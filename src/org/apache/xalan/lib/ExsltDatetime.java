@@ -62,6 +62,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
@@ -943,6 +944,206 @@ public class ExsltDatetime
       Calendar cal = Calendar.getInstance();
       SimpleDateFormat dateFormat = new SimpleDateFormat(format);
       return dateFormat.format(cal.getTime());
+    }
+
+    /**
+     * The date:format-date function formats a date/time according to a pattern.
+     * <p>
+     * The first argument to date:format-date specifies the date/time to be 
+     * formatted. It must be right or left-truncated date/time strings in one of 
+     * the formats defined in 
+     * <a href="http://www.w3.org/TR/xmlschema-2/">[XML Schema Part 2: Datatypes]</a>. 
+     * The permitted formats are as follows: 
+     * <ul>
+     * <li>xs:dateTime (CCYY-MM-DDThh:mm:ss) 
+     * <li>xs:date (CCYY-MM-DD) 
+     * <li>xs:time (hh:mm:ss) 
+     * <li>xs:gYearMonth (CCYY-MM) 
+     * <li>xs:gYear (CCYY) 
+     * <li>xs:gMonthDay (--MM-DD) 
+     * <li>xs:gMonth (--MM--) 
+     * <li>xs:gDay (---DD)
+     * </ul>
+     * The second argument is a string that gives the format pattern used to 
+     * format the date. The format pattern must be in the syntax specified by 
+     * the JDK 1.1 SimpleDateFormat class. The format pattern string is 
+     * interpreted as described for the JDK 1.1 SimpleDateFormat class. 
+     * <p>
+     * If the date/time format is right-truncated (i.e. in a format other than 
+     * xs:time, or xs:dateTime) then any missing components are assumed to be as 
+     * follows: if no month is specified, it is given a month of 01; if no day 
+     * is specified, it is given a day of 01; if no time is specified, it is 
+     * given a time of 00:00:00. 
+     * <p>
+     * If the date/time format is left-truncated (i.e. xs:time, xs:gMonthDay, 
+     * xs:gMonth or xs:gDay) and the format pattern has a token that uses a 
+     * component that is missing from the date/time format used, then that token 
+     * is replaced with an empty string ('') within the result.
+     * 
+     * @author Helg Bredow (helg.bredow@kalido.com)
+     */
+    public static String formatDate(String dateTime, String pattern)
+    {
+        final String yearSymbols = "Gy";
+        final String monthSymbols = "M";
+        final String daySymbols = "dDEFwW";
+        TimeZone timeZone;
+        String zone;
+
+        // Get the timezone information if it was supplied and modify the 
+        // dateTime so that SimpleDateFormat will understand it.
+        if (dateTime.endsWith("Z") || dateTime.endsWith("z"))
+        {
+            timeZone = TimeZone.getTimeZone("GMT");
+            dateTime = dateTime.substring(0, dateTime.length()-1) + "GMT";
+            zone = "z";
+        }
+        else if ((dateTime.length() >= 6) 
+                 && (dateTime.charAt(dateTime.length()-3) == ':') 
+                 && ((dateTime.charAt(dateTime.length()-6) == '+') 
+                    || (dateTime.charAt(dateTime.length()-6) == '-')))
+        {
+            String offset = dateTime.substring(dateTime.length()-6);
+            
+            if ("+00:00".equals(offset) || "-00:00".equals(offset))
+            {
+                timeZone = TimeZone.getTimeZone("GMT");
+            }
+            else
+            {
+                timeZone = TimeZone.getTimeZone("GMT" + offset);
+            }
+            zone = "z";
+            // Need to adjust it since SimpleDateFormat requires GMT+hh:mm but
+            // we have +hh:mm.
+            dateTime = dateTime.substring(0, dateTime.length()-6) + "GMT" + offset;
+        }
+        else
+        {
+            // Assume local time.
+            timeZone = TimeZone.getDefault();
+            zone = "";
+            // Leave off the timezone since SimpleDateFormat will assume local
+            // time if time zone is not included.
+        }
+        String[] formats = {dt + zone, d, gym, gy};
+        
+        // Try the time format first. We need to do this to prevent 
+        // SimpleDateFormat from interpreting a time as a year. i.e we just need
+        // to check if it's a time before we check it's a year.
+        try
+        {
+            SimpleDateFormat inFormat = new SimpleDateFormat(t + zone);
+            inFormat.setLenient(false);
+            Date d= inFormat.parse(dateTime);
+            SimpleDateFormat outFormat = new SimpleDateFormat(strip
+                (yearSymbols + monthSymbols + daySymbols, pattern));
+            outFormat.setTimeZone(timeZone);
+            return outFormat.format(d);
+        }
+        catch (ParseException pe)
+        {
+        }
+        
+        // Try the right truncated formats.
+        for (int i = 0; i < formats.length; i++)
+        {
+            try
+            {
+                SimpleDateFormat inFormat = new SimpleDateFormat(formats[i]);
+                inFormat.setLenient(false);
+                Date d = inFormat.parse(dateTime);
+                SimpleDateFormat outFormat = new SimpleDateFormat(pattern);
+                outFormat.setTimeZone(timeZone);
+                return outFormat.format(d);
+            }
+            catch (ParseException pe)
+            {
+            }
+        }
+        
+        // Now try the left truncated ones. The Java format() function doesn't
+        // return the correct strings in this case. We strip any pattern 
+        // symbols that shouldn't be output so that they are not defaulted to 
+        // inappropriate values in the output.
+        try
+        {
+            SimpleDateFormat inFormat = new SimpleDateFormat(gmd);
+            inFormat.setLenient(false);          
+            Date d = inFormat.parse(dateTime);
+            SimpleDateFormat outFormat = new SimpleDateFormat(strip(yearSymbols, pattern));
+            outFormat.setTimeZone(timeZone);
+            return outFormat.format(d);
+        }
+        catch (ParseException pe)
+        {
+        }
+        try
+        {
+            SimpleDateFormat inFormat = new SimpleDateFormat(gm);
+            inFormat.setLenient(false);
+            Date d = inFormat.parse(dateTime);
+            SimpleDateFormat outFormat = new SimpleDateFormat(strip(yearSymbols, pattern));
+            outFormat.setTimeZone(timeZone);
+            return outFormat.format(d);
+        }
+        catch (ParseException pe)
+        {
+        }
+        try
+        {
+            SimpleDateFormat inFormat = new SimpleDateFormat(gd);
+            inFormat.setLenient(false);
+            Date d = inFormat.parse(dateTime);
+            SimpleDateFormat outFormat = new SimpleDateFormat(strip(yearSymbols + monthSymbols, pattern));
+            outFormat.setTimeZone(timeZone);
+            return outFormat.format(d);
+        }
+        catch (ParseException pe)
+        {
+        }
+        return EMPTY_STR;
+    }
+    
+    /**
+     * Strips occurrences of the given character from a date format pattern.
+     * @param symbols list of symbols to strip.
+     * @param pattern
+     * @return
+     */
+    private static String strip(String symbols, String pattern)
+    {
+        int quoteSemaphore = 0;
+        int i = 0;
+        StringBuffer result = new StringBuffer(pattern.length());
+
+        while (i < pattern.length())
+        {
+            char ch = pattern.charAt(i);
+            if (ch == '\'')
+            {
+                // Assume it's an openening quote so simply copy the quoted 
+                // text to the result. There is nothing to strip here.
+                int endQuote = pattern.indexOf('\'', i + 1);
+                if (endQuote == -1)
+                {
+                    endQuote = pattern.length();
+                }
+                result.append(pattern.substring(i, endQuote));
+                i = endQuote++;
+            }
+            else if (symbols.indexOf(ch) > -1)
+            {
+                // The char needs to be stripped.
+                i++;
+            }
+            else
+            {
+                result.append(ch);
+                i++;
+            }
+        }
+        return result.toString();
     }
 
 }
