@@ -65,6 +65,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 import java.util.Vector;
 
 /**
@@ -330,6 +334,11 @@ public class XSLTElementProcessor
           attrDef.setDefAttrValue(handler, target);
         }
       }
+      if (attrDef.getRequired())
+      {
+        if(!processedDefs.contains(attrDef))
+          handler.error(XSLMessages.createMessage(XSLTErrorResources.ER_REQUIRES_ATTRIB, new Object[]{rawName, attrDef.getName()}) , null);    
+      }    
     }
 
   }

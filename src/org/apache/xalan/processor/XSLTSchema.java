@@ -172,7 +172,7 @@ public class XSLTSchema extends XSLTElementDef
       = new XSLTAttributeDef(null, "result-prefix", XSLTAttributeDef.T_CDATA, true);
 
     XSLTAttributeDef disableOutputEscapingAttr
-      = new XSLTAttributeDef(null, "disable-output-escaping", XSLTAttributeDef.T_YESNO, true);
+      = new XSLTAttributeDef(null, "disable-output-escaping", XSLTAttributeDef.T_YESNO, false);
     
     XSLTAttributeDef levelAttr
       = new XSLTAttributeDef(null, "level", false, 
