@@ -1,839 +1,344 @@
 <?xml version="1.0"?>
 <Commits>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Log>Fix bugzilla bug 3056 
+(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3056). SAX2DTM now keeps 
+track if it is receiving events inside a DTD and ignores comment events when 
+inside the DTD.</Log>
+</Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
-<Log>Integrated fix for problem with count() function for certain iterators.
- PR: Bugzilla 1407
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Parser.java</Modified>
+<Log>I added a flag to the compiler/Parser class that is set if the outermost 
+element
+ in the stylesheet contains a definition of the XSL namespace. The parser 
+already
+ has a global variable '_target' that is set if the stylesheet contains a
+ &lt;?xml-stylesheet?&gt; PI or not. The compiler will now flag an error if neither
+ flags are set after the whole XSL/XML input document has been parsed.
+ PR: bugzilla 1780
  Obtained from: n/a
- Submitted by: John Howard &lt;johnh@schemasoft.com&gt;
- Reviewed by: Morten Jorgensen &lt;morten@xml.apache.org></Log>
-</Commit>
-<Commit category="core">
-<Who>dleslie@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
-<Log>2.2.D8</Log>
-</Commit>
-<Commit category="core">
-<Who>dleslie@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
-<Log>2.2.D8</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer NodeSortKey.java</Modified>
-<Log>Submitted fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2851.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
-<Log>Just added some stuff to diagnose bugs for flavor th.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes WalkerFactory.java
- java/src/org/apache/xpath/compiler Compiler.java
- java/src/org/apache/xpath/patterns
- ContextMatchStepPattern.java StepPattern.java</Modified>
-<Log>These are changes submitted (offline) by Mukund Raghavachari/Watson/IBM@IBMUS.
-
- This fixes a bug with match="chapter//footnote[1]" patterns.
-
- The main change here is minor to remove the automatic attachment of parent::* 
-to simple step patterns.
-
- He has re-implemented executePredicates to be
- more efficient. Given a pattern such as row[6], it
- does not iterate over the entire axis until it reaches
- the node to see if it is the sixth node. Rather,
- starting from the current node, it works backwards
- (preceding siblings) until it either runs out of nodes
- or finds more than six nodes that match the
- predicate [I can explain it better if desired].
- This optimization improves performance slightly
- overall. It helps decoy and patterns most (by
- about 10%).
-
- The other optimization that I implemented was the
- following. For a pattern foo[][3][][4] ..., where more
- than one predicate is a number (position check),
- in checking the predicate [4], the fact that the
- current node has passed foo[][3] implies that it is
- the only node that is the third node among its
- siblings that passes foo[]. Therefore, any
- subsequent position checks can be true if and
- only if the position is [1]. This optimization is not
- used by the xsltmark benchmarks and so does
- not offer any performance benefits.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes DescendantIterator.java</Modified>
-<Log>Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/compiler Lexer.java</Modified>
-<Log>Resize the m_patternMap if m_patternMapSize exceeds the bounds.</Log>
-</Commit>
-<Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/extensions
- ExtensionHandlerGeneral.java
- ExtensionHandlerJavaPackage.java
- ExtensionsTable.java MethodResolver.java
- java/src/org/apache/xalan/lib Extensions.java
- java/src/org/apache/xalan/lib/sql ConnectionPoolManager.java
- java/src/org/apache/xalan/processor ProcessorLRE.java
- ProcessorTemplateElem.java StylesheetHandler.java
- TransformerFactoryImpl.java XSLTAttributeDef.java
- XSLTElementProcessor.java
- java/src/org/apache/xalan/res XSLTErrorResources.java
- java/src/org/apache/xalan/serialize CharInfo.java
- WriterToUTF8Buffered.java
- java/src/org/apache/xalan/templates ElemExtensionCall.java
- ElemExtensionDecl.java ElemMessage.java
- FuncDocument.java FuncFormatNumb.java
- OutputProperties.java StylesheetRoot.java
- java/src/org/apache/xalan/transformer TrAXFilter.java
- TransformerHandlerImpl.java
- TransformerIdentityImpl.java TransformerImpl.java
- java/src/org/apache/xalan/xslt Process.java
- java/src/org/apache/xml/dtm DTMException.java
- DTMManager.java
- java/src/org/apache/xml/dtm/ref ChunkedIntArray.java
- CoroutineManager.java CoroutineSAXParser.java
- CoroutineSAXParser_Xerces.java DTMBuilder.java
- DTMDefaultBase.java DTMDefaultBaseIterators.java
- DTMDefaultBaseTraversers.java
- DTMManagerDefault.java
- IncrementalSAXSource_Filter.java
- IncrementalSAXSource_Xerces.java
- java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java
- java/src/org/apache/xml/utils ObjectPool.java QName.java
- URI.java
- java/src/org/apache/xpath NodeSet.java NodeSetDTM.java
- VariableStack.java XPath.java XPathContext.java
- java/src/org/apache/xpath/axes WalkerFactory.java
- java/src/org/apache/xpath/functions FuncSubstring.java
- FunctionDef1Arg.java
- java/src/org/apache/xpath/objects
- XRTreeFragSelectWrapper.java XStringForChars.java
- java/src/org/apache/xpath/operations Variable.java
- java/src/org/apache/xpath/res XPATHErrorResources.java</Modified>
-<Log>Getting all (almost all) error message strings into the resource bundle</Log>
-</Commit>
-<Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Removed>java/src/org/apache/xml/dtm/ref DTMBuilder.java</Removed>
-<Log>Accidentally added. Now deleting.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/27/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath Expression.java
- java/src/org/apache/xpath/axes AxesWalker.java
- LocPathIterator.java PredicatedNodeTest.java
- ReverseAxesWalker.java
- java/src/org/apache/xpath/objects XNumber.java
- java/src/org/apache/xpath/operations Variable.java</Modified>
-<Log>If a proximity predicate is a stable number (variable or number literal) then,
- once the node is found, don't keep searching! (since only one
- node is possible).</Log>
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc DOM.java
- java/src/org/apache/xalan/xsltc/compiler EqualityExpr.java
- FilterParentPath.java Parser.java Predicate.java
- Step.java SyntaxTreeNode.java Variable.java
- XSLTC.java
- java/src/org/apache/xalan/xsltc/dom DOMAdapter.java
- DOMImpl.java MultiDOM.java
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler UnionPathExpr.java</Modified>
+<Log>Added a small fix that orders the expressions inside a union in such a way 
+that
+ expressions with an attribute axis or attribute node type will be put first.
+ PR: bugzilla 2921
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Parser.java</Modified>
+<Log>A small fix that will allow top-level elements of an unknown URI.
+ XSLTC now ignored the element(s), while it previously reported an error
+ of an unsupported XSLT extension.
+ PR: bugzilla 2840
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultSAXOutputHandler.java
+ TextOutput.java</Modified>
+<Log>A start on a fix for output DOCTYPE declarations based on the attributes
+ of the &lt;xsl:output&gt; element. I also added a fix for bug 2863, to prevent
+ us from outputting namespace delcaration that point a prefix to the null
+ URI (such as 'xmlns:blob=""').
+ PR: bugzilla 2863
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
+<Log>bug 2553, fixes AbbreviatedAbsoluteLocationPath,
+ some relative location paths still give duplicates, will need to filter.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>Update version for 2.2.D9 build</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/compiler Output.java
+ java/src/org/apache/xalan/xsltc/runtime DefaultRun.java
+ DefaultSAXOutputHandler.java TextOutput.java
+ java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>Implemented support for the doctype-system and doctype-public attributes
+ of the &lt;xsl:output/&gt; element. The translet post-processor (TextOutput) can
+ now be instanciated with a ContentHandler and an optional LexicalHandler.
+ The LexicalHandler will receive notofications of the DOCTYPE declaration.
+ The default SAX output handler now implements both ContentHandler and
+ LexicalHandler. The LexicalHandler only handles the startDTD() method,
+ by outputting the DOCTYPE declaration, and all other methods are empty.
+ The trax.Transformer implementation has also been updated to use the
+ LexicalHandler, but I still have not found any way in which a SAX client
+ can set the LexicalHandler.
+ PR: bugzilla 1504
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler XslElement.java</Modified>
+<Log>A minor change to the class handling the &lt;xsl:element&gt; element to be more
+ in-sync with the XSLT 1.0 spec (and M.Kay's book). This in order to make
+ it more readable and maintainable. I was trying to debug the code for
+ something I thought was a bug, and it was just impossible to navigate.
+ This change was necessary, even though the code functioned as it should.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler LiteralElement.java
+ Parser.java</Modified>
+<Log>Fix for outputting all necessary namespace declarations with LREs.
+ PR: bugzilla 2863
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom ReverseIterator.java</Modified>
+<Log>A fix to allow reverse iterators to be reset (inside nested for-each loops).
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>08/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql ConnectionPool.java
+ DefaultConnectionPool.java SQLDocument.java
+ XConnection.java</Modified>
+<Log>Fixed bug in connect method where User and Password were not
+ correctly being passed to the JDBC Driver. Requires chnage in
+ ConnectionPool Interface
+ Submitted by: John Gentilin</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql XConnection.java</Modified>
+<Log>Use defined constant DTMManager.IDENT_DTM_NODE_BITS for shifting DTM nodes, 
+not hard coded value.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/15/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java</Added>
+<Log>bug fix 2553, new iterator to get rid of dups</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/15/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc/compiler
+ FilteredAbsoluteLocationPath.java</Added>
+<Log>bug fix 2553, new abs location path</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler xpath.cup
+ Constants.java</Modified>
+<Log>bug fix 2553, updated Constants for dup processing
+ and updated CUP rule for AbbreviatedAbsoluteLocationPaths</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils SystemIDResolver.java</Modified>
+<Log>Fix problem with resolving a relative URI from a processing instruction</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom AbsoluteIterator.java
+ DOMImpl.java DupFilterIterator.java
+ StepIterator.java UnionIterator.java</Modified>
+<Log>Implementation of id() and key() pattern - finally!
+ Added a small fix to the DOMImpl$DescendantIterator to prevent NPEs.
+ PR: bugzilla 1376
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler IdKeyPattern.java
+ KeyCall.java Mode.java Output.java Parser.java
+ TestSeq.java xpath.cup</Modified>
+<Log>Forgot an 'import' in DupFilterIterator
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java
  java/src/org/apache/xalan/xsltc/runtime
  AbstractTranslet.java DefaultSAXOutputHandler.java
- TextOutput.java
- java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java</Modified>
-<Log>Added code that will speed up predicates such as //foo[@attr=$var],
- //foo[bar = $var] and //foo/[@attr = 'str'].
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java</Modified>
-<Log>In getNextNamespaceNode and getFirstNamespaceNode, was
- sometimes returning a node without the DTM identity bits.
- Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2878.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/compiler OpMap.java</Modified>
-<Log>Throw real error instead of runtime error in getFirstPredicateOpPos
- for better error reporting.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes PredicatedNodeTest.java
- java/src/org/apache/xpath/compiler OpMap.java</Modified>
-<Log>Bit of a hack to make /descendant-or-self::north with getFirstPredicateOpPos
- where getFirstPredicateOpPos was always throwing an error if
- there was not a predicate (!! Should have been discovered before
- now?!?!). If -2 return -2 (instead of throwing an error), and
- handle this case in PredicatedNodeTest#initPredicateInfo.</Log>
-</Commit>
-<Commit category="core">
-<Who>johng@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/lib/sql ObjectArray.java
- SQLDocument.java SQLErrorDocument.java
- XConnection.java</Modified>
-<Log>Added the original pquery and streaming mode functionality
- Submitted by: John Gentilin</Log>
-</Commit>
-<Commit category="core">
-<Who>johng@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Added>java/src/org/apache/xalan/lib/sql DTMDocument.java</Added>
-<Log>Added DTM Document, a common impl between SQLDocument and SQLErrorDocument
- Submitted by: John Gentilin</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/30/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes DescendantIterator.java
- WalkerFactory.java</Modified>
-<Log>Fix addresses http://nagoya.apache.org/bugzilla/enter_bug.cgi?product=XalanJ2,
- and a whole class of related problems.</Log>
+ SAXAdapter.java TextOutput.java
+ TransletOutputBase.java</Modified>
+<Log>missing file</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Expression.java
- Param.java ParameterRef.java Predicate.java
- Stylesheet.java SyntaxTreeNode.java Variable.java
- VariableRef.java WithParam.java</Modified>
-<Log>Fix for parameter and variable handling. This fix makes sure variable slots
- are released once a variable goes out of scope. I have also extracted common
- functionality from Variable and Param into VariableBase, and similarly
- extracted some functionality from VariableRef and ParameterRef into a new
- class VariableRefBase. This can potentially make some code more efficient as
- one can test for 'if (blob instanceof VariableBase)' instead of testing on
- both Variable and Param.
- PR: Bugzilla 2661 and 2699
- Obtained from: n/a
- Submitted by: John Howard &lt;JohnH@schemasoft.com&gt;
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Added>java/src/org/apache/xalan/xsltc/compiler VariableBase.java
- VariableRefBase.java</Added>
-<Log>Forgot to add these two in my last putback.
- PR: none
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Predicate.java
- Step.java Stylesheet.java XSLTC.java</Modified>
-<Log>Removed type-cast error in Stylesheet.java
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/objects XNodeSet.java XObject.java
- java/src/org/apache/xpath/patterns StepPattern.java</Modified>
-<Log>Detach expressions in match patterns. Also, defined
- numWithSideEffects and boolWithSideEffects (for lack of
- better names) that will increment the iterator, and call these
- for predicates. The combination of these results in about an
- 18% performance improvement for decoy.xsl.
- Credits to Mukund Raghavachari/Watson/IBM@IBMUS.</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler VariableBase.java
- java/src/org/apache/xalan/xsltc/runtime
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime
  DefaultSAXOutputHandler.java</Modified>
-<Log>Removed some of the linefeeds we output in the default SAX output handler
- to produce output more similar to Saxon (for testing purposes).
- Added a test for null-pointers in the new VariableBase class.
- PR: bugzilla 2922 &amp; 2598
+<Log>Added another fix for the missing DOCTYPE declaration. XSLTC will now output
+ DOCTYPE declarations for HTML output if either doctype-system or doctype-
+ public is declared in the &lt;xsl:output&gt; element. XSL output will get a
+ DOCTYPE declaration only if doctype-system is declared.
+ PR: 1504
  Obtained from: n/a
  Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org`</Log>
+ Reviewed by: morten@xml.apache.org</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/dom NodeCounter.java</Modified>
-<Log>Added a small fix to prevent unwanted output when using the xsl:number
- element.
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom AbsoluteIterator.java</Modified>
+<Log>
+
+
+</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
+<Log>turning on filtering, bug 2553</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java</Modified>
+<Log>Removed a bad optimisation in the duplicate filter iterator.
  PR: n/a
  Obtained from: n/a
  Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
+<Log>re-activated the no dups filtering, dont know how
+ this got reverted back to no filtering, but it is fixed again.</Log>
 </Commit>
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/extensions
- ExtensionHandlerGeneral.java
- java/src/org/apache/xalan/res XSLTErrorResources.java
- java/src/org/apache/xalan/templates ElemExtensionDecl.java</Modified>
-<Log>Add support for external scripts (ie, the src attribute on a script element)</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath XPathContext.java
- java/src/org/apache/xpath/axes ChildTestIterator.java
- OneStepIteratorForward.java</Modified>
-<Log>In XPathContext#createDTMIterator(int node), call 
-OneStepIteratorForward(Axis.SELF)
- instead of DescendantIterator. This addresses one of the bugs
- in http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2925
- (i.e. &lt;xsl:copy-of select="xalan:nodeset($stylesheets)"/&gt;...
- The DescendantIterator was enumerating all of the nodes in the RTF
- rather than just the one.)</Log>
-</Commit>
-<Commit category="core">
-<Who>johng@apache.org</Who>
-<DateCommitted>07/31/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/lib/sql ConnectionPool.java
- ConnectionPoolManager.java DTMDocument.java
- DefaultConnectionPool.java ObjectArray.java
- PooledConnection.java SQLDocument.java
- SQLErrorDocument.java XConnection.java</Modified>
-<Log>Added Error Managment and javadocs
- Submitted by: John Gentilin</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/patterns StepPattern.java</Modified>
-<Log>Fixed some major problems with position() and last() in secondary
- predicates for match patterns. Credit goes to
- Mukund Raghavachari/Watson/IBM@IBMUS for flagging these.</Log>
+<DateCommitted>08/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils SystemIDResolver.java</Modified>
+<Log>Make sure base is not null before checking for its contents.</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Constants.java
- If.java Key.java Predicate.java Step.java When.java
- java/src/org/apache/xalan/xsltc/compiler/util
- CompareGenerator.java
- java/src/org/apache/xalan/xsltc/dom NodeCounter.java
- java/src/org/apache/xalan/xsltc/runtime
- DefaultSAXOutputHandler.java</Modified>
-<Log>A few changes to make our output look more like Saxon's (to simplyfy
- test diffs).
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="core">
-<Who>johng@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/lib/sql XConnection.java</Modified>
-<Log>Update after building Unit Test's
- Submitted by: John Gentilin</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>tmiller@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/trax TransformerImpl.java
- DOM2SAX.java</Modified>
-<Log>add support for DOMResult handling</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>tmiller@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Added>java/src/org/apache/xalan/xsltc/trax SAX2DOM.java</Added>
-<Log>work in progress, converted needed for DOMResult</Log>
-</Commit>
-<Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/processor XSLTAttributeDef.java</Modified>
-<Log>Fix for Bugzilla 2930. Fix from Alexander Rudnev. Handle namespaced elements.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/01/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm DTMAxisIterator.java
- java/src/org/apache/xml/dtm/ref DTMAxisIteratorBase.java
- DTMDefaultBaseIterators.java
- java/src/org/apache/xpath/axes OneStepIterator.java</Modified>
-<Log>Addresses http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2945
-
- Bug was caused by (redundent) cloneWithReset being called from
- the UnionPathIterator, and the iterator in OneStepIterator not being
- reset. (Need to review: check other iterators for this.)
-
- Call reset on the iterator in OneStepIterator#reset. Reset the position
- value in the ancestor iterator reset. Define DTMAxisIterator#cloneIterator
- to not reset the iterator position, and fix the implementations of
- this to not call clone.reset().</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>tmiller@apache.org</Who>
-<DateCommitted>08/02/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
-<Log>added setting of systemId in DOMSource handling</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/02/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/trax SAX2DOM.java
- TransformerFactoryImpl.java TransformerImpl.java</Modified>
-<Added>java/src/org/apache/xalan/xsltc/trax
- TransformerHandlerImpl.java</Added>
-<Log>Added an implementation of the TransformerHandler interface of TrAX/JAXP.
- Implemented the 4 methods in TransformerFactory to instanciate this
- TransformerHandler implementation.
- Added an attribute of the TransformerFactory which contains the default
- name for generated translet classes (the default name is GregorSamsa from
- Kafka's Metemorphosis), but should be set by the user in cases where the
- Templates implementation cannot get the systemId from the Source object.</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/02/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/dom DOMImpl.java
- java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java
- TransformerHandlerImpl.java</Modified>
-<Added>java/src/org/apache/xalan/xsltc/trax
- TemplatesHandlerImpl.java</Added>
-<Log>Added missing TemplatesHandlerImpl file (implementation of the TrAX
- TemplatesHandler interface).
- Added initial implementation of getAssociatedStylesheet() in
- the TransformerFactoryImpl class.
- Changed behaviour of TransformerHandlerImpl class with regard to
- the setResult() method. This method now has to be called before
- startDocument() is called, which gives XSLTC the same behaviour
- as Xalan.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/02/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Parser.java
- XSLTC.java
- java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java</Modified>
-<Log>Added support for the TransformerFactory's getAssociatedStylesheet()
- method. Added similar methods to the native XSLTC API, as they can come
- in handy.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/02/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java
- java/src/org/apache/xpath NodeSetDTM.java
- java/src/org/apache/xpath/functions FuncExtFunction.java
- java/src/org/apache/xpath/objects XBoolean.java
- XNodeSet.java XNumber.java XObject.java</Modified>
-<Added>java/src/org/apache/xpath/objects XNodeSetForDOM.java</Added>
-<Log>Address http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2925
-
- Create new XObject, XNodeSetForDOM, which is constructed
- from a Node, NodeList, or NodeIterator, and acts the same as
- XNodeSet, except it returns the original object for object(),
- nodeset(), and nodelist().
-
- Add XObject#create(Object val, XPathContext xctxt), which is
- called from TransformerImpl#setParameter(s), and
- FuncExtFunction#execute (for the return values of the
- extension).
-
- XBoolean and XNumber now also have Boolean and Number
- constructors, in which case the original object will also be
- returned from the object() method.
-
- This should make the conversion from java object to XObject
- consistent between function returns and setParameter. These
- changes should also fix a bug where NodeLists weren't being converted.</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Constants.java
- DocumentCall.java
- java/src/org/apache/xalan/xsltc/dom LoadDocument.java</Modified>
-<Log>Fix for the document() function. The code compiled by DocumentCall now
- passes the context URI to the LoadDocument.document() method, and the
- document() method resolves the base/new URIs and constructs an absolute
- path/URI to the document to load.
- PR: bugzilla 2832
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>tmiller@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
-<Log>new recursive parse(InputSource) implemented</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>tmiller@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
-<Log>upated</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>tmiller@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
-<Log>updated again</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/dom DOMImpl.java
- java/src/org/apache/xalan/xsltc/trax SAX2DOM.java</Modified>
-<Log>Fix to get around problem with Crimson. Crimson does not like attribute-
- nodes to be created with 'null' or "" namespace URI. Added an if-test to
- invoke setAttribute(name, value) instead of setAttributeNS(uri, name, value).
- Had to add a little test to DOMImpl$DOMBuilder.makeAttributeNode() to get
- around an internal NPE problem.
- PR: n/a
- Obtained from: n.a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler CopyOf.java
- Step.java
- java/src/org/apache/xalan/xsltc/dom DOMImpl.java
- UnionIterator.java</Modified>
-<Log>Fix for union-iterators wrapping one or more attribute-iterators.
- Attributes should be wrapped in TypedAttributeIterator objects and not
- SingletonIterator objects when they occur insude unions.
- Fix for copying attribute nodes using &lt;xsl:copy&gt; and &lt;xsl:copy-of&gt;
- PR: bugzilla 2603
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Added>java/src/org/apache/xml/utils NamespaceSupport2.java</Added>
-<Log>Replacement for org.xml.sax.helpers.NamespaceSupport; extends
- that API so it can be easily swapped in.
-
- Current changes;
-
- Minor code reorg. I'm sorry, but I find classes easier to read
- if fields are defined before methods reference them rather than
- at end, especially when inner classes are present.
-
- Punt stack vector in favor of doubly-linked list. (It was already
- singly-linked in parallel with the vector!)
-
- The whole dirty-tables concept was broken, because Context's
- ctor always called copyTables and thus always marked tables
- dirty. It also wasted some time setting itself only to be reset by
- setParent. I've fixed both by parameterizing the ctor and making
- copyTables specific to prep-for-new-declaration. (Could be
- moved back into the declaration method, for that matter.)
-
- I'm dubious about the caches in processName. As far as I can
- tell, Xalan per se never actually uses that method...
-
- The use of Hashtables is questionable. Hashtable is
- known to be inefficient and oversynchronized in older JVMs, and
- the fact that this is a bidirectional mapping suggests that an
- approach similar to our own String Pool -- lighter-weight, more
- targeted, hashing without reduplicating the two column tables --
- would be a win. Since these are typically short sets, even
- simple linear search is worth considering!</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/processor StylesheetHandler.java
- java/src/org/apache/xalan/templates ElemTemplateElement.java
- java/src/org/apache/xalan/transformer ResultTreeHandler.java
- TransformSnapshotImpl.java</Modified>
-<Log>Cutover to NamespaceSupport2, q.v.</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/utils NamespaceSupport2.java</Modified>
-<Log>Continuing code review.</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/utils NamespaceSupport2.java</Modified>
-<Log>More efficient prefixes-for-specific-URI. This may wind up being
- redone yet again if/when the underlying storage representation
- changes.</Log>
-</Commit>
-<Commit category="core">
-<Who>dleslie@apache.org</Who>
-<DateCommitted>08/03/2001</DateCommitted>
-<Added>java/src/org/apache/xalan/lib PipeDocument.java</Added>
-<Log>PipeDocument extension element (the pipeDocument method).</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/04/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java
- java/src/org/apache/xpath NodeSet.java NodeSetDTM.java</Modified>
-<Log>Bug fixed regarding the current() function in the root template
- (related to bug#1269). Bug was reported by David Marston
- offline. The test for this is conf/copy/copy29.
-
- In TransformerImpl#applyTemplateToNode, create a NodeSetDTM and pass it to 
-m_xcontext.pushContextNodeList(cnl);.
- In NodeSetDTM fix getCurrentNode so that it doesn't use m_next-1
- (which simply appears to be completely wrong). Do the same for
- NodeSet... though I don't think this will be called anywhere in
- Xalan.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/04/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm DTMAxisIterator.java
- java/src/org/apache/xml/dtm/ref DTMAxisIteratorBase.java
- DTMDefaultBaseIterators.java</Modified>
-<Log>Provide method for DTMAxisIterator to get the current root node
- of the iteration.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/04/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/objects XObject.java</Modified>
-<Log>In response to regression posted on xalan-dev by John Gentilin 
-&lt;johnglinux@eyecatching.com&gt;
- on 08/03/2001 06:49 PM. When the XNodeSet taks a DTMIterator, it
- will call val.getDTMManager();, which will call LocPathIterator#getDTMManager,
- which will call m_execContext..getDTMManager(), which means
- that setRoot has to be called on the iterator before it is added to
- XNodeSet. Thus, call setRoot on the OneStepIterator in
- create(Object, XPathContext) before it is added to the XNodeSet.
- The regression was related to fix for 
-http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2925.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/05/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes OneStepIterator.java</Modified>
-<Log>For the OneStepIterator(DTMAxisIterator iterator) constructor,
- initialize the node tests to DTMFilter.SHOW_ALL (duh).</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/objects XObject.java</Modified>
-<Added>java/src/org/apache/xpath/objects XObjectFactory.java</Added>
-<Log>Move create methods from XObject to XObjectFactory, in response
- to cyclic build problems encountered with javac 1.1.8.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/utils NamespaceSupport2.java</Modified>
-<Log>Moved anonomous class to PrefixEnumerator, in response
- to problems encountered with 1.1.8 build.
- Joe may want to fix this in another way, as
- I'm sure the anon class is probably a bit
- cheaper?</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath VariableStack.java</Modified>
-<Log>Address http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2972,
- where it was throwing a NPE instead of reporting that the variable
- was being accessed before it was bound (i.e. the variable was being
- accessed inside an RTF for that same variable).</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer
- TransformerHandlerImpl.java</Modified>
-<Log>Remove m_hasStarted variable and associated assertion.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java</Modified>
-<Log>Addresses bug http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3001.
- In the cloneIterator function of PrecedingIterator, the cloned array
- was being sized for _maxAncestors, which defaults to 8. But if the
- _stack was resized, it will copy more into the new stack than is
- allocated. The solution is to allocate the new clone._stack array to
- _stack.length.</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/utils NamespaceSupport2.java</Modified>
-<Log>Don't create caches unless used (which I don't think they are, in Xalan).</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBaseIterators.java</Modified>
-<Log>Made _maxAncestors not static, as this is
- not compatible with 1.1.8 (reported by
- Gary Peskin).</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/utils NamespaceSupport2.java</Modified>
-<Log>Playing a hunch, I moved the Context objects out of NamespaceSupport2.
- They're now a second class in the same file rather than being an inner class.
- That reduces the size of the Context2 object, and its initialization time, by
- removing the need for it to carry a reference to the NamespaceSupport2
- object that created it.
-
- Performance seems significantly improved... even (surprisingly!) on the
- getDeclaredPrefixes operation. Memory usage also seems better, as
- expected.
-
- NamespaceSupport2 is still acounting for about 5%
- of the time spent in the ResultTreeHandler, according
- to my latest trace. Apparently we are calling
- getDeclaredPrefixes an obscenely large number of
- times, and the Vector.elements call is adding up. We
- may want to look at where this is being called from
- and whether we can reduce the number of invocations.</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer ResultTreeHandler.java</Modified>
-<Log>Performance improvement; avoid scanning the same list twice.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/06/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer
- TransformerHandlerImpl.java TransformerImpl.java
- java/src/org/apache/xalan/xslt Process.java
- java/src/org/apache/xml/dtm/ref
- IncrementalSAXSource_Filter.java
- java/src/org/apache/xml/utils DefaultErrorHandler.java
- java/src/org/apache/xpath/operations Variable.java</Modified>
-<Log>This checkin hopefully fixes many problems with bad diagnostics lately, but
- at the expense of a slight change in behavior. The rule now is, the
- DefaultErrorHandler never outputs location info for error and fatalError... 
-this has to be done
- by the catcher of the exception. Convenience methods for this are
- in DefaultErrorHandler#printLocation. This method will unwrap the
- exception as close to the originating source as possible.</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/dom LoadDocument.java</Modified>
-<Log>Added code behind the document() function to force the parser to be
- namespace aware (Crimson is pr. default, Xerces is not).
- PR: bugzilla 2862
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
-<Log>Fix to prevent escaping of attribute values in HTML output.
- PR: bugzilla 3003
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
-<Log>Fix for grouping a sequence of text nodes inside one CDATA section.
- PR: bugzilla 3005
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org</Log>
-</Commit>
-<Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler ForEach.java
+<DateCommitted>08/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler IdKeyPattern.java
+ Key.java KeyCall.java Parser.java Sort.java
  xpath.cup
+ java/src/org/apache/xalan/xsltc/compiler/util
+ CompareGenerator.java NodeSortRecordGenerator.java
+ java/src/org/apache/xalan/xsltc/dom DTDMonitor.java
+ DupFilterIterator.java KeyIndex.java
+ NodeSortRecord.java NodeSortRecordFactory.java
  java/src/org/apache/xalan/xsltc/runtime
- AbstractTranslet.java</Modified>
-<Log>Fix for passing node-sets as parameters into a template with a for-each loop.
- The ForEach class resets its node iterator by default. This behaviour is not
- desierd for iterators that are passed in through a parameter, so I added an
- it-test that checks if the iterator is of type 'Reference'.
- PR: bugzilla 2468
+ AbstractTranslet.java BasisLibrary.java</Modified>
+<Log>Major update for id() and key(). Patterns containing id() and key() are
+ now 100% supported (about time), and id() and key() expressions should
+ now work in all (at least most) combinations.
+ PR: bugzilla 1376 (!!!) and 2624
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates FuncDocument.java</Modified>
+<Log>Fix document function so that if only one argument is passed and it is a 
+nodetest, the base to be used to resolve relative URIs is the base of the each 
+node in the nodeset.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>08/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLTSchema.java</Modified>
+<Log>Allow multiple iterations of xsl:with-param within an xsl:call-template or 
+xsl:apply-template</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>A small fix for a cleanup I did in the basis library (it broke the
+ substring() function)&gt;
+ PR: n/a
  Obtained from: n/a
  Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler
- AbsolutePathPattern.java</Modified>
-<Log>Fix for a certain combination of absolute path patterns and ancestor patterns,
- such as &lt;xsl:template match="/foo//*"/&gt;.
- PR: bugzilla 2836
+<DateCommitted>08/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
+<Log>Added small fix to prevent NPE in output handler.
+ PR: n/a
  Obtained from: n/a
  Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler DocumentCall.java</Modified>
-<Log>Fix for document() function. Prevents run-time error.
+<DateCommitted>08/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/compiler Variable.java
+ VariableRef.java VariableRefBase.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ MultiHashtable.java
+ java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java
+ TextOutput.java TransletOutputBase.java</Modified>
+<Log>Added element/attribute prefix information in the internal DOM.
+ This should fix some problems we have had with the copy and copy-of
+ elements. Added a few lines of code in an attempt to speed up the DOM builder.
  PR: n/a
  Obtained from: n/a
  Submitted by: morten@xml.apache.org
@@ -841,203 +346,274 @@ this has to be done
 </Commit>
 <Commit category="core">
 <Who>sboag@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/extensions
- XSLProcessorContext.java
- java/src/org/apache/xml/dtm DTMIterator.java
- java/src/org/apache/xml/dtm/ref DTMAxisIteratorBase.java
- java/src/org/apache/xpath NodeSetDTM.java
- java/src/org/apache/xpath/axes AttributeIterator.java
- AxesWalker.java ChildIterator.java
+<DateCommitted>08/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath XPathContext.java</Modified>
+<Log>Added getCurrentNodeList() for getting the current node list as defined
+ by http://www.w3.org/TR/xslt#dt-current-node-list.
+ This looks up the stack of the SubContextLists to find the top-level
+ LocPathIterator. I'm fairly unhappy with this fix, and hope to restructure
+ the context list stuff a bit to avoid the casts in the getCurrentNodeList(),
+ and to fix getCurrentNode() so that it properly defines the current
+ node as defined by the XSLT spec. As a matter of fact, I would
+ like to break up XPathContext into an XSLTContext.
+ Part of the http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3031
+ fix.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>08/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/functions FuncCurrent.java</Modified>
+<Log>Call new XPathContext#getCurrentNodeList. Fixes
+ http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3031.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>08/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer KeyRefIterator.java
+ java/src/org/apache/xpath/axes ChildIterator.java
  ChildTestIterator.java DescendantIterator.java
- FilterExprWalker.java LocPathIterator.java
- OneStepIterator.java OneStepIteratorForward.java
- ReverseAxesWalker.java UnionPathIterator.java
- WalkingIteratorSorted.java
- java/src/org/apache/xpath/objects XObjectFactory.java</Modified>
-<Log>Changes to allow some dynamic determination in WalkerIteratorSorted to
- see if the nodes really need to be sorted. Added isDocOrdered() and
- getAxis() to both DTMIterator and AxesWalker, and implemented
- appropriate overloads in derived or implementing classes. In FilterExprWalker
- return the contained DTMIterator's getAxis(). In WalkerIteratorSorted,
- implement canBeWalkedInNaturalDocOrder() function that is called
- from setRoot(...). If this function returns true, than don't sort the nodes
- in setRoot, and in all other respects treat this as if it is a simple
- WalkingIterator.</Log>
-</Commit>
-<Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
-<Log>Fix for bugzilla 1251. Make sure exceptions are thrown when we're on the main 
-thread.</Log>
-</Commit>
-<Commit category="core">
-<Who>sboag@apache.org</Who>
-<DateCommitted>08/07/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes AxesWalker.java
- WalkerFactory.java WalkingIteratorSorted.java</Modified>
-<Log>Eliminate do/while check for duplicates in AxesWalker#nextNode()
- by using WalkingIteratorSorted for cases where both the preceding[-sibling]
- and following[-sibling] axes are being walked, and for "@*/foo" patterns
- ("@attr/foo" patterns still use WalkingIterator).</Log>
-</Commit>
-<Commit category="core">
-<Who>garyp@apache.org</Who>
-<DateCommitted>08/08/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/templates FuncFormatNumb.java</Modified>
-<Log>Fix bugzilla bug 3036 
-(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3036). When no 
-xsl:decimal-format element is supplied in the composed stylesheet, the defaults 
-specified in the Recommendation section 12.3 should be used for the attribute 
-values, not locale-specific defaults.</Log>
+ MatchPatternIterator.java
+ SelfIteratorNoPredicate.java UnionPathIterator.java</Modified>
+<Log>Fix for problem reported by Mike Starr &lt;mike.starr@air2web.com&gt;,
+ where the transformation hangs for "foo[2] | bang"
+ patters, i.e. unions with positional predicates. The fix
+ is to have the iterators#nextNode() set m_lastFetched to DTM.NULL
+ when m_foundLast is found to be true on function entry
+ (after the cache check). This allows getCurrentNode() to
+ fullfill it's contract of returning null if the last fetch was
+ null. The bug occured after an optimization for positional
+ predicates to have them not continue searching once
+ the positional node was found, by setting m_foundLast
+ to true.</Log>
 </Commit>
 <Commit category="xsltc">
 <Who>morten@apache.org</Who>
-<DateCommitted>08/08/2001</DateCommitted>
+<DateCommitted>08/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DTDMonitor.java</Modified>
+<Log>An attempt to optimise the building of the ID index. The previous version of
+ this code would traverse the DOM once for each type of element that had a
+ defined ID attribute. The new version traverses the DOM once, and looks up
+ each element's type in a hashtable to determine its ID attribute type (if 
+any).
+ The new version of the code does not use string comparisons, like the old one.
+ This update was done to compensate for the possible performance degradation of
+ having implemented an element/attribute prefix array in the internal DOM.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/trax
+ TemplatesHandlerImpl.java TemplatesImpl.java
+ TransformerHandlerImpl.java TransformerImpl.java</Modified>
+<Log>Protected some methods in our TrAX code that are not defined in the TrAX API.
+ These methods were never intended for public use and should have been defined
+ as "protected" to begin with.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/22/2001</DateCommitted>
 <Modified>java/src/org/apache/xalan/xsltc/compiler XslElement.java</Modified>
-<Log>Added a test to the &lt;xsl:element&gt; element to verify that the element name
- given in the 'name' attribute contains something other than an empty string.
- PR: bugzilla 2794
+<Log>Fix for a problem with some combinations of &lt;xsl:element&gt; and namespace
+ aliasing. The output lacked the necessary namespace definitions when an
+ element created with &lt;xsl:element&gt; was given a qname with a prefix that
+ was mapped to some other prefix.
+ PR: n/a
  Obtained from: n/a
- Submitted by: morten@apache.org
- Reviewed by: morten@apache.org</Log>
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
 </Commit>
 <Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/08/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler LiteralElement.java</Modified>
-<Log>Applied a fix to our class for handling literal result elements. The only
- attributes in the XSLT namespace we handle in LREs are exclude-result-prefixes
- and extension-element-prefixes. We have a test to check if an attribute is
- in the XSLT namespace, and if it is we ignore the attribute. This test was
- placed before the test for the two XSLT attributes we do want to handle,
- causing us to ignore all xsl:exclude-result-prefixes attributes in LREs.
- PR: bugzilla 1506
- Obtained from: n/a
- Submitted by: morten@apache.org
- Reviewed by: morten@apache.org</Log>
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/23/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler ParameterRef.java</Modified>
+<Log>removed typeCheck(), uses the base classes method now</Log>
 </Commit>
 <Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/08/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Attribute.java
- AttributeSet.java Copy.java UseAttributeSets.java
- XslAttribute.java
- java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
-<Log>Fix and performance improvement for attribute sets.
- PR: bugzilla 2536
- Obtained from: n/a
- Submitted by: morten@apache.org
- Reviewed by: morten@apache.org</Log>
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/23/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler
+ VariableRefBase.java</Modified>
+<Log>added default typeCheck() to this base class</Log>
 </Commit>
 <Commit category="xsltc">
-<Who>morten@apache.org</Who>
-<DateCommitted>08/08/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/xsltc/compiler Copy.java</Modified>
-<Log>Fix for use of attribute sets with the xsl:copy element. We were a bit too
- restrictive in our tests to see if it was safe to send the attributes to
- the output handler. We only compiled in a test to see if the copied node
- was an elment, but should also have tested if the xsl:copy element's
- parent node was a LRE or a xsl:element element.
- PR: bugzilla 2538
- Obtained from: n/a
- Submitted by: morten@apache.org
- Reviewed by: morten@apache.org</Log>
+<Who>tmiller@apache.org</Who>
+<DateCommitted>08/23/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler RelationalExpr.java</Modified>
+<Log>bug fix 2838, cast to type real if both operands are
+ ResultTreeType</Log>
 </Commit>
 <Commit category="core">
-<Who>garyp@apache.org</Who>
-<DateCommitted>08/09/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
-<Log>Fix for bugzilla 3060 
-(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3060). Prefixes and
- namespaceURIs are kept in the same Vector, m_prefixMappings. The entries are 
-stored as pairs of vector elements. The even elements contain the prefix and 
-the odd elements contain the URI. In two routines, getPrefix and endElement, 
-the appropriate prefix or URI was being located in the Vector using an 
-indexOf. However, in this case where the prefix and the URI were the same, the 
-routine was looking for the URI but finding the prefix instead of the URI. It 
-tried tried to back up one to get the prefix and underflowed the Vector size.</Log>
+<Who>johng@apache.org</Who>
+<DateCommitted>08/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>Removed debug flag
+ Submitted by:John Gentilin</Log>
 </Commit>
 <Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>08/09/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/transformer ResultTreeHandler.java
- TransformerImpl.java</Modified>
-<Log>Implement ErrorHandler in ResultTreeHandler so that fatal errors can get 
-passed in to the SAXHandler. Also change the code in TransformerImpl to call 
-fatalError in case of an error instead of endDocument. (overlaps with URI 
-handling fix...)</Log>
+<Who>johng@apache.org</Who>
+<DateCommitted>08/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ XConnection.java</Modified>
+<Log>Fixed Streaming Mode
+ Submitted by: John Gentilin</Log>
 </Commit>
 <Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>08/09/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/processor
- TransformerFactoryImpl.java
- java/src/org/apache/xalan/transformer
- TransformerIdentityImpl.java
- java/src/org/apache/xml/utils SystemIDResolver.java</Modified>
-<Log>Fix code to handle absolute paths from unix systems. This fix is part of an 
-ongoing process and is just meant to fix a few pending bugs. More changes are 
-expected in this area.</Log>
-</Commit>
-<Commit category="core">
-<Who>mmidy@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
-<Log>Change version for xalan2.2.D9 build</Log>
-</Commit>
-<Commit category="core">
-<Who>garyp@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xalan/templates ElemElement.java
- java/src/org/apache/xalan/transformer ResultTreeHandler.java
- java/src/org/apache/xml/utils DefaultErrorHandler.java</Modified>
-<Log>ResultTreeHandler was pushing a new namespace context but failing to note 
-that result in more pushes than pops. Cleaned up the execute() method of 
-ElemElement to make it more understandable (to me) and added a few comments. 
-The DefaultErrorHandler was not flushing Writers that it created. Since the 
-Writers are never closed (and cannot be as there is no close method), error 
-messages were failing to appear.</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm DTMManager.java</Modified>
-<Log>Increasing the number of bits used to identify DTM nodes, at the expense of 
-decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
-other code has been updated to track this change (and to better track posible 
-future changes), as have the IDKEY testcases.</Log>
-</Commit>
-<Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+<Who>johng@apache.org</Who>
+<DateCommitted>08/24/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
  DTMDocumentImpl.java DTMManagerDefault.java</Modified>
-<Log>Increasing the number of bits used to identify DTM nodes, at the expense of 
-decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
-other code has been updated to track this change (and to better track posible 
-future changes), as have the IDKEY testcases.</Log>
+<Log>added document registration and release events to the DTM interface
+ Submitted by: John Gentilin</Log>
 </Commit>
 <Commit category="core">
-<Who>jkesselm@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/functions FuncGenerateId.java</Modified>
-<Log>Increasing the number of bits used to identify DTM nodes, at the expense of 
-decreasing the number of DTMs that a DTMManager can track simultaneously. Some 
-other code has been updated to track this change (and to better track posible 
-future changes), as have the IDKEY testcases.</Log>
+<Who>garyp@apache.org</Who>
+<DateCommitted>08/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib Extensions.java</Modified>
+<Log>Fix bug 3112 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3112). Fix 
+tokenize to work with DTM by obtaining a new DocumentBuilder and not using the 
+document from the context node.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>08/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath VariableStack.java
+ java/src/org/apache/xpath/operations Variable.java</Modified>
+<Log>Fix bug 3265 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3265). Using 
+an expression in the evaluate extension function that contains a top-level 
+variable was cause an NPE.</Log>
 </Commit>
 <Commit category="core">
 <Who>sboag@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath NodeSetDTM.java</Modified>
-<Log>Try to support getRoot. Fixes problem with TransformStateTest.</Log>
+<DateCommitted>08/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/objects XStringForChars.java</Modified>
+<Log>Fixed two bugs, one in getChars and one in charAt where the m_start
+ offset wasn't being used correctly. This manifested itself in some
+ stuff I was doing with the startsWith function, but likely caused
+ many other bugs with other functionality.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/27/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc DOM.java
+ java/src/org/apache/xalan/xsltc/compiler
+ AbsoluteLocationPath.java AbsolutePathPattern.java
+ AncestorPattern.java ApplyTemplates.java
+ BooleanExpr.java CallTemplate.java CastExpr.java
+ Constants.java Copy.java CopyOf.java
+ DocumentCall.java FilterExpr.java
+ FilteredAbsoluteLocationPath.java ForEach.java
+ FunctionCall.java Key.java KeyCall.java
+ LastCall.java LocalNameCall.java Mode.java
+ NameCall.java NamespaceUriCall.java Number.java
+ Param.java ParameterRef.java
+ ParentLocationPath.java ParentPattern.java
+ PositionCall.java Predicate.java
+ RelationalExpr.java Sort.java Step.java
+ StepPattern.java Stylesheet.java
+ SyntaxTreeNode.java Template.java TestSeq.java
+ Text.java TransletOutput.java ValueOf.java
+ Variable.java VariableRef.java Whitespace.java
+ XSLTC.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ ClassGenerator.java ErrorMsg.java
+ MethodGenerator.java NodeSetType.java NodeType.java
+ ResultTreeType.java
+ java/src/org/apache/xalan/xsltc/dom Axis.java
+ DOMAdapter.java DOMImpl.java LoadDocument.java
+ MultiDOM.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java BasisLibrary.java</Modified>
+<Log>Changes all calls from the compiled translet code to the DOM to be calls
+ to the DOM interface (and not to a specific DOM class). I did this to make
+ it possible to plugi in any DOM implementation.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/27/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc StripFilter.java</Added>
+<Log>Forgot to add this file in my last putback.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/27/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/compiler Constants.java
+ TransletOutput.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultSAXOutputHandler.java
+ TextOutput.java TransletOutputBase.java</Modified>
+<Log>Added an &lt;xsltc:output&gt; extension to allow for multiple output files. I know
+ that this is not a prioritised task, but I need this for a little project I
+ am working on.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Param.java
+ ParameterRef.java Variable.java VariableBase.java
+ VariableRef.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ NodeSetType.java NodeType.java ReferenceType.java
+ ResultTreeType.java StringType.java Type.java</Modified>
+<Log>A few fixes for the regression caused by my last (huge) putback.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>08/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java</Modified>
+<Log>A fix for the position() function when using duplicate filter iterators.
+ PR: n/
+ Obtained from: N/A
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>08/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java</Modified>
+<Log>added dumpNode method, convenience for debugging.
+
+ We might want to move this function up to DTMDefaultBase, or
+ perhaps to the DTM API itself.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>08/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToText.java</Modified>
+<Log>Fix http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3131 by
+ overriding writeNormalizedChars and writeUTF16Surrogate to
+ not do any XML escaping.</Log>
 </Commit>
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
-<DateCommitted>08/10/2001</DateCommitted>
-<Modified>java/src/org/apache/xpath/axes WalkerFactory.java</Modified>
-<Log>Fix problem with duplicate nodes produced from a walking iterator</Log>
+<DateCommitted>08/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java</Modified>
+<Log>The index was being stored as opposed to the node handle when we were 
+replacing namespace nodes. Store the actual node handle.</Log>
 </Commit>
 </Commits>
