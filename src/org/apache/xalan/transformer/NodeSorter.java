@@ -60,6 +60,8 @@ import java.util.Vector;
 import java.text.NumberFormat;
 import java.text.CollationKey;
 import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
@@ -419,12 +421,7 @@ class NodeSorter
 		    NodeSortKey k1 = (NodeSortKey)m_keys.elementAt(0);
         XObject r = k1.m_selectPat.execute(m_execContext, node, k1.m_namespaceContext);
         
-        if (r.getType()== XObject.CLASS_NODESET)
-        {
-          if (((XNodeSet)r).nodeset().nextNode() == null)
-            tryNextKey = false;
-        }
-        else if (r == null)
+        if (r == null)
           tryNextKey = false;
         
         double d ;
@@ -435,7 +432,17 @@ class NodeSorter
           m_key1Value = new Double(Double.isNaN(d)? 0.0 : d);
         }  
         else
+        {
           m_key1Value = k1.m_col.getCollationKey(r.str());
+        }
+        
+         if (r.getType()== XObject.CLASS_NODESET)
+        {
+           NodeIterator ni = (NodeIterator)r.object();
+           if(ni instanceof ContextNodeList)
+             tryNextKey = (((ContextNodeList)ni).getCurrentNode() != null);
+           // else abdicate... should never happen, but... -sb
+        }
 		  
 		    if (m_keys.size()>1)
 		    {
