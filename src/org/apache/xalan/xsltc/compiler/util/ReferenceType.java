@@ -228,6 +228,38 @@ public final class ReferenceType extends Type {
     }
 
     /**
+     * Translates a reference into the Java type denoted by <code>clazz</code>. 
+     * Only conversion allowed is to java.lang.Object.
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    Class clazz) {
+	if (clazz.getName().equals("java.lang.Object")) {
+	    methodGen.getInstructionList().append(NOP);	
+	}
+	else {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
+	}
+    }
+
+    /**
+     * Translates an external Java type into a reference. Only conversion
+     * allowed is from java.lang.Object.
+     */
+    public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen, 
+			      Class clazz) {
+	if (clazz.getName().equals("java.lang.Object")) {
+	    methodGen.getInstructionList().append(NOP);	
+	}
+	else {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+				toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
+        } 
+    }
+
+    /**
      * Expects a reference on the stack and translates it to a non-synthesized
      * boolean. It does not push a 0 or a 1 but instead returns branchhandle 
      * list to be appended to the false list.
