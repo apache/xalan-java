@@ -260,9 +260,12 @@ final class Predicate extends Expression implements Closure {
 	    }
 
 	    SyntaxTreeNode parent = getParent();
-
+        
 	    // Expand [last()] into [position() = last()]
 	    if ((_exp instanceof LastCall) ||
+                //Fix for bug 22949, check for last() for any expression returns
+                // NumberType            
+                 _exp.hasLastCall()||
 		(parent instanceof Pattern) ||
 		(parent instanceof FilterExpr)) {
 

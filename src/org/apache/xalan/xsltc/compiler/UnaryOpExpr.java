@@ -85,6 +85,13 @@ final class UnaryOpExpr extends Expression {
 	return(_left.hasPositionCall());
     }
 
+    /**
+     * Returns true if this expressions contains a call to last()
+     */
+    public boolean hasLastCall() {
+            return(_left.hasLastCall());
+    }
+    
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	_left.setParser(parser);
