@@ -35,11 +35,9 @@ import org.xml.sax.ext.LexicalHandler;
 /**
  * This class receives notification of SAX-like events, and with gathered
  * information over these calls it will invoke the equivalent SAX methods
- * on a handler, the ultimate output is known to be XML.
+ * on a handler, the ultimate xsl:output method is known to be "xml".
  * 
- * @author minchau
- * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller 
+ * @xsl.usage internal
  */
 public class ToXMLSAXHandler extends ToSAXHandler
 {
