@@ -283,8 +283,9 @@ public final class Template extends TopLevelElement {
 
 	if (_disabled) return;
 	// bug fix #4433133, add a call to named template from applyTemplates 
-	String className = _stylesheet.getClassName();
+	String className = classGen.getClassName();
 	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
+
 	if (_compiled && isNamed()){
 	    il.append(classGen.loadTranslet());
 	    il.append(methodGen.loadDOM());
