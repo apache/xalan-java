@@ -11,7 +11,14 @@
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
 <xsl:template match="/">
-    <xsl:variable name="db" select="sql:new($driver, $datasource)"/>
+    <xsl:variable name="db" select="sql:new()"/>
+    
+    <!-- Connect to the database with minimal error detection -->
+		<xsl:if test="not(sql:connect($db, $driver, $datasource))" >
+    	<xsl:message>Error Connecting to the Database</xsl:message>
+      <xsl:copy-of select="sql:getError($db)/ext-error" />
+    </xsl:if>
+    
 
     <HTML>
       <HEAD>
@@ -19,7 +26,7 @@
       </HEAD>
       <BODY>
         <TABLE border="1">
-        	<xsl:value-of select="sql:disableCacheNodes($db)" />
+        	<xsl:value-of select="sql:enableStreamingMode($db)" />
           <xsl:variable name="table" select='sql:query($db, $query)'/>
           <TR>
              <xsl:for-each select="$table/row-set/column-header">

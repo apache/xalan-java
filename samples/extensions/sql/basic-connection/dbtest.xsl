@@ -8,7 +8,7 @@
 
 <xsl:param name="driver" select="'org.enhydra.instantdb.jdbc.idbDriver'"/>
 <xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
-<xsl:param name="query" select="'SELECT * FROM import2'"/>
+<xsl:param name="query" select="'SELECT * FROM import1'"/>
 
 <xsl:template match="/">
     
