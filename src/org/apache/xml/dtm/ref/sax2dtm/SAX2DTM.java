@@ -87,7 +87,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         implements EntityResolver, DTDHandler, ContentHandler, ErrorHandler,
                    DeclHandler, LexicalHandler
 {
-  /** simple DEBUG flag, for dumping diagnostics info. */
+  /** Set true to monitor SAX events and similar diagnostic info. */
   private static final boolean DEBUG = false;
 
   /**
@@ -1488,6 +1488,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void startDocument() throws SAXException
   {
+    if (DEBUG)
+      System.out.println("startDocument");
+
+		
     int doc = addNode(DTM.DOCUMENT_NODE,
                       m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
                       DTM.NULL, DTM.NULL, 0, true);
@@ -1512,7 +1516,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void endDocument() throws SAXException
   {
-    charactersFlush();
+    if (DEBUG)
+      System.out.println("endDocument");
+
+		charactersFlush();
 
     m_nextsib.setElementAt(NULL,0);
 
@@ -1570,7 +1577,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void endPrefixMapping(String prefix) throws SAXException
   {
-
     if (DEBUG)
       System.out.println("endPrefixMapping: prefix: " + prefix);
 
@@ -1652,6 +1658,27 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           String uri, String localName, String qName, Attributes attributes)
             throws SAXException
   {
+   if (DEBUG)
+	 {
+      System.out.println("startElement: uri: " + uri + ", localname: "
+												 + localName + ", qname: "+qName+", atts: " + attributes);
+
+			boolean DEBUG_ATTRS=true;
+			if(DEBUG_ATTRS & attributes!=null)
+			{
+				int n = attributes.getLength();
+				if(n==0)
+					System.out.println("\tempty attribute list");
+				else for (int i = 0; i < n; i++)
+					System.out.println("\t attr: uri: " + attributes.getURI(i) +
+														 ", localname: " + attributes.getLocalName(i) +
+														 ", qname: " + attributes.getQName(i) +
+														 ", type: " + attributes.getType(i) +
+														 ", value: " + attributes.getValue(i)
+														 );
+			}
+	 }
+		
     charactersFlush();
 
     int exName = m_expandedNameTable.getExpandedTypeID(uri, localName, DTM.ELEMENT_NODE);
@@ -1797,6 +1824,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void endElement(String uri, String localName, String qName)
           throws SAXException
   {
+   if (DEBUG)
+      System.out.println("endElement: uri: " + uri + ", localname: "
+												 + localName + ", qname: "+qName);
 
     charactersFlush();
 
@@ -1838,6 +1868,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void characters(char ch[], int start, int length) throws SAXException
   {
+   if (DEBUG)
+      System.out.println("characters: " + new String(ch,start,length));
 
     if (m_textPendingStart == -1)  // First one in this block
     {
@@ -1874,7 +1906,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void ignorableWhitespace(char ch[], int start, int length)
           throws SAXException
   {
-
     // %OPT% We can probably take advantage of the fact that we know this 
     // is whitespace.
     characters(ch, start, length);
@@ -1898,6 +1929,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void processingInstruction(String target, String data)
           throws SAXException
   {
+    if (DEBUG)
+		 System.out.println("processingInstruction: target: " + target +", data: "+data);
 
     charactersFlush();
 
