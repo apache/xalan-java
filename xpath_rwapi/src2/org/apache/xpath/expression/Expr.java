@@ -265,11 +265,6 @@ public interface Expr
 	static final short INSTANCE_OF_EXPR = 18;
 
 	/**
-	 * The expression is an unary expression
-	 */
-	static final short UNARY_EXPR = 19;
-
-	/**
 	 * The expression is a cast as expression
 	 */
 	static final short CAST_AS_EXPR = 20;

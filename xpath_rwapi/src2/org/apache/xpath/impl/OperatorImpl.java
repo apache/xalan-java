@@ -66,531 +66,639 @@ import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathConstants;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
-
 /**
- *
+ * Basic implementation of {@link OperatorExpr}. 
+ * @author <a href="mailto:villard@us.ibm.com>Lionel Villard</a>
+ * @version $Id$
  */
 public class OperatorImpl extends ExprImpl implements OperatorExpr
 {
-    /**
-     * Mapping between operation type and it's external representation
-     */
-    final private static String[] OPTYPE2STRING = 
-    {
-        "|", "intersect", "except", "+", "-", "to", "eq", "ne", "lt", "le", "gt",
-        "ge", "=", "!=", "<", "<=", ">", ">=", "is", "isnot", "<<", ">>", "and",
-        "or", "+", "-", "/", "//", ",", "*", "div", "idiv", "mod"
-    };
+	/**
+	 * Mapping between operation type and its expression type 
+	 */
+	final private static short[] OPTYPE2EXPRTYPE =
+		{
+			Expr.SEQUENCE_EXPR,
+			Expr.SEQUENCE_EXPR,
+			Expr.SEQUENCE_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.SEQUENCE_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.COMPARISON_EXPR,
+			Expr.LOGICAL_EXPR,
+			Expr.LOGICAL_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.PATH_EXPR,
+			-1,
+			Expr.SEQUENCE_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.ARITHMETIC_EXPR,
+			Expr.ARITHMETIC_EXPR };
 
-    /**
-     * Indicate whether space is needed around the operator
-     */
-    final private static boolean[] SPACE_NEEDED = 
-    {
-        false, true, true, false, false, true, true, true, true, true, true,
-        true, false, false, false, false, false, false, true, true, false, false,
-        true, true, false, false, false, false, false, false, true, true, true
-    };
+	/**
+	 * Mapping between operation type and it's external representation
+	 */
+	final private static String[] OPTYPE2STRING =
+		{
+			"|",
+			"intersect",
+			"except",
+			"+",
+			"-",
+			"to",
+			"eq",
+			"ne",
+			"lt",
+			"le",
+			"gt",
+			"ge",
+			"=",
+			"!=",
+			"<",
+			"<=",
+			">",
+			">=",
+			"is",
+			"isnot",
+			"<<",
+			">>",
+			"and",
+			"or",
+			"+",
+			"-",
+			"/",
+			"//",
+			",",
+			"*",
+			"div",
+			"idiv",
+			"mod" };
 
-    /**
-     * Type of the expression
-     */
-    short m_exprType;
+	/**
+	 * Indicate whether space is needed around the operator
+	 */
+	final private static boolean[] SPACE_NEEDED =
+		{
+			false,
+			true,
+			true,
+			false,
+			false,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			true,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			true,
+			true,
+			false,
+			false,
+			true,
+			true,
+			false,
+			false,
+			false,
+			false,
+			false,
+			false,
+			true,
+			true,
+			true };
 
-    /**
-     * Type of the operator
-     */
-    short m_opType;
+	/**
+	 * Type of the expression
+	 */
+	short m_exprType;
+
+	/**
+	 * Type of the operator
+	 */
+	short m_opType;
 
 	/**
 	 * Internal use only
 	 */
-	protected OperatorImpl() 
+	protected OperatorImpl()
 	{
 	}
 
-    /**
-     * Constructor for OperatorImpl. Internal uses only.
-     *
-     * @param i
-     */
-    public OperatorImpl(int i)
-    {
-        super(i);
+	/**
+	 * Constructor for OperatorImpl. Internal uses only.
+	 *
+	 * @param i
+	 */
+	public OperatorImpl(int i)
+	{
+		super(i);
 
-        switch (i)
-        {
-            case XPathTreeConstants.JJTEXPRSEQUENCE:
-                m_exprType = SEQUENCE_EXPR;
-                m_opType = COMMA;
+		switch (i)
+		{
+			case XPathTreeConstants.JJTEXPRSEQUENCE :
+				m_exprType = SEQUENCE_EXPR;
+				m_opType = COMMA;
 
-                break;
+				break;
 
-            case XPathTreeConstants.JJTUNARYEXPR:
-                m_exprType = UNARY_EXPR;
+			case XPathTreeConstants.JJTUNARYEXPR :
+				m_exprType = ARITHMETIC_EXPR;
 
-                break;
+				break;
 
-            case XPathTreeConstants.JJTUNIONEXPR:
-			case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR:
-            case XPathTreeConstants.JJTPATTERN:
-                m_exprType = SEQUENCE_EXPR;
+			case XPathTreeConstants.JJTUNIONEXPR :
+			case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR :
+			case XPathTreeConstants.JJTPATTERN :
+				m_exprType = SEQUENCE_EXPR;
 
-                // opType is not known yet
-                break;
+				// opType is not known yet
+				break;
 
-            case XPathTreeConstants.JJTFUNCTIONCALL:
-            case XPathTreeConstants.JJTIDKEYPATTERN:
+			case XPathTreeConstants.JJTFUNCTIONCALL :
+			case XPathTreeConstants.JJTIDKEYPATTERN :
 
-                // ignore : see FunctionCallImpl subclass
-                break;
+				// ignore : see FunctionCallImpl subclass
+				break;
 
-            case XPathTreeConstants.JJTADDITIVEEXPR:
-            case XPathTreeConstants.JJTMULTIPLICATIVEEXPR:
-                m_exprType = ARITHMETIC_EXPR;
+			case XPathTreeConstants.JJTADDITIVEEXPR :
+			case XPathTreeConstants.JJTMULTIPLICATIVEEXPR :
+				m_exprType = ARITHMETIC_EXPR;
 
-                // opType is not known yet
-                break;
+				// opType is not known yet
+				break;
 
-            case XPathTreeConstants.JJTOREXPR:
-            case XPathTreeConstants.JJTANDEXPR:
-                m_exprType = LOGICAL_EXPR;
+			case XPathTreeConstants.JJTOREXPR :
+			case XPathTreeConstants.JJTANDEXPR :
+				m_exprType = LOGICAL_EXPR;
 
-                //	opType is not known yet
-                break;
+				//	opType is not known yet
+				break;
 
-            case XPathTreeConstants.JJTCOMPARISONEXPR:
-                m_exprType = COMPARISON_EXPR;
+			case XPathTreeConstants.JJTCOMPARISONEXPR :
+				m_exprType = COMPARISON_EXPR;
 
-                // opType is not known yet
-                break;
+				// opType is not known yet
+				break;
 
-            case XPathTreeConstants.JJTRANGEEXPR:
-                m_exprType = SEQUENCE_EXPR;
-                m_opType = TO;
+			case XPathTreeConstants.JJTRANGEEXPR :
+				m_exprType = SEQUENCE_EXPR;
+				m_opType = TO;
 
-                break;
+				break;
 
-            default:
+			default :
 
-                // Invalid parameter
-                throw new IllegalArgumentException(
-                    "The parameter value does not correspond to an operator identifier"); // I16
-        }
-    }
+				// Invalid parameter
+				throw new IllegalArgumentException("The parameter value does not correspond to an operator identifier");
+				// I16
+		}
+	}
 
-    /**
-     * Constructor for OperatorImpl. Internal uses only.
-     *
-     * @param p
-     * @param i
-     */
-    public OperatorImpl(XPath p, int i)
-    {
-        super(p, i);
-    }
+	/**
+	 * Constructor for OperatorImpl. Internal uses only.
+	 *
+	 * @param p
+	 * @param i
+	 */
+	public OperatorImpl(XPath p, int i)
+	{
+		super(p, i);
+	}
 
-    /**
-     * Create a clone     
-     */
-    protected OperatorImpl(OperatorImpl expr)
-    {
-        super(expr.id);
+	/**
+	 * Create a clone     
+	 */
+	protected OperatorImpl(OperatorImpl expr)
+	{
+		super(expr.id);
 
-        m_exprType = expr.m_exprType;
-        m_opType = expr.m_opType;
+		m_exprType = expr.m_exprType;
+		m_opType = expr.m_opType;
 
-        m_children = expr.cloneChildren();
-    }
-    
+		m_children = expr.cloneChildren();
+	}
 
-    /**
-     * Constructor for OperatorImpl.
-     *
-     * @param id
-     * @param exprType DOCUMENT ME!
-     * @param opType DOCUMENT ME!
-     */
-    protected OperatorImpl(short exprType, short opType)
-    {
-        super();
+	protected OperatorImpl(short exprType, short opType)
+	{
+		super();
 
-        m_exprType = exprType;
-        m_opType = opType;
-    }
+		m_exprType = exprType;
+		m_opType = opType;
+	}
 
-    /**
-     * @see org.apache.xpath.expression.Expr#getExprType()
-     */
-    public short getExprType()
-    {
-        return m_exprType;
-    }
+	// Methods
 
-    /**
-     * @see org.apache.xpath.expression.Expr#cloneExpression()
-     */
-    public Expr cloneExpression()
-    {
-        return new OperatorImpl(this);
-    }
+	public boolean visit(Visitor visitor)
+	{
+		if (visitor.visitOperator(this))
+		{
+			int count = getOperandCount();
 
-    /**
-     * @see org.apache.xpath.expression.Visitable#visit(Visitor)
-     */
-    public boolean visit(Visitor visitor)
-    {
-        if (visitor.visitOperator(this))
-        {
-            int count = getOperandCount();
+			for (int i = 0; i < count; i++)
+			{
+				if (!getOperand(i).visit(visitor))
+				{
+					return false;
+				}
+			}
 
-            for (int i = 0; i < count; i++)
-            {
-                if (!getOperand(i).visit(visitor))
-                {
-                    return false;
-                }
-            }
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
+	// Implements Expr
 
-    /**
-     * @see org.apache.xpath.expression.OperatorExpr#addOperand(Expr)
-     */
-    public void addOperand(Expr operand) throws XPath20Exception
-    {
-    	// do not performed the reduction during edition
-        super.jjtAddChild((Node) operand,
-            (m_children == null) ? 0 : m_children.length);
-    }
+	/**
+	 * @see org.apache.xpath.expression.Expr#getExprType()
+	 */
+	public short getExprType()
+	{
+		return m_exprType;
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.Expr#cloneExpression()
+	 */
+	public Expr cloneExpression()
+	{
+		try
+		{
+			return (Expr) clone();
+		}
+		catch (CloneNotSupportedException e)
+		{
+			// Never
+			return null;
+		}
+	}
+
+	// Implements OperatorExpr    
+
+	/**
+	 * @see org.apache.xpath.expression.OperatorExpr#addOperand(Expr)
+	 */
+	public void addOperand(Expr operand) throws XPath20Exception
+	{
+		// do not performed the reduction during edition
+		super.jjtAddChild(
+			(Node) operand,
+			(m_children == null) ? 0 : m_children.length);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.OperatorExpr#append(org.apache.xpath.expression.OperatorExpr)
 	 */
-	public void append(OperatorExpr expr) throws XPath20Exception {
-		if (expr.getExprType() == m_exprType && expr.getOperatorType() == m_opType ) {
+	public void append(OperatorExpr expr) throws XPath20Exception
+	{
+		if (expr.getExprType() == m_exprType
+			&& expr.getOperatorType() == m_opType)
+		{
 			int size = expr.getOperandCount();
-			for (int i = 0; i < size ; i ++ ) {
-				addOperand(expr.getOperand(i));			
+			for (int i = 0; i < size; i++)
+			{
+				addOperand(expr.getOperand(i));
 			}
-		} else {
-			throw new XPath20Exception("Mismatched operator expressions"); // I16 + better msg
+		}
+		else
+		{
+			throw new XPath20Exception("Mismatched operator expressions");
+			// I16 + better msg
 		}
 	}
 
-    /**
-     * @see org.apache.xpath.expression.OperatorExpr#getOperand(int)
-     */
-    public Expr getOperand(int i)
-    {
-        if (m_children == null)
-        {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-
-        return (Expr) m_children[i];
-    }
-
-    /**
-     * @see org.apache.xpath.expression.OperatorExpr#getOperandCount()
-     */
-    public int getOperandCount()
-    {
-        return (m_children == null) ? 0 : m_children.length;
-    }
-
-    /**
-     * @see org.apache.xpath.expression.OperatorExpr#getOperatorType()
-     */
-    public short getOperatorType()
-    {
-        return m_opType;
-    }
-
-    /**
-     * @see org.apache.xpath.expression.OperatorExpr#removeOperand(Expr)
-     */
-    public void removeOperand(Expr operand) throws XPath20Exception
-    {
-        super.jjtRemoveChild((Node) operand);
-    }
-
-    /**
-     * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
-     */
-    public void jjtAddChild(Node n, int i)
-    {
-        if (n.getId() == XPathTreeConstants.JJTMINUS)
-        {
-            // Minus expression            
-            m_opType = MINUS_UNARY;
-        }
-        else if (n.getId() == XPathTreeConstants.JJTPLUS)
-        {
-            // Plus expression
-            m_opType = PLUS_UNARY;
-        }
-        else
-        {
-            if (((SimpleNode) n).canBeReduced())
-            {
-                if (((m_exprType == SEQUENCE_EXPR)
-                        && (n.jjtGetNumChildren() > 0)
-                        && (((Expr) n.jjtGetChild(0)).getExprType() == SEQUENCE_EXPR)
-                        && (((OperatorExpr) n.jjtGetChild(0)).getOperatorType() == m_opType)
-                        )
-                        || ((id == XPathTreeConstants.JJTPATTERN)
-                        && (n.jjtGetNumChildren() > 0)
-                        && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTPATTERN)))
-                {
-                    super.jjtInsertNodeChildren(n.jjtGetChild(0));
-                }
-                else
-                {
-                    super.jjtInsertChild(n.jjtGetChild(0));
-                }
-            }
-            else
-            {
-                super.jjtInsertChild(n);
-            }
-        }
-    }
-
-    /**
-     * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
-     */
-    public boolean canBeReduced()
-    {
-        if (m_exprType == SEQUENCE_EXPR || id == XPathTreeConstants.JJTPATTERN)
-        {
-            return (m_children == null) || (m_children.length <= 1);
-        }
-        		
-
-        return super.canBeReduced();
-    }
-
-    /**
-     * Gets operator as a char
-     *
-     * @return DOCUMENT ME!
-     */
-    protected String getOperatorChar()
-    {
-        return OPTYPE2STRING[m_opType];
-    }
-
-    /**
-     * Tell is spaces are needed around the operator
-     * @return
-     */
-    protected boolean isSpaceNeeded()
-    {
-        return SPACE_NEEDED[m_opType];
-    }
-
-    /**
-     * Gets expression as external string representation
-     *
-     * @param expr 
-     * @param abbreviate 
-     */
-    public void getString(StringBuffer expr, boolean abbreviate)
-    {
-        int size = getOperandCount();
-        String oper = getOperatorChar();
-        ExprImpl op;
+	/**
+	 * @see org.apache.xpath.expression.OperatorExpr#getOperand(int)
+	 */
+	public Expr getOperand(int i)
+	{
+		if (m_children == null)
+		{
+			throw new ArrayIndexOutOfBoundsException();
+		}
+
+		return (Expr) m_children[i];
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.OperatorExpr#getOperandCount()
+	 */
+	public int getOperandCount()
+	{
+		return (m_children == null) ? 0 : m_children.length;
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.OperatorExpr#getOperatorType()
+	 */
+	public short getOperatorType()
+	{
+		return m_opType;
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.OperatorExpr#removeOperand(Expr)
+	 */
+	public void removeOperand(Expr operand) throws XPath20Exception
+	{
+		super.jjtRemoveChild((Node) operand);
+	}
+
+	/**
+	 * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
+	 */
+	public void jjtAddChild(Node n, int i)
+	{
+		if (n.getId() == XPathTreeConstants.JJTMINUS)
+		{
+			// Minus expression            
+			m_opType = MINUS_UNARY;
+		}
+		else if (n.getId() == XPathTreeConstants.JJTPLUS)
+		{
+			// Plus expression
+			m_opType = PLUS_UNARY;
+		}
+		else
+		{
+			if (((SimpleNode) n).canBeReduced())
+			{
+				if (((m_exprType == SEQUENCE_EXPR)
+					&& (n.jjtGetNumChildren() > 0)
+					&& (((Expr) n.jjtGetChild(0)).getExprType() == SEQUENCE_EXPR)
+					&& (((OperatorExpr) n.jjtGetChild(0)).getOperatorType()
+						== m_opType))
+					|| ((id == XPathTreeConstants.JJTPATTERN)
+						&& (n.jjtGetNumChildren() > 0)
+						&& (n.jjtGetChild(0).getId()
+							== XPathTreeConstants.JJTPATTERN)))
+				{
+					super.jjtInsertNodeChildren(n.jjtGetChild(0));
+				}
+				else
+				{
+					super.jjtInsertChild(n.jjtGetChild(0));
+				}
+			}
+			else
+			{
+				super.jjtInsertChild(n);
+			}
+		}
+	}
+
+	/**
+	 * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
+	 */
+	public boolean canBeReduced()
+	{
+		if (m_exprType == SEQUENCE_EXPR || id == XPathTreeConstants.JJTPATTERN)
+		{
+			return (m_children == null) || (m_children.length <= 1);
+		}
+
+		return super.canBeReduced();
+	}
+
+	/**
+	 * Gets operator as a char
+	 *
+	 * @return DOCUMENT ME!
+	 */
+	protected String getOperatorChar()
+	{
+		return OPTYPE2STRING[m_opType];
+	}
+
+	/**
+	 * Tell is spaces are needed around the operator
+	 * @return
+	 */
+	protected boolean isSpaceNeeded()
+	{
+		return SPACE_NEEDED[m_opType];
+	}
+
+	/**
+	 * Gets expression as external string representation
+	 *
+	 * @param expr 
+	 * @param abbreviate 
+	 */
+	public void getString(StringBuffer expr, boolean abbreviate)
+	{
+		int size = getOperandCount();
+		String oper = getOperatorChar();
+		ExprImpl op;
 
-        if ((m_opType == MINUS_UNARY) || (m_opType == PLUS_UNARY))
-        {
-            expr.append(oper);
-        }
+		if ((m_opType == MINUS_UNARY) || (m_opType == PLUS_UNARY))
+		{
+			expr.append(oper);
+		}
 
-        for (int i = 0; i < size; i++)
-        {
-            op = (ExprImpl) getOperand(i);
+		for (int i = 0; i < size; i++)
+		{
+			op = (ExprImpl) getOperand(i);
 
-            if ((op.getExprType() == ARITHMETIC_EXPR)
-                    || (op.getExprType() == SEQUENCE_EXPR))
-            {
-                expr.append('(');
-            }
+			if ((op.getExprType() == ARITHMETIC_EXPR)
+				|| (op.getExprType() == SEQUENCE_EXPR))
+			{
+				expr.append('(');
+			}
 
-            op.getString(expr, abbreviate);
+			op.getString(expr, abbreviate);
 
-            if ((op.getExprType() == ARITHMETIC_EXPR)
-                    || (op.getExprType() == SEQUENCE_EXPR))
-            {
-                expr.append(')');
-            }
+			if ((op.getExprType() == ARITHMETIC_EXPR)
+				|| (op.getExprType() == SEQUENCE_EXPR))
+			{
+				expr.append(')');
+			}
 
-            if (i < (size - 1))
-            {
-                if (isSpaceNeeded())
-                {
-                    expr.append(' ');
-                }
+			if (i < (size - 1))
+			{
+				if (isSpaceNeeded())
+				{
+					expr.append(' ');
+				}
 
-                expr.append(oper);
+				expr.append(oper);
 
-                if (isSpaceNeeded())
-                {
-                    expr.append(' ');
-                }
-            }
-        }
-    }
+				if (isSpaceNeeded())
+				{
+					expr.append(' ');
+				}
+			}
+		}
+	}
 
-    
-    public void processToken(Token token)
-    {
-        switch (token.kind)
-        {
-            case XPathConstants.Plus:
-                m_opType = PLUS_ADDITIVE;
+	public void processToken(Token token)
+	{
+		switch (token.kind)
+		{
+			case XPathConstants.Plus :
+				m_opType = PLUS_ADDITIVE;
 
-                break;
+				break;
 
-            case XPathConstants.Minus:
-                m_opType = MINUS_ADDITIVE;
+			case XPathConstants.Minus :
+				m_opType = MINUS_ADDITIVE;
 
-                break;
+				break;
 
-            case XPathConstants.Multiply:
-                m_opType = MULT_PRODUCT;
+			case XPathConstants.Multiply :
+				m_opType = MULT_PRODUCT;
 
-                break;
+				break;
 
-            case XPathConstants.Div:
-                m_opType = MULT_DIV;
+			case XPathConstants.Div :
+				m_opType = MULT_DIV;
 
-                break;
+				break;
 
-            case XPathConstants.Idiv:
-                m_opType = MULT_IDIV;
+			case XPathConstants.Idiv :
+				m_opType = MULT_IDIV;
 
-                break;
+				break;
 
-            case XPathConstants.Mod:
-                m_opType = MULT_MOD;
+			case XPathConstants.Mod :
+				m_opType = MULT_MOD;
 
-                break;
+				break;
 
-            case XPathConstants.Union:
-            case XPathConstants.Vbar:
-                m_opType = UNION_COMBINE;
+			case XPathConstants.Union :
+			case XPathConstants.Vbar :
+				m_opType = UNION_COMBINE;
 
-                break;
+				break;
 
-            case XPathConstants.Intersect:
-                m_opType = INTERSECT_COMBINE;
+			case XPathConstants.Intersect :
+				m_opType = INTERSECT_COMBINE;
 
-                break;
+				break;
 
-            case XPathConstants.Except:
-                m_opType = EXCEPT_COMBINE;
+			case XPathConstants.Except :
+				m_opType = EXCEPT_COMBINE;
 
-                break;
+				break;
 
-            case XPathConstants.And:
-                m_opType = AND_LOGICAL;
+			case XPathConstants.And :
+				m_opType = AND_LOGICAL;
 
-                break;
+				break;
 
-            case XPathConstants.Or:
-                m_opType = OR_LOGICAL;
+			case XPathConstants.Or :
+				m_opType = OR_LOGICAL;
 
-                break;
+				break;
 
-            case XPathConstants.Equals:
-                m_opType = EQUAL_GENERAL_COMPARISON;
+			case XPathConstants.Equals :
+				m_opType = EQUAL_GENERAL_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.NotEquals:
-                m_opType = NOTEQUAL_GENERAL_COMPARISON;
+			case XPathConstants.NotEquals :
+				m_opType = NOTEQUAL_GENERAL_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.Lt:
-                m_opType = LESSTHAN_GENERAL_COMPARISON;
+			case XPathConstants.Lt :
+				m_opType = LESSTHAN_GENERAL_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.LtEquals:
-                m_opType = LESSOREQUALTHAN_GENERAL_COMPARISON;
+			case XPathConstants.LtEquals :
+				m_opType = LESSOREQUALTHAN_GENERAL_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.Gt:
-                m_opType = GREATTHAN_GENERAL_COMPARISON;
+			case XPathConstants.Gt :
+				m_opType = GREATTHAN_GENERAL_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.GtEquals:
-                m_opType = GREATOREQUALTHAN_GENERAL_COMPARISON;
+			case XPathConstants.GtEquals :
+				m_opType = GREATOREQUALTHAN_GENERAL_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.FortranEq:
-                m_opType = EQUAL_VALUE_COMPARISON;
+			case XPathConstants.FortranEq :
+				m_opType = EQUAL_VALUE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.FortranNe:
-                m_opType = NOTEQUAL_VALUE_COMPARISON;
+			case XPathConstants.FortranNe :
+				m_opType = NOTEQUAL_VALUE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.FortranLt:
-                m_opType = LESSTHAN_VALUE_COMPARISON;
+			case XPathConstants.FortranLt :
+				m_opType = LESSTHAN_VALUE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.FortranLe:
-                m_opType = LESSOREQUALTHAN_VALUE_COMPARISON;
+			case XPathConstants.FortranLe :
+				m_opType = LESSOREQUALTHAN_VALUE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.FortranGt:
-                m_opType = GREATTHAN_VALUE_COMPARISON;
+			case XPathConstants.FortranGt :
+				m_opType = GREATTHAN_VALUE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.FortranGe:
-                m_opType = GREATOREQUALTHAN_VALUE_COMPARISON;
+			case XPathConstants.FortranGe :
+				m_opType = GREATOREQUALTHAN_VALUE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.Is:
-                m_opType = IS_NODE_COMPARISON;
+			case XPathConstants.Is :
+				m_opType = IS_NODE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.IsNot:
-                m_opType = ISNOT_NODE_COMPARISON;
+			case XPathConstants.IsNot :
+				m_opType = ISNOT_NODE_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.GtGt:
-                m_opType = LATERTHAN_ORDER_COMPARISON;
+			case XPathConstants.GtGt :
+				m_opType = LATERTHAN_ORDER_COMPARISON;
 
-                break;
+				break;
 
-            case XPathConstants.LtLt:
-                m_opType = EARLIERTHAN_ORDER_COMPARISON;
+			case XPathConstants.LtLt :
+				m_opType = EARLIERTHAN_ORDER_COMPARISON;
 
-                break;
+				break;
 
-            default:
-            // never
-        }
-    }
+			default :
+				// never
+		}
+	}
 }

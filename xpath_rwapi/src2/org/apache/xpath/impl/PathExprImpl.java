@@ -65,150 +65,155 @@ import org.apache.xpath.impl.parser.Singletons;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
-
 /**
  *
  */
 public class PathExprImpl extends OperatorImpl implements PathExpr
 {
-    boolean m_isAbsolute;
+	boolean m_isAbsolute;
 
-    /**
-     * Constructor for PathExprImpl.
-     */
-    protected PathExprImpl()
-    {
-        this(XPathTreeConstants.JJTPATHEXPR);
-    }
+	/**
+	 * Constructor for PathExprImpl.
+	 */
+	protected PathExprImpl()
+	{
+		this(XPathTreeConstants.JJTPATHEXPR);
+	}
 
-    /**
-     * Constructor for PathExprImpl.
-     *
-     * @param i
-     */
-    public PathExprImpl(int i)
-    {
+	/**
+	 * Constructor for PathExprImpl.
+	 *
+	 * @param i
+	 */
+	public PathExprImpl(int i)
+	{
 		id = i;
-        m_exprType = PATH_EXPR;
+		m_exprType = PATH_EXPR;
 		m_opType = SLASH_STEP;
-        m_isAbsolute = false;
-    }
+		m_isAbsolute = false;
+	}
 
-    /**
-     * Constructor for PathExprImpl.
-     *
-     * @param p
-     * @param i
-     */
-    public PathExprImpl(XPath p, int i)
-    {
-        super(p, i);
+	/**
+	 * Constructor for PathExprImpl.
+	 *
+	 * @param p
+	 * @param i
+	 */
+	public PathExprImpl(XPath p, int i)
+	{
+		super(p, i);
 
-        m_isAbsolute = false;
-    }
+		m_isAbsolute = false;
+	}
 
 	/**
 	 * @param expr
 	 */
-	protected PathExprImpl(PathExprImpl expr) {
+	protected PathExprImpl(PathExprImpl expr)
+	{
 		super(expr);
 		m_isAbsolute = expr.m_isAbsolute;
 	}
 
-    /**
-     * @see org.apache.xpath.expression.PathExpr#isAbsolute()
-     */
-    public boolean isAbsolute()
-    {
-        return m_isAbsolute;
-    }
-
-    /**
-     * @see org.apache.xpath.expression.Visitable#visit(Visitor)
-     */
-    public boolean visit(Visitor visitor)
-    {
-        if (visitor.visitPath(this))
-        {
-            // visit each step (operand)
-            return super.visit(visitor);
-        }
-
-        return false;
-    }
-
-    /**
-     * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer, boolean)
-     */
-    public void getString(StringBuffer expr, boolean abbreviate)
-    {
-        if (m_isAbsolute)
-        {
-            expr.append("/");
-        }
-
-        super.getString(expr, abbreviate);
-    }
-
-	/* (non-Javadoc)
-	 * @see org.apache.xpath.expression.Expr#cloneExpression()
+	/**
+	 * @see org.apache.xpath.expression.PathExpr#isAbsolute()
 	 */
-	public Expr cloneExpression() {
+	public boolean isAbsolute()
+	{
+		return m_isAbsolute;
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.Visitable#visit(Visitor)
+	 */
+	public boolean visit(Visitor visitor)
+	{
+		if (visitor.visitPath(this))
+		{
+			// visit each step (operand)
+			return super.visit(visitor);
+		}
+
+		return false;
+	}
+
+	/**
+	 * @see org.apache.xpath.impl.ExprImpl#getString(StringBuffer, boolean)
+	 */
+	public void getString(StringBuffer expr, boolean abbreviate)
+	{
+		if (m_isAbsolute)
+		{
+			expr.append("/");
+		}
+
+		super.getString(expr, abbreviate);
+	}
+
+	
+	public Expr cloneExpression()
+	{
+
 		return new PathExprImpl(this);
 	}
 
-    /**
-     * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
-     */
-    public void jjtAddChild(Node n, int i)
-    {
-        if (n.getId() == XPathTreeConstants.JJTROOT)
-        {
-            m_isAbsolute = true;
-        }
-        else if (n.getId() == XPathTreeConstants.JJTROOTDESCENDANTS)
-        {
-            m_isAbsolute = true;
-            super.jjtAddChild(Singletons.SLASHSLASH, i);
-        }
-        else
-        {
-            if (((SimpleNode) n).canBeReduced())
-            {
-                if ((m_exprType == PATH_EXPR) && (n.jjtGetNumChildren() > 0)
-                        && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTPATHEXPR))
-                {
-                    super.jjtInsertNodeChildren(n.jjtGetChild(0));
-                }
-                else
-                {
-                    super.jjtInsertChild(n.jjtGetChild(0));
-                }
-            }
-            else
-            {
-                super.jjtInsertChild(n);
-            }
-        }
-    }
+	/**
+	 * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
+	 */
+	public void jjtAddChild(Node n, int i)
+	{
+		if (n.getId() == XPathTreeConstants.JJTROOT)
+		{
+			m_isAbsolute = true;
+		}
+		else if (n.getId() == XPathTreeConstants.JJTROOTDESCENDANTS)
+		{
+			m_isAbsolute = true;
+			super.jjtAddChild(Singletons.SLASHSLASH, i);
+		}
+		else
+		{
+			if (((SimpleNode) n).canBeReduced())
+			{
+				if ((m_exprType == PATH_EXPR)
+					&& (n.jjtGetNumChildren() > 0)
+					&& (n.jjtGetChild(0).getId()
+						== XPathTreeConstants.JJTPATHEXPR))
+				{
+					super.jjtInsertNodeChildren(n.jjtGetChild(0));
+				}
+				else
+				{
+					super.jjtInsertChild(n.jjtGetChild(0));
+				}
+			}
+			else
+			{
+				super.jjtInsertChild(n);
+			}
+		}
+	}
 
-    /**
-     * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
-     */
-    public boolean canBeReduced()
-    {
-        // Can be reduced whenever there is only one step and this step is a primary expression
-        if ((m_children != null) && (m_children.length == 1))
-        {
-            Expr step = (Expr) m_children[0];
-            int et = step.getExprType();
+	/**
+	 * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
+	 */
+	public boolean canBeReduced()
+	{
+		// Can be reduced whenever there is only one step and this step is a primary expression
+		if ((m_children != null) && (m_children.length == 1))
+		{
+			Expr step = (Expr) m_children[0];
+			int et = step.getExprType();
 
-            return (((et == STEP) && ((StepExpr) step).isPrimaryExpr())
-            || (et == LITERAL_EXPR) || (et == FUNCTION_CALL_EXPR)
-            || (et == SEQUENCE_EXPR) || (et == VARIABLE_REF_EXPR)
-            || (et == ARITHMETIC_EXPR));
-        }
+			return (
+				((et == STEP) && ((StepExpr) step).isPrimaryExpr())
+					|| (et == LITERAL_EXPR)
+					|| (et == FUNCTION_CALL_EXPR)
+					|| (et == SEQUENCE_EXPR)
+					|| (et == VARIABLE_REF_EXPR)
+					|| (et == ARITHMETIC_EXPR));
+		}
 
-        return false;
-    }
+		return false;
+	}
 }

@@ -63,9 +63,6 @@ import org.apache.xpath.expression.ExpressionFactory;
  */
 public class XPathFactoryImpl extends XPath20Factory {
 
-	/**
-	 * @see org.apache.xpath.XPathFactory#newExpressionFactory()
-	 */
 	public ExpressionFactory newExpressionFactory() {
 		return new ExpressionFactoryImpl();
 	}

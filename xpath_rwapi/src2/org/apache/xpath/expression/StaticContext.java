@@ -60,8 +60,10 @@ import java.util.Set;
 import org.apache.xml.NamespaceContext;
 
 /**
- * Static context of expression. 
+ * Static context of XPath expression. 
  * @see <a href="http://www.w3.org/TR/xpath20/#static_context">XPath 2.0 specification</a>
+ * @author <a href="mailto:villard@us.ibm.com>Lionel Villard</a>
+ * @version $Id$
  */
 public interface StaticContext {
     

@@ -80,106 +80,126 @@ import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 /**
- * Default implementation expression factory to create XPath AST nodes.
+ * Basic implementation expression factory to create XPath AST nodes.
+ * @author <a href="mailto:villard@us.ibm.com>Lionel Villard</a>
+ * @version $Id$
  */
-public class ExpressionFactoryImpl implements ExpressionFactory {
+public class ExpressionFactoryImpl implements ExpressionFactory
+{
 
-	public Expr createExpr(String expr) throws XPath20Exception {
+	public Expr createExpr(String expr) throws XPath20Exception
+	{
 		XPath parser = new XPath(new StringReader(expr));
-		try {
+		try
+		{
 			return (Expr) parser.XPath2().jjtGetChild(0);
-		} catch (ParseException e) {
-            throw new XPath20Exception(e);
+		}
+		catch (ParseException e)
+		{
+			throw new XPath20Exception(e);
 		}
 	}
 
 	public Expr createExpr(StaticContext ctx, String expr)
 		throws XPath20Exception
 	{
+		// TODO : context
 		XPath parser = new XPath(new StringReader(expr));
-		try {
+		try
+		{
 			return (Expr) parser.XPath2().jjtGetChild(0);
-		} catch (ParseException e) {
+		}
+		catch (ParseException e)
+		{
 			throw new XPath20Exception(e);
 		}
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createPathExpr(boolean)
-	 */
-	public PathExpr createPathExpr(boolean isAbsolute) {
+	public PathExpr createPathExpr(boolean isAbsolute)
+	{
 		PathExprImpl e = new PathExprImpl();
 		e.m_isAbsolute = isAbsolute;
 		return e;
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createStepExpr(short, org.apache.xpath.expression.NodeTest)
-	 */
-	public StepExpr createStepExpr(short axisType, NodeTest nodeTest) {
+	public StepExpr createStepExpr(short axisType, NodeTest nodeTest)
+	{
 		return new StepExprImpl(axisType, nodeTest);
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createNameTest(java.lang.String, java.lang.String)
-	 */
-	public NodeTest createNameTest(QName qname) {
+	public NodeTest createNameTest(QName qname)
+	{
 		return new NameTestImpl(qname);
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createCombineExpr(short)
-	 */
-	public OperatorExpr createCombineExpr(short type) {
+	public OperatorExpr createCombineExpr(short type)
+	{
 		return new OperatorImpl(Expr.SEQUENCE_EXPR, type);
 	}
 
-	/**
-	 * @see org.apache.xpath.expression.ExpressionFactory#createSomeExpr(org.apache.xpath.expression.Expr)
-	 */
-	public ForAndQuantifiedExpr createSomeExpr(Expr clause) {
-		return null;
+	public OperatorExpr createOperatorExpr(short exprType, short operatorType)
+	{
+		return new OperatorImpl(exprType, operatorType);
+	}
+
+	public ForAndQuantifiedExpr createSomeExpr(Expr clause)
+	{
+		throw new InternalError("Not implemented yet");
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createEveryExpr(org.apache.xpath.expression.Expr)
 	 */
-	public ForAndQuantifiedExpr createEveryExpr(Expr clause) {
-		return null;
+	public ForAndQuantifiedExpr createEveryExpr(Expr clause)
+	{
+		throw new InternalError("Not implemented yet");
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createAndExpr(org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
-	public OperatorExpr createAndExpr(Expr firstOperand, Expr secondOperand) {
+	public OperatorExpr createAndExpr(Expr firstOperand, Expr secondOperand)
+	{
 		return new OperatorImpl(Expr.LOGICAL_EXPR, OperatorExpr.AND_LOGICAL);
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createOrExpr(org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
-	public OperatorExpr createOrExpr(Expr firstOperand, Expr secondOperand) {
+	public OperatorExpr createOrExpr(Expr firstOperand, Expr secondOperand)
+	{
 		return new OperatorImpl(Expr.LOGICAL_EXPR, OperatorExpr.OR_LOGICAL);
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createIfExpr(org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
-	public ConditionalExpr createIfExpr(Expr test, Expr thenExpr, Expr elseExpr) {
+	public ConditionalExpr createIfExpr(
+		Expr test,
+		Expr thenExpr,
+		Expr elseExpr)
+	{
 		return new ConditionalExprImpl(test, thenExpr, elseExpr);
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createForExpr(java.lang.String, org.apache.xpath.expression.Expr, org.apache.xpath.expression.Expr)
 	 */
-	public ForAndQuantifiedExpr createForExpr(String varName, Expr clauseExpr, Expr quantifiedExpr) {
+	public ForAndQuantifiedExpr createForExpr(
+		String varName,
+		Expr clauseExpr,
+		Expr quantifiedExpr)
+	{
 		return null;
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createCastExpr(org.apache.xpath.datamodel.SequenceType, org.apache.xpath.expression.OperatorExpr)
 	 */
-	public CastOrTreatAsExpr createCastAsExpr(SequenceType seqType, OperatorExpr parExpr) {
+	public CastOrTreatAsExpr createCastAsExpr(
+		SequenceType seqType,
+		OperatorExpr parExpr)
+	{
 		return new CastOrTreatAsExprImpl(seqType, parExpr, true);
 	}
 
@@ -188,69 +208,83 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	 */
 	public CastOrTreatAsExpr createTreatAsExpr(
 		SequenceType seqType,
-		OperatorExpr parExpr) {
-			return new CastOrTreatAsExprImpl(seqType, parExpr, false);
+		OperatorExpr parExpr)
+	{
+		return new CastOrTreatAsExprImpl(seqType, parExpr, false);
 
 	}
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createIntegerLiteralExpr(int)
 	 */
-	public Literal createIntegerLiteralExpr(BigInteger value) {
+	public Literal createIntegerLiteralExpr(BigInteger value)
+	{
 		LiteralImpl lit = new LiteralImpl();
 		lit.setIntValue(value);
 		return lit;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.ExpressionFactory#createIntegerLiteralExpr(int)
 	 */
-	public Literal createIntegerLiteralExpr(int value) {
+	public Literal createIntegerLiteralExpr(int value)
+	{
 		return createIntegerLiteralExpr(BigInteger.valueOf(value));
 	}
-
 
 	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createDecimalLiteralExpr(float)
 	 */
-	public Literal createDecimalLiteralExpr(double value) {
+	public Literal createDecimalLiteralExpr(double value)
+	{
 		return createDecimalLiteralExpr(new BigDecimal(value));
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.apache.xpath.expression.ExpressionFactory#createDecimalLiteralExpr(java.math.BigDecimal)
 	 */
-	public Literal createDecimalLiteralExpr(BigDecimal value) {
+	public Literal createDecimalLiteralExpr(BigDecimal value)
+	{
 		LiteralImpl lit = new LiteralImpl();
 		lit.setDecimalValue(value);
 		return lit;
 
 	}
 
-	public Literal createStringLiteralExpr(String value) {
+	public Literal createStringLiteralExpr(String value)
+	{
 		LiteralImpl lit = new LiteralImpl();
 		lit.setStringValue(value);
 		return lit;
 	}
 
-	public Literal createDoubleLiteralExpr(double value) {
+	public Literal createDoubleLiteralExpr(double value)
+	{
 		LiteralImpl lit = new LiteralImpl();
 		lit.setDoubleValue(value);
 		return lit;
 	}
 
-	public OperatorExpr createSequence() {
+	public OperatorExpr createSequence()
+	{
 		return new OperatorImpl(XPathTreeConstants.JJTEXPRSEQUENCE);
 	}
-	
+
 	public FunctionCall createFunctionCall(QName name)
 	{
 		return new FunctionCallImpl(name);
 	}
 
-
 	public QName createQName(String ns, String localPart, String prefix)
 	{
+		if (ns == null && prefix == null)
+		{
+			return new QName(localPart);
+		}
+		if (prefix == null)
+		{
+			return new QName(ns, localPart);
+		}
 		return new QName(ns, localPart, prefix);
 	}
 

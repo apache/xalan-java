@@ -59,30 +59,27 @@ import org.apache.xml.QName;
 import org.apache.xpath.XPath20Exception;
 
 /**
- * Represents item test. An item test includes both node tests and the context item
- * selection.  
- * <pre>
- * [28]   NodeTest   ::=   KindTest |  NameTest 
- * [29]   NameTest   ::=   QName |  Wildcard 
- * [30]   Wildcard   ::=   "*" |  ":"? NCName ":" "*" |  "*" ":" NCName 
- * [31]   KindTest   ::=   ProcessingInstructionTest 
- *                          |  CommentTest
- *                          |  TextTest
- *                          |  AnyKindTest 
- * [32]   ProcessingInstructionTest   ::=   "processing-instruction" "(" StringLiteral? ")" 
- * [33]   CommentTest   ::=   "comment" "(" ")" 
- * [34]   TextTest   ::=   "text" "(" ")" 
- * [35]   AnyKindTest   ::=   "node" "(" ")"
- * </pre>
+ * Represents an item test. An item test includes both node tests 
+ * and the context item test (dot).  
+ * <p>
+ * A node test is either a name test or a kind test. For the former, use
+ * the method {@link #getNameTest()} to get the {@link QName} involved in the test. 
+ * </p>
+ * <p>In the case of kind test, the method {@link #getKindTest()} return the kind
+ * test type as following:
+ * <ul>
+ * <li><b>{@link #TEXT_TEST}</b> for text()</li>
+ * <li><b>{@link #PROCESSING_INSTRUCTION_TEST}</b> for processing-instruction()</b>. 
+ * Use {@link #getNameTest()}.getLocalPart() to get the target.</li>
+ * <li><b>{@link #COMMENT_TEST}</b> for comment()</li>
+ * <li><b>{@link #ANY_KIND_TEST}</b> for node()</li>
+ * <li><b> {@link #CONTEXT_ITEM_TEST}</b> for '.'</li>
+ * </ul> 
+ * 
  * @see <a href="http://www.w3.org/TR/xpath20/#doc-NodeTest">Node test specification</a>
  * @see <a href="http://www.w3.org/TR/xpath20/#abbrev">Context item specification</a>
  */
 public interface NodeTest {
-    
-    /**
-     * The node test is a wildcard
-     */
-    static final QName WILDCARD = new QName("*");
     
     /**
      * The item test is a processing instruction kind test 
@@ -138,7 +135,7 @@ public interface NodeTest {
      * Gets the qualified name of the name test or the name of the 'PITarget'
      * when the node test is pi kind test. For the later, only the local
      * part of the qualified name is relevant.
-     * @return QName The name test or {@link #WILDCARD}
+     * @return QName The name test
      * @throws XPath20Exception whenever this node test isn't a name test
      * or a pi kind test
      */

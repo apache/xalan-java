@@ -11,7 +11,7 @@
 		</ast>
 	</expr>
 	
-	<expr value="-5">
+	<expr value="-5"  normalized-round-trip="(-5)">
 		<ast>
 			<node name="ExprSequence">	
 				<node name="UnaryExpr">	
@@ -129,7 +129,7 @@
 		</ast>
 	</expr>
 	
-	<expr value="(toto, (), (10, ('str', -5)))" normalized-round-trip="toto,10,'str',-5">
+	<expr value="(toto, (), (10, ('str', -5)))" normalized-round-trip="toto,10,'str',(-5)">
 		<ast>
 			<node name="ExprSequence">		
 				<node name="PathExpr">	
@@ -645,7 +645,7 @@
 		</ast>
 	</expr>
 	
-	<expr value="-3">
+	<expr value="-3"  normalized-round-trip="(-3)">
 		<ast>
 			<node name="ExprSequence">
 				<node name="UnaryExpr">

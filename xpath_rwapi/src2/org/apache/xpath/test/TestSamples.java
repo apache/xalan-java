@@ -61,6 +61,7 @@ import java.math.BigInteger;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.xml.QName;
 import org.apache.xpath.XPath20Factory;
 import org.apache.xpath.expression.CastableAsExpr;
 import org.apache.xpath.expression.ConditionalExpr;
@@ -142,12 +143,12 @@ public class TestSamples
             PathExpr pathExpr = exprFct.createPathExpr(true);
             System.out.println("/ =? " + pathExpr.getString(true));
 
-            NodeTest nt = exprFct.createNameTest(null);
+            NodeTest nt = exprFct.createNameTest(new QName("toto"));
             pathExpr.addOperand(exprFct.createStepExpr(StepExpr.AXIS_CHILD, nt));
             System.out.println("/toto =? " + pathExpr.getString(true));
             System.out.println("/child::toto =? " + pathExpr.getString(false));
 
-            nt = exprFct.createNameTest(null);
+            nt = exprFct.createNameTest(new QName("titi"));
             pathExpr.addOperand(exprFct.createStepExpr(
                     StepExpr.AXIS_DESCENDANT, nt));
 
@@ -170,7 +171,10 @@ public class TestSamples
             System.out.println("/descendant::titi =? "
                 + pathExpr.getString(false));
 
-            // Test visitor - anonymous class used
+
+			System.out.println("clone=" + pathExpr.cloneExpression().getString(false));
+
+            // Test visitor
             pathExpr.visit(new TestVisitor());
             
             Expr var = exprFct.createExpr("$var");

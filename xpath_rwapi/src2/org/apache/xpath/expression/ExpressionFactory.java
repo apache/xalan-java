@@ -75,10 +75,10 @@ public interface ExpressionFactory
 {
     /**
      * Creates a new XPath/XQuery expression from a string representation.
-     * <p>For XPath expression, default element and function namespace are
+     * <p>For XPath expression, default element and function namespaces are
      * used to resolve prefixes.
-     * Moreover, various checking are not performed, like the existence test
-     * of variable declaration</p>
+     * Various checking are not performed when the expression is built, 
+     * like the existence test of variable declaration.</p>
      * @return A XPath expression
      * @throws XPath20Exception whenever the specified expression is not valid 
      * syntaxically or semantically.
@@ -119,6 +119,16 @@ public interface ExpressionFactory
      * @return A name test
      */
     public NodeTest createNameTest(QName qname);
+
+	/**
+	 * Creates an {@link OperatorExpr operator expression} from the
+	 * specified type. The new operator contains no operand.
+	 * @param exprType type of operator to create. See {@link Expr} for existing
+	 * operator type.
+	 * @param operatorType One of the constants defined in {@link OperatorExpr}
+	 * @return A new operator
+	 */
+	public OperatorExpr createOperatorExpr(short exprType, short operatorType);
 
     /**
      * Creates a new {@link OperatorExpr combining expression} of the specified type
@@ -241,14 +251,14 @@ public interface ExpressionFactory
      */
     public FunctionCall createFunctionCall(QName name);
   
-  
   	/**
   	 * Creates a {@link QName qname} with the specified prefix, namespace 
   	 * and local part.
   	 * @param ns or null
   	 * @param localPart
   	 * @param prefix or null
-  	 * @return A new QName or an existing one with the same namespace and localpart
+  	 * @return A new QName or an existing one with the same
+  	 * namespace and localpart
   	 */
   	public QName createQName(String ns, String localPart, String prefix);
     

@@ -56,24 +56,26 @@
 package org.apache.xpath.impl.parser;
 
 import org.apache.xml.QName;
-import org.apache.xpath.expression.NodeTest;
 
 /**
  * QNameNode wrappers a 'real' QName object.
+ * @author <a href="mailto:villard@us.ibm.com>Lionel Villard</a>
+ * @version $Id$
  */
-public class QNameWrapper extends SimpleNode {
+public class QNameWrapper extends SimpleNode
+{
 
-    /**
-     * The wrapped QName
-     */
-    QName m_qname;
-    
+	/**
+	 * The wrapped QName
+	 */
+	QName m_qname;
 
 	/**
 	 * Constructor for QName.
 	 * @param i
 	 */
-	public QNameWrapper(int i) {
+	public QNameWrapper(int i)
+	{
 		super(i);
 	}
 
@@ -82,54 +84,77 @@ public class QNameWrapper extends SimpleNode {
 	 * @param p
 	 * @param i
 	 */
-	public QNameWrapper(XPath p, int i) {
+	public QNameWrapper(XPath p, int i)
+	{
 		super(p, i);
 	}
 
 	/**
 	 * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
 	 */
-	public void processToken(Token t) {
+	public void processToken(Token t)
+	{
 		super.processToken(t);
 		String qname;
-		switch (id) {
+		switch (id)
+		{
 			case XPathTreeConstants.JJTSTAR :
-                m_qname = NodeTest.WILDCARD;                
+				m_qname =
+					SimpleNode.getExpressionFactory().createQName(
+						null,
+						"*",
+						null);
 				break;
-			case XPathTreeConstants.JJTSTARCOLONNCNAME :               
-                qname = t.image.trim();
-                qname = qname.substring(qname.indexOf(":")+1);
-                m_qname = new QName("*", qname, "*");
-                
+			case XPathTreeConstants.JJTSTARCOLONNCNAME :
+				qname = t.image.trim();
+				qname = qname.substring(qname.indexOf(":") + 1);
+				m_qname =
+					SimpleNode.getExpressionFactory().createQName(
+						null,
+						qname,
+						"*");
+
 				break;
 			case XPathTreeConstants.JJTNCNAMECOLONSTAR :
-            case XPathTreeConstants.JJTQNAME :
-            case XPathTreeConstants.JJTQNAMELPAR :
+			case XPathTreeConstants.JJTQNAME :
+			case XPathTreeConstants.JJTQNAMELPAR :
 				qname = t.image;
-				int parenIndex = qname.lastIndexOf("("); 
-				if (parenIndex > 0) {
+				int parenIndex = qname.lastIndexOf("(");
+				if (parenIndex > 0)
+				{
 					qname = qname.substring(0, parenIndex);
 				}
 				qname = qname.trim();
 				int colonIdx = qname.indexOf(":");
-                if ( colonIdx == -1 ) {
-					m_qname = new QName(qname);
-                } else {
-                	// TODO: Need to use qname factory
-                m_qname = new QName("defaultns", qname.substring(colonIdx + 1), qname.substring(0, colonIdx ) );                
-                }
+				if (colonIdx == -1)
+				{
+					m_qname =
+						SimpleNode.getExpressionFactory().createQName(
+							null,
+							qname,
+							null);
+				}
+				else
+				{
+					m_qname =
+						SimpleNode.getExpressionFactory().createQName(
+							null,
+							qname.substring(colonIdx + 1),
+							qname.substring(0, colonIdx));
+				}
 				break;
-                   
-           default:
-           throw new RuntimeException( "Invalid jjtree id: doesn't match a QName id=" + id);
+
+			default :
+				throw new RuntimeException(
+					"Invalid jjtree id: doesn't match a QName id=" + id);
 		}
 	}
-
 
 	/**
 	 * @return org.apache.xml.QName
 	 */
-	public org.apache.xml.QName getQName() {
+	public org.apache.xml.QName getQName()
+	{
 		return m_qname;
 	}
 
