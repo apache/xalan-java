@@ -19,7 +19,7 @@
             topmargin="4" leftmargin="4" marginwidth="4" marginheight="4"
             bgcolor="#ffffff">
          <xsl:variable name="topimage" select="./p/img/@src"/>
-         <h1><a href="http://xml.apache.org"><img src="images/{$topimage}"/></a>&#160;&#160;
+         <h1><a href="http://xml.apache.org"><img src="images/{$topimage}" alt="{@alt}"/></a>&#160;&#160;
          <xsl:value-of select="@title"/></h1><hr/>
              <xsl:apply-templates/>
          <hr/>
@@ -226,7 +226,7 @@
   </xsl:template>
 
   <xsl:template match="/s1/s2//img">
-    <center><img src="images/{@src}"/></center>
+    <center><img src="images/{@src}" alt="{@alt}"/></center>
   </xsl:template>
 
   <xsl:template match="resource-ref">
