@@ -102,6 +102,8 @@ import org.apache.serialize.SerializerHandler;
 public class ResultTreeHandler extends QueuedEvents
   implements ContentHandler, SerializerHandler, LexicalHandler
 {
+  private static final boolean DEBUG = false;
+  
   /**
    * Create a new result tree handler.  The real content 
    * handler will be the ContentHandler passed as an argument.
@@ -162,12 +164,23 @@ public class ResultTreeHandler extends QueuedEvents
                             Attributes atts)
     throws SAXException
   {
+    QueuedStartElement qse = getQueuedElem();
+    if(DEBUG)
+    {
+      if(null != qse)
+        System.out.println("(pended: "+qse.getURL()+"#"+qse.getLocalName());
+      System.out.println("startElement: "+ns+"#"+localName);
+    }
     checkForSerializerSwitch(ns, localName);
     flushPending(EVT_STARTELEMENT);
     if(!m_nsContextPushed)
+    {
+      if(DEBUG)
+        System.out.println("push(startElement)");
       m_nsSupport.pushContext();
+    }
 
-    ensurePrefixIsDeclared(ns, localName);
+    ensurePrefixIsDeclared(ns, name);
         
     // getQueuedElem().setPending(ns, localName, name, atts);
     this.pushElementEvent(ns, localName, name, atts);
@@ -185,6 +198,8 @@ public class ResultTreeHandler extends QueuedEvents
     sendEndPrefixMappings();
     popEvent();
     
+    if(DEBUG)
+      System.out.println("pop: "+localName);
     m_nsSupport.popContext();
   }
   
@@ -233,15 +248,22 @@ public class ResultTreeHandler extends QueuedEvents
       flushPending(EVT_STARTPREFIXMAPPING);
     if(!m_nsContextPushed)
     {
+      if(DEBUG)
+        System.out.println("push(startPrefixMapping: "+prefix+")");
       m_nsSupport.pushContext();
       m_nsContextPushed = true;
     }
     if(null == prefix)
       prefix = ""; // bit-o-hack, that that's OK
-    
+        
     String existingURI = m_nsSupport.getURI(prefix);
     if((null == existingURI) || !existingURI.equals(uri))
     {
+      if(DEBUG)
+      {
+        System.out.println("Prefix: "+prefix);
+        System.out.println("uri: "+uri);
+      }
       m_nsSupport.declarePrefix(prefix, uri);
     }
   }
@@ -611,13 +633,13 @@ public class ResultTreeHandler extends QueuedEvents
    * If it's not, it still needs to be declared at this point.
    * TODO: This needs to be done at an earlier stage in the game... -sb
    */
-  void ensurePrefixIsDeclared(String ns, String localName)
+  void ensurePrefixIsDeclared(String ns, String rawName)
     throws SAXException
   {
     if (ns != null && ns.length() > 0)
     { 
       int index;
-      String prefix = (index = localName.indexOf(":"))< 0 ? null : localName.substring(0, index);
+      String prefix = (index = rawName.indexOf(":"))< 0 ? "" : rawName.substring(0, index);
       if(null != prefix)
       {
         String foundURI = m_nsSupport.getURI(prefix);
@@ -695,9 +717,10 @@ public class ResultTreeHandler extends QueuedEvents
       else
         name="xmlns:"+prefix;
       
+      String uri = m_nsSupport.getURI(prefix);
+      
       qe.addAttribute("http://www.w3.org/2000/xmlns/", 
-                      prefix, 
-                      name, "CDATA", m_nsSupport.getURI(prefix));
+                      prefix, name, "CDATA", uri);
     }
     qe.setNSDeclsHaveBeenAdded(true);
   }
@@ -862,8 +885,22 @@ public class ResultTreeHandler extends QueuedEvents
     if(!qe.nsDeclsHaveBeenAdded())
       addNSDeclsToAttrs();
     
-    ensurePrefixIsDeclared(uri, localName);
+    ensurePrefixIsDeclared(uri, rawName);
     qe.addAttribute(uri, localName, rawName, type, value);
+  }
+  
+  public boolean isDefinedNSDecl(Attr attr)
+  {
+    String rawName = attr.getNodeName();
+    if(rawName.equals("xmlns") || rawName.startsWith("xmlns:"))
+    {
+      int index;
+      String prefix = (index = rawName.indexOf(":"))< 0 ? "" : rawName.substring(0, index);
+      String uri = getURI(prefix);
+      if((null != uri) && uri.equals(attr.getValue()))
+        return true;
+    }
+    return false;
   }
   
   /**
@@ -874,6 +911,9 @@ public class ResultTreeHandler extends QueuedEvents
   public void addAttribute( Attr attr )
     throws SAXException
   {
+    if(isDefinedNSDecl(attr))
+      return; 
+    
     DOMHelper helper = m_transformer.getXPathContext().getDOMHelper();
     addAttribute (helper.getNamespaceOfNode(attr), 
                   helper.getLocalNameOfNode(attr), 
@@ -892,7 +932,8 @@ public class ResultTreeHandler extends QueuedEvents
     int nAttrs = nnm.getLength();
     for (int i = 0;  i < nAttrs;  i++)
     {
-      addAttribute((Attr)nnm.item(i));
+      Attr node = (Attr)nnm.item(i);
+      addAttribute(node);
     }
   }
   
