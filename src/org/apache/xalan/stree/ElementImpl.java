@@ -73,7 +73,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   {
     // The call to getAttrCount gets the number of attributes in the list.
     // The attributes are put in the list before the actual children.
-    return (getChildCount() == 0) ? null : getChild(getAttrCount());
+    // Force attributes to be added first!
+    int attrs = getAttrCount();
+    return (getChildCount() == 0) ? null : getChild(attrs);
   }
       
   /**
@@ -101,7 +103,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public int getChildCount()
   {
-    if (null == m_children && !isComplete())
+    if (null == m_children || !isComplete())
     {
       synchronized (this)
       {
@@ -146,7 +148,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     throws DOMException
   {
     AttrImpl attr = (AttrImpl)createAttribute(name); 
-    attr.setValue(value);    
+    attr.setValue(value); 
+    
   }
   
   /**
@@ -162,7 +165,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     throws DOMException
   {
     AttrImplNS attr = (AttrImplNS)createAttributeNS(namespaceURI, qualifiedName);
-    attr.setValue(value);        
+    attr.setValue(value);
+    
   }
   
   /**
@@ -186,7 +190,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
         attr = (AttrImpl)createAttribute(name); 
       
       attr.setValue(atts.getValue(i));             
-    }        
+    } 
+    
   }
   
   public void setIDAttribute(String namespaceURI,
@@ -211,14 +216,23 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     }
     else
       attrImpl = new AttrImpl(name, "");
-    int index = getIndex(name);
-    if (index<0)
-    {  
+    boolean found = false;
+    for (int i = 0; i < attrsEnd; i++)
+    {
+      AttrImpl attr = (AttrImpl)m_children[i];
+      if (attr.getNodeName().equals(name))
+      {  
+        m_children[i] = attrImpl;
+        found = true;
+        break;
+      }
+    } 
+    if (!found)
+    {          
       appendChild(attrImpl);
       attrsEnd++;
-    }
-    else
-      m_children[index] = attrImpl;
+      
+    }       
     return (Attr)attrImpl;    
   }
   
@@ -231,14 +245,23 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   {
     // System.out.println("qualifiedName: "+qualifiedName);
     AttrImplNS attrImpl = new AttrImplNS(namespaceURI, qualifiedName, "");
-    int index = getIndex(namespaceURI, qualifiedName);
-    if (index<0)
-    {  
+    boolean found = false;
+    for (int i = 0; i < attrsEnd; i++)
+    {
+      AttrImpl attr = (AttrImpl)m_children[i];
+      if (attr.getLocalName().equals(attrImpl.getLocalName()) &&
+            attr.getNamespaceURI().equals(attrImpl.getNamespaceURI()))
+      {  
+        m_children[i] = attrImpl;
+        found = true;
+        break;
+      }
+    } 
+    if (!found)
+    {          
       appendChild(attrImpl);
-      attrsEnd++;
-    }  
-    else
-      m_children[index] = attrImpl;
+      attrsEnd++;      
+    } 
     return (Attr)attrImpl;    
   }
   
@@ -253,6 +276,11 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public int getAttrCount ()
     {
+      if (null == m_children && !isComplete())
+      {
+        // Force it to wait until children have been added
+        int count = getChildCount(); 
+      }
       return attrsEnd;
     }
       
