@@ -232,8 +232,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   {
     // printLocation(exception);
     // ensureLocationSet(exception);
-
-    throw exception;
+    printLocation(m_pw, exception);
+    m_pw.println(exception.getMessage());
   }
 
   /**
@@ -260,8 +260,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   {
     // printLocation(exception);
     // ensureLocationSet(exception);
-
-    throw exception;
+    throw exception;    
   }
   
   public static void ensureLocationSet(TransformerException exception)
