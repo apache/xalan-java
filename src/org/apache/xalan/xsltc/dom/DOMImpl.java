@@ -1337,8 +1337,9 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		if (node >= _firstAttributeNode) node = _parent[node];
-		if (_includeSelf)
+		if (node >= _firstAttributeNode)
+		    _startNode = node = _parent[node];
+		else if (_includeSelf)
 		    _startNode = node;
 		else
 		    _startNode = _parent[node];
