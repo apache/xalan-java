@@ -305,18 +305,19 @@ public class MethodResolver
    */
   static ConversionInfo[] m_rtfConversions = {
     new ConversionInfo(org.w3c.dom.traversal.NodeIterator.class, 0),
-    new ConversionInfo(org.w3c.dom.Node.class, 1),
-    new ConversionInfo(java.lang.String.class, 2),
-    new ConversionInfo(Boolean.TYPE, 3),
-    new ConversionInfo(java.lang.Object.class, 4),
-    new ConversionInfo(Character.TYPE, 5),
-    new ConversionInfo(Double.TYPE, 6),
-    new ConversionInfo(Float.TYPE, 6),
-    new ConversionInfo(Long.TYPE, 6),
-    new ConversionInfo(Integer.TYPE, 6),
-    new ConversionInfo(Short.TYPE, 6),
-    new ConversionInfo(Byte.TYPE, 6),
-    new ConversionInfo(Boolean.TYPE, 7)
+    new ConversionInfo(org.w3c.dom.DocumentFragment.class, 1),
+    new ConversionInfo(org.w3c.dom.Node.class, 2),
+    new ConversionInfo(java.lang.String.class, 2+1),
+    new ConversionInfo(Boolean.TYPE, 3+1),
+    new ConversionInfo(java.lang.Object.class, 4+1),
+    new ConversionInfo(Character.TYPE, 5+1),
+    new ConversionInfo(Double.TYPE, 6+1),
+    new ConversionInfo(Float.TYPE, 6+1),
+    new ConversionInfo(Long.TYPE, 6+1),
+    new ConversionInfo(Integer.TYPE, 6+1),
+    new ConversionInfo(Short.TYPE, 6+1),
+    new ConversionInfo(Byte.TYPE, 6+1),
+    new ConversionInfo(Boolean.TYPE, 7+1)
   };
   
   /**
@@ -488,6 +489,12 @@ public class MethodResolver
             return xobj.nodeset();
           }
           else if(javaClass.isAssignableFrom(Node.class))
+          {
+            // This will return a Document fragment in Xalan right 
+            // now, which isn't what the we specify.
+            return xobj.rtree();
+          }
+          else if(javaClass.isAssignableFrom(org.w3c.dom.DocumentFragment.class))
           {
             // This will return a Document fragment in Xalan right 
             // now, which isn't what the we specify.
