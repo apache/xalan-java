@@ -72,6 +72,7 @@ public final class ReverseIterator extends NodeIteratorBase {
     private int[] _data = null;
     private int _last = 0;
     private int _current = 0;
+    private int _start = -1;
 
     public ReverseIterator(NodeIterator source) {
 	_source = source;
@@ -82,7 +83,8 @@ public final class ReverseIterator extends NodeIteratorBase {
     }
 	
     public NodeIterator setStartNode(int node) {
-	if (_data == null) {
+	if ((_data == null) || (node != _start)) {
+	    _start = node;
 	    _source.setStartNode(node);
 	    _data = new int[INIT_DATA_SIZE];
 	    _last = 0;
