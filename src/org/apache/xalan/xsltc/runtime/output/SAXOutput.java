@@ -73,26 +73,18 @@ import org.apache.xalan.xsltc.runtime.Constants;
 
 abstract class SAXOutput extends OutputBase implements Constants { 
 
-    private static final char[] BEGCOMM  = "<!--".toCharArray();
-    private static final char[] ENDCOMM  = "-->".toCharArray();
-    private static final int BEGCOMM_length = BEGCOMM.length;
-    private static final int ENDCOMM_length = ENDCOMM.length;
-
     protected ContentHandler _saxHandler;
-    protected LexicalHandler _lexHandler;
+    protected LexicalHandler _lexHandler = null;
     protected AttributesImpl _attributes = new AttributesImpl();
-    
     protected String	     _elementName = null;
-
     protected String         _encoding = null; 
- 
 
     public SAXOutput(ContentHandler handler, String encoding) {
 	_saxHandler = handler;
 	_encoding = encoding;	
     } 
 
-    public SAXOutput(ContentHandler hdler, LexicalHandler lex, String encoding){
+    public SAXOutput(ContentHandler hdler, LexicalHandler lex, String encoding) {
 	_saxHandler = hdler;
 	_lexHandler = lex;
 	_encoding = encoding;
@@ -123,9 +115,10 @@ abstract class SAXOutput extends OutputBase implements Constants {
 		closeCDATA();
 	    }
 
-            _saxHandler.characters(BEGCOMM, 0, BEGCOMM_length);
-            characters(comment);
-            _saxHandler.characters(ENDCOMM, 0, ENDCOMM_length);
+	    // Ignore if a lexical handler has not been set
+	    if (_lexHandler != null) {
+		_lexHandler.comment(comment.toCharArray(), 0, comment.length());
+	    }
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);

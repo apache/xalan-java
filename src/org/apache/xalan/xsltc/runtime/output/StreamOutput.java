@@ -104,7 +104,6 @@ abstract class StreamOutput extends OutputBase {
     protected int     _indentLevel          = 0;
 
     protected boolean _escaping     = true;
-    protected boolean _firstElement = true;
     protected String  _encoding     = "UTF-8";
 
     // protected HashSet _attributes = new HashSet();

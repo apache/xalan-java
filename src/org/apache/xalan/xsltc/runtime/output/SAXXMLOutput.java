@@ -117,6 +117,7 @@ public class SAXXMLOutput extends SAXOutput {
      * element (<elem>data</elem> type) or a CDATA section.
      */
     public void startElement(String elementName) throws TransletException {
+// System.out.println("SAXXMLOutput.startElement name = " + elementName);
 	try {
             // Close any open start tag
             if (_startTagOpen) {
@@ -127,12 +128,12 @@ public class SAXXMLOutput extends SAXOutput {
 	    }
 
             // Handle document type declaration (for first element only)
-            if (_lexHandler != null) {
+            if (_firstElement) {
                 if (_doctypeSystem != null) {
                     _lexHandler.startDTD(elementName, _doctypePublic,
 			_doctypeSystem);
 		}
-                _lexHandler = null;
+                _firstElement = false;
             }
 
             _depth++;
@@ -182,6 +183,8 @@ public class SAXXMLOutput extends SAXOutput {
     public void characters(char[] ch, int off, int len)
         throws TransletException 
     {
+// System.out.println("SAXXMLOutput.characters ch = " + new String(ch, off, len));
+
 	try {
             // Close any open start tag
             if (_startTagOpen) {
@@ -202,6 +205,7 @@ public class SAXXMLOutput extends SAXOutput {
     }
 
     public void endElement(String elementName) throws TransletException {
+// System.out.println("SAXXMLOutput.endElement name = " + elementName);
         try {
             // Close any open element
             if (_startTagOpen) {

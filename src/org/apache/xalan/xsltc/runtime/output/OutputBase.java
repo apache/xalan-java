@@ -128,6 +128,11 @@ public abstract class OutputBase implements TransletOutputHandler, Constants {
     protected boolean _startTagOpen  = false;
  
     /**
+     * Set to false after processing first element.
+     */
+    protected boolean _firstElement = true;
+
+    /**
      * Initialize global variables
      */
     protected void initCDATA() {
