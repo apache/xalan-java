@@ -397,7 +397,7 @@ public class ElemVariable extends ElemTemplateElement
       
     // Only add the variable if this is not a global.  If it is a global, 
     // it was already added by stylesheet root.
-    if(!(m_parentNode instanceof Stylesheet))
+    if(!(m_parentNode instanceof Stylesheet) && m_qname != null)
     {
       m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
     }

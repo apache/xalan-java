@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author W. Eliot Kimber (eliot@isogen.com)
  *
  */
 
@@ -70,6 +71,8 @@ import java.text.Collator;
 import java.text.CollationKey;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.CollatorFactory;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 /**
@@ -93,6 +96,7 @@ public abstract class NodeSortRecord {
      * specifies a different language (will be updated iff _locale is updated).
      */
     protected Collator _collator = Collator.getInstance();
+    protected CollatorFactory _collatorFactory;
 
     protected int   _levels = 1;
     protected int[] _compareType;
@@ -126,8 +130,9 @@ public abstract class NodeSortRecord {
      * to the default constructor.
      */
     public final void initialize(int node, int last, DOM dom,
-				 AbstractTranslet translet,
-				 int[] order, int[] type) {
+	 AbstractTranslet translet, int[] order, int[] type,
+	 NodeSortRecordFactory nsrFactory) throws TransletException
+    {
 	_dom = dom;
 	_node = node;
 	_last = last;
@@ -139,6 +144,24 @@ public abstract class NodeSortRecord {
 	_compareType = type;
 
 	_values = new Object[_levels];
+
+	// -- W. Eliot Kimber (eliot@isogen.com)
+        String colFactClassname = 
+	    System.getProperty("org.apache.xalan.xsltc.COLLATOR_FACTORY");
+
+        if (colFactClassname != null) {
+            try {
+		Object candObj = nsrFactory.loadTranslet(colFactClassname);
+                _collatorFactory = (CollatorFactory)candObj;
+            } 
+	    catch (ClassNotFoundException e) {
+		throw new TransletException(e);
+            }
+        } 
+	else {
+	    _collatorFactory = new CollatorFactoryBase();
+        }
+        _collator = _collatorFactory.getCollator(_locale);
     }
 
     /**

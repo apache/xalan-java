@@ -829,19 +829,6 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     }
 
     /**
-     * Returns the leftmost descendant of a node (bottom left in sub-tree)
-     */
-    private int leftmostDescendant(int node) 
-    {
-      int current;
-      while (getType(current = node) >= DTM.NTYPES
-             && (node = getFirstChild(node)) != DTM.NULL)
-      {
-      }
-      return current;
-    }
-
-    /**
      * Returns index of last child or 0 if no children
      * (returns DTM.NULL in fact)
      */

@@ -76,6 +76,12 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import org.apache.xalan.xsltc.*;
 
+/**
+ * Serializer for SAX events.
+ *
+ * @deprecated This class is no longer supported in XSLTC. It has been
+ * replaced by <code>xsltc.runtime.output.TransletOutputHandlerFactory</code>.
+ */
 public final class TextOutput implements TransletOutputHandler, Constants {
 
     // These are the various output types we handle

@@ -82,7 +82,7 @@ public class NodeSortRecordFactory {
     private int   _type[];
     private final AbstractTranslet _translet;
 
-    private Class loadTranslet(String name) throws ClassNotFoundException {
+    public Class loadTranslet(String name) throws ClassNotFoundException {
 	// First try to load the class using the default class loader
 	try {
 	    return Class.forName(name);
@@ -92,8 +92,7 @@ public class NodeSortRecordFactory {
 	}
 
 	// Then try to load the class using the bootstrap class loader
-	TransletLoader loader = new TransletLoader();
-	return loader.loadTranslet(name);
+	return new TransletLoader().loadTranslet(name);
     }
 
     /**
@@ -144,7 +143,7 @@ public class NodeSortRecordFactory {
 
 	final NodeSortRecord sortRecord =
 	    (NodeSortRecord)_class.newInstance();
-	sortRecord.initialize(node, last, _dom, _translet, _order, _type);
+	sortRecord.initialize(node, last, _dom, _translet, _order, _type, this);
 	return sortRecord;
     }
 

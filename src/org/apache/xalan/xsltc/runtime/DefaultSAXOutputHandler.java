@@ -78,6 +78,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
+/**
+ * Creates an output handler that accepts events from the translet and 
+ * produces SAX events.
+ *
+ * @deprecated This class is no longer supported in XSLTC. It has been
+ * replaced by <code>xsltc.runtime.output.TransletOutputHandlerFactory</code>.
+ */
 public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 
     // The output writer

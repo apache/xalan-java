@@ -100,6 +100,17 @@ public class ReverseAxesWalker extends AxesWalker
     m_iterator = getDTM(root).getAxisIterator(m_axis);
     m_iterator.setStartNode(root);
   }
+
+  /**
+   * Detaches the walker from the set which it iterated over, releasing
+   * any computational resources and placing the iterator in the INVALID
+   * state.
+   */
+  public void detach()
+  {
+    m_iterator = null;
+    super.detach();
+  }
   
   /**
    * Get the next node in document order on the axes.

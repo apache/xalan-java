@@ -65,6 +65,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -198,14 +199,14 @@ public class Encodings extends Object
    */
   public static int getLastPrintable(String encoding)
   {
-
-    for (int i = 0; i < _encodings.length; ++i)
-    {
-      if (_encodings[i].name.equalsIgnoreCase(encoding)
-              || _encodings[i].javaName.equalsIgnoreCase(encoding))
-        return _encodings[i].lastPrintable;
-    }
-
+    EncodingInfo ei;
+    
+    String normalizedEncoding = encoding.toUpperCase();
+    ei = (EncodingInfo)_encodingTableKeyJava.get(normalizedEncoding);    
+    if (ei == null)
+      ei = (EncodingInfo)_encodingTableKeyMime.get(normalizedEncoding);
+    if (ei != null)
+      return ei.lastPrintable;
     return m_defaultLastPrintable;
   }
 
@@ -298,15 +299,9 @@ public class Encodings extends Object
    */
   public static String convertJava2MimeEncoding(String encoding)
   {
-
-    for (int i = 0; i < _encodings.length; ++i)
-    {
-      if (_encodings[i].javaName.equalsIgnoreCase(encoding))
-      {
-        return _encodings[i].name;
-      }
-    }
-
+    EncodingInfo enc = (EncodingInfo)_encodingTableKeyJava.get(encoding.toUpperCase());
+    if (null != enc)
+      return enc.name;
     return encoding;
   }
 
@@ -415,9 +410,13 @@ public class Encodings extends Object
         {      
           lastPrintable = Integer.decode(val.substring(pos).trim()).intValue();
           StringTokenizer st = new StringTokenizer(val.substring(0, pos),",");
-          while (st.hasMoreTokens()) {
+          for (boolean first = true; st.hasMoreTokens(); first = false) {
                mimeName = st.nextToken();
-               ret [j++] = new EncodingInfo (mimeName, javaName, lastPrintable);                         
+               ret [j] = new EncodingInfo (mimeName, javaName, lastPrintable);                         
+               _encodingTableKeyMime.put(mimeName.toUpperCase(), ret[j]);               
+               if (first)
+                 _encodingTableKeyJava.put(javaName.toUpperCase(), ret[j]);
+               j++;
           }
         }        
       }
@@ -430,5 +429,7 @@ public class Encodings extends Object
     }
   }
 
+  private static final Hashtable _encodingTableKeyJava = new Hashtable();
+  private static final Hashtable _encodingTableKeyMime = new Hashtable();  
   private static final EncodingInfo[] _encodings = loadEncodingInfo();
 }
