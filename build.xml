@@ -161,7 +161,7 @@ Copyright:
            destdir="${build.dest}" 
            debug="${debug}"/>
   </target>
-
+  
   <!-- =================================================================== -->
   <!-- Compiles the samples and jars the class files                       -->  
   <!-- To compile (and run) the servlet sample, the javax.servlet and      -->
@@ -171,8 +171,7 @@ Copyright:
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
     <mkdir dir="${build.samples}"/>
     <mkdir dir="${build.samples}/servlet"/>
-    <!-- Since the samples are packageless, they must be compiled separately. -->
-    
+    <!-- Since the samples are packageless, they must be compiled separately. -->   
     <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${xalanjar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
@@ -185,26 +184,15 @@ Copyright:
     <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${xalanjar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/> 
-
-    <!--javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-           destdir="${build.samples}" excludes="${exclude}"
-           debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/Extensions" classpath="${java.class.path}:${build.dir}/${name}.jar" 
+   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${xalanjar}" 
            destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}"/>
-    <javac srcdir="${samples.dir}/PureSAX" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-           destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/-->                    
+           debug="${debug}"/>           
     <jar jarfile="${build.samples}/$xalansamples.jar" basedir="${build.samples}"
          includes="*.class"/>
-         
-    <!-- copy sample applet to ./build/samples , so (like other samples) can be run from ./build/samples tree.-->
-    <copydir src="${samples.dir}/AppletXMLtoHTML" dest="${build.samples}/AppletXMLtoHTML"/>
-             
+                   
     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${xalanjar}:${servletjar}" 
            destdir="${build.samples}" excludes="${exclude}"
-           debug="${debug}"/>
-         
+           debug="${debug}"/>      
     <jar jarfile="${build.samples}/servlet/xalanservlet.jar" basedir="${build.samples}"
          includes="servlet/*.*"/>            
   </target>
