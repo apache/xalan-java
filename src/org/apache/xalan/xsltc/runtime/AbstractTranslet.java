@@ -110,12 +110,10 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final DOMAdapter makeDOMAdapter(DOM dom)
 	throws TransletException {
-	if (dom instanceof DOMImpl) {
+	if (dom instanceof DOMImpl)
 	    return new DOMAdapter((DOMImpl)dom, namesArray, namespaceArray);
-	}
-	else {
-	    throw new TransletException("wrong type of source DOM");
-	}
+	BasisLibrary.runTimeError(BasisLibrary.DOM_ADAPTER_INIT_ERR);
+	return null;
     }
 
     /************************************************************************

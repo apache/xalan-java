@@ -268,11 +268,9 @@ public final class TextOutput implements TransletOutputHandler {
 		final String prefix = _elementName.substring(0,col);
 		final String localname = _elementName.substring(col+1);
 		final String uri = lookupNamespace(prefix);
-		if (uri == null) {
-		    throw new TransletException("Namespace for prefix "+
-						prefix+" has not been "+
-						"declared.");
-		}
+		if (uri == null)
+		    BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR,
+					      prefix);
 		if (uri.equals(EMPTYSTRING)) _elementName = localname;
 		_saxHandler.startElement(uri, localname,
 					 _elementName, _attributes);
@@ -666,11 +664,9 @@ public final class TextOutput implements TransletOutputHandler {
 	    final String localname = qname.substring(endcol+1);
 	    final String prefix = qname.substring(0,startcol);
 	    final String uri = lookupNamespace(prefix);
-	    if (uri == null) {
-		throw new TransletException("Namespace for prefix "+
-					    prefix+" has not been "+
-					    "declared.");
-	    }
+	    if (uri == null)
+		BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR,
+					  prefix);
 	    // Omit prefix (use default) if the namespace URI is null
 	    if (uri.equals(EMPTYSTRING))
 		return(localname);
@@ -694,8 +690,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    return;
 	case XML:
 	    if (!_startTagOpen)
-		throw new TransletException("attribute '"+name+
-					    "' outside of element");
+		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
 	    // Attributes whose names start with XML need special handling
 	    if (name.startsWith("xml")) {
 		// Output as namespace declaration
@@ -716,9 +711,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    return;
 	case HTML:
 	    if (!_startTagOpen)
-		throw new TransletException("attribute '"+name+
-					    "' outside of element");
-
+		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
 	    // The following is an attempt to escape an URL stored in a href
 	    // attribute of HTML output. Normally URLs should be encoded at
 	    // the time they are created, since escaping or unescaping a
@@ -912,36 +905,14 @@ public final class TextOutput implements TransletOutputHandler {
 		pushNamespace(prefix, uri);
 	    else {
 		if ((prefix == EMPTYSTRING) && (uri == EMPTYSTRING)) return;
-		throw new TransletException("namespace declaration '"+prefix+
-					    "'='"+uri+"' outside of element");
+		BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
+					  prefix, uri);
 	    }
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
 	}
     }
-
-    /** 
-     * Takes a qname as a string on the format prefix:local-name and
-     * returns a strig with the expanded QName on the format uri:local-name.
-     */
-    /*
-    private String expandQName(String withPrefix) {
-	int col = withPrefix.lastIndexOf(':');
-	if (col == -1) return(withPrefix);
-
-	final String prefix = withPrefix.substring(0,col);
-	final String local =  withPrefix.substring(col+1,withPrefix.length());
-	final String uri = lookupNamespace(prefix);
-
-	if (uri == null)
-	    return(local);
-	else if (uri == EMPTYSTRING)
-	    return(local);
-	else
-	    return(uri+":"+local);
-    }
-    */
 
     /************************************************************************
      * The following are all methods for configuring the output settings

@@ -83,11 +83,13 @@ import org.xml.sax.XMLFilter;
 import org.xml.sax.InputSource;
 
 import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 /**
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
@@ -112,20 +114,6 @@ public class TransformerFactoryImpl
 	"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"+
 	"<xsl:template match=\"/\"><xsl:copy-of select=\".\"/></xsl:template>"+
 	"</xsl:stylesheet>";
-
-    // All used error messages should be listed here
-    private static final String ERROR_LISTENER_NULL =
-	"Attempting to set ErrorListener for TransformerFactory to null";
-    private static final String UNKNOWN_SOURCE_ERR =
-	"Only StreamSource and SAXSource are supported by XSLTC";
-    private static final String NO_SOURCE_ERR =
-	"Source object passed to newTemplates() has no contents";
-    private static final String NO_ACCESS_ERR =
-	"Cannot access file or URL ";
-    private static final String COMPILE_ERR =
-	"Could not compile stylesheet";
-    private static final String INVALID_ATTRIBUTE =
-	"TransformerFactory does not recognise attribute: ";
 
     // This Hashtable is used to store parameters for locating
     // <?xml-stylesheet ...?> processing instructions in XML documents.
@@ -164,8 +152,11 @@ public class TransformerFactoryImpl
      */
     public void setErrorListener(ErrorListener listener) 
 	throws IllegalArgumentException {
-	if (listener == null)
-            throw new IllegalArgumentException(ERROR_LISTENER_NULL);
+	if (listener == null) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ERROR_LISTENER_NULL_ERR,
+					"TransformerFactory");
+            throw new IllegalArgumentException(err.toString());
+	}
 	_errorListener = listener;
     }
 
@@ -189,9 +180,11 @@ public class TransformerFactoryImpl
      */
     public Object getAttribute(String name) 
 	throws IllegalArgumentException { 
-	if (name.equals("translet-name"))
-	    return(_defaultTransletName);
-	throw new IllegalArgumentException(INVALID_ATTRIBUTE+name);
+	// Return value for attribute 'translet-name'
+	if (name.equals("translet-name")) return(_defaultTransletName);
+	// Throw an exception for all other attributes
+	ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
+	throw new IllegalArgumentException(err.toString());
     }
 
     /**
@@ -208,7 +201,9 @@ public class TransformerFactoryImpl
 	// for translets that cannot be given a name from their system-id.
 	if ((name.equals("translet-name")) && (value instanceof String))
 	    _defaultTransletName = (String)value;
-	throw new IllegalArgumentException(INVALID_ATTRIBUTE+name);
+	// Throw an exception for all other attributes
+	ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
+	throw new IllegalArgumentException(err.toString());
     }
 
     /**
@@ -319,7 +314,8 @@ public class TransformerFactoryImpl
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
-	    throw new TransformerConfigurationException(COMPILE_ERR);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
+	    throw new TransformerConfigurationException(err.toString());
 	}
 
 	// Create a Transformer object and store for other calls
@@ -435,18 +431,23 @@ public class TransformerFactoryImpl
 		}
 	    }
 	    else {
-		throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
+		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_SOURCE_ERR);
+		throw new TransformerConfigurationException(err.toString());
 	    }
 	    input.setSystemId(systemId);
 	}
 	catch (NullPointerException e) {
-	    throw new TransformerConfigurationException(NO_SOURCE_ERR);
+ 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR,
+					"TransformerFactory.newTemplates()");
+	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (SecurityException e) {
-	    throw new TransformerConfigurationException(NO_ACCESS_ERR+systemId);
+ 	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR, systemId);
+	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (MalformedURLException e){
-	    throw new TransformerConfigurationException(NO_ACCESS_ERR+systemId);
+ 	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR, systemId);
+	    throw new TransformerConfigurationException(err.toString());
 	}
 	finally {
 	    return(input);
@@ -500,7 +501,8 @@ public class TransformerFactoryImpl
 		passErrorsToListener(xsltc.getErrors());
 	    else
 		xsltc.printErrors();
-	    throw new TransformerConfigurationException(COMPILE_ERR);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
+	    throw new TransformerConfigurationException(err.toString());
 	}
 	return(new TemplatesImpl(bytecodes, transletName));
     }

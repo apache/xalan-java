@@ -240,7 +240,8 @@ public final class LoadDocument {
 		return(union);
 	    }
 	    else {
-		throw new IllegalArgumentException("Illegal argument to document() function");
+		final String err = "document("+arg.toString()+")";
+		throw new IllegalArgumentException(err);
 	    }
 	}
 	catch (Exception e) {

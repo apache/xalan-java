@@ -105,6 +105,7 @@ import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.compiler.*;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 import java.util.Properties;
 
@@ -127,26 +128,12 @@ public final class TransformerImpl extends Transformer
 
     // Pre-set DOMImpl to use as input (used only with TransformerHandlerImpl)
     private DOMImpl _dom = null;
-    
-    // List all error messages here
-    private final static String TRANSLET_ERR_MSG = 
-	"The transformer has no encapsulated translet object.";
-    private final static String HANDLER_ERR_MSG = 
-	"No defined output handler for transformation result.";
-    private static final String ERROR_LISTENER_NULL =
-	"Attempting to set ErrorListener for Transformer to null";
-    private static final String INPUT_SOURCE_EMPTY =
-	"The Source object passed to transform() has no contents.";
-    private static final String OUTPUT_RESULT_EMPTY =
-	"The Result object passed to transform() is invalid.";
-    private static final String NO_SUCH_PROPERTY =
-	"Attempting to access invalid Transformer property: ";
 
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
     private static final String NAMESPACE_FEATURE =
 	"http://xml.org/sax/features/namespaces";
-
+    
     /**
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
@@ -174,12 +161,14 @@ public final class TransformerImpl extends Transformer
 	throws TransformerException {
 
 	if (_translet == null) {
-	    throw new TransformerException(TRANSLET_ERR_MSG);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_TRANSLET_ERR);
+	    throw new TransformerException(err.toString());
 	}
 
 	_handler = getOutputHandler(result);
-	if (_handler == null) { 
-	    throw new TransformerException(HANDLER_ERR_MSG);
+	if (_handler == null) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
+	    throw new TransformerException(err.toString());
 	}
 
 	if (_uriResolver != null) {
@@ -246,15 +235,15 @@ public final class TransformerImpl extends Transformer
 	    // Common, final handling of all input sources, only used if the
 	    // other contents of the Result object could not be used
 	    if (systemId != null) {
-		if ((new File(systemId)).exists())
-		    systemId = "file:"+systemId;
+		if ((new File(systemId)).exists()) systemId = "file:"+systemId;
 		final URL url = new URL(systemId);
 		final URLConnection connection = url.openConnection();
 		final OutputStream ostream = connection.getOutputStream();
 		return(new DefaultSAXOutputHandler(ostream, _encoding));
 	    }
 	    else {
-		throw new TransformerException(OUTPUT_RESULT_EMPTY);
+		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_RESULT_ERR);
+		throw new TransformerException(err.toString());
 	    }
 	}
 	// If we cannot write to the location specified by the SystemId
@@ -263,8 +252,8 @@ public final class TransformerImpl extends Transformer
 	}
 	// If we cannot create a SAX2DOM adapter
 	catch (ParserConfigurationException e) {
-	    throw new TransformerException(
-		"SAX2DOM adapter could not be created, " + e.getMessage());
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.SAX2DOM_ADAPTER_ERR);
+	    throw new TransformerException(err.toString());
 	}
 	// If we cannot create the file specified by the SystemId
 	catch (IOException e) {
@@ -388,8 +377,10 @@ public final class TransformerImpl extends Transformer
 		    input = new InputSource(streamReader);
 		else if (systemId != null)
 		    input = new InputSource(systemId);
-		else
-		    throw new TransformerException(INPUT_SOURCE_EMPTY);
+		else {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
+		    throw new TransformerException(err.toString());
+		}
 
 		// Parse the input and build the internal DOM
 		reader.parse(input);
@@ -414,23 +405,19 @@ public final class TransformerImpl extends Transformer
 	    return dom;
 	}
 	catch (FileNotFoundException e) {
-	    if (_errorListener != null)
-		postErrorToListener("File not found: " + e.getMessage());
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
 	catch (MalformedURLException e) {
-	    if (_errorListener != null)
-		postErrorToListener("Malformed URL: " + e.getMessage());
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
 	catch (UnknownHostException e) {
-	    if (_errorListener != null)
-		postErrorToListener("Cannot resolve URI: " + e.getMessage());
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
 	catch (Exception e) {
-	    if (_errorListener != null)
-		postErrorToListener("Internal error: " + e.getMessage()); 
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
     }
@@ -458,18 +445,15 @@ public final class TransformerImpl extends Transformer
 	    _translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
-	    if (_errorListener != null)
-		postErrorToListener(e.getMessage());
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
 	catch (RuntimeException e) {
-	    if (_errorListener != null)
-		postErrorToListener("Runtime Error: " + e.getMessage());
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
 	catch (Exception e) {
-	    if (_errorListener != null)
-		postErrorToListener("Internal error: " + e.getMessage()); 
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
     }
@@ -493,8 +477,11 @@ public final class TransformerImpl extends Transformer
      */
     public void setErrorListener(ErrorListener listener)
 	throws IllegalArgumentException {
-        if (listener == null)
-            throw new IllegalArgumentException(ERROR_LISTENER_NULL);
+        if (listener == null) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ERROR_LISTENER_NULL_ERR,
+					"Transformer");
+            throw new IllegalArgumentException(err.toString());
+	}
         _errorListener = listener;
     }
 
@@ -573,8 +560,10 @@ public final class TransformerImpl extends Transformer
      */
     public String getOutputProperty(String name)
 	throws IllegalArgumentException {
-	if (!validOutputProperty(name))
-	    throw new IllegalArgumentException(NO_SUCH_PROPERTY+name);
+	if (!validOutputProperty(name)) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
+	    throw new IllegalArgumentException(err.toString());
+	}
 	return(_properties.getProperty(name));
     }
 
@@ -604,8 +593,10 @@ public final class TransformerImpl extends Transformer
      */
     public void setOutputProperty(String name, String value)
 	throws IllegalArgumentException {
-	if (!validOutputProperty(name))
-	    throw new IllegalArgumentException(NO_SUCH_PROPERTY+name);
+	if (!validOutputProperty(name)) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
+	    throw new IllegalArgumentException(err.toString());
+	}
 	_properties.setProperty(name, value);
     }
 

@@ -75,6 +75,7 @@ import org.apache.xalan.xsltc.TransletOutputHandler;
 
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.cmdline.getopt.*;
 
 public final class Compile {
@@ -85,24 +86,8 @@ public final class Compile {
     // this class being used in other ways as well.
     private static boolean _allowExit = true;
 
-    private final static String USAGE_STRING =
-	"Usage:\n" + 
-	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-x] [-s] [-u] <stylesheet>|-i\n\n"+
-	"   Where <output> is the name to give the the generated translet.\n"+
-	"         <stylesheet> is one or more stylesheet file names, or if,\n"+
-	"         the -u options is specified, one or more stylesheet URLs.\n"+
-	"         <directory> is the output directory.\n"+
-	"         <jarfile> is the name of a JAR-file to put all generated classes in.\n"+
-	"         <package-name> is a package name to prefix all class names with.\n\n"+
-	"   Notes:\n"+
-	"         The -i options forces the compiler to read the stylsheet from stdin\n"+
-	"         The -o option is ignored when multiple stylesheets are specified.\n"+
-	"         The -x option switched on debug messages.\n"+
-	"         The -s option disables calling System.exit.";
-    
     public static void printUsage() {
-	System.err.println(USAGE_STRING);
+	System.err.println(new ErrorMsg(ErrorMsg.COMPILE_USAGE_STR));
 	if (_allowExit) System.exit(-1);
     }
 
@@ -164,7 +149,7 @@ public final class Compile {
 
 	    if (useStdIn) {
 		if (!classNameSet) {
-		    System.err.println("The -i option must be used with the -o option.");
+		    System.err.println(new ErrorMsg(ErrorMsg.COMPILE_STDIN_ERR));
 		    if (_allowExit) System.exit(-1);
 		}
 		compileOK = xsltc.compile(System.in, xsltc.getClassName());

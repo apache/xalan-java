@@ -66,10 +66,10 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-//import java.util.Hashtable;
+import java.text.MessageFormat;
+import java.text.FieldPosition;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.FieldPosition;
 
 import org.xml.sax.AttributeList;
 
@@ -204,7 +204,8 @@ public final class BasisLibrary implements Operators {
 	    return stringToReal(((DOM) obj).getStringValue());
 	}
 	else {
-	    runTimeError("Invalid argument type in call to number().");
+	    final String className = obj.getClass().getName();
+	    runTimeError(INVALID_ARGUMENT_ERR, className, "number()");
 	    return 0.0;
 	}
     }
@@ -238,7 +239,8 @@ public final class BasisLibrary implements Operators {
 	    return !temp.equals(EMPTYSTRING);
 	}
 	else {
-	    runTimeError("Invalid argument type in call to number().");
+	    final String className = obj.getClass().getName();
+	    runTimeError(INVALID_ARGUMENT_ERR, className, "number()");
 	}
 	return false;
     }
@@ -259,7 +261,7 @@ public final class BasisLibrary implements Operators {
 	    return value.substring(istart);
 	}
 	catch (IndexOutOfBoundsException e) {
-	    runTimeInternalError();
+	    runTimeError(RUN_TIME_INTERNAL_ERR, "substring()");
 	    return null;
 	}
     }
@@ -287,7 +289,7 @@ public final class BasisLibrary implements Operators {
 		return value.substring(istart, isum);
 	}
 	catch (IndexOutOfBoundsException e) {
-	    runTimeInternalError();
+	    runTimeError(RUN_TIME_INTERNAL_ERR, "substring()");
 	    return null;
 	}
     }
@@ -403,7 +405,7 @@ public final class BasisLibrary implements Operators {
      * an unresolved external function.
      */
     public static void unresolved_externalF(String name) {
-	runTimeError("External function '"+name+"' not supported by XSLTC.");
+	runTimeError(EXTERNAL_FUNC_ERR, name);
     }
 
     /**
@@ -424,8 +426,7 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:vendor-url"))
 	    return("http://xml.apache.org/xalan-j");
 	
-	runTimeError("Invalid argument type '"+name+
-		     "' in call to system-property().");
+	runTimeError(INVALID_ARGUMENT_ERR, name, "system-property()");
 	return(EMPTYSTRING);
     }
 
@@ -469,7 +470,7 @@ public final class BasisLibrary implements Operators {
 	    return numberF(lstring, dom) <= numberF(rstring, dom);
 
 	default:
-	    runTimeInternalError();
+	    runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
 	    return false;
 	}
     }
@@ -608,7 +609,7 @@ public final class BasisLibrary implements Operators {
 	    break;
 
 	default:
-	    runTimeInternalError();
+	    runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
 	}
 
 	return false;
@@ -673,7 +674,7 @@ public final class BasisLibrary implements Operators {
 		    return numberF(left, dom) <= numberF(right, dom);
 		    
 		default:
-		    runTimeInternalError();
+		    runTimeError(RUN_TIME_INTERNAL_ERR, "compare()");
 		}
 	    }
 	    // falls through
@@ -761,7 +762,8 @@ public final class BasisLibrary implements Operators {
 		return(false);
 	    }
 	    else {
-		runTimeError("Unknown argument type in call to equal.");
+		final String className = right.getClass().getName();
+		runTimeError(INVALID_ARGUMENT_ERR, className, "compare()");
 	    }
 	}
 	return result;
@@ -860,8 +862,7 @@ public final class BasisLibrary implements Operators {
 	    return(result.toString());
 	}
 	catch (IllegalArgumentException e) {
-	    runTimeError("Attempting to format number '"+ number +
-			 "' using pattern '" + pattern + "'.");
+	    runTimeError(FORMAT_NUMBER_ERR, Double.toString(number), pattern);
 	    return(EMPTYSTRING);
 	}
     }
@@ -886,12 +887,13 @@ public final class BasisLibrary implements Operators {
 		return(dom.getIterator());
 	    }
 	    else {
-		runTimeTypeError("reference", obj.getClass().getName());
+		final String className = obj.getClass().getName();
+		runTimeError(DATA_CONVERSION_ERR, "reference", className);
 		return null;
 	    }
 	}
 	catch (ClassCastException e) {
-	    runTimeTypeError("reference", "node-set");
+	    runTimeError(DATA_CONVERSION_ERR, "reference", "node-set");
 	    return null;
 	}
     }
@@ -935,29 +937,74 @@ public final class BasisLibrary implements Operators {
 	    }
 	}
 	catch (TransletException e) {
-	    runTimeError("TransletException raised in copy().");
+	    runTimeError(RUN_TIME_COPY_ERR);
 	}
     }
 
-    /**
-     * Print a run-time type error message.
-     */
-    public static void runTimeTypeError(String from, String to) {
-	runTimeError("Invalid conversion from '" + from + "' to '" + to + "'.");
-    }
+    public static final int RUN_TIME_INTERNAL_ERR   = 0;
+    public static final int RUN_TIME_COPY_ERR       = 1;
+    public static final int DATA_CONVERSION_ERR     = 2;
+    public static final int EXTERNAL_FUNC_ERR       = 3;
+    public static final int EQUALITY_EXPR_ERR       = 4;
+    public static final int INVALID_ARGUMENT_ERR    = 5;
+    public static final int FORMAT_NUMBER_ERR       = 6;
+    public static final int ITERATOR_CLONE_ERR      = 7;
+    public static final int AXIS_SUPPORT_ERR        = 8;
+    public static final int TYPED_AXIS_SUPPORT_ERR  = 9;
+    public static final int STRAY_ATTRIBUTE_ERR     = 10; 
+    public static final int STRAY_NAMESPACE_ERR     = 11;
+    public static final int NAMESPACE_PREFIX_ERR    = 12;
+    public static final int DOM_ADAPTER_INIT_ERR    = 13;
 
-    /**
-     * Print a run-time internal error message.
-     */
-    public static void runTimeInternalError() {
-	runTimeError("Internal error.");
-    }
+    private final static String[] errorMessages = {
+	// RUN_TIME_INTERNAL_ERR
+	"Run-time internal error in ''{0}''",
+	// RUN_TIME_COPY_ERR
+	"Run-time error when executing <xsl:copy>.",
+	// DATA_CONVERSION_ERR
+	"Invalid conversion from ''{0}'' to ''{1}''.",
+	// EXTERNAL_FUNC_ERR
+	"External function ''{0}'' not supported by XSLTC.",
+	// EQUALITY_EXPR_ERR
+	"Unknown argument type in equality expression.",
+	// INVALID_ARGUMENT_ERR
+	"Invalid argument type ''{0}'' in call to ''{1}''",
+	// FORMAT_NUMBER_ERR
+	"Attempting to format number ''{0}'' using pattern ''{1}''.",
+	// ITERATOR_CLONE_ERR
+	"Cannot clone iterator ''{0}''.",
+	// AXIS_SUPPORT_ERR
+	"Iterator for axis ''{0}'' not supported.",
+	// TYPED_AXIS_SUPPORT_ERR
+	"Iterator for typed axis ''{0}'' not supported.",
+	// STRAY_ATTRIBUTE_ERR
+	"Attribute ''{0}'' outside of element.",
+	// STRAY_NAMESPACE_ERR
+	"Namespace declaration ''{0}''=''{1}'' outside of element.",
+	// NAMESPACE_PREFIX_ERR
+	"Namespace for prefix ''{0}'' has not been declared.",
+	// DOM_ADAPTER_INIT_ERR
+	"DOMAdapter created using wrong type of source DOM."
+    };
 
     /**
      * Print a run-time error message.
      */
-    public static void runTimeError(String message) {
+    public static void runTimeError(int code) {
+	throw new RuntimeException(errorMessages[code]);
+    }
+
+    public static void runTimeError(int code, Object[] args) {
+	final String message = MessageFormat.format(errorMessages[code],args);
 	throw new RuntimeException(message);
+    }
+
+    public static void runTimeError(int code, Object arg0) {
+	runTimeError(code, new Object[]{ arg0 } );
+    }
+
+    public static void runTimeError(int code, Object arg0, Object arg1) {
+	runTimeError(code, new Object[]{ arg0, arg1 } );
     }
 
     public static void consoleOutput(String msg) {

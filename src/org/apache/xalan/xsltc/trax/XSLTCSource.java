@@ -82,6 +82,7 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 public final class XSLTCSource implements Source {
 
@@ -91,9 +92,6 @@ public final class XSLTCSource implements Source {
 
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
-
-    private final static String NO_SYSTEM_ID_ERR =
-	"build() called before setSystemId(String systemId)";
 
     /**
      * Create a new XSLTC-specific DOM source
@@ -148,9 +146,13 @@ public final class XSLTCSource implements Source {
     public void build(XMLReader reader, String systemId) throws SAXException {
 	try {
 	    // Make sure that the system id is set before proceding
-	    if (systemId == null) throw new SAXException(NO_SYSTEM_ID_ERR);
+	    if ((systemId == null) && (_systemId == null)) {
+		ErrorMsg err = new ErrorMsg(ErrorMsg.XSLTC_SOURCE_ERR);
+		throw new SAXException(err.toString());
+	    }
 
 	    // Use this method in case we need to prepend 'file:' to url
+	    if (systemId == null) systemId = _systemId;
 	    setSystemId(systemId);
 
 	    // Create an input source for the parser first, just in case the

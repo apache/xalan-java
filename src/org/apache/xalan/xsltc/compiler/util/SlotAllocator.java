@@ -66,41 +66,22 @@ import de.fub.bytecode.generic.Type;
 import de.fub.bytecode.generic.*;
 
 final class SlotAllocator {
+
     private int   _firstAvailableSlot;
     private int   _size = 8;
     private int   _free = 0;
     private int[] _slotsTaken = new int[_size];
-
-    /*
-    private static int Serial = 0;
-    private final int _serial = Serial++;
-    
-
-    private void printState(String msg) {
-	System.out.println("=========== " + _serial + " =========== " + msg);
-	System.out.println("firstAvailableSlot = " + _firstAvailableSlot);
-	
-	for (int i = 0; i < _free; i++) {
-	    System.out.println("\tslotsTaken = " + _slotsTaken[i]);
-	}
-	
-	System.out.println("========================");
-    }
-    */
     
     public void initialize(LocalVariableGen[] vars) {
 	final int length = vars.length;
-	//System.out.println(_serial + " initialize " + length);
-	int slot = 0;
+	int slot = 0, size, index;
+
 	for (int i = 0; i < length; i++) {
-	    //System.out.println("index " + vars[i].getIndex());
-	    //System.out.println("all " + allocateSlot(vars[i].getType()));
-	    //allocateSlot(vars[i].getType());
-	    slot = Math.max(slot,
-			    vars[i].getIndex() + vars[i].getType().getSize());
+	    size  = vars[i].getType().getSize();
+	    index = vars[i].getIndex();
+	    slot  = Math.max(slot, index + size);
 	}
 	_firstAvailableSlot = slot;
-	//System.out.println("firstAvailableSlot = " + _firstAvailableSlot);
     }
 
     public int allocateSlot(Type type) {
@@ -108,22 +89,18 @@ final class SlotAllocator {
 	final int limit = _free;
 	int slot = _firstAvailableSlot, where = 0;
 
-	//printState("allocating");
-
 	if (_free + size > _size) {
 	    final int[] array = new int[_size *= 2];
-	    for (int j = 0; j < limit; j++) {
+	    for (int j = 0; j < limit; j++)
 		array[j] = _slotsTaken[j];
-	    }
 	    _slotsTaken = array;
 	}
 
 	while (where < limit) {
 	    if (slot + size <= _slotsTaken[where]) {
 		// insert
-		for (int j = limit - 1; j >= where; j--) {
+		for (int j = limit - 1; j >= where; j--)
 		    _slotsTaken[j + size] = _slotsTaken[j];
-		}
 		break;
 	    }
 	    else {
@@ -131,13 +108,10 @@ final class SlotAllocator {
 	    }
 	}
 	
-	for (int j = 0; j < size; j++) {
+	for (int j = 0; j < size; j++)
 	    _slotsTaken[where + j] = slot + j;
-	}
 	
 	_free += size;
-	//System.out.println("allocated slot " + slot);
-	//printState("done");
 	return slot;
     }
 
@@ -146,7 +120,6 @@ final class SlotAllocator {
 	final int slot = lvg.getIndex();
 	final int limit = _free;
 	
-	//printState("releasing " + slot);
 	for (int i = 0; i < limit; i++) {
 	    if (_slotsTaken[i] == slot) {
 		int j = i + size;
@@ -154,16 +127,12 @@ final class SlotAllocator {
 		    _slotsTaken[i++] = _slotsTaken[j++];
 		}
 		_free -= size;
-		//System.out.println("released slot " + slot);
-		
-		//printState("done");
 		return;
 	    }
 	}
-	System.err.println("size = " + size);
-	System.err.println("slot = " + slot);
-	System.err.println("limit = " + limit);
-	//printState("error");
-	throw new Error("releaseSlot");
+	String state = "Variable slot allocation error"+
+	               "(size="+size+", slot="+slot+", limit="+limit+")";
+	ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, state);
+	throw new Error(err.toString());
     }
 }

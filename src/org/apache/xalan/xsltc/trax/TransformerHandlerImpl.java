@@ -71,6 +71,7 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 /**
  * Implementation of a JAXP1.1 TransformerHandler
@@ -86,9 +87,6 @@ public class TransformerHandlerImpl implements TransformerHandler {
     private Result           _result = null;
 
     private boolean          _done = false; // Set in endDocument()
-
-    private final static String NULL_RESULT_ERROR =
-	"setResult() must be called prior to startDocument().";
 
     /**
      * Cosntructor - pass in reference to a TransformerImpl object
@@ -168,13 +166,17 @@ public class TransformerHandlerImpl implements TransformerHandler {
      * Receive notification of the beginning of a document.
      */
     public void startDocument() throws SAXException {
+	// Make sure setResult() was called before the first SAX event
 	if (_result == null) {
-	    throw new SAXException(NULL_RESULT_ERROR);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_SET_RESULT_ERR);
+	    throw new SAXException(err.toString());
 	}
+
 	// Create an internal DOM (not W3C) and get SAX2 input handler
 	_dom = new DOMImpl();
 	_handler = _dom.getBuilder();
 
+	// Proxy call
 	_handler.startDocument();
     }
 

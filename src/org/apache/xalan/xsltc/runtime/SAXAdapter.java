@@ -135,13 +135,13 @@ public final class SAXAdapter implements TransletOutputHandler {
 	}
     }
     
-    public void attribute(String attributeName, String attributeValue)
+    public void attribute(String name, String value)
 	throws TransletException {
 	if (_openElementName != null) {
-	    _attributes.add(attributeName, attributeValue);
+	    _attributes.add(name, value);
 	}
 	else {
-	    throw new TransletException("attribute outside of start tag");
+	    BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR, name);
 	}
     }
     
@@ -177,7 +177,7 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void omitHeader(boolean value) {}
     public void setCdataElements(Hashtable elements) { }
     public void close() {}
-    public boolean setEscaping(boolean escape)  throws TransletException {
+    public boolean setEscaping(boolean escape) throws TransletException {
         return(true);
     }
     public String getPrefix(String uri) { return(""); }

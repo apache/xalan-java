@@ -76,31 +76,24 @@ import javax.xml.transform.*;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.runtime.*;
-
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 public final class TemplatesImpl implements Templates, Serializable {
 
     // Contains the name of the main translet class
-    private String   _transletName = null;
+    private String   _name = null;
 
     // Contains the actual class definition for the translet class and
     // any auxiliary classes (representing node sort records, predicates, etc.)
     private byte[][] _bytecodes = null;
 
-    private Class[]    _class = null;
+    // Contains the translet class definition(s). These are created when this
+    // Templates is first instanciated or read back from disk (see readObject())
+    private Class[]  _class = null;
 
+    // This tells us which index the main translet class has in the _class
+    // and _bytecodes arrays (above).
     private int _transletIndex = -1;
-
-    // This error could occur when a compilation inside the TransformerFactory
-    // failed and when a template has been loaded from stable storage.
-    private final static String NO_TRANSLET_CODE =
-	"This template does not contain a valid translet class definition.";
-    private final static String NO_MAIN_TRANSLET =
-	"This template does not contain a class with the name ";
-    private final static String TRANSLET_CLASS_ERR =
-	"Could not load the translet class ";
-    private final static String TRANSLET_OBJECT_ERR =
-	"Translet class loaded, but unable to create translet instance.";
     
     // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
@@ -110,18 +103,17 @@ public final class TemplatesImpl implements Templates, Serializable {
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-	out.writeObject(_transletName);
+	out.writeObject(_name);
 	out.writeObject(_bytecodes);
 	out.flush();
     }
 
     public void readExternal(ObjectInput in)
 	throws IOException, ClassNotFoundException {
-	_transletName = (String)in.readObject();
-	_bytecodes    = (byte[][])in.readObject();
-	_class        = null;
+	_name      = (String)in.readObject();
+	_bytecodes = (byte[][])in.readObject();
+	_class     = null; // must be created again...
     }
-
 
     /**
      * The only way to create an XSLTC emplate object
@@ -130,7 +122,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName) {
 	_bytecodes = bytecodes;
-	_transletName = transletName;
+	_name      = transletName;
     }
 
     /**
@@ -152,14 +144,14 @@ public final class TemplatesImpl implements Templates, Serializable {
      * The TransformerFactory should call this method to set the translet name
      */
     protected void setTransletName(String name) {
-	_transletName = name;
+	_name = name;
     }
 
     /**
      * Returns the name of the main translet class stored in this template
      */
     protected String getTransletName() {
-	return _transletName;
+	return _name;
     }
 
     /**
@@ -169,8 +161,10 @@ public final class TemplatesImpl implements Templates, Serializable {
     private void defineTransletClasses()
 	throws TransformerConfigurationException {
 
-	if (_bytecodes == null)
-	    throw new TransformerConfigurationException(NO_TRANSLET_CODE);
+	if (_bytecodes == null) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.NO_TRANSLET_CLASS_ERR);
+	    throw new TransformerConfigurationException(err.toString());
+	}
 
 	TransletClassLoader loader = 
 	    (TransletClassLoader) AccessController.doPrivileged(
@@ -187,22 +181,23 @@ public final class TemplatesImpl implements Templates, Serializable {
 
 	    for (int i = 0; i < classCount; i++) {
 		_class[i] = loader.defineClass(_bytecodes[i]);
-		if (_class[i].getName().equals(_transletName))
+		if (_class[i].getName().equals(_name))
 		    _transletIndex = i;
 	    }
 
-	    if (_transletIndex < 0)
-		throw new TransformerConfigurationException(NO_MAIN_TRANSLET+
-							    _transletName);
+	    if (_transletIndex < 0) {
+		ErrorMsg err= new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR,_name);
+		throw new TransformerConfigurationException(err.toString());
+	    }
 	}
 
-	catch (ClassFormatError e)       {
-	    throw new TransformerConfigurationException(TRANSLET_CLASS_ERR+
-							_transletName);
+	catch (ClassFormatError e) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR+_name);
+	    throw new TransformerConfigurationException(err.toString());
 	}
-	catch (LinkageError e)           {
-	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
-							_transletName);
+	catch (LinkageError e) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    throw new TransformerConfigurationException(err.toString());
 	}
     }
 
@@ -214,7 +209,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     private Translet getTransletInstance()
 	throws TransformerConfigurationException {
 	try {
-	    if (_transletName == null) return null;
+	    if (_name == null) return null;
 
 	    if (_class == null) defineTransletClasses();
 
@@ -232,12 +227,12 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    return translet;
 	}
 	catch (InstantiationException e) {
-	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
-							_transletName);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (IllegalAccessException e) {
-	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
-							_transletName);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    throw new TransformerConfigurationException(err.toString());
 	}
     }
 

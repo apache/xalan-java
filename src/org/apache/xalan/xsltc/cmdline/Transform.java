@@ -90,6 +90,7 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 final public class Transform {
 
@@ -210,69 +211,67 @@ final public class Transform {
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("\nTranslet Error: " + e.getMessage());
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       e.getMessage());
 	    if (_allowExit) System.exit(-1);	    
 	}
 	catch (RuntimeException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("\nRuntime Error: " + e.getMessage());
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       e.getMessage());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (FileNotFoundException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, _fileName);
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       err.toString());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (MalformedURLException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_URI_ERR, _fileName);
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       err.toString());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (ClassNotFoundException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("Error: Cannot find class '"+_className+"'.");
+	    ErrorMsg err= new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR,_className);
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       err.toString());
 	    if (_allowExit) System.exit(-1);
 	}
         catch (UnknownHostException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("Error: Can't resolve URI specification '"+ 
-			       _fileName+"'.");
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_URI_ERR, _fileName);
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       err.toString());
 	    if (_allowExit) System.exit(-1);
         }
 	catch (SAXException e) {
-	    Exception i = e.getException();
+	    Exception ex = e.getException();
 	    if (_debug) {
-		if (i != null)
-		    i.printStackTrace();
-		else
-		    e.printStackTrace();
+		if (ex != null) ex.printStackTrace();
+		e.printStackTrace();
 	    }
-	    if (i != null)
-		System.err.println("Error: "+i.getMessage());
+	    System.err.print(ErrorMsg.getTransletErrorMessage());
+	    if (ex != null)
+		System.err.println(ex.getMessage());
 	    else
-		System.err.println("Error: "+e.getMessage());
+		System.err.println(e.getMessage());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (Exception e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println("Error: "+e.getMessage());
+	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+			       e.getMessage());
 	    if (_allowExit) System.exit(-1);
 	}
     }
 
-    private final static String USAGE_STRING =
-	"Usage: \n" +
-	"     xslt [-j <jarfile>] {-u <document_url> | <document>} <class>\n"+
-	"          [<name1>=<value1> ...]\n\n" +
-	"           <document> is the xml document to be transformed, or\n" +
-	"           <document_url> is a url for the xml document,\n" +
-	"           <class> is the translet class which is either in\n" +
-	"           user's CLASSPATH or in the <jarfile> specified \n" +
-	"           with the -j option.\n" +
-	"          also: [-x] (debug), [-s] (don't allow System.exit)";	
-
     public static void printUsage() {
-	System.err.println(USAGE_STRING);
+	System.err.println(new ErrorMsg(ErrorMsg.TRANSFORM_USAGE_STR));
 	if (_allowExit) System.exit(-1);
     }
 
