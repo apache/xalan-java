@@ -103,6 +103,12 @@ public class TemplateList implements java.io.Serializable
           template.m_nextSibling = null; // just to play it safe.
           break;
         }
+        else if (template.equals(next.m_nextSibling))
+        {
+          pos++;
+          break;
+        }  
+                 
         pos++;
         next = next.m_nextSibling;
       }
@@ -232,11 +238,11 @@ public class TemplateList implements java.io.Serializable
 
     case Node.CDATA_SECTION_NODE:
     case Node.TEXT_NODE:
-      matchPat = locateMatchPatternList2(PsuedoNames.PSEUDONAME_TEXT, false);
+      matchPat = locateMatchPatternList2(PsuedoNames.PSEUDONAME_TEXT, true);
       break;
 
     case Node.COMMENT_NODE:
-      matchPat = locateMatchPatternList2(PsuedoNames.PSEUDONAME_COMMENT, false);
+      matchPat = locateMatchPatternList2(PsuedoNames.PSEUDONAME_COMMENT, true);
       break;
 
     case Node.DOCUMENT_NODE:
@@ -249,7 +255,7 @@ public class TemplateList implements java.io.Serializable
 
     default:
       {
-        matchPat = locateMatchPatternList2(targetNode.getNodeName(), false);
+        matchPat = locateMatchPatternList2(targetNode.getNodeName(), true);
       }
     }
 
@@ -341,12 +347,21 @@ public class TemplateList implements java.io.Serializable
       MatchPattern2 nextMatchPat = matchPat.getNext();
 
       // We also have to consider wildcard matches.
-      if((null == nextMatchPat) && !matchPat.m_targetString.equals("*") &&
+      if((null == nextMatchPat) && 
+         !matchPat.m_targetString.equals("*")
+         /*&&
          ((Node.ELEMENT_NODE == targetNodeType) ||
+          (Node.TEXT_NODE == targetNodeType) ||
           (Node.ATTRIBUTE_NODE == targetNodeType) ||
-          (Node.PROCESSING_INSTRUCTION_NODE == targetNodeType)))
+          (Node.PROCESSING_INSTRUCTION_NODE == targetNodeType))*/
+         )
       {
         nextMatchPat = (MatchPattern2)m_patternTable.get("*");
+        // TODO: something like this to avoid going thgough executing 
+        // the match pattern if we can know that it will have lower score 
+        //double d = ((Nodetest)(nextMatchPat.getExpression().getExpression())).getDefaultScore();
+        // if (d < bestMatchScore)
+        //   nextMatchPat = null;  // don't even bother to execute 
       }
       matchPat = nextMatchPat;
     }
