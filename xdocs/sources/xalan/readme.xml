@@ -121,11 +121,6 @@
       xalan-dev@xml.apache.org. We review the patches we receive to make sure they do not break something else, and (assuming they 
      do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design
      issues, we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>
-     <p>Xerces bug in &xml4j-used;:</p>
-     <ul>
-       <li>&xml4j-used; does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16
-        documents. Xerces will post a fix shortly.<br/><br/></li>
-     </ul>
      </s3>     
      <anchor name="status"/>
      <s3 title="Version of Xerces to use"> 
