@@ -247,7 +247,7 @@ Copyright:
           <fileset dir="${compat.src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
                 includes="**/*.properties,**/*.res"/>
     </copy>  
-    <jar jarfile="${built.compat.jar}" manifest="src\MANIFEST.MF" basedir="${build.compat.classes}"/>
+    <jar jarfile="${build.compat.jar}" manifest="src\MANIFEST.MF" basedir="${build.compat.classes}"/>
   </target>
   
   <!-- =================================================================== -->
