@@ -306,12 +306,6 @@ LocationPathPattern ::= SLASH
             | SLASH RelativePathPattern:rpp
             {: RESULT = new AbsolutePathPattern(rpp); :}
 
-            | ProcessingInstructionPattern:pip
-            {: RESULT = pip; :}
-
-	    | ProcessingInstructionPattern:pip Predicates:pp
-            {: RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); :}
-
             | IdKeyPattern:ikp
             {: RESULT = ikp; :}
 
@@ -357,6 +351,12 @@ StepPattern ::= NodeTestPattern:nt
                                         pp);
             :}
 
+            | ProcessingInstructionPattern:pip
+            {: RESULT = pip; :}
+
+	    | ProcessingInstructionPattern:pip Predicates:pp
+            {: RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); :}
+
             | ChildOrAttributeAxisSpecifier:axis NodeTestPattern:nt
             {: RESULT=new StepPattern(axis.intValue(),
                                       parser.findNodeType(axis.intValue(), nt),
@@ -368,7 +368,19 @@ StepPattern ::= NodeTestPattern:nt
             {: RESULT = new StepPattern(axis.intValue(),
                                         parser.findNodeType(axis.intValue(),nt),
                                         pp);
-            :};
+            :}
+
+            | ChildOrAttributeAxisSpecifier:axis ProcessingInstructionPattern:pip
+            {: 
+	       RESULT = pip; 	// TODO: report error if axis is attribute
+	    :}
+
+	    | ChildOrAttributeAxisSpecifier:axis ProcessingInstructionPattern:pip 
+		Predicates:pp
+            {: 
+	       // TODO: report error if axis is attribute	
+	       RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); 
+	    :};
 
 NodeTestPattern ::= NameTestPattern:nt
             {: RESULT = nt; :}
