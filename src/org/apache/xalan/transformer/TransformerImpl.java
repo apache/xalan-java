@@ -434,10 +434,19 @@ public class TransformerImpl extends XMLFilterImpl
     return doc;
   }
   
+    /**
+   * Create a ContentHandler from a Result object.
+   */
+  public ContentHandler createResultContentHandler(Result outputTarget)
+    throws TransformException
+  {
+    return createResultContentHandler(outputTarget, getOutputFormat());
+  }
+  
   /**
    * Create a ContentHandler from a Result object.
    */
-  ContentHandler createResultContentHandler(Result outputTarget)
+  public ContentHandler createResultContentHandler(Result outputTarget, OutputFormat format)
     throws TransformException
   {
     ContentHandler handler;
@@ -460,12 +469,6 @@ public class TransformerImpl extends XMLFilterImpl
     // result tree to either a stream or a writer.
     else
     {      
-      // Get the output format that was set by the user, otherwise get the 
-      // output format from the stylesheet.
-      OutputFormat format = (null == m_outputFormat) 
-                            ? getStylesheet().getOutputComposed() :
-                              m_outputFormat;
-      
       String method = format.getMethod();
       if(null == method)
         method = Method.XML;
@@ -614,7 +617,22 @@ public class TransformerImpl extends XMLFilterImpl
   {
     m_outputFormat = oformat;
   }
-    
+
+  /**
+   * Get the output properties used for the transformation.
+   * 
+   * @see org.xml.serialize.OutputFormat
+   */
+  public OutputFormat getOutputFormat()
+  {
+    // Get the output format that was set by the user, otherwise get the 
+    // output format from the stylesheet.
+    OutputFormat format = (null == m_outputFormat) 
+                          ? getStylesheet().getOutputComposed() :
+                            m_outputFormat;
+    return format;
+  }
+
   /**
    * Set a parameter for the templates.
    * @param name The name of the parameter.
@@ -1074,6 +1092,34 @@ public class TransformerImpl extends XMLFilterImpl
       m_currentMatchNodes.pop();
     }
     return true;
+  }
+  
+  /** 
+   * <meta name="usage" content="advanced"/>
+   * Execute each of the children of a template element.
+   * 
+   * @param transformer The XSLT transformer instance.
+   * @param sourceNode The current context node.
+   * @param mode The current mode.
+   * @exception SAXException Might be thrown from the  document() function, or
+   *      from xsl:include or xsl:import.
+   */
+  public void executeChildTemplates(ElemTemplateElement elem, 
+                              Node sourceNode,
+                              QName mode, ContentHandler handler)
+    throws SAXException
+  { 
+    ContentHandler savedHandler = this.getContentHandler();
+    try
+    {
+      getResultTreeHandler().flushPending();
+      this.setContentHandler(handler);
+      executeChildTemplates(elem, sourceNode, mode);
+    }
+    finally
+    {
+      this.setContentHandler(savedHandler);
+    }
   }
 
   /** 
