@@ -18,7 +18,7 @@ TBD: - The faq doesn't show in the content
      xmlns:fo="http://www.w3.org/1999/XSL/Format">
      
    <!-- to use document func to get resources.xml -->
-  <xsl:variable name="resourceFile" select="'../../sources/xalan/resources.xml'"/>  
+  <xsl:param name="resourceFile" select="'../../sources/xalan/resources.xml'"/>  
               
 <xsl:template match ="/">
 	<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
@@ -189,7 +189,31 @@ TBD: - The faq doesn't show in the content
       <xsl:value-of select="concat(ancestor::chapter/@id,'_',./@name)"/>
     </xsl:attribute>
   </fo:block>    
+</xsl:template>
+
+<xsl:template match="table">
+  <xsl:variable name="colwidth" select="14.5 div count(tr[1]/td)"/>
+  <fo:table>
+  <xsl:for-each select="tr[1]/td">
+    <fo:table-column column-width="{$colwidth}cm"/>
+  </xsl:for-each>
+  <fo:table-body font-size="10pt" font-family="sans-serif">
+  <xsl:apply-templates/>
+  </fo:table-body>
+  </fo:table>  
 </xsl:template>  
+<xsl:template match="tr">
+  <fo:table-row>
+    <xsl:apply-templates/>
+  </fo:table-row>
+</xsl:template>
+<xsl:template match="td">
+  <fo:table-cell>
+    <fo:block>
+      <xsl:apply-templates/>
+    </fo:block>
+   </fo:table-cell>
+</xsl:template>
 
 <!-- p + code 
 <xsl:template match ="p[code]">
