@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE book SYSTEM "sbk:/style/dtd/book.dtd">
 
-<book title="XSLTC Design" copyright="2003 The Apache Software Foundation">
+<book title="XSLTC Design" copyright="2004 The Apache Software Foundation">
  
   <document id="index"
             label="Overview"

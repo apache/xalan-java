@@ -19,6 +19,516 @@
 <s1 title="History of software changes">
 <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
 &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.6.0">
+<p> Core (Non-XSLTC) source code updates:</p>
+<ul>
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/11/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc DOM.java Translet.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/compiler SyntaxTreeNode.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util 
+ResultTreeType.java xml-xalan/java/src/org/apache/xalan/xsltc/dom AdaptiveResultTreeImpl.java 
+DOMAdapter.java DOMWSFilter.java MultiDOM.java SAXImpl.java SimpleResultTreeImpl.java 
+xml-xalan/java/src/org/apache/xml/dtm/ref ExpandedNameTable.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Patch from Morris Kwan (mkwan@ca.ibm.com), reviewed by myself, with a tweak
+or two from myself, reviewed by Morris.<br/><br/>
+
+Split namesArray in translet into three arrays:  namesArray, urisArray and
+typesArray.<br/><br/>
+
+Previously, entries in the namesArray had to be examined at run-time to
+distinguish those that represented elements, from those that represented
+attributes (prefixed by an '@'), and those that represented namespace node
+names (prefixed by a '?').  In addition, any namespace URI for the element or
+attribute was similarly stored in the namesArray entry.  So,
+"http://example.org:abc" and "http://example.org:@abc" respectively represented
+an element and an attribute named abc in the http://example.org namespace;
+"?abc" represented a namespace prefix of abc.<br/><br/>
+
+With this change, the namesArray will have entries for "abc" in all three
+cases; the urisArray will contain entries for "http://example.org" for the
+element and attribute, and an empty string for the namespace prefix; and the
+typesArray will contain the value 1 for the element, 2 for the attribute and 13
+for the namespace (which correspond to the DTM constant values for those kinds
+of nodes).<br/><br/>
+
+In addition, these values are stored in static arrays in the translet, and
+references to those arrays are copied to instance fields in the translet's
+constructor, rather than constructing arrays and initializing all their entries
+in the constructor each time.<br/><br/>
+
+All this serves to reduce the overhead of initializing a transformation.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/11/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer NamespaceMappings.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Submitted by:	Brian Minchau<br/><br/>
+Just indentation and whitespace changes in the code
+(trying to get Apache head and the xslt2.0-compiled branches closer).<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/11/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToTextStream.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 24278<br/><br/>
+Submitted by:	Brian Minchau<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/11/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemLiteralResult.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 24423<br/><br/>
+Submitted by:	Brian Minchau<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/11/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer SerializerBase.java ToXMLSAXHandler.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Submitted by:	Brian Minchau<br/><br/>
+Just indentation and whitespace changes in the code
+(trying to get Apache head and the xslt2.0-compiled branches closer).<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2003/11/25<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToStream.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 24958<br/><br/>
+Submitted by:	Brian Minchau<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2003/12/04<br/>
+<ref>Modified: </ref> xml-xalan/java/samples/TransformThread TransformThread.java foo0.xml foo0.xsl foo1.xml 
+foo1.xsl xml-xalan/java/xdocs/sources/xalan samples.xml<br/><br/>
+<ref>Committer's log entry: </ref>
+Transform Thread sample. Submitted by  Richard Cao.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/04<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerIdentityImpl.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/trax TrAXFilter.java xml-xalan/java/src/org/apache/xml/dtm/ref 
+DTMManagerDefault.java xml-xalan/java/src/org/apache/xml/utils XMLReaderManager.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Moved code for caching XMLReader objects from XSLTC's TransformerFactoryImpl to
+a new org.apache.xml.utils.XMLReaderManager class.<br/><br/>
+
+It is now the responsibility of the DTMManagerDefault class to request one of
+these cached XMLReader objects, so the benefit of reusing an XMLReader is now
+conferred upon both XSLTC and Xalan-J Interpretive, as well as upon references
+to the document() function.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/04<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils ObjectFactory.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Factored out part of ObjectFactory's createObject method into separately
+callable lookUpFactoryClass and lookUpFactoryClassName methods.  This allows
+the caller to cache the Class object that provides a service at an appropriate
+level, and create new instances of that class at will, rather than going
+through the expensive service provider look-up procedure for each and every
+object created.<br/><br/></li>
+
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/12/04<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer Encodings.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Reflection code to load sun.io.CharToByteConverter is now wrapped in a privileged action. 
+This is needed when user code is run without the required permssions.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/04<br/>
+<ref>Modified: </ref> xml-xalan/java build.xml xml-xalan/java/bin xml-apis.jar xml-xalan/java/src 
+xml-commons-src.tar.gz xml-commons-external-1.2.01-src.tar.gz<br/><br/>
+<ref>Committer's log entry: </ref>
+Upgrading to xml-commons-external-1.2.01 release, and moving to new naming
+convention for xml-commons source file.<br/><br/></li>
+
+<li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>2003/12/04<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer Encodings.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Avoid RuntimeException(Throwable) as it is only available in JDK 1.4.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/08<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java 
+xml-xalan/java/src/org/apache/xalan/templates ElemVariable.java ElemWithParam.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Applying patch from Richard Cao (richcao@ca.ibm.com) for Bugzilla bug report
+797.<br/><br/>
+
+Added code that checks whether an xsl:param, xsl:variable or xsl:with-param
+has both a select attribute and content.  Also, new test case to test for
+message in case of xsl:with-param, and updated messages in existing tests for
+xsl:param and xsl:variable.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/08<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer NodeSorter.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Applying patch from Richard Cao (richcao@ca.ibm.com) for Bugzilla bug report
+5761.  Removed code that caused keys to be ignored when they select an empty set of
+values.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/09<br/>
+<ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><br/>
+<ref>Committer's log entry: </ref>
+Upgrading to version 2.6.0 of Xerces-Java.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/12<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Added a finally block for SAXSource/StreamSource case in order to ensure that
+any XMLReader is released to the XMLReader cache.<br/><br/>
+
+Thanks to Joanne Tong (joannet@ca.ibm.com) for catching this bug when she
+reviewed my changes to where caching of XMLReaders was handled, and the DTM
+plugability changes for XSLTC.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/12<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils ObjectFactory.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Created a named constant for "META-INF/services" string.<br/><br/></li>
+
+<li><ref>Committed by </ref>rameshm@apache.org<ref> on </ref>2003/12/22<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor StopParseException.java StylesheetPIHandler.java 
+TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerFactoryImpl.java 
+xml-xalan/java/src/org/apache/xml/utils StopParseException.java StylesheetPIHandler.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Moving classes that are used between Xalan interpretive and XSLTC ( StylesheetPIHandler and StopParseException )  
+to xml/utils package . Making the required modifications to accomadate this change.<br/><br/>
+
+Submitted by:	Bhakti Mehta ( bhakti.mehta@sun.com )<br/><br/>
+Reviewed by: Ramesh Mandava<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/12/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils ObjectFactory.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fixed a bug I injected recently - missing slash between 'META-INF/services' and service name.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/01/04<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates RedundentExprEliminator.java XSLTVisitor.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Made methods in this class public, as is the case in the XPathVisitor class that
+it extends.  Having the class be public, but none of the methods public isn't
+helpful.<br/><br/>
+
+Contributed by Warwick Burrows (wburrows@us.ibm.com).<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/01/06<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates RedundentExprEliminator.java XSLTVisitor.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Updating the copyright dates to reflect recent modifications.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/01/08<br/>
+<ref>Modified: </ref> xml-xalan/java build.xml<br/><br/>
+<ref>Committer's log entry: </ref>
+Updating build copyright year.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/01/15<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemLiteralResult.java ElemTextLiteral.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: 26169<br/>
+Submitted by:	Brian Minchau<br/>
+Flushed serialier before emitting trace event in ElemeTextLiteral and
+ElemLiteralResult.<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2004/01/21<br/>
+<ref>Modified: </ref> xml-xalan/java build.xml<br/><br/>
+<ref>Committer's log entry: </ref>
+Add TransformThread sample to xalansamples.jar.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/02<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2RTFDTM.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 25442.
+
+Record the initial empty sizes of the various vectors in the DTM, and use those
+sizes as the defaults in popRewindMark.  The code originally assumed that these
+vectors had default sizes of zero, but that's not true in the case of m_data,
+which reserves entry zero.<br/><br/>
+
+Reviewed by Christine Li (jycli@ca.ibm.com)
+<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/02<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 19464.
+A reworked patch, move the push statements to the beginning of try block
+and added a flag to make sure that there is always something to pop
+Reviewed by Henry Zongaro (zongaro@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/05<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes UnionPathIterator.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 26019. detach location path iterators happens only when allowDetach flag is true.
+Reviewed by Henry Zongaro (zongaro@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/05<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFunction.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 18351.
+xsl:message instruction is allowed inside func:function.
+It doesn't construct nodes as part of the result.
+Reviewed by Henry Zongaro (zongaro@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/05<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/functions FuncExtFunction.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix bugzilla bug report 18351.
+Set allowDetachToRelease flag to false, which allow caching of the arguments
+Reviewed by Henry Zongaro (zongaro@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2004/02/05<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemAttribute.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for Bugzilla Bug 26075.<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2004/02/06<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils TreeWalker.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for Bugzilla Bug 25416.<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/09<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemTemplateElement.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Applying Joanne Tone's (joannet@ca.ibm.com) patch for
+bugzilla bug report 26030.<br/><br/>
+
+Do not suppress Xalan specified extension element namespace, unless they
+are declared as extension element namespaces by users.<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/11<br/>
+<ref>Modified: </ref> xml-xalan/java build.xml<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 26829.
+
+Modified build.xml to add xalanj2taglet.jar to Xalan source distribution
+Contributed by Sarah McNamara (mcnamara@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/11<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerExsltFunction.java
+xml-xalan/java/src/org/apache/xalan/templates ElemExsltFunction.java ElemExsltFuncResult.java 
+xml-xalan/java/src/org/apache/xalan/transformer TransformerImpl.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 24302.
+
+Fields in the object representing an EXSLT function element (ElemExsltFunction)
+were being used to store execution state information for references to that
+function.  That caused problems with multi-threaded code that used Transformer
+objects created from the same Templates object - each Transformer shares the
+same instances of ElemExsltFunction.<br/><br/>
+
+The fix was to replace the fields ElemExsltFunction.m_result and
+ElemExsltFunction.m_isResultSet with a new ObjectStack field in TransformerImpl
+named m_currentFuncResult.<br/><br/>
+
+Also, changed how VariableStack was being updated in the execute method for a
+function reference - this change was modelled on equivalent code in
+ElemCallTemplate.<br/><br/>
+
+Reviewed by Morris Kwan (mkwan@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/11<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemParam.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 24302.
+
+Changed condition under which the parent element's m_inArgsSize field is
+incremented - that field keeps track of the number of xsl:param children an
+element has.  This was only happening for ElemTemplate, but it needs to happen
+for ElemExsltFunction, which is a subclass of ElemTemplate, as well.<br/><br/>
+
+Reviewed by Morris Kwan (mkwan@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2004/02/12<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Sort.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java NodeSortRecordFactory.java 
+xml-xalan/java/src/org/apache/xml/utils LocaleUtility.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for Bugzilla Bug 26842.<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2004/02/13<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java 
+xml-xalan/java/src/org/apache/xml/utils StringComparable.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for Bugzilla Bug 1396.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/17<br/>
+<ref>Modified: </ref> Most files in the Xalan Java cvs repository (too many to list) <br/><br/>
+<ref>Committer's log entry: </ref>
+New Apache 2.0 license update.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/17<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemForEach.java
+xml-xalan/java/src/org/apache/xalan/processor StylesheetHandler.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 26217<br/>
+Submitted by:	Brian Minchau<br/>
+Reviewed by:	Henry Zongaro<br/>
+This is a javadoc update only.
+Programming instructions don't have a namespace, so make
+the PI with no namespace be "xalan-doc-cache-off" rather than
+"xalan:doc-cache-off"<br/><br/></li>
+
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/17<br/>
+<ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan faq.xml<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 26217<br/>
+Submitted by:	Brian Minchau<br/>
+Reviewed by:	Henry Zongaro<br/>
+Changed a ":" to a "-" in "xalan:doc-cache-off" in the FAQ.
+Programming instructions don't have a namespace, so make
+the PI with no namespace be "xalan-doc-cache-off" rather than
+"xalan:doc-cache-off". <br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/18<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils DOMBuilder.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 15140<br/>
+Submitted by:	patch submitted by Bruno Dumon (bruno@outerthought.org)<br/>
+Reviewed by:	Brian Minchau (minchau@ca.ibm.com)<br/><br/></li>
+
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/18<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToXMLStream.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 24304<br/>
+Submitted by:	Brian Minchau<br/>
+Reviewed by:	Henry Zongaro<br/>
+Serialized XML no longer put a new line after the xml header unless indent="yes".<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/18<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemForEach.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 16889<br/>
+Submitted by:	Elson Jiang<br/>
+Reviewed by:	Brian Minchau<br/>
+Fixes ElemForEach TraceListener bug.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/18<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TransformerIdentityImpl.java TransformerImpl.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 23591<br/>
+Submitted by:	Brian Minchau<br/>
+Reviewed by:	Henry Zongaro<br/>
+
+JAXP transformer.setOutputProperties(null); now not only doesn't
+get an exception, it also resets the internal state to flush out any
+previously accumulated properties as if the transformer had
+just been created.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/18<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer OutputPropertiesFactory.java 
+ToHTMLStream.java ToStream.java ToXMLStream.java<br/><br/>
+<ref>Committer's log entry: </ref>
+PR: bugzilla 25816<br/>
+Submitted by:	Brian Minchau<br/>
+Reviewed by:	Henry Zongaro<br/>
+Make default properties returned by serializer factory immutable.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2004/02/18<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib Redirect.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Javadoc update only.<br/>
+PR: bugzilla 26742<br/>
+Submitted by:	Brian Minchau<br/><br/>
+
+Changed old invalid URI for xmlns:xsl to the correct one
+for XSLT 1.0.  The old value was before the XSLT 1.0 recommendation
+and appeared only in a javadoc example.  But it did confuse me when
+I tried to run the example in the javadoc.<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/20<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils PrefixResolverDefault.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 24979.
+
+Fix for DOM XPath API, any element has an implicit declaration of its own
+prefix, which is enforced during namespace serialization.<br/><br/>
+
+Reviewed by Morris Kwan (mkwan@ca.ibm.com)<br/><br/></li>
+
+<li><ref>Committed by </ref>igorh@apache.org<ref> on </ref>2004/02/21<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java 
+xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Code cleaning and optimization for copy and copy-of.  Discussed with Henry Zongaro.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/22<br/>
+<ref>Modified: </ref> xml-xalan/java build.xml xml-xalan/java/src MANIFEST.MF manifest.xsltc<br/><br/>
+<ref>Committer's log entry: </ref>
+Applying patch for Bugzilla bug report 24728 from Sarah McNamara (mcnamara@ca.ibm.com).<br/><br/>
+
+Use Ant's filtering capabilities to place appropriate "created-by" information
+into the MANIFEST.MF file of the jar that's being built.<br/><br/></li>
+
+<li><ref>Committed by </ref>aruny@apache.org<ref> on </ref>2004/02/23<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandler.java ExtensionHandlerGeneral.java 
+ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/lib Extensions.java 
+ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/lib/sql 
+DefaultConnectionPool.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xslt 
+EnvironmentCheck.java ObjectFactory.java Process.java SecuritySupport.java SecuritySupport12.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/cmdline ObjectFactory.java SecuritySupport.java SecuritySupport12.java 
+Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionAvailableCall.java FunctionCall.java 
+ObjectFactory.java Parser.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util 
+ObjectFactory.java ObjectType.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/dom 
+NodeSortRecord.java NodeSortRecordFactory.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java XSLTCDTMManager.java 
+xml-xalan/java/src/org/apache/xalan/xsltc/trax ObjectFactory.java SecuritySupport.java SecuritySupport12.java 
+SmartTransformerFactoryImpl.java TemplatesImpl.java TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xml/dtm 
+DTMManager.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xml/dtm/ref 
+IncrementalSAXSource_Xerces.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java 
+xml-xalan/java/src/org/apache/xml/serializer CharInfo.java Encodings.java ObjectFactory.java SecuritySupport.java 
+SecuritySupport12.java SerializerFactory.java xml-xalan/java/src/org/apache/xml/utils ObjectFactory.java SecuritySupport.java 
+SecuritySupport12.java xml-xalan/java/src/org/apache/xpath/compiler FuncLoader.java ObjectFactory.java SecuritySupport.java 
+SecuritySupport12.java xml-xalan/java/src/org/apache/xpath/functions FuncSystemProperty.java ObjectFactory.java SecuritySupport.java 
+SecuritySupport12.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Description :
+ObjectFactory was designed to be package private. ObjectFactory class exposes class loaders publicly which allow untrusted code to 
+access internal classes. Making following changes to fix it.<br/><br/>
+
+1.Coping the ObjectFactory, SecuritySupport.java and SecuritySupport12.java class in the sub packages in  order to make it package private.
+2.Using checkPackageAccess() to prevent access to internal packages of jdk(sun.*).<br/><br/></li>
+
+<li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/23<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TrAXFilter.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Fix for bugzilla bug report 22376.
+
+When a TrAXFilter has a parent, should set itself as the EntityResolver,
+DTDHandler and ErrorHandler for it's parent to keep the filter chain,
+instead of always use the default EntityResolver, DTDHandler and ErrorHandler<br/><br/>
+
+The patch is submitted by Werner Donne (werner.donne@re.be)<br/><br/></li>
+
+<li><ref>Committed by </ref>aruny@apache.org<ref> on </ref>2004/02/23<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils DOMBuilder.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Description : Copying the patch from jaxp-1_3_0-branch  to main trunk.
+When there is no mark up inside element content, text should be contained in single TEXT node.
+<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemAttribute.java ElemElement.java 
+ElemPI.java ElemTemplateElement.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler ApplyTemplates.java 
+AttributeSet.java Copy.java DecimalFormatting.java Key.java LiteralElement.java Output.java ProcessingInstruction.java 
+Template.java XslAttribute.java XslElement.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util 
+ErrorMessages.java ErrorMsg.java Util.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java 
+ErrorMessages.java xml-xalan/java/src/org/apache/xml/utils XMLChar.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Patch for Bugzilla bug report 24988 from Joanne Tong (joannet@ca.ibm.com)
+reviewed by myself.<br/><br/>
+
+Changes required to test whether an attribute value that is required to be
+a QName, NCName or whitespace-separated list of QNames actually meets that
+requirement.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/24<br/>
+<ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><br/>
+<ref>Committer's log entry: </ref>
+Upgrading to version 2.6.2 of Xerces-Java.<br/><br/></li>
+
+<li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2004/02/24<br/>
+<ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><br/>
+<ref>Committer's log entry: </ref>
+Part of patch for bug report 24985.  Ensure that m_size is set to zero in
+setStartNode methods of AncestorIterator and TypedAncestorIterator.  The way
+getLast() is implemented resulted in setStartNode being called twice in
+some circumstances, with the nodes from the second call being included as
+additional (though duplicate) ancestors.  Clearing m_size avoids that.<br/><br/>
+
+Reviewed by Morris Kwan (mkwan@ca.ibm.com).<br/><br/></li>
+</ul>
+</s2>
 <s2 title="Changes for &xslt4j; 2.5.2">
 <p> Core (Non-XSLTC) source code updates:</p>
 <ul>

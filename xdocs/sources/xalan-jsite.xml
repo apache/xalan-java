@@ -18,12 +18,14 @@
 -->
 <!-- $Id$ -->
 
-<book title="Xalan XSL Transformer User's Guide" copyright="2003 The Apache Software Foundation">
+<book title="Xalan XSL Transformer User's Guide" copyright="2004 The Apache Software Foundation">
   <resources source="sbk:/sources/xalan/resources.xml"/>
   <external href="../index.html" label="Home"/>
   <separator/>
-  <document id="index" label="Xalan-J 2.5.2" source="xalan/index.xml"/>
-  <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
+  <document id="index" label="Xalan-J 2.6.0" source="xalan/index.xml"/>
+<!--  Commenting this out for now.  We have info in the Release Notes that discusses 
+      changes in the release.
+  <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/> -->
   <separator/>
   <document id="overview" label="Overview" source="xalan/overview.xml"/>
   <document id="downloads" label="Downloads" source="xalan/downloads.xml"/>  
@@ -57,7 +59,8 @@
   <separator/>
   <external href="readme.html#bugs" label="Bugs"/>  
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
+<!--  Temporarily commenting this section out.  We need to overhaul the list.
   <separator/>
   <external href="readme.html#developer-list" label="Credits"/>
-  <external href="xsltc/todo.html#developer-list" label="XSLTC Credits"/>      
+  <external href="xsltc/todo.html#developer-list" label="XSLTC Credits"/> -->
 </book>

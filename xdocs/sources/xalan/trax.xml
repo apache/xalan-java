@@ -131,13 +131,13 @@
 
 <label>DOM</label>
 <item>Document Object Model, specifically referring to the
-			 <jump href="http://www.w3.org/TR/DOM-Level-2%20">Document Object Model
+			 <jump href="http://www.w3.org/TR/DOM-Level-2/">Document Object Model
 			 (DOM) Level 2 Specification</jump>.</item>
-
+			 
 
 <label>SAX</label>
 <item>Simple API for XML, specifically referring to the
-			 <jump href="http://www.megginson.com/SAX/SAX2">SAX 2.0
+			 <jump href="http://www.saxproject.org/">SAX 2.0
 			 release</jump>.</item>
 </gloss> 
 

@@ -62,7 +62,10 @@
 <s2 title="Where do I get &xml4j;?">
 <p>The &xslt4j; download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, 
 this is all you need to run &xslt4j; with the &xml4j; XML parser. You can, however, download the 
-complete &xml4j; binary or source distribution from the <resource-ref idref="xml4j-distdir"/>.</p>
+complete &xml4j; binary or source distribution from the <resource-ref idref="xml4j-distdir"/>.
+If you cannot find &xml4j-used; at that location, have a look at the 
+<jump href="http://archive.apache.org/dist/xml/xerces-j/">Apache archive location for
+Xerces Java</jump>.</p>
 <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging 
 in a Transformer and XML parser</link>.</note> 
 </s2>
