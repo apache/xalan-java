@@ -87,6 +87,7 @@ package org.apache.xml.utils;
  * <p>DTM does _not_ directly support the W3C's Document Object Model. However,
  * it attempts to come close enough that an implementation of DTM can be created 
  * that wraps a DOM.</p>
+ * <p>State: In progress!!</p>
  */
 public interface DTM
 {
@@ -170,7 +171,7 @@ public interface DTM
    * If not yet resolved, waits for more nodes to be added to the document and
    * tries again.
    * 
-   * @param nodeHandle int Index of this node's record.
+   * @param nodeHandle int Handle of the node..
    * @return int DTM node-number of first child, or -1 to indicate none exists.
    */
   public int getFirstChild(int nodeHandle);
@@ -180,7 +181,7 @@ public interface DTM
    * If not yet resolved, waits for more nodes to be added to the document and
    * tries again.
    * 
-   * @param nodeHandle int Index of this node's record.
+   * @param nodeHandle int Handle of the node..
    * @return int Node-number of last child,
    * or -1 to indicate none exists.
    */
@@ -189,7 +190,7 @@ public interface DTM
   /**
    * Given a node handle, get the index of the node's first attribute.
    * 
-   * @param nodeHandle int Index of this node's record.
+   * @param nodeHandle int Handle of the node..
    * @return Handle of first attribute, or -1 to indicate none exists.
    */
   public int getFirstAttribute(int nodeHandle);
@@ -213,7 +214,7 @@ public interface DTM
    * Given a node handle, advance to its next sibling.
    * If not yet resolved, waits for more nodes to be added to the document and
    * tries again.
-   * @param nodeHandle int Index of this node's record.
+   * @param nodeHandle int Handle of the node..
    * @return int Node-number of next sibling,
    * or -1 to indicate none exists.
    */
@@ -223,7 +224,7 @@ public interface DTM
    * Given a node handle, find its preceeding sibling.
    * WARNING: DTM is asymmetric; this operation is resolved by search, and is
    * relatively expensive.
-   * @param postition int Index of this node's record.
+   * @param postition int Handle of the node..
    *
    * @param nodeHandle the id of the node.
    * @return int Node-number of the previous sib,
@@ -236,7 +237,7 @@ public interface DTM
    * element, we advance to its first attribute; if an attr, we advance to
    * the next attr on the same node.
    * 
-   * @param nodeHandle int Index of this node's record.
+   * @param nodeHandle int Handle of the node..
    * @return int DTM node-number of the resolved attr,
    * or -1 to indicate none exists.
    */
@@ -256,7 +257,7 @@ public interface DTM
    * tries again.
    *
    * @param subtreeRootNodeHandle
-   * @param nodeHandle int Index of this node's record.
+   * @param nodeHandle int Handle of the node..
    * @return handle of next descendant,
    * or -1 to indicate none exists.
    */
@@ -284,7 +285,7 @@ public interface DTM
 
   /**
    * Given a node handle, find its parent node.
-   * @param postition int Index of this node's record.
+   * @param postition int Handle of the node..
    *
    * @param nodeHandle the id of the node.
    * @return int Node-number of parent,
@@ -393,7 +394,7 @@ public interface DTM
    * Given a node handle, return its DOM-style name prefix.
    * (As defined in Namespaces, this is the portion of the name before any
    * colon character)
-   * @param postition int Index of this node's record.
+   * @param postition int Handle of the node..
    *
    * @param nodeHandle the id of the node.
    * @return String prefix of this node's name, or null if no explicit
@@ -405,7 +406,7 @@ public interface DTM
    * Given a node handle, return its DOM-style namespace URI
    * (As defined in Namespaces, this is the declared URI which this node's
    * prefix -- or default in lieu thereof -- was mapped to.)
-   * @param postition int Index of this node's record.
+   * @param postition int Handle of the node..
    *
    * @param nodeHandle the id of the node.
    * @return String URI value of this node's namespace, or null if no
@@ -417,7 +418,7 @@ public interface DTM
    * Given a node handle, return its node value. This is mostly
    * as defined by the DOM, but may ignore some conveniences.
    * <p>
-   * @param postition int Index of this node's record.
+   * @param postition int Handle of the node..
    *
    * @param nodeHandle The node id.
    * @return String Value of this node, or null if not
@@ -427,7 +428,7 @@ public interface DTM
 
   /**
    * Given a node handle, return its DOM-style node type.
-   * @param postition int Index of this node's record.
+   * @param postition int Handle of the node..
    *
    * @param nodeHandle The node id.
    * @return int Node type, as per the DOM's Node._NODE constants.
