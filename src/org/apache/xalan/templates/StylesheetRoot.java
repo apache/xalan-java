@@ -89,6 +89,11 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.ErrorListener;
 
 import org.apache.xml.dtm.ref.ExpandedNameTable;
+//dml
+import org.apache.xml.utils.StringVector;
+import org.apache.xalan.extensions.ExtensionNamespaceSupport;
+import org.apache.xalan.extensions.ExtensionHandler;
+import org.apache.xalan.extensions.ExtensionNamespacesManager;
 
 /**
  * <meta name="usage" content="general"/>
@@ -126,7 +131,7 @@ public class StylesheetRoot extends StylesheetComposed
    * @serial
    */
   private Hashtable m_availElems;
-
+  
   /**
    * Creates a StylesheetRoot and retains a pointer to the schema used to create this
    * StylesheetRoot.  The schema may be needed later for an element-available() function call.
@@ -139,7 +144,6 @@ public class StylesheetRoot extends StylesheetComposed
 
     this(listener);
     m_availElems = schema.getElemsAvailable();
-
   }
 
   /**
@@ -162,6 +166,39 @@ public class StylesheetRoot extends StylesheetComposed
   {
     return m_availElems;
   }
+  
+  private ExtensionNamespacesManager m_extNsMgr = null;
+  
+  /**
+   * Only instantiate an ExtensionNamespacesManager if one is called for
+   * (i.e., if the stylesheet contains  extension functions and/or elements).
+   */
+  public ExtensionNamespacesManager getExtensionNamespacesManager()
+  {
+     if (m_extNsMgr == null)
+       m_extNsMgr = new ExtensionNamespacesManager();
+     return m_extNsMgr;
+  }
+  
+  /**
+   * Get the vector of extension namespaces. Used to provide
+   * the extensions table access to a list of extension
+   * namespaces encountered during composition of a stylesheet.
+   */
+  public Vector getExtensions()
+  {
+    return m_extNsMgr != null ? m_extNsMgr.getExtensions() : null;
+  }  
+
+/*
+  public void runtimeInit(TransformerImpl transformer) throws TransformerException
+  {
+    System.out.println("StylesheetRoot.runtimeInit()");
+      
+  //    try{throw new Exception("StylesheetRoot.runtimeInit()");} catch(Exception e){e.printStackTrace();}
+
+    }
+*/  
 
   //============== Templates Interface ================
 
@@ -243,12 +280,8 @@ public class StylesheetRoot extends StylesheetComposed
         // Calculate the number of this import.    
         m_globalImportList[j--].recomposeImports();        
       }
-    }
-
-    
-
+    }    
     // Next, we walk the import tree and add all of the recomposable elements to the vector.
-
     int n = getGlobalImportCount();
 
     for (int i = 0; i < n; i++)
@@ -303,7 +336,10 @@ public class StylesheetRoot extends StylesheetComposed
         composeTemplates(included);
       }
     }
-    
+    // Attempt to register any remaining unregistered extension namespaces.
+    if (m_extNsMgr != null)
+      m_extNsMgr.registerUnregisteredNamespaces();
+
     clearComposeState();
   }
 
@@ -447,7 +483,14 @@ public class StylesheetRoot extends StylesheetComposed
    * will be set as stylesheets are encountered.
    * @serial
    */
-  private OutputProperties m_outputProperties;
+  private OutputProperties m_outputProperties; // Keep for time being?? 
+  // Can set from ElemPrincipalResultDocument.
+  protected void setOutputProperties(OutputProperties primaryProps)
+  {
+    m_outputProperties = primaryProps;
+  }
+  
+  private Hashtable m_outputPropertiesTable = new Hashtable();
 
   /**
    * Recompose the output format object from the included elements.
@@ -457,8 +500,25 @@ public class StylesheetRoot extends StylesheetComposed
   void recomposeOutput(OutputProperties oprops)
     throws TransformerException
   {
+    //System.out.println("StylesheetRoot.recomposeOutput() " + oprops.getName());
+    // put into m_outputPropertiesTable
     
-    m_outputProperties.copyFrom(oprops);
+    Object key = (oprops.getName() != null)
+                  ? (Object)oprops.getName(): (Object)new String("") ;
+    
+    if (m_outputPropertiesTable.containsKey(key))
+    {
+      //System.out.println("has key " + key);
+      ((OutputProperties)m_outputPropertiesTable.get(key)).copyFrom(oprops);
+    }
+    else
+    { 
+      //System.out.println("new key " + key);
+      OutputProperties outputProps = new OutputProperties(Method.XML);
+      outputProps.copyFrom(oprops);
+      m_outputPropertiesTable.put(key, outputProps);
+    }
+    //m_outputProperties.copyFrom(oprops);
   }
 
   /**
@@ -479,7 +539,19 @@ public class StylesheetRoot extends StylesheetComposed
     // System.out.println("getOutputComposed.getIndenting: "+m_outputProperties.getIndenting());
     return m_outputProperties;
   }
+  
+  //dml
+  public OutputProperties getOutputComposed(QName qname)
+  {
+    Object key = (qname != null)
+                  ? (Object)qname : (Object)new String("") ;
+    OutputProperties oprops = (OutputProperties)m_outputPropertiesTable.get(key);
+    
+    return oprops;
+  }
 
+  // following flag must be changed to include QName param.
+  
   /** Flag indicating whether an output method has been set by the user.
    *  @serial           */
   private boolean m_outputMethodSet = false;
