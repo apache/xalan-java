@@ -859,7 +859,8 @@ public class ElemTemplateElement extends UnImplNode
           
           // The exclusion should apply to the non-aliased prefix, so 
           // we don't calculate it here.  -sb
-          decl = new XMLNSDecl(nsAlias.getResultPrefix(), 
+          // Use stylesheet prefix, as per xsl WG
+          decl = new XMLNSDecl(nsAlias.getStylesheetPrefix(), 
                               nsAlias.getResultNamespace(), shouldExclude);
         }
         else

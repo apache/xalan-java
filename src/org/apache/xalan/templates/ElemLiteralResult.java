@@ -225,7 +225,8 @@ public class ElemLiteralResult extends ElemUse
       {
         m_namespace = nsa.getResultNamespace();
         
-        String resultPrefix = nsa.getResultPrefix();
+        // String resultPrefix = nsa.getResultPrefix();
+        String resultPrefix = nsa.getStylesheetPrefix(); // As per xsl WG, Mike Kay
         if((null != resultPrefix) && (resultPrefix.length() > 0))
           m_rawName = resultPrefix+":"+m_localName;
         else
@@ -249,7 +250,8 @@ public class ElemLiteralResult extends ElemUse
           {
             String namespace = nsa.getResultNamespace();
             
-            String resultPrefix = nsa.getResultPrefix();
+            // String resultPrefix = nsa.getResultPrefix();
+            String resultPrefix = nsa.getStylesheetPrefix(); // As per XSL WG
             String rawName = avt.getName();
             if((null != resultPrefix) && (resultPrefix.length() > 0))
               rawName = resultPrefix+":"+rawName;
