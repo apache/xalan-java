@@ -63,6 +63,7 @@
 <li><link anchor="usestylesheetparam">UseStylesheetParam</link></li>
 <li><link anchor="sax2sax">SAX2SAX</link></li>
 <li><link anchor="pipe">Pipe</link></li>
+<li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
 <li><link anchor="servlet">Servlet</link></li>
@@ -114,14 +115,26 @@
     </s2><anchor name="sax2sax"/>
   <s2 title="SAX2SAX">
   <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet, processing the XML input, and producing the output.</p>
-  <p>Run this sample from the Sax2sax subdirectory with</p>
+  <p>Run this sample from the SAX2SAX subdirectory with</p>
    <p><code>java SAX2SAX</code></p>
     </s2><anchor name="pipe"/>
     <s2 title="Pipe">
-    <p>What it does: Chains together a series of 3 transformations by piping SAX events from one Transformer to
-      another. Each Transformer operates as a SAX2 XMLFilter/XMLReader.</p>
+    <p>What it does: Pipes the output from one transformation to a second transformation, then from the second
+    transformation to the third transformation. Transformer1 is the ContentHandler for the XMLReader (which parses the
+    input document). Transformer2 provides the ContentHandler for Transformer1, and Transformer3 for Transformer2.</p>
+    <note>Pipe and UseXMLFilters illustrate two strategies for using the output of one transformation as the input for
+    another transformation. The Pipe sample incorporates a "push" model -- Transformer1 "pushes" its output to
+    Transformer2, and so on -- whereas in the UseXMLFilters sample, Transformer3 "pulls" its input from Transformer2,
+    and so on.</note>
     <p>Run this sample from the Pipe subdirectory with</p> 
     <p><code>java Pipe</code></p>
+    </s2><anchor name="usexmlfilters"/>
+    <s2 title="UseXMLFilters"/>
+    <p>What it does: Chains together the same transformations as the preceding Pipe sample. Using each Transformer
+     object as an extension of the SAX XMLFilter interface, sets the XMLReader as the parent of Transformer1,
+     Transformer1 as the parent of Transformer2, and Transformer2 as the parent of of Transformer3.</p>
+      <p>Run this sample from the UseXMLFilters subdirectory with</p>
+   <p><code>java UseXMLFilters</code></p>
     </s2><anchor name="applyxpath"/>
     <s2 title="ApplyXPath">
     <p>What it does: ApplyXPath uses the <jump href="apidocs/org/apache/xpath/XPathAPI.html">XPathAPI</jump> convenience methods to
