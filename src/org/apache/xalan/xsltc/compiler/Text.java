@@ -153,6 +153,10 @@ final class Text extends Instruction {
 	_ignore = true;
     }
 
+    public boolean isIgnore() {
+    	return _ignore;
+    }
+    
     public boolean isTextElement() {
 	return _textElement;
     }

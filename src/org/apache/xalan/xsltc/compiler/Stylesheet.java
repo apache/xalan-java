@@ -140,7 +140,41 @@ public final class Stylesheet extends SyntaxTreeNode {
     
     private boolean _hasIdCall = false;
 
+    private Output  _lastOutputElement = null;
     private Properties _outputProperties = null;
+    
+    // Output method constants
+    public static final int UNKNOWN_OUTPUT = 0;
+    public static final int XML_OUTPUT = 1;
+    public static final int HTML_OUTPUT = 2;
+    public static final int TEXT_OUTPUT = 3;
+    
+    private int _outputMethod = UNKNOWN_OUTPUT;
+    
+    /**
+     * Return the output method
+     */
+    public int getOutputMethod() {
+    	return _outputMethod;
+    }
+    
+    /**
+     * Check and set the output method
+     */
+    private void checkOutputMethod() {
+	if (_lastOutputElement != null) {
+	    String method = _lastOutputElement.getOutputMethod();
+	    if (method != null) {
+	        if (method.equals("xml"))
+	            _outputMethod = XML_OUTPUT;
+	        else if (method.equals("html"))
+	            _outputMethod = HTML_OUTPUT;
+	        else if (method.equals("text"))
+	            _outputMethod = TEXT_OUTPUT;
+	    }
+	}
+    }
+    
 
     public void setForwardReference() {
 	_forwardReference = true;
@@ -181,6 +215,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _outputProperties;
     }
 
+    public Output getLastOutputElement() {
+    	return _lastOutputElement;
+    }
+    
     public void setMultiDocument(boolean flag) {	
 	_multiDocument = flag;
     }
@@ -513,7 +551,6 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Translate the stylesheet into JVM bytecodes. 
      */
     public void translate() {
-	Output lastOutputElement = null;
 	_className = getXSLTC().getClassName();
 
 	// Define a new class by extending TRANSLET_CLASS
@@ -548,7 +585,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    else if (element instanceof Output) {
 		// save the element for later to pass to compileConstructor 
 		Output output = (Output)element;
-		if (output.enabled()) lastOutputElement = output;
+		if (output.enabled()) _lastOutputElement = output;
 	    }
 	    else {
 		// Global variables and parameters are handled elsewhere.
@@ -557,9 +594,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	}
 
+	checkOutputMethod();
 	processModes();
 	compileModes(classGen);
-	compileConstructor(classGen, lastOutputElement);
+	compileConstructor(classGen, _lastOutputElement);
 
 	if (!getParser().errorsFound()) {
 	    getXSLTC().dumpClass(classGen.getJavaClass());

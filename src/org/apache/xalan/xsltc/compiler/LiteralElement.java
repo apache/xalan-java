@@ -77,13 +77,21 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
 
+import org.apache.xml.serializer.ElemDesc;
+import org.apache.xml.serializer.ToHTMLStream;
+
 final class LiteralElement extends Instruction {
 
     private String _name;
     private LiteralElement _literalElemParent;
     private Vector _attributeElements = null;
     private Hashtable _accessedPrefixes = null;
-
+    
+    // True if all attributes of this LRE are unique, i.e. they all have
+    // different names. This flag is set to false if some attribute
+    // names are not known at compile time.
+    private boolean _allAttributesUnique = false;
+        
     private final static String XMLNS_STRING = "xmlns";
 
     /**
@@ -358,8 +366,12 @@ final class LiteralElement extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+        // Check whether all attributes are unique.
+        _allAttributesUnique = checkAttributesUnique();
+
 	// Compile code to emit element start tag
 	il.append(methodGen.loadHandler());
+	
 	il.append(new PUSH(cpg, _name));
 	il.append(DUP2); 		// duplicate these 2 args for endElement
 	il.append(methodGen.startElement());
@@ -425,4 +437,143 @@ final class LiteralElement extends Instruction {
 	// Compile code to emit element end tag
 	il.append(methodGen.endElement());
     }
-}
+
+    /**
+     * Return true if the output method is html.
+     */
+    private boolean isHTMLOutput() {
+        return getStylesheet().getOutputMethod() == Stylesheet.HTML_OUTPUT;
+    }
+    
+    /**
+     * Return the ElemDesc object for an HTML element.
+     * Return null if the output method is not HTML or this is not a 
+     * valid HTML element.
+     */
+    public ElemDesc getElemDesc() {
+    	if (isHTMLOutput()) {
+    	    return ToHTMLStream.getElemDesc(_name);
+    	}
+    	else
+    	    return null;
+    }
+    
+    /**
+     * Return true if all attributes of this LRE have unique names.
+     */
+    public boolean allAttributesUnique() {
+    	return _allAttributesUnique;
+    }
+    
+    /**
+     * Check whether all attributes are unique.
+     */
+    private boolean checkAttributesUnique() {
+    	 boolean hasHiddenXslAttribute = hasXslAttributeChildren(this, true);
+    	 if (hasHiddenXslAttribute)
+    	     return false;
+    	 
+    	 if (_attributeElements != null) {
+    	     int numAttrs = _attributeElements.size();
+    	     Hashtable attrsTable = null;
+    	     for (int i = 0; i < numAttrs; i++) {
+    	         SyntaxTreeNode node = (SyntaxTreeNode)_attributeElements.elementAt(i);
+    	         
+    	         if (node instanceof UseAttributeSets) {
+    	             return false;
+    	         }
+    	         else if (node instanceof XslAttribute) {   	             
+    	             if (attrsTable == null) {
+    	             	attrsTable = new Hashtable();
+    	                 for (int k = 0; k < i; k++) {
+    	                     SyntaxTreeNode n = (SyntaxTreeNode)_attributeElements.elementAt(k);
+    	                     if (n instanceof LiteralAttribute) {
+    	                         LiteralAttribute literalAttr = (LiteralAttribute)n;
+    	                         attrsTable.put(literalAttr.getName(), literalAttr);
+    	                     }
+    	                 }
+    	             }
+    	             
+    	             XslAttribute xslAttr = (XslAttribute)node;
+    	             AttributeValue attrName = xslAttr.getName();
+    	             if (attrName instanceof AttributeValueTemplate) {
+    	                 return false;
+    	             }
+    	             else if (attrName instanceof SimpleAttributeValue) {
+    	                 SimpleAttributeValue simpleAttr = (SimpleAttributeValue)attrName;
+    	                 String name = simpleAttr.toString();
+    	                 if (name != null && attrsTable.get(name) != null)
+    	                     return false;
+    	                 else if (name != null) {
+    	                     attrsTable.put(name, xslAttr);
+    	                 }    	                 
+    	             }
+    	         }
+    	     }
+    	 }
+    	 return true;
+    }
+    
+    /**
+     * Return true if the given SyntaxTreeNode may contains <xsl:attribute>s in it. The flag
+     * ignoreXslAttribute indicates if the direct <xsl:attribute> children of this node 
+     * are included.
+     */
+    private boolean hasXslAttributeChildren(SyntaxTreeNode node, boolean ignoreXslAttribute) {
+    	Vector contents = node.getContents();
+    	int size = contents.size();
+    	for (int i = 0; i < size; i++) {
+    	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+    	    if (child instanceof Text) {
+    	    	Text text = (Text)child;
+    	    	if (text.isIgnore())
+    	    	    continue;
+    	    	else
+    	    	    return false;
+    	    }
+   	    else if (hasOutputEffect(child))
+    	        return false;
+    	    else if (child instanceof XslAttribute) {
+    	    	if (ignoreXslAttribute)
+    	    	    continue;
+    	    	else
+    	    	    return true;
+    	    } 	         
+    	    else if (child instanceof CallTemplate
+    	        || child instanceof ApplyTemplates)
+    	        return true;
+    	    else if ((child instanceof If
+    	               || child instanceof ForEach)
+    	             && hasXslAttributeChildren(child, false)) {
+     	    	return true;
+    	    }
+    	    else if (child instanceof Choose) {
+    	    	Vector chooseContents = child.getContents();
+    	    	int num = chooseContents.size();
+    	    	for (int k = 0; k < num; k++) {
+    	    	    SyntaxTreeNode chooseChild = (SyntaxTreeNode)chooseContents.elementAt(k);
+    	    	    if (chooseChild instanceof When || chooseChild instanceof Otherwise) {
+    	    	    	if (hasXslAttributeChildren(chooseChild, false))
+    	    	    	    return true;
+    	    	    }
+    	    	}
+    	    }
+    	}
+    	return false;
+    }
+    
+    /**
+     * Return true if this node can output something to the result tree.
+     */
+    private boolean hasOutputEffect(SyntaxTreeNode node) {
+        return (node instanceof LiteralElement)
+            || (node instanceof ValueOf)
+            || (node instanceof Copy)
+            || (node instanceof CopyOf)
+            || (node instanceof XslElement)
+            || (node instanceof Comment)
+            || (node instanceof Number)
+            || (node instanceof ProcessingInstruction);
+    }
+
+}  

@@ -79,6 +79,9 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
 
+import org.apache.xml.serializer.ElemDesc;
+import org.apache.xml.serializer.SerializationHandler;
+
 final class XslAttribute extends Instruction {
 
     private String _prefix;
@@ -256,9 +259,31 @@ final class XslAttribute extends Instruction {
 							 "()" + STRING_SIG)));
 	}
 
-	// call "attribute"
-	il.append(methodGen.attribute());
+	SyntaxTreeNode parent = getParent();
+	if (parent instanceof LiteralElement
+	    && ((LiteralElement)parent).allAttributesUnique()) {
+            int flags = 0;
+	    ElemDesc elemDesc = ((LiteralElement)parent).getElemDesc();
+	    
+	    // Set the HTML flags
+	    if (elemDesc != null && _name instanceof SimpleAttributeValue) {
+	    	String attrName = ((SimpleAttributeValue)_name).toString();
+	    	if (elemDesc.isAttrFlagSet(attrName, ElemDesc.ATTREMPTY)) {
+	    	    flags = flags | SerializationHandler.HTML_ATTREMPTY;
+	    	}
+	    	else if (elemDesc.isAttrFlagSet(attrName, ElemDesc.ATTRURL)) {
+	    	    flags = flags | SerializationHandler.HTML_ATTRURL;
+	    	}
+	    }
+	    il.append(new PUSH(cpg, flags));
+	    il.append(methodGen.uniqueAttribute());    
+	}
+	else {
+	    // call "attribute"
+	    il.append(methodGen.attribute());
+	}
 	// Restore old handler base from stack
 	il.append(methodGen.storeHandler());
     }
+
 }

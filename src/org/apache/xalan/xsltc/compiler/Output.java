@@ -132,6 +132,10 @@ final class Output extends TopLevelElement {
 	return _cdata;
     }
 
+    public String getOutputMethod() {
+    	return _method;
+    }
+    
     public void mergeCdata(String cdata) {
 	_cdataToMerge = cdata;
     }

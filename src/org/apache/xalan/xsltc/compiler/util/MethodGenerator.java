@@ -106,6 +106,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _startDocument;
     private final Instruction _endDocument;
     private final Instruction _attribute;
+    private final Instruction _uniqueAttribute;
     private final Instruction _namespace;
 
     private final Instruction _setStartNode;
@@ -150,6 +151,15 @@ public class MethodGenerator extends MethodGen
 				      + STRING_SIG
 				      + ")V");
 	_attribute = new INVOKEINTERFACE(attribute, 3);
+
+	final int uniqueAttribute =
+	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+				      "addUniqueAttribute", 
+				      "("
+				      + STRING_SIG
+				      + STRING_SIG
+				      + "I)V");
+	_uniqueAttribute = new INVOKEINTERFACE(uniqueAttribute, 4);
 
 	final int namespace =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
@@ -276,6 +286,10 @@ public class MethodGenerator extends MethodGen
 
     public final Instruction attribute() {
 	return _attribute;
+    }
+
+    public final Instruction uniqueAttribute() {
+    	return _uniqueAttribute;
     }
 
     public final Instruction namespace() {
