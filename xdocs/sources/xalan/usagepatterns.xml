@@ -141,9 +141,19 @@ transformer.transform
 <p>You can change these settings as follows:</p>
 <ol>
   <li>Declare the xalan namespace in your stylesheet element (xmlns:xalan="http://xml.apache.org/xslt").<br/><br/></li>
-  <li>Use the namespace prefix you assign (we use "xalan" here in the text) to redefine properties of interest in the stylesheet xsl:output
+  <li>Use the namespace prefix you assign (for example, "xalan") to redefine properties of interest in the stylesheet xsl:output
       element (for example, xalan:indent-amount="5").</li>
 </ol>
+<p>The following stylesheet fragment declares the xalan namespace and sets indent-amount to 2:</p>
+<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;xsl:stylesheet version="1.0" 
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xalan="http://xml.apache.org/xslt"&gt;
+                
+  &lt;xsl:output method="xml" 
+              encoding="UTF-8"
+              indent="yes" 
+              xalan:indent-amount="2"/&gt;</source>
   <p>If you want to change the property settings globally, edit the values in the property files in src/org/apache/xalan/templates, 
   and use Ant to <link idref="readme" anchor="jar">rebuild xalan.jar</link>.</p>
 <p>The properties files define the following properties:</p>

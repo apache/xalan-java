@@ -1,0 +1,13 @@
+<s2 title="XSLTC Usage Constraints">
+<p>XSLTC does not yet support the following features of the <resource-ref idref="xsl"/>:</p>
+<ul>
+  <li>The namespace axis.<br/><br/></li>
+  <li>Complete support for extension elements and functions. Currently you can set up an extension function
+  to call a static Java function. For the extension namespace, use<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;http://www.sun.com/xsltc/java/&lt;class&gt;<br/>
+  [can we change this to xml.apache.org/xalan/xsltc/java/&lt;class&gt;]<br/>
+  where &lt;class&gt; identifies the class with the static method.<br/><br/></li>
+  <li><br/><br/></li>
+  <li><br/><br/></li>  
+</ul>
+</s2>

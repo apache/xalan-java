@@ -64,7 +64,7 @@
   <separator/>
   <document id="index" label="Xalan-J 2.0.1" source="xalan/index.xml"/>
   <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
-  <external href="xsltc/index.html" label="XSLTC Translets"/>
+  <document id="xsltc_usage" label="XSLTC Translets" source="xalan/xsltc_usage.xml"/>
   <separator/>
   <document id="overview" label="Overview" source="xalan/overview.xml"/>
   <document id="getstarted" label="Getting Started" source="xalan/getstarted.xml"/>
@@ -85,9 +85,11 @@
   <document id="readme" label="Release Notes" source="xalan/readme.xml"/>
   <separator/>
   <external href="design/design2_0_0.html" label="Xalan 2 Design"/>
+  <external href="xsltc/index.html" label="XSLTC Design"/>  
   <separator/>
   <external href="readme.html#bugs" label="Bugs"/>  
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
   <separator/>
-  <external href="todo.html#developer-list" label="Credits"/>  
+  <external href="todo.html#developer-list" label="Credits"/>
+  <external href="xsltc/todo.html#developer-list" label="XSLTC Credits"/>      
 </book>

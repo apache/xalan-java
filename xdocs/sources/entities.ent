@@ -2,13 +2,36 @@
 
 <!ENTITY xslt4j "Xalan-Java">
 <!ENTITY xslt4j2 "Xalan-Java 2">
-<!ENTITY xslt4j-dist "xalan-j_2_0_1">
-<!ENTITY xslt4j-current "&xslt4j; version 2.0.1">
+<!ENTITY xslt4j-dist "xalan-j_2_0_2">
+<!ENTITY xslt4j-current "&xslt4j; version 2.0.2">
 <!ENTITY xml4j "Xerces-Java">
-<!ENTITY xml4j-used "&xml4j; version 1.3.0">
+<!ENTITY xml4j-used "&xml4j; version 1.3.1?">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
 <!ENTITY download "The &xslt4j-current; download from xml.apache.org includes xerces.jar from &xml4j-used;.">
 <!ENTITY traxsamplenote "To run the trax sample, you must be using an XML parser (such as Xerces 1.3.0 or Crimson 1.1) 
                          that fully implements the JAXP 1.1 javax.xml.parsers interface.">
 
+<!ENTITY xsltcwhatsnewhead '<ul>
+                      <li><link anchor="design">New design</link></li>
+                      <li><link anchor="xsltc">XSLTC</link></li>
+                    </ul><anchor name="design"/>'>
+                         
+<!ENTITY xsltcwhatsnew '<anchor name="xsltc"/><s2 title="XSLTC">
+                <p>In April 2001, Sun donated XSLTC to the Xalan project. XSLTC compiles stylesheets into translets and
+                provides a runtime environment for using translets to transform XML documents. Initially, XSLTC is
+                available in a separate JAR. Over time, we plan to integrate the two codebases. For more information,
+                see <link idref="xsltc_usage">Using XSLTC</link>.</p>
+                </s2>'>
+                
+<!ENTITY xsltcreadme 
+                '<p>The Sun XSLTC team (david.hofert@east.sun.com, tom.amiro@east.sun.com, todd.miller@east.sun.com, 
+                 morten.jorgensen@Ireland.sun.com) has checked <link idref="xsltc_usage">XSLTC</link> into the Xalan
+                 source tree, and we have begun the process of merging XSLTC into Xalan. XSLTC provides a compiler for compiling
+                 stylesheets into translets, and a streamlined runtime environment for using translets to transform XML input. 
+                 In the near term, XSLTC will appear in a separate JAR file (xsltc.jar) with its own API and command-line
+                 utilities. Over time, we plan to merge the two codebases so that you can use the same JAXP interfaces to perform
+                 transformations with the Xalan transformer and with translets. 
+                 <ref>Requirements and design documents to be written.</ref></p>'>
+                
+                

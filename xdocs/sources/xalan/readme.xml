@@ -77,8 +77,10 @@
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.0.1">
-     <p>This release includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. We have also</p>
+     <s3 title="Changes since &xslt4j; 2.0.1">&xsltcreadme;
+     <p>This release also includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. 
+     We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
+     client transformation requests involving the same stylesheet.</p>
      <ul>
      <li></li>
      <li><br/><br/></li> 

@@ -1,0 +1,245 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
+<!ENTITY xsltc_constraints SYSTEM "xsltc_constraints.xml">]>
+
+<s1 title="Using XSLTC">
+
+<ul>
+<li><link anchor="intro">Introduction</link></li>
+  <li><link anchor="classpath">Setting the system classpath for XSLTC</link></li>
+  <li><link anchor="compile">Compiling translets from the command line</link></li>
+  <li><link anchor="run">Running translets from the command line</link></li>
+  <li><link anchor="api">Using the XSLTC API</link></li>
+  <li><link anchor="constraints">XSLTC usage constraints</link></li>  
+</ul>
+<p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
+<anchor name="intro"/>
+<s2 title="Introduction">
+<p>XSLT provides a compiler and a runtime processor. Use the compiler to compile an XSL stylesheet into a translet, a set of Java classes. Use the runtime processor to apply the translet to an XML document and perform a transformation.</p>
+<note>To compile translets, you must be running the JDK or JRE 1.2 or higher. You can run translets with the JDK or JRE 1.1.8 or higher.</note>
+</s2><anchor name="classpath"/>
+<s2 title="Setting the system classpath for XSLTC">
+<p>To compile translets, urn translets, and use the XSLTC API, put the following on the system classpath:</p>
+<table>
+<tr>
+  <th>Classes or JAR</th>
+  <th>To compile a translet</th>
+  <th>To run a translet</th>
+  <th>To use the XSLTC API</th>
+</tr>
+<tr>
+  <td>the translet</td>
+  <td></td>
+  <td>required</td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>xsltc.jar</td>
+  <td>required</td>
+  <td>required</td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>xml.jar</td>
+  <td>required</td>
+  <td>required</td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>runtime.jar</td>
+  <td>required</td>
+  <td></td>
+  <td>required</td>  
+</tr>
+<tr>
+  <td>BCEL.jar</td>
+  <td>required</td>
+  <td></td>
+  <td>required</td>  
+</tr>
+</table>
+<p>The JAR files listed above are in the &xslt4j; bin directory. The translet is the set of class files or the JAR file that you generate with the compiler; see <link anchor="compile">Compiling translets</link>.</p>
+<p>If you are using JDK or JRE 1.1.8, also include classes.zip on the classpath. If you are using JDK or JRE 1.2, include tools.jar on the classpath.</p>
+<note>For the time being, the Xalan processor and XSLT do not yet use the same DOM, SAX, and parser infastructures. Accordingly, you may find it necessary to reset the system classpath each time you switch between the Xalan processor and XSLTC. For information on setting the classpath for the Xalan processor, see <link idref="getstarted" anchor="classpath">Setting the system classpath for Xalan</link>.</note>
+</s2>
+<anchor name="compile"/>
+<s2 title="Compiling translets from the command line">
+    <ul>
+      <li><link anchor="comp-synopsis">Synopis</link></li>
+      <li><link anchor="comp-args">Flags and arguments</link></li>
+      <li><link anchor="comp-examples">Examples</link></li>
+    </ul>
+	<p>The XSLT Compiler is a Java-based tool for compiling XSLT
+	stylesheets into lightweight and portable Java byte codes 
+	called translets.</p>  
+
+	<p>The XSLT Compiler can be run on any platform including UNIX,
+	Windows, NT, or Mac that supports Java 1.2.x or later. The generated
+	translets can be run on any platform that supports a Java
+	Runtime Environment, including a Palm Pilot with J2ME CLDC 
+	(Java 2 Micro Edition, Connected Limited Device Configuration).</p>
+    
+    <p>To run the compiler from the command line or a script, <link anchor="classpath">set the classpath</link> and 
+    run the XSLTC class with the appropriate flags and arguments (described below).</p>
+    <anchor name="comp-synopsis"/>
+<s3 title="Synopsis">
+<p>
+<code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;[-o &lt;output&gt;] [-d &lt;directory&gt;] [-j &lt;jarfile&gt;]</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;[-p &lt;package name&gt;] [-u] &lt;stylesheet&gt;...</code></p> 
+
+</s3><anchor name="comp-args"/>
+<s3 title="Flags and arguments">
+	<p>The following flags and arguments are supported:</p>
+
+<source>-o &lt;output&gt;
+   Specifies the name of the generated translet class.
+   If you omit this argument, the translet class is
+   named &lt;stylesheet&gt;. Translets are written as 
+   .class files.
+
+-d &lt;directory&gt;
+   Specifies the destination directory. If you omit
+   this argument, the translet class files are placed
+   in the current working directory.
+
+-j &lt;jarfile&gt;
+   Outputs the generated translet class files into a 
+   jar file named &lt;jarfile&gt;.jar. When this option is 
+   used, only the jar file is output.
+
+-p &lt;package name&gt;
+   Specifies a package name for the generated translet
+   classes.		
+
+-u  &lt;stylesheet&gt;
+  Specifies the stylesheet with a URI such as 
+  'http://myserver/stylesheet1.xsl'.
+
+   &lt;stylesheet&gt;
+   (No flag) The pathname of the stylesheet file.</source>
+
+</s3><anchor name="comp-examples"/>
+<s3 title="Examples">
+	<p>The following examples assume that you have already set the classpath to include the translet and the required JAR
+    files (see <link anchor="classpath">setting the system classpath</link>).</p>
+
+	<p><em>Example 1:</em>  Creating a translet from the hamlet.xsl stylesheet.</p>
+	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet.xsl</code></p>    
+    <p>Example 1 produces a set of class files such as hamlet.class, hamlet$0.class, hamlet$1.class.</p>	
+
+	<p><em>Example 2:</em>  Outputting to a JAR file.</p>
+    <p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp; -j hamlet.jar hamlet.xsl</code></p>
+    <p>Example 2 produces hamlet.jar, which contains the translet class files.</p>	
+
+	<p><em>Example 3:</em> Specifying the translet class name. </p> 
+	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp; -o newhamlet hamlet.xsl</code></p>
+    <p>Example 3 producs a set of class files such as newhamlet.class, newhamlet$0.class, etc., rather than hamlet.class,
+    hamles$0.class, etc.</p>
+
+
+	<p><em>Example 4:</em> Compiling multiple stylesheets.</p>
+	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet1.xsl hamlet2.xsl hamlet3.xsl</code></p>
+    <p>Example 4 produces three translets and set of class files derived from the three stylesheets.</p>
+
+	<p><em>Example 5:</em> Package Specification.</p>
+	<p><code>java org.apache.xalan.xsltc.compiler.XSLTC</code><br/>
+    <code>&nbsp;&nbsp;&nbsp;&nbsp; -p com.mycompany.translets hamlet.xsl</code></p>
+    <p>Example 5 produces a set of class files such as com/mycompany/translets/hamlet.class,
+	com/mycompany/translets/hamlet$0.class', etc.</p>
+</s3>
+</s2><anchor name="run"/>
+<s2 title="Running translets from the command line">
+    <ul>
+      <li><link anchor="run-synopsis">Synopis</link></li>
+      <li><link anchor="run-args">Flags and arguments</link></li>
+      <li><link anchor="run-examples">Examples</link></li>
+    </ul>
+
+    <p>The Sun XSLT runtime processor is a Java-based tool for 
+	transforming XML document files using a translet (compiled 
+	stylesheet). </p>
+
+	<p>The XSLT processor can be run on any platform including UNIX,
+	Windows, NT, Mac that supports Java, including a Palm Pilot
+	with J2ME CLDC (Java 2 Micro Edition, Connected Limited Device
+	Configuration).</p>
+    
+    <p>To run  translet from the command line or a script, <link anchor="classpath">set the classpath</link> (be sure to include
+     the translet) and run the translset with the appropriate flags and arguments (described below).</p>
+<anchor name="run-synopsis"/>
+<s3 title="Synopsis">
+<p><code>java &lt;translet&gt;</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp; {-u &lt;document_url&gt; | &lt;document&gt;} &lt;class&gt;</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp; [&lt;name1&gt;=&lt;value1&gt; ...]</code></p>
+
+</s3><anchor name="run-args"/>
+<s3 title="Flags and arguments">
+
+	<p>The following flags and arguments are supported:</p>
+
+<source>-u
+   Specifies the XML input &lt;document&gt; with a URI,
+   such as 'http://myserver/hamlet.xml'.		
+
+Arguments wirhout flags:
+
+   &lt;document&gt;     		
+   Filename of the XML input document. 
+   
+   &lt;document_url&gt;     	
+   URI of the XML input document (see the -u flag above). 
+
+   &lt;class&gt;
+   The translet that performs the transformation. The translet
+   may take a set of stylesheet parameters specified as
+   name-value pairs. The format for a name-value pair is
+   &lt;name&gt;=&lt;value&gt;.</source>
+</s3><anchor name="run-examples"/>
+<s3 title="Examples">
+
+	<p>The following examples assume that you have already set the classpath to include the translet and the required JAR
+    files (see <link anchor="classpath">setting the system classpath</link>).</p>
+    <p>A possible variation: You have set the classpath to include the required JAR files, but when you run the translet,
+    you use the java -cp flag to add the current working directory (containing the translet class files you have just generated)
+    to the classpath.</p>
+    <p><ref>Windows:</ref><code> java -cp .;%CLASSPATH% ...</code><br/>
+       <ref>UNIX:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</ref><code> java -cp .:$CLASSPATH ...</code></p>
+    
+    <p><em>Example 1:</em> Processing an XML document.</p>
+
+	<p><code>java org.apache.xalan.xsltc.runtime.DefaultRun</code><br/>
+       <code>&nbsp;&nbsp;&nbsp;&nbsp;  hamlet.xml hamlet</code></p> 
+
+	<p>Example 1 uses the specified translet (hamlet) to transform the specified XML input document (hamlet.xml). 
+    The XML input document is in the current working directory. The translet was created by using
+    org.apache.xalan.xslt.compiler.XSLTC to compile an XSL stylesheet (hamlet.xsl). </p>
+
+	<p><em>Example 2:</em> Passing stylesheet parameters to the translet.</p>
+
+	<p><code>java org.apache.xalan.xsltc.runtime.DefaultRun</code><br/>
+       <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet.xml hamlet</code><br/>
+       <code>&nbsp;&nbsp;&nbsp;&nbsp; speaker=HAMLET 'scene=SCENE IV'</code></p>
+
+	<p>Example 2 passes "HAMLET" to the stylesheet for the stylesheet parameter named speaker, and "SCENE IV" for the
+    stylesheet parameter named scene. The second name-value pair was placed in single quotes to 
+    specify a value containing a space.</p>
+    
+    <p><em>Example 3:</em> Processing an XML input document specified with a URI.</p>
+
+	<p><code>java org.apache.xalan.xsltc.runtime.DefaultRun</code><br/>
+       <code>&nbsp;&nbsp;&nbsp;&nbsp;  -u http://zarya.east/test.xml hamlet</code></p>
+
+	<p>Example 3 applies the translet (hamlet) to the XML input document (http://zarya.east/test.xml hamlet). Inclusion of
+    the flag (-u) is optional.</p>
+</s3>
+</s2><anchor name="api"/>
+<s2 title="Using the translet API">
+<p></p>
+</s2><anchor name="constraints"/>
+&xsltc_constraints;
+</s1>
