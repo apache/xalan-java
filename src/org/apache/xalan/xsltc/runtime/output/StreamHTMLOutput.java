@@ -272,6 +272,15 @@ public class StreamHTMLOutput extends StreamOutput {
 	if (_startTagOpen) {
 	    closeStartTag();
 	}
+
+	// Handle document type declaration 
+	if (_firstElement) {
+	    if (_doctypeSystem != null || _doctypePublic != null) {
+		appendDTD("html");
+	    }
+	    _firstElement = false;
+	}
+
 	// A PI in HTML ends with ">" instead of "?>"
 	_buffer.append("<?").append(target).append(' ')
 	    .append(data).append('>');

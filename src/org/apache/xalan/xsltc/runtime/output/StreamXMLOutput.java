@@ -122,7 +122,7 @@ public class StreamXMLOutput extends StreamOutput {
     }
 
     public void startElement(String elementName) throws TransletException { 
-// System.out.println("startElement = " + elementName);
+// System.out.println("startElement = " + elementName + " _indent = " + _indent);
 	if (_startTagOpen) {
 	    closeStartTag();
 	}

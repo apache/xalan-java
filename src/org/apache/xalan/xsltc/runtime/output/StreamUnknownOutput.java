@@ -80,7 +80,7 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 public class StreamUnknownOutput extends StreamOutput {
 
     private StreamOutput _handler;
-    private boolean      _startDocumentCalled = false;
+    private boolean      _callStartDocument = false;
 
     public StreamUnknownOutput(Writer writer, String encoding) {
 	super(writer, encoding);
@@ -95,10 +95,13 @@ public class StreamUnknownOutput extends StreamOutput {
     }
 
     public void startDocument() throws TransletException { 
-	_startDocumentCalled = true;
+	_callStartDocument = true;
     }
 
     public void endDocument() throws TransletException { 
+	if (_callStartDocument) {
+	    _handler.startDocument();
+	}
 	_handler.endDocument();
     }
 
@@ -108,8 +111,9 @@ public class StreamUnknownOutput extends StreamOutput {
 	    if (elementName.equalsIgnoreCase("html")) {
 		_handler = new StreamHTMLOutput(_handler);
 	    }
-	    if (_startDocumentCalled) {
+	    if (_callStartDocument) {
 		_handler.startDocument();
+		_callStartDocument = false;
 	    }
 	    _firstElement = false;
 	}

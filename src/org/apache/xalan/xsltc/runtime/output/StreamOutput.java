@@ -167,6 +167,7 @@ abstract class StreamOutput extends OutputBase {
     }
 
     public void setIndent(boolean indent) { 
+// System.out.println("StreamOutput.setIndent() indent = " + indent);
 	_indent = indent;
     }
 
