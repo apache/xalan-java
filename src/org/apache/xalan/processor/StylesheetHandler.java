@@ -494,10 +494,6 @@ public class StylesheetHandler extends DefaultHandler
       {
         if (0 == m_stylesheetLevel)
           getStylesheetRoot().recompose();
-
-        // Resolve the result prefix tables in the elements.
-        if (null != getLastPoppedStylesheet())
-          getLastPoppedStylesheet().resolvePrefixTables();
       }
       else
         throw new TransformerException("Did not find the stylesheet root!");

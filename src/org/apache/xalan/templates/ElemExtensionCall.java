@@ -140,9 +140,10 @@ public class ElemExtensionCall extends ElemLiteralResult
    * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose()
+  public void compose() throws TransformerException
   {
 
+    super.compose();
     m_extns = this.getNamespace();
 
     StylesheetRoot stylesheet = this.getStylesheetRoot();

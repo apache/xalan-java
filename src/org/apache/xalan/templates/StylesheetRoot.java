@@ -297,7 +297,7 @@ public class StylesheetRoot extends StylesheetComposed
    * the composed method called on it, and will have it's children's composed 
    * methods called.
    */
-  static void composeTemplates(ElemTemplateElement templ)
+  static void composeTemplates(ElemTemplateElement templ) throws TransformerException
   {
 
     templ.compose();

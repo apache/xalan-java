@@ -230,7 +230,10 @@ public class ElemTemplateElement extends UnImplNode
    * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose(){}
+  public void compose() throws TransformerException
+  {
+    resolvePrefixTables();
+  }
 
   /**
    * Validate that the string is an NCName.
@@ -923,13 +926,6 @@ public class ElemTemplateElement extends UnImplNode
 
       // Must be stylesheet element without any result prefixes!
       m_prefixTable = new Vector();
-    }
-
-    // Resolve the children's prefix tables.
-    for (ElemTemplateElement child = m_firstChild; child != null;
-            child = child.m_nextSibling)
-    {
-      child.resolvePrefixTables();
     }
   }
   

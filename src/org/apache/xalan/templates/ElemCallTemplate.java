@@ -149,7 +149,7 @@ public class ElemCallTemplate extends ElemForEach
    * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose()
+  public void compose() throws TransformerException
   {
     super.compose();
     if ((null != m_templateName) && (null == m_template))
