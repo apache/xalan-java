@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
  * @author Morten Jorgensen
  */
 public final class TransletException extends SAXException {
+    static final long serialVersionUID = -878916829521217293L;
 
     public TransletException() {
 	super("Translet error");

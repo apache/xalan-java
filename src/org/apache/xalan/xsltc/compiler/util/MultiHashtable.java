@@ -27,6 +27,7 @@ import java.util.Vector;
  * @author Santiago Pericas-Geertsen
  */
 public final class MultiHashtable extends Hashtable {
+    static final long serialVersionUID = -6151608290510033572L;
     public Object put(Object key, Object value) {
 	Vector vector = (Vector)get(key);
 	if (vector == null)

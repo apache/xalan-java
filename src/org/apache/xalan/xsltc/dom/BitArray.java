@@ -31,6 +31,7 @@ import org.apache.xml.dtm.DTMAxisIterator;
  * @author Morten Jorgensen
  */
 public class BitArray implements Externalizable {
+    static final long serialVersionUID = -4876019880708377663L;
 
     private int[] _bits;
     private int   _bitSize;

@@ -45,7 +45,7 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
  * @author Santiago Pericas-Geertsen 
  */
 public final class TemplatesImpl implements Templates, Serializable {
-
+    static final long serialVersionUID = 673094361519270707L;
     /**
      * Name of the superclass of all translets. This is needed to
      * determine which, among all classes comprising a translet, 
