@@ -84,6 +84,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Document;
 
 import org.xml.sax.*;
+import org.xml.sax.ext.*;
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
@@ -2506,8 +2507,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * This class will consume the input document through a SAX2
      * interface and populate the tree.
      */
-    public ContentHandler getBuilder() {
-	return new DOMBuilder();
+    public DOMBuilder getBuilder() {
+	return new DOMBuilderImpl();
     }
 
     /**
@@ -2531,7 +2532,7 @@ public final class DOMImpl implements DOM, Externalizable {
     /****************************************************************/
     /*               DOM builder class definition                   */
     /****************************************************************/
-    private final class DOMBuilder implements ContentHandler {
+    private final class DOMBuilderImpl implements DOMBuilder {
 
 	private final static int ATTR_ARRAY_SIZE = 32;
 	private final static int REUSABLE_TEXT_SIZE = 32;
@@ -2573,7 +2574,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	/**
 	 * Default constructor for the DOMBuiler class
 	 */
-	public DOMBuilder() {
+	public DOMBuilderImpl() {
 	    _xmlSpaceStack[0] = DOM.ROOTNODE;
 	}
 
@@ -3050,6 +3051,29 @@ public final class DOMImpl implements DOM, Externalizable {
 	    final Stack stack = (Stack)_nsPrefixes.get(prefix);
 	    if ((stack != null) && (!stack.empty())) stack.pop();
 	}
+
+	/**
+	 * SAX2: Report an XML comment anywhere in the document.
+	 */
+	public void comment(char[] ch, int start, int length) {
+	    if (_currentOffset + length > _text.length) {
+		resizeTextArray(_text.length * 2);
+	    }
+	    System.arraycopy(ch, start, _text, _currentOffset, length);
+	    _currentOffset += length;
+	    final int node = makeTextNode(false);
+	    _type[node] = COMMENT;
+	}
+
+	/**
+	 * SAX2: Ignored events
+	 */
+	public void startCDATA() {}
+	public void endCDATA() {}
+	public void startDTD(String name, String publicId, String systemId) {}
+	public void endDTD() {}
+	public void startEntity(String name) {}
+	public void endEntity(String name) {}
 
 	/**
 	 * Similar to the SAX2 method character(char[], int, int), but this
