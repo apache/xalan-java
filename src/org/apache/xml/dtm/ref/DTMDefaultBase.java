@@ -517,7 +517,7 @@ public abstract class DTMDefaultBase implements DTM
     {
       int i=0;
       while(NULL != (identity=_parent(identity)))
-	++i;
+        ++i;
       return i;
     }
     else
@@ -1165,7 +1165,7 @@ public abstract class DTMDefaultBase implements DTM
             if(nsContext==null || nsContext.size()<1)
               return NULL;
 
-            return nsContext.elementAt(0);
+            return nsContext.elementAt(0) | m_dtmIdent;
           }
         else
           {
@@ -1218,7 +1218,7 @@ public abstract class DTMDefaultBase implements DTM
             if(i<=0 || i==nsContext.size())
               return NULL;
 
-            return nsContext.elementAt(i);
+            return nsContext.elementAt(i) | m_dtmIdent;
           }
         else
           {
