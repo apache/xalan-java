@@ -116,7 +116,8 @@ public abstract class TransformerFactory
           throws TFactoryConfigurationError
   {
 
-    String classname = findFactory(defaultPropName, null);
+    String classname = findFactory(defaultPropName,
+				   "org.apache.xalan.processor.TransformerFactoryImpl");
 
     if (classname == null)
     {
