@@ -409,9 +409,9 @@ public class SourceTreeManager
       catch (org.xml.sax.SAXNotRecognizedException snre){}
 
       InputSource isource = SAXSource.sourceToInputSource(source);
-System.out.println("parse: "+isource.getSystemId());
+
       reader.parse(isource);
-System.out.println("done with parse: "+isource.getSystemId());
+
       if (handler instanceof org.apache.xalan.stree.SourceTreeHandler)
       {
         doc = ((org.apache.xalan.stree.SourceTreeHandler) handler).getRoot();
