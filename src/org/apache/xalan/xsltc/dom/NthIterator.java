@@ -94,9 +94,8 @@ public final class NthIterator extends NodeIteratorBase {
 	
     public NodeIterator setStartNode(final int node) {
 	_source.setStartNode(node);
-	/*
 	// Make sure we count backwards if the iterator is reverse
-	if (_source.isReverse()) {
+	if ((_source instanceof FilterIterator) && (_source.isReverse())) {
 	    int last = _source.getLast();
 	    _position = (last - _n) + 1;
 	    if (_position < 1) _position = 1;
@@ -104,8 +103,6 @@ public final class NthIterator extends NodeIteratorBase {
 	else {
 	    _position = _n;
 	}
-	*/
-	_position = _n;
 	_ready = true;
 	return this;
     }
