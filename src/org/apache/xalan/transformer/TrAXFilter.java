@@ -197,22 +197,9 @@ public class TrAXFilter extends XMLFilterImpl
 //    if(ch instanceof SourceTreeHandler)
 //      ((SourceTreeHandler)ch).setUseMultiThreading(true);
     p.setContentHandler(ch);
-
-    if(ch instanceof EntityResolver)
-      p.setEntityResolver((EntityResolver)ch);
-    else
-      p.setEntityResolver(this);
-    
-    if(ch instanceof DTDHandler)
-      p.setDTDHandler((DTDHandler)ch);
-    else
-      p.setDTDHandler(this);
-    
-    ErrorListener elistener = m_transformer.getErrorListener();
-    if((null != elistener) && (elistener instanceof org.xml.sax.ErrorHandler))
-      p.setErrorHandler((org.xml.sax.ErrorHandler)elistener);
-    else
-      p.setErrorHandler(this);
+    p.setEntityResolver(this);
+    p.setDTDHandler(this);
+    p.setErrorHandler(this);
   }
 
   /**
