@@ -133,19 +133,21 @@ Copyright:
            debug="${debug}"/>
   </target>
 
-  <target name="compile" depends="prepare,compile.serialize,compile.trax">
-    <echo message="compile target includes=${src.dir}/${xpath.reldir}/**,${src.dir}/${xalan.reldir}/**" />
-    <javac srcdir="${src.dir}" 
-           destdir="${build.classes}" 
-           includes="${xpath.reldir}/**,${xalan.reldir}/**" 
-           excludesfile="compat.excludes" 
-           debug="${debug}" />
-  </target>
-  
-  <target name="compile.other" depends="compile,compile.sax,compile.w3c,compile.jaxp">
-    <echo message="compiling SAX 2, DOM 2, and Java API for XML Parsing"/>
-  </target>  
+  <!-- =================================================================== -->
+  <!-- Compile entire source tree - except Xalan-J 1 compatability classes -->
+  <!-- =================================================================== -->
    
+  <target name="compile" depends="prepare">
+    <echo message="compile entire source tree (except Xalan-J 1 compatability classes)"/>
+    <echo message="  and copy .properties and .res files to build tree." />
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="**/*.java"
+           excludesfile="compat.excludes"           
+           debug="${debug}"/>
+    <copydir src="${src.dir}" dest="${build.classes}" includes="**/*.properties,**/*.res"/>
+  </target>
+    
   <!-- =================================================================== -->
   <!-- Compiles other source trees                                         -->
   <!-- =================================================================== -->
@@ -231,6 +233,7 @@ Copyright:
   <!-- must be on the classpath                                             -->
   <!-- =================================================================== -->
  <target name="servlet" depends="jar">
+     <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.dir}/servlet"/>
      <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
            destdir="${build.samples}"
@@ -270,7 +273,7 @@ Copyright:
     <copyfile src="./xdocs/sources/xalan/trax.gif" dest="${build.apidocs}/trax/trax.gif"/>
       
     <javadoc
-         private="true"
+         public="true"
          doclet="xalanjdoc.Standard"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
@@ -354,7 +357,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the documentation tree for the org.apache.xml website       -->
   <!-- =================================================================== -->
-  <!--target name="site">
+  <target name="site">
  
     <mkdir dir="${site.dir}"/>
     <mkdir dir="${site.dir}/apidocs"/>
@@ -362,8 +365,8 @@ Copyright:
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar" 
          args="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
        
-    <copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/>
+    <!--copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/-->
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
-  </target-->
+  </target>
  
 </project>
