@@ -71,14 +71,14 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.2.D2</link></li>
+    <li><link anchor="done">Changes since version 2.2.D9</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D8">
+     <s3 title="Changes since &xslt4j; 2.2.D9">
      <p>&xslt4j-current; is a Developer release. For enhanced performance, it incorporates the 
      <link idref="dtm">DTM</link>.</p>
      <note>The SQL Extension library has been updated to work with DTM.</note>

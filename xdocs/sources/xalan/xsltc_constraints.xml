@@ -10,7 +10,386 @@
     <li><link anchor="xsltchistory">History of XSLTC software changes</link></li>
 </ul>
 <anchor name="xsltcnew"/>
-<s3 title="Changes since &xslt4j; 2.2.D8">
+<s3 title="Changes since &xslt4j; 2.2.D9">
+<p>XSLTC source code updates:</p>
+<ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Parser.java<br/><ref>Committer's log entry: </ref>I added a flag to the compiler/Parser class that is set if the outermost 
+element
+ in the stylesheet contains a definition of the XSL namespace. The parser 
+already
+ has a global variable '_target' that is set if the stylesheet contains a
+ &lt;?xml-stylesheet?&gt; PI or not. The compiler will now flag an error if neither
+ flags are set after the whole XSL/XML input document has been parsed.
+ PR: bugzilla 1780
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler UnionPathExpr.java<br/><ref>Committer's log entry: </ref>Added a small fix that orders the expressions inside a union in such a way 
+that
+ expressions with an attribute axis or attribute node type will be put first.
+ PR: bugzilla 2921
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Parser.java<br/><ref>Committer's log entry: </ref>A small fix that will allow top-level elements of an unknown URI.
+ XSLTC now ignored the element(s), while it previously reported an error
+ of an unsupported XSLT extension.
+ PR: bugzilla 2840
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultSAXOutputHandler.java
+ TextOutput.java<br/><ref>Committer's log entry: </ref>A start on a fix for output DOCTYPE declarations based on the attributes
+ of the &lt;xsl:output&gt; element. I also added a fix for bug 2863, to prevent
+ us from outputting namespace delcaration that point a prefix to the null
+ URI (such as 'xmlns:blob=""').
+ PR: bugzilla 2863
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup<br/><ref>Committer's log entry: </ref>bug 2553, fixes AbbreviatedAbsoluteLocationPath,
+ some relative location paths still give duplicates, will need to filter.<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/compiler Output.java
+ java/src/org/apache/xalan/xsltc/runtime DefaultRun.java
+ DefaultSAXOutputHandler.java TextOutput.java
+ java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/><ref>Committer's log entry: </ref>Implemented support for the doctype-system and doctype-public attributes
+ of the &lt;xsl:output/&gt; element. The translet post-processor (TextOutput) can
+ now be instanciated with a ContentHandler and an optional LexicalHandler.
+ The LexicalHandler will receive notofications of the DOCTYPE declaration.
+ The default SAX output handler now implements both ContentHandler and
+ LexicalHandler. The LexicalHandler only handles the startDTD() method,
+ by outputting the DOCTYPE declaration, and all other methods are empty.
+ The trax.Transformer implementation has also been updated to use the
+ LexicalHandler, but I still have not found any way in which a SAX client
+ can set the LexicalHandler.
+ PR: bugzilla 1504
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XslElement.java<br/><ref>Committer's log entry: </ref>A minor change to the class handling the &lt;xsl:element&gt; element to be more
+ in-sync with the XSLT 1.0 spec (and M.Kay's book). This in order to make
+ it more readable and maintainable. I was trying to debug the code for
+ something I thought was a bug, and it was just impossible to navigate.
+ This change was necessary, even though the code functioned as it should.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler LiteralElement.java
+ Parser.java<br/><ref>Committer's log entry: </ref>Fix for outputting all necessary namespace declarations with LREs.
+ PR: bugzilla 2863
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom ReverseIterator.java<br/><ref>Committer's log entry: </ref>A fix to allow reverse iterators to be reset (inside nested for-each loops).
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/15/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java<br/><ref>Committer's log entry: </ref>bug fix 2553, new iterator to get rid of dups<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/15/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/compiler
+ FilteredAbsoluteLocationPath.java<br/><ref>Committer's log entry: </ref>bug fix 2553, new abs location path<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup
+ Constants.java<br/><ref>Committer's log entry: </ref>bug fix 2553, updated Constants for dup processing
+ and updated CUP rule for AbbreviatedAbsoluteLocationPaths<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom AbsoluteIterator.java
+ DOMImpl.java DupFilterIterator.java
+ StepIterator.java UnionIterator.java<br/><ref>Committer's log entry: </ref>Implementation of id() and key() pattern - finally!
+ Added a small fix to the DOMImpl$DescendantIterator to prevent NPEs.
+ PR: bugzilla 1376
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler IdKeyPattern.java
+ KeyCall.java Mode.java Output.java Parser.java
+ TestSeq.java xpath.cup<br/><ref>Committer's log entry: </ref>Forgot an 'import' in DupFilterIterator
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultSAXOutputHandler.java
+ SAXAdapter.java TextOutput.java
+ TransletOutputBase.java<br/><ref>Committer's log entry: </ref>missing file<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime
+ DefaultSAXOutputHandler.java<br/><ref>Committer's log entry: </ref>Added another fix for the missing DOCTYPE declaration. XSLTC will now output
+ DOCTYPE declarations for HTML output if either doctype-system or doctype-
+ public is declared in the &lt;xsl:output&gt; element. XSL output will get a
+ DOCTYPE declaration only if doctype-system is declared.
+ PR: 1504
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom AbsoluteIterator.java<br/><ref>Committer's log entry: </ref>
+
+
+<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup<br/><ref>Committer's log entry: </ref>turning on filtering, bug 2553<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java<br/><ref>Committer's log entry: </ref>Removed a bad optimisation in the duplicate filter iterator.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler xpath.cup<br/><ref>Committer's log entry: </ref>re-activated the no dups filtering, dont know how
+ this got reverted back to no filtering, but it is fixed again.<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler IdKeyPattern.java
+ Key.java KeyCall.java Parser.java Sort.java
+ xpath.cup
+ java/src/org/apache/xalan/xsltc/compiler/util
+ CompareGenerator.java NodeSortRecordGenerator.java
+ java/src/org/apache/xalan/xsltc/dom DTDMonitor.java
+ DupFilterIterator.java KeyIndex.java
+ NodeSortRecord.java NodeSortRecordFactory.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java BasisLibrary.java<br/><ref>Committer's log entry: </ref>Major update for id() and key(). Patterns containing id() and key() are
+ now 100% supported (about time), and id() and key() expressions should
+ now work in all (at least most) combinations.
+ PR: bugzilla 1376 (!!!) and 2624
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java<br/><ref>Committer's log entry: </ref>A small fix for a cleanup I did in the basis library (it broke the
+ substring() function)&gt;
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>Added small fix to prevent NPE in output handler.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/compiler Variable.java
+ VariableRef.java VariableRefBase.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ MultiHashtable.java
+ java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java
+ TextOutput.java TransletOutputBase.java<br/><ref>Committer's log entry: </ref>Added element/attribute prefix information in the internal DOM.
+ This should fix some problems we have had with the copy and copy-of
+ elements. Added a few lines of code in an attempt to speed up the DOM builder.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DTDMonitor.java<br/><ref>Committer's log entry: </ref>An attempt to optimise the building of the ID index. The previous version of
+ this code would traverse the DOM once for each type of element that had a
+ defined ID attribute. The new version traverses the DOM once, and looks up
+ each element's type in a hashtable to determine its ID attribute type (if 
+any).
+ The new version of the code does not use string comparisons, like the old one.
+ This update was done to compensate for the possible performance degradation of
+ having implemented an element/attribute prefix array in the internal DOM.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TemplatesHandlerImpl.java TemplatesImpl.java
+ TransformerHandlerImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Protected some methods in our TrAX code that are not defined in the TrAX API.
+ These methods were never intended for public use and should have been defined
+ as "protected" to begin with.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XslElement.java<br/><ref>Committer's log entry: </ref>Fix for a problem with some combinations of &lt;xsl:element&gt; and namespace
+ aliasing. The output lacked the necessary namespace definitions when an
+ element created with &lt;xsl:element&gt; was given a qname with a prefix that
+ was mapped to some other prefix.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler ParameterRef.java<br/><ref>Committer's log entry: </ref>removed typeCheck(), uses the base classes method now<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler
+ VariableRefBase.java<br/><ref>Committer's log entry: </ref>added default typeCheck() to this base class<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>08/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler RelationalExpr.java<br/><ref>Committer's log entry: </ref>bug fix 2838, cast to type real if both operands are
+ ResultTreeType<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc DOM.java
+ java/src/org/apache/xalan/xsltc/compiler
+ AbsoluteLocationPath.java AbsolutePathPattern.java
+ AncestorPattern.java ApplyTemplates.java
+ BooleanExpr.java CallTemplate.java CastExpr.java
+ Constants.java Copy.java CopyOf.java
+ DocumentCall.java FilterExpr.java
+ FilteredAbsoluteLocationPath.java ForEach.java
+ FunctionCall.java Key.java KeyCall.java
+ LastCall.java LocalNameCall.java Mode.java
+ NameCall.java NamespaceUriCall.java Number.java
+ Param.java ParameterRef.java
+ ParentLocationPath.java ParentPattern.java
+ PositionCall.java Predicate.java
+ RelationalExpr.java Sort.java Step.java
+ StepPattern.java Stylesheet.java
+ SyntaxTreeNode.java Template.java TestSeq.java
+ Text.java TransletOutput.java ValueOf.java
+ Variable.java VariableRef.java Whitespace.java
+ XSLTC.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ ClassGenerator.java ErrorMsg.java
+ MethodGenerator.java NodeSetType.java NodeType.java
+ ResultTreeType.java
+ java/src/org/apache/xalan/xsltc/dom Axis.java
+ DOMAdapter.java DOMImpl.java LoadDocument.java
+ MultiDOM.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java BasisLibrary.java<br/><ref>Committer's log entry: </ref>Changes all calls from the compiled translet code to the DOM to be calls
+ to the DOM interface (and not to a specific DOM class). I did this to make
+ it possible to plugi in any DOM implementation.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/compiler Constants.java
+ TransletOutput.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultSAXOutputHandler.java
+ TextOutput.java TransletOutputBase.java<br/><ref>Committer's log entry: </ref>Added an &lt;xsltc:output&gt; extension to allow for multiple output files. I know
+ that this is not a prioritised task, but I need this for a little project I
+ am working on.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Param.java
+ ParameterRef.java Variable.java VariableBase.java
+ VariableRef.java
+ java/src/org/apache/xalan/xsltc/compiler/util
+ NodeSetType.java NodeType.java ReferenceType.java
+ ResultTreeType.java StringType.java Type.java<br/><ref>Committer's log entry: </ref>A few fixes for the regression caused by my last (huge) putback.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java<br/><ref>Committer's log entry: </ref>A fix for the position() function when using duplicate filter iterators.
+ PR: n/
+ Obtained from: N/A
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li></ul>
+</s3>
+<anchor name="xsltcconf"/>
+<s3 title="XSLT 1.0 Conformance and Extensions">
+<p>XSLTC does not yet support the following features of the <resource-ref idref="xsl"/>:</p>
+<ul>
+  <li>The namespace axis is not implemented. You cannot get a node set containing the namespace nodes
+    in scope from a context node in the document tree. Otherwise, namespace functionality is implemented.</li>
+</ul>
+<p>XSLTC does not support a number of features that are not required by the XSLT 1.0 specification,
+but which are supported by a number of other XSLT processors:</p>
+<ul>
+  <li>Incomplete support for extension elements and external Java functions. Currently you can set up an extension function
+    to call a static Java function. For the extension namespace, use<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xalan/xsltc/java/&lt;class&gt;<br/>
+    where &lt;class&gt; identifies the class with the static method.</li>
+  <li>Lack of support for the redirection of output to multiple
+    output files from within a stylesheet (equivalent to xalan:redirect or
+    saxon:output).</li>
+  <li>XSLTC does not implement a node-set extension to convert result tree fragments to
+    node-sets. This would enable sorting and grouping of nodes assigned to a tree </li>
+</ul>
+</s3>
+<anchor name="xsltcknownproblems"/>
+<s3 title="Known Problems">
+<ul>
+  <li>Casting variables: XSLTC requires you to explicitly type cast values 
+  returned by variables or expressions, when you use them in tests. Always a good
+  practice, but it may seem like overkill in some in contexts, where other XSLT processors
+  automatically assume or convert to the correct type. For example. unless you cast $country
+  to a string in the following apply-templates, entry nodes whose &lt;country&gt; elements
+  contain a string matching the global $country parameter are NOT selected.<br/><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;xsl:apply-templates select="entry[country=string($country)]"/&gt;</code></li>
+  <li>Order dependency of conditions within a predicate: If you have a predicate in a select or match
+  expression that has multiple conditions, one of which contains a union (X or Y), put it last. 
+  Otherwise, the predicate fails to match node that it should.</li>
+  <li>When using DOM caching, as shown in the Servlet demo, if the source document is local to the 
+  server, the cache is not refreshed when the source XML document is modified. This 
+  problem does not apply when the source is associated with a URL.</li>
+  <li>If you have a list of references included or imported stylesheets, put any with 
+  a relative path last; otherwise, stylesheets in the current directory are not found.</li>
+  <li>[1] should be treated equivalent to position()=1, but it is not. Therefore, if 
+  you get unexpected results using such shortcut positional predicates, substitute the 
+  full postion()= version.</li>
+  <li>XSLTC fails to match existing nodes when match expressions have 
+  multiple steps with predicates containing the position function.
+  The following examples are taken from the XSLTMark oddtemplates.xsl test:<br/><br/>
+  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[position()=2]'</code><br/>
+  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[6]/kid[2]'</code><br/>
+  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[position()=last()]'</code><br/></li>
+  <li>XSTLC has problems with output escaping, see bug 1403.</li>
+  <li>Case-order option with sorting is ignored.</li>
+  <li>As a minor side-effect of implementing simplified stylesheets, if you inadvertenly 
+  go to compile a stylesheet and give the name of the .xml doc instead of the .xsl doc,
+  it may compile without a warning. In some cases, the compiler aborts with an error 
+  about too many branches.</li>
+</ul>
+</s3>
+<anchor name="xsltcdemos"/>
+<s3 title="Running Demos">
+<p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
+Brazil (a new and powerful Web techology from Sun labs). To run these demos,
+download Brazil from sunlabs:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;<jump href="http://research.sun.com/research/download/index.html">http://research.sun.com/research/download/index.html</jump></code></p>
+<p>and the java extensions for servlets from Sun:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;
+<jump href="http://java.sun.com/products/servlet/download.html">
+http://java.sun.com/products/servlet/download.html</jump>
+</code></p>
+<p>The translet must be specified as a pure class name, accessible
+through the Brazil handler's classpath. For example:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;translet=mk054</code></p>
+<p>The document must be specified as a valid URL. For example:</p>
+<p><code>&nbsp;&nbsp;&nbsp;&nbsp;document=http://server/path/to/filename.xml</code></p>
+<p>If the file is local to the Brazil handler, it has to be
+specified using the "file:filename.xml" format.</p>
+<note>You also need to make the Brazil and javax classes available from your classpath</note>
+<p>See also: <link idref="samples" anchor="translets">sample JAXP translets</link>.</p>
+</s3>
+
+<anchor name="xsltctrax"/>
+<s3 title="Translets and TrAX">
+<p>
+The Translet API has been extended to conform with the JAXP1.1 TrAX model.
+This release contains the first implementation of that extension. Two
+new classes have been added to the Translet XSLT codebase, they are:</p>
+<p>(1) <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code> -<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a SAXTransformerFactory.</p>
+<p>(2) <code>org.apache.xalan.xsltc.runtime.TransletTemplates</code> -
+&nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a Templates object.</p>
+<p>
+The existing XSLT class 'org.apache.xalan.xsltc.runtime.AbstractTranslet'
+that implements the Translet interface is now also extending the 
+javax.xml.transform.Transformer abstract class.
+</p>
+<p>
+This implementation is only a partial implementation, with many limitations.
+These limitations include:
+</p>
+<ol>
+<li>Currently  'StreamSource' and 'StreamResult' are the only
+ TrAX Sources and Results that are supported.</li>
+<li>The translet is compiled everytime a call is made to the<br/>
+<code>TransformerFactoryImpl 'newTransformer()'</code> method.</li>
+<li>The translet is compiled everytime a call is made to the <br/>
+<code>TemplateFactoryImpl 'newTransformer()'</code> method.</li>
+<li>Translet are currently not cached. (See (2) and (3)).</li>
+<li>Several abstract methods from SAXTransformerFactory still need to
+be implemented in the xsltc.runtime.TransformerFactoryImpl class:<br/><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;TemplatesHandler newTemplatesHandler()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler(Source src)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler(Templates templates)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;XMLFilter newXMLFilter(Source src)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;XMLFilter newXMLFilter(Templates templates)</code></li>
+<li>Several abstract methods from Transformer still need to be implemented in the 
+AbstractTranslet class:<br/><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;ErrorListener getErrorListener()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setErrorListener(ErrorListener)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;Properties getOutputProperties()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;String getOutputProperty(String name)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setOutputProperties(Properties props)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setOutputProperty(String name, String value)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;URIResolver getURIResolver()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setURIResolver(URIResolver resolver)</code></li>
+<li>Abstract method from Templates still need to be implemented in the TransletTemplates class:<br/><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;Properties getOutputProperties()</code></li>
+<li>Several abstract methods from TransformerFactory still need to be implemented 
+in the <code>xsltc.runtime.TransformerFactoryImpl</code> class:<br/><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;ErrorListener getErrorListener()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setErrorListener(ErrorListener listener)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;Object getAttribute(String name)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setAttribute(String name, Object value)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;boolean getFeature(String name)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;URIResolver getURIResolver()</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;void setURIResolver(URIResolver resolver)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;Source getAssociatedStylesheet(Source src, String media, String title,</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String charset)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;Templates newTemplates(Source xslSrc)</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;Transformer newTransformer()</code></li>
+<li>Whenever possible, the required methods that are currently unimplemented will throw an 
+exception if someone tries to call them- this will alert the user that the method is not implemented. 
+The message is of the form:<br/><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&quot;&lt;Class Name&gt;:&lt;Method Name&gt;( &lt;args&gt; ) not implemented yet.&quot;</code>
+</li>
+</ol>
+</s3>
+<anchor name="xsltchistory"/>
+<s3 title="History of XSLTC software changes">
+<p>The following sections list XSLT changes back to the incorporation of XSLTC into &xslt4c;.</p>
+
+<s4 title="XSLTC source code updates for &xslt4j; 2.2.D9">
 <p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java<br/><ref>Committer's log entry: </ref>Integrated fix for problem with count() function for certain iterators.
  PR: Bugzilla 1407
  Obtained from: n/a
@@ -202,155 +581,7 @@
  Obtained from: n/a
  Submitted by: morten@apache.org
  Reviewed by: morten@apache.org<br/><br/></li></ul>
-</s3>
-<anchor name="xsltcconf"/>
-<s3 title="XSLT 1.0 Conformance and Extensions">
-<p>XSLTC does not yet support the following features of the <resource-ref idref="xsl"/>:</p>
-<ul>
-  <li>The namespace axis is not implemented. You cannot get a node set containing the namespace nodes
-    in scope from a context node in the document tree. Otherwise, namespace functionality is implemented.</li>
-</ul>
-<p>XSLTC does not support a number of features that are not required by the XSLT 1.0 specification,
-but which are supported by a number of other XSLT processors:</p>
-<ul>
-  <li>Incomplete support for extension elements and external Java functions. Currently you can set up an extension function
-    to call a static Java function. For the extension namespace, use<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xalan/xsltc/java/&lt;class&gt;<br/>
-    where &lt;class&gt; identifies the class with the static method.</li>
-  <li>Lack of support for the redirection of output to multiple
-    output files from within a stylesheet (equivalent to xalan:redirect or
-    saxon:output).</li>
-  <li>XSLTC does not implement a node-set extension to convert result tree fragments to
-    node-sets. This would enable sorting and grouping of nodes assigned to a tree </li>
-</ul>
-</s3>
-<anchor name="xsltcknownproblems"/>
-<s3 title="Known Problems">
-<ul>
-  <li>Casting variables: XSLTC requires you to explicitly type cast values 
-  returned by variables or expressions, when you use them in tests. Always a good
-  practice, but it may seem like overkill in some in contexts, where other XSLT processors
-  automatically assume or convert to the correct type. For example. unless you cast $country
-  to a string in the following apply-templates, entry nodes whose &lt;country&gt; elements
-  contain a string matching the global $country parameter are NOT selected.<br/><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;xsl:apply-templates select="entry[country=string($country)]"/&gt;</code></li>
-  <li>Order dependency of conditions within a predicate: If you have a predicate in a select or match
-  expression that has multiple conditions, one of which contains a union (X or Y), put it last. 
-  Otherwise, the predicate fails to match node that it should.</li>
-  <li>When using DOM caching, as shown in the Servlet demo, if the source document is local to the 
-  server, the cache is not refreshed when the source XML document is modified. This 
-  problem does not apply when the source is associated with a URL.</li>
-  <li>If you have a list of references included or imported stylesheets, put any with 
-  a relative path last; otherwise, stylesheets in the current directory are not found.</li>
-  <li>[1] should be treated equivalent to position()=1, but it is not. Therefore, if 
-  you get unexpected results using such shortcut positional predicates, substitute the 
-  full postion()= version.</li>
-  <li>XSLTC fails to match existing nodes when match expressions have 
-  multiple steps with predicates containing the position function.
-  The following examples are taken from the XSLTMark oddtemplates.xsl test:<br/><br/>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[position()=2]'</code><br/>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[6]/kid[2]'</code><br/>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[position()=last()]'</code><br/></li>
-  <li>XSTLC has problems with output escaping, see bug 1403.</li>
-  <li>Case-order option with sorting is ignored.</li>
-  <li>As a minor side-effect of implementing simplified stylesheets, if you inadvertenly 
-  go to compile a stylesheet and give the name of the .xml doc instead of the .xsl doc,
-  it may compile without a warning. In some cases, the compiler aborts with an error 
-  about too many branches.</li>
-</ul>
-</s3>
-<anchor name="xsltcdemos"/>
-<s3 title="Running Demos">
-<p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
-Brazil (a new and powerful Web techology from Sun labs). To run these demos,
-download Brazil from sunlabs:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;<jump href="http://research.sun.com/research/download/index.html">http://research.sun.com/research/download/index.html</jump></code></p>
-<p>and the java extensions for servlets from Sun:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;
-<jump href="http://java.sun.com/products/servlet/download.html">
-http://java.sun.com/products/servlet/download.html</jump>
-</code></p>
-<p>The translet must be specified as a pure class name, accessible
-through the Brazil handler's classpath. For example:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;translet=mk054</code></p>
-<p>The document must be specified as a valid URL. For example:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;document=http://server/path/to/filename.xml</code></p>
-<p>If the file is local to the Brazil handler, it has to be
-specified using the "file:filename.xml" format.</p>
-<note>You also need to make the Brazil and javax classes available from your classpath</note>
-<p>See also: <link idref="samples" anchor="translets">sample JAXP translets</link>.</p>
-</s3>
-
-<anchor name="xsltctrax"/>
-<s3 title="Translets and TrAX">
-<p>
-The Translet API has been extended to conform with the JAXP1.1 TrAX model.
-This release contains the first implementation of that extension. Two
-new classes have been added to the Translet XSLT codebase, they are:</p>
-<p>(1) <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code> -<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a SAXTransformerFactory.</p>
-<p>(2) <code>org.apache.xalan.xsltc.runtime.TransletTemplates</code> -
-&nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a Templates object.</p>
-<p>
-The existing XSLT class 'org.apache.xalan.xsltc.runtime.AbstractTranslet'
-that implements the Translet interface is now also extending the 
-javax.xml.transform.Transformer abstract class.
-</p>
-<p>
-This implementation is only a partial implementation, with many limitations.
-These limitations include:
-</p>
-<ol>
-<li>Currently  'StreamSource' and 'StreamResult' are the only
- TrAX Sources and Results that are supported.</li>
-<li>The translet is compiled everytime a call is made to the<br/>
-<code>TransformerFactoryImpl 'newTransformer()'</code> method.</li>
-<li>The translet is compiled everytime a call is made to the <br/>
-<code>TemplateFactoryImpl 'newTransformer()'</code> method.</li>
-<li>Translet are currently not cached. (See (2) and (3)).</li>
-<li>Several abstract methods from SAXTransformerFactory still need to
-be implemented in the xsltc.runtime.TransformerFactoryImpl class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TemplatesHandler newTemplatesHandler()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler(Source src)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler(Templates templates)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;XMLFilter newXMLFilter(Source src)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;XMLFilter newXMLFilter(Templates templates)</code></li>
-<li>Several abstract methods from Transformer still need to be implemented in the 
-AbstractTranslet class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;ErrorListener getErrorListener()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setErrorListener(ErrorListener)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Properties getOutputProperties()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;String getOutputProperty(String name)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setOutputProperties(Properties props)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setOutputProperty(String name, String value)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;URIResolver getURIResolver()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setURIResolver(URIResolver resolver)</code></li>
-<li>Abstract method from Templates still need to be implemented in the TransletTemplates class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Properties getOutputProperties()</code></li>
-<li>Several abstract methods from TransformerFactory still need to be implemented 
-in the <code>xsltc.runtime.TransformerFactoryImpl</code> class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;ErrorListener getErrorListener()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setErrorListener(ErrorListener listener)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Object getAttribute(String name)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setAttribute(String name, Object value)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;boolean getFeature(String name)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;URIResolver getURIResolver()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setURIResolver(URIResolver resolver)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Source getAssociatedStylesheet(Source src, String media, String title,</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String charset)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Templates newTemplates(Source xslSrc)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Transformer newTransformer()</code></li>
-<li>Whenever possible, the required methods that are currently unimplemented will throw an 
-exception if someone tries to call them- this will alert the user that the method is not implemented. 
-The message is of the form:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&quot;&lt;Class Name&gt;:&lt;Method Name&gt;( &lt;args&gt; ) not implemented yet.&quot;</code>
-</li>
-</ol>
-</s3>
-<anchor name="xsltchistory"/>
-<s3 title="History of XSLTC software changes">
-<p>The following sections list XSLT changes back to the incorporation of XSLTC into &xslt4c;.</p>
+</s4>
 <s4 title="XSLTC source code updates for &xslt4j; 2.2.D8">
 <p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime
  DefaultSAXOutputHandler.java
