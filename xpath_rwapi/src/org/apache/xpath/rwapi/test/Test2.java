@@ -57,30 +57,8 @@
 package org.apache.xpath.rwapi.test;
 
 import java.io.StringReader;
-import java.io.FileInputStream;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import org.apache.xpath.rwapi.XPathFactory;
-import org.apache.xpath.rwapi.eval.Evaluator;
-import org.apache.xpath.rwapi.expression.ConditionalExpr;
 import org.apache.xpath.rwapi.expression.Expr;
-import org.apache.xpath.rwapi.expression.ExprContext;
-import org.apache.xpath.rwapi.expression.ExpressionFactory;
-import org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr;
-import org.apache.xpath.rwapi.expression.Literal;
-import org.apache.xpath.rwapi.expression.NodeTest;
-import org.apache.xpath.rwapi.expression.OperatorExpr;
-import org.apache.xpath.rwapi.expression.PathExpr;
-import org.apache.xpath.rwapi.expression.StepExpr;
-import org.apache.xpath.rwapi.expression.Variable;
-import org.apache.xpath.rwapi.expression.Visitor;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 
