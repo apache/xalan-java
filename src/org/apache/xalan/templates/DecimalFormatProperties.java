@@ -90,7 +90,15 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class DecimalFormatProperties
 {  
-  DecimalFormatSymbols m_dfs = new java.text.DecimalFormatSymbols();
+  DecimalFormatSymbols m_dfs; 
+  
+  public DecimalFormatProperties()
+  {
+    m_dfs = new java.text.DecimalFormatSymbols();
+    // Set default values, they can be overiden if necessary.  
+    m_dfs.setInfinity(Constants.ATTRVAL_INFINITY);
+    m_dfs.setNaN(Constants.ATTRVAL_NAN);
+  }  
   
   /**
    * Return the decimal format Symbols for this element.

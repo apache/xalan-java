@@ -142,13 +142,17 @@ public class FuncFormatNumb extends Function3Args
           formatter.setDecimalFormatSymbols(dfs);
           formatter.applyLocalizedPattern(patternStr);
         }  
-        else if (null != patternStr)
+        else 
         {
-          formatter = new java.text.DecimalFormat(patternStr);
-          formatter.applyLocalizedPattern(patternStr); // fix bug??
-        }
-        else
+          dfs = new java.text.DecimalFormatSymbols();
+          dfs.setInfinity(Constants.ATTRVAL_INFINITY);
+          dfs.setNaN(Constants.ATTRVAL_NAN);
           formatter = new java.text.DecimalFormat();
+          formatter.setDecimalFormatSymbols(dfs);
+          
+          if (null != patternStr)
+            formatter.applyLocalizedPattern(patternStr);
+        }        
       }
       return new XString(formatter.format(num));
     }
