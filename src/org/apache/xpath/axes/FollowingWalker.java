@@ -134,31 +134,42 @@ public class FollowingWalker extends AxesWalker
   {
 
     Node n;
-    Node nextAncestor = (null != m_currentAncestor)
-                        ? m_currentAncestor.getParentNode() : null;
+//    Node nextAncestor = (null != m_currentAncestor)
+//                        ? m_currentAncestor.getParentNode() : null;
     Node nextParent = m_currentNode.getParentNode();
 
-    if (nextParent == nextAncestor)
-    {
-      n = null;
-
-      Node ancestor = m_currentAncestor;
-
-      while ((null != ancestor)
-             && (null != (ancestor = (Node) ancestor.getParentNode())))
-      {
-        n = ancestor.getNextSibling();
-
-        if ((null != n) || (null == ancestor))
-          break;
-      }
-
-      m_currentAncestor = ancestor;
-    }
-    else
+//    if (nextParent == nextAncestor)
+//    {
+//      n = null;
+//
+//      Node ancestor = m_currentAncestor;
+//
+//      while ((null != ancestor)
+//             && (null != (ancestor = (Node) ancestor.getParentNode())))
+//      {
+//        n = ancestor.getNextSibling();
+//
+//        if ((null != n) || (null == ancestor))
+//          break;
+//      }
+//
+//      m_currentAncestor = ancestor;
+//    }
+//    else
     {
       n = nextParent;
     }
+
+//    if(null != n)
+//    {
+//      Node attrNode = n.getAttributes().getNamedItem("id");
+//      if(null != attrNode)
+//        System.out.println("parentNode: "+attrNode.getNodeValue());
+//      else
+//        System.out.println("parentNode: no id value");
+//    }
+//    else
+//      System.out.println("parentNode: null");
 
     return setCurrentIfNotNull(n);
   }
@@ -196,7 +207,18 @@ public class FollowingWalker extends AxesWalker
     }
 
     m_nextLevelAmount = (null == n) ? 0 : (n.hasChildNodes() ? 1 : 0);
-
+    
+//    if(null != n)
+//    {
+//      Node attrNode = n.getAttributes().getNamedItem("id");
+//      if(null != attrNode)
+//        System.out.println("firstChild: "+attrNode.getNodeValue());
+//      else
+//        System.out.println("firstChild: no id value");
+//    }
+//    else
+//      System.out.println("firstChild: null");
+      
     return setCurrentIfNotNull(n);
   }
 
@@ -214,6 +236,17 @@ public class FollowingWalker extends AxesWalker
     n = m_currentNode.getNextSibling();
 
     m_nextLevelAmount = (null == n) ? 0 : (n.hasChildNodes() ? 1 : 0);
+
+//    if(null != n)
+//    {
+//      Node attrNode = n.getAttributes().getNamedItem("id");
+//      if(null != attrNode)
+//        System.out.println("nextSibling: "+attrNode.getNodeValue());
+//      else
+//        System.out.println("nextSibling: no id value");
+//    }
+//    else
+//      System.out.println("nextSibling: null");
 
     return setCurrentIfNotNull(n);
   }
