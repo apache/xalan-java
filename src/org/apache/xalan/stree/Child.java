@@ -130,7 +130,7 @@ public class Child extends UnImplNode implements DOMOrder
    * if a endElement event has occured.  An atomic node always
    * returns true.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true.
    */
   public boolean isComplete()
   {
@@ -141,9 +141,11 @@ public class Child extends UnImplNode implements DOMOrder
 
   /**
    * Set that this node's child list is complete, i.e.
-   * an endElement event has occured.
+   * an endElement event has occured. At this level, this 
+   * method does nothing.
    *
-   * NEEDSDOC @param isComplete
+   * @param isComplete true if this node has had all it's 
+   * children added.
    */
   public void setComplete(boolean isComplete){}
 
