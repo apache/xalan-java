@@ -312,7 +312,7 @@ public class StylesheetRoot extends StylesheetComposed
    * import precedence will be at element 0.  The one with the lowest
    * import precedence will be at element length - 1.
    */
-  private transient StylesheetComposed[] m_globalImportList;
+  private StylesheetComposed[] m_globalImportList;
 
   /**
    * Add the imports in the given sheet to the working importList vector.
@@ -475,7 +475,7 @@ public class StylesheetRoot extends StylesheetComposed
    * Composed set of all included and imported attribute set properties.
    * Each entry is a vector of ElemAttributeSet objects.
    */
-  private transient Hashtable m_attrSets;
+  private Hashtable m_attrSets;
 
   /**
    * Recompose the attribute-set declarations.
@@ -515,7 +515,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Table of DecimalFormatSymbols, keyed by QName.
    */
-  private transient Hashtable m_decimalFormatSymbols;
+  private Hashtable m_decimalFormatSymbols;
 
   /**
    * Recompose the decimal-format declarations.
@@ -577,7 +577,7 @@ public class StylesheetRoot extends StylesheetComposed
    * A list of all key declarations visible from this stylesheet and all
    * lesser stylesheets.
    */
-  private transient Vector m_keyDecls;
+  private Vector m_keyDecls;
 
   /**
    * Recompose the key declarations.
@@ -603,7 +603,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Composed set of all namespace aliases.
    */
-  private transient Hashtable m_namespaceAliasComposed;
+  private Hashtable m_namespaceAliasComposed;
 
   /**
    * Recompose the namespace-alias declarations.
@@ -634,7 +634,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * The "xsl:template" properties.
    */
-  private transient TemplateList m_templateList;
+  private TemplateList m_templateList;
 
   /**
    * Recompose the template declarations.
@@ -714,8 +714,9 @@ public class StylesheetRoot extends StylesheetComposed
   
   /**
    * Composed set of all variables and params.
+   * (note to self: why were these marked transient???  -sb)
    */
-  private transient Vector m_variables;
+  private Vector m_variables;
 
   /**
    * Recompose the top level variable and parameter declarations.
