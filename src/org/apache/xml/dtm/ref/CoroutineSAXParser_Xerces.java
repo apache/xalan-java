@@ -80,7 +80,9 @@ import org.xml.sax.XMLReader;
  *
  * <p>Usage example: See main().</p>
  *
- * <p>Status: Passes simple main() unit-test. NEEDS JAVADOC.</p>
+ * @deprecated Since the ability to start a parse via the
+ * coroutine protocol was not being used and was complicating design.
+ * See {@link IncrementalSAXSource_Xerces}.
  * */
 public class CoroutineSAXParser_Xerces
 // extends org.apache.xerces.parsers.SAXParser

@@ -80,21 +80,9 @@ import org.apache.xml.dtm.ref.CoroutineManager;
  *
  * <p>For a brief usage example, see the unit-test main() method.</p>
  *
- * <p>Status: Passes simple unit-tests in main().
- * FAILS CoroutineSaxFilterTest termination in the doMore(false) case
- * NEEDS JAVADOC!</p>
- *
- * %TBD% MAJOR ISSUE: In filtering mode, where we aren't the ones who invoked
- * the XMLHandler's parse() operation, we have no way to capture
- * exceptions thrown by the ContentHandler -- and thus no way to complete
- * the doMore(false) dialog in its usual sense, or to be informed if
- * the XMLHandler crashes for other reasons. Two possible solutions:
- *	In this mode, conduct the whole dialog within doMore(). Ugh.
- * Or:
- *	Change the dialogs -- cut over to pure filtering mode, where
- *		we only process one file and doMore(false) can respond with
- *		co_exit_to().
- *
+ * @deprecated Since the ability to start a parse via the
+ * coroutine protocol was not being used and was complicating design.
+ * See {@link IncrementalSAXSource_Filter}.
  * */
 public class CoroutineSAXParser
 implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandler

@@ -349,7 +349,9 @@ public class CoroutineManager
   }
 
   /** Make the ID available for reuse and terminate this coroutine,
-   * transferring control to the specified coroutine.
+   * transferring control to the specified coroutine. Note that this
+   * returns immediately rather than waiting for any further coroutine
+   * traffic, so the thread can proceed with other shutdown activities.
    *
    * @param arg_object A value to be passed to the other coroutine.
    * @param thisCoroutine Integer identifier for the coroutine leaving the set.
