@@ -634,10 +634,7 @@ public class ExsltDatetime
       if (dbl == Double.NaN) 
         return new XNumber(Double.NaN);
       int yr = (int)dbl;
-      Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.YEAR, yr);
-      cal.set(Calendar.MONTH, Calendar.FEBRUARY);
-      return new XBoolean(cal.getActualMaximum(cal.DAY_OF_MONTH)==29);
+      return new XBoolean(yr % 400 == 0 || (yr % 100 != 0 && yr % 4 == 0));
     }
     
     /**
@@ -646,8 +643,8 @@ public class ExsltDatetime
     public static XBoolean leapYear()
     {
       Calendar cal = Calendar.getInstance();
-      cal.set(Calendar.MONTH, Calendar.FEBRUARY);
-      return new XBoolean(cal.getActualMaximum(cal.DAY_OF_MONTH)==29);      
+      int yr = (int)cal.get(Calendar.YEAR);
+      return new XBoolean(yr % 400 == 0 || (yr % 100 != 0 && yr % 4 == 0));      
     }    
        
     /**
