@@ -211,6 +211,7 @@ public class AxesWalker extends PredicatedNodeTest
   { 
   	m_currentNode = DTM.NULL;
   	m_dtm = null;
+  	m_traverser = null;
   	m_isFresh = true;
   	m_root = DTM.NULL;
   }

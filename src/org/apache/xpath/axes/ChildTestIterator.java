@@ -206,5 +206,22 @@ public class ChildTestIterator extends BasicTestIterator
     return org.apache.xml.dtm.Axis.CHILD;
   }
 
+  /**
+   *  Detaches the iterator from the set which it iterated over, releasing
+   * any computational resources and placing the iterator in the INVALID
+   * state. After<code>detach</code> has been invoked, calls to
+   * <code>nextNode</code> or<code>previousNode</code> will raise the
+   * exception INVALID_STATE_ERR.
+   */
+  public void detach()
+  {   
+    if(m_allowDetach)
+    {
+      m_traverser = null;
+      
+      // Always call the superclass detach last!
+      super.detach();
+    }
+  }
 
 }
