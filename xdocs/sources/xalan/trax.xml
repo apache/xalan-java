@@ -253,7 +253,7 @@
 <p>The section defines the abstract model for TrAX, apart from the details
 	 of the interfaces.</p> 
   
-<p>A TRaX <link anchor="pattern-TransformerFactory">TransformerFactory</link> is an object
+<p>A TrAX <link anchor="pattern-TransformerFactory">TransformerFactory</link> is an object
 	 that processes transformation instructions, and produces
 	 <link anchor="pattern-Templates">Templates</link> (in the technical
 	 terminology). A <link anchor="pattern-Templates">Templates</link>
@@ -261,7 +261,7 @@
 	 more <link anchor="pattern-Source">Source</link>s into one or more
 	 <link anchor="pattern-Result">Result</link>s.</p> 
   
-<p>To use the TRaX interface, you create a
+<p>To use the TrAX interface, you create a
 	 <link anchor="pattern-TransformerFactory">TransformerFactory</link>,
 	 which may directly provide a <link anchor="pattern-Transformer">Transformers</link>, or which can provide
 	 <link anchor="pattern-Templates">Templates</link> from a variety of
@@ -279,7 +279,7 @@
 	 <ref>serialization</ref>. We believe this is the most suitable term for
 	 this process, despite the overlap with Java object serialization.</p> 
 </s2><anchor name="patterns"/>
-<s2 title="TRaX Patterns">
+<s2 title="TrAX Patterns">
 <p>The intent, responsibilities, and thread safety of TrAX objects:</p>
 <ul>
   <li><link anchor="pattern-Processor">Processor</link></li>

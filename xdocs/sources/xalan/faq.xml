@@ -93,7 +93,7 @@
            that API (javax.xml.transform....), and includes xercesImpl.jar from  
            <resource-ref idref='xml4j-used' />, which implements the parser portion of the API 
            (javax.xml.parser....).</p>
-        <p>For more information, see <link idref='trax'>TRaX (Transformation API for XML)</link> and
+        <p>For more information, see <link idref='trax'>TrAX (Transformation API for XML)</link> and
           <resource-ref idref='jaxp12' />.
         </p>
       </a>

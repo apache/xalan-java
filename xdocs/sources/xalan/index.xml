@@ -74,8 +74,8 @@
        <resource-ref idref="xpath"/>.  It can be used from the command line, in an applet or a 
        servlet, or as a module in other program.</p>
     <p>&xslt4j; recasts &xslt; as an implementation of the <link idref="trax">
-       Transformation API for XML (TRaX)</link> interfaces, part of the <resource-ref idref="jaxp12"/>. 
-       TRaX provides a  modular framework and a standard API for performing XML transformations, and
+       Transformation API for XML (TrAX)</link> interfaces, part of the <resource-ref idref="jaxp12"/>. 
+       TrAX provides a  modular framework and a standard API for performing XML transformations, and
        it utilizes system properties to determine which Transformer and which XML parser to use.</p>
     <p>&xslt4j; also builds on <resource-ref idref="sax2"/> and <resource-ref idref="dom2"/>.</p>
   

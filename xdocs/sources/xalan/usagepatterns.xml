@@ -277,7 +277,7 @@ instructions:</p>
 </ol>
 </s2><anchor name="serialize"/>
 <s2 title="Serializing output">
-<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <link idref="trax">TRaX (Transformation API for XML)</link> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
+<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <link idref="trax">TrAX (Transformation API for XML)</link> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
 </s2><anchor name="params"/>
 <s2 title="Setting stylesheet parameters">
 <p>An XSLT stylesheet may include parameters that are set at run time each time a transformation is performed. To set a stylesheet parameter, use the Transformer 
