@@ -7,9 +7,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 
 /**
@@ -95,12 +94,12 @@ public class DTMException extends RuntimeException {
     public synchronized Throwable initCause(Throwable cause) {
 
         if ((this.containedException == null) && (cause != null)) {
-            throw new IllegalStateException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_OVERWRITE_CAUSE, null)); //"Can't overwrite cause");
+            throw new IllegalStateException(XMLMessages.createXMLMessage(XMLErrorResources.ER_CANNOT_OVERWRITE_CAUSE, null)); //"Can't overwrite cause");
         }
 
         if (cause == this) {
             throw new IllegalArgumentException(
-                XSLMessages.createMessage(XSLTErrorResources.ER_SELF_CAUSATION_NOT_PERMITTED, null)); //"Self-causation not permitted");
+                XMLMessages.createXMLMessage(XMLErrorResources.ER_SELF_CAUSATION_NOT_PERMITTED, null)); //"Self-causation not permitted");
         }
 
         this.containedException = cause;

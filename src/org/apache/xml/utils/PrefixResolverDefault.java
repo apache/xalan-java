@@ -75,13 +75,6 @@ public class PrefixResolverDefault implements PrefixResolver
   Node m_context;
 
   /**
-   * The URI for the XML namespace.
-   * (Duplicate of that found in org.apache.xpath.XPathContext).
-   */
-  public static final String S_XMLNAMESPACEURI =
-    "http://www.w3.org/XML/1998/namespace";
-
-  /**
    * Construct a PrefixResolverDefault object.
    * @param xpathExpressionContext The context from
    * which XPath expression prefixes will be resolved.
@@ -128,7 +121,7 @@ public class PrefixResolverDefault implements PrefixResolver
 
     if (prefix.equals("xml"))
     {
-      namespace = S_XMLNAMESPACEURI;
+      namespace = Constants.S_XMLNAMESPACEURI;
     }
     else
     {

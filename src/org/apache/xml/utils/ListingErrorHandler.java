@@ -68,8 +68,8 @@ import java.net.URLConnection;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.res.XMLErrorResources;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -97,7 +97,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
     public ListingErrorHandler(PrintWriter pw)
     {
         if (null == pw)
-            throw new NullPointerException(XSLMessages.createMessage(XSLTErrorResources.ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER, null));
+            throw new NullPointerException(XMLMessages.createXMLMessage(XMLErrorResources.ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER, null));
             // "ListingErrorHandler created with null PrintWriter!");
             
         m_pw = pw;

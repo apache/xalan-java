@@ -62,8 +62,8 @@ import javax.xml.transform.Source;
 
 import org.apache.xml.utils.XMLStringFactory;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 
 /**
@@ -191,11 +191,11 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     case Axis.FILTEREDLIST :
       return null; // Don't want to throw an exception for this one.
     default :
-      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_UNKNOWN_AXIS_TYPE, new Object[]{Integer.toString(axis)})); //"Unknown axis traversal type: "+axis);
+      throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_UNKNOWN_AXIS_TYPE, new Object[]{Integer.toString(axis)})); //"Unknown axis traversal type: "+axis);
     }
 
     if (null == traverser)
-      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_AXIS_TRAVERSER_NOT_SUPPORTED, new Object[]{Axis.names[axis]}));
+      throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_AXIS_TRAVERSER_NOT_SUPPORTED, new Object[]{Axis.names[axis]}));
       // "Axis traverser not supported: "
       //                       + Axis.names[axis]);
 

@@ -58,8 +58,8 @@ package org.apache.xml.utils;
 
 import org.w3c.dom.*;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -84,7 +84,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
 
     System.out.println("DOM ERROR! class: " + this.getClass().getName());
 
-    throw new RuntimeException(XSLMessages.createMessage(msg, null));
+    throw new RuntimeException(XMLMessages.createXMLMessage(msg, null));
   }
 
   /**
@@ -98,7 +98,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
 
     System.out.println("DOM ERROR! class: " + this.getClass().getName());
 
-    throw new RuntimeException(XSLMessages.createMessage(msg, args));  //"UnImplNode error: "+msg);
+    throw new RuntimeException(XMLMessages.createXMLMessage(msg, args));  //"UnImplNode error: "+msg);
   }
 
   /**
@@ -113,7 +113,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node appendChild(Node newChild) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"appendChild not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"appendChild not supported!");
 
     return null;
   }
@@ -126,7 +126,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean hasChildNodes()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasChildNodes not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasChildNodes not supported!");
 
     return false;
   }
@@ -139,7 +139,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public short getNodeType()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeType not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeType not supported!");
 
     return 0;
   }
@@ -152,7 +152,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node getParentNode()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getParentNode not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getParentNode not supported!");
 
     return null;
   }
@@ -165,7 +165,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public NodeList getChildNodes()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getChildNodes not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getChildNodes not supported!");
 
     return null;
   }
@@ -178,7 +178,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node getFirstChild()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getFirstChild not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getFirstChild not supported!");
 
     return null;
   }
@@ -191,7 +191,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node getLastChild()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLastChild not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLastChild not supported!");
 
     return null;
   }
@@ -204,7 +204,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node getNextSibling()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNextSibling not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNextSibling not supported!");
 
     return null;
   }
@@ -217,7 +217,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public int getLength()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLength not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLength not supported!");
 
     return 0;
   }  // getLength():int
@@ -232,7 +232,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node item(int index)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"item not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"item not supported!");
 
     return null;
   }  // item(int):Node
@@ -245,7 +245,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Document getOwnerDocument()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getOwnerDocument not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getOwnerDocument not supported!");
 
     return null;
   }
@@ -258,7 +258,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getTagName()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getTagName not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getTagName not supported!");
 
     return null;
   }
@@ -271,7 +271,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getNodeName()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeName not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeName not supported!");
 
     return null;
   }
@@ -279,7 +279,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /** Unimplemented. See org.w3c.dom.Node */
   public void normalize()
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"normalize not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"normalize not supported!");
   }
 
   /**
@@ -292,7 +292,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public NodeList getElementsByTagName(String name)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getElementsByTagName not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getElementsByTagName not supported!");
 
     return null;
   }
@@ -309,7 +309,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Attr removeAttributeNode(Attr oldAttr) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttributeNode not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttributeNode not supported!");
 
     return null;
   }
@@ -326,7 +326,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Attr setAttributeNode(Attr newAttr) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNode not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNode not supported!");
 
     return null;
   }
@@ -342,7 +342,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean hasAttribute(String name)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttribute not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttribute not supported!");
 
     return false;
   }
@@ -359,7 +359,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean hasAttributeNS(String name, String x)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttributeNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttributeNS not supported!");
 
     return false;
   }
@@ -375,7 +375,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Attr getAttributeNode(String name)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNode not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNode not supported!");
 
     return null;
   }
@@ -389,7 +389,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void removeAttribute(String name) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttribute not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttribute not supported!");
   }
 
   /**
@@ -402,7 +402,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setAttribute(String name, String value) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttribute not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttribute not supported!");
   }
 
   /**
@@ -415,7 +415,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getAttribute(String name)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttribute not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttribute not supported!");
 
     return null;
   }
@@ -428,7 +428,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean hasAttributes()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttributes not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"hasAttributes not supported!");
 
     return false;
   }
@@ -445,7 +445,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
                                          String localName)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getElementsByTagNameNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getElementsByTagNameNS not supported!");
 
     return null;
   }
@@ -462,7 +462,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Attr setAttributeNodeNS(Attr newAttr) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNodeNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNodeNS not supported!");
 
     return null;
   }
@@ -478,7 +478,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Attr getAttributeNodeNS(String namespaceURI, String localName)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNodeNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNodeNS not supported!");
 
     return null;
   }
@@ -494,7 +494,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public void removeAttributeNS(String namespaceURI, String localName)
           throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttributeNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"removeAttributeNS not supported!");
   }
 
   /**
@@ -511,7 +511,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
           String namespaceURI, String qualifiedName, String value)
             throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setAttributeNS not supported!");
   }
 
   /**
@@ -525,7 +525,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getAttributeNS(String namespaceURI, String localName)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNS not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributeNS not supported!");
 
     return null;
   }
@@ -538,7 +538,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node getPreviousSibling()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getPreviousSibling not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getPreviousSibling not supported!");
 
     return null;
   }
@@ -553,7 +553,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node cloneNode(boolean deep)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"cloneNode not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"cloneNode not supported!");
 
     return null;
   }
@@ -568,7 +568,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getNodeValue() throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeValue not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNodeValue not supported!");
 
     return null;
   }
@@ -582,7 +582,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setNodeValue(String nodeValue) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setNodeValue not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setNodeValue not supported!");
   }
 
   /**
@@ -597,7 +597,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
 
   // public String getValue ()
   // {      
-  //  error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getValue not supported!");
+  //  error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getValue not supported!");
   //  return null;
   // } 
 
@@ -610,7 +610,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setValue(String value) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
   }
 
   /**
@@ -632,7 +632,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Element getOwnerElement()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getOwnerElement not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getOwnerElement not supported!");
 
     return null;
   }
@@ -645,7 +645,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean getSpecified()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
 
     return false;
   }
@@ -658,7 +658,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public NamedNodeMap getAttributes()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributes not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getAttributes not supported!");
 
     return null;
   }
@@ -676,7 +676,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node insertBefore(Node newChild, Node refChild) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"insertBefore not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"insertBefore not supported!");
 
     return null;
   }
@@ -694,7 +694,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node replaceChild(Node newChild, Node oldChild) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"replaceChild not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"replaceChild not supported!");
 
     return null;
   }
@@ -711,7 +711,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node removeChild(Node oldChild) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"replaceChild not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"replaceChild not supported!");
 
     return null;
   }
@@ -745,7 +745,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getNamespaceURI()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNamespaceURI not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNamespaceURI not supported!");
 
     return null;
   }
@@ -758,7 +758,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getPrefix()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getPrefix not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getPrefix not supported!");
 
     return null;
   }
@@ -772,7 +772,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setPrefix(String prefix) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setPrefix not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setPrefix not supported!");
   }
 
   /**
@@ -783,7 +783,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getLocalName()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLocalName not supported!");
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getLocalName not supported!");
 
     return null;
   }
@@ -796,7 +796,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public DocumentType getDoctype()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -809,7 +809,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public DOMImplementation getImplementation()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -822,7 +822,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Element getDocumentElement()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -839,7 +839,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Element createElement(String tagName) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -852,7 +852,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public DocumentFragment createDocumentFragment()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -867,7 +867,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Text createTextNode(String data)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -882,7 +882,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Comment createComment(String data)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -899,7 +899,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public CDATASection createCDATASection(String data) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -918,7 +918,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
           String target, String data) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -935,7 +935,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Attr createAttribute(String name) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -953,7 +953,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
           throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -977,7 +977,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node importNode(Node importedNode, boolean deep) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -996,7 +996,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
           throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1015,7 +1015,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
           throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1030,7 +1030,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Element getElementById(String elementId)
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1045,7 +1045,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setData(String data) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1061,7 +1061,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String substringData(int offset, int count) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1075,7 +1075,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void appendData(String arg) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1089,7 +1089,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void insertData(int offset, String arg) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1102,7 +1102,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void deleteData(int offset, int count) throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1117,7 +1117,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public void replaceData(int offset, int count, String arg)
           throws DOMException
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1132,7 +1132,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Text splitText(int offset) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1150,7 +1150,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public Node adoptNode(Node source) throws DOMException
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1169,7 +1169,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getEncoding()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1187,7 +1187,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setEncoding(String encoding)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1204,7 +1204,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean getStandalone()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return false;
   }
@@ -1222,7 +1222,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setStandalone(boolean standalone)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1243,7 +1243,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public boolean getStrictErrorChecking()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return false;
   }
@@ -1265,7 +1265,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setStrictErrorChecking(boolean strictErrorChecking)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
   /**
@@ -1282,7 +1282,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getVersion()
   {
 
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
   }
@@ -1300,6 +1300,6 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void setVersion(String version)
   {
-    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 }

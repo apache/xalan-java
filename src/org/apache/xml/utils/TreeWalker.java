@@ -62,8 +62,6 @@ import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.LocatorImpl;
 
-import org.apache.xpath.DOM2Helper;
-import org.apache.xpath.DOMHelper;
 import org.apache.xml.utils.NodeConsumer;
 
 /**
@@ -164,7 +162,7 @@ public class TreeWalker
                 catch (SecurityException se){// user.dir not accessible from applet
                   m_locator.setSystemId("");
     }
-    m_dh = new org.apache.xpath.DOM2Helper();
+    m_dh = new DOM2Helper();
   }
 
   /**

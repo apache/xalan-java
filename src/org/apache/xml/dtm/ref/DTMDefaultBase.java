@@ -78,8 +78,8 @@ import javax.xml.transform.Source;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.res.XMLErrorResources;
 
 import java.io.*; // for dumpDTM
 
@@ -1471,7 +1471,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     // %TBD%
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//("getStringValueChunkCount not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//("getStringValueChunkCount not yet supported!");
 
     return 0;
   }
@@ -1494,7 +1494,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     // %TBD%
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"getStringValueChunk not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"getStringValueChunk not yet supported!");
 
     return null;
   }
@@ -1601,7 +1601,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMDefaultBase abstract method */
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
 
     return null;
   }
@@ -2035,7 +2035,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public void appendChild(int newChild, boolean clone, boolean cloneDepth)
   {
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"appendChild not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"appendChild not yet supported!");
   }
 
   /**
@@ -2049,7 +2049,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public void appendTextChild(String str)
   {
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"appendTextChild not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"appendTextChild not yet supported!");
   }
 
   /**

@@ -58,8 +58,8 @@ package org.apache.xml.utils;
 
 import java.util.*;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 
 /**
@@ -176,7 +176,7 @@ public class ObjectPool implements java.io.Serializable
       catch (IllegalAccessException ex){}
 
       // Throw unchecked exception for error in pool configuration.
-      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_EXCEPTION_CREATING_POOL, null)); //"exception creating new instance for pool");
+      throw new RuntimeException(XMLMessages.createXMLMessage(XMLErrorResources.ER_EXCEPTION_CREATING_POOL, null)); //"exception creating new instance for pool");
     }
     else
     {

@@ -63,8 +63,8 @@ import java.io.IOException;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.XMLReader;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -294,9 +294,9 @@ public class IncrementalSAXSource_Xerces
   public void startParse(InputSource source) throws SAXException
   {
     if (fIncrementalParser==null)
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_STARTPARSE_NEEDS_SAXPARSER, null)); //"startParse needs a non-null SAXParser.");
+      throw new SAXException(XMLMessages.createXMLMessage(XMLErrorResources.ER_STARTPARSE_NEEDS_SAXPARSER, null)); //"startParse needs a non-null SAXParser.");
     if (fParseInProgress)
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_STARTPARSE_WHILE_PARSING, null)); //"startParse may not be called while parsing.");
+      throw new SAXException(XMLMessages.createXMLMessage(XMLErrorResources.ER_STARTPARSE_WHILE_PARSING, null)); //"startParse may not be called while parsing.");
 
     boolean ok=false;
 
@@ -310,7 +310,7 @@ public class IncrementalSAXSource_Xerces
     }
     
     if(!ok)
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_INIT_PARSER, null)); //"could not initialize parser with");
+      throw new SAXException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COULD_NOT_INIT_PARSER, null)); //"could not initialize parser with");
   }
 
   

@@ -56,8 +56,8 @@
  */
 package org.apache.xml.utils;
 
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.utils.NodeVector;
 import java.util.Stack;
 
@@ -190,8 +190,8 @@ public class DOMBuilder
         if ((null != data) && (data.trim().length() > 0))
         {
           throw new org.xml.sax.SAXException(
-            XSLMessages.createXPATHMessage(
-              XPATHErrorResources.ER_CANT_OUTPUT_TEXT_BEFORE_DOC, null));  //"Warning: can't output text before document element!  Ignoring...");
+            XMLMessages.createXMLMessage(
+              XMLErrorResources.ER_CANT_OUTPUT_TEXT_BEFORE_DOC, null));  //"Warning: can't output text before document element!  Ignoring...");
         }
 
         ok = false;
@@ -201,8 +201,8 @@ public class DOMBuilder
         if (m_doc.getDocumentElement() != null)
         {
           throw new org.xml.sax.SAXException(
-            XSLMessages.createXPATHMessage(
-              XPATHErrorResources.ER_CANT_HAVE_MORE_THAN_ONE_ROOT, null));  //"Can't have more than one root on a DOM!");
+            XMLMessages.createXMLMessage(
+              XMLErrorResources.ER_CANT_HAVE_MORE_THAN_ONE_ROOT, null));  //"Can't have more than one root on a DOM!");
         }
       }
 

@@ -56,8 +56,8 @@
  */
 package org.apache.xml.dtm;
 
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
 
@@ -171,13 +171,13 @@ public abstract class DTMManager
               /* The fallback implementation class name */
               "org.apache.xml.dtm.ref.DTMManagerDefault");
      } catch (FactoryFinder.ConfigurationError e) {
-           throw new DTMConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
+           throw new DTMConfigurationException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
      }
 
 
     if (factoryImpl == null)
     {
-      throw new DTMConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
+      throw new DTMConfigurationException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
     }
 
     factoryImpl.setXMLStringFactory(xsf);
