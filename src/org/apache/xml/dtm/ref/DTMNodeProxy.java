@@ -1101,7 +1101,7 @@ public class DTMNodeProxy
    */
   public final String getValue()
   {
-    return dtm.getNodeValue(node + 1);
+    return dtm.getNodeValue(node);
   }
 
   /**
