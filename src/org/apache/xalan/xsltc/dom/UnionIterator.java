@@ -83,6 +83,7 @@ public final class UnionIterator extends DTMAxisIteratorBase {
     private final static class LookAheadIterator {
 	public int node, markedNode;
 	public DTMAxisIterator iterator;
+	public boolean isStartSet = false;
 		
 	public LookAheadIterator(DTMAxisIterator iterator) {
 	    this.iterator = iterator;
@@ -197,8 +198,11 @@ public final class UnionIterator extends DTMAxisIteratorBase {
 	if (_isRestartable) {
 	    _startNode = node;
 	    for (int i = 0; i < _free; i++) {
-		_heap[i].iterator.setStartNode(node);
-		_heap[i].step();	// to get the first node
+         	if(!_heap[i].isStartSet){
+        	   _heap[i].iterator.setStartNode(node);
+        	   _heap[i].step();	// to get the first node
+        	   _heap[i].isStartSet = true;
+        	}
 	    }
 	    // build heap
 	    for (int i = (_heapSize = _free)/2; i >= 0; i--) {
