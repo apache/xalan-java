@@ -92,6 +92,9 @@ public class XSLTResultTarget //implements Result //extends StreamResult
     * Zero-argument default constructor  -- Before you can use the new XSLTResultTarget object in a transformation,
     * you must define the output container by setting its FileName, CharacterStrea, ByteStream, or Node property.
     *
+    * @see #setFileName(String)
+    * @see #setCharacterStream(Writer)
+    * @see #setByteStream(OutputStream)
     * @see #setNode(Node)
     * @see #setDocumentHandler(DocumentHandler)
     * @see #setEncoding(String)
@@ -107,6 +110,9 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param fileName Identifies the file that will contain the transformation result (must be a valid system file name).
    *
+   * @see #setFileName(String)
+   * @see #setCharacterStream(Writer)
+   * @see #setByteStream(OutputStream)
    * @see #setNode(Node)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
@@ -124,6 +130,9 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param byteStream The raw byte stream that will contain the transformation result.
    *
+   * @see #setByteStream(OutputStream)
+   * @see #setFileName(String)
+   * @see #setCharacterStream(Writer)
    * @see #setNode(Node)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
@@ -142,6 +151,9 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param characterStream The character stream where the transformation result is written.
    *
+   * @see #setCharacterStream(Writer)
+   * @see #setByteStream(OutputStream)
+   * @see #setFileName(String)
    * @see #setNode(Node)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
@@ -158,7 +170,10 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param node The DOM Node that will contain the transformation result.
    *
-   * @see #setNode(Node)
+  * @see #setNode(Node)
+   * @see #setCharacterStream(Writer)
+   * @see #setByteStream(OutputStream)
+   * @see #setFileName(String)
    * @see #setDocumentHandler(DocumentHandler)
    * @see #setEncoding(String)
    */
@@ -175,8 +190,11 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    *
    * @param handler The SAX Document handler to which the result is written.
    *
-   * @see #setDocumentHandler(DocumentHandler)
+  * @see #setDocumentHandler(DocumentHandler)
    * @see #setNode(Node)
+   * @see #setCharacterStream(Writer)
+   * @see #setByteStream(OutputStream)
+   * @see #setFileName(String)
    * @see #setEncoding(String)
    */
   public XSLTResultTarget(DocumentHandler handler)
@@ -192,6 +210,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    * @param fileName The system identifier as a string.
    *
    * @see #XSLTResultTarget(String)
+   * @see #getFileName
    */
   public void setFileName (String fileName) // File?
   {
@@ -207,6 +226,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    * @return The file name or URL.
    *
    * @see #XSLTResultTarget(String)
+   * @see #setFileName(String)
    */
   public String getFileName ()
   {
@@ -312,31 +332,28 @@ public class XSLTResultTarget //implements Result //extends StreamResult
         return null;
     }
     
-    /**
-     * Set the node that will contain the result DOM tree.  In practice,
-     * the node should be a {@link org.w3c.dom.Document} node,
-     * a {@link org.w3c.dom.DocumentFragment} node, or a
-     * {@link org.w3c.dom.Element} node.  In other words, a node
-     * that accepts children.
-     *
-     * @param node The node to which the transformation
-     * will be appended.
-     */
+ /**
+   * Set the byte stream to contain the transformation result.
+   *
+   * @param byteStream A byte stream that will contain the transformation result.
+   *
+   * @see #XSLTResultTarget(OutputStream)
+   * @see #setByteStream(OutputStream)
+   */
     public void setByteStream(OutputStream byteStrm) {
         if (sr == null)
           sr = new StreamResult();
         sr.setOutputStream(byteStrm);
     }
 
-    /**
-     * Get the node that will contain the result DOM tree.
-     * If no node was set via setNode, the node will be
-     * set by the transformation, and may be obtained from
-     * this method once the transformation is complete.
-     *
-     * @return The node to which the transformation
-     * will be appended.
-     */
+ /**
+   * Get the byte stream that contains or will contain the transformation result.
+   *
+   * @return The byte stream, or null if none was supplied.
+   *
+   * @see #XSLTResultTarget(OutputStream)
+   * @see #setByteStream(OutputStream)
+   */
     public OutputStream getByteStream() {
       if (sr != null)
         return sr.getOutputStream();
