@@ -122,34 +122,6 @@ abstract public class SerializerBase
      * true if we still need to call startDocumentInternal() 
 	 */
     protected boolean m_needToCallStartDocument = true; 
-    
-    /**
-     * Set to true when a start tag is started, or open, but not all the
-     * attributes or namespace information is yet collected.
-     */
-    protected boolean m_startTagOpen = false;
-
-    /**
-     * Keeps track of the nesting depth of elements inside each other.
-     * This is the nesting depth of the current element being processed.
-     */
-    int m_currentElemDepth = 0;
-
-    /**
-     * The cached value of the QName of the current element
-     */
-    protected String m_elementName = null;
-    
-    /**
-     * The cached value of the local name of the current element
-     */
-    protected String m_elementLocalName = null;
-    
-    /**
-     * The cached value of the URI of the current element
-     */
-    protected String m_elementURI = null;
-
 
     /** True if a trailing "]]>" still needs to be written to be
      * written out. Used to merge adjacent CDATA sections
@@ -170,13 +142,6 @@ abstract public class SerializerBase
 
     /** This flag is set while receiving events from the external DTD */
     protected boolean m_inExternalDTD = false;
-
-    /** When an element starts, if its name is in the cdata-section-names list
-     * then push a True on the stack, otherwise push a False.
-     * at the end of an element the value is poped.
-     * It is True if the text of the element should be in CDATA section blocks. 
-     */
-    protected final BoolStack m_cdataSectionStates = new BoolStack();
 
     /**
      * The System ID for the doc type.
@@ -269,6 +234,14 @@ abstract public class SerializerBase
      * other fire... methods can flush this writer when tracing.
      */
     protected java.io.Writer m_writer = null;    
+    
+    /**
+     * A reference to "stack frame" corresponding to
+     * the current element. Such a frame is pushed at a startElement()
+     * and popped at an endElement(). This frame contains information about
+     * the element, such as its namespace URI. 
+     */
+    protected ElemContext m_elemContext = new ElemContext();
 
     /**
      * Receive notification of a comment.
@@ -381,7 +354,7 @@ abstract public class SerializerBase
         String value)
         throws SAXException
     {
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             addAttributeAlways(uri, localName, rawName, type, value);
         }
@@ -444,7 +417,7 @@ abstract public class SerializerBase
      */
     public void addAttribute(String name, final String value)
     {
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             final String patchedName = patchName(name);
             final String localName = getLocalName(patchedName);
@@ -794,26 +767,28 @@ abstract public class SerializerBase
      * false). Other hidden parameters are the current elements namespaceURI,
      * localName and qName
      */
-    protected void pushCdataSectionState()
+    protected boolean isCdataSection()
     {
 
-        boolean b;
+        boolean b = false;
 
         if (null != m_cdataSectionElements)
         {
-            b = false;
-            if (m_elementLocalName == null)
-                m_elementLocalName = getLocalName(m_elementName);
-            if (m_elementURI == null)
+            if (m_elemContext.m_elementLocalName == null)
+                m_elemContext.m_elementLocalName = 
+                    getLocalName(m_elemContext.m_elementName);
+            if (m_elemContext.m_elementURI == null)
             {
-                String prefix = getPrefixPart(m_elementName);
+                String prefix = getPrefixPart(m_elemContext.m_elementName);
                 if (prefix != null)
-                    m_elementURI = m_prefixMap.lookupNamespace(prefix);
+                    m_elemContext.m_elementURI = 
+                        m_prefixMap.lookupNamespace(prefix);
 
             }
 
-            if ((null != m_elementURI) && m_elementURI.length() == 0)
-                m_elementURI = null;
+            if ((null != m_elemContext.m_elementURI) 
+                && m_elemContext.m_elementURI.length() == 0)
+                m_elemContext.m_elementURI = null;
 
             int nElems = m_cdataSectionElements.size();
 
@@ -822,16 +797,16 @@ abstract public class SerializerBase
             {
                 String uri = (String) m_cdataSectionElements.elementAt(i);
                 String loc = (String) m_cdataSectionElements.elementAt(i + 1);
-                if (loc.equals(m_elementLocalName)
-                    && subPartMatch(m_elementURI, uri))
+                if (loc.equals(m_elemContext.m_elementLocalName)
+                    && subPartMatch(m_elemContext.m_elementURI, uri))
                 {
                     b = true;
 
                     break;
                 }
             }
-            m_cdataSectionStates.push(b);
         }
+        return b;
     }
 
     /**
@@ -1014,7 +989,7 @@ abstract public class SerializerBase
      */
     public void fatalError(SAXParseException exc) throws SAXException {
         
-      m_startTagOpen = false;
+      m_elemContext.m_startTagOpen = false;
 
     }
 
@@ -1290,14 +1265,10 @@ abstract public class SerializerBase
     {
     	this.m_attributes.clear();
     	this.m_cdataSectionElements = null;
-    	this.m_cdataSectionStates.clear();
-    	this.m_currentElemDepth = 0;
+        this.m_elemContext = new ElemContext();
     	this.m_doctypePublic = null;
     	this.m_doctypeSystem = null;
     	this.m_doIndent = false;
-    	this.m_elementLocalName = null;
-    	this.m_elementLocalName = null;
-    	this.m_elementName = null;
     	this.m_encoding = null;
     	this.m_indentAmount = 0;
     	this.m_inEntityRef = false;
@@ -1311,7 +1282,6 @@ abstract public class SerializerBase
     	this.m_sourceLocator = null;
     	this.m_standalone = null;
     	this.m_standaloneWasSpecified = false;
-    	this.m_startTagOpen = false;
     	this.m_tracer = null;
     	this.m_transformer = null;
     	this.m_version = null;

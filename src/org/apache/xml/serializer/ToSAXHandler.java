@@ -161,7 +161,7 @@ abstract public class ToSAXHandler extends SerializerBase
     {
 
         // Close any open element before emitting comment
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
         }
@@ -290,10 +290,10 @@ abstract public class ToSAXHandler extends SerializerBase
                 m_needToCallStartDocument = false;
             }
 
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 closeStartTag();
-                m_startTagOpen = false;
+                m_elemContext.m_startTagOpen = false;
             }
             
             if (m_cdataTagOpen)

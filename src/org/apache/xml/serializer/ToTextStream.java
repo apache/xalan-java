@@ -158,9 +158,6 @@ public class ToTextStream extends ToStream
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
-
-    m_currentElemDepth++;
-
     // time to fire off startElement event
     if (m_tracer != null) {
         super.fireStartElem(name);
@@ -198,7 +195,6 @@ public class ToTextStream extends ToStream
   public void endElement(String namespaceURI, String localName, String name)
           throws org.xml.sax.SAXException
   {
-        m_currentElemDepth--;
         if (m_tracer != null)
 		    super.fireEndElem(name);           
   }
@@ -567,7 +563,6 @@ void writeNormalizedChars(
      */
     public void endElement(String elemName) throws SAXException
     {
-        m_currentElemDepth--;
 		if (m_tracer != null)
             super.fireEndElem(elemName);                       
     }
@@ -581,8 +576,6 @@ void writeNormalizedChars(
     String elementName) 
     throws SAXException 
     {
-        m_currentElemDepth++;
-
         if (m_needToCallStartDocument)
             startDocumentInternal();		
 		// time to fire off startlement event.

@@ -381,7 +381,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         flushPending();
         super.startElement(namespaceURI, localName, qName, atts);
         m_saxHandler.startElement(namespaceURI, localName, qName, atts);
-        m_startTagOpen = false;
+        m_elemContext.m_startTagOpen = false;
     }
 
     /**
@@ -472,13 +472,13 @@ public class ToHTMLSAXHandler extends ToSAXHandler
     protected void closeStartTag() throws SAXException
     {
 
-        m_startTagOpen = false;
+        m_elemContext.m_startTagOpen = false;
 
         // Now is time to send the startElement event
         m_saxHandler.startElement(
             EMPTYSTRING,
-            m_elementName,
-            m_elementName,
+            m_elemContext.m_elementName,
+            m_elemContext.m_elementName,
             m_attributes);
         m_attributes.clear();       
 
@@ -565,14 +565,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
                     doctypeSystem);
             m_lexHandler = null;
         }
-
-        m_currentElemDepth++;
-        m_elementName = elementName;         // required
-        m_elementLocalName = elementLocalName; // possibly null (optional)
-        m_elementURI = elementNamespaceURI;  // possibly null (optional)
-//        m_attributes.clear();
-        m_startTagOpen = true;
-
+        m_elemContext = m_elemContext.push(elementNamespaceURI, elementLocalName, elementName);
     }
     /**
      * An element starts, but attributes are not fully known yet.
@@ -657,7 +650,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
 			} catch (SAXException e) {}
 		}       	
         // Close any open element
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             try
             {
@@ -667,7 +660,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
             {
                 // do something ??
             }
-            m_startTagOpen = false;
+            m_elemContext.m_startTagOpen = false;
         }
     }
     /**
@@ -740,16 +733,16 @@ public class ToHTMLSAXHandler extends ToSAXHandler
         throws SAXException
     {
         // hack for XSLTC with finding URI for default namespace
-        if (m_elementURI == null)
+        if (m_elemContext.m_elementURI == null)
         {
-            String prefix1 = getPrefixPart(m_elementName);
+            String prefix1 = getPrefixPart(m_elemContext.m_elementName);
             if (prefix1 == null && EMPTYSTRING.equals(prefix))
             {
                 // the elements URI is not known yet, and it
                 // doesn't have a prefix, and we are currently
                 // setting the uri for prefix "", so we have
                 // the uri for the element... lets remember it
-                m_elementURI = uri;
+                m_elemContext.m_elementURI = uri;
             }
         }       
         startPrefixMapping(prefix,uri,false);

@@ -76,10 +76,6 @@ import org.xml.sax.SAXException;
 
 public class ToHTMLStream extends ToStream 
 {
-    /** State stack to keep track of if the current element has output 
-     *  escaping disabled. 
-     */
-    protected final BoolStack m_isRawStack = new BoolStack();
 
     /** This flag is set while receiving events from the DTD */
     protected boolean m_inDTD = false;
@@ -506,9 +502,6 @@ public class ToHTMLStream extends ToStream
     /** True if the META tag should be omitted. */
     private boolean m_omitMetaTag = false;
 
-    /** Element description of the element currently being processed */
-    private ElemDesc m_elementDesc = null;
-
     /**
      * Tells if the formatter should use special URL escaping.
      *
@@ -719,10 +712,10 @@ public class ToHTMLStream extends ToStream
     {
 
         // clean up any pending things first
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
-            m_startTagOpen = false;
+            m_elemContext.m_startTagOpen = false;
         }
         else if (m_cdataTagOpen)
         {
@@ -756,7 +749,7 @@ public class ToHTMLStream extends ToStream
                 if (m_ispreserve)
                     m_ispreserve = false;
                 else if (
-                    (null != m_elementName)
+                    (null != m_elemContext.m_elementName)
                     && (!m_inBlockElem
                         || isBlockElement) /* && !isWhiteSpaceSensitive */
                     )
@@ -773,47 +766,37 @@ public class ToHTMLStream extends ToStream
             if (atts != null)
                 addAttributes(atts);            
 
-            // deal with the opening tag itself
-            m_startTagOpen = true;
-            m_elementDesc = elemDesc;
             m_isprevtext = false;
             final java.io.Writer writer = m_writer;
             writer.write('<');
             writer.write(name);
-            
-            
-            // OPTIMIZE-EMPTY 
-            if (elemDesc.is(ElemDesc.EMPTY))
-            {
-                // if the element is empty (has no children) then we can quit early and
-                // not update all the other state information because the endElement() is
-                // coming right away.  If you want to kill this optimization the corresponding
-                // optimization "OPTIMIZE-EMPTY in endElement() must be killed too.
-                if (m_tracer != null)
-                    firePseudoAttributes();
 
-                return;
-            }
 
-            // update any state information
-            m_elementLocalName = localName;
-            m_elementURI = namespaceURI;
-            m_elementName = name;
-            m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
-            m_currentElemDepth++; // current element is one element deeper
 
             if (m_tracer != null)
                 firePseudoAttributes();
-
             
+            if (elemDesc.is(ElemDesc.EMPTY) )  
+            {
+                // an optimization for elements which are expected
+                // to be empty.  Only remember the element description.
+                m_elemContext = m_elemContext.push();
+                m_elemContext.m_elementDesc = elemDesc;
+                return;                
+            } 
+            else
+            {
+                m_elemContext = m_elemContext.push(namespaceURI,localName,name);
+                m_elemContext.m_elementDesc = elemDesc;
+                m_elemContext.m_isRaw = elemDesc.is(ElemDesc.RAW);
+            }
+            
+
             if (elemDesc.is(ElemDesc.HEADELEM))
             {
                 // This is the <HEAD> element, do some special processing
-                if (m_startTagOpen)
-                {
-                    closeStartTag();
-                    m_startTagOpen = false;
-                }
+                closeStartTag();
+                m_elemContext.m_startTagOpen = false;
                 if (!m_omitMetaTag)
                 {
                     if (m_doIndent)
@@ -864,14 +847,13 @@ public class ToHTMLStream extends ToStream
         try
         {
 
-            final ElemDesc elemDesc = getElemDesc(name);
-            m_elementDesc = elemDesc;
+            final ElemDesc elemDesc = m_elemContext.m_elementDesc;
             final boolean elemEmpty = elemDesc.is(ElemDesc.EMPTY);
 
             // deal with any indentation issues
             if (m_doIndent)
             {
-                boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
+                final boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
                 boolean shouldIndent = false;
 
                 if (m_ispreserve)
@@ -883,13 +865,13 @@ public class ToHTMLStream extends ToStream
                     m_startNewLine = true;
                     shouldIndent = true;
                 }
-                if (!m_startTagOpen && shouldIndent)
+                if (!m_elemContext.m_startTagOpen && shouldIndent)
                     indent();
                 m_inBlockElem = !isBlockElement;
             }
 
             final java.io.Writer writer = m_writer;
-            if (!m_startTagOpen)
+            if (!m_elemContext.m_startTagOpen)
             {
                 writer.write("</");
                 writer.write(name);
@@ -897,10 +879,11 @@ public class ToHTMLStream extends ToStream
             }
             else
             {
-                // the start-tag was already closed.
+                // the start-tag open when this method was called,
+                // so we need to process it now.
                 
                 if (m_tracer != null)
-                    super.fireStartElem(m_elementName);
+                    super.fireStartElem(name);
 
                 // the starting tag was still open when we received this endElement() call
                 // so we need to process any gathered attributes NOW, before they go away.
@@ -926,21 +909,12 @@ public class ToHTMLStream extends ToStream
                 {
                     writer.write('>');
                 }
-
-                /* no need to call m_cdataSectionStates.pop();
-                 * because pushCdataSectionState() was never called
-                 * ... the endElement call came before we had a chance
-                 * to push the state.
-                 */
-
             }
             
             // clean up because the element has ended
             if (elemDesc.is(ElemDesc.WHITESPACESENSITIVE))
                 m_ispreserve = true;
             m_isprevtext = false;
-            m_elementURI = null;
-            m_elementLocalName = null;
 
             // fire off the end element event
             if (m_tracer != null)
@@ -952,27 +926,18 @@ public class ToHTMLStream extends ToStream
                 // a quick exit if the HTML element had no children.
                 // This block of code can be removed if the corresponding block of code
                 // in startElement() also labeled with "OPTIMIZE-EMPTY" is also removed
-                m_startTagOpen = false;
+                m_elemContext = m_elemContext.m_prev;
                 return;
             }
 
             // some more clean because the element has ended. 
-            if (!m_startTagOpen)
+            if (!m_elemContext.m_startTagOpen)
             {
-                if (m_cdataSectionElements != null)
-                    m_cdataSectionStates.pop();
                 if (m_doIndent && !m_preserves.isEmpty())
                     m_preserves.pop();
             }
-            else
-                m_startTagOpen = false;
-            /* At this point m_startTagOpen is always false because
-             * we don't have any open tags anymore, since we just 
-             * wrote out a closing ">" 
-             */ 
-
-            m_currentElemDepth--;
-            m_isRawStack.pop();
+            m_elemContext = m_elemContext.m_prev;
+//            m_isRawStack.pop();
         }
         catch (IOException e)
         {
@@ -1439,14 +1404,14 @@ public class ToHTMLStream extends ToStream
         throws org.xml.sax.SAXException
     {
 
-        if (m_isRawStack.peekOrFalse())
+        if (m_elemContext.m_isRaw)
         {
             try
             {
-                if (m_startTagOpen)
+                if (m_elemContext.m_startTagOpen)
                 {
                     closeStartTag();
-                    m_startTagOpen = false;
+                    m_elemContext.m_startTagOpen = false;
                 }
                 m_ispreserve = true;
                 
@@ -1514,16 +1479,16 @@ public class ToHTMLStream extends ToStream
         throws org.xml.sax.SAXException
     {
 
-        if ((null != m_elementName)
-            && (m_elementName.equalsIgnoreCase("SCRIPT")
-                || m_elementName.equalsIgnoreCase("STYLE")))
+        if ((null != m_elemContext.m_elementName)
+            && (m_elemContext.m_elementName.equalsIgnoreCase("SCRIPT")
+                || m_elemContext.m_elementName.equalsIgnoreCase("STYLE")))
         {
             try
             {
-                if (m_startTagOpen)
+                if (m_elemContext.m_startTagOpen)
                 {
                     closeStartTag();
-                    m_startTagOpen = false;
+                    m_elemContext.m_startTagOpen = false;
                 }
 
                 m_ispreserve = true;
@@ -1582,10 +1547,10 @@ public class ToHTMLStream extends ToStream
         {
             try
             {
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 closeStartTag();
-                m_startTagOpen = false;
+                m_elemContext.m_startTagOpen = false;
             }
             else if (m_needToCallStartDocument)
                 startDocumentInternal();
@@ -1608,7 +1573,7 @@ public class ToHTMLStream extends ToStream
             // Always output a newline char if not inside of an 
             // element. The whitespace is not significant in that
             // case.
-            if (m_currentElemDepth <= 0)
+            if (m_elemContext.m_currentElemDepth <= 0)
                 outputLineSep();
 
             m_startNewLine = true;
@@ -1678,7 +1643,7 @@ public class ToHTMLStream extends ToStream
                     writer,
                     m_attributes.getQName(i),
                     m_attributes.getValue(i),
-                    m_elementDesc);
+                    m_elemContext.m_elementDesc);
             }
     }
 
@@ -1695,7 +1660,7 @@ public class ToHTMLStream extends ToStream
 
             // finish processing attributes, time to fire off the start element event
             if (m_tracer != null)
-                super.fireStartElem(m_elementName);  
+                super.fireStartElem(m_elemContext.m_elementName);  
             
             int nAttrs = m_attributes.getLength();   
             if (nAttrs>0)
@@ -1712,7 +1677,7 @@ public class ToHTMLStream extends ToStream
              * section-elements list.
              */
             if (m_cdataSectionElements != null) 
-                pushCdataSectionState();
+                m_elemContext.m_isCdataSection = isCdataSection();
             if (m_doIndent)
             {
                 m_isprevtext = false;
@@ -1788,16 +1753,16 @@ public class ToHTMLStream extends ToStream
             throws SAXException
         {
             // hack for XSLTC with finding URI for default namespace
-            if (m_elementURI == null)
+            if (m_elemContext.m_elementURI == null)
             {
-                String prefix1 = getPrefixPart(m_elementName);
+                String prefix1 = getPrefixPart(m_elemContext.m_elementName);
                 if (prefix1 == null && EMPTYSTRING.equals(prefix))
                 {
                     // the elements URI is not known yet, and it
                     // doesn't have a prefix, and we are currently
                     // setting the uri for prefix "", so we have
                     // the uri for the element... lets remember it
-                    m_elementURI = uri;
+                    m_elemContext.m_elementURI = uri;
                 }
             }            
             startPrefixMapping(prefix,uri,false);
@@ -1883,10 +1848,10 @@ public class ToHTMLStream extends ToStream
     
     private void initToHTMLStream()
     {
-        m_elementDesc = null;
+//        m_elementDesc = null;
         m_inBlockElem = false;
         m_inDTD = false;
-        m_isRawStack.clear();
+//        m_isRawStack.clear();
         m_omitMetaTag = false;
         m_specialEscapeURLs = true;     
     }

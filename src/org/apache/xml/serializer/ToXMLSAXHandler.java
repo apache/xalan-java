@@ -232,26 +232,23 @@ public class ToXMLSAXHandler extends ToSAXHandler
     protected void closeStartTag() throws SAXException
     {
 
-        m_startTagOpen = false;
+        m_elemContext.m_startTagOpen = false;
 
-        final String localName = getLocalName(m_elementName);
-        final String uri = getNamespaceURI(m_elementName, true);
+        final String localName = getLocalName(m_elemContext.m_elementName);
+        final String uri = getNamespaceURI(m_elemContext.m_elementName, true);
 
         // Now is time to send the startElement event
         if (m_needToCallStartDocument)
         {
             startDocumentInternal();
         }
-        m_saxHandler.startElement(uri, localName, m_elementName, m_attributes);
+        m_saxHandler.startElement(uri, localName, m_elemContext.m_elementName, m_attributes);
         // we've sent the official SAX attributes on their way,
         // now we don't need them anymore.
         m_attributes.clear();
 
         if(m_state != null)
           m_state.setCurrentNode(null);
-
-        pushCdataSectionState();
-
     }
 
     /**
@@ -276,16 +273,16 @@ public class ToXMLSAXHandler extends ToSAXHandler
         
         if (namespaceURI == null)
         {
-            if (m_elementURI != null)
-                namespaceURI = m_elementURI;
+            if (m_elemContext.m_elementURI != null)
+                namespaceURI = m_elemContext.m_elementURI;
             else
                 namespaceURI = getNamespaceURI(qName, true);
         }
         
         if (localName == null)
         {
-            if (m_elementLocalName != null)
-                localName = m_elementLocalName;
+            if (m_elemContext.m_elementLocalName != null)
+                localName = m_elemContext.m_elementLocalName;
             else
                 localName = getLocalName(qName);
         }
@@ -298,14 +295,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
         /* Pop all namespaces at the current element depth.
          * We are not waiting for official endPrefixMapping() calls.
          */
-        m_prefixMap.popNamespaces(m_currentElemDepth);
-        m_currentElemDepth--;
-        m_startTagOpen = false;
-        // m_disableOutputEscapingStates.pop();
-        if (m_cdataSectionElements != null)
-            m_cdataSectionStates.pop();
-        m_elementURI = null;
-        m_elementLocalName = null;
+        m_prefixMap.popNamespaces(m_elemContext.m_currentElemDepth);
+        m_elemContext = m_elemContext.m_prev;
     }
 
     /**
@@ -384,12 +375,12 @@ public class ToXMLSAXHandler extends ToSAXHandler
         {
             flushPending();
             // the prefix mapping applies to the child element (one deeper)
-            pushDepth = m_currentElemDepth + 1;
+            pushDepth = m_elemContext.m_currentElemDepth + 1;
         }
         else
         {
             // the prefix mapping applies to the current element
-            pushDepth = m_currentElemDepth;
+            pushDepth = m_elemContext.m_currentElemDepth;
         }
         pushed = m_prefixMap.pushNamespace(prefix, uri, pushDepth);
 
@@ -522,7 +513,7 @@ public class ToXMLSAXHandler extends ToSAXHandler
 
         flushPending();
 
-        if (m_cdataSectionStates.peekOrFalse())
+        if (m_elemContext.m_isCdataSection)
         {
             startCDATA(ch, off, len);
         }
@@ -667,27 +658,20 @@ public class ToXMLSAXHandler extends ToSAXHandler
              }
              m_needToOutputDocTypeDecl = false;
          }
-
-        m_currentElemDepth++; // current element is one element deeper
+        m_elemContext = m_elemContext.push(namespaceURI, localName, name);
 
         // ensurePrefixIsDeclared depends on the current depth, so
         // the previous increment is necessary where it is.
         if (namespaceURI != null)
             ensurePrefixIsDeclared(namespaceURI, name);
 
-        // remember for later
-        m_elementLocalName = localName;  // null if not known yet
-        m_elementURI = namespaceURI;     // null if not known yet
-        m_elementName = name;            // required 
-
         // add the attributes to the collected ones
         if (atts != null)
             addAttributes(atts);
 
-        m_startTagOpen = true;
          
         // do we really need this CDATA section state?
-        pushCdataSectionState();
+        m_elemContext.m_isCdataSection = isCdataSection();
    
     }
  
@@ -744,7 +728,7 @@ public class ToXMLSAXHandler extends ToSAXHandler
         String value)
         throws SAXException
     {      
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             ensurePrefixIsDeclared(uri, rawName);
             addAttributeAlways(uri, localName, rawName, type, value);

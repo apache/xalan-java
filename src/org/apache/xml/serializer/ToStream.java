@@ -762,7 +762,7 @@ abstract public class ToStream extends SerializerBase
          * will run faster in that situation.
          */
         if (m_indentAmount > 0)
-            printSpace(m_currentElemDepth * m_indentAmount);
+            printSpace(m_elemContext.m_currentElemDepth * m_indentAmount);
 
     }
     /**
@@ -1240,10 +1240,10 @@ abstract public class ToStream extends SerializerBase
         try
         {
             final int old_start = start;
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 closeStartTag();
-                m_startTagOpen = false;
+                m_elemContext.m_startTagOpen = false;
             }
             m_ispreserve = true;
 
@@ -1329,10 +1329,10 @@ abstract public class ToStream extends SerializerBase
             return;
         try
         {
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 closeStartTag();
-                m_startTagOpen = false;
+                m_elemContext.m_startTagOpen = false;
             }
 
             m_ispreserve = true;
@@ -1376,17 +1376,17 @@ abstract public class ToStream extends SerializerBase
     public void characters(final char chars[], final int start, final int length)
         throws org.xml.sax.SAXException
     {
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
-            m_startTagOpen = false;
+            m_elemContext.m_startTagOpen = false;
         }
         else if (m_needToCallStartDocument)
         {
             startDocumentInternal();
         }
 
-        if (m_cdataStartCalled || m_cdataSectionStates.peekOrFalse())
+        if (m_cdataStartCalled || m_elemContext.m_isCdataSection)
         {
             /* either due to startCDATA() being called or due to 
              * cdata-section-elements atribute, we need this as cdata
@@ -1411,10 +1411,10 @@ abstract public class ToStream extends SerializerBase
             return;
         }
 
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
-            m_startTagOpen = false;
+            m_elemContext.m_startTagOpen = false;
         }
 
         
@@ -1714,20 +1714,15 @@ abstract public class ToStream extends SerializerBase
             /* before we over-write the current elementLocalName etc.
              * lets close out the old one (if we still need to)
              */
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 closeStartTag();
-                m_startTagOpen = false;
+                m_elemContext.m_startTagOpen = false;
             }
 
             if (namespaceURI != null)
                 ensurePrefixIsDeclared(namespaceURI, name);
-
-            // remember for later
-            m_elementLocalName = localName;
-            m_elementURI = namespaceURI;
-            m_elementName = name;
-
+                
             m_ispreserve = false;
 
             if (shouldIndent() && m_startNewLine)
@@ -1749,10 +1744,8 @@ abstract public class ToStream extends SerializerBase
         // process the attributes now, because after this SAX call they might be gone
         if (atts != null)
             addAttributes(atts);
-
-        // mark that the closing '>' of the starting tag is not yet written out
-        m_startTagOpen = true;
-        m_currentElemDepth++; // current element is one element deeper
+            
+        m_elemContext = m_elemContext.push(namespaceURI,localName,name);
         m_isprevtext = false;
 
 		if (m_tracer != null)
@@ -1956,18 +1949,15 @@ abstract public class ToStream extends SerializerBase
 
         // namespaces declared at the current depth are no longer valid
         // so get rid of them    
-        m_prefixMap.popNamespaces(m_currentElemDepth);
-
-        // this element is done, so the new current element is one element less deep    
-        m_currentElemDepth--;
+        m_prefixMap.popNamespaces(m_elemContext.m_currentElemDepth);
 
         try
         {
             final java.io.Writer writer = m_writer;
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 if (m_tracer != null)
-                    super.fireStartElem(m_elementName);
+                    super.fireStartElem(m_elemContext.m_elementName);
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
                 {
@@ -1996,8 +1986,6 @@ abstract public class ToStream extends SerializerBase
                 writer.write('/');
                 writer.write(name);
                 writer.write('>');
-                if (m_cdataSectionElements != null)
-                    m_cdataSectionStates.pop();
             }
         }
         catch (IOException e)
@@ -2005,22 +1993,17 @@ abstract public class ToStream extends SerializerBase
             throw new SAXException(e);
         }
 
-        if (!m_startTagOpen && m_doIndent)
+        if (!m_elemContext.m_startTagOpen && m_doIndent)
         {
             m_ispreserve = m_preserves.isEmpty() ? false : m_preserves.pop();
         }
 
         m_isprevtext = false;
-        m_startTagOpen = false;
-
-        // m_disableOutputEscapingStates.pop();
-
-		m_elementURI = null;
-		m_elementLocalName = null;
 
         // fire off the end element event
         if (m_tracer != null)
             super.fireEndElem(name);
+        m_elemContext = m_elemContext.m_prev;
     }
 
     /**
@@ -2096,12 +2079,12 @@ abstract public class ToStream extends SerializerBase
         {
             flushPending();
             // the prefix mapping applies to the child element (one deeper)
-            pushDepth = m_currentElemDepth + 1;
+            pushDepth = m_elemContext.m_currentElemDepth + 1;
         }
         else
         {
             // the prefix mapping applies to the current element
-            pushDepth = m_currentElemDepth;
+            pushDepth = m_elemContext.m_currentElemDepth;
         }
         pushed = m_prefixMap.pushNamespace(prefix, uri, pushDepth);
 
@@ -2152,10 +2135,10 @@ abstract public class ToStream extends SerializerBase
         int start_old = start;
         if (m_inEntityRef)
             return;
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
-            m_startTagOpen = false;
+            m_elemContext.m_startTagOpen = false;
         }
         else if (m_needToCallStartDocument)
         {
@@ -2234,7 +2217,7 @@ abstract public class ToStream extends SerializerBase
         {
             if (m_needToOutputDocTypeDecl)
             {
-                outputDocTypeDecl(m_elementName, false);
+                outputDocTypeDecl(m_elemContext.m_elementName, false);
                 m_needToOutputDocTypeDecl = false;
             }
             final java.io.Writer writer = m_writer;
@@ -2346,13 +2329,13 @@ abstract public class ToStream extends SerializerBase
     protected void closeStartTag() throws SAXException
     {
 
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
 
             try
             {
                 if (m_tracer != null)
-                    super.fireStartElem(m_elementName);
+                    super.fireStartElem(m_elemContext.m_elementName);
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
                 {
@@ -2372,7 +2355,7 @@ abstract public class ToStream extends SerializerBase
              * section-elements list.
              */
             if (m_cdataSectionElements != null)
-                pushCdataSectionState();
+                m_elemContext.m_isCdataSection = isCdataSection();
 
             if (m_doIndent)
             {
@@ -2405,7 +2388,7 @@ abstract public class ToStream extends SerializerBase
         setDoctypeSystem(systemId);
         setDoctypePublic(publicId);
 
-        m_elementName = name;
+        m_elemContext.m_elementName = name;
         m_inDoctype = true;
     }
 
@@ -2673,10 +2656,10 @@ abstract public class ToStream extends SerializerBase
                 startDocumentInternal();
                 m_needToCallStartDocument = false;
             }
-            if (m_startTagOpen)
+            if (m_elemContext.m_startTagOpen)
             {
                 closeStartTag();
-                m_startTagOpen = false;
+                m_elemContext.m_startTagOpen = false;
             }
 
             if (m_cdataTagOpen)

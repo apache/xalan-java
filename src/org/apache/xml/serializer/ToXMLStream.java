@@ -118,15 +118,10 @@ public class ToXMLStream extends ToStream
 
         setOmitXMLDeclaration(xmlListener.getOmitXMLDeclaration());
 
-        m_startTagOpen = xmlListener.m_startTagOpen;
-
-        // m_lineSep = xmlListener.m_lineSep;
-        // m_lineSepLen = xmlListener.m_lineSepLen;
         m_ispreserve = xmlListener.m_ispreserve;
         m_preserves = xmlListener.m_preserves;
         m_isprevtext = xmlListener.m_isprevtext;
         m_doIndent = xmlListener.m_doIndent;
-        m_currentElemDepth = xmlListener.m_currentElemDepth;
         setIndentAmount(xmlListener.getIndentAmount());
         m_startNewLine = xmlListener.m_startNewLine;
         m_needToOutputDocTypeDecl = xmlListener.m_needToOutputDocTypeDecl;
@@ -295,10 +290,10 @@ public class ToXMLStream extends ToStream
         {
             try
             {
-                if (m_startTagOpen)
+                if (m_elemContext.m_startTagOpen)
                 {
                     closeStartTag();
-                    m_startTagOpen = false;
+                    m_elemContext.m_startTagOpen = false;
                 }
 
                 if (shouldIndent())
@@ -341,7 +336,7 @@ public class ToXMLStream extends ToStream
                 // Always output a newline char if not inside of an
                 // element. The whitespace is not significant in that
                 // case.
-                if (m_currentElemDepth <= 0)
+                if (m_elemContext.m_currentElemDepth <= 0)
                     writer.write(m_lineSep, 0, m_lineSepLen);
 
                 m_startNewLine = true;
@@ -365,10 +360,10 @@ public class ToXMLStream extends ToStream
      */
     public void entityReference(String name) throws org.xml.sax.SAXException
     {
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
-            m_startTagOpen = false;
+            m_elemContext.m_startTagOpen = false;
         }
 
         try
@@ -399,7 +394,7 @@ public class ToXMLStream extends ToStream
         String value)
         throws SAXException
     {
-        if (m_startTagOpen)
+        if (m_elemContext.m_startTagOpen)
         {
             if (!rawName.startsWith("xmlns"))
             {
@@ -519,16 +514,16 @@ public class ToXMLStream extends ToStream
     {
 
         // hack for XSLTC with finding URI for default namespace
-        if (m_elementURI == null)
+        if (m_elemContext.m_elementURI == null)
         {
-            String prefix1 = getPrefixPart(m_elementName);
+            String prefix1 = getPrefixPart(m_elemContext.m_elementName);
             if (prefix1 == null && EMPTYSTRING.equals(prefix))
             {
                 // the elements URI is not known yet, and it
                 // doesn't have a prefix, and we are currently
                 // setting the uri for prefix "", so we have
                 // the uri for the element... lets remember it
-                m_elementURI = uri;
+                m_elemContext.m_elementURI = uri;
             }
         }            
         startPrefixMapping(prefix,uri,false);
@@ -545,7 +540,8 @@ public class ToXMLStream extends ToStream
     {
         try
         {
-            if (m_prefixMap.pushNamespace(prefix, uri, m_currentElemDepth))
+            if (m_prefixMap.pushNamespace(
+                prefix, uri, m_elemContext.m_currentElemDepth))
             {
                 startPrefixMapping(prefix, uri);
                 return true;
