@@ -282,7 +282,19 @@ public class SerializerToHTML extends SerializerToXML
 
     // From "John Ky" <hand@syd.speednet.com.au
     m_elementFlags.put("NOBR", new ElemDesc(0 | ElemDesc.FONTSTYLE));
-
+    
+     // HTML 4.0, section 16.5
+     m_elementFlags.put("IFRAME",
+                                        new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.BLOCKFORM
+                                                                     | ElemDesc.BLOCKFORMFIELDSET));
+     // NS4 extensions
+     m_elementFlags.put("LAYER",
+                                        new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.BLOCKFORM
+                                                                     | ElemDesc.BLOCKFORMFIELDSET));
+     m_elementFlags.put("ILAYER",
+                                        new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.BLOCKFORM
+                                                                     | ElemDesc.BLOCKFORMFIELDSET));
+  
     ElemDesc elemDesc;
 
     elemDesc = (ElemDesc) m_elementFlags.get("AREA");
@@ -314,6 +326,9 @@ public class SerializerToHTML extends SerializerToXML
 
     elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
     elemDesc.setAttr("NAME", ElemDesc.ATTRURL);
+    
+    elemDesc = (ElemDesc) m_elementFlags.get("LINK");
+    elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
 
     elemDesc = (ElemDesc) m_elementFlags.get("INPUT");
 
@@ -379,6 +394,26 @@ public class SerializerToHTML extends SerializerToXML
 
     // Attribution to: "Voytenko, Dimitry" <DVoytenko@SECTORBASE.COM>
     elemDesc = (ElemDesc) m_elementFlags.get("FRAME");
+
+    elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+    elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
+ 
+    // HTML 4.0, section 16.5
+    elemDesc = (ElemDesc) m_elementFlags.get("IFRAME");
+ 
+    elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+    elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
+ 
+    // NS4 extensions
+    elemDesc = (ElemDesc) m_elementFlags.get("LAYER");
+ 
+    elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+ 
+    elemDesc = (ElemDesc) m_elementFlags.get("ILAYER");
+ 
+    elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+ 
+    elemDesc = (ElemDesc) m_elementFlags.get("DIV");
 
     elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
   }
