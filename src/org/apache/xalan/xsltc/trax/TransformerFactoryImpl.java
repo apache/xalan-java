@@ -410,7 +410,7 @@ public class TransformerFactoryImpl
 
 	InputSource input = null;
 	String systemId = source.getSystemId();
-	if (systemId == null) ystemId = "";
+	if (systemId == null) systemId = "";
 
 	try {
 
