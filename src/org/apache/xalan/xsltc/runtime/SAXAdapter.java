@@ -65,17 +65,25 @@
 package org.apache.xalan.xsltc.runtime;
 
 import org.xml.sax.*;
+import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.*;
 
 public final class SAXAdapter implements TransletOutputHandler {
 
     private final ContentHandler _saxHandler;
+    private final LexicalHandler _lexHandler;
     private final AttributeList  _attributes = new AttributeList();
 
     private String _openElementName;
     
     public SAXAdapter(ContentHandler saxHandler) {
 	_saxHandler = saxHandler;
+	_lexHandler = null;
+    }
+
+    public SAXAdapter(ContentHandler saxHandler, LexicalHandler lexHandler) {
+	_saxHandler = saxHandler;
+	_lexHandler = lexHandler;
     }
 
     private void maybeEmitStartElement() throws SAXException {
@@ -153,6 +161,10 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void comment(String comment) throws TransletException {
 	try {
 	    maybeEmitStartElement();
+	    if (_lexHandler != null) {
+		char[] chars = comment.toCharArray();
+		_lexHandler.comment(chars, 0, chars.length);
+	    }
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);

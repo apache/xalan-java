@@ -2754,7 +2754,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * DOM builder's interface is pure SAX2 (must investigate)
      */
     public TransletOutputHandler getOutputDomBuilder() {
-	return new SAXAdapter(getBuilder());
+	DOMBuilder builder = getBuilder();
+	return new SAXAdapter(builder, builder);
     }
 
     /**
