@@ -90,6 +90,7 @@ import org.apache.xalan.utils.NodeVector;
 import org.apache.xalan.utils.BoolStack;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xalan.utils.ObjectPool;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
@@ -200,10 +201,8 @@ public class TransformerImpl extends XMLFilterImpl
     m_countersTable = null;
     m_stackGuard = new StackGuard();
     getXPathContext().reset();
-    m_currentTemplateElements = new Stack();
-    m_currentNodes = new Stack();
-    m_currentMatchTemplates = new Stack();
-    m_currentMatchNodes = new Stack();
+    m_currentTemplateElements.removeAllElements();
+    m_currentMatchTemplates.removeAllElements();
     m_resultTreeHandler = null;
     m_keyManager = new KeyManager();
     m_attrSetStack = null;
@@ -248,7 +247,29 @@ public class TransformerImpl extends XMLFilterImpl
   {
     return m_parserEventsOnMain;
   }
-    
+  
+  private Thread m_transformThread;
+  
+  /**
+ * <meta name="usage" content="internal"/>
+   * Get the thread that the transform process is on.
+   * This may return null.
+   */
+  public Thread getTransformThread()
+  {
+    return m_transformThread;
+  }
+
+  /**
+ * <meta name="usage" content="internal"/>
+   * Get the thread that the transform process is on.
+   * This may return null.
+   */
+  public void setTransformThread(Thread t)
+  {
+    m_transformThread = t;
+  }
+
   /**
    * Process the source tree to SAX parse events.
    * @param xmlSource  The input for the source tree.
@@ -335,7 +356,9 @@ public class TransformerImpl extends XMLFilterImpl
           throw new org.apache.trax.TransformException(
             ((org.apache.xalan.utils.WrappedRuntimeException)e).getException());
         else
+        {
           throw new org.apache.trax.TransformException(e);
+        }
       }
       else if(null != m_resultTreeHandler)
       {
@@ -865,13 +888,16 @@ public class TransformerImpl extends XMLFilterImpl
     vars.pushContextMarker();
     
     int n = m_newVars.size();
-    for(int i = 0; i < n; i++)
+    if(n > 0)
     {
-      vars.push((Arg)m_newVars.elementAt(i));
+      for(int i = 0; i < n; i++)
+      {
+        vars.push((Arg)m_newVars.elementAt(i));
+      }
+      
+      // Dragons check: make sure this is nulling the refs.
+      m_newVars.removeAllElements();
     }
-    
-    // Dragons check: make sure this is nulling the refs.
-    m_newVars.removeAllElements();
     
   } // end pushParams method
   
@@ -1005,6 +1031,29 @@ public class TransformerImpl extends XMLFilterImpl
     return resultFragment;
   }  
   
+  private ObjectPool m_textResultHandlerObjectPool 
+    = new ObjectPool(org.apache.xalan.transformer.ResultTreeHandler.class);
+
+  private ObjectPool m_stringWriterObjectPool 
+    = new ObjectPool(java.io.StringWriter.class);
+  
+  /** 
+   * <meta name="usage" content="internal"/>
+   * 
+   */
+  public ObjectPool getStringWriterPool()
+  {
+    return m_stringWriterObjectPool;
+  }
+  
+  private static OutputFormat m_textformat;
+  static
+  {
+    m_textformat = new OutputFormat();
+    m_textformat.setMethod("text");
+    m_textformat.setPreserveSpace(true);
+  }
+
   /** 
    * <meta name="usage" content="advanced"/>
    * Take the contents of a template element, process it, and
@@ -1021,45 +1070,65 @@ public class TransformerImpl extends XMLFilterImpl
                                  Node sourceNode,
                                  QName mode)
     throws SAXException
-  {    
+  {        
     // Save the current result tree handler.
     ResultTreeHandler savedRTreeHandler = this.m_resultTreeHandler;
     
     // Create a Serializer object that will handle the SAX events 
     // and build the ResultTreeFrag nodes.
-    ContentHandler shandler;
-    StringWriter sw;
+    StringWriter sw 
+      = (StringWriter)m_stringWriterObjectPool.getInstance();
+    m_resultTreeHandler 
+      = (ResultTreeHandler)m_textResultHandlerObjectPool.getInstance();
+    Serializer serializer = m_resultTreeHandler.getSerializer();
     try
     {
-      // SerializerFactory sfactory 
-      //  = SerializerFactory.getSerializerFactory("text");
-      sw = new StringWriter();
-      OutputFormat format = new OutputFormat();
-      format.setMethod("text");
-      format.setPreserveSpace(true);
-      Serializer serializer = SerializerFactory.getSerializer(format);
-      serializer.setWriter(sw);
-      shandler = serializer.asContentHandler();
+      if(null == serializer)
+      {
+        serializer = SerializerFactory.getSerializer(m_textformat);
+        m_resultTreeHandler.setSerializer(serializer);
+        serializer.setWriter(sw);
+        ContentHandler shandler = serializer.asContentHandler();
+        m_resultTreeHandler.init(this, shandler);
+      }
+      else
+      {
+        // serializer.setWriter(sw);
+        // serializer.setOutputFormat(m_textformat);
+        // ContentHandler shandler = serializer.asContentHandler();
+        // m_resultTreeHandler.setContentHandler(shandler);
+      }
     }
     catch(IOException ioe)
     {
       throw new SAXException(ioe);
     }
+    
+    String result;
+    try
+    {
+      this.m_resultTreeHandler.startDocument();
 
-    // And make a new handler that will write to the RTF.
-    this.m_resultTreeHandler = new ResultTreeHandler(this, shandler);
-    
-    this.m_resultTreeHandler.startDocument();
-
-    // Do the transformation of the child elements.
-    executeChildTemplates(elem, sourceNode, mode);
-    
-    this.m_resultTreeHandler.endDocument();
-    
-    // Restore the previous result tree handler.
-    this.m_resultTreeHandler = savedRTreeHandler;
-    
-    return sw.toString();
+      // Do the transformation of the child elements.
+      executeChildTemplates(elem, sourceNode, mode);
+      
+      this.m_resultTreeHandler.endDocument();
+      
+      result = sw.toString();
+    }
+    finally
+    {
+      sw.getBuffer().setLength(0);
+      try { sw.close(); } catch(Exception ioe) {}
+      m_stringWriterObjectPool.freeInstance(sw);
+      m_textResultHandlerObjectPool.freeInstance(m_resultTreeHandler);
+      
+      m_resultTreeHandler.reset();
+      
+      // Restore the previous result tree handler.
+      m_resultTreeHandler = savedRTreeHandler;
+    }
+    return result;
   }
         
   /** 
@@ -1261,21 +1330,20 @@ public class TransformerImpl extends XMLFilterImpl
       // See http://www.w3.org/TR/xslt#built-in-rule.
       if(null == template)
       {
-        StylesheetRoot root = m_stylesheetRoot;
         switch(nodeType)
         {
         case Node.DOCUMENT_FRAGMENT_NODE:
         case Node.ELEMENT_NODE:
-          template = root.getDefaultRule();
+          template = m_stylesheetRoot.getDefaultRule();
           break;
         case Node.CDATA_SECTION_NODE:
         case Node.TEXT_NODE:
         case Node.ATTRIBUTE_NODE:
-          template = root.getDefaultTextRule();
+          template = m_defaultTextRule;
           isDefaultTextRule = true;
           break;
         case Node.DOCUMENT_NODE:
-          template = root.getDefaultRootRule();
+          template = m_stylesheetRoot.getDefaultRootRule();
           break;
         default:
           // No default rules for processing instructions and the like.
@@ -1288,15 +1356,14 @@ public class TransformerImpl extends XMLFilterImpl
     // the value directly to the result tree.
     try
     {
-      m_currentMatchTemplates.push(template);
-      m_currentMatchNodes.push(child);
+      m_currentMatchTemplates.pushPair(template, child);
       if(isDefaultTextRule)
       {
         switch(nodeType)
         {
         case Node.CDATA_SECTION_NODE:
         case Node.TEXT_NODE:
-          getResultTreeHandler().cloneToResultTree(stylesheetTree, child, false, false, false);
+          m_resultTreeHandler.m_cloner.cloneToResultTree(child, false);
           break;
         case Node.ATTRIBUTE_NODE:
           {
@@ -1308,30 +1375,29 @@ public class TransformerImpl extends XMLFilterImpl
       }
       else
       {
-		// 9/11/00: If template has been compiled, hand off to it
-		// since much (most? all?) of the processing has been inlined.
-		// (It would be nice if there was a single entry point that
-		// worked for both... but the interpretive system works by
-		// having the Tranformer execute the children, while the
-		// compiled obviously has to run its own code. It's
-		// also unclear that "execute" is really the right name for
-		// that entry point.)
+        // 9/11/00: If template has been compiled, hand off to it
+        // since much (most? all?) of the processing has been inlined.
+        // (It would be nice if there was a single entry point that
+        // worked for both... but the interpretive system works by
+        // having the Tranformer execute the children, while the
+        // compiled obviously has to run its own code. It's
+        // also unclear that "execute" is really the right name for
+        // that entry point.)
 
-		// Fire a trace event for the template.
+        // Fire a trace event for the template.
         if(TransformerImpl.S_DEBUG)
-        getTraceManager().fireTraceEvent(child, mode, template);
+          getTraceManager().fireTraceEvent(child, mode, template);
         
         // And execute the child templates.
-		if(template instanceof org.apache.xalan.processor.CompiledTemplate)
-			template.execute(this,child,mode);
-		else
-			executeChildTemplates(template, child, mode);
+        if(template.isCompiledTemplate())
+          template.execute(this,child,mode);
+        else
+          executeChildTemplates(template, child, mode);
       }
     }
     finally
     {
-      m_currentMatchTemplates.pop();
-      m_currentMatchNodes.pop();
+      m_currentMatchTemplates.popPair();
     }
     return true;
   }
@@ -1363,6 +1429,8 @@ public class TransformerImpl extends XMLFilterImpl
       this.setContentHandler(savedHandler);
     }
   }
+  
+  private ElemTemplate m_defaultTextRule;
 
   /** 
    * <meta name="usage" content="advanced"/>
@@ -1387,7 +1455,7 @@ public class TransformerImpl extends XMLFilterImpl
     XPathContext xctxt = getXPathContext();
 
     // Check for infinite loops if we have to.
-    boolean check = (getRecursionLimit() > -1);
+    boolean check = (m_stackGuard.m_recursionLimit > -1);
     if (check)
       getStackGuard().push(elem, sourceNode);
     
@@ -1399,25 +1467,20 @@ public class TransformerImpl extends XMLFilterImpl
     Locator savedLocator = xctxt.getSAXLocator();
     try
     {
+      pushElemTemplateElement(null, sourceNode);
       // Loop through the children of the template, calling execute on 
       // each of them.
       for (ElemTemplateElement t = firstChild; t != null; 
            t = t.getNextSiblingElem()) 
       {
         xctxt.setSAXLocator(t);
-        try
-        {
-          pushElemTemplateElement(t, sourceNode);
-          t.execute(this, sourceNode, mode);
-        }
-        finally
-        {
-          popElemTemplateElement();
-        }
+        m_currentTemplateElements.setTailSub1(t);
+        t.execute(this, sourceNode, mode);
       }
     }
     finally
     {
+      popElemTemplateElement();
       xctxt.setSAXLocator(savedLocator);
       // Pop all the variables in this element frame.
       varstack.popElemFrame();
@@ -1455,14 +1518,12 @@ public class TransformerImpl extends XMLFilterImpl
         String langString = (null != sort.getLang())
                             ? sort.getLang().evaluate(xctxt, 
                                                       sourceNodeContext, 
-                                                      xslInstruction, 
-                                                      new StringBuffer())
+                                                      xslInstruction)
                               : null;
         String dataTypeString 
           = sort.getDataType().evaluate(xctxt, 
                                         sourceNodeContext, 
-                                        xslInstruction, 
-                                        new StringBuffer());
+                                        xslInstruction);
         if (dataTypeString.indexOf(":") >= 0 )
           System.out.println("TODO: Need to write the hooks for QNAME sort data type");        
         else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT)) && 
@@ -1475,8 +1536,7 @@ public class TransformerImpl extends XMLFilterImpl
             true : false;
         String orderString 
           = sort.getOrder().evaluate(xctxt, sourceNodeContext, 
-                                     xslInstruction, 
-                                     new StringBuffer());
+                                     xslInstruction);
         if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING)) && 
 			      !(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_DESCENDING)))
 			      xslInstruction.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[] {Constants.ATTRNAME_ORDER, orderString});   
@@ -1492,8 +1552,7 @@ public class TransformerImpl extends XMLFilterImpl
           String caseOrderString 
             = caseOrder.evaluate(xctxt, 
                                  sourceNodeContext, 
-                                 xslInstruction, 
-                                 new StringBuffer());
+                                 xslInstruction);
           if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER)) && 
 			      !(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_LOWER)))
 			      xslInstruction.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[] {Constants.ATTRNAME_CASEORDER, caseOrderString});   
@@ -1520,16 +1579,14 @@ public class TransformerImpl extends XMLFilterImpl
   // SECTION: TransformState implementation
   //==========================================================
   
-  private Stack m_currentTemplateElements = new Stack();
-  private Stack m_currentNodes = new Stack();
+  private NodeVector m_currentTemplateElements = new NodeVector(64);
   
   /**
    * Push the current template element.
    */
   public void pushElemTemplateElement(ElemTemplateElement elem, Node currentNode)
   {
-    m_currentTemplateElements.push(elem);
-    m_currentNodes.push(currentNode);
+    m_currentTemplateElements.pushPair(elem, currentNode);
   }
   
   /**
@@ -1537,8 +1594,7 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public void popElemTemplateElement()
   {
-    m_currentTemplateElements.pop();
-    m_currentNodes.pop();
+    m_currentTemplateElements.popPair();
   }
   
   /**
@@ -1547,7 +1603,7 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public ElemTemplateElement getCurrentElement()
   {
-    return (ElemTemplateElement)m_currentTemplateElements.peek();
+    return (ElemTemplateElement)m_currentTemplateElements.peepTailSub1();
   }
 
   /**
@@ -1556,7 +1612,7 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public Node getCurrentNode()
   {
-    return (Node)m_currentNodes.peek();
+    return m_currentTemplateElements.peepTail();
   }
   
   /**
@@ -1576,8 +1632,7 @@ public class TransformerImpl extends XMLFilterImpl
     return (ElemTemplate)elem;
   }
 
-  private Stack m_currentMatchTemplates = new Stack();
-  private Stack m_currentMatchNodes = new Stack();
+  private NodeVector m_currentMatchTemplates = new NodeVector();
 
   /**
    * This method retrieves the xsl:template 
@@ -1588,7 +1643,7 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public ElemTemplate getMatchedTemplate()
   {
-    return (ElemTemplate)m_currentMatchTemplates.peek();
+    return (ElemTemplate)m_currentMatchTemplates.peepTailSub1();
   }
 
   /**
@@ -1597,7 +1652,7 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public Node getMatchedNode()
   {
-    return (Node)m_currentMatchNodes.peek();
+    return m_currentMatchTemplates.peepTail();
   }
   
   /**
@@ -1644,6 +1699,7 @@ public class TransformerImpl extends XMLFilterImpl
   public void setStylesheet(StylesheetRoot stylesheetRoot)
   {
     m_stylesheetRoot = stylesheetRoot;
+    m_defaultTextRule = stylesheetRoot.getDefaultTextRule();
   }
 
   /**
@@ -1886,7 +1942,7 @@ public class TransformerImpl extends XMLFilterImpl
    * This is a compile-time flag to turn off calling 
    * of trace listeners. Set this to false for optimization purposes.
    */
-  public static final boolean S_DEBUG = true;
+  public static boolean S_DEBUG = false;
   
   /**
    * The trace manager.
