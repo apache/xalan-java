@@ -192,9 +192,9 @@ public class StepPattern extends NodeTest implements SubContextList
         finally
         {
           xctxt.popCurrentNode();
-        }
-        return count;
+        }        
       }
+      return count;
     }
     catch(org.xml.sax.SAXException se)
     {
@@ -205,8 +205,7 @@ public class StepPattern extends NodeTest implements SubContextList
     {
       xctxt.popCurrentNode();
       // xctxt.popContextNodeList();
-    }
-    return 0;
+    }   
   }
   
   public XObject executeRelativePathPattern(XPathContext xctxt)
