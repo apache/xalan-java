@@ -116,6 +116,7 @@ public class ApplyXPath
       // Set up a DOM tree to query.
       InputSource in = new InputSource(new FileInputStream(filename));
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+      dfactory.setNamespaceAware(true);
       Document doc = dfactory.newDocumentBuilder().parse(in);
       
       // Set up an identity transformer to use as serializer.
