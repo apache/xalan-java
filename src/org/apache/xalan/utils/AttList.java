@@ -58,6 +58,7 @@ package org.apache.xalan.utils;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
+import org.apache.xpath.DOMHelper;
 
 
 /**
@@ -68,11 +69,22 @@ public class AttList implements Attributes
 {
   NamedNodeMap m_attrs;
   int m_lastIndex;
+  // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
+  // DOM2Helper m_dh = new DOM2Helper();
+  DOMHelper m_dh;
   
   public AttList(NamedNodeMap attrs)
   {
     m_attrs = attrs;
     m_lastIndex = m_attrs.getLength() - 1;
+    m_dh = new DOMHelper();
+  }
+  
+  public AttList(NamedNodeMap attrs, DOMHelper dh)
+  {
+    m_attrs = attrs;
+    m_lastIndex = m_attrs.getLength() - 1;
+    m_dh = dh;
   }
   
   public int getLength ()
@@ -90,7 +102,7 @@ public class AttList implements Attributes
    */
   public String getURI (int index)
   {
-	  return null;
+	  return m_dh.getNamespaceOfNode(((Attr)m_attrs.item(index)));
   }
 
   /**
@@ -103,7 +115,7 @@ public class AttList implements Attributes
    */
   public String getLocalName (int index)
   {
-	  return null;
+	  return m_dh.getLocalNameOfNode(((Attr)m_attrs.item(index)));
   }
 
   public String getQName (int i)
