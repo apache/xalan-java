@@ -335,8 +335,8 @@ public class TemplateList implements java.io.Serializable
       {
         StylesheetComposed imported = stylesheet.getImportComposed(i);
         bestMatchedRule 
-          = imported.getTemplateComposed(support, 
-                                         targetNode, mode, quietConflictWarnings);
+          = getTemplate(imported, support, targetNode, mode, 
+                        quietConflictWarnings);
         if(null != bestMatchedRule)
           break;
       }
@@ -381,6 +381,23 @@ public class TemplateList implements java.io.Serializable
 
     return bestMatchedRule;
   } // end findTemplate
+  
+  /**
+   * For derived classes to override which method gets accesed to 
+   * get the imported template.
+   */
+  protected ElemTemplate getTemplate(StylesheetComposed imported,
+                                     XPathContext support,
+                                     Node targetNode,
+                                     QName mode,
+                                     boolean quietConflictWarnings)
+    throws SAXException
+  {
+    return imported.getTemplateComposed(support, 
+                                         targetNode, mode, 
+                                         quietConflictWarnings);
+  }
+
   
   /**
    * Set the manufactured template if there is no wrapper.

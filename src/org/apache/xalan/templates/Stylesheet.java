@@ -61,7 +61,6 @@ package org.apache.xalan.templates;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.URL;
 import java.text.DecimalFormatSymbols;
 import java.util.Hashtable;
 import java.util.Stack;
@@ -955,14 +954,14 @@ public class Stylesheet  extends ElemTemplateElement
    * The base URL of the XSL document.
    * @serial
    */
-  private URL m_href = null;
+  private String m_href = null;
   private String m_publicId;
   private String m_systemId;
 
   /**
    * Get the base identifier with which this stylesheet is associated.
    */
-  public URL getHref()
+  public String getHref()
   {
     return m_href;
   }
@@ -970,7 +969,7 @@ public class Stylesheet  extends ElemTemplateElement
   /**
    * Get the base identifier with which this stylesheet is associated.
    */
-  public void setHref(URL baseIdent)
+  public void setHref(String baseIdent)
   {
     m_href = baseIdent;
   }
@@ -987,7 +986,7 @@ public class Stylesheet  extends ElemTemplateElement
     {
       try
       {
-        m_href = SystemIDResolver.getURLFromString(m_systemId, null);
+        m_href = SystemIDResolver.getAbsoluteURI(m_systemId, null);
       }
       catch(SAXException se)
       {

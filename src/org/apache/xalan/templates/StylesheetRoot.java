@@ -58,7 +58,6 @@ package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
 import java.util.*;
-import java.net.URL;
 import java.net.MalformedURLException;
 import java.io.*;
 import org.xml.sax.*;
@@ -333,6 +332,7 @@ public class StylesheetRoot
         addImports(included);
       }
     }
+    m_globalImportList.insertElementAt(stylesheet, 0);
   }
   
   /**
@@ -393,10 +393,10 @@ public class StylesheetRoot
     if(this == sheet)
       return 0;
     
-    int n = getImportCount();
+    int n = getGlobalImportCount();
     for(int i = 0; i < n; i++)
     {
-      if(this == getImport(i))
+      if(sheet == getGlobalImport(i))
         return i;
     }
     return -1;

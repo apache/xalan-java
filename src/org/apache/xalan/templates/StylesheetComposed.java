@@ -270,7 +270,7 @@ public class StylesheetComposed extends Stylesheet
    * A list of properties that specify how to do space 
    * stripping. This uses the same exact mechanism as Templates.
    */
-  private transient TemplateList m_whiteSpaceInfoList;
+  private transient WhitespaceList m_whiteSpaceInfoList;
   
   /**
    * Compile a lookup table for WhiteSpaceInfo elements, which are built
@@ -280,7 +280,7 @@ public class StylesheetComposed extends Stylesheet
   void recomposeWhiteSpaceInfo()
     throws SAXException
   {
-    m_whiteSpaceInfoList = new TemplateList(this);
+    m_whiteSpaceInfoList = new WhitespaceList(this);
     
     int nIncludes = getIncludeCountComposed();
     for(int k = -1; k < nIncludes; k++)

@@ -220,13 +220,13 @@ public class FuncDocument extends Function
       TransformerImpl transformer = (TransformerImpl)xctxt.getOwnerObject();
       
       { 
-        java.net.URL url = null;
+        String url = null;
         try
         {
-          url = xctxt.getURLFromString(uri, base);
+          url = xctxt.getAbsoluteURI(uri, base);
           if((null != url) && (url.toString().length() > 0))
           {
-            InputSource inputSource = new InputSource(url.toString());
+            InputSource inputSource = new InputSource(url);
             // System.out.println("Trying to parse: "+url.toString());
             newDoc = transformer.parseToNode(inputSource);
           }
