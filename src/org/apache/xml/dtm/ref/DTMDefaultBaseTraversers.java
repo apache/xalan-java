@@ -1565,6 +1565,21 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
    */
   private class RootTraverser extends AllFromRootTraverser
   {
+    /**
+     * Return the root if it matches the expanded type ID,
+     * else return null (nothing found)
+     *
+     * @param context The context node of this traversal.
+     * @param expandedTypeID The expanded type ID that must match.
+     *
+     * @return the first node in the traversal.
+     */
+    public int first(int context, int expandedTypeID)
+    {
+      int root=getDocumentRoot(context);
+      return (getExpandedTypeID(root) == expandedTypeID)
+	? root : NULL;
+    }
 
     /**
      * Traverse to the next node after the current node.
