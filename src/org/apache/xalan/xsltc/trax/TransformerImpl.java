@@ -64,6 +64,7 @@
 package org.apache.xalan.xsltc.trax;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.Writer;
 import java.io.Reader;
 import java.io.InputStream;
@@ -195,10 +196,12 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     private ContentHandler getOutputHandler(Result result) 
 	throws TransformerException {
 	// Try to get the encoding from Translet (may not be set)
-	if (_translet._encoding != null)
+	if (_translet._encoding != null) {
 	    _encoding = _translet._encoding;
-	else
+	}
+	else {
 	    _encoding = "utf-8"; // default output encoding
+	}
 
 	try {
 	    String systemId = result.getSystemId();
@@ -220,6 +223,11 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		    return (new DefaultSAXOutputHandler(ostream, _encoding));
 		else if (writer != null)
 		    return (new DefaultSAXOutputHandler(writer, _encoding));
+		else if ((systemId != null) && systemId.startsWith("file:")) {
+		    final URL url = new URL(systemId);
+		    final OutputStream os = new FileOutputStream(url.getFile());
+		    return (new DefaultSAXOutputHandler(os, _encoding));
+		}
 	    }
 	    // Handle DOMResult output handler
 	    else if (result instanceof DOMResult) {
