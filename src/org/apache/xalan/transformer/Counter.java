@@ -75,7 +75,7 @@ import org.apache.xalan.templates.ElemNumber;
  * It tries to cache the counted nodes in document order...
  * the node count is based on its position in the cache list
  */
-class Counter
+public class Counter
 {
 
   /**
