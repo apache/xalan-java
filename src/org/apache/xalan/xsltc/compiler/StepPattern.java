@@ -243,7 +243,6 @@ final class StepPattern extends RelativePathPattern {
 	for (int i = 0; i < n; i++) {
 	    final Predicate pred = (Predicate)_predicates.elementAt(i);
 	    final Expression exp = pred.getExpr();
-
 	    exp.translateDesynthesized(classGen, methodGen);
 	    _trueList.append(exp._trueList);
 	    _falseList.append(exp._falseList);

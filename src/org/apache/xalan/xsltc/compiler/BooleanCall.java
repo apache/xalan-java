@@ -69,21 +69,24 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class BooleanCall extends FunctionCall {
+
+    private Expression _arg = null;
+
     public BooleanCall(QName fname, Vector arguments) {
 	super(fname, arguments);
+	_arg = argument(0);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	argument(0).typeCheck(stable);
+	_arg.typeCheck(stable);
 	return _type = Type.Boolean;
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final Expression arg = argument(0);
-	arg.translate(classGen, methodGen);
-	final Type targ = arg.getType();
+	_arg.translate(classGen, methodGen);
+	final Type targ = _arg.getType();
 	if (!targ.identicalTo(Type.Boolean)) {
-	    arg.startResetIterator(classGen, methodGen);
+	    _arg.startResetIterator(classGen, methodGen);
 	    targ.translateTo(classGen, methodGen, Type.Boolean);
 	}
     }

@@ -87,6 +87,7 @@ import org.apache.xalan.xsltc.TransletOutputHandler;
 
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 
@@ -142,7 +143,17 @@ final public class Transform {
 
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
 	    final DOMImpl dom = new DOMImpl();
-	    reader.setContentHandler(dom.getBuilder());
+	    final DOMBuilder builder = dom.getBuilder();
+	    reader.setContentHandler(builder);
+
+	    try {
+		String prop = "http://xml.org/sax/properties/lexical-handler";
+		reader.setProperty(prop, builder);
+	    }
+	    catch (SAXException e) {
+		// quitely ignored
+	    }
+	    
 	    // Create a DTD monitor and pass it to the XMLReader object
 	    final DTDMonitor dtdMonitor = new DTDMonitor();
 	    dtdMonitor.handleDTD(reader);

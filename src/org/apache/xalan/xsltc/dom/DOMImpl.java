@@ -455,7 +455,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    case TEXT:
 		return "#text";
 	    case PROCESSING_INSTRUCTION:
-		return "***PI Name NYI";
+		return "#pi";
 	    case COMMENT:
 		return "#comment";
 	    default:
@@ -1748,6 +1748,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	case ROOT:
 	    return getNodeValue(_offsetOrChild[node]);
 	case TEXT:
+	case COMMENT:
+	case PROCESSING_INSTRUCTION:
 	    return makeStringValue(node);
 	default:
 	    if (node < _firstAttributeNode)
@@ -1966,16 +1968,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	case ROOT:
 	    print(_offsetOrChild[node], level);
 	    break;
-
 	case TEXT:
+	case COMMENT:
+	case PROCESSING_INSTRUCTION:
 	    System.out.print(makeStringValue(node));
 	    break;
-
-	case PROCESSING_INSTRUCTION:
-	case COMMENT:
-	    System.out.println("***PI/CMT***");
-	    break;
-
 	default:                  // element
 	    final String name = getNodeName(node);
 	    System.out.print("<" + name);
@@ -2324,7 +2321,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    copyPI(node, handler);
 	    break;
 	case COMMENT:
-	    break;
 	case TEXT:
 	    handler.characters(_text,
 			       _offsetOrChild[node],
@@ -2465,15 +2461,13 @@ public final class DOMImpl implements DOM, Externalizable {
 	     child = _nextSibling[child]) {
 	    switch (_type[child]) {
 	    case TEXT:
+	    case COMMENT:
 		buffer.append(_text,
 			      _offsetOrChild[child],
 			      _lengthOrAttr[child]);
 		break;
-                  
 	    case PROCESSING_INSTRUCTION:
-	    case COMMENT:
 		break;
-                                    
 		// !!! at the moment default can only be an element???
 	    default:
 		stringValueAux(buffer, child);

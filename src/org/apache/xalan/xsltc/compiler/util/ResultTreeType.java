@@ -149,8 +149,12 @@ public final class ResultTreeType extends Type {
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    BooleanType type) {
-	translateTo(classGen, methodGen, Type.String);
-	Type.String.translateTo(classGen, methodGen, Type.Boolean);
+	// A result tree is always 'true' when converted to a boolean value,
+	// since the tree always has at least one node (the root).
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+	il.append(POP);      // don't need the DOM reference
+	il.append(ICONST_1); // push 'true' on the stack
     }
 
     /**
