@@ -3616,9 +3616,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 */
 	private void storeTextRef(final int node)
   {
-	    final int length = _currentOffset - _baseOffset;
-	    _offsetOrChild[node] = maybeReuseText(length);
-	    _lengthOrAttr[node]  = length;
+	   // final int length = _currentOffset - _baseOffset;
+	   // _offsetOrChild[node] = maybeReuseText(length);
+	   // _lengthOrAttr[node]  = length;
 	}
 
 	/**
@@ -3879,12 +3879,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     //linkChildren(node);
     linkParent(node);
 
-    _lengthOrAttr[node] = DTM.NULL;
+   // _lengthOrAttr[node] = DTM.NULL;
 
     final int count = attributes.getLength();
 
     // Append any namespace nodes
-    if (_nextNamespace != DTM.NULL)
+ /*   if (_nextNamespace != DTM.NULL)
     {
       _lengthOrAttr[node] = _nextNamespace;
    /*   while (_nextNamespace != DTM.NULL)
@@ -3895,15 +3895,15 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         // Chain last namespace node to following attribute node(s)
         if ((_nextNamespace == DTM.NULL) && (count > 0))
           _nextSibling2[tail] = _currentAttributeNode;
-      }  */
-    }
+      }  
+    }*/
 
     // Append any attribute nodes
     if (count > 0)
     {
       int attr = _currentAttributeNode;
-      if (_lengthOrAttr[node] == DTM.NULL)
-        _lengthOrAttr[node] = attr;
+      //if (_lengthOrAttr[node] == DTM.NULL)
+      //  _lengthOrAttr[node] = attr;
       for (int i = 0; i<count; i++)
       {
         attr = makeAttributeNode(node, attributes, i);
@@ -4101,7 +4101,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
   {
     if ((length < newSize) && (newSize == _currentNode))
       length = _currentNode;
-
+/*
     // Resize the '_type' array
     //final short[] newType = new short[newSize];
    // System.arraycopy(_type, 0, newType, 0, length);
@@ -4126,7 +4126,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     final int[] newLengthOrAttr = new int[newSize];
     System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
     _lengthOrAttr = newLengthOrAttr;
-
+*/
     // Resize the '_whitespace' array (a BitArray instance)
     _whitespace.resize(newSize);
 

@@ -643,7 +643,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       for (node = _currentNode; node != END; node = getNextNamespaceNode(_startNode, node, true))
       {
-        if (getExpandedTypeID(node) == _nodeType || getNodeType(node) == _nodeType 
+        if (getExpandedTypeID(node) == _nodeType || getNodeType(node) == _nodeType
            || getNamespaceType(node) == _nodeType)
         {
           _currentNode = node;
@@ -1714,6 +1714,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     protected boolean isDescendant(int identity)
     {
+    	if (_startNode == DTM.NULL)
+    	return false;
       return (_startNode == identity) || _parent(identity) >= _startNode;
     }
 
@@ -1742,6 +1744,25 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         return returnNode(makeNodeHandle(node));  // make handle.
       }
     }
+  
+    /**
+     * Reset.
+     *
+     */ 
+  public DTMAxisIterator reset()
+  {
+
+    final boolean temp = _isRestartable;
+
+    _isRestartable = true;
+
+    setStartNode(makeNodeHandle(_startNode));
+
+    _isRestartable = temp;
+
+    return this;
+  }
+    
   }  // end of DescendantIterator
 
   /**
