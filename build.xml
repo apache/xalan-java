@@ -147,7 +147,7 @@ Copyright:
            debug="${debug}"/>
     <copy todir="${build.classes}">
 	  <fileset dir="${src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
-	        includes="**/*.properties,**/*.res,**/MANIFEST.MF,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
+	        includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
 	</copy>  
   </target>
     
@@ -186,7 +186,7 @@ Copyright:
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile">
-    <jar jarfile="${build.dir}/${xalan.jar}" manifest="src\META-INF\MANIFEST.MF" basedir="${build.classes}"/>
+    <jar jarfile="${build.dir}/${xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
   </target>
   <target name="package" depends="jar">
     <!-- OK, what are the 'Apache-standard' names for various targets? -->
