@@ -22,73 +22,107 @@ and new support for the TrAX API.</p>
 </s2>
 <anchor name="xsltcconf"/>
 <s2 title="XSLT 1.0 Conformance and Extensions">
-<p>XSLTC does not yet support the following features of the <resource-ref idref="xslt"/>:</p>
+<p>XSLTC does not yet support the following features of the XSL Transformations 
+  (XSLT) Version 1.0:</p>
 <ul>
-  <li>Explicitly set template priorities are ignored (bugzilla 2886)</li>
-  <li>The case-order option to the sort element is not supported, because XSLTC relies on the underlying Java
-   sorting classes (bugzilla 1396).
-  </li>
+  <li>The case-order option to the sort element is not supported, because XSLTC 
+    relies on the underlying Java sorting classes (bugzilla 1396).</li>
 </ul>
-<p>XSLTC supports a number of features that are not required by the XSLT 1.0 specification,
-but which are supported by a number of other XSLT processors:</p>
+<p>XSLTC supports a number of features that are not required by the XSLT 1.0 specification, 
+  but which are supported by a number of other XSLT processors:</p>
 <ul>
-  <li>Support for extension elements and external Java functions is incomplete. 
-    Currently you can set up an extension function
-    to call a static Java method. For the extension namespace, use<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xslt/java<br/>
-    and then within the xsl reference the static method with <code>java:SomeClass.Method()</code>.
-  </li>
-  <li>Result Tree Fragments (RTFs) can be captured as the template content of a variable or parameter
-  and then the variable can be passed to a for-each or an apply-templates as a node set.
-  </li>
-  <li>Output can be redirected to a file using the &lt;xsltc:output&gt; element. It takes a file 
-  attribute to specify the output file. Attribute value templates can be used within the &quot;file&quot;
-  attribute to construct the name. 
-  </li>
+  <li><em>Calling external Java methods from a Translet.</em><br/>
+    At the time of writing, only static methods are supported. A call to a function 
+    whose namespace is either <code>&lt;http://xml.apache.org/xslt/Java</code> 
+    or <code>&lt;http://xml.apache.org/xalan/xsltc/Java</code> 
+    is resolved by loading the appropriate class and calling a static method that 
+    matches the signature of the function. The class can be specified as part 
+    of the namespace URI or as part of the function call as shown in the following 
+    example:<br/> 
+    <source> &lt;xsl:stylesheet version=&quot;1.0&quot;
+   xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
+   xmlns:Java=&quot;http://xml.apache.org/xslt/Java&quot;
+   xmlns:Java-system=&quot;http://xml.apache.org/xslt/Java/java.lang.System&quot;&gt;
+   &lt;xsl:template match=&quot;/&quot;&gt;
+     &lt;xsl:value-of select=&quot;Java:java.lang.System.currentTimeMillis()&quot;/&gt;
+     &lt;xsl:value-of select=&quot;Java-system:currentTimeMillis()&quot;/&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</source><br/></li>
+  <li><em>Result Tree Fragments as Node Sets</em><br/>
+    Result Tree Fragments (RTFs) can be captured as the template content of a 
+    variable or parameter and then the variable can be passed to a for-each or 
+    an apply-templates as a node set.<br/><br/></li>
+  <li><em>nodeset() Function</em><br/>
+    XSLTC also supports the nodeset() function for transforming an RTF (result 
+    tree fragment) into a node set. It can be used as an xsltc-extension function or as a standard 
+    XPATH function as shown in the following example:<br/>
+    <source>&lt;xsl:stylesheet xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;        
+  xmlns:xsltc-extension=&quot;http://xml.apache.org/xalan/xsltc&quot;
+  xmlns:some-extension=&quot;http://some-extension&quot;
+  version=&quot;1.0&quot;&gt;
+  &lt;xsl:template match=&quot;/&quot;&gt;
+    &lt;xsl:variable name=&quot;rtf&quot;&gt;
+      &lt;docelem&gt;
+        &lt;elem1&gt;elem1&lt;/elem1&gt;
+        &lt;elem2&gt;elem2&lt;/elem2&gt;
+      &lt;/docelem&gt;
+    &lt;/xsl:variable&gt;
+    &lt;!-- Use nodeset as XSLTC extension --&gt;
+    &lt;xsl:value-of select=&quot;xsltc-extension:nodeset($rtf)/docelem/elem1&quot;/&gt;
+    &lt;!-- Use nodeset as standard function --&gt;
+    &lt;xsl:value-of select=&quot;nodeset($rtf)/docelem/elem1&quot;/&gt;
+  &lt;/xsl:template&gt; 
+&lt;/xsl:stylesheet&gt;
+</source><br/></li>
+  <li><em>Output Redirection</em><br/>
+    Output can be redirected to one or more files, using code like the following:<br/>
+    <source> &lt;xsl:stylesheet 
+   xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
+   xmlns:xsltc=&quot;http://xml.apache.org/xalan/xsltc&quot;
+   xsl:version=&quot;1.0&quot;&gt;
+   &lt;xsl:template match=&quot;/&quot;&gt;
+     &lt;xsl:text&gt;This goes to standard output&lt;/xsl:text&gt;
+     &lt;xsltc:output file=&quot;blob.xml&quot;&gt;
+       &lt;xsl:text&gt;This ends up in the file 'blob.xml'&lt;/xsl:text&gt;
+     &lt;/xsltc:output&gt;
+   &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</source><br/></li>
 </ul>
 </s2>
 <anchor name="xsltcknownproblems"/>
 <s2 title="Known Problems">
 <ul>
-  <li>Casting variables: XSLTC requires you to explicitly type cast values 
-  returned by variables or expressions, when you use them in tests. Always a good
-  practice, but it may seem like overkill in some in contexts, where other XSLT processors
-  automatically assume or convert to the correct type. For example. unless you cast $country
-  to a string in the following apply-templates, entry nodes whose &lt;country&gt; elements
-  contain a string matching the global $country parameter are NOT selected.<br/><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;xsl:apply-templates select="entry[country=string($country)]"/&gt;</code></li>
-  <li>XSLTC does not produce the correct output on the XSLTMark Performance Benchmark tests called 'alphabetize' 
-  (bugzilla 5573), and 'trend' (bugzilla 5577).
-  </li>
-  <li>XLSTC throws a ClassCastException in method setImportPrecedence(int) of class 
-Stylesheet when 'elements' does not contain only TopLevelElements, thus causing compilation to fail (bugzilla 5964).
-  </li>
-  <li>XSLTC compiler can generate classes with methods longer than 65535 bytes. As a results the 
-  compiled translet cannot be run (bugzilla 4516)</li>
-  <li>Using the 'select' attribute versus the template content to assign a value to a variable can lead to 
-  inconistent results. For example, you get different results when 
-  select=&quot;preceding-sibling::*[position() =1]/@x&quot; is used as the attribute  
-  of the &lt;xsl:variable&gt; element versus when it is used as the attribute of an &lt;xsl:value-of&gt; element 
-  contained within the &lt;xsl:variable&gt; element (bugzilla 6072).
-  </li>
-  <li>Setting the output type to XHTML and including the xmlns=&quot;http://www.w3.org/1999/xhtml&quot; attribute in
-   the &lt;html&gt; Literal Result Element, causes XSLTC to disregard the mode attribute within apply-templates
-   (bugzilla 6074).
-  </li>
-  <li>After the first transformation, using a cached template object, the ouput is prematurely terminated 
-  after an xsl:comment element. This has been reported to happen only when the stylesheet also includes
-  an xsl:for-each element (bugzilla 6109). 
-  </li>
-  <li>XSLTC TRAX API produces an incorrect DOM Structure when using a DOMResult. 
-  The org.apache.xalan.xsltc.trax.SAX2DOM class automatically adds a Element with 
-  the name "root" to the top of the DOM tree on the startDocument method. On a 
-  successful transform call, the node returned from the DOMResult.getNode() 
-  method is the document node, with this 'root' element attached as the first 
-  child. Xalan and Saxon both have the output document top nodes directly 
-  attached below the Document node. Also, the TransformerImpl and SAX2DOM Classes does not respect 
-  any node already set in the DOMResult (from bugzilla 6417).
-  </li>
+  <li>The strip space element does not work with copy-of. For example, with <code>&lt;xsl:strip-space 
+    elements=&quot;*&quot;/&gt;</code>, if you do an identity transform by matching on 
+    the root node (/) and then do a <code>copy-of select=&quot;.&quot;</code>, the whitespace-only 
+    nodes are not stripped out. <code>xsl:strip-space</code> works when you do not do a copy-of.<br/><br/></li>
+  <li>In some cases, XSLTC can generate methods that are too long (<em>&gt; 64K length</em>) 
+    to run, or contain jump offsets that are too large for the JVM to handle. 
+    You can minimize this by breaking up large templates into smaller templates. 
+    XSLTC has a new compile option to disable template inlining, compiling each 
+    template in a separate method. From the command line, you would use <code>&quot;-n&quot;</code> 
+    to turn off inlining, or with TrAX set the &quot;disable-inlining&quot; attribute to the TransformationFactory. 
+    For example, 
+      <source>TransformationFactory tfac = new TransformationFactory(); 
+tfac.setAttribute(&quot;disable-inlining&quot;, new Boolean(true))</source><br/></li>
+  <li>XSLTC tries to determine the order in which global variables are initialized 
+    by tracking the dependencies between them. In some cases, the value of a variable 
+    may depend on a template, e.g., if <code>xsl:call-template</code> is used to initialized 
+    a variable whose type is RTF. If this happens, a NPE may be thrown at runtime 
+    when the translet attempts to access a variable that has not been properly 
+    initialized. In most cases, this problem can be avoided by reordering the 
+    variable declarations.<br/></li>
 </ul>
+<p>To check on the open bugs in the current Apache xml-xalan/java repository, 
+  follow the instructions below:</p>
+<ol>
+  <li>Go to <jump href="http://nagoya.apache.org/bugzilla">http://nagoya.apache.org/bugzilla</jump>.</li>
+  <li>Select <em>Query Existing Bug Reports</em>.</li>
+  <li>Choose:<br/>
+    Program: <em>XalanJ2</em><br/>
+    Component: <em>org.apache.xalan.xsltc</em> (and) <em>Xalan-Xsltc</em></li>
+  <li>Submit the query.</li>
+</ol>
 </s2>
 <anchor name="xsltcsmart"/>
 <s2 title="Smart Transformer Switch">
