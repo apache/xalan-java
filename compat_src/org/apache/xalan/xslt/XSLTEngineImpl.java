@@ -73,6 +73,7 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import org.xml.sax.ext.*;
 import org.xml.sax.helpers.ParserAdapter;
+import org.apache.xml.serialize.XMLSerializer;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -2314,8 +2315,16 @@ public class XSLTEngineImpl implements  XSLTProcessor
   {
     if (listener instanceof ParserAdapter)      
       m_transformerImpl.setContentHandler(((ParserAdapter)listener).getContentHandler());
-    else
+    else if (listener instanceof XSLTEngineImpl)
       m_transformerImpl.setContentHandler(((XSLTEngineImpl)listener).getTransformer().getContentHandler());
+    else if (listener instanceof XMLSerializer)
+    {
+      try{
+        m_transformerImpl.setContentHandler(((XMLSerializer)listener).asContentHandler());
+      }
+      catch (IOException ioe)
+      {}
+    }
     m_documentHandler = listener;
   }
 
