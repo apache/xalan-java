@@ -572,17 +572,14 @@ public abstract class AbstractTranslet implements Translet {
 		if (_version != null) handler.setVersion(_version);
 		if (_standalone != null) handler.setStandalone(_standalone);
 		if (_omitHeader) handler.omitHeader(true);
-		if (_indent) handler.setIndent(_indent);
+		handler.setIndent(_indent);
 		if (_doctypeSystem != null)
 		    handler.setDoctype(_doctypeSystem, _doctypePublic);
 	    }
 	    // Transfer all output settings relevant to HTML output
 	    else if (_method.equals("html")) {
 		handler.setType(TextOutput.HTML);
-		if (_indent)
-		    handler.setIndent(_indent);
-		else
-		    handler.setIndent(true);
+		handler.setIndent(_indent);
 		handler.setDoctype(_doctypeSystem, _doctypePublic);
 		if (_mediaType != null) handler.setMediaType(_mediaType);
 	    }
@@ -598,7 +595,7 @@ public abstract class AbstractTranslet implements Translet {
 	    if (_version != null) handler.setVersion(_version);
 	    if (_standalone != null) handler.setStandalone(_standalone);
 	    if (_omitHeader) handler.omitHeader(true);
-	    if (_indent) handler.setIndent(_indent);
+	    handler.setIndent(_indent);
 	    handler.setDoctype(_doctypeSystem, _doctypePublic);
 	}
     }
