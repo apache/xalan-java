@@ -56,16 +56,21 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Text;
+//import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.traversal.NodeIterator;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xml.utils.StringVector;
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="general"/>
@@ -74,23 +79,32 @@ import org.apache.xml.utils.StringVector;
  */
 public class XNodeSet extends XObject
 {
+  private DTMManager m_dtmMgr;
+  
+  public DTMManager getDTMMgr()
+  {
+    return m_dtmMgr;
+  }
 
   /**
    * Construct a XNodeSet object.
    *
    * @param val Value of the XNodeSet object
    */
-  public XNodeSet(NodeIterator val)
+  public XNodeSet(DTMIterator val)
   {
     super(val);
+    m_dtmMgr = val.getDTMManager();
   }
 
   /**
-   * Construct an empty XNodeSet object.
+   * Construct an empty XNodeSet object.  This is used to create a mutable 
+   * nodeset to which random nodes may be added.
    */
-  public XNodeSet()
+  public XNodeSet(DTMManager dtmMgr)
   {
     super(new NodeSet());
+    m_dtmMgr = dtmMgr;
   }
 
   /**
@@ -98,12 +112,13 @@ public class XNodeSet extends XObject
    *
    * @param n Node to add to the new XNodeSet object
    */
-  public XNodeSet(Node n)
+  public XNodeSet(int n, DTMManager dtmMgr)
   {
 
     super(new NodeSet());
+    m_dtmMgr = dtmMgr;
 
-    if (null != n)
+    if (DTM.NULL != n)
     {
       ((NodeSet) m_obj).addNode(n);
     }
@@ -137,9 +152,10 @@ public class XNodeSet extends XObject
    *
    * @return numeric value of the string conversion from a single node.
    */
-  public static double getNumberFromNode(Node n)
+  public double getNumberFromNode(int n)
   {
-    return XString.castToNum(getStringFromNode(n));
+    XMLString xstr = m_dtmMgr.getDTM(n).getStringValue(n);
+    return xstr.toDouble();
   }
 
   /**
@@ -151,10 +167,10 @@ public class XNodeSet extends XObject
   public double num()
   {
 
-    NodeIterator nl = nodeset();
-    Node node = nl.nextNode();
+    DTMIterator nl = nodeset();
+    int node = nl.nextNode();
 
-    return (node != null) ? getNumberFromNode(node) : Double.NaN;
+    return (node != DTM.NULL) ? getNumberFromNode(node) : Double.NaN;
   }
 
   /**
@@ -164,9 +180,9 @@ public class XNodeSet extends XObject
    */
   public boolean bool()
   {
-    return (nodeset().nextNode() != null);
+    return (nodeset().nextNode() != DTM.NULL);
   }
-
+  
   /**
    * Get the string conversion from a single node.
    *
@@ -174,25 +190,73 @@ public class XNodeSet extends XObject
    *
    * @return the string conversion from a single node.
    */
-  public static String getStringFromNode(Node n)
+  public XMLString getStringFromNode(int n)
   {
-
-    switch (n.getNodeType())
+    // %OPT%
+    // I guess we'll have to get a static instance of the DTM manager...
+    if(DTM.NULL != n)
     {
-    case Node.ELEMENT_NODE :
-    case Node.DOCUMENT_NODE :
-      return DOMHelper.getNodeData(n);
-    case Node.CDATA_SECTION_NODE :
-    case Node.TEXT_NODE :
-      return ((Text) n).getData();
-    case Node.COMMENT_NODE :
-    case Node.PROCESSING_INSTRUCTION_NODE :
-    case Node.ATTRIBUTE_NODE :
-      return n.getNodeValue();
-    default :
-      return DOMHelper.getNodeData(n);
+      return m_dtmMgr.getDTM(n).getStringValue(n);
+    }
+    else
+    {
+      return org.apache.xpath.objects.XString.EMPTYSTRING;
     }
   }
+  
+  /**
+   * Cast result object to an XMLString.
+   *
+   * @return The document fragment node data or the empty string. 
+   */
+  public XMLString xstr()
+  {
+    DTMIterator nl = nodeset();
+    int node = nl.nextNode();
+
+    return (node != DTM.NULL) ? getStringFromNode(node) : XString.EMPTYSTRING;
+  }
+  
+  /**
+   * Cast result object to a string.
+   *
+   * @return The string this wraps or the empty string if null
+   */
+  public void appendToFsb(org.apache.xml.utils.FastStringBuffer fsb)
+  {
+    XString xstring = (XString)xstr();
+    xstring.appendToFsb(fsb);
+  }
+  
+  /**
+   * Specify if it's OK for detach to release the iterator for reuse.
+   * 
+   * @param allowRelease true if it is OK for detach to release this iterator 
+   * for pooling.
+   */
+  public void allowDetachToRelease(boolean allowRelease)
+  {
+    if(null != m_obj)
+      ((DTMIterator) m_obj).allowDetachToRelease(allowRelease);
+  }
+
+  /**
+   * Detaches the <code>DTMIterator</code> from the set which it iterated
+   * over, releasing any computational resources and placing the iterator
+   * in the INVALID state. After <code>detach</code> has been invoked,
+   * calls to <code>nextNode</code> or <code>previousNode</code> will
+   * raise a runtime exception.
+   */
+  public void detach()
+  {
+    if(null != m_obj)
+    {
+      Object obj = m_obj;
+      m_obj = null;
+      ((DTMIterator) obj).detach();
+    }
+  }
+
 
   /**
    * Cast result object to a string.
@@ -203,72 +267,61 @@ public class XNodeSet extends XObject
   public String str()
   {
 
-    NodeIterator nl = nodeset();
-    Node node = nl.nextNode();
+    DTMIterator nl = nodeset();
+    int node = nl.nextNode();
 
-    return (node != null) ? getStringFromNode(node) : "";
+    return (node != DTM.NULL) ? getStringFromNode(node).toString() : "";
   }
 
-  /**
-   * Cast result object to a result tree fragment.
-   *
-   * @param support The XPath context to use for the conversion 
-   *
-   * @return the nodeset as a result tree fragment.
-   */
-  public DocumentFragment rtree(XPathContext support)
-  {
-
-    DocumentFragment frag =
-      support.getDOMHelper().getDOMFactory().createDocumentFragment();
-    NodeIterator nl = nodeset();
-    Node node;
-
-    while (null != (node = nl.nextNode()))
-    {
-      frag.appendChild(node.cloneNode(true));
-    }
-
-    return frag;
-  }
+  // %REVIEW%
+//  /**
+//   * Cast result object to a result tree fragment.
+//   *
+//   * @param support The XPath context to use for the conversion 
+//   *
+//   * @return the nodeset as a result tree fragment.
+//   */
+//  public DTMIterator rtree(XPathContext support)
+//  {
+//    DTM frag = support.createDocumentFragment();
+//
+//    DTMIterator nl = nodeset();
+//    int node;
+//
+//    while (DTM.NULL != (node = nl.nextNode()))
+//    {
+//      frag.appendChild(node, true, true);
+//    }
+//
+//    return support.createDTMIterator(frag.getDocument());
+//  }
   
   /**
    * Cast result object to a nodelist.
    *
    * @return The nodeset as a nodelist
    */
-  public NodeIterator nodeset()
+  public DTMIterator nodeset()
   {
 
     // System.out.println("In XNodeSet.nodeset()");
-    NodeIterator ns = (NodeIterator) m_obj;
+    DTMIterator ns = (DTMIterator) m_obj;
 
-    // System.out.println("Got NodeIterator");
-    if (ns instanceof ContextNodeList)
+    // System.out.println("Is a ContextNodeList: "+ns);
+    if (ns.isFresh())  // bit of a hack...
     {
-
-      // System.out.println("Is a ContextNodeList: "+ns);
-      if (((ContextNodeList) ns).isFresh())  // bit of a hack...
-      {
-        return ns;
-      }
-      else
-      {
-        try
-        {
-          return ((ContextNodeList) ns).cloneWithReset();
-        }
-        catch (CloneNotSupportedException cnse)
-        {
-          throw new RuntimeException(cnse.getMessage());
-        }
-      }
+      return ns;
     }
     else
     {
-
-      // System.out.println("Returning node iterator");
-      return ns;
+      try
+      {
+        return ns.cloneWithReset();
+      }
+      catch (CloneNotSupportedException cnse)
+      {
+        throw new RuntimeException(cnse.getMessage());
+      }
     }
   }
 
@@ -282,7 +335,7 @@ public class XNodeSet extends XObject
 
     NodeSet mnl;
 
-    if (m_obj instanceof NodeSet)
+    if(m_obj instanceof NodeSet)
     {
       mnl = (NodeSet) m_obj;
     }
@@ -333,6 +386,7 @@ public class XNodeSet extends XObject
 
     if (XObject.CLASS_NODESET == type)
     {
+      // %OPT% This should be XMLString based instead of string based...
 
       // From http://www.w3.org/TR/xpath: 
       // If both objects to be compared are node-sets, then the comparison 
@@ -345,22 +399,22 @@ public class XNodeSet extends XObject
       // is true if and only if some node in $x has the string-value 
       // foo; the latter is true if and only if all nodes in $x have 
       // the string-value foo.
-      NodeIterator list1 = nodeset();
-      NodeIterator list2 = ((XNodeSet) obj2).nodeset();
-      Node node1;
-      StringVector node2Strings = null;
+      DTMIterator list1 = nodeset();
+      DTMIterator list2 = ((XNodeSet) obj2).nodeset();
+      int node1;
+      java.util.Vector node2Strings = null;
 
-      while (null != (node1 = list1.nextNode()))
+      while (DTM.NULL != (node1 = list1.nextNode()))
       {
-        String s1 = getStringFromNode(node1);
+        XMLString s1 = getStringFromNode(node1);
 
         if (null == node2Strings)
         {
-          Node node2;
+          int node2;
 
-          while (null != (node2 = list2.nextNode()))
+          while (DTM.NULL != (node2 = list2.nextNode()))
           {
-            String s2 = getStringFromNode(node2);
+            XMLString s2 = getStringFromNode(node2);
 
             if (comparator.compareStrings(s1, s2))
             {
@@ -370,7 +424,7 @@ public class XNodeSet extends XObject
             }
 
             if (null == node2Strings)
-              node2Strings = new StringVector();
+              node2Strings = new java.util.Vector();
 
             node2Strings.addElement(s2);
           }
@@ -381,7 +435,7 @@ public class XNodeSet extends XObject
 
           for (int i = 0; i < n; i++)
           {
-            if (comparator.compareStrings(s1, node2Strings.elementAt(i)))
+            if (comparator.compareStrings(s1, (XMLString)node2Strings.elementAt(i)))
             {
               result = true;
 
@@ -415,11 +469,11 @@ public class XNodeSet extends XObject
       // comparison on the number to be compared and on the result of 
       // converting the string-value of that node to a number using 
       // the number function is true. 
-      NodeIterator list1 = nodeset();
+      DTMIterator list1 = nodeset();
       double num2 = obj2.num();
-      Node node;
+      int node;
 
-      while (null != (node = list1.nextNode()))
+      while (DTM.NULL != (node = list1.nextNode()))
       {
         double num1 = getNumberFromNode(node);
 
@@ -433,45 +487,19 @@ public class XNodeSet extends XObject
     }
     else if (XObject.CLASS_RTREEFRAG == type)
     {
+      XMLString s2 = obj2.xstr();
+      DTMIterator list1 = nodeset();
+      int node;
 
-      // hmmm... 
-      // Try first to treat it as a number, so that numeric 
-      // comparisons can be done with it.  I suspect this is bogus...
-      double num2 = obj2.num();
-
-      if (!Double.isNaN(num2))
+      while (DTM.NULL != (node = list1.nextNode()))
       {
-        NodeIterator list1 = nodeset();
-        Node node;
+        XMLString s1 = getStringFromNode(node);
 
-        while (null != (node = list1.nextNode()))
+        if (comparator.compareStrings(s1, s2))
         {
-          double num1 = getNumberFromNode(node);
+          result = true;
 
-          if (comparator.compareNumbers(num1, num2))
-          {
-            result = true;
-
-            break;
-          }
-        }
-      }
-      else
-      {
-        String s2 = obj2.str();
-        NodeIterator list1 = nodeset();
-        Node node;
-
-        while (null != (node = list1.nextNode()))
-        {
-          String s1 = getStringFromNode(node);
-
-          if (comparator.compareStrings(s1, s2))
-          {
-            result = true;
-
-            break;
-          }
+          break;
         }
       }
     }
@@ -484,13 +512,13 @@ public class XNodeSet extends XObject
       // is a node in the node-set such that the result of performing 
       // the comparison on the string-value of the node and the other 
       // string is true. 
-      String s2 = obj2.str();
-      NodeIterator list1 = nodeset();
-      Node node;
+      XMLString s2 = obj2.xstr();
+      DTMIterator list1 = nodeset();
+      int node;
 
-      while (null != (node = list1.nextNode()))
+      while (DTM.NULL != (node = list1.nextNode()))
       {
-        String s1 = getStringFromNode(node);
+        XMLString s1 = getStringFromNode(node);
 
         if (comparator.compareStrings(s1, s2))
         {
@@ -574,9 +602,16 @@ public class XNodeSet extends XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
-    return compare(obj2, S_EQ);
+    try
+    {
+      return compare(obj2, S_EQ);
+    }
+    catch(javax.xml.transform.TransformerException te)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
   }
 
   /**
@@ -609,7 +644,7 @@ abstract class Comparator
    *
    * @return Whether the strings are equal or not
    */
-  abstract boolean compareStrings(String s1, String s2);
+  abstract boolean compareStrings(XMLString s1, XMLString s2);
 
   /**
    * Compare two numbers
@@ -638,9 +673,10 @@ class LessThanComparator extends Comparator
    *
    * @return True if s1 is less than s2
    */
-  boolean compareStrings(String s1, String s2)
+  boolean compareStrings(XMLString s1, XMLString s2)
   {
-    return s1.compareTo(s2) < 0;
+    return (s1.toDouble() < s2.toDouble());
+    // return s1.compareTo(s2) < 0;
   }
 
   /**
@@ -673,9 +709,10 @@ class LessThanOrEqualComparator extends Comparator
    *
    * @return true if s1 is less than or equal to s2
    */
-  boolean compareStrings(String s1, String s2)
+  boolean compareStrings(XMLString s1, XMLString s2)
   {
-    return s1.compareTo(s2) <= 0;
+    return (s1.toDouble() <= s2.toDouble());
+    // return s1.compareTo(s2) <= 0;
   }
 
   /**
@@ -708,9 +745,10 @@ class GreaterThanComparator extends Comparator
    *
    * @return true if s1 is greater than s2
    */
-  boolean compareStrings(String s1, String s2)
+  boolean compareStrings(XMLString s1, XMLString s2)
   {
-    return s1.compareTo(s2) > 0;
+    return (s1.toDouble() > s2.toDouble());
+    // return s1.compareTo(s2) > 0;
   }
 
   /**
@@ -743,9 +781,10 @@ class GreaterThanOrEqualComparator extends Comparator
    *
    * @return true if s1 is greater than or equal to s2
    */
-  boolean compareStrings(String s1, String s2)
+  boolean compareStrings(XMLString s1, XMLString s2)
   {
-    return s1.compareTo(s2) >= 0;
+    return (s1.toDouble() >= s2.toDouble());
+    // return s1.compareTo(s2) >= 0;
   }
 
   /**
@@ -778,7 +817,7 @@ class EqualComparator extends Comparator
    *
    * @return true if s1 is equal to s2
    */
-  boolean compareStrings(String s1, String s2)
+  boolean compareStrings(XMLString s1, XMLString s2)
   {
     return s1.equals(s2);
   }
@@ -813,7 +852,7 @@ class NotEqualComparator extends Comparator
    *
    * @return true if s1 is not equal to s2
    */
-  boolean compareStrings(String s1, String s2)
+  boolean compareStrings(XMLString s1, XMLString s2)
   {
     return !s1.equals(s2);
   }

@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -84,4 +84,13 @@ public class FuncTrue extends Function
   {
     return XBoolean.S_TRUE;
   }
+  
+  /**
+   * No arguments to process, so this does nothing.
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    // no-op
+  }
+
 }

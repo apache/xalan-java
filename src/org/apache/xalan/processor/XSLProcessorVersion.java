@@ -72,14 +72,8 @@ public class XSLProcessorVersion
    */
   public static void main(String argv[])
   {
-    System.out.println(PRODUCT + " " + LANGUAGE + " Version " + S_VERSION);
+    System.out.println(S_VERSION);
   }
-
-  /**
-   * Version String like <CODE>"<B>Xalan</B>i v.r[.dd| <B>D</B>nn]"</CODE>.
-   * <P>Semantics of the version string are identical to the Xerces project.</P>
-   */
-  public static String S_VERSION = "2.1.0";
 
   /**
    * Constant name of product.
@@ -112,7 +106,7 @@ public class XSLProcessorVersion
    *            -  API or behaviour change.
    *            -  its designated as a reference release.
    */
-  public static int RELEASE = 1;
+  public static int RELEASE = 2;
 
   /**
    * Maintenance Drop Number.
@@ -142,5 +136,16 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static int DEVELOPMENT = 0;
+  public static int DEVELOPMENT = 1;
+  
+  /**
+   * Version String like <CODE>"<B>Xalan</B> <B>Language</B> 
+   * v.r[.dd| <B>D</B>nn]"</CODE>.
+   * <P>Semantics of the version string are identical to the Xerces project.</P>
+   */
+  public static String S_VERSION = ""+PRODUCT+" "+LANGUAGE+" "
+                                   +VERSION+"."+RELEASE+"."
+                                   +(DEVELOPMENT > 0 ? ("D"+DEVELOPMENT) 
+                                     : (""+MAINTENANCE));
+
 }

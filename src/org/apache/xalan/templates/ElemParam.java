@@ -61,6 +61,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xpath.*;
+import org.apache.xpath.objects.XObject;
 import org.apache.xalan.trace.*;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -81,6 +82,7 @@ import javax.xml.transform.TransformerException;
  */
 public class ElemParam extends ElemVariable
 {
+  int m_qnameID;
 
   /**
    * Constructor ElemParam
@@ -122,12 +124,22 @@ public class ElemParam extends ElemVariable
   }
 
   /**
-   * Execute a parameter declaration.  There are two elements that can
-   * be used to bind variables: xsl:variable and xsl:param. The
-   * difference is that the value specified on the xsl:param variable
-   * is only a default value for the binding; when the template or
-   * stylesheet within which the xsl:param element occurs is invoked,
-   * parameters may be passed that are used in place of the default values.
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+    super.compose(sroot);
+    m_qnameID = sroot.getComposeState().getQNameID(m_qname);
+    if(m_parentNode.getXSLToken() == Constants.ELEMNAME_TEMPLATE)
+      ((ElemTemplate)m_parentNode).m_inArgsSize++;
+  }
+  
+  /**
+   * Execute a variable declaration and push it onto the variable stack.
+   * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
@@ -135,23 +147,22 @@ public class ElemParam extends ElemVariable
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
-
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
+      
     VariableStack vars = transformer.getXPathContext().getVarStack();
-    Arg arg = vars.getParamArg(getName());
+    
+    if(!vars.isLocalSet(m_index))
+    {
 
-    if (null == arg)
-    {
-      super.execute(transformer, sourceNode, mode);
-    }
-    else
-    {
-      arg.setIsVisible(true);
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      int sourceNode = transformer.getXPathContext().getCurrentNode();
+      XObject var = getValue(transformer, sourceNode);
+  
+      // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
+      transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
     }
   }
+  
 }

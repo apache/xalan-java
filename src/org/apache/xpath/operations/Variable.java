@@ -76,6 +76,54 @@ public class Variable extends Expression
   /** The qualified name of the variable.
    *  @serial   */
   protected QName m_qname;
+  
+  /**
+   * The index of the variable, which is either an absolute index to a 
+   * global, or, if higher than the globals area, must be adjusted by adding 
+   * the offset to the current stack frame.
+   */
+  protected int m_index;
+  
+  protected boolean m_isGlobal = false;
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    int sz = vars.size();
+    for (int i = vars.size()-1; i >= 0; i--) 
+    {
+      QName qn = (QName)vars.elementAt(i);
+      // System.out.println("qn: "+qn);
+      if(qn.equals(m_qname))
+      {
+        
+        if(i < globalsSize)
+        {
+          m_isGlobal = true;
+          m_index = i;
+        }
+        else
+        {
+          m_index = i-globalsSize;
+        }
+          
+        return;
+      }
+    }
+    throw new RuntimeException("Could not find variable with the name of "
+                                +m_qname.toString()+"!");
+    
+  }
+
 
   /**
    * Set the qualified name of the variable.
@@ -103,29 +151,24 @@ public class Variable extends Expression
   {
 
     // Is the variable fetched always the same?
+    // XObject result = xctxt.getVariable(m_qname);
+    
     XObject result;
-
-//    try
-//    {
-      result = xctxt.getVariable(m_qname);
-//    }
-//    catch (Exception e)
-//    {
-//      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
-//            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
-//
-//      result = null;
-//    }
+    if(m_isGlobal)
+      result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index);
+    else
+      result = xctxt.getVarStack().getLocalVariable(xctxt, m_index);
 
     if (null == result)
     {
+      // This should now never happen...
       warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
            new Object[]{ m_qname.getLocalPart() });  //"VariableReference given for variable out "+
 //      (new RuntimeException()).printStackTrace();
 //      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
 //            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
       
-      result = new XNodeSet();
+      result = new XNodeSet(xctxt.getDTMManager());
     }
 
     return result;

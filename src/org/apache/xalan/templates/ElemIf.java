@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -105,11 +106,32 @@ public class ElemIf extends ElemTemplateElement
    * Get the "test" attribute.
    * The xsl:if element must have a test attribute, which specifies an expression.
    *
-   * @return the "test" attribute for this element. 
+   * @return the "test" attribute for this element.
    */
   public XPath getTest()
   {
     return m_test;
+  }
+
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   *
+   * NEEDSDOC @param sroot
+   *
+   * @throws TransformerException
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+
+    super.compose(sroot);
+
+    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+
+    if (null != m_test)
+      m_test.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
   }
 
   /**
@@ -146,24 +168,36 @@ public class ElemIf extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     XPathContext xctxt = transformer.getXPathContext();
-    XObject test = m_test.execute(xctxt, sourceNode, this);
+    int sourceNode = xctxt.getCurrentNode();
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-              "test", m_test, test);
-
-    if (test.bool())
     {
-      transformer.executeChildTemplates(this, sourceNode, mode, true);
+      XObject test = m_test.execute(xctxt, sourceNode, this);
+
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                "test", m_test, test);
+
+      if (test.bool())
+      {
+        transformer.executeChildTemplates(this, true);
+      }
+
+      // I don't think we want this.  -sb
+      //  if (TransformerImpl.S_DEBUG)
+      //    transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+      //            "endTest", m_test, test);
+    }
+    else if (m_test.bool(xctxt, sourceNode, this))
+    {
+      transformer.executeChildTemplates(this, true);
     }
   }
 }

@@ -133,6 +133,13 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
   /** a zero length Object array used in loadPropertyFileToSystem() */
   private static final Object[] NO_OBJS = new Object[0];
+  
+  /** Static string to be used for incremental feature */
+  private static final String FEATURE_INCREMENTAL = "http://xml.apache.org/xalan/features/incremental";
+
+  /** Static string to be used for optimize feature */
+  private static final String FEATURE_OPTIMIZE = "http://xml.apache.org/xalan/features/optimize";
+
 
   /**
    * Retrieve a propery bundle from a specified file and load it
@@ -488,7 +495,9 @@ public javax.xml.transform.Templates processFromNode(Node node)
     else
       return false;
   }
-
+  
+  public static boolean m_optimize = true;
+  
   /**
    * Allows the user to set specific attributes on the underlying
    * implementation.
@@ -502,7 +511,12 @@ public javax.xml.transform.Templates processFromNode(Node node)
   public void setAttribute(String name, Object value)
           throws IllegalArgumentException
   {
-    throw new IllegalArgumentException(name);
+    if (name.equals(FEATURE_INCREMENTAL))
+      org.apache.xml.dtm.DTMManager.setIncremental(((Boolean)value).booleanValue());
+    if (name.equals(FEATURE_OPTIMIZE))
+      m_optimize = ((Boolean)value).booleanValue();
+    else
+      throw new IllegalArgumentException(name);
   }
 
   /**

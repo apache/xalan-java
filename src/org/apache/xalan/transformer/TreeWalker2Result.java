@@ -56,11 +56,12 @@
  */
 package org.apache.xalan.transformer;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
-import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.dtm.ref.DTMTreeWalker;
 import org.apache.xml.utils.MutableAttrListImpl;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xpath.DOMHelper;
@@ -71,7 +72,7 @@ import org.apache.xpath.XPathContext;
  * Handle a walk of a tree, but screen out attributes for
  * the result tree.
  */
-public class TreeWalker2Result extends TreeWalker
+public class TreeWalker2Result extends DTMTreeWalker
 {
 
   /** The transformer instance          */
@@ -81,8 +82,8 @@ public class TreeWalker2Result extends TreeWalker
   ResultTreeHandler m_handler;
 
   /** Node where to start the tree walk           */
-  Node m_startNode;
-  
+  int m_startNode;
+
   /**
    * Constructor.
    *
@@ -93,7 +94,7 @@ public class TreeWalker2Result extends TreeWalker
                            ResultTreeHandler handler)
   {
 
-    super(handler, transformer.getXPathContext().getDOMHelper());
+    super(handler, null);
 
     m_transformer = transformer;
     m_handler = handler;
@@ -106,15 +107,15 @@ public class TreeWalker2Result extends TreeWalker
    *
    * @throws TransformerException
    */
-  public void traverse(Node pos) throws org.xml.sax.SAXException
+  public void traverse(int pos) throws org.xml.sax.SAXException
   {
-
+    m_dtm = m_transformer.getXPathContext().getDTM(pos);
     m_startNode = pos;
 
     super.traverse(pos);
   }
-  
-  /**
+	
+	/**
    * End processing of given node 
    *
    *
@@ -122,10 +123,10 @@ public class TreeWalker2Result extends TreeWalker
    *
    * @throws org.xml.sax.SAXException
    */
-  protected void endNode(Node node) throws org.xml.sax.SAXException
+  protected void endNode(int node) throws org.xml.sax.SAXException
   {
     super.endNode(node);
-    if(Node.ELEMENT_NODE == node.getNodeType())
+    if(DTM.ELEMENT_NODE == m_dtm.getNodeType(node))
     {
       m_transformer.getXPathContext().popCurrentNode();
     }
@@ -139,115 +140,61 @@ public class TreeWalker2Result extends TreeWalker
    *
    * @throws TransformerException
    */
-  protected void startNode(Node node) throws org.xml.sax.SAXException
+  protected void startNode(int node) throws org.xml.sax.SAXException
   {
-    
-    XPathContext xcntxt = m_transformer.getXPathContext();
-    
+
+		XPathContext xcntxt = m_transformer.getXPathContext();
     try
     {
-      if (Node.ELEMENT_NODE == node.getNodeType())
-      {
-        xcntxt.pushCurrentNode(node);
-        
-        if(m_startNode != node)
-        {
-          super.startNode(node);
-        }
-        else
-        {
-          DOMHelper dhelper = xcntxt.getDOMHelper();
-          String elemName = node.getNodeName();
-          String localName = dhelper.getLocalNameOfNode(node);
-          String namespace = dhelper.getNamespaceOfNode(node);
-  
-          xcntxt.pushCurrentNode(node);
-          m_handler.startElement(namespace, localName, elemName, null);
-  
-          for (Node parent = node; parent != null;
-               parent = parent.getParentNode())
-          {
-            if (Node.ELEMENT_NODE != parent.getNodeType())
-              continue;
-  
-            NamedNodeMap atts = ((Element) parent).getAttributes();
-            int n = atts.getLength();
-  
-            for (int i = 0; i < n; i++)
-            {
-              String nsDeclPrefix = null;
-              Attr attr = (Attr) atts.item(i);
-              String name = attr.getName();
-              String value = attr.getValue();
-  
-              if (name.startsWith("xmlns:"))
-              {
-  
-                // get the namespace prefix 
-                nsDeclPrefix = name.substring(name.indexOf(":") + 1);
-              }
-              else if (name.equals("xmlns"))
-              {
-                nsDeclPrefix = "";
-              }
-  
-              if ((nsDeclPrefix == null) && (node != parent))
-                continue;
-  
-              /*
-              else if(nsDeclPrefix != null)
-              {
-              String desturi = m_processor.getURI(nsDeclPrefix);
-              // Look for an alias for this URI. If one is found, use it as the result URI
-              String aliasURI = m_elem.m_stylesheet.lookForAlias(value);
-              if(aliasURI.equals(desturi)) // TODO: Check for extension namespaces
-              {
-              continue;
-              }
-              }
-              */
-              m_handler.addAttribute(dhelper.getNamespaceOfNode(attr),
-                                     dhelper.getLocalNameOfNode(attr), name,
-                                     "CDATA", value);
-  
-              // Make sure namespace is not in the excluded list then
-              // add to result tree
-  
-              /*
-              if(!m_handler.getPendingAttributes().contains(name))
-              {
-              if(nsDeclPrefix == null)
-              {
-              m_handler.addAttribute(name, "CDATA", value);
-              }
-              else
-              {
-              String desturi
-              = m_handler.getURI(nsDeclPrefix);
-              if(null == desturi)
-              {
-              m_handler.addAttribute(name, "CDATA", value);
-              }
-              else if(!desturi.equals(value))
-              {
-              m_handler.addAttribute(name, "CDATA", value);
-              }
-              }
-              }
-              */
-            }
-          }
-  
-          // m_handler.processResultNS(m_elem); 
-        }          
-      }
-      else
-      {
-        xcntxt.pushCurrentNode(node);
-        super.startNode(node);
-        xcntxt.popCurrentNode();
-      }
-    }
+      
+			if (DTM.ELEMENT_NODE == m_dtm.getNodeType(node))
+			{
+				xcntxt.pushCurrentNode(node);			
+					
+				if(m_startNode != node)
+				{
+					super.startNode(node);
+				}
+				else
+				{
+					String elemName = m_dtm.getNodeName(node);
+					String localName = m_dtm.getLocalName(node);
+					String namespace = m_dtm.getNamespaceURI(node);
+					
+					//xcntxt.pushCurrentNode(node);	
+					m_handler.startElement(namespace, localName, elemName, null);
+
+					if (DTM.ELEMENT_NODE == m_dtm.getNodeType(node))
+					{
+						boolean hasNSDecls = false;
+						DTM dtm = m_dtm;
+						for (int ns = dtm.getFirstNamespaceNode(node, true); 
+								 DTM.NULL != ns; ns = dtm.getNextNamespaceNode(node, ns, true))
+						{
+							m_handler.ensureNamespaceDeclDeclared(dtm, ns);
+						}
+						
+						if(hasNSDecls)
+						{
+							m_handler.addNSDeclsToAttrs();
+						}
+						
+						for (int attr = dtm.getFirstAttribute(node); 
+								 DTM.NULL != attr; attr = dtm.getNextAttribute(attr))
+						{
+							m_handler.addAttribute(attr);
+						}
+					}
+				}
+				
+			}
+			else
+			{
+				xcntxt.pushCurrentNode(node);
+				super.startNode(node);
+				xcntxt.popCurrentNode();
+			}
+		}
     catch(javax.xml.transform.TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);

@@ -180,6 +180,23 @@ public class KeyDeclaration extends ElemTemplateElement
   {
     return m_use;
   }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) 
+    throws javax.xml.transform.TransformerException
+  {
+    super.compose(sroot);
+    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+    if(null != m_matchPattern)
+      m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+    if(null != m_use)
+      m_use.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+  }
 
   /**
    * This function is called during recomposition to

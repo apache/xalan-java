@@ -59,6 +59,7 @@ package org.apache.xml.utils;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xml.utils.NodeVector;
+import java.util.Stack;
 
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
@@ -87,7 +88,7 @@ public class DOMBuilder
   public DocumentFragment m_docFrag = null;
 
   /** Vector of element nodes          */
-  protected NodeVector m_elemStack = new NodeVector();
+  protected Stack m_elemStack = new Stack();
 
   /**
    * DOMBuilder instance constructor... it will add the DOM nodes
@@ -375,7 +376,8 @@ public class DOMBuilder
   public void endElement(String ns, String localName, String name)
           throws org.xml.sax.SAXException
   {
-    m_currentNode = m_elemStack.popAndTop();
+    m_elemStack.pop();
+    m_currentNode = m_elemStack.isEmpty() ? null : (Node)m_elemStack.peek();
   }
 
   /**

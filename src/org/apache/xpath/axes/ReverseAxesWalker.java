@@ -66,8 +66,10 @@ import org.apache.xpath.objects.XObject;
 
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.Axis;
 
 /**
  * Walker for a reverse axes.
@@ -81,10 +83,43 @@ public class ReverseAxesWalker extends AxesWalker
    *
    * @param locPathIterator The location path iterator that 'owns' this walker.
    */
-  public ReverseAxesWalker(LocPathIterator locPathIterator)
+  ReverseAxesWalker(LocPathIterator locPathIterator, int axis)
   {
-    super(locPathIterator);
+    super(locPathIterator, axis);
   }
+  
+  /**
+   * Set the root node of the TreeWalker.
+   * (Not part of the DOM2 TreeWalker interface).
+   *
+   * @param root The context node of this step.
+   */
+  public void setRoot(int root)
+  {
+    super.setRoot(root);
+    m_iterator = getDTM(root).getAxisIterator(m_axis);
+    m_iterator.setStartNode(root);
+  }
+  
+  /**
+   * Get the next node in document order on the axes.
+   *
+   * @return the next node in document order on the axes, or null.
+   */
+  protected int getNextNode()
+  {
+
+    int next = m_iterator.next();
+    
+    if (m_isFresh)
+      m_isFresh = false;
+
+    if (DTM.NULL == next)
+      this.m_isDone = true;
+
+    return next;
+  }
+
 
   /**
    * Tells if this is a reverse axes.  Overrides AxesWalker#isReverseAxes.
@@ -96,15 +131,15 @@ public class ReverseAxesWalker extends AxesWalker
     return true;
   }
 
-  /**
-   *  Set the root node of the TreeWalker.
-   *
-   * @param root The context node of this step.
-   */
-  public void setRoot(Node root)
-  {
-    super.setRoot(root);
-  }
+//  /**
+//   *  Set the root node of the TreeWalker.
+//   *
+//   * @param root The context node of this step.
+//   */
+//  public void setRoot(int root)
+//  {
+//    super.setRoot(root);
+//  }
 
   /**
    * Get the current sub-context position.  In order to do the
@@ -127,7 +162,7 @@ public class ReverseAxesWalker extends AxesWalker
       
     if (m_proximityPositions[predicateIndex] <= 0)
     {
-      AxesWalker savedWalker = m_lpi.getLastUsedWalker();
+      AxesWalker savedWalker = wi().getLastUsedWalker();
 
       try
       {
@@ -139,13 +174,13 @@ public class ReverseAxesWalker extends AxesWalker
 
         clone.setPrevWalker(null);
         clone.setNextWalker(null);
-        m_lpi.setLastUsedWalker(clone);
+        wi().setLastUsedWalker(clone);
 
         // Count 'em all
         int count = 1;
-        Node next;
+        int next;
 
-        while (null != (next = clone.nextNode()))
+        while (DTM.NULL != (next = clone.nextNode()))
         {
           count++;
         }
@@ -159,7 +194,7 @@ public class ReverseAxesWalker extends AxesWalker
       }
       finally
       {
-        m_lpi.setLastUsedWalker(savedWalker);
+        wi().setLastUsedWalker(savedWalker);
       }
     }
 
@@ -190,7 +225,7 @@ public class ReverseAxesWalker extends AxesWalker
   {
 
     int count = 0;
-    AxesWalker savedWalker = m_lpi.getLastUsedWalker();
+    AxesWalker savedWalker = wi().getLastUsedWalker();
 
     try
     {
@@ -202,13 +237,13 @@ public class ReverseAxesWalker extends AxesWalker
 
       clone.setPrevWalker(null);
       clone.setNextWalker(null);
-      m_lpi.setLastUsedWalker(clone);
+      wi().setLastUsedWalker(clone);
 
       // Count 'em all
       // count = 1;
-      Node next;
+      int next;
 
-      while (null != (next = clone.nextNode()))
+      while (DTM.NULL != (next = clone.nextNode()))
       {
         count++;
       }
@@ -220,10 +255,12 @@ public class ReverseAxesWalker extends AxesWalker
     }
     finally
     {
-      m_lpi.setLastUsedWalker(savedWalker);
+      wi().setLastUsedWalker(savedWalker);
     }
 
-    // System.out.println("getLastPos - pos: "+count);
     return count;
   }
+  
+  /** The DTM inner traversal class, that corresponds to the super axis. */
+  protected DTMAxisIterator m_iterator;
 }

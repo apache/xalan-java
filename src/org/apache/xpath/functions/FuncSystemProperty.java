@@ -66,7 +66,7 @@ import java.lang.ClassLoader;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -85,8 +85,8 @@ public class FuncSystemProperty extends FunctionOneArg
 
   /** The name of the property file where the name will be stored.  */
   static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
-
-  /** a zero length Class array used in loadPropertyFile() */
+	
+	/** a zero length Class array used in loadPropertyFile() */
   private static final Class[] NO_CLASSES = new Class[0];
 
   /** a zero length Object array used in loadPropertyFile() */

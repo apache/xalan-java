@@ -56,8 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
-
+//import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xpath.*;
@@ -72,8 +71,18 @@ import org.apache.xpath.VariableStack;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.ClonerToResultTree;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.Axis;
 
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.SourceLocator;
+
+import org.apache.xml.dtm.DTMManager;
+
+// Experemental
+import org.apache.xml.dtm.ref.ExpandedNameTable;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -124,6 +133,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @serial
    */
   private boolean m_isDefaultTemplate = false;
+  
+//  /**
+//   * List of namespace/localname IDs, for identification of xsl:with-param to 
+//   * xsl:params.  Initialized in the compose() method.
+//   */
+//  private int[] m_paramIDs;
 
   /**
    * Set if this belongs to a default template,
@@ -131,7 +146,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * regard to processing modes.
    * @see <a href="http://www.w3.org/TR/xslt#built-in-rule">built-in-rule in XSLT Specification</a>
    *
-   * @param b boolean value to set. 
+   * @param b boolean value to set.
    */
   public void setIsDefaultTemplate(boolean b)
   {
@@ -147,6 +162,17 @@ public class ElemApplyTemplates extends ElemCallTemplate
   public int getXSLToken()
   {
     return Constants.ELEMNAME_APPLY_TEMPLATES;
+  }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+    super.compose(sroot);
   }
 
   /**
@@ -169,109 +195,254 @@ public class ElemApplyTemplates extends ElemCallTemplate
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
 
     transformer.pushCurrentTemplateRuleIsNull(false);
 
+    boolean pushMode = false;
+
     try
     {
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        transformer.getTraceManager().fireTraceEvent(this);
 
-      if (null != sourceNode)
+      // %REVIEW% Do we need this check??
+      //      if (null != sourceNode)
+      //      {
+      // boolean needToTurnOffInfiniteLoopCheck = false;
+      QName mode = transformer.getMode();
+
+      if (!m_isDefaultTemplate)
       {
-
-        // boolean needToTurnOffInfiniteLoopCheck = false;
-        if (!m_isDefaultTemplate)
+        if (((null == mode) && (null != m_mode))
+                || ((null != mode) &&!mode.equals(m_mode)))
         {
-          mode = m_mode;
-        }
+          pushMode = true;
 
-        transformSelectedNodes(transformer, sourceNode, null, mode);
+          transformer.pushMode(m_mode);
+        }
       }
-      else  // if(null == sourceNode)
-      {
-        transformer.getMsgMgr().error(this,
-          XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);  //"sourceNode is null in handleApplyTemplatesInstruction!");
-      }
+      transformSelectedNodes(transformer);
     }
     finally
     {
+      if (pushMode)
+        transformer.popMode();
+
       transformer.popCurrentTemplateRuleIsNull();
     }
   }
 
+  
   /**
-   * Return whether or not we need to push default arguments on the stack   
-   *
-   *
-   * @return whether or not to push default arguments on the stack
-   */
-  boolean needToPushParams()
-  {
-    return true;
-  }
-
-  /**
-   * Push default arguments on the stack
-   *
+   * <meta name="usage" content="advanced"/>
+   * Perform a query if needed, and call transformNode for each child.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param xctxt The XPath runtime state for this transformation.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
+   * @param template The owning template context.
    *
-   * @return The original value of where to start the current search for a variable.
-   * This value will be used by popParams to restore the value of
-   * VariableStack.m_searchStart.
-   * 
-   * @throws TransformerException
+   * @throws TransformerException Thrown in a variety of circumstances.
    */
-  int pushParams(
-          TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
+  public void transformSelectedNodes(TransformerImpl transformer)
             throws TransformerException
   {
 
+    final XPathContext xctxt = transformer.getXPathContext();
+    final int sourceNode = xctxt.getCurrentNode();
+    DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
     VariableStack vars = xctxt.getVarStack();
-    int savedSearchStart = vars.getSearchStart();      
-    
-    if (null != m_paramElems)
-    {  
-      transformer.pushParams(xctxt, this, sourceNode, mode);
-     }  
-    else
-      vars.pushContextMarker();
-    
-    vars.setSearchStart(-1);
-     
-    return savedSearchStart;
-  }
-  
-  /**
-   * Re-mark the params as params.
-   */
-  void reMarkParams(XPathContext xctxt)
-  {
-    VariableStack vars = xctxt.getVarStack();
-    vars.remarkParams();
+    int nParams = getParamElemCount();
+
+    try
+    {
+
+      final Vector keys = (m_sortElems == null)
+                          ? null
+                          : transformer.processSortKeys(this, sourceNode);
+
+      // Sort if we need to.
+      if (null != keys)
+        sourceNodes = sortNodes(xctxt, keys, sourceNodes);
+
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                "select", new XPath(m_selectExpression),
+                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+
+      final ResultTreeHandler rth = transformer.getResultTreeHandler();
+      ContentHandler chandler = rth.getContentHandler();
+      final StylesheetRoot sroot = transformer.getStylesheet();
+      final TemplateList tl = sroot.getTemplateListComposed();
+      final boolean quiet = transformer.getQuietConflictWarnings();
+      
+      xctxt.pushCurrentNode(DTM.NULL);
+      int[] currentNodes = xctxt.getCurrentNodeStack();
+      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
+      
+      xctxt.pushCurrentExpressionNode(DTM.NULL);
+      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
+      int currentExpressionNodePos = xctxt.getCurrentExpressionNodesFirstFree() - 1;
+
+      xctxt.pushSAXLocatorNull();
+      xctxt.pushContextNodeList(sourceNodes);
+      transformer.pushElemTemplateElement(null);
+      // pushParams(transformer, xctxt);
+
+      // Should be able to get this from the iterator but there must be a bug.
+      DTM dtm = xctxt.getDTM(sourceNode);
+      int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+      
+      int argsFrame = -1;
+      if(nParams > 0)
+      {
+        // This code will create a section on the stack that is all the 
+        // evaluated arguments.  These will be copied into the real params 
+        // section of each called template.
+        int thisframe = vars.getStackFrame();
+        argsFrame = vars.link(nParams);
+        vars.setStackFrame(thisframe);
+        
+        for (int i = 0; i < nParams; i++) 
+        {
+          ElemWithParam ewp = m_paramElems[i];
+          XObject obj = ewp.getValue(transformer, sourceNode);
+          
+          vars.setLocalVariable(i, obj, argsFrame);
+        }
+        vars.setStackFrame(argsFrame);
+      }
+      
+      
+      int child;
+      while (DTM.NULL != (child = sourceNodes.nextNode()))
+      {
+        currentNodes[currentNodePos] = child;
+        currentExpressionNodes[currentExpressionNodePos] = child;
+
+        if((child & DTMManager.IDENT_DTM_DEFAULT) != docID)
+        {
+          dtm = xctxt.getDTM(child);
+          docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+        }
+        
+        final int exNodeType = dtm.getExpandedTypeID(child);
+        final int nodeType = (exNodeType >> ExpandedNameTable.ROTAMOUNT_TYPE);
+
+        final QName mode = transformer.getMode();
+
+        ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, 
+                                      -1, quiet, dtm);
+
+        // If that didn't locate a node, fall back to a default template rule.
+        // See http://www.w3.org/TR/xslt#built-in-rule.
+        if (null == template)
+        {
+          switch (nodeType)
+          {
+          case DTM.DOCUMENT_FRAGMENT_NODE :
+          case DTM.ELEMENT_NODE :
+            template = sroot.getDefaultRule();
+            // %OPT% direct faster?
+            break;
+          case DTM.ATTRIBUTE_NODE :
+          case DTM.CDATA_SECTION_NODE :
+          case DTM.TEXT_NODE :
+            if(rth.m_elemIsPending || rth.m_docPending)
+              rth.flushPending(true);
+            dtm.dispatchCharactersEvents(child, chandler, false);
+            continue;
+          case DTM.DOCUMENT_NODE :
+            template = sroot.getDefaultRootRule();
+            break;
+          default :
+
+            // No default rules for processing instructions and the like.
+            continue;
+          }
+        }
+        
+        transformer.pushPairCurrentMatched(template, child);
+
+        if(template.m_frameSize > 0)
+        {
+          vars.link(template.m_frameSize);
+          if(nParams > 0 && template.m_inArgsSize > 0)
+          {
+            int paramIndex = 0;
+            for (ElemTemplateElement elem = template.getFirstChildElem(); 
+                 null != elem; elem = elem.getNextSiblingElem()) 
+            {
+              if(Constants.ELEMNAME_PARAMVARIABLE == elem.getXSLToken())
+              {
+                ElemParam ep = (ElemParam)elem;
+                int i;
+                for (i = 0; i < nParams; i++) 
+                {
+                  ElemWithParam ewp = m_paramElems[i];
+                  if(ewp.m_qnameID == ep.m_qnameID)
+                  {
+                    XObject obj = vars.getLocalVariable(i, argsFrame);
+                    vars.setLocalVariable(paramIndex, obj);
+                    break;
+                  }
+                }
+                if(i == nParams)
+                  vars.setLocalVariable(paramIndex, null);
+              }
+              else
+                break;
+              paramIndex++;
+            }
+            
+          }
+        }
+
+        // if (check)
+        //  guard.push(this, child);
+
+        // Fire a trace event for the template.
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireTraceEvent(template);
+
+        // And execute the child templates.
+        // Loop through the children of the template, calling execute on 
+        // each of them.
+        for (ElemTemplateElement t = template.m_firstChild; 
+             t != null; t = t.m_nextSibling)
+        {
+          xctxt.setSAXLocator(t);
+          transformer.setCurrentElement(t);
+          t.execute(transformer);
+        }
+        
+        if(template.m_frameSize > 0)
+          vars.unlink();
+          
+        transformer.popCurrentMatched();
+        
+      } // end while (DTM.NULL != (child = sourceNodes.nextNode()))
+    }
+    catch (SAXException se)
+    {
+      transformer.getErrorListener().fatalError(new TransformerException(se));
+    }
+    finally
+    {
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
+                "select", new XPath(m_selectExpression),
+                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+
+      if(nParams > 0)
+        vars.unlink();
+      xctxt.popSAXLocator();
+      xctxt.popContextNodeList();
+      transformer.popElemTemplateElement();
+      xctxt.popCurrentExpressionNode();
+      xctxt.popCurrentNode();
+      sourceNodes.detach();
+    }
   }
 
-
-  /**
-   * Pop the stack of default arguments after we're done with them 
-   *
-   *
-   * @param xctxt The XPath runtime state for this transformation.
-   * @param savedSearchStart Value to restore VariableStack.m_searchStart
-   * to. This is used to set where to start the current search for a variable.
-   */
-  void popParams(XPathContext xctxt, int savedSearchStart)
-  {
-    VariableStack vars = xctxt.getVarStack();
-    vars.popCurrentContext();
-    vars.setSearchStart(savedSearchStart);
-  }
 }

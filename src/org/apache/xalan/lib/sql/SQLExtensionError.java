@@ -71,24 +71,14 @@ import org.w3c.dom.Text;
 import org.w3c.dom.CDATASection;
 
 /**
- * <p>
- * An Extension of the Extension Error Class that adds information
- * about the SQL Exception. {@link ExtensionError}
- * </p>
- * <pre>
- * <p>
- * This class adds the following information to the Document
- *
- * &lt;ext-error&gt;
- *    &lt;sql-error&gt;
- *        &lt;error-code&gt; The SQL Error Code returned by the driver &lt;/error-code&gt;
- *        &lt;state&gt; The Current SQL Connection State &lt;/state&gt;
- *    &lt;/sql-error&gt;
- * &lt;ext-error&gt;
- * </p>
- * </pre>
- *
+ * Title:        <p>
+ * Description:  <p>
+ * Copyright:    Copyright (c) <p>
+ * Company:      <p>
+ * @author
+ * @version 1.0
  */
+
 public class SQLExtensionError extends ExtensionError {
 
   private SQLException m_sql_ex = null;

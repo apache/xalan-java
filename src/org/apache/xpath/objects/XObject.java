@@ -56,10 +56,12 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Text;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.Text;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.io.Serializable;
 
@@ -69,6 +71,7 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="general"/>
@@ -77,11 +80,13 @@ import org.apache.xpath.Expression;
  * This class acts as the base class to other XPath type objects,
  * such as XString, and provides polymorphic casting capabilities.
  */
-public class XObject extends Expression implements Serializable
+public class XObject extends Expression implements Serializable, Cloneable
 {
 
-  /** The java object which this object wraps.
-   *  @serial  */
+  /**
+   * The java object which this object wraps.
+   *  @serial  
+   */
   protected Object m_obj;  // This may be NULL!!!
 
   /**
@@ -92,7 +97,7 @@ public class XObject extends Expression implements Serializable
   /**
    * Create an XObject.
    *
-   * @param obj Can be any object, should be a specific type 
+   * @param obj Can be any object, should be a specific type
    * for derived classes, or null.
    */
   public XObject(Object obj)
@@ -109,9 +114,60 @@ public class XObject extends Expression implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
     return this;
+  }
+
+  /**
+   * Specify if it's OK for detach to release the iterator for reuse.
+   *
+   * @param allowRelease true if it is OK for detach to release this iterator
+   * for pooling.
+   */
+  public void allowDetachToRelease(boolean allowRelease){}
+
+  /**
+   * Detaches the <code>DTMIterator</code> from the set which it iterated
+   * over, releasing any computational resources and placing the iterator
+   * in the INVALID state. After <code>detach</code> has been invoked,
+   * calls to <code>nextNode</code> or <code>previousNode</code> will
+   * raise a runtime exception.
+   */
+  public void detach(){}
+
+  /**
+   * Forces the object to release it's resources.  This is more harsh than
+   * detach().
+   */
+  public void destruct()
+  {
+
+    if (null != m_obj)
+    {
+      allowDetachToRelease(true);
+      detach();
+
+      m_obj = null;
+    }
+  }
+
+  /**
+   * Directly call the
+   * characters method on the passed ContentHandler for the
+   * string-value. Multiple calls to the
+   * ContentHandler's characters methods may well occur for a single call to
+   * this method.
+   *
+   * @param ch A non-null reference to a ContentHandler.
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  public void dispatchCharactersEvents(org.xml.sax.ContentHandler ch)
+          throws org.xml.sax.SAXException
+  {
+    xstr().dispatchCharactersEvents(ch);
   }
 
   /**
@@ -143,17 +199,27 @@ public class XObject extends Expression implements Serializable
     {
       result = new XNumber(((Double) val).doubleValue());
     }
-    else if (val instanceof DocumentFragment)
+    else if (val instanceof org.w3c.dom.DocumentFragment)
     {
-      result = new XRTreeFrag((DocumentFragment) val);
+
+      // result = new XRTreeFrag((DocumentFragment) val);
+      // %REVIEW%
+      result = new XObject(val);
     }
-    else if (val instanceof Node)
+    else if (val instanceof org.w3c.dom.traversal.NodeIterator)
     {
-      result = new XNodeSet((Node) val);
+
+      // result = new XNodeSet((NodeIterator) val);
+      // %REVIEW%
+      result = new XObject(val);
     }
-    else if (val instanceof NodeIterator)
+    else if (val instanceof org.w3c.dom.Node)
     {
-      result = new XNodeSet((NodeIterator) val);
+
+      // result = new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node)val), 
+      //                      xctxt.getDTMManager());
+      // %REVIEW%
+      result = new XObject(val);
     }
     else
     {
@@ -163,28 +229,28 @@ public class XObject extends Expression implements Serializable
     return result;
   }
 
-  /** Constant for NULL object type          */
+  /** Constant for NULL object type */
   public static final int CLASS_NULL = -1;
 
-  /** Constant for UNKNOWN object type         */
+  /** Constant for UNKNOWN object type */
   public static final int CLASS_UNKNOWN = 0;
 
-  /** Constant for BOOLEAN  object type        */
+  /** Constant for BOOLEAN  object type */
   public static final int CLASS_BOOLEAN = 1;
 
-  /** Constant for NUMBER object type         */
+  /** Constant for NUMBER object type */
   public static final int CLASS_NUMBER = 2;
 
-  /** Constant for STRING object type         */
+  /** Constant for STRING object type */
   public static final int CLASS_STRING = 3;
 
-  /** Constant for NODESET object type         */
+  /** Constant for NODESET object type */
   public static final int CLASS_NODESET = 4;
 
-  /** Constant for RESULT TREE FRAGMENT object type         */
+  /** Constant for RESULT TREE FRAGMENT object type */
   public static final int CLASS_RTREEFRAG = 5;
 
-  /** Represents an unresolved variable type as an integer.          */
+  /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
 
   /**
@@ -243,15 +309,25 @@ public class XObject extends Expression implements Serializable
   /**
    * Cast result object to a string.
    *
+   * @return The string this wraps or the empty string if null
+   */
+  public XMLString xstr()
+  {
+    return XMLStringFactoryImpl.getFactory().newstr(str());
+  }
+
+  /**
+   * Cast result object to a string.
+   *
    * @return The object as a string
    */
   public String str()
   {
-    return (m_obj != null) ? m_obj.toString() : "null";
+    return (m_obj != null) ? m_obj.toString() : "";
   }
 
   /**
-   * Return the string representation of the object 
+   * Return the string representation of the object
    *
    *
    * @return the string representation of the object
@@ -268,20 +344,19 @@ public class XObject extends Expression implements Serializable
    *
    * @return the objec as a result tree fragment.
    */
-  public DocumentFragment rtree(XPathContext support)
+  public int rtree(XPathContext support)
   {
 
-    DocumentFragment result = rtree();
+    int result = rtree();
 
-    if (null == result)
+    if (DTM.NULL == result)
     {
-      result =
-        support.getDOMHelper().getDOMFactory().createDocumentFragment();
+      DTM frag = support.createDocumentFragment();
 
-      Text textNode =
-        support.getDOMHelper().getDOMFactory().createTextNode(str());
+      // %OPT%
+      frag.appendTextChild(str());
 
-      result.appendChild(textNode);
+      result = frag.getDocument();
     }
 
     return result;
@@ -292,9 +367,9 @@ public class XObject extends Expression implements Serializable
    *
    * @return null
    */
-  public DocumentFragment rtree()
+  public int rtree()
   {
-    return null;
+    return DTM.NULL;
   }
 
   /**
@@ -315,7 +390,7 @@ public class XObject extends Expression implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public NodeIterator nodeset() throws javax.xml.transform.TransformerException
+  public DTMIterator nodeset() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
@@ -331,7 +406,8 @@ public class XObject extends Expression implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public NodeSet mutableNodeset() throws javax.xml.transform.TransformerException
+  public NodeSet mutableNodeset()
+          throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_MUTABLENODELIST,
@@ -344,7 +420,7 @@ public class XObject extends Expression implements Serializable
    * Cast object to type t.
    *
    * @param t Type of object to cast this to
-   * @param support XPath context to use for the conversion 
+   * @param support XPath context to use for the conversion
    *
    * @return This object as the given type t
    *
@@ -373,9 +449,11 @@ public class XObject extends Expression implements Serializable
     case CLASS_UNKNOWN :
       result = m_obj;
       break;
-    case CLASS_RTREEFRAG :
-      result = rtree(support);
-      break;
+
+    // %TBD%  What to do here?
+    //    case CLASS_RTREEFRAG :
+    //      result = rtree(support);
+    //      break;
     default :
       error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
             new Object[]{ getTypeString(),
@@ -392,11 +470,12 @@ public class XObject extends Expression implements Serializable
    *
    * @param obj2 Object to compare this to
    *
-   * @return True if this object is less than the given object 
+   * @return True if this object is less than the given object
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean lessThan(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean lessThan(XObject obj2)
+          throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -415,11 +494,12 @@ public class XObject extends Expression implements Serializable
    *
    * @param obj2 Object to compare this to
    *
-   * @return True if this object is less than or equal to the given object 
+   * @return True if this object is less than or equal to the given object
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean lessThanOrEqual(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean lessThanOrEqual(XObject obj2)
+          throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -438,11 +518,12 @@ public class XObject extends Expression implements Serializable
    *
    * @param obj2 Object to compare this to
    *
-   * @return True if this object is greater than the given object 
+   * @return True if this object is greater than the given object
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean greaterThan(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean greaterThan(XObject obj2)
+          throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -461,7 +542,7 @@ public class XObject extends Expression implements Serializable
    *
    * @param obj2 Object to compare this to
    *
-   * @return True if this object is greater than or equal to the given object 
+   * @return True if this object is greater than or equal to the given object
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -485,11 +566,11 @@ public class XObject extends Expression implements Serializable
    *
    * @param obj2 Object to compare this to
    *
-   * @return True if this object is equal to the given object 
+   * @return True if this object is equal to the given object
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
 
     // In order to handle the 'all' semantics of 
@@ -513,11 +594,12 @@ public class XObject extends Expression implements Serializable
    *
    * @param obj2 Object to compare this to
    *
-   * @return True if this object is not equal to the given object 
+   * @return True if this object is not equal to the given object
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean notEquals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean notEquals(XObject obj2)
+          throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -537,7 +619,8 @@ public class XObject extends Expression implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void error(int msg) throws javax.xml.transform.TransformerException
+  protected void error(int msg)
+          throws javax.xml.transform.TransformerException
   {
     error(msg, null);
   }
@@ -547,11 +630,12 @@ public class XObject extends Expression implements Serializable
    * exception.
    *
    * @param msg Error message to issue
-   * @param args Arguments to use in the message 
+   * @param args Arguments to use in the message
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void error(int msg, Object[] args) throws javax.xml.transform.TransformerException
+  protected void error(int msg, Object[] args)
+          throws javax.xml.transform.TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);
@@ -564,5 +648,26 @@ public class XObject extends Expression implements Serializable
     {
       throw new XPathException(fmsg);
     }
+  }
+  
+  /**
+   * XObjects should not normally need to fix up variables.
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    // no-op
+  }
+
+
+  /**
+   * Cast result object to a string.
+   *
+   *
+   * NEEDSDOC @param fsb
+   * @return The string this wraps or the empty string if null
+   */
+  public void appendToFsb(org.apache.xml.utils.FastStringBuffer fsb)
+  {
+    fsb.append(str());
   }
 }

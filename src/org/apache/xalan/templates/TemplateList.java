@@ -62,7 +62,10 @@ import java.util.Enumeration;
 
 import java.io.Serializable;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
+
+import org.apache.xml.dtm.ref.ExpandedNameTable;
 
 import javax.xml.transform.TransformerException;
 
@@ -201,7 +204,7 @@ public class TemplateList implements java.io.Serializable
    * After all templates have been added, this function
    * should be called.
    */
-  public void compose()
+  public void compose(StylesheetRoot sroot)
   {
 
     if (DEBUG)
@@ -453,51 +456,158 @@ public class TemplateList implements java.io.Serializable
    *
    * @param xctxt The XPath runtime context.
    * @param targetNode The target node that will be checked for a match.
+   * @param dtm The dtm owner for the target node.
    *
    * @return The head of a linked list that contains all possible match pattern to 
    * template associations.
    */
-  public TemplateSubPatternAssociation getHead(XPathContext xctxt, Node targetNode)
+  public TemplateSubPatternAssociation getHead(XPathContext xctxt, 
+                                               int targetNode, DTM dtm)
   {
-
-    short targetNodeType = targetNode.getNodeType();
+    short targetNodeType = dtm.getNodeType(targetNode);
     TemplateSubPatternAssociation head;
 
     switch (targetNodeType)
     {
-    case Node.ELEMENT_NODE :
-    case Node.ATTRIBUTE_NODE :
+    case DTM.ELEMENT_NODE :
+    case DTM.ATTRIBUTE_NODE :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        xctxt.getDOMHelper().getLocalNameOfNode(targetNode));
+        dtm.getLocalName(targetNode));
       break;
-    case Node.TEXT_NODE :
-    case Node.CDATA_SECTION_NODE :
+    case DTM.TEXT_NODE :
+    case DTM.CDATA_SECTION_NODE :
       head = m_textPatterns;
       break;
-    case Node.ENTITY_REFERENCE_NODE :
-    case Node.ENTITY_NODE :
+    case DTM.ENTITY_REFERENCE_NODE :
+    case DTM.ENTITY_NODE :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        targetNode.getNodeName());
+        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
       break;
-    case Node.PROCESSING_INSTRUCTION_NODE :
+    case DTM.PROCESSING_INSTRUCTION_NODE :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        xctxt.getDOMHelper().getLocalNameOfNode(targetNode));
+        dtm.getLocalName(targetNode));
       break;
-    case Node.COMMENT_NODE :
+    case DTM.COMMENT_NODE :
       head = m_commentPatterns;
       break;
-    case Node.DOCUMENT_NODE :
-    case Node.DOCUMENT_FRAGMENT_NODE :
+    case DTM.DOCUMENT_NODE :
+    case DTM.DOCUMENT_FRAGMENT_NODE :
       head = m_docPatterns;
       break;
-    case Node.NOTATION_NODE :
+    case DTM.NOTATION_NODE :
     default :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        targetNode.getNodeName());
+        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
     }
 
     return (null == head) ? m_wildCardPatterns : head;
   }
+  
+  /**
+   * Given a target element, find the template that best
+   * matches in the given XSL document, according
+   * to the rules specified in the xsl draft.  This variation of getTemplate 
+   * assumes the current node and current expression node have already been 
+   * pushed. 
+   *
+   * @param xctxt
+   * @param targetNode
+   * @param mode A string indicating the display mode.
+   * @param maxImportLevel The maximum importCountComposed that we should consider or -1
+   *        if we should consider all import levels.  This is used by apply-imports to
+   *        access templates that have been overridden.
+   * @param quietConflictWarnings
+   * @return Rule that best matches targetElem.
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * the error condition is severe enough to halt processing.
+   *
+   * @throws TransformerException
+   */
+  public ElemTemplate getTemplateFast(XPathContext xctxt,
+                                int targetNode,
+                                int expTypeID,
+                                QName mode,
+                                int maxImportLevel,
+                                boolean quietConflictWarnings,
+                                DTM dtm)
+            throws TransformerException
+  {
+    
+    TemplateSubPatternAssociation head;
+
+    switch (expTypeID >> ExpandedNameTable.ROTAMOUNT_TYPE)
+    {
+    case DTM.ELEMENT_NODE :
+    case DTM.ATTRIBUTE_NODE :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        dtm.getLocalNameFromExpandedNameID(expTypeID));
+      break;
+    case DTM.TEXT_NODE :
+    case DTM.CDATA_SECTION_NODE :
+      head = m_textPatterns;
+      break;
+    case DTM.ENTITY_REFERENCE_NODE :
+    case DTM.ENTITY_NODE :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
+      break;
+    case DTM.PROCESSING_INSTRUCTION_NODE :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        dtm.getLocalName(targetNode));
+      break;
+    case DTM.COMMENT_NODE :
+      head = m_commentPatterns;
+      break;
+    case DTM.DOCUMENT_NODE :
+    case DTM.DOCUMENT_FRAGMENT_NODE :
+      head = m_docPatterns;
+      break;
+    case DTM.NOTATION_NODE :
+    default :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
+    }
+
+    if(null == head)
+    {
+      head = m_wildCardPatterns;
+      if(null == head)
+        return null;
+    }                                              
+
+    // XSLT functions, such as xsl:key, need to be able to get to 
+    // current ElemTemplateElement via a cast to the prefix resolver.
+    // Setting this fixes bug idkey03.
+    xctxt.pushNamespaceContextNull();
+    try
+    {
+      do
+      {
+        if ( (maxImportLevel > -1) && (head.getImportLevel() > maxImportLevel) )
+        {
+          continue;
+        }
+        ElemTemplate template = head.getTemplate();        
+        xctxt.setNamespaceContext(template);
+        
+        if ((head.m_stepPattern.execute(xctxt, targetNode, dtm, expTypeID) != NodeTest.SCORE_NONE)
+                && head.matchMode(mode))
+        {
+          if (quietConflictWarnings)
+            checkConflicts(head, xctxt, targetNode, mode);
+
+          return template;
+        }
+      }
+      while (null != (head = head.getNext()));
+    }
+    finally
+    {
+      xctxt.popNamespaceContext();
+    }
+
+    return null;
+  }  // end findTemplate
 
   /**
    * Given a target element, find the template that best
@@ -518,25 +628,25 @@ public class TemplateList implements java.io.Serializable
    * @throws TransformerException
    */
   public ElemTemplate getTemplate(XPathContext xctxt,
-                                Node targetNode,
+                                int targetNode,
                                 QName mode,
                                 int maxImportLevel,
-                                boolean quietConflictWarnings)
+                                boolean quietConflictWarnings,
+                                DTM dtm)
             throws TransformerException
   {
 
-    TemplateSubPatternAssociation head = getHead(xctxt, targetNode);
+    TemplateSubPatternAssociation head = getHead(xctxt, targetNode, dtm);
 
     if (null != head)
     {
       // XSLT functions, such as xsl:key, need to be able to get to 
       // current ElemTemplateElement via a cast to the prefix resolver.
       // Setting this fixes bug idkey03.
-      PrefixResolver savedPR = xctxt.getNamespaceContext();
+      xctxt.pushNamespaceContextNull();
+      xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
       try
       {
-        xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
-
         do
         {
           if ( (maxImportLevel > -1) && (head.getImportLevel() > maxImportLevel) )
@@ -546,7 +656,7 @@ public class TemplateList implements java.io.Serializable
           ElemTemplate template = head.getTemplate();        
           xctxt.setNamespaceContext(template);
           
-          if ((head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE)
+          if ((head.m_stepPattern.execute(xctxt, targetNode) != NodeTest.SCORE_NONE)
                   && head.matchMode(mode))
           {
             if (quietConflictWarnings)
@@ -560,7 +670,7 @@ public class TemplateList implements java.io.Serializable
       finally
       {
         xctxt.popCurrentNodeAndExpression();
-        xctxt.setNamespaceContext(savedPR);
+        xctxt.popNamespaceContext();
       }
     }
 
@@ -585,7 +695,7 @@ public class TemplateList implements java.io.Serializable
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    */
   private void checkConflicts(TemplateSubPatternAssociation head,
-                              XPathContext xctxt, Node targetNode, QName mode)
+                              XPathContext xctxt, int targetNode, QName mode)
   {
 
     // TODO: Check for conflicts.

@@ -95,4 +95,20 @@ public class And extends Operation
     else
       return XBoolean.S_FALSE;
   }
+  
+  /**
+   * Evaluate this operation directly to a boolean.
+   *
+   * @param xctxt The runtime execution context.
+   *
+   * @return The result of the operation as a boolean.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public boolean bool(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+    return (m_left.bool(xctxt) && m_right.bool(xctxt));
+  }
+
 }

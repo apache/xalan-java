@@ -73,6 +73,18 @@ public class UnionPattern extends Expression
   private StepPattern[] m_patterns;
   
   /**
+   * No arguments to process, so this does nothing.
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    for (int i = 0; i < m_patterns.length; i++) 
+    {
+      m_patterns[i].fixupVariables(vars, globalsSize);
+    }
+  }
+
+  
+  /**
    * Tell if this expression or it's subexpressions can traverse outside 
    * the current subtree.
    * 

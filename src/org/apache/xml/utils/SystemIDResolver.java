@@ -61,6 +61,9 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.utils.URI;
 import org.apache.xml.utils.URI.MalformedURIException;
 
+import java.io.*;
+
+import java.lang.StringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -72,10 +75,8 @@ public class SystemIDResolver
 
   /**
    * Get absolute URI from a given relative URI. 
-   * The URI is resolved relative to the system property
-   * "user.dir" if it is available; if not the input URI
-   * is returned as-is with backslashes turned into 
-   * forward slashes (as required for URIs).
+   * The URI is resolved relative to the system property "user.dir"
+   *
    *
    * @param uri Relative URI to resolve
    *
@@ -84,21 +85,15 @@ public class SystemIDResolver
    */
   public static String getAbsoluteURIFromRelative(String uri)
   {
-    String curdir = null;
-    try
-    {
-      curdir = System.getProperty("user.dir");
-    }
-    catch (SecurityException se)
-    {
-        // No-op for Applet/sandbox cases -sc 18-May-01
-    }
+
+    String curdir = System.getProperty("user.dir");
+
     if (null != curdir)
     {
-      if (uri != null)
-        uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
-      else
-        uri = "file:///" + curdir + System.getProperty("file.separator");
+                        if (uri != null)
+                                uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
+                        else
+                                uri = "file:///" + curdir + System.getProperty("file.separator");
     }
 
     if (null != uri && (uri.indexOf('\\') > -1))
@@ -170,7 +165,7 @@ public class SystemIDResolver
     if (null != urlString && (urlString.indexOf('\\') > -1))
       urlString = urlString.replace('\\', '/');
 
-    URI uri; // is-a org.apache.xml.utils.URI -sc
+    URI uri;
 
     try
     {

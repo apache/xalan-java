@@ -144,6 +144,18 @@ public class IntStack extends IntVector
   }
 
   /**
+   * Looks at the object at the position the stack counting down n items.
+   *
+   * @param n The number of items down, indexed from zero.
+   * @return     the object at n items down.
+   * @throws  EmptyStackException  if this stack is empty.
+   */
+  public int peek(int n)
+  {
+    return m_map[m_firstFree-(1+n)];
+  }
+
+  /**
    * Sets an object at a the top of the statck
    *
    *

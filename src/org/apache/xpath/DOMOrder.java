@@ -57,6 +57,7 @@
 package org.apache.xpath;
 
 /**
+ * @deprecated Since the introduction of the DTM, this class will be removed.
  * Nodes that implement this index can return a document order index.
  * Eventually, this will be replaced by DOM 3 methods. 
  * (compareDocumentOrder and/or compareTreePosition.)

@@ -88,11 +88,12 @@ import org.apache.xml.utils.PrefixResolver;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.SourceLocator;
 import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.Axis;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
-
-import org.w3c.dom.traversal.NodeFilter;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -673,10 +674,8 @@ public class Compiler extends OpMap
     locPathDepth++;
     try
     {
-      LocPathIterator iter = WalkerFactory.newLocPathIterator(this, opPos);
-      if(locPathDepth == 0)
-        iter.setIsTopLevel(true);
-      return iter;
+      DTMIterator iter = WalkerFactory.newDTMIterator(this, opPos, (locPathDepth == 0));
+      return (Expression)iter; // cast OK, I guess.
     }
     finally
     {
@@ -774,60 +773,62 @@ public class Compiler extends OpMap
     switch (testType)
     {
     case OpCodes.NODETYPE_COMMENT :
-      return NodeFilter.SHOW_COMMENT;
+      return DTMFilter.SHOW_COMMENT;
     case OpCodes.NODETYPE_TEXT :
-//      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT;
-      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_CDATA_SECTION ;
+//      return DTMFilter.SHOW_TEXT | DTMFilter.SHOW_COMMENT;
+      return DTMFilter.SHOW_TEXT | DTMFilter.SHOW_CDATA_SECTION ;
     case OpCodes.NODETYPE_PI :
-      return NodeFilter.SHOW_PROCESSING_INSTRUCTION;
+      return DTMFilter.SHOW_PROCESSING_INSTRUCTION;
     case OpCodes.NODETYPE_NODE :
-//      return NodeFilter.SHOW_ALL;
+//      return DTMFilter.SHOW_ALL;
       switch (axesType)
       {
       case OpCodes.FROM_NAMESPACE:
-        return NodeFilter.SHOW_ATTRIBUTE | NodeTest.SHOW_NAMESPACE;
+        return DTMFilter.SHOW_NAMESPACE;
       case OpCodes.FROM_ATTRIBUTES :
       case OpCodes.MATCH_ATTRIBUTE :
-        return NodeFilter.SHOW_ATTRIBUTE;
+        return DTMFilter.SHOW_ATTRIBUTE;
       case OpCodes.FROM_SELF:
       case OpCodes.FROM_ANCESTORS_OR_SELF:
       case OpCodes.FROM_DESCENDANTS_OR_SELF:
-        return NodeFilter.SHOW_ALL;
+        return DTMFilter.SHOW_ALL;
       default:
         if (getOp(0) == OpCodes.OP_MATCHPATTERN)
-          return ~NodeFilter.SHOW_ATTRIBUTE
-                  & ~NodeFilter.SHOW_DOCUMENT
-                  & ~NodeFilter.SHOW_DOCUMENT_FRAGMENT;
+          return ~DTMFilter.SHOW_ATTRIBUTE
+                  & ~DTMFilter.SHOW_DOCUMENT
+                  & ~DTMFilter.SHOW_DOCUMENT_FRAGMENT;
         else
-          return ~NodeFilter.SHOW_ATTRIBUTE;
+          return ~DTMFilter.SHOW_ATTRIBUTE;
       }
     case OpCodes.NODETYPE_ROOT :
-      return NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT;
+      return DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT;
     case OpCodes.NODETYPE_FUNCTEST :
       return NodeTest.SHOW_BYFUNCTION;
     case OpCodes.NODENAME :
       switch (axesType)
       {
       case OpCodes.FROM_NAMESPACE :
-        return NodeFilter.SHOW_ATTRIBUTE | NodeTest.SHOW_NAMESPACE;
+        return DTMFilter.SHOW_NAMESPACE;
       case OpCodes.FROM_ATTRIBUTES :
       case OpCodes.MATCH_ATTRIBUTE :
-        return NodeFilter.SHOW_ATTRIBUTE;
+        return DTMFilter.SHOW_ATTRIBUTE;
 
       // break;
       case OpCodes.MATCH_ANY_ANCESTOR :
       case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
-        return NodeFilter.SHOW_ELEMENT;
+        return DTMFilter.SHOW_ELEMENT;
 
       // break;
       default :
-        return NodeFilter.SHOW_ELEMENT;
+        return DTMFilter.SHOW_ELEMENT;
       }
     default :
       // System.err.println("We should never reach here.");
-      return NodeFilter.SHOW_ALL;
+      return DTMFilter.SHOW_ALL;
     }
   }
+  
+private static final boolean DEBUG = false;
 
   /**
    * Compile a step pattern unit expression, used for both location paths 
@@ -850,47 +851,72 @@ public class Compiler extends OpMap
     int stepType = getOpMap()[opPos];
 
     if (OpCodes.ENDOP == stepType)
+    {
       return null;
+    }
+    
+    boolean addMagicSelf = true;
 
     int endStep = getNextOpPos(opPos);
 
     // int nextStepType = getOpMap()[endStep];
     StepPattern pattern;
-
+    
     // boolean isSimple = ((OpCodes.ENDOP == nextStepType) && (stepCount == 0));
     int argLen;
 
     switch (stepType)
     {
     case OpCodes.OP_FUNCTION :
+      if(DEBUG)
+        System.out.println("MATCH_FUNCTION: "+m_currentPattern); 
+      addMagicSelf = false;
       argLen = m_opMap[opPos + OpMap.MAPINDEX_LENGTH];
-      pattern = new FunctionPattern(compileFunction(opPos));
+      pattern = new FunctionPattern(compileFunction(opPos), Axis.PARENT, Axis.CHILD);
       break;
     case OpCodes.FROM_ROOT :
+      if(DEBUG)
+        System.out.println("FROM_ROOT, "+m_currentPattern);
+      addMagicSelf = false;
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new StepPattern(NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT);
+      pattern = new StepPattern(DTMFilter.SHOW_DOCUMENT | 
+                                DTMFilter.SHOW_DOCUMENT_FRAGMENT,
+                                Axis.PARENT, Axis.CHILD);
       break;
     case OpCodes.MATCH_ATTRIBUTE :
+     if(DEBUG)
+        System.out.println("MATCH_ATTRIBUTE: "+getStepLocalName(startOpPos)+", "+m_currentPattern);
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new StepPattern(NodeFilter.SHOW_ATTRIBUTE,
+      pattern = new StepPattern(DTMFilter.SHOW_ATTRIBUTE,
                                 getStepNS(startOpPos),
-                                getStepLocalName(startOpPos));
+                                getStepLocalName(startOpPos),
+                                Axis.PARENT, Axis.ATTRIBUTE);
       break;
     case OpCodes.MATCH_ANY_ANCESTOR :
+      if(DEBUG)
+        System.out.println("MATCH_ANY_ANCESTOR: "+getStepLocalName(startOpPos)+", "+m_currentPattern);
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new AncestorStepPattern(getWhatToShow(startOpPos),
+      int what = getWhatToShow(startOpPos);
+      // bit-o-hackery, but this code is due for the morgue anyway...
+      if(0x00000500 == what)
+        addMagicSelf = false;
+      pattern = new StepPattern(getWhatToShow(startOpPos),
                                         getStepNS(startOpPos),
-                                        getStepLocalName(startOpPos));
+                                        getStepLocalName(startOpPos),
+                                        Axis.ANCESTOR, Axis.CHILD);
       break;
     case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
+      if(DEBUG)
+        System.out.println("MATCH_IMMEDIATE_ANCESTOR: "+getStepLocalName(startOpPos)+", "+m_currentPattern);
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
       pattern = new StepPattern(getWhatToShow(startOpPos),
                                 getStepNS(startOpPos),
-                                getStepLocalName(startOpPos));
+                                getStepLocalName(startOpPos),
+                                Axis.PARENT, Axis.CHILD);
       break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_MATCH_OPERATION, null);  //"unknown match operation!");
@@ -899,7 +925,33 @@ public class Compiler extends OpMap
     }
 
     pattern.setPredicates(getCompiledPredicates(opPos + argLen));
-    pattern.setRelativePathPattern(ancestorPattern);
+    if(null == ancestorPattern)
+    {
+      // This is the magic and invisible "." at the head of every 
+      // match pattern, and corresponds to the current node in the context 
+      // list, from where predicates are counted.
+      // So, in order to calculate "foo[3]", it has to count from the 
+      // current node in the context list, so, from that current node, 
+      // the full pattern is really "self::node()/child::foo[3]".  If you 
+      // translate this to a select pattern from the node being tested, 
+      // which is really how we're treating match patterns, it works out to 
+      // self::foo/parent::node[child::foo[3]]", or close enough.
+      if(addMagicSelf && pattern.getPredicateCount() > 0)
+      {
+        StepPattern selfPattern = new StepPattern(DTMFilter.SHOW_ALL, 
+                                                  Axis.PARENT, Axis.CHILD);
+        // We need to keep the new nodetest from affecting the score...
+        XNumber score = pattern.getStaticScore();
+        pattern.setRelativePathPattern(selfPattern);
+        pattern.setStaticScore(score);
+        selfPattern.setStaticScore(score);
+      }
+    }
+    else
+    {
+      // System.out.println("Setting "+ancestorPattern+" as relative to "+pattern);
+      pattern.setRelativePathPattern(ancestorPattern);
+    }
 
     StepPattern relativePathPattern = stepPattern(endStep, stepCount + 1,
                                         pattern);

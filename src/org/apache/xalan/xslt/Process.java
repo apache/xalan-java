@@ -105,12 +105,13 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
-
 import javax.xml.transform.dom.*;
 import javax.xml.transform.sax.*;
 import javax.xml.parsers.*;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ContentHandler;
@@ -144,6 +145,7 @@ public class Process
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
     System.out.println(resbundle.getString("optionV"));  //"   [-V (Version info)]");
     System.out.println(resbundle.getString("optionQC"));  //"   [-QC (Quiet Pattern Conflicts Warnings)]");
+
     // System.out.println(resbundle.getString("optionQ"));  //"   [-Q  (Quiet Mode)]"); // sc 28-Feb-01 commented out
     System.out.println(resbundle.getString("optionTT"));  //"   [-TT (Trace the templates as they are being called.)]");
     System.out.println(resbundle.getString("optionTG"));  //"   [-TG (Trace each generation event.)]");
@@ -157,18 +159,19 @@ public class Process
     System.out.println(resbundle.getString("optionTEXT"));  //"   [-TEXT (Use simple Text formatter.)]");
     System.out.println(resbundle.getString("optionHTML"));  //"   [-HTML (Use HTML formatter.)]");
     System.out.println(resbundle.getString("optionPARAM"));  //"   [-PARAM name expression (Set a stylesheet parameter)]");
+
     // sc 28-Feb-01 these below should really be added as resources
     System.out.println(
       "   [-MEDIA mediaType (use media attribute to find stylesheet associated with a document.)]");
     System.out.println(
-      "   [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)]"); // Added by sboag/scurcuru; experimental
+      "   [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)]");  // Added by sboag/scurcuru; experimental
     System.out.println(
       "   [-DIAG (Print overall milliseconds transform took.)]");
-		System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");
-		System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
-		System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
+    System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");
+    System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
+    System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
   }
-
+  
   /**
    * Command line interface to transform an XML document according to
    * the instructions found in an XSL stylesheet.  
@@ -203,7 +206,6 @@ public class Process
     XSLTErrorResources resbundle =
       (XSLTErrorResources) (XSLMessages.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.ERROR_RESOURCES));
-        
     String flavor = "s2s";
 
     if (argv.length < 1)
@@ -241,9 +243,9 @@ public class Process
       String media = null;
       Vector params = new Vector();
       boolean quietConflictWarnings = false;
-			URIResolver uriResolver = null;
-			EntityResolver entityResolver = null;
-			ContentHandler contentHandler = null;
+      URIResolver uriResolver = null;
+      EntityResolver entityResolver = null;
+      ContentHandler contentHandler = null;
 
       for (int i = 0; i < argv.length; i++)
       {
@@ -369,7 +371,7 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-PARAM" }));  //"Missing argument for);
         }
-        else if ("-treedump".equalsIgnoreCase(argv[i])) // sc 28-Feb-01 appears to be unused; can we remove?
+        else if ("-treedump".equalsIgnoreCase(argv[i]))  // sc 28-Feb-01 appears to be unused; can we remove?
         {
           if (i + 1 < argv.length)
             treedumpFileName = argv[++i];
@@ -379,7 +381,7 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-treedump" }));  //"Missing argument for);
         }
-        else if ("-F".equalsIgnoreCase(argv[i])) // sc 28-Feb-01 appears to be unused; can we remove?
+        else if ("-F".equalsIgnoreCase(argv[i]))  // sc 28-Feb-01 appears to be unused; can we remove?
         {
           formatOutput = true;
         }
@@ -447,81 +449,88 @@ public class Process
             dumpFileName = argv[++i];
           }
         }
-				else if ("-URIRESOLVER".equalsIgnoreCase(argv[i])) 
+        else if ("-URIRESOLVER".equalsIgnoreCase(argv[i]))
         {
           if (i + 1 < argv.length)
-					{	
-						try{
-							uriResolver = (URIResolver)Class.forName(argv[++i]).newInstance();
-							tfactory.setURIResolver(uriResolver);
-						}
-						catch(Exception cnfe)
-						{
-							System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
-                new Object[]{ "-URIResolver" })); 
-							System.exit(-1);
-						}
-					}
-					else
-					{
+          {
+            try
+            {
+              uriResolver =
+                (URIResolver) Class.forName(argv[++i]).newInstance();
+
+              tfactory.setURIResolver(uriResolver);
+            }
+            catch (Exception cnfe)
+            {
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                  new Object[]{ "-URIResolver" }));
+              System.exit(-1);
+            }
+          }
+          else
+          {
             System.err.println(
               XSLMessages.createMessage(
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-URIResolver" }));  //"Missing argument for);
-						System.exit(-1);
-					}
-				}
-				else if ("-ENTITYRESOLVER".equalsIgnoreCase(argv[i])) 
+            System.exit(-1);
+          }
+        }
+        else if ("-ENTITYRESOLVER".equalsIgnoreCase(argv[i]))
         {
           if (i + 1 < argv.length)
-					{	
-						try{
-							entityResolver = (EntityResolver)Class.forName(argv[++i]).newInstance();							
-						}
-						catch(Exception cnfe)
-						{
-							System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
-                new Object[]{ "-EntityResolver" }));
-							System.exit(-1);
-						}
-					}
+          {
+            try
+            {
+              entityResolver =
+                (EntityResolver) Class.forName(argv[++i]).newInstance();
+            }
+            catch (Exception cnfe)
+            {
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                  new Object[]{ "-EntityResolver" }));
+              System.exit(-1);
+            }
+          }
           else
-					{
+          {
             System.err.println(
               XSLMessages.createMessage(
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-EntityResolver" }));  //"Missing argument for);
-						System.exit(-1);
-					}
+            System.exit(-1);
+          }
         }
-				else if ("-CONTENTHANDLER".equalsIgnoreCase(argv[i])) 
+        else if ("-CONTENTHANDLER".equalsIgnoreCase(argv[i]))
         {
           if (i + 1 < argv.length)
-					{	
-						try{
-							contentHandler = (ContentHandler)Class.forName(argv[++i]).newInstance();							
-						}
-						catch(Exception cnfe)
-						{
-							System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
-                new Object[]{ "-ContentHandler" }));
-							System.exit(-1);
-						}
-					}
+          {
+            try
+            {
+              contentHandler =
+                (ContentHandler) Class.forName(argv[++i]).newInstance();
+            }
+            catch (Exception cnfe)
+            {
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                  new Object[]{ "-ContentHandler" }));
+              System.exit(-1);
+            }
+          }
           else
-					{
+          {
             System.err.println(
               XSLMessages.createMessage(
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-ContentHandler" }));  //"Missing argument for);
-						System.exit(-1);
-					}
+            System.exit(-1);
+          }
         }
         else
           System.err.println(
@@ -539,26 +548,37 @@ public class Process
         {
           dumpWriter = new PrintWriter(new FileWriter(dumpFileName));
         }
+
         Templates stylesheet = null;
-        if(null != xslFileName)
+
+        if (null != xslFileName)
         {
-          if(flavor.equals("d2d"))
+          if (flavor.equals("d2d"))
           {
+
             // Parse in the xml data into a DOM
-            DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilderFactory dfactory =
+              DocumentBuilderFactory.newInstance();
+
             dfactory.setNamespaceAware(true);
+
             DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-						Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
-            stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
+            Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
+
+            stylesheet = tfactory.newTemplates(new DOMSource(xslDOM,
+                    xslFileName));
           }
           else
-          { 
+          {
+            // System.out.println("Calling newTemplates: "+xslFileName);
             stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
+            // System.out.println("Done calling newTemplates: "+xslFileName);
           }
         }
-          
+
         PrintWriter resultWriter;
         StreamResult strResult;
+
         if (null != outFileName)
         {
           strResult = new StreamResult(new FileOutputStream(outFileName));
@@ -568,39 +588,38 @@ public class Process
           strResult = new StreamResult(System.out);
         }
 
-
-        SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
+        SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
 
         // Did they pass in a stylesheet, or should we get it from the 
         // document?
         if (null == stylesheet)
         {
           Source source =
-            stf.getAssociatedStylesheet(new StreamSource(inFileName),
-                                               media, null, null);
+            stf.getAssociatedStylesheet(new StreamSource(inFileName), media,
+                                        null, null);
 
           if (null != source)
             stylesheet = tfactory.newTemplates(source);
           else
           {
             if (null != media)
-              throw new TransformerException("No stylesheet found in: " + inFileName
-                                     + ", media=" + media);
+              throw new TransformerException("No stylesheet found in: "
+                                             + inFileName + ", media="
+                                             + media);
             else
               throw new TransformerException("No xml-stylesheet PI found in: "
-                                     + inFileName);
+                                             + inFileName);
           }
         }
 
         if (null != stylesheet)
         {
-          Transformer transformer = stylesheet.newTransformer();
+          Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
 
           // Override the output format?
           if (null != outputType)
           {
-            transformer.setOutputProperty(OutputKeys.METHOD,
-                                          outputType);
+            transformer.setOutputProperty(OutputKeys.METHOD, outputType);
           }
 
           if (transformer instanceof TransformerImpl)
@@ -624,84 +643,200 @@ public class Process
             transformer.setParameter((String) params.elementAt(i),
                                      (String) params.elementAt(i + 1));
           }
-					if (uriResolver != null)
-						transformer.setURIResolver(uriResolver);
+
+          if (uriResolver != null)
+            transformer.setURIResolver(uriResolver);
 
           if (null != inFileName)
           {
-            if(flavor.equals("d2d"))
+            if (flavor.equals("d2d"))
             {
+
               // Parse in the xml data into a DOM
-              DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+              DocumentBuilderFactory dfactory =
+                DocumentBuilderFactory.newInstance();
+
               dfactory.setCoalescing(true);
               dfactory.setNamespaceAware(true);
+
               DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-							if (entityResolver != null)
-								docBuilder.setEntityResolver(entityResolver);
+
+              if (entityResolver != null)
+                docBuilder.setEntityResolver(entityResolver);
+
               Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
               Document doc = docBuilder.newDocument();
-              org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
-              transformer.transform(new DOMSource(xmlDoc, inFileName), 
+              org.w3c.dom.DocumentFragment outNode =
+                doc.createDocumentFragment();
+
+              transformer.transform(new DOMSource(xmlDoc, inFileName),
                                     new DOMResult(outNode));
-                                    
+
               // Now serialize output to disk with identity transformer
               Transformer serializer = stf.newTransformer();
-              Properties serializationProps = stylesheet.getOutputProperties();
+              Properties serializationProps =
+                stylesheet.getOutputProperties();
+
               serializer.setOutputProperties(serializationProps);
-							if (contentHandler != null)
-							{
-								SAXResult result = new SAXResult(contentHandler);
-								serializer.transform(new DOMSource(outNode), result);
-							}
-							else
-								serializer.transform(new DOMSource(outNode), strResult);
-           }
+
+              if (contentHandler != null)
+              {
+                SAXResult result = new SAXResult(contentHandler);
+
+                serializer.transform(new DOMSource(outNode), result);
+              }
+              else
+                serializer.transform(new DOMSource(outNode), strResult);
+            }
+            else if (flavor.equals("th"))
+            {
+              // System.out.println("Testing the TransformerHandler...");
+
+              // ===============
+              XMLReader reader = null;
+
+              // Use JAXP1.1 ( if possible )      
+              try
+              {
+                javax.xml.parsers.SAXParserFactory factory =
+                  javax.xml.parsers.SAXParserFactory.newInstance();
+
+                factory.setNamespaceAware(true);
+
+                javax.xml.parsers.SAXParser jaxpParser =
+                  factory.newSAXParser();
+
+                reader = jaxpParser.getXMLReader();
+              }
+              catch (javax.xml.parsers.ParserConfigurationException ex)
+              {
+                throw new org.xml.sax.SAXException(ex);
+              }
+              catch (javax.xml.parsers.FactoryConfigurationError ex1)
+              {
+                throw new org.xml.sax.SAXException(ex1.toString());
+              }
+              catch (NoSuchMethodError ex2){}
+              catch (AbstractMethodError ame){}
+
+              if (null == reader)
+              {
+                reader = XMLReaderFactory.createXMLReader();
+              }
+              
+              TransformerHandler th = stf.newTransformerHandler(stylesheet);
+              
+              reader.setContentHandler(th);
+              reader.setDTDHandler(th);
+              
+              if(th instanceof org.xml.sax.ErrorHandler)
+                reader.setErrorHandler((org.xml.sax.ErrorHandler)th);
+              
+              try
+              {
+                reader.setProperty(
+                  "http://xml.org/sax/properties/lexical-handler", th);
+              }
+              catch (org.xml.sax.SAXNotRecognizedException e){}
+              catch (org.xml.sax.SAXNotSupportedException e){}
+              try
+              {
+                reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
+                                  true);
+              } catch (org.xml.sax.SAXException se) {}
+        
+              try
+              {
+                reader.setFeature("http://apache.org/xml/features/validation/dynamic",
+                                  true);
+              } catch (org.xml.sax.SAXException se) {}
+              
+              th.setResult(strResult);
+              
+              // System.out.println("sending parse events to the handler...");
+              reader.parse(new InputSource(inFileName));
+
+//              if (contentHandler != null)
+//              {
+//                SAXResult result = new SAXResult(contentHandler);
+//
+//                transformer.transform(
+//                  new SAXSource(reader, new InputSource(inFileName)), result);
+//              }
+//              else
+//              {
+//                transformer.transform(
+//                  new SAXSource(reader, new InputSource(inFileName)),
+//                  strResult);
+//              }
+
+              // ===============
+            }
             else
             {
-		if (entityResolver != null)
-		    {
-			XMLReader reader=null;
-			// Use JAXP1.1 ( if possible )      
-			try {
-			    javax.xml.parsers.SAXParserFactory factory=
-				javax.xml.parsers.SAXParserFactory.newInstance();
-			    factory.setNamespaceAware( true );
-			    javax.xml.parsers.SAXParser jaxpParser=
-				factory.newSAXParser();
-			    reader=jaxpParser.getXMLReader();
-			    
-			} catch( javax.xml.parsers.ParserConfigurationException ex ) {
-			    throw new org.xml.sax.SAXException( ex );
-			} catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-			    throw new org.xml.sax.SAXException( ex1.toString() );
-			} catch( NoSuchMethodError ex2 ) {
-			}
-			catch (AbstractMethodError ame){}
-			if (null == reader) {
-			    reader = XMLReaderFactory.createXMLReader();
-			}
+              if (entityResolver != null)
+              {
+                XMLReader reader = null;
 
-			reader.setEntityResolver(entityResolver);
-			if (contentHandler != null)
-			    {
-				SAXResult result = new SAXResult(contentHandler);
-				transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
-						      result);
-			    }
-			else
-			    {
-				transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
-						      strResult);
-			    }
-		    }
-		else if (contentHandler != null)
-		    {
-			SAXResult result = new SAXResult(contentHandler);
-			transformer.transform(new StreamSource(inFileName),
-					      result);
-		    }
-		else
-		    transformer.transform(new StreamSource(inFileName), strResult);
+                // Use JAXP1.1 ( if possible )      
+                try
+                {
+                  javax.xml.parsers.SAXParserFactory factory =
+                    javax.xml.parsers.SAXParserFactory.newInstance();
+
+                  factory.setNamespaceAware(true);
+
+                  javax.xml.parsers.SAXParser jaxpParser =
+                    factory.newSAXParser();
+
+                  reader = jaxpParser.getXMLReader();
+                }
+                catch (javax.xml.parsers.ParserConfigurationException ex)
+                {
+                  throw new org.xml.sax.SAXException(ex);
+                }
+                catch (javax.xml.parsers.FactoryConfigurationError ex1)
+                {
+                  throw new org.xml.sax.SAXException(ex1.toString());
+                }
+                catch (NoSuchMethodError ex2){}
+                catch (AbstractMethodError ame){}
+
+                if (null == reader)
+                {
+                  reader = XMLReaderFactory.createXMLReader();
+                }
+
+                reader.setEntityResolver(entityResolver);
+
+                if (contentHandler != null)
+                {
+                  SAXResult result = new SAXResult(contentHandler);
+
+                  transformer.transform(
+                    new SAXSource(reader, new InputSource(inFileName)),
+                    result);
+                }
+                else
+                {
+                  transformer.transform(
+                    new SAXSource(reader, new InputSource(inFileName)),
+                    strResult);
+                }
+              }
+              else if (contentHandler != null)
+              {
+                SAXResult result = new SAXResult(contentHandler);
+
+                transformer.transform(new StreamSource(inFileName), result);
+              }
+              else
+              {
+                // System.out.println("Starting transform");
+                transformer.transform(new StreamSource(inFileName),
+                                      strResult);
+                // System.out.println("Done with transform");
+              }
             }
           }
           else
@@ -743,7 +878,8 @@ public class Process
           doStackDumpOnError = true;
 
         diagnosticsWriter.println();
-        if (doStackDumpOnError)          
+
+        if (doStackDumpOnError)
           throwable.printStackTrace(dumpWriter);
         else
           diagnosticsWriter.println(
@@ -777,5 +913,4 @@ public class Process
       diagnosticsWriter.println("");  //"Xalan: done");
     }
   }
-  
 }

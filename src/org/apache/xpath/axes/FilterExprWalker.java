@@ -62,7 +62,6 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.DOMHelper;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
@@ -70,9 +69,10 @@ import org.apache.xpath.patterns.NodeTestFilter;
 
 import java.util.Vector;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.Axis;
 
 /**
  * Walker for the OP_VARIABLE, or OP_EXTFUNCTION, or OP_FUNCTION, or OP_GROUP,
@@ -87,9 +87,9 @@ public class FilterExprWalker extends AxesWalker
    *
    * @param locPathIterator non-null reference to the parent iterator.
    */
-  public FilterExprWalker(LocPathIterator locPathIterator)
+  FilterExprWalker(WalkingIterator locPathIterator)
   {
-    super(locPathIterator);
+    super(locPathIterator, Axis.FILTEREDLIST);
   }
 
   /**
@@ -127,7 +127,7 @@ public class FilterExprWalker extends AxesWalker
    * @param root non-null reference to the root, or starting point of 
    *        the query.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
     // System.out.println("root: "+root);
@@ -151,15 +151,13 @@ public class FilterExprWalker extends AxesWalker
         VariableStack vars = m_lpi.m_execContext.getVarStack();
         
         // These three statements need to be combined into one operation.
-        int savedStart = vars.getSearchStart();
-        vars.setSearchStart(m_lpi.m_varStackPos);
-        vars.pushContextPosition(m_lpi.m_varStackContext);
+        int savedStart = vars.getStackFrame();
+        vars.setStackFrame(m_lpi.m_stackFrame);
         
         obj = m_expr.execute(m_lpi.getXPathContext());
         
         // These two statements need to be combined into one operation.
-        vars.setSearchStart(savedStart);
-        vars.popContextPosition();
+        vars.setStackFrame(savedStart);
       }
       else
         obj = m_expr.execute(m_lpi.getXPathContext());
@@ -167,7 +165,7 @@ public class FilterExprWalker extends AxesWalker
       // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
       m_nodeSet = (null != obj) ? obj.nodeset() : null;
       
-      m_peek = null;
+      m_peek = DTM.NULL;
     }
     catch (javax.xml.transform.TransformerException se)
     {
@@ -198,7 +196,7 @@ public class FilterExprWalker extends AxesWalker
 
     // clone.m_expr = (Expression)((Expression)m_expr).clone();
     if (null != m_nodeSet)
-      clone.m_nodeSet = (NodeIterator) ((ContextNodeList) m_nodeSet).clone();
+      clone.m_nodeSet = (DTMIterator) m_nodeSet.clone();
 
     return clone;
   }
@@ -210,7 +208,7 @@ public class FilterExprWalker extends AxesWalker
    * @return  a constant to determine whether the node is accepted,
    *   rejected, or skipped, as defined  above .
    */
-  public short acceptNode(Node n)
+  public short acceptNode(int n)
   {
 
     try
@@ -220,10 +218,10 @@ public class FilterExprWalker extends AxesWalker
         countProximityPosition(0);
 
         if (!executePredicates(n, m_lpi.getXPathContext()))
-          return NodeFilter.FILTER_SKIP;
+          return DTMIterator.FILTER_SKIP;
       }
 
-      return NodeFilter.FILTER_ACCEPT;
+      return DTMIterator.FILTER_ACCEPT;
     }
     catch (javax.xml.transform.TransformerException se)
     {
@@ -240,68 +238,42 @@ public class FilterExprWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next node  in the TreeWalker's logical view.
    */
-  public Node getNextNode()
+  public int getNextNode()
   {
 
-    Node next;
+    int next;
 
-    if (null != m_peek)
+    if (DTM.NULL != m_peek)
     {
       next = m_peek;
-      m_peek = null;
+      m_peek = DTM.NULL;
     }
     else
     {
       if (null != m_nodeSet)
       {
-        Node current = this.getCurrentNode();
-
-        if (current instanceof NodeTestFilter)
-          ((NodeTestFilter) current).setNodeTest(this);
+        int current = this.getCurrentNode();
 
         next = m_nodeSet.nextNode();
       }
       else
-        next = null;
+        next = DTM.NULL;
     }
 
-    // Bogus, I think, but probably OK for right now since a filterExpr 
-    // can only occur at the head of a location path.
-    if (null == next)
-    {
-      m_nextLevelAmount = 0;
-    }
-    else
-    {
-
-      // System.out.println("FilterExprWalker.getNextNode");
-      m_nextLevelAmount = (next.hasChildNodes() ? 1 : 0);
-
-      /* ...WAIT TO SEE IF WE REALLY NEED THIS...
-      m_peek = m_nodeSet.nextNode();
-      if(null == m_peek)
-        m_nextLevelAmount = 0;
-      else
-      {
-        DOMHelper dh = m_lpi.getDOMHelper();
-        m_nextLevelAmount = dh.getLevel(m_peek) - dh.getLevel(next);
-      }
-      */
-    }
-
-    // System.out.println("FilterExprWalker.getNextNode - Returning: "+next);
-    return setCurrentIfNotNull(next);
+    // int current = setCurrentIfNotNull(next);
+    // System.out.println("Returning: "+this);
+    return next;
   }
-
+  
   /** The contained expression. Should be non-null.
    *  @serial   */
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  transient private NodeIterator m_nodeSet;
+  transient private DTMIterator m_nodeSet;
 
   /** I think this is always null right now.    */
-  transient private Node m_peek = null;
+  transient private int m_peek = DTM.NULL;
 
   /**
    * Tell what's the maximum level this axes can descend to (which is actually
@@ -318,4 +290,21 @@ public class FilterExprWalker extends AxesWalker
 
     // return m_lpi.getDOMHelper().getLevel(this.m_currentNode)+1;
   }
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    super.fixupVariables(vars, globalsSize);
+    m_expr.fixupVariables(vars, globalsSize);
+  }
+
 }

@@ -77,10 +77,6 @@ public class String extends UnaryOperation
    */
   public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {
-
-    if (XObject.CLASS_STRING == right.getType())
-      return right;
-    else
-      return new XString(right.str());
+    return (XString)right.xstr(); // semi-safe cast.
   }
 }

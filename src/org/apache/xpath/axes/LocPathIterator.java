@@ -60,21 +60,16 @@ package org.apache.xpath.axes;
 import java.util.Vector;
 import java.util.Stack;
 
-// DOM imports
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.traversal.TreeWalker;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.NodeList;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMManager;
 
 // Xalan imports
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.OpMap;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.NodeSet;
@@ -100,39 +95,9 @@ import org.apache.xpath.VariableStack;
  * the case where the LocPathIterator is "owned" by a UnionPathIterator,
  * in which case the UnionPathIterator will cache the nodes.</p>
  */
-public class LocPathIterator extends PredicatedNodeTest
-        implements Cloneable, NodeIterator, ContextNodeList, NodeList,
-                   java.io.Serializable
+public abstract class LocPathIterator extends PredicatedNodeTest
+        implements Cloneable, DTMIterator, java.io.Serializable
 {
-
-  /**
-   * Get the waiting walker at the given index.
-   *
-   *
-   * @param i The walker index.
-   *
-   * @return non-null reference to an AxesWalker.
-   */
-  AxesWalker getWaiting(int i)
-  {
-    return (AxesWalker) m_waiting.elementAt(i);
-  }
-
-  /**
-   * Get the number of waiters waiting in the current expression execution.
-   * Note that this may not be the same as the total number of waiters in
-   * the waiting list.
-   *
-   *
-   * @return the number of waiters waiting in the current expression execution.
-   */
-  int getWaitingCount()
-  {
-    if(null == m_waiting)
-      return 0;
-    else
-      return m_waiting.size() - m_waitingBottom;
-  }
 
   /**
    * Create a LocPathIterator object.
@@ -140,7 +105,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * @param nscontext The namespace context for this iterator,
    * should be OK if null.
    */
-  public LocPathIterator(PrefixResolver nscontext)
+  protected LocPathIterator(PrefixResolver nscontext)
   {
 
     setLocPathIterator(this);
@@ -160,7 +125,7 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public LocPathIterator(Compiler compiler, int opPos, int analysis)
+  protected LocPathIterator(Compiler compiler, int opPos, int analysis)
           throws javax.xml.transform.TransformerException
   {
     this(compiler, opPos, analysis, true);
@@ -181,22 +146,56 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public LocPathIterator(
+  protected LocPathIterator(
           Compiler compiler, int opPos, int analysis, boolean shouldLoadWalkers)
             throws javax.xml.transform.TransformerException
   {
-    m_analysis = analysis;
-
     setLocPathIterator(this);
-
-    int firstStepPos = compiler.getFirstChildPos(opPos);
-
-    if (shouldLoadWalkers)
-    {
-      m_firstWalker = WalkerFactory.loadWalkers(this, compiler, firstStepPos,
-                                                0);
-      m_lastUsedWalker = m_firstWalker;
-    }
+  }
+  
+  /**
+   * Set the environment in which this iterator operates, which should provide:
+   * a node (the context node... same value as "root" defined below) 
+   * a pair of non-zero positive integers (the context position and the context size) 
+   * a set of variable bindings 
+   * a function library 
+   * the set of namespace declarations in scope for the expression.
+   * 
+   * <p>At this time the exact implementation of this environment is application 
+   * dependent.  Probably a proper interface will be created fairly soon.</p>
+   * 
+   * @param environment The environment object.
+   */
+  public void setEnvironment(Object environment)
+  {
+    // no-op for now.
+  }
+  
+  /**
+   * Get an instance of a DTM that "owns" a node handle.  Since a node 
+   * iterator may be passed without a DTMManager, this allows the 
+   * caller to easily get the DTM using just the iterator.
+   *
+   * @param nodeHandle the nodeHandle.
+   *
+   * @return a non-null DTM reference.
+   */
+  public DTM getDTM(int nodeHandle)
+  {
+    // %OPT%
+    return m_execContext.getDTM(nodeHandle);
+  }
+  
+  /**
+   * Get an instance of the DTMManager.  Since a node 
+   * iterator may be passed without a DTMManager, this allows the 
+   * caller to easily get the DTMManager using just the iterator.
+   *
+   * @return a non-null DTMManager reference.
+   */
+  public DTMManager getDTMManager()
+  {
+    return m_execContext.getDTMManager();
   }
 
   /**
@@ -215,22 +214,87 @@ public class LocPathIterator extends PredicatedNodeTest
           throws javax.xml.transform.TransformerException
   {
 
-    try
-    {
+    LocPathIterator clone = (LocPathIterator)m_clones.getInstance();
 
-      // LocPathIterator clone = (LocPathIterator) m_pool.getInstanceIfFree();
-      // if (null == clone)
-      LocPathIterator clone = (LocPathIterator) this.clone();
+    int current = xctxt.getCurrentNode();
+    clone.setRoot(current, xctxt);
 
-      clone.initContext(xctxt);
-
-      return new XNodeSet(clone);
-    }
-    catch (CloneNotSupportedException ncse)
-    {
-      throw new javax.xml.transform.TransformerException(ncse);
-    }
+    return new XNodeSet(clone);
   }
+  
+  /**
+   * <meta name="usage" content="experimental"/>
+   * Given an select expression and a context, evaluate the XPath
+   * and return the resulting iterator.
+   * 
+   * @param xctxt The execution context.
+   * @param contextNode The node that "." expresses.
+   * @param namespaceContext The context in which namespaces in the
+   * XPath are supposed to be expanded.
+   * 
+   * @throws TransformerException thrown if the active ProblemListener decides
+   * the error condition is severe enough to halt processing.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DTMIterator asIterator(
+          XPathContext xctxt, int contextNode)
+            throws javax.xml.transform.TransformerException
+  {
+    LocPathIterator clone = (LocPathIterator)m_clones.getInstance();
+    clone.setRoot(contextNode, xctxt);
+    return clone;
+  }
+
+  
+  /**
+   * Tell if the expression is a nodeset expression.  In other words, tell 
+   * if you can execute {@link asNode() asNode} without an exception.
+   * @return true if the expression can be represented as a nodeset.
+   */
+  public boolean isNodesetExpr()
+  {
+    return true;
+  }
+  
+  /**
+   * Return the first node out of the nodeset, if this expression is 
+   * a nodeset expression.  This is the default implementation for 
+   * nodesets.  Derived classes should try and override this and return a 
+   * value without having to do a clone operation.
+   * @param xctxt The XPath runtime context.
+   * @return the first node out of the nodeset, or DTM.NULL.
+   */
+  public int asNode(XPathContext xctxt)
+    throws javax.xml.transform.TransformerException
+  {
+    DTMIterator iter = (DTMIterator)m_clones.getInstance();
+
+    int current = xctxt.getCurrentNode();
+    
+    iter.setRoot(current, xctxt);
+
+    int next = iter.nextNode();
+    // m_clones.freeInstance(iter);
+    iter.detach();
+    return next;
+  }
+  
+  /**
+   * Evaluate this operation directly to a boolean.
+   *
+   * @param xctxt The runtime execution context.
+   *
+   * @return The result of the operation as a boolean.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public boolean bool(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+    return (asNode(xctxt) != DTM.NULL);
+  }
+
 
   /**
    * <meta name="usage" content="advanced"/>
@@ -257,7 +321,7 @@ public class LocPathIterator extends PredicatedNodeTest
   {
     return m_isTopLevel;
   }
-
+  
   /**
    * Initialize the context values for this expression
    * after it is cloned.
@@ -265,22 +329,26 @@ public class LocPathIterator extends PredicatedNodeTest
    * @param execContext The XPath runtime context for this
    * transformation.
    */
-  public void initContext(XPathContext execContext)
+  public void setRoot(int context, Object environment)
   {
 
-    this.m_context = execContext.getCurrentNode();
-    this.m_currentContextNode = execContext.getCurrentExpressionNode();
-    this.m_execContext = execContext;
-    this.m_prefixResolver = execContext.getNamespaceContext();
-    this.m_dhelper = execContext.getDOMHelper();
+    m_context = context;
+    XPathContext xctxt = (XPathContext)environment;
+    m_execContext = xctxt;
+    m_cdtm = xctxt.getDTM(context);
+    m_currentContextNode = context;
+    m_prefixResolver = xctxt.getNamespaceContext();
+    
+//    m_lastFetched = DTM.NULL;
+//    m_currentContextNode = DTM.NULL;
+//    m_foundLast = false;
+//    m_last = 0;
+//    m_next = 0;
 
     if (m_isTopLevel)
-    {
-      VariableStack vars = execContext.getVarStack();
+      this.m_stackFrame = xctxt.getVarStack().getStackFrame();
 
-      this.m_varStackPos = vars.getSearchStartOrTop();
-      this.m_varStackContext = vars.getContextPos();
-    }
+    reset();
   }
 
   /**
@@ -330,6 +398,18 @@ public class LocPathIterator extends PredicatedNodeTest
     else
       m_cachedNodes = null;
   }
+  
+  /**
+   * Tells if this iterator can have nodes added to it or set via 
+   * the <code>setItem(int node, int index)</code> method.
+   * 
+   * @return True if the nodelist can be mutated.
+   */
+  public boolean isMutable()
+  {
+    return (m_cachedNodes != null);
+  }
+
 
   /**
    * Get cached nodes.
@@ -389,12 +469,30 @@ public class LocPathIterator extends PredicatedNodeTest
    *   <code>NodeList</code> , or <code>null</code> if that is not a valid
    *   index.
    */
-  public Node item(int index)
+  public int item(int index)
   {
 
-    resetToCachedList();
+    // resetToCachedList();
 
     return m_cachedNodes.item(index);
+  }
+  
+  /**
+   * Sets the node at the specified index of this vector to be the
+   * specified node. The previous component at that position is discarded.
+   *
+   * <p>The index must be a value greater than or equal to 0 and less
+   * than the current size of the vector.  
+   * The iterator must be in cached mode.</p>
+   * 
+   * <p>Meant to be used for sorted iterators.</p>
+   *
+   * @param node Node to set
+   * @param index Index of where to set the node
+   */
+  public void setItem(int node, int index)
+  {
+    m_cachedNodes.setElementAt(node, index);
   }
 
   /**
@@ -406,9 +504,18 @@ public class LocPathIterator extends PredicatedNodeTest
   public int getLength()
   {
 
-    resetToCachedList();
-
-    return m_cachedNodes.getLength();
+    // resetToCachedList();
+    if(m_last > 0)
+      return m_last;
+    else if(null == m_cachedNodes || !m_foundLast)
+    {
+      m_last = getLastPos(m_execContext);
+    }
+    else
+    {
+      m_last = m_cachedNodes.getLength();
+    }
+    return m_last;
   }
 
   /**
@@ -417,7 +524,7 @@ public class LocPathIterator extends PredicatedNodeTest
    */
   private void resetToCachedList()
   {
-
+    // %REVIEW% ? This doesn't seem to work so well...
     int pos = this.getCurrentPos();
 
     if ((null == m_cachedNodes) || (pos != 0))
@@ -444,11 +551,8 @@ public class LocPathIterator extends PredicatedNodeTest
    * iterator backwards in the set.
    * @return  The previous <code>Node</code> in the set being iterated over,
    *   or<code>null</code> if there are no more members in that set.
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node previousNode() throws DOMException
+  public int previousNode()
   {
 
     if (null == m_cachedNodes)
@@ -475,7 +579,7 @@ public class LocPathIterator extends PredicatedNodeTest
   {
 
     // TODO: ??
-    return NodeFilter.SHOW_ALL & ~NodeFilter.SHOW_ENTITY_REFERENCE;
+    return DTMFilter.SHOW_ALL & ~DTMFilter.SHOW_ENTITY_REFERENCE;
   }
 
   /**
@@ -486,7 +590,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * @return Always null.
    * @see org.w3c.dom.traversal.NodeIterator
    */
-  public NodeFilter getFilter()
+  public DTMFilter getFilter()
   {
     return null;
   }
@@ -497,7 +601,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * @return The "root" of this iterator, which, in XPath terms,
    * is the node context for this iterator.
    */
-  public Node getRoot()
+  public int getRoot()
   {
     return m_context;
   }
@@ -521,6 +625,20 @@ public class LocPathIterator extends PredicatedNodeTest
   {
     return true;
   }
+  
+  /** Control over whether it is OK for detach to reset the iterator. */
+  private boolean m_allowDetach = true;
+  
+  /**
+   * Specify if it's OK for detach to release the iterator for reuse.
+   * 
+   * @param allowRelease true if it is OK for detach to release this iterator 
+   * for pooling.
+   */
+  public void allowDetachToRelease(boolean allowRelease)
+  {
+    m_allowDetach = allowRelease;
+  }
 
   /**
    *  Detaches the iterator from the set which it iterated over, releasing
@@ -530,16 +648,29 @@ public class LocPathIterator extends PredicatedNodeTest
    * exception INVALID_STATE_ERR.
    */
   public void detach()
+  {    
+    if(m_allowDetach)
+    {
+      m_cachedNodes = null;
+      m_execContext = null;
+      m_prefixResolver = null;
+      m_cdtm = null;
+      
+      m_clones.freeInstance(this);
+    }
+  }
+  
+  /**
+   * Reset the iterator.
+   */
+  public void reset()
   {
 
-    this.m_context = null;
-    this.m_execContext = null;
-    this.m_prefixResolver = null;
-    this.m_dhelper = null;
-    this.m_varStackPos = -1;
-    this.m_varStackContext = 0;
-
-    // m_pool.freeInstance(this);
+    // super.reset();
+    m_foundLast = false;
+    m_lastFetched = DTM.NULL;
+    m_next = 0;
+    m_last = 0;
   }
 
   /**
@@ -550,7 +681,7 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @throws CloneNotSupportedException
    */
-  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     LocPathIterator clone = (LocPathIterator) clone();
@@ -560,68 +691,21 @@ public class LocPathIterator extends PredicatedNodeTest
     return clone;
   }
 
-  /**
-   * Get a cloned LocPathIterator that holds the same
-   * position as this iterator.
-   *
-   * @return A clone of this iterator that holds the same node position.
-   *
-   * @throws CloneNotSupportedException
-   */
-  public Object clone() throws CloneNotSupportedException
-  {
-
-    LocPathIterator clone = (LocPathIterator) super.clone();
-
-    //    clone.m_varStackPos = this.m_varStackPos;
-    //    clone.m_varStackContext = this.m_varStackContext;
-    if (null != m_firstWalker)
-    {
-      // If we have waiting walkers, we have to check for duplicates.
-      Vector clones = (null != m_waiting) ? new Vector() : null;
-
-      clone.m_firstWalker = m_firstWalker.cloneDeep(clone, clones);
-
-      if (null != m_waiting)
-      {
-        clone.m_waiting = (Vector) m_waiting.clone();  // or is new Vector faster?
-
-        int n = m_waiting.size();
-
-        for (int i = 0; i < n; i++)
-        {
-          AxesWalker waiting = (AxesWalker) m_waiting.elementAt(i);
-
-          clone.m_waiting.setElementAt(waiting.cloneDeep(clone, clones), i);
-        }
-      }
-    }
-
-    return clone;
-  }
-
-  /**
-   * Reset the iterator.
-   */
-  public void reset()
-  {
-
-    // super.reset();
-    m_foundLast = false;
-    m_lastFetched = null;
-    m_next = 0;
-    m_last = 0;
-    m_waitingBottom = 0;
-
-    if (null != m_firstWalker)
-    {
-      m_lastUsedWalker = m_firstWalker;
-
-      m_firstWalker.setRoot(m_context);
-      if(null != m_waiting)
-        m_waiting.removeAllElements();
-    }
-  }
+//  /**
+//   * Get a cloned LocPathIterator that holds the same
+//   * position as this iterator.
+//   *
+//   * @return A clone of this iterator that holds the same node position.
+//   *
+//   * @throws CloneNotSupportedException
+//   */
+//  public Object clone() throws CloneNotSupportedException
+//  {
+//
+//    LocPathIterator clone = (LocPathIterator) super.clone();
+//
+//    return clone;
+//  }
 
   /**
    *  Returns the next node in the set and advances the position of the
@@ -629,72 +713,8 @@ public class LocPathIterator extends PredicatedNodeTest
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
-  {
-
-    // If the cache is on, and the node has already been found, then 
-    // just return from the list.
-    if ((null != m_cachedNodes)
-            && (m_cachedNodes.getCurrentPos() < m_cachedNodes.size()))
-    {
-      Node next = m_cachedNodes.nextNode();
-
-      this.setCurrentPos(m_cachedNodes.getCurrentPos());
-
-      return next;
-    }
-
-    // If the variable stack position is not -1, we'll have to 
-    // set our position in the variable stack, so our variable access 
-    // will be correct.  Iterators that are at the top level of the 
-    // expression need to reset the variable stack, while iterators 
-    // in predicates do not need to, and should not, since their execution
-    // may be much later than top-level iterators.  
-    // m_varStackPos is set in initContext, which is called 
-    // from the execute method.
-    if (-1 == m_varStackPos)
-    {
-      if (null == m_firstWalker.getRoot())
-      {
-        this.setNextPosition(0);
-        m_firstWalker.setRoot(m_context);
-
-        m_lastUsedWalker = m_firstWalker;
-      }
-
-      return returnNextNode(m_firstWalker.nextNode());
-    }
-    else
-    {
-      VariableStack vars = m_execContext.getVarStack();
-
-      // These three statements need to be combined into one operation.
-      int savedStart = vars.getSearchStart();
-
-      vars.setSearchStart(m_varStackPos);
-      vars.pushContextPosition(m_varStackContext);
-
-      if (null == m_firstWalker.getRoot())
-      {
-        this.setNextPosition(0);
-        m_firstWalker.setRoot(m_context);
-
-        m_lastUsedWalker = m_firstWalker;
-      }
-
-      Node n = returnNextNode(m_firstWalker.nextNode());
-
-      // These two statements need to be combined into one operation.
-      vars.setSearchStart(savedStart);
-      vars.popContextPosition();
-
-      return n;
-    }
-  }
+  public abstract int nextNode();
 
   /**
    * Bottleneck the return of a next node, to make returns
@@ -704,10 +724,10 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @return The same node that was passed as an argument.
    */
-  protected Node returnNextNode(Node nextNode)
+  protected int returnNextNode(int nextNode)
   {
 
-    if (null != nextNode)
+    if (DTM.NULL != nextNode)
     {
       if (null != m_cachedNodes)
         m_cachedNodes.addElement(nextNode);
@@ -717,7 +737,7 @@ public class LocPathIterator extends PredicatedNodeTest
 
     m_lastFetched = nextNode;
 
-    if (null == nextNode)
+    if (DTM.NULL == nextNode)
       m_foundLast = true;
 
     return nextNode;
@@ -728,7 +748,7 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @return The last fetched node, or null if the last fetch was null.
    */
-  public Node getCurrentNode()
+  public int getCurrentNode()
   {
     return m_lastFetched;
   }
@@ -748,88 +768,20 @@ public class LocPathIterator extends PredicatedNodeTest
     if (m_foundLast || ((index >= 0) && (index <= getCurrentPos())))
       return;
 
-    Node n;
+    int n;
 
     if (-1 == index)
     {
-      while (null != (n = nextNode()));
+      while (DTM.NULL != (n = nextNode()));
     }
     else
     {
-      while (null != (n = nextNode()))
+      while (DTM.NULL != (n = nextNode()))
       {
         if (getCurrentPos() >= index)
           break;
       }
     }
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Get the head of the walker list.
-   *
-   * @return The head of the walker list, or null
-   * if this iterator does not implement walkers.
-   */
-  public final AxesWalker getFirstWalker()
-  {
-    return m_firstWalker;
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Set the last used walker.
-   *
-   * @param walker The last used walker, or null.
-   */
-  public final void setLastUsedWalker(AxesWalker walker)
-  {
-    m_lastUsedWalker = walker;
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Get the last used walker.
-   *
-   * @return The last used walker, or null.
-   */
-  public final AxesWalker getLastUsedWalker()
-  {
-    return m_lastUsedWalker;
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Add a walker to the waiting list.
-   *
-   * @param walker A walker that is waiting for
-   * other step walkers to complete, before it can
-   * continue.
-   *
-   * @see org.apache.xpath.axes.AxesWalker
-   */
-  public final void addToWaitList(AxesWalker walker)
-  {
-    if (null == m_waiting)
-    {
-      m_waiting = new Vector();
-    }
-    
-    m_waiting.addElement(walker);
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Remove a walker from the waiting list.
-   *
-   * @param walker A walker that is no longer waiting.
-   *
-   * @see org.apache.xpath.axes.AxesWalker
-   */
-  public final void removeFromWaitList(AxesWalker walker)
-  {
-    if(null != m_waiting) // defensive check.
-      m_waiting.removeElement(walker);
   }
 
   /**
@@ -846,7 +798,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * The XPath execution context we are operating on.
    *
    * @return XPath execution context this iterator is operating on,
-   * or null if initContext has not been called.
+   * or null if setRoot has not been called.
    */
   public final XPathContext getXPathContext()
   {
@@ -854,22 +806,11 @@ public class LocPathIterator extends PredicatedNodeTest
   }
 
   /**
-   * The DOM helper for the given context;
-   *
-   * @return The DOMHelper that should be used,
-   * or null if initContext has not been called.
-   */
-  public final DOMHelper getDOMHelper()
-  {
-    return m_dhelper;
-  }
-
-  /**
    * The node context for the iterator.
    *
    * @return The node context, same as getRoot().
    */
-  public final Node getContext()
+  public final int getContext()
   {
     return m_context;
   }
@@ -880,7 +821,7 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @return The top-level node context of the entire expression.
    */
-  public final Node getCurrentContextNode()
+  public final int getCurrentContextNode()
   {
     return m_currentContextNode;
   }
@@ -890,10 +831,21 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @param n Must be a non-null reference to the node context.
    */
-  public final void setCurrentContextNode(Node n)
+  public final void setCurrentContextNode(int n)
   {
     m_currentContextNode = n;
   }
+  
+//  /**
+//   * Set the current context node for this iterator.
+//   *
+//   * @param n Must be a non-null reference to the node context.
+//   */
+//  public void setRoot(int n)
+//  {
+//    m_context = n;
+//    m_cdtm = m_execContext.getDTM(n);
+//  }
 
   /**
    * Return the saved reference to the prefix resolver that
@@ -914,7 +866,7 @@ public class LocPathIterator extends PredicatedNodeTest
    */
   public int getLast()
   {
-    return m_last;
+    return getLength();
   }
 
   /**
@@ -943,18 +895,23 @@ public class LocPathIterator extends PredicatedNodeTest
 
     try
     {
-      clone = (LocPathIterator) clone();
+      // %REVIEW% %OPT%
+      if(0 == pos && m_currentContextNode != DTM.NULL)
+        clone = (LocPathIterator) cloneWithReset();
+      else
+        clone = (LocPathIterator) clone();
     }
     catch (CloneNotSupportedException cnse)
     {
       return -1;
     }
+    // %REVIEW% Commented this out, as it was messing up pos68 test. count-1?
+    // System.out.println("clone.getPredicateCount(): "+clone.getPredicateCount());
+    // clone.setPredicateCount(clone.getPredicateCount() - 1);
 
-    clone.setPredicateCount(clone.getPredicateCount() - 1);
+    int next;
 
-    Node next;
-
-    while (null != (next = clone.nextNode()))
+    while (DTM.NULL != (next = clone.nextNode()))
     {
       pos++;
     }
@@ -963,66 +920,45 @@ public class LocPathIterator extends PredicatedNodeTest
     return pos;
   }
   
-  /**
-   * Get the analysis pattern built by the WalkerFactory.
-   *
-   * @return The analysis pattern built by the WalkerFactory.
-   */
-  int getAnalysis()
-  {
-    return m_analysis;
-  }
+//  /**
+//   * Get the analysis pattern built by the WalkerFactory.
+//   *
+//   * @return The analysis pattern built by the WalkerFactory.
+//   */
+//  int getAnalysis()
+//  {
+//    return m_analysis;
+//  }
 
-  /**
-   * Set the analysis pattern built by the WalkerFactory.
-   *
-   * @param a The analysis pattern built by the WalkerFactory.
-   */
-  void setAnalysis(int a)
-  {
-    m_analysis = a;
-  }
-  
-  /**
-   * Tell if this expression or it's subexpressions can traverse outside 
-   * the current subtree.
-   * 
-   * @return true if traversal outside the context node's subtree can occur.
-   */
-   public boolean canTraverseOutsideSubtree()
-   {
-    if((m_analysis & WalkerFactory.BITMASK_TRAVERSES_OUTSIDE_SUBTREE) != 0)
-    {
-      return true;
-    }
-    // We have to ask subwalkers about their predicates.
-    if(null != m_firstWalker)
-    {
-      if(m_firstWalker.canTraverseOutsideSubtree())
-        return true;
-    }
-    return super.canTraverseOutsideSubtree();
-   }
-
+//  /**
+//   * Set the analysis pattern built by the WalkerFactory.
+//   *
+//   * @param a The analysis pattern built by the WalkerFactory.
+//   */
+//  void setAnalysis(int a)
+//  {
+//    m_analysis = a;
+//  }
   
   //============= State Data =============
   
-  /** The starting point in m_waiting where the waiting step walkers are. */
-  transient int m_waitingBottom = 0;
-
-  /**
-   * An index to the point in the variable stack where we should
-   * begin variable searches for this iterator.
-   * This is -1 if m_isTopLevel is false.
+  /** 
+   * The pool for cloned iterators.  Iterators need to be cloned
+   * because the hold running state, and thus the original iterator
+   * expression from the stylesheet pool can not be used.          
    */
-  transient int m_varStackPos = -1;
-
-  /**
-   * An index into the variable stack where the variable context
-   * ends, i.e. at the point we should terminate the search and
-   * go looking for global variables.
+  protected IteratorPool m_clones = new IteratorPool(this);
+  
+  /** 
+   * The dtm of the context node.  Careful about using this... it may not 
+   * be the dtm of the current node.
    */
-  transient int m_varStackContext;
+  transient protected DTM m_cdtm;
+  
+  /**
+   * The stack frame index for this iterator.
+   */
+  transient int m_stackFrame = -1;
 
   /**
    * Value determined at compile time, indicates that this is an
@@ -1033,16 +969,10 @@ public class LocPathIterator extends PredicatedNodeTest
   private boolean m_isTopLevel = false;
 
   /** The index of the last node in the iteration. */
-  transient private int m_last = 0;
+  transient protected int m_last = 0;
   
-  /* The pool for cloned iterators.  Iterators need to be cloned
-   * because the hold running state, and thus the original iterator
-   * expression from the stylesheet pool can not be used.          */
-
-  // ObjectPool m_pool = new ObjectPool(this.getClass());
-
   /** The last node that was fetched, usually by nextNode. */
-  transient public Node m_lastFetched;
+  transient public int m_lastFetched = DTM.NULL;
 
   /**
    * If this iterator needs to cache nodes that are fetched, they
@@ -1050,28 +980,14 @@ public class LocPathIterator extends PredicatedNodeTest
    */
   transient NodeSet m_cachedNodes;
 
-  /** The last used step walker in the walker list.
-   *  @serial */
-  protected AxesWalker m_lastUsedWalker;
-
-  /** The head of the step walker list.
-   *  @serial */
-  protected AxesWalker m_firstWalker;
-
   /** This is true if nextNode returns null. */
   transient protected boolean m_foundLast = false;
-
-  /**
-   * Quicker access to the DOM helper than going through the
-   * XPathContext object.
-   */
-  transient protected DOMHelper m_dhelper;
 
   /**
    * The context node for this iterator, which doesn't change through
    * the course of the iteration.
    */
-  transient protected Node m_context;
+  transient protected int m_context = DTM.NULL;
 
   /**
    * The node context from where the expression is being
@@ -1079,7 +995,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * from m_context in that this is the context for the entire
    * expression, rather than the context for the subexpression.
    */
-  transient protected Node m_currentContextNode;
+  transient protected int m_currentContextNode = DTM.NULL;
 
   /**
    * Fast access to the current prefix resolver.  It isn't really
@@ -1099,19 +1015,13 @@ public class LocPathIterator extends PredicatedNodeTest
    * is a cached iterator, and is being used as random access
    * NodeList.
    */
-  transient protected int m_next = 0;
+  transient protected int m_next;
 
-  /**
-   * The list of "waiting" step walkers.
-   * @see org.apache.xpath.axes.AxesWalker
-   */
-  transient private Vector m_waiting = null;
-  
-  /**
-   * The analysis pattern built by the WalkerFactory.
-   * TODO: Move to LocPathIterator.
-   * @see org.apache.xpath.axes.WalkerFactory
-   * @serial
-   */
-  protected int m_analysis = 0x00000000;
+//  /**
+//   * The analysis pattern built by the WalkerFactory.
+//   * TODO: Move to LocPathIterator.
+//   * @see org.apache.xpath.axes.WalkerFactory
+//   * @serial
+//   */
+//  protected int m_analysis = 0x00000000;
 }

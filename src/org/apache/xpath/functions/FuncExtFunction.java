@@ -63,7 +63,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.*;
 import org.apache.xalan.extensions.ExtensionsTable;
 
-import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTMIterator;
+
+//import org.w3c.dom.Node;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -94,6 +96,31 @@ public class FuncExtFunction extends Function
    *  function.
    *  @serial   */
   Vector m_argVec = new Vector();
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    if(null != m_argVec)
+    {
+      int nArgs = m_argVec.size();
+  
+      for (int i = 0; i < nArgs; i++)
+      {
+        Expression arg = (Expression) m_argVec.elementAt(i);
+        arg.fixupVariables(vars, globalsSize);
+      }
+    }
+  }
+
 
   /**
    * Create a new FuncExtFunction based on the qualified name of the extension, 
@@ -139,7 +166,7 @@ public class FuncExtFunction extends Function
 
     ExtensionsTable etable = xctxt.getExtensionsTable();
     Object val = etable.extFunction(m_namespace, m_extensionName, argVec,
-                                    m_methodKey, xctxt);
+                                    m_methodKey, xctxt.getExpressionContext());
 
     if (null != val)
     {
@@ -168,17 +195,19 @@ public class FuncExtFunction extends Function
       {
         result = new XNumber(((Number) val).doubleValue());
       }
-      else if (val instanceof DocumentFragment)
+      // %TBD%
+     // else if (val instanceof DocumentFragment)
+     // {
+     //   result = new XRTreeFrag(val, xctxt);
+     // }
+      else if (val instanceof DTMIterator)
       {
-        result = new XRTreeFrag((DocumentFragment) val);
+        result = new XNodeSet((DTMIterator) val);
       }
-      else if (val instanceof NodeIterator)
+      else if (val instanceof org.w3c.dom.Node)
       {
-        result = new XNodeSet((NodeIterator) val);
-      }
-      else if (val instanceof Node)
-      {
-        result = new XNodeSet((Node) val);
+        result = new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node)val), 
+                              xctxt.getDTMManager());
       }
       else
       {

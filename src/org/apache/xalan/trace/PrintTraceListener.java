@@ -67,6 +67,8 @@ import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.Constants;
 import org.apache.xpath.axes.ContextNodeList;
 
+import org.apache.xml.dtm.DTM;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implementation of the TraceListener interface that
@@ -186,7 +188,7 @@ public class PrintTraceListener implements TraceListener
         // You may not have line numbers if the selection is occuring from a
         // default template.
         ElemTemplateElement parent =
-          (ElemTemplateElement) ete.getParentNode();
+          (ElemTemplateElement) ete.getParentElem();
 
         if (parent == ete.getStylesheetRoot().getDefaultRootRule())
         {
@@ -212,43 +214,37 @@ public class PrintTraceListener implements TraceListener
                    + ev.m_xpath.getPatternString() + "': ");
       }
 
-      if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET)
-      {
-        m_pw.println();
+			if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET)
+			{
+				m_pw.println();
+				
+				org.apache.xml.dtm.DTMIterator nl = ev.m_selection.nodeset();
 
-        NodeIterator nl = ev.m_selection.nodeset();
-        if(nl instanceof ContextNodeList)
-        {
-          try
-          {
-            nl = ((ContextNodeList)nl).cloneWithReset();
-          }
-          catch(CloneNotSupportedException cnse)
-          {
-            m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
-            return;
-          }
-          Node pos = nl.nextNode();
+				try
+				{
+					nl = nl.cloneWithReset();
+				}
+				catch(CloneNotSupportedException cnse)
+				{
+					m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
+					return;
+				}
+				int pos = nl.nextNode();
 
-          if (null == pos)
-          {
-            m_pw.println("     [empty node list]");
-          }
-          else
-          {
-            while (null != pos)
-            {
-              m_pw.println("     " + pos);
+				if (DTM.NULL == pos)
+				{
+					m_pw.println("     [empty node list]");
+				}
+				else
+				{
+					while (DTM.NULL != pos)
+					{
+						m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
 
-              pos = nl.nextNode();
-            }
-          }
-        }
-        else
-        {
-            m_pw.println("     [Can't trace nodelist because it isn't a ContextNodeList]");
-        }
-      }
+						pos = nl.nextNode();
+					}
+				}        
+			}
       else
       {
         m_pw.println(ev.m_selection.str());

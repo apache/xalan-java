@@ -1,80 +1,24 @@
 <html>
   <title>Xalan SQL Extension</title>
   <body>
-    <p>Provides extension functions for connecting to a JDBC data source, executing a query,
-    and working incrementally through a "streamable" result set.<p>
-   <p>The SQL Extension operates in one of two modes: streaming or cached.</p>
-   <p>In streaming mode, a single row object is allocated. The contents of this object are updated as the row 
-   element set is traversed. Accordingly, the result set can only be traversed once moving forward. Consider using streaming mode
-    when the result set is large and memory is an issue. The number of records returned does not affect the memory footprint.</p>
-   <p>In cached mode, the result set can be traversed forward or backward as many times as desired. The downside: memory is 
-    consumed as the result set is traversed.</p>
-
-   <p>Currently, the default is cached mode. To set the mode, use the enableCacheNodes() or disableCahcedNodes() method.</p>
-   <p>
-   <hr>
-   <em>**Experimental**</em> This package is experimental. Streaming mode is not fully implemented and may not return the entire 
-   result set. If you do use streaming mode, be careful not to attempt to traverse the result set in any manner other than a
-   single traversal from start to finish.
-   <HR>
-   </p>
-
+    <p><em>**Experimental**</em> Provides extension functions for connecting to a JDBC data source, executing a query,
+    and working incrementally through "streamable" result set.<p>
+   <p><em>The SQL extension use of a single row-set node to incrementally return a query result set is experimental. Keep in mind that you
+   can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for
+   example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>    
     <p>XConnection provides three extension functions that you can use in your stylesheet.</p>
-    {@link org.apache.xalan.lib.sql.XConnection}
     <ol>
-      <li>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
-       object. You can use one of the constructors creates a connection pool from which stylesheets can obtain connections
-       to a data source. To support connection pools, SQL library includes a Connection-Pool interface and a implementation:
-       DefaultConnectionPool. You can also provide your own Connection-Pool implementation.<br/><br/></li>
-      <li>query() -- Use the XConnection object query() method to return a "streamable" result set in the form of a row-set
+      <li><p>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
+       object.</p></li>
+      <li><p>query() -- Use the XConnection object query() method to return a "streamable" result set in the form of a row-set
        node. Work your way through the row-set one row at a time. The same row element is used over and over again, so you can
-       begin "transforming" the row-set before the entire result set has been returned.<br/><br/></li>
-       <li>pquery(), addParameter(), addParameterFromElement(), clearParameters() -- Use the XConnection pquery() method in
-       conjunction with these other methods to set up and execute parameterized queries.<br/><br/></li>
-       <li>enableCacheNodes(), disableCacheNodes() -- Use these XConnection methods to cache the result set or use a single row
-        element to stream through the result set.<br/><br/></li>
-      <li>close() -- Use the XConnection object close() method to terminate the connection.</li>
+       begin "transforming" the row-set before the entire result set has been returned.</p></li>
+      <li>close() -- Use the XConnection object close() method to terminate the connection.</li>      
     </ol>
-    <p>The query() or pquery() extension function returns a Document node that contains (as needed) an array of column-header elements,
+    <p>The query() extension function returns a Document node that contains (as needed) an array of column-header elements, 
     a single row element that is used repeatedly, and an array of col elements. Each column-header element (one per column in the
-    row-set) contains an attribute (ColumnAttribute) for each of the column descriptors in the ResultSetMetaData object.
+    row-set) contains an attribute (ColumnAttribute) for each of the column descriptors in the ResultSetMetaData object. 
     Each col element contains a text node with a textual representation of the value for that column in the current row.</p>
-
-    <h2>XML Sample of the return Data</h2>
-    <p>This example displays the result set from a table in a sample InstantDB database.</p>
-<pre>
-  &lt;Column-header attribute=value&gt;
-    One column header entry for each column in the query.
-    Each column header contains a set of attributes describing the MetaData
-    for that column. For a list of possible attributes see ColumnAttribute.java.
-    {@link ColumnAttribute}
-  &lt;Column-header&gt;
-
-  &lt;row-set&gt;
-
-      &lt;row&gt;
-          In Streaming Mode, Caching Disabled, only one row object is returned.
-          The benefit of streaming mode is that the memory footprint is the same
-          regardless of the size of the query. A downside to streaming mode is that
-          the row elements can <b>ONLY BE TRAVERSED ONCE</b>. In cached mode, there
-          is a new row element for each row in the result set. The row elements can
-          be traversed as many times as needed.
-          <b>Currently the default mode is cached, streaming mode is experimental
-          and currently does not work </b>
-
-          &lt;col&gt;Value attribute=value &lt;/col&gt;
-            One column entry for each column in the query.
-            Each column contains a set of attributes describing the MetaData
-            for that column. Foa a list of possible attributes see ColumnAttribute.java.
-          &lt;col attribute=value &gt;Value&lt;/col&gt;
-          &lt;col attribute=value &gt;Value&lt;/col&gt;
-      &lt;/row&gt;
-
-  &lt;/row-set&gt;
-
-
-</pre>
-
     <h2>Example</h2>
     <p>This example displays the result set from a table in a sample InstantDB database.</p>
 <pre>&lt;?xml version="1.0"?&gt;
@@ -84,7 +28,7 @@
                 extension-element-prefixes="sql"&gt;
   &lt;xsl:output method="html" indent="yes"/&gt;
   &lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;
-
+ 
   &lt;xsl:template match="/"&gt;
     &lt;!-- 1. Make the connection --&gt;
     &lt;xsl:variable name="products"
@@ -107,7 +51,7 @@
           &lt;xsl:text&gt;&amp;#10;&lt;/xsl:text&gt;
         &lt;/TABLE&gt;
       &lt;/BODY&gt;
-    &lt;/HTML&gt;
+    &lt;/HTML&gt; 
     &lt;!-- 3. Close the connection --&gt;
     &lt;xsl:value-of select="sql:close($products)"/&gt;
   &lt;/xsl:template&gt;
@@ -126,44 +70,6 @@
   &lt;/xsl:template>
 
 &lt;/xsl:stylesheet&gt;
-</pre>
-
-
-  <h1>Handling of SQL Errors and other exceptions in this extension</h1>
-  <p>
-  <HR>
-   <em>**Experimental**</em> This Extension enhancement is extremelly experimental
-   and is being used to test its validity. </em>
-  <HR>
-  </p>
-  <p>
-  The SQL Extension package provides a mechinism to capture errors that occur as a
-  result of an SQL Exception.
-  </p>
-  <p>
-  The document that is returned provides the Exception information along
-  with the SQL Error and SQL State.
-
-  To detect if an error occured, /ext-error can be evaluated using the xsl:test
-  function. A value of true reflects that an error ha occured.
-
-  See the sample code in java/samples/extension/sql/show-error for a working example.
-  </p>
-
-  <pre>
-  <p>
-  <h2>Sample of an Error Return in the event of an SQL Error</h2>
-  &lt;ext-error&gt;
-    &lt;exception-info&gt;
-      &lt;message&gt; Message from the Exception thrown &lt;/message&gt;
-        &lt;sql-error&gt;
-          &lt;error-code&gt; The SQL Error Code returned by the driver&lt;/error-code&gt;
-          &lt;state&gt; The Current SQL Connection State &lt;/state&gt;
-        &lt;/sql-error&gt;
-    &lt;/exception-info&gt;
-  &lt;/ext-error&gt;
-  </p>
-  </pre>
-
+</pre>    
  </body>
 </html>

@@ -57,10 +57,16 @@
 package org.apache.xalan.transformer;
 
 import java.util.Stack;
+import java.util.Vector;
 
 import org.apache.xml.utils.ObjectPool;
 
 import org.xml.sax.Attributes;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.MutableAttrListImpl;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemTemplate;
+
 
 /**
  * This class acts as a base for ResultTreeHandler, and keeps
@@ -71,50 +77,94 @@ abstract class QueuedEvents
 {
 
   /** The number of events queued          */
-  int m_eventCount = 0;
+  protected int m_eventCount = 0;
 
   /** Queued start document          */
-  QueuedStartDocument m_startDoc = new QueuedStartDocument();
+  // QueuedStartDocument m_startDoc = new QueuedStartDocument();
 
   /** Queued start element          */
-  QueuedStartElement m_startElement = new QueuedStartElement();
+  // QueuedStartElement m_startElement = new QueuedStartElement();
+  
+  public boolean m_docPending = false;
+  protected boolean m_docEnded = false;
+  
+  /** Flag indicating that an event is pending.  Public for 
+   *  fast access by ElemForEach.         */
+  public boolean m_elemIsPending = false;
+
+  /** Flag indicating that an event is ended          */
+  public boolean m_elemIsEnded = false;
+  
+  /**
+   * The pending attributes.  We have to delay the call to
+   * m_flistener.startElement(name, atts) because of the
+   * xsl:attribute and xsl:copy calls.  In other words,
+   * the attributes have to be fully collected before you
+   * can call startElement.
+   */
+  protected MutableAttrListImpl m_attributes = new MutableAttrListImpl();
 
   /**
-   * Get the queued document event.
-   *
-   * @return the queued document event or null if none.
+   * Flag to try and get the xmlns decls to the attribute list
+   * before other attributes are added.
    */
-  QueuedStartDocument getQueuedDoc()
-  {
-    return (m_eventCount == 1) ? m_startDoc : null;
-  }
+  protected boolean m_nsDeclsHaveBeenAdded = false;
 
   /**
-   * Get the queued document event.
-   *
-   * @return the queued document event.
+   * The pending element, namespace, and local name.
    */
-  QueuedStartDocument getQueuedDocAtBottom()
-  {
-    return m_startDoc;
-  }
+  protected String m_name;
 
+  /** Namespace URL of the element          */
+  protected String m_url;
+
+  /** Local part of qualified name of the element           */
+  protected String m_localName;
+  
   /**
-   * Get the queued element.
-   *
-   * @return the queued element.
+   * The stylesheet element that produced the SAX event.
    */
-  QueuedStartElement getQueuedElem()
-  {
-    return (m_eventCount > 1) ? m_startElement : null;
-  }
+  protected ElemTemplateElement m_currentElement;
+  
+  /**
+   * The current context node in the source tree.
+   */
+  protected int m_currentNode;
+  
+  /**
+   * The xsl:template that is in effect, which may be a matched template
+   * or a named template.
+   */
+  protected ElemTemplate m_currentTemplate;
+  
+  /**
+   * The xsl:template that was matched.
+   */
+  protected ElemTemplate m_matchedTemplate;
+  
+  /**
+   * The node in the source tree that matched
+   * the template obtained via getMatchedTemplate().
+   */
+  protected int m_matchedNode;
+  
+  /**
+   * The current context node list.
+   */
+  protected DTMIterator m_contextNodeList;
+  
+  /** Vector of namespaces for this element          */
+  protected Vector m_namespaces = null;
 
 //  /**
-//   * This is for the derived class to init new events.
+//   * Get the queued element.
 //   *
-//   * @param qse Queud Sax event
+//   * @return the queued element.
 //   */
-//  protected abstract void initQSE(QueuedSAXEvent qse);
+//  QueuedStartElement getQueuedElem()
+//  {
+//    return (m_eventCount > 1) ? m_startElement : null;
+//  }
 
   /**
    * To re-initialize the document and element events 
@@ -122,8 +172,6 @@ abstract class QueuedEvents
    */
   protected void reInitEvents()
   {
-    // initQSE(m_startDoc);
-    // initQSE(m_startElement);
   }
 
   /**
@@ -142,27 +190,9 @@ abstract class QueuedEvents
   void pushDocumentEvent()
   {
 
-    m_startDoc.setPending(true);
+    // m_startDoc.setPending(true);
     // initQSE(m_startDoc);
-
-    m_eventCount++;
-  }
-
-  /**
-   * Push the element event
-   *
-   *
-   * @param ns Namespace URI of the element
-   * @param localName Local part of the qualified name of the element
-   * @param name Name of the element
-   * @param atts Attribute children of the element
-   */
-  void pushElementEvent(String ns, String localName, String name,
-                        Attributes atts)
-  {
-
-    m_startElement.setPending(ns, localName, name, atts);
-    // initQSE(m_startElement);
+    m_docPending = true;
 
     m_eventCount++;
   }
@@ -173,8 +203,14 @@ abstract class QueuedEvents
    */
   void popEvent()
   {
+    m_elemIsPending = false;
+    m_attributes.clear();
 
-    m_startElement.reset();
+    m_nsDeclsHaveBeenAdded = false;
+    m_name = null;
+    m_url = null;
+    m_localName = null;
+    m_namespaces = null;
 
     m_eventCount--;
   }

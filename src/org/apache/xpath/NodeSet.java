@@ -56,12 +56,17 @@
  */
 package org.apache.xpath;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.DOMException;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NodeList;
+//import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.DOMException;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.axes.ContextNodeList;
@@ -91,7 +96,8 @@ import org.apache.xpath.axes.ContextNodeList;
  * less-than-enlightening results when you do so.</p>
  */
 public class NodeSet extends NodeVector
-        implements NodeList, NodeIterator, Cloneable, ContextNodeList
+        implements /* NodeList, NodeIterator, */ DTMIterator, 
+        Cloneable
 {
 
   /**
@@ -106,25 +112,27 @@ public class NodeSet extends NodeVector
    * Create an empty, using the given block size.
    *
    * @param blocksize Size of blocks to allocate 
+   * @param dummy pass zero for right now...
    */
-  public NodeSet(int blocksize)
+  public NodeSet(int blocksize, int dummy)
   {
     super(blocksize);
   }
 
-  /**
-   * Create a NodeSet, and copy the members of the
-   * given nodelist into it.
-   *
-   * @param nodelist List of Nodes to be made members of the new set.
-   */
-  public NodeSet(NodeList nodelist)
-  {
-
-    super();
-
-    addNodes(nodelist);
-  }
+  // %TBD%
+//  /**
+//   * Create a NodeSet, and copy the members of the
+//   * given nodelist into it.
+//   *
+//   * @param nodelist List of Nodes to be made members of the new set.
+//   */
+//  public NodeSet(NodeList nodelist)
+//  {
+//
+//    super();
+//
+//    addNodes(nodelist);
+//  }
 
   /**
    * Create a NodeSet, and copy the members of the
@@ -137,16 +145,16 @@ public class NodeSet extends NodeVector
 
     super();
 
-    addNodes((NodeIterator) nodelist);
+    addNodes((DTMIterator) nodelist);
   }
 
   /**
    * Create a NodeSet, and copy the members of the
-   * given NodeIterator into it.
+   * given DTMIterator into it.
    *
    * @param ni Iterator which yields Nodes to be made members of the new set.
    */
-  public NodeSet(NodeIterator ni)
+  public NodeSet(DTMIterator ni)
   {
 
     super();
@@ -159,21 +167,53 @@ public class NodeSet extends NodeVector
    *
    * @param node Single node to be added to the new set.
    */
-  public NodeSet(Node node)
+  public NodeSet(int node)
   {
 
     super();
 
     addNode(node);
   }
+  
+  /**
+   * Set the environment in which this iterator operates, which should provide:
+   * a node (the context node... same value as "root" defined below) 
+   * a pair of non-zero positive integers (the context position and the context size) 
+   * a set of variable bindings 
+   * a function library 
+   * the set of namespace declarations in scope for the expression.
+   * 
+   * <p>At this time the exact implementation of this environment is application 
+   * dependent.  Probably a proper interface will be created fairly soon.</p>
+   * 
+   * @param environment The environment object.
+   */
+  public void setEnvironment(Object environment)
+  {
+    // no-op
+  }
+
 
   /**
    * @return The root node of the Iterator, as specified when it was created.
    * For non-Iterator NodeSets, this will be null.
    */
-  public Node getRoot()
+  public int getRoot()
   {
-    return null;
+    // %TBD%?
+    return DTM.NULL;
+  }
+  
+  /**
+   * Initialize the context values for this expression
+   * after it is cloned.
+   *
+   * @param execContext The XPath runtime context for this
+   * transformation.
+   */
+  public void setRoot(int context, Object environment)
+  {
+    // no-op, I guess...  (-sb)
   }
 
   /**
@@ -206,7 +246,7 @@ public class NodeSet extends NodeVector
    * @throws CloneNotSupportedException if this subclass of NodeSet
    * does not support the clone() operation.
    */
-  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     NodeSet clone = (NodeSet) clone();
@@ -227,26 +267,26 @@ public class NodeSet extends NodeVector
   /**
    *  This attribute determines which node types are presented via the
    * iterator. The available set of constants is defined in the
-   * <code>NodeFilter</code> interface. For NodeSets, the mask has been
+   * <code>DTMFilter</code> interface. For NodeSets, the mask has been
    * hardcoded to show all nodes except EntityReference nodes, which have
    * no equivalent in the XPath data model.
    *
    * @return integer used as a bit-array, containing flags defined in
-   * the DOM's NodeFilter class. The value will be 
+   * the DOM's DTMFilter class. The value will be 
    * <code>SHOW_ALL & ~SHOW_ENTITY_REFERENCE</code>, meaning that
    * only entity references are suppressed.
    */
   public int getWhatToShow()
   {
-    return NodeFilter.SHOW_ALL & ~NodeFilter.SHOW_ENTITY_REFERENCE;
+    return DTMFilter.SHOW_ALL & ~DTMFilter.SHOW_ENTITY_REFERENCE;
   }
 
   /**
    * The filter object used to screen nodes. Filters are applied to
-   * further reduce (and restructure) the NodeIterator's view of the
+   * further reduce (and restructure) the DTMIterator's view of the
    * document. In our case, we will be using hardcoded filters built
    * into our iterators... but getFilter() is part of the DOM's 
-   * NodeIterator interface, so we have to support it.
+   * DTMIterator interface, so we have to support it.
    *
    * @return null, which is slightly misleading. True, there is no
    * user-written filter object, but in fact we are doing some very
@@ -254,7 +294,7 @@ public class NodeSet extends NodeVector
    * returning a placeholder object just to indicate that this is
    * not going to return all nodes selected by whatToShow.
    */
-  public NodeFilter getFilter()
+  public DTMFilter getFilter()
   {
     return null;
   }
@@ -279,10 +319,38 @@ public class NodeSet extends NodeVector
   {
     return true;
   }
+  
+  /**
+   * Get an instance of a DTM that "owns" a node handle.  Since a node 
+   * iterator may be passed without a DTMManager, this allows the 
+   * caller to easily get the DTM using just the iterator.
+   *
+   * @param nodeHandle the nodeHandle.
+   *
+   * @return a non-null DTM reference.
+   */
+  public DTM getDTM(int nodeHandle)
+  {
+    // %TBD%
+    return null;
+  }
+  
+  /**
+   * Get an instance of the DTMManager.  Since a node 
+   * iterator may be passed without a DTMManager, this allows the 
+   * caller to easily get the DTMManager using just the iterator.
+   *
+   * @return a non-null DTMManager reference.
+   */
+  public DTMManager getDTMManager()
+  {
+    // %TBD%
+    return null;
+  }
 
   /**
    *  Returns the next node in the set and advances the position of the
-   * iterator in the set. After a NodeIterator is created, the first call
+   * iterator in the set. After a DTMIterator is created, the first call
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
@@ -290,19 +358,19 @@ public class NodeSet extends NodeVector
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
 
     if ((m_next) < this.size())
     {
-      Node next = this.elementAt(m_next);
+      int next = this.elementAt(m_next);
 
       m_next++;
 
       return next;
     }
     else
-      return null;
+      return DTM.NULL;
   }
 
   /**
@@ -316,7 +384,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and hence doesn't know what the previous node was.
    */
-  public Node previousNode() throws DOMException
+  public int previousNode()
   {
 
     if (!m_cacheNodes)
@@ -330,7 +398,7 @@ public class NodeSet extends NodeVector
       return this.elementAt(m_next);
     }
     else
-      return null;
+      return DTM.NULL;
   }
 
   /**
@@ -345,6 +413,18 @@ public class NodeSet extends NodeVector
    * </p>
    */
   public void detach(){}
+  
+  /**
+   * Specify if it's OK for detach to release the iterator for reuse.
+   * 
+   * @param allowRelease true if it is OK for detach to release this iterator 
+   * for pooling.
+   */
+  public void allowDetachToRelease(boolean allowRelease)
+  {
+    // no action for right now.
+  }
+
 
   /**
    * Tells if this NodeSet is "fresh", in other words, if
@@ -396,12 +476,12 @@ public class NodeSet extends NodeVector
    *   <code>NodeList</code>, or <code>null</code> if that is not a valid
    *   index.
    */
-  public Node item(int index)
+  public int item(int index)
   {
 
     runTo(index);
 
-    return (Node) this.elementAt(index);
+    return this.elementAt(index);
   }
 
   /**
@@ -428,7 +508,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addNode(Node n)
+  public void addNode(int n)
   {
 
     if (!m_mutable)
@@ -446,7 +526,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void insertNode(Node n, int pos)
+  public void insertNode(int n, int pos)
   {
 
     if (!m_mutable)
@@ -462,7 +542,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void removeNode(Node n)
+  public void removeNode(int n)
   {
 
     if (!m_mutable)
@@ -471,73 +551,75 @@ public class NodeSet extends NodeVector
     this.removeElement(n);
   }
 
-  /**
-   * Copy NodeList members into this nodelist, adding in
-   * document order.  If a node is null, don't add it.
-   *
-   * @param nodelist List of nodes which should now be referenced by
-   * this NodeSet.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void addNodes(NodeList nodelist)
-  {
+  // %TBD%
+//  /**
+//   * Copy NodeList members into this nodelist, adding in
+//   * document order.  If a node is null, don't add it.
+//   *
+//   * @param nodelist List of nodes which should now be referenced by
+//   * this NodeSet.
+//   * @throws RuntimeException thrown if this NodeSet is not of 
+//   * a mutable type.
+//   */
+//  public void addNodes(NodeList nodelist)
+//  {
+//
+//    if (!m_mutable)
+//      throw new RuntimeException("This NodeSet is not mutable!");
+//
+//    if (null != nodelist)  // defensive to fix a bug that Sanjiva reported.
+//    {
+//      int nChildren = nodelist.getLength();
+//
+//      for (int i = 0; i < nChildren; i++)
+//      {
+//        int obj = nodelist.item(i);
+//
+//        if (null != obj)
+//        {
+//          addElement(obj);
+//        }
+//      }
+//    }
+//
+//    // checkDups();
+//  }
 
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    if (null != nodelist)  // defensive to fix a bug that Sanjiva reported.
-    {
-      int nChildren = nodelist.getLength();
-
-      for (int i = 0; i < nChildren; i++)
-      {
-        Node obj = nodelist.item(i);
-
-        if (null != obj)
-        {
-          addElement(obj);
-        }
-      }
-    }
-
-    // checkDups();
-  }
-
-  /**
-   * <p>Copy NodeList members into this nodelist, adding in
-   * document order.  Only genuine node references will be copied;
-   * nulls appearing in the source NodeSet will
-   * not be added to this one. </p>
-   * 
-   * <p> In case you're wondering why this function is needed: NodeSet
-   * implements both NodeIterator and NodeList. If this method isn't
-   * provided, Java can't decide which of those to use when addNodes()
-   * is invoked. Providing the more-explicit match avoids that
-   * ambiguity.)</p>
-   *
-   * @param ns NodeSet whose members should be merged into this NodeSet.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void addNodes(NodeSet ns)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    addNodes((NodeIterator) ns);
-  }
+  // %TBD%
+//  /**
+//   * <p>Copy NodeList members into this nodelist, adding in
+//   * document order.  Only genuine node references will be copied;
+//   * nulls appearing in the source NodeSet will
+//   * not be added to this one. </p>
+//   * 
+//   * <p> In case you're wondering why this function is needed: NodeSet
+//   * implements both DTMIterator and NodeList. If this method isn't
+//   * provided, Java can't decide which of those to use when addNodes()
+//   * is invoked. Providing the more-explicit match avoids that
+//   * ambiguity.)</p>
+//   *
+//   * @param ns NodeSet whose members should be merged into this NodeSet.
+//   * @throws RuntimeException thrown if this NodeSet is not of 
+//   * a mutable type.
+//   */
+//  public void addNodes(NodeSet ns)
+//  {
+//
+//    if (!m_mutable)
+//      throw new RuntimeException("This NodeSet is not mutable!");
+//
+//    addNodes((DTMIterator) ns);
+//  }
 
   /**
    * Copy NodeList members into this nodelist, adding in
    * document order.  Null references are not added.
    *
-   * @param iterator NodeIterator which yields the nodes to be added.
+   * @param iterator DTMIterator which yields the nodes to be added.
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addNodes(NodeIterator iterator)
+  public void addNodes(DTMIterator iterator)
   {
 
     if (!m_mutable)
@@ -545,9 +627,9 @@ public class NodeSet extends NodeVector
 
     if (null != iterator)  // defensive to fix a bug that Sanjiva reported.
     {
-      Node obj;
+      int obj;
 
-      while (null != (obj = iterator.nextNode()))
+      while (DTM.NULL != (obj = iterator.nextNode()))
       {
         addElement(obj);
       }
@@ -556,120 +638,122 @@ public class NodeSet extends NodeVector
     // checkDups();
   }
 
+  // %TBD%
+//  /**
+//   * Copy NodeList members into this nodelist, adding in
+//   * document order.  If a node is null, don't add it.
+//   *
+//   * @param nodelist List of nodes to be added
+//   * @param support The XPath runtime context.
+//   * @throws RuntimeException thrown if this NodeSet is not of 
+//   * a mutable type.
+//   */
+//  public void addNodesInDocOrder(NodeList nodelist, XPathContext support)
+//  {
+//
+//    if (!m_mutable)
+//      throw new RuntimeException("This NodeSet is not mutable!");
+//
+//    int nChildren = nodelist.getLength();
+//
+//    for (int i = 0; i < nChildren; i++)
+//    {
+//      int node = nodelist.item(i);
+//
+//      if (null != node)
+//      {
+//        addNodeInDocOrder(node, support);
+//      }
+//    }
+//  }
+
   /**
    * Copy NodeList members into this nodelist, adding in
    * document order.  If a node is null, don't add it.
    *
-   * @param nodelist List of nodes to be added
+   * @param iterator DTMIterator which yields the nodes to be added.
    * @param support The XPath runtime context.
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addNodesInDocOrder(NodeList nodelist, XPathContext support)
+  public void addNodesInDocOrder(DTMIterator iterator, XPathContext support)
   {
 
     if (!m_mutable)
       throw new RuntimeException("This NodeSet is not mutable!");
 
-    int nChildren = nodelist.getLength();
+    int node;
 
-    for (int i = 0; i < nChildren; i++)
-    {
-      Node node = nodelist.item(i);
-
-      if (null != node)
-      {
-        addNodeInDocOrder(node, support);
-      }
-    }
-  }
-
-  /**
-   * Copy NodeList members into this nodelist, adding in
-   * document order.  If a node is null, don't add it.
-   *
-   * @param iterator NodeIterator which yields the nodes to be added.
-   * @param support The XPath runtime context.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void addNodesInDocOrder(NodeIterator iterator, XPathContext support)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    Node node;
-
-    while (null != (node = iterator.nextNode()))
+    while (DTM.NULL != (node = iterator.nextNode()))
     {
       addNodeInDocOrder(node, support);
     }
   }
 
-  /**
-   * Add the node list to this node set in document order.
-   *
-   * @param start index.
-   * @param end index.
-   * @param testIndex index.
-   * @param nodelist The nodelist to add.
-   * @param support The XPath runtime context.
-   *
-   * @return false always.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  private boolean addNodesInDocOrder(int start, int end, int testIndex,
-                                     NodeList nodelist, XPathContext support)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    boolean foundit = false;
-    int i;
-    Node node = nodelist.item(testIndex);
-
-    for (i = end; i >= start; i--)
-    {
-      Node child = (Node) elementAt(i);
-
-      if (child == node)
-      {
-        i = -2;  // Duplicate, suppress insert
-
-        break;
-      }
-
-      if (!support.getDOMHelper().isNodeAfter(node, child))
-      {
-        insertElementAt(node, i + 1);
-
-        testIndex--;
-
-        if (testIndex > 0)
-        {
-          boolean foundPrev = addNodesInDocOrder(0, i, testIndex, nodelist,
-                                                 support);
-
-          if (!foundPrev)
-          {
-            addNodesInDocOrder(i, size() - 1, testIndex, nodelist, support);
-          }
-        }
-
-        break;
-      }
-    }
-
-    if (i == -1)
-    {
-      insertElementAt(node, 0);
-    }
-
-    return foundit;
-  }
+  // %TBD%
+//  /**
+//   * Add the node list to this node set in document order.
+//   *
+//   * @param start index.
+//   * @param end index.
+//   * @param testIndex index.
+//   * @param nodelist The nodelist to add.
+//   * @param support The XPath runtime context.
+//   *
+//   * @return false always.
+//   * @throws RuntimeException thrown if this NodeSet is not of 
+//   * a mutable type.
+//   */
+//  private boolean addNodesInDocOrder(int start, int end, int testIndex,
+//                                     NodeList nodelist, XPathContext support)
+//  {
+//
+//    if (!m_mutable)
+//      throw new RuntimeException("This NodeSet is not mutable!");
+//
+//    boolean foundit = false;
+//    int i;
+//    int node = nodelist.item(testIndex);
+//
+//    for (i = end; i >= start; i--)
+//    {
+//      int child = elementAt(i);
+//
+//      if (child == node)
+//      {
+//        i = -2;  // Duplicate, suppress insert
+//
+//        break;
+//      }
+//
+//      if (!support.getDOMHelper().isNodeAfter(node, child))
+//      {
+//        insertElementAt(node, i + 1);
+//
+//        testIndex--;
+//
+//        if (testIndex > 0)
+//        {
+//          boolean foundPrev = addNodesInDocOrder(0, i, testIndex, nodelist,
+//                                                 support);
+//
+//          if (!foundPrev)
+//          {
+//            addNodesInDocOrder(i, size() - 1, testIndex, nodelist, support);
+//          }
+//        }
+//
+//        break;
+//      }
+//    }
+//
+//    if (i == -1)
+//    {
+//      insertElementAt(node, 0);
+//    }
+//
+//    return foundit;
+//  }
 
   /**
    * Add the node into a vector of nodes where it should occur in
@@ -684,7 +768,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public int addNodeInDocOrder(Node node, boolean test, XPathContext support)
+  public int addNodeInDocOrder(int node, boolean test, XPathContext support)
   {
 
     if (!m_mutable)
@@ -702,7 +786,7 @@ public class NodeSet extends NodeVector
 
       for (i = size - 1; i >= 0; i--)
       {
-        Node child = (Node) elementAt(i);
+        int child = elementAt(i);
 
         if (child == node)
         {
@@ -711,7 +795,8 @@ public class NodeSet extends NodeVector
           break;
         }
 
-        if (!support.getDOMHelper().isNodeAfter(node, child))
+        DTM dtm = support.getDTM(node);
+        if (!dtm.isNodeAfter(node, child))
         {
           break;
         }
@@ -732,7 +817,7 @@ public class NodeSet extends NodeVector
 
       for (int i = 0; i < insertIndex; i++)
       {
-        if (this.item(i).equals(node))
+        if (i == node)
         {
           foundit = true;
 
@@ -761,7 +846,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public int addNodeInDocOrder(Node node, XPathContext support)
+  public int addNodeInDocOrder(int node, XPathContext support)
   {
 
     if (!m_mutable)
@@ -787,7 +872,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addElement(Node value)
+  public void addElement(int value)
   {
 
     if (!m_mutable)
@@ -807,7 +892,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void insertElementAt(Node value, int at)
+  public void insertElementAt(int value, int at)
   {
 
     if (!m_mutable)
@@ -862,7 +947,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public boolean removeElement(Node s)
+  public boolean removeElement(int s)
   {
 
     if (!m_mutable)
@@ -902,7 +987,24 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void setElementAt(Node node, int index)
+  public void setElementAt(int node, int index)
+  {
+
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    super.setElementAt(node, index);
+  }
+  
+  /**
+   * Same as setElementAt.
+   *
+   * @param node  The node to be set.
+   * @param index The index of the node to be replaced.
+   * @throws RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
+   */
+  public void setItem(int node, int index)
   {
 
     if (!m_mutable)
@@ -918,14 +1020,14 @@ public class NodeSet extends NodeVector
    *
    * @return Node at specified index.
    */
-  public Node elementAt(int i)
+  public int elementAt(int i)
   {
 
     runTo(i);
 
     return super.elementAt(i);
   }
-
+  
   /**
    * Tell if the table contains the given node.
    *
@@ -933,7 +1035,7 @@ public class NodeSet extends NodeVector
    *
    * @return True if the given node was found.
    */
-  public boolean contains(Node s)
+  public boolean contains(int s)
   {
 
     runTo(-1);
@@ -952,7 +1054,7 @@ public class NodeSet extends NodeVector
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
    */
-  public int indexOf(Node elem, int index)
+  public int indexOf(int elem, int index)
   {
 
     runTo(-1);
@@ -970,7 +1072,7 @@ public class NodeSet extends NodeVector
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
    */
-  public int indexOf(Node elem)
+  public int indexOf(int elem)
   {
 
     runTo(-1);
@@ -1018,7 +1120,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and thus doesn't permit indexed access.
    */
-  public Node getCurrentNode()
+  public int getCurrentNode()
   {
 
     if (!m_cacheNodes)
@@ -1026,7 +1128,7 @@ public class NodeSet extends NodeVector
         "This NodeSet can not do indexing or counting functions!");
 
     int saved = m_next;
-    Node n = elementAt(m_next-1);
+    int n = elementAt(m_next-1);
     m_next = saved; // HACK: I think this is a bit of a hack.  -sb
     return n;
   }
@@ -1071,6 +1173,16 @@ public class NodeSet extends NodeVector
     m_mutable = true;
   }
   
+  /**
+   * Tells if this iterator can have nodes added to it or set via 
+   * the <code>setItem(int node, int index)</code> method.
+   * 
+   * @return True if the nodelist can be mutated.
+   */
+  public boolean isMutable()
+  {
+    return m_mutable;
+  }
   
   transient private int m_last = 0;
   
@@ -1083,5 +1195,7 @@ public class NodeSet extends NodeVector
   {
     m_last = last;
   }
+  
+  
 
 }

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -69,15 +69,8 @@ import org.apache.xpath.DOMOrder;
 import org.apache.xpath.axes.AxesWalker;
 
 /**
- * <p>
- * The StreamableNode really just provides a base implemtation
- * for the other SQL Node based classes. It support keeping track
- * of the Document Order Index where it is just incermented to assure
- * that the node are considered seperate and assign a distance in the
- * Document. It also provides a common reference to the Document Root
- * or the XStatement object.
- * </p>
- *
+ * <meta name="usage" content="experimental"/>
+ * This is the superclass for all nodes in the org.apache.xalan.lib.sql package.
  */
 public class StreamableNode extends UnImplNode
         implements NodeTestFilter, NamedNodeMap, DOMOrder
@@ -87,7 +80,7 @@ public class StreamableNode extends UnImplNode
   private XStatement m_statement;
 
   /**
-   * Get XStatement (owning document)
+   * Get XStatement (owning document) 
    *
    *
    * @return owning document
@@ -97,20 +90,20 @@ public class StreamableNode extends UnImplNode
     return m_statement;
   }
 
-  /**
-   * Check if a given feature is supported
-   *
-   *
-   * @param feature Feature to check
-   * @param version Version to check
-   *
-   * @return True if NodeTest feature is supported
-   */
-  public boolean isSupported(String feature, String version)
-  {
-    return (AxesWalker.FEATURE_NODETESTFILTER == feature)
-           || feature.equals(AxesWalker.FEATURE_NODETESTFILTER);
-  }
+//  /**
+//   * Check if a given feature is supported 
+//   *
+//   *
+//   * @param feature Feature to check
+//   * @param version Version to check
+//   *
+//   * @return True if NodeTest feature is supported
+//   */
+//  public boolean isSupported(String feature, String version)
+//  {
+//    return (AxesWalker.FEATURE_NODETESTFILTER == feature)
+//           || feature.equals(AxesWalker.FEATURE_NODETESTFILTER);
+//  }
 
   /** Instance of a NodeTest          */
   private NodeTest m_nodetest;
@@ -134,8 +127,13 @@ public class StreamableNode extends UnImplNode
    */
   public StreamableNode(XStatement statement)
   {
+
     m_statement = statement;
-    incermentOrderIndex();
+
+    if (null != statement)
+    {
+      m_orderIndex = m_statement.getAndIncrementNodeCounter();
+    }
   }
 
   /**
@@ -150,7 +148,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Get Owner Document
+   * Get Owner Document 
    *
    *
    * @return owner document
@@ -201,10 +199,10 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Get list of attributes
+   * Get list of attributes 
    *
    *
-   * @return the list of attributes for this node, itself
+   * @return the list of attributes for this node, itself  
    */
   public NamedNodeMap getAttributes()
   {
@@ -212,7 +210,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Get the attribute with the given name - Not implemented
+   * Get the attribute with the given name - Not implemented 
    *
    *
    * @param name attribute name to get
@@ -225,7 +223,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Return the attribute at the given index - Not implemented
+   * Return the attribute at the given index - Not implemented 
    *
    *
    * @param index Index of attribute to get
@@ -238,7 +236,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * The number of attributes for this node - Not implemented
+   * The number of attributes for this node - Not implemented 
    *
    *
    * @return 0
@@ -249,7 +247,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Get the attribute with the given namespaced name - Not implemented
+   * Get the attribute with the given namespaced name - Not implemented 
    *
    *
    * @param namespaceURI Namespace URI of the attribute to get
@@ -263,7 +261,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Set the given attribute - Not supported
+   * Set the given attribute - Not supported 
    *
    *
    * @param arg attribute node
@@ -281,7 +279,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Remove the attribute with the given name - Not supported
+   * Remove the attribute with the given name - Not supported 
    *
    *
    * @param name Attribute name
@@ -299,7 +297,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * Set the attribute with the given namespaced name - Not supported
+   * Set the attribute with the given namespaced name - Not supported 
    *
    *
    * @param arg Attriute node
@@ -349,21 +347,16 @@ public class StreamableNode extends UnImplNode
 
     if (-1 == m_orderIndex)
     {
-      incermentOrderIndex();
+      if (null != m_statement)
+      {
+        m_orderIndex = m_statement.getAndIncrementNodeCounter();
+      }
+      else
+        m_orderIndex = 0;  // ?
     }
 
-//    if (DEBUG)
-//      System.out.println(" Returning UID: "+m_orderIndex);
-
+    // System.out.println(" Returning UID: "+m_orderIndex);
+    // System.out.flush();
     return m_orderIndex;
-  }
-
-  public void incermentOrderIndex()
-  {
-    if (null != m_statement)
-    {
-      m_orderIndex = m_statement.getAndIncrementNodeCounter();
-    }
-    else m_orderIndex = 0;
   }
 }

@@ -184,6 +184,17 @@ public final class BoolStack implements Cloneable
   }
 
   /**
+   * Looks at the object at the top of this stack without removing it
+   * from the stack.  If the stack is empty, it returns true.
+   *
+   * @return     the object at the top of this stack.
+   */
+  public final boolean peekOrTrue()
+  {
+    return (m_index > -1) ? m_values[m_index] : true;
+  }
+
+  /**
    * Tests if this stack is empty.
    *
    * @return  <code>true</code> if this stack is empty;

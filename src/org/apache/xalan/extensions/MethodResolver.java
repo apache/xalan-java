@@ -320,7 +320,7 @@ public class MethodResolver
   
   /**
    * Given the name of a method, figure out the resolution of 
-   * the Java Method.
+   * the Java Method
    * @param classObj The Class of the object that should have the method.
    * @param name The name of the method to be invoked.
    * @return A method that will work to be called as an element.
@@ -347,8 +347,8 @@ public class MethodResolver
       {
         Class[] paramTypes = method.getParameterTypes();
         if ( (paramTypes.length == 2)
-        && paramTypes[1].isAssignableFrom(org.apache.xalan.templates.ElemExtensionCall.class)
-        && paramTypes[0].isAssignableFrom(org.apache.xalan.extensions.XSLProcessorContext.class) )
+           && paramTypes[1].isAssignableFrom(org.apache.xalan.templates.ElemExtensionCall.class)
+					 && paramTypes[0].isAssignableFrom(org.apache.xalan.extensions.XSLProcessorContext.class) )
         {
           if ( ++bestScoreCount == 1 )
             bestMethod = method;
@@ -575,7 +575,7 @@ public class MethodResolver
                             : XObject.CLASS_UNKNOWN;
       Class javaClass = javaParamTypes[javaParamTypesIndex];
       
-      // System.out.println("["+i+"] Checking xslt: "+xsltObj.getClass().getName()+
+      // System.out.println("Checking xslt: "+xsltObj.getClass().getName()+
       //                   " against java: "+javaClass.getName());
       
       if(xsltClassType == XObject.CLASS_NULL)
@@ -629,17 +629,12 @@ public class MethodResolver
         // whether this java method is a valid match for this extension function call.
         // This approach eliminates the NullPointerException in the earlier implementation
         // that resulted from passing an XObject encapsulating the null java object.
-
+				
         // TODO:  This needs to be improved to assign relative scores to subclasses,
-        // etc.
+        // etc. 
 
         if (XObject.CLASS_UNKNOWN == xsltClassType)
         {
-          // System.out.println("["+i+"] CLASS_UNKNOWN: " + xsltObj.getClass() +
-          //        ((xsltObj instanceof XObject) ? 
-          //          " object() = " + ((XObject) xsltObj).object()
-          //        : ""));
-
           Class realClass = null;
 
           if (xsltObj instanceof XObject)
@@ -754,16 +749,18 @@ public class MethodResolver
           {
             return ((XRTreeFrag) xobj).asNodeIterator();
           }
-          else if (javaClass == NodeList.class)
-          {
-            return ((XRTreeFrag) xobj).convertToNodeset();
-          }
+          // %DTBD%
+//          else if (javaClass == NodeList.class)
+//          {
+//            return ((XRTreeFrag) xobj).convertToNodeset();
+//          }
           // Same comment as above
           // else if(Node.class.isAssignableFrom(javaClass))
-          else if(javaClass == Node.class)
-          {
-            return xobj.rtree().getFirstChild();
-          }
+          // %DTBD%
+//          else if(javaClass == Node.class)
+//          {
+//            return xobj.rtree().getFirstChild();
+//          }
           else if(javaClass == java.lang.String.class)
           {
             return xobj.str();
@@ -776,14 +773,15 @@ public class MethodResolver
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
-          else
-          {
-            Node child = xobj.rtree().getFirstChild();
-            if(javaClass.isAssignableFrom(child.getClass()))
-              return child;
-            else
-              return null;
-          }
+          // %DTBD%
+//          else
+//          {
+//            Node child = xobj.rtree().getFirstChild();
+//            if(javaClass.isAssignableFrom(child.getClass()))
+//              return child;
+//            else
+//              return null;
+//          }
         }
         // break; Unreachable
         
@@ -812,8 +810,9 @@ public class MethodResolver
           {
             // Xalan ensures that nodeset() always returns an
             // iterator positioned at the beginning.
-            NodeIterator ni = xobj.nodeset();
-            return ni.nextNode(); // may be null.
+            // %DTBD%
+//            NodeIterator ni = xobj.nodeset();
+//            return ni.nextNode(); // may be null.
           }
           else if(javaClass == java.lang.String.class)
           {
@@ -827,14 +826,15 @@ public class MethodResolver
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
-          else
-          {
-            Node child = xobj.nodeset().nextNode();
-            if(javaClass.isAssignableFrom(child.getClass()))
-              return child;
-            else
-              return null;
-          }
+          // %DTBD%
+//          else
+//          {
+//            Node child = xobj.nodeset().nextNode();
+//            if(javaClass.isAssignableFrom(child.getClass()))
+//              return child;
+//            else
+//              return null;
+//          }
         }
         // break; Unreachable
         
@@ -867,10 +867,10 @@ public class MethodResolver
         // Just pass the object directly, and hope for the best.
         return xsltObj;
       }
-    }
+		}
     else
     {
-      // Just pass the null object directly, and hope for the best.
+      // Just pass the object directly, and hope for the best.
       return xsltObj;
     }
   }

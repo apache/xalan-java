@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -64,71 +64,43 @@ import org.w3c.dom.NamedNodeMap;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
-
 /**
- * <p>
- * A JDBC Query returns a resultSet that contains rows of
- * Data. In each row are entried for each column. The Column
- * Object is used to represent the information about an
- * individual column. i.e. It represents the &lt;col&gt; element.
- * From this object, the attributes of that colum can be interrogated
- * {@link org.apache.xalan.lib.sql.ColumnAttribute} or the value of
- * the data that the current column rpresents
- * {@link org.apache.xalan.lib.sql.ColumnData}
- *
- * </p>
- * <p>
- * This object only represents the current column but a full array of
- * all the columns are held in the Parent Row object. The array is
- * zero based and the position of the current column is held in the
- * m_columnIndex class field, the parent row information is held
- * in the m_parentRow and the extent of the array is available in
- * the m_childCount from the m_parentRow object.
- *</p>
+ * <meta name="usage" content="experimental"/>
+ * Represents a col node from a row node.
  */
 public class Column extends StreamableNode
 {
 
-  /**
-   * column Index, our position in the column line up
-   * The first position being zero.
-   */
+  /** column Index          */
   int m_columnIndex;
 
-  /** Parent row node  */
+  /** Parent row node          */
   Row m_parent;
 
   /** Flag indicating if in DEBUG mode         */
   private static final boolean DEBUG = false;
 
-  /** Column data   */
-  ColumnData m_text = null;
+  /** Column data          */
+  ColumnData m_text;
 
   /**
-   * Build up an instance of the Column object.
-   * To support cached nodes, the column data will be
-   * fetched in the constructor to assure that a valid
-   * copy exists.
+   * Constructor Column
+   *
    *
    * @param statement Current Document
    * @param parent Parent row node of this column
    * @param columnIndex Index for this column
    * @param metadata Meta data (column header).
-   * @param ResultSet {@link java.sql.ResultSet}
    */
   public Column(XStatement statement, Row parent, int columnIndex,
-                ResultSetMetaData metadata, ResultSet resultSet)
+                ResultSetMetaData metadata)
   {
 
     super(statement);
 
     m_columnIndex = columnIndex;
     m_parent = parent;
-
-    // Get the column data right away so it is not lost when
-    // streamable mode is turned off.
-    // JCG 4/1/2001
-    m_text = new ColumnData(statement, this, resultSet);
+    m_text = null;
   }
 
   /**
@@ -155,26 +127,22 @@ public class Column extends StreamableNode
    * Return the col text node (the column value).
    *
    * @return the column value
-   * @throws Exception, Let all errors be handled by the XConnection
    */
   public Node getFirstChild()
-    throws DOMException
   {
 
     if (DEBUG)
       System.out.println("In Column.getFirstChild");
+
+    if (null == m_text)
+      m_text = new ColumnData(this.getXStatement(), this);
 
     return m_text;
   }
 
   /**
    * Return the next col element for the current row.
-   * @return a Column node or null if we are at the end
-   * of the column array.
-   *
-   * The column array list is built and maintained in the
-   * parent row object.
-   *
+   * @return a Column node or null.
    */
   public Node getNextSibling()
   {
@@ -191,7 +159,7 @@ public class Column extends StreamableNode
   /**
    * The parent node of col is a row.
    *
-   * @return The parent node of this column
+   * @return The parent node of this column 
    */
   public Node getParentNode()
   {
@@ -219,8 +187,7 @@ public class Column extends StreamableNode
   }
 
   /**
-   * From the XConnection (the root of the variable), retrive
-   * the ColumnAttributes object.
+   * Return the metadata for this column.
    *
    * @return the metadata for this column(column header).
    */

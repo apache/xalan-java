@@ -121,6 +121,21 @@ public class ElemWhen extends ElemTemplateElement
   {
     return Constants.ELEMNAME_WHEN;
   }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) 
+    throws javax.xml.transform.TransformerException
+  {
+    super.compose(sroot);
+    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+    if(null != m_test)
+      m_test.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+  }
 
   /**
    * Return the node name.

@@ -78,7 +78,7 @@ public class CharInfo
 {
 
   /** Bit map that tells if a given character should have special treatment. */
-  private BitSet m_specialsMap = new BitSet(65535);
+  BitSet m_specialsMap = new BitSet(65535);
 
   /** Lookup table for characters to entity references. */
   private Hashtable m_charToEntityRef = new Hashtable();

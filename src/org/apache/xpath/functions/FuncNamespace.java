@@ -58,8 +58,10 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -86,27 +88,28 @@ public class FuncNamespace extends FunctionDef1Arg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node context = getArg0AsNode(xctxt);
+    int context = getArg0AsNode(xctxt);
     
     String s;
-    if(context != null)
+    if(context != DTM.NULL)
     {
-      int t = context.getNodeType();
-      if(t == Node.ELEMENT_NODE)
+      DTM dtm = xctxt.getDTM(context);
+      int t = dtm.getNodeType(context);
+      if(t == DTM.ELEMENT_NODE)
       {
-        s = xctxt.getDOMHelper().getNamespaceOfNode(context);
+        s = dtm.getNamespaceURI(context);
       }
-      else if(t == Node.ATTRIBUTE_NODE)
+      else if(t == DTM.ATTRIBUTE_NODE)
       {
 
         // This function always returns an empty string for namespace nodes.
         // We check for those here.  Fix inspired by Davanum Srinivas.
 
-        s = context.getNodeName();
+        s = dtm.getNodeName(context);
         if(s.startsWith("xmlns:") || s.equals("xmlns"))
           return XString.EMPTYSTRING;
 
-        s = xctxt.getDOMHelper().getNamespaceOfNode(context);
+        s = dtm.getNamespaceURI(context);
       }
       else
         return XString.EMPTYSTRING;

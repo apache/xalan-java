@@ -382,9 +382,6 @@ public class SerializerToHTML extends SerializerToXML
   /** True if URLs should be specially escaped with the %xx form. */
   private boolean m_specialEscapeURLs = true;
 
-  /** True if the META tag should be omitted. */
-  private boolean m_omitMetaTag = false;
-
   /**
    * Tells if the formatter should use special URL escaping.
    *
@@ -393,16 +390,6 @@ public class SerializerToHTML extends SerializerToXML
   public void setSpecialEscapeURLs(boolean bool)
   {
     m_specialEscapeURLs = bool;
-  }
-
-  /**
-   * Tells if the formatter should omit the META tag.
-   *
-   * @param bool True if the META tag should be omitted.
-   */
-  public void setOmitMetaTag(boolean bool)
-  {
-    m_omitMetaTag = bool;
   }
 
   /**
@@ -420,9 +407,6 @@ public class SerializerToHTML extends SerializerToXML
     m_specialEscapeURLs =
       OutputProperties.getBooleanProperty(OutputProperties.S_USE_URL_ESCAPING,
                                           format);
-    m_omitMetaTag =
-      OutputProperties.getBooleanProperty(OutputProperties.S_OMIT_META_TAG,
-                                          format);
                             
     super.setOutputFormat(format);
   }
@@ -435,16 +419,6 @@ public class SerializerToHTML extends SerializerToXML
   public boolean getSpecialEscapeURLs()
   {
     return m_specialEscapeURLs;
-  }
-
-  /**
-   * Tells if the formatter should omit the META tag.
-   *
-   * @return True if the META tag should be omitted.
-   */
-  public boolean getOmitMetaTag()
-  {
-    return m_omitMetaTag;
   }
 
   /**
@@ -522,7 +496,7 @@ public class SerializerToHTML extends SerializerToXML
         }
 
         accum(">");
-        accum(m_lineSep);
+        outputLineSep();
       }
     }
 
@@ -613,21 +587,18 @@ public class SerializerToHTML extends SerializerToXML
     {
       writeParentTagEnd();
 
-      if (!m_omitMetaTag)
-      {
+      if (m_doIndent)
+        indent(m_currentIndent);
 
-        if (m_doIndent)
-          indent(m_currentIndent);
+      accum(
+        "<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
 
-        accum(
-          "<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
+      // String encoding = Encodings.getMimeEncoding(m_encoding).toLowerCase();
+      String encoding = Encodings.getMimeEncoding(m_encoding);
 
-        String encoding = Encodings.getMimeEncoding(m_encoding);
-
-        accum(encoding);
-        accum('"');
-        accum('>');
-      }
+      accum(encoding);
+      accum('"');
+      accum('>');
     }
   }
 
@@ -849,6 +820,12 @@ public class SerializerToHTML extends SerializerToXML
           // Reference is Unicode, A Primer, by Tony Graham.
           // Page 92.
           
+          // Note that Kay doesn't escape 0x20...
+          //  if(ch == 0x20) // Not sure about this... -sb
+          //  {
+          //    accum(ch);
+          //  }
+          //  else 
           if(ch <= 0x7F)
           {
             accum('%');

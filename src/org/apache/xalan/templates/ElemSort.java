@@ -359,4 +359,28 @@ public class ElemSort extends ElemTemplateElement
     //" to " + this.m_elemName);
     return null;
   }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) 
+    throws javax.xml.transform.TransformerException
+  {
+    super.compose(sroot);
+    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+    java.util.Vector vnames = cstate.getVariableNames();
+    if(null != m_caseorder_avt)
+      m_caseorder_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+    if(null != m_dataType_avt)
+      m_dataType_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+    if(null != m_lang_avt)
+      m_lang_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+    if(null != m_order_avt)
+      m_order_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+    if(null != m_selectExpression)
+      m_selectExpression.fixupVariables(vnames, cstate.getGlobalsSize());
+  }
 }

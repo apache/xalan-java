@@ -59,17 +59,21 @@ package org.apache.xpath.axes;
 import org.apache.xpath.compiler.OpCodes;
 
 // DOM Imports
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMIterator;
 
 // Xalan Imports
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.Compiler;
@@ -77,14 +81,14 @@ import org.apache.xml.utils.ObjectPool;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class extends NodeSet, which implements NodeIterator,
+ * This class extends NodeSet, which implements DTMIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
  * As each node is iterated via nextNode(), the node is also stored
  * in the NodeVector, so that previousNode() can easily be done.
  */
 public class UnionPathIterator extends Expression
-        implements Cloneable, NodeIterator, ContextNodeList
+        implements Cloneable, DTMIterator, java.io.Serializable
 {
 
   /**
@@ -107,23 +111,48 @@ public class UnionPathIterator extends Expression
    * @param execContext The XPath runtime context for this 
    * transformation.
    */
-  public void initContext(XPathContext execContext)
+  public void setRoot(int context, Object environment)
   {
+    this.m_execContext = (XPathContext)environment;
+    this.m_currentContextNode = context;
+    this.m_context = context;
+    m_lastFetched = DTM.NULL;
+    m_next = 0;
+    m_last = 0;
+    m_foundLast = false;
 
-    this.m_execContext = execContext;
-    this.m_currentContextNode = execContext.getCurrentExpressionNode();
-    this.m_context = execContext.getCurrentNode();
-
-    if (null != m_iterators)
+    try
     {
-      int n = m_iterators.length;
-
-      for (int i = 0; i < n; i++)
+      if (null != m_iterators)
       {
-        m_iterators[i].initContext(execContext);
-        m_iterators[i].nextNode();
+        int n = m_iterators.length;
+  
+        for (int i = 0; i < n; i++)
+        {
+          m_iterators[i] = ((LocPathIterator)m_iterators[i]).asIterator(m_execContext, context);
+          m_iterators[i].setRoot(context, environment);
+          m_iterators[i].nextNode();
+        }
       }
     }
+    catch(Exception e)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(e);
+    }
+  }
+  
+  /** Control over whether it is OK for detach to reset the iterator. */
+  private boolean m_allowDetach = true;
+  
+  /**
+   * Specify if it's OK for detach to release the iterator for reuse.
+   * 
+   * @param allowRelease true if it is OK for detach to release this iterator 
+   * for pooling.
+   */
+  public void allowDetachToRelease(boolean allowRelease)
+  {
+    m_allowDetach = allowRelease;
   }
 
   /**
@@ -136,22 +165,37 @@ public class UnionPathIterator extends Expression
   public void detach()
   {
 
-    this.m_context = null;
-    this.m_execContext = null;
-    this.m_context = null;
-
-    int n = m_iterators.length;
-
-    for (int i = 0; i < n; i++)
+    if(m_allowDetach)
     {
-      m_iterators[i].detach();
-    }
+      m_cachedNodes = null;
+      m_execContext = null;
+      // m_prefixResolver = null;
+      // m_cdtm = null;
+      
+      if (null != m_iterators)
+      {
+        int n = m_iterators.length;
+  
+        for (int i = 0; i < n; i++)
+        {
+          m_iterators[i].detach();
+        }
+      }
 
-    m_pool.freeInstance(this);
+  
+  //    int n = m_iterators.length;
+  //
+  //    for (int i = 0; i < n; i++)
+  //    {
+  //      m_iterators[i].detach();
+  //    }
+  
+      m_clones.freeInstance(this);
+    }
   }
 
   /** Pool of UnionPathIterators.  (The need for this has to be re-evaluated.  -sb) */
-  transient ObjectPool m_pool = new ObjectPool(this.getClass());
+  protected IteratorPool m_clones = new IteratorPool(this);
 
   /**
    * Execute this iterator, meaning create a clone that can  
@@ -168,21 +212,13 @@ public class UnionPathIterator extends Expression
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    try
-    {
-      UnionPathIterator clone =
-        (UnionPathIterator) m_pool.getInstanceIfFree();
+    UnionPathIterator clone =
+      (UnionPathIterator) m_clones.getInstance();
 
-      if (null == clone)
-        clone = (UnionPathIterator) this.clone();
+    int current = xctxt.getCurrentNode();
+    clone.setRoot(current, xctxt);
 
-      clone.initContext(xctxt);
-
-      return new XNodeSet(clone);
-    }
-    catch (CloneNotSupportedException ncse){}
-
-    return null;
+    return new XNodeSet(clone);
   }
 
   /** If this iterator needs to cache nodes that are fetched, they
@@ -207,6 +243,17 @@ public class UnionPathIterator extends Expression
       m_cachedNodes = new NodeSet();
     else
       m_cachedNodes = null;
+  }
+  
+  /**
+   * Tells if this iterator can have nodes added to it or set via 
+   * the <code>setItem(int node, int index)</code> method.
+   * 
+   * @return True if the nodelist can be mutated.
+   */
+  public boolean isMutable()
+  {
+    return (m_cachedNodes != null);
   }
 
   /**
@@ -256,11 +303,8 @@ public class UnionPathIterator extends Expression
    * iterator backwards in the set.
    * @return  The previous <code>Node</code> in the set being iterated over,
    *   or<code>null</code> if there are no more members in that set.
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node previousNode() throws DOMException
+  public int previousNode()
   {
 
     if (null == m_cachedNodes)
@@ -273,16 +317,16 @@ public class UnionPathIterator extends Expression
   /**
    *  This attribute determines which node types are presented via the
    * iterator. The available set of constants is defined in the
-   * <code>NodeFilter</code> interface.
+   * <code>DTMFilter</code> interface.
    *
-   * @return A bit set that tells what node types to show (NodeFilter.SHOW_ALL at 
+   * @return A bit set that tells what node types to show (DTMFilter.SHOW_ALL at 
    * the iterator level).
    */
   public int getWhatToShow()
   {
 
     // TODO: ??
-    return NodeFilter.SHOW_ALL & ~NodeFilter.SHOW_ENTITY_REFERENCE;
+    return DTMFilter.SHOW_ALL & ~DTMFilter.SHOW_ENTITY_REFERENCE;
   }
 
   /**
@@ -290,7 +334,7 @@ public class UnionPathIterator extends Expression
    *
    * @return null.
    */
-  public NodeFilter getFilter()
+  public DTMFilter getFilter()
   {
     return null;
   }
@@ -300,7 +344,7 @@ public class UnionPathIterator extends Expression
    *
    * @return The context node of this iterator.
    */
-  public Node getRoot()
+  public int getRoot()
   {
     return m_context;
   }
@@ -341,7 +385,7 @@ public class UnionPathIterator extends Expression
     }
     else
     {
-      LocPathIterator[] iters = m_iterators;
+      DTMIterator[] iters = m_iterators;
       int len = m_iterators.length;
 
       m_iterators = new LocPathIterator[len + 1];
@@ -379,11 +423,11 @@ public class UnionPathIterator extends Expression
    * Get a cloned Iterator that is reset to the beginning 
    * of the query.
    *
-   * @return A cloned NodeIterator set of the start of the query.
+   * @return A cloned DTMIterator set of the start of the query.
    *
    * @throws CloneNotSupportedException
    */
-  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     UnionPathIterator clone = (UnionPathIterator) clone();
@@ -411,9 +455,35 @@ public class UnionPathIterator extends Expression
 
     for (int i = 0; i < n; i++)
     {
-      clone.m_iterators[i] = (LocPathIterator) m_iterators[i].clone();
+      clone.m_iterators[i] = m_iterators[i];
     }
 
+    return clone;
+  }
+  
+  /**
+   * <meta name="usage" content="experimental"/>
+   * Given an select expression and a context, evaluate the XPath
+   * and return the resulting iterator.
+   * 
+   * @param xctxt The execution context.
+   * @param contextNode The node that "." expresses.
+   * @param namespaceContext The context in which namespaces in the
+   * XPath are supposed to be expanded.
+   * 
+   * @throws TransformerException thrown if the active ProblemListener decides
+   * the error condition is severe enough to halt processing.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DTMIterator asIterator(
+          XPathContext xctxt, int contextNode)
+            throws javax.xml.transform.TransformerException
+  {
+    UnionPathIterator clone = (UnionPathIterator)m_clones.getInstance();
+    
+    clone.setRoot(contextNode, xctxt);
+    
     return clone;
   }
 
@@ -427,7 +497,7 @@ public class UnionPathIterator extends Expression
     m_foundLast = false;
     m_next = 0;
     m_last = 0;
-    m_lastFetched = null;
+    m_lastFetched = DTM.NULL;
 
     int n = m_iterators.length;
 
@@ -460,7 +530,7 @@ public class UnionPathIterator extends Expression
     {
       loadLocationPaths(compiler, compiler.getNextOpPos(opPos), count + 1);
 
-      m_iterators[count] = createLocPathIterator(compiler, opPos);
+      m_iterators[count] = createDTMIterator(compiler, opPos);
     }
     else
     {
@@ -475,8 +545,8 @@ public class UnionPathIterator extends Expression
       case OpCodes.OP_GROUP :
         loadLocationPaths(compiler, compiler.getNextOpPos(opPos), count + 1);
 
-        LocPathIterator iter =
-          new LocPathIterator(compiler.getNamespaceContext());
+        WalkingIterator iter =
+          new WalkingIterator(compiler.getNamespaceContext());
           
         if(compiler.getLocationPathDepth() <= 0)
           iter.setIsTopLevel(true);
@@ -504,45 +574,53 @@ public class UnionPathIterator extends Expression
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected LocPathIterator createLocPathIterator(
+  protected DTMIterator createDTMIterator(
           Compiler compiler, int opPos) throws javax.xml.transform.TransformerException
   {
-    LocPathIterator lpi = WalkerFactory.newLocPathIterator(compiler, opPos);
-    if(compiler.getLocationPathDepth() <= 0)
-      lpi.setIsTopLevel(true);
+    DTMIterator lpi = WalkerFactory.newDTMIterator(compiler, opPos, 
+                                      (compiler.getLocationPathDepth() <= 0));
     return lpi;
   }
 
   /** The last node that was fetched, usually by nextNode. */
-  transient Node m_lastFetched;
+  transient int m_lastFetched = DTM.NULL;
 
   /**
    *  Returns the next node in the set and advances the position of the
-   * iterator in the set. After a NodeIterator is created, the first call
+   * iterator in the set. After a DTMIterator is created, the first call
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
 
+//    // If the cache is on, and the node has already been found, then 
+//    // just return from the list.
+//    if ((null != m_cachedNodes)
+//            && (m_cachedNodes.getCurrentPos() < m_cachedNodes.size()))
+//    {
+//      return m_cachedNodes.nextNode();
+//    }
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
     if ((null != m_cachedNodes)
-            && (m_cachedNodes.getCurrentPos() < m_cachedNodes.size()))
+            && (m_next < m_cachedNodes.size()))
     {
-      return m_cachedNodes.nextNode();
+      int next = m_cachedNodes.elementAt(m_next);
+    
+      m_next++;
+      m_currentContextNode = next;
+
+      return next;
     }
 
     if (m_foundLast)
-      return null;
+      return DTM.NULL;
 
     // Loop through the iterators getting the current fetched 
     // node, and get the earliest occuring in document order
-    Node earliestNode = null;
+    int earliestNode = DTM.NULL;
 
     if (null != m_iterators)
     {
@@ -551,18 +629,18 @@ public class UnionPathIterator extends Expression
 
       for (int i = 0; i < n; i++)
       {
-        Node node = m_iterators[i].getCurrentNode();
+        int node = m_iterators[i].getCurrentNode();
 
-        if (null == node)
+        if (DTM.NULL == node)
           continue;
-        else if (null == earliestNode)
+        else if (DTM.NULL == earliestNode)
         {
           iteratorUsed = i;
           earliestNode = node;
         }
         else
         {
-          if (node.equals(earliestNode))
+          if (node == earliestNode)
           {
 
             // Found a duplicate, so skip past it.
@@ -570,9 +648,9 @@ public class UnionPathIterator extends Expression
           }
           else
           {
-            DOMHelper dh = m_execContext.getDOMHelper();
+            DTM dtm = getDTM(node);
 
-            if (dh.isNodeAfter(node, earliestNode))
+            if (dtm.isNodeAfter(node, earliestNode))
             {
               iteratorUsed = i;
               earliestNode = node;
@@ -581,7 +659,7 @@ public class UnionPathIterator extends Expression
         }
       }
 
-      if (null != earliestNode)
+      if (DTM.NULL != earliestNode)
       {
         m_iterators[iteratorUsed].nextNode();
 
@@ -611,15 +689,22 @@ public class UnionPathIterator extends Expression
   public void runTo(int index)
   {
 
-    if (m_foundLast || ((index >= 0) && (index <= m_next)))
+    if (m_foundLast || ((index >= 0) && (index <= getCurrentPos())))
       return;
 
-    Node n;
+    int n;
 
-    while (null == (n = nextNode()))
+    if (-1 == index)
     {
-      if (m_next >= index)
-        break;
+      while (DTM.NULL != (n = nextNode()));
+    }
+    else
+    {
+      while (DTM.NULL != (n = nextNode()))
+      {
+        if (getCurrentPos() >= index)
+          break;
+      }
     }
   }
 
@@ -636,15 +721,127 @@ public class UnionPathIterator extends Expression
   {
     return m_next;
   }
+  
+  /**
+   *  The number of nodes in the list. The range of valid child node indices
+   * is 0 to <code>length-1</code> inclusive.
+   *
+   * @return The number of nodes in the list, always greater or equal to zero.
+   */
+  public int getLength()
+  {
 
+    // %REVIEW% ??
+//    resetToCachedList();
+
+    return m_cachedNodes.getLength();
+  }
+
+  /**
+   *  Returns the <code>index</code> th item in the collection. If
+   * <code>index</code> is greater than or equal to the number of nodes in
+   * the list, this returns <code>null</code> .
+   * @param index  Index into the collection.
+   * @return  The node at the <code>index</code> th position in the
+   *   <code>NodeList</code> , or <code>null</code> if that is not a valid
+   *   index.
+   */
+  public int item(int index)
+  {
+    // resetToCachedList(); %TBD% ??
+
+    return m_cachedNodes.item(index);
+  }
+  
+  /**
+   * Sets the node at the specified index of this vector to be the
+   * specified node. The previous component at that position is discarded.
+   *
+   * <p>The index must be a value greater than or equal to 0 and less
+   * than the current size of the vector.  
+   * The iterator must be in cached mode.</p>
+   * 
+   * <p>Meant to be used for sorted iterators.</p>
+   *
+   * @param node Node to set
+   * @param index Index of where to set the node
+   */
+  public void setItem(int node, int index)
+  {
+    m_cachedNodes.setElementAt(node, index);
+  }
+  
+  /**
+   * Set the current context node for this iterator.
+   *
+   * @param n Must be a non-null reference to the node context.
+   */
+  public final void setRoot(int n)
+  {
+    m_context = n;
+  }
+  
+  /**
+   * Set the environment in which this iterator operates, which should provide:
+   * a node (the context node... same value as "root" defined below) 
+   * a pair of non-zero positive integers (the context position and the context size) 
+   * a set of variable bindings 
+   * a function library 
+   * the set of namespace declarations in scope for the expression.
+   * 
+   * <p>At this time the exact implementation of this environment is application 
+   * dependent.  Probably a proper interface will be created fairly soon.</p>
+   * 
+   * @param environment The environment object.
+   */
+  public void setEnvironment(Object environment)
+  {
+    // no-op for now.
+  }
+  
+  /**
+   * Get an instance of the DTMManager.  Since a node 
+   * iterator may be passed without a DTMManager, this allows the 
+   * caller to easily get the DTMManager using just the iterator.
+   *
+   * @return a non-null DTMManager reference.
+   */
+  public DTMManager getDTMManager()
+  {
+    return m_execContext.getDTMManager();
+  }
+  
   /**
    * Return the last fetched node.
    *
    * @return The last fetched node, or null if the last fetch was null.
    */
-  public Node getCurrentNode()
+  public int getCurrentNode()
   {
     return m_lastFetched;
+  }
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    for (int i = 0; i < m_iterators.length; i++) 
+    {
+      DTMIterator iter = m_iterators[i];
+      if(iter instanceof Expression)
+      {
+        ((Expression)iter).fixupVariables(vars, globalsSize);
+      }
+    }
+    
   }
 
   /**
@@ -660,21 +857,35 @@ public class UnionPathIterator extends Expression
   /**
    * The node context for the expression.
    */
-  transient protected Node m_context;
+  transient protected int m_context = DTM.NULL;
 
   /**
    * The node context from where the Location Path is being
    * executed from (i.e. for current() support).
    */
-  transient protected Node m_currentContextNode;
-
+  transient protected int m_currentContextNode = DTM.NULL;
+  
+  /**
+   * Get an instance of a DTM that "owns" a node handle.  Since a node 
+   * iterator may be passed without a DTMManager, this allows the 
+   * caller to easily get the DTM using just the iterator.
+   *
+   * @param nodeHandle the nodeHandle.
+   *
+   * @return a non-null DTM reference.
+   */
+  public DTM getDTM(int nodeHandle)
+  {
+    return m_execContext.getDTM(nodeHandle);
+  }
+  
   /**
    * The node context from where the expression is being
    * executed from (i.e. for current() support).
    *
    * @return The top-level node context of the entire expression.
    */
-  public Node getCurrentContextNode()
+  public int getCurrentContextNode()
   {
     return m_currentContextNode;
   }
@@ -685,7 +896,7 @@ public class UnionPathIterator extends Expression
    * path</a> contained in the union expression.
    * @serial
    */
-  protected LocPathIterator[] m_iterators;
+  protected DTMIterator[] m_iterators;
   
   /**
    * The last index in the list.

@@ -95,8 +95,15 @@ public class XBooleanStatic extends XBoolean
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
-    return m_val == obj2.bool();
+    try
+    {
+      return m_val == obj2.bool();
+    }
+    catch(javax.xml.transform.TransformerException te)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
   }
 }

@@ -64,8 +64,12 @@ import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
+import org.apache.xpath.objects.XString;
+
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Document;
+
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.TransformerException;
@@ -78,7 +82,6 @@ import org.xml.sax.EntityResolver;
 
 // import org.xml.sax.Locator;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -97,20 +100,6 @@ import javax.xml.transform.TransformerException;
  */
 public class SourceTreeManager
 {
-
-  /** XPathContext that created this SourceTreeManager. */
-
-  private XPathContext m_xctxt;
-
-  /**
-   * Construct the instance and save a reference to the creating XPathContext
-   *
-   */
-
-  public SourceTreeManager(XPathContext xctxt) {
-    super();
-    m_xctxt = xctxt;
-  }
 
   /** Vector of SourceTree objects that this manager manages. */
   private Vector m_sourceTree = new Vector();
@@ -155,30 +144,19 @@ public class SourceTreeManager
    *
    * @return The base URI of the owner argument.
    */
-  public String findURIFromDoc(Document owner)
+  public String findURIFromDoc(int owner)
   {
-
-    Node root = owner.getOwnerDocument();
-
-    if (null == root)
-      root = owner;
-
-    String url = null;
     int n = m_sourceTree.size();
 
     for (int i = 0; i < n; i++)
     {
       SourceTree sTree = (SourceTree) m_sourceTree.elementAt(i);
 
-      if (root == sTree.m_root)
-      {
-        url = sTree.m_url;
-
-        break;
-      }
+      if (owner == sTree.m_root)
+        return sTree.m_url;
     }
 
-    return url;
+    return null;
   }
 
   /**
@@ -223,14 +201,14 @@ public class SourceTreeManager
    * @param n The node to cache.
    * @param source The Source object to cache.
    */
-  public void putDocumentInCache(Node n, Source source)
+  public void putDocumentInCache(int n, Source source)
   {
 
-    Node cachedNode = getNode(source);
+    int cachedNode = getNode(source);
 
-    if (null != cachedNode)
+    if (DTM.NULL != cachedNode)
     {
-      if (!cachedNode.equals(n))
+      if (!(cachedNode == n))
         throw new RuntimeException(
           "Programmer's Error!  "
           + "putDocumentInCache found reparse of doc: "
@@ -250,7 +228,7 @@ public class SourceTreeManager
    *
    * @return The node that is associated with the Source, or null if not found.
    */
-  public Node getNode(Source source)
+  public int getNode(Source source)
   {
 
 //    if (source instanceof DOMSource)
@@ -260,11 +238,9 @@ public class SourceTreeManager
     String url = source.getSystemId();
 
     if (null == url)
-      return null;
+      return DTM.NULL;
 
-    Node node = null;
     int n = m_sourceTree.size();
-    ;
 
     // System.out.println("getNode: "+n);
     for (int i = 0; i < n; i++)
@@ -274,15 +250,11 @@ public class SourceTreeManager
       // System.out.println("getNode -         url: "+url);
       // System.out.println("getNode - sTree.m_url: "+sTree.m_url);
       if (url.equals(sTree.m_url))
-      {
-        node = sTree.m_root;
-
-        break;
-      }
+        return sTree.m_root;
     }
 
     // System.out.println("getNode - returning: "+node);
-    return node;
+    return DTM.NULL;
   }
 
   /**
@@ -297,8 +269,8 @@ public class SourceTreeManager
    *
    * @throws TransformerException If the URL can not resolve to a node.
    */
-  public Node getSourceTree(
-          String base, String urlString, SourceLocator locator)
+  public int getSourceTree(
+          String base, String urlString, SourceLocator locator, XPathContext xctxt)
             throws TransformerException
   {
 
@@ -308,7 +280,7 @@ public class SourceTreeManager
       Source source = this.resolveURI(base, urlString, locator);
 
       // System.out.println("getSourceTree - base: "+base+", urlString: "+urlString+", source: "+source.getSystemId());
-      return getSourceTree(source, locator);
+      return getSourceTree(source, locator, xctxt);
     }
     catch (IOException ioe)
     {
@@ -332,18 +304,18 @@ public class SourceTreeManager
    * @throws TransformerException if the Source argument can't be resolved to 
    *         a node.
    */
-  public Node getSourceTree(Source source, SourceLocator locator)
+  public int getSourceTree(Source source, SourceLocator locator, XPathContext xctxt)
           throws TransformerException
   {
 
-    Node n = getNode(source);
+    int n = getNode(source);
 
-    if (null != n)
+    if (DTM.NULL != n)
       return n;
 
-    n = getDOMNode(source, locator);
+    n = parseToNode(source, locator, xctxt);
 
-    if (null != n)
+    if (DTM.NULL != n)
       putDocumentInCache(n, source);
 
     return n;
@@ -360,83 +332,31 @@ public class SourceTreeManager
    * @throws TransformerException if the source argument can not be resolved 
    *         to a source node.
    */
-  public Node getDOMNode(Source source, SourceLocator locator)
+  public int parseToNode(Source source, SourceLocator locator, XPathContext xctxt)
           throws TransformerException
   {
 
-    if (source instanceof DOMSource)
-    {
-      return ((DOMSource) source).getNode();
-    }
-
-    Node doc = null;
-
     try
-    {
-
-      // System.out.println("reading: "+source.getSystemId());
-      XMLReader reader = getXMLReader(source, locator);
-
-      // TODO: Need to use factory of some kind to create the ContentHandler
-      // (Also, try using JAXP if need be...)
-      ContentHandler handler = new SourceTreeHandler();
-
-      if (handler instanceof org.apache.xalan.stree.SourceTreeHandler)
+    {      
+      Object xowner = xctxt.getOwnerObject();
+      DTM dtm;
+      if(null != xowner && xowner instanceof org.apache.xml.dtm.DTMWSFilter)
       {
-
-        // temp hack
-        ((org.apache.xalan.stree.SourceTreeHandler) handler).setUseMultiThreading(
-          false);
+        dtm = xctxt.getDTM(source, false, 
+                          (org.apache.xml.dtm.DTMWSFilter)xowner, false, true);
       }
-
-      reader.setContentHandler(handler);
-
-      if (handler instanceof org.xml.sax.DTDHandler)
-        reader.setDTDHandler((org.xml.sax.DTDHandler) handler);
-
-      try
+      else
       {
-        if (handler instanceof org.xml.sax.ext.LexicalHandler)
-          reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                             handler);
-
-        if (handler instanceof org.xml.sax.ext.DeclHandler)
-          reader.setProperty(
-            "http://xml.org/sax/properties/declaration-handler", handler);
+        dtm = xctxt.getDTM(source, false, null, false, true);
       }
-      catch (org.xml.sax.SAXException se){}
-
-      try
-      {
-        if (handler instanceof org.xml.sax.ext.LexicalHandler)
-          reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
-                             handler);
-
-        if (handler instanceof org.xml.sax.ext.DeclHandler)
-          reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
-                             handler);
-      }
-      catch (org.xml.sax.SAXNotRecognizedException snre){}
-
-      InputSource isource = SAXSource.sourceToInputSource(source);
-
-      reader.parse(isource);
-
-      if (handler instanceof org.apache.xalan.stree.SourceTreeHandler)
-      {
-        doc = ((org.apache.xalan.stree.SourceTreeHandler) handler).getRoot();
-      }
+      return dtm.getDocument();
     }
-    catch (IOException ioe)
+    catch (Exception e)
     {
-      throw new TransformerException(ioe.getMessage(), locator, ioe);
-    }
-    catch (org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se.getMessage(), locator, se);
+      e.printStackTrace();
+      throw new TransformerException(e.getMessage(), locator, e);
     }
 
-    return doc;
   }
 
   /**
@@ -455,7 +375,7 @@ public class SourceTreeManager
    *
    * @throws TransformerException if the reader can not be created.
    */
-  public XMLReader getXMLReader(Source inputSource, SourceLocator locator)
+  public static XMLReader getXMLReader(Source inputSource, SourceLocator locator)
           throws TransformerException
   {
 
@@ -497,19 +417,6 @@ public class SourceTreeManager
 
         // What can we do?
         // TODO: User diagnostics.
-      }
-
-      if (reader == null)
-        return null;
-
-      XMLReader primaryReader = m_xctxt.getPrimaryReader();
-      if (primaryReader != null)
-      {
-        EntityResolver primaryResolver = primaryReader.getEntityResolver();
-        if (primaryResolver != null)
-        {
-          reader.setEntityResolver(primaryResolver);
-        }
       }
 
       return reader;

@@ -58,8 +58,10 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -80,21 +82,6 @@ public class FuncCurrent extends Function
 {
 
   /**
-   * Diagnostics to show string output from a node.
-   *
-   * @param n The input node, which may be null.
-   *
-   * @return A diagnostics string representing the node.
-   */
-  protected String nodeToString(Node n)
-  {
-
-    return (null != n)
-           ? n.getNodeName() + "{" + ((org.apache.xalan.stree.Child) n).getUid() + "}"
-           : "null";
-  }
-
-  /**
    * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
@@ -104,30 +91,44 @@ public class FuncCurrent extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
     // If we're in a predicate, then this will return non-null.
-   // PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
-		SubContextList iter = xctxt.getSubContextList();
-    Node currentNode;
+    Object subContextList = xctxt.getSubContextList();
+    int currentNode;
 
-    if (null != iter && iter instanceof PredicatedNodeTest)
+    // %TBD% Hack city...
+    if (null != subContextList && subContextList instanceof PredicatedNodeTest)
     {
-      LocPathIterator lpi = ((PredicatedNodeTest)iter).getLocPathIterator();
+      PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
+      LocPathIterator lpi = iter.getLocPathIterator();
 
       currentNode = lpi.getCurrentContextNode();
     }
+    else if(xctxt.getIteratorRoot() != DTM.NULL)
+    {
+      currentNode = xctxt.getIteratorRoot();
+    }
     else
     {
-      ContextNodeList cnl = xctxt.getContextNodeList();
+      DTMIterator cnl = xctxt.getContextNodeList();
 
       if (null != cnl)
       {
+        // %REVIEW% Not so certain that this is doing the right thing?
         currentNode = cnl.getCurrentNode();
       }
       else
-        currentNode = null;
+        currentNode = DTM.NULL;
     }
 
-    return new XNodeSet(currentNode);
+    return new XNodeSet(currentNode, xctxt.getDTMManager());
   }
+  
+  /**
+   * No arguments to process, so this does nothing.
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    // no-op
+  }
+
 }

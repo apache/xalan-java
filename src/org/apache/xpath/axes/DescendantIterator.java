@@ -62,12 +62,13 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.OpCodes;
+import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.Axis;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -77,7 +78,6 @@ import org.w3c.dom.traversal.NodeFilter;
  */
 public class DescendantIterator extends LocPathIterator
 {
-
   /**
    * Create a DescendantIterator object.
    *
@@ -87,7 +87,7 @@ public class DescendantIterator extends LocPathIterator
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public DescendantIterator(Compiler compiler, int opPos, int analysis)
+  DescendantIterator(Compiler compiler, int opPos, int analysis)
           throws javax.xml.transform.TransformerException
   {
 
@@ -97,27 +97,39 @@ public class DescendantIterator extends LocPathIterator
     int firstStepPos = compiler.getFirstChildPos(opPos);
     int stepType = ops[firstStepPos];
 
-    if (OpCodes.FROM_DESCENDANTS_OR_SELF == stepType)
-      m_orSelf = true;
+    boolean orSelf = (OpCodes.FROM_DESCENDANTS_OR_SELF == stepType);
+    boolean fromRoot = false;
     if (OpCodes.FROM_SELF == stepType)
     {
-      m_orSelf = true;
+      orSelf = true;
       firstStepPos += 8;
     }
     else if(OpCodes.FROM_ROOT == stepType)
     {
-      m_fromRoot = true;
-      m_orSelf = true;
+      // %TBD% orSelf and fromRoot should be considered seperately.
+      fromRoot = true;
+      // orSelf = true;
       firstStepPos += 8;
     }
+    
+    if(fromRoot)
+    {
+      if(orSelf)
+        m_axis = Axis.DESCENDANTSORSELFFROMROOT;
+      else
+        m_axis = Axis.DESCENDANTSFROMROOT;
+    }
+    else if(orSelf)
+      m_axis = Axis.DESCENDANTORSELF;
     else
-      m_orSelf = false;
+      m_axis = Axis.DESCENDANT;
 
     int whatToShow = compiler.getWhatToShow(firstStepPos);
 
     if ((0 == (whatToShow
-               & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
-                  | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
+               & (DTMFilter.SHOW_ATTRIBUTE | DTMFilter.SHOW_ELEMENT
+                  | DTMFilter.SHOW_PROCESSING_INSTRUCTION))) || 
+                   (whatToShow == DTMFilter.SHOW_ALL))
       initNodeTest(whatToShow);
     else
     {
@@ -128,6 +140,24 @@ public class DescendantIterator extends LocPathIterator
   }
   
   /**
+   * Create a DescendantIterator object.
+   *
+   * @param compiler A reference to the Compiler that contains the op map.
+   * @param opPos The position within the op map, which contains the
+   * location path expression for this itterator.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DescendantIterator()
+  {
+    super(null);
+    m_axis = Axis.DESCENDANTSORSELFFROMROOT;
+    int whatToShow = DTMFilter.SHOW_ALL;
+    initNodeTest(whatToShow);
+  }
+
+  
+  /**
    *  Get a cloned Iterator that is reset to the beginning
    *  of the query.
    * 
@@ -135,7 +165,7 @@ public class DescendantIterator extends LocPathIterator
    * 
    *  @throws CloneNotSupportedException
    */
-  public NodeIterator cloneWithReset() throws CloneNotSupportedException
+  public DTMIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     DescendantIterator clone = (DescendantIterator) super.cloneWithReset();
@@ -157,66 +187,43 @@ public class DescendantIterator extends LocPathIterator
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
-
+    // If the cache is on, and the node has already been found, then 
+    // just return from the list.
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
     if ((null != m_cachedNodes)
-            && (m_cachedNodes.getCurrentPos() < m_cachedNodes.size()))
+            && (m_next < m_cachedNodes.size()))
     {
-      Node next = m_cachedNodes.nextNode();
-
-      this.setCurrentPos(m_cachedNodes.getCurrentPos());
+      int next = m_cachedNodes.elementAt(m_next);
+    
+      incrementNextPosition();
+      m_currentContextNode = next;
 
       return next;
     }
 
     if (m_foundLast)
-      return null;
-
-    Node pos;  // our main itteration node.  
-    boolean getSelf;
-
-    // Figure out what the start context should be.
-    // If the m_lastFetched is null at this point we're at the start 
-    // of a fresh iteration.
-    if (null == m_lastFetched)
-    {
-      getSelf = m_orSelf; // true if descendants-or-self.
+      return DTM.NULL;
       
-      // The start context can either be the location path context node, 
-      // or the root node.
-      if (getSelf && m_fromRoot)
-      {
-        if(m_context.getNodeType() == Node.DOCUMENT_NODE)
-          pos = m_context;
-        else
-          pos = m_context.getOwnerDocument();
-      }
-      else
-        pos = m_context;
-      m_startContext = pos;
+    if(DTM.NULL == m_lastFetched)
+    {
       resetProximityPositions();
     }
-    else
-    {
-      // if the iterator is not fresh...
-      pos = m_lastFetched;
-      getSelf = false;  // never process the start node at this point.
-    }
+
+    int next;
     
     org.apache.xpath.VariableStack vars;
     int savedStart;
-    if (-1 != m_varStackPos)
+    if (-1 != m_stackFrame)
     {
       vars = m_execContext.getVarStack();
 
       // These three statements need to be combined into one operation.
-      savedStart = vars.getSearchStart();
+      savedStart = vars.getStackFrame();
 
-      vars.setSearchStart(m_varStackPos);
-      vars.pushContextPosition(m_varStackContext);
+      vars.setStackFrame(m_stackFrame);
     }
     else
     {
@@ -227,55 +234,38 @@ public class DescendantIterator extends LocPathIterator
     
     try
     {
-      Node top = m_startContext; // tells us when to stop.
-      Node next = null;
-  
-      // non-recursive depth-first traversal.
-      while (null != pos)
+      do
       {
-        if(getSelf)
+        if(0 == m_extendedTypeID)
         {
-          m_lastFetched = pos; // we have to do this for a clone in a predicate to work correctly.
-          if(NodeFilter.FILTER_ACCEPT == acceptNode(pos))
-          {
-            next = pos;
-            break;
-          }
+          next = m_lastFetched = (DTM.NULL == m_lastFetched)
+                       ? m_traverser.first(m_context)
+                       : m_traverser.next(m_context, m_lastFetched);
         }
         else
-          getSelf = true;
-         
-        Node nextNode = pos.getFirstChild();
-  
-        while (null == nextNode)
         {
-          if (top.equals(pos))
-            break;
-  
-          nextNode = pos.getNextSibling();
-  
-          if (null == nextNode)
-          {
-            pos = pos.getParentNode();
-  
-            if ((null == pos) || (top.equals(pos)))
-            {
-              nextNode = null;
-  
-              break;
-            }
-          }
+          next = m_lastFetched = (DTM.NULL == m_lastFetched)
+                       ? m_traverser.first(m_context, m_extendedTypeID)
+                       : m_traverser.next(m_context, m_lastFetched, 
+                                          m_extendedTypeID);
         }
   
-        pos = nextNode;
+        if (DTM.NULL != next)
+        {
+          if(DTMIterator.FILTER_ACCEPT == acceptNode(next))
+            break;
+          else
+            continue;
+        }
+        else
+          break;
       }
-      
-      m_lastFetched = next;
+      while (next != DTM.NULL);
   
-      if (null != next)
+      if (DTM.NULL != next)
       {
         if (null != m_cachedNodes)
-          m_cachedNodes.addElement(next);
+          m_cachedNodes.addElement(m_lastFetched);
   
         m_next++;
   
@@ -284,30 +274,114 @@ public class DescendantIterator extends LocPathIterator
       else
       {
         m_foundLast = true;
-        m_startContext = null;
   
-        return null;
+        return DTM.NULL;
       }
     }
     finally
     {
-      if (-1 != m_varStackPos)
+      if (-1 != m_stackFrame)
       {
         // These two statements need to be combined into one operation.
-        vars.setSearchStart(savedStart);
-        vars.popContextPosition();
+        vars.setStackFrame(savedStart);
       }
     }
   }
   
-  /** The top of the subtree, may not be the same as m_context if "//foo" pattern. */ 
-  transient private Node m_startContext;
-
-  /** True if this is a descendants-or-self axes.
-   *  @serial */
-  private boolean m_orSelf;
+  /**
+   * Initialize the context values for this expression
+   * after it is cloned.
+   *
+   * @param execContext The XPath runtime context for this
+   * transformation.
+   */
+  public void setRoot(int context, Object environment)
+  {
+    super.setRoot(context, environment);
+    m_traverser = m_cdtm.getAxisTraverser(m_axis);
+    
+    String localName = getLocalName();
+    String namespace = getNamespace();
+    int what = m_whatToShow;
+    // System.out.println("what: ");
+    // NodeTest.debugWhatToShow(what);
+    if(DTMFilter.SHOW_ALL == what
+       || localName == NodeTest.WILD
+       || namespace == NodeTest.WILD)
+    {
+      m_extendedTypeID = 0;
+    }
+    else
+    {
+      int type = getNodeTypeTest(what);
+      m_extendedTypeID = m_cdtm.getExpandedTypeID(namespace, localName, type);
+    }
+    
+  }
   
-  /** True if this is a descendants-or-self axes.
-   *  @serial */
-  private boolean m_fromRoot;
+  /**
+   * Return the first node out of the nodeset, if this expression is 
+   * a nodeset expression.  This is the default implementation for 
+   * nodesets.
+   * <p>WARNING: Do not mutate this class from this function!</p>
+   * @param xctxt The XPath runtime context.
+   * @return the first node out of the nodeset, or DTM.NULL.
+   */
+  public int asNode(XPathContext xctxt)
+    throws javax.xml.transform.TransformerException
+  {
+    if(getPredicateCount() > 0)
+      return super.asNode(xctxt);
+
+    int current = xctxt.getCurrentNode();
+    
+    DTM dtm = xctxt.getDTM(current);
+    DTMAxisTraverser traverser = dtm.getAxisTraverser(m_axis);
+    
+    String localName = getLocalName();
+    String namespace = getNamespace();
+    int what = m_whatToShow;
+    
+    // System.out.println("what: ");
+    // NodeTest.debugWhatToShow(what);
+    if(DTMFilter.SHOW_ALL == what
+       || localName == NodeTest.WILD
+       || namespace == NodeTest.WILD)
+    {
+      return traverser.first(current);
+    }
+    else
+    {
+      int type = getNodeTypeTest(what);
+      int extendedType = dtm.getExpandedTypeID(namespace, localName, type);
+      return traverser.first(current, extendedType);
+    }
+  }
+  
+  /**
+   *  Detaches the iterator from the set which it iterated over, releasing
+   * any computational resources and placing the iterator in the INVALID
+   * state. After<code>detach</code> has been invoked, calls to
+   * <code>nextNode</code> or<code>previousNode</code> will raise the
+   * exception INVALID_STATE_ERR.
+   */
+  public void detach()
+  {    
+    m_traverser = null;    
+    m_extendedTypeID = 0;
+    
+    // Always call the superclass detach last!
+    super.detach();
+  }
+
+  
+  /** The traverser to use to navigate over the descendants. */
+  transient protected DTMAxisTraverser m_traverser;
+  
+  /** The axis that we are traversing. */
+  protected int m_axis;
+  
+  /** The extended type ID, not set until setRoot. */
+  protected int m_extendedTypeID;
+  
 }

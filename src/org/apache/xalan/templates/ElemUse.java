@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
-import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -143,6 +143,28 @@ public class ElemUse extends ElemTemplateElement
   {
     return m_attributeSetsNames;
   }
+  
+  /**
+   * Add the attributes from the named attribute sets to the attribute list.
+   * TODO: Error handling for: "It is an error if there are two attribute sets
+   * with the same expanded-name and with equal import precedence and that both
+   * contain the same attribute unless there is a definition of the attribute
+   * set with higher import precedence that also contains the attribute."
+   *
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param stylesheet The owning root stylesheet
+   * @param attributeSetsNames List of attribute sets names to apply
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
+   *
+   * @throws TransformerException
+   */
+  public void applyAttrSets(
+          TransformerImpl transformer, StylesheetRoot stylesheet)
+            throws TransformerException
+  {
+    applyAttrSets(transformer, stylesheet, m_attributeSetsNames);
+  }
 
   /**
    * Add the attributes from the named attribute sets to the attribute list.
@@ -160,7 +182,7 @@ public class ElemUse extends ElemTemplateElement
    * @throws TransformerException
    */
   private void applyAttrSets(
-          TransformerImpl transformer, StylesheetRoot stylesheet, QName attributeSetsNames[], Node sourceNode, QName mode)
+          TransformerImpl transformer, StylesheetRoot stylesheet, QName attributeSetsNames[])
             throws TransformerException
   {
 
@@ -182,7 +204,7 @@ public class ElemUse extends ElemTemplateElement
             ElemAttributeSet attrSet =
               (ElemAttributeSet) attrSets.elementAt(k);
 
-            attrSet.execute(transformer, sourceNode, mode);
+            attrSet.execute(transformer);
           }
         }
       }
@@ -207,17 +229,16 @@ public class ElemUse extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
-
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     if (null != m_attributeSetsNames)
     {
       applyAttrSets(transformer, getStylesheetRoot(),
-                    m_attributeSetsNames, sourceNode, mode);
+                    m_attributeSetsNames);
     }
   }
 }

@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.transformer;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.NodeSet;  // for isNodeAfter support
@@ -102,7 +103,7 @@ public class Counter
    * find a counter if the node being counted is not immediatly
    * found in the m_countNodes vector.
    */
-  Node m_fromNode = null;
+  int m_fromNode = DTM.NULL;
 
   /**
    * The owning xsl:number element.
@@ -151,7 +152,7 @@ public class Counter
    * 
    * @return The count of the node, or -1 if not found.
    */
-  int getPreviouslyCounted(XPathContext support, Node node)
+  int getPreviouslyCounted(XPathContext support, int node)
   {
 
     int n = m_countNodes.size();
@@ -160,9 +161,9 @@ public class Counter
 
     for (int i = n - 1; i >= 0; i--)
     {
-      Node countedNode = (Node) m_countNodes.elementAt(i);
+      int countedNode = m_countNodes.elementAt(i);
 
-      if (node.equals(countedNode))
+      if (node == countedNode)
       {
 
         // Since the list is in backwards order, the count is 
@@ -171,10 +172,12 @@ public class Counter
 
         break;
       }
+      
+      DTM dtm = support.getDTM(countedNode);
 
       // Try to see if the given node falls after the counted node...
       // if it does, don't keep searching backwards.
-      if (support.getDOMHelper().isNodeAfter(countedNode, node))
+      if (dtm.isNodeAfter(countedNode, node))
         break;
     }
 
@@ -186,11 +189,11 @@ public class Counter
    *
    * @return the last node in the list.
    */
-  Node getLast()
+  int getLast()
   {
 
     int size = m_countNodes.size();
 
-    return (size > 0) ? m_countNodes.elementAt(size - 1) : null;
+    return (size > 0) ? m_countNodes.elementAt(size - 1) : DTM.NULL;
   }
 }

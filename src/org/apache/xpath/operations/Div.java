@@ -58,6 +58,7 @@ package org.apache.xpath.operations;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.XPathContext;
 
 /**
  * The 'div' operation expression executer.
@@ -81,4 +82,21 @@ public class Div extends Operation
   {
     return new XNumber(left.num() / right.num());
   }
+  
+  /**
+   * Evaluate this operation directly to a double.
+   *
+   * @param xctxt The runtime execution context.
+   *
+   * @return The result of the operation as a double.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public double num(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+
+    return (m_left.num(xctxt) / m_right.num(xctxt));
+  }
+
 }

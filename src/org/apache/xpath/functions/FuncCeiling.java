@@ -58,7 +58,7 @@ package org.apache.xpath.functions;
 
 import java.lang.Math;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 

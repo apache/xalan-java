@@ -76,7 +76,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * <meta name="usage" content="advanced"/>
+ * @deprecated Since the introduction of the DTM, this class will be removed.
  * This class provides a front-end to DOM implementations, providing
  * a number of utility functions that either aren't yet standardized
  * by the DOM spec or that are defined in optional DOM modules and
@@ -106,7 +106,7 @@ public class DOMHelper
    * null if we can't find a DOM implementation that permits creating
    * new empty Documents.
    */
-  public Document createDocument()
+  public static Document createDocument()
   {
 
     try

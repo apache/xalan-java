@@ -17,8 +17,6 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.ErrorListener;
 
-import org.apache.xalan.stree.SourceTreeHandler;
-
 public class TrAXFilter extends XMLFilterImpl
 {
   private Templates m_templates;
@@ -171,8 +169,8 @@ public class TrAXFilter extends XMLFilterImpl
     }
     
     ContentHandler ch = m_transformer.getInputContentHandler();
-    if(ch instanceof SourceTreeHandler)
-      ((SourceTreeHandler)ch).setUseMultiThreading(true);
+//    if(ch instanceof SourceTreeHandler)
+//      ((SourceTreeHandler)ch).setUseMultiThreading(true);
     p.setContentHandler(ch);
 
     if(ch instanceof EntityResolver)

@@ -149,7 +149,6 @@ public class SerializerToText extends SerializerToXML
    */
   public void endDocument() throws org.xml.sax.SAXException
   {
-    this.flush();
     flushWriter();
   }
 
@@ -264,7 +263,7 @@ public class SerializerToText extends SerializerToXML
     {
       throw new SAXException(ioe);
     }
-    this.flush();
+    this.flushWriter();
 
     // flushWriter();
   }
@@ -293,7 +292,7 @@ public class SerializerToText extends SerializerToXML
     {
       throw new SAXException(ioe);
     }
-    flush();
+    flushWriter();
 
     // flushWriter();
   }
@@ -336,7 +335,7 @@ public class SerializerToText extends SerializerToXML
     {
       throw new SAXException(ioe);
     }
-    flush();
+    flushWriter();
 
     // flushWriter();
   }
@@ -379,7 +378,7 @@ public class SerializerToText extends SerializerToXML
     {
       throw new SAXException(ioe);
     }
-    flush();
+    flushWriter();
   }
 
   /**

@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -75,7 +75,7 @@ import org.apache.xpath.Expression;
  * the arguments don't have to be added to an array, but causes
  * a larger code footprint.
  */
-public class Function extends Expression
+public abstract class Function extends Expression
 {
 
   /**
@@ -126,4 +126,6 @@ public class Function extends Expression
 
     return null;
   }
+  
+
 }

@@ -56,10 +56,11 @@
  */
 package org.apache.xalan.transformer;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NodeList;
+import org.apache.xml.dtm.DTM;
 
 import java.util.Hashtable;
 import java.util.Vector;
@@ -69,11 +70,12 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
+//import org.apache.xpath.DOMHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.XMLString;
 import org.apache.xpath.axes.LocPathIterator;
 
 // import org.apache.xalan.dtm.*;
@@ -92,7 +94,7 @@ public class KeyTable
    * The document key.  This table should only be used with contexts
    * whose Document roots match this key.
    */
-  private Node m_docKey;
+  private int m_docKey;
 
   /**
    * Get the document root matching this key.  
@@ -100,7 +102,7 @@ public class KeyTable
    *
    * @return the document root matching this key
    */
-  public Node getDocKey()
+  public int getDocKey()
   {
     return m_docKey;
   }
@@ -131,7 +133,7 @@ public class KeyTable
    * @throws javax.xml.transform.TransformerException
    */
   public KeyTable(
-          Node doc, PrefixResolver nscontext, QName name, Vector keyDeclarations, XPathContext xmlLiaison)
+          int doc, PrefixResolver nscontext, QName name, Vector keyDeclarations, XPathContext xmlLiaison)
             throws javax.xml.transform.TransformerException
   {
 
@@ -150,7 +152,7 @@ public class KeyTable
    * if the identifier is not found, it will return null,
    * otherwise it will return a LocPathIterator instance.
    */
-  public LocPathIterator getNodeSetByKey(QName name, String ref)
+  public LocPathIterator getNodeSetByKey(QName name, XMLString ref)
   {
 
     KeyIterator ki;
@@ -190,7 +192,7 @@ public class KeyTable
         refsTable = new Hashtable();
       
       // initialize walker only once!
-      if (m_keyIter.getFirstWalker().getRoot() == null)
+      if (m_keyIter.getFirstWalker().getRoot() == DTM.NULL)
         m_keyIter.setLookupKey(ref);
       else
         ((KeyWalker)m_keyIter.getFirstWalker()).m_lookupKey = ref;
@@ -220,7 +222,7 @@ public class KeyTable
    * @param ref Key ref(from key use field)
    * @param node Node matching that ref 
    */
-  void addRefNode(String ref, Node node)
+  void addRefNode(XMLString ref, int node)
   {
     KeyRefIterator kiRef = null;
     Hashtable refsTable = null;

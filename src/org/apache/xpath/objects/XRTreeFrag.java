@@ -56,29 +56,132 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
+
+import org.apache.xml.utils.XMLString;
 
 import org.apache.xpath.DOMHelper;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.Expression;
 
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath result tree fragment object, and is capable of
  * converting the RTF to other types, such as a string.
  */
-public class XRTreeFrag extends XObject
+public class XRTreeFrag extends XObject implements Cloneable
 {
+  DTM m_dtm;
+  int m_dtmRoot;
+  XPathContext m_xctxt;
+  boolean m_allowRelease = true;
 
+//  /**
+//   * Create an XRTreeFrag Object.
+//   *
+//   * @param frag Document fragment this will wrap
+//   */
+//  public XRTreeFrag(DTMIterator frag)
+//  {
+//    super(frag);
+//    
+//    // Obviously, this constructor should be avoided when possible.
+//    m_dtmRoot = frag.cloneWithReset().nextNode();
+//  }
+  
   /**
    * Create an XRTreeFrag Object.
    *
    * @param frag Document fragment this will wrap
    */
-  public XRTreeFrag(DocumentFragment frag)
+  public XRTreeFrag(int root, XPathContext xctxt)
   {
-    super(frag);
+    super(null);
+    
+    // Obviously, this constructor should be avoided when possible.
+    m_dtmRoot = root;
+    m_xctxt = xctxt;
+    m_dtm = xctxt.getDTM(root);
   }
+  
+  /**
+   * Create an XRTreeFrag Object.
+   *
+   * @param frag Document fragment this will wrap
+   */
+  public XRTreeFrag(Expression expr)
+  {
+    super(expr);
+  }
+  
+  /**
+   * Release any resources this object may have by calling destruct().
+   *
+   * @throws Throwable
+   */
+  protected void finalize() throws Throwable
+  {
+
+    try
+    {
+      destruct();
+    }
+    finally
+    {
+      super.finalize();  // Always use this.
+    }
+  }
+  
+  /**
+   * Specify if it's OK for detach to release the iterator for reuse.
+   * 
+   * @param allowRelease true if it is OK for detach to release this iterator 
+   * for pooling.
+   */
+  public void allowDetachToRelease(boolean allowRelease)
+  {
+    m_allowRelease = allowRelease;
+  }
+
+  /**
+   * Detaches the <code>DTMIterator</code> from the set which it iterated
+   * over, releasing any computational resources and placing the iterator
+   * in the INVALID state. After <code>detach</code> has been invoked,
+   * calls to <code>nextNode</code> or <code>previousNode</code> will
+   * raise a runtime exception.
+   * 
+   * In general, detach should only be called once on the object.
+   */
+  public void detach()
+  {
+    if(m_allowRelease)
+    {
+      if(null != m_dtm)
+      {
+        m_xctxt.release(m_dtm, true);
+        m_dtm = null;
+        m_xctxt = null;
+      }
+      m_obj = null;
+    }
+  }
+  
+  /**
+   * Forces the object to release it's resources.  This is more harsh than 
+   * detach().  You can call destruct as many times as you want.
+   */
+  public void destruct()
+  {
+    if(null != m_dtm)
+    {
+      m_xctxt.release(m_dtm, true);
+      m_dtm = null;
+      m_xctxt = null;
+    }
+    m_obj = null;
+ }
 
   /**
    * Tell what kind of class this is.
@@ -107,37 +210,12 @@ public class XRTreeFrag extends XObject
    * @return The result tree fragment as a number or NaN
    */
   public double num()
+    throws javax.xml.transform.TransformerException
   {
 
-//    java.text.NumberFormat m_formatter =
-//      java.text.NumberFormat.getNumberInstance();
-    double result;
-    String s = DOMHelper.getNodeData((DocumentFragment) m_obj);
+    XMLString s = xstr();
 
-    if (null != s)
-    {
-//      try
-//      {
-
-        // result = Double.valueOf(s).doubleValue();
-//        Number n = m_formatter.parse(s.trim());
-//
-//        result = n.doubleValue();
-          result = XString.castToNum(s.trim());
-//      }
-//
-//      // catch(NumberFormatException nfe)
-//      catch (java.text.ParseException nfe)
-//      {
-//        result = Double.NaN;
-//      }
-    }
-    else
-    {
-      result = Double.NaN;
-    }
-
-    return result;
+    return s.toDouble();
   }
 
   /**
@@ -150,6 +228,33 @@ public class XRTreeFrag extends XObject
   {
     return true;
   }
+  
+  private XMLString m_xmlStr = null;
+  
+  /**
+   * Cast result object to an XMLString.
+   *
+   * @return The document fragment node data or the empty string. 
+   */
+  public XMLString xstr()
+  {
+    if(null == m_xmlStr)
+      m_xmlStr = m_dtm.getStringValue(m_dtmRoot);
+    
+    return m_xmlStr;
+  }
+  
+  /**
+   * Cast result object to a string.
+   *
+   * @return The string this wraps or the empty string if null
+   */
+  public void appendToFsb(org.apache.xml.utils.FastStringBuffer fsb)
+  {
+    XString xstring = (XString)xstr();
+    xstring.appendToFsb(fsb);
+  }
+
 
   /**
    * Cast result object to a string.
@@ -158,8 +263,7 @@ public class XRTreeFrag extends XObject
    */
   public String str()
   {
-
-    String str = DOMHelper.getNodeData((DocumentFragment) m_obj);
+    String str = m_dtm.getStringValue(m_dtmRoot).toString();
 
     return (null == str) ? "" : str;
   }
@@ -169,38 +273,35 @@ public class XRTreeFrag extends XObject
    *
    * @return The document fragment this wraps
    */
-  public DocumentFragment rtree()
+  public int rtree()
   {
-    return (DocumentFragment) m_obj;
+    return m_dtmRoot;
   }
 
   /**
-   * Cast result object to a NodeIterator.
+   * Cast result object to a DTMIterator.
    *
-   * @return The document fragment as a NodeIterator
+   * @return The document fragment as a DTMIterator
    */
-  public NodeIterator asNodeIterator()
+  public DTMIterator asNodeIterator()
   {
-
-    if (m_obj instanceof NodeIterator)
-      return (NodeIterator) m_obj;
-    else
-      return new NodeIteratorWrapper(rtree());
+    return m_xctxt.createDTMIterator(m_dtmRoot);
   }
 
-  /**
-   * Cast result object to a nodelist. (special function).
-   *
-   * @return The document fragment as a nodelist
-   */
-  public NodeList convertToNodeset()
-  {
-
-    if (m_obj instanceof NodeList)
-      return (NodeList) m_obj;
-    else
-      return null;
-  }
+  // %TBD%
+//  /**
+//   * Cast result object to a nodelist. (special function).
+//   *
+//   * @return The document fragment as a nodelist
+//   */
+//  public NodeList convertToNodeset()
+//  {
+//
+//    if (m_obj instanceof NodeList)
+//      return (NodeList) m_obj;
+//    else
+//      return null;
+//  }
 
   /**
    * Tell if two objects are functionally equal.
@@ -211,172 +312,50 @@ public class XRTreeFrag extends XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
 
-    if (XObject.CLASS_NODESET == obj2.getType())
+    try
     {
-
-      // In order to handle the 'all' semantics of 
-      // nodeset comparisons, we always call the 
-      // nodeset function.
-      return obj2.equals(this);
+      if (XObject.CLASS_NODESET == obj2.getType())
+      {
+  
+        // In order to handle the 'all' semantics of 
+        // nodeset comparisons, we always call the 
+        // nodeset function.
+        return obj2.equals(this);
+      }
+      else if (XObject.CLASS_BOOLEAN == obj2.getType())
+      {
+        return bool() == obj2.bool();
+      }
+      else if (XObject.CLASS_NUMBER == obj2.getType())
+      {
+        return num() == obj2.num();
+      }
+      else if (XObject.CLASS_NODESET == obj2.getType())
+      {
+        return xstr().equals(obj2.xstr());
+      }
+      else if (XObject.CLASS_STRING == obj2.getType())
+      {
+        return xstr().equals(obj2.xstr());
+      }
+      else if (XObject.CLASS_RTREEFRAG == obj2.getType())
+      {
+  
+        // Probably not so good.  Think about this.
+        return xstr().equals(obj2.xstr());
+      }
+      else
+      {
+        return super.equals(obj2);
+      }
     }
-    else if (XObject.CLASS_BOOLEAN == obj2.getType())
+    catch(javax.xml.transform.TransformerException te)
     {
-      return bool() == obj2.bool();
-    }
-    else if (XObject.CLASS_NUMBER == obj2.getType())
-    {
-      return num() == obj2.num();
-    }
-    else if (XObject.CLASS_NODESET == obj2.getType())
-    {
-      return str().equals(obj2.str());
-    }
-    else if (XObject.CLASS_STRING == obj2.getType())
-    {
-      return str().equals(obj2.str());
-    }
-    else if (XObject.CLASS_RTREEFRAG == obj2.getType())
-    {
-
-      // Probably not so good.  Think about this.
-      return str().equals(obj2.str());
-    }
-    else
-    {
-      return super.equals(obj2);
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
     }
   }
 
-  /**
-   * <meta name="usage" content="internal"/>
-   * Class to wrap a  NodeIterator object
-   */
-  class NodeIteratorWrapper implements NodeIterator
-  {
-
-    /** Position of next node          */
-    private int m_pos = -1;
-
-    /** Document fragment instance this will wrap         */
-    private DocumentFragment m_docFrag;
-
-    /**
-     * Constructor NodeIteratorWrapper
-     *
-     *
-     * @param df Document fragment instance this will wrap
-     */
-    NodeIteratorWrapper(DocumentFragment df)
-    {
-      m_docFrag = df;
-    }
-
-    /**
-     *  The root node of the Iterator, as specified when it was created.
-     *
-     * @return null
-     */
-    public Node getRoot()
-    {
-      return null;
-    }
-
-    /**
-     *  This attribute determines which node types are presented via the
-     * iterator. The available set of constants is defined in the
-     * <code>NodeFilter</code> interface.
-     *
-     * @return All node types
-     */
-    public int getWhatToShow()
-    {
-      return NodeFilter.SHOW_ALL;
-    }
-
-    /**
-     *  The filter used to screen nodes.
-     *
-     * @return null
-     */
-    public NodeFilter getFilter()
-    {
-      return null;
-    }
-
-    /**
-     *  The value of this flag determines whether the children of entity
-     * reference nodes are visible to the iterator. If false, they will be
-     * skipped over.
-     * <br> To produce a view of the document that has entity references
-     * expanded and does not expose the entity reference node itself, use the
-     * whatToShow flags to hide the entity reference node and set
-     * expandEntityReferences to true when creating the iterator. To produce
-     * a view of the document that has entity reference nodes but no entity
-     * expansion, use the whatToShow flags to show the entity reference node
-     * and set expandEntityReferences to false.
-     *
-     * @return true
-     */
-    public boolean getExpandEntityReferences()
-    {
-      return true;
-    }
-
-    /**
-     *  Returns the next node in the set and advances the position of the
-     * iterator in the set. After a NodeIterator is created, the first call
-     * to nextNode() returns the first node in the set.
-     * @return  The next <code>Node</code> in the set being iterated over, or
-     *   <code>null</code> if there are no more members in that set.
-     * @throws DOMException
-     *    INVALID_STATE_ERR: Raised if this method is called after the
-     *   <code>detach</code> method was invoked.
-     */
-    public Node nextNode() throws DOMException
-    {
-
-      if (-1 == m_pos)
-      {
-        m_pos = 0;
-
-        return m_docFrag;
-      }
-      else
-        return null;
-    }
-
-    /**
-     *  Returns the previous node in the set and moves the position of the
-     * iterator backwards in the set.
-     * @return  The previous <code>Node</code> in the set being iterated over,
-     *   or<code>null</code> if there are no more members in that set.
-     * @throws DOMException
-     *    INVALID_STATE_ERR: Raised if this method is called after the
-     *   <code>detach</code> method was invoked.
-     */
-    public Node previousNode() throws DOMException
-    {
-
-      if (0 == m_pos)
-      {
-        m_pos = -1;
-
-        return m_docFrag;
-      }
-      else
-        return null;
-    }
-
-    /**
-     *  Detaches the iterator from the set which it iterated over, releasing
-     * any computational resources and placing the iterator in the INVALID
-     * state. After<code>detach</code> has been invoked, calls to
-     * <code>nextNode</code> or<code>previousNode</code> will raise the
-     * exception INVALID_STATE_ERR.
-     */
-    public void detach(){}
-  }
 }

@@ -84,19 +84,16 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * <p>
  * Represents a JDBC query statement. Also acts as both a
  * NodeIterator and the Document node for the row-set representation
  * of the query result set.
- * </p>
- *
  */
 public class XStatement extends StreamableNode
         implements NodeIterator, ContextNodeList, Cloneable
 {
 
   /** Flag for DEBUG mode          */
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = false; 
 
   /**
    * Ths JDBC Statement that is used for the query.
@@ -108,9 +105,7 @@ public class XStatement extends StreamableNode
   private PreparedStatement m_pstatement;
 
   /** Node counter          */
-  private int               m_nodeCounter = 0;
-
-  private boolean           m_ShouldCacheNodes = true;
+  private int m_nodeCounter = 0;
 
   /**
    * Get And Increment Node Counter
@@ -189,22 +184,14 @@ public class XStatement extends StreamableNode
    *
    * @throws SQLException
    */
-  public XStatement(
-      XConnection connection,
-      String queryString,
-      boolean shouldCacheNodes)
-      throws SQLException
+  public XStatement(XConnection connection, String queryString)
+          throws SQLException
   {
 
     super(null);
 
     if (DEBUG)
-    {
       System.out.println("In XStatement constructor");
-      System.out.println("Query = " + queryString);
-    }
-
-    m_ShouldCacheNodes = shouldCacheNodes;
 
     // The SQL statement which lets us execute commands against the connection.
     m_xconnection = connection;
@@ -220,21 +207,14 @@ public class XStatement extends StreamableNode
       System.out.println("Exiting XStatement constructor");
   }
 
-  public XStatement(
-      XConnection connection,
-      String queryString,
-      Vector pList,
-      boolean shouldCacheNodes)
-      throws SQLException
+  public XStatement(XConnection connection, String queryString, Vector pList)
+          throws SQLException
   {
 
     super(null);
 
     if (DEBUG)
       System.out.println("In XStatement constructor for pquery");
-
-
-    m_ShouldCacheNodes = shouldCacheNodes;
 
     // The SQL statement which lets us execute commands against the connection.
     m_xconnection = connection;
@@ -262,18 +242,12 @@ public class XStatement extends StreamableNode
     m_statement = m_pstatement;
 
     if (DEBUG)
-
       System.out.println("Exiting XStatement constructor");
   }
 
 
   /**
    * Set the parameter for a Prepared Statement
-   * @param int pos, the Position of the place holder in the prepared statement
-   * @param PreparedStatement the current pquery being worked on
-   * @param QueryParameter the Vaue and type of that value to be added.
-   *
-   * @throws SQLException - will be converted to an ext-error
    *
    */
   public void setParameter(int pos, PreparedStatement stmt, QueryParameter p)
@@ -546,14 +520,7 @@ public class XStatement extends StreamableNode
 
     try
     {
-
-      if (getNodeTest() == null)
-      {
-        // We are not searching for any thing so return the row-set
-        return m_rowset;
-      }
-
-      if ((getNodeTest().getNamespace() == null)
+      if ((this.getNodeTest().getNamespace() == null)
               && (this.getNodeTest().getLocalName().equals(S_DOCELEMENTNAME)))
         return m_rowset;
       else
@@ -644,24 +611,15 @@ public class XStatement extends StreamableNode
   }
 
   /**
+   * Set whether nodes should be cached - not implemented
    *
-   * Determines if the data returned from the SQL Query should
-   * be used to build an in memory model of a DOM. If not, only
-   * the current row will be avaiable. Otherwise, build a memory
-   * model but that model will only be built up as the rows are
-   * traversed.
    *
    * @param b Flag indicating whether nodes should be cached
-   *
    */
   public void setShouldCacheNodes(boolean b)
   {
-    m_ShouldCacheNodes = b;
-  }
 
-  public boolean getShouldCacheNodes()
-  {
-    return m_ShouldCacheNodes;
+    // Set streamable?
   }
 
   /**
@@ -768,5 +726,4 @@ public class XStatement extends StreamableNode
   {
     m_last = last;
   }
-
 }

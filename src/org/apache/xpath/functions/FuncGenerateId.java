@@ -56,8 +56,9 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
 
 import java.util.Vector;
 
@@ -84,10 +85,16 @@ public class FuncGenerateId extends FunctionDef1Arg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node which = getArg0AsNode(xctxt);
+    int which = getArg0AsNode(xctxt);
 
-    if (null != which)
-      return new XString(xctxt.getDOMHelper().getUniqueID(which));
+    if (DTM.NULL != which)
+    {
+      // Uglieness to get the unique ID to match the test gold.
+      int docID = (which & org.apache.xml.dtm.DTMManager.IDENT_DTM_DEFAULT) >> 20;
+      docID = (docID-1) << 20;
+      int id = ((which & org.apache.xml.dtm.DTMManager.IDENT_NODE_DEFAULT)+1) | docID;
+      return new XString("N" + Integer.toHexString(id).toUpperCase());
+    }
     else
       return XString.EMPTYSTRING;
   }

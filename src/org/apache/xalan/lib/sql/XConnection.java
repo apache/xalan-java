@@ -72,59 +72,18 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
-import org.apache.xalan.stree.ElementImpl;
-
 /**
- * <p>
- * The XConnection Object is the main (currently the only) interface
- * into the SQL Extensions from the Transformer. It is initiated by
- * supplying connection information and is used by instructing it
- * to produce a JDBC Query.
- * </p>
- * </p>
- *  * The XConnection Object provides several methods of connecting to a
- * JDBC Source. There are two major connection methods, one where the
- * actual connection is established outside the scope of the trasformer
- * {@link org.apache.xalan.lib.sql.XConnectionPoolManager} and the other
- * where the Connection information is supplied as part or either the
- * XSLT Stylesheet or the XML Document.
- *</p>
- * <p>
- * If the Connection is part of an external connection, the connection is
- * identified just by its connection pool name. In this mode, the connection
- * pool manager will be interogated for the connection pool instance and
- * a new connection is pulled from there.
- * </p>
- * <p>
- * When the Connection information is supplied from the Stylesheet or Document,
- * the minimal amount of information that needs to be supplied is the JDBC
- * class or driver and the URL to connect to that Driver.
- * </p>
- * </p>
- * Top maintain backward compatibility with previous versions of the extension,
- * supplying connection information in the constructor is still supported.
- * </p>
- * <p>
- * The new method is to supply the connection information via the connect
- * method.
- * </p>
- * <p>
- * Once a connection is established, a Database query must be performed to
- * have data to work with. This can be accomplished in one of two way.
- * </p>
- * <p>
- * The straight query; the query method allow a simple query to be excuted.
- * This methode qucikly becomes cumbersome when parts of the query are being
- * created dynamically as part of the data but is easiest to implement for a
- * simple static query.
- * </p>
- * <p>
- * The parameter based query; the pquery method allows the Stylesheet designer
- * to create a simple query with place markers for the dynamic components.
- * Form there the parameters are added in order. The pquery uses the JDBC
- * prepated statement to do its work. Parmateres also allow the Stylesheet
- * designer to specify the parameter type.
- * </p>
+ * An XSLT extension that allows a stylesheet to
+ * access JDBC data. From the stylesheet perspective,
+ * XConnection provides 3 extension functions: new(),
+ * query(), and close().
+ * Use new() to call one of XConnection constructors, which
+ * establishes a JDBC driver connection to a data source and
+ * returns an XConnection object.
+ * Then use the XConnection object query() method to return a
+ * result set in the form of a row-set element.
+ * When you have finished working with the row-set, call the
+ * XConnection object close() method to terminate the connection.
  */
 public class XConnection
 {
@@ -164,12 +123,8 @@ public class XConnection
    * For PreparedStatements, we need a place to
    * to store the parameters in a vector.
    */
-   private Vector        m_ParameterList = new Vector();
+   public Vector        m_ParameterList = new Vector();
 
-  /**
-   * Determine if we will build an in-memory copy of the SQL Data
-   */
-  private boolean      m_ShouldCacheNodes = true;
 
   // The original constructors will be kept around for backwards
   // compatibility. Future Stylesheets should use the approaite
@@ -578,12 +533,14 @@ public class XConnection
    *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
+   *
+   * @throws SQLException
    */
   public NodeIterator query(String queryString)
   {
     try
     {
-      return new XStatement(this, queryString, m_ShouldCacheNodes);
+      return new XStatement(this, queryString);
     }
     catch(SQLException e)
     {
@@ -619,14 +576,14 @@ public class XConnection
    *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
+   *
+   * @throws SQLException
    */
   public NodeIterator pquery(String queryString)
   {
     try
     {
-      return new XStatement(
-        this, queryString,
-        m_ParameterList, m_ShouldCacheNodes);
+      return new XStatement(this, queryString, m_ParameterList);
     }
     catch(SQLException e)
     {
@@ -656,6 +613,8 @@ public class XConnection
    *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
+   *
+   * @throws SQLException
    */
   public NodeIterator pquery(String queryString, String typeInfo)
   {
@@ -682,9 +641,7 @@ public class XConnection
         }
       }
 
-      return new XStatement(
-        this, queryString,
-        m_ParameterList, m_ShouldCacheNodes);
+      return new XStatement(this, queryString, m_ParameterList);
     }
     catch(SQLException e)
     {
@@ -852,17 +809,6 @@ public class XConnection
   }
 
   /**
-   *
-   * Clear the parameter list for the Prameter based
-   * queries. Allows for XConnection reuse.
-   *
-   */
-  public void clearParameters()
-  {
-    m_ParameterList.removeAllElements();
-  }
-
-  /**
    * Close the connection to the data source.
    *
    *
@@ -894,16 +840,6 @@ public class XConnection
 
     if (DEBUG)
       System.out.println("Exiting XConnection.close");
-  }
-
-  public void enableCacheNodes()
-  {
-    m_ShouldCacheNodes = true;
-  }
-
-  public void disableCacheNodes()
-  {
-    m_ShouldCacheNodes = false;
   }
 
   protected void finalize()

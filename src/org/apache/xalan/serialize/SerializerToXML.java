@@ -67,6 +67,7 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Properties;
+import java.util.BitSet;
 
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
@@ -94,7 +95,8 @@ import javax.xml.transform.OutputKeys;
  * SerializerToXML formats SAX-style events into XML.
  */
 public class SerializerToXML
-        implements ContentHandler, LexicalHandler, DeclHandler, Serializer, DOMSerializer
+        implements ContentHandler, LexicalHandler, DeclHandler, Serializer,
+                   DOMSerializer
 {
 
   /**
@@ -105,11 +107,8 @@ public class SerializerToXML
   /** True if we control the buffer, and we should flush the output on endDocument. */
   boolean m_shouldFlush = true;
 
-  /** The output stream where the result stream is written. */
-  protected OutputStream m_outputStream = System.out;
-
-  /** True if no encoding has to take place, if we're not writting to a Writer. */
-  private boolean m_bytesEqualChars = false;
+  //  /** The output stream where the result stream is written. */
+  //  protected OutputStream m_outputStream = System.out;
 
   /**
    * The character encoding.  Must match the encoding used for the printWriter.
@@ -174,13 +173,14 @@ public class SerializerToXML
   /**
    * Use the system line seperator to write line breaks.
    */
-  protected final String m_lineSep = System.getProperty("line.separator");
+  protected final char[] m_lineSep =
+    System.getProperty("line.separator").toCharArray();
 
   /**
    * The length of the line seperator, since the write is done
    * one character at a time.
    */
-  protected final int m_lineSepLen = m_lineSep.length();
+  protected final int m_lineSepLen = m_lineSep.length;
 
   /**
    * Output a system-dependent line break.
@@ -190,9 +190,13 @@ public class SerializerToXML
   protected final void outputLineSep() throws org.xml.sax.SAXException
   {
 
-    for (int z = 0; z < m_lineSepLen; z++)
+    try
     {
-      accum(m_lineSep.charAt(z));
+      m_writer.write(m_lineSep, 0, m_lineSepLen);
+    }
+    catch (IOException ioe)
+    {
+      throw new SAXException(ioe);
     }
   }
 
@@ -275,7 +279,7 @@ public class SerializerToXML
    * Tells if we're in an EntityRef event.
    */
   protected boolean m_inEntityRef = false;
-  
+
   /**
    * Tells if we're in an internal document type subset.
    */
@@ -315,8 +319,8 @@ public class SerializerToXML
 
   /** The xsl:output properties. */
   protected Properties m_format;
-  
-  /** Indicate whether running in Debug mode        */
+
+  /** Indicate whether running in Debug mode */
   private static final boolean DEBUG = false;
 
   /**
@@ -336,12 +340,13 @@ public class SerializerToXML
   {
 
     m_writer = xmlListener.m_writer;
-    m_outputStream = xmlListener.m_outputStream;
-    m_bytesEqualChars = xmlListener.m_bytesEqualChars;
+
+    // m_outputStream = xmlListener.m_outputStream;
     m_encoding = xmlListener.m_encoding;
     javaEncodingIsISO = xmlListener.javaEncodingIsISO;
     m_shouldNotWriteXMLHeader = xmlListener.m_shouldNotWriteXMLHeader;
-    m_shouldNotWriteXMLHeader = xmlListener.m_shouldNotWriteXMLHeader;
+
+    // m_shouldNotWriteXMLHeader = xmlListener.m_shouldNotWriteXMLHeader;
     m_elemStack = xmlListener.m_elemStack;
 
     // m_lineSep = xmlListener.m_lineSep;
@@ -362,8 +367,6 @@ public class SerializerToXML
     m_maxCharacter = xmlListener.m_maxCharacter;
     m_spaceBeforeClose = xmlListener.m_spaceBeforeClose;
     m_inCData = xmlListener.m_inCData;
-    m_charBuf = xmlListener.m_charBuf;
-    m_byteBuf = xmlListener.m_byteBuf;
 
     // m_pos = xmlListener.m_pos;
     m_pos = 0;
@@ -502,13 +505,28 @@ public class SerializerToXML
     m_encoding =
       Encodings.getMimeEncoding(format.getProperty(OutputKeys.ENCODING));
 
-    if (m_encoding.equals("WINDOWS-1250") || m_encoding.equals("US-ASCII")
-            || m_encoding.equals("ASCII"))
+    if (m_encoding.equalsIgnoreCase("UTF-8"))
     {
-      m_bytesEqualChars = true;
-      m_outputStream = output;
-
-      init((Writer) null, format, true);
+      if(output instanceof java.io.BufferedOutputStream)
+      {
+        init(new WriterToUTF8(output), format, true);
+      }
+      else if(output instanceof java.io.FileOutputStream)
+      {
+        init(new WriterToUTF8Buffered(output), format, true);
+      }
+      else
+      {
+        // Not sure what to do in this case.  I'm going to be conservative 
+        // and not buffer.
+        init(new WriterToUTF8(output), format, true);
+      }
+      
+    }
+    else if (m_encoding.equals("WINDOWS-1250")
+             || m_encoding.equals("US-ASCII") || m_encoding.equals("ASCII"))
+    {
+      init(new WriterToASCI(output), format, true);
     }
     else
     {
@@ -532,6 +550,7 @@ public class SerializerToXML
 
       init(osw, format, true);
     }
+    
   }
 
   /**
@@ -551,57 +570,77 @@ public class SerializerToXML
    * Output the doc type declaration.
    *
    * @param name non-null reference to document type name.
+   * NEEDSDOC @param closeDecl
    *
    * @throws org.xml.sax.SAXException
    */
-  void outputDocTypeDecl(String name, boolean closeDecl) throws org.xml.sax.SAXException
+  void outputDocTypeDecl(String name, boolean closeDecl)
+          throws org.xml.sax.SAXException
   {
-
-    accum("<!DOCTYPE ");
-    accum(name);
-
-    if (null != m_doctypePublic)
+    try
     {
-      accum(" PUBLIC \"");
-      accum(m_doctypePublic);
-      accum("\"");
-    }
-
-    if (null != m_doctypeSystem)
-    {
-      if (null == m_doctypePublic)
-        accum(" SYSTEM \"");
-      else
-        accum(" \"");
-
-      accum(m_doctypeSystem);
-                        if (closeDecl)
-                        {
-                                accum("\">");
-                                outputLineSep();
-                        }
-                        else
-                                accum("\"");
-    }
-    
-  }
+      final Writer writer = m_writer;
   
+      writer.write("<!DOCTYPE ");
+      writer.write(name);
+  
+      if (null != m_doctypePublic)
+      {
+        writer.write(" PUBLIC \"");
+        writer.write(m_doctypePublic);
+        writer.write('\"');
+      }
+  
+      if (null != m_doctypeSystem)
+      {
+        if (null == m_doctypePublic)
+          writer.write(" SYSTEM \"");
+        else
+          writer.write(" \"");
+  
+        writer.write(m_doctypeSystem);
+  
+        if (closeDecl)
+        {
+          writer.write("\">");
+          writer.write(m_lineSep, 0, m_lineSepLen);;
+        }
+        else
+          writer.write('\"');
+      }
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+  }
+
   /**
    * Output the doc type declaration.
    *
    * @param name non-null reference to document type name.
+   * NEEDSDOC @param value
    *
    * @throws org.xml.sax.SAXException
    */
-  void outputEntityDecl(String name, String value) throws org.xml.sax.SAXException
+  void outputEntityDecl(String name, String value)
+          throws org.xml.sax.SAXException
   {
 
-    accum("<!ENTITY ");
-    accum(name);
-    accum(" \"");
-    accum(value);
-    accum("\">");
-    outputLineSep();
+    try
+    {
+      final Writer writer = m_writer;
+      writer.write("<!ENTITY ");
+      writer.write(name);
+      writer.write(" \"");
+      writer.write(value);
+      writer.write("\">");
+      writer.write(m_lineSep, 0, m_lineSepLen);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
   }
 
   /**
@@ -636,9 +675,22 @@ public class SerializerToXML
         standalone = "";
       }
 
-      accum("<?xml version=\"" + version + "\" encoding=\"" + encoding + "\""
-            + standalone + "?>");
-      outputLineSep();
+      try
+      {
+        final Writer writer = m_writer;
+        writer.write("<?xml version=\"");
+        writer.write(version);
+        writer.write("\" encoding=\"");
+        writer.write(encoding);
+        writer.write('\"');
+        writer.write(standalone);
+        writer.write("?>");
+        writer.write(m_lineSep, 0, m_lineSepLen);
+      }
+      catch(IOException ioe)
+      {
+        throw new SAXException(ioe);
+      }
     }
   }
 
@@ -658,7 +710,6 @@ public class SerializerToXML
       outputLineSep();
     }
 
-    flush();
     flushWriter();
   }
 
@@ -681,10 +732,11 @@ public class SerializerToXML
   public void startDTD(String name, String publicId, String systemId)
           throws org.xml.sax.SAXException
   {
+
     m_doctypeSystem = systemId;
     m_doctypePublic = publicId;
 
-    if ((true == m_needToOutputDocTypeDecl)) // && (null != m_doctypeSystem))
+    if ((true == m_needToOutputDocTypeDecl))  // && (null != m_doctypeSystem))
     {
       outputDocTypeDecl(name, false);
     }
@@ -701,13 +753,22 @@ public class SerializerToXML
    */
   public void endDTD() throws org.xml.sax.SAXException
   {
-    if (!m_inDoctype)
-      accum("]>");
-    else
-    {  
-      accum(">");
-    }  
-    outputLineSep();
+    try
+    {
+      if (!m_inDoctype)
+        m_writer.write("]>");
+      else
+      {
+        m_writer.write('>');
+      }
+  
+      m_writer.write(m_lineSep, 0, m_lineSepLen);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+
     // Do nothing for now.
   }
 
@@ -819,17 +880,24 @@ public class SerializerToXML
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
-    if(DEBUG)
+
+    if (DEBUG)
     {
-      System.out.println("SerializerToXML - startElement: "+namespaceURI+", "+localName);
+      System.out.println("SerializerToXML - startElement: " + namespaceURI
+                         + ", " + localName);
+
       int n = atts.getLength();
-      for (int i = 0; i < n; i++) 
+
+      for (int i = 0; i < n; i++)
       {
-        System.out.println("atts["+i+"]: "+atts.getQName(i)+" = "+atts.getValue(i));
+        System.out.println("atts[" + i + "]: " + atts.getQName(i) + " = "
+                           + atts.getValue(i));
       }
-      if(null == namespaceURI)
+
+      if (null == namespaceURI)
       {
-        (new RuntimeException(localName+" has a null namespace!")).printStackTrace();
+        (new RuntimeException(localName
+                              + " has a null namespace!")).printStackTrace();
       }
     }
 
@@ -838,7 +906,7 @@ public class SerializerToXML
 
     if ((true == m_needToOutputDocTypeDecl) && (null != m_doctypeSystem))
     {
-      outputDocTypeDecl(name, true);			
+      outputDocTypeDecl(name, true);
     }
 
     m_needToOutputDocTypeDecl = false;
@@ -859,8 +927,15 @@ public class SerializerToXML
 
     m_startNewLine = true;
 
-    accum('<');
-    accum(name);
+    try
+    {
+      m_writer.write('<');
+      m_writer.write(name);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
 
     int nAttrs = atts.getLength();
 
@@ -885,20 +960,22 @@ public class SerializerToXML
   protected void writeParentTagEnd() throws org.xml.sax.SAXException
   {
 
-    if (!m_elemStack.isEmpty())
+    // See if the parent element has already been flagged as having children.
+    if (!m_elemStack.peekOrTrue())
     {
-
-      // See if the parent element has already been flagged as having children.
-      if ((false == m_elemStack.peek()))
+      try
       {
-        accum('>');
-
-        m_isprevtext = false;
-
-        m_elemStack.pop();
-        m_elemStack.push(true);
-        m_preserves.push(m_ispreserve);
+        m_writer.write('>');
       }
+      catch(IOException ioe)
+      {
+        throw new SAXException(ioe);
+      }
+
+      m_isprevtext = false;
+
+      m_elemStack.setTop(true);
+      m_preserves.push(m_ispreserve);
     }
   }
 
@@ -951,22 +1028,30 @@ public class SerializerToXML
 
     boolean hasChildNodes = childNodesWereAdded();
 
-    if (hasChildNodes)
+    try
     {
-      if (shouldIndent())
-        indent(m_currentIndent);
-
-      accum('<');
-      accum('/');
-      accum(name);
-      accum('>');
-    }
-    else
-    {
-      if (m_spaceBeforeClose)
-        accum(" />");
+      final Writer writer = m_writer;
+      if (hasChildNodes)
+      {
+        if (shouldIndent())
+          indent(m_currentIndent);
+  
+        writer.write('<');
+        writer.write('/');
+        writer.write(name);
+        writer.write('>');
+      }
       else
-        accum("/>");
+      {
+        if (m_spaceBeforeClose)
+          writer.write(" />");
+        else
+          writer.write("/>");
+      }
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
     }
 
     if (hasChildNodes)
@@ -990,12 +1075,19 @@ public class SerializerToXML
   protected void processAttribute(String name, String value)
           throws org.xml.sax.SAXException
   {
-
-    accum(' ');
-    accum(name);
-    accum("=\"");
-    writeAttrString(value, m_encoding);
-    accum('\"');
+    try
+    {
+      final Writer writer = m_writer;
+      writer.write(' ');
+      writer.write(name);
+      writer.write("=\"");
+      writeAttrString(value, m_encoding);
+      writer.write('\"');
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
   }
 
   /**
@@ -1075,7 +1167,6 @@ public class SerializerToXML
   public void processingInstruction(String target, String data)
           throws org.xml.sax.SAXException
   {
-
     if (m_inEntityRef)
       return;
 
@@ -1089,47 +1180,59 @@ public class SerializerToXML
     }
     else
     {
-      writeParentTagEnd();
-
-      if (shouldIndent())
-        indent(m_currentIndent);
-
-      accum('<');
-      accum('?');
-      accum(target);
-
-      if (data.length() > 0 &&!Character.isSpaceChar(data.charAt(0)))
-        accum(' ');
-
-      int indexOfQLT = data.indexOf("?>");
-      if(indexOfQLT >= 0)
+      try
       {
-        // See XSLT spec on error recovery of "?>" in PIs.
-        if(indexOfQLT > 0)
+        final Writer writer = m_writer;
+        writeParentTagEnd();
+  
+        if (shouldIndent())
+          indent(m_currentIndent);
+  
+        writer.write('<');
+        writer.write('?');
+        writer.write(target);
+  
+        if (data.length() > 0 &&!Character.isSpaceChar(data.charAt(0)))
+          writer.write(' ');
+  
+        int indexOfQLT = data.indexOf("?>");
+  
+        if (indexOfQLT >= 0)
         {
-          accum(data.substring(0, indexOfQLT));
+  
+          // See XSLT spec on error recovery of "?>" in PIs.
+          if (indexOfQLT > 0)
+          {
+            writer.write(data.substring(0, indexOfQLT));
+          }
+  
+          writer.write("? >");  // add space between.
+  
+          if ((indexOfQLT + 2) < data.length())
+          {
+            writer.write(data.substring(indexOfQLT + 2));
+          }
         }
-        accum("? >");  // add space between.
-        if((indexOfQLT+2) < data.length())
+        else
         {
-          accum(data.substring(indexOfQLT+2));
+          writer.write(data);
         }
+  
+        writer.write('?');
+        writer.write('>');
+  
+        // Always output a newline char if not inside of an 
+        // element. The whitespace is not significant in that
+        // case.
+        if (m_elemStack.isEmpty())
+          writer.write(m_lineSep, 0, m_lineSepLen);
+  
+        m_startNewLine = true;
       }
-      else
+      catch(IOException ioe)
       {
-        accum(data);
+        throw new SAXException(ioe);
       }
-
-      accum('?');
-      accum('>');
-      
-      // Always output a newline char if not inside of an 
-      // element. The whitespace is not significant in that
-      // case.
-      if (m_elemStack.isEmpty())
-         outputLineSep();
-
-      m_startNewLine = true;
     }
   }
 
@@ -1157,9 +1260,17 @@ public class SerializerToXML
     if (shouldIndent())
       indent(m_currentIndent);
 
-    accum("<!--");
-    accum(ch, start, length);
-    accum("-->");
+    try
+    {
+      final Writer writer = m_writer;
+      writer.write("<!--");
+      writer.write(ch, start, length);
+      writer.write("-->");
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
 
     m_startNewLine = true;
   }
@@ -1231,10 +1342,10 @@ public class SerializerToXML
 
       if (writeCDataBrackets)
       {
-        accum("<![CDATA[");
+        m_writer.write("<![CDATA[");
       }
 
-      // accum(ch, start, length);
+      // m_writer.write(ch, start, length);
       if (isEscapingDisabled())
       {
         charactersRaw(ch, start, length);
@@ -1244,7 +1355,7 @@ public class SerializerToXML
 
       if (writeCDataBrackets)
       {
-        accum("]]>");
+        m_writer.write("]]>");
       }
     }
     catch (IOException ioe)
@@ -1255,49 +1366,8 @@ public class SerializerToXML
     }
   }
 
-  /** The maximum character buffer, set to 4K to match most servers. */
-  static final int MAXCHARBUF = (4 * 1024);
-
-  /**
-   * If a character event is greater than this number, don't bother with
-   *  the local buffer.
-   */
-  static final int NUMBERBYTESTOWRITEDIRECT = (1024);
-
-  /** Character buffer if characters need to be encoded. */
-  protected char[] m_charBuf = new char[MAXCHARBUF];
-
-  /** Byte buffer if characters do not need to be encoded. */
-  protected byte[] m_byteBuf = new byte[MAXCHARBUF];
-
   /** The current position in the m_charBuf or m_byteBuf. */
   protected int m_pos = 0;
-
-  /**
-   * Append a byte to the buffer.
-   *
-   * @param b Byte to be written.
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  protected final void accum(byte b) throws org.xml.sax.SAXException
-  {
-
-    if (m_bytesEqualChars)
-    {
-      m_byteBuf[m_pos++] = b;
-
-      if (m_pos >= MAXCHARBUF)
-        flushBytes();
-    }
-    else
-    {
-      m_charBuf[m_pos++] = (char) b;
-
-      if (m_pos >= MAXCHARBUF)
-        flushChars();
-    }
-  }
 
   /**
    * Append a character to the buffer.
@@ -1309,22 +1379,16 @@ public class SerializerToXML
   protected final void accum(char b) throws org.xml.sax.SAXException
   {
 
-    if (m_bytesEqualChars)
+    try
     {
-      m_byteBuf[m_pos++] = (byte) b;
-
-      if (m_pos >= MAXCHARBUF)
-        flushBytes();
+      m_writer.write(b);
     }
-    else
+    catch(IOException ioe)
     {
-      m_charBuf[m_pos++] = b;
-
-      if (m_pos >= MAXCHARBUF)
-        flushChars();
+      throw new SAXException(ioe);
     }
   }
-
+  
   /**
    * Append a character to the buffer.
    *
@@ -1338,49 +1402,15 @@ public class SerializerToXML
           throws org.xml.sax.SAXException
   {
 
-    int n = start + length;
-
-    if (m_bytesEqualChars)
+    try
     {
-      for (int i = start; i < n; i++)
-      {
-        m_byteBuf[m_pos++] = (byte) chars[i];
-
-        if (m_pos >= MAXCHARBUF)
-          flushBytes();
-      }
+      m_writer.write(chars, start, length);
     }
-    else
+    catch(IOException ioe)
     {
-      if (length >= NUMBERBYTESTOWRITEDIRECT)
-      {
-        if (m_pos != 0)
-          flushChars();
-
-        try
-        {
-          m_writer.write(chars, start, length);
-        }
-        catch (IOException ioe)
-        {
-          throw new org.xml.sax.SAXException(ioe);
-        }
-      }
-      else
-      {
-        if ((m_pos + length) >= MAXCHARBUF)
-          flushChars();
-
-        // if(1 == length)
-        //   m_charBuf[m_pos] = chars[start];
-        // else
-        System.arraycopy(chars, start, m_charBuf, m_pos, length);
-
-        m_pos += length;
-      }
+      throw new SAXException(ioe);
     }
   }
-
   /**
    * Append a character to the buffer.
    *
@@ -1391,68 +1421,13 @@ public class SerializerToXML
   protected final void accum(String s) throws org.xml.sax.SAXException
   {
 
-    int n = s.length();
-
-    if (m_bytesEqualChars)
-    {
-      char[] chars = s.toCharArray();
-
-      for (int i = 0; i < n; i++)
-      {
-        m_byteBuf[m_pos++] = (byte) chars[i];
-        ;
-
-        if (m_pos >= MAXCHARBUF)
-          flushBytes();
-      }
-    }
-    else
-    {
-      if (n >= NUMBERBYTESTOWRITEDIRECT)
-      {
-        if (m_pos != 0)
-          flushChars();
-
-        try
-        {
-          m_writer.write(s);
-        }
-        catch (IOException ioe)
-        {
-          throw new org.xml.sax.SAXException(ioe);
-        }
-      }
-      else
-      {
-        for (int i = 0; i < n; i++)
-        {
-          m_charBuf[m_pos++] = s.charAt(i);
-          ;
-
-          if (m_pos >= MAXCHARBUF)
-            flushChars();
-        }
-      }
-    }
-  }
-
-  /**
-   * Flush all accumulated bytes to the result stream, without encoding.
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  private final void flushBytes() throws org.xml.sax.SAXException
-  {
-
     try
     {
-      m_outputStream.write(m_byteBuf, 0, m_pos);
-
-      m_pos = 0;
+      m_writer.write(s);
     }
-    catch (IOException ioe)
+    catch(IOException ioe)
     {
-      throw new org.xml.sax.SAXException(ioe);
+      throw new SAXException(ioe);
     }
   }
 
@@ -1464,54 +1439,39 @@ public class SerializerToXML
   public final void flushWriter() throws org.xml.sax.SAXException
   {
 
-    if (m_shouldFlush && (null != m_writer))
+    if (null != m_writer)
     {
       try
       {
-        m_writer.flush();
+        if (m_writer instanceof WriterToUTF8Buffered)
+        {
+          if(m_shouldFlush)
+            ((WriterToUTF8Buffered) m_writer).flush();
+          else
+            ((WriterToUTF8Buffered) m_writer).flushBuffer();
+        }
+        if (m_writer instanceof WriterToUTF8)
+        {
+          if(m_shouldFlush)
+            m_writer.flush(); 
+        }
+        else if (m_writer instanceof WriterToASCI)
+        {
+          if(m_shouldFlush)
+            m_writer.flush();
+        }
+        else
+        {
+          // Flush always. 
+          // Not a great thing if the writer was created 
+          // by this class, but don't have a choice.
+          m_writer.flush(); 
+        }
       }
       catch (IOException ioe)
       {
         throw new org.xml.sax.SAXException(ioe);
       }
-    }
-  }
-
-  /**
-   * Flush all accumulated characters to the result stream.
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  private final void flushChars() throws org.xml.sax.SAXException
-  {
-
-    try
-    {
-      m_writer.write(m_charBuf, 0, m_pos);
-
-      m_pos = 0;
-    }
-    catch (IOException ioe)
-    {
-      throw new org.xml.sax.SAXException(ioe);
-    }
-  }
-
-  /**
-   * Flush all accumulated characters or bytes to the result stream.
-   *
-   * @throws org.xml.sax.SAXException
-   */
-  public final void flush() throws org.xml.sax.SAXException
-  {
-
-    if (m_bytesEqualChars)
-    {
-      flushBytes();
-    }
-    else
-    {
-      flushChars();
     }
   }
 
@@ -1546,76 +1506,97 @@ public class SerializerToXML
           throws org.xml.sax.SAXException
   {
 
-    if (m_inEntityRef)
-      return;
-
-    if (0 == length)
-      return;
-
-    if (isCDataSection())
+    //    if (m_inEntityRef)
+    //      return;
+    //    else 
+    if (m_inCData || m_cdataSectionStates.peekOrFalse())
     {
       cdata(chars, start, length);
 
       return;
     }
-
-    if (isEscapingDisabled())
+    
+    try
     {
-      charactersRaw(chars, start, length);
-
-      return;
-    }
-
-    writeParentTagEnd();
-
-    int startClean = start;
-    int lengthClean = 0;
-
-    // int pos = 0;
-    int end = start + length;
-    boolean checkWhite = true;
-
-    for (int i = start; i < end; i++)
-    {
-      char ch = chars[i];
-
-      if (checkWhite)
+      
+      if (m_disableOutputEscapingStates.peekOrFalse())
       {
-        if (!Character.isWhitespace(ch))
+        charactersRaw(chars, start, length);
+  
+        return;
+      }
+    
+      final Writer writer = m_writer;
+      if (!m_elemStack.peekOrTrue())
+      {
+        writer.write('>');
+  
+        m_isprevtext = false;
+  
+        m_elemStack.setTop(true);
+        m_preserves.push(m_ispreserve);
+      }
+  
+      int startClean = start;
+      int lengthClean = 0;
+  
+      // int pos = 0;
+      int end = start + length;
+      boolean checkWhite = true;
+      final int maxCharacter = m_maxCharacter;
+      final BitSet specialsMap = m_charInfo.m_specialsMap;
+  
+      for (int i = start; i < end; i++)
+      {
+        char ch = chars[i];
+  
+        if (checkWhite
+                && ((ch > 0x20)
+                    ||!((ch == 0x20) || (ch == 0x09) || (ch == 0xD)
+                        || (ch == 0xA))))
         {
           m_ispreserve = true;
           checkWhite = false;
         }
-      }
-
-      if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
-      {
-
-        // accum(ch);
-        lengthClean++;
-      }
-      else if ('"' == ch)
-      {
-        lengthClean++;  // don't escape quote here
-      }
-      else
-      {
-        if (lengthClean > 0)
+  
+        if (((ch < maxCharacter) && (!specialsMap.get(ch))) || ('"' == ch))
         {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
+          lengthClean++;
         }
-
-        startClean = accumDefaultEscape(ch, i, chars, end, false);
-        i = startClean - 1;
+        else
+        {
+          if (lengthClean > 0)
+          {
+            writer.write(chars, startClean, lengthClean);
+  
+            lengthClean = 0;
+          }
+  
+          if (CharInfo.S_LINEFEED == ch)
+          {
+            writer.write(m_lineSep, 0, m_lineSepLen);
+  
+            startClean = i + 1;
+          }
+          else
+          {
+            startClean = accumDefaultEscape(ch, i, chars, end, false);
+            i = startClean - 1;
+          }
+        }
       }
+  
+      if (lengthClean > 0)
+      {
+        writer.write(chars, startClean, lengthClean);
+      }
+    
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
     }
 
-    if (lengthClean > 0)
-    {
-      accum(chars, startClean, lengthClean);
-    }
 
     m_isprevtext = true;
   }
@@ -1634,28 +1615,39 @@ public class SerializerToXML
           throws org.xml.sax.SAXException
   {
 
-    if (m_inEntityRef)
-      return;
-
-    writeParentTagEnd();
-
-    m_ispreserve = true;
-
-    accum(ch, start, length);
-  }
+    try
+    {
+      if (m_inEntityRef)
+        return;
   
+      writeParentTagEnd();
+  
+      m_ispreserve = true;
+  
+      m_writer.write(ch, start, length);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+  }
+
   /**
    * Return true if the character is the high member of a surrogate pair.
+   *
+   * NEEDSDOC @param c
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   static final boolean isUTF16Surrogate(char c)
   {
     return (c & 0xFC00) == 0xD800;
   }
-  
+
   /**
-   * Once a surrogate has been detected, get the pair as a single 
+   * Once a surrogate has been detected, get the pair as a single
    * integer value.
-   * 
+   *
    * @param c the first part of the surrogate.
    * @param ch Character array.
    * @param i position Where the surrogate was detected.
@@ -1666,7 +1658,9 @@ public class SerializerToXML
   int getURF16SurrogateValue(char c, char ch[], int i, int end)
           throws org.xml.sax.SAXException
   {
+
     int next;
+
     if (i + 1 >= end)
     {
       throw new org.xml.sax.SAXException(
@@ -1690,14 +1684,15 @@ public class SerializerToXML
 
       //+Integer.toHexString((int)c)+" "+Integer.toHexString(next));
       next = ((c - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
-    }  
+    }
+
     return next;
   }
-  
+
   /**
-   * Once a surrogate has been detected, write the pair as a single 
+   * Once a surrogate has been detected, write the pair as a single
    * character reference.
-   * 
+   *
    * @param c the first part of the surrogate.
    * @param ch Character array.
    * @param i position Where the surrogate was detected.
@@ -1709,20 +1704,22 @@ public class SerializerToXML
   protected int writeUTF16Surrogate(char c, char ch[], int i, int end)
           throws IOException, org.xml.sax.SAXException
   {
-      // UTF-16 surrogate
-      int surrogateValue = getURF16SurrogateValue(c, ch, i, end);
-      i++;
 
-      accum('&');
-      accum('#');
+    // UTF-16 surrogate
+    int surrogateValue = getURF16SurrogateValue(c, ch, i, end);
 
-      // accum('x');
-      accum(Integer.toString(surrogateValue));
-      accum(';'); 
-      
-      return i;   
+    i++;
+
+    m_writer.write('&');
+    m_writer.write('#');
+
+    // m_writer.write('x');
+    m_writer.write(Integer.toString(surrogateValue));
+    m_writer.write(';');
+
+    return i;
   }
-  
+
   /**
    * Normalize the characters, but don't escape.
    *
@@ -1746,12 +1743,12 @@ public class SerializerToXML
 
       if (CharInfo.S_LINEFEED == c)
       {
-        outputLineSep();
+        m_writer.write(m_lineSep, 0, m_lineSepLen);
       }
       else if (isCData && (c > m_maxCharacter))
       {
         if (i != 0)
-          accum("]]>");
+          m_writer.write("]]>");
 
         // This needs to go into a function... 
         if (isUTF16Surrogate(c))
@@ -1760,22 +1757,22 @@ public class SerializerToXML
         }
         else
         {
-          accum("&#");
+          m_writer.write("&#");
 
           String intStr = Integer.toString((int) c);
 
-          accum(intStr);
-          accum(';');
+          m_writer.write(intStr);
+          m_writer.write(';');
         }
 
         if ((i != 0) && (i < (end - 1)))
-          accum("<![CDATA[");
+          m_writer.write("<![CDATA[");
       }
       else if (isCData
                && ((i < (end - 2)) && (']' == c) && (']' == ch[i + 1])
                    && ('>' == ch[i + 2])))
       {
-        accum("]]]]><![CDATA[>");
+        m_writer.write("]]]]><![CDATA[>");
 
         i += 2;
       }
@@ -1783,23 +1780,22 @@ public class SerializerToXML
       {
         if (c <= m_maxCharacter)
         {
-          accum(c);
+          m_writer.write(c);
         }
 
         // This needs to go into a function... 
         else if (isUTF16Surrogate(c))
         {
-
           i = writeUTF16Surrogate(c, ch, i, end);
         }
         else
         {
-          accum("&#");
+          m_writer.write("&#");
 
           String intStr = Integer.toString((int) c);
 
-          accum(intStr);
-          accum(';');
+          m_writer.write(intStr);
+          m_writer.write(';');
         }
       }
     }
@@ -1845,8 +1841,7 @@ public class SerializerToXML
 
     // TODO: Should handle
   }
-  
-  
+
   /**
    * Report the beginning of an entity.
    *
@@ -1875,7 +1870,7 @@ public class SerializerToXML
    * @see #startEntity
    */
   public void endEntity(String name) throws org.xml.sax.SAXException
-  {    
+  {
     m_inEntityRef = false;
   }
 
@@ -1894,146 +1889,183 @@ public class SerializerToXML
     if (shouldIndent())
       indent(m_currentIndent);
 
-    accum("&");
-    accum(name);
-    accum(";");
-  }
-  
-  // Implement DeclHandler
-  
-  /**
-     * Report an element type declaration.
-     *
-     * <p>The content model will consist of the string "EMPTY", the
-     * string "ANY", or a parenthesised group, optionally followed
-     * by an occurrence indicator.  The model will be normalized so
-     * that all whitespace is removed,and will include the enclosing
-     * parentheses.</p>
-     *
-     * @param name The element type name.
-     * @param model The content model as a normalized string.
-     * @exception SAXException The application may raise an exception.
-     */
-    public void elementDecl (String name, String model)
-        throws SAXException
+    try
     {
-      if (m_inDoctype)
-      {
-        accum(" [");
-        outputLineSep();
-        m_inDoctype = false;
-      }
-      accum("<!ELEMENT ");
-      accum(name);
-      accum(" ");
-      accum(model);
-      accum(">");
-      outputLineSep();
+      final Writer writer = m_writer;
+      writer.write("&");
+      writer.write(name);
+      writer.write(";");
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
     }
 
-    private String m_elemName = "";
-    
-    /**
-     * Report an attribute type declaration.
-     *
-     * <p>Only the effective (first) declaration for an attribute will
-     * be reported.  The type will be one of the strings "CDATA",
-     * "ID", "IDREF", "IDREFS", "NMTOKEN", "NMTOKENS", "ENTITY",
-     * "ENTITIES", or "NOTATION", or a parenthesized token group with 
-     * the separator "|" and all whitespace removed.</p>
-     *
-     * @param eName The name of the associated element.
-     * @param aName The name of the attribute.
-     * @param type A string representing the attribute type.
-     * @param valueDefault A string representing the attribute default
-     *        ("#IMPLIED", "#REQUIRED", or "#FIXED") or null if
-     *        none of these applies.
-     * @param value A string representing the attribute's default value,
-     *        or null if there is none.
-     * @exception SAXException The application may raise an exception.
-     */
-    public void attributeDecl (String eName,
-                                        String aName,
-                                        String type,
-                                        String valueDefault,
-                                        String value)
-        throws SAXException
+  }
+
+  // Implement DeclHandler
+
+  /**
+   *   Report an element type declaration.
+   *  
+   *   <p>The content model will consist of the string "EMPTY", the
+   *   string "ANY", or a parenthesised group, optionally followed
+   *   by an occurrence indicator.  The model will be normalized so
+   *   that all whitespace is removed,and will include the enclosing
+   *   parentheses.</p>
+   *  
+   *   @param name The element type name.
+   *   @param model The content model as a normalized string.
+   *   @exception SAXException The application may raise an exception.
+   */
+  public void elementDecl(String name, String model) throws SAXException
+  {
+    try
     {
+      final Writer writer = m_writer;
       if (m_inDoctype)
       {
-        accum(" [");
-        outputLineSep();
+        writer.write(" [");
+        writer.write(m_lineSep, 0, m_lineSepLen);
+  
         m_inDoctype = false;
       }
+  
+      writer.write("<!ELEMENT ");
+      writer.write(name);
+      writer.write(' ');
+      writer.write(model);
+      writer.write('>');
+      writer.write(m_lineSep, 0, m_lineSepLen);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+  }
+
+  /** NEEDSDOC Field m_elemName          */
+  private String m_elemName = "";
+
+  /**
+   * Report an attribute type declaration.
+   *
+   * <p>Only the effective (first) declaration for an attribute will
+   * be reported.  The type will be one of the strings "CDATA",
+   * "ID", "IDREF", "IDREFS", "NMTOKEN", "NMTOKENS", "ENTITY",
+   * "ENTITIES", or "NOTATION", or a parenthesized token group with
+   * the separator "|" and all whitespace removed.</p>
+   *
+   * @param eName The name of the associated element.
+   * @param aName The name of the attribute.
+   * @param type A string representing the attribute type.
+   * @param valueDefault A string representing the attribute default
+   *        ("#IMPLIED", "#REQUIRED", or "#FIXED") or null if
+   *        none of these applies.
+   * @param value A string representing the attribute's default value,
+   *        or null if there is none.
+   * @exception SAXException The application may raise an exception.
+   */
+  public void attributeDecl(
+          String eName, String aName, String type, String valueDefault, String value)
+            throws SAXException
+  {
+
+    try
+    {
+      final Writer writer = m_writer;
+      if (m_inDoctype)
+      {
+        writer.write(" [");
+        writer.write(m_lineSep, 0, m_lineSepLen);
+  
+        m_inDoctype = false;
+      }
+  
       if (!eName.equals(m_elemName))
-      {  
-        accum("<!ATTLIST ");
-        accum(eName);
-        accum(" ");
+      {
+        writer.write("<!ATTLIST ");
+        writer.write(eName);
+        writer.write(" ");
+  
         m_elemName = eName;
       }
       else
       {
         m_pos -= 3;
-        outputLineSep();
+  
+        writer.write(m_lineSep, 0, m_lineSepLen);
       }
-      accum(aName);
-      accum(" ");
-      accum(type);
-      accum(" ");
-      accum(valueDefault);
-      //accum(" ");
-      //accum(value);
-      accum(">");
-      outputLineSep();      
+  
+      writer.write(aName);
+      writer.write(" ");
+      writer.write(type);
+      writer.write(" ");
+      writer.write(valueDefault);
+  
+      //m_writer.write(" ");
+      //m_writer.write(value);
+      writer.write(">");
+      writer.write(m_lineSep, 0, m_lineSepLen);
     }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+  }
 
+  /**
+   * Report an internal entity declaration.
+   *
+   * <p>Only the effective (first) declaration for each entity
+   * will be reported.</p>
+   *
+   * @param name The name of the entity.  If it is a parameter
+   *        entity, the name will begin with '%'.
+   * @param value The replacement text of the entity.
+   * @exception SAXException The application may raise an exception.
+   * @see #externalEntityDecl
+   * @see org.xml.sax.DTDHandler#unparsedEntityDecl
+   */
+  public void internalEntityDecl(String name, String value)
+          throws SAXException
+  {
 
-    /**
-     * Report an internal entity declaration.
-     *
-     * <p>Only the effective (first) declaration for each entity
-     * will be reported.</p>
-     *
-     * @param name The name of the entity.  If it is a parameter
-     *        entity, the name will begin with '%'.
-     * @param value The replacement text of the entity.
-     * @exception SAXException The application may raise an exception.
-     * @see #externalEntityDecl
-     * @see org.xml.sax.DTDHandler#unparsedEntityDecl
-     */
-    public void internalEntityDecl (String name, String value)
-        throws SAXException
+    try
     {
       if (m_inDoctype)
       {
-        accum(" [");
-        outputLineSep();
+        m_writer.write(" [");
+        m_writer.write(m_lineSep, 0, m_lineSepLen);
+  
         m_inDoctype = false;
       }
+  
       outputEntityDecl(name, value);
     }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+  }
 
-
-    /**
-     * Report a parsed external entity declaration.
-     *
-     * <p>Only the effective (first) declaration for each entity
-     * will be reported.</p>
-     *
-     * @param name The name of the entity.  If it is a parameter
-     *        entity, the name will begin with '%'.
-     * @param publicId The declared public identifier of the entity, or
-     *        null if none was declared.
-     * @param systemId The declared system identifier of the entity.
-     * @exception SAXException The application may raise an exception.
-     * @see #internalEntityDecl
-     * @see org.xml.sax.DTDHandler#unparsedEntityDecl
-     */
-    public void externalEntityDecl (String name, String publicId,
-                                             String systemId)
-        throws SAXException
-    {}
+  /**
+   * Report a parsed external entity declaration.
+   *
+   * <p>Only the effective (first) declaration for each entity
+   * will be reported.</p>
+   *
+   * @param name The name of the entity.  If it is a parameter
+   *        entity, the name will begin with '%'.
+   * @param publicId The declared public identifier of the entity, or
+   *        null if none was declared.
+   * @param systemId The declared system identifier of the entity.
+   * @exception SAXException The application may raise an exception.
+   * @see #internalEntityDecl
+   * @see org.xml.sax.DTDHandler#unparsedEntityDecl
+   */
+  public void externalEntityDecl(
+          String name, String publicId, String systemId) throws SAXException{}
 
   /**
    * Handle one of the default entities, return false if it
@@ -2054,34 +2086,42 @@ public class SerializerToXML
             throws org.xml.sax.SAXException
   {
 
-    if (!escLF && CharInfo.S_LINEFEED == ch)
+    try
     {
-      outputLineSep();
-    }
-    else
-    {
-      if (m_charInfo.isSpecial(ch))
+      if (!escLF && CharInfo.S_LINEFEED == ch)
       {
-        String entityRef = m_charInfo.getEntityNameForChar(ch);
-
-        if (null != entityRef)
+        m_writer.write(m_lineSep, 0, m_lineSepLen);
+      }
+      else
+      {
+        if (m_charInfo.isSpecial(ch))
         {
-          accum('&');
-          accum(entityRef);
-          accum(';');
+          String entityRef = m_charInfo.getEntityNameForChar(ch);
+  
+          if (null != entityRef)
+          {
+            final Writer writer = m_writer;
+            writer.write('&');
+            writer.write(entityRef);
+            writer.write(';');
+          }
+          else
+            return i;
         }
         else
           return i;
       }
-      else
-        return i;
+  
+      return i + 1;
     }
-
-    return i + 1;
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
   }
 
   /**
-   * Escape and accum a character.
+   * Escape and m_writer.write a character.
    *
    * @param ch character to be escaped.
    * @param i index into character array.
@@ -2104,58 +2144,65 @@ public class SerializerToXML
     {
       pos++;
 
-      if (0xd800 <= ch && ch < 0xdc00)
+      try
       {
-
-        // UTF-16 surrogate
-        int next;
-
-        if (i + 1 >= len)
+        if (0xd800 <= ch && ch < 0xdc00)
         {
-          throw new org.xml.sax.SAXException(
-            XSLMessages.createXPATHMessage(
-              XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-              new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
-
-          //+Integer.toHexString(ch)+ " ?");
-        }
-        else
-        {
-          next = chars[++i];
-
-          if (!(0xdc00 <= next && next < 0xe000))
+  
+          // UTF-16 surrogate
+          int next;
+  
+          if (i + 1 >= len)
+          {
             throw new org.xml.sax.SAXException(
               XSLMessages.createXPATHMessage(
                 XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                new Object[]{
-                  Integer.toHexString(ch) + " "
-                  + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
-
-          //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
-          next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
-        }
-
-        accum("&#");
-        accum(Integer.toString(next));
-        accum(";");
-
-        /*} else if (null != ctbc && !ctbc.canConvert(ch)) {
-        sb.append("&#x");
-        sb.append(Integer.toString((int)ch, 16));
-        sb.append(";");*/
-      }
-      else
-      {
-        if (ch > m_maxCharacter || (m_charInfo.isSpecial(ch)))
-        {
-          accum("&#");
-          accum(Integer.toString(ch));
-          accum(";");
+                new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
+  
+            //+Integer.toHexString(ch)+ " ?");
+          }
+          else
+          {
+            next = chars[++i];
+  
+            if (!(0xdc00 <= next && next < 0xe000))
+              throw new org.xml.sax.SAXException(
+                XSLMessages.createXPATHMessage(
+                  XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
+                  new Object[]{
+                    Integer.toHexString(ch) + " "
+                    + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
+  
+            //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
+            next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
+          }
+  
+          m_writer.write("&#");
+          m_writer.write(Integer.toString(next));
+          m_writer.write(";");
+  
+          /*} else if (null != ctbc && !ctbc.canConvert(ch)) {
+          sb.append("&#x");
+          sb.append(Integer.toString((int)ch, 16));
+          sb.append(";");*/
         }
         else
         {
-          accum(ch);
+          if (ch > m_maxCharacter || (m_charInfo.isSpecial(ch)))
+          {
+            m_writer.write("&#");
+            m_writer.write(Integer.toString(ch));
+            m_writer.write(";");
+          }
+          else
+          {
+            m_writer.write(ch);
+          }
         }
+      }
+      catch(IOException ioe)
+      {
+        throw new SAXException(ioe);
       }
     }
 
@@ -2175,28 +2222,39 @@ public class SerializerToXML
           throws org.xml.sax.SAXException
   {
 
-    char[] stringChars = string.toCharArray();
-    int len = stringChars.length;
-
-    for (int i = 0; i < len; i++)
+    try
     {
-      char ch = stringChars[i];
-
-      if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
+      final char[] stringChars = string.toCharArray();
+      final int len = stringChars.length;
+      final Writer writer = m_writer;
+  
+      for (int i = 0; i < len; i++)
       {
-        accum(ch);
-      }
-      else
-      {
-        // I guess the parser doesn't normalize cr/lf in attributes. -sb
-        if((CharInfo.S_CARRIAGERETURN == ch) && ((i+1) < len) 
-        && (CharInfo.S_LINEFEED == stringChars[i+1]))
+        char ch = stringChars[i];
+  
+        if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
         {
-          i++;
-          ch = CharInfo.S_LINEFEED;
+          writer.write(ch);
         }
-        accumDefaultEscape(ch, i, stringChars, len, true);
+        else
+        {
+  
+          // I guess the parser doesn't normalize cr/lf in attributes. -sb
+          if ((CharInfo.S_CARRIAGERETURN == ch) && ((i + 1) < len)
+                  && (CharInfo.S_LINEFEED == stringChars[i + 1]))
+          {
+            i++;
+  
+            ch = CharInfo.S_LINEFEED;
+          }
+  
+          accumDefaultEscape(ch, i, stringChars, len, true);
+        }
       }
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
     }
   }
 
@@ -2221,9 +2279,16 @@ public class SerializerToXML
   public void printSpace(int n) throws org.xml.sax.SAXException
   {
 
-    for (int i = 0; i < n; i++)
+    try
     {
-      accum(' ');
+      for (int i = 0; i < n; i++)
+      {
+        m_writer.write(' ');
+      }
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
     }
   }
 
@@ -2279,7 +2344,15 @@ public class SerializerToXML
    */
   public OutputStream getOutputStream()
   {
-    return m_outputStream;
+
+    if (m_writer instanceof WriterToUTF8Buffered)
+      return ((WriterToUTF8Buffered) m_writer).getOutputStream();
+    if (m_writer instanceof WriterToUTF8)
+      return ((WriterToUTF8) m_writer).getOutputStream();
+    else if (m_writer instanceof WriterToASCI)
+      return ((WriterToASCI) m_writer).getOutputStream();
+    else
+      return null;
   }
 
   /**
@@ -2389,7 +2462,8 @@ public class SerializerToXML
 
     try
     {
-      TreeWalker walker = new TreeWalker(this, new org.apache.xpath.DOM2Helper());
+      TreeWalker walker = new TreeWalker(this,
+                                         new org.apache.xpath.DOM2Helper());
 
       walker.traverse(node);
     }

@@ -237,17 +237,7 @@ public class OutputProperties extends ElemTemplateElement
     // Note that we're working at the HashTable level here, 
     // and not at the Properties level!  This is important 
     // because we don't want to modify the default properties.
-    // NB: If fixupPropertyString ends up changing the property
-    // name or value, we need to remove the old key and re-add
-    // with the new key and value.  However, then our Enumeration
-    // could lose its place in the HashTable.  So, we first
-    // clone the HashTable and enumerate over that since the
-    // clone will not change.  When we migrate to Collections,
-    // this code should be revisited and cleaned up to use
-    // an Iterator which may (or may not) alleviate the need for
-    // the clone.  Many thanks to Padraig O'hIceadha
-    // <padraig@gradient.ie> for finding this problem.  Bugzilla 2000.
-    Enumeration keys = ((Properties) props.clone()).keys();
+    Enumeration keys = props.keys();
     while(keys.hasMoreElements())
     {
       String key = (String)keys.nextElement();
@@ -856,10 +846,10 @@ public class OutputProperties extends ElemTemplateElement
    * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose() throws TransformerException
+  public void compose(StylesheetRoot sroot) throws TransformerException
   {
 
-    super.compose();
+    super.compose(sroot);
 
     m_propertiesLevels = null;
   }
@@ -1050,12 +1040,6 @@ public class OutputProperties extends ElemTemplateElement
    *  use %xx escaping. */
   public static String S_USE_URL_ESCAPING =
     S_BUILTIN_EXTENSIONS_UNIVERSAL+"use-url-escaping";
-
-  /** Use a value of "yes" if the META tag should be omitted where it would
-   *  otherwise be supplied.
-   */
-  public static String S_OMIT_META_TAG =
-    S_BUILTIN_EXTENSIONS_UNIVERSAL+"omit-meta-tag";
 
   /** The default properties of all output files. */
   private static Properties m_xml_properties = null;

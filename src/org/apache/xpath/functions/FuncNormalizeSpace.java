@@ -58,7 +58,7 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -67,7 +67,14 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XMLStringFactoryImpl;
 import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.XMLString;
+import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.FastStringBuffer;
+
+import org.apache.xml.dtm.DTM;
+import org.xml.sax.ContentHandler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -86,120 +93,39 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
+    XMLString s1 = getArg0AsString(xctxt);
 
-    String s1 = getArg0AsString(xctxt);
-
-    return new XString(fixWhiteSpace(s1, true, true, false));
+    return (XString)s1.fixWhiteSpace(true, true, false);
   }
-
+  
   /**
-   * Returns whether the specified <var>ch</var> conforms to the XML 1.0 definition
-   * of whitespace.  Refer to <A href="http://www.w3.org/TR/1998/REC-xml-19980210#NT-S">
-   * the definition of <CODE>S</CODE></A> for details.
-   * @param   ch      Character to check as XML whitespace.
-   * @return          =true if <var>ch</var> is XML whitespace; otherwise =false.
+   * Execute an expression in the XPath runtime context, and return the 
+   * result of the expression.
+   *
+   *
+   * @param xctxt The XPath runtime context.
+   *
+   * @return The result of the expression in the form of a <code>XObject</code>.
+   *
+   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   *         occurs.
    */
-  private static boolean isSpace(char ch)
+  public void executeCharsToContentHandler(XPathContext xctxt, 
+                                              ContentHandler handler)
+    throws javax.xml.transform.TransformerException,
+           org.xml.sax.SAXException
   {
-    return XMLCharacterRecognizer.isWhiteSpace(ch);  // Take the easy way out for now.
+    if(Arg0IsNodesetExpr())
+    {
+      int node = getArg0AsNode(xctxt);
+      DTM dtm = xctxt.getDTM(node);
+      dtm.dispatchCharactersEvents(node, handler, true);
+    }
+    else
+    {
+      XObject obj = execute(xctxt);
+      obj.dispatchCharactersEvents(handler);
+    }
   }
 
-  /**
-   * (Code stolen and modified from XML4J)
-   * Conditionally trim all leading and trailing whitespace in the specified String.
-   * All strings of white space are
-   * replaced by a single space character (#x20), except spaces after punctuation which
-   * receive double spaces if doublePunctuationSpaces is true.
-   * This function may be useful to a formatter, but to get first class
-   * results, the formatter should probably do it's own white space handling
-   * based on the semantics of the formatting object.
-   * @param   string      String to be trimmed.
-   * @param   trimHead    Trim leading whitespace?
-   * @param   trimTail    Trim trailing whitespace?
-   * @param   doublePunctuationSpaces    Use double spaces for punctuation?
-   * @return              The trimmed string.
-   */
-  protected String fixWhiteSpace(String string, boolean trimHead,
-                                 boolean trimTail,
-                                 boolean doublePunctuationSpaces)
-  {
-
-    char[] buf = string.toCharArray();
-    int len = buf.length;
-    boolean edit = false;
-    int s;
-
-    for (s = 0; s < len; s++)
-    {
-      if (isSpace(buf[s]))
-      {
-        break;
-      }
-    }
-
-    /* replace S to ' '. and ' '+ -> single ' '. */
-    int d = s;
-    boolean pres = false;
-
-    for (; s < len; s++)
-    {
-      char c = buf[s];
-
-      if (isSpace(c))
-      {
-        if (!pres)
-        {
-          if (' ' != c)
-          {
-            edit = true;
-          }
-
-          buf[d++] = ' ';
-
-          if (doublePunctuationSpaces && (s != 0))
-          {
-            char prevChar = buf[s - 1];
-
-            if (!((prevChar == '.') || (prevChar == '!')
-                  || (prevChar == '?')))
-            {
-              pres = true;
-            }
-          }
-          else
-          {
-            pres = true;
-          }
-        }
-        else
-        {
-          edit = true;
-          pres = true;
-        }
-      }
-      else
-      {
-        buf[d++] = c;
-        pres = false;
-      }
-    }
-
-    if (trimTail && 1 <= d && ' ' == buf[d - 1])
-    {
-      edit = true;
-
-      d--;
-    }
-
-    int start = 0;
-
-    if (trimHead && 0 < d && ' ' == buf[0])
-    {
-      edit = true;
-
-      start++;
-    }
-
-    return edit ? new String(buf, start, d - start) : string;
-  }
 }

@@ -80,7 +80,7 @@ public class Arg
    *
    * @return QName object containing the qualified name
    */
-  public QName getQName()
+  public final QName getQName()
   {
     return m_qname;
   }
@@ -90,7 +90,7 @@ public class Arg
    *
    * @param name QName object representing the new Qualified Name.
    */
-  public void setQName(QName name)
+  public final void setQName(QName name)
   {
     m_qname = name;
   }
@@ -107,7 +107,7 @@ public class Arg
    * @return the argument's stored XObject value.
    * @see #setVal(XObject)
    */
-  public XObject getVal()
+  public final XObject getVal()
   {
     return m_val;
   }
@@ -118,10 +118,24 @@ public class Arg
    * @param val an XObject representing the arguments's value.
    * @see #getVal()
    */
-  public void setVal(XObject val)
+  public final void setVal(XObject val)
   {
     m_val = val;
   }
+  
+  /**
+   * Have the object release it's resources.
+   * Call only when the variable or argument is going out of scope.
+   */
+  public void detach()
+  {
+    if(null != m_val)
+    {
+      m_val.allowDetachToRelease(true);
+      m_val.detach();
+    }
+  }
+
 
   /** Field m_expression: Stored expression value of this argument.
    * @see #setExpression

@@ -77,7 +77,7 @@ import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
 
 /**
- * <meta name="usage" content="advanced"/>
+ * @deprecated Since the introduction of the DTM, this class will be removed.
  * This class provides a DOM level 2 "helper", which provides services currently 
  * not provided be the DOM standard.
  */

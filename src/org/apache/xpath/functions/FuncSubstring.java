@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -64,6 +64,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -83,10 +84,10 @@ public class FuncSubstring extends Function3Args
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    String s1 = m_arg0.execute(xctxt).str();
+    XMLString s1 = m_arg0.execute(xctxt).xstr();
     double start = m_arg1.execute(xctxt).num();
     int lenOfS1 = s1.length();
-    String substr;
+    XMLString substr;
 
     if (lenOfS1 <= 0)
       return XString.EMPTYSTRING;
@@ -110,7 +111,7 @@ public class FuncSubstring extends Function3Args
 
       if (null != m_arg2)
       {
-        double len = m_arg2.execute(xctxt).num();
+        double len = m_arg2.num(xctxt);
         int end = (int) (Math.round(len) + start) - 1;
 
         // Normalize end index.
@@ -132,7 +133,7 @@ public class FuncSubstring extends Function3Args
       }
     }
 
-    return new XString(substr);
+    return (XString)substr; // cast semi-safe
   }
 
   /**

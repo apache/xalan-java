@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 import java.io.Serializable;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 
@@ -132,7 +132,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * @return The "target" string.
    */
-  public String getTargetString()
+  public final String getTargetString()
   {
     return m_targetString;
   }
@@ -185,7 +185,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * @throws TransformerException
    */
-  public boolean matches(XPathContext xctxt, Node targetNode, QName mode)
+  public boolean matches(XPathContext xctxt, int targetNode, QName mode)
           throws TransformerException
   {
 
@@ -200,7 +200,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * @return true if this pattern is considered to be a wild match.
    */
-  public boolean isWild()
+  public final boolean isWild()
   {
     return m_wild;
   }
@@ -211,7 +211,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    * @return An executable StepPattern object, never null.
    *
    */
-  public StepPattern getStepPattern()
+  public final StepPattern getStepPattern()
   {
     return m_stepPattern;
   }
@@ -222,7 +222,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    * @return The pattern string for diagnostic purposes.
    *
    */
-  public String getPattern()
+  public final String getPattern()
   {
     return m_pattern;
   }
@@ -244,7 +244,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * @return The import level of this template.
    */
-  public int getImportLevel()
+  public final int getImportLevel()
   {
     return m_template.getStylesheetComposed().getImportCountComposed();
   }
@@ -255,7 +255,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    * @return An ElemTemplate, never null.
    *
    */
-  public ElemTemplate getTemplate()
+  public final ElemTemplate getTemplate()
   {
     return m_template;
   }
@@ -265,7 +265,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * @return A valid TemplateSubPatternAssociation, or null.
    */
-  public TemplateSubPatternAssociation getNext()
+  public final TemplateSubPatternAssociation getNext()
   {
     return m_next;
   }

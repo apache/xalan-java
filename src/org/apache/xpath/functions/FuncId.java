@@ -61,9 +61,10 @@ import java.util.StringTokenizer;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Document;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -95,7 +96,7 @@ public class FuncId extends FunctionOneArg
    *
    * @return The usedrefs value.
    */
-  private StringVector getNodesByID(XPathContext xctxt, Document docContext,
+  private StringVector getNodesByID(XPathContext xctxt, int docContext,
                                     String refval, StringVector usedrefs,
                                     NodeSet nodeSet, boolean mayBeMore)
   {
@@ -103,9 +104,10 @@ public class FuncId extends FunctionOneArg
     if (null != refval)
     {
       String ref = null;
-      DOMHelper dh = xctxt.getDOMHelper();
+//      DOMHelper dh = xctxt.getDOMHelper();
       StringTokenizer tokenizer = new StringTokenizer(refval);
       boolean hasMore = tokenizer.hasMoreTokens();
+      DTM dtm = xctxt.getDTM(docContext);
 
       while (hasMore)
       {
@@ -119,9 +121,9 @@ public class FuncId extends FunctionOneArg
           continue;
         }
 
-        Node node = dh.getElementByID(ref, docContext);
+        int node = dtm.getElementById(ref);
 
-        if (null != node)
+        if (DTM.NULL != node)
           nodeSet.addNodeInDocOrder(node, xctxt);
 
         if ((null != ref) && (hasMore || mayBeMore))
@@ -148,31 +150,32 @@ public class FuncId extends FunctionOneArg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node context = xctxt.getCurrentNode();
-    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType())
-                          ? (Document) context : context.getOwnerDocument();
+    int context = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(context);
+    int docContext = dtm.getDocument();
 
-    if (null == docContext)
+    if (DTM.NULL == docContext)
       error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
 
     XObject arg = m_arg0.execute(xctxt);
     int argType = arg.getType();
-    XNodeSet nodes = new XNodeSet();
+    XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
     NodeSet nodeSet = nodes.mutableNodeset();
 
     if (XObject.CLASS_NODESET == argType)
     {
-      NodeIterator ni = arg.nodeset();
+      DTMIterator ni = arg.nodeset();
       StringVector usedrefs = null;
-      Node pos = ni.nextNode();
+      int pos = ni.nextNode();
 
-      while (null != pos)
+      while (DTM.NULL != pos)
       {
-        String refval = DOMHelper.getNodeData(pos);
+        DTM ndtm = ni.getDTM(pos);
+        String refval = ndtm.getStringValue(pos).toString();
 
         pos = ni.nextNode();
         usedrefs = getNodesByID(xctxt, docContext, refval, usedrefs, nodeSet,
-                                null != pos);
+                                DTM.NULL != pos);
       }
       // ni.detach();
     }

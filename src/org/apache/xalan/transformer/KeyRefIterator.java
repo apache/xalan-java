@@ -60,12 +60,15 @@ import java.util.Vector;
 
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLString;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xpath.NodeSet;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -79,15 +82,15 @@ public class KeyRefIterator extends LocPathIterator
 
   /** Key name.
    *  @serial         */
-  private QName m_name;    
+  private final QName m_name;    
   
   /** Use field of key function.
    *  @serial         */
-  private String m_lookupKey;  
+  private final XMLString m_lookupKey;  
   
   /** Main Key iterator for this iterator.
    *  @serial    */
-  private KeyIterator m_ki;    
+  private final KeyIterator m_ki;    
   
   /**
    * Get key name
@@ -109,7 +112,7 @@ public class KeyRefIterator extends LocPathIterator
    * @param ref Key value to match
    * @param ki The main key iterator used to walk the source tree 
    */
-  public KeyRefIterator(String ref, KeyIterator ki)
+  public KeyRefIterator(XMLString ref, KeyIterator ki)
   {
 
     super(ki.getPrefixResolver());
@@ -118,7 +121,6 @@ public class KeyRefIterator extends LocPathIterator
     m_name = ki.getName();
     m_lookupKey = ref;
     this.m_execContext = ki.getXPathContext();
-    this.m_dhelper = ki.getDOMHelper();
   }
 
   /**
@@ -128,16 +130,12 @@ public class KeyRefIterator extends LocPathIterator
    * 
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * 
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
 
    if (m_foundLast)
-      return null;
+      return DTM.NULL;
     
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
@@ -150,21 +148,21 @@ public class KeyRefIterator extends LocPathIterator
     if ((null != m_cachedNodes)
             && (m_next < m_cachedNodes.size()))        
     {
-      Node next = m_cachedNodes.elementAt(m_next); 
+      int next = m_cachedNodes.elementAt(m_next); 
       this.setCurrentPos(++m_next); 
       m_lastFetched = next;
       
       return next;
     }    
 
-    Node next = null;       
+    int next = DTM.NULL;       
     if ( m_ki.getLookForMoreNodes()) 
     {
       ((KeyWalker)m_ki.getFirstWalker()).m_lookupKey = m_lookupKey;
       next = m_ki.nextNode();        
     }
     
-    if (null != next)
+    if (DTM.NULL != next)
     {  
       m_lastFetched = next;
       this.setCurrentPos(++m_next);
@@ -173,8 +171,8 @@ public class KeyRefIterator extends LocPathIterator
     else
       m_foundLast = true;                      
     
-    m_lastFetched = null;
-    return null;
+    m_lastFetched = DTM.NULL;
+    return DTM.NULL;
   }
   
   /**
@@ -187,6 +185,7 @@ public class KeyRefIterator extends LocPathIterator
    */
   public Object clone() throws CloneNotSupportedException
   {
+    // I wonder if we really want to clone the second time.  Myriam review.
     KeyRefIterator clone = (KeyRefIterator)super.clone();
     // clone.m_ki = (KeyIterator)m_ki.clone();
 
@@ -213,9 +212,24 @@ public class KeyRefIterator extends LocPathIterator
    */
   public void reset()
   {
-    super.reset();
-    
+    // I don't think we want to reset anything but the current position 
+    // for this specialized iterator.
+    // super.reset();
+    // setShouldCacheNodes(true);
     setCurrentPos(0);
+  }
+  
+  /**
+   *  Detaches the iterator from the set which it iterated over, releasing
+   * any computational resources and placing the iterator in the INVALID
+   * state. After<code>detach</code> has been invoked, calls to
+   * <code>nextNode</code> or<code>previousNode</code> will raise the
+   * exception INVALID_STATE_ERR.
+   */
+  public void detach()
+  {    
+    // I don't think we want to detach at all for this iterator.
+    // Myriam needs to review.  -sb.
   }
 
   
@@ -225,7 +239,7 @@ public class KeyRefIterator extends LocPathIterator
    *
    * @param node Node to add to cached nodes
    */
-  public void addNode(Node node) 
+  public void addNode(int node) 
   {
     NodeSet m_cachedNodes = getCachedNodes();
     if (null != m_cachedNodes)

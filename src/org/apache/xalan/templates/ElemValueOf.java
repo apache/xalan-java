@@ -56,7 +56,9 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.xml.sax.*;
 
@@ -65,13 +67,14 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xalan.trace.SelectionEvent;
-import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLString;
 
 import javax.xml.transform.TransformerException;
-import org.apache.xalan.stree.SaxEventDispatch;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -93,7 +96,7 @@ public class ElemValueOf extends ElemTemplateElement
    * @serial
    */
   private XPath m_selectExpression = null;
-  
+
   /**
    * True if the pattern is a simple ".".
    * @serial
@@ -110,11 +113,14 @@ public class ElemValueOf extends ElemTemplateElement
    */
   public void setSelect(XPath v)
   {
-    if(null != v)
+
+    if (null != v)
     {
       String s = v.getPatternString();
+
       m_isDot = (null != s) && s.equals(".");
     }
+
     m_selectExpression = v;
   }
 
@@ -200,6 +206,28 @@ public class ElemValueOf extends ElemTemplateElement
   }
 
   /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   *
+   * NEEDSDOC @param sroot
+   *
+   * @throws TransformerException
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+
+    super.compose(sroot);
+
+    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+
+    if (null != m_selectExpression)
+      m_selectExpression.fixupVariables(
+        vnames, sroot.getComposeState().getGlobalsSize());
+  }
+
+  /**
    * Return the node name.
    *
    * @return The node name
@@ -226,98 +254,86 @@ public class ElemValueOf extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
-    boolean didPushCurrent = false;
+
+    XPathContext xctxt = transformer.getXPathContext();
+    ResultTreeHandler rth = transformer.getResultTreeHandler();
 
     try
     {
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        transformer.getTraceManager().fireTraceEvent(this);
 
-      XObject value;
-      Node child;
-      
       // Optimize for "."
-      if(m_isDot && !TransformerImpl.S_DEBUG)
+      if (m_isDot &&!TransformerImpl.S_DEBUG)
       {
-        child = sourceNode;
-        value = null;
-      }
-      else
-      {
-        value = m_selectExpression.execute(transformer.getXPathContext(),
-                                                 sourceNode, this);
-        if(value.getType() == XObject.CLASS_NODESET)
-        {
-          org.w3c.dom.traversal.NodeIterator iterator = value.nodeset();
-          child = iterator.nextNode();
-          if(null == child)
-            return;
-        }
-        else
-          child = null;
-        if (TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                                                          "select", m_selectExpression, value);
-      }
-         
-      String s;                                                                                             
-      if(null != child)
-      {
-        transformer.getXPathContext().pushCurrentNode(child);
-        didPushCurrent = true;
-        if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
-        {
-          if (m_disableOutputEscaping)
-          {
-            ResultTreeHandler rth = transformer.getResultTreeHandler();
-            rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
-            ((SaxEventDispatch) child).dispatchCharactersEvent(rth);
-            rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
-          }
-          else
-            ((SaxEventDispatch) child).dispatchCharactersEvent(transformer.getResultTreeHandler());
-          return;
-        }
-        else
-        {
-          s = XNodeSet.getStringFromNode(child);
-        }
-      }
-      else
-      {
-        s = value.str();
-      }
+        int child = xctxt.getCurrentNode();
+        DTM dtm = xctxt.getDTM(child);
 
-      
-      int len = (null != s) ? s.length() : 0;
-      if(len > 0)
-      {
-        ResultTreeHandler rth = transformer.getResultTreeHandler();
+        xctxt.pushCurrentNode(child);
 
         if (m_disableOutputEscaping)
+          rth.processingInstruction(
+            javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+
+        try
         {
-          rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
-          rth.characters(s.toCharArray(), 0, len);
-          rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+          dtm.dispatchCharactersEvents(child, rth, false);
         }
-        else
-          rth.characters(s.toCharArray(), 0, len);
+        finally
+        {
+          if (m_disableOutputEscaping)
+            rth.processingInstruction(
+              javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+
+          xctxt.popCurrentNode();
+        }
+      }
+      else
+      {
+        xctxt.pushNamespaceContext(this);
+
+        int current = xctxt.getCurrentNode();
+
+        xctxt.pushCurrentNodeAndExpression(current, current);
+
+        if (m_disableOutputEscaping)
+          rth.processingInstruction(
+            javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+
+        try
+        {
+          Expression expr = m_selectExpression.getExpression();
+
+          if (TransformerImpl.S_DEBUG)
+          {
+            XObject obj = expr.execute(xctxt);
+
+            transformer.getTraceManager().fireSelectedEvent(current, this,
+                    "select", m_selectExpression, obj);
+
+            obj.dispatchCharactersEvents(rth);
+          }
+          else
+          {
+            expr.executeCharsToContentHandler(xctxt, rth);
+          }
+        }
+        finally
+        {
+          if (m_disableOutputEscaping)
+            rth.processingInstruction(
+              javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+
+          xctxt.popNamespaceContext();
+          xctxt.popCurrentNodeAndExpression();
+        }
       }
     }
-    catch(SAXException se)
+    catch (SAXException se)
     {
       throw new TransformerException(se);
-    }
-    finally
-    {
-      if(didPushCurrent)
-      {
-        transformer.getXPathContext().popCurrentNode();
-      }
     }
   }
 
@@ -330,7 +346,7 @@ public class ElemValueOf extends ElemTemplateElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     error(XSLTErrorResources.ER_CANNOT_ADD,

@@ -166,7 +166,7 @@ public class XBoolean extends XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
 
     // In order to handle the 'all' semantics of 
@@ -175,7 +175,14 @@ public class XBoolean extends XObject
     if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.equals(this);
 
-    return m_val == obj2.bool();
+    try
+    {
+      return m_val == obj2.bool();
+    }
+    catch(javax.xml.transform.TransformerException te)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
   }
 
 }

@@ -61,9 +61,13 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xpath.*;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -80,6 +84,11 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemWithParam extends ElemTemplateElement
 {
+  /**
+   * This is the index to the stack frame being called, <emph>not</emph> the 
+   * stack frame that contains this element.
+   */
+  int m_index;
 
   /**
    * The "select" attribute, which specifies the value of the
@@ -120,6 +129,8 @@ public class ElemWithParam extends ElemTemplateElement
    * @serial
    */
   private QName m_qname = null;
+  
+  int m_qnameID;
 
   /**
    * Set the "name" attribute.
@@ -155,6 +166,7 @@ public class ElemWithParam extends ElemTemplateElement
     return Constants.ELEMNAME_WITHPARAM;
   }
 
+
   /**
    * Return the node name.
    *
@@ -164,4 +176,95 @@ public class ElemWithParam extends ElemTemplateElement
   {
     return Constants.ELEMNAME_WITHPARAM_STRING;
   }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+    // See if we can reduce an RTF to a select with a string expression.
+    if(null == m_selectPattern  
+       && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+    {
+      XPath newSelect = ElemVariable.rewriteChildToExpression(this);
+      if(null != newSelect)
+        m_selectPattern = newSelect;
+    }
+    m_qnameID = sroot.getComposeState().getQNameID(m_qname);
+    super.compose(sroot);
+    
+    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+    if(null != m_selectPattern)
+      m_selectPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      
+    // m_index must be resolved by ElemApplyTemplates and ElemCallTemplate!
+  }
+  
+  /**
+   * Set the parent as an ElemTemplateElement.
+   *
+   * @param parent This node's parent as an ElemTemplateElement
+   */
+  public void setParentElem(ElemTemplateElement p)
+  {
+    super.setParentElem(p);
+    p.m_hasVariableDecl = true;
+  }
+  
+  /**
+   * Get the XObject representation of the variable.
+   *
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   *
+   * @return the XObject representation of the variable.
+   *
+   * @throws TransformerException
+   */
+  public XObject getValue(TransformerImpl transformer, int sourceNode)
+          throws TransformerException
+  {
+
+    XObject var;
+    XPathContext xctxt = transformer.getXPathContext();
+
+    xctxt.pushCurrentNode(sourceNode);
+
+    try
+    {
+      if (null != m_selectPattern)
+      {
+        var = m_selectPattern.execute(xctxt, sourceNode, this);
+
+        var.allowDetachToRelease(false);
+
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                  "select", m_selectPattern, var);
+      }
+      else if (null == getFirstChildElem())
+      {
+        var = XString.EMPTYSTRING;
+      }
+      else
+      {
+
+        // Use result tree fragment
+        int df = transformer.transformToRTF(this);
+
+        var = new XRTreeFrag(df, xctxt);
+      }
+    }
+    finally
+    {
+      xctxt.popCurrentNode();
+    }
+
+    return var;
+  }
+
+
 }

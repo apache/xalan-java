@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import java.util.Vector;
 import java.util.StringTokenizer;
@@ -498,7 +498,7 @@ public class AVT implements java.io.Serializable
    * @throws javax.xml.transform.TransformerException
    */
   public String evaluate(
-          XPathContext xctxt, Node context, org.apache.xml.utils.PrefixResolver nsNode)
+          XPathContext xctxt, int context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
 
@@ -575,5 +575,30 @@ public class AVT implements java.io.Serializable
     }
 
     return false;
+  }
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    if (null != m_parts)
+    {
+      int n = m_parts.size();
+
+      for (int i = 0; i < n; i++)
+      {
+        AVTPart part = (AVTPart) m_parts.elementAt(i);
+
+        part.fixupVariables(vars, globalsSize);
+      }
+    }
   }
 }

@@ -67,9 +67,9 @@ import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.VariableStack;
 import org.apache.xalan.transformer.TransformerImpl;
-
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -120,7 +120,7 @@ public class ElemCallTemplate extends ElemForEach
    * The template which is named by QName.
    * @serial
    */
-  private ElemTemplateElement m_template = null;
+  private ElemTemplate m_template = null;
 
   /**
    * Get an int constant identifying the type of element.
@@ -149,14 +149,68 @@ public class ElemCallTemplate extends ElemForEach
    * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose() throws TransformerException
+  public void compose(StylesheetRoot sroot) throws TransformerException
   {
-    super.compose();
+    super.compose(sroot);
+    
+    // Call compose on each param no matter if this is apply-templates 
+    // or call templates.
+    int length = getParamElemCount();
+    for (int i = 0; i < length; i++) 
+    {
+      ElemWithParam ewp = getParamElem(i);
+      ewp.compose(sroot);
+    }
+    
     if ((null != m_templateName) && (null == m_template))
     {
       m_template =
         this.getStylesheetRoot().getTemplateComposed(m_templateName);
+        
+      if(null == m_template)
+        return; // %REVIEW% error?
+    
+      length = getParamElemCount();
+      for (int i = 0; i < length; i++) 
+      {
+        ElemWithParam ewp = getParamElem(i);
+        ewp.m_index = -1;
+        // Find the position of the param in the template being called, 
+        // and set the index of the param slot.
+        int etePos = 0;
+        for (ElemTemplateElement ete = m_template.getFirstChildElem(); 
+             null != ete; ete = ete.getNextSiblingElem()) 
+        {
+          if(ete.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE)
+          {
+            ElemParam ep = (ElemParam)ete;
+            if(ep.getName().equals(ewp.getName()))
+            {
+              ewp.m_index = etePos;
+            }
+          }
+          else
+            break;
+          etePos++;
+        }
+        
+      }
     }
+  }
+  
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+    int length = getParamElemCount();
+    for (int i = 0; i < length; i++) 
+    {
+      ElemWithParam ewp = getParamElem(i);
+      ewp.endCompose(sroot);
+    }    
+    
+    super.endCompose(sroot);
   }
 
   /**
@@ -170,27 +224,50 @@ public class ElemCallTemplate extends ElemForEach
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     if (null != m_template)
     {
       XPathContext xctxt = transformer.getXPathContext();
       VariableStack vars = xctxt.getVarStack();
 
-      int savedSearchStart = vars.getSearchStart();
-
-      if (null != m_paramElems)
-        transformer.pushParams(xctxt, this, sourceNode, mode);
-      else
-        vars.pushContextMarker();
+      int thisframe = vars.getStackFrame();
+      int nextFrame = vars.link(m_template.m_frameSize);
       
-      vars.setSearchStart(-1);
-
+      // We have to clear the section of the stack frame that has params 
+      // so that the default param evaluation will work correctly.
+      if(m_template.m_inArgsSize > 0)
+      {
+        vars.clearLocalSlots(0, m_template.m_inArgsSize);
+      
+        if(null != m_paramElems)
+        {
+          int currentNode = xctxt.getCurrentNode();
+          vars.setStackFrame(thisframe);
+          int size = m_paramElems.length;
+          
+          for (int i = 0; i < size; i++) 
+          {
+            ElemWithParam ewp = m_paramElems[i];
+            if(ewp.m_index >= 0)
+            {
+              XObject obj = ewp.getValue(transformer, currentNode);
+              
+              // Note here that the index for ElemWithParam must have been 
+              // statically made relative to the xsl:template being called, 
+              // NOT this xsl:template.
+              vars.setLocalVariable(ewp.m_index, obj, nextFrame);
+            }
+          }
+          vars.setStackFrame(nextFrame);
+        }
+      }
+      
       SourceLocator savedLocator = xctxt.getSAXLocator();
 
       try
@@ -199,14 +276,13 @@ public class ElemCallTemplate extends ElemForEach
 
         // template.executeChildTemplates(transformer, sourceNode, mode, true);
         transformer.pushElemTemplateElement(m_template);
-        m_template.execute(transformer, sourceNode, mode);
+        m_template.execute(transformer);
       }
       finally
       {
         transformer.popElemTemplateElement();
         xctxt.setSAXLocator(savedLocator);
-        vars.popCurrentContext();
-        vars.setSearchStart(savedSearchStart);
+        vars.unlink();
       }
     }
     else
@@ -215,10 +291,10 @@ public class ElemCallTemplate extends ElemForEach
                                     new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
     }
   }
-
+  
   /** Vector of xsl:param elements associated with this element. 
    *  @serial */
-  protected Vector m_paramElems = null;
+  protected ElemWithParam[] m_paramElems = null;
 
   /**
    * Get the count xsl:param elements associated with this element.
@@ -226,7 +302,7 @@ public class ElemCallTemplate extends ElemForEach
    */
   public int getParamElemCount()
   {
-    return (m_paramElems == null) ? 0 : m_paramElems.size();
+    return (m_paramElems == null) ? 0 : m_paramElems.length;
   }
 
   /**
@@ -238,7 +314,7 @@ public class ElemCallTemplate extends ElemForEach
    */
   public ElemWithParam getParamElem(int i)
   {
-    return (ElemWithParam) m_paramElems.elementAt(i);
+    return m_paramElems[i];
   }
 
   /**
@@ -248,11 +324,21 @@ public class ElemCallTemplate extends ElemForEach
    */
   public void setParamElem(ElemWithParam ParamElem)
   {
-
     if (null == m_paramElems)
-      m_paramElems = new Vector();
-
-    m_paramElems.addElement(ParamElem);
+    {
+      m_paramElems = new ElemWithParam[1];
+      m_paramElems[0] = ParamElem;
+    }
+    else
+    {
+      // Expensive 1 at a time growth, but this is done at build time, so 
+      // I think it's OK.
+      int length = m_paramElems.length;
+      ElemWithParam[] ewp = new ElemWithParam[length + 1];
+      System.arraycopy(m_paramElems, 0, ewp, 0, length);
+      m_paramElems = ewp;
+      ewp[length] = ParamElem;
+    }
   }
 
   /**
@@ -269,7 +355,7 @@ public class ElemCallTemplate extends ElemForEach
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

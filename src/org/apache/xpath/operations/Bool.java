@@ -58,6 +58,7 @@ package org.apache.xpath.operations;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.XPathContext;
 
 /**
  * The 'boolean()' operation expression executer.
@@ -83,4 +84,20 @@ public class Bool extends UnaryOperation
     else
       return right.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
+  
+  /**
+   * Evaluate this operation directly to a boolean.
+   *
+   * @param xctxt The runtime execution context.
+   *
+   * @return The result of the operation as a boolean.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public boolean bool(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+    return m_right.bool(xctxt);
+  }
+
 }

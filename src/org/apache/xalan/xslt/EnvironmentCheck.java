@@ -57,7 +57,6 @@
 package org.apache.xalan.xslt;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
@@ -298,9 +297,7 @@ public class EnvironmentCheck
     "xerces.jar", 
     "testxsl.jar", 
     "crimson.jar", 
-    "jaxp.jar", "parser.jar", "dom.jar", "sax.jar", "xml.jar",
-    /* below are .jars associated with XSLTC for now */
-    "BCEL.jar", "java_cup.jar", "JLex.jar", "runtime.jar", "xsltc.jar"
+    "jaxp.jar", "parser.jar", "dom.jar", "sax.jar", "xml.jar"
 
     /* @todo add other jars that commonly include either
      * SAX, DOM, or JAXP interfaces in them
@@ -312,6 +309,9 @@ public class EnvironmentCheck
    *
    * Logs java.class.path and other likely paths; then attempts 
    * to search those paths for .jar files with Xalan-related classes.
+   *
+   * //@todo NOTE: We don't actually search java.ext.dirs for 
+   * //  *.jar files therein! This should be updated
    *
    * @param h Hashtable to put information in
    * @see #jarNames
@@ -335,7 +335,7 @@ public class EnvironmentCheck
 
       // For applet context, etc.
       h.put(
-        ERROR + "java.version",
+        "java.version",
         "WARNING: SecurityException thrown accessing system version properties");
     }
 
@@ -367,23 +367,29 @@ public class EnvironmentCheck
           h.put(FOUNDCLASSES + "sun.boot.class.path", classpathJars);
       }
 
+      //@todo NOTE: We don't actually search java.ext.dirs for 
+      //  *.jar files therein! This should be updated
       othercp = System.getProperty("java.ext.dirs");
+
       if (null != othercp)
       {
         h.put("java.ext.dirs", othercp);
 
-        // Check the whole extensions directory for *.jar
-        classpathJars = checkDirForJars(othercp, jarNames);
+        classpathJars = checkPathForJars(othercp, jarNames);
 
         if (null != classpathJars)
           h.put(FOUNDCLASSES + "java.ext.dirs", classpathJars);
       }
+
+      //@todo also check other System properties' paths?
+      //  v2 = checkPathForJars(System.getProperty("sun.boot.library.path"), jarNames);   // ?? may not be needed
+      //  v3 = checkPathForJars(System.getProperty("java.library.path"), jarNames);   // ?? may not be needed
     }
     catch (SecurityException se2)
     {
       // For applet context, etc.
       h.put(
-        ERROR + "java.class.path.ext.dirs",
+        "java.version",
         "WARNING: SecurityException thrown accessing system classpath properties");
     }
   }
@@ -400,7 +406,6 @@ public class EnvironmentCheck
    * @return false if OK, true if any .jars were reported 
    * as having errors
    * @see #checkPathForJars(String, String[])
-   * @see #checkDirForJars(String, String[])
    */
   protected boolean logFoundJars(Vector v, String desc)
   {
@@ -461,7 +466,6 @@ public class EnvironmentCheck
    *
    * @return Vector of Hashtables filled with info about found .jars
    * @see #jarNames
-   * @see #checkDirForJars(String, String[])
    * @see #logFoundJars(Vector, String)
    * @see #getApparentVersion(String, long)
    */
@@ -486,78 +490,6 @@ public class EnvironmentCheck
         if (filename.indexOf(jars[i]) > -1)
         {
           File f = new File(filename);
-
-          if (f.exists())
-          {
-
-            // If any requested jarName exists, report on 
-            //  the details of that .jar file
-            try
-            {
-              Hashtable h = new Hashtable(5);
-
-              //h.put(jars[i] + ".jarname", jars[i]);
-              // h.put(jars[i] + ".lastModified", String.valueOf(f.lastModified()));
-              h.put(jars[i] + ".path", f.getAbsolutePath());
-              h.put(jars[i] + ".apparent.version",
-                    getApparentVersion(jars[i], f.length()));
-              v.addElement(h);
-            }
-            catch (Exception e)
-            {
-
-              /* no-op, don't add it  */
-            }
-          }
-          else
-          {
-            logMsg("# Warning: Classpath entry: " + filename
-                   + " does not exist.");
-          }
-        }
-      }
-    }
-
-    return v;
-  }
-
-  /**
-   * Cheap-o listing of specified .jars found in a directory. 
-   *
-   * cp should be a directory name, presumably java.ext.dirs.
-   *
-   * @param cp name of directory to look in for *.jar
-   * @param jars array of .jar base filenames to look for
-   *
-   * @return Vector of Hashtables filled with info about found .jars
-   * @see #jarNames
-   * @see #checkPathForJars(String, String[])
-   * @see #logFoundJars(Vector, String)
-   * @see #getApparentVersion(String, long)
-   */
-  protected Vector checkDirForJars(String cp, String[] jars)
-  {
-
-    if ((null == cp) || (null == jars) || (0 == cp.length())
-            || (0 == jars.length))
-      return null;
-
-    File extDir = new File(cp);
-    if (!extDir.exists())
-      return null;
-
-    Vector v = new Vector();
-    String foundJars[] = extDir.list(new JarFileFilter());
-    for (int j = 0; j < foundJars.length; j++)
-    {
-      // Look at each .jar entry for each of our requested jarNames
-      String filename = foundJars[j];
-
-      for (int i = 0; i < jars.length; i++)
-      {
-        if (filename.equalsIgnoreCase(jars[i]))
-        {
-          File f = new File(extDir, filename);
 
           if (f.exists())
           {
@@ -619,14 +551,13 @@ public class EnvironmentCheck
     Hashtable jarVersions = new Hashtable();
 
     // key=jarsize, value=jarname ' from ' distro name
-    // Note assumption: two jars will not have the same size!
+    // Note assumption: two jars cannot have the same size!
     // Note: hackish Hashtable, this could use improvement
     jarVersions.put(new Long(440237), "xalan.jar from xalan-j_1_2");
     jarVersions.put(new Long(436094), "xalan.jar from xalan-j_1_2_1");
     jarVersions.put(new Long(426249), "xalan.jar from xalan-j_1_2_2");
     jarVersions.put(new Long(702536), "xalan.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(720930), "xalan.jar from xalan-j_2_0_1");
-    jarVersions.put(new Long(732330), "xalan.jar from xalan-j_2_1_0");
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
@@ -636,7 +567,6 @@ public class EnvironmentCheck
     jarVersions.put(new Long(804460),  "xerces.jar from xalan-j_1_2_2 from xerces-1_2_2.bin");
     jarVersions.put(new Long(1499244), "xerces.jar from xalan-j_2_0_0 from xerces-1_2_3.bin");
     jarVersions.put(new Long(1605266), "xerces.jar from xalan-j_2_0_1 from xerces-1_3_0.bin");
-    jarVersions.put(new Long(904030),  "xerces.jar from xalan-j_2_1_0 from xerces-1_4_0.bin");
     jarVersions.put(new Long(1190776), "xerces.jar from lotusxsl_1_0_1 apparently-from xerces-1_0_3.bin");
     jarVersions.put(new Long(1489400), "xerces.jar from lotusxsl-j_2_0_0 from XML4J-3_1_1");
 
@@ -657,13 +587,6 @@ public class EnvironmentCheck
     jarVersions.put(new Long(5537), "jaxp.jar from jakarta-ant-1.3 or 1.2");
     jarVersions.put(new Long(136198),
                     "parser.jar from jakarta-ant-1.3 or 1.2");
-
-    // XSLTC integration jars checked-in Apr-01
-    jarVersions.put(new Long(320367), "BCEL.jar from XSLTC integration Apr-01");
-    jarVersions.put(new Long(61975), "java_cup.jar from XSLTC integration Apr-01");
-    jarVersions.put(new Long(54603), "JLex.jar from XSLTC integration Apr-01");
-    jarVersions.put(new Long(7779), "runtime.jar from XSLTC integration Apr-01");
-    jarVersions.put(new Long(129139), "xml.jar from XSLTC integration Apr-01");
 
     // If we found a matching size and it's for our 
     //  jar, then return it's description
@@ -945,24 +868,4 @@ public class EnvironmentCheck
   {
     outWriter.println(s);
   }
-
-  private class JarFileFilter implements FilenameFilter
-  {
-    /**
-     * Returns true for *.jar files
-     * @param dir the directory in which the file was found.
-     * @param name the name of the file.
-     * @return <code>true</code> if the name should be included in the file list; <code>false</code> otherwise.
-     * @since JDK1.0
-     */
-    public boolean accept(File dir, String name)
-    {
-      // Shortcuts for bogus filenames and dirs
-      if (name == null || dir == null)
-        return false;
-      return name.toLowerCase().endsWith("jar");
-    }
-}
-
-
 }

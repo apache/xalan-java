@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -95,7 +96,7 @@ public class ElemChoose extends ElemTemplateElement
   /**
    * Return the node name.
    *
-   * @return The element's name 
+   * @return The element's name
    */
   public String getNodeName()
   {
@@ -109,7 +110,7 @@ public class ElemChoose extends ElemTemplateElement
   public ElemChoose(){}
 
   /**
-   * Execute the xsl:choose transformation. 
+   * Execute the xsl:choose transformation.
    *
    *
    * @param transformer non-null reference to the the current transform-time state.
@@ -118,13 +119,11 @@ public class ElemChoose extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     boolean found = false;
 
@@ -140,16 +139,32 @@ public class ElemChoose extends ElemTemplateElement
         ElemWhen when = (ElemWhen) childElem;
 
         // must be xsl:when
-        XObject test = when.getTest().execute(transformer.getXPathContext(),
-                                              sourceNode, when);
+        XPathContext xctxt = transformer.getXPathContext();
+        int sourceNode = xctxt.getCurrentNode();
 
         if (TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
-                  "test", when.getTest(), test);
-
-        if ((null != test) && test.bool())
         {
-          transformer.executeChildTemplates(when, sourceNode, mode, true);
+          XObject test = when.getTest().execute(xctxt, sourceNode, when);
+
+          if (TransformerImpl.S_DEBUG)
+            transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
+                    "test", when.getTest(), test);
+
+          if (test.bool())
+          {
+            transformer.executeChildTemplates(when, true);
+
+            return;
+          }
+
+          // I don't think we want this.  -sb
+          //  if (TransformerImpl.S_DEBUG)
+          //    transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
+          //            "endTest", when.getTest(), test);
+        }
+        else if (when.getTest().bool(xctxt, sourceNode, when))
+        {
+          transformer.executeChildTemplates(when, true);
 
           return;
         }
@@ -159,15 +174,15 @@ public class ElemChoose extends ElemTemplateElement
         found = true;
 
         // xsl:otherwise                
-        transformer.executeChildTemplates(childElem, sourceNode, mode, true);
+        transformer.executeChildTemplates(childElem, true);
 
         return;
       }
     }
 
     if (!found)
-      transformer.getMsgMgr().error(this,
-        XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
+      transformer.getMsgMgr().error(
+        this, XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
   }
 
   /**
@@ -179,7 +194,7 @@ public class ElemChoose extends ElemTemplateElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

@@ -91,9 +91,19 @@ public class TreeWalker
    *
    * @return the ContentHandler used for the tree walk
    */
-  public ContentHandler getcontentHandler()
+  public ContentHandler getContentHandler()
   {
     return m_contentHandler;
+  }
+
+  /**
+   * Get the ContentHandler used for the tree walk.
+   *
+   * @return the ContentHandler used for the tree walk
+   */
+  public void setContentHandler(ContentHandler ch)
+  {
+    m_contentHandler = ch;
   }
 	
 	/**
@@ -109,20 +119,7 @@ public class TreeWalker
 		if (systemId != null)
 			m_locator.setSystemId(systemId);
 		else
-		{
-            try
-            {
-    			m_locator.setSystemId(System.getProperty("user.dir"));
-            }
-            catch (SecurityException se)
-            {
-                // Must catch this for applet case -sc
-                // Um, set default to '.', for lack of a better idea?
-                // This may well not work, but it's probably better 
-                //  than just propagating the SecurityException
-    			m_locator.setSystemId(".");
-            }		    
-		}
+			m_locator.setSystemId(System.getProperty("user.dir"));
     m_dh = dh;
   }
 
@@ -135,19 +132,7 @@ public class TreeWalker
   {
     this.m_contentHandler = contentHandler;
 		m_contentHandler.setDocumentLocator(m_locator);
-        try
-        {
-    		m_locator.setSystemId(System.getProperty("user.dir"));
-        }
-        catch (SecurityException se)
-        {
-            // Must catch this for applet case -sc
-            // Um, set default to '.', for lack of a better idea?
-            // This may well not work, but it's probably better 
-            //  than just propagating the SecurityException
-    		m_locator.setSystemId(".");
-        }		    
-        
+		m_locator.setSystemId(System.getProperty("user.dir"));
     m_dh = dh;
   }
   
@@ -159,20 +144,10 @@ public class TreeWalker
   public TreeWalker(ContentHandler contentHandler)
   {
     this.m_contentHandler = contentHandler;
-		m_contentHandler.setDocumentLocator(m_locator);
-        try
-        {
-    		m_locator.setSystemId(System.getProperty("user.dir"));
-        }
-        catch (SecurityException se)
-        {
-            // Must catch this for applet case -sc
-            // Um, set default to '.', for lack of a better idea?
-            // This may well not work, but it's probably better 
-            //  than just propagating the SecurityException
-    		m_locator.setSystemId(".");
-        }		    
-		m_dh = new org.apache.xpath.DOM2Helper();
+		if (m_contentHandler != null)
+			m_contentHandler.setDocumentLocator(m_locator);
+		m_locator.setSystemId(System.getProperty("user.dir"));
+    m_dh = new org.apache.xpath.DOM2Helper();
   }
 
   /**
@@ -274,15 +249,8 @@ public class TreeWalker
   private final void dispatachChars(Node node)
      throws org.xml.sax.SAXException
   {
-    if(node.isSupported(org.apache.xalan.stree.SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
-    {
-      ((org.apache.xalan.stree.SaxEventDispatch)node).dispatchCharactersEvent(m_contentHandler);
-    }
-    else
-    {
-      String data = ((Text) node).getData();
-      this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
-    }
+    String data = ((Text) node).getData();
+    this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
   }
 
   /**
@@ -413,7 +381,7 @@ public class TreeWalker
     break;
     case Node.TEXT_NODE :
     {
-      // String data = ((Text) node).getData();
+      //String data = ((Text) node).getData();
 
       if (nextIsRaw)
       {

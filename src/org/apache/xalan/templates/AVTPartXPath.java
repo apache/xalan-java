@@ -62,7 +62,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xml.utils.FastStringBuffer;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -76,6 +77,21 @@ public class AVTPartXPath extends AVTPart
    * @serial
    */
   private XPath m_xpath;
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    m_xpath.fixupVariables(vars, globalsSize);
+  }
   
   /**
    * Tell if this expression or it's subexpressions can traverse outside 
@@ -150,7 +166,7 @@ public class AVTPartXPath extends AVTPart
    * @throws javax.xml.transform.TransformerException
    */
   public void evaluate(
-          XPathContext xctxt, FastStringBuffer buf, Node context, org.apache.xml.utils.PrefixResolver nsNode)
+          XPathContext xctxt, FastStringBuffer buf, int context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
 
@@ -158,7 +174,7 @@ public class AVTPartXPath extends AVTPart
 
     if (null != xobj)
     {
-      buf.append(xobj.str());
+      xobj.appendToFsb(buf);
     }
   }
 }

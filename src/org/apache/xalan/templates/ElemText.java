@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -170,7 +171,7 @@ public class ElemText extends ElemTemplateElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

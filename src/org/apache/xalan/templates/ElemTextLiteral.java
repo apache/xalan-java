@@ -56,8 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
-
+//import org.w3c.dom.*;
+ 
 import org.xml.sax.*;
 
 import org.apache.xml.utils.QName;
@@ -107,6 +107,12 @@ public class ElemTextLiteral extends ElemTemplateElement
    * @serial
    */
   private char m_ch[];
+  
+  /**
+   * The character array as a string.
+   * @serial
+   */
+  private String m_str;
 
   /**
    * Set the characters that will be output to the result tree..
@@ -127,6 +133,23 @@ public class ElemTextLiteral extends ElemTemplateElement
   {
     return m_ch;
   }
+  
+  /**
+   * Get the value of the node as a string.
+   *
+   * @return null
+   */
+  public synchronized String getNodeValue()
+  {
+
+    if(null == m_str)
+    {
+      m_str = new String(m_ch);
+    }
+
+    return m_str;
+  }
+
 
   /**
    * Tells if this element should disable escaping.
@@ -216,13 +239,13 @@ public class ElemTextLiteral extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
     try
     {
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        transformer.getTraceManager().fireTraceEvent(this);
 
       ResultTreeHandler rth = transformer.getResultTreeHandler();
       if (m_disableOutputEscaping)

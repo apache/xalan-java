@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -82,7 +82,7 @@ public class FuncStartsWith extends Function2Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return m_arg0.execute(xctxt).str().startsWith(m_arg1.execute(xctxt).str())
+    return m_arg0.execute(xctxt).xstr().startsWith(m_arg1.execute(xctxt).xstr())
            ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
 }

@@ -59,7 +59,8 @@ package org.apache.xalan.transformer;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -160,7 +161,7 @@ public class CountersTable extends Hashtable
    *
    * @throws TransformerException
    */
-  public int countNode(XPathContext support, ElemNumber numberElem, Node node)
+  public int countNode(XPathContext support, ElemNumber numberElem, int node)
           throws TransformerException
   {
 
@@ -170,9 +171,9 @@ public class CountersTable extends Hashtable
 
     // XPath countMatchPattern = numberElem.getCountMatchPattern(support, node);
     // XPath fromMatchPattern = numberElem.m_fromMatchPattern;
-    Node target = numberElem.getTargetNode(support, node);
+    int target = numberElem.getTargetNode(support, node);
 
-    if (null != target)
+    if (DTM.NULL != target)
     {
       for (int i = 0; i < nCounters; i++)
       {
@@ -192,7 +193,7 @@ public class CountersTable extends Hashtable
       // the backwards list (m_newFound) to the forwards list (counter.m_countNodes).
       count = 0;
 
-      for (; null != target;
+      for (; DTM.NULL != target;
               target = numberElem.getPreviousNode(support, target))
       {
 
@@ -207,8 +208,8 @@ public class CountersTable extends Hashtable
             int cacheLen = counter.m_countNodes.size();
 
             if ((cacheLen > 0)
-                    && counter.m_countNodes.elementAt(cacheLen
-                                                      - 1).equals(target))
+                    && (counter.m_countNodes.elementAt(cacheLen
+                                                      - 1) == target))
             {
               count += (cacheLen + counter.m_countNodesStartCount);
 

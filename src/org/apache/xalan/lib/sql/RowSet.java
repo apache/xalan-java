@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -64,50 +64,16 @@ import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 
-import org.apache.xpath.patterns.NodeTest;
-
 /**
- * <p>
- * The row-set is the controlling element in the Document that determines
- * if the JDB ResultSet is being traversed or if the ResultSet MetaData
- * is being interogated.
- * <p>
- *
- * <pre>
- * <p>
- * The DTD for the Document is a follows.
- * &lt;row-set&gt;
- *    &lt;column-header {@link org.apache.xalan.lib.sql.ColumnAttributes} &gt;
- *    .
- *    . One for each column in the Query
- *    .
- *    &lt;column-header /&gt;
- *    &lt;row&gt;
- *    .
- *    . One for each Row in the query
- *    .
- *      &lt;col {@link ColumnAttribute} &gt; The Data for the column &lt;/col&gt;
- *      .
- *      .
- *      . One for each column in the Row
- *      .
- *      .
- *    &lt;/row&gt;
- * &lt;row-set&gt;
- * </p>
- * </pre>
+ * <meta name="usage" content="experimental"/>
+ * This class represents the row-set StreamableNode, a "streamable" holder
+ * for the JDBC query result set.
  */
-
 public class RowSet extends StreamableNode
 {
-  /** Let's keep track of the branch we are on */
-  private static final int  ROWSET_POS_NONE = 0;
-  private static final int  ROWSET_POS_COLHDR = 1;
-  private static final int  ROWSET_POS_ROW = 2;
-  private int               m_RowSetPos;
 
   /** Array of column headers in this row-set          */
-  ColumnHeader[] m_columnHeaders = null;
+  ColumnHeader[] m_columnHeaders;
 
   /** First row in this row-set          */
   Row m_firstrow;
@@ -124,41 +90,6 @@ public class RowSet extends StreamableNode
   public RowSet(XStatement statement)
   {
     super(statement);
-
-    m_RowSetPos = ROWSET_POS_NONE;
-
-    // Make sure we always populate the column headers
-    // If we do not iterate over the COlumn Headers, and ask
-    // for a column attribute, we will fail. So we need to
-    // populate this array now.
-    // Changed 3/15/01 JCG
-    try
-    {
-      if (null == m_columnHeaders)
-      {
-        ResultSetMetaData metaData = statement.m_resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-
-        // If we have actuall requested a set of columns and we
-        // have not been here before, then get all the column
-        // headers to build our list of attributes
-        if (columnCount > 0)
-        {
-          m_columnHeaders = new ColumnHeader[columnCount];
-
-          // Populate the column Header Array
-          for (int x =0; x< columnCount; x++)
-          {
-            m_columnHeaders[x] =
-              new ColumnHeader(getXStatement(), this, x,  metaData);
-          }
-        }
-      }
-    }
-    catch(SQLException e)
-    {
-      m_columnHeaders = null;
-    }
   }
 
   // ===== Element implementation =====
@@ -173,90 +104,72 @@ public class RowSet extends StreamableNode
     return XStatement.S_DOCELEMENTNAME;
   }
 
+  /**
+   * The first time the client asks for a column-header element, instantiate an array of ColumnHeaders
+   * (1 per column), and return the ColumnHeader for the first row.
+   * @return ColumnHeader Node for first row or null.
+   */
   public Node getFirstChild()
   {
 
     if (DEBUG)
       System.out.println("In RowSet.getFirstChild");
 
-    NodeTest nt = this.getNodeTest();
-
-      // If we are asking for the Column Header branch of the Node Tree
-      // or if we are asking for any branch (nt == null) then we will
-      // return the First Column Header Node
-    if ((null == nt) ||
-      nt.getLocalName().equals(XStatement.S_COLUMNHEADERNAME))
-    {
-      m_RowSetPos = ROWSET_POS_COLHDR;
-      return getFirstColHdr();
-    }
-    //
-    // If we ask for the Row Branch directly then return the
-    // first row. If we have been here before and we are in
-    // streamable mode then return null, we can re-traverse
-    // the Result Set in Streamable Mode.
-    //
-    // Suppporting JDBC scrollable cursors may change that
-    // though.
-    //
-    else if (nt.getLocalName().equals(XStatement.S_ROWNAME))
-    {
-      m_RowSetPos = ROWSET_POS_ROW;
-      return getFirstRow();
-    }
-
-    return null;
-  }
-
-  private Node getFirstColHdr()
-  {
-    if (null != m_columnHeaders) return m_columnHeaders[0];
-    else return null;
-  }
-
-  private Node getFirstRow()
-  {
-    XStatement statement = getXStatement();
-
     try
     {
-      if (null == m_firstrow)
+      org.apache.xpath.patterns.NodeTest nt = this.getNodeTest();
+      if ((null == nt) || nt.getNamespace() == null)
       {
-        // If there was no data, then return null for the query
-        ResultSet resultSet = getXStatement().getResultSet();
-        if (resultSet.next())
+        if ((null == nt) || nt.getLocalName().equals(
+                XStatement.S_COLUMNHEADERNAME))
         {
-          m_firstrow = new Row(getXStatement(), this, null);
+          if (null == m_columnHeaders)
+          {
+            ResultSetMetaData metaData =
+              getXStatement().m_resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            if (columnCount > 0)
+            {
+              m_columnHeaders = new ColumnHeader[columnCount];
+              m_columnHeaders[0] = new ColumnHeader(getXStatement(), this, 0,
+                                                    metaData);
+
+              return m_columnHeaders[0];
+            }
+            else
+              return null;
+          }
+          else
+            return m_columnHeaders[0];
+        }
+        else if (nt.getLocalName().equals(
+                XStatement.S_ROWNAME))
+        {
+          if (null == m_firstrow)
+          {
+            m_firstrow = new Row(getXStatement(), this);
+          }
+
+          return m_firstrow;
         }
         else
-        {
-          m_firstrow = null;
-        }
+          return null;
       }
       else
-      {
-        // We have been here before, then don't allow
-        // use to re-traverse the query.
-        //
-        // We could just re-issue the query ??
-        if (statement.getShouldCacheNodes() == false)
-        {
-          // Streaming is off, so let's prevent another walk through
-          return null;
-        }
-      }
+        return null;
     }
-    catch(SQLException e)
+    catch (SQLException sqle)
     {
-      // Something went wrong, just return null
+
+      // diagnostics?
       return null;
     }
-
-    return m_firstrow;
   }
 
+
   /**
-   * getNextSibling
+   * getNextSibling - This always returns null.
    *
    * @return null
    */
@@ -266,15 +179,7 @@ public class RowSet extends StreamableNode
     if (DEBUG)
       System.out.println("In RowSet.getNextSibling");
 
-    switch (m_RowSetPos)
-    {
-      case ROWSET_POS_NONE:
-        return getFirstColHdr();
-      case ROWSET_POS_COLHDR:
-        return getFirstRow();
-      default:
-        return null;
-    }
+    return null;
   }
 
   /**
@@ -288,14 +193,14 @@ public class RowSet extends StreamableNode
     if (DEBUG)
       System.out.println("In RowSet.getParentNode");
 
-    return getXStatement();
+    return this.getXStatement();
   }
 
   /**
    * Tell if there are any children of the document,
    * which is always true.
    *
-   * @return True
+   * @return True  
    */
   public boolean hasChildNodes()
   {

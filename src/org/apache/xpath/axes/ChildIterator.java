@@ -60,11 +60,13 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.WhitespaceStrippingElementMatcher;
+import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolver;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -82,14 +84,32 @@ public class ChildIterator extends LocPathIterator
    * @param compiler A reference to the Compiler that contains the op map.
    * @param opPos The position within the op map, which contains the
    * location path expression for this itterator.
-   * NEEDSDOC @param analysis
+   * @param analysis Analysis bits of the entire pattern.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public ChildIterator(Compiler compiler, int opPos, int analysis)
+  ChildIterator(Compiler compiler, int opPos, int analysis)
           throws javax.xml.transform.TransformerException
   {
     super(compiler, opPos, analysis, false);
+  }
+  
+  /**
+   * Return the first node out of the nodeset, if this expression is 
+   * a nodeset expression.  This is the default implementation for 
+   * nodesets.
+   * <p>WARNING: Do not mutate this class from this function!</p>
+   * @param xctxt The XPath runtime context.
+   * @return the first node out of the nodeset, or DTM.NULL.
+   */
+  public int asNode(XPathContext xctxt)
+    throws javax.xml.transform.TransformerException
+  {
+    int current = xctxt.getCurrentNode();
+    
+    DTM dtm = xctxt.getDTM(current);
+    
+    return dtm.getFirstChild(current);
   }
 
   /**
@@ -99,88 +119,36 @@ public class ChildIterator extends LocPathIterator
    *
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   *
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
 
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
+    // If the cache is on, and the node has already been found, then 
+    // just return from the list.
     if ((null != m_cachedNodes)
-            && (m_cachedNodes.getCurrentPos() < m_cachedNodes.size()))
+            && (m_next < m_cachedNodes.size()))
     {
-      Node next = m_cachedNodes.nextNode();
-
-      this.setCurrentPos(m_cachedNodes.getCurrentPos());
+      int next = m_cachedNodes.elementAt(m_next);
+    
+      incrementNextPosition();
+      m_currentContextNode = next;
 
       return next;
     }
 
     if (m_foundLast)
-      return null;
+      return DTM.NULL;
 
-    Node next;
+    int next;
 
-    while (true)
-    {
-      m_lastFetched = next = (null == m_lastFetched)
-                             ? m_context.getFirstChild()
-                             : m_lastFetched.getNextSibling();
-
-      // Yuck!  Blech!  -sb
-      if (null != next)
-      {
-        int nt = next.getNodeType();
-        if(Node.DOCUMENT_TYPE_NODE == nt) // bug fix, position14, d2d, xerces DOM
-          continue;
-        else if ((Node.TEXT_NODE == nt)
-                &&!next.isSupported(SUPPORTS_PRE_STRIPPING, null))
-        {
-          Node parent = next.getParentNode();
-
-          if (null != parent && Node.ELEMENT_NODE == parent.getNodeType())
-          {
-            String data = next.getNodeValue();
-
-            if (org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(
-                    data))
-            {
-
-              // Ugly trick for now.
-              PrefixResolver resolver =
-                getXPathContext().getNamespaceContext();
-
-              if (resolver instanceof WhitespaceStrippingElementMatcher)
-              {
-                WhitespaceStrippingElementMatcher wsem =
-                  (WhitespaceStrippingElementMatcher) resolver;
-
-                try
-                {
-                  if (wsem.shouldStripWhiteSpace(
-                          getXPathContext(), (org.w3c.dom.Element) parent))
-                  {
-                    continue;
-                  }
-                }
-                catch (javax.xml.transform.TransformerException te)
-                {
-                  throw new org.apache.xml.utils.WrappedRuntimeException(te);
-                }
-              }
-            }
-          }
-        }
-      }
-
-      break;
-    }
+    m_lastFetched = next = (DTM.NULL == m_lastFetched)
+                           ? m_cdtm.getFirstChild(m_context)
+                           : m_cdtm.getNextSibling(m_lastFetched);
 
     // m_lastFetched = next;
-    if (null != next)
+    if (DTM.NULL != next)
     {
       if (null != m_cachedNodes)
         m_cachedNodes.addElement(m_lastFetched);
@@ -193,7 +161,7 @@ public class ChildIterator extends LocPathIterator
     {
       m_foundLast = true;
 
-      return null;
+      return DTM.NULL;
     }
   }
 }

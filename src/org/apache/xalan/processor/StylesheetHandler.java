@@ -404,7 +404,7 @@ public class StylesheetHandler extends DefaultHandler
             && ((null == getStylesheet()
                 || Double.valueOf(getStylesheet().getVersion()).doubleValue()
                    > Constants.XSLTVERSUPPORTED) ||
-								(!uri.equals(Constants.S_XSLNAMESPACEURL) &&
+                                                                (!uri.equals(Constants.S_XSLNAMESPACEURL) &&
                 currentProcessor instanceof ProcessorStylesheetElement)))
     {
       elemProcessor = def.getProcessorForUnknown(uri, localName);
@@ -413,7 +413,7 @@ public class StylesheetHandler extends DefaultHandler
     if (null == elemProcessor)
       error(rawName + " is not allowed in this position in the stylesheet!",
             null);
-		
+                
     return elemProcessor;
   }
 
@@ -600,7 +600,7 @@ public class StylesheetHandler extends DefaultHandler
           String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-		NamespaceSupport nssupport = this.getNamespaceSupport();
+                NamespaceSupport nssupport = this.getNamespaceSupport();
     nssupport.pushContext();
     
     int n = m_prefixMappings.size();
@@ -613,17 +613,7 @@ public class StylesheetHandler extends DefaultHandler
     //m_prefixMappings.clear(); // JDK 1.2+ only -sc
     m_prefixMappings.removeAllElements(); // JDK 1.1.x compat -sc
 
-    m_elementID++;
-
-    // This check is currently done for all elements.  We should possibly consider
-    // limiting this check to xsl:stylesheet elements only since that is all it really
-    // applies to.  Also, it could be bypassed if m_shouldProcess is already true.
-    // In other words, it would be under the following 'if' statement:
-    // if (!m_shouldProcess && 
-    //     localName.equals(Constants.ELEMNAME_STYLESHEET_STRING) &&
-    //     url.equals(Constants.S_XSLNAMESPACEURL))
-    // I didn't include this 'if' statement at this time because it is a small performance
-    // hit and I was waiting to see if its absence caused a problem. - GLP
+    m_elementID++;		
 
     checkForFragmentID(attributes);
 
@@ -639,7 +629,7 @@ public class StylesheetHandler extends DefaultHandler
 
     this.pushProcessor(elemProcessor);
     elemProcessor.startElement(this, uri, localName, rawName, attributes);
-		
+                
   }
 
   /**
@@ -1035,9 +1025,9 @@ public class StylesheetHandler extends DefaultHandler
 
         for (int i = 0; i < n; i++)
         {
-          String name = attributes.getQName(i);
+          String type = attributes.getType(i);
 
-          if (name.equals(Constants.ATTRNAME_ID))
+          if (type.equalsIgnoreCase("ID"))
           {
             String val = attributes.getValue(i);
 
@@ -1150,8 +1140,8 @@ public class StylesheetHandler extends DefaultHandler
 
   /** The root stylesheet of the stylesheets tree. */
   StylesheetRoot m_stylesheetRoot;
-	
-	/** The last stylesheet that was popped off the stylesheets stack. */
+        
+        /** The last stylesheet that was popped off the stylesheets stack. */
   Stylesheet m_lastPoppedStylesheet;
 
   /**
@@ -1266,7 +1256,7 @@ public class StylesheetHandler extends DefaultHandler
     {
       return null;
     }
-  }
+  }  
 
   /** An increasing number that is used to indicate the order in which this element
    *  was encountered during the parse of the XSLT tree.

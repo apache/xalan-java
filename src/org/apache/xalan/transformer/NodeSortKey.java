@@ -110,7 +110,9 @@ class NodeSortKey
    * @throws javax.xml.transform.TransformerException
    */
   NodeSortKey(
-          TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, boolean descending, String langValue, boolean caseOrderUpper, org.apache.xml.utils.PrefixResolver namespaceContext)
+          TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, 
+          boolean descending, String langValue, boolean caseOrderUpper, 
+          org.apache.xml.utils.PrefixResolver namespaceContext)
             throws javax.xml.transform.TransformerException
   {
 

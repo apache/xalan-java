@@ -143,7 +143,7 @@ public class ElemAttributeSet extends ElemUse
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
@@ -156,15 +156,15 @@ public class ElemAttributeSet extends ElemUse
     }
 
     transformer.pushElemAttributeSet(this);
-    super.execute(transformer, sourceNode, mode);
+    super.execute(transformer);
 
-    ElemAttribute attr = (ElemAttribute) getFirstChild();
+    ElemAttribute attr = (ElemAttribute) getFirstChildElem();
 
     while (null != attr)
     {
-      attr.execute(transformer, sourceNode, mode);
+      attr.execute(transformer);
 
-      attr = (ElemAttribute) attr.getNextSibling();
+      attr = (ElemAttribute) attr.getNextSiblingElem();
     }
 
     transformer.popElemAttributeSet();
@@ -184,7 +184,7 @@ public class ElemAttributeSet extends ElemUse
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChildElem(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

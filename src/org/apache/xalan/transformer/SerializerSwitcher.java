@@ -134,7 +134,7 @@ public class SerializerSwitcher
             serializer.setWriter(writer);
           else
           {
-            OutputStream os = serializer.getOutputStream();
+            OutputStream os = oldSerializer.getOutputStream();
 
             if (null != os)
               serializer.setOutputStream(os);

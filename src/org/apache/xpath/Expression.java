@@ -56,18 +56,23 @@
  */
 package org.apache.xpath;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
 import org.xml.sax.XMLReader;
+import org.xml.sax.ContentHandler;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.XMLString;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
@@ -113,6 +118,50 @@ public abstract class Expression implements java.io.Serializable
   {
     m_slocator = locator;
   }
+  
+  /**
+   * Execute an expression in the XPath runtime context, and return the 
+   * result of the expression.
+   *
+   *
+   * @param xctxt The XPath runtime context.
+   * @param currentNode The currentNode.
+   *
+   * @return The result of the expression in the form of a <code>XObject</code>.
+   *
+   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   *         occurs.
+   */
+  public XObject execute(XPathContext xctxt, int currentNode)
+    throws javax.xml.transform.TransformerException
+  {
+    // For now, the current node is already pushed.
+    return execute(xctxt);
+  }
+  
+  /**
+   * Execute an expression in the XPath runtime context, and return the 
+   * result of the expression.
+   *
+   *
+   * @param xctxt The XPath runtime context.
+   * @param currentNode The currentNode.
+   * @param dtm The DTM of the current node.
+   * @param expType The expanded type ID of the current node.
+   *
+   * @return The result of the expression in the form of a <code>XObject</code>.
+   *
+   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   *         occurs.
+   */
+  public XObject execute(XPathContext xctxt, int currentNode, 
+                         DTM dtm, int expType)
+    throws javax.xml.transform.TransformerException
+  {
+    // For now, the current node is already pushed.
+    return execute(xctxt);
+  }
+
 
   /**
    * Execute an expression in the XPath runtime context, and return the 
@@ -128,6 +177,128 @@ public abstract class Expression implements java.io.Serializable
    */
   public abstract XObject execute(XPathContext xctxt)
     throws javax.xml.transform.TransformerException;
+    
+  /**
+   * Evaluate expression to a number.
+   *
+   * @return 0.0
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public double num(XPathContext xctxt) 
+    throws javax.xml.transform.TransformerException
+  {
+
+    return execute(xctxt).num();
+  }
+
+  /**
+   * Evaluate expression to a boolean.
+   *
+   * @return false
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public boolean bool(XPathContext xctxt) 
+    throws javax.xml.transform.TransformerException
+  {
+    return execute(xctxt).bool();
+  }
+
+  /**
+   * Cast result object to a string.
+   *
+   * @return The string this wraps or the empty string if null
+   */
+  public XMLString xstr(XPathContext xctxt)
+    throws javax.xml.transform.TransformerException
+  {
+    return execute(xctxt).xstr();
+  }
+    
+  /**
+   * Tell if the expression is a nodeset expression.  In other words, tell 
+   * if you can execute {@link asNode() asNode} without an exception.
+   * @return true if the expression can be represented as a nodeset.
+   */
+  public boolean isNodesetExpr()
+  {
+    return false;
+  }
+  
+  /**
+   * Return the first node out of the nodeset, if this expression is 
+   * a nodeset expression.
+   * @param xctxt The XPath runtime context.
+   * @return the first node out of the nodeset, or DTM.NULL.
+   */
+  public int asNode(XPathContext xctxt)
+    throws javax.xml.transform.TransformerException
+  {
+    return execute(xctxt).nodeset().nextNode();
+  }
+  
+  /**
+   * <meta name="usage" content="experimental"/>
+   * Given an select expression and a context, evaluate the XPath
+   * and return the resulting iterator.
+   * 
+   * @param xctxt The execution context.
+   * @param contextNode The node that "." expresses.
+   * 
+   * @throws TransformerException thrown if the active ProblemListener decides
+   * the error condition is severe enough to halt processing.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DTMIterator asIterator(
+          XPathContext xctxt, int contextNode)
+            throws javax.xml.transform.TransformerException
+  {
+    try
+    {
+      xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+      return execute(xctxt).nodeset();
+    }
+    finally
+    {
+      xctxt.popCurrentNodeAndExpression();
+    }
+  }
+    
+  /**
+   * Execute an expression in the XPath runtime context, and return the 
+   * result of the expression.
+   *
+   *
+   * @param xctxt The XPath runtime context.
+   *
+   * @return The result of the expression in the form of a <code>XObject</code>.
+   *
+   * @throws javax.xml.transform.TransformerException if a runtime exception 
+   *         occurs.
+   */
+  public void executeCharsToContentHandler(XPathContext xctxt, 
+                                              ContentHandler handler)
+    throws javax.xml.transform.TransformerException,
+           org.xml.sax.SAXException
+  {
+    XObject obj = execute(xctxt);
+    obj.dispatchCharactersEvents(handler);
+  }
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public abstract void fixupVariables(java.util.Vector vars, int globalsSize);
+
 
   /**
    * Warn the user of an problem.

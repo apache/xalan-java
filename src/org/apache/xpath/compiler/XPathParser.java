@@ -65,7 +65,6 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.utils.StringKey;
 
 import javax.xml.transform.TransformerException;
 import org.xml.sax.Locator;

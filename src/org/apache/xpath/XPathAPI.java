@@ -71,6 +71,12 @@ import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.objects.XObject;
 
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
+
+
 /**
  * The methods in this class are convenience methods into the
  * low-level XPath API.
@@ -159,7 +165,10 @@ public class XPathAPI
     XObject list = eval(contextNode, str, namespaceNode);
 
     // Have the XObject return its result as a NodeSet.
-    return list.nodeset();
+    // %TBD% Convert to DOM nodeset
+		
+    return new DTMNodeIterator(list.nodeset());
+    
   }
 
   /**
@@ -197,15 +206,8 @@ public class XPathAPI
     // Execute the XPath, and have it return the result
     XObject list = eval(contextNode, str, namespaceNode);
 
-    // Patch attributed to nboyd@atg.com (Norris Boyd)
-    NodeSet nodeset = list.mutableNodeset();
-
-    // setShouldCacheNodes(true) be called before the first nextNode() is
-    //   called, in order that nodes can be added as they are fetched.
-    nodeset.setShouldCacheNodes(true);
-
     // Return a NodeList.
-    return (NodeList) nodeset;
+    return new DTMNodeList(list.nodeset());
   }
 
   /**
@@ -272,7 +274,11 @@ public class XPathAPI
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
-    return xpath.execute(xpathSupport, contextNode, prefixResolver);
+    // %TBD% Need to convert contextNode to a DTM node
+//    return xpath.execute(xpathSupport, contextNode, prefixResolver);
+    int ctxtNode;
+		ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
+    return xpath.execute(xpathSupport, ctxtNode, prefixResolver);
   }
 
   /**
@@ -311,6 +317,11 @@ public class XPathAPI
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
-    return xpath.execute(new XPathContext(), contextNode, prefixResolver);
+    // %TBD% Need to convert contextNode to a DTM node
+    // return xpath.execute(new XPathContext(), contextNode, prefixResolver);
+		int ctxtNode;
+		XPathContext xpathSupport = new XPathContext();
+		ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
+    return xpath.execute(xpathSupport, ctxtNode, prefixResolver);
   }
 }

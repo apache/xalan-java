@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
 
 import org.xml.sax.*;
 
@@ -152,14 +152,14 @@ public class ElemMessage extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
-    String data = transformer.transformToString(this, sourceNode, mode);
+    String data = transformer.transformToString(this);
 
     transformer.getMsgMgr().message(this, data, m_terminate);
     

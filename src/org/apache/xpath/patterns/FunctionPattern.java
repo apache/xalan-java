@@ -57,14 +57,13 @@
 package org.apache.xpath.patterns;
 
 import org.apache.xpath.XPath;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.Axis;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -74,16 +73,18 @@ public class FunctionPattern extends StepPattern
 {
 
   /**
-   * Construct a FunctionPattern from a 
+   * Construct a FunctionPattern from a
    * {@link org.apache.xpath.functions.Function expression}.
    *
    *
    * @param a should be a {@link org.apache.xpath.functions.Function expression}.
+   *
+   * NEEDSDOC @param expr
    */
-  public FunctionPattern(Expression expr)
+  public FunctionPattern(Expression expr, int axis, int predaxis)
   {
 
-    super(0, null, null);
+    super(0, null, null, axis, predaxis);
 
     m_functionExpr = expr;
   }
@@ -91,7 +92,7 @@ public class FunctionPattern extends StepPattern
   /**
    * Static calc of match score.
    */
-  protected final void calcScore()
+  public final void calcScore()
   {
 
     m_score = SCORE_OTHER;
@@ -100,38 +101,56 @@ public class FunctionPattern extends StepPattern
       calcTargetString();
   }
 
-  /** Should be a {@link org.apache.xpath.functions.Function expression}.
-   *  @serial   */
+  /**
+   * Should be a {@link org.apache.xpath.functions.Function expression}.
+   *  @serial   
+   */
   Expression m_functionExpr;
+  
+  /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    super.fixupVariables(vars, globalsSize);
+    m_functionExpr.fixupVariables(vars, globalsSize);
+  }
 
+  
   /**
    * Test a node to see if it matches the given node test.
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
    *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
    *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt, int context)
+          throws javax.xml.transform.TransformerException
   {
 
-    Node context = xctxt.getCurrentNode();
-    XObject obj = m_functionExpr.execute(xctxt);
-    NodeIterator nl = obj.nodeset();
+    DTMIterator nl = m_functionExpr.asIterator(xctxt, context);
     XNumber score = SCORE_NONE;
 
     if (null != nl)
     {
-      Node n;
+      int n;
 
-      while (null != (n = nl.nextNode()))
+      while (DTM.NULL != (n = nl.nextNode()))
       {
-        score = (n.equals(context)) ? SCORE_OTHER : SCORE_NONE;
+        score = (n == context) ? SCORE_OTHER : SCORE_NONE;
 
         if (score == SCORE_OTHER)
         {
@@ -140,7 +159,95 @@ public class FunctionPattern extends StepPattern
           break;
         }
       }
+
       // nl.detach();
+    }
+    nl.detach();
+
+    return score;
+  }
+  
+  /**
+   * Test a node to see if it matches the given node test.
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public XObject execute(XPathContext xctxt, int context, 
+                         DTM dtm, int expType)
+          throws javax.xml.transform.TransformerException
+  {
+
+    DTMIterator nl = m_functionExpr.asIterator(xctxt, context);
+    XNumber score = SCORE_NONE;
+
+    if (null != nl)
+    {
+      int n;
+
+      while (DTM.NULL != (n = nl.nextNode()))
+      {
+        score = (n == context) ? SCORE_OTHER : SCORE_NONE;
+
+        if (score == SCORE_OTHER)
+        {
+          context = n;
+
+          break;
+        }
+      }
+
+      nl.detach();
+    }
+
+    return score;
+  }
+  
+  /**
+   * Test a node to see if it matches the given node test.
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+
+    int context = xctxt.getCurrentNode();
+    DTMIterator nl = m_functionExpr.asIterator(xctxt, context);
+    XNumber score = SCORE_NONE;
+
+    if (null != nl)
+    {
+      int n;
+
+      while (DTM.NULL != (n = nl.nextNode()))
+      {
+        score = (n == context) ? SCORE_OTHER : SCORE_NONE;
+
+        if (score == SCORE_OTHER)
+        {
+          context = n;
+
+          break;
+        }
+      }
+
+      nl.detach();
     }
 
     return score;

@@ -58,8 +58,10 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Element;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -86,10 +88,11 @@ public class FuncUnparsedEntityURI extends FunctionOneArg
   {
 
     String name = m_arg0.execute(xctxt).str();
-    Node context = xctxt.getCurrentNode();
-    Document doc = (Node.DOCUMENT_NODE == context.getNodeType())
-                   ? ((Document) context) : context.getOwnerDocument();
-    String uri = xctxt.getDOMHelper().getUnparsedEntityURI(name, doc);
+    int context = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(context);
+    int doc = dtm.getDocument();
+    
+    String uri = dtm.getUnparsedEntityURI(name);
 
     return new XString(uri);
   }

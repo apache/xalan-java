@@ -58,7 +58,7 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 
@@ -85,6 +85,6 @@ public class FuncString extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XString(getArg0AsString(xctxt));
+    return (XString)getArg0AsString(xctxt);
   }
 }
