@@ -56,7 +56,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Defines variables used by the other targets                         -->
   <!-- =================================================================== -->
-  <property name="version" value="2_0_0"/>
+  <property name="version" value="2_0_1"/>
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
