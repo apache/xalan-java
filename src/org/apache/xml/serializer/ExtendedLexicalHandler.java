@@ -23,6 +23,7 @@ import org.xml.sax.SAXException;
 /**
  * This interface has extensions to the standard SAX LexicalHandler interface.
  * This interface is intended to be used by a serializer.
+ * @xsl.usage internal
  */
 public interface ExtendedLexicalHandler extends org.xml.sax.ext.LexicalHandler
 {
