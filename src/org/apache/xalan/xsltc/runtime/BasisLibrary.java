@@ -283,6 +283,7 @@ public final class BasisLibrary implements Operators {
 
 	    if (Double.isNaN(start) || Double.isNaN(length))
 		return(EMPTYSTRING);
+	    if (Double.isInfinite(start)) return(EMPTYSTRING);
 	    if (istart > strlen) return(EMPTYSTRING);
 	    if (isum < 0) return(EMPTYSTRING);
  	    if (istart < 0) istart = 0;
