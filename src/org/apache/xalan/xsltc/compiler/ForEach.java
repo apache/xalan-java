@@ -77,7 +77,9 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ForEach extends Instruction {
+
     private Expression _select;
+    private Type       _tselect;
 
     public void display(int indent) {
 	indent(indent);
@@ -100,14 +102,14 @@ final class ForEach extends Instruction {
     }
 	
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	Type tselect = _select.typeCheck(stable);
+	_tselect = _select.typeCheck(stable);
 
-	if (tselect instanceof ReferenceType || tselect instanceof NodeType) {
+	if (_tselect instanceof ReferenceType || _tselect instanceof NodeType) {
 	    _select = new CastExpr(_select, Type.NodeSet);
 	    typeCheckContents(stable);
 	    return Type.Void;
 	}
-	else if (tselect instanceof NodeSetType) {
+	else if (_tselect instanceof NodeSetType) {
 	    typeCheckContents(stable);
 	    return Type.Void;
 	} 
@@ -143,7 +145,9 @@ final class ForEach extends Instruction {
 		((Step)_select).orderIterator(classGen, methodGen);
 	    }
 	}
-	_select.startResetIterator(classGen, methodGen);
+	if (!(_tselect instanceof ReferenceType)) {
+	    _select.startResetIterator(classGen, methodGen);
+	}
 
 	// Overwrite current iterator
 	il.append(methodGen.storeIterator());

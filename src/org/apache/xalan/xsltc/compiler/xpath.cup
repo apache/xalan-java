@@ -626,7 +626,6 @@ VariableReference ::= DOLLAR VariableName:varName
             }
 
             if (node == null) {
-		System.err.println("looking for var "+varName);
                 RESULT = parser.DummyVarRef;
                 parser.addError(new ErrorMsg(ErrorMsg.VARUNDEF_ERR,
 		    parser.getLineNumber(), varName));

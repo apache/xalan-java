@@ -164,6 +164,7 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final Object addParameter(String name, Object value,
 				     boolean isDefault) {
+
 	// Local parameters need to be re-evaluated for each iteration
 	for (int i = pframe - 1; i >= pbase; i--) {
 	    final Parameter param = (Parameter) paramsStack.elementAt(i);
@@ -199,9 +200,7 @@ public abstract class AbstractTranslet implements Translet {
     public final Object getParameter(String name) {
 	for (int i = pframe - 1; i >= pbase; i--) {
 	    final Parameter param = (Parameter)paramsStack.elementAt(i);
-	    if (param._name.equals(name)) {
-		return param._value;
-	    }
+	    if (param._name.equals(name)) return param._value;
 	}
 	return null;
     }
