@@ -131,6 +131,8 @@ public final class TransformerImpl extends Transformer
     // Pre-set DOMImpl to use as input (used only with TransformerHandlerImpl)
     private DOMImpl _dom = null;
 
+    private DTDMonitor _dtdMonitor = null;
+
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
     private static final String NAMESPACE_FEATURE =
@@ -148,7 +150,8 @@ public final class TransformerImpl extends Transformer
     protected TransformerImpl(Translet translet, boolean experimentalOutput) {
 	_translet = (AbstractTranslet)translet;
 	_properties = createOutputProperties();
-	_experimentalOutput = experimentalOutput;
+	// _experimentalOutput = experimentalOutput;
+	_experimentalOutput = true;
     }
 
     /**
@@ -432,18 +435,19 @@ public final class TransformerImpl extends Transformer
     }
 
     /**
+     * Set the internal DOMImpl that will be used for the next transformation
+     */
+    protected void setDTDMonitor(DTDMonitor dtdMonitor) {
+	_dtdMonitor = dtdMonitor;
+    }
+
+    /**
      * Builds an internal DOM from a TrAX Source object
      */
     private DOMImpl getDOM(Source source, int mask)
-	throws TransformerException {
+	throws TransformerException 
+    {
 	try {
-	    // Use the pre-defined DOM if present
-	    if (_dom != null) {
-		DOMImpl dom = _dom;
-		_dom = null; // use only once, so reset to 'null'
-		return(dom);
-	    }
-
 	    DOMImpl dom = null;
 	    DTDMonitor dtd = null;
 
@@ -574,6 +578,11 @@ public final class TransformerImpl extends Transformer
 		final XSLTCSource xsltcsrc = (XSLTCSource)source;
 		dtd = xsltcsrc.getDTD();
 		dom = xsltcsrc.getDOM();
+	    }
+	    // DOM already set via a call to setDOM()
+	    else if (_dom != null) {
+		dtd = _dtdMonitor;	   // must be set via setDTDMonitor()
+		dom = _dom; _dom = null;   // use only once, so reset to 'null'
 	    }
 	    else {
 		return null;

@@ -63,6 +63,7 @@
 package org.apache.xalan.xsltc.trax;
 
 import org.xml.sax.*;
+import org.xml.sax.ext.DeclHandler;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
@@ -77,7 +78,7 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 /**
  * Implementation of a JAXP1.1 TransformerHandler
  */
-public class TransformerHandlerImpl implements TransformerHandler {
+public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
 
     private TransformerImpl  _transformer;
     private AbstractTranslet _translet = null;
@@ -102,6 +103,9 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	// Create a DOMBuilder object and get the handler
 	_dom = new DOMImpl();
 	_handler = _dom.getBuilder();
+
+	// Create a new DTD monitor
+	_dtd = new DTDMonitor();
     }
 
     /**
@@ -192,12 +196,12 @@ public class TransformerHandlerImpl implements TransformerHandler {
     public void endDocument() throws SAXException {
 	// Signal to the DOMBuilder that the document is complete
 	_handler.endDocument();
-	// Pass unparsed entity declarations (if any) to the translet 
-	if (_dtd != null) _translet.setDTDMonitor(_dtd);
+
 	// Run the transformation now if we have a reference to a Result object
 	if (_result != null) {
 	    try {
 		_transformer.setDOM(_dom);
+		_transformer.setDTDMonitor(_dtd);	// for id/key
 		_transformer.transform(null, _result);
 	    }
 	    catch (TransformerException e) {
@@ -308,28 +312,6 @@ public class TransformerHandlerImpl implements TransformerHandler {
     }
 
     /**
-     * Implements org.xml.sax.DTDHandler.notationDecl()
-     * End the scope of a prefix-URI Namespace mapping.
-     * We do not handle this method, and the input is quietly ignored.
-     */
-    public void notationDecl(String name, String publicId, String systemId) {
-	// Not handled by DTDMonitor - ignored
-    }
-
-    /**
-     * Implements org.xml.sax.DTDHandler.unparsedEntityDecl()
-     * End the scope of a prefix-URI Namespace mapping.
-     */
-    public void unparsedEntityDecl(String name, String publicId,
-				   String systemId, String notationName)
-	throws SAXException 
-    {
-	// Create new contained for unparsed entities
-	if (_dtd == null) _dtd = new DTDMonitor();
-	_dtd.unparsedEntityDecl(name, publicId, systemId, notationName);
-    }
-
-    /**
      * Implements org.xml.sax.ext.LexicalHandler.startDTD()
      */
     public void startDTD(String name, String publicId, String systemId) 
@@ -359,4 +341,57 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	_handler.endEntity(name);
     }
 
+    /**
+     * Implements org.xml.sax.DTDHandler.unparsedEntityDecl()
+     */
+    public void unparsedEntityDecl(String name, String publicId, 
+	String systemId, String notationName) throws SAXException 
+    {
+	_dtd.unparsedEntityDecl(name, publicId, systemId, notationName);
+    }
+
+    /**
+     * Implements org.xml.sax.DTDHandler.notationDecl()
+     */
+    public void notationDecl(String name, String publicId, String systemId) 
+	throws SAXException
+    {
+	_dtd.notationDecl(name, publicId, systemId);
+    }
+
+    /**
+     * Implements org.xml.sax.ext.DeclHandler.attributeDecl()
+     */
+    public void attributeDecl(String eName, String aName, String type, 
+	String valueDefault, String value) throws SAXException 
+    {
+	_dtd.attributeDecl(eName, aName, type, valueDefault, value);
+    }
+
+    /**
+     * Implements org.xml.sax.ext.DeclHandler.elementDecl()
+     */
+    public void elementDecl(String name, String model) 
+	throws SAXException
+    {
+	_dtd.elementDecl(name, model);
+    }
+
+    /**
+     * Implements org.xml.sax.ext.DeclHandler.externalEntityDecl()
+     */
+    public void externalEntityDecl(String name, String publicId, String systemId) 
+	throws SAXException
+    {
+	_dtd.externalEntityDecl(name, publicId, systemId);
+    }
+
+    /**
+     * Implements org.xml.sax.ext.DeclHandler.externalEntityDecl()
+     */
+    public void internalEntityDecl(String name, String value) 
+	throws SAXException
+    {
+	_dtd.internalEntityDecl(name, value);
+    }
 }
