@@ -327,6 +327,8 @@ public class Stylesheet  extends ElemTemplateElement
   {
     if(null == m_ExcludeResultPrefixs)
       return false;
+    if (prefix.length() == 0)
+      prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
     return m_ExcludeResultPrefixs.contains(prefix);
   }
 
