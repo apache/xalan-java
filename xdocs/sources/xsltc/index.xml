@@ -63,6 +63,7 @@
   <li><link anchor="compiler">Compiler design</link></li>
   <li><link anchor="runtime">Runtime library/DOM design</link></li>  
 </ul>
+<p>See also <jump href="../xsltc_usage.html">Using XSLTC</jump>.</p>
 <anchor name="compiler"/>
  <s2 title="Compiler design">
   <p><link idref="xsltc_compiler"><img src="compiler_architecture.gif" alt="compiler_architecture.gif"/></link></p>
