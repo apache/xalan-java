@@ -488,8 +488,24 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 	   // create the new abs location path
 	   Step nodeStep1 = new Step(Axis.DESCENDANTORSELF, -1, null);
 	   Step nodeStep2 = new Step(axis, nodeType, null);
-	   RESULT = new AbsoluteLocationPath(new ParentLocationPath(
-		nodeStep1, nodeStep2)); 
+	   AbsoluteLocationPath path =  new AbsoluteLocationPath(
+		new ParentLocationPath(nodeStep1, nodeStep2)); 
+
+	   // CASE I: no filtering, nodes OK but have dups,
+	   //   results of test suite in file: 'REP_UNFILT'
+	   RESULT = path; 
+
+           // CASE II: Filtered Abs Loc Path -
+	   //    all tests fail except desOrSelf test,
+	   //    results of test suite in file: 'REP-FILT'
+	   //RESULT = new FilteredAbsoluteLocationPath(path); 
+
+
+	   // CASE III: Filtered Parent Loc Path -
+	   //     ancestor and desOrSelf works, all others fail 
+	   //     results of test suite in file: 'REP-FAL-PLP'
+	   //RESULT = new FilteredAbsoluteLocationPath(
+	   //	new ParentLocationPath(nodeStep1, nodeStep2));
         :};
 
 Step ::= NodeTest:ntest

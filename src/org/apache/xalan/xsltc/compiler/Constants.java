@@ -181,6 +181,8 @@ public interface Constants extends InstructionConstants {
 	= "org.apache.xalan.xsltc.dom.NthIterator";
     public static final String ABSOLUTE_ITERATOR
 	= "org.apache.xalan.xsltc.dom.AbsoluteIterator";
+    public static final String DUP_FILTERED_ITERATOR
+	= "org.apache.xalan.xsltc.dom.DupFilterIterator";
     public static final String CURRENT_NODE_LIST_ITERATOR
 	= "org.apache.xalan.xsltc.dom.CurrentNodeListIterator";
     public static final String CURRENT_NODE_LIST_FILTER
