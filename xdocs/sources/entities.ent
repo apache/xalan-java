@@ -15,7 +15,8 @@
 <!ENTITY xml4j-jar "xercesImpl.jar">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
-<!ENTITY download "The &xslt4j-current; download from xml.apache.org includes &xml4j-jar; from &xml4j-used;.">
+<!ENTITY download "The &xslt4j-current; download from xml.apache.org includes &xml4j-jar; from &xml4j-used; and xml-apis.jar. For version
+information about the contents of xml-apis.jar, see the JAR manifest.">
 
 <!ENTITY xsltcwhatsnewhead '<li><link anchor="xsltc">XSLTC</link></li>'>
                          
