@@ -67,10 +67,12 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.Constants;
+import org.apache.xalan.xsltc.runtime.TransletLoader;
 
 public final class ObjectType extends Type {
 
-    private String _javaClassName = "java.lang.Object"; 
+    private String _javaClassName = "java.lang.Object";
+    private Class  _clazz = java.lang.Object.class;
 
     /**
      * Used to represent an 'any' type.
@@ -84,6 +86,19 @@ public final class ObjectType extends Type {
      */
     public ObjectType(String javaClassName) {
 	_javaClassName = javaClassName;
+	  
+	try {
+	  TransletLoader loader = new TransletLoader();
+	  _clazz = loader.loadClass(javaClassName);
+	}
+	catch (ClassNotFoundException e) {
+	  _clazz = null;
+	}
+    }
+    
+    public ObjectType(Class clazz) {
+        _clazz = clazz;
+        _javaClassName = clazz.getName();	
     }
 
     public int hashCode() {
@@ -96,6 +111,10 @@ public final class ObjectType extends Type {
 
     public String getJavaClassName() {
 	return _javaClassName;
+    }
+    
+    public Class getJavaClass() {
+        return _clazz;	
     }
 
     public String toString() {
@@ -157,6 +176,22 @@ public final class ObjectType extends Type {
 	gotobh.setTarget(il.append(NOP));
     }
 
+    /**
+     * Translates an object of this type to the external (Java) type denoted
+     * by <code>clazz</code>. This method is used to translate parameters 
+     * when external functions are called.
+     */ 
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    Class clazz) {
+        if (clazz.isAssignableFrom(_clazz))
+	    methodGen.getInstructionList().append(NOP);
+	else {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+			       toString(), clazz.getClass().toString());
+	    classGen.getParser().reportError(Constants.FATAL, err);	  	
+	}
+    }
+	
     /**
      * Translates an external Java type into an Object type 
      */
