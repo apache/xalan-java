@@ -76,9 +76,23 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
 
   /** Start of text from this Text node          */
   protected int m_start;
+  
+  /** Get the start of text in the text buffer. 
+   *  @return the start of text in the text buffer. */
+  public int getStartOffsetInBuffer()
+  {
+    return m_start;
+  }
 
-  /** Length of text from this text node          */
+  /** The length of text in the text buffer. */
   protected int m_length;
+  
+  /** Get the length of text in the text buffer.
+   *  @return the length of text in the text buffer. */
+  public int getLengthInBuffer()
+  {
+    return m_start;
+  }
 
   /**
    * Constructor TextImpl
