@@ -59,8 +59,6 @@
  *
  */
 
-package org.apache.xalan.xsltc.demo.brazil;
-
 import java.io.*;
 import java.util.NoSuchElementException;
 import java.util.StringTokenizer;

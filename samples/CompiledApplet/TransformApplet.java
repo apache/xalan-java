@@ -161,8 +161,8 @@ public final class TransformApplet extends Applet {
 	    reader.setContentHandler(_dom.getBuilder());
 
 	    // Create a DTD monitor and pass it to the XMLReader object
-	    final DTDMonitor dtdMonitor = new DTDMonitor();
-	    dtdMonitor.handleDTD(reader);
+	    _dtdMonitor = new DTDMonitor();
+	    _dtdMonitor.handleDTD(reader);
 
 	    // Parse the input document
 	    reader.parse(url);
@@ -217,6 +217,7 @@ public final class TransformApplet extends Applet {
 		// Set size of key/id indices
 		translet.setIndexSize(_dom.getSize());
 		// If there are any elements with ID attributes, build an index
+
 		_dtdMonitor.buildIdIndex(_dom, 0, translet);
 		// Pass unparsed entities to translet
 		translet.setUnparsedEntityURIs(_dtdMonitor.
@@ -227,10 +228,11 @@ public final class TransformApplet extends Applet {
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
 	    }
-			
 	    // Now close up the sink, and return the HTML output in the
 	    // StringWrite object as a string.
 	    out.close();
+	    System.err.println("Transformation complete!");
+	    System.err.println(sout.toString());
 	    return sout.toString();
 	}
 	catch (RuntimeException e) {

@@ -74,7 +74,7 @@ import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.util.getopt.*;
 
-public class Compile extends HttpServlet {
+public class CompileServlet extends HttpServlet {
 
     /**
      * Main servlet entry point. The servlet reads a stylesheet from the
