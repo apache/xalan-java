@@ -214,6 +214,9 @@ Copyright:
     <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
+    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
    <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>                                  
