@@ -127,6 +127,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 // TRaX Imports
 import trax.Result;
@@ -282,6 +284,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
         reader.setContentHandler( inputHandler );
         reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
         
+        // Set the reader for cloning purposes.
         getXPathContext().setPrimaryReader(reader);
         
         // Kick off the parse.  When the ContentHandler gets 
@@ -290,6 +293,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
       }
       catch(SAXException se)
       {
+        se.printStackTrace();
         throw new TransformException(se);
       }
       catch(IOException ioe)
@@ -470,7 +474,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
     }
     return handler;
   }
-
+  
   /**
    * Process the source tree to the output result.
    * @param xmlSource  The input for the source tree.
@@ -1446,6 +1450,45 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
   public TraceManager getTraceManager()
   {
     return m_traceManager;
+  }
+  
+  /**
+   * Look up the value of a feature.
+   *
+   * <p>The feature name is any fully-qualified URI.  It is
+   * possible for an Processor to recognize a feature name but
+   * to be unable to return its value; this is especially true
+   * in the case of an adapter for a SAX1 Parser, which has
+   * no way of knowing whether the underlying parser is
+   * validating, for example.</p>
+   * 
+   * <h3>Open issues:</h3>
+   * <dl>
+   *    <dt><h4>Should getFeature be changed to hasFeature?</h4></dt>
+   *    <dd>Keith Visco writes: Should getFeature be changed to hasFeature? 
+   *        It returns a boolean which indicated whether the "state" 
+   *        of feature is "true or false". I assume this means whether 
+   *        or not a feature is supported? I know SAX is using "getFeature", 
+   *        but to me "hasFeature" is cleaner.</dd>
+   * </dl>
+   *
+   * @param name The feature name, which is a fully-qualified
+   *        URI.
+   * @return The current state of the feature (true or false).
+   * @exception org.xml.sax.SAXNotRecognizedException When the
+   *            Processor does not recognize the feature name.
+   * @exception org.xml.sax.SAXNotSupportedException When the
+   *            Processor recognizes the feature name but 
+   *            cannot determine its value at this time.
+   */
+  public boolean getFeature (String name)
+    throws SAXNotRecognizedException, SAXNotSupportedException
+  {
+    if("http://xml.org/trax/features/sax/input".equals(name))
+      return true;
+    else if("http://xml.org/trax/features/dom/input".equals(name))
+      return true;
+    throw new SAXNotRecognizedException(name);
   }
 
   
