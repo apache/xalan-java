@@ -162,4 +162,17 @@ public class Operation extends Expression
   {
     return null;  // no-op
   }
+
+  /** @return the left operand of binary operation, as an Expression.
+   */
+  public Expression getLeftOperand(){
+    return m_left;
+  }
+
+  /** @return the right operand of binary operation, as an Expression.
+   */
+  public Expression getRightOperand(){
+    return m_right;
+  }
+
 }

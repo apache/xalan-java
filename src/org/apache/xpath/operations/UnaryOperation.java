@@ -144,4 +144,11 @@ public abstract class UnaryOperation extends Expression
    */
   public abstract XObject operate(XObject right)
     throws javax.xml.transform.TransformerException;
+
+  /** @return the operand of unary operation, as an Expression.
+   */
+  public Expression getOperand(){
+    return m_right;
+  }
+
 }
