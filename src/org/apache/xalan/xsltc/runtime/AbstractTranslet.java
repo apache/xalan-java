@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
  * @author G. Todd Miller
+ * @author John Howard, JohnH@schemasoft.com 
  */
 
 package org.apache.xalan.xsltc.runtime;
@@ -144,8 +145,16 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void popParamFrame() {
 	if (pbase > 0) {
+	    int bot = pbase - 1;
+	    int top = pframe - 1;
 	    pframe = pbase - 1;
 	    pbase = ((Integer) paramsStack.elementAt(pframe)).intValue();
+	    // bug fix #3424, John Howard.
+	    // remove objects that are in the stack since objects are	
+	    // added with insertElementAt(int) and will cause memory retention
+	    for (int i=top; i>=bot; i--){
+		paramsStack.removeElementAt(i);
+	    }
 	}
     }
 
@@ -219,8 +228,16 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void popVarFrame() {
 	if (vbase > 0) {
+	    int bot = vbase - 1;
+	    int top = vframe - 1;
 	    vframe = vbase - 1;
 	    vbase = ((Integer)varsStack.elementAt(vframe)).intValue();
+	    // bug fix 3424, John Howard
+	    // remove objects that are in the stack since objects are	
+	    // added with insertElementAt(int) and will cause memory retention
+	    for (int i=top; i>=bot; i--){
+		varsStack.removeElementAt(i);
+	    }
 	}
     }
 
@@ -228,9 +245,10 @@ public abstract class AbstractTranslet implements Translet {
      * Get the value of a variable given its index.
      */
     public final Object getVariable(int vindex) {
-	Object blob = varsStack.elementAt(vbase + vindex);
+	// bug fix 3424, John Howard
 	return varsStack.elementAt(vbase + vindex);
     }
+	
 
     /**
      * Set the value of a variable in the current frame.
