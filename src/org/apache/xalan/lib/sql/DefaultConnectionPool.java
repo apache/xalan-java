@@ -56,16 +56,16 @@
  */
 package org.apache.xalan.lib.sql;
 
-import java.util.Properties;
-import java.util.Vector;
-import java.util.Enumeration;
-import java.lang.String;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.util.*;
-import java.sql.*;
+import java.sql.SQLException;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * For internal connectiones, i.e. Connection information supplies in the
@@ -449,17 +449,20 @@ public class DefaultConnectionPool implements ConnectionPool
      // Check our initial values
      if ( m_driver == null )
      {
-       throw new IllegalArgumentException("No Driver Name Specified!");
+       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DRIVER_NAME_SPECIFIED, null));
+       // "No Driver Name Specified!");
      }
 
      if ( m_url == null )
      {
-       throw new IllegalArgumentException("No URL Specified!");
+       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_URL_SPECIFIED, null));
+       // "No URL Specified!");
      }
 
      if ( m_PoolMinSize < 1 )
      {
-       throw new IllegalArgumentException("Pool size is less than 1!");
+       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_POOLSIZE_LESS_THAN_ONE, null));
+       // "Pool size is less than 1!");
      }
 
      // Create the Connections
@@ -471,7 +474,8 @@ public class DefaultConnectionPool implements ConnectionPool
      }
      catch(ClassNotFoundException e)
      {
-       throw new IllegalArgumentException("Invalid Driver Name Specified!");
+       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_DRIVER_NAME, null));
+       // "Invalid Driver Name Specified!");
      }
 
      // IF we are not active, don't actuall build a pool yet

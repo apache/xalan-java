@@ -58,6 +58,7 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
@@ -124,7 +125,7 @@ public class Function2Args extends FunctionOneArg
       arg.exprSetParent(this);
     }
     else
-      throw new WrongNumberArgsException("2");
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("two", null));
   }
 
   /**
@@ -138,7 +139,7 @@ public class Function2Args extends FunctionOneArg
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum != 2)
-      throw new WrongNumberArgsException("2");
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("two", null));
   }
   
   /**

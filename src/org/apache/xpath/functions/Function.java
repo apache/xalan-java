@@ -59,12 +59,13 @@ package org.apache.xpath.functions;
 //import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -92,7 +93,7 @@ public abstract class Function extends Expression
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-    throw new WrongNumberArgsException("0");
+    throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
   }
 
   /**
@@ -108,7 +109,7 @@ public abstract class Function extends Expression
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum != 0)
-      throw new WrongNumberArgsException("0");
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
   }
 
   /**

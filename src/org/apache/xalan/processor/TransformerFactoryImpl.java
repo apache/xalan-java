@@ -1075,7 +1075,8 @@ public javax.xml.transform.Templates processFromNode(Node node)
   {
 
     if (null == listener)
-      throw new IllegalArgumentException("ErrorListener");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ERRORLISTENER, null));
+      // "ErrorListener");
 
     m_errorListener = listener;
   }

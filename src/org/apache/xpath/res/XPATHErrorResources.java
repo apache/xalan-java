@@ -96,21 +96,21 @@ public class XPATHErrorResources extends PropertyResourceBundle
   /** Field WARNING_SUFFIX          */
   public static final String WARNING_SUFFIX = "WR";
 
-  /** Field MAX_CODE          */
-  public static final int MAX_CODE = 84;  // this is needed to keep track of the number of messages          
-
-  /** Field MAX_WARNING          */
-  public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
-
-  /** Field MAX_OTHERS          */
-  public static final int MAX_OTHERS = 20;
-
-  /** Field MAX_MESSAGES          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-  /** Field contents          */
-  static final Object[][] contents =
-    new Object[MAX_MESSAGES + MAX_OTHERS + 1][2];
+//  /** Field MAX_CODE          */
+//  public static final int MAX_CODE = 84;  // this is needed to keep track of the number of messages          
+//
+//  /** Field MAX_WARNING          */
+//  public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
+//
+//  /** Field MAX_OTHERS          */
+//  public static final int MAX_OTHERS = 20;
+//
+//  /** Field MAX_MESSAGES          */
+//  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
+//
+//  /** Field contents          */
+//  static final Object[][] contents =
+//    new Object[MAX_MESSAGES + MAX_OTHERS + 1][2];
 
   /*
   * Now fill in the message text.
@@ -462,7 +462,8 @@ public class XPATHErrorResources extends PropertyResourceBundle
   public static final int ER_TWO_OR_THREE = 84;
 
   
-  
+// Variable accessed before it is bound!
+  public static final int ER_VARIABLE_ACCESSED_BEFORE_BIND = 85;
 
 
   // Warnings...
@@ -547,15 +548,15 @@ public class XPATHErrorResources extends PropertyResourceBundle
   /** Field QUERY_HEADER          */
   public static final String QUERY_HEADER = "PATTERN ";
 
-  /**
-   * Get the association list.
-   *
-   * @return The association list.
-   */
-  public Object[][] getContents()
-  {
-    return contents;
-  }
+//  /**
+//   * Get the association list.
+//   *
+//   * @return The association list.
+//   */
+//  public Object[][] getContents()
+//  {
+//    return contents;
+//  }
 
   /**
    * Return a named ResourceBundle for a particular locale.  This method mimics the behavior
@@ -633,9 +634,9 @@ public class XPATHErrorResources extends PropertyResourceBundle
   public static String getMessageKey(int errorCode)
   {
 
-    if (errorCode > MAX_CODE)
-      return null;
-    else
+//    if (errorCode > MAX_CODE)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 
@@ -653,9 +654,9 @@ public class XPATHErrorResources extends PropertyResourceBundle
   public static String getWarningKey(int errorCode)
   {
 
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
+//    if (errorCode > MAX_WARNING)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 
@@ -673,9 +674,9 @@ public class XPATHErrorResources extends PropertyResourceBundle
   public static String getMKey(int errorCode)
   {
 
-    if (errorCode > MAX_CODE)
-      return null;
-    else
+//    if (errorCode > MAX_CODE)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 
@@ -693,9 +694,9 @@ public class XPATHErrorResources extends PropertyResourceBundle
   public static String getWKey(int errorCode)
   {
 
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
+//    if (errorCode > MAX_WARNING)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 

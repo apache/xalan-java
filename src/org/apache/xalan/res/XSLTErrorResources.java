@@ -94,17 +94,17 @@ public class XSLTErrorResources extends PropertyResourceBundle
   /** The warning suffix for construction error property keys.   */
   public static final String WARNING_SUFFIX = "WR";
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 217;          
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 26;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 45;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
+//  /** Maximum error messages, this is needed to keep track of the number of messages.    */
+//  public static final int MAX_CODE = 226;          
+//
+//  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
+//  public static final int MAX_WARNING = 26;
+//
+//  /** Maximum misc strings.   */
+//  public static final int MAX_OTHERS = 45;
+//
+//  /** Maximum total warnings and error messages.          */
+//  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
 
   /*
    * Now fill in the message text.
@@ -988,9 +988,34 @@ public class XSLTErrorResources extends PropertyResourceBundle
   
   /** Attempting to generate a namespace prefix with a null URI   */
   public static final int ER_NUMBER_TOO_BIG = 217;
+  
+// No Driver Name Specified!
+  public static final int ER_NO_DRIVER_NAME_SPECIFIED = 228;
 
-  
-  
+// No URL Specified!
+  public static final int ER_NO_URL_SPECIFIED = 229; 
+
+// Pool size is less than 1!
+  public static final int ER_POOLSIZE_LESS_THAN_ONE = 230;
+
+// Invalid Driver Name Specified!
+  public static final int ER_INVALID_DRIVER_NAME = 231;
+
+// ErrorListener
+  public static final int ER_ERRORLISTENER = 232;
+
+// Programmer's error! expr has no ElemTemplateElement parent!
+  public static final int ER_ASSERT_NO_TEMPLATE_PARENT = 233;
+
+// Programmer's assertion in RundundentExprEliminator: {0}
+  public static final int ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR = 234;
+
+// Axis traverser not supported: {0}
+  public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
+
+// ListingErrorHandler created with null PrintWriter!
+  public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
+
   /*
     /**  Cannot find SAX1 driver class    *
   public static final int ER_CANNOT_FIND_SAX1_DRIVER = 190;
@@ -1255,9 +1280,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   public static String getMessageKey(int errorCode)
   {
 
-    if (errorCode > MAX_CODE)
-      return null;
-    else
+//    if (errorCode > MAX_CODE)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 
@@ -1276,9 +1301,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   public static String getWarningKey(int errorCode)
   {
 
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
+//    if (errorCode > MAX_WARNING)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 
@@ -1296,9 +1321,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
    */
   public static String getMKey(int errorCode)
   {
-    if (errorCode > MAX_CODE)
-      return null;
-    else
+//    if (errorCode > MAX_CODE)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 
@@ -1317,9 +1342,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   public static String getWKey(int errorCode)
   {
 
-    if (errorCode > MAX_WARNING)
-      return null;
-    else
+//    if (errorCode > MAX_WARNING)
+//      return null;
+//    else
     {
       DecimalFormat df = new DecimalFormat("0000");
 

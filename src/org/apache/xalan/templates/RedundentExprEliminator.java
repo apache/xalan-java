@@ -58,6 +58,8 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xpath.Expression;
@@ -1082,7 +1084,8 @@ public class RedundentExprEliminator extends XSLTVisitor
   			return (ElemTemplateElement)parent;
   		parent = parent.exprGetParent();
   	}
-  	throw new RuntimeException("Programmer's error! expr has no ElemTemplateElement parent!");
+  	throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_ASSERT_NO_TEMPLATE_PARENT, null));
+  	// "Programmer's error! expr has no ElemTemplateElement parent!");
   }
       
   /**
@@ -1326,7 +1329,8 @@ public class RedundentExprEliminator extends XSLTVisitor
   {
   	if(!b)
   	{
-  		throw new RuntimeException("Programmer's assertion in RundundentExprEliminator: "+msg);
+  		throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR, new Object[]{msg}));
+  		// "Programmer's assertion in RundundentExprEliminator: "+msg);
   	}
   }
   
