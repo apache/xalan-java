@@ -377,6 +377,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   		 	m_dtmManager.release((DTM)e.nextElement(), true);
     m_rtfdtm_stack=null; // drop our references too
     m_which_rtfdtm=-1;
+    
+    if(m_global_rtfdtm!=null)
+  		 	m_dtmManager.release(m_global_rtfdtm,true);
+    m_global_rtfdtm=null;
   	
     m_dtmManager = DTMManager.newInstance(
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
