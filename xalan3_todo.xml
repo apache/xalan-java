@@ -55,14 +55,14 @@
       <issue id="collations">What are we going to do about collations? Anything?</issue></action>
     <action category="feature">fn:normalize-unicode()</action>
     <action category="feature">fn:upper-case() and xf:lower-case()</action>
-    <action category="feature">fn:string-pad()</action>
-    <action category="feature">fn:escape-uri()</action>
+    <action category="feature" who="IH">fn:string-pad()</action>
+    <action category="feature" who="IH">fn:escape-uri()</action>
     <action category="feature">fn:resolve-uri()</action>
     <action category="feature">fn:unordered()</action>
     <action category="feature">fn:get-in-scope-namespaces(), fn:get-namespace-uri-for-prefix()</action>
     <action category="feature">fn:default-collation()</action>
     <action category="feature">fn:implicit-timezone()</action>
-    <action category="feature">fn:string-join()</action>
+    <action category="feature" who="IH">fn:string-join()</action>
     <action category="feature">fn:base-uri()</action>
     <action category="feature">change fn:expanded-QName to QName-in-context</action>
     <action category="feature">change fn:get-*-from-dateTime to subtract-dateTimes-yielding-*</action>
@@ -137,6 +137,7 @@
   <person name="Joseph Kesselman" id="JK">developer</person>
   <person name="David Marston" id="DM">tester for XSLT Conformance; stylesheet writer's advocate</person>
   <person name="Myriam Midy" id="MM">developer</person>
+  <person name="Igor Hersht" id="IH">developer</person>
  </devs>
 
 </todo>
