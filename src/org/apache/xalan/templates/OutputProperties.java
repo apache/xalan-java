@@ -131,6 +131,13 @@ public class OutputProperties extends ElemTemplateElement
   static final String S_XALAN_PREFIX = "org.apache.xslt.";
   static final int S_XALAN_PREFIX_LEN = S_XALAN_PREFIX.length();
   
+  /** Built-in extensions namespace, reexpressed in {namespaceURI} syntax
+   * suitable for prepending to a localname to produce a "universal
+   * name".
+   */
+  static final String S_BUILTIN_EXTENSIONS_UNIVERSAL=
+	"{"+Constants.S_BUILTIN_EXTENSIONS_URL+"}";
+  
   /**
    * Fix up a string in an output properties file according to 
    * the rules of {@link #loadPropertiesFile}.
@@ -147,7 +154,7 @@ public class OutputProperties extends ElemTemplateElement
     }
     if (s.startsWith(S_XALAN_PREFIX))
     {
-      s = Constants.S_BUILTIN_EXTENSIONS_URL + s.substring(S_XALAN_PREFIX_LEN);
+      s = S_BUILTIN_EXTENSIONS_UNIVERSAL + s.substring(S_XALAN_PREFIX_LEN);
     }
     if ((index = s.indexOf("\\u003a")) > 0)
     {
@@ -961,7 +968,7 @@ public class OutputProperties extends ElemTemplateElement
 
   /** The number of whitespaces to indent by, if indent="yes". */
   public static String S_KEY_INDENT_AMOUNT =
-    Constants.S_BUILTIN_EXTENSIONS_URL+"indent-amount";
+    S_BUILTIN_EXTENSIONS_UNIVERSAL+"indent-amount";
 
   /**
    * Fully qualified name of class with a default constructor that
@@ -969,16 +976,16 @@ public class OutputProperties extends ElemTemplateElement
    *  will be sent to.      
    */
   public static String S_KEY_CONTENT_HANDLER =
-    Constants.S_BUILTIN_EXTENSIONS_URL+"content-handler";
+    S_BUILTIN_EXTENSIONS_UNIVERSAL+"content-handler";
 
   /** File name of file that specifies character to entity reference mappings. */
   public static String S_KEY_ENTITIES =
-    Constants.S_BUILTIN_EXTENSIONS_URL+"entities";
+    S_BUILTIN_EXTENSIONS_UNIVERSAL+"entities";
 
   /** Use a value of "yes" if the href values for HTML serialization should 
    *  use %xx escaping. */
   public static String S_USE_URL_ESCAPING =
-    Constants.S_BUILTIN_EXTENSIONS_URL+"use-url-escaping";
+    S_BUILTIN_EXTENSIONS_UNIVERSAL+"use-url-escaping";
 
   /** The default properties of all output files. */
   private static Properties m_xml_properties = null;
