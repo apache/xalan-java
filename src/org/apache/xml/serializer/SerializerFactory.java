@@ -71,35 +71,28 @@ import org.xml.sax.ContentHandler;
  */
 public abstract class SerializerFactory
 {
-
-  /*
-   * Associates output methods to serializer classes.
-   * (Don't use this right now.  -sb
-   */
-
-  // private static Hashtable _serializers = new Hashtable();
-
   /**
    * Associates output methods to default output formats.
    */
   private static Hashtable m_formats = new Hashtable();
 
   /**
-   * Returns a serializer for the specified output method. Returns
-   * null if no implementation exists that supports the specified
-   * output method. For a list of the default output methods see
-   * {@link Method}.
+   * Returns a serializer for the specified output method. 
+   * If no implementation exists that supports the specified output method
+   * an exception of some type will be thrown.
+   * For a list of the default output methods see {@link Method}.
    *
-   * @param format The output format
-   * @return A suitable serializer, or null
-   * @throws IllegalArgumentException (apparently -sc) if method is
+   * @param format The output format, minimally the "method" property must be set.
+   * @return A suitable serializer.
+   * @throws IllegalArgumentException if method is
    * null or an appropriate serializer can't be found
-   * @throws WrappedRuntimeException (apparently -sc) if an
-   * exception is thrown while trying to find serializer
+   * @throws Exception if the class for the serializer is found but does not
+   * implement ContentHandler.
+   * @throws WrappedRuntimeException if an exception is thrown while trying to find serializer
    */
   public static Serializer getSerializer(Properties format)
   {
-      Serializer ser = null;
+      Serializer ser;
 
       try
       {
@@ -112,12 +105,21 @@ public abstract class SerializerFactory
         String className =
             format.getProperty(OutputPropertiesFactory.S_KEY_CONTENT_HANDLER);
 
-        if (className == null)
+
+        if (null == className)
         {
-          throw new IllegalArgumentException(
-            "The output format must have a '"
-            + OutputPropertiesFactory.S_KEY_CONTENT_HANDLER + "' property!");
+            // Missing Content Handler property, load default using OutputPropertiesFactory
+            Properties methodDefaults =
+                OutputPropertiesFactory.getDefaultMethodProperties(method);
+            className = 
+            methodDefaults.getProperty(OutputPropertiesFactory.S_KEY_CONTENT_HANDLER);
+                if (null == className)
+                throw new IllegalArgumentException(
+                    "The output format must have a '"
+                    + OutputPropertiesFactory.S_KEY_CONTENT_HANDLER + "' property!");
         }
+
+
 
         ClassLoader loader = ObjectFactory.findClassLoader();
 
@@ -174,6 +176,7 @@ public abstract class SerializerFactory
         throw new org.apache.xml.utils.WrappedRuntimeException(e);
       }
 
+      // If we make it to here ser is not null.
       return ser;
   }
 }
