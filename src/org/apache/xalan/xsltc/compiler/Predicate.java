@@ -204,10 +204,19 @@ final class Predicate extends Expression {
 		}
 		else if (parent instanceof FilterExpr) {
 		    FilterExpr filter = (FilterExpr)parent;
+		    Expression fexp = filter.getExpr();
 
-		    if (filter.getExpr() instanceof KeyCall)
+		    if (fexp instanceof KeyCall)
+			_canOptimize = false;
+		    else if (fexp instanceof VariableRefBase)
+			_canOptimize = false;
+		    else if (fexp instanceof ParentLocationPath)
+			_canOptimize = false;
+		    else if (fexp instanceof UnionPathExpr)
 			_canOptimize = false;
 		    else if (_exp.hasPositionCall() && _exp.hasLastCall())
+			_canOptimize = false;
+		    else if (filter.getParent() instanceof FilterParentPath)
 			_canOptimize = false;
 		    if (_canOptimize)
 			_nthPositionFilter = true;
