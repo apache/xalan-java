@@ -96,8 +96,9 @@ public final class StepIterator extends NodeIteratorBase {
     
     public NodeIterator setStartNode(int node) {
 	if (_isRestartable) {
-	    // iterator is not a clone
+	    // Set start node for left-hand iterator...
 	    _source.setStartNode(_startNode = node);
+	    // ... and get start node for right-hand iterator from left-hand.
 	    _iterator.setStartNode(_source.next());
 	    return resetPosition();
 	}
@@ -105,23 +106,22 @@ public final class StepIterator extends NodeIteratorBase {
     }
 
     public NodeIterator reset() {
-	//_source.setStartNode(_startNode);
 	_source.reset();
-	int node = _source.next();
-	_iterator.setStartNode(node);
+	_iterator.setStartNode(_source.next());
 	return resetPosition();
     }
     
     public int next() {
 	for (int node;;) {
+	    // Try to get another node from the right-hand iterator
 	    if ((node = _iterator.next()) != END) {
 		return returnNode(node);
 	    }
-	    // local iterator ran out of nodes
-	    // try to get new start node from source
+	    // If not, get the next starting point from left-hand iterator...
 	    else if ((node = _source.next()) == END) {
 		return END;
 	    }
+	    // ...and pass it on to the right-hand iterator
 	    else {
 		_iterator.setStartNode(node);
 	    }

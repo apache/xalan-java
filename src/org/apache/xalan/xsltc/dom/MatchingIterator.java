@@ -95,13 +95,10 @@ public final class MatchingIterator extends NodeIteratorBase {
 	    _source.setStartNode(node);
 
 	    // Calculate the position of the node in the set
-	    final int match = _match;
-	    int i = 1;
-	    while ((node = _source.next()) != END && node != match) {
-		++i;
-	    }
-	    _matchPos = i;
+	    _matchPos = 1;
 	    _matchLast = -1;
+	    while ( ((node = _source.next()) != END) && (node != _match) )
+		_matchPos++;
 	}
 	return this;
     }
@@ -116,14 +113,8 @@ public final class MatchingIterator extends NodeIteratorBase {
     }
 	
     public int getLast() {
-	if (_matchLast == -1) {
-	    _source.reset();
-	    int i = 1, node;
-	    while ((node = _source.next()) != END) {
-		++i;
-	    }
-	    _matchLast = i - 1;
-	}
+	if (_matchLast == -1)
+	    _matchLast = _source.getLast();
 	return _matchLast;
     }
 

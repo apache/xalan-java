@@ -1416,7 +1416,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 
 	    _source.setStartNode(node);
-	    return resetPosition();
+	    //return resetPosition();
+	    return(this);
 	}
     
 	public int next() {
@@ -1429,6 +1430,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		case PRESERVE_SPACE:
 		    return returnNode(node);
 		case USE_PREDICATE:
+		default:
 		    if (_whitespace.getBit(node) &&
 			_filter.stripSpace((DOM)DOMImpl.this, node,
 					   _mapping[_type[_parent[node]]]))
@@ -1470,6 +1472,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    count++;
 		    break;
 		case USE_PREDICATE:
+		default:
 		    if (_whitespace.getBit(node) &&
 			_filter.stripSpace((DOM)DOMImpl.this, node,
 					   _mapping[_type[_parent[node]]]))
@@ -2339,8 +2342,14 @@ public final class DOMImpl implements DOM, Externalizable {
 		// Start element definition
 		final String name = copyElement(node, type, handler);
 		// Copy element attribute
-		for (int a=_lengthOrAttr[node]; a!=NULL; a=_nextSibling[a])
+		for (int a=_lengthOrAttr[node]; a!=NULL; a=_nextSibling[a]) {
+		    final String uri = getNamespaceName(a);
+		    if (uri != EMPTYSTRING) {
+			final String prefix = _prefixArray[_prefix[a]];
+			handler.namespace(prefix, uri);
+		    }
 		    handler.attribute(getNodeName(a), makeStringValue(a));
+		}
 		// Copy element children
 		for (int c=_offsetOrChild[node]; c!=NULL; c=_nextSibling[c])
 		    copy(c, handler);
@@ -2349,6 +2358,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    // Shallow copy of attribute to output handler
 	    else {
+		final String uri = getNamespaceName(node);
+		if (uri != EMPTYSTRING) {
+		    final String prefix = _prefixArray[_prefix[node]];
+		    handler.namespace(prefix, uri);
+		}
 		handler.attribute(getNodeName(node), makeStringValue(node));
 	    }
 	    break;
@@ -2405,9 +2419,12 @@ public final class DOMImpl implements DOM, Externalizable {
 		return(copyElement(node, type, handler));
 	    }
 	    else {
-		String name = getNodeName(node);
-		final String value = makeStringValue(node);
-		handler.attribute(name, value);
+		final String uri = getNamespaceName(node);
+		if (uri != EMPTYSTRING) {
+		    final String prefix = _prefixArray[_prefix[node]];
+		    handler.namespace(prefix, uri);
+		}
+		handler.attribute(getNodeName(node), makeStringValue(node));
 		return null;
 	    }
 	}
@@ -2773,8 +2790,9 @@ public final class DOMImpl implements DOM, Externalizable {
 		else if (!_preserve) {
 		    int i = _baseOffset;
 		    while (isWhitespaceChar(_text[i++]) && i < limit) ;
-		    if ((i == limit) && isWhitespaceChar(_text[i-1])) 
+		    if ((i == limit) && isWhitespaceChar(_text[i-1])) {
 			_whitespace.setBit(node);
+		    }
 		}
 
 		_type[node] = TEXT;
@@ -2982,6 +3000,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void endElement(String namespaceURI, String localName,
 			       String qname) {
 	    makeTextNode(false);
+
 	    // Revert to strip/preserve-space setting from before this element
 	    xmlSpaceRevert(_parentStack[_sp]);
 	    _previousSiblingStack[_sp--] = 0;
