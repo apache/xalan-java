@@ -1088,8 +1088,7 @@ public class XStringForFSB extends XString
     	// by a power of 10 too large to fit in a long! In that case, resort to 
     	// successive divisions. 
     	//
-    	// %REVIEW% This can't be a good solution. Need a better algorithm.
- 	     
+    	// %REVIEW% This can't be an optimal solution. Need a better algorithm.
  	    int i=digitsFound[1];
  	    while(i>0)
  	    {
@@ -1102,8 +1101,7 @@ public class XStringForFSB extends XString
 		    doubleResult/=scale;
  	    }
     }
-    
-    /***/System.out.println("GONK "+doubleResult);
+
                 
     if(isNegative)
       doubleResult *= -1;
