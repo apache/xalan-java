@@ -238,7 +238,7 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     protected void setSystemProperties()
 	{
 	  Properties props = new Properties();
-    props.put("vax.xml.transform.TransformerFactory", 
+    props.put("javax.xml.transform.TransformerFactory", 
               "org.apache.xalan.proccessor.TransformerFactoryImpl");
     props.put("javax.xml.parsers.DocumentBuilderFactory", 
               "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
