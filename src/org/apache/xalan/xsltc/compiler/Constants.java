@@ -327,7 +327,9 @@ public interface Constants extends InstructionConstants {
 	= "doubleValue";
     public static final String DOUBLE_VALUE_SIG   
 	= "()D";
-
+    
+    public static final String DOM_PNAME         
+  = "dom";
     public static final String NODE_PNAME         
 	= "node";
     public static final String TRANSLET_OUTPUT_PNAME 
@@ -369,7 +371,7 @@ public interface Constants extends InstructionConstants {
 	= "reset";
 
     public static final String ATTR_SET_SIG
-	= "(" + TRANSLET_OUTPUT_SIG + NODE_ITERATOR_SIG + ")V";
+	= "(" + DOM_INTF_SIG  + NODE_ITERATOR_SIG + TRANSLET_OUTPUT_SIG + ")V";
 
     public static final String GET_NODE_NAME_SIG   
 	= "(" + NODE_SIG + ")" + STRING_SIG;

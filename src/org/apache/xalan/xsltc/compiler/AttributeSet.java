@@ -191,8 +191,9 @@ final class AttributeSet extends TopLevelElement {
             final String methodName = _mergeSet.getMethodName();
 
             il.append(classGen.loadTranslet());
-            il.append(methodGen.loadHandler());
+            il.append(methodGen.loadDOM());
             il.append(methodGen.loadIterator());
+            il.append(methodGen.loadHandler());
             final int method = cpg.addMethodref(classGen.getClassName(),
                                                 methodName, ATTR_SET_SIG);
             il.append(new INVOKESPECIAL(method));

@@ -135,8 +135,9 @@ final class UseAttributeSets extends Instruction {
 	    if (attrs != null) {
 		final String methodName = attrs.getMethodName();
 		il.append(classGen.loadTranslet());
-		il.append(methodGen.loadHandler());
+		il.append(methodGen.loadDOM());
 		il.append(methodGen.loadIterator());
+		il.append(methodGen.loadHandler());
 		final int method = cpg.addMethodref(classGen.getClassName(),
 						    methodName, ATTR_SET_SIG);
 		il.append(new INVOKESPECIAL(method));
