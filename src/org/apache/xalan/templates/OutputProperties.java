@@ -188,15 +188,25 @@ public class OutputProperties extends ElemTemplateElement
       is = OutputProperties.class.getResourceAsStream(resourceName);
       bis = new BufferedInputStream(is);
     props.load(bis);
-    } catch (IOException ioe) {
+    } 
+    catch (IOException ioe) {
       if ( defaults == null ) {
         throw ioe;
       }
-      else
-      {
-        throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH) using just the defaults ", ioe);
+      else {
+        throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH), now using just the defaults ", ioe);
       }
-    } finally {
+    }
+    catch (SecurityException se) {
+      // Repeat IOException handling for sandbox/applet case -sc
+      if ( defaults == null ) {
+        throw se;
+      }
+      else {
+        throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
+      }
+    } 
+    finally {
       if ( bis != null ) {
         bis.close();
       }
@@ -215,13 +225,25 @@ public class OutputProperties extends ElemTemplateElement
       // Now check if the given key was specified as a 
       // System property. If so, the system property 
       // overides the default value in the propery file.
-      String value;
-      if ((value = System.getProperty(key)) == null)      
+      String value = null;
+      try {
+        value = System.getProperty(key);
+      }
+      catch (SecurityException se) {
+        // No-op for sandbox/applet case, leave null -sc
+      }
+      if (value == null)      
         value = (String)props.get(key);                       
       
       String newKey = fixupPropertyString(key, true);
-      String newValue;
-      if ((newValue = System.getProperty(newKey)) == null)
+      String newValue = null;
+      try {
+        newValue = System.getProperty(newKey);
+      }
+      catch (SecurityException se) {
+        // No-op for sandbox/applet case, leave null -sc
+      }
+      if (newValue == null)
         newValue = fixupPropertyString(value, false);
       else
         newValue = fixupPropertyString(newValue, false);
