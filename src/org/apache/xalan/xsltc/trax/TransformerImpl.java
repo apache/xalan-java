@@ -141,7 +141,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
      */
-    public TransformerImpl(Translet translet) {
+    protected TransformerImpl(Translet translet) {
 	_translet = (AbstractTranslet)translet;
     }
 

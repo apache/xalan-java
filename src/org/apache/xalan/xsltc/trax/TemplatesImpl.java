@@ -99,7 +99,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * The bytecodes for the translet and auxiliary classes, plus the name of
      * the main translet class, must be supplied
      */
-    public TemplatesImpl(byte[][] bytecodes, String transletName) {
+    protected TemplatesImpl(byte[][] bytecodes, String transletName) {
 	_bytecodes = bytecodes;
 	_transletName = transletName;
     }
@@ -108,28 +108,28 @@ public final class TemplatesImpl implements Templates, Serializable {
      * The TransformerFactory must pass us the translet bytecodes using this
      * method before we can create any translet instances
      */
-    public void setTransletBytecodes(byte[][] bytecodes) {
+    protected void setTransletBytecodes(byte[][] bytecodes) {
 	_bytecodes = bytecodes;
     }
 
     /**
      * Returns the translet bytecodes stored in this template
      */
-    public byte[][] getTransletBytecodes() {
+    protected byte[][] getTransletBytecodes() {
 	return(_bytecodes);
     }
 
     /**
      * The TransformerFactory should call this method to set the translet name
      */
-    public void setTransletName(String name) {
+    protected void setTransletName(String name) {
 	_transletName = name;
     }
 
     /**
      * Returns the name of the main translet class stored in this template
      */
-    public String getTransletName() {
+    protected String getTransletName() {
 	return _transletName;
     }
 

@@ -78,8 +78,23 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
     private String _defaultTransletName = "GregorSamsa";
     private String _systemId;
 
-    public TemplatesHandlerImpl() {
+    /**
+     * Default constructor
+     */
+    protected TemplatesHandlerImpl() {
 	super(null);
+    }
+
+    /**
+     * Internal initialization
+     */
+    public void init() {
+	// Create and initialize a stylesheet compiler
+	final XSLTC xsltc = new XSLTC();
+	super.setXSLTC(xsltc);
+	xsltc.setParser(this);
+	xsltc.init();
+	xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
     }
 
     /**
@@ -100,15 +115,6 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
      */
     public void setSystemId(String id) {
 	_systemId = id;
-    }
-
-    public void init() {
-	// Create and initialize a stylesheet compiler
-	final XSLTC xsltc = new XSLTC();
-	super.setXSLTC(xsltc);
-	xsltc.setParser(this);
-	xsltc.init();
-	xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
     }
 
     /**

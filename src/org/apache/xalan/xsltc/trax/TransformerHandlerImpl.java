@@ -93,7 +93,7 @@ public class TransformerHandlerImpl implements TransformerHandler {
     /**
      * Cosntructor - pass in reference to a TransformerImpl object
      */
-    public TransformerHandlerImpl(TransformerImpl transformer) {
+    protected TransformerHandlerImpl(TransformerImpl transformer) {
 	// Save the reference to the transformer
 	_transformer = transformer;
 
