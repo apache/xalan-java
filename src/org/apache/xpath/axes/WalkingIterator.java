@@ -249,7 +249,7 @@ public class WalkingIterator extends LocPathIterator
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-    m_predicateIndex = 0;
+    m_predicateIndex = -1;
 
     AxesWalker walker = m_firstWalker;
 
