@@ -63,6 +63,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+import org.w3c.xslt.ExpressionContext;
+
 import org.xml.sax.SAXException;
 
 import com.ibm.bsf.BSFException;
@@ -240,7 +242,7 @@ public class ExtensionFunctionHandler
    * @param object ignored - should always be null
    */
   public Object callJava (Object object, String method, Object[] args, 
-                          Object methodKey) 
+                          Object methodKey, ExpressionContext exprContext) 
     throws SAXException
   {
     // if the function name has a "." in it, then its a static
@@ -279,10 +281,8 @@ public class ExtensionFunctionHandler
         //  className + "'", e);
         throw new SAXException(e);
       }
-    }
-    Object[] convertedArgs = (methodArgs.length > 0) 
-                             ? new Object[methodArgs.length] : null;
-   
+    }  
+    Object[][] convertedArgs = new Object[1][];
     if((null != m_cachedMethods) && !isNew && (null != object))
     {
       try
@@ -291,9 +291,9 @@ public class ExtensionFunctionHandler
         if(null != thisMethod)
         {
           Class[] paramTypes = thisMethod.getParameterTypes();
-          MethodResolver.convertParams(methodArgs, convertedArgs, paramTypes);
+          MethodResolver.convertParams(methodArgs, convertedArgs, paramTypes, exprContext);
                      
-          return thisMethod.invoke (object, methodArgs);
+          return thisMethod.invoke (object, convertedArgs);
         }
       }
       catch(Exception e)
@@ -313,7 +313,8 @@ public class ExtensionFunctionHandler
         // otherwise find and invoke the appropriate method. The method
         // searching logic is the same of course.
         Constructor c = MethodResolver.getConstructor((Class) object, 
-                                                      methodArgs, convertedArgs);
+                                                      methodArgs, convertedArgs,
+                                                      exprContext);
         Object obj = c.newInstance (convertedArgs);
         return obj;
       }
@@ -322,7 +323,7 @@ public class ExtensionFunctionHandler
         Class cl = (object instanceof Class) ? ((Class)object) : object.getClass();
         Method m = MethodResolver.getMethod(cl, method,
                                             methodArgs, 
-                                            convertedArgs);
+                                            convertedArgs, exprContext);
         Object returnObj = m.invoke (object, convertedArgs);
         if(!isNew)
         {
@@ -374,7 +375,8 @@ public class ExtensionFunctionHandler
    */
   public Object callFunction (String funcName, 
                               Vector args, 
-                              Object methodKey, Class javaClass)
+                              Object methodKey, Class javaClass, 
+                              ExpressionContext exprContext)
     throws SAXException 
   {
     if (!componentStarted) 
@@ -455,7 +457,7 @@ public class ExtensionFunctionHandler
       }
 
       if(isJava)
-        return callJava(javaObject, funcName, argArray, methodKey);
+        return callJava(javaObject, funcName, argArray, methodKey, exprContext);
       else
         return e.call (null, funcName, argArray);
     }
@@ -483,11 +485,13 @@ public class ExtensionFunctionHandler
   /////////////////////////////////////////////////////////////////////////
   // Private/Protected Functions
   /////////////////////////////////////////////////////////////////////////
-  
+    
   /**
    * Tell if we've already initialized the bsf engine.
    */
   protected static boolean bsfInitialized = false;
+
+  protected static Boolean bsfInitSynch = new Boolean(true);
 
   /**
    * Start the component up by executing any script that needs to run
@@ -499,9 +503,9 @@ public class ExtensionFunctionHandler
   protected void startupComponent (Class classObj) 
     throws  SAXException 
   {
-    if(!bsfInitialized)
+    synchronized(bsfInitSynch)
     {
-      synchronized(com.ibm.bsf.BSFManager.class)
+      if(!bsfInitialized)
       {
         bsfInitialized = true;
         com.ibm.bsf.BSFManager.registerScriptingEngine ("xslt-javaclass",

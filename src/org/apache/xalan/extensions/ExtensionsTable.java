@@ -60,6 +60,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import org.apache.xpath.objects.XNull;
 import org.apache.xpath.XPathProcessorException;
+import org.w3c.xslt.ExpressionContext;
 
 public class ExtensionsTable
 {
@@ -168,7 +169,7 @@ public class ExtensionsTable
    * @return result of executing the function
    */
   public Object extFunction (String ns, String funcName, Vector argVec, 
-                             Object methodKey)
+                             Object methodKey, ExpressionContext exprContext)
     throws org.xml.sax.SAXException
   {
     if(null == m_extensionFunctionNamespaces.get ("http://xml.apache.org/xslt/java"))
@@ -229,7 +230,7 @@ public class ExtensionsTable
       {
         try
         {
-          result = extNS.callFunction (funcName, argVec, methodKey, null);
+          result = extNS.callFunction (funcName, argVec, methodKey, null, exprContext);
         }
         catch (Exception e)
         {

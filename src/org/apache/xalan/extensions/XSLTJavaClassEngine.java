@@ -130,8 +130,7 @@ public class XSLTJavaClassEngine extends BSFEngineImpl
       }
     }
 
-    Object[] convertedArgs = (methodArgs.length > 0) 
-                             ? new Object[methodArgs.length] : null;
+    Object[][] convertedArgs = new Object[1][];
     try 
     {
       if (isNew) 
@@ -140,7 +139,8 @@ public class XSLTJavaClassEngine extends BSFEngineImpl
         // otherwise find and invoke the appropriate method. The method
         // searching logic is the same of course.
         Constructor c = MethodResolver.getConstructor((Class) object, 
-                                                      methodArgs, convertedArgs);
+                                                      methodArgs, convertedArgs,
+                                                      null);
         Object obj = c.newInstance (methodArgs);
         return obj;
       }
@@ -148,7 +148,7 @@ public class XSLTJavaClassEngine extends BSFEngineImpl
       {
         Method m = MethodResolver.getMethod(object.getClass(), method,
                                                       methodArgs, 
-                                                      convertedArgs);
+                                                      convertedArgs, null);
         return m.invoke (object, methodArgs);
       }
     }

@@ -267,7 +267,8 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
       Vector argv = new Vector (2);
       argv.addElement (xpc);
       argv.addElement (element);
-      result = super.callFunction (localPart, argv, methodKey, classObj);
+      result = super.callFunction (localPart, argv, methodKey, classObj,
+                                   transformer.getXPathContext());
     }
     catch (XPathProcessorException e)
     {
@@ -295,9 +296,9 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
   protected void startupComponent (Class classObj) 
     throws  SAXException
   {
-    if(!bsfInitialized)
+    synchronized(bsfInitSynch)
     {
-      synchronized(com.ibm.bsf.BSFManager.class)
+      if(!bsfInitialized)
       {
         bsfInitialized = true;
         com.ibm.bsf.BSFManager.registerScriptingEngine ("xslt-javaclass",
