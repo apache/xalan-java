@@ -99,6 +99,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _namespace;
 
     private final Instruction _setStartNode;
+    private final Instruction _reset;
     private final Instruction _nextNode;
 
     private SlotAllocator _slotAllocator;
@@ -162,6 +163,10 @@ public class MethodGenerator extends MethodGen
 					  SET_START_NODE,
 					  SET_START_NODE_SIG);
 	_setStartNode = new INVOKEINTERFACE(index, 2);
+
+	index = cpg.addInterfaceMethodref(NODE_ITERATOR,
+					  "reset", "()"+NODE_ITERATOR_SIG);
+	_reset = new INVOKEINTERFACE(index, 1);
 	
 	index = cpg.addInterfaceMethodref(NODE_ITERATOR, NEXT, NEXT_SIG);
 	_nextNode = new INVOKEINTERFACE(index, 1);
@@ -215,6 +220,10 @@ public class MethodGenerator extends MethodGen
     
     public final Instruction setStartNode() {
 	return _setStartNode;
+    }
+
+    public final Instruction reset() {
+	return _reset;
     }
     
     public final Instruction nextNode() {
