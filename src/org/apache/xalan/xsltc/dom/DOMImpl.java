@@ -1245,18 +1245,21 @@ public final class DOMImpl implements DOM, Externalizable {
 	protected int _node;
                   
 	public NodeIterator setStartNode(int node) {
+	    int skip = 0;
 	    if (_isRestartable) {
 		if (node >= _firstAttributeNode) {
+		    skip = 1;
 		    node = _parent[node];
 		    int child = _offsetOrChild[node];
 		    if (child != NULL) node = child;
 		}
 		_startNode = node;
+
 		// find rightmost descendant (or self)
 		int current;
-		while ((node = lastChild(current = node)) != NULL) {
-		}
-		_node = current;
+		while ((node = lastChild(current = node)) != NULL) { }
+
+		_node = current - skip;
 		// _node precedes possible following(node) nodes
 		return resetPosition();
 	    }
