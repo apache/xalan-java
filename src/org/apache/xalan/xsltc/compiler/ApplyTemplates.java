@@ -80,6 +80,7 @@ import org.apache.xalan.xsltc.compiler.util.ResultTreeType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 final class ApplyTemplates extends Instruction {
     private Expression _select;
@@ -117,6 +118,10 @@ final class ApplyTemplates extends Instruction {
 	}
 	
 	if (mode.length() > 0) {
+            if (!XMLChar.isValidQName(mode)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, mode, this);
+                parser.reportError(Constants.ERROR, err);           
+            }		
 	    _modeName = parser.getQNameIgnoreDefaultNs(mode);
 	}
 	

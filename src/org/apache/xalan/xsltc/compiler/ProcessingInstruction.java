@@ -63,24 +63,44 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GETFIELD;
 import org.apache.bcel.generic.INVOKEINTERFACE;
+import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 final class ProcessingInstruction extends Instruction {
 
     private AttributeValue _name; // name treated as AVT (7.1.3)
+    private boolean _isLiteral = false;  // specified name is not AVT  
     
     public void parseContents(Parser parser) {
 	final String name  = getAttribute("name");
-	_name = AttributeValue.create(this, name, parser);
+    
+        if (name.length() > 0) {
+            _isLiteral = Util.isLiteral(name);
+            if (_isLiteral) {
+                if (!XMLChar.isValidNCName(name)) {
+                    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_NCNAME_ERR, name, this);
+                    parser.reportError(Constants.ERROR, err);           
+                }
+            }   
+            _name = AttributeValue.create(this, name, parser);
+        }
+        else
+            reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
+            
 	if (name.equals("xml")) {
 	    reportError(this, parser, ErrorMsg.ILLEGAL_PI_ERR, "xml");
 	}
@@ -96,14 +116,41 @@ final class ProcessingInstruction extends Instruction {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-
-	// Save the current handler base on the stack
-	il.append(methodGen.loadHandler());
-	il.append(DUP);		// first arg to "attributes" call
-	
-	// push attribute name
-	_name.translate(classGen, methodGen);// 2nd arg
-
+    
+        if (!_isLiteral) {
+            // if the ncname is an AVT, then the ncname has to be checked at runtime if it is a valid ncname
+            LocalVariableGen nameValue = methodGen.addLocalVariable2("nameValue",
+            Util.getJCRefType(STRING_SIG),
+            il.getEnd());
+            
+            // store the name into a variable first so _name.translate only needs to be called once  
+            _name.translate(classGen, methodGen);
+            il.append(new ASTORE(nameValue.getIndex()));
+            il.append(new ALOAD(nameValue.getIndex()));
+            
+            // call checkNCName if the name is an AVT
+            final int check = cpg.addMethodref(BASIS_LIBRARY_CLASS, "checkNCName",
+                                "("
+                                +STRING_SIG
+                                +")V");                 
+                                il.append(new INVOKESTATIC(check));
+            
+            // Save the current handler base on the stack
+            il.append(methodGen.loadHandler());
+            il.append(DUP);     // first arg to "attributes" call            
+            
+            // load name value again    
+            il.append(new ALOAD(nameValue.getIndex()));            
+        } else {    
+            // Save the current handler base on the stack
+            il.append(methodGen.loadHandler());
+            il.append(DUP);     // first arg to "attributes" call
+            
+            // Push attribute name
+            _name.translate(classGen, methodGen);// 2nd arg
+        
+        }
+        
 	il.append(classGen.loadTranslet());
 	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					       "stringValueHandler",

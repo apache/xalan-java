@@ -677,5 +677,28 @@ public class XMLChar {
         }
         return false;
     } // isValidIANAEncoding(String):boolean
+    
+   /**
+     * Simple check to determine if qname is legal. If it returns false
+     * then <param>str</param> is illegal; if it returns true then 
+     * <param>str</param> is legal.
+     */
+    public static boolean isValidQName(String str) {
+       
+       final int colon = str.indexOf(':');
+       
+       if (colon == 0 || colon == str.length() - 1) {
+           return false;
+       }       
+       
+       if (colon > 0) {
+           final String prefix = str.substring(0,colon);
+           final String localPart = str.substring(colon+1);
+           return isValidNCName(prefix) && isValidNCName(localPart);
+       }
+       else {
+           return isValidNCName(str);
+       }       
+    }      
 
 } // class XMLChar

@@ -77,6 +77,7 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
@@ -88,6 +89,10 @@ final class Copy extends Instruction {
     public void parseContents(Parser parser) {
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
+            if (!Util.isValidQNames(useSets)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, useSets, this);
+                parser.reportError(Constants.ERROR, err);	
+            }		
 	    _useSets = new UseAttributeSets(useSets, parser);
 	}
 	parseChildren(parser);

@@ -80,6 +80,7 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xml.serializer.Encodings;
+import org.apache.xml.utils.XMLChar;
 
 final class Output extends TopLevelElement {
 
@@ -163,14 +164,21 @@ final class Output extends TopLevelElement {
 	    outputProperties.setProperty(OutputKeys.VERSION, _version);
 	}
 
-	// Get the output method - "xml", "html", "text" or <qname>
+	// Get the output method - "xml", "html", "text" or <qname> (but not ncname)
 	_method = getAttribute("method");
 	if (_method.equals(Constants.EMPTYSTRING)) {
 	    _method = null;
 	}
 	if (_method != null) {
-	    _method = _method.toLowerCase();
-	    outputProperties.setProperty(OutputKeys.METHOD, _method);
+            _method = _method.toLowerCase();
+            if ((_method.equals("xml"))||
+                (_method.equals("html"))||
+                (_method.equals("text"))||
+                ((XMLChar.isValidQName(_method)&&(_method.indexOf(":") > 0)))) {
+	       outputProperties.setProperty(OutputKeys.METHOD, _method);
+            } else {
+                reportError(this, parser, ErrorMsg.INVALID_METHOD_IN_OUTPUT, _method);
+            }
 	}
 
 	// Get the output encoding - any value accepted here
@@ -241,8 +249,13 @@ final class Output extends TopLevelElement {
 
 	    // Make sure to store names in expanded form
 	    while (tokens.hasMoreTokens()) {
+            	String qname = tokens.nextToken();
+                if (!XMLChar.isValidQName(qname)) {
+                    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, qname, this);
+                    parser.reportError(Constants.ERROR, err);	
+                }	    	
 		expandedNames.append(
-		   parser.getQName(tokens.nextToken()).toString()).append(' ');
+        	   parser.getQName(qname).toString()).append(' ');
 	    }
 	    _cdata = expandedNames.toString();
 	    if (_cdataToMerge != null) {

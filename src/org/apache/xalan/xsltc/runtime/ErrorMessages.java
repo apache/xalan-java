@@ -278,14 +278,33 @@ public class ErrorMessages extends ListResourceBundle {
         "Unrecognized XSLTC extension ''{0}''"},
 
 
-        //
-        // Note to translators:  This error message is produced if the translet
-        // class was compiled using a newer version of XSLTC and deployed for
-        // execution with an older version of XSLTC.  The substitution text is
-        // the name of the translet class.
-        //
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
         {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
-        "The specified translet, ''{0}'', was created using a version of XSLTC more recent than the version of the XSLTC run-time that is in use.  You must recompile the stylesheet or use a more recent version of XSLTC to run this translet."}
+        "The specified translet, ''{0}'', was created using a version of XSLTC more recent than the version of the XSLTC run-time that is in use.  You must recompile the stylesheet or use a more recent version of XSLTC to run this translet."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "An attribute whose value must be a QName had the value ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "An attribute whose value must be an NCName had the value ''{0}''"},
     };
 
     public Object[][] getContents() {

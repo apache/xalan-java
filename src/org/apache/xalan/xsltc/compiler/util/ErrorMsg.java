@@ -183,7 +183,10 @@ public final class ErrorMsg {
     public static final String COULD_NOT_CREATE_TRANS_FACT = "COULD_NOT_CREATE_TRANS_FACT";
     public static final String TRANSLET_NAME_JAVA_CONFLICT =
                                                  "TRANSLET_NAME_JAVA_CONFLICT";
-    
+    public static final String INVALID_QNAME_ERR = "INVALID_QNAME_ERR";
+    public static final String INVALID_NCNAME_ERR = "INVALID_NCNAME_ERR";
+    public static final String INVALID_METHOD_IN_OUTPUT = "INVALID_METHOD_IN_OUTPUT";
+                                                     
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.
     private static ResourceBundle _bundle;

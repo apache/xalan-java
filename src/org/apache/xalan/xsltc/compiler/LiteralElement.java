@@ -72,6 +72,7 @@ import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
@@ -290,6 +291,10 @@ final class LiteralElement extends Instruction {
 	    // in the vector or attributes to make sure that later local
 	    // attributes can override an attributes in the set.
 	    if (qname == parser.getUseAttributeSets()) {
+            	if (!Util.isValidQNames(val)) {
+                    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, val, this);
+                    parser.reportError(Constants.ERROR, err);	
+               }
 		setFirstAttribute(new UseAttributeSets(val, parser));
 	    }
 	    // Handle xsl:extension-element-prefixes
