@@ -2,7 +2,6 @@
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
 <!ENTITY done-j SYSTEM "DONE">
 <!ENTITY xsltcreleasenotes SYSTEM "xsltc_constraints.xml">
-<!ENTITY status-j SYSTEM "STATUS">
 
 <!ENTITY history-j SYSTEM "history.xml">]>
 
@@ -91,7 +90,8 @@
        <li>XPath fix: the XPath API wasn't working correctly due to a problem with with NodeSet/NodeIterator adapters.  This fix ended up interacting quite a bit with the #2275 fix.<br/><br/></li>
        <li>Fix for the Norm Walsh bug posted 06/20/2001: iterators weren't always being cloned correctly from the variable value stack.  This fix is not without some risk, though we haven't seen any problems since Scott Boag made it.<br/><br/></li>
        <li>David Bertoni added missing html element properties to SerializerToHTML.java.<br/><br/></li>
-       <li>Shance Curcuru modified TransformerFactoryImpl.setAttribute() to accept a String ("true" or "false") as well as a Boolean object to set the value of a Boolean attribute.</li>
+       <li>Shance Curcuru modified TransformerFactoryImpl.setAttribute() to accept a String ("true" or "false") as well as a Boolean object to set the value of a Boolean attribute.<br/><br/></li>
+       <li>TransformerHandlerImpl was threading when incrementality is turned off. Scott Boag has fixed this bug.</li>       
      </ul>
      </s3>
      <anchor name="other"/>
@@ -138,7 +138,12 @@
      </ul>
      </s3>     
      <anchor name="status"/>
-     &status-j;
+     <s3 title="Version of Xerces to use"> 
+       <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including xerces.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
+       <p><em>Important</em> You may experience unpredictable anomalies if your Xalan and Xerces builds are not in synch. If you download an update to Xalan, check the release notes to determine which version of Xerces you should use.</p>
+       <note>You can use Xalan with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
+       <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
+     </s3>
      <anchor name="to-do"/>
      <s3 title="To-do tasks">
        <p>For a list of goals, tasks, and target dates for completion, see <jump href="todo.html">Xalan-Java Version 2: Things To Do</jump>. 
