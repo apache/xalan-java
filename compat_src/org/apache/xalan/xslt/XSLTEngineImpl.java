@@ -619,7 +619,19 @@ public class XSLTEngineImpl implements  XSLTProcessor
       }
       else
       {
-        m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId(), stylesheetSource);
+				if(null != m_liaison)
+        {
+         // DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+          m_liaison.parse(SAXSource.sourceToInputSource(ssSource));
+					DOMSource source = new DOMSource(m_liaison.getDocument());
+					Templates templates = m_tfactory.newTemplates(source);
+					m_stylesheetRoot = new StylesheetRoot(
+																(org.apache.xalan.templates.StylesheetRoot)templates);																 
+        }  
+				else
+				{
+					m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId(), stylesheetSource);
+				}
         addTraceListenersToStylesheet();
         
         
@@ -628,11 +640,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         pushTime(xslIdentifier);
         //String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
 
-        if(null != m_liaison)
-        {
-         // DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-          m_liaison.parse(SAXSource.sourceToInputSource(ssSource));
-        }  
+        
         if(null != m_diagnosticsPrintWriter)
           displayDuration("Parse of "+xslIdentifier, xslIdentifier);
       }
@@ -952,11 +960,32 @@ public class XSLTEngineImpl implements  XSLTProcessor
       diag(XSLMessages.createMessage(XSLTErrorResources.WG_PARSING_AND_PREPARING, new Object[] {xslURLString})); //"========= Parsing and preparing "+xslURLString+" ==========");
       pushTime(xslURLString);
 
-      if(isRoot)
-      {
-        m_stylesheetRoot = createStylesheetRoot(xslURLString);
-        stylesheet = m_stylesheetRoot.getObject();
-      }
+			URL xslURL = getURLFromString(xslURLString, xmlBaseIdent);
+
+      XSLTInputSource inputSource = new XSLTInputSource(xslURL.toString());
+      
+			if(isRoot)
+			{				
+				if(null != m_liaison)
+				{
+					try{
+						m_liaison.parse(SAXSource.sourceToInputSource(inputSource.getSourceObject()));
+						DOMSource source = new DOMSource(m_liaison.getDocument());
+						Templates templates = m_tfactory.newTemplates(source);
+						m_stylesheetRoot = new StylesheetRoot(
+																		(org.apache.xalan.templates.StylesheetRoot)templates);
+					}					
+					catch (TransformerException tce)
+					{
+						throw new SAXException(tce);
+					}
+				}
+				else
+				{
+					m_stylesheetRoot = createStylesheetRoot(xslURLString);
+				}
+				stylesheet = m_stylesheetRoot.getObject();
+			}
       else
       {
         stylesheet = new Stylesheet(m_stylesheetRoot.getObject());
@@ -974,22 +1003,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         throw new SAXException(tce);
       }
       
-      URL xslURL = getURLFromString(xslURLString, xmlBaseIdent);
-
-      XSLTInputSource inputSource = new XSLTInputSource(xslURL.toString());
-      
-      if(null != m_liaison)
-      {
-        try{
-          //DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-          m_liaison.parse(SAXSource.sourceToInputSource(inputSource.getSourceObject()));
-        }
-                
-        catch (TransformerException tce)
-        {
-          throw new SAXException(tce);
-        }
-      }  
+       
       //m_parserLiaison.setDocumentHandler(stylesheetProcessor);
       //m_parserLiaison.parse(inputSource);
 
