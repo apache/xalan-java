@@ -83,12 +83,14 @@
   <separator/>
   <document id="extensions" label="Extensions" source="xalan/extensions.xml"/>
   <document id="extensionslib" label="Extensions Library" source="xalan/extensionslib.xml"/>
+  <document id="extensions_xsltc" label="XSLTC Exts" source="xalan/extensions_xsltc.xml"/>
   <separator/>
   <document id="readme" label="Release Notes" source="xalan/readme.xml"/>
   <document id="builds" label="Xalan-Java Builds" source="xalan/builds.xml"/>
   <hidden id="history" source="xalan/history.xml"/>
   <hidden id="xsltc_constraints" source="xalan/xsltc_constraints.xml"/>
   <hidden id="xsltc_history" source="xalan/xsltc_history.xml"/>
+  <hidden id="commandline_xsltc" source="xalan/commandline_xsltc.xml"/>
   <separator/>
   <external href="design/design2_0_0.html" label="Xalan 2 Design"/>
   <external href="xsltc/index.html" label="XSLTC Design"/>  

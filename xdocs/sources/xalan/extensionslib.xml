@@ -68,6 +68,7 @@
 <li><link anchor="pipedocument">PipeDocument</link></li>
 <li><link anchor="evaluate">evaluate</link></li>
 <li><link anchor="tokenize">tokenize</link></li>
+<li><link idref="extensions_xsltc">Extensions for XSLTC</link></li>
 <li>Examples: <link anchor="ex-redirect">Redirect</link>, <link anchor="ex-nodeset">nodeset</link>, <link anchor="ex-sql">SQL library</link></li>
 </ul><anchor name="intro"/>
 <s2 title= "Introduction">
