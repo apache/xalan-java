@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+
+<todo title="Things To Do" project="Xalan" major-version="2">
+
+ <devs>
+  <!-- in alphabetical order, by last name -->
+  <person name="Scott Boag" email="scott_boag@lotus.com" id="SB"/>
+  <person name="Shane Curcuru" email="Shane_Curcuru@lotus.com" id="SC"/>
+  <person name="Joseph Kesselman" email="Joseph_Kesselman@lotus.com" id="JK"/>
+  <person name="Donald Leslie" email="donald_leslie@lotus.com" id="DL"/>
+  <person name="Costin Manolache" email="cmanolache@yahoo.com" id="CM"/>
+  <person name="Myriam Midy" email="myriam_midy@lotus.com" id="MM"/>
+  <person name="Gary L Peskin" email="garyp@firstech.com" id="GP"/>
+ </devs>
+
+ <actions priority="high" release-for="1/5/01">
+  <!-- Move to completed section when done. -->
+ 
+  <action context="code" category="performance">
+    When using STree for the input, use STree for the document() and 
+    result tree fragments.
+  </action>
+
+  <action context="code" packages="serialize" who="SB"  category="feature">
+    Implement DOMSerializer on FormatterToXML.
+  </action>
+
+  <action context="code" who="SB"  category="trax">
+    implement javax.trax interfaces.
+  </action>
+
+  <action context="code" who="SB" packages="xpath.axes" category="performance">
+    implement faster itterators for "foo" and "//foo" patterns.
+  </action>
+
+  <action context="code" category="performance">
+    optimize xsl:key and key() stuff.  
+  </action>
+
+  <action context="code" category="code-cleanup">
+    Clean up treatment of null namespaces, re "" vs. null.
+  </action>
+
+  <action context="code"  category="conformance">
+    Check relative URL resolution with notations and unparsed entities.
+    Not sure if there is a bug here.  See note from Thomal Maesing on 
+    10/24/2000, titled "Antwort: Re:".
+  </action>
+
+  <action context="code" category="code-cleanup">
+    Move org.apache.xalan.utils package to org.apache.xml.utils.
+    remove resource dependencies on xalan and/or xpath package.
+  </action>
+
+  <action context="code">
+  </action>
+  
+ </actions>
+ 
+ <actions priority="medium" release-for="1/5/01">
+  <!-- Move to completed section when done. -->
+
+  <action context="code" category="feature">
+    Don published a list of proposed extensions a while ago.  
+    I would really like to get these implemented.  This is a good 
+    area for part-time contributers, as the extensions have limited scope.
+  </action>
+
+  <action context="code" category="performance">
+    Joe could use help with the stylesheet compiler stuff.  
+    Lots of work to be done there.  In particular, I would like to 
+    figure out how to inline some simple itterator operations, 
+    like select="node()" and select="foo".  Also, we need to figure 
+    out how to analyze a particular stylesheet's dependencies, and 
+    be able to package just those classes in a jar, along with the 
+    compiled classes.
+  </action>
+
+  <action context="code">
+  </action>
+
+  <action context="code">
+  </action>
+
+  <action context="code">
+  </action>
+
+  <action context="code">
+  </action>
+  
+ </actions>
+ 
+ <actions priority="long-term" >
+  <!-- Move to completed section when done. -->
+
+  <action context="code" category="feature">
+    XPointer built on the XPath package.
+  </action>
+
+  <action context="code" packages="xpath.axes" category="performance">
+    Schema-savy itterators.  
+    This is hard because there is no standard API for schemas yet.
+  </action>
+
+  <action context="code" id="stylesheet-analysis" packages="processor" category="performance">
+    Stylesheet analysis module.  When I call a template, where is it likely to walk in the tree?  
+    Can I be sure that it will not walk up again?
+  </action>
+
+  <action context="code" packages="stree" category="performance">
+    Related to stylesheet-analysis, the ability to throw away parts of the tree that have been processed, 
+    and we know we won't reuse, based on the stylesheet analysis.
+  </action>
+
+  <action context="code" packages="processor" category="performance">
+    Sub-expression elimination.  When I call a series of 
+    xsl:when tests, are there common subexpressions that can be 
+    executed once and then shared?
+  </action>
+
+  <action context="code">
+  </action>
+  
+ </actions>
+
+ <completed>
+  <!-- Move action sections to here when completed, and date them. -->
+  
+  <action context="code" completed-date="10/31/00">
+    Make this todo list.
+  </action>
+  
+ </completed>
+
+</todo>
