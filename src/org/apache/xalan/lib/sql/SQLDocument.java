@@ -77,7 +77,7 @@ import org.xml.sax.ContentHandler;
 import org.apache.xml.dtm.ref.DTMDefaultBaseIterators;
 import org.xml.sax.ext.*;
 import org.xml.sax.*;
-import org.apache.xml.utils.*;
+import org.apache.xml.utils.SuballocatedIntVector;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.extensions.ExpressionContext;
