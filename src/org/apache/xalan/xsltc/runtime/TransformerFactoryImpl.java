@@ -104,16 +104,60 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     ////////////////////////////////////////////////////// 
     // SAXTransformerFactory (subclass of TransformerFactory)
     //
-    public TemplatesHandler newTemplatesHandler() { /*TBD*/ return null; }
-    public TransformerHandler newTransformerHandler() { /*TBD*/ return null; }
-    public TransformerHandler newTransformerHandler(Source src) { 
-        /*TBD*/ return null; 
+    public TemplatesHandler newTemplatesHandler() 
+	throws TransformerConfigurationException 
+    { 
+	/*TBD*/
+	throw new TransformerConfigurationException(
+	    "TransformerFactoryImpl:newTemplatesHandler() " +
+	    "not implemented yet."); 
+	//return null; 
     }
-    public TransformerHandler newTransformerHandler(Templates templates) { 
-        /*TBD*/ return null; 
+    public TransformerHandler newTransformerHandler() 
+	throws TransformerConfigurationException 
+    {
+	/*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:newTransformerHandler() " +
+            "not implemented yet."); 
+	// return null; 
     }
-    public XMLFilter newXMLFilter(Source src) { /*TBD*/ return null; }
-    public XMLFilter newXMLFilter(Templates templates) { /*TBD*/ return null; }
+    public TransformerHandler newTransformerHandler(Source src) 
+	throws TransformerConfigurationException 
+    { 
+        /*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:newTransformerHandler(Source) " +
+            "not implemented yet."); 
+	// return null; 
+    }
+    public TransformerHandler newTransformerHandler(Templates templates) 
+	throws TransformerConfigurationException 
+    { 
+        /*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:newTransformerHandler(Templates) " +
+            "not implemented yet."); 
+	//return null; 
+    }
+    public XMLFilter newXMLFilter(Source src) 
+	throws TransformerConfigurationException 
+    { 
+	/*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:newXMLFilter(Source) " +
+            "not implemented yet."); 
+	//return null; 
+    }
+    public XMLFilter newXMLFilter(Templates templates) 
+	throws TransformerConfigurationException 
+    { 
+	/*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:newXMLFilter(Templates) " +
+            "not implemented yet."); 
+	//return null; 
+    }
     //
     // End SAXTransformerFactory methods 
     ////////////////////////////////////////////////////// 
@@ -122,9 +166,31 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     // TransformerFactory
     //
     public ErrorListener getErrorListener() { /*TBD*/ return null; }
-    public void setErrorListener(ErrorListener listener) {/*TBD*/   }
-    public Object getAttribute(String name) { /*TBD*/ return null; }
-    public void setAttribute(String name, Object value) { /*TBD*/  }
+    public void setErrorListener(ErrorListener listener) 
+	throws IllegalArgumentException
+    {
+	/*TBD*/   
+        throw new IllegalArgumentException(
+            "TransformerFactoryImpl:setErrorListener(ErrorListener) " +
+            "not implemented yet.");
+    }
+    public Object getAttribute(String name) 
+	throws IllegalArgumentException
+    { 
+	/*TBD*/ 
+        throw new IllegalArgumentException(
+            "TransformerFactoryImpl:getAttribute(String) " +
+            "not implemented yet.");
+	//return null; 
+    }
+    public void setAttribute(String name, Object value) 
+	throws IllegalArgumentException
+    { 
+	/*TBD*/  
+        throw new IllegalArgumentException(
+            "TransformerFactoryImpl:getAttribute(String) " +
+            "not implemented yet.");
+    }
     public boolean getFeature(String name) { 
 	if ((StreamSource.FEATURE == name) ||
 	    (StreamResult.FEATURE == name) ||
@@ -141,9 +207,23 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     public URIResolver getURIResolver() { /*TBD*/ return null; } 
     public void setURIResolver(URIResolver resolver) {/*TBD*/   } 
     public Source getAssociatedStylesheet(Source src, String media,
-	String title, String charset) { /*TBD*/ return null; }
+	String title, String charset)  throws TransformerConfigurationException
+    { 
+	/*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:getAssociatedStylesheet(Source,String," +
+            "String, String) not implemented yet.");
+	//return null; 
+    }
     public Transformer newTransformer() throws
-	TransformerConfigurationException { /*TBD*/ return null; }
+	TransformerConfigurationException 
+    { 
+	/*TBD*/ 
+        throw new TransformerConfigurationException(
+            "TransformerFactoryImpl:newTransformer() " +
+            " not implemented yet.");
+	//return null; 
+    }
     //
     // End TransformerFactory methods 
     ////////////////////////////////////////////////////// 
