@@ -71,6 +71,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
+import javax.xml.transform.Templates;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
@@ -101,6 +102,9 @@ public abstract class AbstractTranslet implements Translet {
     // DOM/translet handshaking - the arrays are set by the compiled translet
     protected String[] namesArray;
     protected String[] namespaceArray;
+    
+    // The Templates object that is used to create this Translet instance
+    protected Templates _templates = null;
     
     // Boolean flag to indicate whether this translet has id functions.
     protected boolean _hasIdCall = false;
@@ -361,7 +365,7 @@ public abstract class AbstractTranslet implements Translet {
 
     // Container for all indexes for xsl:key elements
     private Hashtable _keyIndexes = null;
-    private KeyIndex  _emptyKeyIndex = new KeyIndex(1);
+    private KeyIndex  _emptyKeyIndex = null;
     private int       _indexSize = 0;
 
     /**
@@ -416,13 +420,21 @@ public abstract class AbstractTranslet implements Translet {
      */
     public KeyIndex getKeyIndex(String name) {
 	// Return an empty key index iterator if none are defined
-	if (_keyIndexes == null) return(_emptyKeyIndex);
+	if (_keyIndexes == null) {
+	    return (_emptyKeyIndex != null) 
+	        ? _emptyKeyIndex
+	        : (_emptyKeyIndex = new KeyIndex(1)); 
+	} 
 
 	// Look up the requested key index
 	final KeyIndex index = (KeyIndex)_keyIndexes.get(name);
 
 	// Return an empty key index iterator if the requested index not found
-	if (index == null) return(_emptyKeyIndex);
+	if (index == null) {
+	    return (_emptyKeyIndex != null) 
+	        ? _emptyKeyIndex
+	        : (_emptyKeyIndex = new KeyIndex(1)); 
+	}
 
 	return(index);
     }
@@ -623,6 +635,10 @@ public abstract class AbstractTranslet implements Translet {
 	_auxClasses.put(auxClass.getName(), auxClass);
     }
 
+    public void setAuxiliaryClasses(Hashtable auxClasses) {
+    	_auxClasses = auxClasses;
+    }
+    
     public Class getAuxiliaryClass(String className) {
 	if (_auxClasses == null) return null;
 	return((Class)_auxClasses.get(className));
@@ -639,4 +655,12 @@ public abstract class AbstractTranslet implements Translet {
     public boolean hasIdCall() {
     	return _hasIdCall;
     }
+    
+    public Templates getTemplates() {
+    	return _templates;
+    }
+    
+    public void setTemplates(Templates templates) {
+    	_templates = templates;
+    }    
 }

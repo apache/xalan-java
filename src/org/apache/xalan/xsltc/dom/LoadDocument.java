@@ -64,16 +64,16 @@ package org.apache.xalan.xsltc.dom;
 
 import java.io.FileNotFoundException;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.trax.TemplatesImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.ref.EmptyIterator;
 import org.apache.xml.utils.SystemIDResolver;
@@ -142,9 +142,30 @@ public final class LoadDocument {
                    baseURI = SystemIDResolver.getAbsoluteURIFromRelative(xslURI);
                 
                 String href = (String)arg;
-                if (href.length() == 0) 
-                    href = "";   
-                return document(href, baseURI, translet, dom);
+                if (href.length() == 0) {
+                    href = "";
+                    // %OPT% Optimization to cache the stylesheet DOM.
+                    // The stylesheet DOM is built once and cached
+                    // in the Templates object.
+                    TemplatesImpl templates = (TemplatesImpl)translet.getTemplates();
+                    DOM sdom = null;
+                    if (templates != null) {
+                        sdom = templates.getStylesheetDOM();
+                    }
+                    
+                    // If the cached dom exists, we need to migrate it
+                    // to the new DTMManager and create a DTMAxisIterator
+                    // for the document.
+                    if (sdom != null) {
+                    	return document(sdom, translet, dom);
+                    }
+                    else {
+                    	return document(href, baseURI, translet, dom, true);
+                    } 
+                }
+                else {
+                    return document(href, baseURI, translet, dom);
+                }
             } else if (arg instanceof DTMAxisIterator) {
                 return document((DTMAxisIterator)arg, null, translet, dom);
             } else {
@@ -156,9 +177,16 @@ public final class LoadDocument {
         }
     }
  
- 
     private static DTMAxisIterator document(String uri, String base,
                     AbstractTranslet translet, DOM dom)
+        throws Exception
+    {
+        return document(uri, base, translet, dom, false);
+    }
+ 
+    private static DTMAxisIterator document(String uri, String base,
+                    AbstractTranslet translet, DOM dom,
+                    boolean cacheDOM)
     throws Exception 
     {
         try {
@@ -189,40 +217,35 @@ public final class LoadDocument {
 
         // Check if we can get the DOM from a DOMCache
         DOMCache cache = translet.getDOMCache();
-        DOM newdom;
+        SAXImpl newdom;
 
         mask = multiplexer.nextMask(); // peek
 
         if (cache != null) {
-            newdom = cache.retrieveDocument(base, originalUri, translet);
+            newdom = (SAXImpl)cache.retrieveDocument(base, originalUri, translet);
             if (newdom == null) {
                 final Exception e = new FileNotFoundException(originalUri);
                 throw new TransletException(e);
             }
         } else {
             // Parse the input document and construct DOM object
-            // Create a SAX parser and get the XMLReader object it uses
-            final SAXParserFactory factory = SAXParserFactory.newInstance();
-            final SAXParser parser = factory.newSAXParser();
-            final XMLReader reader = parser.getXMLReader();
-            try {
-                reader.setFeature(NAMESPACE_FEATURE,true);
+            // Trust the DTMManager to pick the right parser and
+            // set up the DOM correctly.
+            XSLTCDTMManager dtmManager = (XSLTCDTMManager)multiplexer.getDTMManager();
+            newdom = (SAXImpl)dtmManager.getDTM(new StreamSource(uri),
+                                       false, null, true, false,
+                                       translet.hasIdCall(), cacheDOM);
+                                
+            // Cache the stylesheet DOM in the Templates object
+            if (cacheDOM) {
+                TemplatesImpl templates = (TemplatesImpl)translet.getTemplates();
+                if (templates != null) {
+                    templates.setStylesheetDOM(newdom);
+                }
             }
-            catch (Exception e) {
-                throw new TransletException(e);
-            }
-
-            // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-            XSLTCDTMManager dtmManager = (XSLTCDTMManager)
-                        ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain())
-                                               .getDOMImpl()).m_mgr;
-            newdom = (SAXImpl)dtmManager.getDTM(
-                                new SAXSource(reader, new InputSource(uri)),
-                                false, null, true, false, translet.hasIdCall());
-
+            
             translet.prepassDocument(newdom);
-
-            ((SAXImpl)newdom).setDocumentURI(uri);
+            newdom.setDocumentURI(uri);
         }
 
         // Wrap the DOM object in a DOM adapter and add to multiplexer
@@ -230,11 +253,10 @@ public final class LoadDocument {
         multiplexer.addDOMAdapter(domAdapter);
 
         // Create index for any key elements
-        translet.buildKeys(domAdapter, null, null,
-                           ((SAXImpl)newdom).getDocument());
+        translet.buildKeys(domAdapter, null, null, newdom.getDocument());
 
         // Return a singleton iterator containing the root node
-        return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
+        return new SingletonIterator(newdom.getDocument(), true);
         } catch (Exception e) {
             throw e;
         }
@@ -260,6 +282,40 @@ public final class LoadDocument {
             union.addIterator(document(uri, baseURI, translet, dom));
         }
         return(union);
+    }
+
+    /**
+     * Create a DTMAxisIterator for the newdom. This is currently only
+     * used to create an iterator for the cached stylesheet DOM.
+     * 
+     * @param newdom the cached stylesheet DOM
+     * @param translet the translet
+     * @param the main dom (should be a MultiDOM)
+     * @return a DTMAxisIterator from the document root
+     */
+    private static DTMAxisIterator document(DOM newdom, 
+                                            AbstractTranslet translet,
+                                            DOM dom)
+        throws Exception
+    {
+        DTMManager dtmManager = ((MultiDOM)dom).getDTMManager();
+        // Need to migrate the cached DTM to the new DTMManager
+        if (dtmManager != null && newdom instanceof DTM) {
+            ((DTM)newdom).migrateTo(dtmManager);
+        }
+    	
+    	translet.prepassDocument(newdom);
+        
+        // Wrap the DOM object in a DOM adapter and add to multiplexer
+        final DOMAdapter domAdapter = translet.makeDOMAdapter(newdom);
+        ((MultiDOM)dom).addDOMAdapter(domAdapter);
+
+        // Create index for any key elements
+        translet.buildKeys(domAdapter, null, null,
+                           newdom.getDocument());
+
+        // Return a singleton iterator containing the root node
+        return new SingletonIterator(newdom.getDocument(), true);
     }
  
     private static String getBaseFromURI( String uri){

@@ -77,8 +77,11 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.URIResolver;
 
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public final class TemplatesImpl implements Templates, Serializable {
 
@@ -114,6 +117,11 @@ public final class TemplatesImpl implements Templates, Serializable {
     private int _transletIndex = -1;
     
     /**
+     * Contains the list of auxiliary class definitions.
+     */
+    private Hashtable _auxClasses = null;
+    
+    /**
      * Output properties of this translet.
      */
     private Properties _outputProperties; 
@@ -128,6 +136,14 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     private URIResolver _uriResolver = null;
 
+    /**
+     * Cache the DTM for the stylesheet in a thread local variable,
+     * which is used by the document('') function.
+     * Use ThreadLocal because a DTM cannot be shared between
+     * multiple threads. 
+     */
+    private ThreadLocal _sdom = new ThreadLocal();
+    
     /**
      * A reference to the transformer factory that this templates
      * object belongs to.
@@ -287,6 +303,10 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    final int classCount = _bytecodes.length;
 	    _class = new Class[classCount];
 
+	    if (classCount > 1) {
+	        _auxClasses = new Hashtable();
+	    }
+
 	    for (int i = 0; i < classCount; i++) {
 		_class[i] = loader.defineClass(_bytecodes[i]);
 		final Class superClass = _class[i].getSuperclass();
@@ -294,6 +314,9 @@ public final class TemplatesImpl implements Templates, Serializable {
 		// Check if this is the main class
 		if (superClass.getName().equals(ABSTRACT_TRANSLET)) {
 		    _transletIndex = i;
+		}
+		else {
+		    _auxClasses.put(_class[i].getName(), _class[i]);
 		}
 	    }
 
@@ -326,13 +349,12 @@ public final class TemplatesImpl implements Templates, Serializable {
 
 	    // The translet needs to keep a reference to all its auxiliary 
 	    // class to prevent the GC from collecting them
-	    Translet translet = (Translet) _class[_transletIndex].newInstance();
-	    final int classCount = _class.length;
-	    for (int i = 0; i < classCount; i++) {
-		if (i != _transletIndex) {
-		    translet.addAuxiliaryClass(_class[i]);
-		}
+	    AbstractTranslet translet = (AbstractTranslet) _class[_transletIndex].newInstance();
+	    translet.setTemplates(this);
+	    if (_auxClasses != null) {
+	        translet.setAuxiliaryClasses(_auxClasses);
 	    }
+	    
 	    return translet;
 	}
 	catch (InstantiationException e) {
@@ -379,5 +401,17 @@ public final class TemplatesImpl implements Templates, Serializable {
 	}
     }
 
+    /**
+     * Return the thread local copy of the stylesheet DOM.
+     */
+    public DOM getStylesheetDOM() {
+    	return (DOM)_sdom.get();
+    }
+    
+    /**
+     * Set the thread local copy of the stylesheet DOM.
+     */
+    public void setStylesheetDOM(DOM sdom) {
+    	_sdom.set(sdom);
+    }
 }
-

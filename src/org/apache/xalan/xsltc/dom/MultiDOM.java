@@ -87,6 +87,7 @@ public final class MultiDOM implements DOM {
     
     private DOM[] _adapters;
     private DOMAdapter _main;
+    private DTMManager _dtmManager;
     private int _free;
     private int _size;
 
@@ -283,6 +284,10 @@ public final class MultiDOM implements DOM {
         DOMAdapter adapter = (DOMAdapter)main;
         _adapters[0] = adapter;
         _main = adapter;
+        DOM dom = adapter.getDOMImpl();
+        if (dom instanceof DTMDefaultBase) {
+            _dtmManager = ((DTMDefaultBase)dom).getManager();
+        }
 
         // %HZ% %REVISIT% Is this the right thing to do here?  In the old
         // %HZ% %REVISIT% version, the main document did not get added through
@@ -400,6 +405,10 @@ public final class MultiDOM implements DOM {
     public int getDocument() 
     {
         return _main.getDocument();
+    }
+
+    public DTMManager getDTMManager() {
+    	return _dtmManager;
     }
 
     /** 
