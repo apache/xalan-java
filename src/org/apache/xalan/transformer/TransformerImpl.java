@@ -1110,10 +1110,20 @@ public class TransformerImpl extends Transformer
       {
         Serializer serializer = SerializerFactory.getSerializer(format);
 
-        if (null != sresult.getCharacterStream())
-          serializer.setWriter(sresult.getCharacterStream());
-        else
-          serializer.setOutputStream(sresult.getByteStream());
+        if (null != sresult.getWriter())
+          serializer.setWriter(sresult.getWriter());
+        else if (null != sresult.getOutputStream())
+          serializer.setOutputStream(sresult.getOutputStream());
+        else if(null != sresult.getSystemId())
+        {
+          String fileURL = sresult.getSystemId();
+          if(fileURL.startsWith("file:///"))
+          {
+            fileURL = fileURL.substring(8);
+          }
+          serializer.setOutputStream(new java.io.FileOutputStream(fileURL));
+        }
+        else throw new TransformerException("No output specified!");
 
         handler = serializer.asContentHandler();
 
@@ -1470,6 +1480,8 @@ public class TransformerImpl extends Transformer
       return null;
     }  
   }
+  
+  
 
   /**
    * Set a bag of parameters for the transformation. Note that 
@@ -1485,7 +1497,7 @@ public class TransformerImpl extends Transformer
    */
   public void setParameters(Properties params)
   {
-    resetParameters();
+    clearParameters();
     Enumeration names = params.propertyNames();
     while(names.hasMoreElements())
     {
@@ -1512,7 +1524,7 @@ public class TransformerImpl extends Transformer
   /**
    * Reset the parameters to a null list.
    */
-  public void resetParameters()
+  public void clearParameters()
   {
     VariableStack varstack = new VariableStack();
     getXPathContext().setVarStack(varstack);

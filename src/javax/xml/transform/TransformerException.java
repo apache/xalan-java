@@ -87,13 +87,56 @@ public class TransformerException extends Exception
   Exception containedException;
 
   /**
-   * Method getException  retrieves an exception that this exception wraps.
+   * This method retrieves an exception that this exception wraps.
    *
    * @return An Exception object, or null.
+   * @see #getCause
    */
   public Exception getException()
   {
     return containedException;
+  }
+  
+  /**
+   * Returns the cause of this throwable or <code>null</code> if the
+   * cause is nonexistent or unknown.  (The cause is the throwable that
+   * caused this throwable to get thrown.)
+   */
+  public Throwable getCause() {
+    return (containedException==this ? null : containedException);
+  }
+
+  /**
+   * Initializes the <i>cause</i> of this throwable to the specified value.
+   * (The cause is the throwable that caused this throwable to get thrown.) 
+   *
+   * <p>This method can be called at most once.  It is generally called from 
+   * within the constructor, or immediately after creating the
+   * throwable.  If this throwable was created
+   * with {@link #TransformerException(Exception)} or
+   * {@link #TransformerException(String,Exception)}, this method cannot be called
+   * even once.
+   *
+   * @param  cause the cause (which is saved for later retrieval by the
+   *         {@link #getCause()} method).  (A <tt>null</tt> value is
+   *         permitted, and indicates that the cause is nonexistent or
+   *         unknown.)
+   * @return  a reference to this <code>Throwable</code> instance.
+   * @throws IllegalArgumentException if <code>cause</code> is this
+   *         throwable.  (A throwable cannot
+   *         be its own cause.)
+   * @throws IllegalStateException if this throwable was
+   *         created with {@link #TransformerException(Exception)} or
+   *         {@link #TransformerException(String,Exception)}, or this method has already
+   *         been called on this throwable.
+   */
+  public synchronized Throwable initCause(Throwable cause) {
+    if (this.containedException == null)
+      throw new IllegalStateException("Can't overwrite cause");
+    if (containedException == this)
+      throw new IllegalArgumentException("Self-causation not permitted");
+    this.containedException = containedException;
+    return this;
   }
 
   /**

@@ -62,6 +62,7 @@ import java.lang.String;
 
 import java.io.OutputStream;
 import java.io.Writer;
+import java.io.File;
 
 /**
  * Acts as an holder for a transformation result, 
@@ -90,11 +91,11 @@ public class StreamResult implements Result
    * the transformer may use instructions contained in the 
    * transformation instructions to control the encoding.
    *
-   * @param byteStream A valid OutputStream reference.
+   * @param outputStream A valid OutputStream reference.
    */
-  public StreamResult(OutputStream byteStream)
+  public StreamResult(OutputStream outputStream)
   {
-    setByteStream(byteStream);
+    setOutputStream(outputStream);
   }
 
   /**
@@ -105,11 +106,31 @@ public class StreamResult implements Result
    * there are times when it is useful to write to a character 
    * stream, such as when using a StringWriter.
    *
-   * @param characterStream  A valid Writer reference.
+   * @param writer  A valid Writer reference.
    */
-  public StreamResult(Writer characterStream)
+  public StreamResult(Writer writer)
   {
-    setCharacterStream(characterStream);
+    setWriter(writer);
+  }
+  
+  /**
+   * Construct a StreamResult from a URL.
+   *
+   * @param systemId Must be a String that conforms to the URI syntax.
+   */
+  public StreamResult(String systemId)
+  {
+    this.systemId = systemId;
+  }
+  
+  /**
+   * Construct a StreamResult from a File.
+   *
+   * @param f Must a non-null File reference.
+   */
+  public StreamResult(File f)
+  {
+    setSystemId(f);
   }
 
   /**
@@ -118,52 +139,52 @@ public class StreamResult implements Result
    * the transformer may use instructions contained in the 
    * transformation instructions to control the encoding.
    *
-   * @param byteStream A valid OutputStream reference.
+   * @param outputStream A valid OutputStream reference.
    */
-  public void setByteStream(OutputStream byteStream)
+  public void setOutputStream(OutputStream outputStream)
   {
-    this.byteStream = byteStream;
+    this.outputStream = outputStream;
   }
 
   /**
-   * Get the byte stream that was set with setByteStream.
+   * Get the byte stream that was set with setOutputStream.
    *
-   * @return The byte stream that was set with setByteStream, or null
-   * if setByteStream or the ByteStream constructor was not called.
+   * @return The byte stream that was set with setOutputStream, or null
+   * if setOutputStream or the ByteStream constructor was not called.
    */
-  public OutputStream getByteStream()
+  public OutputStream getOutputStream()
   {
-    return byteStream;
+    return outputStream;
   }
 
   /**
-   * Set the character stream that is to be written to.  Normally, 
-   * a stream should be used rather than a reader, so that 
+   * Set the writer that is to receive the result.  Normally, 
+   * a stream should be used rather than a writer, so that 
    * the transformer may use instructions contained in the 
    * transformation instructions to control the encoding.  However, 
-   * there are times when it is useful to write to a character 
-   * stream, such as when using a StringWriter.
+   * there are times when it is useful to write to a writer, 
+   * such as when using a StringWriter.
    *
-   * @param characterStream  A valid Writer reference.
+   * @param writer  A valid Writer reference.
    */
-  public void setCharacterStream(Writer characterStream)
+  public void setWriter(Writer writer)
   {
-    this.characterStream = characterStream;
+    this.writer = writer;
   }
 
   /**
-   * Get the character stream that was set with setCharacterStream.
+   * Get the character stream that was set with setWriter.
    *
-   * @return The character stream that was set with setCharacterStream, or null
-   * if setCharacterStream or the CharacterStream constructor was not called.
+   * @return The character stream that was set with setWriter, or null
+   * if setWriter or the Writer constructor was not called.
    */
-  public Writer getCharacterStream()
+  public Writer getWriter()
   {
-    return characterStream;
+    return writer;
   }
 
   /**
-   * Method setSystemId Set the systemID that may be used in association
+   * Set the systemID that may be used in association
    * with the byte or character stream, or, if neither is set, use 
    * this value as a writeable URI (probably a file name).
    *
@@ -172,6 +193,16 @@ public class StreamResult implements Result
   public void setSystemId(String systemId)
   {
     this.systemId = systemId;
+  }
+  
+  /**
+   * Set the system ID from a File reference.
+   *
+   * @param f Must a non-null File reference.
+   */
+  public void setSystemId(File f)
+  {
+    this.systemId = "file:///"+f.getAbsolutePath();
   }
 
   /**
@@ -199,10 +230,10 @@ public class StreamResult implements Result
   /**
    * The byte stream that is to be written to.
    */
-  private OutputStream byteStream;
+  private OutputStream outputStream;
 
   /**
    * The character stream that is to be written to.
    */
-  private Writer characterStream;
+  private Writer writer;
 }

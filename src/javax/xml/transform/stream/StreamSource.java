@@ -60,6 +60,7 @@ import javax.xml.transform.Source;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.File;
 
 /**
  * Acts as an holder for a transformation Source in the form 
@@ -94,11 +95,11 @@ public class StreamSource implements Source
    * setSystemId should also be called, so that relative URI references 
    * can be resolved.</p>
    *
-   * @param byteStream A valid InputStream reference to an XML stream.
+   * @param inputStream A valid InputStream reference to an XML stream.
    */
-  public StreamSource(InputStream byteStream)
+  public StreamSource(InputStream inputStream)
   {
-    setByteStream(byteStream);
+    setInputStream(inputStream);
   }
   
   /**
@@ -111,12 +112,12 @@ public class StreamSource implements Source
    * to the input stream, which allows relative URIs 
    * to be processed.</p>
    *
-   * @param byteStream A valid InputStream reference to an XML stream.
+   * @param inputStream A valid InputStream reference to an XML stream.
    * @param systemId Must be a String that conforms to the URI syntax.
    */
-  public StreamSource(InputStream byteStream, String systemId)
+  public StreamSource(InputStream inputStream, String systemId)
   {
-    setByteStream(byteStream);
+    setInputStream(inputStream);
     setSystemId(systemId);
   }
 
@@ -129,11 +130,11 @@ public class StreamSource implements Source
    * of the input stream is already resolved, as in the case of 
    * reading XML from a StringReader.
    *
-   * @param characterStream A valid Reader reference to an XML character stream.
+   * @param reader A valid Reader reference to an XML character stream.
    */
-  public StreamSource(Reader characterStream)
+  public StreamSource(Reader reader)
   {
-    setCharacterStream(characterStream);
+    setReader(reader);
   }
   
   /**
@@ -144,12 +145,12 @@ public class StreamSource implements Source
    * of the input stream is already resolved, as in the case of 
    * reading XML from a StringReader.
    *
-   * @param characterStream A valid Reader reference to an XML character stream.
+   * @param reader A valid Reader reference to an XML character stream.
    * @param systemId Must be a String that conforms to the URI syntax.
    */
-  public StreamSource(Reader characterStream, String systemId)
+  public StreamSource(Reader reader, String systemId)
   {
-    setCharacterStream(characterStream);
+    setReader(reader);
     setSystemId(systemId);
   }
 
@@ -163,6 +164,16 @@ public class StreamSource implements Source
   {
     this.systemId = systemId;
   }
+  
+  /**
+   * Construct a StreamSource from a File.
+   *
+   * @param f Must a non-null File reference.
+   */
+  public StreamSource(File f)
+  {
+    this.systemId = "file:///"+f.getAbsolutePath();
+  }
 
   /**
    * Set the byte stream to be used as input.  Normally, 
@@ -174,11 +185,11 @@ public class StreamSource implements Source
    * setSystemId should also be called, so that relative URL references 
    * can be resolved.</p>
    *
-   * @param byteStream A valid InputStream reference to an XML stream.
+   * @param inputStream A valid InputStream reference to an XML stream.
    */
-  public void setByteStream(InputStream byteStream)
+  public void setInputStream(InputStream inputStream)
   {
-    this.byteStream = byteStream;
+    this.inputStream = inputStream;
   }
 
   /**
@@ -187,9 +198,9 @@ public class StreamSource implements Source
    * @return The byte stream that was set with setByteStream, or null
    * if setByteStream or the ByteStream constructor was not called.
    */
-  public InputStream getByteStream()
+  public InputStream getInputStream()
   {
-    return byteStream;
+    return inputStream;
   }
 
   /**
@@ -200,22 +211,22 @@ public class StreamSource implements Source
    * of the input stream is already resolved, as in the case of 
    * reading XML from a StringReader.
    *
-   * @param characterStream A valid Reader reference to an XML CharacterStream.   
+   * @param reader A valid Reader reference to an XML CharacterStream.   
    */
-  public void setCharacterStream(Reader characterStream)
+  public void setReader(Reader reader)
   {
-    this.characterStream = characterStream;
+    this.reader = reader;
   }
 
   /**
-   * Get the character stream that was set with setCharacterStream.
+   * Get the character stream that was set with setReader.
    *
-   * @return The character stream that was set with setCharacterStream, or null
-   * if setCharacterStream or the CharacterStream constructor was not called.
+   * @return The character stream that was set with setReader, or null
+   * if setReader or the Reader constructor was not called.
    */
-  public Reader getCharacterStream()
+  public Reader getReader()
   {
-    return characterStream;
+    return reader;
   }
 
   /**
@@ -271,6 +282,16 @@ public class StreamSource implements Source
     return systemId;
   }
   
+  /**
+   * Set the system ID from a File reference.
+   *
+   * @param f Must a non-null File reference.
+   */
+  public void setSystemId(File f)
+  {
+    this.systemId = "file:///"+f.toString();
+  }
+  
   //////////////////////////////////////////////////////////////////////
   // Internal state.
   //////////////////////////////////////////////////////////////////////
@@ -288,11 +309,11 @@ public class StreamSource implements Source
   /**
    * The byte stream for this Source, or null.
    */
-  private InputStream byteStream;
+  private InputStream inputStream;
 
   /**
    * The character stream for this Source, or null.
    */
-  private Reader characterStream;
-  
+  private Reader reader;
+    
 }

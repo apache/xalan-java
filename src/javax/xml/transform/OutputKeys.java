@@ -67,6 +67,12 @@ package javax.xml.transform;
 public class OutputKeys
 {
   /**
+   * Default constructor is private on purpose.  This class is 
+   * only for static variable access, and should never be constructed.
+   */
+  private OutputKeys(){}
+
+  /**
    * method = "xml" | "html" | "text" | <var>qname-but-not-ncname</var>.
    *
    * <p>The method attribute identifies the overall method that

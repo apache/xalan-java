@@ -11,7 +11,7 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * The SAXTransformerFactory provides a reference to an 
+ * The TransformerHandler provides a reference to an 
  * object that implements this interface, and that can 
  * listen to SAX ContentHandler parse events and transform 
  * them to a Result.

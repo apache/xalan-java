@@ -68,13 +68,18 @@ import java.util.Properties;
  * the transformation output to a variety of sinks.</p>
  * 
  * <p>An object of this class may not be used in multiple threads
- * running concurrently.</p>
+ * running concurrently.  Different Transformers may be used 
+ * concurrently by different threads.</p>
  * 
  * <p>A Transformer may be used multiple times.  Parameters and 
  * output properties are preserved across transformations.</p>
  */
 public abstract class Transformer
 {
+  /**
+   * Default constructor is protected on purpose.
+   */
+  protected Transformer(){}
 
   /**
    * Process the source tree to the output result.
@@ -120,6 +125,11 @@ public abstract class Transformer
    * or setParameters.
    */
   public abstract Object getParameter(String name);
+  
+  /**
+   * Clear all parameters set with setParameter.
+   */
+  public abstract void clearParameters();
 
   /**
    * Set an object that will be used to resolve URIs used in

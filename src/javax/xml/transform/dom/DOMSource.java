@@ -89,7 +89,11 @@ public class DOMSource implements Source
   public DOMSource(){}
 
   /**
-   * Create a new input source with a DOM node.
+   * Create a new input source with a DOM node.  The operation 
+   * will be applied to the subtree rooted at this node.  In XSLT, 
+   * a "/" pattern still means the root of the tree (not the subtree),
+   * and the evaluation of global variables and parameters is done 
+   * from the root node also.
    *
    * @param n The DOM node that will contain the Source tree.
    */

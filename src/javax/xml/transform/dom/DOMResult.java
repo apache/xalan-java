@@ -82,15 +82,20 @@ public class DOMResult implements Result
     = "http://javax.xml.transform.dom.DOMResult/feature";
 
   /**
-   * Zero-argument default constructor.  If this constructor is used, and 
-   * no output DOM source is set, then the transformer will 
-   * create an output {@link org.w3c.dom.Document} using 
-   * {@link javax.xml.parsers.DocumentBuilder#newDocument}.
+   * Zero-argument default constructor. In practice, 
+   * the node should be a {@link org.w3c.dom.Document} node, 
+   * a {@link org.w3c.dom.DocumentFragment} node, or a 
+   * {@link org.w3c.dom.Element} node.  In other words, a node 
+   * that accepts children.
    */
   public DOMResult(){}
 
   /**
-   * Use a DOM node to create a new output target.
+   * Use a DOM node to create a new output target. In practice, 
+   * the node should be a {@link org.w3c.dom.Document} node, 
+   * a {@link org.w3c.dom.DocumentFragment} node, or a 
+   * {@link org.w3c.dom.Element} node.  In other words, a node 
+   * that accepts children.
    *
    * @param n The DOM node that will contain the result tree.
    */
@@ -100,7 +105,11 @@ public class DOMResult implements Result
   }
 
   /**
-   * Create a new output target with a DOM node.
+   * Create a new output target with a DOM node. In practice, 
+   * the node should be a {@link org.w3c.dom.Document} node, 
+   * a {@link org.w3c.dom.DocumentFragment} node, or a 
+   * {@link org.w3c.dom.Element} node.  In other words, a node 
+   * that accepts children.
    *
    * @param node The DOM node that will contain the result tree.
    * @param systemID The system identifier which may be used in association 
@@ -113,7 +122,11 @@ public class DOMResult implements Result
   }
 
   /**
-   * Set the node that will contain the result DOM tree.
+   * Set the node that will contain the result DOM tree.  In practice, 
+   * the node should be a {@link org.w3c.dom.Document} node, 
+   * a {@link org.w3c.dom.DocumentFragment} node, or a 
+   * {@link org.w3c.dom.Element} node.  In other words, a node 
+   * that accepts children.
    *
    * @param node The node to which the transformation 
    * will be appended.

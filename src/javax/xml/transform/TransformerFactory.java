@@ -148,6 +148,8 @@ public abstract class TransformerFactory
   /**
    * Process the Source into a Transformer object.  Care must
    * be given not to use this object in multiple threads running concurrently.
+   * Different TransformerFactories can be used concurrently by different 
+   * threads.
    *
    * @param source An object that holds a URI, input stream, etc.
    *

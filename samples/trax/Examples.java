@@ -60,6 +60,13 @@ public class Examples
         handleException(ex);
     } 
     
+    System.out.println("\n\n==== exampleSimple2 ====");
+    try {
+        exampleSimple2("xml/foo.xml", "xsl/foo.xsl");
+    } catch( Exception ex ) { 
+        handleException(ex);
+    } 
+    
     System.out.println("\n\n==== exampleFromStream ====");
     try {
         exampleFromStream("xml/foo.xml", "xsl/foo.xsl");
@@ -186,6 +193,26 @@ public class Examples
     transformer.transform( new StreamSource(sourceID),
                            new StreamResult(System.out));
   }
+  
+  /**
+   * Show the simplest possible transformation from File 
+   * to a File.
+   */
+  public static void exampleSimple2(String sourceID, String xslID)
+    throws TransformerException, TransformerConfigurationException
+  {
+    // Create a transform factory instance.
+    TransformerFactory tfactory = TransformerFactory.newInstance();
+    
+    // Create a transformer for the stylesheet.
+    Transformer transformer 
+      = tfactory.newTransformer(new StreamSource(xslID));
+    
+    // Transform the source XML to System.out.
+    transformer.transform( new StreamSource(new File(sourceID)),
+                           new StreamResult(new File("foo.out")));
+  }
+
   
   /**
    * Show simple transformation from input stream to output stream.

@@ -85,7 +85,9 @@ public interface TemplatesHandler extends ContentHandler
   /**
    * Set the base ID (URI or system ID) for the Templates object
    * created by this builder.  This must be set in order to
-   * resolve relative URIs in the stylesheet.
+   * resolve relative URIs in the stylesheet.  This must be 
+   * called before the startDocument event.
+   * 
    * @param baseID Base URI for this stylesheet.
    */
   public void setSystemId(String systemID);

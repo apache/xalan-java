@@ -161,7 +161,9 @@ public class SAXSource implements Source
   }
   
   /**
-   * Set the system identifier for this Source.
+   * Set the system identifier for this Source.  If an input source 
+   * has already been set, it will set the system ID or that 
+   * input source, otherwise it will create a new input source.
    *
    * <p>The system identifier is optional if there is a byte stream
    * or a character stream, but it is still useful to provide one,
@@ -217,8 +219,8 @@ public class SAXSource implements Source
     {
       StreamSource ss = (StreamSource)source;
       InputSource isource= new InputSource(ss.getSystemId());
-      isource.setByteStream(ss.getByteStream());
-      isource.setCharacterStream(ss.getCharacterStream());
+      isource.setByteStream(ss.getInputStream());
+      isource.setCharacterStream(ss.getReader());
       isource.setPublicId(ss.getPublicId());
       return isource;
     }
