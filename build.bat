@@ -18,12 +18,13 @@ set ANT=bin\ant.jar
 set XERCES=bin\xerces.jar
 set BSF=bin\bsf.jar
 set BSFENGINES=bin\bsfengines.jar
-set DOCLET=xdocs\xalanjdoc.jar
+set DOCGENERATOR=bin\stylebook-1.0-b2.jar
+set DOCLET=bin\xalanjdoc.jar
 
 rem DOCLET must be on system CLASSPATH for javadocs task to work. Just including it in
 rem -classpath arg for java or javadoc call doesn't work....
 set SAVECP=%CLASSPATH%
-set CLASSPATH=%ANT%;%XERCES%;%BSF%;%BSFENGINES%;%DOCLET%;%CLASSPATH%
+set CLASSPATH=%ANT%;%XERCES%;%BSF%;%BSFENGINES%;%DOCGENERATOR%;%DOCLET%;%CLASSPATH%
 set CPSEP=;
 echo.
 echo Building with classpath %CLASSPATH%

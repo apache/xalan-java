@@ -69,14 +69,16 @@ Copyright:
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.dir}/docs/apidocs"/>
-  
+
+  <property name="xalanjar" value="../build/xalan.jar"/>  
+
   <property name="dist.file" value="${name}-j_${version}"/>
   <property name="dist.dir" value="./${dist.file}"/>    <!-- Check dir name dash/underscore 17-Jan-00 SCurcuru -->
   <property name="samples.dir" value="./samples"/>
 
   <property name="xdocs.dir" value="./xdocs"/>
   <property name="version.file" value="org/apache/xalan/processor/XSLProcessorVersion.java"/>
-  <property name="xdocs.book" value="${xdocs.dir}/sources/xalanlocal.xml"/>
+  <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xdocs.javadocbook" value="${xdocs.dir}/sources/javadocPackages.xml"/>
   <property name="xdocs.javadocloader" value="sbk:/style/loaderjdoc.xml"/>
@@ -196,12 +198,12 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <!--target name="docs" depends="jar"--> <!-- xalan.jar used by doc.generator -->
-    <!--mkdir dir="${build.docs}"/>
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar" 
+  <target name="docs" depends="jar"> <!-- xalan.jar used by doc.generator -->
+    <mkdir dir="${build.docs}"/>
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalanjar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
-  </target-->
-
+  </target>
+  
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->

@@ -28,7 +28,8 @@ import org.apache.xml.serialize.SerializerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.ParserConfigurationException; 
+import java.io.BufferedInputStream; // dml
 
 /**
  * Some examples to show how the Simple API for Transformations 
@@ -39,26 +40,39 @@ import javax.xml.parsers.ParserConfigurationException;
  */
 public class Examples
 {
+	static void setProps()
+	  throws IOException
+	{
+	  java.util.Properties props = System.getProperties();
+	  java.util.zip.ZipFile jf = new java.util.jar.JarFile("/xml-xalan/java/build/xalan.jar");
+//	  props.load(new BufferedInputStream(jf.getInputStream(jf.getEntry("serialize/serializer.properties"))));
+//	  props.load(new BufferedInputStream(jf.getInputStream(jf.getEntry("trax/trax.properties"))));
+	  props.load(new BufferedInputStream(jf.getInputStream(jf.getEntry("org/apache/xalan/res/XSLTInfo.properties"))));
+	  System.setProperties(props);
+	}
+	
+
 
   public static void main( String argv[] )
     throws ProcessorException, ProcessorFactoryException, 
            TransformException, SAXException, IOException, 
            ParserConfigurationException
   {
-    System.out.println("==== exampleSimple ====");
+//    setProps();
+	System.out.println("==== exampleSimple ====");
     exampleSimple("foo.xml", "foo.xsl");
     System.out.println("\n==== exampleSAX2SAX ====");
     exampleSAX2SAX("foo.xml", "foo.xsl");
     System.out.println("\n==== exampleXMLFilter ====");
     exampleXMLFilter("foo.xml", "foo.xsl");
     System.out.println("\n==== exampleXMLFilterChain ====");
-    exampleXMLFilterChain("foo.xml", "foo.xsl", "t1.xsl", "t2.xsl");
+    exampleXMLFilterChain("foo.xml", "foo.xsl", "foo2.xsl", "foo.xsl");
     System.out.println("\n==== exampleDOM2DOM ====");
     exampleDOM2DOM("foo.xml", "foo.xsl");
     System.out.println("\n==== exampleParam ====");
     exampleParam("foo.xml", "param.xsl");
     System.out.println("\n==== exampleOutputFormat ====");
-    exampleOutputFormat("foo.xml", "moo.xsl");
+    exampleOutputFormat("foo.xml", "foo.xsl");
     // System.out.println("==== exampleUseAssociated ====");
   }
   
