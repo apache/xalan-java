@@ -247,7 +247,7 @@ public class TemplateList implements java.io.Serializable
         {
           try
           {
-            insertAssociationIntoList(
+            head = insertAssociationIntoList(
               head, (TemplateSubPatternAssociation) wild.clone(), true);
           }
           catch (CloneNotSupportedException cnse){}
@@ -268,60 +268,115 @@ public class TemplateList implements java.io.Serializable
    * Insert the given TemplateSubPatternAssociation into the the linked
    * list.  Sort by priority first, then by document order.
    *
-   * @param head
-   * @param item
-   * NEEDSDOC @param isWildCardInsert
+   * @param head The first TemplateSubPatternAssociation in the linked list.
+   * @param item The item that we want to insert into the proper place.
+   * @param isWildCardInsert <code>true</code> if we are inserting a wild card 
+   *             template onto this list.
+   * @return the new head of the list.
    */
-  private void insertAssociationIntoList(TemplateSubPatternAssociation head,
+  private TemplateSubPatternAssociation
+              insertAssociationIntoList(TemplateSubPatternAssociation head,
                                          TemplateSubPatternAssociation item,
                                          boolean isWildCardInsert)
   {
 
-    // Sort by priority first, then by document order.
-    double priority = getPriorityOrScore(item);
-    TemplateSubPatternAssociation next;
+    // Sort first by decreasing priority (highest priority is at front),
+    // then by document order (later in document is at front).
+    // GLP:  This routine sorts by the document order obtained by getDocOrderPos() on
+    //       the item.  However, this is only the sequence within the individual
+    //       sheet, not within a composed sheet.  This needs to be fixed.
 
-    while (((next = head.getNext()) != null)
-           && (getPriorityOrScore(next) > priority))
+    double priority = getPriorityOrScore(item);
+    double workPriority;
+    int docOrder = item.getDocOrderPos();
+    TemplateSubPatternAssociation insertPoint = head;
+    TemplateSubPatternAssociation next;
+    boolean insertBefore;         // true means insert before insertPoint; otherwise after
+                                  // This can only be true if insertPoint is pointing to
+                                  // the first or last template.
+
+    // Spin down so that insertPoint points to:
+    // (a) the template immediately _before_ the first template on the chain with
+    // a priority that is either (i) less than ours or (ii) the same as ours but
+    // the template document position is less than ours
+    // -or-
+    // (b) the last template on the chain if no such template described in (a) exists.
+    // If we are pointing to the first template or the last template (that is, case b),
+    // we need to determine whether to insert before or after the template.  Otherwise,
+    // we always insert after the insertPoint.
+
+    while (true)
     {
-      head = next;
+      next = insertPoint.getNext();
+      if (null == next)
+        break;
+      else
+      {
+        workPriority = getPriorityOrScore(next);
+        if (priority > workPriority)
+          break;
+        else if (priority < workPriority)
+          insertPoint = next;
+        else if (docOrder >= next.getDocOrderPos())      // priorities are equal
+          break;
+        else
+          insertPoint = next;
+      }
     }
 
+    if ( (null == next) || (insertPoint == head) )      // insert point is first or last
+    {
+      workPriority = getPriorityOrScore(insertPoint);
+      if (priority > workPriority)
+        insertBefore = true;
+      else if (priority < workPriority)
+        insertBefore = false;
+      else if (docOrder >= insertPoint.getDocOrderPos())
+        insertBefore = true;
+      else
+        insertBefore = false;
+    }
+    else
+      insertBefore = false;
+
     // System.out.println("appending: "+target+" to "+matchPat.getPattern());
-    // This check is just to catch the first template in the list
-    // It's priority was not checked against the new template  
+    
     if (isWildCardInsert)
     {
-      if ((getPriorityOrScore(head) < priority))
+      if (insertBefore)
       {
-        item.setNext(head);
+        item.setNext(insertPoint);
 
-        String key = head.getTargetString();
+        String key = insertPoint.getTargetString();
 
         item.setTargetString(key);
         putHead(key, item);
+        return item;
       }
       else
       {
         item.setNext(next);
-        head.setNext(item);
+        insertPoint.setNext(item);
+        return head;
       }
     }
     else
     {
-      if ((getPriorityOrScore(head) <= priority))
+      if (insertBefore)
       {
-        item.setNext(head);
+        item.setNext(insertPoint);
 
-        if (head.isWild() || item.isWild())
+        if (insertPoint.isWild() || item.isWild())
           m_wildCardPatterns = item;
         else
           putHead(item.getTargetString(), item);
+        return item;
       }
       else
       {
         item.setNext(next);
-        head.setNext(item);
+        insertPoint.setNext(item);
+        return head;
       }
     }
   }
