@@ -7,8 +7,6 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:output method="xml"/>
   
-  <xsl:param name="package-root" select="'../../../src/'"/>  <!-- root of destination for package.html files -->
-
   <xsl:template match="Sprs">
   <xsl:comment>This XML fragment contains a list of open bugs to be included in an &lt;s3&gt; section of readme.xml</xsl:comment>
     <xsl:if test="count(Spr[string(State)='Open'] [string(Subsystem)!='Other'])>0">
