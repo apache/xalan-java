@@ -119,5 +119,6 @@ class ProcessorNamespaceAlias extends XSLTElementProcessor
     String resultNS = handler.getNamespaceForPrefix(prefix);
     na.setResultNamespace(resultNS);
     handler.getStylesheet().setNamespaceAlias(na);
+    handler.getStylesheet().appendChild(na);
   }
 }
