@@ -250,8 +250,9 @@ public class DTMManagerDefault extends DTMManager
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
 
-
-        if (this.m_incremental && incremental)
+        // If the reader is null, but they still requested an incremental build, 
+        // then we still want to set up the CoRoutine stuff.
+        if (this.m_incremental && incremental || ((null == reader) || incremental))
         {
 
           // Create a CoroutineManager to manage the coordination between the 
