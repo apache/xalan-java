@@ -57,10 +57,17 @@
  * <http://www.apache.org/>.
  *
  * @author Santiago Pericas-Geertsen
- *
+ * @author Gopal Sharma
  */
 
 package org.apache.xalan.xsltc.compiler.codemodel;
 
 public abstract class CmType extends CmNode {
+
+  /** REVIST: see how to create ObjectType Passed
+  private CmType _cmType ;
+  public void createCmType(Object obj) {
+    _cmType = new
+  }
+  */
 }

@@ -57,7 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Santiago Pericas-Geertsen
- *
+ * @author Gopal Sharma
  */
 
 package org.apache.xalan.xsltc.compiler.codemodel;
@@ -67,7 +67,12 @@ public class CmReturnStmt extends CmStatement {
     /**
      * A reference to an expression.
      */
+
     private CmExpression _expression;
+
+    //REVISIT: Do we need these ? -GS
+    //public static final  CmReturnStmt instance = new CmReturnStmt();
+    //private CmReturnStmt() {}
 
     public CmReturnStmt(CmExpression expression) {
 	_expression = expression;

@@ -57,7 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Santiago Pericas-Geertsen
- *
+ * @author Gopal Sharma
  */
 
 package org.apache.xalan.xsltc.compiler.codemodel;
@@ -79,6 +79,7 @@ public interface CmVisitor {
     public Object visit(CmDoubleType node, Object data);
     public Object visit(CmIntegerType node, Object data);
     public Object visit(CmStringType node, Object data);
+    public Object visit(CmVoidType node, Object data);
 
     public Object visit(CmEmptyStmt node, Object data);
     public Object visit(CmBlockStmt node, Object data);
@@ -95,6 +96,7 @@ public interface CmVisitor {
     public Object visit(CmTryCatchStmt node, Object data);
     public Object visit(CmVariableStmt node, Object data);
     public Object visit(CmWhileStmt node, Object data);
+    public Object visit(CmSwitchStmt node, Object data);
 
     public Object visit(CmAssignmentExpr node, Object data);
     public Object visit(CmBinaryExpr node, Object data);

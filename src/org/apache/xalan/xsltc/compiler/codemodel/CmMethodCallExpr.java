@@ -57,7 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Santiago Pericas-Geertsen
- *
+ * @author Gopal Sharma
  */
 
 package org.apache.xalan.xsltc.compiler.codemodel;
@@ -101,6 +101,12 @@ public class CmMethodCallExpr extends CmExpression {
     {
         this(methodName, param1, param2);
         _parameters.add(param3);
+    }
+
+    public CmMethodCallExpr(String methodName, List parameters)
+     {
+         _methodName = methodName;
+         _parameters = parameters;
     }
 
     public CmMethodCallExpr(CmExpression that, String methodName,

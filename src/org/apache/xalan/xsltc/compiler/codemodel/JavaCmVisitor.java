@@ -57,7 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Santiago Pericas-Geertsen
- *
+ * @author Gopal Sharma
  */
 
 package org.apache.xalan.xsltc.compiler.codemodel;
@@ -290,6 +290,17 @@ public class JavaCmVisitor implements CmVisitor {
 	}
     }
 
+    public Object visit(CmVoidType node, Object object) {
+         try {
+             _writer.write("void");
+             return object;
+         }
+         catch (IOException e) {
+             throw new RuntimeException(e.getMessage());
+         }
+    }
+
+
     // -- CmStatements ---------------------------------------------
 
     public Object visit(CmEmptyStmt node, Object object) {
@@ -511,6 +522,21 @@ public class JavaCmVisitor implements CmVisitor {
 	    throw new RuntimeException(e.getMessage());
 	}
     }
+
+   public Object visit(CmSwitchStmt node, Object object){
+     try {
+            indent(_indentLevel++, _indentSpaces);
+            _writer.write("switch (");
+            object = node.getCondition().accept(this, object);
+            _writer.write(")\n");
+            object = node.getBody().accept(this, object);
+            _indentLevel--;
+            return object;
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
+	}
+   }
 
     // -- CmExpressions --------------------------------------------
 
