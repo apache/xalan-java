@@ -64,7 +64,7 @@
 		</varlistentry> 
 		<varlistentry> 
 		  <term>Transformation</term> 
-		  <listitem>The processor of consuming a stream or tree to produce
+		  <listitem>The process of consuming a stream or tree to produce
 			 another stream or tree.</listitem> 
 		</varlistentry> 
 		<varlistentry> 
