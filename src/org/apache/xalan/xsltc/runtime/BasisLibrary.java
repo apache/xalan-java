@@ -811,7 +811,7 @@ public final class BasisLibrary implements Operators {
     private static boolean hasSimpleType(Object obj) {
 	return obj instanceof Boolean || obj instanceof Double ||
 	    obj instanceof Integer || obj instanceof String ||
-	    obj instanceof Node;
+	    obj instanceof Node || obj instanceof DOM; 
     }
 
     /**
