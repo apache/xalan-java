@@ -111,7 +111,7 @@
       a Compiling processor (XSLTC) for use in a high performance runtime environment.<br/><br/></li>
   <li>Implements the relevant W3C specifications: <resource-ref idref="xslt"/> and 
       <resource-ref idref="xpath"/>.<br/><br/></li>
-  <li>Implements <link idref="trax">TRaX (Transformation API for XML)</link>, now part of 
+  <li>Implements <link idref="trax">TrAX (Transformation API for XML)</link>, now part of 
       <resource-ref idref="jaxp12"/>, and builds on <resource-ref idref="sax2"/> and 
       <resource-ref idref="dom2"/>.<br/><br/></li>
   <li>May be configured to work with any XML parser, such
