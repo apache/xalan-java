@@ -18,35 +18,31 @@
  */
 package org.apache.xalan.lib.sql;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
-import java.sql.Statement;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.OneStepIterator;
 import org.apache.xpath.objects.XBooleanStatic;
-
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
 
 /**
  * An XSLT extension that allows a stylesheet to
@@ -780,6 +776,27 @@ public class XConnection
     return doc;
   }
 
+  /**
+   * The purpose of this routine is to force the DB cursor to skip forward
+   * N records. You should call this function after [p]query to help with
+   * pagination. i.e. Perfrom your select, then skip forward past the records
+   * you read previously.
+   * 
+   * @param exprContext
+   * @param o
+   * @param value
+   */
+  public void skipRec( ExpressionContext exprContext, Object o, int value )
+  {
+    SQLDocument sqldoc = null;
+    DTMNodeIterator nodei = null;
+      
+    sqldoc = locateSQLDocument(o);
+    if (sqldoc != null) sqldoc.skip(value);
+  }
+
+  
+
   private void addTypeToData(String typeInfo)
   {
       int indx;
@@ -1080,25 +1097,47 @@ public class XConnection
    *
    * @throws SQLException
    */
-  public void close( SQLDocument sqldoc )throws SQLException
+
+  public void close(Object doc) throws SQLException 
   {
     if (DEBUG)
-      System.out.println("Entering XConnection.close(" + sqldoc + ")");
+        System.out.println("Entering XConnection.close(" + doc + ")");
 
-    int size = m_OpenSQLDocuments.size();
-
-    for(int x=0; x<size; x++)
-    {
-      SQLDocument d = (SQLDocument) m_OpenSQLDocuments.elementAt(x);
-      if (d == sqldoc)
-      {
-        d.close();
-        m_OpenSQLDocuments.removeElementAt(x);
-      }
-    }
+    SQLDocument sqlDoc = locateSQLDocument(doc);
+    if (sqlDoc != null)   sqlDoc.close();
   }
 
 
+  /**
+   * When an SQL Document is returned as a DTM object, the XSL variable is actually 
+   * assigned as a DTMIterator. This is a helper function that will allow you to get
+   * a reference to the original SQLDocument from the iterator.
+   * 
+   * Original code submitted by 
+   *  Moraine Didier mailto://didier.moraine@winterthur.be
+   * @param doc
+   * @return
+   */
+  private SQLDocument locateSQLDocument(Object doc)
+  {
+    try
+    {
+      DTMNodeIterator dtmIter = (DTMNodeIterator)doc;
+
+      XNodeSet xNS = (XNodeSet)dtmIter.getDTMIterator();
+  
+      OneStepIterator iter = (OneStepIterator)xNS.getContainedIter();
+  
+      DTMManager aDTMManager = (DTMManager)iter.getDTMManager();
+  
+      return (SQLDocument)aDTMManager.getDTM(xNS.nextNode());
+    }
+    catch(Exception e)
+    {
+      return null;
+    }
+  }
+  
   /**
    * @param exprContext
    * @param excp
