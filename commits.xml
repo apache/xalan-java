@@ -1,4 +1,45 @@
 <?xml version="1.0"?>
-<Commits><!-- needs update for changes after the 2.2 release; donald_leslie working on -->
-<Commit category="xsltc"><Who>curcuru@apache.org</Who><DateCommitted>01/18/2002</DateCommitted><Modified>java commits.xml</Modified><Log>fake commit record so prepare.docs will create XSLTCDONE</Log></Commit>
+<Commits>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>01/17/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql XConnection.java</Modified>
+<Log>Fixed second connection problem</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>01/17/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>Update for new DTM Model</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>01/17/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql DTMDocument.java</Modified>
+<Log>Update for new DTM Model</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>01/17/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ DTMDocument.java</Modified>
+<Log>Removed Debug</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>01/18/2002</DateCommitted>
+<Modified>java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>Whups. There's a possible reentrancy problem when data
+ is being serialized from an FSB, thru Sax, back into a new
+ chunk of the same FSB; if the append causes a rechunking,
+ the serialize loop may break.
+
+ TEMPORARY PATCH; permanant fix to follow. See comments.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>01/18/2002</DateCommitted>
+<Modified>java/src/org/apache/xml/utils SuballocatedIntVector.java</Modified>
+<Log>&lt;blush&gt;Wrong side of the fencepost...&lt;/blush></Log>
+</Commit>
 </Commits>
