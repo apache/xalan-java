@@ -277,6 +277,17 @@ Copyright:
 
   <target name="autojavadocs">
     <echo message="autojavadocs is for automated build process, without dependencies"/>
+    
+    <!-- generate trax.html, a TRaX overview document, and a package.html for each trax package
+         (the latter are generated with the the Redirect extension -->
+    <mkdir dir="${build.apidocs}/javax/xml/transform"/>         
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/xalan.jar">
+      <arg line="-in ${xdocs.dir}/sources/trax/trax.xml
+                 -param package-root '../../../src/'
+                 -xsl ${xdocs.style}/stylesheets/spec.xsl 
+                 -out ${build.apidocs}/javax/xml/transform/trax.html"/>
+    </java>   
+    
     <!-- Ant 1.2 ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
          classpath="${java.class.path}"
@@ -304,13 +315,6 @@ Copyright:
           <group title="SAX 2" packages="org.xml.sax*"/>
           <group title="DOM 2" packages="org.w3c.dom*"/>
     </javadoc>
-    <!-- generate patterns.html, a TRaX "patterns design" document -->
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/xalan.jar">
-      <arg line="-in ${src.dir}/org/apache/trax/patterns.xml 
-                -xsl ${xdocs.style}/stylesheets/patterns.xsl 
-                -out ${build.apidocs}/org/apache/trax/patterns.html"/>
-    </java>             
-    <copy file="${xdocs.dir}/sources/xalan/trax.gif" todir="${build.apidocs}/org/apache/trax"/>
     
   </target>
 
