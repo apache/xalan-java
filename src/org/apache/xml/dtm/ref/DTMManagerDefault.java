@@ -421,6 +421,8 @@ public class DTMManagerDefault extends DTMManager
    */
   public int getDTMHandleFromNode(org.w3c.dom.Node node)
   {
+    if(null == node)
+      throw new IllegalArgumentException("node must be non-null for getDTMHandleFromNode!");
 
     if (node instanceof org.apache.xml.dtm.ref.DTMNodeProxy)
       return ((org.apache.xml.dtm.ref.DTMNodeProxy) node).getDTMNodeNumber();
@@ -462,7 +464,12 @@ public class DTMManagerDefault extends DTMManager
       DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root), false,
                        null, true, true);
 
-      return ((DOM2DTM)dtm).getHandleOfNode(node);
+      int handle = ((DOM2DTM)dtm).getHandleOfNode(node);
+      
+      if(DTM.NULL == handle)
+        throw new RuntimeException("Could not resolve the node to a handle!");
+      
+      return handle;
     }
   }
 
