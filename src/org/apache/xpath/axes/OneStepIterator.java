@@ -47,6 +47,23 @@ public class OneStepIterator extends ChildTestIterator
   }
   
   /**
+   * Create a OneStepIterator object.
+   *
+   * @param compiler A reference to the Compiler that contains the op map.
+   * @param opPos The position within the op map, which contains the
+   * location path expression for this itterator.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public OneStepIterator(DTMAxisIterator iterator)
+          throws javax.xml.transform.TransformerException
+  {
+    super(null);
+    
+    m_iterator = iterator;
+  }
+  
+  /**
    * Initialize the context values for this expression
    * after it is cloned.
    *
@@ -56,7 +73,8 @@ public class OneStepIterator extends ChildTestIterator
   public void setRoot(int context, Object environment)
   {
     super.setRoot(context, environment);
-    m_iterator = m_cdtm.getAxisIterator(m_axis);
+    if(m_axis > -1)
+      m_iterator = m_cdtm.getAxisIterator(m_axis);
     m_iterator.setStartNode(m_context);
   }
   

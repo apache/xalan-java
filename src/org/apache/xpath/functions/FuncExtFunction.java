@@ -68,6 +68,9 @@ import org.apache.xml.dtm.DTMIterator;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.traversal.NodeIterator;
 
+import org.apache.xml.dtm.*;
+import org.apache.xpath.axes.*;
+
 /**
  * <meta name="usage" content="advanced"/>
  * An object of this class represents an extension call expression.  When
@@ -203,6 +206,19 @@ public class FuncExtFunction extends Function
         int handle = xctxt.getDTMHandleFromNode((DocumentFragment)val);
         
         result = new XRTreeFrag(handle, xctxt);
+      }
+      else if (val instanceof DTM)
+      {
+        DTM dtm = (DTM)val;
+        DTMIterator iterator = new DescendantIterator();
+        iterator.setRoot(dtm.getDocument(), xctxt);
+        result = new XNodeSet(iterator);
+      }
+      else if (val instanceof DTMAxisIterator)
+      {
+        DTMAxisIterator iter = (DTMAxisIterator)val;
+        DTMIterator iterator = new OneStepIterator(iter);
+        result = new XNodeSet(iterator);
       }
       else if (val instanceof DTMIterator)
       {

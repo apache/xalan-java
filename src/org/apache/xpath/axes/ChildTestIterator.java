@@ -117,6 +117,25 @@ public class ChildTestIterator extends LocPathIterator
   }
   
   /**
+   * Create a ChildTestIterator object.
+   *
+   * @param compiler A reference to the Compiler that contains the op map.
+   * @param opPos The position within the op map, which contains the
+   * location path expression for this itterator.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  ChildTestIterator(DTMAxisTraverser traverser)
+          throws javax.xml.transform.TransformerException
+  {
+
+    super(null);
+
+    m_traverser = traverser;
+  }
+
+  
+  /**
    *  Get a cloned Iterator that is reset to the beginning
    *  of the query.
    * 
