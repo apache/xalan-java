@@ -277,12 +277,12 @@ public class CompiledStylesheetBundle
 	* Xalan code was changed between when the bundle was created and when it
 	* is being reloaded.
 	*/
-	public Stylesheet loadBundle(String filename)
+	public org.apache.trax.Templates loadBundle(String filename)
 		throws java.io.IOException,java.lang.ClassNotFoundException
 	{
 		java.io.InputStream is=null;
 		java.io.ObjectInputStream os=null;
-		Stylesheet ss=null;
+		org.apache.trax.Templates ss=null;
 		
 		try
 		{
@@ -292,7 +292,7 @@ public class CompiledStylesheetBundle
 			is=cl.getResourceAsStream("Stylesheet.ser");
 			// Read objects from the .ser, loading from bundle if necessary
 			os=new ClassLoaderObjectInputStream(cl,is);
-			ss=(Stylesheet)os.readObject();
+			ss=(org.apache.trax.Templates)os.readObject();
 		}
 		finally
 		{

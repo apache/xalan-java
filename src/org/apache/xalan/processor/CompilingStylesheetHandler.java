@@ -240,7 +240,7 @@ if(runSerializer)
   {
     ElemTemplate instance=source;
 
-    String className=generateUniqueClassName("org.apache.xalan.processor.ACompiledTemplate");    
+    String className=generateUniqueClassName("org.apache.xalan.processor.ACompiledTemplate");
     
     try
     {
@@ -1023,11 +1023,11 @@ if(runSerializer)
     return resolved;
   }
 
-  static long templateCounter=0;  
-  /** There is probably a serious implementation of this
-      already existing, so I'm not going to spend a great
-      deal of time or effort on it in the prototype.
-      */
+  /** Generate a mostly-unique class name.
+   * The longterm answer here is File.createTempFile... but that
+   * requires JDK 1.2 or above.
+   */
+  static int templateCounter=0;
   String generateUniqueClassName(String basename)
   {
     //TODO: ***** ISSUE: CLASS NAMING. This is kluged
@@ -1093,7 +1093,12 @@ if(runSerializer)
         
     return className;
   }
-  
+
+  /** Subroutine: Like p.waitFor, but discards the InterruptedException
+   * and goes right back into a wait.
+   * @param Process p to be waited for
+   * @return the exitValue() of the process.
+   */
   int waitHardFor(Process p)
   {
     boolean done=false;
