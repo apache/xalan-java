@@ -72,7 +72,7 @@
      <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
   </s2>
   <s2 title="How about this release?">
-  <p>&xslt4j-current; works with &xml4j; version 2, and the distribution includes xercesImpl.jar from &xml4j-used;. &xslt4j-current; is also
+  <p>&xslt4j-current; is a developer release that works with &xml4j; version 2, and the distribution includes xercesImpl.jar from &xml4j-used;. &xslt4j-current; is also
   compatible with &xml4j; version 1.</p>
   <p>Support for the &xslt4j; release 1 API, which predates the design of the JAXP 1.1/TrAX interfaces, has been dropped.</p>
   <p>The &xslt4j; implementation is in xalan.jar. The SAX, DOM, and JAVAX interfaces are in xml-apis.jar. These interfaces are shared by a 
@@ -91,6 +91,7 @@
       <li><resource-ref idref="xslt4j-dist-src-zip"/></li>
       <li><resource-ref idref="xslt4j-dist-src-targz"/></li>
     </ul>
+    <p>To access previous releases, see the <resource-ref idref="xslt4j-distdir-previous"/>.</p>
   </s2>
   
   <s2 title="Where do I get Xerces?">

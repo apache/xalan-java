@@ -23,6 +23,10 @@
             title="xalan-j distribution directory" 
             location="&xslt4j-distdir;"/>
 
+  <resource id="xslt4j-distdir-previous" 
+            title="xalan-j previously posted builds directory" 
+            location="&xslt4j-distdir;/old"/>
+
   <resource id="xslt4j-dist-zip" 
             title="&xslt4j-dist;.zip" 
             location="&xslt4j-distdir;&xslt4j-dist;.zip"/>

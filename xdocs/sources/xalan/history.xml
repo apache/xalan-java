@@ -3,7 +3,7 @@
  <s1 title="History of software changes">
    <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
    &history2xsltc;
-<s2 title="Changes for &xslt4j; 2.3.2">
+<s2 title="Changes for &xslt4j; 2.3.1">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Make synchronized to address potential reentrancy issue in
  XRTreeFrag.finalize(), as discussed in the Javadoc. This may
  solve several outstanding bug reports regarding reuse of

@@ -69,7 +69,7 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.3.2</link></li>
+    <li><link anchor="done">Changes since version 2.3.1</link></li>
     <li><link anchor="global2.3">Global 2.3 updates</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
@@ -77,7 +77,7 @@
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.3.2">
+     <s3 title="Changes since &xslt4j; 2.3.1">
      <note>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
      <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</note>
      <ul>
