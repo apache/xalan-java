@@ -432,7 +432,7 @@ public class XStringForFSB extends XString
     else if (obj2 instanceof XNodeSet)
       return obj2.equals(this);
     else if (obj2 instanceof XStringForFSB)
-      return equals((XMLString) this);
+      return equals((XMLString) obj2);
     else
       return equals(obj2.toString());
   }
