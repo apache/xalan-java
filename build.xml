@@ -85,7 +85,7 @@ Copyright:
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
-            value="dtd/xsl-html40s.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl"/>
+            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
@@ -309,7 +309,7 @@ Copyright:
           <group title="Xalan Core"
                  packages="org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer"/>
           <group title="XPath" packages="org.apache.xpath*"/>
-          <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils*:org.apache.xalan.xslt"/>
+          <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xml.utils*:org.apache.xalan.xslt"/>
           <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
           <group title="Serializers" packages="org.apache.serialize*:org.apache.xalan.serialize"/>
           <group title="SAX 2" packages="org.xml.sax*"/>
@@ -403,5 +403,15 @@ Copyright:
 	  <fileset dir="${build.apidocs}"/>
 	</copy>  
   </target>
+  
+  <!-- =================================================================== -->
+  <!-- Creates the todo list for the org.apache.xml website                -->
+  <!-- =================================================================== -->
+  <target name="todo">
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+      <arg line="-in todo.xml -xsl todo.xsl -out todo.html"/>
+    </java>   
+  </target>  
+  
    
 </project>
