@@ -186,7 +186,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
 	    if (_indent) {
 		_indentLevel--;
-		_indentNextEndTag = true;
+		_lineFeedNextStartTag = _indentNextEndTag = false;
 	    }
 	}
 	else {
@@ -195,8 +195,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
 		if (_indentNextEndTag) {
 		    indent(_indentNextEndTag);
-		    _indentNextEndTag = true;
-		    _lineFeedNextStartTag = true;
+		    _lineFeedNextStartTag = _indentNextEndTag = true;
 		}
 	    }
 	    _buffer.append("</").append(elementName).append('>');

@@ -251,11 +251,11 @@ abstract public class StreamOutput extends OutputBase {
     protected void indent(boolean linefeed) {
         if (linefeed) {
             _buffer.append('\n');
-	}
 
-	_buffer.append(INDENT, 0, 
-	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel * _indentNumber 
-		: MAX_INDENT);
+	    _buffer.append(INDENT, 0, 
+		_indentLevel < MAX_INDENT_LEVEL ? 
+		    _indentLevel * _indentNumber : MAX_INDENT);
+	}
     }
 
     /**
