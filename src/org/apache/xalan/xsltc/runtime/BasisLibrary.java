@@ -671,7 +671,13 @@ public final class BasisLibrary implements Operators {
 
     public static boolean compare(NodeIterator left, final String rstring,
 				  int op, int node, DOM dom) {
-	return compareStrings(dom.getNodeValue(node), rstring, op, dom);
+	
+	if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
+	    return true;
+	}
+	else {
+	    return false;
+	}
     }
 
     public static boolean compare(Object left, Object right,
@@ -860,6 +866,9 @@ public final class BasisLibrary implements Operators {
 
     static {
 	NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
+	// set max fraction digits so that truncation does not occur,
+	// see conf test string134
+	f.setMaximumFractionDigits(Integer.MAX_VALUE);
 	defaultFormatter = (f instanceof DecimalFormat) ?
 	    (DecimalFormat) f : new DecimalFormat();
 	defaultFormatter.setGroupingUsed(false);
