@@ -248,7 +248,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     // is empty, but that the XPathContext itself is going away. So do
     // _not_ accept the request. (May want to do it as part of
     // reset(), though.)
-    if(m_rtfdtm_stack.contains(dtm))
+    if(m_rtfdtm_stack!=null && m_rtfdtm_stack.contains(dtm))
     {
       return false;
     }
