@@ -56,61 +56,36 @@
  */
 package org.apache.xalan.stree;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class DocumentFragmentImpl <needs-comment/>
+ * This class allows a node to implement an interface that will
+ * allow it to dispatch a SAX ContentHandler event to a ContentHandler.
+ * This is especially useful in those cases where you want the
+ * node to be able to dispatch a character event, but don't want
+ * to cause it to make a string.
  */
-public class DocumentFragmentImpl extends DocumentImpl
-        implements DocumentFragment
+public interface SaxEventDispatch
 {
+  /** The URL to pass to the Node#supports method, to see if the 
+   * node supports this interface. */
+  public static final String SUPPORTSINTERFACE =
+    "http://xml.apache.org/xalan/features/feed-events";
 
   /**
-   * Constructor DocumentFragmentImpl
+   * If a node supports this interface, it can directly call an 
+   * appropriate method on the passed ContentHandler.  For instance, 
+   * a text node will call the characters method.  This is for 
+   * optimization purposes, when the node may have information not 
+   * easily accessible, which it can pass directly to the sax event. 
+   * For instance, the text node may be able to directly pass a 
+   * char array, and thus not have to create a String object 
+   * at all.
    *
-   */
-  public DocumentFragmentImpl()
-  {
-
-    super();
-
-    setComplete(true);
-  }
-
-  /**
-   * A short integer indicating what type of node this is. The named
-   * constants for this value are defined in the org.w3c.dom.Node interface.
+   * @param ch A non-null reference to a ContentHandler.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @throws SAXException
    */
-  public short getNodeType()
-  {
-    return Node.DOCUMENT_FRAGMENT_NODE;
-  }
-
-  /**
-   * Returns the node name. 
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getNodeName()
-  {
-    return "#document-fragment";
-  }
-
-  /**
-   * Returns the local part of the qualified name of this node.
-   * <br>For nodes created with a DOM Level 1 method, such as
-   * <code>createElement</code> from the <code>Document</code> interface,
-   * it is <code>null</code>.
-   * @since DOM Level 2
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getLocalName()
-  {
-    return "#document-fragment";
-  }
+  public void dispatchSaxEvent(ContentHandler ch) throws SAXException;
 }

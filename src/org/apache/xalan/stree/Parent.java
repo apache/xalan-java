@@ -1,3 +1,59 @@
+/*
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
 package org.apache.xalan.stree;
 
 import org.w3c.dom.Node;
@@ -10,44 +66,62 @@ import org.apache.xalan.templates.WhiteSpaceInfo;
 
 import org.xml.sax.SAXException;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class Parent <needs-comment/>
+ */
 public class Parent extends Child
 {
+
+  /**
+   * Constructor Parent
+   *
+   *
+   * NEEDSDOC @param doc
+   */
   public Parent(DocumentImpl doc)
   {
     super(doc);
   }
-  
-  /**
-   * The list of children.  For space conservation reasons, 
-   * this list is resized everytime a child is added, and is 
-   * always exactly the size of the child count.  This is 
-   * certainly subject to review, but I thought I'd give it 
-   * a try and see how it works.  The alternative is to 
-   * keep an extra int around which tells us the first free 
-   * member in the list, etc. 
-   */
-  protected Child[] m_children;   
-  
+
+  /** NEEDSDOC Field m_posInChildList          */
+  protected int m_posInChildList;
+
+  /** NEEDSDOC Field m_childCount          */
+  protected int m_childCount = 0;  // includes attributes, elements
+
+  /** NEEDSDOC Field m_isComplete          */
+  boolean m_isComplete = false;
+
+  /** NEEDSDOC Field m_last          */
+  Child m_last;
+
+  /** NEEDSDOC Field m_first          */
+  Child m_first;
+
   /**
    * Get the number of children this node currently contains.
-   * Note that this will only return the number of children 
-   * added so far.  If the isComplete property is false, 
+   * Note that this will only return the number of children
+   * added so far.  If the isComplete property is false,
    * it is likely that more children will be added.
    * DON'T CALL THIS FUNCTION IF YOU CAN HELP IT!!!
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getChildCount()
-  {    
+  {
+
     if (!isComplete())
     {
-      Object synchObj = getSynchObject();
-      synchronized (synchObj)
+      synchronized (m_doc)
       {
         try
         {
+
           // Here we have to wait until the element is complete
           while (!isComplete())
           {
-            synchObj.wait();
+            m_doc.wait();
             throwIfParseError();
           }
         }
@@ -55,87 +129,42 @@ public class Parent extends Child
         {
           throwIfParseError();
         }
+
         //System.out.println("... getcount " );
-        
       }
     }
+
     //System.out.println("Waiting... Done "+ this.getNodeName() );          
-    return (null == m_children) ? 0 : m_children.length;
+    return m_childCount;
   }
-  
+
   /**
-   *  This is a convenience method to allow easy determination of whether a 
+   *  This is a convenience method to allow easy determination of whether a
    * node has any children.
-   * @return  <code>true</code> if the node has any children, 
+   * @return  <code>true</code> if the node has any children,
    *   <code>false</code> if the node has no children.
    */
-  public boolean      hasChildNodes()
+  public boolean hasChildNodes()
   {
-    if (null == m_children && !isComplete())
+
+    if (0 != m_childCount)
+      return true;
+    else
     {
-      Object synchObj = getSynchObject();
-      synchronized (synchObj)
+      if (!isComplete())
       {
-        try
-        {
-          // Only wait until the first child comes, or we are complete.
-          while (!isComplete())
-          {
-            synchObj.wait();
-            throwIfParseError();
-            if(null != m_children)
-              break;
-          }
-        }
-        catch (InterruptedException e)
-        {
-          throwIfParseError();
-        }
-        //System.out.println("... getcount " );        
-      }
-    }
-    //System.out.println("Waiting(haschildnodes)... Done "+ this.getNodeName() );
-    return (null == m_children || m_children.length == 0) ? false : true;
-  }
-  
-  /**
-   * <meta name="usage" content="internal"/>
-   * Get the position of the child of an element in the document.
-   * Note that this is assuming an index starting at 1
-   */
-  public int getChildUID(int pos)
-  {        
-    Child child = getChild(pos);
-    return (null != child) ? child.getUid() : -1;
-  }
-  
-  /**
-   * Get the nth child.
-   * @param i the index of the child.
-   * @exception ArrayIndexOutOfBoundsException if the index is out of bounds.
-   * @exception NullPointerException if there are no children.
-   */
-  public Child getChild(int i)
-    throws ArrayIndexOutOfBoundsException, NullPointerException
-  {
-      Child child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
-                    m_children[i] : null;
-      if (child == null && !isComplete())
-      {
-        Object synchObj = getSynchObject();
-        synchronized (synchObj)
+        synchronized (m_doc)
         {
           try
           {
-            // System.out.println("Waiting... getChild " + i + " " + getNodeName());
+
+            // Only wait until the first child comes, or we are complete.
             while (!isComplete())
             {
-              synchObj.wait();
+              m_doc.wait();
               throwIfParseError();
-              // System.out.println("... gotChild " + i);
-              child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
-                      m_children[i] : null;
-              if(null != child)
+
+              if (0 != m_childCount)
                 break;
             }
           }
@@ -144,108 +173,201 @@ public class Parent extends Child
             throwIfParseError();
           }
         }
-      }  
-      return child;
+      }
+
+      return (0 == m_childCount) ? false : true;
+    }
   }
-  
+
   /**
-   * The first child of this node. If there is no such node, this returns 
-   * <code>null</code>.
+   * <meta name="usage" content="internal"/>
+   * Get the position of the child of an element in the document.
+   * Note that this is assuming an index starting at 1
+   *
+   * NEEDSDOC @param pos
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Node         getFirstChild()
+  public int getChildUID(int pos)
   {
-    if (!hasChildNodes())
+
+    Child child = getChild(pos);
+
+    return (null != child) ? child.getUid() : -1;
+  }
+
+  /**
+   * Get the nth child.
+   * @param i the index of the child.
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @exception ArrayIndexOutOfBoundsException if the index is out of bounds.
+   * @exception NullPointerException if there are no children.
+   */
+  public Child getChild(int i)
+          throws ArrayIndexOutOfBoundsException, NullPointerException
+  {
+
+    if (i < 0)
       return null;
-    else        
-      return getChild(0);
+    else if ((i >= m_childCount) &&!isComplete())
+    {
+      synchronized (m_doc)
+      {
+        try
+        {
+
+          // System.out.println("Waiting... getChild " + i + " " + getNodeName());
+          while (!isComplete())
+          {
+            m_doc.wait();
+            throwIfParseError();
+
+            if (i < m_childCount)
+              break;
+          }
+        }
+        catch (InterruptedException e)
+        {
+          throwIfParseError();
+        }
+      }
+    }
+
+    if (i < m_childCount)
+    {
+      Child child = m_first;
+      int pos = 0;
+
+      while (null != child)
+      {
+        if (pos == i)
+        {
+          return child;
+        }
+
+        child = child.m_next;
+
+        pos++;
+      }
+    }
+
+    return null;
   }
-  
+
   /**
-   * The last child of this node. If there is no such node, this returns 
+   * The first child of this node. If there is no such node, this returns
    * <code>null</code>.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Node         getLastChild()
+  public Node getFirstChild()
   {
+
+    if (null != m_first)
+      return m_first;
+    else if (!m_isComplete)
+    {
+      synchronized (m_doc)
+      {
+        try
+        {
+
+          // System.out.println("Waiting... getChild " + i + " " + getNodeName());
+          while (!isComplete())
+          {
+            m_doc.wait();
+            throwIfParseError();
+
+            if (null != m_first)
+              return m_first;
+          }
+        }
+        catch (InterruptedException e)
+        {
+          throwIfParseError();
+        }
+      }
+    }
+
+    return m_first;
+  }
+
+  /**
+   * The last child of this node. If there is no such node, this returns
+   * <code>null</code>.
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public Node getLastChild()
+  {
+
     try
     {
-      return getChild(getChildCount()-1);
+      return getChild(getChildCount() - 1);
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       throw new org.apache.xalan.utils.WrappedRuntimeException(e);
-    }  
+    }
   }
-  
+
   /**
    * Append a child to the child list.
    * @param newChild Must be a org.apache.xalan.stree.Child.
+   *
+   * NEEDSDOC ($objectName$) @return
    * @exception ClassCastException if the newChild isn't a org.apache.xalan.stree.Child.
+   *
+   * @throws DOMException
    */
-  public Node appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    int childCount;
-    if(null == m_children)
+
+    Child child = (Child) newChild;
+    DocumentImpl doc = m_doc;
+
+    child.m_parent = this;
+
+    m_childCount++;
+
+    child.m_uid = ++m_doc.m_docOrderCount;
+    child.m_level = (short) (m_level + 1);
+
+    if (null == m_first)
     {
-      m_children = new Child[1];
-      childCount = 0;
+      m_first = child;
     }
     else
     {
-      childCount = m_children.length;
-      Child[] newChildren = new Child[childCount+1];
-      System.arraycopy(m_children, 0, newChildren, 0, childCount);
-      // Child prevChild = m_children[childCount-1];
-      m_children = newChildren;
+      m_last.m_next = child;
+      child.m_prev = m_last;
     }
-    
-    Child child = (Child)newChild;
-    child.SetChildPosition(childCount);
-    m_children[childCount] = child;
 
-    DocumentImpl doc;
-    try
-    {
-      doc = (DocumentImpl)this.getOwnerDocument();
-      doc.incrementDocOrderCount();
-      child.setUid(doc.getDocOrderCount());
-      
-      // I think this was put in to handle Result tree fragments.
-      // Maybe endDocument is not being called??    
-      if(!doc.getUseMultiThreading() && (child instanceof Parent))
-        ((Parent)child).setComplete(true);
+    m_last = child;
 
-    }
-    catch(ClassCastException cce)
-    {
-      // TODO: Make ResultTreeFrag be an Stree DocumentFragment, or some such.
-      // No owner doc, so we can't set the document order count, 
-      // which will be a problem when result tree fragments need to 
-      // be treated like node-sets.
-      doc = null;
-      if(child instanceof Parent) // for now DocumentFragments can't be built on another thread.
-        ((Parent)child).setComplete(true);
-    }
-    child.setParent(this);
-    child.setLevel((short)(getLevel() + 1));
     // getDocumentImpl().getLevelIndexer().insertNode(child);
-    
-    if((null != doc) && (Node.ELEMENT_NODE == child.getNodeType()))
+    if (Node.ELEMENT_NODE == child.getNodeType())
     {
       SourceTreeHandler sh = doc.getSourceTreeHandler();
-      if(null != sh)
+
+      if ((null != sh) && sh.m_shouldCheckWhitespace)
       {
         TransformerImpl transformer = sh.getTransformer();
-        if(null != transformer)
+
+        if (null != transformer)
         {
-          StylesheetRoot stylesheet= transformer.getStylesheet();
+          StylesheetRoot stylesheet = transformer.getStylesheet();
+
           try
           {
-            ElementImpl elem = (ElementImpl)child;
-            WhiteSpaceInfo info 
-              = stylesheet.getWhiteSpaceInfo(transformer.getXPathContext(), elem);
+            ElementImpl elem = (ElementImpl) child;
+            WhiteSpaceInfo info =
+              stylesheet.getWhiteSpaceInfo(transformer.getXPathContext(),
+                                           elem);
             boolean shouldStrip;
-            if(null == info)
+
+            if (null == info)
             {
               shouldStrip = sh.getShouldStripWhitespace();
             }
@@ -253,49 +375,58 @@ public class Parent extends Child
             {
               shouldStrip = info.getShouldStripSpace();
             }
+
             sh.setShouldStripWhitespace(shouldStrip);
           }
-          catch(SAXException se)
+          catch (SAXException se)
           {
+
             // TODO: Diagnostics
           }
         }
       }
     }
-    return newChild;
-  }  
 
-  
+    return newChild;
+  }
+
   /**
-   * Flag that tells if this node is complete.
-   */
-  private boolean m_isComplete = false;
-    
-  /**
-   * Return if this node has had all it's children added, i.e. 
+   * Return if this node has had all it's children added, i.e.
    * if a endElement event has occured.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean isComplete()
   {
-    if(!m_isComplete)
-      throwIfParseError();
+
+    if (!m_isComplete && (null != m_doc.m_exceptionThrown))
+      throwParseError(m_doc.m_exceptionThrown);
+
     return m_isComplete;
   }
-  
+
   /**
-   * Set that this node's child list is complete, i.e. 
+   * Set that this node's child list is complete, i.e.
    * an endElement event has occured.
+   *
+   * NEEDSDOC @param isComplete
    */
   public void setComplete(boolean isComplete)
   {
     m_isComplete = isComplete;
   }
-  
+
+  /**
+   * NEEDSDOC Method throwParseError 
+   *
+   *
+   * NEEDSDOC @param e
+   */
   protected void throwParseError(Exception e)
   {
+
     m_isComplete = true;
+
     super.throwParseError(e);
   }
-
-
 }

@@ -69,18 +69,17 @@ import org.apache.xpath.axes.UnionPathIterator;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class extends NodeSet, which implements NodeIterator, 
+ * This class extends NodeSet, which implements NodeIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
- * As each node is iterated via nextNode(), the node is also stored 
+ * As each node is iterated via nextNode(), the node is also stored
  * in the NodeVector, so that previousNode() can easily be done.
  */
 public class IndexedUnionPathIterator extends UnionPathIterator
 {
+
   /**
    * Constructor.
    */
-  public IndexedUnionPathIterator()
-  {
-  }
+  public IndexedUnionPathIterator(){}
 }

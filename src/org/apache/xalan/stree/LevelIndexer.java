@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,11 +57,14 @@
 package org.apache.xalan.stree;
 
 import org.w3c.dom.*;
-import java.util.*;
-import java.io.*;
-import java.lang.Object;
-import org.apache.xalan.utils.IntVector;
 
+import java.util.*;
+
+import java.io.*;
+
+import java.lang.Object;
+
+import org.apache.xalan.utils.IntVector;
 
 /**
  * <meta name="usage" content="general"/>
@@ -76,188 +79,240 @@ import org.apache.xalan.utils.IntVector;
  */
 public class LevelIndexer
 {
+
+  /** NEEDSDOC Field lastUsed          */
   int lastUsed;
+
+  /** NEEDSDOC Field m_subtype          */
   int m_subtype;
-  int m_defaultSize = 3; // this is the default value.
+
+  /** NEEDSDOC Field m_defaultSize          */
+  int m_defaultSize = 3;  // this is the default value.
 
   // change this to be new object extending from hashtable...
   //Hashtable
-  MultiKeyTable m_elemTypes = new MultiKeyTable();  //array of element types
 
+  /** NEEDSDOC Field m_elemTypes          */
+  MultiKeyTable m_elemTypes = new MultiKeyTable();  //array of element types
 
   /* Array of levels in the tree.
    * Each element of this array is a nodesList element.
    */
-  Object[] m_levelArray;    // array of levels in the tree. These are used
-                                            // to build the elemPostings table.
+
+  /** NEEDSDOC Field m_levelArray          */
+  Object[] m_levelArray;  // array of levels in the tree. These are used
+
+  // to build the elemPostings table.
 
   /**
    * Create a LevelIndexer object.
    */
   public LevelIndexer()
   {
-	  m_levelArray = new Object[10];
-  }	
-
+    m_levelArray = new Object[10];
+  }
 
   /**
    * <meta name="usage" content="internal"/>
    * Insert a node in the nodesList by level, by parent and by type.
+   *
+   * NEEDSDOC @param child
    */
   public void insertNode(Child child)
   {
+
     boolean updateParent = true;
+
     // first assign a subtype to the element and add it to the
     // m_elemTypes table.
     int type = addToTable(child);
 
-	  int uid = child.getUid();
-    int level = child.getLevel();                  
+    // int uid = child.getUid();
+    int level = child.getLevel();
 
     // Nothing there yet
-    if (m_levelArray[level]== null)
+    if (m_levelArray[level] == null)
     {
       Object[] nodesList = new Object[m_defaultSize];
-      m_levelArray[level] = nodesList;
 
+      m_levelArray[level] = nodesList;
       nodesList[0] = child;
-      ((IndexedElem)child.getParentNode()).setIndex(0);	
+
+      ((IndexedElem) child.getParentNode()).setIndex(0);
     }
+
     // Add to the existing list
     else
     {
-      Object[] nodesList = (Object[])m_levelArray[level];
-	    int structIndex = 0;
+      Object[] nodesList = (Object[]) m_levelArray[level];
+      int structIndex = 0;
+
       while (structIndex < nodesList.length
-             && (nodesList[structIndex]!= null) )
+             && (nodesList[structIndex] != null))
       {
-        structIndex++; 
-	    }	
-	    int lastUsed = structIndex-1;
+        structIndex++;
+      }
+
+      int lastUsed = structIndex - 1;
+
       // TODO: cleanup
       // Need to reallocate?? 2 is the max slots we could
       // need to add plus 1 to indicate end...
       if (nodesList.length < lastUsed + 3)
-      {       		    
-        nodesList  = allocateNewList(nodesList);
+      {
+        nodesList = allocateNewList(nodesList);
         m_levelArray[level] = nodesList;
       }
-	
+
       structIndex = 0;
+
       while (structIndex < nodesList.length
-             && (nodesList[structIndex]!= null))
+             && (nodesList[structIndex] != null))
       {
-        int next = structIndex + 1; 
-        Child node = (Child)nodesList[structIndex];
-        if(child.getParentNode().equals(node.getParentNode()))
+        int next = structIndex + 1;
+        Child node = (Child) nodesList[structIndex];
+
+        if (child.getParentNode().equals(node.getParentNode()))
         {
+
           // There is already at least one node with this parent at this level        
           // This parent already has a pointer to its children.
           updateParent = false;
-          if(getType(node) == type)
+
+          if (getType(node) == type)
           {
+
             // This parent already has children of this type.
             // Add this child to the end of the list for this type.
             if (nodesList[next] != null)
             {
+
               // Slide down one
               int i;
+
               for (i = lastUsed; i >= next; i--)
-              {	
-                if (getType((Child)nodesList[i]) != type)
-                  nodesList[i+1] = nodesList[i];
+              {
+                if (getType((Child) nodesList[i]) != type)
+                  nodesList[i + 1] = nodesList[i];
               }
-              nodesList[i] = child;		
-              
+
+              nodesList[i] = child;
             }
             else
             {
-              nodesList[next] = child;              
+              nodesList[next] = child;
             }
-            
+
             break;
           }
+
           structIndex = structIndex + 1;
         }
+
         // Keep looking for this parent and this type
         else
         {
-          structIndex = structIndex + 1; 
+          structIndex = structIndex + 1;
         }
-      }// end while
+      }  // end while
 
       // First node for this parent of this type at this level
-	    if (nodesList[structIndex] == null)
-	    {	
-		    nodesList[structIndex] = child;
+      if (nodesList[structIndex] == null)
+      {
+        nodesList[structIndex] = child;
+
         if (updateParent)
-		      ((IndexedElem)child.getParentNode()).setIndex(structIndex);
-	    }	
-    } //end else add to existing list
-
+          ((IndexedElem) child.getParentNode()).setIndex(structIndex);
+      }
+    }  //end else add to existing list
   }
-
 
   /**
    * <meta name="usage" content="internal"/>
    * Get a list of nodes in the level array by level and by type.
+   *
+   * NEEDSDOC @param level
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object[] getNodesList(int level)
   {
-    if (level > m_levelArray.length - 1 || m_levelArray[level]== null)
-        return null;
+
+    if (level > m_levelArray.length - 1 || m_levelArray[level] == null)
+      return null;
     else
     {
-      return (Object[])m_levelArray[level];
+      return (Object[]) m_levelArray[level];
     }
   }
-  
+
   /**
    * <meta name="usage" content="internal"/>
    * Get a list of nodes in the level array by level and by type.
+   *
+   * NEEDSDOC @param nodesList
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Object[] allocateNewList(Object[]nodesList)
+  public Object[] allocateNewList(Object[] nodesList)
   {
+
     int len = nodesList.length;
-    Object[]newlist = new Object[len + m_defaultSize];
+    Object[] newlist = new Object[len + m_defaultSize];
+
     System.arraycopy(nodesList, 0, newlist, 0, len);
-    for (int i=len; i< len + m_defaultSize; i++)
+
+    for (int i = len; i < len + m_defaultSize; i++)
+    {
       newlist[i] = null;
-    return newlist;    
+    }
+
+    return newlist;
   }
 
   /**
    * <meta name="usage" content="internal"/>
    * Get index pointing to nodes of a certain type in the nodeslist.
+   *
+   * NEEDSDOC @param child
+   * NEEDSDOC @param type
+   * NEEDSDOC @param nodesList
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public int getIndexForType(Node child, int type, Object[]nodesList )
+  public int getIndexForType(Node child, int type, Object[] nodesList)
   {
+
     int structIndex = 0;
+
     if (type == TYPEANY)
       return structIndex;
-    
-    while (structIndex < nodesList.length
-           &&  nodesList[structIndex] != null)
+
+    while (structIndex < nodesList.length && nodesList[structIndex] != null)
     {
-      int next = structIndex + 1; 
-      Child node = (Child)nodesList[structIndex];
-      if (child.getParentNode().equals(node.getParentNode())) 
+
+      // int next = structIndex + 1; 
+      Child node = (Child) nodesList[structIndex];
+
+      if (child.getParentNode().equals(node.getParentNode()))
       {
-        if(getType(node) == type)
+        if (getType(node) == type)
         {
           return structIndex;
         }
+
         structIndex = structIndex + 1;
       }
+
       // Keep looking for this type
       else
       {
-        structIndex = structIndex + 1; 
+        structIndex = structIndex + 1;
       }
     }
-    return -1;    // not found
-  }
 
+    return -1;  // not found
+  }
 
   /**
    * <meta name="usage" content="internal"/>
@@ -268,51 +323,73 @@ public class LevelIndexer
    * seperated by a double colon "::"
    * Note that m_subtype is a global variable that gets incremented
    * for the next time it is used.
+   *
+   * NEEDSDOC @param child
    * @return return the element subtype
    */
   public int addToTable(Child child)
   {
+
     String uri = child.getNamespaceURI();
-    String name = child.getNodeName(); 
+    String name = child.getNodeName();
     String prepend = null;
+
     // Keep track of attribute nodes
-    if (child.getNodeType()== Node.ATTRIBUTE_NODE)
-	    prepend = "@";	
-      
+    if (child.getNodeType() == Node.ATTRIBUTE_NODE)
+      prepend = "@";
+
     // Only add new types to the table    
     int type = m_elemTypes.get(name, uri, prepend);
+
     if (type < 0)
     {
       type = m_subtype;
+
       m_elemTypes.put(name, uri, prepend, type);
+
       m_subtype++;
     }
+
     return type;
   }
 
   /**
    * <meta name="usage" content="internal"/>
    * Get type.
+   *
+   * NEEDSDOC @param name
+   * NEEDSDOC @param namespace
+   * NEEDSDOC @param prepend
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public short getType(String name, String namespace, String prepend)
   {
+
     int type = m_elemTypes.get(name, namespace, prepend);
-    return  (new Integer(type).shortValue());
-    
+
+    return (new Integer(type).shortValue());
   }
-  
+
   /**
    * <meta name="usage" content="internal"/>
    * Get type.
+   *
+   * NEEDSDOC @param node
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public short getType(Node node)
   {
+
     String uri = node.getNamespaceURI();
-    String name = node.getNodeName(); 
+    String name = node.getNodeName();
     String prepend = null;
+
     // set up for attribute nodes
-    if (node.getNodeType()== Node.ATTRIBUTE_NODE)
-      prepend = "@";                   
+    if (node.getNodeType() == Node.ATTRIBUTE_NODE)
+      prepend = "@";
+
     return getType(name, uri, prepend);
   }
 
@@ -322,91 +399,127 @@ public class LevelIndexer
    * the tree is.
    */
   static final int MAXDEPTH = 2000;
-  
-  static final int TYPEANY = 2000;
-  
 
-/**
- * Implement a structure extending from Hashtable that is keyed
- * on multiple keys.
- */
-  protected class MultiKeyTable //extends Hashtable
+  /** NEEDSDOC Field TYPEANY          */
+  static final int TYPEANY = 2000;
+
+  /**
+   * Implement a structure extending from Hashtable that is keyed
+   * on multiple keys.
+   */
+  protected class MultiKeyTable  //extends Hashtable
   {
+
+    /**
+     * Constructor MultiKeyTable
+     *
+     */
     protected MultiKeyTable()
     {
       super();
     }
-    
+
+    /** NEEDSDOC Field m_nameTable          */
     private Hashtable m_nameTable;
+
+    /** NEEDSDOC Field m_uriTable          */
     private Hashtable m_uriTable;
-    
+
+    /**
+     * NEEDSDOC Method put 
+     *
+     *
+     * NEEDSDOC @param name
+     * NEEDSDOC @param namespace
+     * NEEDSDOC @param prepend
+     * NEEDSDOC @param value
+     */
     public void put(String name, String namespace, String prepend, int value)
     {
+
       IntVector nameList, uriList;
-      
+
       if (prepend != null)
         name = prepend + "::" + name;
-      
+
       if (name != null)
       {
         if (m_nameTable == null)
           m_nameTable = new Hashtable();
-        nameList = (IntVector)m_nameTable.get(name);
+
+        nameList = (IntVector) m_nameTable.get(name);
+
         if (nameList == null)
           nameList = new IntVector();
+
         nameList.addElement(value);
         m_nameTable.put(name, nameList);
       }
-      
-      if (namespace == null)
-        namespace = "";      
-      if (m_uriTable == null)
-        m_uriTable = new Hashtable();
-      uriList =(IntVector) m_uriTable.get(namespace);      
-      if (uriList == null)
-        uriList = new IntVector();
-      uriList.addElement(value);
-      m_uriTable.put(namespace, uriList);
-                 
-    }
 
-    public int get(String name, String namespace, String prepend)	
-    {
-      IntVector nameList, uriList = null;
-      if (m_nameTable == null)
-        return -1;
-      
-      if (prepend != null)
-        name = prepend + "::" + name;
-      
-      nameList = (IntVector)m_nameTable.get(name);      
-      if (nameList == null)
-        return -1;
-      
       if (namespace == null)
         namespace = "";
-      if ( m_uriTable != null)
-      {  
-        uriList = (IntVector)m_uriTable.get(namespace);
+
+      if (m_uriTable == null)
+        m_uriTable = new Hashtable();
+
+      uriList = (IntVector) m_uriTable.get(namespace);
+
+      if (uriList == null)
+        uriList = new IntVector();
+
+      uriList.addElement(value);
+      m_uriTable.put(namespace, uriList);
+    }
+
+    /**
+     * NEEDSDOC Method get 
+     *
+     *
+     * NEEDSDOC @param name
+     * NEEDSDOC @param namespace
+     * NEEDSDOC @param prepend
+     *
+     * NEEDSDOC (get) @return
+     */
+    public int get(String name, String namespace, String prepend)
+    {
+
+      IntVector nameList, uriList = null;
+
+      if (m_nameTable == null)
+        return -1;
+
+      if (prepend != null)
+        name = prepend + "::" + name;
+
+      nameList = (IntVector) m_nameTable.get(name);
+
+      if (nameList == null)
+        return -1;
+
+      if (namespace == null)
+        namespace = "";
+
+      if (m_uriTable != null)
+      {
+        uriList = (IntVector) m_uriTable.get(namespace);
+
         if (uriList == null)
           return -1;
-      }       
-      
+      }
+
       // Return the element that is common to both lists 
-      for (int i=0; i< nameList.size(); i++)
+      for (int i = 0; i < nameList.size(); i++)
       {
-        for(int j=0; j< uriList.size(); j++)
+        for (int j = 0; j < uriList.size(); j++)
         {
           if (nameList.elementAt(i) == uriList.elementAt(j))
             return nameList.elementAt(i);
         }
       }
+
       // Not found.
-      return -1;        
-     
-    }         
-  }  
-
-
+      return -1;
+    }
+  }
 }
-

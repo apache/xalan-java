@@ -76,24 +76,28 @@ import org.apache.xpath.compiler.Compiler;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class extends NodeSet, which implements NodeIterator, 
+ * This class extends NodeSet, which implements NodeIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a>.
- * As each node is iterated via nextNode(), the node is also stored 
- * in the NodeVector, so that previousNode() can easily be done, except in 
- * the case where the IndexedLocPathIterator is "owned" by a UnionPathIterator, 
+ * As each node is iterated via nextNode(), the node is also stored
+ * in the NodeVector, so that previousNode() can easily be done, except in
+ * the case where the IndexedLocPathIterator is "owned" by a UnionPathIterator,
  * in which case the UnionPathIterator will cache the nodes.
  */
 public class IndexedLocPathIterator extends LocPathIterator
 {
+
   /**
    * Create a IndexedLocPathIterator object.
+   *
+   * NEEDSDOC @param compiler
+   * NEEDSDOC @param opPos
+   *
+   * @throws org.xml.sax.SAXException
    */
   public IndexedLocPathIterator(Compiler compiler, int opPos)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
     super(compiler, opPos);
-  }  
+  }
 }
-
-
