@@ -201,6 +201,34 @@ public final class TransformerImpl extends Transformer
      */
     private Hashtable _parameters = null;
 
+    /**
+     * This class wraps an ErrorListener into a MessageHandler in order to
+     * capture messages reported via xsl:message.
+     */
+    static class MessageHandler 
+           extends org.apache.xalan.xsltc.runtime.MessageHandler 
+    {
+	private ErrorListener _errorListener;
+     
+	public MessageHandler(ErrorListener errorListener) {
+	    _errorListener = errorListener;
+	}
+     
+	public void displayMessage(String msg) {
+	    if(_errorListener == null) {
+		System.err.println(msg); 
+	    }
+	    else {
+		try {
+		    _errorListener.warning(new TransformerException(msg));
+		}
+		catch (TransformerException e) {
+		    // ignored 
+		}
+	    }
+	}
+    }
+
     protected TransformerImpl(Properties outputProperties, int indentNumber, 
 	TransformerFactoryImpl tfactory) 
     {
@@ -674,6 +702,8 @@ public final class TransformerImpl extends Transformer
     /**
      * Implements JAXP's Transformer.setErrorListener()
      * Set the error event listener in effect for the transformation.
+     * Register a message handler in the translet in order to forward
+     * xsl:messages to error listener.
      *
      * @param listener The error event listener to use
      * @throws IllegalArgumentException
@@ -686,6 +716,8 @@ public final class TransformerImpl extends Transformer
             throw new IllegalArgumentException(err.toString());
 	}
         _errorListener = listener;
+	// Register a message handler to report xsl:messages
+	_translet.setMessageHandler(new MessageHandler(_errorListener));
     }
 
     /**
