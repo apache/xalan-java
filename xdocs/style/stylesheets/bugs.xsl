@@ -11,12 +11,17 @@
 
   <xsl:template match="Sprs">
   <xsl:comment>This XML fragment contains a list of open bugs to be included in an &lt;s3&gt; section of readme.xml</xsl:comment>
-  <p>Open bugs:</p>
-    <ul>
-    <xsl:for-each select="Spr[string(State)='Open'] [string(Subsystem)!='Other']">
-      <li><xsl:apply-templates select="Name|DateCreated|TestDesc"/><br/><br/></li>
-    </xsl:for-each>
-    </ul>
+    <xsl:if test="count(Spr[string(State)='Open'] [string(Subsystem)!='Other'])>0">
+      <p>Open bugs:</p>
+      <ul>
+      <xsl:for-each select="Spr[string(State)='Open'] [string(Subsystem)!='Other']">
+        <li><xsl:apply-templates select="Name|DateCreated|TestDesc"/><br/><br/></li>
+      </xsl:for-each>
+      </ul>
+    </xsl:if>
+    <xsl:if test="count(Spr[string(State)='Open'] [string(Subsystem)!='Other'])=0">
+      <note>No open bugs are currently listed.</note>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template match="Name">
