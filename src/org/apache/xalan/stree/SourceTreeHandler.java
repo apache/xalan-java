@@ -545,17 +545,22 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
     synchronized (m_root)
     {
-      ((Parent) m_sourceTreeHandler.getCurrentNode()).setComplete(true);
+      Parent myElement=(Parent)(m_sourceTreeHandler.getCurrentNode());
       
       m_sourceTreeHandler.endElement(ns, localName, name);     
 
+      // Mark as complete only after endElement has had a chance to flush
+      // any pending work (Text nodes in particular)
+      myElement.setComplete(true);
+
       m_shouldStripWS = m_shouldStripWhitespaceStack.popAndTop();
+      
     }
 
     notifyWaiters();
   }
 
-  /** Flaf indicating whether we got a CDATA event          */
+  /** Flag indicating whether we got a CDATA event          */
   private boolean m_isCData = false;
 
   /**
