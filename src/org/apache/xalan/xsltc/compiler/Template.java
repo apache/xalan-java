@@ -74,6 +74,7 @@ import org.apache.bcel.generic.InstructionList;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NamedMethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
@@ -87,15 +88,18 @@ public final class Template extends TopLevelElement {
     private int     _position; // Position within stylesheet (prio. resolution)
     private boolean _disabled = false;
     private boolean _compiled = false;//make sure it is compiled only once
-    private boolean _hasParams = false;
     private boolean _simplified = false;
 
+    // True if this is a simple named template. A simple named 
+    // template is a template which only has a name but no match pattern.
+    private boolean _isSimpleNamedTemplate = false;
+    
+    // The list of parameters in this template. This is only used
+    // for simple named templates.
+    private Vector  _parameters = new Vector();
+    
     public boolean hasParams() {
-	return _hasParams;
-    }
-
-    public void hasParams(boolean hasParams) {
-	_hasParams = hasParams;
+	return _parameters.size() > 0;
     }
 
     public boolean isSimplified() {
@@ -104,6 +108,19 @@ public final class Template extends TopLevelElement {
 
     public void setSimplified() {
 	_simplified = true;
+    }
+
+    public boolean isSimpleNamedTemplate() {
+    	return _isSimpleNamedTemplate;
+    }
+    
+    public void addParameter(Param param) {
+    	param.setIndex(_parameters.size());
+    	_parameters.addElement(param);
+    }
+    
+    public Vector getParameters() {
+    	return _parameters;
     }
 
     public void disable() {
@@ -247,6 +264,10 @@ public final class Template extends TopLevelElement {
 		    new ErrorMsg(ErrorMsg.TEMPLATE_REDEF_ERR, _name, this);
 		parser.reportError(Constants.ERROR, err);
 	    }
+	    // Is this a simple named template?
+	    if (_pattern == null && _mode == null) {
+	    	_isSimpleNamedTemplate = true;
+	    }
 	}
 
 	parser.setTemplate(this);	// set current template
@@ -324,10 +345,61 @@ public final class Template extends TopLevelElement {
 
 	if (_compiled) return;
 	_compiled = true; 
+		
+	// %OPT% Special handling for simple named templates.
+	if (_isSimpleNamedTemplate && methodGen instanceof NamedMethodGenerator) {
+	    NamedMethodGenerator namedMethodGen = (NamedMethodGenerator)methodGen;
+	    int numParams = _parameters.size();
+	    // Update the load instructions of the Params, so that they
+	    // are loaded from the method parameters. 
+	    for (int i = 0; i < numParams; i++) {
+	    	Param param = (Param)_parameters.elementAt(i);
+	    	param.setLoadInstruction(namedMethodGen.loadParameter(i));
+	    }
+	    // Translate all children except the parameters.
+	    // The parameters are translated in CallTemplates if necessary.
+	    translateContentsWithoutParams(classGen, methodGen);
+	}
+	else {
+	    translateContents(classGen, methodGen);
+	}
 	
-	final InstructionHandle start = il.getEnd();
-	translateContents(classGen, methodGen);
-	final InstructionHandle end = il.getEnd();
 	il.setPositions(true);
     }
+    
+    /**
+     * Call translate() on all child syntax tree nodes except the parameters.
+     * 
+     * This is used for a simple named template, where the paramters are
+     * translated in the CallTemplate if necessary.
+     * 
+     * @param classGen BCEL Java class generator
+     * @param methodGen BCEL Java method generator
+     */
+    protected void translateContentsWithoutParams(
+        ClassGenerator classGen,
+        MethodGenerator methodGen) {
+        // Call translate() on all child nodes
+        final int n = elementCount();
+        for (int i = 0; i < n; i++) {
+            final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(i);
+            if (!(item instanceof Param)) {
+                item.translate(classGen, methodGen);
+            }
+        }
+
+        // After translation, unmap any registers for any
+        // variables / parameters
+        // that were declared in this scope. Performing this unmapping in the
+        // same AST scope as the declaration deals with the problems of
+        // references falling out-of-scope inside the for-each element.
+        // (the cause of which being 'lazy' register allocation for references) 
+        for (int i = 0; i < n; i++) {
+            if (elementAt(i) instanceof Variable) {
+                final Variable var = (Variable) elementAt(i);
+                var.unmapRegister(methodGen);
+            }
+        }
+    }
+    
 }

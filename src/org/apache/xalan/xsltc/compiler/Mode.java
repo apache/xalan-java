@@ -577,25 +577,39 @@ for (int i = 0; i < _templates.size(); i++) {
 	final InstructionList il = new InstructionList();
 	String methodName = Util.escape(template.getName().toString());
 
-	final NamedMethodGenerator methodGen =
-	    new NamedMethodGenerator(ACC_PUBLIC,
-				     org.apache.bcel.generic.Type.VOID,
-				     new org.apache.bcel.generic.Type[] {
-					 Util.getJCRefType(DOM_INTF_SIG),
-					 Util.getJCRefType(NODE_ITERATOR_SIG),
-					 Util.getJCRefType(TRANSLET_OUTPUT_SIG),
-					 org.apache.bcel.generic.Type.INT
-				     },
-				     new String[] {
-					 DOCUMENT_PNAME,
-					 ITERATOR_PNAME,
-					 TRANSLET_OUTPUT_PNAME,
-					 NODE_PNAME
-				     },
-				     methodName,
-				     getClassName(),
-				     il, cpg);
+	int numParams = 0;
+	if (template.isSimpleNamedTemplate()) {
+	    Vector parameters = template.getParameters();
+	    numParams = parameters.size();
+	}
 	
+	// Initialize the types and names arrays for the NamedMethodGenerator. 
+	org.apache.bcel.generic.Type[] types = 
+	    new org.apache.bcel.generic.Type[4 + numParams];
+	String[] names = new String[4 + numParams];
+	types[0] = Util.getJCRefType(DOM_INTF_SIG);
+	types[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
+	types[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
+	types[3] = org.apache.bcel.generic.Type.INT;
+	names[0] = DOCUMENT_PNAME;
+	names[1] = ITERATOR_PNAME;
+	names[2] = TRANSLET_OUTPUT_PNAME;
+	names[3] = NODE_PNAME;
+	
+	// For simple named templates, the signature of the generated method
+	// is not fixed. It depends on the number of parameters declared in the
+	// template.
+	for (int i = 4; i < 4 + numParams; i++) {
+	    types[i] = Util.getJCRefType(OBJECT_SIG);
+	    names[i] = "param" + String.valueOf(i-4);
+	}
+	
+	NamedMethodGenerator methodGen =
+	        new NamedMethodGenerator(ACC_PUBLIC,
+				     org.apache.bcel.generic.Type.VOID,
+				     types, names, methodName,
+				     getClassName(), il, cpg);	    
+
 	il.append(template.compile(classGen, methodGen));
 	il.append(RETURN);
 	

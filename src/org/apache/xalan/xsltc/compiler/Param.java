@@ -70,6 +70,7 @@ import org.apache.bcel.classfile.Field;
 import org.apache.bcel.generic.CHECKCAST;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.PUTFIELD;
@@ -82,11 +83,34 @@ import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 final class Param extends VariableBase {
 
+    // True if this Param is declared in a simple named template.
+    // This is used to optimize codegen for parameter passing
+    // in named templates.
+    private boolean _isInSimpleNamedTemplate = false;
+
+    // The order index of the parameter, which is only used when
+    // the Param is declared in a simple named template.
+    private int _index = 0;
+
     /**
      * Display variable as single string
      */
     public String toString() {
 	return("param("+_name+")");
+    }
+
+    /**
+     * Set the index of this parameter
+     */
+    public void setIndex(int index) {
+        _index = index;
+    }
+
+    /**
+     * Return the index of this parameter
+     */
+    public int getIndex() {
+        return _index;
     }
 
     /**
@@ -141,8 +165,12 @@ final class Param extends VariableBase {
 	    parser.getSymbolTable().addParam(this);
 	}
 	else if (parent instanceof Template) {
+            Template template = (Template) parent;
 	    _isLocal = true;
-	    ((Template)parent).hasParams(true);
+            template.addParameter(this);
+            if (template.isSimpleNamedTemplate()) {
+                _isInSimpleNamedTemplate = true;
+            }
 	}
     }
 
@@ -174,7 +202,7 @@ final class Param extends VariableBase {
 	final InstructionList il = methodGen.getInstructionList();
 
 	if (_ignore) return;
-	_ignore = true;
+	// _ignore = true;
 
 	final String name = getVariable();
 	final String signature = _type.toSignature();
@@ -182,6 +210,14 @@ final class Param extends VariableBase {
 
 	if (isLocal()) {
 
+            // %OPT% Only translate the value and put it on the
+            // stack if this Param is in a simple named template.
+            // No need to call Translet.addParameter().
+            if (_isInSimpleNamedTemplate) {
+                translateValue(classGen, methodGen);
+                return;
+            }
+            
 	    il.append(classGen.loadTranslet());
 	    il.append(new PUSH(cpg, name));
 	    translateValue(classGen, methodGen);
@@ -235,6 +271,16 @@ final class Param extends VariableBase {
 						       name, signature)));
 	    }
 	}
+    }
+
+    /**
+     * Set the instruction handle for loading the value of this
+     * variable onto the JVM stack and returns the old instruction handle.
+     */
+    public Instruction setLoadInstruction(Instruction instruction) {
+        Instruction tmp = _loadInstruction;
+        _loadInstruction = instruction;
+        return tmp;
     }
 
 }

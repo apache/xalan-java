@@ -63,7 +63,9 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.bcel.generic.ALOAD;
 import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.Type;
 
@@ -73,6 +75,9 @@ import org.apache.bcel.generic.Type;
  */
 public final class NamedMethodGenerator extends MethodGenerator {
     protected static int CURRENT_INDEX  = 4;
+    
+    // The index of the first parameter (after dom/iterator/handler/current)
+    private static final int PARAM_START_INDEX = 5;
 
     public NamedMethodGenerator(int access_flags, Type return_type,
 				Type[] arg_types, String[] arg_names,
@@ -87,5 +92,9 @@ public final class NamedMethodGenerator extends MethodGenerator {
 	    return CURRENT_INDEX;
 	}
 	return super.getLocalIndex(name);
+    }
+
+    public Instruction loadParameter(int index) {
+        return new ALOAD(index + PARAM_START_INDEX);
     }
 }

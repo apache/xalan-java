@@ -82,6 +82,13 @@ final class WithParam extends Instruction {
     private QName _name;
     private Expression _select;
 
+    // %OPT% This is set to true when the WithParam is used in a
+    // CallTemplate for a simple named template. If this is true,
+    // the parameters are passed to the named template through method
+    // arguments rather than using the expensive Translet.addParameter()
+    // call.
+    private boolean _doParameterOptimization = false;
+
     /**
      * Displays the contents of this element
      */
@@ -94,6 +101,21 @@ final class WithParam extends Instruction {
 	}
 	displayContents(indent + IndentIncrement);
     }
+    
+    /**
+     * Return the name of this WithParam.
+     */
+    public QName getName() {
+        return _name;	
+    }
+    
+    /**
+     * Set the do parameter optimization flag
+     */
+    public void setDoParameterOptimization(boolean flag) {
+    	_doParameterOptimization = flag;
+    }
+    
 
     /**
      * The contents of a <xsl:with-param> elements are either in the element's
@@ -165,6 +187,12 @@ final class WithParam extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+	// Translate the value and put it on the stack
+	if (_doParameterOptimization) {
+	    translateValue(classGen, methodGen);
+	    return;
+	}
+	
 	// Make name acceptable for use as field name in class
 	String name = Util.escape(_name.getLocalPart());
 
