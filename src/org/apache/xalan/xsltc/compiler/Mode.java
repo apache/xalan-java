@@ -722,7 +722,8 @@ final class Mode implements Constants {
 	targets[DOM.ATTRIBUTE] = attrNamespaceHandle;
 
 	// Match on processing instruction - default: process next node
-	InstructionHandle ihPI = ihElem;
+	InstructionHandle ihPI = ihLoop;
+	if (_nodeTestSeq != null) ihPI = ihElem;
 	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null)
 	    targets[DOM.PROCESSING_INSTRUCTION] =
 		_testSeq[DOM.PROCESSING_INSTRUCTION].
@@ -731,7 +732,8 @@ final class Mode implements Constants {
 	    targets[DOM.PROCESSING_INSTRUCTION] = ihPI;
 	
 	// Match on comments - default: process next node
-	InstructionHandle ihComment = ihElem;
+	InstructionHandle ihComment = ihLoop;
+	if (_nodeTestSeq != null) ihComment = ihElem;
 	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
 	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
 	    : ihComment;
