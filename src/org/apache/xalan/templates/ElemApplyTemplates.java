@@ -277,22 +277,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
       final TemplateList tl = sroot.getTemplateListComposed();
       final boolean quiet = transformer.getQuietConflictWarnings();
       
-      xctxt.pushCurrentNode(DTM.NULL);
-      int[] currentNodes = xctxt.getCurrentNodeStack();
-      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
-      
-      xctxt.pushCurrentExpressionNode(DTM.NULL);
-      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-      int currentExpressionNodePos = xctxt.getCurrentExpressionNodesFirstFree() - 1;
-
-      xctxt.pushSAXLocatorNull();
-      xctxt.pushContextNodeList(sourceNodes);
-      transformer.pushElemTemplateElement(null);
-      // pushParams(transformer, xctxt);
-
-      // Should be able to get this from the iterator but there must be a bug.
-      DTM dtm = xctxt.getDTM(sourceNode);
-      
       int argsFrame = -1;
       if(nParams > 0)
       {
@@ -311,6 +295,24 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         vars.setStackFrame(argsFrame);
       }
+      
+      xctxt.pushCurrentNode(DTM.NULL);
+      int[] currentNodes = xctxt.getCurrentNodeStack();
+      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
+      
+      xctxt.pushCurrentExpressionNode(DTM.NULL);
+      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
+      int currentExpressionNodePos = xctxt.getCurrentExpressionNodesFirstFree() - 1;
+
+      xctxt.pushSAXLocatorNull();
+      xctxt.pushContextNodeList(sourceNodes);
+      transformer.pushElemTemplateElement(null);
+      // pushParams(transformer, xctxt);
+
+      // Should be able to get this from the iterator but there must be a bug.
+      DTM dtm = xctxt.getDTM(sourceNode);
+      
+      
       
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))
