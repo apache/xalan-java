@@ -680,12 +680,9 @@ public class SimpleNode implements Node
      */
     public Object childrenAccept(XPathVisitor visitor, Object data)
     {
-        if (m_children != null)
+        for (int i = 0; i < jjtGetNumChildren(); ++i)
         {
-            for (int i = 0; i < m_children.length; ++i)
-            {
-                m_children[i].jjtAccept(visitor, data);
-            }
+            jjtGetChild(i).jjtAccept(visitor, data);
         }
 
         return data;
@@ -754,16 +751,13 @@ public class SimpleNode implements Node
     {
         out.println(toString(prefix));
 
-        if (m_children != null)
+        for (int i = 0; i < jjtGetNumChildren(); ++i)
         {
-            for (int i = 0; i < m_children.length; ++i)
-            {
-                SimpleNode n = (SimpleNode) m_children[i];
+            SimpleNode n = (SimpleNode) jjtGetChild(i);
 
-                if (n != null)
-                {
-                    n.dump(prefix + " ", out);
-                }
+            if (n != null)
+            {
+                n.dump(prefix + " ", out);
             }
         }
     }
