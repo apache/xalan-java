@@ -95,10 +95,10 @@ import java.util.ResourceBundle;
 public final class Messages
 {
     /** The local object to use.  */
-    private Locale m_locale = Locale.getDefault();
+    private final Locale m_locale = Locale.getDefault();
 
     /** The language specific resource object for messages.  */
-    private ListResourceBundle m_resourceBundle = null;
+    private ListResourceBundle m_resourceBundle;
 
     /** The class name of the error message string table with no language suffix. */
     private String m_resourceBundleName;
@@ -128,13 +128,17 @@ public final class Messages
      * 
      * @xsl.usage internal
      */
-    public Messages(String resourceBundle)
+    Messages(String resourceBundle)
     {
 
         m_resourceBundleName = resourceBundle;
     }
     
-    /**
+    // This method is dropped because it makes the singleton messages object
+    // mutable, and this messages object is used as long as the JVM stays up,
+    // potentially by different users in a server situation.
+    // This method was also never called anywhere in the serializer... so it's gone.
+    /*
      * Set the Locale object to use. If this method is not called the
      * default locale is used. This method needs to be called before
      * loadResourceBundle().
@@ -142,10 +146,10 @@ public final class Messages
      * @param locale non-null reference to Locale object.
      * @xsl.usage internal
      */
-    public void setLocale(Locale locale)
-    {
-        m_locale = locale;
-    }
+//    public void setLocale(Locale locale)
+//    {
+//        m_locale = locale;
+//    }
 
     /**
      * Get the Locale object that is being used.
@@ -153,7 +157,7 @@ public final class Messages
      * @return non-null reference to Locale object.
      * @xsl.usage internal
      */
-    public Locale getLocale()
+    private Locale getLocale()
     {
         return m_locale;
     }
@@ -163,7 +167,7 @@ public final class Messages
      * previously set by a call to loadResourceBundle(className)
      * @xsl.usage internal
      */
-    public ListResourceBundle getResourceBundle()
+    private ListResourceBundle getResourceBundle()
     {
         return m_resourceBundle;
     }
@@ -206,7 +210,7 @@ public final class Messages
      * @return The formatted message string.
      * @xsl.usage internal
      */
-    public final String createMsg(
+    private final String createMsg(
         ListResourceBundle fResourceBundle,
         String msgKey,
         Object args[]) //throws Exception
@@ -311,7 +315,7 @@ public final class Messages
      * @throws MissingResourceException
      * @xsl.usage internal
      */
-    public ListResourceBundle loadResourceBundle(String resourceBundle)
+    private ListResourceBundle loadResourceBundle(String resourceBundle)
         throws MissingResourceException
     {
         m_resourceBundleName = resourceBundle;

@@ -30,57 +30,12 @@ import java.util.Hashtable;
  */
 public final class Utils
 {
-
     /**
-     * This nested class acts as a way to lazy load the hashtable
-     * in a thread safe way.
+     * A singleton Messages object is used to load the 
+     * given resource bundle just once, it is
+     * used by multiple transformations as long as the JVM stays up.
      */
-    static private class CacheHolder
-    {
-        static final Hashtable cache;
-        static {
-            cache = new Hashtable();
-        }
-    }
-    /**
-     * Load the class by name.
-     * 
-     * This implementation, for performance reasons,
-     * caches all classes loaded by name and
-     * returns the cached Class object if it can previously 
-     * loaded classes that were load by name.  If not previously loaded
-     * an attempt is made to load with Class.forName(classname)
-     * @param classname the name of the class to be loaded
-     * @return the loaded class, never null. If the class could not be
-     * loaded a ClassNotFound exception is thrown.
-     * @throws ClassNotFoundException if the class was not loaded
-     */
-    static Class ClassForName(String classname) throws ClassNotFoundException
-    {
-        Class c;
-        // the first time the next line runs will reference
-        // CacheHolder, causing the class to load and create the
-        // Hashtable.
-        Object o = CacheHolder.cache.get(classname);
-        if (o == null)
-        {
-            // class was not in the cache, so try to load it
-            c = Class.forName(classname);
-            // if the class is not found we will have thrown a
-            // ClassNotFoundException on the statement above
-            
-            // if we get here c is not null
-            CacheHolder.cache.put(classname, c);
-        }
-        else
-        {
-            c = (Class)o;
-        }
-        return c;
-    }
-    
-    
-    public static org.apache.xml.serializer.utils.Messages messages= 
+    public static final org.apache.xml.serializer.utils.Messages messages= 
         new org.apache.xml.serializer.utils.Messages(
             "org.apache.xml.serializer.utils.SerializerMessages");
 }

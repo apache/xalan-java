@@ -75,10 +75,10 @@ public class SerializerMessages extends ListResourceBundle
 
     // Message keys required by the message utility class (in case it has problems
   // with messages in this class)
-  public static String BAD_MSGKEY = "BAD_CODE";
+  public static final String BAD_MSGKEY = "BAD_CODE";
 
   /** String to use if the message format operation failed.  */
-  public static String BAD_MSGFORMAT = "FORMAT_FAILED";
+  public static final String BAD_MSGFORMAT = "FORMAT_FAILED";
   
   // Message keys used by the serializer
   public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
@@ -96,24 +96,24 @@ public class SerializerMessages extends ListResourceBundle
   public static final String ER_ILLEGAL_CHARACTER = "ER_ILLEGAL_CHARACTER";
   
 
-  public static String ER_INVALID_PORT = "ER_INVALID_PORT";
-  public static String ER_PORT_WHEN_HOST_NULL = "ER_PORT_WHEN_HOST_NULL";
-  public static String ER_HOST_ADDRESS_NOT_WELLFORMED = "ER_HOST_ADDRESS_NOT_WELLFORMED";
-  public static String ER_SCHEME_NOT_CONFORMANT = "ER_SCHEME_NOT_CONFORMANT";
-  public static String ER_SCHEME_FROM_NULL_STRING = "ER_SCHEME_FROM_NULL_STRING";
-  public static String ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = "ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE";
-  public static String ER_PATH_INVALID_CHAR = "ER_PATH_INVALID_CHAR";
-  public static String ER_NO_SCHEME_INURI = "ER_NO_SCHEME_INURI";
-  public static String ER_FRAG_INVALID_CHAR = "ER_FRAG_INVALID_CHAR";
-  public static String ER_FRAG_WHEN_PATH_NULL = "ER_FRAG_WHEN_PATH_NULL";
-  public static String ER_FRAG_FOR_GENERIC_URI = "ER_FRAG_FOR_GENERIC_URI";
-  public static String ER_NO_SCHEME_IN_URI = "ER_NO_SCHEME_IN_URI";
-  public static String ER_CANNOT_INIT_URI_EMPTY_PARMS = "ER_CANNOT_INIT_URI_EMPTY_PARMS";
-  public static String ER_NO_FRAGMENT_STRING_IN_PATH = "ER_NO_FRAGMENT_STRING_IN_PATH";
-  public static String ER_NO_QUERY_STRING_IN_PATH = "ER_NO_QUERY_STRING_IN_PATH";
-  public static String ER_NO_PORT_IF_NO_HOST = "ER_NO_PORT_IF_NO_HOST";
-  public static String ER_NO_USERINFO_IF_NO_HOST = "ER_NO_USERINFO_IF_NO_HOST";
-  public static String ER_SCHEME_REQUIRED = "ER_SCHEME_REQUIRED";
+  public static final String ER_INVALID_PORT = "ER_INVALID_PORT";
+  public static final String ER_PORT_WHEN_HOST_NULL = "ER_PORT_WHEN_HOST_NULL";
+  public static final String ER_HOST_ADDRESS_NOT_WELLFORMED = "ER_HOST_ADDRESS_NOT_WELLFORMED";
+  public static final String ER_SCHEME_NOT_CONFORMANT = "ER_SCHEME_NOT_CONFORMANT";
+  public static final String ER_SCHEME_FROM_NULL_STRING = "ER_SCHEME_FROM_NULL_STRING";
+  public static final String ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = "ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE";
+  public static final String ER_PATH_INVALID_CHAR = "ER_PATH_INVALID_CHAR";
+  public static final String ER_NO_SCHEME_INURI = "ER_NO_SCHEME_INURI";
+  public static final String ER_FRAG_INVALID_CHAR = "ER_FRAG_INVALID_CHAR";
+  public static final String ER_FRAG_WHEN_PATH_NULL = "ER_FRAG_WHEN_PATH_NULL";
+  public static final String ER_FRAG_FOR_GENERIC_URI = "ER_FRAG_FOR_GENERIC_URI";
+  public static final String ER_NO_SCHEME_IN_URI = "ER_NO_SCHEME_IN_URI";
+  public static final String ER_CANNOT_INIT_URI_EMPTY_PARMS = "ER_CANNOT_INIT_URI_EMPTY_PARMS";
+  public static final String ER_NO_FRAGMENT_STRING_IN_PATH = "ER_NO_FRAGMENT_STRING_IN_PATH";
+  public static final String ER_NO_QUERY_STRING_IN_PATH = "ER_NO_QUERY_STRING_IN_PATH";
+  public static final String ER_NO_PORT_IF_NO_HOST = "ER_NO_PORT_IF_NO_HOST";
+  public static final String ER_NO_USERINFO_IF_NO_HOST = "ER_NO_USERINFO_IF_NO_HOST";
+  public static final String ER_SCHEME_REQUIRED = "ER_SCHEME_REQUIRED";
 
   /*
    * Now fill in the message text.
@@ -124,7 +124,7 @@ public class SerializerMessages extends ListResourceBundle
   // Error messages...
 
   /** The lookup table for error messages.   */
-  public static final Object[][] contents = {        
+  private static final Object[][] contents = {        
     {BAD_MSGKEY, 
       "The message key ''{0}'' is not in the message class ''{1}''"},
     
