@@ -156,8 +156,34 @@ public final class TemplatesImpl implements Templates, Serializable {
     /**
      * Returns the translet bytecodes stored in this template
      */
-    protected byte[][] getTransletBytecodes() {
-	return(_bytecodes);
+    public byte[][] getTransletBytecodes() {
+	return _bytecodes;
+    }
+
+    /**
+     * Returns the translet bytecodes stored in this template
+     */
+    public Class[] getTransletClasses() {
+	try {
+	    if (_class == null) defineTransletClasses();
+	}
+	catch (TransformerConfigurationException e) {
+	    // Falls through
+	}
+	return _class;
+    }
+
+    /**
+     * Returns the index of the main class in array of bytecodes
+     */
+    public int getTransletIndex() {
+	try {
+	    if (_class == null) defineTransletClasses();
+	}
+	catch (TransformerConfigurationException e) {
+	    // Falls through
+	}
+	return _transletIndex;
     }
 
     /**
