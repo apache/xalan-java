@@ -154,8 +154,8 @@ public class XPathParser
 
     lexer.tokenize(expression);
 
-    m_ops.m_opMap[0] = OpCodes.OP_XPATH;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = 2;
+    m_ops.setOp(0,OpCodes.OP_XPATH);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH,2);
     
     
 	// Patch for Christine's gripe. She wants her errorHandler to return from
@@ -229,8 +229,8 @@ public class XPathParser
 
     lexer.tokenize(expression);
 
-    m_ops.m_opMap[0] = OpCodes.OP_MATCHPATTERN;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = 2;
+    m_ops.setOp(0, OpCodes.OP_MATCHPATTERN);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, 2);
 
     nextToken();
     Pattern();
@@ -254,8 +254,8 @@ public class XPathParser
     }
 
     // Terminate for safety.
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH)+1);
 
     m_ops.shrink();
   }
@@ -332,10 +332,10 @@ public class XPathParser
     int pos = (m_queueMark + n);
     boolean b;
 
-    if ((pos <= m_ops.m_tokenQueueSize) && (pos > 0)
-            && (m_ops.m_tokenQueueSize != 0))
+    if ((pos <= m_ops.getTokenQueueSize()) && (pos > 0)
+            && (m_ops.getTokenQueueSize() != 0))
     {
-      String tok = ((String) m_ops.m_tokenQueue[pos - 1]);
+      String tok = ((String) m_ops.m_tokenQueue.elementAt(pos - 1));
 
       b = (tok.length() == 1) ? (tok.charAt(0) == c) : false;
     }
@@ -369,7 +369,7 @@ public class XPathParser
 
     if (lookBehindPos >= 0)
     {
-      String lookbehind = (String) m_ops.m_tokenQueue[lookBehindPos];
+      String lookbehind = (String) m_ops.m_tokenQueue.elementAt(lookBehindPos);
 
       if (lookbehind.length() == 1)
       {
@@ -409,7 +409,7 @@ public class XPathParser
 
     if ((m_queueMark - n) > 0)
     {
-      String lookbehind = (String) m_ops.m_tokenQueue[m_queueMark - (n - 1)];
+      String lookbehind = (String) m_ops.m_tokenQueue.elementAt(m_queueMark - (n - 1));
       char c0 = (lookbehind == null) ? '|' : lookbehind.charAt(0);
 
       hasToken = (c0 == '|') ? false : true;
@@ -438,9 +438,9 @@ public class XPathParser
 
     boolean isToken;
 
-    if ((m_queueMark + n) <= m_ops.m_tokenQueueSize)
+    if ((m_queueMark + n) <= m_ops.getTokenQueueSize())
     {
-      String lookahead = (String) m_ops.m_tokenQueue[m_queueMark + (n - 1)];
+      String lookahead = (String) m_ops.m_tokenQueue.elementAt(m_queueMark + (n - 1));
 
       isToken = (lookahead != null) ? lookahead.equals(s) : (s == null);
     }
@@ -459,9 +459,9 @@ public class XPathParser
   private final void nextToken()
   {
 
-    if (m_queueMark < m_ops.m_tokenQueueSize)
+    if (m_queueMark < m_ops.getTokenQueueSize())
     {
-      m_token = (String) m_ops.m_tokenQueue[m_queueMark++];
+      m_token = (String) m_ops.m_tokenQueue.elementAt(m_queueMark++);
       m_tokenChar = m_token.charAt(0);
     }
     else
@@ -485,9 +485,9 @@ public class XPathParser
     String tok;
     int relative = m_queueMark + i;
 
-    if ((relative > 0) && (relative < m_ops.m_tokenQueueSize))
+    if ((relative > 0) && (relative < m_ops.getTokenQueueSize()))
     {
-      tok = (String) m_ops.m_tokenQueue[relative];
+      tok = (String) m_ops.m_tokenQueue.elementAt(relative);
     }
     else
     {
@@ -508,7 +508,7 @@ public class XPathParser
     {
       m_queueMark--;
 
-      m_token = (String) m_ops.m_tokenQueue[m_queueMark];
+      m_token = (String) m_ops.m_tokenQueue.elementAt(m_queueMark);
       m_tokenChar = m_token.charAt(0);
     }
     else
@@ -672,13 +672,13 @@ public class XPathParser
     int q = m_queueMark;
     String returnMsg;
 
-    if (q < m_ops.m_tokenQueueSize)
+    if (q < m_ops.getTokenQueueSize())
     {
       String msg = "\n Remaining tokens: (";
 
-      while (q < m_ops.m_tokenQueueSize)
+      while (q < m_ops.getTokenQueueSize())
       {
-        String t = (String) m_ops.m_tokenQueue[q++];
+        String t = (String) m_ops.m_tokenQueue.elementAt(q++);
 
         msg += (" '" + t + "'");
       }
@@ -735,15 +735,15 @@ public class XPathParser
   void insertOp(int pos, int length, int op)
   {
 
-    int totalLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int totalLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     for (int i = totalLen - 1; i >= pos; i--)
     {
-      m_ops.m_opMap[i + length] = m_ops.m_opMap[i];
+      m_ops.setOp(i + length, m_ops.getOp(i));
     }
 
-    m_ops.m_opMap[pos] = op;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = totalLen + length;
+    m_ops.setOp(pos,op);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH,totalLen + length);
   }
 
   /**
@@ -757,11 +757,11 @@ public class XPathParser
   void appendOp(int length, int op)
   {
 
-    int totalLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int totalLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
-    m_ops.m_opMap[totalLen] = op;
-    m_ops.m_opMap[totalLen + OpMap.MAPINDEX_LENGTH] = length;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = totalLen + length;
+    m_ops.setOp(totalLen, op);
+    m_ops.setOp(totalLen + OpMap.MAPINDEX_LENGTH, length);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, totalLen + length);
   }
 
   // ============= EXPRESSIONS FUNCTIONS =================
@@ -791,7 +791,7 @@ public class XPathParser
   protected void OrExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     AndExpr();
 
@@ -801,8 +801,8 @@ public class XPathParser
       insertOp(opPos, 2, OpCodes.OP_OR);
       OrExpr();
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     }
   }
 
@@ -818,7 +818,7 @@ public class XPathParser
   protected void AndExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     EqualityExpr(-1);
 
@@ -828,8 +828,8 @@ public class XPathParser
       insertOp(opPos, 2, OpCodes.OP_AND);
       AndExpr();
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     }
   }
 
@@ -851,7 +851,7 @@ public class XPathParser
   protected int EqualityExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if (-1 == addPos)
       addPos = opPos;
@@ -866,11 +866,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_NOTEQUALS);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = EqualityExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
       else if (tokenIs('='))
@@ -878,11 +878,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_EQUALS);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = EqualityExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
     }
@@ -911,7 +911,7 @@ public class XPathParser
   protected int RelationalExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if (-1 == addPos)
       addPos = opPos;
@@ -934,11 +934,11 @@ public class XPathParser
           insertOp(addPos, 2, OpCodes.OP_LT);
         }
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = RelationalExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
       else if (tokenIs('>'))
@@ -955,11 +955,11 @@ public class XPathParser
           insertOp(addPos, 2, OpCodes.OP_GT);
         }
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = RelationalExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
     }
@@ -986,7 +986,7 @@ public class XPathParser
   protected int AdditiveExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if (-1 == addPos)
       addPos = opPos;
@@ -1000,11 +1000,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_PLUS);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = AdditiveExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
       else if (tokenIs('-'))
@@ -1012,11 +1012,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_MINUS);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = AdditiveExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
     }
@@ -1044,7 +1044,7 @@ public class XPathParser
   protected int MultiplicativeExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if (-1 == addPos)
       addPos = opPos;
@@ -1058,11 +1058,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_MULT);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
       else if (tokenIs("div"))
@@ -1070,11 +1070,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_DIV);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
       else if (tokenIs("mod"))
@@ -1082,11 +1082,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_MOD);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
       else if (tokenIs("quo"))
@@ -1094,11 +1094,11 @@ public class XPathParser
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_QUO);
 
-        int opPlusLeftHandLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - addPos;
+        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
         addPos = MultiplicativeExpr(addPos);
-        m_ops.m_opMap[addPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[addPos + opPlusLeftHandLen + 1] + opPlusLeftHandLen;
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
     }
@@ -1117,7 +1117,7 @@ public class XPathParser
   protected void UnaryExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     boolean isNeg = false;
 
     if (m_tokenChar == '-')
@@ -1131,8 +1131,8 @@ public class XPathParser
     UnionExpr();
 
     if (isNeg)
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1145,13 +1145,13 @@ public class XPathParser
   protected void StringExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_STRING);
     Expr();
 
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1165,19 +1165,19 @@ public class XPathParser
   protected void BooleanExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_BOOL);
     Expr();
 
-    int opLen = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    int opLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos;
 
     if (opLen == 2)
     {
       error(XPATHErrorResources.ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL, null);  //"boolean(...) argument is no longer optional with 19990709 XPath draft.");
     }
 
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = opLen;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, opLen);
   }
 
   /**
@@ -1191,13 +1191,13 @@ public class XPathParser
   protected void NumberExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_NUMBER);
     Expr();
 
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1216,7 +1216,7 @@ public class XPathParser
   protected void UnionExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     boolean continueOrLoop = true;
     boolean foundUnion = false;
 
@@ -1244,8 +1244,8 @@ public class XPathParser
     }
     while (continueOrLoop);
 
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1262,7 +1262,7 @@ public class XPathParser
   protected void PathExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     int filterExprMatch = FilterExpr();
 
@@ -1295,10 +1295,10 @@ public class XPathParser
       // Terminate for safety.
       if (locationPathStarted)
       {
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-        m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+        m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
       }
     }
     else
@@ -1327,7 +1327,7 @@ public class XPathParser
   protected int FilterExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     int filterMatch;
 
@@ -1384,15 +1384,15 @@ public class XPathParser
   {
 
     boolean matchFound;
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if ((m_tokenChar == '\'') || (m_tokenChar == '"'))
     {
       appendOp(2, OpCodes.OP_LITERAL);
       Literal();
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
       matchFound = true;
     }
@@ -1402,8 +1402,8 @@ public class XPathParser
       appendOp(2, OpCodes.OP_VARIABLE);
       QName();
       
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
       matchFound = true;
     }
@@ -1414,8 +1414,8 @@ public class XPathParser
       Expr();
       consumeExpected(')');
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
       matchFound = true;
     }
@@ -1425,8 +1425,8 @@ public class XPathParser
       appendOp(2, OpCodes.OP_NUMBERLIT);
       Number();
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
       matchFound = true;
     }
@@ -1452,13 +1452,13 @@ public class XPathParser
   protected void Argument() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_ARGUMENT);
     Expr();
 
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1472,18 +1472,18 @@ public class XPathParser
   protected boolean FunctionCall() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if (lookahead(':', 1))
     {
       appendOp(4, OpCodes.OP_EXTFUNCTION);
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = m_queueMark - 1;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, m_queueMark - 1);
 
       nextToken();
       consumeExpected(':');
 
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 2] = m_queueMark - 1;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 2, m_queueMark - 1);
 
       nextToken();
     }
@@ -1508,7 +1508,7 @@ public class XPathParser
       default :
         appendOp(3, OpCodes.OP_FUNCTION);
 
-        m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] = funcTok;
+        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
       }
 
       nextToken();
@@ -1540,10 +1540,10 @@ public class XPathParser
     consumeExpected(')');
 
     // Terminate for safety.
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
     return true;
   }
@@ -1561,7 +1561,7 @@ public class XPathParser
   protected void LocationPath() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     // int locationPathOpPos = opPos;
     appendOp(2, OpCodes.OP_LOCATIONPATH);
@@ -1573,9 +1573,8 @@ public class XPathParser
       appendOp(4, OpCodes.FROM_ROOT);
 
       // Tell how long the step is without the predicate
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
-        OpCodes.NODETYPE_ROOT;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 2, 4);
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_ROOT);
 
       nextToken();
     }
@@ -1592,10 +1591,10 @@ public class XPathParser
     }
 
     // Terminate for safety.
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1642,7 +1641,7 @@ public class XPathParser
    */
   protected boolean Step() throws javax.xml.transform.TransformerException
   {
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     boolean doubleSlash = tokenIs('/');
 
@@ -1661,20 +1660,19 @@ public class XPathParser
       // by a regular step pattern.
 
       // Make room for telling how long the step is without the predicate
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
-        OpCodes.NODETYPE_NODE;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.NODETYPE_NODE);
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       // Tell how long the step is without the predicate
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
-          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
+          m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
       // Tell how long the step is with the predicate
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-          m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
-      opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+      opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     }
 
     if (tokenIs("."))
@@ -1689,9 +1687,8 @@ public class XPathParser
       appendOp(4, OpCodes.FROM_SELF);
 
       // Tell how long the step is without the predicate
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
-        OpCodes.NODETYPE_NODE;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 2,4);
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_NODE);
     }
     else if (tokenIs(".."))
     {
@@ -1699,9 +1696,8 @@ public class XPathParser
       appendOp(4, OpCodes.FROM_PARENT);
 
       // Tell how long the step is without the predicate
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
-        OpCodes.NODETYPE_NODE;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 2,4);
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_NODE);
     }
 
     // There is probably a better way to test for this 
@@ -1718,8 +1714,8 @@ public class XPathParser
       }
 
       // Tell how long the entire step is.
-      m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+        m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos); 
     }
     else
     {
@@ -1746,7 +1742,7 @@ public class XPathParser
   protected void Basis() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     int axesType;
 
     // The next blocks guarantee that a FROM_XXX will be added.
@@ -1772,14 +1768,14 @@ public class XPathParser
     }
 
     // Make room for telling how long the step is without the predicate
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
     NodeTest(axesType);
 
     // Tell how long the step is without the predicate
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
-  }
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+   }
 
   /**
    *
@@ -1836,8 +1832,8 @@ public class XPathParser
 
         int nt = ((Integer) nodeTestOp).intValue();
 
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = nt;
-        m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), nt);
+        m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
         consumeExpected('(');
 
@@ -1856,20 +1852,18 @@ public class XPathParser
     {
 
       // Assume name of attribute or element.
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.NODENAME;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.NODENAME);
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       if (lookahead(':', 1))
       {
         if (tokenIs('*'))
         {
-          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
-            OpCodes.ELEMWILDCARD;
+          m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ELEMWILDCARD);
         }
         else
         {
-          m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark
-                  - 1;
+          m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
 
           // Minimalist check for an NCName - just check first character
           // to distinguish from other possible tokens
@@ -1885,29 +1879,28 @@ public class XPathParser
       }
       else
       {
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.EMPTY;
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.EMPTY);
       }
 
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       if (tokenIs('*'))
       {
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] =
-          OpCodes.ELEMWILDCARD;
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ELEMWILDCARD);
       }
       else
       {
         if (OpCodes.FROM_NAMESPACE == axesType)
         {
-          String prefix = (String) this.m_ops.m_tokenQueue[m_queueMark - 1];
+          String prefix = (String) this.m_ops.m_tokenQueue.elementAt(m_queueMark - 1);
           String namespace =
             ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(
               prefix);
 
-          this.m_ops.m_tokenQueue[m_queueMark - 1] = namespace;
+          this.m_ops.m_tokenQueue.setElementAt(namespace,m_queueMark - 1);
         }
 
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
 
         // Minimalist check for an NCName - just check first character
         // to distinguish from other possible tokens
@@ -1918,7 +1911,7 @@ public class XPathParser
         }
       }
 
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       nextToken();
     }
@@ -1952,16 +1945,16 @@ public class XPathParser
   protected void PredicateExpr() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_PREDICATE);
     Expr();
 
     // Terminate for safety.
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -1976,21 +1969,21 @@ public class XPathParser
     // Namespace
     if(lookahead(':', 1))
     {
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       nextToken();
       consumeExpected(':');
     }
     else
     {
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.EMPTY;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.EMPTY);
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
     }
     
     // Local name
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
     nextToken();
   }
@@ -2002,8 +1995,8 @@ public class XPathParser
   protected void NCName()
   {
 
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
     nextToken();
   }
@@ -2032,15 +2025,15 @@ public class XPathParser
       // already made.
       int tokenQueuePos = m_queueMark - 1;
 
-      m_ops.m_tokenQueue[tokenQueuePos] = null;
+      m_ops.m_tokenQueue.setElementAt(null,tokenQueuePos);
 
       Object obj = new XString(m_token.substring(1, last));
 
-      m_ops.m_tokenQueue[tokenQueuePos] = obj;
+      m_ops.m_tokenQueue.setElementAt(obj,tokenQueuePos);
 
       // lit = m_token.substring(1, last);
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = tokenQueuePos;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), tokenQueuePos);
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       nextToken();
     }
@@ -2080,9 +2073,9 @@ public class XPathParser
               new Object[]{ m_token });  //m_token+" could not be formatted to a number!");
       }
 
-      m_ops.m_tokenQueue[m_queueMark - 1] = new XNumber(num);
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+      m_ops.m_tokenQueue.setElementAt(new XNumber(num),m_queueMark - 1);
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
+      m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
       nextToken();
     }
@@ -2129,7 +2122,7 @@ public class XPathParser
   protected void LocationPathPattern() throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     final int RELATIVE_PATH_NOT_PERMITTED = 0;
     final int RELATIVE_PATH_PERMITTED     = 1;
@@ -2161,9 +2154,8 @@ public class XPathParser
         }
 
         // Tell how long the step is without the predicate
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
-          OpCodes.NODETYPE_FUNCTEST;
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 2, 4);
+        m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_FUNCTEST);
 
         relativePathStatus = RELATIVE_PATH_REQUIRED;
       }
@@ -2191,9 +2183,8 @@ public class XPathParser
 
 
       // Tell how long the step is without the predicate
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] =
-        OpCodes.NODETYPE_ROOT;
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 2, 4);
+      m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_ROOT);
 
       nextToken();
     }
@@ -2216,10 +2207,10 @@ public class XPathParser
     }
 
     // Terminate for safety.
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.ENDOP;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**
@@ -2295,7 +2286,7 @@ public class XPathParser
             throws javax.xml.transform.TransformerException
   {
 
-    int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     int axesType;
 
     // The next blocks guarantee that a MATCH_XXX will be added.
@@ -2318,7 +2309,7 @@ public class XPathParser
       }
       else if (tokenIs("child"))
       {
-        matchTypePos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+        matchTypePos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
         axesType = OpCodes.MATCH_IMMEDIATE_ANCESTOR;
 
         appendOp(2, axesType);
@@ -2348,20 +2339,20 @@ public class XPathParser
     }
     else
     {
-      matchTypePos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
+      matchTypePos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
       axesType = OpCodes.MATCH_IMMEDIATE_ANCESTOR;
 
       appendOp(2, axesType);
     }
 
     // Make room for telling how long the step is without the predicate
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 
     NodeTest(axesType);
 
     // Tell how long the step is without the predicate
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH + 1] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
     while (tokenIs('['))
     {
@@ -2384,7 +2375,7 @@ public class XPathParser
     // MATCH_ANY_ANCESTOR on next call instead.
     if ((matchTypePos > -1) && tokenIs('/') && lookahead('/', 1))
     {
-      m_ops.m_opMap[matchTypePos] = OpCodes.MATCH_ANY_ANCESTOR;
+      m_ops.setOp(matchTypePos, OpCodes.MATCH_ANY_ANCESTOR);
 
       nextToken();
 
@@ -2396,8 +2387,8 @@ public class XPathParser
     }
 
     // Tell how long the entire step is.
-    m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
-      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
+    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
     return trailingSlashConsumed;
   }

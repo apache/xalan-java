@@ -102,7 +102,7 @@ public class WalkerFactory
   {
 
     AxesWalker firstWalker = null;
-    int stepType = compiler.getOpMap()[stepOpCodePos];
+    int stepType = compiler.getOp(stepOpCodePos);
 
     if (stepType != OpCodes.ENDOP)
     {
@@ -142,10 +142,10 @@ public class WalkerFactory
     int stepType;
     AxesWalker firstWalker = null;
     AxesWalker walker, prevWalker = null;
-    int ops[] = compiler.getOpMap();
+
     int analysis = analyze(compiler, stepOpCodePos, stepIndex);
 
-    while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
+    while (OpCodes.ENDOP != (stepType = compiler.getOp(stepOpCodePos)))
     {
       walker = createDefaultWalker(compiler, stepOpCodePos, lpi, analysis);
 
@@ -345,8 +345,7 @@ public class WalkerFactory
             throws javax.xml.transform.TransformerException
   {
 
-    int ops[] = compiler.getOpMap();
-    int stepType = ops[stepOpCodePos];
+    int stepType = compiler.getOp(stepOpCodePos);
 
     switch (stepType)
     {
@@ -603,7 +602,6 @@ public class WalkerFactory
   {
 
     int stepType;
-    int ops[] = compiler.getOpMap();
     int stepCount = 0;
     boolean foundDorDS = false;
     boolean foundSelf = false;
@@ -611,7 +609,7 @@ public class WalkerFactory
     
     int nodeTestType = OpCodes.NODETYPE_NODE;
     
-    while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
+    while (OpCodes.ENDOP != (stepType = compiler.getOp(stepOpCodePos)))
     {
       // The DescendantIterator can only do one node test.  If there's more 
       // than one, use another iterator.
@@ -677,7 +675,7 @@ public class WalkerFactory
       if (nextStepOpCodePos < 0)
         break;
         
-      if(OpCodes.ENDOP != ops[nextStepOpCodePos])
+      if(OpCodes.ENDOP != compiler.getOp(nextStepOpCodePos))
       {
         if(compiler.countPredicates(stepOpCodePos) > 0)
         {
@@ -712,11 +710,10 @@ public class WalkerFactory
   {
 
     int stepType;
-    int ops[] = compiler.getOpMap();
     int stepCount = 0;
     int analysisResult = 0x00000000;  // 32 bits of analysis
 
-    while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
+    while (OpCodes.ENDOP != (stepType = compiler.getOp(stepOpCodePos)))
     {
       stepCount++;
 
@@ -802,7 +799,7 @@ public class WalkerFactory
                                    //+ stepType);
       }
 
-      if (OpCodes.NODETYPE_NODE == ops[stepOpCodePos + 3])  // child::node()
+      if (OpCodes.NODETYPE_NODE == compiler.getOp(stepOpCodePos + 3))  // child::node()
       {
         analysisResult |= BIT_NODETEST_ANY;
       }
@@ -875,10 +872,9 @@ public class WalkerFactory
     int stepType;
     StepPattern step = null;
     StepPattern firstStep = null, prevStep = null;
-    int ops[] = compiler.getOpMap();
     int analysis = analyze(compiler, stepOpCodePos, stepIndex);
 
-    while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
+    while (OpCodes.ENDOP != (stepType = compiler.getOp(stepOpCodePos)))
     {
       step = createDefaultStepPattern(compiler, stepOpCodePos, mpi, analysis,
                                       firstStep, prevStep);
@@ -1697,7 +1693,6 @@ public class WalkerFactory
     // Unfortunately, we can't do this just via the analysis bits.
     
     int stepType;
-    int ops[] = compiler.getOpMap();
     int stepCount = 0;
     boolean foundWildAttribute = false;
     
@@ -1706,7 +1701,7 @@ public class WalkerFactory
     // combonation are counted with this variable.
     int potentialDuplicateMakingStepCount = 0;
     
-    while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
+    while (OpCodes.ENDOP != (stepType = compiler.getOp(stepOpCodePos)))
     {        
       stepCount++;
         
