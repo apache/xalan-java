@@ -375,21 +375,18 @@ public class TransformerFactoryImpl
     /**
      * Pass warning messages from the compiler to the error listener
      */
-    private void passWarningsToListener(Vector messages) {
-	try {
-	    // Nothing to do if there is no registered error listener
-	    if (_errorListener == null) return;
-	    // Nothing to do if there are not warning messages
-	    if (messages == null) return;
-	    // Pass messages to listener, one by one
-	    final int count = messages.size();
-	    for (int pos=0; pos<count; pos++) {
-		String message = messages.elementAt(pos).toString();
-		_errorListener.warning(new TransformerException(message));
-	    }
+    private void passWarningsToListener(Vector messages) 
+	throws TransformerException 
+    {
+	if (_errorListener == null || messages == null ) {
+	    return;
 	}
-	catch (TransformerException e) {
-	    // nada
+	// Pass messages to listener, one by one
+	final int count = messages.size();
+	for (int pos = 0; pos < count; pos++) {
+	    String message = messages.elementAt(pos).toString();
+	    _errorListener.error(
+		new TransformerConfigurationException(message));
 	}
     }
 
@@ -514,10 +511,17 @@ public class TransformerFactoryImpl
 	final String transletName = xsltc.getClassName();
 
 	// Pass compiler warnings to the error listener
-	if (_errorListener != null)
-	    passWarningsToListener(xsltc.getWarnings());
-	else
+	if (_errorListener != this) {
+	    try {
+		passWarningsToListener(xsltc.getWarnings());
+	    }
+	    catch (TransformerException e) {
+		throw new TransformerConfigurationException(e);
+	    }
+	}
+	else {
 	    xsltc.printWarnings();
+	}
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
