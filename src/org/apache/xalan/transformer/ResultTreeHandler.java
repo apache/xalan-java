@@ -552,7 +552,7 @@ public class ResultTreeHandler
     }
     else if(getContentHandler() instanceof DOMBuilder)
     {
-      ((RawCharacterHandler)getContentHandler()).charactersRaw(ch, start, length);
+      ((DOMBuilder)getContentHandler()).charactersRaw(ch, start, length);
     }
     else
     {
