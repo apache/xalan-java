@@ -349,8 +349,9 @@ public class TemplateList implements java.io.Serializable
       // We also have to consider wildcard matches.
       if((null == nextMatchPat) && 
          !matchPat.m_targetString.equals("*")
-         /*&&
-         ((Node.ELEMENT_NODE == targetNodeType) ||
+         && (Node.DOCUMENT_NODE != targetNodeType)
+         && (Node.ATTRIBUTE_NODE != targetNodeType)
+        /* ((Node.ELEMENT_NODE == targetNodeType) ||
           (Node.TEXT_NODE == targetNodeType) ||
           (Node.ATTRIBUTE_NODE == targetNodeType) ||
           (Node.PROCESSING_INSTRUCTION_NODE == targetNodeType))*/
