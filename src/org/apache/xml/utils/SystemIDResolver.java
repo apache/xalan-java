@@ -90,7 +90,10 @@ public class SystemIDResolver
 
     if (null != curdir)
     {
-      uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
+			if (uri != null)
+				uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
+			else
+				uri = "file:///" + curdir + System.getProperty("file.separator");
     }
 
     if (null != uri && (uri.indexOf('\\') > -1))
@@ -111,9 +114,12 @@ public class SystemIDResolver
   public static String getAbsoluteURI(String urlString, String base)
           throws TransformerException
   {
+		boolean isAbsouteUrl = false;
+		if (urlString.indexOf(':') > 0)
+			isAbsouteUrl = true;
 
-    if ((urlString.indexOf(':') < 0) && (null != base)
-            && (base.indexOf(':') < 0))
+    if ((!isAbsouteUrl) && ((null == base)
+            || (base.indexOf(':') < 0)))
     {
       base = getAbsoluteURIFromRelative(base);
     }
@@ -129,6 +135,7 @@ public class SystemIDResolver
       else
       {
         urlString = urlString.substring(5);
+				isAbsouteUrl = false;
       }
     }   
 
@@ -143,7 +150,7 @@ public class SystemIDResolver
 
     try
     {
-      if ((null == base) || (base.length() == 0))
+      if ((null == base) || (base.length() == 0) || (isAbsouteUrl))
       {
         uri = new URI(urlString);
       }
