@@ -341,7 +341,17 @@ public abstract class DTMManager
    * @param incremental boolean to use to set m_incremental.
    *
    */
-  public static void setIncremental(boolean incremental)
+  public synchronized static boolean getIncremental()
+  {
+    return m_incremental;  
+  }
+  
+  /**
+   * Set a flag indicating whether an incremental transform is desired 
+   * @param incremental boolean to use to set m_incremental.
+   *
+   */
+  public synchronized static void setIncremental(boolean incremental)
   {
     m_incremental = incremental;  
   }
