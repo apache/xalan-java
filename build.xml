@@ -27,6 +27,7 @@ Build targets
     - clean    purges the build tree.
     - dist     creates a complete distribution in ./xalan-j_x_x_x
     - auto*    targets used by automated build programs, without dependencies
+    - minitest compile and run the minitest in xml-xalan\test
         
 If you build a target that depends on other targets, those other targets are created in 
 the correct order.
@@ -76,6 +77,7 @@ Copyright:
   <property name="samples.dir" value="./samples"/>
   <property name="bin.dir" value="./bin"/>
   <property name="xerces.jar" value="${bin.dir}/xerces.jar"/>
+  <property name="bsf.jar" value="${bin.dir}/bsf.jar"/>
 
   <property name="dist.file" value="${name}-j_${version}"/>
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
@@ -100,6 +102,7 @@ Copyright:
   <target name="prepare">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
+    <available file="${minitest.dir}" property="minitest-available" />
   </target>
   <target name="prepare.docs" depends="prepare">
     <gunzip src="${doc.generator.styletargz}"/>
@@ -142,8 +145,8 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Compile entire source tree - except Xalan-J 1 compatability classes -->
   <!-- =================================================================== -->
-   
-  <target name="compile" depends="prepare">
+  <target name="compile" depends="prepare"
+    description="Compile Xalan the normal way" >
     <echo message="compile entire source tree and copy  .properties and .res files to build tree."/>
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
@@ -189,7 +192,8 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
-  <target name="jar" depends="compile">
+  <target name="jar" depends="compile"
+    description="Jar up xalan.jar" >
     <jar jarfile="${build.dir}/xalan.jar" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
   </target>
   <target name="package" depends="jar">
@@ -200,7 +204,8 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
-  <target name="samples" depends="jar">
+  <target name="samples" depends="jar"
+    description="Compile and jar the samples (except servlet)" >
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->   
@@ -247,7 +252,8 @@ Copyright:
   <!-- The javax.servlet and javax.servlet.http packages                    -->
   <!-- must be on the classpath                                             -->
   <!-- =================================================================== -->
- <target name="servlet" depends="jar">
+ <target name="servlet" depends="jar"
+    description="Compile and jar just the servlet sample" >
      <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.samples}/servlet"/>
      <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.dir}/xalan.jar" 
@@ -264,7 +270,8 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="prepare.docs,autodocs">
+  <target name="docs" depends="prepare.docs,autodocs"
+    description="Build the framework documentation (overview, readme, etc.)" >
     <echo message="docs is human-usable target with dependencies"/>  
   </target>
   
@@ -278,7 +285,8 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="prepare.docs,autojavadocs">
+  <target name="javadocs" depends="prepare.docs,autojavadocs"
+    description="Build the Javadocs for Xalan sources" >
     <echo message="javadocs is human-usable target with dependencies"/>  
   </target>
 
@@ -337,7 +345,8 @@ Copyright:
   <!--         - Javadoc overview and packqage-level html docs placed      -->
   <!--           in the source tree                                        -->
   <!-- =================================================================== -->
-  <target name="clean">
+  <target name="clean"
+    description="Clean up the build" >
     <delete dir="${build.dir}"/>
     <delete dir="${site.root}"/>
     <delete>
@@ -348,7 +357,8 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="docs,javadocs,samples,servlet,autodist">
+  <target name="dist" depends="docs,javadocs,samples,servlet,autodist"
+    description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
   <target name="autodist">
@@ -411,6 +421,40 @@ Copyright:
 	  <fileset dir="${build.apidocs}"/>
 	</copy>  
   </target>
+   
+  <!-- =================================================================== -->
+  <!-- Compiles and runs the minitest from xml-xalan\test, if present      -->
+  <!-- =================================================================== -->
+  <path id="minitest.class.path">
+    <pathelement location="${xerces.jar}" />
+    <pathelement location="${build.dir}/xalan.jar" />
+    <pathelement location="${bsf.jar}" />
+    <pathelement path="${java.class.path}" />
+  </path>
+
+  <property name="minitest.backref" value="../../java/"/>
+  <property name="minitest.dir" value="../test/java/"/>
+
+  <target name="minitest" depends="jar,minitest-run,minitest-not-available" 
+    description="Run the Minitest from xml-xalan/test/java" >
+  </target>
+  <target name="minitest-run" if="minitest-available" >
+    <echo message=" [minitest] Calling ${minitest.dir}build.xml now to run minitest.xalan2" />
+    <ant dir="${minitest.dir}" antfile="build.xml" target="minitest.xalan2" >
+      <property name="name" value="minitest" /> <!-- Set this so that it will create minitest.jar instead of testxsl.jar -->
+      <property name="prepend.class.path"
+                value="${minitest.backref}${xerces.jar}:${minitest.backref}${build.dir}/xalan.jar:${minitest.backref}${bsf.jar}" />
+    <!-- Why doesn't the following refid work? I get an error referencing it.
+      <property name="prepend.class.path" refid="minitest.class.path" />
+    -->
+    </ant>
+  </target>
+  <target name="minitest-not-available" unless="minitest-available" >
+    <echo message=" [minitest] The Minitest does not seem to be present!" />
+    <echo message=" [minitest] You must have checked out from CVS to run the minitest," />
+    <echo message=" [minitest]   it is not included in binary distributions." />
+    <echo message=" [minitest] See http://xml.apache.org/xalan-j/test/ for more info." />
+  </target>
   
   <!-- =================================================================== -->
   <!-- Creates the todo list for the org.apache.xml website                -->
@@ -420,6 +464,5 @@ Copyright:
       <arg line="-in todo.xml -xsl todo.xsl -out todo.html"/>
     </java>   
   </target>  
-  
-   
+
 </project>
