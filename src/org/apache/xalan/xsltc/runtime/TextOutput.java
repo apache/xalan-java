@@ -578,7 +578,6 @@ public final class TextOutput implements TransletOutputHandler {
 	    default:
 		// Escape all characters not in the basic ASCII character set
 		// to simple (hexadecimal) character references
-		// GTM Mortens line: if (ch[i] > '\u00ff') {
 		if (ch[i] > '\u007F') {
 		    StringBuffer buf = new StringBuffer(CHAR_ESC_START);
 		    buf.append(Integer.toString((int)ch[i]));
@@ -675,10 +674,53 @@ public final class TextOutput implements TransletOutputHandler {
      * This method escapes special characters used in HTML attribute values
      */
     private String escapeAttr(String base) {
-
 	final int len = base.length() - 1;
 	final String str = "&quot;";
 	int pos;
+
+	char[] ch = base.toCharArray();
+	StringBuffer buf = new StringBuffer();
+        for(int i=0; i<base.length(); i++){
+	    if (ch[i] > '\u007F') {
+	        buf.append('%');
+		buf.append(Integer.toHexString((int)ch[i]));
+	    }
+	    else {
+		// These chars are reserved or unsafe in URLs
+		// pg 196, 'HTML, The Definitive Guide" C. Musciano, et. al
+	        switch (ch[i]) {
+		    case '\u003B' :
+		    case '\u002F' :
+		    case '\u003F' :
+		    case '\u003A' :
+		    case '\u0040' :
+		    case '\u007F' :
+		    case '\u003D' :
+		    case '\u0026' :
+		    case '\u003C' :
+		    case '\u003E' :
+		    case '\u0022' :
+		    case '\u0023' :
+		    case '\u0025' :
+		    case '\u007B' :
+		    case '\u007D' :
+		    case '\u007C' :
+		    case '\\'     :
+		    case '\t'     :
+		    case '\u005E' :
+		    case '\u007E' :
+		    case '\u005B' :
+		    case '\u005D' :
+		    case '\u0060' :
+		        buf.append('%');
+		        buf.append(Integer.toHexString((int)ch[i]));
+		        break;
+		    default:	
+		        buf.append(ch[i]); break;
+	        }
+	    } 
+  	}
+	base = buf.toString();
 
 	while ((pos = base.indexOf('"')) > -1) {
 	    if (pos == 0) {
@@ -794,10 +836,12 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    // URL-encode href attributes in HTML output
 	    final String tmp = name.toLowerCase();
-	    if  (tmp.equals(HREF_STR) || tmp.equals(SRC_STR))
+	    if  (tmp.equals(HREF_STR) || tmp.equals(SRC_STR)) {
 		_attributes.add(name,quickAndDirtyUrlEncode(escapeAttr(value)));
-	    else
+	    }
+	    else {
 		_attributes.add(expandAttribute(name), escapeAttr(value));
+	    }
 	    return;
 	}
     }
