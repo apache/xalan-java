@@ -73,7 +73,7 @@
     discussion groups, frequently asked questions, and tutorials on XSLT, see <link anchor="uptospeed">Getting up
     to speed with XSLT</link>.</p> 
     <note>XSL also includes a vocabulary for formatting documents, which is not part of &xslt4j;. 
-    For more information, see <jump href="http://www.w3.org/TR/xsl/">W3C XSL Working Draft</jump> and the <jump
+    For more information, see <resource-ref idref="xsl"/> and the <jump
     href="http://xml.apache.org/fop">Apache XML FOP (Formatting Objects Project)</jump>.</note>
     <p>You use the XSLT language to compose XSL stylesheets. An XSL stylesheet contains instructions for
      transforming XML documents from one document type into another document type (XML, HTML, or other). In structural
