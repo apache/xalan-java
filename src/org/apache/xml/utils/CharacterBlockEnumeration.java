@@ -90,6 +90,8 @@ public class CharacterBlockEnumeration
 	protected int _length;
 	protected String _string=null;
 	
+	static final protected char[] EMPTY=new char[0];
+	
 	/** Create an empty enumeration. */
 	public CharacterBlockEnumeration()
 	{
@@ -217,7 +219,7 @@ public class CharacterBlockEnumeration
 			if(_string!=null)
 				_chars=_string.toCharArray();
 			else
-				_chars=new char[0];
+				_chars=EMPTY;
 		}
 		return _chars;		
 	}
