@@ -8,6 +8,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 
+// Yuck.  Have to do it right not, for synch issues.  
+// There will be a better way...
+import org.apache.xalan.transformer.TransformerImpl;
+
 public class Child extends UnImplNode implements DOMOrder
 {
   private Parent m_parent;
@@ -32,7 +36,7 @@ public class Child extends UnImplNode implements DOMOrder
     return true;
   }
   
-  protected Object getSynchObject()
+  protected TransformerImpl getTransformer()
   {
     DocumentImpl di = this.getDocumentImpl();
     if(null != di)
@@ -41,30 +45,39 @@ public class Child extends UnImplNode implements DOMOrder
       if(null != sth)
       {
         sth = di.getSourceTreeHandler();
-        org.apache.xalan.transformer.TransformerImpl ti 
-          = sth.getTransformer();
-        if(null != ti)
-        {
-          Exception e = ti.getExceptionThrown();
-          if(null != e)
-          {
-            throw new org.apache.xalan.utils.WrappedRuntimeException(e);
-          }
-        }
+        return sth.getTransformer();
       }
     }
-    return this;
+    return null;
   }
   
+  /**
+   * Get an object that is being synchronized 
+   * with the parse thread, so that notification 
+   * will work correctly.
+   */
+  protected Object getSynchObject()
+  {
+    Object obj = getTransformer();
+    return (null == obj) ? this : obj;
+  }
+  
+  protected void throwParseError(Exception e)
+  {
+    throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+  }
+    
   protected void throwIfParseError()
   {
-    // That's OK, it's as good a time as any to check again
-    Exception pe 
-      = this.getDocumentImpl().getSourceTreeHandler().getTransformer().getExceptionThrown();
-    if(null != pe)
-      throw new org.apache.xalan.utils.WrappedRuntimeException(pe);
+    TransformerImpl ti = getTransformer();
+    
+    if(null != ti)
+    {
+      Exception e = ti.getExceptionThrown();
+      if(null != e)
+        throwParseError(e);
+    }
   }
-
   
   /**
    * The position in the parent's list.
@@ -130,25 +143,6 @@ public class Child extends UnImplNode implements DOMOrder
     m_level = level;
   }
   
-  /**
-   * <meta name="usage" content="internal"/>
-   * Get the value of K.  K is the maximum width of the tree.
-   *
-  public int getK()
-  {
-    return getDocumentImpl().getK();
-  }
-  
-  /**
-   * <meta name="usage" content="internal"/>
-   * Get the value of Y.  Y is the maximum depth of the tree.
-   * Needed to calculate depth-first (document order) numbering.
-   *
-  public int getY()
-  {
-    return getDocumentImpl().getY();
-  }
-
   /**
    * Get the root Document Implementation.
    */

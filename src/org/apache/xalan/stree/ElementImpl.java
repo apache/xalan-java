@@ -13,7 +13,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   
 {
   private String m_name;
-  private short attrsEnd;
+  private short attrsEnd = 0;
   
   ElementImpl (String name)
   {
@@ -100,17 +100,23 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * Note that this will only return the number of children 
    * added so far.  If the isComplete property is false, 
    * it is likely that more children will be added.
+   * DON'T CALL THIS FUNCTION IF YOU CAN HELP IT!!!!!!
    */
   public int getChildCount()
   {
     if (!isComplete())
     {
-      synchronized (getSynchObject())
+      Object synchObj = getSynchObject();
+      synchronized (synchObj)
       {
         try
         {
-          //System.out.println("Waiting... getelCount " );
-          getSynchObject().wait();
+          // Here we have to wait until the element is complete
+          while (!isComplete())
+          {
+            synchObj.wait();
+            throwIfParseError();
+          }
         }
         catch (InterruptedException e)
         {
@@ -276,25 +282,6 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
   public int getAttrCount ()
   {
-    if (null == m_children && !isComplete())      
-    {
-      // Force it to wait until at least an element child 
-      // has been added or end element.
-      synchronized (getSynchObject())
-      {
-        try
-        {
-          //System.out.println("Waiting... getelCount " );
-          getSynchObject().wait();
-        }
-        catch (InterruptedException e)
-        {
-          throwIfParseError();
-        }
-        //System.out.println("/// gotelcount " );
-        
-      }
-    }
     return attrsEnd;
   }
       

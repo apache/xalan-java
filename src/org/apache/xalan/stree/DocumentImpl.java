@@ -22,6 +22,12 @@ public class DocumentImpl extends Parent
 	  m_bUpIndexer = new LevelIndexer();
   }
 
+  DocumentImpl(SourceTreeHandler sth)
+  {
+	  m_bUpIndexer = new LevelIndexer();
+    m_sourceTreeHandler = sth;
+  }
+
   DocumentImpl(DocumentType doctype)
   {
     if(null != doctype)
@@ -266,15 +272,22 @@ public class DocumentImpl extends Parent
     Element elem = (Element)m_idAttributes.get(elementId); 
     // Make sure we're done parsing.
     if (elem == null && !isComplete())
-    {    
-      synchronized (getSynchObject())
+    { 
+      Object synchObj = getSynchObject();
+      synchronized (synchObj)
       {
         try
         {
           // Don't really know why we should need the while loop,
           // but we seem to come out of wait() too soon! 
           while (!isComplete())
-            getSynchObject().wait();
+          {
+            synchObj.wait();
+            throwIfParseError();
+            elem = (Element)m_idAttributes.get(elementId); 
+            if(null != elem)
+              return elem;
+          }
         }
         catch (InterruptedException e)
         {   

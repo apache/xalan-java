@@ -28,17 +28,23 @@ public class Parent extends Child
    * Note that this will only return the number of children 
    * added so far.  If the isComplete property is false, 
    * it is likely that more children will be added.
+   * DON'T CALL THIS FUNCTION IF YOU CAN HELP IT!!!
    */
   public int getChildCount()
   {    
     if (!isComplete())
     {
-      synchronized (getSynchObject())
+      Object synchObj = getSynchObject();
+      synchronized (synchObj)
       {
         try
         {
-          //System.out.println("Waiting... getCount "+ this.getNodeName() );
-          getSynchObject().wait();
+          // Here we have to wait until the element is complete
+          while (!isComplete())
+          {
+            synchObj.wait();
+            throwIfParseError();
+          }
         }
         catch (InterruptedException e)
         {
@@ -62,20 +68,23 @@ public class Parent extends Child
   {
     if (null == m_children && !isComplete())
     {
-      synchronized (getSynchObject())
+      Object synchObj = getSynchObject();
+      synchronized (synchObj)
       {
         try
         {
-          //System.out.println("Waiting... getCount " + this.getNodeName() );
-          getSynchObject().wait();
+          // Only wait until the first child comes, or we are complete.
+          while (!isComplete())
+          {
+            synchObj.wait();
+            throwIfParseError();
+            if(null != m_children)
+              break;
+          }
         }
         catch (InterruptedException e)
         {
-          // That's OK, it's as good a time as any to check again
-          Exception pe 
-            = this.getDocumentImpl().getSourceTreeHandler().getTransformer().getExceptionThrown();
-          if(null != pe)
-            throw new org.apache.xalan.utils.WrappedRuntimeException(pe);
+          throwIfParseError();
         }
         //System.out.println("... getcount " );        
       }
@@ -110,22 +119,28 @@ public class Parent extends Child
            m_children[i] : null;
     if (child == null && !isComplete())
     {
-      synchronized (getSynchObject())
+      Object synchObj = getSynchObject();
+      synchronized (synchObj)
       {
         try
         {
           // System.out.println("Waiting... getChild " + i + " " + getNodeName());
-          
-          getSynchObject().wait();
+          while (!isComplete())
+          {
+            synchObj.wait();
+            throwIfParseError();
+            // System.out.println("... gotChild " + i);
+            child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
+                    m_children[i] : null;
+            if(null != child)
+              break;
+          }
         }
         catch (InterruptedException e)
         {
           throwIfParseError();
         }
-        // System.out.println("... gotChild " + i);
-        child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
-           m_children[i] : null;
-        }
+      }
     }     
     return child;
       
@@ -263,7 +278,7 @@ public class Parent extends Child
    * Flag that tells if this node is complete.
    */
   private boolean m_isComplete = false;
-  
+    
   /**
    * Return if this node has had all it's children added, i.e. 
    * if a endElement event has occured.
@@ -271,28 +286,7 @@ public class Parent extends Child
   public boolean isComplete()
   {
     if(!m_isComplete)
-    {
-      DocumentImpl di = this.getDocumentImpl();
-      if(null != di)
-      {
-        SourceTreeHandler sth = di.getSourceTreeHandler();
-        if(null != sth)
-        {
-          sth = di.getSourceTreeHandler();
-          org.apache.xalan.transformer.TransformerImpl ti 
-            = sth.getTransformer();
-          if(null != ti)
-          {
-            Exception e = ti.getExceptionThrown();
-            if(null != e)
-            {
-              m_isComplete = true; // to be safe
-              throw new org.apache.xalan.utils.WrappedRuntimeException(e);
-            }
-          }
-        }
-      }
-    }
+      throwIfParseError();
     return m_isComplete;
   }
   
@@ -302,20 +296,14 @@ public class Parent extends Child
    */
   public void setComplete(boolean isComplete)
   {
-    if(m_isComplete != isComplete)
-    {
-      m_isComplete = isComplete;
-      if (m_isComplete)
-      {
-        Object synchObj = getSynchObject();
-        // Notify anyone waiting for a child...
-        synchronized (synchObj)
-        {
-          //System.out.println("notify set complete" + this.getNodeName());
-          synchObj.notifyAll();
-        }
-      }
-    }
+    m_isComplete = isComplete;
   }
+  
+  protected void throwParseError(Exception e)
+  {
+    m_isComplete = true;
+    super.throwParseError(e);
+  }
+
 
 }

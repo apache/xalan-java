@@ -36,7 +36,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     if (indexedLookup)
       m_root = new IndexedDocImpl();
     else
-      m_root = new DocumentImpl();      
+      m_root = new DocumentImpl(this);      
   }
 
   /**
@@ -112,7 +112,18 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   }
 
   
-  private boolean indexedLookup = false;      // for now   
+  private boolean indexedLookup = false;      // for now 
+  
+  private void notifyWaiters()
+  {
+    if(null != m_transformer)
+    {
+      synchronized (m_transformer)
+      {
+        m_transformer.notifyAll();
+      }
+    }
+  }
   
   /**
    * Implement the startDocument event.
@@ -125,7 +136,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
       if (indexedLookup)
         m_root = new IndexedDocImpl();
       else
-        m_root = new DocumentImpl();      
+        m_root = new DocumentImpl(this);      
     }
     ((DocumentImpl)m_root).setSourceTreeHandler(this);
     ((DocumentImpl)m_root).setUid(1);
@@ -146,6 +157,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     }
 
     m_sourceTreeHandler.startDocument();
+    notifyWaiters();
   }
   
   
@@ -164,6 +176,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     {
       m_transformer.transformNode(m_root);
     }
+    notifyWaiters();
   }
 
   /**
@@ -175,6 +188,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
     pushShouldStripWhitespace(getShouldStripWhitespace());
     m_sourceTreeHandler.startElement(ns, localName, name, atts);
+    notifyWaiters();
   }
 
   /**
@@ -186,7 +200,8 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
     ((Parent)m_sourceTreeHandler.getCurrentNode()).setComplete(true);
     m_sourceTreeHandler.endElement(ns, localName, name);
-    popShouldStripWhitespace();    
+    popShouldStripWhitespace(); 
+    notifyWaiters();
   }
 
   private boolean m_isCData = false;
@@ -246,6 +261,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
       m_sourceTreeHandler.cdata(ch, start, length);
     else
       m_sourceTreeHandler.characters(ch, start, length);
+    notifyWaiters();
   }
 
   /**
@@ -255,6 +271,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     throws SAXException
   {
     m_sourceTreeHandler.charactersRaw(ch, start, length);
+    notifyWaiters();
   }
 
   /**
@@ -264,6 +281,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     throws SAXException
   {
     m_sourceTreeHandler.charactersRaw(ch, start, length);
+    notifyWaiters();
   }
 
   /**
@@ -273,6 +291,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     throws SAXException
   {
     m_sourceTreeHandler.processingInstruction(target, data);
+    notifyWaiters();
   }
 
   /**
@@ -291,6 +310,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     throws SAXException
   {
     m_sourceTreeHandler.comment(ch, start, length);
+    notifyWaiters();
   }
   
   /**
@@ -316,6 +336,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     throws SAXException
   {
     m_sourceTreeHandler.startEntity(name);
+    notifyWaiters();
   }
 
   /**
@@ -329,6 +350,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     throws SAXException
   {
     m_sourceTreeHandler.endEntity(name);
+    notifyWaiters();
   }
   
   /**
