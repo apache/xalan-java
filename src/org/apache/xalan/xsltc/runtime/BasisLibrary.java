@@ -739,8 +739,9 @@ public final class BasisLibrary implements Operators {
 
 	    if (hasSimpleType(left) ||
 		left instanceof DOM && right instanceof DTMAxisIterator) {
-		// swap operands
+		// swap operands and operator
 		final Object temp = right; right = left; left = temp;
+                op = Operators.swapArray[op];
 	    }
 
 	    if (left instanceof DOM) {

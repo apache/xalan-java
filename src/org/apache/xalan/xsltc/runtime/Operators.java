@@ -34,4 +34,9 @@ public interface Operators {
     public static final String[] names = {
 	"=", "!=", ">", "<", ">=", "<="
     };
+    
+    // Swap operator array
+    public static final int[] swapArray = {
+        0, 1, 3, 2, 5, 4
+    };   
 }
