@@ -2471,14 +2471,14 @@ abstract public class ToStream extends SerializerBase
         if (null == s2)
         {
             // add null URI and the local name
-            v.add(null);
-            v.add(s1);
+            v.addElement(null);
+            v.addElement(s1);
         }
         else
         {
             // add URI, then local name
-            v.add(s1);
-            v.add(s2);
+            v.addElement(s1);
+            v.addElement(s2);
         }
     }
 
