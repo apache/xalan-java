@@ -153,6 +153,11 @@ public final class TransformerImpl extends Transformer
     private TransformerFactoryImpl _tfactory = null;
 
     /**
+     * A reference to the output stream, if we create one in our code.
+     */
+    private OutputStream _ostream = null;
+
+    /**
      * A reference to the XSLTCDTMManager which is used to build the DOM/DTM
      * for this transformer.
      */
@@ -372,20 +377,20 @@ public final class TransformerImpl extends Transformer
 		if (systemId.startsWith("file:")) {
                     url = new URL(systemId);
 		    _tohFactory.setOutputStream(
-		        new FileOutputStream(url.getFile()));
+		        _ostream = new FileOutputStream(url.getFile()));
 		    return _tohFactory.getSerializationHandler();
                 }
                 else if (systemId.startsWith("http:")) {
                     url = new URL(systemId);
                     final URLConnection connection = url.openConnection();
-		    _tohFactory.setOutputStream(connection.getOutputStream());
+		    _tohFactory.setOutputStream(_ostream = connection.getOutputStream());
 		    return _tohFactory.getSerializationHandler();
                 }
                 else {
                     // system id is just a filename
                     url = new File(systemId).toURL();
 		    _tohFactory.setOutputStream(
-		        new FileOutputStream(url.getFile()));
+		        _ostream = new FileOutputStream(url.getFile()));
 		    return _tohFactory.getSerializationHandler();
                 }
 	    }
@@ -608,6 +613,15 @@ public final class TransformerImpl extends Transformer
 	} finally {
             _dtmManager = null;
         }
+
+	// If we create an output stream for the Result, we need to close it after the transformation.
+	if (_ostream != null) {
+	    try {
+	        _ostream.close();
+	    }
+	    catch (IOException e) {}
+	    _ostream = null;
+	}
     }
 
     /**
