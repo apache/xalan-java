@@ -247,6 +247,10 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
             MethodResolver.convertParams(methodArgs, convertedArgs, paramTypes, exprContext);
             return c.newInstance(convertedArgs[0]);
           }
+          catch (InvocationTargetException ite)
+          {
+            throw ite;
+          }
           catch(Exception e)
           {
             // Must not have been the right one
@@ -300,6 +304,10 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
               }
             }
           }
+          catch (InvocationTargetException ite)
+          {
+            throw ite;
+          }
           catch(Exception e)
           {
             // Must not have been the right one
@@ -352,11 +360,15 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     }
     catch (InvocationTargetException ite)
     {
-      Throwable realException = ite.getTargetException();
-      if (realException instanceof Exception)
-        throw new TransformerException((Exception) realException);
-      else
-        throw new TransformerException(ite);
+      Throwable resultException = ite;
+      Throwable targetException = ite.getTargetException();
+ 
+      if (targetException instanceof TransformerException)
+        throw ((TransformerException)targetException);
+      else if (targetException != null)
+        resultException = targetException;
+            
+      throw new TransformerException(resultException);
     }
     catch (Exception e)
     {
@@ -423,7 +435,9 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     {
       Throwable targetException = e.getTargetException();
       
-      if (targetException != null)
+      if (targetException instanceof TransformerException)
+        throw (TransformerException)targetException;
+      else if (targetException != null)
         throw new TransformerException (targetException.getMessage (), targetException);
       else
         throw new TransformerException (e.getMessage (), e);
