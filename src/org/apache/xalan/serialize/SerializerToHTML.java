@@ -382,6 +382,9 @@ public class SerializerToHTML extends SerializerToXML
   /** True if URLs should be specially escaped with the %xx form. */
   private boolean m_specialEscapeURLs = true;
 
+  /** True if the META tag should be omitted. */
+  private boolean m_omitMetaTag = false;
+
   /**
    * Tells if the formatter should use special URL escaping.
    *
@@ -390,6 +393,16 @@ public class SerializerToHTML extends SerializerToXML
   public void setSpecialEscapeURLs(boolean bool)
   {
     m_specialEscapeURLs = bool;
+  }
+
+  /**
+   * Tells if the formatter should omit the META tag.
+   *
+   * @param bool True if the META tag should be omitted.
+   */
+  public void setOmitMetaTag(boolean bool)
+  {
+    m_omitMetaTag = bool;
   }
 
   /**
@@ -407,6 +420,9 @@ public class SerializerToHTML extends SerializerToXML
     m_specialEscapeURLs =
       OutputProperties.getBooleanProperty(OutputProperties.S_USE_URL_ESCAPING,
                                           format);
+    m_omitMetaTag =
+      OutputProperties.getBooleanProperty(OutputProperties.S_OMIT_META_TAG,
+                                          format);
                             
     super.setOutputFormat(format);
   }
@@ -419,6 +435,16 @@ public class SerializerToHTML extends SerializerToXML
   public boolean getSpecialEscapeURLs()
   {
     return m_specialEscapeURLs;
+  }
+
+  /**
+   * Tells if the formatter should omit the META tag.
+   *
+   * @return True if the META tag should be omitted.
+   */
+  public boolean getOmitMetaTag()
+  {
+    return m_omitMetaTag;
   }
 
   /**
@@ -587,17 +613,21 @@ public class SerializerToHTML extends SerializerToXML
     {
       writeParentTagEnd();
 
-      if (m_doIndent)
-        indent(m_currentIndent);
+      if (!m_omitMetaTag)
+      {
 
-      accum(
-        "<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
+        if (m_doIndent)
+          indent(m_currentIndent);
 
-      String encoding = Encodings.getMimeEncoding(m_encoding);
+        accum(
+          "<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
 
-      accum(encoding);
-      accum('"');
-      accum('>');
+        String encoding = Encodings.getMimeEncoding(m_encoding);
+
+        accum(encoding);
+        accum('"');
+        accum('>');
+      }
     }
   }
 

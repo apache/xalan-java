@@ -189,12 +189,16 @@ transformer.transform
     <td>org.apache.xalan.serialize.SerializerToHTML</td>
   </tr>
   <tr>
-    <td>entities</td>
+    <td>xalan:entities</td>
     <td>HTMLEntities.res</td>
   </tr>
   <tr>
     <td>xalan:use-url-escaping</td>
     <td>yes</td>
+  </tr>
+  <tr>
+    <td>xalan:omit-meta-tag</td>
+    <td>no</td>
   </tr>
 </table>
 <note>You can also create your own HTML entity file (mapping characters to entities) 
