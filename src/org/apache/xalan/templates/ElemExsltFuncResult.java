@@ -77,6 +77,10 @@ public class ElemExsltFuncResult extends ElemVariable
   {    
     XPathContext context = transformer.getXPathContext();
     ElemExsltFunction owner = getOwnerFunction();
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
+    
     if (owner != null)
     {
       // Verify that result has not already been set by another result
@@ -89,7 +93,11 @@ public class ElemExsltFuncResult extends ElemVariable
       // Set the return value;
       XObject var = getValue(transformer, sourceNode);
       owner.setResult(var);
-    }    
+    }
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEndEvent(this);    
+    
   }
 
   /**
