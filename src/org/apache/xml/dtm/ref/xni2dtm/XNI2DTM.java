@@ -119,7 +119,7 @@ public class XNI2DTM
 	implements XMLDocumentHandler, XMLErrorHandler, XMLDTDHandler
 {
   /** DEBUGGING FLAG: Set true to monitor XNI events and similar diagnostic info. */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
   
   /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as declared.
    * See discussion in addNode 

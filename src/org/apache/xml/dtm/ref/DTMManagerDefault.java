@@ -121,14 +121,6 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
-  /** TEMPORARY EXPERIMENTAL: If true, enable Joe's kluge to drag in the
-   * XNI2DTM/XPath2 support. This may be a sloppy solution, mostly because
-   * our getDTM() method is unnecessarily convoluted and needs to be
-   * rationalized. There's also the problem that XNI2DTM requires Xerces2
-   * in order to compile... so we may want reflection here. GRUMP!
-   * */
-  private static final boolean JKESS_XNI_EXPERIMENT=true;	
-	
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
 
@@ -366,10 +358,9 @@ public class DTMManagerDefault extends DTMManager
         xmlSource.setSystemId(urlOfSource);
       } // urlOfSource fixup
       
-      // GONK -- Need a better test for whether Xerces2 is available
+      // %REVIEW% Need a better test for whether Xerces2 is available
       // This one involves creating a SAX reader, then discarding
       // it in order to build a lower-level XNI reader. Wasteful.
-      // %REVIEW%
       if(reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser")) 
       {         
         DTM dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
@@ -449,19 +440,8 @@ public class DTMManagerDefault extends DTMManager
         xmlSource.setSystemId(urlOfSource);
       }
 
-      /**************************************************************/
-      // EXPERIMENTAL 3/22/02
-      if(JKESS_XNI_EXPERIMENT && m_incremental)
-      {         
-        dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
+      dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
                           xstringFactory, doIndexing);
-      }
-      else // Create the basic SAX2DTM.
-      /**************************************************************/
-      {
-        dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
-                          xstringFactory, doIndexing);
-      }
 
       // Add the DTM to the lookup table with offset 0 (start of new DTM).
       // This needs to be done before any parsing occurs.
@@ -508,26 +488,8 @@ public class DTMManagerDefault extends DTMManager
 
         }
 
-                        
-        /**************************************************************/
-        // EXPERIMENTAL 3/22/02
-        if(JKESS_XNI_EXPERIMENT && m_incremental & 
-           dtm instanceof XNI2DTM && 
-           coParser instanceof IncrementalSAXSource_Xerces)
-        {               
-          org.apache.xerces.xni.parser.XMLPullParserConfiguration xpc=
-            ((IncrementalSAXSource_Xerces)coParser).getXNIParserConfiguration();
-          if(xpc!=null) 
-            // Bypass SAX; listen to the XNI stream
-            ((XNI2DTM)dtm).setIncrementalXNISource(xpc);
-          else
-            // Listen to the SAX stream (will fail, diagnostically...)
-            dtm.setIncrementalSAXSource(coParser);
-        } else
-          /***************************************************************/
-          
-          // Have the DTM set itself up as the IncrementalSAXSource's listener.
-          dtm.setIncrementalSAXSource(coParser);
+        // Have the DTM set itself up as the IncrementalSAXSource's listener.
+        dtm.setIncrementalSAXSource(coParser);
 
         if (null == xmlSource)
         {
