@@ -71,16 +71,17 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.2.D9</link></li>
+    <li><link anchor="done">Changes since version 2.2.D10</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D9">
-     <p>&xslt4j-current; is a Developer release. For enhanced performance, it incorporates the 
-     <link idref="dtm">DTM</link>.</p>
+     <s3 title="Changes since &xslt4j; 2.2.D10">
+     <p>&xslt4j-current; is a Developer release. For enhanced performance, the current series of Developer releases incorporate
+     the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a
+     standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
      <note>The SQL Extension library has been updated to work with DTM.</note>
      &done-j;
      </s3>
