@@ -178,7 +178,6 @@ public class WalkerFactory
           Compiler compiler, int opPos)
             throws javax.xml.transform.TransformerException
   {
-
     int firstStepPos = compiler.getFirstChildPos(opPos);
     int analysis = analyze(compiler, firstStepPos, 0);
     
@@ -186,8 +185,12 @@ public class WalkerFactory
     // Is the iteration exactly one child step?
     if ((BIT_CHILD | 0x00000001) == (analysis & (BIT_CHILD | BITS_COUNT)))
     {
+      //                 BIT_NODETEST_ANY: 1000000000000000000000000000000
+      //                 BIT_PREDICATE:                      1000000000000
+      // new iterator:  ChildIterator: 1000000000000010000000000000001, node()
       // Does the pattern specify *any* child with no predicate? (i.e. select="child::node()".
-      if (BIT_CHILD == (analysis & BIT_NODETEST_ANY) && !(BIT_PREDICATE == (analysis & BIT_PREDICATE)))
+      if ((BIT_NODETEST_ANY == (analysis & BIT_NODETEST_ANY)) && 
+         !(BIT_PREDICATE == (analysis & BIT_PREDICATE)))
       {
         if (DEBUG_ITERATOR_CREATION)
           System.out.println("new iterator:  ChildIterator: " 
