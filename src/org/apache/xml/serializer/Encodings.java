@@ -38,9 +38,12 @@ import java.util.StringTokenizer;
  * to provides writers for the different encodings, but can be used
  * to override encoding names and provide the last printable character
  * for each encoding.
+ * 
+ * This class is for internal use within Xalan. However, it is used directly
+ * by org.apache.xalan.xsltc.compiler.Output.
  *
- * @version $Revision$ $Date$
  * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
+ * @xsl.usage internal
  */
 
 public class Encodings extends Object
