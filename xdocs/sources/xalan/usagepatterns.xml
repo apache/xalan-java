@@ -62,6 +62,7 @@
 <li><link anchor="plug">Plugging in the Transformer and XML parser</link></li>
 <li><link anchor="embed">Working with embedded stylesheets</link></li>
 <li><link anchor="params">Setting stylesheet parameters</link></li>
+<li><link anchor="serialize">Serializing output</link></li>
 <li><link anchor="sax">Explicitly working with SAX</link></li>
 <li><link anchor="outasin">Using transformation output as input for another transformation</link></li>
 <li><link anchor="dom">Processing and producing DOM trees</link></li>
@@ -156,6 +157,9 @@ instructions:</p>
   <li>Include the <code>-in</code> flag with an XML source that contains a stylesheet processing instruction.<br/><br/></li>
   <li>Do not include the <code>-xsl</code> flag.</li>
 </ol>
+</s2><anchor name="serialize"/>
+<s2 title="Serializing output">
+<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <resource-ref idref="trax"/> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
 </s2><anchor name="params"/>
 <s2 title="Setting stylesheet parameters">
 <p>An XSLT stylesheet may include parameters that are set at run time each time a transformation is performed. To set a stylesheet parameter, use the Transformer <jump href="apidocs/org/apache/trax/Transformer.html#setParameter(java.lang.String,java.lang.Object)">setParameter(String name, Object value)</jump> method. For a working example, see UseStylesheetParam.java in the samples/UseStylesheetParam subdirectory.</p>
@@ -294,6 +298,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
   <li>Use the TransformerFactory <jump href="apidocs/javax/xml/transform/TransformerFactory.html#newTemplates(javax.xml.transform.Source)">newTemplates(Source xslSource)</jump> method to create a Templates object.<br/><br/></li>
 <li>For each transformation, use the Templates object <jump href="apidocs/javax/xml/transform/Templates.html#newTransformer()">newTransformer()</jump> method to create a Transformer, and use that Transformer's <jump href="apidocs/javax/xml/transform/Transformer.html#transform(javax.xml.transform.Source, javax.xml.transform.Result)">transform(Source xmlSource, Result transformResult)</jump> method to perform the transformation.</li>
 </ol>
+<p>For an example, see Examples.exampleUseTemplatesObj() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
 </s2><anchor name="debugging"/>
 <s2 title="Debugger Interface">
 		<p>&xslt4j; contains a debugger interface in the org.apache.xalan.xslt.trace package:</p> 
