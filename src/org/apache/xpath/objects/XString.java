@@ -89,7 +89,7 @@ public class XString extends XObject
    * Given a request type, return the equivalent string. 
    * For diagnostic purposes.
    */
-  protected String getTypeString()
+  public String getTypeString()
   {
     return "#STRING";
   }

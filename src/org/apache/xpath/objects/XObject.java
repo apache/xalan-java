@@ -165,9 +165,9 @@ public class XObject extends Expression implements Serializable
    * Given a request type, return the equivalent string. 
    * For diagnostic purposes.
    */
-  protected String getTypeString()
+  public String getTypeString()
   {
-    return "#UNKNOWN";
+    return "#UNKNOWN (" + object().getClass().getName() + ")";
   }
   
   /**
