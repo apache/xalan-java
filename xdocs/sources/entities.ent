@@ -42,9 +42,8 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                  <li><link anchor="xsltc2">JAXPTransletMultipleTransformations</link></li>
                  <li><link anchor="xsltcother">Other XSLTC samples</link></li>   
                  </ul>
-                 <p>You can use the TrAX/JAXP 1.1 interfaces to compile and run translets. For this release, you must still
-                 use StreamSource objects for the XSL stylesheet and XML input document, and a StreamResult object for the 
-                 transformation output. For an overview of the usage patterns these samples illustrate, see 
+                 <p>You can use the TrAX/JAXP 1.2 interfaces to compile and run translets.
+                 For an overview of the usage patterns these samples illustrate, see 
                  <link idref="xsltc_usage" anchor="api">Calling XSLTC with the TrAX/JAXP API</link>.</p>
                  <anchor name="xsltcprepare"/>
                  <p><em>Important:</em> To run these samples, you must compile the sample class files and adjust the 
@@ -52,12 +51,12 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                  <ol>
                    <li>To compile the samples, you can run the Ant build from the root directory as follows:<br/><br/>
                    <code>&nbsp;&nbsp;build xsltc.samples</code><br/><br/></li>
-                   <li>Add xsltc.jar, runtime.jar, BCEL.jar, java_cup.jar, and the samples/translets subdirectory to 
+                   <li>Add xalan.jar and the samples/translets subdirectory to 
                    the classpath</li>
                  </ol>
-                 <note>The JAR files listed above are in the bin directory. 
+                 <note>The JAR file mentioned above is in the bin directory. 
                  The samples/translets directory contains the sample class files as well as the translet class file that is
-                 generated at tun time (todo.class from the todo.xsl stylesheet).</note> 
+                 generated at run-time (todo.class from the todo.xsl stylesheet).</note> 
                  <anchor name="xsltc1"/>
                  <s3 title="JAXPTransletOneTransformation">
                  <p>What it does: Uses the XSLTC TransformerFactory to compile a translet and use
@@ -73,7 +72,7 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                  into HTML.</p>
                  <p>Complete the <link anchor="xsltcprepare">steps detailed above</link>, and run this sample 
                  from the translets subdirectory with</p>
-                 <p><code>java JAXPTransletOneTransformation</code></p>
+                 <p><code>java JAXPTransletMultipleTransformations</code></p>
                  <p>View the results in todo-xsltc.html and todo-xalan.html.</p>                
                  </s3><anchor name="xsltcother"/>
                  <s3 title="Other XSLTC samples">
@@ -105,4 +104,3 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                 <note>You also need to make the Brazil and javax classes available from your classpath</note>
                  </s3>
                  </s2>'>
-                
