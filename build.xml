@@ -318,6 +318,8 @@ Copyright:
     <jar jarfile="${build.xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
         <exclude name="${xsltc.reldir}/**/*" />
+        <exclude name="javax/xml/parsers/**" />
+        <exclude name="META-INF/services/javax.xml.parsers*" />
       </patternset>
     </jar>
   </target>
