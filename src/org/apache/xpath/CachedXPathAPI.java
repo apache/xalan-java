@@ -78,23 +78,32 @@ import org.apache.xml.dtm.ref.DTMManagerDefault;
 /**
  * The methods in this class are convenience methods into the
  * low-level XPath API.
+ *
  * These functions tend to be a little slow, since a number of objects must be
  * created for each evaluation.  A faster way is to precompile the
  * XPaths using the low-level API, and then just use the XPaths
  * over and over.
  *
- * NOTE: In particular, each call to this method will create a new
- * XPathContext, a new DTMManager... and thus a new DTM. That's very
- * safe, since it guarantees that you're always processing against a
- * fully up-to-date view of your document. But it's also portentially
- * very expensive, since you're rebuilding the DTM every time. You should
- * consider using an instance of CachedXPathAPI rather than these static
- * methods.
+ * This is an alternative for the old XPathAPI class, which provided
+ * static methods for the purpose but had the drawback of
+ * instantiating a new XPathContext (and thus building a new DTMManager,
+ * and new DTMs) each time it was called. XPathAPIObject instead retains
+ * its context as long as the object persists, reusing the DTMs. This
+ * does have a downside: if you've changed your source document, you should
+ * obtain a new XPathAPIObject to continue searching it, since trying to use
+ * the old DTMs will probably yield bad results or malfunction outright... and
+ * the cached DTMs may consume memory until this object and its context are
+ * returned to the heap. Essentially, it's the caller's responsibility to
+ * decide when to discard the cache.
  *
- * @see <a href="http://www.w3.org/TR/xpath">XPath Specification</a> 
+ * @see <a href="http://www.w3.org/TR/xpath">XPath Specification</a>
  * */
-public class XPathAPI
+public class CachedXPathAPI
 {
+  /** XPathContext, and thus DTMManager and DTMs, persists through multiple
+      calls to this object.
+  */
+  XPathContext xpathSupport = new XPathContext();
 
   /**
    * Use an XPath string to select a single node. XPath namespace
@@ -107,7 +116,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static Node selectSingleNode(Node contextNode, String str)
+  public  Node selectSingleNode(Node contextNode, String str)
           throws TransformerException
   {
     return selectSingleNode(contextNode, str, contextNode);
@@ -124,7 +133,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static Node selectSingleNode(
+  public  Node selectSingleNode(
           Node contextNode, String str, Node namespaceNode)
             throws TransformerException
   {
@@ -146,7 +155,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static NodeIterator selectNodeIterator(Node contextNode, String str)
+  public  NodeIterator selectNodeIterator(Node contextNode, String str)
           throws TransformerException
   {
     return selectNodeIterator(contextNode, str, contextNode);
@@ -163,7 +172,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static NodeIterator selectNodeIterator(
+  public  NodeIterator selectNodeIterator(
           Node contextNode, String str, Node namespaceNode)
             throws TransformerException
   {
@@ -185,7 +194,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static NodeList selectNodeList(Node contextNode, String str)
+  public  NodeList selectNodeList(Node contextNode, String str)
           throws TransformerException
   {
     return selectNodeList(contextNode, str, contextNode);
@@ -202,7 +211,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static NodeList selectNodeList(
+  public  NodeList selectNodeList(
           Node contextNode, String str, Node namespaceNode)
             throws TransformerException
   {
@@ -230,14 +239,14 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static XObject eval(Node contextNode, String str)
+  public  XObject eval(Node contextNode, String str)
           throws TransformerException
   {
     return eval(contextNode, str, contextNode);
   }
 
   /**
-   *  Evaluate XPath string to an XObject.
+   *  Evaluate XPath string to an XObject. 
    *  XPath namespace prefixes are resolved from the namespaceNode.
    *  The implementation of this is a little slow, since it creates
    *  a number of objects each time it is called.  This could be optimized
@@ -256,7 +265,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static XObject eval(Node contextNode, String str, Node namespaceNode)
+  public  XObject eval(Node contextNode, String str, Node namespaceNode)
           throws TransformerException
   {
 
@@ -265,7 +274,6 @@ public class XPathAPI
     // (Changed from: XPathContext xpathSupport = new XPathContext();
     //    because XPathContext is weak in a number of areas... perhaps
     //    XPathContext should be done away with.)
-    XPathContext xpathSupport = new XPathContext();
 
     // Create an object to resolve namespace prefixes.
     // XPath namespaces are resolved from the input context node's document element
@@ -307,7 +315,7 @@ public class XPathAPI
    *
    * @throws TransformerException
    */
-  public static XObject eval(
+  public  XObject eval(
           Node contextNode, String str, PrefixResolver prefixResolver)
             throws TransformerException
   {

@@ -915,6 +915,7 @@ public abstract class DTMDefaultBase implements DTM
     if(JJK_DEBUG && nodeHandle<DTMManager.IDENT_NODE_DEFAULT)
       System.err.println("GONK! (only useful in limited situations)");
 	  
+		/**JJK*/int jjk=DTMManager.IDENT_DTM_DEFAULT;
     int whichDTMid=m_dtmIdent.indexOf(nodeHandle & DTMManager.IDENT_DTM_DEFAULT);
     return (whichDTMid==NULL) 
       ? NULL

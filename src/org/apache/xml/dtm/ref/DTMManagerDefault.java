@@ -116,7 +116,7 @@ public class DTMManagerDefault extends DTMManager
   protected DTM m_dtms[] = new DTM[256];
 	
 	/** Map from DTM identifier numbers to offsets. For small DTMs with a 
-	 * single identifier, this will always be 0. In extended addressing, where
+	 * single identifier, this will always be 0. In overflow addressing, where
 	 * additional identifiers are allocated to access nodes beyond the range of
 	 * a single Node Handle, this table is used to map the handle's node field
 	 * into the actual node identifier.
@@ -147,7 +147,7 @@ public class DTMManagerDefault extends DTMManager
    * @param offset Integer addressing offset. The internal DTM Node ID is
    * obtained by adding this offset to the node-number field of the 
    * public DTM Handle. For the first DTM ID accessing each DTM, this is 0;
-   * for extended addressing it will be a multiple of 1<<IDENT_DTM_NODE_BITS.
+   * for overflow addressing it will be a multiple of 1<<IDENT_DTM_NODE_BITS.
    */
   public void addDTM(DTM dtm, int id, int offset)
   {
@@ -475,6 +475,7 @@ public class DTMManagerDefault extends DTMManager
 
     if (node instanceof org.apache.xml.dtm.ref.DTMNodeProxy)
       return ((org.apache.xml.dtm.ref.DTMNodeProxy) node).getDTMNodeNumber();
+		
     else
     {
       // Find the DOM2DTMs wrapped around this Document (if any)
@@ -489,10 +490,10 @@ public class DTMManagerDefault extends DTMManager
       // %REVIEW% We could search for the one which contains this
       // node at the deepest level, and thus covers the widest
       // subtree, but that's going to entail additional work
-      // checking more DTMs... and getHandleFromNode is not a
+      // checking more DTMs... and getHandleOfNode is not a
       // cheap operation in most implementations.
 			//
-			// TODO: %REVIEW% If extended addressing, we may recheck a DTM
+			// TODO: %REVIEW% If overflow addressing, we may recheck a DTM
 			// already examined. Ouch. But with the increased number of DTMs,
 			// scanning back to check this is painful. 
 			// POSSIBLE SOLUTIONS: 
@@ -509,7 +510,23 @@ public class DTMManagerDefault extends DTMManager
           }
          }
 
-      // Since the real root of our tree may be a DocumentFragment, we need to
+			// Not found; generate a new DTM.
+			//
+			// %REVIEW% Is this really desirable, or should we return null
+			// and make folks explicitly instantiate from a DOMSource? The
+			// latter is more work but gives the caller the opportunity to
+			// explicitly add the DTM to a DTMManager... and thus to know when
+			// it can be discarded again, which is something we need to pay much
+			// more attention to. (Especially since only DTMs which are assigned
+			// to a manager can use the overflow addressing scheme.)
+			//
+			// %BUG% If the source node was a DOM2DTM$defaultNamespaceDeclarationNode
+			// and the DTM wasn't registered with this DTMManager, we will create
+			// a new DTM and _still_ not be able to find the node (since it will
+			// be resynthesized). Another reason to push hard on making all DTMs
+			// be managed DTMs.
+
+			// Since the real root of our tree may be a DocumentFragment, we need to
       // use getParent to find the root, instead of getOwnerDocument.  Otherwise
       // DOM2DTM#getHandleOfNode will be very unhappy.
       Node root = node;
@@ -519,10 +536,21 @@ public class DTMManagerDefault extends DTMManager
         root = p;
       }
 
-      DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root), false,
-                       null, true, true);
+      DOM2DTM dtm = (DOM2DTM) getDTM(new javax.xml.transform.dom.DOMSource(root),
+																		 false, null, true, true);
 
-      int handle = ((DOM2DTM)dtm).getHandleOfNode(node);
+      int handle;
+      
+      if(node instanceof org.apache.xml.dtm.ref.dom2dtm.DOM2DTMdefaultNamespaceDeclarationNode)
+      {
+				// Can't return the same node since it's unique to a specific DTM, 
+				// but can return the equivalent node -- find the corresponding 
+				// Document Element, then ask it for the xml: namespace decl.
+				handle=dtm.getHandleOfNode(((org.w3c.dom.Attr)node).getOwnerElement());
+				handle=dtm.getAttributeNode(handle,node.getNamespaceURI(),node.getLocalName());
+      }
+      else
+				handle = ((DOM2DTM)dtm).getHandleOfNode(node);
 
       if(DTM.NULL == handle)
         throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_RESOLVE_NODE, null)); //"Could not resolve the node to a handle!");
@@ -644,7 +672,7 @@ public class DTMManagerDefault extends DTMManager
 
   /**
    * Given a DTM, find the ID number in the DTM tables which addresses
-   * the start of the document. If extended addressing is in use, other
+   * the start of the document. If overflow addressing is in use, other
    * DTM IDs may also be assigned to this DTM.
    *
    * @param dtm The DTM which (hopefully) contains this node.

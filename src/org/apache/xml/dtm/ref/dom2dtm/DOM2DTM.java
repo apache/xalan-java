@@ -797,9 +797,16 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       while (DTM.NULL != (identity = getNextNodeIdentity(identity)))
       {
         // Assume this can not be null.
-        type = getNodeType(identity);
+        type = _type(identity);
 
-        if (type == DTM.ATTRIBUTE_NODE)
+				// %REVIEW%
+				// Should namespace nodes be retrievable DOM-style as attrs?
+				// If not we need a separate function... which may be desirable
+				// architecturally, but which is ugly from a code point of view.
+				// (If we REALLY insist on it, this code should become a subroutine
+				// of both -- retrieve the node, then test if the type matches
+				// what you're looking for.)
+        if (type == DTM.ATTRIBUTE_NODE || type==DTM.NAMESPACE_NODE)
         {
           Node node = lookupNode(identity);
           String nodeuri = node.getNamespaceURI();
@@ -812,7 +819,8 @@ public class DOM2DTM extends DTMDefaultBaseIterators
           if (nodeuri.equals(namespaceURI) && name.equals(nodelocalname))
             return makeNodeHandle(identity);
         }
-        else if (DTM.NAMESPACE_NODE != type)
+				
+        else // if (DTM.NAMESPACE_NODE != type)
         {
           break;
         }
