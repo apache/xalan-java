@@ -215,19 +215,25 @@ final class Sort extends Instruction {
 
 	// Get the current node iterator
 	if (nodeSet == null) {	// apply-templates default
-	    Mode.compileGetChildren(classGen, methodGen,
-				    methodGen.getLocalIndex("current"));
+	    final int children = cpg.addInterfaceMethodref(DOM_INTF,
+							   "getAxisIterator",
+							   "(I)"+
+							   NODE_ITERATOR_SIG);
+	    il.append(methodGen.loadDOM());
+	    il.append(new PUSH(cpg, Axis.CHILD));
+	    il.append(new INVOKEINTERFACE(children, 2));
 	}
 	else {
 	    nodeSet.translate(classGen, methodGen);
-	    il.append(new PUSH(cpg,methodGen.getLocalIndex("current")));
-	    il.append(new INVOKEINTERFACE(setStartNode,2));
 	}
 	
 	// Compile the code for the NodeSortRecord producing class and pass
 	// that as the last argument to the SortingIterator constructor.
 	compileSortRecordFactory(sortObjects, classGen, methodGen);
 	il.append(new INVOKESPECIAL(init));
+
+	il.append(methodGen.loadCurrentNode());
+	il.append(new INVOKEINTERFACE(setStartNode,2));
     }
 
 
