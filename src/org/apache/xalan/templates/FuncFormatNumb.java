@@ -168,7 +168,7 @@ public class FuncFormatNumb extends Function3Args
   public void checkNumberArgs(int argNum)
     throws WrongNumberArgsException
   {
-    if((argNum != 3) || (argNum != 2))
+    if((argNum > 3) || (argNum < 2))
       throw new WrongNumberArgsException("3");
   }
 
