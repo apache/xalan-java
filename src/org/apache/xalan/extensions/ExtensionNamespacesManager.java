@@ -249,6 +249,10 @@ public class ExtensionNamespacesManager
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
    
+    uri = Constants.S_EXTENSIONS_OLD_JAVA_URL;
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));
+    
     uri = Constants.S_EXTENSIONS_LOTUSXSL_JAVA_URL;
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
@@ -259,6 +263,23 @@ public class ExtensionNamespacesManager
     lib = "org.apache.xalan.lib.Extensions";
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
+    
+    // Xalan extension namespaces (redirect, pipe and SQL).
+    uri = Constants.S_EXTENSIONS_REDIRECT_URL;
+    lib = "org.apache.xalan.lib.Redirect";
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));
+ 
+    uri = Constants.S_EXTENSIONS_PIPE_URL;
+    lib = "org.apache.xalan.lib.PipeDocument";
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));
+ 
+    uri = Constants.S_EXTENSIONS_SQL_URL;
+    lib = "org.apache.xalan.lib.sql.XConnection";
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));
+ 
     
     //EXSLT namespaces (not including EXSLT function namespaces which are
     // registered by the associated ElemFunction.
@@ -282,11 +303,15 @@ public class ExtensionNamespacesManager
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
                                              
-    uri = "http://exslt.org/dynamic";
+    uri = Constants.S_EXSLT_DYNAMIC_URL;
     lib = "org.apache.xalan.lib.ExsltDynamic";
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
-                                             
+
+    uri = Constants.S_EXSLT_STRINGS_URL;
+    lib = "org.apache.xalan.lib.ExsltStrings";
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));                                             
   }    
   
 }
