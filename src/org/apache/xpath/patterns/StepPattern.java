@@ -239,20 +239,8 @@ public class StepPattern extends NodeTest implements SubContextList
   {
 
     XObject score;
-    short nodeType = xctxt.getCurrentNode().getNodeType();
 
-    if (nodeType == Node.ATTRIBUTE_NODE
-            && m_whatToShow != NodeFilter.SHOW_ATTRIBUTE)
-    {
-      score = NodeTest.SCORE_NONE;
-    }
-    else if ((nodeType == Node.DOCUMENT_NODE || nodeType == Node.DOCUMENT_FRAGMENT_NODE)
-             && m_whatToShow != (NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT))
-    {
-      score = NodeTest.SCORE_NONE;
-    }
-    else
-      score = super.execute(xctxt);
+    score = super.execute(xctxt);
 
     if (score == NodeTest.SCORE_NONE)
     {
