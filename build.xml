@@ -4,17 +4,11 @@
    Build file for Xalan-Java - for use with the Jakarta Ant java build tool
    
 Setup instructions: 
-   Before running an Ant build, you must
-   
-     - set the JAVA_HOME environment variable to the JDK (1.2.2 or higher) root directory
-     
-   When the Xalan team uses this tool to build a distribution, we also need to
-     - copy the correct version (FOR THIS BUILD) of xerces.jar to the bin subdirectory of the 
-       directory in which this file is located
-   
+   Before running an Ant build, you must:
+     - set the JAVA_HOME environment variable to the JDK (1.2.2 or higher to do docs) root directory
+  
 Build Instructions:   
-   To build, run
-    
+   To build, run:
    build.bat (win32) or build.sh (unix) - optionally with a target arg as indicated below -     
    in the directory where this file is located. The batch/shell file sets up your classpath
    and calls java org.apache.tools.ant.Main
@@ -23,6 +17,7 @@ Build targets
     This build file supports the following targets:
     - compile  compiles Xalan-J in ./build/classes.
     - jar      creates ./build/xalan.jar [the default target]
+    - docs     generates the human-written documentation in ./build/docs
     - javadocs [or apidocs] generates the API documentation in ./build/docs/apidocs
     - clean    purges the build tree.
     
@@ -68,9 +63,9 @@ Copyright:
   <property name="build.dest" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
-  <property name="build.apidocs" value="${build.dir}/docs/apidocs"/>
+  <property name="build.apidocs" value="${build.docs}/apidocs"/>
 
-  <property name="xalanjar" value="../build/xalan.jar"/>  
+  <property name="xalanjar" value="${build.dir}/${name}.jar"/>  
 
   <property name="dist.file" value="${name}-j_${version}"/>
   <property name="dist.dir" value="./${dist.file}"/>    <!-- Check dir name dash/underscore 17-Jan-00 SCurcuru -->
@@ -87,7 +82,7 @@ Copyright:
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
   
   <property name="site.root" value="./xml-site"/>
-  <property name="site.dir" value="./xml-site/target/xalan"/>
+  <property name="site.dir" value="${site.root}/target/xalan"/>
   <property name="site.book" value="${xdocs.dir}/sources/xalan.xml"/>
 
   <!-- =================================================================== -->
@@ -96,11 +91,11 @@ Copyright:
   <target name="prepare">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.dest}"/>
+    <mkdir dir="${build.samples}"/>
   </target>
-  <target name="prepare-docs" depends="prepare">
+  <target name="prepare.docs" depends="prepare">
     <!--gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/-->
-    <mkdir dir="${build.samples}"/>
     <mkdir dir="${build.docs}"/>
     <mkdir dir="${build.apidocs}"/>
   </target>
@@ -117,7 +112,8 @@ Copyright:
   <!-- Note: Still too many cross-dependencies to do this separately -->
   <target name="compile.xpath" depends="prepare">
     <javac srcdir="${src.dir}/${xpath.reldir}" 
-           destdir="${build.dest}" 
+           destdir="${build.dest}"
+           excludesfile="compat.xpath.excludes" 
            debug="${debug}" />
   </target>
 
@@ -128,6 +124,7 @@ Copyright:
   <target name="compile.xalan" depends="compile.xpath">
     <javac srcdir="${src.dir}/${xalan.reldir}" 
            destdir="${build.dest}" 
+           excludesfile="compat.xslt.excludes" 
            debug="${debug}" />
   </target>
 
@@ -136,6 +133,7 @@ Copyright:
     <javac srcdir="${src.dir}" 
            destdir="${build.dest}" 
            includes="${xpath.reldir}/**,${xalan.reldir}/**" 
+           excludesfile="compat.excludes" 
            debug="${debug}" />
   </target>
 
@@ -143,17 +141,21 @@ Copyright:
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile">
-    <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"/>
+    <jar jarfile="${xalanjar}" basedir="${build.dest}"/>
   </target>
 
   <!-- =================================================================== -->
   <!-- Compiles other source trees                                         -->
   <!-- =================================================================== -->
   <target name="compile.trax" depends="prepare">
-    <javac srcdir="${src.dir}/${trax.reldir}" destdir="${build.dest}" debug="${debug}"/>
+    <javac srcdir="${src.dir}/${trax.reldir}" 
+           destdir="${build.dest}" 
+           debug="${debug}"/>
   </target>
   <target name="compile.serialize" depends="prepare">
-    <javac srcdir="${src.dir}/${serialize.reldir}" destdir="${build.dest}" debug="${debug}"/>
+    <javac srcdir="${src.dir}/${serialize.reldir}" 
+           destdir="${build.dest}" 
+           debug="${debug}"/>
   </target>
 
   <!-- =================================================================== -->
@@ -198,8 +200,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="jar"> <!-- xalan.jar used by doc.generator -->
-    <mkdir dir="${build.docs}"/>
+  <target name="docs" depends="jar">
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalanjar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
@@ -207,18 +208,18 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="prepare"> <!--  depends="jar" xalan.jar used by doc.generator -->
+  <target name="javadocs" depends="jar">
 
     <!--java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar" 
           args="loaderConfig=${xdocs.javadocloader} targetDirectory=${build.src} ${xdocs.javadocbook} ${xdocs.style}"/-->
 
-    <mkdir dir="${build.apidocs}"/>
     <javadoc
          public="true"
          doclet="xalanjdoc.Standard"
          sourcepath="${build.src}"
-         overview="${build.src}/javadocOverview.html"        packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
-group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serializers serialize*"
+         overview="${build.src}/javadocOverview.html"        
+         packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
+         group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serializers serialize*"
          destdir="${build.apidocs}"
          author="true"
          version="true"
