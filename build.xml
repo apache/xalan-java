@@ -264,7 +264,7 @@ Copyright:
          public="true"
          sourcepath="${compat.src.dir}:${src.dir}"
          overview="${compat.src.dir}/compatOverview.html"         
-         packagenames="org.apache.xalan.*"
+         packagenames="org.apache.xalan.xslt,org.apache.xalan.xpath,org.apache.xalan.xpath.xml"
          author="true"
          version="true"
          use="true"
