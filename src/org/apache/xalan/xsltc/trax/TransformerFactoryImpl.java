@@ -129,16 +129,7 @@ public class TransformerFactoryImpl
     public final static String DEBUG = "debug";
     public final static String ENABLE_INLINING = "enable-inlining";
     public final static String INDENT_NUMBER = "indent-number";
-    
-    static {
-        // If 'org.xml.sax.driver' not set, default to Xerces
-        String saxDriver = System.getProperty("org.xml.sax.driver");
-        if (saxDriver == null) {
-            System.setProperty("org.xml.sax.driver", 
-                               "org.apache.xerces.parsers.SAXParser");                              
-        }        
-    }
-    
+        
     /**
      * This error listener is used only for this factory and is not passed to
      * the Templates or Transformer objects that we create.
@@ -1061,15 +1052,28 @@ public class TransformerFactoryImpl
 	}
 	XMLReader result = (XMLReader) _xmlReader.get();
 	if (result == null) {
+            try {
+                /*
+                 * Fix for bug 24695
+                 * According to JAXP 1.2 specification if a SAXSource
+                 * is created using a SAX InputSource the Transformer or
+                 * TransformerFactory creates a reader via the XMLReaderFactory
+                 * if setXMLReader is not used
+                 */
+                result = XMLReaderFactory.createXMLReader();
+            }
+            catch (Exception e) {
+               try {
+                    // If unable to create an instance, let's try to use Xerces
+                    Class clazz = Thread.currentThread().getContextClassLoader()
+                        .loadClass("org.apache.xerces.parsers.SAXParser");
+                    result = (XMLReader) clazz.newInstance();
+                }
+                catch (ClassNotFoundException cnfe) {
+                    throw e;   // ignore cnfe
+                }
+            }
  
-            /*
-              * Fix for bug 24695
-              * According to JAXP 1.2 specification if a SAXSource
-              * is created using a SAX InputSource the Transformer or
-              * TransformerFactory creates a reader via the XMLReaderFactory
-              * if setXMLReader is not used
-              */
-            result = XMLReaderFactory.createXMLReader();
             result.setFeature("http://xml.org/sax/features/namespaces",
                true);
             result.setFeature("http://xml.org/sax/features/namespace-prefixes",
