@@ -388,19 +388,12 @@ public class NamespaceSupport2
         // a specific enumerator for these prefixes... or a filter
         // around the all-prefixes enumerator, which comes out to
         // roughly the same thing.
+        //
+        // **** Currently a filter. That may not be most efficient
+        // when I'm done restructuring storage!
         
-//          Vector prefixes = new Vector();
-//          Enumeration allPrefixes = getPrefixes();
-//          while (allPrefixes.hasMoreElements()) {
-//              String prefix = (String)allPrefixes.nextElement();
-//              if (uri.equals(getURI(prefix))) {
-//                  prefixes.addElement(prefix);
-//              }
-//          }
-//          return prefixes.elements();
-
         PrefixEnumerator prefixEnumerator = new PrefixEnumerator();
-        return prefixEnumerator.setup(uri,getPrefixes());	
+        return prefixEnumerator.setup(uri,getPrefixes());       
     }
     
     /**
@@ -516,8 +509,8 @@ public class NamespaceSupport2
                 {
                     prefixTable = new Hashtable();
                     uriTable = new Hashtable();
-                    elementNameTable=new Hashtable(); 
-                    attributeNameTable=new Hashtable(); 
+                    elementNameTable=null; 
+                    attributeNameTable=null; 
                 }
             else
                 setParent(parent);
@@ -614,8 +607,12 @@ public class NamespaceSupport2
             
                                 // Select the appropriate table.
             if (isAttribute) {
+                if(elementNameTable==null)
+                    elementNameTable=new Hashtable();
                 table = elementNameTable;
             } else {
+                if(attributeNameTable==null)
+                    attributeNameTable=new Hashtable();
                 table = attributeNameTable;
             }
             
@@ -768,10 +765,12 @@ public class NamespaceSupport2
             // Replace the caches with empty ones, rather than
             // trying to determine which bindings should be flushed.
             // As far as I can tell, these caches are never actually
-            // used in Xalan... More efficient to dump the whole
+            // used in Xalan... More efficient to remove the whole
             // cache system? ****
-            elementNameTable=new Hashtable(); 
-            attributeNameTable=new Hashtable(); 
+	    if(elementNameTable!=null)
+		elementNameTable=new Hashtable(); 
+	    if(attributeNameTable!=null)
+		attributeNameTable=new Hashtable(); 
             tablesDirty = true;
         }
 
