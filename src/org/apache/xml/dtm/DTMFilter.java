@@ -170,27 +170,45 @@ public interface DTMFilter
    * a function.  Make sure this does not conflict with
    * {@link org.w3c.dom.traversal.NodeFilter}.
    * <p>
-   * %REVIEW% Might be safer to start from higher bits and work down,
-   * to leave room for the DOM to expand its set of constants... Or,
-   * possibly, to create a DTM-specific field for these additional bits.
+   * NOTE the need to avoid colliding with SHOW_ITEM.
+   * <p>
+   * NOTE that if we introduce any more node types, we may have to
+   * push this up and/or individually pick out the appropriate bits in
+   * SHOW_ITEM.
    */
   public static final int SHOW_BYFUNCTION = 0x00010000;
-  
-  /**
-   * Special bit for supporting "item" in ItemType..
-   * <p>
-   * %REVIEW% Might be safer to start from higher bits and work down,
-   * to leave room for the DOM to expand its set of constants... Or,
-   * possibly, to create a DTM-specific field for these additional bits.
-   */
-  public static final int SHOW_ITEM = 0x00020000;
 
   /**
-   * Special bit for supporting "untyped" in ItemType..
+   * Special bit for supporting "item" in ItemType. "An Item is either an
+   * atomic value or a node." 
    * <p>
-   * %REVIEW% Might be safer to start from higher bits and work down,
-   * to leave room for the DOM to expand its set of constants... Or,
-   * possibly, to create a DTM-specific field for these additional bits.
+   * As a mask, then, SHOW_ITEM ought to accept
+   * just about anything except a Sequence -- and with an occurances count,
+   * it might accept sequences too.
+   * <p>
+   * %REVIEW%
+   * That suggests that SHOW_ITEM should be pretty much the same as SHOW_ALL.
+   * For now, I'm going to maintain a slight difference by leaving some of the
+   * high bits unset, since we need space for SHOW_UNTYPED and SHOW_BYFUNCTION
+   * ... but I suspect that we should reconsider the design of those flags,
+   * to avoid muddying the waters.
+   * <p>
+   * NOTE that if we introduce any more node types, we may have to
+   * push this up and/or individually pick out the appropriate bits in
+   * SHOW_ITEM.
+   */
+  public static final int SHOW_ITEM = 0x0000FFFF;
+
+
+  /**
+   * Special bit for supporting "untyped" in ItemType. This should match
+   * only atomic values (*not* nodes!) which are bare instances of xs:anySimpleType.
+   * <p>
+   * NOTE the need to avoid colliding with SHOW_ITEM.
+   * <p>
+   * NOTE that if we introduce any more node types, we may have to
+   * push this up and/or individually pick out the appropriate bits in
+   * SHOW_ITEM.
    */
   public static final int SHOW_UNTYPED = 0x00040000;
 
