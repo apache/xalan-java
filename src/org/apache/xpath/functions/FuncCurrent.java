@@ -70,6 +70,7 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.axes.PredicatedNodeTest;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.ContextNodeList;
+import org.apache.xpath.axes.SubContextList;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -105,12 +106,13 @@ public class FuncCurrent extends Function
   {
 
     // If we're in a predicate, then this will return non-null.
-    PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
+   // PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
+		SubContextList iter = xctxt.getSubContextList();
     Node currentNode;
 
-    if (null != iter)
+    if (null != iter && iter instanceof PredicatedNodeTest)
     {
-      LocPathIterator lpi = iter.getLocPathIterator();
+      LocPathIterator lpi = ((PredicatedNodeTest)iter).getLocPathIterator();
 
       currentNode = lpi.getCurrentContextNode();
     }
