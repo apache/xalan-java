@@ -13,7 +13,7 @@
       <p>Open bugs:</p>
       <ul>
       <xsl:for-each select="Spr[string(State)='Open'] [string(Subsystem)!='Other']">
-        <li><xsl:apply-templates select="Name|DateCreated|TestDesc"/><br/><br/></li>
+        <li><xsl:apply-templates select="Name|DateCreated|TestDesc"/></li>
       </xsl:for-each>
       </ul>
     </xsl:if>
@@ -23,13 +23,13 @@
   </xsl:template>
 
   <xsl:template match="Name">
-    <ref>Name: </ref><xsl:value-of select="."/><br/>
+    <ref>Name: </ref><xsl:value-of select="."/>
   </xsl:template>
   <xsl:template match="DateCreated">      
-    <ref>Date Created: </ref><xsl:value-of select="."/><br/>
+    <ref> Date Created: </ref><xsl:value-of select="."/><br/>
   </xsl:template>    
   <xsl:template match="TestDesc">    
-    <ref>Description: </ref><xsl:value-of select="."/><br/>
+    <ref>Description: </ref><xsl:value-of select="."/><br/><br/>
   </xsl:template>    
   
 </xsl:stylesheet>
