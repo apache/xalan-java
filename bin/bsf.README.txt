@@ -1,0 +1,6 @@
+bsf.jar - Bean Scripting Framework for incorporating scripting into Java applications and applets.
+
+Source:	  http://www-124.ibm.com/developerworks/projects/bsf
+Used by: 	Xalan-Java extensions implemented in a scripting language
+
+See bsf.LICENSE.txt for the IBM Public license that applies to bsf.jar.
