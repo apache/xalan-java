@@ -286,6 +286,8 @@ public interface Constants extends InstructionConstants {
 	= "java.lang.Double";
     public static final String INTEGER_CLASS      
 	= "java.lang.Integer";
+    public static final String LONG_CLASS      
+	= "java.lang.Long";
     public static final String RUNTIME_NODE_CLASS 
 	= "org.apache.xalan.xsltc.runtime.Node";
     public static final String MATH_CLASS         
@@ -299,6 +301,10 @@ public interface Constants extends InstructionConstants {
 	= "intValue";
     public static final String INT_VALUE_SIG      
 	= "()I";
+    public static final String LONG_VALUE          
+	= "longValue";
+    public static final String LONG_VALUE_SIG      
+	= "()J";
     public static final String DOUBLE_VALUE       
 	= "doubleValue";
     public static final String DOUBLE_VALUE_SIG   

@@ -226,7 +226,7 @@ terminal ID, KEY, TEXT, NODE, OR, AND, COMMENT, PI, PIPARAM, PRECEDINGSIBLING;
 terminal SELF, PARENT, CHILD, ATTRIBUTE, ANCESTOR, ANCESTORORSELF, DESCENDANT; 
 terminal DESCENDANTORSELF, FOLLOWING, FOLLOWINGSIBLING, NAMESPACE, PRECEDING;
 terminal Double REAL;
-terminal Integer INT;
+terminal Long INT;
 terminal PATTERN, EXPRESSION;
 
 non terminal SyntaxTreeNode TopLevel;
@@ -729,14 +729,15 @@ PrimaryExpr ::= VariableReference:vr
 
         | INT:num
         {: 
-	    if (num.doubleValue() == -0)
-	        RESULT = new RealExpr(num.doubleValue());
-	    else if (num.intValue() == 0)
-	        RESULT = new IntExpr(num.intValue());
-	    else if (num.doubleValue() == 0.0)
-	        RESULT = new RealExpr(num.doubleValue());
-	    else
-	        RESULT = new IntExpr(num.intValue());
+	   // bug fix 3592, num comes in as a Long rather than an Integer
+	   //               see xpath.lex, {Digit}+ rule. 
+	   long value = num.longValue();
+	   if ( (value > Integer.MIN_VALUE) && (value < Integer.MAX_VALUE)) {
+		RESULT = new IntExpr(num.intValue());
+	   }
+	   else {
+		RESULT = new LongExpr(num.longValue());
+	   }
         :}
 
         | REAL:num

@@ -645,6 +645,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType R_D  = new MethodType(Type.Real, Type.NodeSet);
 	MethodType R_O  = new MethodType(Type.Real, Type.Reference);
 	MethodType I_I  = new MethodType(Type.Int, Type.Int);
+	MethodType J_J  = new MethodType(Type.Lng, Type.Lng);  //GTM,bug 3592
  	MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
 	MethodType D_V  = new MethodType(Type.NodeSet, Type.Void);
 	MethodType D_S  = new MethodType(Type.NodeSet, Type.String);
@@ -780,7 +781,8 @@ public class Parser implements Constants, ContentHandler {
 
 	// Unary minus.
 	_symbolTable.addPrimop("u-", R_R);	
-	_symbolTable.addPrimop("u-", I_I);
+	_symbolTable.addPrimop("u-", I_I);	
+	_symbolTable.addPrimop("u-", J_J);  // GTM,bug 3592	
     }
 
     public SymbolTable getSymbolTable() {

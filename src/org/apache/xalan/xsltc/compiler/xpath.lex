@@ -140,7 +140,7 @@ NCName=({Letter}|"_")({NCNameChar})*
 			      yytext().substring(1, yytext().length() - 1)); }
 \'[^\']*\'               { return new Symbol(sym.Literal,
 			      yytext().substring(1, yytext().length() - 1)); }
-{Digit}+               	 { return new Symbol(sym.INT, new Integer(yytext())); }
+{Digit}+               	 { return new Symbol(sym.INT, new Long(yytext())); }
 {Digit}+("."{Digit}*)? 	 { return new Symbol(sym.REAL, new Double(yytext())); }
 "."{Digit}+            	 { return new Symbol(sym.REAL, new Double(yytext())); }
 "."                      { return new Symbol(sym.DOT); }
