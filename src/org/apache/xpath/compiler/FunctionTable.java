@@ -137,7 +137,7 @@ public class FunctionTable
   /**
    * The function table.
    */
-  public static FuncLoader m_functions[];
+  private static FuncLoader m_functions[];
 
   /**
    * Number of built in functions.  Be sure to update this as
@@ -154,7 +154,7 @@ public class FunctionTable
    * The index to the next free function index.
    */
   static int m_funcNextFreeIndex = NUM_BUILT_IN_FUNCS;
-
+  
   static
   {
     m_functions = new FuncLoader[NUM_BUILT_IN_FUNCS + NUM_ALLOWABLE_ADDINS];
@@ -215,6 +215,14 @@ public class FunctionTable
             FUNC_DOCLOCATION);
     m_functions[FUNC_UNPARSED_ENTITY_URI] =
       new FuncLoader("FuncUnparsedEntityURI", FUNC_UNPARSED_ENTITY_URI);
+  }
+
+  /**
+   * Return the name of the a function in the static table. Needed to avoid
+   * making the table publicly available.
+   */
+  static String getFunctionName(int funcID) {
+      return m_functions[funcID].getName();
   }
 
   /**
