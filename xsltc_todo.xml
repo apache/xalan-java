@@ -4,19 +4,19 @@
 
   <devs>
    <person name="Jacek Ambroziak" email="jaceka@crossgain.com" id="JA" expertise="code">
-     Inventor, architect, former lead developer and evangelist.
+     Originator.
    </person>  
    <person name="Tom Amiro" email="Tom.Amiro@Sun.COM" id="TA" expertise="testing">
      Testing.
    </person>  
    <person name="Morten J&#216;rgensen" email="morten@xml.apache.org" id="MJ" expertise="code, doc">
-     Lead developer - key contributor on design documentation, ID/Keys, performance, JAXP, and continuing development in general.
+     Lead developer.
    </person>
    <person name="G. Todd Miller" email="Glenn.Miller@Sun.COM" id="TM" expertise="code">
-     Developer - key contributor on TrAX.
+     Developer.
    </person>
    <person name="Santiago Pericas-Geertsen" email="santiago@cs.bu.edu" id="SP" expertise="code">
-     Developer - key contributor on compilation strategy.
+     Co-originator.
    </person>
   </devs>
  
