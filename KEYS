@@ -1,14 +1,20 @@
-This file contains the PGP keys of various Xalan developers.
-Please don't use them for email unless you have to. Their main
-purpose is code signing.
+This file contains the PGP keys of xml-commons committers 
+and are used for signing .zip/.tar.gz distributions.
 
-Xalan users: pgp < KEYS
-Xalan developers: pgp -kxa <your name> and append it to this file.
+To verify the .sig on a distribution:
+  Using PGP:  pgp xalan-j_version.num.zip.sig
+  Using gpg:  gpg -verify xalan-j_version.num.zip.sig xalan-j_version.num.zip
+
+To import these public keys into your keyring: 
+  Using PGP:  pgp < KEYS    or pgp -ka KEYS
+  Using gpg:  gpg --import < KEYS
+
+Committers: to put your key in here: 
+  Using PGP:  pgp -kxa <your name> and append it to this file.
+  Using gpg:  gpg --export -a <your_name> >>KEYS should do the trick
 
 
-Type Bits/KeyID    Date       User ID
-pub  1024/30A21D55 1999/11/04 Shane Curcuru <shane_curcuru@lotus.com>
-
+Shane Curcuru  curcuru@apache.org
 -----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: PGP Personal Privacy 6.5.3
 
@@ -20,25 +26,44 @@ fEJmC5ihX7p8k8eEf2XepeAo6N0gdOxYVXVwcoRCmqPy7SSg1jnXqKOnA87ylv16
 lOiJ5WUkiVX96WOWEsbbYKuggmWeDL+6iFc9hp6oEP2sf/geC8AEAEHTPfneJzpo
 3z28A/9iX41r4K0iRx5eIJu2KUrjdpPxhn0JPe9dz2XzWZIciNeki+ThrcarEj9h
 lmfvcGLifXbQfXuFid3btMsBRI8dqAbbXmyfvCYYSHDOkXEmoMW66AWfeF4hgfHF
-SA5lmcpH4mtHU69uC0+cvYlRROP+HaeOepYbriA+9A9Qq4MAW7QnU2hhbmUgQ3Vy
-Y3VydSA8c2hhbmVfY3VyY3VydUBsb3R1cy5jb20+iQBOBBARAgAOBQI4IYzSBAsD
-AgECGQEACgkQMuwXWTCiHVXQIQCg1Q1MKkWygIsDGAOhiPaM09pTdlUAniTeCkoO
-I0+2IgD/NtqnGDaSvNDniQBGBBARAgAGBQI4qZk/AAoJEFHrPvFXdlryVbIAoO/e
-gti1esgRI6GErIhICg3IoctfAKDlpw6NWq/WTxk1Aa0pN/1b6fmD5LkCDQQ4IYzS
-EAgA9kJXtwh/CBdyorrWqULzBej5UxE5T7bxbrlLOCDaAadWoxTpj0BV89AHxstD
-qZSt90xkhkn4DIO9ZekX1KHTUPj1WV/cdlJPPT2N286Z4VeSWc39uK50T8X8dryD
-xUcwYc58yWb/Ffm7/ZFexwGq01uejaClcjrUGvC/RgBYK+X0iP1YTknbzSC0neSR
-BzZrM2w4DUUdD3yIsxx8Wy2O9vPJI8BD8KVbGI2Ou1WMuF040zT9fBdXQ6MdGGze
-MyEstSr/POGxKUAYEY18hKcKctaGxAMZyAcpesqVDNmWn6vQClCbAkbTCD1mpF1B
-n5x8vYlLIhkmuquiXsNV6TILOwACAggAzu/QObuykLGwPLCoSQEKfeNSGPOr7wK2
-XSp8c8DS1B2jrVL4oH+PYb6wVhcNd3+Xt4+P/BfllemRU80GD6t/RHoTEZhIhp/3
-8erBLJfLPqFDYdjKf30EMMjFWIhecg9QnZSXU2f7EJ24L+/vnotjAz6hZfJvjb1b
-1tX3PQ1W2e+lTFhSz1RYSKx4msEcez3Z0wValNqWlet3t78cCZRT4fPOkyM4C7Fb
-tK6csvFUXkIfu3qgx4aVk8HUIwXkHZD2W7XiFSPhMtgcPeUAb3AIeYJs/iqP4H4N
-4oJ8B6tXxmpDm3P85PhC4gJOFUThnZKGkLtWwdUago8XSKB5VUA/UIkARgQYEQIA
-BgUCOCGM0gAKCRAy7BdZMKIdVXS+AKDhyJwx048+c7ATINSGf6IxiXQyYQCg46pJ
-/fc0HVWUvHfjioDRaLQUIv8=
-=ut/M
+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
+0Wi0FCL/
+=QTmn
 -----END PGP PUBLIC KEY BLOCK-----
 
 -----BEGIN PGP PUBLIC KEY BLOCK-----
