@@ -404,6 +404,12 @@ public class ResultTreeHandler
     // m_flistener.startDocument();
     m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
                                                       GenerateEvent.EVENTTYPE_STARTDOCUMENT));
+    ContentHandler chandler = getContentHandler();
+    if((null != chandler) 
+       && (chandler instanceof TransformerClient))
+    {
+      ((TransformerClient)chandler).setTransformState(m_transformer);
+    }
   }
 
   /**
