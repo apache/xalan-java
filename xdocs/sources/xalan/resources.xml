@@ -72,6 +72,8 @@
             title="Xalan Repository Release Notes" 
             location="http://www.apache.org/websrc/cvsweb.cgi/xml-xalan/README"/>
             
+  <resource id="mulberryxsl-list" title="Mulberry XSL Mailing List" location="http://mulberrytech.com/xsl/xsl-list/index.html"/>
+
   <resource id="dpawsonxslfaq" title="XSL Frequently Asked Questions" location="http://www.dpawson.co.uk/xsl/xslfaq.html"/>
   
   <resource id="xsl" 
@@ -113,6 +115,9 @@
             title="xml-commons/java/external/src"
             location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>
             
+  <resource id="endorsed"
+            title="Endorsed Standards Override Mechanism"
+            location="http://java.sun.com/j2se/1.4/docs/guide/standards/"/>
            
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
