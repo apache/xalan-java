@@ -59,6 +59,8 @@ package org.apache.xalan.utils;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
+import org.apache.xpath.DOM2Helper;
+import org.apache.xpath.DOMHelper;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -67,14 +69,18 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class TreeWalker
 {
-  private ContentHandler m_formatterListener =   null;
+  private ContentHandler m_contentHandler =   null;
+  
+  // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
+  // DOM2Helper m_dh = new DOM2Helper();
+  DOMHelper m_dh = new DOMHelper();
   
   /**
    * Get the ContentHandler used for the tree walk.
    */
   public ContentHandler getFormatterListener()
   {
-    return m_formatterListener;
+    return m_contentHandler;
   }
   
   /**
@@ -84,7 +90,7 @@ public class TreeWalker
    */
   public TreeWalker(ContentHandler formatterListener) 
   {
-    this.m_formatterListener = formatterListener;
+    this.m_contentHandler = formatterListener;
   }
 
   /**
@@ -177,9 +183,9 @@ public class TreeWalker
     case Node.COMMENT_NODE:
       {
         String data = ((Comment)node).getData();
-        if(m_formatterListener instanceof LexicalHandler)
+        if(m_contentHandler instanceof LexicalHandler)
         {
-          LexicalHandler lh = ((LexicalHandler)this.m_formatterListener);
+          LexicalHandler lh = ((LexicalHandler)this.m_contentHandler);
           lh.comment(data.toCharArray(), 0, data.length());
         }
       }
@@ -188,11 +194,16 @@ public class TreeWalker
       // ??;
       break;
     case Node.DOCUMENT_NODE:
-      this.m_formatterListener.startDocument();
+      this.m_contentHandler.startDocument();
       break;
     case Node.ELEMENT_NODE:
       NamedNodeMap atts = ((Element)node).getAttributes();
-      this.m_formatterListener.startElement ("", "", node.getNodeName(), new AttList(atts));
+      // System.out.println("m_dh.getNamespaceOfNode(node): "+m_dh.getNamespaceOfNode(node));
+      // System.out.println("m_dh.getLocalNameOfNode(node): "+m_dh.getLocalNameOfNode(node));
+      this.m_contentHandler.startElement (m_dh.getNamespaceOfNode(node), 
+                                          m_dh.getLocalNameOfNode(node), 
+                                          node.getNodeName(), 
+                                          new AttList(atts, m_dh));
       break;
     case Node.PROCESSING_INSTRUCTION_NODE:
       {
@@ -205,20 +216,20 @@ public class TreeWalker
         }
         else
         {
-          this.m_formatterListener.processingInstruction(pi.getNodeName(), pi.getData());
+          this.m_contentHandler.processingInstruction(pi.getNodeName(), pi.getData());
         }
       }
       break;
     case Node.CDATA_SECTION_NODE:
       {
         String data = ((Text)node).getData();
-        boolean isLexH = (m_formatterListener instanceof LexicalHandler);
-        LexicalHandler lh = isLexH ? ((LexicalHandler)this.m_formatterListener) : null;
+        boolean isLexH = (m_contentHandler instanceof LexicalHandler);
+        LexicalHandler lh = isLexH ? ((LexicalHandler)this.m_contentHandler) : null;
         if(isLexH)
         {
           lh.startCDATA();
         }
-        this.m_formatterListener.characters(data.toCharArray(), 0, data.length());
+        this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
         {
           if(isLexH)
           {
@@ -233,28 +244,28 @@ public class TreeWalker
         if(nextIsRaw)
         {
           nextIsRaw = false;
-          if(this.m_formatterListener instanceof RawCharacterHandler)
+          if(this.m_contentHandler instanceof RawCharacterHandler)
           {
-            ((RawCharacterHandler)this.m_formatterListener).charactersRaw(data.toCharArray(), 0, data.length());
+            ((RawCharacterHandler)this.m_contentHandler).charactersRaw(data.toCharArray(), 0, data.length());
           }
           else
           {
             System.out.println("Warning: can't output raw characters!");
-            this.m_formatterListener.characters(data.toCharArray(), 0, data.length());
+            this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
           }
         }
         else
         {
-          this.m_formatterListener.characters(data.toCharArray(), 0, data.length());
+          this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
         }
       }
       break;
     case Node.ENTITY_REFERENCE_NODE:
       {
         EntityReference eref = (EntityReference)node;
-        if(m_formatterListener instanceof LexicalHandler)
+        if(m_contentHandler instanceof LexicalHandler)
         {
-          ((LexicalHandler)this.m_formatterListener).startEntity(eref.getNodeName());
+          ((LexicalHandler)this.m_contentHandler).startEntity(eref.getNodeName());
         }
         else
         {
@@ -272,19 +283,19 @@ public class TreeWalker
     switch(node.getNodeType())
     {
     case Node.DOCUMENT_NODE:
-      this.m_formatterListener.endDocument();
+      this.m_contentHandler.endDocument();
       break;
     case Node.ELEMENT_NODE:
-      this.m_formatterListener.endElement("", "", node.getNodeName());
+      this.m_contentHandler.endElement("", "", node.getNodeName());
       break;
     case Node.CDATA_SECTION_NODE:
       break;
     case Node.ENTITY_REFERENCE_NODE:
       {
         EntityReference eref = (EntityReference)node;
-        if(m_formatterListener instanceof LexicalHandler)
+        if(m_contentHandler instanceof LexicalHandler)
         {
-          LexicalHandler lh = ((LexicalHandler)this.m_formatterListener);
+          LexicalHandler lh = ((LexicalHandler)this.m_contentHandler);
           lh.endEntity(eref.getNodeName());
         }
       }
