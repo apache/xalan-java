@@ -371,11 +371,10 @@ public class SampleXSLTServlet extends javax.servlet.http.HttpServlet {
                      javax.servlet.http.HttpServletResponse response)
     throws javax.servlet.ServletException, java.io.IOException
   {
-    // Output goes in the response stream.
-    java.io.PrintWriter out = 
-                         new java.io.PrintWriter(response.getOutputStream());
     // Set content type for HTML.
-    response.setContentType("text/html");    
+    response.setContentType("text/html; charset=UTF-8");    
+    // Output goes to the response PrintWriter.
+    java.io.PrintWriter out = response.getWriter());
     try
     {	
       javax.xml.transform.TransformerFactory tFactory = 

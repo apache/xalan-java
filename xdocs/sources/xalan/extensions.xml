@@ -273,7 +273,7 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
 <p>If the extension element is implemented in a loosely typed scripting language, such as JavaScript, the arguments and return value are untyped.</p>
 <p><em>Caution:</em> The value returned by an extension element is placed in the transformation result. If you are not interested in a return value, use a public void Java method or return null from a scripting language function.</p>
 <p>Java example: <code>public void myElement</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(org.apache.xalan.xslt.XSLProcessorContext, </code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(org.apache.xalan.extensions.XSLProcessorContext, </code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.apache.xalan.templates.ElemExtensionCall extensionElement)</code></p>
 <p>JavaScript example: <code>function myElement(xslProcContext, element)</code></p>
 <p>The <link idref="extensionslib" anchor="redirect">Redirect extension</link> in the extensions library contains three extension elements.</p>

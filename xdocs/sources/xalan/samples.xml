@@ -192,6 +192,8 @@
     <p><link anchor="usestylesheetparamservlet">servlet.UseStylesheetParamServlet</link> sets a stylesheet parameter 
     (the parameter name is hardwired into the servlet), and requires the user to supply parameters for the 
     XML document and XSL stylesheet.</p>
+    <p><link anchor="jspsample">jspSample.jsp</link> is a Java ServerPage that sets a stylesheet parameter and applies the
+     stylesheet to the XML document.</p>
     <p><link anchor="xsltservletwithparams">servlet.XSLTServletWithParams</link> accepts parameters for the XML document, 
     the XSL stylesheet, and any number of stylesheet parameters.</p>
     <p><link anchor="applyxslt">servlet.ApplyXSLT</link> (and associated classes) is closer to a production level servlet. It accepts parameters, provides a 
@@ -227,6 +229,13 @@
      <code>transformer.setParameter("param1", paramValue);</code></p>
  <p>The result is returned to the client:</p>
 <p><code>&lt;html&gt;&lt;body&gt;&lt;p&gt;GoodBye&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</code></p>
+     </s3><anchor name="jspsample"/>
+     <s3 title="jspSample.jsp">
+     <note>Paul Campbell &lt;seapwc@halcyon.com&gt; wrote this Java Server Page.</note>
+     <p>This Java Server Page performs essentially the same operation as 
+     <link anchor="usestylesheetparamservlet">servlet.UseStylesheetParamServlet</link>. It applies a stylesheet parameter 
+      to a stylesheet (fooparam.xsl), applies the stylesheet to an XML source document (fooparam.xml), and returns the
+      result.</p>     
      </s3><anchor name="xsltservletwithparams"/>
      <s3 title="servlet.XSLTServletWithParams">
      <p>What it does: servlet.XSLTServletWithParams takes parameters in the request -- a URL parameter for
