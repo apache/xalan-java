@@ -315,7 +315,7 @@ public final class XSLTC {
 	setClassName(className);
 	if (compile(stylesheetURL)) {
 	    final int count = _classes.size();
-	    final byte[][] result = new byte[1][count];
+	    final byte[][] result = new byte[count][1];
 	    for (int i = 0; i < count; i++)
 		result[i] = (byte[])_classes.elementAt(i);
 	    return result;

@@ -63,6 +63,8 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import java.io.Serializable;
+
 import javax.xml.transform.*;
 
 import org.apache.xalan.xsltc.Translet;
@@ -71,10 +73,19 @@ import org.apache.xalan.xsltc.runtime.*;
 
 import java.util.Properties;
 
-public final class TemplatesImpl implements Templates {
+public final class TemplatesImpl implements Templates, Serializable {
     
+    // Contains the name of the main translet class
     private String   _transletName = null;
+
+    // Contains the actual class definition for the translet class and
+    // any auxiliary classes (representing node sort records, predicates, etc.)
     private byte[][] _bytecodes = null;
+
+    // This error could occur when a compilation inside the TransformerFactory
+    // failed and when a template has been loaded from stable storage.
+    private final static String TRANSLET_ERR_MSG =
+	"This template does not contain a valid translet class definition.";
     
     // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
@@ -84,7 +95,9 @@ public final class TemplatesImpl implements Templates {
     }
 
     /**
-     *
+     * The only way to create an XSLTC emplate object
+     * The bytecodes for the translet and auxiliary classes, plus the name of
+     * the main translet class, must be supplied
      */
     public TemplatesImpl(byte[][] bytecodes, String transletName) {
 	_bytecodes = bytecodes;
@@ -99,6 +112,9 @@ public final class TemplatesImpl implements Templates {
 	_bytecodes = bytecodes;
     }
 
+    /**
+     * Returns the translet bytecodes stored in this template
+     */
     public byte[][] getTransletBytecodes() {
 	return(_bytecodes);
     }
@@ -110,6 +126,9 @@ public final class TemplatesImpl implements Templates {
 	_transletName = name;
     }
 
+    /**
+     * Returns the name of the main translet class stored in this template
+     */
     public String getTransletName() {
 	return _transletName;
     }
@@ -160,6 +179,7 @@ public final class TemplatesImpl implements Templates {
 	// Create the class definition from the bytecodes if failed
 	try {
 	    Class transletClass = defineTransletClasses();
+	    if (transletClass == null) return null;
 	    return((Translet)transletClass.newInstance());
 	}
 	catch (LinkageError e) { return(null); }
@@ -173,6 +193,8 @@ public final class TemplatesImpl implements Templates {
     public Transformer newTransformer() throws 
 	TransformerConfigurationException {
 	Translet translet = getTransletInstance();
+	if (translet == null)
+	    throw new TransformerConfigurationException(TRANSLET_ERR_MSG);
 	TransformerImpl transformer = new TransformerImpl(translet);
         return(transformer);
     }
@@ -181,7 +203,10 @@ public final class TemplatesImpl implements Templates {
      * JAXP interface implementation - UNFINISHED!!!
      */
     public Properties getOutputProperties() { 
-	// TODO
+	// TODO - this method should extract the output properties stored in
+	// a translet instance. This could prove to be pretty tricky as this
+	// class has a reference to a translet class only and not to an
+	// actual instance of a translet
 	return new Properties(); 
     }
 

@@ -65,6 +65,7 @@ package org.apache.xalan.xsltc.trax;
 
 import javax.xml.transform.Templates; 
 import javax.xml.transform.Transformer; 
+import javax.xml.transform.TransformerFactory; 
 import javax.xml.transform.TransformerException; 
 import javax.xml.transform.ErrorListener; 
 import javax.xml.transform.Source; 
@@ -72,6 +73,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult; 
 import javax.xml.transform.URIResolver; 
 import javax.xml.transform.TransformerConfigurationException; 
+
 import javax.xml.transform.sax.SAXTransformerFactory; 
 import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.sax.TransformerHandler;
@@ -93,7 +95,7 @@ import java.net.MalformedURLException;
 /**
  * Implementation of a JAXP1.1 SAXTransformerFactory for Translets.
  */
-public class TransformerFactoryImpl extends SAXTransformerFactory {
+public class TransformerFactoryImpl extends TransformerFactory {
     public TransformerFactoryImpl() { /* nothing yet */ }
 
     ////////////////////////////////////////////////////// 

@@ -94,22 +94,39 @@ public final class TransformerImpl extends Transformer {
     private String           _encoding = null;
     private ContentHandler   _handler = null;
 
+    private final static String TRANSLET_ERR_MSG = 
+	"The transformer has no encapsulated translet object.";
+    private final static String HANDLER_ERR_MSG = 
+	"No defined output handler for transformation result.";
+
+    /**
+     * Our Transformer objects always need a translet to do the actual work
+     */
     public TransformerImpl(Translet translet) {
 	_translet = (AbstractTranslet)translet;
     }
 
+    /**
+     * JAXP interface implementation
+     */
     public void transform(Source source, Result result)
 	throws TransformerException {
 
-	if (_translet == null) return;
+	// Verify the input
+	if (_translet == null) throw new TransformerException(TRANSLET_ERR_MSG);
 	_handler = getOutputHandler(result);
-	if (_handler == null) return;
+	if (_handler == null) throw new TransformerException(HANDLER_ERR_MSG);
 	
-	// finally do the transformation...
-	doTransform(source.getSystemId(), _handler, _encoding);
+	// Run the transformation
+	transform(source.getSystemId(), _handler, _encoding);
     }
 
-    private ContentHandler getOutputHandler(Result result) {
+    /**
+     * Create an output handler, and get the requested output encoding
+     * from the translet instance
+     */
+    private ContentHandler getOutputHandler(Result result) 
+	throws TransformerException {
 	// Try to get the encoding from Translet (may not be set)
 	_encoding = _translet.getOutputEncoding();
 	if (_encoding == null) _encoding = "UTF-8";
@@ -135,6 +152,7 @@ public final class TransformerImpl extends Transformer {
 		ostream = (OutputStream)(new FileOutputStream(systemid));
 		return(new DefaultSAXOutputHandler(ostream, _encoding));
 	    }
+	    return null;
 	}
 	catch (java.io.FileNotFoundException e) {
 	    throw new TransformerException(e);
@@ -142,13 +160,14 @@ public final class TransformerImpl extends Transformer {
 	catch (java.io.IOException e) {
 	    throw new TransformerException(e);
 	}
-	finally {
-	    return null;
-	}
     }
  
-    private void doTransform(String source, ContentHandler handler,
-			     String encoding) {
+    /**
+     * Internal transformation method - uses the internal APIs of XSLTC
+     */
+    private void transform(String source,
+			   ContentHandler handler,
+			   String encoding) throws TransformerException {
 	try {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -181,54 +200,34 @@ public final class TransformerImpl extends Transformer {
 	    _translet.transform(dom, textOutput);
 	}
 	catch (TransletException e) {
-	    if (_errorListener != null) {
+	    if (_errorListener != null)
 		postErrorToListener(e.getMessage());
-	    } else {
-	        System.err.println("\nTranslet Error: " + e.getMessage());
-	    }
-	    System.exit(1);
+	    throw new TransformerException(e);
 	}
 	catch (RuntimeException e) {
-	    if (_errorListener != null) {
+	    if (_errorListener != null)
 		postErrorToListener("Runtime Error: " + e.getMessage());
-	    } else {
-	        System.err.println("\nRuntime Error: " + e.getMessage());
-	    }
-	    System.exit(1);
+	    throw new TransformerException(e);
 	}
 	catch (FileNotFoundException e) {
-	    if (_errorListener != null) {
+	    if (_errorListener != null)
 		postErrorToListener("File not found: " + e.getMessage());
-	    } else {
-		System.err.println("Error: File not found:"+e.getMessage());
-	    }
-	    System.exit(1);
+	    throw new TransformerException(e);
 	}
 	catch (MalformedURLException e) {
-	    if (_errorListener != null) {
+	    if (_errorListener != null)
 		postErrorToListener("Malformed URL: " + e.getMessage());
-	    } else {
-	        System.err.println("Error: Malformed URL: "+e.getMessage());
-	    }
-	    System.exit(1);
+	    throw new TransformerException(e);
 	}
 	catch (UnknownHostException e) {
-	    if (_errorListener != null) {
+	    if (_errorListener != null)
 		postErrorToListener("Cannot resolve URI: " + e.getMessage());
-	    } else {
-	        System.err.println("Error: Cannot resolve URI: "+
-				   e.getMessage());
-	    }
-	    System.exit(1);
+	    throw new TransformerException(e);
 	}
 	catch (Exception e) {
-	    if (_errorListener != null) {
+	    if (_errorListener != null)
 		postErrorToListener("Internal error: " + e.getMessage()); 
-	    } else {
-	        System.err.println("Internal error: "+e.getMessage());
-	        e.printStackTrace();
-	    }
-	    System.exit(1);
+	    throw new TransformerException(e);
 	}
     }
 
