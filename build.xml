@@ -103,7 +103,7 @@ Copyright:
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
-            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/bugs.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl,stylesheets/xml2fo.xsl"/>
+            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/bugs.xsl,stylesheets/done.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl,stylesheets/xml2fo.xsl"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
@@ -136,10 +136,16 @@ Copyright:
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
     </java> 
-    <!-- We use a Notes agent to extract Xalan-Java 2 bugs from our SPR database into bugs.xml.  The following operation 
+    <!-- We use a Notes agent to extract Xalan-Java 2 bugs from our SPR database into commits.xml.  The following operation 
     transforms bugs.xml (just including open bugs) and puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in bugs.xml -xsl ${xdocs.style}/stylesheets/bugs.xsl -out ${xdocs.dir}/sources/xalan/BUGS"/>
+    </java>      
+    <!-- We use a Notes agent to extract Xalan-Java 2 commits from our team database into bugs.xml.  The following operation 
+    transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
+    readme.xml -->      
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out ${xdocs.dir}/sources/xalan/DONE"/>
     </java>
     <!-- Generate the Xalan-J2 design document -->
     <java fork="yes" classname="${doc.generator}"
@@ -331,8 +337,8 @@ Copyright:
   <!-- must be on the classpath                                             -->
   <!-- =================================================================== -->
  <target name="servlet" depends="jar"
-    description="Compile and jar the servlet sample" >
-     <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
+    description="Compile and jar the servlet samples" >
+     <echo message="To compile the sample servlets, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.samples}/servlet"/>
      <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"
@@ -341,8 +347,9 @@ Copyright:
           <fileset dir="${samples.dir}/servlet" 
                 includes="media.properties,default.xsl,default2.xsl"/>
         </copy>  		         
-    <jar jarfile="${build.dir}/xalanservlet.jar" basedir="${build.samples}"
-         includes="servlet/**"/>            
+    <jar jarfile="${build.dir}/xalanservlet.jar" 
+         basedir="${build.samples}" 
+         includes="servlet/**"/>
  </target>
  
   <!-- =================================================================== -->
@@ -482,7 +489,7 @@ Copyright:
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
+      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml,commits.xml"/>
     </copy>
           
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
@@ -703,7 +710,7 @@ Copyright:
                 includes="media.properties,default.xsl,default2.xsl"/>
         </copy>  		         
     <jar jarfile="${build.compat.samples}/xalancompatservlet.jar" basedir="${build.compat.samples}"
-         includes="servlet/**"/>            
+         includes="servlet/**"/>
  </target>
-      
+ 
 </project>

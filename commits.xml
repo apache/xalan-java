@@ -1,0 +1,467 @@
+<?xml version="1.0"?>
+<Commits>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/02/2001</DateCommitted>
+<Modified>java/compat_src compatOverview.html</Modified>
+<Log>Fixed spelling error.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/02/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTInputSource.java
+ XSLTResultTarget.java</Modified>
+<Log>Implement some more methods for compatibility</Log>
+</Commit>
+<Commit category="compat">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/02/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTInputSource.java</Modified>
+<Log>Fixed javadoc for api that was just added back.</Log>
+</Commit>
+<Commit category="compat">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/02/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTResultTarget.java</Modified>
+<Log>Fixed javadoc for api that was just added back.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/02/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
+<Log>Fix problem with calling the processor with a liaison</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/02/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
+<Log>Fix problem where source file was being parsed more than once and if using an 
+input stream, we would get a read error</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes ChildWalkerMultiStep.java</Modified>
+<Log>Fix for bug reported by "Chris P. McCabe" &lt;chris_mccabe@choicehotels.com&gt;
+ 02/06/2001 06:55 PM.
+ Defensive fix for if the last used walker is null, then don't check to
+ see if it is a fast walker! Without this, a null pointer exception is
+ very possible.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Fixes for exceptions being thrown that weren't being passed through
+ the error listener.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/07/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes FollowingWalker.java</Modified>
+<Log>Fix for bug reported by Dave Haffner &lt;dave.haffner@xmls.com&gt;
+ 02/06/2001 04:03 AM
+ In parentNode(), don't screen out nextAncestor, since the parent
+ is never actually returned. This sets things up correctly for firstChild
+ and nextSibling.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/07/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes PrecedingWalker.java</Modified>
+<Log>Fix for bug reported by Dave Haffner &lt;dave.haffner@xmls.com&gt;
+ 02/06/2001 04:03 AM
+ In nextSibling(), don't return null if isAncestorOfRootContext, instead
+ do next.getFirstChild().</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/07/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath SourceTreeManager.java</Modified>
+<Log>Fix for bug reported by anders.domeij@uc.se
+ 02/07/2001 09:35 AM
+ removed extra bogus TransformerException decl in resolveURI</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/stree SourceTreeHandler.java</Modified>
+<Log>Fix bug reported by Jason Harrop &lt;jharrop@bigpond.net.au&gt;
+ 02/07/2001 08:12 PM
+ Don't process comment or whitespace events if inside a startDTD/endDTD
+ event.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes WalkerFactory.java</Modified>
+<Log>In indirect response to bug posted by "Thee Boon Hoo" &lt;theebh@newstakes.com&gt;
+ 02/07/2001 09:37 PM
+
+ "//table[1]" patterns would give one node
+ when they should have given 2, when applied to Boon Hoo's
+ source.
+ "//table[1]" is equivelent to
+ "/descendant-or-self::node()/table[1]",
+ and so must return the first table child
+ of each table-inst element.
+
+ An optimization was optimizing this to
+ "/descendant-or-self::table, which is
+ fine as long as indexing isn't used. Since
+ we can not tell until runtime if indexing
+ is being used, we have to turn of this
+ optimization for all predicated "//foo[xx]"
+ patterns.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/12/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
+<Log>Set system id in stylesheet handler</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor StylesheetPIHandler.java
+ TransformerFactoryImpl.java</Modified>
+<Log>Patch for Dmitri IIyin to use the specified URIResolver.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemNumber.java</Modified>
+<Log>Number Expression should be evaluated then rounded up.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/xdocs/style/stylesheets xml2fo.xsl</Modified>
+<Log>Added processing for &lt;source&gt; elements, i.e., code.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan usagepatterns.xml</Modified>
+<Log>Fixed typo in class name.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Create a document fragment for the output node, for -flavor d2d.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/compiler Compiler.java</Modified>
+<Log>Better error message when quo is used.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemCallTemplate.java
+ ElemChoose.java ElemCopy.java ElemFallback.java
+ ElemIf.java ElemLiteralResult.java
+ ElemTemplate.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Remove extra method/call to TransformerImpl.executeChildTemplates()</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan DONE history.xml</Modified>
+<Log>preliminary updates for next release.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/patterns NodeTest.java</Modified>
+<Log>Return an empty string instead of null from getLocalName() when the
+ nodetest does not have a name. Encountered with the SQL extension,
+ in response to bug reported by "Michael Kay" &lt;mhkay@iclway.co.uk&gt;,
+ 02/08/2001 08:57 AM.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql ColumnData.java</Modified>
+<Log>In getData() return an empty string instead of null if there is
+ no data to be obtained.
+ In response to bug reported by "Michael Kay" &lt;mhkay@iclway.co.uk&gt;,
+ 02/08/2001 08:57 AM.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/14/2001</DateCommitted>
+<Modified>java/xdocs/style/stylesheets xml2fo.xsl</Modified>
+<Log>Added support for images.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/14/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan DONE</Modified>
+<Log>Added SQL library bug fixes.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/14/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan faq.xml usagepatterns.xml</Modified>
+<Log>1. Added item on classpath problems using the IBM JDK 1.3.
+ 2. Added usage patern note on change in handling of string
+ stylesheet parameters from Xalan-J 1 to Xalan-J 2.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/14/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTInputSource.java</Modified>
+<Log>Call local setSystemId.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/15/2001</DateCommitted>
+<Modified>java/xdocs/style/stylesheets xml2fo.xsl</Modified>
+<Log>Added processing for &lt;br/&gt;.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/15/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
+<Log>Fix problem with processing an input source created from a reader with no 
+systemId
+ Fix problem with reading an input source file twice if it has a PI</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/16/2001</DateCommitted>
+<Modified>java/xdocs/style/stylesheets xml2fo.xsl</Modified>
+<Log>Tried to refine use of keep-with-next. This component is
+ currently broken.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>02/19/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions MethodResolver.java</Modified>
+<Log>Correct ConversionInfo array for Node-Set and RTF. Remove DocumentFragment 
+from RTF and replace with NodeList. Remove duplicate Boolean from both. Fix 
+Boolean conversion to make java.lang.Boolean higher than string.</Log>
+</Commit>
+<Commit category="other">
+<Who>garyp@apache.org</Who>
+<DateCommitted>02/19/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan extensions.xml</Modified>
+<Log>Correct ConversionInfo array for Node-Set and RTF. Remove DocumentFragment 
+from RTF and replace with NodeList. Remove duplicate Boolean from both. Fix 
+Boolean conversion to make java.lang.Boolean higher than string.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/19/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql ColumnHeader.java
+ RowSet.java XStatement.java</Modified>
+<Log>Use null nodetest to mean the same as "node()". This fixes a bug reported
+ by "Voytenko, Dimitry" &lt;DVoytenko@SECTORBASE.COM&gt;
+ where &lt;xsl:copy-of select="sql:query(...)"/&gt;
+ crashes with NullPointerException, i.e.
+ there are cases where we really don't want
+ to set the NodeTest.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/20/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan overview.xml resources.xml</Modified>
+<Log>Updated two links.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/20/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan overview.xml</Modified>
+<Log>Updated ref to XSL spec.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/20/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan DONE</Modified>
+<Log>More bug fixes.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/compiler XPathParser.java</Modified>
+<Log>Check for null token before checking if it is a letter</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/20/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java</Modified>
+<Log>Fix made for bug reported by "Glencross, Christian" 
+&lt;Christian.Glencross@gs.com&gt;
+ on 02/16/2001 10:18 AM.
+ Xerces 1.2.3 SAX parser calls
+ handler.setDocumentLocator() before handler.startDocument().
+ TransformerIdentityImpl.m_resultContentHandler isn't initialised until
+ TransformerIdentityImpl.startDocument() is called.
+ Added lazy construction of result handler
+ in setDocumentLocator, in addition to
+ startDocument.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>02/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib Extensions.java</Modified>
+<Log>Correct implementation of string value of a node.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/21/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java Row.java RowSet.java
+ StreamableNode.java XConnection.java
+ XStatement.java package.html</Modified>
+<Log>Added experimental usage metatag to all classes in this package,
+ and an explanatory note to package.html.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/21/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan extensionslib.xml</Modified>
+<Log>Added explanatory note about experimental nature of this extensions package.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/21/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan commandline.xml</Modified>
+<Log>Removed -validate flag from command-line options.</Log>
+</Commit>
+<Commit category="compat">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/22/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xslt StylesheetRoot.java</Modified>
+<Log>Add getOutputMethod API.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/22/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/stree ElementImpl.java</Modified>
+<Log>Bug fix attributed to Norman Walsh &lt;ndw@nwalsh.com&gt;, on
+ 02/20/2001 09:50 AM. if the attribute 'name' doesn't occur in the AttList, 
+the
+ result of getIndex(name) is -1, but
+ getChildAttribute() would incorrectly
+ return the first attribute. Fix returns
+ null if index &lt; 0.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/22/2001</DateCommitted>
+<Added>java/samples/servlet SimpleXSLTServlet.java
+ XSLTServletWithParams.java</Added>
+<Log>Simpler servlet samples</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>02/22/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToXML.java
+ java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java</Modified>
+<Log>Implement DeclHandler for identity transforms</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/22/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan DONE samples.xml usagepatterns.xml</Modified>
+<Log>Added info on servlets and 2 new samples.
+ More bug fixes in "DONE".</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>02/22/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Fix for bug originally reported by Daryl Beattie &lt;DarylB@screamingmedia.com&gt;
+ on 02/14/2001 04:16 PM. A hang was occuring inside the use
+ of a Result Tree Fragment. When the result tree fragement was
+ being created, the Redirect extension was being called, which
+ called createResultContentHandler which set the ContentHandler
+ in the Transformer, but not in the ResultTreeHandler. Then, Redirect
+ called Transformer#executeChildTemplates(
+ ElemTemplateElement elem, Node sourceNode, QName mode, 
+ContentHandler handler)
+ which saves the reference to the original content handler in
+ the transformer, and then sets the new one by calling setContentHandler,
+ which sets the ContentHandler in the ResultTreeHandler as well
+ as the Transformer. When it tried to restore the old ContentHandler,
+ it restored the value in the ResultTreeHandler to a Serializer, instead
+ of the correct ContentHandler. When transformToRTF then called
+ endDocument on it's resultTreeFragment, the event was sent
+ to the Serializer instead of the SourceTreeHandler, and thus the
+ isComplete flag was not set, and thus the hang. (whew!)
+ The fix is in executeChildTemplates save the value of the
+ resultTreeHandler's contentHandler as well as Transformer's
+ content handler, and restore them both. A more architectual fix
+ could be made, but not without high risk, so I think this is the best
+ and safest way to fix it.</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/23/2001</DateCommitted>
+<Modified>java/xdocs/sources entities.ent xalan-jsite.xml</Modified>
+<Log>Changed version to 2.0.1</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/23/2001</DateCommitted>
+<Modified>java/xdocs/sources/xalan readme.xml</Modified>
+<Log>Changed version to 2.0.1</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/23/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>Changed version to 2.0.1</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/23/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>Changed version to 2.0.1</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/23/2001</DateCommitted>
+<Modified>java/bin xerces.jar</Modified>
+<Log>version 1.3 from Xerces-J-Tools.1.3.0.zip</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/27/2001</DateCommitted>
+<Modified>java/bin xerces.jar</Modified>
+<Log>Returning to Xerces 1.2.3. Release 1.3 generates the following error:
+ [java] http://www.w3.org/1999/XSL/Transform grammar not found
+ [java] java.lang.NoSuchMethodError: org.w3c.dom.Node: method
+ isSupported(Ljava/lang/String;Ljava/lang/String;)Z not found...</Log>
+</Commit>
+<Commit category="other">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>02/27/2001</DateCommitted>
+<Modified>java/bin xerces.jar</Modified>
+<Log>The real Xerces-J 1.3.0.
+ The xerces.jar in the xerces-1_3_0 binary distribution is OLD.
+ I built the jar from the src distribution, and it appears to work fine.</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>02/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTErrorResources.java</Modified>
+<Log>Update text of error messages
+ Submitted by: Andreas Zehnpfund</Log>
+</Commit>
+<Commit category="core">
+<Who>curcuru@apache.org</Who>
+<DateCommitted>02/28/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Update printArgOptions() with better text and to better reflect actual
+ options that are currently supported; catch missing -IN argument</Log>
+</Commit>
+</Commits>
