@@ -45,6 +45,15 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLProcessorContext.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLTJavaClassEngine.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)Redirect.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)XConnection.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)XStatement.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)Column.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)ColumnData.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)ColumnHeader.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)Row.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)RowSet.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)StreamableNode.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)ColumnAttribute.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorAttributeSet.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorCharacters.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorDecimalFormat.java \

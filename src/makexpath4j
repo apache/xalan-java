@@ -102,6 +102,7 @@ SRCS = \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)patterns$(PATHSEP)AncestorStepPattern.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)patterns$(PATHSEP)FunctionPattern.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)patterns$(PATHSEP)NodeTest.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)patterns$(PATHSEP)NodeTestFilter.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)patterns$(PATHSEP)StepPattern.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)patterns$(PATHSEP)UnionPattern.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)res$(PATHSEP)XPATHErrorResourceBundle.java \
