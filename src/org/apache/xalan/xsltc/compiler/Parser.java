@@ -915,7 +915,6 @@ public class Parser implements Constants, ContentHandler {
     public SyntaxTreeNode makeInstance(String uri, String prefix, 
 	String local, Attributes attributes)
     {
-	//boolean isStylesheet = false;
 	SyntaxTreeNode node = null;
 	QName  qname = getQName(uri, prefix, local);
 	String className = (String)_instructionClasses.get(qname);
@@ -930,7 +929,6 @@ public class Parser implements Constants, ContentHandler {
 		    node.setLineNumber(_locator.getLineNumber());
 		}
 		if (node instanceof Stylesheet) {
-		    //isStylesheet = true;
 		    _xsltc.setStylesheet((Stylesheet)node);
 		}
 		checkForSuperfluousAttributes(node, attributes);
