@@ -238,7 +238,16 @@ public class XSLTSchema extends XSLTElementDef
                            new ProcessorCharacters(), 
                            ElemTextLiteral.class /* class object */ );
     charData.setType(XSLTElementDef.T_PCDATA);
-    
+
+    XSLTElementDef whiteSpaceOnly
+      = new XSLTElementDef(null, "text()", 
+                           null /*alias */, 
+                           null /* elements */,
+                           null, /* attributes */ 
+                           null, 
+                           ElemTextLiteral.class /* should be null? -sb */ );
+    charData.setType(XSLTElementDef.T_PCDATA);
+
     XSLTAttributeDef resultAttr
       = new XSLTAttributeDef(null, "*", XSLTAttributeDef.T_AVT, false);
 
@@ -607,7 +616,7 @@ public class XSLTSchema extends XSLTElementDef
 
      XSLTAttributeDef extensionElementPrefixesAttr
       = new XSLTAttributeDef(null, "extension-element-prefixes", 
-                             XSLTAttributeDef.T_CDATA, false);
+                             XSLTAttributeDef.T_STRINGLIST, false);
      
      XSLTAttributeDef idAttr
       = new XSLTAttributeDef(null, "id", 
@@ -639,7 +648,7 @@ public class XSLTSchema extends XSLTElementDef
     build(null, 
           null, 
           null, 
-          new XSLTElementDef[] {stylesheetElemDef, resultElement},
+          new XSLTElementDef[] {stylesheetElemDef, whiteSpaceOnly, resultElement},
           null, 
           new ProcessorStylesheetDoc(), /* ContentHandler */
           null /* class object */

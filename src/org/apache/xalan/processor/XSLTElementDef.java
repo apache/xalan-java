@@ -307,8 +307,11 @@ class XSLTElementDef
    */
   void setElementProcessor(XSLTElementProcessor handler) 
   {
-    m_elementProcessor = handler; 
-    m_elementProcessor.setElemDef(this);
+    if (handler != null)
+    {  
+      m_elementProcessor = handler; 
+      m_elementProcessor.setElemDef(this);
+    }  
   }
 
   /**
