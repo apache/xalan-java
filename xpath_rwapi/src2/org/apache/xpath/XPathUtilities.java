@@ -59,8 +59,10 @@
 package org.apache.xpath;
 
 import org.apache.xpath.expression.Expr;
+import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.OperatorExpr;
 import org.apache.xpath.expression.PathExpr;
+import org.apache.xpath.expression.StepExpr;
 
 /**
  * A collection of utility methods for XPath.
@@ -71,7 +73,10 @@ public class XPathUtilities
 {
 
 	/**
-	 * Return true whether the specified expression matches document node
+	 * Return true whether the specified expression matches document node.
+	 * The test is performed statically, therefore there is no guarantee
+	 * that the expression will indeed match the document node at runtime.
+	 * (example: node()).
 	 * @param Expr
 	 * @return boolean 		
 	 */
@@ -95,7 +100,22 @@ public class XPathUtilities
 			case Expr.PATH_EXPR :
 				PathExpr p = (PathExpr) expr;
 				// TODO: revisit after implementation of fn:root(...)=> operandCount == 1
-				result = p.isAbsolute() && p.getOperandCount() == 0;
+					result =
+						(p.isAbsolute() && p.getOperandCount() == 0) // '/'
+	|| (p.getOperandCount() == 1 && isMatchDocumentNode(p.getOperand(0)));
+				
+				break;
+			case Expr.STEP :
+				StepExpr s = (StepExpr) expr;
+				try
+				{
+					result = s.getNodeTest().isKindTest()
+						&& s.getNodeTest().getKindTest() == NodeTest.ANY_KIND_TEST;
+				} catch (XPathException e)
+				{
+					// impossible
+					result = false;
+				}
 				break;
 			case Expr.COMBINE_EXPR : // Union, intersect, except
 				OperatorExpr c = (OperatorExpr) expr;
