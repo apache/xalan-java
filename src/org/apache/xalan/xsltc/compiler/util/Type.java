@@ -79,7 +79,9 @@ public abstract class Type implements Constants {
     public static final Type ResultTree = new ResultTreeType();
     public static final Type Reference  = new ReferenceType();
     public static final Type Void       = new VoidType();
-    public static final Type Object     = new ObjectType();
+    
+    public static final Type Object       = new ObjectType(java.lang.Object.class);
+    public static final Type ObjectString = new ObjectType(java.lang.String.class);
 
     public static final Type Node       = new NodeType(NodeTest.ANODE);
     public static final Type Root       = new NodeType(NodeTest.ROOT);
@@ -89,6 +91,38 @@ public abstract class Type implements Constants {
     public static final Type Comment    = new NodeType(NodeTest.COMMENT);
     public static final Type Processing_Instruction = new NodeType(NodeTest.PI);
 
+    /**
+     * Factory method to instantiate object types. Returns a pre-defined
+     * instance for "java.lang.Object" and "java.lang.String".
+     */
+    public static Type newObjectType(String javaClassName) {
+        if (javaClassName == "java.lang.Object") {
+            return Type.Object;
+        }
+        else if (javaClassName == "java.lang.String") {
+            return Type.ObjectString;
+        }
+        else {
+            return new ObjectType(javaClassName);
+        }
+    }
+    
+   /**
+     * Factory method to instantiate object types. Returns a pre-defined
+     * instance for java.lang.Object.class and java.lang.String.class.
+     */
+    public static Type newObjectType(Class clazz) {
+        if (clazz == java.lang.Object.class) {
+            return Type.Object;
+        }
+        else if (clazz == java.lang.String.class) {
+            return Type.ObjectString;
+        }
+        else {
+            return new ObjectType(clazz);
+        }
+    }
+    
     /**
      * Returns a string representation of this type.	
      */

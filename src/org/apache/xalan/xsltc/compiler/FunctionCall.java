@@ -512,10 +512,8 @@ class FunctionCall extends Expression {
 	        _isExtConstructor = true;
 		bestConstrDistance = currConstrDistance;
 		
-		if (_clazz != null)
-	          _type = new ObjectType(_clazz);
-		else
-		  _type = new ObjectType(_className);
+                _type = (_clazz != null) ? Type.newObjectType(_clazz)
+                    : Type.newObjectType(_className);
 	    }
 	}
 
@@ -651,7 +649,7 @@ class FunctionCall extends Expression {
 		
 		  _type = (Type) _java2Internal.get(extType);
 		  if (_type == null) {
-		      _type = new ObjectType(extType);
+		      _type = Type.newObjectType(extType);
 		  }		
 
 		  // Use this method if all parameters & return type match

@@ -108,7 +108,7 @@ final class CastCall extends FunctionCall {
 	Expression exp = argument(0);
         if (exp instanceof LiteralExpr) {
             _className = ((LiteralExpr) exp).getValue();
-            _type = new ObjectType(_className);
+            _type = Type.newObjectType(_className);
         }
         else {
 	    throw new TypeCheckError(new ErrorMsg(ErrorMsg.NEED_LITERAL_ERR,

@@ -77,21 +77,16 @@ import org.apache.xalan.xsltc.compiler.Constants;
 import org.apache.xml.utils.ObjectFactory;
 
 public final class ObjectType extends Type {
-
+    
     private String _javaClassName = "java.lang.Object";
     private Class  _clazz = java.lang.Object.class;
-
-    /**
-     * Used to represent an 'any' type.
-     */
-    protected ObjectType() {}
 
     /**
      * Used to represent a Java Class type such is required to support 
      * non-static java functions. 
      * @param javaClassName name of the class such as 'com.foo.Processor'
      */
-    public ObjectType(String javaClassName) {
+    protected ObjectType(String javaClassName) {
 	_javaClassName = javaClassName;
 
 	try {
@@ -103,7 +98,7 @@ public final class ObjectType extends Type {
 	}
     }
     
-    public ObjectType(Class clazz) {
+    protected ObjectType(Class clazz) {
         _clazz = clazz;
         _javaClassName = clazz.getName();	
     }
