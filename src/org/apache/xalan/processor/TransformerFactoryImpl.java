@@ -657,11 +657,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
     if (null == baseID)
     {
-      String currentDir = System.getProperty("user.dir");
-      ;
+      try
+      {
+        String currentDir = System.getProperty("user.dir");
 
-      baseID = "file:///" + currentDir + java.io.File.separatorChar
-               + source.getClass().getName();
+        baseID = "file:///" + currentDir + java.io.File.separatorChar
+                 + source.getClass().getName();        
+      }
+      catch (SecurityException se)
+      {
+        // For untrusted applet case, user.dir is outside the sandbox 
+        //  and not accessible: just leave baseID as null (-sb & -sc)
+      }
     }
 
     builder.setSystemId(baseID);
