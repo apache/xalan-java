@@ -3085,11 +3085,12 @@ public class TransformerImpl extends Transformer
       {
         m_isTransformDone = false;
         
-        if(m_inputContentHandler instanceof TransformerHandlerImpl)
-        {
-          TransformerHandlerImpl thi = (TransformerHandlerImpl)m_inputContentHandler;
-          thi.waitForInitialEvents();
-        }
+	// Should no longer be needed...
+//          if(m_inputContentHandler instanceof TransformerHandlerImpl)
+//          {
+//            TransformerHandlerImpl thi = (TransformerHandlerImpl)m_inputContentHandler;
+//            thi.waitForInitialEvents();
+//          }
 
         transformNode(m_doc);
         
