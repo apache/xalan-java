@@ -592,12 +592,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     TemplatesHandler builder = newTemplatesHandler();
     
+    String baseID = source.getSystemId();
+    if(null == baseID)
+    {
+      String currentDir = System.getProperty("user.dir");;
+      baseID = "file:///"+currentDir+java.io.File.separatorChar+source.getClass().getName();
+    }
+    builder.setSystemId(baseID);
+    
     if(source instanceof DOMSource)
     {
       DOMSource dsource = (DOMSource)source;
       Node node = dsource.getNode();
-      String baseID = dsource.getSystemId();
-      builder.setSystemId(baseID);
       return processFromNode(node, baseID);
     }
     
