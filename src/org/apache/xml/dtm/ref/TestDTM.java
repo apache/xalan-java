@@ -1,116 +1,155 @@
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.ref.DTMDocumentImpl;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.TestDTMNodes;
-import org.xml.sax.helpers.AttributesImpl;
+
 
 /**
- * Tests the DTM by creating
+ * Unit test for DTMManager/DTM
  *
- * REWRITTEN to use SAX2 ContentHandler APIs -- original draft used
- * an incomplete/incorrect version of SAX1 DocumentHandler, which is
- * being phased out as quickly as we can possibly manage it.
+ * Loads an XML document from a file (or, if no filename is supplied,
+ * an internal string), then dumps its contents. Replaces the old
+ * version, which was specific to the ultra-compressed implementation.
+ * (Which, by the way, we probably ought to revisit as part of our ongoing
+ * speed/size performance evaluation.)
  *
- * %TBD% I _think_ the SAX convention is that "no namespace" is expressed
- * as "" rather than as null (which is the DOM's convention). What should 
- * DTM expect? What should it do with the other?
- */
+ * %REVIEW% Extend to test DOM2DTM, incremental, DOM view of the DTM, 
+ * whitespace-filtered, indexed/nonindexed, ...
+ * */
 public class TestDTM {
 
-  public static void main(String argv[]) {
-    String text;
-
-    /*  <?xml version="1.0"?>
-     *  <top>
-     *   <A>
-     *    <B hat="new" car="Honda" dog="Boxer">Life is good</B>
-     *   </A>
-     *   <C>My Anaconda<D/>Words</C>
-     *  </top> */
-
-    DTMDocumentImpl doc = new DTMDocumentImpl(null, 0, null, 
-                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
-
+  public static void main(String argv[])
+  {
     try
+    {
+      // Pick our input source
+      Source source;
+      if(argv.length<1)
       {
-        doc.startDocument();
-
-        doc.startElement("", "top", "top", null);
-
-        doc.startElement("", "A", "A", null);
-
-        AttributesImpl atts = new AttributesImpl();
-        atts.addAttribute("", "", "hat", "CDATA", "new");
-        atts.addAttribute("", "", "car", "CDATA", "Honda");
-        atts.addAttribute("", "", "dog", "CDATA", "Boxer");
-        doc.startElement("","B","B", atts);
-        text="Life is good";
-        doc.characters(text.toCharArray(),0,text.length());
-        doc.endElement("","B","B");
-
-        doc.endElement("","A","A");
-        doc.startElement("","C","C", null);
-
-        text="My Anaconda";
-        doc.characters(text.toCharArray(),0,text.length());
-        doc.startElement("","D","D",null);
-        doc.endElement("","D","D");
-        text="Words";
-        doc.characters(text.toCharArray(),0,text.length());
-
-        doc.endElement("", "C", "C");
-
-        boolean BUILDPURCHASEORDER=false;
-        if(BUILDPURCHASEORDER)
-          {
-            int root, h, c1, c2, c3, c4, c1_text, c2_text, c3_text, c4_text;
-
-            doc.startElement(null,"PurchaseOrderList","PurchaseOrderList", null);
-
-            for (int i = 0; i < 10; i++) {
-
-              doc.startElement("","PurchaseOrder","PurchaseOrder", null);
-
-              doc.startElement("","Item","Item", null);
-              text="Basketball" + " - " + i;
-              doc.characters(text.toCharArray(),0,text.length());
-                      
-              doc.endElement("", "Item", "Item");
-
-              doc.startElement("","Description","Description", null);
-              // c2.createAttribute();
-              text="Professional Leather Michael Jordan Signatured Basketball";
-              doc.characters(text.toCharArray(),0,text.length());
-                      
-              doc.endElement("", "Description", "Description");
-
-              doc.startElement("","UnitPrice","UnitPrice", null);
-              text="$12.99";
-              doc.characters(text.toCharArray(),0,text.length());
-                      
-              doc.endElement("", "UnitPrice", "UnitPrice");
-
-              doc.startElement("","Quantity","Quantity", null);
-              text="50";
-              doc.characters(text.toCharArray(),0,text.length());
-                      
-              doc.endElement("", "Quantity", "Quantity");
-
-              doc.endElement("", "PurchaseOrder", "PurchaseOrder");
-            }
-
-            doc.endElement("", "PurchaseOrderList", "PurchaseOrderList");
-          } // if(BUILDPURCHASEORDER)
-
-        doc.endElement("", "top", "top");
-        doc.endDocument();
+	String defaultSource=
+	  "<?xml version=\"1.0\"?>\n"+
+	  "  <dummyDocument>\n"+
+	  "   <A>\n"+
+	  "    <B hat=\"new\" car=\"Honda\" dog=\"Boxer\">Life is good</B>\n"+
+	  "   </A>\n"+
+	  "   <C>My Anaconda<D/>Words</C>\n"+
+	  "  To test with a more interesting docuent, provide the URI on the command line!\n"+
+	  "  </dummyDocument>\n";
+	source=new StreamSource(new java.io.StringReader(defaultSource));
       }
-    catch(org.xml.sax.SAXException e)
+      else
+      {
+	// Read from a URI
+	source=new StreamSource(argv[0]);
+      }
+
+      // Get a DTM manager, and ask it to load the DTM "uniquely",
+      // with no whitespace filtering, nonincremental, but _with_
+      // indexing (a fairly common case, and avoids the special
+      // mode used for RTF DTMs).
+      DTMManager manager=
+	new org.apache.xml.dtm.ref.DTMManagerDefault().newInstance
+	  (new org.apache.xpath.objects.XMLStringFactoryImpl());
+      DTM dtm=manager.getDTM(source, true, null, false, true);
+      
+      // Get the root node. NOTE THE ASSUMPTION that this is a single-document
+      // DTM -- which will always be true for a node obtained this way, but
+      // won't be true for "shared" DTMs used to hold XSLT variables
+      int rootNode=dtm.getDocument();
+      
+      // Simple test: Recursively dump the DTM's content.
+      // We'll want to replace this with more serious examples
+      recursiveDumpNode(dtm,rootNode);
+    }
+    catch(Exception e)
       {
         e.printStackTrace();
       }
-                
-
-    TestDTMNodes.printNodeTable(doc);
   }
+
+  static final String[] TYPENAME={
+    "NULL",
+    "ELEMENT",
+    "ATTRIBUTE",
+    "TEXT",
+    "CDATA_SECTION",
+    "ENTITY_REFERENCE",
+    "ENTITY",
+    "PROCESSING_INSTRUCTION",
+    "COMMENT",
+    "DOCUMENT",
+    "DOCUMENT_TYPE",
+    "DOCUMENT_FRAGMENT",
+    "NOTATION",
+    "NAMESPACE"
+  };
+  
+  static void recursiveDumpNode(DTM dtm,int nodeHandle)
+  {
+    // ITERATE over siblings
+    for(;
+	nodeHandle!=DTM.NULL;
+	nodeHandle=dtm.getNextSibling(nodeHandle))
+    {
+      printNode(dtm,nodeHandle,"");
+      
+      // List the namespaces, if any.
+      // Include only node's local namespaces, not inherited
+      // %ISSUE% Consider inherited?
+      int kid=dtm.getFirstNamespaceNode(nodeHandle,false);
+      if(kid!=DTM.NULL)
+      {
+	System.out.println("\tNAMESPACES:");
+	for(;
+	    kid!=DTM.NULL;
+	    kid=dtm.getNextNamespaceNode(nodeHandle,kid,false))
+	{
+	  printNode(dtm,kid,"\t");
+	}
+      }
+      
+      // List the attributes, if any
+      kid=dtm.getFirstAttribute(nodeHandle);
+      if(kid!=DTM.NULL)
+      {
+	System.out.println("\tATTRIBUTES:");
+	for(;
+	    kid!=DTM.NULL;
+	    kid=dtm.getNextSibling(kid))
+	{
+	  printNode(dtm,kid,"\t");
+	}
+      }
+      
+      // Recurse into the children, if any
+      recursiveDumpNode(dtm,dtm.getFirstChild(nodeHandle));
+      }
+    }
+
+  static void printNode(DTM dtm,int nodeHandle,String indent)
+  {
+    // Briefly display this node
+    // Don't bother displaying namespaces or attrs; we do that at the
+    // next level up.
+    System.out.println(indent+
+		       "Node "+nodeHandle+": \""+dtm.getNodeName(nodeHandle)+
+		       "\" expandedType="+dtm.getExpandedTypeID(nodeHandle)+
+		       " ("+TYPENAME[dtm.getNodeType(nodeHandle)]+")\n"+
+
+		       indent+
+		       "\tParent=" + dtm.getParent(nodeHandle) +
+		       " FirstChild=" + dtm.getFirstChild(nodeHandle) +
+		       " NextSib=" + dtm.getNextSibling(nodeHandle)+"\n"+
+		       
+		       indent+
+		       "\tValue=\"" + dtm.getNodeValue(nodeHandle)+"\""
+		       ); 
+
+  }
+  
 }
