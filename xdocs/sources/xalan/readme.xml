@@ -78,27 +78,10 @@
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D2">
-     <p><em>Important: Xerces has added a number of DOM level-3 methods to its DOM interfaces. The DOM level-3 proposal
-is currently a working draft (it is not yet a W3C recommendation), and Xalan does not support these new methods. 
-To run Xalan in the JDK 1.1.8 platform, you must put xalan.jar (with its DOM level-2 interfaces) in front of 
-xerces.jar on the system class path. If you want to rebuild Xalan (on JDK 1.1.8 or higher), you must put Xalan 
-in front of xerces.jar on the system class path.</em></p>
-
-     <p>This beta release includes the following changes:</p>     
-     <ul>
-       <li>Costin Manolache has slightly modified the CoRoutine stuff so that a you can compile and run everything but the CoRoutineXercesParser without having Xerces on the classpath.<br/><br/></li>
-       <li>Joseph Kesselman added chunked int array stuff to address our scaling problems that Mukund &amp; co. uncovered.  This was a fairly mechanical, but still substantial, change.  No bugs have yet been discovered that relate to this.  This is probably the most controversial change.<br/><br/></li>       
-       <li>The Process class now outputs incrementally if the output is standard out.  This is mostly for testing purposes, but it makes general sense.<br/><br/></li>
-       <li>Bug was fixed with setting the incremental flag in TransformerFactoryImpl.  Clearly the change was made but never tested.  Simply a missing 'else'.<br/><br/></li>
-       <li>Fix for Bugzilla Bug 2275, Xalan did not fire the right templates.  This was substantial and somewhat risky.  Xalan had several problems related to the last() function.  Fixes cover four axes files.<br/><br/></li>                     
-       <li>Change PrintTraceListener to output the file, as well as the line numbers.  This is really a feature change, but simple, and aids diagnosing problems with multi-part stylesheets.<br/><br/></li>       
-       <li>XPath fix: the XPath API wasn't working correctly due to a problem with with NodeSet/NodeIterator adapters.  This fix ended up interacting quite a bit with the #2275 fix.<br/><br/></li>
-       <li>Fix for the Norm Walsh bug posted 06/20/2001: iterators weren't always being cloned correctly from the variable value stack.  This fix is not without some risk, though we haven't seen any problems since Scott Boag made it.<br/><br/></li>
-       <li>David Bertoni added missing html element properties to SerializerToHTML.java.<br/><br/></li>
-       <li>Shance Curcuru modified TransformerFactoryImpl.setAttribute() to accept a String ("true" or "false") as well as a Boolean object to set the value of a Boolean attribute.<br/><br/></li>
-       <li>TransformerHandlerImpl was threading when incrementality is turned off. Scott Boag has fixed this bug.</li>       
-     </ul>
+     <s3 title="Changes since &xslt4j; 2.2.D6">
+     <p>&xslt4j-current; is a production release. For enhanced performance, it incorporates the 
+     <link idref="dtm">DTM</link>.</p>
+     &done-j;
      </s3>
      <anchor name="other"/>
      <s3 title="Other points of interest">

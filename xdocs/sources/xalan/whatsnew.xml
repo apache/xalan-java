@@ -70,6 +70,6 @@
 <p>As part of the Java API for XML Processing, TraX provides a stable framework for plugging Transformers (like &xslt4j;) and XML parsers (like &xml4j;) into your applications without tying yourself to the internal details of those implementations. See <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
 </s2><anchor name="dtm"/>
 <s2 title="&xslt4j; DTM">
-<p>In place of the DOM object tree of nodes, the Document Table Model (DTM) uses integer arrays and string pools to represent the structure and content of the XML document to be transformed. The motivation behind this model is to optimize performance and minimize storage. For more information, see <link idref="dtm">DTM</link> and <link idref="readme" anchor="dtm">DTM Release Notes</link>.</p>
+<p>In place of the DOM object tree of nodes, the Document Table Model (DTM) uses integer arrays and string pools to represent the structure and content of the XML document to be transformed. The motivation behind this model is to optimize performance and minimize storage. For more information, see <link idref="dtm">DTM</link>.</p>
 </s2>
 </s1>

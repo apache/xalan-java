@@ -459,7 +459,6 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       Interface</link></p>
      </s2><anchor name="trax"/>
      <s2 title="trax">
-     <note>&traxsamplenote;</note>
      <p>What it does: run a number of samples illustrating uses of the <resource-ref idref="trax"/> interfaces.</p>
      <p>Run this sample from the trax subdirectory with</p>
      <p><code>java Examples</code></p>
