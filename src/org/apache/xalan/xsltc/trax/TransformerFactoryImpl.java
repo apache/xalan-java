@@ -106,6 +106,7 @@ import org.apache.xalan.processor.StopParseException;
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 
 import org.apache.xml.utils.ObjectFactory;
 
@@ -238,15 +239,18 @@ public class TransformerFactoryImpl
     private int _indentNumber = -1;
 
     /**
-     * A reference to a SAXParserFactory.
+     * The provider of the XSLTC DTM Manager service.  This is fixed for any
+     * instance of this class.  In order to change service providers, a new
+     * XSLTC <code>TransformerFactory</code> must be instantiated.
+     * @see XSLTCDTMManager#getDTMManagerClass()
      */
-    private SAXParserFactory _parserFactory = null;
+    private Class m_DTMManagerClass;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
-     * Contains nothing yet
      */
     public TransformerFactoryImpl() {
+        m_DTMManagerClass = XSLTCDTMManager.getDTMManagerClass();
     }
 
     /**
@@ -1041,51 +1045,6 @@ public class TransformerFactoryImpl
     }
 
     /**
-     * This method is synchronized to allow instances of this class to 
-     * be shared among threads. A tranformer object will call this 
-     * method to get an XMLReader. A different instance of an XMLReader
-     * is returned/cached for each thread.
-     */
-    public synchronized XMLReader getXMLReader() throws Exception {
-	// First check if factory is instantiated
-	if (_parserFactory == null) {
-	    _parserFactory = SAXParserFactory.newInstance();
-	    _parserFactory.setNamespaceAware(true);
-	}
-	XMLReader result = (XMLReader) _xmlReader.get();
-	if (result == null) {
-            try {
-                /*
-                 * Fix for bug 24695
-                 * According to JAXP 1.2 specification if a SAXSource
-                 * is created using a SAX InputSource the Transformer or
-                 * TransformerFactory creates a reader via the XMLReaderFactory
-                 * if setXMLReader is not used
-                 */
-                result = XMLReaderFactory.createXMLReader();
-            }
-            catch (Exception e) {
-               try {
-                    // If unable to create an instance, let's try to use 
-                    // the XMLReader from JAXP
-                    result = _parserFactory.newSAXParser().getXMLReader();
-                }
-                catch (ParserConfigurationException pce) {
-                    throw e;   // ignore pce
-                }
-            }
- 
-            result.setFeature("http://xml.org/sax/features/namespaces",
-               true);
-            result.setFeature("http://xml.org/sax/features/namespace-prefixes",
-               false);
-            _xmlReader.set(result);
-
-	}
-	return result;
-    }
-    
-    /**
      * Reset the per-session attributes to their default values
      */
     private void resetTransientAttributes() {
@@ -1407,5 +1366,12 @@ public class TransformerFactoryImpl
       	}
       	else
             return null;
+    }
+
+    /**
+     * Returns the Class object the provides the XSLTC DTM Manager service.
+     */
+    protected Class getDTMManagerClass() {
+        return m_DTMManagerClass;
     }
 }
