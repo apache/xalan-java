@@ -87,7 +87,7 @@ Copyright:
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
-            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl"/>
+            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/bugs.xsl"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
@@ -111,8 +111,13 @@ Copyright:
     <mkdir dir="${build.docs}"/> <!-- transform todo.xml and put the result in build/docs -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
+    </java> 
+    <!-- We use a Notes agent to extract Xalan-Java 2 bugs from our SPR database into bugs-j-2.xml.  The following operation 
+    transforms bugs-j-2.xml (just including open bugs) and puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+      <arg line="-in bugs-j-2.xml -xsl ${xdocs.style}/stylesheets/bugs.xsl -out ${xdocs.dir}/sources/xalan/BUGS"/>
     </java>   
-    
+           
     <mkdir dir="${build.apidocs}"/>
   </target>
 
@@ -398,7 +403,7 @@ Copyright:
     <copy file="${build.dir}/xalan.jar" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl"/>
+      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs-j-2.xml"/>
     </copy>
 	  
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
