@@ -116,10 +116,6 @@ parser code {:
         return _lineNumber;
     }
 
-    public QName getQName(String name) {
-          return _parser.getQName(name);
-    }    
-
     public QName getQNameIgnoreDefaultNs(String name) {
           return _parser.getQNameIgnoreDefaultNs(name);
     }    
@@ -133,14 +129,10 @@ parser code {:
     }
 
     public int findNodeType(int axis, Object test) {
-
 	if (test == null) {  // *
-            if (axis == Axis.ATTRIBUTE)
-                return NodeTest.ATTRIBUTE;
-            else if (axis == Axis.NAMESPACE)
-                return -1;
-            else
-                return NodeTest.ELEMENT;
+	    return (axis == Axis.ATTRIBUTE) ? 
+		NodeTest.ATTRIBUTE :
+		(axis == Axis.NAMESPACE) ? -1 : NodeTest.ELEMENT;
         }
         else if (test instanceof Integer) {
             return ((Integer)test).intValue();
@@ -149,30 +141,24 @@ parser code {:
 	    QName name = (QName)test;
 
 	    if (axis == Axis.NAMESPACE) {
-                if (name.toString().equals("*"))
-                    return -1;
-                else
-                    return _xsltc.registerNamespace(name);
+		return (name.toString().equals("*")) ? -1
+		    : _xsltc.registerNamespace(name);
             }
 
-            if (name.getPrefix() == null || name.getNamespace() == null) {
-                final String local = name.getLocalPart();
-	        if (local.equals("*")) {
-                    if (axis == Axis.ATTRIBUTE)
-                        return(NodeTest.ATTRIBUTE);
-                    else
-                        return(NodeTest.ELEMENT);
-                }
-                else if (local.equals("@*"))
-                    return(NodeTest.ATTRIBUTE);
-                name = new QName(null,null,local);
-            }
-            if (axis == Axis.ATTRIBUTE) {
-                return _xsltc.registerAttribute(name);
-            }
-            else {
-		return _xsltc.registerElement(name);
-            }
+	    if (name.getNamespace() == null) {
+		final String local = name.getLocalPart();
+
+		if (local.equals("*")) {
+		    return (axis == Axis.ATTRIBUTE) ? NodeTest.ATTRIBUTE
+			: NodeTest.ELEMENT;
+		}
+		else if (local.equals("@*")) {
+		    return NodeTest.ATTRIBUTE;
+		}
+	    }
+
+	    return (axis == Axis.ATTRIBUTE) ? _xsltc.registerAttribute(name)
+		: _xsltc.registerElement(name); 
         }
     }
 
@@ -942,19 +928,11 @@ NonemptyArgumentList ::= Argument:arg
 
 FunctionName ::= QName:fname
         {: 
-	    final String prefix = fname.getPrefix();
-	    if (prefix == null || prefix.equals(Constants.EMPTYSTRING)) {
-		fname = parser.getQNameIgnoreDefaultNs(fname.getLocalPart());
-	    }
 	    RESULT = fname; 
 	:};
 
 VariableName ::= QName:vname
         {: 
-	    final String prefix = vname.getPrefix();
-	    if (prefix == null || prefix.equals(Constants.EMPTYSTRING)) {
-		vname = parser.getQNameIgnoreDefaultNs(vname.getLocalPart());
-	    }
 	    RESULT = vname; 
 	:};
 
@@ -994,7 +972,7 @@ NameTest ::= STAR
              {: RESULT = qn; :};
 
 QName ::= QNAME:qname
-        {: RESULT = parser.getQName(qname); :}
+        {: RESULT = parser.getQNameIgnoreDefaultNs(qname); :}
 
 	| DIV
         {: RESULT = parser.getQNameIgnoreDefaultNs("div"); :}
