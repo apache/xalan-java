@@ -141,6 +141,9 @@ final class AttributeSet extends TopLevelElement {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
+	    else if (child instanceof Text) {
+		// ignore
+	    }
 	    else {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_CHILD_ERR, this);
 		parser.reportError(Constants.ERROR, msg);
@@ -185,8 +188,12 @@ final class AttributeSet extends TopLevelElement {
 
 	// Merge the contents of the two attribute sets...
 	final Enumeration attributes = other.elements();
-	while (attributes.hasMoreElements())
-	    setFirstElement((XslAttribute)attributes.nextElement());
+	while (attributes.hasMoreElements()) {
+	    SyntaxTreeNode element = (SyntaxTreeNode)attributes.nextElement();
+	    if (element instanceof XslAttribute) {
+		setFirstElement((XslAttribute)element);
+	    }
+	}
     }
 
     /**
@@ -206,9 +213,11 @@ final class AttributeSet extends TopLevelElement {
 	// Translate all local attributes
 	final Enumeration attributes = elements();
 	while (attributes.hasMoreElements()) {
-	    final XslAttribute attribute =
-		(XslAttribute)attributes.nextElement();
-	    attribute.translate(classGen, methodGen);
+	    SyntaxTreeNode element = (SyntaxTreeNode)attributes.nextElement();
+	    if (element instanceof XslAttribute) {
+		final XslAttribute attribute = (XslAttribute)element;
+		attribute.translate(classGen, methodGen);
+	    }
 	}
 	final InstructionList il = methodGen.getInstructionList();
 	il.append(RETURN);
