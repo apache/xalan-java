@@ -138,6 +138,11 @@ import trax.Transformer;
 import trax.TransformException;
 import trax.URIResolver;
 
+// Imported JAVA API for XML Parsing 1.0 classes
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException; 
+
 /**
  * <meta name="usage" content="advanced"/>
  * The Xalan workhorse -- Collaborates with the XPath xcontext, the DOM,
@@ -808,6 +813,8 @@ public class TransformerImpl extends XMLFilterImpl
 
     
   // ======== End Transformer Implementation ========  
+  
+  DocumentBuilder m_docBuilder = null;
     
   /**
    * <meta name="usage" content="advanced"/>
@@ -826,11 +833,25 @@ public class TransformerImpl extends XMLFilterImpl
     throws SAXException
   {
     XPathContext xctxt = getXPathContext();
-    Document docFactory = xctxt.getDOMHelper().getDOMFactory();
-
+    // Document docFactory = xctxt.getDOMHelper().getDOMFactory();
+    
+    if(null == m_docBuilder)
+    {
+      try
+      {
+        DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        m_docBuilder = dfactory.newDocumentBuilder();
+      }
+      catch(ParserConfigurationException pce)
+      {
+        throw new SAXException(pce);//"createDocument() not supported in XPathContext!");
+        // return null;
+      }
+    }
+    Document docFactory = m_docBuilder.newDocument();
+    
     // Create a ResultTreeFrag object.
-    ResultTreeFrag resultFragment 
-      = new ResultTreeFrag(docFactory, xctxt);
+    DocumentFragment resultFragment = docFactory.createDocumentFragment();
 
     // Create a DOMBuilder object that will handle the SAX events 
     // and build the ResultTreeFrag nodes.
