@@ -2239,11 +2239,15 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
   public SourceLocator getSourceLocatorFor(int node)
   {
-    node = node & ExpandedNameTable.MASK_NODEHANDLE;
-    
-    return new NodeLocator(null,
-                           m_sourceSystemId.elementAt(node),
-                           m_sourceLine.elementAt(node),
-                           m_sourceColumn.elementAt(node));
+    if (m_useSourceLocationProperty)
+    {
+      node = node & ExpandedNameTable.MASK_NODEHANDLE;
+      
+      return new NodeLocator(null,
+                             m_sourceSystemId.elementAt(node),
+                             m_sourceLine.elementAt(node),
+                             m_sourceColumn.elementAt(node));
+    }
+    return null;
   }
 }
