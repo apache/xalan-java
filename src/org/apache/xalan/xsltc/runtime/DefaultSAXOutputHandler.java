@@ -268,10 +268,12 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 
 	    // Handle indentation (not a requirement)
             if (_indent) {
-		indent(_lineFeedNextStartTag);
-		_lineFeedNextStartTag = true;
-                _indentNextEndTag = false;
-                _indentLevel++;
+		if (!_emptyElements.containsKey(elementName.toLowerCase())) {
+		    indent(_lineFeedNextStartTag);
+		    _lineFeedNextStartTag = true;
+		    _indentNextEndTag = false;
+		}
+		_indentLevel++;
             }
 
 	    // Now, finally, output the start tag for the element.
