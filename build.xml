@@ -75,7 +75,7 @@ Copyright:
   <property name="w3c.reldir" value="org/w3c"/>    
   <property name="build.dir" value="./build"/>
   <!-- Where we put the xalan.jar we compile by default -->
-  <property name="built.xalan.jar" value="${build.dir}/xalan.jar"/>
+  <property name="build.xalan.jar" value="${build.dir}/xalan.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
@@ -229,7 +229,7 @@ Copyright:
   <!-- =================================================================== -->
   <target name="jar" depends="compile"
     description="Jar up xalan.jar" >
-    <jar jarfile="${built.xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
+    <jar jarfile="${build.xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
   </target>
   <target name="package" depends="jar">
     <!-- OK, what are the 'Apache-standard' names for various targets? -->
@@ -242,7 +242,7 @@ Copyright:
   <target name="compat.jar" depends="jar">
     <echo message="compile and JAR Xalan-J 1 compability API."/>
     <mkdir dir="${build.compat.classes}"/>
-    <javac srcdir="${compat.src.dir}" classpath="${java.class.path}:${built.xalan.jar}" 
+    <javac srcdir="${compat.src.dir}" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.compat.classes}"
            includes="**/*.java"
            debug="${debug}"/>
@@ -282,37 +282,37 @@ Copyright:
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->   
-    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${built.xalan.jar}" 
+    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${built.xalan.jar}"  
+    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.xalan.jar}"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${built.xalan.jar}"
+    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.xalan.jar}"
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${built.xalan.jar}" 
+    <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/DOM2DOM" classpath="${java.class.path}:${built.xalan.jar}" 
+    <javac srcdir="${samples.dir}/DOM2DOM" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${built.xalan.jar}" 
+    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${built.xalan.jar}" 
+    <javac srcdir="${samples.dir}/UseXMLFilters" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${built.xalan.jar}"  
+    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.xalan.jar}"  
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${built.xalan.jar}" 
+   <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/trax" classpath="${java.class.path}:${built.xalan.jar}" 
+   <javac srcdir="${samples.dir}/trax" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
-   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${built.xalan.jar}" 
+   <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
@@ -329,7 +329,7 @@ Copyright:
     description="Compile and jar just the servlet sample" >
      <echo message="To compile and run the sample servlet, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.samples}/servlet"/>
-     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${built.xalan.jar}" 
+     <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.samples}"
            debug="${debug}"/>
       <copy todir="${build.samples}/servlet">
@@ -350,7 +350,7 @@ Copyright:
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${built.xalan.jar}">
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.xalan.jar}">
        <arg line="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>
         </java>	 
   </target>
@@ -369,7 +369,7 @@ Copyright:
     <!-- generate trax.html, a TRaX overview document, and a package.html for each trax package
          (the latter are generated with the the Redirect extension -->
     <mkdir dir="${build.apidocs}/javax/xml/transform"/>         
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${built.xalan.jar}">
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.xalan.jar}">
       <arg line="-in ${xdocs.dir}/sources/trax/trax.xml
                  -param package-root '../../../src/'
                  -xsl ${xdocs.style}/stylesheets/spec.xsl 
@@ -473,7 +473,7 @@ Copyright:
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
     <!-- Copy xalan jar and compability into the bin directory (subject to change) -->
-    <copy file="${built.xalan.jar}" todir="${dist.dir}/bin"/>
+    <copy file="${build.xalan.jar}" todir="${dist.dir}/bin"/>
     <copy file="${built.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
@@ -518,7 +518,7 @@ Copyright:
   <!-- =================================================================== -->
   <path id="minitest.class.path">
     <pathelement location="${xerces.jar}" />
-    <pathelement location="${built.xalan.jar}" />
+    <pathelement location="${build.xalan.jar}" />
     <pathelement location="${bsf.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
@@ -551,7 +551,7 @@ Copyright:
       -->
       <property name="testxsl.jar.name" value="minitest.jar" />
       <property name="prepend.class.path"
-                value="${tests.backref}${xerces.jar}:${tests.backref}${built.xalan.jar}:${tests.backref}${bsf.jar}" />
+                value="${tests.backref}${xerces.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
     <!-- Why doesn't the following refid work? I get an error referencing it.
       <property name="prepend.class.path" refid="minitest.class.path" />
     -->
@@ -590,7 +590,7 @@ Copyright:
            of doing it from this directory.
       -->
       <property name="prepend.class.path"
-                value="${tests.backref}${xerces.jar}:${tests.backref}${built.xalan.jar}:${tests.backref}${bsf.jar}" />
+                value="${tests.backref}${xerces.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
     </ant>
   </target>
   
@@ -603,7 +603,7 @@ Copyright:
   <target name="smoketest-run" if="tests-available" depends="prepare" >
     <ant dir="${tests.dir}" antfile="build.xml" target="smoketest-xalan2" >
       <property name="prepend.class.path"
-                value="${tests.backref}${xerces.jar}:${tests.backref}${built.xalan.jar}:${tests.backref}${bsf.jar}" />
+                value="${tests.backref}${xerces.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
     </ant>
   </target>
   
@@ -657,5 +657,5 @@ Copyright:
       <arg line="${build.docs}/xalan-collate.fo build/docs/xalan.pdf"/>
     </java>
   </target>    
-
+  
 </project>
