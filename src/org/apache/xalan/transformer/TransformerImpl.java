@@ -231,15 +231,17 @@ public class TransformerImpl extends Transformer
     m_textformat = new OutputProperties(Method.Text);
   }
   
-  /**
-   * Flag to let us know if an exception should be reported inside the 
-   * postExceptionFromThread method.  This is needed if the transform is 
-   * being generated from SAX events, and thus there is no central place 
-   * to report the exception from.  (An exception is usually picked up in 
-   * the main thread from the transform thread in {@link #transform(Source source)} 
-   * from {@link #getExceptionThrown()}. )
-   */
-  private boolean m_reportInPostExceptionFromThread = true;
+  // Commenteded out in response to problem reported by 
+  // Nicola Brown <Nicola.Brown@jacobsrimell.com>
+//  /**
+//   * Flag to let us know if an exception should be reported inside the 
+//   * postExceptionFromThread method.  This is needed if the transform is 
+//   * being generated from SAX events, and thus there is no central place 
+//   * to report the exception from.  (An exception is usually picked up in 
+//   * the main thread from the transform thread in {@link #transform(Source source)} 
+//   * from {@link #getExceptionThrown()}. )
+//   */
+//  private boolean m_reportInPostExceptionFromThread = false;
   
   /** A node vector used as a stack to track the current 
    * ElemTemplateElement.  Needed for the 
@@ -393,7 +395,7 @@ public class TransformerImpl extends Transformer
     // For now, reset the document cache each time.
     getXPathContext().getSourceTreeManager().reset();
     
-    m_reportInPostExceptionFromThread = false;
+//    m_reportInPostExceptionFromThread = false;
   }
 
   // ========= Transformer Interface Implementation ==========
@@ -574,8 +576,8 @@ public class TransformerImpl extends Transformer
           }
           else
           {
-            Thread t = new Thread(this);
-            m_reportInPostExceptionFromThread = true;
+            Thread t = createTransformThread();
+//            m_reportInPostExceptionFromThread = false;
             t.start();
             transformNode(doc);
           }
@@ -2697,6 +2699,18 @@ public class TransformerImpl extends Transformer
   ////////////////////////
   // Implement Runnable //  
   ////////////////////////
+  
+  /**
+   * Create a thread for the transform.  This can be overridden by derived 
+   * implementations to provide their own thread, for thread pooling and the 
+   * like.
+   * 
+   * @return thread suitable to use for the transformation.
+   */
+  public Thread createTransformThread()
+  {
+    return new Thread(this);
+  }
 
   /**
    * Get the exception thrown by the secondary thread (normally 
@@ -2740,11 +2754,12 @@ public class TransformerImpl extends Transformer
    */
   void postExceptionFromThread(Exception e)
   {
-    if(m_reportInPostExceptionFromThread)
-    {
-      // Consider re-throwing the exception if this flag is set.
-      e.printStackTrace();
-    }
+    // Commented out in response to problem reported by Nicola Brown <Nicola.Brown@jacobsrimell.com>
+//    if(m_reportInPostExceptionFromThread)
+//    {
+//      // Consider re-throwing the exception if this flag is set.
+//      e.printStackTrace();
+//    }
       
     if (m_inputContentHandler instanceof SourceTreeHandler)
     {
