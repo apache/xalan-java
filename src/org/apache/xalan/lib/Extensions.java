@@ -71,6 +71,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xml.utils.XMLString;
 
 import org.xml.sax.SAXNotSupportedException;
 
@@ -245,27 +247,30 @@ public class Extensions
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public static NodeSet distinct(NodeIterator ni)
+  public static NodeSet distinct(ExpressionContext myContext, NodeIterator ni)
           throws javax.xml.transform.TransformerException
   {
 
-    NodeSet ns = new NodeSet(ni);
-    NodeSet dist = new NodeSet();
+    // Set up our resulting NodeSet and the hashtable we use to keep track of duplicate
+    // strings.
 
+    NodeSet dist = new NodeSet();
     dist.setShouldCacheNodes(true);
 
     Hashtable stringTable = new Hashtable();
 
-    for (int i = 0; i < ns.getLength(); i++)
+    Node currNode = ni.nextNode();
+
+    while (currNode != null)
     {
-      Node n = ns.elementAt(i);
-      String key = DOMHelper.getNodeData(n);  // TODO:  Fix this to use DTM
+      String key = myContext.toString(currNode);
 
       if (!stringTable.containsKey(key))
       {
-        stringTable.put(key, n);
-        dist.addElement(n);
+        stringTable.put(key, currNode);
+        dist.addElement(currNode);
       }
+      currNode = ni.nextNode();
     }
 
     return dist;
