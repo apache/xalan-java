@@ -125,7 +125,7 @@
 <label>Identity (or Copy) Transformation</label>
 <item>The process of transformation from a source to a result,
 			 making as few structural changes as possible and no informational changes. The
-			 term is somewhat loosely used, as the process is really a copy. from one
+			 term is somewhat loosely used, as the process is really a copy from one
 			 "format" (such as a DOM tree, stream, or set of SAX events) to
 			 another.</item>
 

@@ -250,7 +250,7 @@ transformation result while the source document is still being parsed. For more 
 <p>An XML Source may include an <jump href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet processing instruction</jump> which identifies the stylesheet to be used to process the document. As indicated by the processing instruction <ref>href</ref> attribute, the stylesheet itself may be embedded in the XML document or located elsewhere.</p>
 <p>Suppose you have an XML document (foo.xml) with the following xml-stylesheet processing instruction:</p>
 <p><code>&lt;?xml-stylesheet type="text/xml" href="foo.xsl"?&gt;</code></p>
-<p>The following fragment, uses this instruction to locate the stylesheet (foo.xsl in the same directory as foo.xml) and create a Templates object. Note the use of the TransformerFactory getAssociatedStylesheet() in step 2a.</p>
+<p>The following fragment uses this instruction to locate the stylesheet (foo.xsl in the same directory as foo.xml) and create a Templates object. Note the use of the TransformerFactory getAssociatedStylesheet() in step 2a.</p>
 <note>An XML document may include more than one xml-stylesheet processing instruction, hence the support for working with multiple stylesheets. If more than one stylesheet is returned, the other stylesheets are imported into the first stylesheet.</note>
 <source>// 1. Instantiate the TransformerFactory.
 javax.xml.transform.TransformerFactory tFactory = 
@@ -258,7 +258,7 @@ javax.xml.transform.TransformerFactory tFactory =
 // 2a. Get the stylesheet from the XML source.
 String media = null , title = null, charset = null;
 javax.xml.transform.Source stylesheet = tFactory.getAssociatedStylesheet
-                   (new StreamSource("foo.xml"),media, title, charset);
+                   (new StreamSource("foo.xml"), media, title, charset);
 
 // 2b. Process the stylesheet and generate a Transformer.
 Transformer transformer = tFactory.newTransformer(stylesheet);
@@ -291,7 +291,7 @@ quotes (') as string expressions.</note>
 <s2 title="Explicitly working with SAX">
   <p>&xslt4j; uses the SAX event model to process stylesheets, to parse XML input documents, and to produce output. For each of these operations, an XMLReader reads input, firing parse events, and a ContentHandler listens to the XMLReader and executes parse event methods.</p>
 <p>When you use the basic procedure described above for performing transformations, &xslt4j; takes care of many of the SAX details under the covers. You are free to make these details explicit, which simply means that you can intervene in the procedure to accommodate the precise environment in which your application operates.</p>
-<p>Suppose, for example, you are using a custom XMLReader, perhaps doing more than just parsing static XML documents) to generate &xslt4j; SAX parse events. You might even have a custom reader for producing/processing stylesheets. You can cast the TransformerFactory to a SAXTransformerFactory, which provides access to a TransformerHandler, which you can set as the ContentHandler for this reader.</p>
+<p>Suppose, for example, you are using a custom XMLReader (perhaps for doing more than just parsing static XML documents) to generate &xslt4j; SAX parse events. You might even have a custom reader for producing/processing stylesheets. You can cast the TransformerFactory to a SAXTransformerFactory, which provides access to a TransformerHandler, which you can set as the ContentHandler for this reader.</p>
   <p>The following example explicitly sets up the XMLReader and ContentHandlers, and replicates the <link anchor="basic">basic steps</link> described above.</p>
   <source>// Instantiate a TransformerFactory.
 javax.xml.transform.TransformerFactory tFactory = 

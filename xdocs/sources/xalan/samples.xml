@@ -159,7 +159,7 @@
     <p>where <ref>param</ref> is the stylesheet parameter value (a string of your choice).</p>  
     </s2><anchor name="sax2sax"/>
   <s2 title="SAX2SAX">
-  <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet (birds.xsl), processing the XML input (birds.xml), and producing the output (birds.out).</p>
+  <p>What it does: Explicitly sets the SAX XMLReader and SAX ContentHandler for processing the stylesheet (birds.xsl), processing the XML input (birds.xml), and producing the output (birds.out).</p>
   <p>Run this sample from the SAX2SAX subdirectory with</p>
    <p><code>java SAX2SAX</code></p>
     </s2><anchor name="dom2dom"/>
@@ -228,7 +228,7 @@
     <p>For more information, see <link idref="usagepatterns" anchor="xpath">Working with XPath expressions</link>.</p>
     </s2><anchor name="appletxmltohtml"/>
     <s2 title="AppletXMLtoHTML">
-    <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
+    <p>This applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>
     <p>How to run it: Open appletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
     <note>For information about running &xslt4j; applets in Netscape Communicator, see <link idref="usagepatterns" anchor="netscape">Problems
@@ -242,8 +242,8 @@
     <p>The servlet subdirectory contains four sample servlets and one JSP that use &xslt4j; to perform transformations. The sample 
     code is compiled and packed in xalanservlet.war. To run these samples, you must place 
     xalanservlet.war on a web server with a servlet engine. For example, using <jump href="http://jakarta.apache.org/tomcat/index.html">jakarta-tomcat 4.1.18</jump>. 
-    Copy the xalanservlet.war to %Tomcat_Home%/webapps. For more detail about deploying
-    servlet on Tomcat, please refer to <jump href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/appdev/deployment.html">Deployment Organization</jump>.</p>
+    Copy the xalanservlet.war to %Tomcat_Home%/webapps. For more details about deploying
+    servlets on Tomcat, please refer to <jump href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/appdev/deployment.html">Deployment Organization</jump>.</p>
     <note>Dependency on Tomcat version. If encountering "java.lang.VerifyError: Cannot inherit from final class" error, 
     replace xercesImpl.jar under %Tomcat_Home%/common/endorsed with the one included with &xslt4j; .</note>
     <p><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link> applies a particular stylesheet to a particular 
@@ -269,10 +269,10 @@
      <s3 title="servlet.UseStylesheetParamServlet">
      <note>Paul Campbell &lt;seapwc@halcyon.com&gt; wrote this servlet and the following explanatory text.
      Thank you, Paul!</note>
-     <p>What it does: The client (perhaps an HTML form ) specifies an XML document, a stylesheet, and a value to be passed
+     <p>What it does: The client (perhaps an HTML form) specifies an XML document, a stylesheet, and a value to be passed
       to the stylesheet for a stylesheet parameter named "param1". The servlet performs the transformation and returns
       the output to the client. The client must specify which stylesheet (containing a "param1" stylesheet parameter") 
-      and XML file are to be used or use sample files fooparam.xml and fooparam.xsl</p>
+      and XML file are to be used or use sample files fooparam.xml and fooparam.xsl.</p>
      <p>How to run it: set up an HTML client to call the servlet with arguments along the lines of</p>
     <gloss><label>http://localhost:port/xalanservlet/UseStylesheetParamServlet?
     XML=fooparam.xml&amp;XSL=fooparam.xsl&amp;PVAL=GoodBye</label></gloss>
@@ -318,8 +318,8 @@ xslURL=birds.xsl</label></gloss>
     <p>To run the servlet:  set system property server.root=server root. Set up an HTML page to call
      servlet.ApplyXSLT with arguments as illustrated below.</p>
     <p>The files catalog.xml,  booklist1.xsl and booklist2.xsl are used in the following example.
-    In the deploy descriptor, booklist1.xsl is set as the default xsl file. If you create these files yourself, be careful that the output method should
-    be set to "xml" in the stylesheet.</p>
+    In the deployment descriptor, booklist1.xsl is set as the default xsl file. If you create these files yourself, make sure that you set the output method
+    to "xml" in the stylesheet.</p>
      <p>Examples:</p>
 <gloss>
 <label>http://localhost:port/xalanservlet/ApplyXSLT?URL=/xalanservlet/catalog.xml&amp;xslURL=
@@ -489,7 +489,7 @@ information.<br/><br/></item>
     </s3><anchor name="pquery"/>
     <s3 title="Parameterized query">
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
-    <p>What it does: connect to a datasource, execute a parameterized query, and return the result. The XML source document
+    <p>What it does: connects to a datasource, executes a parameterized query, and returns the result. The XML source document
     provides the parameter value as well as the connection information. The parameter value is in a node in the XML source.</p>
     <p>The stylesheet gets the required connection and parameter information from the XML source, sets up and executes the
     parameterized query, and retuns the query result set.</p>
@@ -505,7 +505,7 @@ information.<br/><br/></item>
     <p>1. To turn caching on:</p>
     <p><code>java org.apache.xalan.xslt.Process</code>
     <br/><code>-xsl cachedNodes.xsl</code></p>
-    <p>1. To turn caching off:</p>
+    <p>2. To turn caching off:</p>
     <p><code>java org.apache.xalan.xslt.Process</code>
     <br/><code>-xsl streamNodes.xsl</code></p>
     <p>3. <ref>To be added</ref></p>
@@ -562,7 +562,7 @@ information.<br/><br/></item>
      </s2>
      <anchor name="trax"/>
      <s2 title="trax">
-     <p>What it does: run a number of samples illustrating uses of the <link idref="trax">TrAX (Transformation API for XML)</link> interfaces.</p>
+     <p>What it does: runs a number of samples illustrating uses of the <link idref="trax">TrAX (Transformation API for XML)</link> interfaces.</p>
      <p>Run this sample from the trax subdirectory with</p>
      <p><code>java Examples</code></p>
      <p>and examine the source in Examples.java and ExampleContentHandler.java.</p>
