@@ -57,6 +57,7 @@
 package org.apache.xalan.utils;
 
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 import org.w3c.dom.Element;
 
@@ -161,6 +162,19 @@ public class QName extends org.apache.xalan.serialize.QName
            && (((null != thisnamespace) && (null != thatnamespace))
                ? thisnamespace.equals(thatnamespace)
                : ((null == thisnamespace) && (null == thatnamespace)));
+  }
+  
+  public static QName getQNameFromString(String name)
+  {
+    StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
+    QName qname;
+    String s1 = tokenizer.nextToken();
+    String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+    if(null == s2)
+      qname = new QName(null, s1);
+    else
+      qname = new QName(s1, s2);
+    return qname;
   }
 
   /**

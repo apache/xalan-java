@@ -70,9 +70,6 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
 
   /**
    * Constructor DefaultErrorHandler
-   *
-   *
-   * NEEDSDOC @param identifier
    */
   public DefaultErrorHandler()
   {

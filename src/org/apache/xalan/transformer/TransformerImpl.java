@@ -328,7 +328,7 @@ public class TransformerImpl extends Transformer
   /**
    * The SAX error handler, where errors and warnings are sent.
    */
-  private ErrorListener m_errorHandler = null;
+  private ErrorListener m_errorHandler = new org.apache.xalan.utils.DefaultErrorHandler();
 
   /**
    * The trace manager.
@@ -633,13 +633,20 @@ public class TransformerImpl extends Transformer
    *            XMLReader recognizes the property name but
    *            cannot set the requested value.
    *
-   * @throws TransformerException
+   * @throws IllegalArgumentException If the property is not supported, 
+   * and is not namespaced.
    */
-  public String getOutputProperty(String name)
+  public String getOutputProperty(String qnameString)
+    throws IllegalArgumentException
   {    
-    if (m_outputFormat instanceof OutputFormatExtended)
+    OutputFormat of = getOutputFormat();
+    QName qname = QName.getQNameFromString(qnameString);
+    if(qname.getNamespace() != null)
+      return null;  // fix
+    String name = qname.getLocalName();
+    if (of instanceof OutputFormatExtended)
     {
-      OutputFormatExtended ofe = (OutputFormatExtended) m_outputFormat;
+      OutputFormatExtended ofe = (OutputFormatExtended) of;
       if(name.equals(OutputKeys.METHOD))
         return ofe.methodHasBeenSet() ? ofe.getMethod() : null;
       else if(name.equals(OutputKeys.INDENT))
@@ -658,34 +665,37 @@ public class TransformerImpl extends Transformer
         return ofe.encodingHasBeenSet() ? ofe.getEncoding() : null;
       else if(name.equals(OutputKeys.VERSION))
         return ofe.versionHasBeenSet() ? ofe.getVersion() : null;
+      else
+        throw new IllegalArgumentException("output property not recognized: "+qnameString);
+      
     }
     else
     {
-      OutputFormat ofe = m_outputFormat;
       // Just set them all for now.
       if(name.equals(OutputKeys.METHOD))
-        return ofe.getMethod();
+        return of.getMethod();
       else if(name.equals(OutputKeys.INDENT))
-        return ofe.getIndent() ? "yes" : "no";
+        return of.getIndent() ? "yes" : "no";
       else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
-        return ofe.getDoctypePublicId();
+        return of.getDoctypePublicId();
       else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
-        return ofe.getDoctypeSystemId();
+        return of.getDoctypeSystemId();
       else if(name.equals(OutputKeys.MEDIA_TYPE))
-        return ofe.getMediaType();
+        return of.getMediaType();
       else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
-        return ofe.getOmitXMLDeclaration() ? "yes" : "no";
+        return of.getOmitXMLDeclaration() ? "yes" : "no";
       else if(name.equals(OutputKeys.STANDALONE))
-        return ofe.getStandalone() ? "yes" : "no";
+        return of.getStandalone() ? "yes" : "no";
       else if(name.equals(OutputKeys.ENCODING))
-        return ofe.getEncoding();
+        return of.getEncoding();
       else if(name.equals(OutputKeys.VERSION))
-        return ofe.getVersion();
+        return of.getVersion();
+      else
+        throw new IllegalArgumentException("output property not recognized: "+qnameString);
     }
     
-    return null;
   }
-
+  
   /**
    * Set the value of a property.  Recognized properties are:
    *
@@ -706,9 +716,7 @@ public class TransformerImpl extends Transformer
   public void setOutputProperty(String name, String value)
     throws IllegalArgumentException
   {
-    OutputFormat ofe = m_outputFormat;
-    if(null == ofe)
-      ofe = m_stylesheetRoot.getOutputComposed();
+    OutputFormat ofe = getOutputFormat();
     
     if(name == OutputKeys.METHOD)
       ofe.setMethod(value);
@@ -763,9 +771,7 @@ public class TransformerImpl extends Transformer
   public void setOutputProperties(Properties oformat)
   {
     Enumeration names = oformat.propertyNames();
-    OutputFormat ofe = m_outputFormat;
-    if(null == ofe)
-      ofe = m_stylesheetRoot.getOutputComposed();
+    OutputFormat ofe = getOutputFormat();
     while(names.hasMoreElements())
     {
       String name = (String)names.nextElement();
@@ -803,12 +809,11 @@ public class TransformerImpl extends Transformer
    */
   public Properties getOutputProperties()
   {
-    Properties oprops = new Properties();
-    
-    OutputFormat outputProps = m_outputFormat;
-    if(null == outputProps)
-      outputProps = m_stylesheetRoot.getOutputComposed();
-    
+    OutputFormat outputProps = getOutputFormat();
+    Properties defaultProps = m_stylesheetRoot.getDefaultOutputProps();
+
+    Properties oprops = new Properties(defaultProps);
+        
     if (outputProps instanceof OutputFormatExtended)
     {
       OutputFormatExtended ofe = (OutputFormatExtended) outputProps;
@@ -1301,7 +1306,7 @@ public class TransformerImpl extends Transformer
     QName qname = new QName(namespace, name);
     XObject xobject = XObject.create(value);
 
-    varstack.pushVariable(qname, xobject);
+    varstack.pushOrReplaceVariable(qname, xobject);
   }
   
   Vector m_userParams;
@@ -1329,14 +1334,12 @@ public class TransformerImpl extends Transformer
         m_userParams = new Vector();
       if(null == s2)
       {
-        m_userParams.addElement(new Arg(new QName(s1), 
-                                        new XObject(value)));
+        replaceOrPushUserParam(new QName(s1), new XObject(value));
         setParameter(s1, null, value);
       }
       else
       {
-        m_userParams.addElement(new Arg(new QName(s1, s2), 
-                                        new XObject(value)));
+        replaceOrPushUserParam(new QName(s1, s2), new XObject(value));
         setParameter(s2, s1, value);
       }
       
@@ -1345,6 +1348,21 @@ public class TransformerImpl extends Transformer
     {
       // Should throw some sort of an error.
     }
+  }
+  
+  private void replaceOrPushUserParam(QName qname, XObject xval)
+  {
+      int n = m_userParams.size();
+      for(int i = n-1; i >= 0; i--)
+      {
+        Arg arg = (Arg)m_userParams.elementAt(i);
+        if(arg.getQName().equals(qname))
+        {
+          m_userParams.setElementAt(new Arg(qname, xval), i);
+          return;
+        }
+      }
+      m_userParams.addElement(new Arg(qname, xval));
   }
   
   /**
@@ -1358,24 +1376,17 @@ public class TransformerImpl extends Transformer
    */
   public Object getParameter(String name)
   {
-    StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
     try
     {
-      VariableStack varstack = getXPathContext().getVarStack();
+      // VariableStack varstack = getXPathContext().getVarStack();
       // The first string might be the namespace, or it might be 
       // the local name, if the namespace is null.
-      QName qname;
-      String s1 = tokenizer.nextToken();
-      String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
-      if(null == s2)
-        qname = new QName(null, s1);
-      else
-        qname = new QName(s1, s2);
+      QName qname = QName.getQNameFromString(name);
 
       if(null == m_userParams)
         return null;
       int n = m_userParams.size();
-      for(int i = 0; i < n; i++)
+      for(int i = n-1; i >= 0; i--)
       {
         Arg arg = (Arg)m_userParams.elementAt(i);
         if(arg.getQName().equals(qname))

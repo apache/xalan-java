@@ -214,6 +214,31 @@ public class VariableStack extends Stack
 
     setSize(newSize);
   }
+  
+  /**
+   * Push an argument onto the stack, or replace it 
+   * if it already exists.  Don't forget
+   * to call startContext before pushing a series of
+   * arguments for a given macro call.
+   *
+   * @param qname The qualified name of the variable.
+   * @param val The wrapped value of the variable.
+   */
+  public void pushOrReplaceVariable(QName qname, XObject xval)
+  {
+    int n = this.size();
+    for(int i = n-1; i >= 0; i--)
+    {
+      Arg arg = (Arg)this.elementAt(i);
+      if(arg.getQName().equals(qname))
+      {
+        this.setElementAt(new Arg(qname, xval), i);
+        return;
+      }
+    }
+    push(new Arg(qname, xval, false));
+  }
+
 
   /**
    * Push an argument onto the stack.  Don't forget

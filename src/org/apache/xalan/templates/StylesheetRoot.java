@@ -137,6 +137,28 @@ public class StylesheetRoot extends StylesheetComposed
     return new TransformerImpl(this);
   }
   
+
+  public Properties getDefaultOutputProps()
+  {
+    OutputFormat outputProps = m_outputFormatComposed;
+    Properties defaultProps = new Properties();
+    defaultProps.put(OutputKeys.METHOD, outputProps.getMethod());
+    defaultProps.put(OutputKeys.INDENT, outputProps.getIndent() ? "yes" : "no");
+    if(null != outputProps.getDoctypePublicId())
+      defaultProps.put(OutputKeys.DOCTYPE_PUBLIC, outputProps.getDoctypePublicId());
+    if(null != outputProps.getDoctypeSystemId())
+      defaultProps.put(OutputKeys.DOCTYPE_SYSTEM, outputProps.getDoctypeSystemId());
+    if(null != outputProps.getMediaType())
+      defaultProps.put(OutputKeys.MEDIA_TYPE, outputProps.getMediaType());
+    defaultProps.put(OutputKeys.OMIT_XML_DECLARATION, outputProps.getOmitXMLDeclaration() ? "yes" : "no");
+    defaultProps.put(OutputKeys.STANDALONE, outputProps.getStandalone() ? "yes" : "no");
+    if(null != outputProps.getEncoding())
+      defaultProps.put(OutputKeys.ENCODING, outputProps.getEncoding());
+    if(null != outputProps.getVersion())
+      defaultProps.put(OutputKeys.VERSION, outputProps.getVersion());
+    return defaultProps;
+  }
+  
   /**
    * Get the static properties for xsl:output.  The object returned will
    * be a clone of the internal values, and thus it can be mutated
@@ -149,47 +171,8 @@ public class StylesheetRoot extends StylesheetComposed
    * @return A Properties object, not null.
    */
   public Properties getOutputProperties()
-  {
-    Properties oprops = new Properties();
-    
-    if (m_outputFormatComposed instanceof OutputFormatExtended)
-    {
-      OutputFormatExtended ofe = (OutputFormatExtended) m_outputFormatComposed;
-      if(ofe.methodHasBeenSet())
-        oprops.put(OutputKeys.METHOD, ofe.getMethod());
-      if(ofe.indentHasBeenSet())
-        oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
-      if(ofe.doctypePublicHasBeenSet())
-        oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
-      if(ofe.doctypeSystemHasBeenSet())
-        oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
-      if(ofe.mediaTypeHasBeenSet())
-        oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
-      if(ofe.omitXmlDeclarationHasBeenSet())
-        oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
-      if(ofe.standaloneHasBeenSet())
-        oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
-      if(ofe.encodingHasBeenSet())
-        oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
-      if(ofe.versionHasBeenSet())
-        oprops.put(OutputKeys.VERSION, ofe.getVersion());
-    }
-    else
-    {
-      OutputFormat ofe = m_outputFormatComposed;
-      // Just set them all for now.
-      oprops.put(OutputKeys.METHOD, ofe.getMethod());
-      oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
-      oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
-      oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
-      oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
-      oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
-      oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
-      oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
-      oprops.put(OutputKeys.VERSION, ofe.getVersion());
-    }
-    
-    return oprops;
+  {    
+    return getDefaultOutputProps();
   }
 
   /**
