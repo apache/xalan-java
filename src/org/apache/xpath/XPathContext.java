@@ -387,13 +387,13 @@ public class XPathContext extends DTMManager // implements ExpressionContext
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
                    
     m_saxLocations.removeAllElements();   
-	m_axesIteratorStack = new Stack();
-	m_contextNodeLists = new Stack();
+	m_axesIteratorStack.clear();
+	m_contextNodeLists.clear();
 	m_currentExpressionNodes.removeAllElements();
 	m_currentNodes.removeAllElements();
-	m_iteratorRoots = new NodeVector();
-	m_predicatePos = new IntStack();
-	m_predicateRoots = new NodeVector();
+	m_iteratorRoots.RemoveAllNoClear();
+	m_predicatePos.removeAllElements();
+	m_predicateRoots.RemoveAllNoClear();
 	m_prefixResolvers.removeAllElements();
 	
 	m_prefixResolvers.push(null);
