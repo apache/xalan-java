@@ -393,7 +393,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
         else
           m_transformer.setSourceTreeDocForThread(m_root);
 
-        Thread t = new Thread(m_transformer);
+        Thread t = m_transformer.createTransformThread();
 
         m_transformer.setTransformThread(t);
 
@@ -616,10 +616,6 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
     synchronized (m_root)
     {
-      if (m_shouldStripWS
-              && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
-        return;
-
       if (m_isCData)
         m_sourceTreeHandler.cdata(ch, start, length);
       else
