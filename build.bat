@@ -1,56 +1,53 @@
 @echo off
-rem Prerequisites: user must set JAVA_HOME
-if "%JAVA_HOME%" == "" goto error
+rem     build.bat: Build Xalan-J 2.x using Ant 
+rem     Usage: build [ant-options] [targets]
+rem     Setup:
+rem         - you should set JAVA_HOME
+rem         - you can set ANT_HOME if you use your own Ant install
+rem         - JAVA_OPTS is added to the java command line
+rem         - PARSER_JAR may be set to use alternate parser (default:bin\xerces.jar)
 echo.
 echo Xalan-J 2.x Build
 echo -------------
 
-rem Default ANT_HOME if not set
-set SAVEANTHOME=%ANT_HOME%
-if "%ANT_HOME%" == "" set ANT_HOME=.
-
-rem This automatically adds system classes to CLASSPATH
-set SAVECP=%CLASSPATH%
-if exist "%JAVA_HOME%\lib\tools.jar" set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
-if exist "%JAVA_HOME%\lib\classes.zip" set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
-
-rem Default locations of jars we depend on 
-set ANT=bin\ant.jar
-set XERCES=bin\xerces.jar
-set BSF=bin\bsf.jar
-set BSFENGINES=bin\bsfengines.jar
-set DOCGENERATOR=bin\stylebook-1.0-b3_xalan-2.jar
-set DOCLET=bin\xalanjdoc.jar
-
-rem DOCLET must be on system CLASSPATH for javadocs task to work. Just including it in
-rem -classpath arg for java or javadoc call doesn't work....
-rem set CLASSPATH=%ANT%;%XERCES%;%BSF%;%BSFENGINES%;%DOCGENERATOR%;%DOCLET%;%CLASSPATH%
-set CLASSPATH=%ANT%;%XERCES%;%DOCGENERATOR%;%DOCLET%;%CLASSPATH%
+if not "%JAVA_HOME%" == "" goto setant
+:noJavaHome
+rem Default command used to call java.exe; hopefully it's on the path here
+if "%_JAVACMD%" == "" set _JAVACMD=java
 echo.
-echo Building with classpath %CLASSPATH%
-echo Starting Ant...
+echo Warning: JAVA_HOME environment variable is not set.
+echo   If build fails because sun.* classes could not be found
+echo   you will need to set the JAVA_HOME environment variable
+echo   to the installation directory of java.
+echo.
 
-rem Temporarily, up the -mx memory since we compile a really big glob of files
-echo %JAVA_HOME%\bin\java.exe -mx64m -Dant.home="%ANT_HOME%" -classpath "%CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
-"%JAVA_HOME%\bin\java.exe" -mx64m -Dant.home="%ANT_HOME%" -classpath "%CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+:setant
+rem Default command used to call java.exe or equivalent
+if "%_JAVACMD%" == "" set _JAVACMD=%JAVA_HOME%\bin\java
+
+rem Default _ANT_HOME to Xalan's checked-in copy if not set
+set _ANT_HOME=%ANT_HOME%
+if "%_ANT_HOME%" == "" set _ANT_HOME=.
+
+rem Default locations of jars we depend on to run Ant on our build.xml file
+if "%ANT_JAR%" == "" set ANT_JAR=bin\ant.jar
+if "%PARSER_JAR%" == "" set PARSER_JAR=bin\xerces.jar
+
+rem Attempt to automatically add system classes to _CLASSPATH
+rem Use _underscore prefix to not conflict with user's settings
+set _CLASSPATH=%CLASSPATH%
+if exist "%JAVA_HOME%\lib\tools.jar" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
+if exist "%JAVA_HOME%\lib\classes.zip" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
+set _CLASSPATH=%ANT_JAR%;%PARSER_JAR%;%_CLASSPATH%
+
+echo "%_JAVACMD%" %JAVA_OPTS% -Dant.home="%ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+"%_JAVACMD%" %JAVA_OPTS% -Dant.home="%ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 goto end
 
-:error
-
-echo "ERROR: JAVA_HOME not found in your environment."
-echo.
-echo "Please, set the JAVA_HOME environment variable to match the"
-echo "root directory of the Java Virtual Machine you want to use."
-
 :end
 rem Cleanup environment variables
-set CLASSPATH=%SAVECP%
-set SAVECP=
-set ANT_HOME=%SAVEANTHOME%
-set SAVEANTHOME=
-set XERCES=
-set BSF=
-set BSFENGINES=
-set DOCLET=
-set ANT=
+set _JAVACMD=
+set _CLASSPATH=
+set _ANT_HOME=
+

@@ -54,34 +54,66 @@ Copyright:
 
 <project name="Xalan" default="jar" basedir=".">
   <!-- =================================================================== -->
-  <!-- Defines variables used by the other targets                         -->
+  <!-- Defines paths/names of prerequisite jar files we compile against    -->
   <!-- =================================================================== -->
+  <!-- We keep checked-in known-good .jars here -->
+  <property name="bin.dir" value="./bin"/>
+
+  <!-- Allows external users/GUMP/Alexandria systems to replace .jars as needed -->
+  <property name="parser.jar.name" value="xerces.jar"/>
+  <property name="parser.jar" value="${bin.dir}/${parser.jar.name}"/>
+  <property name="bsf.jar.name" value="bsf.jar"/>
+  <property name="bsf.jar" value="${bin.dir}/${bsf.jar.name}"/>
+  <property name="stylebook.jar.name" value="stylebook-1.0-b3_xalan-2.jar"/>
+  <property name="stylebook.jar" value="${bin.dir}/${stylebook.jar.name}"/>
+  <property name="doclet.jar.name" value="xalan2jdoc.jar"/>
+  <property name="doclet.jar" value="${bin.dir}/${doclet.jar.name}"/>
+
+  <!-- Currently 18-Apr-01 used only for org.apache.xalan.xsltc -->
+  <property name="BCEL.jar.name" value="BCEL.jar"/>
+  <property name="BCEL.jar" value="${bin.dir}/${BCEL.jar.name}"/>
+  <property name="crimson.jar.name" value="crimson.jar"/>
+  <property name="crimson.jar" value="${bin.dir}/${crimson.jar.name}"/>
+  <property name="java_cup.jar.name" value="java_cup.jar"/>
+  <property name="java_cup.jar" value="${bin.dir}/${java_cup.jar.name}"/>
+  <property name="JLex.jar.name" value="JLex.jar"/>
+  <property name="JLex.jar" value="${bin.dir}/${JLex.jar.name}"/>
+  <property name="runtime.jar.name" value="runtime.jar"/>
+  <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
+  <property name="xml.jar.name" value="xml.jar"/>
+  <property name="xml.jar" value="${bin.dir}/${xml.jar.name}"/>
+
+  <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version" value="2_0_1"/>
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
-
-
   <property name="build.compiler" value="classic"/>
   <property name="debug" value="off"/>
 
-  <property name="mfinf.dir" value="./src/META-INF"/>
+  <!-- Relative locations of source directories -->
+  <property name="metainf.dir" value="./src/META-INF"/>
   <property name="src.dir" value="./src"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
+  <property name="xsltc.reldir" value="${xalan.reldir}/xsltc"/>
   <property name="trax.reldir" value="javax/xml/transform"/>
   <property name="serialize.reldir" value="org/apache/serialize"/>
   <property name="serializer.reldir" value="org/apache/xalan/serialize"/>
   <property name="jaxp.reldir" value="javax/xml/parsers"/>
   <property name="sax.reldir" value="org/xml/sax"/>
   <property name="w3c.reldir" value="org/w3c"/>    
+
+  <!-- Build and distribution output areas -->
   <property name="build.dir" value="./build"/>
-  <!-- Where we put the xalan.jar we compile by default -->
-  <property name="build.xalan.jar" value="${build.dir}/xalan.jar"/>
+  <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/>
+  <property name="build.xsltc.jar" value="${build.dir}/xsltc.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
+  <property name="dist.file" value="${name}-j_${version}"/>
+  <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
   <!-- Xalan-J1 compatability stuff.  -->
   <property name="compat.jar" value="xalanj1compat.jar"/>
@@ -90,30 +122,31 @@ Copyright:
   <property name="build.compat.jar" value="${build.dir}/${compat.jar}"/>
   <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
 
-  <!-- Reference to the top level of the test source code area. -->
-  <property name="tests.dir" value="../test/java/"/>
+  <!-- Documentation and samples information  -->
+  <property name="version.file" value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
   <property name="samples.dir" value="./samples"/>
-  <property name="bin.dir" value="./bin"/>
-  <property name="xerces.jar" value="${bin.dir}/xerces.jar"/>
-  <property name="bsf.jar" value="${bin.dir}/bsf.jar"/>
-
-  <property name="dist.file" value="${name}-j_${version}"/>
-  <property name="dist.dir" value="${build.dir}/${dist.file}"/>
-
   <property name="xdocs.dir" value="./xdocs"/>
-  <property name="version.file" value="org/apache/xalan/processor/XSLProcessorVersion.java"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
             value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/done.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl,stylesheets/xml2fo.xsl"/>
+  <property name="xalan.cmdline.class" value="org.apache.xalan.xslt.Process"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
-  
   <property name="site.root" value="./xml-site"/>
   <property name="site.dir" value="${site.root}/target/xalan-j"/>
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
+  <path id="docs.class.path">
+    <pathelement location="${bsf.jar}" />
+    <pathelement location="${stylebook.jar}" />
+    <pathelement location="${doclet.jar}" />
+    <pathelement location="${build.xalan.jar}" />
+    <pathelement path="${java.class.path}" />
+  </path>
 
+  <!-- References to various automated test locations/parameters -->
+  <property name="tests.dir" value="../test/java/"/>
   <property name="test.loggingLevel" value="5"/>
   <!-- The excluded lre tests are at issue or are new bugs, and should be 
        included as soon as they are resolved.  -->
@@ -121,7 +154,7 @@ Copyright:
   <property name="test.embedded" value="embed01.xsl;embed02.xsl;embed07.xsl"/>
 
   <!-- =================================================================== -->
-  <!-- Prepares the xdocs/style and the build directories                  -->
+  <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
   <target name="prepare">
     <mkdir dir="${build.dir}"/>
@@ -132,117 +165,137 @@ Copyright:
     -->
     <available file="${tests.dir}" property="tests-available" />
   </target>
-  <target name="prepare.docs" depends="prepare">
+
+  <!-- Must depend on jar since we use Xalan to process xml files -->
+  <target name="prepare.docs" depends="jar">
+    <mkdir dir="${build.docs}"/> 
+    <mkdir dir="${build.apidocs}"/>
+
     <gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
-        <delete file="${doc.generator.styletar}"/>
-    <mkdir dir="${build.docs}"/> <!-- transform todo.xml and put the result in build/docs -->
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+    <delete file="${doc.generator.styletar}"/>
+    
+    <echo message="Transform todo.xml and put the result in ${build.docs}"/>
+    <java fork="yes" classname="${xalan.cmdline.class}">
+      <classpath refid="docs.class.path" />
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
     </java> 
-    <!-- We use a Notes agent to extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
+    <!-- We use a Notes agent to periodically extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
     transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
     readme.xml -->      
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+    <echo message="Transform commits.xml and put the result in ${xdocs.dir}"/>
+    <java fork="yes" classname="${xalan.cmdline.class}" >
+      <classpath refid="docs.class.path" />
       <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out ${xdocs.dir}/sources/xalan/DONE"/>
     </java>
-    <!-- Generate the Xalan-J2 design document -->
-    <java fork="yes" classname="${doc.generator}"
-          classpath="${java.class.path}:${build.dir}/xalan.jar"> 
-          <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./build/docs/design/
-                     ./xdocs/sources/xalandesign.xml ./xdocs/style"/>
+    <echo message="Generate Xalan-J 2.x design document"/>
+    <java fork="yes" classname="${doc.generator}" >
+      <classpath refid="docs.class.path" />
+      <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./build/docs/design/
+                 ./xdocs/sources/xalandesign.xml ./xdocs/style"/>
     </java>
-           
-    <mkdir dir="${build.apidocs}"/>
   </target>
 
-  <!-- =================================================================== -->
-  <!-- Copy over the source code                                           -->
-  <!-- We're currently skipping this step, since it seems extraneous if
-       you're not going to be using the filtering stuff. -->
-  <!-- =================================================================== -->
-
-  <!-- =================================================================== -->
-  <!-- Compiles the source tree - xpath (independent xpath engine)         -->
-  <!-- =================================================================== -->
-  <!-- Note: Still too many cross-dependencies to do this separately -->
-  <target name="compile.xpath" depends="prepare">
-    <javac srcdir="${src.dir}/${xpath.reldir}" 
-           destdir="${build.classes}"
-           debug="${debug}" />
-  </target>
-
-  <!-- =================================================================== -->
-  <!-- Compiles the source tree - xalan (the processor)                    -->
-  <!-- =================================================================== -->
-  <!-- Note: Still too many cross-dependencies to do this separately -->
-  <target name="compile.xalan" depends="compile.xpath">
-    <javac srcdir="${src.dir}/${xalan.reldir}" excludes="org/apache/xalan/xsltc/**/*.java" 
-           destdir="${build.classes}" 
-           debug="${debug}"/>
-  </target>
 
   <!-- =================================================================== -->
   <!-- Compile entire source tree - except Xalan-J 1 compatability classes -->
   <!-- =================================================================== -->
   <target name="compile" depends="prepare"
-    description="Compile Xalan the normal way" >
+    description="Compile Xalan-J 2.x (skips 1.x compat and XSLTC)" >
     <echo message="compile entire source tree and copy .properties and .res files to build tree."/>
     <!-- Note: split compile into separate javac steps to avoid JDK 1.1.8 bug reported at:
          http://developer.java.sun.com/developer/bugParade/bugs/4043508.html
          which causes an error like:
          [javac] E:\builds\xml-xalan\java\src\org\apache\xalan\templates\ElemTemplate.java:108: Cyclic class inheritance or scoping.
     --> 
+    <!-- Compile our copy of JAXP 1.1 classes -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="javax/**/*.java"
            debug="${debug}"/>
+    <!-- Compile our copy of DOM Level 2 final draft, SAX 2.0 classes -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="org/w3c/**/*.java,org/w3c/**/*.java"
+           includes="org/w3c/**/*.java,org/xml/**/*.java"
            debug="${debug}"/>
+    <!-- Compile XPath engine and some common utilities -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="org/apache/xml/**/*.java,org/apache/xpath/**/*.java"
            debug="${debug}"/>
-    <javac srcdir="${src.dir}" excludes="org/apache/xalan/xsltc/**/*.java"
+    <!-- Compile Xalan main engine (but not xsltc package yet) -->
+    <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="org/apache/xalan/**/*.java"
+           includes="${xalan.reldir}/**/*.java"
+           excludes="${xsltc.reldir}/**/*.java,${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
            debug="${debug}"/>
+    <!-- Compile various Xalan-specific extensions and command line class -->
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
+           debug="${debug}"/>
+    <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
           <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
         </copy>  
   </target>
-    
+
   <!-- =================================================================== -->
-  <!-- Compiles other source trees                                         -->
+  <!-- Compile just the XSLTC compiler portion (to be integrated soon!) -->
   <!-- =================================================================== -->
-  <target name="compile.trax" depends="prepare">
-    <javac srcdir="${src.dir}"
-           destdir="${build.classes}" 
-           includes="${trax.reldir}/**"
-           debug="${debug}"/>
-  </target>
-  <target name="compile.serialize" depends="prepare">
+  <path id="xsltc.class.path">
+    <pathelement location="${BCEL.jar}" />
+    <pathelement location="${JLex.jar}" />
+    <pathelement location="${java_cup.jar}" />
+    <pathelement location="${runtime.jar}" />
+    <pathelement location="${xml.jar}" />
+    <pathelement location="${crimson.jar}" />
+    <pathelement path="${java.class.path}" />
+  </path>
+  <target name="xsltc.compile" depends="prepare"
+    description="Compile just the XSLTC classes" >
+
+    <!-- The first step generates sym.java and XPathParser.java, and the
+    last one generates XPathLexer.java. The lexiographical analyser
+    has to be generated after sym.java, so order is important. -->
+<!-- 
+java -cp /src/XSLT/External/java_cup/java_cup.jar:/src/XSLT/External/java_cup/runtime/runtime.jar java_cup.Main -parser XPathParser -expect 0 < /src/xml-xalan/java/src/org/apache/xalan/xsltc/compiler/xpath.cup
+-->
+    <echo message="java_cup preparsing"/>
+    <java fork="yes" classname="java_cup.Main" >
+      <classpath refid="xsltc.class.path" />
+      <!-- Note XML-isms prevent putting bare < in line; also Ant doesn't allow stdin redirection like this -->
+      <arg line="-parser XPathParser -expect 0 ${src.dir}/${xsltc.reldir}/compiler/xpath.cup"/><!-- PROBABLY DOES NOT WORK! -sc 19-Apr-01 -->
+    </java>
+<!-- 
+java -cp /src/XSLT/External/JLex/JLex.jar JLex.Main -static /src/xml-xalan/java/src/org/apache/xalan/xsltc/compiler/xpath.lex
+-->
+    <echo message="JLex preparsing"/>
+    <java fork="yes" classname="JLex.Main" >
+      <classpath refid="xsltc.class.path" />
+      <arg line="-static ${src.dir}/${xsltc.reldir}/compiler/xpath.lex"/>
+    </java>
+<!--
+mv xpath.lex.java XPathLexer.java
+-->
+    <echo message="JLex move output file"/>
+    <move file="${src.dir}/${xsltc.reldir}/compiler/xpath.lex.java" tofile="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
+
+    <echo message="Compiling all XSLTC classes"/>
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="${serialize.reldir}/**" 
-           debug="${debug}"/>
+           includes="${xsltc.reldir}/**/*.java"
+           debug="${debug}">
+      <classpath refid="xsltc.class.path" />
+    </javac>
   </target>
-  <target name="compile.sax" depends="prepare">
-    <javac srcdir="${src.dir}/${sax.reldir}" 
-           destdir="${build.classes}" 
-           debug="${debug}"/>
-  </target>
-    <target name="compile.w3c" depends="prepare">
-    <javac srcdir="${src.dir}/${w3c.reldir}" 
-           destdir="${build.classes}" 
-           debug="${debug}"/>
-  </target>
-    <target name="compile.jaxp" depends="prepare">
-    <javac srcdir="${src.dir}/${jaxp.reldir}" 
-           destdir="${build.classes}" 
-           debug="${debug}"/>
+  <target name="xsltc.jar" depends="xsltc.compile"
+    description="Jar just the xsltc.jar file" >
+    <jar jarfile="${build.xsltc.jar}" basedir="${build.classes}" >
+      <patternset><!-- relative to jar/@basedir -->
+        <include name="${xsltc.reldir}/**/*" />
+      </patternset>
+    </jar>
   </target>
   
   <!-- =================================================================== -->
@@ -250,18 +303,19 @@ Copyright:
   <!-- =================================================================== -->
   <target name="jar" depends="compile"
     description="Jar up xalan.jar" >
-    <jar jarfile="${build.xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}"/>
-  </target>
-  <target name="package" depends="jar">
-    <!-- OK, what are the 'Apache-standard' names for various targets? -->
-    <echo message="package is an alias for jar"/>  
+    <jar jarfile="${build.xalan.jar}" manifest="src\MANIFEST.MF" basedir="${build.classes}" >
+      <patternset><!-- relative to jar/@basedir -->
+        <exclude name="${xsltc.reldir}/**/*" />
+      </patternset>
+    </jar>
   </target>
   
   <!-- =================================================================== -->
   <!-- Creates the Xalan-J1 compatability JAR                              -->
   <!-- =================================================================== -->
-  <target name="compat.jar" depends="jar">
-    <echo message="compile and JAR Xalan-J 1 compability API."/>
+  <target name="compat.jar" depends="jar"
+    description="Compile and jar Xalan-J 1.x backwards compat classes" >
+    <echo message="Compile and jar just the Xalan-J 1 compability API"/>
     <mkdir dir="${build.compat.classes}"/>
     <javac srcdir="${compat.src.dir}" classpath="${java.class.path}:${build.xalan.jar}" 
            destdir="${build.compat.classes}"
@@ -272,17 +326,14 @@ Copyright:
     </copy>  
     <jar jarfile="${build.compat.jar}" manifest="src\MANIFEST.MF" basedir="${build.compat.classes}"/>
   </target>
-  <target name="compat.package" depends="compat.jar">
-    <echo message="compat.package is an alias for compat.jar"/>  
-  </target>
   
   <!-- =================================================================== -->
   <!-- Creates the Xalan-J1 compatability javadoc                          -->
   <!-- =================================================================== -->
-  <target name="compat.javadocs" depends="jar">
+  <target name="compat.javadocs" depends="jar"
+    description="Build javadocs for Xalan-J 1.x backwards compat classes" >
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
-         classpath="${java.class.path}"
          public="true"
          sourcepath="${compat.src.dir}"
          overview="${compat.src.dir}/compatOverview.html"         
@@ -294,10 +345,8 @@ Copyright:
          windowtitle="Xalan-Java 1 Compatability" 
          doctitle="Xalan-Java 1 Compatability"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+      <classpath refid="docs.class.path" />
     </javadoc>
-  </target>
-    <target name="compat.apidocs" depends="compat.javadocs">
-    <echo message="compat.apidocs is an alias for compat.javadocs"/>  
   </target>
     
 
@@ -372,22 +421,24 @@ Copyright:
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
   <target name="docs" depends="jar,prepare.docs,autodocs"
-    description="Build the framework documentation (overview, readme, etc.)" >
+    description="Build the documentation (overview, readme, etc.)" >
     <echo message="docs is human-usable target with dependencies"/>  
   </target>
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.xalan.jar}">
+    <java fork="yes" 
+          classname="${doc.generator}" 
+          classpathref="docs.class.path" >
        <arg line="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>
-        </java>	 
+    </java>	 
   </target>
   
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="prepare.docs,autojavadocs"
-    description="Build the Javadocs for Xalan sources" >
+  <target name="javadocs" depends="jar,prepare.docs,autojavadocs"
+    description="Build the Javadocs for Xalan 2.x sources" >
     <echo message="javadocs is human-usable target with dependencies"/>  
   </target>
 
@@ -396,17 +447,18 @@ Copyright:
     
     <!-- generate trax.html, a TRaX overview document, and a package.html for each trax package
          (the latter are generated with the the Redirect extension -->
-    <mkdir dir="${build.apidocs}/javax/xml/transform"/>         
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.xalan.jar}">
+    <mkdir dir="${build.apidocs}/${trax.reldir}"/>         
+    <java fork="yes" 
+          classname="${xalan.cmdline.class}" >
+      <classpath refid="docs.class.path" />
       <arg line="-in ${xdocs.dir}/sources/trax/trax.xml
                  -param package-root '../../../src/'
                  -xsl ${xdocs.style}/stylesheets/spec.xsl 
-                 -out ${build.apidocs}/javax/xml/transform/trax.html"/>
+                 -out ${build.apidocs}/${trax.reldir}/trax.html"/>
     </java>   
     
     <!-- Ant 1.2 ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
-         classpath="${java.class.path}"
          public="true"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
@@ -417,6 +469,7 @@ Copyright:
          windowtitle="${Name} 2" 
          doctitle="${Name} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+          <classpath refid="docs.class.path" />
           <doclet name="xalanjdoc.Standard" path="${bin.dir}/xalan2jdoc.jar">
             <param name="-d" value="${build.apidocs}"/>
           </doclet>
@@ -431,6 +484,8 @@ Copyright:
           <group title="Serializers" packages="org.apache.xalan.serialize"/>
           <group title="SAX 2" packages="org.xml.sax*"/>
           <group title="DOM 2" packages="org.w3c.dom*"/>
+          <group title="XSLTC Core"
+                 packages="org.apache.xalan.xsltc*"/>
     </javadoc>
     
   </target>
@@ -447,7 +502,7 @@ Copyright:
   <!--           in the source tree                                        -->
   <!-- =================================================================== -->
   <target name="clean"
-    description="Clean up the build" >
+    description="Clean up the build tree and any outputs" >
     <delete dir="${build.dir}"/>
     <delete dir="${site.root}"/>
     <delete>
@@ -516,18 +571,21 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the documentation tree for the org.apache.xml website       -->
   <!-- =================================================================== -->
-  <target name="site" depends="prepare.docs">
+  <target name="site" depends="prepare.docs"
+    description="Build documentation for posting to the website" >
  
     <mkdir dir="${site.dir}/apidocs"/>
     <mkdir dir="${site.dir}/compat_apidocs"/>
     <mkdir dir="${site.dir}/design"/>
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
+    <java fork="yes" 
+          classname="${doc.generator}" 
+          classpathref="docs.class.path" >
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
-        </java>
+    </java>
 
-        <!-- put todo.html in the site directory -->     
+    <!-- put todo.html in the site directory -->     
     <copy file="${build.docs}/todo.html" todir="${site.dir}"/>
-     <!-- put xalan design doc in the site design subdir -->
+    <!-- put xalan design doc in the site design subdir -->
     <copy todir="${site.dir}/design">
       <fileset dir="${build.docs}/design"/>
     </copy>  
@@ -545,7 +603,7 @@ Copyright:
   <!-- Compiles and runs the minitest from xml-xalan\test, if present      -->
   <!-- =================================================================== -->
   <path id="minitest.class.path">
-    <pathelement location="${xerces.jar}" />
+    <pathelement location="${parser.jar}" />
     <pathelement location="${build.xalan.jar}" />
     <pathelement location="${bsf.jar}" />
     <pathelement path="${java.class.path}" />
@@ -579,7 +637,7 @@ Copyright:
       -->
       <property name="testxsl.jar.name" value="minitest.jar" />
       <property name="prepend.class.path"
-                value="${tests.backref}${xerces.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
+                value="${tests.backref}${parser.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
     <!-- Why doesn't the following refid work? I get an error referencing it.
       <property name="prepend.class.path" refid="minitest.class.path" />
     -->
@@ -618,7 +676,7 @@ Copyright:
            of doing it from this directory.
       -->
       <property name="prepend.class.path"
-                value="${tests.backref}${xerces.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
+                value="${tests.backref}${parser.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
     </ant>
   </target>
   
@@ -626,12 +684,12 @@ Copyright:
   <!-- Compiles and runs the smoke test from xml-xalan\test, if present      -->
   <!-- =================================================================== -->
   <target name="smoketest" depends="prepare,jar,smoketest-run,tests-not-available" 
-    description="Run the smoke test - to be defined." >
+    description="Run the SmokeTest (includes API tests and ConformanceTest)" >
   </target>
   <target name="smoketest-run" if="tests-available" depends="prepare" >
     <ant dir="${tests.dir}" antfile="build.xml" target="smoketest-xalan2" >
       <property name="prepend.class.path"
-                value="${tests.backref}${xerces.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
+                value="${tests.backref}${parser.jar}:${tests.backref}${build.xalan.jar}:${tests.backref}${bsf.jar}" />
     </ant>
   </target>
   
@@ -639,7 +697,9 @@ Copyright:
   <!-- Creates the todo list for the org.apache.xml website                -->
   <!-- =================================================================== -->
   <target name="todo">
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+    <java fork="yes" 
+          classname="${xalan.cmdline.class}" 
+          classpathref="docs.class.path" >
       <arg line="-in todo.xml -xsl todo.xsl -out todo.html"/>
     </java>   
   </target>  
@@ -648,7 +708,9 @@ Copyright:
   <!-- Creates the xalan design document                                   -->
   <!-- =================================================================== -->
     <target name="xalan-j2-design">
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/xalan.jar"> 
+    <java fork="yes" 
+          classname="${doc.generator}" 
+          classpathref="docs.class.path" >
       <arg line="loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=${build.dir}/docs/design/
       ${xdocs.dir}/sources/xalandesign.xml ${xdocs.style}"/>
     </java>
@@ -657,23 +719,24 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Use FOP to create preliminary print (pdf) doc                       -->
   <!-- Note: fop.jar and xml.jar (from xml-fop) must be on classpath       -->
-
   <!-- This is VERY preliminary, not yet for inclusion in distribution     -->
   <!-- =================================================================== -->
 
   <!--Collate the xml sources into a single xml source with a litle extra structure -->
   <target name="print.docs" depends="prepare.docs">
     <echo message="fop.jar and xml.jar must be on the classpath"/>
-    <java fork="yes" classname="org.apache.xalan.xslt.Process"
-      classpath="${java.class.path}:${build.dir}/xalan.jar">
+    <java fork="yes" 
+          classname="${xalan.cmdline.class}"
+          classpathref="docs.class.path" >
       <arg line="-xsl ${xdocs.dir}/sources/xalan-collate.xsl 
                  -out ${xdocs.dir}/sources/xalan/xalan-collate.xml"/>
     </java>
     
     <!-- Transform collation into Formatting Objects 
          (with a little work on links along the way) -->    
-    <java fork="yes" classname="org.apache.xalan.xslt.Process"
-      classpath="${java.class.path}:${build.dir}/xalan.jar">
+    <java fork="yes" 
+          classname="${xalan.cmdline.class}"
+          classpathref="docs.class.path" >
       <arg line="-in  ${xdocs.dir}/sources/xalan/xalan-collate.xml
                  -param resourceFile '../../sources/xalan/resources.xml'
                  -param project ${Name}      
@@ -681,16 +744,18 @@ Copyright:
                  -out ${build.docs}/xalan-collate.fo"/>
     </java>
     
-    <!-- Use FOP to generate a pdf file -->
-    <java fork="yes" classname="org.apache.fop.apps.CommandLine"
-      classpath="${java.class.path}:${build.dir}/xalan.jar:${bin.dir}/fop.jar:${bin.dir}/w3c.jar">
+    <!-- Use FOP to generate a pdf file (classpath may need updating! -sc 18-Apr-01)-->
+    <java fork="yes" 
+          classname="org.apache.fop.apps.CommandLine"
+      classpath="${java.class.path}:${build.xalan.jar}:${bin.dir}/fop.jar:${bin.dir}/w3c.jar">
       <arg line="${build.docs}/xalan-collate.fo build/docs/xalan.pdf"/>
     </java>
   </target>
 
   <!-- =================================================================== -->  
    <!-- for developers only; compiles xalan-j1 samples with compat jar and xalan-j2 xalan.jar-->
-   <target name="compat.samples" description="Compile XalanJ1 samples" >
+   <target name="compat.samples" depends="jar,compat.jar" 
+    description="Compile and jar Xalan-J 1.x backwards compat samples" >
      <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
      <property name="samplesj1.dir" value="/xml-xalan/samples"/>
      <property name="build.compat.samples" value="./build/compat_samples"/>
