@@ -96,10 +96,17 @@ public class ElemVariable extends ElemTemplateElement
   public ElemVariable(){}
 
   /**
-   * This is the index into the stack frame.  If the index is above the 
-   * global area, it will have to be offset at execution time.
+   * This is the index into the stack frame.
    */
   protected int m_index;
+  
+  /**
+   * The stack frame size for this variable if it is a global variable 
+   * that declares an RTF, which is equal to the maximum number 
+   * of variables that can be declared in the variable at one time.
+   */
+  int m_frameSize = -1;
+
   
   /**
    * Sets the relative position of this variable within the stack frame (if local)
@@ -391,12 +398,38 @@ public class ElemVariable extends ElemTemplateElement
     // Only add the variable if this is not a global.  If it is a global, 
     // it was already added by stylesheet root.
     if(!(m_parentNode instanceof Stylesheet))
+    {
       m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
+    }
+    else
+    {
+    	// If this is a global, then we need to treat it as if it's a xsl:template, 
+    	// and count the number of variables it contains.  So we set the count to 
+    	// zero here.
+		cstate.resetStackFrameSize();
+    }
     
     // This has to be done after the addVariableName, so that the variable 
     // pushed won't be immediately popped again in endCompose.
     super.compose(sroot);
   }
+  
+  /**
+   * This after the template's children have been composed.  We have to get 
+   * the count of how many variables have been declared, so we can do a link 
+   * and unlink.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+    super.endCompose(sroot);
+    if(m_parentNode instanceof Stylesheet)
+    {
+    	StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+    	m_frameSize = cstate.getFrameSize();
+    	cstate.resetStackFrameSize();
+    }
+  }
+
   
   
 //  /**
