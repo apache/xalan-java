@@ -120,7 +120,7 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * The schema used when creating this StylesheetRoot
    */
-  private XSLTSchema m_schema;
+  private Hashtable m_availElems;
 
   /**
    * Creates a StylesheetRoot and retains a pointer to the schema used to create this
@@ -133,7 +133,7 @@ public class StylesheetRoot extends StylesheetComposed
   {
 
     this();
-    m_schema = schema;
+    m_availElems = schema.getElemsAvailable();
 
   }
 
@@ -148,13 +148,14 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
-   * Get the schema associated with this StylesheetRoot
+   * Get the hashtable of available elements.
    *
-   * @return the schema in effect when this StylesheetRoot was built
+   * @return table of available elements, keyed by qualified names, and with 
+   * values of the same qualified names.
    */
-  public XSLTSchema getSchema()
+  public Hashtable getAvailableElements()
   {
-    return m_schema;
+    return m_availElems;
   }
 
   //============== Templates Interface ================
