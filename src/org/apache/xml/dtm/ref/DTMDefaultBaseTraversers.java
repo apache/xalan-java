@@ -852,7 +852,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			context=makeNodeIdentity(context);
 
       int first;
-      int type = _exptype(context);
+      int type = _type(context);
 
       if ((DTM.ATTRIBUTE_NODE == type) || (DTM.NAMESPACE_NODE == type))
       {
