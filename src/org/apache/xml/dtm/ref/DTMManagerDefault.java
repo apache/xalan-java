@@ -376,7 +376,8 @@ public class DTMManagerDefault extends DTMManager
           {
             // IncrementalSAXSource_Xerces to avoid threading.
             try {
-              coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces.createIncrementalSAXSource();
+              coParser =(IncrementalSAXSource)
+                Class.forName("org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces").newInstance();  
             }  catch( Exception ex ) {
               ex.printStackTrace();
               coParser=null;
