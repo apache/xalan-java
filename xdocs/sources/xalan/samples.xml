@@ -66,6 +66,7 @@
 <li><link anchor="pipe">Pipe</link></li>
 <li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
+<li><link anchor="applyxpathdom">ApplyXPathDOM</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
 <li><link anchor="servlet">servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
@@ -163,6 +164,36 @@
     <p><code>java ApplyXPath foo.xml /</code></p>
     <p>and</p>
     <p><code>java ApplyXPath foo.xml /doc/name/@first</code></p>
+    <p>For more information, see <link idref="usagepatterns" anchor="xpath">Working with XPath expressions</link>.</p>
+    </s2><anchor name="appletxmltohtml"/>
+    <s2 title="AppletXMLtoHTML">
+    <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
+     stylesheet, and the HTML output.</p>
+    <p>How to run it: Open appletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
+    <note>For information about running &xslt4j; applets in Netscape Communicator, see <link idref="usagepatterns" anchor="netscape">Problems
+    with Netscape</link>.<br/><br/>
+    This applet looks for xalan.jar, xml-apis.jar, and xercesImpl.jar (Xerces-J2) or xerces.jar (Xerces-J 1) in the bin 
+    subdirectory. If you have placed these JAR files
+    elsewhere, adjust the applet archive setting in client.html accordingly.</note>
+    </s2><anchor name="applyxpathdom"/>
+    <s2 title="ApplyXPathDOM">
+    <p>What it does: ApplyXPathDOM is very similar to the <link anchor="applyxpath">ApplyXPath</link> sample, but it uses the API 
+     in the <jump href="http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328/">DOM Level 3 XPath 
+     Specification</jump> to execute an XPath expression against an XML document and return 
+     the nodes (if any) it finds.  At the time of writing the DOM Level 3 XPath Specification is in 
+     <jump href="http://www.w3.org/Consortium/Process-20010719/tr.html#last-call">Last Call</jump>.</p>
+     <note>You can use this sample as an aid when you want to find out what a given XPath expression returns from a
+     given XML file. Keep in mind that the context node (base point of evaluation) for the XPath expression is the document
+     root.</note>
+    <p>Run this sample from the ApplyXPathDOM subdirectory with</p> 
+    <p><code>java ApplyXPathDOM <ref>XMLFile XPathExpression</ref></code></p>
+    <p>where <ref>XMLFile</ref> is an XML source file and <ref>XPathExpression</ref> is an XPath expression to
+     apply to that file. The ApplyXPathDOM subdirectory contains an XML file named foo.xml --<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;doc&gt;&lt;name first="David" last="Marston"/&gt;...&lt;/doc></code><br/> -- so you can try command
+     lines like</p>
+    <p><code>java ApplyXPathDOM foo.xml /</code></p>
+    <p>and</p>
+    <p><code>java ApplyXPathDOM foo.xml /doc/name/@first</code></p>
     <p>For more information, see <link idref="usagepatterns" anchor="xpath">Working with XPath expressions</link>.</p>
     </s2><anchor name="appletxmltohtml"/>
     <s2 title="AppletXMLtoHTML">
