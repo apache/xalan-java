@@ -360,11 +360,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // Establish SAX-stream link so we can receive the requested data
     incrementalSAXSource.setContentHandler(this);
     incrementalSAXSource.setLexicalHandler(this);
+    incrementalSAXSource.setDTDHandler(this);
 
     // Are the following really needed? incrementalSAXSource doesn't yet
     // support them, and they're mostly no-ops here...
     //incrementalSAXSource.setErrorHandler(this);
-    //incrementalSAXSource.setDTDHandler(this);
     //incrementalSAXSource.setDeclHandler(this);
   }
 

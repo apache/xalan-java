@@ -255,8 +255,7 @@ public class IncrementalSAXSource_Xerces
     ((XMLReader)fIncrementalParser).setContentHandler(handler);
   }
 
-  // Note name, needed to dodge the inherited Xerces setLexicalHandler
-  // which isn't public.
+  // Register handler directly with the incremental parser
   public void setLexicalHandler(org.xml.sax.ext.LexicalHandler handler)
   {
     // Not supported by all SAX2 parsers but should work in Xerces:
@@ -277,6 +276,14 @@ public class IncrementalSAXSource_Xerces
     }
   }
   
+  // Register handler directly with the incremental parser
+  public void setDTDHandler(org.xml.sax.DTDHandler handler)
+  {
+    // Typecast required in Xerces2; SAXParser doesn't inheret XMLReader
+    // %OPT% Cast at asignment?
+    ((XMLReader)fIncrementalParser).setDTDHandler(handler);
+  }
+
   //================================================================
   /** startParse() is a simple API which tells the IncrementalSAXSource
    * to begin reading a document.
