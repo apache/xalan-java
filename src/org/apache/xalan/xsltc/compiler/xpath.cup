@@ -122,6 +122,10 @@ parser code {:
           return _parser.getQNameIgnoreDefaultNs(name);
     }    
 
+    public QName getQName(String namespace, String prefix, String localname) {
+        return _parser.getQName(namespace, prefix, localname);
+    }        
+
     public void setMultiDocument(boolean flag) {
           _xsltc.setMultiDocument(flag);
     }
@@ -1021,6 +1025,9 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
 	  }
           else if (fname == parser.getQNameIgnoreDefaultNs("namespace-uri")) {
             RESULT = new NamespaceUriCall(fname, argl);
+	  }
+          else if (fname == parser.getQName(Constants.TRANSLET_URI, "xsltc", "cast")) {
+            RESULT = new CastCall(fname, argl);
 	  }
 	  // Special case for extension function nodeset()
           else if (fname.getLocalPart().equals("nodeset") || fname.getLocalPart().equals("node-set")) {

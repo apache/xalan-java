@@ -782,6 +782,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType S_SS = new MethodType(Type.String, Type.String, Type.String);
 	MethodType S_DS = new MethodType(Type.String, Type.Real, Type.String);
 	MethodType S_SR = new MethodType(Type.String, Type.String, Type.Real);
+	MethodType O_SO = new MethodType(Type.Reference, Type.String, Type.Reference);
 
 	MethodType D_SS =
 	    new MethodType(Type.NodeSet, Type.String, Type.String);
@@ -862,6 +863,7 @@ public class Parser implements Constants, ContentHandler {
 	// Extensions
         _symbolTable.addPrimop("nodeset", D_O);
         _symbolTable.addPrimop("objectType", S_O);
+        _symbolTable.addPrimop("cast", O_SO);
 
 	// Operators +, -, *, /, % defined on real types.
 	_symbolTable.addPrimop("+", R_RR);	
