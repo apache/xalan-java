@@ -361,13 +361,5 @@ Copyright:
     <copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/>
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
   </target-->
-
-  <target name="docsxalan1">
-   
-    <java fork="yes" classname="${doc.generator}" classpath="../build/xalan.jar:../xdocs/stylebook-1.0-b2.jar:${java.class.path}"
-         args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
-  </target>
   
-
-
 </project>
