@@ -56,7 +56,13 @@
  */
 
 // Imported TraX classes
-import trax.*;
+import trax.Processor; 
+import trax.Templates;
+import trax.Transformer; 
+import trax.Result;
+import trax.ProcessorException; 
+import trax.ProcessorFactoryException;
+import trax.TransformException; 
 
 // Imported java.io class
 import java.io.IOException;
@@ -74,6 +80,7 @@ import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.Serializer;
 import org.apache.xml.serialize.SerializerFactory;
 
+// Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
@@ -103,13 +110,12 @@ public class TransformToDom
 	  
 	  // Perform the transformation, placing the output in the DOM
 	  // Document Node.
-      /** doesn't yet work -- no error, but no output either!
       transformer.transform(new InputSource("foo.xml"), new Result(outNode));
- 
-      For time being, input must also be DOM.
-      */
-      Node doc = docBuilder.parse(new InputSource("foo.xml"));
-      transformer.transformNode(doc, new Result(outNode));
+	  
+      // If also wanted to process DOM input, replace the preceding statement with
+	  // the following:
+      // Node doc = docBuilder.parse(new InputSource("foo.xml"));
+      // transformer.transformNode(doc, new Result(outNode));
 	  
 	  //Instantiate an XML serializer and use it to serialize the output DOM to System.out
 	  // using a default output format.
