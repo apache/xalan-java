@@ -119,7 +119,7 @@ public class NodeInfo
   }
 
   /**
-   * <code>publicId</code> returns the system id of the current
+   * <code>publicId</code> returns the public identifier of the current
    * context node.
    *
    * @param context an <code>ExpressionContext</code> value
@@ -139,8 +139,8 @@ public class NodeInfo
   }
 
   /**
-   * <code>publicId</code> returns the system id of the node passed as
-   * argument. If a node set is passed as argument, the system id of
+   * <code>publicId</code> returns the public identifier of the node passed as
+   * argument. If a node set is passed as argument, the public identifier of
    * the first node in the set is returned.
    *
    * @param context an <code>ExpressionContext</code> value
