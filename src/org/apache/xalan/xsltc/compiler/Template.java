@@ -115,7 +115,6 @@ public final class Template extends TopLevelElement {
     }
     
     public void addParameter(Param param) {
-    	param.setIndex(_parameters.size());
     	_parameters.addElement(param);
     }
     
@@ -352,58 +351,19 @@ public final class Template extends TopLevelElement {
 		
 	// %OPT% Special handling for simple named templates.
 	if (_isSimpleNamedTemplate && methodGen instanceof NamedMethodGenerator) {
-	    NamedMethodGenerator namedMethodGen = (NamedMethodGenerator)methodGen;
 	    int numParams = _parameters.size();
-	    // Update the load instructions of the Params, so that they
-	    // are loaded from the method parameters. 
+	    NamedMethodGenerator namedMethodGen = (NamedMethodGenerator)methodGen;
+            
+            // Update load/store instructions to access Params from the stack
 	    for (int i = 0; i < numParams; i++) {
 	    	Param param = (Param)_parameters.elementAt(i);
 	    	param.setLoadInstruction(namedMethodGen.loadParameter(i));
+	    	param.setStoreInstruction(namedMethodGen.storeParameter(i));
 	    }
-	    // Translate all children except the parameters.
-	    // The parameters are translated in CallTemplates if necessary.
-	    translateContentsWithoutParams(classGen, methodGen);
 	}
-	else {
-	    translateContents(classGen, methodGen);
-	}
-	
+        
+        translateContents(classGen, methodGen);
 	il.setPositions(true);
     }
-    
-    /**
-     * Call translate() on all child syntax tree nodes except the parameters.
-     * 
-     * This is used for a simple named template, where the paramters are
-     * translated in the CallTemplate if necessary.
-     * 
-     * @param classGen BCEL Java class generator
-     * @param methodGen BCEL Java method generator
-     */
-    protected void translateContentsWithoutParams(
-        ClassGenerator classGen,
-        MethodGenerator methodGen) {
-        // Call translate() on all child nodes
-        final int n = elementCount();
-        for (int i = 0; i < n; i++) {
-            final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(i);
-            if (!(item instanceof Param)) {
-                item.translate(classGen, methodGen);
-            }
-        }
-
-        // After translation, unmap any registers for any
-        // variables / parameters
-        // that were declared in this scope. Performing this unmapping in the
-        // same AST scope as the declaration deals with the problems of
-        // references falling out-of-scope inside the for-each element.
-        // (the cause of which being 'lazy' register allocation for references) 
-        for (int i = 0; i < n; i++) {
-            if (elementAt(i) instanceof Variable) {
-                final Variable var = (Variable) elementAt(i);
-                var.unmapRegister(methodGen);
-            }
-        }
-    }
-    
+        
 }

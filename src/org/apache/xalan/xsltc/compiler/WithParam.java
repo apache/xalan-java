@@ -79,14 +79,22 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class WithParam extends Instruction {
 
+    /**
+     * Parameter's name.
+     */
     private QName _name;
+    
+    /**
+     * Parameter's default value.
+     */
     private Expression _select;
 
-    // %OPT% This is set to true when the WithParam is used in a
-    // CallTemplate for a simple named template. If this is true,
-    // the parameters are passed to the named template through method
-    // arguments rather than using the expensive Translet.addParameter()
-    // call.
+    /**
+     * %OPT% This is set to true when the WithParam is used in a CallTemplate
+     * for a simple named template. If this is true, the parameters are 
+     * passed to the named template through method arguments rather than
+     * using the expensive Translet.addParameter() call.
+     */
     private boolean _doParameterOptimization = false;
 
     /**
@@ -116,7 +124,6 @@ final class WithParam extends Instruction {
     	_doParameterOptimization = flag;
     }
     
-
     /**
      * The contents of a <xsl:with-param> elements are either in the element's
      * 'select' attribute (this has precedence) or in the element body.

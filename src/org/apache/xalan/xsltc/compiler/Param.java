@@ -67,7 +67,9 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.bcel.classfile.Field;
+import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.CHECKCAST;
+import org.apache.bcel.generic.IFNONNULL;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.Instruction;
@@ -80,38 +82,42 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+
 final class Param extends VariableBase {
 
-    // True if this Param is declared in a simple named template.
-    // This is used to optimize codegen for parameter passing
-    // in named templates.
+    /**
+     * True if this Param is declared in a simple named template.
+     * This is used to optimize codegen for parameter passing
+     * in named templates.
+     */
     private boolean _isInSimpleNamedTemplate = false;
-
-    // The order index of the parameter, which is only used when
-    // the Param is declared in a simple named template.
-    private int _index = 0;
 
     /**
      * Display variable as single string
      */
     public String toString() {
-	return("param("+_name+")");
+	return "param(" + _name + ")";
     }
 
     /**
-     * Set the index of this parameter
+     * Set the instruction for loading the value of this variable onto the 
+     * JVM stack and returns the old instruction.
      */
-    public void setIndex(int index) {
-        _index = index;
+    public Instruction setLoadInstruction(Instruction instruction) {
+        Instruction tmp = _loadInstruction;
+        _loadInstruction = instruction;
+        return tmp;
     }
 
     /**
-     * Return the index of this parameter
+     * Set the instruction for storing a value from the stack into this
+     * variable and returns the old instruction.
      */
-    public int getIndex() {
-        return _index;
+    public Instruction setStoreInstruction(Instruction instruction) {
+        Instruction tmp = _storeInstruction;
+        _storeInstruction = instruction;
+        return tmp;
     }
 
     /**
@@ -198,33 +204,33 @@ final class Param extends VariableBase {
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
 	if (_ignore) return;
-	// _ignore = true;
+	_ignore = true;
 
         /*
          * To fix bug 24518 related to setting parameters of the form
-         * {namespaceuri}localName
-         * which will get mapped to an instance variable in the class
-         * Hence  a parameter of the form "{http://foo.bar}xyz"
-         * will be replaced with the corresponding values
-         * by the BasisLibrary's utility method mapQNametoJavaName
-         * and thus get mapped to legal java variable names
+         * {namespaceuri}localName which will get mapped to an instance 
+         * variable in the class.
          */
 	final String name = BasisLibrary.mapQNameToJavaName(_name.toString());
 	final String signature = _type.toSignature();
 	final String className = _type.getClassName();
 
 	if (isLocal()) {
-
-            // %OPT% Only translate the value and put it on the
-            // stack if this Param is in a simple named template.
-            // No need to call Translet.addParameter().
+            /*
+              * If simple named template then generate a conditional init of the 
+              * param using its default value: 
+              *       if (param == null) param = <default-value>
+              */
             if (_isInSimpleNamedTemplate) {
+		il.append(loadInstruction());
+                BranchHandle ifBlock = il.append(new IFNONNULL(null));
                 translateValue(classGen, methodGen);
+                il.append(storeInstruction());
+                ifBlock.setTarget(il.append(NOP));
                 return;
             }
             
@@ -282,15 +288,4 @@ final class Param extends VariableBase {
 	    }
 	}
     }
-
-    /**
-     * Set the instruction handle for loading the value of this
-     * variable onto the JVM stack and returns the old instruction handle.
-     */
-    public Instruction setLoadInstruction(Instruction instruction) {
-        Instruction tmp = _loadInstruction;
-        _loadInstruction = instruction;
-        return tmp;
-    }
-
 }

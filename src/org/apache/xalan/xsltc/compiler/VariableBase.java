@@ -90,6 +90,7 @@ class VariableBase extends TopLevelElement {
     protected boolean     _isLocal;         // True if the variable is local.
     protected LocalVariableGen _local;      // Reference to JVM variable
     protected Instruction _loadInstruction; // Instruction to load JVM variable
+    protected Instruction _storeInstruction; // Instruction to load JVM variable
     protected Expression  _select;          // Reference to variable expression
     protected String      select;           // Textual repr. of variable expr.
 
@@ -173,14 +174,27 @@ class VariableBase extends TopLevelElement {
     }
 
     /**
-     * Returns a handle to the instruction for loading the value of this
-     * variable onto the JVM stack.
+     * Returns an instruction for loading the value of this variable onto 
+     * the JVM stack.
      */
     public Instruction loadInstruction() {
 	final Instruction instr = _loadInstruction;
-	if (_loadInstruction == null) 
+	if (_loadInstruction == null) {
 	    _loadInstruction = _type.LOAD(_local.getIndex());
+        }
 	return _loadInstruction;
+    }
+
+    /**
+     * Returns an instruction for storing a value from the JVM stack
+     * into this variable.
+     */
+    public Instruction storeInstruction() {
+	final Instruction instr = _storeInstruction;
+	if (_storeInstruction == null) {
+	    _storeInstruction = _type.STORE(_local.getIndex());
+        }
+	return _storeInstruction;
     }
 
     /**

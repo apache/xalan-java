@@ -80,23 +80,24 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 import java.util.Vector;
 
 final class CallTemplate extends Instruction {
+    
+    /**
+     * Name of template to call.
+     */
     private QName _name;
     
-    // The array of effective parameters in this CallTemplate.
-    // An object in this array can be either a WithParam or
-    // a Param if no WithParam exists for a particular parameter.
+    /** 
+     * The array of effective parameters in this CallTemplate. An object in 
+     * this array can be either a WithParam or a Param if no WithParam 
+     * exists for a particular parameter.
+     */
     private Object[] _parameters = null;
-    
-    // True if we need to create temporary variables to hold
-    // the parameter values.
-    private boolean _createTempVar = false;
-    
-    // The corresponding template which this CallTemplate calls.
+        
+    /**
+     * The corresponding template which this CallTemplate calls.
+     */
     private Template _calleeTemplate = null;
     
-    // The array to hold the old load instructions for the parameters.
-    private org.apache.bcel.generic.Instruction[] _oldLoadInstructions;
-
     public void display(int indent) {
 	indent(indent);
 	System.out.print("CallTemplate");
@@ -128,23 +129,16 @@ final class CallTemplate extends Instruction {
 	return Type.Void;
     }
 
-    /**
-     * Translate call-template.
-     * A parameter frame is pushed only if some template in the stylesheet
-     * uses parameters.
-     * TODO: optimize by checking if the callee has parameters.
-     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final Stylesheet stylesheet = classGen.getStylesheet();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-
+        // If there are Params in the stylesheet or WithParams in this call?
 	if (stylesheet.hasLocalParams() || hasContents()) {
 	    _calleeTemplate = getCalleeTemplate();
 	    
-	    // Build the parameter list if the called template is
-	    // a simple named template.
+	    // Build the parameter list if the called template is simple named
 	    if (_calleeTemplate != null) {
 	    	buildParameterList();
 	    }
@@ -157,95 +151,49 @@ final class CallTemplate extends Instruction {
 					          PUSH_PARAM_FRAME_SIG);
 	        il.append(classGen.loadTranslet());
 	        il.append(new INVOKEVIRTUAL(push));
-	        // Translate with-params
 	        translateContents(classGen, methodGen);
 	    }
 	}
 
+        // Generate a valid Java method name
 	final String className = stylesheet.getClassName();
-	// Generate a valid Java method name
-	String methodName = Util.escape(_name.toString());
+        String methodName = Util.escape(_name.toString());
 
+        // Load standard arguments
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadIterator());
 	il.append(methodGen.loadHandler());
 	il.append(methodGen.loadCurrentNode());
-	String methodSig = "(" + DOM_INTF_SIG + NODE_ITERATOR_SIG
-	                   + TRANSLET_OUTPUT_SIG + NODE_SIG;
+        
+        // Initialize prefix of method signature
+	StringBuffer methodSig = new StringBuffer("(" + DOM_INTF_SIG 
+            + NODE_ITERATOR_SIG + TRANSLET_OUTPUT_SIG + NODE_SIG);
 	
+        // If calling a simply named template, push actual arguments
 	if (_calleeTemplate != null) {
 	    Vector calleeParams = _calleeTemplate.getParameters();
 	    int numParams = _parameters.length;
-	    org.apache.bcel.generic.Type objectType = null;	                
 	    
-	    if (_createTempVar) {
-	    	_oldLoadInstructions = new org.apache.bcel.generic.Instruction[numParams];
-	    	objectType = Util.getJCRefType(OBJECT_SIG);
-	    }
-	    
-	    // Translate all effective WithParams and Params in the list
 	    for (int i = 0; i < numParams; i++) {
-	    	methodSig = methodSig + OBJECT_SIG;
 	        SyntaxTreeNode node = (SyntaxTreeNode)_parameters[i];
-	        node.translate(classGen, methodGen);
-	        
-	        // Store the parameter value in a local variable if default
-	        // parameters are used. In this case the default value of a
-	        // parameter may reference another parameter declared earlier. 
-	        if (_createTempVar) {
-	            il.append(DUP);
-	            
-	            // The name of the variable used to hold the value of a
-	            // parameter
-	            String name = "call$template$" + Util.escape(_name.toString())
-	                          + "$" + getParameterName(node);
-	            
-	            // Search for the local variable first, only add it
-	            // if it does not exist.
-	            LocalVariableGen local = methodGen.getLocalVariable(name);
-	            
-	            if (local == null) {
-	            	local = methodGen.addLocalVariable2(name,
-				            objectType,
-				            il.getEnd());
-	            }
-	            
-	            // Store the parameter value into a variable.
-	            il.append(new ASTORE(local.getIndex()));
-	            
-	            // Update the load instructions of the Param objects so that
-	            // they point to the local variables. Store the old load
-	            // instructions in the _oldLoadInstructions array so that
-	            // we can restore them later. 
-	            if (node instanceof Param) {
-	            	Param param = (Param)node;            	
-	            	org.apache.bcel.generic.Instruction oldInstruction = 
-	            	    param.setLoadInstruction(new ALOAD(local.getIndex()));	                
-	                _oldLoadInstructions[param.getIndex()] = oldInstruction;
-	            }
-	            else if (node instanceof WithParam) {
-	            	Param param = (Param)calleeParams.elementAt(i);
-	            	org.apache.bcel.generic.Instruction oldInstruction = 
-	            	    param.setLoadInstruction(new ALOAD(local.getIndex()));
-	            	_oldLoadInstructions[param.getIndex()] = oldInstruction;
-	            }
-	        }
-	    }
-	    
-	    // Restore the old load instructions for the Params.
-	    if (_createTempVar) {
-	    	for (int i = 0; i < numParams; i++) {
-	    	    Param param = (Param)calleeParams.elementAt(i);
-	    	    param.setLoadInstruction(_oldLoadInstructions[i]);     
-	    	}
-	    }
-	}
-	
-	methodSig = methodSig + ")V";
+                methodSig.append(OBJECT_SIG);   // append Object to signature
+                
+                // Push 'null' if Param to indicate no actual parameter specified
+                if (node instanceof Param) {
+                    il.append(ACONST_NULL);
+                }
+                else {  // translate WithParam
+                    node.translate(classGen, methodGen);
+                }
+            }
+        }
+
+        // Complete signature and generate invokevirtual call
+	methodSig.append(")V");
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
 						     methodName,
-						     methodSig)));
+						     methodSig.toString())));
 	
 	// Do not need to call Translet.popParamFrame() if we are
 	// calling a simple named template.
@@ -270,8 +218,7 @@ final class CallTemplate extends Instruction {
             WithParam withParam = (WithParam)node;
             return Util.escape(withParam.getName().toString());
         }
-        else
-            return null;
+        return null;
     }
     
     /**
@@ -282,6 +229,7 @@ final class CallTemplate extends Instruction {
     public Template getCalleeTemplate() {
     	Stylesheet stylesheet = getXSLTC().getStylesheet();
     	Vector templates = stylesheet.getAllValidTemplates();
+        
     	int size = templates.size();
     	for (int i = 0; i < size; i++) {
     	    Template t = (Template)templates.elementAt(i);
@@ -312,9 +260,13 @@ final class CallTemplate extends Instruction {
     	int count = elementCount();
     	for (int i = 0; i < count; i++) {
     	    Object node = elementAt(i);
+            
+            // Ignore if not WithParam
     	    if (node instanceof WithParam) {
     	    	WithParam withParam = (WithParam)node;
     	    	QName name = withParam.getName();
+                
+                // Search for a Param with the same name
     	    	for (int k = 0; k < numParams; k++) {
     	    	    Object object = _parameters[k];
     	    	    if (object instanceof Param 
@@ -332,24 +284,6 @@ final class CallTemplate extends Instruction {
     	    	}    	    	
     	    }
     	}
-    	
-    	// Set the _createTempVar flag to true if the select expression
-    	// in a parameter may reference another parameter.
-    	for (int i = 0; i < numParams; i++) {
-    	    if (_parameters[i] instanceof Param) {
-    	    	Param param = (Param)_parameters[i];
-    	    	Expression expr = param.getExpression();
-    	    	if ((expr != null || param.elementCount() != 0)
-    	    	    && !(expr instanceof CastExpr
-    	    	        && (((CastExpr)expr).getExpr() instanceof LiteralExpr
-    	    	            || ((CastExpr)expr).getExpr() instanceof BooleanExpr)))
-    	    	{
-    	    	    _createTempVar = true;
-    	    	    break;	
-    	    	}
-    	    }
-    	}
-    }
-    
+     }
 }
     

@@ -73,11 +73,15 @@ import org.apache.bcel.generic.InstructionList;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.NodeSetType;
-
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+
 final class ParameterRef extends VariableRefBase {
 
-    QName _name= null ;
+    /**
+     * Name of param being referenced.
+     */
+    QName _name = null;
+    
     public ParameterRef(Param param) {
 	super(param);
         _name = param._name;
@@ -88,22 +92,16 @@ final class ParameterRef extends VariableRefBase {
 	return "parameter-ref("+_variable.getName()+'/'+_variable.getType()+')';
     }
 
-   public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
         /*
          * To fix bug 24518 related to setting parameters of the form
-         * {namespaceuri}localName
-         * which will get mapped to an instance variable in the class
-         * Hence  a parameter of the form "{http://foo.bar}xyz"
-         * will be replaced with the corresponding values 
-         * by the BasisLibrary's utility method mapQNametoJavaName
-         * and thus get mapped to legal java variable names 
+         * {namespaceuri}localName, which will get mapped to an instance 
+         * variable in the class.
          */
-
         final String name = BasisLibrary.mapQNameToJavaName (_name.toString());
-
 	final String signature = _type.toSignature();
 
 	if (_variable.isLocal()) {

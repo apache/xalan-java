@@ -64,6 +64,7 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
@@ -96,5 +97,9 @@ public final class NamedMethodGenerator extends MethodGenerator {
 
     public Instruction loadParameter(int index) {
         return new ALOAD(index + PARAM_START_INDEX);
+    }
+    
+    public Instruction storeParameter(int index) {
+        return new ASTORE(index + PARAM_START_INDEX);
     }
 }
