@@ -73,10 +73,9 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class XslAttribute extends Instruction {
 
-    // Attribute contents
-    private AttributeValue _name; // name treated as AVT (7.1.3)
-    private AttributeValueTemplate _namespace = null;
     private String _prefix;
+    private AttributeValue _name; 	// name treated as AVT (7.1.3)
+    private AttributeValueTemplate _namespace = null;
     private boolean _ignore = false;
 
     /**
@@ -99,15 +98,15 @@ final class XslAttribute extends Instruction {
      * Parses the attribute's contents. Special care taken for namespaces.
      */
     public void parseContents(Parser parser) {
-
-	final SymbolTable stable = parser.getSymbolTable();
-	String namespace = getAttribute("namespace");
-	String name = getAttribute("name");
-	QName qname = parser.getQName(name);
-	final String prefix = qname.getPrefix();
 	boolean generated = false;
+	final SymbolTable stable = parser.getSymbolTable();
 
-	if ((prefix != null) && (prefix.equals("xmlns"))) {
+	String name = getAttribute("name");
+	String namespace = getAttribute("namespace");
+	QName qname = parser.getQName(name, false);
+	final String prefix = qname.getPrefix();
+
+	if ((prefix != null) && (prefix.equals(XMLNS_PREFIX))) {
 	    reportError(this, parser, ErrorMsg.ILLEGAL_ATTR_NAME_ERR, name);
 	    return;
 	}
@@ -118,11 +117,13 @@ final class XslAttribute extends Instruction {
 	for (int i = 0; i < parent.elementCount(); i++) {
 	    SyntaxTreeNode item = (SyntaxTreeNode)siblings.elementAt(i);
 	    if (item == this) break;
+
 	    // These three objects result in one or more attribute output
 	    if (item instanceof XslAttribute) continue;
 	    if (item instanceof UseAttributeSets) continue;
 	    if (item instanceof LiteralAttribute) continue;
 	    if (item instanceof Text) continue;
+
 	    // These objects _can_ result in one or more attribute
 	    // The output handler will generate an error if not (at runtime)
 	    if (item instanceof If) continue;
@@ -134,24 +135,23 @@ final class XslAttribute extends Instruction {
 	}
 
 	// Get namespace from namespace attribute?
-	if ((namespace != null) && (namespace != Constants.EMPTYSTRING)) {
-	    // Prefix could be in symbol table
+	if (namespace != null && namespace != Constants.EMPTYSTRING) {
 	    _prefix = lookupPrefix(namespace);
 	    _namespace = new AttributeValueTemplate(namespace, parser);
 	}
 	// Get namespace from prefix in name attribute?
-	else if ((prefix != null) && (prefix != Constants.EMPTYSTRING)) {
+	else if (prefix != null && prefix != Constants.EMPTYSTRING) {
 	    _prefix = prefix;
 	    namespace = lookupNamespace(prefix);
-	    if (namespace != null)
+	    if (namespace != null) {
 		_namespace = new AttributeValueTemplate(namespace, parser);
+	    }
 	}
 	
 	// Common handling for namespaces:
 	if (_namespace != null) {
-
 	    // Generate prefix if we have none
-	    if (_prefix == null) {
+	    if (_prefix == null || _prefix == Constants.EMPTYSTRING) {
 		if (prefix != null) {
 		    _prefix = prefix;
 		}
@@ -160,25 +160,25 @@ final class XslAttribute extends Instruction {
 		    generated = true;
 		}
 	    }
-
-	    if (_prefix == Constants.EMPTYSTRING) {
-		name = qname.getLocalPart();
+	    else if (prefix != null && !prefix.equals(_prefix)) {
+		_prefix = prefix;
 	    }
-	    else {
-		name = _prefix+":"+qname.getLocalPart();
-		// PROBLEM:
-		// The namespace URI must be passed to the parent element,
-		// but we don't yet know what the actual URI is (as we only
-		// know it as an attribute value template). New design needed.
-		if ((parent instanceof LiteralElement) && (!generated)) {
-		    ((LiteralElement)parent).registerNamespace(_prefix,
-							       namespace,
-							       stable,false);
-		}
+
+	    name = _prefix + ":" + qname.getLocalPart();
+
+	    /*
+	     * TODO: The namespace URI must be passed to the parent 
+	     * element but we don't yet know what the actual URI is 
+	     * (as we only know it as an attribute value template). 
+	     */
+	    if ((parent instanceof LiteralElement) && (!generated)) {
+		((LiteralElement)parent).registerNamespace(_prefix,
+							   namespace,
+							   stable, false);
 	    }
 	}
 
-	if (name.equals("xmlns")) {
+	if (name.equals(XMLNS_PREFIX)) {
 	    reportError(this, parser, ErrorMsg.ILLEGAL_ATTR_NAME_ERR, name);
 	    return;
 	}
@@ -191,15 +191,14 @@ final class XslAttribute extends Instruction {
 	parseChildren(parser);
     }
 	
-    /**
-     *
-     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_ignore) return(Type.Void);
-	_name.typeCheck(stable);
-	if (_namespace != null)
-	    _namespace.typeCheck(stable);
-	typeCheckContents(stable);
+	if (!_ignore) {
+	    _name.typeCheck(stable);
+	    if (_namespace != null) {
+		_namespace.typeCheck(stable);
+	    }
+	    typeCheckContents(stable);
+	}
 	return Type.Void;
     }
 

@@ -99,11 +99,6 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	_currentNode = currentNode;
     }
 
-    public NodeIterator forceNaturalOrder() {
-	_docOrder = true;
-	return this;
-    }
-
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
@@ -139,9 +134,8 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	final int currentNode = _currentNode;
 
 	for (int index = _current; index < last; ) {
-	    final int node = _nodes.at(index++); // note increment
-	    final int position = docOrder ? index : last - index + 1;
-	    if (_filter.test(node, position, last, currentNode, _translet, this)) {
+	    final int node = _nodes.at(index++); 	// note increment
+	    if (_filter.test(node, index, last, currentNode, _translet, this)) {
 		_current = index;
 		return returnNode(node);
 	    }
@@ -156,9 +150,8 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
         final int currNode = _currentNode;
 
 	for (int index = _current; index < last; ) {
-            int nodeIndex = _nodes.at(index++); // note increment
-            final int pos = docOrder ? index : last - index + 1;
-            if (_filter.test(nodeIndex, pos, last, currNode, _translet, this)) {
+            int nodeIndex = _nodes.at(index++); 	// note increment
+            if (_filter.test(nodeIndex, index, last, currNode, _translet, this)) {
                 lastPosition++;
             }
         }
@@ -185,7 +178,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     }
 	
     public int getLast() {
-	return ( _last == -1 ) ? computePositionOfLast() : _last;
+	return (_last == -1) ? computePositionOfLast() : _last;
     }
 
     public void setMark() {

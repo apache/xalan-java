@@ -508,22 +508,6 @@ final class Step extends RelativeLocationPath {
 		    il.append(new CHECKCAST(cpg.addClass(className)));
 		}
 		il.append(new INVOKESPECIAL(idx));
-
-		// Determine if the node set should be generated using the
-		// natural order of the node set or document order.
-		// See CurrentNodeListIterator's constructor(s) for details.
-		SyntaxTreeNode parent = getParent();
-		while (!(parent instanceof Template)) {
-		    if (parent == null) break;
-		    if (parent instanceof ApplyTemplates) {
-			idx = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
-					       "forceNaturalOrder",
-					       "()"+NODE_ITERATOR_SIG);
-			il.append(new INVOKEVIRTUAL(idx));
-			break;
-		    }
-		    parent = parent.getParent();
-		}
 	    }
 	}
     }
