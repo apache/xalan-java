@@ -95,6 +95,14 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
+
+	// Transfer output settings
+	setDoctype(output._doctypeSystem, output._doctypePublic);
+	omitHeader(output._omitHeader);
+	setStandalone(output._standalone);
+
+	// Indentation turned on for HTML
+	setIndent(true);
     }
 
     public StreamHTMLOutput(Writer writer, String encoding) {
@@ -122,7 +130,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public void startElement(String elementName) throws TransletException { 
 	if (_startTagOpen) {
-	    _buffer.append('>');
+	    closeStartTag();
 	}
 
 	// Handle document type declaration (for first element only)
@@ -158,8 +166,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public void endElement(String elementName) throws TransletException { 
 	if (_startTagOpen) {
-	    _startTagOpen = false;
-	    _buffer.append(">");
+	    closeStartTag();
 	}
 
 	if (_indent) {
@@ -173,10 +180,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	// Empty elements may not have closing tags
 	if (!_emptyElements.containsKey(elementName.toLowerCase())) {
 	    _buffer.append("</").append(elementName).append('>');
-	}
-	else if (_headTagOpen) {
-	    appendHeader(); 	// Insert <META> tag after <HEAD>
-	    _headTagOpen = false;
+	    _indentNextEndTag = true;
 	}
 	else if (_inStyleScript && 
 		 (elementName.equalsIgnoreCase("style") || 
@@ -190,8 +194,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	throws TransletException 
     { 
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 
 	if (_escaping && !_inStyleScript) {
@@ -206,8 +209,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	throws TransletException 
     { 
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 
 	if (_escaping && !_inStyleScript) {
@@ -238,8 +240,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public void comment(String comment) throws TransletException { 
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 	_buffer.append("<!--").append(comment).append("-->");
     }
@@ -248,8 +249,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	throws TransletException 
     { 
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 	// A PI in HTML ends with ">" instead of "?>"
 	_buffer.append("<?").append(target).append(' ')
@@ -341,5 +341,16 @@ public class StreamHTMLOutput extends StreamOutput {
 	       .append(_mediaType).append(" charset=\"")
 	       .append(_encoding).append("/>");
     }
+
+    private void closeStartTag() {
+	_buffer.append('>');
+	_startTagOpen = false;
+
+	// Insert <META> tag directly after <HEAD> element in HTML output
+	if (_headTagOpen) {
+	    appendHeader();
+	    _headTagOpen = false;
+	}
+    } 
 
 }
