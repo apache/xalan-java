@@ -120,7 +120,7 @@ public class Examples
         handleException(ex);
     } 
     
-    System.out.println("\n\n==== exampleSimple2 ====");
+    System.out.println("\n\n==== exampleSimple2 (see foo.out) ====");
     try {
         exampleSimple2("xml/foo.xml", "xsl/foo.xsl");
     } catch( Exception ex ) { 
@@ -268,7 +268,7 @@ public class Examples
     Transformer transformer 
       = tfactory.newTransformer(new StreamSource(xslID));
     
-    // Transform the source XML to System.out.
+    // Transform the source XML to foo.out.
     transformer.transform( new StreamSource(new File(sourceID)),
                            new StreamResult(new File("foo.out")));
   }
