@@ -67,6 +67,7 @@ import org.w3c.dom.Node;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.patterns.NodeTest;
@@ -522,6 +523,10 @@ public class TemplateList implements java.io.Serializable
 
     if (null != head)
     {
+      // XSLT functions, such as xsl:key, need to be able to get to 
+      // current ElemTemplateElement via a cast to the prefix resolver.
+      // Setting this fixes bug idkey03.
+      PrefixResolver savedPR = xctxt.getNamespaceContext();
       try
       {
         xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
@@ -532,14 +537,16 @@ public class TemplateList implements java.io.Serializable
           {
             continue;
           }
-
+          ElemTemplate template = head.getTemplate();        
+          xctxt.setNamespaceContext(template);
+          
           if ((head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE)
                   && head.matchMode(mode))
           {
             if (quietConflictWarnings)
               checkConflicts(head, xctxt, targetNode, mode);
 
-            return head.getTemplate();
+            return template;
           }
         }
         while (null != (head = head.getNext()));
@@ -547,6 +554,7 @@ public class TemplateList implements java.io.Serializable
       finally
       {
         xctxt.popCurrentNodeAndExpression();
+        xctxt.setNamespaceContext(savedPR);
       }
     }
 
