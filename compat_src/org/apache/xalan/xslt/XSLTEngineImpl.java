@@ -432,6 +432,11 @@ public class XSLTEngineImpl implements  XSLTProcessor
       {
         error(XSLTErrorResources.ER_NO_INPUT_STYLESHEET); //"Stylesheet input was not specified!");
       }
+      
+      if (m_stylesheetRoot != null)
+      {
+        templates = m_stylesheetRoot.getObject();
+      }      
 
       if(null == templates)
       {
@@ -1301,11 +1306,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
   public void message(Node styleNode, Node sourceNode, String msg)
     throws SAXException
   {
-    //boolean shouldThrow = m_processor.getErrorHandler().message(msg);
-    //if(shouldThrow)
-    //{
-    //  throw new XSLProcessorException(msg);
-    //}
+    m_problemListener.message(msg);
   }
 
   /**
