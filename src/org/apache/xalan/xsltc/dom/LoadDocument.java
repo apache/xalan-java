@@ -62,7 +62,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 import javax.xml.parsers.SAXParser;
@@ -77,6 +76,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.ref.EmptyIterator;
+import org.apache.xml.utils.SystemIDResolver;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
@@ -137,12 +137,14 @@ public final class LoadDocument {
     throws TransletException {
         try {
             if (arg instanceof String) {
-                if (((String)arg).length() == 0) {
-                    return document(xslURI, "", translet, dom);
-                } else {
-                    return document((String)arg, getBaseFromURI(xslURI),
-                                    translet, dom);
-                }
+                String baseURI = xslURI;
+                if (!SystemIDResolver.isAbsoluteURI(xslURI))
+                   baseURI = SystemIDResolver.getAbsoluteURIFromRelative(xslURI);
+                
+                String href = (String)arg;
+                if (href.length() == 0) 
+                    href = "";   
+                return document(href, baseURI, translet, dom);
             } else if (arg instanceof DTMAxisIterator) {
                 return document((DTMAxisIterator)arg, null, translet, dom);
             } else {
@@ -150,6 +152,7 @@ public final class LoadDocument {
                 throw new IllegalArgumentException(err);
             }      
         } catch (Exception e) {
+            System.out.println("xslURI: " + xslURI);
             throw new TransletException(e);
         }
     }
@@ -159,31 +162,21 @@ public final class LoadDocument {
                     AbstractTranslet translet, DOM dom)
     throws Exception 
     {
+        try {
         final String originalUri = uri;
         MultiDOM multiplexer = (MultiDOM)dom;
+
+        // Prepend URI base to URI (from context)
+        if (base != null && !base.equals("")) {
+            uri = SystemIDResolver.getAbsoluteURI(uri, base);
+        }
 
         // Return an empty iterator if the URI is clearly invalid
         // (to prevent some unncessary MalformedURL exceptions).
         if (uri == null || uri.equals("")) {
             return(EmptyIterator.getInstance());
         }
-
-        // Prepend URI base to URI (from context)
-        if (base != null && !base.equals("")) {
-            if (!uri.startsWith(base)     &&   // unless URI contains base
-                !uri.startsWith("/")      &&   // unless URI is abs. file path
-                !uri.startsWith("http:/") &&   // unless URI is abs. http URL
-                !uri.startsWith("file:/")) {   // unless URI is abs. file URL
-                uri = base + uri;
-            }
-        }
-
-        // Check if this is a local file name
-        final File file = new File(uri);
-        if (file.exists()) {
-            uri = file.toURL().toExternalForm();
-        }
-    
+        
         // Check if this DOM has already been added to the multiplexer
         int mask = multiplexer.getDocumentMask(uri);
         if (mask != -1) {
@@ -202,8 +195,7 @@ public final class LoadDocument {
         mask = multiplexer.nextMask(); // peek
 
         if (cache != null) {
-            //newdom = cache.retrieveDocument(originalUri, mask, translet);
-            newdom = cache.retrieveDocument(uri, mask, translet);
+            newdom = cache.retrieveDocument(base, originalUri, translet);
             if (newdom == null) {
                 final Exception e = new FileNotFoundException(originalUri);
                 throw new TransletException(e);
@@ -244,6 +236,9 @@ public final class LoadDocument {
 
         // Return a singleton iterator containing the root node
         return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 
 
