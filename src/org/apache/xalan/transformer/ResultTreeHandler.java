@@ -1210,9 +1210,10 @@ public class ResultTreeHandler extends QueuedEvents
 
       m_attributes.addAttribute("http://www.w3.org/2000/xmlns/", 
                                 prefix, name, "CDATA", uri);
+      
+      m_nsDeclsHaveBeenAdded = true;        
     }
 
-    m_nsDeclsHaveBeenAdded = true;
   }
 
   /**
@@ -1431,7 +1432,8 @@ public class ResultTreeHandler extends QueuedEvents
     if (m_elemIsPending)
     {
       // %REVIEW% %OPT% Is this ever needed?????
-      if (!m_nsDeclsHaveBeenAdded)
+      // The check is not needed. See Bugzilla 10306. 
+      // if (!m_nsDeclsHaveBeenAdded)
 	addNSDeclsToAttrs();
 
       if (null == uri)  // defensive, should not really need this.
