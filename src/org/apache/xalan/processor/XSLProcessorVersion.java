@@ -130,7 +130,6 @@ public class XSLProcessorVersion
    *
    *          Development drops are works in progress towards a
    *          compeleted, final release. A specific development drop
-   *
    *          may not completely implement all aspects of a new
    *          feature, which may take several development drops to
    *          complete. At the point of the final drop for the
@@ -140,5 +139,5 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static int DEVELOPMENT = D02;
+  public static int DEVELOPMENT = 2;
 }
