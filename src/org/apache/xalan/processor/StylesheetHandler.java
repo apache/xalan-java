@@ -62,6 +62,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.utils.NodeConsumer;
 import trax.ProcessorException;
 import trax.TemplatesBuilder;
@@ -337,8 +338,12 @@ public class StylesheetHandler
     XSLTElementDef def = currentProcessor.getElemDef();
     XSLTElementProcessor elemProcessor = def.getProcessorFor(uri, localName);
     
+    if(null == elemProcessor && Double.valueOf(getStylesheet().getVersion()).doubleValue() > Constants.XSLTVERSUPPORTED)
+    {
+      elemProcessor = def.getProcessorForUnknown(uri, localName);
+    }
     if(null == elemProcessor)
-      error(rawName+" is not allowed in this position in the stylesheet!", null);
+        error(rawName+" is not allowed in this position in the stylesheet!", null);     
     
     return elemProcessor;
   }

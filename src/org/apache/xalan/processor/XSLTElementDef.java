@@ -249,6 +249,27 @@ class XSLTElementDef
     }
     return lreDef;
   }
+  
+  /**
+   * Given an unknown element , get the processor 
+   * for the element
+   */
+  XSLTElementProcessor getProcessorForUnknown( String uri, String localName )
+  {
+    XSLTElementProcessor lreDef = null; // return value
+    if(null == m_elements)
+      return null;
+    int n = m_elements.length;
+    for(int i = 0; i < n; i++)
+    {
+      XSLTElementDef def = m_elements[i];
+      if(def.m_name.equals("unknown"))
+      {
+        return def.m_elementProcessor;
+      }
+    }
+    return null;
+  }  
     
   /**
    * The allowed attributes for this type.

@@ -254,9 +254,9 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslResultAttr
       = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*", XSLTAttributeDef.T_CDATA, false);
 
-    XSLTElementDef[] templateElements = new XSLTElementDef[20];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[21];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[21];
+    XSLTElementDef[] templateElements = new XSLTElementDef[21];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[22];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[22];
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[15];
 
     XSLTElementDef resultElement
@@ -270,6 +270,18 @@ public class XSLTSchema extends XSLTElementDef
                            xslVersionAttr, xslResultAttr, resultAttr}, 
                            new ProcessorLRE(), 
                            ElemLiteralResult.class /* class object */ );
+    
+    XSLTElementDef unknownElement
+      = new XSLTElementDef(null, "unknown", 
+                           null /*alias */, 
+                           templateElementsAndParams /* elements */,
+                           new XSLTAttributeDef[] {
+                           xslExcludeResultPrefixesAttr, 
+                           xslExtensionElementPrefixesAttr,
+                           xslUseAttributeSetsAttr, 
+                           xslVersionAttr, xslResultAttr, resultAttr}, 
+                           new ProcessorUnknown(), 
+                           ElemUnknown.class /* class object */ );
                            
     XSLTElementDef xslValueOf 
       = new XSLTElementDef(Constants.S_XSLNAMESPACEURL, "value-of", 
@@ -487,6 +499,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslElement;
     templateElements[i++] = xslAttribute;
     templateElements[i++] = resultElement;
+    templateElements[i++] = unknownElement;
     
     int k;
     for(k = 0; k < i; k++)
@@ -537,7 +550,7 @@ public class XSLTSchema extends XSLTElementDef
                
     XSLTElementDef[] topLevelElements 
       = new XSLTElementDef[]
-         {includeDef, importDef, resultElement, whiteSpaceOnly,
+         {includeDef, importDef, resultElement, whiteSpaceOnly, unknownElement,
 
          new XSLTElementDef(Constants.S_XSLNAMESPACEURL, "strip-space", 
          null /*alias */, 
@@ -672,15 +685,15 @@ public class XSLTSchema extends XSLTElementDef
                            );
 
     importDef.setElements(
-      new XSLTElementDef[] {stylesheetElemDef, resultElement});
+      new XSLTElementDef[] {stylesheetElemDef, resultElement, unknownElement});
     
     includeDef.setElements(
-      new XSLTElementDef[] {stylesheetElemDef, resultElement});
+      new XSLTElementDef[] {stylesheetElemDef, resultElement, unknownElement});
 
     build(null, 
           null, 
           null, 
-          new XSLTElementDef[] {stylesheetElemDef, whiteSpaceOnly, resultElement},
+          new XSLTElementDef[] {stylesheetElemDef, whiteSpaceOnly, resultElement, unknownElement},
           null, 
           new ProcessorStylesheetDoc(), /* ContentHandler */
           null /* class object */

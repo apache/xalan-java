@@ -54,6 +54,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorInclude.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorKey.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorLRE.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorUnknown.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorNamespaceAlias.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorOutputElem.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorPreserveSpace.java \
@@ -150,6 +151,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemTemplateElement.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemText.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemTextLiteral.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemUnknown.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemUse.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemValueOf.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemVariable.java \
@@ -220,6 +222,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)TreeWalker.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Trie.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)UnImplNode.java \
+    org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)URI.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrongParserException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeConsumer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
