@@ -168,7 +168,7 @@ public abstract class NodeSortRecord {
 	    }
 	    // Treat number as NaN if it cannot be parsed as a double
 	    catch (NumberFormatException e) {
-		num = new Double(Double.POSITIVE_INFINITY);
+		num = new Double(Double.NEGATIVE_INFINITY);
 	    }
 	    _values[_scanned++] = num;
 	    return(num);
