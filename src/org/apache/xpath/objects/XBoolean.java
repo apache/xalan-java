@@ -170,7 +170,7 @@ public class XBoolean extends XObject
   public Object object()
   {
     if(null == m_obj)
-      m_obj = m_val ? S_TRUE : S_FALSE;
+      m_obj = new Boolean(m_val);
     return m_obj;
   }
 
