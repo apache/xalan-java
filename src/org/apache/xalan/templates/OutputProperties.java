@@ -699,5 +699,23 @@ public class OutputProperties extends ElemTemplateElement
    *  @serial */
   private Properties m_properties = null;
 
-
+    /**
+     * Creates an empty OutputProperties with the defaults specified by
+     * a property file.  The method argument is used to construct a string of
+     * the form output_[method].properties (for instance, output_html.properties).
+     * The output_xml.properties file is always used as the base.
+     * <p>At the moment, anything other than 'text', 'xml', and 'html', will
+     * use the output_xml.properties file.</p>
+     *
+     * @param   method non-null reference to method name.
+     *
+     * @return Properties object that holds the defaults for the given method.
+     * 
+     * @deprecated Use org.apache.xml.serializer.OuputPropertiesFactory.
+     * getDefaultMethodProperties directly.
+     */
+    static public Properties getDefaultMethodProperties(String method)
+    {
+        return org.apache.xml.serializer.OutputPropertiesFactory.getDefaultMethodProperties(method);
+    }
 }

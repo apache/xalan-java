@@ -82,6 +82,7 @@ public interface SerializationHandler
         XSLOutputAttributes,
         DeclHandler,
         ErrorHandler,
+        DOMSerializer,
         Serializer
 {
     /**

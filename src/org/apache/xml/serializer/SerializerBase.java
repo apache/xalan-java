@@ -781,7 +781,7 @@ abstract public class SerializerBase
      */
     public DOMSerializer asDOMSerializer() throws IOException
     { 
-        return null;
+        return this;
     }
 
     /**

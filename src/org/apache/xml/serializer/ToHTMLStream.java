@@ -1602,13 +1602,6 @@ public class ToHTMLStream extends ToStream
 
         }
     }
-    /**
-     * @see org.apache.xml.serializer.Serializer#asDOMSerializer()
-     */
-    public DOMSerializer asDOMSerializer() throws IOException
-    {
-        return null;
-    }
 
     /**
      * For the enclosing elements starting tag write out out any attributes

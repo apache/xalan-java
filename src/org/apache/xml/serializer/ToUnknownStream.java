@@ -1164,7 +1164,7 @@ public class ToUnknownStream extends SerializerBase
      */
     public DOMSerializer asDOMSerializer() throws IOException
     {
-        return null;
+        return m_handler.asDOMSerializer();
     }
 
     /**
