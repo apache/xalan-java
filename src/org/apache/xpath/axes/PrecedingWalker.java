@@ -85,12 +85,16 @@ public class PrecedingWalker extends ReverseAxesWalker
   }
 
   /**
-   *  Set the root node of the TreeWalker.
+   *  Set the root node of the TreeWalker.  If we follow an attribute:: or namespace::
+   *  axis, we operate relative to the parent node.
    *
    * NEEDSDOC @param root
    */
   public void setRoot(Node root)
   {
+
+    if (Node.ATTRIBUTE_NODE == root.getNodeType())
+      root = root.getParentNode();
 
     super.setRoot(root);
 
