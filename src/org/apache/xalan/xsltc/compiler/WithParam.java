@@ -30,6 +30,7 @@ import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 /**
  * @author Jacek Ambroziak
@@ -43,6 +44,11 @@ final class WithParam extends Instruction {
      * Parameter's name.
      */
     private QName _name;
+    
+    /**
+     * The escaped qname of the with-param.
+     */
+    protected String _escapedName;
     
     /**
      * Parameter's default value.
@@ -71,11 +77,26 @@ final class WithParam extends Instruction {
     }
     
     /**
+     * Returns the escaped qname of the parameter
+     */
+    public String getEscapedName() {
+	return _escapedName;
+    }    
+    
+    /**
      * Return the name of this WithParam.
      */
     public QName getName() {
         return _name;	
     }
+    
+    /**
+     * Set the name of the variable or paremeter. Escape all special chars.
+     */
+    public void setName(QName name) {
+	_name = name;
+	_escapedName = Util.escape(name.getStringRep());
+    }    
     
     /**
      * Set the do parameter optimization flag
@@ -91,7 +112,12 @@ final class WithParam extends Instruction {
     public void parseContents(Parser parser) {
 	final String name = getAttribute("name");
 	if (name.length() > 0) {
-	    _name = parser.getQName(name);
+            if (!XMLChar.isValidQName(name)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name,
+                                            this);
+                parser.reportError(Constants.ERROR, err);
+            }
+	    setName(parser.getQNameIgnoreDefaultNs(name));
 	}
         else {
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
@@ -161,7 +187,7 @@ final class WithParam extends Instruction {
 	}
 	
 	// Make name acceptable for use as field name in class
-	String name = Util.escape(_name.getLocalPart());
+	String name = Util.escape(getEscapedName());
 
 	// Load reference to the translet (method is in AbstractTranslet)
 	il.append(classGen.loadTranslet());
