@@ -185,10 +185,27 @@ Copyright:
   <!-- =================================================================== -->
   <target name="compile" depends="prepare"
     description="Compile Xalan the normal way" >
-    <echo message="compile entire source tree and copy  .properties and .res files to build tree."/>
+    <echo message="compile entire source tree and copy .properties and .res files to build tree."/>
+    <!-- Note: split compile into separate javac steps to avoid JDK 1.1.8 bug reported at:
+         http://developer.java.sun.com/developer/bugParade/bugs/4043508.html
+         which causes an error like:
+         [javac] E:\builds\xml-xalan\java\src\org\apache\xalan\templates\ElemTemplate.java:108: Cyclic class inheritance or scoping.
+    --> 
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           includes="**/*.java"
+           includes="javax/**/*.java"
+           debug="${debug}"/>
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="org/w3c/**/*.java,org/w3c/**/*.java"
+           debug="${debug}"/>
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="org/apache/xml/**/*.java,org/apache/xpath/**/*.java"
+           debug="${debug}"/>
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="org/apache/xalan/**/*.java"
            debug="${debug}"/>
     <copy todir="${build.classes}">
           <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,**/javax.xml.parsers.*,**/javax.xml.transform.*"/>
