@@ -88,7 +88,6 @@ public final class TextOutput implements TransletOutputHandler {
 
     private boolean   _escapeChars = false;
     private boolean   _startTagOpen = false;
-    private boolean   _cdataTagOpen = false;
     private boolean   _headTagOpen = false;
 
     // Contains all elements that should be output as CDATA sections
@@ -125,6 +124,7 @@ public final class TextOutput implements TransletOutputHandler {
     private Stack     _nodeStack;
     private Stack     _prefixStack;
     private Stack     _qnameStack;
+    private Stack     _cdataStack;
 
     // Holds the current tree depth (see startElement() and endElement()).
     private int _depth = 0;
@@ -169,8 +169,9 @@ public final class TextOutput implements TransletOutputHandler {
 	// Reset all internal variables and tables
 	_escapeChars  = false;
 	_startTagOpen = false;
-	_cdataTagOpen = false;
 	_qnameStack = new Stack();
+	_cdataStack = new Stack();
+	_cdataStack.push(new Integer(-1)); // push dummy value
 
 	// Reset our internal namespace handling
 	initNamespaces();
@@ -214,33 +215,26 @@ public final class TextOutput implements TransletOutputHandler {
 	try {
 	    _startTagOpen = false;
 	    
-	    // Output current element, either as element or CDATA section
-	    if ((_cdata != null) && (_cdata.containsKey(_elementName))) {
-		characters(BEGCDATA);
-		_cdataTagOpen = true;
+	    // Final check to assure that the element is within a namespace
+	    // that has been declared (all declarations for this element
+	    // should have been processed at this point).
+	    int col = _elementName.lastIndexOf(':');
+	    if (col > 0) {
+		final String prefix = _elementName.substring(0,col);
+		final String localname = _elementName.substring(col+1);
+		final String uri = lookupNamespace(prefix);
+		if (uri == null) {
+		    throw new TransletException("Namespace for prefix "+
+						prefix+" has not been "+
+						"declared.");
+		}
+		_saxHandler.startElement(uri, localname,
+					 _elementName, _attributes);
 	    }
 	    else {
-		// Final check to assure that the element is within a namespace
-		// that has been declared (all declarations for this element
-		// should have been processed at this point).
-		int col = _elementName.lastIndexOf(':');
-		if (col > 0) {
-		    final String prefix = _elementName.substring(0,col);
-		    final String localname = _elementName.substring(col+1);
-		    final String uri = lookupNamespace(prefix);
-		    if (uri == null) {
-			throw new TransletException("Namespace for prefix "+
-						    prefix+" has not been "+
-						    "declared.");
-		    }
-		    _saxHandler.startElement(uri, localname,
-					     _elementName, _attributes);
-		}
-		else {
-		    final String uri = lookupNamespace(EMPTYSTRING);
-		    _saxHandler.startElement(uri, _elementName,
-					     _elementName, _attributes);
-		}
+		final String uri = lookupNamespace(EMPTYSTRING);
+		_saxHandler.startElement(uri, _elementName,
+					 _elementName, _attributes);
 	    }
 
 	    // Insert <META> tag directly after <HEAD> element in HTML output
@@ -263,10 +257,11 @@ public final class TextOutput implements TransletOutputHandler {
 	// Set output type to XML (the default) if still unknown.
 	if (_outputType == UNKNOWN) setTypeInternal(XML);
 
+	// Save old escaping setting (for the return value) and set new value
 	boolean oldSetting = _escapeChars;
 	_escapeChars = escape;
 
-	// bug # 1403, see also compiler/Text.java::translate method.
+	// Characters are never escaped in output mode 'text'
 	if (_outputType == TEXT) _escapeChars = false; 
 
 	return(oldSetting);
@@ -298,10 +293,6 @@ public final class TextOutput implements TransletOutputHandler {
 	    if (_startTagOpen) {
 		closeStartTag();
 	    }
-            else if (_cdataTagOpen) {
-                characters(ENDCDATA);
-                _cdataTagOpen = false;
-            }
 
 	    // Close output document
             _saxHandler.endDocument();
@@ -313,7 +304,7 @@ public final class TextOutput implements TransletOutputHandler {
     /**
      * Utility method - pass a string to the SAX handler's characters() method
      */
-    private void characters(String str) throws SAXException{
+    private void characters(String str) throws SAXException {
 	final char[] ch = str.toCharArray();
 	_saxHandler.characters(ch, 0, ch.length);
     }
@@ -321,8 +312,80 @@ public final class TextOutput implements TransletOutputHandler {
     /**
      * Utility method - pass a whole character array to the SAX handler
      */
-    private void characters(char[] ch) throws SAXException{
+    private void characters(char[] ch) throws SAXException {
 	_saxHandler.characters(ch, 0, ch.length);
+    }
+
+    /**
+     * Utility method - escape special characters and pass to SAX handler
+     */
+    private void escapeCharacters(char[] ch, int off, int len)
+	throws SAXException {
+
+	final int limit = off + len;
+	int offset = off;
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    switch (ch[i]) {
+	    case '&':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(AMP, 0, AMP_length);
+		offset = i + 1;
+		break;
+	    case '"':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(QUOTE, 0, QUOTE_length);
+		offset = i + 1;
+		break;
+	    case '<':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(LT, 0, LT_length);
+		offset = i + 1;
+		break;
+	    case '>':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(GT, 0, GT_length);
+		offset = i + 1;
+		break;
+	    case '\u00a0':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(NBSP, 0, NBSP_length);
+		offset = i + 1;
+		break;
+	    }
+	    // TODO - more characters need escaping!!!
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
+    }
+
+    /**
+     * Utility method - pass a whole charactes as CDATA to SAX handler
+     */
+    private void cdata(char[] ch, int off, int len) throws SAXException {
+	
+	final int limit = off + len;
+	int offset = off;
+
+	// Output start bracket - "<![CDATA["
+	characters(BEGCDATA);
+
+	// Detect any occurence of "]]>" in the character array
+	for (int i = offset; i < limit-2; i++) {
+	    if (ch[i] == ']' && ch[i+1] == ']' && ch[i+2] == '>') {
+		_saxHandler.characters(ch, offset, i - offset);
+		characters(CNTCDATA);
+		offset = i+3;
+		i=i+2; // Skip next chars ']' and '>'.
+	    }
+	}
+
+	// Output the remaining characters
+	if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
+
+	// Output closing bracket - "]]>"
+	characters(ENDCDATA);
     }
 
     /**
@@ -337,67 +400,26 @@ public final class TextOutput implements TransletOutputHandler {
             // Set output type to XML (the default) if still unknown.
             if (_outputType == UNKNOWN) setTypeInternal(XML);
 
-	    int limit = off + len;
-	    int offset = off;
-	    int i;
-
             // Take special precautions if within a CDATA section. If we
             // encounter the sequence ']]>' within the CDATA, we need to
             // break the section in two and leave the ']]' at the end of
-            // the first CDATA and '>' at the beginning of the next.
-            if (_cdataTagOpen && len>2) {
-                for (i = off; i < limit-2; i++) {
-                    if (ch[i] == ']' && ch[i+1] == ']' && ch[i+2] == '>') {
-                        _saxHandler.characters(ch, offset, i - offset);
-                        characters(CNTCDATA);
-                        offset = i+3;
-                        i=i+2; // Skip next chars ']' and '>'.
-                    }
-                }
-                if (offset < limit) {
-                    _saxHandler.characters(ch, offset, limit - offset);
-                }
-            }
+            // the first CDATA and '>' at the beginning of the next. Other
+	    // special characters/sequences are _NOT_ escaped within CDATA.
+	    Integer I = (Integer)_cdataStack.peek();
+	    if (I.intValue() == _depth) {
+		cdata(ch, off, len);
+	    }
 	    // Output escaped characters if required. Non-ASCII characters
             // within HTML attributes should _NOT_ be escaped.
 	    else if (_escapeChars) {
-                for (i = off; i < limit; i++) {
-                    switch (ch[i]) {
-                    case '&':
-                        _saxHandler.characters(ch, offset, i - offset);
-                        _saxHandler.characters(AMP, 0, AMP_length);
-                        offset = i + 1;
-                        break;
-                    case '"':
-                        _saxHandler.characters(ch, offset, i - offset);
-                        _saxHandler.characters(QUOTE, 0, QUOTE_length);
-                        offset = i + 1;
-                        break;
-                    case '<':
-                        _saxHandler.characters(ch, offset, i - offset);
-                        _saxHandler.characters(LT, 0, LT_length);
-                        offset = i + 1;
-                        break;
-                    case '>':
-                        _saxHandler.characters(ch, offset, i - offset);
-                        _saxHandler.characters(GT, 0, GT_length);
-                        offset = i + 1;
-                        break;
-                    case '\u00a0':
-                        _saxHandler.characters(ch, offset, i - offset);
-                        _saxHandler.characters(NBSP, 0, NBSP_length);
-                        offset = i + 1;
-                        break;
-                    }
-                    // !!! not finished yet (more chars need escaping)
-                }
+		escapeCharacters(ch, off, len);
 	    }
-
-	    if (offset < limit) {
-		_saxHandler.characters(ch, offset, limit - offset);
+	    // Output the chracters as the are
+	    else {
+		_saxHandler.characters(ch, off, len);
 	    }
-
-        } catch (SAXException e) {
+        }
+	catch (SAXException e) {
             throw new TransletException(e);
         }
     }
@@ -409,45 +431,35 @@ public final class TextOutput implements TransletOutputHandler {
     public void startElement(String elementName)
 	throws TransletException {
 
-	// bug fix # 1499, GTM.
+	// Do not output element tags if output mode is 'text'
 	if (_outputType == TEXT) return; 
 
-	try {
-	    // Close any open start tag
-	    if (_startTagOpen) {
-		closeStartTag();
-	    }
-            else if (_cdataTagOpen) {
-                characters(ENDCDATA);
-                _cdataTagOpen = false;
-            }
+	// Close any open start tag
+	if (_startTagOpen) closeStartTag();
 
-	    // If we don't know the output type yet we need to examine
-	    // the very first element to see if it is "html".
-	    if (_outputType == UNKNOWN) {
-		if (elementName.toLowerCase().equals("html"))
-		    setTypeInternal(HTML);
-		else
-		    setTypeInternal(XML);
-	    }
-
-            _depth++;
-	    _elementName = elementName;
-	    _attributes.clear();
-	    _startTagOpen = true;
-
-	    _qnameStack.push(elementName);
-
-	    // Insert <META> tag directly after <HEAD> element in HTML doc
-	    if (_outputType == HTML) {
-		if (elementName.toLowerCase().equals("head")) {
-		    _headTagOpen = true;
-		}
-	    }
-
-	} catch (SAXException e) {
-	    throw new TransletException(e);
+	// If we don't know the output type yet we need to examine
+	// the very first element to see if it is "html".
+	if (_outputType == UNKNOWN) {
+	    if (elementName.toLowerCase().equals("html"))
+		setTypeInternal(HTML);
+	    else
+		setTypeInternal(XML);
 	}
+
+	_depth++;
+	_elementName = elementName;
+	_attributes.clear();
+	_startTagOpen = true;
+
+	_qnameStack.push(elementName);
+
+	if (_cdata.get(elementName) != null)
+	    _cdataStack.push(new Integer(_depth));
+
+	// Insert <META> tag directly after <HEAD> element in HTML doc
+	if (_outputType == HTML)
+	    if (elementName.toLowerCase().equals("head"))
+		_headTagOpen = true;
     }
 
     /**
@@ -503,7 +515,7 @@ public final class TextOutput implements TransletOutputHandler {
     public void attribute(final String name, final String value)
 	throws TransletException {
 	
-	// bug fix #1499, GTM
+	// Do not output attributes if output mode is 'text'
 	if (_outputType == TEXT) return; 
 
 	if (_startTagOpen) {
@@ -518,9 +530,6 @@ public final class TextOutput implements TransletOutputHandler {
 		_attributes.add(name,escapeChars(value));
 	    }
 	}
-	else if (_cdataTagOpen) {
-	    throw new TransletException("attribute '"+name+"' within CDATA");
-	}
 	else {
 	    throw new TransletException("attribute '"+name+
 					"' outside of element");
@@ -532,26 +541,22 @@ public final class TextOutput implements TransletOutputHandler {
      */
     public void endElement(String elementName) throws TransletException {
 	
-	// bug fix #1499, GTM
+	// Do not output element tags if output mode is 'text'
 	if (_outputType == TEXT) return;
  
 	try {
 	    boolean closeElement = true;
 
 	    // Close any open element
-	    if (_startTagOpen) {
-		closeStartTag();
-	    }
-	    else if (_cdataTagOpen) {
-		characters(ENDCDATA);
-		_cdataTagOpen = false;
-		closeElement = false;
-	    }
-
+	    if (_startTagOpen) closeStartTag();
 	    final String qname = (String)(_qnameStack.pop());
             if (closeElement) _saxHandler.endElement(null, null, qname);
 
             popNamespaces();
+
+	    Integer I = (Integer)_cdataStack.peek();
+	    if (I.intValue() == _depth) _cdataStack.pop();
+
             _depth--;
 
         } catch (SAXException e) {
@@ -565,13 +570,7 @@ public final class TextOutput implements TransletOutputHandler {
     public void comment(String comment) throws TransletException {
 	try {
 	    // Close any open element before emitting comment
-            if (_startTagOpen) {
-                closeStartTag();
-            }
-            else if (_cdataTagOpen) {
-                characters(ENDCDATA);
-                _cdataTagOpen = false;
-            }
+            if (_startTagOpen) closeStartTag();
 
             // Set output type to XML (the default) if still unknown.
             if (_outputType == UNKNOWN) setTypeInternal(XML);
@@ -593,13 +592,7 @@ public final class TextOutput implements TransletOutputHandler {
 	throws TransletException {
         try {
 	    // Close any open element
-	    if (_startTagOpen) {
-		closeStartTag();
-	    }
-            else if (_cdataTagOpen) {
-                characters(ENDCDATA);
-                _cdataTagOpen = false;
-            }
+	    if (_startTagOpen) closeStartTag();
 	    // Pass the processing instruction to the SAX handler
             _saxHandler.processingInstruction(target, data);
         } catch (SAXException e) {
@@ -696,9 +689,6 @@ public final class TextOutput implements TransletOutputHandler {
 	try {
 	    if (_startTagOpen)
 		pushNamespace(prefix, uri);
-	    else if (_cdataTagOpen)
-		throw new TransletException("namespace declaration within "+
-					    "CDATA element");
 	    else
 		throw new TransletException("namespace declaration '"+prefix+
 					    "'='"+uri+"' outside of element");
