@@ -363,7 +363,8 @@ public class QName implements java.io.Serializable
   }
 
   /**
-   * Return the string representation of the namespace. Performs
+   * Return the string representation of the qualified name, using the 
+   * prefix if available, or the '{ns}foo' notation if not. Performs
    * string concatenation, so beware of performance issues.
    *
    * @return the string representation of the namespace
@@ -374,8 +375,23 @@ public class QName implements java.io.Serializable
     return _prefix != null
            ? (_prefix + ":" + _localName)
            : (_namespaceURI != null
-              ? (_namespaceURI + "^" + _localName) : _localName);
+              ? ("{"+_namespaceURI + "}" + _localName) : _localName);
   }
+  
+  /**
+   * Return the string representation of the qualified name using the 
+   * the '{ns}foo' notation. Performs
+   * string concatenation, so beware of performance issues.
+   *
+   * @return the string representation of the namespace
+   */
+  public String toNamespacedString()
+  {
+
+    return (_namespaceURI != null
+              ? ("{"+_namespaceURI + "}" + _localName) : _localName);
+  }
+
 
   /**
    * Get the namespace of the qualified name.
