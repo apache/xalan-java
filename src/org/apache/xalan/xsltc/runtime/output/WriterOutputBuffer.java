@@ -63,65 +63,63 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.io.Writer;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 
-import org.apache.xalan.xsltc.TransletException;
+class WriterOutputBuffer implements OutputBuffer {
+    protected static final int BUFFER_SIZE = 32 * 1024;
 
-public class StreamTextOutput extends StreamOutput {
+    private Writer _writer;
 
-    public StreamTextOutput(Writer writer, String encoding) {
-	super(writer, encoding);
-	_buffer = new WriterOutputBuffer(_writer);
+    /**
+     * Initializes a WriterOutputBuffer by creating an instance of a 
+     * BufferedWriter. The size of the buffer in this writer may have 
+     * a significant impact on throughput. Solaris prefers a larger
+     * buffer, while Linux works better with a smaller one.
+     */
+    public WriterOutputBuffer(Writer writer) {
+	_writer = new BufferedWriter(writer, BUFFER_SIZE);
     }
 
-    public StreamTextOutput(OutputStream out, String encoding) 
-	throws IOException
-    {
-	super(out, encoding);
-	_buffer = new WriterOutputBuffer(_writer);
+    public String close() {
+	try {
+	    _writer.flush();
+	}
+	catch (IOException e) {
+	    throw new RuntimeException(e.toString());
+	}
+	return "";
     }
 
-    public void startDocument() throws TransletException { 
+    public OutputBuffer append(String s) {
+	try {
+	    _writer.write(s);
+	}
+	catch (IOException e) {
+	    throw new RuntimeException(e.toString());
+	}
+	return this;
     }
 
-    public void endDocument() throws TransletException { 
-	outputBuffer();
+    public OutputBuffer append(char[] s, int from, int to) {
+	try {
+	    _writer.write(s, from, to);
+	}
+	catch (IOException e) {
+	    throw new RuntimeException(e.toString());
+	}
+	return this;
     }
 
-    public void startElement(String elementName) 
-	throws TransletException 
-    {
-    }
-
-    public void endElement(String elementName) 
-	throws TransletException 
-    {
-    }
-
-    public void characters(String characters) 
-	throws TransletException 
-    { 
-	_buffer.append(characters);
-    }
-
-    public void characters(char[] characters, int offset, int length)
-	throws TransletException 
-    { 
-	_buffer.append(characters, offset, length);
-    }
-
-    public void comment(String comment) throws TransletException {
-    }
-
-    public void attribute(String name, String value) 
-	throws TransletException 
-    {
-    }
-
-    public void processingInstruction(String target, String data) 
-	throws TransletException
-    {
+    public OutputBuffer append(char ch) {
+	try {
+	    _writer.write(ch);
+	}
+	catch (IOException e) {
+	    throw new RuntimeException(e.toString());
+	}
+	return this;
     }
 }
+
 

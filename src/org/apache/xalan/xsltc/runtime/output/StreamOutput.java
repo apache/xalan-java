@@ -64,6 +64,7 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.io.Writer;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -89,11 +90,8 @@ abstract class StreamOutput extends OutputBase {
     protected static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
     protected static final int MAX_INDENT       = INDENT.length;
 
-    protected static final int BUFFER_SIZE = 32 * 1024;
-    protected static final int OUTPUT_BUFFER_SIZE = 4 * 1024;
-
     protected Writer  _writer;
-    protected StringBuffer _buffer;
+    protected OutputBuffer _buffer;
 
     protected boolean _is8859Encoded = false;
     protected boolean _indent     = false;
@@ -147,7 +145,6 @@ abstract class StreamOutput extends OutputBase {
 	_writer = writer;
 	_encoding = encoding;
 	_is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
-	_buffer = new StringBuffer(BUFFER_SIZE);
     }
 
     protected StreamOutput(OutputStream out, String encoding) 
@@ -160,7 +157,6 @@ abstract class StreamOutput extends OutputBase {
 	catch (UnsupportedEncodingException e) {
 	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
 	}
-	_buffer = new StringBuffer(BUFFER_SIZE);
     }
 
     public void setIndentNumber(int value) {
@@ -194,22 +190,9 @@ abstract class StreamOutput extends OutputBase {
 
     protected void outputBuffer() {
 	try {
-	    int n = 0;
-	    final int length = _buffer.length();
-	    final String output = _buffer.toString();
-
-	    // Output buffer in chunks of OUTPUT_BUFFER_SIZE 
-	    if (length > OUTPUT_BUFFER_SIZE) {
-		do {
-		    _writer.write(output, n, OUTPUT_BUFFER_SIZE);
-		    n += OUTPUT_BUFFER_SIZE;
-		} while (n + OUTPUT_BUFFER_SIZE < length);
-	    }
-	    _writer.write(output, n, length - n);
-	    _writer.flush();
+	    _writer.write(_buffer.close());
 	}
 	catch (IOException e) {
-	    // ignore
 	}
     }
 

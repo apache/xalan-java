@@ -90,6 +90,7 @@ public class StreamXMLOutput extends StreamOutput {
 
     public StreamXMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
+	_buffer = new StringOutputBuffer();
 	initCDATA();
 	initNamespaces();
 //System.out.println("StreamXMLOutput.<init>");
@@ -99,9 +100,20 @@ public class StreamXMLOutput extends StreamOutput {
 	throws IOException
     {
 	super(out, encoding);
+	_buffer = new StringOutputBuffer();
 	initCDATA();
 	initNamespaces();
 //System.out.println("StreamXMLOutput.<init>");
+    }
+
+    private void insertHeader(String header) {
+	try {
+	    _writer.write(header);
+	    _writer.write(_buffer.close());
+	    _buffer = new WriterOutputBuffer(_writer);
+	}
+	catch (IOException e) {
+	}
     }
 
     public void startDocument() throws TransletException { 
@@ -115,7 +127,11 @@ public class StreamXMLOutput extends StreamOutput {
 	    header.append("\"?>\n");
 
 	    // Always insert header at the beginning 
-	    _buffer.insert(0, header.toString());
+	    insertHeader(header.toString());
+	}
+	else {
+	    // Must inform buffer the absence of a header
+	    insertHeader(EMPTYSTRING);
 	}
     }
 

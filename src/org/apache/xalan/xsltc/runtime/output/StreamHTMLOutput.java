@@ -97,12 +97,14 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
+	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
 // System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public StreamHTMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
+	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
 //System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
@@ -111,6 +113,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	throws IOException
     {
 	super(out, encoding);
+	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
 //System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
@@ -326,6 +329,33 @@ public class StreamHTMLOutput extends StreamOutput {
      */
     private String escapeNonURL(String base) {
 	final int length = base.length();
+	StringBuffer result = null;
+
+        for (int i = 0; i < length; i++){
+	    final char ch = base.charAt(i);
+
+	    if ((ch >= '\u007F' && ch < '\u00A0') ||
+		(_is8859Encoded && ch > '\u00FF'))
+	    {
+		if (result == null) {
+		    result = new StringBuffer((int) (1.2 * length));
+		    result.append(base.substring(0, i));
+		}
+	        result.append(CHAR_ESC_START)
+		      .append(Integer.toString((int) ch))
+		      .append(';');
+	    }
+	    else if (result != null) {
+		result.append(ch);
+	    }
+	}
+
+	return (result == null) ? base : result.toString();
+    }
+
+/*
+    private String escapeNonURL(String base) {
+	final int length = base.length();
 	final StringBuffer result = new StringBuffer();
 
         for (int i = 0; i < length; i++){
@@ -344,6 +374,7 @@ public class StreamHTMLOutput extends StreamOutput {
   	}
 	return result.toString();
     }
+*/
 
     /**
      * This method escapes special characters used in HTML attribute values
