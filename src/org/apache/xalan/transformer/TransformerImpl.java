@@ -2051,7 +2051,7 @@ public class TransformerImpl extends Transformer
    * template and process the contents.
    *
    * @param xslInstruction The calling element.
-   * @param template The template to use if xsl:for-each, or null.
+   * @param template The template to use if xsl:for-each, current template for apply-imports, or null.
    * @param child The source context node.
    * @param mode The current mode, may be null.
    * @throws TransformerException
@@ -2066,22 +2066,23 @@ public class TransformerImpl extends Transformer
     DTM dtm = m_xcontext.getDTM(child);
     short nodeType = dtm.getNodeType(child);
     boolean isDefaultTextRule = false;
-    boolean isApplyImports = false;    
-
-    if (null == template)
-    {
-      int maxImportLevel, endImportLevel=0;
-      isApplyImports = ((xslInstruction == null)
+    boolean isApplyImports = false;
+    
+    isApplyImports = ((xslInstruction == null)
                                 ? false
                                 : xslInstruction.getXSLToken()
-                                  == Constants.ELEMNAME_APPLY_IMPORTS);
+                                  == Constants.ELEMNAME_APPLY_IMPORTS);        
+
+    if (null == template || isApplyImports)
+    {
+      int maxImportLevel, endImportLevel=0;
 
       if (isApplyImports)
       {
         maxImportLevel =
-          xslInstruction.getStylesheetComposed().getImportCountComposed() - 1;
+          template.getStylesheetComposed().getImportCountComposed() - 1;
         endImportLevel =
-          xslInstruction.getStylesheetComposed().getEndImportCountComposed();
+          template.getStylesheetComposed().getEndImportCountComposed();
       }
       else
       {
@@ -2216,8 +2217,9 @@ public class TransformerImpl extends Transformer
       m_xcontext.popCurrentNode();
       if (!isApplyImports) {
           m_xcontext.popContextNodeList();
-          popCurrentMatched();
       }
+      popCurrentMatched();
+      
       popElemTemplateElement();
     }
 

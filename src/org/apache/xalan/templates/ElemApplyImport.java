@@ -83,10 +83,9 @@ public class ElemApplyImport extends ElemTemplateElement
     int sourceNode = transformer.getXPathContext().getCurrentNode();
     if (DTM.NULL != sourceNode)
     {
-
-      // This will have to change to current template, (which will have 
-      // to be the top of a current template stack).
-      transformer.applyTemplateToNode(this, null, sourceNode);
+      // supply the current templated (matched, not named)        
+      ElemTemplate matchTemplate = transformer.getMatchedTemplate();
+      transformer.applyTemplateToNode(this, matchTemplate, sourceNode);
     }
     else  // if(null == sourceNode)
     {
