@@ -110,6 +110,25 @@ public class Constants
     S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xslt"; 
   
   /**
+   * Xalan extension namespaces.
+   */
+  public static final String 
+    S_EXTENSIONS_JAVA_URL = "http://xml.apache.org/xslt/java",
+    S_EXTENSIONS_LOTUSXSL_JAVA_URL = "http://xsl.lotus.com/java",
+    S_EXTENSIONS_XALANLIB_URL = "http://xml.apache.org/xalan";   
+  
+  /**
+   * EXSLT extension namespaces.
+   */
+  public static final String
+    S_EXSLT_COMMON_URL = "http://exslt.org/common",
+    S_EXSLT_MATH_URL = "http://exslt.org/math",
+    S_EXSLT_SETS_URL = "http://exslt.org/sets",
+    S_EXSLT_DATETIME_URL = "http://exslt.org/dates-and-times",
+    S_EXSLT_FUNCTIONS_URL = "http://exslt.org/functions";
+    
+    
+  /**
    * The minimum version of XSLT supported by this processor.
    */
   public static final double XSLTVERSUPPORTED = 1.0;
@@ -177,7 +196,7 @@ public class Constants
   ELEMNAME_EXTENSIONSCRIPT = 86, ELEMNAME_OUTPUT = 80,
   ELEMNAME_COMPONENT = 81, ELEMNAME_SCRIPT = 82;
 
-  // Next free number: 87
+  // Next free number: 90 (88 and 89 used for EXSLT elements);
 
   /**
    * Literals for XSL element names.  Note that there are more
@@ -251,6 +270,17 @@ public class Constants
       ELEMNAME_VARIABLE_STRING = "variable",
       ELEMNAME_WHEN_STRING = "when",
       ELEMNAME_WITHPARAM_STRING = "with-param";
+  
+  /**
+   * Literals for EXSLT function elements.
+   */
+  public static final String
+    EXSLT_ELEMNAME_FUNCTION_STRING = "function",
+    EXSLT_ELEMNAME_FUNCRESULT_STRING = "result";
+  public static final int
+    EXSLT_ELEMNAME_FUNCTION = 88,
+    EXSLT_ELEMNAME_FUNCRESULT = 89;
+  
   
   /**
    * Literals for XSL attribute names.  Note that there may be more

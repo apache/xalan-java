@@ -54,68 +54,34 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.extensions;
+package org.apache.xpath;
 
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Node;
-import org.apache.xpath.objects.XObject;
+import java.util.Vector;
 
 /**
- * An object that implements this interface can supply
- * information about the current XPath expression context.
+ * Interface that XPath objects can call to obtain access to an 
+ * ExtensionsTable.
+ * 
  */
-public interface ExpressionContext
+public interface ExtensionsProvider
 {
-
   /**
-   * Get the current context node.
-   * @return The current context node.
+   * Is the extension function available?
    */
-  public Node getContextNode();
-
-  /**
-   * Get the current context node list.
-   * @return An iterator for the current context list, as
-   * defined in XSLT.
-   */
-  public NodeIterator getContextNodes();
-
-  /**
-   * Get the value of a node as a number.
-   * @param n Node to be converted to a number.  May be null.
-   * @return value of n as a number.
-   */
-  public double toNumber(Node n);
-
-  /**
-   * Get the value of a node as a string.
-   * @param n Node to be converted to a string.  May be null.
-   * @return value of n as a string, or an empty string if n is null.
-   */
-  public String toString(Node n);
-
-  /**
-   * Get a variable based on it's qualified name.
-   *
-   * @param qname The qualified name of the variable.
-   *
-   * @return The evaluated value of the variable.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject getVariableOrParam(org.apache.xml.utils.QName qname)
-            throws javax.xml.transform.TransformerException;
+  
+  public boolean functionAvailable(String ns, String funcName)
+          throws javax.xml.transform.TransformerException;
   
   /**
-   * Get the XPathContext that owns this ExpressionContext.
-   * 
-   * Note: exslt:function requires the XPathContext to access
-   * the variable stack and TransformerImpl.
-   * 
-   * @return The current XPathContext.
-   * @throws javax.xml.transform.TransformerException
+   * Is the extension element available?
    */
-  public org.apache.xpath.XPathContext getXPathContext()
+  public boolean elementAvailable(String ns, String elemName)
+          throws javax.xml.transform.TransformerException;
+   
+  /**
+   * Execute the extension function.
+   */
+  public Object extFunction(String ns, String funcName, 
+                            Vector argVec, Object methodKey)
             throws javax.xml.transform.TransformerException;
-
 }

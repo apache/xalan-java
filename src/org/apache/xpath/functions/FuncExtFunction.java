@@ -60,7 +60,9 @@ import java.util.Vector;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.objects.*;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xml.dtm.DTMIterator;
 
@@ -133,6 +135,15 @@ public class FuncExtFunction extends Function
       }
     }
   }
+  //called by StylesheetHandler.createXPath() -- dml 
+  public String getNamespace()
+  {
+    return m_namespace;
+  }
+  public String getFunctionName()
+  {
+    return m_extensionName;
+  }
 
   /**
    * Create a new FuncExtFunction based on the qualified name of the extension,
@@ -148,7 +159,7 @@ public class FuncExtFunction extends Function
   public FuncExtFunction(java.lang.String namespace,
                          java.lang.String extensionName, Object methodKey)
   {
-
+    //try{throw new Exception("FuncExtFunction() " + namespace + " " + extensionName);} catch (Exception e){e.printStackTrace();}
     m_namespace = namespace;
     m_extensionName = extensionName;
     m_methodKey = methodKey;
@@ -178,11 +189,10 @@ public class FuncExtFunction extends Function
 
       argVec.addElement(xobj);
     }
-
-    ExtensionsTable etable = xctxt.getExtensionsTable();
-    Object val = etable.extFunction(m_namespace, m_extensionName, argVec,
-                                    m_methodKey,
-                                    xctxt.getExpressionContext());
+    //dml
+    ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
+    Object val = extProvider.extFunction(m_namespace, m_extensionName, 
+                                         argVec, m_methodKey);
 
     if (null != val)
     {

@@ -56,66 +56,51 @@
  */
 package org.apache.xalan.extensions;
 
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Node;
-import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xalan.templates.StylesheetRoot;
 
 /**
- * An object that implements this interface can supply
- * information about the current XPath expression context.
+ * When {@link org.apache.xalan.templates.StylesheetHandler} creates 
+ * an {@link org.apache.xpath.XPath}, the ExpressionVisitor
+ * visits the XPath expression. For any extension functions it 
+ * encounters, it instructs StylesheetRoot to register the
+ * extension namespace. 
+ * 
+ * This mechanism is required to locate extension functions
+ * that may be embedded within an expression.
  */
-public interface ExpressionContext
+public class ExpressionVisitor extends XPathVisitor
 {
-
-  /**
-   * Get the current context node.
-   * @return The current context node.
-   */
-  public Node getContextNode();
-
-  /**
-   * Get the current context node list.
-   * @return An iterator for the current context list, as
-   * defined in XSLT.
-   */
-  public NodeIterator getContextNodes();
-
-  /**
-   * Get the value of a node as a number.
-   * @param n Node to be converted to a number.  May be null.
-   * @return value of n as a number.
-   */
-  public double toNumber(Node n);
-
-  /**
-   * Get the value of a node as a string.
-   * @param n Node to be converted to a string.  May be null.
-   * @return value of n as a string, or an empty string if n is null.
-   */
-  public String toString(Node n);
-
-  /**
-   * Get a variable based on it's qualified name.
-   *
-   * @param qname The qualified name of the variable.
-   *
-   * @return The evaluated value of the variable.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject getVariableOrParam(org.apache.xml.utils.QName qname)
-            throws javax.xml.transform.TransformerException;
+  private StylesheetRoot m_sroot;
   
   /**
-   * Get the XPathContext that owns this ExpressionContext.
-   * 
-   * Note: exslt:function requires the XPathContext to access
-   * the variable stack and TransformerImpl.
-   * 
-   * @return The current XPathContext.
-   * @throws javax.xml.transform.TransformerException
+   * The constructor sets the StylesheetRoot variable which
+   * is used to register extension namespaces.
+   * @param sroot the StylesheetRoot that is being constructed.
    */
-  public org.apache.xpath.XPathContext getXPathContext()
-            throws javax.xml.transform.TransformerException;
-
+  public ExpressionVisitor (StylesheetRoot sroot)
+  {
+    m_sroot = sroot;
+  }
+  
+  /**
+   * If the function is an extension function, register the namespace.
+   * 
+   * @param owner The current XPath object that owns the expression.
+   * @param function The function currently being visited.
+   * 
+   * @return true to continue the visit in the subtree, if any.
+   */
+  public boolean visitFunction(ExpressionOwner owner, Function func)
+	{
+    if (func instanceof FuncExtFunction)
+    {
+      String namespace = ((FuncExtFunction)func).getNamespace();
+      m_sroot.getExtensionNamespacesManager().registerExtension(namespace);      
+    }
+		return true;
+	}
 }

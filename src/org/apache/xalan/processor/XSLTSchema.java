@@ -267,9 +267,12 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslResultAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false);
-    XSLTElementDef[] templateElements = new XSLTElementDef[21];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[22];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[22];
+    XSLTElementDef[] templateElements = new XSLTElementDef[22];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[23];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[23];
+    //exslt
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[23];
+    
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[15];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
@@ -293,8 +296,8 @@ public class XSLTSchema extends XSLTElementDef
                                                  xslVersionAttr,
                                                  xslResultAttr,
                                                  resultAttr }, 
-                                                                                                 new ProcessorUnknown(),
-                         ElemUnknown.class /* class object */, 20, true);
+                                                 new ProcessorUnknown(),
+                                                 ElemUnknown.class /* class object */, 20, true);
     XSLTElementDef xslValueOf = new XSLTElementDef(this,
                                   Constants.S_XSLNAMESPACEURL, "value-of",
                                   null /*alias */, null /* elements */,
@@ -485,8 +488,27 @@ public class XSLTSchema extends XSLTElementDef
                                    new XSLTAttributeDef[]{ spaceAttr },
                                    new ProcessorTemplateElem(),
                                    ElemFallback.class /* class object */, 20, true);
+    //exslt
+    XSLTElementDef exsltFunction =
+                                  new XSLTElementDef(this, 
+                                  Constants.S_EXSLT_FUNCTIONS_URL, 
+                                  "function",
+                                  null /*alias */,
+                                  exsltFunctionElements /* elements */,
+                                  new XSLTAttributeDef[]{ nameAttrRequired },
+                                  new ProcessorExsltFunction(),
+                                  ElemExsltFunction.class /* class object */);
+    XSLTElementDef exsltResult =
+                                  new XSLTElementDef(this, 
+                                  Constants.S_EXSLT_FUNCTIONS_URL, 
+                                  "result",
+                                  null /*alias */,
+                                  templateElements /* elements */,
+                                  new XSLTAttributeDef[]{ selectAttrOpt },
+                                  new ProcessorExsltFuncResult(),
+                                  ElemExsltFuncResult.class  /* class object */);            
+    
     int i = 0;
-
     templateElements[i++] = charData;  // #PCDATA
 
     // char-instructions
@@ -512,22 +534,20 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslAttribute;
     templateElements[i++] = resultElement;
     templateElements[i++] = unknownElement;
+    templateElements[i++] = exsltResult;
 
     int k;
 
     for (k = 0; k < i; k++)
     {
       templateElementsAndParams[k] = templateElements[k];
-    }
-
-    templateElementsAndParams[k] = xslParam;
-
-    for (k = 0; k < i; k++)
-    {
       templateElementsAndSort[k] = templateElements[k];
+      exsltFunctionElements[k]     = templateElements[k];
     }
-
+    templateElementsAndParams[k] = xslParam;
     templateElementsAndSort[k] = xslSort;
+    exsltFunctionElements[k]   = xslParam;
+
     i = 0;
     charTemplateElements[i++] = charData;  // #PCDATA
 
@@ -561,156 +581,172 @@ public class XSLTSchema extends XSLTElementDef
                                   new ProcessorInclude(),
                                   null /* class object */,
                                                20, true);
-    XSLTElementDef[] topLevelElements = new XSLTElementDef[]{ includeDef,
-                                                              importDef,
-                                                              // resultElement,
-                                                              whiteSpaceOnly,
-                                                              unknownElement,
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "strip-space",
-                                                                null /*alias */,
-                                                                null /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                elementsAttr },
-                                                                new ProcessorStripSpace(),
-                                                                null /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "preserve-space",
-                                                                null /*alias */,
-                                                                null /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                elementsAttr },
-                                                                new ProcessorPreserveSpace(),
-                                                                null /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "output",
-                                                                null /*alias */,
-                                                                null /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                  methodAttr,
-                                                                  versionAttr,
-                                                                  encodingAttr,
-                                                                  omitXmlDeclarationAttr,
-                                                                  standaloneAttr,
-                                                                  doctypePublicAttr,
-                                                                  doctypeSystemAttr,
-                                                                  cdataSectionElementsAttr,
-                                                                  indentAttr,
-                                                                  mediaTypeAttr,
-                                                                  XSLTAttributeDef.m_foreignAttr }, 
-                                                                new ProcessorOutputElem(), null /* class object */, 20, true), 
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "key",
-                                                                null /*alias */,
-                                                                null /* elements */,  // EMPTY
-                                                                new XSLTAttributeDef[]{ nameAttrRequired,
-                                                                                            matchAttrRequired,
-                                                                                            useAttr }, 
-                                                                                               new ProcessorKey(), null /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "decimal-format",
-                                                                null /*alias */,
-                                                                null /* elements */,  // EMPTY
-                                                                                 new XSLTAttributeDef[]{
-                                                                                   nameAttrOpt,
-                                                                                   decimalSeparatorAttr,
-                                                                                   groupingSeparatorAttr,
-                                                                                   infinityAttr,
-                                                                                   minusSignAttr,
-                                                                                   NaNAttr,
-                                                                                   percentAttr,
-                                                                                   perMilleAttr,
-                                                                                   zeroDigitAttr,
-                                                                                   digitAttr,
-                                                                                   patternSeparatorAttr }, 
-                                                                                               new ProcessorDecimalFormat(),
-                                                                null /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "attribute-set",
-                                                                null /*alias */,
-                                                                new XSLTElementDef[]{
-                                                                xslAttribute } /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                  nameAttrRequired,
-                                                                  useAttributeSetsAttr }, new ProcessorAttributeSet(),
-                                                                                          null /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "variable",
-                                                                null /*alias */,
-                                                                templateElements /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                  nameAttrRequired,
-                                                                  selectAttrOpt }, new ProcessorGlobalVariableDecl(),
-                                                                                   ElemVariable.class /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "param",
-                                                                null /*alias */,
-                                                                templateElements /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                  nameAttrRequired,
-                                                                  selectAttrOpt }, new ProcessorGlobalParamDecl(),
-                                                                                   ElemParam.class /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_XSLNAMESPACEURL,
-                                                                "template",
-                                                                null /*alias */,
-                                                                templateElementsAndParams /* elements */,
-                                                                new XSLTAttributeDef[]{
-                                                                  matchAttrOpt,
-                                                                  nameAttrOpt,
-                                                                  priorityAttr,
-                                                                  modeAttr,
-                                                                  spaceAttr }, new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true), 
-                                                                                             new XSLTElementDef(
-                                                                    this,
-                                                                    Constants.S_XSLNAMESPACEURL,
-                                                                    "namespace-alias",
-                                                                    null /*alias */,
-                                                                    null /* elements */,  // EMPTY
-                                                                    new XSLTAttributeDef[]{ stylesheetPrefixAttr,
-                                                                                            resultPrefixAttr }, 
-                                                                                                   new ProcessorNamespaceAlias(), null /* class object */, 20, true),
-                                                              new XSLTElementDef(
-                                                                this,
-                                                                Constants.S_BUILTIN_EXTENSIONS_URL,
-                                                                "component",
-                                                                null /*alias */,
-                                                                new XSLTElementDef[]{
-                                                                  new XSLTElementDef(
-                                                                    this,
-                                                                    Constants.S_BUILTIN_EXTENSIONS_URL,
-                                                                    "script",
-                                                                    null /*alias */,
-                                                                    new XSLTElementDef[]{ charData } /* elements */,
-                                                                    new XSLTAttributeDef[]{
-                                                                      new XSLTAttributeDef(
-                                                                        null,
-                                                                        "lang",
-                                                                        XSLTAttributeDef.T_NMTOKEN,
-                                                                        true),
-                                                                      new XSLTAttributeDef(null, "src", XSLTAttributeDef.T_URL, false) }, 
-                                                                                                  new ProcessorLRE(),
-                                                                   ElemExtensionScript.class /* class object */, 20, true) },  // EMPTY
-                                                                                              new XSLTAttributeDef[]{ new XSLTAttributeDef(null, "prefix", XSLTAttributeDef.T_NMTOKEN, true),
-                                                                                                                      new XSLTAttributeDef(null, "elements", XSLTAttributeDef.T_STRINGLIST, false),
-                                                                                                                      new XSLTAttributeDef(null, "functions", XSLTAttributeDef.T_STRINGLIST, false) }, new ProcessorLRE(), ElemExtensionDecl.class /* class object */) };
+
+    XSLTElementDef[] topLevelElements = new XSLTElementDef[]
+                                 {includeDef,
+                                  importDef,
+                                  // resultElement,
+                                  whiteSpaceOnly,
+                                  unknownElement,
+                                  new XSLTElementDef(
+                                         this,
+                                         Constants.S_XSLNAMESPACEURL,
+                                         "strip-space",
+                                         null /*alias */,
+                                         null /* elements */,
+                                         new XSLTAttributeDef[]{
+                                                elementsAttr },
+                                                new ProcessorStripSpace(),
+                                         null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                         this,
+                                         Constants.S_XSLNAMESPACEURL,
+                                         "preserve-space",
+                                         null /*alias */,
+                                         null /* elements */,
+                                         new XSLTAttributeDef[]{
+                                                 elementsAttr },
+                                                 new ProcessorPreserveSpace(),
+                                         null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                         this,
+                                         Constants.S_XSLNAMESPACEURL,
+                                         "output",
+                                         null /*alias */,
+                                         null /* elements */,
+                                         new XSLTAttributeDef[]{
+                                                  methodAttr,
+                                                  versionAttr,
+                                                  encodingAttr,
+                                                  omitXmlDeclarationAttr,
+                                                  standaloneAttr,
+                                                  doctypePublicAttr,
+                                                  doctypeSystemAttr,
+                                                  cdataSectionElementsAttr,
+                                                  indentAttr,
+                                                  mediaTypeAttr,
+                                                  XSLTAttributeDef.m_foreignAttr }, 
+                                          new ProcessorOutputElem(), null /* class object */, 20, true), 
+                                  new XSLTElementDef(
+                                          this,
+                                          Constants.S_XSLNAMESPACEURL,
+                                          "key",
+                                          null /*alias */,
+                                          null /* elements */,  // EMPTY
+                                          new XSLTAttributeDef[]{ nameAttrRequired,
+                                                  matchAttrRequired,
+                                                  useAttr }, 
+                                          new ProcessorKey(), null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                          this,
+                                          Constants.S_XSLNAMESPACEURL,
+                                          "decimal-format",
+                                          null /*alias */,
+                                          null /* elements */,  // EMPTY
+                                          new XSLTAttributeDef[]{
+                                                  nameAttrOpt,
+                                                  decimalSeparatorAttr,
+                                                  groupingSeparatorAttr,
+                                                  infinityAttr,
+                                                  minusSignAttr,
+                                                  NaNAttr,
+                                                  percentAttr,
+                                                  perMilleAttr,
+                                                  zeroDigitAttr,
+                                                  digitAttr,
+                                                  patternSeparatorAttr }, 
+                                           new ProcessorDecimalFormat(),
+                                           null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_XSLNAMESPACEURL,
+                                           "attribute-set",
+                                           null /*alias */,
+                                           new XSLTElementDef[]{
+                                                   xslAttribute } /* elements */,
+                                           new XSLTAttributeDef[]{
+                                                   nameAttrRequired,
+                                                   useAttributeSetsAttr }, 
+                                           new ProcessorAttributeSet(),
+                                           null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_XSLNAMESPACEURL,
+                                           "variable",
+                                           null /*alias */,
+                                           templateElements /* elements */,
+                                           new XSLTAttributeDef[]{
+                                                   nameAttrRequired,
+                                                   selectAttrOpt }, 
+                                           new ProcessorGlobalVariableDecl(),
+                                           ElemVariable.class /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_XSLNAMESPACEURL,
+                                           "param",
+                                           null /*alias */,
+                                           templateElements /* elements */,
+                                           new XSLTAttributeDef[]{
+                                                   nameAttrRequired,
+                                                   selectAttrOpt }, 
+                                           new ProcessorGlobalParamDecl(),
+                                           ElemParam.class /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_XSLNAMESPACEURL,
+                                           "template",
+                                           null /*alias */,
+                                           templateElementsAndParams /* elements */,
+                                           new XSLTAttributeDef[]{
+                                                   matchAttrOpt,
+                                                   nameAttrOpt,
+                                                   priorityAttr,
+                                                   modeAttr,
+                                                   spaceAttr }, 
+                                           new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true), 
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_XSLNAMESPACEURL,
+                                           "namespace-alias",
+                                           null /*alias */,
+                                          null /* elements */,  // EMPTY
+                                           new XSLTAttributeDef[]{ 
+                                                   stylesheetPrefixAttr,
+                                                   resultPrefixAttr }, 
+                                           new ProcessorNamespaceAlias(), null /* class object */, 20, true),
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_BUILTIN_EXTENSIONS_URL,
+                                           "component",
+                                           null /*alias */,
+                                           new XSLTElementDef[]{
+                                                    new XSLTElementDef(
+                                                        this,
+                                                        Constants.S_BUILTIN_EXTENSIONS_URL,
+                                                        "script",
+                                                        null /*alias */,
+                                                    new XSLTElementDef[]{ 
+                                                        charData } /* elements */,
+                                                        new XSLTAttributeDef[]{
+                                                            new XSLTAttributeDef(
+                                                                null,
+                                                                "lang",
+                                                                XSLTAttributeDef.T_NMTOKEN,
+                                                                true),
+                                                            new XSLTAttributeDef(
+                                                                null, "src", XSLTAttributeDef.T_URL, false) }, 
+                                                                new ProcessorLRE(),
+                                                                ElemExtensionScript.class /* class object */, 20, true) },  // EMPTY
+                                                            new XSLTAttributeDef[]{ 
+                                                                new XSLTAttributeDef(
+                                                                    null, "prefix", XSLTAttributeDef.T_NMTOKEN, true),
+                                                                new XSLTAttributeDef(
+                                                                    null, "elements", XSLTAttributeDef.T_STRINGLIST, false),
+                                                                new XSLTAttributeDef(
+                                                                    null, "functions", XSLTAttributeDef.T_STRINGLIST, false) }, 
+                                                    new ProcessorLRE(), ElemExtensionDecl.class /* class object */),
+                                  exsltFunction}/* exslt */;  //end of topevelElements
+    
     XSLTAttributeDef excludeResultPrefixesAttr =
       new XSLTAttributeDef(null, "exclude-result-prefixes",
                            XSLTAttributeDef.T_STRINGLIST, false);

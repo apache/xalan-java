@@ -85,6 +85,8 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.XPath;
 
+import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xalan.extensions.ExpressionVisitor;
 import org.w3c.dom.Node;
 
 import org.xml.sax.Attributes;
@@ -194,7 +196,10 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    return new XPath(str, owningTemplate, this, XPath.SELECT, handler);
+    XPath xpath = new XPath(str, owningTemplate, this, XPath.SELECT, handler);
+    // Visit the expression, registering namespaces for any extension functions it includes.
+    xpath.callVisitors(xpath, new ExpressionVisitor(getStylesheetRoot()));
+    return xpath;
   }
 
   /**
