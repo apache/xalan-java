@@ -272,7 +272,7 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
     if((null == ns) || (ns.length() == 0))
       elem = m_doc.createElement(name);
     else
-      elem = m_doc.createElementNS(ns, localName);
+      elem = m_doc.createElementNS(ns, name);
     append(elem); 
     int nAtts = atts.getLength();
     for(int i = 0; i < nAtts; i++)
