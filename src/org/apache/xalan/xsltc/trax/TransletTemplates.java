@@ -70,6 +70,8 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.compiler.CompilerException;
+import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.Translet;
 import java.util.Properties;
 
@@ -94,6 +96,19 @@ public class TransletTemplates implements Templates {
         XSLTC xsltc = new XSLTC();
         xsltc.init();
 
+        // check if destination has been set with system property
+        String transletDestDir = System.getProperty("transletPool");
+        if (transletDestDir != null) {
+            try {
+                xsltc.setDestDirectory(transletDestDir);
+            } catch(CompilerException e)  {
+                throw new TransformerConfigurationException(
+                    "System property 'transletPool' was set to  " +
+                    transletDestDir + ", " + e );
+            }
+        }
+
+
 	// compile stylesheet
 	boolean isSuccessful = true;
 	StreamSource strmsrc = (StreamSource)_stylesheet;
@@ -103,6 +118,7 @@ public class TransletTemplates implements Templates {
 	if (inputStream != null) {
 	    isSuccessful = xsltc.compile(inputStream, transletName);
 	} else if (stylesheetName != null ){
+/******************
 	    int index = stylesheetName.indexOf('.');
 	    if (index > 0) { 
                 transletName = stylesheetName.substring(0,index);
@@ -111,6 +127,9 @@ public class TransletTemplates implements Templates {
                 // indexOf returns -1 if '.' is not present
                 transletName = stylesheetName;
             }   
+********************/
+	    transletName = Util.toJavaName(Util.noExtName(
+                Util.baseName(stylesheetName)));
             try {
                 if (stylesheetName.startsWith("file:/")) {
                     isSuccessful = xsltc.compile(new URL(stylesheetName));

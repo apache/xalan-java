@@ -80,6 +80,7 @@ import org.xml.sax.XMLFilter;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
@@ -254,6 +255,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     {
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
+
+	// check if destination has been set with system property
+	String transletDestDir = System.getProperty("transletPool");
+	if (transletDestDir != null) {
+	    try {
+	        xsltc.setDestDirectory(transletDestDir);
+	    } catch(CompilerException e)  {
+		throw new TransformerConfigurationException(
+		    "System property 'transletPool' was set to  " + 
+		    transletDestDir + ", " + e );
+	    }
+ 	}
 
         // compile stylesheet
         boolean isSuccessful = true;
