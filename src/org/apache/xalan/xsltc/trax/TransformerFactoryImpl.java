@@ -447,6 +447,9 @@ public class TransformerFactoryImpl
 	catch (SecurityException e) {
 	    throw new TransformerConfigurationException(NO_ACCESS_ERR+systemId);
 	}
+	catch (MalformedURLException e){
+	    throw new TransformerConfigurationException(NO_ACCESS_ERR+systemId);
+	}
 	finally {
 	    return(input);
 	}
