@@ -472,6 +472,14 @@ public final class TransformerImpl extends Transformer
     protected TransformerFactoryImpl getTransformerFactory() {
         return _tfactory;
     }
+    
+    /**
+     * Returns the {@link org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory}
+     * object that create the <code>TransletOutputHandler</code>.
+     */
+    protected TransletOutputHandlerFactory getTransletOutputHandlerFactory() {
+        return _tohFactory;
+    }
 
     private void transformIdentity(Source source, SerializationHandler handler)
 	throws Exception 
