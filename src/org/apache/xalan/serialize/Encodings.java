@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -83,11 +83,18 @@ public class Encodings extends Object
    * The last printable character for unknown encodings.
    */
   static final int m_defaultLastPrintable = 0x7F;
-  
+
   /**
    * Standard filename for properties file with encodings data.
    */
-  static final String ENCODINGS_FILE = "Encodings.properties";
+  static final String ENCODINGS_FILE = "org/apache/xalan/serialize/Encodings.properties";
+  
+  /** a zero length Class array used in loadPropertyFile() */
+  private static final Class[] NO_CLASSES = new Class[0];
+
+  /** a zero length Object array used in loadPropertyFile() */
+  private static final Object[] NO_OBJS = new Object[0];
+
 
 
   /**
@@ -133,7 +140,7 @@ public class Encodings extends Object
       throw new UnsupportedEncodingException(encoding);
     }
   }
-  
+
   /**
    * Returns an opaque CharToByte converter for the specified encoding.
    *
@@ -145,13 +152,13 @@ public class Encodings extends Object
 
     Class charToByteConverterClass = null;
     java.lang.reflect.Method getConverterMethod = null;
-    
+
     try
     {
       charToByteConverterClass = Class.forName("sun.io.CharToByteConverter");
       Class argTypes[] = new Class[1];
       argTypes[0] = String.class;
-      getConverterMethod 
+      getConverterMethod
         = charToByteConverterClass.getMethod("getConverter", argTypes);
     }
     catch(Exception e)
@@ -226,7 +233,7 @@ public class Encodings extends Object
    * [XML]. If no encoding attribute is specified, then the XSLT processor should
    * use either UTF-8 or UTF-16."
    *
-   * @param encoding Reference to java-style encoding string, which may be null, 
+   * @param encoding Reference to java-style encoding string, which may be null,
    * in which case a default will be found.
    *
    * @return The ISO-style encoding string, or null if failure.
@@ -239,8 +246,8 @@ public class Encodings extends Object
       try
       {
 
-        // Get the default system character encoding.  This may be 
-        // incorrect if they passed in a writer, but right now there 
+        // Get the default system character encoding.  This may be
+        // incorrect if they passed in a writer, but right now there
         // seems to be no way to get the encoding from a writer.
         encoding = System.getProperty("file.encoding", "UTF8");
 
@@ -256,7 +263,7 @@ public class Encodings extends Object
           */
           String jencoding =
             (encoding.equalsIgnoreCase("Cp1252") || encoding.equalsIgnoreCase(
-            "ISO8859_1") || encoding.equalsIgnoreCase("8859_1") 
+            "ISO8859_1") || encoding.equalsIgnoreCase("8859_1")
             || encoding.equalsIgnoreCase("UTF8")) ? DEFAULT_MIME_ENCODING
               : convertJava2MimeEncoding(
               encoding);
@@ -301,7 +308,7 @@ public class Encodings extends Object
 
     return encoding;
   }
-  
+
   /**
    * Try the best we can to convert a Java encoding to a XML-style encoding.
    *
@@ -337,27 +344,38 @@ public class Encodings extends Object
     try {
       String urlString =
         System.getProperty("org.apache.xalan.serialize.encodings", "");
-      if (urlString == null || urlString.length() == 0) {
-        ClassLoader cl = Encodings.class.getClassLoader();
-        if (cl == null) {
-          url = ClassLoader.getSystemResource("org/apache/xalan/serialize/" +
-                                              ENCODINGS_FILE);
-        } else {
-          url = cl.getResource(ENCODINGS_FILE);
-          if (url == null)
-            url = ClassLoader.getSystemResource("org/apache/xalan/serialize/" +
-                                              ENCODINGS_FILE);
-        }
-      } else {
+      if (urlString != null && urlString.length() > 0)
         url = new URL (urlString);
+      if (url == null) {
+        ClassLoader cl = null;          
+        try{
+          java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
+          if (getCCL != null) {
+            cl = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
+          }
+        }
+        catch (Exception e) {}
+        if (cl != null) {
+          url = cl.getResource(ENCODINGS_FILE);
+        }
       }
+      if (url == null)
+        url = ClassLoader.getSystemResource(ENCODINGS_FILE);
 
-      // ? consider whether we should allow an exception here if resource
-      // is not found or should we return an empty array ?
-      InputStream is = url.openStream();
       Properties props = new Properties ();
-      props.load(is);
-      is.close();
+      if (url != null) {
+        InputStream is = url.openStream();
+        props.load(is);
+        is.close();
+      }
+      else {
+      // Seems to be no real need to force failure here, let the system
+      //   do its best... The issue is not really very critical, and the
+      //   output will be in any case _correct_ though maybe not always
+      //   human-friendly... :)
+      // But maybe report/log the resource problem?
+      // Any standard ways to report/log errors in Xalan (in static context)?
+      }
 
       int totalEntries = props.size();
       EncodingInfo[] ret = new EncodingInfo[totalEntries];
@@ -370,9 +388,9 @@ public class Encodings extends Object
         int lastPrintable;
         if (pos < 0)
         {
-          //throw new Exception
-          //  ("Last printable character not defined for encoding " +
-          //   mimeName + " (" + val + ")");
+          // Maybe report/log this problem?
+          //  "Last printable character not defined for encoding " +
+          //  mimeName + " (" + val + ")" ...
           javaName = val;
           lastPrintable = 0x00FF;
         }
