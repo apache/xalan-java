@@ -157,7 +157,9 @@ public class IncrementalSAXSource_Xerces
   // Register handler directly with the incremental parser
   public void setContentHandler(org.xml.sax.ContentHandler handler)
   {
-    fIncrementalParser.setContentHandler(handler);
+    // Typecast required in Xerces2; SAXParser doesn't inheret XMLReader
+    // %OPT% Cast at asignment?
+    ((XMLReader)fIncrementalParser).setContentHandler(handler);
   }
 
   // Note name, needed to dodge the inherited Xerces setLexicalHandler
@@ -167,7 +169,9 @@ public class IncrementalSAXSource_Xerces
     // Not supported by all SAX2 parsers but should work in Xerces:
     try 
     {
-      fIncrementalParser.setProperty("http://xml.org/sax/properties/lexical-handler",
+      // Typecast required in Xerces2; SAXParser doesn't inheret XMLReader
+      // %OPT% Cast at asignment?
+      ((XMLReader)fIncrementalParser).setProperty("http://xml.org/sax/properties/lexical-handler",
                                      handler);
     }
     catch(org.xml.sax.SAXNotRecognizedException e)
