@@ -65,7 +65,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Provides information about encodings. Depends on the Java runtime
@@ -197,13 +199,14 @@ public class Encodings extends Object
    */
   public static int getLastPrintable(String encoding)
   {
-    for (int i = 0; i < _encodings.length; ++i)
-    {
-      if (_encodings[i].name.equalsIgnoreCase(encoding)
-        || _encodings[i].javaName.equalsIgnoreCase(encoding))
-        return _encodings[i].lastPrintable;
-    }
+    EncodingInfo ei;
 
+    String normalizedEncoding = encoding.toUpperCase();
+    ei = (EncodingInfo)_encodingTableKeyJava.get(normalizedEncoding);    
+    if (ei == null)
+      ei = (EncodingInfo)_encodingTableKeyMime.get(normalizedEncoding);
+    if (ei != null)
+      return ei.lastPrintable;
     return m_defaultLastPrintable;
   }
 
@@ -296,15 +299,9 @@ public class Encodings extends Object
    */
   public static String convertJava2MimeEncoding(String encoding)
   {
-
-    for (int i = 0; i < _encodings.length; ++i)
-    {
-      if (_encodings[i].javaName.equalsIgnoreCase(encoding))
-      {
-        return _encodings[i].name;
-      }
-    }
-
+    EncodingInfo enc = (EncodingInfo)_encodingTableKeyJava.get(encoding.toUpperCase());
+    if (null != enc)
+      return enc.name;
     return encoding;
   }
 
@@ -405,32 +402,55 @@ public class Encodings extends Object
   private static EncodingInfo[] loadEncodingInfoFromProps(Properties props)
   {
     int totalEntries = props.size();
-    EncodingInfo[] ret = new EncodingInfo[totalEntries];
+    int totalMimeNames = 0;
     Enumeration keys = props.keys();
     for (int i = 0; i < totalEntries; ++i)
     {
-      String mimeName = (String) keys.nextElement();
-      String val = props.getProperty(mimeName);
+      String javaName = (String) keys.nextElement();
+      String val = props.getProperty(javaName);
+      totalMimeNames++;
       int pos = val.indexOf(' ');
-      String javaName;
+      for (int j = 0; j < pos; ++j)
+      if (val.charAt(j) == ',')
+        totalMimeNames++;
+    }
+    EncodingInfo[] ret = new EncodingInfo[totalMimeNames];
+    int j = 0;
+    keys = props.keys();
+    for (int i = 0; i < totalEntries; ++i)
+    {
+      String javaName = (String) keys.nextElement();
+      String val = props.getProperty(javaName);
+      int pos = val.indexOf(' ');
+      String mimeName;
       int lastPrintable;
       if (pos < 0)
       {
         // Maybe report/log this problem?
         //  "Last printable character not defined for encoding " +
         //  mimeName + " (" + val + ")" ...
-        javaName = val;
+        mimeName = val;
         lastPrintable = 0x00FF;
       }
       else
-      {
-        javaName = val.substring(0, pos);
+      {      
         lastPrintable = Integer.decode(val.substring(pos).trim()).intValue();
-      }
-      ret[i] = new EncodingInfo(mimeName, javaName, lastPrintable);
+        StringTokenizer st = new StringTokenizer(val.substring(0, pos),",");
+        for (boolean first = true; st.hasMoreTokens(); first = false)
+        {
+          mimeName = st.nextToken();
+          ret [j] = new EncodingInfo (mimeName, javaName, lastPrintable);
+          _encodingTableKeyMime.put(mimeName.toUpperCase(), ret[j]);
+          if (first)
+            _encodingTableKeyJava.put(javaName.toUpperCase(), ret[j]);
+          j++;
+        }
+      }        
     }
     return ret;
   }
 
+  private static final Hashtable _encodingTableKeyJava = new Hashtable();
+  private static final Hashtable _encodingTableKeyMime = new Hashtable();
   private static final EncodingInfo[] _encodings = loadEncodingInfo();
 }
