@@ -346,9 +346,18 @@ public final class TransformerImpl extends Transformer
                 final ContentHandler handler = target.getHandler();
 
 		_tohFactory.setHandler(handler);
-		if (handler instanceof LexicalHandler) {
-		    _tohFactory.setLexicalHandler((LexicalHandler) handler);
+
+                /**
+                 * Fix for bug 24414
+                 * If the lexicalHandler is set then we need to get that
+                 * for obtaining the lexical information 
+                 */
+                LexicalHandler lexicalHandler = target.getLexicalHandler();
+
+                if (lexicalHandler != null ) {
+		    _tohFactory.setLexicalHandler(lexicalHandler);
 		}
+
 		_tohFactory.setOutputType(TransletOutputHandlerFactory.SAX);
 		return _tohFactory.getSerializationHandler();
             }
