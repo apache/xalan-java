@@ -157,11 +157,16 @@ public class ApplyXPath
 	  {
 		while ((n = nl.nextNode())!= null)
 		{
-    	  if (n.getNodeValue() == null)
-	        System.out.println(n.getNodeName());
-	      else
-	        System.out.println(n.getNodeName()+ " -- " + n.getNodeValue());
-		  // XMLSerializer does not work.
+		  // XMLSerializer does not fully work.		  
+		  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
+		  if (n.getNodeType() == n.DOCUMENT_NODE)
+			xmlser.serialize((Document)n);
+		  else if (n.getNodeType() == n.ELEMENT_NODE)
+			xmlser.serialize((Element)n);
+		  else
+			  System.out.println
+				  ("XMLSerializer cannot serialize: " + n.getNodeName()+ " -- " + n.getNodeValue());
+		  
 		  //TreeWalker tw = new TreeWalker(new XMLSerializer(System.out, new OutputFormat()));
           //tw.traverse(n);
 		}
