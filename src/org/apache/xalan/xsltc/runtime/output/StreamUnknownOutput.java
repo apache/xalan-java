@@ -63,9 +63,7 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
-import java.util.Stack;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.ArrayList;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -80,7 +78,24 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 public class StreamUnknownOutput extends StreamOutput {
 
     private StreamOutput _handler;
-    private boolean      _callStartDocument = false;
+    private boolean      _callStartDocument  = false;
+
+    private boolean      _isHtmlOutput = false;
+    private boolean      _firstTagOpen  = false;
+    private boolean      _firstElement = true;
+    private String       _firstTagPrefix, _firstTag;
+
+    private ArrayList    _attributes = null;
+    private ArrayList    _namespaces = null;
+
+    static class Pair {
+	public String name, value;
+
+	public Pair(String name, String value) {
+	    this.name = name;
+	    this.value = value;
+	}
+    }
 
     public StreamUnknownOutput(Writer writer, String encoding) {
 	super(writer, encoding);
@@ -96,82 +111,126 @@ public class StreamUnknownOutput extends StreamOutput {
 // System.out.println("StreamUnknownOutput.<init>");
     }
 
-    public void startDocument() throws TransletException { 
+    public void startDocument() 
+	throws TransletException 
+    { 
 	_callStartDocument = true;
     }
 
-    public void endDocument() throws TransletException { 
-	if (_callStartDocument) {
+    public void endDocument() 
+	throws TransletException 
+    { 
+	if (_firstTagOpen) {
+	    initStreamOutput();
+	}
+	else if (_callStartDocument) {
 	    _handler.startDocument();
 	}
 	_handler.endDocument();
     }
 
-    public void startElement(String elementName) throws TransletException { 
+    public void startElement(String elementName) 
+	throws TransletException 
+    { 
+// System.out.println("startElement() = " + elementName);
 	if (_firstElement) {
-	    // If first element is HTML, create a new handler
-	    if (elementName.equalsIgnoreCase("html")) {
-		_handler = new StreamHTMLOutput(_handler);
-	    }
-	    if (_callStartDocument) {
-		_handler.startDocument();
-		_callStartDocument = false;
-	    }
 	    _firstElement = false;
+
+	    _firstTag = elementName;
+	    _firstTagPrefix = BasisLibrary.getPrefix(elementName);
+	    if (_firstTagPrefix == null) {
+		_firstTagPrefix = EMPTYSTRING;
+	    }
+
+	    _firstTagOpen = true;
+	    _isHtmlOutput = BasisLibrary.getLocalName(elementName)
+				        .equalsIgnoreCase("html");
 	}
-	_handler.startElement(elementName);
+	else {
+	    if (_firstTagOpen) {
+		initStreamOutput();
+	    }
+	    _handler.startElement(elementName);
+	}
     }
 
     public void endElement(String elementName) 
 	throws TransletException 
     { 
+	if (_firstTagOpen) {
+	    initStreamOutput();
+	}
 	_handler.endElement(elementName);
     }
 
     public void characters(String characters) 
 	throws TransletException 
     { 
+	if (_firstTagOpen) {
+	    initStreamOutput();
+	}
 	_handler.characters(characters);
     }
 
     public void characters(char[] characters, int offset, int length)
 	throws TransletException 
     { 
+	if (_firstTagOpen) {
+	    initStreamOutput();
+	}
 	_handler.characters(characters, offset, length);
     }
 
     public void attribute(String name, String value)
 	throws TransletException 
     { 
-	_handler.attribute(name, value);
+	if (_firstTagOpen) {
+	    if (_attributes == null) {
+		_attributes = new ArrayList();
+	    }
+	    _attributes.add(new Pair(name, value));
+	}
+	else {
+	    _handler.attribute(name, value);
+	}
+    }
+
+    public void namespace(String prefix, String uri)
+	throws TransletException 
+    {
+// System.out.println("namespace() = " + prefix + " " + uri);
+	if (_firstTagOpen) {
+	    if (_namespaces == null) {
+		_namespaces = new ArrayList();
+	    }
+	    _namespaces.add(new Pair(prefix, uri));
+
+	    // Check if output is XHTML instead of HTML
+	    if (_firstTagPrefix.equals(prefix) && !uri.equals(EMPTYSTRING)) {
+		_isHtmlOutput = false;
+	    }
+	}
+	else {
+	    _handler.namespace(prefix, uri);
+	}
     }
 
     public void comment(String comment) 
 	throws TransletException 
     { 
+	if (_firstTagOpen) {
+	    initStreamOutput();
+	}
 	_handler.comment(comment);
     }
 
     public void processingInstruction(String target, String data)
 	throws TransletException 
     { 
+	if (_firstTagOpen) {
+	    initStreamOutput();
+	}
 	_handler.processingInstruction(target, data);
-    }
-
-    public boolean setEscaping(boolean escape) 
-	throws TransletException 
-    { 
-	return _handler.setEscaping(escape);
-    }
-
-    public void setCdataElements(Hashtable elements) { 
-	_handler.setCdataElements(elements);
-    }
-
-    public void namespace(String prefix, String uri)
-	throws TransletException 
-    {
-	_handler.namespace(prefix, uri);
     }
 
     public void setDoctype(String system, String pub) {
@@ -190,4 +249,50 @@ public class StreamUnknownOutput extends StreamOutput {
 	_handler.setStandalone(standalone);
     }
 
+    public boolean setEscaping(boolean escape) 
+	throws TransletException 
+    { 
+	return _handler.setEscaping(escape);
+    }
+
+    public void setCdataElements(Hashtable elements) { 
+	_handler.setCdataElements(elements);
+    }
+
+    private void initStreamOutput() 
+	throws TransletException 
+    {
+	// Create a new handler if output is HTML
+	if (_isHtmlOutput) {
+	    _handler = new StreamHTMLOutput(_handler);
+	}
+	if (_callStartDocument) {
+	    _handler.startDocument();
+	    _callStartDocument = false;
+	}
+
+	// Output first tag
+	_handler.startElement(_firstTag);
+
+	// Output namespaces of first tag
+	if (_namespaces != null) {
+	    final int n = _namespaces.size();
+	    for (int i = 0; i < n; i++) {
+		final Pair pair = (Pair) _namespaces.get(i);
+		_handler.namespace(pair.name, pair.value);
+	    }
+	}
+
+	// Output attributes of first tag
+	if (_attributes != null) {
+	    final int n = _attributes.size();
+	    for (int i = 0; i < n; i++) {
+		final Pair pair = (Pair) _attributes.get(i);
+		_handler.attribute(pair.name, pair.value);
+	    }
+	}
+
+	// Close first tag
+	_firstTagOpen = false;
+    }
 }

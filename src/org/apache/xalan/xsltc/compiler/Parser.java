@@ -383,7 +383,11 @@ public class Parser implements Constants, ContentHandler {
 		stylesheet.setSimplified();
 		stylesheet.addElement(element);
 		stylesheet.setAttributes(element.getAttributes());
-		element.addPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+
+		// Map the default NS if not already defined
+		if (element.lookupNamespace(EMPTYSTRING) == null) {
+		    element.addPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+		}
 	    }
 	    stylesheet.setParser(this);
 	    return stylesheet;
