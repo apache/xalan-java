@@ -149,11 +149,16 @@
     &xsltcreleasenotes;  
   <anchor name="build"/>  
   <s2 title="Build Notes">
+  <p>We provide two distributions: a binary distribution, and a source distribution. See <link idref="getstarted" anchor="download">Downloading
+  what you need</link>. If you have downloaded the binary distribution, you already have a build. If you downloaded the source
+  distribution, you can use Ant to build &xslt4j;, including xalan.jar, xalansamples.jar, xalanservlet.jar, the
+  user documentation, and the Javadoc API documentation. You need the source distribution to do builds. Keep in mind that if you have also
+  downloaded the binary distribution, any builds you run will overwrite that binary distribution.</p>
 <ul>
 <li><link anchor="ant">Using Ant</link></li>
-<li><link anchor="jar">Rebuilding xalan.jar</link></li>
-<li><link anchor="samples">Rebuilding sample applications</link></li>
-<li><link anchor="doc">Rebuilding the &xslt4j; documentation</link></li>
+<li><link anchor="jar">Building xalan.jar</link></li>
+<li><link anchor="samples">Building sample applications</link></li>
+<li><link anchor="doc">Building the &xslt4j; documentation</link></li>
 </ul>
 <anchor name="ant"/>
    <s3 title="Using Ant">
@@ -190,7 +195,7 @@
   </table>
   <p>If you build a target that depends on other targets, Ant creates those other targets in the correct order.</p>
    </s3><anchor name="jar"/> 
-   <s3 title="Rebuilding &xslt4j;">
+   <s3 title="Building &xslt4j;">
      <p>The &xslt4j; build is in xalan.jar. The &xslt4j; source code tree is in the src directory.</p>
      <p>If you are using Ant, the target is jar (the default). For more information, see <link anchor="ant">Using
      Ant</link>.</p>

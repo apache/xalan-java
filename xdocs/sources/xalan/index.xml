@@ -75,11 +75,16 @@
   <p>&xslt4j-current; is a Developer release with a number of <link idref="readme" anchor="done">bug fixes</link>. To improve performance, it uses the Document Table Model (<link idref="dtm">DTM</link>) to represent the XML source document to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
   </s2> 
   <s2 title="How do I get it?">
-    <p>Download and unzip either of the following:</p>
+    <p>To get the binary distribution (all you need to use and develop applications with &xslt4j;), download and unzip either of the following:</p>
     <ul>
-      <li><resource-ref idref="xslt4j-dist-zip"/></li>
-      <li><resource-ref idref="xslt4j-dist-targz"/></li>
-    </ul>     
+      <li><resource-ref idref="xslt4j-bin-dist-zip"/></li>
+      <li><resource-ref idref="xslt4j-bin-dist-targz"/></li>
+    </ul>
+    <p>To get the &xslt4j; sources (with which you can do your own &xslt4j; build; see <link idref="readme" anchor="build">Build notes</link>), download and unzip either of the following:</p>
+    <ul>
+      <li><resource-ref idref="xslt4j-src-dist-zip"/></li>
+      <li><resource-ref idref="xslt4j-src-dist-targz"/></li>
+    </ul>    
   </s2>
   
   <s2 title="Where do I get Xerces?">
