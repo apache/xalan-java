@@ -157,9 +157,9 @@ public class TransformerFactoryImpl
     private int _indentNumber = -1;
 
     /**
-     * A reference to an XML reader for parsing.
+     * A reference to a SAXParserFactory.
      */
-    private XMLReader _xmlReader = null;
+    private SAXParserFactory _parserFactory = null;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -724,13 +724,17 @@ public class TransformerFactoryImpl
 	return null;
     }
 
-    public XMLReader getXMLReader() throws Exception {
-	if (_xmlReader == null) {
-	    final SAXParserFactory pfactory 
-		= SAXParserFactory.newInstance();
-	    pfactory.setNamespaceAware(true);
-	    _xmlReader = pfactory.newSAXParser().getXMLReader();
+    /**
+     * This method is synchronized to allow instances of this class to 
+     * be shared among threads. A tranformer object will call this 
+     * method to get an XMLReader.
+     */
+    public synchronized XMLReader getXMLReader() throws Exception {
+	// First check if factory is instantiated
+	if (_parserFactory == null) {
+	    _parserFactory = SAXParserFactory.newInstance();
+	    _parserFactory.setNamespaceAware(true);
 	}
-	return _xmlReader;
+	return _parserFactory.newSAXParser().getXMLReader();
     }
 }
