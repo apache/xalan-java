@@ -64,6 +64,7 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.InputStream;
 import java.io.ByteArrayInputStream;
@@ -80,6 +81,7 @@ import org.xml.sax.InputSource;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
@@ -87,9 +89,10 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.w3c.dom.Document;
 import javax.xml.transform.dom.DOMSource;
 /**
- * Implementation of a JAXP1.1 SAXTransformerFactory for Translets.
+ * Implementation of a JAXP1.1 TransformerFactory for Translets.
  */
-public class TransformerFactoryImpl extends TransformerFactory {
+public class TransformerFactoryImpl
+    extends TransformerFactory implements SourceLoader {
 
     // This constant should be removed once all abstract methods are impl'ed.
     private static final String NYI = "Not yet implemented";
@@ -113,7 +116,11 @@ public class TransformerFactoryImpl extends TransformerFactory {
     private static final String ERROR_LISTENER_NULL =
 	"Attempting to set ErrorListener for TransformerFactory to null";
     private static final String UNKNOWN_SOURCE_ERR =
-	"Only StreamSource and SAXSource is supported by XSLTC";
+	"Only StreamSource and SAXSource are supported by XSLTC";
+    private static final String NO_SOURCE_ERR =
+	"Source object passed to newTemplates() has no contents";
+    private static final String NO_ACCESS_ERR =
+	"Cannot access file or URL ";
     private static final String COMPILE_ERR =
 	"Could not compile stylesheet";
 
@@ -264,7 +271,11 @@ public class TransformerFactoryImpl extends TransformerFactory {
     public Transformer newTransformer()
 	throws TransformerConfigurationException { 
 
-	if (_copyTransformer != null) return _copyTransformer;
+	if (_copyTransformer != null) {
+	    if (_uriResolver != null)
+		_copyTransformer.setURIResolver(_uriResolver);
+	    return _copyTransformer;
+	}
 
 	byte[][] bytecodes = null; // The translet classes go in here
 
@@ -286,6 +297,7 @@ public class TransformerFactoryImpl extends TransformerFactory {
 	// Create a Transformer object and store for other calls
 	Templates templates = new TemplatesImpl(bytecodes, COPY_TRANSLET_NAME);
 	_copyTransformer = templates.newTransformer();
+	if (_uriResolver != null) _copyTransformer.setURIResolver(_uriResolver);
 	return(_copyTransformer);
     }
 
@@ -301,8 +313,10 @@ public class TransformerFactoryImpl extends TransformerFactory {
      */
     public Transformer newTransformer(Source source) throws
 	TransformerConfigurationException {
-	Templates templates = newTemplates(source);
-	return(templates.newTransformer());
+	final Templates templates = newTemplates(source);
+	final Transformer transformer = templates.newTransformer();
+	if (_uriResolver != null) transformer.setURIResolver(_uriResolver);
+	return(transformer);
     }
 
     /**
@@ -348,6 +362,73 @@ public class TransformerFactoryImpl extends TransformerFactory {
     }
 
     /**
+     * Creates a SAX2 InputSource object from a TrAX Source object
+     */
+    private InputSource getInputSource(XSLTC xsltc, Source source)
+	throws TransformerConfigurationException {
+
+	InputSource input = null;
+	final String systemId = source.getSystemId();
+
+	try {
+
+	    // Try to get InputSource from SAXSource input
+	    if (source instanceof SAXSource) {
+		final SAXSource sax = (SAXSource)source;
+		input = sax.getInputSource();
+		// Pass the SAX parser to the compiler
+		xsltc.setXMLReader(sax.getXMLReader());
+	    }
+	    // handle  DOMSource  
+	    else if (source instanceof DOMSource) {
+		throw new TransformerConfigurationException(
+							    "DOMSource not supported yet.");
+		/****
+		     final DOMSource domsrc = (DOMSource)source;
+		     final Document dom = (Document)domsrc.getNode();
+		     final DOM2SAX dom2sax = new DOM2SAX(dom);
+		     xsltc.setXMLReader(dom2sax);  
+		     input = null;
+		****/
+	    }
+	    // Try to get InputStream or Reader from StreamSource
+	    else if (source instanceof StreamSource) {
+		final StreamSource stream = (StreamSource)source;
+		final InputStream istream = stream.getInputStream();
+		final Reader reader = stream.getReader();
+		// Create InputSource from Reader or InputStream in Source
+		if (istream != null)
+		    input = new InputSource(istream);
+		else if (reader != null)
+		    input = new InputSource(reader);
+	    }
+	    else {
+		throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
+	    }
+	
+	    // Try to create an InputStream from the SystemId if no input so far
+	    if (input == null) {
+		if ((new File(systemId)).exists())
+		    input = new InputSource("file:/"+systemId);
+		else
+		    input = new InputSource(systemId);
+	    }
+
+	    // Pass system id to InputSource just to be on the safe side
+	    input.setSystemId(systemId);
+	}
+	catch (NullPointerException e) {
+	    throw new TransformerConfigurationException(NO_SOURCE_ERR);
+	}
+	catch (SecurityException e) {
+	    throw new TransformerConfigurationException(NO_ACCESS_ERR+systemId);
+	}
+	finally {
+	    return(input);
+	}
+    }
+
+    /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Process the Source into a Templates object, which is a a compiled
      * representation of the source.
@@ -363,52 +444,15 @@ public class TransformerFactoryImpl extends TransformerFactory {
 	byte[][] bytecodes = null;
 
 	// Create and initialize a stylesheet compiler
-	XSLTC xsltc = new XSLTC();
+	final XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
-	InputSource input = null;
-	final String systemId = source.getSystemId();
+	// Set a document loader (for xsl:include/import) if defined
+	if (_uriResolver != null)
+	    xsltc.setSourceLoader(this);
 
-	// Try to get InputSource from SAXSource input
-	if (source instanceof SAXSource) {
-	    final SAXSource sax = (SAXSource)source;
-	    input = sax.getInputSource();
-	    // Pass the SAX parser to the compiler
-	    xsltc.setXMLReader(sax.getXMLReader());
-	}
-	// handle  DOMSource  
-	else if (source instanceof DOMSource) {
-	    throw new TransformerConfigurationException(
-		"DOMSource not supported yet.");
-	  /****
- 	    final DOMSource domsrc = (DOMSource)source;
-            final Document dom = (Document)domsrc.getNode();
-            final DOM2SAX dom2sax = new DOM2SAX(dom);
-	    xsltc.setXMLReader(dom2sax);  
-	    input = null; 	
-  	   ****/
-	}
-	// Try to get InputStream or Reader from StreamSource
-	else if (source instanceof StreamSource) {
-	    final StreamSource stream = (StreamSource)source;
-	    final InputStream istream = stream.getInputStream();
-	    final Reader reader = stream.getReader();
-	    // Create InputSource from Reader or InputStream in Source
-	    if (istream != null)
-		input = new InputSource(istream);
-	    else if (reader != null)
-		input = new InputSource(reader);
-	}
-	else {
-	    throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
-	}
-	
-	// Try to create an InputStream from the SystemId if no input so far
-	if (input == null) input = new InputSource(systemId);
-
-	// Pass system id to InputSource just to be on the safe side
-	input.setSystemId(systemId);
 	// Compile the stylesheet
+	final InputSource input = getInputSource(xsltc, source);
 	bytecodes = xsltc.compile(null, input);
 
 	final String transletName = xsltc.getClassName();
@@ -530,6 +574,29 @@ public class TransformerFactoryImpl extends TransformerFactory {
       	    }
       	    throw e1;
     	}
+    }
+
+    /**
+     * This method implements XSLTC's SourceLoader interface. It is used to
+     * glue a TrAX URIResolver to the XSLTC compiler's Input and Import classes.
+     *
+     * @param href The URI of the document to load
+     * @param context The URI of the currently loaded document
+     * @param xsltc The compiler that resuests the document
+     * @return An InputSource with the loaded document
+     */
+    public InputSource loadSource(String href, String context, XSLTC xsltc) {
+	try {
+	    final Source source = _uriResolver.resolve(href, context);
+	    final InputSource input = getInputSource(xsltc, source);
+	    return(input);
+	}
+	catch (TransformerConfigurationException e) {
+	    return null;
+	}
+	catch (TransformerException e) {
+	    return null;
+	}
     }
 
 }

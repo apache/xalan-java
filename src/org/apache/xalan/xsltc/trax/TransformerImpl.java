@@ -63,6 +63,7 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import java.io.File;
 import java.io.Writer;
 import java.io.Reader;
 import java.io.InputStream;
@@ -91,13 +92,14 @@ import javax.xml.transform.stream.*;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.compiler.*;
 
 import java.util.Properties;
 
-public final class TransformerImpl extends Transformer {
+public final class TransformerImpl extends Transformer implements DOMCache {
 
     private AbstractTranslet _translet = null;
     private String           _encoding = null;
@@ -139,10 +141,15 @@ public final class TransformerImpl extends Transformer {
     public void transform(Source source, Result result)
 	throws TransformerException {
 
-	// Verify the input
-	if (_translet == null) throw new TransformerException(TRANSLET_ERR_MSG);
+	if (_translet == null)
+	    throw new TransformerException(TRANSLET_ERR_MSG);
+
 	_handler = getOutputHandler(result);
-	if (_handler == null) throw new TransformerException(HANDLER_ERR_MSG);
+	if (_handler == null)
+	    throw new TransformerException(HANDLER_ERR_MSG);
+
+	if (_uriResolver != null)
+	    _translet.setDOMCache(this);
 	
 	// Run the transformation
 	transform(source, _handler, _encoding);
@@ -163,7 +170,7 @@ public final class TransformerImpl extends Transformer {
 	    _encoding = "utf-8"; // default output encoding
 
 	try {
-	    final String systemId = result.getSystemId();
+	    String systemId = result.getSystemId();
 
 	    // Handle SAXResult output handler
 	    if (result instanceof SAXResult) {
@@ -187,6 +194,8 @@ public final class TransformerImpl extends Transformer {
 	    // Common, final handling of all input sources, only used if the
 	    // other contents of the Result object could not be used
 	    if (systemId != null) {
+		if ((new File(systemId)).exists())
+		    systemId = "file:/"+systemId;
 		final URL url = new URL(systemId);
 		final URLConnection connection = url.openConnection();
 		final OutputStream ostream = connection.getOutputStream();
@@ -206,13 +215,12 @@ public final class TransformerImpl extends Transformer {
 	    throw new TransformerException(e);
 	}
     }
- 
+
     /**
-     * Internal transformation method - uses the internal APIs of XSLTC
+     * Builds an internal DOM from a TrAX Source object
      */
-    private void transform(Source source,
-			   ContentHandler outputHandler,
-			   String encoding) throws TransformerException {
+    private DOMImpl getDOM(Source source, int mask)
+	throws TransformerException {
 	try {
 	    // Create an internal DOM (not W3C) and get SAX2 input handler
 	    final DOMImpl dom = new DOMImpl();
@@ -263,32 +271,16 @@ public final class TransformerImpl extends Transformer {
 		dom.setDocumentURI(systemId);
 	    }
 	    else {
-		throw new TransformerException("Unsupported input.");
+		return null;
 	    }
-	    
+
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
 	    // If there are any elements with ID attributes, build an index
-	    dtdMonitor.buildIdIndex(dom, 0, _translet);
+	    dtdMonitor.buildIdIndex(dom, mask, _translet);
 	    // Pass unparsed entity URIs to the translet
 	    _translet.setDTDMonitor(dtdMonitor);
-
-	    // Pass output properties to the translet
-	    setOutputProperties(_translet, _properties);
-
-	    // Transform the document
-	    TextOutput textOutput = new TextOutput(outputHandler, _encoding);
-	    _translet.transform(dom, textOutput);
-	}
-	catch (TransletException e) {
-	    if (_errorListener != null)
-		postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
-	catch (RuntimeException e) {
-	    if (_errorListener != null)
-		postErrorToListener("Runtime Error: " + e.getMessage());
-	    throw new TransformerException(e);
+	    return dom;
 	}
 	catch (FileNotFoundException e) {
 	    if (_errorListener != null)
@@ -303,6 +295,36 @@ public final class TransformerImpl extends Transformer {
 	catch (UnknownHostException e) {
 	    if (_errorListener != null)
 		postErrorToListener("Cannot resolve URI: " + e.getMessage());
+	    throw new TransformerException(e);
+	}
+	catch (Exception e) {
+	    if (_errorListener != null)
+		postErrorToListener("Internal error: " + e.getMessage()); 
+	    throw new TransformerException(e);
+	}
+    }
+ 
+    /**
+     * Internal transformation method - uses the internal APIs of XSLTC
+     */
+    private void transform(Source src, ContentHandler handler, String encoding)
+	throws TransformerException {
+	try {
+	    // Build an iternal DOMImpl from the TrAX Source
+	    DOMImpl dom = getDOM(src, 0);
+	    // Pass output properties to the translet
+	    setOutputProperties(_translet, _properties);
+	    // Transform the document
+	    _translet.transform(dom, new TextOutput(handler, _encoding));
+	}
+	catch (TransletException e) {
+	    if (_errorListener != null)
+		postErrorToListener(e.getMessage());
+	    throw new TransformerException(e);
+	}
+	catch (RuntimeException e) {
+	    if (_errorListener != null)
+		postErrorToListener("Runtime Error: " + e.getMessage());
 	    throw new TransformerException(e);
 	}
 	catch (Exception e) {
@@ -603,4 +625,28 @@ public final class TransformerImpl extends Transformer {
 	_uriResolver = resolver;
     }
 
+    /**
+     * This class should only be used as a DOMCache for the translet if the
+     * URIResolver has been set.
+     *
+     * The method implements XSLTC's DOMCache interface, which is used to
+     * plug in an external document loader into a translet. This method acts
+     * as an adapter between TrAX's URIResolver interface and XSLTC's
+     * DOMCache interface. This approach is simple, but removes the
+     * possibility of using external document caches with XSLTC.
+     *
+     * @param uri  An URI pointing to the document location
+     * @param mask Contains a document ID (passed from the translet)
+     * @param translet A reference to the translet requesting the document
+     */
+    public DOMImpl retrieveDocument(String uri, int mask, Translet translet) {
+	try {
+	    return(getDOM(_uriResolver.resolve(uri, ""), mask));
+	}
+	catch (TransformerException e) {
+	    if (_errorListener != null)
+		postErrorToListener("File not found: " + e.getMessage());
+	    return(null);
+	}
+    }
 }

@@ -121,6 +121,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     private boolean _simplified = false;
 
+    private SourceLoader _loader = null;
+
+
     public boolean isSimplified() {
 	return(_simplified);
     }
@@ -202,6 +205,14 @@ public final class Stylesheet extends SyntaxTreeNode {
     
     public String getSystemId() {
 	return _systemId;
+    }
+
+    public void setSourceLoader(SourceLoader loader) {
+	_loader = loader;
+    }
+    
+    public SourceLoader getSourceLoader() {
+	return _loader;
     }
 
     private QName makeStylesheetName(String prefix) {

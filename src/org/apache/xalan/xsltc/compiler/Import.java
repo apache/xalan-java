@@ -90,17 +90,29 @@ final class Import extends TopLevelElement {
 	try {
 	    final String systemId = getAttribute("href");
 	    if (context.checkForLoop(systemId)) {
-		ErrorMsg msg = new ErrorMsg(ErrorMsg.CIRCULAR_INC,systemId,this);
+		final int errno = ErrorMsg.CIRCULAR_INC;
+		final ErrorMsg msg = new ErrorMsg(errno, systemId, this);
 		parser.reportError(Constants.FATAL, msg);
 		return;
 	    }
 
-	    InputSource input = new InputSource(systemId);
+	    SourceLoader loader = context.getSourceLoader();
+	    InputSource input = null;
+	    if (loader != null) {
+		final XSLTC xsltc = parser.getXSLTC();
+		final String base = context.getSystemId();
+		input = loader.loadSource(base, systemId, xsltc);
+	    }
+	    else {
+		input = new InputSource(systemId);
+	    }
+
 	    final SyntaxTreeNode root = parser.parse(input);
 	    if (root == null) return;
 	    final Stylesheet _imported = parser.makeStylesheet(root);
 	    if (_imported == null) return;
 
+	    _imported.setSourceLoader(loader);
 	    _imported.setSystemId(systemId);
 	    _imported.setParentStylesheet(context);
 

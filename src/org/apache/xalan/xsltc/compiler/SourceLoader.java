@@ -16,7 +16,7 @@
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
+ *    the documentation and/or other makterials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -56,96 +56,25 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Jacek Ambroziak
  * @author Morten Jorgensen
- * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.Enumeration;
+import org.xml.sax.InputSource;
 
-import javax.xml.parsers.*;
+public interface SourceLoader {
 
-import org.xml.sax.*;
+    /**
+     * This interface is used to plug external document loaders into XSLTC
+     * (used with the <xsl:include> and <xsl:import> elements.
+     *
+     * @param href The URI of the document to load
+     * @param context The URI of the currently loaded document
+     * @param xsltc The compiler that resuests the document
+     * @return An InputSource with the loaded document
+     */
+    public InputSource loadSource(String href, String context, XSLTC xsltc);
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.xalan.xsltc.compiler.util.*;
-
-import de.fub.bytecode.generic.*;
-
-final class Include extends TopLevelElement {
-
-    private Stylesheet _included = null;
-
-    public Stylesheet getIncludedStylesheet() {
-	return(_included);
-    }
-
-    public void parseContents(final Parser parser) {
-	final Stylesheet context = parser.getCurrentStylesheet();
-	try {
-	    final String systemId = getAttribute("href");
-	    if (context.checkForLoop(systemId)) {
-		final int errno = ErrorMsg.CIRCULAR_INC;
-		final ErrorMsg msg = new ErrorMsg(errno, systemId, this);
-		parser.reportError(Constants.FATAL, msg);
-		return;
-	    }
-
-	    SourceLoader loader = context.getSourceLoader();
-	    InputSource input = null;
-	    if (loader != null) {
-		final XSLTC xsltc = parser.getXSLTC();
-		final String base = context.getSystemId();
-		input = loader.loadSource(base, systemId, xsltc);
-	    }
-	    else {
-		input = new InputSource(systemId);
-	    }
-
-	    final SyntaxTreeNode root = parser.parse(input);
-	    if (root == null) return;
-	    final Stylesheet _included = parser.makeStylesheet(root);
-	    if (_included == null) return;
-
-	    _included.setSourceLoader(loader);
-	    _included.setSystemId(systemId);
-	    _included.setParentStylesheet(context);
-
-	    // An included stylesheet gets the same import precedence
-	    // as the stylesheet that included it.
-	    final int precedence = context.getImportPrecedence();
-	    _included.setImportPrecedence(precedence);
-
-	    parser.setCurrentStylesheet(_included);
-	    _included.parseContents(parser);
-
-	    final Enumeration elements = _included.elements();
-	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();
-	    while (elements.hasMoreElements()) {
-		final Object element = elements.nextElement();
-		if (element instanceof TopLevelElement) {
-		    topStylesheet.addElement((TopLevelElement)element);
-		}
-	    }
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	}
-	finally {
-	    parser.setCurrentStylesheet(context);
-	}
-    }
-    
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return Type.Void;
-    }
-    
-    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	// do nothing
-    }
 }

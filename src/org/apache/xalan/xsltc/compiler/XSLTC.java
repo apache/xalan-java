@@ -95,6 +95,9 @@ public final class XSLTC {
 
     // A reference to an external XMLReader (SAX parser) passed to us
     private XMLReader _reader = null;
+
+    // A reference to an external SourceLoader (for use with include/import)
+    private SourceLoader _loader = null;
     
     // A reference to the stylesheet being compiled.
     private Stylesheet _stylesheet = null;
@@ -177,6 +180,15 @@ public final class XSLTC {
 	    -1, 	// LEVEL_MULTIPLE
 	    -1		// LEVEL_ANY
 	};
+    }
+
+    /**
+     * Defines an external SourceLoader to provide the compiler with documents
+     * referenced in xsl:include/import
+     * @param loader The SourceLoader to use for include/import
+     */    
+    public void setSourceLoader(SourceLoader loader) {
+	_loader = loader;
     }
     
     /**
@@ -264,6 +276,7 @@ public final class XSLTC {
 	    if ((!_parser.errorsFound()) && (element != null)) {
 		// Create a Stylesheet element from the root node
 		_stylesheet = _parser.makeStylesheet(element);
+		_stylesheet.setSourceLoader(_loader);
 		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
 		_parser.setCurrentStylesheet(_stylesheet);
