@@ -66,86 +66,86 @@ import java.util.Hashtable;
 class ElemDesc
 {
 
-  /** NEEDSDOC Field m_flags          */
+  /** Element's flags (See below for posible values          */
   int m_flags;
 
-  /** NEEDSDOC Field m_attrs          */
+  /** Table of attributes for the element          */
   Hashtable m_attrs = null;
 
-  /** NEEDSDOC Field EMPTY          */
+  /** EMPTY flag          */
   static final int EMPTY = (1 << 1);
 
-  /** NEEDSDOC Field FLOW          */
+  /** FLOW flag          */
   static final int FLOW = (1 << 2);
 
-  /** NEEDSDOC Field BLOCK          */
+  /** BLOCK flag          */
   static final int BLOCK = (1 << 3);
 
-  /** NEEDSDOC Field BLOCKFORM          */
+  /** BLOCKFORM  flag         */
   static final int BLOCKFORM = (1 << 4);
 
-  /** NEEDSDOC Field BLOCKFORMFIELDSET          */
+  /** BLOCKFORMFIELDSET flag          */
   static final int BLOCKFORMFIELDSET = (1 << 5);
 
-  /** NEEDSDOC Field CDATA          */
+  /** CDATA flag         */
   static final int CDATA = (1 << 6);
 
-  /** NEEDSDOC Field PCDATA          */
+  /** PCDATA flag          */
   static final int PCDATA = (1 << 7);
 
-  /** NEEDSDOC Field RAW          */
+  /** RAW flag         */
   static final int RAW = (1 << 8);
 
-  /** NEEDSDOC Field INLINE          */
+  /** INLINE flag          */
   static final int INLINE = (1 << 9);
 
-  /** NEEDSDOC Field INLINEA          */
+  /** INLINEA flag          */
   static final int INLINEA = (1 << 10);
 
-  /** NEEDSDOC Field INLINELABEL          */
+  /** INLINELABEL flag          */
   static final int INLINELABEL = (1 << 11);
 
-  /** NEEDSDOC Field FONTSTYLE          */
+  /** FONTSTYLE flag          */
   static final int FONTSTYLE = (1 << 12);
 
-  /** NEEDSDOC Field PHRASE          */
+  /** PHRASE flag          */
   static final int PHRASE = (1 << 13);
 
-  /** NEEDSDOC Field FORMCTRL          */
+  /** FORMCTRL flag         */
   static final int FORMCTRL = (1 << 14);
 
-  /** NEEDSDOC Field SPECIAL          */
+  /** SPECIAL flag         */
   static final int SPECIAL = (1 << 15);
 
-  /** NEEDSDOC Field ASPECIAL          */
+  /** ASPECIAL flag         */
   static final int ASPECIAL = (1 << 16);
 
-  /** NEEDSDOC Field HEADMISC          */
+  /** HEADMISC flag         */
   static final int HEADMISC = (1 << 17);
 
-  /** NEEDSDOC Field HEAD          */
+  /** HEAD flag         */
   static final int HEAD = (1 << 18);
 
-  /** NEEDSDOC Field LIST          */
+  /** LIST flag         */
   static final int LIST = (1 << 19);
 
-  /** NEEDSDOC Field PREFORMATTED          */
+  /** PREFORMATTED flag         */
   static final int PREFORMATTED = (1 << 20);
 
-  /** NEEDSDOC Field WHITESPACESENSITIVE          */
+  /** WHITESPACESENSITIVE flag         */
   static final int WHITESPACESENSITIVE = (1 << 21);
 
-  /** NEEDSDOC Field ATTRURL          */
+  /** ATTRURL flag         */
   static final int ATTRURL = (1 << 1);
 
-  /** NEEDSDOC Field ATTREMPTY          */
+  /** ATTREMPTY flag         */
   static final int ATTREMPTY = (1 << 2);
 
   /**
    * Constructor ElemDesc
    *
    *
-   * NEEDSDOC @param flags
+   * @param flags Element flags
    */
   ElemDesc(int flags)
   {
@@ -156,9 +156,9 @@ class ElemDesc
    * NEEDSDOC Method is 
    *
    *
-   * NEEDSDOC @param flags
+   * @param flags flags to compare this element to
    *
-   * NEEDSDOC (is) @return
+   * @return true if these flags match the element's
    */
   boolean is(int flags)
   {
@@ -168,11 +168,11 @@ class ElemDesc
   }
 
   /**
-   * NEEDSDOC Method setAttr 
+   * Set a new attribute for this element 
    *
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param flags
+   * @param name Attribute name
+   * @param flags Attibute flags
    */
   void setAttr(String name, int flags)
   {
@@ -184,13 +184,14 @@ class ElemDesc
   }
 
   /**
-   * NEEDSDOC Method isAttrFlagSet 
+   * Find out if a flag is set in a given attribute of this element 
    *
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param flags
+   * @param name Attribute name
+   * @param flags Flag to check
    *
-   * NEEDSDOC (isAttrFlagSet) @return
+   * @return True if the flag is set in the attribute. Returns false
+   * if the attribute is not found 
    */
   boolean isAttrFlagSet(String name, int flags)
   {

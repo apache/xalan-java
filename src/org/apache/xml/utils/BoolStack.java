@@ -65,13 +65,13 @@ import java.util.EmptyStackException;
 public final class BoolStack
 {
 
-  /** NEEDSDOC Field m_values[]          */
+  /** Array of boolean values          */
   private boolean m_values[];
 
-  /** NEEDSDOC Field m_allocatedSize          */
+  /** Array size allocated           */
   private int m_allocatedSize;
 
-  /** NEEDSDOC Field m_index          */
+  /** Index into the array of booleans          */
   private int m_index;
 
   /**
@@ -86,7 +86,7 @@ public final class BoolStack
   /**
    * Construct a IntVector, using the given block size.
    *
-   * NEEDSDOC @param size
+   * @param size array size to allocate
    */
   public BoolStack(int size)
   {
@@ -99,7 +99,7 @@ public final class BoolStack
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Current length of the list
    */
   public final int size()
   {
@@ -109,9 +109,8 @@ public final class BoolStack
   /**
    * Pushes an item onto the top of this stack.
    *
-   * @param   i   the int to be pushed onto this stack.
    *
-   * NEEDSDOC @param val
+   * @param val the boolean to be pushed onto this stack.
    * @return  the <code>item</code> argument.
    */
   public final boolean push(boolean val)
@@ -136,10 +135,11 @@ public final class BoolStack
   }
 
   /**
-   * NEEDSDOC Method popAndTop 
+   * Removes the object at the top of this stack and returns the
+   * next object at the top as the value of this function.
    *
    *
-   * NEEDSDOC (popAndTop) @return
+   * @return Next object to the top or false if none there
    */
   public final boolean popAndTop()
   {
@@ -150,10 +150,10 @@ public final class BoolStack
   }
 
   /**
-   * NEEDSDOC Method setTop 
+   * Set the item at the top of this stack  
    *
    *
-   * NEEDSDOC @param b
+   * @param b Object to set at the top of this stack
    */
   public final void setTop(boolean b)
   {

@@ -63,16 +63,16 @@ package org.apache.xml.utils;
 public class IntVector
 {
 
-  /** NEEDSDOC Field m_blocksize          */
+  /** Size of blocks to allocate          */
   protected int m_blocksize;
 
-  /** NEEDSDOC Field m_map[]          */
+  /** Array of ints          */
   public int m_map[];  // expose to package for direct access.
 
-  /** NEEDSDOC Field m_firstFree          */
+  /** Number of ints in array          */
   protected int m_firstFree = 0;
 
-  /** NEEDSDOC Field m_mapSize          */
+  /** Size of array          */
   protected int m_mapSize;
 
   /**
@@ -90,7 +90,7 @@ public class IntVector
   /**
    * Construct a IntVector, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of block to allocate
    */
   public IntVector(int blocksize)
   {
@@ -103,7 +103,7 @@ public class IntVector
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return length of the list
    */
   public final int size()
   {
@@ -113,7 +113,7 @@ public class IntVector
   /**
    * Append a int onto the vector.
    *
-   * NEEDSDOC @param value
+   * @param value Int to add to the list 
    */
   public final void addElement(int value)
   {
@@ -140,8 +140,8 @@ public class IntVector
    * the specified index is shifted upward to have an index one greater
    * than the value it had previously.
    *
-   * NEEDSDOC @param value
-   * NEEDSDOC @param at
+   * @param value Int to insert
+   * @param at Index of where to insert 
    */
   public final void insertElementAt(int value, int at)
   {
@@ -191,9 +191,9 @@ public class IntVector
    * downward to have an index one smaller than the value it had
    * previously.
    *
-   * NEEDSDOC @param s
+   * @param s Int to remove from array
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the int was removed, false if it was not found
    */
   public final boolean removeElement(int s)
   {
@@ -222,7 +222,7 @@ public class IntVector
    * index is shifted downward to have an index one smaller than
    * the value it had previously.
    *
-   * NEEDSDOC @param i
+   * @param i index of where to remove and int
    */
   public final void removeElementAt(int i)
   {
@@ -242,8 +242,8 @@ public class IntVector
    * The index must be a value greater than or equal to 0 and less
    * than the current size of the vector.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param index
+   * @param node object to set
+   * @param index Index of where to set the object
    */
   public final void setElementAt(int node, int index)
   {
@@ -253,9 +253,9 @@ public class IntVector
   /**
    * Get the nth element.
    *
-   * NEEDSDOC @param i
+   * @param i index of object to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return object at given index
    */
   public final int elementAt(int i)
   {
@@ -265,9 +265,9 @@ public class IntVector
   /**
    * Tell if the table contains the given node.
    *
-   * NEEDSDOC @param s
+   * @param s object to look for
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the object is in the list
    */
   public final boolean contains(int s)
   {
@@ -286,8 +286,8 @@ public class IntVector
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
-   * NEEDSDOC @param index
+   * @param elem object to look for
+   * @param index Index of where to begin search
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
@@ -309,7 +309,7 @@ public class IntVector
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
+   * @param elem object to look for
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.
@@ -331,7 +331,7 @@ public class IntVector
    * beginning the search at index, and testing for equality
    * using the equals method.
    *
-   * NEEDSDOC @param elem
+   * @param elem Object to look for
    * @return the index of the first occurrence of the object
    * argument in this vector at position index or later in the
    * vector; returns -1 if the object is not found.

@@ -77,24 +77,24 @@ public class DOMBuilder
         implements ContentHandler, LexicalHandler
 {
 
-  /** NEEDSDOC Field m_doc          */
+  /** Root document          */
   public Document m_doc;
 
-  /** NEEDSDOC Field m_currentNode          */
+  /** Current node           */
   Node m_currentNode = null;
 
-  /** NEEDSDOC Field m_docFrag          */
+  /** First node of document fragment or null if not a DocumentFragment     */
   public DocumentFragment m_docFrag = null;
 
-  /** NEEDSDOC Field m_elemStack          */
+  /** Vector of element nodes          */
   NodeVector m_elemStack = new NodeVector();
 
   /**
    * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param node
+   * @param doc Root document
+   * @param node Current node
    */
   public DOMBuilder(Document doc, Node node)
   {
@@ -106,8 +106,8 @@ public class DOMBuilder
    * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param docFrag
+   * @param doc Root document
+   * @param docFrag Document fragment
    */
   public DOMBuilder(Document doc, DocumentFragment docFrag)
   {
@@ -119,7 +119,7 @@ public class DOMBuilder
    * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document.
    *
-   * NEEDSDOC @param doc
+   * @param doc Root document
    */
   public DOMBuilder(Document doc)
   {
@@ -130,7 +130,7 @@ public class DOMBuilder
    * Get the root node of the DOM being created.  This
    * is either a Document or a DocumentFragment.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The root document or document fragment if not null
    */
   public Node getRootNode()
   {
@@ -140,7 +140,7 @@ public class DOMBuilder
   /**
    * Get the node currently being processed.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the current node being processed
    */
   public Node getCurrentNode()
   {
@@ -150,7 +150,7 @@ public class DOMBuilder
   /**
    * Return null since there is no Writer for this class.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public java.io.Writer getWriter()
   {
@@ -160,7 +160,7 @@ public class DOMBuilder
   /**
    * Append a node to the current container.
    *
-   * NEEDSDOC @param newNode
+   * @param newNode New node to append
    */
   protected void append(Node newNode) throws org.xml.sax.SAXException
   {
@@ -285,9 +285,9 @@ public class DOMBuilder
    * defaulted): #IMPLIED attributes will be omitted.</p>
    *
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * @param name The element type name.
+   * @param ns The namespace of the node
+   * @param localName The local part of the qualified name 
+   * @param name The element name.
    * @param atts The attributes attached to the element, if any.
    * @see #endElement
    * @see org.xml.sax.Attributes
@@ -352,9 +352,9 @@ public class DOMBuilder
    * still be attached to the name.</p>
    *
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * @param name The element type name
+   * @param ns the namespace of the element
+   * @param localName The local part of the qualified name of the element
+   * @param name The element name
    */
   public void endElement(String ns, String localName, String name)
           throws org.xml.sax.SAXException
@@ -419,9 +419,9 @@ public class DOMBuilder
    * of the node with the name "lotusxsl-next-is-raw" and a value of
    * "formatter-to-dom".
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Array containing the characters
+   * @param start Index to start of characters in the array
+   * @param length Number of characters in the array 
    */
   public void charactersRaw(char ch[], int start, int length)
           throws org.xml.sax.SAXException
@@ -466,7 +466,7 @@ public class DOMBuilder
   /**
    * Receive notivication of a entityReference.
    *
-   * NEEDSDOC @param name
+   * @param name name of the entity reference
    */
   public void entityReference(String name) throws org.xml.sax.SAXException
   {
@@ -541,7 +541,7 @@ public class DOMBuilder
     append(m_doc.createComment(new String(ch, start, length)));
   }
 
-  /** NEEDSDOC Field m_inCData          */
+  /** Flag indicating that we are processing a CData section          */
   protected boolean m_inCData = false;
 
   /**

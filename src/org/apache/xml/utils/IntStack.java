@@ -77,7 +77,7 @@ public class IntStack extends IntVector
   /**
    * Construct a IntVector, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of block to allocate
    */
   public IntStack(int blocksize)
   {
@@ -147,7 +147,7 @@ public class IntStack extends IntVector
    * Sets an object at a the top of the statck
    *
    *
-   * NEEDSDOC @param val
+   * @param val object to set at the top
    * @exception  EmptyStackException  if this stack is empty.
    */
   public void setTop(int val)

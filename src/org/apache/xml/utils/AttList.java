@@ -70,23 +70,23 @@ import org.apache.xpath.DOM2Helper;
 public class AttList implements Attributes
 {
 
-  /** NEEDSDOC Field m_attrs          */
+  /** List of attribute nodes          */
   NamedNodeMap m_attrs;
 
-  /** NEEDSDOC Field m_lastIndex          */
+  /** Index of last attribute node          */
   int m_lastIndex;
 
   // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
   // DOM2Helper m_dh = new DOM2Helper();
 
-  /** NEEDSDOC Field m_dh          */
+  /** Local reference to DOMHelper          */
   DOMHelper m_dh;
 
   /**
    * Constructor AttList
    *
    *
-   * NEEDSDOC @param attrs
+   * @param attrs List of attributes this will contain
    */
   public AttList(NamedNodeMap attrs)
   {
@@ -100,8 +100,8 @@ public class AttList implements Attributes
    * Constructor AttList
    *
    *
-   * NEEDSDOC @param attrs
-   * NEEDSDOC @param dh
+   * @param attrs List of attributes this will contain
+   * @param dh DOMHelper 
    */
   public AttList(NamedNodeMap attrs, DOMHelper dh)
   {
@@ -112,10 +112,10 @@ public class AttList implements Attributes
   }
 
   /**
-   * NEEDSDOC Method getLength 
+   * Get the number of attribute nodes in the list 
    *
    *
-   * NEEDSDOC (getLength) @return
+   * @return number of attribute nodes
    */
   public int getLength()
   {
@@ -149,12 +149,12 @@ public class AttList implements Attributes
   }
 
   /**
-   * NEEDSDOC Method getQName 
+   * Look up an attribute's qualified name by index.
    *
    *
-   * NEEDSDOC @param i
+   * @param index The attribute index (zero-based).
    *
-   * NEEDSDOC (getQName) @return
+   * @return The attribute's qualified name
    */
   public String getQName(int i)
   {
@@ -162,12 +162,12 @@ public class AttList implements Attributes
   }
 
   /**
-   * NEEDSDOC Method getType 
+   * Get the attribute's node type by index
    *
    *
-   * NEEDSDOC @param i
+   * @param index The attribute index (zero-based)
    *
-   * NEEDSDOC (getType) @return
+   * @return the attribute's node type
    */
   public String getType(int i)
   {
@@ -175,12 +175,12 @@ public class AttList implements Attributes
   }
 
   /**
-   * NEEDSDOC Method getValue 
+   * Get the attribute's node value by index
    *
    *
-   * NEEDSDOC @param i
+   * @param index The attribute index (zero-based)
    *
-   * NEEDSDOC (getValue) @return
+   * @return the attribute's node value
    */
   public String getValue(int i)
   {
@@ -188,12 +188,12 @@ public class AttList implements Attributes
   }
 
   /**
-   * NEEDSDOC Method getType 
+   * Get the attribute's node type by name
    *
    *
-   * NEEDSDOC @param name
+   * @param name Attribute name
    *
-   * NEEDSDOC (getType) @return
+   * @return the attribute's node type
    */
   public String getType(String name)
   {
@@ -216,12 +216,12 @@ public class AttList implements Attributes
   }
 
   /**
-   * NEEDSDOC Method getValue 
+   * Look up an attribute's value by name.
    *
    *
-   * NEEDSDOC @param name
+   * @param name The attribute node's name
    *
-   * NEEDSDOC (getValue) @return
+   * @return The attribute node's value
    */
   public String getValue(String name)
   {
@@ -247,8 +247,7 @@ public class AttList implements Attributes
    *
    * @param uri The Namespace URI, or the empty string if
    *        the name has no Namespace URI.
-   * @param localName The attribute's local name.
-   * NEEDSDOC @param localPart
+   * @param localPart The attribute's local name.
    * @return The index of the attribute, or -1 if it does not
    *         appear in the list.
    */
