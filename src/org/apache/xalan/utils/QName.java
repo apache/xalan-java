@@ -179,7 +179,7 @@ public class QName extends serialize.QName implements java.io.Serializable
   public static String getPrefixFromXMLNSDecl(String attRawName)
   {
     int index = attRawName.indexOf(':');
-    return (index >= 0) ? attRawName.substring(0, index) : "";
+    return (index >= 0) ? attRawName.substring(index+1) : "";
   }
 
   /**
