@@ -468,6 +468,8 @@ final class Step extends RelativeLocationPath {
 	    // Handle 'elem[n]' expression
 	    else if (predicate.isNthPositionFilter()) {
 		// Special case for typed descendant / decendant-or-self axis
+		/* Crap piece of code right here, I added it, and I am
+		   taking it away as well. Very wrong ideed. Morten
 		if (((_axis == Axis.DESCENDANT) ||
 		     (_axis == Axis.DESCENDANTORSELF)) &&
 		    (_nodeType > DOM.ATTRIBUTE)) {
@@ -484,15 +486,15 @@ final class Step extends RelativeLocationPath {
 		    il.append(new INVOKEINTERFACE(idx, 4));
 		}
 		else {
-		    idx = cpg.addMethodref(NTH_ITERATOR_CLASS,
-					   "<init>",
-					   "("+NODE_ITERATOR_SIG+"I)V");
-		    il.append(new NEW(cpg.addClass(NTH_ITERATOR_CLASS)));
-		    il.append(DUP);
-		    translatePredicates(classGen, methodGen); // recursive call
-		    predicate.translate(classGen, methodGen);
-		    il.append(new INVOKESPECIAL(idx));
-		}
+		*/
+		idx = cpg.addMethodref(NTH_ITERATOR_CLASS,
+				       "<init>",
+				       "("+NODE_ITERATOR_SIG+"I)V");
+		il.append(new NEW(cpg.addClass(NTH_ITERATOR_CLASS)));
+		il.append(DUP);
+		translatePredicates(classGen, methodGen); // recursive call
+		predicate.translate(classGen, methodGen);
+		il.append(new INVOKESPECIAL(idx));
 	    }
 	    else {
 		idx = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
