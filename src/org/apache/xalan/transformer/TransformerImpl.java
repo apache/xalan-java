@@ -70,6 +70,7 @@ import java.io.UnsupportedEncodingException;
 // Xalan imports
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.stree.SourceTreeHandler;
+import org.apache.xalan.stree.DocumentImpl;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -1564,7 +1565,6 @@ public class TransformerImpl extends Transformer
    * <meta name="usage" content="advanced"/>
    * Given a stylesheet element, create a result tree fragment from it's
    * contents.
-   * @param stylesheetTree The stylesheet object that holds the fragment.
    * @param templateParent The template element that holds the fragment.
    * @param sourceNode The current source context node.
    * @param mode The mode under which the template is operating.
@@ -1579,34 +1579,49 @@ public class TransformerImpl extends Transformer
 
     // XPathContext xctxt = getXPathContext();
     // Document docFactory = xctxt.getDOMHelper().getDOMFactory();
-    if (null == m_docBuilder)
+    ContentHandler rtfHandler;
+    DocumentFragment resultFragment;
+    
+    // If this is an Stree instance, handle it with SourceTreeHandler
+    // and bypass the whole DOM process.
+    if (sourceNode instanceof org.apache.xalan.stree.Child)
+    {      
+      rtfHandler = new SourceTreeHandler(this);
+      ((SourceTreeHandler)rtfHandler).setUseMultiThreading(false);
+      ((SourceTreeHandler)rtfHandler).setShouldTransformAtEnd(false);
+      // Create a ResultTreeFrag object.
+      DocumentImpl doc = (DocumentImpl)((SourceTreeHandler)rtfHandler).getRoot();
+      resultFragment = doc.createDocumentFragment();      
+      ((SourceTreeHandler)rtfHandler).setRoot((Document)resultFragment);
+    }     
+    else
     {
-      try
+      if (null == m_docBuilder)
       {
-        DocumentBuilderFactory dfactory =
-          DocumentBuilderFactory.newInstance();
+        try
+        {
+          DocumentBuilderFactory dfactory =
+                                 DocumentBuilderFactory.newInstance();
 
-        dfactory.setNamespaceAware(true);
-        dfactory.setValidating(true);
+          dfactory.setNamespaceAware(true);
+          dfactory.setValidating(true);
 
-        m_docBuilder = dfactory.newDocumentBuilder();
-      }
-      catch (ParserConfigurationException pce)
-      {
-        throw new TransformerException(pce);  //"createDocument() not supported in XPathContext!");
+          m_docBuilder = dfactory.newDocumentBuilder();
+        }
+        catch (ParserConfigurationException pce)
+        {
+          throw new TransformerException(pce);  //"createDocument() not supported in XPathContext!");
 
-        // return null;
-      }
+          // return null;
+        }
+      }     
+      Document docFactory = m_docBuilder.newDocument();
+      // Create a ResultTreeFrag object.
+      resultFragment = docFactory.createDocumentFragment();           
+      // Create a DOMBuilder object that will handle the SAX events 
+      // and build the ResultTreeFrag nodes.
+      rtfHandler = new DOMBuilder(docFactory, resultFragment);
     }
-
-    Document docFactory = m_docBuilder.newDocument();
-
-    // Create a ResultTreeFrag object.
-    DocumentFragment resultFragment = docFactory.createDocumentFragment();
-
-    // Create a DOMBuilder object that will handle the SAX events 
-    // and build the ResultTreeFrag nodes.
-    ContentHandler rtfHandler = new DOMBuilder(docFactory, resultFragment);
 
     // Save the current result tree handler.
     ResultTreeHandler savedRTreeHandler = this.m_resultTreeHandler;
@@ -1627,9 +1642,12 @@ public class TransformerImpl extends Transformer
       throw new TransformerException(se);
     }
 
+    finally
+    {
     // Restore the previous result tree handler.
     this.m_resultTreeHandler = savedRTreeHandler;
-
+    }
+    
     return resultFragment;
   }
 

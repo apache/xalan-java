@@ -72,6 +72,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.WhiteSpaceInfo;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ext.LexicalHandler;
@@ -156,6 +157,13 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
   /** Flag indicating whether we should check whitespaces          */
   boolean m_shouldCheckWhitespace = false;
+  
+  boolean m_shouldTransformAtEnd = true;
+  
+  public void setShouldTransformAtEnd(boolean b)
+  {
+    m_shouldTransformAtEnd = b;
+  }
 
   /**
    * Get the root document of tree that is being or will be created.
@@ -300,6 +308,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
       ((DocumentImpl) m_root).setLevel(new Integer(1).shortValue());
       ((DocumentImpl) m_root).setUseMultiThreading(getUseMultiThreading());
 
+      if (m_root.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE)
+        m_sourceTreeHandler = new StreeDOMBuilder(m_root, (DocumentFragment)m_root);
+      else
       m_sourceTreeHandler = new StreeDOMBuilder(m_root);
 
       pushShouldStripWhitespace(false);
@@ -349,7 +360,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
       m_sourceTreeHandler.endDocument();
       popShouldStripWhitespace();
 
-      if (!m_useMultiThreading && (null != m_transformer))
+      if (!m_useMultiThreading && (null != m_transformer) && m_shouldTransformAtEnd)
       {
         try
         {

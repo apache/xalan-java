@@ -322,12 +322,27 @@ public class StreeDOMBuilder extends DOMBuilder
    *
    */
   void appendAccumulatedText(Node currentNode, char ch[], int start, int length)
+    throws org.xml.sax.SAXException
   {
     // Get the text node. It should be the last node that was 
     // added to the current node. (Text nodes are never made to be
     // the currentNode).
-    TextImpl textNode = (TextImpl)((Parent)currentNode).m_last;
-    textNode.appendText(ch, start, length);
+    // Note that we are checking for a null current node, because
+    // if this is document fragment, the current node could be null.
+    if (null == currentNode)
+    {
+      currentNode =  m_docFrag;    
+    }
+    if (null != currentNode)
+    {  
+      TextImpl textNode = (TextImpl)((Parent)currentNode).m_last;
+      textNode.appendText(ch, start, length);
+    }
+    else
+    {
+      append(new TextImpl(m_docImpl, ch, start, length));
+      setPreviousIsText(true);
+    }
   }
   
 }

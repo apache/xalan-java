@@ -86,7 +86,7 @@ public class DOMHelper
    * Used as a helper for handling DOM issues.  May be subclassed to take advantage
    * of specific DOM implementations.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The DOM Document object to build a DOM tree with.
    */
   public Document createDocument()
   {
