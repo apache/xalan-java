@@ -1,0 +1,115 @@
+<!-- CVS $Revision$ $Date$ -->
+<html>
+  <title>Transformations for XML (TRaX).</title>
+  <body>
+    <p/>
+    <p>Defines an interface for processing transformation instructions, 
+       performing tree transformations via a transformer, and sending the 
+       result to SAX handlers, and interfacing to a {@link org.xml.serialize.Serializer} if needed.<p>
+    <dl>
+      <dt><b>Version: </b></dt><dd>Alpha, 0.5, March 20, 2000</dd>
+      <dt><b>Author: </b></dt><dd><a href="mailto:scott_boag@lotus.com">Scott Boag</a>
+                                  <dd>(with help from Keith Visco, Mike Kay, Oracle, Assaf Arkin, and many others).</dd>
+      <dt><b>Goals: </b></dt><dd>
+        <ul>
+          <li>Define a vendor-neutral and language-neutral interface for tree 
+              transformations that will allow an application to use any implementation.</li>
+          <li>Support SAX 1, SAX 2, DOM Level 1, and the {@link org.xml.serialize.Serializer} interfaces.</li>
+          <li>Provide a good model for concurent and optimized transformations.</li>
+          <li>Provide a reasonable model for incremental processing.</li>
+          <li>Provide a reasonable model for passing data from the calling application 
+              to the transformation.</li>
+        </ul>
+      </dd>
+    </dl>
+    
+    <h3>Usage Examples</h3>
+
+    <p>See <a href="org/xml/trax/Examples.html#method_detail">Examples Page</a></p>
+
+    <h3>The TRaX Interfaces</h3>
+    
+    <p>A TRaX {@link org.xml.trax.Processor} is an object that processes transformation 
+       instructions, or {@link org.xml.trax.Templates}.  The {@link org.xml.trax.Templates} provide 
+       {@link org.xml.trax.Transformer}s, which transforms a source tree into a result tree.</p>
+    <p>To use the TRaX interface, you create an {@link org.xml.trax.Processor}, which can 
+       provide {@link org.xml.trax.Templates} 
+       from a variety of sources. The {@link org.xml.trax.Templates} object 
+       provides a {@link org.xml.trax.Transformer}.  The {@link org.xml.trax.Transformer} processes the 
+       {@link org.xml.sax.InputSource} according to the 
+       {@link org.xml.trax.Templates}, parameters, and 
+       {@link org.xml.serialize.OutputFormat} properties.</p>
+       
+    <p>To create a {@link org.xml.trax.Processor}, you call the factory interface on 
+       the {@link org.xml.trax.Processor} class.  The {@link org.xml.trax.Processor} is 
+       "plugged" into the platform in one of two 
+       ways: 1) as a platform default, and 2) through external specification by a 
+       system property named "org.xml.trax.Processor.[type]" 
+       obtained using java.lang.System.getProperty().  The [type] part of the property specifies 
+       the language to be used, for instance, "org.xml.trax.Processor.xslt" would 
+       specify an XSLT processor.</p>
+       
+    <p>Both the {@link org.xml.trax.Processor} and the {@link org.xml.trax.Transformer} 
+       objects let you ask about particular features 
+       that the processor supports.  You can do this using SAX style getFeature/setFeature 
+       methods.  For instance, some processors may not support DOM trees as a method of 
+       input.  In this case, it is wise to first ask the {@link org.xml.trax.Transformer} 
+       if it supports the "http://xml.org/trax/features/dom/input" feature.  
+       Those methods that may be optional are clearly documented in the method headers.</p>
+       
+    <p>The {@link org.xml.trax.Processor}'s primary purpose is to process transformation 
+       instructions, such as 
+       an XSLT stylesheet, into a threadsafe {@link org.xml.trax.Templates} object.  
+       The {@link org.xml.trax.Processor} can get these 
+       instructions from either a SAX {@link org.xml.sax.InputSource}, or from a DOM tree.  
+       The {@link org.xml.trax.Processor} 
+       can also return a list of {@link org.xml.sax.InputSource}s from a XML document 
+       that are specified via 
+       the xml-stylesheet instruction.  These {@link org.xml.sax.InputSource}s can 
+       then be handed in to a 
+       process instruction to create a {@link org.xml.trax.Templates} object.</p>
+       
+    <p>The {@link org.xml.trax.Templates} object is a bag of instructions 
+       that tells the {@link org.xml.trax.Transformer} how to 
+       transform a source tree.  It is meant to be thread safe for use in multiple threads 
+       at the same time.  At this time there are only two methods on the {@link org.xml.trax.Templates}
+       object.  newTransformer() creates a {@link org.xml.trax.Transformer} object that is 
+       associated with the {@link org.xml.trax.Templates} object.  getOutputFormat() allows 
+       you to get a {@link org.xml.serialize.OutputFormat} object which you may then modify 
+       and hand in to the {@link org.xml.trax.Transformer} object.</p>
+       
+    <p>The {@link org.xml.trax.Transformer} object represents a single transform.  You can only 
+       use the Transformer object in a single thread at a time.  You can pass parameters to the 
+       {@link org.xml.trax.Transformer} object, which will then be used from within the 
+       transform.  You can also set the OutputFormat, which will override the properties 
+       obtained from the owning {@link org.xml.trax.Templates} object.  The primary method on 
+       the {@link org.xml.trax.Templates} object is transform(...), which takes as input a 
+       SAX {@link org.xml.sax.InputSource}.  But there are a couple of other ways to cause a 
+       transformation to occur.  You can use the transformNode(...) method to transform a DOM 
+       node.  You can also obtain SAX parse event handler interfaces, such as {@link org.xml.sax.DocumentHandler},
+       which can then be used as SAX event catchers.  A {@link org.xml.trax.Transformer} is 
+       also a SAX {@link org.xml.sax.XMLFilter}.  An XML filter is like an XML reader/parser, 
+       except that it obtains its events from another XML reader rather than a primary source like
+       an XML document or database.  Useing the {@link org.xml.trax.Transformer} as a 
+       {@link org.xml.sax.XMLFilter} is one method to use to chain or pipe transformations.
+       It also allows you to use a {@link org.xml.sax.XMLFilter} polymorphicaly as a 
+       {@link org.xml.sax.XMLReader}.</p>
+       
+     <p>The output of a transformation is specified via a {@link org.xml.trax.Result} object. 
+        This is very much like a {@link org.xml.sax.InputSource}, except that it allows you 
+        to specify OutputStreams, Writers, or DOM Nodes.  To specify SAX output, simply use 
+        the {@link org.xml.sax.XMLReader} methods (since the {@link org.xml.trax.Transformer}
+        is also a {@link org.xml.sax.XMLReader}), and call the transform() method that takes 
+        only an input source. </p>
+       
+    <h3>Design Patterns</h3>
+
+    <p><img src="org/xml/trax/trax.gif"></p>
+
+    <p>For more detailed information on the patterns see the <a href="org\xml\trax\patterns.html">Design Patterns Document</a></p>
+
+    <p>For open design issues, see the class and method headers.</p>
+ </body>
+</html>
+
+
