@@ -99,7 +99,7 @@ transformer.transform
      new javax.xml.transform.stream.StreamResult( new
                                   java.io.FileOutputStream("foo.out")));</source>
   <note>For a working example of this model at its simplest, see SimpleTransform.java in the java/samples/SimpleTransform subdirectory.</note>
-  </s2><anchor name="processor"/>
+  </s2><anchor name="transformerfactory"/>
   <s2 title="1. Instantiate a TransformerFactory">
   <p><jump href="apidocs/javax/xml/transform/TransformerFactory#html">TransformerFactory</jump> is an abstract class with a static newInstance() method that instantiates the concrete subclass designated by the javax.xml.transform.TransformerFactory system property.</p>
   <p>The default setting for this system property is <jump href="apidocs/org/apache/xalan/processor/TransformerFactoryImpl.html">org.apache.xalan.processor.TransformerFactoryImpl</jump>.</p>

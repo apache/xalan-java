@@ -104,14 +104,14 @@
          <resource-ref idref="sax2"/> and <resource-ref idref="dom2"/>.<br/><br/></li>
     	  <li>May be configured to work with any XML parser, such
         <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j;</jump>, that implements <resource-ref
-        idref="jaxp"/> (see <link idref="usagepatterns" anchor="xmlreader">Plugging in an XML
+        idref="jaxp"/> (see <link idref="usagepatterns" anchor="plug">Plugging in an XML
          parser</link>).<br/><br/></li>
     	  <li>Can process Stream, SAX or DOM input, and output to a Stream, SAX or DOM.<br/><br/></li>
         <li>Transformations may be chained (the output of one transformation may be the input for
          another).<br/><br/></li>
         <li>May be run from the <link idref="commandline">command line</link> for convenient file-to-file
             transformations.<br/><br/></li>
-    	  <li>Includes an <link idref="getstarted" anchor="applet">applet wrapper</link>.<br/><br/></li>
+    	  <li>Includes an <link idref="usagepatterns" anchor="applet">applet wrapper</link>.<br/><br/></li>
         <li>May be used in a <link idref="samples" anchor="servlet">servlet</link> to transform XML documents into
         HTML and serve the results to clients.<br/><br/></li>
         <li>Supports the creation of <link idref="extensions">Java and scripting language extensions</link>. and
