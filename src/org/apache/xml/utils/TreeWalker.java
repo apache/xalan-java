@@ -102,6 +102,17 @@ public class TreeWalker
     this.m_contentHandler = contentHandler;
     m_dh = dh;
   }
+  
+  /**
+   * Constructor.
+   * @param   contentHandler The implemention of the
+   * contentHandler operation (toXMLString, digest, ...)
+   */
+  public TreeWalker(ContentHandler contentHandler)
+  {
+    this.m_contentHandler = contentHandler;
+    m_dh = new org.apache.xpath.DOM2Helper();
+  }
 
   /**
    * Perform a pre-order traversal non-recursive style.
