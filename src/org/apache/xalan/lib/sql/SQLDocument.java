@@ -144,7 +144,7 @@ public class SQLDocument extends DTMDocument
   private static final String S_CASESENSITIVE = "case-sensitive";
   /**
    */
-  private static final String S_DEFINITLEYWRITABLE = "definitley-writable";
+  private static final String S_DEFINITELYWRITABLE = "definitely-writable";
   /**
    */
   private static final String S_ISNULLABLE = "nullable";
@@ -212,7 +212,7 @@ public class SQLDocument extends DTMDocument
   private int m_ColAttrib_CASESENSITIVE_TypeID = 0;
   /**
    */
-  private int m_ColAttrib_DEFINITLEYWRITEABLE_TypeID = 0;
+  private int m_ColAttrib_DEFINITELYWRITABLE_TypeID = 0;
   /**
    */
   private int m_ColAttrib_ISNULLABLE_TypeID = 0;
@@ -525,13 +525,13 @@ public class SQLDocument extends DTMDocument
       {
         addAttributeToNode(
           meta.isDefinitelyWritable(i) ? S_ISTRUE : S_ISFALSE,
-          m_ColAttrib_DEFINITLEYWRITEABLE_TypeID, lastColHeaderIdx);
+          m_ColAttrib_DEFINITELYWRITABLE_TypeID, lastColHeaderIdx);
       }
       catch(Exception e)
       {
         addAttributeToNode(
           S_ATTRIB_NOT_SUPPORTED,
-          m_ColAttrib_DEFINITLEYWRITEABLE_TypeID, lastColHeaderIdx);
+          m_ColAttrib_DEFINITELYWRITABLE_TypeID, lastColHeaderIdx);
       }
 
       try
@@ -637,8 +637,8 @@ public class SQLDocument extends DTMDocument
       m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_TABLE_NAME, DTM.ATTRIBUTE_NODE);
     m_ColAttrib_CASESENSITIVE_TypeID =
       m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_CASESENSITIVE, DTM.ATTRIBUTE_NODE);
-    m_ColAttrib_DEFINITLEYWRITEABLE_TypeID =
-      m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_DEFINITLEYWRITABLE, DTM.ATTRIBUTE_NODE);
+    m_ColAttrib_DEFINITELYWRITABLE_TypeID =
+      m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_DEFINITELYWRITABLE, DTM.ATTRIBUTE_NODE);
     m_ColAttrib_ISNULLABLE_TypeID =
       m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_ISNULLABLE, DTM.ATTRIBUTE_NODE);
     m_ColAttrib_ISSIGNED_TypeID =
