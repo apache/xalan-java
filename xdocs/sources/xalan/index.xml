@@ -71,7 +71,7 @@
   </s2>
   <s2 title="How about this release?">
     <p>&xslt4j-current; is a beta Developer's release of &xslt4j2;. It represents a stable build that conforms to the XSLT 
-    and XPath 1.0 specifications, and it includes some error-handling enhancements along with fixes for the bugs we and our users have found 
+    and XPath 1.0 specifications, and it includes some performance and error-handling enhancements along with fixes for the bugs we and our users have found 
     in &xslt4j; 2.0.D05. For the details, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, 
     and feedback to the <human-resource-ref idref="xalandev"/>.</p>
   </s2> 
