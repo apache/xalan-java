@@ -453,11 +453,16 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 	    else {
 		buf.append(" PUBLIC \"");
 		buf.append(publicId);
-		buf.append("\" ");
+		buf.append("\"");
 	    }
-	    buf.append('\"');
-	    buf.append(systemId);
-	    buf.append("\">\n");
+	    if (systemId != null) {
+		buf.append(" \"");
+		buf.append(systemId);
+		buf.append("\">\n");
+	    }
+	    else {
+		buf.append(">\n");
+	    }
 	    _writer.write(buf.toString());
 	}
         catch (IOException e) {

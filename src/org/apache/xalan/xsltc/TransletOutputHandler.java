@@ -71,13 +71,14 @@ public interface TransletOutputHandler {
 
     public void startDocument() throws TransletException;
     public void endDocument() throws TransletException;
-    public void characters(char[] characters, int offset, int length)
-	throws TransletException;
     public void startElement(String elementName) throws TransletException;
     public void endElement(String elementName) throws TransletException;
+    public void characters(char[] characters, int offset, int length)
+	throws TransletException;
     public void attribute(String attributeName, String attributeValue)
 	throws TransletException;
     public void namespace(String prefix, String uri) throws TransletException;
+    public String getPrefix(String uri) throws TransletException;
     public void comment(String comment) throws TransletException;
     public void processingInstruction(String target, String data)
 	throws TransletException;

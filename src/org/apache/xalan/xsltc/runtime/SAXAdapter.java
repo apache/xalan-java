@@ -179,4 +179,5 @@ public final class SAXAdapter implements TransletOutputHandler {
     public boolean setEscaping(boolean escape)  throws TransletException {
         return(true);
     }
+    public String getPrefix(String uri) { return(""); }
 }

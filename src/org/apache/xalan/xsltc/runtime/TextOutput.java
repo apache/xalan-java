@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.runtime;
 
 import java.io.*;
 import java.util.Stack;
+import java.util.Enumeration;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -125,16 +126,25 @@ public final class TextOutput implements TransletOutputHandler {
     private AttributeList _attributes = new AttributeList();
     private String        _elementName = null;
 
+    // Each entry (prefix) in this hashtable points to a Stack of URIs
     private Hashtable _namespaces;
+    // The top of this stack contains an id of the element that last declared
+    // a namespace. Used to ensure prefix/uri map scopes are closed correctly
     private Stack     _nodeStack;
+    // The top of this stack is the prefix that was last mapped to an URI
     private Stack     _prefixStack;
+
+    // The top of this stack contains the QName of the currently open element
     private Stack     _qnameStack;
+
+    // The top of this stack contains the element id of the last element whose
+    // contents should be output as CDATA sections.
     private Stack     _cdataStack;
 
     // Holds the current tree depth (see startElement() and endElement()).
     private int _depth = 0;
 
-    // Reference to the SAX2 handler that consumes this handler's output
+    // Reference to the SAX2 handlers that consume this handler's output
     private ContentHandler _saxHandler;
     private LexicalHandler _lexHandler;
 
@@ -478,9 +488,12 @@ public final class TextOutput implements TransletOutputHandler {
 	    }
 
 	    // Handle document type declaration (for first element only)
-	    if ((_doctypeSystem != null) && (_lexHandler != null)) {
-		_lexHandler.startDTD(elementName,_doctypePublic,_doctypeSystem);
-		_doctypeSystem = null;
+	    if (_lexHandler != null) {
+		if (((_outputType == XML) && (_doctypeSystem != null)) ||
+		    ((_doctypeSystem != null) || (_doctypePublic != null)))
+		    _lexHandler.startDTD(elementName,
+					 _doctypePublic,_doctypeSystem);
+		_lexHandler = null;
 	    }
 
 	    _depth++;
@@ -685,6 +698,7 @@ public final class TextOutput implements TransletOutputHandler {
 	if (!stack.empty() && uri.equals(stack.peek())) return;
 	// Put this URI on top of the stack for this prefix
 	stack.push(uri);
+
 	_prefixStack.push(prefix);
 	_nodeStack.push(new Integer(_depth));
 	_saxHandler.startPrefixMapping(prefix, uri);
@@ -728,6 +742,43 @@ public final class TextOutput implements TransletOutputHandler {
     private String lookupNamespace(String prefix) {
 	final Stack stack = (Stack)_namespaces.get(prefix);
 	return stack != null && !stack.isEmpty() ? (String)stack.peek() : null;
+    }
+
+    /**
+     * Generates a namespace prefix for URIs that have no associated
+     * prefix. Can happen quite frequently since we do not store
+     * namespace prefixes in the tree (we only store the URIs).
+     */
+    private int _nsCounter = 0;
+
+    private String generateNamespacePrefix() {
+	return(new String("ns"+Integer.toString(_nsCounter++)));
+    }
+
+    /**
+     * Returns a prefix that is currently mapped to a given URI
+     */
+    public String getPrefix(String uri) throws TransletException {
+	try {
+	    String prefix = EMPTYSTRING;
+	    String theuri;
+
+	    // First a quick check for the default namespace
+	    if (uri.equals(lookupNamespace(prefix))) return prefix;
+
+	    Enumeration prefixes = _namespaces.keys();
+	    while (prefixes.hasMoreElements()) {
+		prefix = (String)prefixes.nextElement();
+		theuri = lookupNamespace(prefix);
+		if (theuri.equals(uri)) return prefix;
+	    }
+	    prefix = generateNamespacePrefix();
+	    pushNamespace(prefix, uri);
+	    return prefix;
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
     }
 
     /**
