@@ -349,6 +349,8 @@ public class TransformerImpl extends Transformer
    */
   boolean m_isTransformDone = false;
   
+  private boolean m_hasBeenReset = false;
+  
   //==========================================================
   // SECTION: Constructors
   //==========================================================
@@ -372,29 +374,33 @@ public class TransformerImpl extends Transformer
    */
   public void reset()
   {
-
-    // I need to look more carefully at which of these really
-    // needs to be reset.
-    m_countersTable = null;
-    m_stackGuard = new StackGuard();
-
-    getXPathContext().reset();
-    getXPathContext().getVarStack().setSize(1);
-    m_currentTemplateElements.removeAllElements();
-    m_currentMatchTemplates.removeAllElements();
-
-    m_resultTreeHandler = null;
-    m_keyManager = new KeyManager();
-    m_attrSetStack = null;
-    m_countersTable = null;
-    m_currentTemplateRuleIsNull = new BoolStack();
-    m_xmlSource = null;
-    m_doc = null;
-    m_isTransformDone = false;
-    m_inputContentHandler = null;
-    
-    // For now, reset the document cache each time.
-    getXPathContext().getSourceTreeManager().reset();
+    if(!m_hasBeenReset)
+    {
+      m_hasBeenReset = true;
+  
+      // I need to look more carefully at which of these really
+      // needs to be reset.
+      m_countersTable = null;
+      m_stackGuard = new StackGuard();
+  
+      getXPathContext().reset();
+      getXPathContext().getVarStack().setSize(1);
+      m_currentTemplateElements.removeAllElements();
+      m_currentMatchTemplates.removeAllElements();
+  
+      m_resultTreeHandler = null;
+      m_keyManager = new KeyManager();
+      m_attrSetStack = null;
+      m_countersTable = null;
+      m_currentTemplateRuleIsNull = new BoolStack();
+      m_xmlSource = null;
+      m_doc = null;
+      m_isTransformDone = false;
+      m_inputContentHandler = null;
+      
+      // For now, reset the document cache each time.
+      getXPathContext().getSourceTreeManager().reset();
+    }
     
 //    m_reportInPostExceptionFromThread = false;
   }
@@ -649,6 +655,7 @@ public class TransformerImpl extends Transformer
     }
     finally
     {
+      // This looks to be redundent to the one done in TransformNode.
       reset();
     }
   }
@@ -1078,7 +1085,6 @@ public class TransformerImpl extends Transformer
   public void transform(Source xmlSource, Result outputTarget)
           throws TransformerException
   {
-
     ContentHandler handler = createResultContentHandler(outputTarget);
 
     this.setContentHandler(handler);
@@ -1115,6 +1121,7 @@ public class TransformerImpl extends Transformer
    */
   public void transformNode(Node node) throws TransformerException
   {
+    m_hasBeenReset = false;
 
     try
     {
@@ -1154,8 +1161,7 @@ public class TransformerImpl extends Transformer
       if (null != m_resultTreeHandler)
       {
         m_resultTreeHandler.endDocument();
-      }
-      this.reset();
+      }   
     }
     catch (Exception se)
     {
@@ -1173,6 +1179,10 @@ public class TransformerImpl extends Transformer
         catch(Exception e){}
       }
       throw new TransformerException(se.getMessage(), se);
+    }
+    finally
+    {
+      this.reset();
     }
   }
   
@@ -2704,7 +2714,9 @@ public class TransformerImpl extends Transformer
    */
   public Thread createTransformThread()
   {
-    return new Thread(this);
+    Thread t = new Thread(this);
+    // System.out.println("created thread: "+t.getName());
+    return t;
   }
 
   /**
@@ -2796,6 +2808,7 @@ public class TransformerImpl extends Transformer
    */
   public void run()
   {
+    m_hasBeenReset = false;
 
     try
     {
