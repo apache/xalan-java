@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author Morten Jorgensen
  *
  */
 
@@ -67,25 +68,38 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class StepIterator extends NodeIteratorBase {
-    private NodeIterator _source;
-    private NodeIterator _iterator;
+public class StepIterator extends NodeIteratorBase {
+
+    protected NodeIterator _source;
+    protected NodeIterator _iterator;
 
     public StepIterator(NodeIterator source, NodeIterator iterator) {
 	_source = source;
 	_iterator = iterator;
     }
 
+    protected void setNotRestartable() {
+	if (_source instanceof StepIterator) {
+	    _isRestartable = true;
+	    if (_iterator instanceof NodeIteratorBase)
+		((NodeIteratorBase)_iterator)._isRestartable = true;
+	    ((StepIterator)_source).setNotRestartable();
+	}
+	else {
+	    _isRestartable = false;
+	    if (_source instanceof NodeIteratorBase)
+		((NodeIteratorBase)_source)._isRestartable = false;
+	    if (_iterator instanceof NodeIteratorBase)
+		((NodeIteratorBase)_iterator)._isRestartable = true;
+	}
+    }
+
     public NodeIterator cloneIterator() {
-	_isRestartable = false;
+	setNotRestartable();
 	try {
 	    final StepIterator clone = (StepIterator)super.clone();
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
-	    // Special case -> _iterator must be restartable
-	    if (clone._iterator instanceof NodeIteratorBase) {
-		((NodeIteratorBase)(clone._iterator))._isRestartable = true;
-	    }
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

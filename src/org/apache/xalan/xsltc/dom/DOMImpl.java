@@ -743,7 +743,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_currentChild = _offsetOrChild[_startNode];
 	    else
 		_currentChild = END;
-	    return this;
+	    return resetPosition();
 	}
 
 	public int next() {

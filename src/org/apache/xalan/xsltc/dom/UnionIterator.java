@@ -227,7 +227,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	for (int i = 0; i < _free; i++) {
 	    _heap[i].iterator.reset();
 	}
-	return(this);
+	return resetPosition();
     }
 
 }

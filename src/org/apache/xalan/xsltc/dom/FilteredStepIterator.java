@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -66,28 +67,26 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class FilteredStepIterator extends NodeIteratorBase {
-    private NodeIterator _source;
-    private NodeIterator _iterator;
-    private final Filter _filter;
+public final class FilteredStepIterator extends StepIterator {
+
+    private Filter _filter;
 	
     public FilteredStepIterator(NodeIterator source,
 				NodeIterator iterator,
 				Filter filter) {
-	_source = source;
-	_iterator = iterator;
+	super(source, iterator);
 	_filter = filter;
     }
 
     public NodeIterator cloneIterator() {
+	setNotRestartable();
 	try {
 	    final FilteredStepIterator clone =
 		(FilteredStepIterator)super.clone();
-	    clone._isRestartable = false;
 	    clone._source = _source.cloneIterator();
-	    clone._iterator = _iterator.cloneIterator()
-		.setStartNode(_source.next());
-	    return clone.resetPosition();
+	    clone._iterator = _iterator.cloneIterator();
+	    clone._filter = _filter;
+	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {
 	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
@@ -95,45 +94,14 @@ public final class FilteredStepIterator extends NodeIteratorBase {
 	    return null;
 	}
     }
-    
-    public NodeIterator setStartNode(int node) {
-	if (_isRestartable) {
-	    // iterator is not a clone
-	    _source.setStartNode(_startNode = node);
-	    _iterator.setStartNode(_source.next());
-	    return resetPosition();
-	}
-	return this;
-    }
 
-    public NodeIterator reset() {
-	_source.reset();
-	_iterator.setStartNode(_source.next());
-	return resetPosition();
-    }
-    
     public int next() {
-	for (int node;;) {
-	    while ((node = _iterator.next()) != END)
-		if (_filter.test(node)) {
-		    return returnNode(node);
-		}
-	    // local iterator ran out of nodes
-	    // try to get new start node from source
-	    if ((node = _source.next()) == END)
-		return END;
-	    else
-		_iterator.setStartNode(node);
+	int node;
+	while ((node = super.next()) != END) {
+	    if (_filter.test(node))
+		return returnNode(node);
 	}
-    }
-		
-    public void setMark() {
-	_source.setMark();
-	_iterator.setMark();
+	return(node);
     }
 
-    public void gotoMark() {
-	_source.gotoMark();
-	_iterator.gotoMark();
-    }
 }
