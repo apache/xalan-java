@@ -860,7 +860,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
   {
 
-    TemplatesHandler builder = newTemplatesHandler();
     String baseID = source.getSystemId();
 
     if (null == baseID)
@@ -895,8 +894,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
       }
     }
 
-    builder.setSystemId(baseID);
-
     if (source instanceof DOMSource)
     {
       DOMSource dsource = (DOMSource) source;
@@ -912,6 +909,9 @@ public javax.xml.transform.Templates processFromNode(Node node)
         throw new IllegalArgumentException(messageStr);
       }
     }
+
+    TemplatesHandler builder = newTemplatesHandler();
+    builder.setSystemId(baseID);
 
     try
     {
