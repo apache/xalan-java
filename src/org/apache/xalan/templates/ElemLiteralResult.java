@@ -262,7 +262,26 @@ public class ElemLiteralResult extends ElemUse
       }
     }
   }
-
+  
+  /**
+   * Return whether we need to check namespace prefixes 
+   * against and exclude result prefixes list.
+   * Note that this will create a new prefix table if one
+   * has not been created already.
+   */
+  boolean needToCheckExclude()
+  {
+    if (null == m_excludeResultPrefixes && null == m_prefixTable)
+      return false;
+    else
+    {
+      // Create a new prefix table if one has not already been created.
+      if (null == m_prefixTable)
+        m_prefixTable = new Vector();
+      return true;
+    }  
+  }    
+  
   /**
    * The namespace of the element to be created.
    */
@@ -600,8 +619,8 @@ public class ElemLiteralResult extends ElemUse
     {
       child.resolvePrefixTables();
     }
-  }
-  */
+  }*/
+  
 
   /**
    * Copy a Literal Result Element into the Result tree, copy the

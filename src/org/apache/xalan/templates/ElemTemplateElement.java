@@ -876,7 +876,7 @@ public class ElemTemplateElement extends UnImplNode
       // The prefix table of the parent should never be null!
       Vector prefixes = parent.m_prefixTable;
 
-      if (null == m_prefixTable)
+      if (null == m_prefixTable && !needToCheckExclude())
       {
 
         // Nothing to combine, so just use parent's table!
@@ -918,6 +918,15 @@ public class ElemTemplateElement extends UnImplNode
       child.resolvePrefixTables();
     }
   }
+  
+  /**
+   * Return whether we need to check namespace prefixes 
+   * against and exclude result prefixes list.
+   */
+  boolean needToCheckExclude()
+  {
+    return false;    
+  } 
 
   /**
    * Send startPrefixMapping events to the result tree handler
