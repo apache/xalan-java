@@ -552,5 +552,20 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
     return m_sRootObject.getOutputComposed().getProperty(OutputKeys.MEDIA_TYPE); 
   }
   
+  /**
+   * Get the base identifier with which this stylesheet is associated.
+   */
+  public String getBaseIdentifier()
+  {
+    return m_sRootObject.getBaseIdentifier();
+  }
+
+  /**
+   * Get the base identifier with which this stylesheet is associated.
+   */
+  public void setBaseIdentifier(String baseIdent)
+  {
+    m_sRootObject.setHref(baseIdent);
+  }
   
 }

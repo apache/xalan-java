@@ -261,7 +261,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */ 
     try 
       {
-        DOM2Helper m_liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+        m_liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
+        org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
+
+        xctxt.setDOMHelper(m_liaison);
         //getXPathContext().setDOMHelper(liaison);
         
       } 
@@ -319,7 +322,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
     {
       //throw new TransformException("Could not create Processor", pfe);
     }*/
-    DOM2Helper m_liaison =  (DOM2Helper)parserLiaison;
+    m_liaison =  (DOM2Helper)parserLiaison;
+    org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
+
+    xctxt.setDOMHelper(m_liaison);
     //getXPathContext().setDOMHelper(liaison);
   }
 
@@ -350,7 +356,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
     //{
       //throw new TransformException("Could not create Processor", pfe);
    // }
-    DOM2Helper m_liaison =  (DOM2Helper)parserLiaison;
+    m_liaison =  (DOM2Helper)parserLiaison;
+    org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
+
+    xctxt.setDOMHelper(m_liaison);
     //getXPathContext().setDOMHelper(liaison);
   }
  
