@@ -607,7 +607,7 @@ public class Compiler extends OpMap
     case OpCodes.MATCH_ANY_ANCESTOR:
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new StepPattern(getWhatToShow(startOpPos), 
+      pattern = new AncestorStepPattern(getWhatToShow(startOpPos), 
                                 getStepNS(startOpPos), 
                                 getStepLocalName(startOpPos));
       break;

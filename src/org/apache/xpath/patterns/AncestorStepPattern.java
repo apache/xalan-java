@@ -32,7 +32,7 @@ public class AncestorStepPattern extends StepPattern
       try
       {
         xctxt.pushCurrentNode(parent);
-        score = m_relativePathPattern.execute(xctxt);
+        score = execute(xctxt);
         if(score != NodeTest.SCORE_NONE)
         {
           score = SCORE_OTHER;

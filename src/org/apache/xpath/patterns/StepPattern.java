@@ -215,7 +215,7 @@ public class StepPattern extends NodeTest implements SubContextList
     
     if((score != NodeTest.SCORE_NONE) && (null != m_relativePathPattern))
     {
-      score = executeRelativePathPattern(xctxt);
+      score = m_relativePathPattern.executeRelativePathPattern(xctxt);
     }
     return score;
   }
