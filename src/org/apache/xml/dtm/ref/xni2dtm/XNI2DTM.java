@@ -501,7 +501,7 @@ public class XNI2DTM
 
   /**
    * XNI XMLDocumentHandler: Receive notification of a notation declaration.
-   * Normally a no-op.
+   * Normally a no-op in Xalan, though XPath2 might change that.
    *
    * @param name The notation name.
    * @param publicId The notation public identifier, or null if not
@@ -519,7 +519,6 @@ public class XNI2DTM
 
   /**
    * XNI XMLDocumentHandler: Receive notification of an unparsed entity declaration.
-   * Normally a no-op.
    *
    * @param name The entity name.
    * @param publicId The entity public identifier, or null if not
@@ -532,8 +531,9 @@ public class XNI2DTM
    *
    * @throws XNIException
    */
-  public void unparsedEntityDecl(
-                                 String name, String publicId, String systemId, String notationName)
+  public void unparsedEntityDecl(String name, 
+  								  String publicId, String systemId,
+  								  String notationName)
     throws XNIException
   {
     try
@@ -800,7 +800,7 @@ public class XNI2DTM
 
       exName = m_expandedNameTable.getExpandedTypeID(null, prefix, DTM.NAMESPACE_NODE);
 
-      int val = m_valuesOrPrefixes.stringToIndex(declURL);
+      int val = m_valuesOrPrefixes.stringToIndex(declURL);      
 
       // %REVIEW% I don't _think_ we need datatype on namespaces...?
       prev = addNode(DTM.NAMESPACE_NODE, exName, elemNode,
@@ -831,10 +831,11 @@ public class XNI2DTM
 
         nodeType = DTM.NAMESPACE_NODE;
       } // NS special-handling
+
       else
       {
         nodeType = DTM.ATTRIBUTE_NODE;
-
+        
         if (attributes.getType(i).equalsIgnoreCase("ID"))
           setIDAttribute(valString, elemNode);
       } // Attr/ID special handling
@@ -864,6 +865,10 @@ public class XNI2DTM
       exName = m_expandedNameTable.getExpandedTypeID(attrUri, attrLocalName, nodeType);
 
       // Experimental Xerces PSVI data
+        // %BUG% Need to assert Schema types for ID, IDREF... others
+        // from DTD which may not be provided via augmentations but
+        // overlap with Schema's type system.
+
       Augmentations attrAugs=attributes.getAugmentations(i);
       boolean syntheticAttribute= null != attrAugs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE);
       if(syntheticAttribute)
@@ -1095,7 +1100,9 @@ public class XNI2DTM
   }
 
   /**
-   * XNI XMLDocumentHandler: Report the beginning of an entity in content.
+   * XNI XMLDocumentHandler: Report the beginning of an entity in 
+   * content. The XPath/XSLT data model does not 
+   * currently use this information.
    *
    * <p><strong>NOTE:</entity> entity references in attribute
    * values -- and the start and end of the document entity --
@@ -1123,6 +1130,7 @@ public class XNI2DTM
 
   /**
    * XNI XMLDocumentHandler: Report the end of an entity.
+   * The XPath/XSLT data model does not currently use this information.
    *
    * @param name The name of the entity that is ending.
    * @throws SAXException The application may raise an exception.
@@ -1134,6 +1142,7 @@ public class XNI2DTM
   /** XNI XMLDocumentHandler: Notifies of the presence of an XMLDecl line in the document. 
    * If present, this method will be called immediately following 
    * the startDocument call.
+   * The XPath/XSLT data model does not currently use this information.
    * @param version - The XML version.
    * @param encoding - The IANA encoding name of the document, or null if not
    *    specified.
@@ -1149,6 +1158,7 @@ public class XNI2DTM
         
   /** XNI XMLDocumentHandler: Notifies of the presence of a TextDecl line in an entity. If present, this
    * method will be called immediately following the startEntity call. 
+   * The XPath/XSLT data model does not currently use this information.
    * 
    * Note: This method will never be called for the document entity; it is only
    * called for external general entities referenced in document content. 
@@ -1164,7 +1174,6 @@ public class XNI2DTM
     throws XNIException
   {    /*no op*/  }
               
-
   /**
    * XNI XMLDocumentHandler: Report the start of a CDATA section.
    *
@@ -1223,39 +1232,30 @@ public class XNI2DTM
         
     public void setLocator(XMLLocator locator)
     { this.locator=locator; }
-        
     public void setPublicId(String publicId)
     { this.publicId=publicId; }
-        
     public void setSystemId(String systemId)
     { this.systemId=systemId; }
         
     public int getColumnNumber() 
-    {
-      return locator.getColumnNumber();
-    }
+    { return locator.getColumnNumber(); }
     public int getLineNumber() 
-    {
-      return locator.getLineNumber();
-    }
+    { return locator.getLineNumber(); }
     public String getPublicId() 
-    {
-      return publicId;
-    }
+    { return publicId; }
     public String getSystemId()         
-    {
-      return systemId;
-    }
+    { return systemId; }
   }
   
   /** XNI XMLDocumentHandler: Notifies of the presence of the DOCTYPE line in the document.
-         *  @param rootElement - The name of the root element.
-         * @param publicId - The public identifier if an external DTD or null if the
-         *        external DTD is specified using SYSTEM.
-         * @param systemId - The system identifier if an external DTD, null otherwise.
-         * @param augs - Additional information that may include infoset augmentations
-         * @throws XNIException - Thrown by handler to signal an error.
-         * */
+   * The XPath/XSLT data model does not currently use this information.
+   * @param rootElement - The name of the root element.
+   * @param publicId - The public identifier if an external DTD or null if the
+   * external DTD is specified using SYSTEM.
+   * @param systemId - The system identifier if an external DTD, null otherwise.
+   * @param augs - Additional information that may include infoset augmentations
+   * @throws XNIException - Thrown by handler to signal an error.
+   * */
   public void doctypeDecl(String rootElement,String publicId,String systemId,
                           Augmentations augs)
     throws XNIException
@@ -1263,34 +1263,34 @@ public class XNI2DTM
     
   ////////////////////////////////////////////////////////////////////
   // XNI error handler
+  // %REVIEW% Should be routed to the JAXP error listener, presumably.
+  // What's the easiest way to get that from here?
+  // It's available from the xctxt, but I'm not sure how to get that
+  // from the DTM structures; the connections mostly go the other way.
+  // Note that the SAX error handler has the same issue...
   
+  /** XNI error handler */
   public void warning(java.lang.String domain,
                       java.lang.String key,
                       XMLParseException exception)
     throws XNIException
   {
-    // %REVIEW% Should be routed to the JAXP error listener, presumably.
-    // What's the easiest way to get that from here?
-    // It's available from the xctxt, but I'm not sure how to get that
-    // from the DTM structures; the connections mostly go the other way.
     System.err.println(exception);
   }
+  /** XNI error handler */
   public void error(java.lang.String domain,
                     java.lang.String key,
                     XMLParseException exception)
     throws XNIException
   {
-    // %REVIEW% Should be routed to the JAXP error listener, presumably.
-    // see warning()
      System.err.println(exception);
   }
+  /** XNI error handler */
   public void fatalError(java.lang.String domain,
                          java.lang.String key,
                          XMLParseException exception)
     throws XNIException
   {
-    // %REVIEW% Should be routed to the JAXP error listener, presumably.
-    // see warning()
     throw exception;
   }
   
@@ -1300,7 +1300,7 @@ public class XNI2DTM
   // and end of the DTD to prevent DTD comments from being taken as
   // part of the main document.
 
-  /* We need to know when DTDs start and end so we can ignore
+  /** XNI DTD handler: We need to know when DTDs start and end so we can ignore
    * comments found within the DTD (since they're otherwise
    * indistingishable from content comments).
    * */
@@ -1314,7 +1314,7 @@ public class XNI2DTM
     {      throw new XNIException(e);    }
   }
   
-  /* We need to know when DTDs start and end so we can ignore
+  /** XNI DTD handler:  We need to know when DTDs start and end so we can ignore
    * comments found within the DTD (since they're otherwise
    * indistingishable from content comments).
    * */
@@ -1327,7 +1327,7 @@ public class XNI2DTM
     {      throw new XNIException(e);    }
   }     
   
-  /* We need to know about unparsed entities, as they arise.
+  /** XNI DTD handler: We need to know about unparsed entities as they arise.
    * */  
   public void unparsedEntityDecl(java.lang.String name,
                                  XMLResourceIdentifier identifier,
@@ -1345,64 +1345,75 @@ public class XNI2DTM
   // comment already handled, including suppression during the DTD
   // processing instruction already handled. NOT currently suppressed during DTD?
 
-  // All other DTD events not shown above need to be defined as no-ops.
+  // All XNI DTD events not shown above are defined as no-ops.
 
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void startParameterEntity(java.lang.String name,
                                    XMLResourceIdentifier identifier,
                                    java.lang.String encoding,
                                    Augmentations augmentations)
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void endParameterEntity(java.lang.String name,
                                  Augmentations augmentations)
     throws XNIException  
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void startExternalSubset(XMLResourceIdentifier resource,Augmentations augmentations)
     throws XNIException  
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void endExternalSubset(Augmentations augmentations)
     throws XNIException  
   {    /*no op*/  }  
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void elementDecl(java.lang.String name,
                           java.lang.String contentModel,
                           Augmentations augmentations)
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void startAttlist(java.lang.String elementName,
                            Augmentations augmentations)
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void attributeDecl(String elementName,String attributeName, 
                             java.lang.String type, java.lang.String[] enumeration, 
                             String defaultType, XMLString defaultValue,
                             XMLString nonNormalizedDefaultValue, Augmentations augmentations)
     throws XNIException
   {     /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void endAttlist(Augmentations augmentations)
     throws XNIException  
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void internalEntityDecl(String name, XMLString text, 
   								XMLString nonNormalizedText,
                                 Augmentations augmentations) 
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void externalEntityDecl(java.lang.String name,
   								XMLResourceIdentifier identifier,
   								Augmentations augmentations)
     throws XNIException
   { /*no op*/  }
-  
-  
- 
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void notationDecl(java.lang.String name,XMLResourceIdentifier identifier,Augmentations augmentations)
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void startConditional(short type,Augmentations augmentations)
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void ignoredCharacters(XMLString text,Augmentations augmentations)
     throws XNIException
   {    /*no op*/  }
+  /** XNI DTD handler:  The XPath/XSLT data model does not currently use this information. */
   public void endConditional(Augmentations augmentations)
     throws XNIException
   {  /*no op*/  } 
