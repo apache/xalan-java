@@ -70,6 +70,7 @@
 <li><link anchor="servlet">Servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
 <li><link anchor="trace">Trace</link></li>
+<li><link anchor="trax">trax</link></li>
 </ul>  
 	  <s2 title="Samples to help you get started">
     <p>Each of the subdirectories in the &xslt4j; java/samples directory contains the source files for one or more
@@ -275,5 +276,11 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <p><code>java Trace</code></p>
       <p>and examine the result in events.log. For more information, see <link idref="usagepatterns" anchor="debugging">Debugger
       Interface</link></p>
+     </s2><anchor name="trax"/>
+     <s2 title="trax">
+     <p>What it does: run a number of samples illustrating uses of the <link idref="trax"/> interfaces.</p>
+     <p>Run this sample from the trax subdirectory with</p>
+     <p><code>java Examples</code></p>
+     <p>and examine the source in Examples.java and ExampleContentHandler.java.</p>
      </s2>
 </s1>

@@ -65,8 +65,11 @@
             title="SAX 2" 
             location="http://www.megginson.com/SAX/Java/index.html"/>
   <resource id="jaxp" 
-            title="Java API for XML Parsing" 
+            title="Java API for XML Parsing 1.0" 
             location="http://java.sun.com/xml/docs/api/index.html"/>
+  <resource id="jaxp11" 
+            title="Java API for XML Processing 1.1 Public Review 2" 
+            location="http://java.sun.com/aboutJava/communityprocess/review/jsr063/jaxp-pd2.pdf"/>
   <resource id="jsr063"
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>

@@ -182,7 +182,8 @@
        a build/docs/apdidocs/javax/xml/transform directory and run the Xalan command-line utility from the xdocs directory 
        as follows (all one line):<br/><br/>
 <code>
-java org.apache.xalan.xslt.Process -in sources/trax/trax.xml
+java org.apache.xalan.xslt.Process 
+  -in sources/trax/trax.xml
   -param package-root '../../../src/'
   -xsl style/stylesheets/spec.xsl 
   -out build/docs/apidocs/javax/xml/transform/trax.html</code><br/><br/></li>
@@ -190,29 +191,39 @@ java org.apache.xalan.xslt.Process -in sources/trax/trax.xml
          directory: build/docs/apidocs.<br/><br/></li>
        <li>To build the API documentation, run the JDK 1.2.2 javadoc tool from the xdocs directory (all one line):<br/><br/>
 <code>
-javadoc -doclet xalanjdoc.Standard -docletpath ../bin/xalanjdoc.jar -private
+javadoc -doclet xalanjdoc.Standard 
+ -docletpath ../bin/xalanjdoc.jar 
+ -private
  -overview ../src/javadocOverview.html -sourcepath ../src 
  -group TrAX "javax.xml.transform*" 
- -group Xalan_Core "org.apache.xalan.processor:org.apache.xalan.templates:
+ -group Xalan_Core "org.apache.xalan.processor:
+        org.apache.xalan.templates:
  org.apache.xalan.transformer"
  -group XPath "org.apache.xpath*"
  -group Utilities "org.apache.xml.utils*"
- -group Xalan_Other "org.apache.xalan.client:org.apache.xalan.dtm:
- org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:
- org.apache.xalan.trace:org.apache.xalan.xslt" 
+ -group Xalan_Other "org.apache.xalan.client:
+        org.apache.xalan.dtm:
+ org.apache.xalan.extensions:org.apache.xalan.res:
+ org.apache.xalan.stree:org.apache.xalan.trace:
+ org.apache.xalan.xslt" 
  -group Xalan_Extensions "org.apache.xalan.lib*" 
  -group Serializers "org.apache.xalan.serialize" 
- org.apache.xalan.client org.apache.xalan.dtm org.apache.xalan.extensions 
- org.apache.xalan.lib org.apache.xalan.lib.sql org.apache.xalan.processor 
- org.apache.xalan.res org.apache.xalan.stree org.apache.xalan.templates 
- org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.xslt 
- org.apache.xpath org.apache.xpath.axes org.apache.xpath.compiler 
- org.apache.xpath.functions org.apache.xpath.objects 
- org.apache.xpath.operations org.apache.xpath.patterns org.apache.xpath.res
- org.apache.xalan.serialize javax.xml.transform  javax.xml.transform.dom
- javax.xml.transform.sax javax.xml.transform.stream javax.xml.parsers
- -d ../build/docs/apidocs -windowtitle "Xalan-Java 2" -doctitle "Xalan-Java 2"
- -bottom "Copyright &#169; 2000 Apache XML Project. All Rights Reserved."
+ org.apache.xalan.client org.apache.xalan.dtm 
+ org.apache.xalan.extensions org.apache.xalan.lib 
+ org.apache.xalan.lib.sql org.apache.xalan.processor 
+ org.apache.xalan.res org.apache.xalan.stree 
+ org.apache.xalan.templates org.apache.xalan.trace 
+ org.apache.xalan.transformer org.apache.xalan.xslt 
+ org.apache.xpath org.apache.xpath.axes 
+ org.apache.xpath.compiler org.apache.xpath.functions 
+ org.apache.xpath.objects org.apache.xpath.operations 
+ org.apache.xpath.patterns org.apache.xpath.res
+ org.apache.xalan.serialize javax.xml.transform  
+ javax.xml.transform.dom javax.xml.transform.sax 
+ javax.xml.transform.stream javax.xml.parsers
+ -d ../build/docs/apidocs -windowtitle "Xalan-Java 2" 
+ -doctitle "Xalan-Java 2" -bottom "Copyright &#169; 
+  2000 Apache XML Project. All Rights Reserved."
 </code></li>
 </ul>
   </s3>    
