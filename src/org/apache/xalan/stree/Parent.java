@@ -185,6 +185,9 @@ public class Parent extends Child
       doc = (DocumentImpl)this.getOwnerDocument();
       doc.incrementDocOrderCount();
       child.setUid(doc.getDocOrderCount());
+      if(!doc.getUseMultiThreading() && (child instanceof Parent))
+        ((Parent)child).setComplete(true);
+
     }
     catch(ClassCastException cce)
     {
@@ -193,6 +196,8 @@ public class Parent extends Child
       // which will be a problem when result tree fragments need to 
       // be treated like node-sets.
       doc = null;
+      if(child instanceof Parent) // for now DocumentFragments can't be built on another thread.
+        ((Parent)child).setComplete(true);
     }
     child.setParent(this);
     child.setLevel((short)(getLevel() + 1));
@@ -201,29 +206,32 @@ public class Parent extends Child
     if((null != doc) && (Node.ELEMENT_NODE == child.getNodeType()))
     {
       SourceTreeHandler sh = doc.getSourceTreeHandler();
-      TransformerImpl transformer = sh.getTransformer();
-      if(null != transformer)
+      if(null != sh)
       {
-        StylesheetRoot stylesheet= transformer.getStylesheet();
-        try
+        TransformerImpl transformer = sh.getTransformer();
+        if(null != transformer)
         {
-          ElementImpl elem = (ElementImpl)child;
-          WhiteSpaceInfo info 
-            = stylesheet.getWhiteSpaceInfo(transformer.getXPathContext(), elem);
-          boolean shouldStrip;
-          if(null == info)
+          StylesheetRoot stylesheet= transformer.getStylesheet();
+          try
           {
-            shouldStrip = sh.getShouldStripWhitespace();
+            ElementImpl elem = (ElementImpl)child;
+            WhiteSpaceInfo info 
+              = stylesheet.getWhiteSpaceInfo(transformer.getXPathContext(), elem);
+            boolean shouldStrip;
+            if(null == info)
+            {
+              shouldStrip = sh.getShouldStripWhitespace();
+            }
+            else
+            {
+              shouldStrip = info.getShouldStripSpace();
+            }
+            sh.setShouldStripWhitespace(shouldStrip);
           }
-          else
+          catch(SAXException se)
           {
-            shouldStrip = info.getShouldStripSpace();
+            // TODO: Diagnostics
           }
-          sh.setShouldStripWhitespace(shouldStrip);
-        }
-        catch(SAXException se)
-        {
-          // TODO: Diagnostics
         }
       }
 

@@ -15,6 +15,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
   private String m_publicID;
   private String m_systemID;
   private String m_internalSubset;
+
   
   /** 
    * A short integer indicating what type of node this is. The named

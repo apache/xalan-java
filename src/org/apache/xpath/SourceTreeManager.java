@@ -346,7 +346,7 @@ public class SourceTreeManager
       if(handler instanceof org.apache.xalan.stree.SourceTreeHandler)
       {
         // temp hack
-        ((org.apache.xalan.stree.SourceTreeHandler)handler).m_useMultiThreading = false;
+        ((org.apache.xalan.stree.SourceTreeHandler)handler).setUseMultiThreading(false);
       }
       reader.setContentHandler(handler);
 

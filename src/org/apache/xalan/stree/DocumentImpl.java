@@ -87,6 +87,26 @@ public class DocumentImpl extends Parent
     return m_docType;
   }
   
+  private boolean m_useMultiThreading = false;
+  
+  /**
+   * Set whether or not the tree being built should handle 
+   * transformation while the parse is still going on.
+   */
+  public void setUseMultiThreading(boolean b)
+  {
+    m_useMultiThreading = b;
+  }
+  
+  /**
+   * Tell whether or not the tree being built should handle 
+   * transformation while the parse is still going on.
+   */
+  public boolean getUseMultiThreading()
+  {
+    return m_useMultiThreading;
+  }
+  
   /**
    * The document element.
    */

@@ -304,6 +304,7 @@ public class TransformerImpl extends XMLFilterImpl
         if(inputHandler instanceof org.apache.xalan.stree.SourceTreeHandler)
         {
           ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
+          ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setUseMultiThreading(true);
           Node doc 
             = ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).getRoot();
           if(null != doc)

@@ -3,8 +3,13 @@ package org.apache.xalan.stree;
 import org.w3c.dom.Node;
 import org.w3c.dom.DocumentFragment;
 
-public class DocumentFragmentImpl extends Parent implements DocumentFragment
+public class DocumentFragmentImpl extends DocumentImpl implements DocumentFragment
 {
+  public DocumentFragmentImpl()
+  {
+    setComplete(true);
+  }
+  
   /** 
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.

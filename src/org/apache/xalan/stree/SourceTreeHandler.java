@@ -90,7 +90,26 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
   }
   
-  public boolean m_useMultiThreading = true;
+  private boolean m_useMultiThreading = false;
+  
+  /**
+   * Set whether or not the tree being built should handle 
+   * transformation while the parse is still going on.
+   */
+  public void setUseMultiThreading(boolean b)
+  {
+    m_useMultiThreading = b;
+  }
+  
+  /**
+   * Tell whether or not the tree being built should handle 
+   * transformation while the parse is still going on.
+   */
+  public boolean getUseMultiThreading()
+  {
+    return m_useMultiThreading;
+  }
+
   
   private boolean indexedLookup = false;      // for now   
   
@@ -110,6 +129,8 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     ((DocumentImpl)m_root).setSourceTreeHandler(this);
     ((DocumentImpl)m_root).setUid(1);
     ((DocumentImpl)m_root).setLevel(new Integer(1).shortValue());
+    ((DocumentImpl)m_root).setUseMultiThreading(getUseMultiThreading());
+
     m_sourceTreeHandler = new StreeDOMBuilder(m_root);
     setShouldStripWhitespace(false);
     
