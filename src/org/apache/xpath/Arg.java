@@ -154,31 +154,49 @@ public class Arg
   }
 
   /** 
-   * True if this is a parameter variable. 
-   * Set at the time the object is constructed.
+   * True if this variable was added with an xsl:with-param or
+   * is added via setParameter.
    */
-  private boolean m_isParamVar;
-  
+  private boolean m_isFromWithParam;
+
   /**
-   * Tell if this variable is a param var.
+   * Tell if this variable is a parameter passed with a with-param or as 
+   * a top-level parameter.
    */
-   public boolean isParamVar()
+   public boolean isFromWithParam()
    {
-    return m_isParamVar;
+    return m_isFromWithParam;
+   }
+
+  /** 
+   * True if this variable is currently visible.  To be visible,
+   * a variable needs to come either from xsl:variable or be 
+   * a "received" parameter, ie one for which an xsl:param has
+   * been encountered.
+   * Set at the time the object is constructed and updated as needed.
+   */
+  private boolean m_isVisible;
+
+  /**
+   * Tell if this variable is currently visible.
+   */
+   public boolean isVisible()
+   {
+    return m_isVisible;
    }
    
   /**
-   * Tell if this variable is a param var.
+   * Update visibility status of this variable.
    */
-   public void setIsParamVar(boolean b)
+   public void setIsVisible(boolean b)
    {
-    m_isParamVar = b;
+    m_isVisible = b;
    }
 
   /**
    * Construct a dummy parameter argument, with no QName and no
-   * value (either expression string or value XObject). isParameterVar
-   * defaults to false.
+   * value (either expression string or value XObject). isVisible
+   * defaults to true.
    */
   public Arg()
   {
@@ -187,7 +205,8 @@ public class Arg
     ;  // so that string compares can be done.
     m_val = null;
     m_expression = null;
-    m_isParamVar = false;
+    m_isVisible = true;
+    m_isFromWithParam = false;
   }
 
   /**
@@ -195,20 +214,21 @@ public class Arg
    *
    * @param qname Name of the argument, expressed as a QName object.
    * @param expression String to be stored as this argument's value expression.
-   * @param isParamVar True if this is a parameter variable.
+   * @param isFromWithParam True if this is a parameter variable.
    */
-  public Arg(QName qname, String expression, boolean isParamVar)
+  public Arg(QName qname, String expression, boolean isFromWithParam)
   {
 
     m_qname = qname;
     m_val = null;
     m_expression = expression;
-    m_isParamVar = isParamVar;
+    m_isFromWithParam = isFromWithParam;
+    m_isVisible = !isFromWithParam;
   }
 
   /**
    * Construct a parameter argument which has an XObject value.
-   * isParamVar defaults to false.
+   * isVisible defaults to true.
    *
    * @param qname Name of the argument, expressed as a QName object.
    * @param val Value of the argument, expressed as an XObject
@@ -218,7 +238,8 @@ public class Arg
 
     m_qname = qname;
     m_val = val;
-    m_isParamVar = false;
+    m_isVisible = true;
+    m_isFromWithParam = false;
     m_expression = null;
   }
   
@@ -245,14 +266,15 @@ public class Arg
    *
    * @param qname Name of the argument, expressed as a QName object.
    * @param val Value of the argument, expressed as an XObject
-   * @param isParamVar True if this is a parameter variable.
+   * @param isFromWithParam True if this is a parameter variable.
    */
-  public Arg(QName qname, XObject val, boolean isParamVar)
+  public Arg(QName qname, XObject val, boolean isFromWithParam)
   {
 
     m_qname = qname;
     m_val = val;
-    m_isParamVar = isParamVar;
+    m_isFromWithParam = isFromWithParam;
+    m_isVisible = !isFromWithParam;
     m_expression = null;
   }
 }

@@ -277,13 +277,13 @@ public class VariableStack extends Stack
     for (int i = (frame.size() - 1); i >= 0; i--)
     {
       Arg arg = (Arg)frame.elementAt(i);
-      if(arg.getQName().equals(qname) && arg.isParamVar())
+      if(arg.getQName().equals(qname) && arg.isFromWithParam())
       {
-        frame.setElementAt(new Arg(qname, xval), i);
+        frame.setElementAt(new Arg(qname, xval, true), i);
         return;
       }
     }
-    frame.push(new Arg(qname, xval, false));
+    frame.push(new Arg(qname, xval, true));
   }
   
   /**
@@ -297,7 +297,7 @@ public class VariableStack extends Stack
     for (int i = (frame.size() - 1); i >= 0; i--)
     {
       Arg arg = (Arg)frame.elementAt(i);
-      arg.setIsParamVar(true);
+      arg.setIsVisible(false);
     }
   }
 
@@ -310,6 +310,16 @@ public class VariableStack extends Stack
    * @param qname The qualified name of the variable.
    * @param val The wrapped value of the variable.
    */
+  // Note that this method will push an Arg onto the Frame even
+  // if an Arg for this qname already exists, effectively hiding that 
+  // previous stack entry.  That entry is never reclaimed.  This could lead to
+  // objects in the Frame that will never be used.  Hopefully, this situation
+  // will be short lived since the frame is released after the node-set is
+  // in the apply-templates is completed.  However, for large node-sets, we
+  // will be putting a lot of unusable entries in the Frame.  If this becomes
+  // a problem, we should replace those matching entries provided that 
+  // isFromWithParam is false.  I'm not sure that the overhead of searching
+  // for matching entries is worth it at this point.  GLP
   public void pushVariable(QName qname, XObject val)
   {
     Stack frame = getCurrentFrame();
@@ -396,7 +406,7 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg)frame.elementAt(i);
 
-      if (arg.getQName().equals(qname) && arg.isParamVar())
+      if (arg.getQName().equals(qname) && arg.isFromWithParam())
       {
         return arg;
       }
@@ -427,7 +437,7 @@ public class VariableStack extends Stack
       {
         Arg arg = (Arg)frame.elementAt(i);
   
-        if (arg.getQName().equals(name) && !arg.isParamVar())
+        if (arg.getQName().equals(name) && arg.isVisible())
         {
           XObject val = arg.getVal();
           if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)

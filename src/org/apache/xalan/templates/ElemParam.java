@@ -149,7 +149,7 @@ public class ElemParam extends ElemVariable
     }
     else
     {
-      arg.setIsParamVar(false);
+      arg.setIsVisible(true);
       if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
     }
