@@ -1336,8 +1336,10 @@ public class ToHTMLStream extends ToStream
                     if (isUTF16Surrogate(ch))
                     {
  
-                            i = writeUTF16Surrogate(ch, chars, i, end);
-
+                            writeUTF16Surrogate(ch, chars, i, end);
+                            i++; // two input characters processed
+                                 // this increments by one and the for()
+                                 // loop itself increments by another one.
                     }
 
                     // The next is kind of a hack to keep from escaping in the case 

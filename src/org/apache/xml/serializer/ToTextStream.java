@@ -300,6 +300,9 @@ void writeNormalizedChars(
 
     if (isCData)
     {
+        // This for() loop always increments i by one at the end
+        // of the loop.  Additional increments of i adjust for when
+        // two input characters are processed.
         for (int i = start; i < end; i++)
         {
             final char c = ch[i];
@@ -316,7 +319,8 @@ void writeNormalizedChars(
                 // This needs to go into a function...
                 if (isUTF16Surrogate(c))
                 {
-                    i = writeUTF16Surrogate(c, ch, i, end);
+                    writeUTF16Surrogate(c, ch, i, end);
+                    i++; // two input characters processed
                 }
                 else
                 {
@@ -347,7 +351,8 @@ void writeNormalizedChars(
 
                 else if (isUTF16Surrogate(c))
                 {
-                    i = writeUTF16Surrogate(c, ch, i, end);
+                    writeUTF16Surrogate(c, ch, i, end);
+                    i++; // two input characters processed
                 }
                 else
                 {
@@ -373,7 +378,8 @@ void writeNormalizedChars(
             }
             else if (isUTF16Surrogate(c))
             {
-                i = writeUTF16Surrogate(c, ch, i, end);
+                writeUTF16Surrogate(c, ch, i, end);
+                i++; // two input characters processed
             }
             else
             {

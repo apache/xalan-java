@@ -979,25 +979,22 @@ abstract public class ToStream extends SerializerBase
     }
 
     /**
-     * Once a surrogate has been detected, write the pair as a single
-     * character reference.
+     * Once a surrogate has been detected, write out the pair of
+     * characters as a single character reference.
      *
      * @param c the first part of the surrogate.
      * @param ch Character array.
      * @param i position Where the surrogate was detected.
      * @param end The end index of the significant characters.
-     * @return i+1.
      * @throws IOException
      * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
      */
-    protected int writeUTF16Surrogate(char c, char ch[], int i, int end)
+    protected void writeUTF16Surrogate(char c, char ch[], int i, int end)
         throws IOException
     {
 
         // UTF-16 surrogate
         int surrogateValue = getURF16SurrogateValue(c, ch, i, end);
-
-        i++;
 
         final java.io.Writer writer = m_writer;
         writer.write('&');
@@ -1006,8 +1003,6 @@ abstract public class ToStream extends SerializerBase
         // writer.write('x');
         writer.write(Integer.toString(surrogateValue));
         writer.write(';');
-
-        return i;
     }
 
     /**
@@ -1018,7 +1013,7 @@ abstract public class ToStream extends SerializerBase
      * @param ch Character array.
      * @param i position Where the surrogate was detected.
      * @param end The end index of the significant characters.
-     * @return i+1.
+     * @return the integer value of the UTF-16 surrogate.
      * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
      */
     int getURF16SurrogateValue(char c, char ch[], int i, int end)
@@ -1149,7 +1144,8 @@ abstract public class ToStream extends SerializerBase
                 // This needs to go into a function... 
                 if (isUTF16Surrogate(c))
                 {
-                    i = writeUTF16Surrogate(c, ch, i, end);
+                    writeUTF16Surrogate(c, ch, i, end);
+                    i++ ; // process two input characters
                 }
                 else
                 {
@@ -1196,7 +1192,8 @@ abstract public class ToStream extends SerializerBase
                 {
                     if (m_cdataTagOpen)
                         closeCDATA();
-                    i = writeUTF16Surrogate(c, ch, i, end);
+                    writeUTF16Surrogate(c, ch, i, end);
+                    i++; // process two input characters
                 }
                 else
                 {
@@ -1621,7 +1618,8 @@ abstract public class ToStream extends SerializerBase
      * @param len length of chars.
      * @param escLF true if the linefeed should be escaped.
      *
-     * @return i+1 if the character was written, else i.
+     * @return i+1 if a character was written, i+2 if two characters
+     * were written out, else return i.
      *
      * @throws org.xml.sax.SAXException
      */
@@ -1639,8 +1637,6 @@ abstract public class ToStream extends SerializerBase
 
         if (i == pos)
         {
-            pos++;
-
             if (0xd800 <= ch && ch < 0xdc00)
             {
 
@@ -1679,7 +1675,7 @@ abstract public class ToStream extends SerializerBase
                 writer.write("&#");
                 writer.write(Integer.toString(next));
                 writer.write(';');
-
+                pos += 2; // count the two characters that went into writing out this entity
                 /*} else if (null != ctbc && !ctbc.canConvert(ch)) {
                 sb.append("&#x");
                 sb.append(Integer.toString((int)ch, 16));
@@ -1697,6 +1693,7 @@ abstract public class ToStream extends SerializerBase
                 {
                     writer.write(ch);
                 }
+                pos++;  // count the single character that was processed
             }
 
         }
