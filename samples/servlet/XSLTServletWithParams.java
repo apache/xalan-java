@@ -87,6 +87,11 @@ import javax.xml.transform.stream.StreamResult;
 
 public class XSLTServletWithParams extends HttpServlet {
 
+  /**
+   * String representing the file separator characters for the System.
+   */
+  public final static String FS = System.getProperty("file.separator");
+  
   public void init(ServletConfig config) throws ServletException
   {
     super.init(config);
@@ -109,12 +114,15 @@ public class XSLTServletWithParams extends HttpServlet {
       Source xmlSource = null;
       Source xslSource = null;
       Transformer transformer = null;
+//get the real path for xml and xsl files.
+      String ctx = getServletContext().getRealPath("") + FS;
+      
       // Get the XML input document.
       if (xml != null && xml.length()> 0)
-        xmlSource = new StreamSource(new URL(xml).openStream());
+        xmlSource = new StreamSource(new URL("file", "", ctx + xml).openStream());
       // Get the stylesheet.
       if (xsl != null && xsl.length()> 0)
-        xslSource = new StreamSource(new URL(xsl).openStream());
+        xslSource = new StreamSource(new URL("file", "", ctx + xsl).openStream());
       if (xmlSource != null) // We have an XML input document.
       {
         if (xslSource == null) // If no stylesheet, look for PI in XML input document.

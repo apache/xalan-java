@@ -77,6 +77,12 @@ import javax.servlet.http.*;
 
 public class UseStylesheetParamServlet extends HttpServlet {
 	
+
+   /**
+    * String representing the file separator characters for the System.
+    */
+    public final static String FS = System.getProperty("file.separator");
+    
 	PrintWriter out;
 	String xslFile, xmlFile, paramValue;
 	public void doGet(HttpServletRequest req,
@@ -104,6 +110,12 @@ public class UseStylesheetParamServlet extends HttpServlet {
 			"<h1>No input for xslFile</h1>");
 			return;
 		}
+        
+        // get the real path for xml and xsl files;
+        String ctx = getServletContext().getRealPath("") + FS;
+        xslFile = ctx + xslFile;
+        xmlFile = ctx + xmlFile;
+         
 		TransformerFactory tFactory =
 			TransformerFactory.newInstance();
 		Transformer transformer =

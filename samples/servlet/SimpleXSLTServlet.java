@@ -79,6 +79,11 @@ import javax.xml.transform.stream.StreamResult;
 
 public class SimpleXSLTServlet extends HttpServlet {
 
+  /**
+   * String representing the file separator characters for the System.
+   */
+  public final static String FS = System.getProperty("file.separator");
+  
   public void init(ServletConfig config) throws ServletException
   {
     super.init(config);
@@ -95,9 +100,11 @@ public class SimpleXSLTServlet extends HttpServlet {
     try
     {	
       TransformerFactory tFactory = TransformerFactory.newInstance();
+      //get the real path for xml and xsl files.
+      String ctx = getServletContext().getRealPath("") + FS;
       // Get the XML input document and the stylesheet.
-      Source xmlSource = new StreamSource(new URL("file:trax.xml").openStream());
-      Source xslSource = new StreamSource(new URL("file:spec.xsl").openStream());
+      Source xmlSource = new StreamSource(new URL("file", "", ctx+"birds.xml").openStream());
+      Source xslSource = new StreamSource(new URL("file", "", ctx+"birds.xsl").openStream());
       // Generate the transformer.
       Transformer transformer = tFactory.newTransformer(xslSource);
       // Perform the transformation, sending the output to the response.

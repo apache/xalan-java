@@ -247,7 +247,8 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
 	    String reqURL = getXSLRequestURL(request);
 	    if (reqURL != null)
 	        return reqURL;
-	    return super.getXSLurl(null);
+	    URL url = toSafeURL(super.getXSLurl(null), request);
+	    return url.toExternalForm();
     }
 
     /**

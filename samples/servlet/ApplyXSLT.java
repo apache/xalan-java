@@ -67,7 +67,6 @@ import javax.xml.transform.OutputKeys;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.StylesheetRoot;
-import org.apache.xalan.templates.OutputProperties;
 // SAX2 Imports
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -82,7 +81,6 @@ import org.xml.sax.SAXNotSupportedException;
 import org.w3c.dom.*;
 import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
-import javax.xml.transform.sax.SAXTransformerFactory;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -117,8 +115,6 @@ public class ApplyXSLT extends HttpServlet
    * @serial
    */
   protected ApplyXSLTProperties ourDefaultParameters = null;
-  private boolean useDefaultTemplates = false;
-  private Templates defaultTemplates = null;
 
   /**
    * String representing the end of line characters for the System.
@@ -147,33 +143,15 @@ public class ApplyXSLT extends HttpServlet
     super.init(config);
     // If the server.root property --see above-- is null, use current working directory
     // as default location for media.properties.
-    if (ROOT != null)
-      CURRENTDIR= ROOT + FS + "servlets" + FS;
+    if (ROOT != null){
+      CURRENTDIR= getServletContext().getRealPath("/WEB-INF/classes/servlet/") + FS;
+	  System.out.println ( CURRENTDIR);}
     else
       CURRENTDIR = System.getProperty("user.dir")+ FS;
     
-	  setDefaultParameters(config);
+	setDefaultParameters(config);
 	
-    setMediaProps(config.getInitParameter("mediaURL"));
-    String defaultXSL = config.getInitParameter("xslURL");
-    try
-    {
-    if (defaultXSL !=null && defaultXSL.length() > 0)
-      compileXSL(defaultXSL);
-    }
-    catch (Exception e){}
-  }
-  
- /**
-  * If a default setting exists for xslURL, create a Templates object
-  * for rapid transformations.
-  */ 
-  protected void compileXSL(String defaultXSL)
-    throws TransformerConfigurationException
-  {
-    TransformerFactory tFactory = TransformerFactory.newInstance();
-    defaultTemplates = tFactory.newTemplates(new StreamSource(defaultXSL));
-    useDefaultTemplates = true;
+    setMediaProps(config.getInitParameter("mediaURL"));	
   }
   
  /**
@@ -295,7 +273,7 @@ public class ApplyXSLT extends HttpServlet
    */
   
   public void process(TransformerFactory tFactory, 
-		          			  HttpServletRequest request,
+					  HttpServletRequest request,
                       HttpServletResponse response)
     throws ServletException, IOException, SAXException
   {
@@ -307,10 +285,10 @@ public class ApplyXSLT extends HttpServlet
 
     // Listener to be used for all reporting
     ApplyXSLTListener listener = new ApplyXSLTListener();
-	  listener.out.println("debug is " + debug);
+	listener.out.println("debug is " + debug);
 
-    Source xmlSource = null;
-	  Source xslSource = null;
+    StreamSource xmlSource = null;
+	StreamSource xslSource = null;
     try
     {
       if ((xmlSource = getDocument(request, listener)) == null)
@@ -328,16 +306,17 @@ public class ApplyXSLT extends HttpServlet
     }
     // creating XSL Stylesheet
     if (xmlSource != null)
-	  {
+	{
       try
       {
-        if ((xslSource = getStylesheet(tFactory, request, xmlSource, listener)) == null)
+	    if ((xslSource = getStylesheet(tFactory, request, xmlSource, listener)) == null)
+		{
           throw new ApplyXSLTException("getStylesheet() returned null",
-                                      new NullPointerException(),
-                                      response.SC_NOT_FOUND);
- 
-        // Must "reset" xmlSource (a StreamSource) after looking for stylesheet PI
-		    xmlSource = getDocument(request, listener); 
+                                       new NullPointerException(),
+                                       response.SC_NOT_FOUND);
+        }
+        // For time being, must "reset" xmlSource after extracting stylesheet PI
+		xmlSource = getDocument(request, listener); 
       }
       catch (ApplyXSLTException axe)
       {
@@ -349,19 +328,19 @@ public class ApplyXSLT extends HttpServlet
       }
     // perform Transformation
 	  
-    if (useDefaultTemplates)
+    if ((xmlSource != null) && (xslSource != null))
     {
-      try
-      {
-        listener.out.println("Using default templates");
-        if (defaultTemplates == null)
+	  try
+	  {
+        listener.out.println("Performing transformation...");
+		
+        Templates templates = tFactory.newTemplates(xslSource);
+        Transformer transformer = templates.newTransformer();
         {
-          listener.out.println("Must recompile default templates");
-          defaultTemplates = tFactory.newTemplates(xslSource);
-        }
-        Transformer transformer = defaultTemplates.newTransformer();
+          try
+          {
             String contentType = null;
-			      contentType = getContentType(defaultTemplates);
+			      contentType = getContentType(templates);
             if (contentType != null);
               response.setContentType(contentType);
 
@@ -376,47 +355,6 @@ public class ApplyXSLT extends HttpServlet
 			
 			      if (debug)              
               writeLog(listener.getMessage(), response.SC_OK);
-        
-      }
-      catch (Exception exc)
-      {
-        ApplyXSLTException axe = new ApplyXSLTException
-				          ("Exception occurred during Transformation:"
-                    + EOL + listener.getMessage() + EOL
-                    + exc.getMessage(), 
-					          exc,
-                    response.SC_INTERNAL_SERVER_ERROR);
-        if (debug) writeLog(axe);
-          displayException(response, axe, debug);      
-       }
-     }   
-      
-     else if ((xmlSource != null) && (xslSource != null))
-     {
-	     try
-	     {
-         listener.out.println("Performing transformation...");		
-         Templates templates = tFactory.newTemplates(xslSource);
-         Transformer transformer = templates.newTransformer();
- 
-         try
-         {
-           String contentType = null;
-			     contentType = getContentType(templates);
-           if (contentType != null);
-             response.setContentType(contentType);
-
-			     if (transformer instanceof TransformerImpl)
-			     {
-			       TransformerImpl transformerImpl = (TransformerImpl)transformer;
-             transformerImpl.setQuietConflictWarnings(ourDefaultParameters.isNoCW(request));
-			     }
-			
-			     setStylesheetParams(transformer, request);			
-	         transformer.transform(xmlSource, new StreamResult(response.getOutputStream()));
-			
-			     if (debug)              
-             writeLog(listener.getMessage(), response.SC_OK);
           }
           catch (Exception exc)
           {
@@ -433,31 +371,32 @@ public class ApplyXSLT extends HttpServlet
           {
             // transformer.reset();
           } // end of try ... catch ... finally
-		    }
-        catch (/*org.xml.sax.SAX*/Exception saxExc)
-        {
-          ApplyXSLTException axe = new ApplyXSLTException
-			                     ("Exception occurred during ctor/Transformation:"
-                             + EOL + listener.getMessage() + EOL
-                             + saxExc.getMessage(), 
-			             					 saxExc,
-                             response.SC_INTERNAL_SERVER_ERROR);
-          if (debug) writeLog(axe);
-          displayException(response, axe, debug);
-        } // end of new try ... catch
-      } // end of if((stylesheetRoot != null) ...
-      if (debug)
+		}
+	  }
+      catch (/*org.xml.sax.SAX*/Exception saxExc)
       {
-        time = System.currentTimeMillis() - time;
-        writeLog("  No Conflict Warnings = " + ourDefaultParameters.isNoCW(request) +
-                 "  Transformation time: " + time + " ms", response.SC_OK);
-      }
+        ApplyXSLTException axe = new ApplyXSLTException
+			                     ("Exception occurred during ctor/Transformation:"
+                                             + EOL + listener.getMessage() + EOL
+                                             + saxExc.getMessage(), 
+			                					  saxExc,
+                                  response.SC_INTERNAL_SERVER_ERROR);
+        if (debug) writeLog(axe);
+        displayException(response, axe, debug);
+      } // end of new try ... catch
+    } // end of if((stylesheetRoot != null) ...
+    if (debug)
+    {
+      time = System.currentTimeMillis() - time;
+      writeLog("  No Conflict Warnings = " + ourDefaultParameters.isNoCW(request) +
+               "  Transformation time: " + time + " ms", response.SC_OK);
     }
+  }
   }  
 
   /**
-   * Returns a Source object with the XML document to be transformed. Attempts will be make to create the 
-   * Source object from the following:
+   * Returns an XML XSLTInputSource DOM.  Attempts will be make to create the DOM from the following
+   * sources:
    * <ol>
    * <li>A relative URL specified in the HTTP request's path information. This capability is intended
    * for use by <b>servlet engines that map</b> some or all XML data to be processed at the server.</li>
@@ -466,12 +405,12 @@ public class ApplyXSLT extends HttpServlet
    * security reasons, this URL will be forced to the local IP host.</li>
    * <li>The HTTP request's XML input stream. This capability is intended for use by chained servlets.</li>
    * </ol>
-   * @param request client HTTPRequest object
+   * @param request May contain or point to the XML XSLTInputSource
    * @param listener To record detailed parsing messages for possible return to requestor
-   * @return Source with XML document to be transformed, or null if the Source could not be located
+   * @return XML XSLTInputSource DOM, or null if the XSLTInputSource could not be parsed
    * @exception ApplyXSLTException Thrown if exception occurs while handling request
    */
-  protected Source getDocument(HttpServletRequest request,
+  protected StreamSource getDocument(HttpServletRequest request,
                                      ApplyXSLTListener listener)
     throws ApplyXSLTException
   {
@@ -484,7 +423,8 @@ public class ApplyXSLT extends HttpServlet
         listener.out.println("Parsing XML Document from PathInfo: " + xmlURL);
         return new StreamSource(new URL("http", ((DefaultApplyXSLTProperties)
                                          ourDefaultParameters).getLocalHost(),
-                                         xmlURL.replace('\\', '/')).openStream());		
+                                         request.getServerPort(),
+                                         xmlURL.replace('\\', '/')).openStream());                          
       }
       // document from Request parameter
       if ((xmlURL = ourDefaultParameters.getXMLurl(request)) != null)
@@ -512,35 +452,34 @@ public class ApplyXSLT extends HttpServlet
   }
 
   /**
-   * Returns a Source object containing the stylesheet.  Attempts will be make to obtain the stylesheet 
-   * from the following sources:
+   * Returns a Templates (StylesheetRoot) object.  Attempts will be make to create the Stylesheet 
+   * from the followingsources:
    * <ol>
-   * <li>A URL specified in the HTTP request's <code>xslURL=</code> parameter. For security reasons, 
-   * this URL will be forced to the local IP host.</li>
-   * <li>A URL specified in the XML document xsl:stylesheet Processing Instruction.  XML documents may contain 
-   * Processing Instruction references to one or more stylesheets using the
-   * <a HREF="http://www.w3.org/TR/xml-stylesheet/>Associating Style Sheets with XML documents</a> 
-   * W3C ecommendation.
+   * <li>A URL specified in the HTTP request's <code>xslURL=</code> parameter.  This capability
+   * is intended for clients wishing to selectively override the server algorithm for applying XSL
+   * stylesheets.  For security reasons, this URL will be forced to the local IP host.</li>
+   * <li>XML association.  XML documents may contain references to one or more stylesheets using
+   * <a HREF="http://www.w3.org/TR/1999/PR-xml-stylesheet-19990114">this</a> W3C proposed recommendation.
    * If the XML document does contain such references, a best match will be chosen based on the browser
    * type making the request and the default association.  This capability enables relationships to be
    * defined between client capabilities and stylesheets capable of acting on these capabilities.</li>
-   * <li>A default stylesheet URL specified when the servlet is loaded. During init(), the servlet
-   * uses this xslURL startup parameter to create a Templates object, which is the used for transformations
-   * where no other stylesheet is designated.</li>
+   * <li>A configured default stylesheet URL</li>
    * </ol>
-   * @param request the client HTTP request, which may include an xslURL parameter
-   * @param xmlSource  the XML document to be transformed
+   * @param request May contain or point to the XSL XSLTInputSource
+   * @param xmlSource  May point to the XSL XSLTInputSource
    * @param listener To record detailed parsing messages for possible return to requestor
-   * @return Source, or null if the stylesheet could not be located.
+   * @return XSL XSLTInputSource, or null if the request could not be parsed
+   * @see #makeDocument
    * @see #getMedia
    * @see #STYLESHEET_ATTRIBUTE
+   * @see #getXSLURLfromDoc
    * @see #toAcceptLanguageConnection
-   * @exception ApplyXSLTException Thrown if exception occurs while locating the stylesheet
+   * @exception ApplyXSLTException Thrown if exception occurs while handling request
    */
-  protected Source getStylesheet(TransformerFactory tFactory,
-				   	        	  			   HttpServletRequest request,
-                                 Source xmlSource,
-                                 ApplyXSLTListener listener)
+  protected StreamSource getStylesheet(TransformerFactory tFactory,
+				   		  			   HttpServletRequest request,
+                                       StreamSource xmlSource,
+                                       ApplyXSLTListener listener)
     throws ApplyXSLTException
   {
     try
@@ -549,30 +488,21 @@ public class ApplyXSLT extends HttpServlet
       String xslURL = ((DefaultApplyXSLTProperties) ourDefaultParameters).getXSLRequestURL(request);
 
       if (xslURL != null)
-      {
         listener.out.println("Parsing XSL Stylesheet Document from request parameter: "
                              + xslURL);
-        useDefaultTemplates = false;
-      }
-      else 
+      else
       {
         // find stylesheet from XML Document, Media tag preference
-        SAXTransformerFactory stf = (SAXTransformerFactory)tFactory;
-        Source styleSource =
-               stf.getAssociatedStylesheet(xmlSource,getMedia(request), null, null);
-        if (styleSource != null)
-        {
-          listener.out.println("Parsing XSL Stylesheet from XML document stylesheet PI.");
-          useDefaultTemplates = false;
-          return styleSource;
+        if (xmlSource != null){
+          listener.out.println("calling getXSLURLfromDoc and getMedia " + getMedia(request) );
+          xslURL = getXSLURLfromDoc(xmlSource, STYLESHEET_ATTRIBUTE, getMedia(request), tFactory);
         }
-        
-        // Configuration Default
-        if ((xslURL = ourDefaultParameters.getXSLurl(null)) != null)
-        {
-          listener.out.println("Parsing XSL Stylesheet Document from configuration: " + xslURL);
-          useDefaultTemplates = true;
-        }
+        if (xslURL != null)
+          listener.out.println("Parsing XSL Stylesheet Document from XML Document tag: " + xslURL);
+        else
+          // Configuration Default
+          if ((xslURL = ourDefaultParameters.getXSLurl(null)) != null)
+            listener.out.println("Parsing XSL Stylesheet Document from configuration: " + xslURL);
       }
       return new StreamSource(xslURL);
     }
@@ -589,7 +519,6 @@ public class ApplyXSLT extends HttpServlet
   /**
    * Returns the response content type specified by the media-type and encoding attributes of
    * the &lt;xsl:output> element(s) of the stylesheet.
-   * Default output property settings are used for any properties not set by the stylesheet. 
    * @param xslSourceRoot XSL Stylesheet to be examined for &lt;xsl:output> elements.
    * @return The response content type (MIME type and charset) of the stylesheet output
    * @see #process
@@ -597,26 +526,24 @@ public class ApplyXSLT extends HttpServlet
   public String getContentType(Templates templates)
   {
     Properties oprops = templates.getOutputProperties();
-    String method = oprops.getProperty(OutputKeys.METHOD);
-    if (method == null) method = "xml"; // the default.
-    
-    Properties defoprops = null;
-    if (method.equals("html"))
-      defoprops = OutputProperties.getDefaultMethodProperties("html");
-    else if (method.equals("text"))
-      defoprops = OutputProperties.getDefaultMethodProperties("text");
-    else
-      defoprops = OutputProperties.getDefaultMethodProperties("xml");
-    
-    String encoding = oprops.getProperty(OutputKeys.ENCODING);
-    if (encoding == null) 
-      encoding = defoprops.getProperty(OutputKeys.ENCODING);
-    
-    String media = oprops.getProperty(OutputKeys.MEDIA_TYPE);
-    if (media == null) 
-      media = defoprops.getProperty(OutputKeys.MEDIA_TYPE);
-    
-    return media + "; charset=" + encoding;
+    String encoding = oprops.getProperty(OutputKeys.ENCODING);  
+          String media = oprops.getProperty(OutputKeys.MEDIA_TYPE);
+          if (media != null)
+          {
+      if (encoding != null)
+        return media + "; charset=" + encoding;
+      return media;
+          }
+          else
+          {
+            String method = oprops.getProperty(OutputKeys.METHOD);
+            if (method.equals("html"))
+                    return "text/html";
+            else if (method.equals("text"))
+                    return "text/plain";
+            else 
+                    return "text/xml";
+          }
   }  
   
 
@@ -821,7 +748,7 @@ public class ApplyXSLT extends HttpServlet
    * @return The preferred XSL stylesheet URL, or null if no XSL stylesheet association is found
    * @see #getStylesheet
    */
-/*  public static String getXSLURLfromDoc(StreamSource xmlSource,
+  public static String getXSLURLfromDoc(StreamSource xmlSource,
                                         String attributeName,
                                         String attributeValue,
                                         TransformerFactory tFactory)
@@ -858,7 +785,7 @@ public class ApplyXSLT extends HttpServlet
     }
     return returnURL;
   }  
-*/
+
  /**
    * The attribute name in the <?xml-stylesheet> tag used in stylesheet selection.
    */
