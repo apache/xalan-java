@@ -67,7 +67,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.axes.AxesWalker;
+import org.apache.xpath.axes.PredicatedNodeTest;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.ContextNodeList;
 
@@ -105,7 +105,7 @@ public class FuncCurrent extends Function
   {
 
     // If we're in a predicate, then this will return non-null.
-    AxesWalker iter = (AxesWalker) xctxt.getSubContextList();
+    PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
     Node currentNode;
 
     if (null != iter)
