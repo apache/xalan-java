@@ -188,7 +188,8 @@ public class StylesheetHandler extends DefaultHandler
   public XPath createXPath(String str)
           throws javax.xml.transform.TransformerException
   {
-    return new XPath(str, getLocator(), this, XPath.SELECT);
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+    return new XPath(str, getLocator(), this, XPath.SELECT, handler);
   }
 
   /**
@@ -204,7 +205,8 @@ public class StylesheetHandler extends DefaultHandler
   XPath createMatchPatternXPath(String str)
           throws javax.xml.transform.TransformerException
   {
-    return new XPath(str, getLocator(), this, XPath.MATCH);
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+    return new XPath(str, getLocator(), this, XPath.MATCH, handler);
   }
 
   /**
@@ -1433,11 +1435,6 @@ public class StylesheetHandler extends DefaultHandler
    * older XSLT namespace URL.
    */
   private boolean warnedAboutOldXSLTNamespace = false;
-
-  /**
-   * The query/pattern-matcher object.
-   */
-  private XPathParser m_xpathProcessor = new XPathParser();
 
   /** Stack of {@link org.xml.sax.helpers.NamespaceSupport} objects. */
   Stack m_nsSupportStack = new Stack();

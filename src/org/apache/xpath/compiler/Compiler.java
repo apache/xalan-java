@@ -72,7 +72,6 @@ import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
-import org.apache.xpath.operations.Quo;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.objects.*;
@@ -1002,7 +1001,7 @@ public class Compiler extends OpMap
     }
     else
     {
-      warn(XPATHErrorResources.WG_FUNCTION_TOKEN_NOT_FOUND, null);  //"function token not found.");
+      error(XPATHErrorResources.ER_FUNCTION_TOKEN_NOT_FOUND, null);  //"function token not found.");
 
       return null;
     }
@@ -1131,6 +1130,7 @@ public class Compiler extends OpMap
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
+    
 
     if (null != m_errorHandler)
     {

@@ -576,6 +576,7 @@ public class XSLTAttributeDef
     }
     catch (TransformerException te)
     {
+      org.xml.sax.SAXException se = new org.xml.sax.SAXException(te);
       throw new org.xml.sax.SAXException(te);
     }
   }

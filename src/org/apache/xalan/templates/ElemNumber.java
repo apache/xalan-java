@@ -684,35 +684,35 @@ public class ElemNumber extends ElemTemplateElement
 
         // countMatchPattern = m_stylesheet.createMatchPattern(contextNode.getNodeName(), this);
         countMatchPattern = new XPath(contextNode.getNodeName(), this, this,
-                                      XPath.MATCH);
+                                      XPath.MATCH, support.getErrorListener());
         break;
       case Node.ATTRIBUTE_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
         countMatchPattern = new XPath("@" + contextNode.getNodeName(), this,
-                                      this, XPath.MATCH);
+                                      this, XPath.MATCH, support.getErrorListener());
         break;
       case Node.CDATA_SECTION_NODE :
       case Node.TEXT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("text()", this);
-        countMatchPattern = new XPath("text()", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("text()", this, this, XPath.MATCH, support.getErrorListener());
         break;
       case Node.COMMENT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("comment()", this);
-        countMatchPattern = new XPath("comment()", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("comment()", this, this, XPath.MATCH, support.getErrorListener());
         break;
       case Node.DOCUMENT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("/", this);
-        countMatchPattern = new XPath("/", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("/", this, this, XPath.MATCH, support.getErrorListener());
         break;
       case Node.PROCESSING_INSTRUCTION_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("pi("+contextNode.getNodeName()+")", this);
         countMatchPattern = new XPath("pi(" + contextNode.getNodeName()
-                                      + ")", this, this, XPath.MATCH);
+                                      + ")", this, this, XPath.MATCH, support.getErrorListener());
         break;
       default :
         countMatchPattern = null;

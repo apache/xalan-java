@@ -177,17 +177,22 @@ public class XPath implements Serializable
    * @param prefixResolver A prefix resolver to use to resolve prefixes to 
    *                       namespace URIs.
    * @param type one of {@link #SELECT} or {@link #MATCH}.
+   * @param errorListener The error listener, or null if default should be used.
    *
    * @throws javax.xml.transform.TransformerException if syntax or other error.
    */
   public XPath(
-          String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type)
+          String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type,
+          ErrorListener errorListener)
             throws javax.xml.transform.TransformerException
   {      
+    if(null == errorListener)
+      errorListener = new org.apache.xml.utils.DefaultErrorHandler();
+    
     m_patternString = exprString;
 
-    XPathParser parser = new XPathParser();
-    Compiler compiler = new Compiler(null, locator);
+    XPathParser parser = new XPathParser(errorListener, locator);
+    Compiler compiler = new Compiler(errorListener, locator);
 
     if (SELECT == type)
       parser.initXPath(compiler, exprString, prefixResolver);
@@ -202,6 +207,25 @@ public class XPath implements Serializable
     // System.out.println("expr: "+expr);
     this.setExpression(expr);
 
+  }
+  
+  /**
+   * Construct an XPath object.  The object must be initialized by the
+   * XPathParser.initXPath method.
+   *
+   * @param exprString The XPath expression.
+   * @param locator The location of the expression, may be null.
+   * @param prefixResolver A prefix resolver to use to resolve prefixes to 
+   *                       namespace URIs.
+   * @param type one of {@link #SELECT} or {@link #MATCH}.
+   *
+   * @throws javax.xml.transform.TransformerException if syntax or other error.
+   */
+  public XPath(
+          String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type)
+            throws javax.xml.transform.TransformerException
+  {  
+    this(exprString, locator, prefixResolver, type, null);    
   }
 
   /**

@@ -121,7 +121,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
         Stylesheet stylesheet;
         try
         {
-          stylesheet = new StylesheetRoot(handler.getSchema());
+          stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
         }
         catch(TransformerConfigurationException tfe)
         {
@@ -189,7 +189,8 @@ public class ProcessorLRE extends ProcessorTemplateElem
 
         appendAndPush(handler, template);
 
-        XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH);
+        XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH, 
+             handler.getStylesheetProcessor().getErrorListener());
 
         template.setMatch(rootMatch);
 

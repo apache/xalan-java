@@ -103,7 +103,7 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
       {
         try
         {
-          stylesheet = new StylesheetRoot(handler.getSchema());
+          stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
         }
         catch(TransformerConfigurationException tfe)
         {

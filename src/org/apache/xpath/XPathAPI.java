@@ -262,7 +262,7 @@ public class XPathAPI
       ? ((Document) namespaceNode).getDocumentElement() : namespaceNode);
 
     // Create the XPath object.
-    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT);
+    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
     return xpath.execute(xpathSupport, contextNode, prefixResolver);
@@ -301,7 +301,7 @@ public class XPathAPI
     //    because XPathContext is weak in a number of areas... perhaps
     //    XPathContext should be done away with.)
     // Create the XPath object.
-    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT);
+    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
     return xpath.execute(new XPathContext(), contextNode, prefixResolver);

@@ -85,6 +85,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.Templates;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.ErrorListener;
 
 /**
  * <meta name="usage" content="general"/>
@@ -98,7 +99,7 @@ public class StylesheetRoot extends StylesheetComposed
    * Uses an XSL stylesheet document.
    * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
-  public StylesheetRoot() throws TransformerConfigurationException
+  public StylesheetRoot(ErrorListener errorListener) throws TransformerConfigurationException
   {
 
     super(null);
@@ -107,9 +108,9 @@ public class StylesheetRoot extends StylesheetComposed
 
     try
     {
-      m_selectDefault = new XPath("node()", this, this, XPath.SELECT);
+      m_selectDefault = new XPath("node()", this, this, XPath.SELECT, errorListener);
 
-      initDefaultRule();
+      initDefaultRule(errorListener);
     }
     catch (TransformerException se)
     {
@@ -130,10 +131,10 @@ public class StylesheetRoot extends StylesheetComposed
    * @param schema The schema used to create this stylesheet
    * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
-  public StylesheetRoot(XSLTSchema schema) throws TransformerConfigurationException
+  public StylesheetRoot(XSLTSchema schema, ErrorListener listener) throws TransformerConfigurationException
   {
 
-    this();
+    this(listener);
     m_availElems = schema.getElemsAvailable();
 
   }
@@ -948,7 +949,7 @@ public class StylesheetRoot extends StylesheetComposed
    *
    * @throws TransformerException
    */
-  private void initDefaultRule() throws TransformerException
+  private void initDefaultRule(ErrorListener errorListener) throws TransformerException
   {
 
     // Then manufacture a default
@@ -956,7 +957,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultRule.setStylesheet(this);
 
-    XPath defMatch = new XPath("*", this, this, XPath.MATCH);
+    XPath defMatch = new XPath("*", this, this, XPath.MATCH, errorListener);
 
     m_defaultRule.setMatch(defMatch);
 
@@ -970,7 +971,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultTextRule.setStylesheet(this);
 
-    defMatch = new XPath("text() | @*", this, this, XPath.MATCH);
+    defMatch = new XPath("text() | @*", this, this, XPath.MATCH, errorListener);
 
     m_defaultTextRule.setMatch(defMatch);
 
@@ -978,7 +979,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultTextRule.appendChild(elemValueOf);
 
-    XPath selectPattern = new XPath(".", this, this, XPath.SELECT);
+    XPath selectPattern = new XPath(".", this, this, XPath.SELECT, errorListener);
 
     elemValueOf.setSelect(selectPattern);
 
@@ -987,7 +988,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultRootRule.setStylesheet(this);
 
-    defMatch = new XPath("/", this, this, XPath.MATCH);
+    defMatch = new XPath("/", this, this, XPath.MATCH, errorListener);
 
     m_defaultRootRule.setMatch(defMatch);
 

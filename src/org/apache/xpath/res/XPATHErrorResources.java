@@ -84,7 +84,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 68;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 69;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -732,6 +732,16 @@ public class XPATHErrorResources extends XResourceBundleBase
   {
     contents[ER_XPATH_READOBJECT][1] = "In XPath.readObject: {0}";
   }
+  
+  /** Field ER_XPATH_READOBJECT         */
+  public static final int ER_FUNCTION_TOKEN_NOT_FOUND = 69;
+
+  static
+  {
+    contents[ER_FUNCTION_TOKEN_NOT_FOUND][1] =
+      "function token not found.";
+  }
+
 
   // Warnings...
 

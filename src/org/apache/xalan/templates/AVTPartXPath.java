@@ -122,7 +122,7 @@ public class AVTPartXPath extends AVTPart
           XPathContext liaison)
             throws javax.xml.transform.TransformerException
   {
-    m_xpath = new XPath(val, null, nsNode, XPath.SELECT);
+    m_xpath = new XPath(val, null, nsNode, XPath.SELECT, liaison.getErrorListener());
   }
 
   /**
