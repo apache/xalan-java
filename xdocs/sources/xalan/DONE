@@ -7,15 +7,15 @@
   <li>Fixed a bug running Norm Walsh's docbook stylesheets by not setting the variable stack position if the TreeWalker is not owned by a
   top-level NodeIterator.<br/><br/></li>
   <li>In the interest of stability, we now treat "unknown error in XPath" as a fatal error.<br/><br/></li>
-  <li>Added support for "text/xml" and "application/xml+xslt" mime types for stylesheet processing instructions.<br/><br/></li>
+  <li>Added support in stylesheet processing instructions for "text/xml" and "application/xml+xslt" mime types.<br/><br/></li>
   <li>Fixed tokenizing of stylesheet processing instructions to allow parameters to be passed to server in href attributes.</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
-  <li>Enabled error messages to be sent to a ProblemListener (ErrorHandler in &xslt4j; 2).<br/><br/></li>
+  <li>Fixed ProblemListener (for processing error messages) to derive from &xslt4j; 2 ErrorHandler.<br/><br/></li>
   <li>Fixed evaluation of stylesheet string parameters to conform to &xslt4j; 1 behavior (expressions for &xslt4j; 1 vs. String objects 
   for &xslt4j; 2).<br/><br/></li>    
-  <li>Fixed the derivation of XObject sub-types (XString, etc.).</li>
+  <li>Added XPathSupport and XPathSupportDefault, and fixed the derivation of XObject sub-types (XString, etc.).</li>
 </ul>
 <p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s3>
