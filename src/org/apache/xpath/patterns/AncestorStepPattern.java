@@ -66,19 +66,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class AncestorStepPattern <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Implements a match pattern step that tests an ancestor.
  */
 public class AncestorStepPattern extends StepPattern
 {
 
   /**
-   * Constructor AncestorStepPattern
+   * Construct an AncestorStepPattern that tests for namespaces and node names.
    *
    *
-   * NEEDSDOC @param whatToShow
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param namespace The namespace to be tested.
+   * @param name The local name to be tested.
    */
   public AncestorStepPattern(int whatToShow, String namespace, String name)
   {
@@ -86,10 +86,10 @@ public class AncestorStepPattern extends StepPattern
   }
 
   /**
-   * Constructor AncestorStepPattern
+   * Construct an AncestorStepPattern that doesn't test for node names.
    *
    *
-   * NEEDSDOC @param whatToShow
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
    */
   public AncestorStepPattern(int whatToShow)
   {
@@ -112,9 +112,13 @@ public class AncestorStepPattern extends StepPattern
    * Overide the super method so that we can handle
    * match patterns starting with a function such as id()/
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -139,12 +143,16 @@ public class AncestorStepPattern extends StepPattern
   }
 
   /**
-   * NEEDSDOC Method executeRelativePathPattern 
+   * Execute the match pattern step relative to another step.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC (executeRelativePathPattern) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

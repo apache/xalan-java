@@ -61,20 +61,21 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class UnionPattern <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * This class represents a union pattern, which can have multiple individual 
+ * StepPattern patterns.
  */
 public class UnionPattern extends Expression
 {
 
-  /** NEEDSDOC Field m_patterns          */
+  /** Array of the contained step patterns to be tested.  */
   private StepPattern[] m_patterns;
 
   /**
-   * NEEDSDOC Method setPatterns 
+   * Set the contained step patterns to be tested. 
    *
    *
-   * NEEDSDOC @param patterns
+   * @param patterns the contained step patterns to be tested. 
    */
   public void setPatterns(StepPattern[] patterns)
   {
@@ -82,10 +83,10 @@ public class UnionPattern extends Expression
   }
 
   /**
-   * NEEDSDOC Method getPatterns 
+   * Get the contained step patterns to be tested. 
    *
    *
-   * NEEDSDOC (getPatterns) @return
+   * @return an array of the contained step patterns to be tested. 
    */
   public StepPattern[] getPatterns()
   {
@@ -93,18 +94,15 @@ public class UnionPattern extends Expression
   }
 
   /**
-   * Test a node to see if it matches the given node test.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   * @param opPos The current position in the xpath.m_opMap array.
-   * @param len The length of the argument.
-   * @param len The type of the step.
-   * @returns score in an XNumber, one of MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
+   * Test a node to see if it matches any of the patterns in the union.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

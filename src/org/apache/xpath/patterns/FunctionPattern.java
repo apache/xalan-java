@@ -67,17 +67,18 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class FunctionPattern <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Match pattern step that contains a function.
  */
 public class FunctionPattern extends StepPattern
 {
 
   /**
-   * Constructor FunctionPattern
+   * Construct a FunctionPattern from a 
+   * {@link org.apache.xpath.functions.Function expression}.
    *
    *
-   * NEEDSDOC @param expr
+   * @param a should be a {@link org.apache.xpath.functions.Function expression}.
    */
   public FunctionPattern(Expression expr)
   {
@@ -99,22 +100,19 @@ public class FunctionPattern extends StepPattern
       calcTargetString();
   }
 
-  /** NEEDSDOC Field m_functionExpr          */
+  /** Should be a {@link org.apache.xpath.functions.Function expression}.   */
   Expression m_functionExpr;
 
   /**
    * Test a node to see if it matches the given node test.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   * @param opPos The current position in the xpath.m_opMap array.
-   * @param len The length of the argument.
-   * @param len The type of the step.
-   * @returns score in an XNumber, one of MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -70,13 +70,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class NodeTest <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * This is the basic node test class for both match patterns and location path 
+ * steps.
  */
 public class NodeTest extends Expression
 {
 
-  /** NEEDSDOC Field WILD          */
+  /** The namespace or local name for node tests with a wildcard.
+   *  @see <a href="http://www.w3.org/TR/xpath#NT-NameTest">the XPath NameTest production.</a> */
   public static final String WILD = "*";
 
   /**
@@ -84,80 +86,104 @@ public class NodeTest extends Expression
    */
   protected int m_whatToShow;
 
-  /** NEEDSDOC Field SHOW_NAMESPACE          */
+  /** This bit specifies a namespace, and extends the SHOW_XXX stuff 
+   *  in {@link org.w3c.dom.NodeFilter}. */
   public static final int SHOW_NAMESPACE = 0x00001000;
 
   /**
    * Special bitmap for match patterns starting with a function.
-   * Make sure this does not conflict with dom.traversal.NodeFilter
+   * Make sure this does not conflict with {@link org.w3c.dom.NodeFilter}.
    */
   public static final int SHOW_BYFUNCTION = 0x00010000;
 
   /**
    * This attribute determines which node types are accepted.
-   * These constants are defined in the <code>NodeFilter</code>
+   * These constants are defined in the {@link org.w3c.dom.NodeFilter}
    * interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return bitset mainly defined in {@link org.w3c.dom.NodeFilter}.
    */
   public int getWhatToShow()
   {
     return m_whatToShow;
   }
 
-  /** NEEDSDOC Field m_namespace          */
+  /** The namespace to be tested for, which may be null. */
   String m_namespace;
 
   /**
    * Return the namespace to be tested.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The namespace to be tested for, or {@link #WILD}, or null.
    */
   public String getNamespace()
   {
     return m_namespace;
   }
 
-  /** NEEDSDOC Field m_name          */
+  /** The local name to be tested for. */
   String m_name;
 
   /**
    * Return the local namespace to be tested.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local namespace to be tested, or {@link #WILD}, or null.
    */
   public String getLocalName()
   {
     return m_name;
   }
 
-  /** NEEDSDOC Field m_score          */
+  /** Statically calculated score for this test.  One of
+   *  {@link #SCORE_NODETEST}, 
+   *  {@link #SCORE_NONE}, 
+   *  {@link #SCORE_NSWILD}, 
+   *  {@link #SCORE_QNAME}, or
+   *  {@link #SCORE_OTHER}.
+   */
   XNumber m_score;
 
-  /** NEEDSDOC Field SCORE_NODETEST          */
+  /** 
+   * The match score if the pattern consists of just a NodeTest.
+   *  @see XSLT Specification -  
+   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
   static final XNumber SCORE_NODETEST =
-                                       new XNumber(XPath.MATCH_SCORE_NODETEST);
+    new XNumber(XPath.MATCH_SCORE_NODETEST);
 
-  /** NEEDSDOC Field SCORE_NSWILD          */
+  /** 
+   * The match score if the pattern pattern has the form NCName:*.
+   *  @see XSLT Specification - 
+   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
   static final XNumber SCORE_NSWILD = new XNumber(XPath.MATCH_SCORE_NSWILD);
 
-  /** NEEDSDOC Field SCORE_QNAME          */
+  /** 
+   * The match score if the pattern has the form
+   * of a QName optionally preceded by an @ character.
+   *  @see XSLT Specification - 
+   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
   static final XNumber SCORE_QNAME = new XNumber(XPath.MATCH_SCORE_QNAME);
 
-  /** NEEDSDOC Field SCORE_OTHER          */
+  /** 
+   * The match score if the pattern consists of something
+   * other than just a NodeTest or just a qname.
+   *  @see XSLT Specification - 
+   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
   static final XNumber SCORE_OTHER = new XNumber(XPath.MATCH_SCORE_OTHER);
 
-  /** NEEDSDOC Field SCORE_NONE          */
+  /** 
+   * The match score if no match is made.
+   *  @see XSLT Specification - 
+   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
   public static final XNumber SCORE_NONE =
-                                          new XNumber(XPath.MATCH_SCORE_NONE);
+    new XNumber(XPath.MATCH_SCORE_NONE);
 
   /**
-   * Constructor NodeTest
+   * Construct an NodeTest that tests for namespaces and node names.
    *
    *
-   * NEEDSDOC @param whatToShow
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param namespace The namespace to be tested.
+   * @param name The local name to be tested.
    */
   public NodeTest(int whatToShow, String namespace, String name)
   {
@@ -165,10 +191,10 @@ public class NodeTest extends Expression
   }
 
   /**
-   * Constructor NodeTest
+   * Construct an NodeTest that doesn't test for node names.
    *
    *
-   * NEEDSDOC @param whatToShow
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
    */
   public NodeTest(int whatToShow)
   {
@@ -176,16 +202,16 @@ public class NodeTest extends Expression
   }
 
   /**
-   * Constructor NodeTest
-   *
+   * Null argument constructor.
    */
   public NodeTest(){}
 
   /**
-   * NEEDSDOC Method initNodeTest 
+   * Initialize this node test by setting the whatToShow property, and 
+   * calculating the score that this test will return if a test succeeds.
    *
    *
-   * NEEDSDOC @param whatToShow
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
    */
   public void initNodeTest(int whatToShow)
   {
@@ -196,12 +222,14 @@ public class NodeTest extends Expression
   }
 
   /**
-   * NEEDSDOC Method initNodeTest 
+   * Initialize this node test by setting the whatToShow property and the 
+   * namespace and local name, and 
+   * calculating the score that this test will return if a test succeeds.
    *
    *
-   * NEEDSDOC @param whatToShow
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param namespace The namespace to be tested.
+   * @param name The local name to be tested.
    */
   public void initNodeTest(int whatToShow, String namespace, String name)
   {
@@ -213,7 +241,7 @@ public class NodeTest extends Expression
     calcScore();
   }
 
-  /** NEEDSDOC Field m_isTotallyWild          */
+  /** True if this test has a null namespace and a local name of {@link #WILD}. */
   private boolean m_isTotallyWild;
 
   /**
@@ -236,10 +264,10 @@ public class NodeTest extends Expression
   }
 
   /**
-   * NEEDSDOC Method getDefaultScore 
+   * Get the score that this test will return if a test succeeds.
    *
    *
-   * NEEDSDOC (getDefaultScore) @return
+   * @return the score that this test will return if a test succeeds.
    */
   public double getDefaultScore()
   {
@@ -247,10 +275,10 @@ public class NodeTest extends Expression
   }
 
   /**
-   * NEEDSDOC Method debugWhatToShow 
+   * Do a diagnostics dump of a whatToShow bit set.
    *
    *
-   * NEEDSDOC @param whatToShow
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
    */
   public static void debugWhatToShow(int whatToShow)
   {
@@ -314,10 +342,10 @@ public class NodeTest extends Expression
    * the name t is wild and the name p is non-null, or the two
    * strings are equal.
    *
-   * NEEDSDOC @param p
-   * NEEDSDOC @param t
+   * @param p part string from the node.
+   * @param t target string, which may be {@link #WILD}.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the strings match according to the rules of this method.
    */
   private static final boolean subPartMatch(String p, String t)
   {
@@ -326,10 +354,26 @@ public class NodeTest extends Expression
     // System.out.println("subPartMatch - p: "+p+", t: "+t+", result: "+b);
     return (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
   }
-  
+
+  /**
+   * Tell what the test score is for the given node.
+   *
+   *
+   * @param xctxt XPath runtime context.
+   * @param context The node being tested.
+   *
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
   public XObject execute(XPathContext xctxt, Node context)
-    throws javax.xml.transform.TransformerException
+          throws javax.xml.transform.TransformerException
   {
+
     short nodeType = context.getNodeType();
     int nodeBit = (m_whatToShow & (0x00000001 << (nodeType - 1)));
 
@@ -348,79 +392,78 @@ public class NodeTest extends Expression
       return subPartMatch(context.getNodeName(), m_name)
              ? m_score : SCORE_NONE;
 
-      // From the draft: "Two expanded names are equal if they 
-      // have the same local part, and either both have no URI or 
-      // both have the same URI."
-      // "A node test * is true for any node of the principal node type. 
-      // For example, child::* will select all element children of the 
-      // context node, and attribute::* will select all attributes of 
-      // the context node."
-      // "A node test can have the form NCName:*. In this case, the prefix 
-      // is expanded in the same way as with a QName using the context 
-      // namespace declarations. The node test will be true for any node 
-      // of the principal type whose expanded name has the URI to which 
-      // the prefix expands, regardless of the local part of the name."
+    // From the draft: "Two expanded names are equal if they 
+    // have the same local part, and either both have no URI or 
+    // both have the same URI."
+    // "A node test * is true for any node of the principal node type. 
+    // For example, child::* will select all element children of the 
+    // context node, and attribute::* will select all attributes of 
+    // the context node."
+    // "A node test can have the form NCName:*. In this case, the prefix 
+    // is expanded in the same way as with a QName using the context 
+    // namespace declarations. The node test will be true for any node 
+    // of the principal type whose expanded name has the URI to which 
+    // the prefix expands, regardless of the local part of the name."
     case NodeFilter.SHOW_ATTRIBUTE :
-      {
-        int isNamespace = (m_whatToShow & SHOW_NAMESPACE);
+    {
+      int isNamespace = (m_whatToShow & SHOW_NAMESPACE);
 
-        if (0 == isNamespace)
-        {
-          DOMHelper dh = xctxt.getDOMHelper();
-
-          if (!dh.isNamespaceNode(context))
-            return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
-                   ? m_score : SCORE_NONE;
-          else
-            return SCORE_NONE;
-        }
-        else
-        {
-          if (xctxt.getDOMHelper().isNamespaceNode(context))
-          {
-            String ns = context.getNodeValue();
-
-            return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
-          }
-          else
-            return SCORE_NONE;
-        }
-      }
-    case NodeFilter.SHOW_ELEMENT :
+      if (0 == isNamespace)
       {
         DOMHelper dh = xctxt.getDOMHelper();
 
-        return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
-               ? m_score : SCORE_NONE;
+        if (!dh.isNamespaceNode(context))
+          return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+                 ? m_score : SCORE_NONE;
+        else
+          return SCORE_NONE;
       }
+      else
+      {
+        if (xctxt.getDOMHelper().isNamespaceNode(context))
+        {
+          String ns = context.getNodeValue();
+
+          return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
+        }
+        else
+          return SCORE_NONE;
+      }
+    }
+    case NodeFilter.SHOW_ELEMENT :
+    {
+      DOMHelper dh = xctxt.getDOMHelper();
+
+      return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+             ? m_score : SCORE_NONE;
+    }
     default :
       return SCORE_NONE;
     }  // end switch(testType)
   }
 
   /**
-   * Test a node to see if it matches the given node test.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   * @param opPos The current position in the xpath.m_opMap array.
-   * @param len The length of the argument.
-   * @param len The type of the step.
-   * @returns score in an XNumber, one of MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
+   * Test the current node to see if it matches the given node test.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
 
     if (m_whatToShow == NodeFilter.SHOW_ALL)
       return m_score;
 
     Node context = xctxt.getCurrentNode();
+
     return execute(xctxt, context);
   }
 }

@@ -58,17 +58,18 @@ package org.apache.xpath.patterns;
 
 /**
  * This interface should be implemented by Nodes and/or iterators,
- * when they need to know what the node test is before get they do
+ * when they need to know what the node test is before they do
  * getNextChild, etc.
  */
 public interface NodeTestFilter
 {
 
   /**
-   * NEEDSDOC Method setNodeTest 
+   * Set the node test for this filter.
    *
    *
-   * NEEDSDOC @param nodeTest
+   * @param nodeTest Reference to a NodeTest that may be used to predetermine 
+   *                 what nodes to return.
    */
   void setNodeTest(NodeTest nodeTest);
 }

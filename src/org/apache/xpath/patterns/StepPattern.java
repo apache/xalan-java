@@ -68,19 +68,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class StepPattern <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * This class represents a single pattern match step.
  */
 public class StepPattern extends NodeTest implements SubContextList
 {
 
   /**
-   * Constructor StepPattern
+   * Construct a StepPattern that tests for namespaces and node names.
    *
    *
-   * NEEDSDOC @param whatToShow
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param name
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param namespace The namespace to be tested.
+   * @param name The local name to be tested.
    */
   public StepPattern(int whatToShow, String namespace, String name)
   {
@@ -88,22 +88,24 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * Constructor StepPattern
+   * Construct a StepPattern that doesn't test for node names.
    *
    *
-   * NEEDSDOC @param whatToShow
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
    */
   public StepPattern(int whatToShow)
   {
     super(whatToShow);
   }
 
-  /** NEEDSDOC Field m_targetString          */
+  /** The target local name or psuedo name, for hash table lookup optimization.  */
   String m_targetString;  // only calculate on head
 
   /**
-   * NEEDSDOC Method calcTargetString 
+   * Calculate the local name or psuedo name of the node that this pattern will test, 
+   * for hash table lookup optimization.
    *
+   * @see {@link org.apache.xpath.compiler.PsuedoNames}.
    */
   public void calcTargetString()
   {
@@ -138,10 +140,12 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method getTargetString 
+   * Get the local name or psuedo name of the node that this pattern will test, 
+   * for hash table lookup optimization.
    *
    *
-   * NEEDSDOC (getTargetString) @return
+   * @return local name or psuedo name of the node.
+   * @see {@link org.apache.xpath.compiler.PsuedoNames}.
    */
   public String getTargetString()
   {
@@ -155,10 +159,11 @@ public class StepPattern extends NodeTest implements SubContextList
   StepPattern m_relativePathPattern;
 
   /**
-   * NEEDSDOC Method setRelativePathPattern 
+   * Set the reference to nodetest and predicate for
+   * parent or ancestor.
    *
    *
-   * NEEDSDOC @param expr
+   * @param expr The relative pattern expression.
    */
   public void setRelativePathPattern(StepPattern expr)
   {
@@ -168,16 +173,16 @@ public class StepPattern extends NodeTest implements SubContextList
     calcScore();
   }
 
-  /** NEEDSDOC Field m_predicates          */
+  /** The list of predicate expressions for this pattern step.   */
   Expression[] m_predicates;
 
   /**
-   * NEEDSDOC Method getPredicate 
+   * Get a predicate expression.
    *
    *
-   * NEEDSDOC @param i
+   * @param i The index of the predicate.
    *
-   * NEEDSDOC (getPredicate) @return
+   * @return A predicate expression.
    */
   public Expression getPredicate(int i)
   {
@@ -185,10 +190,10 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method getPredicateCount 
+   * Get the number of predicates for this match pattern step.
    *
    *
-   * NEEDSDOC (getPredicateCount) @return
+   * @return the number of predicates for this match pattern step.
    */
   public final int getPredicateCount()
   {
@@ -196,10 +201,11 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method setPredicates 
+   * Set the predicates for this match pattern step.
    *
    *
-   * NEEDSDOC @param predicates
+   * @param predicates An array of expressions that define predicates 
+   *                   for this step.
    */
   public void setPredicates(Expression[] predicates)
   {
@@ -225,12 +231,16 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method executeStep 
+   * Execute this pattern step, including predicates.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC (executeStep) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -295,12 +305,14 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method getProximityPosition 
+   * Get the proximity position index of the current node based on this 
+   * node test.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC (getProximityPosition) @return
+   * @return the proximity position index of the current node based on the 
+   *         node test.
    */
   public int getProximityPosition(XPathContext xctxt)
   {
@@ -357,12 +369,15 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method getLastPos 
+   * Get the count of the nodes that match the test, which is the proximity 
+   * position of the last node that can pass this test in the sub context 
+   * selection.  In XSLT 1-based indexing, this count is the index of the last 
+   * node.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC (getLastPos) @return
+   * @return the count of the nodes that match the test.
    */
   public int getLastPos(XPathContext xctxt)
   {
@@ -409,12 +424,16 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method executeRelativePathPattern 
+   * Execute the match pattern step relative to another step.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC (executeRelativePathPattern) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -449,12 +468,17 @@ public class StepPattern extends NodeTest implements SubContextList
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Test the current node to see if it matches the given node test, and if 
+   * it does, and there is a relative path pattern, execute that to see if it 
+   * matches also.
    *
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC @param xctxt
-   *
-   * NEEDSDOC (execute) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -474,18 +498,20 @@ public class StepPattern extends NodeTest implements SubContextList
     return score;
   }
 
-  /** NEEDSDOC Field DEBUG_MATCHES          */
+  /** Set to true to send diagnostics about pattern matches to the consol.  */
   private static final boolean DEBUG_MATCHES = false;
 
   /**
    * Get the match score of the given node.
    *
-   * NEEDSDOC @param xctxt
-   * @param context The current source tree context node.
-   * @returns score, one of MATCH_SCORE_NODETEST,
-   * MATCH_SCORE_NONE, MATCH_SCORE_OTHER, MATCH_SCORE_QNAME.
+   * @param xctxt The XPath runtime context.
+   * @param context The node to be tested.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
