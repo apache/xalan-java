@@ -277,6 +277,7 @@ public class StylesheetRoot extends StylesheetComposed
     
     // Need to clear check for properties at the same import level.
     m_outputProperties.compose(this);
+    m_outputProperties.endCompose(this);
     
     // Now call the compose() method on every element to give it a chance to adjust
     // based on composed values.
