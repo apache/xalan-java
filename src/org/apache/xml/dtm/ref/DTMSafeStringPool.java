@@ -56,7 +56,6 @@
  */
 
 package org.apache.xml.dtm.ref;
-import org.apache.xml.utils.IntVector;
 import java.util.Vector;
 
 /** <p>Like DTMStringPool, but threadsafe. It's been proposed that DTMs
