@@ -256,7 +256,9 @@ public class StylesheetPIHandler extends DefaultHandler
         
       }
 
-      if ((null != type) && type.equals("text/xsl") && (null != href))
+      if ((null != type) 
+          && (type.equals("text/xsl") || type.equals("text/xml") || type.equals("application/xml+xslt"))  
+          && (null != href))
       {
         if (null != m_media)
         {
