@@ -63,6 +63,7 @@ import org.w3c.dom.Node;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xalan.utils.NodeVector;
 import org.xml.sax.SAXException;
 
@@ -411,11 +412,21 @@ class NodeSorter
     
     NodeCompareElem(Node node) throws org.xml.sax.SAXException
     {
+      boolean tryNextKey = true;
       m_node = node;
       if (!m_keys.isEmpty())
       { 
 		    NodeSortKey k1 = (NodeSortKey)m_keys.elementAt(0);
         XObject r = k1.m_selectPat.execute(m_execContext, node, k1.m_namespaceContext);
+        
+        if (r.getType()== XObject.CLASS_NODESET)
+        {
+          if (((XNodeSet)r).nodeset().nextNode() == null)
+            tryNextKey = false;
+        }
+        else if (r == null)
+          tryNextKey = false;
+        
         double d ;
         if(k1.m_treatAsNumbers)
         {  
@@ -429,14 +440,24 @@ class NodeSorter
 		    if (m_keys.size()>1)
 		    {
 			    NodeSortKey k2 = (NodeSortKey)m_keys.elementAt(1);
-          XObject r2 = k2.m_selectPat.execute(m_execContext, node, k2.m_namespaceContext);
-          if(k2.m_treatAsNumbers)
-          {
-            d = r2.num();
-            m_key2Value = new Double(Double.isNaN(d)? 0.0 : d);
+          if (!tryNextKey)
+          {  
+            if(k2.m_treatAsNumbers)            
+              m_key2Value =  new Double(0.0);              
+            else
+              m_key2Value = k2.m_col.getCollationKey("");
           }  
           else
-            m_key2Value = k2.m_col.getCollationKey(r2.str());  
+          {  
+            XObject r2 = k2.m_selectPat.execute(m_execContext, node, k2.m_namespaceContext);
+            if(k2.m_treatAsNumbers)
+            {
+              d = r2.num();
+              m_key2Value = new Double(Double.isNaN(d)? 0.0 : d);
+            }  
+            else
+              m_key2Value = k2.m_col.getCollationKey(r2.str());
+          }
 		    }	  
         /* Leave this in case we decide to use an array later
         while (kIndex <= m_keys.size() && kIndex < maxkey)
