@@ -978,6 +978,8 @@ public class XStringForFSB extends XString
    * the performance of this operation. Does XString.toDouble constitute
    * any measurable percentage of our typical runtime? I suspect not!
    *
+   * %REVIEW%
+   *
    * @return A double value representation of the string, or return Double.NaN 
    * if the string can not be converted.  */
   public double toDouble()
@@ -994,7 +996,7 @@ public class XStringForFSB extends XString
     boolean trailingSpace=false;
     int[] digitsFound={0,0}; // intpart,fracpart
     int digitType=0;    // Index to which kind of digit we're accumulating
-    double doubleResult;
+    double doubleResult=0;
     
     // Scan past leading whitespace characters
     while(start< end &&
@@ -1040,8 +1042,21 @@ public class XStringForFSB extends XString
       case '7':
       case '8':
       case '9':
-        longResult = longResult * 10 + (c - '0'); // Accumulate as int
-        ++digitsFound[digitType]; // Remember scaling
+	// We have a potential overflow issue that we need
+	// to guard against. See Bugzilla 5346.
+	//
+	// %REVIEW% Is it possible that we should be accepting _some_
+	// of the bits of the new digit, but not all of them?
+	long newResult = longResult * 10 + (c - '0');
+	if(newResult>0)
+	{
+	  longResult=newResult;
+	  ++digitsFound[digitType]; // Remember scaling
+	}
+	else
+	{
+	  --digitsFound[1]; // Just scale up by 10, later
+	}
 	break;
 
       default:
@@ -1059,10 +1074,19 @@ public class XStringForFSB extends XString
     // the same thing.
                 
     long scale=1;               // AFAIK, java doesn't have an easier 10^n operation
-    for(int i=digitsFound[1];i>0;--i) 
-      scale*=10;
-                
-    doubleResult=((double)longResult)/scale;
+    
+    if(digitsFound[1]>0)		// Normal fractional-part processing
+    {
+	    for(int i=digitsFound[1];i>0;--i) 
+ 	     scale*=10;
+	    doubleResult=((double)longResult)/scale;
+    }
+    else 						// Case where int-part overflow exceeds frac-part length
+    {
+	    for(int i=digitsFound[1];i<0;++i) 
+ 	     scale*=10;
+	    doubleResult=((double)longResult)*scale;
+    }
                 
     if(isNegative)
       doubleResult *= -1;
