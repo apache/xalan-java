@@ -652,7 +652,7 @@ public class Compiler extends OpMap
   /**
    * Count the number of predicates in the step.
    */
-  private int countPredicates(int opPos)
+  public int countPredicates(int opPos)
     throws org.xml.sax.SAXException
   {
     int count = 0;
