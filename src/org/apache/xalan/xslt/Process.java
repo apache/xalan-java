@@ -169,14 +169,18 @@ public class Process
 		System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
   }
 
-  /** Default properties file          */
-  static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
-
   /**
-   * Command line interfact to transform the XML according to
-   * the instructions found in the XSL stylesheet.
-   *  <p>To set stylesheet parameters from the command line, use -PARAM name expression. If
-   *  you want to set the parameter to a string value, enclose the string in single quotes (') to
+   * Command line interface to transform an XML document according to
+   * the instructions found in an XSL stylesheet.  
+   * <p>The Process class provides basic functionality for 
+   * performing transformations from the command line.  To see a 
+   * list of arguments supported, call with zero arguments.</p>
+   * <p>To set stylesheet parameters from the command line, use 
+   * <code>-PARAM name expression</code>. If you want to set the 
+   * parameter to a string value, simply pass the string value 
+   * as-is, and it will be interpreted as a string.  (Note: if 
+   * the value has spaces in it, you may need to quote it depending 
+   * on your shell environment).</p>
    *
    * @param argv Input parameters from command line
    */
@@ -202,7 +206,6 @@ public class Process
         
     String flavor = "s2s";
 
-    // loadPropertyFileToSystem(XSLT_PROPERTIES);
     if (argv.length < 1)
     {
       printArgOptions(resbundle);
