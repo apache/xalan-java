@@ -295,14 +295,23 @@ public class StreamXMLOutput extends StreamOutput {
 	throws TransletException 
     {
 // System.out.println("namespace prefix = " + prefix + " uri = " + uri);
-	String escaped = escapeString(uri);
+	final String escaped = escapeString(uri);
+
 	if (_startTagOpen) {
 	    if (pushNamespace(prefix, escaped)) {
-		_buffer.append(' ').append(XMLNS_PREFIX);
 		if (prefix != null && prefix != EMPTYSTRING) {
-		    _buffer.append(':').append(prefix);
+		    // Ignore if not default NS and if uri is ""
+		    if (escaped.length() > 0) {
+			_buffer.append(' ').append(XMLNS_PREFIX)
+			       .append(':').append(prefix)
+			       .append("=\"").append(escaped).append('"');
+		    }
 		}
-		_buffer.append("=\"").append(escaped).append('"');
+		else {
+		    _buffer.append(' ').append(XMLNS_PREFIX)
+		           .append("=\"").append(escaped).append('"');
+		}
+
 	    }
 	}
 	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
