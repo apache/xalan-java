@@ -179,6 +179,15 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         _namespaceHash = new Hashtable();
         _prefixArray = new Hashtable();
 
+        Integer eType = new Integer(getExpandedTypeID(EMPTYSTRING, EMPTYSTRING,
+                                                      DTM.NAMESPACE_NODE));
+        _nsIndex.put(eType, new Integer(_URICount++));
+  
+        eType = new Integer(getExpandedTypeID(XML_PREFIX,
+                                     "http://www.w3.org/XML/1998/namespace",
+                                     DTM.NAMESPACE_NODE));
+        _prefixArray.put(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
+        _nsIndex.put(eType, new Integer(_URICount++));
 
         for (int node = docIter.next();
              node != DTM.NULL;
@@ -208,9 +217,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
             namesArray[idx] = name;
             if (uri != null) {
                 final String prefix = (String)_prefixArray.get(uri);
-                final Integer eType =
-                             new Integer(getExpandedTypeID(uri, prefix,
-                                                           DTM.NAMESPACE_NODE));
+                eType = new Integer(getExpandedTypeID(uri, prefix,
+                                                      DTM.NAMESPACE_NODE));
                 final short URIIdx = ((Integer)_nsIndex.get(eType))
                                                        .shortValue();
                 namespace[idx] = URIIdx;
@@ -242,8 +250,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         final boolean hasNamespace = (uri.length() != 0 &&
                                       !prefix.equals(XML_PREFIX));
         if (hasNamespace) {
-            Integer eType = new Integer (getExpandedTypeID(uri, prefix,
-                                                           DTM.NAMESPACE_NODE));
+            Integer eType = new Integer(getExpandedTypeID(uri, prefix,
+                                                          DTM.NAMESPACE_NODE));
             if ((Integer)_nsIndex.get(eType) == null) {
                 _prefixArray.put(uri, prefix);
                 _nsIndex.put(eType, new Integer(_URICount++));
@@ -957,7 +965,11 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public int getNSType(int node)
     {
-    	int eType = super.getNamespaceType(node);
+        final String uri = getNamespaceURI(node);
+        if (uri == null || uri.length() == 0) {
+            return 0;
+        }
+        int eType = getExpandedTypeID(uri, getPrefix(node), DTM.NAMESPACE_NODE);
     	return ((Integer)_nsIndex.get(new Integer(eType))).intValue();        
     }
     
@@ -1102,7 +1114,9 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 
       for (i=0; i<nsLength; i++)
       {
-        int eType = getExpandedTypeID(namespaces[i], (String)_prefixArray.get(namespaces[i]) , DTM.NAMESPACE_NODE); // need to make it public in SAX2DTM...
+        int eType = getExpandedTypeID(namespaces[i],
+                                      (String)_prefixArray.get(namespaces[i]),
+                                      DTM.NAMESPACE_NODE);
         Integer type = (Integer)_nsIndex.get(new Integer(eType));
         if (type != null)
         {
@@ -1319,6 +1333,13 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	case DTM.TEXT_NODE:
 	case DTM.COMMENT_NODE:
 	    return EMPTYSTRING;
+        case DTM.NAMESPACE_NODE:
+            final String name = this.getLocalName(nodeh);
+            // %HZ% %REVISIT% DTM bug?  Should DTM.getLocalName for a default
+            // %HZ% %REVISIT% namespace declaration return the empty string or
+            // %HZ% %REVISIT% "xmlns"?  DOM2DTM returns the latter, but SAX2DTM
+            // %HZ% %REVISIT% the former.
+            return name.equals("xmlns") ? EMPTYSTRING : name;
 	default:
 	    return super.getNodeName(nodeh);
 	}
@@ -1330,7 +1351,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public String getNamespaceName(final int node) 
     {
-        if (node == DTM.NULL)
+        if (node == DTM.NULL || getNodeType(node) == DTM.NAMESPACE_NODE)
             return EMPTYSTRING;
         String s;
         return (s = getNamespaceURI(node)) == null ? EMPTYSTRING : s;
