@@ -74,8 +74,9 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.DeclHandler;
 
-public class DefaultSAXOutputHandler implements ContentHandler {
+public class DefaultSAXOutputHandler implements ContentHandler, DeclHandler {
 
     // The output writer
     private Writer _writer;
@@ -376,8 +377,8 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     /**
      * SAX2: Receive notification of a processing instruction.
      */
-    public void processingInstruction(String target, String data) throws 
-	SAXException {
+    public void processingInstruction(String target, String data)
+	throws SAXException {
 	try {
             if (_startTagOpen) closeStartTag(true);
             _writer.write(BEGPI);
@@ -423,6 +424,23 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     public void endPrefixMapping(String prefix) {
 	// Do nothing
     }
+
+    public void attributeDecl(java.lang.String eName, java.lang.String aName, java.lang.String type, java.lang.String valueDefault, java.lang.String value) {
+
+    }
+
+    public void elementDecl(java.lang.String name, java.lang.String model) {
+
+    }
+
+    public void externalEntityDecl(java.lang.String name, java.lang.String publicId, java.lang.String systemId) {
+
+    }
+
+    public void internalEntityDecl(java.lang.String name, java.lang.String value) {
+
+    }
+    
 
     /**
      * Adds a newline in the output stream and indents to correct level

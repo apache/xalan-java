@@ -67,9 +67,11 @@ package org.apache.xalan.xsltc.runtime;
 import java.io.*;
 import java.util.Stack;
 
-import org.apache.xalan.xsltc.*;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.ext.DeclHandler;
+
+import org.apache.xalan.xsltc.*;
 
 public final class TextOutput implements TransletOutputHandler {
 
@@ -85,6 +87,8 @@ public final class TextOutput implements TransletOutputHandler {
     private int	   _outputType = UNKNOWN;
     private String _encoding;
     private String _mediaType = "text/html";
+    private String _doctypeSystem = null;
+    private String _doctypePublic = null;
 
     private boolean   _escapeChars = false;
     private boolean   _startTagOpen = false;
@@ -132,6 +136,7 @@ public final class TextOutput implements TransletOutputHandler {
 
     // Reference to the SAX2 handler that consumes this handler's output
     private ContentHandler _saxHandler;
+    private DeclHandler    _declHandler;
 
     /**
      * Creates a new translet output post-processor
@@ -154,6 +159,22 @@ public final class TextOutput implements TransletOutputHandler {
     public TextOutput(ContentHandler handler, String encoding)
 	throws IOException {
         _saxHandler = handler;
+        init();
+	_encoding = encoding;
+    }
+
+    /**
+     * Creates a new translet output post-processor
+     *
+     * @param handler A SAX2 handler to consume the generated SAX events 
+     * @param encoding The default encoding to use (set in <xsl:output>)
+     * @throws IOException
+     */
+    public TextOutput(ContentHandler saxHandler, DeclHandler declHandler,
+		      String encoding)
+	throws IOException {
+        _saxHandler = saxHandler;
+	_declHandler = declHandler;
         init();
 	_encoding = encoding;
     }
@@ -457,6 +478,12 @@ public final class TextOutput implements TransletOutputHandler {
 		    setTypeInternal(XML);
 	    }
 
+	    // Handle document type declaration (for first element only)
+	    if ((_doctypeSystem != null) && (_declHandler != null)) {
+		// _declHandler.something(something);
+		_doctypeSystem = null;
+	    }
+
 	    _depth++;
 	    _elementName = elementName;
 	    _attributes.clear();
@@ -647,6 +674,8 @@ public final class TextOutput implements TransletOutputHandler {
 
 	if (prefix.equals(XML_PREFIX)) return;
 
+	if ((!prefix.equals(EMPTYSTRING)) && (uri.equals(EMPTYSTRING))) return;
+
 	Stack stack;
 	// Get the stack that contains URIs for the specified prefix
 	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
@@ -798,7 +827,8 @@ public final class TextOutput implements TransletOutputHandler {
      * Set the output document system/public identifiers
      */
     public void setDoctype(String system, String pub) {
-	// TODO - pass these to the SAX output handler - how?
+	_doctypeSystem = system;
+	_doctypePublic = pub;
     }
 
     /**

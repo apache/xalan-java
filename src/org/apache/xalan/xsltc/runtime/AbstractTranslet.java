@@ -542,7 +542,7 @@ public abstract class AbstractTranslet implements Translet {
 		if (_standalone != null) handler.setStandalone(_standalone);
 		if (_omitHeader) handler.omitHeader(true);
 		if (_indent) handler.setIndent(_indent);
-		if ((_doctypePublic != null) && (_doctypeSystem != null))
+		if (_doctypeSystem != null)
 		    handler.setDoctype(_doctypeSystem, _doctypePublic);
 	    }
 	    // Transfer all output settings relevant to HTML output
@@ -552,7 +552,7 @@ public abstract class AbstractTranslet implements Translet {
 		    handler.setIndent(_indent);
 		else
 		    handler.setIndent(true);
-		if ((_doctypePublic != null) && (_doctypeSystem != null))
+		if (_doctypeSystem != null)
 		    handler.setDoctype(_doctypeSystem, _doctypePublic);
 		if (_mediaType != null) handler.setMediaType(_mediaType);
 	    }
@@ -569,7 +569,7 @@ public abstract class AbstractTranslet implements Translet {
 	    if (_standalone != null) handler.setStandalone(_standalone);
 	    if (_omitHeader) handler.omitHeader(true);
 	    if (_indent) handler.setIndent(_indent);
-	    if ((_doctypePublic != null) && (_doctypeSystem != null))
+	    if (_doctypeSystem != null)
 		handler.setDoctype(_doctypeSystem, _doctypePublic);
 	}
     }
