@@ -16,7 +16,10 @@ TBD: - The faq doesn't show in the content
 <xsl:stylesheet
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
      xmlns:fo="http://www.w3.org/1999/XSL/Format">
-
+     
+   <!-- to use document func to get resources.xml -->
+  <xsl:variable name="resourceFile" select="'../../sources/xalan/resources.xml'"/>  
+              
 <xsl:template match ="/">
 	<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
 
@@ -286,13 +289,11 @@ TBD: - The faq doesn't show in the content
 
 
 <xsl:template match="resource-ref">
-  <xsl:variable name="resourceFile" 
-          select="../../../sources/xalan/resources.xml"/>
   <xsl:variable name="xref" select="@idref"/>
   <xsl:variable name="href"
-          select="document('../../sources/xalan/resources.xml')/resources/resource[@id=$xref]/@location"/>
+          select="document($resourceFile)/resources/resource[@id=$xref]/@location"/>
   <xsl:variable name="label"
-          select="document('../../sources/xalan/resources.xml')/resources/resource[@id=$xref]/@title"/>
+          select="document($resourceFile)/resources/resource[@id=$xref]/@title"/>
   <fo:basic-link color="blue">
      <xsl:attribute name="external-destination">
        <xsl:if test="starts-with($href,'apidocs')">
@@ -312,9 +313,9 @@ TBD: - The faq doesn't show in the content
           select="./xalan/resources.xml"/>  
     <xsl:variable name="ref"  select="@idref"/>
     <xsl:variable name="mailto"
-          select="document('../../sources/xalan/resources.xml')/resources/human-resource[@id=$ref]/@mailto"/>
+          select="document($resourceFile)/resources/human-resource[@id=$ref]/@mailto"/>
     <xsl:variable name="name"
-          select="document('../../sources/xalan/resources.xml')/resources/human-resource[@id=$ref]/@name"/>
+          select="document($resourceFile)/resources/human-resource[@id=$ref]/@name"/>
   <fo:basic-link color="blue" external-destination="mailto:{$mailto}">
      <xsl:value-of select="$name"/>
      <!--xsl:apply-templates/--> 
