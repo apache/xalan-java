@@ -124,6 +124,10 @@ Copyright:
   <property name="build.compat.jar" value="${build.dir}/${compat.jar}"/>
   <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
 
+   <!-- xml-commons sources (for Javadoc) -->                                                                        
+   <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>                                                                         
+   <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-src.tar"/>
+ 
   <!-- Documentation and samples information  -->
   <property name="Name-in-docs" value="Xalan-Java"/>
   <property name="version.file" value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
@@ -620,13 +624,19 @@ Copyright:
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
   <target name="javadocs" depends="jar,prepare.docs,autojavadocs"
-    description="Build the Javadocs for Xalan 2.x sources" >
+    description="Build the Javadocs for Xalan 2.x and xml-commons sources" >
     <echo message="javadocs is human-usable target with dependencies"/>  
   </target>
 
   <target name="autojavadocs">
-    <echo message="autojavadocs is for automated build process, without dependencies"/>    
+    <echo message="autojavadocs is for automated build process, without dependencies"/>
     
+      <!-- Expand xml-commons sources (JAXP 1.1, DOM 2, and SAX 2) into source tree for 
+           inclusion in the Javadoc. -->                                            
+     <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />                                                                         
+     <untar src="${xml-commons-srcs.tar}" dest="${src.dir}" /><!-- Note this is into the src area.-->                                                                         
+     <delete file="${xml-commons-srcs.tar}"/>
+      
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
          public="true"
