@@ -57,7 +57,9 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   static final boolean DEBUG = false;
   
   /**
-   * This is set by an "xalan:doc-cache-off" pi.  It tells the engine that
+   * This is set by an "xalan-doc-cache-off" pi, or the old "xalan:doc-cache-off" pi.
+   * The old form of the PI only works for XML parsers that are not namespace aware.
+   * It tells the engine that
    * documents created in the location paths executed by this element
    * will not be reparsed. It's set by StylesheetHandler during
    * construction. Note that this feature applies _only_ to xsl:for-each
