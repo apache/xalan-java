@@ -165,10 +165,10 @@ public final class XSLTC {
     /**
      * Only for user by the internal TrAX implementation.
      */
-    public void setParser(Parser parser) {
-	_parser = parser;
+    public Parser getParser() {
+        return _parser;
     }
-
+ 
     /**
      * Only for user by the internal TrAX implementation.
      */

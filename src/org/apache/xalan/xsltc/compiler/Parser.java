@@ -109,16 +109,16 @@ public class Parser implements Constants, ContentHandler {
     private Hashtable   _variableScope;
     private Stylesheet  _currentStylesheet;
     private SymbolTable _symbolTable; // Maps QNames to syntax-tree nodes
-    private Output      _output = null;
+    private Output      _output;
     private Template    _template;    // Reference to the template being parsed.
 
-    private boolean     _rootNamespaceDef = false; // Used for validity check
+    private boolean     _rootNamespaceDef; // Used for validity check
 
-    private SyntaxTreeNode _root = null;
+    private SyntaxTreeNode _root;
 
     private String _target;
 
-    private int _currentImportPrecedence = 1;
+    private int _currentImportPrecedence;
 
     public Parser(XSLTC xsltc) {
 	_xsltc = xsltc;
@@ -136,6 +136,9 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable         = new SymbolTable();
 	_xpathParser         = new XPathParser(this);
 	_currentStylesheet   = null;
+        _output              = null;
+        _root                = null;
+        _rootNamespaceDef    = false;
 	_currentImportPrecedence = 1;
 	
 	initStdClasses();

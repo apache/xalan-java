@@ -1151,7 +1151,7 @@ private static final boolean DEBUG = false;
   /**
    * Warn the user of an problem.
    *
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -1160,7 +1160,7 @@ private static final boolean DEBUG = false;
    * @throws TransformerException if the current ErrorListoner determines to 
    *                              throw an exception.
    */
-  public void warn(int msg, Object[] args) throws TransformerException
+  public void warn(String msg, Object[] args) throws TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHWarning(msg, args);
@@ -1204,7 +1204,7 @@ private static final boolean DEBUG = false;
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -1213,7 +1213,7 @@ private static final boolean DEBUG = false;
    * @throws TransformerException if the current ErrorListoner determines to 
    *                              throw an exception.
    */
-  public void error(int msg, Object[] args) throws TransformerException
+  public void error(String msg, Object[] args) throws TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
