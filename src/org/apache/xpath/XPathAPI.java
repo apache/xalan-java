@@ -71,13 +71,7 @@ import org.apache.xpath.objects.XObject;
 
 /**
  * The methods in this class are convenience methods into the
- * low-level XPath API.  We would like to eventually move these
- * methods into the XPath core, but would like to do some peer
- * review first to make sure we have it right.
- * Please note that these methods execute pure XPaths. They do not
- * implement those parts of XPath extended by XSLT, such as the
- * document() function).  If you want to install XSLT functions, you
- * have to use the low-level API.
+ * low-level XPath API.  
  * These functions tend to be a little slow, since a number of objects must be
  * created for each evaluation.  A faster way is to precompile the
  * XPaths using the low-level API, and then just use the XPaths
