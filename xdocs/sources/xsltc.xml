@@ -72,10 +72,10 @@
              label="Xsltc Native API" 
              source="xsltc/xsltc_native_api.xml"/>
    <document id="xsltc_trax_api"
-             label="Xsltc Native API" 
+             label="Xsltc TrAX API" 
              source="xsltc/xsltc_trax_api.xml"/>
  <separator/>
- <external href="todo.html" label="To-do list"/>
+ <external href="todo.html" label="Credits"/>
             
 </book>
   
