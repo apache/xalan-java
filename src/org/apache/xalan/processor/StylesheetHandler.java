@@ -1125,7 +1125,7 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @param s non-null reference to a stylesheet.
    */
-  void pushStylesheet(Stylesheet s)
+  public void pushStylesheet(Stylesheet s)
   {
 
     if (m_stylesheets.size() == 0)
