@@ -578,7 +578,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    default:
 		// Escape all characters not in the basic ASCII character set
 		// to simple (hexadecimal) character references
-		if (ch[i] > '\u00ff') {
+		// GTM Mortens line: if (ch[i] > '\u00ff') {
+		if (ch[i] > '\u0080') {
 		    StringBuffer buf = new StringBuffer(CHAR_ESC_START);
 		    buf.append(Integer.toString((int)ch[i]));
 		    buf.append(';');
