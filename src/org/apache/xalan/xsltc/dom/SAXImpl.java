@@ -65,38 +65,69 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.io.Externalizable;
+import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.IOException;
-import java.util.Dictionary;
 import java.util.Enumeration;
-import java.util.Stack;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Document;
-
-import org.xml.sax.*;
-import org.xml.sax.ext.*;
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.util.IntegerArray;
-import org.apache.xalan.xsltc.runtime.BasisLibrary;
-import org.apache.xalan.xsltc.runtime.SAXAdapter;
-import org.apache.xalan.xsltc.runtime.Hashtable;
-
-import org.apache.xml.dtm.ref.*;
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
-import org.apache.xml.utils.XMLStringFactory;
-
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.Source;
 
-public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.runtime.SAXAdapter;
+import org.apache.xml.utils.XMLStringFactory;
+
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
+
+import org.apache.xalan.xsltc.*;
+import org.apache.xml.dtm.ref.*;
+import org.apache.xml.dtm.*;
+
+
+public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
 {
+    
+    /* ------------------------------------------------------------------- */
+    /* DOMBuilder fields BEGIN                                             */
+    /* ------------------------------------------------------------------- */
+    private final static int INIT_STACK_LENGTH = 64;
+
+    private int       _parentStackLength    = INIT_STACK_LENGTH;
+    private int[]     _parentStack          = new int[INIT_STACK_LENGTH];
+    private int       _sp;
+    private int       _currentNode          = 0;
+
+    // Temporary structures for attribute nodes
+    private int       _currentAttributeNode = 1;
+
+    // Namespace prefix-to-uri mapping stuff
+    private int       _uriCount     = 0;
+    private int       _prefixCount  = 0;
+
+    // Stack used to keep track of what whitespace text nodes are protected
+    // by xml:space="preserve" attributes and which nodes that are not.
+    private int[]   _xmlSpaceStack = new int[64];
+    private int     _idx = 1;
+    private boolean _preserve = false;
+
+    private static final String XML_STRING = "xml:";
+    private static final String XML_PREFIX   = "xml";   
+    private static final String XMLSPACE_STRING = "xml:space";
+    private static final String PRESERVE_STRING = "preserve";
+    private static final String XMLNS_PREFIX = "xmlns";
+
+    private boolean _escaping = true;
+    private boolean _disableEscaping = false;
+
+    /* ------------------------------------------------------------------- */
+    /* DOMBuilder fields END                                               */
+    /* ------------------------------------------------------------------- */
+
     // empty String for null attribute values
     private final static String EMPTYSTRING = "";
 
@@ -118,17 +149,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     private int       _treeNodeLimit;
     private int       _firstAttributeNode;
 
-    // Node-to-type, type-to-name, and name-to-type mappings
+     // Node-to-type, type-to-name, and name-to-type mappings
     private int[] _types;
     private String[]  _namesArray;
 
-    // Tree navigation arrays
-    private int[]     _offsetOrChild; // Serves two purposes !!!
-    private int[]     _lengthOrAttr;  // Serves two purposes !!!
-
     // Namespace related stuff
-    private String[]  _uriArray;
-    private short[]   _namespace;
     private Hashtable _nsIndex = new Hashtable();
 
     // Tracks which textnodes are whitespaces and which are not
@@ -141,12 +166,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     private String    _documentURI = null;
     static private int _documentURIIndex = 0;
 
+    // Object used to map TransletOutputHandler events to SAX events
+    private CH2TOH _ch2toh = new CH2TOH();
+
     // Support for access/navigation through org.w3c.dom API
     private Node[] _nodes;
     private NodeList[] _nodeLists;
-    private static NodeList _emptyNodeList;
-    private static NamedNodeMap _emptyNamedNodeMap;
-
     private final static String XML_LANG_ATTRIBUTE =
         "http://www.w3.org/XML/1998/namespace:@lang";
 
@@ -308,24 +333,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         return new DTMAxisIterNodeList(this, iter);
     }
 
-    /**
-     * Create an empty org.w3c.dom.NodeList
-     */
-    private NodeList getEmptyNodeList() {
-        return (_emptyNodeList != null)
-                       ? _emptyNodeList
-                       : (_emptyNodeList = new DTMNodeListBase());
-    }
-
-    /**
-     * Create an empty org.w3c.dom.NamedNodeMap
-     */
-    private NamedNodeMap getEmptyNamedNodeMap() {
-        return _emptyNamedNodeMap != null
-                       ? _emptyNamedNodeMap
-                       : (_emptyNamedNodeMap = new DTMNamedNodeMap(this,
-                                                                   DTM.NULL));
-    }
 
     /**
      * Exception thrown by methods in inner classes implementing
@@ -685,33 +692,100 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     }
 
     /**
-     * Returns the leftmost descendant of a node (bottom left in sub-tree)
-     */
-    private int leftmostDescendant(int node)
-    {
-      int current;
-      while (getType(current = node) >= DTM.NTYPES
-             && (node = getFirstChild(node)) != DTM.NULL)
-      {
-      }
-      return current;
-    }
-
-    /**
-     * Returns index of last child or 0 if no children
-     * (returns DTM.NULL in fact)
-     */
-    private int lastChild(int node)
-    {
-      return getLastChild(node);
-    }
-
-    /**
      * Returns the parent of a node
      *
     public int getParent(final int node) {
 	return _parent[node];
     }  use DTM's */
+
+    public int getElementPosition(int node) {
+      // Initialize with the first sbiling of the current node
+      int match = 0;
+      int curr  = getFirstChild(getParent(node));
+      if (isElement(curr)) match++;
+
+      // Then traverse all other siblings up until the current node
+      while (curr != node)
+      {
+        curr = getNextSibling(curr);
+        if (isElement(curr)) match++;
+      }
+
+      // And finally return number of matches
+      return match;
+    }
+
+    public int getAttributePosition(int attr)
+    {
+      // Initialize with the first sbiling of the current node
+      int match = 1;
+      int curr  = getFirstChild(getParent(attr));
+
+      // Then traverse all other siblings up until the current node
+      while (curr != attr)
+      {
+        curr = getNextSibling(curr);
+        match++;
+      }
+
+      // And finally return number of matches
+      return match;
+    }
+
+    /**
+     * Returns a node's position amongst other nodes of the same type
+     */
+    public int getTypedPosition(int type, int node)
+    {
+      // Just return the basic position if no type is specified
+      switch(type)
+      {
+      case DTM.ELEMENT_NODE:
+        return getElementPosition(node);
+      case DTM.ATTRIBUTE_NODE:
+        return getAttributePosition(node);
+      case -1:
+        type = getNodeType(node);
+      }
+
+      // Initialize with the first sbiling of the current node
+      int match = 0;
+      int curr  = getFirstChild(getParent(node));
+      if (getExpandedTypeID(curr) == type) match++;
+
+      // Then traverse all other siblings up until the current node
+      while (curr != node)
+      {
+        curr = getNextSibling(curr);
+        if (getExpandedTypeID(curr) == type) match++;
+      }
+
+      // And finally return number of matches
+      return match;
+    }
+
+    /**
+     * Returns an iterator's last node of a given type
+     */
+    public int getTypedLast(int type, int node)
+    {
+      // Just return the basic position if no type is specified
+      if (type == -1) type = getNodeType(node);
+
+      // Initialize with the first sbiling of the current node
+      int match = 0;
+      int curr  = getFirstChild(getParent(node));
+      if (getExpandedTypeID(curr) == type) match++;
+
+      // Then traverse all other siblings up until the very last one
+      while (curr != DTM.NULL)
+      {
+        curr = getNextSibling(curr);
+        if (getExpandedTypeID(curr) == type) match++;
+      }
+
+      return match;
+    }
 
     /**
      * Returns singleton iterator containg the document root
@@ -887,7 +961,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     {
       int i;
       final int nsLength = namespaces.length;
-      final int mappingLength = _uriArray.length;
+ //     final int mappingLength = _uriArray.length;
+      final int mappingLength = _uriCount;
+
       final short[] result = new short[mappingLength];
 
       // Initialize all entries to -1
@@ -928,69 +1004,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       return result;
     }
 
-   
-    /**
-     * Dump the whole tree to a file (serialized)
-     */
-    public void writeExternal(ObjectOutput out) throws IOException
-    {
-      out.writeInt(_treeNodeLimit);      // number of nodes in DOM
-      out.writeInt(_firstAttributeNode); // index of first attribute node
-      out.writeObject(_documentURI);     // URI of original document
-
-      //out.writeObject(_type);            // type of every node in DOM
-      out.writeObject(_namespace);       // namespace URI of each type
-
-      out.writeObject(_offsetOrChild);   // first child of every node in DOM
-      out.writeObject(_lengthOrAttr);    // first attr of every node in DOM
-
-      out.writeObject(_namesArray);      // names of all element/attr types
-      out.writeObject(_uriArray);        // name of all URIs
-
-      out.writeObject(_whitespace);
-
-      if (_dontEscape != null) {
-	    out.writeObject(_dontEscape);
-	}
-	else {
-	    out.writeObject(new BitArray(0));
-	}
-
-      out.flush();
-    }
-
-    /**
-     * Read the whole tree from a file (serialized)
-     */
-    public void readExternal(ObjectInput in)
-      throws IOException, ClassNotFoundException
-    {
-      _treeNodeLimit = in.readInt();
-      _firstAttributeNode = in.readInt();
-      _documentURI = (String)in.readObject();
-
-      //_type          = (short[])in.readObject();
-      _namespace     = (short[])in.readObject();
-      //_prefix        = (short[])in.readObject();
-
-      //_parent        = (int[])in.readObject();
-      //_nextSibling   = (int[])in.readObject();
-      _offsetOrChild = (int[])in.readObject();
-      _lengthOrAttr  = (int[])in.readObject();
-
-      _namesArray    = (String[])in.readObject();
-      _uriArray      = (String[])in.readObject();
-
-      _whitespace    = (BitArray)in.readObject();
-      
-      _dontEscape    = (BitArray)in.readObject();
-	if (_dontEscape.size() == 0) {
-	    _dontEscape = null;
-        }
-
-      _types         = setupMapping(_namesArray, _namesArray.length);
-    }
-
     /*
      * These init sizes have been tuned for the average case. Do not
      * change these values unless you know exactly what you're doing.
@@ -1020,17 +1033,345 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
             doIndexing);
       initialize(size, size < 128 ? SMALL_TEXT_SIZE
                                   : size * DEFAULT_TEXT_FACTOR);
+                                  
+       /* From DOMBuilder */ 
+      _xmlSpaceStack[0] = DTMDefaultBase.ROOTNODE;                            
     }
 
     /**
      *  defines initial size
      */
-    public void initialize(int size, int textsize)
+    private void initialize(int size, int textsize)
     {
-      _offsetOrChild        = new int[size];
-      _lengthOrAttr         = new int[size];
       _whitespace           = new BitArray(size);
     }
+
+   /*---------------------------------------------------------------------------*/
+   /* DOMBuilder methods begin                                                  */
+   /*---------------------------------------------------------------------------*/
+    /**
+     * Call this when an xml:space attribute is encountered to
+     * define the whitespace strip/preserve settings.
+     */
+    private void xmlSpaceDefine(String val, final int node)
+  {
+    final boolean setting = val.equals(PRESERVE_STRING);
+    if (setting != _preserve)
+    {
+      _xmlSpaceStack[_idx++] = node;
+      _preserve = setting;
+    }
+  }
+
+    /**
+     * Call this from endElement() to revert strip/preserve setting
+     * to whatever it was before the corresponding startElement()
+     */
+    private void xmlSpaceRevert(final int node)
+  {
+    if (node == _xmlSpaceStack[_idx - 1])
+    {
+      _idx--;
+      _preserve = !_preserve;
+    }
+  }
+
+    /**
+     * Returns the next available node. Increases the various arrays
+     * that constitute the node if necessary.
+     */
+//    private int nextNode()
+//  {
+//    final int index = _currentNode++;
+//   /* if (index == _names.length + DTM.NTYPES) //_type.length)
+//    {
+//      resizeArrays((_names.length + DTM.NTYPES) * 2, index);
+//    }*/
+//    return index;
+//  }
+
+    /**
+     * Returns the next available attribute node. Increases the
+     * various arrays that constitute the attribute if necessary
+     */
+  private int nextAttributeNode()
+  {
+    final int index = _currentAttributeNode++;
+    return index;
+  }
+
+    /**
+     * Sets the current parent
+     */
+    private void linkParent(final int node)
+  {
+    if (++_sp >= _parentStackLength)
+    {
+      int length = _parentStackLength;
+      _parentStackLength = length + INIT_STACK_LENGTH;
+
+      final int newParent[] = new int[_parentStackLength];
+      System.arraycopy(_parentStack,0,newParent,0,length);
+      _parentStack = newParent;
+
+    }
+    _parentStack[_sp] = node;
+  }
+
+    /**
+     * Creates a text-node and checks if it is a whitespace node.
+   */
+  private int makeTextNode(boolean isWhitespace)
+  {
+      final int node = getNumberOfNodes()-1; //nextNode();
+      
+      // Tag as whitespace node if the parser tells us that it is...
+      if (isWhitespace) {      
+        _whitespace.setBit(node);
+        _currentNode = node;   // Catch up?? ILENE
+        
+      // ...otherwise we check if this is a whitespace node, unless
+      // the node is protected by an xml:space="preserve" attribute.
+      } else if (!_preserve) {
+           while (_currentNode < node) {
+              int nodeh = makeNodeHandle(++_currentNode);
+              if (isWhitespace(nodeh)) { 
+                  _whitespace.setBit(_currentNode);
+              }
+           }
+      }
+      
+      if (_disableEscaping) {
+          if (_dontEscape == null) {
+              _dontEscape = new BitArray(_whitespace.size());
+          }
+          _dontEscape.setBit(_currentNode);
+          _disableEscaping = false;
+      }
+      return node;
+  }
+
+    private int makeNamespaceNode(String prefix, String uri)
+        throws SAXException
+  {
+
+            final int node = nextAttributeNode();
+        //characters(uri);
+       // storeAttrValRef(node);
+        return node;
+    }
+
+
+    /****************************************************************/
+    /*               SAX Interface Starts Here                      */
+    /****************************************************************/
+
+    /**
+     * SAX2: Receive notification of character data.
+     */
+  public void characters(char[] ch, int start, int length) throws SAXException
+  {
+       super.characters(ch, start, length);
+        
+       _disableEscaping = !_escaping;  
+
+  }
+
+    /**
+     * SAX2: Receive notification of the beginning of a document.
+     */
+    public void startDocument() throws SAXException
+  {
+
+        super.startDocument();
+        _sp             = 0;
+        _parentStack[0] = DTMDefaultBase.ROOTNODE;  // root
+        _currentNode    = DTMDefaultBase.ROOTNODE + 1;
+        _currentAttributeNode = 1;
+
+        definePrefixAndUri(EMPTYSTRING, EMPTYSTRING);
+        startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
+    }
+
+    /**
+     * SAX2: Receive notification of the end of a document.
+     */
+    public void endDocument() throws SAXException
+  {
+
+     makeTextNode(false);
+
+    final int namesSize = m_expandedNameTable.getSize() - DTM.NTYPES;
+    _types = new int[m_expandedNameTable.getSize()];
+ 
+    // Fill the _namesArray[] array
+    String[] namesArray = new String[namesSize];
+    int nameCount = 0;
+
+    for (int i = 0; i < namesSize; i++) {
+        final short nodeType =
+                        m_expandedNameTable.getType(i+DTM.NTYPES);
+        final boolean isAttr = (nodeType == DTM.ATTRIBUTE_NODE);
+        if (isAttr || nodeType == DTM.ELEMENT_NODE) {
+            final String uri = m_expandedNameTable
+                                        .getNamespace(i+DTM.NTYPES);
+            final String lName = m_expandedNameTable
+                                        .getLocalName(i+DTM.NTYPES);
+
+            if (uri != null && uri.length() != 0) {
+                namesArray[nameCount++] = isAttr ? (uri + ":@" + lName)
+                                               : uri + ":" + lName;
+            } else {
+                namesArray[nameCount++] = isAttr ? ("@"+lName) : lName;
+            }
+            int type = getExpandedTypeID(uri, lName, nodeType);
+           _types[type] = type;
+            
+        }
+        
+    }
+    _namesArray = namesArray;
+//    _types = setupMapping(_namesArray, nameCount);
+    // trim arrays' sizes
+    //resizeTextArray(_currentOffset);
+
+    _firstAttributeNode = _currentNode;
+   // shiftAttributes(_currentNode);
+    resizeArrays(_currentNode + _currentAttributeNode, _currentNode);
+   // appendAttributes();
+    //_treeNodeLimit = _currentNode + _currentAttributeNode;
+
+
+        super.endDocument();
+  }
+
+    /**
+     * SAX2: Receive notification of the beginning of an element.
+     */
+    public void startElement(String uri, String localName,
+                 String qname, Attributes attributes)
+        throws SAXException
+  {
+     super.startElement(uri, localName, qname, attributes);
+
+    // Get node index and setup parent/child references
+    final int node = makeTextNode(false); //nextNode();
+    linkParent(node);
+
+    // Look for any xml:space attributes
+    // Depending on the implementation of attributes, this
+    // might be faster than looping through all attributes. ILENE
+    final int index = attributes.getIndex(XMLSPACE_STRING);
+    if (index > 0) {
+        xmlSpaceDefine(attributes.getValue(index), node);
+    }
+  }
+
+    /**
+     * SAX2: Receive notification of the end of an element.
+     */
+    public void endElement(String namespaceURI, String localName,
+                   String qname) throws SAXException
+        {
+        super.endElement(namespaceURI, localName, qname);
+
+      makeTextNode(false);
+
+        // Revert to strip/preserve-space setting from before this element
+            // use m_parent??
+        xmlSpaceRevert(_parentStack[_sp--]);
+    }
+
+    /**
+     * SAX2: Receive notification of a processing instruction.
+     */
+    public void processingInstruction(String target, String data)
+        throws SAXException
+        {
+        super.processingInstruction(target, data);
+        makeTextNode(false);
+    }
+
+    /**
+     * SAX2: Receive notification of ignorable whitespace in element
+     * content. Similar to characters(char[], int, int).
+     */
+    public void ignorableWhitespace(char[] ch, int start, int length)
+            throws SAXException
+        {
+            super.ignorableWhitespace(ch, start, length);
+            makeTextNode(true);
+        }
+
+    /**
+     * SAX2: Begin the scope of a prefix-URI Namespace mapping.
+     */
+    public void startPrefixMapping(String prefix, String uri)
+        throws SAXException
+        {
+            super.startPrefixMapping(prefix, uri);
+            definePrefixAndUri(prefix, uri);
+
+            makeTextNode(false);
+            makeNamespaceNode(prefix, uri);
+        }
+
+    private void definePrefixAndUri(String prefix, String uri) 
+        throws SAXException 
+    {
+            // Check if the URI already exists before pushing on stack
+            Integer eType = new Integer(getIdForNamespace(uri));
+            if ((Integer)_nsIndex.get(eType) == null) {
+                _nsIndex.put(eType, new Integer(_uriCount++));
+            }
+    }
+ 
+
+    /**
+     * SAX2: Report an XML comment anywhere in the document.
+     */
+    public void comment(char[] ch, int start, int length)
+            throws SAXException
+        {
+            // Why do we need to call makeTextNode twice.  Second
+            // call should cover both
+        //   makeTextNode(false); 
+            super.comment(ch, start, length);
+            makeTextNode(false);
+        }
+
+    /**
+     * Similar to the SAX2 method character(char[], int, int), but this
+     * method takes a string as its only parameter. The effect is the same.
+     */
+    private void characters(final String string)
+        {
+            final int length = string.length();
+ //           _currentOffset += length;
+    
+        }
+
+    private void resizeArrays(final int newSize, int length) {
+    if ((length < newSize) && (newSize == _currentNode))
+      length = _currentNode;
+
+    // Resize the '_whitespace' array (a BitArray instance)
+    _whitespace.resize(newSize);
+    // Resize the '_dontEscape' array (a BitArray instance)
+    if (_dontEscape != null) {
+        _dontEscape.resize(newSize);
+    }
+  }
+
+        public boolean setEscaping(boolean value) {
+            final boolean temp = _escaping;
+            _escaping = value; 
+            return temp;
+        }
+   
+   /*---------------------------------------------------------------------------*/
+   /* DOMBuilder methods end                                                    */
+   /*---------------------------------------------------------------------------*/
 
     /**
      * Prints the whole tree to standard output
@@ -1100,15 +1441,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         return (s = getNamespaceURI(node)) == null ? EMPTYSTRING : s;
     }
 
-    /**
-     * Returns the string value of a single text/comment node or
-     * attribute value (they are all stored in the same array).
-     */
-    private String makeStringValue(final int node)
-    {
-      return getStringValue(node).toString();
-    }
-
+ 
     /**
      * Returns the attribute node of a given type (if any) for an element
      */
@@ -1130,14 +1463,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     {
       final int attr = getAttributeNode(type, element);
       return (attr != DTM.NULL) ? getStringValue(attr).toString() : EMPTYSTRING;
-    }
-
-    /**
-     * Returns true if a given element has an attribute of a given type
-     */
-    public boolean hasAttribute(final int type, final int node)
-    {
-      return (getAttributeNode(type, node) != DTM.NULL);
     }
 
     /**
@@ -1340,13 +1665,19 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     }
 
     /**
-     * Copy the contents of a text-node to an output handler
+     * Copy the string value of a node directly to an output handler
      */
-    public void characters(final int textNode, TransletOutputHandler handler)
+    public void characters(final int node, TransletOutputHandler handler)
       throws TransletException
     {
-      //TODO: child of a text node== null!!
-        handler.characters(getNodeValue(textNode));
+        if (node != DTM.NULL) {
+            _ch2toh.setTOH(handler);
+            try {
+                dispatchCharactersEvents(node, _ch2toh, false);
+            } catch (SAXException e) {
+                throw new TransletException(e);
+            }
+        }
     }
 
     /**
@@ -1393,9 +1724,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         copyPI(node, handler);
         break;
       case DTM.COMMENT_NODE:
-        handler.comment(getNodeValue(node)/*_text,
-                                   _offsetOrChild[node],
-                                   _lengthOrAttr[node])*/);
+        handler.comment(getNodeValue(node));
         break;
       case DTM.TEXT_NODE:
         boolean oldEscapeSetting = false;
@@ -1407,8 +1736,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
                 oldEscapeSetting = handler.setEscaping(false);
             }
         }
-
-        handler.characters(getNodeValue(node));
+        characters(node, handler);
         
         if (escapeBit) {
             handler.setEscaping(oldEscapeSetting);
@@ -1500,16 +1828,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      case DTM.DOCUMENT_NODE:
         return EMPTYSTRING;
       case DTM.TEXT_NODE:
-        handler.characters(this.getNodeValue(node));
+        characters(node, handler);      
         return null;
       case DTM.PROCESSING_INSTRUCTION_NODE:
         copyPI(node, handler);
         return null;
       case DTM.COMMENT_NODE:
-        final String comment = getNodeValue(node); /*)new String(_text,
-                                          _offsetOrChild[node],
-                                          _lengthOrAttr[node]);*/
-        handler.comment(comment);
+        handler.comment(getNodeValue(node));
         return null;
       case DTM.NAMESPACE_NODE:
         handler.namespace(getNodeNameX(node), //_prefixArray[_prefix[node]],
@@ -1565,15 +1890,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         handler.startElement(name);
       }
 
-/*  %HZ%:  How do the namespaces normally get copied?
-      // Copy element's namespaces
-      for (int a = getFirstNamespaceNode(node, false);
-               a != DTM.NULL;
-               a = getNextNamespaceNode(node, a, false)) {
-          handler.namespace(getPrefix(a), getStringValue(a).toString());
-      }
-*/
-
       return name;
     }
 
@@ -1582,26 +1898,31 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      */
     public String getStringValue()
     {
-      return getElementValue(getDocument()); //DTMDefaultBase.ROOTNODE);
+      final int doc = getDocument();
+      final int child = getFirstChild(doc);
+      if (child == DTM.NULL) return EMPTYSTRING;
+      
+      // optimization: only create StringBuffer if > 1 child      
+      if ((getNodeType(child) == DTM.TEXT_NODE) && (getNextSibling(child) == DTM.NULL))
+        return getStringValue(child).toString();
+      else
+        return stringValueAux(new StringBuffer(), doc).toString();
     }
 
     /**
      * Returns the string value of any element
      */
-    public String getElementValue(final int element)
-    {
-      // optimization: only create StringBuffer if > 1 child
-      final int child = getFirstChild(element);
-      if (child == DTM.NULL)
-        return EMPTYSTRING;
-      if ((getNodeType(child) == DTM.TEXT_NODE) && (getNextSibling(child) == DTM.NULL))
-        return getStringValue(child).toString();
-      else
-        return stringValueAux(new StringBuffer(), element).toString();
-    }
+//    public String getElementValue(final int element)
+//    {
+//      // optimization: only create StringBuffer if > 1 child
+//      final int child = getFirstChild(element);
+//      if (child == DTM.NULL)
+//        return EMPTYSTRING;
+//      
+//    }
 
     /**
-     * Helper to getElementValue() above
+     * Helper to getStringValue() above
      */
     private StringBuffer stringValueAux(StringBuffer buffer, final int element)
     {
@@ -1613,16 +1934,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         case DTM.COMMENT_NODE:
           break;
         case DTM.TEXT_NODE:
-          buffer.append(getStringValue(child).toString());/*_text,
-                        _offsetOrChild[child],
-                        _lengthOrAttr[child]); */
+          buffer.append(getStringValue(child).toString());
           break;
         case DTM.PROCESSING_INSTRUCTION_NODE:
-          /* This method should not return anything for PIs
-          buffer.append(_text,
-          _offsetOrChild[child],
-          _lengthOrAttr[child]);
-          */
           break;
         default:
           stringValueAux(buffer, child);
@@ -1661,21 +1975,15 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	    switch (getNodeType(child)) {
 	    case DTM.COMMENT_NODE:
 		buffer.append("<!--");
-		buffer.append(buffer.append(getStringValue(child).toString()));/*_text,
-			      _offsetOrChild[child],
-			      _lengthOrAttr[child]);*/
+		buffer.append(buffer.append(getStringValue(child).toString()));
 		buffer.append("-->");
 		break;
 	    case DTM.TEXT_NODE:
-		buffer.append(buffer.append(getStringValue(child).toString()));/*_text,
-			      _offsetOrChild[child],
-			      _lengthOrAttr[child]);*/
+		buffer.append(buffer.append(getStringValue(child).toString()));
 		break;
 	    case DTM.PROCESSING_INSTRUCTION_NODE:
 		buffer.append("<?");
-		buffer.append(buffer.append(getStringValue(child).toString()));/*_text,
-			      _offsetOrChild[child],
-			      _lengthOrAttr[child]);*/
+		buffer.append(buffer.append(getStringValue(child).toString()));
 		buffer.append("?>");
 		break;
 	    default:
@@ -1721,7 +2029,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      */
     public DOMBuilder getBuilder()
     {
-	return new DOMBuilderImpl();
+	return this;
     }
 
     /**
@@ -1733,7 +2041,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     {
       //DOMBuilder builder = getBuilder();
      // return new SAXAdapter(builder, builder);
-      return new SAXAdapter(new DOMBuilderImpl());
+      return new SAXAdapter(this);
     }
     
     /**
@@ -1771,594 +2079,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
         return idAttrsTable;
     }
 
-    /**
-     * Returns true if a character is an XML whitespace character.
-     * Order of tests is important for performance ([space] first).
-     */
-    private static final boolean isWhitespaceChar(char c) {
-	return c == 0x20 || c == 0x0A || c == 0x0D || c == 0x09;
+    public boolean compareNodeToString(int node, String value) {
+        return getStringValue(node).equals(value);
     }
-
-
-    /****************************************************************/
-    /*               DOM builder class definition                   */
-    /****************************************************************/
-    private final class DOMBuilderImpl implements DOMBuilder
-    {
-
-	private final static int ATTR_ARRAY_SIZE = 32;
-	private final static int REUSABLE_TEXT_SIZE = 0;  // turned off
-	private final static int INIT_STACK_LENGTH = 64;
-
-	private Hashtable _shortTexts           = null;
-
-	private Hashtable _names                = null;
-	private int       _nextNameCode         = NTYPES;
-	private int       _parentStackLength    = INIT_STACK_LENGTH;
-	private int[]     _parentStack          = new int[INIT_STACK_LENGTH];
-	//private int[]     _previousSiblingStack = new int[INIT_STACK_LENGTH];
-	private int       _sp;
-	private int       _baseOffset           = 0;
-	private int       _currentOffset        = 0;
-	private int       _currentNode          = 0;
-
-	// Temporary structures for attribute nodes
-	private int       _currentAttributeNode = 1;
-	private short[]   _type2        = new short[ATTR_ARRAY_SIZE];
-
-	// Namespace prefix-to-uri mapping stuff
-	private Hashtable _nsPrefixes   = new Hashtable();
-	private int       _uriCount     = 0;
-	private int       _prefixCount  = 0;
-
-	// Stack used to keep track of what whitespace text nodes are protected
-	// by xml:space="preserve" attributes and which nodes that are not.
-	private int[]   _xmlSpaceStack = new int[64];
-	private int     _idx = 1;
-	private boolean _preserve = false;
-
-	private static final String XML_STRING = "xml:";
-	private static final String XML_PREFIX   = "xml";	
-	private static final String XMLSPACE_STRING = "xml:space";
-	private static final String PRESERVE_STRING = "preserve";
-	private static final String XMLNS_PREFIX = "xmlns";
-
-        private boolean _escaping = true;
-	private boolean _disableEscaping = false;
-
-
-	/**
-	 * Default constructor for the DOMBuiler class
-	 */
-	public DOMBuilderImpl()
-  {
-	    _xmlSpaceStack[0] = DTMDefaultBase.ROOTNODE;
-	}
-
-	/**
-	 * Returns the namespace URI that a prefix currently maps to
-	 */
-	private String getNamespaceURI(String prefix)
-  {
-    // Get the stack associated with this namespace prefix
-  /*  final Stack stack = (Stack)_nsPrefixes.get(prefix);
-    if ((stack != null) && (!stack.empty()))
-    {
-      return((String)stack.peek());
-    }
-    else
-      return(EMPTYSTRING);*/
-       return SAXImpl.this.getNamespaceURI(prefix);
-  }
-
-	/**
-	 * Call this when an xml:space attribute is encountered to
-	 * define the whitespace strip/preserve settings.
-	 */
-	private void xmlSpaceDefine(String val, final int node)
-  {
-    final boolean setting = val.equals(PRESERVE_STRING);
-    if (setting != _preserve)
-    {
-      _xmlSpaceStack[_idx++] = node;
-      _preserve = setting;
-    }
-  }
-
-	/**
-	 * Call this from endElement() to revert strip/preserve setting
-	 * to whatever it was before the corresponding startElement()
-	 */
-	private void xmlSpaceRevert(final int node)
-  {
-    if (node == _xmlSpaceStack[_idx - 1])
-    {
-      _idx--;
-      _preserve = !_preserve;
-    }
-  }
-
-	/**
-	 * Returns the next available node. Increases the various arrays
-	 * that constitute the node if necessary.
-	 */
-	private int nextNode()
-  {
-    final int index = _currentNode++;
-   /* if (index == _names.length + DTM.NTYPES) //_type.length)
-    {
-      resizeArrays((_names.length + DTM.NTYPES) * 2, index);
-    }*/
-    return index;
-  }
-
-	/**
-	 * Returns the next available attribute node. Increases the
-	 * various arrays that constitute the attribute if necessary
-	 */
-  private int nextAttributeNode()
-  {
-    final int index = _currentAttributeNode++;
-    return index;
-  }
-
-	/**
-	 * Sets the current parent
-	 */
-	private void linkParent(final int node)
-  {
-    if (++_sp >= _parentStackLength)
-    {
-      int length = _parentStackLength;
-      _parentStackLength = length + INIT_STACK_LENGTH;
-
-      final int newParent[] = new int[_parentStackLength];
-      System.arraycopy(_parentStack,0,newParent,0,length);
-      _parentStack = newParent;
-
-      //final int newSibling[] = new int[_parentStackLength];
-      //System.arraycopy(_previousSiblingStack,0,newSibling,0,length);
-      //_previousSiblingStack = newSibling;
-    }
-    _parentStack[_sp] = node;
-  }
-
-	/*
-	 * This method will check if the current text node contains text that
-	 * is already in the text array. If the text is found in the array
-	 * then this method returns the offset of the previous instance of the
-	 * string. Otherwise the text is inserted in the array, and the
-	 * offset of the new instance is inserted.
-	 * Updates the globals _baseOffset and _currentOffset
-	 *
-	private int maybeReuseText(final int length)
-  {
-    final int base = _baseOffset;
-    if (length <= REUSABLE_TEXT_SIZE)
-    {
-      // Use a char array instead of string for performance benefit
-      char[] chars = new char[length];
-      System.arraycopy(_text, base, chars, 0, length);
-      final Integer offsetObj = (Integer)_shortTexts.get(chars);
-
-      if (offsetObj != null)
-      {
-        _currentOffset = base;       // step back current
-        return offsetObj.intValue(); // reuse previous string
-      }
-      else
-      {
-        _shortTexts.put(chars, new Integer(base));
-      }
-    }
-    _baseOffset = _currentOffset; // advance base to current
-    return base;
-  }
-
-	/**
-	 * Creates a text-node and checks if it is a whitespace node.
-   */
-  private int makeTextNode(boolean isWhitespace)
-  {
-      final int node = getNumberOfNodes()-1; //nextNode();
-      // Tag as whitespace node if the parser tells us that it is...
-      if (isWhitespace)
-      {
-      	_whitespace.setBit(node);
-      }
-      // ...otherwise we check if this is a whitespace node, unless
-      // the node is protected by an xml:space="preserve" attribute.
-      else if (!_preserve)
-      {
-      	while (_currentNode < node)
-      	{
-      		int nodeh = makeNodeHandle(++_currentNode);
-         if (isWhitespace(nodeh))
-        { 
-          _whitespace.setBit(_currentNode);
-        }
-     }
-      }
-      if (_disableEscaping) {
-          if (_dontEscape == null) {
-              _dontEscape = new BitArray(_whitespace.size());
-          }
-          _dontEscape.setBit(_currentNode);
-          _disableEscaping = false;
-      }
-      return node;
-  }
-
-	/**
-	 * Links an attribute value (an occurance of a sequence of characters
-	 * in the _text[] array) to a specific attribute node index.
-	 */
-	private void storeAttrValRef(final int attributeNode)
-  {
-	    final int length = _currentOffset - _baseOffset;
-	  //  _offset[attributeNode] = maybeReuseText(length);
-	   // _length[attributeNode] = length;
-	}
-
-	private int makeNamespaceNode(String prefix, String uri)
-	    throws SAXException
-  {
-
-    	    final int node = nextAttributeNode();
-	    //_type2[node] = DTM.NAMESPACE_NODE;
-	    //characters(uri);
-	   // storeAttrValRef(node);
-	    return node;
-	}
-
-
-	/****************************************************************/
-	/*               SAX Interface Starts Here                      */
-	/****************************************************************/
-
-	/**
-	 * SAX2: Receive notification of character data.
-	 */
-  public void characters(char[] ch, int start, int length) throws SAXException
-  {
-        SAXImpl.this.characters(ch, start, length);
-        
-   /*     if (_currentOffset + length > _text.length) {
-		// GTM resizeTextArray(_text.length * 2);
-		// bug fix 6189, contributed by Mirko Seifert
-		resizeTextArray(
-		    Math.max(_text.length * 2, _currentOffset + length));
-	    }
-	    System.arraycopy(ch, start, _text, _currentOffset, length);
-	*/  _currentOffset += length;
-
-	    _disableEscaping = !_escaping;	
-
-//makeTextNode(false);
-  }
-
-	/**
-	 * SAX2: Receive notification of the beginning of a document.
-	 */
-	public void startDocument() throws SAXException
-  {
-
-        SAXImpl.this.startDocument();
-	    _shortTexts     = new Hashtable();
-	    _names          = new Hashtable();
-	    _sp             = 0;
-	    _parentStack[0] = DTMDefaultBase.ROOTNODE;	// root
-	    _currentNode    = DTMDefaultBase.ROOTNODE + 1;
-	    _currentAttributeNode = 1;
-	    _type2[0] = DTM.NAMESPACE_NODE;
-
-	    definePrefixAndUri(EMPTYSTRING, EMPTYSTRING);
-	    startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
-//	    _lengthOrAttr[DTMDefaultBase.ROOTNODE] = _nextNamespace;
-//	    _parent2[_nextNamespace] = DTMDefaultBase.ROOTNODE;
-//	    _nextNamespace = DTM.NULL;
-	}
-
-	/**
-	 * SAX2: Receive notification of the end of a document.
-	 */
-	public void endDocument() throws SAXException
-  {
-
-    makeTextNode(false);
-
-    _shortTexts = null;
-    final int namesSize = m_expandedNameTable.getSize() - DTM.NTYPES;
-
-    // Fill the _namesArray[] array
-    String[] namesArray = new String[namesSize];
-    int nameCount = 0;
-
-    for (int i = 0; i < namesSize; i++) {
-        final short nodeType =
-                        m_expandedNameTable.getType(i+DTM.NTYPES);
-        final boolean isAttr = (nodeType == DTM.ATTRIBUTE_NODE);
-        if (isAttr || nodeType == DTM.ELEMENT_NODE) {
-            final String uri = m_expandedNameTable
-                                        .getNamespace(i+DTM.NTYPES);
-            final String lName = m_expandedNameTable
-                                        .getLocalName(i+DTM.NTYPES);
-
-            if (uri != null && uri.length() != 0) {
-                namesArray[nameCount++] = isAttr ? (uri + ":@" + lName)
-                                               : uri + ":" + lName;
-            } else {
-                namesArray[nameCount++] = isAttr ? ("@"+lName) : lName;
-            }
-        }
-    }
-    _namesArray = namesArray;
-    _nextNameCode = nameCount;
-
-    _names = null;
-    _types = setupMapping(_namesArray, nameCount);
-
-    // trim arrays' sizes
-    //resizeTextArray(_currentOffset);
-
-    _firstAttributeNode = _currentNode;
-   // shiftAttributes(_currentNode);
-    resizeArrays(_currentNode + _currentAttributeNode, _currentNode);
-   // appendAttributes();
-    //_treeNodeLimit = _currentNode + _currentAttributeNode;
-
-    // Fill the _namespace[] and _uriArray[] array
-    _namespace = new short[nameCount];
-    _uriArray = new String[_uriCount];
-    for (int i = 0; i<nameCount; i++)
-    {
-      final String qname = _namesArray[i];
-      final int col = _namesArray[i].lastIndexOf(':');
-      // Elements/attributes with the xml prefix are not in a NS
-      if ((!qname.startsWith(XML_STRING)) && (col > -1))
-      {
-        final String uri = _namesArray[i].substring(0, col);
-          Integer eType = new Integer (getIdForNamespace(uri));
-                                       //getExpandedTypeID(null, getPrefix(null, uri), DTM.NAMESPACE_NODE));
-        final Integer idx = (Integer)_nsIndex.get(eType);
-        if (idx != null)
-        {
-          _namespace[i] = idx.shortValue();
-          _uriArray[idx.intValue()] = uri;
-        }
-      }
-    }
-
-   /* _prefixArray = new String[_prefixCount];
-    Enumeration p = _nsPrefixes.keys();
-    while (p.hasMoreElements())
-    {
-      final String prefix = (String)p.nextElement();
-      final Stack stack = (Stack)_nsPrefixes.get(prefix);
-      final Integer I = (Integer)stack.elementAt(0);
-      _prefixArray[I.shortValue()] = prefix;
-    }*/
-        SAXImpl.this.endDocument();
-  }
-
-	/**
-	 * SAX2: Receive notification of the beginning of an element.
-	 */
-	public void startElement(String uri, String localName,
-				 String qname, Attributes attributes)
-	    throws SAXException
-  {
-     SAXImpl.this.startElement(uri, localName, qname, attributes);
-
-    // Get node index and setup parent/child references
-    final int node = makeTextNode(false); //nextNode();
-    linkParent(node);
-
-    final int count = attributes.getLength();
-
-    // Look for any xml:space attributes
-    for (int i = 0; i<count; i++) {
-      if (attributes.getQName(i).equals(XMLSPACE_STRING)) {
-        xmlSpaceDefine(attributes.getValue(i), node);
-      }
-    }
-  }
-
-	/**
-	 * SAX2: Receive notification of the end of an element.
-	 */
-	public void endElement(String namespaceURI, String localName,
-			       String qname) throws SAXException
-        {
-            SAXImpl.this.endElement(namespaceURI, localName, qname);
-	    makeTextNode(false);
-
-	    // Revert to strip/preserve-space setting from before this element
-            // use m_parent??
-	    xmlSpaceRevert(_parentStack[_sp--]);
-	}
-
-	/**
-	 * SAX2: Receive notification of a processing instruction.
-	 */
-	public void processingInstruction(String target, String data)
-	    throws SAXException
-        {
-            SAXImpl.this.processingInstruction(target, data);
-	    final int node = makeTextNode(false);
-	}
-
-	/**
-	 * SAX2: Receive notification of ignorable whitespace in element
-	 * content. Similar to characters(char[], int, int).
-	 */
-	public void ignorableWhitespace(char[] ch, int start, int length)
-            throws SAXException
-        {
-            SAXImpl.this.ignorableWhitespace(ch, start, length);
-            makeTextNode(true);
-        }
-
-	/**
-	 * SAX2: Receive an object for locating the origin of SAX document
-	 * events.
-	 */
-	public void setDocumentLocator(Locator locator)
-        {
-            SAXImpl.this.setDocumentLocator(locator);
-	    // Not handled
-	}
-
-	/**
-	 * SAX2: Receive notification of a skipped entity.
-	 */
-	public void skippedEntity(String name)
-        {
-	    // Not handled
-	}
-
-	/**
-	 * SAX2: Begin the scope of a prefix-URI Namespace mapping.
-	 */
-	public void startPrefixMapping(String prefix, String uri)
-	    throws SAXException
-        {
-            SAXImpl.this.startPrefixMapping(prefix, uri);
-            definePrefixAndUri(prefix, uri);
-
-            makeTextNode(false);
-            int attr = makeNamespaceNode(prefix, uri);
-        }
-
-	private void definePrefixAndUri(String prefix, String uri) 
-	    throws SAXException 
-	{
-            // Check if the URI already exists before pushing on stack
-            Integer eType = new Integer(getIdForNamespace(uri));
-            if ((Integer)_nsIndex.get(eType) == null) {
-                _nsIndex.put(eType, new Integer(_uriCount++));
-            }
- 	}
- 
-        /**
-         * SAX2: End the scope of a prefix-URI Namespace mapping.
-         */
-        public void endPrefixMapping(String prefix) throws SAXException
-        {
-            SAXImpl.this.endPrefixMapping(prefix);
-        }
-
-	/**
-	 * SAX2: Report an XML comment anywhere in the document.
-	 */
-	public void comment(char[] ch, int start, int length)
-            throws SAXException
-        {
-            makeTextNode(false);
-            SAXImpl.this.comment(ch, start, length);
-            final int node = makeTextNode(false);
-        }
-
-	/**
-	 * SAX2: Ignored events
-	 */
-        // %HZ%:  Should these events be dispatched to SAX2DTM?
-	public void startCDATA() {}
-	public void endCDATA() {}
-	public void startDTD(String name, String publicId, String systemId) {}
-	public void endDTD() {}
-	public void startEntity(String name) {}
-	public void endEntity(String name) {}
-	public void notationDecl(String name, String publicId,
-                                 String systemId) {}
-
-
-        // %HZ%:  Need Javadoc
-	public void unparsedEntityDecl(String name, String publicId,
-                                       String systemId, String notationName)
-               throws SAXException
-        {
-            SAXImpl.this.unparsedEntityDecl(name, publicId, systemId,
-                                            notationName);
-        }
-
-        // %HZ%:  Need Javadoc
-	public void elementDecl(String name, String model)
-               throws SAXException
-        {
-            SAXImpl.this.elementDecl(name, model);
-        }
-
-        // %HZ%:  Need Javadoc
-	public void attributeDecl(String eName, String aName, String type,
-                                  String valueDefault, String value)
-               throws SAXException
-        {
-            SAXImpl.this.attributeDecl(eName, aName, type, valueDefault, value);
-        }
-
-        // %HZ%:  Need Javadoc
-	public void externalEntityDecl(String name, String publicId,
-                                       String systemId)
-               throws SAXException
-        {
-            SAXImpl.this.externalEntityDecl(name, publicId, systemId);
-        }
-
-        // %HZ%:  Need Javadoc
-	public void internalEntityDecl(String name, String value)
-               throws SAXException
-        {
-            SAXImpl.this.internalEntityDecl(name, value);
-        }
-
-	/**
-	 * Similar to the SAX2 method character(char[], int, int), but this
-	 * method takes a string as its only parameter. The effect is the same.
-	 */
-	private void characters(final String string)
-        {
-            final int length = string.length();
-            _currentOffset += length;
-    
-        }
-
-	private void resizeArrays(final int newSize, int length) {
-    if ((length < newSize) && (newSize == _currentNode))
-      length = _currentNode;
-
-    // Resize the '_whitespace' array (a BitArray instance)
-    _whitespace.resize(newSize);
-    // Resize the '_dontEscape' array (a BitArray instance)
-    if (_dontEscape != null) {
-        _dontEscape.resize(newSize);
-    }
-  }
-
-	private void resizeArrays2(final int newSize, final int length) {
-    if (newSize > length)
-    {
-      // Resize the '_type2' array (attribute types)
-      final short[] newType = new short[newSize];
-      System.arraycopy(_type2, 0, newType, 0, length);
-      _type2 = newType;
-    }
-  }
-
-
-        private void appendAttributes() {
-            final int len = _currentAttributeNode;
-            if (len > 0) {
-                final int dst = _currentNode;
-            }
-        }
-  
-        public boolean setEscaping(boolean value) {
-            final boolean temp = _escaping;
-            _escaping = value; 
-            return temp;
-        }
-
-    } // end of DOMBuilder
-
 }
