@@ -104,14 +104,21 @@ public class VariableStack extends Stack
    */
   private IntStack m_contextPositions = new IntStack();
 
-  /** NEEDSDOC Field m_globalStackFrameIndex          */
+  /** The top of the globals space.     */
   private int m_globalStackFrameIndex = -1;
   
-  /** NEEDSDOC  */
+  /** Where to start the current search for a variable.
+   * If this is -1, the search should start at the top 
+   * of the stack. */
   private int m_searchStart = -1;
   
   /**
-   * NEEDSDOC
+   * Set where to start the current search for a variable.
+   * If this is -1, the search should start at the top 
+   * of the stack.
+   * 
+   * @param startPos The position to start the search, or -1
+   * if the search should start from the top.
    */
   public void setSearchStart(int startPos)
   {
@@ -119,7 +126,12 @@ public class VariableStack extends Stack
   }
   
   /**
-   * NEEDSDOC
+   * Get the position from where the search should start, 
+   * which is either the searchStart property, or the top
+   * of the stack if that value is -1.
+   * 
+   * @return The position from where the search should start, which
+   * is always greater than or equal to zero.
    */
   public int getSearchStartOrTop()
   {
@@ -127,7 +139,11 @@ public class VariableStack extends Stack
   }
   
   /**
-   * NEEDSDOC
+   * Get the position to start the search, or -1
+   * if the search should start from the top.
+   * 
+   * @return The position to start the search, or -1
+   * if the search should start from the top.
    */
   public int getSearchStart()
   {
@@ -147,11 +163,10 @@ public class VariableStack extends Stack
     m_globalStackFrameIndex = this.size();
   }
 
-  // Push a context marker onto the stack to let us know when
-  // to stop searching for a var.
-  
   /**
-   * NEEDSDOC Method pushContextPosition 
+   * Push a context marker onto the contextPositions stack to let us know when
+   * to stop searching for a var.  This operation 
+   * usually corresponds to the start of a template.
    */
   public void pushContextPosition(int pos)
   {
@@ -159,7 +174,8 @@ public class VariableStack extends Stack
   }
   
   /**
-   * NEEDSDOC Method popContextPosition 
+   * Pop the current context position onto the contextPositions. This operation 
+   * usually corresponds to the ending of a template.
    */
   public void popContextPosition()
   {
@@ -167,7 +183,10 @@ public class VariableStack extends Stack
   }
   
   /**
-   * NEEDSDOC Method pushContextMarker 
+   * Get the current context position.
+   * 
+   * @return The context marker into the stack to let us know when
+   * to stop searching for a var.
    */
   public int getContextPos()
   {
@@ -175,8 +194,10 @@ public class VariableStack extends Stack
   }
   
   /**
-   * NEEDSDOC Method pushContextMarker 
-   *
+   * Push the current top of the stack as 
+   * a context marker into the variables stack to let us know when
+   * to stop searching for a var.  This operation 
+   * usually corresponds to the start of a template.
    */
   public void pushContextMarker()
   {
@@ -199,28 +220,27 @@ public class VariableStack extends Stack
    * to call startContext before pushing a series of
    * arguments for a given macro call.
    *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param val
+   * @param qname The qualified name of the variable.
+   * @param val The wrapped value of the variable.
    */
   public void pushVariable(QName qname, XObject val)
   {
     push(new Arg(qname, val, false));
   }
-
+  
   /**
-   * Same as getVariable, except don't look in the
-   * global space.
+   * Tell if a variable or parameter is already declared, 
+   * either in the current context or in the global space.
    *
-   * NEEDSDOC @param qname
+   * @param qname The qualified name of the variable.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the variable is already declared.
    *
    * @throws SAXException
    */
-  public XObject getParamVariable(QName qname) throws SAXException
+  public boolean variableIsDeclared(QName qname) throws SAXException
   {
 
-    XObject val = null;
     int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
     int endContextPos = m_contextPositions.peek();
 
@@ -230,7 +250,58 @@ public class VariableStack extends Stack
 
       if (((Arg) obj).equals(qname))
       {
-        val = ((Arg) obj).getVal();
+        return true;
+      }
+    }
+    
+    if(endContextPos < m_globalStackFrameIndex)
+      return false;
+    
+    // Look in the global space
+    for (int i = (m_globalStackFrameIndex - 1); i >= 0; i--)
+    {
+      Object obj = elementAt(i);
+
+      if (((Arg) obj).equals(qname))
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+
+  /**
+   * Same as getVariable, except don't look in the
+   * global space.
+   *
+   * @param qname The qualified name of the variable.
+   *
+   * @return The wrapped value of the variable.
+   *
+   * @throws SAXException
+   */
+  public XObject getParamVariable(XPathContext xctxt, QName qname) throws SAXException
+  {
+
+    XObject val = null;
+    int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
+    int endContextPos = m_contextPositions.peek();
+
+    for (int i = (nElems - 1); i >= endContextPos; i--)
+    {
+      Arg arg = (Arg)elementAt(i);
+
+      if (arg.equals(qname))
+      {
+        val = arg.getVal();
+        
+        if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+        {
+          val = val.execute(xctxt);
+          arg.setVal(val);
+        }
 
         break;
       }
@@ -240,16 +311,16 @@ public class VariableStack extends Stack
   }
 
   /**
-   * Given a name, return a string representing
+   * Given a name, return an object representing
    * the value.
    *
-   * NEEDSDOC @param name
+   * @param qname The qualified name of the variable.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The wrapped value of the variable.
    *
    * @throws SAXException
    */
-  public Object getVariable(QName name) throws SAXException
+  public Object getVariable(XPathContext xctxt, QName name) throws SAXException
   {
 
     int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
@@ -260,16 +331,35 @@ public class VariableStack extends Stack
       Arg arg = (Arg) elementAt(i);
 
       if (arg.equals(name))
-        return arg.getVal();
+      {
+        XObject val = arg.getVal();
+        if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+        {
+          val = val.execute(xctxt);
+          arg.setVal(val);
+        }
+        return val;
+      }
     }
+    
+    if(endContextPos < m_globalStackFrameIndex)
+      return null;
 
     // Look in the global space
     for (int i = (m_globalStackFrameIndex - 1); i >= 0; i--)
     {
-      Object obj = elementAt(i);
+      Arg arg = (Arg)elementAt(i);
 
-      if (((Arg) obj).equals(name))
-        return ((Arg) obj).getVal();
+      if (arg.equals(name))
+      {
+        XObject val = arg.getVal();
+        if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+        {
+          val = val.execute(xctxt);
+          arg.setVal(val);
+        }
+        return val;
+      }
     }
 
     return null;

@@ -80,7 +80,7 @@ import org.apache.xpath.Expression;
 public class XObject extends Expression implements Serializable
 {
 
-  /** NEEDSDOC Field m_obj          */
+  /** The java object which this object wraps.  */
   protected Object m_obj;  // This may be NULL!!!
 
   /**
@@ -91,7 +91,8 @@ public class XObject extends Expression implements Serializable
   /**
    * Create an XObject.
    *
-   * NEEDSDOC @param obj
+   * @param obj Can be any object, should be a specific type 
+   * for derived classes, or null.
    */
   public XObject(Object obj)
   {
@@ -100,11 +101,10 @@ public class XObject extends Expression implements Serializable
 
   /**
    * For support of literal objects in xpaths.
-   * @returns This object.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath execution context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This object.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -183,10 +183,13 @@ public class XObject extends Expression implements Serializable
   /** NEEDSDOC Field CLASS_RTREEFRAG          */
   public static final int CLASS_RTREEFRAG = 5;
 
+  /** Represents an unresolved variable type as an integer.          */
+  public static final int CLASS_UNRESOLVEDVARIABLE = 600;
+
   /**
    * Tell what kind of class this is.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return CLASS_UNKNOWN
    */
   public int getType()
   {

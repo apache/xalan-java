@@ -249,7 +249,7 @@ public class XPathContext implements ExpressionContext
   public XObject getVariable(QName qname) throws org.xml.sax.SAXException
   {
 
-    Object obj = getVarStack().getVariable(qname);
+    Object obj = getVarStack().getVariable(this, qname);
 
     if ((null != obj) &&!(obj instanceof XObject))
     {

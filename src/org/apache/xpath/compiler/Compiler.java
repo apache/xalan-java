@@ -591,9 +591,13 @@ public class Compiler extends OpMap
 
     opPos = getFirstChildPos(opPos);
 
-    java.lang.String varName =
-      (java.lang.String) m_tokenQueue[m_opMap[opPos]];
-    QName qname = new QName(varName, getNamespaceContext());
+    int nsPos = m_opMap[opPos];
+    java.lang.String namespace 
+      = (OpCodes.EMPTY == nsPos) ? null 
+                                   : (java.lang.String) m_tokenQueue[nsPos];
+    java.lang.String localname 
+      = (java.lang.String) m_tokenQueue[m_opMap[opPos+1]];
+    QName qname = new QName(namespace, localname);
 
     var.setQName(qname);
 

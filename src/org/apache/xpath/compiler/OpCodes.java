@@ -354,8 +354,9 @@ public class OpCodes
   /**
    * <meta name="usage" content="advanced"/>
    * [OP_VARIABLE]
-   * [3]
-   * [index to token]
+   * [4]
+   * [index to namespace token, or EMPTY]
+   * [index to function name token]
    *
    * returns:
    *  XString

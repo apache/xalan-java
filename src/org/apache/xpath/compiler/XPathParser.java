@@ -1377,8 +1377,8 @@ public class XPathParser implements java.io.Serializable
     {
       nextToken();  // consume '$'
       appendOp(2, OpCodes.OP_VARIABLE);
-      NCName();
-
+      QName();
+      
       m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] =
         m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
     }
@@ -1888,13 +1888,22 @@ public class XPathParser implements java.io.Serializable
    */
   protected void QName() throws org.xml.sax.SAXException
   {
+    // Namespace
+    if(lookahead(':', 1))
+    {
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
 
-    m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
-    m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
-
-    nextToken();
-    consumeExpected(':');
-
+      nextToken();
+      consumeExpected(':');
+    }
+    else
+    {
+      m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = OpCodes.EMPTY;
+      m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
+    }
+    
+    // Local name
     m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH]] = m_queueMark - 1;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] += 1;
 

@@ -86,6 +86,7 @@ import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemCallTemplate;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.TemplateList;
+import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.utils.DOMBuilder;
 import org.apache.xalan.utils.NodeVector;
@@ -1346,7 +1347,7 @@ public class TransformerImpl extends Transformer
         qname = new QName(s1, s2);
       try
       {
-        return varstack.getVariable(qname);
+        return varstack.getVariable(m_xcontext, qname);
       }
       catch(SAXException se)
       {
@@ -1498,23 +1499,33 @@ public class TransformerImpl extends Transformer
     StylesheetRoot sr = getStylesheet();
     Vector vars = sr.getVariablesAndParamsComposed();
 
+    int startGlobals = vs.size();
     int i = vars.size();
     while (--i >= 0)
     {
       ElemVariable v = (ElemVariable) vars.elementAt(i);
-      Object val = vs.getVariable(v.getName());
 
-      if (null != val)
+      if (vs.variableIsDeclared(v.getName()))
         continue;
 
-      XObject xobj = v.getValue(this, contextNode);
+      // XObject xobj = v.getValue(this, contextNode);
+      XObject xobj = new XUnresolvedVariable(v, contextNode, 
+                             this, vs.getSearchStartOrTop(), 0, true);
 
       vs.pushVariable(v.getName(), xobj);
       vs.markGlobalStackFrame();
     }
-
-
     vs.markGlobalStackFrame();
+    
+    int endGlobals = vs.size();
+    for(i = startGlobals; i < endGlobals; i++)
+    {
+      Arg arg = (Arg)vs.elementAt(i);
+      XUnresolvedVariable uv = (XUnresolvedVariable)arg.getVal();
+      uv.setVarStackPos(endGlobals);
+    }
+
+    vs.pushContextMarker();
   }
 
   /**

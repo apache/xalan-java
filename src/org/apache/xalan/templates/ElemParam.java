@@ -138,8 +138,9 @@ public class ElemParam extends ElemVariable
             throws SAXException
   {
 
+    VariableStack vars = transformer.getXPathContext().getVarStack();
     Object obj =
-      transformer.getXPathContext().getVarStack().getParamVariable(getName());
+      vars.getParamVariable(transformer.getXPathContext(), getName());
 
     if (null == obj)
     {
