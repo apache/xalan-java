@@ -18,6 +18,11 @@
   <li>Fixed ElemNumber bug. The number expression must be evaluated and then rounded up.<br/><br/></li>
   <li>Fixed bug in Process by creating a DocumentFragment for the output node in DOM to DOM transformations.<br/><br/></li>
   <li>Improved Compiler class error message when the QUO opcode (from an earlier version of the XSLT spec) is used.<br/><br/></li>
+  <li>Removed superfluous method calls to TransformerImpl.executeChildTemplates().<br/><br/></li>  
+  <li>In response to a bug with the SQL library extension reported by Mike Kay, NodeTest.getLocalName() and ColumnData.getData() now return
+  an empty string instead of null when there is no NodeTest name or column data.<br/><br/></li>
+  <li><br/><br/></li>  
+  <li><br/><br/></li>  
   <li></li>
 
 </ul>
