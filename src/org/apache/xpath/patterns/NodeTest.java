@@ -361,6 +361,23 @@ public class NodeTest extends Expression
     // System.out.println("subPartMatch - p: "+p+", t: "+t+", result: "+b);
     return (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
   }
+  
+  /**
+   * This is temporary to patch over Xerces issue with representing DOM 
+   * namespaces as "".
+   *
+   * @param p part string from the node, which may represent the null namespace 
+   *        as null or as "".
+   * @param t target string, which may be {@link #WILD}.
+   *
+   * @return true if the strings match according to the rules of this method.
+   */
+  private static final boolean subPartMatchNS(String p, String t)
+  {
+
+    return (p == t) || ((null != p) && ((p.length() > 0) ? ((t == WILD) || p.equals(t)) : null == t));
+  }
+
 
   /**
    * Tell what the test score is for the given node.
@@ -447,7 +464,7 @@ public class NodeTest extends Expression
         DOMHelper dh = xctxt.getDOMHelper();
 
         if (!dh.isNamespaceNode(context))
-          return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+          return (m_isTotallyWild || (subPartMatchNS(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
                  ? m_score : SCORE_NONE;
         else
           return SCORE_NONE;
@@ -468,7 +485,7 @@ public class NodeTest extends Expression
     {
       DOMHelper dh = xctxt.getDOMHelper();
 
-      return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+      return (m_isTotallyWild || (subPartMatchNS(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
              ? m_score : SCORE_NONE;
     }
     default :
