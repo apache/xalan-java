@@ -83,7 +83,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.processor.XSLProcessorVersion;
+import org.apache.xalan.Version;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.trace.PrintTraceListener;
@@ -415,7 +415,7 @@ public class Process
         else if ("-V".equalsIgnoreCase(argv[i]))
         {
           diagnosticsWriter.println(resbundle.getString("version")  //">>>>>>> Xalan Version "
-                                    + XSLProcessorVersion.S_VERSION + ", " +
+                                    + Version.getVersion() + ", " +
 
           /* xmlProcessorLiaison.getParserDescription()+ */
           resbundle.getString("version2"));  // "<<<<<<<");
@@ -1089,8 +1089,8 @@ public class Process
         else
         {
           DefaultErrorHandler.printLocation(diagnosticsWriter, throwable);
-          diagnosticsWriter.println(" "
-            + XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
+          diagnosticsWriter.println(
+            XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
             + " (" + throwable.getClass().getName() + "): "
             + throwable.getMessage());
         }
