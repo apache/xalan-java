@@ -140,7 +140,8 @@ Copyright:
   <property name="site.dir" value="${site.root}/target/xalan-j"/>
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
   <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
-    <property name="xdocs.XSLTCDONE.file" value="${xdocs.dir}/sources/xalan/XSLTCDONE"/>
+  <property name="xdocs.XSLTCDONE.file" value="XSLTCDONE"/>
+  <property name="xdocs.XSLTCDONE.location" value="${xdocs.dir}/sources/xalan/${xdocs.XSLTCDONE.file}"/>    
   <path id="docs.class.path">
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
@@ -678,7 +679,7 @@ Copyright:
       <fileset dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
     </delete>
     <delete file="${xdocs.DONE.file}"/>
-    <delete file="${xdocs.XSLTCDONE.file}"/>
+    <delete file="${xdocs.XSLTCDONE.location}"/>
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
   </target>
  
