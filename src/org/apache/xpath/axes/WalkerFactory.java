@@ -253,7 +253,7 @@ public class WalkerFactory
       //                   ? namespace.equals(NodeTest.WILD) : false;
       // String localname = compiler.getStepLocalName(stepOpCodePos);
       // boolean isWild = (null != localname) ? localname.equals(NodeTest.WILD) : false;
-      // int predAnalysis = analyzePredicate(compiler, stepOpCodePos, stepType);
+      int predAnalysis = analyzePredicate(compiler, stepOpCodePos, stepType);
       switch (stepType)
       {
       case OpCodes.OP_VARIABLE :
@@ -287,7 +287,10 @@ public class WalkerFactory
           {
 
             // System.out.println("ONESTEP_CHILDREN_ANY");
-            analysisResult = ONESTEP_CHILDREN_ANY;
+            if(predAnalysis == HAS_NOPREDICATE)
+              analysisResult = ONESTEP_CHILDREN_ANY;
+            else
+              analysisResult = NO_OPTIMIZE;
           }
           else
             analysisResult = ONESTEP_CHILDREN;
