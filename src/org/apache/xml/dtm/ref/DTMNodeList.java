@@ -161,6 +161,7 @@ public class DTMNodeList implements org.w3c.dom.NodeList
       if(dtm_iter!=null)
       {
         int handle=dtm_iter.item(index);
+        if (handle == DTM.NULL) return null;
         return dtm_iter.getDTM(handle).getNode(handle);
       }
       else
@@ -168,6 +169,7 @@ public class DTMNodeList implements org.w3c.dom.NodeList
         int handle=m_firstChild;
         while(--index>=0 && handle!=DTM.NULL)
           handle=m_parentDTM.getNextSibling(handle);
+        if (handle == DTM.NULL) return null;
         return m_parentDTM.getNode(handle);
       }
     }
