@@ -173,7 +173,9 @@ public class DOM2TO implements XMLReader, Locator {
 			_handler.namespaceAfterStartElement(prefix, uriAttr);
 		        _handler.addAttribute((prefix + ":" + qnameAttr)
                             , attr.getNodeValue());
-		    }
+		    } else {
+                         _handler.addAttribute(qnameAttr, attr.getNodeValue());
+                    }
                 }
 	    }
 
