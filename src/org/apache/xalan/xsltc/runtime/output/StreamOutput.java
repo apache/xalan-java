@@ -91,6 +91,8 @@ class StreamOutput extends OutputBase {
 
     protected boolean _indent = false;
     protected boolean _omitHeader = false;
+    protected String  _standalone = null;
+    protected String  _version    = "1.0";
 
     protected boolean _lineFeedNextStartTag = false;
     protected boolean _linefeedNextEndTag = false;
@@ -119,6 +121,10 @@ class StreamOutput extends OutputBase {
 
     public void omitHeader(boolean value) {
         _omitHeader = value;
+    }
+
+    public void setStandalone(String standalone) {
+	_standalone = standalone;
     }
 
     protected void appendDTD(String name) {

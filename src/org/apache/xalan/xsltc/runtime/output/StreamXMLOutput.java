@@ -79,6 +79,14 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public class StreamXMLOutput extends StreamOutput implements Constants {
 
+    private static final String BEGCDATA = "<![CDATA[";
+    private static final String ENDCDATA = "]]>";
+    private static final String CNTCDATA = "]]]]><![CDATA[>";
+    private static final String BEGCOMM  = "<!--";
+    private static final String ENDCOMM  = "-->";
+    private static final String CDATA_ESC_START = "]]>&#";
+    private static final String CDATA_ESC_END   = ";<![CDATA[";
+
     /**
      * Holds the current tree depth.
      */
@@ -110,6 +118,8 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
      * contents should be output as CDATA sections.
      */
     private Stack _cdataStack;
+
+    private boolean _cdataTagOpen = false;
 
     private HashSet _attributes = new HashSet();
 
@@ -162,16 +172,43 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	// CDATA stack
 	_cdataStack = new Stack();
 	_cdataStack.push(new Integer(-1)); 	// push dummy value
-	initNamespaces();
+
+	// Namespaces
+	_namespaces = new Hashtable();
+	_nodeStack = new Stack();
+	_prefixStack = new Stack();
+
+	// Define the default namespace (initially maps to "" uri)
+	Stack stack;
+	_namespaces.put(EMPTYSTRING, stack = new Stack());
+	stack.push(EMPTYSTRING);
+	_prefixStack.push(EMPTYSTRING);
+
+	_namespaces.put(XML_PREFIX, stack = new Stack());
+	stack.push("http://www.w3.org/XML/1998/namespace");
+	_prefixStack.push(XML_PREFIX);
+
+	_nodeStack.push(new Integer(-1));
+	_depth = 0;
     }
 
     public void startDocument() throws TransletException { 
-	// empty
+	if (!_omitHeader) {
+	    _buffer.append("<?xml version=\"").append(_version)
+	           .append("\" encoding=\"").append(_encoding);
+	    if (_standalone != null) {
+		_buffer.append("\" standalone=\"").append(_standalone);
+	    }
+	    _buffer.append("\"?>\n");
+	}
     }
 
     public void endDocument() throws TransletException { 
 	if (_startTagOpen) {
 	    _buffer.append("/>");
+	}
+	else if (_cdataTagOpen) {
+	    closeCDATA();
 	}
 
 	try {
@@ -199,6 +236,9 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	if (_startTagOpen) {
 	    _buffer.append('>');
 	}
+	else if (_cdataTagOpen) {
+	    closeCDATA();
+	}
 
 	// Handle document type declaration (for first element only)
 	if (_firstElement) {
@@ -206,6 +246,10 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 		appendDTD(elementName);
 	    }
 	    _firstElement = false;
+	}
+
+	if (_cdata != null && _cdata.containsKey(elementName)) {
+	    _cdataStack.push(new Integer(_depth));
 	}
 
 	if (_indent) {
@@ -228,6 +272,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    _startTagOpen = false;
 	    _buffer.append("/>");
 	    _indentLevel--;
+	    _indentNextEndTag = true;
 	}
 	else {
 	    if (_indent) {
@@ -245,17 +290,26 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	_depth--;
     }
 
-    public void characters(String characters)
-	throws TransletException 
-    { 
+    public void characters(String characters) throws TransletException { 
 	if (_startTagOpen) {
 	    _buffer.append('>');
 	    _startTagOpen = false;
 	}
 
-	if (_escaping) {
-	    escapeCharacters(characters.toCharArray(), 0, characters.length());
-	}
+	final Integer I = (Integer) _cdataStack.peek();
+	if (I.intValue() == _depth && !_cdataTagOpen) {
+	    startCDATA(characters.toCharArray(), 0, characters.length());
+	} 
+	else if (_escaping) {
+	    if (_cdataTagOpen) {
+		escapeCDATA(characters.toCharArray(), 0, 
+			    characters.length());
+	    } 
+	    else {
+		escapeCharacters(characters.toCharArray(), 0, 
+			         characters.length());
+	    }
+	} 
 	else {
 	    _buffer.append(characters);
 	}
@@ -347,28 +401,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     /**
-     * Initialize namespace stacks
-     */
-    private void initNamespaces() {
-	_namespaces = new Hashtable();
-	_nodeStack = new Stack();
-	_prefixStack = new Stack();
-
-	// Define the default namespace (initially maps to "" uri)
-	Stack stack;
-	_namespaces.put(EMPTYSTRING, stack = new Stack());
-	stack.push(EMPTYSTRING);
-	_prefixStack.push(EMPTYSTRING);
-
-	_namespaces.put(XML_PREFIX, stack = new Stack());
-	stack.push("http://www.w3.org/XML/1998/namespace");
-	_prefixStack.push(XML_PREFIX);
-
-	_nodeStack.push(new Integer(-1));
-	_depth = 0;
-    }
-
-    /**
      * Declare a prefix to point to a namespace URI
      */
     private boolean pushNamespace(String prefix, String uri) {
@@ -419,6 +451,65 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    if (i.intValue() != _depth) return;
 	    _nodeStack.pop();
 	    popNamespace((String)_prefixStack.pop());
+	}
+    }
+
+    /**
+     * Utility method - pass a whole charactes as CDATA to SAX handler
+     */
+    private void startCDATA(char[] ch, int off, int len) {
+	final int limit = off + len;
+	int offset = off;
+
+	// Output start bracket - "<![CDATA["
+	_buffer.append(BEGCDATA);
+
+	// Detect any occurence of "]]>" in the character array
+	for (int i = offset; i < limit - 2; i++) {
+	    if (ch[i] == ']' && ch[i+1] == ']' && ch[i+2] == '>') {
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(CNTCDATA);
+		offset = i + 3;
+		i = i + 2; 	// Skip next chars ']' and '>'.
+	    }
+	}
+
+	// Output the remaining characters
+	if (offset < limit) {
+	    _buffer.append(ch, offset, limit - offset);
+	}
+	_cdataTagOpen = true;
+    }
+
+    private void closeCDATA() {
+	_buffer.append(ENDCDATA);
+	_cdataTagOpen = false;
+    }
+
+    /**
+     * Utility method - escape special characters and pass to SAX handler
+     */
+    private void escapeCDATA(char[] ch, int off, int len) {
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) {
+	    limit = ch.length;
+	}
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    if (ch[i] > '\u00ff') { 	// encoding??
+		_buffer.append(ch, offset, i - offset)
+		       .append(CDATA_ESC_START)
+		       .append(Integer.toString((int) ch[i]))
+		       .append(CDATA_ESC_END);
+		offset = i + 1;
+	    }
+	}
+	// Output remaining characters 
+	if (offset < limit) {
+	    _buffer.append(ch, offset, limit - offset);
 	}
     }
 }
