@@ -97,10 +97,11 @@ public class Extensions {
    * node-set, <code>nodeset</code> returns a node-set.  If the argument
    * is a string, number, or boolean, then <code>nodeset</code> returns
    * a node-set consisting of a single root node with a single text node
-   * child that is the result of calling the string() function on the 
-   * passed parameter.  If the argument is anything else, then a node-set 
-   * consisting of a single text node is returned which is the value
-   * obtained by calling <code>toString()</code> on the passed argument.
+   * child that is the result of calling the XPath string() function on the 
+   * passed parameter.  If the argument is anything else, then a node-set
+   * is returned consisting of a single root node with a single text node
+   * child that is the result of calling the java <code>toString()</code>
+   * method on the passed argument.
    * Most of the
    * actual work here is done in <code>MethodResolver</code> and
    * <code>XRTreeFrag</code>.
