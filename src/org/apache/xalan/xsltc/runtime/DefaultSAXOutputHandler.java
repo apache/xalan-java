@@ -256,8 +256,8 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
      * SAX2: Receive notification of the beginning of an element.
      */
     public void startElement(String uri, String localname,
-			     String elementName, Attributes attrs) throws
-	SAXException {
+			     String elementName, Attributes attrs)
+	throws SAXException {
 	try {
 	    // Determine the output document type if not already known
 	    if (_outputType == TextOutput.UNKNOWN)

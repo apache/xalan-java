@@ -2382,6 +2382,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	    copyPI(node, handler);
 	    break;
 	case COMMENT:
+	    handler.comment(new String(_text,
+				       _offsetOrChild[node],
+				       _lengthOrAttr[node]));
+	    break;
 	case TEXT:
 	    handler.characters(_text,
 			       _offsetOrChild[node],
@@ -2437,7 +2441,7 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	final int len = i - start;
 	final String target = new String(text, start, len);
-	final String value  = new String(text, i + 1, length - len);
+	final String value  = new String(text, i + 1, length - len - 1);
 
 	handler.processingInstruction(target, value);
     }
