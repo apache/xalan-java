@@ -1,2 +1,12 @@
 <?xml version="1.0"?>
-<!-- not used this release -->
+<Commits>
+<Commit category="none">
+<Who>sboag,jkesselm,curcuru</Who>
+<DateCommitted>06/12/2001</DateCommitted>
+<Modified>DTM_EXP branch merged</Modified>
+<Log>Due to the significant changes from merging the DTM_EXP 
+branch, we temporarily aren't including the (very very long)
+list of commits between recent builds.  Sorry for the inconvenience!</Log>
+</Commit>
+</Commits>
+
