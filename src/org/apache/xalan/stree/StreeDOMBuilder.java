@@ -159,7 +159,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param localName local part of qualified name of the element
    * @param name The element type name.
    * @param atts The attributes attached to the element, if any.
-   * @see org.apache.xml.utils.DOMBuilder.startElement()
+   * @see org.apache.xml.utils.DOMBuilder#startElement(String, String, String, Attributes)
    *
    * @throws org.xml.sax.SAXException
    */
@@ -182,6 +182,7 @@ public class StreeDOMBuilder extends DOMBuilder
     // But, in order for the document order stuff to be done correctly, we 
     // have to set the uid here, before the attributes are counted.
     elem.m_uid = ++((DocImpl)m_doc).m_docOrderCount;
+    elem.m_level = (short) (((DocImpl)m_doc).m_level + 1);
 
     int nAtts = atts.getLength();
 
@@ -245,7 +246,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    *
    * @throws org.xml.sax.SAXException
    */
@@ -289,7 +290,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    *
    * @throws org.xml.sax.SAXException
    */
@@ -316,7 +317,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    *
    * @throws org.xml.sax.SAXException
    */
@@ -338,7 +339,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    *
    * @throws org.xml.sax.SAXException
    */
