@@ -868,9 +868,13 @@ public class DOMHelper
    * return that information.
    * @deprecated
    *
-   * NEEDSDOC @param node
+   * @param node Node to be examined
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return CURRENTLY HARDCODED TO FALSE, but should return true if
+   * and only if the node is of type Text, contains only whitespace,
+   * and does not appear as part of the #PCDATA content of an element.
+   * (Note that determining this last may require allowing for 
+   * Entity References.)
    */
   public boolean isIgnorableWhitespace(Text node)
   {
@@ -1228,15 +1232,15 @@ public class DOMHelper
   }
 
   /**
-   * Get the textual contents of the node. If the node
-   * is an element, apply whitespace stripping rules,
-   * though I'm not sure if this is right (I'll fix
-   * or declare victory when I review the entire
-   * whitespace handling).
+   * Get the textual contents of the node. See
+   * getNodeData(Node,FastStringBuffer) for discussion of how
+   * whitespace nodes are handled.
    *
-   * NEEDSDOC @param node
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param node DOM Node to be examined
+   * @return String containing a concatenation of all the 
+   * textual content within that node. 
+   * @see getNodeData(Node,FastStringBuffer)
+   * 
    */
   public static String getNodeData(Node node)
   {
