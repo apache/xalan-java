@@ -94,8 +94,8 @@ public class FuncReplace extends FunctionMultiArgs
   	int groups = regex.getNumberOfGroups();
   	Token tokenTree = regex.getTokenTree();
   	int indexVar;
-  	if (groups > 1 && (indexVar = replace.indexOf("$")) > 0 && 
-  	                  replace.charAt(indexVar - 1) != '\\')
+  	if (groups > 1 && (((indexVar = replace.indexOf("$")) > 0 && 
+  	                  replace.charAt(indexVar - 1) != '\\') || indexVar==0))
   	{
   		
   		Token child;
@@ -136,7 +136,7 @@ public class FuncReplace extends FunctionMultiArgs
     		if (indexVar >= 0)
     		{
     		repVars = repVars+ replace.substring(start, indexVar);
-    		if (indexVar >0 && replace.charAt(indexVar-1) == '\\')
+    		if (indexVar >0 && replace.charAt(indexVar-1) == '\\') 
     		{
     		repVars = repVars.replace('\\', '$');
     		start = indexVar + 1;
