@@ -103,7 +103,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public int getChildCount()
   {
-    if (null == m_children && !isComplete())
+    if (!isComplete())
     {
       synchronized (this)
       {
@@ -274,15 +274,29 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      *
      * @return The number of attributes in the list.
      */
-    public int getAttrCount ()
+  public int getAttrCount ()
+  {
+    if (null == m_children && !isComplete())      
     {
-      if (null == m_children && !isComplete())
+      // Force it to wait until at least an element child 
+      // has been added or end element.
+      synchronized (this)
       {
-        // Force it to wait until children have been added
-        int count = getChildCount(); 
+        try
+        {
+          //System.out.println("Waiting... getelCount " );
+          wait();
+        }
+        catch (InterruptedException e)
+        {
+          // That's OK, it's as good a time as any to check again
+        }
+        //System.out.println("/// gotelcount " );
+        
       }
-      return attrsEnd;
     }
+    return attrsEnd;
+  }
       
 
 
