@@ -78,11 +78,15 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 
     private String _systemId;
 
+    // Temporary
+    private boolean _experimentalOutput;
+
     /**
      * Default constructor
      */
-    protected TemplatesHandlerImpl() {
+    protected TemplatesHandlerImpl(boolean experimentalOutput) {
 	super(null);
+	_experimentalOutput = experimentalOutput;
     }
 
     /**
@@ -168,7 +172,8 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 		return null;
 	    }
 
-	    return(new TemplatesImpl(bytecodes, transletName));
+	    return new TemplatesImpl(bytecodes, transletName, 
+				     _experimentalOutput);
 	}
 	catch (CompilerException e) {
 	    return null;

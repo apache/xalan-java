@@ -101,9 +101,11 @@ import javax.xml.transform.stream.*;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.runtime.*;
+import org.apache.xalan.xsltc.runtime.output.*;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
@@ -134,13 +136,19 @@ public final class TransformerImpl extends Transformer
     private static final String NAMESPACE_FEATURE =
 	"http://xml.org/sax/features/namespaces";
     
+    private TransletOutputHandlerFactory _tohFactory = null;
+
+    // Temporary
+    private boolean _experimentalOutput;
+
     /**
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
      */
-    protected TransformerImpl(Translet translet) {
+    protected TransformerImpl(Translet translet, boolean experimentalOutput) {
 	_translet = (AbstractTranslet)translet;
 	_properties = createOutputProperties();
+	_experimentalOutput = experimentalOutput;
     }
 
     /**
@@ -165,24 +173,159 @@ public final class TransformerImpl extends Transformer
 	    throw new TransformerException(err.toString());
 	}
 
-	_handler = getOutputHandler(result);
-	if (_handler == null) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
-	    throw new TransformerException(err.toString());
-	}
+	// Pass output properties to the translet
+	setOutputProperties(_translet, _properties);
+	    
+	if (_experimentalOutput) {
+	    final TransletOutputHandler toHandler = 
+		getExperimentalOutputHandler(result);
 
-	if (_uriResolver != null) {
-	    _translet.setDOMCache(this);
-	}
+	    if (toHandler == null) {
+		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
+		throw new TransformerException(err.toString());
+	    }
 
-	// Run the transformation
-	transform(source, (ContentHandler)_handler, _encoding);
+	    if (_uriResolver != null) {
+		_translet.setDOMCache(this);
+	    }
 
-	// If a DOMResult, then we must set the DOM Tree so it can
-	// be retrieved later 
-	if (result instanceof DOMResult) {
-	    ((DOMResult)result).setNode(((SAX2DOM)_handler).getDOM());
+	    transform(source, toHandler, _encoding);
+
+	    if (result instanceof DOMResult) {
+		((DOMResult)result).setNode(_tohFactory.getNode());
+	    }
 	}
+	else {
+	    _handler = getOutputHandler(result);
+	    if (_handler == null) {
+		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
+		throw new TransformerException(err.toString());
+	    }
+
+	    if (_uriResolver != null) {
+		_translet.setDOMCache(this);
+	    }
+
+	    // Run the transformation
+	    transform(source, (ContentHandler)_handler, _encoding);
+
+	    // If a DOMResult, then we must set the DOM Tree so it can
+	    // be retrieved later 
+	    if (result instanceof DOMResult) {
+		((DOMResult)result).setNode(((SAX2DOM)_handler).getDOM());
+	    }
+	}
+    }
+
+    /**
+     * Create an output handler for the transformation output based on 
+     * the type and contents of the TrAX Result object passed to the 
+     * transform() method. 
+     */
+    private TransletOutputHandler getExperimentalOutputHandler(Result result) 
+	throws TransformerException 
+    {
+	// Try to get the encoding from the translet (may not be set)
+	if (_translet._encoding != null) {
+            _encoding = _translet._encoding;
+        }
+        else {
+            _encoding = "UTF-8"; // default output encoding
+        }
+
+	_tohFactory = TransletOutputHandlerFactory.newInstance();
+	_tohFactory.setEncoding(_encoding);
+
+	// Is _method already set? TODO
+	_tohFactory.setOutputMethod(_translet._method);
+
+	// Return the content handler for this Result object
+	try {
+	    // Result object could be SAXResult, DOMResult, or StreamResult 
+	    if (result instanceof SAXResult) {
+                final SAXResult target = (SAXResult)result;
+                final ContentHandler handler = target.getHandler();
+
+		_tohFactory.setHandler(handler);
+		if (handler instanceof LexicalHandler) {
+		    _tohFactory.setLexicalHandler((LexicalHandler) handler);
+		}
+		_tohFactory.setOutputType(TransletOutputHandlerFactory.SAX);
+		return _tohFactory.getTransletOutputHandler();
+            }
+	    else if (result instanceof DOMResult) {
+		_tohFactory.setNode(((DOMResult) result).getNode());
+		_tohFactory.setOutputType(TransletOutputHandlerFactory.DOM);
+		return _tohFactory.getTransletOutputHandler();
+            }
+	    else if (result instanceof StreamResult) {
+		// Get StreamResult
+		final StreamResult target = (StreamResult) result;	
+
+		// StreamResult may have been created with a java.io.File,
+		// java.io.Writer, java.io.OutputStream or just a String
+		// systemId. 
+
+		_tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+
+		// try to get a Writer from Result object
+		final Writer writer = target.getWriter();
+		if (writer != null) {
+		    _tohFactory.setWriter(writer);
+		    return _tohFactory.getTransletOutputHandler();
+		}
+
+		// or try to get an OutputStream from Result object
+		final OutputStream ostream = target.getOutputStream();
+		if (ostream != null) {
+		    _tohFactory.setOutputStream(ostream);
+		    return _tohFactory.getTransletOutputHandler();
+		}
+
+		// or try to get just a systemId string from Result object
+		String systemId = result.getSystemId();
+		if (systemId == null) {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_RESULT_ERR);
+                    throw new TransformerException(err.toString());
+		}
+
+		// System Id may be in one of several forms, (1) a uri
+		// that starts with 'file:', (2) uri that starts with 'http:'
+		// or (3) just a filename on the local system.
+		URL url = null;
+		if (systemId.startsWith("file:")) {
+                    url = new URL(systemId);
+		    _tohFactory.setOutputStream(
+			new FileOutputStream(url.getFile()));
+		    return _tohFactory.getTransletOutputHandler();
+                }
+                else if (systemId.startsWith("http:")) {
+                    url = new URL(systemId);
+                    final URLConnection connection = url.openConnection();
+		    _tohFactory.setOutputStream(connection.getOutputStream());
+		    return _tohFactory.getTransletOutputHandler();
+                }
+                else {
+                    // system id is just a filename
+                    url = new File(systemId).toURL();
+		    _tohFactory.setOutputStream(
+			new FileOutputStream(url.getFile()));
+		    return _tohFactory.getTransletOutputHandler();
+                }
+	    }
+	}
+        // If we cannot write to the location specified by the SystemId
+        catch (UnknownServiceException e) {
+            throw new TransformerException(e);
+        }
+        catch (ParserConfigurationException e) {
+            throw new TransformerException(e);
+        }
+        // If we cannot create the file specified by the SystemId
+        catch (IOException e) {
+            throw new TransformerException(e);
+        }
+	return null;
     }
 
     /**
@@ -280,80 +423,6 @@ public final class TransformerImpl extends Transformer
         }
 	return null;
     }
-
-
-/*************
-    private ContentHandler getOutputHandler(Result result) 
-	throws TransformerException {
-	// Try to get the encoding from Translet (may not be set)
-	if (_translet._encoding != null) {
-	    _encoding = _translet._encoding;
-	}
-	else {
-	    _encoding = "UTF-8"; // default output encoding
-	}
-
-	try {
-	    String systemId = result.getSystemId();
-
-	    // Handle SAXResult output handler
-	    if (result instanceof SAXResult) {
-		final SAXResult target = (SAXResult)result;
-		final ContentHandler handler = target.getHandler();
-		// Simple as feck, just pass the SAX handler back...
-		if (handler != null) return handler;
-	    }
-	    // Handle StreamResult output handler
-	    else if (result instanceof StreamResult) {
-		final StreamResult target = (StreamResult)result;
-		final OutputStream ostream = target.getOutputStream();
-		final Writer writer = target.getWriter();
-
-		if (ostream != null)
-		    return (new DefaultSAXOutputHandler(ostream, _encoding));
-		else if (writer != null)
-		    return (new DefaultSAXOutputHandler(writer, _encoding));
-		else if ((systemId != null) && systemId.startsWith("file:")) {
-		    final URL url = new URL(systemId);
-		    final OutputStream os = new FileOutputStream(url.getFile());
-		    return (new DefaultSAXOutputHandler(os, _encoding));
-		}
-	    }
-	    // Handle DOMResult output handler
-	    else if (result instanceof DOMResult) {
-		return (new SAX2DOM());
-	    }
-
-	    // Common, final handling of all input sources, only used if the
-	    // other contents of the Result object could not be used
-	    if (systemId != null) {
-		if ((new File(systemId)).exists()) systemId = "file:"+systemId;
-		final URL url = new URL(systemId);
-		final URLConnection connection = url.openConnection();
-		final OutputStream ostream = connection.getOutputStream();
-		return(new DefaultSAXOutputHandler(ostream, _encoding));
-	    }
-	    else {
-		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_RESULT_ERR);
-		throw new TransformerException(err.toString());
-	    }
-	}
-	// If we cannot write to the location specified by the SystemId
-	catch (UnknownServiceException e) {
-	    throw new TransformerException(e);
-	}
-	// If we cannot create a SAX2DOM adapter
-	catch (ParserConfigurationException e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.SAX2DOM_ADAPTER_ERR);
-	    throw new TransformerException(err.toString());
-	}
-	// If we cannot create the file specified by the SystemId
-	catch (IOException e) {
-	    throw new TransformerException(e);
-	}
-    }
-
-**********************/
 
     /**
      * Set the internal DOMImpl that will be used for the next transformation
@@ -539,15 +608,35 @@ public final class TransformerImpl extends Transformer
     /**
      * Internal transformation method - uses the internal APIs of XSLTC
      */
+    private void transform(Source src, TransletOutputHandler handler, 
+	String encoding) throws TransformerException 
+    {
+	try {
+	    _translet.transform(getDOM(src, 0), handler);
+	}
+	catch (TransletException e) {
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+	    throw new TransformerException(e);
+	}
+	catch (RuntimeException e) {
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+	    throw new TransformerException(e);
+	}
+	catch (Exception e) {
+	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+	    throw new TransformerException(e);
+	}
+    }
+
+    /**
+     * Internal transformation method - uses the internal APIs of XSLTC
+     */
     private void transform(Source src, ContentHandler sax, String encoding)
 	throws TransformerException {
 	try {
 	    // Build an iternal DOMImpl from the TrAX Source
 	    DOMImpl dom = getDOM(src, 0);
 
-	    // Pass output properties to the translet
-	    setOutputProperties(_translet, _properties);
-	    
 	    // This handler will post-process the translet output
 	    TextOutput handler;
 

@@ -66,11 +66,16 @@ import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.runtime.*;
+import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xalan.xsltc.trax.SAX2DOM;
 
 public class TransletOutputHandlerFactory {
 
@@ -83,7 +88,8 @@ public class TransletOutputHandlerFactory {
     private int    _outputType     = STREAM;
     private OutputStream _ostream  = System.out;
     private Writer _writer         = null;
-    private ContentHandler _handler= null;
+    private Node           _node   = null;
+    private ContentHandler _handler    = null;
     private LexicalHandler _lexHandler = null;
 
     static public TransletOutputHandlerFactory newInstance() {
@@ -120,7 +126,18 @@ public class TransletOutputHandlerFactory {
 	_lexHandler = lex;
     }
 
-    public TransletOutputHandler getTransletOutputHandler() throws IOException {
+    public void setNode(Node node) {
+	_node = node;
+    }
+
+    public Node getNode() {
+	return (_handler instanceof SAX2DOM) ? ((SAX2DOM)_handler).getDOM() 
+	   : null;
+    }
+
+    public TransletOutputHandler getTransletOutputHandler() 
+	throws IOException, ParserConfigurationException 
+    {
 	switch (_outputType) {
 	    case STREAM:
 		if (_method == null) {
@@ -145,26 +162,28 @@ public class TransletOutputHandlerFactory {
 			new StreamTextOutput(_writer, _encoding);
 		}
 	    break;
+	    case DOM:
+		_lexHandler = null;
+		_handler = (_node != null) ? new SAX2DOM(_node) : 
+					     new SAX2DOM();
+		// falls through
 	    case SAX:
-                if (_method == null) {
-                    _method = "xml";    // default case
-                }
+		if (_method == null) {
+		    _method = "xml";    // default case
+		}
 
-                if (_method.equalsIgnoreCase("xml")) {
-                    return (_lexHandler == null) ? 
+		if (_method.equalsIgnoreCase("xml")) {
+		    return (_lexHandler == null) ? 
 			new SAXXMLOutput(_handler, _encoding) :
 			new SAXXMLOutput(_handler, _lexHandler, _encoding);
-                }
-                else if (_method.equalsIgnoreCase("html")) {
-                    return (_lexHandler == null) ? 
+		}
+		else if (_method.equalsIgnoreCase("html")) {
+		    return (_lexHandler == null) ? 
 			new SAXHTMLOutput(_handler, _encoding) :
 			new SAXHTMLOutput(_handler, _lexHandler, _encoding);
-                }
-            break;
-
-	    case DOM:
-		// TODO
+		}
 	    break;
+
 	}
 	return null;
     }

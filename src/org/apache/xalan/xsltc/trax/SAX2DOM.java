@@ -80,7 +80,7 @@ import org.w3c.dom.Attr;
 
 import org.apache.xalan.xsltc.runtime.Constants;
 
-class SAX2DOM implements ContentHandler, Constants {
+public class SAX2DOM implements ContentHandler, Constants {
 
     private Document _root = null;
     private Stack _nodeStk = new Stack();

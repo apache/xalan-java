@@ -203,7 +203,8 @@ final public class Transform {
 	    }
 
 	    // Transform the document
-	    TransletOutputHandlerFactory tohFactory = TransletOutputHandlerFactory.newInstance();
+	    TransletOutputHandlerFactory tohFactory = 
+		TransletOutputHandlerFactory.newInstance();
 	    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
 	    tohFactory.setEncoding(_translet._encoding);
 	    tohFactory.setOutputMethod(_translet._method);
