@@ -479,17 +479,17 @@ public class DefaultConnectionPool implements ConnectionPool
      {
         // We need to implement the context classloader
         Class cls = null;
-        try 
+        try
         {
           Method m = Thread.class.getMethod("getContextClassLoader", null);
           ClassLoader classLoader = (ClassLoader) m.invoke(Thread.currentThread(), null);
           cls = classLoader.loadClass(m_driver);
-        } 
-        catch (Exception e) 
-        {
-          cls = Class.forName(m_driver);  
         }
-        
+        catch (Exception e)
+        {
+          cls = Class.forName(m_driver);
+        }
+
         if (cls == null)
           cls = Class.forName(m_driver);
 
@@ -606,15 +606,20 @@ public class DefaultConnectionPool implements ConnectionPool
    * The Pool can be Enabled and Disabled. Disabling the pool
    * closes all the outstanding Unused connections and any new
    * connections will be closed upon release.
-   * @param flag Control the Connection Pool. If it is enabled then Connections will actuall be held
-   * around. If disabled then all unused connections will be instantly closed and as
-   * connections are released they are closed and removed from the pool.
+   *
+   * @param flag Control the Connection Pool.
+   * If it is enabled then Connections will actuall be held
+   * around. If disabled then all unused connections will be instantly
+   * closed and as connections are released they are closed and removed
+   * from the pool.
+   *
    * @return
    */
-  public void setPoolEnabled( final boolean flag )
+  public void setPoolEnabled( boolean flag )
   {
-
+     m_IsActive = flag;
+     if ( ! flag )
+      freeUnused();
   }
-
 
 }
