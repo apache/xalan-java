@@ -18,6 +18,16 @@ public class FunctionPattern extends StepPattern
     m_functionExpr = expr;
   }
   
+  /**
+   * Static calc of match score.
+   */
+  protected final void calcScore()
+  {
+    m_score = SCORE_OTHER;
+    if(null == m_targetString)
+      calcTargetString();
+  }
+  
   Expression m_functionExpr;
   
   /**
@@ -37,14 +47,17 @@ public class FunctionPattern extends StepPattern
     XObject obj = m_functionExpr.execute(xctxt);
     NodeIterator nl = obj.nodeset();
     XNumber score = SCORE_NONE;
-    Node n;
-    while(null != (n = nl.nextNode()))
+    if(null != nl)
     {
-      score = (n.equals(context)) ? SCORE_OTHER : SCORE_NONE;
-      if(score == SCORE_OTHER)
+      Node n;
+      while(null != (n = nl.nextNode()))
       {
-        context = n;
-        break;
+        score = (n.equals(context)) ? SCORE_OTHER : SCORE_NONE;
+        if(score == SCORE_OTHER)
+        {
+          context = n;
+          break;
+        }
       }
     }
     return score;

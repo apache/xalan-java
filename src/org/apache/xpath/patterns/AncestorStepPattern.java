@@ -22,6 +22,16 @@ public class AncestorStepPattern extends StepPattern
   }
   
   /**
+   * Static calc of match score.
+   */
+  protected final void calcScore()
+  {
+    m_score = SCORE_OTHER;
+    if(null == m_targetString)
+      calcTargetString();
+  }
+  
+  /**
    * Overide the super method so that we can handle
    * match patterns starting with a function such as id()// 
    */  
