@@ -63,6 +63,7 @@ import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
+import java.lang.reflect.Method;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -73,6 +74,11 @@ import org.apache.xalan.res.XSLTErrorResources;
  */
 public class DefaultConnectionPool implements ConnectionPool
 {
+  /**
+   * A placeholder thast will keep the driver loaded
+   * between calls.
+   */
+  private Object m_Driver = null;
   /**
    */
   private static final boolean DEBUG = false;
@@ -470,12 +476,36 @@ public class DefaultConnectionPool implements ConnectionPool
 
      try
      {
-       Class.forName( m_driver );
+        // We need to implement the context classloader
+        Class cls = null;
+        try 
+        {
+          Method m = Thread.class.getMethod("getContextClassLoader", null);
+          ClassLoader classLoader = (ClassLoader) m.invoke(Thread.currentThread(), null);
+          cls = classLoader.loadClass(m_driver);
+        } 
+        catch (Exception e) 
+        {
+          cls = Class.forName(m_driver);  
+        }
+        
+        if (cls == null)
+          cls = Class.forName(m_driver);
+
+        // We have also had problems with drivers unloading
+        // load an instance that will get freed with the class.
+        m_Driver = cls.newInstance();
+
+
      }
      catch(ClassNotFoundException e)
      {
        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_DRIVER_NAME, null));
        // "Invalid Driver Name Specified!");
+     }
+     catch(Exception e)
+     {
+       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_DRIVER_NAME, null));
      }
 
      // IF we are not active, don't actuall build a pool yet

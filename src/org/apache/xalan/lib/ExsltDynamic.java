@@ -156,7 +156,7 @@ public class ExsltDynamic extends ExsltBase
       {
         XPath dynamicXPath = new XPath(expr, xctxt.getSAXLocator(),
                                        xctxt.getNamespaceContext(),
-                                       XPath.SELECT);
+                                       XPath.SELECT, null, 1.0);
         result = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext()).num();
       }
       catch (TransformerException e)
@@ -237,7 +237,7 @@ public class ExsltDynamic extends ExsltBase
       {
         XPath dynamicXPath = new XPath(expr, xctxt.getSAXLocator(),
                                        xctxt.getNamespaceContext(),
-                                       XPath.SELECT);
+                                       XPath.SELECT, null, 1.0);
         result = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext()).num();
       }
       catch (TransformerException e)
@@ -317,7 +317,7 @@ public class ExsltDynamic extends ExsltBase
       {
         XPath dynamicXPath = new XPath(expr, xctxt.getSAXLocator(),
                                        xctxt.getNamespaceContext(),
-                                       XPath.SELECT);
+                                       XPath.SELECT, null, 1.0);
         result = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext()).num();
       }
       catch (TransformerException e)
@@ -411,7 +411,7 @@ public class ExsltDynamic extends ExsltBase
     xctxt.pushContextNodeList(contextNodes);
     
     NodeSet resultSet = new NodeSet();
-    resultSet.setShouldCacheNodes(true);
+    resultSet.setShouldCache(true);
     
     for (int i = 0; i < nl.getLength(); i++)
     {
@@ -423,7 +423,7 @@ public class ExsltDynamic extends ExsltBase
       {
         XPath dynamicXPath = new XPath(expr, xctxt.getSAXLocator(),
                                        xctxt.getNamespaceContext(),
-                                       XPath.SELECT);
+                                       XPath.SELECT, null, 1.0);
         object = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
         
         if (object instanceof XNodeSet)
@@ -503,7 +503,7 @@ public class ExsltDynamic extends ExsltBase
         xctxt = ((XPathContext.XPathExpressionContext) myContext).getXPathContext();
         XPath dynamicXPath = new XPath(xpathExpr, xctxt.getSAXLocator(),
                                        xctxt.getNamespaceContext(),
-                                       XPath.SELECT);
+                                       XPath.SELECT, null, 1.0);
 
         return dynamicXPath.execute(xctxt, myContext.getContextNode(),
                                     xctxt.getNamespaceContext());
@@ -573,7 +573,7 @@ public class ExsltDynamic extends ExsltBase
       return new NodeSet();
           
     NodeSet closureSet = new NodeSet();
-    closureSet.setShouldCacheNodes(true);
+    closureSet.setShouldCache(true);
         
     NodeList iterationList = nl;
     do
@@ -594,7 +594,7 @@ public class ExsltDynamic extends ExsltBase
         {
           XPath dynamicXPath = new XPath(expr, xctxt.getSAXLocator(),
                                          xctxt.getNamespaceContext(),
-                                         XPath.SELECT);
+                                         XPath.SELECT, null, 1.0);
           object = dynamicXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
           
           if (object instanceof XNodeSet)

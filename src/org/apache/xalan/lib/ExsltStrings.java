@@ -248,7 +248,7 @@ public class ExsltStrings extends ExsltBase
     }
     
     NodeSet resultSet = new NodeSet();
-    resultSet.setShouldCacheNodes(true);
+    resultSet.setShouldCache(true);
     
     boolean done = false;
     int fromIndex = 0;

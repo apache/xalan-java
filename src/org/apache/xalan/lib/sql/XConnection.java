@@ -83,7 +83,14 @@ import java.util.*;
 
 /**
  * An XSLT extension that allows a stylesheet to
- * access JDBC data. From the stylesheet perspective,
+ * access JDBC data. 
+ *
+ * It is accessed by specifying a namespace URI as follows:
+ * <pre>
+ *    xmlns:sql="http://xml.apache.org/xalan/sql"
+ * </pre>
+ *
+ * From the stylesheet perspective,
  * XConnection provides 3 extension functions: new(),
  * query(), and close().
  * Use new() to call one of XConnection constructors, which

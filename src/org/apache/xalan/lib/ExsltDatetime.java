@@ -74,7 +74,7 @@ import org.apache.xpath.objects.XObject;
  * This class contains EXSLT dates and times extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:math="http://exslt.org/dates-and-times"
+ *    xmlns:datetime="http://exslt.org/dates-and-times"
  * </pre>
  * 
  * The documentation for each function has been copied from the relevant
@@ -90,9 +90,9 @@ public class ExsltDatetime
     static final String d = "yyyy-MM-dd";
     static final String gym = "yyyy-MM";
     static final String gy = "yyyy";
-    static final String gmd = "MM-dd";
-    static final String gm = "MM";
-    static final String gd = "dd";
+    static final String gmd = "--MM-dd";
+    static final String gm = "--MM--";
+    static final String gd = "---dd";
     static final String t = "HH:mm:ss";
 
     /**
@@ -306,7 +306,9 @@ public class ExsltDatetime
      * The permitted formats are as follows: 
      *    xs:dateTime (CCYY-MM-DDThh:mm:ss) 
      *    xs:date (CCYY-MM-DD) 
-     *    xs:gYearMonth (CCYY-MM) 
+     *    xs:gYearMonth (CCYY-MM)
+     *    xs:gMonth (--MM--) 
+     *    xs:gMonthDay (--MM-DD)
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
     public static XDouble monthInYear(String datetimeIn)
@@ -317,7 +319,7 @@ public class ExsltDatetime
       if (datetime == null)
         return new XDouble(Double.NaN);      
       
-      String[] formats = {dt, d, gym};
+      String[] formats = {dt, d, gym, gm, gmd};
       return new XDouble(getNumber(datetime, formats, Calendar.MONTH));
     }
     
@@ -525,7 +527,7 @@ public class ExsltDatetime
       if (datetime == null) 
         return new XDouble(Double.NaN);            
       
-      String[] formats = {d, t};
+      String[] formats = {dt, t};
       return new XDouble(getNumber(datetime, formats, Calendar.HOUR_OF_DAY));
     }
     
@@ -821,7 +823,7 @@ public class ExsltDatetime
       String leader = "";
       String datetime = in;
       String zone = "";
-      if (in.charAt(0)=='-')
+      if (in.charAt(0)=='-' && !in.startsWith("--"))
       {
         leader = "-"; //  '+' is implicit , not allowed
         datetime = in.substring(1);
@@ -847,13 +849,11 @@ public class ExsltDatetime
     private static int getZoneStart (String datetime)
     {
       if (datetime.indexOf("Z") == datetime.length()-1)
-        return datetime.indexOf("Z");
-      else if (
-               (datetime.lastIndexOf("-") == datetime.length()-6 &&
-                datetime.charAt(datetime.length()-3) == ':')               
-                || 
-                (datetime.indexOf("+") == datetime.length() -6)
-              )
+        return datetime.length()-1;
+      else if (datetime.length() >=6 
+      		&& datetime.charAt(datetime.length()-3) == ':'
+      		&& (datetime.charAt(datetime.length()-6) == '+' 
+      		    || datetime.charAt(datetime.length()-6) == '-'))      		    
       {
         try
         {
@@ -874,9 +874,7 @@ public class ExsltDatetime
     
     /**
      * Attempt to parse an input string with the allowed formats, returning
-     * null if none of the formats work. Input formats are passed in longest to shortest,
-     * so if any parse operation fails with a parse error in the string, can
-     * immediately return null.
+     * null if none of the formats work.
      */
     private static Date testFormats (String in, String[] formats)
       throws ParseException
@@ -891,8 +889,6 @@ public class ExsltDatetime
         }
         catch (ParseException pe)
         {
-          if (pe.getErrorOffset() < in.length())
-            return null;
         }
       }
       return null;
@@ -935,11 +931,6 @@ public class ExsltDatetime
         }
         catch (ParseException pe)
         {
-          // If ParseException occurred during input string, input is invalid.
-          // If the ParseException occurred at the end of the input string,
-          // another format may work.
-          if (pe.getErrorOffset() < in.length())
-            return "";
         }
       }
       return "";
