@@ -37,8 +37,7 @@ import org.xml.sax.ext.LexicalHandler;
  * This class accepts SAX-like calls, then sends true SAX calls to a
  * wrapped SAX handler.  There is optimization done knowing that the ultimate
  * output is HTML.
- * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller 
+ * @xsl.usage internal
  */
 public class ToHTMLSAXHandler extends ToSAXHandler
 {
