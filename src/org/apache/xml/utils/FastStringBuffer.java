@@ -170,28 +170,20 @@ public class FastStringBuffer
   /**
    * Ensure that the FastStringBuffer has at least the specified amount
    * of unused space in m_map[]. If necessary, this operation will
-   * enlarge the buffer, overallocating (as specified by the blocksize)
-   * to try to decrease the frequency of these reallocations.
+   * enlarge the buffer, overallocating by blocksize so we're less
+   * likely to immediately need to grow again.
    * <p>
-   * NOTE THAT after calling ensureSize(), previously obtained
+   * NOTE THAT after calling ensureFreeSpace(), previously obtained
    * references to m_map[] may no longer be valid.
    *
    * @param newSize the required amount of "free space".
    */
-  private final void ensureSize(int newSize)
+  private final void ensureFreeSpace(int newSize)
   {
 
     if ((m_firstFree + newSize) >= m_mapSize)
     {
-		// This has somewhat interesting characteristics... if
-		// newsize==blocksize repeatedly, we reallocate every time,
-		// while if newsize==blocksize+1 we reallocate every other time.
-		// Might be simpler to always use +=newSize+m_blocksize,
-		// avoiding the test-and-branch.
-      if (m_blocksize > newSize)
-        m_mapSize += m_blocksize;
-      else
-        m_mapSize += (newSize + m_blocksize);
+      m_mapSize += (newSize + m_blocksize);
 
       char newMap[] = new char[m_mapSize];
 
@@ -213,7 +205,7 @@ public class FastStringBuffer
   public final void append(char value)
   {
 
-    ensureSize(1);
+    ensureFreeSpace(1);
 
     m_map[m_firstFree] = value;
 
@@ -234,7 +226,7 @@ public class FastStringBuffer
 
     int len = value.length();
 
-    ensureSize(len);
+    ensureFreeSpace(len);
     value.getChars(0, len, m_map, m_firstFree);
 
     m_firstFree += len;
@@ -254,7 +246,7 @@ public class FastStringBuffer
 
     int len = value.length();
 
-    ensureSize(len);
+    ensureFreeSpace(len);
     value.getChars(0, len, m_map, m_firstFree);
 
     m_firstFree += len;
@@ -275,7 +267,7 @@ public class FastStringBuffer
   public final void append(char[] chars, int start, int length)
   {
 
-    ensureSize(length);
+    ensureFreeSpace(length);
     System.arraycopy(chars, start, m_map, m_firstFree, length);
 
     m_firstFree += length;
@@ -296,7 +288,7 @@ public class FastStringBuffer
 
     int length = value.m_firstFree;
 
-    ensureSize(length);
+    ensureFreeSpace(length);
     System.arraycopy(value.m_map, 0, m_map, m_firstFree, length);
 
     m_firstFree += length;
