@@ -79,6 +79,12 @@
    </ul>
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.2.D2">
+     <p><em>Important: Xerces has added a number of DOM level-3 methods to its DOM interfaces. The DOM level-3 proposal
+is currently a working draft (it is not yet a W3C recommendation), and Xalan does not support these new methods. 
+To run Xalan in the JDK 1.1.8 platform, you must put xalan.jar (with its DOM level-2 interfaces) in front of 
+xerces.jar on the system class path. If you want to rebuild Xalan (on JDK 1.1.8 or higher), you must put Xalan 
+in front of xerces.jar on the system class path.</em></p>
+
      <p>This beta release includes the following changes:</p>     
      <ul>
        <li>Costin Manolache has slightly modified the CoRoutine stuff so that a you can compile and run everything but the CoRoutineXercesParser without having Xerces on the classpath.<br/><br/></li>
