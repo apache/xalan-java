@@ -91,7 +91,7 @@ public class ObjectFactory {
     private static final String DEFAULT_PROPERTIES_FILENAME =
                                                      "xalan.properties";
 
-    private static final String SERVICES_PATH = "META-INF/services";
+    private static final String SERVICES_PATH = "META-INF/services/";
 
     /** Set to true for debugging */
     private static final boolean DEBUG = false;
