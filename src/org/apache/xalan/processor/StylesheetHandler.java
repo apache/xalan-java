@@ -56,9 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import java.util.EmptyStackException;
 import java.util.Stack;
-import java.util.Vector;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
@@ -66,6 +64,7 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.TemplatesHandler;
+
 import org.apache.xalan.extensions.ExpressionVisitor;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -88,8 +87,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 
@@ -103,6 +100,26 @@ import org.xml.sax.helpers.NamespaceSupport;
 public class StylesheetHandler extends DefaultHandler
         implements TemplatesHandler, PrefixResolver, NodeConsumer
 {
+
+  static  {
+      Function func = new org.apache.xalan.templates.FuncDocument();
+      
+      SimpleNode.m_builtInFunctions.put(new QName("document"), func);
+
+      // func = new org.apache.xalan.templates.FuncKey();
+      // FunctionTable.installFunction("key", func);
+      func = new org.apache.xalan.templates.FuncFormatNumb();
+
+      SimpleNode.m_builtInFunctions.put(new QName("format-number"), func);
+                
+      func = new org.apache.xalan.templates.FuncCurrentGroup();
+
+      SimpleNode.m_builtInFunctions.put(new QName("current-group"), func);
+      
+      func = new org.apache.xalan.templates.FuncRegexGroup();
+
+      SimpleNode.m_builtInFunctions.put(new QName("regex-group"), func);
+  }
 
   /**
    * Create a StylesheetHandler object, creating a root stylesheet
@@ -122,50 +139,12 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Static flag to let us know if the XPath functions table
-   * has been initialized.
-   */
-  private static boolean m_xpathFunctionsInited = false;
-
-  /**
    * Do common initialization.
    *
    * @param processor non-null reference to the transformer factory that owns this handler.
    */
   void init(TransformerFactoryImpl processor)
   {
-
-    // Not sure about double-check of this flag, but
-    // it seems safe...
-    if (false == m_xpathFunctionsInited)
-    {
-      synchronized (this)
-      {
-        if (false == m_xpathFunctionsInited)
-        {
-          m_xpathFunctionsInited = true;
-
-          Function func = new org.apache.xalan.templates.FuncDocument();
-          
-          SimpleNode.m_builtInFunctions.put(new QName("document"), func);
-
-          // func = new org.apache.xalan.templates.FuncKey();
-          // FunctionTable.installFunction("key", func);
-          func = new org.apache.xalan.templates.FuncFormatNumb();
-
-          SimpleNode.m_builtInFunctions.put(new QName("format-number"), func);
-					
-          func = new org.apache.xalan.templates.FuncCurrentGroup();
-
-          SimpleNode.m_builtInFunctions.put(new QName("current-group"), func);
-          
-          func = new org.apache.xalan.templates.FuncRegexGroup();
-
-          SimpleNode.m_builtInFunctions.put(new QName("regex-group"), func);
-        }
-      }
-    }
-
     m_stylesheetProcessor = processor;
 
     // Set the initial content handler.
@@ -420,8 +399,8 @@ public class StylesheetHandler extends DefaultHandler
     }
 
     if (null == elemProcessor)
-      error(rawName + " is not allowed in this position in the stylesheet!",
-            null);
+      error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[]{rawName}),null);//rawName + " is not allowed in this position in the stylesheet!",
+            
                 
     return elemProcessor;
   }
@@ -738,8 +717,8 @@ public class StylesheetHandler extends DefaultHandler
       // If it's whitespace, just ignore it, otherwise flag an error.
       if (!XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
         error(
-          "Non-whitespace text is not allowed in this position in the stylesheet!",
-          null);
+          XSLMessages.createMessage(XSLTErrorResources.ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION, null),null);//"Non-whitespace text is not allowed in this position in the stylesheet!",
+          
     }
     else
       elemProcessor.characters(this, ch, start, length);

@@ -307,7 +307,7 @@ public class NodeSet
 
     if (!m_cacheNodes)
       throw new RuntimeException(
-        "This NodeSet can not iterate to a previous node!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_CANNOT_ITERATE, null)); //"This NodeSet can not iterate to a previous node!");
 
     if ((m_next - 1) > 0)
     {
@@ -362,7 +362,7 @@ public class NodeSet
 
     if (!m_cacheNodes)
       throw new RuntimeException(
-        "This NodeSet can not do indexing or counting functions!");
+        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_CANNOT_INDEX, null)); //"This NodeSet can not do indexing or counting functions!");
 
     if ((index >= 0) && (m_next < m_firstFree))
       m_next = index;
