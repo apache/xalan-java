@@ -170,7 +170,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 		final byte[][] bytecodes = xsltc.getBytecodes();
 		if (bytecodes != null) {
 		    return new TemplatesImpl(xsltc.getBytecodes(), transletName, 
-					     _oldOutputSystem);
+			 getOutputProperties(), _oldOutputSystem);
 		}
 	    }
 	}

@@ -70,6 +70,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
@@ -164,6 +165,10 @@ public class Parser implements Constants, ContentHandler {
 
     public Output getOutput() {
 	return _output;
+    }
+
+    public Properties getOutputProperties() {
+	return getTopLevelStylesheet().getOutputProperties();
     }
 
     public void addVariable(Variable var) {

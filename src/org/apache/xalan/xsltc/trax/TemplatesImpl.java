@@ -97,6 +97,8 @@ public final class TemplatesImpl implements Templates, Serializable {
     // and _bytecodes arrays (above).
     private int _transletIndex = -1;
     
+    private Properties _outputProperties; 
+
     // Temporary
     private boolean _oldOutputSystem;
 
@@ -131,10 +133,11 @@ public final class TemplatesImpl implements Templates, Serializable {
      * the main translet class, must be supplied
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName,
-	boolean oldOutputSystem) 
+	Properties outputProperties, boolean oldOutputSystem) 
     {
 	_bytecodes = bytecodes;
 	_name      = transletName;
+	_outputProperties = outputProperties;
 	_oldOutputSystem = oldOutputSystem;
     }
 
@@ -262,7 +265,8 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     public Transformer newTransformer()
 	throws TransformerConfigurationException {
-        return new TransformerImpl(getTransletInstance(), _oldOutputSystem);
+        return new TransformerImpl(getTransletInstance(), _outputProperties,
+	    _oldOutputSystem);
     }
 
     /**

@@ -120,7 +120,7 @@ public final class TransformerImpl extends Transformer
 
     private ErrorListener _errorListener = this;
     private URIResolver   _uriResolver = null;
-    private Properties    _properties = null;
+    private Properties    _properties, _propertiesClone;
 
     // Used for default output property settings
     private final static String EMPTY_STRING = "";
@@ -147,17 +147,20 @@ public final class TransformerImpl extends Transformer
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
      */
-    protected TransformerImpl(Translet translet, boolean oldOutputSystem) {
-	_translet = (AbstractTranslet)translet;
-	_properties = createOutputProperties();
+    protected TransformerImpl(Translet translet, Properties outputProperties,
+	boolean oldOutputSystem) 
+    {
+	_translet = (AbstractTranslet) translet;
+	_properties = createOutputProperties(outputProperties);
 	_oldOutputSystem = oldOutputSystem;
+	_propertiesClone = (Properties) _properties.clone();
     }
 
     /**
      * Returns the translet wrapped inside this Transformer
      */
     protected AbstractTranslet getTranslet() {
-	return(_translet);
+	return _translet;
     }
 
     /**
@@ -168,8 +171,8 @@ public final class TransformerImpl extends Transformer
      * @throws TransformerException
      */
     public void transform(Source source, Result result)
-	throws TransformerException {
-
+	throws TransformerException 
+    {
 	if (_translet == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_TRANSLET_ERR);
 	    throw new TransformerException(err.toString());
@@ -227,12 +230,8 @@ public final class TransformerImpl extends Transformer
 	throws TransformerException 
     {
 	// Try to get the encoding from the translet (may not be set)
-	if (_translet._encoding != null) {
-            _encoding = _translet._encoding;
-        }
-        else {
-            _encoding = "UTF-8"; // default output encoding
-        }
+	_encoding = (_translet._encoding != null) ? _translet._encoding 
+	    : "UTF-8";
 
 	_tohFactory = TransletOutputHandlerFactory.newInstance();
 	_tohFactory.setEncoding(
@@ -758,7 +757,7 @@ public final class TransformerImpl extends Transformer
      * @return Properties in effect for this Transformer
      */
     public Properties getOutputProperties() {
-	return(_properties);
+	return (Properties) _properties.clone();
     }
 
     /**
@@ -771,12 +770,13 @@ public final class TransformerImpl extends Transformer
      * @throws IllegalArgumentException if the property name is not known
      */
     public String getOutputProperty(String name)
-	throws IllegalArgumentException {
+	throws IllegalArgumentException 
+    {
 	if (!validOutputProperty(name)) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
 	    throw new IllegalArgumentException(err.toString());
 	}
-	return(_properties.getProperty(name));
+	return _properties.getProperty(name);
     }
 
     /**
@@ -791,11 +791,22 @@ public final class TransformerImpl extends Transformer
     public void setOutputProperties(Properties properties)
 	throws IllegalArgumentException 
     {
-	// Notice that _properties.putAll() will not copy default props
-	final Enumeration propertyNames = properties.propertyNames();
-	while (propertyNames.hasMoreElements()) {
-	    final String prop = (String) propertyNames.nextElement();
-	    _properties.setProperty(prop, (String) properties.getProperty(prop));
+	if (properties != null) {
+	    final Enumeration names = properties.propertyNames();
+
+	    while (names.hasMoreElements()) {
+		final String name = (String) names.nextElement();
+		if (validOutputProperty(name)) {
+		    _properties.setProperty(name, properties.getProperty(name));
+		}
+		else {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
+		    throw new IllegalArgumentException(err.toString());
+		}
+	    }
+	}
+	else {
+	    _properties = _propertiesClone;
 	}
     }
 
@@ -810,7 +821,8 @@ public final class TransformerImpl extends Transformer
      * @throws IllegalArgumentException Never, errors are ignored
      */
     public void setOutputProperty(String name, String value)
-	throws IllegalArgumentException {
+	throws IllegalArgumentException 
+    {
 	if (!validOutputProperty(name)) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_PROP_ERR, name);
 	    throw new IllegalArgumentException(err.toString());
@@ -823,44 +835,46 @@ public final class TransformerImpl extends Transformer
      * initiating the transformation
      */
     private void setOutputProperties(AbstractTranslet translet,
-				     Properties properties) {
+				     Properties properties) 
+    {
 	// Return right now if no properties are set
 	if (properties == null) return;
 
 	// Get a list of all the defined properties
 	Enumeration names = properties.propertyNames();
 	while (names.hasMoreElements()) {
-	    // Get the next property name and value
-	    String name  = (String)names.nextElement();
-	    // bug fix # 6636- contributed by Tim Elcott
-	    String value = (String)properties.getProperty(name);
+	    String name  = (String) names.nextElement();
+	    String value = (String) properties.getProperty(name);
 
 	    // Pass property value to translet - override previous setting
-	    if (name.equals(OutputKeys.ENCODING))
+	    if (name.equals(OutputKeys.ENCODING)) {
 		translet._encoding = value;
-	    else if (name.equals(OutputKeys.METHOD))
+	    }
+	    else if (name.equals(OutputKeys.METHOD)) {
 		translet._method = value;
-	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC))
+	    }
+	    else if (name.equals(OutputKeys.DOCTYPE_PUBLIC)) {
 		translet._doctypePublic = value;
-	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM))
+	    }
+	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM)) {
 		translet._doctypeSystem = value;
-	    else if (name.equals(OutputKeys.MEDIA_TYPE))
+	    }
+	    else if (name.equals(OutputKeys.MEDIA_TYPE)) {
 		translet._mediaType = value;
-	    else if (name.equals(OutputKeys.STANDALONE))
+	    }
+	    else if (name.equals(OutputKeys.STANDALONE)) {
 		translet._standalone = value;
-	    else if (name.equals(OutputKeys.VERSION))
+	    }
+	    else if (name.equals(OutputKeys.VERSION)) {
 		translet._version = value;
+	    }
 	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) {
-		if ((value != null) && (value.toLowerCase().equals("yes")))
-		    translet._omitHeader = true;
-		else
-		    translet._omitHeader = false;
+		translet._omitHeader = 
+		    (value != null && value.toLowerCase().equals("yes"));
 	    }
 	    else if (name.equals(OutputKeys.INDENT)) {
-		if ((value != null) && (value.toLowerCase().equals("yes")))
-		    translet._indent = true;
-		else
-		    translet._indent = false;
+		translet._indent = 
+		    (value != null && value.toLowerCase().equals("yes"));
 	    }
 	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
 		if (value != null) {
@@ -875,68 +889,45 @@ public final class TransformerImpl extends Transformer
     }
 
     /**
-     * Internal method to pass any properties to the translet prior to
-     * initiating the transformation
+     * Internal method to create the initial set of properties. There
+     * are two layers of properties: the default layer and the base layer.
+     * The latter contains properties defined in the stylesheet or by
+     * the user using this API.
      */
-    private Properties createOutputProperties() {
-	
-	// Level3: Return the default property value
- 	// bug # 6751 fixed by removing setProperty lines for 
-  	//  OutputKeys.(DOCTYPE_PUBLIC|DOCTYPE_SYSTEM|CDATA_SECTION_ELEMENTS)
-  	//  instead of setting them to "" (EMPTY_STRING). Fix contributed
-  	//  by Derek Sayeau.   
-	Properties third = new Properties();
-	third.setProperty(OutputKeys.ENCODING, "UTF-8");
-	third.setProperty(OutputKeys.METHOD, XML_STRING);
-	third.setProperty(OutputKeys.INDENT, NO_STRING);
-	third.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
-	third.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
-	third.setProperty(OutputKeys.VERSION, "1.0");
+    private Properties createOutputProperties(Properties outputProperties) {
+	final Properties defaults = new Properties();
+	defaults.setProperty(OutputKeys.ENCODING, "UTF-8");
+	defaults.setProperty(OutputKeys.METHOD, XML_STRING);
+	defaults.setProperty(OutputKeys.INDENT, NO_STRING);
+	defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
+	defaults.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
+	defaults.setProperty(OutputKeys.STANDALONE, NO_STRING);
+	defaults.setProperty(OutputKeys.VERSION, "1.0");
 
-	// Level2: Return the property value is set in the translet
-	// Creating these properties with the third-level properties as default
-	Properties second = new Properties(third);
-	if (_translet != null) {
-	    String value = _translet._encoding;
-	    if (value != null) second.setProperty(OutputKeys.ENCODING, value);
-
-	    value = _translet._method;
-	    if (value != null) second.setProperty(OutputKeys.METHOD, value);
-
-	    if (_translet._indent)
-		second.setProperty(OutputKeys.INDENT, "yes");
-	    else
-		second.setProperty(OutputKeys.INDENT, "no");
-
-	    value = _translet._doctypePublic;
-	    if (value != null) 
-		second.setProperty(OutputKeys.DOCTYPE_PUBLIC, value);
-
-	    value = _translet._doctypeSystem;
-	    if (value != null) 
-		second.setProperty(OutputKeys.DOCTYPE_SYSTEM, value);
-
-	    value = makeCDATAString(_translet._cdata);
-	    if (value != null) 
-		second.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS,value);
-
-	    value = _translet._mediaType;
-	    if (value != null) second.setProperty(OutputKeys.MEDIA_TYPE, value);
-
-	    if (_translet._omitHeader)
-		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-	    else
-		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-
-	    value = _translet._standalone;
-	    if (value != null) second.setProperty(OutputKeys.STANDALONE, value);
-
-	    value = _translet._version;
-	    if (value != null) second.setProperty(OutputKeys.VERSION, value);
+	// Copy propeties set in stylesheet to base
+	final Properties base = new Properties(defaults);
+	if (outputProperties != null) {
+	    final Enumeration names = outputProperties.propertyNames();
+	    while (names.hasMoreElements()) {
+		final String name = (String) names.nextElement();
+		base.setProperty(name, outputProperties.getProperty(name));
+	    }
 	}
 
-	// Creating the properties with the second-level properties as default
-	return(new Properties(second));
+	// Update defaults based on output method
+	final String method = base.getProperty(OutputKeys.METHOD);
+	if (method != null) {
+	    if (method.equals("html")) {
+		defaults.setProperty(OutputKeys.INDENT, "yes");
+		defaults.setProperty(OutputKeys.VERSION, "4.0");
+		defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/html");
+	    }
+	    else if (method.equals("text")) {
+		defaults.setProperty(OutputKeys.MEDIA_TYPE, "text/plain");
+	    }
+	}
+
+	return base; 
     }
 
     /**
@@ -944,18 +935,17 @@ public final class TransformerImpl extends Transformer
      * the JAXP 1.1 / TrAX spec
      */
     private boolean validOutputProperty(String name) {
-	if (name.equals(OutputKeys.ENCODING)) return true;
-	if (name.equals(OutputKeys.METHOD)) return true;
-	if (name.equals(OutputKeys.INDENT)) return true;
-	if (name.equals(OutputKeys.DOCTYPE_PUBLIC)) return true;
-	if (name.equals(OutputKeys.DOCTYPE_SYSTEM)) return true;
-	if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) return true;
-	if (name.equals(OutputKeys.MEDIA_TYPE)) return true;
-	if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) return true;
-	if (name.equals(OutputKeys.STANDALONE)) return true;
-	if (name.equals(OutputKeys.VERSION)) return true;
-	if (name.charAt(0) == '{') return true;
-	return false;
+	return (name.equals(OutputKeys.ENCODING) ||
+		name.equals(OutputKeys.METHOD) ||
+		name.equals(OutputKeys.INDENT) ||
+		name.equals(OutputKeys.DOCTYPE_PUBLIC) ||
+		name.equals(OutputKeys.DOCTYPE_SYSTEM) ||
+		name.equals(OutputKeys.CDATA_SECTION_ELEMENTS) ||
+		name.equals(OutputKeys.MEDIA_TYPE) ||
+		name.equals(OutputKeys.OMIT_XML_DECLARATION)   ||
+		name.equals(OutputKeys.STANDALONE) ||
+		name.equals(OutputKeys.VERSION) ||
+		name.charAt(0) == '{');
     }
 
     /**
@@ -1049,8 +1039,9 @@ public final class TransformerImpl extends Transformer
      * the transformation (always does in our case).
      */
     public void error(TransformerException e)
-	throws TransformerException {
-	System.err.println("ERROR: "+e.getMessageAndLocation());
+	throws TransformerException 
+    {
+	System.err.println("ERROR: " + e.getMessageAndLocation());
 	throw(e); 	
     }
 
@@ -1068,11 +1059,13 @@ public final class TransformerImpl extends Transformer
      * the transformation (always does in our case).
      */
     public void fatalError(TransformerException e)
-	throws TransformerException {
-	System.err.println("FATAL: "+e.getMessageAndLocation());
+	throws TransformerException 
+    {
+	System.err.println("FATAL: " + e.getMessageAndLocation());
 	Throwable wrapped = e.getException();
-	if (wrapped != null)
+	if (wrapped != null) {
 	    System.err.println("     : "+wrapped.getMessage());
+	}
 	throw(e);
     }
 
@@ -1090,11 +1083,13 @@ public final class TransformerImpl extends Transformer
      * the transformation (never does in our case).
      */
     public void warning(TransformerException e)
-	throws TransformerException {
-	System.err.println("WARNING: "+e.getMessageAndLocation());
+	throws TransformerException 
+    {
+	System.err.println("WARNING: " + e.getMessageAndLocation());
 	Throwable wrapped = e.getException();
-	if (wrapped != null)
+	if (wrapped != null) {
 	    System.err.println("       : "+wrapped.getMessage());
+	}
     }
 
 }
