@@ -150,7 +150,7 @@ public class DTMManagerDefault extends DTMManager
   private static final boolean DUMPTREE = false;
 
   /** Set this to true if you want a basic diagnostics. */
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
 
   /**
    * Get an instance of a DTM, loaded with the content from the
@@ -179,7 +179,11 @@ public class DTMManagerDefault extends DTMManager
   {
 
     if(DEBUG && null != source)
-      System.out.println("Starting source: "+source.getSystemId());
+      System.out.println("Starting "+
+			 (unique ? "UNIQUE" : "shared")+
+			 " source: "+source.getSystemId()
+			 );
+
     XMLStringFactory xstringFactory = m_xsf;
     int dtmPos = getFirstFreeDTMID();
     int documentID = dtmPos << IDENT_DTM_NODE_BITS;
@@ -545,9 +549,18 @@ public class DTMManagerDefault extends DTMManager
    */
   public DTM getDTM(int nodeHandle)
   {
-
-    // Performance critical function.
-    return m_dtms[nodeHandle >>> IDENT_DTM_NODE_BITS];
+    try
+    {
+      // Performance critical function.
+      return m_dtms[nodeHandle >>> IDENT_DTM_NODE_BITS];
+    }
+    catch(java.lang.ArrayIndexOutOfBoundsException e)
+    {
+      if(nodeHandle==DTM.NULL)
+	return null;		// Accept as a special case.
+      else
+	throw e;		// Programming error; want to know about it.
+    }    
   }
 
   /**
@@ -587,6 +600,16 @@ public class DTMManagerDefault extends DTMManager
    */
   public boolean release(DTM dtm, boolean shouldHardDelete)
   {
+    if(DEBUG)
+    {
+      System.out.println("Releasing "+
+			 (shouldHardDelete ? "HARD" : "soft")+
+			 " systemID="+
+			 // Following shouldn't need a nodeHandle, but does...
+			 // and doesn't seem to report the intended value
+			 dtm.getDocumentSystemIdentifier(dtm.getDocument())
+			 );
+    }
 
     if (dtm instanceof SAX2DTM)
     {
