@@ -73,6 +73,8 @@ import java.util.Enumeration;
 import java.util.Vector;
 import javax.xml.transform.Templates;
 
+import org.apache.xml.dtm.DTM;
+
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.Translet;
@@ -99,8 +101,21 @@ public abstract class AbstractTranslet implements Translet {
     public String  _mediaType = null;
     public Vector _cdata = null;
 
+    public static final int FIRST_TRANSLET_VERSION = 100;
+    public static final int VER_SPLIT_NAMES_ARRAY = 101;
+    public static final int CURRENT_TRANSLET_VERSION = VER_SPLIT_NAMES_ARRAY;
+
+    // Initialize Translet version field to base value.  A class that extends
+    // AbstractTranslet may override this value to a more recent translet
+    // version; if it doesn't override the value (because it was compiled
+    // before the notion of a translet version was introduced, it will get
+    // this default value).
+    protected int transletVersion = FIRST_TRANSLET_VERSION;
+
     // DOM/translet handshaking - the arrays are set by the compiled translet
     protected String[] namesArray;
+    protected String[] urisArray;
+    protected int[]    typesArray;
     protected String[] namespaceArray;
     
     // The Templates object that is used to create this Translet instance
@@ -141,7 +156,7 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final DOMAdapter makeDOMAdapter(DOM dom)
 	throws TransletException {
-	return new DOMAdapter(dom, namesArray, namespaceArray);
+	return new DOMAdapter(dom, namesArray, urisArray, typesArray, namespaceArray);
     }
 
     /************************************************************************
@@ -356,6 +371,58 @@ public abstract class AbstractTranslet implements Translet {
             	    setKeyIndexDom(ID_INDEX_NAME, document);
                 }
             }
+        }
+    }
+
+    /**
+     * After constructing the translet object, this method must be called to
+     * perform any version-specific post-initialization that's required.
+     */
+    public final void postInitialization() {
+        // If the version of the translet had just one namesArray, split
+        // it into multiple fields.
+        if (transletVersion < VER_SPLIT_NAMES_ARRAY) {
+            int arraySize = namesArray.length;
+            String[] newURIsArray = new String[arraySize];
+            String[] newNamesArray = new String[arraySize];
+            int[] newTypesArray = new int[arraySize];
+
+            for (int i = 0; i < arraySize; i++) {
+                String name = namesArray[i];
+                int colonIndex = name.lastIndexOf(':');
+                int lNameStartIdx = colonIndex+1;
+
+                if (colonIndex > -1) {
+                    newURIsArray[i] = name.substring(0, colonIndex);
+                }
+
+               // Distinguish attribute and element names.  Attribute has
+               // @ before local part of name.
+               if (name.charAt(lNameStartIdx) == '@') {
+                   lNameStartIdx++;
+                   newTypesArray[i] = DTM.ATTRIBUTE_NODE;
+               } else if (name.charAt(lNameStartIdx) == '?') {
+                   lNameStartIdx++;
+                   newTypesArray[i] = DTM.NAMESPACE_NODE;
+               } else {
+                   newTypesArray[i] = DTM.ELEMENT_NODE;
+               }
+               newNamesArray[i] =
+                          (lNameStartIdx == 0) ? name
+                                               : name.substring(lNameStartIdx);
+            }
+
+            namesArray = newNamesArray;
+            urisArray  = newURIsArray;
+            typesArray = newTypesArray;
+        }
+
+        // Was translet compiled using a more recent version of the XSLTC
+        // compiler than is known by the AbstractTranslet class?  If, so
+        // and we've made it this far (which is doubtful), we should give up.
+        if (transletVersion > CURRENT_TRANSLET_VERSION) {
+            BasisLibrary.runTimeError(BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+                                      this.getClass().getName());
         }
     }
 
@@ -648,6 +715,15 @@ public abstract class AbstractTranslet implements Translet {
     public String[] getNamesArray() {
 	return namesArray;
     }
+    
+    public String[] getUrisArray() {
+    	return urisArray;
+    }
+    
+    public int[] getTypesArray() {
+    	return typesArray;
+    }
+    
     public String[] getNamespaceArray() {
 	return namespaceArray;
     }

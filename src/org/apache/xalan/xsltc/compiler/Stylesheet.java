@@ -72,9 +72,11 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.apache.bcel.generic.ANEWARRAY;
+import org.apache.bcel.generic.BasicType;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.FieldGen;
 import org.apache.bcel.generic.GETFIELD;
+import org.apache.bcel.generic.GETSTATIC;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
@@ -83,6 +85,7 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.NEWARRAY;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.PUTFIELD;
 import org.apache.bcel.generic.PUTSTATIC;
@@ -94,6 +97,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.dtm.DTM;
 
 public final class Stylesheet extends SyntaxTreeNode {
@@ -558,7 +562,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 					   classGen.getConstantPool());
 	classGen.addField(fgen.getField());
     }
-
+    
     /**
      * Add a static field
      */
@@ -632,19 +636,25 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Create a static initializer for the translet which will contain
-     * read-only that can be shared by all translet instances.
+     * Compile the namesArray, urisArray and typesArray into
+     * the static initializer. They are read-only from the
+     * translet. All translet instances can share a single
+     * copy of this informtion.
      */
     private void compileStaticInitializer(ClassGenerator classGen) {
-        final ConstantPoolGen cpg = classGen.getConstantPool();
-        final InstructionList il = new InstructionList();
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = new InstructionList();
 
-        final MethodGenerator staticConst =
-            new MethodGenerator(ACC_PUBLIC|ACC_STATIC,
-                                org.apache.bcel.generic.Type.VOID,
-                                null, null, "<clinit>",
-                                _className, il, cpg);
+	final MethodGenerator staticConst =
+	    new MethodGenerator(ACC_PUBLIC|ACC_STATIC,
+				org.apache.bcel.generic.Type.VOID, 
+				null, null, "<clinit>", 
+				_className, il, cpg);
 
+	addStaticField(classGen, "[" + STRING_SIG, STATIC_NAMES_ARRAY_FIELD);
+	addStaticField(classGen, "[" + STRING_SIG, STATIC_URIS_ARRAY_FIELD);
+	addStaticField(classGen, "[I", STATIC_TYPES_ARRAY_FIELD);
+	addStaticField(classGen, "[" + STRING_SIG, STATIC_NAMESPACE_ARRAY_FIELD);
         // Create fields of type char[] that will contain literal text from
         // the stylesheet.
         final int charDataFieldCount = getXSLTC().getCharacterDataCount();
@@ -652,6 +662,97 @@ public final class Stylesheet extends SyntaxTreeNode {
             addStaticField(classGen, STATIC_CHAR_DATA_FIELD_SIG,
                            STATIC_CHAR_DATA_FIELD+i);
         }
+
+	// Put the names array into the translet - used for dom/translet mapping
+	final Vector namesIndex = getXSLTC().getNamesIndex();
+	int size = namesIndex.size();
+	String[] namesArray = new String[size];
+	String[] urisArray = new String[size];
+	int[] typesArray = new int[size];
+	
+	int index;
+	for (int i = 0; i < size; i++) {
+	    String encodedName = (String)namesIndex.elementAt(i);
+	    if ((index = encodedName.lastIndexOf(':')) > -1) {
+	        urisArray[i] = encodedName.substring(0, index);
+	    }
+	    
+	    index = index + 1;
+	    if (encodedName.charAt(index) == '@') {
+	    	typesArray[i] = DTM.ATTRIBUTE_NODE;
+	    	index++;
+	    } else if (encodedName.charAt(index) == '?') {
+	    	typesArray[i] = DTM.NAMESPACE_NODE;
+	    	index++;
+	    } else {
+	        typesArray[i] = DTM.ELEMENT_NODE;
+	    }
+	    
+	    if (index == 0) {
+	        namesArray[i] = encodedName;
+	    }
+	    else {
+	        namesArray[i] = encodedName.substring(index);
+	    }	    
+	}
+	
+	il.append(new PUSH(cpg, size));
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+
+	for (int i = 0; i < size; i++) {
+	    final String name = namesArray[i];
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, i));
+	    il.append(new PUSH(cpg, name));
+	    il.append(AASTORE);
+	}
+	il.append(new PUTSTATIC(cpg.addFieldref(_className,
+					       STATIC_NAMES_ARRAY_FIELD,
+					       NAMES_INDEX_SIG)));
+
+	il.append(new PUSH(cpg, size));
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+
+	for (int i = 0; i < size; i++) {
+	    final String uri = urisArray[i];
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, i));
+	    il.append(new PUSH(cpg, uri));
+	    il.append(AASTORE);
+	}
+	il.append(new PUTSTATIC(cpg.addFieldref(_className,
+					       STATIC_URIS_ARRAY_FIELD,
+					       URIS_INDEX_SIG)));
+
+	il.append(new PUSH(cpg, size));
+	il.append(new NEWARRAY(BasicType.INT));		
+
+	for (int i = 0; i < size; i++) {
+	    final int nodeType = typesArray[i];
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, i));
+	    il.append(new PUSH(cpg, nodeType));
+	    il.append(IASTORE);
+	}
+	il.append(new PUTSTATIC(cpg.addFieldref(_className,
+					       STATIC_TYPES_ARRAY_FIELD,
+					       TYPES_INDEX_SIG)));
+
+	// Put the namespace names array into the translet
+	final Vector namespaces = getXSLTC().getNamespaceIndex();
+	il.append(new PUSH(cpg, namespaces.size()));
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+
+	for (int i = 0; i < namespaces.size(); i++) {
+	    final String ns = (String)namespaces.elementAt(i);
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, i));
+	    il.append(new PUSH(cpg, ns));
+	    il.append(AASTORE);
+	}
+	il.append(new PUTSTATIC(cpg.addFieldref(_className,
+					       STATIC_NAMESPACE_ARRAY_FIELD,
+					       NAMESPACE_INDEX_SIG)));
 
         // Grab all the literal text in the stylesheet and put it in a char[]
         final int charDataCount = getXSLTC().getCharacterDataCount();
@@ -664,13 +765,15 @@ public final class Stylesheet extends SyntaxTreeNode {
                                                STATIC_CHAR_DATA_FIELD_SIG)));
         }
 
-        il.append(RETURN);
+	il.append(RETURN);
 
-        staticConst.stripAttributes(true);
-        staticConst.setMaxLocals();
-        staticConst.setMaxStack();
-        classGen.addMethod(staticConst.getMethod());
+	staticConst.stripAttributes(true);
+	staticConst.setMaxLocals();
+	staticConst.setMaxStack();
+	classGen.addMethod(staticConst.getMethod());
+    	
     }
+
     /**
      * Compile the translet's constructor
      */
@@ -689,41 +792,45 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(classGen.loadTranslet());
 	il.append(new INVOKESPECIAL(cpg.addMethodref(TRANSLET_CLASS,
 						     "<init>", "()V")));
-
-	// Put the names array into the translet - used for dom/translet mapping
-	final Vector names = getXSLTC().getNamesIndex();
+	
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, names.size()));
-	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
-
-	for (int i = 0; i < names.size(); i++) {
-	    final String name = (String)names.elementAt(i);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, i));
-	    il.append(new PUSH(cpg, name));
-	    il.append(AASTORE);
-	}
+	il.append(new GETSTATIC(cpg.addFieldref(_className,
+	                                        STATIC_NAMES_ARRAY_FIELD,
+	                                        NAMES_INDEX_SIG)));
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       NAMES_INDEX,
-					       NAMES_INDEX_SIG)));
-
-	// Put the namespace names array into the translet
-	final Vector namespaces = getXSLTC().getNamespaceIndex();
+	                                       NAMES_INDEX,
+	                                       NAMES_INDEX_SIG)));
+	
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, namespaces.size()));
-	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
-
-	for (int i = 0; i < namespaces.size(); i++) {
-	    final String ns = (String)namespaces.elementAt(i);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, i));
-	    il.append(new PUSH(cpg, ns));
-	    il.append(AASTORE);
-	}
+	il.append(new GETSTATIC(cpg.addFieldref(_className,
+	                                        STATIC_URIS_ARRAY_FIELD,
+	                                        URIS_INDEX_SIG)));
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       NAMESPACE_INDEX,
-					       NAMESPACE_INDEX_SIG)));
+	                                       URIS_INDEX,
+	                                       URIS_INDEX_SIG)));
 
+	il.append(classGen.loadTranslet());
+	il.append(new GETSTATIC(cpg.addFieldref(_className,
+	                                        STATIC_TYPES_ARRAY_FIELD,
+	                                        TYPES_INDEX_SIG)));
+	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
+	                                       TYPES_INDEX,
+	                                       TYPES_INDEX_SIG)));
+
+	il.append(classGen.loadTranslet());
+	il.append(new GETSTATIC(cpg.addFieldref(_className,
+	                                        STATIC_NAMESPACE_ARRAY_FIELD,
+	                                        NAMESPACE_INDEX_SIG)));
+	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
+	                                       NAMESPACE_INDEX,
+	                                       NAMESPACE_INDEX_SIG)));
+
+	il.append(classGen.loadTranslet());
+        il.append(new PUSH(cpg, AbstractTranslet.CURRENT_TRANSLET_VERSION));
+	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
+	                                       TRANSLET_VERSION_INDEX,
+	                                       TRANSLET_VERSION_INDEX_SIG)));
+	
 	if (_hasIdCall) {
 	    il.append(classGen.loadTranslet());
 	    il.append(new PUSH(cpg, Boolean.TRUE));
