@@ -140,6 +140,8 @@ public class TransformerFactoryImpl
 	}
     }
 
+    // This flag is passed to the compiler - will produce stack traces etc.
+    private boolean _debug = false;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -207,11 +209,17 @@ public class TransformerFactoryImpl
 	throws IllegalArgumentException { 
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
-	if ((name.equals("translet-name")) && (value instanceof String))
+	if ((name.equals("translet-name")) && (value instanceof String)) {
 	    _defaultTransletName = (String)value;
-	// Throw an exception for all other attributes
-	ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
-	throw new IllegalArgumentException(err.toString());
+	}
+	else if (name.equals("debug")) {
+	    _debug = true;
+	}
+	else {
+	    // Throw an exception for all other attributes
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
+	    throw new IllegalArgumentException(err.toString());
+	}
     }
 
     /**
@@ -311,6 +319,7 @@ public class TransformerFactoryImpl
 	}
 
 	XSLTC xsltc = new XSLTC();
+	if (_debug) xsltc.setDebug(true);
 	xsltc.init();
 
 	// Compile the default copy-stylesheet
@@ -476,6 +485,7 @@ public class TransformerFactoryImpl
 
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
+	if (_debug) xsltc.setDebug(true);
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined

@@ -780,7 +780,7 @@ public class Parser implements Constants, ContentHandler {
 
 	// Unary minus.
 	_symbolTable.addPrimop("u-", R_R);	
-	_symbolTable.addPrimop("u-", I_I);	
+	_symbolTable.addPrimop("u-", I_I);
     }
 
     public SymbolTable getSymbolTable() {
