@@ -116,7 +116,7 @@ public class Encodings extends Object
                         return charToByteConverterClass.getMethod("getConverter", argTypes);
                     }
                     catch (Exception e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException(e.toString());
                     }
                 }});
         }
