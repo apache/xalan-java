@@ -64,6 +64,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.XType;
@@ -78,6 +79,7 @@ public class DateTimeObj
     // Datetime formats (era and zone handled separately).
     public static final String dt1 = "yyyy-MM-dd'T'HH:mm:ss.ss";
     public static final String dt2 = "yyyy-MM-dd'T'HH:mm:ss";
+    public static final String dt3 = "yyyy-MM-dd'T'HH:mm";
     public static final String d = "yyyy-MM-dd";
     public static final String gym = "yyyy-MM";
     public static final String gy = "yyyy";
@@ -111,7 +113,7 @@ public class DateTimeObj
      */
     public DateTimeObj(String dateTimeIn) throws TransformerException
     {
-    	this(dateTimeIn, new String[]{dt2});
+    	this(dateTimeIn, new String[]{dt1, dt2, dt3});
     }
     
     public DateTimeObj(String dateTimeIn, String[] formatsIn) throws TransformerException
@@ -161,7 +163,10 @@ public class DateTimeObj
       dateFormat.setLenient(false);
       m_dateTime = dateFormat.format(date);
       m_date = date;
-
+      m_size = m_dateTime.length();
+    	// Remember our Time separator
+      m_T = (m_T = m_dateTime.indexOf("T")) != -1 ? m_T : m_size ;
+    	
       Calendar cal = Calendar.getInstance();
       cal.setLenient(false);
       cal.setTime(date);
@@ -311,6 +316,8 @@ public class DateTimeObj
       if (z > 0)
       {
         zone = datetime.substring(z);
+       if(datetime.charAt(z-1) == 'T')
+          z--;
         datetime = datetime.substring(0, z);
       }
       else if (z == -2)
@@ -456,7 +463,7 @@ public class DateTimeObj
     
     public static DateTimeObj time(Date timeIn) throws TransformerException
     {
-    	DateTimeObj dt = new DateTimeObj (timeIn, t1);
+    	DateTimeObj dt = new DateTimeObj (timeIn, t2);
               
       return dt;
     }
@@ -596,6 +603,27 @@ public class DateTimeObj
         dd = "0" + dd;
       return dd;
     }
+    
+    /**
+     * Return the hours from a given timezone.
+     * @param timezone string
+     * @return hours from timezone
+     */
+    private static int getHrsFromZone(String zone)
+    {
+      if (zone.equals("Z"))
+      return 0;
+      int sign = 1;
+      if (zone.startsWith("-"))
+      {
+        sign = -1;
+      }
+     int index = zone.indexOf(":");
+     int hr = sign * (Integer.parseInt(zone.substring(1, index)));
+     int min = sign * (Integer.parseInt(zone.substring(index+1))); 
+     return hr;
+    }
+        
     
     /**
      * The duration function returns the duration specified in the duration 
@@ -1011,6 +1039,252 @@ public class DateTimeObj
      return dt;
     }
     
+    public DateTimeObj addTZToDateTime(Duration tz) throws TransformerException
+    {
+    	if(tz == null)
+    	{
+    		if (m_zone.equals("z"))
+    		return this;
+    		Date date;
+    		if (m_zone== null || m_zone.length()==0)
+    		{
+    			Calendar cal = Calendar.getInstance();
+    			int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    			  cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    			int tZone = offset/(60*60*1000);    			
+    			// ...but without daylight saving:
+    			//int tZone = TimeZone.getDefault().getRawOffset()/(60*60*1000);
+    			cal.setTime(m_date);
+    			cal.add(Calendar.HOUR,-tZone);
+    			//String dateTime = m_dateTime.substring(0,m_dateTime.indexOf("T"));
+    			//dateTime = dateTime + formatDigits(hrs) + ":" + formatDigits(m_minute) + ":" + m_second;
+    			date = cal.getTime();
+    			DateTimeObj datetime = new DateTimeObj(date, dt2);
+    			datetime.setZone("Z");
+    			return datetime; 
+    		}
+    		else
+    		{    			
+    			Calendar cal = Calendar.getInstance();
+    			int tZone = getHrsFromZone(m_zone);
+    			cal.setTime(m_date);
+    			cal.add(Calendar.HOUR,-tZone);
+    			date = cal.getTime();
+    			DateTimeObj datetime = new DateTimeObj(date, dt2);
+    			datetime.setZone("Z");
+    			return datetime;
+    		}
+    	}
+    	else
+    	{
+    		Calendar cal = Calendar.getInstance();
+    		int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    		 cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    		int tZone = tz.getSigned() ? tz.getHours() * -1 : tz.getHours();
+    		// need to handle m_zone!!!
+    		cal.setTime(m_date);
+    		cal.add(Calendar.HOUR,-tZone);
+    		if(m_zone != null && m_zone.length()>0)
+    		{
+    		  tZone = getHrsFromZone(m_zone);    		
+    		  tZone = tZone - (offset/(60*60*1000));    		
+    		  cal.add(Calendar.HOUR,-tZone);
+    		}
+    		//String dateTime = m_dateTime.substring(0,m_dateTime.indexOf("T"));
+    		//dateTime = dateTime + formatDigits(hrs) + ":" + formatDigits(m_minute) + ":" + m_second;
+    		Date date = cal.getTime();
+    		DateTimeObj datetime = new DateTimeObj(date, dt2);
+    		datetime.setZone("Z");
+    		return datetime;
+    	}
+    }
+    
+    public DateTimeObj addTZToDate(Duration tz) throws TransformerException
+    {
+    	if(tz == null)
+    	{
+    		if (m_zone== null || m_zone.length()==0)
+    		{
+    			Calendar cal = Calendar.getInstance();
+    			int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    			  cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    			int tZone = offset/(60*60*1000);
+    			boolean signed = tZone < 0;
+    			DateTimeObj dateTime = date(m_dateTime);
+    			dateTime.setZone((signed?"-" : "") + formatDigits(tZone) + ":00");
+    			return dateTime; 
+    		}
+    		else
+    		return this;
+    	}
+    	else
+    	{
+    		int tZone = tz.getHours();
+    		// need to handle m_zone!!!
+    		DateTimeObj dateTime = date(m_dateTime);
+    		dateTime.setZone((tz.getSigned() ? "-" + formatDigits(tZone) : formatDigits(tZone)) + ":00");
+    		return dateTime; 
+    	}
+    }
+    
+    public DateTimeObj addTZToTime(Duration tz) throws TransformerException
+    {
+    	if(tz == null)
+    	{
+    		if (m_zone.equals("z"))
+    		return this;
+    		Date date;
+    		if (m_zone== null || m_zone.length()==0)
+    		{
+    			Calendar cal = Calendar.getInstance();
+    			int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    			  cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    			int tZone = offset/(60*60*1000);
+    			cal.setTime(m_date);
+    			cal.add(Calendar.HOUR,tZone);
+    			//String dateTime = m_dateTime.substring(0,m_dateTime.indexOf("T"));
+    			//dateTime = dateTime + formatDigits(hrs) + ":" + formatDigits(m_minute) + ":" + m_second;
+    			date = cal.getTime();
+    			DateTimeObj time = time(date);
+    		    time.setZone("Z");
+    		    return time; 
+    		}
+    		else
+    		{
+    			Calendar cal = Calendar.getInstance();
+    			int tZone = getHrsFromZone(m_zone);
+    			cal.setTime(m_date);
+    			cal.add(Calendar.HOUR,-tZone);
+    			date = cal.getTime();
+    			DateTimeObj time = time(date);
+    		    time.setZone("Z");
+    		    return time;
+    		}
+    	}
+    	else
+    	{
+    		Calendar cal = Calendar.getInstance();
+    		int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    		  cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    		int tZone = tz.getSigned() ? tz.getHours() * -1 : tz.getHours();
+    		// need to handle m_zone!!!
+    		cal.setTime(m_date);
+    		cal.add(Calendar.HOUR,-tZone);
+    		if(m_zone != null && m_zone.length()>0)
+    		{
+    		  tZone = getHrsFromZone(m_zone);
+    		  tZone = tZone - (offset/(60*60*1000));    		
+    		  cal.add(Calendar.HOUR,-tZone);
+    		}
+    		//String dateTime = m_dateTime.substring(0,m_dateTime.indexOf("T"));
+    		//dateTime = dateTime + formatDigits(hrs) + ":" + formatDigits(m_minute) + ":" + m_second;
+    		Date date = cal.getTime();
+    		DateTimeObj time = time(date);
+    		time.setZone("Z");
+    		return time;
+    	}
+    }
+    
+    public DateTimeObj removeTZFromDateTime(Duration tz) throws TransformerException
+    {
+    	if(tz == null)
+    	{
+    		if (m_zone.equals("z") || m_zone== null || m_zone.length()==0)
+    		return this;
+    		
+    		Date date;
+    		Calendar cal = Calendar.getInstance();
+    		int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    		cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    	
+    		int tZone = getHrsFromZone(m_zone);
+    		tZone = (offset/(60*60*1000)) - tZone;
+    		cal.setTime(m_date);
+    		cal.add(Calendar.HOUR,tZone);
+    		date = cal.getTime();
+    		DateTimeObj datetime = new DateTimeObj(date, dt2);
+    		datetime.setZone("Z");
+    		return datetime;    		
+    	}
+    	else
+    	{
+    		Calendar cal = Calendar.getInstance();
+    		int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    			  cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    			
+    		int tZone = tz.getSigned() ? tz.getHours() * -1 : tz.getHours();
+    		tZone = tZone - (offset/(60*60*1000));
+    		// need to handle m_zone!!!
+    		cal.setTime(m_date);
+    		cal.add(Calendar.HOUR,tZone);
+    		if(m_zone != null && m_zone.length()>0)
+    		{
+    		  tZone = getHrsFromZone(m_zone);
+    		  tZone = (offset/(60*60*1000)) - tZone;    		
+    		  cal.add(Calendar.HOUR,tZone);
+    		}
+    		//String dateTime = m_dateTime.substring(0,m_dateTime.indexOf("T"));
+    		//dateTime = dateTime + formatDigits(hrs) + ":" + formatDigits(m_minute) + ":" + m_second;
+    		Date date = cal.getTime();
+    		DateTimeObj datetime = new DateTimeObj(date, dt2);
+    		datetime.setZone("Z");
+    		return datetime;
+    	}
+    }
+    /* Removed from spec...
+    public DateTimeObj removeTZFromDate(Duration tz) throws TransformerException
+    {
+    	return new DateTimeObj(m_dateTime);
+    }
+    */
+    
+    public DateTimeObj removeTZFromTime(Duration tz) throws TransformerException
+    {
+    	if(tz == null)
+    	{
+    		if (m_zone.equals("z") || m_zone== null || m_zone.length()==0)
+    		return this;
+    		
+    		Date date;
+    		Calendar cal = Calendar.getInstance();
+    		int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    		cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    	
+    		int tZone = getHrsFromZone(m_zone);
+    		tZone = (offset/(60*60*1000)) - tZone;
+    		cal.setTime(m_date);
+    		cal.add(Calendar.HOUR,tZone);
+    		date = cal.getTime();
+    		DateTimeObj time = time(date);
+    		time.setZone("Z");
+    		return time;    		
+    	}
+    	else
+    	{
+    		Calendar cal = Calendar.getInstance();
+    		int offset = TimeZone.getDefault().getOffset(cal.get(Calendar.ERA), cal.get(Calendar.YEAR), 
+    			  cal.get(Calendar.MONTH), cal.get(Calendar.DATE), cal.get(Calendar.DAY_OF_WEEK),Math.abs(TimeZone.getDefault().getRawOffset()));
+    			
+    		int tZone = tz.getSigned() ? tz.getHours() * -1 : tz.getHours();
+    		tZone = tZone - (offset/(60*60*1000));
+    		// need to handle m_zone!!!
+    		cal.setTime(m_date);
+    		cal.add(Calendar.HOUR,tZone);
+    		if(m_zone != null && m_zone.length()>0)
+    		{
+    		  tZone = getHrsFromZone(m_zone);
+    		  tZone = (offset/(60*60*1000)) - tZone;    		
+    		  cal.add(Calendar.HOUR,tZone);
+    		}
+    		//String dateTime = m_dateTime.substring(0,m_dateTime.indexOf("T"));
+    		//dateTime = dateTime + formatDigits(hrs) + ":" + formatDigits(m_minute) + ":" + m_second;
+    		Date date = cal.getTime();
+    		DateTimeObj time = time(date);
+    		time.setZone("Z");
+    		return time;
+    	}
+    }
+    
     
     
     public void setYears(int years)
@@ -1093,7 +1367,9 @@ public class DateTimeObj
     
     public String toString()
     {
-    	return (m_dateTime + (m_zone == null ? "" : m_zone));
+    	return (m_dateTime + 
+    	((m_zone != null && m_zone.length()>0 && m_hour == 0) ? "T" : "" )+ 
+    	(m_zone == null ? "" : m_zone));
     }
     
     

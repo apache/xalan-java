@@ -7,12 +7,30 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.VariableComposeState;
+import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Variable;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.QuantifiedExpr;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
 
 public class Some extends Expression implements ExpressionOwner
 {
+	
+  Expression m_test;
+
+  Expression[] m_clauses;
+
+  Expression[] m_vars;
+  
+  int m_evalPos = 0;
+  
+  XSequence[] m_evaluations;
 	
   public Some() {
     super();
@@ -21,6 +39,56 @@ public class Some extends Expression implements ExpressionOwner
   /** Accept the visitor. **/
   public Object jjtAccept(org.apache.xpath.parser.XPathVisitor visitor, Object data) {
     return visitor.visit(this, data);
+  }  
+  
+  
+  /**
+   * @see org.apache.xpath.parser.Node#jjtSetParent(Node)
+   */
+  public void jjtSetParent(Node n)
+  {
+    super.jjtSetParent(n);
+    if (n instanceof QuantifiedExpr) // don't fix up if we're reducing
+    {
+      QuantifiedExpr qexpr = (QuantifiedExpr) n;
+
+      // At this point all children should have been added except this node.
+      // This has a fixed number of children.
+      int i = qexpr.jjtGetNumChildren();
+      m_test = (Expression) qexpr.jjtGetChild(--i);
+      m_test.jjtSetParent(this);
+      i-=2;
+      int count = (i)/3;
+      m_clauses = new Expression[count];
+      m_vars = new Expression[count];
+      m_evaluations = new XSequence[count];
+      count = 0;
+      while(i>0)
+      {      
+      m_clauses[count] = (Expression) qexpr.jjtGetChild(i);
+      m_clauses[count].jjtSetParent(this);
+      m_vars [count]= (Expression) qexpr.jjtGetChild(i-=2);
+      m_vars[count++].jjtSetParent(this);
+      i--;
+      }
+
+      qexpr.m_exprs.setSize(1);
+    }
+  }
+  
+  /**
+   * @see org.apache.xpath.parser.Node#jjtGetChild(int)
+   */
+  public Node jjtGetChild(int i)
+  {
+  	if (i == this.jjtGetNumChildren() -1)
+  	return m_test;
+  	else if (i < m_vars.length)
+    return m_vars[i];
+   else if (i < m_vars.length + m_clauses.length) 
+    return m_clauses[i - m_vars.length];
+   else  
+    return null;
   }
   
   /**
@@ -35,14 +103,125 @@ public class Some extends Expression implements ExpressionOwner
    */
   public void fixupVariables(VariableComposeState vcs)
   {
+  	vcs.pushStackMark();
+    int globalsSize = vcs.getGlobalsSize();
+    for (int i = 0; i < m_vars.length; i++)
+    {
+      Variable var = (Variable)m_vars[i];
+      QName varName = var.getQName();
+      int index = vcs.addVariableName(varName) - globalsSize;
+      var.setIndex(index);
+      var.setFixUpWasCalled(true);
+      // var.fixupVariables(vcs);
+    }
+    m_test.fixupVariables(vcs);
+    vcs.popStackMark();
   }
+
+  /**
+   * Bind the next tuple of values to the variables
+   * 
+   * @return XObject The last evaluation found, or null if 
+   * there's no more to evaluate.
+   */
+  public XObject evalVars(XPathContext xctxt) throws TransformerException
+  {
+    //XObject var = m_var.execute(xctxt);
+    VariableStack vars = xctxt.getVarStack();
+    XSequence xseq;
+    XObject xobj = null; 
+  	for (int i =m_evalPos; i < m_vars.length; i++)
+  	{
+  	  if (m_evaluations[i] == null)
+  	  {
+  	    XObject clauseResult = m_clauses[i].execute(xctxt);
+  	    xseq = clauseResult.xseq();
+  	    m_evaluations[i] = xseq;  	  
+  	  }
+  	  else
+  	  xseq = m_evaluations[i];
+  	  
+  	  xobj = xseq.next();
+  	  if (null != xobj) 
+  	  { 	
+  	    vars.setLocalVariable(((Variable)m_vars[i]).getIndex(), xobj);  	    
+  	    m_evalPos = i;
+  	  }
+  	  else
+  	  {
+  	    if (i != 0)
+  	    {
+  	      m_evaluations[i] = null;
+  	      i -=2;  	      
+  	    }
+  	    else
+  	    {
+  	      m_evalPos = m_vars.length;
+  	      break;
+  	    }
+  	  }
+  	}
+  	return xobj;
+  }
+
 
   /**
    * @see Expression#execute(XPathContext)
    */
   public XObject execute(XPathContext xctxt) throws TransformerException
   {
-    return null;
+    boolean testResult = true;
+    while (true)
+    {
+      XObject xobj; 
+  	  xobj = evalVars(xctxt);
+  	  if (null != xobj)
+  	  {
+  	     testResult = m_test.execute(xctxt).bool();
+  	    if(testResult)
+         return new XBoolean(true);
+  	  }
+  	  else 
+  	  break;  	  
+    }
+    return new XBoolean(false);
+  //	
+  //	XSequence xseq = clauseResult.xseq();
+  	
+ // 	VariableStack vars = xctxt.getVarStack();
+ //   int thisframe = vars.getStackFrame();
+
+//  	XObject item;
+ // 	try{
+ /* 	int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
+      int currentExpressionNodePos =
+        xctxt.getCurrentExpressionNodesFirstFree() - 1;
+    int argsFrame = -1;    
+    argsFrame = vars.link(1);
+    vars.setStackFrame(thisframe);
+      while (null != (item = xseq.next()))
+      {
+        xctxt.setCurrentItem(item);
+        if(item instanceof XNodeSequenceSingleton)
+        {
+          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+          int nodeHandle = xnss.getNodeHandle();
+          currentExpressionNodes[currentExpressionNodePos] = nodeHandle;
+        }
+             
+        // This code will create a section on the stack that is all the 
+        // evaluated arguments.  These will be copied into the real params 
+        // section of each called template.
+        
+        vars.setLocalVariable(0, item, argsFrame);
+        vars.setStackFrame(argsFrame); 
+        
+        boolean testResult = m_test.execute(xctxt).bool();
+        if(testResult)
+        return new XBoolean(true);
+      //}
+    return new XBoolean(false);*/
+  	
   }
 
   /**

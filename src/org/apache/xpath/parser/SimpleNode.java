@@ -9,6 +9,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.axes.UnionPathIterator;
+import org.apache.xpath.axes.ExceptPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.functions.*;
 import org.apache.xpath.objects.XDecimal;
@@ -203,6 +204,21 @@ public class SimpleNode implements Node
       m_builtInFunctions.put(
       new QName("subtract-dayTimeDurationFromTime"),
       new FuncSubtractDTDurationFromTime());
+      m_builtInFunctions.put(
+      new QName("add-timezone-to-dateTime"),
+      new FuncAddTZToDT());
+      m_builtInFunctions.put(
+      new QName("remove-timezone-from-dateTime"),
+      new FuncRemoveTZFromDT());
+      m_builtInFunctions.put(
+      new QName("add-timezone-to-date"),
+      new FuncAddTZToDate());
+      m_builtInFunctions.put(
+      new QName("add-timezone-to-time"),
+      new FuncAddTZToTime());
+      m_builtInFunctions.put(
+      new QName("remove-timezone-from-time"),
+      new FuncRemoveTZFromTime());
       m_builtInFunctions.put(
       new QName("add-days"),
       new FuncAddDays());
@@ -597,7 +613,8 @@ m_builtInFunctions.put(
         newNode = new UnionPathIterator();
         break;
       case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR :
-        newNode = new NonExecutableExpression(p, "JJTUNIONEXPR");
+        //newNode = new NonExecutableExpression(p, "JJTUNIONEXPR");
+        newNode = new ExceptPathIterator();
         break;
         //			case XPathTreeConstants.JJTUNION:
         //				newNode = new SimpleNode();

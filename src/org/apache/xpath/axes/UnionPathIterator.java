@@ -65,6 +65,8 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.SimpleNode;
+import org.apache.xpath.seqctor.ExprSequence;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -218,7 +220,7 @@ public class UnionPathIterator
     // we need to turn it back into a path expression here!  There 
     // might be a way to do this a bit earlier.  -sb
     // if(!(((SimpleNode)n).isPathExpr()))
-    if(n instanceof Variable || n instanceof Function)
+    if(n instanceof Variable || n instanceof Function || n instanceof ExprSequence)
     {
       FilterExprIteratorSimple feis =
         new FilterExprIteratorSimple((Expression) n);

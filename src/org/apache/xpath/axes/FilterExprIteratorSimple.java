@@ -112,7 +112,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
         vars.setStackFrame(savedStart);
       }
       else
-          result = (XNodeSet) expr.execute(xctxt);
+          result = (XSequence)expr.execute(xctxt);
          
       /* %REVIEW% %OPT%
       	Unfortunately, not all variables can be statically resolved into either
