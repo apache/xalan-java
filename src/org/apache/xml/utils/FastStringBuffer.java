@@ -100,7 +100,7 @@ public class FastStringBuffer
   	// that issue. For now, I have forced us into fixed-size mode.
 	static boolean DEBUG_FORCE_FIXED_CHUNKSIZE=true;
 
-	/** Manefest constant: Suppress leading whitespace.
+	/** Manifest constant: Suppress leading whitespace.
 	 * This should be used when normalize-to-SAX is called for the first chunk of a
 	 * multi-chunk output, or one following unsuppressed whitespace in a previous
 	 * chunk.
@@ -108,13 +108,13 @@ public class FastStringBuffer
 	 */
 	public static final int SUPPRESS_LEADING_WS=0x01;
 	
-	/** Manefest constant: Suppress trailing whitespace.
+	/** Manifest constant: Suppress trailing whitespace.
 	 * This should be used when normalize-to-SAX is called for the last chunk of a
 	 * multi-chunk output; it may have to be or'ed with SUPPRESS_LEADING_WS.
 	 */
 	public static final int SUPPRESS_TRAILING_WS=0x02;
 	
-	/** Manefest constant: Suppress both leading and trailing whitespace.
+	/** Manifest constant: Suppress both leading and trailing whitespace.
 	 * This should be used when normalize-to-SAX is called for a complete string.
 	 * (I'm not wild about the name of this one. Ideas welcome.)
 	 * @see sendNormalizedSAXcharacters(char[],int,int,org.xml.sax.ContentHandler,int)
@@ -122,7 +122,7 @@ public class FastStringBuffer
 	public static final int SUPPRESS_BOTH
 		= SUPPRESS_LEADING_WS | SUPPRESS_TRAILING_WS;
 
-	/** Manefest constant: Carry trailing whitespace of one chunk as leading 
+	/** Manifest constant: Carry trailing whitespace of one chunk as leading 
 	 * whitespace of the next chunk. Used internally; I don't see any reason
 	 * to make it public right now.
 	 */
@@ -1154,120 +1154,63 @@ public class FastStringBuffer
 						 int edgeTreatmentFlags)
           throws org.xml.sax.SAXException
   {
-    int end = length + start;
-    int scanpos=start;
-		
-    // Leading whitespaces should be _completely_ suppressed if and only if
-    // (a) we're the first chunk in the normalized sequence or (b) the
-    // previous chunk ended in a normalized-but-not-suppressed whitespace.
-    // If no suppression required and first char is whitespace, than
-    // add single space and suppress following white spaces
-    if (XMLCharacterRecognizer.isWhiteSpace(ch[scanpos]))
-    {
-        if(0 == (edgeTreatmentFlags&SUPPRESS_LEADING_WS) )
-            handler.characters(SINGLE_SPACE, 0, 1);
+     boolean processingLeadingWhitespace =
+                       ((edgeTreatmentFlags & SUPPRESS_LEADING_WS) != 0);
+     boolean seenWhitespace = ((edgeTreatmentFlags & CARRY_WS) != 0);
+     boolean suppressTrailingWhitespace =
+                       ((edgeTreatmentFlags & SUPPRESS_TRAILING_WS) != 0);
+     int currPos = start;
+     int limit = start+length;
 
-        while(++scanpos < end)
-        {
-            char c = ch[scanpos];
-            if(!XMLCharacterRecognizer.isWhiteSpace(c))
-                break;
-        }
-    }
+     // Strip any leading spaces first, if required
+     if (processingLeadingWhitespace) {
+         for (; currPos < limit
+                && XMLCharacterRecognizer.isWhiteSpace(ch[currPos]);
+              currPos++) { }
 
-	// %REVIEW% Do we really need both flags?
-    boolean whiteSpaceFound = false;  // Last char seen was whitespace
-    // Pending whitespace. May be carried from previous chunk
-    boolean needToFlushSpace = 0!=(edgeTreatmentFlags&CARRY_WS); 
-    
-    int datapos = scanpos;	// Start of non-whitespace data (if any)
-    for (; scanpos < end; scanpos++)
-    {
-      char c = ch[scanpos];
+         // If we've only encountered leading spaces, the
+         // current state remains unchanged
+         if (currPos == limit) {
+             return edgeTreatmentFlags;
+         }
+     }
 
-      if (XMLCharacterRecognizer.isWhiteSpace(c))
-      {
-        if (!whiteSpaceFound)
-        {
-          whiteSpaceFound = true;
-          int len = (scanpos-datapos);
-          if( len > 0)
-          {
-            if(needToFlushSpace)
-              handler.characters(SINGLE_SPACE, 0, 1);
-              
-            handler.characters(ch, datapos, len);
-            needToFlushSpace = true;
-          }
-          datapos = scanpos+1;
-        }
-        else
-        {
-          int nonwhitescan = scanpos+1; // Hunt for first nonwhite character after whitespace
-          for (; nonwhitescan < end; nonwhitescan++)
-          {
-            c = ch[nonwhitescan];
-            if(!XMLCharacterRecognizer.isWhiteSpace(c))
-              break;
-          }
+     // If we get here, there are no more leading spaces to strip
+     while (currPos < limit) {
+         int startNonWhitespace = currPos;
 
-          if(nonwhitescan == end)
-          {
-            end = scanpos;
-            break; // Let the flush at the end handle it.
-          }
+         // Grab a chunk of non-whitespace characters
+         for (; currPos < limit
+                && !XMLCharacterRecognizer.isWhiteSpace(ch[currPos]);
+              currPos++) { }
 
-          int len = (scanpos-datapos);
-          if(len > 0)
-          {
-            if(needToFlushSpace)
-            {
-              handler.characters(SINGLE_SPACE, 0, 1);
-              needToFlushSpace = false;
-            }
-              
-            handler.characters(ch, datapos, len);
-          }
+         // Non-whitespace seen - emit them, along with a single
+         // space for any preceding whitespace characters
+         if (startNonWhitespace != currPos) {
+             if (seenWhitespace) {
+                 handler.characters(SINGLE_SPACE, 0, 1);
+                 seenWhitespace = false;
+             }
+             handler.characters(ch, startNonWhitespace,
+                                currPos - startNonWhitespace);
+         }
 
-          whiteSpaceFound = false;
-          datapos = scanpos = nonwhitescan;
-        }
-      }
-      else
-      {
-        whiteSpaceFound = false;
-      }
-    }
+         int startWhitespace = currPos;
 
-    if (whiteSpaceFound)
-      scanpos--;
-    
-    int len = (scanpos-datapos);
+         // Consume any whitespace characters
+         for (; currPos < limit
+                && XMLCharacterRecognizer.isWhiteSpace(ch[currPos]);
+              currPos++) { }
 
-	// If have non-space text, output it (possibly with a space before it)
-	// and 
-    if(len > 0)
-    {
-      if(needToFlushSpace) // Pending space
-        handler.characters(SINGLE_SPACE, 0, 1); // Output single space
-  
-  	  handler.characters(ch, datapos, len);
-  	  edgeTreatmentFlags &= ~(SUPPRESS_LEADING_WS | CARRY_WS);
-    }
-    // If we ended in (nonsuppressed) whitespace, tell the next chunk to suppress
-    // leading whitespace _BUT_ to output a single space before any non-whitespace.
-    // (This allows us to skip through multiple chunks' worth of whitespace, if
-    // necessary, yet still output the one required space if needed. The last block
-    // will aways have SUPPRESS_TRAILING_WS set, and so discard any remaining space.)
-	if(whiteSpaceFound && 0==(edgeTreatmentFlags&SUPPRESS_TRAILING_WS))
-	{
-        // handler.characters(SINGLE_SPACE, 0, 1); // Output single space
-		edgeTreatmentFlags |= SUPPRESS_LEADING_WS | CARRY_WS;
-    }
-		
-	return edgeTreatmentFlags;
+         if (startWhitespace != currPos) {
+             seenWhitespace = true;
+         }
+     }
+
+     return (seenWhitespace ? CARRY_WS : 0)
+            | (edgeTreatmentFlags & SUPPRESS_TRAILING_WS);
   }
-  
+
   /**
    * Directly normalize and dispatch the character array.
    *
