@@ -142,6 +142,22 @@ public class ElemCallTemplate extends ElemForEach
   {
     return Constants.ELEMNAME_CALLTEMPLATE_STRING;
   }
+  
+  /**
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
+   * depends on recomposition.
+   */
+  public void compose()
+  {
+    super.compose();
+    if ((null != m_templateName) && (null == m_template))
+    {
+      m_template =
+        this.getStylesheetRoot().getTemplateComposed(m_templateName);
+    }
+  }
 
   /**
    * Invoke a named template.
@@ -160,12 +176,6 @@ public class ElemCallTemplate extends ElemForEach
 
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-    if (null == m_template)
-    {
-      m_template =
-        this.getStylesheetRoot().getTemplateComposed(m_templateName);
-    }
 
     if (null != m_template)
     {
