@@ -562,6 +562,9 @@ public class XPATHErrorResources extends PropertyResourceBundle
 /** Field ER_WRONG_NODETYPE                    */
   public static final int ER_WRONG_NODETYPE          = 115; 
   
+/** Field ER_XPATH_ERROR                       */  
+  public static final int ER_XPATH_ERROR             = 116;
+  
   // Warnings...
 
   /** Field WG_LOCALE_NAME_NOT_HANDLED          */
