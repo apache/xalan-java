@@ -86,8 +86,8 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   /** Property name to load the BSFManager class */
   private static final String propName = "org.apache.xalan.extensions.bsf.BSFManager";
   
-  /** Negative one integer */
-  private static final Integer NEG1INT = new Integer(-1);
+  /** Integer Zero */
+  private static final Integer ZEROINT = new Integer(0);
 
   static{
           BSF_MANAGER =  ObjectFactory.lookUpFactoryClassName(propName, null, null);
@@ -230,7 +230,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
       // "Compile" the program
       engineExec.invoke(m_engine,
-        new Object[]{ "XalanScript", NEG1INT, NEG1INT, m_scriptSrc });
+        new Object[]{ "XalanScript", ZEROINT, ZEROINT, m_scriptSrc });
     }
     catch (Exception e)
     {
