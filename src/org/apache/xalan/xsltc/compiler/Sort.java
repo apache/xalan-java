@@ -370,9 +370,11 @@ final class Sort extends Instruction {
 
 	final int levels = sortObjects.size();
 
+	/*
 	final int levelsField = cpg.addFieldref(className, "_levels", "I");
 	il.append(new PUSH(cpg, levels));
 	il.append(new PUTSTATIC(levelsField));
+	*/
 
 	// Compile code that initializes the locale
 	String language = null;

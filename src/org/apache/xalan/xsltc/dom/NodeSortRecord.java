@@ -83,7 +83,7 @@ public abstract class NodeSortRecord {
 
     protected static Collator _collator = Collator.getInstance();
 
-    protected static int _levels = 1;
+    protected int   _levels = 1;
     protected int[] _compareType;
     protected int[] _sortOrder;
 
@@ -123,6 +123,7 @@ public abstract class NodeSortRecord {
 	_translet = translet;
 	_scanned = 0;
 
+	_levels = order.length;
 	_sortOrder = order;
 	_compareType = type;
 
