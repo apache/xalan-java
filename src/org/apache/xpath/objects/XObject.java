@@ -250,6 +250,7 @@ public class XObject extends Expression implements Serializable, Cloneable
         DTMAxisIterator iter = dtm.getAxisIterator(Axis.SELF);
         iter.setStartNode(dtmRoot);
         DTMIterator iterator = new OneStepIterator(iter);
+        iterator.setRoot(dtmRoot, xctxt);
         result = new XNodeSet(iterator);
       }
       catch(Exception ex)
@@ -262,9 +263,10 @@ public class XObject extends Expression implements Serializable, Cloneable
       DTMAxisIterator iter = (DTMAxisIterator)val;
       try
       {
-       DTMIterator iterator = new OneStepIterator(iter);
-       result = new XNodeSet(iterator);
-     }
+        DTMIterator iterator = new OneStepIterator(iter);
+        iterator.setRoot(iter.getStartNode(), xctxt);
+        result = new XNodeSet(iterator);
+      }
       catch(Exception ex)
       {
         throw new org.apache.xml.utils.WrappedRuntimeException(ex);
