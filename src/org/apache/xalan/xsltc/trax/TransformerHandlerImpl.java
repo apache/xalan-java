@@ -92,6 +92,7 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     private DOMBuilder       _handler = null;
     private DTDMonitor       _dtd = null;
     private Result           _result = null;
+    private Locator          _locator = null;
 
     private boolean          _done = false; // Set in endDocument()
 
@@ -104,14 +105,6 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
 
 	// Get a reference to the translet wrapped inside the transformer
 	_translet = _transformer.getTranslet();
-
-	// Create a DOMBuilder object and get the handler
-/*
-%HZ% This just moved to the constructor from startDocument - now we're
-%HZ% moving the equivale thing back again.  Is that absolutely required?
-	_dom = new DOMImpl();
-	_handler = _dom.getBuilder();
-*/
 
 	// Create a new DTD monitor
 	_dtd = new DTDMonitor();
@@ -192,14 +185,18 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
 	}
 
 	// Create an internal DOM (not W3C) and get SAX2 input handler
-  DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
-        _dom = (SAXImpl)dtmManager.getDTM(new StreamSource(_systemId), false,
-                                                           null, true, true);
+        DTMManager dtmManager = XSLTCDTMManager.newInstance(
+                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+
+        // Construct the DTM using the SAX events that come through
+        _dom = (SAXImpl)dtmManager.getDTM(null, false, null, true, true);
 	_handler = _dom.getBuilder();
 
+        if (_locator != null) {
+            _handler.setDocumentLocator(_locator);
+        }
+
 	// Proxy call
-        // wondering if I need this. I think it would get called during DTM build...
 	_handler.startDocument();
     }
 
@@ -297,7 +294,11 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
      * Receive an object for locating the origin of SAX document events. 
      */
     public void setDocumentLocator(Locator locator) {
-	_handler.setDocumentLocator(locator);
+        _locator = locator;
+
+        if (_handler != null) {
+            _handler.setDocumentLocator(locator);
+        }
     }
 
     /**
