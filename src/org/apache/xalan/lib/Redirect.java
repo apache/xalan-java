@@ -72,13 +72,14 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPath;
 
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
 
 /**
  * Implements three extension elements to allow an XSLT transformation to
  * redirect its output to multiple output files.
  * You must declare the Xalan namespace (xmlns:lxslt="http://xml.apache.org/xslt"),
- * a namespace for the extension prefix (such as xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"),
+ * a namespace for the extension prefix (such as xmlns:redirect="org.apache.xalan.lib.Redirect"),
  * and declare the extension namespace as an extension (extension-element-prefixes="redirect").
  * You can either just use redirect:write, in which case the file will be
  * opened and immediately closed after the write, or you can bracket the
@@ -90,8 +91,10 @@ import javax.xml.transform.TransformerException;
  * that indicates the filename.  If the string evaluates to empty, it will
  * attempt to use the 'file' attribute as a default.  Filenames can be relative
  * or absolute.  If they are relative, the base directory will be the same as
- * the base directory for the output document (setOutputFileName(outFileName) must
- * be called first on the processor when using the API).
+ * the base directory for the output document.  This is obtained by calling
+ * getOutputTarget() on the TransformerImpl.  You can set this base directory
+ * by calling TransformerImpl.setOutputTarget() or it is automatically set
+ * when using the two argument form of transform() or transformNode().
  *
  * <p>Example:</p>
  * <PRE>
@@ -351,10 +354,26 @@ public class Redirect
   {
     File file = new File(fileName);
     TransformerImpl transformer = context.getTransformer();
+    String base;          // Base URI to use for relative paths
 
     if(!file.isAbsolute())
     {
-      String base = urlToFileName(elem.getStylesheet().getSystemId());
+      // This code is attributed to Jon Grov <jon@linpro.no>.  A relative file name
+      // is relative to the Result used to kick off the transform.  If no such
+      // Result was supplied, the filename is relative to the source document.
+      // When transforming with a SAXResult or DOMResult, call
+      // TransformerImpl.setOutputTarget() to set the desired Result base.
+//      String base = urlToFileName(elem.getStylesheet().getSystemId());
+
+      Result outputTarget = transformer.getOutputTarget();
+      if ( (null != outputTarget) && ((base = outputTarget.getSystemId()) != null) ) {
+        base = urlToFileName(base);
+      }
+      else
+      {
+        base = urlToFileName(transformer.getBaseURLOfSource());
+      }
+
       if(null != base)
       {
         File baseFile = new File(base);

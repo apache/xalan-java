@@ -192,6 +192,9 @@ public class TransformerImpl extends Transformer
   /** The base URL of the source tree.          */
   private String m_urlOfSource = null;
 
+  /** The Result object at the start of the transform, if any.    */
+  private Result m_outputTarget = null;
+
   /**
    * The output format object set by the user.  May be null.
    */
@@ -402,6 +405,7 @@ public class TransformerImpl extends Transformer
       m_currentMatchTemplates.removeAllElements();
   
       m_resultTreeHandler = null;
+      m_outputTarget = null;
       m_keyManager = new KeyManager();
       m_attrSetStack = null;
       m_countersTable = null;
@@ -695,6 +699,27 @@ public class TransformerImpl extends Transformer
   public void setBaseURLOfSource(String base)
   {
     m_urlOfSource = base;
+  }
+
+  /**
+   * Get the original output target.
+   *
+   * @return The Result object used to kick of the transform or null.
+   */
+  public Result getOutputTarget()
+  {
+    return m_outputTarget;
+  }
+  
+  /**
+   * Set the original output target.  This is useful when using a SAX transform and
+   * supplying a ContentHandler or when the URI of the output target should
+   * not be the same as the systemID of the original output target.
+   *
+   */
+  public void setOutputTarget(Result outputTarget)
+  {
+    m_outputTarget = outputTarget;
   }
 
   /**
@@ -1116,6 +1141,7 @@ public class TransformerImpl extends Transformer
     synchronized(m_reentryGuard) 
     {
       ContentHandler handler = createResultContentHandler(outputTarget);
+      m_outputTarget = outputTarget;
   
       this.setContentHandler(handler);
       transform(xmlSource);
@@ -1136,6 +1162,7 @@ public class TransformerImpl extends Transformer
   {
 
     ContentHandler handler = createResultContentHandler(outputTarget);
+    m_outputTarget = outputTarget;
 
     this.setContentHandler(handler);
     transformNode(node);

@@ -56,6 +56,7 @@
  */
 package org.apache.xalan.xslt;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -562,9 +563,16 @@ public class Process
         }
           
         PrintWriter resultWriter;
-        OutputStream outputStream = (null != outFileName)
-                                    ? new FileOutputStream(outFileName)
-                                    : (OutputStream) System.out;
+        StreamResult strResult;
+        if (null != outFileName)
+        {
+          strResult = new StreamResult(new File(outFileName));
+        }
+        else
+        {
+          strResult = new StreamResult(System.out);
+        }
+
 
         SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
 
@@ -651,8 +659,7 @@ public class Process
 								serializer.transform(new DOMSource(outNode), result);
 							}
 							else
-								serializer.transform(new DOMSource(outNode), 
-                                   new StreamResult(outputStream));
+								serializer.transform(new DOMSource(outNode), strResult);
            }
             else
             {
@@ -669,7 +676,7 @@ public class Process
 								else
 								{
 									transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
-																			new StreamResult(outputStream));
+																			strResult);
 								}
 							}
 							else if (contentHandler != null)
@@ -679,8 +686,7 @@ public class Process
 																			result);
 							}
 							else
-								transformer.transform(new StreamSource(inFileName),
-																			new StreamResult(outputStream));
+								transformer.transform(new StreamSource(inFileName), strResult);
             }
           }
           else
@@ -688,8 +694,7 @@ public class Process
             StringReader reader =
               new StringReader("<?xml version=\"1.0\"?> <doc/>");
 
-            transformer.transform(new StreamSource(reader),
-                                  new StreamResult(outputStream));
+            transformer.transform(new StreamSource(reader), strResult);
           }
         }
         else
