@@ -242,11 +242,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	// Hack for ordering attribute nodes
 	if (node1 >= _firstAttributeNode) node1 = _parent[node1];
 	if (node2 >= _firstAttributeNode) node2 = _parent[node2];
-
-	if ((node2 < _treeNodeLimit) && (node1 < node2))
-	    return(true);
-	else
-	    return(false);
+	return (node2 < _treeNodeLimit && node1 < node2);
     }
 
     /**
@@ -256,9 +252,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	if (_nodes == null) {
 	    _nodes = new Node[_type.length];
 	}
-	return _nodes[index] != null
-	    ? _nodes[index]
-	    : (_nodes[index] = new NodeImpl(index));
+	return _nodes[index] != null ? _nodes[index]
+				     : (_nodes[index] = new NodeImpl(index));
     }
 
     /**
@@ -276,9 +271,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	if (_nodeLists == null) {
 	    _nodeLists = new NodeList[_type.length];
 	}
-	return _nodeLists[index] != null
-	    ? _nodeLists[index]
-	    : (_nodeLists[index] = new NodeListImpl(index));
+	return _nodeLists[index] != null ? _nodeLists[index]
+		     : (_nodeLists[index] = new NodeListImpl(index));
     }
 
     /**
@@ -293,8 +287,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Create an empty org.w3c.dom.NodeList
      */
     private NodeList getEmptyNodeList() {
-	return EmptyNodeList != null
-	    ? EmptyNodeList
+	return EmptyNodeList != null ? EmptyNodeList
 	    : (EmptyNodeList = new NodeListImpl(new int[0]));
     }
 
@@ -302,8 +295,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Create an empty org.w3c.dom.NamedNodeMap
      */
     private NamedNodeMap getEmptyNamedNodeMap() {
-	return EmptyNamedNodeMap != null
-	    ? EmptyNamedNodeMap
+	return EmptyNamedNodeMap != null ? EmptyNamedNodeMap
 	    : (EmptyNamedNodeMap = new NamedNodeMapImpl(new int[0]));
     }
 
@@ -791,10 +783,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public NodeIterator reset() {
-	    if (hasChildren(_startNode))
-		_currentChild = _offsetOrChild[_startNode];
-	    else
-		_currentChild = END;
+	    _currentChild = hasChildren(_startNode) ? 
+			    _offsetOrChild[_startNode] : END;
 	    return resetPosition();
 	}
 
@@ -1432,12 +1422,9 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public int next() {
 	    if (_index >= 0) {
-		int bob = _index;
-		if (_index == 0)
-		    _index = -1;
-		else
-		    _index = _parent[_index];
-		return returnNode(bob);
+		final int node = _index;
+		_index = (_index == 0) ? -1 : _parent[_index];
+		return returnNode(node);
 	    }
 	    return(NULL);
 	}
@@ -2020,15 +2007,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	case PROCESSING_INSTRUCTION:
 	    final String pistr = makeStringValue(node);
 	    final int col = pistr.indexOf(' ');
-	    if (col > 0)
-		return pistr.substring(col+1);
-	    else
-		return pistr;
+	    return (col > 0) ?  pistr.substring(col+1) : pistr;
 	default:
-	    if (node < _firstAttributeNode)
-		return getElementValue(node); // element string value
-	    else
-		return makeStringValue(node); // attribute value
+	    return (node < _firstAttributeNode) ? getElementValue(node) :
+						  makeStringValue(node);
 	}
     }
 
@@ -2096,20 +2078,16 @@ public final class DOMImpl implements DOM, Externalizable {
 		len = uri.length();
 		if (len > 0) len++;
 	    }
-
-	    if ((name.length() > 0) && (name.charAt(len) == '@'))
-		result[i] = (short)ATTRIBUTE;
-	    else
-		result[i] = (short)ELEMENT;
+	    result[i] = (short) ((name.length() > 0 && name.charAt(len) == '@') ?
+		ATTRIBUTE : ELEMENT);
 	}
 
 	// actual mapping of caller requested names
 	for (i = 0; i < namesLength; i++) {
 	    result[getGeneralizedType(names[i])] = (short)(i + NTYPES);
 	}
-             
-	return(result);
 
+	return result;
     }
 
     /**
@@ -2128,7 +2106,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (result[i + NTYPES] == ELEMENT)
 		result[i + NTYPES] = NO_TYPE;
 	}
-	return(result);
+	return result;
     }
 
     /**
@@ -2162,15 +2140,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	final int length = namespaces.length;
 	final short[] result = new short[length];
 
-	for (i=0; i<length; i++) {
+	for (i = 0; i < length; i++) {
 	    Integer type = (Integer)_nsIndex.get(namespaces[i]);
-	    if (type == null)
-		result[i] = -1;
-	    else
-		result[i] = type.shortValue();
+	    result[i] = (type == null) ? -1 : type.shortValue();
 	}
-
-	return(result);
+	return result;
     }
 
     /**
@@ -2308,17 +2282,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	    return EMPTYSTRING;
 	case DOM.NAMESPACE:
 	    final int index = _prefix[node];
-	    if (index < _prefixArray.length)
-		return _prefixArray[index];
-	    else
-		return EMPTYSTRING;
+	    return (index < _prefixArray.length) ? _prefixArray[index]
+						 : EMPTYSTRING;
 	case DOM.PROCESSING_INSTRUCTION:
 	    final String pistr = makeStringValue(node);
 	    final int col = pistr.indexOf(' ');
-	    if (col > -1)
-		return(pistr.substring(0,col));
-	    else
-		return pistr;
+	    return (col > -1) ? pistr.substring(0,col) : pistr;
 	default:
 	    // Construct the local part (omit '@' for attributes)
 	    String name  = getLocalName(node);
@@ -2328,8 +2297,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    final int pi = _prefix[node];
 	    if (pi > 0) {
 		final String prefix = _prefixArray[pi];
-		if (prefix != EMPTYSTRING)
-		    name = prefix+':'+name;
+		if (prefix != EMPTYSTRING) {
+		    name = prefix + ':' + name;
+		}
 	    }
 	    return name;
 	}
@@ -2345,10 +2315,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	else {
 	    final int type = getNamespaceType(node);
 	    final String name = _uriArray[type];
-	    if (name == null)
-		return(EMPTYSTRING);
-	    else
-		return(name);
+	    return (name == null) ? EMPTYSTRING : name;
 	}
     }
 
@@ -2377,20 +2344,14 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String getAttributeValue(final int type, final int element) {
 	final int attr = getAttributeNode(type, element);
-	if (attr != NULL)
-	    return makeStringValue(attr);
-	else
-	    return EMPTYSTRING;
+	return (attr != NULL) ? makeStringValue(attr) : EMPTYSTRING;
     }
 
     /**
      * Returns true if a given element has an attribute of a given type
      */
     public boolean hasAttribute(final int type, final int node) {
-	if (getAttributeNode(type, node) != NULL)
-	    return true;
-	else
-	    return false;
+	return (getAttributeNode(type, node) != NULL);
     }
 
     /**
@@ -2416,10 +2377,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns an iterator with all the children of a given node
      */
     public NodeIterator getChildren(final int node) {
-	if (hasChildren(node))
-	    return(new ChildrenIterator());
-	else
-	    return(EMPTYITERATOR);
+	return hasChildren(node) ? new ChildrenIterator()
+				 : EMPTYITERATOR;
     }
 
     /**
@@ -2487,66 +2446,54 @@ public final class DOMImpl implements DOM, Externalizable {
      * containing nodes of a typed axis (ex.: child::foo)
      */
     public NodeIterator getTypedAxisIterator(int axis, int type) {
-	NodeIterator iterator = null;
-
 	/* This causes an error when using patterns for elements that
 	   do not exist in the DOM (translet types which do not correspond
 	   to a DOM type are mapped to the DOM.ELEMENT type).
 	*/
 
 	if (type == NO_TYPE) {
-	    return(EMPTYITERATOR);
+	    return EMPTYITERATOR;
 	}
         else if ((type == ELEMENT) && (axis != Axis.NAMESPACE)) {
-	    iterator = new FilterIterator(getAxisIterator(axis),
+	    return new FilterIterator(getAxisIterator(axis),
 					  getElementFilter());
 	}
 	else {
 	    switch (axis) {
 	    case Axis.SELF:
-		iterator = new TypedSingletonIterator(type);
-		break;
+		return new TypedSingletonIterator(type);
 	    case Axis.CHILD:
-		iterator = new TypedChildrenIterator(type);
-		break;
+		return new TypedChildrenIterator(type);
 	    case Axis.PARENT:
-		return(new ParentIterator().setNodeType(type));
+		return new ParentIterator().setNodeType(type);
 	    case Axis.ANCESTOR:
-		return(new TypedAncestorIterator(type));
+		return new TypedAncestorIterator(type);
 	    case Axis.ANCESTORORSELF:
-		return((new TypedAncestorIterator(type)).includeSelf());
+		return (new TypedAncestorIterator(type)).includeSelf();
 	    case Axis.ATTRIBUTE:
-		return(new TypedAttributeIterator(type));
+		return new TypedAttributeIterator(type);
 	    case Axis.DESCENDANT:
-		iterator = new TypedDescendantIterator(type);
-		break;
+		return new TypedDescendantIterator(type);
 	    case Axis.DESCENDANTORSELF:
-		iterator = (new TypedDescendantIterator(type)).includeSelf();
-		break;
+		return (new TypedDescendantIterator(type)).includeSelf();
 	    case Axis.FOLLOWING:
-		iterator = new TypedFollowingIterator(type);
-		break;
+		return new TypedFollowingIterator(type);
 	    case Axis.PRECEDING:
-		iterator = new TypedPrecedingIterator(type);
-		break;
+		return new TypedPrecedingIterator(type);
 	    case Axis.FOLLOWINGSIBLING:
-		iterator = new TypedFollowingSiblingIterator(type);
-		break;
+		return new TypedFollowingSiblingIterator(type);
 	    case Axis.PRECEDINGSIBLING:
-		iterator = new TypedPrecedingSiblingIterator(type);
-		break;
+		return new TypedPrecedingSiblingIterator(type);
 	    case Axis.NAMESPACE:
-		if (type == ELEMENT)
-		    iterator = new NamespaceIterator();
-		else
-		    iterator = new TypedNamespaceIterator(type);
-		break;
+		return (type == ELEMENT) ?  
+		    (NodeIterator) new NamespaceIterator() :
+		    (NodeIterator) new TypedNamespaceIterator(type);
 	    default:
 		BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
 					  Axis.names[axis]);
 	    }
 	}
-	return(iterator);
+	return null;
     }
 
     /**
@@ -2557,26 +2504,21 @@ public final class DOMImpl implements DOM, Externalizable {
      * nodes are taken, while 'ns' specifies the namespace URI type.
      */
     public NodeIterator getNamespaceAxisIterator(int axis, int ns) {
-
-	NodeIterator iterator = null;
-
 	if (ns == NO_TYPE) {
-	    return(EMPTYITERATOR);
+	    return EMPTYITERATOR;
 	}
 	else {
 	    switch (axis) {
 	    case Axis.CHILD:
-		iterator = new NamespaceChildrenIterator(ns);
-		break;
+		return new NamespaceChildrenIterator(ns);
 	    case Axis.ATTRIBUTE:
-		iterator = new NamespaceAttributeIterator(ns);
-		break;
+		return new NamespaceAttributeIterator(ns);
 	    default:
 		BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
 					  Axis.names[axis]);
 	    }
 	}
-	return(iterator);
+	return null;
     }
 
     /**
@@ -2584,27 +2526,23 @@ public final class DOMImpl implements DOM, Externalizable {
      * a given type.
      */
     public NodeIterator getTypedDescendantIterator(int type) {
-	NodeIterator iterator;
-	if (type == ELEMENT)
-	    iterator = new FilterIterator(new DescendantIterator(),
-					  getElementFilter());
-	else
-	    iterator = new TypedDescendantIterator(type);
-	return(iterator);
+	return (type == ELEMENT) ? (NodeIterator)
+	    new FilterIterator(new DescendantIterator(), getElementFilter())
+	    : (NodeIterator) new TypedDescendantIterator(type);
     }
 
     /**
      * Returns the nth descendant of a node
      */
     public NodeIterator getNthDescendant(int type, int n, boolean includeself) {
-	NodeIterator source;
-	if (type == ELEMENT)
-	    source = new FilterIterator(new DescendantIterator(),
-					getElementFilter());
-	else
-	    source = new TypedDescendantIterator(type);
-	if (includeself) ((NodeIteratorBase)source).includeSelf();
-	return(new NthDescendantIterator(source, n, type));
+	NodeIterator source = (type == ELEMENT) ? (NodeIterator)
+	     new FilterIterator(new DescendantIterator(), getElementFilter())
+	     : (NodeIterator) new TypedDescendantIterator(type);
+
+	if (includeself) {
+	    ((NodeIteratorBase)source).includeSelf();
+	}
+	return new NthDescendantIterator(source, n, type);
     }
 
     /**
