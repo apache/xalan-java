@@ -66,6 +66,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.Expression;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
@@ -534,6 +535,9 @@ public class NodeSequence extends XObject
   {
   	if(hasCache())
   	{
+        if (m_obj instanceof NodeSetDTM) {
+            return ((NodeSetDTM)m_obj).getLength();
+        }    
 	  	if(-1 == m_last)
 	  	{
 	  		int pos = m_next;
