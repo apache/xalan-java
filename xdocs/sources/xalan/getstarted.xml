@@ -25,6 +25,7 @@
 <s2 title="Setting up the system class path">
 <p>At the very minimum, you must include xalan.jar and xerces.jar (or another conformant XMLReader -- see <link idref="usagepatterns" anchor="xmlreader">Setting the XMLReader</link>) on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
 <p>If you are using JDK or JRE 1.1.8, also include classes.zip on the class path.</p>
+<note>If you are using xerces.jar from a Xerces release that is more recent than &xml4j-used;, you may need to put xerces.jar before xalan.jar on the classpath. Both JAR files include the org.w3c.dom packages. The Xerces team is tracking updates to DOM level 2, and the Xerces parser may require access to updates in these packages.</note>
 </s2><anchor name="samples"/>
 <s2 title="Trying out the samples">
 <p>The &xslt4j; distribution includes a number of basic sample applications. These samples are easy to run, and you can review the source files -- all of which are brief -- to see just how they work.</p>
