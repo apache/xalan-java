@@ -337,15 +337,14 @@ public class DOMHelper
    * 
    * @param node1 The first DOM node to compare.
    * @param node2 The second DOM node to compare.
-   * @return true if the two nodes are the same, false if not or if
-   * the nodes are not DTMNodeProxy.
+   * @return true if the two nodes are the same.
    */
   public static boolean isNodeTheSame(Node node1, Node node2)
   {
     if (node1 instanceof DTMNodeProxy && node2 instanceof DTMNodeProxy)
       return ((DTMNodeProxy)node1).equals((DTMNodeProxy)node2);
     else
-      return false;
+      return (node1 == node2);
   }
 
   /**

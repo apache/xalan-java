@@ -58,12 +58,7 @@ package org.apache.xalan.lib;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.apache.xpath.NodeSet;
-import org.apache.xpath.DOMHelper;
-import org.apache.xml.dtm.ref.DTMNodeProxy;
-
-import java.util.Hashtable;
 
 /**
  * <meta name="usage" content="general"/>
@@ -79,7 +74,7 @@ import java.util.Hashtable;
  * @see <a href="http://www.exslt.org/">EXSLT</a>
 
  */
-public class ExsltMath
+public class ExsltMath extends ExsltBase
 {
   // Constants
   private static String PI = "3.1415926535897932384626433832795028841971693993751";
@@ -234,35 +229,6 @@ public class ExsltMath
     return lowNodes;
   }
   
-  /**
-   *  Return the string value of a Node
-   */
-  private static String toString(Node n)
-  {
-  	if (n instanceof DTMNodeProxy)
-  	 return ((DTMNodeProxy)n).getStringValue();
-  	else
-  	 return n.getNodeValue();
-  }
-  
-  /**
-   * Convert the string value of a Node to a number
-   */
-  private static double toNumber(Node n)
-  {
-  	double d = 0.0;
-  	String str = toString(n);
-  	try
-  	{
-  	  d = Double.parseDouble(str);
-  	}
-  	catch (NumberFormatException e)
-  	{
-  	  d= Double.NaN;  		
-  	}
-  	return d;
-  }
-
   /**
    * The math:abs function returns the absolute value of a number. 
    */

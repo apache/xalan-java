@@ -124,25 +124,27 @@ public class ElemAttribute extends ElemElement
 
     // If they are trying to add an attribute when there isn't an 
     // element pending, it is an error.
-    if (!rhandler.isElementPending())
-    {
-      // Make sure the trace event is sent.
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(this);
-
-      XPathContext xctxt = transformer.getXPathContext();
-      int sourceNode = xctxt.getCurrentNode();
-      String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
-      transformer.getMsgMgr().warn(this,
-                                   XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE,
-                                   new Object[]{ attrName });
-
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEndEvent(this);
-      return;
-
-      // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
-    }
+    // I don't think we need this check here because it is checked in 
+    // ResultTreeHandler.addAttribute.  (is)
+//    if (!rhandler.isElementPending())
+//    {
+//      // Make sure the trace event is sent.
+//      if (TransformerImpl.S_DEBUG)
+//        transformer.getTraceManager().fireTraceEvent(this);
+//
+//      XPathContext xctxt = transformer.getXPathContext();
+//      int sourceNode = xctxt.getCurrentNode();
+//      String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
+//      transformer.getMsgMgr().warn(this,
+//                                   XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_POSITION,
+//                                   new Object[]{ attrName });
+//
+//      if (TransformerImpl.S_DEBUG)
+//        transformer.getTraceManager().fireTraceEndEvent(this);
+//      return;
+//
+//      // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
+//    }
     
     super.execute(transformer);
     

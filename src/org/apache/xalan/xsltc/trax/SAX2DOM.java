@@ -86,24 +86,31 @@ import org.apache.xalan.xsltc.runtime.Constants;
 
 public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 
-    private Document _root = null;
+    private Node _root = null;
+    private Document _document = null;
     private Stack _nodeStk = new Stack();
     private Vector _namespaceDecls = null;
 
     public SAX2DOM() throws ParserConfigurationException {
 	final DocumentBuilderFactory factory = 
 		DocumentBuilderFactory.newInstance();
-	_root = factory.newDocumentBuilder().newDocument();
+	_document = factory.newDocumentBuilder().newDocument();
+	_root = _document;
     }
 
     public SAX2DOM(Node root) throws ParserConfigurationException {
-	if (root != null) {
-	    _root = (Document) root;   // TODO: add support for frags and elems
+	_root = root;
+	if (root instanceof Document) {
+	  _document = (Document)root;
+	}
+	else if (root != null) {
+	  _document = root.getOwnerDocument();
 	}
 	else {
-	    final DocumentBuilderFactory factory = 
+	  final DocumentBuilderFactory factory = 
 		DocumentBuilderFactory.newInstance();
-	    _root = factory.newDocumentBuilder().newDocument();
+	  _document = factory.newDocumentBuilder().newDocument();
+	  _root = _document;
 	}
     }
 
@@ -115,9 +122,9 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	final Node last = (Node)_nodeStk.peek();
 
 	// No text nodes can be children of root (DOM006 exception)
-	if (last != _root) {
+	if (last != _document) {
 	    final String text = new String(ch, start, length);
-	    last.appendChild(_root.createTextNode(text));
+	    last.appendChild(_document.createTextNode(text));
 	}
     }
 
@@ -126,12 +133,13 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
     }
 
     public void endDocument() {
+        _nodeStk.pop();
     }
 
     public void startElement(String namespace, String localName, String qName,
 	Attributes attrs) 
     {
-	final Element tmp = (Element)_root.createElementNS(namespace, qName);
+	final Element tmp = (Element)_document.createElementNS(namespace, qName);
 
 	// Add namespace declarations first
 	if (_namespaceDecls != null) {
@@ -199,7 +207,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
      */
     public void processingInstruction(String target, String data) {
 	final Node last = (Node)_nodeStk.peek();
-	ProcessingInstruction pi = _root.createProcessingInstruction(
+	ProcessingInstruction pi = _document.createProcessingInstruction(
 		target, data);
 	if (pi != null)  last.appendChild(pi);
     }
@@ -224,7 +232,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
      */
     public void comment(char[] ch, int start, int length) {
 	final Node last = (Node)_nodeStk.peek();
-	Comment comment = _root.createComment(new String(ch,start,length));
+	Comment comment = _document.createComment(new String(ch,start,length));
 	if (comment != null) last.appendChild(comment);
     }
 

@@ -1051,8 +1051,28 @@ public class XSLTErrorResources extends PropertyResourceBundle
 
   // Illegal value\u003a {1} used for number attribute\u003a {0}. 
   public static final int INVALID_NUMBER = 247;
+
+  
   // End of shared codes...
   
+  // Argument to {0} in match pattern must be a literal.
+  public static final int ER_ARG_LITERAL             = 248;
+  
+  // Duplicate global variable declaration.
+  public static final int ER_DUPLICATE_GLOBAL_VAR    = 249;
+  
+  // Duplicate variable declaration.
+  public static final int ER_DUPLICATE_VAR           = 250;
+  
+  // xsl:template must have a name or match attribute (or both)
+  public static final int ER_TEMPLATE_NAME_MATCH     = 251;    
+  
+  // Prefix in exclude-result-prefixes is not valid\u003a {0}
+  public static final int ER_INVALID_PREFIX          = 252;
+  
+  // attribute-set named {0} does not exist
+  public static final int ER_NO_ATTRIB_SET           = 253;
+
 
 
   /*
@@ -1210,6 +1230,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   
   /** WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
   public static final int WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME = 28;  
+  
+  /** WG_ILLEGAL_ATTRIBUTE_POSITION         */
+  public static final int WG_ILLEGAL_ATTRIBUTE_POSITION = 29;
   
   
   //The following warning codes are shared with the error codes ... 

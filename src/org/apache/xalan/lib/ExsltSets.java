@@ -58,15 +58,9 @@ package org.apache.xalan.lib;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.traversal.NodeIterator;
-
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.DOMHelper;
-import org.apache.xml.dtm.ref.DTMNodeProxy;
 import java.util.Hashtable;
-
-import org.apache.xalan.extensions.ExpressionContext;
-
 import javax.xml.parsers.*;
 
 /**
@@ -82,7 +76,7 @@ import javax.xml.parsers.*;
  * 
  * @see <a href="http://www.exslt.org/">EXSLT</a>
  */
-public class ExsltSets
+public class ExsltSets extends ExsltBase
 {   
   /**
    * The set:leading function returns the nodes in the node set passed as the first argument that
@@ -113,7 +107,7 @@ public class ExsltSets
     {
       Node testNode = nl1.item(i);
       if (DOMHelper.isNodeAfter(testNode, endNode) 
-          && !(testNode == endNode || DOMHelper.isNodeTheSame(testNode, endNode)))
+          && !DOMHelper.isNodeTheSame(testNode, endNode))
         leadNodes.addElement(testNode);
     }
     return leadNodes;
@@ -148,7 +142,7 @@ public class ExsltSets
     {
       Node testNode = nl1.item(i);
       if (DOMHelper.isNodeAfter(startNode, testNode) 
-          && !(startNode == testNode || DOMHelper.isNodeTheSame(startNode, testNode)))
+          && !DOMHelper.isNodeTheSame(startNode, testNode))
         trailNodes.addElement(testNode);          
     }
     return trailNodes;
@@ -237,11 +231,7 @@ public class ExsltSets
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node currNode = nl.item(i);
-      String key = null;
-      if (currNode instanceof DTMNodeProxy)
-        key = ((DTMNodeProxy)currNode).getStringValue();
-      else
-        key = currNode.getNodeValue();
+      String key = toString(currNode);
       
       if (key == null)
         dist.addElement(currNode);
