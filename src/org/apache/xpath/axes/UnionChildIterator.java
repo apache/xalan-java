@@ -117,6 +117,26 @@ public class UnionChildIterator extends ChildTestIterator
   }
 
   /**
+   * This function is used to fixup variables from QNames to stack frame 
+   * indexes at stylesheet build time.
+   * @param vars List of QNames that correspond to variables.  This list 
+   * should be searched backwards for the first qualified name that 
+   * corresponds to the variable reference qname.  The position of the 
+   * QName in the vector from the start of the vector will be its position 
+   * in the stack frame (but variables above the globalsTop value will need 
+   * to be offset to the current stack frame).
+   */
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+    super.fixupVariables(vars, globalsSize);
+    if (m_nodeTests != null) {
+      for (int i = 0; i < m_nodeTests.length; i++) {
+        m_nodeTests[i].fixupVariables(vars, globalsSize);
+      }
+    }
+  }
+
+  /**
    * Test whether a specified node is visible in the logical view of a
    * TreeWalker or NodeIterator. This function will be called by the
    * implementation of TreeWalker and NodeIterator; it is not intended to
