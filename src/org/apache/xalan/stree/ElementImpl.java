@@ -86,7 +86,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     throws ArrayIndexOutOfBoundsException, NullPointerException
   {
     // wait?
-    if (i < getAttrCount()) 
+    if (i < getAttrCount() && i >= 0) 
       return (AttrImpl)m_children[i];
     else
       return null;
@@ -269,7 +269,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     public String getURI (int index)
     {
       AttrImpl attr = getChildAttribute(index);
-      return attr.getNamespaceURI();     
+      if (null != attr)
+        return attr.getNamespaceURI();
+      else
+        return null;
     }
 
 
@@ -284,7 +287,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     public  String getLocalName (int index)
     {
       AttrImpl attr = getChildAttribute(index);
-      return attr.getLocalName();
+      if (null != attr)
+        return attr.getLocalName();
+      else
+        return null;
     }  
 
 
@@ -299,7 +305,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     public String getQName (int index)
     {
       AttrImpl attr = getChildAttribute(index);
-      return attr.getNodeName();
+      if (null != attr)
+        return attr.getNodeName();
+      else
+        return null;
     }  
 
 
@@ -313,7 +322,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     public String getType (int index)
     {
       AttrImpl attr = getChildAttribute(index);
-      return Integer.toString(attr.getNodeType());
+      if (null != attr)
+        return Integer.toString(attr.getNodeType());
+      else
+        return null;
     } 
 
     /**
@@ -326,7 +338,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     public String getValue (int index)
     {
       AttrImpl attr = getChildAttribute(index);
-      return attr.getValue();
+      if (null != attr)
+        return attr.getValue();
+      else 
+        return null;
     }
     
     /**
@@ -398,7 +413,14 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public String getType (String uri, String localName)
     {
-      return getType(getIndex(uri, localName));
+      for (int i = 0; i < getAttrCount(); i++)
+      {
+        AttrImpl attr = (AttrImpl)getChildAttribute(i);
+        if (attr.getLocalName().equals(localName) &&
+            attr.getNamespaceURI().equals(uri))
+          return Integer.toString(attr.getNodeType());
+      }
+      return null;
     } 
 
     /**
@@ -411,7 +433,13 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public String getType (String rawName)
     {
-      return getType(getIndex(rawName));
+      for (int i = 0; i < getAttrCount(); i++)
+      {
+        AttrImpl attr = getChildAttribute(i);
+        if (attr.getNodeName().equals(rawName))
+          return Integer.toString(attr.getNodeType());
+      }
+      return null;
     } 
 
     /**
@@ -425,7 +453,14 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public String getValue (String uri, String localName)
     {
-      return getValue(getIndex(uri, localName));
+      for (int i = 0; i < getAttrCount(); i++)
+      {
+        AttrImpl attr = (AttrImpl)getChildAttribute(i);
+        if (attr.getLocalName().equals(localName) &&
+            attr.getNamespaceURI().equals(uri))
+          return attr.getValue();
+      }
+      return null;
     } 
 
     /**
@@ -438,7 +473,13 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public String getValue (String rawName)
     {
-      return getValue(getIndex(rawName));
+      for (int i = 0; i < getAttrCount(); i++)
+      {
+        AttrImpl attr = getChildAttribute(i);
+        if (attr.getNodeName().equals(rawName))
+          return attr.getValue();
+      }
+      return null;
     }
     
     ////////////////////////////  
