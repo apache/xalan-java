@@ -64,6 +64,7 @@ import org.apache.xpath.XPathContext;
  * <meta name="usage" content="general"/>
  * This class represents an XPath string object, and is capable of 
  * converting the string to other types, such as a number.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XString extends XObject
 {

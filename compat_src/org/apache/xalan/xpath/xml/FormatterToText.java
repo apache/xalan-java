@@ -69,6 +69,7 @@ import org.xml.sax.SAXException;
  * This class takes SAX events (in addition to some extra events 
  * that SAX doesn't handle yet) and produces simple text only.
  * Warning: this class will be replaced by the Xerces Serializer classes.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class FormatterToText extends ParserAdapter
 {

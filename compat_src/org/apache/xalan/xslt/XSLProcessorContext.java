@@ -69,6 +69,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  * passed to an extension element.
  *
  * @author Sanjiva Weerawarana (sanjiva@watson.ibm.com)
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XSLProcessorContext extends org.apache.xalan.extensions.XSLProcessorContext
 { 

@@ -67,6 +67,7 @@ import org.apache.xml.utils.TreeWalker;
  * <meta name="usage" content="general"/>
  * Manufactures the processor for performing transformations. Use one of the static getProcessor methods
  * to create an XSLTProcessor object.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XSLTProcessorFactory
 {

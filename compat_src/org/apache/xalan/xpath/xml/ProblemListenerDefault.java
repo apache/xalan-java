@@ -69,6 +69,7 @@ import javax.xml.transform.TransformerException;
  * Users should ass the XSLTEngineImpl class to setProblemListener
  * if they wish an object instance to be called when a problem
  * event occurs.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHandler implements ProblemListener 
 {

@@ -72,6 +72,7 @@ import org.xml.sax.*;
  * parser services, DOM implementation, etc.  Most if all implementations
  * of this should derive from XPathSupportDefault (hence, it should 
  * probably be an abstract class instead of an interface).
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public interface XPathSupport 
 {

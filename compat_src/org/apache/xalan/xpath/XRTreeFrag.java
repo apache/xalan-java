@@ -62,6 +62,7 @@ import org.w3c.dom.*;
  * <meta name="usage" content="general"/>
  * This class represents an XPath result tree fragment object, and is capable of 
  * converting the RTF to other types, such as a string.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XRTreeFrag extends XObject 
 { 

@@ -68,6 +68,7 @@ import org.apache.xalan.res.XSLMessages;
  * converting the object to various types, such as a string.
  * This class acts as the base class to other XPath type objects, 
  * such as XString, and provides polymorphic casting capabilities.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XObject extends Object implements Serializable    
 {

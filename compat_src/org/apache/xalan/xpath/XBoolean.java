@@ -62,6 +62,7 @@ import org.w3c.dom.*;
  * <meta name="usage" content="advanced"/>
  * This class represents an XPath boolean object, and is capable of 
  * converting the boolean to other types, such as a string.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XBoolean extends XObject
 {

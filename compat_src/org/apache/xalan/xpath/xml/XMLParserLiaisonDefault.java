@@ -70,6 +70,7 @@ import org.apache.xalan.xpath.xml.XMLParserLiaison;
 /**
  * A class that handles interfacing IBM's XML4J2 to the 
  * Lotus XSL Processor.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XMLParserLiaisonDefault extends XMLParserLiaison 
 {

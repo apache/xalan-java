@@ -74,6 +74,7 @@ import org.apache.xml.dtm.DTM;
  * <meta name="usage" content="general"/>
  * This class represents an XPath nodeset object, and is capable of 
  * converting the nodeset to other types, such as a string.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XNodeSet extends XObject  
 {

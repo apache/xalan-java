@@ -65,6 +65,7 @@ import org.apache.xpath.XPathContext;
  * <meta name="usage" content="general"/>
  * This class represents an XPath null object, and is capable of 
  * converting the null to other types, such as a string.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XNull extends XObject
 {

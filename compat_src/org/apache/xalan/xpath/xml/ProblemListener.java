@@ -65,6 +65,7 @@ import org.w3c.dom.*;
  * Users should ass the XSLTEngineImpl class to setProblemListener
  * if they wish an object instance to be called when a problem
  * event occurs.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public interface ProblemListener
 {

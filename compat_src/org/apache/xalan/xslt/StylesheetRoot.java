@@ -80,6 +80,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  * Binary representation of a stylesheet -- use the {@link org.apache.xalan.xslt.XSLTProcessor} ProcessStylesheet
  * method to create a StylesheetRoot and improve performance for a stylesheet performing multiple transformations.
  * Also required for XSLTProcessor to function as SAX DocumentHandler.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class StylesheetRoot extends Stylesheet
 {
@@ -146,9 +147,8 @@ public class StylesheetRoot extends Stylesheet
                               (null != m_liaisonClassUsedToCreate) ?
                               new XSLTProcessorFactory().getProcessorUsingLiaisonName(m_liaisonClassUsedToCreate)
                               : new XSLTProcessorFactory().getProcessor();
-    process(iprocessor, iprocessor.getSourceTreeFromInput(xmlSource), outputTarget);
-    // System.out.println("Number counters made: "+
-    //                   ((XSLTEngineImpl)iprocessor).getCountersTable().m_countersMade);
+    process(iprocessor, xmlSource, outputTarget);
+    
   }
 
   /**
@@ -168,7 +168,24 @@ public class StylesheetRoot extends Stylesheet
            FileNotFoundException,
            IOException
   {
-    process(iprocessor, iprocessor.getSourceTreeFromInput(xmlSource), outputTarget);
+    //process(iprocessor, iprocessor.getSourceTreeFromInput(xmlSource), outputTarget);
+		XSLTEngineImpl processor = (XSLTEngineImpl)iprocessor; // TODO: Check for class cast exception
+		
+    synchronized(processor)
+    {      
+      processor.setStylesheet(this);
+
+      try
+      {
+				processor.getTransformer().transform(xmlSource.getSourceObject(),
+																						 outputTarget.getResultObject());
+			}
+      catch (TransformerException te)
+      {
+        throw new SAXException(te); 
+      }             
+    }
+       
   }
 
   /**
@@ -188,6 +205,7 @@ public class StylesheetRoot extends Stylesheet
            FileNotFoundException,
            IOException
   {
+		
     XSLTEngineImpl processor = (XSLTEngineImpl)iprocessor; // TODO: Check for class cast exception
 		//checkInit(processor);
     synchronized(processor)
@@ -200,147 +218,9 @@ public class StylesheetRoot extends Stylesheet
 
       try
       {
-        // Double-check the node to make sure it matches the processor liaison.
-        //processor.getXMLProcessorLiaison().checkNode(sourceTree);
-
-        // Needs work: We have to put the extension namespaces
-        // into the liaison's table.  We wouldn't have to do this
-        // if the stylesheet handled it's own extensions, which
-        // I'll fix on a later date.
-  /*      Enumeration keys = m_extensionNamespaces.keys();
-        while(keys.hasMoreElements())
-        {
-          Object key = keys.nextElement();
-          // System.out.println("Putting ext namespace: "+key);
-          processor.getExecContext().addExtensionNamespace ((String)key,
-                                                            (ExtensionFunctionHandler)m_extensionNamespaces.get(key));
-        }*/
-
-        // Find the root pattern in the XSL.
-        int child = processor.getTransformer().getXPathContext().getDTMHandleFromNode(sourceTree);
-        ElemTemplate rootRule = m_sRootObject.getTemplateComposed(processor.getTransformer().getXPathContext(), 
-                                                                  child, 
-                                                                  null, -1, false,
-                                                                  processor.getTransformer().getXPathContext().getDTM(child));
-                               //this.findTemplate(processor, sourceTree, sourceTree);
-
-        if(null == rootRule)
-        {
-          rootRule = m_sRootObject.getDefaultRootRule();
-        }
-
-        DocumentHandler docHandler = outputTarget.getDocumentHandler();
-
-        OutputFormat formatter = getOutputFormat();
-
-        if(null != outputTarget.getEncoding())
-          formatter.setEncoding(outputTarget.getEncoding());
-
-        if(null != docHandler)
-        {
-          processor.setDocumentHandler(docHandler);
-        }
-        else if(null != outputTarget.getByteStream())
-        {
-         /* if (!(processor.getXMLProcessorLiaison()..getIndent() < 0))
-          {
-            // This is to get around differences between Xalan and Xerces.
-            // Xalan uses -1 as default for no indenting, Xerces uses 0.
-            // So we just bump up the indent value here because we will
-            // subtract from it at output time (FormatterToXML.init());
-            formatter.setIndent(processor.m_parserLiaison.getIndent() + 1);
-          }*/
-          processor.setDocumentHandler(makeSAXSerializer(outputTarget.getByteStream(),
-                                                               formatter));
-        }
-        else if(null != outputTarget.getCharacterStream())
-        {
-        /*  if (!(processor.m_parserLiaison.getIndent() < 0))
-          {
-            formatter.setIndent(processor.m_parserLiaison.getIndent() + 1);
-          }*/
-          processor.setDocumentHandler(makeSAXSerializer(outputTarget.getCharacterStream(),
-                                                               formatter));
-        }
-        else if(null != outputTarget.getFileName())
-        {
-          /*if (!(processor.m_parserLiaison.getIndent() < 0))
-          {
-            formatter.setIndent(processor.m_parserLiaison.getIndent() + 1);
-          }*/
-          ostream = new FileOutputStream(outputTarget.getFileName());
-          processor.setDocumentHandler( makeSAXSerializer(ostream, formatter));
-        }
-        else if(null != outputTarget.getNode())
-        {
-          ParserAdapter handler = new ParserAdapter(new org.apache.xerces.parsers.SAXParser());
-          // Patch from Costin Manolache
-//          if( "org.apache.xalan.xpath.dtm.DTMLiaison".equals( processor.getXMLProcessorLiaison().getClass().getName()))
-//            processor.error(XSLTErrorResources.ER_CANT_USE_DTM_FOR_OUTPUT); //Can't use a DTMLiaison for an output DOM node... pass a org.apache.xalan.xpath.xdom.XercesLiaison instead!");
-          
-          switch(outputTarget.getNode().getNodeType())
-          {
-          case Node.DOCUMENT_NODE:            
-            handler.setContentHandler(new FormatterToDOM((Document)outputTarget.getNode()).getSerializerObject());
-            processor.setDocumentHandler(handler);
-            break;
-          case Node.DOCUMENT_FRAGMENT_NODE:
-            handler.setContentHandler(new FormatterToDOM(outputTarget.getNode().getOwnerDocument(), // PR:DMAN4M6PK5 Submitted by:<bk@viae.de>
-                                                       (DocumentFragment)outputTarget.getNode()).getSerializerObject());
-            processor.setDocumentHandler(handler);
-            break;
-          case Node.ELEMENT_NODE:
-            handler.setContentHandler(new FormatterToDOM(outputTarget.getNode().getOwnerDocument(), // PR:DMAN4M6PK5 Submitted by:<bk@viae.de>
-                                                       (Element)outputTarget.getNode()).getSerializerObject());
-            processor.setDocumentHandler(handler);
-            break;
-          default:
-            m_sRootObject.error(XSLTErrorResources.ER_CAN_ONLY_OUTPUT_TO_ELEMENT); //"Can only output to an Element, DocumentFragment, Document, or PrintWriter.");
-          }
-        }
-        else
-        {
-          ParserAdapter handler = new ParserAdapter(new org.apache.xerces.parsers.SAXParser());
-          outputTarget.setNode(processor.getXMLProcessorLiaison().createDocument());
-          handler.setContentHandler(new FormatterToDOM((Document)outputTarget.getNode()).getSerializerObject());
-          processor.setDocumentHandler(handler);
-        }
-
-       // processor.resetCurrentState(sourceTree);
-       // processor.m_rootDoc = sourceTree;
-
-        if(null != processor.m_diagnosticsPrintWriter)
-        {
-          processor.diag("=============================");
-          processor.diag("Transforming...");
-          processor.pushTime(sourceTree);
-        }
-
-       // processor.getVarStack().pushContextMarker();
-      //  try
-      //  {
-      //    processor.resolveTopLevelParams();
-      //  }
-      //  catch(Exception e)
-      //  {
-      //    throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESS_ERROR, null), e); //"StylesheetRoot.process error", e);
-      //  }
-
-        processor.getTransformer().getResultTreeHandler().startDocument();
-
-        // Output the action of the found root rule.  All processing
-        // occurs from here.  buildResultFromTemplate is highly recursive.
-        rootRule.execute(processor.getTransformer());
-
-         processor.getTransformer().getResultTreeHandler().endDocument();
-
-        // Reset the top-level params for the next round.
-        // processor.m_topLevelParams = new Vector();
-
-        if(null != processor.m_diagnosticsPrintWriter)
-        {
-          processor.displayDuration("transform", sourceTree);
-        }
+				processor.getTransformer().transform(new javax.xml.transform.dom.DOMSource(sourceTree),
+																						 outputTarget.getResultObject());
+       
       }
       catch (TransformerException te)
       {

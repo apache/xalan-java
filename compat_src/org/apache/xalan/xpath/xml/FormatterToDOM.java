@@ -71,6 +71,7 @@ import org.xml.sax.SAXException;
  * This class takes SAX events (in addition to some extra events 
  * that SAX doesn't handle yet) and adds the result to a document 
  * or document fragment.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class FormatterToDOM extends ParserAdapter
 { 

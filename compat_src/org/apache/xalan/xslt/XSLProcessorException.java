@@ -64,6 +64,7 @@ import org.apache.xalan.res.XSLMessages;
 /**
  * <meta name="usage" content="general"/>
  * The exception used for most XSLT errors.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XSLProcessorException extends SAXException
 {

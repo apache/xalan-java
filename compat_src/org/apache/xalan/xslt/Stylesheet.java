@@ -69,6 +69,7 @@ import org.xml.sax.*;
  * At the moment these stylesheets can not be reused within the
  * stylesheet tree or between trees.  This needs to be fixed
  * in the future.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class Stylesheet  extends org.apache.xalan.templates.Stylesheet
 { 

@@ -79,6 +79,7 @@ import javax.xml.transform.sax.SAXResult;
  *
  * @see XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)
  * @see StylesheetRoot
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XSLTResultTarget //implements Result //extends StreamResult
 {
@@ -199,7 +200,7 @@ public class XSLTResultTarget //implements Result //extends StreamResult
    */
   public XSLTResultTarget(DocumentHandler handler)
   { 
-    SAXResult saxResult = new SAXResult();    
+    saxResult = new SAXResult();    
     setDocumentHandler(handler);
   }
     
@@ -275,6 +276,8 @@ public class XSLTResultTarget //implements Result //extends StreamResult
   public void setDocumentHandler (DocumentHandler handler)
   {
     this.formatterListener = handler;
+		if (handler instanceof XSLTEngineImpl)
+			saxResult.setHandler(((XSLTEngineImpl)handler).getTransformer().getContentHandler());
     if (handler instanceof ParserAdapter)
     {
       if (saxResult == null)

@@ -62,6 +62,7 @@ import javax.xml.transform.stream.StreamSource;
  * <meta name="usage" content="general"/>
  * This class implements the representation of a stylesheet 
  * specification via xml-stylesheet in an XML document.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class StylesheetSpec extends StreamSource
 {

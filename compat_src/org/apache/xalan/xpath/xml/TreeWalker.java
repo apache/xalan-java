@@ -66,6 +66,7 @@ import org.apache.xml.utils.AttList;
  * <meta name="usage" content="advanced"/>
  * This class does a pre-order walk of the DOM tree, calling the FormatterListener
  * interface as it goes.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class TreeWalker //extends org.apache.xml.utils.TreeWalker
 {

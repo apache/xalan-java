@@ -63,6 +63,7 @@ import java.text.DecimalFormat;
  * <meta name="usage" content="general"/>
  * This class represents an XPath number, and is capable of 
  * converting the number to other types, such as a string.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XNumber extends XObject
 {

@@ -74,6 +74,7 @@ import org.xml.sax.SAXException;
  * <meta name="usage" content="general"/>
  * FormatterToXML formats SAX-style events into XML.
  * Warning: this class will be replaced by the Xerces Serializer classes.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class FormatterToXML extends ParserAdapter
 {

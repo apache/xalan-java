@@ -80,6 +80,7 @@ import javax.xml.parsers.*;
  * the source tree or as the result tree.
  * @see org.apache.xalan.xslt.XSLTProcessor
  * @see org.apache.xml.parsers
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XercesLiaison extends XMLParserLiaisonDefault //implements XPathSupport
 {

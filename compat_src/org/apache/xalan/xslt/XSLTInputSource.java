@@ -74,6 +74,7 @@ import javax.xml.transform.dom.DOMSource;
  * DOM nodes as input as well as files, character streams, byte streams and SAX DocumentHandlers.
  *
  * @see XSLTProcessor#process(XSLTInputSource, XSLTInputSource, XSLTResultTarget)
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XSLTInputSource //extends SAXSource 
 {

@@ -62,6 +62,7 @@ import org.w3c.dom.*;
  * <meta name="usage" content="internal"/>
  * This class doesn't have any XPathSupport, so override 
  * whatever to ensure it works OK.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XBooleanStatic extends XBoolean
 {

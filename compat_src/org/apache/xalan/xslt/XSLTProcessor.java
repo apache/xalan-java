@@ -97,6 +97,7 @@ import org.xml.sax.ext.LexicalHandler;
  * for an advanced usage example.
  *
  * <p>If you reuse the processor instance, you should call reset() between transformations.</p>
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public interface XSLTProcessor extends DocumentHandler, LexicalHandler
 {

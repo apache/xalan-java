@@ -114,6 +114,11 @@ import org.apache.xml.utils.QName;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xalan.transformer.TransformerHandlerImpl;
 
+// Imported JAVA API for XML Parsing 1.0 classes
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -140,6 +145,7 @@ import org.apache.xalan.transformer.TransformerHandlerImpl;
  * <p>If you reuse the processor instance, you should call reset() between transformations.</p>
  * @see XSLTProcessorFactory
  * @see XSLTProcessor
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XSLTEngineImpl implements  XSLTProcessor
 {
@@ -768,38 +774,27 @@ public class XSLTEngineImpl implements  XSLTProcessor
             displayDuration("Parse of "+xmlIdentifier, xmlIdentifier);
           sourceTree = m_liaison.getDocument();
         }
-        else
-        {      
-          XMLReader reader = XMLReaderFactory.createXMLReader();        
-          try
-          {
-            reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-          }
-          catch(SAXException se)
-          {
-          // What can we do?
-          // TODO: User diagnostics.
-          }
-        
-          // Get the input content handler, which will handle the 
-          // parse events and create the source tree.          
-          //StylesheetHandler inputHandler = (StylesheetHandler)m_processor.getTemplatesBuilder();
-          //reader.setContentHandler( inputHandler );
-          
-         /*TransformerHandlerImpl handler = new TransformerHandlerImpl(getTransformer(), false,
-              xmlIdentifier);
-          reader.setContentHandler(handler);
-          reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-        */
-          // Kick off the parse.  When the ContentHandler gets 
-          // the startDocument event, it will call transformNode( node ).
-       /*   reader.parse( SAXSource.sourceToInputSource(iSource));
-          sourceTree = handler.getRoot();
-        */  
-          org.apache.xml.dtm.DTMManager dtmManager = new org.apache.xml.dtm.ref.DTMManagerDefault();
-          org.apache.xml.dtm.DTM dtm = dtmManager.getDTM(inputSource.getSourceObject(), true, null, false, false);
-          sourceTree = dtm.getNode(dtm.getDocument());
-        }
+				else
+				{
+					try
+					{
+
+						// Use an implementation of the JAVA API for XML Parsing 1.0 to
+						// create a DOM Document node to contain the result.
+						DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+
+						dfactory.setNamespaceAware(true);
+						dfactory.setValidating(true);
+
+						DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+						sourceTree = docBuilder.parse(xmlIdentifier);
+
+					}
+					catch (ParserConfigurationException pce)
+					{
+						error(XSLTErrorResources.ER_COULDNT_PARSE_DOC, new Object[] {xmlIdentifier}, pce); 
+					}
+				}							
       }
       catch(Exception e)
       {

@@ -67,6 +67,7 @@ import org.w3c.dom.*;
  * of the functions in this class need to be overridden in order to 
  * perform correct execution of the XPath (for instance, variable 
  * execution).  This class will likely eventually replace XMLParserLiaisons.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class XPathSupportDefault extends org.apache.xpath.XPathContext implements XPathSupport 
 {

@@ -73,6 +73,7 @@ import org.apache.xalan.templates.Stylesheet;
  * If you need to alter the code in here,
  * it is not for the faint-of-heart, due to the state tracking
  * that has to be done due to the SAX event model.
+ * @deprecated This compatibility layer will be removed in later releases. 
  */
 public class StylesheetHandler extends ParserAdapter
   
