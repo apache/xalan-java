@@ -165,7 +165,7 @@ Copyright:
     <mkdir dir="${docs.dir}"/>
   	<javadoc sourcepath="${src.dir}" destdir="${docs.dir}"
   	 		 public="true"                  	 
-         	 packagenames="org.apache.xml,org.apache.xpath,org.apache.xpath.expression"
+         	 packagenames="org.apache.xml,org.apache.xpath.*,org.apache.xpath.impl.*"
          	 author="true"
          	 version="true"
          	 use="true"
@@ -173,7 +173,9 @@ Copyright:
          	 doctitle="XPath API 2"
          	 bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
          	  <classpath refid="docs.class.path" />
-         	  <group title="XPath API" packages="org.apache.xml:org.apache.xpath:org.apache.xpath.expression"/>
+         	  <group title="Namespace Support" packages="org.apache.xml"/>
+         	  <group title="XPath Public API" packages="org.apache.xpath:org.apache.xpath.expression"/>
+         	  <group title="XPath Implementation API" packages="org.apache.xpath.datamodel:org.apache.xpath.impl*"/>
     </javadoc>
   </target>
 
