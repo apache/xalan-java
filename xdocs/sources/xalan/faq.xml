@@ -146,7 +146,7 @@
            xalan:checkEnvironment extension function. It is highly recommended that you use this 
            method to verify the version of &xslt4j; you are running, especially 
            before opening a bug report.</p>
-        <p>There are several ways to use a later version of &xslt4j; and 
+        <p>To use a later version of &xslt4j; and 
            override the one packaged with the JDK:</p>
         <ul>
           <li>For the SUN JDK 1.4, use the
@@ -154,22 +154,6 @@
             in the 
             &lt;java-home&gt;\lib\endorsed directory, where
             &lt;java-home&gt; is where the runtime software is installed.
-          </li>
-          <li>Use the -Xbootclasspath java commandline option to prepend the new xalan.jar, 
-              xercesImpl.jar, and xml-apis.jar to the boot class path. When running 
-              &xslt4j;:
-            <br />
-            <br />
-	    <code>java -Xbootclasspath/p:&lt;path&gt;
-		    org.apache.xalan.xslt.Process</code>
-            <br />
-	    <br />where &lt;path&gt; is a &lt;path.separator&gt; separated list of the paths to the files xalan.jar, 
-	     xercesImpl.jar, and xml-apis.jar (e.g. bin/xalan.jar:bin/xercesImpl.jar:bin/xml-apis.jar) 
-	     containing the new-version of &xslt4j;.
-	     <br /><br />
-	     &lt;path.separator&gt; depends on the OS and version of the JDK. For Windows, it is likely a semicolon (;).
-	     For Unix, it is likely a colon (:). To determine which &lt;path.separator&gt; to use, you can execute "java -X";
-	     it will mention the appropriate separator in the help output.
           </li>
         </ul>
         <p>The following methods
