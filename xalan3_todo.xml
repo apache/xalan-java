@@ -5,11 +5,11 @@
     <action category="feature">starting node can be designated</action>
     <action category="feature">Can designate a named template to be invoked at startup</action>
     <action category="feature">External parameters: data types?</action>
+    <action category="feature">XPath backward-compatibility mode</action>
     <action category="feature" who="SB">() constructs empty sequence</action>
     <action category="feature" who="SB">"instance of empty" test</action>
     <action category="feature" status="unstable">xsl:import-schema</action>
     <action category="feature" status="unstable">format-dateTime() and xsl:datetime-format</action>
-    <action category="feature" status="unstable">xsl:principal-result-document</action>
     <action category="feature">xsl:sort-key</action>
     <action category="feature" status="unstable">xsl:namespace</action>
     <action category="feature">Function sort(string,sequence)</action>
@@ -25,6 +25,16 @@
     <action category="feature">xf:string-pad()</action>
     <action category="feature">xf:escape-uri()</action>
     <action category="feature">xf:resolve-uri()</action>
+    <action category="feature">fn:unordered</action>
+    <action category="feature">fn:get-in-scope-namespaces(), fn:get-namespace-uri-for-prefix()</action>
+    <action category="feature">fn:default-collation</action>
+    <action category="feature">fn:implicit-timezone()</action>
+    <action category="feature">fn:string-join()</action>
+    <action category="feature">fn:base-uri()</action>
+    <action category="feature">change fn:expanded-QName to QName-in-context</action>
+    <action category="feature">change fn:get-*-from-dateTime to subtract-dateTimes-yielding-*</action>
+    <action category="feature">fn:codepoints-to-string, fn:string-to-codepoints</action>
+    <action category="feature">fn:error</action>
     <action category="feature" status="unstable">xf:copy()</action>
     <action category="feature" who="MM">xf:input()</action>
     <action category="feature">xf:context-item()</action>
@@ -37,26 +47,32 @@
     <action category="feature" who="JK">constructor functions for [non][positive/negative]integer</action>
     <action category="feature" who="JK">constructor functions for decimal, float, double</action>
     <action category="feature" status="partial">XPath keywords: type, of type, untyped, in</action>
+    <action category="feature">XPath keyword: castable</action>
     <action category="feature">operators &lt;&lt; (before) and &gt;&gt; (after)</action>
     <action category="feature">equality test for QName, anyURI, hexBinary, base64Binary</action>
     <action category="feature" status="unstable" who="JK">cast as, treat as</action>
     <action category="feature" status="unstable">ValidateExpr::= "validate" SchemaContext? "{" Expr "}"</action>
-    <action category="feature">exclude-prefixes, default-xpath-namespace standard attributes, allowed everywhere</action>
+    <action category="feature">default-xpath-namespace standard attribute allowed everywhere</action>
+    <action category="feature">xsl:analyze-string has sub-element xsl:fallback</action>
+    <action category="feature">xsl:copy and xsl:copy-of take @copy-namespaces</action>
     <action category="feature" status="unstable">version attribute on XSLT element, allows mixing</action>
+    <action category="feature">exclude-result-prefixes="#all" supported</action>
     <action category="feature">exclude-result-prefixes, extension element-prefixes now ubiquitous</action>
     <action category="feature">xsl:apply-imports takes with-param subelement</action>
-    <action category="feature" who="JK">xsl:variable and xsl:param take @type. SequenceType parsing should be centralized.</action>
+    <action category="feature" who="JK">xsl:variable and xsl:param take @as (was @type). SequenceType parsing should be centralized.</action>
+    <action category="feature">xsl:param takes @required</action>
     <action category="feature">xsl:attribute takes @disable-output-escaping</action>
-    <action category="feature" who="JK">xsl:sort and xsl:key take @type, @collation for value matching. SequenceType parsing should be centralized.
-      <issue id="collations">What are we going to do about collations?</issue></action>
-    <action category="feature" status="partial">xsl:output takes @name</action>
+    <action category="feature" who="JK">xsl:sort and xsl:key take @as, @collation for value matching. SequenceType parsing should be centralized.
+      <issue id="collations">What are we going to do about collations?</issue>
+      <issue id="collations">New rules for matching NaN as a value</issue></action>
+    <action category="feature" status="partial">xsl:output takes @name, @unicode-normalization</action>
     <action category="feature">xsl:output method="xhtml"</action>
     <action category="feature">xsl:text allows instructions</action>
     <action category="feature">system-property() has new keywords</action>
+    <action category="feature" status="partial">xsl:function, xsl:result takes @as</action>
   </actions>
   <completed>
     <action category="feature">Input is a sequence, not just one tree</action>
-    <action category="feature" status="bugs">xsl:function, xsl:result sub-element</action>
     <action category="feature">xsl:result-document</action>
     <action category="feature">xsl:for-each-group</action>
     <action category="feature">OccurrenceIndicator::= ("*" |  "+" |  "?")? in match and select</action>
