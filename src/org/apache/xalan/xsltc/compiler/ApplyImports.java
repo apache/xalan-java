@@ -32,13 +32,9 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
 
-/**
- * @author Morten Jorgensen
- */
 final class ApplyImports extends Instruction {
 
     private QName      _modeName;
-    private String     _functionName;
     private int        _precedence;
 
     public void display(int indent) {
@@ -66,31 +62,13 @@ final class ApplyImports extends Instruction {
      * the integer returned by this method.
      */
     private int getMinPrecedence(int max) {
-	Stylesheet stylesheet = getStylesheet();
-	Stylesheet root = getParser().getTopLevelStylesheet();
+        // Move to root of include tree
+        Stylesheet includeRoot = getStylesheet();
+        while (includeRoot._includedFrom != null) {
+            includeRoot = includeRoot._includedFrom;
+        }
 
-	int min = max;
-
-	Enumeration templates = root.getContents().elements();
-	while (templates.hasMoreElements()) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)templates.nextElement();
-	    if (child instanceof Template) {
-		Stylesheet curr = child.getStylesheet();
-		while ((curr != null) && (curr != stylesheet)) {
-		    if (curr._importedFrom != null)
-			curr = curr._importedFrom;
-		    else if (curr._includedFrom != null)
-			curr = curr._includedFrom;
-		    else
-			curr = null;
-		}
-		if (curr == stylesheet) {
-		    int prec = child.getStylesheet().getImportPrecedence();
-		    if (prec < min) min = prec;
-		}
-	    }
-	}
-	return (min);
+        return includeRoot.getMinimumDescendantPrecedence();
     }
 
     /**
@@ -109,13 +87,6 @@ final class ApplyImports extends Instruction {
 
 	// Get the method name for <xsl:apply-imports/> in this mode
 	stylesheet = parser.getTopLevelStylesheet();
-
-	// Get the [min,max> precedence of all templates imported under the
-	// current stylesheet
-	final int maxPrecedence = _precedence;
-	final int minPrecedence = getMinPrecedence(maxPrecedence);
-	final Mode mode = stylesheet.getMode(_modeName);
-	_functionName = mode.functionName(minPrecedence, maxPrecedence);
 
 	parseChildren(parser);	// with-params
     }
@@ -151,13 +122,42 @@ final class ApplyImports extends Instruction {
 
 	il.append(methodGen.loadHandler());
 
+        // Push a new parameter frame in case imported template might expect
+        // parameters.  The apply-imports has nothing that it can pass.
+        if (stylesheet.hasLocalParams()) {
+            il.append(classGen.loadTranslet());
+            final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
+                                                   PUSH_PARAM_FRAME,
+                                                   PUSH_PARAM_FRAME_SIG);
+            il.append(new INVOKEVIRTUAL(pushFrame));
+        }
+
+	// Get the [min,max> precedence of all templates imported under the
+	// current stylesheet
+	final int maxPrecedence = _precedence;
+	final int minPrecedence = getMinPrecedence(maxPrecedence);
+	final Mode mode = stylesheet.getMode(_modeName);
+
+        // Get name of appropriate apply-templates function for this
+        // xsl:apply-imports instruction
+	String functionName = mode.functionName(minPrecedence, maxPrecedence);
+
 	// Construct the translet class-name and the signature of the method
 	final String className = classGen.getStylesheet().getClassName();
 	final String signature = classGen.getApplyTemplatesSig();
 	final int applyTemplates = cpg.addMethodref(className,
-						    _functionName,
+						    functionName,
 						    signature);
 	il.append(new INVOKEVIRTUAL(applyTemplates));
+
+        // Pop any parameter frame that was pushed above.
+        if (stylesheet.hasLocalParams()) {
+            il.append(classGen.loadTranslet());
+            final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
+                                                   POP_PARAM_FRAME,
+                                                   POP_PARAM_FRAME_SIG);
+            il.append(new INVOKEVIRTUAL(pushFrame));
+        }
     }
 
 }
