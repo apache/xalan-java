@@ -218,22 +218,31 @@ public class ErrorMessages extends ResourceBundle {
 
 	// COMPILE_STDIN_ERR
 	"The -i option must be used with the -o option.",
+
 	// COMPILE_USAGE_STR
-	"Usage:\n" + 
-	"   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-n] [-x] [-s] [-u] { <stylesheet> | -i }\n\n"+
-	"   Where <output> is the name to give the the generated translet.\n"+
-	"         <stylesheet> is one or more stylesheet file names, or if\n"+
-	"         the -u options is specified, one or more stylesheet URLs.\n"+
-	"         <directory> is the output directory.\n"+
-	"         <jarfile> is the name of a JAR-file to put all classes in.\n"+
-	"         <package-name> is used to prefix all class names.\n\n"+
-	"   Notes:\n"+
-	"         The -i options forces the compiler to read from stdin\n"+
-	"         The -o option is ignored if compiling multiple stylesheets\n"+
-	"         The -x option switches on debug messages.\n"+
-	"         The -n disable template inlining to reduce method length.\n"+
-	"         The -s option disables calling System.exit.",
+	"SYNOPSIS\n" +
+	"   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>]\n" +
+	"      [-d <directory>] [-j <jarfile>] [-p <package>]\n" +
+	"      [-n] [-x] [-s] [-u] [-v] [-h] { <stylesheet> | -i }\n\n" +
+	"OPTIONS\n" +
+	"   -o <output>    assigns the name <output> to the generated\n" +
+	"                  translet. By default the translet name\n" +
+	"                  is taken from the <stylesheet> name. This option\n"+
+	"                  is ignored if compiling multiple stylesheets.\n" +
+	"   -d <directory> specifies a destination directory for translet\n" +
+	"   -j <jarfile>   packages translet classes into a jar file of the\n"+
+ 	"                  name specified as <jarfile>\n"+
+	"   -p <package>   specifies a package name prefix for all generated\n"+
+	"                  translet classes.\n" +
+	"   -n             disables template inlining to reduce method\n" +
+	"                  length.\n"+
+	"   -x             turns on additional debugging message output\n" +
+	"   -s             disables calling System.exit\n" +
+	"   -u             interprets <stylesheet> arguments as URLs\n" +
+	"   -i             forces compiler to read stylesheet from stdin\n" +
+	"   -v             prints the version of the compiler\n" +
+	"   -h             prints this usage statement\n",  
+ 
 	// TRANSFORM_USAGE_STR
 	"Usage: \n" +
 	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>] [-x] [-s]\n" +
