@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Created-By: 1.2.2 (Sun Microsystems Inc.)
+Created-By: @java.version@ (@java.vendor@)
 
 Name: org/apache/xalan/xsltc
 Comment: Main XSLTC engine implementing TrAX/JAXP
