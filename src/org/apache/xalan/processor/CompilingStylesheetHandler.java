@@ -839,9 +839,6 @@ public class CompilingStylesheetHandler
                 // Resolves prefix in terms of STYLESHEET context, not input
                 // or output doc context... which requires that we track
                 // that context in our compiled code. Grrr.
-                // TODO: ***** BIG ISSUE: What about uncompiled nodes? Do we need
-                //         to become their parent and support gNFP()?
-                //       Bigger restructuring than I've been doing.
                 +attrNameSpace+"=nsSupport.getURI("+nsprefix+");\n"
                 
                 // The if here substitutes for early returns in original code
