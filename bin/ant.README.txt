@@ -1,7 +1,0 @@
-ant.jar - a Java based build tool. In theory it is kind of like make without make's wrinkles.
-
-Source:	 http://jakarta.apache.org/ant
-Used By: Xalan's build process: xml-xalan/java/build.xml and xml-xalan/test/build.xml
-
-See ant.LICENSE.txt for the Apache Software License that applies 
-to the following files: ant.jar, antRun, antRun.bat
