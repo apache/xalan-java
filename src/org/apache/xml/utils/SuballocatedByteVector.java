@@ -59,10 +59,10 @@ package org.apache.xml.utils;
 /**
  * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of byte. Very similar API to our
- * ByteVector class (same API); different internal storage.
+ * IntVector class (same API); different internal storage.
  * 
  * This version uses an array-of-arrays solution. Read/write access is thus
- * a bit slower than the simple ByteVector, and basic storage is a trifle
+ * a bit slower than the simple IntVector, and basic storage is a trifle
  * higher due to the top-level array -- but appending is O(1) fast rather
  * than O(N**2) slow, which will swamp those costs in situations where
  * long vectors are being built up.
