@@ -99,4 +99,6 @@ class StreamOutput extends OutputBase {
 
     protected boolean _escaping = true;
 
+    protected String  _encoding;
+
 }

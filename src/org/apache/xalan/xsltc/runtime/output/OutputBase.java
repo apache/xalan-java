@@ -89,5 +89,9 @@ public abstract class OutputBase implements TransletOutputHandler {
 	return false;
     }
     public void setCdataElements(Hashtable elements){}
-    public void close(){}
+    public void setDoctype(String system, String pub) {}
+    public void setMediaType(String mediaType) {}
+    public void setStandalone(String standalone) {}
+    public void setVersion(String version) {}
+    public void close() {}
 }

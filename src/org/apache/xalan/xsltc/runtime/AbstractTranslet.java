@@ -561,14 +561,7 @@ public abstract class AbstractTranslet implements Translet {
     /**
      * Transfer the output settings to the output post-processor
      */
-    protected void transferOutputSettings(TransletOutputHandler output) {
-
-	// It is an error if this method is called with anything else than
-	// the translet post-processor (TextOutput)
-	if (!(output instanceof TextOutput)) return;
-
-	TextOutput handler = (TextOutput)output;
-
+    protected void transferOutputSettings(TransletOutputHandler handler) {
 	// Transfer the output method setting
 	if (_method != null) {
 	    // Transfer all settings relevant to XML output

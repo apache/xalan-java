@@ -75,8 +75,12 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public class HtmlOutput extends StreamOutput {
 
-    protected static final Hashtable _emptyElements = new Hashtable();
-    protected static final String[] tags = { "area", "base", "basefont", "br",
+    private static final String HREF_STR = "href";
+    private static final String CITE_STR = "cite";
+    private static final String SRC_STR  = "src";
+
+    private static final Hashtable _emptyElements = new Hashtable();
+    private static final String[] tags = { "area", "base", "basefont", "br",
 					   "col", "frame", "hr", "img", "input",
 					   "isindex", "link", "meta", "param" };
     static {
@@ -85,18 +89,27 @@ public class HtmlOutput extends StreamOutput {
 	}
     }
 
-    public HtmlOutput(Writer writer) {
+    private boolean _inStyleScript = false;
+
+    public HtmlOutput(Writer writer, String encoding) {
 	_writer = writer;
+	_encoding = encoding;
+	if (encoding.equalsIgnoreCase("iso-8859-1")) {
+	    _is8859Encoded = true;
+	}
     }
 
     public HtmlOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	try {
-	    _writer = new OutputStreamWriter(out, encoding);
+	    _writer = new OutputStreamWriter(out, _encoding = encoding);
+	    if (encoding.equalsIgnoreCase("iso-8859-1")) {
+		_is8859Encoded = true;
+	    }
 	}
 	catch (UnsupportedEncodingException e) {
-	    _writer = new OutputStreamWriter(out, "UTF-8");
+	    _writer = new OutputStreamWriter(out, _encoding = "UTF-8");
 	}
     }
 
@@ -145,6 +158,13 @@ public class HtmlOutput extends StreamOutput {
 
 	_buffer.append('<').append(elementName);
 	_startTagOpen = true;
+	_indentNextEndTag = false;
+
+	if (elementName.equalsIgnoreCase("style") || 
+	    elementName.equalsIgnoreCase("script")) 
+	{
+	    _inStyleScript = true;
+	}
     }
 
     public void endElement(String elementName) throws TransletException { 
@@ -152,9 +172,24 @@ public class HtmlOutput extends StreamOutput {
 	    _startTagOpen = false;
 	    _buffer.append(">");
 	}
+
+	if (_indent) {
+	    _indentLevel --;
+	    if (_indentNextEndTag) {
+		indent(_indentNextEndTag);
+		_indentNextEndTag = true;
+	    }
+	}
+
 	// Empty elements may not have closing tags
-	if (_emptyElements.get(elementName.toLowerCase()) == null) {
+	if (!_emptyElements.containsKey(elementName.toLowerCase())) {
 	    _buffer.append("</").append(elementName).append('>');
+	}
+	else if (_inStyleScript && 
+		 (elementName.equalsIgnoreCase("style") || 
+		  elementName.equalsIgnoreCase("script"))) 
+	{
+	    _inStyleScript = false;
 	}
     }
 
@@ -166,7 +201,7 @@ public class HtmlOutput extends StreamOutput {
 	    _startTagOpen = false;
 	}
 
-	if (_escaping) {
+	if (_escaping && !_inStyleScript) {
 	    escapeCharacters(characters.toCharArray(), 0, characters.length());
 	}
 	else {
@@ -182,7 +217,7 @@ public class HtmlOutput extends StreamOutput {
 	    _startTagOpen = false;
 	}
 
-	if (_escaping) {
+	if (_escaping && !_inStyleScript) {
 	    escapeCharacters(characters, offset, length);
 	}
 	else {
@@ -194,8 +229,17 @@ public class HtmlOutput extends StreamOutput {
 	throws TransletException 
     { 
 	if (_startTagOpen) {
-	    _buffer.append(' ').append(attributeName)
-		.append("=\"").append(attributeValue).append('"');
+	    _buffer.append(' ').append(attributeName).append("=\"");
+
+	    if (attributeName.equalsIgnoreCase(HREF_STR) || 
+		attributeName.equalsIgnoreCase(SRC_STR)  || 
+		attributeName.equals(CITE_STR)) 
+	    {
+		appendEncodedURL(attributeValue).append('"');
+	    }
+	    else {
+		appendNonURL(attributeValue).append('"');
+	    }
 	}
     }
 
@@ -235,25 +279,25 @@ public class HtmlOutput extends StreamOutput {
 	}
     }
 
+    public void setIndent(boolean indent) { 
+	_indent = indent;
+    }
+
+    public void omitHeader(boolean value) {
+        _omitHeader = value;
+    }
+
     public void namespace(String prefix, String uri) throws TransletException 
     { 
-	// ignore since method type is HTML
+	// ignore when method type is HTML
     }
 
     public void setCdataElements(Hashtable elements) { 
-	// ignore since method type is HTML
+	// ignore when method type is HTML
     }
 
     public void setType(int type) { 
 	// ignore: default is HTML
-    }
-
-    public void setIndent(boolean indent) { 
-	// ignore: default is off
-    }
-
-    public void omitHeader(boolean value) { 
-	// ignore: default is on
     }
 
     private void escapeCharacters(char[] ch, int off, int len) {
@@ -290,8 +334,8 @@ public class HtmlOutput extends StreamOutput {
 		offset = i + 1;
 		break;
 	    default:
-		if ( (current >= '\u007F' && current < '\u00A0') ||
-		     (_is8859Encoded && (current > '\u00FF')) )
+		if ((current >= '\u007F' && current < '\u00A0') ||
+		    (_is8859Encoded && current > '\u00FF'))
 		{
 		    _buffer.append(ch, offset, i - offset);
 		    _buffer.append(CHAR_ESC_START);
@@ -319,4 +363,44 @@ public class HtmlOutput extends StreamOutput {
 	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel + _indentLevel 
 		: MAX_INDENT);
     }
+
+    /**
+     * Replaces whitespaces in a URL with '%20'
+     */
+    private StringBuffer appendEncodedURL(String base) {
+	final int length = base.length();
+
+	for (int i = 0; i < length; i++) {
+	    final char ch = base.charAt(i);
+	    if (ch == ' ') {
+		_buffer.append("%20");
+	    }
+	    else {
+		_buffer.append(ch);
+	    }
+	}
+	return _buffer;
+    }
+
+    /**
+     * Escape non ASCII characters (> u007F) as &#XXX; entities.
+     */
+    private StringBuffer appendNonURL(String base) {
+	final int length = base.length();
+
+        for (int i = 0; i < length; i++){
+	    final char ch = base.charAt(i);
+
+	    if (ch > '\u007F') {
+	        _buffer.append(CHAR_ESC_START)
+		       .append(Integer.toString((int) ch))
+		       .append(';');
+	    }
+	    else {
+	        _buffer.append(ch); 
+	    } 
+  	}
+	return _buffer;
+    }
+
 }
