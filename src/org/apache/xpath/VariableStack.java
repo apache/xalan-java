@@ -299,6 +299,9 @@ public final class VariableStack implements Cloneable
     index += _cfb;
 
     XObject val = _sf[index];
+    
+    if(null == val)
+      throw new TransformerException("Variable accessed before it is bound!", xctxt.getSAXLocator());
 
     // Lazy execution of variables.
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
