@@ -187,6 +187,8 @@ public class XRTreeFrag extends XObject implements Cloneable
   {
     if(m_allowRelease)
     {
+    	// %REVIEW% Do we actually _need_ detach, now that DTM RTF
+    	// storage is managed as a stack?
       // See #destruct() for a comment about this next check.
       int ident = m_xctxt.getDTMIdentity(m_dtm);
       DTM foundDTM = m_xctxt.getDTM(ident);      
