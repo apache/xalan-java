@@ -204,7 +204,10 @@ public class XSLTAttributeDef
     T_NMTOKEN = 13,
 
     // Used for a list of white-space delimited strings.
-    T_STRINGLIST = 14
+    T_STRINGLIST = 14,
+    
+    // Used for a list of white-space delimited strings.
+    T_PREFIX_URLLIST = 15
     ;
 
   static XSLTAttributeDef m_foreignAttr 
@@ -500,6 +503,28 @@ public class XSLTAttributeDef
   }
   
   /**
+   * Process an attribute string of type T_STRINGLIST into 
+   * a vector of XPath match patterns.
+   */
+  StringVector processPREFIX_URLLIST(StylesheetHandler handler,
+                                  String uri, String name,
+                                  String rawName, String value)
+    throws SAXException
+  {
+    StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
+    int nStrings = tokenizer.countTokens();
+    StringVector strings = new StringVector(nStrings);
+    for(int i = 0; i < nStrings; i++)
+    {
+      String prefix = tokenizer.nextToken();
+      String url = handler.getNamespaceForPrefix(prefix);
+      strings.addElement(url);
+    }
+    return strings;
+  }
+
+  
+  /**
    * Process an attribute string of type T_URL into 
    * a URL value.
    */
@@ -577,6 +602,9 @@ public class XSLTAttributeDef
       break;
     case T_STRINGLIST:
       processedValue = processSTRINGLIST(handler, uri, name, rawName, value);
+      break;
+    case T_PREFIX_URLLIST:
+      processedValue = processPREFIX_URLLIST(handler, uri, name, rawName, value);
       break;
     default:
     }

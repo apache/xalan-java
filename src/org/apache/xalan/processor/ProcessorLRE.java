@@ -57,6 +57,9 @@
 package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.ElemExtensionCall;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
@@ -79,10 +82,36 @@ public class ProcessorLRE extends ProcessorTemplateElem
     XSLTElementDef def = getElemDef();
     Class classObject = def.getClassObject();
     
+    boolean isExtension = false;
+    ElemTemplateElement p = handler.getElemTemplateElement();
+    while(null != p)
+    {
+      // System.out.println("Checking: "+p);
+      if(p instanceof ElemLiteralResult)
+      {
+        ElemLiteralResult parentElem = (ElemLiteralResult)p;
+        isExtension = parentElem.containsExtensionElementURI(uri);
+      }
+      else if(p instanceof Stylesheet)
+      {
+        Stylesheet parentElem = (Stylesheet)p;
+        isExtension = parentElem.containsExtensionElementURI(uri);
+      }
+      if(isExtension)
+        break;
+      p = p.getParentElem();
+    }
+    
     ElemLiteralResult elem = null;
     try
     {
-      elem = (ElemLiteralResult)classObject.newInstance();
+      if(isExtension)
+      {
+        // System.out.println("Creating extension(1): "+uri);
+        elem = new ElemExtensionCall();
+      }
+      else
+        elem = (ElemLiteralResult)classObject.newInstance();
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
       elem.setNamespace(uri);
@@ -99,6 +128,23 @@ public class ProcessorLRE extends ProcessorTemplateElem
     }
     
     setPropertiesFromAttributes(handler, rawName, attributes, elem);
+    
+    // bit of a hack here...
+    if(!isExtension)
+    {
+      isExtension = elem.containsExtensionElementURI(uri);
+      if(isExtension)
+      {
+        // System.out.println("Creating extension(2): "+uri);
+        elem = new ElemExtensionCall();
+        elem.setLocaterInfo(handler.getLocator());
+        elem.setPrefixes(handler.getNamespaceSupport());
+        elem.setNamespace(uri);
+        elem.setLocalName(localName);
+        elem.setRawName(rawName);
+        setPropertiesFromAttributes(handler, rawName, attributes, elem);
+      }
+    }
     
     appendAndPush(handler, elem);
   }

@@ -218,7 +218,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef xslExtensionElementPrefixesAttr
       = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, 
                              "extension-element-prefixes", 
-                             XSLTAttributeDef.T_STRINGLIST, false);
+                             XSLTAttributeDef.T_PREFIX_URLLIST, false);
 
     XSLTAttributeDef xslUseAttributeSetsAttr
       = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, 
@@ -623,7 +623,7 @@ public class XSLTSchema extends XSLTElementDef
 
      XSLTAttributeDef extensionElementPrefixesAttr
       = new XSLTAttributeDef(null, "extension-element-prefixes", 
-                             XSLTAttributeDef.T_STRINGLIST, false);
+                             XSLTAttributeDef.T_PREFIX_URLLIST, false);
      
      XSLTAttributeDef idAttr
       = new XSLTAttributeDef(null, "id", 
