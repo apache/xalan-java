@@ -41,6 +41,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorKey extends XSLTElementProcessor
 {
+    static final long serialVersionUID = 4285205417566822979L;
 
   /**
    * Receive notification of the start of an xsl:key element.

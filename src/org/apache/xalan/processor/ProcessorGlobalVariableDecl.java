@@ -28,6 +28,7 @@ import org.apache.xalan.templates.ElemVariable;
  */
 class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
 {
+    static final long serialVersionUID = -5954332402269819582L;
 
   /**
    * Append the current template element to the current

@@ -33,6 +33,7 @@ import org.xml.sax.SAXException;
  */
 public class ProcessorExsltFuncResult extends ProcessorTemplateElem
 {
+    static final long serialVersionUID = 6451230911473482423L;
   
   /**
    * Verify that the func:result element does not appear within a variable,

@@ -54,6 +54,7 @@ import org.xml.sax.SAXException;
  */
 public class ProcessorExsltFunction extends ProcessorTemplateElem
 {
+    static final long serialVersionUID = 2411427965578315332L;
   /**
    * Start an ElemExsltFunction. Verify that it is top level and that it has a name attribute with a
    * namespace.

@@ -25,6 +25,7 @@ import org.apache.xalan.templates.WhiteSpaceInfo;
 
 public class WhitespaceInfoPaths extends WhiteSpaceInfo
 {
+    static final long serialVersionUID = 5954766719577516723L;
 	
   /**
    * Bean property to allow setPropertiesFromAttributes to

@@ -36,6 +36,7 @@ import org.xml.sax.Attributes;
  */
 public class ProcessorStylesheetElement extends XSLTElementProcessor
 {
+    static final long serialVersionUID = -877798927447840792L;
 
   /**
    * Receive notification of the start of an strip-space element.

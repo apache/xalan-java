@@ -48,6 +48,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class ProcessorInclude extends XSLTElementProcessor
 {
+    static final long serialVersionUID = -4570078731972673481L;
 
   /**
    * The base URL of the XSL document.

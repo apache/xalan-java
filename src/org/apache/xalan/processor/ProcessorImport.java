@@ -29,6 +29,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  */
 public class ProcessorImport extends ProcessorInclude
 {
+    static final long serialVersionUID = -8247537698214245237L;
 
   /**
    * Get the stylesheet type associated with an imported stylesheet

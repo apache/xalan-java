@@ -32,6 +32,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorAttributeSet extends XSLTElementProcessor
 {
+    static final long serialVersionUID = -6473739251316787552L;
 
   /**
    * Receive notification of the start of an xsl:attribute-set element.

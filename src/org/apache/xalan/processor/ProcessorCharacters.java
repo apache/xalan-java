@@ -34,6 +34,7 @@ import org.w3c.dom.Node;
  */
 public class ProcessorCharacters extends XSLTElementProcessor
 {
+    static final long serialVersionUID = 8632900007814162650L;
 
   /**
    * Receive notification of the start of the non-text event.  This

@@ -35,6 +35,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorOutputElem extends XSLTElementProcessor
 {
+    static final long serialVersionUID = 3513742319582547590L;
 
   /** The output properties, set temporarily while the properties are 
    *  being set from the attributes, and then nulled after that operation 

@@ -36,6 +36,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class XSLTElementProcessor extends ElemTemplateElement
 {
+    static final long serialVersionUID = 5597421564955304421L;
 
   /**
    * Construct a processor for top-level elements.

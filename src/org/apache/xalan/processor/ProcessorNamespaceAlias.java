@@ -37,6 +37,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorNamespaceAlias extends XSLTElementProcessor
 {
+    static final long serialVersionUID = -6309867839007018964L;
 
   /**
    * Receive notification of the start of an xsl:namespace-alias element.

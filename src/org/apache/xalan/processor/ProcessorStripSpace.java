@@ -35,6 +35,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorStripSpace extends ProcessorPreserveSpace
 {
+    static final long serialVersionUID = -5594493198637899591L;
 
   /**
    * Receive notification of the start of an strip-space element.

@@ -35,6 +35,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorPreserveSpace extends XSLTElementProcessor
 {
+    static final long serialVersionUID = -5552836470051177302L;
 
   /**
    * Receive notification of the start of an preserve-space element.

@@ -32,6 +32,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorDecimalFormat extends XSLTElementProcessor
 {
+    static final long serialVersionUID = -5052904382662921627L;
 
   /**
    * Receive notification of the start of an element.

@@ -32,6 +32,7 @@ import org.xml.sax.Attributes;
  */
 public class ProcessorTemplateElem extends XSLTElementProcessor
 {
+    static final long serialVersionUID = 8344994001943407235L;
 
   /**
    * Receive notification of the start of an element.

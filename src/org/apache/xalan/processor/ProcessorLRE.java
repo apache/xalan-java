@@ -53,7 +53,7 @@ import org.xml.sax.helpers.AttributesImpl;
  */
 public class ProcessorLRE extends ProcessorTemplateElem
 {
-
+    static final long serialVersionUID = -1490218021772101404L;
   /**
    * Receive notification of the start of an element.
    *
