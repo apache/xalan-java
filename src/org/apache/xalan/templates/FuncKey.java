@@ -151,8 +151,14 @@ public class FuncKey extends Function2Args
           kmgr.getNodeSetByKey(xctxt, docContext, keyname, ref,
                                xctxt.getNamespaceContext());
 
-        upi.addIterator(nl);
-
+        try
+        {
+          upi.addIterator((LocPathIterator)nl.clone());
+        }
+        catch(CloneNotSupportedException cnse)
+        {
+          // will never happen.
+        }
         //mnodeset.addNodesInDocOrder(nl, xctxt); needed??
       }
 
@@ -167,7 +173,14 @@ public class FuncKey extends Function2Args
                                                 ref,
                                                 xctxt.getNamespaceContext());
 
-      nodes = new XNodeSet(nl);
+      try
+      {
+        nodes = new XNodeSet((LocPathIterator)nl.cloneWithReset());
+      }
+      catch(CloneNotSupportedException cnse)
+      {
+        // will never happen.
+      }
     }
 
     return nodes;
