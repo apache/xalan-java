@@ -15,6 +15,7 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.EntityResolver;
 import org.w3c.dom.Node;
 
 /**
@@ -178,6 +179,20 @@ public abstract class Processor
    * @returns A Templates object capable of being used for transformation purposes.
    */
   public abstract Templates processFromNode(Node node)
+    throws ProcessorException;
+
+  /**
+   * Process the stylesheet from a DOM tree, if the 
+   * processor supports the "http://xml.org/trax/features/dom/input" 
+   * feature.    
+   * 
+   * @param node A DOM tree which must contain 
+   * valid transform instructions that this processor understands.
+   * @param systemID The systemID from where xsl:includes and xsl:imports 
+   * should be resolved from.
+   * @returns A Templates object capable of being used for transformation purposes.
+   */
+  public abstract Templates processFromNode(Node node, String systemID)
     throws ProcessorException;
 
   /**
@@ -401,5 +416,41 @@ public abstract class Processor
   {
     return errorHandler;
   }
+  
+  private EntityResolver entityResolver;
+  
+  /**
+   * Allow an application to register an entity resolver.
+   *
+   * <p>If the application does not register an entity resolver,
+   * the XMLReader will perform its own default resolution.</p>
+   *
+   * <p>Applications may register a new or different resolver in the
+   * middle of a parse, and the SAX parser must begin using the new
+   * resolver immediately.</p>
+   *
+   * @param resolver The entity resolver.
+   * @exception java.lang.NullPointerException If the resolver 
+   *            argument is null.
+   * @see #getEntityResolver
+   */
+  public void setEntityResolver (EntityResolver resolver)
+  {
+    entityResolver = resolver;
+  }
+
+
+  /**
+   * Return the current entity resolver.
+   *
+   * @return The current entity resolver, or null if none
+   *         has been registered.
+   * @see #setEntityResolver
+   */
+  public EntityResolver getEntityResolver ()
+  {
+    return entityResolver;
+  }
+
 
 }
