@@ -207,6 +207,7 @@ public class TemplateList implements java.io.Serializable
   {
     ElemTemplate bestMatchedRule = null;
     MatchPattern2 bestMatchedPattern =null; // Syncs with bestMatchedRule
+    double bestMatchPathPriority = XPath.MATCH_SCORE_NONE;
     if(m_isWrapperless)
     {
       return m_wrapperlessTemplate;
@@ -261,6 +262,7 @@ public class TemplateList implements java.io.Serializable
 
     String prevPat = null;
     MatchPattern2 prevMatchPat = null;
+    double prevMatchPatPriority = XPath.MATCH_SCORE_NONE;
 
     while(null != matchPat)
     {
@@ -268,6 +270,7 @@ public class TemplateList implements java.io.Serializable
       // We'll be needing to match rules according to what
       // mode we're in.
       QName ruleMode = rule.getMode();
+      double matchPatPriority = XPath.MATCH_SCORE_NONE;
 
       // The logic here should be that if we are not in a mode AND
       // the rule does not have a node, then go ahead.
@@ -291,7 +294,7 @@ public class TemplateList implements java.io.Serializable
             {
               bestMatchedRule = rule;
               bestMatchedPattern = matchPat;
-              bestMatchedPattern.m_priority
+              bestMatchPathPriority
                 = (XPath.MATCH_SCORE_NONE != rule.getPriority())
                   ? rule.getPriority() : matchPat.getExpression().getMatchScore(support, targetNode);
             }            
@@ -302,6 +305,8 @@ public class TemplateList implements java.io.Serializable
           {
             prevMatchPat = matchPat;
             prevPat = patterns;
+            prevMatchPatPriority = matchPatPriority;
+            matchPatPriority = XPath.MATCH_SCORE_NONE;
 
             // Date date1 = new Date();
             XPath xpath = matchPat.getExpression();
@@ -317,9 +322,9 @@ public class TemplateList implements java.io.Serializable
               double priorityOfRule
                 = (XPath.MATCH_SCORE_NONE != rule.getPriority())
                   ? rule.getPriority() : score;
-              matchPat.m_priority = priorityOfRule;
+              matchPatPriority = priorityOfRule;
               double priorityOfBestMatched = (null != bestMatchedPattern) ?
-                                             bestMatchedPattern.m_priority :
+                                             bestMatchPathPriority :
                                              XPath.MATCH_SCORE_NONE;
               // System.out.println("priorityOfRule: "+priorityOfRule+", priorityOfBestMatched: "+priorityOfBestMatched);
               if(priorityOfRule > priorityOfBestMatched)
@@ -329,6 +334,7 @@ public class TemplateList implements java.io.Serializable
                 highScore = score;
                 bestMatchedRule = rule;
                 bestMatchedPattern = matchPat;
+                bestMatchPathPriority = matchPatPriority;
               }
               else if(priorityOfRule == priorityOfBestMatched)
               {
