@@ -282,10 +282,6 @@ final class LiteralElement extends Instruction {
 	    if (qname == parser.getUseAttributeSets()) {
 		setFirstAttribute(new UseAttributeSets(val, parser));
 	    }
-	    // Ignore all other attributes in XSL namespace
-	    else if ((uri != null) && (uri.equals(XSLT_URI))) {
-		
-	    }
 	    // Handle xsl:extension-element-prefixes
 	    else if (qname == parser.getExtensionElementPrefixes()) {
 		stable.excludeNamespaces(val);
@@ -293,6 +289,10 @@ final class LiteralElement extends Instruction {
 	    // Handle xsl:exclude-result-prefixes
 	    else if (qname == parser.getExcludeResultPrefixes()) {
 		stable.excludeNamespaces(val);
+	    }
+	    // Ignore all other attributes in XSL namespace
+	    else if ((uri != null) && (uri.equals(XSLT_URI))) {
+		
 	    }
 	    // Handle literal attributes (attributes not in XSL namespace)
 	    else {
