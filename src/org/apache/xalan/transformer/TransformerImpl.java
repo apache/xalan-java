@@ -815,6 +815,9 @@ public class TransformerImpl extends Transformer
       {
         m_outputFormat.copyFrom(oformat);
       }
+      // copyFrom does not set properties that have been already set, so 
+      // this must be called after, which is a bit in the reverse from 
+      // what one might think.
       m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
     }
   }
