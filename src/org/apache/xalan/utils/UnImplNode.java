@@ -75,6 +75,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void error(int msg)
   {
+    System.out.println("DOM ERROR! class: "+this.getClass().getName());
     throw new RuntimeException(XSLMessages.createMessage(msg, null));
   }
 
@@ -83,6 +84,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    */
   public void error(int msg, Object[]args)
   {
+    System.out.println("DOM ERROR! class: "+this.getClass().getName());
     throw new RuntimeException(XSLMessages.createMessage(msg, args)); //"UnImplNode error: "+msg);
   }
 
