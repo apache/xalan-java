@@ -91,6 +91,7 @@ import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceListener;
 import org.apache.xalan.trace.TraceManager;
+import org.apache.xml.utils.DefaultErrorHandler;
 
 // Needed TRaX classes
 import javax.xml.transform.Result;
@@ -910,10 +911,13 @@ public class Process
         if (doStackDumpOnError)
           throwable.printStackTrace(dumpWriter);
         else
+        {
+          DefaultErrorHandler.printLocation(diagnosticsWriter, throwable);
           diagnosticsWriter.println(
             XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
             + " (" + throwable.getClass().getName() + "): "
             + throwable.getMessage());
+        }
 
         // diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         if (null != dumpFileName)

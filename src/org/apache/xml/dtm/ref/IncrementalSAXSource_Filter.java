@@ -233,7 +233,7 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
   // and resume our coroutine each time that counter hits zero and
   // is reset.
   //
-  // Note that for everything except endDocument, we do the count-and-yield
+  // Note that for everything except endDocument and fatalError, we do the count-and-yield
   // BEFORE passing the call along. I'm hoping that this will encourage JIT
   // compilers to realize that these are tail-calls, reducing the expense of
   // the additional layer of data flow.
@@ -448,8 +448,14 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
   
   public void fatalError(SAXParseException exception) throws SAXException
   {
+    // EXCEPTION: In this case we need to run the event BEFORE we yield --
+    // just as with endDocument, this terminates the event stream.
     if(null!=clientErrorHandler)
       clientErrorHandler.error(exception);
+
+    eventcounter=0;     
+    co_yield(false);
+
   }
   
   public void warning(SAXParseException exception) throws SAXException
@@ -717,7 +723,7 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
         fCoroutineManager.co_resume(parsemore?Boolean.TRUE:Boolean.FALSE,
                                     fControllerCoroutineID, fSourceCoroutineID);
       if(result==Boolean.FALSE)
-	fCoroutineManager.co_exit(fControllerCoroutineID);
+        fCoroutineManager.co_exit(fControllerCoroutineID);
 
       return result;
     }
@@ -750,7 +756,7 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
       // The filter is not currently designed to be restartable
       // after a parse has ended. Generate a new one each time.
       IncrementalSAXSource_Filter filter=
-	new IncrementalSAXSource_Filter();
+        new IncrementalSAXSource_Filter();
       // Use a serializer as our sample output
       org.apache.xml.serialize.XMLSerializer trace;
       trace=new org.apache.xml.serialize.XMLSerializer(System.out,null);
@@ -759,11 +765,11 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
 
       try
       {
-	InputSource source = new InputSource(args[arg]);
+        InputSource source = new InputSource(args[arg]);
         Object result=null;
         boolean more=true;
 
-	// init not issued; we _should_ automagically Do The Right Thing
+        // init not issued; we _should_ automagically Do The Right Thing
 
         // Bind parser, kick off parsing in a thread
         filter.setXMLReader(theSAXParser);

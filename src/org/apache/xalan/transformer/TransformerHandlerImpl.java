@@ -148,32 +148,41 @@ public class TransformerHandlerImpl
   /** 
    * Do what needs to be done to shut down the CoRoutine management.
    */
-  protected void clearCoRoutine(Exception ex)
+  protected void clearCoRoutine(SAXException ex)
   {
+    if(null != ex)
+      m_transformer.setExceptionThrown(ex);
     
     if(m_dtm instanceof SAX2DTM)
     {
       if(DEBUG)
-        System.out.println("In clearCoRoutine...");
-      SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);
-      if(null != m_contentHandler 
-         && m_contentHandler instanceof IncrementalSAXSource_Filter)
+        System.err.println("In clearCoRoutine...");
+      try
       {
-        IncrementalSAXSource_Filter sp =
-          (IncrementalSAXSource_Filter)m_contentHandler;
-        // This should now be all that's needed.
-        sp.deliverMoreNodes(false);
+        SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);          
+        if(null != m_contentHandler 
+           && m_contentHandler instanceof IncrementalSAXSource_Filter)
+        {
+          IncrementalSAXSource_Filter sp =
+            (IncrementalSAXSource_Filter)m_contentHandler;
+          // This should now be all that's needed.
+          sp.deliverMoreNodes(false);
+        }
+        
+        sax2dtm.clearCoRoutine(true);
+        m_contentHandler = null;
+        m_dtdHandler = null;
+        m_entityResolver = null;
+        m_errorHandler = null;
+        m_lexicalHandler = null;
+      }
+      catch(Throwable throwable)
+      {
+        throwable.printStackTrace();
       }
       
-      sax2dtm.clearCoRoutine(true);
-      m_contentHandler = null;
-      m_dtdHandler = null;
-      m_entityResolver = null;
-      m_errorHandler = null;
-      m_lexicalHandler = null;
-      
       if(DEBUG)
-        System.out.println("...exiting clearCoRoutine");
+        System.err.println("...exiting clearCoRoutine");
     }
   }
   
@@ -716,13 +725,25 @@ public class TransformerHandlerImpl
    */
   public void fatalError(SAXParseException e) throws SAXException
   {
-    clearCoRoutine(e);
+    if(null != m_errorHandler)
+    {
+      try
+      {
+        m_errorHandler.fatalError(e);
+      }
+      catch(SAXParseException se)
+      {
+        // ignore
+      }
+      // clearCoRoutine(e);
+    }
 
     // This is not great, but we really would rather have the error 
     // handler be the error listener if it is a error handler.  Coroutine's fatalError 
     // can't really be configured, so I think this is the best thing right now 
     // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
     javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
+    
     if(errorListener instanceof ErrorHandler)
     {
       ((ErrorHandler)errorListener).fatalError(e);

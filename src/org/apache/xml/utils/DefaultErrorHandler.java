@@ -60,6 +60,9 @@ import org.xml.sax.*;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
+import java.io.PrintWriter;
+import java.io.PrintStream;
+
 
 /**
  * <meta name="usage" content="general"/>
@@ -67,13 +70,32 @@ import javax.xml.transform.SourceLocator;
  */
 public class DefaultErrorHandler implements ErrorHandler, ErrorListener
 {
+  PrintWriter m_pw;
 
+  /**
+   * Constructor DefaultErrorHandler
+   */
+  public DefaultErrorHandler(PrintWriter pw)
+  {
+    m_pw = pw;
+  }
+  
+  /**
+   * Constructor DefaultErrorHandler
+   */
+  public DefaultErrorHandler(PrintStream pw)
+  {
+    m_pw = new PrintWriter(pw);
+  }
+  
   /**
    * Constructor DefaultErrorHandler
    */
   public DefaultErrorHandler()
   {
+    m_pw = new PrintWriter(System.err);
   }
+
 
   /**
    * Receive notification of a warning.
@@ -93,8 +115,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void warning(SAXParseException exception) throws SAXException
   {
-    printLocation(exception);
-    System.err.println("Parser warning: " + exception.getMessage());
+    printLocation(m_pw, exception);
+    m_pw.println("Parser warning: " + exception.getMessage());
   }
 
   /**
@@ -120,8 +142,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void error(SAXParseException exception) throws SAXException
   {
-    printLocation(exception);
-    System.err.println(exception.getMessage());
+    // printLocation(exception);
+    // m_pw.println(exception.getMessage());
 
     throw exception;
   }
@@ -147,8 +169,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void fatalError(SAXParseException exception) throws SAXException
   {
-    printLocation(exception);
-    System.err.println(exception.getMessage());
+    // printLocation(exception);
+    // m_pw.println(exception.getMessage());
 
     throw exception;
   }
@@ -172,9 +194,9 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void warning(TransformerException exception) throws TransformerException
   {
-    printLocation(exception);
+    printLocation(m_pw, exception);
 
-    System.err.println(exception.getMessage());
+    m_pw.println(exception.getMessage());
   }
 
   /**
@@ -201,7 +223,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void error(TransformerException exception) throws TransformerException
   {
-    printLocation(exception);
+    // printLocation(exception);
+    // ensureLocationSet(exception);
 
     throw exception;
   }
@@ -228,36 +251,90 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void fatalError(TransformerException exception) throws TransformerException
   {
-    printLocation(exception);
+    // printLocation(exception);
+    // ensureLocationSet(exception);
 
     throw exception;
   }
   
-  private void printLocation(org.xml.sax.SAXParseException exception)
+  public static void ensureLocationSet(TransformerException exception)
   {
-    // System.err.println("Parser fatal error: "+exception.getMessage());
-    String id = (null != exception.getSystemId())
-                ? exception.getSystemId() : "SystemId Unknown";
-
-    System.err.print(id + "; Line " + exception.getLineNumber()
-                       + "; Column " + exception.getColumnNumber()+"; ");
-  }
-
-  
-  private void printLocation(TransformerException exception)
-  {
-    SourceLocator locator = exception.getLocator();
+    // SourceLocator locator = exception.getLocator();
+    SourceLocator locator = null;
+    Throwable cause = exception;
     
+    // Try to find the locator closest to the cause.
+    do
+    {
+      if(cause instanceof SAXParseException)
+      {
+        locator = new SAXSourceLocator((SAXParseException)cause);
+      }
+      else if (cause instanceof TransformerException)
+      {
+        SourceLocator causeLocator = ((TransformerException)cause).getLocator();
+        if(null != causeLocator)
+          locator = causeLocator;
+      }
+      
+      if(cause instanceof TransformerException)
+        cause = ((TransformerException)cause).getCause();
+      else if(cause instanceof SAXException)
+        cause = ((SAXException)cause).getException();
+      else
+        cause = null;
+    }
+    while(null != cause);
+    
+    exception.setLocator(locator);
+  }
+  
+  public static void printLocation(PrintStream pw, TransformerException exception)
+  {
+    printLocation(new PrintWriter(pw), exception);
+  }
+  
+  public static void printLocation(PrintWriter pw, Throwable exception)
+  {
+    SourceLocator locator = null;
+    Throwable cause = exception;
+    
+    // Try to find the locator closest to the cause.
+    do
+    {
+      if(cause instanceof SAXParseException)
+      {
+        locator = new SAXSourceLocator((SAXParseException)cause);
+      }
+      else if (cause instanceof TransformerException)
+      {
+        SourceLocator causeLocator = ((TransformerException)cause).getLocator();
+        if(null != causeLocator)
+          locator = causeLocator;
+      }
+      if(cause instanceof TransformerException)
+        cause = ((TransformerException)cause).getCause();
+      else if(cause instanceof WrappedRuntimeException)
+        cause = ((WrappedRuntimeException)cause).getException();
+      else if(cause instanceof SAXException)
+        cause = ((SAXException)cause).getException();
+      else
+        cause = null;
+    }
+    while(null != cause);
+        
     if(null != locator)
     {
-      // System.err.println("Parser fatal error: "+exception.getMessage());
+      // m_pw.println("Parser fatal error: "+exception.getMessage());
       String id = (locator.getPublicId() != locator.getPublicId())
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())
                       ? locator.getSystemId() : "SystemId Unknown";
 
-      System.err.print(id + "; Line " + locator.getLineNumber()
+      pw.print(id + "; Line " + locator.getLineNumber()
                          + "; Column " + locator.getColumnNumber()+"; ");
     }
+    else
+      pw.print("(Location of error unknown)");
   }
 }

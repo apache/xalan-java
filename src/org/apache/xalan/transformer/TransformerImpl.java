@@ -1189,8 +1189,30 @@ public class TransformerImpl extends Transformer
           }
           catch (Exception e){}
         }
-
-        throw new TransformerException(se.getMessage(), se);
+        
+        // SAXSourceLocator
+        while(se instanceof org.apache.xml.utils.WrappedRuntimeException)
+        {
+          Exception e = ((org.apache.xml.utils.WrappedRuntimeException)se).getException();
+          if(null != e)
+            se = e;
+        }
+        
+        if(se instanceof TransformerException)
+        {
+          m_errorHandler.fatalError((TransformerException)se);
+        }
+        else if(se instanceof org.xml.sax.SAXParseException)
+        {
+          m_errorHandler.fatalError(new TransformerException(se.getMessage(), 
+                      new SAXSourceLocator((org.xml.sax.SAXParseException)se), 
+                      se));
+        }
+        else
+        {
+          m_errorHandler.fatalError(new TransformerException(se));
+        }
+        
       }
       finally
       {

@@ -56,6 +56,8 @@
  */
 package org.apache.xpath.operations;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -124,8 +126,12 @@ public class Variable extends Expression
         return;
       }
     }
-    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, new Object[]{m_qname.toString()})); //"Could not find variable with the name of "
-                               // +m_qname.toString()+"!");
+    java.lang.String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, 
+                                             new Object[]{m_qname.toString()});
+                                             
+    TransformerException te = new TransformerException(msg, m_slocator);
+                                             
+    throw new org.apache.xml.utils.WrappedRuntimeException(te);
     
   }
 
