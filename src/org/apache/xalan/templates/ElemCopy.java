@@ -149,7 +149,11 @@ public class ElemCopy extends ElemUse
           super.execute(transformer, sourceNode, mode);
           rthandler.processNSDecls(sourceNode);
           transformer.executeChildTemplates(this, sourceNode, mode);
-          transformer.getResultTreeHandler().endElement("", "",
+          
+          DOMHelper dhelper = transformer.getXPathContext().getDOMHelper();
+          String ns = dhelper.getNamespaceOfNode(sourceNode);
+          String localName = dhelper.getLocalNameOfNode(sourceNode);
+          transformer.getResultTreeHandler().endElement(ns, localName,
                                                         sourceNode.getNodeName());
         }
         else
