@@ -124,27 +124,12 @@ public class XRTreeFrag extends XObject
   }
 
   /**
-   * Cast result object to a boolean.
+   * Cast result object to a boolean.  This always returns true for a RTreeFrag
+   * because it is treated like a node-set with a single root node.
    */
   public boolean bool()
   {
-    boolean result = false;
-    NodeList nl = ((DocumentFragment)m_obj).getChildNodes();
-    int nChildren = nl.getLength();
-    for(int i = 0; i < nChildren; i++)
-    {
-      Node n = nl.item(i);
-      if((Node.TEXT_NODE == n.getNodeType()) &&
-          (((Text)n).getData().trim().length() == 0))
-      {
-        continue;
-      }
-      
-      result = true;
-      break;
-    }
-
-    return result;
+    return true;
   }
 
   /**
