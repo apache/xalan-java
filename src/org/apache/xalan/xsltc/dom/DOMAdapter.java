@@ -237,14 +237,6 @@ public final class DOMAdapter implements DOM {
 	return _domImpl.getParent(node);
     }
 
-    public int getTypedPosition(int type, int node) {
-	return _domImpl.getTypedPosition(getReverse()[type], node);
-    }
-
-    public int getTypedLast(int type, int node) {
-	return _domImpl.getTypedLast(getReverse()[type], node);
-    }
-
     public int getAttributeNode(final int type, final int element) {
 	return _domImpl.getAttributeNode(getReverse()[type], element);
     }

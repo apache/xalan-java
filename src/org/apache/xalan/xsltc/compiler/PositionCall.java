@@ -71,15 +71,8 @@ import org.apache.xalan.xsltc.DOM;
 
 final class PositionCall extends FunctionCall {
 
-    private int _type = -1;
-
     public PositionCall(QName fname) {
 	super(fname);
-    }
-
-    public PositionCall(QName fname, int type) {
-	this(fname);
-	_type = type;
     }
 
     public boolean hasPositionCall() {
@@ -87,27 +80,7 @@ final class PositionCall extends FunctionCall {
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-
 	final InstructionList il = methodGen.getInstructionList();
-
-	SyntaxTreeNode parent = getParent();
-	SyntaxTreeNode granny = parent.getParent();
-
-	// If we're a part of an expression's predicate we want to know what
-	// type of node we want to be looking for
-	if ((parent instanceof Expression) && (granny instanceof Predicate)) {
-	    _type = ((Predicate)granny).getPosType();
-	}
-	else {
-	    while ((granny != null) && !(granny instanceof StepPattern)) {
-		parent = granny;
-		granny = granny.getParent();
-	    }
-	    if ((parent instanceof Predicate) &&
-		(granny instanceof StepPattern)){
-		_type = ((StepPattern)granny).getNodeType();
-	    }
-	}
 
 	if (methodGen instanceof CompareGenerator) {
 	    il.append(((CompareGenerator)methodGen).loadCurrentNode());
@@ -115,24 +88,13 @@ final class PositionCall extends FunctionCall {
 	else if (methodGen instanceof TestGenerator) {
 	    il.append(new ILOAD(POSITION_INDEX));
 	}
-	else if (_type == -1) {
+	else {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
 	    final int getPosition = cpg.addInterfaceMethodref(NODE_ITERATOR,
 							      "getPosition", 
 							      "()I");
 	    il.append(methodGen.loadIterator());
 	    il.append(new INVOKEINTERFACE(getPosition, 1));
-	}
-	else {
-	    final ConstantPoolGen cpg = classGen.getConstantPool();
-	    // public int getTypedPosition(int type, int node)
-	    final int pos = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getTypedPosition",
-						      "(II)I");
-	    il.append(methodGen.loadDOM());
-	    il.append(new PUSH(cpg, _type));
-	    il.append(methodGen.loadContextNode());
-	    il.append(new INVOKEINTERFACE(pos, 3));
 	}
     }
 }

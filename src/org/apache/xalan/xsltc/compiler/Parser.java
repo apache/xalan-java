@@ -1103,6 +1103,7 @@ public class Parser implements Constants, ContentHandler {
 		    node.setParser(this);
 		    node.setParent(parent);
 		    node.setLineNumber(line);
+// System.out.println("e = " + text + " " + node);
 		    return node;
 		}
 	    } 

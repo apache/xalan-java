@@ -126,8 +126,6 @@ public interface DOM {
     public String getLanguage(int node);
     public int getSize();
     public String getDocumentURI(int node);
-    public int getTypedPosition(int type, int node);
-    public int getTypedLast(int type, int node);
     public void setFilter(StripFilter filter);
     public void setupMapping(String[] names, String[] namespaces);
     public boolean isElement(final int node);

@@ -69,17 +69,51 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
+/**
+ * Iterators of this kind use a CurrentNodeListFilter to filter a subset of 
+ * nodes from a source iterator. For each node from the source, the boolean 
+ * method CurrentNodeListFilter.test() is called. 
+ *
+ * All nodes from the source are read into an array upon calling setStartNode() 
+ * (this is needed to determine the value of last, a parameter to 
+ * CurrentNodeListFilter.test()). The method getLast() returns the last element 
+ * after applying the filter.
+ */
 public final class CurrentNodeListIterator extends NodeIteratorBase {
 
+    /**
+     * A flag indicating if nodes are returned in document order.
+     */
     private boolean _docOrder;
+
+    /**
+     * The source for this iterator.
+     */
     private NodeIterator _source;
+
+    /**
+     * A reference to a filter object.
+     */
     private final CurrentNodeListFilter _filter;
+
+    /**
+     * An integer array to store nodes from source iterator.
+     */
     private IntegerArray _nodes = new IntegerArray();
 	
-    private int _current;	// index in _nodes of the next node to try
-    private int _last = -1;		
+    /**
+     * Index in _nodes of the next node to filter.
+     */
+    private int _currentIndex;
 	
+    /**
+     * The current node in the stylesheet at the time of evaluation.
+     */
     private final int _currentNode;
+
+    /**
+     * A reference to the translet.
+     */
     private AbstractTranslet _translet;
 
     public CurrentNodeListIterator(NodeIterator source, 
@@ -114,9 +148,10 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     public NodeIterator cloneIterator() {
 	try {
 	    final CurrentNodeListIterator clone =
-		(CurrentNodeListIterator)super.clone();
-	    clone._nodes = (IntegerArray)_nodes.clone();
-	    clone.setRestartable(false);
+		(CurrentNodeListIterator) super.clone();
+	    clone._nodes = (IntegerArray) _nodes.clone();
+	    clone._source = _source.cloneIterator();
+	    clone._isRestartable = false;
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {
@@ -127,7 +162,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     }
     
     public NodeIterator reset() {
-	_current = 0;
+	_currentIndex = 0;
 	return resetPosition();
     }
 
@@ -136,10 +171,12 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	final int currentNode = _currentNode;
 	final AbstractTranslet translet = _translet;
 
-	for (int index = _current; index < last; ) {
+	for (int index = _currentIndex; index < last; ) {
+	    final int position = _docOrder ? index + 1 : last - index;
 	    final int node = _nodes.at(index++); 	// note increment
-	    if (_filter.test(node, index, last, currentNode, translet, this)) {
-		_current = index;
+
+	    if (_filter.test(node, position, last, currentNode, translet, this)) {
+		_currentIndex = index;
 		return returnNode(node);
 	    }
 	}
@@ -147,8 +184,6 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     }
 
     public NodeIterator setStartNode(int node) {
-	NodeIterator retval = this;
-	
 	if (_isRestartable) {
 	    _source.setStartNode(_startNode = node);
 
@@ -156,12 +191,19 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	    while ((node = _source.next()) != END) {
 		_nodes.add(node);
 	    }
-	    _current = 0;
-	    retval = resetPosition();
+	    _currentIndex = 0;
+	    resetPosition();
 	}
-	return retval;
+	return this;
     }
 	
+    public int getPosition() {
+	if (_last == -1) {
+	    _last = computePositionOfLast();
+	}
+	return _docOrder ? _position : _last - _position + 1;
+    }
+
     public int getLast() {
 	if (_last == -1) {
 	    _last = computePositionOfLast();
@@ -170,13 +212,11 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     }
 
     public void setMark() {
-	_source.setMark();
-	_markedNode = _current;
+	_markedNode = _currentIndex;
     }
 
     public void gotoMark() {
-	_source.gotoMark();
-	_current = _markedNode;
+	_currentIndex = _markedNode;
     }
 
     private int computePositionOfLast() {
@@ -184,10 +224,12 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
         final int currNode = _currentNode;
 	final AbstractTranslet translet = _translet;
 
-	int lastPosition = 0;
-	for (int index = _current; index < last; ) {
+	int lastPosition = _position;
+	for (int index = _currentIndex; index < last; ) {
+	    final int position = _docOrder ? index + 1 : last - index;
             int nodeIndex = _nodes.at(index++); 	// note increment
-            if (_filter.test(nodeIndex, index, last, currNode, translet, this)) {
+
+            if (_filter.test(nodeIndex, position, last, currNode, translet, this)) {
                 lastPosition++;
             }
         }

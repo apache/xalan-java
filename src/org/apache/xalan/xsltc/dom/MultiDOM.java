@@ -355,14 +355,6 @@ public final class MultiDOM implements DOM {
 	return _adapters[node>>>24].getParent(node & CLR) | node&SET;
     }
     
-    public int getTypedPosition(int type, int node) {
-	return _adapters[node>>>24].getTypedPosition(type, node&CLR);
-    }
-
-    public int getTypedLast(int type, int node) {
-	return _adapters[node>>>24].getTypedLast(type, node&CLR);
-    }
-
     public int getAttributeNode(final int type, final int el) {
 	return _adapters[el>>>24].getAttributeNode(type, el&CLR) | el&SET;
     }

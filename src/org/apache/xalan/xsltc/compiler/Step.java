@@ -149,10 +149,12 @@ final class Step extends RelativeLocationPath {
      * Returns the vector containing all predicates for this step.
      */
     public void addPredicates(Vector predicates) {
-	if (_predicates == null)
+	if (_predicates == null) {
 	    _predicates = predicates;
-	else
+	}
+	else {
 	    _predicates.addAll(predicates);
+	}
     }
 
     /**
@@ -235,41 +237,6 @@ final class Step extends RelativeLocationPath {
     }
 
     /**
-     * This method is used to determine whether the node-set produced by
-     * this step must be reversed before returned to the parent element.
-     * <xsl:apply-templates> should always return nodes in document order,
-     * while others, such as <xsl:value-of> and <xsl:for-each> should return
-     * nodes in the order of the axis in use.
-     */
-    private boolean reverseNodeSet() {
-	// Check if axis returned nodes in reverse document order
-	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
-	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
-
-	    // Do not reverse nodes if we had predicates
-	    // if (_hadPredicates) return false;
-	    
-	    // Check if this step occured under an <xsl:apply-templates> element
-	    SyntaxTreeNode parent = this;
-	    do {
-		// Get the next ancestor element and check its type
-		parent = parent.getParent();
-
-		// Order node set if descendant of these elements:
-		if (parent instanceof ApplyImports) return true;
-		if (parent instanceof ApplyTemplates) return true;
-		if (parent instanceof ForEach) return true;
-		if (parent instanceof FilterParentPath) return true;
-		if (parent instanceof FilterExpr) return true;
-		if (parent instanceof WithParam) return true;
-		if (parent instanceof ValueOf) return true;
-
-	    } while (parent != null && parent instanceof Instruction == false);
-	}
-	return false;
-    }
-
-    /**
      * Translate a step by pushing the appropriate iterator onto the stack.
      * The abbreviated steps '.' and '@attr' do not create new iterators
      * if they are not part of a LocationPath and have no filters.
@@ -282,11 +249,6 @@ final class Step extends RelativeLocationPath {
 
 	if (hasPredicates()) {
 	    translatePredicates(classGen, methodGen);
-
-	    // If needed, create a reverse iterator after compiling preds
-	    if (_predicates.size() == 0) {
-		orderIterator(classGen, methodGen);
-	    }
 	}
 	else {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
@@ -382,11 +344,6 @@ final class Step extends RelativeLocationPath {
 		il.append(new INVOKEINTERFACE(ty, 3));
 
 		break;
-	    }
-
-	    // If needed, create a reverse iterator
-	    if (!_hadPredicates) {
-		orderIterator(classGen, methodGen);
 	    }
 	}
     }
@@ -493,28 +450,6 @@ final class Step extends RelativeLocationPath {
 	    }
 	}
     }
-
-
-    /**
-     * This method tests if this step needs to have its axis reversed,
-     * and wraps its iterator inside a ReverseIterator to return the node-set
-     * in document order.
-     */
-    public void orderIterator(ClassGenerator classGen,
-			      MethodGenerator methodGen) {
-	// First test if nodes are in reverse document order
-	if (!reverseNodeSet()) return;
-
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-	final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
-					  "("+NODE_ITERATOR_SIG+")V");
-	il.append(new NEW(cpg.addClass(REVERSE_ITERATOR)));
-	il.append(DUP_X1);
-	il.append(SWAP);
-	il.append(new INVOKESPECIAL(init));
-    }
-
 
     /**
      * Returns a string representation of this step.

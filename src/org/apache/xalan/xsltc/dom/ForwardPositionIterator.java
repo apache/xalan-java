@@ -56,73 +56,67 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.NodeIterator;
-import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-public final class ReverseIterator extends NodeIteratorBase {
+/**
+ * This iterator is a wrapper that always returns the position of
+ * a node in document order. It is needed for the case where 
+ * a call to position() occurs in the context of an XSLT element
+ * such as xsl:for-each, xsl:apply-templates, etc. 
+ */
+public final class ForwardPositionIterator extends NodeIteratorBase {
 
-    private final static int INIT_DATA_SIZE = 16;
-    private final NodeIterator _source;
-    private int[] _data = null;
-    private int _last = 0;
-    private int _current = 0;
-    private int _start = -1;
+    private NodeIterator _source;
 
-    public ReverseIterator(NodeIterator source) {
+    public ForwardPositionIterator(NodeIterator source) {
 	_source = source;
     }
 
+    public NodeIterator cloneIterator() {
+	try {
+	    final ForwardPositionIterator clone = 
+		(ForwardPositionIterator) super.clone();
+	    clone._source = _source.cloneIterator();
+	    clone._isRestartable = false;
+	    return clone.reset();
+	}
+	catch (CloneNotSupportedException e) {
+	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+				      e.toString());
+	    return null;
+	}
+    }
+
     public int next() {
-	return _current > 0 ? _data[--_current] : END;
+	return returnNode(_source.next());
     }
 	
     public NodeIterator setStartNode(int node) {
-	if ((_data == null) || (node != _start)) {
-	    _start = node;
-	    _source.setStartNode(node);
-	    _data = new int[INIT_DATA_SIZE];
-	    _last = 0;
-	    // gather all nodes from the source iterator
-	    while ((node = _source.next()) != END) {
-		if (_last == _data.length) {
-		    int[] newArray = new int[_data.length * 2];
-		    System.arraycopy(_data, 0, newArray, 0, _last);
-		    _data = newArray;
-		}
-		_data[_last++] = node;
-	    }
-	}
-	_startNode = _current = _last;
+	_source.setStartNode(node);
 	return this;
     }
 
     public NodeIterator reset() {
-	_current = _startNode;
-	return this;
+	_source.reset();
+	return resetPosition();
     }
 
     public int getPosition() {
-	return (_last - _current);
-    }
-
-    public int getLast() {
-	return _last;
+	return _position == 0 ? 1 : _position;
     }
 
     public void setMark() {
 	_source.setMark();
-	_markedNode = _current;
     }
 
     public void gotoMark() {
 	_source.gotoMark();
-	_current = _markedNode;
     }
-
 }

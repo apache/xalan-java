@@ -66,13 +66,32 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
+/**
+ * Similar to a CurrentNodeListIterator except that the filter has a 
+ * simpler interface (only needs the node, no position, last, etc.)  
+ * It takes a source iterator and a Filter object and returns nodes 
+ * from the source after filtering them by calling filter.test(node).
+ */
 public final class FilterIterator extends NodeIteratorBase {
+
+    /**
+     * Reference to source iterator.
+     */
     private NodeIterator _source;
+
+    /**
+     * Reference to a filter object that to be applied to each node.
+     */
     private final Filter _filter;
+
+    /**
+     * A flag indicating if position is reversed.
+     */
     private final boolean _isReverse;
 	
     public FilterIterator(NodeIterator source, Filter filter) {
 	_source = source;
+// System.out.println("FI souce = " + source + " this = " + this);
 	_filter = filter;
 	_isReverse = source.isReverse();
     }
@@ -88,9 +107,9 @@ public final class FilterIterator extends NodeIteratorBase {
 
     public NodeIterator cloneIterator() {
 	try {
-	    final FilterIterator clone = (FilterIterator)super.clone();
-	    clone.setRestartable(false);
+	    final FilterIterator clone = (FilterIterator) super.clone();
 	    clone._source = _source.cloneIterator();
+	    clone._isRestartable = false;
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {
@@ -121,6 +140,11 @@ public final class FilterIterator extends NodeIteratorBase {
 	    return resetPosition();
 	}
 	return this;
+    }
+
+    public int getPosition() {
+	final int last = getLast();
+	return _isReverse ? last - _position + 1 : _position;
     }
 
     public void setMark() {

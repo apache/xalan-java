@@ -1151,26 +1151,20 @@ public final class DOMImpl implements DOM, Externalizable {
      * Iterator that returns preceding siblings of a given node
      */
     private class PrecedingSiblingIterator extends NodeIteratorBase {
-
+ 
 	private int _node;
-	private int _mom;
-         
+	private int _sibling;
+
 	public boolean isReverse() {
 	    return true;
 	}
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		if (node >= _firstAttributeNode) node = NULL;
-		int tmp = NULL;
-		_startNode = node;
-		_mom = _parent[node];
-		_node = _offsetOrChild[_mom];
-		while ((_node != node) && (_node != NULL)) {
-		    tmp = _node;
-		    _node = _nextSibling[_node];
-		}
-		_node = tmp;
+		_node = node;
+		_sibling = _startNode = (node >= _firstAttributeNode) ? 
+		    NULL : _offsetOrChild[_parent[node]];
+		_last = -1;
 		return resetPosition();
 	    }
 	    return this;
@@ -1178,27 +1172,34 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int next() {
 	    // Return NULL if end already reached
-	    if (_node == NULL) return NULL;
-
-	    int current = _offsetOrChild[_mom];
-
-	    // Otherwise find the next preceeding sibling
-	    int last = NULL;
-	    while ((current != _node) && (current != NULL)) {
-		last = current;
-		current = _nextSibling[current];
+	    if (_sibling == NULL) {
+		return END;
 	    }
-	    current = _node;
-	    _node = last;
+
+	    if (_sibling == _node) {
+		return (_node = END);
+	    }
+
+	    final int current = _sibling;
+	    _sibling = _nextSibling[current];
 	    return returnNode(current);
 	}
 
+	public NodeIterator reset() {
+	    _sibling = _startNode;
+	    return resetPosition();
+	}
+
+	public int getPosition() {
+	    return getLast() - _position + 1;
+	}
+
 	public void setMark() {
-	    _markedNode = _node;
+	    _markedNode = _sibling;
 	}
 
 	public void gotoMark() {
-	    _node = _markedNode;
+	    _sibling = _markedNode;
 	}
 
     } // end of PrecedingSiblingIterator
@@ -1209,7 +1210,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * a given node
      */
     private final class TypedPrecedingSiblingIterator
-	extends PrecedingSiblingIterator {
+	extends PrecedingSiblingIterator 
+    {
 	private final int _nodeType;
 
 	public TypedPrecedingSiblingIterator(int type) {
@@ -1218,9 +1220,10 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType)
+	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
 		_position--;
-	    return(node);
+	    }
+	    return node;
 	}
 
     } // end of PrecedingSiblingIterator
@@ -1233,8 +1236,10 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     private class PrecedingIterator extends NodeIteratorBase {
 
-	private int _node = 0;
-	private int _mom = 0;
+	private int _node;
+	private int _ancestor;
+	private int _index, _markedIndex;
+	private IntegerArray _ancestorOrSelf = new IntegerArray();
 
 	public boolean isReverse() {
 	    return true;
@@ -1243,8 +1248,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeIterator cloneIterator() {
 	    try {
 		final PrecedingIterator clone = 
-		    (PrecedingIterator)super.clone();
+		    (PrecedingIterator) super.clone();
 		clone.setRestartable(false);
+		clone._ancestorOrSelf = (IntegerArray) _ancestorOrSelf.clone();
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1256,37 +1262,60 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		if (node >= _firstAttributeNode) node = _parent[node];
-		_node = _startNode = node;
-		_mom  = _parent[_startNode];
+		_ancestorOrSelf.clear();
+
+		if (node >= _firstAttributeNode) {
+		    node = _parent[node];
+		}
+		do {
+		    _ancestorOrSelf.add(node);
+		} while ((node = _parent[node]) > ROOTNODE);
+
+		_index = _ancestorOrSelf.cardinality() - 1;
+		_node = _ancestorOrSelf.at(_index) + 1;
+		_ancestor = (_index > 0) ? _ancestorOrSelf.at(--_index) 
+		    : ROOTNODE;
+
+		_last = -1;
 		return resetPosition();
 	    }
+
 	    return this;
 	}
-                  
+	    
 	public int next() {
-	    while (--_node > ROOTNODE) {
-		if (_node < _mom) _mom = _parent[_mom];
-		if (_node != _mom) return returnNode(_node);
+	    while (true) {
+		if (_node < _ancestor) {
+		    return returnNode(_node++);
+		}
+		if (--_index < 0) break;
+		_ancestor = _ancestorOrSelf.at(_index);
+		_node++;	// skip ancestor
 	    }
-	    return(NULL);
+	    return END;
 	}
 
-	// redefine NodeIteratorBase's reset
+	public int getPosition() {
+	    return getLast() - _position + 1;
+	}
+
 	public NodeIterator reset() {
-	    _node = _startNode;
-	    _mom  = _parent[_startNode];
+	    _index = _ancestorOrSelf.cardinality() - 1;
+	    _node = _ancestorOrSelf.at(_index) + 1;
+	    _ancestor = (_index > 0) ? _ancestorOrSelf.at(--_index) : ROOTNODE;
 	    return resetPosition();
 	}
 
 	public void setMark() {
 	    _markedNode = _node;
+	    _markedIndex = _index;
 	}
 
 	public void gotoMark() {
 	    _node = _markedNode;
+	    _index = _markedIndex;
+	    _ancestor = _ancestorOrSelf.at(_markedIndex);
 	}
-
     } // end of PrecedingIterator
 
 
@@ -1304,8 +1333,9 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType)
+	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
 		_position--; 
+	    }
 	    return node;
 	}
 
@@ -1386,26 +1416,13 @@ public final class DOMImpl implements DOM, Externalizable {
     private class AncestorIterator extends NodeIteratorBase {
 
 	protected int _index;
-	protected int _last = -1;
-
-	public final boolean isReverse() {
-	    return true;
-	}
-
-	public int getLast() {
-	    if (_last > -1) return _last;
-	    int count = 1;
-	    int node = _startNode;
-	    while ((node = _parent[node]) != ROOT) count++;
-	    _last = count;
-	    return(count);
-	}
+	protected IntegerArray _cache = new IntegerArray();
          
 	public NodeIterator cloneIterator() {
 	    try {
 		final AncestorIterator clone = (AncestorIterator)super.clone();
 		clone.setRestartable(false); // must set to false for any clone
-		clone._startNode = _startNode;
+		clone._cache = (IntegerArray) _cache.clone();
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1417,20 +1434,32 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_last = -1;
+		_cache.clear();
+
 		if (_includeSelf) {
-		    _startNode = node;
+		    _cache.add(node);
 		}
-		else if (node >= _firstAttributeNode) {
-		    _startNode = node = _parent[node];
+		while ((node = _parent[node]) != NULL) {
+		    _cache.add(node);
 		}
-		else {
-		    _startNode = _parent[node];
-		}
-		_index = _startNode;
+
+		_last = _cache.cardinality();
+		_startNode = _index = _last - 1;
 		return resetPosition();
 	    }
 	    return this;
+	}
+
+	public boolean isReverse() {
+	    return true;
+	}
+
+	public int getLast() {
+	    return _last;
+	}
+
+	public int getPosition() {
+	    return _last - _position + 1;	
 	}
 
 	public NodeIterator reset() {
@@ -1439,12 +1468,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
                   
 	public int next() {
-	    if (_index >= 0) {
-		final int node = _index;
-		_index = (_index == 0) ? -1 : _parent[_index];
-		return returnNode(node);
-	    }
-	    return(NULL);
+	    return (_index >= 0) ? 
+		returnNode(_cache.at(_index--)) : END;
 	}
 
 	public void setMark() {
@@ -1468,26 +1493,25 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _nodeType = type;
 	}
 
-	public int next() {
-	    int node;
-	    while ((node = super.next()) != NULL) {
-		if (_type[node] == _nodeType) return(node);
-		_position--;
+	public NodeIterator setStartNode(int node) {
+	    if (_isRestartable) {
+		_cache.clear();
+
+		if (_includeSelf && _type[node] == _nodeType) {
+		    _cache.add(node);
+		}
+		while ((node = _parent[node]) != NULL) {
+		    if (_nodeType == _type[node]) {
+			_cache.add(node);
+		    }
+		}
+
+		_last = _cache.cardinality();
+		_startNode = _index = _last - 1;
+		return resetPosition();
 	    }
-	    return(NULL);
+	    return this;
 	}
-
-	public int getLast() {
-	    if (_last > -1) return _last;
-	    int count = 1;
-	    int node = _startNode;
-	    do {
-		if (_type[node] == _nodeType) count++;
-	    } while ((node = _parent[node]) != ROOT);
-	    _last = count;
-	    return(count);
-	}
-
     } // end of TypedAncestorIterator
 
 
@@ -1895,87 +1919,6 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public int getParent(final int node) {
 	return _parent[node];
-    }
-
-    public int getElementPosition(int node) {
-	// Initialize with the first sbiling of the current node
-	int match = 0;
-	int curr  = _offsetOrChild[_parent[node]];
-	if (isElement(curr)) match++;
-
-	// Then traverse all other siblings up until the current node
-	while (curr != node) {
-	    curr = _nextSibling[curr];
-	    if (isElement(curr)) match++;
-	}
-
-	// And finally return number of matches
-	return match;         
-    }
-
-    public int getAttributePosition(int attr) {
-	// Initialize with the first sbiling of the current node
-	int match = 1;
-	int curr  = _lengthOrAttr[_parent[attr]];
-
-	// Then traverse all other siblings up until the current node
-	while (curr != attr) {
-	    curr = _nextSibling[curr];
-	    match++;
-	}
-
-	// And finally return number of matches
-	return match;         
-    }
-
-    /**
-     * Returns a node's position amongst other nodes of the same type
-     */
-    public int getTypedPosition(int type, int node) {
-	// Just return the basic position if no type is specified
-	switch(type) {
-	case ELEMENT:
-	    return getElementPosition(node);
-	case ATTRIBUTE:
-	    return getAttributePosition(node);
-	case -1:
-	    type = _type[node];
-	}
-
-	// Initialize with the first sbiling of the current node
-	int match = 0;
-	int curr  = _offsetOrChild[_parent[node]];
-	if (_type[curr] == type) match++;
-
-	// Then traverse all other siblings up until the current node
-	while (curr != node) {
-	    curr = _nextSibling[curr];
-	    if (_type[curr] == type) match++;
-	}
-
-	// And finally return number of matches
-	return match;         
-    }
-
-    /**
-     * Returns an iterator's last node of a given type
-     */
-    public int getTypedLast(int type, int node) {
-	// Just return the basic position if no type is specified
-	if (type == -1) type = _type[node];
-
-	// Initialize with the first sbiling of the current node
-	int match = 0;
-	int curr  = _offsetOrChild[_parent[node]];
-	if (_type[curr] == type) match++;
-
-	// Then traverse all other siblings up until the very last one
-	while (curr != NULL) {
-	    curr = _nextSibling[curr];
-	    if (_type[curr] == type) match++;
-	}
-
-	return match;         
     }
 
     /**
