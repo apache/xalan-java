@@ -317,6 +317,9 @@ m_builtInFunctions.put(
 m_builtInFunctions.put(
       new QName("node-kind"),
       new FuncNodeKind());
+m_builtInFunctions.put(
+      new QName("base-uri"),
+      new FuncBaseURI());
   }
 
   /**

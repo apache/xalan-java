@@ -73,21 +73,16 @@ import org.apache.xpath.objects.XSequence;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the xf:node-kind function, returning a string. 
- * 
- * %OPT% Would it be better to create a single stored instance of
- * each of the possible XStrings? More resources burned during 
- * initialization, fewer during execution... but this is a rarely
- * used function.
+ * Execute the xf:base-uri function, returning a string. 
  */
-public class FuncNodeKind extends FunctionDef1Arg
+public class FuncBaseURI extends FunctionDef1Arg
 {
   /**
    * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
-   * @return An XString containing the node kind name, or
-   * XObject.EMPTY if the input wasn't one of the acceptable values.
+   * @return An XString containing the base URI, or
+   * XObject.EMPTY if the input wasn't a Document or Element node.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -101,29 +96,12 @@ public class FuncNodeKind extends FunctionDef1Arg
 	    DTM dtm = xctxt.getDTM(context);
     	switch (dtm.getNodeType(context))
 	    {
-    		case DTM.ATTRIBUTE_NODE:
-    			s="attribute";
-    			break;
 	    	case DTM.DOCUMENT_NODE:
-    			s="document";
-    			break;
-	    	case DTM.COMMENT_NODE:
-    			s="comment";
-    			break;
     		case DTM.ELEMENT_NODE:
-    			s="element";
-    			break;
-    		case DTM.NAMESPACE_NODE:
-    			s="namespace";
-				break;
-    		case DTM.PROCESSING_INSTRUCTION_NODE:
-    			s="processing-instruction";
-    			break;
-    		case DTM.TEXT_NODE:
-    			s="text";
+    			s=dtm.getDocumentBaseURI();
     			break;
     		default:
-    			// leave it unknown? SHOULD NOT ARISE!
+    			// leave it unknown
     			break;
 	    }
     }
