@@ -133,51 +133,51 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
      */
     public Templates getTemplates() {
 	try {
-
 	    final XSLTC xsltc = getXSLTC();
 
 	    // Set the translet class name if not already set
 	    String transletName = TransformerFactoryImpl._defaultTransletName;
-	    if (_systemId != null) transletName = Util.baseName(_systemId);
+	    if (_systemId != null) {
+		transletName = Util.baseName(_systemId);
+	    }
 	    xsltc.setClassName(transletName);
-	    // get java-legal class name from XSLTC module
+
+	    // Get java-legal class name from XSLTC module
 	    transletName = xsltc.getClassName();
 
 	    Stylesheet stylesheet = null;
 	    SyntaxTreeNode root = getDocumentRoot();
 
 	    // Compile the translet - this is where the work is done!
-	    if ((!errorsFound()) && (root != null)) {
+	    if (!errorsFound() && root != null) {
 		// Create a Stylesheet element from the root node
 		stylesheet = makeStylesheet(root);
 		stylesheet.setSystemId(_systemId);
 		stylesheet.setParentStylesheet(null);
 		setCurrentStylesheet(stylesheet);
-		// Create AST under the Stylesheet element (parse & type-check)
+		// Create AST under the Stylesheet element 
 		createAST(stylesheet);
 	    }
 
 	    // Generate the bytecodes and output the translet class(es)
-	    if ((!errorsFound()) && (stylesheet != null)) {
+	    if (!errorsFound() && stylesheet != null) {
 		stylesheet.setMultiDocument(xsltc.isMultiDocument());
 		stylesheet.translate();
 	    }
 
-	    xsltc.printWarnings();
-
-	    // Check that the transformation went well before returning
-	    final byte[][] bytecodes = xsltc.getBytecodes();
-	    if (bytecodes == null) {
-		xsltc.printErrors();
-		return null;
+	    if (!errorsFound()) {
+		// Check that the transformation went well before returning
+		final byte[][] bytecodes = xsltc.getBytecodes();
+		if (bytecodes != null) {
+		    return new TemplatesImpl(xsltc.getBytecodes(), transletName, 
+					     _experimentalOutput);
+		}
 	    }
-
-	    return new TemplatesImpl(bytecodes, transletName, 
-				     _experimentalOutput);
 	}
 	catch (CompilerException e) {
-	    return null;
+	    // falls through
 	}
+	return null;
     }
 
     /**
