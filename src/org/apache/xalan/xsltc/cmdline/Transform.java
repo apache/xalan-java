@@ -118,7 +118,10 @@ final public class Transform {
 	_uri = uri;
 	_debug = debug;
 	_iterations = iterations;
-    }
+  }
+  
+   public String getFileName(){return _fileName;}
+   public String getClassName(){return _className;}
 
     public void setParameters(Vector params) {
 	_params = params;
@@ -224,8 +227,13 @@ final public class Transform {
 		mm = System.currentTimeMillis() - mm;
 
 		System.err.println("\n<!--");
-		System.err.println("  transform  = " + (mm / _iterations) + " ms");
-		System.err.println("  throughput = " + (1000.0 / (mm / _iterations)) + " tps");
+		System.err.println("  transform  = "
+                                   + (((double) mm) / ((double) _iterations))
+                                   + " ms");
+		System.err.println("  throughput = "
+                                   + (1000.0 / (((double) mm)
+                                                 / ((double) _iterations)))
+                                   + " tps");
 		System.err.println("-->");
 	    }
 	}

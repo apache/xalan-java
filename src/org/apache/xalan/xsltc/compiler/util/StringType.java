@@ -182,8 +182,9 @@ public class StringType extends Type {
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateFrom
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
-			    Class clazz) {
-	if (clazz.getName().equals("java.lang.String")) {
+			    Class clazz) 
+    {
+        if (clazz.isAssignableFrom(java.lang.String.class)) {
 	    // same internal representation
 	    methodGen.getInstructionList().append(NOP);
 	}
@@ -199,9 +200,25 @@ public class StringType extends Type {
      *
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateFrom
      */
-    public void translateFrom(ClassGenerator classGen, MethodGenerator methodGen, 
-			      Class clazz) {
-	translateTo(classGen, methodGen, clazz);
+    public void translateFrom(ClassGenerator classGen, 
+	MethodGenerator methodGen, Class clazz) 
+    {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	if (clazz.getName().equals("java.lang.String")) {
+	    // same internal representation, convert null to ""
+	    il.append(DUP);
+	    final BranchHandle ifNonNull = il.append(new IFNONNULL(null));
+	    il.append(POP);
+	    il.append(new PUSH(cpg, ""));
+	    ifNonNull.setTarget(il.append(NOP));
+	}
+	else {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+					toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
+	}
     }
 
     /**

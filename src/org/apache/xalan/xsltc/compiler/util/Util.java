@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler.util;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class Util {
     static public char filesep;
@@ -85,11 +86,20 @@ public final class Util {
      * files.
      */
     public static String baseName(String name) {
-	int index = name.lastIndexOf('/');
+	int index = name.lastIndexOf('\\');
 	if (index < 0) {
-	    index = name.lastIndexOf('\\');
+	    index = name.lastIndexOf('/');
 	}
-	return name.substring(index + 1);
+	
+	if (index >= 0)
+	    return name.substring(index + 1);
+	else {
+	    int lastColonIndex = name.lastIndexOf(':');
+	    if (lastColonIndex > 0)
+	    	return name.substring(lastColonIndex + 1);
+	    else
+	    	return name;
+	}
     }
 
     /**
@@ -186,5 +196,15 @@ public final class Util {
 	    new String[] { "$dot$", "$dash$", "$slash$", "$colon$" });
     }
 
+    public static String getLocalName(String qname) {
+	final int index = qname.lastIndexOf(":");
+	return (index > 0) ? qname.substring(index + 1) : qname;
+    }
+
+    public static String getPrefix(String qname) {
+	final int index = qname.lastIndexOf(":");
+	return (index > 0) ? qname.substring(0, index) : 
+	    Constants.EMPTYSTRING;
+    }
 }
 

@@ -181,15 +181,24 @@ public abstract class OutputBase implements TransletOutputHandler, Constants {
      * an attribute. If at runtime, when the qname of the attribute is
      * known, another prefix is specified for the attribute, then we can get
      * a qname of the form "ns?:otherprefix:name". This function patches the
-     * qname by simply ignoring "otherprefix".
+     * qname by simply ignoring "otherprefix". In addition, this method 
+     * ignores prefixes bound to the empty string "".
      */ 
-    protected static String patchName(String qname) throws TransletException {
+    protected String patchName(String qname) throws TransletException {
         final int lastColon = qname.lastIndexOf(':');
+
         if (lastColon > 0) {
             final int firstColon = qname.indexOf(':');
-            if (firstColon != lastColon) {
-                return qname.substring(0, firstColon) + 
-		    qname.substring(lastColon);
+            final String prefix = qname.substring(0, firstColon);
+            final String localName = qname.substring(lastColon + 1);
+
+	    // If uri is "" then ignore prefix
+            final String uri = lookupNamespace(prefix);
+            if (uri != null && uri.length() == 0) {
+                return localName;
+            }
+            else if (firstColon != lastColon) {
+                return prefix + ':' + localName;
             }
         }
         return qname;
@@ -288,7 +297,8 @@ public abstract class OutputBase implements TransletOutputHandler, Constants {
         return uri;
     }
 
-    // -- Temporary
+    public void startCDATA() throws TransletException { }
+    public void endCDATA() throws TransletException { }
     public void namespace(String prefix, String uri) throws TransletException { }
     public void setType(int type) { }
     public void setIndent(boolean indent) { }

@@ -132,7 +132,6 @@ public class DOM2TO implements XMLReader, Locator {
 
         switch (node.getNodeType()) {
 	case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE
-	case Node.DOCUMENT_FRAGMENT_NODE:
 	case Node.DOCUMENT_TYPE_NODE :
 	case Node.ENTITY_NODE :
 	case Node.ENTITY_REFERENCE_NODE:
@@ -159,11 +158,18 @@ public class DOM2TO implements XMLReader, Locator {
 	    _handler.endDocument();
 	    break;
 
+	case Node.DOCUMENT_FRAGMENT_NODE:
+	    next = node.getFirstChild();
+	    while (next != null) {
+		parse(next);
+		next = next.getNextSibling();
+	    }
+	    break;
+
 	case Node.ELEMENT_NODE:
 	    // Generate SAX event to start element
 	    final String qname = node.getNodeName();
 	    _handler.startElement(qname);
-
 	    String prefix;
 	    final NamedNodeMap map = node.getAttributes();
 	    final int length = map.getLength();
@@ -184,7 +190,7 @@ public class DOM2TO implements XMLReader, Locator {
 		else {
 		    final String uriAttr = attr.getNamespaceURI();
 		    // Uri may be implicitly declared
-		    if (uriAttr != null) {	
+		    if (uriAttr != null && !uriAttr.equals(EMPTYSTRING) ) {	
 			colon = qnameAttr.lastIndexOf(':');
 			prefix = (colon > 0) ? qnameAttr.substring(0, colon) 
 			    : EMPTYSTRING;

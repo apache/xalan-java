@@ -75,6 +75,7 @@ import org.xml.sax.SAXNotSupportedException;
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 final public class DTDMonitor implements DTDHandler, DeclHandler {
 
@@ -90,10 +91,6 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
     // Name of DTD declaration handler property of an XMLReader object
     private final static String DECL_HANDLER_PROP =
 	"http://xml.org/sax/properties/declaration-handler";
-
-    // Error message used when the SAX parser does not generate DTD events
-    private final static String NO_DTD_SUPPORT_STR =
-	"Your SAX parser does not handle DTD declarations";
 
     /**
      * Constructor - does nothing
@@ -117,10 +114,10 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
 	    reader.setDTDHandler(this);
 	}
 	catch (SAXNotRecognizedException e) {
-	    throw(new RuntimeException(NO_DTD_SUPPORT_STR));
+	    BasisLibrary.runTimeError(BasisLibrary.PARSER_DTD_SUPPORT_ERR);
 	}
 	catch (SAXNotSupportedException e) {
-	    throw(new RuntimeException(NO_DTD_SUPPORT_STR));
+	    BasisLibrary.runTimeError(BasisLibrary.PARSER_DTD_SUPPORT_ERR);
 	}
     }
 

@@ -97,20 +97,25 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
+	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
-// System.out.println("StreamHTMLOutput.<init>");
+// System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public StreamHTMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
-// System.out.println("StreamHTMLOutput.<init>");
+	_buffer = new WriterOutputBuffer(_writer);
+	setIndent(true);  // default for HTML
+//System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public StreamHTMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	super(out, encoding);
-// System.out.println("StreamHTMLOutput.<init>");
+	_buffer = new WriterOutputBuffer(_writer);
+	setIndent(true);  // default for HTML
+//System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public void startDocument() throws TransletException { 
@@ -181,7 +186,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
 	    if (_indent) {
 		_indentLevel--;
-		_indentNextEndTag = true;
+		_lineFeedNextStartTag = _indentNextEndTag = false;
 	    }
 	}
 	else {
@@ -190,8 +195,7 @@ public class StreamHTMLOutput extends StreamOutput {
 
 		if (_indentNextEndTag) {
 		    indent(_indentNextEndTag);
-		    _indentNextEndTag = true;
-		    _lineFeedNextStartTag = true;
+		    _lineFeedNextStartTag = _indentNextEndTag = true;
 		}
 	    }
 	    _buffer.append("</").append(elementName).append('>');
@@ -260,7 +264,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	if (_startTagOpen) {
 	    closeStartTag();
 	}
-	_buffer.append("<!--").append(comment).append("-->");
+	appendComment(comment);
     }
 
     public void processingInstruction(String target, String data)
@@ -324,6 +328,33 @@ public class StreamHTMLOutput extends StreamOutput {
      */
     private String escapeNonURL(String base) {
 	final int length = base.length();
+	StringBuffer result = null;
+
+        for (int i = 0; i < length; i++){
+	    final char ch = base.charAt(i);
+
+	    if ((ch >= '\u007F' && ch < '\u00A0') ||
+		(_is8859Encoded && ch > '\u00FF'))
+	    {
+		if (result == null) {
+		    result = new StringBuffer((int) (1.2 * length));
+		    result.append(base.substring(0, i));
+		}
+	        result.append(CHAR_ESC_START)
+		      .append(Integer.toString((int) ch))
+		      .append(';');
+	    }
+	    else if (result != null) {
+		result.append(ch);
+	    }
+	}
+
+	return (result == null) ? base : result.toString();
+    }
+
+/*
+    private String escapeNonURL(String base) {
+	final int length = base.length();
 	final StringBuffer result = new StringBuffer();
 
         for (int i = 0; i < length; i++){
@@ -342,6 +373,7 @@ public class StreamHTMLOutput extends StreamOutput {
   	}
 	return result.toString();
     }
+*/
 
     /**
      * This method escapes special characters used in HTML attribute values
@@ -416,4 +448,54 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _headTagOpen = false;
 	}
     } 
+
+    /**
+     * This method escapes special characters used in text nodes
+     */
+    protected void escapeCharacters(char[] ch, int off, int len) {
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) {
+	    limit = ch.length;
+	}
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    final char current = ch[i];
+
+	    switch (current) {
+	    case '&':
+		_buffer.append(ch, offset, i - offset).append(AMP);
+		offset = i + 1;
+		break;
+	    case '<':
+		_buffer.append(ch, offset, i - offset).append(LT);
+		offset = i + 1;
+		break;
+	    case '>':
+		_buffer.append(ch, offset, i - offset).append(GT);
+		offset = i + 1;
+		break;
+	    case '\u00A0':
+		_buffer.append(ch, offset, i - offset).append(NBSP);
+		offset = i + 1;
+		break;
+	    default:
+		if ((current >= '\u007F' && current < '\u00A0') ||
+		    (_is8859Encoded && current > '\u00FF'))
+		{
+		    _buffer.append(ch, offset, i - offset)
+			   .append(CHAR_ESC_START)
+			   .append(Integer.toString((int)ch[i]))
+			   .append(';');
+		    offset = i + 1;
+		}
+	    }
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) {
+	    _buffer.append(ch, offset, limit - offset);
+	}
+    }
 }

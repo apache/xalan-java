@@ -384,6 +384,14 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 	_cdataTagOpen = false;
     }
 
+    public void startCDATA() throws TransletException {
+	// This class is deprecated - use runtime.output package
+    }
+
+    public void endCDATA() throws TransletException {
+	// This class is deprecated - use runtime.output package
+    }
+
     /**
      * Send characters to the output document
      */

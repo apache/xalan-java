@@ -406,23 +406,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * @return Symbol table.
      */
     protected final SymbolTable getSymbolTable() {
-	if (_parser != null)
-	    return _parser.getSymbolTable();
-	else
-	    return null;
-    }
-
-    /**
-     * Local variables that are accessible from a given syntax tree node will
-     * be put on the JVM's stack. A closure is a record that contains a pointer
-     * to a node's outer variable frame (not only global variables, but also
-     * variables in parent nodes). This method returns true if this node's code
-     * is implemented by code outside of ApplyTemplates (the only such case is
-     * the Predicates class). This methid is only called by the VariableRef).
-     * @return 'true' if node's code is implemented outside of ApplyTemplates
-     */
-    protected boolean isClosureBoundary() {
-	return false;
+	return (_parser == null) ? null : _parser.getSymbolTable();
     }
 
     /**
@@ -563,12 +547,12 @@ public abstract class SyntaxTreeNode implements Constants {
 
 	final String DOM_CLASS = classGen.getDOMClass();
 
-	// Create new instance of DOM class (with 64 nodes)
+	// Create new instance of DOM class
 	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
 	il.append(new NEW(cpg.addClass(DOM_IMPL)));
 	il.append(DUP);
 	il.append(DUP);
-	il.append(new PUSH(cpg, 64));
+	il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
 	il.append(new INVOKESPECIAL(index));
 
 	// Overwrite old handler with DOM handler

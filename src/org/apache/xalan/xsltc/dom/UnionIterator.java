@@ -81,7 +81,7 @@ public final class UnionIterator extends NodeIteratorBase {
 
     private final static class LookAheadIterator {
 	public int node, markedNode;
-	public final NodeIterator iterator;
+	public NodeIterator iterator;
 		
 	public LookAheadIterator(NodeIterator iterator) {
 	    this.iterator = iterator;
@@ -90,6 +90,14 @@ public final class UnionIterator extends NodeIteratorBase {
 	public int step() {
 	    node = iterator.next();
 	    return node;
+	}
+
+	public LookAheadIterator cloneIterator() {
+	    final LookAheadIterator clone = 
+		 new LookAheadIterator(iterator.cloneIterator());
+	    clone.node = node;
+	    clone.markedNode = node;
+	    return clone;
 	}
 
 	public void setMark() {
@@ -124,7 +132,9 @@ public final class UnionIterator extends NodeIteratorBase {
 	    new LookAheadIterator[_heap.length];
 	try {
 	    final UnionIterator clone = (UnionIterator)super.clone();
-	    System.arraycopy(_heap, 0, heapCopy, 0, _heap.length);
+            for (int i = 0; i < _free; i++) {
+                heapCopy[i] = _heap[i].cloneIterator();
+            }
 	    clone.setRestartable(false);
 	    clone._heap = heapCopy;
 	    return clone.reset();
@@ -225,10 +235,15 @@ public final class UnionIterator extends NodeIteratorBase {
     }
 
     public NodeIterator reset() {
-	super.reset();
 	for (int i = 0; i < _free; i++) {
 	    _heap[i].iterator.reset();
+	    _heap[i].step();
 	}
+	// build heap
+	for (int i = (_heapSize = _free)/2; i >= 0; i--) {
+	    heapify(i);
+	}
+	_returnedLast = END;
 	return resetPosition();
     }
 

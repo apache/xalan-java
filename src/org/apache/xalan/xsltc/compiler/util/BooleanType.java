@@ -172,6 +172,9 @@ public final class BooleanType extends Type {
 	if (clazz == java.lang.Boolean.TYPE) {
 	    methodGen.getInstructionList().append(NOP);
 	}
+        else if (clazz.isAssignableFrom(java.lang.Boolean.class)) {
+            translateTo(classGen, methodGen, Type.Reference);
+        }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), clazz.getName());

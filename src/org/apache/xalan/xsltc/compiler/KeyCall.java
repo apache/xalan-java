@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
@@ -70,10 +71,25 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class KeyCall extends FunctionCall {
 
-    private Expression _name;      // The name of this key
-    private Expression _value;     // The value to look up in the key/index
-    private Type       _valueType; // The value's data type
-    private QName      _resolvedQName = null;
+    /**
+     * The name of the key.
+     */
+    private Expression _name;
+
+    /**
+     * The value to look up in the key/index.
+     */
+    private Expression _value;
+
+    /**
+     * The value's data type.
+     */
+    private Type _valueType; // The value's data type
+
+    /**
+     * Expanded qname when name is literal.
+     */
+    private QName _resolvedQName = null;
 
     /**
      * Get the parameters passed to function:
@@ -138,11 +154,9 @@ final class KeyCall extends FunctionCall {
 	// be added to the resulting node-set.
 	_valueType = _value.typeCheck(stable);
 
-	if ((_valueType != Type.NodeSet) &&
-	    (_valueType != Type.ResultTree) &&
-	    (_valueType != Type.String) &&
-	    (_valueType != Type.Real) &&
-	    (_valueType != Type.Int)) {
+	if (_valueType != Type.NodeSet && _valueType != Type.ResultTree
+		&& _valueType != Type.String) 
+	{
 	    _value = new CastExpr(_value, Type.String);
 	}
 
@@ -324,18 +338,7 @@ final class KeyCall extends FunctionCall {
 	    // the iterator should return.
 	    il.append(DUP);
 
-	    if (_valueType == Type.Int || _valueType == Type.Real) {
-		final int dbl = cpg.addMethodref(DOUBLE_CLASS,"<init>", "(D)V");
-		il.append(new NEW(cpg.addClass(DOUBLE_CLASS)));
-		il.append(DUP);
-		_value.translate(classGen, methodGen);
-		if (_valueType == Type.Int)
-		    il.append(new I2D());
-		il.append(new INVOKESPECIAL(dbl));
-	    }
-	    else {
-		_value.translate(classGen, methodGen);
-	    }
+	    _value.translate(classGen, methodGen);
 
 	    if (_name == null) {
 		il.append(new INVOKEVIRTUAL(lookupId));

@@ -84,11 +84,12 @@ final class Include extends TopLevelElement {
     private Stylesheet _included = null;
 
     public Stylesheet getIncludedStylesheet() {
-	return(_included);
+	return _included;
     }
 
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
+
 	String docToLoad = getAttribute("href");
 	try {
 	    if (context.checkForLoop(docToLoad)) {
@@ -124,16 +125,27 @@ final class Include extends TopLevelElement {
 			docToLoad = "file:" + file.getCanonicalPath();
 		    }
 		    else {
-			throw new FileNotFoundException(
-			  "Could not load file " + docToLoad);
+			final ErrorMsg msg =
+                                       new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR,
+                                                    docToLoad);
+                        parser.reportError(Constants.FATAL, msg);
+                        return;
 		    }
 		    input = new InputSource(docToLoad);
 		}
 	    }
 
+	    // Return if we could not resolve the URL
+	    if (input == null) {
+		final ErrorMsg msg = 
+		    new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
+		parser.reportError(Constants.FATAL, msg);
+		return;
+	    }
+
 	    final SyntaxTreeNode root = parser.parse(input);
 	    if (root == null) return;
-	    final Stylesheet _included = parser.makeStylesheet(root);
+	    _included = parser.makeStylesheet(root);
 	    if (_included == null) return;
 
 	    _included.setSourceLoader(loader);
@@ -146,7 +158,6 @@ final class Include extends TopLevelElement {
 	    // as the stylesheet that included it.
 	    final int precedence = context.getImportPrecedence();
 	    _included.setImportPrecedence(precedence);
-
 	    parser.setCurrentStylesheet(_included);
 	    _included.parseContents(parser);
 
@@ -155,12 +166,15 @@ final class Include extends TopLevelElement {
 	    while (elements.hasMoreElements()) {
 		final Object element = elements.nextElement();
 		if (element instanceof TopLevelElement) {
-		    if (element instanceof Variable)
-			topStylesheet.addVariable((Variable)element);
-		    else if (element instanceof Param)
-			topStylesheet.addParam((Param)element);
-		    else
-			topStylesheet.addElement((TopLevelElement)element);
+		    if (element instanceof Variable) {
+			topStylesheet.addVariable((Variable) element);
+		    }
+		    else if (element instanceof Param) {
+			topStylesheet.addParam((Param) element);
+		    }
+		    else {
+			topStylesheet.addElement((TopLevelElement) element);
+		    }
 		}
 	    }
 	}

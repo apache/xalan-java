@@ -231,6 +231,9 @@ public final class IntType extends NumberType {
 	else if (clazz == Double.TYPE) {
 	    il.append(I2D);
 	}
+        else if (clazz.isAssignableFrom(java.lang.Integer.class)) {
+            translateTo(classGen, methodGen, Type.Reference);   
+        }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), clazz.getName());

@@ -134,6 +134,9 @@ public final class ResultTreeType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType)type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
@@ -264,12 +267,12 @@ public final class ResultTreeType extends Type {
 	    }
 	    il.append(methodGen.loadDOM());
 
-	    // Create new instance of DOM class (with 64 nodes)
+	    // Create new instance of DOM class 
 	    int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
 	    il.append(new NEW(cpg.addClass(DOM_IMPL)));
 	    il.append(DUP);
 	    il.append(DUP);
-	    il.append(new PUSH(cpg, 64));
+	    il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
 	    il.append(new INVOKESPECIAL(index));
 	    
 	    // Store new DOM into a local variable
@@ -359,12 +362,21 @@ public final class ResultTreeType extends Type {
 	il.append(new INVOKEINTERFACE(mapping, 3));
 	il.append(DUP);
 
-	// Create an iterator with all the nodes in the DOM adapter
+	// Create an iterator for the root node of the DOM adapter
 	final int iter = cpg.addInterfaceMethodref(DOM_INTF,
-						   "getChildren",
-						   "(I)"+NODE_ITERATOR_SIG);
-	il.append(new PUSH(cpg, DOM.ROOTNODE));
-	il.append(new INVOKEINTERFACE(iter, 2));
+						   "getIterator",
+						   "()"+NODE_ITERATOR_SIG);
+	il.append(new INVOKEINTERFACE(iter, 1));	
+    }
+
+    /**
+     * Subsume result tree into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	methodGen.getInstructionList().append(NOP);	
     }
 
     /**
@@ -417,6 +429,15 @@ public final class ResultTreeType extends Type {
 						  MAKE_NODE_LIST_SIG2);
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
+	else if (className.equals("java.lang.Object")) {
+	    il.append(NOP);
+	}
+        else if (className.equals("java.lang.String")) {
+            translateTo(classGen, methodGen, Type.String);
+        }
+        else if (clazz == Double.TYPE) {
+            translateTo(classGen, methodGen, Type.Real);
+        }        
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);

@@ -73,11 +73,16 @@ import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
 
 public final class DOMAdapter implements DOM {
+
     private final DOMImpl _domImpl;
-    private short[] _mapping;
-    private short[] _reverse;
-    private short[] _NSmapping;
-    private short[] _NSreverse;
+    private String[] _namesArray;
+    private String[] _namespaceArray;
+
+    // Cached mappings
+    private short[] _mapping = null;
+    private short[] _reverse = null;
+    private short[] _NSmapping = null;
+    private short[] _NSreverse = null;
 
     private StripFilter _filter = null;
 
@@ -85,22 +90,49 @@ public final class DOMAdapter implements DOM {
     
     public DOMAdapter(DOMImpl dom,
 		      String[] namesArray,
-		      String[] namespaceArray) {
+		      String[] namespaceArray) 
+    {
 	_domImpl = dom;
-	_mapping = dom.getMapping(namesArray);
-	_reverse = dom.getReverseMapping(namesArray);
-	_NSmapping = dom.getNamespaceMapping(namespaceArray);
-	_NSreverse = dom.getReverseNamespaceMapping(namespaceArray);
+	_namesArray = namesArray;
+	_namespaceArray = namespaceArray;
     }
 
     public void setupMapping(String[] names, String[] namespaces) {
-	_mapping = _domImpl.getMapping(names);
-	_reverse = _domImpl.getReverseMapping(names);
-	_NSmapping = _domImpl.getNamespaceMapping(namespaces);
-	_NSreverse = _domImpl.getReverseNamespaceMapping(namespaces);
+	_namesArray = names;
+	_namespaceArray = namespaces;
     }
 
-    /** returns singleton iterator containg the document root */
+    private short[] getMapping() {
+	if (_mapping == null) {
+	    _mapping = _domImpl.getMapping(_namesArray);
+	}
+	return _mapping;
+    }
+
+    private short[] getReverse() {
+	if (_reverse == null) {
+	    _reverse = _domImpl.getReverseMapping(_namesArray);
+	}
+	return _reverse;
+    }
+
+    private short[] getNSMapping() {
+	if (_NSmapping == null) {
+	    _NSmapping = _domImpl.getNamespaceMapping(_namespaceArray);
+	}
+	return _NSmapping;
+    }
+
+    private short[] getNSReverse() {
+	if (_NSreverse == null) {
+	    _NSreverse = _domImpl.getReverseNamespaceMapping(_namespaceArray);
+	}
+	return _NSreverse;
+    }
+
+    /** 
+      * Returns singleton iterator containg the document root 
+      */
     public NodeIterator getIterator() {
 	return _domImpl.getIterator();
     }
@@ -124,11 +156,12 @@ public final class DOMAdapter implements DOM {
     public NodeIterator getChildren(final int node) {
 	NodeIterator iterator = _domImpl.getChildren(node);
 	if (_filter == null) {
-	    return(iterator.setStartNode(node));
+	    return iterator.setStartNode(node);
 	}
 	else {
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
-	    return(iterator.setStartNode(node));
+	    iterator = _domImpl.strippingIterator(iterator, getMapping(), 
+		_filter);
+	    return iterator.setStartNode(node);
 	}
     }
 
@@ -137,47 +170,54 @@ public final class DOMAdapter implements DOM {
     }
     
     public NodeIterator getTypedChildren(final int type) {
-	NodeIterator iterator = _domImpl.getTypedChildren(_reverse[type]);
-	if ((_reverse[type] == DOM.TEXT) && (_filter != null))
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
-	return(iterator);
+	final short[] reverse = getReverse();
+
+	NodeIterator iterator = _domImpl.getTypedChildren(reverse[type]);
+	if (reverse[type] == DOM.TEXT && _filter != null) {
+	    return _domImpl.strippingIterator(iterator, getMapping(), _filter);
+	}
+	return iterator;
     }
 
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
-	return _domImpl.getNamespaceAxisIterator(axis,_NSreverse[ns]);
+	return _domImpl.getNamespaceAxisIterator(axis, getNSReverse()[ns]);
     }
 
     public NodeIterator getAxisIterator(final int axis) {
 	NodeIterator iterator = _domImpl.getAxisIterator(axis);
 	if (_filter != null) {
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
+	    return _domImpl.strippingIterator(iterator, getMapping(), _filter);
 	}
-	return(iterator);
+	return iterator;
     }
     
     public NodeIterator getTypedAxisIterator(final int axis, final int type) {
 	NodeIterator iterator;
+	final short[] reverse = getReverse();
+	final short[] NSreverse = getNSReverse();
 
 	if (axis == Axis.NAMESPACE) {
-	    if ((type == NO_TYPE) || (type > _NSreverse.length))
-		iterator = _domImpl.getAxisIterator(axis);
-	    else
-		iterator = _domImpl.getTypedAxisIterator(axis,_NSreverse[type]);
+	    iterator = (type == NO_TYPE || type > NSreverse.length) ?
+		_domImpl.getAxisIterator(axis) :
+		_domImpl.getTypedAxisIterator(axis, NSreverse[type]);
 	}
-	else
-	    iterator = _domImpl.getTypedAxisIterator(axis, _reverse[type]);
+	else {
+	    iterator = _domImpl.getTypedAxisIterator(axis, reverse[type]);
+	}
 	
-	if ((_reverse[type] == DOM.TEXT) && (_filter != null))
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
-	return(iterator);
+	if (reverse[type] == DOM.TEXT && _filter != null) {
+	    iterator = _domImpl.strippingIterator(iterator, getMapping(), _filter);
+	}
+	return iterator;
     }
 
     public NodeIterator getNthDescendant(int type, int n, boolean includeself) {
-	return _domImpl.getNthDescendant(_reverse[type], n, includeself);
+	return _domImpl.getNthDescendant(getReverse()[type], n, includeself);
     }
 
     public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
-					     String value, boolean op) {
+					     String value, boolean op) 
+    {
 	return _domImpl.getNodeValueIterator(iterator, type, value, op);
     }
 
@@ -186,27 +226,19 @@ public final class DOMAdapter implements DOM {
     }
         
     public int getType(final int node) {
-	return _mapping[_domImpl.getType(node)];
+	return getMapping()[_domImpl.getType(node)];
     }
 
     public int getNamespaceType(final int node) {
-	return _NSmapping[_domImpl.getNamespaceType(node)];
+	return getNSMapping()[_domImpl.getNamespaceType(node)];
     }
     
     public int getParent(final int node) {
 	return _domImpl.getParent(node);
     }
 
-    public int getTypedPosition(int type, int node) {
-	return _domImpl.getTypedPosition(_reverse[type], node);
-    }
-
-    public int getTypedLast(int type, int node) {
-	return _domImpl.getTypedLast(_reverse[type], node);
-    }
-
     public int getAttributeNode(final int type, final int element) {
-	return _domImpl.getAttributeNode(_reverse[type], element);
+	return _domImpl.getAttributeNode(getReverse()[type], element);
     }
     
     public String getNodeName(final int node) {

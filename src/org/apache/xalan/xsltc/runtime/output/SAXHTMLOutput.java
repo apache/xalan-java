@@ -140,7 +140,7 @@ public class SAXHTMLOutput extends SAXOutput {
             if (_startTagOpen) {
 		closeStartTag();
 	    }
-            _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, elementName);
+            _saxHandler.endElement(EMPTYSTRING, elementName, elementName);
         } 
 	catch (SAXException e) {
             throw new TransletException(e);
@@ -151,22 +151,20 @@ public class SAXHTMLOutput extends SAXOutput {
     public void attribute(String name, final String value) 
 	throws TransletException
     {
-	final String patchedName = patchName(name);
-	final String localName = getLocalName(patchedName);
-	final int index = _attributes.getIndex(name); 
+	if (_startTagOpen) {
+	    final String patchedName = patchName(name);
+	    final String localName = getLocalName(patchedName);
+	    final int index = _attributes.getIndex(name); 
 
-	if (!_startTagOpen) {
-            BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
-        }
-
-        if (index >= 0) {
-            _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING,
-                    name, "CDATA", value);
-        }
-        else {
-            _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING,
+	    if (index >= 0) {
+		_attributes.setAttribute(index, EMPTYSTRING, localName,
+			name, "CDATA", value);
+	    }
+	    else {
+		_attributes.addAttribute(EMPTYSTRING, localName,
                 name, "CDATA", value);
-        }
+	    }
+	}
     }
 
     /**
@@ -194,8 +192,8 @@ public class SAXHTMLOutput extends SAXOutput {
             _startTagOpen = false;
 
             // Now is time to send the startElement event
-            _saxHandler.startElement(null, _elementName, _elementName, 
-		_attributes);
+            _saxHandler.startElement(EMPTYSTRING, _elementName, 
+		_elementName, _attributes);
         }
         catch (SAXException e) {
             throw new TransletException(e);

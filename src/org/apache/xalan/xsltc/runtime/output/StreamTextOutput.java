@@ -72,12 +72,14 @@ public class StreamTextOutput extends StreamOutput {
 
     public StreamTextOutput(Writer writer, String encoding) {
 	super(writer, encoding);
+	_buffer = new WriterOutputBuffer(_writer);
     }
 
     public StreamTextOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	super(out, encoding);
+	_buffer = new WriterOutputBuffer(_writer);
     }
 
     public void startDocument() throws TransletException { 

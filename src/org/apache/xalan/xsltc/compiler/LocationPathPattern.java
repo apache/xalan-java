@@ -64,6 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.*;
 
@@ -125,12 +126,16 @@ public abstract class LocationPathPattern extends Pattern {
 	return false;
     }
     
-    /** return last pattern (matching the current node) */
     public abstract StepPattern getKernelPattern();
 	
     public abstract void reduceKernelPattern();
 		
     public abstract boolean isWildcard();
+
+    public int getAxis() {
+	final StepPattern sp = getKernelPattern();
+	return (sp != null) ? sp.getAxis() : Axis.CHILD;
+    }
 
     public String toString() {
 	return "root()";

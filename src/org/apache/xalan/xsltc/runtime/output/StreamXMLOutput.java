@@ -90,6 +90,7 @@ public class StreamXMLOutput extends StreamOutput {
 
     public StreamXMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
+	_buffer = new StringOutputBuffer();
 	initCDATA();
 	initNamespaces();
 //System.out.println("StreamXMLOutput.<init>");
@@ -99,9 +100,20 @@ public class StreamXMLOutput extends StreamOutput {
 	throws IOException
     {
 	super(out, encoding);
+	_buffer = new StringOutputBuffer();
 	initCDATA();
 	initNamespaces();
 //System.out.println("StreamXMLOutput.<init>");
+    }
+
+    private void insertHeader(String header) {
+	try {
+	    _writer.write(header);
+	    _writer.write(_buffer.close());
+	    _buffer = new WriterOutputBuffer(_writer);
+	}
+	catch (IOException e) {
+	}
     }
 
     public void startDocument() throws TransletException { 
@@ -115,7 +127,11 @@ public class StreamXMLOutput extends StreamOutput {
 	    header.append("\"?>\n");
 
 	    // Always insert header at the beginning 
-	    _buffer.insert(0, header.toString());
+	    insertHeader(header.toString());
+	}
+	else {
+	    // Must inform buffer the absence of a header
+	    insertHeader(EMPTYSTRING);
 	}
     }
 
@@ -131,7 +147,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 
 	// Handle document type declaration (for first element only)
@@ -159,7 +175,7 @@ public class StreamXMLOutput extends StreamOutput {
     public void endElement(String elementName) throws TransletException { 
 // System.out.println("endElement = " + elementName);
 	if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 
 	if (_startTagOpen) {
@@ -248,10 +264,9 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
-
-	_buffer.append("<!--").append(comment).append("-->");
+	appendComment(comment);
     }
 
     public void processingInstruction(String target, String data)
@@ -262,7 +277,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 
 	_buffer.append("<?").append(target).append(' ')
@@ -280,14 +295,23 @@ public class StreamXMLOutput extends StreamOutput {
 	throws TransletException 
     {
 // System.out.println("namespace prefix = " + prefix + " uri = " + uri);
-	String escaped = escapeString(uri);
+	final String escaped = escapeString(uri);
+
 	if (_startTagOpen) {
 	    if (pushNamespace(prefix, escaped)) {
-		_buffer.append(' ').append(XMLNS_PREFIX);
 		if (prefix != null && prefix != EMPTYSTRING) {
-		    _buffer.append(':').append(prefix);
+		    // Ignore if not default NS and if uri is ""
+		    if (escaped.length() > 0) {
+			_buffer.append(' ').append(XMLNS_PREFIX)
+			       .append(':').append(prefix)
+			       .append("=\"").append(escaped).append('"');
+		    }
 		}
-		_buffer.append("=\"").append(escaped).append('"');
+		else {
+		    _buffer.append(' ').append(XMLNS_PREFIX)
+		           .append("=\"").append(escaped).append('"');
+		}
+
 	    }
 	}
 	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
@@ -340,7 +364,12 @@ public class StreamXMLOutput extends StreamOutput {
 	_cdataTagOpen = true;
     }
 
-    private void closeCDATA() {
+    public void startCDATA() throws TransletException {
+	_buffer.append(BEGCDATA);
+	_cdataTagOpen = true;
+    }
+
+    public void endCDATA() throws TransletException {
 	_buffer.append(ENDCDATA);
 	_cdataTagOpen = false;
     }
@@ -390,7 +419,7 @@ public class StreamXMLOutput extends StreamOutput {
 		offset = i + 1;
 		break;
 	    case '"':
-		result.append(ch, offset, i - offset).append(QUOTE);
+		result.append(ch, offset, i - offset).append(QUOT);
 		offset = i + 1;
 		break;
 	    case '<':
@@ -412,5 +441,51 @@ public class StreamXMLOutput extends StreamOutput {
 	    result.append(ch, offset, limit - offset);
 	}
 	return result.toString();
+    }
+
+    /**
+     * This method escapes special characters used in text nodes
+     */
+    protected void escapeCharacters(char[] ch, int off, int len) {
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) {
+	    limit = ch.length;
+	}
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    final char current = ch[i];
+
+	    switch (current) {
+	    case '&':
+		_buffer.append(ch, offset, i - offset).append(AMP);
+		offset = i + 1;
+		break;
+	    case '<':
+		_buffer.append(ch, offset, i - offset).append(LT);
+		offset = i + 1;
+		break;
+	    case '>':
+		_buffer.append(ch, offset, i - offset).append(GT);
+		offset = i + 1;
+		break;
+	    default:
+		if ((current >= '\u007F' && current < '\u00A0') ||
+		    (_is8859Encoded && current > '\u00FF'))
+		{
+		    _buffer.append(ch, offset, i - offset)
+			   .append(CHAR_ESC_START)
+			   .append(Integer.toString((int)ch[i]))
+			   .append(';');
+		    offset = i + 1;
+		}
+	    }
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) {
+	    _buffer.append(ch, offset, limit - offset);
+	}
     }
 }

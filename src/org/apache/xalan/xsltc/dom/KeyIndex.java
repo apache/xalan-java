@@ -57,70 +57,67 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Vector;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.dom.NodeIteratorBase;
 import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.util.IntegerArray;
 
-public class KeyIndex implements NodeIterator {
-
-    private Hashtable _index = new Hashtable();
-    private BitArray  _nodes = null;
-    private int       _pos = 0;
-    private int       _mark = 0;
-    private int       _save = 0;
-    private int       _start = 0;
-    private int       _arraySize = 0;
-    private int       _node = -1;
+public class KeyIndex extends NodeIteratorBase {
 
     /**
-     * Creates an index for a key defined by xsl:key
+     * A mapping between values and nodesets.
      */
-    public KeyIndex(int size) {
-	_arraySize = size;
+    private Hashtable _index = new Hashtable();
+
+    /**
+     * The node set associated to the current value passed
+     * to lookupKey();
+     */
+    private IntegerArray _nodes = null;
+
+    /**
+     * Store position after call to setMark()
+     */
+    private int _markedPosition = 0;
+
+    public KeyIndex(int dummy) {
     }
 
-    public void setRestartable(boolean flag) {
-	    
-    }
- 
     /**
-     * Adds a node to the node list for a given value.
-     * The BitArray object makes sure duplicate nodes are eliminated.
+     * Adds a node to the node list for a given value. Nodes will
+     * always be added in document order.
      */
     public void add(Object value, int node) {
-	if ((_nodes = (BitArray)_index.get(value)) == null) {
-	    _nodes = new BitArray(_arraySize);
-	    _nodes.setMask(node & 0xff000000);
-	    _index.put(value,_nodes);
+	IntegerArray nodes;
+	if ((nodes = (IntegerArray) _index.get(value)) == null) {
+	    _index.put(value, nodes = new IntegerArray());
 	}
-	_nodes.setBit(node & 0x00ffffff);
-
-	/*
-	 * TODO: A bit array can currently only hold nodes from one DOM.
-	 * An index will therefore only return nodes from a single document.
-	 */
+	nodes.add(node);
     }
 
     /**
-     * Merge this node set with nodes from another index
+     * Merge the current value's nodeset set by lookupKey() with _nodes.
      */
     public void merge(KeyIndex other) {
-	// Only merge if other node set is not empty
-	if (other != null) {
-	    if (other._nodes != null) {
-		// Create new Vector for nodes if this set is empty
-		if (_nodes == null)
-		    _nodes = other._nodes;
-		else
-		    _nodes = _nodes.merge(other._nodes);
+	if (other == null) return;
+
+	if (other._nodes != null) {
+	    if (_nodes == null) {
+		_nodes = other._nodes;
+	    }
+	    else {
+		_nodes.merge(other._nodes);
 	    }
 	}
     }
@@ -133,23 +130,23 @@ public class KeyIndex implements NodeIterator {
      * key() function.
      */
     public void lookupId(Object value) {
-	if (value instanceof String) {
-	    final String string = (String)value;
-	    if (string.indexOf(' ') > -1) {
-		StringTokenizer values = new StringTokenizer(string);
-		while (values.hasMoreElements()) {
-		    BitArray nodes = (BitArray)_index.get(values.nextElement());
-		    if (nodes != null) {
-			if (_nodes == null)
-			    _nodes = nodes;
-			else
-			    _nodes = _nodes.merge(nodes);
-		    }
-		}
-		return;
+	// Clear _nodes array
+	_nodes = null;
+
+	final StringTokenizer values = new StringTokenizer((String) value);
+	while (values.hasMoreElements()) {
+	    final IntegerArray nodes = 
+		(IntegerArray) _index.get(values.nextElement());
+
+	    if (nodes == null) continue;
+
+	    if (_nodes == null) {
+		_nodes = nodes;
+	    }
+	    else {
+		_nodes.merge(nodes);
 	    }
 	}
-	_nodes = (BitArray)_index.get(value);
     }
 
     /**
@@ -157,83 +154,80 @@ public class KeyIndex implements NodeIterator {
      * prior to returning the node iterator.
      */
     public void lookupKey(Object value) {
-	_nodes = (BitArray)_index.get(value);
+	_nodes = (IntegerArray) _index.get(value);
+	_position = 0;
     }
 
     /** 
      * Callers should not call next() after it returns END.
      */
     public int next() {
-	if (_nodes == null) return(END);
-	if ((_node = _nodes.getNextBit(++_node)) == END) return(END);
-	_pos++;
-	return(_node | _nodes.getMask());
+	if (_nodes == null) return END;
+
+	return (_position < _nodes.cardinality()) ? 
+	    _nodes.at(_position++) : END;
     }
 
     public int containsID(int node, Object value) { 
-	if (value instanceof String) {
-	    final String string = (String)value;
-	    if (string.indexOf(' ') > -1) {
-		StringTokenizer values = new StringTokenizer(string);
-		while (values.hasMoreElements()) {
-		    BitArray nodes = (BitArray)_index.get(values.nextElement());
-		    if ((nodes != null) && (nodes.getBit(node))) return(1);
-		}
-		return(0);
-	    }
-	}
+	final String string = (String)value;
+	if (string.indexOf(' ') > -1) {
+	    final StringTokenizer values = new StringTokenizer(string);
 
-	BitArray nodes = (BitArray)_index.get(value);
-	if ((nodes != null) && (nodes.getBit(node))) return(1);
-	return(0);
+	    while (values.hasMoreElements()) {
+		final IntegerArray nodes = 
+		    (IntegerArray) _index.get(values.nextElement());
+
+		if (nodes != null && nodes.indexOf(node) >= 0) {
+		    return 1;
+		}
+	    }
+	    return 0;
+	}
+	else {
+	    final IntegerArray nodes = (IntegerArray) _index.get(value);
+	    return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
+	}
     }
 
     public int containsKey(int node, Object value) { 
-	BitArray nodes = (BitArray)_index.get(value);
-	if ((nodes != null) && (nodes.getBit(node))) return(1);
-	return(0);
+	final IntegerArray nodes = (IntegerArray) _index.get(value);
+	return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
     }
 
     /**
      * Resets the iterator to the last start node.
      */
     public NodeIterator reset() {
-	_pos = _start;
-	_node = _start - 1;
-	return(this);
+	_position = 0;
+	return this;
     }
 
     /**
      * Returns the number of elements in this iterator.
      */
     public int getLast() {
-	if (_nodes == null)
-	    return(0);
-	else
-	    return(_nodes.size()); // TODO: count actual nodes
+	return (_nodes == null) ? 0 : _nodes.cardinality();
     }
 
     /**
      * Returns the position of the current node in the set.
      */
     public int getPosition() {
-	return(_pos);
+	return _position;
     }
 
     /**
      * Remembers the current node for the next call to gotoMark().
      */
     public void setMark() {
-	_mark = _pos;
-	_save = _node;
+	_markedPosition = _position;
     }
 
     /**
      * Restores the current node remembered by setMark().
      */
     public void gotoMark() {
-	_pos = _mark;
-	_node = _save;
+	_position = _markedPosition;
     }
 
     /** 
@@ -245,34 +239,19 @@ public class KeyIndex implements NodeIterator {
 	    _nodes = null;
 	}
 	else if (_nodes != null) {
-	    // Node count starts with 1, while bit arrays count from 0. Must
-	    // subtract one from 'start' to initialize bit array correctly.
-	    _start = _nodes.getBitNumber(start-1); 
-	    _node = _start - 1;
+	    _position = 0;
 	}
-	return((NodeIterator)this);
-    }
-
-    /**
-     * True if this iterator has a reversed axis.
-     */
-    public boolean isReverse() {
-	return(false);
+	return this;
     }
 
     /**
      * Returns a deep copy of this iterator.
      */
     public NodeIterator cloneIterator() {
-	KeyIndex other = new KeyIndex(_arraySize);
-
+	KeyIndex other = new KeyIndex(0);
 	other._index = _index;
-	other._nodes = _nodes.cloneArray();
-	other._pos   = _pos;
-	other._start = _start;
-	other._node  = _node;
-
-	return(other);
+	other._nodes = _nodes;
+	other._position = _position;
+	return other;
     }
-
 }

@@ -129,6 +129,9 @@ public final class NodeType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
@@ -228,6 +231,16 @@ public final class NodeType extends Type {
     }
 
     /**
+     * Subsume Node into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	    methodGen.getInstructionList().append(NOP);	
+    }
+
+    /**
      * Translates a node into a non-synthesized boolean. It does not push a 
      * 0 or a 1 but instead returns branchhandle list to be appended to the 
      * false list.
@@ -269,11 +282,17 @@ public final class NodeType extends Type {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+        String className = clazz.getName();
+        if (className.equals("java.lang.String")) {
+           translateTo(classGen, methodGen, Type.String);
+           return;
+        }
+
 	il.append(methodGen.loadDOM());
 	il.append(SWAP);		// dom ref must be below node index
 
-	String className = clazz.getName();
-	if (className.equals("org.w3c.dom.Node")) {
+        if (className.equals("org.w3c.dom.Node") ||
+            className.equals("java.lang.Object")) {
 	    int index = cpg.addInterfaceMethodref(DOM_INTF,
 						  MAKE_NODE,
 						  MAKE_NODE_SIG);

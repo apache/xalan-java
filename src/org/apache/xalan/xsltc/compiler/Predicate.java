@@ -65,21 +65,26 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.bcel.classfile.Field;
 
-final class Predicate extends Expression {
+final class Predicate extends Expression implements Closure {
 
     private Expression _exp = null; // Expression to be compiled inside pred.
-    private String  _className;     // Name of filter to generate
     private boolean _nthPositionFilter = false;
     private boolean _nthDescendant = false;
     private boolean _canOptimize = true;
     private int     _ptype = -1;
+
+    private String _className = null;
+    private ArrayList _closureVars = null;
+    private Closure _parentClosure = null;
 
     public Predicate(Expression exp) {
 	(_exp = exp).setParent(this);
@@ -102,10 +107,66 @@ final class Predicate extends Expression {
 	_canOptimize = false;
     }
 
-    protected final boolean isClosureBoundary() {
-	return true;
+    // -- Begin Closure interface --------------------
+
+    /**
+     * Returns true if this closure is compiled in an inner class (i.e.
+     * if this is a real closure).
+     */
+    public boolean inInnerClass() {
+	return (_className != null);
     }
-    
+
+    /**
+     * Returns a reference to its parent closure or null if outermost.
+     */
+    public Closure getParentClosure() {
+	if (_parentClosure == null) {
+	    SyntaxTreeNode node = getParent();
+	    do {
+		if (node instanceof Closure) {
+		    _parentClosure = (Closure) node;
+		    break;
+		}
+		if (node instanceof TopLevelElement) {
+		    break;	// way up in the tree
+		}
+		node = node.getParent();
+	    } while (node != null);
+	}
+	return _parentClosure;
+    }
+
+    /**
+     * Returns the name of the auxiliary class or null if this predicate 
+     * is compiled inside the Translet.
+     */
+    public String getInnerClassName() {
+	return _className;
+    }
+
+    /**
+     * Add new variable to the closure.
+     */
+    public void addVariable(VariableRefBase variableRef) {
+	if (_closureVars == null) {
+	    _closureVars = new ArrayList();
+	}
+
+	// Only one reference per variable
+	if (!_closureVars.contains(variableRef)) {
+	    _closureVars.add(variableRef);
+
+	    // Add variable to parent closure as well
+	    Closure parentClosure = getParentClosure();
+	    if (parentClosure != null) {
+		parentClosure.addVariable(variableRef);
+	    }
+	}
+    }
+
+    // -- End Closure interface ----------------------
+
     public int getPosType() {
 	if (_ptype == -1) {
 	    SyntaxTreeNode parent = getParent();
@@ -189,7 +250,7 @@ final class Predicate extends Expression {
 		(parent instanceof Pattern) ||
 		(parent instanceof FilterExpr)) {
 
-		final QName position = getParser().getQName("position");
+		final QName position = getParser().getQNameIgnoreDefaultNs("position");
 		final PositionCall positionCall = new PositionCall(position);
 		positionCall.setParser(getParser());
 		positionCall.setParent(this);
@@ -208,8 +269,8 @@ final class Predicate extends Expression {
 
 		    if (fexp instanceof KeyCall)
 			_canOptimize = false;
-		    //else if (fexp instanceof VariableRefBase)
-		    //    _canOptimize = false;
+		    else if (fexp instanceof VariableRefBase)
+		        _canOptimize = false;
 		    else if (fexp instanceof ParentLocationPath)
 			_canOptimize = false;
 		    else if (fexp instanceof UnionPathExpr)
@@ -273,9 +334,20 @@ final class Predicate extends Expression {
 					},
 					classGen.getStylesheet());	
 
-	final InstructionList il = new InstructionList();
 	final ConstantPoolGen cpg = filterGen.getConstantPool();
+	final int length = (_closureVars == null) ? 0 : _closureVars.size();
 
+	// Add a new instance variable for each var in closure
+	for (int i = 0; i < length; i++) {
+	    VariableBase var = ((VariableRefBase) _closureVars.get(i)).getVariable();
+
+	    filterGen.addField(new Field(ACC_PUBLIC, 
+					cpg.addUtf8(var.getVariable()),
+					cpg.addUtf8(var.getType().toSignature()),
+					null, cpg.getConstantPool()));
+	}
+
+	final InstructionList il = new InstructionList();
 	testGen = new TestGenerator(ACC_PUBLIC | ACC_FINAL,
 				    org.apache.bcel.generic.Type.BOOLEAN, 
 				    new org.apache.bcel.generic.Type[] {
@@ -339,10 +411,7 @@ final class Predicate extends Expression {
      */
     public boolean isNodeValueTest() {
 	if (!_canOptimize) return false;
-	if ((getStep() != null) && (getCompareValue() != null))
-	    return true;
-	else
-	    return false;
+	return (getStep() != null && getCompareValue() != null);
     }
 
     private Expression _value = null;
@@ -439,15 +508,53 @@ final class Predicate extends Expression {
      * filter object and a reference to the predicate's closure.
      */
     public void translateFilter(ClassGenerator classGen,
-				MethodGenerator methodGen) {
-
+				MethodGenerator methodGen) 
+    {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+	// Compile auxiliary class for filter
 	compileFilter(classGen, methodGen);
+	
+	// Create new instance of filter
 	il.append(new NEW(cpg.addClass(_className)));
 	il.append(DUP);
 	il.append(new INVOKESPECIAL(cpg.addMethodref(_className,
 						     "<init>", "()V")));
+
+	// Initialize closure variables
+	final int length = (_closureVars == null) ? 0 : _closureVars.size();
+
+	for (int i = 0; i < length; i++) {
+	    VariableRefBase varRef = (VariableRefBase) _closureVars.get(i);
+	    VariableBase var = varRef.getVariable();
+	    Type varType = var.getType();
+
+	    il.append(DUP);
+
+	    // Find nearest closure implemented as an inner class
+	    Closure variableClosure = _parentClosure;
+	    while (variableClosure != null) {
+		if (variableClosure.inInnerClass()) break;
+		variableClosure = variableClosure.getParentClosure();
+	    }
+
+	    // Use getfield if in an inner class
+	    if (variableClosure != null) {
+		il.append(ALOAD_0);
+		il.append(new GETFIELD(
+		    cpg.addFieldref(variableClosure.getInnerClassName(), 
+			var.getVariable(), varType.toSignature())));
+	    }
+	    else {
+		// Use a load of instruction if in translet class
+		il.append(var.loadInstruction());
+	    }
+
+	    // Store variable in new closure
+	    il.append(new PUTFIELD(
+		    cpg.addFieldref(_className, var.getVariable(), 
+			varType.toSignature())));
+	}
     }
 }

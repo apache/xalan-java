@@ -64,22 +64,25 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.io.Writer;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
 import java.util.Vector;
+import java.util.Hashtable;
 
 import org.apache.xalan.xsltc.TransletException;
 
-abstract class StreamOutput extends OutputBase {
+abstract public class StreamOutput extends OutputBase {
 
     protected static final String AMP      = "&amp;";
     protected static final String LT       = "&lt;";
     protected static final String GT       = "&gt;";
     protected static final String CRLF     = "&#xA;";
-    protected static final String QUOTE    = "&quot;";
+    protected static final String APOS     = "&apos;";
+    protected static final String QUOT     = "&quot;";
     protected static final String NBSP     = "&nbsp;";
 
     protected static final String CHAR_ESC_START  = "&#";
@@ -88,11 +91,8 @@ abstract class StreamOutput extends OutputBase {
     protected static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
     protected static final int MAX_INDENT       = INDENT.length;
 
-    protected static final int BUFFER_SIZE = 64 * 1024;
-    protected static final int OUTPUT_BUFFER_SIZE = 4 * 1024;
-
     protected Writer  _writer;
-    protected StringBuffer _buffer;
+    protected OutputBuffer _buffer;
 
     protected boolean _is8859Encoded = false;
     protected boolean _indent     = false;
@@ -108,7 +108,8 @@ abstract class StreamOutput extends OutputBase {
     protected boolean _escaping     = true;
     protected String  _encoding     = "UTF-8";
 
-    // protected HashSet _attributes = new HashSet();
+    protected int     _indentNumber = 2;
+
     protected Vector _attributes = new Vector();
 
     static class Attribute {
@@ -133,31 +134,66 @@ abstract class StreamOutput extends OutputBase {
 	}
     }
 
+    // Canonical encodings
+    private static Hashtable _canonicalEncodings;
+    static {
+	_canonicalEncodings = new Hashtable();
+	_canonicalEncodings.put("ebcdic-cp-us", "Cp037");
+	_canonicalEncodings.put("ebcdic-cp-ca", "Cp037"); 
+	_canonicalEncodings.put("ebcdic-cp-nl", "Cp037");
+	_canonicalEncodings.put("ebcdic-cp-dk", "Cp277"); 
+	_canonicalEncodings.put("ebcdic-cp-no", "Cp277"); 
+	_canonicalEncodings.put("ebcdic-cp-fi", "Cp278"); 
+	_canonicalEncodings.put("ebcdic-cp-se", "Cp278"); 
+	_canonicalEncodings.put("ebcdic-cp-it", "Cp280"); 
+	_canonicalEncodings.put("ebcdic-cp-es", "Cp284"); 
+	_canonicalEncodings.put("ebcdic-cp-gb", "Cp285"); 
+	_canonicalEncodings.put("ebcdic-cp-fr", "Cp297"); 
+	_canonicalEncodings.put("ebcdic-cp-ar1", "Cp420"); 
+	_canonicalEncodings.put("ebcdic-cp-he", "Cp424"); 
+	_canonicalEncodings.put("ebcdic-cp-ch", "Cp500"); 
+	_canonicalEncodings.put("ebcdic-cp-roece", "Cp870");
+	_canonicalEncodings.put("ebcdic-cp-yu", "Cp870"); 
+	_canonicalEncodings.put("ebcdic-cp-is", "Cp871"); 
+	_canonicalEncodings.put("ebcdic-cp-ar2", "Cp918");   
+    }
+
+    public static String getCanonicalEncoding(String encoding) {
+	String canonical = 
+	    (String)_canonicalEncodings.get(encoding.toLowerCase());
+	return (canonical != null) ? canonical : encoding;
+    }
+
     protected StreamOutput(StreamOutput output) {
 	_writer = output._writer;
 	_encoding = output._encoding;
 	_is8859Encoded = output._is8859Encoded;
 	_buffer = output._buffer;
+	_indentNumber = output._indentNumber;
     }
 
     protected StreamOutput(Writer writer, String encoding) {
 	_writer = writer;
 	_encoding = encoding;
 	_is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
-	_buffer = new StringBuffer(BUFFER_SIZE);
     }
 
     protected StreamOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	try {
-	    _writer = new OutputStreamWriter(out, _encoding = encoding);
+	    _writer = new OutputStreamWriter(out, 
+					     getCanonicalEncoding(encoding));
+	    _encoding = encoding;
 	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
 	}
 	catch (UnsupportedEncodingException e) {
 	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
 	}
-	_buffer = new StringBuffer(BUFFER_SIZE);
+    }
+
+    public void setIndentNumber(int value) {
+	_indentNumber = value;
     }
 
     /**
@@ -187,22 +223,9 @@ abstract class StreamOutput extends OutputBase {
 
     protected void outputBuffer() {
 	try {
-	    int n = 0;
-	    final int length = _buffer.length();
-	    final String output = _buffer.toString();
-
-	    // Output buffer in chunks of OUTPUT_BUFFER_SIZE 
-	    if (length > OUTPUT_BUFFER_SIZE) {
-		do {
-		    _writer.write(output, n, OUTPUT_BUFFER_SIZE);
-		    n += OUTPUT_BUFFER_SIZE;
-		} while (n + OUTPUT_BUFFER_SIZE < length);
-	    }
-	    _writer.write(output, n, length - n);
-	    _writer.flush();
+	    _writer.write(_buffer.close());
 	}
 	catch (IOException e) {
-	    // ignore
 	}
     }
 
@@ -228,62 +251,18 @@ abstract class StreamOutput extends OutputBase {
     protected void indent(boolean linefeed) {
         if (linefeed) {
             _buffer.append('\n');
-	}
 
-	_buffer.append(INDENT, 0, 
-	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel + _indentLevel 
-		: MAX_INDENT);
+	    _buffer.append(INDENT, 0, 
+		_indentLevel < MAX_INDENT_LEVEL ? 
+		    _indentLevel * _indentNumber : MAX_INDENT);
+	}
     }
 
+    /**
+     * This method escapes special characters used in text nodes. It
+     * is overriden for XML and HTML output.
+     */
     protected void escapeCharacters(char[] ch, int off, int len) {
-	int limit = off + len;
-	int offset = off;
-
-	if (limit > ch.length) {
-	    limit = ch.length;
-	}
-
-	// Step through characters and escape all special characters
-	for (int i = off; i < limit; i++) {
-	    final char current = ch[i];
-
-	    switch (current) {
-	    case '&':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(AMP);
-		offset = i + 1;
-		break;
-	    case '<':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(LT);
-		offset = i + 1;
-		break;
-	    case '>':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(GT);
-		offset = i + 1;
-		break;
-	    case '\u00a0':
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(NBSP);
-		offset = i + 1;
-		break;
-	    default:
-		if ((current >= '\u007F' && current < '\u00A0') ||
-		    (_is8859Encoded && current > '\u00FF'))
-		{
-		    _buffer.append(ch, offset, i - offset);
-		    _buffer.append(CHAR_ESC_START);
-		    _buffer.append(Integer.toString((int)ch[i]));
-		    _buffer.append(';');
-		    offset = i + 1;
-		}
-	    }
-	}
-	// Output remaining characters (that do not need escaping).
-	if (offset < limit) {
-	    _buffer.append(ch, offset, limit - offset);
-	}
     }
 
     protected void appendAttributes() {
@@ -306,5 +285,34 @@ abstract class StreamOutput extends OutputBase {
 	appendAttributes();
 	_buffer.append('>');
 	_startTagOpen = false;
+    }
+
+    /**
+     * Ensure that comments do not include the sequence "--" and
+     * that they do not end with "-".
+     */
+    protected void appendComment(String comment) 
+	throws TransletException 
+    {
+	boolean lastIsDash = false;
+	final int n = comment.length();
+
+	_buffer.append("<!--");
+	for (int i = 0; i < n; i++) {
+	    final char ch = comment.charAt(i);
+	    final boolean isDash = (ch == '-');
+
+	    if (lastIsDash && isDash) {
+		_buffer.append(" -");
+	    }
+	    else {
+		_buffer.append(ch);
+	    }
+	    lastIsDash = isDash;
+	}
+	if (lastIsDash) {
+	    _buffer.append(' ');
+	}
+	_buffer.append("-->");
     }
 }

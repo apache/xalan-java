@@ -171,10 +171,13 @@ final class RelationalExpr extends Expression implements Operators {
 	    if (tright instanceof NodeType) {
 		_right = new CastExpr(_right, Type.NodeSet);
 	    }
-
 	    // Promote integer to doubles to have fewer compares
 	    if (tright instanceof IntType) {
 		_right = new CastExpr(_right, Type.Real);
+	    }
+	    // Promote result-trees to strings
+	    if (tright instanceof ResultTreeType) {
+		_right = new CastExpr(_right, Type.String);
 	    }
 	    return _type = Type.Boolean;
 	}
@@ -222,7 +225,6 @@ final class RelationalExpr extends Expression implements Operators {
 	    _right.startResetIterator(classGen, methodGen);
 
 	    il.append(new PUSH(cpg, _op));
-	    il.append(methodGen.loadContextNode());
 	    il.append(methodGen.loadDOM());
 
 	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "compare",
@@ -230,7 +232,6 @@ final class RelationalExpr extends Expression implements Operators {
 					 + _left.getType().toSignature() 
 					 + _right.getType().toSignature()
 					 + "I"
-					 + NODE_SIG
 					 + DOM_INTF_SIG
 					 + ")Z");
 	    il.append(new INVOKESTATIC(index));

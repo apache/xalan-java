@@ -68,6 +68,7 @@ package org.apache.xalan.xsltc.trax;
 import java.io.Serializable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.security.AccessController;
@@ -82,91 +83,161 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 public final class TemplatesImpl implements Templates, Serializable {
 
-    // Contains the name of the main translet class
-    private String   _name = null;
+    /**
+     * Name of the superclass of all translets. This is needed to
+     * determine which, among all classes comprising a translet, 
+     * is the main one.
+     */
+    private static String ABSTRACT_TRANSLET 
+	= "org.apache.xalan.xsltc.runtime.AbstractTranslet";
 
-    // Contains the actual class definition for the translet class and
-    // any auxiliary classes (representing node sort records, predicates, etc.)
+    /**
+     * Name of the main class or default name if unknown.
+     */
+    private String _name = null;
+
+    /**
+     * Contains the actual class definition for the translet class and
+     * any auxiliary classes.
+     */
     private byte[][] _bytecodes = null;
 
-    // Contains the translet class definition(s). These are created when this
-    // Templates is first instanciated or read back from disk (see readObject())
-    private Class[]  _class = null;
+    /**
+     * Contains the translet class definition(s). These are created when 
+     * this Templates is created or when it is read back from disk.
+     */
+    private Class[] _class = null;
 
-    // This tells us which index the main translet class has in the _class
-    // and _bytecodes arrays (above).
+    /**
+     * The index of the main translet class in the arrays _class[] and
+     * _bytecodes.
+     */
     private int _transletIndex = -1;
     
+    /**
+     * Output properties of this translet.
+     */
     private Properties _outputProperties; 
 
-    // Temporary
-    private boolean _oldOutputSystem;
+    /**
+     * Number of spaces to add for output indentation.
+     */
+    private int _indentNumber;
 
-    // Our own private class loader - builds Class definitions from bytecodes
+    /**
+     * This URIResolver is passed to all Transformers.
+     */
+    private URIResolver _uriResolver = null;
+
+    /**
+     * A reference to the transformer factory that this templates
+     * object belongs to.
+     */
+    private transient TransformerFactoryImpl _tfactory = null;
+
     private class TransletClassLoader extends ClassLoader {
 
 	protected TransletClassLoader(ClassLoader parent){
 	    super(parent);
 	}
-
 	public Class defineClass(byte[] b) {
 	    return super.defineClass(null, b, 0, b.length);
 	}
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-	out.writeObject(_name);
-	out.writeObject(_bytecodes);
-	out.flush();
-    }
 
-    public void readExternal(ObjectInput in)
-	throws IOException, ClassNotFoundException {
-	_name      = (String)in.readObject();
-	_bytecodes = (byte[][])in.readObject();
-	_class     = null; // must be created again...
-    }
-
-    /**
+   /**
      * The only way to create an XSLTC emplate object
      * The bytecodes for the translet and auxiliary classes, plus the name of
      * the main translet class, must be supplied
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName,
-	Properties outputProperties, boolean oldOutputSystem) 
+	Properties outputProperties, int indentNumber,
+	TransformerFactoryImpl tfactory) 
     {
 	_bytecodes = bytecodes;
 	_name      = transletName;
 	_outputProperties = outputProperties;
-	_oldOutputSystem = oldOutputSystem;
+	_indentNumber = indentNumber;
+	_tfactory = tfactory;
+    }
+
+    /**
+     * Need for de-serialization, see readObject().
+     */
+    public TemplatesImpl() { }
+
+    /**
+     *  Overrides the default readObject implementation since we decided
+     *  it would be cleaner not to serialize the entire tranformer
+     *  factory.  [ ref bugzilla 12317 ]
+     */
+    private void  readObject(ObjectInputStream is) 
+      throws IOException, ClassNotFoundException 
+    {
+	is.defaultReadObject();
+	_tfactory = new TransformerFactoryImpl();
+    } 
+
+     /**
+     * Store URIResolver needed for Transformers.
+     */
+    public synchronized void setURIResolver(URIResolver resolver) {
+	_uriResolver = resolver;
     }
 
     /**
      * The TransformerFactory must pass us the translet bytecodes using this
      * method before we can create any translet instances
      */
-    protected void setTransletBytecodes(byte[][] bytecodes) {
+    protected synchronized void setTransletBytecodes(byte[][] bytecodes) {
 	_bytecodes = bytecodes;
     }
 
     /**
      * Returns the translet bytecodes stored in this template
      */
-    protected byte[][] getTransletBytecodes() {
-	return(_bytecodes);
+    public synchronized byte[][] getTransletBytecodes() {
+	return _bytecodes;
+    }
+
+    /**
+     * Returns the translet bytecodes stored in this template
+     */
+    public synchronized Class[] getTransletClasses() {
+	try {
+	    if (_class == null) defineTransletClasses();
+	}
+	catch (TransformerConfigurationException e) {
+	    // Falls through
+	}
+	return _class;
+    }
+
+    /**
+     * Returns the index of the main class in array of bytecodes
+     */
+    public synchronized int getTransletIndex() {
+	try {
+	    if (_class == null) defineTransletClasses();
+	}
+	catch (TransformerConfigurationException e) {
+	    // Falls through
+	}
+	return _transletIndex;
     }
 
     /**
      * The TransformerFactory should call this method to set the translet name
      */
-    protected void setTransletName(String name) {
+    protected synchronized void setTransletName(String name) {
 	_name = name;
     }
 
     /**
      * Returns the name of the main translet class stored in this template
      */
-    protected String getTransletName() {
+    protected synchronized String getTransletName() {
 	return _name;
     }
 
@@ -203,22 +274,25 @@ public final class TemplatesImpl implements Templates, Serializable {
 
 	    for (int i = 0; i < classCount; i++) {
 		_class[i] = loader.defineClass(_bytecodes[i]);
-		if (_class[i].getName().equals(_name))
+		final Class superClass = _class[i].getSuperclass();
+
+		// Check if this is the main class
+		if (superClass.getName().equals(ABSTRACT_TRANSLET)) {
 		    _transletIndex = i;
+		}
 	    }
 
 	    if (_transletIndex < 0) {
-		ErrorMsg err= new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR,_name);
+		ErrorMsg err= new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR, _name);
 		throw new TransformerConfigurationException(err.toString());
 	    }
 	}
-
 	catch (ClassFormatError e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (LinkageError e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
     }
@@ -235,25 +309,23 @@ public final class TemplatesImpl implements Templates, Serializable {
 
 	    if (_class == null) defineTransletClasses();
 
-	    // The translet needs a reference to all its auxiliary class
-	    // definitions so that it can instanciate them on the fly. You
-	    // wouldn't think this is necessary, but it seems like the JVM
-	    // quickly forgets the classes we define here and the translet
-	    // needs to know them as long as it exists.
-	    Translet translet = (Translet)_class[_transletIndex].newInstance();
+	    // The translet needs to keep a reference to all its auxiliary 
+	    // class to prevent the GC from collecting them
+	    Translet translet = (Translet) _class[_transletIndex].newInstance();
 	    final int classCount = _bytecodes.length;
 	    for (int i = 0; i < classCount; i++) {
-		if (i != _transletIndex)
+		if (i != _transletIndex) {
 		    translet.addAuxiliaryClass(_class[i]);
+		}
 	    }
 	    return translet;
 	}
 	catch (InstantiationException e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (IllegalAccessException e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
     }
@@ -263,22 +335,27 @@ public final class TemplatesImpl implements Templates, Serializable {
      *
      * @throws TransformerConfigurationException
      */
-    public Transformer newTransformer()
-	throws TransformerConfigurationException {
-        return new TransformerImpl(getTransletInstance(), _outputProperties,
-	    _oldOutputSystem);
+    public synchronized Transformer newTransformer()
+	throws TransformerConfigurationException 
+    {
+	final TransformerImpl transformer =
+	    new TransformerImpl(getTransletInstance(), _outputProperties,
+			        _indentNumber, _tfactory);
+	if (_uriResolver != null) {
+	    transformer.setURIResolver(_uriResolver);
+	}
+	return transformer;
     }
 
     /**
-     * Implements JAXP's Templates.getOutputProperties()
+     * Implements JAXP's Templates.getOutputProperties(). We need to 
+     * instanciate a translet to get the output settings, so
+     * we might as well just instanciate a Transformer and use its
+     * implementation of this method.
      */
-    public Properties getOutputProperties() { 
-	// We need to instanciate a translet to get the output settings, so
-	// we might as well just instanciate a Transformer and use its
-	// implementation of this method
+    public synchronized Properties getOutputProperties() { 
 	try {
-	    Transformer transformer = newTransformer();
-	    return transformer.getOutputProperties();
+	    return newTransformer().getOutputProperties();
 	}
 	catch (TransformerConfigurationException e) {
 	    return null;

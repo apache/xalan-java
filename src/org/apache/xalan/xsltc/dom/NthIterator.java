@@ -83,21 +83,37 @@ public final class NthIterator extends NodeIteratorBase {
 	_source.setRestartable(isRestartable);
     }
     
+    public NodeIterator cloneIterator() {
+	try {
+	    final NthIterator clone = (NthIterator) super.clone();
+	    clone._source = _source.cloneIterator();	// resets source
+	    clone._isRestartable = false;
+	    return clone;
+	}
+	catch (CloneNotSupportedException e) {
+	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+				      e.toString());
+	    return null;
+	}
+    }
+
     public int next() {
 	if (_ready && _position > 0) {
+            final int pos = _source.isReverse()
+                                       ? _source.getLast() - _position + 1
+                                       : _position;
+
 	    _ready = false;
-	    // skip N-1 nodes
-	    final int pos = _position;
-	    for (int n = pos - 1; n-- > 0;) {
-		if (_source.next() == NodeIterator.END) {
-		    return NodeIterator.END;
+	    int node;
+	    while ((node = _source.next()) != END) {
+		if (pos == _source.getPosition()) {
+		    return node;
 		}
 	    }
-	    return _source.next();
 	}
-	return NodeIterator.END;
+	return END;
     }
-	
+
     public NodeIterator setStartNode(final int node) {
 	if (_isRestartable) {
 	    _source.setStartNode(node);
@@ -120,22 +136,11 @@ public final class NthIterator extends NodeIteratorBase {
 	return 1;
     }
     
-    public boolean isReverse() {
-	return _source.isReverse();
-    }
-    
     public void setMark() {
 	_source.setMark();
     }
     
     public void gotoMark() {
 	_source.gotoMark();
-    }
-
-    public NodeIterator cloneIterator() {
-	NodeIterator clone = _source.cloneIterator();
-	NthIterator other = new NthIterator(clone, _position);
-	other.setRestartable(false);
-	return other.reset();
     }
 }

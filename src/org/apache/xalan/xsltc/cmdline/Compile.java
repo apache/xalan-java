@@ -82,8 +82,8 @@ public final class Compile {
 
     // Versioning numbers  for the compiler -v option output
     private static int VERSION_MAJOR = 1;
-    private static int VERSION_MINOR = 0;
-    private static int VERSION_DELTA = 0;
+    private static int VERSION_MINOR = 2;
+    private static int VERSION_DELTA = 1;
  
 
     // This variable should be set to false to prevent any methods in this 
@@ -148,7 +148,7 @@ public final class Compile {
 		    _allowExit = false;
 		    break;
 		case 'n':
-		    xsltc.setTemplateInlining(false);
+		    xsltc.setTemplateInlining(true);	// used to be 'false'
 		    break;
 		case 'v':
 		    // fall through to case h

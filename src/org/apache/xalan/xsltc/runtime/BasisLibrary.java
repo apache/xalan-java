@@ -69,6 +69,7 @@ package org.apache.xalan.xsltc.runtime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import java.text.NumberFormat;
 import java.text.MessageFormat;
 import java.text.FieldPosition;
 import java.text.DecimalFormat;
@@ -85,6 +86,17 @@ import org.apache.xalan.xsltc.dom.MultiDOM;
 import org.apache.xalan.xsltc.dom.AbsoluteIterator;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
 
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.StepIterator;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import javax.xml.parsers.DocumentBuilderFactory; 
+import javax.xml.parsers.DocumentBuilder; 
+import org.apache.xalan.xsltc.trax.DOM2SAX;
+
 /**
  * Standard XSLT functions. All standard functions expect the current node 
  * and the DOM as their last two arguments.
@@ -98,6 +110,15 @@ public final class BasisLibrary implements Operators {
      */
     public static int countF(NodeIterator iterator) {
 	return(iterator.getLast());
+    }
+
+    /**
+     * Standard function position()
+     */
+    public static int positionF(NodeIterator iterator) {
+       return iterator.isReverse()
+                     ? iterator.getLast() - iterator.getPosition() + 1
+                     : iterator.getPosition();
     }
 
     /**
@@ -452,12 +473,43 @@ public final class BasisLibrary implements Operators {
     }
 
     /**
+     * Implements the object-type() extension function.
+     * 
+     * @see <a href="http://www.exslt.org/">EXSLT</a>
+     */
+    public static String objectTypeF(Object obj)
+    {
+      if (obj instanceof String)
+        return "string";
+      else if (obj instanceof Boolean)
+        return "boolean";
+      else if (obj instanceof Number)
+        return "number";
+      else if (obj instanceof DOMAdapter)
+        return "RTF";
+      else if (obj instanceof NodeIterator)
+        return "node-set";
+      else
+        return "unknown";
+    }  
+
+    /**
      * Implements the nodeset() extension function. 
      */
-    public static NodeIterator nodesetF(DOM rtf) {
-	final DOMAdapter adapter = (DOMAdapter) rtf;
-	return new SingletonIterator(
-	    DOM.ROOTNODE | adapter.getMultiDOMMask(), true);
+    public static NodeIterator nodesetF(Object obj) {
+	if (obj instanceof DOM) {
+	   final DOMAdapter adapter = (DOMAdapter) obj;
+	   return new SingletonIterator(
+		  DOM.ROOTNODE | adapter.getMultiDOMMask(), true);
+	}
+        else if (obj instanceof NodeIterator) {
+	   return (NodeIterator) obj;
+        }
+        else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "node-set", className);
+	    return null;
+        }
     }
 
     //-- Begin utility functions
@@ -497,7 +549,8 @@ public final class BasisLibrary implements Operators {
      * Utility function: node-set/node-set compare. 
      */
     public static boolean compare(NodeIterator left, NodeIterator right,
-				  int op, int node, DOM dom) {
+				  int op, DOM dom) 
+    {
 	int lnode;
 	left.reset();
 	
@@ -515,24 +568,10 @@ public final class BasisLibrary implements Operators {
 	return false;
     }
 
-    /**
-     * Utility function: node/node-set compare.
-     */
-    public static boolean compare(int node, NodeIterator nodeSet,
-				  int op, DOM dom) {
-	final String lvalue = dom.getNodeValue(node);
-	int rnode;
-	//nodeSet.reset();
-	while ((rnode = nodeSet.next()) != NodeIterator.END) {
-	    if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
-		return true;
-	    }
-	} 
-	return false;
-    }
 
     public static boolean compare(int node, NodeIterator iterator,
-				  int op, int dummy, DOM dom) {
+				  int op, DOM dom) 
+    {
 	//iterator.reset();
 
 	int rnode;
@@ -540,46 +579,40 @@ public final class BasisLibrary implements Operators {
 
 	switch(op) {
 	case EQ:
-	    /* TODO:
-	     * This needs figuring out: What sort of comparison is done here?
-	     * Are we comparing exact node id's, node types, or node values?
-	     * Values is the obvious for attributes, but what about elements?
-	     */
 	    value = dom.getNodeValue(node);
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != NodeIterator.END) {
 		if (value.equals(dom.getNodeValue(rnode))) return true;
-	    // if (rnode == node) return true; It just ain't that easy!!!
+	    }
 	    break;
 	case NE:
 	    value = dom.getNodeValue(node);
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != NodeIterator.END) {
 		if (!value.equals(dom.getNodeValue(rnode))) return true;
-	    // if (rnode != node) return true;
+	    }
 	    break;
 	case LT:
 	    // Assume we're comparing document order here
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != NodeIterator.END) {
 		if (rnode > node) return true;
+	    }
 	    break;
 	case GT:
 	    // Assume we're comparing document order here
-	    while ((rnode = iterator.next()) != NodeIterator.END)
+	    while ((rnode = iterator.next()) != NodeIterator.END) {
 		if (rnode < node) return true;
+	    }
 	    break;
 	} 
 	return(false);
     }
 
-    public static boolean compare(NodeIterator left, final double rnumber,
-				  final int op, final int node, DOM dom) {
-	return(compare(left,rnumber,op,dom));
-    }
 
     /**
      * Utility function: node-set/number compare.
      */
     public static boolean compare(NodeIterator left, final double rnumber,
-				  final int op, DOM dom) {
+				  final int op, DOM dom) 
+    {
 	int node;
 	//left.reset();
 
@@ -637,7 +670,8 @@ public final class BasisLibrary implements Operators {
      * Utility function: node-set/string comparison. 
      */
     public static boolean compare(NodeIterator left, final String rstring,
-				  int op, DOM dom) {
+				  int op, DOM dom) 
+    {
 	int node;
 	//left.reset();
 	while ((node = left.next()) != NodeIterator.END) {
@@ -648,19 +682,10 @@ public final class BasisLibrary implements Operators {
 	return false;
     }
 
-    public static boolean compare(NodeIterator left, final String rstring,
-				  int op, int node, DOM dom) {
-	
-	if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
-	    return true;
-	}
-	else {
-	    return false;
-	}
-    }
 
     public static boolean compare(Object left, Object right,
-				  int op, int node, DOM dom) { 
+				  int op, DOM dom) 
+    { 
 	boolean result = false;
 	boolean hasSimpleArgs = hasSimpleType(left) && hasSimpleType(right);
 
@@ -758,10 +783,9 @@ public final class BasisLibrary implements Operators {
 	    NodeIterator iter = ((NodeIterator)left).reset();
 
 	    if (right instanceof NodeIterator) {
-		result = compare(iter, (NodeIterator)right, op, node, dom);
+		result = compare(iter, (NodeIterator)right, op, dom);
 	    }
 	    else if (right instanceof String) {
-		//result = compare(iter, (String)right, op, node, dom);
 		result = compare(iter, (String)right, op, dom);
 	    }	
 	    else if (right instanceof Number) {
@@ -774,7 +798,7 @@ public final class BasisLibrary implements Operators {
 	    }
 	    else if (right instanceof DOM) {
 		result = compare(iter, ((DOM)right).getStringValue(),
-				 op, node, dom);
+				 op, dom);
 	    }
 	    else if (right == null) {
 		return(false);
@@ -811,7 +835,7 @@ public final class BasisLibrary implements Operators {
     private static boolean hasSimpleType(Object obj) {
 	return obj instanceof Boolean || obj instanceof Double ||
 	    obj instanceof Integer || obj instanceof String ||
-	    obj instanceof Node;
+	    obj instanceof Node || obj instanceof DOM; 
     }
 
     /**
@@ -844,7 +868,12 @@ public final class BasisLibrary implements Operators {
     private static String defaultPattern = "";
 
     static {
-	defaultFormatter = new DecimalFormat();
+	NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
+	// set max fraction digits so that truncation does not occur,
+	// see conf test string134
+	f.setMaximumFractionDigits(Integer.MAX_VALUE);
+	defaultFormatter = (f instanceof DecimalFormat) ?
+	    (DecimalFormat) f : new DecimalFormat();
 	defaultFormatter.setGroupingUsed(false);
     }
 
@@ -887,9 +916,15 @@ public final class BasisLibrary implements Operators {
 
     public static String formatNumber(double number, String pattern,
 				      DecimalFormat formatter) {
+        // bugzilla fix 12813 
+	if (formatter == null) {
+	    formatter = defaultFormatter;
+	}
 	try {
 	    StringBuffer result = new StringBuffer();
-	    formatter.applyLocalizedPattern(pattern);
+	    if (pattern != defaultPattern) {
+		formatter.applyLocalizedPattern(pattern);
+	    }
 
 	    //------------------------------------------------------
  	    // bug fix # 9179 - make sure localized pattern contains
@@ -942,6 +977,223 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
 	    return null;
 	}
+    }
+    
+    /**
+     * Utility function: used to convert reference to org.w3c.dom.NodeList.
+     */
+    public static NodeList referenceToNodeList(Object obj, DOM dom) {
+        if (obj instanceof Node || obj instanceof NodeIterator) {
+            NodeIterator iter = referenceToNodeSet(obj);
+            return dom.makeNodeList(iter);
+        }
+        else if (obj instanceof DOM) {
+          dom = (DOM)obj;
+          return dom.makeNodeList(DOM.ROOTNODE);
+        }
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
+
+    /**
+     * Utility function: used to convert reference to org.w3c.dom.Node.
+     */
+    public static org.w3c.dom.Node referenceToNode(Object obj, DOM dom) {
+        if (obj instanceof Node || obj instanceof NodeIterator) {
+            NodeIterator iter = referenceToNodeSet(obj);
+            return dom.makeNode(iter);
+        }
+        else if (obj instanceof DOM) {
+          dom = (DOM)obj;
+          NodeIterator iter = dom.getChildren(DOM.ROOTNODE);
+          return dom.makeNode(iter);
+        }
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
+    
+    /**
+     * Utility function used to convert a w3c Node into an internal DOM iterator. 
+     */
+    public static NodeIterator node2Iterator(org.w3c.dom.Node node,
+	Translet translet, DOM dom) 
+    {
+        final org.w3c.dom.Node inNode = node;
+        // Create a dummy NodeList which only contains the given node to make 
+        // use of the nodeList2Iterator() interface.
+        org.w3c.dom.NodeList nodelist = new org.w3c.dom.NodeList() {            
+            public int getLength() {
+                return 1;
+            }
+            
+            public org.w3c.dom.Node item(int index) {
+                if (index == 0)
+                    return inNode;
+                else
+                    return null;
+            }
+        };
+        
+        return nodeList2Iterator(nodelist, translet, dom);
+    }
+    
+    /**
+     * Utility function used to copy a node list to be under a parent node.
+     */
+    private static void copyNodes(org.w3c.dom.NodeList nodeList, 
+	org.w3c.dom.Document doc, org.w3c.dom.Node parent)
+    {
+          // copy Nodes from NodeList into new w3c DOM
+        for (int i = 0; i < nodeList.getLength(); i++) 
+        {
+            org.w3c.dom.Node curr = nodeList.item(i);
+            int nodeType = curr.getNodeType();
+            String value = null;
+            try {
+                value = curr.getNodeValue();
+            } catch (DOMException ex) {
+                runTimeError(RUN_TIME_INTERNAL_ERR, ex.getMessage());
+                return;
+            }
+            
+            String nodeName = curr.getNodeName();
+            org.w3c.dom.Node newNode = null; 
+            switch (nodeType){
+                case org.w3c.dom.Node.ATTRIBUTE_NODE:
+                     newNode = doc.createAttributeNS(curr.getNamespaceURI(), 
+			nodeName);
+                     break;
+                case org.w3c.dom.Node.CDATA_SECTION_NODE: 
+                     newNode = doc.createCDATASection(value);
+                     break;
+                case org.w3c.dom.Node.COMMENT_NODE: 
+                     newNode = doc.createComment(value);
+                     break;
+                case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE: 
+                     newNode = doc.createDocumentFragment();
+                     break;
+                case org.w3c.dom.Node.DOCUMENT_NODE:
+                     newNode = doc.createElementNS(null, "__document__");
+                     copyNodes(curr.getChildNodes(), doc, newNode);
+                     break;
+                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE:
+                     // nothing?
+                     break;
+                case org.w3c.dom.Node.ELEMENT_NODE: 
+                     // For Element node, also copy the children and the 
+		     // attributes.
+                     org.w3c.dom.Element element = doc.createElementNS(
+			curr.getNamespaceURI(), nodeName);
+                     if (curr.hasAttributes())
+                     {
+                       org.w3c.dom.NamedNodeMap attributes = curr.getAttributes();
+                       for (int k = 0; k < attributes.getLength(); k++) {
+                         org.w3c.dom.Node attr = attributes.item(k);
+                         element.setAttribute(attr.getNodeName(), 
+			    attr.getNodeValue());
+                       }
+                     }
+                     copyNodes(curr.getChildNodes(), doc, element);
+                     newNode = element;
+                     break;
+                case org.w3c.dom.Node.ENTITY_NODE: 
+                     // nothing ? 
+                     break;
+                case org.w3c.dom.Node.ENTITY_REFERENCE_NODE: 
+                     newNode = doc.createEntityReference(nodeName);
+                     break;
+                case org.w3c.dom.Node.NOTATION_NODE: 
+                     // nothing ? 
+                     break;
+                case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE: 
+                     newNode = doc.createProcessingInstruction(nodeName,
+                        value);
+                     break;
+                case org.w3c.dom.Node.TEXT_NODE: 
+                     newNode = doc.createTextNode(value);
+                     break;
+            }
+            try {
+                parent.appendChild(newNode);
+            } catch (DOMException e) {
+                runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
+                return;
+            }           
+        }
+    }
+
+    /**
+     * Utility function used to convert a w3c NodeList into a internal
+     * DOM iterator. 
+     */
+    public static NodeIterator nodeList2Iterator(org.w3c.dom.NodeList nodeList,
+	Translet translet, DOM dom) 
+    {
+	int size = nodeList.getLength();
+
+	// w3c NodeList -> w3c DOM
+	DocumentBuilderFactory dfac = DocumentBuilderFactory.newInstance();
+	DocumentBuilder docbldr = null;
+	try {
+	    docbldr = dfac.newDocumentBuilder();
+	} catch (javax.xml.parsers.ParserConfigurationException e) {
+	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
+            return null;
+
+	}
+	// create new w3c DOM
+	Document doc = docbldr.newDocument();	
+        org.w3c.dom.Node topElementNode = 
+            doc.appendChild(doc.createElementNS("", "__top__"));
+
+        // Copy all the nodes in the nodelist to be under the top element
+        copyNodes(nodeList, doc, topElementNode);
+        
+	// w3c DOM -> DOM2SAX -> DOMBuilder -> DOMImpl
+	DOMImpl idom = new DOMImpl();
+	final DOM2SAX dom2sax = new DOM2SAX(doc);
+	final DOMBuilder domBuilder = idom.getBuilder();
+	dom2sax.setContentHandler(domBuilder);
+	try {
+	    dom2sax.parse(); 
+	} 
+        catch (java.io.IOException e){
+	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
+            return null;
+	}
+        catch (org.xml.sax.SAXException e){
+	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
+            return null;
+	}
+	
+
+	if (dom instanceof MultiDOM) {
+            final MultiDOM multiDOM = (MultiDOM) dom;
+
+	    // Create DOMAdapter and register with MultiDOM
+	    DOMAdapter domAdapter = new DOMAdapter(idom, 
+                translet.getNamesArray(),
+		translet.getNamespaceArray());
+            multiDOM.addDOMAdapter(domAdapter);
+
+	    NodeIterator iter1 = multiDOM.getAxisIterator(Axis.CHILD);
+	    NodeIterator iter2 = multiDOM.getAxisIterator(Axis.CHILD);
+            NodeIterator iter = new AbsoluteIterator(
+                new StepIterator(iter1, iter2));
+
+ 	    iter.setStartNode(DOM.ROOTNODE | domAdapter.getMultiDOMMask());
+	    return iter;
+	}
+        else {
+	    runTimeError(RUN_TIME_INTERNAL_ERR, "nodeList2Iterator()");
+	    return null;
+        }
     }
 
     /**
@@ -1000,7 +1252,49 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(RUN_TIME_COPY_ERR);
 	}
     }
-    
+
+    /**
+     * Utility function for the implementation of xsl:element.
+     */
+    public static String startXslElement(String qname, String namespace,
+	TransletOutputHandler handler, DOM dom, int node)
+    {
+	try {
+	    // Get prefix from qname
+	    String prefix;
+	    final int index = qname.indexOf(':');
+
+	    if (index > 0) {
+		prefix = qname.substring(0, index);
+
+		// Handle case when prefix is not known at compile time
+		if (namespace == null || namespace.length() == 0) {
+		    namespace = dom.lookupNamespace(node, prefix);
+		}
+
+		handler.startElement(qname);
+		handler.namespace(prefix, namespace); 
+	    }
+	    else {
+		// Need to generate a prefix?
+		if (namespace != null && namespace.length() > 0) {
+		    prefix = generatePrefix();
+		    qname = prefix + ':' + qname;   
+		    handler.startElement(qname);   
+		    handler.namespace(prefix, namespace);
+		}
+		else {
+		    handler.startElement(qname);   
+		}
+	    }
+	}
+	catch (TransletException e) {
+	    throw new RuntimeException(e.getMessage());
+	}
+
+	return qname;
+    }
+
     /**
      * This function is used in the execution of xsl:element
      */
@@ -1012,16 +1306,9 @@ public final class BasisLibrary implements Operators {
     /**
      * This function is used in the execution of xsl:element
      */
-    private static int prefixIndex = 0;
+    private static int prefixIndex = 0;		// not thread safe!!
     public static String generatePrefix() {
 	return ("ns" + prefixIndex++);
-    }
-
-    /**
-     * This function is used in the execution of xsl:element
-     */
-    public static String makeQName(String localName, String prefix) {
-	return (new StringBuffer(prefix).append(':').append(localName).toString());
     }
 
     public static final int RUN_TIME_INTERNAL_ERR   = 0;
@@ -1038,6 +1325,8 @@ public final class BasisLibrary implements Operators {
     public static final int STRAY_NAMESPACE_ERR     = 11;
     public static final int NAMESPACE_PREFIX_ERR    = 12;
     public static final int DOM_ADAPTER_INIT_ERR    = 13;
+    public static final int PARSER_DTD_SUPPORT_ERR  = 14;
+    public static final int NAMESPACES_SUPPORT_ERR  = 15;
 
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.

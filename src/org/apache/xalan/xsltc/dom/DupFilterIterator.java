@@ -66,128 +66,121 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletException;
 
+import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
+
+/**
+ * Removes duplicates and sorts a source iterator. The nodes from the 
+ * source are collected in an array upon calling setStartNode(). This
+ * array is later sorted and duplicates are ignored in next().
+ */
 public final class DupFilterIterator extends NodeIteratorBase {
 
-    private final static int INIT_DATA_SIZE = 16;
+    /**
+     * Reference to source iterator.
+     */
+    private NodeIterator _source;
 
-    private final NodeIterator _source; // the source iterator
-    private int[] _data = null;         // cached nodes from the source
-    private int _last = 0;              // the number of nodes in this iterator
+    /**
+     * Array to cache all nodes from source.
+     */
+    private IntegerArray _nodes = new IntegerArray();
+
+    /**
+     * Index in _nodes array to current node.
+     */
     private int _current = 0;
 
     /**
-     * Creates a new duplicate filter iterator based on an existing iterator.
-     * This iterator should be used with union expressions and other complex
-     * iterator combinations (like 'get me the parents of all child node in
-     * the dom' sort of thing). The iterator is also used to cache node-sets
-     * returned by id() and key() iterators.
-     * @param source The iterator this iterator will get its nodes from
+     * Cardinality of _nodes array.
      */
+    private int _nodesSize = 0; 
+
+    /**
+     * Last value returned by next().
+     */
+    private int _lastNext = END;
+
     public DupFilterIterator(NodeIterator source) {
-	// Save a reference to the source iterator
 	_source = source;
+// System.out.println("DFI source = " + source + " this = " + this);
 
 	// Cache contents of id() or key() index right away. Necessary for
 	// union expressions containing multiple calls to the same index, and
 	// correct as well since start-node is irrelevant for id()/key() exrp.
-	if (source instanceof KeyIndex) setStartNode(DOM.ROOTNODE);
+	if (source instanceof KeyIndex) {
+	    setStartNode(DOM.ROOTNODE);
+	}
     }
 
-    /**
-     * Returns the next node in this iterator - excludes duplicates.
-     * @return The next node in this iterator
-     */
-    public int next() {
-	return _current < _last ? _data[_current++] : END;
-    }
-
-    /**
-     * Set the start node for this iterator
-     * @param node The start node
-     * @return A reference to this node iterator
-     */
     public NodeIterator setStartNode(int node) {
+	if (_isRestartable) {
+	    // KeyIndex iterators are always relative to the root node, so there
+	    // is never any point in re-reading the iterator (and we SHOULD NOT).
+	    if (_source instanceof KeyIndex && _startNode == DOM.ROOTNODE) {
+		return this;
+	    }
 
-	int i, j; // loop variables declared first for speed - don't move!!!
+	    if (node != _startNode) {
+		_source.setStartNode(_startNode = node);
 
-	// KeyIndex iterators are always relative to the root node, so there
-	// is never any point in re-reading the iterator (and we SHOULD NOT).
-	if ((_source instanceof KeyIndex) && (_data != null)) return this;
-
-	// If the _data array is populated, and the current start node is
-	// equal to the new start node, we know we already have what we need.
-	if ((_data == null) || (node != _startNode)) {
-
-	    _startNode = node;
-	    _last = 0;
-	    _source.setStartNode(node);
-	    _data = new int[INIT_DATA_SIZE];
-
-	    // Gather all nodes from the source iterator, eliminate dups
-	    while ((node = _source.next()) != END) {
-		if (_last == _data.length) {
-		    int[] newArray = new int[_data.length * 2];
-		    System.arraycopy(_data, 0, newArray, 0, _last);
-		    _data = newArray;
+		_nodes.clear();
+		while ((node = _source.next()) != END) {
+		    _nodes.add(node);
 		}
-
-		// Go through all nodes in turn
-		for (i=0; i<_last; i++) {
-		    // Is this a duplicate of the new node
-		    if (_data[i] == node) {
-			break;
-		    }
-		    // Should the new node be inserted at this position?
-		    else if (_data[i] > node) {
-			for (j = _last++; j>i; j--)
-			    _data[j] = _data[j-1];
-			_data[i] = node;
-			break;
-		    }
-		}
-		if (i == _last) _data[_last++] = node;
+		_nodes.sort();
+		_nodesSize = _nodes.cardinality();
+		_current = 0;
+		_lastNext = END;
+		resetPosition();
 	    }
 	}
-
-	_current = 0;  // set to beginning 
 	return this;
     }
 
-    /**
-     * Returns the current position of the iterator. The position is within the
-     * node set covered by this iterator, not within the DOM.
-     */
-    public int getPosition() {
-	return (_current);
+
+    public int next() {
+	while (_current < _nodesSize) {
+	    final int next = _nodes.at(_current++);
+	    if (next != _lastNext) {
+		return returnNode(_lastNext = next);
+	    }
+	}
+	return END;
     }
 
-    /**
-     * Returns the position of the last node in this iterator. The integer
-     * returned is equivalent to the number of nodes in this iterator.
-     */
-    public int getLast() {
-	return _last;
+    public NodeIterator cloneIterator() {
+	try {
+	    final DupFilterIterator clone =
+		(DupFilterIterator) super.clone();
+	    clone._nodes = (IntegerArray) _nodes.clone();
+	    clone._source = _source.cloneIterator();
+	    clone._isRestartable = false;
+	    return clone.reset();
+	}
+	catch (CloneNotSupportedException e) {
+	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+				      e.toString());
+	    return null;
+	}
     }
 
-    /**
-     * Saves the position of this iterator - see gotoMark()
-     */
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	_source.setRestartable(isRestartable);
+    }
+
     public void setMark() {
-	_source.setMark();
 	_markedNode = _current;
     }
 
-    /**
-     * Restores the position of this iterator - see setMark()
-     */
     public void gotoMark() {
-	_source.gotoMark();
 	_current = _markedNode;
     }
 
     public NodeIterator reset() {
 	_current = 0;
-	return(this);
+	_lastNext = END;
+	return resetPosition();
     }
-
 }

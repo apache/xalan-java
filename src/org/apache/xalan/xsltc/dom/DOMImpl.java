@@ -153,6 +153,10 @@ public final class DOMImpl implements DOM, Externalizable {
     private final static String XML_LANG_ATTRIBUTE =
 	"http://www.w3.org/XML/1998/namespace:@lang";
 
+    // Types for generic elements and attributes
+    private final static Integer elementInt = new Integer(ELEMENT);
+    private final static Integer attributeInt = new Integer(ATTRIBUTE);
+
     /**
      * Define the origin of the document from which the tree was built
      */
@@ -164,7 +168,10 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the origin of the document from which the tree was built
      */
     public String getDocumentURI() {
-	return (_documentURI != null) ? _documentURI : "rtf" + _documentURIIndex++;
+	synchronized (getClass()) {	// synchornize access to static
+	    return (_documentURI != null) ? _documentURI : 
+					    "rtf" + _documentURIIndex++;
+	}
     }
 
     public String getDocumentURI(int node) {
@@ -202,8 +209,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	}
 
-	// TODO: Internationalization?
-	throw new TransletException("Namespace prefix '" + prefix + "' is undeclared.");
+        BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR, prefix);
+        return null;
     }
 
     /**
@@ -648,14 +655,13 @@ public final class DOMImpl implements DOM, Externalizable {
 		if (node >= _firstAttributeNode) node = NULL;
 		if (node != _startNode) _last = -1;
 		_startNode = node;
+
 		if (_includeSelf) {
 		    _currentChild = -1;
 		}
 		else {
-		    if (hasChildren(node))
-			_currentChild = _offsetOrChild[node];
-		    else
-			_currentChild = END;
+		    _currentChild = hasChildren(node) ? _offsetOrChild[node] 
+			: END;
 		}
 		return resetPosition();
 	    }
@@ -667,10 +673,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (_includeSelf) {
 		if (node == -1) {
 		    node = _startNode;
-		    if (hasChildren(node))
-			_currentChild = _offsetOrChild[node];
-		    else
-			_currentChild = END;
+		    _currentChild = hasChildren(node) ? _offsetOrChild[node] 
+			: END;
+
 		    // IMPORTANT: The start node (parent of all children) is
 		    // returned, but the node position counter (_position)
 		    // should not be increased, so returnNode() is not called
@@ -691,11 +696,16 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int getLast() {
 	    if (_last == -1) {
-		_last = 1;
-		int node = _offsetOrChild[_startNode];
-		while ((node = _nextSibling[node]) != END) _last++;
+		_last = 0;
+
+		int node;
+		if ((node = _offsetOrChild[_startNode]) != END) {
+		    do {
+			_last++;
+		    } while ((node = _nextSibling[node]) != END);
+		}
 	    }
-	    return(_last);
+	    return _last;
 	}
 
     } // end of ChildrenIterator
@@ -1144,26 +1154,20 @@ public final class DOMImpl implements DOM, Externalizable {
      * Iterator that returns preceding siblings of a given node
      */
     private class PrecedingSiblingIterator extends NodeIteratorBase {
-
+ 
 	private int _node;
-	private int _mom;
-         
+	private int _sibling;
+
 	public boolean isReverse() {
 	    return true;
 	}
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		if (node >= _firstAttributeNode) node = NULL;
-		int tmp = NULL;
-		_startNode = node;
-		_mom = _parent[node];
-		_node = _offsetOrChild[_mom];
-		while ((_node != node) && (_node != NULL)) {
-		    tmp = _node;
-		    _node = _nextSibling[_node];
-		}
-		_node = tmp;
+		_node = node;
+		_sibling = _startNode = (node >= _firstAttributeNode) ? 
+		    NULL : _offsetOrChild[_parent[node]];
+		_last = -1;
 		return resetPosition();
 	    }
 	    return this;
@@ -1171,27 +1175,30 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int next() {
 	    // Return NULL if end already reached
-	    if (_node == NULL) return NULL;
-
-	    int current = _offsetOrChild[_mom];
-
-	    // Otherwise find the next preceeding sibling
-	    int last = NULL;
-	    while ((current != _node) && (current != NULL)) {
-		last = current;
-		current = _nextSibling[current];
+	    if (_sibling == NULL) {
+		return END;
 	    }
-	    current = _node;
-	    _node = last;
+
+	    if (_sibling == _node) {
+		return (_node = END);
+	    }
+
+	    final int current = _sibling;
+	    _sibling = _nextSibling[current];
 	    return returnNode(current);
 	}
 
+	public NodeIterator reset() {
+	    _sibling = _startNode;
+	    return resetPosition();
+	}
+
 	public void setMark() {
-	    _markedNode = _node;
+	    _markedNode = _sibling;
 	}
 
 	public void gotoMark() {
-	    _node = _markedNode;
+	    _sibling = _markedNode;
 	}
 
     } // end of PrecedingSiblingIterator
@@ -1202,7 +1209,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * a given node
      */
     private final class TypedPrecedingSiblingIterator
-	extends PrecedingSiblingIterator {
+	extends PrecedingSiblingIterator 
+    {
 	private final int _nodeType;
 
 	public TypedPrecedingSiblingIterator(int type) {
@@ -1211,9 +1219,10 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType)
+	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
 		_position--;
-	    return(node);
+	    }
+	    return node;
 	}
 
     } // end of PrecedingSiblingIterator
@@ -1226,8 +1235,10 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     private class PrecedingIterator extends NodeIteratorBase {
 
-	private int _node = 0;
-	private int _mom = 0;
+	private int _node;
+	private int _ancestor;
+	private int _index, _markedIndex;
+	private IntegerArray _ancestorOrSelf = new IntegerArray();
 
 	public boolean isReverse() {
 	    return true;
@@ -1236,8 +1247,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeIterator cloneIterator() {
 	    try {
 		final PrecedingIterator clone = 
-		    (PrecedingIterator)super.clone();
+		    (PrecedingIterator) super.clone();
 		clone.setRestartable(false);
+		clone._ancestorOrSelf = (IntegerArray) _ancestorOrSelf.clone();
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1249,37 +1261,56 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		if (node >= _firstAttributeNode) node = _parent[node];
-		_node = _startNode = node;
-		_mom  = _parent[_startNode];
+		_ancestorOrSelf.clear();
+
+		if (node >= _firstAttributeNode) {
+		    node = _parent[node];
+		}
+		do {
+		    _ancestorOrSelf.add(node);
+		} while ((node = _parent[node]) > ROOTNODE);
+
+		_index = _ancestorOrSelf.cardinality() - 1;
+		_node = _ancestorOrSelf.at(_index) + 1;
+		_ancestor = (_index > 0) ? _ancestorOrSelf.at(--_index) 
+		    : ROOTNODE;
+
+		_last = -1;
 		return resetPosition();
 	    }
+
 	    return this;
 	}
-                  
+	    
 	public int next() {
-	    while (--_node > ROOTNODE) {
-		if (_node < _mom) _mom = _parent[_mom];
-		if (_node != _mom) return returnNode(_node);
+	    while (true) {
+		if (_node < _ancestor) {
+		    return returnNode(_node++);
+		}
+		if (--_index < 0) break;
+		_ancestor = _ancestorOrSelf.at(_index);
+		_node++;	// skip ancestor
 	    }
-	    return(NULL);
+	    return END;
 	}
 
-	// redefine NodeIteratorBase's reset
 	public NodeIterator reset() {
-	    _node = _startNode;
-	    _mom  = _parent[_startNode];
+	    _index = _ancestorOrSelf.cardinality() - 1;
+	    _node = _ancestorOrSelf.at(_index) + 1;
+	    _ancestor = (_index > 0) ? _ancestorOrSelf.at(--_index) : ROOTNODE;
 	    return resetPosition();
 	}
 
 	public void setMark() {
 	    _markedNode = _node;
+	    _markedIndex = _index;
 	}
 
 	public void gotoMark() {
 	    _node = _markedNode;
+	    _index = _markedIndex;
+	    _ancestor = _ancestorOrSelf.at(_markedIndex);
 	}
-
     } // end of PrecedingIterator
 
 
@@ -1297,8 +1328,9 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != NULL && _type[node] != _nodeType)
+	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
 		_position--; 
+	    }
 	    return node;
 	}
 
@@ -1379,26 +1411,13 @@ public final class DOMImpl implements DOM, Externalizable {
     private class AncestorIterator extends NodeIteratorBase {
 
 	protected int _index;
-	protected int _last = -1;
-
-	public final boolean isReverse() {
-	    return true;
-	}
-
-	public int getLast() {
-	    if (_last > -1) return _last;
-	    int count = 1;
-	    int node = _startNode;
-	    while ((node = _parent[node]) != ROOT) count++;
-	    _last = count;
-	    return(count);
-	}
+	protected IntegerArray _cache = new IntegerArray();
          
 	public NodeIterator cloneIterator() {
 	    try {
 		final AncestorIterator clone = (AncestorIterator)super.clone();
 		clone.setRestartable(false); // must set to false for any clone
-		clone._startNode = _startNode;
+		clone._cache = (IntegerArray) _cache.clone();
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1410,17 +1429,28 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_last = -1;
-		if (node >= _firstAttributeNode)
-		    _startNode = node = _parent[node];
-		else if (_includeSelf)
-		    _startNode = node;
-		else
-		    _startNode = _parent[node];
-		_index = _startNode;
+		_cache.clear();
+
+		if (_includeSelf) {
+		    _cache.add(node);
+		}
+		while ((node = _parent[node]) != NULL) {
+		    _cache.add(node);
+		}
+
+		_last = _cache.cardinality();
+		_startNode = _index = _last - 1;
 		return resetPosition();
 	    }
 	    return this;
+	}
+
+	public boolean isReverse() {
+	    return true;
+	}
+
+	public int getLast() {
+	    return _last;
 	}
 
 	public NodeIterator reset() {
@@ -1429,12 +1459,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
                   
 	public int next() {
-	    if (_index >= 0) {
-		final int node = _index;
-		_index = (_index == 0) ? -1 : _parent[_index];
-		return returnNode(node);
-	    }
-	    return(NULL);
+	    return (_index >= 0) ? 
+		returnNode(_cache.at(_index--)) : END;
 	}
 
 	public void setMark() {
@@ -1458,26 +1484,25 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _nodeType = type;
 	}
 
-	public int next() {
-	    int node;
-	    while ((node = super.next()) != NULL) {
-		if (_type[node] == _nodeType) return(node);
-		_position--;
+	public NodeIterator setStartNode(int node) {
+	    if (_isRestartable) {
+		_cache.clear();
+
+		if (_includeSelf && _type[node] == _nodeType) {
+		    _cache.add(node);
+		}
+		while ((node = _parent[node]) != NULL) {
+		    if (_nodeType == _type[node]) {
+			_cache.add(node);
+		    }
+		}
+
+		_last = _cache.cardinality();
+		_startNode = _index = _last - 1;
+		return resetPosition();
 	    }
-	    return(NULL);
+	    return this;
 	}
-
-	public int getLast() {
-	    if (_last > -1) return _last;
-	    int count = 1;
-	    int node = _startNode;
-	    do {
-		if (_type[node] == _nodeType) count++;
-	    } while ((node = _parent[node]) != ROOT);
-	    _last = count;
-	    return(count);
-	}
-
     } // end of TypedAncestorIterator
 
 
@@ -1887,87 +1912,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	return _parent[node];
     }
 
-    public int getElementPosition(int node) {
-	// Initialize with the first sbiling of the current node
-	int match = 0;
-	int curr  = _offsetOrChild[_parent[node]];
-	if (isElement(curr)) match++;
-
-	// Then traverse all other siblings up until the current node
-	while (curr != node) {
-	    curr = _nextSibling[curr];
-	    if (isElement(curr)) match++;
-	}
-
-	// And finally return number of matches
-	return match;         
-    }
-
-    public int getAttributePosition(int attr) {
-	// Initialize with the first sbiling of the current node
-	int match = 1;
-	int curr  = _lengthOrAttr[_parent[attr]];
-
-	// Then traverse all other siblings up until the current node
-	while (curr != attr) {
-	    curr = _nextSibling[curr];
-	    match++;
-	}
-
-	// And finally return number of matches
-	return match;         
-    }
-
-    /**
-     * Returns a node's position amongst other nodes of the same type
-     */
-    public int getTypedPosition(int type, int node) {
-	// Just return the basic position if no type is specified
-	switch(type) {
-	case ELEMENT:
-	    return getElementPosition(node);
-	case ATTRIBUTE:
-	    return getAttributePosition(node);
-	case -1:
-	    type = _type[node];
-	}
-
-	// Initialize with the first sbiling of the current node
-	int match = 0;
-	int curr  = _offsetOrChild[_parent[node]];
-	if (_type[curr] == type) match++;
-
-	// Then traverse all other siblings up until the current node
-	while (curr != node) {
-	    curr = _nextSibling[curr];
-	    if (_type[curr] == type) match++;
-	}
-
-	// And finally return number of matches
-	return match;         
-    }
-
-    /**
-     * Returns an iterator's last node of a given type
-     */
-    public int getTypedLast(int type, int node) {
-	// Just return the basic position if no type is specified
-	if (type == -1) type = _type[node];
-
-	// Initialize with the first sbiling of the current node
-	int match = 0;
-	int curr  = _offsetOrChild[_parent[node]];
-	if (_type[curr] == type) match++;
-
-	// Then traverse all other siblings up until the very last one
-	while (curr != NULL) {
-	    curr = _nextSibling[curr];
-	    if (_type[curr] == type) match++;
-	}
-
-	return match;         
-    }
-
     /**
      * Returns singleton iterator containg the document root
      * Works for them main document (mark == 0)
@@ -2050,16 +1994,13 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the internal type associated with an expaneded QName
      */
     public int getGeneralizedType(final String name) {
-	final Integer type = (Integer)_types.get(name);
+	Integer type = (Integer)_types.get(name);
 	if (type == null) {
 	    // memorize default type
-	    final int code = name.charAt(0) == '@' ? ATTRIBUTE : ELEMENT;
-	    _types.put(name, new Integer(code));
-	    return code;
+	    _types.put(name, 
+		type = (name.charAt(0) == '@') ? attributeInt : elementInt);
 	}
-	else {
-	    return type.intValue();
-	}
+	return type.intValue();
     }
 
     /**
@@ -2222,24 +2163,30 @@ public final class DOMImpl implements DOM, Externalizable {
 	_types         = setupMapping(_namesArray);
     }
 
-    /**
-     * Constructor - defaults to 32K nodes
+    /*
+     * These init sizes have been tuned for the average case. Do not
+     * change these values unless you know exactly what you're doing.
      */
+    static private final int SMALL_TEXT_SIZE   = 1024; 
+    static private final int DEFAULT_INIT_SIZE = 1024;
+    static private final int DEFAULT_TEXT_FACTOR = 10;
+
     public DOMImpl() {
-	//this(32*1024);
-	this(8*1024);
+	this(DEFAULT_INIT_SIZE);
+    }
+
+    public DOMImpl(int size) {
+	initialize(size, size < 128 ? SMALL_TEXT_SIZE : 
+	    size * DEFAULT_TEXT_FACTOR);
     }
          
-    /**
-     * Constructor - defines initial size
-     */
-    public DOMImpl(int size) {
+    private void initialize(int size, int textsize) {
 	_type          = new short[size];
 	_parent        = new int[size];
 	_nextSibling   = new int[size];
 	_offsetOrChild = new int[size];
 	_lengthOrAttr  = new int[size];
-	_text          = new char[size * 10];
+	_text          = new char[textsize];
 	_whitespace    = new BitArray(size);
 	_prefix        = new short[size];
 	// _namesArray[] and _uriArray[] are allocated in endDocument
@@ -2698,8 +2645,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * Performs a shallow copy (ref. XSLs copy())
      */
     public String shallowCopy(final int node, TransletOutputHandler handler)
-	throws TransletException {
-
+	throws TransletException 
+    {
 	final int type = _type[node];
 
 	switch(type) {
@@ -2743,32 +2690,40 @@ public final class DOMImpl implements DOM, Externalizable {
 
     private String copyElement(int node, int type,
 			       TransletOutputHandler handler)
-	throws TransletException {
-
+	throws TransletException 
+    {
 	type = type - NTYPES;
 	String name = _namesArray[type];
 	final int pi = _prefix[node];
 	final int ui = _namespace[type];
+
 	if (pi > 0) {
 	    final String prefix = _prefixArray[pi];
 	    final String uri = _uriArray[ui];
 	    final String local = getLocalName(node);
-	    if (prefix.equals(EMPTYSTRING))
-		name = local;
-	    else
-		name = prefix+':'+local;
+
+	    name = prefix.equals(EMPTYSTRING) ? local : (prefix + ':' + local);
 	    handler.startElement(name);
 	    handler.namespace(prefix, uri);
 	}
 	else {
 	    if (ui > 0) {
-		handler.startElement(getLocalName(node));
+		handler.startElement(name = getLocalName(node));
 		handler.namespace(EMPTYSTRING, _uriArray[ui]);
 	    }
 	    else {
 		handler.startElement(name);
 	    }
 	}
+
+	// Copy element namespaces
+	for (int a = _lengthOrAttr[node]; a != NULL; a = _nextSibling[a]) {
+	    if (_type[a] == NAMESPACE) {
+		handler.namespace(_prefixArray[_prefix[a]],
+				  makeStringValue(a));
+	    }
+	}
+
 	return name;
     }
 
@@ -2941,14 +2896,13 @@ public final class DOMImpl implements DOM, Externalizable {
 	return c == 0x20 || c == 0x0A || c == 0x0D || c == 0x09;
     }
 
-
     /****************************************************************/
     /*               DOM builder class definition                   */
     /****************************************************************/
     private final class DOMBuilderImpl implements DOMBuilder {
 
 	private final static int ATTR_ARRAY_SIZE = 32;
-	private final static int REUSABLE_TEXT_SIZE = 32;
+	private final static int REUSABLE_TEXT_SIZE = 0;  // turned off
 	private final static int INIT_STACK_LENGTH = 64;
 
 	private Hashtable _shortTexts           = null;
@@ -2960,8 +2914,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int[]     _previousSiblingStack = new int[INIT_STACK_LENGTH];
 	private int       _sp;
 	private int       _baseOffset           = 0;
-	private int       _currentOffset        = 0;
 	private int       _currentNode          = 0;
+	private int       _currentOffset        = 0;
 
 	// Temporary structures for attribute nodes
 	private int       _currentAttributeNode = 1;
@@ -2977,8 +2931,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int       _uriCount     = 0;
 	private int       _prefixCount  = 0;
 
-	private int       _nextNamespace = DOM.NULL;
 	private int       _lastNamespace = DOM.NULL;
+	private int       _nextNamespace = DOM.NULL;
 	
 	// Stack used to keep track of what whitespace text nodes are protected
 	// by xml:space="preserve" attributes and which nodes that are not.
@@ -3321,7 +3275,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _currentOffset += length;
 
 	    _disableEscaping = !_escaping;	
-
 	}
 
 	/**
@@ -3336,8 +3289,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _currentAttributeNode = 1;
 	    _type2[0] = NAMESPACE;
 
-	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+	    definePrefixAndUri(EMPTYSTRING, EMPTYSTRING);
 	    startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
+
 	    _lengthOrAttr[ROOTNODE] = _nextNamespace;
 	    _parent2[_nextNamespace] = ROOTNODE;
 	    _nextNamespace = DOM.NULL;
@@ -3405,8 +3359,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void startElement(String uri, String localName,
 				 String qname, Attributes attributes)
-	    throws SAXException {
-
+	    throws SAXException 
+	{
+// System.out.println("DOMImpl.startElement() qname = " + qname);
 	    makeTextNode(false);
 
 	    // Get node index and setup parent/child references
@@ -3531,8 +3486,25 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * SAX2: Begin the scope of a prefix-URI Namespace mapping.
 	 */
 	public void startPrefixMapping(String prefix, String uri) 
-	    throws SAXException {
+	    throws SAXException 
+	{
+	    final Stack stack = definePrefixAndUri(prefix, uri);
 
+	    makeTextNode(false);
+	    int attr = makeNamespaceNode(prefix, uri);
+	    if (_nextNamespace == DOM.NULL) {
+		_nextNamespace = attr;
+	    }
+	    else {
+		_nextSibling2[attr-1] = attr;
+	    }
+	    _nextSibling2[attr] = DOM.NULL;
+	    _prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
+	}
+
+	private Stack definePrefixAndUri(String prefix, String uri) 
+	    throws SAXException 
+	{
 	    // Get the stack associated with this namespace prefix
 	    Stack stack = (Stack)_nsPrefixes.get(prefix);
 	    if (stack == null) {
@@ -3548,17 +3520,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    stack.push(uri);
 
-	    if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
-		makeTextNode(false);
-		int attr = makeNamespaceNode(prefix, uri);
-		if (_nextNamespace == DOM.NULL)
-		    _nextNamespace = attr;
-		else
-		    _nextSibling2[attr-1] = attr;
-		_nextSibling2[attr] = DOM.NULL;
-		// _prefix2[attr] = idx.shortValue();
-		_prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
-	    }
+	    return stack;
 	}
 
 	/**

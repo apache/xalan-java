@@ -69,9 +69,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class TransletOutput extends Instruction {
 
     private Expression _filename;
-
-    private final static String MISSING_FILE_ATTR =
-	"The <xsltc:output> element requires a 'file' attribute.";
+    private boolean _append;
 
     /**
      * Displays the contents of this <xsltc:output> element.
@@ -88,6 +86,10 @@ final class TransletOutput extends Instruction {
     public void parseContents(Parser parser) {
 	// Get the output filename from the 'file' attribute
 	String filename = getAttribute("file");
+        
+        // If the 'append' attribute is set to "yes" or "true",
+        // the output is appended to the file.
+        String append   = getAttribute("append");
 
 	// Verify that the filename is in fact set
 	if ((filename == null) || (filename.equals(EMPTYSTRING))) {
@@ -96,6 +98,14 @@ final class TransletOutput extends Instruction {
 
 	// Save filename as an attribute value template
 	_filename = AttributeValue.create(this, filename, parser);
+        
+        if (append != null && (append.toLowerCase().equals("yes") ||
+            append.toLowerCase().equals("true"))) {
+          _append = true;     
+        }
+        else
+          _append = false;
+          
 	parseChildren(parser);
     }
     
@@ -124,7 +134,7 @@ final class TransletOutput extends Instruction {
 	
 	final int open =  cpg.addMethodref(TRANSLET_CLASS,
 					   "openOutputHandler",
-					   "("+STRING_SIG+")"+
+                                           "(" + STRING_SIG + "Z)" +
 					   TRANSLET_OUTPUT_SIG);
 
 	final int close =  cpg.addMethodref(TRANSLET_CLASS,
@@ -134,6 +144,7 @@ final class TransletOutput extends Instruction {
 	// Create the new output handler (leave it on stack)
 	il.append(classGen.loadTranslet());
 	_filename.translate(classGen, methodGen);
+        il.append(new PUSH(cpg, _append));
 	il.append(new INVOKEVIRTUAL(open));
 
 	// Overwrite current handler

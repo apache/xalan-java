@@ -130,6 +130,9 @@ public final class XSLTC {
     public static final int JAR_OUTPUT         = 1;
     public static final int BYTEARRAY_OUTPUT   = 2;
     public static final int CLASSLOADER_OUTPUT = 3;
+    public static final int BYTEARRAY_AND_FILE_OUTPUT = 4;
+    public static final int BYTEARRAY_AND_JAR_OUTPUT  = 5;
+    
 
     // Compiler options (passed from command line or XSLTC client)
     private boolean _debug = false;      // -x
@@ -140,9 +143,17 @@ public final class XSLTC {
     private int     _outputType = FILE_OUTPUT; // by default
 
     private Vector  _classes;
+    private Vector  _bcelClasses;
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
-    private boolean _templateInlining = true;
+
+    /**
+     * Set to true if template inlining is requested. Template
+     * inlining used to be the default, but we have found that
+     * Hotspots does a better job with shorter methods, so the
+     * default is *not* to inline now.
+     */
+    private boolean _templateInlining = false;
 
     /**
      * XSLTC compiler constructor
@@ -179,6 +190,7 @@ public final class XSLTC {
 	reset();
 	_reader = null;
 	_classes = new Vector();
+	_bcelClasses = new Vector();
     }
     
     /**
@@ -341,7 +353,11 @@ public final class XSLTC {
 	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
 		_stylesheet.setCallsNodeset(_callsNodeset);
 		_stylesheet.setMultiDocument(_multiDocument);
-		_stylesheet.translate();
+
+		// Class synchronization is needed for BCEL
+		synchronized (getClass()) {
+		    _stylesheet.translate();
+		}
 	    }
 	}
 	catch (Exception e) {
@@ -410,15 +426,27 @@ public final class XSLTC {
      * set of byte arrays. One byte array for each generated class.
      * @param name The name of the translet class to generate
      * @param input An InputSource that will pass in the stylesheet contents
+     * @param outputType The output type
      * @return JVM bytecodes that represent translet class definition
      */
-    public byte[][] compile(String name, InputSource input) {
-	_outputType = BYTEARRAY_OUTPUT;
+    public byte[][] compile(String name, InputSource input, int outputType) {
+	_outputType = outputType;
 	if (compile(input, name))
 	    return getBytecodes();
 	else
 	    return null;
     }
+    
+    /**
+     * Compiles a stylesheet pointed to by a URL. The result is put in a
+     * set of byte arrays. One byte array for each generated class.
+     * @param name The name of the translet class to generate
+     * @param input An InputSource that will pass in the stylesheet contents
+     * @return JVM bytecodes that represent translet class definition
+     */
+    public byte[][] compile(String name, InputSource input) {
+        return compile(name, input, BYTEARRAY_OUTPUT);
+    }    
 
     /**
      * Set the XMLReader to use for parsing the next input stylesheet
@@ -685,19 +713,44 @@ public final class XSLTC {
     }
    
     public void dumpClass(JavaClass clazz) {
+	
+	if (_outputType == FILE_OUTPUT || 
+	    _outputType == BYTEARRAY_AND_FILE_OUTPUT) 
+	{
+	    File outFile = getOutputFile(clazz.getClassName());
+	    String parentDir = outFile.getParent();
+	    if (parentDir != null) {
+	      	File parentFile = new File(parentDir);
+	      	if (!parentFile.exists())
+	            parentFile.mkdirs();
+	    }
+	}
+	
 	try {
 	    switch (_outputType) {
 	    case FILE_OUTPUT:
-		clazz.dump(getOutputFile(clazz.getClassName()));
+		clazz.dump(
+		    new BufferedOutputStream(
+			new FileOutputStream(
+			    getOutputFile(clazz.getClassName()))));
 		break;
 	    case JAR_OUTPUT:
-		_classes.addElement(clazz);	 
+		_bcelClasses.addElement(clazz);	 
 		break;
 	    case BYTEARRAY_OUTPUT:
+	    case BYTEARRAY_AND_FILE_OUTPUT:
+	    case BYTEARRAY_AND_JAR_OUTPUT:
 	    case CLASSLOADER_OUTPUT:
 		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
 		clazz.dump(out);
 		_classes.addElement(out.toByteArray());
+		
+		if (_outputType == BYTEARRAY_AND_FILE_OUTPUT)
+		  clazz.dump(new BufferedOutputStream(
+			new FileOutputStream(getOutputFile(clazz.getClassName()))));
+		else if (_outputType == BYTEARRAY_AND_JAR_OUTPUT)
+		  _bcelClasses.addElement(clazz);
+		  
 		break;
 	    }
 	}
@@ -720,11 +773,11 @@ public final class XSLTC {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	final java.util.jar.Attributes atrs = manifest.getMainAttributes();
-	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.0");
+	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.2");
 
 	final Map map = manifest.getEntries();
 	// create manifest
-	Enumeration classes = _classes.elements();
+	Enumeration classes = _bcelClasses.elements();
 	final String now = (new Date()).toString();
 	final java.util.jar.Attributes.Name dateAttr = 
 	    new java.util.jar.Attributes.Name("Date");
@@ -739,7 +792,7 @@ public final class XSLTC {
 	final File jarFile = new File(_destDir, _jarFileName);
 	final JarOutputStream jos =
 	    new JarOutputStream(new FileOutputStream(jarFile), manifest);
-	classes = _classes.elements();
+	classes = _bcelClasses.elements();
 	while (classes.hasMoreElements()) {
 	    final JavaClass clazz = (JavaClass)classes.nextElement();
 	    final String className = clazz.getClassName().replace('.','/');

@@ -58,28 +58,37 @@
  *
  * @author G. Todd Miller 
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
 package org.apache.xalan.xsltc.trax;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.InputStream;
+import java.io.FileInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FilenameFilter;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
+import java.util.Enumeration;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipEntry;
 
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
+import javax.xml.parsers.SAXParserFactory;
 
+import org.xml.sax.*;
 import org.w3c.dom.Document;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.InputSource;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
@@ -87,48 +96,73 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.CompilerException;
-import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 /**
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
  */
 public class TransformerFactoryImpl
-    extends SAXTransformerFactory implements SourceLoader, ErrorListener {
-
-    // This error listener is used only for this factory and is not passed to
-    // the Templates or Transformer objects that we create!!!
+    extends SAXTransformerFactory implements SourceLoader, ErrorListener 
+{
+    /**
+     * This error listener is used only for this factory and is not passed to
+     * the Templates or Transformer objects that we create.
+     */
     private ErrorListener _errorListener = this; 
 
-    // This URIResolver is passed to all created Templates and Transformers
+    /**
+     * This URIResolver is passed to all created Templates and Transformers
+     */
     private URIResolver _uriResolver = null;
 
-    // As Gregor Samsa awoke one morning from uneasy dreams he found himself
-    // transformed in his bed into a gigantic insect. He was lying on his hard,
-    // as it were armour plated, back, and if he lifted his head a little he
-    // could see his big, brown belly divided into stiff, arched segments, on
-    // top of which the bed quilt could hardly keep in position and was about
-    // to slide off completely. His numerous legs, which were pitifully thin
-    // compared to the rest of his bulk, waved helplessly before his eyes.
-    // "What has happened to me?", he thought. It was no dream....
-    protected static String _defaultTransletName = "GregorSamsa";
+    /** 
+     * As Gregor Samsa awoke one morning from uneasy dreams he found himself
+     * transformed in his bed into a gigantic insect. He was lying on his hard,
+     * as it were armour plated, back, and if he lifted his head a little he
+     * could see his big, brown belly divided into stiff, arched segments, on
+     * top of which the bed quilt could hardly keep in position and was about
+     * to slide off completely. His numerous legs, which were pitifully thin
+     * compared to the rest of his bulk, waved helplessly before his eyes.
+     * "What has happened to me?", he thought. It was no dream....
+     */
+    protected static String DEFAULT_TRANSLET_NAME = "GregorSamsa";
+    
+    /**
+     * The class name of the translet
+     */
+    private String _transletName = DEFAULT_TRANSLET_NAME;
+    
+    /**
+     * The destination directory for the translet
+     */
+    private String _destinationDirectory = null;
+    
+    /**
+     * The package name prefix for all generated translet classes
+     */
+    private String _packageName = null;
+    
+    /**
+     * The jar file name which the translet classes are packaged into
+     */
+    private String _jarFileName = null;
 
-    // Cache for the newTransformer() method - see method for details
-    private Transformer _copyTransformer = null;
-    // XSL document for the default transformer
-    private static final String COPY_TRANSLET_CODE =
-	"<xsl:stylesheet xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">"+
-	"<xsl:template match=\"/\">"+
-	"  <xsl:copy-of select=\".\"/>"+
-	"</xsl:template>"+
-	"</xsl:stylesheet>";
-
-    // This Hashtable is used to store parameters for locating
-    // <?xml-stylesheet ...?> processing instructions in XML documents.
+    /**
+     * This Hashtable is used to store parameters for locating
+     * <?xml-stylesheet ...?> processing instructions in XML docs.
+     */
     private Hashtable _piParams = null;
 
-    // The above hashtable stores objects of this class only:
-    private class PIParamWrapper {
+
+    /**
+     * Use a thread local variable to store a copy of an XML Reader.
+     */
+    static ThreadLocal _xmlReader = new ThreadLocal();
+
+    /**
+     * The above hashtable stores objects of this class.
+     */
+    private static class PIParamWrapper {
 	public String _media = null;
 	public String _title = null;
 	public String _charset = null;
@@ -140,17 +174,44 @@ public class TransformerFactoryImpl
 	}
     }
 
-    // This flags are passed to the compiler
+    /**
+     * Set to <code>true</code> when debugging is enabled.
+     */
     private boolean _debug = false;
-    private boolean _disableInlining = false;
-    private boolean _oldOutputSystem = false;
+
+    /**
+     * Set to <code>true</code> when templates are inlined.
+     */
+    private boolean _enableInlining = false;
+    
+    /**
+     * Set to <code>true</code> when we want to generate 
+     * translet classes from the stylesheet.
+     */
+    private boolean _generateTranslet = false;
+    
+    /**
+     * If this is set to <code>true</code>, we attempt to use translet classes for 
+     * transformation if possible without compiling the stylesheet. The translet class
+     * is only used if its timestamp is newer than the timestamp of the stylesheet.
+     */
+    private boolean _autoTranslet = false;
+
+    /**
+     * Number of indent spaces when indentation is turned on.
+     */
+    private int _indentNumber = -1;
+
+    /**
+     * A reference to a SAXParserFactory.
+     */
+    private SAXParserFactory _parserFactory = null;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Contains nothing yet
      */
     public TransformerFactoryImpl() {
-	// Don't need anything here so far...
     }
 
     /**
@@ -163,7 +224,8 @@ public class TransformerFactoryImpl
      * @throws IllegalArgumentException
      */
     public void setErrorListener(ErrorListener listener) 
-	throws IllegalArgumentException {
+	throws IllegalArgumentException 
+    {
 	if (listener == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.ERROR_LISTENER_NULL_ERR,
 					"TransformerFactory");
@@ -191,9 +253,19 @@ public class TransformerFactoryImpl
      * @throws IllegalArgumentException
      */
     public Object getAttribute(String name) 
-	throws IllegalArgumentException { 
+	throws IllegalArgumentException 
+    { 
 	// Return value for attribute 'translet-name'
-	if (name.equals("translet-name")) return(_defaultTransletName);
+	if (name.equals("translet-name")) {
+	    return _transletName;
+	}
+	else if (name.equals("generate-translet")) {
+	    return new Boolean(_generateTranslet);
+	}
+	else if (name.equals("auto-translet")) {
+	    return new Boolean(_autoTranslet);
+	}
+
 	// Throw an exception for all other attributes
 	ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
 	throw new IllegalArgumentException(err.toString());
@@ -208,26 +280,86 @@ public class TransformerFactoryImpl
      * @throws IllegalArgumentException
      */
     public void setAttribute(String name, Object value) 
-	throws IllegalArgumentException { 
+	throws IllegalArgumentException 
+    { 
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
-	if ((name.equals("translet-name")) && (value instanceof String)) {
-	    _defaultTransletName = (String)value;
+	if (name.equals("translet-name") && value instanceof String) {
+	    _transletName = (String) value;	      
+	    return;
+	}
+	else if (name.equals("destination-directory") && value instanceof String) {
+	    _destinationDirectory = (String) value;
+	    return;
+	}
+	else if (name.equals("package-name") && value instanceof String) {
+	    _packageName = (String) value;
+	    return;
+	}
+	else if (name.equals("jar-name") && value instanceof String) {
+	    _jarFileName = (String) value;
+	    return;
+	}
+	else if (name.equals("generate-translet")) {
+	    if (value instanceof Boolean) {
+		_generateTranslet = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_generateTranslet = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
+	}
+	else if (name.equals("auto-translet")) {
+	    if (value instanceof Boolean) {
+		_autoTranslet = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_autoTranslet = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
 	else if (name.equals("debug")) {
-	    _debug = true;
+	    if (value instanceof Boolean) {
+		_debug = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_debug = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
-	else if (name.equals("disable-inlining") && value instanceof Boolean) {
-	    _disableInlining = ((Boolean) value).booleanValue();
+	else if (name.equals("enable-inlining")) {
+	    if (value instanceof Boolean) {
+		_enableInlining = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_enableInlining = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
-	else if (name.equals("old-output") && value instanceof Boolean) {
-	    _oldOutputSystem = ((Boolean) value).booleanValue();
+	else if (name.equals("indent-number")) {
+	    if (value instanceof String) {
+		try {
+		    _indentNumber = Integer.parseInt((String) value);
+		    return;
+		}
+		catch (NumberFormatException e) {
+		    // Falls through
+		}
+	    }
+	    else if (value instanceof Integer) {
+		_indentNumber = ((Integer) value).intValue();
+		return;
+	    }
 	}
-	else {
-	    // Throw an exception for all other attributes
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
-	    throw new IllegalArgumentException(err.toString());
-	}
+
+	// Throw an exception for all other attributes
+	final ErrorMsg err 
+	    = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
+	throw new IllegalArgumentException(err.toString());
     }
 
     /**
@@ -250,10 +382,12 @@ public class TransformerFactoryImpl
 	    StreamResult.FEATURE
 	};
 
-	// Inefficient, but it really does not matter in a function like this
-	for (int i=0; i<features.length; i++)
-	    if (name.equals(features[i])) return true;
-
+	// Inefficient, but array is small
+	for (int i =0; i < features.length; i++) {
+	    if (name.equals(features[i])) {
+		return true;
+	    }
+	}
 	// Feature not supported
 	return false;
     }
@@ -267,7 +401,7 @@ public class TransformerFactoryImpl
      * Templates and Transformer objects created using this factory
      */    
     public URIResolver getURIResolver() {
-	return(_uriResolver);
+	return _uriResolver;
     } 
 
     /**
@@ -301,13 +435,16 @@ public class TransformerFactoryImpl
      */
     public Source getAssociatedStylesheet(Source source, String media,
 					  String title, String charset)
-	throws TransformerConfigurationException {
+	throws TransformerConfigurationException 
+    {
 	// First create a hashtable that maps Source refs. to parameters
-	if (_piParams == null) _piParams = new Hashtable();
+	if (_piParams == null) {
+	    _piParams = new Hashtable();
+	}
 	// Store the parameters for this Source in the Hashtable
 	_piParams.put(source, new PIParamWrapper(media, title, charset));
 	// Return the same Source - we'll locate the stylesheet later
-	return(source);
+	return source;
     }
 
     /**
@@ -318,40 +455,14 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */    
     public Transformer newTransformer()
-	throws TransformerConfigurationException { 
-
-	if (_copyTransformer != null) {
-	    if (_uriResolver != null)
-		_copyTransformer.setURIResolver(_uriResolver);
-	    return _copyTransformer;
-	}
-
-	XSLTC xsltc = new XSLTC();
-	if (_debug) xsltc.setDebug(true);
-	if (_disableInlining) xsltc.setTemplateInlining(false);
-	xsltc.init();
-
-	// Compile the default copy-stylesheet
-	byte[] bytes = COPY_TRANSLET_CODE.getBytes();
-	ByteArrayInputStream bytestream = new ByteArrayInputStream(bytes);
-	InputSource input = new InputSource(bytestream);
-	input.setSystemId(_defaultTransletName);
-	byte[][] bytecodes = xsltc.compile(_defaultTransletName, input);
-
-	// Check that the transformation went well before returning
-	if (bytecodes == null) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
-	    throw new TransformerConfigurationException(err.toString());
-	}
-
-	// Create a Transformer object and store for other calls
-	Templates templates = new TemplatesImpl(bytecodes, _defaultTransletName,
-	    xsltc.getOutputProperties(), _oldOutputSystem);
-	_copyTransformer = templates.newTransformer();
+	throws TransformerConfigurationException 
+    { 
+	TransformerImpl result = new TransformerImpl(new Properties(), 
+	    _indentNumber, this);
 	if (_uriResolver != null) {
-	    _copyTransformer.setURIResolver(_uriResolver);
+	    result.setURIResolver(_uriResolver);
 	}
-	return _copyTransformer;
+	return result;
     }
 
     /**
@@ -365,10 +476,13 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public Transformer newTransformer(Source source) throws
-	TransformerConfigurationException {
+	TransformerConfigurationException 
+    {
 	final Templates templates = newTemplates(source);
 	final Transformer transformer = templates.newTransformer();
-	if (_uriResolver != null) transformer.setURIResolver(_uriResolver);
+	if (_uriResolver != null) {
+	    transformer.setURIResolver(_uriResolver);
+	}
 	return(transformer);
     }
 
@@ -378,7 +492,7 @@ public class TransformerFactoryImpl
     private void passWarningsToListener(Vector messages) 
 	throws TransformerException 
     {
-	if (_errorListener == null || messages == null ) {
+	if (_errorListener == null || messages == null) {
 	    return;
 	}
 	// Pass messages to listener, one by one
@@ -395,83 +509,18 @@ public class TransformerFactoryImpl
      */
     private void passErrorsToListener(Vector messages) {
 	try {
-	    // Nothing to do if there is no registered error listener
-	    if (_errorListener == null) return;
-	    // Nothing to do if there are not warning messages
-	    if (messages == null) return;
+	    if (_errorListener == null || messages == null) {
+		return;
+	    }
 	    // Pass messages to listener, one by one
 	    final int count = messages.size();
-	    for (int pos=0; pos<count; pos++) {
+	    for (int pos = 0; pos < count; pos++) {
 		String message = messages.elementAt(pos).toString();
 		_errorListener.error(new TransformerException(message));
 	    }
 	}
 	catch (TransformerException e) {
 	    // nada
-	}
-    }
-
-    /**
-     * Creates a SAX2 InputSource object from a TrAX Source object
-     */
-    private InputSource getInputSource(XSLTC xsltc, Source source)
-	throws TransformerConfigurationException {
-
-	InputSource input = null;
-	String systemId = source.getSystemId();
-	if (systemId == null) systemId = "";
-
-	try {
-
-	    // Try to get InputSource from SAXSource input
-	    if (source instanceof SAXSource) {
-		final SAXSource sax = (SAXSource)source;
-		input = sax.getInputSource();
-		// Pass the SAX parser to the compiler
-		xsltc.setXMLReader(sax.getXMLReader());
-	    }
-	    // handle  DOMSource  
-	    else if (source instanceof DOMSource) {
-		final DOMSource domsrc = (DOMSource)source;
-		final Document dom = (Document)domsrc.getNode();
-		final DOM2SAX dom2sax = new DOM2SAX(dom);
-		xsltc.setXMLReader(dom2sax);  
-	        // try to get SAX InputSource from DOM Source.
-		input = SAXSource.sourceToInputSource(source);
-		if (input == null){
-			input = new InputSource(domsrc.getSystemId());
-		}
-	    }
-	    // Try to get InputStream or Reader from StreamSource
-	    else if (source instanceof StreamSource) {
-		final StreamSource stream = (StreamSource)source;
-		final InputStream istream = stream.getInputStream();
-		final Reader reader = stream.getReader();
-		// Create InputSource from Reader or InputStream in Source
-		if (istream != null)
-		    input = new InputSource(istream);
-		else if (reader != null)
-		    input = new InputSource(reader);
-		else
-		    input = new InputSource(systemId);
-	    }
-	    else {
-		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_SOURCE_ERR);
-		throw new TransformerConfigurationException(err.toString());
-	    }
-	    input.setSystemId(systemId);
-	}
-	catch (NullPointerException e) {
- 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR,
-					"TransformerFactory.newTemplates()");
-	    throw new TransformerConfigurationException(err.toString());
-	}
-	catch (SecurityException e) {
- 	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR, systemId);
-	    throw new TransformerConfigurationException(err.toString());
-	}
-	finally {
-	    return(input);
 	}
     }
 
@@ -485,15 +534,47 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public Templates newTemplates(Source source)
-	throws TransformerConfigurationException {
+	throws TransformerConfigurationException 
+    {
+	// If _autoTranslet is true, we will try to load the bytecodes
+	// from the translet classes without compiling the stylesheet.
+	if (_autoTranslet)  {
+	    byte[][] bytecodes = null;
+	    String transletClassName = getTransletClassName(source);
+	    
+	    if (_jarFileName != null)
+	    	bytecodes = getBytecodesFromJar(source, transletClassName);
+	    else
+	    	bytecodes = getBytecodesFromClasses(source, transletClassName);	    
+	  
+	    if (bytecodes != null) {
+	    	if (_debug) {
+	      	    if (_jarFileName != null)
+	        	System.err.println(new ErrorMsg(
+	            	    ErrorMsg.TRANSFORM_WITH_JAR_STR, transletClassName, _jarFileName));
+	            else
+	            	System.err.println(new ErrorMsg(
+	            	    ErrorMsg.TRANSFORM_WITH_TRANSLET_STR, transletClassName));
+	    	}
+
+	    	// Reset the per-session attributes to their default values
+	    	// after each newTemplates() call.
+	    	resetTransientAttributes();
+	    
+	    	return new TemplatesImpl(bytecodes, transletClassName, null, _indentNumber, this);	    
+	    }
+	}
+	
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
-	if (_disableInlining) xsltc.setTemplateInlining(false);
+	if (_enableInlining) xsltc.setTemplateInlining(true);
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined
-	if (_uriResolver != null) xsltc.setSourceLoader(this);
+	if (_uriResolver != null) {
+	    xsltc.setSourceLoader(this);
+	}
 
 	// Pass parameters to the Parser to make sure it locates the correct
 	// <?xml-stylesheet ...?> PI in an XML input document
@@ -501,14 +582,59 @@ public class TransformerFactoryImpl
 	    // Get the parameters for this Source object
 	    PIParamWrapper p = (PIParamWrapper)_piParams.get(source);
 	    // Pass them on to the compiler (which will pass then to the parser)
-	    if (p != null) 
+	    if (p != null) {
 		xsltc.setPIParameters(p._media, p._title, p._charset);
+	    }
+	}
+
+	// Set the attributes for translet generation
+	int outputType = XSLTC.BYTEARRAY_OUTPUT;
+	if (_generateTranslet || _autoTranslet) {
+	    // Set the translet name
+	    if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
+	        xsltc.setClassName(_transletName);
+	  
+	    if (_destinationDirectory != null)
+	    	xsltc.setDestDirectory(_destinationDirectory);
+	    else {
+	    	String xslName = getStylesheetFileName(source);
+	    	if (xslName != null) {
+	      	    File xslFile = new File(xslName);
+	            String xslDir = xslFile.getParent();
+	    
+	      	    if (xslDir != null)
+	                xsltc.setDestDirectory(xslDir);
+	    	}
+	    }
+	  
+	    if (_packageName != null)
+	        xsltc.setPackageName(_packageName);
+	
+	    if (_jarFileName != null) {
+	    	xsltc.setJarFileName(_jarFileName);
+	    	outputType = XSLTC.BYTEARRAY_AND_JAR_OUTPUT;
+	    }
+	    else
+	    	outputType = XSLTC.BYTEARRAY_AND_FILE_OUTPUT;
 	}
 
 	// Compile the stylesheet
-	final InputSource input = getInputSource(xsltc, source);
-	byte[][] bytecodes = xsltc.compile(null, input);
+	final InputSource input = Util.getInputSource(xsltc, source);
+	byte[][] bytecodes = xsltc.compile(null, input, outputType);
 	final String transletName = xsltc.getClassName();
+
+	// Output to the jar file if the jar file name is set.
+	if ((_generateTranslet || _autoTranslet)
+	   	&& bytecodes != null && _jarFileName != null) {
+	    try {
+	    	xsltc.outputToJar();
+	    }
+	    catch (java.io.IOException e) { }
+	}
+
+	// Reset the per-session attributes to their default values
+	// after each newTemplates() call.
+	resetTransientAttributes();
 
 	// Pass compiler warnings to the error listener
 	if (_errorListener != this) {
@@ -526,15 +652,18 @@ public class TransformerFactoryImpl
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
 	    // Pass compiler errors to the error listener
-	    if (_errorListener != null)
+	    if (_errorListener != null) {
 		passErrorsToListener(xsltc.getErrors());
-	    else
+	    }
+	    else {
 		xsltc.printErrors();
+	    }
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
 	    throw new TransformerConfigurationException(err.toString());
 	}
+
 	return new TemplatesImpl(bytecodes, transletName, 
-	    xsltc.getOutputProperties(), _oldOutputSystem);
+	    xsltc.getOutputProperties(), _indentNumber, this);
     }
 
     /**
@@ -546,10 +675,14 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public TemplatesHandler newTemplatesHandler() 
-	throws TransformerConfigurationException { 
+	throws TransformerConfigurationException 
+    { 
 	final TemplatesHandlerImpl handler = 
-	    new TemplatesHandlerImpl(_oldOutputSystem);
+	    new TemplatesHandlerImpl(_indentNumber, this);
 	handler.init();
+	if (_uriResolver != null) {
+	    handler.setURIResolver(_uriResolver);
+	}
 	return handler;
     }
 
@@ -562,10 +695,13 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public TransformerHandler newTransformerHandler() 
-	throws TransformerConfigurationException {
+	throws TransformerConfigurationException 
+    {
 	final Transformer transformer = newTransformer();
-	final TransformerImpl internal = (TransformerImpl)transformer;
-	return(new TransformerHandlerImpl(internal));
+	if (_uriResolver != null) {
+	    transformer.setURIResolver(_uriResolver);
+	}
+	return new TransformerHandlerImpl((TransformerImpl) transformer);
     }
 
     /**
@@ -579,10 +715,13 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public TransformerHandler newTransformerHandler(Source src) 
-	throws TransformerConfigurationException { 
+	throws TransformerConfigurationException 
+    { 
 	final Transformer transformer = newTransformer(src);
-	final TransformerImpl internal = (TransformerImpl)transformer;
-	return(new TransformerHandlerImpl(internal));
+	if (_uriResolver != null) {
+	    transformer.setURIResolver(_uriResolver);
+	}
+	return new TransformerHandlerImpl((TransformerImpl) transformer);
     }
 
     /**
@@ -596,12 +735,12 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */    
     public TransformerHandler newTransformerHandler(Templates templates) 
-	throws TransformerConfigurationException  {
+	throws TransformerConfigurationException  
+    {
 	final Transformer transformer = templates.newTransformer();
 	final TransformerImpl internal = (TransformerImpl)transformer;
-	return(new TransformerHandlerImpl(internal));
+	return new TransformerHandlerImpl(internal);
     }
-
 
     /**
      * javax.xml.transform.sax.SAXTransformerFactory implementation.
@@ -613,9 +752,10 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public XMLFilter newXMLFilter(Source src) 
-	throws TransformerConfigurationException {
+	throws TransformerConfigurationException 
+    {
 	Templates templates = newTemplates(src);
-	if (templates == null ) return null; 
+	if (templates == null) return null; 
 	return newXMLFilter(templates);
     }
 
@@ -629,45 +769,23 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public XMLFilter newXMLFilter(Templates templates) 
-	throws TransformerConfigurationException {
+	throws TransformerConfigurationException 
+    {
 	try {
       	    return new org.apache.xalan.xsltc.trax.TrAXFilter(templates);
     	}
-	catch(TransformerConfigurationException e1) {
-      	    if(_errorListener != null) {
+	catch (TransformerConfigurationException e1) {
+      	    if (_errorListener != null) {
                 try {
           	    _errorListener.fatalError(e1);
           	    return null;
         	}
-		catch( TransformerException e2) {
+		catch (TransformerException e2) {
           	    new TransformerConfigurationException(e2);
         	}
       	    }
       	    throw e1;
     	}
-    }
-
-    /**
-     * This method implements XSLTC's SourceLoader interface. It is used to
-     * glue a TrAX URIResolver to the XSLTC compiler's Input and Import classes.
-     *
-     * @param href The URI of the document to load
-     * @param context The URI of the currently loaded document
-     * @param xsltc The compiler that resuests the document
-     * @return An InputSource with the loaded document
-     */
-    public InputSource loadSource(String href, String context, XSLTC xsltc) {
-	try {
-	    final Source source = _uriResolver.resolve(href, context);
-	    final InputSource input = getInputSource(xsltc, source);
-	    return(input);
-	}
-	catch (TransformerConfigurationException e) {
-	    return null;
-	}
-	catch (TransformerException e) {
-	    return null;
-	}
     }
 
     /**
@@ -682,12 +800,18 @@ public class TransformerFactoryImpl
      * the transformation (always does in our case).
      */
     public void error(TransformerException e)
-	throws TransformerException {
-	System.err.println("ERROR: "+e.getMessageAndLocation());
+	throws TransformerException 
+    {
 	Throwable wrapped = e.getException();
-	if (wrapped != null)
-	    System.err.println("     : "+wrapped.getMessage());
-	throw(e); 	
+        if (wrapped != null) {
+            System.err.println(new ErrorMsg(ErrorMsg.ERROR_PLUS_WRAPPED_MSG,
+                                            e.getMessageAndLocation(),
+                                            wrapped.getMessage()));
+        } else {
+            System.err.println(new ErrorMsg(ErrorMsg.ERROR_MSG,
+                                            e.getMessageAndLocation()));
+	}
+	throw e; 	
     }
 
     /**
@@ -704,12 +828,18 @@ public class TransformerFactoryImpl
      * the transformation (always does in our case).
      */
     public void fatalError(TransformerException e)
-	throws TransformerException {
-	System.err.println("FATAL: "+e.getMessageAndLocation());
+	throws TransformerException 
+    {
 	Throwable wrapped = e.getException();
-	if (wrapped != null)
-	    System.err.println("     : "+wrapped.getMessage());
-	throw(e);
+        if (wrapped != null) {
+            System.err.println(new ErrorMsg(ErrorMsg.FATAL_ERR_PLUS_WRAPPED_MSG,
+                                            e.getMessageAndLocation(),
+                                            wrapped.getMessage()));
+        } else {
+            System.err.println(new ErrorMsg(ErrorMsg.FATAL_ERR_MSG,
+                                            e.getMessageAndLocation()));
+        }
+	throw e;
     }
 
     /**
@@ -726,11 +856,387 @@ public class TransformerFactoryImpl
      * the transformation (never does in our case).
      */
     public void warning(TransformerException e)
-	throws TransformerException {
-	System.err.println("WARNING: "+e.getMessageAndLocation());
+	throws TransformerException 
+    {
 	Throwable wrapped = e.getException();
-	if (wrapped != null)
-	    System.err.println("       : "+wrapped.getMessage());
+	if (wrapped != null) {
+            System.err.println(new ErrorMsg(ErrorMsg.WARNING_PLUS_WRAPPED_MSG,
+                                            e.getMessageAndLocation(),
+                                            wrapped.getMessage()));
+	} else {
+            System.err.println(new ErrorMsg(ErrorMsg.WARNING_MSG,
+                                            e.getMessageAndLocation()));
+        }
     }
 
+    /**
+     * This method implements XSLTC's SourceLoader interface. It is used to
+     * glue a TrAX URIResolver to the XSLTC compiler's Input and Import classes.
+     *
+     * @param href The URI of the document to load
+     * @param context The URI of the currently loaded document
+     * @param xsltc The compiler that resuests the document
+     * @return An InputSource with the loaded document
+     */
+    public InputSource loadSource(String href, String context, XSLTC xsltc) {
+	try {
+	    if (_uriResolver != null) {
+		final Source source = _uriResolver.resolve(href, context);
+		if (source != null) {
+		    return Util.getInputSource(xsltc, source);
+		}
+	    }
+	}
+	catch (TransformerException e) {
+	    // Falls through
+	}
+	return null;
+    }
+
+    /**
+     * This method is synchronized to allow instances of this class to 
+     * be shared among threads. A tranformer object will call this 
+     * method to get an XMLReader. A different instance of an XMLReader
+     * is returned/cached for each thread.
+     */
+    public synchronized XMLReader getXMLReader() throws Exception {
+	// First check if factory is instantiated
+	if (_parserFactory == null) {
+	    _parserFactory = SAXParserFactory.newInstance();
+	    _parserFactory.setNamespaceAware(true);
+	}
+	XMLReader result = (XMLReader) _xmlReader.get();
+	if (result == null) {
+	    _xmlReader.set(
+		result = _parserFactory.newSAXParser().getXMLReader());
+	}
+	return result;
+    }
+    
+    /**
+     * Reset the per-session attributes to their default values
+     */
+    private void resetTransientAttributes() {
+	_transletName = DEFAULT_TRANSLET_NAME;
+	_destinationDirectory = null;
+	_packageName = null;
+	_jarFileName = null;    
+    }
+        
+    /**
+     * Load the translet classes from local .class files and return
+     * the bytecode array.
+     *
+     * @param source The xsl source
+     * @param fullClassName The full name of the translet
+     * @return The bytecode array
+     */
+    private byte[][] getBytecodesFromClasses(Source source, String fullClassName)
+    {
+    	if (fullClassName == null)
+    	    return null;
+    	  
+    	String xslFileName = getStylesheetFileName(source);
+    	File xslFile = null;
+    	if (xslFileName != null)
+    	    xslFile = new File(xslFileName);
+    	
+    	// Find the base name of the translet
+    	final String transletName;
+    	int lastDotIndex = fullClassName.lastIndexOf('.');
+    	if (lastDotIndex > 0)
+    	    transletName = fullClassName.substring(lastDotIndex+1);
+    	else
+    	    transletName = fullClassName;
+    	    	
+    	// Construct the path name for the translet class file
+    	String transletPath = fullClassName.replace('.', '/');
+    	if (_destinationDirectory != null) {
+    	    transletPath = _destinationDirectory + "/" + transletPath + ".class";
+    	}
+    	else {
+    	    if (xslFile != null && xslFile.getParent() != null)
+    	    	transletPath = xslFile.getParent() + "/" + transletPath + ".class";
+    	    else
+    	    	transletPath = transletPath + ".class";
+    	}
+    	    	    	
+    	// Return null if the translet class file does not exist.
+    	File transletFile = new File(transletPath);
+    	if (!transletFile.exists())
+    	    return null;
+    	    	  
+    	// Compare the timestamps of the translet and the xsl file.
+    	// If the translet is older than the xsl file, return null 
+    	// so that the xsl file is used for the transformation and
+    	// the translet is regenerated.
+    	if (xslFile != null && xslFile.exists()) {
+    	    long xslTimestamp = xslFile.lastModified();
+    	    long transletTimestamp = transletFile.lastModified();
+    	    if (transletTimestamp < xslTimestamp)
+    	    	return null;
+    	}
+    	
+    	// Load the translet into a bytecode array.
+    	Vector bytecodes = new Vector();
+    	int fileLength = (int)transletFile.length();
+    	if (fileLength > 0) {
+    	    FileInputStream input = null;
+    	    try {
+    	    	input = new FileInputStream(transletFile);
+    	    }
+    	    catch (FileNotFoundException e) {
+    	    	return null;
+    	    }
+    	  
+    	    byte[] bytes = new byte[fileLength];
+    	    try {
+	    	readFromInputStream(bytes, input, fileLength);
+	    	input.close();
+	    }
+	    catch (IOException e) {
+    	    	return null;
+    	    }
+    	  
+    	    bytecodes.addElement(bytes);
+    	}
+    	else
+    	    return null;
+    	
+    	// Find the parent directory of the translet.
+    	String transletParentDir = transletFile.getParent();
+    	if (transletParentDir == null)
+    	    transletParentDir = System.getProperty("user.dir");
+    	  
+    	File transletParentFile = new File(transletParentDir);
+    	
+    	// Find all the auxiliary files which have a name pattern of "transletClass$nnn.class".
+    	final String transletAuxPrefix = transletName + "$";
+    	File[] auxfiles = transletParentFile.listFiles(new FilenameFilter() {
+        	public boolean accept(File dir, String name)
+    		{
+    		    return (name.endsWith(".class") && name.startsWith(transletAuxPrefix));	
+    		}
+    	      });
+    	
+    	// Load the auxiliary class files and add them to the bytecode array.
+    	for (int i = 0; i < auxfiles.length; i++)
+    	{
+    	    File auxfile = auxfiles[i];
+    	    int auxlength = (int)auxfile.length();
+    	    if (auxlength > 0) {
+    	    	FileInputStream auxinput = null;
+    	    	try {
+    	      	    auxinput = new FileInputStream(auxfile);
+    	    	}
+    	    	catch (FileNotFoundException e) {
+    	      	    continue;
+    	    	}
+    	  
+    	    	byte[] bytes = new byte[auxlength];
+    	    
+    	    	try {
+    	      	    readFromInputStream(bytes, auxinput, auxlength);
+    	      	    auxinput.close();
+    	    	}
+    	    	catch (IOException e) {
+    	      	    continue;
+    	    	}
+    	    
+    	    	bytecodes.addElement(bytes);   	    
+    	    }
+    	}
+    	
+    	// Convert the Vector of byte[] to byte[][].
+    	final int count = bytecodes.size();
+    	if ( count > 0) {
+    	    final byte[][] result = new byte[count][1];
+    	    for (int i = 0; i < count; i++) {
+    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    }
+    	  
+    	    return result;
+    	}
+    	else
+    	    return null;
+    }
+    
+    /**
+     * Load the translet classes from the jar file and return the bytecode.
+     *
+     * @param source The xsl source
+     * @param fullClassName The full name of the translet
+     * @return The bytecode array
+     */
+    private byte[][] getBytecodesFromJar(Source source, String fullClassName)
+    {
+    	String xslFileName = getStylesheetFileName(source);
+    	File xslFile = null;
+    	if (xslFileName != null)
+    	    xslFile = new File(xslFileName);
+      
+      	// Construct the path for the jar file
+      	String jarPath = null;
+      	if (_destinationDirectory != null)
+            jarPath = _destinationDirectory + "/" + _jarFileName;
+      	else {
+      	    if (xslFile != null && xslFile.getParent() != null)
+    	    	jarPath = xslFile.getParent() + "/" + _jarFileName;
+    	    else
+    	    	jarPath = _jarFileName;
+    	}
+            
+      	// Return null if the jar file does not exist.
+      	File file = new File(jarPath);
+      	if (!file.exists())
+            return null;
+
+     	// Compare the timestamps of the jar file and the xsl file. Return null
+     	// if the xsl file is newer than the jar file.
+    	if (xslFile != null && xslFile.exists()) {
+    	    long xslTimestamp = xslFile.lastModified();
+    	    long transletTimestamp = file.lastModified();
+    	    if (transletTimestamp < xslTimestamp)
+    	        return null;
+    	}
+      
+      	// Create a ZipFile object for the jar file
+      	ZipFile jarFile = null;
+      	try {
+            jarFile = new ZipFile(file);
+      	}
+      	catch (IOException e) {
+            return null;
+      	}
+      
+      	String transletPath = fullClassName.replace('.', '/');
+      	String transletAuxPrefix = transletPath + "$";
+      	String transletFullName = transletPath + ".class";
+      
+      	Vector bytecodes = new Vector();      
+      
+      	// Iterate through all entries in the jar file to find the 
+      	// translet and auxiliary classes.
+      	Enumeration entries = jarFile.entries();
+      	while (entries.hasMoreElements())
+      	{
+            ZipEntry entry = (ZipEntry)entries.nextElement();
+            String entryName = entry.getName();
+            if (entry.getSize() > 0 && 
+            	  (entryName.equals(transletFullName) ||
+              	  (entryName.endsWith(".class") && 
+              	      entryName.startsWith(transletAuxPrefix))))
+            {
+            	try {
+              	    InputStream input = jarFile.getInputStream(entry);
+              	    int size = (int)entry.getSize();
+              	    byte[] bytes = new byte[size];
+              	    readFromInputStream(bytes, input, size);
+              	    input.close();
+              	    bytecodes.addElement(bytes);
+            	}
+            	catch (IOException e) {
+              	    return null;
+            	}          
+            }
+      	}
+      
+        // Convert the Vector of byte[] to byte[][].
+    	final int count = bytecodes.size();
+    	if (count > 0) {
+    	    final byte[][] result = new byte[count][1];
+    	    for (int i = 0; i < count; i++) {
+    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    }
+    	  
+    	    return result;
+    	}
+    	else
+    	    return null;
+    }
+    
+    /**
+     * Read a given number of bytes from the InputStream into a byte array.
+     *
+     * @param bytes The byte array to store the input content.
+     * @param input The input stream.
+     * @param size The number of bytes to read.
+     */
+    private void readFromInputStream(byte[] bytes, InputStream input, int size)
+      	throws IOException
+    {
+      int n = 0;
+      int offset = 0;
+      int length = size;
+      while (length > 0 && (n = input.read(bytes, offset, length)) > 0) {
+          offset = offset + n;
+          length = length - n;
+      }    
+    }
+
+    /**
+     * Return the fully qualified class name of the translet
+     *
+     * @param source The Source
+     * @return The full name of the translet class
+     */
+    private String getTransletClassName(Source source)
+    {      
+        String transletBaseName = null;
+        if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
+            transletBaseName = _transletName;
+      	else {
+            String systemId = source.getSystemId();
+            if (systemId != null) {
+          	String baseName = Util.baseName(systemId);
+                //if (baseName != null)
+            	//   transletBaseName = Util.noExtName(baseName);
+		if (baseName != null) {
+		    baseName = Util.noExtName(baseName);
+		    transletBaseName = Util.toJavaName(baseName);
+		}
+            }
+      	}
+      
+        if (transletBaseName == null)
+            transletBaseName = DEFAULT_TRANSLET_NAME;
+        
+        if (_packageName != null)
+            return _packageName + "." + transletBaseName;
+        else
+            return transletBaseName;
+    }
+        
+    /**
+     *  Return the local file name from the systemId of the Source object
+     *
+     * @param source The Source
+     * @return The file name in the local filesystem, or null if the
+     * systemId does not represent a local file.
+     */
+    private String getStylesheetFileName(Source source)
+    {
+    	String systemId = source.getSystemId();
+      	if (systemId != null) {
+            File file = new File(systemId);
+            if (file.exists())
+                return systemId;
+            else {
+              	URL url = null;
+          	try {
+            	    url = new URL(systemId);
+          	}
+          	catch (MalformedURLException e) {
+            	    return null;
+          	}
+          
+          	if ("file".equals(url.getProtocol()))
+            	    return url.getFile();
+          	else
+            	    return null;
+            }
+      	}
+      	else
+            return null;
+    }
 }

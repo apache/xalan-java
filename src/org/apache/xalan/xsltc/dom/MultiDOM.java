@@ -76,6 +76,7 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class MultiDOM implements DOM {
+
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;
     private static final int INITIAL_SIZE = 4;
     private static final int CLR = 0x00FFFFFF;
@@ -88,12 +89,11 @@ public final class MultiDOM implements DOM {
     private Hashtable _documents = new Hashtable();
 
     private final class AxisIterator implements NodeIterator {
-	// constitutive data
 	private final int _axis;
 	private final int _type;
-	// implementation mechanism
-	private NodeIterator _source;
+
 	private int _mask;
+	private NodeIterator _source = null;
 	
 	public AxisIterator(final int axis, final int type) {
 	    _axis = axis;
@@ -112,19 +112,23 @@ public final class MultiDOM implements DOM {
 	}
 
 	public NodeIterator setStartNode(final int node) {
-	    _mask = node & SET;
-	    int dom = node >>> 24;
+	    final int dom = node >>> 24;
+	    final int mask = node & SET;
 
-	    // consider caching these
-	    if ((_type == NO_TYPE) || (_type == DOM.ELEMENT)) {
-		_source = _adapters[dom].getAxisIterator(_axis);
+	    // Get a new source first time and when mask changes
+	    if (_source == null || _mask != mask) {
+		if (_type == NO_TYPE) {
+		    _source = _adapters[dom].getAxisIterator(_axis);
+		}
+		else if (_axis == Axis.CHILD && _type != ELEMENT) {
+		    _source = _adapters[dom].getTypedChildren(_type);
+		}
+		else {
+		    _source = _adapters[dom].getTypedAxisIterator(_axis, _type);
+		}
 	    }
-	    else if (_axis == Axis.CHILD) {
-		_source = _adapters[dom].getTypedChildren(_type);
-	    }
-	    else {
-		_source = _adapters[dom].getTypedAxisIterator(_axis,_type);
-	    }
+
+	    _mask = mask;
 	    _source.setStartNode(node & CLR);
 	    return this;
 	}
@@ -143,10 +147,7 @@ public final class MultiDOM implements DOM {
 	}
     
 	public boolean isReverse() {
-	    if (_source == null)
-		return(false);
-	    else
-		return _source.isReverse();
+	    return Axis.isReverse[_axis];
 	}
     
 	public void setMark() {
@@ -290,7 +291,9 @@ public final class MultiDOM implements DOM {
 	    return((domIdx.intValue() << 24));
     }
 
-    /** returns singleton iterator containg the document root */
+    /** 
+      * Returns singleton iterator containg the document root 
+      */
     public NodeIterator getIterator() {
 	// main source document @ 0
 	return _adapters[0].getIterator();
@@ -352,14 +355,6 @@ public final class MultiDOM implements DOM {
 	return _adapters[node>>>24].getParent(node & CLR) | node&SET;
     }
     
-    public int getTypedPosition(int type, int node) {
-	return _adapters[node>>>24].getTypedPosition(type, node&CLR);
-    }
-
-    public int getTypedLast(int type, int node) {
-	return _adapters[node>>>24].getTypedLast(type, node&CLR);
-    }
-
     public int getAttributeNode(final int type, final int el) {
 	return _adapters[el>>>24].getAttributeNode(type, el&CLR) | el&SET;
     }
@@ -458,6 +453,6 @@ public final class MultiDOM implements DOM {
     public String lookupNamespace(int node, String prefix) 
 	throws TransletException
     {
-	return _adapters[node>>>24].lookupNamespace(node, prefix);
+	return _adapters[node>>>24].lookupNamespace(node & CLR, prefix);
     }
 }

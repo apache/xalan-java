@@ -127,6 +127,8 @@ public interface Constants extends InstructionConstants {
 	= org.apache.bcel.Constants.ACC_PRIVATE;
     public static final int ACC_PROTECTED 
 	= org.apache.bcel.Constants.ACC_PROTECTED;
+    public static final int ACC_STATIC
+	= org.apache.bcel.Constants.ACC_STATIC;
 
     public static final String STRING_SIG         
 	= "Ljava/lang/String;";
@@ -153,8 +155,8 @@ public interface Constants extends InstructionConstants {
 	= "org.apache.xalan.xsltc.dom.SortingIterator";
     public static final String SORT_ITERATOR_SIG     
 	= "Lorg.apache.xalan.xsltc.dom.SortingIterator;";
-    public static final String REVERSE_ITERATOR      
-	= "org.apache.xalan.xsltc.dom.ReverseIterator";
+    public static final String FORWARD_POSITION_ITERATOR      
+	= "org.apache.xalan.xsltc.dom.ForwardPositionIterator";
     public static final String NODE_SORT_RECORD 
 	= "org.apache.xalan.xsltc.dom.NodeSortRecord";
     public static final String NODE_SORT_FACTORY
@@ -284,8 +286,6 @@ public interface Constants extends InstructionConstants {
 	= "java.lang.Double";
     public static final String INTEGER_CLASS      
 	= "java.lang.Integer";
-    public static final String LONG_CLASS      
-	= "java.lang.Long";
     public static final String RUNTIME_NODE_CLASS 
 	= "org.apache.xalan.xsltc.runtime.Node";
     public static final String MATH_CLASS         
@@ -299,10 +299,6 @@ public interface Constants extends InstructionConstants {
 	= "intValue";
     public static final String INT_VALUE_SIG      
 	= "()I";
-    public static final String LONG_VALUE          
-	= "longValue";
-    public static final String LONG_VALUE_SIG      
-	= "()J";
     public static final String DOUBLE_VALUE       
 	= "doubleValue";
     public static final String DOUBLE_VALUE_SIG   
@@ -316,6 +312,8 @@ public interface Constants extends InstructionConstants {
 	= "iterator";
     public static final String DOCUMENT_PNAME     
 	= "document";
+    public static final String TRANSLET_PNAME     
+	= "translet";
 
     public static final String GET_NODE_NAME      
 	= "getNodeName";
@@ -450,22 +448,6 @@ public interface Constants extends InstructionConstants {
 	= "(" + STRING_SIG + ")" + OBJECT_SIG;
     public static final String ADD_PARAMETER_SIG
 	= "(" + STRING_SIG + OBJECT_SIG + "Z)" + OBJECT_SIG;
-    public static final String PUSH_VAR_FRAME
-	= "pushVarFrame";
-    public static final String PUSH_VAR_FRAME_SIG
-	= "(I)V";
-    public static final String POP_VAR_FRAME
-	= "popVarFrame";
-    public static final String POP_VAR_FRAME_SIG
-	= "()V";
-    public static final String ADD_VARIABLE
-	= "addVariable";
-    public static final String ADD_VARIABLE_SIG
-	= "(I" + OBJECT_SIG + ")V";
-    public static final String GET_VARIABLE
-	= "getVariable";
-    public static final String GET_VARIABLE_SIG
-	= "(I)" + OBJECT_SIG;
 
     public static final String STRIP_SPACE
 	= "stripSpace";
@@ -494,6 +476,10 @@ public interface Constants extends InstructionConstants {
 	= "http://www.w3.org/1999/xhtml";
     public static final String TRANSLET_URI
 	= "http://xml.apache.org/xalan/xsltc";
+    public static final String REDIRECT_URI
+        = "http://xml.apache.org/xalan/redirect";
     public static final String FALLBACK_CLASS
 	= "org.apache.xalan.xsltc.compiler.Fallback";
+
+    public static final int RTF_INITIAL_SIZE = 64;
 }

@@ -116,6 +116,9 @@ public final class ReferenceType extends Type {
 	else if (type == Type.ResultTree) {
 	    translateTo(classGen, methodGen, (ResultTreeType) type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, type.toString());
 	    classGen.getParser().reportError(Constants.FATAL, err);
@@ -228,13 +231,54 @@ public final class ReferenceType extends Type {
     }
 
     /**
+     * Subsume reference into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	methodGen.getInstructionList().append(NOP);	
+    }
+
+    /**
      * Translates a reference into the Java type denoted by <code>clazz</code>. 
-     * Only conversion allowed is to java.lang.Object.
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+	
 	if (clazz.getName().equals("java.lang.Object")) {
-	    methodGen.getInstructionList().append(NOP);	
+	    il.append(NOP);	
+	}
+	else if (clazz == Double.TYPE) {
+	    translateTo(classGen, methodGen, Type.Real);
+	}
+	else if (clazz.getName().equals("java.lang.String")) {
+	    translateTo(classGen, methodGen, Type.String);
+	}
+	else if (clazz.getName().equals("org.w3c.dom.Node")) {
+	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNode", 
+				         "(" 
+				         + OBJECT_SIG 
+				         + DOM_INTF_SIG 
+				         + ")"
+				         + "Lorg/w3c/dom/Node;");
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKESTATIC(index));
+	}
+	else if (clazz.getName().equals("org.w3c.dom.NodeList")) {
+	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNodeList", 
+				         "(" 
+				         + OBJECT_SIG 
+				         + DOM_INTF_SIG 
+				         + ")"
+				         + "Lorg/w3c/dom/NodeList;");
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKESTATIC(index));
+	}
+	else if (clazz.getName().equals("org.apache.xalan.xsltc.DOM")) {
+	    translateTo(classGen, methodGen, Type.ResultTree);
 	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,

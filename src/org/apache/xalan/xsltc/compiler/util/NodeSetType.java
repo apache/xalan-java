@@ -113,12 +113,63 @@ public final class NodeSetType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
+	else if (type == Type.Object) {
+	    translateTo(classGen, methodGen, (ObjectType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
 	    classGen.getParser().reportError(Constants.FATAL, err);
 	}
     }
+
+    /**
+     * Translates an external Java Class into an internal type.
+     * Expects the Java object on the stack, pushes the internal type
+     */
+    public void translateFrom(ClassGenerator classGen, 
+	MethodGenerator methodGen, Class clazz) 
+    {
+		
+  	InstructionList il = methodGen.getInstructionList();
+	ConstantPoolGen cpg = classGen.getConstantPool();
+	if (clazz.getName().equals("org.w3c.dom.NodeList")) {
+	   // w3c NodeList is on the stack from the external Java function call.
+	   // call BasisFunction to consume NodeList and leave Iterator on
+	   //    the stack. 
+	   il.append(classGen.loadTranslet());   // push translet onto stack
+	   il.append(methodGen.loadDOM());   	 // push DOM onto stack
+	   final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+					"nodeList2Iterator",
+					"("		
+					 + "Lorg/w3c/dom/NodeList;"
+					 + TRANSLET_INTF_SIG 
+					 + DOM_INTF_SIG 
+					 + ")" + NODE_ITERATOR_SIG );
+	   il.append(new INVOKESTATIC(convert));
+	}
+	else if (clazz.getName().equals("org.w3c.dom.Node")) {
+	   // w3c Node is on the stack from the external Java function call.
+	   // call BasisLibrary.node2Iterator() to consume Node and leave 
+	   // Iterator on the stack. 
+	   il.append(classGen.loadTranslet());   // push translet onto stack
+	   il.append(methodGen.loadDOM());   	 // push DOM onto stack
+	   final int convert = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+					"node2Iterator",
+					"("		
+					 + "Lorg/w3c/dom/Node;"
+					 + TRANSLET_INTF_SIG 
+					 + DOM_INTF_SIG 
+					 + ")" + NODE_ITERATOR_SIG );
+	   il.append(new INVOKESTATIC(convert));
+	}
+	else {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
+		toString(), clazz.getName());
+	    classGen.getParser().reportError(Constants.FATAL, err);
+	} 
+    }
+
 
     /**
      * Translates a node-set into a synthesized boolean.
@@ -180,6 +231,16 @@ public final class NodeSetType extends Type {
     }
 
     /**
+     * Subsume node-set into ObjectType.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ObjectType type) {
+	    methodGen.getInstructionList().append(NOP);	
+    }
+
+    /**
      * Translates a node-set into a non-synthesized boolean. It does not 
      * push a 0 or a 1 but instead returns branchhandle list to be appended 
      * to the false list.
@@ -225,12 +286,26 @@ public final class NodeSetType extends Type {
 						  MAKE_NODE_SIG2);
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
-	else if (className.equals("org.w3c.dom.NodeList")) {
+        else if (className.equals("org.w3c.dom.NodeList") || 
+                 className.equals("java.lang.Object")) {
 	    int index = cpg.addInterfaceMethodref(DOM_INTF,
 						  MAKE_NODE_LIST,
 						  MAKE_NODE_LIST_SIG2);
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
+        else if (className.equals("java.lang.String")) {
+            int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
+                                                 "next", "()I");
+            int index = cpg.addInterfaceMethodref(DOM_INTF,
+                                                 GET_NODE_VALUE,
+                                                 "(I)"+STRING_SIG);
+
+            // Get next node from the iterator
+            il.append(new INVOKEINTERFACE(next, 1));
+            // Get the node's string value (from the DOM)
+            il.append(new INVOKEINTERFACE(index, 2));
+                       
+        }
 	else if (className.equals("int")) {
 	    int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
 						  "next", "()I");

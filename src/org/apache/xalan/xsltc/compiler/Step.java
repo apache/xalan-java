@@ -74,23 +74,28 @@ import org.apache.xalan.xsltc.DOM;
 
 final class Step extends RelativeLocationPath {
 
-    // This step's axis as defined in class Axis.
+    /**
+     * This step's axis as defined in class Axis.
+     */
     private int _axis;
 
-    // A vector of predicates (filters) defined on this step - may be null
+    /**
+     * A vector of predicates (filters) defined on this step - may be null
+     */
     private Vector _predicates;
 
-    // Some simple predicates can be handled by this class (and not by the
-    // Predicate class) and will be removed from the above vector as they are
-    // handled. We use this boolean to remember if we did have any predicates.
+    /**
+     * Some simple predicates can be handled by this class (and not by the
+     * Predicate class) and will be removed from the above vector as they are
+     * handled. We use this boolean to remember if we did have any predicates.
+     */
     private boolean _hadPredicates = false;
 
-    // Type of the node test.
+    /**
+     * Type of the node test.
+     */
     private int _nodeType;
 
-    /**
-     * Constructor
-     */
     public Step(int axis, int nodeType, Vector predicates) {
 	_axis = axis;
 	_nodeType = nodeType;
@@ -144,10 +149,12 @@ final class Step extends RelativeLocationPath {
      * Returns the vector containing all predicates for this step.
      */
     public void addPredicates(Vector predicates) {
-	if (_predicates == null)
+	if (_predicates == null) {
 	    _predicates = predicates;
-	else
+	}
+	else {
 	    _predicates.addAll(predicates);
+	}
     }
 
     /**
@@ -156,16 +163,12 @@ final class Step extends RelativeLocationPath {
      * an element like <xsl:for-each> or <xsl:apply-templates>.
      */
     private boolean hasParentPattern() {
-	SyntaxTreeNode parent = getParent();
-	if ((parent instanceof ParentPattern) ||
-	    (parent instanceof ParentLocationPath) ||
-	    (parent instanceof UnionPathExpr) ||
-	    (parent instanceof FilterParentPath))
-	    return(true);
-	else
-	    return(false);
+	final SyntaxTreeNode parent = getParent();
+	return (parent instanceof ParentPattern ||
+		parent instanceof ParentLocationPath ||
+		parent instanceof UnionPathExpr ||
+		parent instanceof FilterParentPath);
     }
-
     
     /**
      * Returns 'true' if this step has any predicates
@@ -212,16 +215,12 @@ final class Step extends RelativeLocationPath {
 	// combinations of steps and patterns than can be optimised
 	_hadPredicates = hasPredicates();
 
-	// Special case for '.' 
+	// Special case for '.'
+ 	//   in the case where '.' has a context such as book/. 
+	//   or .[false()] we can not optimize the nodeset to a single node. 
 	if (isAbbreviatedDot()) {
-	    if (hasParentPattern())
-		_type = Type.NodeSet;
-	    else
-		_type = Type.Node;
-	}
-	// Special case for '..'
-	else if (isAbbreviatedDDot()) {
-	    _type = Type.NodeSet;
+	    _type =  (hasParentPattern() || hasPredicates() ) ? 
+		Type.NodeSet : Type.Node;
 	}
 	else {
 	    _type = Type.NodeSet;
@@ -241,45 +240,6 @@ final class Step extends RelativeLocationPath {
     }
 
     /**
-     * This method is used to determine whether the node-set produced by
-     * this step must be reversed before returned to the parent element.
-     * <xsl:apply-templates> should always return nodes in document order,
-     * while others, such as <xsl:value-of> and <xsl:for-each> should return
-     * nodes in the order of the axis in use.
-     */
-    private boolean reverseNodeSet() {
-	// Check if axis returned nodes in reverse document order
-	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
-	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
-
-	    // Do not reverse nodes if we have a parent step that will reverse
-	    // the nodes for us.
-	    if (hasParentPattern()) return false;
-	    if (hasPredicates()) return false;
-	    if (_hadPredicates) return false;
-	    
-	    // Check if this step occured under an <xsl:apply-templates> element
-	    SyntaxTreeNode parent = this;
-	    do {
-		// Get the next ancestor element and check its type
-		parent = parent.getParent();
-
-		// Order node set if descendant of these elements:
-		if (parent instanceof ApplyImports) return true;
-		if (parent instanceof ApplyTemplates) return true;
-		if (parent instanceof ForEach) return true;
-		if (parent instanceof FilterParentPath) return true;
-		if (parent instanceof WithParam) return true;
-
-		// No not order node set if descendant of these elements:
-		if (parent instanceof ValueOf) return false;
-
-	    } while (parent != null);
-	}
-	return false;
-    }
-
-    /**
      * Translate a step by pushing the appropriate iterator onto the stack.
      * The abbreviated steps '.' and '@attr' do not create new iterators
      * if they are not part of a LocationPath and have no filters.
@@ -294,9 +254,11 @@ final class Step extends RelativeLocationPath {
 	    translatePredicates(classGen, methodGen);
 	}
 	else {
-	    // If it is an attribute but not '@*' or '@attr' with a parent
-	    if ((_axis == Axis.ATTRIBUTE) &&
-		(_nodeType != NodeTest.ATTRIBUTE) && (!hasParentPattern())) {
+	    // If it is an attribute but not '@*', '@attr' or '@node()' and
+	    // has no parent
+	    if (_axis == Axis.ATTRIBUTE && _nodeType != NodeTest.ATTRIBUTE &&
+		_nodeType != NodeTest.ANODE && !hasParentPattern()) 
+	    {
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getTypedAxisIterator",
 						     "(II)"+NODE_ITERATOR_SIG);
@@ -385,7 +347,7 @@ final class Step extends RelativeLocationPath {
 		il.append(new PUSH(cpg, _axis));
 		il.append(new PUSH(cpg, _nodeType));
 		il.append(new INVOKEINTERFACE(ty, 3));
-		orderIterator(classGen, methodGen);
+
 		break;
 	    }
 	}
@@ -493,28 +455,6 @@ final class Step extends RelativeLocationPath {
 	    }
 	}
     }
-
-
-    /**
-     * This method tests if this step needs to have its axis reversed,
-     * and wraps its iterator inside a ReverseIterator to return the node-set
-     * in document order.
-     */
-    public void orderIterator(ClassGenerator classGen,
-			      MethodGenerator methodGen) {
-	// First test if nodes are in reverse document order
-	if (!reverseNodeSet()) return;
-
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-	final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
-					  "("+NODE_ITERATOR_SIG+")V");
-	il.append(new NEW(cpg.addClass(REVERSE_ITERATOR)));
-	il.append(DUP_X1);
-	il.append(SWAP);
-	il.append(new INVOKESPECIAL(init));
-    }
-
 
     /**
      * Returns a string representation of this step.

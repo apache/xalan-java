@@ -360,7 +360,6 @@ final class EqualityExpr extends Expression implements Operators {
 
 	// Call the appropriate compare() from the BasisLibrary
 	il.append(new PUSH(cpg, _op));
-	il.append(methodGen.loadContextNode());
 	il.append(methodGen.loadDOM());
 
 	final int compare = cpg.addMethodref(BASIS_LIBRARY_CLASS,
@@ -369,7 +368,6 @@ final class EqualityExpr extends Expression implements Operators {
 					     + tleft.toSignature() 
 					     + tright.toSignature()
 					     + "I"
-					     + NODE_SIG
 					     + DOM_INTF_SIG
 					     + ")Z");
 	il.append(new INVOKESTATIC(compare));
