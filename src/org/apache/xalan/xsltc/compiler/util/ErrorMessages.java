@@ -247,8 +247,9 @@ public class ErrorMessages extends ResourceBundle {
 	"         The -s option disables calling System.exit.",
 
 	// STRAY_SORT_ERR
-	"<xsl:sort> can only be used within <xsl:for-each> or <xsl:apply-templates>."
-
+	"<xsl:sort> can only be used within <xsl:for-each> or <xsl:apply-templates>.",
+	// UNSUPPORTED_ENCODING
+	"Output encoding ''{0}'' is not supported on this JVM."
     };
 
     private static Vector _keys;

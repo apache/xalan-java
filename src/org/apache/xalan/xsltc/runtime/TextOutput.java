@@ -998,7 +998,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    if ((_outputType == HTML) || (_outputType == XML))
 		_escapeChars = true;
 	    if (_encoding == null)
-		_encoding = "UTF-8";
+	    	_encoding = "UTF-8";
 	    if (_saxHandler instanceof DefaultSAXOutputHandler)
 		((DefaultSAXOutputHandler)_saxHandler).setOutputType(type);
 	}

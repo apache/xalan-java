@@ -67,6 +67,7 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
+import java.io.OutputStreamWriter;
 
 import de.fub.bytecode.generic.*;
 import de.fub.bytecode.classfile.JavaClass;
@@ -149,7 +150,19 @@ final class Output extends TopLevelElement {
 
 	// Get the output encoding - any value accepted here
 	_encoding = getAttribute("encoding");
-	if (_encoding.equals(Constants.EMPTYSTRING)) _encoding = null;
+	if (_encoding.equals(Constants.EMPTYSTRING))
+	    _encoding = null;
+	else {
+	    try {
+		OutputStreamWriter writer =
+		    new OutputStreamWriter(System.out, _encoding);
+	    }
+	    catch (java.io.UnsupportedEncodingException e) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_ENCODING,
+					    _encoding, this);
+		parser.reportError(Constants.WARNING, msg);
+	    }
+	}
 
 	// Should the XML header be omitted - translate to true/false
 	attrib = getAttribute("omit-xml-declaration");

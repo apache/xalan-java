@@ -247,8 +247,9 @@ public final class ErrorMessages_no extends ErrorMessages {
 	"         -s blokkerer alle kall til System.exit().",
 
 	// STRAY_SORT_ERR
-	"<xsl:sort> kan bare brukes under <xsl:for-each> eller <xsl:apply-templates>."
-
+	"<xsl:sort> kan bare brukes under <xsl:for-each> eller <xsl:apply-templates>.",
+	// UNSUPPORTED_ENCODING
+	"Karaktersett ''{0}'' er ikke st\u00f8ttet av denne JVM."
     };
 
     public Object handleGetObject(String key) {
