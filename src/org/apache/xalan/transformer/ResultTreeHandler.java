@@ -943,18 +943,6 @@ public class ResultTreeHandler extends QueuedEvents
 
       m_nsContextPushed = false;
     }
-
-    else // Bugzila4344
-    {
-      // %REVIEW% I'm not sure how much of this is actually needed and/or
-      // appropriate. In particular, do we really want to flush m_namespaces?
-      m_attributes.clear();
-      m_nsDeclsHaveBeenAdded = false;
-      m_name = null;
-      m_url = null;
-      m_localName = null;
-      m_namespaces = null;
-    }
   }
 
   /**
@@ -1416,30 +1404,36 @@ public class ResultTreeHandler extends QueuedEvents
           String uri, String localName, String rawName, String type, String value)
             throws TransformerException
   {
-
-    // %REVIEW% %OPT% Is this ever needed?????
-    if (!m_nsDeclsHaveBeenAdded)
-      addNSDeclsToAttrs();
-
-    if (null == uri)  // defensive, should not really need this.
-      uri = "";
-
-    try
+    // %REVIEW% See Bugzilla 4344. Do we need an "else" that announces
+    // an error? Technically, this can't happen unless the stylesheet
+    // is unreasonable... but it's unclear whether silent or noisy
+    // failure is called for.
+    if (m_elemIsPending)
     {
-      if (!rawName.equals("xmlns"))  // don't handle xmlns default namespace.
-        ensurePrefixIsDeclared(uri, rawName);
-    }
-    catch (org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
+      // %REVIEW% %OPT% Is this ever needed?????
+      if (!m_nsDeclsHaveBeenAdded)
+	addNSDeclsToAttrs();
 
-    if (DEBUG)
-      System.out.println("ResultTreeHandler#addAttribute Adding attr: "
-                         + localName + ", " + uri);
+      if (null == uri)  // defensive, should not really need this.
+	uri = "";
 
-    if (!isDefinedNSDecl(rawName, value))
-      m_attributes.addAttribute(uri, localName, rawName, type, value);
+      try
+      {
+	if (!rawName.equals("xmlns"))  // don't handle xmlns default namespace.
+	  ensurePrefixIsDeclared(uri, rawName);
+      }
+      catch (org.xml.sax.SAXException se)
+      {
+	throw new TransformerException(se);
+      }
+      
+      if (DEBUG)
+	System.out.println("ResultTreeHandler#addAttribute Adding attr: "
+			   + localName + ", " + uri);
+
+      if (!isDefinedNSDecl(rawName, value))
+	m_attributes.addAttribute(uri, localName, rawName, type, value);
+    }
   }
 
   /**
