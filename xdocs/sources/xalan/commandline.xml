@@ -92,7 +92,6 @@
 -TG (Trace each result tree generation event)
 -TS (Trace each selection event)
 -TTC (Trace the template children as they are being processed)
--VALIDATE (Validate the XML and XSL input -- validation is off by default)
 -EDUMP [optional]FileName (Do stackdump on error)
 -XML (Use XML formatter and add XML header)
 -TEXT (Use simple Text formatter)
