@@ -1022,9 +1022,11 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTUNTYPED :
         newNode = new NodeTestType(p, DTMFilter.SHOW_UNTYPED);
         break;
-//      case XPathTreeConstants.JJTATOMICVALUE :
-//        newNode = new AtomicType(p);
-//        break;
+/* JKESS: This case had been commented out. I've re-enabled it after patching
+ * AtomicType not to cause a crash -- but it still doesn't _work_.  */
+/**/      case XPathTreeConstants.JJTATOMICVALUE :
+/**/        newNode = new AtomicType(p);
+/**/        break;
       case XPathTreeConstants.JJTELEMORATTRTYPE :
         newNode = new ElemOrAttrType(p, "JJTELEMORATTRTYPE");
         break;
