@@ -77,7 +77,7 @@ public class TransletOutputHandlerFactory {
     public static final int DOM    = 2;
 
     private String _encoding   = "utf-8";
-    private String _method     = "xml";
+    private String _method     = null;
     private int    _outputType = STREAM;
 
     static public TransletOutputHandlerFactory newInstance() {
@@ -95,14 +95,16 @@ public class TransletOutputHandlerFactory {
     }
 
     public void setOutputMethod(String method) {
-	if (method != null) {
-	    _method = method;
-	}
+	_method = method;
     }
 
     public TransletOutputHandler getTransletOutputHandler() throws IOException {
 	switch (_outputType) {
 	    case STREAM:
+		if (_method == null) {
+		    return new StreamUnknownOutput(System.out, _encoding);
+		}
+
 		if (_method.equalsIgnoreCase("xml")) {
 		    return new StreamXMLOutput(System.out, _encoding);
 		}
@@ -110,7 +112,7 @@ public class TransletOutputHandlerFactory {
 		    return new StreamHTMLOutput(System.out, _encoding);
 		}
 		else if (_method.equalsIgnoreCase("text")) {
-		    return null;		// TODO
+		    // TODO
 		}
 	    break;
 	    case SAX:

@@ -64,6 +64,10 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.io.Writer;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 
 class StreamOutput extends OutputBase {
 
@@ -80,32 +84,58 @@ class StreamOutput extends OutputBase {
     protected static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
     protected static final int MAX_INDENT       = INDENT.length;
 
-    protected static final int BUFFER_SIZE = 32 * 1024;
-    protected static final int OUTPUT_BUFFER_SIZE = 4 * 1024;
+    protected static final int BUFFER_SIZE = 64 * 1024;
+    protected static final int OUTPUT_BUFFER_SIZE = 8 * 1024;
 
-    protected Writer  _writer = null;
-    protected StringBuffer _buffer = new StringBuffer(BUFFER_SIZE);
+    protected Writer  _writer;
+    protected StringBuffer _buffer;
 
-    protected boolean _startTagOpen = false;
+    protected boolean _startTagOpen  = false;
     protected boolean _is8859Encoded = false;
 
-    protected boolean _indent = false;
+    protected boolean _indent     = false;
     protected boolean _omitHeader = false;
     protected String  _standalone = null;
     protected String  _version    = "1.0";
 
     protected boolean _lineFeedNextStartTag = false;
-    protected boolean _linefeedNextEndTag = false;
-    protected boolean _indentNextEndTag = false;
-    protected int     _indentLevel = 0;
+    protected boolean _linefeedNextEndTag   = false;
+    protected boolean _indentNextEndTag     = false;
+    protected int     _indentLevel          = 0;
 
-    protected boolean _escaping = true;
+    protected boolean _escaping     = true;
     protected boolean _firstElement = true;
-
-    protected String  _encoding;
+    protected String  _encoding     = "UTF-8";
 
     protected String  _doctypeSystem = null;
     protected String  _doctypePublic = null;
+
+    protected StreamOutput(StreamOutput output) {
+	_writer = output._writer;
+	_encoding = output._encoding;
+	_is8859Encoded = output._is8859Encoded;
+	_buffer = output._buffer;
+    }
+
+    protected StreamOutput(Writer writer, String encoding) {
+	_writer = writer;
+	_encoding = encoding;
+	_is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
+	_buffer = new StringBuffer(BUFFER_SIZE);
+    }
+
+    protected StreamOutput(OutputStream out, String encoding) 
+	throws IOException
+    {
+	try {
+	    _writer = new OutputStreamWriter(out, _encoding = encoding);
+	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
+	}
+	catch (UnsupportedEncodingException e) {
+	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
+	}
+	_buffer = new StringBuffer(BUFFER_SIZE);
+    }
 
     /**
      * Set the output document system/public identifiers
@@ -125,6 +155,27 @@ class StreamOutput extends OutputBase {
 
     public void setStandalone(String standalone) {
 	_standalone = standalone;
+    }
+
+    protected void outputBuffer() {
+	try {
+	    int n = 0;
+	    final int length = _buffer.length();
+	    final String output = _buffer.toString();
+
+	    // Output buffer in chunks of OUTPUT_BUFFER_SIZE 
+	    if (length > OUTPUT_BUFFER_SIZE) {
+		do {
+		    _writer.write(output, n, OUTPUT_BUFFER_SIZE);
+		    n += OUTPUT_BUFFER_SIZE;
+		} while (n + OUTPUT_BUFFER_SIZE < length);
+	    }
+	    _writer.write(output, n, length - n);
+	    _writer.flush();
+	}
+	catch (IOException e) {
+	    // ignore
+	}
     }
 
     protected void appendDTD(String name) {

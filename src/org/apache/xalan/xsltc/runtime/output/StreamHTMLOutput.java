@@ -93,22 +93,18 @@ public class StreamHTMLOutput extends StreamOutput {
     private boolean _inStyleScript = false;
     private String  _mediaType     = "text/html";
 
+    public StreamHTMLOutput(StreamOutput output) {
+	super(output);
+    }
+
     public StreamHTMLOutput(Writer writer, String encoding) {
-	_writer = writer;
-	_encoding = encoding;
-	_is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
+	super(writer, encoding);
     }
 
     public StreamHTMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
-	try {
-	    _writer = new OutputStreamWriter(out, _encoding = encoding);
-	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
-	}
-	catch (UnsupportedEncodingException e) {
-	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
-	}
+	super(out, encoding);
     }
 
     public void startDocument() throws TransletException { 
@@ -120,24 +116,8 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _buffer.append("/>");
 	}
 
-	try {
-	    int n = 0;
-	    final int length = _buffer.length();
-	    final String output = _buffer.toString();
-
-	    // Output buffer in chunks of OUTPUT_BUFFER_SIZE 
-	    if (length > OUTPUT_BUFFER_SIZE) {
-		do {
-		    _writer.write(output, n, OUTPUT_BUFFER_SIZE);
-		    n += OUTPUT_BUFFER_SIZE;
-		} while (n + OUTPUT_BUFFER_SIZE < length);
-	    }
-	    _writer.write(output, n, length - n);
-	    _writer.flush();
-	}
-	catch (IOException e) {
-	    // ignore
-	}
+	// Finally, output buffer to writer
+	outputBuffer();
     }
 
     public void startElement(String elementName) throws TransletException { 
@@ -339,7 +319,9 @@ public class StreamHTMLOutput extends StreamOutput {
         for (int i = 0; i < length; i++){
 	    final char ch = base.charAt(i);
 
-	    if (ch > '\u007F') {
+	    if ((ch >= '\u007F' && ch < '\u00A0') ||
+		(_is8859Encoded && ch > '\u00FF'))
+	    {
 	        _buffer.append(CHAR_ESC_START)
 		       .append(Integer.toString((int) ch))
 		       .append(';');

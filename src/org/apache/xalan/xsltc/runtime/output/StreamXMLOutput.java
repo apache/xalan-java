@@ -146,22 +146,14 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     public StreamXMLOutput(Writer writer, String encoding) {
-	_writer = writer;
-	_encoding = encoding;
-	_is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
+	super(writer, encoding);
 	init();
     }
 
     public StreamXMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
-	try {
-	    _writer = new OutputStreamWriter(out, _encoding = encoding);
-	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
-	}
-	catch (UnsupportedEncodingException e) {
-	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
-	}
+	super(out, encoding);
 	init();
     }
 
@@ -211,24 +203,8 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    closeCDATA();
 	}
 
-	try {
-	    int n = 0;
-	    final int length = _buffer.length();
-	    final String output = _buffer.toString();
-
-	    // Output buffer in chunks of OUTPUT_BUFFER_SIZE 
-	    if (length > OUTPUT_BUFFER_SIZE) {
-		do {
-		    _writer.write(output, n, OUTPUT_BUFFER_SIZE);
-		    n += OUTPUT_BUFFER_SIZE;
-		} while (n + OUTPUT_BUFFER_SIZE < length);
-	    }
-	    _writer.write(output, n, length - n);
-	    _writer.flush();
-	}
-	catch (IOException e) {
-	    // ignore
-	}
+	// Finally, output buffer to writer
+	outputBuffer();
     }
 
     public void startElement(String elementName) throws TransletException { 
@@ -268,6 +244,10 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
     public void endElement(String elementName) throws TransletException { 
 // System.out.println("endElement = " + elementName);
+	if (_cdataTagOpen) {
+	    closeCDATA();
+	}
+
 	if (_startTagOpen) {
 	    _startTagOpen = false;
 	    _buffer.append("/>");
@@ -281,6 +261,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 		if (_indentNextEndTag) {
 		    indent(_indentNextEndTag);
 		    _indentNextEndTag = true;
+		    _lineFeedNextStartTag = true;
 		}
 	    }
 	    _buffer.append("</").append(elementName).append('>');
@@ -351,6 +332,10 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    _buffer.append('>');
 	    _startTagOpen = false;
 	}
+	else if (_cdataTagOpen) {
+	    closeCDATA();
+	}
+
 	_buffer.append("<!--").append(comment).append("-->");
     }
 
@@ -362,11 +347,12 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    _buffer.append('>');
 	    _startTagOpen = false;
 	}
+	else if (_cdataTagOpen) {
+	    closeCDATA();
+	}
+
 	_buffer.append("<?").append(target).append(' ')
 	       .append(data).append("?>");
-	if (_indent) {
-	    _buffer.append('\n');
-	}
     }
 
     public boolean setEscaping(boolean escape) throws TransletException 
@@ -499,7 +485,11 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
 	// Step through characters and escape all special characters
 	for (int i = off; i < limit; i++) {
-	    if (ch[i] > '\u00ff') { 	// encoding??
+	    final char current = ch[i];
+
+	    if ((current >= '\u007F' && current < '\u00A0') ||
+		(_is8859Encoded && current > '\u00FF'))
+	    {
 		_buffer.append(ch, offset, i - offset)
 		       .append(CDATA_ESC_START)
 		       .append(Integer.toString((int) ch[i]))
