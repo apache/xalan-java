@@ -122,6 +122,7 @@ final class XslAttribute extends Instruction {
 	    if (item instanceof XslAttribute) continue;
 	    if (item instanceof UseAttributeSets) continue;
 	    if (item instanceof LiteralAttribute) continue;
+	    if (item instanceof Text) continue;
 	    // These objects _can_ result in one or more attribute
 	    // The output handler will generate an error if not (at runtime)
 	    if (item instanceof If) continue;
