@@ -1,79 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <todo project="XSLT 2.0 in Xalan-J" major-version="3">
   <actions>
-    <action category="feature">Errors formalized, numbered, dichotomized as static/dynamic</action>
-    <action category="feature">starting node can be designated</action>
-    <action category="feature">Can designate a named template to be invoked at startup</action>
-    <action category="feature">External parameters: data types?</action>
-    <action category="feature">XPath backward-compatibility mode</action>
     <action category="feature" who="SB">() constructs empty sequence</action>
     <action category="feature" who="SB">"instance of empty" test</action>
-    <action category="feature" status="unstable">xsl:import-schema</action>
-    <action category="feature" status="unstable">format-dateTime() and xsl:datetime-format</action>
-    <action category="feature">xsl:sort-key</action>
+  <!-- From XSLT 2.0 Working Draft 15-Nov-2002: -->
+    <action category="feature">Errors formalized, numbered, dichotomized as static/dynamic</action>
+    <action category="feature">starting node can be designated</action>
+    <action category="feature">Can designate base output URI at startup</action>
+    <action category="feature">Can designate a named template to be invoked at startup</action>
+    <action category="feature">External parameters: data types?</action>
+    <action category="feature" status="unstable">Module: XPath backward-compatibility</action>
+    <action category="feature">Module: Lexical construct support (XSLT Appendix G)</action>
+    <action category="feature" status="unstable">Modularize mandatory schema processing (XSLT Issue 125)</action>
+    <action category="feature" status="unstable">default-xpath-namespace attribute on any XSLT element</action>
+    <action category="feature" status="unstable">version attribute on any XSLT element and LREs, allows mixing</action>
+    <action category="feature">exclude-result-prefixes="#all" supported</action>
+    <action category="feature">exclude-result-prefixes, extension-element-prefixes now ubiquitous</action>
+    <action category="feature">Implement namespace fixup rules from XSLT part 4.4</action>
+    <action category="feature" status="unstable">Implement d-o-e rules from XSLT part 4.5</action>
+    <action category="feature">Detect use of reserved namespaces for named objects like templates, raise error</action>
+    <action category="feature">If AVT is sequence, produce space-separated string (XSLT part 5.5)</action>
+    <action category="feature">Template modes: multiple per template, #default, #current</action>
+    <action category="feature">xsl:apply-imports takes with-param subelement</action>
+    <action category="feature" who="JK">xsl:variable and xsl:param take @as (was @type). SequenceType parsing should be centralized.</action>
+    <action category="feature" who="JK">xsl:variable, xsl:param, xsl:with-param take @type-information</action>
+    <action category="feature">xsl:param takes @required</action>
+    <action category="feature" status="partial">xsl:function takes @override, xsl:result takes @as</action>
+    <action category="feature">LREs, xsl:element, xsl:attribute take @type-annotation</action>
+    <action category="feature">xsl:attribute takes @disable-output-escaping</action>
+    <action category="feature" status="unstable">xsl:text allows instructions</action>
     <action category="feature" status="unstable">xsl:namespace</action>
+    <action category="feature">xsl:copy and xsl:copy-of take @copy-namespaces</action>
+    <action category="feature">xsl:copy-of takes @copy-type-annotations</action>
+    <action category="feature">xsl:sort-key</action>
+    <action category="feature" who="JK">xsl:sort and xsl:key take @as, @collation for value matching. SequenceType parsing should be centralized.
+      <issue id="collations">What are we going to do about collations?</issue>
+      <issue id="collations">New rules for matching NaN as a value</issue></action>
     <action category="feature">Function sort(string,sequence)</action>
-    <action category="feature" who="JK">Add collation argument to starts-with, contains, substring-before, substring-after
-      <issue id="collations">What are we going to do about collations? Anything?</issue></action>
+    <action category="feature">xsl:analyze-string has sub-element xsl:fallback</action>
     <action category="feature" who="MM">regex-group(integer)</action>
     <action category="feature">Function unparsed-text(sequence, string?)</action>
+    <action category="feature">Function format-number has new picture strings and algorithm</action>
+    <action category="feature" status="unstable">format-dateTime() and xsl:datetime-format</action>
     <action category="feature">Function unparsed-entity-public-id(string)</action>
-    <action category="feature" who="JK" status="partial">xf:compare()
+    <action category="feature">system-property() has new keywords</action>
+    <action category="feature" status="partial">xsl:result-document takes @type-information</action>
+    <action category="feature" status="partial">xsl:output takes @name, @normalize-unicode</action>
+    <action category="feature">xsl:output method="xhtml"</action>
+    <action category="feature" status="partial">xsl:output takes @escape-uri-attributes for XHTML, HTML</action>
+  <!-- From Functions and Operators Working Draft 15-Nov-2002: -->
+    <action category="feature" who="JK">Add collation argument to starts-with, contains, substring-before, substring-after
       <issue id="collations">What are we going to do about collations? Anything?</issue></action>
-    <action category="feature">xf:normalize-unicode()</action>
-    <action category="feature">xf:upper-case() and xf:lower-case()</action>
-    <action category="feature">xf:string-pad()</action>
-    <action category="feature">xf:escape-uri()</action>
-    <action category="feature">xf:resolve-uri()</action>
-    <action category="feature">fn:unordered</action>
+    <action category="feature" who="JK" status="partial">fn:compare()
+      <issue id="collations">What are we going to do about collations? Anything?</issue></action>
+    <action category="feature">fn:normalize-unicode()</action>
+    <action category="feature">fn:upper-case() and xf:lower-case()</action>
+    <action category="feature">fn:string-pad()</action>
+    <action category="feature">fn:escape-uri()</action>
+    <action category="feature">fn:resolve-uri()</action>
+    <action category="feature">fn:unordered()</action>
     <action category="feature">fn:get-in-scope-namespaces(), fn:get-namespace-uri-for-prefix()</action>
-    <action category="feature">fn:default-collation</action>
+    <action category="feature">fn:default-collation()</action>
     <action category="feature">fn:implicit-timezone()</action>
     <action category="feature">fn:string-join()</action>
     <action category="feature">fn:base-uri()</action>
     <action category="feature">change fn:expanded-QName to QName-in-context</action>
     <action category="feature">change fn:get-*-from-dateTime to subtract-dateTimes-yielding-*</action>
-    <action category="feature">fn:codepoints-to-string, fn:string-to-codepoints</action>
-    <action category="feature">fn:error</action>
-    <action category="feature" status="unstable">xf:copy()</action>
-    <action category="feature" who="MM">xf:input()</action>
-    <action category="feature">xf:context-item()</action>
-    <action category="feature">xf:context-document()</action>
-    <action category="feature">xf:ends-with()</action>
+    <action category="feature">fn:codepoints-to-string(), fn:string-to-codepoints()</action>
+    <action category="feature">fn:error()</action>
+    <action category="feature" who="MM">fn:input()</action>
+    <action category="feature">fn:context-item()</action>
+    <action category="feature">fn:context-document()</action>
+    <action category="feature">fn:ends-with()</action>
     <action category="feature" who="JK">constructor functions for hexBinary, base64Binary, anyURI, Name, NCName, QName</action>
     <action category="feature" who="JK">constructor functions for normalizedString, token, language, NMTOKEN, NMTOKENS</action>
     <action category="feature" who="JK">constructor functions for NOTATION, ID, IDREF, IDREFS, ENTITY, ENTITIES</action>
     <action category="feature" who="JK">constructor functions for [unsigned]long, int, short, byte</action>
     <action category="feature" who="JK">constructor functions for [non][positive/negative]integer</action>
     <action category="feature" who="JK">constructor functions for decimal, float, double</action>
+    <action category="feature">equality test for QName, anyURI, hexBinary, base64Binary, NOTATION</action>
+  <!-- From XPath 2.0 Working Draft 15-Nov-2002: -->
+    <action category="feature" status="unstable">XPath backward-compatibility as part of context</action>
+    <action category="feature" status="unstable">default function namespace as part of context</action>
+    <action category="feature" status="unstable">modularize extras from XPath section 2.6</action>
     <action category="feature" status="partial">XPath keywords: type, of type, untyped, in</action>
     <action category="feature">XPath keyword: castable</action>
     <action category="feature">operators &lt;&lt; (before) and &gt;&gt; (after)</action>
-    <action category="feature">equality test for QName, anyURI, hexBinary, base64Binary</action>
     <action category="feature" status="unstable" who="JK">cast as, treat as</action>
     <action category="feature" status="unstable">ValidateExpr::= "validate" SchemaContext? "{" Expr "}"</action>
-    <action category="feature">default-xpath-namespace standard attribute allowed everywhere</action>
-    <action category="feature">xsl:analyze-string has sub-element xsl:fallback</action>
-    <action category="feature">xsl:copy and xsl:copy-of take @copy-namespaces</action>
-    <action category="feature" status="unstable">version attribute on XSLT element, allows mixing</action>
-    <action category="feature">exclude-result-prefixes="#all" supported</action>
-    <action category="feature">exclude-result-prefixes, extension element-prefixes now ubiquitous</action>
-    <action category="feature">xsl:apply-imports takes with-param subelement</action>
-    <action category="feature" who="JK">xsl:variable and xsl:param take @as (was @type). SequenceType parsing should be centralized.</action>
-    <action category="feature">xsl:param takes @required</action>
-    <action category="feature">xsl:attribute takes @disable-output-escaping</action>
-    <action category="feature" who="JK">xsl:sort and xsl:key take @as, @collation for value matching. SequenceType parsing should be centralized.
-      <issue id="collations">What are we going to do about collations?</issue>
-      <issue id="collations">New rules for matching NaN as a value</issue></action>
-    <action category="feature" status="partial">xsl:output takes @name, @unicode-normalization</action>
-    <action category="feature">xsl:output method="xhtml"</action>
-    <action category="feature">xsl:text allows instructions</action>
-    <action category="feature">system-property() has new keywords</action>
-    <action category="feature" status="partial">xsl:function, xsl:result takes @as</action>
   </actions>
   <completed>
     <action category="feature">Input is a sequence, not just one tree</action>
-    <action category="feature">xsl:result-document</action>
     <action category="feature">xsl:for-each-group</action>
     <action category="feature">OccurrenceIndicator::= ("*" |  "+" |  "?")? in match and select</action>
     <action category="feature">ItemType keywords: element, attribute, node, document, item, atomic value, etc.</action>
@@ -112,6 +129,7 @@
       <issue id="collations">What are we going to do about collations? Anything?</issue></action>
     <action category="feature" status="bugs">xf:collection()</action>
     <action category="feature">ExprComment ::= "{--" [^}]* "--}"</action>
+    <action category="feature">xsl:import-schema</action>
   </completed>
  <devs>
   <!-- in alphabetical order, by last name -->
