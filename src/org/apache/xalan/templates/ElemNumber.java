@@ -74,6 +74,12 @@ public class ElemNumber extends ElemTemplateElement
 {
     static final long serialVersionUID = 8118472298274407610L;
 
+    /**
+     * Chars for converting integers into alpha counts.
+     * @see TransformerImpl#int2alphaCount
+     */
+    private CharArrayWrapper m_alphaCountTable = null;
+    
     private class MyPrefixResolver implements PrefixResolver {
         
         DTM dtm;
@@ -1334,28 +1340,26 @@ public class ElemNumber extends ElemTemplateElement
     switch (numberType)
     {
     case 'A' :
-
-        thisBundle =
-          (XResourceBundle) XResourceBundle.loadResourceBundle(
-            org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
-
-
-        alphaCountTable = (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
-
-      int2alphaCount(listElement, alphaCountTable, formattedNumber);
+        if (null == m_alphaCountTable){
+                thisBundle =
+                  (XResourceBundle) XResourceBundle.loadResourceBundle(
+                    org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
+                m_alphaCountTable = (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);                
+        }
+      int2alphaCount(listElement, m_alphaCountTable, formattedNumber);
       break;
     case 'a' :
-
-        thisBundle =
-          (XResourceBundle) XResourceBundle.loadResourceBundle(
-            org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
-
-        alphaCountTable = (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
+        if (null == m_alphaCountTable){
+                thisBundle =
+                  (XResourceBundle) XResourceBundle.loadResourceBundle(
+                    org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
+                m_alphaCountTable = (CharArrayWrapper) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);                
+        }
       FastStringBuffer stringBuf = StringBufferPool.get();
 
       try
       {
-        int2alphaCount(listElement, alphaCountTable, stringBuf);
+        int2alphaCount(listElement, m_alphaCountTable, stringBuf);
         formattedNumber.append(
           stringBuf.toString().toLowerCase(
             getLocale(transformer, contextNode)));
