@@ -131,15 +131,6 @@ abstract class SAXOutput extends OutputBase implements Constants {
         // Redefined in SAXXMLOutput
     }
 
-    /**
-     * Returns the local name of a qualified name. If the name has 
-     * no prefix, then it works as the identity (SAX2).
-     */
-    protected static String getLocalName(String qname) {
-        final int col = qname.lastIndexOf(':');
-        return (col > 0) ? qname.substring(col + 1) : qname;
-    }
-
     protected void closeStartTag() throws TransletException {
     }
 

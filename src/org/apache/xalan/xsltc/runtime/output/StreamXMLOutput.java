@@ -86,6 +86,8 @@ public class StreamXMLOutput extends StreamOutput {
     private static final String CDATA_ESC_START = "]]>&#";
     private static final String CDATA_ESC_END   = ";<![CDATA[";
 
+    private String _elementName;
+
     public StreamXMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
 	initCDATA();
@@ -124,7 +126,7 @@ public class StreamXMLOutput extends StreamOutput {
     }
 
     public void startElement(String elementName) throws TransletException { 
-// System.out.println("startElement = " + elementName + " _indent = " + _indent);
+// System.out.println("startElement = " + elementName);
 	if (_startTagOpen) {
 	    closeStartTag();
 	}
@@ -151,10 +153,7 @@ public class StreamXMLOutput extends StreamOutput {
 
 	_depth++;
 	_startTagOpen = true;
-
-	if (_cdata != null && _cdata.containsKey(elementName)) {
-	    _cdataStack.push(new Integer(_depth));
-	}
+	_elementName = elementName;
     }
 
     public void endElement(String elementName) throws TransletException { 
@@ -294,6 +293,23 @@ public class StreamXMLOutput extends StreamOutput {
 	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
 	    BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
 				      prefix, uri);
+	}
+    }
+
+    protected void closeStartTag() throws TransletException {
+	super.closeStartTag();
+
+	if (_cdata != null) {
+	    final String localName = getLocalName(_elementName);
+	    final String uri = getNamespaceURI(_elementName, true);
+
+	    final StringBuffer expandedName = (uri == EMPTYSTRING) ? 
+		new StringBuffer(_elementName) :
+		new StringBuffer(uri).append(':').append(localName);
+
+	    if (_cdata.containsKey(expandedName.toString())) {
+		_cdataStack.push(new Integer(_depth));
+	    }
 	}
     }
 

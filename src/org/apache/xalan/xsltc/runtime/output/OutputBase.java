@@ -250,6 +250,44 @@ public abstract class OutputBase implements TransletOutputHandler, Constants {
 	}
     }
 
+    /**
+     * Use a namespace prefix to lookup a namespace URI
+     */
+    protected String lookupNamespace(String prefix) {
+        final Stack stack = (Stack)_namespaces.get(prefix);
+        return stack != null && !stack.isEmpty() ? (String)stack.peek() : null;
+    }
+
+    /**
+     * Returns the local name of a qualified name. If the name has 
+     * no prefix, then it works as the identity (SAX2).
+     */
+    protected static String getLocalName(String qname) {
+        final int col = qname.lastIndexOf(':');
+        return (col > 0) ? qname.substring(col + 1) : qname;
+    }
+
+    /**
+     * Returns the URI of an element or attribute. Note that default namespaces
+     * do not apply directly to attributes.
+     */
+    protected String getNamespaceURI(String qname, boolean isElement)
+        throws TransletException
+    {
+        String uri = EMPTYSTRING;
+        int col = qname.lastIndexOf(':');
+        final String prefix = (col > 0) ? qname.substring(0, col) : EMPTYSTRING;
+
+        if (prefix != EMPTYSTRING || isElement) {
+            uri = lookupNamespace(prefix);
+            if (uri == null && !prefix.equals(XMLNS_PREFIX)) {
+                BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR,
+                                          qname.substring(0, col));
+            }
+        }
+        return uri;
+    }
+
     // -- Temporary
     public void namespace(String prefix, String uri) throws TransletException { }
     public void setType(int type) { }

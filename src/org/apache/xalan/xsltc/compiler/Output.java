@@ -215,6 +215,16 @@ final class Output extends TopLevelElement {
 	    _cdata = null;
 	}
 	else {
+	    StringBuffer expandedNames = new StringBuffer();
+	    StringTokenizer tokens = new StringTokenizer(_cdata);
+
+	    // Make sure to store names in expanded form
+	    while (tokens.hasMoreTokens()) {
+		expandedNames.append(parser.getQName(tokens.nextToken()).toString())
+			     .append(' ');
+	    }
+	    _cdata = expandedNames.toString();
+
 	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, _cdata);
 	}
 
@@ -348,6 +358,7 @@ final class Output extends TopLevelElement {
 	    int index = cpg.addMethodref(TRANSLET_CLASS,
 					 "addCdataElement",
 					 "(Ljava/lang/String;)V");
+
 	    StringTokenizer tokens = new StringTokenizer(_cdata);
 	    while (tokens.hasMoreTokens()) {
 		il.append(DUP);

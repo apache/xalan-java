@@ -415,7 +415,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	       .append(_encoding).append("\">");
     }
 
-    protected void closeStartTag() {
+    protected void closeStartTag() throws TransletException {
 	super.closeStartTag();
 
 	// Insert <META> tag directly after <HEAD> element in HTML output

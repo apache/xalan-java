@@ -71,6 +71,8 @@ import java.io.UnsupportedEncodingException;
 
 import java.util.Vector;
 
+import org.apache.xalan.xsltc.TransletException;
+
 abstract class StreamOutput extends OutputBase {
 
     protected static final String AMP      = "&amp;";
@@ -296,7 +298,7 @@ abstract class StreamOutput extends OutputBase {
 	}
     }
 
-    protected void closeStartTag() {
+    protected void closeStartTag() throws TransletException {
 	appendAttributes();
 	_buffer.append('>');
 	_startTagOpen = false;

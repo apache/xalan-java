@@ -140,10 +140,6 @@ public class SAXXMLOutput extends SAXOutput {
             _elementName = elementName;
             _attributes.clear();
             _startTagOpen = true;
-
-            if (_cdata != null && _cdata.get(elementName) != null) {
-                _cdataStack.push(new Integer(_depth));
-	    }
 	}
         catch (SAXException e) {
             throw new TransletException(e);
@@ -312,42 +308,26 @@ public class SAXXMLOutput extends SAXOutput {
         try {
             _startTagOpen = false;
 
+	    final String localName = getLocalName(_elementName);
+	    final String uri = getNamespaceURI(_elementName, true);
+
             // Now is time to send the startElement event
-            _saxHandler.startElement(getNamespaceURI(_elementName, true),
-                getLocalName(_elementName), _elementName, _attributes);
+            _saxHandler.startElement(uri, localName, _elementName, 
+		_attributes);
+
+	    if (_cdata != null) {
+		final StringBuffer expandedName = (uri == EMPTYSTRING) ? 
+		    new StringBuffer(_elementName) :
+		    new StringBuffer(uri).append(':').append(localName);
+
+		if (_cdata.containsKey(expandedName.toString())) {
+		    _cdataStack.push(new Integer(_depth));
+		}
+	    }
         }
         catch (SAXException e) {
             throw new TransletException(e);
         }
-    }
-
-    /**
-     * Returns the URI of an element or attribute. Note that default namespaces
-     * do not apply directly to attributes.
-     */
-    private String getNamespaceURI(String qname, boolean isElement)
-        throws TransletException
-    {
-        String uri = EMPTYSTRING;
-        int col = qname.lastIndexOf(':');
-        final String prefix = (col > 0) ? qname.substring(0, col) : EMPTYSTRING;
-
-        if (prefix != EMPTYSTRING || isElement) {
-            uri = lookupNamespace(prefix);
-            if (uri == null && !prefix.equals(XMLNS_PREFIX)) {
-                BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR,
-                                          qname.substring(0, col));
-            }
-        }
-        return uri;
-    }
-
-    /**
-     * Use a namespace prefix to lookup a namespace URI
-     */
-    private String lookupNamespace(String prefix) {
-        final Stack stack = (Stack)_namespaces.get(prefix);
-        return stack != null && !stack.isEmpty() ? (String)stack.peek() : null;
     }
 
     protected void closeCDATA() throws SAXException {
