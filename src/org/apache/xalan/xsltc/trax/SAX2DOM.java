@@ -102,8 +102,8 @@ class SAX2DOM implements ContentHandler, Constants {
 	final Node last = (Node)_nodeStk.peek();
 	final String text = new String(ch, start, length);
 
-	// Only whitespace text nodes can be children of root
-	if (last != _document || text.trim().length() == 0) {
+	// No text nodes can be children of root (DOM006 exception)
+	if (last != _document) {
 	    last.appendChild(_document.createTextNode(text));
 	}
     }
