@@ -1,7 +1,8 @@
 Manifest-Version: 1.0
 Created-By: @java.version@ (@java.vendor@)
+Class-Path: xercesImpl.jar xml-apis.jar serializer.jar
 
-Name: org/apache/xalan/xsltc
+Name: org/apache/xalan/xsltc/
 Comment: Main XSLTC engine implementing TrAX/JAXP
 Specification-Title: Java API for XML Processing
 Specification-Vendor: Sun Microsystems Inc.
@@ -11,27 +12,14 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
 Implementation-URL: http://xml.apache.org/xalan-j/dist/
 
-Name: JLex 
-Comment: A Lexical Analyzer for Java 
-Specification-Title: A Lexical Analyzer for Java 
-Specification-Vendor: Princeton University 
-Specification-Version: 1.2.5 
-Implementation-Title: JLex 
+Name: org/apache/xml/
+Comment: DTM implementation and utilities
+Implementation-Title: org.apache.xml
 Implementation-Version: @impl.version@
-Implementation-Vendor: Princeton University 
-Implementation-URL: http://www.cs.princeton.edu/~appel/modern/java/JLex/
+Implementation-Vendor: Apache Software Foundation
+Implementation-URL: http://xml.apache.org/xalan-j/dist/
 
-Name: java_cup 
-Comment: Parser Generator for Java 
-Specification-Title: Parser Generator for Java 
-Specification-Vendor: Princeton University 
-Specification-Version: 0.10k 
-Implementation-Title: java_cup 
-Implementation-Version: @impl.version@
-Implementation-Vendor: Princeton University 
-Implementation-URL: http://www.cs.princeton.edu/~appel/modern/java/CUP/ 
-
-Name: runtime 
+Name: java_cup/runtime/
 Comment: Runtime component of JCup 
 Specification-Title: Runtime component of JCup
 Specification-Vendor: Princeton University 
@@ -41,8 +29,7 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Princeton University  
 Implementation-URL: http://www.cs.princeton.edu/~appel/modern/java/CUP/ 
 
-
-Name: org/apache/bcel
+Name: org/apache/bcel/
 Comment: Byte Code Engineering Library 
 Specification-Title: Byte Code Engineering Library 
 Specification-Vendor: Markus Dahm 
@@ -52,7 +39,7 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
 Implementation-URL: http://jakarta.apache.org/bcel
 
-Name: org/apache/regexp
+Name: org/apache/regexp/
 Comment: Java Regular Expression package 
 Specification-Title: Java Regular Expression package 
 Specification-Vendor: Apache Software Foundation 

@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Created-By: @java.version@ (@java.vendor@)
 Main-Class: org.apache.xalan.xslt.Process
-Class-Path: xercesImpl.jar xml-apis.jar
+Class-Path: xercesImpl.jar xml-apis.jar serializer.jar
 
 
-Name: org/apache/xalan
+Name: org/apache/xalan/
 Comment: Main Xalan engine implementing TrAX/JAXP
 Specification-Title: Java API for XML Processing
 Specification-Vendor: Sun Microsystems Inc.
@@ -12,23 +12,23 @@ Specification-Version: 1.2
 Implementation-Title: org.apache.xalan
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://xml.apache.org/xalan-j/dist/
+Implementation-URL: http://xml.apache.org/xalan-j/
 
-Name: org/apache/xpath
+Name: org/apache/xpath/
 Comment: XPath engine
 Implementation-Title: org.apache.xpath
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://xml.apache.org/xalan-j/dist/
+Implementation-URL: http://xml.apache.org/xalan-j/
 
-Name: org/apache/xml
+Name: org/apache/xml/
 Comment: DTM implementation and utilities
 Implementation-Title: org.apache.xml
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://xml.apache.org/xalan-j/dist/
+Implementation-URL: http://xml.apache.org/xalan-j/
 
-Name: org/apache/xalan/xsltc
+Name: org/apache/xalan/xsltc/
 Comment: Main XSLTC engine implementing TrAX/JAXP
 Specification-Title: Java API for XML Processing
 Specification-Vendor: Sun Microsystems Inc.
@@ -36,9 +36,9 @@ Specification-Version: 1.2
 Implementation-Title: org.apache.xalan.xsltc
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://xml.apache.org/xalan-j/dist/
+Implementation-URL: http://xml.apache.org/xalan-j/
 
-Name: runtime 
+Name: java_cup/runtime/ 
 Comment: Runtime component of JCup 
 Specification-Title: Runtime component of JCup
 Specification-Vendor: Princeton University 
@@ -48,7 +48,7 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Princeton University  
 Implementation-URL: http://www.cs.princeton.edu/~appel/modern/java/CUP/ 
 
-Name: org/apache/bcel
+Name: org/apache/bcel/
 Comment: Byte Code Engineering Library 
 Specification-Title: Byte Code Engineering Library 
 Specification-Vendor: Markus Dahm 
@@ -58,7 +58,7 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
 Implementation-URL: http://jakarta.apache.org/bcel
 
-Name: org/apache/regexp
+Name: org/apache/regexp/
 Comment: Java Regular Expression package 
 Specification-Title: Java Regular Expression package 
 Specification-Vendor: Apache Software Foundation 
@@ -68,4 +68,12 @@ Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
 Implementation-URL: http://jakarta.apache.org/regexp
 
+Name: org/w3c/dom/xpath/
+Comment: Document Object Model (DOM) Level 3 L3 XPath
+Specification-Vendor: World Wide Web Consortium
+Specification-Version: 1.0
+Implementation-Title: org.w3c.dom
+Implementation-Version: 1.0
+Implementation-Vendor: World Wide Web Consortium
+Implementation-URL: http://www.w3c.org/DOM/
 
