@@ -168,6 +168,14 @@ public class FuncExtFunction extends Function
       {
         result = new XNumber(((Double) val).doubleValue());
       }
+      else if (val instanceof Long)
+      {
+        result = new XNumber(((Long)val).doubleValue());
+      }
+      else if (val instanceof Integer)
+      {
+        result = new XNumber(((Integer)val).doubleValue());
+      }
       else if (val instanceof DocumentFragment)
       {
         result = new XRTreeFrag((DocumentFragment) val);
