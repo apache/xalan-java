@@ -211,18 +211,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     catch (org.xml.sax.SAXException se)
     {
       if( m_errorListener != null ) {
-	try {
-	  m_errorListener.fatalError( new TransformerException( se ) );
-	} catch( TransformerException ex ) {
-	  throw new TransformerConfigurationException( ex );
-	}
-	return null;
+        try {
+          m_errorListener.fatalError( new TransformerException( se ) );
+        } catch( TransformerException ex ) {
+          throw new TransformerConfigurationException( ex );
+        }
+        return null;
       } else
-	// Should remove this later... but right now diagnostics from 
-	// TransformerConfigurationException are not good.
-	// se.printStackTrace();
-	throw new TransformerConfigurationException("processFromNode failed",
-						    se);
+        // Should remove this later... but right now diagnostics from 
+        // TransformerConfigurationException are not good.
+        // se.printStackTrace();
+        throw new TransformerConfigurationException("processFromNode failed",
+                                                    se);
     }
   }
 
@@ -350,6 +350,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
           throw new org.xml.sax.SAXException(ex1.toString());
         }
         catch (NoSuchMethodError ex2){}
+        catch (AbstractMethodError ame){}
 
         if (null == reader)
         {
@@ -507,12 +508,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       return new TrAXFilter(templates);
     } catch( TransformerConfigurationException ex ) {
       if( m_errorListener != null) {
-	try {
-	  m_errorListener.fatalError( ex );
-	  return null;
-	} catch( TransformerException ex1 ) {
-	  new TransformerConfigurationException(ex1);
-	}
+        try {
+          m_errorListener.fatalError( ex );
+          return null;
+        } catch( TransformerException ex1 ) {
+          new TransformerConfigurationException(ex1);
+        }
       }
       throw ex;
     }
@@ -553,19 +554,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     try {
       TransformerImpl transformer =
-	(TransformerImpl) templates.newTransformer();
+        (TransformerImpl) templates.newTransformer();
       TransformerHandler th =
-	(TransformerHandler) transformer.getInputContentHandler(true);
+        (TransformerHandler) transformer.getInputContentHandler(true);
 
       return th;
     } catch( TransformerConfigurationException ex ) {
       if( m_errorListener != null ) {
-	try {
-	  m_errorListener.fatalError( ex );
-	  return null;
-	} catch (TransformerException ex1 ) {
-	  ex=new TransformerConfigurationException(ex1);
-	}
+        try {
+          m_errorListener.fatalError( ex );
+          return null;
+        } catch (TransformerException ex1 ) {
+          ex=new TransformerConfigurationException(ex1);
+        }
       }
       throw ex;
     }
@@ -636,18 +637,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
          throw any exception in fatalError. 
          The spec says: "a Transformer must use this interface
          instead of throwing an exception" - the newTemplates() does
-	 that, and returns null.
+         that, and returns null.
       */
       if( tmpl==null ) return null;
       return tmpl.newTransformer();
     } catch( TransformerConfigurationException ex ) {
       if( m_errorListener != null ) {
-	try {
-	  m_errorListener.fatalError( ex );
-	  return null;
-	} catch( TransformerException ex1 ) {
-	  ex=new TransformerConfigurationException( ex1 );
-	}
+        try {
+          m_errorListener.fatalError( ex );
+          return null;
+        } catch( TransformerException ex1 ) {
+          ex=new TransformerConfigurationException( ex1 );
+        }
       }
       throw ex;
     }
@@ -770,6 +771,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
           throw new org.xml.sax.SAXException(ex1.toString());
         }
         catch (NoSuchMethodError ex2){}
+        catch (AbstractMethodError ame){}
       }
       
       if (null == reader)
@@ -795,25 +797,25 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     catch (IOException ioe)
     {
       if( m_errorListener != null ) {
-	try {
-	  m_errorListener.fatalError( new TransformerException(ioe) );
-	  return null;
-	} catch( TransformerException ex1 ) {
-	  throw new TransformerConfigurationException( ex1 );
-	}
+        try {
+          m_errorListener.fatalError( new TransformerException(ioe) );
+          return null;
+        } catch( TransformerException ex1 ) {
+          throw new TransformerConfigurationException( ex1 );
+        }
       } else 
-	throw new TransformerConfigurationException(ioe.getMessage(), ioe);
+        throw new TransformerConfigurationException(ioe.getMessage(), ioe);
     }
     catch (org.xml.sax.SAXException se)
     {
       if( m_errorListener != null ) {
-	try {
-	  m_errorListener.fatalError( new TransformerException(se) );
-	} catch( TransformerException ex1 ) {
-	  throw new TransformerConfigurationException( ex1 );
-	}
+        try {
+          m_errorListener.fatalError( new TransformerException(se) );
+        } catch( TransformerException ex1 ) {
+          throw new TransformerConfigurationException( ex1 );
+        }
       } else 
-	throw new TransformerConfigurationException(se.getMessage(), se);
+        throw new TransformerConfigurationException(se.getMessage(), se);
     }
 
     return builder.getTemplates();

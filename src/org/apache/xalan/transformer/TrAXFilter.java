@@ -99,6 +99,7 @@ public class TrAXFilter extends XMLFilterImpl
           throw new org.xml.sax.SAXException( ex1.toString() );
       } catch( NoSuchMethodError ex2 ) {
       }
+      catch (AbstractMethodError ame){}
 
       XMLReader parent;
       if( reader==null )

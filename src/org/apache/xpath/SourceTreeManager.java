@@ -466,6 +466,7 @@ public class SourceTreeManager
             throw new org.xml.sax.SAXException( ex1.toString() );
         } catch( NoSuchMethodError ex2 ) {
         }
+        catch (AbstractMethodError ame){}
         if(null == reader)
           reader = XMLReaderFactory.createXMLReader();
       }
