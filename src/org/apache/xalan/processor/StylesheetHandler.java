@@ -923,8 +923,10 @@ public class StylesheetHandler
   /**
    * The root of the XSLT Schema, which tells us how to 
    * transition content handlers, create elements, etc.
+   * For the moment at least, this can't be static, since 
+   * the processors store state.
    */
-  private static XSLTSchema m_schema = new XSLTSchema();
+  private XSLTSchema m_schema = new XSLTSchema();
   
   /**
    * Get the root of the XSLT Schema, which tells us how to 
