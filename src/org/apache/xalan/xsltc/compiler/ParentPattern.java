@@ -117,8 +117,6 @@ final class ParentPattern extends RelativePathPattern {
 	    il.append(SWAP);
 	}
 	else if (_right instanceof StepPattern) {
-	    //!!! check this
-
 	    il.append(DUP);
 	    il.append(storeLocal);
 	    
@@ -142,9 +140,9 @@ final class ParentPattern extends RelativePathPattern {
 	il.append(new INVOKEINTERFACE(getParent, 2));
 
 	final SyntaxTreeNode p = getParent();
-	if ((p == null) ||
-	    (p instanceof Instruction) ||
-	    (p instanceof TopLevelElement)) {
+	if (p == null || p instanceof Instruction || 
+	    p instanceof TopLevelElement) 
+	{
 	    _left.translate(classGen, methodGen);
 	}
 	else {
@@ -159,6 +157,15 @@ final class ParentPattern extends RelativePathPattern {
 
 	methodGen.removeLocalVariable(local);
 	
+	/*
+	 * If _right is an ancestor pattern, backpatch _left false
+	 * list to the loop that searches for more ancestors.
+	 */
+	if (_right instanceof AncestorPattern) {
+	    final AncestorPattern ancestor = (AncestorPattern) _right;
+	    _left.backPatchFalseList(ancestor.getLoopHandle());    // clears list
+	}
+
 	_trueList.append(_right._trueList.append(_left._trueList));
 	_falseList.append(_right._falseList.append(_left._falseList));
     }
