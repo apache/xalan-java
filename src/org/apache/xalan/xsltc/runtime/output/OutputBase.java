@@ -218,16 +218,18 @@ public abstract class OutputBase implements TransletOutputHandler, Constants {
     /**
      * Undeclare the namespace that is currently pointed to by a given prefix
      */
-    protected void popNamespace(String prefix) {
+    protected boolean popNamespace(String prefix) {
 	// Prefixes "xml" and "xmlns" cannot be redefined
 	if (prefix.startsWith(XML_PREFIX)) {
-	    return;
+	    return false;
 	}
 
 	Stack stack;
 	if ((stack = (Stack)_namespaces.get(prefix)) != null) {
 	    stack.pop();
+	    return true;
 	}
+	return false;
     }
 
     /**

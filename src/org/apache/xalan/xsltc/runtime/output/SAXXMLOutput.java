@@ -245,23 +245,6 @@ public class SAXXMLOutput extends SAXOutput {
     }
 
     /**
-     * This method is called when all the data needed for a call to the
-     * SAX handler's startElement() method has been gathered.
-     */
-    protected void closeStartTag() throws TransletException {
-        try {
-            _startTagOpen = false;
-
-            // Now is time to send the startElement event
-            _saxHandler.startElement(getNamespaceURI(_elementName, true),
-                getLocalName(_elementName), _elementName, _attributes);
-        }
-        catch (SAXException e) {
-            throw new TransletException(e);
-        }
-    }
-
-    /**
      * Send a processing instruction to the output document
      */
     public void processingInstruction(String target, String data)
@@ -277,6 +260,57 @@ public class SAXXMLOutput extends SAXOutput {
 
             // Pass the processing instruction to the SAX handler
             _saxHandler.processingInstruction(target, data);
+        }
+        catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
+    /**
+     * Declare a prefix to point to a namespace URI. Inform SAX handler
+     * if this is a new prefix mapping.
+     */
+    protected boolean pushNamespace(String prefix, String uri) {
+	try {
+	    if (super.pushNamespace(prefix, uri)) {
+		_saxHandler.startPrefixMapping(prefix, uri);
+		return true;
+	    }
+	} 
+	catch (SAXException e) {
+	    // falls through
+	}
+	return false;
+    }
+
+    /**
+     * Undeclare the namespace that is currently pointed to by a given 
+     * prefix. Inform SAX handler if prefix was previously mapped.
+     */
+    protected boolean popNamespace(String prefix) {
+	try {
+	    if (super.popNamespace(prefix)) {
+		_saxHandler.endPrefixMapping(prefix);
+		return true;
+	    }
+	}
+	catch (SAXException e) {
+	    // falls through
+	}
+	return false;
+    }
+
+    /**
+     * This method is called when all the data needed for a call to the
+     * SAX handler's startElement() method has been gathered.
+     */
+    protected void closeStartTag() throws TransletException {
+        try {
+            _startTagOpen = false;
+
+            // Now is time to send the startElement event
+            _saxHandler.startElement(getNamespaceURI(_elementName, true),
+                getLocalName(_elementName), _elementName, _attributes);
         }
         catch (SAXException e) {
             throw new TransletException(e);
