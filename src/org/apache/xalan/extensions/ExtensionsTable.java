@@ -289,13 +289,16 @@ public class ExtensionsTable
   /**
    * Declare the appropriate java extension handler.
    * @param ns        the URI of namespace in which the function is needed
-   * @return          an ExtensionHandler for this namespace
+   * @return          an ExtensionHandler for this namespace, or null if 
+   *                  not found.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public ExtensionHandler makeJavaNamespace(String ns)
           throws javax.xml.transform.TransformerException
   {
+    if(null == ns || ns.trim().length() == 0) // defensive. I don't think it's needed.  -sb
+      return null;
 
     // First, prepare the name of the actual class or package.  We strip
     // out any leading "class:".  Next, we see if there is a /.  If so,
@@ -314,6 +317,11 @@ public class ExtensionsTable
 
     if (-1 != lastSlash)
       className = className.substring(lastSlash + 1);
+      
+    // The className can be null here, and can cause an error in getClassForName
+    // in JDK 1.8.
+    if(null == className || className.trim().length() == 0) 
+      return null;
 
     try
     {
