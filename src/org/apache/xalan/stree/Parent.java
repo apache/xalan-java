@@ -33,16 +33,16 @@ public class Parent extends Child
   {    
     if (!isComplete())
     {
-      synchronized (this)
+      synchronized (getSynchObject())
       {
         try
         {
           //System.out.println("Waiting... getCount "+ this.getNodeName() );
-          wait();
+          getSynchObject().wait();
         }
         catch (InterruptedException e)
         {
-          // That's OK, it's as good a time as any to check again
+          throwIfParseError();
         }
         //System.out.println("... getcount " );
         
@@ -62,16 +62,20 @@ public class Parent extends Child
   {
     if (null == m_children && !isComplete())
     {
-      synchronized (this)
+      synchronized (getSynchObject())
       {
         try
         {
           //System.out.println("Waiting... getCount " + this.getNodeName() );
-          wait();
+          getSynchObject().wait();
         }
         catch (InterruptedException e)
         {
           // That's OK, it's as good a time as any to check again
+          Exception pe 
+            = this.getDocumentImpl().getSourceTreeHandler().getTransformer().getExceptionThrown();
+          if(null != pe)
+            throw new org.apache.xalan.utils.WrappedRuntimeException(pe);
         }
         //System.out.println("... getcount " );        
       }
@@ -106,17 +110,17 @@ public class Parent extends Child
            m_children[i] : null;
     if (child == null && !isComplete())
     {
-      synchronized (this)
+      synchronized (getSynchObject())
       {
         try
         {
           // System.out.println("Waiting... getChild " + i + " " + getNodeName());
           
-          wait();
+          getSynchObject().wait();
         }
         catch (InterruptedException e)
         {
-          // That's OK, it's as good a time as any to check again
+          throwIfParseError();
         }
         // System.out.println("... gotChild " + i);
         child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
@@ -151,7 +155,7 @@ public class Parent extends Child
     }
     catch(Exception e)
     {
-      return null;
+      throw new org.apache.xalan.utils.WrappedRuntimeException(e);
     }  
   }
   
@@ -245,9 +249,9 @@ public class Parent extends Child
     if (newChild.getNodeType() != Node.ATTRIBUTE_NODE)
     {  
       // Notify anyone waiting for a child...
-      synchronized (this)
+      synchronized (getSynchObject())
       {
-        notifyAll();
+        getSynchObject().notifyAll();
       }
     }
     
@@ -266,23 +270,50 @@ public class Parent extends Child
    */
   public boolean isComplete()
   {
+    if(!m_isComplete)
+    {
+      DocumentImpl di = this.getDocumentImpl();
+      if(null != di)
+      {
+        SourceTreeHandler sth = di.getSourceTreeHandler();
+        if(null != sth)
+        {
+          sth = di.getSourceTreeHandler();
+          org.apache.xalan.transformer.TransformerImpl ti 
+            = sth.getTransformer();
+          if(null != ti)
+          {
+            Exception e = ti.getExceptionThrown();
+            if(null != e)
+            {
+              m_isComplete = true; // to be safe
+              throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+            }
+          }
+        }
+      }
+    }
     return m_isComplete;
   }
-
+  
   /**
    * Set that this node's child list is complete, i.e. 
    * an endElement event has occured.
    */
   public void setComplete(boolean isComplete)
   {
-    m_isComplete = isComplete;
-    if (isComplete())
+    if(m_isComplete != isComplete)
     {
-      // Notify anyone waiting for a child...
-      synchronized (this)
+      m_isComplete = isComplete;
+      if (m_isComplete)
       {
-        //System.out.println("notify set complete" + this.getNodeName());
-        notifyAll();
+        Object synchObj = getSynchObject();
+        // Notify anyone waiting for a child...
+        synchronized (synchObj)
+        {
+          //System.out.println("notify set complete" + this.getNodeName());
+          synchObj.notifyAll();
+        }
       }
     }
   }

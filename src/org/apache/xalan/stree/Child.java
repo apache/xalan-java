@@ -32,6 +32,40 @@ public class Child extends UnImplNode implements DOMOrder
     return true;
   }
   
+  protected Object getSynchObject()
+  {
+    DocumentImpl di = this.getDocumentImpl();
+    if(null != di)
+    {
+      SourceTreeHandler sth = di.getSourceTreeHandler();
+      if(null != sth)
+      {
+        sth = di.getSourceTreeHandler();
+        org.apache.xalan.transformer.TransformerImpl ti 
+          = sth.getTransformer();
+        if(null != ti)
+        {
+          Exception e = ti.getExceptionThrown();
+          if(null != e)
+          {
+            throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+          }
+        }
+      }
+    }
+    return this;
+  }
+  
+  protected void throwIfParseError()
+  {
+    // That's OK, it's as good a time as any to check again
+    Exception pe 
+      = this.getDocumentImpl().getSourceTreeHandler().getTransformer().getExceptionThrown();
+    if(null != pe)
+      throw new org.apache.xalan.utils.WrappedRuntimeException(pe);
+  }
+
+  
   /**
    * The position in the parent's list.
    */
@@ -122,9 +156,11 @@ public class Child extends UnImplNode implements DOMOrder
   {
     Child n = this;
     while(n.getUid() > 1)
+    {
       n = (Child)n.getParentNode();
-    // if((n == null) || !(n instanceof DocumentImpl))
-    //    return null;
+      if(n == null)
+        return null;
+    }
     return (DocumentImpl)n;
   }
 
@@ -174,7 +210,9 @@ public class Child extends UnImplNode implements DOMOrder
         return m_parent.getChild(getChildPosition()-1);
       }
       catch(Exception e)
-      {}
+      {
+        throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+      }
     }  
     return null;
   }
@@ -192,7 +230,9 @@ public class Child extends UnImplNode implements DOMOrder
         return m_parent.getChild(getChildPosition()+1);
       }
       catch(Exception e)
-      {}
+      {
+        throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+      }
     }  
     return null;
   }

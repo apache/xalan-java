@@ -105,16 +105,16 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   {
     if (!isComplete())
     {
-      synchronized (this)
+      synchronized (getSynchObject())
       {
         try
         {
           //System.out.println("Waiting... getelCount " );
-          wait();
+          getSynchObject().wait();
         }
         catch (InterruptedException e)
         {
-          // That's OK, it's as good a time as any to check again
+          throwIfParseError();
         }
         //System.out.println("/// gotelcount " );
         
@@ -280,16 +280,16 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     {
       // Force it to wait until at least an element child 
       // has been added or end element.
-      synchronized (this)
+      synchronized (getSynchObject())
       {
         try
         {
           //System.out.println("Waiting... getelCount " );
-          wait();
+          getSynchObject().wait();
         }
         catch (InterruptedException e)
         {
-          // That's OK, it's as good a time as any to check again
+          throwIfParseError();
         }
         //System.out.println("/// gotelcount " );
         

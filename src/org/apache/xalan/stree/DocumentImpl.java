@@ -267,18 +267,18 @@ public class DocumentImpl extends Parent
     // Make sure we're done parsing.
     if (elem == null && !isComplete())
     {    
-      synchronized (this)
+      synchronized (getSynchObject())
       {
         try
         {
           // Don't really know why we should need the while loop,
           // but we seem to come out of wait() too soon! 
           while (!isComplete())
-            wait();
+            getSynchObject().wait();
         }
         catch (InterruptedException e)
-        {          
-          // That's OK, it's as good a time as any to check again
+        {   
+          throwIfParseError();
         }        
       }
       elem = (Element)m_idAttributes.get(elementId); 
