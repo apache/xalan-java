@@ -589,7 +589,6 @@ public class XConnection
 
         // also keep a local reference
         m_OpenSQLDocuments.addElement(doc);
-//        return doc.getAxisIterator(0);
         return doc;
       }
       else
@@ -605,6 +604,7 @@ public class XConnection
 //    }
     catch (Exception e)
     {
+      if (DEBUG) System.out.println("exception in query()");
       m_Error = new SQLErrorDocument(e);
       return null;
     }
