@@ -68,6 +68,12 @@
    <document id="xsltc_iterators"
              label="Xsltc Iterators"
              source="xsltc/xsltc_iterators.xml"/>
+   <document id="xsltc_native_api"
+             label="Xsltc Native API" 
+             source="xsltc/xsltc_native_api.xml"/>
+   <document id="xsltc_trax_api"
+             label="Xsltc Native API" 
+             source="xsltc/xsltc_trax_api.xml"/>
  <separator/>
  <external href="todo.html" label="To-do list"/>
             
