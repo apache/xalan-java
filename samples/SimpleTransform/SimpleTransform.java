@@ -66,6 +66,7 @@ import javax.xml.transform.TransformerConfigurationException;
 // Imported java classes
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  *  Use the TraX interface to perform a transformation in the simplest manner possible
@@ -74,7 +75,8 @@ import java.io.FileNotFoundException;
 public class SimpleTransform
 {
 	public static void main(String[] args)
-    throws TransformerException, TransformerConfigurationException, FileNotFoundException
+    throws TransformerException, TransformerConfigurationException, 
+           FileNotFoundException, IOException
   {  
   // Use the static TransformerFactory.newInstance() method to instantiate 
   // a TransformerFactory. The javax.xml.transform.TransformerFactory 
