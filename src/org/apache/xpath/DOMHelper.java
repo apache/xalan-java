@@ -9,6 +9,11 @@ import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 
+// Imported JAVA API for XML Parsing 1.0 classes
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException; 
+
 public class DOMHelper
 {
   /**
@@ -17,8 +22,20 @@ public class DOMHelper
    */
   public Document createDocument()
   {
-    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CREATEDOCUMENT_NOT_SUPPORTED, null));//"createDocument() not supported in XPathContext!");
-    // return null;
+    try
+    {
+      // Use an implementation of the JAVA API for XML Parsing 1.0 to
+      // create a DOM Document node to contain the result.
+      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+      Document outNode = docBuilder.newDocument();
+      return outNode;
+    }
+    catch(ParserConfigurationException pce)
+    {
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CREATEDOCUMENT_NOT_SUPPORTED, null));//"createDocument() not supported in XPathContext!");
+      // return null;
+    }
   }
 
   /**
