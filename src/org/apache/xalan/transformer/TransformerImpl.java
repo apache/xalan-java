@@ -899,8 +899,15 @@ public class TransformerImpl extends Transformer
    * @param oformat A set of output properties that will be
    * used to override any of the same properties in effect
    * for the transformation.
+   *
+   * @see javax.xml.transform.OutputKeys
+   * @see java.util.Properties
+   *
+   * @throws IllegalArgumentException if any of the argument keys are not
+   * recognized and are not namespace qualified.   
    */
   public void setOutputProperties(Properties oformat)
+  		throws IllegalArgumentException
   {
 
     synchronized (m_reentryGuard)
