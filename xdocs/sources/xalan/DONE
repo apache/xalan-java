@@ -4,7 +4,7 @@
 <ul>
   <li>A threading problem showed up when using multiple processors. We fixed it by using a separate XPathContext object to do whitespace node
    matches (xsl:strip-space).<br/><br/></li>
-  <li>Fixed a bug running Norm Walsh's DocBook stylesheets by not setting the variable stack position if the TreeWalker is not owned by a
+  <li>Fixed a bug running Norm Walsh's DocBook stylesheets by not setting the variable stack position if the FilterExprWalker is not owned by a
   top-level NodeIterator.<br/><br/></li>
   <li>Fixed a problem with null namespace being passed from xsl:element. This bug also surfaced while processing DocBook
    stylesheets.<br/><br/></li>
