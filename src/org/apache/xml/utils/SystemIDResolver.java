@@ -147,8 +147,16 @@ public class SystemIDResolver
       * character cannot be used as the first segment of a relative URI path
       * (e.g., "this:that"), because it would be mistaken for a scheme name.
      **/
-     /** %REVIEW% Can we assume here that systemId is a valid URI?
+     /** 
+      * %REVIEW% Can we assume here that systemId is a valid URI?
+      * It looks like we cannot ( See discussion of this common problem in 
+      * Bugzilla Bug 22777 ). 
      **/
+     //"fix" for Bugzilla Bug 22777
+    if(isWindowsAbsolutePath(systemId)){
+        return false;
+     }
+    
     final int fragmentIndex = systemId.indexOf('#');
     final int queryIndex = systemId.indexOf('?');
     final int slashIndex = systemId.indexOf('/');
@@ -175,10 +183,23 @@ public class SystemIDResolver
    */
   public static boolean isAbsolutePath(String systemId)
   {
-    // On Unix, an absolute path starts with '/'.
-    if (systemId.startsWith(File.separator))
-      return true;
+    if(systemId == null)
+        return false;
+    final File file = new File(systemId);
+    return file.isAbsolute();
     
+  }
+  
+   /**
+   * Return true if the local path is a Windows absolute path.
+   *
+   * @param systemId The path string
+   * @return true if the path is a Windows absolute path
+   */
+    private static boolean isWindowsAbsolutePath(String systemId)
+  {
+    if(!isAbsolutePath(systemId))
+      return false;
     // On Windows, an absolute path starts with "[drive_letter]:\".
     if (systemId.length() > 2 
         && systemId.charAt(1) == ':'
