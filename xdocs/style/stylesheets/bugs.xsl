@@ -23,9 +23,9 @@
   </xsl:template>
 
   <xsl:template match="Name">
-    <ref>Name: </ref><xsl:value-of select="."/>
+    <ref>SPR#: </ref><xsl:value-of select="."/>
   </xsl:template>
-  <xsl:template match="DateCreated">      
+  <xsl:template match="DateCreated">
     <ref> Date Created: </ref><xsl:value-of select="."/><br/>
   </xsl:template>    
   <xsl:template match="TestDesc">    
