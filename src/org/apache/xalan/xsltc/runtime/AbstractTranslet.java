@@ -65,7 +65,7 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.text.DecimalFormat;
@@ -496,6 +496,7 @@ public abstract class AbstractTranslet implements Translet {
 
 	    factory.setEncoding(_encoding);
 	    factory.setOutputMethod(_method);
+	    factory.setWriter(new FileWriter(filename));
 	    factory.setOutputType(TransletOutputHandlerFactory.STREAM);
 
 	    final TransletOutputHandler handler 
