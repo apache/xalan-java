@@ -74,6 +74,7 @@ import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
 
 // W3C DOM
 import org.w3c.dom.Document;
@@ -116,6 +117,13 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
+  static final boolean JKESS_XNI_EXPERIMENT=true;
+
+  /** Set this to true if you want a dump of the DTM after creation. */
+  private static final boolean DUMPTREE = false;
+
+  /** Set this to true if you want a basic diagnostics. */
+  private static final boolean DEBUG = false;
 
   /**
    * Map from DTM identifier numbers to DTM objects that this manager manages.
@@ -232,11 +240,6 @@ public class DTMManagerDefault extends DTMManager
    */
   public DTMManagerDefault(){}
 
-  /** Set this to true if you want a dump of the DTM after creation. */
-  private static final boolean DUMPTREE = false;
-
-  /** Set this to true if you want a basic diagnostics. */
-  private static final boolean DEBUG = false;
 
   /**
    * Get an instance of a DTM, loaded with the content from the
@@ -265,15 +268,15 @@ public class DTMManagerDefault extends DTMManager
    * @return a non-null DTM reference.
    */
   synchronized public DTM getDTM(Source source, boolean unique,
-                    DTMWSFilter whiteSpaceFilter, boolean incremental,
-                    boolean doIndexing)
+                                 DTMWSFilter whiteSpaceFilter,
+                                 boolean incremental, boolean doIndexing)
   {
 
     if(DEBUG && null != source)
       System.out.println("Starting "+
-			 (unique ? "UNIQUE" : "shared")+
-			 " source: "+source.getSystemId()
-			 );
+                         (unique ? "UNIQUE" : "shared")+
+                         " source: "+source.getSystemId()
+                         );
 
     XMLStringFactory xstringFactory = m_xsf;
     int dtmPos = getFirstFreeDTMID();
@@ -286,19 +289,19 @@ public class DTMManagerDefault extends DTMManager
 
       addDTM(dtm, dtmPos, 0);
 
-//      if (DUMPTREE)
-//      {
-//        dtm.dumpDTM();
-//      }
+      //      if (DUMPTREE)
+      //      {
+      //        dtm.dumpDTM();
+      //      }
 
       return dtm;
     }
     else
     {
       boolean isSAXSource = (null != source)
-                            ? (source instanceof SAXSource) : true;
+        ? (source instanceof SAXSource) : true;
       boolean isStreamSource = (null != source)
-                               ? (source instanceof StreamSource) : false;
+        ? (source instanceof StreamSource) : false;
 
       if (isSAXSource || isStreamSource)
       {
@@ -334,39 +337,44 @@ public class DTMManagerDefault extends DTMManager
           }
         }
 
- 	    SAX2DTM dtm;
-		if(source==null && unique && !incremental && !doIndexing)
-		{
-		  // Special case to support RTF construction into shared DTM.
-		  // It should actually still work for other uses,
-		  // but may be slightly deoptimized relative to the base
-		  // to allow it to deal with carrying multiple documents.
-		  //
-		  // %REVIEW% This is a sloppy way to request this mode;
-		  // we need to consider architectural improvements.
-		  dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
-				       xstringFactory, doIndexing);
-		}
-		else // Create the basic SAX2DTM.
-		{
-		  dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
-				    xstringFactory, doIndexing);
-
-       	}
+        SAX2DTM dtm;
+        if(source==null && unique && !incremental && !doIndexing)
+        {
+          // Special case to support RTF construction into shared DTM.
+          // It should actually still work for other uses,
+          // but may be slightly deoptimized relative to the base
+          // to allow it to deal with carrying multiple documents.
+          //
+          // %REVIEW% This is a sloppy way to request this mode;
+          // we need to consider architectural improvements.
+          dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
+                               xstringFactory, doIndexing);
+        }
+        // EXPERIMENTAL 3/22/02
+        else if(JKESS_XNI_EXPERIMENT && m_incremental)
+        {
+          dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
+                            xstringFactory, doIndexing);
+        }
+        else // Create the basic SAX2DTM.
+        {
+          dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
+                            xstringFactory, doIndexing);
+        }
 
         // Go ahead and add the DTM to the lookup table.  This needs to be
         // done before any parsing occurs. Note offset 0, since we've just
         // created a new DTM.
- 	    addDTM(dtm, dtmPos, 0);
+        addDTM(dtm, dtmPos, 0);
 
 
         boolean haveXercesParser =
           (null != reader)
           && (reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser") );
-	
+        
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
-	
+        
         // If the reader is null, but they still requested an incremental build,
         // then we still want to set up the IncrementalSAXSource stuff.
         if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
@@ -376,13 +384,8 @@ public class DTMManagerDefault extends DTMManager
           if (haveXercesParser)
           {
             // IncrementalSAXSource_Xerces to avoid threading.
-            // System.out.println("Using IncrementalSAXSource_Xerces to avoid threading");
             try {
-              // should be ok, it's in the same package - no need for thread class loader,
-							// AND theoretically no need for reflection...
-              // Class c=Class.forName( "org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces" );
-              // coParser=(IncrementalSAXSource)c.newInstance();
-							coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces.createIncrementalSAXSource();
+              coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces.createIncrementalSAXSource();
             }  catch( Exception ex ) {
               ex.printStackTrace();
               coParser=null;
@@ -394,14 +397,28 @@ public class DTMManagerDefault extends DTMManager
             if (null == reader)
               coParser = new IncrementalSAXSource_Filter();
             else
-	    {
-	      IncrementalSAXSource_Filter filter=new IncrementalSAXSource_Filter();
-	      filter.setXMLReader(reader);
-	      coParser=filter;
-	    }
+            {
+              IncrementalSAXSource_Filter filter=new IncrementalSAXSource_Filter();
+              filter.setXMLReader(reader);
+              coParser=filter;
+            }
 
           }
 
+          if(JKESS_XNI_EXPERIMENT && m_incremental & 
+          	dtm instanceof XNI2DTM && 
+          	coParser instanceof IncrementalSAXSource_Xerces)
+          {          	
+       		org.apache.xerces.xni.parser.XMLPullParserConfiguration xpc=
+       			((IncrementalSAXSource_Xerces)coParser).getXNIParserConfiguration();
+       		if(xpc!=null)	
+       			// Bypass SAX; listen to the XNI stream
+          		((XNI2DTM)dtm).setIncrementalXNISource(xpc);
+          	else
+          		// Listen to the SAX stream (will fail, diagnostically...)
+				dtm.setIncrementalSAXSource(coParser);
+          } else
+          
           // Have the DTM set itself up as the IncrementalSAXSource's listener.
           dtm.setIncrementalSAXSource(coParser);
 
@@ -419,8 +436,8 @@ public class DTMManagerDefault extends DTMManager
           try
           {
 
-	    // Launch parsing coroutine.  Launches a second thread,
-	    // if we're using IncrementalSAXSource.filter().
+            // Launch parsing coroutine.  Launches a second thread,
+            // if we're using IncrementalSAXSource.filter().
             coParser.startParse(xmlSource);
           }
           catch (RuntimeException re)
@@ -456,7 +473,7 @@ public class DTMManagerDefault extends DTMManager
           try
           {
             reader.setProperty(
-              "http://xml.org/sax/properties/lexical-handler", dtm);
+                               "http://xml.org/sax/properties/lexical-handler", dtm);
           }
           catch (SAXNotRecognizedException e){}
           catch (SAXNotSupportedException e){}
@@ -484,7 +501,7 @@ public class DTMManagerDefault extends DTMManager
         if (DUMPTREE)
         {
           System.out.println("Dumping SAX2DOM");
-          dtm.dumpDTM();
+          dtm.dumpDTM(System.err);
         }
 
         return dtm;
@@ -717,20 +734,21 @@ public class DTMManagerDefault extends DTMManager
    *
    * @param dtm The DTM which (hopefully) contains this node.
    *
-   * @return The ID, or -1 if the DTM doesn't belong to this manager.
+   * @return The DTM ID (as the high bits of a NodeHandle, not as our
+   * internal index), or -1 if the DTM doesn't belong to this manager.
    */
   synchronized public int getDTMIdentity(DTM dtm)
   {
-		// Shortcut using DTMDefaultBase's extension hooks
-		// %REVIEW% Should the lookup be part of the basic DTM API?
-		if(dtm instanceof DTMDefaultBase)
-		{
-			DTMDefaultBase dtmdb=(DTMDefaultBase)dtm;
-			if(dtmdb.getManager()==this)
-				return dtmdb.getDTMIDs().elementAt(0);
-			else
-				return -1;
-		}
+	// Shortcut using DTMDefaultBase's extension hooks
+	// %REVIEW% Should the lookup be part of the basic DTM API?
+	if(dtm instanceof DTMDefaultBase)
+	{
+		DTMDefaultBase dtmdb=(DTMDefaultBase)dtm;
+		if(dtmdb.getManager()==this)
+			return dtmdb.getDTMIDs().elementAt(0);
+		else
+			return -1;
+	}
 				
     int n = m_dtms.length;
 
@@ -739,7 +757,7 @@ public class DTMManagerDefault extends DTMManager
       DTM tdtm = m_dtms[i];
 
       if (tdtm == dtm && m_dtm_offsets[i]==0)
-        return i;
+        return i << IDENT_DTM_NODE_BITS;
     }
 
     return -1;
@@ -795,9 +813,9 @@ public class DTMManagerDefault extends DTMManager
 		else
 		{
 			int i = getDTMIdentity(dtm);
-		  if (i >= 0)
+		    if (i >= 0)
 			{
-				m_dtms[i] = null;
+				m_dtms[i >>> DTMManager.IDENT_DTM_NODE_BITS] = null;
 			}
 		}
 
