@@ -68,6 +68,7 @@ import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.ExpressionFactory;
 import org.apache.xpath.expression.ForAndQuantifiedExpr;
 import org.apache.xpath.expression.FunctionCall;
+import org.apache.xpath.expression.LetExpr;
 import org.apache.xpath.expression.Literal;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.OperatorExpr;
@@ -251,6 +252,11 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	public QName createQName(String ns, String localPart, String prefix)
 	{
 		return new QName(ns, localPart, prefix);
+	}
+
+	public LetExpr createLetExpr(QName varname, SequenceType type, Expr expr)
+	{
+		return new LetExprImpl(varname, type, expr);
 	}
 
 }

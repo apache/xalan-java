@@ -174,7 +174,7 @@ package org.apache.xpath.expression;
  * The number of steps is 3 (and not 2). 
  * </p> 
  * <p>
- * An {@link Expr} object may be not a valid XPath expression but a only a fragment.
+ * An {@link Expr} object may be not a valid XPath expression but only a fragment.
  * For example a {@link StepExpr} expression is a fragment but can't be executed by
  * itself. To be valid, the top level expression must be an expression sequence.
  * </p>
@@ -283,6 +283,12 @@ public interface Expr
 	 * The expression is a treat as expression
 	 */
 	static final short TREAT_AS_EXPR = 22;
+
+	/**
+	 * The expression is a let expression
+	 */
+	static final short LET_EXPR = 23;
+
 
 	/**
 	 * Gets the expression type. 

@@ -20,7 +20,7 @@ import org.apache.xpath.impl.VariableImpl;
 /**
  * Representation of an XPath AST node.
  */
-public class SimpleNode implements Node
+public class SimpleNode implements Node, Cloneable
 {
     public static boolean PRODUCE_RAW_TREE = false;
     

@@ -1,7 +1,4 @@
 /*
- * Created on Jul 14, 2003
- */
-/*
  * The Apache Software License, Version 1.1
  *
  * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
@@ -56,101 +53,125 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath;
+package org.apache.xpath.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.xml.QName;
+import org.apache.xpath.XPathException;
+import org.apache.xpath.datamodel.SequenceType;
 import org.apache.xpath.expression.Expr;
-import org.apache.xpath.expression.NodeTest;
-import org.apache.xpath.expression.OperatorExpr;
-import org.apache.xpath.expression.PathExpr;
-import org.apache.xpath.expression.StepExpr;
+import org.apache.xpath.expression.LetExpr;
 
 /**
- * A collection of utility methods for XPath.
+ * Basic implementation of {@link LetExpr}.
+ * 
  * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
  * @version $Id$
  */
-public class XPathUtilities
+public class LetExprImpl extends ExprImpl implements LetExpr
 {
+	List m_varNameList;
+	List m_typeList;
+	List m_exprList;
+
+	// Constructors
+
+	protected LetExprImpl()
+	{
+		m_varNameList = new ArrayList(1);
+		m_typeList = new ArrayList(1);
+		m_exprList = new ArrayList(1);
+	}
 
 	/**
-	 * Return true whether the specified expression matches document node.
-	 * The test is performed statically, therefore there is no guarantee
-	 * that the expression will indeed match the document node at runtime.
-	 * (example: node()).
-	 * @param Expr
-	 * @return boolean 		
+	 * Constructor for factory
 	 */
-	static public boolean isMatchDocumentNode(Expr expr)
+	protected LetExprImpl(QName varName, SequenceType type, Expr expr)
 	{
-		// TODO: patterns are not supported by the XPath API yet
-		// it means that pattern may be embedded in sequence
-		boolean result;
+		this();
+
+		appendClause(varName, type, expr);
+	}
+
+	// Implements LetExpr
+
+	public int getClauseCount()
+	{
+		return m_varNameList.size();
+	}
+
+	public QName getVariableName(int i)
+	{
+		return (QName) m_varNameList.get(i);
+	}
+
+	public SequenceType getType(int i)
+	{
+		return (SequenceType) m_typeList.get(i);
+	}
+
+	public Expr getExpr(int i)
+	{
+		return (Expr) m_exprList.get(i);
+	}
+
+	public void appendClause(QName varName, SequenceType type, Expr expr)
+	{
+		m_varNameList.add(varName);
+		m_typeList.add(type);
+		m_exprList.add(expr);
+	}
+
+	public void insertClause(
+		int i,
+		QName varName,
+		SequenceType type,
+		Expr expr)
+		throws XPathException
+	{
+		if (i > m_varNameList.size())
+		{
+			throw new XPathException("Index out of bounds");
+		}
+
+		m_varNameList.add(i, varName);
+		m_typeList.add(i, type);
+		m_exprList.add(i, expr);
+	}
+
+	public void removeClause(int i) throws XPathException
+	{
 		try
 		{
-			switch (expr.getExprType())
-			{
-				case Expr.SEQUENCE_EXPR :
-					OperatorExpr op = (OperatorExpr) expr;
-					switch (op.getOperatorType())
-					{
-						case OperatorExpr.COMMA :
-			
-							if (op.getOperandCount() == 1)
-							{
-								result = isMatchDocumentNode(op.getOperand(0));
-							} else
-							{
-								result = false;
-							}
-							break;
-						case OperatorExpr.UNION_COMBINE :
-							result = false;
-							for (int i = op.getOperandCount() - 1; i >= 0; i--)
-							{
-								if (isMatchDocumentNode(op.getOperand(i)))
-								{
-									result = true;
-									break;
-								}
-							}
-							break;
-						default :
-							result = false;
-					}
-					break;
-				case Expr.PATH_EXPR :
-					PathExpr p = (PathExpr) expr;
-					// TODO: revisit after implementation of fn:root(...)=> operandCount == 1
-						result =
-							(p.isAbsolute() && p.getOperandCount() == 0) // '/'
-			|| (p.getOperandCount() == 1 && isMatchDocumentNode(p.getOperand(0)));
-			
-					break;
-				case Expr.STEP :
-					StepExpr s = (StepExpr) expr;
-					try
-					{
-						result =
-							s.getNodeTest().isKindTest()
-								&& s.getNodeTest().getKindTest()
-									== NodeTest.ANY_KIND_TEST;
-					} catch (XPathException e)
-					{
-						// impossible
-						result = false;
-					}
-					break;
-			
-				default :
-					result = false;
-			}
-		} catch (XPathException e)
+			m_varNameList.remove(i);
+			m_typeList.remove(i);
+			m_exprList.remove(i);
+		} catch (IndexOutOfBoundsException e)
 		{
-			// Bug
-			e.printStackTrace();
-			result = false;
+			throw new XPathException(e);
 		}
-		return result;
+
+	}
+
+	// Implements Expr
+	
+	public short getExprType()
+	{
+		return Expr.LET_EXPR;
+	}
+
+	public Expr cloneExpression()
+	{
+		try
+		{
+			return (Expr) clone();
+		} catch (CloneNotSupportedException e)
+		{
+			// Never
+			return null;
+		}
 	}
 
 }

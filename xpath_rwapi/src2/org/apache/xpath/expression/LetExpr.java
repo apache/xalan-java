@@ -1,10 +1,7 @@
 /*
- * Created on Jul 14, 2003
- */
-/*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -20,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -28,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -56,101 +53,83 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath;
 
-import org.apache.xpath.expression.Expr;
-import org.apache.xpath.expression.NodeTest;
-import org.apache.xpath.expression.OperatorExpr;
-import org.apache.xpath.expression.PathExpr;
-import org.apache.xpath.expression.StepExpr;
+package org.apache.xpath.expression;
+
+import org.apache.xml.QName;
+import org.apache.xpath.XPathException;
+import org.apache.xpath.datamodel.SequenceType;
 
 /**
- * A collection of utility methods for XPath.
+ * Represents <code>let</code> expressions.
+ * A <code>let</code> expression consists of a list of let clause with binds a variable,
+ * eventually typed, to an expression. For example, the following expression:
+ * <pre><![CDATA[
+ * let $s := (<one/>, <two/>, <three/>)
+ * ]>  
+ * </pre>
+ * contains one let clause which bind the variable <code>s</code> with a sequence
+ * of three elements.
  * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
  * @version $Id$
  */
-public class XPathUtilities
+public interface LetExpr extends Expr
 {
 
 	/**
-	 * Return true whether the specified expression matches document node.
-	 * The test is performed statically, therefore there is no guarantee
-	 * that the expression will indeed match the document node at runtime.
-	 * (example: node()).
-	 * @param Expr
-	 * @return boolean 		
+	 * Gets the number of let clauses 
+	 * @return int
 	 */
-	static public boolean isMatchDocumentNode(Expr expr)
-	{
-		// TODO: patterns are not supported by the XPath API yet
-		// it means that pattern may be embedded in sequence
-		boolean result;
-		try
-		{
-			switch (expr.getExprType())
-			{
-				case Expr.SEQUENCE_EXPR :
-					OperatorExpr op = (OperatorExpr) expr;
-					switch (op.getOperatorType())
-					{
-						case OperatorExpr.COMMA :
-			
-							if (op.getOperandCount() == 1)
-							{
-								result = isMatchDocumentNode(op.getOperand(0));
-							} else
-							{
-								result = false;
-							}
-							break;
-						case OperatorExpr.UNION_COMBINE :
-							result = false;
-							for (int i = op.getOperandCount() - 1; i >= 0; i--)
-							{
-								if (isMatchDocumentNode(op.getOperand(i)))
-								{
-									result = true;
-									break;
-								}
-							}
-							break;
-						default :
-							result = false;
-					}
-					break;
-				case Expr.PATH_EXPR :
-					PathExpr p = (PathExpr) expr;
-					// TODO: revisit after implementation of fn:root(...)=> operandCount == 1
-						result =
-							(p.isAbsolute() && p.getOperandCount() == 0) // '/'
-			|| (p.getOperandCount() == 1 && isMatchDocumentNode(p.getOperand(0)));
-			
-					break;
-				case Expr.STEP :
-					StepExpr s = (StepExpr) expr;
-					try
-					{
-						result =
-							s.getNodeTest().isKindTest()
-								&& s.getNodeTest().getKindTest()
-									== NodeTest.ANY_KIND_TEST;
-					} catch (XPathException e)
-					{
-						// impossible
-						result = false;
-					}
-					break;
-			
-				default :
-					result = false;
-			}
-		} catch (XPathException e)
-		{
-			// Bug
-			e.printStackTrace();
-			result = false;
-		}
-		return result;
-	}
-
+	int getClauseCount();
+	
+	/**
+	 * Gets the variable name of the ith let clause
+	 * @param i
+	 * @return QName
+	 * @throws XPathException when the specified index is out of bounds
+	 */
+	QName getVariableName(int i) throws XPathException;
+	
+	/**
+	 * Gets the type of the ith let clause
+	 * @param i
+	 * @return A {@link SequenceType} or null when no type is specified.
+	 * @throws XPathException when the specified index is out of bounds
+	 */
+	SequenceType getType(int i) throws XPathException;
+	
+	/**
+	 * Gets the expression of the ith let clause
+	 * @param i
+	 * @return An expression
+	 * @throws XPathException when the specified index is out of bounds
+	 */
+	Expr getExpr(int i) throws XPathException;
+	
+	/**
+	 * Append a clause at the end of the clause list
+	 * @param varName
+	 * @param type
+	 * @param expr
+	 * @throws XPathException when the specified expression is not a single expression
+	 */
+	void appendClause(QName varName, SequenceType type, Expr expr)  throws XPathException;
+	
+	/**
+	 * Insert a clause before the ith position.
+	 * @param i
+	 * @param varName
+	 * @param type
+	 * @param expr
+	 * @throws XPathException when the specified expression is not a single expression
+	 * or when the specified index is out of bounds
+	 */
+	void insertClause(int i, QName varName, SequenceType type, Expr expr) throws XPathException;
+	
+	/**
+	 * Remove the clause at the ith position
+	 * @param i
+	 * @throws XPathException when the specified index is out of bounds
+	 */
+	void removeClause(int i) throws XPathException;
 }

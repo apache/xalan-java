@@ -302,9 +302,8 @@ public interface OperatorExpr extends Expr
 
     /**
      * Gets the operand at the ith position.
-     * @throws IndexOutOfBoundsException
      */
-    Expr getOperand(int i);
+    Expr getOperand(int i) throws XPathException;
 
     /**
      * Gets the operand count
@@ -313,6 +312,8 @@ public interface OperatorExpr extends Expr
 
     /**
      * Append an operand at the end of this expression.
+     * @throws XPathException when the specified operand do not match
+     * the operator type
      */
     void addOperand(Expr operand) throws XPathException;
 
@@ -323,7 +324,7 @@ public interface OperatorExpr extends Expr
 
 	// TODO
 	// void setOperand(Expr operand)
-	// void insertOperand(Expr operant, int i)	
+	// void insertOperand(int i, Expr operant)	
     
     /**
      * Append the specified expr at the end of this expression. 

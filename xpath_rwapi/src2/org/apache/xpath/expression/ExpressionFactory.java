@@ -248,9 +248,17 @@ public interface ExpressionFactory
   	 * @param ns or null
   	 * @param localPart
   	 * @param prefix or null
-  	 * @return
+  	 * @return A new QName or an existing one with the same namespace and localpart
   	 */
   	public QName createQName(String ns, String localPart, String prefix);
     
-
+	/**
+	 * Creates a {@link LetExpr} with one initial clause
+	 * @param varname of the initial clause
+	 * @param type of the variable (can be null)
+	 * @param expr of the initial clause
+	 * @return
+	 */
+	public LetExpr createLetExpr(QName varname, SequenceType type, Expr expr);
+	
 }
