@@ -255,9 +255,14 @@ public class MethodGenerator extends MethodGen
     }
 
     public Instruction loadCurrentNode() {
-	return _iloadCurrent != null
-	    ? _iloadCurrent
-	    : (_iloadCurrent = new ILOAD(getLocalIndex("current")));
+	if (_iloadCurrent == null) {
+	    int idx = getLocalIndex("current");
+	    if (idx > 0)
+		_iloadCurrent = new ILOAD(idx);
+	    else
+		_iloadCurrent = new ICONST(0);
+	}
+	return _iloadCurrent;
     }
 
     public Instruction storeCurrentNode() {
