@@ -1047,10 +1047,7 @@ public final class DOMImpl implements DOM, Externalizable {
     private class PrecedingIterator extends NodeIteratorBase {
 
 	private int _node = 0;
-	private int[] _stack = new int[8];
-	private int _sp = 0;
-	private int _spStart = 0;
-	private int _spMark = 0;
+	private int _mom = 0;
 
 	public boolean isReverse() {
 	    return true;
@@ -1071,52 +1068,36 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_startNode = node;
-		_node = ROOTNODE;
-		int parent = node;
-		while ((parent = _parent[parent]) > ROOTNODE) {
-		    if (_sp == _stack.length) {
-			final int[] stack = new int[_sp + 4];
-			System.arraycopy(_stack, 0, stack, 0, _sp);
-			_stack = stack;
-		    }
-		    _stack[_sp++] = parent;
-		}
-		_sp--;
-		_spStart = _sp;
+		_node = _startNode = node;
+		_mom  = _parent[_startNode];
 		return resetPosition();
 	    }
 	    return this;
 	}
                   
 	public int next() {
-	    // Advance node index and check if all nodes have been returned.
-	    while (++_node < _startNode) {
-		// Check if we reached one of the base node's ancestors
-		if ((_sp < 0) || (_node < _stack[_sp]))
-		    return returnNode(_node);
-		// Anvance past the next ancestor node
-		_sp--;
+	    while (--_node > ROOTNODE) {
+		if (_node < _mom) _mom = _parent[_mom];
+		if (_node != _mom) return returnNode(_node);
 	    }
 	    return(NULL);
 	}
 
 	// redefine NodeIteratorBase's reset
 	public NodeIterator reset() {
-	    _node = ROOTNODE;
-	    _spStart = _sp;
+	    _node = _startNode;
+	    _mom  = _parent[_startNode];
 	    return resetPosition();
 	}
 
 	public void setMark() {
 	    _markedNode = _node;
-	    _spMark = _sp;
 	}
 
 	public void gotoMark() {
 	    _node = _markedNode;
-	    _sp = _spMark;
 	}
+
     } // end of PrecedingIterator
 
 

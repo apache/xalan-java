@@ -205,7 +205,7 @@ final class Step extends RelativeLocationPath {
 	else {
 	    // Special case for '@attr' with no parent or predicates
 	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
-		(!hasParentPattern()) && (!hasPredicates())) {
+		(!hasParentPattern()) && (_hadPredicates)) {
 		_type = Type.Node;
 	    }
 	    else {
@@ -254,6 +254,7 @@ final class Step extends RelativeLocationPath {
 		if (parent instanceof ApplyImports) return true;
 		if (parent instanceof ApplyTemplates) return true;
 		if (parent instanceof ForEach) return true;
+		if (parent instanceof FilterParentPath) return true;
 
 		// No not order node set if descendant of these elements:
 		if (parent instanceof ValueOf) return false;
@@ -384,7 +385,6 @@ final class Step extends RelativeLocationPath {
 		orderIterator(classGen, methodGen);
 		break;
 	    }
-
 	}
     }
 
