@@ -68,8 +68,7 @@ package org.apache.xml.utils;
  * the data.
  * <p>
  * This has been recoded to operate as a "chunked buffer". Doing so
- * reduces (or, when initial chunk size equals max chunk size,
- * eliminates) the need to recopy existing information when an append
+ * reduces the need to recopy existing information when an append
  * exceeds the space available; we just allocate another chunk and
  * flow across to it. (The array of chunks may need to grow,
  * admittedly, but that's a much smaller object.) Some excess
