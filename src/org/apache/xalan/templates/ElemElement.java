@@ -210,23 +210,24 @@ public class ElemElement extends ElemUse
 
       // make sure that if a prefix is specified on the attribute name, it is valid
       int indexOfNSSep = elemName.indexOf(':');
-      String ns = "";
+      String prefix = null;
+      String elemNameSpace = "";
 
       if (indexOfNSSep >= 0)
       {
-        String nsprefix = elemName.substring(0, indexOfNSSep);
+        prefix = elemName.substring(0, indexOfNSSep);
 
         // Catch the exception this may cause. We don't want to stop processing.
         try
         {
-          ns = getNamespaceForPrefix(nsprefix);
+          elemNameSpace = getNamespaceForPrefix(prefix);
 
           // Check if valid QName. Assuming that if the prefix is defined,
           // it is valid.
           if (indexOfNSSep + 1 == elemName.length()
               ||!isValidNCName(elemName.substring(indexOfNSSep + 1)))
           {
-            transformer.getMsgMgr().warn(
+            transformer.getMsgMgr().warn(this,
                                          XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
                                          new Object[]{ elemName });
 
@@ -235,53 +236,55 @@ public class ElemElement extends ElemUse
         }
         catch (Exception ex)
         {
-
-          // Could not resolve prefix
-          ns = null;
-
-          transformer.getMsgMgr().warn(
+          transformer.getMsgMgr().warn(this,
                                        XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-                                       new Object[]{ nsprefix });
+                                       new Object[]{ prefix });
         }
       }
 
       // Check if valid QName
       else if (elemName.length() == 0 ||!isValidNCName(elemName))
       {
-        transformer.getMsgMgr().warn(
+        transformer.getMsgMgr().warn(this,
                                      XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
                                      new Object[]{ elemName });
 
         elemName = null;
       }
 
-      // Only do this if name is valid
-      String elemNameSpace = "";
-      String prefix = null;
-
-      if (null != elemName && null != ns)
+      if (null != elemName)
       {
         if (null != m_namespace_avt)
         {
           elemNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
 
-          if (null != elemNameSpace && elemNameSpace.length() > 0)
+          if (null == elemNameSpace)
+            elemNameSpace = "";
+            
+          if(null != prefix)
           {
-
-            // Get the prefix for that attribute in the result namespace.
-            prefix = rhandler.getPrefix(elemNameSpace);
-
-            // If we didn't find the prefix mapping, make up a prefix 
-            // and have it declared in the result tree.
-            if (null == prefix)
-            {
-              prefix = rhandler.getNewUniqueNSPrefix();
-            }
-
-            // add the prefix to the attribute name.
-            if(prefix.length() > 0)
-              elemName = (prefix + ":" + QName.getLocalPart(elemName));
+            String nsPrefix = rhandler.getPrefix(elemNameSpace);
+            
+            if (null == nsPrefix)
+              nsPrefix = "";
+              
+//            if(!nsPrefix.equals(prefix))
+//            {
+//              prefix="";
+//              elemName = QName.getLocalPart(elemName);
+//            }            
           }
+          if(null == prefix)
+            prefix = "";
+            
+          if(prefix.length() > 0)
+            elemName = (prefix + ":" + QName.getLocalPart(elemName));
+        }
+        else if(null != prefix && null == elemNameSpace)
+        {
+          transformer.getMsgMgr().warn(this,
+                                       XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
+                                       new Object[]{ prefix });
         }
 
         // Add namespace declarations.
@@ -303,9 +306,9 @@ public class ElemElement extends ElemUse
       transformer.executeChildTemplates(this, sourceNode, mode);
 
       // Now end the element if name was valid
-      if (null != elemName && null != ns)
+      if (null != elemName)
       {
-        rhandler.endElement("", "", elemName);
+        rhandler.endElement(elemNameSpace, QName.getLocalPart(elemName), elemName);
         unexecuteNSDecls(transformer);
       }
     }

@@ -142,7 +142,7 @@ class NodeSortKey
 
     if (null == m_col)
     {
-      m_processor.getMsgMgr().warn(XSLTErrorResources.WG_CANNOT_FIND_COLLATOR,
+      m_processor.getMsgMgr().warn(null, XSLTErrorResources.WG_CANNOT_FIND_COLLATOR,
                                    new Object[]{ langValue });  //"Could not find Collator for <sort xml:lang="+langValue);
 
       m_col = Collator.getInstance();

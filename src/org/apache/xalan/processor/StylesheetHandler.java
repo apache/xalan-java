@@ -516,6 +516,8 @@ public class StylesheetHandler extends DefaultHandler
       throw new org.xml.sax.SAXException(te);
     }
   }
+  
+  private java.util.Vector m_prefixMappings = new java.util.Vector();
 
   /**
    * Receive notification of the start of a Namespace mapping.
@@ -537,7 +539,9 @@ public class StylesheetHandler extends DefaultHandler
   {
 
     // m_nsSupport.pushContext();
-    this.getNamespaceSupport().declarePrefix(prefix, uri);
+    // this.getNamespaceSupport().declarePrefix(prefix, uri);
+    m_prefixMappings.add(prefix);
+    m_prefixMappings.add(uri);
   }
 
   /**
@@ -590,6 +594,17 @@ public class StylesheetHandler extends DefaultHandler
           String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
+    NamespaceSupport nssupport = this.getNamespaceSupport();
+    nssupport.pushContext();
+    
+    int n = m_prefixMappings.size();
+    for (int i = 0; i < n; i++) 
+    {
+      String prefix = (String)m_prefixMappings.elementAt(i++);
+      String nsURI = (String)m_prefixMappings.elementAt(i);
+      nssupport.declarePrefix(prefix, nsURI);
+    }
+    m_prefixMappings.clear();
 
     m_elementID++;
 
@@ -605,7 +620,6 @@ public class StylesheetHandler extends DefaultHandler
 
     this.pushProcessor(elemProcessor);
     elemProcessor.startElement(this, uri, localName, rawName, attributes);
-    this.getNamespaceSupport().pushContext();
   }
 
   /**

@@ -381,7 +381,7 @@ public class ElemTemplate extends ElemTemplateElement
     }
     else  // if(null == sourceNode)
     {
-      transformer.getMsgMgr().error(
+      transformer.getMsgMgr().error(this,
         this, sourceNode,
         XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);
 

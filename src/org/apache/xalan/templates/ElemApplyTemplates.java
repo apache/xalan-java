@@ -194,7 +194,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       }
       else  // if(null == sourceNode)
       {
-        transformer.getMsgMgr().error(
+        transformer.getMsgMgr().error(this,
           XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);  //"sourceNode is null in handleApplyTemplatesInstruction!");
       }
     }

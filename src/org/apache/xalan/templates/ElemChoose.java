@@ -166,7 +166,7 @@ public class ElemChoose extends ElemTemplateElement
     }
 
     if (!found)
-      transformer.getMsgMgr().error(
+      transformer.getMsgMgr().error(this,
         XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
   }
 

@@ -161,6 +161,9 @@ public class ElemMessage extends ElemTemplateElement
 
     String data = transformer.transformToString(this, sourceNode, mode);
 
-    transformer.getMsgMgr().message(data, m_terminate);
+    transformer.getMsgMgr().message(this, data, m_terminate);
+    
+    if(m_terminate)
+      transformer.getErrorListener().fatalError(new TransformerException("Stylesheet directed termination", this));
   }
 }

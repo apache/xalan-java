@@ -190,7 +190,7 @@ public class ElemAttribute extends ElemTemplateElement
       // element pending, it is an error.
       if (!rhandler.isElementPending())
       {
-        transformer.getMsgMgr().warn(
+        transformer.getMsgMgr().warn(this,
                                      XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
                                      new Object[]{ origAttrName });
 
@@ -264,7 +264,7 @@ public class ElemAttribute extends ElemTemplateElement
 
           if ((null == attrNameSpace) && (nsprefix.length() > 0))
           {
-            transformer.getMsgMgr().warn(
+            transformer.getMsgMgr().warn(this,
                                          XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
                                          new Object[]{ nsprefix });
 
@@ -278,7 +278,7 @@ public class ElemAttribute extends ElemTemplateElement
 
           // Could not resolve prefix
 
-          transformer.getMsgMgr().warn(
+          transformer.getMsgMgr().warn(this,
                                        XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
                                        new Object[]{ nsprefix });
 

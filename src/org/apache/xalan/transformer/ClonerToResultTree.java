@@ -257,7 +257,7 @@ public class ClonerToResultTree
         }
         break;
       default :
-        m_transformer.getMsgMgr().error(XSLTErrorResources.ER_CANT_CREATE_ITEM,
+        m_transformer.getMsgMgr().error(null, XSLTErrorResources.ER_CANT_CREATE_ITEM,
                                         new Object[]{ node.getNodeName() });  //"Can not create item in result tree: "+node.getNodeName());
       }
     }

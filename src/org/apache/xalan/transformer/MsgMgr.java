@@ -66,6 +66,7 @@ import org.w3c.dom.Node;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.dom.DOMLocator;
+import javax.xml.transform.SourceLocator;
 
 /**
  * This class will manage error messages, warning messages, and other types of
@@ -101,22 +102,19 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void message(String msg, boolean terminate) throws TransformerException
+  public void message(SourceLocator srcLctr, String msg, boolean terminate) throws TransformerException
   {
 
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
     {
-      if (terminate)
-        errHandler.fatalError(new TransformerException(msg));
-      else
-        errHandler.warning(new TransformerException(msg));
+      errHandler.warning(new TransformerException(msg));
     }
     else
     {
       if (terminate)
-        throw new TransformerException(msg);
+        throw new TransformerException(msg, srcLctr);
       else
         System.out.println(msg);
     }
@@ -132,9 +130,9 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void warn(int msg) throws TransformerException
+  public void warn(SourceLocator srcLctr, int msg) throws TransformerException
   {
-    warn(null, null, msg, null);
+    warn(srcLctr, null, null, msg, null);
   }
 
   /**
@@ -148,9 +146,9 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void warn(int msg, Object[] args) throws TransformerException
+  public void warn(SourceLocator srcLctr, int msg, Object[] args) throws TransformerException
   {
-    warn(null, null, msg, args);
+    warn(srcLctr, null, null, msg, args);
   }
 
   /**
@@ -166,10 +164,10 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void warn(Node styleNode, Node sourceNode, int msg)
+  public void warn(SourceLocator srcLctr, Node styleNode, Node sourceNode, int msg)
           throws TransformerException
   {
-    warn(styleNode, sourceNode, msg, null);
+    warn(srcLctr, styleNode, sourceNode, msg, null);
   }
 
   /**
@@ -185,7 +183,7 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void warn(Node styleNode, Node sourceNode, int msg, Object args[])
+  public void warn(SourceLocator srcLctr, Node styleNode, Node sourceNode, int msg, Object args[])
           throws TransformerException
   {
 
@@ -193,7 +191,7 @@ public class MsgMgr
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.warning(new TransformerException(formattedMsg));
+      errHandler.warning(new TransformerException(formattedMsg, srcLctr));
     else
       System.out.println(formattedMsg);
   }
@@ -209,7 +207,7 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(String msg) throws TransformerException
+  public void error(SourceLocator srcLctr, String msg) throws TransformerException
   {
 
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
@@ -219,9 +217,9 @@ public class MsgMgr
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.fatalError(new TransformerException(msg));
+      errHandler.fatalError(new TransformerException(msg, srcLctr));
     else
-      throw new TransformerException(msg);
+      throw new TransformerException(msg, srcLctr);
   }
 
   /**
@@ -235,9 +233,9 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(int msg) throws TransformerException
+  public void error(SourceLocator srcLctr, int msg) throws TransformerException
   {
-    error(null, null, msg, null);
+    error(srcLctr, null, null, msg, null);
   }
 
   /**
@@ -252,9 +250,9 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(int msg, Object[] args) throws TransformerException
+  public void error(SourceLocator srcLctr, int msg, Object[] args) throws TransformerException
   {
-    error(null, null, msg, args);
+    error(srcLctr, null, null, msg, args);
   }
 
   /**
@@ -269,9 +267,9 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(int msg, Exception e) throws TransformerException
+  public void error(SourceLocator srcLctr, int msg, Exception e) throws TransformerException
   {
-    error(msg, null, e);
+    error(srcLctr, msg, null, e);
   }
 
   /**
@@ -287,7 +285,7 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(int msg, Object args[], Exception e) throws TransformerException
+  public void error(SourceLocator srcLctr, int msg, Object args[], Exception e) throws TransformerException
   {
 
     //msg  = (null == msg) ? XSLTErrorResources.ER_PROCESSOR_ERROR : msg;
@@ -300,9 +298,9 @@ public class MsgMgr
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.fatalError(new TransformerException(formattedMsg));
+      errHandler.fatalError(new TransformerException(formattedMsg, srcLctr));
     else
-      throw new TransformerException(formattedMsg);
+      throw new TransformerException(formattedMsg, srcLctr);
   }
 
   /**
@@ -318,10 +316,10 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(Node styleNode, Node sourceNode, int msg)
+  public void error(SourceLocator srcLctr, Node styleNode, Node sourceNode, int msg)
           throws TransformerException
   {
-    error(styleNode, sourceNode, msg, null);
+    error(srcLctr, styleNode, sourceNode, msg, null);
   }
 
   /**
@@ -338,7 +336,7 @@ public class MsgMgr
    *
    * @throws TransformerException
    */
-  public void error(Node styleNode, Node sourceNode, int msg, Object args[])
+  public void error(SourceLocator srcLctr, Node styleNode, Node sourceNode, int msg, Object args[])
           throws TransformerException
   {
 
@@ -351,8 +349,8 @@ public class MsgMgr
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.fatalError(new TransformerException(formattedMsg));
+      errHandler.fatalError(new TransformerException(formattedMsg, srcLctr));
     else
-      throw new TransformerException(formattedMsg);
+      throw new TransformerException(formattedMsg, srcLctr);
   }
 }

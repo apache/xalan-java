@@ -201,7 +201,7 @@ public class ElemCallTemplate extends ElemForEach
     }
     else
     {
-      transformer.getMsgMgr().error(XSLTErrorResources.ER_TEMPLATE_NOT_FOUND,
+      transformer.getMsgMgr().error(this, XSLTErrorResources.ER_TEMPLATE_NOT_FOUND,
                                     new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
     }
   }

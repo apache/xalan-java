@@ -113,7 +113,7 @@ public class ElemApplyImport extends ElemTemplateElement
 
     if (transformer.currentTemplateRuleIsNull())
     {
-      transformer.getMsgMgr().error(
+      transformer.getMsgMgr().error(this,
         XSLTErrorResources.ER_NO_APPLY_IMPORT_IN_FOR_EACH);  //"xsl:apply-imports not allowed in a xsl:for-each");
     }
 
@@ -129,7 +129,7 @@ public class ElemApplyImport extends ElemTemplateElement
     }
     else  // if(null == sourceNode)
     {
-      transformer.getMsgMgr().error(
+      transformer.getMsgMgr().error(this,
         XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");
     }
   }

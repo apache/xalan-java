@@ -149,7 +149,7 @@ public class XUnresolvedVariable extends XObject
     if (!m_doneEval) 
     {
       this.m_transformer.getMsgMgr().error      
-        (XSLTErrorResources.ER_REFERENCING_ITSELF, 
+        (xctxt.getSAXLocator(), XSLTErrorResources.ER_REFERENCING_ITSELF, 
           new Object[]{((ElemVariable)this.object()).getName().getLocalName()}); 
     }
     VariableStack vars = xctxt.getVarStack();

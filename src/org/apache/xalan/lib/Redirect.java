@@ -299,7 +299,7 @@ public class Redirect
     }
     if(null == fileName)
     {
-      context.getTransformer().getMsgMgr().error(elem, 
+      context.getTransformer().getMsgMgr().error(elem, elem, 
                                      context.getContextNode(), 
                                      XSLTErrorResources.ER_REDIRECT_COULDNT_GET_FILENAME);
                               //"Redirect extension: Could not get filename - file or select attribute must return vald string.");
