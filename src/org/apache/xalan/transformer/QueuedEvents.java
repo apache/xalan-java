@@ -119,6 +119,15 @@ abstract class QueuedEvents
     }
   }
   
+  public void reset()
+  {
+    // if(null != m_serializer)
+    //  m_serializer.reset();
+    m_eventQueue.removeAllElements();
+    pushDocumentEvent();
+    this.reInitEvents();
+  }
+  
   /**
    * Push the document event.  This never gets popped.
    */
@@ -146,7 +155,7 @@ abstract class QueuedEvents
     event.reset();
     return event;
   }
-  
+    
   /**
    * Stack of QueuedSAXEvents.
    */
@@ -156,9 +165,24 @@ abstract class QueuedEvents
    * Pool of QueuedStartElement objects.
    */
   private ObjectPool m_queuedStartElementPool = new ObjectPool(QueuedStartElement.class);
-
+  
+  private org.apache.serialize.Serializer m_serializer;
+  
   /**
-   * The pending document event.
+   * This is only for use of object pooling, so the that 
+   * it can be reset.
    */
-  private QueuedStartDocument m_queuedDocument;
+  void setSerializer(org.apache.serialize.Serializer s)
+  {
+    m_serializer = s;
+  }
+  
+  /**
+   * This is only for use of object pooling, so the that 
+   * it can be reset.
+   */
+  org.apache.serialize.Serializer getSerializer()
+  {
+    return m_serializer;
+  }
 }
