@@ -207,7 +207,7 @@ final class Predicate extends Expression {
 
 		    if (filter.getExpr() instanceof KeyCall)
 			_canOptimize = false;
-		    else if (_exp.hasPositionCall())
+		    else if (_exp.hasPositionCall() && _exp.hasLastCall())
 			_canOptimize = false;
 		    if (_canOptimize)
 			_nthPositionFilter = true;

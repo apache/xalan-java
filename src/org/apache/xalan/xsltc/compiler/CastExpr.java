@@ -179,6 +179,10 @@ final class CastExpr extends Expression {
 	return(_left.hasPositionCall());
     }
 
+    public boolean hasLastCall() {
+	return(_left.hasLastCall());
+    }
+
     public String toString() {
 	return "cast(" + _left + ", " + _type + ")";
     }

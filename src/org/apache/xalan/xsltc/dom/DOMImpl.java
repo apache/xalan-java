@@ -1741,8 +1741,15 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeIterator cloneIterator() {
 	    try {
 		NodeValueIterator clone = (NodeValueIterator)super.clone();
-		clone._isRestartable = false;
 		clone._source = _source.cloneIterator();
+		if (_source instanceof StepIterator) {
+		    StepIterator source = (StepIterator)clone._source;
+		    source.setRestartable();
+		}
+		else if (_source instanceof NodeIteratorBase) {
+		    NodeIteratorBase source = (NodeIteratorBase)clone._source;
+		    source._isRestartable = true;
+		}
 		clone._value = _value;
 		clone._op = _op;
 		return clone.reset();

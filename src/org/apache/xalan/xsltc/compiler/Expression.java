@@ -105,6 +105,10 @@ abstract class Expression extends SyntaxTreeNode {
     public boolean hasPositionCall() {
 	return true;
     }
+
+    public boolean hasLastCall() {
+	return false;
+    }
 		
     /**
      * Type check all the children of this node.

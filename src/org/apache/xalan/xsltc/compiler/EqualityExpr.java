@@ -117,6 +117,12 @@ final class EqualityExpr extends Expression implements Operators {
 	return false;
     }
 
+    public boolean hasLastCall() {
+	if (_left.hasLastCall()) return true;
+	if (_right.hasLastCall()) return true;
+	return false;
+    }
+
     private void swapArguments() {
 	final Expression temp = _left;
 	_left = _right;

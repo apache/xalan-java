@@ -72,10 +72,23 @@ public class StepIterator extends NodeIteratorBase {
 
     protected NodeIterator _source;
     protected NodeIterator _iterator;
+    private int _pos = -1;
 
     public StepIterator(NodeIterator source, NodeIterator iterator) {
 	_source = source;
 	_iterator = iterator;
+    }
+
+    protected void setRestartable() {
+	_isRestartable = true;
+	if (_source instanceof StepIterator) {
+	    ((StepIterator)_source).setRestartable();
+	}
+	else if (_source instanceof NodeIteratorBase) {
+	    ((NodeIteratorBase)_source)._isRestartable = true;
+	}
+	if (_iterator instanceof NodeIteratorBase)
+	    ((NodeIteratorBase)_iterator)._isRestartable = true;
     }
 
     protected void setNotRestartable() {
@@ -150,10 +163,12 @@ public class StepIterator extends NodeIteratorBase {
     public void setMark() {
 	_source.setMark();
 	_iterator.setMark();
+	_pos = _position;
     }
 
     public void gotoMark() {
 	_source.gotoMark();
 	_iterator.gotoMark();
+	_position = _pos;
     }
 }
