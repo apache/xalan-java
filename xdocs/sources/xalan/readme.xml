@@ -83,6 +83,8 @@
      <p>&xslt4j; 2.2.D14 is intended to be the final release in the current series of Developer releases incorporating
      the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
      standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
+     <p>&xslt4j; 2.2.D14 also includes a new <jump href="apidocs/org/apache/xpath/CachedXPathAPI.html">CachedXPathAPI</jump> class that
+     provides an enhanced alternative to the XPath convenience methods in <jump href="apidocs/org/apache/xpath/XPathAPI.html">XPathAPI</jump>.</p>
      <p>Beginning with 2.2.D12, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
      and JAXP 1.1 interfaces are pulled from the xml-commons repository (<resource-ref idref="xmlapirepository"/>), and are built as
      xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
