@@ -157,6 +157,19 @@ public class ElemTemplateElement extends UnImplNode
   {
     return "Unknown XSLT Element";
   }
+  
+  /**
+   * For now, just return the result of getNodeName(), which 
+   * the local name.
+   *
+   * @return The result of getNodeName().
+   */
+  public String getLocalName()
+  {
+
+    return getNodeName();
+  }
+
 
   /**
    * This function will be called on top-level elements
@@ -670,6 +683,25 @@ public class ElemTemplateElement extends UnImplNode
   {
     return getStylesheet();
   }
+  
+  /**
+   * Get the owning xsl:template element.
+   *
+   * @return The owning xsl:template element, this element if it is a xsl:template, or null if not found.
+   */
+  public ElemTemplate getOwnerXSLTemplate()
+  {
+  	ElemTemplateElement el = this;
+  	int type = el.getXSLToken();
+  	while((null != el) && (type != Constants.ELEMNAME_TEMPLATE))
+  	{
+    	el = el.getParentElem();
+    	if(null != el)
+  			type = el.getXSLToken();
+  	}
+  	return (ElemTemplate)el;
+  }
+
 
   /**
    * Return the element name.
