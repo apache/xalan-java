@@ -95,6 +95,7 @@ class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
     throws SAXException
   {
     ElemVariable v = (ElemVariable)handler.getElemTemplateElement();
+    handler.getStylesheet().appendChild(v);
     handler.getStylesheet().setVariable(v);
     super.endElement(handler, uri, localName, rawName);
   }

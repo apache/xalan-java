@@ -95,6 +95,7 @@ class ProcessorGlobalParamDecl extends ProcessorTemplateElem
     throws SAXException
   {
     ElemParam v = (ElemParam)handler.getElemTemplateElement();
+    handler.getStylesheet().appendChild(v);
     handler.getStylesheet().setParam(v);
     super.endElement(handler, uri, localName, rawName);
   }
