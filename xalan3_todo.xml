@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<todo project="XSLT 2.0 in Xalan-J" major-version="3">
+  <actions>
+    <action category="feature">Errors formalized, numbered, dichotomized as static/dynamic</action>
+    <action category="feature">starting node can be designated</action>
+    <action category="feature">Can designate a named template to be invoked at startup</action>
+    <action category="feature">External parameters: data types?</action>
+    <action category="feature">Default collation</action>
+    <action category="feature">xsl:import-schema</action>
+    <action category="feature" status="unstable">format-dateTime() and xsl:datetime-format</action>
+    <action category="feature" status="unstable">xsl:principal-result-document</action>
+    <action category="feature">xsl:sort-key</action>
+    <action category="feature" status="unstable">xsl:namespace</action>
+    <action category="feature" who="MM">analyze-string and sub-elements matching-substring, non-matching-substring</action>
+    <action category="feature">Function sort(string,sequence)</action>
+    <action category="feature" who="MM">regex-group(integer)</action>
+    <action category="feature">Function unparsed-text(sequence, string?)</action>
+    <action category="feature">Function unparsed-entity-public-id(string)</action>
+    <action category="feature">Function input()</action>
+    <action category="feature" who="JK">xf:compare()
+      <issue id="collations">What are we going to do about collations? Anything?</issue></action>
+    <action category="feature">xf:normalize-unicode()</action>
+    <action category="feature">xf:upper-case() and xf:lower-case()</action>
+    <action category="feature">xf:string-pad()</action>
+    <action category="feature" status="partial" who="MM">xf:matches(), xf:replace(), xf:tokenize()</action>
+    <action category="feature">xf:escape-URI()</action>
+    <action category="feature">xf:resolve-URI()</action>
+    <action category="feature" status="unstable">xf:deep-equal()</action>
+    <action category="feature">xf:copy()</action>
+    <action category="feature">xf:shallow()</action>
+    <action category="feature">xf:root()</action>
+    <action category="feature">xf:if-absent()</action>
+    <action category="feature">xf:if-empty()</action>
+    <action category="feature">xf:item-at()</action>
+    <action category="feature">xf:index-of()</action>
+    <action category="feature" who="MM">xf:empty()</action>
+    <action category="feature">xf:exists()</action>
+    <action category="feature">xf:distinct-nodes()</action>
+    <action category="feature">xf:distinct-values()</action>
+    <action category="feature">xf:insert()</action>
+    <action category="feature">xf:remove()</action>
+    <action category="feature">xf:subsequence()</action>
+    <action category="feature">xf:sequence-deep-equal()</action>
+    <action category="feature">xf:sequence-node-equal()</action>
+    <action category="feature">xf:avg()</action>
+    <action category="feature">xf:max() and xf:min()</action>
+    <action category="feature">xf:idref()</action>
+    <action category="feature" status="unstable">xf:filter()</action>
+    <action category="feature">xf:collection()</action>
+    <action category="feature">xf:input()</action>
+    <action category="feature" status="partial">XPath keywords: type, of type, untyped, in</action>
+    <action category="feature" status="partial" who="MM">union, intersect, except</action>
+    <action category="feature">operators &lt;&lt; (before) and &gt;&gt; (after)</action>
+    <action category="feature" who="MM">Quantified expressions: some, every</action>
+    <action category="feature" status="unstable" who="JK">cast as, treat as</action>
+    <action category="feature" status="unstable">ValidateExpr::= "validate" SchemaContext? "{" Expr "}"</action>
+    <action category="feature">exclude-prefixes, default-xpath-namespace standard attributes, allowed everywhere</action>
+    <action category="feature" status="unstable">version attribute on XSLT element, allows mixing</action>
+    <action category="feature">exclude-result-prefixes, extension element-prefixes now ubiquitous</action>
+    <action category="feature">xsl:apply-imports takes with-param subelement</action>
+    <action category="feature" who="JK">xsl:variable and xsl:param take @type. SequenceType parsing should be centralized.</action>
+    <action category="feature">xsl:attribute takes @disable-output-escaping</action>
+    <action category="feature" who="JK">xsl:sort and xsl:key take @type, @collation for value matching. SequenceType parsing should be centralized.
+      <issue id="collations">What are we going to do about collations?</issue></action>
+    <action category="feature" status="partial">xsl:output takes @name</action>
+    <action category="feature">xsl:output method="xhtml"</action>
+    <action category="feature">xsl:text allows instructions</action>
+    <action category="feature">system-property() has new keywords</action>
+  </actions>
+  <completed>
+    <action category="feature">Input is a sequence, not just one tree</action>
+    <action category="feature" status="bugs">xsl:function, xsl:result sub-element</action>
+    <action category="feature">xsl:result-document</action>
+    <action category="feature">xsl:for-each-group</action>
+    <action category="feature">OccurrenceIndicator::= ("*" |  "+" |  "?")? in match and select</action>
+    <action category="feature">XPath keywords: element, attribute, empty, document, item, atomic value</action>
+    <action category="feature">ExprComment ::= "{--" [^}]* "--}"</action>
+    <action category="feature">to operator</action>
+    <action category="feature">idiv (like div)</action>
+    <action category="feature">unary +</action>
+    <action category="feature">for...return</action>
+    <action category="feature">XPath expressions allow if...then...else</action>
+    <action category="feature">instance of</action>
+    <action category="feature">xsl:copy-of and xsl:value-of take @separator</action>
+  </completed>
+ <devs>
+  <!-- in alphabetical order, by last name -->
+  <person name="Scott Boag" id="SB">Xalan architect, lead developer on Xalan-J 3.x.</person>
+  <person name="Joseph Kesselman" id="JK">developer</person>
+  <person name="David Marston" id="DM">tester for XSLT Conformance; stylesheet writer's advocate</person>
+  <person name="Myriam Midy" id="MM">developer</person>
+ </devs>
+
+</todo>
