@@ -174,7 +174,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns 'true' if a specific node is an element (of any type)
      */
     private boolean isElement(final int node) {
-	return ((node < _firstAttributeNode) && (_type[node] >= NTYPES));
+	if ((node<_firstAttributeNode) && (_type[node]>=NTYPES)) return true;
+	return false;
     }
 
     /**
@@ -1137,7 +1138,11 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		if (node >= _firstAttributeNode) node = _parent[node];
+		if (node >= _firstAttributeNode) {
+		    node = _parent[node];
+		    int child = _offsetOrChild[node];
+		    if (child != NULL) node = child;
+		}
 		_startNode = node;
 		// find rightmost descendant (or self)
 		int current;
