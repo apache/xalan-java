@@ -242,8 +242,9 @@ public class ElemLiteralResult extends ElemUse
   }
 
   /**
-   * Get whether or not the passed URL is contained flagged by
-   * the "extension-element-prefixes" property.
+   * Get whether or not the passed URL is flagged by
+   * the "extension-element-prefixes" or "exclude-result-prefixes"
+   * properties.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
    * @param prefix non-null reference to prefix that might be excluded.(not currently used)
@@ -253,8 +254,10 @@ public class ElemLiteralResult extends ElemUse
    */
   public boolean containsExcludeResultPrefix(String prefix, String uri)
   {
-
-    if (null == m_excludeResultPrefixes || uri == null)
+    if (uri == null ||
+				(null == m_excludeResultPrefixes &&
+				 null == m_ExtensionElementURIs)
+				)
       return super.containsExcludeResultPrefix(prefix, uri);
 
     if (prefix.length() == 0)
@@ -262,13 +265,18 @@ public class ElemLiteralResult extends ElemUse
 
     // This loop is ok here because this code only runs during
     // stylesheet compile time.    
-    for (int i =0; i< m_excludeResultPrefixes.size(); i++)
-    {
-      if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixes.elementAt(i))))
-        return true;
-    }    
-    
-    return super.containsExcludeResultPrefix(prefix, uri);
+		if(m_excludeResultPrefixes!=null)
+			for (int i =0; i< m_excludeResultPrefixes.size(); i++)
+			{
+				if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixes.elementAt(i))))
+					return true;
+			}    
+		
+		// JJK Bugzilla 1133: Also check locally-scoped extensions
+    if(m_ExtensionElementURIs!=null && m_ExtensionElementURIs.contains(uri))
+       return true;
+
+		return super.containsExcludeResultPrefix(prefix, uri);
   }
 
   /**
@@ -339,7 +347,7 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * Return whether we need to check namespace prefixes
-   * against and exclude result prefixes list.
+   * against the exclude result prefixes or extensions lists.
    * Note that this will create a new prefix table if one
    * has not been created already.
    *
@@ -347,8 +355,9 @@ public class ElemLiteralResult extends ElemUse
    */
   boolean needToCheckExclude()
   {
-
-    if (null == m_excludeResultPrefixes && null == m_prefixTable)
+    if (null == m_excludeResultPrefixes && null == m_prefixTable
+				&& m_ExtensionElementURIs==null   	// JJK Bugzilla 1133
+				)
       return false;
     else
     {
@@ -463,11 +472,11 @@ public class ElemLiteralResult extends ElemUse
    * Set the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * @param v Vector of URI to set as the "extension-element-prefixes" property
+   * @param v Vector of URIs (not prefixes) to set as the "extension-element-prefixes" property
    */
   public void setExtensionElementPrefixes(StringVector v)
   {
-    m_ExtensionElementURIs = v;
+    m_ExtensionElementURIs = v; // JJK Being set, but not applied?
   }
 
   /**
@@ -638,6 +647,13 @@ public class ElemLiteralResult extends ElemUse
       ResultTreeHandler rhandler = transformer.getResultTreeHandler();
 
       // Add namespace declarations.
+			// JJK ISSUE: Need to make sure extensionElementURIs asserted here...
+			// and passed downward to contained LREs. (Regression LRE21)
+			// This method is inherited; I think that means we either subclass it or
+			// pre-apply this flag to the declarations. 
+			// ISSUE: Needs to be inherited downward, which means it's a real scoped
+			// change in the state of the namespace declaration.
+      // gonk();
       executeNSDecls(transformer);
       rhandler.startElement(getNamespace(), getLocalName(), getRawName(), null);
 
