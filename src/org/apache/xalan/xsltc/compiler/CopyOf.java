@@ -94,7 +94,7 @@ final class CopyOf extends Instruction {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final Type tselect = _select.typeCheck(stable);
 	if (tselect instanceof NodeType ||
-	    tselect instanceof NodeSetType ||
+	    tselect instanceof NodeSetDTMType ||
 	    tselect instanceof ReferenceType ||
 	    tselect instanceof ResultTreeType) {
 	    // falls through 
@@ -113,7 +113,7 @@ final class CopyOf extends Instruction {
 
 	
 
-	if (tselect instanceof NodeSetType) {
+	if (tselect instanceof NodeSetDTMType) {
 	    il.append(methodGen.loadDOM());
 
 	    // push NodeIterator

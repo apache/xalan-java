@@ -62,7 +62,6 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.*;
 import org.apache.xalan.extensions.ExtensionsTable;
-
 import org.apache.xml.dtm.DTMIterator;
 
 //import org.w3c.dom.Node;
@@ -71,66 +70,76 @@ import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * <meta name="usage" content="advanced"/>
- * An object of this class represents an extension call expression.  When 
- * the expression executes, it calls ExtensionsTable#extFunction, and then 
+ * An object of this class represents an extension call expression.  When
+ * the expression executes, it calls ExtensionsTable#extFunction, and then
  * converts the result to the appropriate XObject.
  */
 public class FuncExtFunction extends Function
 {
 
-  /** The namespace for the extension function, which should not normally 
+  /**
+   * The namespace for the extension function, which should not normally
    *  be null or empty.
-   *  @serial    */
+   *  @serial    
+   */
   String m_namespace;
 
-  /** The local name of the extension.
-   *  @serial   */
+  /**
+   * The local name of the extension.
+   *  @serial   
+   */
   String m_extensionName;
 
-  /** Unique method key, which is passed to ExtensionsTable#extFunction in 
-   *  order to allow caching of the method. 
-   *  @serial */
+  /**
+   * Unique method key, which is passed to ExtensionsTable#extFunction in
+   *  order to allow caching of the method.
+   *  @serial 
+   */
   Object m_methodKey;
 
-  /** Array of static expressions which represent the parameters to the 
-   *  function.
-   *  @serial   */
-  Vector m_argVec = new Vector();
-  
   /**
-   * This function is used to fixup variables from QNames to stack frame 
+   * Array of static expressions which represent the parameters to the
+   *  function.
+   *  @serial   
+   */
+  Vector m_argVec = new Vector();
+
+  /**
+   * This function is used to fixup variables from QNames to stack frame
    * indexes at stylesheet build time.
-   * @param vars List of QNames that correspond to variables.  This list 
-   * should be searched backwards for the first qualified name that 
-   * corresponds to the variable reference qname.  The position of the 
-   * QName in the vector from the start of the vector will be its position 
-   * in the stack frame (but variables above the globalsTop value will need 
+   * @param vars List of QNames that correspond to variables.  This list
+   * should be searched backwards for the first qualified name that
+   * corresponds to the variable reference qname.  The position of the
+   * QName in the vector from the start of the vector will be its position
+   * in the stack frame (but variables above the globalsTop value will need
    * to be offset to the current stack frame).
+   * NEEDSDOC @param globalsSize
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-    if(null != m_argVec)
+
+    if (null != m_argVec)
     {
       int nArgs = m_argVec.size();
-  
+
       for (int i = 0; i < nArgs; i++)
       {
         Expression arg = (Expression) m_argVec.elementAt(i);
+
         arg.fixupVariables(vars, globalsSize);
       }
     }
   }
 
-
   /**
-   * Create a new FuncExtFunction based on the qualified name of the extension, 
+   * Create a new FuncExtFunction based on the qualified name of the extension,
    * and a unique method key.
    *
-   * @param namespace The namespace for the extension function, which should 
-   *                  not normally be null or empty. 
+   * @param namespace The namespace for the extension function, which should
+   *                  not normally be null or empty.
    * @param extensionName The local name of the extension.
-   * @param methodKey Unique method key, which is passed to 
-   *                  ExtensionsTable#extFunction in order to allow caching 
+   * @param methodKey Unique method key, which is passed to
+   *                  ExtensionsTable#extFunction in order to allow caching
    *                  of the method.
    */
   public FuncExtFunction(java.lang.String namespace,
@@ -150,7 +159,8 @@ public class FuncExtFunction extends Function
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
 
     XObject result;
@@ -166,7 +176,8 @@ public class FuncExtFunction extends Function
 
     ExtensionsTable etable = xctxt.getExtensionsTable();
     Object val = etable.extFunction(m_namespace, m_extensionName, argVec,
-                                    m_methodKey, xctxt.getExpressionContext());
+                                    m_methodKey,
+                                    xctxt.getExpressionContext());
 
     if (null != val)
     {
@@ -174,14 +185,6 @@ public class FuncExtFunction extends Function
       {
         result = (XObject) val;
       }
-
-      // else if(val instanceof XLocator)
-      // {
-      // XLocator locator = (XLocator)val;
-      // opPos = getNextOpPos(opPos+1);
-      // result = locator.connectToNodes(this, opPos, argVec);  
-      // System.out.println("nodeset len: "+result.nodeset().getLength());
-      // }
       else if (val instanceof String)
       {
         result = new XString((String) val);
@@ -195,19 +198,25 @@ public class FuncExtFunction extends Function
       {
         result = new XNumber(((Number) val).doubleValue());
       }
-      // %TBD%
-     // else if (val instanceof DocumentFragment)
-     // {
-     //   result = new XRTreeFrag(val, xctxt);
-     // }
+      else if (val instanceof DocumentFragment)
+      {
+        int handle = xctxt.getDTMHandleFromNode((DocumentFragment)val);
+        
+        result = new XRTreeFrag(handle, xctxt);
+      }
       else if (val instanceof DTMIterator)
       {
         result = new XNodeSet((DTMIterator) val);
       }
+      else if (val instanceof NodeIterator)
+      {
+        result = new XNodeSet(new org.apache.xpath.NodeSetDTM(((NodeIterator)val), xctxt));
+      }
       else if (val instanceof org.w3c.dom.Node)
       {
-        result = new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node)val), 
-                              xctxt.getDTMManager());
+        result =
+          new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node) val),
+                       xctxt.getDTMManager());
       }
       else
       {
@@ -223,13 +232,13 @@ public class FuncExtFunction extends Function
   }
 
   /**
-   * Set an argument expression for a function.  This method is called by the 
+   * Set an argument expression for a function.  This method is called by the
    * XPath compiler.
    *
    * @param arg non-null expression that represents the argument.
    * @param argNum The argument number index.
    *
-   * @throws WrongNumberArgsException If the argNum parameter is beyond what 
+   * @throws WrongNumberArgsException If the argNum parameter is beyond what
    * is specified for this function.
    */
   public void setArg(Expression arg, int argNum)
@@ -239,7 +248,7 @@ public class FuncExtFunction extends Function
   }
 
   /**
-   * Check that the number of arguments passed to this function is correct. 
+   * Check that the number of arguments passed to this function is correct.
    *
    *
    * @param argNum The number of arguments that is being passed to the function.

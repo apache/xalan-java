@@ -80,6 +80,10 @@ import org.apache.xml.utils.StringVector;
 
 import java.lang.reflect.Method;
 
+import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.dtm.DTMIterator;
+
 /**
  * <meta name="usage" content="internal"/>
  * Class handling an extension namespace for XPath. Provides functions
@@ -139,12 +143,12 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     try
     {
       //managerClass = Class.forName(BSF_MANAGER);
-			managerClass = ExtensionHandler.getClassForName(BSF_MANAGER);
+                        managerClass = ExtensionHandler.getClassForName(BSF_MANAGER);
       mgrLoadScriptingEngine = managerClass.getMethod("loadScriptingEngine",
               new Class[]{ String.class });
 
       //Class engineClass = Class.forName(BSF_ENGINE);
-			Class engineClass = ExtensionHandler.getClassForName(BSF_ENGINE);
+                        Class engineClass = ExtensionHandler.getClassForName(BSF_ENGINE);
 
       engineExec = engineClass.getMethod("exec", new Class[]{ String.class,
                                                               Integer.TYPE,
@@ -296,6 +300,11 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
         Object o = args.elementAt(i);
 
         argArray[i] = (o instanceof XObject) ? ((XObject) o).object() : o;
+        o = argArray[i];
+        if(null != o && o instanceof DTMIterator)
+        {
+          argArray[i] = new DTMNodeList((DTMIterator)o);
+        }
       }
 
       return engineCall.invoke(m_engine, new Object[]{ null, funcName,
@@ -357,25 +366,22 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     Object result = null;
     XSLProcessorContext xpc = new XSLProcessorContext(transformer, stylesheetTree);
 
-    // %DTBD%
-//    try
+    try
     {
       Vector argv = new Vector(2);
 
       argv.addElement(xpc);
       argv.addElement(element);
 
-      // %DTBD% This wants an ExpressionContext.
-//      result = callFunction(localPart, argv, methodKey,
-//                            transformer.getXPathContext());
+      result = callFunction(localPart, argv, methodKey,
+                            transformer.getXPathContext().getExpressionContext());
     }
-    // %DTBD%
-//    catch (XPathProcessorException e)
-//    {
-//
-//      // e.printStackTrace ();
-//      throw new TransformerException(e.getMessage(), e);
-//    }
+    catch (XPathProcessorException e)
+    {
+
+      // e.printStackTrace ();
+      throw new TransformerException(e.getMessage(), e);
+    }
 
     if (result != null)
     {

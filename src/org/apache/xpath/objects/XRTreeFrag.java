@@ -56,6 +56,8 @@
  */
 package org.apache.xpath.objects;
 
+import org.w3c.dom.NodeList;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMFilter;
@@ -104,6 +106,17 @@ public class XRTreeFrag extends XObject implements Cloneable
     m_dtmRoot = root;
     m_xctxt = xctxt;
     m_dtm = xctxt.getDTM(root);
+  }
+  
+  /**
+   * Return a java object that's closest to the representation
+   * that should be handed to an extension.
+   *
+   * @return The object that this class wraps
+   */
+  public Object object()
+  {
+    return new org.apache.xml.dtm.ref.DTMNodeIterator((DTMIterator)(new org.apache.xpath.NodeSetDTM(m_dtmRoot)));
   }
   
   /**
@@ -288,20 +301,19 @@ public class XRTreeFrag extends XObject implements Cloneable
     return m_xctxt.createDTMIterator(m_dtmRoot);
   }
 
-  // %TBD%
-//  /**
-//   * Cast result object to a nodelist. (special function).
-//   *
-//   * @return The document fragment as a nodelist
-//   */
-//  public NodeList convertToNodeset()
-//  {
-//
-//    if (m_obj instanceof NodeList)
-//      return (NodeList) m_obj;
-//    else
-//      return null;
-//  }
+  /**
+   * Cast result object to a nodelist. (special function).
+   *
+   * @return The document fragment as a nodelist
+   */
+  public NodeList convertToNodeset()
+  {
+
+    if (m_obj instanceof NodeList)
+      return (NodeList) m_obj;
+    else
+      return new org.apache.xml.dtm.ref.DTMNodeList(asNodeIterator());
+  }
 
   /**
    * Tell if two objects are functionally equal.

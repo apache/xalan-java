@@ -268,7 +268,7 @@ public class DOM2Helper extends DOMHelper
    * You can think of this as 
    * <code>(node1.documentOrderPosition &lt;= node2.documentOrderPosition)</code>.
    */
-  public boolean isNodeAfter(Node node1, Node node2)
+  public static boolean isNodeAfter(Node node1, Node node2)
   {
 
     // Assume first that the nodes are DTM nodes, since discovering node 
@@ -285,7 +285,7 @@ public class DOM2Helper extends DOMHelper
 
       // isNodeAfter will return true if node is after countedNode 
       // in document order. The base isNodeAfter is sloooow (relatively).
-      return super.isNodeAfter(node1, node2);
+      return DOMHelper.isNodeAfter(node1, node2);
     }
   }
 
@@ -301,7 +301,7 @@ public class DOM2Helper extends DOMHelper
    * ownerElement if the input node is an Attr, or null if the node is
    * a Document, a DocumentFragment, or an orphan.
    */
-  public Node getParentOfNode(Node node)
+  public static Node getParentOfNode(Node node)
   {
           Node parent=node.getParentNode();
           if(parent==null && (Node.ATTRIBUTE_NODE == node.getNodeType()) )

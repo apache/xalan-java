@@ -56,17 +56,12 @@
  */
 package org.apache.xpath;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.NamedNodeMap;
-//import org.w3c.dom.traversal.NodeIterator;
-//import org.w3c.dom.traversal.NodeFilter;
-//import org.w3c.dom.DOMException;
-
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMManager;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.traversal.NodeFilter;
+import org.w3c.dom.DOMException;
 
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.axes.ContextNodeList;
@@ -95,9 +90,8 @@ import org.apache.xpath.axes.ContextNodeList;
  * to the same calls; the disadvantage is that some of them may return
  * less-than-enlightening results when you do so.</p>
  */
-public class NodeSet extends NodeVector
-        implements /* NodeList, NodeIterator, */ DTMIterator, 
-        Cloneable
+public class NodeSet
+        implements NodeList, NodeIterator, Cloneable, ContextNodeList
 {
 
   /**
@@ -105,34 +99,34 @@ public class NodeSet extends NodeVector
    */
   public NodeSet()
   {
-    super();
+    m_blocksize = 32;
+    m_mapSize = 0;
   }
 
   /**
    * Create an empty, using the given block size.
    *
    * @param blocksize Size of blocks to allocate 
-   * @param dummy pass zero for right now...
    */
-  public NodeSet(int blocksize, int dummy)
+  public NodeSet(int blocksize)
   {
-    super(blocksize);
+    m_blocksize = blocksize;
+    m_mapSize = 0;
   }
 
-  // %TBD%
-//  /**
-//   * Create a NodeSet, and copy the members of the
-//   * given nodelist into it.
-//   *
-//   * @param nodelist List of Nodes to be made members of the new set.
-//   */
-//  public NodeSet(NodeList nodelist)
-//  {
-//
-//    super();
-//
-//    addNodes(nodelist);
-//  }
+  /**
+   * Create a NodeSet, and copy the members of the
+   * given nodelist into it.
+   *
+   * @param nodelist List of Nodes to be made members of the new set.
+   */
+  public NodeSet(NodeList nodelist)
+  {
+
+    this(32);
+
+    addNodes(nodelist);
+  }
 
   /**
    * Create a NodeSet, and copy the members of the
@@ -143,21 +137,21 @@ public class NodeSet extends NodeVector
   public NodeSet(NodeSet nodelist)
   {
 
-    super();
+    this(32);
 
-    addNodes((DTMIterator) nodelist);
+    addNodes((NodeIterator) nodelist);
   }
 
   /**
    * Create a NodeSet, and copy the members of the
-   * given DTMIterator into it.
+   * given NodeIterator into it.
    *
    * @param ni Iterator which yields Nodes to be made members of the new set.
    */
-  public NodeSet(DTMIterator ni)
+  public NodeSet(NodeIterator ni)
   {
 
-    super();
+    this(32);
 
     addNodes(ni);
   }
@@ -167,73 +161,21 @@ public class NodeSet extends NodeVector
    *
    * @param node Single node to be added to the new set.
    */
-  public NodeSet(int node)
+  public NodeSet(Node node)
   {
 
-    super();
+    this(32);
 
     addNode(node);
   }
-  
-  /**
-   * Set the environment in which this iterator operates, which should provide:
-   * a node (the context node... same value as "root" defined below) 
-   * a pair of non-zero positive integers (the context position and the context size) 
-   * a set of variable bindings 
-   * a function library 
-   * the set of namespace declarations in scope for the expression.
-   * 
-   * <p>At this time the exact implementation of this environment is application 
-   * dependent.  Probably a proper interface will be created fairly soon.</p>
-   * 
-   * @param environment The environment object.
-   */
-  public void setEnvironment(Object environment)
-  {
-    // no-op
-  }
-
 
   /**
    * @return The root node of the Iterator, as specified when it was created.
    * For non-Iterator NodeSets, this will be null.
    */
-  public int getRoot()
+  public Node getRoot()
   {
-    // %TBD%?
-    return DTM.NULL;
-  }
-  
-  /**
-   * Initialize the context values for this expression
-   * after it is cloned.
-   *
-   * @param execContext The XPath runtime context for this
-   * transformation.
-   */
-  public void setRoot(int context, Object environment)
-  {
-    // no-op, I guess...  (-sb)
-  }
-
-  /**
-   * Clone this NodeSet.
-   * At this time, we only expect this to be used with LocPathIterators;
-   * it may not work with other kinds of NodeSets.
-   *
-   * @return a new NodeSet of the same type, having the same state...
-   * though unless overridden in the subclasses, it may not copy all
-   * the state information.
-   *
-   * @throws CloneNotSupportedException if this subclass of NodeSet
-   * does not support the clone() operation.
-   */
-  public Object clone() throws CloneNotSupportedException
-  {
-
-    NodeSet clone = (NodeSet) super.clone();
-
-    return clone;
+    return null;
   }
 
   /**
@@ -246,7 +188,7 @@ public class NodeSet extends NodeVector
    * @throws CloneNotSupportedException if this subclass of NodeSet
    * does not support the clone() operation.
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public NodeIterator cloneWithReset() throws CloneNotSupportedException
   {
 
     NodeSet clone = (NodeSet) clone();
@@ -267,26 +209,26 @@ public class NodeSet extends NodeVector
   /**
    *  This attribute determines which node types are presented via the
    * iterator. The available set of constants is defined in the
-   * <code>DTMFilter</code> interface. For NodeSets, the mask has been
+   * <code>NodeFilter</code> interface. For NodeSets, the mask has been
    * hardcoded to show all nodes except EntityReference nodes, which have
    * no equivalent in the XPath data model.
    *
    * @return integer used as a bit-array, containing flags defined in
-   * the DOM's DTMFilter class. The value will be 
+   * the DOM's NodeFilter class. The value will be 
    * <code>SHOW_ALL & ~SHOW_ENTITY_REFERENCE</code>, meaning that
    * only entity references are suppressed.
    */
   public int getWhatToShow()
   {
-    return DTMFilter.SHOW_ALL & ~DTMFilter.SHOW_ENTITY_REFERENCE;
+    return NodeFilter.SHOW_ALL & ~NodeFilter.SHOW_ENTITY_REFERENCE;
   }
 
   /**
    * The filter object used to screen nodes. Filters are applied to
-   * further reduce (and restructure) the DTMIterator's view of the
+   * further reduce (and restructure) the NodeIterator's view of the
    * document. In our case, we will be using hardcoded filters built
    * into our iterators... but getFilter() is part of the DOM's 
-   * DTMIterator interface, so we have to support it.
+   * NodeIterator interface, so we have to support it.
    *
    * @return null, which is slightly misleading. True, there is no
    * user-written filter object, but in fact we are doing some very
@@ -294,7 +236,7 @@ public class NodeSet extends NodeVector
    * returning a placeholder object just to indicate that this is
    * not going to return all nodes selected by whatToShow.
    */
-  public DTMFilter getFilter()
+  public NodeFilter getFilter()
   {
     return null;
   }
@@ -319,38 +261,10 @@ public class NodeSet extends NodeVector
   {
     return true;
   }
-  
-  /**
-   * Get an instance of a DTM that "owns" a node handle.  Since a node 
-   * iterator may be passed without a DTMManager, this allows the 
-   * caller to easily get the DTM using just the iterator.
-   *
-   * @param nodeHandle the nodeHandle.
-   *
-   * @return a non-null DTM reference.
-   */
-  public DTM getDTM(int nodeHandle)
-  {
-    // %TBD%
-    return null;
-  }
-  
-  /**
-   * Get an instance of the DTMManager.  Since a node 
-   * iterator may be passed without a DTMManager, this allows the 
-   * caller to easily get the DTMManager using just the iterator.
-   *
-   * @return a non-null DTMManager reference.
-   */
-  public DTMManager getDTMManager()
-  {
-    // %TBD%
-    return null;
-  }
 
   /**
    *  Returns the next node in the set and advances the position of the
-   * iterator in the set. After a DTMIterator is created, the first call
+   * iterator in the set. After a NodeIterator is created, the first call
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
@@ -358,19 +272,19 @@ public class NodeSet extends NodeVector
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
-  public int nextNode()
+  public Node nextNode() throws DOMException
   {
 
     if ((m_next) < this.size())
     {
-      int next = this.elementAt(m_next);
+      Node next = this.elementAt(m_next);
 
       m_next++;
 
       return next;
     }
     else
-      return DTM.NULL;
+      return null;
   }
 
   /**
@@ -384,7 +298,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and hence doesn't know what the previous node was.
    */
-  public int previousNode()
+  public Node previousNode() throws DOMException
   {
 
     if (!m_cacheNodes)
@@ -398,7 +312,7 @@ public class NodeSet extends NodeVector
       return this.elementAt(m_next);
     }
     else
-      return DTM.NULL;
+      return null;
   }
 
   /**
@@ -413,18 +327,6 @@ public class NodeSet extends NodeVector
    * </p>
    */
   public void detach(){}
-  
-  /**
-   * Specify if it's OK for detach to release the iterator for reuse.
-   * 
-   * @param allowRelease true if it is OK for detach to release this iterator 
-   * for pooling.
-   */
-  public void allowDetachToRelease(boolean allowRelease)
-  {
-    // no action for right now.
-  }
-
 
   /**
    * Tells if this NodeSet is "fresh", in other words, if
@@ -476,12 +378,12 @@ public class NodeSet extends NodeVector
    *   <code>NodeList</code>, or <code>null</code> if that is not a valid
    *   index.
    */
-  public int item(int index)
+  public Node item(int index)
   {
 
     runTo(index);
 
-    return this.elementAt(index);
+    return (Node) this.elementAt(index);
   }
 
   /**
@@ -508,7 +410,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addNode(int n)
+  public void addNode(Node n)
   {
 
     if (!m_mutable)
@@ -526,7 +428,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void insertNode(int n, int pos)
+  public void insertNode(Node n, int pos)
   {
 
     if (!m_mutable)
@@ -542,7 +444,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void removeNode(int n)
+  public void removeNode(Node n)
   {
 
     if (!m_mutable)
@@ -551,75 +453,73 @@ public class NodeSet extends NodeVector
     this.removeElement(n);
   }
 
-  // %TBD%
-//  /**
-//   * Copy NodeList members into this nodelist, adding in
-//   * document order.  If a node is null, don't add it.
-//   *
-//   * @param nodelist List of nodes which should now be referenced by
-//   * this NodeSet.
-//   * @throws RuntimeException thrown if this NodeSet is not of 
-//   * a mutable type.
-//   */
-//  public void addNodes(NodeList nodelist)
-//  {
-//
-//    if (!m_mutable)
-//      throw new RuntimeException("This NodeSet is not mutable!");
-//
-//    if (null != nodelist)  // defensive to fix a bug that Sanjiva reported.
-//    {
-//      int nChildren = nodelist.getLength();
-//
-//      for (int i = 0; i < nChildren; i++)
-//      {
-//        int obj = nodelist.item(i);
-//
-//        if (null != obj)
-//        {
-//          addElement(obj);
-//        }
-//      }
-//    }
-//
-//    // checkDups();
-//  }
+  /**
+   * Copy NodeList members into this nodelist, adding in
+   * document order.  If a node is null, don't add it.
+   *
+   * @param nodelist List of nodes which should now be referenced by
+   * this NodeSet.
+   * @throws RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
+   */
+  public void addNodes(NodeList nodelist)
+  {
 
-  // %TBD%
-//  /**
-//   * <p>Copy NodeList members into this nodelist, adding in
-//   * document order.  Only genuine node references will be copied;
-//   * nulls appearing in the source NodeSet will
-//   * not be added to this one. </p>
-//   * 
-//   * <p> In case you're wondering why this function is needed: NodeSet
-//   * implements both DTMIterator and NodeList. If this method isn't
-//   * provided, Java can't decide which of those to use when addNodes()
-//   * is invoked. Providing the more-explicit match avoids that
-//   * ambiguity.)</p>
-//   *
-//   * @param ns NodeSet whose members should be merged into this NodeSet.
-//   * @throws RuntimeException thrown if this NodeSet is not of 
-//   * a mutable type.
-//   */
-//  public void addNodes(NodeSet ns)
-//  {
-//
-//    if (!m_mutable)
-//      throw new RuntimeException("This NodeSet is not mutable!");
-//
-//    addNodes((DTMIterator) ns);
-//  }
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    if (null != nodelist)  // defensive to fix a bug that Sanjiva reported.
+    {
+      int nChildren = nodelist.getLength();
+
+      for (int i = 0; i < nChildren; i++)
+      {
+        Node obj = nodelist.item(i);
+
+        if (null != obj)
+        {
+          addElement(obj);
+        }
+      }
+    }
+
+    // checkDups();
+  }
+
+  /**
+   * <p>Copy NodeList members into this nodelist, adding in
+   * document order.  Only genuine node references will be copied;
+   * nulls appearing in the source NodeSet will
+   * not be added to this one. </p>
+   * 
+   * <p> In case you're wondering why this function is needed: NodeSet
+   * implements both NodeIterator and NodeList. If this method isn't
+   * provided, Java can't decide which of those to use when addNodes()
+   * is invoked. Providing the more-explicit match avoids that
+   * ambiguity.)</p>
+   *
+   * @param ns NodeSet whose members should be merged into this NodeSet.
+   * @throws RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
+   */
+  public void addNodes(NodeSet ns)
+  {
+
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    addNodes((NodeIterator) ns);
+  }
 
   /**
    * Copy NodeList members into this nodelist, adding in
    * document order.  Null references are not added.
    *
-   * @param iterator DTMIterator which yields the nodes to be added.
+   * @param iterator NodeIterator which yields the nodes to be added.
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addNodes(DTMIterator iterator)
+  public void addNodes(NodeIterator iterator)
   {
 
     if (!m_mutable)
@@ -627,9 +527,9 @@ public class NodeSet extends NodeVector
 
     if (null != iterator)  // defensive to fix a bug that Sanjiva reported.
     {
-      int obj;
+      Node obj;
 
-      while (DTM.NULL != (obj = iterator.nextNode()))
+      while (null != (obj = iterator.nextNode()))
       {
         addElement(obj);
       }
@@ -638,122 +538,120 @@ public class NodeSet extends NodeVector
     // checkDups();
   }
 
-  // %TBD%
-//  /**
-//   * Copy NodeList members into this nodelist, adding in
-//   * document order.  If a node is null, don't add it.
-//   *
-//   * @param nodelist List of nodes to be added
-//   * @param support The XPath runtime context.
-//   * @throws RuntimeException thrown if this NodeSet is not of 
-//   * a mutable type.
-//   */
-//  public void addNodesInDocOrder(NodeList nodelist, XPathContext support)
-//  {
-//
-//    if (!m_mutable)
-//      throw new RuntimeException("This NodeSet is not mutable!");
-//
-//    int nChildren = nodelist.getLength();
-//
-//    for (int i = 0; i < nChildren; i++)
-//    {
-//      int node = nodelist.item(i);
-//
-//      if (null != node)
-//      {
-//        addNodeInDocOrder(node, support);
-//      }
-//    }
-//  }
-
   /**
    * Copy NodeList members into this nodelist, adding in
    * document order.  If a node is null, don't add it.
    *
-   * @param iterator DTMIterator which yields the nodes to be added.
+   * @param nodelist List of nodes to be added
    * @param support The XPath runtime context.
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public void addNodesInDocOrder(DTMIterator iterator, XPathContext support)
+  public void addNodesInDocOrder(NodeList nodelist, XPathContext support)
   {
 
     if (!m_mutable)
       throw new RuntimeException("This NodeSet is not mutable!");
 
-    int node;
+    int nChildren = nodelist.getLength();
 
-    while (DTM.NULL != (node = iterator.nextNode()))
+    for (int i = 0; i < nChildren; i++)
+    {
+      Node node = nodelist.item(i);
+
+      if (null != node)
+      {
+        addNodeInDocOrder(node, support);
+      }
+    }
+  }
+
+  /**
+   * Copy NodeList members into this nodelist, adding in
+   * document order.  If a node is null, don't add it.
+   *
+   * @param iterator NodeIterator which yields the nodes to be added.
+   * @param support The XPath runtime context.
+   * @throws RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
+   */
+  public void addNodesInDocOrder(NodeIterator iterator, XPathContext support)
+  {
+
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    Node node;
+
+    while (null != (node = iterator.nextNode()))
     {
       addNodeInDocOrder(node, support);
     }
   }
 
-  // %TBD%
-//  /**
-//   * Add the node list to this node set in document order.
-//   *
-//   * @param start index.
-//   * @param end index.
-//   * @param testIndex index.
-//   * @param nodelist The nodelist to add.
-//   * @param support The XPath runtime context.
-//   *
-//   * @return false always.
-//   * @throws RuntimeException thrown if this NodeSet is not of 
-//   * a mutable type.
-//   */
-//  private boolean addNodesInDocOrder(int start, int end, int testIndex,
-//                                     NodeList nodelist, XPathContext support)
-//  {
-//
-//    if (!m_mutable)
-//      throw new RuntimeException("This NodeSet is not mutable!");
-//
-//    boolean foundit = false;
-//    int i;
-//    int node = nodelist.item(testIndex);
-//
-//    for (i = end; i >= start; i--)
-//    {
-//      int child = elementAt(i);
-//
-//      if (child == node)
-//      {
-//        i = -2;  // Duplicate, suppress insert
-//
-//        break;
-//      }
-//
-//      if (!support.getDOMHelper().isNodeAfter(node, child))
-//      {
-//        insertElementAt(node, i + 1);
-//
-//        testIndex--;
-//
-//        if (testIndex > 0)
-//        {
-//          boolean foundPrev = addNodesInDocOrder(0, i, testIndex, nodelist,
-//                                                 support);
-//
-//          if (!foundPrev)
-//          {
-//            addNodesInDocOrder(i, size() - 1, testIndex, nodelist, support);
-//          }
-//        }
-//
-//        break;
-//      }
-//    }
-//
-//    if (i == -1)
-//    {
-//      insertElementAt(node, 0);
-//    }
-//
-//    return foundit;
-//  }
+  /**
+   * Add the node list to this node set in document order.
+   *
+   * @param start index.
+   * @param end index.
+   * @param testIndex index.
+   * @param nodelist The nodelist to add.
+   * @param support The XPath runtime context.
+   *
+   * @return false always.
+   * @throws RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
+   */
+  private boolean addNodesInDocOrder(int start, int end, int testIndex,
+                                     NodeList nodelist, XPathContext support)
+  {
+
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    boolean foundit = false;
+    int i;
+    Node node = nodelist.item(testIndex);
+
+    for (i = end; i >= start; i--)
+    {
+      Node child = (Node) elementAt(i);
+
+      if (child == node)
+      {
+        i = -2;  // Duplicate, suppress insert
+
+        break;
+      }
+
+      if (!DOM2Helper.isNodeAfter(node, child))
+      {
+        insertElementAt(node, i + 1);
+
+        testIndex--;
+
+        if (testIndex > 0)
+        {
+          boolean foundPrev = addNodesInDocOrder(0, i, testIndex, nodelist,
+                                                 support);
+
+          if (!foundPrev)
+          {
+            addNodesInDocOrder(i, size() - 1, testIndex, nodelist, support);
+          }
+        }
+
+        break;
+      }
+    }
+
+    if (i == -1)
+    {
+      insertElementAt(node, 0);
+    }
+
+    return foundit;
+  }
 
   /**
    * Add the node into a vector of nodes where it should occur in
@@ -768,7 +666,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public int addNodeInDocOrder(int node, boolean test, XPathContext support)
+  public int addNodeInDocOrder(Node node, boolean test, XPathContext support)
   {
 
     if (!m_mutable)
@@ -786,7 +684,7 @@ public class NodeSet extends NodeVector
 
       for (i = size - 1; i >= 0; i--)
       {
-        int child = elementAt(i);
+        Node child = (Node) elementAt(i);
 
         if (child == node)
         {
@@ -795,8 +693,7 @@ public class NodeSet extends NodeVector
           break;
         }
 
-        DTM dtm = support.getDTM(node);
-        if (!dtm.isNodeAfter(node, child))
+        if (!DOM2Helper.isNodeAfter(node, child))
         {
           break;
         }
@@ -817,7 +714,7 @@ public class NodeSet extends NodeVector
 
       for (int i = 0; i < insertIndex; i++)
       {
-        if (i == node)
+        if (this.item(i).equals(node))
         {
           foundit = true;
 
@@ -846,7 +743,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
-  public int addNodeInDocOrder(int node, XPathContext support)
+  public int addNodeInDocOrder(Node node, XPathContext support)
   {
 
     if (!m_mutable)
@@ -855,230 +752,6 @@ public class NodeSet extends NodeVector
     return addNodeInDocOrder(node, true, support);
   }  // end addNodeInDocOrder(Vector v, Object obj)
 
-  /**
-   * Get the length of the list.
-   *
-   * @return The size of this node set.
-   */
-  public int size()
-  {
-    return super.size();
-  }
-
-  /**
-   * Append a Node onto the vector.
-   *
-   * @param value The node to be added.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void addElement(int value)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.addElement(value);
-  }
-
-  /**
-   * Inserts the specified node in this vector at the specified index.
-   * Each component in this vector with an index greater or equal to
-   * the specified index is shifted upward to have an index one greater
-   * than the value it had previously.
-   *
-   * @param value The node to be inserted.
-   * @param at The index where the insert should occur.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void insertElementAt(int value, int at)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.insertElementAt(value, at);
-  }
-
-  /**
-   * Append the nodes to the list.
-   *
-   * @param nodes The nodes to be appended to this node set.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void appendNodes(NodeVector nodes)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.appendNodes(nodes);
-  }
-
-  /**
-   * Inserts the specified node in this vector at the specified index.
-   * Each component in this vector with an index greater or equal to
-   * the specified index is shifted upward to have an index one greater
-   * than the value it had previously.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void removeAllElements()
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.removeAllElements();
-  }
-
-  /**
-   * Removes the first occurrence of the argument from this vector.
-   * If the object is found in this vector, each component in the vector
-   * with an index greater or equal to the object's index is shifted
-   * downward to have an index one smaller than the value it had
-   * previously.
-   *
-   * @param s The node to be removed.
-   *
-   * @return True if the node was successfully removed
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public boolean removeElement(int s)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    return super.removeElement(s);
-  }
-
-  /**
-   * Deletes the component at the specified index. Each component in
-   * this vector with an index greater or equal to the specified
-   * index is shifted downward to have an index one smaller than
-   * the value it had previously.
-   *
-   * @param i The index of the node to be removed.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void removeElementAt(int i)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.removeElementAt(i);
-  }
-
-  /**
-   * Sets the component at the specified index of this vector to be the
-   * specified object. The previous component at that position is discarded.
-   *
-   * The index must be a value greater than or equal to 0 and less
-   * than the current size of the vector.
-   *
-   * @param node  The node to be set.
-   * @param index The index of the node to be replaced.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void setElementAt(int node, int index)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.setElementAt(node, index);
-  }
-  
-  /**
-   * Same as setElementAt.
-   *
-   * @param node  The node to be set.
-   * @param index The index of the node to be replaced.
-   * @throws RuntimeException thrown if this NodeSet is not of 
-   * a mutable type.
-   */
-  public void setItem(int node, int index)
-  {
-
-    if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
-
-    super.setElementAt(node, index);
-  }
-
-  /**
-   * Get the nth element.
-   *
-   * @param i The index of the requested node.
-   *
-   * @return Node at specified index.
-   */
-  public int elementAt(int i)
-  {
-
-    runTo(i);
-
-    return super.elementAt(i);
-  }
-  
-  /**
-   * Tell if the table contains the given node.
-   *
-   * @param s Node to look for
-   *
-   * @return True if the given node was found.
-   */
-  public boolean contains(int s)
-  {
-
-    runTo(-1);
-
-    return super.contains(s);
-  }
-
-  /**
-   * Searches for the first occurence of the given argument,
-   * beginning the search at index, and testing for equality
-   * using the equals method.
-   *
-   * @param elem Node to look for
-   * @param index Index of where to start the search
-   * @return the index of the first occurrence of the object
-   * argument in this vector at position index or later in the
-   * vector; returns -1 if the object is not found.
-   */
-  public int indexOf(int elem, int index)
-  {
-
-    runTo(-1);
-
-    return super.indexOf(elem, index);
-  }
-
-  /**
-   * Searches for the first occurence of the given argument,
-   * beginning the search at index, and testing for equality
-   * using the equals method.
-   *
-   * @param elem Node to look for 
-   * @return the index of the first occurrence of the object
-   * argument in this vector at position index or later in the
-   * vector; returns -1 if the object is not found.
-   */
-  public int indexOf(int elem)
-  {
-
-    runTo(-1);
-
-    return super.indexOf(elem);
-  }
 
   /** If this node is being used as an iterator, the next index that nextNode()
    *  will return.  */
@@ -1120,7 +793,7 @@ public class NodeSet extends NodeVector
    * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and thus doesn't permit indexed access.
    */
-  public int getCurrentNode()
+  public Node getCurrentNode()
   {
 
     if (!m_cacheNodes)
@@ -1128,7 +801,7 @@ public class NodeSet extends NodeVector
         "This NodeSet can not do indexing or counting functions!");
 
     int saved = m_next;
-    int n = elementAt(m_next-1);
+    Node n = elementAt(m_next-1);
     m_next = saved; // HACK: I think this is a bit of a hack.  -sb
     return n;
   }
@@ -1173,16 +846,6 @@ public class NodeSet extends NodeVector
     m_mutable = true;
   }
   
-  /**
-   * Tells if this iterator can have nodes added to it or set via 
-   * the <code>setItem(int node, int index)</code> method.
-   * 
-   * @return True if the nodelist can be mutated.
-   */
-  public boolean isMutable()
-  {
-    return m_mutable;
-  }
   
   transient private int m_last = 0;
   
@@ -1196,6 +859,547 @@ public class NodeSet extends NodeVector
     m_last = last;
   }
   
-  
+  /** Size of blocks to allocate.
+   *  @serial          */
+  private int m_blocksize;
+
+  /** Array of nodes this points to.
+   *  @serial          */
+  Node m_map[];
+
+  /** Number of nodes in this NodeVector.
+   *  @serial          */
+  protected int m_firstFree = 0;
+
+  /** Size of the array this points to.
+   *  @serial           */
+  private int m_mapSize;  // lazy initialization
+
+  /**
+   * Get a cloned LocPathIterator.
+   *
+   * @return A clone of this
+   *
+   * @throws CloneNotSupportedException
+   */
+  public Object clone() throws CloneNotSupportedException
+  {
+
+    NodeSet clone = (NodeSet) super.clone();
+
+    if ((null != this.m_map) && (this.m_map == clone.m_map))
+    {
+      clone.m_map = new Node[this.m_map.length];
+
+      System.arraycopy(this.m_map, 0, clone.m_map, 0, this.m_map.length);
+    }
+
+    return clone;
+  }
+
+  /**
+   * Get the length of the list.
+   *
+   * @return Number of nodes in this NodeVector
+   */
+  public int size()
+  {
+    return m_firstFree;
+  }
+
+  /**
+   * Append a Node onto the vector.
+   *
+   * @param value Node to add to the vector
+   */
+  public void addElement(Node value)
+  {
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    if ((m_firstFree + 1) >= m_mapSize)
+    {
+      if (null == m_map)
+      {
+        m_map = new Node[m_blocksize];
+        m_mapSize = m_blocksize;
+      }
+      else
+      {
+        m_mapSize += m_blocksize;
+
+        Node newMap[] = new Node[m_mapSize];
+
+        System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
+        m_map = newMap;
+      }
+    }
+
+    m_map[m_firstFree] = value;
+
+    m_firstFree++;
+  }
+
+  /**
+   * Append a Node onto the vector.
+   *
+   * @param value Node to add to the vector
+   */
+  public final void push(Node value)
+  {
+
+    int ff = m_firstFree;
+
+    if ((ff + 1) >= m_mapSize)
+    {
+      if (null == m_map)
+      {
+        m_map = new Node[m_blocksize];
+        m_mapSize = m_blocksize;
+      }
+      else
+      {
+        m_mapSize += m_blocksize;
+
+        Node newMap[] = new Node[m_mapSize];
+
+        System.arraycopy(m_map, 0, newMap, 0, ff + 1);
+
+        m_map = newMap;
+      }
+    }
+
+    m_map[ff] = value;
+
+    ff++;
+
+    m_firstFree = ff;
+  }
+
+  /**
+   * Pop a node from the tail of the vector and return the result.
+   *
+   * @return the node at the tail of the vector
+   */
+  public final Node pop()
+  {
+
+    m_firstFree--;
+
+    Node n = m_map[m_firstFree];
+
+    m_map[m_firstFree] = null;
+
+    return n;
+  }
+
+  /**
+   * Pop a node from the tail of the vector and return the
+   * top of the stack after the pop.
+   *
+   * @return The top of the stack after it's been popped 
+   */
+  public final Node popAndTop()
+  {
+
+    m_firstFree--;
+
+    m_map[m_firstFree] = null;
+
+    return (m_firstFree == 0) ? null : m_map[m_firstFree - 1];
+  }
+
+  /**
+   * Pop a node from the tail of the vector.
+   */
+  public final void popQuick()
+  {
+
+    m_firstFree--;
+
+    m_map[m_firstFree] = null;
+  }
+
+  /**
+   * Return the node at the top of the stack without popping the stack.
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   *
+   * @return Node at the top of the stack or null if stack is empty.  
+   */
+  public final Node peepOrNull()
+  {
+    return ((null != m_map) && (m_firstFree > 0))
+           ? m_map[m_firstFree - 1] : null;
+  }
+
+  /**
+   * Push a pair of nodes into the stack.  
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   *
+   * @param v1 First node to add to vector
+   * @param v2 Second node to add to vector
+   */
+  public final void pushPair(Node v1, Node v2)
+  {
+
+    if (null == m_map)
+    {
+      m_map = new Node[m_blocksize];
+      m_mapSize = m_blocksize;
+    }
+    else
+    {
+      if ((m_firstFree + 2) >= m_mapSize)
+      {
+        m_mapSize += m_blocksize;
+
+        Node newMap[] = new Node[m_mapSize];
+
+        System.arraycopy(m_map, 0, newMap, 0, m_firstFree);
+
+        m_map = newMap;
+      }
+    }
+
+    m_map[m_firstFree] = v1;
+    m_map[m_firstFree + 1] = v2;
+    m_firstFree += 2;
+  }
+
+  /**
+   * Pop a pair of nodes from the tail of the stack. 
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   */
+  public final void popPair()
+  {
+
+    m_firstFree -= 2;
+    m_map[m_firstFree] = null;
+    m_map[m_firstFree + 1] = null;
+  }
+
+  /**
+   * Set the tail of the stack to the given node.
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   *
+   * @param n Node to set at the tail of vector
+   */
+  public final void setTail(Node n)
+  {
+    m_map[m_firstFree - 1] = n;
+  }
+
+  /**
+   * Set the given node one position from the tail.
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   *
+   * @param n Node to set
+   */
+  public final void setTailSub1(Node n)
+  {
+    m_map[m_firstFree - 2] = n;
+  }
+
+  /**
+   * Return the node at the tail of the vector without popping
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   *
+   * @return Node at the tail of the vector
+   */
+  public final Node peepTail()
+  {
+    return m_map[m_firstFree - 1];
+  }
+
+  /**
+   * Return the node one position from the tail without popping.
+   * Special purpose method for TransformerImpl, pushElemTemplateElement.
+   * Performance critical.
+   *
+   * @return Node one away from the tail
+   */
+  public final Node peepTailSub1()
+  {
+    return m_map[m_firstFree - 2];
+  }
+
+  /**
+   * Inserts the specified node in this vector at the specified index.
+   * Each component in this vector with an index greater or equal to
+   * the specified index is shifted upward to have an index one greater
+   * than the value it had previously.
+   *
+   * @param value Node to insert
+   * @param at Position where to insert
+   */
+  public void insertElementAt(Node value, int at)
+  {
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    if (null == m_map)
+    {
+      m_map = new Node[m_blocksize];
+      m_mapSize = m_blocksize;
+    }
+    else if ((m_firstFree + 1) >= m_mapSize)
+    {
+      m_mapSize += m_blocksize;
+
+      Node newMap[] = new Node[m_mapSize];
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
+
+      m_map = newMap;
+    }
+
+    if (at <= (m_firstFree - 1))
+    {
+      System.arraycopy(m_map, at, m_map, at + 1, m_firstFree - at);
+    }
+
+    m_map[at] = value;
+
+    m_firstFree++;
+  }
+
+  /**
+   * Append the nodes to the list.
+   *
+   * @param nodes NodeVector to append to this list
+   */
+  public void appendNodes(NodeSet nodes)
+  {
+
+    int nNodes = nodes.size();
+
+    if (null == m_map)
+    {
+      m_mapSize = nNodes + m_blocksize;
+      m_map = new Node[m_mapSize];
+    }
+    else if ((m_firstFree + nNodes) >= m_mapSize)
+    {
+      m_mapSize += (nNodes + m_blocksize);
+
+      Node newMap[] = new Node[m_mapSize];
+
+      System.arraycopy(m_map, 0, newMap, 0, m_firstFree + nNodes);
+
+      m_map = newMap;
+    }
+
+    System.arraycopy(nodes.m_map, 0, m_map, m_firstFree, nNodes);
+
+    m_firstFree += nNodes;
+  }
+
+  /**
+   * Inserts the specified node in this vector at the specified index.
+   * Each component in this vector with an index greater or equal to
+   * the specified index is shifted upward to have an index one greater
+   * than the value it had previously.
+   */
+  public void removeAllElements()
+  {
+
+    if (null == m_map)
+      return;
+
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      m_map[i] = null;
+    }
+
+    m_firstFree = 0;
+  }
+
+  /**
+   * Removes the first occurrence of the argument from this vector.
+   * If the object is found in this vector, each component in the vector
+   * with an index greater or equal to the object's index is shifted
+   * downward to have an index one smaller than the value it had
+   * previously.
+   *
+   * @param s Node to remove from the list
+   *
+   * @return True if the node was successfully removed
+   */
+  public boolean removeElement(Node s)
+  {
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    if (null == m_map)
+      return false;
+
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      Node node = m_map[i];
+
+      if ((null != node) && node.equals(s))
+      {
+        if (i > m_firstFree)
+          System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
+        else
+          m_map[i] = null;
+
+        m_firstFree--;
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Deletes the component at the specified index. Each component in
+   * this vector with an index greater or equal to the specified
+   * index is shifted downward to have an index one smaller than
+   * the value it had previously.
+   *
+   * @param i Index of node to remove
+   */
+  public void removeElementAt(int i)
+  {
+
+    if (null == m_map)
+      return;
+
+    if (i > m_firstFree)
+      System.arraycopy(m_map, i + 1, m_map, i - 1, m_firstFree - i);
+    else
+      m_map[i] = null;
+  }
+
+  /**
+   * Sets the component at the specified index of this vector to be the
+   * specified object. The previous component at that position is discarded.
+   *
+   * The index must be a value greater than or equal to 0 and less
+   * than the current size of the vector.
+   *
+   * @param node Node to set
+   * @param index Index of where to set the node
+   */
+  public void setElementAt(Node node, int index)
+  {
+    if (!m_mutable)
+      throw new RuntimeException("This NodeSet is not mutable!");
+
+    if (null == m_map)
+    {
+      m_map = new Node[m_blocksize];
+      m_mapSize = m_blocksize;
+    }
+
+    m_map[index] = node;
+  }
+
+  /**
+   * Get the nth element.
+   *
+   * @param i Index of node to get
+   *
+   * @return Node at specified index
+   */
+  public Node elementAt(int i)
+  {
+
+    if (null == m_map)
+      return null;
+
+    return m_map[i];
+  }
+
+  /**
+   * Tell if the table contains the given node.
+   *
+   * @param s Node to look for
+   *
+   * @return True if the given node was found.
+   */
+  public boolean contains(Node s)
+  {
+    runTo(-1);
+
+    if (null == m_map)
+      return false;
+
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      Node node = m_map[i];
+
+      if ((null != node) && node.equals(s))
+        return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
+   *
+   * @param elem Node to look for
+   * @param index Index of where to start the search
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
+   */
+  public int indexOf(Node elem, int index)
+  {
+    runTo(-1);
+
+    if (null == m_map)
+      return -1;
+
+    for (int i = index; i < m_firstFree; i++)
+    {
+      Node node = m_map[i];
+
+      if ((null != node) && node.equals(elem))
+        return i;
+    }
+
+    return -1;
+  }
+
+  /**
+   * Searches for the first occurence of the given argument,
+   * beginning the search at index, and testing for equality
+   * using the equals method.
+   *
+   * @param elem Node to look for 
+   * @return the index of the first occurrence of the object
+   * argument in this vector at position index or later in the
+   * vector; returns -1 if the object is not found.
+   */
+  public int indexOf(Node elem)
+  {
+    runTo(-1);
+
+    if (null == m_map)
+      return -1;
+
+    for (int i = 0; i < m_firstFree; i++)
+    {
+      Node node = m_map[i];
+
+      if ((null != node) && node.equals(elem))
+        return i;
+    }
+
+    return -1;
+  }
 
 }

@@ -311,7 +311,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   static
   {
     contents[ER_CANT_CONVERT_TO_MUTABLENODELIST][1] =
-      "Can not convert {0} to a NodeSet!";
+      "Can not convert {0} to a NodeSetDTM!";
   }
 
   /** Field ER_CANT_CONVERT_TO_TYPE          */

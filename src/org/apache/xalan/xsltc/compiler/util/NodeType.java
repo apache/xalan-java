@@ -122,8 +122,8 @@ public final class NodeType extends Type {
 	else if (type == Type.Real) {
 	    translateTo(classGen, methodGen, (RealType) type);
 	}
-	else if (type == Type.NodeSet) {
-	    translateTo(classGen, methodGen, (NodeSetType) type);
+	else if (type == Type.NodeSetDTM) {
+	    translateTo(classGen, methodGen, (NodeSetDTMType) type);
 	}
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
@@ -210,7 +210,7 @@ public final class NodeType extends Type {
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
-			    NodeSetType type) {
+			    NodeSetDTMType type) {
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
 

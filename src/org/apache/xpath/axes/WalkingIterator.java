@@ -12,7 +12,7 @@ import org.apache.xpath.compiler.OpMap;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.compiler.PsuedoNames;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;

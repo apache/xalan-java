@@ -67,7 +67,7 @@ import org.apache.xml.dtm.DTMManager;
 
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XMLString;
@@ -103,7 +103,7 @@ public class XNodeSet extends XObject
    */
   public XNodeSet(DTMManager dtmMgr)
   {
-    super(new NodeSet());
+    super(new NodeSetDTM());
     m_dtmMgr = dtmMgr;
   }
 
@@ -115,12 +115,12 @@ public class XNodeSet extends XObject
   public XNodeSet(int n, DTMManager dtmMgr)
   {
 
-    super(new NodeSet());
+    super(new NodeSetDTM());
     m_dtmMgr = dtmMgr;
 
     if (DTM.NULL != n)
     {
-      ((NodeSet) m_obj).addNode(n);
+      ((NodeSetDTM) m_obj).addNode(n);
     }
   }
 
@@ -162,7 +162,7 @@ public class XNodeSet extends XObject
    * Cast result object to a number.
    *
    * @return numeric value of the string conversion from the 
-   * next node in the NodeSet, or NAN if no node was found
+   * next node in the NodeSetDTM, or NAN if no node was found
    */
   public double num()
   {
@@ -330,18 +330,18 @@ public class XNodeSet extends XObject
    *
    * @return The nodeset as a mutableNodeset
    */
-  public NodeSet mutableNodeset()
+  public NodeSetDTM mutableNodeset()
   {
 
-    NodeSet mnl;
+    NodeSetDTM mnl;
 
-    if(m_obj instanceof NodeSet)
+    if(m_obj instanceof NodeSetDTM)
     {
-      mnl = (NodeSet) m_obj;
+      mnl = (NodeSetDTM) m_obj;
     }
     else
     {
-      mnl = new NodeSet(nodeset());
+      mnl = new NodeSetDTM(nodeset());
       m_obj = mnl;
     }
 

@@ -74,7 +74,7 @@ public abstract class Type implements Constants {
     public static final Type Int        = new IntType();
     public static final Type Real       = new RealType();
     public static final Type Boolean    = new BooleanType();
-    public static final Type NodeSet    = new NodeSetType();
+    public static final Type NodeSetDTM    = new NodeSetDTMType();
     public static final Type String     = new StringType();
     public static final Type ResultTree = new ResultTreeType();
     public static final Type Reference  = new ReferenceType();

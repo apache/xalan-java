@@ -62,7 +62,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xalan.templates.KeyDeclaration;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 
 //import org.w3c.dom.Node;
 //import org.w3c.dom.DOMException;
@@ -139,9 +139,9 @@ public class KeyRefIterator extends LocPathIterator
     
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
-    NodeSet m_cachedNodes = getCachedNodes();
+    NodeSetDTM m_cachedNodes = getCachedNodes();
     
-    // We are not using the NodeSet methods getCurrentPos() and nextNode()
+    // We are not using the NodeSetDTM methods getCurrentPos() and nextNode()
     // in this case because the nodeset is not cloned and therefore
     // the positions it indicates may not be associated with the 
     // current iterator.
@@ -241,7 +241,7 @@ public class KeyRefIterator extends LocPathIterator
    */
   public void addNode(int node) 
   {
-    NodeSet m_cachedNodes = getCachedNodes();
+    NodeSetDTM m_cachedNodes = getCachedNodes();
     if (null != m_cachedNodes)
     {
       if(!m_cachedNodes.contains(node))

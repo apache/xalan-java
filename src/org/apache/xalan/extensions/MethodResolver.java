@@ -68,6 +68,10 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xml.dtm.*;
+import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 
 import javax.xml.transform.TransformerException;
 
@@ -348,7 +352,7 @@ public class MethodResolver
         Class[] paramTypes = method.getParameterTypes();
         if ( (paramTypes.length == 2)
            && paramTypes[1].isAssignableFrom(org.apache.xalan.templates.ElemExtensionCall.class)
-					 && paramTypes[0].isAssignableFrom(org.apache.xalan.extensions.XSLProcessorContext.class) )
+                                         && paramTypes[0].isAssignableFrom(org.apache.xalan.extensions.XSLProcessorContext.class) )
         {
           if ( ++bestScoreCount == 1 )
             bestMethod = method;
@@ -629,7 +633,7 @@ public class MethodResolver
         // whether this java method is a valid match for this extension function call.
         // This approach eliminates the NullPointerException in the earlier implementation
         // that resulted from passing an XObject encapsulating the null java object.
-				
+                                
         // TODO:  This needs to be improved to assign relative scores to subclasses,
         // etc. 
 
@@ -747,20 +751,22 @@ public class MethodResolver
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
-            return ((XRTreeFrag) xobj).asNodeIterator();
+            DTMIterator dtmIter = ((XRTreeFrag) xobj).asNodeIterator();
+            return new DTMNodeIterator(dtmIter);
           }
-          // %DTBD%
-//          else if (javaClass == NodeList.class)
-//          {
-//            return ((XRTreeFrag) xobj).convertToNodeset();
-//          }
+          else if (javaClass == NodeList.class)
+          {
+            return ((XRTreeFrag) xobj).convertToNodeset();
+          }
           // Same comment as above
           // else if(Node.class.isAssignableFrom(javaClass))
-          // %DTBD%
-//          else if(javaClass == Node.class)
-//          {
-//            return xobj.rtree().getFirstChild();
-//          }
+          else if(javaClass == Node.class)
+          {
+            DTMIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
+            int rootHandle = iter.nextNode();
+            DTM dtm = iter.getDTM(rootHandle);
+            return dtm.getNode(dtm.getFirstChild(rootHandle));
+          }
           else if(javaClass == java.lang.String.class)
           {
             return xobj.str();
@@ -773,15 +779,18 @@ public class MethodResolver
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
-          // %DTBD%
-//          else
-//          {
-//            Node child = xobj.rtree().getFirstChild();
-//            if(javaClass.isAssignableFrom(child.getClass()))
-//              return child;
-//            else
-//              return null;
-//          }
+          else
+          {
+            DTMIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
+            int rootHandle = iter.nextNode();
+            DTM dtm = iter.getDTM(rootHandle);
+            Node child = dtm.getNode(dtm.getFirstChild(rootHandle));
+
+            if(javaClass.isAssignableFrom(child.getClass()))
+              return child;
+            else
+              return null;
+          }
         }
         // break; Unreachable
         
@@ -810,9 +819,9 @@ public class MethodResolver
           {
             // Xalan ensures that nodeset() always returns an
             // iterator positioned at the beginning.
-            // %DTBD%
-//            NodeIterator ni = xobj.nodeset();
-//            return ni.nextNode(); // may be null.
+            DTMIterator ni = xobj.nodeset();
+            int handle = ni.nextNode();           
+            return ni.getDTM(handle).getNode(handle); // may be null.
           }
           else if(javaClass == java.lang.String.class)
           {
@@ -826,15 +835,17 @@ public class MethodResolver
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
-          // %DTBD%
-//          else
-//          {
-//            Node child = xobj.nodeset().nextNode();
-//            if(javaClass.isAssignableFrom(child.getClass()))
-//              return child;
-//            else
-//              return null;
-//          }
+          else
+          {
+            DTMIterator iter = xobj.nodeset();
+            int childHandle = iter.nextNode();
+            DTM dtm = iter.getDTM(childHandle);
+            Node child = dtm.getNode(childHandle);
+            if(javaClass.isAssignableFrom(child.getClass()))
+              return child;
+            else
+              return null;
+          }
         }
         // break; Unreachable
         
@@ -867,7 +878,7 @@ public class MethodResolver
         // Just pass the object directly, and hope for the best.
         return xsltObj;
       }
-		}
+                }
     else
     {
       // Just pass the object directly, and hope for the best.

@@ -75,7 +75,7 @@ public class StringBufferPool
    *
    * @return A string buffer ready for use.
    */
-  public static FastStringBuffer get()
+  public synchronized static FastStringBuffer get()
   {
     return (FastStringBuffer) m_stringBufPool.getInstance();
   }
@@ -85,7 +85,7 @@ public class StringBufferPool
    *
    * @param sb Must be a non-null reference to a string buffer.
    */
-  public static void free(FastStringBuffer sb)
+  public synchronized static void free(FastStringBuffer sb)
   {
     // Since this isn't synchronized, setLength must be 
     // done before the instance is freed.

@@ -202,7 +202,7 @@ public class DOMHelper
    * You can think of this as 
    * <code>(node1.documentOrderPosition &lt;= node2.documentOrderPosition)</code>.
    */
-  public boolean isNodeAfter(Node node1, Node node2)
+  public static boolean isNodeAfter(Node node1, Node node2)
   {
     if (node1 == node2)
       return true;
@@ -993,7 +993,7 @@ public class DOMHelper
    * via the DOM Level 2 factory methods, but is possible if other
    * mechanisms were used to obtain it
    */
-  public Node getParentOfNode(Node node) throws RuntimeException
+  public static Node getParentOfNode(Node node) throws RuntimeException
   {
     Node parent;
     short nodeType = node.getNodeType();
@@ -1177,7 +1177,7 @@ public class DOMHelper
    * DOMs had some hope that Attrs might be sharable, but this idea has
    * been abandoned.)
    */
-  private Node locateAttrParent(Element elem, Node attr)
+  private static Node locateAttrParent(Element elem, Node attr)
   {
 
     Node parent = null;

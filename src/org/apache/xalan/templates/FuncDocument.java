@@ -66,7 +66,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -183,7 +183,7 @@ public class FuncDocument extends Function2Args
     }
 
     XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
-    NodeSet mnl = nodes.mutableNodeset();
+    NodeSetDTM mnl = nodes.mutableNodeset();
     DTMIterator iterator = (XObject.CLASS_NODESET == arg.getType())
                             ? arg.nodeset() : null;
     int pos = DTM.NULL;

@@ -67,7 +67,7 @@ import java.io.Serializable;
 
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
@@ -402,18 +402,18 @@ public class XObject extends Expression implements Serializable, Cloneable
   /**
    * Cast result object to a nodelist. Always issues an error.
    *
-   * @return The object as a NodeSet.
+   * @return The object as a NodeSetDTM.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public NodeSet mutableNodeset()
+  public NodeSetDTM mutableNodeset()
           throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_MUTABLENODELIST,
-          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeSet!");
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeSetDTM!");
 
-    return (NodeSet) m_obj;
+    return (NodeSetDTM) m_obj;
   }
 
   /**

@@ -95,9 +95,9 @@ final class RelationalExpr extends Expression implements Operators {
 	    _right.getType() instanceof NodeType;
     }
 
-    public boolean hasNodeSetArgs() {
-	return _left.getType() instanceof NodeSetType ||
-	    _right.getType() instanceof NodeSetType;
+    public boolean hasNodeSetDTMArgs() {
+	return _left.getType() instanceof NodeSetDTMType ||
+	    _right.getType() instanceof NodeSetDTMType;
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -116,9 +116,9 @@ final class RelationalExpr extends Expression implements Operators {
 	    return _type = Type.Boolean;
 	}
 
-	if (hasNodeSetArgs()) {
+	if (hasNodeSetDTMArgs()) {
 	    // Ensure that the node-set is the left argument
-	    if (tright instanceof NodeSetType) {
+	    if (tright instanceof NodeSetDTMType) {
 		final Expression temp = _right; _right = _left; _left = temp;
 		_op = (_op == Operators.GT) ? Operators.LT :
 		    (_op == Operators.LT) ? Operators.GT :
@@ -128,7 +128,7 @@ final class RelationalExpr extends Expression implements Operators {
 
 	    // Promote nodes to node sets
 	    if (tright instanceof NodeType) {
-		_right = new CastExpr(_right, Type.NodeSet);
+		_right = new CastExpr(_right, Type.NodeSetDTM);
 	    }
 
 	    // Promote integer to doubles to have fewer compares
@@ -170,7 +170,7 @@ final class RelationalExpr extends Expression implements Operators {
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	if (hasNodeSetArgs() || hasReferenceArgs()) {
+	if (hasNodeSetDTMArgs() || hasReferenceArgs()) {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
 	    final InstructionList il = methodGen.getInstructionList();
 
@@ -202,7 +202,7 @@ final class RelationalExpr extends Expression implements Operators {
 
     public void translateDesynthesized(ClassGenerator classGen,
 				       MethodGenerator methodGen) {
-	if (hasNodeSetArgs() || hasReferenceArgs()) {
+	if (hasNodeSetDTMArgs() || hasReferenceArgs()) {
 	    translate(classGen, methodGen);
 	    desynthesize(classGen, methodGen);
 	}

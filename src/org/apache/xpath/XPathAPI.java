@@ -122,7 +122,7 @@ public class XPathAPI
             throws TransformerException
   {
 
-    // Have the XObject return its result as a NodeSet.
+    // Have the XObject return its result as a NodeSetDTM.
     NodeIterator nl = selectNodeIterator(contextNode, str, namespaceNode);
 
     // Return the first node, or null
@@ -164,7 +164,7 @@ public class XPathAPI
     // Execute the XPath, and have it return the result
     XObject list = eval(contextNode, str, namespaceNode);
 
-    // Have the XObject return its result as a NodeSet.
+    // Have the XObject return its result as a NodeSetDTM.
     // %TBD% Convert to DOM nodeset
 		
     return new DTMNodeIterator(list.nodeset());

@@ -103,11 +103,11 @@ final class ForEach extends Instruction {
 	Type tselect = _select.typeCheck(stable);
 
 	if (tselect instanceof ReferenceType || tselect instanceof NodeType) {
-	    _select = new CastExpr(_select, Type.NodeSet);
+	    _select = new CastExpr(_select, Type.NodeSetDTM);
 	    typeCheckContents(stable);
 	    return Type.Void;
 	}
-	else if (tselect instanceof NodeSetType) {
+	else if (tselect instanceof NodeSetDTMType) {
 	    typeCheckContents(stable);
 	    return Type.Void;
 	} 

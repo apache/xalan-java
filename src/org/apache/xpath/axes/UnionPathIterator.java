@@ -70,7 +70,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMIterator;
 
 // Xalan Imports
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -81,7 +81,7 @@ import org.apache.xml.utils.ObjectPool;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class extends NodeSet, which implements DTMIterator,
+ * This class extends NodeSetDTM, which implements DTMIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-UnionExpr">UnionExpr</a>.
  * As each node is iterated via nextNode(), the node is also stored
@@ -223,7 +223,7 @@ public class UnionPathIterator extends Expression
 
   /** If this iterator needs to cache nodes that are fetched, they
    * are stored here.   */
-  transient NodeSet m_cachedNodes = null;
+  transient NodeSetDTM m_cachedNodes = null;
 
   /** The index of the next node to be fetched.  Useful if this 
    * is a cached iterator, and is being used as random access 
@@ -240,7 +240,7 @@ public class UnionPathIterator extends Expression
   {
 
     if (b)
-      m_cachedNodes = new NodeSet();
+      m_cachedNodes = new NodeSetDTM();
     else
       m_cachedNodes = null;
   }
@@ -265,7 +265,7 @@ public class UnionPathIterator extends Expression
 
     if (null == m_cachedNodes)
       throw new RuntimeException(
-        "This NodeSet can not do indexing or counting functions!");
+        "This NodeSetDTM can not do indexing or counting functions!");
 
     m_next = i;
 
@@ -287,7 +287,7 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * Tells if this NodeSet is "fresh", in other words, if
+   * Tells if this NodeSetDTM is "fresh", in other words, if
    * the first nextNode() that is called will return the
    * first node in the set.
    *
@@ -309,7 +309,7 @@ public class UnionPathIterator extends Expression
 
     if (null == m_cachedNodes)
       throw new RuntimeException(
-        "This NodeSet can not iterate to a previous node!");
+        "This NodeSetDTM can not iterate to a previous node!");
 
     return m_cachedNodes.previousNode();
   }
@@ -687,7 +687,7 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * If an index is requested, NodeSet will call this method
+   * If an index is requested, NodeSetDTM will call this method
    * to run the iterator to the index.  By default this sets
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.

@@ -449,7 +449,7 @@ public class DTMManagerDefault extends DTMManager
       // Current solution: Generate a new DOM2DTM with this node as root.
       // %REVIEW% Maybe the best I can do??
       DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(node), false,
-                       null, true, false);
+                       null, true, true);
 
       return dtm.getDocument();
     }

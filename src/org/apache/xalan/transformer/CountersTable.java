@@ -66,7 +66,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xalan.templates.ElemNumber;
 
 /**
@@ -123,7 +123,7 @@ public class CountersTable extends Hashtable
   /**
    * Place to collect new counters.
    */
-  transient private NodeSet m_newFound = new NodeSet();
+  transient private NodeSetDTM m_newFound = new NodeSetDTM();
 
   /**
    * Add a list of counted nodes that were built in backwards document
@@ -133,7 +133,7 @@ public class CountersTable extends Hashtable
    * @param flist Vector of nodes built in forwards document order
    * @param blist Vector of nodes built in backwards document order
    */
-  void appendBtoFList(NodeSet flist, NodeSet blist)
+  void appendBtoFList(NodeSetDTM flist, NodeSetDTM blist)
   {
 
     int n = blist.size();

@@ -72,7 +72,7 @@ import org.apache.xpath.compiler.OpMap;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.compiler.PsuedoNames;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -85,7 +85,7 @@ import org.apache.xpath.VariableStack;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class extends NodeSet, which implements NodeIterator,
+ * This class extends NodeSetDTM, which implements NodeIterator,
  * and fetches nodes one at a time in document order based on a XPath
  * <a href="http://www.w3.org/TR/xpath#NT-LocationPath>LocationPath</a>.
  *
@@ -394,7 +394,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   {
 
     if (b)
-      m_cachedNodes = new NodeSet();
+      m_cachedNodes = new NodeSetDTM();
     else
       m_cachedNodes = null;
   }
@@ -416,7 +416,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    *
    * @return Cached nodes.
    */
-  public NodeSet getCachedNodes()
+  public NodeSetDTM getCachedNodes()
   {
     return m_cachedNodes;
   }
@@ -433,7 +433,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     // System.out.println("setCurrentPos: "+i);
     if (null == m_cachedNodes)
       throw new RuntimeException(
-        "This NodeSet can not do indexing or counting functions!");
+        "This NodeSetDTM can not do indexing or counting functions!");
 
     setNextPosition(i);
     m_cachedNodes.setCurrentPos(i);
@@ -535,7 +535,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   }
 
   /**
-   * Tells if this NodeSet is "fresh", in other words, if
+   * Tells if this NodeSetDTM is "fresh", in other words, if
    * the first nextNode() that is called will return the
    * first node in the set.
    *
@@ -557,7 +557,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
 
     if (null == m_cachedNodes)
       throw new RuntimeException(
-        "This NodeSet can not iterate to a previous node!");
+        "This NodeSetDTM can not iterate to a previous node!");
 
     return m_cachedNodes.previousNode();
   }
@@ -754,7 +754,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   }
 
   /**
-   * If an index is requested, NodeSet will call this method
+   * If an index is requested, NodeSetDTM will call this method
    * to run the iterator to the index.  By default this sets
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
@@ -978,7 +978,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * If this iterator needs to cache nodes that are fetched, they
    * are stored here.
    */
-  transient NodeSet m_cachedNodes;
+  transient NodeSetDTM m_cachedNodes;
 
   /** This is true if nextNode returns null. */
   transient protected boolean m_foundLast = false;

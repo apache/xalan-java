@@ -60,12 +60,12 @@ package org.apache.xalan.transformer;
 import org.apache.xml.dtm.DTM;
 
 import org.apache.xml.utils.NodeVector;
-import org.apache.xpath.NodeSet;  // for isNodeAfter support
+import org.apache.xpath.NodeSetDTM;  // for isNodeAfter support
 import org.apache.xpath.XPathContext;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.ElemNumber;
 
@@ -96,7 +96,7 @@ public class Counter
   /**
    * A vector of all nodes counted so far.
    */
-  NodeSet m_countNodes = new NodeSet();
+  NodeSetDTM m_countNodes = new NodeSetDTM();
 
   /**
    * The node from where the counting starts.  This is needed to
@@ -125,7 +125,7 @@ public class Counter
    *
    * @throws TransformerException
    */
-  Counter(ElemNumber numberElem, NodeSet countNodes) throws TransformerException
+  Counter(ElemNumber numberElem, NodeSetDTM countNodes) throws TransformerException
   {
     m_countNodes = countNodes;
     m_numberElem = numberElem;

@@ -107,7 +107,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
   /** Access the wrapped DTMIterator. I'm not sure whether anyone will
    * need this or not, but let's write it and think about it.
    * */
-  DTMIterator getDTMIterator()
+  public DTMIterator getDTMIterator()
     {
       return dtm_iter;
     }
@@ -187,7 +187,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
       
       int handle=dtm_iter.nextNode();
       if (handle==-1)
-	return null;
+        return null;
       return dtm_iter.getDTM(handle).getNode(handle);
     }
   

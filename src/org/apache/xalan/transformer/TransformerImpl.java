@@ -99,7 +99,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.ObjectPool;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.XPath;

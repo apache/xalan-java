@@ -66,7 +66,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Enumeration;
 
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathContext;
@@ -152,7 +152,7 @@ public class KeyTable
    * if the identifier is not found, it will return null,
    * otherwise it will return a LocPathIterator instance.
    */
-  public LocPathIterator getNodeSetByKey(QName name, XMLString ref)
+  public LocPathIterator getNodeSetDTMByKey(QName name, XMLString ref)
   {
 
     KeyIterator ki;

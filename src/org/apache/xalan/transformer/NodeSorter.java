@@ -68,7 +68,7 @@ import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xml.utils.NodeVector;

@@ -69,7 +69,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 
 /**
  * <meta name="usage" content="advanced"/>

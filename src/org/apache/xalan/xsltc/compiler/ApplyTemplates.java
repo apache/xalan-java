@@ -119,10 +119,10 @@ final class ApplyTemplates extends Instruction {
 	    Type tselect = _select.typeCheck(stable);
 	    if (tselect instanceof NodeType ||
 		tselect instanceof ReferenceType) {
-		_select = new CastExpr(_select, Type.NodeSet);
-		tselect = Type.NodeSet;
+		_select = new CastExpr(_select, Type.NodeSetDTM);
+		tselect = Type.NodeSetDTM;
 	    }
-	    if (tselect instanceof NodeSetType) {
+	    if (tselect instanceof NodeSetDTMType) {
 		typeCheckContents(stable);		// with-params
 		return Type.Void;
 	    } 

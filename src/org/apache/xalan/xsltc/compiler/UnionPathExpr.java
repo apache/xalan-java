@@ -98,11 +98,11 @@ final class UnionPathExpr extends Expression {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final int length = _components.length;
 	for (int i = 0; i < length; i++) {
-	    if (_components[i].typeCheck(stable) != Type.NodeSet) {
-		_components[i] = new CastExpr(_components[i], Type.NodeSet);
+	    if (_components[i].typeCheck(stable) != Type.NodeSetDTM) {
+		_components[i] = new CastExpr(_components[i], Type.NodeSetDTM);
 	    }
 	}
-	return _type = Type.NodeSet;	
+	return _type = Type.NodeSetDTM;	
     }
 
     public String toString() {

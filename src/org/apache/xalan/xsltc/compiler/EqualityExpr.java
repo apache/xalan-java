@@ -140,27 +140,27 @@ final class EqualityExpr extends Expression implements Operators {
 	    _left = new CastExpr(_left, Type.String);
 	    _right = new CastExpr(_right, Type.String);
 	}
-	else if (tleft instanceof NodeType && tright instanceof NodeSetType) {
-	    // compare(Node, NodeSet) will be invoked
+	else if (tleft instanceof NodeType && tright instanceof NodeSetDTMType) {
+	    // compare(Node, NodeSetDTM) will be invoked
 	}
-	else if (tleft instanceof NodeSetType && tright instanceof NodeType) {
-	    swapArguments();	// for compare(Node, NodeSet)
+	else if (tleft instanceof NodeSetDTMType && tright instanceof NodeType) {
+	    swapArguments();	// for compare(Node, NodeSetDTM)
 	}
 	else {	
 	    // At least one argument is of type node, node-set or result-tree
 
 	    // Promote an expression of type node to node-set
 	    if (tleft instanceof NodeType) {
-		_left = new CastExpr(_left, Type.NodeSet);
+		_left = new CastExpr(_left, Type.NodeSetDTM);
 	    }
 	    if (tright instanceof NodeType) {
-		_right = new CastExpr(_right, Type.NodeSet);
+		_right = new CastExpr(_right, Type.NodeSetDTM);
 	    }
 
 	    // If one arg is a node-set then make it the left one
 	    if (tleft.isSimple() ||
 		tleft instanceof ResultTreeType &&
-		tright instanceof NodeSetType) {
+		tright instanceof NodeSetDTMType) {
 		swapArguments();
 	    }
 
@@ -284,10 +284,10 @@ final class EqualityExpr extends Expression implements Operators {
 	    return;
 	}
 
-	if (tleft instanceof NodeSetType && tright instanceof BooleanType) {
+	if (tleft instanceof NodeSetDTMType && tright instanceof BooleanType) {
 	    _left.translate(classGen, methodGen);
 	    _left.startResetIterator(classGen, methodGen);
-	    Type.NodeSet.translateTo(classGen, methodGen, Type.Boolean);
+	    Type.NodeSetDTM.translateTo(classGen, methodGen, Type.Boolean);
 	    _right.translate(classGen, methodGen);
 
 	    il.append(IXOR); // x != y <-> x xor y
@@ -298,7 +298,7 @@ final class EqualityExpr extends Expression implements Operators {
 	    return;
 	}
 
-	if (tleft instanceof NodeSetType && tright instanceof StringType) {
+	if (tleft instanceof NodeSetDTMType && tright instanceof StringType) {
 	    _left.translate(classGen, methodGen);
 	    _left.startResetIterator(classGen, methodGen); // needed ?
 	    _right.translate(classGen, methodGen);

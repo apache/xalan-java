@@ -94,7 +94,7 @@ public class KeyManager
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public LocPathIterator getNodeSetByKey(
+  public LocPathIterator getNodeSetDTMByKey(
           XPathContext xctxt, int doc, QName name, XMLString ref, PrefixResolver nscontext)
             throws javax.xml.transform.TransformerException
   {
@@ -121,7 +121,7 @@ public class KeyManager
 
           if (kt.getKeyTableName().equals(name) && doc == kt.getDocKey())
           {
-            nl = kt.getNodeSetByKey(name, ref);
+            nl = kt.getNodeSetDTMByKey(name, ref);
 
             if (nl != null)
             {
@@ -145,7 +145,7 @@ public class KeyManager
         if (doc == kt.getDocKey())
         {
           foundDoc = true;
-          nl = kt.getNodeSetByKey(name, ref);
+          nl = kt.getNodeSetDTMByKey(name, ref);
         }
       }
     }

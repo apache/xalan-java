@@ -115,10 +115,10 @@ public class FuncKey extends Function2Args
     String xkeyname = getArg0().execute(xctxt).str();
     QName keyname = new QName(xkeyname, xctxt.getNamespaceContext());
     XObject arg = getArg1().execute(xctxt);
-    boolean argIsNodeSet = (XObject.CLASS_NODESET == arg.getType());
+    boolean argIsNodeSetDTM = (XObject.CLASS_NODESET == arg.getType());
     KeyManager kmgr = transformer.getKeyManager();
 
-    if (argIsNodeSet)
+    if (argIsNodeSetDTM)
     {
       Hashtable usedrefs = null;
       DTMIterator ni = arg.nodeset();
@@ -148,7 +148,7 @@ public class FuncKey extends Function2Args
         }
 
         LocPathIterator nl =
-          kmgr.getNodeSetByKey(xctxt, docContext, keyname, ref,
+          kmgr.getNodeSetDTMByKey(xctxt, docContext, keyname, ref,
                                xctxt.getNamespaceContext());
 
         try
@@ -170,7 +170,7 @@ public class FuncKey extends Function2Args
     else
     {
       XMLString ref = arg.xstr();
-      LocPathIterator nl = kmgr.getNodeSetByKey(xctxt, docContext, keyname,
+      LocPathIterator nl = kmgr.getNodeSetDTMByKey(xctxt, docContext, keyname,
                                                 ref,
                                                 xctxt.getNamespaceContext());
 

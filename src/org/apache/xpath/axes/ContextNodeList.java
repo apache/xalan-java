@@ -102,7 +102,7 @@ public interface ContextNodeList
   public void setShouldCacheNodes(boolean b);
 
   /**
-   * If an index is requested, NodeSet will call this method
+   * If an index is requested, NodeSetDTM will call this method
    * to run the iterator to the index.  By default this sets
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
@@ -126,7 +126,7 @@ public interface ContextNodeList
   public int size();
 
   /**
-   * Tells if this NodeSet is "fresh", in other words, if
+   * Tells if this NodeSetDTM is "fresh", in other words, if
    * the first nextNode() that is called will return the
    * first node in the set.
    *

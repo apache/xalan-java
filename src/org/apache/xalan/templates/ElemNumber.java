@@ -957,7 +957,7 @@ public class ElemNumber extends ElemTemplateElement
             throws javax.xml.transform.TransformerException
   {
 
-    NodeSet ancestors = new NodeSet();
+    NodeSetDTM ancestors = new NodeSetDTM();
     XPath countMatchPattern = getCountMatchPattern(xctxt, node);
     DTM dtm = xctxt.getDTM(node);
 
@@ -1016,8 +1016,8 @@ public class ElemNumber extends ElemTemplateElement
 
     if (null != m_lang_avt)
     {
-      String langValue = m_lang_avt.evaluate(transformer.getXPathContext(),
-                                             contextNode, this);
+      XPathContext xctxt = transformer.getXPathContext();
+      String langValue = m_lang_avt.evaluate(xctxt, contextNode, this);
 
       if (null != langValue)
       {
@@ -1030,10 +1030,9 @@ public class ElemNumber extends ElemTemplateElement
         //Locale.getDefault().getDisplayCountry());
         if (null == locale)
         {
-          // %DTBD%
-//          transformer.getMsgMgr().warn(this, null, contextNode,
-//                                       XSLTErrorResources.WG_LOCALE_NOT_FOUND,
-//                                       new Object[]{ langValue });  //"Warning: Could not find locale for xml:lang="+langValue);
+          transformer.getMsgMgr().warn(this, null, xctxt.getDTM(contextNode).getNode(contextNode),
+                                       XSLTErrorResources.WG_LOCALE_NOT_FOUND,
+                                       new Object[]{ langValue });  //"Warning: Could not find locale for xml:lang="+langValue);
 
           locale = Locale.getDefault();
         }

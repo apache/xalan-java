@@ -131,7 +131,7 @@ final class Key extends TopLevelElement {
 		_use = new CastExpr(_use, Type.String);
 	    }
 	    // ...or a node-set.
-	    else if (!(_useType instanceof NodeSetType)) {
+	    else if (!(_useType instanceof NodeSetDTMType)) {
 		throw new TypeCheckError(this);
 	    }
 	}
@@ -143,7 +143,7 @@ final class Key extends TopLevelElement {
      * node set. In this case we must traverse all nodes in the set and
      * create one entry in this key's index for each node in the set.
      */
-    public void traverseNodeSet(ClassGenerator classGen,
+    public void traverseNodeSetDTM(ClassGenerator classGen,
 				MethodGenerator methodGen,
 				int buildKeyIndex) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
@@ -260,7 +260,7 @@ final class Key extends TopLevelElement {
 	else {
 	    // Pass current node as parameter (we're indexing on that node)
 	    il.append(methodGen.loadCurrentNode());
-	    traverseNodeSet(classGen,methodGen,key);
+	    traverseNodeSetDTM(classGen,methodGen,key);
 	}
 	
 	// Get the next node from the iterator and do loop again...

@@ -71,7 +71,7 @@ import java.util.Vector;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPath;
-import org.apache.xpath.NodeSet;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xml.utils.StringVector;
@@ -98,7 +98,7 @@ public class FuncId extends FunctionOneArg
    */
   private StringVector getNodesByID(XPathContext xctxt, int docContext,
                                     String refval, StringVector usedrefs,
-                                    NodeSet nodeSet, boolean mayBeMore)
+                                    NodeSetDTM nodeSet, boolean mayBeMore)
   {
 
     if (null != refval)
@@ -160,7 +160,7 @@ public class FuncId extends FunctionOneArg
     XObject arg = m_arg0.execute(xctxt);
     int argType = arg.getType();
     XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
-    NodeSet nodeSet = nodes.mutableNodeset();
+    NodeSetDTM nodeSet = nodes.mutableNodeset();
 
     if (XObject.CLASS_NODESET == argType)
     {

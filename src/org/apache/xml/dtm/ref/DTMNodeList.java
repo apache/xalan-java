@@ -104,8 +104,15 @@ public class DTMNodeList implements org.w3c.dom.NodeList
    * */
   public DTMNodeList(DTMIterator dtmIterator)
     {
-      dtm_iter=dtmIterator;
+      int pos = dtmIterator.getCurrentPos();
+      try
+      {
+        dtm_iter=(DTMIterator)dtmIterator.cloneWithReset();
+      }
+      catch(CloneNotSupportedException cnse) {}
       dtm_iter.setShouldCacheNodes(true);
+      dtm_iter.runTo(-1);
+      dtm_iter.setCurrentPos(pos);
     }
 
   /** Access the wrapped DTMIterator. I'm not sure whether anyone will
@@ -141,6 +148,6 @@ public class DTMNodeList implements org.w3c.dom.NodeList
      */
     public int getLength()
     {
-	return dtm_iter.getLength();
+        return dtm_iter.getLength();
     }
 }

@@ -135,7 +135,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
    public DTMManager getDTMManager()
    {
-     return this;
+     return m_dtmManager;
    }
   
   /**
@@ -1037,8 +1037,18 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     return expressionContext;
   }
   
-  class XPathExpressionContext implements ExpressionContext
+  public class XPathExpressionContext implements ExpressionContext
   {
+    /**
+     * Return the DTMManager object.  Though XPathContext context extends 
+     * the DTMManager, it really is a proxy for the real DTMManager.  If a 
+     * caller needs to make a lot of calls to the DTMManager, it is faster 
+     * if it gets the real one from this function.
+     */
+     public DTMManager getDTMManager()
+     {
+       return m_dtmManager;
+     }
     
     /**
      * Get the current context node.
@@ -1058,8 +1068,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
      */
     public org.w3c.dom.traversal.NodeIterator getContextNodes()
     {
-      // %TBD%
-      return null;
+      return new org.apache.xml.dtm.ref.DTMNodeIterator(getContextNodeList());
     }
   
     /**

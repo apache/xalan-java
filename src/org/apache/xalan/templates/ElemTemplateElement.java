@@ -82,10 +82,10 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.SourceLocator;
 
 // DOM Imports
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
-//import org.w3c.dom.DOMException;
-//import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.apache.xml.dtm.DTM;
 
 // SAX Imports
@@ -322,45 +322,44 @@ public class ElemTemplateElement extends UnImplNode
   
 
   // Implemented DOM Element methods.
-// %DTBD%
-//  /**
-//   * Add a child to the child list.
-//   * NOTE: This presumes the child did not previously have a parent.
-//   * Making that assumption makes this a less expensive operation -- but
-//   * requires that if you *do* want to reparent a node, you use removeChild()
-//   * first to remove it from its previous context. Failing to do so will
-//   * damage the tree.
-//   *
-//   * @param newChild Child to be added to child list
-//   *
-//   * @return Child just added to the child list
-//   * @throws DOMException
-//   */
-//  public Node appendChild(Node newChild) throws DOMException
-//  {
-//
-//    if (null == newChild)
-//    {
-//      error(XSLTErrorResources.ER_NULL_CHILD, null);  //"Trying to add a null child!");
-//    }
-//
-//    ElemTemplateElement elem = (ElemTemplateElement) newChild;
-//
-//    if (null == m_firstChild)
-//    {
-//      m_firstChild = elem;
-//    }
-//    else
-//    {
-//      ElemTemplateElement last = (ElemTemplateElement) getLastChild();
-//
-//      last.m_nextSibling = elem;
-//    }
-//
-//    elem.m_parentNode = this;
-//
-//    return newChild;
-//  }
+  /**
+   * Add a child to the child list.
+   * NOTE: This presumes the child did not previously have a parent.
+   * Making that assumption makes this a less expensive operation -- but
+   * requires that if you *do* want to reparent a node, you use removeChild()
+   * first to remove it from its previous context. Failing to do so will
+   * damage the tree.
+   *
+   * @param newChild Child to be added to child list
+   *
+   * @return Child just added to the child list
+   * @throws DOMException
+   */
+  public Node appendChild(Node newChild) throws DOMException
+  {
+
+    if (null == newChild)
+    {
+      error(XSLTErrorResources.ER_NULL_CHILD, null);  //"Trying to add a null child!");
+    }
+
+    ElemTemplateElement elem = (ElemTemplateElement) newChild;
+
+    if (null == m_firstChild)
+    {
+      m_firstChild = elem;
+    }
+    else
+    {
+      ElemTemplateElement last = (ElemTemplateElement) getLastChild();
+
+      last.m_nextSibling = elem;
+    }
+
+    elem.m_parentNode = this;
+
+    return newChild;
+  }
 
   /**
    * Add a child to the child list.
@@ -419,16 +418,15 @@ public class ElemTemplateElement extends UnImplNode
     return org.w3c.dom.Node.ELEMENT_NODE;
   }
 
-  // %DTBD%
-//  /**
-//   * Return the nodelist (same reference).
-//   *
-//   * @return The nodelist containing the child nodes (this)
-//   */
-//  public NodeList getChildNodes()
-//  {
-//    return this;
-//  }
+  /**
+   * Return the nodelist (same reference).
+   *
+   * @return The nodelist containing the child nodes (this)
+   */
+  public NodeList getChildNodes()
+  {
+    return this;
+  }
 
   /**
    * Remove a child.
@@ -467,46 +465,45 @@ public class ElemTemplateElement extends UnImplNode
     return childETE;
   }
 
-  // %DTBD%
-//  /**
-//   * Replace the old child with a new child.
-//   *
-//   * @param newChild New child to replace with
-//   * @param oldChild Old child to be replaced
-//   *
-//   * @return The new child
-//   *
-//   * @throws DOMException
-//   */
-//  public Node replaceChild(Node newChild, Node oldChild) throws DOMException
-//  {
-//
-//    if (oldChild == null || oldChild.getParentNode() != this)
-//      return null;
-//
-//    ElemTemplateElement newChildElem = ((ElemTemplateElement) newChild);
-//    ElemTemplateElement oldChildElem = ((ElemTemplateElement) oldChild);
-//
-//    // Fix up previous sibling.
-//    ElemTemplateElement prev =
-//      (ElemTemplateElement) oldChildElem.getPreviousSibling();
-//
-//    if (null != prev)
-//      prev.m_nextSibling = newChildElem;
-//
-//    // Fix up parent (this)
-//    if (m_firstChild == oldChildElem)
-//      m_firstChild = newChildElem;
-//
-//    newChildElem.m_parentNode = this;
-//    oldChildElem.m_parentNode = null;
-//    newChildElem.m_nextSibling = oldChildElem.m_nextSibling;
-//    oldChildElem.m_nextSibling = null;
-//
-//    // newChildElem.m_stylesheet = oldChildElem.m_stylesheet;
-//    // oldChildElem.m_stylesheet = null;
-//    return newChildElem;
-//  }
+  /**
+   * Replace the old child with a new child.
+   *
+   * @param newChild New child to replace with
+   * @param oldChild Old child to be replaced
+   *
+   * @return The new child
+   *
+   * @throws DOMException
+   */
+  public Node replaceChild(Node newChild, Node oldChild) throws DOMException
+  {
+
+    if (oldChild == null || oldChild.getParentNode() != this)
+      return null;
+
+    ElemTemplateElement newChildElem = ((ElemTemplateElement) newChild);
+    ElemTemplateElement oldChildElem = ((ElemTemplateElement) oldChild);
+
+    // Fix up previous sibling.
+    ElemTemplateElement prev =
+      (ElemTemplateElement) oldChildElem.getPreviousSibling();
+
+    if (null != prev)
+      prev.m_nextSibling = newChildElem;
+
+    // Fix up parent (this)
+    if (m_firstChild == oldChildElem)
+      m_firstChild = newChildElem;
+
+    newChildElem.m_parentNode = this;
+    oldChildElem.m_parentNode = null;
+    newChildElem.m_nextSibling = oldChildElem.m_nextSibling;
+    oldChildElem.m_nextSibling = null;
+
+    // newChildElem.m_stylesheet = oldChildElem.m_stylesheet;
+    // oldChildElem.m_stylesheet = null;
+    return newChildElem;
+  }
 
   /**
    * Replace the old child with a new child.
@@ -568,40 +565,38 @@ public class ElemTemplateElement extends UnImplNode
     return count;
   }  // getLength():int
 
-  // %TDB%
-//  /**
-//   * NodeList method: Return the Nth immediate child of this node, or
-//   * null if the index is out of bounds.
-//   *
-//   * @param index Index of child to find
-//   * @return org.w3c.dom.Node: the child node at given index
-//   */
-//  public Node item(int index)
-//  {
-//
-//    // It is assumed that the getChildNodes call synchronized
-//    // the children. Therefore, we can access the first child
-//    // reference directly.
-//    ElemTemplateElement node = m_firstChild;
-//
-//    for (int i = 0; i < index && node != null; i++)
-//    {
-//      node = node.m_nextSibling;
-//    }
-//
-//    return node;
-//  }  // item(int):Node
+  /**
+   * NodeList method: Return the Nth immediate child of this node, or
+   * null if the index is out of bounds.
+   *
+   * @param index Index of child to find
+   * @return org.w3c.dom.Node: the child node at given index
+   */
+  public Node item(int index)
+  {
 
-  // %DTBD%
-//  /**
-//   * Get the stylesheet owner.
-//   *
-//   * @return The stylesheet owner
-//   */
-//  public Document getOwnerDocument()
-//  {
-//    return getStylesheet();
-//  }
+    // It is assumed that the getChildNodes call synchronized
+    // the children. Therefore, we can access the first child
+    // reference directly.
+    ElemTemplateElement node = m_firstChild;
+
+    for (int i = 0; i < index && node != null; i++)
+    {
+      node = node.m_nextSibling;
+    }
+
+    return node;
+  }  // item(int):Node
+
+  /**
+   * Get the stylesheet owner.
+   *
+   * @return The stylesheet owner
+   */
+  public Document getOwnerDocument()
+  {
+    return getStylesheet();
+  }
 
   /**
    * Return the element name.
@@ -1172,16 +1167,15 @@ public class ElemTemplateElement extends UnImplNode
    */
   protected ElemTemplateElement m_parentNode;
 
-  // %DTBD%
-//  /**
-//   * Get the parent as a Node.
-//   *
-//   * @return This node's parent node
-//   */
-//  public Node getParentNode()
-//  {
-//    return m_parentNode;
-//  }
+  /**
+   * Get the parent as a Node.
+   *
+   * @return This node's parent node
+   */
+  public Node getParentNode()
+  {
+    return m_parentNode;
+  }
 
   /**
    * Get the parent as an ElemTemplateElement.
@@ -1209,42 +1203,40 @@ public class ElemTemplateElement extends UnImplNode
    */
   ElemTemplateElement m_nextSibling;
 
-  // %DTBD%
-//  /**
-//   * Get the next sibling (as a Node) or return null.
-//   *
-//   * @return this node's next sibling or null
-//   */
-//  public Node getNextSibling()
-//  {
-//    return m_nextSibling;
-//  }
+  /**
+   * Get the next sibling (as a Node) or return null.
+   *
+   * @return this node's next sibling or null
+   */
+  public Node getNextSibling()
+  {
+    return m_nextSibling;
+  }
 
-  // %DTBD%
-//  /**
-//   * Get the previous sibling (as a Node) or return null.
-//   * Note that this may be expensive if the parent has many kids;
-//   * we accept that price in exchange for avoiding the prev pointer
-//   * TODO: If we were sure parents and sibs are always ElemTemplateElements,
-//   * we could hit the fields directly rather than thru accessors.
-//   *
-//   * @return This node's previous sibling or null
-//   */
-//  public Node getPreviousSibling()
-//  {
-//
-//    Node walker = getParentNode(), prev = null;
-//
-//    if (walker != null)
-//      for (walker = walker.getFirstChild(); walker != null;
-//              prev = walker, walker = walker.getNextSibling())
-//      {
-//        if (walker == this)
-//          return prev;
-//      }
-//
-//    return null;
-//  }
+  /**
+   * Get the previous sibling (as a Node) or return null.
+   * Note that this may be expensive if the parent has many kids;
+   * we accept that price in exchange for avoiding the prev pointer
+   * TODO: If we were sure parents and sibs are always ElemTemplateElements,
+   * we could hit the fields directly rather than thru accessors.
+   *
+   * @return This node's previous sibling or null
+   */
+  public Node getPreviousSibling()
+  {
+
+    Node walker = getParentNode(), prev = null;
+
+    if (walker != null)
+      for (walker = walker.getFirstChild(); walker != null;
+              prev = walker, walker = walker.getNextSibling())
+      {
+        if (walker == this)
+          return prev;
+      }
+
+    return null;
+  }
 
   /**
    * Get the previous sibling (as a Node) or return null.
@@ -1300,16 +1292,15 @@ public class ElemTemplateElement extends UnImplNode
    */
   ElemTemplateElement m_firstChild;
 
-  // %DTBD%
-//  /**
-//   * Get the first child as a Node.
-//   *
-//   * @return This node's first child or null
-//   */
-//  public Node getFirstChild()
-//  {
-//    return m_firstChild;
-//  }
+  /**
+   * Get the first child as a Node.
+   *
+   * @return This node's first child or null
+   */
+  public Node getFirstChild()
+  {
+    return m_firstChild;
+  }
 
   /**
    * Get the first child as a ElemTemplateElement.
@@ -1321,25 +1312,24 @@ public class ElemTemplateElement extends UnImplNode
     return m_firstChild;
   }
 
-  // %DTBD%
-//  /**
-//   * Get the last child.
-//   *
-//   * @return This node's last child
-//   */
-//  public Node getLastChild()
-//  {
-//
-//    ElemTemplateElement lastChild = null;
-//
-//    for (ElemTemplateElement node = m_firstChild; node != null;
-//            node = node.m_nextSibling)
-//    {
-//      lastChild = node;
-//    }
-//
-//    return lastChild;
-//  }
+  /**
+   * Get the last child.
+   *
+   * @return This node's last child
+   */
+  public Node getLastChild()
+  {
+
+    ElemTemplateElement lastChild = null;
+
+    for (ElemTemplateElement node = m_firstChild; node != null;
+            node = node.m_nextSibling)
+    {
+      lastChild = node;
+    }
+
+    return lastChild;
+  }
 
   /**
    * Get the last child.
