@@ -114,7 +114,7 @@ import org.apache.xml.utils.IntStack;
 
 import org.apache.xpath.axes.DescendantIterator;
 
-// For RTF handling.
+// For  handling.
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 
 /**
@@ -387,6 +387,26 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   	
     m_dtmManager = DTMManager.newInstance(
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+                   
+    m_saxLocations = new SourceLocator[RECURSIONLIMIT];
+	m_saxLocationsTop = 0;
+    
+	m_axesIteratorStack = new Stack();
+	m_contextNodeLists = new Stack();
+	m_currentExpressionNodes = new int[RECURSIONLIMIT];
+	m_currentExpressionNodesFirstFree = 0;
+	m_currentNodes = new int[RECURSIONLIMIT];
+	m_currentNodesFirstFree = 0;
+	m_iteratorRoots = new NodeVector();
+	m_predicatePos = new IntStack();
+	m_predicateRoots = new NodeVector();
+	m_prefixResolvers = new PrefixResolver[RECURSIONLIMIT];
+	int m_prefixResolversTop = 0;
+	
+	m_prefixResolvers[m_prefixResolversTop++] = null;
+    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
+    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
+    m_saxLocations[m_saxLocationsTop++] = null;
   }
 
   /** The current stylesheet locator. */
@@ -883,13 +903,13 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   /** A stack of the current sub-expression nodes.  */
   private NodeVector m_iteratorRoots = new NodeVector();
 
-  
   /** A stack of the current sub-expression nodes.  */
   private NodeVector m_predicateRoots = new NodeVector();
 
   /** A stack of the current sub-expression nodes.  */
   private int m_currentExpressionNodes[] = new int[RECURSIONLIMIT];
   protected int m_currentExpressionNodesFirstFree = 0;
+  
      
   public int[] getCurrentExpressionNodeStack() { return m_currentExpressionNodes; }
   public void setCurrentExpressionNodeStack(int[] nv) { m_currentExpressionNodes = nv; }
