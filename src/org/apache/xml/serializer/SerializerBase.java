@@ -1267,5 +1267,23 @@ abstract public class SerializerBase
     	// don't set writer to null, so that it might be re-used
     	//this.m_writer = null;
     }
+    
+    /**
+     * Returns true if the serializer is used for temporary output rather than
+     * final output.
+     * 
+     * This concept is made clear in the XSLT 2.0 draft.
+     */
+    final boolean inTemporaryOutputState() 
+    {
+        /* This is a hack. We should really be letting the serializer know
+         * that it is in temporary output state with an explicit call, but
+         * from a pragmatic point of view (for now anyways) having no output
+         * encoding at all, not even the default UTF-8 indicates that the serializer
+         * is being used for temporary RTF.
+         */ 
+        return (getEncoding() == null);
+        
+    }
 
 }
