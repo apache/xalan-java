@@ -176,9 +176,6 @@ public abstract class DTMDefaultBase implements DTM
   /** The XMLString factory for creating XMLStrings. */
   protected XMLStringFactory m_xstrf;
 
-  /** The identity of the root node. */
-  public static final int ROOTNODE = 0;
-
   /**
    * The table for exandedNameID lookups.  This may or may not be the same
    * table as is contained in the DTMManagerDefault.
