@@ -451,34 +451,6 @@ Applying patch for Bugzilla bug report 24728 from Sarah McNamara (mcnamara@ca.ib
 Use Ant's filtering capabilities to place appropriate "created-by" information
 into the MANIFEST.MF file of the jar that's being built.<br/><br/></li>
 
-<li><ref>Committed by </ref>aruny@apache.org<ref> on </ref>2004/02/23<br/>
-<ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandler.java ExtensionHandlerGeneral.java 
-ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/lib Extensions.java 
-ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/lib/sql 
-DefaultConnectionPool.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xslt 
-EnvironmentCheck.java ObjectFactory.java Process.java SecuritySupport.java SecuritySupport12.java 
-xml-xalan/java/src/org/apache/xalan/xsltc/cmdline ObjectFactory.java SecuritySupport.java SecuritySupport12.java 
-Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionAvailableCall.java FunctionCall.java 
-ObjectFactory.java Parser.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util 
-ObjectFactory.java ObjectType.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/dom 
-NodeSortRecord.java NodeSortRecordFactory.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java XSLTCDTMManager.java 
-xml-xalan/java/src/org/apache/xalan/xsltc/trax ObjectFactory.java SecuritySupport.java SecuritySupport12.java 
-SmartTransformerFactoryImpl.java TemplatesImpl.java TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xml/dtm 
-DTMManager.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xml/dtm/ref 
-IncrementalSAXSource_Xerces.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java 
-xml-xalan/java/src/org/apache/xml/serializer CharInfo.java Encodings.java ObjectFactory.java SecuritySupport.java 
-SecuritySupport12.java SerializerFactory.java xml-xalan/java/src/org/apache/xml/utils ObjectFactory.java SecuritySupport.java 
-SecuritySupport12.java xml-xalan/java/src/org/apache/xpath/compiler FuncLoader.java ObjectFactory.java SecuritySupport.java 
-SecuritySupport12.java xml-xalan/java/src/org/apache/xpath/functions FuncSystemProperty.java ObjectFactory.java SecuritySupport.java 
-SecuritySupport12.java<br/><br/>
-<ref>Committer's log entry: </ref>
-Description :
-ObjectFactory was designed to be package private. ObjectFactory class exposes class loaders publicly which allow untrusted code to 
-access internal classes. Making following changes to fix it.<br/><br/>
-
-1.Coping the ObjectFactory, SecuritySupport.java and SecuritySupport12.java class in the sub packages in  order to make it package private.
-2.Using checkPackageAccess() to prevent access to internal packages of jdk(sun.*).<br/><br/></li>
-
 <li><ref>Committed by </ref>jycli@apache.org<ref> on </ref>2004/02/23<br/>
 <ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TrAXFilter.java<br/><br/>
 <ref>Committer's log entry: </ref>

@@ -1660,23 +1660,6 @@ Use Ant's filtering capabilities to place appropriate "created-by" information
 into the MANIFEST.MF file of the jar that's being built.
 </Log>
 </Commit>
-<Commit category="core">
-<Who>aruny@apache.org</Who>
-<DateCommitted>2004/02/23</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandler.java ExtensionHandlerGeneral.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/lib Extensions.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xslt EnvironmentCheck.java ObjectFactory.java Process.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/cmdline ObjectFactory.java SecuritySupport.java SecuritySupport12.java Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionAvailableCall.java FunctionCall.java ObjectFactory.java Parser.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler/util ObjectFactory.java ObjectType.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java NodeSortRecordFactory.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java XSLTCDTMManager.java xml-xalan/java/src/org/apache/xalan/xsltc/trax ObjectFactory.java SecuritySupport.java SecuritySupport12.java SmartTransformerFactoryImpl.java TemplatesImpl.java TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xml/dtm DTMManager.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xml/dtm/ref IncrementalSAXSource_Xerces.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xml/serializer CharInfo.java Encodings.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java SerializerFactory.java xml-xalan/java/src/org/apache/xml/utils ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xpath/compiler FuncLoader.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java xml-xalan/java/src/org/apache/xpath/functions FuncSystemProperty.java ObjectFactory.java SecuritySupport.java SecuritySupport12.java</Modified>
-<Log>
-Description :
-ObjectFactory was designed to be package private. ObjectFactory class exposes class loaders publicly which allow untrusted code to access internal classes. Making following changes to fix it.
-
-1.Coping the ObjectFactory, SecuritySupport.java and SecuritySupport12.java class in the sub packages in  order to make it package    private.
-2.Using checkPackageAccess() to prevent access to internal packages of jdk(sun.*).
-
-PR:
-Obtained from:
-Submitted by:
-Reviewed by:
-</Log>
-</Commit>
 <Commit category="xsltc">
 <Who>jycli@apache.org</Who>
 <DateCommitted>2004/02/23</DateCommitted>
