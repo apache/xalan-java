@@ -537,7 +537,7 @@ public class XSLTSchema extends XSLTElementDef
                
     XSLTElementDef[] topLevelElements 
       = new XSLTElementDef[]
-         {includeDef, importDef,
+         {includeDef, importDef, resultElement, whiteSpaceOnly,
 
          new XSLTElementDef(Constants.S_XSLNAMESPACEURL, "strip-space", 
          null /*alias */, 
