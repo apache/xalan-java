@@ -602,12 +602,6 @@ public final class XSLTC {
 	return code.intValue();
     }
     
-    /*
-    public int nextVariableSerial() {
-	return _variableSerial++;
-    }
-    */
-
     public int nextModeSerial() {
 	return _modeSerial++;
     }

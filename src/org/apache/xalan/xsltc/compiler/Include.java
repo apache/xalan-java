@@ -118,6 +118,7 @@ final class Include extends TopLevelElement {
 	    _included.setSourceLoader(loader);
 	    _included.setSystemId(docToLoad);
 	    _included.setParentStylesheet(context);
+	    _included.setIncludingStylesheet(context);
 
 	    // An included stylesheet gets the same import precedence
 	    // as the stylesheet that included it.

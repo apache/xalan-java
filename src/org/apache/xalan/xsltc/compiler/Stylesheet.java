@@ -111,6 +111,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private final Hashtable _extensions = new Hashtable();
 
     public  Stylesheet _importedFrom = null;
+    public  Stylesheet _includedFrom = null;
     private int _importPrecedence = 1;
     private Mode _defaultMode;
     private boolean _multiDocument = false;
@@ -146,7 +147,6 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void setImportPrecedence(final int precedence) {
-	//System.err.println("PREC="+precedence+" for "+getSystemId());
 	// Set import precedence for this stylesheet
 	_importPrecedence = precedence;
 
@@ -156,9 +156,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    SyntaxTreeNode child = (SyntaxTreeNode)elements.nextElement();
 	    if (child instanceof Include) {
 		Stylesheet included = ((Include)child).getIncludedStylesheet();
-		if (included != null) {
-		    included.setImportPrecedence(precedence);
-		}
+		if (included != null) included.setImportPrecedence(precedence);
 	    }
 	}
 
@@ -169,6 +167,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 		final int nextPrecedence = parser.getNextImportPrecedence();
 		_importedFrom.setImportPrecedence(nextPrecedence);
 	    }
+	}
+	// Set import precedence for the stylesheet that imported this one
+	else if (_includedFrom != null) {
+	    if (_includedFrom.getImportPrecedence() != precedence)
+		_includedFrom.setImportPrecedence(precedence);
 	}
     }
     
@@ -201,6 +204,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void setImportingStylesheet(Stylesheet parent) {
+	_importedFrom = parent;
+    }
+
+    public void setIncludingStylesheet(Stylesheet parent) {
 	_importedFrom = parent;
     }
 
