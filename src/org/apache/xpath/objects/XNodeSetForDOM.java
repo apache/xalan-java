@@ -25,6 +25,18 @@ public class XNodeSetForDOM extends XNodeSet
     ((NodeSetDTM) m_obj).addNode(dtmHandle);
   }
   
+  /**
+   * Construct a XNodeSet object.
+   *
+   * @param val Value of the XNodeSet object
+   */
+  public XNodeSetForDOM(XNodeSet val)
+  {
+  	super(val);
+  	if(val instanceof XNodeSetForDOM)
+    	m_origObj = ((XNodeSetForDOM)val).m_origObj;
+  }
+  
   public XNodeSetForDOM(NodeList nodeList, XPathContext xctxt)
   {
     m_dtmMgr = xctxt.getDTMManager();

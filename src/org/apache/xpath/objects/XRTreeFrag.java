@@ -78,7 +78,7 @@ public class XRTreeFrag extends XObject implements Cloneable
   DTM m_dtm;
   int m_dtmRoot;
   XPathContext m_xctxt;
-  boolean m_allowRelease = true;
+  boolean m_allowRelease = false;
 
 //  /**
 //   * Create an XRTreeFrag Object.

@@ -267,9 +267,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
       if (TransformerImpl.S_DEBUG)
+      {
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
+      }
 
       final ResultTreeHandler rth = transformer.getResultTreeHandler();
       ContentHandler chandler = rth.getContentHandler();
@@ -277,19 +279,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
       final TemplateList tl = sroot.getTemplateListComposed();
       final boolean quiet = transformer.getQuietConflictWarnings();
       
-      xctxt.pushCurrentNode(DTM.NULL);
-      int[] currentNodes = xctxt.getCurrentNodeStack();
-      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
-      
-      xctxt.pushCurrentExpressionNode(DTM.NULL);
-      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-      int currentExpressionNodePos = xctxt.getCurrentExpressionNodesFirstFree() - 1;
-
-      xctxt.pushSAXLocatorNull();
-      xctxt.pushContextNodeList(sourceNodes);
-      transformer.pushElemTemplateElement(null);
-      // pushParams(transformer, xctxt);
-
       // Should be able to get this from the iterator but there must be a bug.
       DTM dtm = xctxt.getDTM(sourceNode);
       
@@ -311,6 +300,19 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         vars.setStackFrame(argsFrame);
       }
+      
+      xctxt.pushCurrentNode(DTM.NULL);
+      int[] currentNodes = xctxt.getCurrentNodeStack();
+      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
+      
+      xctxt.pushCurrentExpressionNode(DTM.NULL);
+      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
+      int currentExpressionNodePos = xctxt.getCurrentExpressionNodesFirstFree() - 1;
+
+      xctxt.pushSAXLocatorNull();
+      xctxt.pushContextNodeList(sourceNodes);
+      transformer.pushElemTemplateElement(null);
+      // pushParams(transformer, xctxt);
       
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))

@@ -406,4 +406,17 @@ public class ElemExtensionCall extends ElemLiteralResult
     return null;
   }
   
+  /**
+   * Accept a visitor and call the appropriate method 
+   * for this class.
+   * 
+   * @param visitor The visitor whose appropriate method will be called.
+   * @return true if the children of the object should be visited.
+   */
+  protected boolean accept(XSLTVisitor visitor)
+  {
+  	return visitor.visitExtensionElement(this);
+  }
+
+  
 }

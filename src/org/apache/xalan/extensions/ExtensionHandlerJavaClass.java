@@ -305,7 +305,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
           if (targetObject instanceof XObject)
             targetObject = ((XObject) targetObject).object();
-
+            
           if (m_classObj.isAssignableFrom(targetObject.getClass()))
             resolveType = MethodResolver.DYNAMIC;
           else

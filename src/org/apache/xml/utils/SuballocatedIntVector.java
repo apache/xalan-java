@@ -452,7 +452,6 @@ public class SuballocatedIntVector
     // This is actually a significant optimization!
     if(i<m_blocksize)
       return m_map0[i];
-
     return m_map[i>>>m_SHIFT][i&m_MASK];
   }
 

@@ -56,19 +56,13 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.Vector;
-
-import org.w3c.dom.*;
-
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xpath.VariableStack;
-import org.apache.xalan.transformer.TransformerImpl;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -378,4 +372,24 @@ public class ElemCallTemplate extends ElemForEach
     // contain a for-each, and other elements.
     return super.appendChild(newChild);
   }
+  
+    /**
+     * Call the children visitors.
+     * @param visitor The visitor whose appropriate method will be called.
+     */
+    public void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
+    {
+//      if (null != m_paramElems)
+//      {
+//        int size = m_paramElems.length;
+//
+//        for (int i = 0; i < size; i++)
+//        {
+//          ElemWithParam ewp = m_paramElems[i];
+//          ewp.callVisitors(visitor);
+//        }
+//      }
+
+      super.callChildVisitors(visitor, callAttrs);
+    }
 }

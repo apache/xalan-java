@@ -190,11 +190,11 @@ public class StylesheetHandler extends DefaultHandler
    * @throws javax.xml.transform.TransformerException if the expression can not be processed.
    * @see <a href="http://www.w3.org/TR/xslt#section-Expressions">Section 4 Expressions in XSLT Specification</a>
    */
-  public XPath createXPath(String str)
+  public XPath createXPath(String str, ElemTemplateElement owningTemplate)
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    return new XPath(str, getLocator(), this, XPath.SELECT, handler);
+    return new XPath(str, owningTemplate, this, XPath.SELECT, handler);
   }
 
   /**
@@ -207,11 +207,11 @@ public class StylesheetHandler extends DefaultHandler
    * @throws javax.xml.transform.TransformerException if the pattern can not be processed.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">Section 5.2 Patterns in XSLT Specification</a>
    */
-  XPath createMatchPatternXPath(String str)
+  XPath createMatchPatternXPath(String str, ElemTemplateElement owningTemplate)
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    return new XPath(str, getLocator(), this, XPath.MATCH, handler);
+    return new XPath(str, owningTemplate, this, XPath.MATCH, handler);
   }
 
   /**

@@ -76,6 +76,7 @@ import org.apache.xalan.transformer.ResultNameSpace;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.WhitespaceStrippingElementMatcher;
+import org.apache.xpath.ExpressionNode;
 
 // TRaX imports
 import javax.xml.transform.Templates;
@@ -109,8 +110,8 @@ import org.apache.xml.utils.NamespaceSupport2;
  * @see Stylesheet
  */
 public class ElemTemplateElement extends UnImplNode
-        implements PrefixResolver, Serializable, SourceLocator, 
-                   WhitespaceStrippingElementMatcher
+        implements PrefixResolver, Serializable, ExpressionNode, 
+                   WhitespaceStrippingElementMatcher, XSLTVisitable
 {
 
   /**
@@ -506,6 +507,76 @@ public class ElemTemplateElement extends UnImplNode
     // oldChildElem.m_stylesheet = null;
     return newChildElem;
   }
+  
+  /**
+   * Unimplemented. See org.w3c.dom.Node
+   *
+   * @param newChild New child node to insert
+   * @param refChild Insert in front of this child
+   *
+   * @return null
+   *
+   * @throws DOMException
+   */
+  public Node insertBefore(Node newChild, Node refChild) throws DOMException
+  {
+  	if(null == refChild)
+  	{
+  		appendChild(newChild);
+  		return newChild;
+  	}
+  	
+  	if(newChild == refChild)
+  	{
+  		// hmm...
+  		return newChild;
+  	}
+
+    Node node = m_firstChild; 
+    Node prev = null;  
+    boolean foundit = false;
+    
+    while (null != node)
+    {
+    	// If the newChild is already in the tree, it is first removed.
+    	if(newChild == node)
+    	{
+    		if(null != prev)
+    			((ElemTemplateElement)prev).m_nextSibling = 
+    				(ElemTemplateElement)node.getNextSibling();
+    		else
+    			m_firstChild = (ElemTemplateElement)node.getNextSibling();
+    		node = node.getNextSibling();
+    		continue; // prev remains the same.
+    	}
+    	if(refChild == node)
+    	{
+    		if(null != prev)
+    		{
+    			((ElemTemplateElement)prev).m_nextSibling = (ElemTemplateElement)newChild;
+    		}
+    		else
+    		{
+    			m_firstChild = (ElemTemplateElement)newChild;
+    		}
+    		((ElemTemplateElement)newChild).m_nextSibling = (ElemTemplateElement)refChild;
+    		((ElemTemplateElement)newChild).setParentElem(this);
+    		prev = newChild;
+    		node = node.getNextSibling();
+    		foundit = true;
+    		continue;
+    	}
+    	prev = node;
+    	node = node.getNextSibling();
+    }
+    
+    if(!foundit)
+    	throw new DOMException(DOMException.NOT_FOUND_ERR, 
+    		"refChild was not found in insertBefore method!");
+    else
+    	return newChild;
+  }
+
 
   /**
    * Replace the old child with a new child.
@@ -1471,5 +1542,105 @@ public class ElemTemplateElement extends UnImplNode
     StylesheetRoot sroot = this.getStylesheetRoot();
     return (null != sroot) ? sroot.canStripWhiteSpace() : false;
   }
+  
+  /**
+   * Tell if this element can accept variable declarations.
+   * @return true if the element can accept and process variable declarations.
+   */
+  public boolean canAcceptVariables()
+  {
+  	return true;
+  }
+  
+  //=============== ExpressionNode methods ================
+  
+  /** 
+   * Set the parent of this node.
+   * @param n Must be a ElemTemplateElement.
+   */
+  public void exprSetParent(ExpressionNode n)
+  {
+  	// This obviously requires that only a ElemTemplateElement can 
+  	// parent a node of this type.
+  	setParentElem((ElemTemplateElement)n);
+  }
+  
+  /**
+   * Get the ExpressionNode parent of this node.
+   */
+  public ExpressionNode exprGetParent()
+  {
+  	return getParentElem();
+  }
+
+  /** 
+   * This method tells the node to add its argument to the node's
+   * list of children. 
+   * @param n Must be a ElemTemplateElement. 
+   */
+  public void exprAddChild(ExpressionNode n, int i)
+  {
+  	appendChild((ElemTemplateElement)n);
+  }
+
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	return (ExpressionNode)item(i);
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return getLength();
+  }
+  
+  /**
+   * Accept a visitor and call the appropriate method 
+   * for this class.
+   * 
+   * @param visitor The visitor whose appropriate method will be called.
+   * @return true if the children of the object should be visited.
+   */
+  protected boolean accept(XSLTVisitor visitor)
+  {
+  	return visitor.visitInstruction(this);
+  }
+
+  /**
+   * @see XSLTVisitable#callVisitors(XSLTVisitor)
+   */
+  public void callVisitors(XSLTVisitor visitor)
+  {
+  	if(accept(visitor))
+  	{
+		callChildVisitors(visitor);
+  	}
+  }
+
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
+  {
+    for (ElemTemplateElement node = m_firstChild;
+      node != null;
+      node = node.m_nextSibling)
+      {
+      node.callVisitors(visitor);
+    }
+  }
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  protected void callChildVisitors(XSLTVisitor visitor)
+  {
+  	callChildVisitors(visitor, true);
+  }
+
 
 }

@@ -68,6 +68,7 @@ import org.apache.xml.dtm.ref.ExpandedNameTable;
 import org.xml.sax.*;
 
 import org.apache.xpath.*;
+import org.apache.xpath.Expression;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.objects.XObject;
 
@@ -84,6 +85,7 @@ import org.apache.xalan.transformer.ClonerToResultTree;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import org.apache.xpath.ExpressionOwner;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -103,7 +105,7 @@ import javax.xml.transform.TransformerException;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#for-each">for-each in XSLT Specification</a>
  */
-public class ElemForEach extends ElemTemplateElement
+public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 {
   /** Set true to request some basic status reports */
   static final boolean DEBUG = false;
@@ -333,7 +335,6 @@ public class ElemForEach extends ElemTemplateElement
   {
 
     NodeSorter sorter = new NodeSorter(xctxt);
-
     sourceNodes.setShouldCacheNodes(true);
     sourceNodes.runTo(-1);
     xctxt.pushContextNodeList(sourceNodes);
@@ -367,23 +368,25 @@ public class ElemForEach extends ElemTemplateElement
     final XPathContext xctxt = transformer.getXPathContext();
     final int sourceNode = xctxt.getCurrentNode();
     DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt,
-                                sourceNode);
+            sourceNode);
 
     try
     {
 
       final Vector keys = (m_sortElems == null)
-                          ? null
-                          : transformer.processSortKeys(this, sourceNode);
+              ? null
+              : transformer.processSortKeys(this, sourceNode);
 
       // Sort if we need to.
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
       if (TransformerImpl.S_DEBUG)
+      {
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                 "select", new XPath(m_selectExpression),
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
+      }
 
       final ResultTreeHandler rth = transformer.getResultTreeHandler();
       ContentHandler chandler = rth.getContentHandler();
@@ -397,7 +400,7 @@ public class ElemForEach extends ElemTemplateElement
 
       int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
       int currentExpressionNodePos =
-        xctxt.getCurrentExpressionNodesFirstFree() - 1;
+              xctxt.getCurrentExpressionNodesFirstFree() - 1;
 
       xctxt.pushSAXLocatorNull();
       xctxt.pushContextNodeList(sourceNodes);
@@ -431,31 +434,31 @@ public class ElemForEach extends ElemTemplateElement
         // Loop through the children of the template, calling execute on 
         // each of them.
         for (ElemTemplateElement t = this.m_firstChild; t != null;
-                t = t.m_nextSibling)
+             t = t.m_nextSibling)
         {
           xctxt.setSAXLocator(t);
           transformer.setCurrentElement(t);
           t.execute(transformer);
         }
 
-	// KLUGE: Implement <?xalan:doc_cache_off?> 
-	// ASSUMPTION: This will be set only when the XPath was indeed
-	// a call to the Document() function. Calling it in other
-	// situations is likely to fry Xalan.
-	//
-	// %REVIEW% We need a MUCH cleaner solution -- one that will
-	// handle cleaning up after document() and getDTM() in other
-	// contexts. The whole SourceTreeManager mechanism should probably
-	// be moved into DTMManager rather than being explicitly invoked in
-	// FuncDocument and here.
-	if(m_doc_cache_off)
-	{
-	  if(DEBUG)
-	    System.out.println("JJK***** CACHE RELEASE *****\n"+
-			       "\tdtm="+dtm.getDocumentBaseURI());
-	  xctxt.getSourceTreeManager().removeDocumentFromCache(dtm.getDocument());
-	  xctxt.release(dtm,false);
-	}
+        // KLUGE: Implement <?xalan:doc_cache_off?>
+        // ASSUMPTION: This will be set only when the XPath was indeed
+        // a call to the Document() function. Calling it in other
+        // situations is likely to fry Xalan.
+        //
+        // %REVIEW% We need a MUCH cleaner solution -- one that will
+        // handle cleaning up after document() and getDTM() in other
+        // contexts. The whole SourceTreeManager mechanism should probably
+        // be moved into DTMManager rather than being explicitly invoked in
+        // FuncDocument and here.
+        if(m_doc_cache_off)
+        {
+          if(DEBUG)
+            System.out.println("JJK***** CACHE RELEASE *****\n"+
+                    "\tdtm="+dtm.getDocumentBaseURI());
+          xctxt.getSourceTreeManager().removeDocumentFromCache(dtm.getDocument());
+          xctxt.release(dtm,false);
+        }
       }
     }
     finally
@@ -500,4 +503,41 @@ public class ElemForEach extends ElemTemplateElement
     else
       return super.appendChild(newChild);
   }
+  
+  /**
+   * Call the children visitors.
+   * @param visitor The visitor whose appropriate method will be called.
+   */
+  public void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
+  {
+  	if(callAttributes && (null != m_selectExpression))
+  		m_selectExpression.callVisitors(this, visitor);
+  		
+    int length = getSortElemCount();
+
+    for (int i = 0; i < length; i++)
+    {
+      getSortElem(i).callVisitors(visitor);
+    }
+
+    super.callChildVisitors(visitor, callAttributes);
+  }
+
+  /**
+   * @see ExpressionOwner#getExpression()
+   */
+  public Expression getExpression()
+  {
+    return m_selectExpression;
+  }
+
+  /**
+   * @see ExpressionOwner#setExpression(Expression)
+   */
+  public void setExpression(Expression exp)
+  {
+  	exp.exprSetParent(this);
+  	m_selectExpression = exp;
+  }
+
 }

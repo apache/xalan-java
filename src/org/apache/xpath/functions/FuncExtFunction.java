@@ -173,8 +173,10 @@ public class FuncExtFunction extends Function
     for (int i = 0; i < nArgs; i++)
     {
       Expression arg = (Expression) m_argVec.elementAt(i);
+      
+      XObject xobj = arg.execute(xctxt);
 
-      argVec.addElement(arg.execute(xctxt));
+      argVec.addElement(xobj);
     }
 
     ExtensionsTable etable = xctxt.getExtensionsTable();

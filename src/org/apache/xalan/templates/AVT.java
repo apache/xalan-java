@@ -79,7 +79,7 @@ import javax.xml.transform.ErrorListener;
  * <meta name="usage" content="advanced"/>
  * Class to hold an Attribute Value Template.
  */
-public class AVT implements java.io.Serializable
+public class AVT implements java.io.Serializable, XSLTVisitable
 {
 
   /**
@@ -185,7 +185,9 @@ public class AVT implements java.io.Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public AVT(StylesheetHandler handler, String uri, String name, String rawName, String stringedValue)
+  public AVT(StylesheetHandler handler, String uri, String name, 
+             String rawName, String stringedValue,
+             ElemTemplateElement owner)
           throws javax.xml.transform.TransformerException
   {
 
@@ -324,7 +326,7 @@ public class AVT implements java.io.Serializable
                           buffer.setLength(0);
 
                           XPath xpath =
-                                       handler.createXPath(exprBuffer.toString());
+                                       handler.createXPath(exprBuffer.toString(), owner);
 
                           m_parts.addElement(new AVTPartXPath(xpath));
 
@@ -611,4 +613,23 @@ public class AVT implements java.io.Serializable
       }
     }
   }
+  
+  /**
+   * @see XSLTVisitable#callVisitors(XSLTVisitor)
+   */
+  public void callVisitors(XSLTVisitor visitor)
+  {
+  	if(visitor.visitAVT(this) && (null != m_parts))
+  	{
+      int n = m_parts.size();
+
+      for (int i = 0; i < n; i++)
+      {
+        AVTPart part = (AVTPart) m_parts.elementAt(i);
+
+        part.callVisitors(visitor);
+      }  		
+  	}
+  }
+
 }

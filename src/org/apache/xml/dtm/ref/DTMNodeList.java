@@ -161,6 +161,14 @@ public class DTMNodeList implements org.w3c.dom.NodeList
       if(dtm_iter!=null)
       {
         int handle=dtm_iter.item(index);
+        if(DTM.NULL == handle)
+        {
+        	throw new RuntimeException(("DTM.NULL IN NODELIST!!! "+dtm_iter.getClass().getName())+"\n"+
+        	("contained: "+((org.apache.xpath.objects.XNodeSet)dtm_iter).getContainedIter().getClass().getName())+"\n"+
+        	("contained in doc order: "+((org.apache.xpath.objects.XNodeSet)dtm_iter).isDocOrdered())+"\n"+
+        	("hasCache: "+((org.apache.xpath.objects.XNodeSet)dtm_iter).hasCache())+"\n"+
+        	("length "+dtm_iter.getLength()));
+        }
         return dtm_iter.getDTM(handle).getNode(handle);
       }
       else

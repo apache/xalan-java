@@ -634,7 +634,9 @@ public class TransformerImpl extends Transformer
       }
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
+      // int dtmRoot = m_xcontext.getSourceTreeManager().getNode(source);
       DTM dtm = mgr.getDTM(source, false, this, true, true);
+      // m_xcontext.getSourceTreeManager().putDocumentInCache(dtm.getDocument(), source);
       dtm.setProperty(XalanProperties.SOURCE_LOCATION,
                       new Boolean(m_useSourceLocationProperty));
       
@@ -699,8 +701,8 @@ public class TransformerImpl extends Transformer
       String msg = spe.getMessage();
       SAXSourceLocator loc = new SAXSourceLocator(spe);
 
-      //m_errorHandler.fatalError(new TransformerException( msg, loc ));
-      m_errorHandler.fatalError(new TransformerException(spe));
+      m_errorHandler.fatalError(new TransformerException( msg, loc ));
+      // m_errorHandler.fatalError(new TransformerException(spe));
     }
     catch (org.xml.sax.SAXException se)
     {

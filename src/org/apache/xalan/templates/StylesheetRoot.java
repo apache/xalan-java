@@ -212,7 +212,6 @@ public class StylesheetRoot extends StylesheetComposed
    */
   public void recompose() throws TransformerException
   {
-
     // First, we build the global import tree.
 
     if (null == m_globalImportList)
@@ -269,6 +268,16 @@ public class StylesheetRoot extends StylesheetComposed
     // Note that we're going backwards, encountering the highest precedence items first.
     for (int i = recomposableElements.size() - 1; i >= 0; i--)
       ((ElemTemplateElement) recomposableElements.elementAt(i)).recompose(this);
+      
+    // This has to be done before the initialization of the compose state, because 
+    // eleminateRedundentGlobals will add variables to the m_variables vector, which 
+    // it then copied in the ComposeState constructor.
+    if(true && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+    {
+    	RedundentExprEliminator ree = new RedundentExprEliminator();
+    	callVisitors(ree);
+    	ree.eleminateRedundentGlobals(this);
+    }
     
     initComposeState();
 
@@ -278,7 +287,7 @@ public class StylesheetRoot extends StylesheetComposed
     // Need to clear check for properties at the same import level.
     m_outputProperties.compose(this);
     m_outputProperties.endCompose(this);
-    
+        
     // Now call the compose() method on every element to give it a chance to adjust
     // based on composed values.
     
@@ -1155,7 +1164,7 @@ public class StylesheetRoot extends StylesheetComposed
         }
         
       }
-      
+            
       private ExpandedNameTable m_ent = new ExpandedNameTable();
       
       /**

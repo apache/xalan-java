@@ -371,6 +371,8 @@ public class XStringForFSB extends XString
     {
       return true;
     }
+    if(obj2.getType() == XObject.CLASS_NUMBER)
+    	return obj2.equals(this);
 
     String str = obj2.str();
     int n = m_length;
@@ -457,6 +459,9 @@ public class XStringForFSB extends XString
 
     if (null == obj2)
       return false;
+      
+    if(obj2 instanceof XNumber)
+    	return obj2.equals(this);
 
       // In order to handle the 'all' semantics of 
       // nodeset comparisons, we always call the 

@@ -713,7 +713,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popContextNodeList()
   {
-    m_contextNodeLists.pop();
+  	if(m_contextNodeLists.isEmpty())
+  	  System.err.println("Warning: popContextNodeList when stack is empty!");
+  	else
+      m_contextNodeLists.pop();
   }
 
   /**

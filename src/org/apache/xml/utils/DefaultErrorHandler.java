@@ -93,7 +93,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public DefaultErrorHandler()
   {
-    m_pw = new PrintWriter(System.err, true);
+    // m_pw = new PrintWriter(System.err, true);
+    m_pw = null;
   }
 
 
@@ -115,6 +116,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void warning(SAXParseException exception) throws SAXException
   {
+  	if(null == m_pw)
+  		m_pw = new PrintWriter(System.err, true);
     printLocation(m_pw, exception);
     m_pw.println("Parser warning: " + exception.getMessage());
   }
@@ -194,6 +197,9 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void warning(TransformerException exception) throws TransformerException
   {
+  	if(null == m_pw)
+  		m_pw = new PrintWriter(System.err, true);
+
     printLocation(m_pw, exception);
 
     m_pw.println(exception.getMessage());
@@ -223,6 +229,9 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void error(TransformerException exception) throws TransformerException
   {
+  	if(null == m_pw)
+  		m_pw = new PrintWriter(System.err, true);
+
     // printLocation(exception);
     // ensureLocationSet(exception);
 
@@ -289,9 +298,11 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
     exception.setLocator(locator);
   }
   
-  public static void printLocation(PrintStream pw, TransformerException exception)
+  public static void printLocation(PrintStream ps, TransformerException exception)
   {
-    printLocation(new PrintWriter(pw), exception);
+  	PrintWriter pw = new PrintWriter(ps);
+    printLocation(pw, exception);
+    pw.flush();
   }
   
   public static void printLocation(PrintWriter pw, Throwable exception)

@@ -56,29 +56,16 @@
  */
 package org.apache.xalan.transformer;
 
-//import org.w3c.dom.Element;
-//import org.w3c.dom.NamedNodeMap;
-//import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
-import org.apache.xml.dtm.DTM;
-
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Enumeration;
 
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPathContext;
-//import org.apache.xpath.DOMHelper;
-import org.apache.xml.utils.QName;
-import org.apache.xalan.templates.KeyDeclaration;
-import org.apache.xpath.XPathContext;
+import javax.xml.transform.TransformerException;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
-import org.apache.xpath.axes.LocPathIterator;
-
-// import org.apache.xalan.dtm.*;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSet;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -111,16 +98,12 @@ public class KeyTable
    * The main iterator that will walk through the source  
    * tree for this key.
    */
-  private KeyIterator m_keyIter;
+  private XNodeSet m_keyNodes;
   
-  /**
-   * Hashtable of keys.
-   * The table is:
-   * a) keyed by key name,
-   * b) with a value that is a hashtable keyed by key values 
-   * with at value of KeyRefIterator(cloned).
-   */
-  private Hashtable m_defsTable;
+  KeyIterator getKeyIterator()
+  {
+  	return (KeyIterator)(m_keyNodes.getContainedIter());
+  }
 
   /**
    * Build a keys table.
@@ -133,14 +116,17 @@ public class KeyTable
    * @throws javax.xml.transform.TransformerException
    */
   public KeyTable(
-          int doc, PrefixResolver nscontext, QName name, Vector keyDeclarations, XPathContext xmlLiaison)
+          int doc, PrefixResolver nscontext, QName name, Vector keyDeclarations, XPathContext xctxt)
             throws javax.xml.transform.TransformerException
   {
 
     m_docKey = doc;
-    m_keyIter = new KeyIterator(doc, nscontext, name, keyDeclarations,
-                                xmlLiaison);
-    m_keyIter.setKeyTable(this);
+    KeyIterator ki = new KeyIterator(name, keyDeclarations);
+    
+    m_keyNodes = new XNodeSet(ki);
+    m_keyNodes.allowDetachToRelease(false);
+    
+    m_keyNodes.setRoot(xctxt.getDTM(doc).getDocument(), xctxt);
   }  
 
   /**
@@ -152,55 +138,15 @@ public class KeyTable
    * if the identifier is not found, it will return null,
    * otherwise it will return a LocPathIterator instance.
    */
-  public LocPathIterator getNodeSetDTMByKey(QName name, XMLString ref)
+  public XNodeSet getNodeSetDTMByKey(QName name, XMLString ref)
   {
+  	Vector keyDecls = getKeyIterator().getKeyDeclarations();
+  	org.apache.xml.dtm.DTMIterator keyNodes = m_keyNodes.iter();
+	XNodeSet refNodes = new XNodeSet( new KeyRefIterator(name, ref, keyDecls, keyNodes) );
+	
+	// I don't think setRoot needs to be called on refNodes!
+	return refNodes;
 
-    KeyIterator ki;
-    KeyRefIterator kiRef;
-    Hashtable refsTable = null;
-
-    // First look for the key in the existing key names table
-    if (m_defsTable != null)
-    {
-      refsTable = (Hashtable)m_defsTable.get(name);
-      if (refsTable != null)
-      {
-        Object kiObj = refsTable.get(ref);
-        if (kiObj != null)
-        {
-          // An entry already exists for this key name and value.
-          // Return a clone of the node iterator found.
-          try
-          {
-            // clone with reset??
-            kiRef = (KeyRefIterator)((KeyRefIterator)kiObj).clone();
-            return kiRef;
-          }
-          catch (CloneNotSupportedException cnse)
-          {
-            ki = null;
-          }
-        }
-      }
-    }
-
-    // No entry was found for this key name and value. Create one.
-    {
-      if (m_defsTable == null)
-        m_defsTable = new Hashtable();
-      if (refsTable == null)
-        refsTable = new Hashtable();
-      
-      // initialize walker only once!
-      if (m_keyIter.getFirstWalker().getRoot() == DTM.NULL)
-        m_keyIter.setLookupKey(ref);
-      else
-        ((KeyWalker)m_keyIter.getFirstWalker()).m_lookupKey = ref;
-      kiRef = new KeyRefIterator(ref, m_keyIter);
-      refsTable.put(ref, kiRef);
-      m_defsTable.put(name,refsTable);
-      return kiRef;              
-    } 
   }
 
   /**
@@ -211,47 +157,7 @@ public class KeyTable
    */
   public QName getKeyTableName()
   {
-    return m_keyIter.getName();
+    return getKeyIterator().getName();
   }
-  
-  /**
-   * Add this node to the nodelist matching this key value. 
-   * If there was no existing entry for that key value, create
-   * one.   
-   *
-   * @param ref Key ref(from key use field)
-   * @param node Node matching that ref 
-   */
-  void addRefNode(XMLString ref, int node)
-  {
-    KeyRefIterator kiRef = null;
-    Hashtable refsTable = null;
-    if (m_defsTable != null)
-    {
-      refsTable = (Hashtable)m_defsTable.get(getKeyTableName());
-      if (refsTable != null)
-      {
-        Object kiObj = refsTable.get(ref);
-        if (kiObj != null)
-        {          
-          kiRef = (KeyRefIterator)kiObj;            
-        }
-      }
-    }
-    if (kiRef == null)
-    {  
-      if (m_defsTable == null)
-        m_defsTable = new Hashtable();
-      if (refsTable == null)
-      {  
-        refsTable = new Hashtable();
-        m_defsTable.put(getKeyTableName(),refsTable);
-      }
-      kiRef = new KeyRefIterator(ref, m_keyIter);
-      refsTable.put(ref, kiRef);      
-    }
-    kiRef.addNode(node); 
-  }
-  
   
 }

@@ -53,8 +53,9 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
   {
     try
     {
+      m_selected = ((Expression)m_obj).execute(xctxt);
+      m_selected.allowDetachToRelease(m_allowRelease);
       XRTreeFragSelectWrapper xrtf = (XRTreeFragSelectWrapper)this.clone();
-      xrtf.m_selected = ((Expression)m_obj).execute(xctxt);
       return xrtf;
     }
     catch(CloneNotSupportedException cnse)
@@ -62,6 +63,26 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
       throw new javax.xml.transform.TransformerException(cnse);
     }
     
+  }
+  
+  /**
+   * Detaches the <code>DTMIterator</code> from the set which it iterated
+   * over, releasing any computational resources and placing the iterator
+   * in the INVALID state. After <code>detach</code> has been invoked,
+   * calls to <code>nextNode</code> or <code>previousNode</code> will
+   * raise a runtime exception.
+   * 
+   * In general, detach should only be called once on the object.
+   */
+  public void detach()
+  {
+    if(m_allowRelease)
+    {
+      m_selected.detach();
+      m_selected = null;
+    }
+    
+    super.detach();
   }
   
   /**

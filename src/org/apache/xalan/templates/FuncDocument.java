@@ -179,6 +179,7 @@ public class FuncDocument extends Function2Args
       // the tree representation of the stylesheet is exactly 
       // the same as if the XML document containing the stylesheet 
       // was the initial source document.
+      assertion(null != xctxt.getNamespaceContext(), "Namespace context can not be null!");
       base = xctxt.getNamespaceContext().getBaseIdentifier();
     }
 

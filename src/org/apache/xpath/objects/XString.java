@@ -57,16 +57,18 @@
 package org.apache.xpath.objects;
 
 //import org.w3c.dom.*;
+import java.util.Locale;
+
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMFilter;
-import org.apache.xpath.XPathContext;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-import org.apache.xml.utils.FastStringBuffer;
-
-import java.util.Locale;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathVisitor;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * <meta name="usage" content="general"/>
@@ -397,7 +399,8 @@ public class XString extends XObject implements XMLString
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if (obj2.getType() == XObject.CLASS_NODESET)
+    int t = obj2.getType();
+    if ((XObject.CLASS_NODESET == t) || (XObject.CLASS_NUMBER == t) )
       return obj2.equals(this);
 
     return str().equals(obj2.str());
@@ -453,6 +456,8 @@ public class XString extends XObject implements XMLString
       // nodeset function.
     else if (obj2 instanceof XNodeSet)
       return obj2.equals(this);
+    else if(obj2 instanceof XNumber)
+    	return obj2.equals(this);
     else
       return str().equals(obj2.toString());
   }
@@ -1178,4 +1183,13 @@ public class XString extends XObject implements XMLString
 
     return edit ? xsf.newstr(new String(buf, start, d - start)) : this;
   }
+  
+  /**
+   * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+   */
+  public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
+  {
+  	visitor.visitStringLiteral(owner, this);
+  }
+
 }

@@ -171,6 +171,9 @@ public class VariableStack implements Cloneable
     // to look one under without having to check if we're at zero.
     // (As long as the caller doesn't screw up link/unlink.)
     _links[_linksTop++] = 0;
+    
+    int n = _sf.length;
+    _sf = new XObject[n];
   }
 
   /**
@@ -319,8 +322,41 @@ public class VariableStack implements Cloneable
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
       return (_sf[index] = val.execute(xctxt));
 
-    return val;
+    return val.getFresh();
   }
+  
+  /**
+   * Get a local variable or parameter in the current stack frame.
+   *
+   *
+   * @param xctxt The XPath context, which must be passed in order to
+   * lazy evaluate variables.
+   *
+   * @param index Local variable index relative to the current stack
+   * frame bottom.
+   *
+   * @return The value of the variable.
+   *
+   * @throws TransformerException
+   */
+  public XObject getLocalVariable(XPathContext xctxt, int index, boolean destructiveOK)
+          throws TransformerException
+  {
+
+    index += _cfb;
+
+    XObject val = _sf[index];
+    
+    if(null == val)
+      throw new TransformerException("Variable accessed before it is bound!", xctxt.getSAXLocator());
+
+    // Lazy execution of variables.
+    if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+      return (_sf[index] = val.execute(xctxt));
+
+    return destructiveOK ? val : val.getFresh();
+  }
+
 
   /**
    * Get a local variable or parameter in the current stack frame.
@@ -342,7 +378,7 @@ public class VariableStack implements Cloneable
 
     XObject val = _sf[index];
 
-    return val;
+    return val.getFresh();
   }
 
   /**
@@ -418,8 +454,36 @@ public class VariableStack implements Cloneable
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
       return (_sf[index] = val.execute(xctxt));
 
-    return val;
+    return val.getFresh();
   }
+  
+  /**
+   * Get a global variable or parameter from the global stack frame.
+   *
+   *
+   * @param xctxt The XPath context, which must be passed in order to
+   * lazy evaluate variables.
+   *
+   * @param index Global variable index relative to the global stack
+   * frame bottom.
+   *
+   * @return The value of the variable.
+   *
+   * @throws TransformerException
+   */
+  public XObject getGlobalVariable(XPathContext xctxt, final int index, boolean destructiveOK)
+          throws TransformerException
+  {
+
+    XObject val = _sf[index];
+
+    // Lazy execution of variables.
+    if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
+      return (_sf[index] = val.execute(xctxt));
+
+    return destructiveOK ? val : val.getFresh();
+  }
+
 
   /**
    * Get a variable based on it's qualified name.

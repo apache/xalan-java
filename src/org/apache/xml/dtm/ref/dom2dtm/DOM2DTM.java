@@ -852,7 +852,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     {
       FastStringBuffer buf = StringBufferPool.get();
       String s;
-  
       try
       {
         getNodeData(node, buf);
@@ -863,8 +862,20 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       {
         StringBufferPool.free(buf);
       }
-  
       return m_xstrf.newstr( s );
+ 		// sb: The following can be used to reduce the number of 
+ 		// string objects.  However, tests do not show this to 
+ 		// be a win.
+		//      getNodeData(node, buf);
+		//      if(buf.length() > 0)
+		//      {
+		//      	return m_xstrf.newstr(buf, 0, buf.length());
+		//      }
+		//      else
+		//      {
+		//      	StringBufferPool.free(buf);
+		//      	return m_xstrf.emptystr();
+		//      }
     }
     else if(TEXT_NODE == type || CDATA_SECTION_NODE == type)
     {
