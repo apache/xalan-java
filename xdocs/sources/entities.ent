@@ -28,7 +28,6 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                 Release Notes</link>, and <jump href="xsltc/index.html">XSLTC Design</link>.</p>
                 </s2>'>
                 
-<!ENTITY xsltcreleasenotesentry '<li><link idref="xsltc_constraints">XSLTC Release Notes</link></li>'>
 <!ENTITY history2xsltc '<note>For XSLTC changes since XSLTC was incorporated into &xslt4j;, see 
                         <link idref="xsltc_history">XSLTC software changes</link>.</note>'>
                         

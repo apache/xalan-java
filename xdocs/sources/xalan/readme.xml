@@ -62,9 +62,10 @@
 <p>&xslt4j-current;</p>
 
  <ul>
-  <li><link anchor="status0">Status</link></li>&xsltcreleasenotesentry;
+  <li><link anchor="status0">Status</link></li>
   <li><link anchor="build">Build distributions and notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
+  <li><link idref="xsltc_usage" anchor="constraints">XSLTC usage constraints</link></li>
   <li><link idref="history">History of software changes</link></li>
  </ul><anchor name="status0"/>
   <s2 title="Status">

@@ -88,7 +88,6 @@
   <document id="readme" label="Release Notes" source="xalan/readme.xml"/>
   <document id="builds" label="Xalan-Java Builds" source="xalan/builds.xml"/>
   <hidden id="history" source="xalan/history.xml"/>
-  <hidden id="xsltc_constraints" source="xalan/xsltc_constraints.xml"/>
   <hidden id="xsltc_history" source="xalan/xsltc_history.xml"/>
   <hidden id="commandline_xsltc" source="xalan/commandline_xsltc.xml"/>
   <separator/>
