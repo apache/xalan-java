@@ -167,7 +167,7 @@ final class Variable extends VariableBase {
 	if (isLocal() && !_refs.isEmpty()) {
 	    // Create a variable slot if none is allocated
 	    if (_local == null) {
-		_local = methodGen.addLocalVariable2(_name.getLocalPart(),
+		_local = methodGen.addLocalVariable2(getEscapedName(),
 						     _type.toJCType(),
 						     il.getEnd());
 	    }
@@ -188,7 +188,7 @@ final class Variable extends VariableBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	final String name = getVariable();
+	final String name = getEscapedName();
 
 	// Make sure that a variable instance is only compiled once
 	if (_ignore) return;

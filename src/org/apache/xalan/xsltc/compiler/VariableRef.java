@@ -87,7 +87,7 @@ final class VariableRef extends VariableRefBase {
 	// Fall-through for variables that are implemented as methods
 	if (_type.implementedAsMethod()) return;
 
-	final String name = _variable.getVariable();
+	final String name = _variable.getEscapedName();
 	final String signature = _type.toSignature();
 
 	if (_variable.isLocal()) {
