@@ -29,13 +29,80 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.5.1</link></li>
+    <li><link anchor="done">Changes since version 2.5.2</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
-    <li><link anchor="developer-list">&xslt4j; developers</link></li>
+<!-- <li><link anchor="developer-list">&xslt4j; developers</link></li> -->
    </ul>
      <anchor name="done"/>
+   <s3 title="Changes since &xslt4j; 2.5.2">
+     <p>&xslt4j; 2.6.0 contains the following functional enhancements, performance enhancements and 
+        bug fixes:</p>
+     <ul>
+     <li>Eliminated the use of "enum" as a name to allow compilation under JDK 1.5</li>
+     <li>Split the namesArray into three for translet - improves translet initialization time.</li>
+     <li>Added a translet versioning mechanism.</li>
+     <li>Added a new TransformThread sample.</li>
+     <li>Caching of XMLReaders is now shared by XSLTC and Interpretive (in DTMManager).</li>
+     <li>Changes that allow XSLTC to use other DTM implementations.</li>
+     <li>Conversions from reference types to double, string and boolean.</li>
+     <li>Upgrade to Xerces-J (2.6.2) and a new version of xml-commons (xml-commons-external-1.2.01)</li>
+     <li>Enhancement to XSLTC's URIResolvers and the general mechanism to resolve relative URIs to be
+         compatible with Xalan Intepretive.</li>
+        
+     <li>Bugzilla fixes:     
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=797">797</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1396">1396</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5761">5761</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15140">15140</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=16889">16889</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=18351">18351</jump>, 
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19194">19194</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19464">19464</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=22376">22376</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23046">23046</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=23591">23591</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24278">24278</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24111">24111</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24187">24187</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24188">24188</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24302">24302</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24304">24304</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24365">24365</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24414">24414</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24518">24518</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24695">24695</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24728">24728</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24788">24788</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24793">24793</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24958">24958</jump>, 
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24979">24979</jump>,           
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24985">24985</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24988">24988</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25368">25368</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25416">25416</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25442">25442</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25449">25449</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25506">25506</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25816">25816</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25924">25924</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26019">26019</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26030">26030</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26075">26075</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26169">26169</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26217">26217</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26697">26697</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26742">26742</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26829">26829</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26842">26842</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27016">27016</jump>
+     </li>
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+      <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.
+     </li>         
+     </ul>
+   </s3>      
    <s3 title="Changes since &xslt4j; 2.5.1">
      <p>&xslt4j; 2.5.2 contains bug fixes and performance enhancements.</p>
       <p>Fixes in this release include the following: </p>
@@ -594,10 +661,12 @@ javadoc -doclet xalanjdoc.Standard
   take on an active role in the ongoing development, testing, and documentation of &xslt4j;?</p> 
 <p>Please email your comments, questions, suggestions, and offers to join the Xalan team 
 to <human-resource-ref idref="xalandev"/>.</p>
- </s2><anchor name="developer-list"/>
+ </s2>
+<!-- We need to overhaul this list if we still want to publish it.  
+     It should probably be broken out into active & past contributors.
+ <anchor name="developer-list"/>
  <s2 title="Developers">
 <p>A list of some of people currently working on working on &xslt4j;:</p>
-  <!-- in alphabetical order, by last name -->
   <ul>
   <li><human-resource-ref idref="sboag"/>
     <br/>Xalan architect, lead developer on Xalan-J.
@@ -648,5 +717,5 @@ to <human-resource-ref idref="xalandev"/>.</p>
     <br/>Xalan-J developer.
   </li>  
  </ul>
- </s2>
+ </s2> -->
 </s1>
