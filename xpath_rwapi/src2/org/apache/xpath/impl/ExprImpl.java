@@ -55,7 +55,6 @@
  */
 package org.apache.xpath.impl;
 
-import org.apache.xpath.XPathException;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.parser.Node;
@@ -137,7 +136,13 @@ public abstract class ExprImpl extends SimpleNode implements Expr
 
         for (int i = 0; i < m_children.length; i++)
         {
-            clone[i] = (Node) ((Expr) m_children[i]).cloneExpression();
+        	Node child = m_children[i];
+        	if (child instanceof Expr) {
+            	clone[i] = (Node) ((Expr) child).cloneExpression();
+        	} else {
+        		// immutable object, just copy reference
+        		clone[i] = child;
+        	}
         }
 
         return clone;

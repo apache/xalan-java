@@ -88,8 +88,9 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
      */
     public PathExprImpl(int i)
     {
-        super(i);
-
+		id = i;
+        m_exprType = PATH_EXPR;
+		m_opType = SLASH_STEP;
         m_isAbsolute = false;
     }
 
@@ -105,6 +106,14 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
 
         m_isAbsolute = false;
     }
+
+	/**
+	 * @param expr
+	 */
+	protected PathExprImpl(PathExprImpl expr) {
+		super(expr);
+		m_isAbsolute = expr.m_isAbsolute;
+	}
 
     /**
      * @see org.apache.xpath.expression.PathExpr#isAbsolute()
@@ -140,6 +149,13 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
 
         super.getString(expr, abbreviate);
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.Expr#cloneExpression()
+	 */
+	public Expr cloneExpression() {
+		return new PathExprImpl(this);
+	}
 
     /**
      * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)

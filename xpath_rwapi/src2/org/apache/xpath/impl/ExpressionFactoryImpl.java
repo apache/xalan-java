@@ -74,6 +74,7 @@ import org.apache.xpath.expression.StepExpr;
 import org.apache.xpath.impl.parser.NodeFactory;
 import org.apache.xpath.impl.parser.ParseException;
 import org.apache.xpath.impl.parser.XPath;
+import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 /**
  * Default implementation expression factory to create XPath AST nodes.
@@ -247,6 +248,13 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 		LiteralImpl lit = new LiteralImpl();
 		lit.setDoubleValue(value);
 		return lit;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.ExpressionFactory#createSequence()
+	 */
+	public OperatorExpr createSequence() {
+		return new OperatorImpl(XPathTreeConstants.JJTEXPRSEQUENCE);
 	}
 
 

@@ -771,4 +771,5 @@ public class SimpleNode implements Node
     public void getString(StringBuffer expr, boolean abbreviate)
     {
     }
+    
 }

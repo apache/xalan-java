@@ -79,6 +79,12 @@ public interface ExpressionFactory
      */
     public Expr createExpr(String expr) throws XPathException;
 
+	/**
+	 * Creates a new XPath sequence
+	 * @return A sequence
+	 */
+	public OperatorExpr createSequence();
+
     /**
      * Create a new relative or absolute path expression
      *

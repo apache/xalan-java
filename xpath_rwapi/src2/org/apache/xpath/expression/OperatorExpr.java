@@ -281,4 +281,13 @@ public interface OperatorExpr extends Expr
      * Remove an operand
      */
     void removeOperand(Expr operand) throws XPathException;
+    
+    /**
+     * Append the specified expr to the end of this expression. <br>
+     * The specified expression has to be of the same type of this expression,
+     * otherwise an exception will be raised
+     * @param expr The expression to append
+     */    
+    void append(OperatorExpr expr) throws XPathException;
+    
 }

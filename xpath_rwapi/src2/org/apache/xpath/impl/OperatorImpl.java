@@ -104,6 +104,13 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     short m_opType;
 
+	/**
+	 * Internal use only
+	 */
+	protected OperatorImpl() 
+	{
+	}
+
     /**
      * Constructor for OperatorImpl. Internal uses only.
      *
@@ -123,13 +130,6 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
             case XPathTreeConstants.JJTUNARYEXPR:
                 m_exprType = UNARY_EXPR;
-
-                break;
-
-            case XPathTreeConstants.JJTPATHEXPR:
-            case XPathTreeConstants.JJTPATHPATTERN:
-                m_exprType = PATH_EXPR;
-                m_opType = SLASH_STEP;
 
                 break;
 
@@ -210,6 +210,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     /**
      * Constructor for OperatorImpl.
      *
+     * @param id
      * @param exprType DOCUMENT ME!
      * @param opType DOCUMENT ME!
      */
@@ -267,9 +268,24 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public void addOperand(Expr operand) throws XPathException
     {
+    	// do not performed the reduction during edition
         super.jjtAddChild((Node) operand,
             (m_children == null) ? 0 : m_children.length);
     }
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.OperatorExpr#append(org.apache.xpath.expression.OperatorExpr)
+	 */
+	public void append(OperatorExpr expr) throws XPathException {
+		if (expr.getExprType() == m_exprType && expr.getOperatorType() == m_opType ) {
+			int size = expr.getOperandCount();
+			for (int i = 0; i < size ; i ++ ) {
+				addOperand(expr.getOperand(i));			
+			}
+		} else {
+			throw new XPathException("Mismatched operator expressions"); // I16 + better msg
+		}
+	}
 
     /**
      * @see org.apache.xpath.expression.OperatorExpr#getOperand(int)

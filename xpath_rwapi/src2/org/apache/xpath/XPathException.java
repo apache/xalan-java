@@ -97,7 +97,7 @@ public class XPathException extends Exception
      */
     public String getLocalizedMessage()
     {
-        return m_e.getLocalizedMessage();
+        return (m_e == null) ? super.getLocalizedMessage() : getLocalizedMessage();
     }
 
     /**
@@ -105,7 +105,7 @@ public class XPathException extends Exception
      */
     public String getMessage()
     {
-        return m_e.getMessage();
+        return (m_e == null) ? super.getMessage() : m_e.getMessage();
     }
 
     /**

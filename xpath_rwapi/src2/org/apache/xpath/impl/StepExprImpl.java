@@ -133,6 +133,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     {
     	super(XPathTreeConstants.JJTSTEPEXPR);
     	
+    	m_axisType = step.m_axisType;    	    	
     	m_children = step.cloneChildren();
     }
 
