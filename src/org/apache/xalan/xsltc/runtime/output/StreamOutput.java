@@ -108,6 +108,8 @@ abstract class StreamOutput extends OutputBase {
     protected boolean _escaping     = true;
     protected String  _encoding     = "UTF-8";
 
+    protected int     _indentNumber = 2;
+
     // protected HashSet _attributes = new HashSet();
     protected Vector _attributes = new Vector();
 
@@ -138,6 +140,7 @@ abstract class StreamOutput extends OutputBase {
 	_encoding = output._encoding;
 	_is8859Encoded = output._is8859Encoded;
 	_buffer = output._buffer;
+	_indentNumber = output._indentNumber;
     }
 
     protected StreamOutput(Writer writer, String encoding) {
@@ -158,6 +161,10 @@ abstract class StreamOutput extends OutputBase {
 	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
 	}
 	_buffer = new StringBuffer(BUFFER_SIZE);
+    }
+
+    public void setIndentNumber(int value) {
+	_indentNumber = value;
     }
 
     /**
@@ -231,7 +238,7 @@ abstract class StreamOutput extends OutputBase {
 	}
 
 	_buffer.append(INDENT, 0, 
-	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel + _indentLevel 
+	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel * _indentNumber 
 		: MAX_INDENT);
     }
 

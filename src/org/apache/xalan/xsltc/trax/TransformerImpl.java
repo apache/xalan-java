@@ -104,6 +104,7 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.dom.*;
+import org.apache.xalan.xsltc.compiler.Constants;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.runtime.output.*;
 import org.apache.xalan.xsltc.compiler.*;
@@ -141,6 +142,8 @@ public final class TransformerImpl extends Transformer
     
     private TransletOutputHandlerFactory _tohFactory = null;
 
+    private int _indentNumber;
+
     // Temporary
     private boolean _oldOutputSystem;
 
@@ -149,12 +152,13 @@ public final class TransformerImpl extends Transformer
      * Our Transformer objects always need a translet to do the actual work
      */
     protected TransformerImpl(Translet translet, Properties outputProperties,
-	boolean oldOutputSystem) 
+	int indentNumber, boolean oldOutputSystem) 
     {
 	_translet = (AbstractTranslet) translet;
 	_properties = createOutputProperties(outputProperties);
 	_oldOutputSystem = oldOutputSystem;
 	_propertiesClone = (Properties) _properties.clone();
+	_indentNumber = indentNumber;
     }
 
     /**
@@ -240,6 +244,11 @@ public final class TransformerImpl extends Transformer
 	_tohFactory.setEncoding(_encoding);
 	if (_method != null) {
 	    _tohFactory.setOutputMethod(_method);
+	}
+
+	// Set indentation number in the factory
+	if (_indentNumber >= 0) {
+	    _tohFactory.setIndentNumber(_indentNumber);
 	}
 
 	// Return the content handler for this Result object

@@ -144,6 +144,7 @@ public class TransformerFactoryImpl
     private boolean _debug = false;
     private boolean _disableInlining = false;
     private boolean _oldOutputSystem = false;
+    private int     _indentNumber    = -1;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -208,26 +209,64 @@ public class TransformerFactoryImpl
      * @throws IllegalArgumentException
      */
     public void setAttribute(String name, Object value) 
-	throws IllegalArgumentException { 
+	throws IllegalArgumentException 
+    { 
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
-	if ((name.equals("translet-name")) && (value instanceof String)) {
-	    _defaultTransletName = (String)value;
+	if (name.equals("translet-name") && value instanceof String) {
+	    _defaultTransletName = (String) value;
+	    return;
 	}
 	else if (name.equals("debug")) {
-	    _debug = true;
+	    if (value instanceof Boolean) {
+		_debug = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_debug = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
-	else if (name.equals("disable-inlining") && value instanceof Boolean) {
-	    _disableInlining = ((Boolean) value).booleanValue();
+	else if (name.equals("disable-inlining")) {
+	    if (value instanceof Boolean) {
+		_disableInlining = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_disableInlining = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
-	else if (name.equals("old-output") && value instanceof Boolean) {
-	    _oldOutputSystem = ((Boolean) value).booleanValue();
+	else if (name.equals("old-output")) {
+	    if (value instanceof Boolean) {
+		_oldOutputSystem = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_oldOutputSystem = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
-	else {
-	    // Throw an exception for all other attributes
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
-	    throw new IllegalArgumentException(err.toString());
+	else if (name.equals("indent-number")) {
+	    if (value instanceof String) {
+		try {
+		    _indentNumber = Integer.parseInt((String) value);
+		    return;
+		}
+		catch (NumberFormatException e) {
+		    // Falls through
+		}
+	    }
+	    else if (value instanceof Integer) {
+		_indentNumber = ((Integer) value).intValue();
+		return;
+	    }
 	}
+
+	// Throw an exception for all other attributes
+	final ErrorMsg err 
+	    = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
+	throw new IllegalArgumentException(err.toString());
     }
 
     /**
@@ -346,7 +385,8 @@ public class TransformerFactoryImpl
 
 	// Create a Transformer object and store for other calls
 	Templates templates = new TemplatesImpl(bytecodes, _defaultTransletName,
-	    xsltc.getOutputProperties(), _oldOutputSystem);
+	    xsltc.getOutputProperties(), _indentNumber, _oldOutputSystem);
+
 	_copyTransformer = templates.newTransformer();
 	if (_uriResolver != null) {
 	    _copyTransformer.setURIResolver(_uriResolver);
@@ -534,7 +574,7 @@ public class TransformerFactoryImpl
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	return new TemplatesImpl(bytecodes, transletName, 
-	    xsltc.getOutputProperties(), _oldOutputSystem);
+	    xsltc.getOutputProperties(), _indentNumber, _oldOutputSystem);
     }
 
     /**
@@ -548,7 +588,7 @@ public class TransformerFactoryImpl
     public TemplatesHandler newTemplatesHandler() 
 	throws TransformerConfigurationException { 
 	final TemplatesHandlerImpl handler = 
-	    new TemplatesHandlerImpl(_oldOutputSystem);
+	    new TemplatesHandlerImpl(_indentNumber, _oldOutputSystem);
 	handler.init();
 	return handler;
     }

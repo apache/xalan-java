@@ -89,6 +89,7 @@ public class TransletOutputHandlerFactory {
     private OutputStream _ostream  = System.out;
     private Writer _writer         = null;
     private Node           _node   = null;
+    private int _indentNumber      = -1;
     private ContentHandler _handler    = null;
     private LexicalHandler _lexHandler = null;
 
@@ -135,33 +136,42 @@ public class TransletOutputHandlerFactory {
 	   : null;
     }
 
+    public void setIndentNumber(int value) {
+	_indentNumber = value;
+    }
+
     public TransletOutputHandler getTransletOutputHandler() 
 	throws IOException, ParserConfigurationException 
     {
 	switch (_outputType) {
 	    case STREAM:
+		StreamOutput result = null;
+
 		if (_method == null) {
-		    return (_writer == null) ? 
+		    result = (_writer == null) ? 
 			new StreamUnknownOutput(_ostream, _encoding) :
 			new StreamUnknownOutput(_writer, _encoding);
 		}
-
-		if (_method.equalsIgnoreCase("xml")) {
-		    return (_writer == null) ? 
+		else if (_method.equalsIgnoreCase("xml")) {
+		    result = (_writer == null) ? 
 			new StreamXMLOutput(_ostream, _encoding) :
 			new StreamXMLOutput(_writer, _encoding);
 		}
 		else if (_method.equalsIgnoreCase("html")) {
-		    return (_writer == null) ? 
+		    result = (_writer == null) ? 
 			new StreamHTMLOutput(_ostream, _encoding) :
 			new StreamHTMLOutput(_writer, _encoding);
 		}
 		else if (_method.equalsIgnoreCase("text")) {
-		    return (_writer == null) ? 
+		    result = (_writer == null) ? 
 			new StreamTextOutput(_ostream, _encoding) :
 			new StreamTextOutput(_writer, _encoding);
 		}
-	    break;
+
+		if (result != null && _indentNumber >= 0) {
+		    result.setIndentNumber(_indentNumber);
+		}
+		return result;
 	    case DOM:
 		_handler = (_node != null) ? new SAX2DOM(_node) : 
 					     new SAX2DOM();

@@ -77,6 +77,7 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 
     private String _systemId;
+    private int    _indentNumber;
 
     // Temporary
     private boolean _oldOutputSystem;
@@ -84,8 +85,9 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
     /**
      * Default constructor
      */
-    protected TemplatesHandlerImpl(boolean oldOutputSystem) {
+    protected TemplatesHandlerImpl(int indentNumber, boolean oldOutputSystem) {
 	super(null);
+	_indentNumber = indentNumber;
 	_oldOutputSystem = oldOutputSystem;
     }
 
@@ -170,7 +172,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 		final byte[][] bytecodes = xsltc.getBytecodes();
 		if (bytecodes != null) {
 		    return new TemplatesImpl(xsltc.getBytecodes(), transletName, 
-			 getOutputProperties(), _oldOutputSystem);
+			 getOutputProperties(), _indentNumber, _oldOutputSystem);
 		}
 	    }
 	}
