@@ -55,7 +55,6 @@
  */
 package org.apache.xpath.expression;
 
-import org.apache.xpath.XPathException;
 
 /**
  * Represents for and quantified expressions.

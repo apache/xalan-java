@@ -55,11 +55,16 @@
  */
 package org.apache.xpath.test;
 
+import java.io.StringReader;
+import java.math.BigInteger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.expression.CastableAsExpr;
 import org.apache.xpath.expression.ConditionalExpr;
 import org.apache.xpath.expression.Expr;
-import org.apache.xpath.expression.ExprContext;
 import org.apache.xpath.expression.ExpressionFactory;
 import org.apache.xpath.expression.ForAndQuantifiedExpr;
 import org.apache.xpath.expression.InstanceOfExpr;
@@ -70,26 +75,15 @@ import org.apache.xpath.expression.PathExpr;
 import org.apache.xpath.expression.StepExpr;
 import org.apache.xpath.expression.Variable;
 import org.apache.xpath.expression.Visitor;
-import org.apache.xpath.impl.ExprContextImpl;
 import org.apache.xpath.impl.parser.ParseException;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
-import org.apache.xpath.objects.XObject;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-
-import java.math.BigInteger;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
@@ -181,22 +175,6 @@ public class TestSamples
             
             Expr var = exprFct.createExpr("$var");
             var.visit(new TestVisitor());
-
-            // Simple Evaluation check
-            //Evaluator eval = XPathFactory.newInstance().newEvaluatorFactory()
-            //                             .createEvaluator();
-            XalanEvaluator eval = new XalanEvaluator();
-
-            ExprContextImpl ctx = eval.createExprContext();
-
-            //ctx.getDynamicContext().setContextItem(doc.getDocumentElement());
-            ctx.setContextItem(doc.getDocumentElement());
-
-            // exprs
-            Expr e = exprFct.createExpr("expr[2]/@value");
-            Object res = eval.evaluate(ctx, e);
-
-            System.out.println("-5 ?= " + ((XObject) res).str());
         }
         catch (Exception e)
         {

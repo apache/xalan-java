@@ -55,6 +55,7 @@
  */
 package org.apache.xpath.expression;
 
+import org.apache.xml.QName;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.datamodel.SequenceType;
 import org.apache.xpath.impl.parser.NodeFactory;
@@ -70,10 +71,9 @@ import java.math.BigInteger;
 public interface ExpressionFactory
 {
     /**
-     * Create a new XPath expression from a string representation
+     * Creates a new XPath expression from a string representation
      *
      * @return A XPath expression
-     *
      * @throws XPathException whenever the given expression isn't a valid XPath
      *         expression
      */
@@ -86,28 +86,27 @@ public interface ExpressionFactory
 	public OperatorExpr createSequence();
 
     /**
-     * Create a new relative or absolute path expression
-     *
+     * Creates a new relative or absolute path expression
      * @return An XPath expression of type 'path'
      */
     public PathExpr createPathExpr(boolean isAbsolute);
 
     /**
-     * Create a new step. This step contains no qualifier.
+     * Creates a new step. This step contains no qualifier.
      *
      * @return A step
      */
     public StepExpr createStepExpr(short axisType, NodeTest nodeTest);
 
     /**
-     * Create a name test.
+     * Creates a name test.
      *
      * @return A name test
      */
     public NodeTest createNameTest(String namespace, String name);
 
     /**
-     * Create a new combining expression of the given type
+     * Creates a new combining expression of the given type
      *
      * @param type The type of the combining expression to create.
      *
@@ -120,23 +119,22 @@ public interface ExpressionFactory
     public OperatorExpr createCombineExpr(short type);
 
     /**
-     * Create a new quantifier expression of type 'some' with one clause
+     * Creates a new quantifier expression of type 'some' with one clause
      *
      * @param clause First clause of the new quantifier expression
-     *
      * @return An XPath expression of type 'some'
      */
     public ForAndQuantifiedExpr createSomeExpr(Expr clause);
 
     /**
-     * Create a quantifier expression of type 'every'  with one clause
+     * Creates a quantifier expression of type 'every'  with one clause
      *
      * @return An XPath expression of type 'every'
      */
     public ForAndQuantifiedExpr createEveryExpr(Expr clause);
 
     /**
-     * Create a logical expression of type 'and' with at least two operands
+     * Creates a logical expression of type 'and' with at least two operands
      *
      * @param operand1 XPath expression to compose
      * @param operand2 XPath expression to compose
@@ -146,7 +144,7 @@ public interface ExpressionFactory
     public OperatorExpr createAndExpr(Expr operand1, Expr operand2);
 
     /**
-     * Create a new logical expression of type 'or' with at least two operands
+     * Creates a new logical expression of type 'or' with at least two operands
      *
      * @param operand1 XPath expression to compose
      * @param operand2 XPath expression to compose
@@ -156,7 +154,7 @@ public interface ExpressionFactory
     public OperatorExpr createOrExpr(Expr operand1, Expr operand2);
 
     /**
-     * Create a new conditional expression
+     * Creates a new conditional expression
      *
      * @param test The boolean XPath expression
      * @param thenExpr The XPath expression uses in the then clause
@@ -167,7 +165,7 @@ public interface ExpressionFactory
     public ConditionalExpr createIfExpr(Expr test, Expr thenExpr, Expr elseExpr);
 
     /**
-     * Create a new for expression
+     * Creates a new 'for' expression
      *
      * @param varName The name of the binding variable
      * @param clauseExpr The for clause expression
@@ -179,7 +177,7 @@ public interface ExpressionFactory
         Expr quantifiedExpr);
 
     /**
-     * Create a new cast as expression
+     * Creates a new cast as expression
      *
      * @param seqType The cast as type
      * @param parExpr The XPath expression to cast as
@@ -190,7 +188,7 @@ public interface ExpressionFactory
         OperatorExpr parExpr);
 
     /**
-     * Create a new treat as expression
+     * Creates a new treat as expression
      *
      * @param seqType The treat as type
      * @param parExpr The XPath expression to treat as
@@ -201,14 +199,14 @@ public interface ExpressionFactory
         OperatorExpr parExpr);
 
     /**
-     * Create a new integer literal
+     * Creates a new integer literal
      *
      * @return A literal of type integer
      */
     public Literal createIntegerLiteralExpr(int value);
 
     /**
-     * Create a new 'big' integer literal
+     * Creates a new 'big' integer literal
      *
      * @param value The big integer
      *
@@ -217,35 +215,43 @@ public interface ExpressionFactory
     public Literal createIntegerLiteralExpr(BigInteger value);
 
     /**
-     * Create a new decimal literal
+     * Creates a new decimal literal
      *
      * @return A literal of type decimal
      */
     public Literal createDecimalLiteralExpr(double value);
 
     /**
-     * Create a new 'big' decimal literal
+     * Creates a new 'big' decimal literal
      *
      * @return A literal of type decimal
      */
     public Literal createDecimalLiteralExpr(BigDecimal value);
 
     /**
-     * Create a new string literal
+     * Creates a new string literal
      *
      * @return A literal of type string
      */
     public Literal createStringLiteralExpr(String value);
 
     /**
-     * Create a new double literal
+     * Creates a new double literal
      *
      * @return A literal of type double
      */
     public Literal createDoubleLiteralExpr(double value);
     
     /**
-     * Sets the node factory for creating AST nodes
+     * Creates new function call expression with the specified name
+     * and no parameter. 
+     * @param name Qualified name of the function to create 
+     * @return
+     */
+    public FunctionCall createFunctionCall(QName name);
+    
+    /**
+     * Sets the node factory to use for creating AST nodes
      */
     void setNodeFactory(NodeFactory factory);
 }

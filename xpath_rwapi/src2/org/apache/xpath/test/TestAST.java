@@ -56,13 +56,10 @@
 
 package org.apache.xpath.test;
 
-import java.io.StringReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
-import java.util.Vector;
+import java.io.StringReader;
 
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.impl.parser.ParseException;

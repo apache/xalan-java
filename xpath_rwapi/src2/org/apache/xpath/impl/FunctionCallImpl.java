@@ -93,6 +93,17 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	public FunctionCallImpl(XPath p, int i) {
 		super(p, i);
 	}
+	
+	/**
+	 * Constructor for FunctionCallImpl with specified name
+	 */
+	protected FunctionCallImpl(QName name)
+	{
+		super(XPathTreeConstants.JJTFUNCTIONCALL);
+		
+		m_qname = name;
+	}
+	
 
 	/**
 	 * Clone FunctionCall

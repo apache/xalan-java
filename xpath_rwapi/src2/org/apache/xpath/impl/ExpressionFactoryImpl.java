@@ -59,6 +59,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import org.apache.xml.QName;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.datamodel.SequenceType;
 import org.apache.xpath.expression.CastOrTreatAsExpr;
@@ -66,6 +67,7 @@ import org.apache.xpath.expression.ConditionalExpr;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.ExpressionFactory;
 import org.apache.xpath.expression.ForAndQuantifiedExpr;
+import org.apache.xpath.expression.FunctionCall;
 import org.apache.xpath.expression.Literal;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.OperatorExpr;
@@ -255,6 +257,12 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	 */
 	public OperatorExpr createSequence() {
 		return new OperatorImpl(XPathTreeConstants.JJTEXPRSEQUENCE);
+	}
+
+	
+	public FunctionCall createFunctionCall(QName name)
+	{
+		return new FunctionCallImpl(name);
 	}
 
 
