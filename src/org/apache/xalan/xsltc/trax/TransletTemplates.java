@@ -99,15 +99,8 @@ public class TransletTemplates implements Templates {
         // check if destination has been set with system property
         String transletDestDir = System.getProperty("transletPool");
         if (transletDestDir != null) {
-            try {
-                xsltc.setDestDirectory(transletDestDir);
-            } catch(CompilerException e)  {
-                throw new TransformerConfigurationException(
-                    "System property 'transletPool' was set to  " +
-                    transletDestDir + ", " + e );
-            }
+	    xsltc.setDestDirectory(transletDestDir);
         }
-
 
 	// compile stylesheet
 	boolean isSuccessful = true;
