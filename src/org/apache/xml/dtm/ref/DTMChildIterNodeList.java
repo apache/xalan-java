@@ -88,45 +88,33 @@ import org.w3c.dom.DOMException;
  *
  * <p>State: In progress!!</p>
  * */
-public class DTMNodeList extends DTMNodeListBase {
-    private DTMIterator m_iter;
+public class DTMChildIterNodeList extends DTMNodeListBase {
+    private int m_firstChild;
+    private DTM m_parentDTM;
 
     //================================================================
     // Methods unique to this class
-    private DTMNodeList() {
+    private DTMChildIterNodeList() {
     }
 
     /**
-     * Public constructor: Wrap a DTMNodeList around an existing
-     * and preconfigured DTMIterator
+     * Public constructor: Create a NodeList to support
+     * DTMNodeProxy.getChildren().
      *
-     * WARNING: THIS HAS THE SIDE EFFECT OF ISSUING setShouldCacheNodes(true)
-     * AGAINST THE DTMIterator.
+     * Unfortunately AxisIterators and DTMIterators don't share an API,
+     * so I can't use the existing Axis.CHILD iterator. Rather than
+     * create Yet Another Class, let's set up a special case of this
+     * one.
+     *
+     * @param parentDTM The DTM containing this node
+     * @param parentHandle DTM node-handle integer
      *
      */
-    public DTMNodeList(DTMIterator dtmIterator) {
-        if (dtmIterator != null) {
-            int pos = dtmIterator.getCurrentPos();
-            try {
-                m_iter=(DTMIterator)dtmIterator.cloneWithReset();
-            } catch(CloneNotSupportedException cnse) {
-                m_iter = dtmIterator;
-            }
-            m_iter.setShouldCacheNodes(true);
-            m_iter.runTo(-1);
-            m_iter.setCurrentPos(pos);
-        }
+    public DTMChildIterNodeList(DTM parentDTM,int parentHandle) {
+        m_parentDTM=parentDTM;
+        m_firstChild=parentDTM.getFirstChild(parentHandle);
     }
 
-    /**
-     * Access the wrapped DTMIterator. I'm not sure whether anyone will
-     * need this or not, but let's write it and think about it.
-     *
-     */
-    DTMIterator getDTMIterator() {
-        return m_iter;
-    }
-  
 
     //================================================================
     // org.w3c.dom.NodeList API follows
@@ -140,14 +128,12 @@ public class DTMNodeList extends DTMNodeListBase {
      *   <code>NodeList</code>, or <code>null</code> if that is not a valid 
      *   index.
      */
-    public Node item(int index)
-    {
-        if (m_iter != null) {
-            int handle=m_iter.item(index);
-            return m_iter.getDTM(handle).getNode(handle);
-        } else {
-            return null;
+    public Node item(int index) {
+        int handle=m_firstChild;
+        while(--index>=0 && handle!=DTM.NULL) {
+            handle=m_parentDTM.getNextSibling(handle);
         }
+        return m_parentDTM.getNode(handle);
     }
 
     /**
@@ -155,6 +141,12 @@ public class DTMNodeList extends DTMNodeListBase {
      * is 0 to <code>length-1</code> inclusive. 
      */
     public int getLength() {
-        return (m_iter != null) ? m_iter.getLength() : 0;
+        int count=0;
+        for (int handle=m_firstChild;
+             handle!=DTM.NULL;
+             handle=m_parentDTM.getNextSibling(handle)) {
+            ++count;
+        }
+        return count;
     }
 }

@@ -55,12 +55,17 @@
  * <http://www.apache.org/>.
  */
 package org.apache.xml.dtm.ref;
+
 import org.apache.xml.dtm.*;
+import org.apache.xml.utils.IntVector;
+
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
+import java.util.Vector;
+
 /**
- * <code>DTMNodeList</code> gives us an implementation of the DOM's
+ * <code>DTMAxisNodeList</code> gives us an implementation of the DOM's
  * NodeList interface wrapped around a DTM Iterator. The author
  * considers this something of an abominations, since NodeList was not
  * intended to be a general purpose "list of nodes" API and is
@@ -88,34 +93,28 @@ import org.w3c.dom.DOMException;
  *
  * <p>State: In progress!!</p>
  * */
-public class DTMNodeList extends DTMNodeListBase {
-    private DTMIterator m_iter;
-
+public class DTMAxisIterNodeList extends DTMNodeListBase {
+    private DTM m_dtm;
+    private DTMAxisIterator m_iter;
+    private IntVector m_cachedNodes;
+    private int m_last = -1;
     //================================================================
     // Methods unique to this class
-    private DTMNodeList() {
+    private DTMAxisIterNodeList() {
     }
 
     /**
      * Public constructor: Wrap a DTMNodeList around an existing
-     * and preconfigured DTMIterator
-     *
-     * WARNING: THIS HAS THE SIDE EFFECT OF ISSUING setShouldCacheNodes(true)
-     * AGAINST THE DTMIterator.
-     *
+     * and preconfigured DTMAxisIterator
      */
-    public DTMNodeList(DTMIterator dtmIterator) {
-        if (dtmIterator != null) {
-            int pos = dtmIterator.getCurrentPos();
-            try {
-                m_iter=(DTMIterator)dtmIterator.cloneWithReset();
-            } catch(CloneNotSupportedException cnse) {
-                m_iter = dtmIterator;
-            }
-            m_iter.setShouldCacheNodes(true);
-            m_iter.runTo(-1);
-            m_iter.setCurrentPos(pos);
+    public DTMAxisIterNodeList(DTM dtm, DTMAxisIterator dtmAxisIterator) {
+        if (dtmAxisIterator == null) {
+            m_last = 0;
+        } else {
+            m_cachedNodes = new IntVector();
+            m_dtm = dtm;
         }
+        m_iter = dtmAxisIterator;
     }
 
     /**
@@ -123,7 +122,7 @@ public class DTMNodeList extends DTMNodeListBase {
      * need this or not, but let's write it and think about it.
      *
      */
-    DTMIterator getDTMIterator() {
+    DTMAxisIterator getDTMAxisIterator() {
         return m_iter;
     }
   
@@ -140,14 +139,28 @@ public class DTMNodeList extends DTMNodeListBase {
      *   <code>NodeList</code>, or <code>null</code> if that is not a valid 
      *   index.
      */
-    public Node item(int index)
-    {
+    public Node item(int index) {
         if (m_iter != null) {
-            int handle=m_iter.item(index);
-            return m_iter.getDTM(handle).getNode(handle);
-        } else {
-            return null;
+            int node;
+            int count = m_cachedNodes.size();
+
+            if (count > index) {
+                node = m_cachedNodes.elementAt(index);
+                return m_dtm.getNode(node);
+            } else if (m_last == -1) {
+                while (((node = m_iter.next()) != DTMAxisIterator.END)
+                           && count <= index) {
+                    m_cachedNodes.addElement(node);
+                    count++;
+                }
+                if (node == DTMAxisIterator.END) {
+                    m_last = count;
+                } else {
+                    return m_dtm.getNode(node);
+                }
+            }
         }
+        return null;
     }
 
     /**
@@ -155,6 +168,13 @@ public class DTMNodeList extends DTMNodeListBase {
      * is 0 to <code>length-1</code> inclusive. 
      */
     public int getLength() {
-        return (m_iter != null) ? m_iter.getLength() : 0;
+        if (m_last == -1) {
+            int node;
+            while ((node = m_iter.next()) != DTMAxisIterator.END) {
+                m_cachedNodes.addElement(node);
+            }
+            m_last = m_cachedNodes.size();
+        }
+        return m_last;
     }
 }
