@@ -339,10 +339,8 @@ final class Step extends RelativeLocationPath {
 		    
 		// Now, for reverse iterators we may need to re-arrange the
 		// node ordering (ancestor-type iterators).
-		if (!(getParent() instanceof ForEach)) {
-		    if ((!hasParent()) && (!_hadPredicates))
-			orderIterator(classGen, methodGen);
-		}
+		if (!(getParent() instanceof ForEach) && (!hasParent()))
+		    orderIterator(classGen, methodGen);
 		break;
 	    }
 	}
@@ -464,16 +462,15 @@ final class Step extends RelativeLocationPath {
 
     /*
      * Order nodes for iterators with reverse axis
-     *
-     * Should be done for preceding and preceding-sibling axis as well,
-     * but our iterators for those axis are not reverse (as they should)
      */
     public void orderIterator(ClassGenerator classGen,
 			      MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-
-	if ((_axis == Axis.ANCESTOR) || (_axis == Axis.ANCESTORORSELF)) {
+	if ((_axis == Axis.ANCESTOR)  ||
+	    (_axis == Axis.ANCESTORORSELF) ||
+	    (_axis == Axis.PRECEDING)) {
+	    System.err.println("HERE!");
 	    final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
 					      "("+NODE_ITERATOR_SIG+")V");
 
