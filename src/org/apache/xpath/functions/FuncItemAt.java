@@ -101,7 +101,7 @@ public class FuncItemAt extends Function2Args
   	if (seqParam.getLength() <= pos)
   	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
   	
-  	return ((XSequenceImpl)seqParam).getItem(pos);  	
+  	return ((XSequenceImpl)seqParam).getItem(pos-1);  	
  
     
   }

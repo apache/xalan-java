@@ -128,12 +128,12 @@ public class FuncIndexOf extends Function3Args
   	    if (comparator == null)
   	    {
   	      if (item.equals(srchParam))
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
+  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()+1), pos++);  	      
   	    }
   	    else
   	    {
   	      if (comparator.compare(item.str(), srchParam.str()) == 0)
-  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
+  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()+1), pos++);  	      
   	    }  	      
   	    
   	  }
@@ -145,19 +145,19 @@ public class FuncIndexOf extends Function3Args
           if (comparator == null)
           {
             if (xnss.equalsExistential(srchParam))
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()+1), pos++);
           }
           else
           {
             if (comparator.compare(xnss.str(), srchParam.str()) == 0)
-               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()+1), pos++);
           }
   	    }
   	  }
   	  else
   	  {
   	    if (item.equals(srchParam))
-  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()+1), pos++);
   	  }
   	}
   	
