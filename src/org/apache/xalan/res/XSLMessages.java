@@ -58,15 +58,14 @@ package org.apache.xalan.res;
 
 import java.util.ListResourceBundle;
 
-import org.apache.xpath.res.XPATHMessages;
+import org.apache.xml.res.XMLMessages;
 
 /**
  * <meta name="usage" content="internal"/>
  * Sets things up for issuing error messages.  This class is misnamed, and
  * should be called XalanMessages, or some such.
  */
-public class XSLMessages extends XPATHMessages
-{
+public class XSLMessages extends XMLMessages {
 
   /** The language specific resource object for Xalan messages.  */
   private static ListResourceBundle XSLTBundle = null;
