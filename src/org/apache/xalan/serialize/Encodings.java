@@ -56,10 +56,16 @@
  */
 package org.apache.xalan.serialize;
 
+import java.io.InputStream;
 import java.io.Writer;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+
+import java.net.URL;
+
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * Provides information about encodings. Depends on the Java runtime
@@ -77,6 +83,12 @@ public class Encodings extends Object
    * The last printable character for unknown encodings.
    */
   static final int m_defaultLastPrintable = 0x7F;
+  
+  /**
+   * Standard filename for properties file with encodings data.
+   */
+  static final String ENCODINGS_FILE = "Encodings.properties";
+
 
   /**
    * Returns a writer for the specified encoding based on
@@ -313,98 +325,73 @@ public class Encodings extends Object
 
 
   /**
-   * Constructs a list of all the supported encodings.
+   * Load a list of all the supported encodings.
+   *
+   * System property "org.apache.xalan.serialize.encodings"
+   * formatted using URL syntax may define an external encodings list.
+   * Thanks to Sergey Ushakov for the code contribution!
    */
-  private static final EncodingInfo[] _encodings = new EncodingInfo[]
+  private static EncodingInfo[] loadEncodingInfo()
   {
+    URL url = null;
+    try {
+      String urlString =
+        System.getProperty("org.apache.xalan.serialize.encodings", "");
+      if (urlString == null || urlString.length() == 0) {
+        ClassLoader cl = Encodings.class.getClassLoader();
+        if (cl == null) {
+          url = ClassLoader.getSystemResource("org/apache/xalan/serialize/" +
+                                              ENCODINGS_FILE);
+        } else {
+          url = cl.getResource(ENCODINGS_FILE);
+          if (url == null)
+            url = ClassLoader.getSystemResource("org/apache/xalan/serialize/" +
+                                              ENCODINGS_FILE);
+        }
+      } else {
+        url = new URL (urlString);
+      }
 
-    //    <preferred MIME name>, <Java encoding name>
-    // new EncodingInfo( "ISO 8859-1", "CP1252"); // Close enough, I guess
-    new EncodingInfo("WINDOWS-1250", "Cp1250", 0x00FF),  // Peter Smolik
-    // Patch attributed to havardw@underdusken.no (Håvard Wigtil)
-    new EncodingInfo("WINDOWS-1252", "Cp1252", 0x00FF),
-    new EncodingInfo("UTF-8", "UTF8", 0xFFFF),
-    new EncodingInfo("US-ASCII", "ISO8859_1", 0x7F),
-    new EncodingInfo("ISO-8859-1", "ISO8859_1", 0x00FF),
-    // Patch attributed to havardw@underdusken.no (Håvard Wigtil)
-    new EncodingInfo("ISO-8859-1", "ISO8859-1", 0x00FF),
-    new EncodingInfo("ISO-8859-2", "ISO8859_2", 0x00FF),
-    // I'm going to apply "ISO8859-X" variant to all these, to be safe.
-    new EncodingInfo("ISO-8859-2", "ISO8859-2", 0x00FF),
-    new EncodingInfo("ISO-8859-3", "ISO8859_3", 0x00FF),
-    new EncodingInfo("ISO-8859-3", "ISO8859-3", 0x00FF),
-    new EncodingInfo("ISO-8859-4", "ISO8859_4", 0x00FF),
-    new EncodingInfo("ISO-8859-4", "ISO8859-4", 0x00FF),
-    new EncodingInfo("ISO-8859-5", "ISO8859_5", 0x00FF),
-    new EncodingInfo("ISO-8859-5", "ISO8859-5", 0x00FF),
-    new EncodingInfo("ISO-8859-6", "ISO8859_6", 0x00FF),
-    new EncodingInfo("ISO-8859-6", "ISO8859-6", 0x00FF),
-    new EncodingInfo("ISO-8859-7", "ISO8859_7", 0x00FF),
-    new EncodingInfo("ISO-8859-7", "ISO8859-7", 0x00FF),
-    new EncodingInfo("ISO-8859-8", "ISO8859_8", 0x00FF),
-    new EncodingInfo("ISO-8859-8", "ISO8859-8", 0x00FF),
-    new EncodingInfo("ISO-8859-9", "ISO8859_9", 0x00FF),
-    new EncodingInfo("ISO-8859-9", "ISO8859-9", 0x00FF),
-    new EncodingInfo("US-ASCII", "8859_1", 0x00FF),  // ?
-    new EncodingInfo("ISO-8859-1", "8859_1", 0x00FF),
-    new EncodingInfo("ISO-8859-2", "8859_2", 0x00FF),
-    new EncodingInfo("ISO-8859-3", "8859_3", 0x00FF),
-    new EncodingInfo("ISO-8859-4", "8859_4", 0x00FF),
-    new EncodingInfo("ISO-8859-5", "8859_5", 0x00FF),
-    new EncodingInfo("ISO-8859-6", "8859_6", 0x00FF),
-    new EncodingInfo("ISO-8859-7", "8859_7", 0x00FF),
-    new EncodingInfo("ISO-8859-8", "8859_8", 0x00FF),
-    new EncodingInfo("ISO-8859-9", "8859_9", 0x00FF),
-    new EncodingInfo("ISO-8859-1", "8859-1", 0x00FF),
-    new EncodingInfo("ISO-8859-2", "8859-2", 0x00FF),
-    new EncodingInfo("ISO-8859-3", "8859-3", 0x00FF),
-    new EncodingInfo("ISO-8859-4", "8859-4", 0x00FF),
-    new EncodingInfo("ISO-8859-5", "8859-5", 0x00FF),
-    new EncodingInfo("ISO-8859-6", "8859-6", 0x00FF),
-    new EncodingInfo("ISO-8859-7", "8859-7", 0x00FF),
-    new EncodingInfo("ISO-8859-8", "8859-8", 0x00FF),
-    new EncodingInfo("ISO-8859-9", "8859-9", 0x00FF),
-    new EncodingInfo("ISO-2022-JP", "JIS", 0xFFFF),
-    new EncodingInfo("SHIFT_JIS", "SJIS", 0xFFFF),
-    new EncodingInfo("EUC-JP", "EUC_JP", 0xFFFF),
-    new EncodingInfo("EUC-KR", "EUC_KR", 0xFFFF),
-    new EncodingInfo("EUC-CN", "EUC_CN", 0xFFFF),
-    new EncodingInfo("EUC-TW", "EUC_TW", 0xFFFF),
-    new EncodingInfo("GB2312", "EUC_CN", 0xFFFF),
-    new EncodingInfo("EUC-JP", "EUC-JP", 0xFFFF),
-    new EncodingInfo("EUC-KR", "EUC-KR", 0xFFFF),
-    new EncodingInfo("EUC-CN", "EUC-CN", 0xFFFF),
-    new EncodingInfo("EUC-TW", "EUC-TW", 0xFFFF),
-    new EncodingInfo("GB2312", "EUC-CN", 0xFFFF),
-    new EncodingInfo("GB2312", "GB2312", 0xFFFF),
-    new EncodingInfo("BIG5", "Big5", 0xFFFF),
-    new EncodingInfo("EUC-JP", "EUCJIS", 0xFFFF),
-    new EncodingInfo("EUC-KR", "KSC5601", 0xFFFF),
-    new EncodingInfo("ISO-2022-KR", "ISO2022KR", 0xFFFF),
-    new EncodingInfo("KOI8-R", "KOI8_R", 0xFFFF),
-    new EncodingInfo("EBCDIC-CP-US", "Cp037", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-CA", "Cp037", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-NL", "Cp037", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-DK", "Cp277", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-NO", "Cp277", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-FI", "Cp278", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-SE", "Cp278", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-IT", "Cp280", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-ES", "Cp284", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-GB", "Cp285", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-FR", "Cp297", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-AR1", "Cp420", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-HE", "Cp424", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-CH", "Cp500", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-ROECE", "Cp870", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-YU", "Cp870", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-IS", "Cp871", 0x00FF),
-    new EncodingInfo("EBCDIC-CP-AR2", "Cp918", 0x00FF),
-    new EncodingInfo("MacRoman", "MacTEC", 0xFF),
-    new EncodingInfo("ASCII", "ASCII", 0x7F),
-    new EncodingInfo("ISO-Latin-1", "ASCII", 0xFF),
-    new EncodingInfo("UTF-8", "UTF8", 0xFFFF),
-    new EncodingInfo("UNICODE", "Unicode", 0xFFFF),
-    new EncodingInfo("UTF-16", "Unicode", 0xFFFF)
-  };
+      // ? consider whether we should allow an exception here if resource
+      // is not found or should we return an empty array ?
+      InputStream is = url.openStream();
+      Properties props = new Properties ();
+      props.load(is);
+      is.close();
+
+      int totalEntries = props.size();
+      EncodingInfo[] ret = new EncodingInfo[totalEntries];
+      Enumeration keys = props.keys();
+      for (int i = 0; i < totalEntries; ++i) {
+        String mimeName = (String) keys.nextElement();
+        String val = props.getProperty(mimeName);
+        int pos = val.indexOf(' ');
+        String javaName;
+        int lastPrintable;
+        if (pos < 0)
+        {
+          //throw new Exception
+          //  ("Last printable character not defined for encoding " +
+          //   mimeName + " (" + val + ")");
+          javaName = val;
+          lastPrintable = 0x00FF;
+        }
+        else
+        {
+          javaName = val.substring(0, pos);
+          lastPrintable =
+                         Integer.decode(val.substring(pos).trim()).intValue();
+        }
+        ret [i] = new EncodingInfo (mimeName, javaName, lastPrintable);
+      }
+      return ret;
+    } catch (java.net.MalformedURLException mue) {
+      throw new org.apache.xml.utils.WrappedRuntimeException(mue);
+    }
+    catch (java.io.IOException ioe) {
+      throw new org.apache.xml.utils.WrappedRuntimeException(ioe);
+    }
+  }
+
+  private static final EncodingInfo[] _encodings = loadEncodingInfo();
 }
