@@ -866,7 +866,14 @@ public class StylesheetHandler
    */
   ElemTemplateElement getElemTemplateElement()
   {
-    return (ElemTemplateElement)m_elems.peek();
+    try
+    {
+      return (ElemTemplateElement)m_elems.peek();
+    }
+    catch(java.util.EmptyStackException ese)
+    {
+      return null;
+    }
   }
   
   /**
