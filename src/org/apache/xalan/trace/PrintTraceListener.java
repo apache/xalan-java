@@ -239,7 +239,12 @@ public class PrintTraceListener implements TraceListener
                                 {
                                         while (DTM.NULL != pos)
                                         {
-                                                m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
+                                                // m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
+                                                DTM dtm = ev.m_processor.getXPathContext().getDTM(pos);
+                                                m_pw.print("     ");
+                                                m_pw.print(Integer.toHexString(pos));
+                                                m_pw.print(": ");
+                                                m_pw.println(dtm.getNodeName(pos));
 
                                                 pos = nl.nextNode();
                                         }
