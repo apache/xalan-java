@@ -1194,19 +1194,22 @@ public final class BasisLibrary implements Operators {
 		if (namespace == null || namespace.length() == 0) {
 		    namespace = dom.lookupNamespace(node, prefix);
 		}
+
+		handler.startElement(qname);
 		handler.namespace(prefix, namespace); 
 	    }
 	    else {
 		// Need to generate a prefix?
 		if (namespace != null && namespace.length() > 0) {
 		    prefix = generatePrefix();
+		    qname = prefix + ':' + qname;   
+		    handler.startElement(qname);   
 		    handler.namespace(prefix, namespace);
-		    qname = prefix + ':' + qname;
+		}
+		else {
+		    handler.startElement(qname);   
 		}
 	    }
-
-	    // Call start element before returning
-	    handler.startElement(qname);
 	}
 	catch (TransletException e) {
 	    throw new RuntimeException(e.getMessage());
