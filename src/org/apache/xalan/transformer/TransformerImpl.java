@@ -2494,7 +2494,8 @@ public class TransformerImpl extends Transformer
 
     try
     {
-      return getXPathContext().getContextNodeList().cloneWithReset();
+			ContextNodeList cnl = getXPathContext().getContextNodeList();
+			return (cnl == null)? null : cnl.cloneWithReset();
     }
     catch (CloneNotSupportedException cnse)
     {
