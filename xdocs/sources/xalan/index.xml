@@ -94,7 +94,7 @@
   
   <s2 title="Where do I get Xerces?">
     <p>The &xslt4j; download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, this is all you need to run &xslt4j; with 
-    the &xml4j; XML parser. You can, however, download the complete Xerces binary or source distribution from the 
+    the &xml4j; XML parser. You can, however, download the complete &xml4j; binary or source distribution from the 
     <resource-ref idref="xml4j-distdir"/>.</p>
     <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer
      and XML parser</link>.</note> 
