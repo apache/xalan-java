@@ -57,7 +57,7 @@ public class MethodResolver
       {
         Class javaClass = paramTypes[0];
         // System.out.println("first javaClass: "+javaClass.getName());
-        if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
+        if(org.w3c.xslt.ExpressionContext.class.isAssignableFrom(javaClass))
         {
           isFirstExpressionContext = true;
           scoreStart = 0;
@@ -142,7 +142,7 @@ public class MethodResolver
         if(numberMethodParams == (argsLen+1))
         {
           Class javaClass = paramTypes[0];
-          if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
+          if(org.w3c.xslt.ExpressionContext.class.isAssignableFrom(javaClass))
           {
             isFirstExpressionContext = true;
             scoreStart = 0;
@@ -201,7 +201,7 @@ public class MethodResolver
     int nMethods = (null != argsIn) ? argsIn.length : 0;
     int paramIndex = 0;
     if((paramTypes.length > 0) 
-       && paramTypes[0].isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
+       && org.w3c.xslt.ExpressionContext.class.isAssignableFrom(paramTypes[0]))
     {
       argsOut[0] = new Object[nMethods+1];
       argsOut[0][0] = exprContext;
@@ -482,20 +482,20 @@ public class MethodResolver
         
       case XObject.CLASS_RTREEFRAG:
         {
-          if((javaClass.isAssignableFrom(NodeIterator.class)) ||
+          if((NodeIterator.class.isAssignableFrom(javaClass)) ||
              (javaClass == java.lang.Object.class))
           {
             // This will fail in Xalan right now, since RTFs aren't 
             // convertable to node-sets.
             return xobj.nodeset();
           }
-          else if(javaClass.isAssignableFrom(Node.class))
+          else if(Node.class.isAssignableFrom(javaClass))
           {
             // This will return a Document fragment in Xalan right 
             // now, which isn't what the we specify.
             return xobj.rtree();
           }
-          else if(javaClass.isAssignableFrom(org.w3c.dom.DocumentFragment.class))
+          else if(org.w3c.dom.DocumentFragment.class.isAssignableFrom(javaClass))
           {
             // This will return a Document fragment in Xalan right 
             // now, which isn't what the we specify.
@@ -518,14 +518,14 @@ public class MethodResolver
         
       case XObject.CLASS_NODESET:
         {
-          if((javaClass.isAssignableFrom(NodeIterator.class)) ||
+          if((NodeIterator.class.isAssignableFrom(javaClass)) ||
              (javaClass == java.lang.Object.class))
           {
             // This will fail in Xalan right now, since RTFs aren't 
             // convertable to node-sets.
             return xobj.nodeset();
           }
-          else if(javaClass.isAssignableFrom(Node.class))
+          else if(Node.class.isAssignableFrom(javaClass))
           {
             // Xalan ensures that nodeset() always returns an
             // iterator positioned at the beginning.
