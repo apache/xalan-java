@@ -8,11 +8,17 @@
    example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>    
     <p>XConnection provides three extension functions that you can use in your stylesheet.</p>
     <ol>
-      <li><p>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
-       object.</p></li>
-      <li><p>query() -- Use the XConnection object query() method to return a "streamable" result set in the form of a row-set
+      <li>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
+       object. You can use one of the constructors creates a connection pool from which stylesheets can obtain connections 
+       to a datasource. To support connction pools, SQL library includes a ConnectionPool interface and a implementation:
+       DefaultConnectionPool. You can also provide your own ConnectionPool implementation.<br/><br/></li>
+      <li>query() -- Use the XConnection object query() method to return a "streamable" result set in the form of a row-set
        node. Work your way through the row-set one row at a time. The same row element is used over and over again, so you can
-       begin "transforming" the row-set before the entire result set has been returned.</p></li>
+       begin "transforming" the row-set before the entire result set has been returned.<br/><br/></li>
+       <li>pquery(), addParameter(), addParameterFromElement(), clearParameters() -- Use the XConnection pquery() method in 
+       conjunction with these other methods to set up and execute parameterized queries.<br/><br/></li>
+       <li>enableCacheNodes(), disableCacheNodes() -- Use these XConnection methods to manage the caching of the streamable 
+       nodes returned by queries.<br/><br/></li>
       <li>close() -- Use the XConnection object close() method to terminate the connection.</li>      
     </ol>
     <p>The query() extension function returns a Document node that contains (as needed) an array of column-header elements, 
