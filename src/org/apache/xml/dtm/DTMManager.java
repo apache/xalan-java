@@ -56,22 +56,10 @@
  */
 package org.apache.xml.dtm;
 
-import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.BufferedReader;
-
-import java.util.Properties;
-import java.util.Enumeration;
-
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.XMLStringFactory;
 
 /**
  * A DTMManager instance can be used to create DTM and
@@ -180,33 +168,21 @@ public abstract class DTMManager
            throws DTMConfigurationException
   {
 
-    String classname = findFactory(defaultPropName, defaultClassName);
+     DTMManager factoryImpl = null;
+     try {
+        factoryImpl = (DTMManager) FactoryFinder.find(defaultPropName,
+              /* The fallback implementation class name */
+                                                      defaultClassName);
+     } catch (FactoryFinder.ConfigurationError e) {
+           throw new DTMConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
+     }
 
-    if (classname == null)
+
+    if (factoryImpl == null)
     {
       throw new DTMConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
     }
 
-    DTMManager factoryImpl;
-
-    try
-    {
-      Class clazz = Class.forName(classname);
-
-      factoryImpl = (DTMManager) clazz.newInstance();
-    }
-    catch (ClassNotFoundException cnfe)
-    {
-      throw new DTMConfigurationException(cnfe);
-    }
-    catch (IllegalAccessException iae)
-    {
-      throw new DTMConfigurationException(iae);
-    }
-    catch (InstantiationException ie)
-    {
-      throw new DTMConfigurationException(ie);
-    }
     factoryImpl.setXMLStringFactory(xsf);
 
     return factoryImpl;
@@ -368,14 +344,7 @@ public abstract class DTMManager
 
   // -------------------- private methods --------------------
 
-  /**
-   * Avoid reading all the files when the findFactory
-   * method is called the second time (cache the result of
-   * finding the default impl).
-   */
-  private static String foundFactory = null;
-
-  /**
+   /**
    * Temp debug code - this will be removed after we test everything
    */
   private static boolean debug;
@@ -388,135 +357,6 @@ public abstract class DTMManager
     }
     catch (SecurityException ex){}
   }
-
-  /**
-   * Private implementation method - will find the implementation
-   * class in the specified order.
-   *
-   * @param factoryId   Name of the factory interface.
-   * @param xmlProperties Name of the properties file based on JAVA/lib.
-   * @param defaultFactory Default implementation, if nothing else is found.
-   *
-   * @return The factory class name.
-   */
-  private static String findFactory(String factoryId, String defaultFactory)
-  {
-
-    // Use the system property first
-    try
-    {
-      String systemProp = null;
-
-      try
-      {
-        systemProp = System.getProperty(factoryId);
-      }
-      catch (SecurityException se){}
-
-      if (systemProp != null)
-      {
-        if (debug)
-        {
-          System.err.println("DTM: found system property" + systemProp);
-        }
-
-        return systemProp;
-      }
-    }
-    catch (SecurityException se){}
-
-    if (foundFactory != null)
-    {
-      return foundFactory;
-    }
-
-    // try to read from $java.home/lib/jaxp.properties
-    try
-    {
-      String javah = System.getProperty("java.home");
-      String configFile = javah + File.separator + "lib" + File.separator
-                          + "jaxp.properties";
-      File f = new File(configFile);
-
-      if (f.exists())
-      {
-        Properties props = new Properties();
-
-        props.load(new FileInputStream(f));
-
-        foundFactory = props.getProperty(factoryId);
-
-        if (debug)
-        {
-          System.err.println("DTM: found java.home property " + foundFactory);
-        }
-
-        if (foundFactory != null)
-        {
-          return foundFactory;
-        }
-      }
-    }
-    catch (Exception ex)
-    {
-      if (debug)
-      {
-        ex.printStackTrace();
-      }
-    }
-
-    String serviceId = "META-INF/services/" + factoryId;
-
-    // try to find services in CLASSPATH
-    try
-    {
-      ClassLoader cl = DTMManager.class.getClassLoader();
-      InputStream is = null;
-
-      if (cl == null)
-      {
-        is = ClassLoader.getSystemResourceAsStream(serviceId);
-      }
-      else
-      {
-        is = cl.getResourceAsStream(serviceId);
-      }
-
-      if (is != null)
-      {
-        if (debug)
-        {
-          System.err.println("DTM: found  " + serviceId);
-        }
-
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-
-        foundFactory = rd.readLine();
-
-        rd.close();
-
-        if (debug)
-        {
-          System.err.println("DTM: loaded from services: " + foundFactory);
-        }
-
-        if ((foundFactory != null) &&!"".equals(foundFactory))
-        {
-          return foundFactory;
-        }
-      }
-    }
-    catch (Exception ex)
-    {
-      if (debug)
-      {
-        ex.printStackTrace();
-      }
-    }
-
-    return defaultFactory;
-  }
-
 
   /** This value, set at compile time, controls how many bits of the
    * DTM node identifier numbers are used to identify a node within a

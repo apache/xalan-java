@@ -342,7 +342,12 @@ public class XNumber extends XObject
     int e = s.indexOf('E');
 
     if (e < 0)
-      return s;
+    {
+      if (s.charAt(len - 1) == '0')
+        return s.substring(0, len - 1);
+      else
+        return s;
+    }
 
     int exp = Integer.parseInt(s.substring(e + 1));
     String sign;

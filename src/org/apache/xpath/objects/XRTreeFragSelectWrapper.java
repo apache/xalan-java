@@ -53,7 +53,10 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
   {
      m_selected = ((Expression)m_obj).execute(xctxt);
      m_selected.allowDetachToRelease(m_allowRelease);
-     return m_selected;
+     if (m_selected.getType() == CLASS_STRING)
+       return m_selected;
+     else
+       return new XString(m_selected.str());
   }
     
   /**
@@ -112,11 +115,11 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
   /**
    * Tell what kind of class this is.
    *
-   * @return the type of the select expression
+   * @return the string type
    */
   public int getType()
   {
-    return m_selected.getType();
+    return CLASS_STRING;
   }
 
   /**
