@@ -77,16 +77,34 @@ import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class DOMHelper <needs-comment/>
+ * This class provides a front-end to DOM implementations, providing
+ * a number of utility functions that either aren't yet standardized
+ * by the DOM spec or that are defined in optional DOM modules and
+ * hence may not be present in all DOMs.
  */
 public class DOMHelper
 {
 
   /**
-   * Used as a helper for handling DOM issues.  May be subclassed to take advantage
-   * of specific DOM implementations.
+   * DOM Level 1 did not have a standard mechanism for creating a new
+   * Document object. This function provides a DOM-implementation-independent
+   * abstraction for that for that concept. It's typically used when 
+   * outputting a new DOM as the result of an operation.
+   * <p>
+   * TODO: This isn't directly compatable with DOM Level 2. 
+   * The Level 2 createDocument call also creates the root 
+   * element, and thus requires that you know what that element will be
+   * before creating the Document. We should think about whether we want
+   * to change this code, and the callers, so we can use the DOM's own 
+   * method. (It's also possible that DOM Level 3 may relax this
+   * sequence, but you may give up some intelligence in the DOM by
+   * doing so; the intent was that knowing the document type and root
+   * element might let the DOM automatically switch to a specialized
+   * subclass for particular kinds of documents.)
    *
-   * @return The DOM Document object to build a DOM tree with.
+   * @return The newly created DOM Document object, with no children, or
+   * null if we can't find a DOM implementation that permits creating
+   * new empty Documents.
    */
   public Document createDocument()
   {
@@ -137,12 +155,29 @@ public class DOMHelper
   }
 
   /**
-   * NEEDSDOC Method getUniqueID 
+   * Supports the XPath function GenerateID by returning a unique
+   * identifier string for any given DOM Node.
+   * <p>
+   * Warning: The base implementation uses the Node object's hashCode(),
+   * which is NOT guaranteed to be unique. If that method hasn't been
+   * overridden in this DOM ipmlementation, most Java implementions will
+   * derive it from the object's address and should be OK... but if
+   * your DOM uses a different definition of hashCode (eg hashing the
+   * contents of the subtree), or if your DOM may have multiple objects
+   * that represent a single Node in the data structure (eg via proxying),
+   * you may need to find another way to assign a unique identifier.
+   * <p>
+   * Also, be aware that if nodes are destroyed and recreated, there is
+   * an open issue regarding whether an ID may be reused. Currently
+   * we're assuming that the input document is stable for the duration
+   * of the XPath/XSLT operation, so this shouldn't arise in this context.
+   * <p>
+   * (DOM Level 3 is investigating providing a unique node "key", but
+   * that won't help Level 1 and Level 2 implementations.)
    *
+   * @param node whose identifier you want to obtain
    *
-   * NEEDSDOC @param node
-   *
-   * NEEDSDOC (getUniqueID) @return
+   * @return a string which should be different for every Node object.
    */
   public String getUniqueID(Node node)
   {
@@ -150,19 +185,23 @@ public class DOMHelper
   }
 
   /**
-   * Figure out if node2 should be placed after node1 in
-   * document order (returns node1 &lt;= node2).
-   * NOTE: Make sure this does the right thing with attribute nodes!!!
+   * Figure out whether node2 should be considered as being later
+   * in the document than node1, in Document Order as defined
+   * by the XPath model. This may not agree with the ordering defined
+   * by other XML applications, and there are some cases where the
+   * order isn't defined and we're just returning noise.
+   * 
+   * TODO: Make sure this does the right thing with attribute nodes!!!
    *
-   * NEEDSDOC @param node1
-   * NEEDSDOC @param node2
-   * @return true if node2 should be placed
-   * after node1, and false if node2 should be placed
-   * before node1.
+   * @param node1 DOM Node to perform position comparison on.
+   * @param node2 DOM Node to perform position comparison on .
+   * 
+   * @return false if node2 comes before node1, otherwise return true.
+   * You can think of this as 
+   * <code>(node1.documentOrderPosition &lt;= node2.documentOrderPosition)</code>.
    */
   public boolean isNodeAfter(Node node1, Node node2)
   {
-
     if (node1 == node2)
       return true;
 
@@ -177,9 +216,16 @@ public class DOMHelper
         isNodeAfter = isNodeAfterSibling(parent1, node1, node2);
       else
       {
-        if (node1 == node2)  // Same document?
-          return false;
-        else
+		  // TODO: If both parents are null, ordering is not defined.
+		  // We're returning true in lieu of throwing an exception.
+		  // Not a case we expect to arise in XPath, but beware if you
+		  // try to reuse this method.
+		  
+		  /* TODO: This case can't arise; dead code.
+			 if (node1 == node2)  // Same document?
+			    return false;
+			 else
+		  */
           return true;
       }
     }
