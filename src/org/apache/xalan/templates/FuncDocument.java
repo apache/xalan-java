@@ -130,11 +130,17 @@ public class FuncDocument extends Function2Args
         int baseNode = arg2.iter().nextNode();
 
         if (baseNode == DTM.NULL)
-          warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);
-        
-        DTM baseDTM = xctxt.getDTM(baseNode);
-        base = baseDTM.getDocumentBaseURI();
-
+        {
+            // See http://www.w3.org/1999/11/REC-xslt-19991116-errata#E14.
+            // If the second argument is an empty nodeset, this is an error.
+            // The processor can recover by returning an empty nodeset.
+          	warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);
+          	XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+   	        return nodes;
+        } else{
+	        DTM baseDTM = xctxt.getDTM(baseNode);
+    	    base = baseDTM.getDocumentBaseURI();
+        }
         // %REVIEW% This doesn't seem to be a problem with the conformance
         // suite, but maybe it's just not doing a good test?
 //        int baseDoc = baseDTM.getDocument();

@@ -2277,7 +2277,7 @@ public class XSLTErrorResources extends ListResourceBundle
 //  public static final int WG_EMPTY_SECOND_ARG = 26;
 
     { WG_EMPTY_SECOND_ARG,
-      "Resulting nodeset from second argument of document function is empty. The first agument will be used."},
+      "Resulting nodeset from second argument of document function is empty. Return an empty node-set."},
 
   //Following are the new WARNING keys added in XALAN code base after Jdk 1.4 (Xalan 2.2-D11)
 
