@@ -335,12 +335,13 @@ public final class TextOutput implements TransletOutputHandler, Constants {
         }
     }
 
-    /**
-     * Utility method - pass a string to the SAX handler's characters() method
-     */
-    private void characters(String str) throws SAXException {
-	final char[] ch = str.toCharArray();
-	characters(ch, 0, ch.length);
+    public void characters(String str) throws TransletException {
+	try {
+	    characters(str.toCharArray(), 0, str.length());
+	}
+	catch (SAXException e) {
+            throw new TransletException(e);
+	}
     }
 
     /**
@@ -832,14 +833,6 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 	    if (!_startTagOpen) {
 		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR, patchedName);
 	    }
-
-/*
-System.err.println("TextOutput.attribute() uri = " + uri
-    + " localname = " + localName
-    + " qname = " + name 
-    + "\n value = " + value
-    + " escapeString(value) = " + escapeString(value));
-*/
 
 	    // Output as namespace declaration
 	    if (name.startsWith(XMLNS_PREFIX)) {

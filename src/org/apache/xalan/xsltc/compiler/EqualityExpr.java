@@ -101,10 +101,7 @@ final class EqualityExpr extends Expression implements Operators {
     }
 
     public boolean getOp() {
-	if (_op == Operators.NE)
-	    return false;
-	else
-	    return true;
+	return (_op != Operators.NE);
     }
 
     /**

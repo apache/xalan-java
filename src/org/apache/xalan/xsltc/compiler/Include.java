@@ -90,7 +90,6 @@ final class Include extends TopLevelElement {
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
 	String docToLoad = getAttribute("href");
-
 	try {
 	    if (context.checkForLoop(docToLoad)) {
 		final int errno = ErrorMsg.CIRCULAR_INCLUDE_ERR;
@@ -141,6 +140,7 @@ final class Include extends TopLevelElement {
 	    _included.setSystemId(docToLoad);
 	    _included.setParentStylesheet(context);
 	    _included.setIncludingStylesheet(context);
+	    _included.setTemplateInlining(context.getTemplateInlining());
 
 	    // An included stylesheet gets the same import precedence
 	    // as the stylesheet that included it.

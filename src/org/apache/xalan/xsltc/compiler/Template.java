@@ -132,11 +132,6 @@ public final class Template extends TopLevelElement {
 	return _name != null;
     }
 
-    public boolean isRootTemplate() {
-	final String match = getAttribute("match");
-	return (match != null && match.equals("/"));
-    }
-
     public Pattern getPattern() {
 	return _pattern;
     }
@@ -250,11 +245,11 @@ public final class Template extends TopLevelElement {
 	_stylesheet = super.getStylesheet();
 
 	if (name.length() > 0) {
-	    _name = parser.getQName(name);
+	    _name = parser.getQNameIgnoreDefaultNs(name);
 	}
 	
 	if (mode.length() > 0) {
-	    _mode = parser.getQName(mode);
+	    _mode = parser.getQNameIgnoreDefaultNs(mode);
 	}
 	
 	if (match.length() > 0) {

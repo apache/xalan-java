@@ -218,38 +218,54 @@ public class ErrorMessages extends ResourceBundle {
 
 	// COMPILE_STDIN_ERR
 	"The -i option must be used with the -o option.",
+
 	// COMPILE_USAGE_STR
-	"Usage:\n" + 
-	"   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-x] [-s] [-u] { <stylesheet> | -i }\n\n"+
-	"   Where <output> is the name to give the the generated translet.\n"+
-	"         <stylesheet> is one or more stylesheet file names, or if\n"+
-	"         the -u options is specified, one or more stylesheet URLs.\n"+
-	"         <directory> is the output directory.\n"+
-	"         <jarfile> is the name of a JAR-file to put all classes in.\n"+
-	"         <package-name> is used to prefix all class names.\n\n"+
-	"   Notes:\n"+
-	"         The -i options forces the compiler to read from stdin\n"+
-	"         The -o option is ignored if compiling multiple stylesheets\n"+
-	"         The -x option switches on debug messages.\n"+
-	"         The -s option disables calling System.exit.",
+	"SYNOPSIS\n" +
+	"   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>]\n" +
+	"      [-d <directory>] [-j <jarfile>] [-p <package>]\n" +
+	"      [-n] [-x] [-s] [-u] [-v] [-h] { <stylesheet> | -i }\n\n" +
+	"OPTIONS\n" +
+	"   -o <output>    assigns the name <output> to the generated\n" +
+	"                  translet. By default the translet name\n" +
+	"                  is taken from the <stylesheet> name. This option\n"+
+	"                  is ignored if compiling multiple stylesheets.\n" +
+	"   -d <directory> specifies a destination directory for translet\n" +
+	"   -j <jarfile>   packages translet classes into a jar file of the\n"+
+ 	"                  name specified as <jarfile>\n"+
+	"   -p <package>   specifies a package name prefix for all generated\n"+
+	"                  translet classes.\n" +
+	"   -n             disables template inlining to reduce method\n" +
+	"                  length.\n"+
+	"   -x             turns on additional debugging message output\n" +
+	"   -s             disables calling System.exit\n" +
+	"   -u             interprets <stylesheet> arguments as URLs\n" +
+	"   -i             forces compiler to read stylesheet from stdin\n" +
+	"   -v             prints the version of the compiler\n" +
+	"   -h             prints this usage statement\n",  
+ 
 	// TRANSFORM_USAGE_STR
-	"Usage: \n" +
-	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>] [-x] [-s]\n" +
-	"         {-u <document_url> | <document>} <class> [<param1>=<value1> ...]\n" +
-	"   Where <document> is the xml document to be transformed, or\n" +
-	"         <document_url> is a url for the xml document,\n" +
-	"         <class> is the translet class which is either in\n" +
-	"         user's CLASSPATH or in the <jarfile> specified \n" +
-	"         with the -j option.\n" +
-	"   Notes:\n"+
-	"         The -x option switches on debug messages.\n"+
-	"         The -s option disables calling System.exit.",
+	"SYNOPSIS \n" +
+	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>]\n"+
+        "      [-x] [-s] [-n <iterations>] {-u <document_url> | <document>}\n" +  
+        "      <class> [<param1>=<value1> ...]\n\n" +
+        "   uses the translet <class> to transform an XML document \n"+
+	"   specified as <document>. The translet <class> is either in\n"+
+	"   the user's CLASSPATH or in the optionally specified <jarfile>.\n"+
+	"OPTIONS\n" +
+	"   -j <jarfile>    specifies a jarfile from which to load translet\n"+
+	"   -x              turns on additional debugging message output\n" +
+	"   -s              disables calling System.exit\n" +
+	"   -n <iterations> runs the transformation <iterations> times and\n" +
+	"                   displays profiling information\n" +
+	"   -u <document_url> specifies XML input document as a URL\n", 
+
 
 	// STRAY_SORT_ERR
 	"<xsl:sort> can only be used within <xsl:for-each> or <xsl:apply-templates>.",
 	// UNSUPPORTED_ENCODING
-	"Output encoding ''{0}'' is not supported on this JVM."
+	"Output encoding ''{0}'' is not supported on this JVM.",
+	// SYNTAX_ERR
+	"Syntax error in ''{0}''."
     };
 
     private static Vector _keys;

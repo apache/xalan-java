@@ -106,7 +106,7 @@ final class ApplyTemplates extends Instruction {
 	}
 	
 	if (mode.length() > 0) {
-	    _modeName = parser.getQName(mode);
+	    _modeName = parser.getQNameIgnoreDefaultNs(mode);
 	}
 	
 	// instantiate Mode if needed, cache (apply temp) function name

@@ -121,6 +121,7 @@ class FunctionCall extends Expression {
      */
     static {
 	try {
+	    final Class objectClass   = Class.forName("java.lang.Object");
 	    final Class stringClass   = Class.forName("java.lang.String");
 	    final Class nodeClass     = Class.forName("org.w3c.dom.Node");
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
@@ -156,6 +157,8 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.ResultTree, nodeClass);
 	    _internal2Java.put(Type.ResultTree, nodeListClass);
 
+	    _internal2Java.put(Type.Reference, objectClass);
+
 	    // Possible conversions between Java and internal types
 	    _java2Internal.put(Boolean.TYPE, Type.Boolean);
 
@@ -168,6 +171,8 @@ class FunctionCall extends Expression {
 	    _java2Internal.put(Double.TYPE, Type.Real);
 
 	    _java2Internal.put(stringClass, Type.String);
+
+	    _java2Internal.put(objectClass, Type.Reference);
 
 	    // Conversions from org.w3c.dom.Node/NodeList are not supported
 	}
@@ -474,7 +479,7 @@ class FunctionCall extends Expression {
 		exp.translate(classGen, methodGen);
 		// Convert the argument to its Java type
 		exp.startResetIterator(classGen, methodGen);
-		exp._type.translateTo(classGen, methodGen, paramTypes[i]);
+		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
 	    }
 
 	    final StringBuffer buffer = new StringBuffer();

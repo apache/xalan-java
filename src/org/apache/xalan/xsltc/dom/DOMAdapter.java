@@ -73,6 +73,7 @@ import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
 
 public final class DOMAdapter implements DOM {
+
     private final DOMImpl _domImpl;
     private short[] _mapping;
     private short[] _reverse;
@@ -85,7 +86,8 @@ public final class DOMAdapter implements DOM {
     
     public DOMAdapter(DOMImpl dom,
 		      String[] namesArray,
-		      String[] namespaceArray) {
+		      String[] namespaceArray) 
+    {
 	_domImpl = dom;
 	_mapping = dom.getMapping(namesArray);
 	_reverse = dom.getReverseMapping(namesArray);
@@ -100,7 +102,9 @@ public final class DOMAdapter implements DOM {
 	_NSreverse = _domImpl.getReverseNamespaceMapping(namespaces);
     }
 
-    /** returns singleton iterator containg the document root */
+    /** 
+      * Returns singleton iterator containg the document root 
+      */
     public NodeIterator getIterator() {
 	return _domImpl.getIterator();
     }
@@ -124,11 +128,11 @@ public final class DOMAdapter implements DOM {
     public NodeIterator getChildren(final int node) {
 	NodeIterator iterator = _domImpl.getChildren(node);
 	if (_filter == null) {
-	    return(iterator.setStartNode(node));
+	    return iterator.setStartNode(node);
 	}
 	else {
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
-	    return(iterator.setStartNode(node));
+	    iterator = _domImpl.strippingIterator(iterator, _mapping, _filter);
+	    return iterator.setStartNode(node);
 	}
     }
 
@@ -138,9 +142,10 @@ public final class DOMAdapter implements DOM {
     
     public NodeIterator getTypedChildren(final int type) {
 	NodeIterator iterator = _domImpl.getTypedChildren(_reverse[type]);
-	if ((_reverse[type] == DOM.TEXT) && (_filter != null))
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
-	return(iterator);
+	if (_reverse[type] == DOM.TEXT && _filter != null) {
+	    return _domImpl.strippingIterator(iterator,_mapping,_filter);
+	}
+	return iterator;
     }
 
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
@@ -150,26 +155,27 @@ public final class DOMAdapter implements DOM {
     public NodeIterator getAxisIterator(final int axis) {
 	NodeIterator iterator = _domImpl.getAxisIterator(axis);
 	if (_filter != null) {
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
+	    return _domImpl.strippingIterator(iterator, _mapping, _filter);
 	}
-	return(iterator);
+	return iterator;
     }
     
     public NodeIterator getTypedAxisIterator(final int axis, final int type) {
 	NodeIterator iterator;
 
 	if (axis == Axis.NAMESPACE) {
-	    if ((type == NO_TYPE) || (type > _NSreverse.length))
-		iterator = _domImpl.getAxisIterator(axis);
-	    else
-		iterator = _domImpl.getTypedAxisIterator(axis,_NSreverse[type]);
+	    iterator = (type == NO_TYPE || type > _NSreverse.length) ?
+		_domImpl.getAxisIterator(axis) :
+		_domImpl.getTypedAxisIterator(axis,_NSreverse[type]);
 	}
-	else
+	else {
 	    iterator = _domImpl.getTypedAxisIterator(axis, _reverse[type]);
+	}
 	
-	if ((_reverse[type] == DOM.TEXT) && (_filter != null))
-	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
-	return(iterator);
+	if (_reverse[type] == DOM.TEXT && _filter != null) {
+	    iterator = _domImpl.strippingIterator(iterator, _mapping, _filter);
+	}
+	return iterator;
     }
 
     public NodeIterator getNthDescendant(int type, int n, boolean includeself) {
@@ -177,7 +183,8 @@ public final class DOMAdapter implements DOM {
     }
 
     public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
-					     String value, boolean op) {
+					     String value, boolean op) 
+    {
 	return _domImpl.getNodeValueIterator(iterator, type, value, op);
     }
 

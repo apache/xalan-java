@@ -67,12 +67,12 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.io.*;
+import java.util.Set;
 import java.util.Vector;
 import java.util.Hashtable;
-import java.util.Set;
+import java.util.Properties;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Properties;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Date;
@@ -142,6 +142,7 @@ public final class XSLTC {
     private Vector  _classes;
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
+    private boolean _templateInlining = true;
 
     /**
      * XSLTC compiler constructor
@@ -213,6 +214,16 @@ public final class XSLTC {
      */    
     public void setSourceLoader(SourceLoader loader) {
 	_loader = loader;
+    }
+
+    /**
+     * Set a flag indicating if templates are to be inlined or not. The
+     * default is to do inlining, but this causes problems when the
+     * stylesheets have a large number of templates (e.g. branch targets
+     * exceeding 64K or a length of a method exceeding 64K).
+     */
+    public void setTemplateInlining(boolean templateInlining) {
+	_templateInlining = templateInlining;
     }
 
     /**
@@ -320,7 +331,9 @@ public final class XSLTC {
 		_stylesheet.setSourceLoader(_loader);
 		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
+		_stylesheet.setTemplateInlining(_templateInlining);
 		_parser.setCurrentStylesheet(_stylesheet);
+
 		// Create AST under the Stylesheet element (parse & type-check)
 		_parser.createAST(_stylesheet);
 	    }
@@ -675,7 +688,10 @@ public final class XSLTC {
 	try {
 	    switch (_outputType) {
 	    case FILE_OUTPUT:
-		clazz.dump(getOutputFile(clazz.getClassName()));
+		clazz.dump(
+		    new BufferedOutputStream(
+			new FileOutputStream(
+			    getOutputFile(clazz.getClassName()))));
 		break;
 	    case JAR_OUTPUT:
 		_classes.addElement(clazz);	 
@@ -707,7 +723,7 @@ public final class XSLTC {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	final java.util.jar.Attributes atrs = manifest.getMainAttributes();
-	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.0");
+	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.1");
 
 	final Map map = manifest.getEntries();
 	// create manifest

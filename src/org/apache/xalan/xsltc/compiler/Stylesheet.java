@@ -129,7 +129,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     private SourceLoader _loader = null;
 
-    private boolean _compileTemplatesAsMethods;
+    private boolean _templateInlining = true;
 
     private boolean _forwardReference = false;
 
@@ -139,8 +139,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_forwardReference = true;
     }
 
-    public void compileTemplatesAsMethods() {
-	_compileTemplatesAsMethods = true;
+    public boolean getTemplateInlining() {
+	return _templateInlining;
+    }
+
+    public void setTemplateInlining(boolean flag) {
+	_templateInlining = flag;
     }
 
     public boolean isSimplified() {
@@ -222,8 +226,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public boolean checkForLoop(String systemId) {
 	// Return true if this stylesheet includes/imports itself
-	if (_systemId.equals(systemId))
+	if (_systemId != null && _systemId.equals(systemId)) {
 	    return true;
+	}
 	// Then check with any stylesheets that included/imported this one
 	if (_parentStylesheet != null) 
 	    return _parentStylesheet.checkForLoop(systemId);
@@ -428,9 +433,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
+
 	    // All template code should be compiled as methods if the
 	    // <xsl:apply-imports/> element was ever used in this stylesheet
-	    if (_compileTemplatesAsMethods && (child instanceof Template)) {
+	    if (!_templateInlining && (child instanceof Template)) {
 		Template template = (Template)child;
 		String name = "template$dot$"+template.getPosition();
 		template.setName(parser.getQName(name));
@@ -722,9 +728,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * This method returns a vector with variables in the order in which
-     * they are to be compiled. The order is determined by the dependencies
-     * between them. The first step is to close the input vector under
+     * This method returns a vector with variables in the order in 
+     * which they are to be compiled. The order is determined by the 
+     * dependencies between them and the order in which they were defined 
+     * in the stylesheet. The first step is to close the input vector under
      * the dependence relation (this is usually needed when variables are
      * defined inside other variables in a RTF).
      */
@@ -744,19 +751,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	}
 
+	/* DEBUG CODE - INGORE
+	for (int i = 0; i < input.size(); i++) {
+	    final VariableBase var = (VariableBase) input.elementAt(i);
+	    System.out.println("var = " + var);
+	}
+	System.out.println("=================================");
+	*/
+
 	Vector result = new Vector();
-	int zeroDep = 0;
 	while (input.size() > 0) {
 	    boolean changed = false;
 	    for (int i = 0; i < input.size(); ) {
 		final VariableBase var = (VariableBase)input.elementAt(i);
 		final Vector dep = var.getDependencies();
-		if (dep == null) {
-		    result.insertElementAt(var, zeroDep++);
-		    input.remove(i);
-		    changed = true;
-		}
-		else if (result.containsAll(dep)) {
+		if (dep == null || result.containsAll(dep)) {
 		    result.addElement(var);
 		    input.remove(i);
 		    changed = true;
@@ -766,7 +775,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 		}
 	    }
 
-
 	    // If nothing was changed in this pass then we have a circular ref
 	    if (!changed) {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
@@ -775,7 +783,16 @@ public final class Stylesheet extends SyntaxTreeNode {
 		return(result);
 	    }
 	}
-	return(result);
+
+	/* DEBUG CODE - INGORE
+	System.out.println("=================================");
+	for (int i = 0; i < result.size(); i++) {
+	    final VariableBase var = (VariableBase) result.elementAt(i);
+	    System.out.println("var = " + var);
+	}
+	*/
+
+	return result;
     }
 
     /**

@@ -431,7 +431,7 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:version"))
 	    return("1.0");
 	if (name.equals("xsl:vendor"))
-	    return("Apache Software Foundation");
+	    return("Apache Software Foundation (Xalan XSLTC)");
 	if (name.equals("xsl:vendor-url"))
 	    return("http://xml.apache.org/xalan-j");
 	
@@ -890,6 +890,31 @@ public final class BasisLibrary implements Operators {
 	try {
 	    StringBuffer result = new StringBuffer();
 	    formatter.applyLocalizedPattern(pattern);
+
+	    //------------------------------------------------------
+ 	    // bug fix # 9179 - make sure localized pattern contains
+	    //   a leading zero before decimal, handle cases where  
+	    //   decimal is in position zero, and >= to 1. 
+	    //   localized pattern is ###.### convert to ##0.###
+	    //   localized pattern is .###    convert to 0.###
+	    //------------------------------------------------------
+	    String localizedPattern = formatter.toPattern();
+	    int index = localizedPattern.indexOf('.');
+	    if ( index >= 1  && localizedPattern.charAt(index-1) == '#' ) {
+		//insert a zero before the decimal point in the pattern
+		StringBuffer newpattern = new StringBuffer();
+		newpattern.append(localizedPattern.substring(0, index-1));
+                newpattern.append("0");
+                newpattern.append(localizedPattern.substring(index));
+		formatter.applyLocalizedPattern(newpattern.toString());
+	    } else if (index == 0) {
+                // insert a zero before decimal point in pattern
+                StringBuffer newpattern = new StringBuffer();
+                newpattern.append("0");
+                newpattern.append(localizedPattern);
+		formatter.applyLocalizedPattern(newpattern.toString());
+            }
+
 	    formatter.format(number, result, _fieldPosition);
 	    return(result.toString());
 	}
@@ -1048,6 +1073,32 @@ public final class BasisLibrary implements Operators {
 
     public static void consoleOutput(String msg) {
 	System.out.println(msg);
+    }
+
+    /**
+     * Replace a certain character in a string with a new substring.
+     */
+    public static String replace(String base, char ch, String str) {
+	return (base.indexOf(ch) < 0) ? base : 
+	    replace(base, String.valueOf(ch), new String[] { str });
+    }
+
+    public static String replace(String base, String delim, String[] str) {
+	final int len = base.length();
+	final StringBuffer result = new StringBuffer();
+
+	for (int i = 0; i < len; i++) {
+	    final char ch = base.charAt(i);
+	    final int k = delim.indexOf(ch);
+
+	    if (k >= 0) {
+		result.append(str[k]);
+	    }
+	    else {
+		result.append(ch);
+	    }
+	}
+	return result.toString();
     }
 
     //-- End utility functions

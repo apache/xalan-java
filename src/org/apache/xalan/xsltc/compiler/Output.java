@@ -75,7 +75,6 @@ import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.runtime.TextOutput;
 
 final class Output extends TopLevelElement {
 
@@ -98,8 +97,8 @@ final class Output extends TopLevelElement {
     private boolean _disabled = false;
 
     // Some global constants
-    private final static String STRING_SIG   = "Ljava/lang/String;";
-    private final static String XML_VERSION  = "1.0";
+    private final static String STRING_SIG = "Ljava/lang/String;";
+    private final static String XML_VERSION = "1.0";
     private final static String HTML_VERSION = "4.0";
 
     /**
@@ -216,6 +215,16 @@ final class Output extends TopLevelElement {
 	    _cdata = null;
 	}
 	else {
+	    StringBuffer expandedNames = new StringBuffer();
+	    StringTokenizer tokens = new StringTokenizer(_cdata);
+
+	    // Make sure to store names in expanded form
+	    while (tokens.hasMoreTokens()) {
+		expandedNames.append(parser.getQName(tokens.nextToken()).toString())
+			     .append(' ');
+	    }
+	    _cdata = expandedNames.toString();
+
 	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, _cdata);
 	}
 
@@ -227,7 +236,6 @@ final class Output extends TopLevelElement {
 	    }
 	    outputProperties.setProperty(OutputKeys.INDENT, attrib);
 	}
-
 	else if (_method != null && _method.equals("html")) {
 	    _indent = true;
 	}
@@ -250,7 +258,6 @@ final class Output extends TopLevelElement {
 		if (_mediaType == null) {
 		    _mediaType = "text/html";
 		}
-		_indent = true;
 	    }
 	    else if (_method.equals("text")) {
 		if (_mediaType == null) {
@@ -279,7 +286,7 @@ final class Output extends TopLevelElement {
         il.append(classGen.loadTranslet());
 
 	// Only update _version field if set and different from default
-	if (_version != null && !_version.equals(XML_VERSION)) {
+	if ((_version != null) && (!_version.equals(XML_VERSION))) {
 	    field = cpg.addFieldref(TRANSLET_CLASS, "_version", STRING_SIG);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, _version));
@@ -337,7 +344,7 @@ final class Output extends TopLevelElement {
 	}
 
 	// Compile code to set output indentation on/off
-	if (_indent ) {
+	if (_indent) {
 	    field = cpg.addFieldref(TRANSLET_CLASS, "_indent", "Z");
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, _indent));
@@ -349,6 +356,7 @@ final class Output extends TopLevelElement {
 	    int index = cpg.addMethodref(TRANSLET_CLASS,
 					 "addCdataElement",
 					 "(Ljava/lang/String;)V");
+
 	    StringTokenizer tokens = new StringTokenizer(_cdata);
 	    while (tokens.hasMoreTokens()) {
 		il.append(DUP);

@@ -64,13 +64,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
 import java.util.Hashtable;
-import java.util.Properties;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.xml.parsers.*;
-import javax.xml.transform.OutputKeys;
 
 import org.xml.sax.*;
 
@@ -272,18 +270,6 @@ final class LiteralElement extends Instruction {
 
 	_name = translateQName(_qname, stable);
 
-	// Determine output type if first literal output is html
-	if (_name.toString().equalsIgnoreCase("html")) {
-	    final SyntaxTreeNode parent = getParent();
-	    if (parent instanceof Template) {
-		final Template tt = (Template) parent;
-		if (tt.isRootTemplate()) {
-		    final Stylesheet stylesheet = parser.getCurrentStylesheet();
-		    stylesheet.setOutputProperty(OutputKeys.METHOD, "html");
-		}
-	    }
-	}
-
 	// Process all attributes and register all namespaces they use
 	final int count = _attributes.getLength();
 	for (int i = 0; i < count; i++) {
@@ -306,10 +292,12 @@ final class LiteralElement extends Instruction {
 		stable.excludeNamespaces(val);
 	    }
 	    else {
-		// Ignore special attributes
+		// Ignore special attributes (e.g. xmlns:prefix and xmlns)
 		final String prefix = qname.getPrefix();
-		if (uri != null && uri.equals(XSLT_URI) ||
-		    prefix != null && prefix.equals(XMLNS_STRING)) {
+		if (prefix != null && prefix.equals(XMLNS_PREFIX) ||
+		    prefix == null && qname.getLocalPart().equals("xmlns") ||
+		    uri != null && uri.equals(XSLT_URI))
+		{
 		    continue;	
 		}
 

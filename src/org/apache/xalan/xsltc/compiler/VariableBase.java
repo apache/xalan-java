@@ -125,8 +125,12 @@ class VariableBase extends TopLevelElement {
      *
      */
     public void addDependency(VariableBase other) {
-	if (_dependencies == null) _dependencies = new Vector();
-	_dependencies.addElement(other);
+	if (_dependencies == null) {
+	    _dependencies = new Vector();
+	}
+	if (!_dependencies.contains(other)) {
+	    _dependencies.addElement(other);
+	}
     }
 
     /**
@@ -227,7 +231,6 @@ class VariableBase extends TopLevelElement {
      */
     public void setName(QName name) {
 	_name = name;
-	_name.clearDefaultNamespace();
 	_variable = Util.escape(name.getLocalPart());
     }
 
@@ -247,7 +250,7 @@ class VariableBase extends TopLevelElement {
 	if (name == null) name = EMPTYSTRING;
 
 	if (name.length() > 0)
-	    setName(parser.getQName(name));
+	    setName(parser.getQNameIgnoreDefaultNs(name));
         else
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 
@@ -260,6 +263,10 @@ class VariableBase extends TopLevelElement {
 	select = getAttribute("select");
 	if (select.length() > 0) {
 	    _select = getParser().parseExpression(this, "select", null);
+	    if (_select.isDummy()) {
+		reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "select");
+		return;
+	    }
 	}
 
 	// Children must be parsed first -> static scoping
