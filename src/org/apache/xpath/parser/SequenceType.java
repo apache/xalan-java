@@ -184,4 +184,20 @@ public class SequenceType extends NonExecutableExpression
     m_elemOrAttrName = elemOrAttrName;
   }
 
+	/**
+	 * @see org.apache.xpath.parser.Node#jjtAddChild(Node, int)
+	 */
+	public void jjtAddChild(Node n, int i)
+	{
+		super.jjtAddChild(n, i);
+		
+		// It isn't. It's an OccurrenceIndicator, with m_occuranceType (oh,
+		// you can't spell it consistantly either?) defaulting to unset (0);
+		// its add-child or set-type methods aren't being invoked.
+		// Another layer of dubious default; chase this farther up the grammar?
+		
+		if(n instanceof Empty)
+			m_occurrenceIndicator=InstanceofExpr.EMPTY_SEQ;
+	}
+
 }
