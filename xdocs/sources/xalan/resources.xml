@@ -44,7 +44,7 @@
             location="http://www.apache.org/websrc/cvsweb.cgi/xml-xalan/README"/>
   
   <resource id="xslt" 
-            title="W3C Recommendation 16 November 1999 XSL Transformations (XSLT) Version 1.0"
+            title="W3C Recommendation XSL Transformations (XSLT) Version 1.0"
             location="http://www.w3.org/TR/xslt"/>
   
   <resource id="xpath" 
