@@ -163,7 +163,7 @@ public class ApplyXPath
 	      Node n = null;
         while ((n = nl.nextNode())!= null)
 		    { //System.out.println("Node is " + n.getNodeName());          
-          ser.asDOMSerializer().serialize(n);ser.reset();
+          ser.asDOMSerializer().serialize(n);
 		    }
       }
 	    catch (Exception e3)
