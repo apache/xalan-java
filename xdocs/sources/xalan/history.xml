@@ -1,5 +1,5 @@
 
-     <s3 title="Changes since &xslt4j; 2.1.0">
+     <s3 title="Changes for &xslt4j; 2.1.0">
      &xsltcdone;
      <p>This release also includes a number of bug fixes to &xslt4j; and TrAX. 
      We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple

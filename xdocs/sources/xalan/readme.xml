@@ -78,7 +78,8 @@
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D1">
+     <s3 title="Changes since &xslt4j; 2.1.0">
+     <p></p>
 <p>We have moved the DTM_EXP branch to the main branch, incorporating all our work on the <link idref="whatsnew" anchor="dtm">DTM</link> into the Xalan source tree. 
 The branch is not absolutely perfect, but it's in pretty good shape, and we think
 any final polishing should be done on the main branch.  We would also like
