@@ -1,3 +1,71 @@
+
+<s3 title="Changes for &xslt4j; 2.2.D10">
+<p> Core (Non-XSLTC) source code updates:</p><ul>
+<li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Fix bugzilla bug 3056 
+(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3056). SAX2DTM now keeps 
+track if it is receiving events inside a DTD and ignores comment events when 
+inside the DTD.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>Update version for 2.2.D9 build<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>08/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql ConnectionPool.java
+ DefaultConnectionPool.java SQLDocument.java
+ XConnection.java<br/><ref>Committer's log entry: </ref>Fixed bug in connect method where User and Password were not
+ correctly being passed to the JDBC Driver. Requires chnage in
+ ConnectionPool Interface
+ Submitted by: John Gentilin<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql XConnection.java<br/><ref>Committer's log entry: </ref>Use defined constant DTMManager.IDENT_DTM_NODE_BITS for shifting DTM nodes, 
+not hard coded value.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SystemIDResolver.java<br/><ref>Committer's log entry: </ref>Fix problem with resolving a relative URI from a processing instruction<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SystemIDResolver.java<br/><ref>Committer's log entry: </ref>Make sure base is not null before checking for its contents.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates FuncDocument.java<br/><ref>Committer's log entry: </ref>Fix document function so that if only one argument is passed and it is a 
+nodetest, the base to be used to resolve relative URIs is the base of the each 
+node in the nodeset.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLTSchema.java<br/><ref>Committer's log entry: </ref>Allow multiple iterations of xsl:with-param within an xsl:call-template or 
+xsl:apply-template<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>08/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>Added getCurrentNodeList() for getting the current node list as defined
+ by http://www.w3.org/TR/xslt#dt-current-node-list.
+ This looks up the stack of the SubContextLists to find the top-level
+ LocPathIterator. I'm fairly unhappy with this fix, and hope to restructure
+ the context list stuff a bit to avoid the casts in the getCurrentNodeList(),
+ and to fix getCurrentNode() so that it properly defines the current
+ node as defined by the XSLT spec. As a matter of fact, I would
+ like to break up XPathContext into an XSLTContext.
+ Part of the http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3031
+ fix.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>08/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/functions FuncCurrent.java<br/><ref>Committer's log entry: </ref>Call new XPathContext#getCurrentNodeList. Fixes
+ http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3031.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>08/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer KeyRefIterator.java
+ java/src/org/apache/xpath/axes ChildIterator.java
+ ChildTestIterator.java DescendantIterator.java
+ MatchPatternIterator.java
+ SelfIteratorNoPredicate.java UnionPathIterator.java<br/><ref>Committer's log entry: </ref>Fix for problem reported by Mike Starr &lt;mike.starr@air2web.com&gt;,
+ where the transformation hangs for "foo[2] | bang"
+ patters, i.e. unions with positional predicates. The fix
+ is to have the iterators#nextNode() set m_lastFetched to DTM.NULL
+ when m_foundLast is found to be true on function entry
+ (after the cache check). This allows getCurrentNode() to
+ fullfill it's contract of returning null if the last fetch was
+ null. The bug occured after an optimization for positional
+ predicates to have them not continue searching once
+ the positional node was found, by setting m_foundLast
+ to true.<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>08/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Removed debug flag
+ Submitted by:John Gentilin<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>08/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ XConnection.java<br/><ref>Committer's log entry: </ref>Fixed Streaming Mode
+ Submitted by: John Gentilin<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>08/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDocumentImpl.java DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>added document registration and release events to the DTM interface
+ Submitted by: John Gentilin<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>08/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib Extensions.java<br/><ref>Committer's log entry: </ref>Fix bug 3112 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3112). Fix 
+tokenize to work with DTM by obtaining a new DocumentBuilder and not using the 
+document from the context node.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>08/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath VariableStack.java
+ java/src/org/apache/xpath/operations Variable.java<br/><ref>Committer's log entry: </ref>Fix bug 3265 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3265). Using 
+an expression in the evaluate extension function that contains a top-level 
+variable was cause an NPE.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>08/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XStringForChars.java<br/><ref>Committer's log entry: </ref>Fixed two bugs, one in getChars and one in charAt where the m_start
+ offset wasn't being used correctly. This manifested itself in some
+ stuff I was doing with the startsWith function, but likely caused
+ many other bugs with other functionality.<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>08/27/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc StripFilter.java<br/><ref>Committer's log entry: </ref>Forgot to add this file in my last putback.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>08/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java<br/><ref>Committer's log entry: </ref>added dumpNode method, convenience for debugging.
+
+ We might want to move this function up to DTMDefaultBase, or
+ perhaps to the DTM API itself.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>08/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToText.java<br/><ref>Committer's log entry: </ref>Fix http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3131 by
+ overriding writeNormalizedChars and writeUTF16Surrogate to
+ not do any XML escaping.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>08/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java<br/><ref>Committer's log entry: </ref>The index was being stored as opposed to the node handle when we were 
+replacing namespace nodes. Store the actual node handle.<br/><br/></li>
+<li><ref>Committed by</ref> mmidy@apache.org<ref> on </ref>08/29/2001<br/><ref>Modified: </ref>
+java/src/org/apache/xpath/compiler Lexer.java<br/><ref>Committer's log entry: </ref>Fix for Bugzilla 2684 StringIndexOutOfBounds Exception. Check if we are at the end of the pattern string.<br/><br/></li>
+</ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+</s3>
 <s3 title="Changes for &xslt4j; 2.2.D9">
 <p> Core (Non-XSLTC) source code updates:</p>
 <ul><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>2.2.D8<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>2.2.D8<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer NodeSortKey.java<br/><ref>Committer's log entry: </ref>Submitted fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2851.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Just added some stuff to diagnose bugs for flavor th.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes WalkerFactory.java
