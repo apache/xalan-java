@@ -53,7 +53,7 @@ Pieriodic update.
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/05/09</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/xdocs/sources/xalan extensionslib.xml</Modified>
 <Log>
 Added info on Xalan implementation of EXSLT common, math,
 and set extensions, and ongoing work on the function and result
@@ -119,7 +119,7 @@ added new method 'setDocumentLocator()' to TemplatesHandlerImpl so that SAX pars
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/10</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler UnresolvedRef.java</Modified>
 <Log>
 Assigned type to _type.
 </Log>
@@ -127,7 +127,7 @@ Assigned type to _type.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/10</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler ApplyTemplates.java AttributeSet.java CallTemplate.java DecimalFormatting.java EqualityExpr.java FormatNumberCall.java Key.java KeyCall.java Parser.java QName.java SymbolTable.java Template.java UseAttributeSets.java VariableBase.java xpath.cup</Modified>
 <Log>
 Fixed problem with default namespace in XPath expressions and XSLT's
 named objects (e.g. templates, keys, variables, etc.).
@@ -261,7 +261,7 @@ Fixed looping problem reported by Girish.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/14</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Text.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Text.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime SAXAdapter.java StringValueHandler.java TextOutput.java TransletOutputBase.java</Modified>
 <Log>
 Added characters(String) to TextOutputHandler.
 </Log>
@@ -335,7 +335,7 @@ fixed a regression in output66 test
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Text.java</Modified>
 <Log>
 Fix for attribset49.
 </Log>
@@ -423,7 +423,7 @@ Fix bug in Attr iterator.
 <Commit category="core">
 <Who>amiro@apache.org</Who>
 <DateCommitted>2002/05/17</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_constraints.xml</Modified>
 <Log>
 section on problems was way out of date. Also incorporated material from JAXP 1.2 release notes
 </Log>
@@ -431,7 +431,7 @@ section on problems was way out of date. Also incorporated material from JAXP 1.
 <Commit category="core">
 <Who>amiro@apache.org</Who>
 <DateCommitted>2002/05/17</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/xdocs/sources/xalan xsltc_usage.xml</Modified>
 <Log>
 updated command option usuage. Some options have been added.
 </Log>
@@ -456,7 +456,7 @@ is more severe.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/20</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output HtmlOutput.java StreamOutput.java</Modified>
 <Log>
 *** empty log message ***
 </Log>
@@ -464,7 +464,7 @@ is more severe.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/05/20</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXHTMLOutput.java SAXOutput.java SAXXMLOutput.java</Modified>
 <Log>
 updated new code, on-going development
 </Log>
@@ -480,7 +480,7 @@ added new methods, on-going
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/21</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java SAXAdapter.java TransletOutputBase.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc TransletOutputHandler.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java SAXAdapter.java TransletOutputBase.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output HtmlOutput.java OutputBase.java StreamOutput.java</Modified>
 <Log>
 New methods added to the translet output handler.
 </Log>
@@ -496,7 +496,7 @@ Renamed module.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/05/21</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
 <Log>
 Obvious mistake, apparently in a corner our regression tests missed.
 </Log>
@@ -512,7 +512,7 @@ Root node is not always 0 in an RTFDTM
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/05/21</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output DOMOutput.java</Modified>
 <Log>
 temporarily moved out of the way
 </Log>
@@ -520,7 +520,7 @@ temporarily moved out of the way
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/05/21</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java SAXXMLOutput.java</Modified>
 <Log>
 updated namespace support
 </Log>
@@ -528,7 +528,7 @@ updated namespace support
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/05/21</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXHTMLOutput.java SAXOutput.java</Modified>
 <Log>
 fixed uninitialized stack
 </Log>
@@ -584,7 +584,7 @@ Added "-n" option to Transform.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamOutput.java StreamXMLOutput.java</Modified>
 <Log>
 *** empty log message ***
 </Log>
@@ -592,7 +592,7 @@ Added "-n" option to Transform.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamOutput.java StreamUnknownOutput.java StreamXMLOutput.java TransletOutputHandlerFactory.java</Modified>
 <Log>
 *** empty log message ***
 </Log>
@@ -600,7 +600,7 @@ Added "-n" option to Transform.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamTextOutput.java TransletOutputHandlerFactory.java</Modified>
 <Log>
 *** empty log message ***
 </Log>
@@ -608,7 +608,7 @@ Added "-n" option to Transform.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamXMLOutput.java</Modified>
 <Log>
 Insert XML header at the beginning.
 </Log>
@@ -616,7 +616,7 @@ Insert XML header at the beginning.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/28</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
 <Log>
 *** empty log message ***
 </Log>
@@ -624,7 +624,7 @@ Insert XML header at the beginning.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/05/28</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
 <Log>
 added sax case support
 </Log>
@@ -648,7 +648,7 @@ Added 'experimental-output' attribute to transformer factory.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/28</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java</Modified>
 <Log>
 *** empty log message ***
 </Log>
@@ -656,7 +656,7 @@ Added 'experimental-output' attribute to transformer factory.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/05/29</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXXMLOutput.java</Modified>
 <Log>
 added processing instruction support
 </Log>
@@ -664,7 +664,7 @@ added processing instruction support
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/05/29</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamOutput.java StreamXMLOutput.java</Modified>
 <Log>
 Bug fixes after testing.
 </Log>
@@ -713,7 +713,7 @@ Fixed problem with offset in characters().
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/05/31</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
 <Log>
 Starting branch for Xalan3
 </Log>
@@ -737,7 +737,7 @@ Just comment
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/05/31</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm DTM2XNI.java</Modified>
 <Log>
 file DTM2XNI.java was initially added on branch Xalan3.
 </Log>
@@ -745,7 +745,7 @@ file DTM2XNI.java was initially added on branch Xalan3.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/05/31</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm FuncValidate.java</Modified>
 <Log>
 file FuncValidate.java was initially added on branch Xalan3.
 </Log>
@@ -761,7 +761,7 @@ file XNISource.java was initially added on branch Xalan3.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/05/31</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/utils CharacterBlockEnumeration.java</Modified>
 <Log>
 file CharacterBlockEnumeration.java was initially added on branch Xalan3.
 </Log>
@@ -778,7 +778,7 @@ XALAN3-branch copy.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/03</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output OutputBase.java SAXHTMLOutput.java SAXOutput.java SAXXMLOutput.java StreamOutput.java StreamXMLOutput.java</Modified>
 <Log>
 Moved common methods to base classes.
 </Log>
@@ -786,7 +786,7 @@ Moved common methods to base classes.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output OutputBase.java SAXHTMLOutput.java SAXOutput.java SAXXMLOutput.java StreamOutput.java StreamTextOutput.java StreamXMLOutput.java</Modified>
 <Log>
 updating work in progress
 </Log>
@@ -794,7 +794,7 @@ updating work in progress
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java SAXXMLOutput.java StreamXMLOutput.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java SAXXMLOutput.java StreamXMLOutput.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerHandlerImpl.java</Modified>
 <Log>
 Updated.
 </Log>
@@ -839,7 +839,7 @@ we need; when they restore that functionality, we'll cut over.
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorFuncResult.java ProcessorFunction.java</Modified>
 <Log>
 Mistake! These files belong on the Xalan3 branch.
 </Log>
@@ -855,7 +855,7 @@ Mistake! This file belongs on the Xalan3 branch.
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemFuncResult.java</Modified>
 <Log>
 file ElemFuncResult.java was initially added on branch Xalan3.
 </Log>
@@ -863,7 +863,7 @@ file ElemFuncResult.java was initially added on branch Xalan3.
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemFunction.java</Modified>
 <Log>
 file ElemFunction.java was initially added on branch Xalan3.
 </Log>
@@ -871,7 +871,7 @@ file ElemFunction.java was initially added on branch Xalan3.
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemPrincipalResultDocument.java</Modified>
 <Log>
 file ElemPrincipalResultDocument.java was initially added on branch Xalan3.
 </Log>
@@ -895,7 +895,7 @@ Fixed problems with id/key.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/04</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output OutputBase.java SAXOutput.java SAXXMLOutput.java StreamOutput.java</Modified>
 <Log>
 Updated.
 </Log>
@@ -927,7 +927,7 @@ Restored pre-Xalan3 source file!
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExpressionVisitor.java</Modified>
 <Log>
 file ExpressionVisitor.java was initially added on branch ExtensionEnhancements.
 </Log>
@@ -935,7 +935,7 @@ file ExpressionVisitor.java was initially added on branch ExtensionEnhancements.
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionHandlerExsltFunction.java</Modified>
 <Log>
 file ExtensionHandlerExsltFunction.java was initially added on branch ExtensionEnhancements.
 </Log>
@@ -943,7 +943,7 @@ file ExtensionHandlerExsltFunction.java was initially added on branch ExtensionE
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/extensions ExtensionNamespacesManager.java</Modified>
 <Log>
 file ExtensionNamespacesManager.java was initially added on branch ExtensionEnhancements.
 </Log>
@@ -959,7 +959,7 @@ file ExtensionNamespaceSupport.java was initially added on branch ExtensionEnhan
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemExsltFuncResult.java</Modified>
 <Log>
 file ElemExsltFuncResult.java was initially added on branch ExtensionEnhancements.
 </Log>
@@ -983,7 +983,7 @@ file ExtensionsProvider.java was initially added on branch ExtensionEnhancements
 <Commit category="core">
 <Who>dleslie@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/processor ProcessorExsltFuncResult.java</Modified>
 <Log>
 file ProcessorExsltFuncResult.java was initially added on branch ExtensionEnhancements.
 </Log>
@@ -1007,7 +1007,7 @@ Core EXSLT dates-and-times functions.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
 <Log>
 updated xsl:vendor string
 </Log>
@@ -1015,7 +1015,7 @@ updated xsl:vendor string
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/05</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
 <Log>
 updated xsl:vendor string
 </Log>
@@ -1328,7 +1328,7 @@ Added comment() support.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/11</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output TransletOutputHandlerFactory.java xml-xalan/java/src/org/apache/xalan/xsltc/trax SAX2DOM.java</Modified>
 <Log>
 added support for comment handling in DOM
 </Log>
@@ -1376,7 +1376,7 @@ No longer in use.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/11</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java Output.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java TextOutput.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java StreamHTMLOutput.java StreamUnknownOutput.java StreamXMLOutput.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java Output.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java TextOutput.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output SAXOutput.java StreamHTMLOutput.java StreamUnknownOutput.java StreamXMLOutput.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java TemplatesImpl.java TransformerFactoryImpl.java TransformerImpl.java</Modified>
 <Log>
 New output system installed.
 </Log>
@@ -1416,7 +1416,7 @@ Fixed insertion of META when HEAD is empty.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/13</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom CurrentNodeListIterator.java</Modified>
 <Log>
 Replaced eager by lazy computation of last.
 </Log>
@@ -1424,7 +1424,7 @@ Replaced eager by lazy computation of last.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/13</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom StepIterator.java</Modified>
 <Log>
 Very minor optimization.
 </Log>
@@ -1532,7 +1532,7 @@ on a Calendar method that doesn't exist in Java 1.1.8.
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/18</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Include.java</Modified>
 <Log>
 catching file not found exception fixed
 </Log>
@@ -1540,7 +1540,7 @@ catching file not found exception fixed
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/18</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Parser.java</Modified>
 <Log>
 added ability to detect/flag superfluous attributes
 </Log>
@@ -1679,7 +1679,7 @@ Rollback to revision 1.39
 <Commit category="xsltc">
 <Who>tmiller@apache.org</Who>
 <DateCommitted>2002/06/20</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax DOM2SAX.java</Modified>
 <Log>
 whitespace13.xsl fix for trax.dom case
 </Log>
@@ -1695,7 +1695,7 @@ Fixed regression.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/20</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler NameBase.java</Modified>
 <Log>
 _type renamed to _paramType to avoid shadowing of protected vars.
 </Log>
@@ -1779,7 +1779,7 @@ Better fix for Bugzilla 9068.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/24</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Step.java</Modified>
 <Log>
 Fix for Bugzilla 8551.
 </Log>
@@ -1803,7 +1803,7 @@ Fix for Bugzilla 6925.
 <Commit category="xsltc">
 <Who>amiro@apache.org</Who>
 <DateCommitted>2002/06/25</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionAvailableCall.java</Modified>
 <Log>
 fix check for extension functions
 </Log>
@@ -1819,7 +1819,7 @@ Fix for function-available() needed to handle XSLTC's extension functions.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/25</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler ParentLocationPath.java Step.java</Modified>
 <Log>
 Fix for axes122.
 </Log>
@@ -1928,7 +1928,7 @@ Fix problem in copyElement().
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/27</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler xpath.cup</Modified>
 <Log>
 Use doubles instead of longs for big ints.
 </Log>
@@ -1968,7 +1968,7 @@ Copy namespace nodes of an element in xsl:copy.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/06/28</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler ElementAvailableCall.java FunctionAvailableCall.java</Modified>
 <Log>
 Better error reporting when argument is not a literal.
 </Log>
@@ -2016,7 +2016,7 @@ resource error messages
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/09</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Compile.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Compile.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler XSLTC.java</Modified>
 <Log>
 Updated XSLTC's version number from 1.0 to 1.1
 </Log>
@@ -2024,7 +2024,7 @@ Updated XSLTC's version number from 1.0 to 1.1
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/09</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler AttributeSet.java</Modified>
 <Log>
 Fix for Bugzilla 4603 (thanks to Henri Zongaro)
 </Log>
@@ -2032,7 +2032,7 @@ Fix for Bugzilla 4603 (thanks to Henri Zongaro)
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/09</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler Parser.java</Modified>
 <Log>
 Print warning message for superfluous attributes that have a null URI only.
 </Log>
@@ -2141,7 +2141,7 @@ testing commit
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/18</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/compiler FunctionCall.java</Modified>
 <Log>
 Fixed problem in error reporting code.
 </Log>
@@ -2184,7 +2184,7 @@ Report a decent error when the URI cannot be resolved.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/21</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java</Modified>
 <Log>
 Added a few getters to this class.
 </Log>
@@ -2211,7 +2211,7 @@ The bug addresses the problem that there is a build error with Xalan under JDK 1
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/22</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime/output StreamHTMLOutput.java StreamOutput.java StreamXMLOutput.java</Modified>
 <Log>
 Fix for Bugzilla 10715.
 </Log>
@@ -2227,7 +2227,7 @@ Fixed a regression.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesHandlerImpl.java TemplatesImpl.java TransformerFactoryImpl.java TransformerImpl.java</Modified>
 <Log>
 Fixed for Bugzilla 10625. URIResolvers were being dropped in several places.
 </Log>
@@ -2251,7 +2251,7 @@ Synchronize calls to Stylesheet.translate() using class' lock.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/07/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java</Modified>
 <Log>
 Ensure synchronization for Templates objects.
 </Log>
@@ -2511,7 +2511,7 @@ For Bug#6547. Remove reference to old jar files.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java debugconf.bat</Modified>
 <Log>
 file debugconf.bat was initially added on branch xalan3.
 </Log>
@@ -2527,7 +2527,7 @@ file parse.bat was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar xpath-grammar.xml</Modified>
 <Log>
 file xpath-grammar.xml was initially added on branch xalan3.
 </Log>
@@ -2535,7 +2535,7 @@ file xpath-grammar.xml was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar xpath-manifest.txt</Modified>
 <Log>
 file xpath-manifest.txt was initially added on branch xalan3.
 </Log>
@@ -2543,7 +2543,7 @@ file xpath-manifest.txt was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar xquery-manifest.txt</Modified>
 <Log>
 file xquery-manifest.txt was initially added on branch xalan3.
 </Log>
@@ -2551,7 +2551,7 @@ file xquery-manifest.txt was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar core-manifest.txt</Modified>
 <Log>
 file core-manifest.txt was initially added on branch xalan3.
 </Log>
@@ -2559,7 +2559,7 @@ file core-manifest.txt was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar etree.xsl</Modified>
 <Log>
 file etree.xsl was initially added on branch xalan3.
 </Log>
@@ -2567,7 +2567,7 @@ file etree.xsl was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar grammar.dtd</Modified>
 <Log>
 file grammar.dtd was initially added on branch xalan3.
 </Log>
@@ -2575,7 +2575,7 @@ file grammar.dtd was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar javacc.xsl</Modified>
 <Log>
 file javacc.xsl was initially added on branch xalan3.
 </Log>
@@ -2583,7 +2583,7 @@ file javacc.xsl was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar jjtree.xsl</Modified>
 <Log>
 file jjtree.xsl was initially added on branch xalan3.
 </Log>
@@ -2591,7 +2591,7 @@ file jjtree.xsl was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar pathx1-manifest.txt</Modified>
 <Log>
 file pathx1-manifest.txt was initially added on branch xalan3.
 </Log>
@@ -2599,7 +2599,7 @@ file pathx1-manifest.txt was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar SimpleNode.java</Modified>
 <Log>
 file SimpleNode.java was initially added on branch xalan3.
 </Log>
@@ -2607,7 +2607,7 @@ file SimpleNode.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/grammar Test.java</Modified>
 <Log>
 file Test.java was initially added on branch xalan3.
 </Log>
@@ -2623,7 +2623,7 @@ file utils.xsl was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/bin JavaCC.zip</Modified>
 <Log>
 file JavaCC.zip was initially added on branch xalan3.
 </Log>
@@ -2647,7 +2647,7 @@ file ExtensionHandlerStylesheetFunction.java was initially added on branch xalan
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemForEachGroup.java</Modified>
 <Log>
 file ElemForEachGroup.java was initially added on branch xalan3.
 </Log>
@@ -2655,7 +2655,7 @@ file ElemForEachGroup.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemNamespace.java</Modified>
 <Log>
 file ElemNamespace.java was initially added on branch xalan3.
 </Log>
@@ -2671,7 +2671,7 @@ file FuncCurrentGroup.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/transformer GroupingIterator.java</Modified>
 <Log>
 file GroupingIterator.java was initially added on branch xalan3.
 </Log>
@@ -2679,7 +2679,7 @@ file GroupingIterator.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/transformer GroupSorter.java</Modified>
 <Log>
 file GroupSorter.java was initially added on branch xalan3.
 </Log>
@@ -2687,7 +2687,7 @@ file GroupSorter.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/transformer ItemSorter.java</Modified>
 <Log>
 file ItemSorter.java was initially added on branch xalan3.
 </Log>
@@ -2703,7 +2703,7 @@ file SortKey.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm DTMSequence.java</Modified>
 <Log>
 file DTMSequence.java was initially added on branch xalan3.
 </Log>
@@ -2711,7 +2711,7 @@ file DTMSequence.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm DTMSequenceEmpty.java</Modified>
 <Log>
 file DTMSequenceEmpty.java was initially added on branch xalan3.
 </Log>
@@ -2719,7 +2719,7 @@ file DTMSequenceEmpty.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm XType.java</Modified>
 <Log>
 file XType.java was initially added on branch xalan3.
 </Log>
@@ -2735,7 +2735,7 @@ file XTypeConverter.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm AbstractSchema.java</Modified>
 <Log>
 file AbstractSchema.java was initially added on branch xalan3.
 </Log>
@@ -2743,7 +2743,7 @@ file AbstractSchema.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm DOMValidationConfigurationSwipedFromXerces.java</Modified>
 <Log>
 file DOMValidationConfigurationSwipedFromXerces.java was initially added on branch xalan3.
 </Log>
@@ -2751,7 +2751,7 @@ file DOMValidationConfigurationSwipedFromXerces.java was initially added on bran
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm ElemImportSchema.java</Modified>
 <Log>
 file ElemImportSchema.java was initially added on branch xalan3.
 </Log>
@@ -2759,7 +2759,7 @@ file ElemImportSchema.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm FuncData.java</Modified>
 <Log>
 file FuncData.java was initially added on branch xalan3.
 </Log>
@@ -2767,7 +2767,7 @@ file FuncData.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm FuncInstanceOf.java</Modified>
 <Log>
 file FuncInstanceOf.java was initially added on branch xalan3.
 </Log>
@@ -2775,7 +2775,7 @@ file FuncInstanceOf.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm FuncTreatAs.java</Modified>
 <Log>
 file FuncTreatAs.java was initially added on branch xalan3.
 </Log>
@@ -2783,7 +2783,7 @@ file FuncTreatAs.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/dtm/ref/xni2dtm NamespaceSupportAtDTMNode.java</Modified>
 <Log>
 file NamespaceSupportAtDTMNode.java was initially added on branch xalan3.
 </Log>
@@ -2799,7 +2799,7 @@ file XPath2Type.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/utils DateTimeObj.java</Modified>
 <Log>
 file DateTimeObj.java was initially added on branch xalan3.
 </Log>
@@ -2807,7 +2807,7 @@ file DateTimeObj.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xml/utils Duration.java</Modified>
 <Log>
 file Duration.java was initially added on branch xalan3.
 </Log>
@@ -2839,7 +2839,7 @@ file Else.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddDays.java</Modified>
 <Log>
 file FuncAddDays.java was initially added on branch xalan3.
 </Log>
@@ -2847,7 +2847,7 @@ file FuncAddDays.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddDayTimeDuration.java</Modified>
 <Log>
 file FuncAddDayTimeDuration.java was initially added on branch xalan3.
 </Log>
@@ -2855,7 +2855,7 @@ file FuncAddDayTimeDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddDTDurationToDate.java</Modified>
 <Log>
 file FuncAddDTDurationToDate.java was initially added on branch xalan3.
 </Log>
@@ -2863,7 +2863,7 @@ file FuncAddDTDurationToDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddDTDurationToDT.java</Modified>
 <Log>
 file FuncAddDTDurationToDT.java was initially added on branch xalan3.
 </Log>
@@ -2871,7 +2871,7 @@ file FuncAddDTDurationToDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddDTDurationToTime.java</Modified>
 <Log>
 file FuncAddDTDurationToTime.java was initially added on branch xalan3.
 </Log>
@@ -2879,7 +2879,7 @@ file FuncAddDTDurationToTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddYearMonthDuration.java</Modified>
 <Log>
 file FuncAddYearMonthDuration.java was initially added on branch xalan3.
 </Log>
@@ -2887,7 +2887,7 @@ file FuncAddYearMonthDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddYMDurationToDate.java</Modified>
 <Log>
 file FuncAddYMDurationToDate.java was initially added on branch xalan3.
 </Log>
@@ -2895,7 +2895,7 @@ file FuncAddYMDurationToDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncAddYMDurationToDT.java</Modified>
 <Log>
 file FuncAddYMDurationToDT.java was initially added on branch xalan3.
 </Log>
@@ -2903,7 +2903,7 @@ file FuncAddYMDurationToDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncCurrentDate.java</Modified>
 <Log>
 file FuncCurrentDate.java was initially added on branch xalan3.
 </Log>
@@ -2911,7 +2911,7 @@ file FuncCurrentDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncCurrentDateTime.java</Modified>
 <Log>
 file FuncCurrentDateTime.java was initially added on branch xalan3.
 </Log>
@@ -2919,7 +2919,7 @@ file FuncCurrentDateTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncData.java</Modified>
 <Log>
 file FuncData.java was initially added on branch xalan3.
 </Log>
@@ -2927,7 +2927,7 @@ file FuncData.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDate.java</Modified>
 <Log>
 file FuncDate.java was initially added on branch xalan3.
 </Log>
@@ -2935,7 +2935,7 @@ file FuncDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDateTime.java</Modified>
 <Log>
 file FuncDateTime.java was initially added on branch xalan3.
 </Log>
@@ -2943,7 +2943,7 @@ file FuncDateTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDateTimeEq.java</Modified>
 <Log>
 file FuncDateTimeEq.java was initially added on branch xalan3.
 </Log>
@@ -2951,7 +2951,7 @@ file FuncDateTimeEq.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDateTimeGT.java</Modified>
 <Log>
 file FuncDateTimeGT.java was initially added on branch xalan3.
 </Log>
@@ -2959,15 +2959,16 @@ file FuncDateTimeGT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDateTimeLT.java</Modified>
 <Log>
 file FuncDateTimeLT.java was initially added on branch xalan3.
+
 </Log>
 </Commit>
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDivDayTimeDuration.java</Modified>
 <Log>
 file FuncDivDayTimeDuration.java was initially added on branch xalan3.
 </Log>
@@ -2975,7 +2976,7 @@ file FuncDivDayTimeDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDivYearMonthDuration.java</Modified>
 <Log>
 file FuncDivYearMonthDuration.java was initially added on branch xalan3.
 </Log>
@@ -2983,7 +2984,7 @@ file FuncDivYearMonthDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDTDuration.java</Modified>
 <Log>
 file FuncDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -2991,7 +2992,7 @@ file FuncDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDTDurationEqual.java</Modified>
 <Log>
 file FuncDTDurationEqual.java was initially added on branch xalan3.
 </Log>
@@ -2999,7 +3000,7 @@ file FuncDTDurationEqual.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDTDurationFromSecs.java</Modified>
 <Log>
 file FuncDTDurationFromSecs.java was initially added on branch xalan3.
 </Log>
@@ -3007,7 +3008,7 @@ file FuncDTDurationFromSecs.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDTDurationGT.java</Modified>
 <Log>
 file FuncDTDurationGT.java was initially added on branch xalan3.
 </Log>
@@ -3015,7 +3016,7 @@ file FuncDTDurationGT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDTDurationLT.java</Modified>
 <Log>
 file FuncDTDurationLT.java was initially added on branch xalan3.
 </Log>
@@ -3023,7 +3024,7 @@ file FuncDTDurationLT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDuration.java</Modified>
 <Log>
 file FuncDuration.java was initially added on branch xalan3.
 </Log>
@@ -3031,7 +3032,7 @@ file FuncDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncDurationEqual.java</Modified>
 <Log>
 file FuncDurationEqual.java was initially added on branch xalan3.
 </Log>
@@ -3039,7 +3040,7 @@ file FuncDurationEqual.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGDay.java</Modified>
 <Log>
 file FuncGDay.java was initially added on branch xalan3.
 </Log>
@@ -3047,7 +3048,7 @@ file FuncGDay.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetDFromDate.java</Modified>
 <Log>
 file FuncGetDFromDate.java was initially added on branch xalan3.
 </Log>
@@ -3055,7 +3056,7 @@ file FuncGetDFromDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetDFromDT.java</Modified>
 <Log>
 file FuncGetDFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3063,7 +3064,7 @@ file FuncGetDFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetDFromDTDuration.java</Modified>
 <Log>
 file FuncGetDFromDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -3071,7 +3072,7 @@ file FuncGetDFromDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetDTDuration.java</Modified>
 <Log>
 file FuncGetDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -3079,7 +3080,7 @@ file FuncGetDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetHFromDT.java</Modified>
 <Log>
 file FuncGetHFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3087,7 +3088,7 @@ file FuncGetHFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetHFromDTDuration.java</Modified>
 <Log>
 file FuncGetHFromDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -3095,7 +3096,7 @@ file FuncGetHFromDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetHFromTime.java</Modified>
 <Log>
 file FuncGetHFromTime.java was initially added on branch xalan3.
 </Log>
@@ -3103,7 +3104,7 @@ file FuncGetHFromTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetMFromDate.java</Modified>
 <Log>
 file FuncGetMFromDate.java was initially added on branch xalan3.
 </Log>
@@ -3111,7 +3112,7 @@ file FuncGetMFromDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetMFromDT.java</Modified>
 <Log>
 file FuncGetMFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3119,7 +3120,7 @@ file FuncGetMFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetMFromYMDuration.java</Modified>
 <Log>
 file FuncGetMFromYMDuration.java was initially added on branch xalan3.
 </Log>
@@ -3127,7 +3128,7 @@ file FuncGetMFromYMDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetMnFromDT.java</Modified>
 <Log>
 file FuncGetMnFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3135,7 +3136,7 @@ file FuncGetMnFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetMnFromDTDuration.java</Modified>
 <Log>
 file FuncGetMnFromDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -3143,7 +3144,7 @@ file FuncGetMnFromDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetMnFromTime.java</Modified>
 <Log>
 file FuncGetMnFromTime.java was initially added on branch xalan3.
 </Log>
@@ -3151,7 +3152,7 @@ file FuncGetMnFromTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetSFromDT.java</Modified>
 <Log>
 file FuncGetSFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3159,7 +3160,7 @@ file FuncGetSFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetSFromDTDuration.java</Modified>
 <Log>
 file FuncGetSFromDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -3167,7 +3168,7 @@ file FuncGetSFromDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetSFromTime.java</Modified>
 <Log>
 file FuncGetSFromTime.java was initially added on branch xalan3.
 </Log>
@@ -3175,7 +3176,7 @@ file FuncGetSFromTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetTZFromDate.java</Modified>
 <Log>
 file FuncGetTZFromDate.java was initially added on branch xalan3.
 </Log>
@@ -3183,7 +3184,7 @@ file FuncGetTZFromDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetTZFromDT.java</Modified>
 <Log>
 file FuncGetTZFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3191,7 +3192,7 @@ file FuncGetTZFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetTZFromTime.java</Modified>
 <Log>
 file FuncGetTZFromTime.java was initially added on branch xalan3.
 </Log>
@@ -3199,7 +3200,7 @@ file FuncGetTZFromTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetYFromDate.java</Modified>
 <Log>
 file FuncGetYFromDate.java was initially added on branch xalan3.
 </Log>
@@ -3207,7 +3208,7 @@ file FuncGetYFromDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetYFromDT.java</Modified>
 <Log>
 file FuncGetYFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3215,7 +3216,7 @@ file FuncGetYFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetYFromYMDuration.java</Modified>
 <Log>
 file FuncGetYFromYMDuration.java was initially added on branch xalan3.
 </Log>
@@ -3223,7 +3224,7 @@ file FuncGetYFromYMDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetYMDuration.java</Modified>
 <Log>
 file FuncGetYMDuration.java was initially added on branch xalan3.
 </Log>
@@ -3231,7 +3232,7 @@ file FuncGetYMDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGMonth.java</Modified>
 <Log>
 file FuncGMonth.java was initially added on branch xalan3.
 </Log>
@@ -3239,7 +3240,7 @@ file FuncGMonth.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGMonthDay.java</Modified>
 <Log>
 file FuncGMonthDay.java was initially added on branch xalan3.
 </Log>
@@ -3247,7 +3248,7 @@ file FuncGMonthDay.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGYear.java</Modified>
 <Log>
 file FuncGYear.java was initially added on branch xalan3.
 </Log>
@@ -3263,7 +3264,7 @@ file FuncGYearMonth.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/conditional If.java</Modified>
 <Log>
 file If.java was initially added on branch xalan3.
 </Log>
@@ -3279,7 +3280,7 @@ file Then.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncMultDayTimeDuration.java</Modified>
 <Log>
 file FuncMultDayTimeDuration.java was initially added on branch xalan3.
 </Log>
@@ -3287,7 +3288,7 @@ file FuncMultDayTimeDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncMultYearMonthDuration.java</Modified>
 <Log>
 file FuncMultYearMonthDuration.java was initially added on branch xalan3.
 </Log>
@@ -3295,7 +3296,7 @@ file FuncMultYearMonthDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubDayTimeDuration.java</Modified>
 <Log>
 file FuncSubDayTimeDuration.java was initially added on branch xalan3.
 </Log>
@@ -3303,7 +3304,7 @@ file FuncSubDayTimeDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubtractDTDurationFromDate.java</Modified>
 <Log>
 file FuncSubtractDTDurationFromDate.java was initially added on branch xalan3.
 </Log>
@@ -3311,7 +3312,7 @@ file FuncSubtractDTDurationFromDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubtractDTDurationFromDT.java</Modified>
 <Log>
 file FuncSubtractDTDurationFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3319,7 +3320,7 @@ file FuncSubtractDTDurationFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubtractDTDurationFromTime.java</Modified>
 <Log>
 file FuncSubtractDTDurationFromTime.java was initially added on branch xalan3.
 </Log>
@@ -3327,7 +3328,7 @@ file FuncSubtractDTDurationFromTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubtractYMDurationFromDate.java</Modified>
 <Log>
 file FuncSubtractYMDurationFromDate.java was initially added on branch xalan3.
 </Log>
@@ -3335,7 +3336,7 @@ file FuncSubtractYMDurationFromDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubtractYMDurationFromDT.java</Modified>
 <Log>
 file FuncSubtractYMDurationFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3343,7 +3344,7 @@ file FuncSubtractYMDurationFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncSubYearMonthDuration.java</Modified>
 <Log>
 file FuncSubYearMonthDuration.java was initially added on branch xalan3.
 </Log>
@@ -3351,7 +3352,7 @@ file FuncSubYearMonthDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncTime.java</Modified>
 <Log>
 file FuncTime.java was initially added on branch xalan3.
 </Log>
@@ -3359,7 +3360,7 @@ file FuncTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncYMDuration.java</Modified>
 <Log>
 file FuncYMDuration.java was initially added on branch xalan3.
 </Log>
@@ -3367,7 +3368,7 @@ file FuncYMDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncYMDurationEqual.java</Modified>
 <Log>
 file FuncYMDurationEqual.java was initially added on branch xalan3.
 </Log>
@@ -3375,7 +3376,7 @@ file FuncYMDurationEqual.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncYMDurationFromDT.java</Modified>
 <Log>
 file FuncYMDurationFromDT.java was initially added on branch xalan3.
 </Log>
@@ -3383,7 +3384,7 @@ file FuncYMDurationFromDT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncYMDurationFromMonths.java</Modified>
 <Log>
 file FuncYMDurationFromMonths.java was initially added on branch xalan3.
 </Log>
@@ -3391,7 +3392,7 @@ file FuncYMDurationFromMonths.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncYMDurationGT.java</Modified>
 <Log>
 file FuncYMDurationGT.java was initially added on branch xalan3.
 </Log>
@@ -3407,7 +3408,7 @@ file FuncYMDurationLT.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects NodeSequence.java</Modified>
 <Log>
 file NodeSequence.java was initially added on branch xalan3.
 </Log>
@@ -3415,7 +3416,7 @@ file NodeSequence.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects TypeOperations.java</Modified>
 <Log>
 file TypeOperations.java was initially added on branch xalan3.
 </Log>
@@ -3423,7 +3424,7 @@ file TypeOperations.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDate.java</Modified>
 <Log>
 file XDate.java was initially added on branch xalan3.
 </Log>
@@ -3431,7 +3432,7 @@ file XDate.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDateTime.java</Modified>
 <Log>
 file XDateTime.java was initially added on branch xalan3.
 </Log>
@@ -3439,7 +3440,7 @@ file XDateTime.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDecimal.java</Modified>
 <Log>
 file XDecimal.java was initially added on branch xalan3.
 </Log>
@@ -3447,7 +3448,7 @@ file XDecimal.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDouble.java</Modified>
 <Log>
 file XDouble.java was initially added on branch xalan3.
 </Log>
@@ -3455,7 +3456,7 @@ file XDouble.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDTDuration.java</Modified>
 <Log>
 file XDTDuration.java was initially added on branch xalan3.
 </Log>
@@ -3463,7 +3464,7 @@ file XDTDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDTMSequence.java</Modified>
 <Log>
 file XDTMSequence.java was initially added on branch xalan3.
 </Log>
@@ -3471,7 +3472,7 @@ file XDTMSequence.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XDuration.java</Modified>
 <Log>
 file XDuration.java was initially added on branch xalan3.
 </Log>
@@ -3479,7 +3480,7 @@ file XDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XFloat.java</Modified>
 <Log>
 file XFloat.java was initially added on branch xalan3.
 </Log>
@@ -3487,7 +3488,7 @@ file XFloat.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XGDay.java</Modified>
 <Log>
 file XGDay.java was initially added on branch xalan3.
 </Log>
@@ -3495,7 +3496,7 @@ file XGDay.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XGMonth.java</Modified>
 <Log>
 file XGMonth.java was initially added on branch xalan3.
 </Log>
@@ -3503,7 +3504,7 @@ file XGMonth.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XGMonthDay.java</Modified>
 <Log>
 file XGMonthDay.java was initially added on branch xalan3.
 </Log>
@@ -3511,7 +3512,7 @@ file XGMonthDay.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XGYearMonth.java</Modified>
 <Log>
 file XGYearMonth.java was initially added on branch xalan3.
 </Log>
@@ -3519,7 +3520,7 @@ file XGYearMonth.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XGYearObj.java</Modified>
 <Log>
 file XGYearObj.java was initially added on branch xalan3.
 </Log>
@@ -3527,7 +3528,7 @@ file XGYearObj.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XInteger.java</Modified>
 <Log>
 file XInteger.java was initially added on branch xalan3.
 </Log>
@@ -3535,7 +3536,7 @@ file XInteger.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XJavaObject.java</Modified>
 <Log>
 file XJavaObject.java was initially added on branch xalan3.
 </Log>
@@ -3543,7 +3544,7 @@ file XJavaObject.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XNodeSequenceSingleton.java</Modified>
 <Log>
 file XNodeSequenceSingleton.java was initially added on branch xalan3.
 </Log>
@@ -3551,7 +3552,7 @@ file XNodeSequenceSingleton.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XSequence.java</Modified>
 <Log>
 file XSequence.java was initially added on branch xalan3.
 </Log>
@@ -3559,7 +3560,7 @@ file XSequence.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XSequenceCachedBase.java</Modified>
 <Log>
 file XSequenceCachedBase.java was initially added on branch xalan3.
 </Log>
@@ -3567,7 +3568,7 @@ file XSequenceCachedBase.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XSequenceEmpty.java</Modified>
 <Log>
 file XSequenceEmpty.java was initially added on branch xalan3.
 </Log>
@@ -3575,7 +3576,7 @@ file XSequenceEmpty.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XSequenceImpl.java</Modified>
 <Log>
 file XSequenceImpl.java was initially added on branch xalan3.
 </Log>
@@ -3583,7 +3584,7 @@ file XSequenceImpl.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XSequenceMutable.java</Modified>
 <Log>
 file XSequenceMutable.java was initially added on branch xalan3.
 </Log>
@@ -3591,7 +3592,7 @@ file XSequenceMutable.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XSequenceSingleton.java</Modified>
 <Log>
 file XSequenceSingleton.java was initially added on branch xalan3.
 </Log>
@@ -3599,7 +3600,7 @@ file XSequenceSingleton.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/objects XTime.java</Modified>
 <Log>
 file XTime.java was initially added on branch xalan3.
 </Log>
@@ -3615,7 +3616,7 @@ file XYMDuration.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Add.java</Modified>
 <Log>
 file Add.java was initially added on branch xalan3.
 </Log>
@@ -3623,7 +3624,7 @@ file Add.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Follows.java</Modified>
 <Log>
 file Follows.java was initially added on branch xalan3.
 </Log>
@@ -3631,7 +3632,7 @@ file Follows.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations FortranEq.java</Modified>
 <Log>
 file FortranEq.java was initially added on branch xalan3.
 </Log>
@@ -3639,7 +3640,7 @@ file FortranEq.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations FortranGe.java</Modified>
 <Log>
 file FortranGe.java was initially added on branch xalan3.
 </Log>
@@ -3647,7 +3648,7 @@ file FortranGe.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations FortranGt.java</Modified>
 <Log>
 file FortranGt.java was initially added on branch xalan3.
 </Log>
@@ -3655,7 +3656,7 @@ file FortranGt.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations FortranLe.java</Modified>
 <Log>
 file FortranLe.java was initially added on branch xalan3.
 </Log>
@@ -3663,7 +3664,7 @@ file FortranLe.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations FortranLt.java</Modified>
 <Log>
 file FortranLt.java was initially added on branch xalan3.
 </Log>
@@ -3671,7 +3672,7 @@ file FortranLt.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations FortranNe.java</Modified>
 <Log>
 file FortranNe.java was initially added on branch xalan3.
 </Log>
@@ -3679,7 +3680,7 @@ file FortranNe.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations GenericOpFunc.java</Modified>
 <Log>
 file GenericOpFunc.java was initially added on branch xalan3.
 </Log>
@@ -3687,7 +3688,7 @@ file GenericOpFunc.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations GtGt.java</Modified>
 <Log>
 file GtGt.java was initially added on branch xalan3.
 </Log>
@@ -3695,7 +3696,7 @@ file GtGt.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Idiv.java</Modified>
 <Log>
 file Idiv.java was initially added on branch xalan3.
 </Log>
@@ -3703,7 +3704,7 @@ file Idiv.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Is.java</Modified>
 <Log>
 file Is.java was initially added on branch xalan3.
 </Log>
@@ -3711,7 +3712,7 @@ file Is.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations IsNot.java</Modified>
 <Log>
 file IsNot.java was initially added on branch xalan3.
 </Log>
@@ -3719,7 +3720,7 @@ file IsNot.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations LtLt.java</Modified>
 <Log>
 file LtLt.java was initially added on branch xalan3.
 </Log>
@@ -3727,7 +3728,7 @@ file LtLt.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations OperationNormalized.java</Modified>
 <Log>
 file OperationNormalized.java was initially added on branch xalan3.
 </Log>
@@ -3735,7 +3736,7 @@ file OperationNormalized.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations OperationSimple.java</Modified>
 <Log>
 file OperationSimple.java was initially added on branch xalan3.
 </Log>
@@ -3743,7 +3744,7 @@ file OperationSimple.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations OpFuncLookupTable.java</Modified>
 <Log>
 file OpFuncLookupTable.java was initially added on branch xalan3.
 </Log>
@@ -3751,7 +3752,7 @@ file OpFuncLookupTable.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Pos.java</Modified>
 <Log>
 file Pos.java was initially added on branch xalan3.
 </Log>
@@ -3759,7 +3760,7 @@ file Pos.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/operations Precedes.java</Modified>
 <Log>
 file Precedes.java was initially added on branch xalan3.
 </Log>
@@ -3775,7 +3776,7 @@ file Subtract.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser AnyKindTest.java</Modified>
 <Log>
 file AnyKindTest.java was initially added on branch xalan3.
 </Log>
@@ -3783,7 +3784,7 @@ file AnyKindTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser ASCII_CharStream.java</Modified>
 <Log>
 file ASCII_CharStream.java was initially added on branch xalan3.
 </Log>
@@ -3791,7 +3792,7 @@ file ASCII_CharStream.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser AtomicType.java</Modified>
 <Log>
 file AtomicType.java was initially added on branch xalan3.
 </Log>
@@ -3799,7 +3800,7 @@ file AtomicType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser CommentTest.java</Modified>
 <Log>
 file CommentTest.java was initially added on branch xalan3.
 </Log>
@@ -3807,7 +3808,7 @@ file CommentTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser ElemOrAttrType.java</Modified>
 <Log>
 file ElemOrAttrType.java was initially added on branch xalan3.
 </Log>
@@ -3815,7 +3816,7 @@ file ElemOrAttrType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Empty.java</Modified>
 <Log>
 file Empty.java was initially added on branch xalan3.
 </Log>
@@ -3823,7 +3824,7 @@ file Empty.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser ForClause.java</Modified>
 <Log>
 file ForClause.java was initially added on branch xalan3.
 </Log>
@@ -3831,7 +3832,7 @@ file ForClause.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser IfExpr.java</Modified>
 <Log>
 file IfExpr.java was initially added on branch xalan3.
 </Log>
@@ -3839,7 +3840,7 @@ file IfExpr.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser In.java</Modified>
 <Log>
 file In.java was initially added on branch xalan3.
 </Log>
@@ -3847,7 +3848,7 @@ file In.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Instanceof.java</Modified>
 <Log>
 file Instanceof.java was initially added on branch xalan3.
 </Log>
@@ -3855,7 +3856,7 @@ file Instanceof.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser ItemType.java</Modified>
 <Log>
 file ItemType.java was initially added on branch xalan3.
 </Log>
@@ -3863,7 +3864,7 @@ file ItemType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser JJTXPathState.java</Modified>
 <Log>
 file JJTXPathState.java was initially added on branch xalan3.
 </Log>
@@ -3871,7 +3872,7 @@ file JJTXPathState.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser KindTest.java</Modified>
 <Log>
 file KindTest.java was initially added on branch xalan3.
 </Log>
@@ -3879,7 +3880,7 @@ file KindTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser LbrackOrRbrack.java</Modified>
 <Log>
 file LbrackOrRbrack.java was initially added on branch xalan3.
 </Log>
@@ -3887,7 +3888,7 @@ file LbrackOrRbrack.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser NameTest.java</Modified>
 <Log>
 file NameTest.java was initially added on branch xalan3.
 </Log>
@@ -3895,7 +3896,7 @@ file NameTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser NCNameColonStar.java</Modified>
 <Log>
 file NCNameColonStar.java was initially added on branch xalan3.
 </Log>
@@ -3903,7 +3904,7 @@ file NCNameColonStar.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Node.java</Modified>
 <Log>
 file Node.java was initially added on branch xalan3.
 </Log>
@@ -3911,7 +3912,7 @@ file Node.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser NodeTest.java</Modified>
 <Log>
 file NodeTest.java was initially added on branch xalan3.
 </Log>
@@ -3919,7 +3920,7 @@ file NodeTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser NodeTestType.java</Modified>
 <Log>
 file NodeTestType.java was initially added on branch xalan3.
 </Log>
@@ -3927,7 +3928,7 @@ file NodeTestType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser NonExecutableExpression.java</Modified>
 <Log>
 file NonExecutableExpression.java was initially added on branch xalan3.
 </Log>
@@ -3935,7 +3936,7 @@ file NonExecutableExpression.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser OccurrenceIndicator.java</Modified>
 <Log>
 file OccurrenceIndicator.java was initially added on branch xalan3.
 </Log>
@@ -3943,7 +3944,7 @@ file OccurrenceIndicator.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser OfType.java</Modified>
 <Log>
 file OfType.java was initially added on branch xalan3.
 </Log>
@@ -3951,7 +3952,7 @@ file OfType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser ParseException.java</Modified>
 <Log>
 file ParseException.java was initially added on branch xalan3.
 </Log>
@@ -3959,7 +3960,7 @@ file ParseException.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser PathExpr.java</Modified>
 <Log>
 file PathExpr.java was initially added on branch xalan3.
 </Log>
@@ -3967,7 +3968,7 @@ file PathExpr.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Pattern.java</Modified>
 <Log>
 file Pattern.java was initially added on branch xalan3.
 </Log>
@@ -3975,7 +3976,7 @@ file Pattern.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser PatternAxis.java</Modified>
 <Log>
 file PatternAxis.java was initially added on branch xalan3.
 </Log>
@@ -3983,7 +3984,7 @@ file PatternAxis.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Predicates.java</Modified>
 <Log>
 file Predicates.java was initially added on branch xalan3.
 </Log>
@@ -3991,7 +3992,7 @@ file Predicates.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser ProcessingInstructionTest.java</Modified>
 <Log>
 file ProcessingInstructionTest.java was initially added on branch xalan3.
 </Log>
@@ -3999,7 +4000,7 @@ file ProcessingInstructionTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser QName.java</Modified>
 <Log>
 file QName.java was initially added on branch xalan3.
 </Log>
@@ -4007,7 +4008,7 @@ file QName.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser QuantifiedExpr.java</Modified>
 <Log>
 file QuantifiedExpr.java was initially added on branch xalan3.
 </Log>
@@ -4015,7 +4016,7 @@ file QuantifiedExpr.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Return.java</Modified>
 <Log>
 file Return.java was initially added on branch xalan3.
 </Log>
@@ -4023,7 +4024,7 @@ file Return.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser RootOfRoot.java</Modified>
 <Log>
 file RootOfRoot.java was initially added on branch xalan3.
 </Log>
@@ -4031,7 +4032,7 @@ file RootOfRoot.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser RootOfRootPattern.java</Modified>
 <Log>
 file RootOfRootPattern.java was initially added on branch xalan3.
 </Log>
@@ -4039,7 +4040,7 @@ file RootOfRootPattern.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SchemaContext.java</Modified>
 <Log>
 file SchemaContext.java was initially added on branch xalan3.
 </Log>
@@ -4047,7 +4048,7 @@ file SchemaContext.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SchemaContextStep.java</Modified>
 <Log>
 file SchemaContextStep.java was initially added on branch xalan3.
 </Log>
@@ -4055,7 +4056,7 @@ file SchemaContextStep.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SchemaGlobalContext.java</Modified>
 <Log>
 file SchemaGlobalContext.java was initially added on branch xalan3.
 </Log>
@@ -4063,7 +4064,7 @@ file SchemaGlobalContext.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SchemaType.java</Modified>
 <Log>
 file SchemaType.java was initially added on branch xalan3.
 </Log>
@@ -4071,7 +4072,7 @@ file SchemaType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SequenceType.java</Modified>
 <Log>
 file SequenceType.java was initially added on branch xalan3.
 </Log>
@@ -4079,7 +4080,7 @@ file SequenceType.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SimpleNode.java</Modified>
 <Log>
 file SimpleNode.java was initially added on branch xalan3.
 </Log>
@@ -4087,7 +4088,7 @@ file SimpleNode.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser SlashOrSlashSlash.java</Modified>
 <Log>
 file SlashOrSlashSlash.java was initially added on branch xalan3.
 </Log>
@@ -4095,7 +4096,7 @@ file SlashOrSlashSlash.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Star.java</Modified>
 <Log>
 file Star.java was initially added on branch xalan3.
 </Log>
@@ -4103,7 +4104,7 @@ file Star.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser StarColonNCName.java</Modified>
 <Log>
 file StarColonNCName.java was initially added on branch xalan3.
 </Log>
@@ -4111,7 +4112,7 @@ file StarColonNCName.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser StepExpr.java</Modified>
 <Log>
 file StepExpr.java was initially added on branch xalan3.
 </Log>
@@ -4119,7 +4120,7 @@ file StepExpr.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser TempFunctionHolder.java</Modified>
 <Log>
 file TempFunctionHolder.java was initially added on branch xalan3.
 </Log>
@@ -4127,7 +4128,7 @@ file TempFunctionHolder.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser TextTest.java</Modified>
 <Log>
 file TextTest.java was initially added on branch xalan3.
 </Log>
@@ -4135,7 +4136,7 @@ file TextTest.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser Token.java</Modified>
 <Log>
 file Token.java was initially added on branch xalan3.
 </Log>
@@ -4143,7 +4144,7 @@ file Token.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser TokenMgrError.java</Modified>
 <Log>
 file TokenMgrError.java was initially added on branch xalan3.
 </Log>
@@ -4151,7 +4152,7 @@ file TokenMgrError.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser UnaryExpr.java</Modified>
 <Log>
 file UnaryExpr.java was initially added on branch xalan3.
 </Log>
@@ -4159,7 +4160,7 @@ file UnaryExpr.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser XPath.java</Modified>
 <Log>
 file XPath.java was initially added on branch xalan3.
 </Log>
@@ -4167,7 +4168,7 @@ file XPath.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser XPathConstants.java</Modified>
 <Log>
 file XPathConstants.java was initially added on branch xalan3.
 </Log>
@@ -4175,7 +4176,7 @@ file XPathConstants.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser XPathTokenManager.java</Modified>
 <Log>
 file XPathTokenManager.java was initially added on branch xalan3.
 </Log>
@@ -4183,7 +4184,7 @@ file XPathTokenManager.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser XPathTreeConstants.java</Modified>
 <Log>
 file XPathTreeConstants.java was initially added on branch xalan3.
 </Log>
@@ -4199,7 +4200,7 @@ file XPathVisitor.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/quantified Every.java</Modified>
 <Log>
 file Every.java was initially added on branch xalan3.
 </Log>
@@ -4207,7 +4208,7 @@ file Every.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/quantified In.java</Modified>
 <Log>
 file In.java was initially added on branch xalan3.
 </Log>
@@ -4215,7 +4216,7 @@ file In.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/quantified Satisfies.java</Modified>
 <Log>
 file Satisfies.java was initially added on branch xalan3.
 </Log>
@@ -4239,7 +4240,7 @@ file Atomizer.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor Binding.java</Modified>
 <Log>
 file Binding.java was initially added on branch xalan3.
 </Log>
@@ -4247,7 +4248,7 @@ file Binding.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor ExprSequence.java</Modified>
 <Log>
 file ExprSequence.java was initially added on branch xalan3.
 </Log>
@@ -4255,7 +4256,7 @@ file ExprSequence.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor ExprSequenceIter.java</Modified>
 <Log>
 file ExprSequenceIter.java was initially added on branch xalan3.
 </Log>
@@ -4263,7 +4264,7 @@ file ExprSequenceIter.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor FLWRExpr.java</Modified>
 <Log>
 file FLWRExpr.java was initially added on branch xalan3.
 </Log>
@@ -4279,7 +4280,7 @@ file FLWRIter.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/types InstanceofExpr.java</Modified>
 <Log>
 file InstanceofExpr.java was initially added on branch xalan3.
 </Log>
@@ -4295,7 +4296,7 @@ file Promoter.java was initially added on branch xalan3.
 <Commit category="core">
 <Who>pauldick@apache.org</Who>
 <DateCommitted>2002/08/14</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/seqctor RangeExpr.java</Modified>
 <Log>
 file RangeExpr.java was initially added on branch xalan3.
 </Log>
@@ -4330,7 +4331,7 @@ Modified FuncKey.execute to use getDocumentRoot instead of getDocument.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/08/15</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncNodeKind.java</Modified>
 <Log>
 file FuncNodeKind.java was initially added on branch xslt20.
 </Log>
@@ -4370,7 +4371,7 @@ See bug#10945. Test if a node is a DTMNodeProxy before casting.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemAnalyzeString.java</Modified>
 <Log>
 file ElemAnalyzeString.java was initially added on branch xslt20.
 </Log>
@@ -4378,7 +4379,7 @@ file ElemAnalyzeString.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/templates ElemMatchingSubstring.java</Modified>
 <Log>
 file ElemMatchingSubstring.java was initially added on branch xslt20.
 </Log>
@@ -4434,7 +4435,7 @@ file FuncTokenize.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp Match.java</Modified>
 <Log>
 file Match.java was initially added on branch xslt20.
 </Log>
@@ -4442,7 +4443,7 @@ file Match.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp Op.java</Modified>
 <Log>
 file Op.java was initially added on branch xslt20.
 </Log>
@@ -4450,7 +4451,7 @@ file Op.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp ParseException.java</Modified>
 <Log>
 file ParseException.java was initially added on branch xslt20.
 </Log>
@@ -4458,7 +4459,7 @@ file ParseException.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp ParserForXMLSchema.java</Modified>
 <Log>
 file ParserForXMLSchema.java was initially added on branch xslt20.
 </Log>
@@ -4466,7 +4467,7 @@ file ParserForXMLSchema.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp RangeToken.java</Modified>
 <Log>
 file RangeToken.java was initially added on branch xslt20.
 </Log>
@@ -4474,7 +4475,7 @@ file RangeToken.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp RegexParser.java</Modified>
 <Log>
 file RegexParser.java was initially added on branch xslt20.
 </Log>
@@ -4482,7 +4483,7 @@ file RegexParser.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp RegularExpression.java</Modified>
 <Log>
 file RegularExpression.java was initially added on branch xslt20.
 </Log>
@@ -4490,7 +4491,7 @@ file RegularExpression.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>mmidy@apache.org</Who>
 <DateCommitted>2002/08/16</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/parser/regexp REUtil.java</Modified>
 <Log>
 file REUtil.java was initially added on branch xslt20.
 </Log>
@@ -4506,7 +4507,7 @@ file Token.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/08/19</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncUniqueID.java</Modified>
 <Log>
 file FuncUniqueID.java was initially added on branch xslt20.
 </Log>
@@ -4575,7 +4576,7 @@ Fix for bugzilla 11987. Missing case in typeCheck() method.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/08/23</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
 <Log>
 Very minor optimization.
 </Log>
@@ -4628,7 +4629,7 @@ file XExpandedQName.java was initially added on branch xslt20.
 <Commit category="xsltc">
 <Who>santiagopg@apache.org</Who>
 <DateCommitted>2002/08/27</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
 <Log>
 Allow the default namespace to be redefined as "".
 </Log>
@@ -4678,7 +4679,7 @@ Small updates to the build documentation.
 <Commit category="core">
 <Who>ilene@apache.org</Who>
 <DateCommitted>2002/08/27</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
 <Log>
 Updating version numbers to 2.4.0 for new release.
 </Log>
@@ -4686,7 +4687,7 @@ Updating version numbers to 2.4.0 for new release.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/08/27</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncExpandedQName.java</Modified>
 <Log>
 file FuncExpandedQName.java was initially added on branch xslt20.
 </Log>
@@ -4694,7 +4695,7 @@ file FuncExpandedQName.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>jkesselm@apache.org</Who>
 <DateCommitted>2002/08/27</DateCommitted>
-<Modified/>
+<Modified> xml-xalan/java/src/org/apache/xpath/functions FuncGetLocalNameFromQName.java</Modified>
 <Log>
 file FuncGetLocalNameFromQName.java was initially added on branch xslt20.
 </Log>
@@ -4710,9 +4711,25 @@ file FuncGetNamespaceFromQName.java was initially added on branch xslt20.
 <Commit category="core">
 <Who>ilene@apache.org</Who>
 <DateCommitted>2002/08/27</DateCommitted>
-<Modified> xml-xalan/java/src/org/apache/xalan/res XSLTInfo.properties xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Modified> xml-xalan/java build.xml xml-xalan/java/src/org/apache/xalan/processor XSLProcessorVersion.java xml-xalan/java/xdocs/sources entities.ent xalan-jsite.xml</Modified>
 <Log>
 Updating version numbers to 2.4.0 for new release.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java commits.xml</Modified>
+<Log>
+New commits.xml for upcoming Xalan 2.4.0 release.
+</Log>
+</Commit>
+<Commit category="core">
+<Who>ilene@apache.org</Who>
+<DateCommitted>2002/08/27</DateCommitted>
+<Modified> xml-xalan/java/xdocs/sources/xalan history.xml xsltc_history.xml</Modified>
+<Log>
+New history.xml, xsltc_history.xml for upcoming Xalan 2.4.0 release.
 </Log>
 </Commit>
 </Commits>
