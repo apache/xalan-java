@@ -90,12 +90,19 @@ public class AVTPartXPath extends AVTPart
   /**
    * Construct a simple AVT part.
    * @param val A pure string section of an AVT.
-   * NEEDSDOC @param nsNode
+   * @param nsNode An object which can be used to determine the
+   * Namespace Name (URI) for any Namespace prefix used in the XPath. 
+   * Usually this is based on the context where the XPath was specified,
+   * such as a node within a Stylesheet.
    * NEEDSDOC @param xpathProcessor
    * NEEDSDOC @param factory
-   * NEEDSDOC @param liaison
+   * @param liaison An XPathContext object, providing infomation specific
+   * to this invocation and this thread. Maintains SAX output state, 
+   * variables, error handler and so on, so the transformation/XPath 
+   * object itself can be simultaneously invoked from multiple threads.
    *
    * @throws javax.xml.transform.TransformerException
+   * TODO: Fix or remove this unused c'tor.
    */
   public AVTPartXPath(
           String val, org.apache.xml.utils.PrefixResolver nsNode, XPathParser xpathProcessor, XPathFactory factory, XPathContext liaison)
@@ -117,7 +124,10 @@ public class AVTPartXPath extends AVTPart
   /**
    * Write the value into the buffer.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt An XPathContext object, providing infomation specific
+   * to this invocation and this thread. Maintains SAX state, variables, 
+   * error handler and  so on, so the transformation/XPath object itself
+   * can be simultaneously invoked from multiple threads.
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).

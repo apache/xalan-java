@@ -95,7 +95,10 @@ public class AVTPartSimple extends AVTPart
   /**
    * Write the value into the buffer.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt An XPathContext object, providing infomation specific
+   * to this invocation and this thread. Maintains SAX state, variables, 
+   * error handler and  so on, so the transformation/XPath object itself
+   * can be simultaneously invoked from multiple threads.
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).

@@ -65,33 +65,75 @@ import org.apache.xml.utils.res.XResourceBundle;
 public class Constants
 {
 
-  /** NEEDSDOC Field S_XMLNAMESPACEURI, S_XSLNAMESPACEURL, S_OLDXSLNAMESPACEURL, S_XPATHNAMESPACEURL, S_XPATHNAMESPACEVERSION, S_VENDOR, S_VENDORURL, S_BUILTIN_EXTENSIONS_URL, PARSER_PATH, LIAISON_CLASS          */
-  public static final String S_XMLNAMESPACEURI =
-    "http://www.w3.org/XML/1998/namespace", S_XSLNAMESPACEURL =
-    "http://www.w3.org/1999/XSL/Transform", S_OLDXSLNAMESPACEURL =
-    "http://www.w3.org/XSL/Transform/1.0", S_XPATHNAMESPACEURL =
-    "http://www.w3.org/XSL/Transform", S_XPATHNAMESPACEVERSION =
-    "1.0", S_VENDOR = "Apache Software Foundation", S_VENDORURL =
-    "http://xml.apache.org",
+  /** 
+   * Mnemonics for standard XML Namespace URIs, as Java Strings:
+   * <ul>
+   * <li>S_XMLNAMESPACEURI (http://www.w3.org/XML/1998/namespace) is the
+   * URI permanantly assigned to the "xml:" prefix. This is used for some
+   * features built into the XML specification itself, such as xml:space 
+   * and xml:lang. It was defined by the W3C's XML Namespaces spec.</li>
+   * <li>S_XSLNAMESPACEURL (http://www.w3.org/1999/XSL/Transform) is the
+   * URI which indicates that a name may be an XSLT directive. In most
+   * XSLT stylesheets, this is bound to the "xsl:" prefix. It's defined
+   * by the W3C's XSLT Recommendation.</li>
+   * <li>S_OLDXSLNAMESPACEURL (http://www.w3.org/XSL/Transform/1.0) was
+   * used in early prototypes of XSLT processors for much the same purpose
+   * as S_XSLNAMESPACEURL. It is now considered obsolete, and the version
+   * of XSLT which it signified is not fully compatable with the final
+   * XSLT Recommendation, so what it really signifies is a badly obsolete
+   * stylesheet.</li>
+   * </ul> */
+  public static final String 
+	S_XMLNAMESPACEURI = "http://www.w3.org/XML/1998/namespace", 
+	S_XSLNAMESPACEURL = "http://www.w3.org/1999/XSL/Transform", 
+	S_OLDXSLNAMESPACEURL = "http://www.w3.org/XSL/Transform/1.0";
 
-  /*
-  * Special apache namespace for built-in extensions.
-  */
-    S_BUILTIN_EXTENSIONS_URL = "{http://xml.apache.org/xslt}", PARSER_PATH =
-    "com/ibm/xml/parser/Parser",
+  /** Authorship mnemonics, as Java Strings. Not standardized, 
+   * as far as I know.
+   * <ul>
+   * <li>S_VENDOR -- the name of the organization/individual who published
+   * this XSLT processor. </li>
+   * <li>S_VENDORURL -- URL where one can attempt to retrieve more
+   * information about this publisher and product.</li>
+   * </ul>
+   */
+  public static final String 
+	S_VENDOR = "Apache Software Foundation", 
+	S_VENDORURL = "http://xml.apache.org";
 
-  //  LIAISON_CLASS = "org.apache.xpath.DOM2Helper";
-  LIAISON_CLASS = "org.apache.xalan.dtm.DTMLiaison";
+  /** S_BUILTIN_EXTENSIONS_URL is a mnemonit for the XML Namespace 
+   *(http://xml.apache.org/xslt) predefined to signify Xalan's
+   * built-in XSLT Extensions. When used in stylesheets, this is often 
+   * bound to the "xalan:" prefix.
+   * TODO: ARE THE BRACES HERE A BUG?
+   */
+  public static final String 
+    S_BUILTIN_EXTENSIONS_URL = "{http://xml.apache.org/xslt}"; 
+  
+  /** NEEDSDOC: PARSER_PATH
+   */
+  public static final String 
+	PARSER_PATH = "com/ibm/xml/parser/Parser";
+
+  /** NEEDSDOC: LIAISON_CLASS
+   */
+  public static final String 
+    //  LIAISON_CLASS = "org.apache.xpath.DOM2Helper";
+	LIAISON_CLASS = "org.apache.xalan.dtm.DTMLiaison";
 
   /**
-   * The minimum version of XSLT supported.
+   * The minimum version of XSLT supported by this processor.
    */
   public static final double XSLTVERSUPPORTED = 1.0;
 
   /**
    * IDs for XSL element types. These are associated
    * with the string literals in the TransformerImpl class.
-   * Don't change the numbers.
+   * Don't change the numbers. NOTE THAT THESE ARE NOT IN
+   * ALPHABETICAL ORDER!
+   * (It's a pity Java doesn't have a real Enumerated Mnemonic
+   * datatype... or a C-like preprocessor in lieu thereof which
+   * could be used to generate and maintain synch between these lists.)
    */
   public static final int ELEMNAME_UNDEFINED = -1, ELEMNAME_WITHPARAM = 2,
                           ELEMNAME_ADDATTRIBUTE = 4, ELEMNAME_ANCHOR = 22,
@@ -153,160 +195,168 @@ public class Constants
    * Literals for XSL element names.  Note that there are more
    * names than IDs, because some names map to the same ID.
    */
-  public static final String ELEMNAME_COMPONENT_STRING = "component",
-                             ELEMNAME_SCRIPT_STRING = "script",
-                             ELEMNAME_ARG_STRING = "arg",
-                             ELEMNAME_ANCHOR_STRING = "anchor",
-                             ELEMNAME_ANY_STRING = "any",  // pattern-by-example support
-                             ELEMNAME_APPLY_IMPORTS_STRING = "apply-imports",
-                             ELEMNAME_APPLY_TEMPLATES_STRING = "apply-templates",
-                             ELEMNAME_ATTRIBUTESET_STRING = "attribute-set",
-                             ELEMNAME_ATTRIBUTE_STRING = "attribute",  // pattern-by-example support
-                             ELEMNAME_CALLTEMPLATEARG_STRING = "invoke-arg",
-                             ELEMNAME_CALLTEMPLATE_STRING = "call-template",
-                             ELEMNAME_CALL_STRING = "call",
-                             ELEMNAME_CHILDREN_STRING = "children",
-                             ELEMNAME_CHOOSE_STRING = "choose",
-                             ELEMNAME_COMMENT_STRING = "comment",
-                             ELEMNAME_CONSTRUCT_STRING = "construct",  // my own
-                             ELEMNAME_CONTENTS_STRING =
-                               "contents", ELEMNAME_COPY_OF_STRING =
-                               "copy-of", ELEMNAME_COPY_STRING =
-                               "copy", ELEMNAME_DECIMALFORMAT_STRING =
-                               "decimal-format", ELEMNAME_COUNTERINCREMENT_STRING =
-                               "counter-increment", ELEMNAME_COUNTERRESET_STRING =
-                               "counter-reset", ELEMNAME_COUNTERSCOPE_STRING =
-                               "counter-scope", ELEMNAME_COUNTERS_STRING =
-                               "counters", ELEMNAME_COUNTER_STRING =
-                               "counter", ELEMNAME_CSSSTYLECONVERSION_STRING =
-                               "css-style-conversion", ELEMNAME_DISPLAYIF_STRING =
-                               "display-if",  // my own
-                             ELEMNAME_ELEMENT_STRING = "element",  // pattern-by-example support
-                             ELEMNAME_EMPTY_STRING = "empty",
-                             ELEMNAME_EVAL_STRING = "eval",
-                             ELEMNAME_EXPECTEDCHILDREN_STRING = "expectedchildren",
-                             ELEMNAME_EXTENSIONHANDLER_STRING = "code-dispatcher",
-                             ELEMNAME_EXTENSION_STRING = "functions",
-                             ELEMNAME_FALLBACK_STRING = "fallback",
-                             ELEMNAME_FOREACH_STRING = "for-each",
-                             ELEMNAME_IF_STRING = "if",
-                             ELEMNAME_IMPORT_STRING = "import",
-                             ELEMNAME_INCLUDE_STRING = "include",
-                             ELEMNAME_KEY_STRING = "key",
-                             ELEMNAME_LOCALE_STRING = "locale",
-                             ELEMNAME_MESSAGE_STRING = "message",
-                             ELEMNAME_NUMBER_STRING = "number",
-                             ELEMNAME_NSALIAS_STRING = "namespace-alias",
-                             ELEMNAME_OTHERWISE_STRING = "otherwise",
-                             ELEMNAME_OUTPUT_STRING = "output",
-                             ELEMNAME_PARAMVARIABLE_STRING = "param",
-                             ELEMNAME_PI_OLD_STRING = "pi",
-                             ELEMNAME_PI_STRING = "processing-instruction",
-                             ELEMNAME_PRESERVESPACE_STRING = "preserve-space",
-                             ELEMNAME_ROOT_STRING = "root",  // pattern-by-example support
-                             ELEMNAME_SORT_STRING = "sort",
-                             ELEMNAME_STRIPSPACE_STRING = "strip-space",
-                             ELEMNAME_STYLESHEET_STRING = "stylesheet",
-                             ELEMNAME_TARGETATTRIBUTE_STRING =
-                               "target-attribute",  // pattern-by-example support
-                             ELEMNAME_TARGETCOMMENT_STRING = "target-comment",
-                             ELEMNAME_TARGETELEMENT_STRING = "target-element",  // pattern-by-example support
-                             ELEMNAME_TARGETPI_STRING = "target-pi",
-                             ELEMNAME_TARGETTEXT_STRING = "target-text",
-                             ELEMNAME_TEMPLATE_STRING = "template",
-                             ELEMNAME_TEXT_STRING = "text",
-                             ELEMNAME_TRANSFORM_STRING = "transform",
-                             ELEMNAME_URL_STRING = "uri",  // pattern-by-example support
-                             ELEMNAME_USE_STRING = "use",
-                             ELEMNAME_VALUEOF_STRING = "value-of",
-                             ELEMNAME_VARIABLE_STRING = "variable",
-                             ELEMNAME_WHEN_STRING = "when",
-                             ELEMNAME_WITHPARAM_STRING = "with-param";
+  public static final String       
+	  ELEMNAME_ANCHOR_STRING = "anchor",
+      ELEMNAME_ANY_STRING = "any",  // pattern-by-example support
+      ELEMNAME_APPLY_IMPORTS_STRING = "apply-imports",
+      ELEMNAME_APPLY_TEMPLATES_STRING = "apply-templates",
+      ELEMNAME_ARG_STRING = "arg",
+      ELEMNAME_ATTRIBUTESET_STRING = "attribute-set",
+      ELEMNAME_ATTRIBUTE_STRING = "attribute",  // pattern-by-example support
+      ELEMNAME_CALLTEMPLATEARG_STRING = "invoke-arg",
+      ELEMNAME_CALLTEMPLATE_STRING = "call-template",
+      ELEMNAME_CALL_STRING = "call",
+      ELEMNAME_CHILDREN_STRING = "children",
+      ELEMNAME_CHOOSE_STRING = "choose",
+      ELEMNAME_COMMENT_STRING = "comment",
+      ELEMNAME_COMPONENT_STRING = "component",
+      ELEMNAME_CONSTRUCT_STRING = "construct",  // my own
+      ELEMNAME_CONTENTS_STRING = "contents", 
+      ELEMNAME_COPY_OF_STRING ="copy-of",
+      ELEMNAME_COPY_STRING = "copy",
+      ELEMNAME_COUNTERINCREMENT_STRING = "counter-increment",
+      ELEMNAME_COUNTERRESET_STRING = "counter-reset",
+      ELEMNAME_COUNTERSCOPE_STRING = "counter-scope",
+      ELEMNAME_COUNTERS_STRING = "counters",
+      ELEMNAME_COUNTER_STRING = "counter",
+      ELEMNAME_CSSSTYLECONVERSION_STRING = "css-style-conversion",
+      ELEMNAME_DECIMALFORMAT_STRING = "decimal-format",
+      ELEMNAME_DISPLAYIF_STRING = "display-if",  // my own
+      ELEMNAME_ELEMENT_STRING = "element",  // pattern-by-example support
+      ELEMNAME_EMPTY_STRING = "empty",
+      ELEMNAME_EVAL_STRING = "eval",
+      ELEMNAME_EXPECTEDCHILDREN_STRING = "expectedchildren",
+      ELEMNAME_EXTENSIONHANDLER_STRING = "code-dispatcher",
+      ELEMNAME_EXTENSION_STRING = "functions",
+      ELEMNAME_FALLBACK_STRING = "fallback",
+      ELEMNAME_FOREACH_STRING = "for-each",
+      ELEMNAME_IF_STRING = "if",
+      ELEMNAME_IMPORT_STRING = "import",
+      ELEMNAME_INCLUDE_STRING = "include",
+      ELEMNAME_KEY_STRING = "key",
+      ELEMNAME_LOCALE_STRING = "locale",
+      ELEMNAME_MESSAGE_STRING = "message",
+      ELEMNAME_NSALIAS_STRING = "namespace-alias",
+      ELEMNAME_NUMBER_STRING = "number",
+      ELEMNAME_OTHERWISE_STRING = "otherwise",
+      ELEMNAME_OUTPUT_STRING = "output",
+      ELEMNAME_PARAMVARIABLE_STRING = "param",
+      ELEMNAME_PI_OLD_STRING = "pi",
+      ELEMNAME_PI_STRING = "processing-instruction",
+      ELEMNAME_PRESERVESPACE_STRING = "preserve-space",
+      ELEMNAME_ROOT_STRING = "root",  // pattern-by-example support
+      ELEMNAME_SCRIPT_STRING = "script",
+      ELEMNAME_SORT_STRING = "sort",
+      ELEMNAME_STRIPSPACE_STRING = "strip-space",
+      ELEMNAME_STYLESHEET_STRING = "stylesheet",
+      ELEMNAME_TARGETATTRIBUTE_STRING = "target-attribute",  // pattern-by-example support
+      ELEMNAME_TARGETCOMMENT_STRING = "target-comment",
+      ELEMNAME_TARGETELEMENT_STRING = "target-element",  // pattern-by-example support
+      ELEMNAME_TARGETPI_STRING = "target-pi",
+      ELEMNAME_TARGETTEXT_STRING = "target-text",
+      ELEMNAME_TEMPLATE_STRING = "template",
+      ELEMNAME_TEXT_STRING = "text",
+      ELEMNAME_TRANSFORM_STRING = "transform",
+      ELEMNAME_URL_STRING = "uri",  // pattern-by-example support
+      ELEMNAME_USE_STRING = "use",
+      ELEMNAME_VALUEOF_STRING = "value-of",
+      ELEMNAME_VARIABLE_STRING = "variable",
+      ELEMNAME_WHEN_STRING = "when",
+      ELEMNAME_WITHPARAM_STRING = "with-param";
+  
+  /**
+   * Literals for XSL attribute names.  Note that there may be more
+   * names than IDs, because some names may map to the same ID.
+   */
+  public static final String
+	  ATTRNAME_AMOUNT = "amount",
+      ATTRNAME_ANCESTOR = "ancestor",
+      ATTRNAME_ARCHIVE = "archive",
+      ATTRNAME_ATTRIBUTE = "attribute",
+      ATTRNAME_ATTRIBUTE_SET = "attribute-set",
+      ATTRNAME_CASEORDER = "case-order",
+      ATTRNAME_CLASS = "class",
+      ATTRNAME_CLASSID = "classid",
+      ATTRNAME_CODEBASE = "codebase",
+      ATTRNAME_CODETYPE = "type",
+      ATTRNAME_CONDITION = "condition",
+      ATTRNAME_COPYTYPE = "copy-type",
+      ATTRNAME_COUNT = "count",
+      ATTRNAME_DATATYPE = "data-type",
+      ATTRNAME_DECIMALSEPARATOR = "decimal-separator",
+      ATTRNAME_DEFAULT = "default",
+      ATTRNAME_DEFAULTSPACE = "default-space",
+      ATTRNAME_DEPTH = "with-children",
+      ATTRNAME_DIGIT = "digit",
+      ATTRNAME_DIGITGROUPSEP = "digit-group-sep",
+      ATTRNAME_DISABLE_OUTPUT_ESCAPING = "disable-output-escaping",
+      ATTRNAME_ELEMENT = "element",
+      ATTRNAME_ELEMENTS = "elements",
+      ATTRNAME_EXCLUDE_RESULT_PREFIXES ="exclude-result-prefixes",
+      ATTRNAME_EXPR = "expr",
+      ATTRNAME_EXTENSIONELEMENTPREFIXES = "extension-element-prefixes",
+      ATTRNAME_FORMAT = "format",
+      ATTRNAME_FROM = "from",
+      ATTRNAME_GROUPINGSEPARATOR = "grouping-separator",
+      ATTRNAME_GROUPINGSIZE = "grouping-size",
+      ATTRNAME_HREF = "href",
+      ATTRNAME_ID = "id",
+      ATTRNAME_IMPORTANCE = "importance",
+      ATTRNAME_INDENTRESULT = "indent-result",
+      ATTRNAME_INFINITY = "infinity",
+      ATTRNAME_LANG = "lang",
+      ATTRNAME_LETTERVALUE = "letter-value",
+      ATTRNAME_LEVEL = "level",
+      ATTRNAME_MATCH = "match",
+      ATTRNAME_METHOD = "calls",
+      ATTRNAME_MINUSSIGN = "minus-sign",
+      ATTRNAME_MODE = "mode",
+      ATTRNAME_NAME = "name",
+      ATTRNAME_NAMESPACE = "namespace",
+      ATTRNAME_NAN = "NaN",
+      ATTRNAME_NDIGITSPERGROUP = "n-digits-per-group",
+      ATTRNAME_NS = "ns",
+      ATTRNAME_ONLY = "only",
+      ATTRNAME_ORDER = "order",
+      ATTRNAME_OUTPUT_CDATA_SECTION_ELEMENTS = "cdata-section-elements",
+      ATTRNAME_OUTPUT_DOCTYPE_PUBLIC = "doctype-public",
+      ATTRNAME_OUTPUT_DOCTYPE_SYSTEM = "doctype-system",
+      ATTRNAME_OUTPUT_ENCODING = "encoding",
+      ATTRNAME_OUTPUT_INDENT = "indent",
+      ATTRNAME_OUTPUT_MEDIATYPE = "media-type",
+      ATTRNAME_OUTPUT_METHOD = "method",  // qname, 
+      ATTRNAME_OUTPUT_OMITXMLDECL = "omit-xml-declaration",
+      ATTRNAME_OUTPUT_STANDALONE = "standalone",
+      ATTRNAME_OUTPUT_VERSION = "version",
+      ATTRNAME_PATTERNSEPARATOR = "pattern-separator",
+      ATTRNAME_PERCENT = "percent",
+      ATTRNAME_PERMILLE = "per-mille",
+      ATTRNAME_PRIORITY = "priority",
+      ATTRNAME_REFID = "refID",
+      ATTRNAME_RESULTNS = "result-ns",
+      ATTRNAME_RESULT_PREFIX = "result-prefix",
+      ATTRNAME_SELECT = "select",
+      ATTRNAME_SEQUENCESRC = "sequence-src",
+      ATTRNAME_STYLE = "style",
+      ATTRNAME_STYLESHEET_PREFIX = "stylesheet-prefix",
+      ATTRNAME_TERMINATE = "terminate",
+      ATTRNAME_TEST = "test",
+      ATTRNAME_TOSTRING = "to-string",
+      ATTRNAME_TYPE = "type",
+      ATTRNAME_USE = "use",
+      ATTRNAME_USEATTRIBUTESETS = "use-attribute-sets",
+      ATTRNAME_VALUE = "value",
+      ATTRNAME_VERSION = "version",
+      ATTRNAME_XMLNS = "xmlns:", // namespace declaration prefix -- NOT an attribute by itself
+      ATTRNAME_XMLNSDEF = "xmlns", // default namespace
+      ATTRNAME_XMLSPACE = "xml:space", 
+      ATTRNAME_ZERODIGIT = "zero-digit";
 
-  /** NEEDSDOC Field ATTRNAME_OUTPUT_METHOD, ATTRNAME_AMOUNT, ATTRNAME_ANCESTOR, ATTRNAME_ARCHIVE, ATTRNAME_ATTRIBUTE, ATTRNAME_ATTRIBUTE_SET, ATTRNAME_CASEORDER, ATTRNAME_CLASS, ATTRNAME_CLASSID, ATTRNAME_CODEBASE, ATTRNAME_CODETYPE, ATTRNAME_CONDITION, ATTRNAME_COPYTYPE, ATTRNAME_COUNT, ATTRNAME_DATATYPE, ATTRNAME_DECIMALSEPARATOR, ATTRNAME_DEFAULT, ATTRNAME_DEFAULTSPACE, ATTRNAME_DEPTH, ATTRNAME_DIGIT, ATTRNAME_DIGITGROUPSEP, ATTRNAME_DISABLE_OUTPUT_ESCAPING, ATTRNAME_ELEMENT, ATTRNAME_ELEMENTS, ATTRNAME_EXPR, ATTRNAME_EXTENSIONELEMENTPREFIXES, ATTRNAME_FORMAT, ATTRNAME_FROM, ATTRNAME_GROUPINGSEPARATOR, ATTRNAME_GROUPINGSIZE, ATTRNAME_HREF, ATTRNAME_ID, ATTRNAME_IMPORTANCE, ATTRNAME_INDENTRESULT, ATTRNAME_INFINITY, ATTRNAME_LANG, ATTRNAME_LETTERVALUE, ATTRNAME_LEVEL, ATTRNAME_MATCH, ATTRNAME_METHOD, ATTRNAME_MINUSSIGN, ATTRNAME_MODE, ATTRNAME_NAME, ATTRNAME_NAMESPACE, ATTRNAME_NAN, ATTRNAME_NDIGITSPERGROUP, ATTRNAME_NS, ATTRNAME_ONLY, ATTRNAME_ORDER, ATTRNAME_OUTPUT_CDATA_SECTION_ELEMENTS, ATTRNAME_OUTPUT_DOCTYPE_PUBLIC, ATTRNAME_OUTPUT_DOCTYPE_SYSTEM, ATTRNAME_OUTPUT_ENCODING, ATTRNAME_OUTPUT_INDENT, ATTRNAME_OUTPUT_MEDIATYPE, ATTRNAME_OUTPUT_STANDALONE, ATTRNAME_OUTPUT_VERSION, ATTRNAME_OUTPUT_OMITXMLDECL, ATTRNAME_PATTERNSEPARATOR, ATTRNAME_PERCENT, ATTRNAME_PERMILLE, ATTRNAME_PRIORITY, ATTRNAME_REFID, ATTRNAME_RESULTNS, ATTRNAME_RESULT_PREFIX, ATTRNAME_SELECT, ATTRNAME_SEQUENCESRC, ATTRNAME_STYLE, ATTRNAME_STYLESHEET_PREFIX, ATTRNAME_TERMINATE, ATTRNAME_TEST, ATTRNAME_TOSTRING, ATTRNAME_TYPE, ATTRNAME_USE, ATTRNAME_USEATTRIBUTESETS, ATTRNAME_VALUE, ATTRNAME_VERSION, ATTRNAME_XMLNSDEF, ATTRNAME_XMLNS, ATTRNAME_XMLSPACE, ATTRNAME_ZERODIGIT, ATTRNAME_EXCLUDE_RESULT_PREFIXES          */
-  public static final String ATTRNAME_OUTPUT_METHOD = "method",  // qname, 
-                             ATTRNAME_AMOUNT = "amount", ATTRNAME_ANCESTOR =
-                               "ancestor", ATTRNAME_ARCHIVE =
-                               "archive", ATTRNAME_ATTRIBUTE =
-                               "attribute", ATTRNAME_ATTRIBUTE_SET =
-                               "attribute-set", ATTRNAME_CASEORDER =
-                               "case-order", ATTRNAME_CLASS =
-                               "class", ATTRNAME_CLASSID =
-                               "classid", ATTRNAME_CODEBASE =
-                               "codebase", ATTRNAME_CODETYPE =
-                               "type", ATTRNAME_CONDITION =
-                               "condition", ATTRNAME_COPYTYPE =
-                               "copy-type", ATTRNAME_COUNT =
-                               "count", ATTRNAME_DATATYPE =
-                               "data-type", ATTRNAME_DECIMALSEPARATOR =
-                               "decimal-separator", ATTRNAME_DEFAULT =
-                               "default", ATTRNAME_DEFAULTSPACE =
-                               "default-space", ATTRNAME_DEPTH =
-                               "with-children", ATTRNAME_DIGIT =
-                               "digit", ATTRNAME_DIGITGROUPSEP =
-                               "digit-group-sep", ATTRNAME_DISABLE_OUTPUT_ESCAPING =
-                               "disable-output-escaping", ATTRNAME_ELEMENT =
-                               "element", ATTRNAME_ELEMENTS =
-                               "elements", ATTRNAME_EXPR =
-                               "expr", ATTRNAME_EXTENSIONELEMENTPREFIXES =
-                               "extension-element-prefixes", ATTRNAME_FORMAT =
-                               "format", ATTRNAME_FROM =
-                               "from", ATTRNAME_GROUPINGSEPARATOR =
-                               "grouping-separator", ATTRNAME_GROUPINGSIZE =
-                               "grouping-size", ATTRNAME_HREF =
-                               "href", ATTRNAME_ID =
-                               "id", ATTRNAME_IMPORTANCE =
-                               "importance", ATTRNAME_INDENTRESULT =
-                               "indent-result", ATTRNAME_INFINITY =
-                               "infinity", ATTRNAME_LANG =
-                               "lang", ATTRNAME_LETTERVALUE =
-                               "letter-value", ATTRNAME_LEVEL =
-                               "level", ATTRNAME_MATCH =
-                               "match", ATTRNAME_METHOD =
-                               "calls", ATTRNAME_MINUSSIGN =
-                               "minus-sign", ATTRNAME_MODE =
-                               "mode", ATTRNAME_NAME =
-                               "name", ATTRNAME_NAMESPACE =
-                               "namespace", ATTRNAME_NAN =
-                               "NaN", ATTRNAME_NDIGITSPERGROUP =
-                               "n-digits-per-group", ATTRNAME_NS =
-                               "ns", ATTRNAME_ONLY = "only", ATTRNAME_ORDER =
-                               "order", ATTRNAME_OUTPUT_CDATA_SECTION_ELEMENTS =
-                               "cdata-section-elements", ATTRNAME_OUTPUT_DOCTYPE_PUBLIC =
-                               "doctype-public", ATTRNAME_OUTPUT_DOCTYPE_SYSTEM =
-                               "doctype-system", ATTRNAME_OUTPUT_ENCODING =
-                               "encoding", ATTRNAME_OUTPUT_INDENT =
-                               "indent", ATTRNAME_OUTPUT_MEDIATYPE =
-                               "media-type", ATTRNAME_OUTPUT_STANDALONE =
-                               "standalone", ATTRNAME_OUTPUT_VERSION =
-                               "version", ATTRNAME_OUTPUT_OMITXMLDECL =
-                               "omit-xml-declaration", ATTRNAME_PATTERNSEPARATOR =
-                               "pattern-separator", ATTRNAME_PERCENT =
-                               "percent", ATTRNAME_PERMILLE =
-                               "per-mille", ATTRNAME_PRIORITY =
-                               "priority", ATTRNAME_REFID =
-                               "refID", ATTRNAME_RESULTNS =
-                               "result-ns", ATTRNAME_RESULT_PREFIX =
-                               "result-prefix", ATTRNAME_SELECT =
-                               "select", ATTRNAME_SEQUENCESRC =
-                               "sequence-src", ATTRNAME_STYLE =
-                               "style", ATTRNAME_STYLESHEET_PREFIX =
-                               "stylesheet-prefix", ATTRNAME_TERMINATE =
-                               "terminate", ATTRNAME_TEST =
-                               "test", ATTRNAME_TOSTRING =
-                               "to-string", ATTRNAME_TYPE =
-                               "type", ATTRNAME_USE =
-                               "use", ATTRNAME_USEATTRIBUTESETS =
-                               "use-attribute-sets", ATTRNAME_VALUE =
-                               "value", ATTRNAME_VERSION =
-                               "version", ATTRNAME_XMLNSDEF =
-                               "xmlns", ATTRNAME_XMLNS =
-                               "xmlns:", ATTRNAME_XMLSPACE =
-                               "xml:space", ATTRNAME_ZERODIGIT =
-                               "zero-digit", ATTRNAME_EXCLUDE_RESULT_PREFIXES =
-                               "exclude-result-prefixes";
-
-  /** NEEDSDOC Field TATTRNAME_OUTPUT_METHOD, TATTRNAME_AMOUNT, TATTRNAME_ANCESTOR, TATTRNAME_ARCHIVE, TATTRNAME_ATTRIBUTE, TATTRNAME_ATTRIBUTE_SET, TATTRNAME_CASEORDER, TATTRNAME_CLASS, TATTRNAME_CLASSID, TATTRNAME_CODEBASE, TATTRNAME_CODETYPE, TATTRNAME_CONDITION, TATTRNAME_COPYTYPE, TATTRNAME_COUNT, TATTRNAME_DATATYPE, TATTRNAME_DEFAULT, TATTRNAME_DEFAULTSPACE, TATTRNAME_DEPTH, TATTRNAME_DIGITGROUPSEP, TATTRNAME_DISABLE_OUTPUT_ESCAPING, TATTRNAME_ELEMENT, TATTRNAME_ELEMENTS, TATTRNAME_EXPR, TATTRNAME_EXTENSIONELEMENTPREFIXES, TATTRNAME_FORMAT, TATTRNAME_FROM, TATTRNAME_GROUPINGSEPARATOR, TATTRNAME_GROUPINGSIZE, TATTRNAME_HREF, TATTRNAME_ID, TATTRNAME_IMPORTANCE, TATTRNAME_INDENTRESULT, TATTRNAME_LANG, TATTRNAME_LETTERVALUE, TATTRNAME_LEVEL, TATTRNAME_MATCH, TATTRNAME_METHOD, TATTRNAME_MODE, TATTRNAME_NAME, TATTRNAME_NAMESPACE, TATTRNAME_NDIGITSPERGROUP, TATTRNAME_NS, TATTRNAME_ONLY, TATTRNAME_ORDER, TATTRNAME_OUTPUT_CDATA_SECTION_ELEMENTS, TATTRNAME_OUTPUT_DOCTYPE_PUBLIC, TATTRNAME_OUTPUT_DOCTYPE_SYSTEM, TATTRNAME_OUTPUT_ENCODING, TATTRNAME_OUTPUT_INDENT, TATTRNAME_OUTPUT_MEDIATYPE, TATTRNAME_OUTPUT_STANDALONE, TATTRNAME_OUTPUT_VERSION, TATTRNAME_OUTPUT_OMITXMLDECL, TATTRNAME_PRIORITY, TATTRNAME_REFID, TATTRNAME_RESULTNS, TATTRNAME_SELECT, TATTRNAME_SEQUENCESRC, TATTRNAME_STYLE, TATTRNAME_TEST, TATTRNAME_TOSTRING, TATTRNAME_TYPE, TATTRNAME_USE, TATTRNAME_USEATTRIBUTESETS, TATTRNAME_VALUE, TATTRNAME_XMLNSDEF, TATTRNAME_XMLNS, TATTRNAME_XMLSPACE, TATTRNAME_EXCLUDE_RESULT_PREFIXES          */
+  /** IDs for XSL attribute types. These are associated
+   * with the string literals in the TransformerImpl class.
+   * Don't change the numbers. NOTE THAT THESE ARE NOT IN
+   * ALPHABETICAL ORDER!
+   */
   public static final int TATTRNAME_OUTPUT_METHOD = 1, TATTRNAME_AMOUNT = 2,
                           TATTRNAME_ANCESTOR = 3, TATTRNAME_ARCHIVE = 4,
                           TATTRNAME_ATTRIBUTE = 5,
@@ -352,14 +402,29 @@ public class Constants
                           TATTRNAME_XMLNS = 67, TATTRNAME_XMLSPACE = 68,
                           TATTRNAME_EXCLUDE_RESULT_PREFIXES = 69;
 
-  /** NEEDSDOC Field ATTRVAL_OUTPUT_METHOD_HTML, ATTRVAL_OUTPUT_METHOD_XML, ATTRVAL_OUTPUT_METHOD_TEXT          */
+  /** Mnemonics for the possible values of the xsl:output element's
+   * method= attribute:
+   * <ul>
+   * <li>ATTRVAL_OUTPUT_METHOD_XML = Use an XML formatter to
+   * produce the output document (basic XSLT operation).</li>
+   * <li>ATTRVAL_OUTPUT_METHOD_HTML: Use an HTML formatter to
+   * produce the output document. When generating HTML documents,
+   * this may yield better results; it does things like escaping
+   * characters in href attributes.</li>
+   * </li>ATTRVAL_OUTPUT_METHOD_TEXT:  Use a Text formatter to
+   * produce the output document. Generally the right choice if your
+   * stylesheet wants to take over _all_ the details of formatting,
+   * most often when producing something that isn't an XML or HTML
+   * document.</li>
+   * </ul> 
+   * */
   public static final String ATTRVAL_OUTPUT_METHOD_HTML = "html",
                              ATTRVAL_OUTPUT_METHOD_XML = "xml",
                              ATTRVAL_OUTPUT_METHOD_TEXT = "text";
 
   // For space-att
 
-  /** NEEDSDOC Field ATTRVAL_PRESERVE, ATTRVAL_STRIP          */
+  /* NEEDSDOC */
   public static final int ATTRVAL_PRESERVE = 1, ATTRVAL_STRIP = 2;
 
   // For indent-result
