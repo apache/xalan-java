@@ -12,15 +12,15 @@ within a Java applet:
 
     function run_transform(form) {
       /* Get the input document and translet class name from input form */
-      var translet = form.translet;
-      var document = form.document;
+      var translet = form.translet.value;
+      var doc = form.doc.value;
 
       /* Get the frame to output to */
       var output_frame = parent.frames.demo_output.document;
 
       /* Display the output in this frame */
       output_frame.clear();
-      output_frame.writeln(document.TransformApplet.transform(translet, document));
+      output_frame.writeln(document.TransformApplet.transform(translet, doc));
       output_frame.close();
       return(true);
     }
@@ -31,7 +31,7 @@ within a Java applet:
     <p>Select translet:</p>
     <p><input name="translet" width="64"></p>
     <p>Select XML source document:</p>
-    <p><input name="document" width="64"></p>
+    <p><input name="doc" width="64"></p>
     <p><input type="button" value="Run" onClick="run_transform(this.form)"></p>
 
   </form>
@@ -40,7 +40,7 @@ within a Java applet:
     The xsltc.jar file must contain the XSLTC runtime classes and your
     pre-compiled translets, as described in the README.applet file.
   -->
-  <applet archive="xsltc.jar"
+  <applet archive="../../bin/xsltc.jar"
           code="TransformApplet"
           name="TransformApplet"
           width="10"

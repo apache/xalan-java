@@ -301,33 +301,25 @@ xslURL=birds.xsl</label></gloss>
     are provided for testing.</note>
     <p>To run the servlet:  set system property server.root=server root. Set up an HTML page to call
      servlet.ApplyXSLT with arguments as illustrated below.</p>
-    <p>The files foo.xml and foo.xsl used in the following example are created by the user. Good 
-    examples for these files are birds.xml/birds.xsl and foo.xml/foo.xsl under the SimpleTransform 
-    sample. If you create these files yourself, be careful that the output method should
+    <p>The files catalog.xml,  booklist1.xsl and booklist2.xsl are used in the following example.
+    In the deploy descriptor, booklist1.xsl is set as the default xsl file. If you create these files yourself, be careful that the output method should
     be set to "xml" in the stylesheet.</p>
      <p>Examples:</p>
 <gloss>
-<label>http://localhost/servlethome/servlet.ApplyXSLT?URL=/foo.xml&amp;xslURL=
-/foo.xsl</label>
-<item>...applies the foo.xsl stylesheet to the foo.xml data. Both files are<br/>
+<label>http://localhost:port/xalanservlet/ApplyXSLT?URL=/xalanservlet/catalog.xml&amp;xslURL=
+/xalanservlet/booklist2.xsl</label>
+<item>...applies the booklist2.xsl stylesheet to the catalog.xml data. Both files are<br/>
 served from the Web server's HTTP document root.<br/><br/></item>
-<label>http://localhost/servlethome/servlet.ApplyXSLT?URL=/foo.xml&amp;xslURL=
-/foo.xsl&amp;debug=true</label>
+<label>http://localhost:port/xalanservlet/ApplyXSLT?URL=/xalanservlet/catalog.xml&amp;xslURL=
+/xalanservlet/booklist2.xsl&amp;debug=true</label>
 <item>...ensures that XML and XSL processor messages are returned in the event of problems
-applying foo.xsl to foo.xml<br/><br/></item>
-<label>http://localhost/servlethome/servlet.ApplyXSLT/foo.xml?xslURL=/foo.xsl</label>
-<item>...applies the foo.xsl stylesheet to the foo.xml data, just like the first example.
+applying booklist2.xsl to catalog.xml<br/><br/></item>
+<label>http://localhost:port/xalanservlet/ApplyXSLT/xalanservlet/catalog.xml?xslURL=/xalanservlet/booklist2.xsl</label>
+<item>...applies the booklist2.xsl stylesheet to the catalog.xml data, just like the first example.
 This is an alternative way of specifying the XML XSLTInputSource by utilizing the HTTP request's path
 information.<br/><br/></item>
-<label>http://localhost/servlethome/servlet.ApplyXSLT/foo.xml</label>
-<item>...examines foo.xml for an associated XSL stylesheet (a stylesheet Processing Instruction). If multiple XSLs are associated with the data, the stylesheet whose media attribute maps to your browser type will be chosen.  If no mapping is successful, the primary associated stylesheet is used.<br/><br/></item>
-<label>http://localhost/servlet/foo.xml</label>
-<item>...provides the same function as the previous example, but this example assumes
-that /servlet/foo.xml has been mapped to be executed by this servlet.  The servlet engine may be configured
-to map all or some *.xml files to this servlet through the use of servlet aliases or filters.<br/><br/></item>
-<label>http://localhost/servlet/foo.xml?catalog=http://www.xml.org/dtds/oag.xml</label>
-<item>...supplements any servlet-configured XCatalog
-with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</item>
+<label>http://localhost:port/xalanservlet/ApplyXSLT/xalanservlet/catalog.xml</label>
+<item>...examines catalog.xml for an associated XSL stylesheet booklist1.xsl (a stylesheet Processing Instruction). If multiple XSLs are associated with the data, the stylesheet whose media attribute maps to your browser type will be chosen.  If no mapping is successful, the primary associated stylesheet is used.<br/><br/></item>
 </gloss>     
    </s3>
      </s2><anchor name="extensions"/>
@@ -350,7 +342,8 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
      <p>To run these examples, you must place bsf.jar (distributed with &xslt4j;), and js.jar
       (version 1.5, available from 
       <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the classpath. 
-     You do not need js.jar on the classpath for the samples that use Java extensions. </p>
+     You do not need js.jar on the classpath for the samples that use Java extensions. <link idref="faq.html">
+     Problems related to JDK 1.4</link></p>
      <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
       the <link idref="commandline">command line</link>. The command line must include an -in flag with the 
       XML source and an -xsl flag with the XSL stylesheet. If you want the output to be written to a file, rather
@@ -416,7 +409,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
           <li>Modify the SQL query to your own needs. The SQL query is defined in a parameter like
           <code>&lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;</code>.</li>
           <li>Modify the JDBC driver name and the database url. They are specified in the stylesheets as parameters for some
-          examples. For other examples the parameters are defined in the dbinfo.xml file.</li>
+          examples. For other examples the parameters are defined in the basic-connection/dbinfo.xml and basic-connection/dbtest.xsl.</li>
         </ul>
       </li>
       <li>Add the JDBC driver jar to the system class path.</li>

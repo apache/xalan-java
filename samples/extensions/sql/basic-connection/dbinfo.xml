@@ -7,6 +7,12 @@
    <user />
    <password/>
  </DBINFO>
- 
-
+ <!-- an example setting for using DB2, sample is the database name
+  <DBINFO>
+   <dbdriver>COM.ibm.db2.jdbc.app.DB2Driver</dbdriver>
+   <dburl>jdbc:db2:sample</dburl>
+   <user />
+   <password/>
+ </DBINFO>
+-->
 </dbtest>

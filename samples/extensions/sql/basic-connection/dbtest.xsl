@@ -20,7 +20,9 @@
 
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
+<xsl:param name="username" select="'***'"/>
 
+<xsl:param name="passwd" select="'***'"/>
 
 <xsl:template match="/">
 
@@ -32,7 +34,7 @@
 
     <!-- Connect to the database with minimal error detection -->
 
-		<xsl:if test="not(sql:connect($db, $driver, $datasource))" >
+		<xsl:if test="not(sql:connect($db, $driver, $datasource, $username, $passwd))" >
 
     	<xsl:message>Error Connecting to the Database</xsl:message>
 
