@@ -1267,9 +1267,6 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
    * Return a named ResourceBundle for a particular locale.  This method mimics the behavior
    * of ResourceBundle.getBundle().
    *
-   * @param res the name of the resource to load.
-   * @param locale the locale to prefer when searching for the bundle
-   *
    * @param className Name of local-specific subclass.
    * @return the ResourceBundle
    * @throws MissingResourceException
