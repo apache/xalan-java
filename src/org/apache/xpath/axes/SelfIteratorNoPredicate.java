@@ -14,7 +14,7 @@ import org.apache.xml.dtm.DTM;
 /**
  * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
- * "." patterns, that is, the self axes without any predicates.
+ * "." patterns, that is, the self axes without any predicates.  
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
 public class SelfIteratorNoPredicate extends LocPathIterator
