@@ -256,7 +256,25 @@ public class ErrorMessages extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Could not resolve the URI reference ''{0}''."}
+        "Could not resolve the URI reference ''{0}''."},
+ 
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Unsupported XSL element ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSTLC does
+         * not recognized the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Unrecognised XSLTC extension ''{0}''"}
+       
     };
 
     public Object[][] getContents() {
