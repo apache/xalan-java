@@ -149,19 +149,16 @@ final class Param extends VariableBase {
      * element has a body and no 'select' expression.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-
-	// Get the type from the select exrepssion...
 	if (_select != null) {
 	    _type = _select.typeCheck(stable); 
 	    if (_type instanceof ReferenceType == false) {
 		_select = new CastExpr(_select, Type.Reference);
 	    }
 	}
-	// ...or set the type to result tree
 	else if (hasContents()) {
 	    typeCheckContents(stable);
 	}
-	_type = Type.ResultTree;
+	_type = Type.Reference;
 
 	// This element has no type (the parameter does, but the parameter
 	// element itself does not).
