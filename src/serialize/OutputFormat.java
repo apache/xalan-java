@@ -121,7 +121,11 @@ public class OutputFormat
      * True if indentation is requested, false for no indentation.
      */
     private boolean _indent = false;
-
+    
+    /**
+     * The amount to indent a line, when indent is set to true.
+     */
+    private int _indentAmount = 4;
 
     /**
      * The encoding to use, if an input stream is used, UTF-8 for
@@ -266,6 +270,28 @@ public class OutputFormat
     {
         _indent = indent;
     }
+    
+    /**
+     * Returns the amount to indent if indentation was specified.
+     *
+     * @return True if indentation was specified
+     */
+    public int getIndentAmount()
+    {
+        return _indentAmount;
+    }
+
+
+    /**
+     * Sets how much to indent, if indentation was specified.
+     *
+     * @param amount Number of spaces to indent.
+     */
+    public void setIndentAmount( int amount )
+    {
+        _indentAmount = amount;
+    }
+
 
 
     /**
