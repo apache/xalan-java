@@ -3299,12 +3299,17 @@ public final class DOMImpl implements DOM, Externalizable {
 	{
     	    final int node = nextAttributeNode();
 	    final String qname = attList.getQName(i);
-	    String localname = attList.getLocalName(i);
+	    String localName = attList.getLocalName(i);
 	    final String value = attList.getValue(i);
 	    StringBuffer namebuf = new StringBuffer(EMPTYSTRING);
 	    
 	    if (qname.startsWith(XMLSPACE_STRING)) {
 		xmlSpaceDefine(attList.getValue(i), parent);
+	    }
+
+	    // If local name is null set it to the empty string
+	    if (localName == null) {
+		localName = EMPTYSTRING;
 	    }
 
 	    // Create the internal attribute node name (uri+@+localname)
@@ -3314,7 +3319,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		namebuf.append(':');
 	    }
 	    namebuf.append('@');
-	    namebuf.append(localname.length() > 0 ? localname : qname);
+	    namebuf.append(localName.length() > 0 ? localName : qname);
 
 	    String name = namebuf.toString();
 
@@ -3466,6 +3471,11 @@ public final class DOMImpl implements DOM, Externalizable {
 			_nextSibling2[last] = _currentAttributeNode;
 		    }
 		}
+	    }
+
+	    // If local name is null set it to the empty string
+	    if (localName == null) {
+		localName = EMPTYSTRING;
 	    }
 
 	    // Append any attribute nodes
