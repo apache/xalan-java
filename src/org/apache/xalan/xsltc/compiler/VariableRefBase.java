@@ -68,17 +68,34 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 class VariableRefBase extends Expression {
 
-    protected final VariableBase _variable;
+    protected final VariableBase _variable; // Reference to the associated var.
 
+    /**
+     * Created a new variable or parameter reference. Note that this base-
+     * class is not here mostly because variable and parameter references share
+     * a lot of functionality. The base class is needed more for having a
+     * single class to run 'if (instanceof)' on in the compiler code. The same
+     * holds for the variable base class.
+     * @param variable The referenced variable
+     */
     public VariableRefBase(VariableBase variable) {
 	_variable = variable;
 	variable.addReference(this);
     }
 
+    /**
+     * Returns a reference to the associated variable
+     * @return The referenced variable
+     */
     public VariableBase getVariable() {
 	return(_variable);
     }
 
+    /**
+     * Returns a string representation of this variable reference on the
+     * format 'variable-ref(<var-name>)'.
+     * @return Variable reference description
+     */
     public String toString() {
 	return "variable-ref(" + _variable.getName() + ')';
     }

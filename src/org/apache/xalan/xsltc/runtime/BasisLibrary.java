@@ -243,8 +243,8 @@ public final class BasisLibrary implements Operators {
 	    int istart = (int)Math.round(start) - 1;
 
 	    if (Double.isNaN(start)) return(EMPTYSTRING);
-
- 	    if ((istart < 1) || (istart > strlen)) istart = 0;
+	    if (istart > strlen) return(EMPTYSTRING);
+ 	    if (istart < 1) istart = 0;
 
 	    return value.substring(istart);
 	}
@@ -266,10 +266,12 @@ public final class BasisLibrary implements Operators {
 
 	    if (Double.isNaN(start) || Double.isNaN(length))
 		return(EMPTYSTRING);
+	    if (istart > strlen) return(EMPTYSTRING);
+	    if (isum < 0)  return(EMPTYSTRING);
 
- 	    if ((istart < 1) || (istart > strlen)) istart = 0;
+ 	    if (istart < 0) istart = 0;
 
-	    if ((isum < 0) || (isum > strlen))
+	    if (isum > strlen)
 		return value.substring(istart);
 	    else
 		return value.substring(istart, isum);

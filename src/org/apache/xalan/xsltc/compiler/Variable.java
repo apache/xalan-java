@@ -194,6 +194,10 @@ final class Variable extends VariableBase {
 		_type = Type.ResultTree;
 	    }
 	}
+
+	// The return type is void as the variable element does not leave
+	// anything on the JVM's stack. The '_type' global will be returned
+	// by the references to this variable, and not by the variable itself.
 	return Type.Void;
     }
 

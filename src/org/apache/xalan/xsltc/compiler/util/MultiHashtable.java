@@ -76,6 +76,7 @@ public final class MultiHashtable extends Hashtable {
     }
 	
     public boolean maps(Object from, Object to) {
+	if (from == null) return false;
 	final Vector vector = (Vector) get(from);
 	if (vector != null) {
 	    final int n = vector.size();

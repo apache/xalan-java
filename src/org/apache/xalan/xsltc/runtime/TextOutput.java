@@ -745,43 +745,6 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
-     * Generates a namespace prefix for URIs that have no associated
-     * prefix. Can happen quite frequently since we do not store
-     * namespace prefixes in the tree (we only store the URIs).
-     */
-    private int _nsCounter = 0;
-
-    private String generateNamespacePrefix() {
-	return(new String("ns"+Integer.toString(_nsCounter++)));
-    }
-
-    /**
-     * Returns a prefix that is currently mapped to a given URI
-     */
-    public String getPrefix(String uri) throws TransletException {
-	try {
-	    String prefix = EMPTYSTRING;
-	    String theuri;
-
-	    // First a quick check for the default namespace
-	    if (uri.equals(lookupNamespace(prefix))) return prefix;
-
-	    Enumeration prefixes = _namespaces.keys();
-	    while (prefixes.hasMoreElements()) {
-		prefix = (String)prefixes.nextElement();
-		theuri = lookupNamespace(prefix);
-		if ((theuri != null) && (theuri.equals(uri))) return prefix;
-	    }
-	    prefix = generateNamespacePrefix();
-	    pushNamespace(prefix, uri);
-	    return prefix;
-	}
-	catch (SAXException e) {
-	    throw new TransletException(e);
-	}
-    }
-
-    /**
      * Send a namespace declaration in the output document. The namespace
      * declaration will not be include if the namespace is already in scope
      * with the same prefix.

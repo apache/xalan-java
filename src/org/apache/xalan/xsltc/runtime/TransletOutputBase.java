@@ -79,7 +79,6 @@ public class TransletOutputBase implements TransletOutputHandler {
 	throws TransletException {}
     public void namespace(String prefix, String uri)
 	throws TransletException {}
-    public String getPrefix(String uri) throws TransletException { return(""); }
     public void comment(String comment) throws TransletException {}
     public void processingInstruction(String target, String data)
 	throws TransletException {}

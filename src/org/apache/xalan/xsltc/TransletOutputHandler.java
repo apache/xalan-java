@@ -78,7 +78,6 @@ public interface TransletOutputHandler {
     public void attribute(String attributeName, String attributeValue)
 	throws TransletException;
     public void namespace(String prefix, String uri) throws TransletException;
-    public String getPrefix(String uri) throws TransletException;
     public void comment(String comment) throws TransletException;
     public void processingInstruction(String target, String data)
 	throws TransletException;

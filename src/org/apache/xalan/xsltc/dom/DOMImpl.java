@@ -128,8 +128,10 @@ public final class DOMImpl implements DOM, Externalizable {
     private char[]    _text;
 
     // Namespace related stuff
-    private String[]  _nsNamesArray;
+    private String[]  _uriArray;
+    private String[]  _prefixArray;
     private short[]   _namespace;
+    private short[]   _prefix;
     private Hashtable _nsIndex = new Hashtable();
 
     // Tracks which textnodes are whitespaces and which are not
@@ -162,7 +164,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns 'true' if a specific node is an element (of any type)
      */
     private boolean isElement(final int node) {
-	return ((node < _treeNodeLimit) && (_type[node] >= NTYPES));
+	return ((node < _firstAttributeNode) && (_type[node] >= NTYPES));
     }
 
     /**
@@ -361,7 +363,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		return Node.COMMENT_NODE;
 		
 	    default:
-		return _index < _treeNodeLimit
+		return _index < _firstAttributeNode
 		    ? Node.ELEMENT_NODE : Node.ATTRIBUTE_NODE;
 	    }
 	}
@@ -506,11 +508,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public String getNamespaceURI() {
-	    return _nsNamesArray[_namespace[_type[_index] - NTYPES]];
+	    return _uriArray[_namespace[_type[_index] - NTYPES]];
 	}
 
 	public String getPrefix() {
-	    return null; // We don't know with the current DOM implementation
+	    return _prefixArray[_prefix[_index]];
 	}
 
 	public void setPrefix(String prefix) {
@@ -518,9 +520,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public String getLocalName() {
-	    final String qname = _namesArray[_type[_index] - NTYPES];
-	    final int col = qname.lastIndexOf(':');
-	    return qname.substring(col+1);
+	    return DOMImpl.this.getLocalName(_index);
 	}
 
 	public boolean hasAttributes() {
@@ -1736,10 +1736,23 @@ public final class DOMImpl implements DOM, Externalizable {
 	case TEXT:
 	    return makeStringValue(node);
 	default:
-	    return node < _treeNodeLimit
-		? getElementValue(node) // element string value
-		: makeStringValue(node); // attribute value
+	    if (node < _firstAttributeNode)
+		return getElementValue(node); // element string value
+	    else
+		return makeStringValue(node); // attribute value
 	}
+    }
+
+    private String getLocalName(int node) {
+	final int type = _type[node] - NTYPES;
+	final String qname = _namesArray[type];
+	final String uri = _uriArray[_namespace[type]];
+
+	if (uri != null) {
+	    final int len = uri.length();
+	    if (len > 0) return qname.substring(len+1);
+	}
+	return qname;
     }
 
     /**
@@ -1786,10 +1799,18 @@ public final class DOMImpl implements DOM, Externalizable {
 	// extended types initialized to "beyond caller's types"
 	// unknown element or Attr
 	for (i = NTYPES; i < mappingLength; i++) {
-	    final String name = _namesArray[i - NTYPES];
-	    final int atPos = name.lastIndexOf(':')+1;
-	    result[i] = (short)(name.charAt(atPos) == '@'
-				? ATTRIBUTE : ELEMENT);
+	    final int type = i - NTYPES;
+	    final String name = _namesArray[type];
+	    final String uri = _uriArray[_namespace[type]];
+	    int len = 0;
+	    if (uri != null) {
+		len = uri.length();
+		if (len > 0) len++;
+	    }
+	    if (name.charAt(len) == '@')
+		result[i] = (short)ATTRIBUTE;
+	    else
+		result[i] = (short)ELEMENT;
 	}
 
 	// actual mapping of caller requested names
@@ -1826,7 +1847,7 @@ public final class DOMImpl implements DOM, Externalizable {
     public short[] getNamespaceMapping(String[] namespaces) {
 	int i;
 	final int nsLength = namespaces.length;
-	final int mappingLength = _nsNamesArray.length;
+	final int mappingLength = _uriArray.length;
 	final short[] result = new short[mappingLength];
 
 	// Initialize all entries to -1
@@ -1875,8 +1896,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	out.writeObject(_lengthOrAttr);
 	out.writeObject(_text);
 	out.writeObject(_namesArray);
-	out.writeObject(_nsNamesArray);
+	out.writeObject(_uriArray);
 	out.writeObject(_whitespace);
+	out.writeObject(_prefix);
 	out.flush();
     }
 
@@ -1894,8 +1916,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	_lengthOrAttr  = (int[])in.readObject();
 	_text          = (char[])in.readObject();
 	_namesArray    = (String[])in.readObject();
-	_nsNamesArray  = (String[])in.readObject();
+	_uriArray      = (String[])in.readObject();
 	_whitespace    = (BitArray)in.readObject();
+	_prefix        = (short[])in.readObject();
 	_types         = setupMapping(_namesArray);
     }
 
@@ -1909,7 +1932,7 @@ public final class DOMImpl implements DOM, Externalizable {
     /**
      * Constructor - defines initial size
      */
-    public DOMImpl(final int size) {
+    public DOMImpl(int size) {
 	_type          = new short[size];
 	_parent        = new int[size];
 	_nextSibling   = new int[size];
@@ -1917,7 +1940,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	_lengthOrAttr  = new int[size];
 	_text          = new char[size * 10];
 	_whitespace    = new BitArray(size);
-	// _namesArray[] and _nsNamesArray are allocated in endDocument
+	_prefix        = new short[size];
+	// _namesArray[] and _uriArray are allocated in endDocument
     }
 
     /**
@@ -1961,22 +1985,29 @@ public final class DOMImpl implements DOM, Externalizable {
     public String getNodeName(final int node) {
 	// Get the node type and make sure that it is within limits
 	final short type = _type[node];
-	if (type == DOM.PROCESSING_INSTRUCTION)
-	    return("a-pi");
-	else if (type < NTYPES)
+	switch(type) {
+	case DOM.ROOT:
+	case DOM.TEXT:
+	case DOM.UNUSED:
+	case DOM.ELEMENT:
+	case DOM.ATTRIBUTE:
+	case DOM.COMMENT:
 	    return EMPTYSTRING;
+	case DOM.PROCESSING_INSTRUCTION:
+	    return "a-pi";
+	default:
+	    // Construct the local part (omit '@' for attributes)
+	    String name  = getLocalName(node);
+	    if (node >= _firstAttributeNode)
+		name = name.substring(1);
 
-	// Get node's name (attribute or element)
-	final String rawName = _namesArray[type - NTYPES];
-	// Make sure attributes are returned without the leading '@'
-	if (node < _firstAttributeNode)
-	    return(rawName);
-	else {
-	    final int col = rawName.lastIndexOf(':');
-	    if (col < 0)
-		return(rawName.substring(1));
-	    else
-		return(rawName.substring(0,col)+':'+rawName.substring(col+2));
+	    final int pi = _prefix[node];
+	    if (pi > 0) {
+		final String prefix = _prefixArray[pi];
+		if (prefix != EMPTYSTRING)
+		    name = prefix+':'+name;
+	    }
+	    return name;
 	}
     }
 
@@ -1985,7 +2016,7 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String getNamespaceName(final int node) {
 	final int type = getNamespaceType(node);
-	final String name = _nsNamesArray[type];
+	final String name = _uriArray[type];
 	if (name == null)
 	    return(EMPTYSTRING);
 	else
@@ -2001,40 +2032,36 @@ public final class DOMImpl implements DOM, Externalizable {
     }
 
     /**
-     * Returns the value of a given attribute type of a given element
+     * Returns the attribute node of a given type (if any) for an element
      */
-    public String getAttributeValue(final int type, final int element) {
+    public int getAttributeNode(final int type, final int element) {
 	for (int attr = _lengthOrAttr[element];
 	     attr != NULL;
 	     attr = _nextSibling[attr]) {
-	    if (_type[attr] == type) return makeStringValue(attr);
+	    if (_type[attr] == type) return attr;
 	}
-	return EMPTYSTRING;
+	return NULL;
     }
 
     /**
-     * Returns the attribute node of a given type (if any) for an element
+     * Returns the value of a given attribute type of a given element
      */
-    public int getAttributeNode(final int gType, final int element) {
-	for (int attr = _lengthOrAttr[element];
-	     attr != NULL;
-	     attr = _nextSibling[attr]) {
-	    if (_type[attr] == gType) return attr;
-	}
-	return NULL;
+    public String getAttributeValue(final int type, final int element) {
+	final int attr = getAttributeNode(type, element);
+	if (attr != NULL)
+	    return makeStringValue(attr);
+	else
+	    return EMPTYSTRING;
     }
 
     /**
      * Returns true if a given element has an attribute of a given type
      */
     public boolean hasAttribute(final int type, final int node) {
-	for (int attr = _lengthOrAttr[node]; attr != NULL;
-	     attr = _nextSibling[attr]) {
-	    if (_type[attr] == type) {
-		return true;
-	    }
-	}
-	return false;
+	if (getAttributeNode(type, node) != NULL)
+	    return true;
+	else
+	    return false;
     }
 
     /**
@@ -2048,7 +2075,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns true if the given element has any children
      */
     private boolean hasChildren(final int node) {
-	if (node < _treeNodeLimit) {
+	if (node < _firstAttributeNode) {
 	    final int type = _type[node];
 	    return(((type >= NTYPES) || (type == ROOT)) &&
 		   (_offsetOrChild[node] != 0));
@@ -2060,12 +2087,10 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns an iterator with all the children of a given node
      */
     public NodeIterator getChildren(final int node) {
-	if (hasChildren(node)) {
+	if (hasChildren(node))
 	    return(new ChildrenIterator());
-	}
-	else {
+	else
 	    return(EMPTYITERATOR);
-	}
     }
 
     /**
@@ -2274,15 +2299,12 @@ public final class DOMImpl implements DOM, Externalizable {
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException {
 
-	int attr, child, col;
+	final int type = _type[node];
 
-	switch(_type[node]) {
+	switch(type) {
 	case ROOT:
-	    for (child = _offsetOrChild[node];
-		 child != NULL;
-		 child = _nextSibling[child]) {
-		copy(child, handler);
-	    }
+	    for (int c=_offsetOrChild[node]; c!=NULL; c=_nextSibling[c])
+		copy(c, handler);
 	    break;
 	case PROCESSING_INSTRUCTION:
 	    copyPI(node, handler);
@@ -2299,57 +2321,20 @@ public final class DOMImpl implements DOM, Externalizable {
 	    break;
 	default:
 	    if (isElement(node)) {
-		final String name = getNodeName(node);
-		// Copy element name - start tag
-		col = name.lastIndexOf(':');
-		if (col > 0) {
-		    final String uri = name.substring(0,col);
-		    final String prefix = handler.getPrefix(uri);
-		    final String local = name.substring(col+1);
-		    if (prefix.equals(EMPTYSTRING))
-			handler.startElement(local);
-		    else
-			handler.startElement(prefix+':'+local);
-		}
-		else {
-		    handler.startElement(name);
-		}
-
+		// Start element definition
+		final String name = copyElement(node, type, handler);
 		// Copy element attribute
-		for (attr = _lengthOrAttr[node];
-		     attr != NULL;
-		     attr = _nextSibling[attr]) {
-		    final String aname = getNodeName(attr);
-		    col = aname.lastIndexOf(':');
-		    if (col < 0) {
-			handler.attribute(aname,makeStringValue(attr));
-		    }
-		    else {
-			final String uri = aname.substring(0,col);
-			final String prefix = handler.getPrefix(uri);
-			final String local = aname.substring(col+1);
-			final String value = makeStringValue(attr);
-			final String qname = prefix+':'+local;
-			if (prefix.equals(EMPTYSTRING))
-			    handler.attribute(local, value);
-			else
-			    handler.attribute(prefix+':'+local, value);
-		    }
-		}
-
+		for (int a=_lengthOrAttr[node]; a!=NULL; a=_nextSibling[a])
+		    handler.attribute(getNodeName(a), makeStringValue(a));
 		// Copy element children
-		for (child = _offsetOrChild[node];
-		     child != NULL;
-		     child = _nextSibling[child]) {
-		    copy(child, handler);
-		}
-
-		// Copy element end-tag
+		for (int c=_offsetOrChild[node]; c!=NULL; c=_nextSibling[c])
+		    copy(c, handler);
+		// Close element definition
 		handler.endElement(name);
 	    }
 	    // Shallow copy of attribute to output handler
 	    else {
-		shallowCopy(node, handler);
+		handler.attribute(getNodeName(node), makeStringValue(node));
 	    }
 	    break;
 	}
@@ -2384,7 +2369,10 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String shallowCopy(final int node, TransletOutputHandler handler)
 	throws TransletException {
-	switch(_type[node]) {
+
+	final int type = _type[node];
+
+	switch(type) {
 	case ROOT: // do nothing
 	    return EMPTYSTRING;
 	case TEXT:
@@ -2397,30 +2385,41 @@ public final class DOMImpl implements DOM, Externalizable {
 	    return null;
 	case COMMENT:
 	    return null;
-	default:                  // element or attribute
-	    final String name = getNodeName(node);
+	default:
 	    if (isElement(node)) {
-		// Copy element name - start tag
-		int col = name.lastIndexOf(':');
-		if (col > 0) {
-		    final String uri = name.substring(0,col);
-		    final String prefix = handler.getPrefix(uri);
-		    final String local = name.substring(col+1);
-		    if (prefix.equals(EMPTYSTRING))
-			handler.startElement(local);
-		    else
-			handler.startElement(prefix+':'+local);
-		}
-		else {
-		    handler.startElement(name);
-		}
-		return(name);
+		return(copyElement(node, type, handler));
 	    }
-	    else {                  // attribute
-		handler.attribute(name, makeStringValue(node));
+	    else {
+		String name = getNodeName(node);
+		final String value = makeStringValue(node);
+		handler.attribute(name, value);
+		return null;
 	    }
-	    return null;
 	}
+    }
+
+    private String copyElement(int node, int type,
+			       TransletOutputHandler handler)
+	throws TransletException {
+
+	type = type - NTYPES;
+	String name = _namesArray[type];
+	final int pi = _prefix[node];
+	if (pi > 0) {
+	    final String prefix = _prefixArray[pi];
+	    final String uri = _uriArray[_namespace[type]];
+	    final String local = getLocalName(node);
+	    if (prefix.equals(EMPTYSTRING))
+		name = local;
+	    else
+		name = prefix+':'+local;
+	    handler.startElement(name);
+	    handler.namespace(prefix, uri);
+	}
+	else {
+	    handler.startElement(name);
+	}
+	return name;
     }
 
     /**
@@ -2521,6 +2520,7 @@ public final class DOMImpl implements DOM, Externalizable {
     /****************************************************************/
     private final class DOMBuilder implements ContentHandler {
 
+	private final static int ATTR_ARRAY_SIZE = 32;
 	private final static int REUSABLE_TEXT_SIZE = 32;
 	private Hashtable _shortTexts           = null;
 
@@ -2533,17 +2533,19 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int       _currentOffset        = 0;
 	private int       _currentNode          = 0;
 
-	// attribute node stuff
+	// Temporary structures for attribute nodes
 	private int       _currentAttributeNode = 0;
-	private short[]  _type2        = new short[32];
-	private int[]    _parent2      = new int[32];
-	private int[]    _nextSibling2 = new int[32];
-	private int[]    _offset       = new int[32];
-	private int[]    _length       = new int[32];
+	private short[]   _type2        = new short[ATTR_ARRAY_SIZE];
+	private short[]   _prefix2      = new short[ATTR_ARRAY_SIZE];
+	private int[]     _parent2      = new int[ATTR_ARRAY_SIZE];
+	private int[]     _nextSibling2 = new int[ATTR_ARRAY_SIZE];
+	private int[]     _offset       = new int[ATTR_ARRAY_SIZE];
+	private int[]     _length       = new int[ATTR_ARRAY_SIZE];
 
 	// Namespace prefix-to-uri mapping stuff
 	private Hashtable _nsPrefixes   = new Hashtable();
-	private int       _nsCount      = 0;
+	private int       _uriCount     = 0;
+	private int       _prefixCount  = 0;
 	
 	// Stack used to keep track of what whitespace text nodes are protected
 	// by xml:space="preserve" attributes and which nodes that are not.
@@ -2670,9 +2672,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	/**
 	 * Generate the internal type for an element's expanded QName
 	 */
-	private short makeElementNode(String name) throws SAXException {
+	private short makeElementNode(String name, int col)
+	    throws SAXException {
 	    // Expand prefix:localname to full QName
-	    int col = name.lastIndexOf(':');
 	    if (col > -1) {
 		final String uri = getNamespaceURI(name.substring(0, col));
 		name = uri + name.substring(col);
@@ -2689,6 +2691,18 @@ public final class DOMImpl implements DOM, Externalizable {
 		_names.put(name, obj = new Integer(_nextNameCode++));
 	    }
 	    return (short)obj.intValue();
+	}
+
+	/**
+	 *
+	 */
+	private short registerPrefix(String prefix) {
+	    Stack stack = (Stack)_nsPrefixes.get(prefix);
+	    if (stack != null) {
+		Integer obj = (Integer)stack.elementAt(0);
+		return (short)obj.intValue();
+	    }
+	    return 0;
 	}
 
 	/*
@@ -2778,7 +2792,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    final String qname = attList.getQName(i);
 	    final String localname = attList.getLocalName(i);
 	    final String value = attList.getValue(i);
-	    
 	    StringBuffer namebuf = new StringBuffer(EMPTYSTRING);
 	    
 	    // Create the internal attribute node name (uri+@+localname)
@@ -2810,6 +2823,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 
 	    _parent2[node] = parent;
+
+	    final int col = qname.lastIndexOf(':');
+	    if (col > 0) {
+		_prefix2[node] = registerPrefix(qname.substring(0, col));
+	    }
+
 	    characters(attList.getValue(i));
 	    storeAttrValRef(node);
 	    return node;
@@ -2872,9 +2891,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    appendAttributes();
 	    _treeNodeLimit = _currentNode;
 
-	    // Fill the _namespace[] and _nsNamesArray[] array
+	    // Fill the _namespace[] and _uriArray[] array
 	    _namespace = new short[namesSize];
-	    _nsNamesArray = new String[_nsCount];
+	    _uriArray = new String[_uriCount];
 	    for (int i = 0; i<namesSize; i++) {
 		final String qname = _namesArray[i];
 		final int col = _namesArray[i].lastIndexOf(':');
@@ -2883,8 +2902,17 @@ public final class DOMImpl implements DOM, Externalizable {
 		    final String uri = _namesArray[i].substring(0, col);
 		    final Integer idx = (Integer)_nsIndex.get(uri);
 		    _namespace[i] = idx.shortValue();
-		    _nsNamesArray[idx.intValue()] = uri;
+		    _uriArray[idx.intValue()] = uri;
 		}
+	    }
+
+	    _prefixArray = new String[_prefixCount];
+	    Enumeration p = _nsPrefixes.keys();
+	    while (p.hasMoreElements()) {
+		final String prefix = (String)p.nextElement();
+		final Stack stack = (Stack)_nsPrefixes.get(prefix);
+		final Integer I = (Integer)stack.elementAt(0);
+		_prefixArray[I.shortValue()] = prefix;
 	    }
 	}
 	
@@ -2916,11 +2944,18 @@ public final class DOMImpl implements DOM, Externalizable {
 		_lengthOrAttr[node] = DOM.NULL;
 	    }	    
 	    
+	    final int col = qname.lastIndexOf(':');
+
 	    // Assign an internal type to this element (may exist)
 	    if ((uri != null) && (localName.length() > 0))
 		_type[node] = makeElementNode(uri, localName);
 	    else
-		_type[node] = makeElementNode(qname);
+		_type[node] = makeElementNode(qname, col);
+
+	    // Assign an internal type to the element's prefix (may exist)
+	    if (col > -1) {
+		_prefix[node] = registerPrefix(qname.substring(0, col));
+	    }
 	}
 	
 	/**
@@ -2983,12 +3018,13 @@ public final class DOMImpl implements DOM, Externalizable {
 	    Stack stack = (Stack)_nsPrefixes.get(prefix);
 	    if (stack == null) {
 		stack = new Stack();
+		stack.push(new Integer(_prefixCount++));
 		_nsPrefixes.put(prefix, stack);
 	    }
 
 	    // Check if the URI already exists before pushing on stack
 	    if (_nsIndex.get(uri) == null) {
-		_nsIndex.put(uri, new Integer(_nsCount++));
+		_nsIndex.put(uri, new Integer(_uriCount++));
 	    }
 	    stack.push(uri);
 	}
@@ -3014,45 +3050,75 @@ public final class DOMImpl implements DOM, Externalizable {
 	    string.getChars(0, length, _text, _currentOffset);
 	    _currentOffset += length;
 	}
-	
+
 	private void resizeArrays(final int newSize, final int length) {
 	    if (newSize > length) {
+		// Resize the '_type' array
 		final short[] newType = new short[newSize];
 		System.arraycopy(_type, 0, newType, 0, length);
 		_type = newType;
+
+		// Resize the '_parent' array
 		final int[] newParent = new int[newSize];
 		System.arraycopy(_parent, 0, newParent, 0, length);
 		_parent = newParent;
+
+		// Resize the '_nextSibling' array
 		final int[] newNextSibling = new int[newSize];
 		System.arraycopy(_nextSibling, 0, newNextSibling, 0, length);
 		_nextSibling = newNextSibling;
+
+		// Resize the '_offsetOrChild' array
 		final int[] newOffsetOrChild = new int[newSize];
 		System.arraycopy(_offsetOrChild, 0, newOffsetOrChild, 0,length);
 		_offsetOrChild = newOffsetOrChild;
+
+		// Resize the '_lengthOrAttr' array
 		final int[] newLengthOrAttr = new int[newSize];
 		System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
 		_lengthOrAttr = newLengthOrAttr;
+
+		// Resize the '_whitespace' array (a BitArray instance)
 		_whitespace.resize(newSize);
+
+		// Resize the '_prefix' array
+		final short[] newPrefix = new short[newSize];
+		System.arraycopy(_prefix, 0, newPrefix, 0, length);
+		_prefix = newPrefix;
 	    }
 	}
 	
 	private void resizeArrays2(final int newSize, final int length) {
 	    if (newSize > length) {
+		// Resize the '_type2' array (attribute types)
 		final short[] newType = new short[newSize];
 		System.arraycopy(_type2, 0, newType, 0, length);
 		_type2 = newType;
+
+		// Resize the '_parent2' array (attribute parent elements)
 		final int[] newParent = new int[newSize];
 		System.arraycopy(_parent2, 0, newParent, 0, length);
 		_parent2 = newParent;
+
+		// Resize the '_nextSibling2' array (you get the idea...)
 		final int[] newNextSibling = new int[newSize];
 		System.arraycopy(_nextSibling2, 0, newNextSibling, 0, length);
 		_nextSibling2 = newNextSibling;
+
+		// Resize the '_offset' array (attribute value start)
 		final int[] newOffset = new int[newSize];
 		System.arraycopy(_offset, 0, newOffset, 0, length);
 		_offset = newOffset;
+
+		// Resize the 'length' array (attribute value length)
 		final int[] newLength = new int[newSize];
 		System.arraycopy(_length, 0, newLength, 0, length);
 		_length = newLength;
+
+		// Resize the '_prefix2' array
+		final short[] newPrefix = new short[newSize];
+		System.arraycopy(_prefix2, 0, newPrefix, 0, length);
+		_prefix2 = newPrefix;
 	    }
 	}
 	
@@ -3077,6 +3143,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (len > 0) {
 		final int dst = _currentNode;
 		System.arraycopy(_type2,         0, _type,          dst, len);
+		System.arraycopy(_prefix2,       0, _prefix,        dst, len);
 		System.arraycopy(_parent2,       0, _parent,        dst, len);
 		System.arraycopy(_nextSibling2,  0, _nextSibling,   dst, len);
 		System.arraycopy(_offset,        0, _offsetOrChild, dst, len);
