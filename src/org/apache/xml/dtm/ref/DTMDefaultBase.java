@@ -632,13 +632,17 @@ public abstract class DTMDefaultBase implements DTM
   /**
    * Diagnostics function to dump the DTM.
    */
-  public void dumpDTM()
+  public void dumpDTM(OutputStream os)
   {
     try
     {
-      File f = new File("DTMDump"+((Object)this).hashCode()+".txt");
-      System.err.println("Dumping... "+f.getAbsolutePath());
-      PrintStream ps = new PrintStream(new FileOutputStream(f));
+      if(os==null)
+      {
+	      File f = new File("DTMDump"+((Object)this).hashCode()+".txt");
+ 	      System.err.println("Dumping... "+f.getAbsolutePath());
+ 	      os=new FileOutputStream(f);
+      }
+      PrintStream ps = new PrintStream(os);
 
       while (nextNode()){}
 
@@ -646,21 +650,22 @@ public abstract class DTMDefaultBase implements DTM
 
       ps.println("Total nodes: " + nRecords);
 
-      for (int i = 0; i < nRecords; i++)
+      for (int index = 0; index < nRecords; ++index)
       {
-        ps.println("=========== " + i + " ===========");
+      	int i=makeNodeHandle(index);
+        ps.println("=========== index=" + index + " handle=" + i + " ===========");
         ps.println("NodeName: " + getNodeName(i));
         ps.println("NodeNameX: " + getNodeNameX(i));
         ps.println("LocalName: " + getLocalName(i));
         ps.println("NamespaceURI: " + getNamespaceURI(i));
         ps.println("Prefix: " + getPrefix(i));
 
-        int exTypeID = _exptype(i);
+        int exTypeID = _exptype(index);
 
         ps.println("Expanded Type ID: "
                            + Integer.toHexString(exTypeID));
 
-        int type = _type(i);
+        int type = _type(index);
         String typestring;
 
         switch (type)
@@ -714,7 +719,7 @@ public abstract class DTMDefaultBase implements DTM
 
         ps.println("Type: " + typestring);
 
-        int firstChild = _firstch(i);
+        int firstChild = _firstch(index);
 
         if (DTM.NULL == firstChild)
           ps.println("First child: DTM.NULL");
@@ -723,7 +728,7 @@ public abstract class DTMDefaultBase implements DTM
         else
           ps.println("First child: " + firstChild);
 
-        int prevSibling = _prevsib(i);
+        int prevSibling = _prevsib(index);
 
         if (DTM.NULL == prevSibling)
           ps.println("Prev sibling: DTM.NULL");
@@ -732,7 +737,7 @@ public abstract class DTMDefaultBase implements DTM
         else
           ps.println("Prev sibling: " + prevSibling);
 
-        int nextSibling = _nextsib(i);
+        int nextSibling = _nextsib(index);
 
         if (DTM.NULL == nextSibling)
           ps.println("Next sibling: DTM.NULL");
@@ -741,7 +746,7 @@ public abstract class DTMDefaultBase implements DTM
         else
           ps.println("Next sibling: " + nextSibling);
 
-        int parent = _parent(i);
+        int parent = _parent(index);
 
         if (DTM.NULL == parent)
           ps.println("Parent: DTM.NULL");
@@ -750,7 +755,7 @@ public abstract class DTMDefaultBase implements DTM
         else
           ps.println("Parent: " + parent);
 
-        int level = _level(i);
+        int level = _level(index);
 
         ps.println("Level: " + level);
         ps.println("Node Value: " + getNodeValue(i));
