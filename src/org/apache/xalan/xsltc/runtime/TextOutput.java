@@ -791,14 +791,14 @@ public final class TextOutput implements TransletOutputHandler, Constants {
      * an attribute. If at runtime, when the qname of the attribute is
      * known, another prefix is specified for the attribute, then we can get 
      * a qname of the form "ns?:otherprefix:name". This function patches the 
-     * qname by simply ignoring the generated prefix.
+     * qname by simply ignoring "otherprefix".
      */
     private static String patchQName(String qname) throws TransletException {
 	final int lastColon = qname.lastIndexOf(':');
 	if (lastColon > 0) {
 	    final int firstColon = qname.indexOf(':');
 	    if (firstColon != lastColon) {
-		return qname.substring(firstColon + 1);
+		return qname.substring(0, firstColon) + qname.substring(lastColon);
 	    }
 	}
 	return qname;
