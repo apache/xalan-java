@@ -1555,13 +1555,13 @@ apply.
 		<level>
 			<prefix name="IfExpr" if="xpath core xquery" condition="> 1">
 				<sequence>
-					<ref name="IfLpar"/>
+					<ref name="IfLpar" node-type="void"/>
 					<ref name="Expr"/>
-					<ref name="Rpar"/>
+					<ref name="Rpar" node-type="void"/>
           <!-- XPath TF decision to remove, Oct 16, 2002 -->
-					<ref name="Then"/>
+					<ref name="Then" node-type="void"/>
 					<ref name="Expr"/>
-					<ref name="Else"/>
+					<ref name="Else" node-type="void"/>
 				</sequence>
 			</prefix>  
 		</level>
