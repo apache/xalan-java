@@ -87,6 +87,8 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
 public class ExpressionFactoryImpl implements ExpressionFactory
 {
 
+	public StaticContext m_context;
+
 	public Expr createExpr(String expr) throws XPath20Exception
 	{
 		XPath parser = new XPath(new StringReader(expr));
@@ -102,9 +104,9 @@ public class ExpressionFactoryImpl implements ExpressionFactory
 
 	public Expr createExpr(StaticContext ctx, String expr)
 		throws XPath20Exception
-	{
-		// TODO : context
-		XPath parser = new XPath(new StringReader(expr));
+	{		
+		m_context = ctx;
+		XPath parser = new XPath(new StringReader(expr));		
 		try
 		{
 			return (Expr) parser.XPath2().jjtGetChild(0);

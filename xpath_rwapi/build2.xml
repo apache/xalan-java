@@ -32,9 +32,12 @@ Copyright:
 <project name="XPathAPI" default="javacc" basedir=".">
   <property name="year" value="2003"/>
 
+  <property name="version" value="0.5"/>
+
   <property name="build.dir" value="../build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.debug" value="on"/>
+  
   <!-- Note bin.dir assumes we're using Xalan's checked-in copy of ant.jar -->
   <property name="bin.dir" value="${ant.home}/bin"/>
   <property name="jarfilename" value="xpath.jar"/>
@@ -178,7 +181,7 @@ Copyright:
          	 version="true"
          	 use="true"
          	 windowtitle="XPath API" 
-         	 doctitle="XPath API 2"
+         	 doctitle="XPath API 2.0 Version ${version}"
          	 bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
          	  <classpath refid="docs.class.path" />
          	  <group title="Namespace Support" packages="org.apache.xml"/>

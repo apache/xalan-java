@@ -8,13 +8,14 @@
 Primary external APIs for this XPath AST model.</p>
 <p>This XPath API is a compact set of Java interfaces that allow to
 encode and handle XPath 2.0/XQuery 1.0 expressions (although only XPath
-2.0 expressions are currently supported). It was designed to fulfill
+2.0 expressions are currently supported except for the let expression).
+It was designed to fulfill
 the following requirements:</p>
 <ul>
   <li style="font-weight: bold;">Read/Write: <span
  style="font-weight: normal;">capability of visiting and modifying the
 internal representation of expressions. The expression reading is
-performed by using either the visitor pattern or the get-like methods.
+performed by using either the visitor pattern or get-like methods.
 Similarly, the</span><span style="font-weight: normal;"> expression </span><span
  style="font-weight: normal;">writing is done through a bunch of
 set-like methods.</span></li>
@@ -33,7 +34,7 @@ implementation package).<span style="font-weight: bold;"><br>
  style="font-weight: normal;">keep the interface set as minimal as
 possible by factoring similar concepts. The best example is the
 interface OperatorExpr which allows to represent more than ten
-expressions types.</span></li>
+expression types.</span></li>
 </ul>
 Right now, the XPath API do not provide a standard way to evaluate
 expressions. This should be done.<br>
