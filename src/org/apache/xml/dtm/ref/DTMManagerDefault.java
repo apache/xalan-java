@@ -303,7 +303,8 @@ public class DTMManagerDefault extends DTMManager
             return dtm;
           }
 
-          reader.setDTDHandler(dtm);
+          if(null == reader.getErrorHandler())
+            reader.setDTDHandler(dtm);
           reader.setErrorHandler(dtm);
 
           try
@@ -340,7 +341,8 @@ public class DTMManagerDefault extends DTMManager
           // not incremental
           reader.setContentHandler(dtm);
           reader.setDTDHandler(dtm);
-          reader.setErrorHandler(dtm);
+          if(null == reader.getErrorHandler())
+            reader.setDTDHandler(dtm);
 
           try
           {
