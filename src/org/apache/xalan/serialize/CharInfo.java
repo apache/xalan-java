@@ -96,6 +96,9 @@ public class CharInfo
   /** The linefeed character, which the parser should always normalize. */
   public static char S_LINEFEED = 0x0A;
 
+  /** The carriage return character, which the parser should always normalize. */
+  public static char S_CARRIAGERETURN = 0x0D;
+
   /**
    * Constructor that reads in a resource file that describes the mapping of
    * characters to entity references.
@@ -169,6 +172,7 @@ public class CharInfo
 
       is.close();
       m_specialsMap.set(S_LINEFEED);
+      m_specialsMap.set(S_CARRIAGERETURN);
     }
     catch (Exception except)
     {

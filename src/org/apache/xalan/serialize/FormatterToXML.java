@@ -1949,9 +1949,20 @@ public class FormatterToXML
       char ch = stringChars[i];
 
       if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
+      {
         accum(ch);
+      }
       else
+      {
+        // I guess the parser doesn't normalize cr/lf in attributes. -sb
+        if((CharInfo.S_CARRIAGERETURN == ch) && ((i+1) < len) 
+        && (CharInfo.S_LINEFEED == stringChars[i+1]))
+        {
+          i++;
+          ch = CharInfo.S_LINEFEED;
+        }
         accumDefaultEscape(ch, i, stringChars, len, true);
+      }
     }
   }
 
