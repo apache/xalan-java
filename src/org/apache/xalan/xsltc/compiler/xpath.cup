@@ -612,10 +612,8 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
         {:
 	    final Step step = new Step(Axis.DESCENDANTORSELF, -1, null);
-
-	    RESULT = new FilteredAbsoluteLocationPath(
-			new AbsoluteLocationPath(parser.insertStep(step, 
-				(RelativeLocationPath) rlp)));
+	    RESULT = new AbsoluteLocationPath(parser.insertStep(step, 
+				(RelativeLocationPath) rlp));
 	:};
 
 Step ::= NodeTest:ntest
