@@ -39,6 +39,18 @@ public class DocumentTypeImpl extends Child implements DocumentType
   {
     return m_name;
   }
+  
+   /**
+   * Returns the local part of the qualified name of this node.
+   * <br>For nodes created with a DOM Level 1 method, such as 
+   * <code>createElement</code> from the <code>Document</code> interface, 
+   * it is <code>null</code>.
+   * @since DOM Level 2
+   */
+  public String       getLocalName()
+  {
+    return m_name;
+  }
 
   
     /**
