@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -77,9 +77,9 @@ final class ContainsCall extends FunctionCall {
     private Expression _token = null;
 
     /**
-     * Create a contains() call - two arguments, both strings
+     * Create a containsValue() call - two arguments, both strings
      */
-    public ContainsCall(QName fname, Vector arguments) {
+    public ContainsCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

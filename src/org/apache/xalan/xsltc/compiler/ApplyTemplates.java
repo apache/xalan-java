@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.xml.parsers.*;
 
@@ -152,12 +152,12 @@ final class ApplyTemplates extends Instruction {
 	final int current = methodGen.getLocalIndex("current");
 
 	// check if sorting nodes is required
-	final Vector sortObjects = new Vector();
-	final Enumeration children = elements();
-	while (children.hasMoreElements()) {
-	    final Object child = children.nextElement();
+	final ArrayList sortObjects = new ArrayList();
+	final Iterator children = iterator();
+	while (children.hasNext()) {
+	    final Object child = children.next();
 	    if (child instanceof Sort) {
-		sortObjects.addElement(child);
+		sortObjects.add(child);
 	    }
 	}
 

@@ -63,7 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Method;
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -84,9 +84,9 @@ final class FunctionAvailableCall extends FunctionCall {
      * a list of arguments where the arguments must be instances of 
      * LiteralExpression. 
      */
-    public FunctionAvailableCall(QName fname, Vector arguments) {
+    public FunctionAvailableCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
-	_arg = (Expression)arguments.elementAt(0);
+	_arg = (Expression)arguments.get(0);
 	_type = null; 
 
         if (_arg instanceof LiteralExpr) {

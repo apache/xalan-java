@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
@@ -116,7 +116,7 @@ final class Sort extends Instruction implements Closure {
     }
 
     /**
-     * Returns the name of the auxiliary class or null if this predicate 
+     * Returns the name of the auxiliary class or null if this predicate
      * is compiled inside the Translet.
      */
     public String getInnerClassName() {
@@ -196,7 +196,7 @@ final class Sort extends Instruction implements Closure {
 	    }
 	}
     }
-    
+
     /**
      * Run type checks on the attributes; expression must return a string
      * which we will use as a sort key
@@ -224,12 +224,12 @@ final class Sort extends Instruction implements Closure {
 				  MethodGenerator methodGen) {
 	_dataType.translate(classGen, methodGen);
     }
-    
+
     public void translateSortOrder(ClassGenerator classGen,
 				   MethodGenerator methodGen) {
 	_order.translate(classGen, methodGen);
     }
-    
+
     /**
      * This method compiles code for the select expression for this
      * xsl:sort element. The method is called from the static code-generating
@@ -255,7 +255,7 @@ final class Sort extends Instruction implements Closure {
     public static void translateSortIterator(ClassGenerator classGen,
 				      MethodGenerator methodGen,
 				      Expression nodeSet,
-				      Vector sortObjects) 
+				      ArrayList sortObjects)
     {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -265,7 +265,7 @@ final class Sort extends Instruction implements Closure {
 					  "("
 					  + NODE_ITERATOR_SIG
 					  + NODE_SORT_FACTORY_SIG
-					  + ")V");	
+					  + ")V");
 
 	il.append(new NEW(cpg.addClass(SORT_ITERATOR)));
 	il.append(DUP);
@@ -283,7 +283,7 @@ final class Sort extends Instruction implements Closure {
 	else {
 	    nodeSet.translate(classGen, methodGen);
 	}
-	
+
 	// Compile the code for the NodeSortRecord producing class and pass
 	// that as the last argument to the SortingIterator constructor.
 	compileSortRecordFactory(sortObjects, classGen, methodGen);
@@ -295,29 +295,29 @@ final class Sort extends Instruction implements Closure {
      * Compiles code that instantiates a NodeSortRecordFactory object which
      * will produce NodeSortRecord objects of a specific type.
      */
-    public static void compileSortRecordFactory(Vector sortObjects,
-	ClassGenerator classGen, MethodGenerator methodGen) 
+    public static void compileSortRecordFactory(ArrayList sortObjects,
+	ClassGenerator classGen, MethodGenerator methodGen)
     {
-	String sortRecordClass = 
+	String sortRecordClass =
 	    compileSortRecord(sortObjects, classGen, methodGen);
 
 	boolean needsSortRecordFactory = false;
 	final int nsorts = sortObjects.size();
 	for (int i = 0; i < nsorts; i++) {
-	    final Sort sort = (Sort) sortObjects.elementAt(i);
+	    final Sort sort = (Sort) sortObjects.get(i);
 	    needsSortRecordFactory |= sort._needsSortRecordFactory;
 	}
 
 	String sortRecordFactoryClass = NODE_SORT_FACTORY;
 	if (needsSortRecordFactory) {
-	    sortRecordFactoryClass = 
-		compileSortRecordFactory(sortObjects, classGen, methodGen, 
+	    sortRecordFactoryClass =
+		compileSortRecordFactory(sortObjects, classGen, methodGen,
 		    sortRecordClass);
 	}
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	
+
 	il.append(new NEW(cpg.addClass(sortRecordFactoryClass)));
 	il.append(DUP);
 	il.append(methodGen.loadDOM());
@@ -328,7 +328,7 @@ final class Sort extends Instruction implements Closure {
 	il.append(new PUSH(cpg, nsorts));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));
 	for (int level = 0; level < nsorts; level++) {
-	    final Sort sort = (Sort)sortObjects.elementAt(level);
+	    final Sort sort = (Sort)sortObjects.get(level);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, level));
 	    sort.translateSortOrder(classGen, methodGen);
@@ -338,7 +338,7 @@ final class Sort extends Instruction implements Closure {
 	il.append(new PUSH(cpg, nsorts));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));
 	for (int level = 0; level < nsorts; level++) {
-	    final Sort sort = (Sort)sortObjects.elementAt(level);
+	    final Sort sort = (Sort)sortObjects.get(level);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, level));
 	    sort.translateSortType(classGen, methodGen);
@@ -346,8 +346,8 @@ final class Sort extends Instruction implements Closure {
 	}
 
 	il.append(new INVOKESPECIAL(
-	    cpg.addMethodref(sortRecordFactoryClass, "<init>", 
-		"(" + DOM_INTF_SIG 
+	    cpg.addMethodref(sortRecordFactoryClass, "<init>",
+		"(" + DOM_INTF_SIG
 		    + STRING_SIG
 		    + TRANSLET_INTF_SIG
 		    + "[" + STRING_SIG
@@ -358,7 +358,7 @@ final class Sort extends Instruction implements Closure {
 
 	for (int j = 0; j < nsorts; j++) {
 	    final Sort sort = (Sort) sortObjects.get(j);
-	    final int length = (sort._closureVars == null) ? 0 : 
+	    final int length = (sort._closureVars == null) ? 0 :
 		sort._closureVars.size();
 
 	    for (int i = 0; i < length; i++) {
@@ -373,18 +373,18 @@ final class Sort extends Instruction implements Closure {
 		il.append(DUP);
 		il.append(var.loadInstruction());
 		il.append(new PUTFIELD(
-			cpg.addFieldref(sortRecordFactoryClass, var.getVariable(), 
+			cpg.addFieldref(sortRecordFactoryClass, var.getVariable(),
 			    var.getType().toSignature())));
 		dups.add(varRef);
 	    }
 	}
     }
 
-    public static String compileSortRecordFactory(Vector sortObjects,
-	ClassGenerator classGen, MethodGenerator methodGen, 
+    public static String compileSortRecordFactory(ArrayList sortObjects,
+	ClassGenerator classGen, MethodGenerator methodGen,
 	String sortRecordClass)
     {
-	final XSLTC  xsltc = ((Sort)sortObjects.firstElement()).getXSLTC();
+	final XSLTC  xsltc = ((Sort)sortObjects.get(0)).getXSLTC();
 	final String className = xsltc.getHelperClassName();
 
 	final NodeSortRecordFactGenerator sortRecordFactory =
@@ -403,7 +403,7 @@ final class Sort extends Instruction implements Closure {
 
 	for (int j = 0; j < nsorts; j++) {
 	    final Sort sort = (Sort) sortObjects.get(j);
-	    final int length = (sort._closureVars == null) ? 0 : 
+	    final int length = (sort._closureVars == null) ? 0 :
 		sort._closureVars.size();
 
 	    for (int i = 0; i < length; i++) {
@@ -413,7 +413,7 @@ final class Sort extends Instruction implements Closure {
 		if (dups.contains(varRef)) continue;
 
 		final VariableBase var = varRef.getVariable();
-		sortRecordFactory.addField(new Field(ACC_PUBLIC, 
+		sortRecordFactory.addField(new Field(ACC_PUBLIC,
 					   cpg.addUtf8(var.getVariable()),
 					   cpg.addUtf8(var.getType().toSignature()),
 					   null, cpg.getConstantPool()));
@@ -422,7 +422,7 @@ final class Sort extends Instruction implements Closure {
 	}
 
 	// Define a constructor for this class
-	final org.apache.bcel.generic.Type[] argTypes = 
+	final org.apache.bcel.generic.Type[] argTypes =
 	    new org.apache.bcel.generic.Type[5];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(STRING_SIG);
@@ -440,8 +440,8 @@ final class Sort extends Instruction implements Closure {
 	InstructionList il = new InstructionList();
 	final MethodGenerator constructor =
 	    new MethodGenerator(ACC_PUBLIC,
-				org.apache.bcel.generic.Type.VOID, 
-				argTypes, argNames, "<init>", 
+				org.apache.bcel.generic.Type.VOID,
+				argTypes, argNames, "<init>",
 				className, il, cpg);
 
 	// Push all parameters onto the stack and called super.<init>()
@@ -452,20 +452,20 @@ final class Sort extends Instruction implements Closure {
 	il.append(new ALOAD(4));
 	il.append(new ALOAD(5));
 	il.append(new INVOKESPECIAL(cpg.addMethodref(NODE_SORT_FACTORY,
-	    "<init>", 
-	    "(" + DOM_INTF_SIG 
-		+ STRING_SIG 
-		+ TRANSLET_INTF_SIG 
+	    "<init>",
+	    "(" + DOM_INTF_SIG
+		+ STRING_SIG
+		+ TRANSLET_INTF_SIG
 		+ "[" + STRING_SIG
 		+ "[" + STRING_SIG + ")V")));
 	il.append(RETURN);
 
 	// Override the definition of makeNodeSortRecord()
-	il = new InstructionList(); 
+	il = new InstructionList();
 	final MethodGenerator makeNodeSortRecord =
 	    new MethodGenerator(ACC_PUBLIC,
-		Util.getJCRefType(NODE_SORT_RECORD_SIG), 
-		new org.apache.bcel.generic.Type[] { 
+		Util.getJCRefType(NODE_SORT_RECORD_SIG),
+		new org.apache.bcel.generic.Type[] {
 		    org.apache.bcel.generic.Type.INT,
 		    org.apache.bcel.generic.Type.INT },
 		new String[] { "node", "last" }, "makeNodeSortRecord",
@@ -485,7 +485,7 @@ final class Sort extends Instruction implements Closure {
 	    final VariableRef varRef = (VariableRef) dups.get(i);
 	    final VariableBase var = varRef.getVariable();
 	    final Type varType = var.getType();
-	    
+
 	    il.append(DUP);
 
 	    // Get field from factory class
@@ -516,10 +516,10 @@ final class Sort extends Instruction implements Closure {
     /**
      * Create a new auxillary class extending NodeSortRecord.
      */
-    private static String compileSortRecord(Vector sortObjects,
+    private static String compileSortRecord(ArrayList sortObjects,
 					    ClassGenerator classGen,
 					    MethodGenerator methodGen) {
-	final XSLTC  xsltc = ((Sort)sortObjects.firstElement()).getXSLTC();
+	final XSLTC  xsltc = ((Sort)sortObjects.get(0)).getXSLTC();
 	final String className = xsltc.getHelperClassName();
 
 	// This generates a new class for handling this specific sort
@@ -530,8 +530,8 @@ final class Sort extends Instruction implements Closure {
 					ACC_PUBLIC | ACC_SUPER | ACC_FINAL,
 					new String[] {},
 					classGen.getStylesheet());
-	
-	final ConstantPoolGen cpg = sortRecord.getConstantPool();	
+
+	final ConstantPoolGen cpg = sortRecord.getConstantPool();
 
 	// Add a new instance variable for each var in closure
 	final int nsorts = sortObjects.size();
@@ -541,9 +541,9 @@ final class Sort extends Instruction implements Closure {
 	    final Sort sort = (Sort) sortObjects.get(j);
 
 	    // Set the name of the inner class in this sort object
-	    sort.setInnerClassName(className);	
+	    sort.setInnerClassName(className);
 
-	    final int length = (sort._closureVars == null) ? 0 : 
+	    final int length = (sort._closureVars == null) ? 0 :
 		sort._closureVars.size();
 	    for (int i = 0; i < length; i++) {
 		final VariableRef varRef = (VariableRef) sort._closureVars.get(i);
@@ -552,7 +552,7 @@ final class Sort extends Instruction implements Closure {
 		if (dups.contains(varRef)) continue;
 
 		final VariableBase var = varRef.getVariable();
-		sortRecord.addField(new Field(ACC_PUBLIC, 
+		sortRecord.addField(new Field(ACC_PUBLIC,
 				    cpg.addUtf8(var.getVariable()),
 				    cpg.addUtf8(var.getType().toSignature()),
 				    null, cpg.getConstantPool()));
@@ -570,7 +570,7 @@ final class Sort extends Instruction implements Closure {
 
 	// Overload NodeSortRecord.getCollator() only if needed
 	for (int i = 0; i < sortObjects.size(); i++) {
-	    if (((Sort)(sortObjects.elementAt(i)))._lang != null) {
+	    if (((Sort)(sortObjects.get(i)))._lang != null) {
 		sortRecord.addMethod(compileGetCollator(sortObjects,
 							sortRecord,
 							cpg,
@@ -578,7 +578,7 @@ final class Sort extends Instruction implements Closure {
 		i = sortObjects.size();
 	    }
 	}
-	
+
 	xsltc.dumpClass(sortRecord.getJavaClass());
 	return className;
     }
@@ -588,7 +588,7 @@ final class Sort extends Instruction implements Closure {
      * is to initialize a couple of tables that contain information on sort
      * order and sort type. These static tables cannot be in the parent class.
      */
-    private static Method compileClassInit(Vector sortObjects,
+    private static Method compileClassInit(ArrayList sortObjects,
 					   NodeSortRecordGenerator sortRecord,
 					   ConstantPoolGen cpg,
 					   String className) {
@@ -596,7 +596,7 @@ final class Sort extends Instruction implements Closure {
 	final InstructionList il = new InstructionList();
 	final CompareGenerator classInit =
 	    new CompareGenerator(ACC_PUBLIC | ACC_STATIC,
-				 org.apache.bcel.generic.Type.VOID, 
+				 org.apache.bcel.generic.Type.VOID,
 				 new org.apache.bcel.generic.Type[] { },
 				 new String[] { },
 				 "<clinit>", className, il, cpg);
@@ -605,7 +605,7 @@ final class Sort extends Instruction implements Closure {
 						 "<init>",
 						 "(Ljava/lang/String;"+
 						 "Ljava/lang/String;)V");
-	
+
 	final int getCollator = cpg.addMethodref(COLLATOR_CLASS,
 						 "getInstance",
 						 "(Ljava/util/Locale;)"+
@@ -625,7 +625,7 @@ final class Sort extends Instruction implements Closure {
 	// Compile code that initializes the locale
 	String language = null;
 	String country = null;
-	Sort sort = (Sort)sortObjects.elementAt(0);
+	Sort sort = (Sort)sortObjects.get(0);
 
 	for (int level = 0; level < levels; level++) {
 	    if (language == null && sort._lang != null)
@@ -645,7 +645,7 @@ final class Sort extends Instruction implements Closure {
 	    il.append(new PUSH(cpg, language));
 	    il.append(new PUSH(cpg, (country != null ? country : EMPTYSTRING)));
 	    il.append(new INVOKESPECIAL(initLocale));
-	    
+
 	    // Use that Locale object to get the required Collator object
 	    il.append(new INVOKESTATIC(getCollator));
 	    il.append(new PUTSTATIC(collator));
@@ -669,16 +669,16 @@ final class Sort extends Instruction implements Closure {
     /**
      * Compiles a method that overloads NodeSortRecord.extractValueFromDOM()
      */
-    private static Method compileExtract(Vector sortObjects,
+    private static Method compileExtract(ArrayList sortObjects,
 					 NodeSortRecordGenerator sortRecord,
 					 ConstantPoolGen cpg,
 					 String className) {
 	final InstructionList il = new InstructionList();
-	
+
 	// String NodeSortRecord.extractValueFromDOM(dom,node,level);
 	final CompareGenerator extractMethod =
 	    new CompareGenerator(ACC_PUBLIC | ACC_FINAL,
-				 org.apache.bcel.generic.Type.STRING, 
+				 org.apache.bcel.generic.Type.STRING,
 				 new org.apache.bcel.generic.Type[] {
 		                     Util.getJCRefType(DOM_INTF_SIG),
 				     org.apache.bcel.generic.Type.INT,
@@ -711,12 +711,12 @@ final class Sort extends Instruction implements Closure {
 	// Append all the cases for the switch statment
 	for (int level = 0; level < levels; level++) {
 	    match[level] = level;
-	    final Sort sort = (Sort)sortObjects.elementAt(level);
+	    final Sort sort = (Sort)sortObjects.get(level);
 	    target[level] = il.append(NOP);
 	    sort.translateSelect(sortRecord, extractMethod);
 	    il.append(ARETURN);
 	}
-	
+
 	// Compile def. target for switch statement if key has multiple levels
 	if (levels > 1) {
 	    // Append the default target - it will _NEVER_ be reached
@@ -738,7 +738,7 @@ final class Sort extends Instruction implements Closure {
      * Compiles a method that overloads NodeSortRecord.getCollator()
      * This method is only compiled if the "lang" attribute is used.
      */
-    private static Method compileGetCollator(Vector sortObjects,
+    private static Method compileGetCollator(ArrayList sortObjects,
 					     NodeSortRecordGenerator sortRecord,
 					     ConstantPoolGen cpg,
 					     String className) {

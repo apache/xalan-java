@@ -68,7 +68,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.xml.parsers.*;
 
@@ -161,10 +161,10 @@ final class Include extends TopLevelElement {
 	    parser.setCurrentStylesheet(_included);
 	    _included.parseContents(parser);
 
-	    final Enumeration elements = _included.elements();
+	    final Iterator elements = _included.iterator();
 	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();
-	    while (elements.hasMoreElements()) {
-		final Object element = elements.nextElement();
+	    while (elements.hasNext()) {
+		final Object element = elements.next();
 		if (element instanceof TopLevelElement) {
 		    if (element instanceof Variable) {
 			topStylesheet.addVariable((Variable) element);
@@ -173,7 +173,7 @@ final class Include extends TopLevelElement {
 			topStylesheet.addParam((Param) element);
 		    }
 		    else {
-			topStylesheet.addElement((TopLevelElement) element);
+			topStylesheet.add((TopLevelElement) element);
 		    }
 		}
 	    }

@@ -68,12 +68,12 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.io.*;
 import java.util.Set;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Date;
 import java.util.Map;
@@ -100,7 +100,7 @@ public final class XSLTC {
 
     // A reference to an external SourceLoader (for use with include/import)
     private SourceLoader _loader = null;
-    
+
     // A reference to the stylesheet being compiled.
     private Stylesheet _stylesheet = null;
 
@@ -111,19 +111,19 @@ public final class XSLTC {
     private int _stepPatternSerial  = 1;
     private int _helperClassSerial  = 0;
     private int _attributeSetSerial = 0;
-    
+
     private int[] _numberFieldIndexes;
-    
+
     // Name index tables
     private int       _nextGType;  // Next available element type
-    private Vector    _namesIndex; // Index of all registered QNames
-    private Hashtable _elements;   // Hashtable of all registered elements
-    private Hashtable _attributes; // Hashtable of all registered attributes
+    private ArrayList    _namesIndex; // Index of all registered QNames
+    private HashMap _elements;   // HashMap of all registered elements
+    private HashMap _attributes; // HashMap of all registered attributes
 
     // Namespace index tables
     private int       _nextNSType; // Next available namespace type
-    private Vector    _namespaceIndex; // Index of all registered namespaces
-    private Hashtable _namespaces; // Hashtable of all registered namespaces
+    private ArrayList    _namespaceIndex; // Index of all registered namespaces
+    private HashMap _namespaces; // HashMap of all registered namespaces
 
     // These define the various methods for outputting the translet
     public static final int FILE_OUTPUT        = 0;
@@ -132,7 +132,7 @@ public final class XSLTC {
     public static final int CLASSLOADER_OUTPUT = 3;
     public static final int BYTEARRAY_AND_FILE_OUTPUT = 4;
     public static final int BYTEARRAY_AND_JAR_OUTPUT  = 5;
-    
+
 
     // Compiler options (passed from command line or XSLTC client)
     private boolean _debug = false;      // -x
@@ -142,8 +142,8 @@ public final class XSLTC {
     private File    _destDir = null;     // -d <directory-name>
     private int     _outputType = FILE_OUTPUT; // by default
 
-    private Vector  _classes;
-    private Vector  _bcelClasses;
+    private ArrayList  _classes;
+    private ArrayList  _bcelClasses;
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
 
@@ -189,21 +189,21 @@ public final class XSLTC {
     public void init() {
 	reset();
 	_reader = null;
-	_classes = new Vector();
-	_bcelClasses = new Vector();
+	_classes = new ArrayList();
+	_bcelClasses = new ArrayList();
     }
-    
+
     /**
      * Initializes the compiler to produce a new translet
      */
     private void reset() {
 	_nextGType      = DOM.NTYPES;
-	_elements       = new Hashtable();
-	_attributes     = new Hashtable();
-	_namespaces     = new Hashtable();
+	_elements       = new HashMap();
+	_attributes     = new HashMap();
+	_namespaces     = new HashMap();
 	_namespaces.put("",new Integer(_nextNSType));
-	_namesIndex     = new Vector(128);
-	_namespaceIndex = new Vector(32);
+	_namesIndex     = new ArrayList(128);
+	_namespaceIndex = new ArrayList(32);
 	_parser.init();
 	//_variableSerial     = 1;
 	_modeSerial         = 1;
@@ -223,7 +223,7 @@ public final class XSLTC {
      * Defines an external SourceLoader to provide the compiler with documents
      * referenced in xsl:include/import
      * @param loader The SourceLoader to use for include/import
-     */    
+     */
     public void setSourceLoader(SourceLoader loader) {
 	_loader = loader;
     }
@@ -250,7 +250,7 @@ public final class XSLTC {
     public void setPIParameters(String media, String title, String charset) {
 	_parser.setPIParameters(media, title, charset);
     }
-    
+
     /**
      * Compiles an XSL stylesheet pointed to by a URL
      * @param url An URL containing the input XSL stylesheet
@@ -308,11 +308,11 @@ public final class XSLTC {
      */
     public boolean compile(InputSource input, String name) {
 	try {
-	    // Reset globals in case we're called by compile(Vector v);
+	    // Reset globals in case we're called by compile(ArrayList v);
 	    reset();
 
 	    // The systemId may not be set, so we'll have to check the URL
-	    String systemId = null; 
+	    String systemId = null;
 	    if (input != null) {
 	        systemId = input.getSystemId();
 	    }
@@ -375,21 +375,21 @@ public final class XSLTC {
     }
 
     /**
-     * Compiles a set of stylesheets pointed to by a Vector of URLs
-     * @param stylesheets A Vector containing URLs pointing to the stylesheets
+     * Compiles a set of stylesheets pointed to by a ArrayList of URLs
+     * @param stylesheets A ArrayList containing URLs pointing to the stylesheets
      * @return 'true' if the compilation was successful
      */
-    public boolean compile(Vector stylesheets) {
+    public boolean compile(ArrayList stylesheets) {
 	// Get the number of stylesheets (ie. URLs) in the vector
 	final int count = stylesheets.size();
-	
+
 	// Return straight away if the vector is empty
 	if (count == 0) return true;
 
 	// Special handling needed if the URL count is one, becuase the
 	// _className global must not be reset if it was set explicitly
 	if (count == 1) {
-	    final Object url = stylesheets.firstElement();
+	    final Object url = stylesheets.get(0);
 	    if (url instanceof URL)
 		return compile((URL)url);
 	    else
@@ -397,10 +397,10 @@ public final class XSLTC {
 	}
 	else {
 	    // Traverse all elements in the vector and compile
-	    final Enumeration urls = stylesheets.elements();
-	    while (urls.hasMoreElements()) {
-		_className = null; // reset, so that new name will be computed 
-		final Object url = urls.nextElement();
+	    final Iterator urls = stylesheets.iterator();
+	    while (urls.hasNext()) {
+		_className = null; // reset, so that new name will be computed
+		final Object url = urls.next();
 		if (url instanceof URL) {
 		    if (!compile((URL)url)) return false;
 		}
@@ -417,7 +417,7 @@ public final class XSLTC {
 	final int count = _classes.size();
 	final byte[][] result = new byte[count][1];
 	for (int i = 0; i < count; i++)
-	    result[i] = (byte[])_classes.elementAt(i);
+	    result[i] = (byte[])_classes.get(i);
 	return result;
     }
 
@@ -436,7 +436,7 @@ public final class XSLTC {
 	else
 	    return null;
     }
-    
+
     /**
      * Compiles a stylesheet pointed to by a URL. The result is put in a
      * set of byte arrays. One byte array for each generated class.
@@ -446,7 +446,7 @@ public final class XSLTC {
      */
     public byte[][] compile(String name, InputSource input) {
         return compile(name, input, BYTEARRAY_OUTPUT);
-    }    
+    }
 
     /**
      * Set the XMLReader to use for parsing the next input stylesheet
@@ -457,18 +457,18 @@ public final class XSLTC {
     }
 
     /**
-     * Get a Vector containing all compile error messages
-     * @return A Vector containing all compile error messages
+     * Get a ArrayList containing all compile error messages
+     * @return A ArrayList containing all compile error messages
      */
-    public Vector getErrors() {
+    public ArrayList getErrors() {
 	return _parser.getErrors();
     }
 
     /**
-     * Get a Vector containing all compile warning messages
-     * @return A Vector containing all compile error messages
+     * Get a ArrayList containing all compile warning messages
+     * @return A ArrayList containing all compile error messages
      */
-    public Vector getWarnings() {
+    public ArrayList getWarnings() {
 	return _parser.getWarnings();
     }
 
@@ -514,12 +514,12 @@ public final class XSLTC {
     /**
      * Set the class name for the generated translet. This class name is
      * overridden if multiple stylesheets are compiled in one go using the
-     * compile(Vector urls) method.
+     * compile(ArrayList urls) method.
      * @param className The name to assign to the translet class
      */
     public void setClassName(String className) {
 	final String base  = Util.baseName(className);
-	final String noext = Util.noExtName(base); 
+	final String noext = Util.noExtName(base);
 	String name  = Util.toJavaName(noext);
 
 	if (_packageName == null)
@@ -527,7 +527,7 @@ public final class XSLTC {
 	else
 	    _className = _packageName + '.' + name;
     }
-    
+
     /**
      * Get the class name for the generated translet.
      */
@@ -542,7 +542,7 @@ public final class XSLTC {
     private String classFileName(final String className) {
 	return className.replace('.', File.separatorChar) + ".class";
     }
-    
+
     /**
      * Generate an output File object to send the translet to
      */
@@ -607,7 +607,7 @@ public final class XSLTC {
     public Stylesheet getStylesheet() {
 	return _stylesheet;
     }
-   
+
     /**
      * Registers an attribute and gives it a type so that it can be mapped to
      * DOM attribute types at run-time.
@@ -620,9 +620,9 @@ public final class XSLTC {
 	    final String uri = name.getNamespace();
 	    final String local = "@"+name.getLocalPart();
 	    if ((uri != null) && (!uri.equals("")))
-		_namesIndex.addElement(uri+":"+local);
+		_namesIndex.add(uri+":"+local);
 	    else
-		_namesIndex.addElement(local);
+		_namesIndex.add(local);
 	    if (name.getLocalPart().equals("*")) {
 		registerNamespace(name.getNamespace());
 	    }
@@ -639,7 +639,7 @@ public final class XSLTC {
 	Integer code = (Integer)_elements.get(name.toString());
 	if (code == null) {
 	    _elements.put(name.toString(), code = new Integer(_nextGType++));
-	    _namesIndex.addElement(name.toString());
+	    _namesIndex.add(name.toString());
 	}
 	if (name.getLocalPart().equals("*")) {
 	    registerNamespace(name.getNamespace());
@@ -655,7 +655,7 @@ public final class XSLTC {
 	final SymbolTable stable = _parser.getSymbolTable();
 	final String uri = stable.lookupNamespace(name.toString());
 	final int code = registerNamespace(uri);
-	return code; 
+	return code;
     }
 
     /**
@@ -667,11 +667,11 @@ public final class XSLTC {
 	if (code == null) {
 	    code = new Integer(_nextNSType++);
 	    _namespaces.put(namespaceURI,code);
-	    _namespaceIndex.addElement(namespaceURI);
+	    _namespaceIndex.add(namespaceURI);
 	}
 	return code.intValue();
     }
-    
+
     public int nextModeSerial() {
 	return _modeSerial++;
     }
@@ -691,19 +691,19 @@ public final class XSLTC {
     public int nextHelperClassSerial() {
 	return _helperClassSerial++;
     }
-    
+
     public int nextAttributeSetSerial() {
 	return _attributeSetSerial++;
     }
 
-    public Vector getNamesIndex() {
+    public ArrayList getNamesIndex() {
 	return _namesIndex;
     }
 
-    public Vector getNamespaceIndex() {
+    public ArrayList getNamespaceIndex() {
 	return _namespaceIndex;
     }
-    
+
     /**
      * Returns a unique name for every helper class needed to
      * execute a translet.
@@ -711,11 +711,11 @@ public final class XSLTC {
     public String getHelperClassName() {
 	return getClassName() + '$' + _helperClassSerial++;
     }
-   
+
     public void dumpClass(JavaClass clazz) {
-	
-	if (_outputType == FILE_OUTPUT || 
-	    _outputType == BYTEARRAY_AND_FILE_OUTPUT) 
+
+	if (_outputType == FILE_OUTPUT ||
+	    _outputType == BYTEARRAY_AND_FILE_OUTPUT)
 	{
 	    File outFile = getOutputFile(clazz.getClassName());
 	    String parentDir = outFile.getParent();
@@ -725,7 +725,7 @@ public final class XSLTC {
 	            parentFile.mkdirs();
 	    }
 	}
-	
+
 	try {
 	    switch (_outputType) {
 	    case FILE_OUTPUT:
@@ -735,7 +735,7 @@ public final class XSLTC {
 			    getOutputFile(clazz.getClassName()))));
 		break;
 	    case JAR_OUTPUT:
-		_bcelClasses.addElement(clazz);	 
+		_bcelClasses.add(clazz);
 		break;
 	    case BYTEARRAY_OUTPUT:
 	    case BYTEARRAY_AND_FILE_OUTPUT:
@@ -743,14 +743,14 @@ public final class XSLTC {
 	    case CLASSLOADER_OUTPUT:
 		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
 		clazz.dump(out);
-		_classes.addElement(out.toByteArray());
-		
+		_classes.add(out.toByteArray());
+
 		if (_outputType == BYTEARRAY_AND_FILE_OUTPUT)
 		  clazz.dump(new BufferedOutputStream(
 			new FileOutputStream(getOutputFile(clazz.getClassName()))));
 		else if (_outputType == BYTEARRAY_AND_JAR_OUTPUT)
-		  _bcelClasses.addElement(clazz);
-		  
+		  _bcelClasses.add(clazz);
+
 		break;
 	    }
 	}
@@ -765,7 +765,7 @@ public final class XSLTC {
     private String entryName(File f) throws IOException {
 	return f.getName().replace(File.separatorChar, '/');
     }
-    
+
     /**
      * Generate output JAR-file and packages
      */
@@ -777,12 +777,12 @@ public final class XSLTC {
 
 	final Map map = manifest.getEntries();
 	// create manifest
-	Enumeration classes = _bcelClasses.elements();
+	Iterator classes = _bcelClasses.iterator();
 	final String now = (new Date()).toString();
-	final java.util.jar.Attributes.Name dateAttr = 
+	final java.util.jar.Attributes.Name dateAttr =
 	    new java.util.jar.Attributes.Name("Date");
-	while (classes.hasMoreElements()) {
-	    final JavaClass clazz = (JavaClass)classes.nextElement();
+	while (classes.hasNext()) {
+	    final JavaClass clazz = (JavaClass)classes.next();
 	    final String className = clazz.getClassName().replace('.','/');
 	    final java.util.jar.Attributes attr = new java.util.jar.Attributes();
 	    attr.put(dateAttr, now);
@@ -792,9 +792,9 @@ public final class XSLTC {
 	final File jarFile = new File(_destDir, _jarFileName);
 	final JarOutputStream jos =
 	    new JarOutputStream(new FileOutputStream(jarFile), manifest);
-	classes = _bcelClasses.elements();
-	while (classes.hasMoreElements()) {
-	    final JavaClass clazz = (JavaClass)classes.nextElement();
+	classes = _bcelClasses.iterator();
+	while (classes.hasNext()) {
+	    final JavaClass clazz = (JavaClass)classes.next();
 	    final String className = clazz.getClassName().replace('.','/');
 	    jos.putNextEntry(new JarEntry(className+".class"));
 	    final ByteArrayOutputStream out = new ByteArrayOutputStream(2048);

@@ -65,10 +65,10 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Iterator;
 
 import org.apache.bcel.generic.*;
@@ -83,8 +83,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
  *      (element sequence only) or matching "@*" (attribute
  *      sequence only).
  *
- * A test sequence may have a default template, which will be 
- * instantiated if none of the other patterns match. 
+ * A test sequence may have a default template, which will be
+ * instantiated if none of the other patterns match.
  */
 final class TestSeq {
 
@@ -94,10 +94,10 @@ final class TestSeq {
     private int _kernelType;
 
     /**
-     * Vector of all patterns in the test sequence. May include
+     * ArrayList of all patterns in the test sequence. May include
      * patterns with "*", "@*" or "node()" kernel.
      */
-    private Vector _patterns = null;
+    private ArrayList _patterns = null;
 
     /**
      * A reference to the Mode object.
@@ -122,11 +122,11 @@ final class TestSeq {
     /**
      * Creates a new test sequence given a set of patterns and a mode.
      */
-    public TestSeq(Vector patterns, Mode mode) {
+    public TestSeq(ArrayList patterns, Mode mode) {
 	this(patterns, -2, mode);
     }
 
-    public TestSeq(Vector patterns, int kernelType, Mode mode) {
+    public TestSeq(ArrayList patterns, int kernelType, Mode mode) {
 	_patterns = patterns;
 	_kernelType = kernelType;
 	_mode = mode;
@@ -143,7 +143,7 @@ final class TestSeq {
 
 	for (int i = 0; i < count; i++) {
 	    final LocationPathPattern pattern =
-		(LocationPathPattern) _patterns.elementAt(i);
+		(LocationPathPattern) _patterns.get(i);
 
 	    if (i == 0) {
 		result.append("Testseq for kernel " + _kernelType)
@@ -169,18 +169,18 @@ final class TestSeq {
      * of the default pattern.
      */
     public double getPriority() {
-	final Template template = (_patterns.size() == 0) ? _default 
-	    : ((Pattern) _patterns.elementAt(0)).getTemplate();
+	final Template template = (_patterns.size() == 0) ? _default
+	    : ((Pattern) _patterns.get(0)).getTemplate();
 	return template.getPriority();
     }
 
     /**
-     * Returns the position of the highest priority pattern in 
+     * Returns the position of the highest priority pattern in
      * this test sequence.
      */
     public int getPosition() {
-	final Template template = (_patterns.size() == 0) ? _default 
-	    : ((Pattern) _patterns.elementAt(0)).getTemplate();
+	final Template template = (_patterns.size() == 0) ? _default
+	    : ((Pattern) _patterns.get(0)).getTemplate();
 	return template.getPosition();
     }
 
@@ -190,48 +190,48 @@ final class TestSeq {
      * finds a patterns that is fully reduced.
      */
     public void reduce() {
-	final Vector newPatterns = new Vector();
+	final ArrayList newPatterns = new ArrayList();
 
 	final int count = _patterns.size();
 	for (int i = 0; i < count; i++) {
 	    final LocationPathPattern pattern =
-		(LocationPathPattern)_patterns.elementAt(i);
-		
+		(LocationPathPattern)_patterns.get(i);
+
 	    // Reduce this pattern
 	    pattern.reduceKernelPattern();
-			
+
 	    // Is this pattern fully reduced?
 	    if (pattern.isWildcard()) {
 		_default = pattern.getTemplate();
-		break; 		// Ignore following patterns 
+		break; 		// Ignore following patterns
 	    }
 	    else {
-		newPatterns.addElement(pattern);
+		newPatterns.add(pattern);
 	    }
 	}
 	_patterns = newPatterns;
     }
 
     /**
-     * Returns, by reference, the templates that are included in 
-     * this test sequence. Note that a single template can occur 
+     * Returns, by reference, the templates that are included in
+     * this test sequence. Note that a single template can occur
      * in several test sequences if its pattern is a union.
      */
-    public void findTemplates(Dictionary templates) {
+    public void findTemplates(HashMap templates) {
 	if (_default != null) {
 	    templates.put(_default, this);
 	}
 	for (int i = 0; i < _patterns.size(); i++) {
 	    final LocationPathPattern pattern =
-		(LocationPathPattern)_patterns.elementAt(i);
+		(LocationPathPattern)_patterns.get(i);
 	    templates.put(pattern.getTemplate(), this);
 	}
     }
 
     /**
-     * Get the instruction handle to a template's code. This is 
-     * used when a single template occurs in several test 
-     * sequences; that is, if its pattern is a union of patterns 
+     * Get the instruction handle to a template's code. This is
+     * used when a single template occurs in several test
+     * sequences; that is, if its pattern is a union of patterns
      * (e.g. match="A/B | A/C").
      */
     private InstructionHandle getTemplateHandle(Template template) {
@@ -242,18 +242,18 @@ final class TestSeq {
      * Returns pattern n in this test sequence
      */
     private LocationPathPattern getPattern(int n) {
-	return (LocationPathPattern)_patterns.elementAt(n);
+	return (LocationPathPattern)_patterns.get(n);
     }
 
     /**
-     * Compile the code for this test sequence. Compile patterns 
-     * from highest to lowest priority. Note that since patterns 
-     * can be share by multiple test sequences, instruction lists 
+     * Compile the code for this test sequence. Compile patterns
+     * from highest to lowest priority. Note that since patterns
+     * can be share by multiple test sequences, instruction lists
      * must be copied before backpatching.
      */
     public InstructionHandle compile(ClassGenerator classGen,
 				     MethodGenerator methodGen,
-				     InstructionHandle continuation) 
+				     InstructionHandle continuation)
     {
 	// Returned cached value if already compiled
 	if (_start != null) {
@@ -269,7 +269,7 @@ final class TestSeq {
 	// Init handle to jump when all patterns failed
 	InstructionHandle fail = (_default == null) ? continuation
 	    : getTemplateHandle(_default);
-	
+
 	// Compile all patterns in reverse order
 	for (int n = count - 1; n >= 0; n--) {
 	    final LocationPathPattern pattern = getPattern(n);
@@ -309,7 +309,7 @@ final class TestSeq {
 	    }
 	    if (falseList != null) {
 		falseList.backPatch(fail);
-	    } 
+	    }
 
 	    // Next pattern's 'fail' target is this pattern's first instruction
 	    fail = il.getStart();

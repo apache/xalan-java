@@ -94,7 +94,7 @@ final class UnaryOpExpr extends Expression {
 							     tleft)); 
 	
 	if (ptype != null) {
-	    final Type arg1 = (Type) ptype.argsType().elementAt(0);
+	    final Type arg1 = (Type) ptype.argsType().get(0);
 	    if (!arg1.identicalTo(tleft)) {
 		_left = new CastExpr(_left, arg1);
 	    }

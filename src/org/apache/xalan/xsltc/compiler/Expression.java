@@ -69,7 +69,7 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.*;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.bcel.generic.*;
 
@@ -232,12 +232,12 @@ abstract class Expression extends SyntaxTreeNode {
     public MethodType lookupPrimop(SymbolTable stable, String op,
 				   MethodType ctype) {
 	MethodType result = null;
-	final Vector primop = stable.lookupPrimop(op);
+	final ArrayList primop = stable.lookupPrimop(op);
 	if (primop != null) {
 	    final int n = primop.size();
 	    int minDistance = Integer.MAX_VALUE;
 	    for (int i = 0; i < n; i++) {
-		final MethodType ptype = (MethodType) primop.elementAt(i);
+		final MethodType ptype = (MethodType) primop.get(i);
 		// Skip if different arity
 		if (ptype.argsCount() != ctype.argsCount()) {
 		    continue;

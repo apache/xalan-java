@@ -64,8 +64,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.*;
@@ -134,10 +134,10 @@ final class AttributeSet extends TopLevelElement {
 
 	// Parse the contents of this node. All child elements must be
 	// <xsl:attribute> elements. Other elements cause an error.
-	final Vector contents = getContents();
+	final ArrayList contents = getContents();
 	final int count = contents.size();
 	for (int i=0; i<count; i++) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
 	    if (child instanceof XslAttribute) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
@@ -202,9 +202,9 @@ final class AttributeSet extends TopLevelElement {
 	if (_useSets != null) _useSets.translate(classGen, methodGen);
 
 	// Translate all local attributes
-	final Enumeration attributes = elements();
-	while (attributes.hasMoreElements()) {
-	    SyntaxTreeNode element = (SyntaxTreeNode)attributes.nextElement();
+	final Iterator attributes = iterator();
+	while (attributes.hasNext()) {
+	    SyntaxTreeNode element = (SyntaxTreeNode)attributes.next();
 	    if (element instanceof XslAttribute) {
 		final XslAttribute attribute = (XslAttribute)element;
 		attribute.translate(classGen, methodGen);
@@ -223,10 +223,10 @@ final class AttributeSet extends TopLevelElement {
     public String toString() {
 	StringBuffer buf = new StringBuffer("attribute-set: ");
 	// Translate all local attributes
-	final Enumeration attributes = elements();
-	while (attributes.hasMoreElements()) {
+	final Iterator attributes = iterator();
+	while (attributes.hasNext()) {
 	    final XslAttribute attribute =
-		(XslAttribute)attributes.nextElement();
+		(XslAttribute)attributes.next();
 	    buf.append(attribute);
 	}
 	return(buf.toString());

@@ -63,14 +63,14 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class NumberCall extends FunctionCall {
 
-    public NumberCall(QName fname, Vector arguments) {
+    public NumberCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

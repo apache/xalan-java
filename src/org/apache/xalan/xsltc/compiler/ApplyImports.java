@@ -62,8 +62,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
@@ -107,9 +107,9 @@ final class ApplyImports extends Instruction {
 
 	int min = max;
 
-	Enumeration templates = root.getContents().elements();
-	while (templates.hasMoreElements()) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)templates.nextElement();
+	Iterator templates = root.getContents().iterator();
+	while (templates.hasNext()) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)templates.next();
 	    if (child instanceof Template) {
 		Stylesheet curr = child.getStylesheet();
 		while ((curr != null) && (curr != stylesheet)) {

@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -81,7 +81,7 @@ final class DocumentCall extends FunctionCall {
     /**
      * Default function call constructor
      */
-    public DocumentCall(QName fname, Vector arguments) {
+    public DocumentCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

@@ -128,7 +128,7 @@ public class ErrorMessages extends ResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String errorMessages[] = { 
+    private static final String errorMessages[] = {
 	//MULTIPLE_STYLESHEET_ERR
 	"More than one stylesheet defined in the same file.",
 
@@ -870,7 +870,7 @@ public class ErrorMessages extends ResourceBundle {
 	 */
 	//ERROR_MSG
 	"ERROR:  ''{0}''",
-	
+
 	/*
 	 * Note to translators:  The substitution text is the name of a class.
 	 */
@@ -897,10 +897,10 @@ public class ErrorMessages extends ResourceBundle {
 
     static {
 	_keys = new Vector();
-	_keys.addElement(ErrorMsg.ERROR_MESSAGES_KEY);
-	_keys.addElement(ErrorMsg.COMPILER_ERROR_KEY);
-	_keys.addElement(ErrorMsg.COMPILER_WARNING_KEY);
-	_keys.addElement(ErrorMsg.RUNTIME_ERROR_KEY);
+	_keys.add(ErrorMsg.ERROR_MESSAGES_KEY);
+	_keys.add(ErrorMsg.COMPILER_ERROR_KEY);
+	_keys.add(ErrorMsg.COMPILER_WARNING_KEY);
+	_keys.add(ErrorMsg.RUNTIME_ERROR_KEY);
     }
 
     public Enumeration getKeys() {
@@ -914,7 +914,7 @@ public class ErrorMessages extends ResourceBundle {
  	else if (key.equals(ErrorMsg.COMPILER_ERROR_KEY))
 	    return "Compiler error(s): ";
 	else if (key.equals(ErrorMsg.COMPILER_WARNING_KEY))
-	    return "Compiler warning(s): ";	    
+	    return "Compiler warning(s): ";
  	else if (key.equals(ErrorMsg.RUNTIME_ERROR_KEY))
 	    return "Translet error(s): ";
 	return(null);

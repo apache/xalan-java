@@ -63,13 +63,13 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class StringCall extends FunctionCall {
-    public StringCall(QName fname, Vector arguments) {
+    public StringCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

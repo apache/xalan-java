@@ -64,9 +64,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Hashtable;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -74,16 +74,16 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class SymbolTable {
 
     // These hashtables are used for all stylesheets
-    private final Hashtable _stylesheets = new Hashtable();
-    private final Hashtable _primops     = new Hashtable();
+    private final HashMap _stylesheets = new HashMap();
+    private final HashMap _primops     = new HashMap();
 
     // These hashtables are used for some stylesheets
-    private Hashtable _variables = null;
-    private Hashtable _templates = null;
-    private Hashtable _attributeSets = null;
-    private Hashtable _aliases = null;
-    private Hashtable _excludedURI = null;
-    private Hashtable _decimalFormats = null;
+    private HashMap _variables = null;
+    private HashMap _templates = null;
+    private HashMap _attributeSets = null;
+    private HashMap _aliases = null;
+    private HashMap _excludedURI = null;
+    private HashMap _decimalFormats = null;
 
     public DecimalFormatting getDecimalFormatting(QName name) {
 	if (_decimalFormats == null) return null;
@@ -91,7 +91,7 @@ final class SymbolTable {
     }
 
     public void addDecimalFormatting(QName name, DecimalFormatting symbols) {
-	if (_decimalFormats == null) _decimalFormats = new Hashtable();
+	if (_decimalFormats == null) _decimalFormats = new HashMap();
 	_decimalFormats.put(name, symbols);
     }
 
@@ -105,7 +105,7 @@ final class SymbolTable {
 
     public Template addTemplate(Template template) {
 	final QName name = template.getName();
-	if (_templates == null) _templates = new Hashtable();
+	if (_templates == null) _templates = new HashMap();
 	return (Template)_templates.put(name, template);
     }
 	
@@ -115,13 +115,13 @@ final class SymbolTable {
     }
 
     public Variable addVariable(Variable variable) {
-	if (_variables == null) _variables = new Hashtable();
+	if (_variables == null) _variables = new HashMap();
 	final String name = variable.getName().getStringRep();
 	return (Variable)_variables.put(name, variable);
     }
 	
     public Param addParam(Param parameter) {
-	if (_variables == null) _variables = new Hashtable();
+	if (_variables == null) _variables = new HashMap();
 	final String name = parameter.getName().getStringRep();
 	return (Param)_variables.put(name, parameter);
     }
@@ -147,7 +147,7 @@ final class SymbolTable {
     }
 
     public AttributeSet addAttributeSet(AttributeSet atts) {
-	if (_attributeSets == null) _attributeSets = new Hashtable();
+	if (_attributeSets == null) _attributeSets = new HashMap();
 	return (AttributeSet)_attributeSets.put(atts.getName(), atts);
     }
 
@@ -162,19 +162,19 @@ final class SymbolTable {
      * is prepended.
      */
     public void addPrimop(String name, MethodType mtype) {
-	Vector methods = (Vector)_primops.get(name);
+	ArrayList methods = (ArrayList)_primops.get(name);
 	if (methods == null) {
-	    _primops.put(name, methods = new Vector());
+	    _primops.put(name, methods = new ArrayList());
 	}
-	methods.addElement(mtype);
+	methods.add(mtype);
     }
 	
     /**
      * Lookup a primitive operator or function in the symbol table by
      * prepending the prefix <tt>PrimopPrefix</tt>.
      */
-    public Vector lookupPrimop(String name) {
-	return (Vector)_primops.get(name);
+    public ArrayList lookupPrimop(String name) {
+	return (ArrayList)_primops.get(name);
     }
 
     /**
@@ -205,7 +205,7 @@ final class SymbolTable {
      * Adds an alias for a namespace prefix
      */ 
     public void addPrefixAlias(String prefix, String alias) {
-	if (_aliases == null) _aliases = new Hashtable();
+	if (_aliases == null) _aliases = new HashMap();
 	_aliases.put(prefix,alias);
     }
 
@@ -226,7 +226,7 @@ final class SymbolTable {
 	if (uri == null) return;
 
 	// Create new hashtable of exlcuded URIs if none exists
-	if (_excludedURI == null) _excludedURI = new Hashtable();
+	if (_excludedURI == null) _excludedURI = new HashMap();
 
 	// Register the namespace URI
 	Integer refcnt = (Integer)_excludedURI.get(uri);

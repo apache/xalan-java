@@ -56,21 +56,17 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller
- * @author Morten Jorensen
- * @author Erwin Bolwidt <ejb@klomp.org>
- * @author John Howard <JohnH@schemasoft.com>
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.xml.parsers.*;
 
@@ -84,28 +80,61 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 public abstract class SyntaxTreeNode implements Constants {
 
-    // Reference to the AST parser
+    // -- The following should be moved to CompilerContext ---------------
+
+    /**
+     * Reference to the parser object
+     */
     private Parser _parser;
 
-    // AST navigation pointers
-    protected SyntaxTreeNode _parent;          // Parent node
-    private Stylesheet       _stylesheet;      // Stylesheet ancestor node
-    private Template         _template;        // Template ancestor node
-    private final Vector _contents = new Vector(2); // Child nodes
+    /**
+     * A reference to the containing stylesheet (an ancestor).
+     */
+    private Stylesheet  _stylesheet;
 
-    // Element description data
-    protected QName _qname;                    // The element QName
-    private int _line;                         // Source file line number
-    protected Attributes _attributes = null;   // Attributes of this element
-    private   Hashtable _prefixMapping = null; // Namespace declarations
+    /**
+     * A reference to the containing template (an ancestor)
+     */
+    private Template _template;
 
-    // Sentinel - used to denote unrecognised syntaxt tree nodes.
-    protected static final SyntaxTreeNode Dummy = new AbsolutePathPattern(null);
+    // -------------------------------------------------------------------
 
-    // These two are used for indenting nodes in the AST (debug output)
-    protected static final int IndentIncrement = 4;
-    private static final char[] _spaces = 
-	"                                                       ".toCharArray();
+    /**
+     * A reference to this node's parent or null it outermost.
+     */
+    protected SyntaxTreeNode _parent;
+
+    /**
+     * List of children of this node.
+     */
+    private final ArrayList _contents = new ArrayList(2);
+
+    /**
+     * The element's qualified name.
+     */
+    protected QName _qname;
+
+    /**
+     * The list of attributes defined in this element.
+     */
+    protected Attributes _attributes = null;
+
+    /**
+     * Namespace declarations of this element (as a mapping).
+     */
+    private HashMap _prefixMapping = null;
+
+    /**
+     * Source line where this element occurs in the input file.
+     */
+    private int _line;
+
+    /**
+     * A "sentinel" that is used to denote unrecognised syntaxt
+     * tree nodes.
+     */
+    protected static final SyntaxTreeNode Dummy
+            = new AbsolutePathPattern(null);   // TODO: use a different class
 
     /**
      * Creates a new SyntaxTreeNode with a 'null' QName and no source file
@@ -134,6 +163,14 @@ public abstract class SyntaxTreeNode implements Constants {
     public SyntaxTreeNode(String uri, String prefix, String local) {
 	_line = 0;
 	setQName(uri, prefix, local);
+    }
+
+    /**
+     * Returns a reference to the static context using this node as
+     * current.
+     */
+    public StaticContextImpl getStaticContext() {
+        return StaticContextImpl.getInstance(this);
     }
 
     /**
@@ -197,7 +234,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	    return EMPTYSTRING;
 	}
 	final String value = _attributes.getValue(qname);
-	return (value == null || value.equals(EMPTYSTRING)) ? 
+	return (value == null || value.equals(EMPTYSTRING)) ?
 	    EMPTYSTRING : value;
     }
 
@@ -218,22 +255,22 @@ public abstract class SyntaxTreeNode implements Constants {
      * Sets the prefix mapping for the namespaces that were declared in this
      * element. This does not include all prefix mappings in scope, so one
      * may have to check ancestor elements to get all mappings that are in
-     * in scope. The prefixes must be passed in as a Hashtable that maps
+     * in scope. The prefixes must be passed in as a HashMap that maps
      * namespace prefixes (String objects) to namespace URIs (also String).
-     * @param mapping The Hashtable containing the mappings.
+     * @param mapping The HashMap containing the mappings.
      */
-    protected void setPrefixMapping(Hashtable mapping) {
+    protected void setPrefixMapping(HashMap mapping) {
 	_prefixMapping = mapping;
     }
 
     /**
-     * Returns a Hashtable containing the prefix mappings that were declared
+     * Returns a HashMap containing the prefix mappings that were declared
      * for this element. This does not include all prefix mappings in scope,
      * so one may have to check ancestor elements to get all mappings that are
-     * in in scope. 
+     * in in scope.
      * @return Prefix mappings (for this element only).
      */
-    protected Hashtable getPrefixMapping() {
+    protected HashMap getPrefixMapping() {
 	return _prefixMapping;
     }
 
@@ -244,7 +281,7 @@ public abstract class SyntaxTreeNode implements Constants {
      */
     protected void addPrefixMapping(String prefix, String uri) {
 	if (_prefixMapping == null)
-	    _prefixMapping = new Hashtable();
+	    _prefixMapping = new HashMap();
 	_prefixMapping.put(prefix, uri);
     }
 
@@ -289,10 +326,10 @@ public abstract class SyntaxTreeNode implements Constants {
 
 	// First look up the prefix/uri mapping in our own hashtable...
 	if ((_prefixMapping != null) &&
-	    (_prefixMapping.contains(uri))) {
-	    Enumeration prefixes = _prefixMapping.keys();
-	    while (prefixes.hasMoreElements()) {
-		prefix = (String)prefixes.nextElement();
+	    (_prefixMapping.containsValue(uri))) {
+	    Iterator prefixes = _prefixMapping.keySet().iterator();
+	    while (prefixes.hasNext()) {
+		prefix = (String)prefixes.next();
 		String mapsTo = (String)_prefixMapping.get(prefix);
 		if (mapsTo.equals(uri)) return(prefix);
 	    }
@@ -427,20 +464,20 @@ public abstract class SyntaxTreeNode implements Constants {
      */
     protected final void parseChildren(Parser parser) {
 
-	Vector locals = null;	// only create when needed
-	
+	ArrayList locals = null;	// only create when needed
+
 	final int count = _contents.size();
 	for (int i=0; i<count; i++) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)_contents.elementAt(i);
+	    SyntaxTreeNode child = (SyntaxTreeNode)_contents.get(i);
 	    parser.getSymbolTable().setCurrentNode(child);
 	    child.parseContents(parser);
 	    // if variable or parameter, add it to scope
 	    final QName varOrParamName = updateScope(parser, child);
 	    if (varOrParamName != null) {
 		if (locals == null) {
-		    locals = new Vector(2);
+		    locals = new ArrayList(2);
 		}
-		locals.addElement(varOrParamName);
+		locals.add(varOrParamName);
 	    }
 	}
 
@@ -450,11 +487,11 @@ public abstract class SyntaxTreeNode implements Constants {
 	if (locals != null) {
 	    final int nLocals = locals.size();
 	    for (int i = 0; i < nLocals; i++) {
-		parser.removeVariable((QName)locals.elementAt(i));
+		parser.removeVariable((QName)locals.get(i));
 	    }
 	}
     }
-   
+
     /**
      * Add a node to the current scope and return name of a variable or
      * parameter if the node represents a variable or a parameter.
@@ -489,7 +526,7 @@ public abstract class SyntaxTreeNode implements Constants {
     protected Type typeCheckContents(SymbolTable stable) throws TypeCheckError {
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
-	    SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
+	    SyntaxTreeNode item = (SyntaxTreeNode)_contents.get(i);
 	    item.typeCheck(stable);
 	}
 	return Type.Void;
@@ -513,7 +550,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	// Call translate() on all child nodes
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
-	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
+	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.get(i);
 	    item.translate(classGen, methodGen);
 	}
 
@@ -523,8 +560,8 @@ public abstract class SyntaxTreeNode implements Constants {
 	// references falling out-of-scope inside the for-each element.
 	// (the cause of which being 'lazy' register allocation for references)
 	for (int i = 0; i < n; i++) {
-	    if( _contents.elementAt(i) instanceof VariableBase) {
-		final VariableBase var = (VariableBase)_contents.elementAt(i);
+	    if( _contents.get(i) instanceof VariableBase) {
+		final VariableBase var = (VariableBase)_contents.get(i);
 		var.unmapRegister(methodGen);
 	    }
 	}
@@ -536,7 +573,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param methodGen BCEL Java method generator
      */
     protected void compileResultTree(ClassGenerator classGen,
-				     MethodGenerator methodGen) 
+				     MethodGenerator methodGen)
     {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -601,7 +638,7 @@ public abstract class SyntaxTreeNode implements Constants {
 		il.append(ALOAD_0);
 		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					   NAMES_INDEX,
-					   NAMES_INDEX_SIG))); 
+					   NAMES_INDEX_SIG)));
 		il.append(ALOAD_0);
 		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					   NAMESPACE_INDEX,
@@ -629,9 +666,9 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     /**
-     * Returns true if this expression/instruction depends on the context. By 
-     * default, every expression/instruction depends on the context unless it 
-     * overrides this method. Currently used to determine if result trees are 
+     * Returns true if this expression/instruction depends on the context. By
+     * default, every expression/instruction depends on the context unless it
+     * overrides this method. Currently used to determine if result trees are
      * compiled using procedures or little DOMs (result tree fragments).
      * @return 'true' if this node depends on the context.
      */
@@ -647,7 +684,7 @@ public abstract class SyntaxTreeNode implements Constants {
     protected boolean dependentContents() {
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
-	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
+	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.get(i);
 	    if (item.contextDependent()) {
 		return true;
 	    }
@@ -659,8 +696,8 @@ public abstract class SyntaxTreeNode implements Constants {
      * Adds a child node to this syntax tree node.
      * @param element is the new child node.
      */
-    protected final void addElement(SyntaxTreeNode element) {
-	_contents.addElement(element);
+    protected final void add(SyntaxTreeNode element) {
+	_contents.add(element);
 	element.setParent(this);
     }
 
@@ -670,7 +707,7 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param element is the new child node.
      */
     protected final void setFirstElement(SyntaxTreeNode element) {
-	_contents.insertElementAt(element,0);
+	_contents.set(0, element);
 	element.setParent(this);
     }
 
@@ -684,10 +721,10 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     /**
-     * Returns a Vector containing all the child nodes of this node.
-     * @return A Vector containing all the child nodes of this node.
+     * Returns a ArrayList containing all the child nodes of this node.
+     * @return A ArrayList containing all the child nodes of this node.
      */
-    protected final Vector getContents() {
+    protected final ArrayList getContents() {
 	return _contents;
     }
 
@@ -708,11 +745,11 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     /**
-     * Returns an Enumeration of all child nodes of this node.
-     * @return An Enumeration of all child nodes of this node.
+     * Returns an Iterator of all child nodes of this node.
+     * @return An Iterator of all child nodes of this node.
      */
-    protected final Enumeration elements() {
-	return _contents.elements();
+    protected final Iterator iterator() {
+	return _contents.iterator();
     }
 
     /**
@@ -720,8 +757,8 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param pos The child node's position.
      * @return The child node.
      */
-    protected final Object elementAt(int pos) {
-	return _contents.elementAt(pos);
+    protected final Object get(int pos) {
+	return _contents.get(pos);
     }
 
     /**
@@ -729,8 +766,9 @@ public abstract class SyntaxTreeNode implements Constants {
      * @return The child node.
      */
     protected final SyntaxTreeNode lastChild() {
-	if (_contents.size() == 0) return null;
-	return (SyntaxTreeNode)_contents.lastElement();
+        final int n = _contents.size();
+	if (n == 0) return null;
+	return (SyntaxTreeNode)_contents.get(n);
     }
 
     /**
@@ -751,7 +789,7 @@ public abstract class SyntaxTreeNode implements Constants {
     protected void displayContents(int indent) {
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
-	    SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
+	    SyntaxTreeNode item = (SyntaxTreeNode)_contents.get(i);
 	    item.display(indent);
 	}
     }
@@ -791,5 +829,13 @@ public abstract class SyntaxTreeNode implements Constants {
 	final ErrorMsg error = new ErrorMsg(errorCode, message, element);
         parser.reportError(Constants.WARNING, error);
     }
+
+    // -- Pretty printing ------------------------------------------------
+
+    // These two are used for indenting nodes in the AST (debug output)
+    protected static final int IndentIncrement = 4;
+    private static final char[] _spaces =
+        "                                                       ".toCharArray();
+
 
 }

@@ -64,9 +64,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import javax.xml.parsers.*;
 
@@ -80,8 +80,8 @@ final class LiteralElement extends Instruction {
 
     private String _name;
     private LiteralElement _literalElemParent;
-    private Vector _attributeElements = null;
-    private Hashtable _accessedPrefixes = null;
+    private ArrayList _attributeElements = null;
+    private HashMap _accessedPrefixes = null;
 
     private final static String XMLNS_STRING = "xmlns";
 
@@ -91,7 +91,7 @@ final class LiteralElement extends Instruction {
     public QName getName() {
 	return _qname;
     }
- 
+
     /**
      * Displays the contents of this literal element
      */
@@ -131,7 +131,7 @@ final class LiteralElement extends Instruction {
 
 	// Check if we have any declared namesaces
 	if (_accessedPrefixes == null) {
-	    _accessedPrefixes = new Hashtable();
+	    _accessedPrefixes = new HashMap();
 	}
 	else {
 	    if (!declared) {
@@ -140,7 +140,7 @@ final class LiteralElement extends Instruction {
 		if (old != null) {
 		    if (old.equals(uri))
 			return;
-		    else 
+		    else
 			prefix = stable.generateNamespacePrefix();
 		}
 	    }
@@ -166,7 +166,7 @@ final class LiteralElement extends Instruction {
 	    prefix = Constants.EMPTYSTRING;
 	else if (prefix.equals(XMLNS_STRING))
 	    return(XMLNS_STRING);
-	
+
 	// Check if we must translate the prefix
 	final String alternative = stable.lookupPrefixAlias(prefix);
 	if (alternative != null) {
@@ -193,7 +193,7 @@ final class LiteralElement extends Instruction {
      */
     public void addAttribute(SyntaxTreeNode attribute) {
 	if (_attributeElements == null) {
-	    _attributeElements = new Vector(2);
+	    _attributeElements = new ArrayList(2);
 	}
 	_attributeElements.add(attribute);
     }
@@ -203,9 +203,9 @@ final class LiteralElement extends Instruction {
      */
     public void setFirstAttribute(SyntaxTreeNode attribute) {
 	if (_attributeElements == null) {
-	    _attributeElements = new Vector(2);
+	    _attributeElements = new ArrayList(2);
 	}
-	_attributeElements.insertElementAt(attribute,0);
+	_attributeElements.add(0, attribute);
     }
 
     /**
@@ -217,8 +217,8 @@ final class LiteralElement extends Instruction {
 	if (_attributeElements != null) {
 	    final int count = _attributeElements.size();
 	    for (int i = 0; i < count; i++) {
-		SyntaxTreeNode node = 
-		    (SyntaxTreeNode)_attributeElements.elementAt(i);
+		SyntaxTreeNode node =
+		    (SyntaxTreeNode)_attributeElements.get(i);
 		node.typeCheck(stable);
 	    }
 	}
@@ -231,15 +231,15 @@ final class LiteralElement extends Instruction {
      * and assembles a list of all prefixes that (for the given node) maps
      * to _ANY_ namespace URI. Used by literal result elements to determine
      */
-    public Enumeration getNamespaceScope(SyntaxTreeNode node) {
-	Hashtable all = new Hashtable();
-	
+    public Iterator getNamespaceScope(SyntaxTreeNode node) {
+	HashMap all = new HashMap();
+
 	while (node != null) {
-	    Hashtable mapping = node.getPrefixMapping();
+	    HashMap mapping = node.getPrefixMapping();
 	    if (mapping != null) {
-		Enumeration prefixes = mapping.keys();
-		while (prefixes.hasMoreElements()) {
-		    String prefix = (String)prefixes.nextElement();
+		Iterator prefixes = mapping.keySet().iterator();
+		while (prefixes.hasNext()) {
+		    String prefix = (String)prefixes.next();
 		    if (!all.containsKey(prefix)) {
 			all.put(prefix, mapping.get(prefix));
 		    }
@@ -247,7 +247,7 @@ final class LiteralElement extends Instruction {
 	    }
 	    node = node.getParent();
 	}
-	return(all.keys());
+	return(all.keySet().iterator());
     }
 
     /**
@@ -298,7 +298,7 @@ final class LiteralElement extends Instruction {
 		    prefix == null && qname.getLocalPart().equals("xmlns") ||
 		    uri != null && uri.equals(XSLT_URI))
 		{
-		    continue;	
+		    continue;
 		}
 
 		// Handle all other literal attributes
@@ -312,9 +312,9 @@ final class LiteralElement extends Instruction {
 
 	// Register all namespaces that are in scope, except for those that
 	// are listed in the xsl:stylesheet element's *-prefixes attributes
-	final Enumeration include = getNamespaceScope(this);
-	while (include.hasMoreElements()) {
-	    final String prefix = (String)include.nextElement();
+	final Iterator include = getNamespaceScope(this);
+	while (include.hasNext()) {
+	    final String prefix = (String)include.next();
 	    if (!prefix.equals("xml")) {
 		final String uri = lookupNamespace(prefix);
 		if (uri != null && !stable.isExcludedNamespace(uri)) {
@@ -365,7 +365,7 @@ final class LiteralElement extends Instruction {
 
 	// The value of an attribute may depend on a (sibling) variable
 	for (int i = 0; i < elementCount(); i++) {
-	    final SyntaxTreeNode item = (SyntaxTreeNode) elementAt(i);
+	    final SyntaxTreeNode item = (SyntaxTreeNode) get(i);
 	    if (item instanceof Variable) {
 		item.translate(classGen, methodGen);
 		removeElement(item);	// avoid translating it twice
@@ -375,14 +375,14 @@ final class LiteralElement extends Instruction {
 	// Compile code to emit namespace attributes
 	if (_accessedPrefixes != null) {
 	    boolean declaresDefaultNS = false;
-	    Enumeration e = _accessedPrefixes.keys();
+	    Iterator e = _accessedPrefixes.keySet().iterator();
 
-	    while (e.hasMoreElements()) {
-		final String prefix = (String)e.nextElement();
+	    while (e.hasNext()) {
+		final String prefix = (String)e.next();
 		final String uri = (String)_accessedPrefixes.get(prefix);
 
-		if (uri != Constants.EMPTYSTRING || 
-			prefix != Constants.EMPTYSTRING) 
+		if (uri != Constants.EMPTYSTRING ||
+			prefix != Constants.EMPTYSTRING)
 		{
 		    if (prefix == Constants.EMPTYSTRING) {
 			declaresDefaultNS = true;
@@ -394,12 +394,12 @@ final class LiteralElement extends Instruction {
 		}
 	    }
 
-	    /* 
+	    /*
 	     * If our XslElement parent redeclares the default NS, and this
 	     * element doesn't, it must be redeclared one more time.
 	     */
 	    if (!declaresDefaultNS && (_parent instanceof XslElement)
-		    && ((XslElement) _parent).declaresDefaultNS()) 
+		    && ((XslElement) _parent).declaresDefaultNS())
 	    {
 		il.append(methodGen.loadHandler());
 		il.append(new PUSH(cpg, Constants.EMPTYSTRING));
@@ -412,12 +412,12 @@ final class LiteralElement extends Instruction {
 	if (_attributeElements != null) {
 	    final int count = _attributeElements.size();
 	    for (int i = 0; i < count; i++) {
-		SyntaxTreeNode node = 
-		    (SyntaxTreeNode)_attributeElements.elementAt(i);
+		SyntaxTreeNode node =
+		    (SyntaxTreeNode)_attributeElements.get(i);
 		node.translate(classGen, methodGen);
 	    }
 	}
-	
+
 	// Compile code to emit attributes and child elements
 	translateContents(classGen, methodGen);
 

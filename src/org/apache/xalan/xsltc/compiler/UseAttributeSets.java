@@ -64,9 +64,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -80,7 +80,7 @@ final class UseAttributeSets extends Instruction {
 	"";
 
     // Contains the names of all references attribute sets
-    private final Vector _sets = new Vector(2);
+    private final ArrayList _sets = new ArrayList(2);
 
     /**
      * Constructur - define initial attribute sets to use
@@ -125,7 +125,7 @@ final class UseAttributeSets extends Instruction {
 	// Go through each attribute set and generate a method call
 	for (int i=0; i<_sets.size(); i++) {
 	    // Get the attribute set name
-	    final QName name = (QName)_sets.elementAt(i);
+	    final QName name = (QName)_sets.get(i);
 	    // Get the AttributeSet reference from the symbol table
 	    final AttributeSet attrs = symbolTable.lookupAttributeSet(name);
 	    // Compile the call to the set's method if the set exists

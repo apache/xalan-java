@@ -62,9 +62,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ArrayList;
 
 import javax.xml.parsers.*;
 
@@ -124,11 +124,11 @@ final class UnsupportedElement extends SyntaxTreeNode {
 	if (root instanceof Fallback) return((Fallback)root);
 
 	// Then traverse all child elements
-	Vector children = root.getContents();
+	ArrayList children = root.getContents();
 	if (children != null) {
 	    final int count = children.size();
 	    for (int i = 0; i < count; i++) {
-		SyntaxTreeNode child = (SyntaxTreeNode)children.elementAt(i);
+		SyntaxTreeNode child = (SyntaxTreeNode)children.get(i);
 		SyntaxTreeNode node = findFallback(child);
 		if (node != null) return node;
 	    }

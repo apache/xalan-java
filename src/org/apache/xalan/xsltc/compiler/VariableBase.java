@@ -66,7 +66,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.Instruction;
@@ -87,10 +87,10 @@ class VariableBase extends TopLevelElement {
     protected String      select;           // Textual repr. of variable expr.
 
     // References to this variable (when local)
-    protected Vector      _refs = new Vector(2); 
+    protected ArrayList      _refs = new ArrayList(2);
 
     // Dependencies to other variables/parameters (for globals only)
-    protected Vector      _dependencies = null;
+    protected ArrayList      _dependencies = null;
 
     // Used to make sure parameter field is not added twice
     protected boolean    _ignore = false;
@@ -110,7 +110,7 @@ class VariableBase extends TopLevelElement {
      * expression contains a reference to this variable.
      */
     public void addReference(VariableRefBase vref) {
-	_refs.addElement(vref);
+	_refs.add(vref);
     }
 
     /**
@@ -126,17 +126,17 @@ class VariableBase extends TopLevelElement {
      */
     public void addDependency(VariableBase other) {
 	if (_dependencies == null) {
-	    _dependencies = new Vector();
+	    _dependencies = new ArrayList();
 	}
 	if (!_dependencies.contains(other)) {
-	    _dependencies.addElement(other);
+	    _dependencies.add(other);
 	}
     }
 
     /**
      *
      */
-    public Vector getDependencies() {
+    public ArrayList getDependencies() {
 	return _dependencies;
     }
 
@@ -171,7 +171,7 @@ class VariableBase extends TopLevelElement {
      */
     public Instruction loadInstruction() {
 	final Instruction instr = _loadInstruction;
-	if (_loadInstruction == null) 
+	if (_loadInstruction == null)
 	    _loadInstruction = _type.LOAD(_local.getIndex());
 	return _loadInstruction;
     }
@@ -196,7 +196,7 @@ class VariableBase extends TopLevelElement {
     public void display(int indent) {
 	indent(indent);
 	System.out.println("Variable " + _name);
-	if (_select != null) { 
+	if (_select != null) {
 	    indent(indent + IndentIncrement);
 	    System.out.println("select " + _select.toString());
 	}
@@ -259,7 +259,7 @@ class VariableBase extends TopLevelElement {
 	if ((other != null) && (other.getParent() == getParent())) {
 	    reportError(this, parser, ErrorMsg.VARIABLE_REDEF_ERR, name);
 	}
-	
+
 	select = getAttribute("select");
 	if (select.length() > 0) {
 	    _select = getParser().parseExpression(this, "select", null);

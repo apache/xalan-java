@@ -56,7 +56,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author G. Todd Miller 
+ * @author G. Todd Miller
  * @author Morten Jorgensen
  * @author Santiago Pericas-Geertsen
  *
@@ -74,7 +74,7 @@ import java.io.ByteArrayInputStream;
 import java.io.FilenameFilter;
 import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Enumeration;
@@ -102,20 +102,20 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
  */
 public class TransformerFactoryImpl
-    extends SAXTransformerFactory implements SourceLoader, ErrorListener 
+    extends SAXTransformerFactory implements SourceLoader, ErrorListener
 {
     /**
      * This error listener is used only for this factory and is not passed to
      * the Templates or Transformer objects that we create.
      */
-    private ErrorListener _errorListener = this; 
+    private ErrorListener _errorListener = this;
 
     /**
      * This URIResolver is passed to all created Templates and Transformers
      */
     private URIResolver _uriResolver = null;
 
-    /** 
+    /**
      * As Gregor Samsa awoke one morning from uneasy dreams he found himself
      * transformed in his bed into a gigantic insect. He was lying on his hard,
      * as it were armour plated, back, and if he lifted his head a little he
@@ -126,22 +126,22 @@ public class TransformerFactoryImpl
      * "What has happened to me?", he thought. It was no dream....
      */
     protected static String DEFAULT_TRANSLET_NAME = "GregorSamsa";
-    
+
     /**
      * The class name of the translet
      */
     private String _transletName = DEFAULT_TRANSLET_NAME;
-    
+
     /**
      * The destination directory for the translet
      */
     private String _destinationDirectory = null;
-    
+
     /**
      * The package name prefix for all generated translet classes
      */
     private String _packageName = null;
-    
+
     /**
      * The jar file name which the translet classes are packaged into
      */
@@ -166,7 +166,7 @@ public class TransformerFactoryImpl
 	public String _media = null;
 	public String _title = null;
 	public String _charset = null;
-	
+
 	public PIParamWrapper(String media, String title, String charset) {
 	    _media = media;
 	    _title = title;
@@ -183,15 +183,15 @@ public class TransformerFactoryImpl
      * Set to <code>true</code> when templates are inlined.
      */
     private boolean _enableInlining = false;
-    
+
     /**
-     * Set to <code>true</code> when we want to generate 
+     * Set to <code>true</code> when we want to generate
      * translet classes from the stylesheet.
      */
     private boolean _generateTranslet = false;
-    
+
     /**
-     * If this is set to <code>true</code>, we attempt to use translet classes for 
+     * If this is set to <code>true</code>, we attempt to use translet classes for
      * transformation if possible without compiling the stylesheet. The translet class
      * is only used if its timestamp is newer than the timestamp of the stylesheet.
      */
@@ -223,8 +223,8 @@ public class TransformerFactoryImpl
      * @param listener The error listener to use with the TransformerFactory
      * @throws IllegalArgumentException
      */
-    public void setErrorListener(ErrorListener listener) 
-	throws IllegalArgumentException 
+    public void setErrorListener(ErrorListener listener)
+	throws IllegalArgumentException
     {
 	if (listener == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.ERROR_LISTENER_NULL_ERR,
@@ -240,7 +240,7 @@ public class TransformerFactoryImpl
      *
      * @return The error listener used with the TransformerFactory
      */
-    public ErrorListener getErrorListener() { 
+    public ErrorListener getErrorListener() {
 	return _errorListener;
     }
 
@@ -252,9 +252,9 @@ public class TransformerFactoryImpl
      * @return An object representing the attribute value
      * @throws IllegalArgumentException
      */
-    public Object getAttribute(String name) 
-	throws IllegalArgumentException 
-    { 
+    public Object getAttribute(String name)
+	throws IllegalArgumentException
+    {
 	// Return value for attribute 'translet-name'
 	if (name.equals("translet-name")) {
 	    return _transletName;
@@ -279,13 +279,13 @@ public class TransformerFactoryImpl
      * @param value An object representing the attribute value
      * @throws IllegalArgumentException
      */
-    public void setAttribute(String name, Object value) 
-	throws IllegalArgumentException 
-    { 
+    public void setAttribute(String name, Object value)
+	throws IllegalArgumentException
+    {
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
 	if (name.equals("translet-name") && value instanceof String) {
-	    _transletName = (String) value;	      
+	    _transletName = (String) value;
 	    return;
 	}
 	else if (name.equals("destination-directory") && value instanceof String) {
@@ -357,7 +357,7 @@ public class TransformerFactoryImpl
 	}
 
 	// Throw an exception for all other attributes
-	final ErrorMsg err 
+	final ErrorMsg err
 	    = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
 	throw new IllegalArgumentException(err.toString());
     }
@@ -371,7 +371,7 @@ public class TransformerFactoryImpl
      * @param name The feature name
      * @return 'true' if feature is supported, 'false' if not
      */
-    public boolean getFeature(String name) { 
+    public boolean getFeature(String name) {
 	// All supported features should be listed here
 	String[] features = {
 	    DOMSource.FEATURE,
@@ -399,10 +399,10 @@ public class TransformerFactoryImpl
      *
      * @return The URLResolver used for this TransformerFactory and all
      * Templates and Transformer objects created using this factory
-     */    
+     */
     public URIResolver getURIResolver() {
 	return _uriResolver;
-    } 
+    }
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -413,7 +413,7 @@ public class TransformerFactoryImpl
      *
      * @param resolver The URLResolver used for this TransformerFactory and all
      * Templates and Transformer objects created using this factory
-     */    
+     */
     public void setURIResolver(URIResolver resolver) {
 	_uriResolver = resolver;
     }
@@ -435,7 +435,7 @@ public class TransformerFactoryImpl
      */
     public Source getAssociatedStylesheet(Source source, String media,
 					  String title, String charset)
-	throws TransformerConfigurationException 
+	throws TransformerConfigurationException
     {
 	// First create a hashtable that maps Source refs. to parameters
 	if (_piParams == null) {
@@ -453,11 +453,11 @@ public class TransformerFactoryImpl
      *
      * @return A Transformer object that simply copies the source to the result.
      * @throws TransformerConfigurationException
-     */    
+     */
     public Transformer newTransformer()
-	throws TransformerConfigurationException 
-    { 
-	TransformerImpl result = new TransformerImpl(new Properties(), 
+	throws TransformerConfigurationException
+    {
+	TransformerImpl result = new TransformerImpl(new Properties(),
 	    _indentNumber, this);
 	if (_uriResolver != null) {
 	    result.setURIResolver(_uriResolver);
@@ -476,7 +476,7 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public Transformer newTransformer(Source source) throws
-	TransformerConfigurationException 
+	TransformerConfigurationException
     {
 	final Templates templates = newTemplates(source);
 	final Transformer transformer = templates.newTransformer();
@@ -489,8 +489,8 @@ public class TransformerFactoryImpl
     /**
      * Pass warning messages from the compiler to the error listener
      */
-    private void passWarningsToListener(Vector messages) 
-	throws TransformerException 
+    private void passWarningsToListener(ArrayList messages)
+	throws TransformerException
     {
 	if (_errorListener == null || messages == null) {
 	    return;
@@ -498,7 +498,7 @@ public class TransformerFactoryImpl
 	// Pass messages to listener, one by one
 	final int count = messages.size();
 	for (int pos = 0; pos < count; pos++) {
-	    String message = messages.elementAt(pos).toString();
+	    String message = messages.get(pos).toString();
 	    _errorListener.error(
 		new TransformerConfigurationException(message));
 	}
@@ -507,7 +507,7 @@ public class TransformerFactoryImpl
     /**
      * Pass error messages from the compiler to the error listener
      */
-    private void passErrorsToListener(Vector messages) {
+    private void passErrorsToListener(ArrayList messages) {
 	try {
 	    if (_errorListener == null || messages == null) {
 		return;
@@ -515,7 +515,7 @@ public class TransformerFactoryImpl
 	    // Pass messages to listener, one by one
 	    final int count = messages.size();
 	    for (int pos = 0; pos < count; pos++) {
-		String message = messages.elementAt(pos).toString();
+		String message = messages.get(pos).toString();
 		_errorListener.error(new TransformerException(message));
 	    }
 	}
@@ -534,19 +534,19 @@ public class TransformerFactoryImpl
      * @throws TransformerConfigurationException
      */
     public Templates newTemplates(Source source)
-	throws TransformerConfigurationException 
+	throws TransformerConfigurationException
     {
 	// If _autoTranslet is true, we will try to load the bytecodes
 	// from the translet classes without compiling the stylesheet.
 	if (_autoTranslet)  {
 	    byte[][] bytecodes = null;
 	    String transletClassName = getTransletClassName(source);
-	    
+
 	    if (_jarFileName != null)
 	    	bytecodes = getBytecodesFromJar(source, transletClassName);
 	    else
-	    	bytecodes = getBytecodesFromClasses(source, transletClassName);	    
-	  
+	    	bytecodes = getBytecodesFromClasses(source, transletClassName);
+
 	    if (bytecodes != null) {
 	    	if (_debug) {
 	      	    if (_jarFileName != null)
@@ -560,11 +560,11 @@ public class TransformerFactoryImpl
 	    	// Reset the per-session attributes to their default values
 	    	// after each newTemplates() call.
 	    	resetTransientAttributes();
-	    
-	    	return new TemplatesImpl(bytecodes, transletClassName, null, _indentNumber, this);	    
+
+	    	return new TemplatesImpl(bytecodes, transletClassName, null, _indentNumber, this);
 	    }
 	}
-	
+
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
@@ -593,7 +593,7 @@ public class TransformerFactoryImpl
 	    // Set the translet name
 	    if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
 	        xsltc.setClassName(_transletName);
-	  
+
 	    if (_destinationDirectory != null)
 	    	xsltc.setDestDirectory(_destinationDirectory);
 	    else {
@@ -601,15 +601,15 @@ public class TransformerFactoryImpl
 	    	if (xslName != null) {
 	      	    File xslFile = new File(xslName);
 	            String xslDir = xslFile.getParent();
-	    
+
 	      	    if (xslDir != null)
 	                xsltc.setDestDirectory(xslDir);
 	    	}
 	    }
-	  
+
 	    if (_packageName != null)
 	        xsltc.setPackageName(_packageName);
-	
+
 	    if (_jarFileName != null) {
 	    	xsltc.setJarFileName(_jarFileName);
 	    	outputType = XSLTC.BYTEARRAY_AND_JAR_OUTPUT;
@@ -662,7 +662,7 @@ public class TransformerFactoryImpl
 	    throw new TransformerConfigurationException(err.toString());
 	}
 
-	return new TemplatesImpl(bytecodes, transletName, 
+	return new TemplatesImpl(bytecodes, transletName,
 	    xsltc.getOutputProperties(), _indentNumber, this);
     }
 
@@ -674,10 +674,10 @@ public class TransformerFactoryImpl
      * @return A TemplatesHandler object that can handle SAX events
      * @throws TransformerConfigurationException
      */
-    public TemplatesHandler newTemplatesHandler() 
-	throws TransformerConfigurationException 
-    { 
-	final TemplatesHandlerImpl handler = 
+    public TemplatesHandler newTemplatesHandler()
+	throws TransformerConfigurationException
+    {
+	final TemplatesHandlerImpl handler =
 	    new TemplatesHandlerImpl(_indentNumber, this);
 	handler.init();
 	if (_uriResolver != null) {
@@ -694,8 +694,8 @@ public class TransformerFactoryImpl
      * @return A TransformerHandler object that can handle SAX events
      * @throws TransformerConfigurationException
      */
-    public TransformerHandler newTransformerHandler() 
-	throws TransformerConfigurationException 
+    public TransformerHandler newTransformerHandler()
+	throws TransformerConfigurationException
     {
 	final Transformer transformer = newTransformer();
 	if (_uriResolver != null) {
@@ -714,9 +714,9 @@ public class TransformerFactoryImpl
      * @return A TransformerHandler object that can handle SAX events
      * @throws TransformerConfigurationException
      */
-    public TransformerHandler newTransformerHandler(Source src) 
-	throws TransformerConfigurationException 
-    { 
+    public TransformerHandler newTransformerHandler(Source src)
+	throws TransformerConfigurationException
+    {
 	final Transformer transformer = newTransformer(src);
 	if (_uriResolver != null) {
 	    transformer.setURIResolver(_uriResolver);
@@ -733,9 +733,9 @@ public class TransformerFactoryImpl
      * @param templates Represents a pre-processed stylesheet
      * @return A TransformerHandler object that can handle SAX events
      * @throws TransformerConfigurationException
-     */    
-    public TransformerHandler newTransformerHandler(Templates templates) 
-	throws TransformerConfigurationException  
+     */
+    public TransformerHandler newTransformerHandler(Templates templates)
+	throws TransformerConfigurationException
     {
 	final Transformer transformer = templates.newTransformer();
 	final TransformerImpl internal = (TransformerImpl)transformer;
@@ -751,11 +751,11 @@ public class TransformerFactoryImpl
      * @return An XMLFilter object, or null if this feature is not supported.
      * @throws TransformerConfigurationException
      */
-    public XMLFilter newXMLFilter(Source src) 
-	throws TransformerConfigurationException 
+    public XMLFilter newXMLFilter(Source src)
+	throws TransformerConfigurationException
     {
 	Templates templates = newTemplates(src);
-	if (templates == null) return null; 
+	if (templates == null) return null;
 	return newXMLFilter(templates);
     }
 
@@ -768,8 +768,8 @@ public class TransformerFactoryImpl
      * @return An XMLFilter object, or null if this feature is not supported.
      * @throws TransformerConfigurationException
      */
-    public XMLFilter newXMLFilter(Templates templates) 
-	throws TransformerConfigurationException 
+    public XMLFilter newXMLFilter(Templates templates)
+	throws TransformerConfigurationException
     {
 	try {
       	    return new org.apache.xalan.xsltc.trax.TrAXFilter(templates);
@@ -789,18 +789,18 @@ public class TransformerFactoryImpl
     }
 
     /**
-     * Receive notification of a recoverable error. 
+     * Receive notification of a recoverable error.
      * The transformer must continue to provide normal parsing events after
      * invoking this method. It should still be possible for the application
      * to process the document through to the end.
      *
-     * @param exception The warning information encapsulated in a transformer 
+     * @param exception The warning information encapsulated in a transformer
      * exception.
      * @throws TransformerException if the application chooses to discontinue
      * the transformation (always does in our case).
      */
     public void error(TransformerException e)
-	throws TransformerException 
+	throws TransformerException
     {
 	Throwable wrapped = e.getException();
         if (wrapped != null) {
@@ -811,11 +811,11 @@ public class TransformerFactoryImpl
             System.err.println(new ErrorMsg(ErrorMsg.ERROR_MSG,
                                             e.getMessageAndLocation()));
 	}
-	throw e; 	
+	throw e;
     }
 
     /**
-     * Receive notification of a non-recoverable error. 
+     * Receive notification of a non-recoverable error.
      * The application must assume that the transformation cannot continue
      * after the Transformer has invoked this method, and should continue
      * (if at all) only to collect addition error messages. In fact,
@@ -828,7 +828,7 @@ public class TransformerFactoryImpl
      * the transformation (always does in our case).
      */
     public void fatalError(TransformerException e)
-	throws TransformerException 
+	throws TransformerException
     {
 	Throwable wrapped = e.getException();
         if (wrapped != null) {
@@ -856,7 +856,7 @@ public class TransformerFactoryImpl
      * the transformation (never does in our case).
      */
     public void warning(TransformerException e)
-	throws TransformerException 
+	throws TransformerException
     {
 	Throwable wrapped = e.getException();
 	if (wrapped != null) {
@@ -894,8 +894,8 @@ public class TransformerFactoryImpl
     }
 
     /**
-     * This method is synchronized to allow instances of this class to 
-     * be shared among threads. A tranformer object will call this 
+     * This method is synchronized to allow instances of this class to
+     * be shared among threads. A tranformer object will call this
      * method to get an XMLReader. A different instance of an XMLReader
      * is returned/cached for each thread.
      */
@@ -912,7 +912,7 @@ public class TransformerFactoryImpl
 	}
 	return result;
     }
-    
+
     /**
      * Reset the per-session attributes to their default values
      */
@@ -920,9 +920,9 @@ public class TransformerFactoryImpl
 	_transletName = DEFAULT_TRANSLET_NAME;
 	_destinationDirectory = null;
 	_packageName = null;
-	_jarFileName = null;    
+	_jarFileName = null;
     }
-        
+
     /**
      * Load the translet classes from local .class files and return
      * the bytecode array.
@@ -935,12 +935,12 @@ public class TransformerFactoryImpl
     {
     	if (fullClassName == null)
     	    return null;
-    	  
+
     	String xslFileName = getStylesheetFileName(source);
     	File xslFile = null;
     	if (xslFileName != null)
     	    xslFile = new File(xslFileName);
-    	
+
     	// Find the base name of the translet
     	final String transletName;
     	int lastDotIndex = fullClassName.lastIndexOf('.');
@@ -948,7 +948,7 @@ public class TransformerFactoryImpl
     	    transletName = fullClassName.substring(lastDotIndex+1);
     	else
     	    transletName = fullClassName;
-    	    	
+
     	// Construct the path name for the translet class file
     	String transletPath = fullClassName.replace('.', '/');
     	if (_destinationDirectory != null) {
@@ -960,14 +960,14 @@ public class TransformerFactoryImpl
     	    else
     	    	transletPath = transletPath + ".class";
     	}
-    	    	    	
+
     	// Return null if the translet class file does not exist.
     	File transletFile = new File(transletPath);
     	if (!transletFile.exists())
     	    return null;
-    	    	  
+
     	// Compare the timestamps of the translet and the xsl file.
-    	// If the translet is older than the xsl file, return null 
+    	// If the translet is older than the xsl file, return null
     	// so that the xsl file is used for the transformation and
     	// the translet is regenerated.
     	if (xslFile != null && xslFile.exists()) {
@@ -976,9 +976,9 @@ public class TransformerFactoryImpl
     	    if (transletTimestamp < xslTimestamp)
     	    	return null;
     	}
-    	
+
     	// Load the translet into a bytecode array.
-    	Vector bytecodes = new Vector();
+    	ArrayList bytecodes = new ArrayList();
     	int fileLength = (int)transletFile.length();
     	if (fileLength > 0) {
     	    FileInputStream input = null;
@@ -988,7 +988,7 @@ public class TransformerFactoryImpl
     	    catch (FileNotFoundException e) {
     	    	return null;
     	    }
-    	  
+
     	    byte[] bytes = new byte[fileLength];
     	    try {
 	    	readFromInputStream(bytes, input, fileLength);
@@ -997,28 +997,28 @@ public class TransformerFactoryImpl
 	    catch (IOException e) {
     	    	return null;
     	    }
-    	  
-    	    bytecodes.addElement(bytes);
+
+    	    bytecodes.add(bytes);
     	}
     	else
     	    return null;
-    	
+
     	// Find the parent directory of the translet.
     	String transletParentDir = transletFile.getParent();
     	if (transletParentDir == null)
     	    transletParentDir = System.getProperty("user.dir");
-    	  
+
     	File transletParentFile = new File(transletParentDir);
-    	
+
     	// Find all the auxiliary files which have a name pattern of "transletClass$nnn.class".
     	final String transletAuxPrefix = transletName + "$";
     	File[] auxfiles = transletParentFile.listFiles(new FilenameFilter() {
         	public boolean accept(File dir, String name)
     		{
-    		    return (name.endsWith(".class") && name.startsWith(transletAuxPrefix));	
+    		    return (name.endsWith(".class") && name.startsWith(transletAuxPrefix));
     		}
     	      });
-    	
+
     	// Load the auxiliary class files and add them to the bytecode array.
     	for (int i = 0; i < auxfiles.length; i++)
     	{
@@ -1032,9 +1032,9 @@ public class TransformerFactoryImpl
     	    	catch (FileNotFoundException e) {
     	      	    continue;
     	    	}
-    	  
+
     	    	byte[] bytes = new byte[auxlength];
-    	    
+
     	    	try {
     	      	    readFromInputStream(bytes, auxinput, auxlength);
     	      	    auxinput.close();
@@ -1042,25 +1042,25 @@ public class TransformerFactoryImpl
     	    	catch (IOException e) {
     	      	    continue;
     	    	}
-    	    
-    	    	bytecodes.addElement(bytes);   	    
+
+    	    	bytecodes.add(bytes);
     	    }
     	}
-    	
-    	// Convert the Vector of byte[] to byte[][].
+
+    	// Convert the ArrayList of byte[] to byte[][].
     	final int count = bytecodes.size();
     	if ( count > 0) {
     	    final byte[][] result = new byte[count][1];
     	    for (int i = 0; i < count; i++) {
-    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    	result[i] = (byte[])bytecodes.get(i);
     	    }
-    	  
+
     	    return result;
     	}
     	else
     	    return null;
     }
-    
+
     /**
      * Load the translet classes from the jar file and return the bytecode.
      *
@@ -1074,7 +1074,7 @@ public class TransformerFactoryImpl
     	File xslFile = null;
     	if (xslFileName != null)
     	    xslFile = new File(xslFileName);
-      
+
       	// Construct the path for the jar file
       	String jarPath = null;
       	if (_destinationDirectory != null)
@@ -1085,7 +1085,7 @@ public class TransformerFactoryImpl
     	    else
     	    	jarPath = _jarFileName;
     	}
-            
+
       	// Return null if the jar file does not exist.
       	File file = new File(jarPath);
       	if (!file.exists())
@@ -1099,7 +1099,7 @@ public class TransformerFactoryImpl
     	    if (transletTimestamp < xslTimestamp)
     	        return null;
     	}
-      
+
       	// Create a ZipFile object for the jar file
       	ZipFile jarFile = null;
       	try {
@@ -1108,23 +1108,23 @@ public class TransformerFactoryImpl
       	catch (IOException e) {
             return null;
       	}
-      
+
       	String transletPath = fullClassName.replace('.', '/');
       	String transletAuxPrefix = transletPath + "$";
       	String transletFullName = transletPath + ".class";
-      
-      	Vector bytecodes = new Vector();      
-      
-      	// Iterate through all entries in the jar file to find the 
+
+      	ArrayList bytecodes = new ArrayList();
+
+      	// Iterate through all entries in the jar file to find the
       	// translet and auxiliary classes.
       	Enumeration entries = jarFile.entries();
       	while (entries.hasMoreElements())
       	{
             ZipEntry entry = (ZipEntry)entries.nextElement();
             String entryName = entry.getName();
-            if (entry.getSize() > 0 && 
+            if (entry.getSize() > 0 &&
             	  (entryName.equals(transletFullName) ||
-              	  (entryName.endsWith(".class") && 
+              	  (entryName.endsWith(".class") &&
               	      entryName.startsWith(transletAuxPrefix))))
             {
             	try {
@@ -1133,28 +1133,28 @@ public class TransformerFactoryImpl
               	    byte[] bytes = new byte[size];
               	    readFromInputStream(bytes, input, size);
               	    input.close();
-              	    bytecodes.addElement(bytes);
+              	    bytecodes.add(bytes);
             	}
             	catch (IOException e) {
               	    return null;
-            	}          
+            	}
             }
       	}
-      
-        // Convert the Vector of byte[] to byte[][].
+
+        // Convert the ArrayList of byte[] to byte[][].
     	final int count = bytecodes.size();
     	if (count > 0) {
     	    final byte[][] result = new byte[count][1];
     	    for (int i = 0; i < count; i++) {
-    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    	result[i] = (byte[])bytecodes.get(i);
     	    }
-    	  
+
     	    return result;
     	}
     	else
     	    return null;
     }
-    
+
     /**
      * Read a given number of bytes from the InputStream into a byte array.
      *
@@ -1171,7 +1171,7 @@ public class TransformerFactoryImpl
       while (length > 0 && (n = input.read(bytes, offset, length)) > 0) {
           offset = offset + n;
           length = length - n;
-      }    
+      }
     }
 
     /**
@@ -1181,7 +1181,7 @@ public class TransformerFactoryImpl
      * @return The full name of the translet class
      */
     private String getTransletClassName(Source source)
-    {      
+    {
         String transletBaseName = null;
         if (!_transletName.equals(DEFAULT_TRANSLET_NAME))
             transletBaseName = _transletName;
@@ -1197,16 +1197,16 @@ public class TransformerFactoryImpl
 		}
             }
       	}
-      
+
         if (transletBaseName == null)
             transletBaseName = DEFAULT_TRANSLET_NAME;
-        
+
         if (_packageName != null)
             return _packageName + "." + transletBaseName;
         else
             return transletBaseName;
     }
-        
+
     /**
      *  Return the local file name from the systemId of the Source object
      *
@@ -1229,7 +1229,7 @@ public class TransformerFactoryImpl
           	catch (MalformedURLException e) {
             	    return null;
           	}
-          
+
           	if ("file".equals(url.getProtocol()))
             	    return url.getFile();
           	else

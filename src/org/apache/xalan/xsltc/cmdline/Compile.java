@@ -66,7 +66,7 @@
 package org.apache.xalan.xsltc.cmdline;
 
 import java.io.*;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.net.URL;
 
 import org.apache.xalan.xsltc.DOM;
@@ -171,7 +171,7 @@ public final class Compile {
 	    else {
 		// Generate a vector containg URLs for all stylesheets specified
 		final String[] stylesheetNames = getopt.getCmdArgs();
-		final Vector   stylesheetVector = new Vector();
+		final ArrayList   stylesheetArrayList = new ArrayList();
 		for (int i = 0; i < stylesheetNames.length; i++) {
 		    final String name = stylesheetNames[i];
 		    URL url;
@@ -179,9 +179,9 @@ public final class Compile {
 			url = new URL(name);
 		    else
 			url = (new File(name)).toURL();
-		    stylesheetVector.addElement(url);
+		    stylesheetArrayList.add(url);
 		}
-		compileOK = xsltc.compile(stylesheetVector);
+		compileOK = xsltc.compile(stylesheetArrayList);
 	    }
 
 	    // Compile the stylesheet and output class/jar file(s)

@@ -69,7 +69,7 @@ import java.io.*;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -105,7 +105,7 @@ final public class Transform {
     private String  _className;
     private String  _jarFileSrc;
     private boolean _isJarFileSpecified = false;
-    private Vector  _params = null;
+    private ArrayList  _params = null;
     private boolean _uri, _debug;
     private int     _iterations;
 
@@ -119,11 +119,11 @@ final public class Transform {
 	_debug = debug;
 	_iterations = iterations;
   }
-  
+
    public String getFileName(){return _fileName;}
    public String getClassName(){return _className;}
 
-    public void setParameters(Vector params) {
+    public void setParameters(ArrayList params) {
 	_params = params;
     }
 
@@ -132,10 +132,10 @@ final public class Transform {
 	// information, attempts to add the jarfile to the CLASSPATH
 	// were successful via System.setProperty, but the effects
 	// were not visible to the running JVM. For now we add jarfile
-	// to CLASSPATH in the wrapper script that calls this program. 
+	// to CLASSPATH in the wrapper script that calls this program.
 	_isJarFileSpecified = flag;
 	// TODO verify jarFile exists...
-	_jarFileSrc = jarFile;	
+	_jarFileSrc = jarFile;
     }
 
     private Class loadTranslet(String name) throws ClassNotFoundException {
@@ -154,7 +154,7 @@ final public class Transform {
 
     private void doTransform() {
 	try {
-	    
+
 	    final Class clazz = loadTranslet(_className);
 	    final Translet translet = (Translet)clazz.newInstance();
 
@@ -181,7 +181,7 @@ final public class Transform {
 	    catch (SAXException e) {
 		// quitely ignored
 	    }
-	    
+
 	    // Create a DTD monitor and pass it to the XMLReader object
 	    final DTDMonitor dtdMonitor = new DTDMonitor(reader);
 	    AbstractTranslet _translet = (AbstractTranslet)translet;
@@ -201,12 +201,12 @@ final public class Transform {
 	    // Pass global parameters
 	    int n = _params.size();
 	    for (int i = 0; i < n; i++) {
-		Parameter param = (Parameter) _params.elementAt(i);
+		Parameter param = (Parameter) _params.get(i);
 		translet.addParameter(param._name, param._value);
 	    }
 
 	    // Transform the document
-	    TransletOutputHandlerFactory tohFactory = 
+	    TransletOutputHandlerFactory tohFactory =
 		TransletOutputHandlerFactory.newInstance();
 	    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
 	    tohFactory.setEncoding(_translet._encoding);
@@ -241,7 +241,7 @@ final public class Transform {
 	    if (_debug) e.printStackTrace();
 	    System.err.println(ErrorMsg.getTransletErrorMessage()+
 			       e.getMessage());
-	    if (_allowExit) System.exit(-1);	    
+	    if (_allowExit) System.exit(-1);
 	}
 	catch (RuntimeException e) {
 	    if (_debug) e.printStackTrace();
@@ -324,7 +324,7 @@ final public class Transform {
 			_allowExit = false;
 		    }
 		    else if (args[i].equals("-j")) {
-			isJarFileSpecified = true;	
+			isJarFileSpecified = true;
 			jarFile = args[++i];
 		    }
 		    else if (args[i].equals("-e")) {
@@ -352,13 +352,13 @@ final public class Transform {
 		handler.setJarFileInputSrc(isJarFileSpecified,	jarFile);
 
 		// Parse stylesheet parameters
-		Vector params = new Vector();
+		ArrayList params = new ArrayList();
 		for (i += 2; i < args.length; i++) {
 		    final int equal = args[i].indexOf('=');
 		    if (equal > 0) {
 			final String name  = args[i].substring(0, equal);
 			final String value = args[i].substring(equal+1);
-			params.addElement(new Parameter(name, value));
+			params.add(new Parameter(name, value));
 		    }
 		    else {
 			printUsage();

@@ -63,15 +63,15 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ConcatCall extends FunctionCall {
-    public ConcatCall(QName fname, Vector arguments) {
+    public ConcatCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -78,7 +78,7 @@ final class StartsWithCall extends FunctionCall {
     /**
      * Create a starts-with() call - two arguments, both strings
      */
-    public StartsWithCall(QName fname, Vector arguments) {
+    public StartsWithCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

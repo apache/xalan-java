@@ -66,7 +66,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Stack;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.io.StringReader;
 import java_cup.runtime.*;
 
@@ -79,7 +79,7 @@ parser code {:
     /**
      * Used by function calls with no args.
      */
-    static public final Vector EmptyArgs = new Vector(0);
+    static public final ArrayList EmptyArgs = new ArrayList(0);
 
     /**
      * Reference to non-existing variable.
@@ -279,7 +279,7 @@ non terminal RelativePathPattern RelativePathPattern;
 non terminal StepPattern StepPattern;
 non terminal Object NodeTestPattern, NameTestPattern;
 
-non terminal Vector Predicates, NonemptyArgumentList;
+non terminal ArrayList Predicates, NonemptyArgumentList;
 non terminal QName QName, FunctionName, VariableName;
 non terminal Integer AxisName, AxisSpecifier;
 non terminal Integer ChildOrAttributeAxisSpecifier;
@@ -428,13 +428,13 @@ ChildOrAttributeAxisSpecifier ::= ATSIGN
 
 Predicates ::= Predicate:p
             {: 
-		Vector temp = new Vector();
-		temp.addElement(p);
+		ArrayList temp = new ArrayList();
+		temp.add(p);
 		RESULT = temp;     
             :}
 
             | Predicate:p Predicates:pp
-            {: pp.insertElementAt(p, 0); RESULT = pp; :}; 
+            {: pp.add(0, p); RESULT = pp; :}; 
 
 Predicate ::=  LBRACK Expr:e RBRACK
 	    {:
@@ -585,7 +585,7 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 	   final Step right  = (Step)step;
            final int  axis   = right.getAxis();
            final int  type   = right.getNodeType();
-           final Vector predicates = right.getPredicates();
+           final ArrayList predicates = right.getPredicates();
 
            if ((axis == Axis.CHILD) && (type != NodeTest.ATTRIBUTE)) {
                // Compress './/child:E' into 'descendant::E' - if possible
@@ -953,13 +953,13 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
 
 NonemptyArgumentList ::= Argument:arg
         {: 
-            Vector temp = new Vector();
-            temp.addElement(arg);
+            ArrayList temp = new ArrayList();
+            temp.add(arg);
             RESULT = temp;
         :}
 
         | Argument:arg COMMA NonemptyArgumentList:argl
-        {: argl.insertElementAt(arg, 0); RESULT = argl; :};
+        {: argl.add(0, arg); RESULT = argl; :};
 
 FunctionName ::= QName:fname
         {: 
@@ -992,8 +992,8 @@ NodeTest ::= NameTest:nt
            Expression exp = new EqualityExpr(Operators.EQ,
                                              new NameCall(name),
                                              new LiteralExpr(l));
-           Vector predicates = new Vector();
-           predicates.addElement(new Predicate(exp));
+           ArrayList predicates = new ArrayList();
+           predicates.add(new Predicate(exp));
            RESULT = new Step(Axis.CHILD, NodeTest.PI, predicates);
         :}
 

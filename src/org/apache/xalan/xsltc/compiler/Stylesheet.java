@@ -64,10 +64,10 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Iterator;
 import java.net.URL;
@@ -96,22 +96,22 @@ public final class Stylesheet extends SyntaxTreeNode {
     private QName        _name;
     private String       _systemId;
     private Stylesheet   _parentStylesheet;
-	
+
     // Contains global variables and parameters defined in the stylesheet
-    private Vector _globals = new Vector();
+    private ArrayList _globals = new ArrayList();
 
     // Used to cache the result returned by <code>hasLocalParams()</code>.
     private Boolean _hasLocalParams = null;
 
     //  The name of the class being generated.
     private String _className;
-    
+
     // Contains all templates defined in this stylesheet
-    private final Vector _templates = new Vector();
+    private final ArrayList _templates = new ArrayList();
 
     private int _nextModeSerial = 1;
-    private final Hashtable _modes = new Hashtable();
-    private final Hashtable _extensions = new Hashtable();
+    private final HashMap _modes = new HashMap();
+    private final HashMap _extensions = new HashMap();
 
     public  Stylesheet _importedFrom = null;
     public  Stylesheet _includedFrom = null;
@@ -121,7 +121,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private boolean _callsNodeset = false;
 
     // All named key elements (needed by Key/IdPattern)
-    private Hashtable _keys = new Hashtable();
+    private HashMap _keys = new HashMap();
 
     private boolean _numberFormattingUsed = false;
 
@@ -154,7 +154,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void setSimplified() {
 	_simplified = true;
     }
-    
+
     public void setOutputProperty(String key, String value) {
 	if (_outputProperties == null) {
 	    _outputProperties = new Properties();
@@ -170,7 +170,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _outputProperties;
     }
 
-    public void setMultiDocument(boolean flag) {	
+    public void setMultiDocument(boolean flag) {
 	_multiDocument = flag;
     }
 
@@ -196,9 +196,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_importPrecedence = precedence;
 
 	// Set import precedence for all included stylesheets
-	final Enumeration elements = elements();
-	while (elements.hasMoreElements()) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)elements.nextElement();
+	final Iterator elements = iterator();
+	while (elements.hasNext()) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)elements.next();
 	    if (child instanceof Include) {
 		Stylesheet included = ((Include)child).getIncludedStylesheet();
 		if (included != null) included.setImportPrecedence(precedence);
@@ -219,7 +219,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 		_includedFrom.setImportPrecedence(precedence);
 	}
     }
-    
+
     public int getImportPrecedence() {
 	return _importPrecedence;
     }
@@ -230,21 +230,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    return true;
 	}
 	// Then check with any stylesheets that included/imported this one
-	if (_parentStylesheet != null) 
+	if (_parentStylesheet != null)
 	    return _parentStylesheet.checkForLoop(systemId);
 	// Otherwise OK
 	return false;
     }
-    
+
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	_name = makeStylesheetName("__stylesheet_");
     }
-    
+
     public void setParentStylesheet(Stylesheet parent) {
 	_parentStylesheet = parent;
     }
-    
+
     public Stylesheet getParentStylesheet() {
 	return _parentStylesheet;
     }
@@ -260,7 +260,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void setSystemId(String systemId) {
 	_systemId = systemId;
     }
-    
+
     public String getSystemId() {
 	return _systemId;
     }
@@ -268,7 +268,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void setSourceLoader(SourceLoader loader) {
 	_loader = loader;
     }
-    
+
     public SourceLoader getSourceLoader() {
 	return _loader;
     }
@@ -293,7 +293,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	if (_hasLocalParams == null) {
 	    final int n = _templates.size();
 	    for (int i = 0; i < n; i++) {
-		final Template template = (Template)_templates.elementAt(i);
+		final Template template = (Template)_templates.get(i);
 		if (template.hasParams()) {
 		    _hasLocalParams = new Boolean(true);
 		    return true;
@@ -341,8 +341,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final SymbolTable stable = parser.getSymbolTable();
     	final String excludePrefixes = getAttribute("exclude-result-prefixes");
 	final String extensionPrefixes = getAttribute("extension-element-prefixes");
-	
-	// Exclude XSLT uri 
+
+	// Exclude XSLT uri
 	stable.excludeURI(Constants.XSLT_URI);
 	stable.excludeNamespaces(excludePrefixes);
 	stable.excludeNamespaces(extensionPrefixes);
@@ -399,13 +399,13 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Parse all direct children of the <xsl:stylesheet/> element.
      */
     public final void parseOwnChildren(Parser parser) {
-	final Vector contents = getContents();
+	final ArrayList contents = getContents();
 	final int count = contents.size();
 
 	// We have to scan the stylesheet element's top-level elements for
 	// variables and/or parameters before we parse the other elements
 	for (int i = 0; i < count; i++) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
 	    if ((child instanceof VariableBase) ||
 		(child instanceof NamespaceAlias)) {
 		parser.getSymbolTable().setCurrentNode(child);
@@ -415,8 +415,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	// Now go through all the other top-level elements...
 	for (int i = 0; i < count; i++) {
-	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if (!(child instanceof VariableBase) && 
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
+	    if (!(child instanceof VariableBase) &&
 		!(child instanceof NamespaceAlias)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
@@ -436,18 +436,18 @@ public final class Stylesheet extends SyntaxTreeNode {
 	if (_defaultMode == null)
 	    _defaultMode = new Mode(null, this, Constants.EMPTYSTRING);
 	_defaultMode.processPatterns(_keys);
-	final Enumeration modes = _modes.elements();
-	while (modes.hasMoreElements()) {
-	    final Mode mode = (Mode)modes.nextElement();
+	final Iterator modes = _modes.values().iterator();
+	while (modes.hasNext()) {
+	    final Mode mode = (Mode)modes.next();
 	    mode.processPatterns(_keys);
 	}
     }
-	
+
     private void compileModes(ClassGenerator classGen) {
 	_defaultMode.compileApplyTemplates(classGen);
-	final Enumeration modes = _modes.elements();
-	while (modes.hasMoreElements()) {
-	    final Mode mode = (Mode)modes.nextElement();
+	final Iterator modes = _modes.values().iterator();
+	while (modes.hasNext()) {
+	    final Mode mode = (Mode)modes.next();
 	    mode.compileApplyTemplates(classGen);
 	}
     }
@@ -475,14 +475,14 @@ public final class Stylesheet extends SyntaxTreeNode {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final int count = _globals.size();
 	for (int i = 0; i < count; i++) {
-	    final VariableBase var = (VariableBase)_globals.elementAt(i);
+	    final VariableBase var = (VariableBase)_globals.get(i);
 	    var.typeCheck(stable);
 	}
 	return typeCheckContents(stable);
     }
 
     /**
-     * Translate the stylesheet into JVM bytecodes. 
+     * Translate the stylesheet into JVM bytecodes.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	translate();
@@ -497,7 +497,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Translate the stylesheet into JVM bytecodes. 
+     * Translate the stylesheet into JVM bytecodes.
      */
     public void translate() {
 	Output lastOutputElement = null;
@@ -510,7 +510,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 			       Constants.EMPTYSTRING,
 			       ACC_PUBLIC | ACC_SUPER,
 			       null, this);
-	
+
 	addDOMField(classGen);
 
 	// Compile transform() to initialize parameters, globals & output
@@ -518,14 +518,14 @@ public final class Stylesheet extends SyntaxTreeNode {
 	compileTransform(classGen);
 
 	// Translate all non-template elements and filter out all templates
-	final Enumeration elements = elements();
-	while (elements.hasMoreElements()) {
-	    Object element = elements.nextElement();
+	final Iterator elements = iterator();
+	while (elements.hasNext()) {
+	    Object element = elements.next();
 	    // xsl:template
 	    if (element instanceof Template) {
 		// Separate templates by modes
 		final Template template = (Template)element;
-		_templates.addElement(template);
+		_templates.add(template);
 		getMode(template.getModeName()).addTemplate(template);
 	    }
 	    // xsl:attribute-set
@@ -533,7 +533,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 		((AttributeSet)element).translate(classGen, null);
 	    }
 	    else if (element instanceof Output) {
-		// save the element for later to pass to compileConstructor 
+		// save the element for later to pass to compileConstructor
 		Output output = (Output)element;
 		if (output.enabled()) lastOutputElement = output;
 	    }
@@ -563,8 +563,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final MethodGenerator constructor =
 	    new MethodGenerator(ACC_PUBLIC,
-				org.apache.bcel.generic.Type.VOID, 
-				null, null, "<init>", 
+				org.apache.bcel.generic.Type.VOID,
+				null, null, "<init>",
 				_className, il, cpg);
 
 	// Call the constructor in the AbstractTranslet superclass
@@ -573,13 +573,13 @@ public final class Stylesheet extends SyntaxTreeNode {
 						     "<init>", "()V")));
 
 	// Put the names array into the translet - used for dom/translet mapping
-	final Vector names = getXSLTC().getNamesIndex();
+	final ArrayList names = getXSLTC().getNamesIndex();
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, names.size()));
-	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));
 
 	for (int i = 0; i < names.size(); i++) {
-	    final String name = (String)names.elementAt(i);
+	    final String name = (String)names.get(i);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, i));
 	    il.append(new PUSH(cpg, name));
@@ -590,13 +590,13 @@ public final class Stylesheet extends SyntaxTreeNode {
 					       NAMES_INDEX_SIG)));
 
 	// Put the namespace names array into the translet
-	final Vector namespaces = getXSLTC().getNamespaceIndex();
+	final ArrayList namespaces = getXSLTC().getNamespaceIndex();
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, namespaces.size()));
-	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+	il.append(new ANEWARRAY(cpg.addClass(STRING)));
 
 	for (int i = 0; i < namespaces.size(); i++) {
-	    final String ns = (String)namespaces.elementAt(i);
+	    final String ns = (String)namespaces.get(i);
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, i));
 	    il.append(new PUSH(cpg, ns));
@@ -626,12 +626,12 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Compile a topLevel() method into the output class. This method is 
+     * Compile a topLevel() method into the output class. This method is
      * called from transform() to handle all non-template top-level elemtents.
      * Returns the signature of the topLevel() method.
      */
     private String compileTopLevel(ClassGenerator classGen,
-				   Enumeration elements) {
+				   Iterator elements) {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
@@ -657,7 +657,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	toplevel.addException("org.apache.xalan.xsltc.TransletException");
 
 	// Define and initialize 'current' variable with the root node
-	final LocalVariableGen current = 
+	final LocalVariableGen current =
 	    toplevel.addLocalVariable("current",
 				    org.apache.bcel.generic.Type.INT,
 				    il.getEnd(), null);
@@ -673,14 +673,14 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_globals = resolveReferences(_globals);
 	final int count = _globals.size();
 	for (int i = 0; i < count; i++) {
-	    final VariableBase var = (VariableBase)_globals.elementAt(i);
+	    final VariableBase var = (VariableBase)_globals.get(i);
 	    var.translate(classGen,toplevel);
 	}
 
 	// Compile code for other top-level elements
-	Vector whitespaceRules = new Vector();
-	while (elements.hasMoreElements()) {
-	    final Object element = elements.nextElement();
+	ArrayList whitespaceRules = new ArrayList();
+	while (elements.hasNext()) {
+	    final Object element = elements.next();
 	    // xsl:decimal-format
 	    if (element instanceof DecimalFormatting) {
 		((DecimalFormatting)element).translate(classGen,toplevel);
@@ -711,50 +711,50 @@ public final class Stylesheet extends SyntaxTreeNode {
 	toplevel.removeNOPs();
 
 	classGen.addMethod(toplevel.getMethod());
-	
+
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
 
     /**
-     * This method returns a vector with variables in the order in 
-     * which they are to be compiled. The order is determined by the 
-     * dependencies between them and the order in which they were defined 
+     * This method returns a vector with variables in the order in
+     * which they are to be compiled. The order is determined by the
+     * dependencies between them and the order in which they were defined
      * in the stylesheet. The first step is to close the input vector under
      * the dependence relation (this is usually needed when variables are
      * defined inside other variables in a RTF).
      */
-    private Vector resolveReferences(Vector input) {
+    private ArrayList resolveReferences(ArrayList input) {
 
 	// Make sure that the vector 'input' is closed
 	for (int i = 0; i < input.size(); i++) {
-	    final VariableBase var = (VariableBase) input.elementAt(i);
-	    final Vector dep  = var.getDependencies();
+	    final VariableBase var = (VariableBase) input.get(i);
+	    final ArrayList dep  = var.getDependencies();
 	    final int depSize = (dep != null) ? dep.size() : 0;
 
 	    for (int j = 0; j < depSize; j++) {
-		final VariableBase depVar = (VariableBase) dep.elementAt(j);
+		final VariableBase depVar = (VariableBase) dep.get(j);
 		if (!input.contains(depVar)) {
-		    input.addElement(depVar);
+		    input.add(depVar);
 		}
 	    }
 	}
 
 	/* DEBUG CODE - INGORE
 	for (int i = 0; i < input.size(); i++) {
-	    final VariableBase var = (VariableBase) input.elementAt(i);
+	    final VariableBase var = (VariableBase) input.get(i);
 	    System.out.println("var = " + var);
 	}
 	System.out.println("=================================");
 	*/
 
-	Vector result = new Vector();
+	ArrayList result = new ArrayList();
 	while (input.size() > 0) {
 	    boolean changed = false;
 	    for (int i = 0; i < input.size(); ) {
-		final VariableBase var = (VariableBase)input.elementAt(i);
-		final Vector dep = var.getDependencies();
+		final VariableBase var = (VariableBase)input.get(i);
+		final ArrayList dep = var.getDependencies();
 		if (dep == null || result.containsAll(dep)) {
-		    result.addElement(var);
+		    result.add(var);
 		    input.remove(i);
 		    changed = true;
 		}
@@ -775,7 +775,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	/* DEBUG CODE - INGORE
 	System.out.println("=================================");
 	for (int i = 0; i < result.size(); i++) {
-	    final VariableBase var = (VariableBase) result.elementAt(i);
+	    final VariableBase var = (VariableBase) result.get(i);
 	    System.out.println("var = " + var);
 	}
 	*/
@@ -784,7 +784,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Compile a buildKeys() method into the output class. This method is 
+     * Compile a buildKeys() method into the output class. This method is
      * called from transform() to handle build all indexes needed by key().
      */
     private String compileBuildKeys(ClassGenerator classGen) {
@@ -820,21 +820,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(classGen.loadTranslet());
 	il.append(new GETFIELD(domField));  // The DOM reference
 	il.append(new ASTORE(1));
-	
-	final Enumeration elements = elements();
+
+	final Iterator elements = iterator();
 	// Compile code for other top-level elements
-	while (elements.hasMoreElements()) {
+	while (elements.hasNext()) {
 	    // xsl:key
-	    final Object element = elements.nextElement();
+	    final Object element = elements.next();
 	    if (element instanceof Key) {
 		final Key key = (Key)element;
 		key.translate(classGen, buildKeys);
 		_keys.put(key.getName(),key);
 	    }
 	}
-	
+
 	il.append(RETURN);
-	
+
 	// Compute max locals + stack and add method to class
 	buildKeys.stripAttributes(true);
 	buildKeys.setMaxLocals();
@@ -842,23 +842,23 @@ public final class Stylesheet extends SyntaxTreeNode {
 	buildKeys.removeNOPs();
 
 	classGen.addMethod(buildKeys.getMethod());
-	
+
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+"I)V");
     }
 
     /**
-     * Compile transform() into the output class. This method is used to 
+     * Compile transform() into the output class. This method is used to
      * initialize global variables and global parameters. The current node
      * is set to be the document's root node.
      */
     private void compileTransform(ClassGenerator classGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
-	/* 
+	/*
 	 * Define the the method transform with the following signature:
 	 * void transform(DOM, NodeIterator, HandlerBase)
 	 */
-	final org.apache.bcel.generic.Type[] argTypes = 
+	final org.apache.bcel.generic.Type[] argTypes =
 	    new org.apache.bcel.generic.Type[3];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
@@ -881,7 +881,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	transf.addException("org.apache.xalan.xsltc.TransletException");
 
 	// Define and initialize current with the root node
-	final LocalVariableGen current = 
+	final LocalVariableGen current =
 	    transf.addLocalVariable("current",
 				    org.apache.bcel.generic.Type.INT,
 				    il.getEnd(), null);
@@ -896,12 +896,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// push translet for PUTFIELD
 	il.append(classGen.loadTranslet());
 	// prepare appropriate DOM implementation
-	
+
 	if (isMultiDocument()) {
 	    il.append(new NEW(cpg.addClass(MULTI_DOM_CLASS)));
 	    il.append(DUP);
 	}
-	
+
 	il.append(classGen.loadTranslet());
 	il.append(transf.loadDOM());
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
@@ -917,7 +917,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(new INVOKESPECIAL(init));
 	    // MultiDOM is on the stack
 	}
-	
+
 	//store to _dom variable
 	il.append(new PUTFIELD(domField));
 
@@ -946,8 +946,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new INVOKEVIRTUAL(keyIdx));
 
 	// Look for top-level elements that need handling
-	final Enumeration toplevel = elements();
-	if ((_globals.size() > 0) || (toplevel.hasMoreElements())) {
+	final Iterator toplevel = iterator();
+	if ((_globals.size() > 0) || (toplevel.hasNext())) {
 	    // Compile method for handling top-level elements
 	    final String topLevelSig = compileTopLevel(classGen, toplevel);
 	    // Get a reference to that method
@@ -962,7 +962,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(transf.loadHandler());    // The output handler
 	    il.append(new INVOKEVIRTUAL(topLevelIdx));
 	}
-	
+
 	// start document
 	il.append(transf.loadHandler());
 	il.append(transf.startDocument());
@@ -1002,7 +1002,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    InstructionHandle[] match = (InstructionHandle[])iter.next();
 	    try {
 		il.delete(match[0], match[1]);
-	    } 
+	    }
 	    catch (TargetLostException e) {
             	// TODO: move target down into the list
             }
@@ -1010,12 +1010,12 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public int addParam(Param param) {
-	_globals.addElement(param);
+	_globals.add(param);
 	return _globals.size() - 1;
     }
 
     public int addVariable(Variable global) {
-	_globals.addElement(global);
+	_globals.add(global);
 	return _globals.size() - 1;
     }
 
@@ -1034,7 +1034,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _className;
     }
 
-    public Vector getTemplates() {
+    public ArrayList getTemplates() {
 	return _templates;
     }
 }

@@ -66,9 +66,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.HashMap;
 
 import java.lang.reflect.*;
 
@@ -92,15 +92,15 @@ class FunctionCall extends Expression {
     // Name of this function call
     private QName  _fname;
     // Arguments to this function call (might not be any)
-    private final Vector _arguments;
+    private final ArrayList _arguments;
     // Empty argument list, used for certain functions
-    private final static Vector EMPTY_ARG_LIST = new Vector(0);
+    private final static ArrayList EMPTY_ARG_LIST = new ArrayList(0);
 
     // Valid namespaces for Java function-call extension
-    protected final static String EXT_XSLTC = 
+    protected final static String EXT_XSLTC =
 	TRANSLET_URI;
 
-    protected final static String JAVA_EXT_XSLTC = 
+    protected final static String JAVA_EXT_XSLTC =
 	EXT_XSLTC + "/java";
 
     protected final static String EXT_XALAN =
@@ -111,13 +111,13 @@ class FunctionCall extends Expression {
 
     protected final static String JAVA_EXT_XALAN_OLD =
 	"http://xml.apache.org/xslt/java";
-	
+
     protected final static String EXSLT_COMMON =
 	"http://exslt.org/common";
 
     protected final static String EXSLT_MATH =
 	"http://exslt.org/math";
-	
+
     protected final static String EXSLT_SETS =
 	"http://exslt.org/sets";
 
@@ -126,16 +126,16 @@ class FunctionCall extends Expression {
 
     protected final static String EXSLT_STRINGS =
 	"http://exslt.org/strings";
-	
+
     // Namespace format constants
     protected final static int NAMESPACE_FORMAT_JAVA = 0;
     protected final static int NAMESPACE_FORMAT_CLASS = 1;
     protected final static int NAMESPACE_FORMAT_PACKAGE = 2;
     protected final static int NAMESPACE_FORMAT_CLASS_OR_PACKAGE = 3;
-	
+
     // Namespace format
     private int _namespace_format = NAMESPACE_FORMAT_JAVA;
-        
+
     /**
      * Stores reference to object for non-static Java calls
      */
@@ -151,8 +151,8 @@ class FunctionCall extends Expression {
     // Encapsulates all unsupported external function calls
     private boolean    unresolvedExternal;
 
-    // If FunctionCall is a external java constructor 
-    private boolean     _isExtConstructor = false; 
+    // If FunctionCall is a external java constructor
+    private boolean     _isExtConstructor = false;
 
     // If the java method is static
     private boolean 	  _isStatic = false;
@@ -161,22 +161,22 @@ class FunctionCall extends Expression {
     private static final MultiHashtable _internal2Java = new MultiHashtable();
 
     // Legal conversions between Java and internal types.
-    private static final Hashtable _java2Internal = new Hashtable();
-    
+    private static final HashMap _java2Internal = new HashMap();
+
     // The mappings between EXSLT extension namespaces and implementation classes
-    private static final Hashtable _extensionNamespaceTable = new Hashtable();
+    private static final HashMap _extensionNamespaceTable = new HashMap();
 
     // Extension functions that are implemented in BasisLibrary
-    private static final Hashtable _extensionFunctionTable = new Hashtable();
+    private static final HashMap _extensionFunctionTable = new HashMap();
     /**
      * inner class to used in internal2Java mappings, contains
      * the Java type and the distance between the internal type and
-     * the Java type. 
+     * the Java type.
      */
     static class JavaType {
 	public Class  type;
 	public int distance;
-	
+
 	public JavaType(Class type, int distance){
 	    this.type = type;
 	    this.distance = distance;
@@ -184,7 +184,7 @@ class FunctionCall extends Expression {
 	public boolean equals(Object query){
 	    return query.equals(type);
 	}
-    } 
+    }
 
     /**
      * Defines 2 conversion tables:
@@ -216,7 +216,7 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 4));
 
 	    _internal2Java.put(Type.Real, new JavaType(objectClass, 8));
-	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 7)); 
+	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 7));
 	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 6));
 	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 5));
 	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 4));
@@ -226,20 +226,20 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.Real, new JavaType(Double.TYPE, 0));
 
 	    _internal2Java.put(Type.String, new JavaType(objectClass, 1));
-	    _internal2Java.put(Type.String, new JavaType(stringClass, 0)); 
+	    _internal2Java.put(Type.String, new JavaType(stringClass, 0));
 
-	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));  
+	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));
 	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 1));
 	    _internal2Java.put(Type.Node, new JavaType(objectClass, 2));
 	    _internal2Java.put(Type.Node, new JavaType(stringClass, 3));
 
 	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10));
-	    _internal2Java.put(Type.NodeSet, new JavaType(stringClass, 3)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(stringClass, 3));
 	    _internal2Java.put(Type.NodeSet, new JavaType(objectClass, 2));
-	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
-	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1));
+	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0));
 
-	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
+	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1));
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass, 0));
 	    _internal2Java.put(Type.ResultTree, new JavaType(objectClass, 2));
 	    _internal2Java.put(Type.ResultTree, new JavaType(stringClass, 3));
@@ -248,9 +248,9 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.Reference, new JavaType(objectClass,0));
 
 	    // Possible conversions between Java and internal types
-	    _java2Internal.put(Boolean.TYPE, Type.Boolean); 
+	    _java2Internal.put(Boolean.TYPE, Type.Boolean);
 	    _java2Internal.put(Void.TYPE, Type.Void);
-	    _java2Internal.put(Character.TYPE, Type.Real); 
+	    _java2Internal.put(Character.TYPE, Type.Real);
 	    _java2Internal.put(Byte.TYPE, Type.Real);
 	    _java2Internal.put(Short.TYPE, Type.Real);
 	    _java2Internal.put(Integer.TYPE, Type.Real);
@@ -265,7 +265,7 @@ class FunctionCall extends Expression {
 	    // Conversions from org.w3c.dom.Node/NodeList to internal NodeSet
 	    _java2Internal.put(nodeListClass, Type.NodeSet);
 	    _java2Internal.put(nodeClass, Type.NodeSet);
-	    
+
 	    // Initialize the extension namespace table
 	    _extensionNamespaceTable.put(EXT_XALAN, "org.apache.xalan.lib.Extensions");
 	    _extensionNamespaceTable.put(EXSLT_COMMON, "org.apache.xalan.lib.ExsltCommon");
@@ -273,18 +273,18 @@ class FunctionCall extends Expression {
 	    _extensionNamespaceTable.put(EXSLT_SETS, "org.apache.xalan.lib.ExsltSets");
 	    _extensionNamespaceTable.put(EXSLT_DATETIME, "org.apache.xalan.lib.ExsltDatetime");
 	    _extensionNamespaceTable.put(EXSLT_STRINGS, "org.apache.xalan.lib.ExsltStrings");
-	    
+
 	    // Initialize the extension function table
 	    _extensionFunctionTable.put(EXSLT_COMMON + ":nodeSet", "nodeset");
-	    _extensionFunctionTable.put(EXSLT_COMMON + ":objectType", "objectType");	    
+	    _extensionFunctionTable.put(EXSLT_COMMON + ":objectType", "objectType");
 	    _extensionFunctionTable.put(EXT_XALAN + ":nodeset", "nodeset");
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println(e);
 	}
     }
-		
-    public FunctionCall(QName fname, Vector arguments) {
+
+    public FunctionCall(QName fname, ArrayList arguments) {
 	_fname = fname;
 	_arguments = arguments;
 	_type = null;
@@ -303,17 +303,17 @@ class FunctionCall extends Expression {
 	if (_arguments != null) {
 	    final int n = _arguments.size();
 	    for (int i = 0; i < n; i++) {
-		final Expression exp = (Expression)_arguments.elementAt(i);
+		final Expression exp = (Expression)_arguments.get(i);
 		exp.setParser(parser);
 		exp.setParent(this);
 	    }
 	}
     }
 
-    public String getClassNameFromUri(String uri) 
-    {   
+    public String getClassNameFromUri(String uri)
+    {
         String className = (String)_extensionNamespaceTable.get(uri);
-    
+
         if (className != null)
             return className;
         else {
@@ -332,7 +332,7 @@ class FunctionCall extends Expression {
             else {
       	    	int index = uri.lastIndexOf('/');
       	    	return (index > 0) ? uri.substring(index+1) : uri;
-            }      
+            }
         }
     }
 
@@ -340,8 +340,8 @@ class FunctionCall extends Expression {
      * Type check a function call. Since different type conversions apply,
      * type checking is different for standard and external (Java) functions.
      */
-    public Type typeCheck(SymbolTable stable) 
-	throws TypeCheckError 
+    public Type typeCheck(SymbolTable stable)
+	throws TypeCheckError
     {
         if (_type != null) return _type;
 
@@ -359,7 +359,7 @@ class FunctionCall extends Expression {
 	else {
 	    try {
 	    	_className = getClassNameFromUri(namespace);
-		  
+
                 final int pos = local.lastIndexOf('.');
 		if (pos > 0) {
 		    _isStatic = true;
@@ -371,27 +371,27 @@ class FunctionCall extends Expression {
 		     	_namespace_format = NAMESPACE_FORMAT_JAVA;
 		     	_className = local.substring(0, pos);
 		    }
-			  
+
 		    _fname = new QName(namespace, null, local.substring(pos + 1));
 		}
 		else {
 		    if (_className != null && _className.length() > 0) {
-		    	try {			  	
+		    	try {
 		      	    TransletLoader loader = new TransletLoader();
-		            _clazz = loader.loadClass(_className);			  	
+		            _clazz = loader.loadClass(_className);
 		            _namespace_format = NAMESPACE_FORMAT_CLASS;
 		    	}
 		    	catch (ClassNotFoundException e) {
-		      	    _namespace_format = NAMESPACE_FORMAT_PACKAGE;	
+		      	    _namespace_format = NAMESPACE_FORMAT_PACKAGE;
 		        }
 		    }
 		    else
 	            	_namespace_format = NAMESPACE_FORMAT_JAVA;
-			
+
 		    if (local.indexOf('-') > 0) {
 		        local = replaceDash(local);
 		    }
-		    
+
 		    String extFunction = (String)_extensionFunctionTable.get(namespace + ":" + local);
 		    if (extFunction != null) {
 		      	_fname = new QName(null, null, extFunction);
@@ -400,9 +400,9 @@ class FunctionCall extends Expression {
 		    else
 		      	_fname = new QName(namespace, null, local);
 		}
-		  
+
 		return typeCheckExternal(stable);
-	    } 
+	    }
 	    catch (TypeCheckError e) {
 		ErrorMsg errorMsg = e.getErrorMsg();
 		if (errorMsg == null) {
@@ -417,25 +417,25 @@ class FunctionCall extends Expression {
 
     /**
      * Type check a call to a standard function. Insert CastExprs when needed.
-     * If as a result of the insertion of a CastExpr a type check error is 
+     * If as a result of the insertion of a CastExpr a type check error is
      * thrown, then catch it and re-throw it with a new "this".
      */
     public Type typeCheckStandard(SymbolTable stable) throws TypeCheckError {
 	_fname.clearNamespace(); 	// HACK!!!
 
 	final int n = _arguments.size();
-	final Vector argsType = typeCheckArgs(stable);
+	final ArrayList argsType = typeCheckArgs(stable);
 	final MethodType args = new MethodType(Type.Void, argsType);
 	final MethodType ptype =
 	    lookupPrimop(stable, _fname.getLocalPart(), args);
 
 	if (ptype != null) {
 	    for (int i = 0; i < n; i++) {
-		final Type argType = (Type) ptype.argsType().elementAt(i);
-		final Expression exp = (Expression)_arguments.elementAt(i);
+		final Type argType = (Type) ptype.argsType().get(i);
+		final Expression exp = (Expression)_arguments.get(i);
 		if (!argType.identicalTo(exp.getType())) {
 		    try {
-			_arguments.setElementAt(new CastExpr(exp, argType), i);
+			_arguments.set(i, new CastExpr(exp, argType));
 		    }
 		    catch (TypeCheckError e) {
 			throw new TypeCheckError(this);	// invalid conversion
@@ -448,28 +448,28 @@ class FunctionCall extends Expression {
 	throw new TypeCheckError(this);
     }
 
-   
+
 
     public Type typeCheckConstructor(SymbolTable stable) throws TypeCheckError{
-        final Vector constructors = findConstructors();
+        final ArrayList constructors = findConstructors();
 	if (constructors == null) {
             // Constructor not found in this class
-            throw new TypeCheckError(ErrorMsg.CONSTRUCTOR_NOT_FOUND, 
+            throw new TypeCheckError(ErrorMsg.CONSTRUCTOR_NOT_FOUND,
 		_className);
-        
+
 	}
 
 	final int nConstructors = constructors.size();
 	final int nArgs = _arguments.size();
-	final Vector argsType = typeCheckArgs(stable);
+	final ArrayList argsType = typeCheckArgs(stable);
 
-	// Try all constructors 
+	// Try all constructors
 	int bestConstrDistance = Integer.MAX_VALUE;
 	_type = null;			// reset
 	for (int j, i = 0; i < nConstructors; i++) {
 	    // Check if all parameters to this constructor can be converted
-	    final Constructor constructor = 
-		(Constructor)constructors.elementAt(i);
+	    final Constructor constructor =
+		(Constructor)constructors.get(i);
 	    final Class[] paramTypes = constructor.getParameterTypes();
 
 	    Class extType = null;
@@ -477,7 +477,7 @@ class FunctionCall extends Expression {
 	    for (j = 0; j < nArgs; j++) {
 		// Convert from internal (translet) type to external (Java) type
 		extType = paramTypes[j];
-		final Type intType = (Type)argsType.elementAt(j);
+		final Type intType = (Type)argsType.get(j);
 		Object match = _internal2Java.maps(intType, extType);
 		if (match != null) {
 		    currConstrDistance += ((JavaType)match).distance;
@@ -486,14 +486,14 @@ class FunctionCall extends Expression {
 		    // no mapping available
 		    currConstrDistance = Integer.MAX_VALUE;
 		    break;
-		} 
+		}
 	    }
 
 	    if (j == nArgs && currConstrDistance < bestConstrDistance ) {
 	        _chosenConstructor = constructor;
 	        _isExtConstructor = true;
 		bestConstrDistance = currConstrDistance;
-		
+
 		if (_clazz != null)
 	          _type = new ObjectType(_clazz);
 		else
@@ -519,7 +519,7 @@ class FunctionCall extends Expression {
     public Type typeCheckExternal(SymbolTable stable) throws TypeCheckError {
 	int nArgs = _arguments.size();
 	final String name = _fname.getLocalPart();
-    
+
  	// check if function is a contructor 'new'
 	if (_fname.getLocalPart().equals("new")) {
 	    return typeCheckConstructor(stable);
@@ -527,32 +527,32 @@ class FunctionCall extends Expression {
 	// check if we are calling an instance method
 	else {
 	    boolean hasThisArgument = false;
-	  
+
 	    if (nArgs == 0)
 	        _isStatic = true;
-	  
+
 	    if (!_isStatic) {
 	        if (_namespace_format == NAMESPACE_FORMAT_JAVA
 	  	    || _namespace_format == NAMESPACE_FORMAT_PACKAGE)
 	   	    hasThisArgument = true;
-	  	  
-	  	Expression firstArg = (Expression)_arguments.elementAt(0);
+
+	  	Expression firstArg = (Expression)_arguments.get(0);
 	  	Type firstArgType = (Type)firstArg.typeCheck(stable);
-	  	
+
 	  	if (_namespace_format == NAMESPACE_FORMAT_CLASS
 	  	    && firstArgType instanceof ObjectType
 	  	    && _clazz != null
 	  	    && _clazz.isAssignableFrom(((ObjectType)firstArgType).getJavaClass()))
 	  	    hasThisArgument = true;
-	  	
+
 	  	if (hasThisArgument) {
-	  	    _thisArgument = (Expression) _arguments.elementAt(0);
+	  	    _thisArgument = (Expression) _arguments.get(0);
 	  	    _arguments.remove(0); nArgs--;
 		    if (firstArgType instanceof ObjectType) {
 		    	_className = ((ObjectType) firstArgType).getJavaClassName();
 		    }
 		    else
-		    	throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, name);  	  	
+		    	throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, name);
 	  	}
 	    }
 	    else if (_className.length() == 0) {
@@ -571,9 +571,9 @@ class FunctionCall extends Expression {
 		return _type = Type.Int;	// use "Int" as "unknown"
 	    }
 	}
-	
-	final Vector methods = findMethods();
-	
+
+	final ArrayList methods = findMethods();
+
 	if (methods == null) {
 	    // Method not found in this class
 	    throw new TypeCheckError(ErrorMsg.METHOD_NOT_FOUND_ERR, _className + "." + name);
@@ -581,25 +581,25 @@ class FunctionCall extends Expression {
 
 	Class extType = null;
 	final int nMethods = methods.size();
-	final Vector argsType = typeCheckArgs(stable);
+	final ArrayList argsType = typeCheckArgs(stable);
 
-	// Try all methods to identify the best fit 
+	// Try all methods to identify the best fit
 	int bestMethodDistance  = Integer.MAX_VALUE;
-	_type = null;                       // reset internal type 
+	_type = null;                       // reset internal type
 	for (int j, i = 0; i < nMethods; i++) {
 
 	    // Check if all paramteters to this method can be converted
-	    final Method method = (Method)methods.elementAt(i);
+	    final Method method = (Method)methods.get(i);
 	    final Class[] paramTypes = method.getParameterTypes();
-	    
+
 	    int currMethodDistance = 0;
 	    for (j = 0; j < nArgs; j++) {
 		// Convert from internal (translet) type to external (Java) type
 		extType = paramTypes[j];
-		final Type intType = (Type)argsType.elementAt(j);
+		final Type intType = (Type)argsType.get(j);
 		Object match = _internal2Java.maps(intType, extType);
 		if (match != null) {
-		    currMethodDistance += ((JavaType)match).distance; 
+		    currMethodDistance += ((JavaType)match).distance;
 		}
 		else {
 		    // no mapping available
@@ -607,7 +607,7 @@ class FunctionCall extends Expression {
 		    // Allow a Reference type to match any external (Java) type at
 		    // the moment. The real type checking is performed at runtime.
 		    if (intType instanceof ReferenceType) {
-		       currMethodDistance += 1; 
+		       currMethodDistance += 1;
 		    }
 		    else if (intType instanceof ObjectType) {
 		        ObjectType object = (ObjectType)intType;
@@ -630,11 +630,11 @@ class FunctionCall extends Expression {
 	    if (j == nArgs) {
 		  // Check if the return type can be converted
 		  extType = method.getReturnType();
-		
+
 		  _type = (Type) _java2Internal.get(extType);
 		  if (_type == null) {
 		      _type = new ObjectType(extType);
-		  }		
+		  }
 
 		  // Use this method if all parameters & return type match
 		  if (_type != null && currMethodDistance < bestMethodDistance) {
@@ -643,7 +643,7 @@ class FunctionCall extends Expression {
 		  }
 	    }
 	}
-	
+
 	// It is an error if the chosen method is an instance menthod but we don't
 	// have a this argument.
 	if (_chosenMethod != null && _thisArgument == null &&
@@ -664,30 +664,30 @@ class FunctionCall extends Expression {
     /**
      * Type check the actual arguments of this function call.
      */
-    public Vector typeCheckArgs(SymbolTable stable) throws TypeCheckError {
-	final Vector result = new Vector();
-	final Enumeration e = _arguments.elements();	
-	while (e.hasMoreElements()) {
-	    final Expression exp = (Expression)e.nextElement();
-	    result.addElement(exp.typeCheck(stable));
+    public ArrayList typeCheckArgs(SymbolTable stable) throws TypeCheckError {
+	final ArrayList result = new ArrayList();
+	final Iterator e = _arguments.iterator();
+	while (e.hasNext()) {
+	    final Expression exp = (Expression)e.next();
+	    result.add(exp.typeCheck(stable));
 	}
 	return result;
     }
 
     protected final Expression argument(int i) {
-	return (Expression)_arguments.elementAt(i);
+	return (Expression)_arguments.get(i);
     }
 
     protected final Expression argument() {
 	return argument(0);
     }
-    
+
     protected final int argumentCount() {
 	return _arguments.size();
     }
 
     protected final void setArgument(int i, Expression exp) {
-	_arguments.setElementAt(exp, i);
+	_arguments.set(i, exp);
     }
 
     /**
@@ -695,7 +695,7 @@ class FunctionCall extends Expression {
      * Update true/false-lists.
      */
     public void translateDesynthesized(ClassGenerator classGen,
-				       MethodGenerator methodGen) 
+				       MethodGenerator methodGen)
     {
 	Type type = Type.Boolean;
 	if (_chosenMethodType != null)
@@ -761,10 +761,10 @@ class FunctionCall extends Expression {
 	    il.append(new INVOKESTATIC(index));
 	}
 	else if (_isExtConstructor) {
-	    final String clazz = 
+	    final String clazz =
 		_chosenConstructor.getDeclaringClass().getName();
 	    Class[] paramTypes = _chosenConstructor.getParameterTypes();
-	    
+
 	    il.append(new NEW(cpg.addClass(_className)));
 	    il.append(InstructionConstants.DUP);
 
@@ -785,14 +785,14 @@ class FunctionCall extends Expression {
 	    buffer.append("V");
 
 	    index = cpg.addMethodref(clazz,
-				     "<init>", 
+				     "<init>",
 				     buffer.toString());
 	    il.append(new INVOKESPECIAL(index));
 
 	    // Convert the return type back to our internal type
-	    (Type.Object).translateFrom(classGen, methodGen, 
+	    (Type.Object).translateFrom(classGen, methodGen,
 				_chosenConstructor.getDeclaringClass());
-	    
+
 	}
 	// Invoke function calls that are handled in separate classes
 	else {
@@ -802,7 +802,7 @@ class FunctionCall extends Expression {
 	    // Push "this" if it is an instance method
 	    if (_thisArgument != null) {
 		_thisArgument.translate(classGen, methodGen);
-	    }	    
+	    }
 
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
@@ -825,7 +825,7 @@ class FunctionCall extends Expression {
 				     buffer.toString());
 	    il.append(_thisArgument != null ? (InvokeInstruction) new INVOKEVIRTUAL(index) :
 	    		  (InvokeInstruction) new INVOKESTATIC(index));
- 
+
 	    // Convert the return type back to our internal type
 	    _type.translateFrom(classGen, methodGen,
 				_chosenMethod.getReturnType());
@@ -851,9 +851,9 @@ class FunctionCall extends Expression {
      * after stripping its namespace or <code>null</code>
      * if no such methods exist.
      */
-    private Vector findMethods() {
-	  
-	  Vector result = null;
+    private ArrayList findMethods() {
+
+	  ArrayList result = null;
 	  final String namespace = _fname.getNamespace();
 
 	  if (_className != null && _className.length() > 0) {
@@ -862,7 +862,7 @@ class FunctionCall extends Expression {
 	      if (_clazz == null) {
 		TransletLoader loader = new TransletLoader();
 		_clazz = loader.loadClass(_className);
-		
+
 		if (_clazz == null) {
 		  final ErrorMsg msg =
 		        new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
@@ -881,9 +881,9 @@ class FunctionCall extends Expression {
 		    && methods[i].getParameterTypes().length == nArgs)
 		{
 		  if (result == null) {
-		    result = new Vector();
+		    result = new ArrayList();
 	          }
-		  result.addElement(methods[i]);
+		  result.add(methods[i]);
 		}
 	      }
 	    }
@@ -900,8 +900,8 @@ class FunctionCall extends Expression {
      * after stripping its namespace or <code>null</code>
      * if no such methods exist.
      */
-    private Vector findConstructors() {
-        Vector result = null;
+    private ArrayList findConstructors() {
+        ArrayList result = null;
         final String namespace = _fname.getNamespace();
 
         final int nArgs = _arguments.size();
@@ -909,11 +909,11 @@ class FunctionCall extends Expression {
           if (_clazz == null) {
             TransletLoader loader = new TransletLoader();
             _clazz = loader.loadClass(_className);
-          
+
             if (_clazz == null) {
               final ErrorMsg msg = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
               getParser().reportError(Constants.ERROR, msg);
-            }          
+            }
           }
 
           final Constructor[] constructors = _clazz.getConstructors();
@@ -925,9 +925,9 @@ class FunctionCall extends Expression {
                   constructors[i].getParameterTypes().length == nArgs)
               {
                 if (result == null) {
-                  result = new Vector();
+                  result = new ArrayList();
                 }
-                result.addElement(constructors[i]);
+                result.add(constructors[i]);
               }
           }
         }
@@ -935,7 +935,7 @@ class FunctionCall extends Expression {
           final ErrorMsg msg = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
           getParser().reportError(Constants.ERROR, msg);
         }
-            
+
         return result;
     }
 
@@ -1019,27 +1019,27 @@ class FunctionCall extends Expression {
 	}
 	return sb.append(")V").toString();
     }
-    
+
     /**
      * Return the signature of the current method
      */
-    private String getMethodSignature(Vector argsType) {
+    private String getMethodSignature(ArrayList argsType) {
  	final StringBuffer buf = new StringBuffer(_className);
         buf.append('.').append(_fname.getLocalPart()).append('(');
-	  
-	int nArgs = argsType.size();	    
+
+	int nArgs = argsType.size();
 	for (int i = 0; i < nArgs; i++) {
-	    final Type intType = (Type)argsType.elementAt(i);
+	    final Type intType = (Type)argsType.get(i);
 	    buf.append(intType.toString());
 	    if (i < nArgs - 1) buf.append(", ");
 	}
-	  
+
 	buf.append(')');
 	return buf.toString();
     }
 
     /**
-     * To support EXSLT extensions, convert names with dash to allowable Java names: 
+     * To support EXSLT extensions, convert names with dash to allowable Java names:
      * e.g., convert abc-xyz to abcXyz.
      * Note: dashes only appear in middle of an EXSLT function or element name.
      */
@@ -1055,5 +1055,5 @@ class FunctionCall extends Expression {
         }
         return buff.toString();
     }
- 	 
+
 }

@@ -65,9 +65,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.HashMap;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 
@@ -216,11 +216,11 @@ public final class Template extends TopLevelElement {
 	if (name.length() > 0) {
 	    _name = parser.getQNameIgnoreDefaultNs(name);
 	}
-	
+
 	if (mode.length() > 0) {
 	    _mode = parser.getQNameIgnoreDefaultNs(mode);
 	}
-	
+
 	if (match.length() > 0) {
 	    _pattern = parser.parsePattern(this, "match", null);
 	}
@@ -274,11 +274,11 @@ public final class Template extends TopLevelElement {
 	_priority = Double.NaN;
 	_pattern = parser.parsePattern(this, "/");
 
-	final Vector contents = _stylesheet.getContents();
-	final SyntaxTreeNode root = (SyntaxTreeNode)contents.elementAt(0);
+	final ArrayList contents = _stylesheet.getContents();
+	final SyntaxTreeNode root = (SyntaxTreeNode)contents.get(0);
 
 	if (root instanceof LiteralElement) {
-	    addElement(root);
+	    add(root);
 	    root.setParent(this);
 	    contents.set(0, this);
 	    parser.setTemplate(this);
@@ -300,7 +300,7 @@ public final class Template extends TopLevelElement {
 	final InstructionList il = methodGen.getInstructionList();
 
 	if (_disabled) return;
-	// bug fix #4433133, add a call to named template from applyTemplates 
+	// bug fix #4433133, add a call to named template from applyTemplates
 	String className = classGen.getClassName();
 
 	if (_compiled && isNamed()){
@@ -308,8 +308,8 @@ public final class Template extends TopLevelElement {
 	    il.append(classGen.loadTranslet());
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadIterator());
-	    il.append(methodGen.loadHandler()); 
-	    il.append(methodGen.loadCurrentNode()); 
+	    il.append(methodGen.loadHandler());
+	    il.append(methodGen.loadCurrentNode());
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
 							 methodName,
 							 "("
@@ -321,8 +321,8 @@ public final class Template extends TopLevelElement {
 	}
 
 	if (_compiled) return;
-	_compiled = true; 
-	
+	_compiled = true;
+
 	final InstructionHandle start = il.getEnd();
 	translateContents(classGen, methodGen);
 	final InstructionHandle end = il.getEnd();

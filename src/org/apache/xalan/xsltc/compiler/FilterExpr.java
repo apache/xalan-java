@@ -64,8 +64,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.bcel.generic.*;
@@ -73,9 +73,9 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 class FilterExpr extends Expression {
     private Expression   _primary;
-    private final Vector _predicates;
+    private final ArrayList _predicates;
 
-    public FilterExpr(Expression primary, Vector predicates) {
+    public FilterExpr(Expression primary, ArrayList predicates) {
 	_primary = primary;
 	_predicates = predicates;
 	primary.setParent(this);
@@ -94,20 +94,20 @@ class FilterExpr extends Expression {
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
-		final Expression exp = (Expression)_predicates.elementAt(i);
+		final Expression exp = (Expression)_predicates.get(i);
 		exp.setParser(parser);
 		exp.setParent(this);
 	    }
 	}
     }
-    
+
     public String toString() {
 	return "filter-expr(" + _primary + ", " + _predicates + ")";
     }
 
     /**
-     * Type check a FilterParentPath. If the filter is not a node-set add a 
-     * cast to node-set only if it is of reference type. This type coercion 
+     * Type check a FilterParentPath. If the filter is not a node-set add a
+     * cast to node-set only if it is of reference type. This type coercion
      * is needed for expressions like $x where $x is a parameter reference.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -124,12 +124,12 @@ class FilterExpr extends Expression {
 
 	int n = _predicates.size();
 	for (int i = 0; i < n; i++) {
-	    Expression pred = (Expression)_predicates.elementAt(i);
+	    Expression pred = (Expression)_predicates.get(i);
 	    pred.typeCheck(stable);
 	}
-	return _type = Type.NodeSet;	
+	return _type = Type.NodeSet;
     }
-	
+
     /**
      * Translate a filter expression by pushing the appropriate iterator
      * onto the stack.
@@ -149,7 +149,7 @@ class FilterExpr extends Expression {
      * Each predicate is translated by constructing an instance
      * of <code>CurrentNodeListIterator</code> which is initialized from
      * another iterator (recursive call), a filter and a closure
-     * (call to translate on the predicate) and "this". 
+     * (call to translate on the predicate) and "this".
      */
     public void translatePredicates(ClassGenerator classGen,
 				    MethodGenerator methodGen) {
@@ -166,12 +166,13 @@ class FilterExpr extends Expression {
 						  CURRENT_NODE_LIST_FILTER_SIG +
 						  NODE_SIG+TRANSLET_SIG+")V");
 
-	    Predicate predicate = (Predicate)_predicates.lastElement();
+	    Predicate predicate =
+               (Predicate)_predicates.get(_predicates.size() - 1);
 	    _predicates.remove(predicate);
 
 	    if (predicate.isNthPositionFilter()) {
 		final int start = cpg.addInterfaceMethodref(NODE_ITERATOR,
-							    "setStartNode", 
+							    "setStartNode",
 							    "(I)"+
 							    NODE_ITERATOR_SIG);
 		final int reset = cpg.addInterfaceMethodref(NODE_ITERATOR,

@@ -63,7 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -72,7 +72,7 @@ final class BooleanCall extends FunctionCall {
 
     private Expression _arg = null;
 
-    public BooleanCall(QName fname, Vector arguments) {
+    public BooleanCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
 	_arg = argument(0);
     }

@@ -68,8 +68,8 @@ import javax.xml.parsers.*;
 
 import org.xml.sax.*;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 

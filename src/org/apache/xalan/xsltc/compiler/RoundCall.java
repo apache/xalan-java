@@ -63,13 +63,13 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class RoundCall extends FunctionCall {
 
-    public RoundCall(QName fname, Vector arguments) {
+    public RoundCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

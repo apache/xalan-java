@@ -64,8 +64,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -321,7 +321,7 @@ final class XslElement extends Instruction {
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
 	    final SyntaxTreeNode item =
-		(SyntaxTreeNode)getContents().elementAt(i);
+		(SyntaxTreeNode)getContents().get(i);
 	    if (_ignore && item instanceof XslAttribute) continue;
 	    item.translate(classGen, methodGen);
 	}

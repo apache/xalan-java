@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -82,7 +82,7 @@ final class Step extends RelativeLocationPath {
     /**
      * A vector of predicates (filters) defined on this step - may be null
      */
-    private Vector _predicates;
+    private ArrayList _predicates;
 
     /**
      * Some simple predicates can be handled by this class (and not by the
@@ -96,7 +96,7 @@ final class Step extends RelativeLocationPath {
      */
     private int _nodeType;
 
-    public Step(int axis, int nodeType, Vector predicates) {
+    public Step(int axis, int nodeType, ArrayList predicates) {
 	_axis = axis;
 	_nodeType = nodeType;
 	_predicates = predicates;
@@ -110,20 +110,20 @@ final class Step extends RelativeLocationPath {
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
-		final Predicate exp = (Predicate)_predicates.elementAt(i);
+		final Predicate exp = (Predicate)_predicates.get(i);
 		exp.setParser(parser);
 		exp.setParent(this);
 	    }
 	}
     }
-    
+
     /**
      * Define the axis (defined in Axis class) for this step
      */
     public int getAxis() {
 	return _axis;
     }
-	
+
     /**
      * Get the axis (defined in Axis class) for this step
      */
@@ -141,14 +141,14 @@ final class Step extends RelativeLocationPath {
     /**
      * Returns the vector containing all predicates for this step.
      */
-    public Vector getPredicates() {
+    public ArrayList getPredicates() {
 	return _predicates;
     }
 
     /**
      * Returns the vector containing all predicates for this step.
      */
-    public void addPredicates(Vector predicates) {
+    public void addPredicates(ArrayList predicates) {
 	if (_predicates == null) {
 	    _predicates = predicates;
 	}
@@ -169,7 +169,7 @@ final class Step extends RelativeLocationPath {
 		parent instanceof UnionPathExpr ||
 		parent instanceof FilterParentPath);
     }
-    
+
     /**
      * Returns 'true' if this step has any predicates
      */
@@ -206,7 +206,7 @@ final class Step extends RelativeLocationPath {
 
     /**
      * Type check this step. The abbreviated steps '.' and '@attr' are
-     * assigned type node if they have no predicates. All other steps 
+     * assigned type node if they have no predicates. All other steps
      * have type node-set.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -216,10 +216,10 @@ final class Step extends RelativeLocationPath {
 	_hadPredicates = hasPredicates();
 
 	// Special case for '.'
- 	//   in the case where '.' has a context such as book/. 
-	//   or .[false()] we can not optimize the nodeset to a single node. 
+ 	//   in the case where '.' has a context such as book/.
+	//   or .[false()] we can not optimize the nodeset to a single node.
 	if (isAbbreviatedDot()) {
-	    _type =  (hasParentPattern() || hasPredicates() ) ? 
+	    _type =  (hasParentPattern() || hasPredicates() ) ?
 		Type.NodeSet : Type.Node;
 	}
 	else {
@@ -230,7 +230,7 @@ final class Step extends RelativeLocationPath {
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
-		final Expression pred = (Expression)_predicates.elementAt(i);
+		final Expression pred = (Expression)_predicates.get(i);
 		pred.typeCheck(stable);
 	    }
 	}
@@ -257,7 +257,7 @@ final class Step extends RelativeLocationPath {
 	    // If it is an attribute but not '@*', '@attr' or '@node()' and
 	    // has no parent
 	    if (_axis == Axis.ATTRIBUTE && _nodeType != NodeTest.ATTRIBUTE &&
-		_nodeType != NodeTest.ANODE && !hasParentPattern()) 
+		_nodeType != NodeTest.ANODE && !hasParentPattern())
 	    {
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 						     "getTypedAxisIterator",
@@ -311,15 +311,15 @@ final class Step extends RelativeLocationPath {
 		break;
 	    default:
 		final XSLTC xsltc = getParser().getXSLTC();
-		final Vector ni = xsltc.getNamesIndex();
+		final ArrayList ni = xsltc.getNamesIndex();
 		String name = null;
 		int star = 0;
-		
+
 		if (_nodeType >= DOM.NTYPES) {
-		    name = (String)ni.elementAt(_nodeType-DOM.NTYPES);
+		    name = (String)ni.get(_nodeType-DOM.NTYPES);
 		    star = name.lastIndexOf('*');
 		}
-		
+
 		if (star > 1) {
 		    final String namespace;
 		    if (_axis == Axis.ATTRIBUTE)
@@ -358,7 +358,7 @@ final class Step extends RelativeLocationPath {
      * Translate a sequence of predicates. Each predicate is translated
      * by constructing an instance of <code>CurrentNodeListIterator</code>
      * which is initialized from another iterator (recursive call),
-     * a filter and a closure (call to translate on the predicate) and "this". 
+     * a filter and a closure (call to translate on the predicate) and "this".
      */
     public void translatePredicates(ClassGenerator classGen,
 				    MethodGenerator methodGen) {
@@ -371,7 +371,8 @@ final class Step extends RelativeLocationPath {
 	    translate(classGen, methodGen);
 	}
 	else {
-	    final Predicate predicate = (Predicate)_predicates.lastElement();
+	    final Predicate predicate =
+                (Predicate)_predicates.get(_predicates.size() - 1);
 	    _predicates.remove(predicate);
 
 	    // Special case for predicates that can use the NodeValueIterator
@@ -444,7 +445,7 @@ final class Step extends RelativeLocationPath {
 		il.append(DUP);
 		translatePredicates(classGen, methodGen); // recursive call
 		predicate.translateFilter(classGen, methodGen);
-		
+
 		il.append(methodGen.loadCurrentNode());
 		il.append(classGen.loadTranslet());
 		if (classGen.isExternal()) {
@@ -465,7 +466,7 @@ final class Step extends RelativeLocationPath {
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
-		final Predicate pred = (Predicate)_predicates.elementAt(i);
+		final Predicate pred = (Predicate)_predicates.get(i);
 		buffer.append(", ").append(pred.toString());
 	    }
 	}

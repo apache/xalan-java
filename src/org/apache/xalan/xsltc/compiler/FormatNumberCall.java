@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -76,7 +76,7 @@ final class FormatNumberCall extends FunctionCall {
     private Expression _name;
     private QName      _resolvedQName = null;
 
-    public FormatNumberCall(QName fname, Vector arguments) {
+    public FormatNumberCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
 	_value = argument(0);
 	_format = argument(1);

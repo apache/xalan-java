@@ -63,7 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
@@ -90,7 +90,7 @@ final class UnionPathExpr extends Expression {
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	// find all expressions in this Union
-	final Vector components = new Vector();
+	final ArrayList components = new ArrayList();
 	flatten(components);
 	final int size = components.size();
 	_components = (Expression[])components.toArray(new Expression[size]);
@@ -128,14 +128,14 @@ final class UnionPathExpr extends Expression {
 	return "union(" + _pathExpr + ", " + _rest + ')';
     }
 	
-    private void flatten(Vector components) {
-	components.addElement(_pathExpr);
+    private void flatten(ArrayList components) {
+	components.add(_pathExpr);
 	if (_rest != null) {
 	    if (_rest instanceof UnionPathExpr) {
 		((UnionPathExpr)_rest).flatten(components);
 	    }
 	    else {
-		components.addElement(_rest);
+		components.add(_rest);
 	    }
 	}
     }

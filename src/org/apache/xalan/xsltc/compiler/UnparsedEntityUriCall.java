@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -73,7 +73,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class UnparsedEntityUriCall extends FunctionCall {
     private Expression _entity;
 
-    public UnparsedEntityUriCall(QName fname, Vector arguments) {
+    public UnparsedEntityUriCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
 	_entity = argument();
     }

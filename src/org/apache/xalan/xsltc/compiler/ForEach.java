@@ -64,8 +64,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.xml.parsers.*;
 
@@ -131,12 +131,12 @@ final class ForEach extends Instruction {
 	il.append(methodGen.loadIterator());
 		
 	// Collect sort objects associated with this instruction
-	final Vector sortObjects = new Vector();
-	Enumeration children = elements();
-	while (children.hasMoreElements()) {
-	    final Object child = children.nextElement();
+	final ArrayList sortObjects = new ArrayList();
+	Iterator children = iterator();
+	while (children.hasNext()) {
+	    final Object child = children.next();
 	    if (child instanceof Sort) {
-		sortObjects.addElement(child);
+		sortObjects.add(child);
 	    }
 	}
 
@@ -221,7 +221,7 @@ final class ForEach extends Instruction {
 				   MethodGenerator methodGen) {
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
-	    final Object child = getContents().elementAt(i);
+	    final Object child = getContents().get(i);
 	    if (child instanceof Variable) {
 		Variable var = (Variable)child;
 		var.initialize(classGen, methodGen);

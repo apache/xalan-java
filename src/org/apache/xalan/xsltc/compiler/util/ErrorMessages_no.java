@@ -62,7 +62,7 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 

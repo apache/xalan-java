@@ -65,7 +65,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -113,9 +113,9 @@ final class XslAttribute extends Instruction {
 
 	// Ignore attribute if preceeded by some other type of element
 	final SyntaxTreeNode parent = getParent();
-	final Vector siblings = parent.getContents();
+	final ArrayList siblings = parent.getContents();
 	for (int i = 0; i < parent.elementCount(); i++) {
-	    SyntaxTreeNode item = (SyntaxTreeNode)siblings.elementAt(i);
+	    SyntaxTreeNode item = (SyntaxTreeNode)siblings.get(i);
 	    if (item == this) break;
 
 	    // These three objects result in one or more attribute output
@@ -229,8 +229,8 @@ final class XslAttribute extends Instruction {
 	_name.translate(classGen, methodGen);// 2nd arg
 
 	// Push attribute value - shortcut for literal strings
-	if ((elementCount() == 1) && (elementAt(0) instanceof Text)) {
-	    il.append(new PUSH(cpg, ((Text)elementAt(0)).getText()));
+	if ((elementCount() == 1) && (get(0) instanceof Text)) {
+	    il.append(new PUSH(cpg, ((Text)get(0)).getText()));
 	}
 	else {
 	    il.append(classGen.loadTranslet());

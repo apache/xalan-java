@@ -63,7 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -103,7 +103,7 @@ final class KeyCall extends FunctionCall {
      * @param fname The function name (should be 'key' or 'id')
      * @param arguments A vector containing the arguments the the function
      */
-    public KeyCall(QName fname, Vector arguments) {
+    public KeyCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
 	switch(argumentCount()) {
 	case 1:
@@ -133,11 +133,11 @@ final class KeyCall extends FunctionCall {
 	// Run type check on the key name (first argument) - must be a string,
 	// and if it is not it must be converted to one using string() rules.
 	if (_name != null) {
-	    final Type nameType = _name.typeCheck(stable); 
+	    final Type nameType = _name.typeCheck(stable);
 
 	    if (_name instanceof LiteralExpr) {
 		final LiteralExpr literal = (LiteralExpr) _name;
-		_resolvedQName = 
+		_resolvedQName =
 		    getParser().getQNameIgnoreDefaultNs(literal.getValue());
 	    }
 	    else if (nameType instanceof StringType == false) {
@@ -155,7 +155,7 @@ final class KeyCall extends FunctionCall {
 	_valueType = _value.typeCheck(stable);
 
 	if (_valueType != Type.NodeSet && _valueType != Type.ResultTree
-		&& _valueType != Type.String) 
+		&& _valueType != Type.String)
 	{
 	    _value = new CastExpr(_value, Type.String);
 	}
@@ -229,7 +229,7 @@ final class KeyCall extends FunctionCall {
 	final int indexConstructor = cpg.addMethodref(TRANSLET_CLASS,
 						      "createKeyIndex",
 						      "()"+KEY_INDEX_SIG);
-	
+
 	// This local variable holds the index/iterator we will return
 	final LocalVariableGen returnIndex =
 	    methodGen.addLocalVariable("returnIndex",
@@ -284,7 +284,7 @@ final class KeyCall extends FunctionCall {
 
 	    // Push returnIndex on stack to prepare for call to merge()
 	    il.append(new ALOAD(returnIndex.getIndex()));
-	    
+
 	    // Lookup index using the string value from the current node
 	    il.append(new ALOAD(searchIndex.getIndex()));
 	    il.append(DUP);
@@ -300,7 +300,7 @@ final class KeyCall extends FunctionCall {
 
 	    // Call to returnIndex.merge(searchIndex);
 	    il.append(new INVOKEVIRTUAL(merge));
-		
+
 	    // Go on with next node in the 2nd parameter node-set
 	    nextNode.setTarget(il.append(methodGen.loadIterator()));
 	    il.append(methodGen.nextNode());

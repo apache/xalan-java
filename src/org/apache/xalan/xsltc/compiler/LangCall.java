@@ -62,7 +62,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.*;
@@ -76,7 +76,7 @@ final class LangCall extends FunctionCall {
      * Get the parameters passed to function:
      *   lang(string)
      */
-    public LangCall(QName fname, Vector arguments) {
+    public LangCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
 	_lang = argument(0);
     }

@@ -68,11 +68,11 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Vector;
-import java.util.Hashtable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 import java.util.Dictionary;
-import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 import java.util.Stack;
 import java.net.MalformedURLException;
@@ -96,17 +96,17 @@ public class Parser implements Constants, ContentHandler {
 
     private XSLTC _xsltc;             // Reference to the compiler object.
     private XPathParser _xpathParser; // Reference to the XPath parser.
-    private Vector _errors;           // Contains all compilation errors
-    private Vector _warnings;         // Contains all compilation errors
+    private ArrayList _errors;           // Contains all compilation errors
+    private ArrayList _warnings;         // Contains all compilation errors
 
-    private Hashtable   _instructionClasses; // Maps instructions to classes
-    private Hashtable   _instructionAttrs;;  // reqd and opt attrs 
-    private Hashtable   _qNames;
-    private Hashtable   _namespaces;
+    private HashMap   _instructionClasses; // Maps instructions to classes
+    private HashMap   _instructionAttrs;;  // reqd and opt attrs
+    private HashMap   _qNames;
+    private HashMap   _namespaces;
     private QName       _useAttributeSets;
     private QName       _excludeResultPrefixes;
     private QName       _extensionElementPrefixes;
-    private Hashtable   _variableScope;
+    private HashMap   _variableScope;
     private Stylesheet  _currentStylesheet;
     private SymbolTable _symbolTable; // Maps QNames to syntax-tree nodes
     private Output      _output = null;
@@ -125,24 +125,24 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public void init() {
-	_qNames              = new Hashtable(512);
-	_namespaces          = new Hashtable();
-	_instructionClasses  = new Hashtable();
-	_instructionAttrs    = new Hashtable();
-	_variableScope       = new Hashtable();
+	_qNames              = new HashMap(512);
+	_namespaces          = new HashMap();
+	_instructionClasses  = new HashMap();
+	_instructionAttrs    = new HashMap();
+	_variableScope       = new HashMap();
 	_template            = null;
-	_errors              = new Vector();
-	_warnings            = new Vector();
+	_errors              = new ArrayList();
+	_warnings            = new ArrayList();
 	_symbolTable         = new SymbolTable();
 	_xpathParser         = new XPathParser(this);
 	_currentStylesheet   = null;
 	_currentImportPrecedence = 1;
-	
+
 	initStdClasses();
 	initInstructionAttrs();
 	initExtClasses();
 	initSymbolTable();
-	
+
 	_useAttributeSets =
 	    getQName(XSLT_URI, XSL, "use-attribute-sets");
 	_excludeResultPrefixes =
@@ -236,7 +236,7 @@ public class Parser implements Constants, ContentHandler {
     public int getCurrentImportPrecedence() {
 	return _currentImportPrecedence;
     }
-    
+
     public int getNextImportPrecedence() {
 	return ++_currentImportPrecedence;
     }
@@ -248,7 +248,7 @@ public class Parser implements Constants, ContentHandler {
     public Stylesheet getCurrentStylesheet() {
 	return _currentStylesheet;
     }
-    
+
     public Stylesheet getTopLevelStylesheet() {
 	return _xsltc.getStylesheet();
     }
@@ -260,7 +260,7 @@ public class Parser implements Constants, ContentHandler {
 	    final String prefix = stringRep.substring(0, colon);
 	    final String localname = stringRep.substring(colon + 1);
 	    String namespace = null;
-	    
+
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
@@ -274,9 +274,9 @@ public class Parser implements Constants, ContentHandler {
 	    return getQName(uri, null, stringRep);
 	}
     }
-    
+
     public QName getQName(final String stringRep) {
-	return getQName(stringRep, true, false);    
+	return getQName(stringRep, true, false);
     }
 
     public QName getQNameIgnoreDefaultNs(final String stringRep) {
@@ -288,7 +288,7 @@ public class Parser implements Constants, ContentHandler {
     }
 
     private QName getQName(final String stringRep, boolean reportError,
-	boolean ignoreDefaultNs) 
+	boolean ignoreDefaultNs)
     {
 	// parse and retrieve namespace
 	final int colon = stringRep.lastIndexOf(':');
@@ -296,7 +296,7 @@ public class Parser implements Constants, ContentHandler {
 	    final String prefix = stringRep.substring(0, colon);
 	    final String localname = stringRep.substring(colon + 1);
 	    String namespace = null;
-	    
+
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
@@ -313,7 +313,7 @@ public class Parser implements Constants, ContentHandler {
 	    if (stringRep.equals(XMLNS_PREFIX)) {
 		ignoreDefaultNs = true;
 	    }
-	    final String defURI = ignoreDefaultNs ? null 
+	    final String defURI = ignoreDefaultNs ? null
 				  : _symbolTable.lookupNamespace(EMPTYSTRING);
 	    return getQName(defURI, null, stringRep);
 	}
@@ -329,10 +329,10 @@ public class Parser implements Constants, ContentHandler {
 	    return name;
 	}
 	else {
-	    Dictionary space = (Dictionary)_namespaces.get(namespace);
+	    HashMap space = (HashMap) _namespaces.get(namespace);
 	    if (space == null) {
 		final QName name = new QName(namespace, prefix, localname);
-		_namespaces.put(namespace, space = new Hashtable());
+		_namespaces.put(namespace, space = new HashMap());
 		space.put(localname, name);
 		return name;
 	    }
@@ -346,7 +346,7 @@ public class Parser implements Constants, ContentHandler {
 	    }
 	}
     }
-    
+
     public QName getQName(String scope, String name) {
 	return getQName(scope + name);
     }
@@ -366,13 +366,13 @@ public class Parser implements Constants, ContentHandler {
     public QName getExcludeResultPrefixes() {
 	return _excludeResultPrefixes;
     }
-    
-    /**	
+
+    /**
      * Create an instance of the <code>Stylesheet</code> class,
      * and then parse, typecheck and compile the instance.
      * Must be called after <code>parse()</code>.
      */
-    public Stylesheet makeStylesheet(SyntaxTreeNode element) 
+    public Stylesheet makeStylesheet(SyntaxTreeNode element)
 	throws CompilerException {
 	try {
 	    Stylesheet stylesheet;
@@ -383,7 +383,7 @@ public class Parser implements Constants, ContentHandler {
 	    else {
 		stylesheet = new Stylesheet();
 		stylesheet.setSimplified();
-		stylesheet.addElement(element);
+		stylesheet.add(element);
 		stylesheet.setAttributes(element.getAttributes());
 
 		// Map the default NS if not already defined
@@ -399,7 +399,7 @@ public class Parser implements Constants, ContentHandler {
 	    throw new CompilerException(err.toString());
 	}
     }
-    
+
     /**
      * Instanciates a SAX2 parser and generate the AST from the input.
      */
@@ -408,9 +408,9 @@ public class Parser implements Constants, ContentHandler {
 	    if (stylesheet != null) {
 		stylesheet.parseContents(this);
 		final int precedence = stylesheet.getImportPrecedence();
-		final Enumeration elements = stylesheet.elements();
-		while (elements.hasMoreElements()) {
-		    Object child = elements.nextElement();
+		final Iterator elements = stylesheet.iterator();
+		while (elements.hasNext()) {
+		    Object child = elements.next();
 		    if (child instanceof Text) {
 			final int l = _locator.getLineNumber();
 			ErrorMsg err =
@@ -440,7 +440,7 @@ public class Parser implements Constants, ContentHandler {
 	    reader.setContentHandler(this);
 	    reader.parse(input);
 	    // Find the start of the stylesheet within the tree
-	    return (SyntaxTreeNode)getStylesheet(_root);	
+	    return (SyntaxTreeNode)getStylesheet(_root);
 	}
 	catch (IOException e) {
 	    if (_xsltc.debug()) e.printStackTrace();
@@ -522,9 +522,9 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Extracts the DOM for the stylesheet. In the case of an embedded
-     * stylesheet, it extracts the DOM subtree corresponding to the 
+     * stylesheet, it extracts the DOM subtree corresponding to the
      * embedded stylesheet that has an 'id' attribute whose value is the
-     * same as the value declared in the <?xml-stylesheet...?> processing 
+     * same as the value declared in the <?xml-stylesheet...?> processing
      * instruction (P.I.). In the xml-stylesheet P.I. the value is labeled
      * as the 'href' data of the P.I. The extracted DOM representing the
      * stylesheet is returned as an Element object.
@@ -570,16 +570,16 @@ public class Parser implements Constants, ContentHandler {
 	    String id = root.getAttribute("id");
 	    if (id.equals(href)) return root;
 	}
-	Vector children = root.getContents();
+	ArrayList children = root.getContents();
 	if (children != null) {
 	    final int count = children.size();
 	    for (int i = 0; i < count; i++) {
-		SyntaxTreeNode child = (SyntaxTreeNode)children.elementAt(i);
+		SyntaxTreeNode child = (SyntaxTreeNode)children.get(i);
 		SyntaxTreeNode node = findStylesheet(child, href);
 		if (node != null) return node;
 	    }
 	}
-	return null;	
+	return null;
     }
 
     /**
@@ -606,66 +606,66 @@ public class Parser implements Constants, ContentHandler {
     }
 
     private void initInstructionAttrs() {
-	initAttrTable("template", 
+	initAttrTable("template",
 	    new String[] {"match", "name", "priority", "mode"});
-	initAttrTable("stylesheet", 
+	initAttrTable("stylesheet",
 	    new String[] {"id", "version", "extension-element-prefixes",
 		"exclude-result-prefixes"});
 	initAttrTable("transform",
 	    new String[] {"id", "version", "extension-element-prefixes",
 		"exclude-result-prefixes"});
-	initAttrTable("text", new String[] {"disable-output-escaping"}); 
-	initAttrTable("if", new String[] {"test"}); 
-	initAttrTable("choose", new String[] {}); 
-	initAttrTable("when", new String[] {"test"}); 
-	initAttrTable("otherwise", new String[] {}); 
-	initAttrTable("for-each", new String[] {"select"}); 
-	initAttrTable("message", new String[] {"terminate"}); 
-	initAttrTable("number", 
+	initAttrTable("text", new String[] {"disable-output-escaping"});
+	initAttrTable("if", new String[] {"test"});
+	initAttrTable("choose", new String[] {});
+	initAttrTable("when", new String[] {"test"});
+	initAttrTable("otherwise", new String[] {});
+	initAttrTable("for-each", new String[] {"select"});
+	initAttrTable("message", new String[] {"terminate"});
+	initAttrTable("number",
 	    new String[] {"level", "count", "from", "value", "format", "lang",
 		"letter-value", "grouping-separator", "grouping-size"});
-		initAttrTable("comment", new String[] {}); 
-	initAttrTable("copy", new String[] {"use-attribute-sets"}); 
-	initAttrTable("copy-of", new String[] {"select"}); 
-	initAttrTable("param", new String[] {"name", "select"}); 
-	initAttrTable("with-param", new String[] {"name", "select"}); 
-	initAttrTable("variable", new String[] {"name", "select"}); 
-	initAttrTable("output", 
-	    new String[] {"method", "version", "encoding", 
+		initAttrTable("comment", new String[] {});
+	initAttrTable("copy", new String[] {"use-attribute-sets"});
+	initAttrTable("copy-of", new String[] {"select"});
+	initAttrTable("param", new String[] {"name", "select"});
+	initAttrTable("with-param", new String[] {"name", "select"});
+	initAttrTable("variable", new String[] {"name", "select"});
+	initAttrTable("output",
+	    new String[] {"method", "version", "encoding",
 		"omit-xml-declaration", "standalone", "doctype-public",
 		"doctype-system", "cdata-section-elements", "indent",
-		"media-type"}); 
-	initAttrTable("sort", 
+		"media-type"});
+	initAttrTable("sort",
 	   new String[] {"select", "order", "case-order", "lang", "data-type"});
-	initAttrTable("key", new String[] {"name", "match", "use"}); 
-	initAttrTable("fallback", new String[] {}); 
-	initAttrTable("attribute", new String[] {"name", "namespace"}); 
-	initAttrTable("attribute-set", 
-	    new String[] {"name", "use-attribute-sets"}); 
-	initAttrTable("value-of", 
-	    new String[] {"select", "disable-output-escaping"}); 
-	initAttrTable("element", 
-	    new String[] {"name", "namespace", "use-attribute-sets"}); 
-	initAttrTable("call-template", new String[] {"name"}); 
-	initAttrTable("apply-templates", new String[] {"select", "mode"}); 
-	initAttrTable("apply-imports", new String[] {}); 
-	initAttrTable("decimal-format", 
+	initAttrTable("key", new String[] {"name", "match", "use"});
+	initAttrTable("fallback", new String[] {});
+	initAttrTable("attribute", new String[] {"name", "namespace"});
+	initAttrTable("attribute-set",
+	    new String[] {"name", "use-attribute-sets"});
+	initAttrTable("value-of",
+	    new String[] {"select", "disable-output-escaping"});
+	initAttrTable("element",
+	    new String[] {"name", "namespace", "use-attribute-sets"});
+	initAttrTable("call-template", new String[] {"name"});
+	initAttrTable("apply-templates", new String[] {"select", "mode"});
+	initAttrTable("apply-imports", new String[] {});
+	initAttrTable("decimal-format",
 	    new String[] {"name", "decimal-separator", "grouping-separator",
 		"infinity", "minus-sign", "NaN", "percent", "per-mille",
-		"zero-digit", "digit", "pattern-separator"}); 
-	initAttrTable("import", new String[] {"href"}); 
-	initAttrTable("include", new String[] {"href"}); 
-	initAttrTable("strip-space", new String[] {"elements"}); 
-	initAttrTable("preserve-space", new String[] {"elements"}); 
-	initAttrTable("processing-instruction", new String[] {"name"}); 
-	initAttrTable("namespace-alias", 
-	   new String[] {"stylesheet-prefix", "result-prefix"}); 
+		"zero-digit", "digit", "pattern-separator"});
+	initAttrTable("import", new String[] {"href"});
+	initAttrTable("include", new String[] {"href"});
+	initAttrTable("strip-space", new String[] {"elements"});
+	initAttrTable("preserve-space", new String[] {"elements"});
+	initAttrTable("processing-instruction", new String[] {"name"});
+	initAttrTable("namespace-alias",
+	   new String[] {"stylesheet-prefix", "result-prefix"});
     }
 
 
 
     /**
-     * Initialize the _instructionClasses Hashtable, which maps XSL element
+     * Initialize the _instructionClasses HashMap, which maps XSL element
      * names to Java classes in this package.
      */
     private void initStdClasses() {
@@ -705,7 +705,7 @@ public class Parser implements Constants, ContentHandler {
 	initStdClass("processing-instruction", "ProcessingInstruction");
 	initStdClass("namespace-alias", "NamespaceAlias");
     }
-    
+
     private void initStdClass(String elementName, String className) {
 	_instructionClasses.put(getQName(XSLT_URI, XSL, elementName),
 				COMPILER_PACKAGE + '.' + className);
@@ -773,7 +773,7 @@ public class Parser implements Constants, ContentHandler {
 
 	MethodType D_SS =
 	    new MethodType(Type.NodeSet, Type.String, Type.String);
-	MethodType D_SD = 
+	MethodType D_SD =
 	    new MethodType(Type.NodeSet, Type.String, Type.NodeSet);
 	MethodType B_BB =
 	    new MethodType(Type.Boolean, Type.Boolean, Type.Boolean);
@@ -852,43 +852,43 @@ public class Parser implements Constants, ContentHandler {
         _symbolTable.addPrimop("objectType", S_O);
 
 	// Operators +, -, *, /, % defined on real types.
-	_symbolTable.addPrimop("+", R_RR);	
-	_symbolTable.addPrimop("-", R_RR);	
-	_symbolTable.addPrimop("*", R_RR);	
-	_symbolTable.addPrimop("/", R_RR);	
-	_symbolTable.addPrimop("%", R_RR);	
+	_symbolTable.addPrimop("+", R_RR);
+	_symbolTable.addPrimop("-", R_RR);
+	_symbolTable.addPrimop("*", R_RR);
+	_symbolTable.addPrimop("/", R_RR);
+	_symbolTable.addPrimop("%", R_RR);
 
 	// Operators +, -, * defined on integer types.
 	// Operators / and % are not  defined on integers (may cause exception)
-	_symbolTable.addPrimop("+", I_II);	
-	_symbolTable.addPrimop("-", I_II);	
-	_symbolTable.addPrimop("*", I_II);	
+	_symbolTable.addPrimop("+", I_II);
+	_symbolTable.addPrimop("-", I_II);
+	_symbolTable.addPrimop("*", I_II);
 
 	 // Operators <, <= >, >= defined on real types.
-	_symbolTable.addPrimop("<",  B_RR);	
-	_symbolTable.addPrimop("<=", B_RR);	
-	_symbolTable.addPrimop(">",  B_RR);	
-	_symbolTable.addPrimop(">=", B_RR);	
+	_symbolTable.addPrimop("<",  B_RR);
+	_symbolTable.addPrimop("<=", B_RR);
+	_symbolTable.addPrimop(">",  B_RR);
+	_symbolTable.addPrimop(">=", B_RR);
 
 	// Operators <, <= >, >= defined on int types.
-	_symbolTable.addPrimop("<",  B_II);	
-	_symbolTable.addPrimop("<=", B_II);	
-	_symbolTable.addPrimop(">",  B_II);	
-	_symbolTable.addPrimop(">=", B_II);	
+	_symbolTable.addPrimop("<",  B_II);
+	_symbolTable.addPrimop("<=", B_II);
+	_symbolTable.addPrimop(">",  B_II);
+	_symbolTable.addPrimop(">=", B_II);
 
 	// Operators <, <= >, >= defined on boolean types.
-	_symbolTable.addPrimop("<",  B_BB);	
-	_symbolTable.addPrimop("<=", B_BB);	
-	_symbolTable.addPrimop(">",  B_BB);	
-	_symbolTable.addPrimop(">=", B_BB);	
+	_symbolTable.addPrimop("<",  B_BB);
+	_symbolTable.addPrimop("<=", B_BB);
+	_symbolTable.addPrimop(">",  B_BB);
+	_symbolTable.addPrimop(">=", B_BB);
 
 	// Operators 'and' and 'or'.
-	_symbolTable.addPrimop("or", B_BB);	
-	_symbolTable.addPrimop("and", B_BB);	
+	_symbolTable.addPrimop("or", B_BB);
+	_symbolTable.addPrimop("and", B_BB);
 
 	// Unary minus.
-	_symbolTable.addPrimop("u-", R_R);	
-	_symbolTable.addPrimop("u-", I_I);	
+	_symbolTable.addPrimop("u-", R_R);
+	_symbolTable.addPrimop("u-", I_I);
     }
 
     public SymbolTable getSymbolTable() {
@@ -923,7 +923,7 @@ public class Parser implements Constants, ContentHandler {
 
     private boolean versionIsOne = true;
 
-    public SyntaxTreeNode makeInstance(String uri, String prefix, 
+    public SyntaxTreeNode makeInstance(String uri, String prefix,
 	String local, Attributes attributes)
     {
 	SyntaxTreeNode node = null;
@@ -1000,11 +1000,11 @@ public class Parser implements Constants, ContentHandler {
      * checks the list of attributes against a list of allowed attributes
      * for a particular element node.
      */
-    private void checkForSuperfluousAttributes(SyntaxTreeNode node, 
+    private void checkForSuperfluousAttributes(SyntaxTreeNode node,
 	Attributes attrs)
     {
 	QName qname = node.getQName();
-	boolean isStylesheet = (node instanceof Stylesheet); 
+	boolean isStylesheet = (node instanceof Stylesheet);
         String[] legal = (String[]) _instructionAttrs.get(qname);
 	if (versionIsOne && legal != null) {
 	    int j;
@@ -1024,16 +1024,16 @@ public class Parser implements Constants, ContentHandler {
 	        for (j = 0; j < legal.length; j++) {
 	            if (attrQName.equalsIgnoreCase(legal[j])) {
 		        break;
-		    }	
+		    }
 	        }
 	        if (j == legal.length) {
-	            final ErrorMsg err = 
-		        new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR, 
+	            final ErrorMsg err =
+		        new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR,
 				attrQName, node);
 		    reportError(WARNING, err);
 	        }
 	    }
-        }	
+        }
     }
 
 
@@ -1108,7 +1108,7 @@ public class Parser implements Constants, ContentHandler {
 // System.out.println("e = " + text + " " + node);
 		    return node;
 		}
-	    } 
+	    }
 	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
 					    expression, parent));
 	}
@@ -1120,7 +1120,7 @@ public class Parser implements Constants, ContentHandler {
 
 	// Return a dummy pattern (which is an expression)
 	SyntaxTreeNode.Dummy.setParser(this);
-        return SyntaxTreeNode.Dummy; 
+        return SyntaxTreeNode.Dummy;
     }
 
     /************************ ERROR HANDLING SECTION ************************/
@@ -1140,7 +1140,7 @@ public class Parser implements Constants, ContentHandler {
 	if (size > 0) {
 	    System.err.println(ErrorMsg.getCompileErrorMessage());
 	    for (int i = 0; i < size; i++) {
-		System.err.println("  " + _errors.elementAt(i));
+		System.err.println("  " + _errors.get(i));
 	    }
 	}
     }
@@ -1153,7 +1153,7 @@ public class Parser implements Constants, ContentHandler {
 	if (size > 0) {
 	    System.err.println(ErrorMsg.getCompileWarningMessage());
 	    for (int i = 0; i < size; i++) {
-		System.err.println("  " + _warnings.elementAt(i));
+		System.err.println("  " + _warnings.get(i));
 	    }
 	}
     }
@@ -1166,43 +1166,43 @@ public class Parser implements Constants, ContentHandler {
 	case Constants.INTERNAL:
 	    // Unexpected internal errors, such as null-ptr exceptions, etc.
 	    // Immediately terminates compilation, no translet produced
-	    _errors.addElement(error);
+	    _errors.add(error);
 	    break;
 	case Constants.UNSUPPORTED:
 	    // XSLT elements that are not implemented and unsupported ext.
 	    // Immediately terminates compilation, no translet produced
-	    _errors.addElement(error);
+	    _errors.add(error);
 	    break;
 	case Constants.FATAL:
 	    // Fatal error in the stylesheet input (parsing or content)
 	    // Immediately terminates compilation, no translet produced
-	    _errors.addElement(error);
+	    _errors.add(error);
 	    break;
 	case Constants.ERROR:
 	    // Other error in the stylesheet input (parsing or content)
 	    // Does not terminate compilation, no translet produced
-	    _errors.addElement(error);
+	    _errors.add(error);
 	    break;
 	case Constants.WARNING:
 	    // Other error in the stylesheet input (content errors only)
 	    // Does not terminate compilation, a translet is produced
-	    _warnings.addElement(error);
+	    _warnings.add(error);
 	    break;
 	}
     }
 
-    public Vector getErrors() {
+    public ArrayList getErrors() {
 	return _errors;
     }
 
-    public Vector getWarnings() {
+    public ArrayList getWarnings() {
 	return _warnings;
     }
 
     /************************ SAX2 ContentHandler INTERFACE *****************/
 
     private Stack _parentStack = null;
-    private Hashtable _prefixMapping = null;
+    private HashMap _prefixMapping = null;
 
     /**
      * SAX2: Receive notification of the beginning of a document.
@@ -1226,7 +1226,7 @@ public class Parser implements Constants, ContentHandler {
      */
     public void startPrefixMapping(String prefix, String uri) {
 	if (_prefixMapping == null) {
-	    _prefixMapping = new Hashtable();
+	    _prefixMapping = new HashMap();
 	}
 	_prefixMapping.put(prefix, uri);
     }
@@ -1243,12 +1243,12 @@ public class Parser implements Constants, ContentHandler {
      *       we clone the attributes in our own Attributes implementation
      */
     public void startElement(String uri, String localname,
-			     String qname, Attributes attributes) 
+			     String qname, Attributes attributes)
 	throws SAXException {
 	final int col = qname.lastIndexOf(':');
 	final String prefix = (col == -1) ? null : qname.substring(0, col);
 
-	SyntaxTreeNode element = makeInstance(uri, prefix, 
+	SyntaxTreeNode element = makeInstance(uri, prefix,
 					localname, attributes);
 	if (element == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR,
@@ -1259,8 +1259,8 @@ public class Parser implements Constants, ContentHandler {
 	// If this is the root element of the XML document we need to make sure
 	// that it contains a definition of the XSL namespace URI
 	if (_root == null) {
-	    if ((_prefixMapping == null) ||
-		(_prefixMapping.containsValue(Constants.XSLT_URI) == false))
+	    if (_prefixMapping == null ||
+		_prefixMapping.containsValue(Constants.XSLT_URI) == false)
 		_rootNamespaceDef = false;
 	    else
 		_rootNamespaceDef = true;
@@ -1268,12 +1268,12 @@ public class Parser implements Constants, ContentHandler {
 	}
 	else {
 	    SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
-	    parent.addElement(element);
+	    parent.add(element);
 	    element.setParent(parent);
 	}
 	element.setAttributes((Attributes)new AttributeList(attributes));
 	element.setPrefixMapping(_prefixMapping);
-	
+
 	if (element instanceof Stylesheet) {
 	    // Extension elements and excluded elements have to be
 	    // handled at this point in order to correctly generate
@@ -1324,7 +1324,7 @@ public class Parser implements Constants, ContentHandler {
 	}
 
 	// Add it as a regular text node otherwise
-	parent.addElement(new Text(string));
+	parent.add(new Text(string));
     }
 
     private String getTokenValue(String token) {
@@ -1348,8 +1348,8 @@ public class Parser implements Constants, ContentHandler {
 
 	    // Get the attributes from the processing instruction
 	    StringTokenizer tokens = new StringTokenizer(value);
-	    while (tokens.hasMoreElements()) {
-		String token = (String)tokens.nextElement();
+	    while (tokens.hasMoreTokens()) {
+		String token = (String)tokens.nextToken();
 		if (token.startsWith("href"))
 		    href = getTokenValue(token);
 		else if (token.startsWith("media"))

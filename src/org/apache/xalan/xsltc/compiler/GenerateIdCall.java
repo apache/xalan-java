@@ -63,12 +63,12 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class GenerateIdCall extends FunctionCall {
-    public GenerateIdCall(QName fname, Vector arguments) {
+    public GenerateIdCall(QName fname, ArrayList arguments) {
 	super(fname, arguments);
     }
 

@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.*;

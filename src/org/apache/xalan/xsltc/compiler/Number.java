@@ -78,13 +78,13 @@ final class Number extends Instruction implements Closure {
     private static final int LEVEL_MULTIPLE = 1;
     private static final int LEVEL_ANY      = 2;
 
-    static final private String[] ClassNames = { 
+    static final private String[] ClassNames = {
 	"org.apache.xalan.xsltc.dom.SingleNodeCounter",	  // LEVEL_SINGLE
 	"org.apache.xalan.xsltc.dom.MultipleNodeCounter", // LEVEL_MULTIPLE
 	"org.apache.xalan.xsltc.dom.AnyNodeCounter"	  // LEVEL_ANY
     };
 
-    static final private String[] FieldNames = { 
+    static final private String[] FieldNames = {
 	"___single_node_counter",		   // LEVEL_SINGLE
 	"___multiple_node_counter",		   // LEVEL_MULTIPLE
 	"___any_node_counter"			   // LEVEL_ANY
@@ -124,7 +124,7 @@ final class Number extends Instruction implements Closure {
     }
 
     /**
-     * Returns the name of the auxiliary class or null if this predicate 
+     * Returns the name of the auxiliary class or null if this predicate
      * is compiled inside the Translet.
      */
     public String getInnerClassName() {
@@ -252,17 +252,17 @@ final class Number extends Instruction implements Closure {
 	int[] fieldIndexes = getXSLTC().getNumberFieldIndexes();
 
 	if (fieldIndexes[_level] == -1) {
-	    Field defaultNode = new Field(ACC_PRIVATE, 
+	    Field defaultNode = new Field(ACC_PRIVATE,
 					  cpg.addUtf8(FieldNames[_level]),
 					  cpg.addUtf8(NODE_COUNTER_SIG),
-					  null, 
+					  null,
 					  cpg.getConstantPool());
 
 	    // Add a new private field to this class
 	    classGen.addField(defaultNode);
 
 	    // Get a reference to the newly added field
-	    fieldIndexes[_level] = cpg.addFieldref(classGen.getClassName(), 
+	    fieldIndexes[_level] = cpg.addFieldref(classGen.getClassName(),
 						   FieldNames[_level],
 						   NODE_COUNTER_SIG);
 	}
@@ -274,10 +274,10 @@ final class Number extends Instruction implements Closure {
 
 	// Create an instance of DefaultNodeCounter
 	index = cpg.addMethodref(ClassNames[_level],
-				 "getDefaultNodeCounter", 
+				 "getDefaultNodeCounter",
 				 "(" + TRANSLET_INTF_SIG
 				 + DOM_INTF_SIG
-				 + NODE_ITERATOR_SIG 
+				 + NODE_ITERATOR_SIG
 				 + ")" + NODE_COUNTER_SIG);
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
@@ -294,7 +294,7 @@ final class Number extends Instruction implements Closure {
 	// Backpatch conditionals
 	ifBlock1.setTarget(il.append(classGen.loadTranslet()));
 	il.append(new GETFIELD(fieldIndexes[_level]));
-	
+
 	ifBlock2.setTarget(il.append(NOP));
     }
 
@@ -309,7 +309,7 @@ final class Number extends Instruction implements Closure {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
 	cons = new MethodGenerator(ACC_PUBLIC,
-				   org.apache.bcel.generic.Type.VOID, 
+				   org.apache.bcel.generic.Type.VOID,
 				   new org.apache.bcel.generic.Type[] {
 				       Util.getJCRefType(TRANSLET_INTF_SIG),
 				       Util.getJCRefType(DOM_INTF_SIG),
@@ -328,14 +328,14 @@ final class Number extends Instruction implements Closure {
 	il.append(new ALOAD(3));// iterator
 
 	int index = cpg.addMethodref(ClassNames[_level],
-				     "<init>", 
+				     "<init>",
 				     "(" + TRANSLET_INTF_SIG
 				     + DOM_INTF_SIG
-				     + NODE_ITERATOR_SIG 
+				     + NODE_ITERATOR_SIG
 				     + ")V");
 	il.append(new INVOKESPECIAL(index));
 	il.append(RETURN);
-	
+
 	cons.stripAttributes(true);
 	cons.setMaxLocals();
 	cons.setMaxStack();
@@ -348,14 +348,14 @@ final class Number extends Instruction implements Closure {
      */
     private void compileLocals(NodeCounterGenerator nodeCounterGen,
 			       MatchGenerator matchGen,
-			       InstructionList il) 
+			       InstructionList il)
     {
 	int field;
 	LocalVariableGen local;
 	ConstantPoolGen cpg = nodeCounterGen.getConstantPool();
 
 	// Get NodeCounter._iterator and store locally
-	local = matchGen.addLocalVariable("iterator", 
+	local = matchGen.addLocalVariable("iterator",
 					  Util.getJCRefType(NODE_ITERATOR_SIG),
 					  null, null);
 	field = cpg.addFieldref(NODE_COUNTER, "_iterator",
@@ -364,9 +364,9 @@ final class Number extends Instruction implements Closure {
 	il.append(new GETFIELD(field));
 	il.append(new ASTORE(local.getIndex()));
 	matchGen.setIteratorIndex(local.getIndex());
-	
+
 	// Get NodeCounter._translet and store locally
-	local = matchGen.addLocalVariable("translet", 
+	local = matchGen.addLocalVariable("translet",
 				  Util.getJCRefType(TRANSLET_SIG),
 				  null, null);
 	field = cpg.addFieldref(NODE_COUNTER, "_translet",
@@ -378,7 +378,7 @@ final class Number extends Instruction implements Closure {
 	nodeCounterGen.setTransletIndex(local.getIndex());
 
 	// Get NodeCounter._document and store locally
-	local = matchGen.addLocalVariable("document", 
+	local = matchGen.addLocalVariable("document",
 					  Util.getJCRefType(DOM_INTF_SIG),
 					  null, null);
 	field = cpg.addFieldref(_className, "_document", DOM_INTF_SIG);
@@ -390,7 +390,7 @@ final class Number extends Instruction implements Closure {
     }
 
     private void compilePatterns(ClassGenerator classGen,
-				 MethodGenerator methodGen) 
+				 MethodGenerator methodGen)
     {
 	int current;
 	int field;
@@ -401,7 +401,7 @@ final class Number extends Instruction implements Closure {
 	_className = getXSLTC().getHelperClassName();
 	nodeCounterGen = new NodeCounterGenerator(_className,
 						  ClassNames[_level],
-						  toString(), 
+						  toString(),
 						  ACC_PUBLIC | ACC_SUPER,
 						  null,
 						  classGen.getStylesheet());
@@ -409,14 +409,14 @@ final class Number extends Instruction implements Closure {
 	ConstantPoolGen cpg = nodeCounterGen.getConstantPool();
 
 	// Add a new instance variable for each var in closure
-	final int closureLen = (_closureVars == null) ? 0 : 
+	final int closureLen = (_closureVars == null) ? 0 :
 	    _closureVars.size();
 
 	for (int i = 0; i < closureLen; i++) {
-	    VariableBase var = 
+	    VariableBase var =
 		((VariableRefBase) _closureVars.get(i)).getVariable();
 
-	    nodeCounterGen.addField(new Field(ACC_PUBLIC, 
+	    nodeCounterGen.addField(new Field(ACC_PUBLIC,
 					cpg.addUtf8(var.getVariable()),
 					cpg.addUtf8(var.getType().toSignature()),
 					null, cpg.getConstantPool()));
@@ -432,7 +432,7 @@ final class Number extends Instruction implements Closure {
 	    il = new InstructionList();
 	    matchGen =
 		new MatchGenerator(ACC_PUBLIC | ACC_FINAL,
-				   org.apache.bcel.generic.Type.BOOLEAN, 
+				   org.apache.bcel.generic.Type.BOOLEAN,
 				   new org.apache.bcel.generic.Type[] {
 				       org.apache.bcel.generic.Type.INT,
 				   },
@@ -448,7 +448,7 @@ final class Number extends Instruction implements Closure {
 	    _from.translate(nodeCounterGen, matchGen);
 	    _from.synthesize(nodeCounterGen, matchGen);
 	    il.append(IRETURN);
-		    
+
 	    matchGen.stripAttributes(true);
 	    matchGen.setMaxLocals();
 	    matchGen.setMaxStack();
@@ -462,7 +462,7 @@ final class Number extends Instruction implements Closure {
 	if (_count != null) {
 	    il = new InstructionList();
 	    matchGen = new MatchGenerator(ACC_PUBLIC | ACC_FINAL,
-					  org.apache.bcel.generic.Type.BOOLEAN, 
+					  org.apache.bcel.generic.Type.BOOLEAN,
 					  new org.apache.bcel.generic.Type[] {
 					      org.apache.bcel.generic.Type.INT,
 					  },
@@ -472,30 +472,30 @@ final class Number extends Instruction implements Closure {
 					  "matchesCount", _className, il, cpg);
 
 	    compileLocals(nodeCounterGen,matchGen,il);
-	    
+
 	    // Translate Pattern
 	    il.append(matchGen.loadContextNode());
 	    _count.translate(nodeCounterGen, matchGen);
 	    _count.synthesize(nodeCounterGen, matchGen);
-	    
+
 	    il.append(IRETURN);
-		    
+
 	    matchGen.stripAttributes(true);
 	    matchGen.setMaxLocals();
 	    matchGen.setMaxStack();
 	    matchGen.removeNOPs();
 	    nodeCounterGen.addMethod(matchGen.getMethod());
 	}
-	
+
 	getXSLTC().dumpClass(nodeCounterGen.getJavaClass());
 
 	// Push an instance of the newly created class
 	cpg = classGen.getConstantPool();
 	il = methodGen.getInstructionList();
 
-	final int index = cpg.addMethodref(_className, "<init>", 
+	final int index = cpg.addMethodref(_className, "<init>",
 					   "(" + TRANSLET_INTF_SIG
-					   + DOM_INTF_SIG 
+					   + DOM_INTF_SIG
 					   + NODE_ITERATOR_SIG
 					   + ")V");
 	il.append(new NEW(cpg.addClass(_className)));
@@ -515,7 +515,7 @@ final class Number extends Instruction implements Closure {
 	    il.append(DUP);
 	    il.append(var.loadInstruction());
 	    il.append(new PUTFIELD(
-		    cpg.addFieldref(_className, var.getVariable(), 
+		    cpg.addFieldref(_className, var.getVariable(),
 			varType.toSignature())));
 	}
     }
@@ -538,8 +538,8 @@ final class Number extends Instruction implements Closure {
 	    il.append(new L2I());
 
 	    // Call setValue on the node counter
-	    index = cpg.addMethodref(NODE_COUNTER, 
-				     "setValue", 
+	    index = cpg.addMethodref(NODE_COUNTER,
+				     "setValue",
 				     "(I)" + NODE_COUNTER_SIG);
 	    il.append(new INVOKEVIRTUAL(index));
 	}
@@ -550,11 +550,11 @@ final class Number extends Instruction implements Closure {
 	    compilePatterns(classGen, methodGen);
 	}
 
-	// Call setStartNode() 
+	// Call setStartNode()
 	if (!hasValue()) {
 	    il.append(methodGen.loadContextNode());
-	    index = cpg.addMethodref(NODE_COUNTER, 
-				     SET_START_NODE, 
+	    index = cpg.addMethodref(NODE_COUNTER,
+				     SET_START_NODE,
 				     "(I)" + NODE_COUNTER_SIG);
 	    il.append(new INVOKEVIRTUAL(index));
 	}
@@ -596,18 +596,18 @@ final class Number extends Instruction implements Closure {
 		il.append(new PUSH(cpg, "0"));
 	    }
 
-	    index = cpg.addMethodref(NODE_COUNTER, "getCounter", 
-				     "(" + STRING_SIG + STRING_SIG 
-				     + STRING_SIG + STRING_SIG 
+	    index = cpg.addMethodref(NODE_COUNTER, "getCounter",
+				     "(" + STRING_SIG + STRING_SIG
+				     + STRING_SIG + STRING_SIG
 				     + STRING_SIG + ")" + STRING_SIG);
 	    il.append(new INVOKEVIRTUAL(index));
 	}
 	else {
-	    index = cpg.addMethodref(NODE_COUNTER, "setDefaultFormatting", 
+	    index = cpg.addMethodref(NODE_COUNTER, "setDefaultFormatting",
 				     "()" + NODE_COUNTER_SIG);
 	    il.append(new INVOKEVIRTUAL(index));
 
-	    index = cpg.addMethodref(NODE_COUNTER, "getCounter", 
+	    index = cpg.addMethodref(NODE_COUNTER, "getCounter",
 				     "()" + STRING_SIG);
 	    il.append(new INVOKEVIRTUAL(index));
 	}

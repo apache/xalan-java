@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.ArrayList;
 
 import org.apache.bcel.classfile.JavaClass;
@@ -138,7 +138,7 @@ final class Predicate extends Expression implements Closure {
     }
 
     /**
-     * Returns the name of the auxiliary class or null if this predicate 
+     * Returns the name of the auxiliary class or null if this predicate
      * is compiled inside the Translet.
      */
     public String getInnerClassName() {
@@ -209,12 +209,12 @@ final class Predicate extends Expression implements Closure {
 	else
 	    return "pred(" + _exp + ')';
     }
-	
+
     /**
-     * Type check a predicate expression. If the type of the expression is 
+     * Type check a predicate expression. If the type of the expression is
      * number convert it to boolean by adding a comparison with position().
      * Note that if the expression is a parameter, we cannot distinguish
-     * at compile time if its type is number or not. Hence, expressions of 
+     * at compile time if its type is number or not. Hence, expressions of
      * reference type are always converted to booleans.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -311,10 +311,10 @@ final class Predicate extends Expression implements Closure {
 
 	return _type = Type.Boolean;
     }
-	
+
     /**
      * Create a new "Filter" class implementing
-     * <code>CurrentNodeListFilter</code>. Allocate registers for local 
+     * <code>CurrentNodeListFilter</code>. Allocate registers for local
      * variables and local parameters passed in the closure to test().
      * Notice that local variables need to be "unboxed".
      */
@@ -327,12 +327,12 @@ final class Predicate extends Expression implements Closure {
 	_className = getXSLTC().getHelperClassName();
 	filterGen = new FilterGenerator(_className,
 					"java.lang.Object",
-					toString(), 
+					toString(),
 					ACC_PUBLIC | ACC_SUPER,
 					new String[] {
 					    CURRENT_NODE_LIST_FILTER
 					},
-					classGen.getStylesheet());	
+					classGen.getStylesheet());
 
 	final ConstantPoolGen cpg = filterGen.getConstantPool();
 	final int length = (_closureVars == null) ? 0 : _closureVars.size();
@@ -341,7 +341,7 @@ final class Predicate extends Expression implements Closure {
 	for (int i = 0; i < length; i++) {
 	    VariableBase var = ((VariableRefBase) _closureVars.get(i)).getVariable();
 
-	    filterGen.addField(new Field(ACC_PUBLIC, 
+	    filterGen.addField(new Field(ACC_PUBLIC,
 					cpg.addUtf8(var.getVariable()),
 					cpg.addUtf8(var.getType().toSignature()),
 					null, cpg.getConstantPool()));
@@ -349,7 +349,7 @@ final class Predicate extends Expression implements Closure {
 
 	final InstructionList il = new InstructionList();
 	testGen = new TestGenerator(ACC_PUBLIC | ACC_FINAL,
-				    org.apache.bcel.generic.Type.BOOLEAN, 
+				    org.apache.bcel.generic.Type.BOOLEAN,
 				    new org.apache.bcel.generic.Type[] {
 					org.apache.bcel.generic.Type.INT,
 					org.apache.bcel.generic.Type.INT,
@@ -367,7 +367,7 @@ final class Predicate extends Expression implements Closure {
 					"iterator"
 				    },
 				    "test", _className, il, cpg);
-		
+
 	// Store the dom in a local variable
 	local = testGen.addLocalVariable("document",
 					 Util.getJCRefType(DOM_INTF_SIG),
@@ -384,14 +384,14 @@ final class Predicate extends Expression implements Closure {
 
 	_exp.translate(filterGen, testGen);
 	il.append(IRETURN);
-	
+
 	testGen.stripAttributes(true);
 	testGen.setMaxLocals();
 	testGen.setMaxStack();
 	testGen.removeNOPs();
 	filterGen.addEmptyConstructor(ACC_PUBLIC);
 	filterGen.addMethod(testGen.getMethod());
-		
+
 	getXSLTC().dumpClass(filterGen.getJavaClass());
     }
 
@@ -432,14 +432,14 @@ final class Predicate extends Expression implements Closure {
 	    Type tleft = left.getType();
 	    Type tright = right.getType();
 
-	    
+
 	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
 	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
-	    
+
 	    try {
 		if ((tleft == Type.String) && (!(left instanceof Step)))
 		    _value = exp.getLeft();
-		if (left instanceof VariableRefBase) 
+		if (left instanceof VariableRefBase)
 		    _value = new CastExpr(left, Type.String);
 		if (_value != null) return _value;
 	    }
@@ -472,7 +472,7 @@ final class Predicate extends Expression implements Closure {
 
 	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
 	    if (left instanceof Step) _step = (Step)left;
-	    
+
 	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
 	    if (right instanceof Step) _step = (Step)right;
 	}
@@ -508,14 +508,14 @@ final class Predicate extends Expression implements Closure {
      * filter object and a reference to the predicate's closure.
      */
     public void translateFilter(ClassGenerator classGen,
-				MethodGenerator methodGen) 
+				MethodGenerator methodGen)
     {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
 	// Compile auxiliary class for filter
 	compileFilter(classGen, methodGen);
-	
+
 	// Create new instance of filter
 	il.append(new NEW(cpg.addClass(_className)));
 	il.append(DUP);
@@ -543,7 +543,7 @@ final class Predicate extends Expression implements Closure {
 	    if (variableClosure != null) {
 		il.append(ALOAD_0);
 		il.append(new GETFIELD(
-		    cpg.addFieldref(variableClosure.getInnerClassName(), 
+		    cpg.addFieldref(variableClosure.getInnerClassName(),
 			var.getVariable(), varType.toSignature())));
 	    }
 	    else {
@@ -553,7 +553,7 @@ final class Predicate extends Expression implements Closure {
 
 	    // Store variable in new closure
 	    il.append(new PUTFIELD(
-		    cpg.addFieldref(_className, var.getVariable(), 
+		    cpg.addFieldref(_className, var.getVariable(),
 			varType.toSignature())));
 	}
     }

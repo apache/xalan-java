@@ -63,8 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.Iterator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.*;
@@ -72,8 +72,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AttributeValueTemplate extends AttributeValue {
 
-    public AttributeValueTemplate(String value, Parser parser, 
-	SyntaxTreeNode parent) 
+    public AttributeValueTemplate(String value, Parser parser,
+	SyntaxTreeNode parent)
     {
 	setParent(parent);
 	setParser(parser);
@@ -91,8 +91,8 @@ final class AttributeValueTemplate extends AttributeValue {
 	int open = start - 2;
 	do {
 	    open = text.indexOf('{', open+2);
-	} while ((open != -1) && 
-		 (open < (text.length()-1)) && 
+	} while ((open != -1) &&
+		 (open < (text.length()-1)) &&
 		 (text.charAt(open+1) == '{'));
 
 	if (open != -1) {
@@ -100,29 +100,29 @@ final class AttributeValueTemplate extends AttributeValue {
 	    int close = open - 2;
 	    do {
 		close = text.indexOf('}', close+2);
-	    } while ((close != -1) && 
-		     (close < (text.length()-1)) && 
+	    } while ((close != -1) &&
+		     (close < (text.length()-1)) &&
 		     (text.charAt(close+1) == '}'));
-	    
+
 	    // Add literal expressiong before AVT
 	    if (open > start) {
 		str = removeDuplicateBraces(text.substring(start, open));
-		addElement(new LiteralExpr(str));
+		add(new LiteralExpr(str));
 	    }
 	    // Add the AVT itself
 	    if (close > open + 1) {
 		str = text.substring(open + 1, close);
 		str = removeDuplicateBraces(text.substring(open+1,close));
-		addElement(parser.parseExpression(this, str));
+		add(parser.parseExpression(this, str));
 	    }
 	    // Parse rest of string
 	    parseAVTemplate(close + 1, text, parser);
-	    
+
 	}
 	else if (start < text.length()) {
 	    // Add literal expression following AVT
 	    str = removeDuplicateBraces(text.substring(start));
-	    addElement(new LiteralExpr(str));
+	    add(new LiteralExpr(str));
 	}
     }
 
@@ -131,12 +131,12 @@ final class AttributeValueTemplate extends AttributeValue {
 	int index;
 
 	while ((index = result.indexOf("{{")) != -1) {
-	    result = result.substring(0,index) + 
+	    result = result.substring(0,index) +
 		result.substring(index+1,result.length());
 	}
 
 	while ((index = result.indexOf("}}")) != -1) {
-	    result = result.substring(0,index) + 
+	    result = result.substring(0,index) +
 		result.substring(index+1,result.length());
 	}
 
@@ -144,12 +144,12 @@ final class AttributeValueTemplate extends AttributeValue {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Vector contents = getContents();
+	final ArrayList contents = getContents();
 	final int n = contents.size();
 	for (int i = 0; i < n; i++) {
-	    final Expression exp = (Expression)contents.elementAt(i);
+	    final Expression exp = (Expression)contents.get(i);
 	    if (!exp.typeCheck(stable).identicalTo(Type.String)) {
-		contents.setElementAt(new CastExpr(exp, Type.String), i);
+		contents.set(i, new CastExpr(exp, Type.String));
 	    }
 	}
 	return _type = Type.String;
@@ -159,16 +159,16 @@ final class AttributeValueTemplate extends AttributeValue {
 	final StringBuffer buffer = new StringBuffer("AVT:[");
 	final int count = elementCount();
 	for (int i = 0; i < count; i++) {
-	    buffer.append(elementAt(i).toString());
+	    buffer.append(get(i).toString());
 	    if (i < count - 1)
 		buffer.append(' ');
 	}
 	return buffer.append(']').toString();
     }
-		
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	if (elementCount() == 1) {
-	    final Expression exp = (Expression)elementAt(0);
+	    final Expression exp = (Expression)get(0);
 	    exp.translate(classGen, methodGen);
 	}
 	else {
@@ -181,7 +181,7 @@ final class AttributeValueTemplate extends AttributeValue {
 						   "append",
 						   "(" + STRING_SIG + ")"
 						   + STRING_BUFFER_SIG));
-	    
+
 	    final int toString = cpg.addMethodref(STRING_BUFFER_CLASS,
 						  "toString",
 						  "()"+STRING_SIG);
@@ -189,9 +189,9 @@ final class AttributeValueTemplate extends AttributeValue {
 	    il.append(DUP);
 	    il.append(new INVOKESPECIAL(initBuffer));
 	    // StringBuffer is on the stack
-	    final Enumeration enum = elements();
-	    while (enum.hasMoreElements()) {
-		final Expression exp = (Expression)enum.nextElement();
+	    final Iterator enum = iterator();
+	    while (enum.hasNext()) {
+		final Expression exp = (Expression)enum.next();
 		exp.translate(classGen, methodGen);
 		il.append(append);
 	    }
@@ -213,7 +213,7 @@ final class AttributeValueTemplate extends AttributeValue {
 		else
 		    i++;
 		break;
-	    case '}':	
+	    case '}':
 		if (((i+1) == (chars.length)) || (chars[i+1] != '}'))
 		    --level;
 		else

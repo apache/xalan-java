@@ -68,7 +68,7 @@ package org.apache.xalan.xsltc.compiler;
 import java.io.File;
 import java.net.URL;
 import java.net.MalformedURLException;
-import java.util.Enumeration;
+import java.util.Iterator;
 
 import javax.xml.parsers.*;
 
@@ -142,10 +142,10 @@ final class Import extends TopLevelElement {
 	    parser.setCurrentStylesheet(_imported);
 	    _imported.parseContents(parser);
 
-	    final Enumeration elements = _imported.elements();
+	    final Iterator elements = _imported.iterator();
 	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();
-	    while (elements.hasMoreElements()) {
-		final Object element = elements.nextElement();
+	    while (elements.hasNext()) {
+		final Object element = elements.next();
 		if (element instanceof TopLevelElement) {
 		    if (element instanceof Variable) {
 			topStylesheet.addVariable((Variable) element);
@@ -154,7 +154,7 @@ final class Import extends TopLevelElement {
 			topStylesheet.addParam((Param) element);
 		    }
 		    else {
-			topStylesheet.addElement((TopLevelElement) element);
+			topStylesheet.add((TopLevelElement) element);
 		    }
 		}
 	    }

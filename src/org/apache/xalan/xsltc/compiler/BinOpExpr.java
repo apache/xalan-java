@@ -110,11 +110,11 @@ final class BinOpExpr extends Expression {
 					      new MethodType(Type.Void,
 							     tleft, tright)); 
 	if (ptype != null) {
-	    final Type arg1 = (Type) ptype.argsType().elementAt(0);
+	    final Type arg1 = (Type) ptype.argsType().get(0);
 	    if (!arg1.identicalTo(tleft)) {
 		_left = new CastExpr(_left, arg1);
 	    }
-	    final Type arg2 = (Type) ptype.argsType().elementAt(1);
+	    final Type arg2 = (Type) ptype.argsType().get(1);
 	    if (!arg2.identicalTo(tright)) {
 		_right = new CastExpr(_right, arg1);
 	    }

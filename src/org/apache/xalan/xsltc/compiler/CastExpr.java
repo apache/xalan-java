@@ -149,7 +149,7 @@ final class CastExpr extends Expression {
     private boolean _typeTest = false;
 
     /**
-     * Construct a cast expression and check that the conversion is 
+     * Construct a cast expression and check that the conversion is
      * valid by calling typeCheck().
      */
     public CastExpr(Expression left, Type type) throws TypeCheckError {
@@ -158,17 +158,17 @@ final class CastExpr extends Expression {
 
 	if ((_left instanceof Step) && (_type == Type.Boolean)) {
 	    Step step = (Step)_left;
-	    if ((step.getAxis() == Axis.SELF) && (step.getNodeType() != -1)) 
+	    if ((step.getAxis() == Axis.SELF) && (step.getNodeType() != -1))
 		_typeTest = true;
 	}
-	
+
 	// check if conversion is valid
 	setParser(left.getParser());
 	setParent(left.getParent());
 	left.setParent(this);
 	typeCheck(left.getParser().getSymbolTable());
     }
-		
+
     public Expression getExpr() {
 	return _left;
     }
@@ -190,11 +190,11 @@ final class CastExpr extends Expression {
     }
 
     /**
-     * Type checking a cast expression amounts to verifying that the  
-     * type conversion is legal. Cast expressions are created during 
-     * type checking, but typeCheck() is usually not called on them. 
+     * Type checking a cast expression amounts to verifying that the
+     * type conversion is legal. Cast expressions are created during
+     * type checking, but typeCheck() is usually not called on them.
      * As a result, this method is called from the constructor.
-     */	
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	Type tleft = _left.getType();
 	if (tleft == null) {
@@ -209,10 +209,10 @@ final class CastExpr extends Expression {
 	if (InternalTypeMap.maps(tleft, _type) != null) {
 	    return _type;
 	}
-	throw new TypeCheckError(this);	
+	throw new TypeCheckError(this);
     }
 
-    public void translateDesynthesized(ClassGenerator classGen, 
+    public void translateDesynthesized(ClassGenerator classGen,
 				       MethodGenerator methodGen) {
 	FlowList fl;
 	final Type ltype = _left.getType();
@@ -245,7 +245,7 @@ final class CastExpr extends Expression {
 		    }
 		}
 		else {
-		    ltype.translateTo(classGen, methodGen, _type);	
+		    ltype.translateTo(classGen, methodGen, _type);
 		}
 	    }
 	}
