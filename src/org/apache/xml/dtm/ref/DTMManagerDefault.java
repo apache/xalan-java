@@ -126,7 +126,7 @@ public class DTMManagerDefault extends DTMManager
   // Set true to attempt loading DOMs via our experimental
   // DOM2DTM2 wrapper. If false, or if that fails, we fall
   // back on standard DOM2DTM.
-  private static final boolean ATTEMPT_DOM2DTM2=false;	
+  private static final boolean ATTEMPT_DOM2DTM2=true;	
 	
 	
   /** Set this to true if you want a dump of the DTM after creation. */

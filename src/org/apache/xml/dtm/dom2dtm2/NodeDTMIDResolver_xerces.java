@@ -685,12 +685,7 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
  
         // Note:  the following 2 loops are quite close to the ones above.
         // May want to common them up.  LM.
-        //
-        // ISSUE: If either was an attr node, the switch to the Element may
-        // put it in the OTHER's ancestry. We need to rescan *both*
-        //
-        /* -- *///if (thisAncestorType == Node.ATTRIBUTE_NODE) {
-        /* ++ */if (thisAncestorType == Node.ATTRIBUTE_NODE || otherAncestorType==Node.ATTRIBUTE_NODE) {
+        if (thisAncestorType == Node.ATTRIBUTE_NODE) {
             thisDepth=0;
             for (node=thisNode; node != null; node=node.getParentNode()) {
                 thisDepth +=1;
@@ -699,11 +694,11 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
                   return NodeImpl.TREE_POSITION_PRECEDING;
                 thisAncestor = node;
             }
-        /* -- *///}
+		}
 
-        /* -- */// Now, find the ancestor of the owning element, if the original
-        /* -- */// ancestor was an attribute
-        /* -- *///if (otherAncestorType == Node.ATTRIBUTE_NODE) {
+        // Now, find the ancestor of the owning element, if the original
+        // ancestor was an attribute
+        if (otherAncestorType == Node.ATTRIBUTE_NODE) {
             otherDepth=0;
             for (node=otherNode; node != null; node=node.getParentNode()) {
                 otherDepth +=1;
@@ -720,16 +715,27 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
         if (thisAncestor != otherAncestor) 
           return NodeImpl.TREE_POSITION_DISCONNECTED; 
 
-        // Determine which node is of the greatest depth.  
-        if (thisDepth > otherDepth) {
-          for (int i=0; i<thisDepth - otherDepth; i++)
-            thisNode = thisNode.getParentNode();
-        }
-        else {
-          for (int i=0; i<otherDepth - thisDepth; i++)
-            otherNode = otherNode.getParentNode();
-        }
-          
+		// Go up the parent chain of the deeper node, until we find a node
+		// with the same depth as the shallower node
+		if (thisDepth > otherDepth) {
+			for (int i=0; i<thisDepth - otherDepth; i++)
+            	thisNode = thisNode.getParentNode();
+			// Check if the node we have reached is in fact "otherNode". 
+			// This can happen in the case of attributes.  In this case, 
+			// otherNode "precedes" this.
+			if (thisNode == otherNode)
+				return NodeImpl.TREE_POSITION_PRECEDING;
+		}
+		else {
+			for (int i=0; i<otherDepth - thisDepth; i++)
+				otherNode = otherNode.getParentNode();
+			// Check if the node we have reached is in fact "thisNode".  This can
+			// happen in the case of attributes.  In this case, otherNode
+			// "follows" this.
+			if (otherNode == thisNode)
+				return NodeImpl.TREE_POSITION_FOLLOWING;
+		}
+		
         // We now have nodes at the same depth in the tree.  Find a common 
         // ancestor.                                   
         Node thisNodeP, otherNodeP;
