@@ -512,9 +512,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
 
       if(null != sourceTree)
       {
-        TransformerImpl t;
         try{
-          t = (TransformerImpl)templates.newTransformer(); 
+          m_transformerImpl = (TransformerImpl)templates.newTransformer(); 
+          if (m_problemListener != null)
+            m_transformerImpl.setErrorListener(m_problemListener);
         }
         catch (TransformerConfigurationException tce)
         {
@@ -528,12 +529,12 @@ public class XSLTEngineImpl implements  XSLTProcessor
           {
             String name = (String)keys.nextElement();
             Object value = m_stylesheetParams.get(name); 
-            t.setParameter(name, null, value);
+            m_transformerImpl.setParameter(name, null, value);
           } 
         }  
         
         try{
-          t.transform(inputSource.getSourceObject(),
+          m_transformerImpl.transform(inputSource.getSourceObject(),
                     outputTarget.getResultObject());
         }
         catch (TransformerException te)
@@ -701,6 +702,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
     if (m_transformerImpl == null)
       m_transformerImpl = (TransformerImpl)sr.newTransformer();
     m_transformerImpl.setStylesheet(sr);
+    if (m_problemListener != null)
+      m_transformerImpl.setErrorListener(m_problemListener);
   }
 
   /**
@@ -2423,7 +2426,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
     if (l instanceof ProblemListenerDefault)
       m_problemListener = (ProblemListenerDefault)l;
     else
-      m_problemListener = new ProblemListenerDefault((DefaultErrorHandler)m_tfactory.getErrorListener(), l);        
+      m_problemListener = new ProblemListenerDefault(l); 
+    if (m_transformerImpl != null)
+      m_transformerImpl.setErrorListener(m_problemListener);
+    m_tfactory.setErrorListener(m_problemListener);
   }
 
   /**

@@ -59,6 +59,8 @@ package org.apache.xalan.xpath.xml;
 import org.w3c.dom.*;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="general"/>
@@ -68,27 +70,27 @@ import org.xml.sax.SAXParseException;
  * if they wish an object instance to be called when a problem
  * event occurs.
  */
-public class ProblemListenerDefault implements ProblemListener 
+public class ProblemListenerDefault extends org.apache.xml.utils.DefaultErrorHandler implements ProblemListener 
 {
-  ErrorHandler m_errorHandler = null;
+  //ErrorHandler m_errorHandler = null;
   ProblemListener m_problemListener = null;
   
   public ProblemListenerDefault()
   {
-    m_errorHandler = new org.apache.xml.utils.DefaultErrorHandler();
+    //m_errorHandler = new org.apache.xml.utils.DefaultErrorHandler();
   }
   
-  public ProblemListenerDefault(ErrorHandler handler, ProblemListener l)
+  public ProblemListenerDefault(ProblemListener l)
   { 
-    m_errorHandler = handler;
+    //m_errorHandler = handler;
     m_problemListener = l;
   }
-  
+  /*
   public void setErrorHandler (ErrorHandler handler)
   {
     m_errorHandler = handler;
   }
-  
+  */
   public void setProblemListener (ProblemListener l)
   {
     m_problemListener = l;
@@ -96,7 +98,7 @@ public class ProblemListenerDefault implements ProblemListener
   
   public ErrorHandler getErrorHandler ()
   {
-    return m_errorHandler;
+    return this; // m_errorHandler;
   }
   
   public ProblemListener getProblemListener ()
@@ -110,7 +112,8 @@ public class ProblemListenerDefault implements ProblemListener
    */
   public boolean message(String msg)
   {
-      
+      if (m_problemListener != null)
+        m_problemListener.message(msg);
       synchronized (this)
       {  
         new java.io.PrintWriter(  System.err, true ).println( msg );
@@ -127,9 +130,173 @@ public class ProblemListenerDefault implements ProblemListener
     if (m_problemListener != null)
       m_problemListener.problem(where, classification, styleNode, sourceNode, msg, id, lineNo, charOffset);
     else
-      m_errorHandler.error(new SAXParseException(msg, null, id, lineNo, charOffset));
+      this.error(new SAXParseException(msg, null, id, lineNo, charOffset));
     return false;   
-  }  
+  } 
   
+  public void warning(SAXParseException exception) throws SAXException
+  {
+    if (m_problemListener == null)
+    {
+      super.warning(exception);    
+    }
+    else
+    {
+      m_problemListener.problem(XSLPROCESSOR, WARNING,
+                                null, null,
+                                exception.getMessage(),
+                                exception.getSystemId(),
+                                exception.getLineNumber(),  
+                                exception.getColumnNumber()); 
+    }
+  }
+  
+  public void error(SAXParseException exception) throws SAXException
+  {
+    if (m_problemListener == null)
+    {
+      super.error(exception);    
+    }
+    else
+    {
+      m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                null, null,
+                                exception.getMessage(),
+                                exception.getSystemId(),
+                                exception.getLineNumber(),  
+                                exception.getColumnNumber()); 
+    }
+  }
+  
+  public void fatalError(SAXParseException exception) throws SAXException
+  {
+    if (m_problemListener == null)
+    {
+      super.fatalError(exception);    
+    }
+    else
+    {
+      m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                null, null,
+                                exception.getMessage(),
+                                exception.getSystemId(),
+                                exception.getLineNumber(),  
+                                exception.getColumnNumber()); 
+    }
+  }
+  
+  public void warning(TransformerException exception) throws TransformerException
+  {
+    if (m_problemListener == null)
+    {
+      super.warning(exception);    
+    }
+    else
+    {
+      try{
+      javax.xml.transform.SourceLocator locator = exception.getLocator();
+      if (locator != null)
+      {
+        m_problemListener.problem(XSLPROCESSOR, WARNING,
+                                  null, null,
+                                  exception.getMessage(),
+                                  locator.getSystemId(),
+                                  locator.getLineNumber(),  
+                                  locator.getColumnNumber());
+      }
+      else 
+      {
+        m_problemListener.problem(XSLPROCESSOR, MESSAGE,
+                                  null, null,
+                                  exception.getMessage(),
+                                  null,
+                                  0,  
+                                  0);
+      }
+      }
+      catch (SAXException se)
+      {
+        throw new TransformerException(se);
+      }
+    }
+  }
+  
+  public void error(TransformerException exception) throws TransformerException
+  {
+    if (m_problemListener == null)
+    {
+      super.error(exception);    
+    }
+    else
+    {
+      try{
+      javax.xml.transform.SourceLocator locator = exception.getLocator();
+      if (locator != null)
+      {
+        m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                  null, null,
+                                  exception.getMessage(),
+                                  locator.getSystemId(),
+                                  locator.getLineNumber(),  
+                                  locator.getColumnNumber());
+      }
+      else 
+      {
+        m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                  null, null,
+                                  exception.getMessage(),
+                                  null,
+                                  0,  
+                                  0);
+      }
+      }
+      catch (SAXException se)
+      {
+        throw new TransformerException(se);
+      }
+    }
+  }
+  
+  public void fatalError(TransformerException exception) throws TransformerException
+  {
+    if (m_problemListener == null)
+    {
+      super.fatalError(exception);    
+    }
+    else
+    {
+      try{
+      javax.xml.transform.SourceLocator locator = exception.getLocator();
+      if (locator != null)
+      {
+        m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                  null, null,
+                                  exception.getMessage(),
+                                  locator.getSystemId(),
+                                  locator.getLineNumber(),  
+                                  locator.getColumnNumber());
+      }
+      else 
+      {
+        m_problemListener.problem(XSLPROCESSOR, ERROR,
+                                  null, null,
+                                  exception.getMessage(),
+                                  null,
+                                  0,  
+                                  0);
+      }
+      }
+      catch (SAXException se)
+      {
+        throw new TransformerException(se);
+      }
+    }
+  }
+  /*
+  private class MessageMgr extends org.apache.xalan.transformer.MsgMgr 
+  {
+    void MessageMgr()
+    {}
+  }*/
 
 }
