@@ -73,9 +73,11 @@ import java.net.MalformedURLException;
 import java.util.Vector;
 
 import javax.xml.transform.*;
-import javax.xml.transform.stream.*;
 import javax.xml.transform.sax.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
 
+import org.w3c.dom.Document;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.InputSource;
 
@@ -86,8 +88,6 @@ import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
-import org.w3c.dom.Document;
-import javax.xml.transform.dom.DOMSource;
 /**
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
  */

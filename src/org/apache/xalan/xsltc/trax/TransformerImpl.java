@@ -84,10 +84,13 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
+import org.w3c.dom.Document;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
+import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
 
 import org.apache.xalan.xsltc.Translet;
@@ -240,6 +243,18 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 
 		reader.setContentHandler(inputHandler);
 		reader.parse(input);
+		dom.setDocumentURI(systemId);
+	    }
+	    // Handle DOMSource input
+	    else if (source instanceof DOMSource) {
+		final DOMSource   domsrc = (DOMSource)source;
+		final Document    tree = (Document)domsrc.getNode();
+		final DOM2SAX     dom2sax = new DOM2SAX(tree);
+		final InputSource input = SAXSource.sourceToInputSource(source);
+		final String      systemId = domsrc.getSystemId();
+		dtdMonitor.handleDTD(dom2sax);
+		dom2sax.setContentHandler(inputHandler);
+		dom2sax.parse(input);
 		dom.setDocumentURI(systemId);
 	    }
 	    // Handle StreamSource input
