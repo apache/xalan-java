@@ -325,15 +325,15 @@ public class DOMBuilder
   
           String attrNS = atts.getURI(i);
           
-          if("".equals(attrNS))
-            attrNS = null; // DOM represents no-namespace as null
-  
-          // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
-          //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
-          // Crimson won't let us set an xmlns: attribute on the DOM.
           String attrQName = atts.getQName(i);
-          // ALWAYS use the DOM Level 2 call!
-          elem.setAttributeNS(attrNS,attrQName, atts.getValue(i));
+          if((attrQName.equals("xmlns") || attrQName.startsWith("xmlns:")) )
+          {
+            elem.setAttributeNS("http://www.w3.org/2000/xmlns/",attrQName, atts.getValue(i));
+          }
+          else
+          {
+             elem.setAttributeNS(atts.getURI(i),attrQName, atts.getValue(i));
+          }
         }
       }
       

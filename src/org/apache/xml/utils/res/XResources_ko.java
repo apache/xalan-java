@@ -1,4 +1,6 @@
 /*
+ * @(#)XResources_ko.java	1.3 01/12/03
+ *
  * The Apache Software License, Version 1.1
  *
  *
@@ -61,14 +63,14 @@ import org.apache.xml.utils.res.XResourceBundle;
 import java.util.*;
 
 //
-//  LangResources_en.properties
+//  LangResources_ko.properties
 //
 
 /**
  * <meta name="usage" content="internal"/>
- * The Chinese resource bundle.
+ * The Korean resource bundle.
  */
-public class XResources_zh_CN extends XResourceBundle
+public class XResources_ko extends XResourceBundle
 {
 
   /**
@@ -84,12 +86,10 @@ public class XResources_zh_CN extends XResourceBundle
   /** The association list.          */
   static final Object[][] contents =
   {
-    { "ui_language", "zh" }, { "help_language", "zh" }, { "language", "zh" },
+    { "ui_language", "ko" }, { "help_language", "ko" }, { "language", "ko" },
     { "alphabet",
-      new char[]{ 0xff21, 0xff22, 0xff23, 0xff24, 0xff25, 0xff26, 0xff27,
-                  0xff28, 0xff29, 0xff2a, 0xff2b, 0xff2c, 0xff2d, 0xff2e,
-                  0xff2f, 0xff30, 0xff31, 0xff32, 0xff33, 0xff34, 0xff35,
-                  0xff36, 0xff37, 0xff38, 0xff39, 0xff3a } },
+      new char[]{ 0x3131, 0x3134, 0x3137, 0x3139, 0x3141, 0x3142, 0x3145, 0x3147, 0x3148, 0x314a, 0x314b, 0x314c,
+                  0x314d, 0x314e, 0x314f, 0x3151, 0x3153, 0x3155, 0x3157, 0x315b, 0x315c, 0x3160, 0x3161, 0x3163}},
     { "tradAlphabet",
       new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
@@ -107,15 +107,15 @@ public class XResources_zh_CN extends XResourceBundle
     //These would not be used for EN. Only used for traditional numbering   
     { "numberGroups", new int[]{ 1 } },
 
-    // simplified chinese  
-    { "zero", new char[]{ 0x96f6 } },
+    // chinese only ??
+    { "zero", new char[0] },
 
     //These only used for mutiplicative-additive numbering
-    { "multiplier", new long[]{ 100000000, 10000, 1000, 100, 10 } },
+    { "multiplier", new int[]{ 100000000, 10000, 1000, 100, 10 } },
     { "multiplierChar",
-      new char[]{ 0x4ebf, 0x4e07, 0x5343, 0x767e, 0x5341 } },
+      new char[]{  0xc5b5, 0xb9cc, 0xcc9c, 0xbc31, 0xc2ed } },
     { "digits",
-      new char[]{ 0x4e00, 0x4e8c, 0x4e09, 0x56db, 0x4e94, 0x516d, 0x4e03,
-                  0x516b, 0x4e5d } }, { "tables", new String[]{ "digits" } }
+      new char[]{ 0xc77c, 0xc774, 0xc0bc, 0xc0ac, 0xc624, 0xc721, 0xce60, 0xd314, 0xad6c
+                   } }, { "tables", new String[]{ "digits" } }
   };
 }

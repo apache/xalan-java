@@ -679,7 +679,6 @@ public class TransformerFactoryImpl
     { 
 	final TemplatesHandlerImpl handler = 
 	    new TemplatesHandlerImpl(_indentNumber, this);
-	handler.init();
 	if (_uriResolver != null) {
 	    handler.setURIResolver(_uriResolver);
 	}

@@ -883,7 +883,7 @@ public class StylesheetHandler extends DefaultHandler
    * <meta name="usage" content="internal"/>
    * Warn the user of an problem.
    *
-   * @param msg An index into the {@link org.apache.xalan.res.XSLTErrorResources}
+   * @param msg An key into the {@link org.apache.xalan.res.XSLTErrorResources}
    * table, that is one of the WG_ prefixed definitions.
    * @param args An array of arguments for the given warning.
    *
@@ -892,7 +892,7 @@ public class StylesheetHandler extends DefaultHandler
    * {@link javax.xml.transform.ErrorListener#warning}
    * method chooses to flag this condition as an error.
    */
-  public void warn(int msg, Object args[]) throws org.xml.sax.SAXException
+  public void warn(String msg, Object args[]) throws org.xml.sax.SAXException
   {
 
     String formattedMsg = m_XSLMessages.createWarning(msg, args);
@@ -975,7 +975,7 @@ public class StylesheetHandler extends DefaultHandler
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * @param msg An index into the {@link org.apache.xalan.res.XSLTErrorResources}
+   * @param msg A key into the {@link org.apache.xalan.res.XSLTErrorResources}
    * table, that is one of the WG_ prefixed definitions.
    * @param args An array of arguments for the given warning.
    * @param e An error which the SAXException should wrap.
@@ -985,7 +985,7 @@ public class StylesheetHandler extends DefaultHandler
    * {@link javax.xml.transform.ErrorListener#error}
    * method chooses to flag this condition as an error.
    */
-  protected void error(int msg, Object args[], Exception e)
+  protected void error(String msg, Object args[], Exception e)
           throws org.xml.sax.SAXException
   {
 
