@@ -619,10 +619,9 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int getLast() {
 	    if (_last == -1) {
+		_last = 1;
 		int node = _offsetOrChild[_startNode];
-		do {
-		    ++_last;
-		} while ((node = _nextSibling[node]) != END);
+		while ((node = _nextSibling[node]) != END) _last++;
 	    }
 	    return(_last);
 	}
