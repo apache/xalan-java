@@ -1,24 +1,19 @@
 <s3 title="Changes since &xslt4j; version 2.0.D06">
-<p><em>A new compatability JAR</em></p>
-<p>This release includes a new JAR -- xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x sample applications and run them with Xalan-Java 2. To use this compability layer with an existing Xalan-Java 1.x application, do the following:</p>
+
+<p>&xslt4j; 2.0.D07 incorporates a Xalan-Java 1 compatibility jar, some performance enhancements, and a number of bug fixes for bugs found in version 2.0.D06.</p>
+<p><em>Compatibility jar: xalanj1compat.jar</em></p>
+<p>This release includes a new JAR in the bin directory --xalanj1compat.jar, that lets you rebuild your Xalan-Java 1.x applications to run with Xalan-Java 2. As a point of reference, this JAR includes the API required to recompile the Xalan-Java 1.x core sample applications and run them with Xalan-Java 2. To use this compatibility layer with an existing Xalan-Java 1.x application, do the following:</p>
 <ol>
-<li>Place xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.<br/><br/></li>
-<li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatability layer does not support. <br/><br/></li>
+<li>Place xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar (both are in the bin directory).<br/><br/></li>
+<li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatibility layer does not support. <br/><br/></li>
 <li>Run the recompiled application with xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.</li>
 </ol>
-<p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are 
-  concentrating our efforts to improve performance and fix any outstanding bugs. 
-  To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, 
-  see <jump href="compat_apidocs/index.html">Xalan-Java 1 Compatability Javadoc</jump>. 
-  Xalan-Java 1.x extensions, for example, are not covered. If you feel that we should 
-  extend our compatablity JAR to support other Xalan-Java 1.x API calls, please let us 
-  know exactly what you would like to see.  Note that the Xalan1 compatibility layer does 
-  not cover extensions at this time.</p>
+<p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 compatibility Javadoc</jump>. For example, the compatibility layer does not support the use of Xalan-Java 1.x extensions. If you feel that we should extend our compatibility JAR to support additional Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
 <p><em>Other changes</em></p>
 <p>Along with performance enhancements, we have fixed a number of bugs found in Xalan-Java 2.0.D06:</p>
 <ol>
 <li>Fixed handling of disable-output-escaping="no".  Previously, once it was turned on, it could not be turned off.<br/><br/></li>
-<li>Fixed a bug with whitespace handling where Xalan was incorreclty chedking for whitespace 
+<li>Fixed a bug with whitespace handling where Xalan was incorrectly checking for whitespace 
     stripping before collation of multiple whitespace events into a single text node.<br/><br/></li>
 <li>Whitespace stripping wasn't working with input DOMs before.  This is now fixed.<br/><br/></li>
 <li>Fixed many exception handling problems and problems with error reporting.<br/><br/></li>
