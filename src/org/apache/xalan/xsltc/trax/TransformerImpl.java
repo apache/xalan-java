@@ -397,6 +397,7 @@ public final class TransformerImpl extends Transformer
 		final SAXSource sax = (SAXSource)source;
 		XMLReader reader = sax.getXMLReader();
 		final InputSource input = sax.getInputSource();
+                final boolean hasUserReader = reader != null;
 
 		// Create a reader if not set by user
 		if (reader == null) {
@@ -405,10 +406,13 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                   org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+		XSLTCDTMManager dtmManager = 
+                   (XSLTCDTMManager) XSLTCDTMManager.newInstance(
+                                   org.apache.xpath.objects.XMLStringFactoryImpl
+                                                       .getFactory());
 
-		dom = (SAXImpl)dtmManager.getDTM(sax, false, null, true, true);
+		dom = (SAXImpl)dtmManager.getDTM(sax, false, null, true, true,
+                                                 hasUserReader);
 		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
 		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
@@ -424,11 +428,13 @@ public final class TransformerImpl extends Transformer
 		final DOMSource domsrc = (DOMSource) source;
 
 		// Create a new internal DTM and build it directly from DOM
-		DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                   org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+		XSLTCDTMManager dtmManager =
+                     (XSLTCDTMManager)XSLTCDTMManager.newInstance(
+                                   org.apache.xpath.objects.XMLStringFactoryImpl
+                                                         .getFactory());
     
 		dom = (DOMImpl)dtmManager.getDTM(domsrc, false, null, true,
-                                                 true);
+                                                 true, false);
 		((DOMImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
 	    // Handle StreamSource input
@@ -441,8 +447,10 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+		XSLTCDTMManager dtmManager =
+                         (XSLTCDTMManager) XSLTCDTMManager.newInstance(
+                                   org.apache.xpath.objects.XMLStringFactoryImpl
+                                                   .getFactory());
 
 		InputSource input;
 		if (streamInput != null) {
@@ -460,7 +468,8 @@ public final class TransformerImpl extends Transformer
 		    throw new TransformerException(err.toString());
 		}
 		dom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, input),
-                                                 false, null, true, true);
+                                                 false, null, true, true,
+                                                 false);
 		((SAXImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
 	    else if (source instanceof XSLTCSource) {

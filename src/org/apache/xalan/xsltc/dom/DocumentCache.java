@@ -138,13 +138,15 @@ public final class DocumentCache implements DOMCache {
 	 */
 	public void loadDocument(String uri) {
 
-           DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                 org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
+            XSLTCDTMManager dtmManager =
+                    (XSLTCDTMManager)XSLTCDTMManager.newInstance(
+                                  org.apache.xpath.objects.XMLStringFactoryImpl
+                                                          .getFactory());
 	    try {
 		final long stamp = System.currentTimeMillis();
                 _dom = (SAXImpl)dtmManager.getDTM(
                                  new SAXSource(_reader, new InputSource(uri)),
-                                 false, null, true, true);
+                                 false, null, true, true, false);
 		_dom.setDocumentURI(uri);
 
 		// The build time can be used for statistics for a better

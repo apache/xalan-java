@@ -1885,7 +1885,8 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     public DOM getResultTreeFrag(int initSize)
     {
     	return (SAXImpl) ((XSLTCDTMManager)m_mgr).getDTM(null, true, m_wsfilter,
-                                                        false, false, initSize);
+                                                         false, false, false,
+                                                         initSize);
     }
 
     /**
