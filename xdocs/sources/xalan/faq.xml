@@ -142,7 +142,7 @@
       </a>
     </faq>
     <faq title='Which version of Xerces should I be using?'>
-      <q>Which version of &xml4j-used; should I be using?</q>
+      <q>Which version of &xml4j; should I be using?</q>
       <a>
         <p><resource-ref idref='xslt4j-current' /> has been tested with <resource-ref idref='xml4j-used' />. 
            See <link anchor='status' idref='readme'>Status</link>.
