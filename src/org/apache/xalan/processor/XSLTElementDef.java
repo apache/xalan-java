@@ -367,7 +367,9 @@ public class XSLTElementDef
     int len1 = (s1 == null) ? 0 : s1.length();
     int len2 = (s2 == null) ? 0 : s2.length();
 
-    return (len1 != len2) ? false : (len1 == 0) ? true : s1.equals(s2);
+    return (len1 != len2) ? false 
+						 : (len1 == 0) ? true 
+								 : s1.equals(s2);
   }
 
   /** Content type enumerations    */
@@ -622,7 +624,7 @@ public class XSLTElementDef
       String nameDef = attrDef.getName();
       
       if (nameDef.equals("*") && (equalsMayBeNullOrZeroLen(uri, uriDef) || 
-          (uriDef != null && uri.length() > 0 && uriDef.equals("*"))))
+          (uriDef != null && uriDef.equals("*") && uri!=null && uri.length() > 0 )))
       {
         return attrDef;
       }
