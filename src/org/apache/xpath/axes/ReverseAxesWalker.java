@@ -119,7 +119,12 @@ public class ReverseAxesWalker extends AxesWalker
    */
   protected int getProximityPosition(int predicateIndex)
   {
-
+    // A negative predicate index seems to occur with
+    // (preceding-sibling::*|following-sibling::*)/ancestor::*[position()]/*[position()]
+    // -sb
+    if(predicateIndex < 0)
+      return -1;
+      
     if (m_proximityPositions[predicateIndex] <= 0)
     {
       AxesWalker savedWalker = m_lpi.getLastUsedWalker();
