@@ -135,7 +135,7 @@ public class TransformerHandlerImpl implements TransformerHandler {
      * @return The Transformer object
      */
     public Transformer getTransformer() {
-	return(null);
+	return(_transformer);
     }
 
     /**
