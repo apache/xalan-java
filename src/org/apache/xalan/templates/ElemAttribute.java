@@ -68,6 +68,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xpath.XPathContext;
 
+import org.xml.sax.SAXException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:attribute.
@@ -81,60 +83,8 @@ import org.apache.xpath.XPathContext;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#creating-attributes">creating-attributes in XSLT Specification</a>
  */
-public class ElemAttribute extends ElemTemplateElement
+public class ElemAttribute extends ElemElement
 {
-
-  /**
-   * The local name which should be used.
-   * @serial
-   */
-  public AVT m_name_avt = null;
-
-  /**
-   * The namespace which should be used.
-   * @serial
-   */
-  public AVT m_namespace_avt = null;
-
-  /**
-   * Set the "name" attribute.
-   *
-   * @param name name attribute to set 
-   */
-  public void setName(AVT name)
-  {
-    m_name_avt = name;
-  }
-
-  /**
-   * Get the "name" attribute.
-   *
-   * @return the "name" attribute.
-   */
-  public AVT getName()
-  {
-    return m_name_avt;
-  }
-
-  /**
-   * Set the "namespace" attribute.
-   *
-   * @param name Namspace attribute to set
-   */
-  public void setNamespace(AVT name)
-  {
-    m_namespace_avt = name;
-  }
-
-  /**
-   * Get the "namespace" attribute.
-   *
-   * @return the "namespace" attribute.
-   */
-  public AVT getNamespace()
-  {
-    return m_namespace_avt;
-  }
 
   /**
    * Get an int constant identifying the type of element.
@@ -171,135 +121,120 @@ public class ElemAttribute extends ElemTemplateElement
           TransformerImpl transformer, Node sourceNode, QName mode)
             throws TransformerException
   {
-    try
+    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+
+    // If they are trying to add an attribute when there isn't an 
+    // element pending, it is an error.
+    if (!rhandler.isElementPending())
     {
+      // Make sure the trace event is sent.
       if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
       XPathContext xctxt = transformer.getXPathContext();
-
-      // The attribute name has to be evaluated as an AVT.
       String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
-      String origAttrName = attrName;  // save original attribute name
+      transformer.getMsgMgr().warn(this,
+                                   XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE,
+                                   new Object[]{ attrName });
 
-      // Get the children of the xsl:attribute element as the string value.
-      String val = transformer.transformToString(this, sourceNode, mode);
+      return;
 
-      // If they are trying to add an attribute when there isn't an 
-      // element pending, it is an error.
-      if (!rhandler.isElementPending())
-      {
-        transformer.getMsgMgr().warn(this,
-                                     XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
-                                     new Object[]{ origAttrName });
-
-        return;
-
-        // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
-      }
-
-      if (null == attrName)
-        return;
-
-      String attrNameSpace = "";  // by default
-
-      // Did they declare a namespace attribute?
-      if (null != m_namespace_avt)
-      {
-
-        // The namespace attribute is an AVT also.
-        attrNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
-
-        if (null != attrNameSpace && attrNameSpace.length() > 0)
-        {
-
-          // Get the prefix for that attribute in the result namespace.
-          String prefix = rhandler.getPrefix(attrNameSpace);
-
-          // If we didn't find the prefix mapping, make up a prefix 
-          // and have it declared in the result tree.
-          if (null == prefix)
-          {
-            prefix = rhandler.getNewUniqueNSPrefix();
-
-            rhandler.startPrefixMapping(prefix, attrNameSpace, false);
-          }
-
-          // add the prefix to the attribute name.
-          attrName = (prefix + ":" + QName.getLocalPart(attrName));
-        }
-      }
-
-      // Is the attribute xmlns type?
-      else if (QName.isXMLNSDecl(origAttrName))
-      {
-
-        // Then just declare the namespace prefix and get out.
-        String prefix = QName.getPrefixFromXMLNSDecl(origAttrName);
-        String ns = rhandler.getURI(prefix);
-
-        if (null == ns)
-          rhandler.startPrefixMapping(prefix, val, false);
-
-        return;
-      }
-
-      // Note we are using original attribute name for these tests. 
-      else
-      {
-
-        // Does the attribute name have a prefix?
-        String nsprefix = QName.getPrefixPart(origAttrName);
-
-        if (null == nsprefix)
-          nsprefix = "";
-
-        // We're going to claim that this must be resolved in 
-        // the result tree namespace.
-        try
-        {
-          attrNameSpace = getNamespaceForPrefix(nsprefix);
-          // System.out.println("attrNameSpace: "+attrNameSpace);
-
-          if ((null == attrNameSpace) && (nsprefix.length() > 0))
-          {
-            transformer.getMsgMgr().warn(this,
-                                         XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-                                         new Object[]{ nsprefix });
-
-            return;
-          }
-          else if(null == attrNameSpace)
-            attrNameSpace = "";
-        }
-        catch (Exception ex)
-        {
-
-          // Could not resolve prefix
-
-          transformer.getMsgMgr().warn(this,
-                                       XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-                                       new Object[]{ nsprefix });
-
-          return;
-        }
-      }
-
-      String localName = QName.getLocalPart(attrName);
-//      System.out.println("rhandler.addAttribute("+attrNameSpace+", "
-//                                                 +localName+", "
-//                                                 +attrName+", "
-//                                                 +"CDATA"+", "
-//                                                 +val+");");
-      rhandler.addAttribute(attrNameSpace, localName, attrName, "CDATA", val);
-    }
-    catch(org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
+      // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
     }
     
+    super.execute(transformer, sourceNode, mode);
+    
   }
+  
+  /**
+   * Resolve the namespace into a prefix.  At this level, if no prefix exists, 
+   * then return a manufactured prefix.
+   *
+   * @param rhandler The current result tree handler.
+   * @param prefix The probable prefix if already known.
+   * @param nodeNamespace  The namespace, which should not be null.
+   *
+   * @return The prefix to be used.
+   */
+  protected String resolvePrefix(ResultTreeHandler rhandler,
+                                 String prefix, String nodeNamespace)
+    throws TransformerException
+  {
+
+    if (null != prefix && (prefix.length() == 0 || prefix.equals("xmlns")))
+    {
+      // Since we can't use default namespace, in this case we try and 
+      // see if a prefix has already been defined or this namespace.
+      prefix = rhandler.getPrefix(nodeNamespace);
+
+      // System.out.println("nsPrefix: "+nsPrefix);           
+      if (null == prefix || prefix.length() == 0 || prefix.equals("xmlns"))
+      {
+        if(nodeNamespace.length() > 0)
+        {
+          prefix = rhandler.getNewUniqueNSPrefix();
+        }
+        else
+          prefix = "";
+      }
+    }
+    return prefix;
+  }
+  
+  /**
+   * Validate that the node name is good.
+   * 
+   * @param nodeName Name of the node being constructed, which may be null.
+   * 
+   * @return true if the node name is valid, false otherwise.
+   */
+   protected boolean validateNodeName(String nodeName)
+   {
+      if(null == nodeName)
+        return false;
+      if(nodeName.equals("xmlns"))
+        return false;
+      return super.validateNodeName(nodeName);
+   }
+  
+  /**
+   * Construct a node in the result tree.  This method is overloaded by 
+   * xsl:attribute. At this class level, this method creates an element.
+   *
+   * @param nodeName The name of the node, which may be null.
+   * @param prefix The prefix for the namespace, which may be null.
+   * @param nodeNamespace The namespace of the node, which may be null.
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
+   *
+   * @throws TransformerException
+   */
+  void constructNode(
+          String nodeName, String prefix, String nodeNamespace, TransformerImpl transformer, Node sourceNode, QName mode)
+            throws TransformerException
+  {
+
+    if(null != nodeName && nodeName.length() > 0)
+    {
+      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      if(prefix != null && prefix.length() > 0)
+      {
+        try
+        {
+          rhandler.startPrefixMapping(prefix, nodeNamespace, false);
+        }
+        catch(SAXException se)
+        {
+          throw new TransformerException(se);
+        }
+      }
+      String val = transformer.transformToString(this, sourceNode, mode);
+      String localName = QName.getLocalPart(nodeName);
+      rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
+    }
+  }
+
 
   /**
    * Add a child to the child list.
