@@ -536,7 +536,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
       return m_last;
     else if(null == m_cachedNodes || !m_foundLast)
     {
-      m_last = getLastPos(m_execContext);
+      m_last = findLastPos(m_execContext);
     }
     else
     {
@@ -906,8 +906,8 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   {
     m_last = last;
   }
-
-  /**
+  
+   /**
    * Get the index of the last node that can be itterated to.
    * This probably will need to be overridded by derived classes.
    *
@@ -916,6 +916,19 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * @return the index of the last node that can be itterated to.
    */
   public int getLastPos(XPathContext xctxt)
+  {
+    return getLength();
+  }
+    
+  /**
+   * Get the index of the last node that can be itterated to.
+   * This probably will need to be overridded by derived classes.
+   *
+   * @param xctxt XPath runtime context.
+   *
+   * @return the index of the last node that can be itterated to.
+   */
+  public int findLastPos(XPathContext xctxt)
   {
     int savedPos;
     if(null != m_cachedNodes)
@@ -940,9 +953,16 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     {
       return -1;
     }
-    // %REVIEW% Commented this out, as it was messing up pos68 test. count-1?
-    // System.out.println("clone.getPredicateCount(): "+clone.getPredicateCount());
-    // clone.setPredicateCount(clone.getPredicateCount() - 1);
+
+    // We want to clip off the last predicate, but only if we are a sub 
+    // context node list, NOT if we are a context list.  See pos68 test, 
+    // also test against bug4638.
+    int predCount = clone.getPredicateCount();
+    if(predCount > 0 && this == m_execContext.getSubContextList())
+    {
+      // Don't call setPredicateCount, because it clones and is slower.
+      clone.m_predCount = predCount - 1;
+    }
 
     int next;
 

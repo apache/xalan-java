@@ -87,6 +87,9 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
 
     return clone;
   }
+  
+  // Only for clones for findLastPos.  See bug4638.
+  protected int m_predCount = -1;
 
   /**
    * Get the number of predicates that this walker has.
@@ -95,7 +98,10 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    */
   public int getPredicateCount()
   {
-    return (null == m_predicates) ? 0 : m_predicates.length;
+    if(-1 == m_predCount)
+      return (null == m_predicates) ? 0 : m_predicates.length;
+    else
+      return m_predCount;
   }
 
   /**

@@ -152,7 +152,8 @@ public class OneStepIterator extends ChildTestIterator
         xctxt.pushCurrentNode(root);
         clone.setRoot(root, xctxt);
 
-        clone.setPredicateCount(predicateIndex);
+        // clone.setPredicateCount(predicateIndex);
+        clone.m_predCount = predicateIndex;
 
         // Count 'em all
         int count = 1;
@@ -201,7 +202,7 @@ public class OneStepIterator extends ChildTestIterator
    *
    * @return the number of nodes in this node list.
    */
-  public int getLastPos(XPathContext xctxt)
+  public int findLastPos(XPathContext xctxt)
   {
     if(!isReverseAxes())
       return super.getLastPos(xctxt);
@@ -216,7 +217,12 @@ public class OneStepIterator extends ChildTestIterator
       xctxt.pushCurrentNode(root);
       clone.setRoot(root, xctxt);
 
-      clone.setPredicateCount(this.getPredicateCount() - 1);
+      int predCount = clone.getPredicateCount();
+      if(predCount > 0 && this == m_execContext.getSubContextList())
+      {
+        // Don't call setPredicateCount, because it clones and is slower.
+        clone.m_predCount = predCount - 1;
+      }
 
       // Count 'em all
       // count = 1;
