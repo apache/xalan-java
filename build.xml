@@ -204,6 +204,15 @@ Copyright:
     <available file="${test.relpath}" property="tests-available" />
     <available property="xerces.present" 
       classname="org.apache.xerces.parsers.SAXParser"/>
+      
+    <!-- Update version information.  This copies the Version.src
+         file into Version.java, while replacing the following tokens
+    -->
+    <filter token="version.VERSION" value="${version.VERSION}"/>  
+    <filter token="version.RELEASE" value="${version.RELEASE}"/>
+    <filter token="version.MINOR" value="${version.MINOR}"/>
+    <filter token="version.DEVELOPER" value="${version.DEVELOPER}"/>
+    <copy tofile="${src.dir}/${xalan.reldir}/Version.java" file="${src.dir}/${xalan.reldir}/Version.src" filtering="true"/>
   </target>
 
   <!-- Must depend on jar since we use Xalan to process xml files -->

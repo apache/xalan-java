@@ -81,10 +81,10 @@ public class Version
    */
   public static String getVersion()
   {
-    return getProduct()+" "+getImplementationLanguage()+" "
+     return getProduct()+" "+getImplementationLanguage()+" "
            +getMajorVersionNum()+"."+getReleaseVersionNum()+"."
            +( (getDevelopmentVersionNum() > 0) ? 
-               ("D"+getDevelopmentVersionNum()) : (""+getMaintenanceVersionNum()));
+               ("D"+getDevelopmentVersionNum()) : (""+getMaintenanceVersionNum()));  
   }
 
   /**
@@ -96,7 +96,7 @@ public class Version
   {
     System.out.println(getVersion());
   }
-
+  
   /**
    * Name of product: Xalan.
    */
@@ -112,7 +112,8 @@ public class Version
   {
     return "Java";
   }
-
+  
+  
   /**
    * Major version number.
    * Version number. This changes only when there is a
@@ -126,13 +127,9 @@ public class Version
    */
   public static int getMajorVersionNum()
   {
-    // return 2;
-    // NOTE: In post 2.2 builds, we should remove XSLProcessorVersion
-    //  and simply store this info here or in the build.xml and use 
-    //  Ant's filtering capability to replace it here
-    return org.apache.xalan.processor.XSLProcessorVersion.VERSION;
+    return 2;
     
-  }
+  }  
 
   /**
    * Release Number.
@@ -144,10 +141,9 @@ public class Version
    */
   public static int getReleaseVersionNum()
   {
-    //return 2;
-    return org.apache.xalan.processor.XSLProcessorVersion.RELEASE;
+    return 5;
   }
-
+  
   /**
    * Maintenance Drop Number.
    * Optional identifier used to designate maintenance
@@ -159,8 +155,7 @@ public class Version
    */
   public static int getMaintenanceVersionNum()
   {
-    //return 0;
-    return org.apache.xalan.processor.XSLProcessorVersion.MAINTENANCE;
+    return 1;
   }
 
   /**
@@ -181,8 +176,14 @@ public class Version
    *          the final releases.
    */
   public static int getDevelopmentVersionNum()
-  {
-    //return 13;
-    return org.apache.xalan.processor.XSLProcessorVersion.DEVELOPMENT;
-  }
+  { 
+    try {   
+        if ((new String("")).length() == 0)
+          return 0;
+        else  
+          return Integer.parseInt("");
+    } catch (NumberFormatException nfe) {
+           return 0;
+    }    
+  }      
 }
