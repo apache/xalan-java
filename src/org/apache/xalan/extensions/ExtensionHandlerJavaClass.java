@@ -412,6 +412,15 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     {
       result = m.invoke(m_defaultInstance, new Object[] {xpc, element});
     }
+    catch (InvocationTargetException e)
+    {
+      Throwable targetException = e.getTargetException();
+      
+      if (targetException != null)
+        throw new TransformerException (targetException.getMessage (), targetException);
+      else
+        throw new TransformerException (e.getMessage (), e);
+    }
     catch (Exception e)
     {
       // e.printStackTrace ();
