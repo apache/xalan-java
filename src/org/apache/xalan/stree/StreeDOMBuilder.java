@@ -183,7 +183,7 @@ public class StreeDOMBuilder extends DOMBuilder
     // But, in order for the document order stuff to be done correctly, we 
     // have to set the uid here, before the attributes are counted.
     elem.m_uid = ++((DocImpl)m_doc).m_docOrderCount;
-    elem.m_level = (short) (((DocImpl)m_doc).m_level + 1);
+		elem.m_level = (short) (((Parent)(m_currentNode == null ? m_doc : m_currentNode)).m_level + 1);
 
     int nAtts = atts.getLength();
 
