@@ -84,7 +84,6 @@ import javax.xml.transform.*;
 import javax.xml.transform.stream.*;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xalan.processor.*;
