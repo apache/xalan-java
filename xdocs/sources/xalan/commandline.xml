@@ -82,8 +82,6 @@
       <source>-IN inputXMLURL
 -XSL XSLTransformationURL
 -OUT outputFileName
--LXCIN compiledStylesheetFileNameIn
--LXCOUT compiledStylesheetFileNameOut
 -V (Version info)
 -QC (Quiet Pattern Conflicts Warnings)
 -Q  (Quiet Mode)
@@ -103,14 +101,10 @@
 -DIAG put out timing diagnostics</source>
       <p>Use -IN to specify the XML source document.</p> 
       <p>Use -XSL to specify the XSL stylesheet file.</p>
-      <p>Use -LXCIN to specify a compiled XSL stylesheet file.</p>
-      <p>Use -LXCOUT to compile an XSL stylesheet for future use as -LXCIN input.</p>
-      <note>You can only use -LXCIN with a compiled stylesheet that you have already created with the -LXOUT switch. For an
-       example, see <link anchor="compiledstylesheet">Using a compiled stylesheet</link></note>
       <p>Use -TEXT if you want the output to include only element values (not element tags with element names and
       attributes).</p>
       <p>Use -HTML to write 4.0 transitional HTML (some elements, such as &lt;br&gt;, are
-      not well formed XML.</p>
+      not well formed XML).</p>
       <p>To set stylesheet parameters from the command line, use <br/>
       <code>TestXSLT -PARAM <ref>name expression</ref></code></p>
    </s2>

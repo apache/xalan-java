@@ -75,7 +75,7 @@
   <s2 title="How about this release?">
     <p>&xslt4j-current; is the first release of &xslt4j2;. It is an alpha Developer's release. For information about known
     limitations and problems, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, and
-    feeback to the <human-resource-ref idref="xalandev"/></p>
+    feedback to the <human-resource-ref idref="xalandev"/></p>
   </s2> 
   <s2 title="How do I get it?">
     <p>Download and unzip either of the following:</p>

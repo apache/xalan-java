@@ -62,7 +62,7 @@
   <li><link anchor="packages">Package layout</link></li>
 </ul><anchor name="design"/>
   <s2 title="New Design">
-  <p>&xslt4j2; represents a fundamental redesign of Xalan. The primary objective of this redesign is an easier-to-use, more understandable, and more modular API that that encourages wider participation in its ongoing development by the open-source XML developer community, and that lends itself to "streaming," the production of transformation output while the input is still being parsed, and .</p>
+  <p>&xslt4j2; represents a fundamental redesign of Xalan. The primary objective of this redesign is an easier-to-use, more understandable, and more modular API that that encourages wider participation in its ongoing development by the open-source XML developer community, and that lends itself to "streaming," the production of transformation output while the input is still being parsed.</p>
 <p>As a result of this redesign, the changes are global in nature. The API and the basic usage patterns are different. For the details, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
 <p>To start with, &xslt4j2; implements the <resource-ref idref="trax"/> interfaces. A number of open-source XML tool developers have collaborated on TRaX, a conceptual framework and a standard API for performing XML transformations. We strongly encourage you to use the TRaX framework and interfaces when you use &xslt4j2; to perform XML transformations.</p>
 <p>The basic organization of TRaX is quite simple: use a Processor to process transformation instructions (the stylesheet), producing a Templates object. Use the Templates object to instantiate a Transformer, with which you can apply the Templates object to XML input, producing a result tree. For more detail, see <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
@@ -113,7 +113,7 @@
 	 </gloss>
    <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></label>
-     <item>&xslt4j; resource files (such as error message).</item>
+     <item>&xslt4j; resource files (such as error messages).</item>
 	 </gloss> 
    <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></label>

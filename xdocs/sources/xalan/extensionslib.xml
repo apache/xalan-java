@@ -151,7 +151,7 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
     Testing Redirect extension:
     &lt;foobar-out&gt;foo subelement text node&lt;/foobar-out&gt;
   &lt;/foo-out&gt;</source>
-<p>For more information on using the Redirect extension to send output to multiple files, examine the <link idref="samples" anchor="ext1">SimpleRedirect</link> sample and see the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump>class Javadoc.</p>  
+<p>For more information on using the Redirect extension to send output to multiple files, examine the <link idref="samples" anchor="ext1">SimpleRedirect</link> sample and see the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump> class Javadoc.</p>  
 </s3>
 
 </s2><anchor name="nodeset"/>

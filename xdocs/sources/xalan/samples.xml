@@ -156,7 +156,7 @@
     <s2 title="AppletXMLtoHTML">
     <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>
-    <p>How to run it: Copy xalan.jar and xerces.jar to the AppletXMLtoHTML subdirectory, and open AppletXMLotHTML.hmtl in a
+    <p>How to run it: Copy xalan.jar and xerces.jar to the AppletXMLtoHTML subdirectory, and open AppletXMLtoHTML.hmtl in a
     browser (it has been tested with Netscape 4.7 and Internet Explorer 5).</p>
     </s2><anchor name="servlet"/>
     <s2 title="Servlet">
@@ -225,7 +225,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <p>Run this sample from the extensions subdirectory with</p> 
        <p><code>java org.apache.xalan.xslt.Process -in 1-redir.xml</code><br/>
        &nbsp;&nbsp;<code>-xsl 1-redir.xsl</code></p>
-      <p>The standard (non-redirected) output is writen to the screen. The redirected output is written to 1-redir-out, or
+      <p>The standard (non-redirected) output is written to the screen. The redirected output is written to 1-redir-out, or
       whatever filename you assign to the doc/foo @file attribute in 1-redir.xml. The stylesheet gets the file name for
       redirected output from the XML input file.</p>
       </s3><anchor name="ext2"/>

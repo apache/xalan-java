@@ -21,7 +21,7 @@
   <s2 title="Introduction">
   <p>For those situations where you would like to augment the functionality of XSLT with calls to a procedural language, &xslt4j; supports the creation and use of extension elements and extension functions. &xslt4j; also provides a growing <link idref="extensionslib">extensions library</link> available for your use. An extension (a collection of elements and functions) inhabits a namespace, either a namespace you declare and designate as an extensions namespace, or the predefined java namespace that &xslt4j; provides. For information about XML namespaces, see <jump href="http://www.w3.org/TR/REC-xml-names/">Namespaces in XML</jump>.</p>
 
-<p><em>Extension elements</em>  Unlike a literal result element, which the stylesheet simply transfers to the result tree, an extension element performs an action. For example, you can use the Redirect extension elements shipped with &xslt4j; to redirect portions of your transformation output to one or more files. Extension elements may contain attributes, text nodes, other elements, basically any valid XML. Extension elements may perform quite sophisticated actions, given that the extension routine (the implementation) has direct access to the XSL processor context object and to the element. In many cases the implementation returns void or null; if it does return a value, that value is placed in the transformation result tree.</p>
+<p><em>Extension elements</em>  Unlike a literal result element, which the stylesheet simply transfers to the result tree, an extension element performs an action. For example, you can use the Redirect extension elements shipped with &xslt4j; to redirect portions of your transformation output to one or more files. Extension elements may contain attributes, text nodes, other elements, basically any valid XML. Extension elements may perform quite sophisticated actions, given that the extension routine (the implementation) has direct access to the XSLT processor context object and to the element. In many cases the implementation returns void or null; if it does return a value, that value is placed in the transformation result tree.</p>
 
 <p><em>Extension functions</em>You can think of extension functions as extending the core library of functions that XPath provides. An extension function passes arguments to the extension implementation and returns a value. You can use extension functions to return values that XSLT can interact with directly (node-set, result tree fragment, string, boolean, and number) as well as values (of any type) that you pass in turn to other extension functions.</p>
 </s2><anchor name="supported-lang"/>
@@ -227,7 +227,7 @@ Example: <code>&lt;lxslt:script lang="javaclass"</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(org.apache.xalan.xslt.XSLProcessorContext, </code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.w3c.dom.Element extensionElement)</code></p>
 <p>JavaScript example: <code>function myElement(xslProcContext, element)</code></p>
-<p>The <link idref="extensionslib" anchor="redirect">Redirect extension</link>in the extensions library contains three extension elements.</p>
+<p>The <link idref="extensionslib" anchor="redirect">Redirect extension</link> in the extensions library contains three extension elements.</p>
 </s3>
 
 </s2><anchor name="ext-functions"/>
@@ -334,7 +334,9 @@ public class IntDate
       // set the year, month, and day.
       Calendar c = Calendar.getInstance();
       // Convert each argument to int.
-      c.set(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day));
+      c.set ( Integer.parseInt(year),
+              Integer.parseInt(month),
+              Integer.parseInt(day) );
       return c.getTime();
     }
 }</source>
@@ -362,7 +364,8 @@ public class IntDate
     xmlns:java="http://xml.apache.org/xslt/java"
     exclude-result-prefixes="java"&gt;
     
-  &lt;!--Other templates for transforming the rest of the XML source documents--&gt;
+  &lt;!--Other templates for transforming the rest of
+                                            the XML source documents--&gt;
   
   &lt;xsl:template match="date"&gt; 
     &lt;xsl:variable name="year" select="string(./@year)"/&gt;
@@ -395,8 +398,9 @@ public class MyCounter {
   public MyCounter () 
   {}
 
-  public void init(org.apache.xalan.extensions.XSLProcessorContext context, 
-                   org.apache.xalan.xslt.ElemExtensionCall extElem) 
+  public void init
+             ( org.apache.xalan.extensions.XSLProcessorContext context,
+               org.apache.xalan.xslt.ElemExtensionCall extElem ) 
   {
     String name = extElem.getAttribute("name");
     String value = extElem.getAttribute("value");
@@ -419,8 +423,10 @@ public class MyCounter {
     return (cval == null) ? 0 : cval.intValue ();
   }
 
-  public void incr(org.apache.xalan.extensions.XSLProcessorContext context, 
-                   org.apache.xalan.xslt.ElemExtensionCall extElem) {
+  public void incr
+             ( org.apache.xalan.extensions.XSLProcessorContext context,
+               org.apache.xalan.xslt.ElemExtensionCall extElem) 
+  {
     String name = extElem.getAttribute("name");
     Integer cval = (Integer) counters.get(name);
     int nval = (cval == null) ? 0 : (cval.intValue () + 1);
