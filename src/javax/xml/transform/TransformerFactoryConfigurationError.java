@@ -67,6 +67,8 @@ package javax.xml.transform;
  */
 public class TransformerFactoryConfigurationError extends Error {
 
+    /** The contained exception.  
+     *  @serial */
     private Exception exception;
 
     /**

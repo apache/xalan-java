@@ -72,7 +72,8 @@ import javax.xml.transform.SourceLocator;
  */
 public class TransformerException extends Exception {
 
-    /** Field locator specifies where the error occured */
+    /** Field locator specifies where the error occured.
+     *  @serial */
     SourceLocator locator;
 
     /**
@@ -95,7 +96,8 @@ public class TransformerException extends Exception {
         locator = location;
     }
 
-    /** Field containedException specifies a wrapped exception.  May be null. */
+    /** Field containedException specifies a wrapped exception.  May be null.
+     *  @serial */
     Throwable containedException;
 
     /**

@@ -70,6 +70,7 @@ package javax.xml.parsers;
 
 public class FactoryConfigurationError extends Error {
 
+    /** @serial */
     private Exception exception;
 
     /**

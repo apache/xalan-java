@@ -21,6 +21,7 @@ public class RangeException extends RuntimeException {
        super(message);
        this.code = code;
     }
+    /** @serial */
     public short   code;
     // RangeExceptionCode
     public static final short BAD_BOUNDARYPOINTS_ERR    = 1;

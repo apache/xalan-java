@@ -26,5 +26,28 @@
 	 when it is useful to write to a character stream, such as when using a
 	 StringWriter in order to write to a String, or in the case of reading source
 	 XML from a StringReader.</p>
+<p>The following code fragment illustrates the use of the stream Source
+	 and Result objects.</p>
+<code>
+<pre>    // Create a TransformerFactory instance.
+    TransformerFactory tfactory = TransformerFactory.newInstance();
+
+    InputStream xslIS = new BufferedInputStream(new FileInputStream(xslID));
+    StreamSource xslSource = new StreamSource(xslIS);
+    // Note that if we don't do this, relative URLs cannot be resolved correctly!
+    xslSource.setSystemId(xslID);
+
+    // Create a transformer for the stylesheet.
+    Transformer transformer = tfactory.newTransformer(xslSource);
+    
+    InputStream xmlIS = new BufferedInputStream(new FileInputStream(sourceID));
+    StreamSource xmlSource = new StreamSource(xmlIS);
+    // Note that if we don't do this, relative URLs cannot be resolved correctly!
+    xmlSource.setSystemId(sourceID);
+    
+    // Transform the source XML to System.out.
+    transformer.transform( xmlSource, new StreamResult(System.out));
+</pre>
+</code>
 </body>
 </html>
