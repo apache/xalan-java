@@ -61,6 +61,7 @@ package org.apache.xpath.domapi;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.DTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.DOMException;
@@ -70,8 +71,7 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.xpath.XPathException;
-import org.w3c.dom.xpath.XPathResult;
+import org.w3c.dom.xpath.*;
 
 /**
  * <meta name="usage" content="experimental"/>
@@ -286,7 +286,17 @@ public class XPathResultImpl implements XPathResult, EventListener {
 		} catch (TransformerException te) {
 			throw new XPathException(XPathException.TYPE_ERR,te.getMessage());
 		}
-		return (null == result) ? null : result.nextNode();
+        
+        if (null == result) return null;
+        
+        Node node = result.nextNode();
+         
+        // Wrap "namespace node" in an XPathNamespace 
+        if (isNamespaceNode(node)) {
+            return new XPathNamespaceImpl(node);
+        } else {
+            return node;
+        }        
 	}
 
 	/**
@@ -344,9 +354,14 @@ public class XPathResultImpl implements XPathResult, EventListener {
 		  throw new DOMException(DOMException.INVALID_STATE_ERR,fmsg);  // Document mutated since result was returned. Iterator is invalid.
 		}			 
 
-	    return m_iterator.nextNode();
-
-
+        Node node = m_iterator.nextNode();
+        
+        // Wrap "namespace node" in an XPathNamespace 
+        if (isNamespaceNode(node)) {
+            return new XPathNamespaceImpl(node);
+        } else {
+            return node;
+        }
 	}
 
     /**
@@ -374,7 +389,15 @@ public class XPathResultImpl implements XPathResult, EventListener {
            throw new XPathException(XPathException.TYPE_ERR, fmsg); // Can call snapshotItem on type: {0}. This method applies to types 
                                                               // UNORDERED_NODE_SNAPSHOT_TYPE and ORDERED_NODE_SNAPSHOT_TYPE.
 	    }		
-		return m_list.item(index);
+        
+        Node node = m_list.item(index);
+        
+        // Wrap "namespace node" in an XPathNamespace 
+        if (isNamespaceNode(node)) {
+            return new XPathNamespaceImpl(node);
+        } else {
+            return node;
+        }
 	}
 
 	
@@ -468,4 +491,22 @@ public class XPathResultImpl implements XPathResult, EventListener {
     
   }  
 
+/**
+ * Given a node, determine if it is a namespace node.
+ * 
+ * @param node 
+ * 
+ * @return boolean Returns true if this is a namespace node; otherwise, returns false.
+ */
+  private boolean isNamespaceNode(Node node) {
+    
+     if ((null != node) && 
+         (node.getNodeType() == Node.ATTRIBUTE_NODE) &&
+         (node.getNodeName().startsWith("xmlns:") || node.getNodeName().equals("xmlns"))) {
+        return true;   
+     } else {
+        return false;
+     }
+  }
+  
 }
