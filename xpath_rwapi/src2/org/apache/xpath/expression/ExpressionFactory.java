@@ -57,6 +57,7 @@ package org.apache.xpath.expression;
 
 import org.apache.xpath.XPathException;
 import org.apache.xpath.datamodel.SequenceType;
+import org.apache.xpath.impl.parser.NodeFactory;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -236,4 +237,9 @@ public interface ExpressionFactory
      * @return A literal of type double
      */
     public Literal createDoubleLiteralExpr(double value);
+    
+    /**
+     * Sets the node factory for creating AST nodes
+     */
+    void setNodeFactory(NodeFactory factory);
 }

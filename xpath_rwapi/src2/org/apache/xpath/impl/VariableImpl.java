@@ -143,9 +143,10 @@ public class VariableImpl extends ExprImpl implements Variable
     /**
      * @see org.apache.xpath.expression.Visitable#visited(Visitor)
      */
-    public void visited(Visitor visitor)
+    public boolean visit(Visitor visitor)
     {
         visitor.visitVariable(this);
+        return false;
     }
 
     /**

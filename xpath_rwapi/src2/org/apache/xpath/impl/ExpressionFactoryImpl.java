@@ -71,6 +71,7 @@ import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.expression.OperatorExpr;
 import org.apache.xpath.expression.PathExpr;
 import org.apache.xpath.expression.StepExpr;
+import org.apache.xpath.impl.parser.NodeFactory;
 import org.apache.xpath.impl.parser.ParseException;
 import org.apache.xpath.impl.parser.XPath;
 
@@ -81,10 +82,25 @@ import org.apache.xpath.impl.parser.XPath;
 public class ExpressionFactoryImpl implements ExpressionFactory {
 
 	/**
+	 * Node factory
+	 */
+	protected NodeFactory m_nodeFactory = null;
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.ExpressionFactory#setNodeFactory(org.apache.xpath.impl.parser.NodeFactory)
+	 */
+	public void setNodeFactory(NodeFactory factory) {
+		m_nodeFactory = factory;
+	}
+
+	/**
 	 * @see org.apache.xpath.expression.ExpressionFactory#createExpr(java.lang.String)
 	 */
 	public Expr createExpr(String expr) throws XPathException {
 		XPath parser = new XPath(new StringReader(expr));
+		if ( m_nodeFactory != null )  {
+			parser.setNodeFactory(m_nodeFactory);
+		}
 		try {
 			return (Expr) parser.XPath2().jjtGetChild(0);
 		} catch (ParseException e) {

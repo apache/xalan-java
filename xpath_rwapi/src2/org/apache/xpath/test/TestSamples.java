@@ -97,10 +97,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
  */
 public class TestSamples
 {
+	
     public static String TEST_SAMPLES_XML = "src2/org/apache/xpath/test/TestSamples.xml";
 
     public TestSamples(String[] args)
-    {
+    {	
         try
         {
             final boolean dumpTree = ((args.length == 1)
@@ -176,68 +177,10 @@ public class TestSamples
                 + pathExpr.getString(false));
 
             // Test visitor - anonymous class used
-            pathExpr.visit(new Visitor()
-                {
-                    public boolean visitPath(PathExpr path)
-                    {
-                        System.out.println("visit path "
-                            + path.getString(false));
-
-                        return true;
-                    }
-
-                    public boolean visitStep(StepExpr step)
-                    {
-                        System.out.println("visit step "
-                            + step.getString(false));
-
-                        return true;
-                    }
-
-                    public boolean visitLiteral(Literal primary)
-                    {
-                        System.out.println(primary.getString(false));
-
-                        return true;
-                    }
-
-                    public boolean visitOperator(OperatorExpr arithmetic)
-                    {
-                        System.out.println(arithmetic.getString(false));
-
-                        return true;
-                    }
-
-                    public boolean visitConditional(ConditionalExpr condition)
-                    {
-                        System.out.println(condition.getString(false));
-
-                        return true;
-                    }
-
-                    public boolean visitForOrQuantifiedExpr(
-                        ForAndQuantifiedExpr expr)
-                    {
-                        System.out.println(expr.getString(false));
-
-                        return true;
-                    }
-
-                    public boolean visitVariable(Variable var)
-                    {
-                        return false;
-                    }
-
-                    public boolean visitInstanceOf(InstanceOfExpr expr)
-                    {
-                        return false;
-                    }
-
-                    public boolean visitCastableAs(CastableAsExpr expr)
-                    {
-                        return false;
-                    }
-                });
+            pathExpr.visit(new TestVisitor());
+            
+            Expr var = exprFct.createExpr("$var");
+            var.visit(new TestVisitor());
 
             // Simple Evaluation check
             //Evaluator eval = XPathFactory.newInstance().newEvaluatorFactory()
@@ -473,4 +416,70 @@ public class TestSamples
     {
         new TestSamples(args);
     }
+    
+    class TestVisitor implements Visitor
+	{
+		public boolean visitPath(PathExpr path)
+		{
+			System.out.println("visit path "
+				+ path.getString(false));
+
+			return true;
+		}
+
+		public boolean visitStep(StepExpr step)
+		{
+			System.out.println("visit step "
+				+ step.getString(false));
+
+			return true;
+		}
+
+		public boolean visitLiteral(Literal primary)
+		{
+			System.out.println(primary.getString(false));
+
+			return true;
+		}
+
+		public boolean visitOperator(OperatorExpr arithmetic)
+		{
+			System.out.println(arithmetic.getString(false));
+
+			return true;
+		}
+
+		public boolean visitConditional(ConditionalExpr condition)
+		{
+			System.out.println(condition.getString(false));
+
+			return true;
+		}
+
+		public boolean visitForOrQuantifiedExpr(
+			ForAndQuantifiedExpr expr)
+		{
+			System.out.println(expr.getString(false));
+
+			return true;
+		}
+
+		public boolean visitVariable(Variable var)
+		{
+			System.out.println("Visit var");
+			return false;
+		}
+
+		public boolean visitInstanceOf(InstanceOfExpr expr)
+		{
+			return false;
+		}
+
+		public boolean visitCastableAs(CastableAsExpr expr)
+		{
+			return false;
+		}
+	}
 }
+
+

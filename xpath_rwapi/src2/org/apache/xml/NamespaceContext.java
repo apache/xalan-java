@@ -59,9 +59,14 @@ import java.util.Iterator;
 
 public interface NamespaceContext {
 
-    String getNamespaceURI(String prefix);
-  
-    String getPrefix(String namespaceURI);
+	/**
+	 * 
+	 * @param prefix
+	 * @return
+	 */
+	String getNamespaceURI(String prefix);
 
-    Iterator getPrefixes(String namespaceURI);
+	String getPrefix(String namespaceURI);
+
+	Iterator getPrefixes(String namespaceURI);
 }
