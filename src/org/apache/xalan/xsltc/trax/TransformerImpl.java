@@ -230,7 +230,7 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	    // other contents of the Result object could not be used
 	    if (systemId != null) {
 		if ((new File(systemId)).exists())
-		    systemId = "file:/"+systemId;
+		    systemId = "file:"+systemId;
 		final URL url = new URL(systemId);
 		final URLConnection connection = url.openConnection();
 		final OutputStream ostream = connection.getOutputStream();

@@ -64,6 +64,9 @@
 package org.apache.xalan.xsltc.trax;
 
 import java.io.Serializable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
 import java.util.Properties;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -84,6 +87,10 @@ public final class TemplatesImpl implements Templates, Serializable {
     // any auxiliary classes (representing node sort records, predicates, etc.)
     private byte[][] _bytecodes = null;
 
+    private Class[]    _class = null;
+
+    private int _transletIndex = -1;
+
     // This error could occur when a compilation inside the TransformerFactory
     // failed and when a template has been loaded from stable storage.
     private final static String NO_TRANSLET_CODE =
@@ -101,6 +108,20 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    return super.defineClass(null, b, 0, b.length);
 	}
     }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+	out.writeObject(_transletName);
+	out.writeObject(_bytecodes);
+	out.flush();
+    }
+
+    public void readExternal(ObjectInput in)
+	throws IOException, ClassNotFoundException {
+	_transletName = (String)in.readObject();
+	_bytecodes    = (byte[][])in.readObject();
+	_class        = null;
+    }
+
 
     /**
      * The only way to create an XSLTC emplate object
@@ -145,7 +166,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * Defines the translet class and auxiliary classes.
      * Returns a reference to the Class object that defines the main class
      */
-    private Translet defineTransletClasses()
+    private void defineTransletClasses()
 	throws TransformerConfigurationException {
 
 	if (_bytecodes == null)
@@ -161,25 +182,18 @@ public final class TemplatesImpl implements Templates, Serializable {
 		);
 
 	try {
-	    int transletIndex = -1;
 	    final int classCount = _bytecodes.length;
-	    Class[] clazz = new Class[classCount];
+	    _class = new Class[classCount];
 
 	    for (int i = 0; i < classCount; i++) {
-		clazz[i] = loader.defineClass(_bytecodes[i]);
-		if (clazz[i].getName().equals(_transletName)) transletIndex = i;
+		_class[i] = loader.defineClass(_bytecodes[i]);
+		if (_class[i].getName().equals(_transletName))
+		    _transletIndex = i;
 	    }
 
-	    if (transletIndex < 0)
+	    if (_transletIndex < 0)
 		throw new TransformerConfigurationException(NO_MAIN_TRANSLET+
 							    _transletName);
-
-	    Translet translet = (Translet)clazz[transletIndex].newInstance();
-	    for (int i = 0; i < classCount; i++) {
-		if (i != transletIndex)
-		    translet.addAuxiliaryClass(clazz[i]);
-	    }
-	    return translet;
 	}
 
 	catch (ClassFormatError e)       {
@@ -187,14 +201,6 @@ public final class TemplatesImpl implements Templates, Serializable {
 							_transletName);
 	}
 	catch (LinkageError e)           {
-	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
-							_transletName);
-	}
-	catch (InstantiationException e) {
-	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
-							_transletName);
-	}
-	catch (IllegalAccessException e) {
 	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
 							_transletName);
 	}
@@ -207,21 +213,32 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     private Translet getTransletInstance()
 	throws TransformerConfigurationException {
-	if (_transletName == null) return null;
-
-	// First assume that the JVM already had the class definition
 	try {
-	    Class transletClass = Class.forName(_transletName);
-	    return((Translet)transletClass.newInstance());
-	}
-	// Ignore these for now, try to define translet class again
-	catch (LinkageError e) { }
-	catch (InstantiationException e) { }
-	catch (ClassNotFoundException e) { }
-	catch (IllegalAccessException e) { }
+	    if (_transletName == null) return null;
 
-	// Create the class definition from the bytecodes if failed
-	return((Translet)defineTransletClasses());
+	    if (_class == null) defineTransletClasses();
+
+	    // The translet needs a reference to all its auxiliary class
+	    // definitions so that it can instanciate them on the fly. You
+	    // wouldn't think this is necessary, but it seems like the JVM
+	    // quickly forgets the classes we define here and the translet
+	    // needs to know them as long as it exists.
+	    Translet translet = (Translet)_class[_transletIndex].newInstance();
+	    final int classCount = _bytecodes.length;
+	    for (int i = 0; i < classCount; i++) {
+		if (i != _transletIndex)
+		    translet.addAuxiliaryClass(_class[i]);
+	    }
+	    return translet;
+	}
+	catch (InstantiationException e) {
+	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
+							_transletName);
+	}
+	catch (IllegalAccessException e) {
+	    throw new TransformerConfigurationException(TRANSLET_OBJECT_ERR+
+							_transletName);
+	}
     }
 
     /**

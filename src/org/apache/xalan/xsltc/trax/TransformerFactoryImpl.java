@@ -393,7 +393,7 @@ public class TransformerFactoryImpl
 	throws TransformerConfigurationException {
 
 	InputSource input = null;
-	final String systemId = source.getSystemId();
+	String systemId = source.getSystemId();
 
 	try {
 
@@ -427,13 +427,12 @@ public class TransformerFactoryImpl
 	    else {
 		throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
 	    }
+
+	    if ((new File(systemId)).exists())
+		systemId = "file:"+systemId;
+
 	    // Try to create an InputStream from the SystemId if no input so far
-	    if (input == null) {
-		if ((new File(systemId)).exists())
-		    input = new InputSource("file:/"+systemId);
-		else
-		    input = new InputSource(systemId);
-	    }
+	    if (input == null) input = new InputSource(systemId);
 
 	    // Pass system id to InputSource just to be on the safe side
 	    input.setSystemId(systemId);
