@@ -116,10 +116,14 @@ final class Text extends Instruction {
 	    // Turn off character escaping if so is wanted.
 	    final int esc = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 						      "setEscaping", "(Z)Z");
-	    // Turn off character escaping if so is wanted.
-	    if (!_escaping) {
+	    // set escaping value in output handler 
+	    if (_escaping) {
 		il.append(methodGen.loadHandler());
-		il.append(new PUSH(cpg,false));
+		il.append(new PUSH(cpg,true));
+		il.append(new INVOKEINTERFACE(esc, 2));
+	    } else {
+		il.append(methodGen.loadHandler());
+		il.append(new PUSH(cpg, false));
 		il.append(new INVOKEINTERFACE(esc, 2));
 	    }
 
@@ -131,12 +135,11 @@ final class Text extends Instruction {
 							 CHARACTERSW_SIG)));
 
 	    // Restore character escaping setting to whatever it was.
-	    if (!_escaping) {
-		il.append(methodGen.loadHandler());
-		il.append(SWAP);
-		il.append(new INVOKEINTERFACE(esc, 2));
-		il.append(POP);
-	    }
+	    // Note: setEscaping(bool) returns the original (old) value
+	    il.append(methodGen.loadHandler());
+	    il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(esc, 2));
+	    il.append(POP);
 	}
 
     }

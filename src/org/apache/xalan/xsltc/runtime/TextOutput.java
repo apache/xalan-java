@@ -278,7 +278,14 @@ public final class TextOutput implements TransletOutputHandler {
 		oldSetting = true;
 	    }
 	    _escapeChars = escape;
+
+	    // bug # 1403, see also compiler/Text.java::translate method.
+	    if (_outputType == TEXT) { 
+		_escapeChars = false; 
+	    }
+
 	    return(oldSetting);
+		
 	}
 	catch (SAXException e) {
 	    throw(new TransletException(e));
