@@ -151,25 +151,14 @@ public class ApplyXPath
         System.err.println("selectNodeIterator threw: " + e2.toString() + " perhaps your xpath didn't select any nodes");
         e2.printStackTrace();
         return;
-      }		 
+      }
+	  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
 	  Node n = null;
 	  try
 	  {
 		while ((n = nl.nextNode())!= null)
-		{
-		  // XMLSerializer doesn't fully work!		  
-		  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
-		  if (n.getNodeType() == n.DOCUMENT_NODE)			  
-			xmlser.serialize((Document)n);
-          else if (n.getNodeType() == n.ELEMENT_NODE)
-			xmlser.serialize((Element)n);
-	      else
-			 System.out.println
-				  ("XMLSerializer cannot serialize: " + n.getNodeName()+ " -- " + n.getNodeValue());
-//	How about (doesn't yet work, but ??) --	  
-/*		  TreeWalker tw = new TreeWalker(new XMLSerializer(System.out, new OutputFormat()));
-	          tw.traverse(n); 
-*/
+		{		  
+		  xmlser.serializeXPathReturnNode(n);
 		}
       }
 	  catch (Exception e3)
