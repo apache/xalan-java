@@ -366,6 +366,14 @@ public final class ResultTreeType extends Type {
 	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					       NAMES_INDEX,
 					       NAMES_INDEX_SIG)));
+	il.append(classGen.loadTranslet()); // get uris array
+	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					       URIS_INDEX,
+					       URIS_INDEX_SIG)));
+	il.append(classGen.loadTranslet()); // get types array
+	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					       TYPES_INDEX,
+					       TYPES_INDEX_SIG)));
 	il.append(classGen.loadTranslet()); // get namespaces array
 	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					       NAMESPACE_INDEX,
@@ -374,8 +382,10 @@ public final class ResultTreeType extends Type {
 	final int mapping = cpg.addInterfaceMethodref(DOM_INTF,
 						      "setupMapping",
 						      "(["+STRING_SIG+
+						      "["+STRING_SIG+
+						      "[I" +
 						      "["+STRING_SIG+")V");
-	il.append(new INVOKEINTERFACE(mapping, 3));
+	il.append(new INVOKEINTERFACE(mapping, 5));
 	il.append(DUP);
 
 	// Create an iterator for the root node of the DOM adapter

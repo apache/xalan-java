@@ -129,7 +129,9 @@ public class DOMWSFilter implements DTMWSFilter {
                 else {  
                     mapping = (short[])m_mappings.get(dtm);
                     if (mapping == null) {
-                        mapping = saxImpl.getMapping(m_translet.getNamesArray());
+                        mapping = saxImpl.getMapping(m_translet.getNamesArray(),
+                                     m_translet.getUrisArray(),
+                                     m_translet.getTypesArray());
                         m_mappings.put(dtm, mapping);
                         m_currentDTM = saxImpl;
                         m_currentMapping = mapping;

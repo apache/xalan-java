@@ -310,7 +310,7 @@ public final class MultiDOM implements DOM {
         return _free;
     }
 
-    public void setupMapping(String[] names, String[] namespaces) {
+    public void setupMapping(String[] names, String[] uris, int[] types, String[] namespaces) {
         // This method only has a function in DOM adapters
     }
 
@@ -376,6 +376,8 @@ public final class MultiDOM implements DOM {
             if (nestedDom != null) {
                 DOMAdapter newAdapter = new DOMAdapter(nestedDom, 
                                                        adapter.getNamesArray(),
+                                                       adapter.getUrisArray(),
+                                                       adapter.getTypesArray(),
                                                        adapter.getNamespaceArray());
                 addDOMAdapter(newAdapter);  
             } 

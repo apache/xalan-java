@@ -82,6 +82,8 @@ public final class DOMAdapter implements DOM {
     private DOM _dom;
 
     private String[] _namesArray;
+    private String[] _urisArray;
+    private int[]    _typesArray;
     private String[] _namespaceArray;
 
     // Cached mappings
@@ -96,6 +98,8 @@ public final class DOMAdapter implements DOM {
     
     public DOMAdapter(DOM dom,
                       String[] namesArray,
+                      String[] urisArray,
+                      int[] typesArray,
                       String[] namespaceArray) {
         if (dom instanceof SAXImpl){
             _saxImpl = (SAXImpl) dom;
@@ -103,16 +107,29 @@ public final class DOMAdapter implements DOM {
 
         _dom = dom;
         _namesArray = namesArray;
+        _urisArray = urisArray;
+        _typesArray = typesArray;
         _namespaceArray = namespaceArray;
     }
 
-    public void setupMapping(String[] names, String[] namespaces) {
+    public void setupMapping(String[] names, String[] urisArray,
+                             int[] typesArray, String[] namespaces) {
         _namesArray = names;
+        _urisArray = urisArray;
+        _typesArray = typesArray;
         _namespaceArray = namespaces;
     }
     
     public String[] getNamesArray() {
         return _namesArray;
+    }
+    
+    public String[] getUrisArray() {
+    	return _urisArray;
+    }
+    
+    public int[] getTypesArray() {
+    	return _typesArray;
     }
     
     public String[] getNamespaceArray() {
@@ -126,7 +143,7 @@ public final class DOMAdapter implements DOM {
     private short[] getMapping() {
         if (_mapping == null) {
             if (_saxImpl != null) {
-                _mapping = _saxImpl.getMapping(_namesArray);
+                _mapping = _saxImpl.getMapping(_namesArray, _urisArray, _typesArray);
             } 
         }
         return _mapping;
@@ -135,7 +152,7 @@ public final class DOMAdapter implements DOM {
     private int[] getReverse() {
 	if (_reverse == null) {
             if (_saxImpl != null) {
-	        _reverse = _saxImpl.getReverseMapping(_namesArray);
+	        _reverse = _saxImpl.getReverseMapping(_namesArray, _urisArray, _typesArray);
             }
 	}
 	return _reverse;

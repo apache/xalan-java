@@ -84,5 +84,7 @@ public interface Translet {
     public void addAuxiliaryClass(Class auxClass);
     public Class getAuxiliaryClass(String className);
     public String[] getNamesArray();
+    public String[] getUrisArray();
+    public int[]    getTypesArray();
     public String[] getNamespaceArray();
 }

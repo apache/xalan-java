@@ -486,13 +486,13 @@ public class AdaptiveResultTreeImpl extends SimpleResultTreeImpl
         }        
     }
     
-    public void setupMapping(String[] names, String[] namespaces)
+    public void setupMapping(String[] names, String[] uris, int[] types, String[] namespaces)
     {
         if (_dom != null) {
-            _dom.setupMapping(names, namespaces);
+            _dom.setupMapping(names, uris, types, namespaces);
         }
         else {
-            super.setupMapping(names, namespaces);
+            super.setupMapping(names, uris, types, namespaces);
         }        
     }
     

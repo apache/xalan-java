@@ -191,6 +191,29 @@ public class ExpandedNameTable
    */
   public int getExpandedTypeID(String namespace, String localName, int type)
   {
+    return getExpandedTypeID(namespace, localName, type, false);
+  }
+  
+  /**
+   * Given an expanded name represented by namespace, local name and node type,
+   * return an ID.  If the expanded-name does not exist in the internal tables,
+   * the entry will be created, and the ID will be returned.  Any additional 
+   * nodes that are created that have this expanded name will use this ID.
+   * <p>
+   * If searchOnly is true, we will return -1 if the name is not found in the 
+   * table, otherwise the name is added to the table and the expanded name id
+   * of the new entry is returned.
+   *
+   * @param namespace The namespace
+   * @param localName The local name
+   * @param type The node type
+   * @param searchOnly If it is true, we will only search for the expanded name.
+   * -1 is return is the name is not found.
+   *
+   * @return the expanded-name id of the node.
+   */
+  public int getExpandedTypeID(String namespace, String localName, int type, boolean searchOnly)
+  {
     if (null == namespace)
       namespace = "";
     if (null == localName)
@@ -213,6 +236,11 @@ public class ExpandedNameTable
     {
       if (e.hash == hash && e.key.equals(hashET))
         return e.value;
+    }
+    
+    if (searchOnly)
+    {
+      return DTM.NULL;
     }
 
     // Expand the internal HashEntry array if necessary.

@@ -72,6 +72,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.bcel.generic.ANEWARRAY;
+import org.apache.bcel.generic.BasicType;
 import org.apache.bcel.generic.CHECKCAST;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DUP_X1;
@@ -82,6 +83,7 @@ import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.NEW;
+import org.apache.bcel.generic.NEWARRAY;
 import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -699,6 +701,8 @@ public abstract class SyntaxTreeNode implements Constants {
 				     "<init>",
 				     "("+DOM_INTF_SIG+
 				     "["+STRING_SIG+
+				     "["+STRING_SIG+
+				     "[I"+
 				     "["+STRING_SIG+")V");
 	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));
 	    il.append(new DUP_X1());
@@ -712,6 +716,10 @@ public abstract class SyntaxTreeNode implements Constants {
 		il.append(new ICONST(0));
 		il.append(new ANEWARRAY(cpg.addClass(STRING)));
 		il.append(DUP);
+		il.append(DUP);
+		il.append(new ICONST(0));
+		il.append(new NEWARRAY(BasicType.INT));
+		il.append(SWAP);
 		il.append(new INVOKESPECIAL(index));
 	    }
 	    else {
@@ -720,6 +728,14 @@ public abstract class SyntaxTreeNode implements Constants {
 		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					   NAMES_INDEX,
 					   NAMES_INDEX_SIG))); 
+		il.append(ALOAD_0);
+		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					   URIS_INDEX,
+					   URIS_INDEX_SIG))); 
+		il.append(ALOAD_0);
+		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
+					   TYPES_INDEX,
+					   TYPES_INDEX_SIG))); 
 		il.append(ALOAD_0);
 		il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					   NAMESPACE_INDEX,
