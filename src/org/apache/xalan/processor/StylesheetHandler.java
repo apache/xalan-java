@@ -947,9 +947,14 @@ public class StylesheetHandler
    */
   public Locator getLocator()
   {
-    return m_stylesheetLocatorStack.isEmpty()
-           ? null :
-             ((Locator)m_stylesheetLocatorStack.peek());
+    if(m_stylesheetLocatorStack.isEmpty())
+    {
+      org.xml.sax.helpers.LocatorImpl locator 
+        = new org.xml.sax.helpers.LocatorImpl();
+      locator.setSystemId(this.getStylesheetProcessor().getDOMsystemID());
+      m_stylesheetLocatorStack.push(locator);
+    }
+    return ((Locator)m_stylesheetLocatorStack.peek());
   }
   
   /**
