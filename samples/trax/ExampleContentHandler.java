@@ -54,10 +54,10 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-import org.xml.sax.ContentHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 public class ExampleContentHandler implements ContentHandler
 {

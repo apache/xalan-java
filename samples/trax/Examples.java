@@ -54,49 +54,45 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-import javax.xml.transform.*;
-import javax.xml.transform.sax.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.stream.*;
-
-// Needed java classes
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.IOException;
-import java.io.File;
-import java.io.OutputStreamWriter;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.FileInputStream;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-
 import java.util.Properties;
 
-// Needed SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.Parser;
-import org.xml.sax.helpers.ParserAdapter;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.ext.DeclHandler;
-
-// Needed DOM classes
-import org.w3c.dom.Node;
-
-// Needed JAXP classes
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
-import java.io.BufferedInputStream;    // dml
-
+import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * Some examples to show how the Simple API for Transformations
  * could be used.

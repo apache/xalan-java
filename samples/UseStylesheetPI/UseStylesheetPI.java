@@ -55,18 +55,13 @@
  * <http://www.apache.org/>.
  */
 
-// Imported TraX classes
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
-
-// Imported java.io classes
-import java.io.FileOutputStream;
-import java.io.IOException;	
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;	
 
 public class UseStylesheetPI
 {

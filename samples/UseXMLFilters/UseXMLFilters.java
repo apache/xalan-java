@@ -55,48 +55,24 @@
  * <http://www.apache.org/>.
  */
 
-// Imported TraX classes
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.Templates;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
+import java.io.IOException;
+
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.Result;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.sax.TransformerHandler;              
+import javax.xml.transform.stream.StreamSource;
 
-// Imported SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.Parser;
-import org.xml.sax.helpers.ParserAdapter;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.XMLReader;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.ContentHandler;
-
-// Imported DOM classes
-import org.w3c.dom.Node;
-
-// Imported Serializer classes
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.templates.OutputProperties;
-
-// Imported JAVA API for XML Parsing classes
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException; 
-
-// Imported java.io classes
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.IOException;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLFilter;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
   /**
    * This example shows how to chain a series of transformations by

@@ -54,20 +54,17 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 

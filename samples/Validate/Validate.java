@@ -55,26 +55,23 @@
  * <http://www.apache.org/>.
  */
 
-// Imported JAXP classes
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.FilenameFilter;
+import java.io.IOException;
 
-// SAX import
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.ext.LexicalHandler;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-
-// Imported java.io classes
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.FileWriter;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.DefaultHandler;
 
 /* Use JAXP SAXParser to parse 1 .xml file or all the .xml files in a directory.
  * Takes 1 or 2 command-line arguments:
