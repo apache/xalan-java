@@ -88,6 +88,10 @@ final class XslElement extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 
+    public boolean declaresDefaultNS() {
+	return (_namespace != null && _prefix == EMPTYSTRING);
+    }
+
     /**
      * Parses the element's contents. Special care taken for namespaces.
      * TODO: The namespace attribute that specifies the namespace to use

@@ -486,6 +486,10 @@ public interface Constants extends InstructionConstants {
     public static final int POSITION_INDEX = 2;
     public static final int LAST_INDEX     = 3;
 
+    public static final String XMLNS_PREFIX = "xmlns";
+    public static final String XMLNS_STRING = "xmlns:";
+    public static final String XMLNS_URI 
+	= "http://www.w3.org/2000/xmlns/";
     public static final String XSLT_URI
 	= "http://www.w3.org/1999/XSL/Transform";
     public static final String XHTML_URI

@@ -133,15 +133,11 @@ public final class Util {
     }
 
     public static void println(String s) {
-	if (false) {
-	    System.out.println(s);
-	}
+	System.out.println(s);
     }
 
     public static void println(char ch) {
-	if (false) {
-	    System.out.println(ch);
-	}
+	System.out.println(ch);
     }
 
     public static void TRACE1() {

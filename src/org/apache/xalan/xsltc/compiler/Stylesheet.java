@@ -284,7 +284,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	super.addPrefixMapping(prefix, uri);
     }
 
-
     /**
      * Store extension URIs
      */
@@ -308,8 +307,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void excludeExtensionPrefixes(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
     	final String excludePrefixes = getAttribute("exclude-result-prefixes");
-	final String extensionPrefixes = 
-	    getAttribute("extension-element-prefixes");
+	final String extensionPrefixes = getAttribute("extension-element-prefixes");
+	
+	// Exclude XSLT uri 
+	stable.excludeURI(Constants.XSLT_URI);
 	stable.excludeNamespaces(excludePrefixes);
 	stable.excludeNamespaces(extensionPrefixes);
 	extensionURI(extensionPrefixes, stable);

@@ -72,10 +72,11 @@ import java.util.Enumeration;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.AttributesImpl;
 
 import org.apache.xalan.xsltc.*;
 
-public final class TextOutput implements TransletOutputHandler {
+public final class TextOutput implements TransletOutputHandler, Constants {
 
     // These are the various output types we handle
     public static final int UNKNOWN = 0; // determine type from output contents
@@ -100,8 +101,6 @@ public final class TextOutput implements TransletOutputHandler {
     // Contains all elements that should be output as CDATA sections
     private Hashtable _cdata = null;
 
-    private static final String XML_PREFIX = "xml";
-
     private static final char[] AMP      = "&amp;".toCharArray();
     private static final char[] LT       = "&lt;".toCharArray();
     private static final char[] GT       = "&gt;".toCharArray();
@@ -124,7 +123,6 @@ public final class TextOutput implements TransletOutputHandler {
     private static final int BEGCOMM_length = BEGCOMM.length;
     private static final int ENDCOMM_length = ENDCOMM.length;
 
-    private static final String EMPTYSTRING     = "";
     private static final String HREF_STR        = "href";
     private static final String CITE_STR        = "cite";
     private static final String SRC_STR         = "src";
@@ -132,8 +130,8 @@ public final class TextOutput implements TransletOutputHandler {
     private static final String CDATA_ESC_START = "]]>&#";
     private static final String CDATA_ESC_END   = ";<![CDATA[";
 
-    private AttributeList _attributes = new AttributeList();
-    private String        _elementName = null;
+    private AttributesImpl _attributes = new AttributesImpl();
+    private String         _elementName = null;
 
     // Each entry (prefix) in this hashtable points to a Stack of URIs
     private Hashtable _namespaces;
@@ -253,8 +251,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    AttributeList attrs = new AttributeList();
 	    attrs.add("http-equiv", "Content-Type");
 	    attrs.add("content", _mediaType+"; charset="+_encoding);
-	    _saxHandler.startElement(null, null, "meta", attrs);
-	    _saxHandler.endElement(null, null, "meta");
+	    _saxHandler.startElement(EMPTYSTRING, EMPTYSTRING, "meta", attrs);
+	    _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, "meta");
 	}
     }
 
@@ -265,27 +263,10 @@ public final class TextOutput implements TransletOutputHandler {
     public void closeStartTag() throws TransletException {
 	try {
 	    _startTagOpen = false;
-	    
-	    // Final check to assure that the element is within a namespace
-	    // that has been declared (all declarations for this element
-	    // should have been processed at this point).
-	    int col = _elementName.lastIndexOf(':');
-	    if (col > 0) {
-		final String prefix = _elementName.substring(0,col);
-		final String localname = _elementName.substring(col+1);
-		final String uri = lookupNamespace(prefix);
-		if (uri == null)
-		    BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR,
-					      prefix);
-		if (uri.equals(EMPTYSTRING)) _elementName = localname;
-		_saxHandler.startElement(uri, localname,
-					 _elementName, _attributes);
-	    }
-	    else {
-		final String uri = lookupNamespace(EMPTYSTRING);
-		_saxHandler.startElement(uri, _elementName,
-					 _elementName, _attributes);
-	    }
+
+	    // Now is time to send the startElement event
+	    _saxHandler.startElement(getNamespaceURI(_elementName, true),
+		getLocalName(_elementName), _elementName, _attributes);
 
 	    // Insert <META> tag directly after <HEAD> element in HTML output
 	    if (_headTagOpen) {
@@ -468,9 +449,7 @@ public final class TextOutput implements TransletOutputHandler {
      * Start an element in the output document. This might be an XML
      * element (<elem>data</elem> type) or a CDATA section.
      */
-    public void startElement(String elementName)
-	throws TransletException {
-
+    public void startElement(String elementName) throws TransletException {
 	try {
 	    switch(_outputType) {
 
@@ -776,27 +755,51 @@ public final class TextOutput implements TransletOutputHandler {
 	return base;
     }
 
-    private String expandAttribute(String qname) throws TransletException {
-	// If this attribute was created using an <xsl:attribute>
-	// element with a 'namespace' attribute and a 'name' attribute
-	// containing an AVT, then we might get an attribute name on
-	// a strange format like 'prefix1:prefix2:localpart', where
-	// prefix1 is from the AVT and prefix2 from the namespace.
-	final int endcol = qname.lastIndexOf(':');
-	if (endcol > 0) {
-	    final int startcol = qname.indexOf(':');
-	    final String localname = qname.substring(endcol+1);
-	    final String prefix = qname.substring(0,startcol);
-	    final String uri = lookupNamespace(prefix);
-	    if (uri == null)
+    /**
+     * Returns the URI of an element or attribute. Note that default namespaces 
+     * do not apply directly to attributes.
+     */
+    private String getNamespaceURI(String qname, boolean isElement) 
+	throws TransletException 
+    {
+	String uri = EMPTYSTRING;
+	int col = qname.lastIndexOf(':');
+	final String prefix = (col > 0) ? qname.substring(0, col) : EMPTYSTRING;
+
+	if (prefix != EMPTYSTRING || isElement) { 
+	    uri = lookupNamespace(prefix);
+	    if (uri == null && !prefix.equals(XMLNS_PREFIX)) {
 		BasisLibrary.runTimeError(BasisLibrary.NAMESPACE_PREFIX_ERR,
-					  prefix);
-	    // Omit prefix (use default) if the namespace URI is null
-	    if (uri.equals(EMPTYSTRING))
-		return(localname);
-	    // Construct new QName if we've got two alt. prefixes
-	    else if (endcol != startcol)
-		return(prefix+':'+localname);
+					  qname.substring(0, col));
+	    }
+	}
+	return uri;
+    }
+
+    /**
+     * Returns the local name of a qualified name. If the name has no prefix
+     * then return null. 
+     */
+    private static String getLocalName(String qname) throws TransletException {
+	final int col = qname.lastIndexOf(':');
+	return (col > 0) ? qname.substring(col + 1) : null;
+    }
+
+    /**
+     * TODO: This method is a HACK! Since XSLTC does not have access to the
+     * XML file, it sometimes generates a NS prefix of the form "ns?" for
+     * an attribute. If at runtime, when the qname of the attribute is
+     * known, another prefix is specified for the attribute, then we can get 
+     * a qname of the form "ns?:otherprefix:name". This function patches the 
+     * qname by simply ignoring the generated prefix.
+     */
+    private static String patchQName(String qname) throws TransletException {
+	final int lastColon = qname.lastIndexOf(':');
+	if (lastColon > 0) {
+	    final int firstColon = qname.indexOf(':');
+	    if (firstColon != lastColon) {
+		return qname.substring(firstColon + 1);
+	    }
 	}
 	return qname;
     }
@@ -808,54 +811,80 @@ public final class TextOutput implements TransletOutputHandler {
     public void attribute(String name, final String value)
 	throws TransletException {
 
-	switch(_outputType) {
-	case TEXT:
-	    // Do not output attributes if output mode is 'text'
-	    return;
-	case XML:
-	    if (!_startTagOpen)
-		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
-	    // Attributes whose names start with XML need special handling
-	    if (name.startsWith("xml")) {
-		// Output as namespace declaration
-		if (name.startsWith("xmlns")) {
-		    if (name.length() == 5)
-			namespace(EMPTYSTRING, value);
-		    else
-			namespace(name.substring(6),value);
-		    return;
-		}
-		// Output as xml:<blah> attribute
-		_attributes.add(name, value);
-	    }
-	    else {
-		// Output as regular attribute
-		_attributes.add(expandAttribute(name), escapeString(value));
-	    }
-	    return;
-	case HTML:
-	    if (!_startTagOpen)
-		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
-	    // The following is an attempt to escape an URL stored in a href
-	    // attribute of HTML output. Normally URLs should be encoded at
-	    // the time they are created, since escaping or unescaping a
-	    // completed URI might change its semantics. We limit or escaping
-	    // to include space characters only - and nothing else. This is for
-	    // two reasons: (1) performance and (2) we want to make sure that
-	    // we do not change the meaning of the URL.
+	if (_outputType == TEXT) return;
 
-	    // URL-encode href attributes in HTML output
-	    final String tmp = name.toLowerCase();
-	    if (tmp.equals(HREF_STR) || tmp.equals(SRC_STR) ||
-		 tmp.equals(CITE_STR)) {
-		_attributes.add(name,
-		    quickAndDirtyUrlEncode(escapeAttr(value)));
+	final String patchedName = patchQName(name);
+	final String localName = getLocalName(patchedName);
+	final String uri = getNamespaceURI(patchedName, false);
+	final int index = (localName == null) ?
+				_attributes.getIndex(name) :	/* don't use patchedName */
+				_attributes.getIndex(uri, localName);
+
+	switch(_outputType) {
+	case XML:
+	    if (!_startTagOpen) {
+		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR, patchedName);
+	    }
+
+/*
+System.err.println("TextOutput.attribute() uri = " + uri
+    + " localname = " + localName
+    + " qname = " + name 
+    + "\n value = " + value
+    + " escapeString(value) = " + escapeString(value));
+*/
+
+	    // Output as namespace declaration
+	    if (name.startsWith(XMLNS_PREFIX)) {
+		namespace(name.length() > 6 ? name.substring(6) : EMPTYSTRING, value);
 	    }
 	    else {
-		_attributes.add(expandAttribute(name), 
-			escapeNonURLAttr(value));
+		if (index >= 0) {	// Duplicate attribute?
+		    _attributes.setAttribute(index, uri, localName, patchedName, "CDATA", 
+			escapeString(value));	
+		}
+		else {
+		    _attributes.addAttribute(uri, localName, patchedName, "CDATA", 
+			escapeString(value));
+		}
 	    }
-	    return;
+	    break;
+	case HTML:
+	    if (!_startTagOpen) {
+		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
+	    }
+
+	    /* 
+	     * The following is an attempt to escape an URL stored in a href
+	     * attribute of HTML output. Normally URLs should be encoded at
+	     * the time they are created, since escaping or unescaping a
+	     * completed URI might change its semantics. We limit or escaping
+	     * to include space characters only - and nothing else. This is for
+	     * two reasons: (1) performance and (2) we want to make sure that
+	     * we do not change the meaning of the URL.
+	     */
+	    final String tmp = name.toLowerCase();
+	    if (tmp.equals(HREF_STR) || tmp.equals(SRC_STR) || tmp.equals(CITE_STR)) {
+		if (index >= 0) {
+		    _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING, name, 
+			"CDATA", quickAndDirtyUrlEncode(escapeAttr(value)));
+		}
+		else {
+		    _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING, name, "CDATA",
+			quickAndDirtyUrlEncode(escapeAttr(value)));
+		}
+	    }
+	    else {
+		if (index >= 0) {
+		    _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING, 
+			name, "CDATA", escapeNonURLAttr(value));
+		}
+		else {
+		    _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING, 
+			name, "CDATA", escapeNonURLAttr(value));
+		}
+	    }
+	    break;
 	}
     }
 
@@ -886,7 +915,6 @@ public final class TextOutput implements TransletOutputHandler {
      * End an element or CDATA section in the output document
      */
     public void endElement(String elementName) throws TransletException {
-	
 	try {
 	    switch(_outputType) {
 	    case TEXT:
@@ -897,7 +925,10 @@ public final class TextOutput implements TransletOutputHandler {
 		if (_startTagOpen) closeStartTag();
 		if (_cdataTagOpen) closeCDATA();
 
-		_saxHandler.endElement(null, null, (String)(_qnameStack.pop()));
+		final String qname = (String) _qnameStack.pop();
+		_saxHandler.endElement(getNamespaceURI(qname, true), 
+		    getLocalName(qname), qname);
+
 		popNamespaces();
 		if (((Integer)_cdataStack.peek()).intValue() == _depth)
 		    _cdataStack.pop();
@@ -906,7 +937,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    case HTML:
 		// Close any open element
 		if (_startTagOpen) closeStartTag();
-		_saxHandler.endElement(null, null, (String)(_qnameStack.pop()));
+		_saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, 
+		    (String)(_qnameStack.pop()));
 		popNamespaces();
 		_depth--;		
 		return;
@@ -973,10 +1005,15 @@ public final class TextOutput implements TransletOutputHandler {
 	_prefixStack = new Stack();
 
 	// Define the default namespace (initially maps to "" uri)
-	Stack stack =  new Stack();
-	_namespaces.put(EMPTYSTRING, stack);
+	Stack stack;
+	_namespaces.put(EMPTYSTRING, stack = new Stack());
 	stack.push(EMPTYSTRING);
 	_prefixStack.push(EMPTYSTRING);
+
+	_namespaces.put(XML_PREFIX, stack = new Stack());
+	stack.push("http://www.w3.org/XML/1998/namespace");
+	_prefixStack.push(XML_PREFIX);
+
 	_nodeStack.push(new Integer(-1));
 	_depth = 0;
     }
@@ -985,9 +1022,9 @@ public final class TextOutput implements TransletOutputHandler {
      * Declare a prefix to point to a namespace URI
      */
     private void pushNamespace(String prefix, String uri) throws SAXException {
-
+	// Prefixes "xml" and "xmlns" cannot be redefined
 	if (prefix.equals(XML_PREFIX)) return;
-
+	
 	Stack stack;
 	// Get the stack that contains URIs for the specified prefix
 	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
@@ -1002,15 +1039,15 @@ public final class TextOutput implements TransletOutputHandler {
 	_prefixStack.push(prefix);
 	_nodeStack.push(new Integer(_depth));
 
-	if ((!prefix.equals(EMPTYSTRING)) && (uri.equals(EMPTYSTRING))) return;
-	_saxHandler.startPrefixMapping(prefix, uri);
+	// Inform the SAX handler
+	_saxHandler.startPrefixMapping(prefix, escapeString(uri));
     }
 
     /**
      * Undeclare the namespace that is currently pointed to by a given prefix
      */
     private void popNamespace(String prefix) throws SAXException {
-
+	// Prefixes "xml" and "xmlns" cannot be redefined
 	if (prefix.equals(XML_PREFIX)) return;
 
 	Stack stack;

@@ -81,6 +81,7 @@ import org.w3c.dom.Document;
 
 import org.xml.sax.*;
 import org.xml.sax.ext.*;
+import org.xml.sax.helpers.AttributesImpl;
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
@@ -1056,6 +1057,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		while ((_ns == DOM.NULL) && (_node != DOM.NULL)) {
 		    _node = _parent[_node];
 		    _ns = _lengthOrAttr[_node];
+
 		    while ((_ns != DOM.NULL) && (_type[_ns] != NAMESPACE)) {
 			_ns = _nextSibling[_ns];
 		    }
@@ -2658,6 +2660,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (isElement(node)) {
 		// Start element definition
 		final String name = copyElement(node, type, handler);
+
 		// Copy element attribute
 		for (int a=_lengthOrAttr[node]; a!=NULL; a=_nextSibling[a]) {
 		    if (_type[a] != NAMESPACE) {
@@ -2990,6 +2993,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	private static final String XML_STRING = "xml:";
 	private static final String XMLSPACE_STRING = "xml:space";
 	private static final String PRESERVE_STRING = "preserve";
+	private static final String XML_PREFIX   = "xml";
+	private static final String XMLNS_PREFIX = "xmlns";
 
 	private boolean _escaping = true;
 	private boolean _disableEscaping = false;
@@ -3110,7 +3115,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	private short makeElementNode(String uri, String localname)
 	    throws SAXException {
-	    
 	    final String name;
 	    if (uri != EMPTYSTRING)
 		name = uri + ':' + localname;
@@ -3260,33 +3264,29 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * Creates an attribute node
 	 */
 	private int makeAttributeNode(int parent, Attributes attList, int i)
-	    throws SAXException {
-
+	    throws SAXException 
+	{
     	    final int node = nextAttributeNode();
-
 	    final String qname = attList.getQName(i);
-	    final String localname = attList.getLocalName(i);
+	    String localname = attList.getLocalName(i);
 	    final String value = attList.getValue(i);
 	    StringBuffer namebuf = new StringBuffer(EMPTYSTRING);
 	    
-	    // Create the internal attribute node name (uri+@+localname)
-	    if (qname.startsWith(XML_STRING)) {
-		if (qname.startsWith(XMLSPACE_STRING))
-		    xmlSpaceDefine(attList.getValue(i), parent);
+	    if (qname.startsWith(XMLSPACE_STRING)) {
+		xmlSpaceDefine(attList.getValue(i), parent);
 	    }
+
+	    // Create the internal attribute node name (uri+@+localname)
 	    final String uri = attList.getURI(i);
-	    if ((uri != null) && (!uri.equals(EMPTYSTRING))) {
+	    if (uri != null && !uri.equals(EMPTYSTRING)) {
 		namebuf.append(uri);
 		namebuf.append(':');
 	    }
 	    namebuf.append('@');
-	    if (localname != null )
-                namebuf.append(localname);
-            else
-                namebuf.append(qname);
+	    namebuf.append(localname.length() > 0 ? localname : qname);
 
 	    String name = namebuf.toString();
-	    
+
 	    // Get the index of the attribute node name (create new if non-ex).
 	    Integer obj = (Integer)_names.get(name);
 	    if (obj == null) {
@@ -3341,7 +3341,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _type2[0] = NAMESPACE;
 
 	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
-	    startPrefixMapping("xml", "http://www.w3.org/XML/1998/namespace");
+	    startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
 	    _lengthOrAttr[ROOTNODE] = _nextNamespace;
 	    _parent2[_nextNamespace] = ROOTNODE;
 	    _nextNamespace = DOM.NULL;
@@ -3420,41 +3420,56 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	    _lengthOrAttr[node] = DOM.NULL;
 
+	    int last = -1;
 	    final int count = attributes.getLength();
 
 	    // Append any namespace nodes
 	    if (_nextNamespace != DOM.NULL) {
 		_lengthOrAttr[node] = _nextNamespace;
+
 		while (_nextNamespace != DOM.NULL) {
 		    _parent2[_nextNamespace] = node;
-		    int tail = _nextNamespace;
-		    _nextNamespace = _nextSibling2[_nextNamespace];
+		    _nextNamespace = _nextSibling2[last = _nextNamespace];
 		    // Chain last namespace node to following attribute node(s)
-		    if ((_nextNamespace == DOM.NULL) && (count > 0))
-			_nextSibling2[tail] = _currentAttributeNode;
+		    if (_nextNamespace == DOM.NULL && count > 0) {
+			_nextSibling2[last] = _currentAttributeNode;
+		    }
 		}
 	    }
 
 	    // Append any attribute nodes
+	    boolean attrsAdded = false;
 	    if (count > 0) {
 		int attr = _currentAttributeNode;
-		if (_lengthOrAttr[node] == DOM.NULL)
+		if (_lengthOrAttr[node] == DOM.NULL) {
 		    _lengthOrAttr[node] = attr;
-		for (int i = 0; i<count; i++) {
-		    attr = makeAttributeNode(node, attributes, i);
-		    _parent2[attr] = node;
-		    _nextSibling2[attr] = attr + 1;
 		}
-		_nextSibling2[attr] = DOM.NULL;
+		for (int i = 0; i < count; i++) {
+		    if (!attributes.getQName(i).startsWith(XMLNS_PREFIX)) {
+			attr = makeAttributeNode(node, attributes, i);
+			_parent2[attr] = node;
+			_nextSibling2[attr] = attr + 1;
+			attrsAdded = true;
+		    }
+		}
+		// Did we append namespace nodes only?
+		if (!attrsAdded && last != -1) {
+		    _nextSibling2[last] = DOM.NULL;
+		}
+		else {
+		    _nextSibling2[attr] = DOM.NULL;
+		}
 	    }
 
 	    final int col = qname.lastIndexOf(':');
 
 	    // Assign an internal type to this element (may exist)
-	    if ((uri != null) && (localName.length() > 0))
+	    if (uri != null && localName.length() > 0) {
 		_type[node] = makeElementNode(uri, localName);
-	    else
+	    }
+	    else {
 		_type[node] = makeElementNode(qname, col);
+	    }
 
 	    // Assign an internal type to the element's prefix (may exist)
 	    if (col > -1) {
@@ -3548,7 +3563,8 @@ public final class DOMImpl implements DOM, Externalizable {
 		else
 		    _nextSibling2[attr-1] = attr;
 		_nextSibling2[attr] = DOM.NULL;
-		_prefix2[attr] = idx.shortValue();
+		// _prefix2[attr] = idx.shortValue();
+		_prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
 	    }
 	}
 
