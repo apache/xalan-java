@@ -350,7 +350,7 @@ public class TreeWalker
     break;
     case Node.TEXT_NODE :
     {
-      String data = ((Text) node).getData();
+      // String data = ((Text) node).getData();
 
       if (nextIsRaw)
       {
