@@ -110,6 +110,7 @@ $Id$
   <!-- Relative locations of source directories -->
   <property name="manifest.mf" value="./src/MANIFEST.MF"/>
   <property name="manifest.xsltc.mf" value="./src/manifest.xsltc"/>
+  <property name="manifest.xalan-interpretive.mf" value="./src/manifest.xalan-interpretive"/>  
   <property name="XSLTInfo.props" value="./src/org/apache/xalan/res/XSLTInfo.properties"/>  
   <property name="src.dir" value="./src"/>
   <property name="apachexml.reldir" value="org/apache/xml"/>
@@ -631,12 +632,13 @@ $Id$
     <filter token="impl.version" value="${impl.version}"/>
     <filter token="java.version" value="${java.version}"/>
     <filter token="java.vendor" value="${java.vendor}"/>     
-    <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
-    <jar jarfile="${build.xalan-interpretive.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
+    <copy todir="${build.dir}" file="${manifest.xalan-interpretive.mf}" filtering="true"/>
+    <jar jarfile="${build.xalan-interpretive.jar}" manifest="${build.dir}/manifest.xalan-interpretive" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
         <include name="${apachexml.reldir}/**/*" />
         <include name="${xpath.reldir}/**/*" />
         <include name="${xalan.reldir}/**/*" />
+        <include name="${domxpath.reldir}/**/*" />        
         <include name="META-INF/services/*" />
         <exclude name="${xsltc.reldir}/**/*" />
         <exclude name="${serializer.reldir}/**/*" />
