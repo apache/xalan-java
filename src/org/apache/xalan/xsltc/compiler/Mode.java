@@ -599,8 +599,6 @@ final class Mode implements Constants {
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
 	
-	System.out.println("arg " + argTypes[1]);
-
 	final String[] argNames = new String[3];
 	argNames[0] = DOCUMENT_PNAME;
 	argNames[1] = ITERATOR_PNAME;
