@@ -97,6 +97,7 @@ public final class TextOutput implements TransletOutputHandler, Constants {
     private boolean   _startTagOpen = false;
     private boolean   _headTagOpen = false;
     private boolean   _cdataTagOpen = false;
+    private boolean   _is8859Encoded = false;
 
     // Contains all elements that should be output as CDATA sections
     private Hashtable _cdata = null;
@@ -178,6 +179,7 @@ public final class TextOutput implements TransletOutputHandler, Constants {
         _saxHandler = handler;
         init();
 	_encoding = encoding;
+	_is8859Encoded = _encoding.equalsIgnoreCase("iso-8859-1");	
     }
 
     /**
@@ -193,6 +195,7 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 	_lexHandler = lex;
         init();
 	_encoding = encoding;
+	_is8859Encoded = _encoding.equalsIgnoreCase("iso-8859-1");	
     }
 
     /**
@@ -399,17 +402,19 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 		// the first CDATA and '>' at the beginning of the next. Other
 		// special characters/sequences are _NOT_ escaped within CDATA.
 		Integer I = (Integer)_cdataStack.peek();
-		if ((I.intValue() == _depth) && (!_cdataTagOpen))
+		if ((I.intValue() == _depth) && (!_cdataTagOpen)) {
 		    startCDATA(ch, off, len);
-		// Output characters escaped if required.
-		else if (_escapeChars)
-		    if (_cdataTagOpen)
+		} 
+		else if (_escapeChars) {
+		    if (_cdataTagOpen) {
 			escapeCDATA(ch, off, len);
-		    else
+		    } else {
 			escapeCharacters(ch, off, len);
-		// Output the chracters as the are if not.
-		else
+		    }
+		} 
+		else {
 		    _saxHandler.characters(ch, off, len);
+		}
 		return;
 
 	    case HTML:
@@ -532,9 +537,11 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 
 	if (limit > ch.length) limit = ch.length;;
 
+
 	// Step through characters and escape all special characters
 	for (int i = off; i < limit; i++) {
-	    switch (ch[i]) {
+	    char current = ch[i];
+	    switch (current) {
 	    case '&':
 		_saxHandler.characters(ch, offset, i - offset);
 		_saxHandler.characters(AMP, 0, AMP_length);
@@ -558,7 +565,9 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 	    default:
 		// Escape all characters not in the basic ASCII character set
 		// to simple (hexadecimal) character references
-		if (ch[i] > '\u007F') {
+		if ( (current >= '\u007F' && current < '\u00A0') ||
+		     (_is8859Encoded && (current > '\u00FF')) )
+		{
 		    StringBuffer buf = new StringBuffer(CHAR_ESC_START);
 		    buf.append(Integer.toString((int)ch[i]));
 		    buf.append(';');
