@@ -371,7 +371,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
         if(template.m_frameSize > 0)
         {
           vars.link(template.m_frameSize);
-          if(nParams > 0 && template.m_inArgsSize > 0)
+          // You can't do the check for nParams here, otherwise the 
+          // xsl:params might not be nulled.
+          if(/* nParams > 0 && */ template.m_inArgsSize > 0)
           {
             int paramIndex = 0;
             for (ElemTemplateElement elem = template.getFirstChildElem(); 
@@ -380,6 +382,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
               if(Constants.ELEMNAME_PARAMVARIABLE == elem.getXSLToken())
               {
                 ElemParam ep = (ElemParam)elem;
+                
                 int i;
                 for (i = 0; i < nParams; i++) 
                 {
