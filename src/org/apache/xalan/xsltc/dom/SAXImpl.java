@@ -190,7 +190,9 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
      * Define the origin of the document from which the tree was built
      */
     public void setDocumentURI(String uri) {
-        setDocumentBaseURI(SystemIDResolver.getAbsoluteURI(uri));
+        if (uri != null) {
+            setDocumentBaseURI(SystemIDResolver.getAbsoluteURI(uri));
+        }
     }
 
     /**
