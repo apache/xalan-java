@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Created-By: 1.2.2 (Sun Microsystems Inc.)
 Main-Class: org.apache.xalan.xslt.Process
-Class-Path: jaxp.jar xerces.jar crimson.jar
+Class-Path: jaxp.jar xerces.jar crimson.jar xml-apis.jar
 
 
 Name: org/apache/xalan
@@ -29,33 +29,4 @@ Implementation-Vendor: Apache Software Foundation
 Implementation-URL: http://xml.apache.org/xalan-j/dist/
 
 
-Name: org/xml/sax/
-Comment: Sources copied from xml-commons
-Specification-Title: Simple API for XML
-Specification-Vendor: David Megginson
-Specification-Version: 2.0
-Implementation-Title: org.xml.sax
-Implementation-Version: 2.0
-Implementation-Vendor: David Megginson
-Implementation-URL: http://www.megginson.com/SAX/index.html
-
-Name: org/w3c/dom/
-Comment: Sources copied from xml-commons
-Specification-Title: Document Object Model, Level 2 Core
-Specification-Vendor: World Wide Web Consortium
-Specification-Version: 1.0
-Implementation-Title: org.w3c.dom
-Implementation-Version: 1.0
-Implementation-Vendor: World Wide Web Consortium
-Implementation-URL: http://www.w3c.org/DOM/
-
-Name: javax/xml/transform/
-Comment: Sources copied from xml-commons
-Specification-Title: Java API for XML Processing
-Specification-Version: 1.1
-Specification-Vendor: Sun Microsystems Inc.
-Implementation-Title: javax.xml.transform
-Implementation-Version: 1.1.2
-Implementation-Vendor: Sun Microsystems Inc.
-Implementation-URL: http://java.sun.com/xml/jaxp.html
 
