@@ -1,67 +1,33 @@
 <s3 title="Changes since &xslt4j; version 2.0.D07">
-<p>This release includes several bug fixes to the &xslt4j; and TrAX core and to the Xalan-Java 1 compatibility API. We also updated bsf.jar to the <resource-ref idref="bsf"/> release candidate 2.2, which fixes a bug running JPython extensions.</p>
+<p>This release includes several bug fixes to the &xslt4j; and TrAX core and to the Xalan-Java 1 compatibility API.</p>
 <p><em>Core bug fixes:</em></p>
 <ul>
-  <li>A threading problem showed up when using multiple processors. We fixed it by using a separate XPathContext object to do whitespace node
-   matches (xsl:strip-space).<br/><br/></li>
-  <li>Fixed a bug running Norm Walsh's DocBook stylesheets by not setting the variable stack position if the FilterExprWalker is not owned by a
-  top-level NodeIterator.<br/><br/></li>
-  <li>Fixed a problem with null namespace being passed from xsl:element. This bug also surfaced while processing DocBook
-   stylesheets.<br/><br/></li>
-  <li>In the interest of stability, we now treat "unknown error in XPath" as a fatal error.<br/><br/></li>
-  <li>Added support in stylesheet processing instructions for "text/xml" and "application/xml+xslt" mime types.<br/><br/></li>
-  <li>Fixed tokenizing of stylesheet processing instructions to allow parameters to be passed to server in href attributes.<br/><br/></li>
-  <li>Fixed a bug passing Transformer creation error messages to ErrorListener when an ErrorListener has been set on
-   TransformerFactory.<br/><br/></li>
-  <li>When using an Exception to instantiate a FactoryConfigurationError (extends Error), we now propagate the Exception message to 
-  super().<br/><br/></li>
-  <li>Added defensive code to ElemTemplateElement for handling a null URI.<br/><br/></li>
-  <li>When using an Exception to instantiate a TransformerException (extends Exception), we now propagate the Exception message to super() 
-  rather than a generic message.<br/><br/></li>
-  <li>Fixed a bug (the generation of an unwanted entity reference) performing the identity transformation 
-  (see <link idref="usagepatterns" anchor="serialize">Serializing output</link>) with an XML document containing a DOCTYPE
-   declaration.<br/><br/></li>
-   <li>Message manager modified so that the SourceLocator must always be passed in,
-  which will make a major difference in getting line number information.<br/><br/></li> 
-  <li>xsl:element's handling of namespace attribute and prefix in
-  name attribute changed so that it no longer manufactures prefixes...
-  it always tries its best to match the prefix entered.<br/><br/></li>  
-  <li>Bug fixed with namespace contexts in the stylesheet processor.
-  The bug could cause &lt;a xmlns:a="x"&gt;&lt;b&gt; to produce &lt;a xmlns:a="x"&gt;&lt;b xmlns:a="x"&gt;.<br/><br/></li>  
-  <li>Modified processing of xsl:message to enhance it as a debugging aid. Line numbers are now output with each
-  message. If the terminate attribute is true (the default is false) the message is sent to the console, and an exception is thrown with the
-  message "Stylesheet directed termination".<br/><br/></li>
-  <li>In TransformerException, check that the cause != null when checking for a contained exception.<br/><br/></li>
-  <li>Fixed a problem validating non-namespaced attributes and a problem allowing non-namespaced attributes to be children of the
-   stylesheet element.<br/><br/></li>
-   <li>Fixed checking of number of arguments in document() function.<br/><br/></li>
-   <li>Fixed problem with mutation of templates at run time. Templates resolution now takes place during the compose() method.<br/><br/></li>
-   <li>Fixed some minor threading issues in org.apache.xalan.stree (Child, Parent, ElementImpl, SourceTreeHandler).<br/><br/></li>
-   <li>Synchronized TrAX API functions subject to mutation to prevent mutation during a transformation.<br/><br/></li>
-   <li>Fixed bug reported by Jano Elovirta: substring() was returning an error if the start index is larger than the string.<br/><br/></li>   
-   <li>Set StringKey.toString() to return the underlying String (m_str), thus avoiding a potential symmetry problem with the equals() method
-   reported by Ito Kazumitsu.<br/><br/></li>
-   <li>In response to note from Ito Kazumitsu, changed Java encoding name "EUCJIS" in FormatterToXML to "EUC_JP".<br/><br/></li>
-   <li>When Xalan creates a FileOutputStream, it now closes the stream before exiting.<br/><br/></li>
-   <li>Fixed handling of an exception that can be thrown while building a DOM.<br/><br/></li>
-   <li>Fixed a problem reported by Dimitry Voytenko serializing compiled stylesheets.<br/><br/></li>
-   <li>For support of applets, modified TransformerFactory System.getProperty() calls to catch SecurityExceptions.<br/><br/></li>
-   <li>Fixed a bug reported by Krishna Mohan Meduri setting output properties.<br/><br/></li>
-   <li>Fixed error recovery when xsl:element encounters a bad name or unresolvable prefix.<br/><br/></li>
-   <li>Added AbstractMethodError handling to existing NoSuchMethodError handling as a fallback to the XMLReaderFactory for XML parsers that do
-       not implement the JAXP parsers interface for creating an XMLReader<br/><br/></li>
-   <li>Fixed bug with cloned iterators reported by Tim Sean.<br/><br/></li>
-   <li>Fixed null pointer exception that could occur with getValue("xxx").<br/><br/></li>
-   <li>Fixed bug reported by Tim Sean handling the xml:space attribute.</li>
+  <li>Fixed bug reported by Chris McCabe. If the last used AxesWalker is null, we no longer check to see if it is a fast walker!<br/><br/></li>
+  <li>Fixed TransformerImpl for exceptions that were not being passed through the error listener.<br/><br/></li>  
+  <li>Fixed bug in FollowingWalker reported by Dave Haffner. In parentNode(), no longer screen out nextAncestor, since the parent
+  is never returned. This fix sets things up correctly for firstChild and nextSibling.<br/><br/></li>
+  <li>Fixed bug in PrecedingWalker reported by Dave Haffner. In nextSibling(), do not return null if isAncestorOfRootContext; rather do
+  next.getFirstChild.<br/><br/></li>
+  <li>Fixed SourceTreeManager bug reported by anders.domeij@uc.se. Removed an extra TransformationException declaration in resolveURI().<br/><br/></li>
+  <li>Fixed SourceTreeHandler bug reported by Jason Harrop. Do not process a comment or whitespace if inside a startDTD/endDTD event.<br/><br/></li>
+  <li>In indirect reponse to a bug reported by Thee Boon Hoo (theebh@newstakes.com). The "//tables[1]" pattern was returning one instead of
+  two nodes when applied to Thee Boon Hoo's source. This pattern is equivalent to "/descendent-or-self::node()/table[1]", so it must
+  return the first table child of each table-inst element. Must turn off optimization which used "/descendent-or-self//table", given that
+  we cannot be sure until runtime that indexing is not being used.<br/><br/></li>
+  <li>Added patch to StylesheetPIHandler and TransformerFactoryImpl submitted by Dmitri Ilyin for use of the specified URIResolver.<br/><br/></li>
+  <li>Fixed ElemNumber bug. The number expression must be evaluated and then rounded up.<br/><br/></li>
+  <li>Fixed bug in Process by creating a DocumentFragment for the output node in DOM to DOM transformations.<br/><br/></li>
+  <li>Improved Compiler class error message when the QUO opcode (from an earlier version of the XSLT spec) is used.<br/><br/></li>
+  <li></li>
+
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
-  <li>Fixed ProblemListener (for processing error messages) to derive from &xslt4j; 2 ErrorHandler.<br/><br/></li>
-  <li>Fixed evaluation of stylesheet string parameters to conform to &xslt4j; 1 behavior (expressions for &xslt4j; 1 vs. String objects 
-  for &xslt4j; 2).<br/><br/></li>    
-  <li>Added XPathSupport and XPathSupportDefault, and fixed the derivation of XObject sub-types (XString, etc.).<br/><br/></li>
-  <li>Fixed bug with XSLTProcessor process(xmlIn, null, out) method so that it uses the StylesheetRoot (if one exists) that has been created
-   with the processStylesheet() method.</li>
+  <li><br/><br/></li>
+  <li><br/><br/></li>
+  <li><br/><br/></li>
+  <li><br/><br/></li>
+  <li></li>        
 </ul>
 <p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s3>
