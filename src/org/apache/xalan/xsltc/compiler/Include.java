@@ -75,7 +75,9 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+
 import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
 
 final class Include extends TopLevelElement {
 
@@ -100,10 +102,12 @@ final class Include extends TopLevelElement {
 	    String currLoadedDoc = context.getSystemId();
 	    SourceLoader loader = context.getSourceLoader();
 	    InputSource input = null;
+	    XMLReader reader = null;
 
 	    if (loader != null) {
 		final XSLTC xsltc = parser.getXSLTC();
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
+		reader = xsltc.getXMLReader();
 	    }
 	    else {
 		// bug 7835, patch by Stefan Kost (s.kost@webmacher.de)
@@ -141,7 +145,14 @@ final class Include extends TopLevelElement {
 		return;
 	    }
 
-	    final SyntaxTreeNode root = parser.parse(input);
+	    final SyntaxTreeNode root;
+            if (reader != null) {
+                root = parser.parse(reader,input);
+            }
+            else {
+                root = parser.parse(input);
+            }
+              
 	    if (root == null) return;
 	    _included = parser.makeStylesheet(root);
 	    if (_included == null) return;

@@ -455,6 +455,13 @@ public final class XSLTC {
     public void setXMLReader(XMLReader reader) {
 	_reader = reader;
     }
+    
+    /**
+     * Get the XMLReader to use for parsing the next input stylesheet
+     */
+    public XMLReader getXMLReader() {
+	return _reader ;
+    }
 
     /**
      * Get a Vector containing all compile error messages
