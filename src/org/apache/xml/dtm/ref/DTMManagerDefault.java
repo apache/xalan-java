@@ -137,11 +137,6 @@ public class DTMManagerDefault extends DTMManager
     new ExpandedNameTable();
 
   /**
-   * The most recent EntityResolver used.
-   */
-  private EntityResolver m_lastEntityResolver;
-
-  /**
    * Constructor DTMManagerDefault
    *
    */
@@ -531,16 +526,6 @@ public class DTMManagerDefault extends DTMManager
 
         // What can we do?
         // TODO: User diagnostics.
-      }
-
-      EntityResolver currentEntityResolver = reader.getEntityResolver();
-      if (null != currentEntityResolver)
-      {
-        m_lastEntityResolver = currentEntityResolver;
-      }
-      else if (null != m_lastEntityResolver)
-      {
-        reader.setEntityResolver(m_lastEntityResolver);
       }
 
       return reader;
