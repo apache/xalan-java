@@ -101,16 +101,16 @@ transformer.transform
   <note>For a working example of this model at its simplest, see SimpleTransform.java in the java/samples/SimpleTransform subdirectory.</note>
   </s2><anchor name="transformerfactory"/>
   <s2 title="1. Instantiate a TransformerFactory">
-  <p><jump href="apidocs/javax/xml/transform/TransformerFactory#html">TransformerFactory</jump> is an abstract class with a static newInstance() method that instantiates the concrete subclass designated by the javax.xml.transform.TransformerFactory system property.</p>
+  <p><jump href="apidocs/javax/xml/transform/TransformerFactory.html">TransformerFactory</jump> is an abstract class with a static newInstance() method that instantiates the concrete subclass designated by the javax.xml.transform.TransformerFactory system property.</p>
   <p>The default setting for this system property is <jump href="apidocs/org/apache/xalan/processor/TransformerFactoryImpl.html">org.apache.xalan.processor.TransformerFactoryImpl</jump>.</p>
 </s2><anchor name="transformer"/>
   <s2 title="2. Use the TransformerFactory to process the stylesheet Source and produce a Transformer">
 <p>The TransformerFactory <jump href="apidocs/javax/xml/transform/TransformerFactory.html#newTransformer(javax.xml.transform.Source)">newTransformer(Source xslSource)</jump> method processes the stylesheet Source into a Templates object and returns a Transformer that you can use to perform a transformation (apply the Templates object to an XML Source).</p>
 <p>You may provide the stylesheet Source in the form of a stream of XML markup (<jump href="apidocs/javax/xml/transform/stream/StreamSource.html">StreamSource</jump>), a DOM Node (<jump href="apidocs/javax/xml/transform/dom/DOMSource.html">DOMSource</jump>), or a SAX InputSource (<jump href="apidocs/javax/xml/transform/sax/SAXSource.html">SAXSource</jump>). To specify a StreamSource, you may use a system ID or file name (using URI syntax), a java.io.InputStream, or a java.io.Reader. The use of DOMSource and SAXSource are illustrated in subsequent sections.</p>
-<note>If you plan to use the stylesheet Source to transform multiple XML Sources, you should use the TransformerFactory <jump href="apidocs/javax/xml/import/TransformerFactory.html#newTemplates(javax.xml.transform.Source)">newTemplates(Source xslSource)</jump> method to explicitly generate a Templates object. For each transformation, use the Templates object to generate a new Transformer. For the details, see <link anchor="multithreading">Multithreading</link>.</note>
+<note>If you plan to use the stylesheet Source to transform multiple XML Sources, you should use the TransformerFactory <jump href="apidocs/javax/xml/transform/TransformerFactory.html#newTemplates(javax.xml.transform.Source)">newTemplates(Source xslSource)</jump> method to explicitly generate a Templates object. For each transformation, use the Templates object to generate a new Transformer. For the details, see <link anchor="multithreading">Multithreading</link>.</note>
 </s2><anchor name="transformation"/>
 <s2 title="3. Use the Transformer to perform a transformation">
-<p>Use the Transformer <jump href="apidocs/javax/xml/import/Transformer.html#transform(javax.xml.transform.Source, javax.xml.transform.Result">transform(Source xmlSource, Result transformResult)</jump> method to transform  the XML Source and place the transformation output in a Result object.</p>
+<p>Use the Transformer <jump href="apidocs/javax/xml/transform/Transformer.html#transform(javax.xml.transform.Source,javax.xml.transform.Result">transform(Source xmlSource, Result transformResult)</jump> method to transform  the XML Source and place the transformation output in a Result object.</p>
 <p>Just as with the stylesheet, you can supply the XML Source in the form of a <jump href="apidocs/javax/xml/transform/stream/StreamSource.html">StreamSource</jump>, <jump href="apidocs/javax/xml/transform/dom/DOMSource.html">DOMSource</jump>, or <jump href="apidocs/javax/xml/transform/sax/SAXSource.html">SAXSource</jump>. Likewise, the Result may be a <jump href="apidocs/javax/xml/transform/stream/StreamResult.html">StreamResult</jump>, <jump href="apidocs/javax/xml/transform/dom/DOMResult.html">DOMResult</jump>, or <jump href="apidocs/javax/xml/transform/sax/SAXResult.html">SAXResult</jump>.</p>
 <p>For each node in the XML source, the Transformer uses the transformation instructions in the Templates object to determine which template to apply: one of the templates in the Templates object, a default template rule as specified in the XSLT spec, or none.</p>
 </s2><anchor name="plug"/>
@@ -214,7 +214,6 @@ or edit src/org/apache/xalan/serialize/HTMLEntities.res and rebuild xalan.jar.</
     <td>org.apache.xalan.serialize.SerializerToText</td>
   </tr>
 </table>
-<p>See also <link idref="readme" anchor="outputprops">Release Notes: Output Properties</link>.</p>
 </s2><anchor name="embed"/>
 <s2 title="Working with embedded stylesheets">
 <p>An XML Source may include an <jump href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet processing instruction</jump> which identifies the stylesheet to be used to process the document. As indicated by the processing instruction <ref>href</ref> attribute, the stylesheet itself may be embedded in the XML document or located elsewhere.</p>
@@ -247,7 +246,7 @@ instructions:</p>
 </ol>
 </s2><anchor name="serialize"/>
 <s2 title="Serializing output">
-<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <resource-ref idref="trax"/> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
+<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <link idref="trax">TRaX (Transformation API for XML)</link> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
 </s2><anchor name="params"/>
 <s2 title="Setting stylesheet parameters">
 <p>An XSLT stylesheet may include parameters that are set at run time each time a transformation is performed. To set a stylesheet parameter, use the Transformer 
@@ -433,7 +432,8 @@ anchor="usestylesheetparamservlet">UseStylesheetParamServlet</link> and <link id
 <p>If you want to perform multiple transformations (sequentially or concurrently) with the same stylesheet instructions, do the following:</p>
 <ol>
   <li>Use the TransformerFactory <jump href="apidocs/javax/xml/transform/TransformerFactory.html#newTemplates(javax.xml.transform.Source)">newTemplates(Source xslSource)</jump> method to create a Templates object.<br/><br/></li>
-<li>For each transformation, use the Templates object <jump href="apidocs/javax/xml/transform/Templates.html#newTransformer()">newTransformer()</jump> method to create a Transformer, and use that Transformer's <jump href="apidocs/javax/xml/transform/Transformer.html#transform(javax.xml.transform.Source, javax.xml.transform.Result)">transform(Source xmlSource, Result transformResult)</jump> method to perform the transformation.</li>
+<li>For each transformation, use the Templates object <jump href="apidocs/javax/xml/transform/Templates.html#newTransformer()">newTransformer()</jump> method to create a Transformer, and use that Transformer's 
+<jump href="apidocs/javax/xml/transform/Transformer.html#transform(javax.xml.transform.Source,javax.xml.transform.Result)">transform(Source xmlSource, Result transformResult)</jump> method to perform the transformation.</li>
 </ol>
 <p>For an example, see Examples.exampleUseTemplatesObj() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
 </s2><anchor name="debugging"/>
@@ -452,7 +452,7 @@ anchor="usestylesheetparamservlet">UseStylesheetParamServlet</link> and <link id
 		  <li><jump href="apidocs/org/apache/xalan/trace/GenerateEvent.html">GenerateEvent</jump> is an event that is 
 		  passed to the TraceListener.generated() function. It is called after an event occurs to create something in the result
       tree.<br/><br/></li>
-      <li><jump href="apidocs/org/apache/xalan/trace/SdelectionEvent.html">SelectionEvent</jump> is an event triggered by the
+      <li><jump href="apidocs/org/apache/xalan/trace/SelectionEvent.html">SelectionEvent</jump> is an event triggered by the
        selection of a stylesheet node.</li>
 		</ul>
     <p>The <link idref="commandline">command-line utility</link> uses the debugger interface when you include one or more of the
