@@ -79,7 +79,7 @@ public class DefaultConnectionPool implements ConnectionPool
    * A placeholder thast will keep the driver loaded
    * between calls.
    */
-  private Object m_Driver = null;
+  private Driver m_Driver = null;
   /**
    */
   private static final boolean DEBUG = false;
@@ -438,8 +438,9 @@ public class DefaultConnectionPool implements ConnectionPool
   {
     Connection con = null;
 
-    // Create a Connection
-    con = DriverManager.getConnection( m_url, m_ConnectionProtocol );
+    // Create a Connection directly from the Driver that was loaded
+    // with the context class loader. This is to support JDK1.4
+    con = m_Driver.connect(m_url, m_ConnectionProtocol );
 
     return con;
   }
@@ -495,8 +496,12 @@ public class DefaultConnectionPool implements ConnectionPool
 
         // We have also had problems with drivers unloading
         // load an instance that will get freed with the class.
-        m_Driver = cls.newInstance();
+        m_Driver = (Driver) cls.newInstance();
 
+        // Register the Driver that was loaded with the Contect Classloader
+        // but we will ask for connections directly from the Driver
+        // instance
+        DriverManager.registerDriver(m_Driver);
 
      }
      catch(ClassNotFoundException e)
