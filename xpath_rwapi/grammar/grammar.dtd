@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--========================================================================
+    DTD (Document Type Definition) for grammar definition originally created 
+    by James Clark.  The idea is to define an abstract grammar in XML than 
+    may then be used by documentation, directly by parser generators, 
+    or via an XSLT stylesheet or other transformation, may generate 
+    a parser compiler specification such as for YACC or JavaCC.
+
+$Log: grammar.dtd,v $
+Revision 1.1.2.1  2002/08/14 18:47:41  pauldick
+Xalan3 specific additions.
+
+Revision 1.1  2002/07/14 05:47:11  sboag
+new grammar definition set for XPath2.
+
+Revision 1.10  2002/03/17 21:31:08  sboag
+Made new grammar element, <next/> for use in primary or prefix expressions,
+to control when the next element is going to be called.  Somewhat experemental.
+
+Changed javacc stylesheet and bnf stylesheets to handle g:next.
+
+Fixed bugs with child::text(), by adding text, comment, etc., tokens to after forward
+or reverse axis.  (note: have to do the same to names after @).  This is yet
+another bad hack.
+
+Fixed bug with @type, by adding At token to lexical stateswitch into QNAME state
+for XQuery.
+
+Revision 1.9  2002/03/06 13:41:44  sboag
+Add some attributes for control of prefix productions.
+
+Revision 1.8  2001/12/20 21:01:14  sboag
+Added Jerome's Core changes, and fixed stuff to make core.jar and a core applet.
+
+Revision 1.7  2001/12/09 22:07:16  sboag
+Fixed problem with comments from previous checkin.
+
+Revision 1.6  2001/12/09 21:39:37  sboag
+[batch checkin] Added {- - comment - -} type comments.  
+Added ";" list query processing.  Added some stuff for ^char handling in reg 
+expressions, in order to support CharData better, but backed out of this (but 
+left some of the support in.  Removed old type def and group stuff (can look to 
+previous versions if we want to add this back in).  Changed to case sensitivity 
+in grammar, and updated fragment.xml.  Added optional (AT schemaLocation)? to 
+SchemaImport.  Other minor changes in support of WG decisions.
+
+Revision 1.5  2001/12/07 09:09:27  sboag
+Add a "show" attribute for RequiredSkip that allows control of whether or not
+to show the whitespace in the EBNF productions.  Only show it in those cases
+where it is required to disambiguate a token.
+
+Revision 1.4  2001/11/16 21:53:34  sboag
+I thought I already did this once, but changed action attribute to use CDATA
+instead of just popState|pushState, to enable pushState(STATE).
+
+Revision 1.3  2001/11/15 06:18:40  sboag
+Change type for action attribute to CDATA, in order to support
+action="pushState(STATETOKEN)".
+
+=========================================================================-->
+<!-- The root element of the definition -->
+<!ELEMENT grammar (language | start | token | skip | exprProduction | lexical-state-transitions | production)+>
+<!ATTLIST grammar
+  xmlns CDATA #FIXED "http://www.w3.org/2001/03/XPath/grammar"
+>
+
+<!-- Declare a language subset or superset, if they are used in the 
+     if attributes.
+     Attributes:
+         id -> the id of the language. 'if' attributes should map to these ids.
+         display-name -> The name to use for the descriptive name of the language.
+-->
+<!ELEMENT language EMPTY>
+<!ATTLIST language
+  id ID #REQUIRED
+  display-name CDATA #REQUIRED
+>
+
+<!-- The grammar must say where the start point is.
+     Attributes:
+         name -> the name of the starting production. 
+         state -> the start state for lexical matching.
+         if -> space separated list of tokens for conditional processing.
+-->
+<!ELEMENT start EMPTY>
+<!ATTLIST start
+  name IDREF #REQUIRED
+  state CDATA #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!-- ============= Lexical Specifications (terminals) ==============-->
+<!-- Define a token.
+     Attributes:
+         name -> the name of the token. 
+         if -> space separated list of tokens for conditional processing.
+         inline -> tell if the BNF description should expand this token inline.
+         override -> (not sure what this does yet. -sb)
+         recognize -> The state where this token will be recognized.
+         is-macro -> "yes" if this token can be used just as a macro, 
+                     and not as a true token.
+         value-type -> If just a grammatical token, use "none", 
+                       or use "string" for a string value
+                       or use "number" for a number value
+                       or use "id" if it is a token value with meaning.
+-->
+<!ELEMENT token (string | zeroOrMore | charClass | requiredSkip | optional | ref | choice | optionalSkip | oneOrMore)+>
+<!ATTLIST token
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+  inline CDATA #IMPLIED
+  override CDATA #IMPLIED
+  recognize CDATA #IMPLIED
+  is-macro (yes | no) #IMPLIED
+  special (no | yes) #IMPLIED
+  value-type (none | string | number | id) #IMPLIED
+  show (yes | no) #IMPLIED
+>
+
+<!-- Specification of a single character token. -->
+<!ELEMENT char (#PCDATA)>
+<!ATTLIST char
+  if IDREFS #IMPLIED
+  complement (no | yes) #IMPLIED
+>
+
+<!-- SGML mode in emacs doesn't like this, so I'm avoiding it for now. -->
+<!-- ATTLIST char
+	xml:space CDATA #IMPLIED
+-->
+
+<!ELEMENT charClass (charCode | char | charCodeRange | charRange)+>
+<!ELEMENT charCode EMPTY>
+<!ATTLIST charCode
+  value CDATA #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT charCodeRange EMPTY>
+<!ATTLIST charCodeRange
+  minValue CDATA #REQUIRED
+  maxValue CDATA #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT charRange EMPTY>
+<!ATTLIST charRange
+  minChar (0 | A | a) #REQUIRED
+  maxChar (9 | F | f) #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!-- Defines a character that must be complemented by another character of 
+     the same value, such as a quote. -->
+<!ELEMENT complement (charClass)>
+<!ATTLIST complement
+  if IDREFS #IMPLIED
+>
+
+<!-- Defines a string token. -->
+<!ELEMENT string (#PCDATA)>
+<!ATTLIST string
+  ignoreCase CDATA #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT skip (choice | ref)>
+<!ATTLIST skip
+  recognize CDATA #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT requiredSkip EMPTY>
+<!ATTLIST requiredSkip
+  recognize CDATA #IMPLIED
+  if IDREFS #IMPLIED
+  show (yes | no) #IMPLIED
+>
+
+<!--=================== Lexical State Transitions =================== -->
+<!-- Define a transition table for lexical states.  Using this is more 
+     convenient and cleaner than defining transitions for each token. 
+     Attributes:
+         if -> space separated list of tokens for conditional processing.
+               (Not currently used by the stylesheet!)
+-->
+<!ELEMENT lexical-state-transitions (transition-default?, transition+)>
+<!ATTLIST lexical-state-transitions
+  if IDREFS #REQUIRED
+>
+
+<!-- Define the default transition for all tokens not defined by the 
+     transition element.
+     Attributes:
+         if -> space separated list of tokens for conditional processing.
+               (Not currently used by the stylesheet!)
+         recognize -> The state where the tokens will be recognized.
+         nextState -> The next state to transition to. Invalid if popState us 
+                      used for the action.
+         action -> State stack action.
+-->
+<!ELEMENT transition-default EMPTY>
+<!ATTLIST transition-default
+  if IDREFS #IMPLIED
+  recognize CDATA #IMPLIED
+  nextState CDATA #IMPLIED
+  action CDATA #IMPLIED
+>
+
+<!-- Define a transition for a token or set of tokens.
+     Attributes:
+         refs -> IDREFS list of the tokens for which this transition applies. 
+         if -> space separated list of tokens for conditional processing.
+               (Not currently used by the stylesheet!)
+         recognize -> The state where the tokens will be recognized.
+         nextState -> The next state to transition to. Invalid if popState us 
+                      used for the action.
+         action -> State stack action.
+-->
+<!ELEMENT transition EMPTY>
+<!ATTLIST transition
+  refs IDREFS #REQUIRED
+  if IDREFS #IMPLIED
+  recognize CDATA #IMPLIED
+  nextState CDATA #IMPLIED
+  action CDATA #IMPLIED
+>
+
+<!--=================== Parser Production Specifications ===============-->
+<!-- A production that defines a "cascade" of productions that define 
+     operator precedence.
+         name -> the ID of the production. 
+         if -> space separated list of tokens for conditional processing.
+-->
+<!ELEMENT exprProduction (level+)>
+<!ATTLIST exprProduction
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT level (postfix | binary | prefix | primary)+>
+<!ATTLIST level
+  if IDREFS #IMPLIED
+>
+
+<!-- Basic non-terminal production.  
+         name -> the ID of the production. 
+         if -> space separated list of tokens for conditional processing.
+         show -> Don't show in the BNF if this value is "no".
+-->
+<!ELEMENT production (optional | ref | choice | sequence | zeroOrMore | oneOrMore)+>
+<!ATTLIST production
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+  show (yes | no) #IMPLIED
+>
+
+<!-- Defines a binary operator.  
+         name -> the ID of the production. 
+         if -> space separated list of tokens for conditional processing.
+       Example:
+       		<binary name="EqualityExpr">
+				<choice>
+					<ref name="Equals"/>
+					<ref name="NotEquals"/>
+				</choice>
+			</binary>
+-->
+<!ELEMENT binary (ref | choice)>
+<!ATTLIST binary
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT optionalSkip EMPTY>
+<!ATTLIST optionalSkip
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT postfix (ref | optional)+>
+<!ATTLIST postfix
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT prefix (optional | ref | choice | zeroOrMore | oneOrMore | sequence | next)+>
+<!ATTLIST prefix
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+  prefix-seq-type CDATA "*"
+>
+
+<!-- This element is used in exprProduction to control where the next production 
+     will be called from.  If it is not used, the next production will automatically be 
+     called.
+-->
+<!ELEMENT next EMPTY>
+<!ATTLIST next
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT primary (optional | ref | choice | zeroOrMore | oneOrMore)+>
+<!ATTLIST primary
+  name ID #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT ref EMPTY>
+<!ATTLIST ref
+  name IDREF #REQUIRED
+  if IDREFS #IMPLIED
+>
+
+<!--================ General Constructs =================-->
+<!ELEMENT zeroOrMore (string | charClass | optional | ref | 
+          choice | optional | zeroOrMore | oneOrMore | sequence | complement)+>
+<!ATTLIST zeroOrMore
+  name ID #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT oneOrMore (string | charClass | optional | ref | 
+          choice | optional | zeroOrMore | oneOrMore | sequence | complement)+>
+<!ATTLIST oneOrMore
+  name ID #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT optional (string | charClass | optional | ref | 
+          choice | optional | zeroOrMore | oneOrMore | sequence | complement)+>
+<!ATTLIST optional
+  name ID #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT choice (ref | string | sequence)+>
+<!ATTLIST choice
+  name ID #IMPLIED
+  break CDATA #IMPLIED
+  if IDREFS #IMPLIED
+>
+
+<!ELEMENT sequence (string | ref | optional | zeroOrMore | choice |  next)+>
+<!ATTLIST sequence
+  name ID #IMPLIED
+  if IDREFS #IMPLIED
+>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ===================================================================
+
+   Build file for XPath Api
+   
+Setup instructions: 
+   Before running an Ant build, you must
+   
+     - set the JAVA_HOME environment variable to the JDK root directory
+     - To build 'servlet' sample: Include Servlet SDK in your classpath
+     - To build docs/javadocs/xsltc: use JDK 1.2.x or higher
+   
+Build Instructions:   
+  To build, run
+   ant [antoptions] [targets]
+  in the directory where this file is located; you should also be 
+  able to use an installation of Ant v1.4.1 or later.
+   
+  build -projecthelp  will show a list of supported targets.
+   
+  Developers: include a description="" attribute in all user-callable targets.
+        
+  If you build a target that depends on other targets, those other 
+  targets are *usually* created in the correct order; however a 
+  few of the larger targets like dist do not list all dependencies.
+  
+Authors:
+  Shane Curcuru <shane_curcuru@lotus.com>
+  Don Leslie <donald_leslie@lotus.com>
+  Scott Boag <scott_boag@us.ibm.com>
+  Lionel Villard <villard@us.ibm.com>
+
+Copyright:
+  Copyright (c) 1999-2001 The Apache Software Foundation.
+   $Id: build.xml,v 1.174.2.1 2002/08/14 18:38:41 pauldick Exp $
+==================================================================== -->
+
+<project name="XPathAPI" default="javacc" basedir=".">
+
+  <property name="spec" value="xpath"/>
+  <property name="tree.xsl" value="grammar/etree.xsl"/>
+  
+	<path id="classpath">
+		<fileset dir="bin" includes="*.jar"/>
+	</path>
+
+  <target name="gen-grammar">
+      <mkdir dir="${spec}-src"/>
+      <property name="target.parser" value="${spec}-src"/>
+
+		<!-- first customized from original xpath-grammar -->
+      <style style="grammar/customize.xsl" in="grammar/xpath-grammar.xml" 
+	    out="grammar/custom-xpath-grammar.xml" force="yes" extension=".xml" destdir="grammar"/>
+    
+      <style style="${tree.xsl}" in="grammar/custom-xpath-grammar.xml" 
+	    out="${spec}-src/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}-src">
+      	<param name="spec" expression="${spec}"/>
+      	<param name="package-name" expression="com.ibm.etools.xpath.impl.parser"/>
+      </style>
+
+  </target>
+  
+  <target name="jjtree" depends="gen-grammar">
+    <jjtree target="${spec}-src/xpath-grammar.jjt" javacchome="bin"/>
+  </target>
+
+  <target name="javacc" depends="jjtree">
+    <javacc target="${spec}-src/xpath-grammar.jj" 
+	    javacchome="bin"
+	    debugtokenmanager="${debug}"
+	    debugparser="${debug}"
+	    sanitycheck="true"
+	    unicodeinput="${unicodeinput}"
+	    javaunicodeescape="${unicodeinput}"
+        outputdirectory="src/com/ibm/etools/xpath/impl/parser"/>
+      <copy file="${spec}-src/XPathTreeConstants.java" todir="src/com/ibm/etools/xpath/impl/parser"/>
+  </target>
+  
+  <target name="prepare">
+		<mkdir dir="build/classes"/>
+	</target>
+  
+  <target name="compile" depends="prepare">
+  	<javac srcdir="src" destdir="build/classes">
+	  	<classpath refid="classpath"/>
+	</javac>
+  </target>
+  
+  <target name="jar" depends="compile">
+		<jar destfile="build/xpathapi.jar" basedir="build/classes" includes="**/*.*"/>
+	</target>
+
+</project>

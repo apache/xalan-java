@@ -1,0 +1,3206 @@
+<?xml version="1.0"?>
+<!-- DOCTYPE grammar SYSTEM "grammar.dtd" -->
+
+<!--
+Copyright (c) 2002 W3C(r) (http://www.w3.org/) (MIT (http://www.lcs.mit.edu/), 
+INRIA (http://www.inria.fr/), Keio (http://www.keio.ac.jp/)), 
+All Rights Reserved.
+See http://www.w3.org/Consortium/Legal/ipr-notice-20000612#Copyright.
+W3C liability 
+(http://www.w3.org/Consortium/Legal/ipr-notice-20000612#Legal_Disclaimer), 
+trademark 
+(http://www.w3.org/Consortium/Legal/ipr-notice-20000612#W3C_Trademarks), 
+document use 
+(http://www.w3.org/Consortium/Legal/copyright-documents-19990405), 
+and software licensing rules 
+(http://www.w3.org/Consortium/Legal/copyright-software-19980720) 
+apply.
+-->
+
+<grammar xmlns="http://www.w3.org/2001/03/XPath/grammar">
+  <language id="xpath" display-name="XPath 2.0"/>
+  <language id="pathx1" display-name="XPath 1.0"/>
+  <language id="xquery" display-name="XQuery 1.0"/>
+  <language id="core"
+    display-name="XML Processing Formal Semantics Core Language 1.0"/>
+  <language id="match" display-name="XSLT 2.0 Match Patterns"/>
+	
+  <start name="Expr" state="DEFAULT" if="pathx1"/>
+  <start name="XPath" state="DEFAULT" if="xpath"/>
+  <start name="QueryList" state="DEFAULT" if="core"/>
+  <start name="QueryList" state="DEFAULT" if="xquery"/>
+  <start name="Pattern" state="DEFAULT" if="match"/>
+	
+  <token name="XmlCommentStart" if="xquery core">
+    <string>&lt;!--</string>
+  </token>
+	
+  <token name="XmlCommentEnd" if="xquery core">
+    <string>--></string>
+  </token>
+
+  <token name="IntegerLiteral" inline="false" value-type="number" type="literal">
+    <ref name="Digits"/>
+  </token>
+	
+  <token name="DecimalLiteral" inline="false" value-type="number" type="literal">
+    <choice>
+      <sequence>
+        <string>.</string>
+        <ref name="Digits"/>
+      </sequence>
+      <sequence>
+        <ref name="Digits"/>
+        <string>.</string>
+				<zeroOrMore>
+					<charClass>
+						<charRange minChar="0" maxChar="9"/>
+					</charClass>
+				</zeroOrMore>
+      </sequence>
+    </choice>
+  </token>
+	
+  <token name="DoubleLiteral" inline="false" value-type="number" type="literal">
+    <choice>
+      <sequence>
+        <string>.</string>
+        <ref name="Digits"/>
+      </sequence>
+      <sequence>
+        <ref name="Digits"/>
+        <optional>
+          <string>.</string>
+          <zeroOrMore>
+            <charClass>
+              <charRange minChar="0" maxChar="9"/>
+            </charClass>
+          </zeroOrMore>
+        </optional>
+      </sequence>
+    </choice>
+    <charClass>
+			<char>e</char>
+			<char>E</char>
+    </charClass>
+    <optional>
+			<charClass>
+				<char>+</char>
+				<char>-</char>
+			</charClass>
+    </optional>
+    <ref name="Digits"/>
+  </token>
+
+  <token name="StringLiteral" inline="false" value-type="string" type="literal" whitespace-spec="significant">
+    <choice>
+			<sequence>
+        <string>&quot;</string>
+        <zeroOrMore>
+          <choice>
+            <sequence>
+              <char>&quot;</char>
+              <char>&quot;</char>
+            </sequence>
+					<complement>
+						<charClass>
+							<char>&quot;</char>
+						</charClass>
+					</complement>
+		    </choice>
+	    </zeroOrMore>
+		<string>&quot;</string>
+	</sequence>
+		<sequence>
+			<string>&apos;</string>
+			<zeroOrMore>
+				<choice>
+					<sequence>
+						<char>&apos;</char>
+						<char>&apos;</char>
+					</sequence>
+				<complement>
+					<charClass>
+						<char>&apos;</char>
+					</charClass>
+				</complement>
+			</choice>
+			</zeroOrMore>
+			<string>&apos;</string>
+		</sequence>
+	</choice>
+  </token>
+
+  <token name="AtStringLiteral" if="xquery core">
+    <string>at</string>
+    <optionalSkip/>
+    <ref name="StringLiteral"/>
+  </token>
+	
+  <token name="URLLiteral" inline="false" value-type="string" if="xquery core" type="literal" whitespace-spec="significant">
+		<choice>
+      <sequence>
+        <string>&quot;</string>
+        <zeroOrMore>
+          <choice>
+            <sequence>
+              <char>&quot;</char>
+              <char>&quot;</char>
+            </sequence>
+					  <complement>
+					    <charClass>
+			   		    <char>&quot;</char>
+				      </charClass>
+					  </complement>
+		      </choice>
+	      </zeroOrMore>
+		    <string>&quot;</string>
+      </sequence>
+		  <sequence>
+			  <string>&apos;</string>
+			  <zeroOrMore>
+				  <choice>
+					  <sequence>
+						  <char>&apos;</char>
+						  <char>&apos;</char>
+					  </sequence>
+				    <complement>
+					    <charClass>
+						    <char>&apos;</char>
+					    </charClass>
+				    </complement>
+			    </choice>
+			  </zeroOrMore>
+			  <string>&apos;</string>
+		  </sequence>
+	  </choice>
+  </token>
+	
+  <token name="ExprComment" if="xquery core xpath" special="yes" inline="false">
+    <string>{--</string>
+		<zeroOrMore>
+			<complement>
+				<charClass>
+					<char>}</char>
+				</charClass>
+			</complement>
+		</zeroOrMore>
+    <string>--}</string>
+  </token>
+	
+  <skip recognize="DEFAULT OPERATOR QNAME NAMESPACEDECL XMLSPACE_DECL ITEMTYPE NAMESPACEKEYWORD VARNAME" if="xquery core xpath">
+		<oneOrMore>
+      <choice>
+        <ref name="WhitespaceChar"/>
+        <ref name="ExprComment"/>
+      </choice>
+		</oneOrMore>
+  </skip>
+	
+  <skip recognize="DEFAULT OPERATOR QNAME" if="pathx1">
+		<oneOrMore>
+			<ref name="WhitespaceChar"/>
+		</oneOrMore>
+  </skip>
+	
+	<token name="S" inline="false">
+		<oneOrMore>
+			<ref name="WhitespaceChar"/>
+		</oneOrMore>
+	</token>
+
+  <token name="ProcessingInstructionStart" if="xquery core">
+    <string>&lt;?</string>
+  </token>
+	
+  <token name="ProcessingInstructionEnd" if="xquery core">
+    <string>?></string>
+  </token>
+	
+  <token name="AxisChild" value-type="string">
+    <string>child</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisDescendant" value-type="string">
+    <string >descendant</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisParent" value-type="string">
+    <string >parent</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisAttribute" value-type="string">
+    <string >attribute</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisSelf" value-type="string">
+    <string >self</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisDescendantOrSelf" value-type="string">
+    <string >descendant-or-self</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisAncestor" value-type="string" if="xpath pathx1 core">
+    <string >ancestor</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisFollowingSibling" value-type="string" if="xpath pathx1 core">
+    <string >following-sibling</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisPrecedingSibling" value-type="string" if="xpath pathx1 core">
+    <string >preceding-sibling</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisFollowing" value-type="string" if="xpath pathx1 core">
+    <string >following</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisPreceding" value-type="string" if="xpath pathx1 core">
+    <string >preceding</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisNamespace" value-type="string" if="xpath pathx1 core">
+    <string >namespace</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="AxisAncestorOrSelf" value-type="string" if="xpath pathx1 core">
+    <string >ancestor-or-self</string>
+    <optionalSkip/>
+    <string>::</string>
+  </token>
+	
+  <token name="DefineElement" if="core">
+    <string >define</string>
+    <requiredSkip show="no"/>
+    <string >element</string>
+  </token>
+	
+  <token name="DefineAttribute" if="core">
+    <string >define</string>
+    <requiredSkip show="no"/>
+    <string >attribute</string>
+  </token>
+	
+  <token name="DefineType" if="core">
+    <string >define</string>
+    <requiredSkip show="no"/>
+    <string >type</string>
+  </token>
+	
+  <token name="DefineFunction" if="xquery core">
+    <string >define</string>
+    <requiredSkip show="no"/>
+    <string >function</string>
+  </token>
+	
+  <token name="Or">
+    <string >or</string>
+  </token>
+	
+  <token name="And">
+    <string >and</string>
+  </token>
+	
+  <!-- token name="AtKeyword">
+    <string >at</string>
+  </token -->
+	
+  <token name="Div">
+    <string >div</string>
+  </token>
+
+  <token name="Idiv">
+    <string >idiv</string>
+  </token>
+	
+  <token name="Mod">
+    <string >mod</string>
+  </token>
+	
+  <token name="Multiply">
+    <string>*</string>
+  </token>
+	
+  <token name="In" if="xpath xquery core">
+    <string >in</string>
+  </token>
+
+  <token name="InContext" if="xpath xquery core">
+    <string >context</string>
+  </token>
+	
+  <token name="Satisfies" value-type="id">
+    <string >satisfies</string>
+  </token>
+	
+  <token name="Return">
+    <string >return</string>
+  </token>
+	
+   <token name="Then">
+    <string >then</string>
+  </token>
+	
+  <token name="Else">
+    <string >else</string>
+  </token>
+	
+  <token name="Default" if="xquery core">
+    <string >default</string>
+  </token>
+
+  <token name="DeclareXMLSpace" if="xquery core">
+    <string >declare</string>
+    <requiredSkip show="no"/>
+    <string>xmlspace</string>
+  </token>
+
+  <token name="XMLSpacePreserve" if="xquery core">
+    <string >preserve</string>
+  </token>
+
+  <token name="XMLSpaceStrip" if="xquery core">
+    <string >strip</string>
+  </token>
+	
+  <token name="Namespace" if="xquery core">
+    <string >namespace</string>
+  </token>
+	
+  <token name="DeclareNamespace" if="xquery core">
+    <string >declare</string>
+    <requiredSkip show="no"/>
+    <string>namespace</string>
+  </token>
+
+  <token name="DeclareResult" if="xquery core">
+    <string >declare</string>
+    <requiredSkip show="no"/>
+    <string>result</string>
+  </token>
+	
+  <token name="To">
+    <string >to</string>
+  </token>
+	
+  <token name="Where" if="xquery core">
+    <string >where</string>
+  </token>
+
+  <token name="Collation" if="xquery core">
+    <string >collation</string>
+  </token>
+	
+  <token name="Intersect">
+    <string >intersect</string>
+  </token>
+	
+  <token name="Union">
+    <string >union</string>
+  </token>
+	
+  <token name="Except">
+    <string >except</string>
+  </token>
+	
+  <!-- token name="Before" if="xquery core" value-type="id">
+	<string >before</string>
+  </token>
+	
+  <token name="After" if="xquery core" value-type="id">
+	<string >after</string>
+  </token -->
+	
+  <token name="As" if="xquery core">
+    <string >as</string>
+  </token>
+
+  <token name="AtWord" if="xquery core">
+    <string >at</string>
+  </token>
+	
+  <token name="Case" if="xquery core">
+    <string >case</string>
+  </token>
+	
+  <token name="Instanceof">
+    <string >instance</string>
+    <requiredSkip show="no"/>
+    <string >of</string>
+  </token>
+
+  <token name="Castable">
+    <string>castable</string>
+    <requiredSkip show="no"/>
+    <string >as</string>  </token>
+	
+  <!-- see http://lists.w3.org/Archives/Member/w3c-xsl-query/2002Mar/0154.html -->
+  <!-- token name="Only" value-type="id">
+	<string >only</string>
+  </token -->
+	
+  <!-- token name="Returns" if="xquery core">
+	<string >returns</string>
+  </token -->
+	
+  <token name="RparAs" if="xquery core">
+    <string >)</string>
+    <optionalSkip/>
+    <string >as</string>
+  </token>
+	
+  <!-- token name="Function" value-type="id" if="xquery core">
+	<string >function</string>
+  </token -->
+	
+  <token name="Item" value-type="id">
+    <string >item</string>
+  </token>
+	
+  <token name="ElementType" value-type="id">
+    <string >element</string>
+  </token>
+	
+  <token name="AttributeType" value-type="id">
+    <string >attribute</string>
+  </token>
+	
+  <!-- token name="Element" value-type="id">
+	<string >element</string>
+  </token -->
+
+  <token name="ElementQNameLbrace" value-type="id">
+    <string >element</string>
+    <requiredSkip show="no"/>
+    <ref name="QName"/>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+	
+  <token name="AttributeQNameLbrace" value-type="id">
+    <string >attribute</string>
+    <requiredSkip show="no"/>
+    <ref name="QName"/>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+	
+  <token name="ElementLbrace" value-type="id">
+    <string >element</string>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+	
+  <token name="AttributeLbrace" value-type="id">
+    <string >attribute</string>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+
+  <token name="TextLbrace" value-type="id" if="xquery core">
+    <string >text</string>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+	
+  <!-- token name="Attribute" value-type="id">
+	<string >attribute</string>
+  </token -->
+
+  <token name="DefaultCollationEquals" if="xpath xquery core">
+    <string >default</string>
+    <requiredSkip show="no"/>
+    <string >collation</string>
+    <requiredSkip show="no"/>
+    <string >=</string>
+  </token>
+	
+  <token name="DefaultElement" if="xpath xquery core">
+    <string >default</string>
+    <requiredSkip show="no"/>
+    <string >element</string>
+  </token>
+	
+  <token name="DefaultFunction"  if="xpath xquery core">
+    <string >default</string>
+    <requiredSkip show="no"/>
+    <string >function</string>
+  </token>
+
+  <token name="OfType" value-type="id">
+    <string >of</string>
+    <requiredSkip show="no"/>
+    <string >type</string>
+  </token>
+
+  <token name="AtomicValue" value-type="id">
+    <string >atomic</string>
+    <requiredSkip show="no"/>
+    <string >value</string>
+  </token>
+
+  <token name="Type" if="core" value-type="id">
+    <string >type</string>
+  </token>
+
+  <token name="TypeQName" if="xpath xquery core">
+    <string >type</string>
+    <requiredSkip show="no"/>
+    <ref name="QName"/>
+  </token>
+
+  <token name="Node" if="xquery core xpath" value-type="id">
+    <string >node</string>
+  </token>
+
+  <token name="Empty" if="xquery core xpath" value-type="id">
+    <string >empty</string>
+  </token>
+
+
+  <token name="None" if="core">
+    <string >none</string>
+  </token>
+
+  <!-- token name="Ref" if="xquery core" value-type="id">
+    <string >ref</string>
+  </token -->
+
+  <!-- Schema and Module need to be above QName in order for it 
+             to work with flex.  Of course, this means that these 
+             are reserved words.  I suspect they can be stateful to 
+             avoid this. -->
+  <!-- token name="Schema" if="xquery core">
+    <string >schema</string>
+  </token -->
+
+  <token name="ImportSchemaToken" if="xquery core">
+    <string >import</string>
+    <requiredSkip show="no"/>
+    <string>schema</string>
+  </token>
+
+  <!-- token name="Module" if="xquery core">
+    <string >module</string>
+  </token -->
+
+  <!--
+	<token name="Minoccurs"  if="core">
+		<string >minoccurs</string>
+	</token>
+	<token name="Maxoccurs"  if="core">
+		<string >maxoccurs</string>
+	</token>
+	-->
+	
+  <token name="Nmstart" inline="false">
+    <choice>
+      <ref name="Letter"/>
+      <string>_</string>
+    </choice>
+  </token>
+
+  <token name="Nmchar" inline="false">
+    <choice>
+      <ref name="Letter"/>
+      <ref name="CombiningChar"/>
+      <ref name="Extender"/>
+      <ref name="Digit"/>
+      <string>.</string>
+      <string>-</string>
+      <string>_</string>
+    </choice>
+  </token>
+
+  <token name="Star" value-type="string">
+    <string>*</string>
+  </token>
+	
+  <token name="NCNameColonStar" value-type="string">
+    <ref name="NCName"/>
+    <string>:</string>
+    <string>*</string>
+  </token>
+	
+  <token name="StarColonNCName" value-type="string">
+    <string>*</string>
+    <string>:</string>
+    <ref name="NCName"/>
+  </token>
+	
+  <token name="Root" value-type="id">
+		<string>&#47;</string>
+	</token>
+	
+  <token name="RootDescendants" value-type="id">
+		<string>&#47;&#47;</string>
+  </token>
+	
+  <token name="Slash">
+		<string>&#47;</string>
+  </token>
+	
+  <token name="SlashSlash">
+    <string>&#47;&#47;</string>
+  </token>
+	
+  <token name="Equals">
+    <string>=</string>
+  </token>
+	
+  <token name="AssignEquals" if="xquery core">
+    <string>=</string>
+  </token>
+
+  <token name="XMLSpaceEquals" if="xquery core">
+    <string>=</string>
+  </token>
+	
+  <token name="Is">
+    <string>is</string>
+  </token>
+	
+  <token name="NotEquals">
+    <string>!=</string>
+  </token>
+	
+  <token name="IsNot">
+    <string>isnot</string>
+  </token>
+	
+  <token name="LtEquals">
+    <string>&lt;=</string>
+  </token>
+	
+  <token name="LtLt" >
+    <string>&lt;&lt;</string>
+  </token>
+	
+  <token name="GtEquals">
+    <string>&gt;=</string>
+  </token>
+	
+  <token name="GtGt" >
+    <string>&gt;&gt;</string>
+  </token>
+	
+  <token name="FortranEq" >
+    <string>eq</string>
+  </token>
+	
+  <token name="FortranNe" >
+    <string>ne</string>
+  </token>
+	
+  <token name="FortranGt" >
+    <string>gt</string>
+  </token>
+	
+  <token name="FortranGe" >
+    <string>ge</string>
+  </token>
+	
+  <token name="FortranLt" >
+    <string>lt</string>
+  </token>
+	
+  <token name="FortranLe" >
+    <string>le</string>
+  </token>
+	
+  <token name="ColonEquals" if="xquery core">
+    <string>:=</string>
+  </token>
+	
+  <token name="Lt">
+		<string>&lt;</string>
+  </token>
+	
+  <token name="Gt">
+    <string>&gt;</string>
+  </token>
+	
+  <token name="Minus" value-type="id">
+    <string>-</string>
+  </token>
+	
+  <token name="Plus" value-type="id">
+    <string>+</string>
+  </token>
+	
+  <token name="QMark" if="xquery core xpath">
+    <string>?</string>
+  </token>
+	
+  <!-- Decision from Oracle F2F to remove -->
+  <!-- token name="Arrow" value-type="id">
+	<string>=&gt;</string>
+  </token -->
+	
+  <token name="Vbar">
+    <string>|</string>
+  </token>
+	
+  <token name="Lpar" node-type="void">
+    <string>(</string>
+  </token>
+	
+  <token name="At">
+    <string>@</string>
+  </token>
+	
+  <token name="Lbrack">
+    <string>[</string>
+  </token>
+
+  <token name="Rbrack">
+    <string>]</string>
+  </token>
+	
+  <token name="Rpar" node-type="void">
+    <string>)</string>
+  </token>
+	
+  <token name="Some" value-type="id">
+    <string >some</string>
+    <optionalSkip/>
+    <ref name="VariableIndicator"/>
+  </token>
+	
+  <token name="Every" value-type="id">
+    <string >every</string>
+	  <optionalSkip/>
+    <ref name="VariableIndicator"/>
+  </token>
+	
+  <!-- Added for XPath with no reserved words. -sb -->
+  <token name="ForVariable" override="true" 
+              if="xpath pathx1 xquery core" node-type="void">
+    <string >for</string>
+    <optionalSkip/>
+    <ref name="VariableIndicator"/>
+  </token>
+	
+  <token name="LetVariable" if="xquery core">
+    <string >let</string>
+    <optionalSkip/>
+    <ref name="VariableIndicator"/>
+  </token>
+	
+  <token name="CastAs">
+    <string >cast</string>
+    <requiredSkip show="no"/>
+    <string >as</string>
+  </token>
+	
+  <!-- token name="AssertAs">
+    <string >assert</string>
+    <requiredSkip show="no"/>
+    <string >as</string>
+  </token -->
+	
+  <token name="TreatAs">
+    <string >treat</string>
+    <requiredSkip show="no"/>
+    <string >as</string>
+  </token>
+	
+  <token name="ValidateLbrace" if="xpath xquery core">
+    <string >validate</string>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+
+  <token name="ValidateContext" if="xpath xquery core">
+    <string >validate</string>
+    <requiredSkip show="no"/>
+    <string>context</string>
+  </token>
+	
+  <token name="Digits" inline="false">
+    <oneOrMore>
+      <charClass>
+        <charRange minChar="0" maxChar="9"/>
+      </charClass>
+    </oneOrMore>
+  </token>
+		
+  <token name="Comment" override="true" if="xquery core xpath" value-type="id">
+    <string >comment</string>
+  </token>
+	
+  <token name="Document" override="true" if="xquery core xpath" value-type="id">
+    <string >document</string>
+  </token>
+	
+  <token name="DocumentLbrace" override="true" if="xquery core xpath" value-type="id">
+    <string >document</string>
+    <optionalSkip/>
+    <string>{</string>
+  </token>
+	
+  <token name="Text" override="true" if="xquery core xpath" value-type="id">
+    <string >text</string >
+  </token>
+	
+  <token name="Untyped" override="true" if="xquery core xpath" value-type="id">
+    <string>untyped</string>
+  </token>
+
+  <!-- token name="Unordered" if="xquery core" value-type="id">
+    <string>unordered</string>
+  </token -->
+	
+	
+  <token name="ProcessingInstruction" override="true" if="xquery core xpath" value-type="id">
+    <string >processing-instruction</string>
+  </token>
+	
+  <token name="NodeLpar" if="xquery core xpath pathx1" node-type="void">
+    <string >node</string>
+    <optionalSkip/>
+    <string>(</string>
+  </token>
+	
+  <token name="CommentLpar" override="true" 
+               if="xquery core xpath pathx1" node-type="void">
+    <string >comment</string>
+    <optionalSkip/>
+    <string>(</string>
+  </token>
+	
+  <token name="TextLpar" override="true" if="xquery core xpath pathx1"
+                         node-type="void">
+    <string >text</string>
+    <optionalSkip/>
+    <string>(</string>
+  </token>
+	
+  <token name="ProcessingInstructionLpar" override="true" 
+         if="xquery core xpath pathx1" node-type="void">
+    <string >processing-instruction</string>
+    <optionalSkip/>
+    <string>(</string>
+  </token>
+	
+  <!-- Added for XPath with no reserved words. -sb -->
+  <token name="IfLpar" override="true" if="xquery core xpath">
+    <string >if</string>
+    <optionalSkip/>
+    <string>(</string>
+  </token>
+	
+  <token name="TypeswitchLpar" override="true" if="xquery core">
+		<string >typeswitch</string>
+		<optionalSkip/>
+		<string>(</string>
+  </token>
+	
+  <token name="Comma" node-type="void">
+    <string>,</string>
+  </token>
+	
+  <token name="SemiColon" if="xquery core" show="no" node-type="void">
+    <string>;</string>
+  </token>
+	
+  <!-- token name="Colon" if="xquery core">
+	<string>:</string>
+  </token -->
+	
+  <!-- Should only be recognized in attribute content. -->
+  <token name="EscapeQuot" inline="false" override="true" if="xquery">
+    <sequence>
+      <char>&quot;</char>
+      <char>&quot;</char>
+    </sequence>
+  </token>
+	
+  <!-- OpenQuot and CloseQuote need to be before StringLiteral in 
+	order for them to be matched by flex. -->
+  <token name="OpenQuot" if="xquery core">
+    <string>&quot;</string>
+  </token>
+	
+  <token name="CloseQuot" if="xquery core">
+    <string>&quot;</string>
+  </token>
+	
+  <token name="Dot" value-type="id">
+    <string>.</string>
+  </token>
+	
+  <token name="DotDot" value-type="id">
+    <string>..</string>
+  </token>
+	
+  <!-- token name="SortbyLpar" if="xquery core">
+    <string >sort</string>
+    <requiredSkip show="no"/>
+    <string >by</string>
+    <optionalSkip/>
+    <string>(</string>
+  </token -->
+
+  <token name="OrderBy" if="xquery core">
+    <string >order</string>
+    <requiredSkip show="no"/>
+    <string >by</string>
+  </token>
+
+  <token name="OrderByStable" if="xquery core">
+    <string >stable</string>
+    <requiredSkip show="no"/>
+    <string >order</string>
+    <requiredSkip show="no"/>
+    <string >by</string>
+  </token>
+	
+  <token name="Ascending" if="xquery core" value-type="id">
+    <string >ascending</string>
+  </token>
+	
+  <token name="Descending" if="xquery core" value-type="id">
+    <string >descending</string>
+  </token>
+	
+  <token name="EmptyGreatest" if="xquery core" value-type="id">
+    <string >empty</string>
+    <requiredSkip show="no"/>
+    <string >greatest</string>
+  </token>
+	
+  <token name="EmptyLeast" if="xquery core" value-type="id">
+    <string >empty</string>
+    <requiredSkip show="no"/>
+    <string >least</string>
+  </token>
+	
+  <!--
+	<token name="Sequence"  if="xquery">
+	<string >sequence</string>
+	</token>
+	-->
+	
+  <token name="PITarget" inline="false" if="xquery core" value-type="string">
+    <ref name="NCName"/>
+  </token>
+	
+  <token name="NCName" inline="false" value-type="string" is-xml="yes">
+    <ref name="Nmstart"/>
+    <zeroOrMore>
+      <ref name="Nmchar"/>
+    </zeroOrMore>
+  </token>
+	
+  <token name="Prefix" value-type="string" visible="false" is-xml="yes">
+    <ref name="NCName"/>
+  </token>
+	
+  <token name="LocalPart" value-type="string" visible="false" is-xml="yes">
+    <ref name="NCName"/>
+  </token>
+	
+  <token name="VariableIndicator" inline="true" node-type="void">
+    <string>$</string>
+  </token>
+	
+  <token name="VarName" inline="false" value-type="string">
+    <ref name="QName"/>
+  </token>
+	
+  <!-- token name="Variable" inline="true" value-type="string">
+	<ref name="VariableIndicator"/>
+	<ref name="VarName"/>
+  </token -->
+
+  <token name="QName" inline="false" value-type="string" is-xml="yes">
+    <optional>
+      <ref name="Prefix"/>
+      <string>:</string>
+    </optional>
+	  <ref name="LocalPart"/>
+  </token>
+			
+  <token name="QNameLpar" value-type="string">
+		<ref name="QName"/>
+		<optionalSkip/>
+    <string>(</string>
+  </token>
+
+  <token name="IDLpar" value-type="string" if="match">
+		<string>id</string>
+		<optionalSkip/>
+    <string>(</string>
+  </token>
+
+  <token name="KeyLpar" value-type="string" if="match">
+		<string>key</string>
+		<optionalSkip/>
+    <string>(</string>
+  </token>
+	
+  <token name="NCNameForPrefix" inline="false" value-type="string" if="xquery core">
+		<ref name="Nmstart"/>
+		<zeroOrMore>
+			<ref name="Nmchar"/>
+		</zeroOrMore>
+  </token>
+		
+  <state-list if="xquery core xpath pathx1">
+    <state name="#ANY">This state is for patterns that can be recognized in any state.</state>
+    <state name="DEFAULT">This state is for patterns that occur at the beginning of an expression.</state>
+    <state name="OPERATOR">This state is for patterns that are defined for operators.</state>
+    <state name="QNAME">When a qualified name is expected, and it is required to remove ambiguity from patterns that look like keywords, this state is used.</state>
+    <state name="NAMESPACEDECL" if="xquery core">This state occurs inside of a namespace declaration, and is needed to recognize a NCName that is to be used as the prefix, as opposed to allowing a QName to occur.  (Otherwise, the difference between NCName and QName are ambiguous.)</state>
+    <state name="NAMESPACEKEYWORD" if="xquery core">This state occurs at places where the keyword "namespace" is expected, which would otherwise be ambiguous compared to a QName.  QNames can not occur in this state.</state>
+    <state name="XMLSPACE_DECL" if="xquery core">This state occurs at places where the keywords "preserve" and "strip" is expected to support "declare xmlspace".  QNames can not occur in this state.</state>
+    <state name="ITEMTYPE">This state distinguishes tokens that can occur only inside the ItemType production.</state>
+    <!-- state name="FUNCDEF" if="xquery core">This state is defined to recognise a FuncName, which then transitions to an ITEMTYPE state after the opening left bracket, in order to recognize SequenceType productions.</state -->
+    <state name="VARNAME">This state differentiates variable names from qualified names.  This allows only the pattern of a QName to be recognized when otherwise ambiguities could occur.</state>
+    <state name="START_TAG" if="xquery core">This state allows attributes in the native XML syntax, and marks the beginning of an element construction. Element constructors also push the current state, popping it at the conclusion of an end tag. In the START_TAG state, the string ">" is recognized as a token which is associated with the transition to the original state.</state>
+    <state name="ELEMENT_CONTENT" if="xquery core">This state allows XML-like content, without these characters being misinterpreted as expressions. The character "{" marks a transition to the DEFAULT state, i.e. the start of an embedded expression, and the "}" character pops back to the ELEMENT_CONTENT state.  To allow curly braces to be used as character content, a double left or right curly brace is interpreted as a single curly brace character.  The string "&lt;/" is interpreted as the beginning of an end tag, which is associated with a transition to the END_TAG state.</state>
+    <state name="END_TAG" if="xquery core">When the end tag is terminated, the state is popped to the state that was pushed at the start of the corresponding start tag.</state>
+    <state name="XML_COMMENT" if="xquery core">The "&lt;--" token marks the beginning of an XML Comment, and the "-->" token marks the end.  This allows no special interpretation of other characters in this state.</state>
+    <state name="PROCESSING_INSTRUCTION" if="xquery core">In this state, only lexemes that are legal in a processing instruction name are recognized.</state>
+    <state name="PROCESSING_INSTRUCTION_CONTENT" if="xquery core">In this state, only characters are that are legal in processing instruction content are recognized.</state>
+    <state name="CDATA_SECTION" if="xquery core">In this state, only lexemes that are legal in a CDATA section are recognized.</state>
+    <state name="QUOT_ATTRIBUTE_CONTENT" if="xquery core">This state allows content legal for attributes. The character "{" marks a transition to the DEFAULT state, i.e. the start of an embedded expression, and the "}" character pops back to the original state.  To allow curly braces to be used as character content, a double left or right curly brace is interpreted as a single curly brace character.  This state is the same as QUOT_ATTRIBUTE_CONTENT, except that apostrophes are allowed without escaping, and an unescaped quote marks the end of the state.</state>
+    <state name="APOS_ATTRIBUTE_CONTENT" if="xquery core">This state is the same as QUOT_ATTRIBUTE_CONTENT, except that quotes are allowed, and an unescaped apostrophe marks the end of the state.</state>
+  </state-list>
+
+  <lexical-state-transitions if="xquery core xpath pathx1">
+		<transition refs="WhitespaceChar Nmstart NCName  Nmchar Prefix LocalPart 
+			Digits Letter BaseChar Ideographic CombiningChar 
+			Digit  Extender HexDigits"/>
+
+    <transition-default recognize="DEFAULT OPERATOR" nextState="OPERATOR"/>
+    <transition refs="Rbrack IntegerLiteral DecimalLiteral DoubleLiteral TypeswitchLpar OrderByStable" recognize="DEFAULT OPERATOR" nextState="OPERATOR"/>
+
+		<transition refs="S" recognize="DEFAULT OPERATOR QNAME START_TAG NAMESPACEDECL ITEMTYPE 
+                                    NAMESPACEKEYWORD END_TAG"/>
+	  <!-- ==== NEXT=>DEFAULT ==== -->
+	  <transition refs="URLLiteral" recognize="NAMESPACEDECL" nextState="DEFAULT"/>
+	  <transition refs="Slash SlashSlash Div Idiv Mod And Or 
+		Multiply Return Then Else To 
+		Union Intersect Except 
+		Equals Is NotEquals 
+		IsNot LtEquals GtEquals 
+		Lt Gt Vbar
+		LtLt GtGt 
+		FortranEq FortranNe FortranGt
+		FortranGe FortranLt FortranLe 
+		Type In InContext
+		Where OrderBy Satisfies AtWord ColonEquals" 
+		recognize="OPERATOR" nextState="DEFAULT"/>
+
+    <transition refs="TypeQName" recognize="DEFAULT" nextState="OPERATOR"/>
+
+    <transition refs="Collation" recognize="OPERATOR" nextState="OPERATOR"/>
+
+    <transition refs="QMark" 
+		recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
+
+    <!-- nextState="DEFAULT" -->
+    <transition refs="Comma" recognize="OPERATOR DEFAULT QNAME" 
+       action="resetParenStateOrSwitch(DEFAULT)"/>
+
+    <transition refs="AttributeType ElementType Node Document Comment Text 
+		ProcessingInstruction Item Untyped AtomicValue AtomicType Empty" 
+		recognize="ITEMTYPE" nextState="DEFAULT"/>
+
+    <transition refs="Lbrack Plus Minus" 
+		recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
+
+    <transition refs="Lpar" 
+		  recognize="DEFAULT OPERATOR QNAME"  nextState="DEFAULT"/>
+    <transition refs="TextLpar CommentLpar NodeLpar ProcessingInstructionLpar" 
+		recognize="QNAME DEFAULT"  nextState="DEFAULT"/>
+    <transition refs="DefaultCollationEquals" recognize="DEFAULT OPERATOR" 
+         nextState="NAMESPACEDECL"/>
+    <!-- Not sure that this is right for SemiColon, but SemiColon is a 
+         strange character anyhow.  -sb -->
+    <transition refs="SemiColon" 
+		recognize="QNAME DEFAULT OPERATOR" nextState="DEFAULT"/>
+    <!-- transition refs="Returns" recognize="OPERATOR" nextState="DEFAULT"/ -->
+    <transition refs="Type" 
+       recognize="DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="IfLpar" 
+       recognize="DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="QNameLpar" 
+       recognize="DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="AtStringLiteral" 
+		recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
+    <transition refs="Item Node Document Comment Text"
+		recognize="OPERATOR" nextState="DEFAULT"/>
+    <transition refs="LbraceExprEnclosure ValidateLbrace" recognize="DEFAULT OPERATOR ITEMTYPE" 
+		nextState="DEFAULT" action="pushState(DEFAULT)"/>
+    <transition refs="AttributeQNameLbrace ElementQNameLbrace ElementLbrace DocumentLbrace AttributeLbrace TextLbrace" recognize="DEFAULT" 
+		nextState="DEFAULT" action="pushState(DEFAULT)"/>
+    <transition refs="ValidateContext" 
+                recognize="DEFAULT" nextState="DEFAULT"/>
+
+    <transition refs="Lbrace" recognize="START_TAG END_TAG ELEMENT_CONTENT 
+		QUOT_ATTRIBUTE_CONTENT 
+		APOS_ATTRIBUTE_CONTENT" 
+		nextState="DEFAULT" action="pushState"/>
+    <!-- ==== NEXT=>OPERATOR ==== -->
+    <transition refs="VarName" recognize="VARNAME" nextState="OPERATOR"/>
+    <transition refs="Star" recognize="DEFAULT QNAME" nextState="OPERATOR"/>
+    <transition refs="QName NCNameColonStar StarColonNCName Dot DotDot" 
+		               recognize="ITEMTYPE QNAME DEFAULT OPERATOR"  
+                   nextState="OPERATOR"/>
+
+    <transition refs="Rpar" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" 
+       nextState="OPERATOR"/>
+
+    <transition refs="Ascending Descending EmptyGreatest EmptyLeast" 
+		recognize="OPERATOR" nextState="OPERATOR"/>
+    <transition refs="StringLiteral" recognize="DEFAULT OPERATOR NAMESPACEKEYWORD" nextState="OPERATOR"/>
+    <transition refs="Default" recognize="OPERATOR" nextState="OPERATOR"/>
+    <!-- ==== NEXT=>VARNAME ==== -->
+    <transition refs="VariableIndicator" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" nextState="VARNAME"/>
+    <!-- transition refs="Unordered" recognize="DEFAULT OPERATOR" if="xquery core"/ -->
+    <!-- transition refs="ForVariable LetVariable Some Every" 
+		  recognize="DEFAULT OPERATOR" nextState="ITEMTYPE" if="xquery core"/ -->
+    <transition refs="ForVariable LetVariable Some Every" 
+		  recognize="DEFAULT OPERATOR" nextState="VARNAME"/>
+    <!-- ==== NEXT=>NAMESPACEKEYWORD ==== -->
+    <transition refs="DefaultElement DefaultFunction ImportSchemaToken" recognize="DEFAULT OPERATOR" nextState="NAMESPACEKEYWORD"/>
+    <!-- ==== NEXT=>NAMESPACEDECL ==== -->
+    <transition refs="Namespace" recognize="NAMESPACEKEYWORD" nextState="NAMESPACEDECL"/>
+    <transition refs="DeclareNamespace" recognize="DEFAULT OPERATOR" nextState="NAMESPACEDECL"/>
+    <transition refs="AssignEquals NCNameForPrefix" recognize="NAMESPACEDECL" nextState="NAMESPACEDECL"/>
+    <!-- ==== NEXT=>ITEMTYPE ==== -->
+    <transition refs="Instanceof Castable Case As" recognize="OPERATOR" nextState="ITEMTYPE"/>
+    <transition refs="CastAs TreatAs" recognize="DEFAULT" nextState="ITEMTYPE"/>
+    <transition refs="DeclareResult" recognize="DEFAULT OPERATOR" nextState="ITEMTYPE"/>
+    <!-- transition refs="FuncName" recognize="FUNCDEF"/ -->
+    <!-- transition refs="FuncPListOpen" recognize="FUNCDEF" 
+                           action="pushParenState(DEFAULT, ITEMTYPE)"/ -->
+    
+    <!-- Both nextState and action here on purpose -->
+    <transition refs="RparAs" recognize="DEFAULT OPERATOR ITEMTYPE QNAME" 
+       nextState="ITEMTYPE"/>
+
+    <!-- ==== NEXT=>FUNCDEF ==== -->
+    <transition refs="DefineFunction" recognize="DEFAULT OPERATOR" nextState="DEFAULT"/>
+    <!-- ==== NEXT=>QNAME ==== -->
+    <transition refs="OfType" recognize="DEFAULT OPERATOR" nextState="QNAME"/>
+    <transition refs="Root RootDescendants 
+		AxisChild AxisDescendant AxisParent AxisAttribute
+		AxisSelf AxisDescendantOrSelf AxisAncestor AxisFollowingSibling
+		AxisPrecedingSibling AxisFollowing AxisPreceding AxisNamespace
+		AxisAncestorOrSelf" 
+		recognize="DEFAULT QNAME" nextState="QNAME"/>
+    <transition refs="At" recognize="DEFAULT QNAME" nextState="QNAME"/>
+    <!-- ==== NEXT=>XML_COMMENT ==== -->
+    <transition refs="XmlCommentStart" 
+		recognize="DEFAULT ELEMENT_CONTENT" nextState="XML_COMMENT" 
+		action="pushState"/>
+    <!-- ==== NEXT=>PROCESSING_INSTRUCTION ==== -->
+    <transition refs="ProcessingInstructionStart" 
+		recognize="DEFAULT ELEMENT_CONTENT" nextState="PROCESSING_INSTRUCTION" action="pushState"/>
+    <!-- ==== NEXT=>CDATA_SECTION ==== -->
+    <transition refs="CdataSectionStart" recognize="ELEMENT_CONTENT DEFAULT" nextState="CDATA_SECTION" action="pushState"/>
+    <!-- ==== NEXT=>ELEMENT_CONTENT ==== -->
+    <transition refs="CdataSectionEnd" 
+		recognize="ELEMENT_CONTENT CDATA_SECTION" action="popState"/>
+    <transition refs="StartTagClose" recognize="START_TAG" 
+		nextState="ELEMENT_CONTENT"/>
+    <!-- ==== NEXT=>START_TAG ==== -->
+    <transition refs="StartTagOpen" recognize="ELEMENT_CONTENT" 
+		nextState="START_TAG" action="pushState"/>
+    <transition refs="StartTagOpenRoot" recognize="DEFAULT" 
+		nextState="START_TAG" action="pushState(OPERATOR)"/>
+    <transition refs="CloseQuot" recognize="QUOT_ATTRIBUTE_CONTENT" 
+		nextState="START_TAG"/>
+    <!-- ==== NEXT=>END_TAG ==== -->
+    <transition refs="EndTagOpen" recognize="ELEMENT_CONTENT" 
+		nextState="END_TAG"/>
+    <transition refs="CloseApos" recognize="APOS_ATTRIBUTE_CONTENT" 
+		nextState="START_TAG"/>
+    <!-- ==== NEXT=>QUOT_ATTRIBUTE_CONTENT ==== -->
+    <transition refs="OpenQuot" recognize="START_TAG" 
+		nextState="QUOT_ATTRIBUTE_CONTENT"/>
+    <transition refs="EscapeQuot" recognize="QUOT_ATTRIBUTE_CONTENT" 
+		nextState="QUOT_ATTRIBUTE_CONTENT"/>
+    <!-- ==== NEXT=>APOS_ATTRIBUTE_CONTENT ==== -->
+    <transition refs="OpenApos" recognize="START_TAG" 
+		nextState="APOS_ATTRIBUTE_CONTENT"/>
+    <transition refs="EscapeApos" recognize="APOS_ATTRIBUTE_CONTENT" 
+		nextState="APOS_ATTRIBUTE_CONTENT"/>
+    <!-- ==== NEXT=>XMLSPACE_DECL ==== -->
+    <transition refs="DeclareXMLSpace" recognize="DEFAULT OPERATOR" nextState="XMLSPACE_DECL"/>
+    <transition refs="XMLSpaceEquals" recognize="XMLSPACE_DECL"/>
+    <transition refs="XMLSpacePreserve XMLSpaceStrip" 
+      recognize="XMLSPACE_DECL" 
+			nextState="DEFAULT"/>
+    <!-- ==== NEXT=>(SAME) ==== -->
+    <transition refs="ExprComment" recognize="DEFAULT OPERATOR QNAME NAMESPACEDECL XMLSPACE_DECL 
+                                              ITEMTYPE NAMESPACEKEYWORD VARNAME ELEMENT_CONTENT"/>
+    <transition refs="PITarget" recognize="PROCESSING_INSTRUCTION" nextState="PROCESSING_INSTRUCTION_CONTENT"/>
+    <transition refs="PredefinedEntityRef CharRef" 
+		recognize="ELEMENT_CONTENT QUOT_ATTRIBUTE_CONTENT APOS_ATTRIBUTE_CONTENT"/>
+    <transition refs="TagQName" recognize="START_TAG END_TAG"/>
+    <transition refs="ValueIndicator" recognize="START_TAG"/>
+    <transition refs="LCurlyBraceEscape RCurlyBraceEscape" recognize="ELEMENT_CONTENT QUOT_ATTRIBUTE_CONTENT 
+		APOS_ATTRIBUTE_CONTENT"/>
+    <transition refs="Char" recognize="ELEMENT_CONTENT CDATA_SECTION 
+		QUOT_ATTRIBUTE_CONTENT 
+		APOS_ATTRIBUTE_CONTENT 
+		PROCESSING_INSTRUCTION_CONTENT XML_COMMENT 
+		XQUERY_COMMENT"/>
+    <!-- ==== NEXT=>pop ==== -->
+
+    <transition refs="XmlCommentEnd" recognize="XML_COMMENT" 
+		action="popState"/>
+    <transition refs="ProcessingInstructionEnd" 
+		recognize="PROCESSING_INSTRUCTION_CONTENT" action="popState"/>
+    <transition refs="EmptyTagClose" recognize="START_TAG" 
+		action="popState"/>
+    <transition refs="EndTagClose" recognize="END_TAG" action="popState"/>
+    <transition refs="Rbrace" recognize="QUOT_ATTRIBUTE_CONTENT OPERATOR DEFAULT" action="popState"/>
+
+  </lexical-state-transitions>
+  <!-- ====================== End Lexical States ==================== -sb -->
+
+  <!-- The QueryList production is  not in the official grammar, 
+       and is not shown in the bnf.  It is here only for the purpose 
+       of testing a series of queries. 
+    -->
+  <production name="QueryList" if="xquery core" show="no">
+    <ref name="Query"/>
+    <zeroOrMore>
+		<ref name="SemiColon"/>
+      <ref name="Query"/>
+    </zeroOrMore>    
+  </production>
+
+  <!-- ### Use the name="" names instead of Expr_1() for generated .jj code -->
+  <production name="Query" if="xquery core">
+    <ref name="QueryProlog"/>
+    <ref name="QueryBody"/>
+  </production>
+
+  <production name="QueryProlog" if="xquery core">
+    <zeroOrMore>
+      <choice break="true">
+        <ref name="NamespaceDecl"/>
+				<ref name="XMLSpaceDecl"/>
+        <ref name="DefaultNamespaceDecl"/>
+        <ref name="DefaultCollationDecl"/>
+        <ref name="SchemaImport"/>
+      </choice>
+    </zeroOrMore>
+    <zeroOrMore>
+		  <ref name="FunctionDefn"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="XPath" if="xpath">
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+  </production>
+
+  <production name="QueryBody" if="xquery core">
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+  </production>
+
+
+  <production name="ExprSequence">
+    <ref name="Expr"/>
+    <zeroOrMore name="CommaExpr">
+		<ref name="Comma"/>
+      <ref name="Expr"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="Pattern" if="xpath pathx1" sub-spec="xslt-patterns">
+		<ref name="PathPattern"/>
+		<optional>
+			<choice>
+				<ref name="Union" if="xquery xpath" node-type="void"/>
+				<ref name="Vbar" node-type="void"/>
+      </choice>
+			<ref name="Pattern"/>
+	  </optional>
+  </production>
+
+  <production name="PathPattern" if="xpath pathx1" sub-spec="xslt-patterns">
+		<choice break="true">
+			<sequence>
+				<ref name="Root"/>
+				<optional>
+					<ref name="RelativePathPattern"/>
+				</optional>
+			</sequence>
+			<sequence>
+				<ref name="RootDescendants"/>
+				<ref name="RelativePathPattern"/>
+			</sequence>
+			<sequence>
+				<ref name="IdKeyPattern"/>
+				<optional>
+					<choice>
+						<ref name="Slash"/>
+						<ref name="SlashSlash"/>
+					</choice>
+					<ref name="RelativePathPattern"/>
+				</optional>
+			</sequence>
+			<ref name="RelativePathPattern"/>
+		</choice>		
+  </production>
+
+  <production name="RelativePathPattern" if="xpath pathx1" node-type="void"
+		sub-spec="xslt-patterns">
+		<ref name="PatternStep"/>
+		<optional>
+			<choice>
+				<ref name="Slash"/>
+				<ref name="SlashSlash"/>
+			</choice>
+			<ref name="RelativePathPattern"/>
+		</optional>
+  </production>
+
+  <production name="PatternStep" if="xpath pathx1"
+		sub-spec="xslt-patterns">
+		<optional>
+			<ref name="PatternAxis"/>
+		</optional>
+		<ref name="NodeTest"/>
+		<ref name="Predicates"/>
+  </production>
+
+  <production name="PatternAxis" if="xpath pathx1" node-type="void"
+		sub-spec="xslt-patterns">
+    <choice break="true">
+      <ref name="AxisChild"/>
+      <ref name="AxisAttribute"/>
+			<ref name="At"/>
+    </choice>
+  </production>
+
+  <production name="IdKeyPattern" if="xpath pathx1"
+		sub-spec="xslt-patterns">
+		<ref name="QNameLpar"/>
+		<ref name="IdKeyValue"/>
+		<optional>
+			<ref name="Comma"/>
+			<ref name="IdKeyValue"/>
+		</optional>
+		<ref name="Rpar"/>
+  </production>
+
+
+  <production name="IdKeyPattern" if="match"
+		sub-spec="xslt-patterns">
+		<choice>
+			<sequence>
+				<ref name="IDLpar"/>
+				<ref name="IdKeyValue"/>
+				<ref name="Rpar"/>
+			</sequence>
+			<sequence>
+				<ref name="KeyLpar"/>
+				<ref name="StringLiteral"/>
+        <ref name="Comma"/>
+				<ref name="IdKeyValue"/>
+				<ref name="Rpar"/>
+			</sequence>
+		</choice>
+  </production>
+
+  <production name="IdKeyValue" if="xpath pathx1" node-type="void"
+		sub-spec="xslt-patterns">
+		<choice>
+			<ref name="StringLiteral"/>
+			<sequence>
+				<ref name="VariableIndicator"/>
+				<ref name="VarName"/>
+			</sequence>
+		</choice>
+  </production>
+
+  <exprProduction name="Expr" node-type="void">
+		<level>	
+			<binary name="OrExpr" if="xpath xquery pathx1">
+				<ref name="Or"/>
+			</binary>
+		</level>
+		<level>
+			<binary name="AndExpr" if="xpath xquery pathx1">
+				<ref name="And"/>
+			</binary>
+		</level>
+    <!-- level if="xquery core">
+      <prefix name="UnorderedExpr" if="xquery core" prefix-seq-type="?">
+				<choice>
+					<ref name="Unordered" if="xquery core"/>
+				</choice>
+      </prefix>
+    </level -->
+		<level>
+			<prefix name="FLWRExpr" if="xquery core" prefix-seq-type="*">
+				<sequence>
+					<oneOrMore if="xquery">
+						<choice>
+							<ref name="ForClause"/>
+							<ref name="LetClause"/>
+						</choice>
+					</oneOrMore>
+					<choice if="core">
+						<ref name="ForClause"/>
+						<ref name="LetClause"/>
+					</choice>
+					<optional if="xquery">
+						<ref name="WhereClause"/>
+					</optional>
+					<optional if="xquery core">
+						<ref name="OrderByClause" if="xquery core"/>
+					</optional>
+					<ref name="Return"/>
+				</sequence>
+			</prefix>
+			
+			<prefix name="ForExpr" if="xpath">
+				<sequence>
+					<ref name="SimpleForClause"/>
+					<ref name="Return"/>
+				</sequence>
+			</prefix>
+		</level>
+		<level>
+			<prefix name="QuantifiedExpr" if="xquery xpath" >
+				<sequence>
+					<choice>
+						<ref name="Some"/>
+						<ref name="Every"/>
+					</choice>
+					<!-- ref name="VariableIndicator" if="xquery core"/ -->
+					<ref name="VarName"/>
+          <optional if="xquery core">
+					  <ref name="TypeDeclaration" if="xquery core"/>
+          </optional>
+					<ref name="In"/>
+					<ref name="Expr"/>
+					<zeroOrMore>
+						<ref name="Comma"/>
+						<sequence>
+							<ref name="VariableIndicator"/>
+							<ref name="VarName"/>
+              <optional if="xquery core">
+					      <ref name="TypeDeclaration" if="xquery core"/>
+              </optional>
+						</sequence>
+						<ref name="In"/>
+						<ref name="Expr"/>
+					</zeroOrMore>
+					<ref name="Satisfies"/>
+				</sequence>
+			</prefix>	  
+		</level>
+		<level>
+			<prefix name="TypeswitchExpr" if="xquery core">
+				<sequence>
+					<ref name="TypeswitchLpar"/>
+					<ref name="Expr"/>
+					<ref name="Rpar"/>
+				  <oneOrMore>
+					  <ref name="CaseClause"/>
+				  </oneOrMore>
+				  <ref name="Default"/>
+				  <optional>
+					  <ref name="VariableIndicator"/>
+					  <ref name="VarName"/>
+				  </optional>
+				  <ref name="Return"/>
+			  </sequence>
+			</prefix>
+		</level>
+		<level>
+			<prefix name="IfExpr" if="xpath core xquery">
+				<sequence>
+					<ref name="IfLpar"/>
+					<ref name="Expr"/>
+					<ref name="Rpar"/>
+          <!-- XPath TF decision to remove, Oct 16, 2002 -->
+					<ref name="Then"/>
+					<ref name="Expr"/>
+					<ref name="Else"/>
+				</sequence>
+			</prefix>  
+		</level>
+		<level>
+      <postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?">
+				  <sequence>
+					  <ref name="Instanceof"/>
+					  <ref name="SequenceType"/>
+				  </sequence>
+      </postfix>       
+    </level>
+		<level>
+      <postfix name="CastableExpr" if="xquery xpath" prefix-seq-type="?">
+          <sequence>
+            <ref name="Castable"/>
+            <ref name="SingleType"/>
+          </sequence>
+      </postfix>       
+    </level>
+    <level>
+      <binary name="ComparisonExpr" prefix-seq-type="*" if="xpath xquery core">
+        <choice break="true">
+          <ref name="ValueComp"/>
+          <ref name="GeneralComp"/>
+          <ref name="NodeComp"/>
+          <ref name="OrderComp"/>
+        </choice>
+      </binary>
+      <binary name="ComparisonExpr" if="pathx1">
+        <ref name="GeneralComp"/>
+      </binary>
+    </level>
+    <level>
+      <binary name="RangeExpr" if="xquery xpath" prefix-seq-type="?">
+        <ref name="To"/>
+      </binary>
+    </level>
+    <level>
+      <binary name="AdditiveExpr">
+        <choice>
+          <ref name="Plus"/>
+          <ref name="Minus"/>
+        </choice>
+      </binary>
+    </level>
+    <level>
+      <binary name="MultiplicativeExpr">
+        <choice>
+          <ref name="Multiply"/>
+          <ref name="Div"/>
+          <ref name="Idiv"/>
+          <ref name="Mod"/>
+        </choice>
+      </binary>
+    </level>
+    <level node-type="UnaryExpr">
+      <prefix name="UnaryExpr" if="xquery xpath pathx1">
+        <choice>
+          <ref name="Minus"/>
+          <ref name="Plus" if="xquery xpath core"/>
+        </choice>
+      </prefix>
+    </level>
+    <level>
+      <binary name="UnionExpr" if="xquery xpath pathx1">
+        <choice>
+          <ref name="Union" if="xquery xpath"/>
+          <ref name="Vbar"/>
+        </choice>
+      </binary>
+    </level>
+    <level>
+      <binary name="IntersectExceptExpr" if="xquery xpath">
+        <choice>
+          <ref name="Intersect"/>
+          <ref name="Except"/>
+        </choice>
+      </binary>
+    </level>
+    <level>
+			<primary name="ValueExpr">
+				<choice>
+					<ref name="ValidateExpr" if="xquery core xpath"/>
+					<ref name="CastExpr" if="xquery core xpath"/>
+					<ref name="TreatExpr" if="xquery core xpath"/>
+					<ref name="Constructor" if="xquery core"/>
+					<ref name="PathExpr"/>
+			  </choice>
+			</primary>
+    </level>
+  </exprProduction>
+
+	<production name="PathExpr">
+		<choice>
+			<sequence>
+				<ref name="Root"/>
+				<optional>
+					<ref name="RelativePathExpr"/>
+				</optional>
+			</sequence>
+			<sequence>
+				<ref name="RootDescendants"/>
+				<ref name="RelativePathExpr"/>
+			</sequence>
+			<sequence if="pathx1">
+        <ref name="RHSPrimaryExpr" if="pathx1"/>
+        <optional if="pathx1">
+			    <choice if="pathx1">
+			      <ref name="Slash" if="pathx1"/>
+		        <ref name="SlashSlash" if="pathx1"/>
+	        </choice>
+          <ref name="RelativePathExpr" if="pathx1"/>
+        </optional>
+			</sequence>
+			<ref name="RelativePathExpr" if="xquery xpath core"/>
+		</choice>
+	</production>
+	
+	<production name="RelativePathExpr" node-type="void">
+		<ref name="StepExpr"/>
+		<zeroOrMore>
+			<choice>
+			  <ref name="Slash"/>
+		    <ref name="SlashSlash"/>
+	    </choice>
+		  <ref name="StepExpr"/>
+		</zeroOrMore>
+	</production>
+	
+	<production name="StepExpr">
+		<choice>
+			<ref name="ForwardStep"/>
+			<ref name="ReverseStep"/>
+			<ref name="PrimaryExpr" if="xpath xquery core"/>	
+		</choice>
+		<ref name="Predicates"/>
+	</production>
+	
+  <!-- ForClause is slightly different now for XQuery vs. XPath.  -sb -->
+  <production name="ForClause" if="xquery core">
+    <ref name="ForVariable"/>
+		<!-- ref name="VariableIndicator" if="xquery core"/ -->
+    <ref name="VarName"/>
+    <optional if="xquery core">
+			<ref name="TypeDeclaration" if="xquery core"/>
+    </optional>
+    <optional if="xquery core">
+      <ref name="PositionalVar" if="xquery core"/>
+    </optional>
+    <ref name="In"/>
+    <ref name="Expr"/>
+    <zeroOrMore if="xquery">
+		  <ref name="Comma"/>
+      <sequence>
+				<ref name="VariableIndicator"/>
+        <ref name="VarName"/>
+        <optional if="xquery core">
+					<ref name="TypeDeclaration" if="xquery core"/>
+        </optional>
+        <optional if="xquery core">
+          <ref name="PositionalVar" if="xquery core"/>
+        </optional>
+      </sequence>
+      <ref name="In"/>
+      <ref name="Expr"/>
+    </zeroOrMore>
+  </production>
+
+  <!-- SimpleForClause is slightly different now for XQuery vs. XPath.  -sb -->
+  <production name="SimpleForClause" if="xpath">
+    <ref name="ForVariable"/>
+    <ref name="VarName"/>
+    <ref name="In"/>
+    <ref name="Expr"/>
+    <zeroOrMore>
+		  <ref name="Comma"/>
+      <sequence>
+				<ref name="VariableIndicator"/>
+        <ref name="VarName"/>
+      </sequence>
+      <ref name="In"/>
+      <ref name="Expr"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="LetClause" if="xquery core">
+    <ref name="LetVariable"/>
+		<!-- ref name="VariableIndicator" if="xquery core"/ -->
+    <ref name="VarName"/>
+    <optional if="xquery core">
+		  <ref name="TypeDeclaration" if="xquery core"/>
+    </optional>
+    <ref name="ColonEquals"/>
+    <ref name="Expr"/>
+    <zeroOrMore if="xquery">
+		  <ref name="Comma"/>
+      <sequence>
+				<ref name="VariableIndicator"/>
+				<ref name="VarName"/>
+        <optional if="xquery core">
+					<ref name="TypeDeclaration" if="xquery core"/>
+        </optional>
+			</sequence>
+      <ref name="ColonEquals"/>
+      <ref name="Expr"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="WhereClause" if="xquery">
+    <ref name="Where"/>
+    <ref name="Expr"/>
+  </production>
+
+  <production name="PositionalVar" if="core xquery">
+    <ref name="AtWord"/>
+		<ref name="VariableIndicator"/>
+		<ref name="VarName"/>    
+  </production>
+
+	<production name="ValidateExpr" if="xpath core xquery">
+    <choice>
+      <ref name="ValidateLbrace"/>
+      <sequence>
+        <ref name="ValidateContext"/>
+        <ref name="SchemaGlobalContext"/>
+        <zeroOrMore>
+          <ref name="Slash"/>
+          <ref name="SchemaContextStep"/>
+        </zeroOrMore>
+        <ref name="LbraceExprEnclosure"/>
+      </sequence>
+    </choice>
+		<ref name="Expr"/>
+		<ref name="Rbrace"/>
+	</production>
+	
+	<production name="CastExpr" if="xpath core xquery">
+	      <sequence>
+		  <ref name="CastAs"/>
+       	  <ref name="SingleType"/>
+      	</sequence>
+   		<ref name="ParenthesizedExpr"/>
+
+    <!-- ref name="Lpar"/>
+    <ref name="Expr"/>
+    <optional>
+      <ref name="Comma"/>
+      <ref name="Expr"/>
+    </optional>
+    <ref name="Rpar"/ -->
+
+	</production>
+	
+	<production name="TreatExpr" if="xpath core xquery">
+  		<sequence>
+        		<ref name="TreatAs" if="xpath xquery"/>
+        		<ref name="SequenceType"/>
+      	</sequence>
+      	<ref name="ParenthesizedExpr"/>    
+	</production>
+
+	<production name="Constructor" if="xquery core">
+		<choice break="true">
+			<ref name="ElementConstructor" if="xquery"/>
+			<ref name="XmlComment"/>
+			<ref name="XmlProcessingInstruction"/>
+			<ref name="CdataSection"/>
+			<ref name="ComputedDocumentConstructor" if="xquery core"/>
+			<ref name="ComputedElementConstructor" if="xquery core"/>
+			<ref name="ComputedAttributeConstructor" if="xquery core"/>
+			<ref name="ComputedTextConstructor" if="xquery core"/>
+		</choice>
+	</production>
+	
+	<production name="GeneralComp" if="xpath xquery pathx1" is-binary="yes">
+		<choice break="false">
+			<ref name="Equals"/>
+			<ref name="NotEquals"/>
+			<ref name="Lt"/>
+			<ref name="LtEquals"/>
+			<ref name="Gt"/>
+			<ref name="GtEquals"/>
+		</choice>
+	</production>
+	
+	<production name="ValueComp" if="xpath xquery pathx1"  is-binary="yes">
+		<choice break="false">
+			<ref name="FortranEq"/>
+			<ref name="FortranNe"/>
+			<ref name="FortranLt"/>
+			<ref name="FortranLe"/>	
+			<ref name="FortranGt"/>
+			<ref name="FortranGe"/>
+		</choice>
+	</production>
+	
+	<production name="NodeComp" if="xpath xquery pathx1"  is-binary="yes">
+		<choice break="false">
+			<ref name="Is"/>
+			<ref name="IsNot"/>
+		</choice>
+	</production>
+	
+	<production name="OrderComp" if="xpath xquery"  is-binary="yes">
+		<choice break="false">
+			<ref name="LtLt"/>
+			<ref name="GtGt"/>
+		</choice>
+	</production>
+
+	<production name="OrderByClause" if="xquery core">
+		<choice break="false">
+			<ref name="OrderBy"/>
+			<ref name="OrderByStable"/>
+		</choice>
+    <ref name="OrderSpecList"/>
+	</production>
+	
+  <production name="OrderSpecList" if="xquery core">
+    <ref name="OrderSpec"/>
+    <zeroOrMore>
+      <ref name="Comma"/>
+      <ref name="OrderSpec"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="OrderSpec" if="xquery core">
+    <ref name="Expr"/>
+    <ref name="OrderModifier"/>
+  </production>
+	
+  <production name="OrderModifier" if="xquery core">
+    <optional>
+      <choice>
+        <ref name="Ascending"/>
+        <ref name="Descending"/>
+      </choice>
+    </optional>
+    <optional>
+      <choice>
+       <ref name="EmptyGreatest"/>
+       <ref name="EmptyLeast"/>
+      </choice>
+    </optional>
+    <optional>
+      <ref name="Collation"/>
+      <ref name="StringLiteral"/>
+    </optional>
+  </production>
+
+  <production name="CaseClause" if="xquery core">
+    <ref name="Case"/>
+		<optional>
+			<ref name="VariableIndicator"/>
+			<ref name="VarName"/>
+      <ref name="As"/>
+		</optional>
+    <ref name="SequenceType"/>
+    <ref name="Return"/>
+    <ref name="Expr"/>
+  </production>
+
+	<!-- production name="DefaultClause" if="xquery core">
+		<ref name="Default"/>
+		<optional>
+			<ref name="VariableIndicator"/>
+			<ref name="VarName"/>
+		</optional>
+		<ref name="Default"/>
+		<ref name="Expr"/>
+	</production -->
+
+	<production name="PrimaryExpr" node-type="void">
+		<choice>
+			<ref name="Literal"/>
+			<ref name="FunctionCall"/>
+			<sequence>
+				<ref name="VariableIndicator"/>
+				<ref name="VarName"/>
+			</sequence>
+			<ref name="ParenthesizedExpr"/>
+		</choice>
+	</production>
+	
+  <production name="ForwardAxis" node-type="void">
+    <choice break="true">
+      <ref name="AxisChild"/>
+      <ref name="AxisDescendant"/>
+      <ref name="AxisAttribute"/>
+      <ref name="AxisSelf"/>
+      <ref name="AxisDescendantOrSelf"/>
+
+      <ref name="AxisFollowingSibling" if="xpath pathx1 core"/>
+      <ref name="AxisFollowing" if="xpath pathx1 core"/>
+      <ref name="AxisNamespace" if="xpath pathx1 core"/>
+
+    </choice>
+  </production>
+
+  <production name="ReverseAxis" node-type="void">
+    <choice break="true">
+      <ref name="AxisParent"/>
+
+      <ref name="AxisAncestor" if="xpath pathx1 core"/>
+      <ref name="AxisPrecedingSibling" if="xpath pathx1 core"/>
+      <ref name="AxisPreceding" if="xpath pathx1 core"/>
+      <ref name="AxisAncestorOrSelf" if="xpath pathx1 core"/>
+    </choice>
+  </production>
+
+  <!-- production name="Axis">
+    <choice break="false">
+      <ref name="ForwardAxis"/>
+      <ref name="ReverseAxis"/>
+    </choice>
+  </production -->
+
+  <production name="NodeTest">
+    <choice>
+      <ref name="KindTest"/>
+      <ref name="NameTest"/>
+    </choice>
+  </production>
+
+  <production name="NameTest">
+    <choice>
+      <ref name="QName"/>
+      <ref name="Wildcard"/>
+    </choice>
+  </production>
+
+  <production name="Wildcard" node-type="void">
+    <choice>
+      <ref name="Star"/>
+      <ref name="NCNameColonStar"/>
+      <ref name="StarColonNCName" if="xquery core xpath"/>
+    </choice>
+  </production>
+
+  <production name="KindTest">
+    <choice break="true">
+      <ref name="ProcessingInstructionTest"/>
+      <ref name="CommentTest"/>
+      <ref name="TextTest"/>
+      <!-- jwr: xDataTest was a KindTest in the grammar, but I don't know why,
+     since this is a function.
+			<ref name="DataTest"/> -->
+      <ref name="AnyKindTest"/>
+    </choice>
+  </production>
+
+  <!-- NodeLpar CommentLpar TextLpar ProcessingInstructionLpar -->
+  <production name="ProcessingInstructionTest">
+    <ref name="ProcessingInstructionLpar"/>
+    <optional>
+      <ref name="StringLiteral"/>
+    </optional>
+    <ref name="Rpar"/>
+  </production>
+
+  <production name="CommentTest">
+    <ref name="CommentLpar"/>
+    <ref name="Rpar"/>
+  </production>
+
+  <production name="TextTest">
+    <ref name="TextLpar"/>
+    <ref name="Rpar"/>
+  </production>
+
+  <!--	<production name="DataTest" if="xquery xpath">
+		<ref name="Data"/>
+		<ref name="Lpar"/>
+		<ref name="Rpar"/>
+	</production>
+
+-->
+  <production name="AnyKindTest">
+    <ref name="NodeLpar"/>
+    <ref name="Rpar"/>
+  </production>
+
+  <production name="ForwardStep" node-type="void">
+    <choice>
+      <sequence>
+        <ref name="ForwardAxis"/>
+        <choice>
+          <ref name="NodeTest"/>
+          <!-- ref name="Text" if="xquery core"/>
+          <ref name="Comment" if="xquery core"/>
+          <ref name="Node" if="xquery core"/>
+          <ref name="ProcessingInstruction" if="xquery core"/ -->
+          <!-- ref name="Data" if="xquery core" -->
+        </choice>
+      </sequence>
+      <ref name="AbbreviatedForwardStep" if="xpath pathx1 xquery"/>
+    </choice>
+  </production>
+
+  <production name="ReverseStep" node-type="void">
+    <choice>
+      <sequence>
+        <ref name="ReverseAxis"/>
+        <choice>
+          <ref name="NodeTest"/>
+          <!-- ref name="Text" if="xquery core"/>
+          <ref name="Comment" if="xquery core"/>
+          <ref name="Node" if="xquery core"/>
+          <ref name="ProcessingInstruction" if="xquery core"/ -->
+          <!-- ref name="Data" if="xquery core" -->
+        </choice>
+      </sequence>
+      <ref name="AbbreviatedReverseStep" if="xpath pathx1 xquery"/>
+    </choice>
+  </production>
+
+  <production name="AbbreviatedForwardStep" if="xquery xpath pathx1">
+    <choice>
+      <ref name="Dot"/>
+      <sequence>
+        <ref name="At"/>
+        <ref name="NameTest"/>
+      </sequence>
+      <ref name="NodeTest"/> <!-- child axis -->
+    </choice>
+  </production>
+
+  <production name="AbbreviatedReverseStep" if="xquery xpath pathx1" 
+              node-type="void">
+	  <ref name="DotDot"/>
+  </production>
+
+  <production name="Predicates" if="xquery xpath pathx1 core">
+    <zeroOrMore name="PredicatesList">
+      <choice>
+        <sequence>
+          <ref name="Lbrack"/>
+          <ref name="Expr"/>
+          <ref name="Rbrack"/>
+        </sequence>
+        <!-- Decision of Oracle F2F to remove -->
+        <!-- sequence if="xpath xquery core">
+          <ref name="Arrow"/>
+          <ref name="NameTest"/>
+        </sequence -->
+      </choice>
+    </zeroOrMore>
+  </production>
+
+  <production name="NumericLiteral" node-type="void">
+    <choice>
+      <ref name="IntegerLiteral"/>
+      <ref name="DecimalLiteral"/>
+      <ref name="DoubleLiteral"/>
+    </choice>
+  </production>
+
+  <production name="Literal" node-type="void">
+    <choice>
+      <ref name="NumericLiteral"/>
+      <ref name="StringLiteral"/>
+    </choice>
+  </production>
+
+  <production name="ParenthesizedExpr" node-type="void">
+    <ref name="Lpar"/>
+    <optional if="xquery core xpath">
+      <ref name="ExprSequence"/>
+    </optional>
+    <ref name="Expr" if="pathx1"/>
+    <ref name="Rpar"/>
+  </production>
+
+  <production name="ElementName" if="pathx1">
+    <ref name="QName"/>
+  </production>
+
+  <production name="FunctionCall" if="xpath pathx1 xquery core">
+    <ref name="QNameLpar"/>
+    <optional>
+      <ref name="Expr"/>
+      <zeroOrMore>
+        <ref name="Comma"/>
+        <ref name="Expr"/>
+      </zeroOrMore>
+    </optional>
+    <ref name="Rpar"/>
+  </production>
+
+  <production name="Param" if="xquery core">
+		<ref name="VariableIndicator"/>
+		<ref name="VarName"/>
+		<optional>
+			<ref name="TypeDeclaration"/>
+		</optional>
+  </production>
+
+  <production name="SchemaContext" if="xpath xquery core">
+    <ref name="InContext"/>
+    <ref name="SchemaGlobalContext"/>
+    <zeroOrMore>
+      <ref name="Slash"/>
+      <ref name="SchemaContextStep"/>
+    </zeroOrMore>
+  </production>
+
+  <production name="SchemaGlobalContext" if="xpath xquery core">
+    <choice>
+      <ref name="QName"/>
+      <ref name="TypeQName"/>
+    </choice>
+  </production>
+
+  <production name="SchemaContextStep" if="xpath xquery core">
+    <ref name="QName"/>
+  </production>
+
+  <production name="TypeDeclaration" if="xquery core">
+    <ref name="As"/>
+    <ref name="SequenceType"/>
+  </production>
+
+  <production name="SingleType" if="xquery core xpath">
+    <ref name="AtomicType"/>
+    <optional>
+      <ref name="QMark"/>
+    </optional>
+  </production>
+
+  <production name="SequenceType" if="xquery core xpath">
+	  <choice>
+      <sequence>
+        <ref name="ItemType"/>
+        <ref name="OccurrenceIndicator"/>
+      </sequence>
+      <ref name="Empty"/>
+		</choice>
+  </production>
+	
+  <production name="ItemType" if="xquery core xpath">
+    <choice break="true">
+      <sequence>
+        <choice>
+	        <ref name="ElementType"/>
+	        <ref name="AttributeType"/>
+	      </choice>
+	      <optional>
+	        <ref name="ElemOrAttrType"/>
+	      </optional>
+      </sequence>
+
+      <ref name="Node"/>
+      <ref name="ProcessingInstruction"/>
+      <ref name="Comment"/>
+      <ref name="Text"/>
+      <sequence>
+         <ref name="Document"/>
+         <!-- April 16 taskforce decided to remove...
+	       <optional>
+	         <ref name="DocumentElement"/>
+	       </optional -->
+      </sequence>
+
+      <ref name="Item"/>
+
+      <ref name="AtomicType"/>
+      <ref name="Untyped"/>
+      <ref name="AtomicValue"/>
+
+
+    </choice>
+
+  </production>
+
+  <production name="ElemOrAttrType" if="xquery core xpath">
+    <choice>
+      <sequence>
+        <ref name="QName"/>
+        <choice>
+          <ref name="SchemaType"/>
+          <optional>
+            <ref name="SchemaContext"/>
+          </optional>
+        </choice>
+      </sequence>
+      <ref name="SchemaType"/>
+    </choice>
+  </production>
+ 
+  <production name="SchemaType" if="xquery core xpath">
+    <ref name="OfType"/>
+    <ref name="QName"/>
+  </production>
+
+  <!-- jwr: proposed but not yet accepted -->
+  <production name="AtomicType" if="xquery core xpath">
+    <ref name="QName"/>
+  </production>
+
+  <production name="OccurrenceIndicator" if="xquery core xpath">
+    <optional>
+      <choice>
+        <ref name="Star" if="xpath xquery core" show="no"/>
+        <ref name="Multiply" if="xpath xquery core"/>
+        <ref name="Plus"/>
+        <ref name="QMark"/>
+      </choice>
+    </optional>
+  </production>
+
+  <token name="CdataSectionStart" if="xquery core">
+    <string>&lt;![CDATA[</string>
+  </token>
+
+  <!-- Recognizing it in content disallows ]]> in content same as XML. -->
+  <token name="CdataSectionEnd" if="xquery core">
+    <string>]]&gt;</string>
+  </token>
+
+  <!-- This effectively disallows in element content and attribute
+       values ampersands that are not part of entity or character
+       references. -->
+  <token name="Amp" override="true" if="core">
+    <string>&amp;</string>
+  </token>
+
+  <token name="PredefinedEntityRef" if="xquery" inline="false">
+    <string>&amp;</string>
+    <choice>
+      <string>lt</string>
+      <string>gt</string>
+      <string>amp</string>
+      <string>quot</string>
+      <string>apos</string>
+    </choice>
+    <string>;</string>
+  </token>
+
+  <token name="HexDigits" inline="false" if="xquery">
+    <oneOrMore>
+      <charClass>
+        <charRange minChar="0" maxChar="9"/>
+        <charRange minChar="a" maxChar="f"/>
+        <charRange minChar="A" maxChar="F"/>
+      </charClass>
+    </oneOrMore>
+  </token>
+
+  <token name="CharRef" if="xquery" inline="false">
+    <string>&amp;#</string>
+    <choice>
+      <ref name="Digits"/>
+      <sequence>
+        <string>x</string>
+        <ref name="HexDigits"/>
+      </sequence>
+    </choice>
+    <string>;</string>
+  </token>
+
+  <token name="StartTagOpen" override="true" if="xquery">
+    <string>&lt;</string>
+  </token>
+
+  <token name="StartTagOpenRoot" override="true" if="xquery">
+    <string>&lt;</string>
+  </token>
+
+  <token name="StartTagClose" if="xquery">
+    <string>&gt;</string>
+  </token>
+
+  <token name="EmptyTagClose" if="xquery">
+    <string>/&gt;</string>
+  </token>
+
+  <token name="EndTagOpen" if="xquery">
+    <string>&lt;/</string>
+  </token>
+
+  <token name="EndTagClose" if="xquery">
+    <string>&gt;</string>
+  </token>
+
+  <token name="ValueIndicator" recognize="START_TAG" if="xquery">
+    <string>=</string>
+  </token>
+
+  <token name="TagQName" recognize="START_TAG END_TAG" if="xquery">
+    <ref name="QName"/>
+  </token>
+
+  <!-- Recognize in OPERATOR state for function definitions. -->
+  <!-- These should be query only, once we get the validate issue fixed! -->
+  <token name="Lbrace" if="xquery core xpath" override="true">
+    <string>{</string>
+  </token>
+
+  <token name="LbraceExprEnclosure" if="xquery core xpath" override="true">
+    <string>{</string>
+  </token>
+
+  <token name="Rbrace" if="xquery core xpath" override="true">
+    <string>}</string>
+  </token>
+
+  <token name="LCurlyBraceEscape" if="xquery core" override="true">
+    <string>{{</string>
+  </token>
+
+  <token name="RCurlyBraceEscape" if="xquery core" override="true">
+    <string>}}</string>
+  </token>
+
+  <token name="EscapeApos" inline="false" if="xquery">
+    <string>&apos;&apos;</string>
+  </token>
+
+  <token name="OpenApos" if="xquery">
+    <string>&apos;</string>
+  </token>
+
+  <token name="CloseApos" override="true" if="xquery">
+    <string>&apos;</string>
+  </token>
+
+  <!-- This needs to come after the rules for special characters. -->
+  <token name="Char" if="xquery core xpath" inline="false" value-type="string">
+    <charClass>
+      <charCode value="0009"/>
+      <charCode value="000D"/>
+      <charCode value="000A"/>
+      <!-- This isn't quite right, but JavaCC doesn't understand surrogates. -->
+      <charCodeRange minValue="0020" maxValue="FFFD"/>
+    </charClass>
+  </token>
+
+  <!-- It would be nice to not take character content runs one character 
+       at a time.  However, it seems difficult to say, "all these characters 
+       but these three", at least in JavaCC. -->
+  <!-- token name="CharData" if="xquery" inline="true" value-type="string">
+    <oneOrMore>
+      <complement>
+      <charClass>
+        <char>&lt;</char>
+        <char>&amp;</char>
+        <char>{</char>
+      </charClass>
+      </complement>
+    </oneOrMore>
+  </token -->
+
+  <production name="ElementConstructor" if="xquery" whitespace-spec="explicit">
+    <choice name="TagOpenStart">
+      <ref name="StartTagOpenRoot" show="no"/>
+      <ref name="StartTagOpen"/>
+    </choice>
+    <ref name= "TagQName"/>
+    <ref name="AttributeList"/>    
+    <choice name="TagClose">
+      <ref name="EmptyTagClose"/>
+      <sequence name="TagContent">
+        <ref name="StartTagClose"/>
+        <zeroOrMore>
+          <ref name="ElementContent"/>
+        </zeroOrMore>
+        <ref name="EndTagOpen"/>
+        <ref name="TagQName"/>
+				<optional>
+					<ref name="S"/>
+				</optional>
+        <ref name="EndTagClose"/>
+      </sequence>
+    </choice>
+  </production>
+
+  <production name="ComputedDocumentConstructor" if="xquery core">
+    <sequence>
+      <ref name="DocumentLbrace"/>
+      <ref name="ExprSequence"/>
+      <ref name="Rbrace"/>
+    </sequence>
+  </production>
+
+  <production name="ComputedElementConstructor" if="xquery core">
+      <choice>
+        <ref name="ElementQNameLbrace"/>
+        <sequence>
+          <ref name="ElementLbrace"/>
+          <ref name="Expr"/>
+          <ref name="Rbrace"/>
+          <ref name="LbraceExprEnclosure"/>
+        </sequence>
+      </choice>
+      <optional>
+        <ref name="ExprSequence"/>
+      </optional>
+      <ref name="Rbrace"/>
+  </production>
+
+  <production name="ComputedAttributeConstructor" if="xquery core">
+    <choice>
+        <ref name="AttributeQNameLbrace"/>
+        <sequence>
+          <ref name="AttributeLbrace"/>
+          <ref name="Expr"/>
+          <ref name="Rbrace"/>
+          <ref name="LbraceExprEnclosure"/>
+        </sequence>
+    </choice>
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+    <ref name="Rbrace"/>
+  </production>
+
+  <production name="ComputedTextConstructor" if="xquery core">
+    <ref name="TextLbrace"/>
+    <optional>
+      <ref name="ExprSequence"/>
+    </optional>
+    <ref name="Rbrace"/>
+  </production>
+
+  <production name="CdataSection" if="xquery core" whitespace-spec="significant">
+    <ref name="CdataSectionStart"/>
+    <zeroOrMore>
+      <ref name="Char"/>
+    </zeroOrMore>
+    <ref name="CdataSectionEnd"/>
+  </production>
+
+  <production name="XmlProcessingInstruction" if="xquery core" whitespace-spec="significant">
+    <ref name="ProcessingInstructionStart"/>
+    <ref name="PITarget"/>
+    <zeroOrMore>
+      <ref name="Char"/>
+    </zeroOrMore>
+    <ref name="ProcessingInstructionEnd"/>
+  </production>
+
+  <production name="XmlComment" if="xquery core" whitespace-spec="significant">
+    <ref name="XmlCommentStart"/>
+    <zeroOrMore>
+      <ref name="Char"/>
+    </zeroOrMore>
+    <ref name="XmlCommentEnd"/>
+  </production>
+
+  <production name="ElementContent" if="xquery" whitespace-spec="significant">
+    <choice break="true">
+      <ref name="Char"/>
+      <ref name="LCurlyBraceEscape"/>
+      <ref name="RCurlyBraceEscape"/>
+      <ref name="ElementConstructor"/>
+      <ref name="EnclosedExpr"/>
+      <ref name="CdataSection"/>
+      <ref name="CharRef"/>
+      <ref name="PredefinedEntityRef"/>
+      <ref name="XmlComment"/>
+      <ref name="XmlProcessingInstruction"/>
+    </choice>
+  </production>
+
+  <production name="AttributeList" if="xquery" whitespace-spec="explicit">
+	  <zeroOrMore name="optionalAttribute">
+			<ref name="S"/>
+			<optional>
+				<ref name="TagQName"/>
+				<optional>
+					<ref name="S"/>
+				</optional>
+				<ref name="ValueIndicator"/>
+				<optional>
+					<ref name="S"/>
+				</optional>
+				<ref name="AttributeValue"/>
+			</optional>
+    </zeroOrMore>
+  </production>
+
+  <production name="AttributeValue" if="xquery" whitespace-spec="significant">
+    <choice break="true">
+      <sequence>
+        <ref name="OpenQuot"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="EscapeQuot"/>
+            <ref name="AttributeValueContent"/>
+          </choice>
+        </zeroOrMore>
+        <ref name="CloseQuot"/>
+      </sequence>
+      <sequence>
+        <ref name="OpenApos"/>
+        <zeroOrMore>
+          <choice>
+            <ref name="EscapeApos"/>
+            <ref name="AttributeValueContent"/>
+          </choice>
+        </zeroOrMore>
+        <ref name="CloseApos"/>
+      </sequence>
+    </choice>
+  </production>
+
+  <production name="AttributeValueContent" if="xquery" whitespace-spec="significant">
+    <choice break="true">
+      <ref name="Char"/>
+      <ref name="CharRef"/>
+      <ref name="LCurlyBraceEscape"/>
+      <ref name="RCurlyBraceEscape"/>
+      <ref name="EnclosedExpr"/>
+      <!-- not in Dana's grammar -->
+      <ref name="PredefinedEntityRef"/>
+    </choice>
+  </production>
+
+  <production name="EnclosedExpr" if="xquery core">
+    <choice>
+      <ref name="Lbrace" show="no"/>
+      <ref name="LbraceExprEnclosure"/>
+    </choice>
+    <ref name="ExprSequence"/>
+    <ref name="Rbrace"/>
+  </production>
+
+  <production name="XMLSpaceDecl" if="xquery core">
+    <ref name="DeclareXMLSpace"/>
+    <ref name="XMLSpaceEquals"/>
+    <choice>
+      <ref name="XMLSpacePreserve"/>
+      <ref name="XMLSpaceStrip"/>
+		</choice>
+  </production>
+
+  <production name="DefaultCollationDecl" if="xquery core">
+    <ref name="DefaultCollationEquals"/>
+    <!-- ref name="StringLiteral"/ -->
+    <ref name="URLLiteral"/>
+  </production>
+
+  <production name="NamespaceDecl" if="xquery core">
+    <ref name="DeclareNamespace"/>
+    <ref name="NCNameForPrefix"/>
+    <ref name="AssignEquals"/>
+    <ref name="URLLiteral"/>
+  </production>
+
+  <production name="SubNamespaceDecl" if="xquery core">
+    <ref name="Namespace"/>
+    <ref name="NCNameForPrefix"/>
+    <ref name="AssignEquals"/>
+    <ref name="URLLiteral"/>
+  </production>
+
+  <production name="DefaultNamespaceDecl" if="xquery core">
+    <choice>
+      <ref name="DefaultElement"/>
+      <ref name="DefaultFunction"/>
+    </choice>
+    <ref name="Namespace"/>
+    <ref name="AssignEquals"/>
+    <ref name="URLLiteral"/>
+  </production>
+
+  <!-- production name="ContextDecl" if="xquery core">
+    <choice break="true">
+      <ref name="NamespaceDecl"/>
+      <ref name="DefaultNamespaceDecl"/>
+      <ref name="SchemaImport"/>
+    </choice>
+  </production -->
+
+  <production name="FunctionDefn" if="xquery core">
+    <ref name="DefineFunction"/>
+    <ref name="QNameLpar"/>
+	  <!-- ref name="FuncPListOpen"/ -->
+    <optional>
+      <ref name="ParamList"/>
+    </optional>
+    <choice>
+      <ref name="Rpar"/>
+      <sequence if="xquery core">
+        <ref name="RparAs"/>
+        <!-- Was Datatype -->
+        <ref name="SequenceType"/>
+      </sequence>
+    </choice>
+    <ref name="EnclosedExpr"/>
+  </production>
+
+  <production name="ParamList" if="xquery core">
+    <ref name="Param"/>
+    <zeroOrMore>
+      <ref name="Comma"/>
+      <ref name="Param"/>
+    </zeroOrMore>
+  </production>  
+
+  <production name="SchemaImport" if="xquery core">
+    <ref name="ImportSchemaToken"/>
+    <!-- See http://lists.w3.org/Archives/Member/w3c-xml-query-wg/2002Jan/0181.html -->
+    <choice>
+      <ref name="StringLiteral"/>
+      <ref name="SubNamespaceDecl"/>
+      <ref name="DefaultNamespaceDecl"/>
+    </choice>
+    <optional>
+      <ref name="AtStringLiteral"/>
+    </optional>
+  </production>
+
+  <!-- Type declaration stuff follows -->
+  <production name="TypeDeclaration" if="core">
+    <choice break="true">
+      <sequence>
+        <ref name="DefineElement"/>
+        <ref name="QName"/>
+        <ref name="Lbrace"/>
+        <optional>
+          <ref name="TypeDefn"/>
+        </optional>
+        <ref name="Rbrace"/>
+      </sequence>
+      <sequence>
+        <ref name="DefineAttribute"/>
+        <ref name="QName"/>
+        <ref name="Lbrace"/>
+        <optional>
+          <ref name="TypeDefn"/>
+        </optional>
+        <ref name="Rbrace"/>
+      </sequence>
+      <sequence>
+        <ref name="DefineType"/>
+        <ref name="QName"/>
+        <ref name="Lbrace"/>
+        <optional>
+          <ref name="TypeDefn"/>
+        </optional>
+        <ref name="Rbrace"/>
+      </sequence>
+    </choice>
+  </production>
+
+  <exprProduction name="TypeDefn" if="core">
+    <level>
+      <binary name="TypeUnion" if="core">
+        <ref name="Vbar"/>
+      </binary>
+    </level>
+    <level>
+      <binary name="TypeBoth" if="core">
+        <ref name="Amp"/>
+      </binary>
+      <binary name="TypeSequence" if="core">
+      <ref name="Comma"/>
+      </binary>
+    </level>
+    <level>
+      <primary name="TypeSimpleType" if="core">
+        <ref name="QName"/>
+        <ref name="OccurrenceIndicator"/>
+      </primary>
+      <primary name="TypeAttributeRef" if="core">
+        <ref name="Attribute"/>
+        <ref name="NameTest"/>
+        <optional>
+          <ref name="Lbrace"/>
+          <optional>
+            <ref name="TypeDefn"/>
+          </optional>
+          <ref name="Rbrace"/>
+        </optional>
+        <ref name="OccurrenceIndicator"/>
+      </primary>
+      <primary name="TypeElementRef" if="core">
+        <ref name="Element"/>
+        <ref name="NameTest"/>
+        <optional>
+          <ref name="Lbrace"/>
+          <optional>
+            <ref name="TypeDefn"/>
+          </optional>
+          <ref name="Rbrace"/>
+        </optional>
+        <ref name="OccurrenceIndicator"/>
+      </primary>
+      <primary name="TypeTypeRef" if="core">
+        <ref name="Type"/>
+        <ref name="NameTest"/>
+        <ref name="OccurrenceIndicator"/>
+      </primary>
+      <primary name="TypeParenthesized" if="core">
+        <ref name="Lpar"/>
+        <optional>
+          <ref name="TypeDefn"/>
+        </optional>
+        <ref name="Rpar"/>
+        <ref name="OccurrenceIndicator"/>
+      </primary>
+      <!-- primary name="TypeEmptySequence" if="core">
+			        <ref name="Lpar"/>
+				<ref name="Rpar"/>
+			</primary -->
+      <primary name="TypeNone" if="core">
+        <ref name="None"/>
+      </primary>
+    </level>
+  </exprProduction>
+
+  <!-- This is never referenced from anywhere. -sb -->
+  <!-- production name="ModuleImport" if="xquery core">
+	      <ref name="Module"/>
+	      <ref name="StringLiteral"/>
+	</production -->
+
+  <!-- ==================== XPath 1.0 =========================-->
+  <!-- production name="RHSStepExpr" if="pathx1">
+    <choice>
+      <ref name="AxisStep"/>
+      <ref name="RHSGeneralStepExpr"/>
+    </choice>
+  </production -->
+
+  <!-- production name="RHSGeneralStepExpr" if="pathx1">
+    <ref name="RHSPrimaryExpr"/>
+    <ref name="RHSStepQualifiers"/>
+  </production -->
+
+  <!-- production name="RHSStepQualifiers" if="pathx1">
+    <zeroOrMore>
+      <choice>
+        <sequence>
+          <ref name="Lbrack"/>
+          <ref name="Expr"/>
+          <ref name="Rbrack"/>
+        </sequence>
+      </choice>
+    </zeroOrMore>
+  </production -->
+
+  <production name="RHSPrimaryExpr" if="pathx1">
+    <choice break="true">
+      <ref name="StepExpr" if="pathx1"/>
+      <sequence>
+        <ref name="PrimaryExpr" if="pathx1"/>
+        <ref name="Predicates"/>
+      </sequence>
+    </choice>
+  </production>
+
+  <token name="WhitespaceChar" inline="false">
+    <charClass>
+      <charCode value="0009"/>
+      <charCode value="000D"/>
+      <charCode value="000A"/>
+      <!-- char xml:space="preserve"> </char -->
+      <!-- SGML mode in EMacs doesn't like xml:space, so 
+                             we avoid it for now. -->
+      <charCode value="0020"/>
+    </charClass>
+  </token>
+
+  <token name="Letter" inline="false" is-macro="yes" is-xml="yes">
+    <choice>
+      <ref name="BaseChar"/>
+      <ref name="Ideographic"/>
+    </choice>
+  </token>
+
+  <token name="BaseChar" inline="false" is-macro="yes" is-xml="yes">
+    <charClass>
+      <charCodeRange minValue="0041" maxValue="005a"/>
+      <charCodeRange minValue="0061" maxValue="007a"/>
+      <charCodeRange minValue="00c0" maxValue="00d6"/>
+      <charCodeRange minValue="00d8" maxValue="00f6"/>
+      <charCodeRange minValue="00f8" maxValue="00ff"/>
+      <charCodeRange minValue="0100" maxValue="0131"/>
+      <charCodeRange minValue="0134" maxValue="013e"/>
+      <charCodeRange minValue="0141" maxValue="0148"/>
+      <charCodeRange minValue="014a" maxValue="017e"/>
+      <charCodeRange minValue="0180" maxValue="01c3"/>
+      <charCodeRange minValue="01cd" maxValue="01f0"/>
+      <charCodeRange minValue="01f4" maxValue="01f5"/>
+      <charCodeRange minValue="01fa" maxValue="0217"/>
+      <charCodeRange minValue="0250" maxValue="02a8"/>
+      <charCodeRange minValue="02bb" maxValue="02c1"/>
+      <charCode value="0386"/>
+      <charCodeRange minValue="0388" maxValue="038a"/>
+      <charCode value="038c"/>
+      <charCodeRange minValue="038e" maxValue="03a1"/>
+      <charCodeRange minValue="03a3" maxValue="03ce"/>
+      <charCodeRange minValue="03d0" maxValue="03d6"/>
+      <charCode value="03da"/>
+      <charCode value="03dc"/>
+      <charCode value="03de"/>
+      <charCode value="03e0"/>
+      <charCodeRange minValue="03e2" maxValue="03f3"/>
+      <charCodeRange minValue="0401" maxValue="040c"/>
+      <charCodeRange minValue="040e" maxValue="044f"/>
+      <charCodeRange minValue="0451" maxValue="045c"/>
+      <charCodeRange minValue="045e" maxValue="0481"/>
+      <charCodeRange minValue="0490" maxValue="04c4"/>
+      <charCodeRange minValue="04c7" maxValue="04c8"/>
+      <charCodeRange minValue="04cb" maxValue="04cc"/>
+      <charCodeRange minValue="04d0" maxValue="04eb"/>
+      <charCodeRange minValue="04ee" maxValue="04f5"/>
+      <charCodeRange minValue="04f8" maxValue="04f9"/>
+      <charCodeRange minValue="0531" maxValue="0556"/>
+      <charCode value="0559"/>
+      <charCodeRange minValue="0561" maxValue="0586"/>
+      <charCodeRange minValue="05d0" maxValue="05ea"/>
+      <charCodeRange minValue="05f0" maxValue="05f2"/>
+      <charCodeRange minValue="0621" maxValue="063a"/>
+      <charCodeRange minValue="0641" maxValue="064a"/>
+      <charCodeRange minValue="0671" maxValue="06b7"/>
+      <charCodeRange minValue="06ba" maxValue="06be"/>
+      <charCodeRange minValue="06c0" maxValue="06ce"/>
+      <charCodeRange minValue="06d0" maxValue="06d3"/>
+      <charCode value="06d5"/>
+      <charCodeRange minValue="06e5" maxValue="06e6"/>
+      <charCodeRange minValue="0905" maxValue="0939"/>
+      <charCode value="093d"/>
+      <charCodeRange minValue="0958" maxValue="0961"/>
+      <charCodeRange minValue="0985" maxValue="098c"/>
+      <charCodeRange minValue="098f" maxValue="0990"/>
+      <charCodeRange minValue="0993" maxValue="09a8"/>
+      <charCodeRange minValue="09aa" maxValue="09b0"/>
+      <charCode value="09b2"/>
+      <charCodeRange minValue="09b6" maxValue="09b9"/>
+      <charCodeRange minValue="09dc" maxValue="09dd"/>
+      <charCodeRange minValue="09df" maxValue="09e1"/>
+      <charCodeRange minValue="09f0" maxValue="09f1"/>
+      <charCodeRange minValue="0a05" maxValue="0a0a"/>
+      <charCodeRange minValue="0a0f" maxValue="0a10"/>
+      <charCodeRange minValue="0a13" maxValue="0a28"/>
+      <charCodeRange minValue="0a2a" maxValue="0a30"/>
+      <charCodeRange minValue="0a32" maxValue="0a33"/>
+      <charCodeRange minValue="0a35" maxValue="0a36"/>
+      <charCodeRange minValue="0a38" maxValue="0a39"/>
+      <charCodeRange minValue="0a59" maxValue="0a5c"/>
+      <charCode value="0a5e"/>
+      <charCodeRange minValue="0a72" maxValue="0a74"/>
+      <charCodeRange minValue="0a85" maxValue="0a8b"/>
+      <charCode value="0a8d"/>
+      <charCodeRange minValue="0a8f" maxValue="0a91"/>
+      <charCodeRange minValue="0a93" maxValue="0aa8"/>
+      <charCodeRange minValue="0aaa" maxValue="0ab0"/>
+      <charCodeRange minValue="0ab2" maxValue="0ab3"/>
+      <charCodeRange minValue="0ab5" maxValue="0ab9"/>
+      <charCode value="0abd"/>
+      <charCode value="0ae0"/>
+      <charCodeRange minValue="0b05" maxValue="0b0c"/>
+      <charCodeRange minValue="0b0f" maxValue="0b10"/>
+      <charCodeRange minValue="0b13" maxValue="0b28"/>
+      <charCodeRange minValue="0b2a" maxValue="0b30"/>
+      <charCodeRange minValue="0b32" maxValue="0b33"/>
+      <charCodeRange minValue="0b36" maxValue="0b39"/>
+      <charCode value="0b3d"/>
+      <charCodeRange minValue="0b5c" maxValue="0b5d"/>
+      <charCodeRange minValue="0b5f" maxValue="0b61"/>
+      <charCodeRange minValue="0b85" maxValue="0b8a"/>
+      <charCodeRange minValue="0b8e" maxValue="0b90"/>
+      <charCodeRange minValue="0b92" maxValue="0b95"/>
+      <charCodeRange minValue="0b99" maxValue="0b9a"/>
+      <charCode value="0b9c"/>
+      <charCodeRange minValue="0b9e" maxValue="0b9f"/>
+      <charCodeRange minValue="0ba3" maxValue="0ba4"/>
+      <charCodeRange minValue="0ba8" maxValue="0baa"/>
+      <charCodeRange minValue="0bae" maxValue="0bb5"/>
+      <charCodeRange minValue="0bb7" maxValue="0bb9"/>
+      <charCodeRange minValue="0c05" maxValue="0c0c"/>
+      <charCodeRange minValue="0c0e" maxValue="0c10"/>
+      <charCodeRange minValue="0c12" maxValue="0c28"/>
+      <charCodeRange minValue="0c2a" maxValue="0c33"/>
+      <charCodeRange minValue="0c35" maxValue="0c39"/>
+      <charCodeRange minValue="0c60" maxValue="0c61"/>
+      <charCodeRange minValue="0c85" maxValue="0c8c"/>
+      <charCodeRange minValue="0c8e" maxValue="0c90"/>
+      <charCodeRange minValue="0c92" maxValue="0ca8"/>
+      <charCodeRange minValue="0caa" maxValue="0cb3"/>
+      <charCodeRange minValue="0cb5" maxValue="0cb9"/>
+      <charCode value="0cde"/>
+      <charCodeRange minValue="0ce0" maxValue="0ce1"/>
+      <charCodeRange minValue="0d05" maxValue="0d0c"/>
+      <charCodeRange minValue="0d0e" maxValue="0d10"/>
+      <charCodeRange minValue="0d12" maxValue="0d28"/>
+      <charCodeRange minValue="0d2a" maxValue="0d39"/>
+      <charCodeRange minValue="0d60" maxValue="0d61"/>
+      <charCodeRange minValue="0e01" maxValue="0e2e"/>
+      <charCode value="0e30"/>
+      <charCodeRange minValue="0e32" maxValue="0e33"/>
+      <charCodeRange minValue="0e40" maxValue="0e45"/>
+      <charCodeRange minValue="0e81" maxValue="0e82"/>
+      <charCode value="0e84"/>
+      <charCodeRange minValue="0e87" maxValue="0e88"/>
+      <charCode value="0e8a"/>
+      <charCode value="0e8d"/>
+      <charCodeRange minValue="0e94" maxValue="0e97"/>
+      <charCodeRange minValue="0e99" maxValue="0e9f"/>
+      <charCodeRange minValue="0ea1" maxValue="0ea3"/>
+      <charCode value="0ea5"/>
+      <charCode value="0ea7"/>
+      <charCodeRange minValue="0eaa" maxValue="0eab"/>
+      <charCodeRange minValue="0ead" maxValue="0eae"/>
+      <charCode value="0eb0"/>
+      <charCodeRange minValue="0eb2" maxValue="0eb3"/>
+      <charCode value="0ebd"/>
+      <charCodeRange minValue="0ec0" maxValue="0ec4"/>
+      <charCodeRange minValue="0f40" maxValue="0f47"/>
+      <charCodeRange minValue="0f49" maxValue="0f69"/>
+      <charCodeRange minValue="10a0" maxValue="10c5"/>
+      <charCodeRange minValue="10d0" maxValue="10f6"/>
+      <charCode value="1100"/>
+      <charCodeRange minValue="1102" maxValue="1103"/>
+      <charCodeRange minValue="1105" maxValue="1107"/>
+      <charCode value="1109"/>
+      <charCodeRange minValue="110b" maxValue="110c"/>
+      <charCodeRange minValue="110e" maxValue="1112"/>
+      <charCode value="113c"/>
+      <charCode value="113e"/>
+      <charCode value="1140"/>
+      <charCode value="114c"/>
+      <charCode value="114e"/>
+      <charCode value="1150"/>
+      <charCodeRange minValue="1154" maxValue="1155"/>
+      <charCode value="1159"/>
+      <charCodeRange minValue="115f" maxValue="1161"/>
+      <charCode value="1163"/>
+      <charCode value="1165"/>
+      <charCode value="1167"/>
+      <charCode value="1169"/>
+      <charCodeRange minValue="116d" maxValue="116e"/>
+      <charCodeRange minValue="1172" maxValue="1173"/>
+      <charCode value="1175"/>
+      <charCode value="119e"/>
+      <charCode value="11a8"/>
+      <charCode value="11ab"/>
+      <charCodeRange minValue="11ae" maxValue="11af"/>
+      <charCodeRange minValue="11b7" maxValue="11b8"/>
+      <charCode value="11ba"/>
+      <charCodeRange minValue="11bc" maxValue="11c2"/>
+      <charCode value="11eb"/>
+      <charCode value="11f0"/>
+      <charCode value="11f9"/>
+      <charCodeRange minValue="1e00" maxValue="1e9b"/>
+      <charCodeRange minValue="1ea0" maxValue="1ef9"/>
+      <charCodeRange minValue="1f00" maxValue="1f15"/>
+      <charCodeRange minValue="1f18" maxValue="1f1d"/>
+      <charCodeRange minValue="1f20" maxValue="1f45"/>
+      <charCodeRange minValue="1f48" maxValue="1f4d"/>
+      <charCodeRange minValue="1f50" maxValue="1f57"/>
+      <charCode value="1f59"/>
+      <charCode value="1f5b"/>
+      <charCode value="1f5d"/>
+      <charCodeRange minValue="1f5f" maxValue="1f7d"/>
+      <charCodeRange minValue="1f80" maxValue="1fb4"/>
+      <charCodeRange minValue="1fb6" maxValue="1fbc"/>
+      <charCode value="1fbe"/>
+      <charCodeRange minValue="1fc2" maxValue="1fc4"/>
+      <charCodeRange minValue="1fc6" maxValue="1fcc"/>
+      <charCodeRange minValue="1fd0" maxValue="1fd3"/>
+      <charCodeRange minValue="1fd6" maxValue="1fdb"/>
+      <charCodeRange minValue="1fe0" maxValue="1fec"/>
+      <charCodeRange minValue="1ff2" maxValue="1ff4"/>
+      <charCodeRange minValue="1ff6" maxValue="1ffc"/>
+      <charCode value="2126"/>
+      <charCodeRange minValue="212a" maxValue="212b"/>
+      <charCode value="212e"/>
+      <charCodeRange minValue="2180" maxValue="2182"/>
+      <charCodeRange minValue="3041" maxValue="3094"/>
+      <charCodeRange minValue="30a1" maxValue="30fa"/>
+      <charCodeRange minValue="3105" maxValue="312c"/>
+      <charCodeRange minValue="ac00" maxValue="d7a3"/>
+    </charClass>
+  </token>
+
+  <token name="Ideographic" inline="false" is-macro="yes" is-xml="yes">
+    <charClass>
+      <charCodeRange minValue="4e00" maxValue="9fa5"/>
+      <charCode value="3007"/>
+      <charCodeRange minValue="3021" maxValue="3029"/>
+    </charClass>
+  </token>
+
+  <token name="CombiningChar" inline="false" is-macro="yes" is-xml="yes">
+    <charClass>
+      <charCodeRange minValue="0300" maxValue="0345"/>
+      <charCodeRange minValue="0360" maxValue="0361"/>
+      <charCodeRange minValue="0483" maxValue="0486"/>
+      <charCodeRange minValue="0591" maxValue="05a1"/>
+      <charCodeRange minValue="05a3" maxValue="05b9"/>
+      <charCodeRange minValue="05bb" maxValue="05bd"/>
+      <charCode value="05bf"/>
+      <charCodeRange minValue="05c1" maxValue="05c2"/>
+      <charCode value="05c4"/>
+      <charCodeRange minValue="064b" maxValue="0652"/>
+      <charCode value="0670"/>
+      <charCodeRange minValue="06d6" maxValue="06dc"/>
+      <charCodeRange minValue="06dd" maxValue="06df"/>
+      <charCodeRange minValue="06e0" maxValue="06e4"/>
+      <charCodeRange minValue="06e7" maxValue="06e8"/>
+      <charCodeRange minValue="06ea" maxValue="06ed"/>
+      <charCodeRange minValue="0901" maxValue="0903"/>
+      <charCode value="093c"/>
+      <charCodeRange minValue="093e" maxValue="094c"/>
+      <charCode value="094d"/>
+      <charCodeRange minValue="0951" maxValue="0954"/>
+      <charCodeRange minValue="0962" maxValue="0963"/>
+      <charCodeRange minValue="0981" maxValue="0983"/>
+      <charCode value="09bc"/>
+      <charCode value="09be"/>
+      <charCode value="09bf"/>
+      <charCodeRange minValue="09c0" maxValue="09c4"/>
+      <charCodeRange minValue="09c7" maxValue="09c8"/>
+      <charCodeRange minValue="09cb" maxValue="09cd"/>
+      <charCode value="09d7"/>
+      <charCodeRange minValue="09e2" maxValue="09e3"/>
+      <charCode value="0a02"/>
+      <charCode value="0a3c"/>
+      <charCode value="0a3e"/>
+      <charCode value="0a3f"/>
+      <charCodeRange minValue="0a40" maxValue="0a42"/>
+      <charCodeRange minValue="0a47" maxValue="0a48"/>
+      <charCodeRange minValue="0a4b" maxValue="0a4d"/>
+      <charCodeRange minValue="0a70" maxValue="0a71"/>
+      <charCodeRange minValue="0a81" maxValue="0a83"/>
+      <charCode value="0abc"/>
+      <charCodeRange minValue="0abe" maxValue="0ac5"/>
+      <charCodeRange minValue="0ac7" maxValue="0ac9"/>
+      <charCodeRange minValue="0acb" maxValue="0acd"/>
+      <charCodeRange minValue="0b01" maxValue="0b03"/>
+      <charCode value="0b3c"/>
+      <charCodeRange minValue="0b3e" maxValue="0b43"/>
+      <charCodeRange minValue="0b47" maxValue="0b48"/>
+      <charCodeRange minValue="0b4b" maxValue="0b4d"/>
+      <charCodeRange minValue="0b56" maxValue="0b57"/>
+      <charCodeRange minValue="0b82" maxValue="0b83"/>
+      <charCodeRange minValue="0bbe" maxValue="0bc2"/>
+      <charCodeRange minValue="0bc6" maxValue="0bc8"/>
+      <charCodeRange minValue="0bca" maxValue="0bcd"/>
+      <charCode value="0bd7"/>
+      <charCodeRange minValue="0c01" maxValue="0c03"/>
+      <charCodeRange minValue="0c3e" maxValue="0c44"/>
+      <charCodeRange minValue="0c46" maxValue="0c48"/>
+      <charCodeRange minValue="0c4a" maxValue="0c4d"/>
+      <charCodeRange minValue="0c55" maxValue="0c56"/>
+      <charCodeRange minValue="0c82" maxValue="0c83"/>
+      <charCodeRange minValue="0cbe" maxValue="0cc4"/>
+      <charCodeRange minValue="0cc6" maxValue="0cc8"/>
+      <charCodeRange minValue="0cca" maxValue="0ccd"/>
+      <charCodeRange minValue="0cd5" maxValue="0cd6"/>
+      <charCodeRange minValue="0d02" maxValue="0d03"/>
+      <charCodeRange minValue="0d3e" maxValue="0d43"/>
+      <charCodeRange minValue="0d46" maxValue="0d48"/>
+      <charCodeRange minValue="0d4a" maxValue="0d4d"/>
+      <charCode value="0d57"/>
+      <charCode value="0e31"/>
+      <charCodeRange minValue="0e34" maxValue="0e3a"/>
+      <charCodeRange minValue="0e47" maxValue="0e4e"/>
+      <charCode value="0eb1"/>
+      <charCodeRange minValue="0eb4" maxValue="0eb9"/>
+      <charCodeRange minValue="0ebb" maxValue="0ebc"/>
+      <charCodeRange minValue="0ec8" maxValue="0ecd"/>
+      <charCodeRange minValue="0f18" maxValue="0f19"/>
+      <charCode value="0f35"/>
+      <charCode value="0f37"/>
+      <charCode value="0f39"/>
+      <charCode value="0f3e"/>
+      <charCode value="0f3f"/>
+      <charCodeRange minValue="0f71" maxValue="0f84"/>
+      <charCodeRange minValue="0f86" maxValue="0f8b"/>
+      <charCodeRange minValue="0f90" maxValue="0f95"/>
+      <charCode value="0f97"/>
+      <charCodeRange minValue="0f99" maxValue="0fad"/>
+      <charCodeRange minValue="0fb1" maxValue="0fb7"/>
+      <charCode value="0fb9"/>
+      <charCodeRange minValue="20d0" maxValue="20dc"/>
+      <charCode value="20e1"/>
+      <charCodeRange minValue="302a" maxValue="302f"/>
+      <charCode value="3099"/>
+      <charCode value="309a"/>
+    </charClass>
+  </token>
+
+  <token name="Digit" inline="false" is-macro="yes" is-xml="yes">
+    <charClass>
+      <charCodeRange minValue="0030" maxValue="0039"/>
+      <charCodeRange minValue="0660" maxValue="0669"/>
+      <charCodeRange minValue="06f0" maxValue="06f9"/>
+      <charCodeRange minValue="0966" maxValue="096f"/>
+      <charCodeRange minValue="09e6" maxValue="09ef"/>
+      <charCodeRange minValue="0a66" maxValue="0a6f"/>
+      <charCodeRange minValue="0ae6" maxValue="0aef"/>
+      <charCodeRange minValue="0b66" maxValue="0b6f"/>
+      <charCodeRange minValue="0be7" maxValue="0bef"/>
+      <charCodeRange minValue="0c66" maxValue="0c6f"/>
+      <charCodeRange minValue="0ce6" maxValue="0cef"/>
+      <charCodeRange minValue="0d66" maxValue="0d6f"/>
+      <charCodeRange minValue="0e50" maxValue="0e59"/>
+      <charCodeRange minValue="0ed0" maxValue="0ed9"/>
+      <charCodeRange minValue="0f20" maxValue="0f29"/>
+    </charClass>
+  </token>
+
+  <token name="Extender" inline="false" is-macro="yes" is-xml="yes">
+    <charClass>
+      <charCode value="00b7"/>
+      <charCode value="02d0"/>
+      <charCode value="02d1"/>
+      <charCode value="0387"/>
+      <charCode value="0640"/>
+      <charCode value="0e46"/>
+      <charCode value="0ec6"/>
+      <charCode value="3005"/>
+      <charCodeRange minValue="3031" maxValue="3035"/>
+      <charCodeRange minValue="309d" maxValue="309e"/>
+      <charCodeRange minValue="30fc" maxValue="30fe"/>
+    </charClass>
+  </token>
+
+
+</grammar>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:nil
+sgml-shorttag:nil
+sgml-namecase-general:nil
+sgml-general-insert-case:lower
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:2
+sgml-indent-data:nil
+sgml-parent-document:nil
+sgml-exposed-tags:nil
+sgml-local-catalogs:nil
+sgml-local-ecat-files:nil
+End:
+-->

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<exprs>
+	<!-- primary (not nodeset) -->
+	<expr value="10"/>
+	<expr value="'chaine'"/>
+	<expr value="toto,10"/>
+	
+	<expr value="tutu/(toto|titi)"/>
+	<expr value="tutu/toto|titi"/>
+
+	<!-- primary expr -->
+	<expr value="func()"/>
+	<expr value="func2('param1',56)"/>
+	<expr value="$varvar"/>
+	<expr value="toto/$varvar"/>
+	<expr value="$varvar/toto"/>
+	<!--expr value="(toto|titi)"/-->
+
+	
+	<!-- nametest (AbbreviateForwardStep) -->
+	<expr value="toto"/>
+	<expr value="prefix4:toto"/>
+	<expr value="*"/>		
+	<expr value="prefix3:*"/>			
+	<expr value="*:toto"/>			
+	
+	<!-- kindtest -->
+	<expr value="text()"/>
+	<expr value="comment()"/>
+	<expr value="processing-instruction()"/>
+	<expr value="node()"/>
+	
+	<!-- abbreviate step -->
+	<!--expr value="."/-->
+	<expr value="@toto"/>
+	<expr value=".."/>
+
+	
+	<!-- reverse axis -->
+	<expr value="ancestor::toto"/>
+		
+	<!-- path expr (more than one step) -->
+	<expr value="toto/titi"/>
+	<expr value="/abs/titi"/>
+	<expr value="rel//titi"/>
+	<expr value="rel//titi/tutu//tata"/>
+	<expr value="//abs/self:titi"/>
+	<expr value="//abs[//toto]/self::titi"/>
+	
+	<!-- predicate -->
+	<expr value="toto[titi]"/>
+	<expr value="toto[10]"/>
+	<expr value="toto[10][descendant::tutu]"/>
+	
+	<!-- expr sequence -->
+	<expr value="toto,50,'chaine'"/>
+	
+	<!-- Additive/Mutiplicative/unary expr -->
+	<expr value="45+23-10"/>
+	<expr value="toto[45+23]"/>
+	<expr value="42+12*5-4 div 12 idiv 10 mod 10"/>
+	<expr value="42+12 mod 10"/>
+	<expr value="(42+12) mod 10"/>
+	
+
+
+	<!-- Semantically invalid expression -->
+	<expr value="toto/(45+23)"/>
+</exprs>
