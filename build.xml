@@ -332,7 +332,7 @@ Copyright:
     description="Compile and jar Xalan-J 1.x backwards compat classes" >
     <echo message="Compile and jar just the Xalan-J 1 compability API"/>
     <mkdir dir="${build.compat.classes}"/>
-    <javac srcdir="${compat.src.dir}" classpath="${java.class.path}:${build.xalan.jar}" 
+    <javac srcdir="${compat.src.dir}" classpath="${build.xalan.jar}:${java.class.path}" 
            destdir="${build.compat.classes}"
            includes="**/*.java"
            debug="${debug}"/>
