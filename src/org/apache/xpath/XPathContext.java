@@ -332,7 +332,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   /**
    * Reset for new run.
    */
-  public void reset(){}
+  public void reset()
+  {
+    m_dtmManager = DTMManager.newInstance(
+                   org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+  }
 
   /** The current stylesheet locator. */
   SourceLocator[] m_saxLocations = new SourceLocator[RECURSIONLIMIT];
