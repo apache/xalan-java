@@ -224,10 +224,11 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <li><link anchor="ext2">2-basicJscript</link></li>
       <li><link anchor="ext3">3-java-namespace</link></li>
       <li><link anchor="ext4">4-numlistJava</link></li>
-      <li><link anchor="ext5">5-numlistJScript</link></li>                        
+      <li><link anchor="ext5">5-numlistJScript</link></li>
+      <li><link anchor="ext6">6-sqllib-instantdb</link></li>
     </ul>
-    <p>The extensions subdirectory contains five samples with &xslt4j; extensions. Two of the samples use
-     extensions implemented in JavaScript, and three of the samples use extensions implemented in Java.</p>
+    <p>The extensions subdirectory contains six samples with &xslt4j; extensions. Two of the samples use
+     extensions implemented in JavaScript, and four of the samples use extensions implemented in Java.</p>
      <p>To run these examples, you must place bsf.jar (distributed with &xslt4j;), and js.jar
       (version 1.5, available from 
       <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the class path. 
@@ -279,6 +280,21 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     <p>Run this sample from the extensions subdirectory with</p>
       <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
         <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
+      </s3><anchor name="ext6"/>
+      <s3 title="6-sqllib-instantdb">
+      <p>What it does: Uses <link idref="extensionslib" anchor="sql">SQL library XConnection
+      extension</link> to connect to an InstantDB sample database, perform a query, and display the
+      query result in an HTML table.</p>
+      <note>You must include idb.jar on the classpath. We have placed a copy of idb.jar from
+      InstantDB version 3.25 in samples/extensions/instantdb. For information about InstantDB, see
+      <jump href="http://instantdb.enhydra.org/software/documentation/index.html">InstantDB</jump>
+      and the <jump href="http://instantdb.enhydra.org/software/license/index.html">Enydra Public
+      License</jump>.</note>
+      <p>Run this sample from the extensions subdirectory with (adjust the Windows CLASSPATH setting 
+      below for your operating environment):</p>
+      <p><code>java org.apache.xalan.xslt.Process</code> 
+      <br/>&nbsp;&nbsp;<code>-cp instantdb/idb.jar;%CLASSPATH%</code>
+      <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb -out import1.html</code></p>
       </s3>
     </s2><anchor name="trace"/>
     <s2 title="Trace">

@@ -230,7 +230,9 @@ and working incrementally through "streamable" result set.</p>
     Each col element contains a text node with a textual representation of the value for that column in the current row.</p>
     <anchor name="ex-sql"/> 
     <s3 title="Example with SQL library">
-    <p>This example displays the result set from a table in a sample InstantDB database.</p>
+    <p>This example displays the result set from a table in a sample InstantDB database. It is also
+    available as a sample application; see 
+    <link idref="samples" anchor="ext6">6-sqllib-instantdb</link>.</p>
 <source>&lt;?xml version="1.0"?&gt;
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
@@ -243,7 +245,7 @@ and working incrementally through "streamable" result set.</p>
     &lt;!-- 1. Make the connection --&gt;
     &lt;xsl:variable name="products"
                   select="sql:new('org.enhydra.instantdb.jdbc.idbDriver',
-                                'jdbc:idb:D:\instantdb\Examples\sample.prp')"/&gt;
+                                'jdbc:idb:.\instantdb\sample.prp')"/&gt;
     &lt;HTML&gt;
       &lt;HEAD&gt;
       &lt;/HEAD&gt;
