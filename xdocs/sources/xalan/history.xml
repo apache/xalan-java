@@ -3,6 +3,488 @@
  <s1 title="History of software changes">
    <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
    &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.3.2">
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Make synchronized to address potential reentrancy issue in
+ XRTreeFrag.finalize(), as discussed in the Javadoc. This may
+ solve several outstanding bug reports regarding reuse of
+ Transformers and cache suppression in for-each.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>Well, _that_ was dumb... Forgot one "don't dereference if null" test.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>Just comment<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>02/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>We weren't handling the case where no default-value handling was specified.
+ This didn't generally bother us because XSLT never produces an element
+ declaration as output... but it did affect TransformerIdentityImpl when the
+ source document had an internal subset.
+
+ See xalan-j-users archives, under subject
+ "Differences between explicit and implicit parsing for docs with DTDs?"<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/04/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
+ java/src/org/apache/xalan/templates ElemVariable.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xml/dtm/ref DTMManagerDefault.java
+ java/src/org/apache/xpath VariableStack.java
+ XPathContext.java<br/><ref>Committer's log entry: </ref>Variable64-66 and a number of variable-related Bugzilla reports: Global
+ variables may have their resolution deferred. This was causing their
+ content to be placed on the normal variable stack, where it could be
+ popped off (arggh) and later overwritten (double arggh). This change
+ gives them an independent storage space which is not subject to
+ those risks.
+
+ While I was at it, I've also made the VariableStack class a trifle more
+ self-documenting by giving some of the fields more meaningful names.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/04/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils IntStack.java<br/><ref>Committer's log entry: </ref>Bugzilla 6854: Return the stack exception, as documented.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/12/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>Bugzilla 6156 reopened: Same symptom, different disease -- rather than
+ a late finalizer, we simply forgot to reset one field between invocations.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/19/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref TestDTM.java<br/><ref>Committer's log entry: </ref>Replace old version, which was specific to particular implentations of
+ DTM, with one which is specific only to DTMManagerDefault and which
+ can be generalized more easily to conduct other tests.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/19/2002<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm/ref TestDTMNodes.java<br/><ref>Committer's log entry: </ref>No longer in service.
+
+ This supported the old version of TestDTM. New version has
+ a node-dumper as an internal subroutine. (If we're going to do
+ a display method for other debugging purposes, it should be
+ both applicable to all DTMs and -- probably -- built into the
+ DTM system.)<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/20/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref TestDTM.java<br/><ref>Committer's log entry: </ref>Add Apache header, remove import of discarded TestDTMNode.
+ At some point, we should consider moving this class to the tests
+ directory.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/21/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToXML.java<br/><ref>Committer's log entry: </ref>Properly catch exception from CharInfo constructor, and try again.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/21/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SystemIDResolver.java<br/><ref>Committer's log entry: </ref>Put extra check for getAbsoluteURI(String urlString, String base) for absolute
+ file paths with no protocol... I think one of the last check-in's wiped this 
+out.
+ So now, if the path is the form of "x:/x" or "/x" then "file:///" is added to 
+it.
+ I don't see how this can screw anything up... but I'm sure it will.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/21/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>Merge from redundent expression elemination branch.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/21/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan Version.java
+ java/src/org/apache/xalan/lib/sql DTMDocument.java
+ java/src/org/apache/xalan/processor ProcessorKey.java
+ ProcessorPreserveSpace.java
+ ProcessorStripSpace.java StylesheetHandler.java
+ XSLTAttributeDef.java XSLTElementProcessor.java
+ java/src/org/apache/xalan/templates AVT.java AVTPart.java
+ AVTPartSimple.java AVTPartXPath.java
+ ElemApplyTemplates.java ElemAttribute.java
+ ElemCallTemplate.java ElemChoose.java
+ ElemCopyOf.java ElemElement.java
+ ElemExtensionCall.java ElemForEach.java ElemIf.java
+ ElemLiteralResult.java ElemNumber.java
+ ElemTemplateElement.java ElemValueOf.java
+ ElemVariable.java ElemWhen.java ElemWithParam.java
+ FuncDocument.java FuncKey.java Stylesheet.java
+ WhiteSpaceInfo.java
+ java/src/org/apache/xalan/trace TraceManager.java
+ java/src/org/apache/xalan/transformer KeyIterator.java
+ KeyManager.java KeyRefIterator.java KeyTable.java
+ NodeSorter.java ResultTreeHandler.java
+ TransformerHandlerImpl.java
+ java/src/org/apache/xml/utils NodeVector.java
+ java/src/org/apache/xpath Expression.java VariableStack.java
+ XPath.java
+ java/src/org/apache/xpath/axes AttributeIterator.java
+ AxesWalker.java ChildIterator.java
+ ChildTestIterator.java DescendantIterator.java
+ FilterExprWalker.java IteratorPool.java
+ LocPathIterator.java MatchPatternIterator.java
+ OneStepIterator.java OneStepIteratorForward.java
+ PredicatedNodeTest.java ReverseAxesWalker.java
+ SelfIteratorNoPredicate.java UnionPathIterator.java
+ WalkerFactory.java WalkingIterator.java
+ WalkingIteratorSorted.java
+ java/src/org/apache/xpath/compiler Compiler.java
+ java/src/org/apache/xpath/functions FuncBoolean.java
+ FuncCount.java FuncExtFunction.java Function.java
+ Function2Args.java Function3Args.java
+ FunctionMultiArgs.java FunctionOneArg.java
+ java/src/org/apache/xpath/objects XBoolean.java
+ XNodeSet.java XNodeSetForDOM.java XNumber.java
+ XObject.java XRTreeFrag.java
+ XRTreeFragSelectWrapper.java XString.java
+ XStringForFSB.java
+ java/src/org/apache/xpath/operations Bool.java Equals.java
+ Operation.java UnaryOperation.java Variable.java
+ java/src/org/apache/xpath/patterns FunctionPattern.java
+ NodeTest.java StepPattern.java UnionPattern.java<br/><ref>Added: </ref>java/src/org/apache/xalan/processor WhitespaceInfoPaths.java
+ java/src/org/apache/xalan/templates AbsPathChecker.java
+ ElemVariablePsuedo.java
+ RedundentExprEliminator.java VarNameCollector.java
+ XSLTVisitable.java XSLTVisitor.java
+ XUnresolvedVariableSimple.java
+ java/src/org/apache/xpath ExpressionNode.java
+ ExpressionOwner.java XPathVisitable.java
+ XPathVisitor.java
+ java/src/org/apache/xpath/axes BasicTestIterator.java
+ FilterExprIterator.java
+ FilterExprIteratorSimple.java
+ HasPositionalPredChecker.java NodeSequence.java
+ PathComponent.java UnionChildIterator.java
+ java/src/org/apache/xpath/operations VariableSafeAbsRef.java<br/><ref>Removed: </ref>java/src/org/apache/xalan/transformer KeyWalker.java<br/><ref>Committer's log entry: </ref>Redundent Expression Elimination branch merge.
+
+ Major architectural changes
+ 1) Rip out cacheing in all iterators, and move the caching into XNodeSet 
+(actually NodeSequence where the caching is done derives from XObject and 
+XNodeSet derives from NodeSequence).Lots of other changes went into this, 
+including rewriting of some of the xsl:key stuff.
+
+ 2) Implementation of a Visitor mechanism for the stylesheet and xpath 
+components.Each component for an XPath event is passed an ExpressionOwner, 
+which just has a getExpression and setExpression method, which allows us to 
+create a list of these, and then be able to do rewrites.This should be a 
+generally useful mechanism for all sorts of stuff, and should be considered a 
+public API.
+
+ 3) Implementation of deepEquality methods for all XPath components, which 
+allows us to see if two components are equal.
+
+ 4) Implementation of RedundentExprEliminator, which is a derivative from the 
+new XSLTVisitor class, which runs over the stylesheet collecting xpaths within 
+the same scope, and absolute xpaths that are not context dependent.These are 
+then each reduced by walking the list and checking for deep equality (though 
+global paths are always reduced).Reduction takes place by creating variables 
+that have a special namespace and a non-legal local name.Both full and partial 
+path reduction done.
+
+ Not done yet: Add back in the xsl:key caching that I ripped out (not a big 
+deal).Could be skipped, with some risk.
+
+ Not done yet: Implement isLast function.With the new stuff, the last() 
+function will be slower, so, since most cases are just checking to see if an 
+item is the last, I want to rewrite foo[last()] patterns to 
+foo[xalan:isLast()].Could be skipped, with some risk.
+
+ Davanum performance test result: 4x increase in performance.
+
+ Datapower performance suite results: very slight decrease in overall 
+performance.:-(
+
+ Smoke test results: All clear when run with Xerces 1.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>03/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath DOMHelper.java<br/><ref>Committer's log entry: </ref>The Node identity test in isNodeAfter()
+ (ie., node1 == node2) does not work in some cases,
+ so I added a routine to use DTMNodeProxy equals()
+ if that test fails.
+ This was required to support the new EXSLT
+ leading() and trailing() extension functions.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>03/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions ExtensionsTable.java
+ MethodResolver.java<br/><ref>Committer's log entry: </ref>1. Registered the EXSLT 'common', 'sets', and 'math'
+ namespaces ExtensionsTable.
+
+ 2. To handle extension functions (e.g., some EXSLT
+ functions) that include a dash in their name, added
+ a routine in MethodResolver that maps abc_xyz to
+ abcXyz.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>03/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib package.html<br/><ref>Added: </ref>java/src/org/apache/xalan/lib ExsltCommon.java
+ ExsltMath.java ExsltSets.java<br/><ref>Committer's log entry: </ref>Preliminary set of EXSLT extension implementations.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>03/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib ExsltCommon.java
+ ExsltMath.java ExsltSets.java Extensions.java<br/><ref>Committer's log entry: </ref>Added Apache license.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/23/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemApplyImport.java
+ ElemApplyTemplates.java ElemAttribute.java
+ ElemCallTemplate.java ElemChoose.java
+ ElemComment.java ElemCopy.java ElemCopyOf.java
+ ElemFallback.java ElemForEach.java ElemIf.java
+ ElemMessage.java ElemNumber.java ElemPI.java
+ ElemParam.java ElemTemplate.java
+ ElemTextLiteral.java ElemUse.java ElemValueOf.java
+ ElemVariable.java
+ java/src/org/apache/xalan/trace TraceListenerEx.java
+ TraceManager.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Added: </ref>java/src/org/apache/xalan/trace TraceListenerEx2.java<br/><ref>Committer's log entry: </ref>Implemented TraceListenerEx2, which extends TraceListenerEx to add
+ the traceEnd event.
+
+ Modified all existing templates that call fireTraceEvent to also call
+ fireTraceEndEvent at the appropriate time.
+
+ Note that there was a bad incompatibility between xsl:for-each and
+ xsl:if, which was called whether the test was successful or not.
+ With the current logic of xsl:for-each,
+ if the node-set is empty trace will not be called at all.
+ So I've changed xsl:if to match the xsl:for-each behavior.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>Set the DEVELOPMENT number to 1, in prep for a developer's release.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemForEach.java<br/><ref>Committer's log entry: </ref>Make sure the current element is nulled out if debug mode so that
+ TransformerImpl#getElementCallstack works correctly.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemElement.java<br/><ref>Committer's log entry: </ref>Added fire trace events, which seemed to be missing.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added getElementCallstack() and getTemplateCallstack() methods, for support
+ of xsl debuggers.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/24/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>Changed the release number to 4, since new functionality has been added.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemApplyTemplates.java<br/><ref>Committer's log entry: </ref>Fix Frank Weiss bug, which has to do with the currentFrameBottom not being
+ restored properly when inside a with-param.
+
+ Fix Cristina bug where the traceEnd event was being passed the wrong template.
+
+ Fix problem with RTF pruning where push/popRTFContext wasn't being called
+ for xsl:apply-templates.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/trace TraceListenerEx2.java<br/><ref>Committer's log entry: </ref>Fix JavaDoc comment.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/trace PrintTraceListener.java<br/><ref>Committer's log entry: </ref>Handle TraceListenerEx2, even though we don't do anything with the extra 
+methods.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Fix problem with the SAXSourceLocator not getting the line number info.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils SAXSourceLocator.java<br/><ref>Committer's log entry: </ref>Add a constructor that takes a SourceLocator.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemTemplateElement.java<br/><ref>Committer's log entry: </ref>Added getOwnerXSLTemplate method, a convenience function.
+ Implemented getLocalName().<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
+ ProcessorTemplateElem.java<br/><ref>Committer's log entry: </ref>Addressing http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6752.
+ Make the processor more robust against multiple failures during compilation.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XNull.java<br/><ref>Committer's log entry: </ref>Change derivation to XNodeSet.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath XPathProcessorException.java
+ XPathException.java<br/><ref>Committer's log entry: </ref>Pass in the parent ExpressionNode, so that more context information can be
+ set. For the moment, I've added methods that are dependent on the
+ XSLT module, to set the source stylesheet node. I'll deal with this more when
+ I deal with the proper breakup and packaging of the XPath package, in a
+ few days.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XObject.java<br/><ref>Committer's log entry: </ref>Pass this as ExpressionNode to the XPathException object on error, which
+ helps us to establish context information for the exception object.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>Add constructor that lets us set the owning ExpressionNode.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>For getCurrentElement, add some protection for access when there is no
+ current element.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemVariable.java
+ ElemWithParam.java<br/><ref>Committer's log entry: </ref>Pass the template to the XRTreeFrag constructor, so we can establish
+ better context.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath XPathException.java<br/><ref>Committer's log entry: </ref>Set the "StylesheetNode" to the ElemTemplateElement instead of the
+ DOM backpointer.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>04/02/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Wrap runtime exception in TransformerException, so we'll get line number info
+ when NPE and the like.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>04/02/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XRTreeFrag.java<br/><ref>Committer's log entry: </ref>Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7622.
+ 1) Transform#1 creates an XRTreeFrag. This has a reference to a DTM, that in 
+turn is registered with a DTMManager. The DTM will need to be deleted from the 
+DTMManager when the XRTreeFrag is deleted. The XRTreeFrag also contains a 
+reference to the XPathContext.
+ 2) Transform#1 completes. The XPathContext is reset... namely the a bunch of 
+structures are reset or rebuilt, including DTMManagerDefault#m_dtms. BUT, the 
+XRTreeFrags are still hanging around, waiting to unregister themselves.
+ 3) Transform#2 starts humming along. It builds a XRTreeFrag and installs 
+that RTF DTM into DTMManagerDefault#m_dtms[2].
+ 4) The finalizer thread wakes and decides to delete some of those old 
+XRTreeFrags from Transform#1.
+ 5) The XRTreeFrag#finalize() method references through the XPathContext, and 
+deletes what it thinks is it's DTM from DTMManagerDefault#m_dtms[2] (via 
+getDTMIdentity(dtm)).
+ 6) Transform#2 tries to reference DTMManagerDefault#m_dtms[2], finds it is 
+null, and chaos results.
+
+ ...so, before calling xctxt.release, etc., check to make sure the DTM is 
+actually
+ entered in the current DTMManager.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>04/04/2002<br/><ref>Added: </ref>java/src/org/w3c/dom/xpath COPYRIGHT.html
+ XPathEvaluator.java XPathException.java
+ XPathExpression.java XPathNSResolver.java
+ XPathNamespace.java XPathResult.java<br/><ref>Committer's log entry: </ref>Add Document Object Model (DOM) Level 3 XPath Specification.
+ (Temp until it's added to xml-commons.)<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>04/05/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>On entry, set the document base URI in the DTM. Fixes bug reported
+ by Christine.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/09/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Fix inconsistancy in handling returned DTM IDs. (There's room for
+ debate about whether the current value -- expressed as the
+ NodeHandle for Node 0 in that DTM -- is the best possible
+ representation, but this is what we're currently using...)<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/09/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMDefaultBase.java<br/><ref>Committer's log entry: </ref>Clean-up of dumpDTM method, some code clarity changes.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/09/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Yeowch. Didn't mean to check in the XNI experiment.
+ Disabled, probably belongs on a branch. (And probably
+ needs to be rewritten fairly intensively, since the current
+ hook is something of a kluge!)<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/09/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>(nitpicking)<br/><br/></li><li><ref>Committed by </ref>pauldick@apache.org<ref> on </ref>04/10/2002<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm/ref TestDTM.java<br/><ref>Committer's log entry: </ref>Moved into Test directory<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/10/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Cleaner disabling of experimental code. Sorry 'bout that.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/10/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDefaultBaseIterators.java
+ DTMDefaultBaseTraversers.java
+ ExpandedNameTable.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Change extended types to be an integer and use a structure with a localname, 
+a namespace and a nodetype to represent the node extended type. We no longer 
+need to do the shifting left and right that we did for the previous extended 
+types.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/10/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/operations Variable.java
+ java/src/org/apache/xpath/patterns NodeTest.java<br/><ref>Committer's log entry: </ref>Change extended types to be an integer and use a structure with a localname, 
+a namespace and a nodetype to represent the node extended type. We no longer 
+need to do the shifting left and right that we did for the previous extended 
+types.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/10/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemApplyTemplates.java
+ ElemForEach.java TemplateList.java
+ VarNameCollector.java<br/><ref>Committer's log entry: </ref>Change extended types to be an integer and use a structure with a localname, 
+a namespace and a nodetype to represent the node extended type. We no longer 
+need to do the shifting left and right that we did for the previous extended 
+types.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/12/2002<br/><ref>Added: </ref>java/src/org/apache/xml/dtm XSequence.java<br/><ref>Committer's log entry: </ref>Creating a new branch, Xalan3, for experimentation with XPath2 support.
+
+ Currently the changes are limited to org.apache.xml.dtm -- enabling
+ datatype support by tying into Xerces' low-level XNI layer, which
+ includes experimental support for post-schema-validation Infoset
+ (PSVI) information. Eventually we'll be patching other portions of
+ Xalan to actually retrieve and use this data.
+
+ The code I'm now checking in is NOT in final form. Known issues:
+
+ 1) The logic in DTMManager which enables this behavior is
+ something of a kluge -- it only kicks in if you parse incrementally
+ from a StreamSource. The getDTM() method really wants to be
+ rationalized somewhat, which will make adding XNI easier.
+
+ 2) The storage for datatype information currently adds another
+ column to the DTM table. We really want to switch to associating
+ the datatype with the Expanded Type table, and using some form
+ of sparse array to record local overrides.
+
+ 3) The XNI code won't compile without Xerces2. We need to think
+ about whether we want to accept that as a dependency, or use
+ reflection to bind at run time rather than compile time.
+
+ Note that typed values are currently computed on demand, with the
+ DTM storing only the sting values. An argument could be made for
+ precomputing some or all of this information and instead generating
+ strings on demand (see the XPath2 Data Model spec for discussion
+ of that alternative). But that's a considerably larger change, and
+ would affect non-type-based users of XSLT as well since it would
+ present values in their normalized form rather than as entered; I'd
+ rather not go that route until we have a string-based alternative
+ fully functional.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/12/2002<br/><ref>Added: </ref>java/src/org/apache/xml/dtm/ref/xni2dtm DTM_XSequence.java
+ XNI2DTM.java<br/><ref>Committer's log entry: </ref>Creating a new branch, Xalan3, for experimentation with XPath2 support.
+
+ Currently the changes are limited to org.apache.xml.dtm -- enabling
+ datatype support by tying into Xerces' low-level XNI layer, which
+ includes experimental support for post-schema-validation Infoset
+ (PSVI) information. Eventually we'll be patching other portions of
+ Xalan to actually retrieve and use this data.
+
+ The code I'm now checking in is NOT in final form. Known issues:
+
+ 1) The logic in DTMManager which enables this behavior is
+ something of a kluge -- it only kicks in if you parse incrementally
+ from a StreamSource. The getDTM() method really wants to be
+ rationalized somewhat, which will make adding XNI easier.
+
+ 2) The storage for datatype information currently adds another
+ column to the DTM table. We really want to switch to associating
+ the datatype with the Expanded Type table, and using some form
+ of sparse array to record local overrides.
+
+ 3) The XNI code won't compile without Xerces2. We need to think
+ about whether we want to accept that as a dependency, or use
+ reflection to bind at run time rather than compile time.
+
+ Note that typed values are currently computed on demand, with the
+ DTM storing only the sting values. An argument could be made for
+ precomputing some or all of this information and instead generating
+ strings on demand (see the XPath2 Data Model spec for discussion
+ of that alternative). But that's a considerably larger change, and
+ would affect non-type-based users of XSLT as well since it would
+ present values in their normalized form rather than as entered; I'd
+ rather not go that route until we have a string-based alternative
+ fully functional.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/12/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm Tag: Xalan3 DTM.java
+ java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ DTMDefaultBase.java DTMDocumentImpl.java
+ DTMManagerDefault.java
+ IncrementalSAXSource_Xerces.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm Tag: Xalan3
+ SAX2DTM.java<br/><ref>Committer's log entry: </ref>Creating a new branch, Xalan3, for experimentation with XPath2 support.
+
+ Currently the changes are limited to org.apache.xml.dtm -- enabling
+ datatype support by tying into Xerces' low-level XNI layer, which
+ includes experimental support for post-schema-validation Infoset
+ (PSVI) information. Eventually we'll be patching other portions of
+ Xalan to actually retrieve and use this data.
+
+ The code I'm now checking in is NOT in final form. Known issues:
+
+ 1) The logic in DTMManager which enables this behavior is
+ something of a kluge -- it only kicks in if you parse incrementally
+ from a StreamSource. The getDTM() method really wants to be
+ rationalized somewhat, which will make adding XNI easier.
+
+ 2) The storage for datatype information currently adds another
+ column to the DTM table. We really want to switch to associating
+ the datatype with the Expanded Type table, and using some form
+ of sparse array to record local overrides.
+
+ 3) The XNI code won't compile without Xerces2. We need to think
+ about whether we want to accept that as a dependency, or use
+ reflection to bind at run time rather than compile time.
+
+ Note that typed values are currently computed on demand, with the
+ DTM storing only the sting values. An argument could be made for
+ precomputing some or all of this information and instead generating
+ strings on demand (see the XPath2 Data Model spec for discussion
+ of that alternative). But that's a considerably larger change, and
+ would affect non-type-based users of XSLT as well since it would
+ present values in their normalized form rather than as entered; I'd
+ rather not go that route until we have a string-based alternative
+ fully functional.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/12/2002<br/><ref>Removed: </ref>java/src/org/apache/xml/dtm XSequence.java
+ java/src/org/apache/xml/dtm/ref/xni2dtm DTM_XSequence.java
+ XNI2DTM.java<br/><ref>Committer's log entry: </ref>These should only be on the Xalan3 branch, not the main branch.
+ I _hope_ I can split this successfully...<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/12/2002<br/><ref>Added: </ref>java/src/org/apache/xml/dtm Tag: Xalan3 XSequence.java<br/><ref>Committer's log entry: </ref>These should only be on the Xalan3 branch, not the main branch.
+ I _hope_ I can split this successfully...<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/12/2002<br/><ref>Added: </ref>java/src/org/apache/xml/dtm/ref/xni2dtm Tag: Xalan3
+ DTM_XSequence.java XNI2DTM.java<br/><ref>Committer's log entry: </ref>These should only be on the Xalan3 branch, not the main branch.
+ I _hope_ I can split this successfully...<br/><br/></li><li><ref>Committed by </ref>santiagopg@apache.org<ref> on </ref>04/15/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc Tag:
+ jaxp-ri-1_2_0-fcs-branch DOM.java<br/><ref>Committer's log entry: </ref>New implementation of xsl:element<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/compiler XPathParser.java<br/><ref>Committer's log entry: </ref>Improve recovery if user's error handler insists on trying to
+ continue past a fatal error in the XPath syntax. Ideally, this
+ mechanism should be cleaned up and applied across the
+ entire XPath grammar. But for now, I'm addressing the one
+ specific complaint in a way that can be expanded later, and
+ doing so in a way that minimizes costs.
+
+ (In fact, one can argue that since this is a rare event, we
+ shouldn't be minimizing the cost quite so much, and should
+ be throwing new exception objects rather than reusing a
+ preconstructed one.)<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/compiler XPathParser.java<br/><ref>Committer's log entry: </ref>Decided I _was_ overoptimizing.
+
+ Saving memory in tne non-error case trumps saving it in the error case.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates Tag: XSLTC_DTM
+ ElemApplyTemplates.java
+ java/src/org/apache/xalan/xsltc Tag: XSLTC_DTM DOM.java
+ DOMCache.java NodeIterator.java Translet.java
+ java/src/org/apache/xalan/xsltc/cmdline Tag: XSLTC_DTM
+ Transform.java
+ java/src/org/apache/xalan/xsltc/compiler Tag: XSLTC_DTM
+ AbsolutePathPattern.java AncestorPattern.java
+ Constants.java CopyOf.java DocumentCall.java
+ ForEach.java IdKeyPattern.java Import.java Key.java
+ KeyCall.java LastCall.java Mode.java NameBase.java
+ NodeTest.java ParentLocationPath.java Parser.java
+ ProcessingInstructionPattern.java Step.java
+ StepPattern.java Stylesheet.java
+ SyntaxTreeNode.java UnionPathExpr.java XSLTC.java
+ java/src/org/apache/xalan/xsltc/compiler/util Tag: XSLTC_DTM
+ MethodGenerator.java NodeSetType.java
+ ResultTreeType.java
+ java/src/org/apache/xalan/xsltc/dom Tag: XSLTC_DTM
+ AbsoluteIterator.java AnyNodeCounter.java Axis.java
+ BitArray.java CurrentNodeListFilter.java
+ CurrentNodeListIterator.java DOMAdapter.java
+ DOMImpl.java DTDMonitor.java DocumentCache.java
+ DupFilterIterator.java FilterIterator.java
+ FilteredStepIterator.java KeyIndex.java
+ LoadDocument.java MatchingIterator.java
+ MultiDOM.java MultipleNodeCounter.java
+ NodeCounter.java NthIterator.java
+ ReverseIterator.java SingleNodeCounter.java
+ SingletonIterator.java SortingIterator.java
+ StepIterator.java UnionIterator.java
+ java/src/org/apache/xalan/xsltc/runtime Tag: XSLTC_DTM
+ AbstractTranslet.java BasisLibrary.java
+ Constants.java DefaultRun.java SAXAdapter.java
+ java/src/org/apache/xalan/xsltc/trax Tag: XSLTC_DTM
+ TransformerHandlerImpl.java TransformerImpl.java
+ XSLTCSource.java
+ java/src/org/apache/xml/dtm Tag: XSLTC_DTM DTM.java
+ DTMAxisIterator.java DTMManager.java
+ java/src/org/apache/xml/dtm/ref Tag: XSLTC_DTM
+ DTMAxisIteratorBase.java DTMDefaultBase.java
+ DTMDefaultBaseIterators.java DTMNamedNodeMap.java
+ DTMNodeList.java DTMNodeProxy.java
+ ExpandedNameTable.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm Tag: XSLTC_DTM
+ DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm Tag: XSLTC_DTM
+ SAX2DTM.java<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/dom Tag: XSLTC_DTM
+ SAXImpl.java XSLTCDTMManager.java<br/><ref>Committer's log entry: </ref>Checking in a branch of xalan where XSLTC is using the DTM interface. This 
+branch is very unstable, please do not use yet!!!<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm Tag: XSLTC_DTM
+ DOM2DTM.java<br/><ref>Committer's log entry: </ref>Make getNumberOfNodes() public<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/18/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ DTMManagerDefault.java
+ IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>XNI support now always used if available, with SAX as fallback.
+
+ Issues: DTMDefaultManager is still a bit more aware of Xerces2
+ than I want it to be. And the kluge of creating an Incremental Xerces
+ source and then running it non-incrementally, while producing
+ straightforward code, is a slightly ugly mixed metaphor.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/18/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ DTMManagerDefault.java
+ java/src/org/apache/xml/dtm/ref/xni2dtm Tag: Xalan3
+ XNI2DTM.java<br/><ref>Committer's log entry: </ref>Minor polishing, disabling debugging dump.
+
+ We currently pass most of Smoketest with the new XNI code enabled.
+ Some suspicious stuff in the API tests; my attempts to disentangle
+ the XNI and SAX support may not have been 100% succesful.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/18/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom Tag: XSLTC_DTM
+ SAXImpl.java
+ java/src/org/apache/xml/dtm/ref Tag: XSLTC_DTM
+ DTMDefaultBaseIterators.java
+ java/src/org/apache/xpath/compiler Tag: XSLTC_DTM
+ XPathParser.java<br/><ref>Committer's log entry: </ref>Misc fixes<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/22/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Bug 4546 -- thanks to Wolfram Eisert for tracking this down and
+ proposing the patch.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ DTMManagerDefault.java
+ IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>Easy enable/disable of XNI support for testing purposes,
+ and some error-reporting cleanup. We still fail a few API tests
+ in XNI mode, mostly related to error handling.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/29/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm Tag: Xalan3 DTM.java
+ java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ DTMDefaultBase.java DTMDefaultBaseIterators.java
+ DTMDefaultBaseTraversers.java
+ ExpandedNameTable.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm Tag: Xalan3
+ DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm Tag: Xalan3
+ SAX2DTM.java<br/><ref>Committer's log entry: </ref>Merge ExtendedType changes from main branch<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>05/02/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ ExpandedNameTable.java<br/><ref>Committer's log entry: </ref>Oops. Typo.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>05/02/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ ExpandedNameTable.java
+ IncrementalSAXSource_Xerces.java
+ java/src/org/apache/xml/dtm/ref/xni2dtm Tag: Xalan3
+ XNI2DTM.java<br/><ref>Committer's log entry: </ref>Make sure current version checked in before I start experimenting with 
+alternatives.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>05/02/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/xni2dtm Tag: Xalan3
+ XNI2DTM.java<br/><ref>Committer's log entry: </ref>It helps if we actually remember to store the schema info...<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>05/03/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref Tag: Xalan3
+ ExpandedNameTable.java
+ java/src/org/apache/xml/dtm/ref/xni2dtm Tag: Xalan3
+ XNI2DTM.java<br/><ref>Committer's log entry: </ref>Xalan3 PSVI changes: Lighter-weight storage for PSVI datatype. Schema
+ type first seen is now stored as part of the ExpandedName. In many cases
+ all instances of the same node have the same type and this should suffice.
+ In some cases tthe actual type may be locally overridden (schema
+ derived types), and XNI2DTM will record an exception into a simple
+ "sparse vector".
+
+ Storage improved. DTM construction speed improved. Schema type
+ retrieval speed adversely impacted but -- one hopes -- not significantly.
+
+ Of course right now Xerces' schema-validator burns so many cycles
+ that our own efficiency or lack thereof is completely moot... but we
+ assume they'll be improving that over time.<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>05/06/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/compiler XPathParser.java<br/><ref>Committer's log entry: </ref>Remove the duplicated ;;
+
+ ( which broke the JDK1.4 compilation which in turn broke all the gump
+ deps ).<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>05/06/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes PredicatedNodeTest.java<br/><ref>Committer's log entry: </ref>Bugzilla 7159 -- Just an access-permission change, for improved
+ toolability.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>05/09/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize SerializerToText.java<br/><ref>Committer's log entry: </ref>Bugzilla 8358 -- bad method signature. I've created a new method
+ with the correct signature. The old one may or may not be entirely
+ superfluous, but I don't want to muck with it right now.<br/><br/></li></ul>
+</s2>
+
 <s2 title="Changes for &xslt4j; 2.3 and 2.3.1">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql XConnection.java<br/><ref>Committer's log entry: </ref>Fixed second connection problem<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Update for new DTM Model<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql DTMDocument.java<br/><ref>Committer's log entry: </ref>Update for new DTM Model<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>01/17/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
  DTMDocument.java<br/><ref>Committer's log entry: </ref>Removed Debug<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/18/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Whups. There's a possible reentrancy problem when data

@@ -69,7 +69,7 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.2</link></li>
+    <li><link anchor="done">Changes since version 2.3.2</link></li>
     <li><link anchor="global2.3">Global 2.3 updates</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
@@ -77,8 +77,17 @@
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.3.1">
-     &done-j;     
+     <s3 title="Changes since &xslt4j; 2.3.2">
+     <note>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailoing list archive index</jump>.</note>
+     <ul>
+     <li>[add here]</li>
+     <li>Support for the <jump href="http://www.exslt.org/">EXSLT</jump> function and result elements, and EXSLT 
+     date-and-time functions.</li>
+     <li>Improvements to the extensions mechanism to more efficiently handle the detection and analysis of extensions 
+     during the stylesheet "composition" process, and the generation of the required extension handlers during 
+     initialization of the transformation process.</li>
+     </ul>
      </s3><anchor name="global2.3"/>
     <s3 title="Global 2.3 updates">
      <ul>
