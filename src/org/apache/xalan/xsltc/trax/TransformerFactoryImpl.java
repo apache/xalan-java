@@ -249,80 +249,64 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     // End TransformerFactory methods 
     ////////////////////////////////////////////////////// 
 
+    /**
+     *
+     */
+    public Transformer newTransformer(Source source) throws
+	TransformerConfigurationException {
+	Templates templates = newTemplates(source);
+	return(templates.newTransformer());
+    }
 
-    public Transformer newTransformer(Source stylesheet) throws
-	TransformerConfigurationException
-    {
+    /**
+     *
+     */
+    public Templates newTemplates(Source stylesheet) throws
+	TransformerConfigurationException {
+
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
-	// check if destination has been set with system property
+	// Check if destination has been set with system property
+	// TODO: We probably have to change this.
+	//       Xalan might already have a property defined for this
 	String transletDestDir = System.getProperty("transletPool");
 	if (transletDestDir != null) {
 	    xsltc.setDestDirectory(transletDestDir);
  	}
 
-        // compile stylesheet
-        boolean isSuccessful = true;
-        StreamSource strmsrc = (StreamSource)stylesheet;
-        InputStream inputStream = strmsrc.getInputStream();
+        // Get down to business: Compile the stylesheet
+        InputStream inputStream = ((StreamSource)stylesheet).getInputStream();
         String stylesheetName = stylesheet.getSystemId();
-        String transletName = "no_name";
-        if (inputStream != null) {
-            isSuccessful = xsltc.compile(inputStream, transletName);
-        } else if (stylesheetName != null ){
-            transletName = Util.toJavaName(Util.noExtName(
-		Util.baseName(stylesheetName)));
-            try {
+	URL url = null;
+
+	// Attempt to get a decent name for the translet...
+        String transletName = "undefined";
+	if (stylesheetName != null) {
+	    final String base  = Util.baseName(stylesheetName);
+	    final String noext = Util.noExtName(base);
+            transletName = Util.toJavaName(noext);
+	    try {
 		if (stylesheetName.startsWith("file:/")) {
-                    isSuccessful = xsltc.compile(new URL(stylesheetName));
+		    url = new URL(stylesheetName);
 		} else {
-                    File file = new File(stylesheetName);
-                    URL url = file.toURL();
-                    isSuccessful = xsltc.compile(url);
+		    url = (new File(stylesheetName)).toURL();
 		}
-            } catch (MalformedURLException e) {
-                throw new TransformerConfigurationException(
-                    "URL for stylesheet '" + stylesheetName +
-                    "' can not be formed.");
-            }
-        } else {
-           throw new TransformerConfigurationException(
-                "Stylesheet must have a system id or be an InputStream.");
-        }
-
-	if (!isSuccessful) {
-	    throw new TransformerConfigurationException(
-		"Compilation of stylesheet '" + stylesheetName + "' failed.");
-	}
-
-	Translet translet = null;
-	try {
-	    Class clazz = Class.forName(transletName);
-	    translet = (Translet)clazz.newInstance();
-	    ((AbstractTranslet)translet).setTransletName(transletName);
-	    // GTM
-	    if (_errorListener != null) {
-	        ((AbstractTranslet)translet).setErrorListener(_errorListener);
 	    }
-	} catch (ClassNotFoundException e) {
-	    throw new TransformerConfigurationException(
-		"Translet class '" + transletName + "' not found.");
-	} catch (InstantiationException e) {
-	    throw new TransformerConfigurationException(
-		"Translet class '" + transletName + 
-		"' could not be instantiated");
-	} catch (IllegalAccessException  e) {
-	    throw new TransformerConfigurationException(
-		"Translet class '" + transletName + "' could not be accessed.");
+	    catch (MalformedURLException e) { url = null; }
 	}
-	return (AbstractTranslet)translet;
-    }
 
-    public Templates newTemplates(Source stylesheet) throws
-       TransformerConfigurationException 
-    {
-	return new TransletTemplates(stylesheet);
+	byte[][] bytecodes = null;
+
+	if (url != null)
+	    bytecodes = xsltc.compile(url, transletName);
+	else if (inputStream != null)
+	    bytecodes = xsltc.compile(inputStream, transletName, 77);
+	else
+	    throw new TransformerConfigurationException(
+		"Stylesheet must have a system id or be an InputStream.");
+
+	return(new TemplatesImpl(bytecodes, transletName));
     }
 
     private ErrorListener _errorListener = null; 

@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author G. Todd Miller
  *
  */
 
@@ -68,7 +69,9 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.runtime.*;
 
-public abstract class TemplatesImpl implements Templates {
+import java.util.Properties;
+
+public final class TemplatesImpl implements Templates {
     
     private String   _transletName = null;
     private byte[][] _bytecodes = null;
@@ -78,6 +81,14 @@ public abstract class TemplatesImpl implements Templates {
 	public Class defineClass(byte[] b) {
 	    return super.defineClass(null, b, 0, b.length);
 	}
+    }
+
+    /**
+     *
+     */
+    public TemplatesImpl(byte[][] bytecodes, String transletName) {
+	_bytecodes = bytecodes;
+	_transletName = transletName;
     }
 
     /**
@@ -154,6 +165,24 @@ public abstract class TemplatesImpl implements Templates {
 	catch (LinkageError e) { return(null); }
 	catch (InstantiationException e) { return(null); }
 	catch (IllegalAccessException e) { return(null); }
+    }
+
+    /**
+     * JAXP interface implementation
+     */
+    public Transformer newTransformer() throws 
+	TransformerConfigurationException {
+	Translet translet = getTransletInstance();
+	TransformerImpl transformer = new TransformerImpl(translet);
+        return(transformer);
+    }
+
+    /**
+     * JAXP interface implementation - UNFINISHED!!!
+     */
+    public Properties getOutputProperties() { 
+	// TODO
+	return new Properties(); 
     }
 
 }

@@ -324,6 +324,23 @@ public final class XSLTC {
     }
 
     /**
+     * Compiles a stylesheet pointed to by a URL. The result is put in a
+     * set of byte arrays. One byte array for each generated class.
+     */
+    public byte[][] compile(InputStream source, String className, int dummy) {
+	_outputType = BYTEARRAY_OUTPUT;
+	setClassName(className);
+	if (compile(source, className)) {
+	    final int count = _classes.size();
+	    final byte[][] result = new byte[1][count];
+	    for (int i = 0; i < count; i++)
+		result[i] = (byte[])_classes.elementAt(i);
+	    return result;
+	}
+	return null;
+    }
+
+    /**
      * This method is called by the XPathParser when it encounters a call
      * to the document() function. Affects the DOM used by the translet.
      */
