@@ -287,6 +287,15 @@ public static SourceLocator getRootSourceLocator(Throwable exception)
 <br/><br/>
 A JAXP 1.1 TransformerException often wraps another exception. Two of the TransformerException structures that are frequently used to construct contained exceptions in JAXP 1.1 do not set the locator.  The locator is not set because we don't know the type of exception that the Throwable argument represents.  The solution is to chase up the contained exceptions to find the root cause, which will usually have a location set for you.  This can be somewhat tricky, as not all the exceptions may be TransformerExceptions.  A good sample is in the DefaultHandler static printLocation() method, which the Xalan command-line processor uses to report errors. You can also roll your own functions along the lines of the getRootSourceLocator() example above.</note>
 </a>
+</faq>
+<faq title="StackOverflowError with recursive stylesheet">
+<q>Xalan dies with a java.lang.StackOverflowError when I run a deeply recursive stylesheet. The same stylesheet worked fine in the past (or on other machines). What's happening?</q>
+<a>
+<p>That may not be our fault.  As of JDK 1.3.x, many Java Virtual Machine publishers reduced the default size of a thread's call stack from 1MB to 256MB. This allows more threads to run simultaneously, but it means that each thread is more limited in how deeply its function calls can be nested. </p>
 
+<p>Some JVMs may offer an option that allows you to raise this limit. For example, in Sun JDK 1.3.1 you can start JVM with the -Xss1m option to allow each thread to use a full megabyte.  Other JVMs may set this in other ways, or may not allow you to control it at all; check the documentation on your system for details.</p>
+
+<p>Note too that on some platforms 1MB is an architectural upper limit on the stack size, so setting -Xss2m (or equivalent) may not allow deeper recusion than -Xss1m.</p>
+</a>
 </faq>
 </faqs>

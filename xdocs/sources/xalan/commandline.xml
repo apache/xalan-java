@@ -85,7 +85,7 @@
 -V (Version info)
 -QC (Quiet Pattern Conflicts Warnings)
 
--L (Use line numbers for source document)
+-L (Report line numbers for problems with source document)
 -TT (Trace the templates as they are being called)
 -TG (Trace each result tree generation event)
 -TS (Trace each selection event)
