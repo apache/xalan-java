@@ -152,7 +152,7 @@ transformer.transform
   </tr>
   <tr>
     <td>xalan:content-handler</td>
-    <td>org.apache.xalan.serialize.FormatterToXML</td>
+    <td>org.apache.xalan.serialize.SerializerToXML</td>
   </tr>
 </table>
 <p><ref>output_html.properties</ref>:</p>
@@ -167,7 +167,7 @@ transformer.transform
   </tr>
   <tr>
     <td>xalan:content-handler</td>
-    <td>org.apache.xalan.serialize.FormatterToHTML</td>
+    <td>org.apache.xalan.serialize.SerializerToHTML</td>
   </tr>
   <tr>
     <td>entities</td>
@@ -188,7 +188,7 @@ or edit src/org/apache/xalan/serialize/HTMLEntities.res and rebuild xalan.jar.</
   </tr>
   <tr>
     <td>xalan:content-handler</td>
-    <td>org.apache.xloan.serialize.FormatterToText</td>
+    <td>org.apache.xalan.serialize.SerializerToText</td>
   </tr>
 </table>
 <p>See also <link idref="readme" anchor="outputprops">Release Notes: Output Properties</link>.</p>
