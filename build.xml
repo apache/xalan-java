@@ -849,8 +849,6 @@ Copyright:
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
     </java>
 
-    <!-- put todo.html in the site directory -->     
-    <copy file="${build.docs}/todo.html" todir="${site.dir}"/>
     <!-- put xalan design doc in the site design subdir -->
     <copy todir="${site.dir}/design">
       <fileset dir="${build.docs}/design"/>
