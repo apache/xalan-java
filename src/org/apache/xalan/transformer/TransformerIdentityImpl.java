@@ -273,8 +273,7 @@ public class TransformerIdentityImpl extends Transformer
     if (m_resultContentHandler instanceof DeclHandler)
       m_resultDeclHandler = (DeclHandler) m_resultContentHandler;
 
-    if (null == m_resultLexicalHandler
-            && m_resultContentHandler instanceof LexicalHandler)
+    if (m_resultContentHandler instanceof LexicalHandler)
       m_resultLexicalHandler = (LexicalHandler) m_resultContentHandler;
   }
 
