@@ -29,15 +29,6 @@ SUBDIRS =
 
 SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)client$(PATHSEP)XSLTProcessorApplet.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)ChunkedIntArray.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTM.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMException.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMLiaison.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMNodeVector.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMProxy.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)DTMProxyMap.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)IntMap.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)dtm$(PATHSEP)IntToObjectMap.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionFunctionHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionNSHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionsTable.java \
