@@ -1,10 +1,8 @@
-import java.util.*;
+import java.util.Hashtable;
 
 public class MyCounter {
   Hashtable counters = new Hashtable ();
 
-  public MyCounter () 
-  {}
 
   public void init(org.apache.xalan.extensions.XSLProcessorContext context, 
                    org.w3c.dom.Element elem) 
@@ -30,7 +28,7 @@ public class MyCounter {
     return (cval == null) ? 0 : cval.intValue ();
   }
 
-  public void incr(org.apache.xalan.extensions.XSLProcessorContext context, 
+  public void incr(org.apache.xalan.extensions.XSLProcessorContext context,  
                    org.w3c.dom.Element elem) {
     String name = elem.getAttribute("name");
     Integer cval = (Integer) counters.get(name);

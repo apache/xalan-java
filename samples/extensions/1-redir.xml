@@ -2,7 +2,7 @@
 <doc>
   <foo file="1-redir.out">
     Testing Redirect extension:
-      <bar>A foo subelement text node</bar>
+    <bar>A foo subelement text node</bar>
   </foo>
   <main>
     Everything else

@@ -15,7 +15,7 @@
     <xsl:variable name="formatter"       
          select="java:java.text.SimpleDateFormat.new($format)"/>
     <xsl:variable name="date" 
-         select="java:IntDate.getDate($year,$month,$day)"/>         
+         select="java:IntDate.getDate($year,$month,$day)"/>
     <p>Date: <xsl:value-of select="java:format($formatter, $date)"/></p>
   </xsl:template>
  

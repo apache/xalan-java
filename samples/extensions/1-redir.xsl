@@ -3,6 +3,10 @@
     xmlns:lxslt="http://xml.apache.org/xslt"
     xmlns:redirect="org.apache.xalan.lib.Redirect"
     extension-element-prefixes="redirect">
+    
+  <lxslt:component prefix="redirect" elements="write open close" functions="">
+    <lxslt:script lang="javaclass" src="org.apache.xalan.lib.Redirect"/>
+  </lxslt:component>  
 
   <xsl:template match="/">
     <standard-out>
@@ -10,14 +14,17 @@
       <xsl:apply-templates/>
     </standard-out>
   </xsl:template>
-  
-  <xsl:template match="main">
+
+  <!-- not redirected -->
+  <xsl:template match="doc/main">
     <main>
       <xsl:apply-templates/>
     </main>
   </xsl:template>
   
-  <xsl:template match="/doc/foo">
+  <!-- redirected -->
+  <xsl:template match="doc/foo">
+    <!-- get redirect file name from XML input -->
     <redirect:write select="@file">
       <foo-out>
         <xsl:apply-templates/>
@@ -25,6 +32,7 @@
     </redirect:write>
   </xsl:template>
   
+<!-- redirected (from the xsl:apply-templates above. I.e., bar is in /doc/foo -->  
   <xsl:template match="bar">
     <foobar-out>
       <xsl:apply-templates/>
