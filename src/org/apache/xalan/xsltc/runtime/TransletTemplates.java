@@ -61,20 +61,82 @@
  */
 package org.apache.xalan.xsltc.runtime;
 
-import javax.xml.transform.Templates; 
+import javax.xml.transform.Templates;
+import javax.xml.transform.Source; 
 import javax.xml.transform.Transformer; 
 import javax.xml.transform.TransformerConfigurationException; 
 import javax.xml.transform.sax.SAXTransformerFactory; 
 
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.compiler.XSLTC;
+import org.apache.xalan.xsltc.Translet;
 import java.util.Properties;
+
+import java.io.File;
+import java.net.URL;
+import java.net.MalformedURLException;
 
 /**
  * Implementation of a JAXP1.1 Templates object for Translets.
  */ 
 public class TransletTemplates implements Templates {
-    public TransletTemplates(Transformer translet) {
-	_translet = (AbstractTranslet)translet;
+
+    public TransletTemplates(Source stylesheet) {
+	_stylesheetName = stylesheet.getSystemId();
+	int index       = _stylesheetName.indexOf('.');
+	_transletName   = _stylesheetName.substring(0,index); 
+    }
+
+    private void generateTransletClass() throws 
+	TransformerConfigurationException
+    {
+        XSLTC xsltc = new XSLTC();
+        xsltc.init();
+        boolean isSuccessful = true;
+        try {
+            File file = new File(_stylesheetName);
+            URL url = file.toURL();
+            isSuccessful = xsltc.compile(url);
+        } catch (MalformedURLException e) {
+            throw new TransformerConfigurationException(
+                "URL for stylesheet '" + _stylesheetName +
+                "' can not be formed.");
+        }
+
+        if (!isSuccessful) {
+            throw new TransformerConfigurationException(
+                "Compilation of stylesheet '" + _stylesheetName + "' failed.");
+        }
+
+        Translet translet = null;
+        try {
+            _transletClass  = Class.forName(_transletName);
+        } catch (ClassNotFoundException e) {
+            throw new TransformerConfigurationException(
+                "Translet class '" + _transletName + "' not found.");
+	}
+    }
+
+    public Transformer newTransformer() throws 
+	TransformerConfigurationException
+    {
+	if (_transletClass == null ) {
+	   generateTransletClass(); 
+	}
+
+	Translet translet = null;
+	try {
+            translet = (Translet)_transletClass.newInstance();
+            ((AbstractTranslet)translet).setTransletName(_transletName);
+        } catch (InstantiationException e) {
+            throw new TransformerConfigurationException(
+                "Translet class '" + _transletName +
+                "' could not be instantiated");
+        } catch (IllegalAccessException  e) {
+            throw new TransformerConfigurationException(
+                "Translet class '" + _transletName+ "' could not be accessed.");
+        }
+        return (AbstractTranslet)translet;
     }
 
     public Properties getOutputProperties() { 
@@ -82,15 +144,7 @@ public class TransletTemplates implements Templates {
 	return new Properties(); 
     }
 
-    public Transformer newTransformer() throws 
-	TransformerConfigurationException
-    {
-	if (_translet == null) {
-	    throw new TransformerConfigurationException(
-		"Error: Null Translet");
-	}
-        return _translet;
-    }
-
-    private AbstractTranslet _translet = null;
+    private Class  _transletClass = null;
+    private String _transletName;
+    private String _stylesheetName;
 }

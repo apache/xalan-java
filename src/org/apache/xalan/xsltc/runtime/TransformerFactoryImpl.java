@@ -60,15 +60,6 @@
  *
  */
 
-/*********************************************************************
- * Prototype SAXTransformerFactory to deliver Translets - GTM
- * NOTES:
- *  - to use set javax.xml.transform.TransformerFactory system property
- *    to 'org.apache.xalan.xsltc.runtime.TransformerFactoryImpl'.
- *  - the stylesheet *is always* compiled into a translet, this will get 
- *    smarter, look into caching.
- *  - translet is compiled and stored as a File in cwd currently.
- *********************************************************************/
 
 package org.apache.xalan.xsltc.runtime;
 
@@ -275,7 +266,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     public Templates newTemplates(Source stylesheet) throws
        TransformerConfigurationException 
     {
-	Transformer translet = newTransformer(stylesheet);
-	return new TransletTemplates(translet);
+	return new TransletTemplates(stylesheet);
     } 
 }
