@@ -164,6 +164,7 @@ public class ElemCopy extends ElemUse
         if (TransformerImpl.S_DEBUG)
           transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
+        super.execute(transformer, sourceNode, mode);
         transformer.executeChildTemplates(this, sourceNode, mode);
       }
     }
