@@ -118,7 +118,12 @@ public MutableAttrListImpl()
     if (null == uri)
       uri = "";
 
-    int index = this.getIndex(uri, localName);
+    // getIndex(qName) seems to be more reliable than getIndex(uri, localName), 
+    // in the case of the xmlns attribute anyway.
+    int index = this.getIndex(qName);
+    // int index = this.getIndex(uri, localName);
+   
+    // System.out.println("MutableAttrListImpl#addAttribute: "+uri+":"+localName+", "+index+", "+qName+", "+this);
 
     if (index >= 0)
       this.setAttribute(index, uri, localName, qName, type, value);
@@ -146,7 +151,7 @@ public MutableAttrListImpl()
       String localName = atts.getLocalName(i);
       String qname = atts.getQName(i);
       int index = this.getIndex(uri, localName);
-
+      // System.out.println("MutableAttrListImpl#addAttributes: "+uri+":"+localName+", "+index+", "+atts.getQName(i)+", "+this);
       if (index >= 0)
         this.setAttribute(index, uri, localName, qname, atts.getType(i),
                           atts.getValue(i));
