@@ -271,6 +271,9 @@ public class VariableStack extends Stack
   {
     Stack frame = getCurrentFrame();
     
+    if(frame == m_emptyStackFrame)
+      frame = allocateCurrentFrame();
+      
     for (int i = (frame.size() - 1); i >= 0; i--)
     {
       Arg arg = (Arg)frame.elementAt(i);
@@ -280,8 +283,6 @@ public class VariableStack extends Stack
         return;
       }
     }
-    if(frame == m_emptyStackFrame)
-      frame = allocateCurrentFrame();
     frame.push(new Arg(qname, xval, false));
   }
   
