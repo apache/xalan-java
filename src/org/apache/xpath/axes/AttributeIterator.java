@@ -62,7 +62,7 @@ import org.apache.xpath.compiler.Compiler;
 /**
  * This class implements an optimized iterator for
  * attribute axes patterns.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @see org.apache.xpath.axes#ChildTestIterator
  * @xsl.usage advanced
  */
 public class AttributeIterator extends ChildTestIterator

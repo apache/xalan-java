@@ -67,7 +67,7 @@ import org.apache.xpath.compiler.Compiler;
 /**
  * This class implements a general iterator for
  * those LocationSteps with only one step, and perhaps a predicate.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @see org.apache.xpath.axes#LocPathIterator
  * @xsl.usage advanced
  */
 public class OneStepIterator extends ChildTestIterator

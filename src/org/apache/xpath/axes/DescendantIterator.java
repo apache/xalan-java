@@ -70,7 +70,7 @@ import org.apache.xpath.patterns.NodeTest;
 /**
  * This class implements an optimized iterator for
  * descendant, descendant-or-self, or "//foo" patterns.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @see org.apache.xpath.axes.LocPathIterator
  * @xsl.usage advanced
  */
 public class DescendantIterator extends LocPathIterator

@@ -63,7 +63,7 @@ import org.apache.xpath.compiler.Compiler;
 /**
  * This class implements an optimized iterator for
  * "." patterns, that is, the self axes without any predicates.  
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @see org.apache.xpath.axes.LocPathIterator
  * @xsl.usage advanced
  */
 public class SelfIteratorNoPredicate extends LocPathIterator

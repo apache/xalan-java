@@ -313,8 +313,8 @@ public abstract class LocPathIterator extends PredicatedNodeTest
 
   
   /**
-   * Tell if the expression is a nodeset expression.  In other words, tell 
-   * if you can execute {@link asNode() asNode} without an exception.
+   * Tell if the expression is a nodeset expression.
+   * 
    * @return true if the expression can be represented as a nodeset.
    */
   public boolean isNodesetExpr()
@@ -955,7 +955,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
 //  }
 
   /**
-   * @see XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
+   * @see org.apache.xpath.XPathVisitable#callVisitors(ExpressionOwner, XPathVisitor)
    */
   public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
   {

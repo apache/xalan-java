@@ -66,7 +66,7 @@ import org.apache.xpath.compiler.Compiler;
  * those LocationSteps with only one step, and perhaps a predicate, 
  * that only go forward (i.e. it can not be used with ancestors, 
  * preceding, etc.)
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @see org.apache.xpath.axes#ChildTestIterator
  * @xsl.usage advanced
  */
 public class OneStepIteratorForward extends ChildTestIterator

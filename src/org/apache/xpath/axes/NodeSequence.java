@@ -617,7 +617,7 @@ public class NodeSequence extends XObject
   }
 
   /**
-   * @see Expression#fixupVariables(Vector, int)
+   * @see org.apache.xpath.Expression#fixupVariables(Vector, int)
    */
   public void fixupVariables(Vector vars, int globalsSize)
   {

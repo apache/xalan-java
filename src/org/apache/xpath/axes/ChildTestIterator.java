@@ -65,7 +65,7 @@ import org.apache.xpath.compiler.Compiler;
 /**
  * This class implements an optimized iterator for
  * children patterns that have a node test, and possibly a predicate.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * @see org.apache.xpath.axes.BasicTestIterator
  * @xsl.usage advanced
  */
 public class ChildTestIterator extends BasicTestIterator
