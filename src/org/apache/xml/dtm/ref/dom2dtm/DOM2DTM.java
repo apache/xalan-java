@@ -342,7 +342,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   /**
    * Get the number of nodes that have been added.
    */
-  protected int getNumberOfNodes()
+  public int getNumberOfNodes()
   {
     return m_nodes.size();
   }
