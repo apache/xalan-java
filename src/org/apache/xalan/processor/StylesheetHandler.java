@@ -404,7 +404,8 @@ public class StylesheetHandler extends DefaultHandler
             && ((null == getStylesheet()
                 || Double.valueOf(getStylesheet().getVersion()).doubleValue()
                    > Constants.XSLTVERSUPPORTED) ||
-                currentProcessor instanceof ProcessorStylesheetElement))
+								(!uri.equals(Constants.S_XSLNAMESPACEURL) &&
+                currentProcessor instanceof ProcessorStylesheetElement)))
     {
       elemProcessor = def.getProcessorForUnknown(uri, localName);
     }
@@ -412,7 +413,7 @@ public class StylesheetHandler extends DefaultHandler
     if (null == elemProcessor)
       error(rawName + " is not allowed in this position in the stylesheet!",
             null);
-
+		
     return elemProcessor;
   }
 
@@ -493,7 +494,7 @@ public class StylesheetHandler extends DefaultHandler
       if (null != getStylesheetRoot())
       {
         if (0 == m_stylesheetLevel)
-          getStylesheetRoot().recompose();
+          getStylesheetRoot().recompose();        
       }
       else
         throw new TransformerException("Did not find the stylesheet root!");
@@ -503,7 +504,7 @@ public class StylesheetHandler extends DefaultHandler
       if (null != elemProcessor)
         elemProcessor.startNonText(this);
 
-      m_stylesheetLevel--;
+      m_stylesheetLevel--;			
       
       popSpaceHandling();
 
@@ -599,7 +600,7 @@ public class StylesheetHandler extends DefaultHandler
           String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-    NamespaceSupport nssupport = this.getNamespaceSupport();
+		NamespaceSupport nssupport = this.getNamespaceSupport();
     nssupport.pushContext();
     
     int n = m_prefixMappings.size();
@@ -612,7 +613,7 @@ public class StylesheetHandler extends DefaultHandler
     //m_prefixMappings.clear(); // JDK 1.2+ only -sc
     m_prefixMappings.removeAllElements(); // JDK 1.1.x compat -sc
 
-    m_elementID++;
+    m_elementID++;		
 
     checkForFragmentID(attributes);
 
@@ -628,6 +629,7 @@ public class StylesheetHandler extends DefaultHandler
 
     this.pushProcessor(elemProcessor);
     elemProcessor.startElement(this, uri, localName, rawName, attributes);
+		
   }
 
   /**
@@ -1138,8 +1140,8 @@ public class StylesheetHandler extends DefaultHandler
 
   /** The root stylesheet of the stylesheets tree. */
   StylesheetRoot m_stylesheetRoot;
-
-  /** The last stylesheet that was popped off the stylesheets stack. */
+	
+	/** The last stylesheet that was popped off the stylesheets stack. */
   Stylesheet m_lastPoppedStylesheet;
 
   /**
@@ -1295,13 +1297,7 @@ public class StylesheetHandler extends DefaultHandler
     return (ElemTemplateElement) m_elems.pop();
   }
 
-  /**
-   * Flag to let us know when we've found an element inside the
-   * stylesheet that is not an xsl:import, so we can restrict imports
-   * to being the first elements.
-   */
-  private boolean m_foundNotImport = false;
-
+  
   /**
    * A XSLMessages instance capable of producing user messages.
    */

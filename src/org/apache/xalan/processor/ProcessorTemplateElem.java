@@ -93,6 +93,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
+		super.startElement(handler, uri, localName, rawName, attributes);
     try
     {
       // ElemTemplateElement parent = handler.getElemTemplateElement();
@@ -163,6 +164,7 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName)
             throws org.xml.sax.SAXException
   {
+		super.endElement(handler, uri, localName, rawName);
     handler.popElemTemplateElement();
   }
 }

@@ -64,6 +64,9 @@ import org.xml.sax.ContentHandler;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Constants;
+import org.apache.xml.utils.IntStack;
 
 import org.xml.sax.helpers.AttributesImpl;
 import javax.xml.transform.ErrorListener;
@@ -84,6 +87,8 @@ public class XSLTElementProcessor
    * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
    */
   XSLTElementProcessor(){}
+	
+	private IntStack m_savedLastOrder;
 
   /**
    * The element definition that this processor conforms to.
@@ -195,7 +200,10 @@ public class XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
-    // no op
+    if (m_savedLastOrder == null)
+				m_savedLastOrder = new IntStack();
+			m_savedLastOrder.push(getElemDef().getLastOrder());
+			getElemDef().setLastOrder(-1);
   }
 
   /**
@@ -213,8 +221,8 @@ public class XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName)
             throws org.xml.sax.SAXException
   {
-
-    // no op
+		if (m_savedLastOrder != null && !m_savedLastOrder.empty())
+			getElemDef().setLastOrder(m_savedLastOrder.pop());
   }
 
   /**

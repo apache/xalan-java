@@ -94,6 +94,7 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
             throws org.xml.sax.SAXException
   {
 
+		super.startElement(handler, uri, localName, rawName, attributes);
     try
     {
       int stylesheetType = handler.getStylesheetType();
@@ -159,6 +160,7 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName)
             throws org.xml.sax.SAXException
   {
+		super.endElement(handler, uri, localName, rawName);
     handler.popElemTemplateElement();
     handler.popStylesheet();
   }
