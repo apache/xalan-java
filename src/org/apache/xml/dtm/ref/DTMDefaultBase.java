@@ -779,6 +779,82 @@ public abstract class DTMDefaultBase implements DTM
       System.exit(-1);
     }
   }
+  
+  /**
+   * Diagnostics function to dump a single node.
+   * 
+   * %REVIEW% KNOWN GLITCH: If you pass it a node index rather than a 
+   * node handle, it works just fine... but the displayed identity 
+   * number before the colon is different, which complicates comparing
+   * it with nodes printed the other way. We could always OR the DTM ID
+   * into the value, to suppress that distinction...
+   * 
+   * %REVIEW% This might want to be moved up to DTMDefaultBase, or possibly
+   * DTM itself, since it's a useful diagnostic and uses only DTM's public
+   * APIs.
+   */
+  public String dumpNode(int nodeHandle)
+  {	  
+	  if(nodeHandle==DTM.NULL)
+		  return "[null]";
+		  
+        String typestring;
+        switch (getNodeType(nodeHandle))
+        {
+        case DTM.ATTRIBUTE_NODE :
+          typestring = "ATTR";
+          break;
+        case DTM.CDATA_SECTION_NODE :
+          typestring = "CDATA";
+          break;
+        case DTM.COMMENT_NODE :
+          typestring = "COMMENT";
+          break;
+        case DTM.DOCUMENT_FRAGMENT_NODE :
+          typestring = "DOC_FRAG";
+          break;
+        case DTM.DOCUMENT_NODE :
+          typestring = "DOC";
+          break;
+        case DTM.DOCUMENT_TYPE_NODE :
+          typestring = "DOC_TYPE";
+          break;
+        case DTM.ELEMENT_NODE :
+          typestring = "ELEMENT";
+          break;
+        case DTM.ENTITY_NODE :
+          typestring = "ENTITY";
+          break;
+        case DTM.ENTITY_REFERENCE_NODE :
+          typestring = "ENT_REF";
+          break;
+        case DTM.NAMESPACE_NODE :
+          typestring = "NAMESPACE";
+          break;
+        case DTM.NOTATION_NODE :
+          typestring = "NOTATION";
+          break;
+        case DTM.NULL :
+          typestring = "null";
+          break;
+        case DTM.PROCESSING_INSTRUCTION_NODE :
+          typestring = "PI";
+          break;
+        case DTM.TEXT_NODE :
+          typestring = "TEXT";
+          break;
+        default :
+          typestring = "Unknown!";
+          break;
+        }
+
+      StringBuffer sb=new StringBuffer();
+	  sb.append("["+nodeHandle+": "+typestring+
+				"(0x"+Integer.toHexString(getExpandedTypeID(nodeHandle))+") "+
+				getNodeNameX(nodeHandle)+" {"+getNamespaceURI(nodeHandle)+"}"+
+				"=\""+ getNodeValue(nodeHandle)+"\"]");
+	  return sb.toString();
+  }
 
   // ========= DTM Implementation Control Functions. ==============
 
