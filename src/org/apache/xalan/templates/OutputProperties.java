@@ -182,11 +182,28 @@ public class OutputProperties extends ElemTemplateElement
   {
     Properties props = new Properties(defaults);
 
-    InputStream is = OutputProperties.class.getResourceAsStream(
-                                                                resourceName);
-    BufferedInputStream bis = new BufferedInputStream(is);
-
+    InputStream is = null;
+    BufferedInputStream bis = null;
+    try {
+      is = OutputProperties.class.getResourceAsStream(resourceName);
+      bis = new BufferedInputStream(is);
     props.load(bis);
+    } catch (IOException ioe) {
+      if ( defaults == null ) {
+        throw ioe;
+      }
+      else
+      {
+        throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH) using just the defaults ", ioe);
+      }
+    } finally {
+      if ( bis != null ) {
+        bis.close();
+      }
+      if (is != null ) {
+        is.close();
+      }
+    }
     
     // Note that we're working at the HashTable level here, 
     // and not at the Properties level!  This is important 
@@ -234,19 +251,18 @@ public class OutputProperties extends ElemTemplateElement
    */
   static public Properties getDefaultMethodProperties(String method)
   {
-
+    String fileName = null;
     Properties defaultProperties = null;
-
+    // According to this article : Double-check locking does not work
+    // http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-toolbox.html
     try
     {
-      if (null == m_xml_properties)  // fast check
+      synchronized (m_synch_object)
       {
-        synchronized (m_synch_object)
+        if (null == m_xml_properties)  // double check
         {
-          if (null == m_xml_properties)  // double check
-          {
-            m_xml_properties = loadPropertiesFile("output_xml.properties", null);
-          }
+          fileName = "output_xml.properties";
+          m_xml_properties = loadPropertiesFile(fileName, null);
         }
       }
 
@@ -256,38 +272,28 @@ public class OutputProperties extends ElemTemplateElement
       }
       else if (method.equals(Method.HTML))
       {
-        if (null == m_html_properties)  // fast check
-        {
-          synchronized (m_synch_object)
-          {
             if (null == m_html_properties)  // double check
             {
-              m_html_properties = loadPropertiesFile("output_html.properties", 
+              fileName = "output_html.properties";
+              m_html_properties = loadPropertiesFile(fileName,
                                                      m_xml_properties);
             }
-          }
-        }
 
         defaultProperties = m_html_properties;
       }
       else if (method.equals(Method.Text))
       {
-        if (null == m_text_properties)  // fast check
-        {
-          synchronized (m_synch_object)
-          {
             if (null == m_text_properties)  // double check
             {
-              m_text_properties = loadPropertiesFile("output_text.properties", 
-                                                     null);
+              fileName = "output_text.properties";
+              m_text_properties = loadPropertiesFile(fileName,
+                                                     m_xml_properties);
               if(null == m_text_properties.getProperty(OutputKeys.ENCODING))
               {
                 String mimeEncoding = org.apache.xalan.serialize.Encodings.getMimeEncoding(null);
                 m_text_properties.put(OutputKeys.ENCODING, mimeEncoding);
               }
             }
-          }
-        }
 
         defaultProperties = m_text_properties;
       }
@@ -300,7 +306,9 @@ public class OutputProperties extends ElemTemplateElement
     }
     catch (IOException ioe)
     {
-      throw new org.apache.xml.utils.WrappedRuntimeException(ioe);
+      throw new WrappedRuntimeException(
+            "Output method is "+method+" could not load "+fileName+" (check CLASSPATH)",
+             ioe);
     }
 
     return defaultProperties;
