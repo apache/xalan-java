@@ -1052,8 +1052,21 @@ public class TransformerFactoryImpl
 	}
 	XMLReader result = (XMLReader) _xmlReader.get();
 	if (result == null) {
-	    _xmlReader.set(
-		result = _parserFactory.newSAXParser().getXMLReader());
+ 
+            /*
+              * Fix for bug 24695
+              * According to JAXP 1.2 specification if a SAXSource
+              * is created using a SAX InputSource the Transformer or
+              * TransformerFactory creates a reader via the XMLReaderFactory
+              * if setXMLReader is not used
+              */
+            result = XMLReaderFactory.createXMLReader();
+            result.setFeature("http://xml.org/sax/features/namespaces",
+               true);
+            result.setFeature("http://xml.org/sax/features/namespace-prefixes",
+               false);
+            _xmlReader.set(result);
+
 	}
 	return result;
     }

@@ -75,7 +75,13 @@ import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
 import org.w3c.dom.Document;
+
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 public final class Util {
 
@@ -110,7 +116,37 @@ public final class Util {
 		final SAXSource sax = (SAXSource)source;
 		input = sax.getInputSource();
 		// Pass the SAX parser to the compiler
-		xsltc.setXMLReader(sax.getXMLReader());
+                try {
+                    XMLReader reader = sax.getXMLReader();
+
+                     /*
+                      * Fix for bug 24695
+                      * According to JAXP 1.2 specification if a SAXSource
+                      * is created using a SAX InputSource the Transformer or
+                      * TransformerFactory creates a reader via the
+                      * XMLReaderFactory if setXMLReader is not used
+                      */
+
+                    if (reader == null) {
+                       reader= XMLReaderFactory.createXMLReader();
+                       reader.setFeature
+                        ("http://xml.org/sax/features/namespaces",true);
+                       reader.setFeature
+                        ("http://xml.org/sax/features/namespace-prefixes",false);
+                    }
+
+                    xsltc.setXMLReader(reader);
+                }catch (SAXNotRecognizedException snre ) {
+                  throw new TransformerConfigurationException
+                       ("SAXNotRecognizedException ",snre);
+                }catch (SAXNotSupportedException snse ) {
+                  throw new TransformerConfigurationException
+                       ("SAXNotSupportedException ",snse);
+                }catch (SAXException se ) {
+                  throw new TransformerConfigurationException
+                       ("SAXException ",se);
+                }
+
 	    }
 	    // handle  DOMSource  
 	    else if (source instanceof DOMSource) {
