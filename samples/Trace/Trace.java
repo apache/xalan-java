@@ -54,15 +54,16 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.trace.TraceManager;
-import org.apache.xalan.trace.PrintTraceListener;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.apache.xalan.trace.PrintTraceListener;
+import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.transformer.TransformerImpl;
 
 public class Trace
 {	

@@ -55,23 +55,17 @@
  * <http://www.apache.org/>.
  */
 
-// Imported TraX classes
-// Imported TraX classes
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-
-// Imported SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
-// Imported java classes
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import org.xml.sax.SAXException;
 
   /**
    * Use command-line input as a stylesheet parameter.

@@ -54,8 +54,8 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-import java.util.Date;
 import java.util.Calendar;
+import java.util.Date;
 
 public class IntDate
 {

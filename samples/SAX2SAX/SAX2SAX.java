@@ -61,32 +61,26 @@
  *  stylesheet, the XML input, and the transformation.
  */
 
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.Templates;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import javax.xml.transform.Result;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.sax.TransformerHandler;              
+import javax.xml.transform.sax.TransformerHandler;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLReaderFactory;
-
-import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.templates.OutputProperties;
-
-import java.io.FileOutputStream;
-import java.io.IOException;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 
 public class SAX2SAX
