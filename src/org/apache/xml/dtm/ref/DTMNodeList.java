@@ -143,6 +143,9 @@ public class DTMNodeList extends DTMNodeListBase {
     {
         if (m_iter != null) {
             int handle=m_iter.item(index);
+            if (handle == DTM.NULL) {
+                return null;
+            }
             return m_iter.getDTM(handle).getNode(handle);
         } else {
             return null;

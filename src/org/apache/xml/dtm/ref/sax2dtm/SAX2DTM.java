@@ -157,6 +157,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** The SAX Document locator */
   transient private Locator m_locator = null;
 
+  /** The SAX Document system-id */
+  transient private String m_systemId = null;
+
   /** We are inside the DTD.  This is used for ignoring comments.  */
   transient private boolean m_insideDTD = false;
 
@@ -934,7 +937,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // building the document.
     if (m_sourceSystemId.size() != m_size) {
         System.err.println("CODING ERROR in Source Location: " + m_size
-   	                    + " != "
+                           + " != "
                             + m_sourceSystemId.size());
         System.exit(1);
     }
@@ -1622,6 +1625,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void setDocumentLocator(Locator locator)
   {
     m_locator = locator;
+    m_systemId = locator.getSystemId();
   }
 
   /**
@@ -1674,6 +1678,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_contextIndexes = null;
 
     m_endDocumentOccured = true;
+    
+    // Bugzilla 4858: throw away m_locator. we cache m_systemId
+    m_locator = null;
   }
 
   /**
@@ -2447,6 +2454,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     else if(m_locator!=null)
     {
     	return new NodeLocator(null,m_locator.getSystemId(),-1,-1);
+    }
+    else if(m_systemId!=null)
+    {
+    	return new NodeLocator(null,m_systemId,-1,-1);
     }
     return null;
   }

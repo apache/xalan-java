@@ -79,7 +79,7 @@ public class DefaultConnectionPool implements ConnectionPool
    * A placeholder thast will keep the driver loaded
    * between calls.
    */
-  private Object m_Driver = null;
+  private Driver m_Driver = null;
   /**
    */
   private static final boolean DEBUG = false;
@@ -438,8 +438,9 @@ public class DefaultConnectionPool implements ConnectionPool
   {
     Connection con = null;
 
-    // Create a Connection
-    con = DriverManager.getConnection( m_url, m_ConnectionProtocol );
+    // Create a Connection directly from the Driver that was loaded
+    // with the context class loader. This is to support JDK1.4
+    con = m_Driver.connect(m_url, m_ConnectionProtocol );
 
     return con;
   }
@@ -479,24 +480,28 @@ public class DefaultConnectionPool implements ConnectionPool
      {
         // We need to implement the context classloader
         Class cls = null;
-        try 
+        try
         {
           Method m = Thread.class.getMethod("getContextClassLoader", null);
           ClassLoader classLoader = (ClassLoader) m.invoke(Thread.currentThread(), null);
           cls = classLoader.loadClass(m_driver);
-        } 
-        catch (Exception e) 
-        {
-          cls = Class.forName(m_driver);  
         }
-        
+        catch (Exception e)
+        {
+          cls = Class.forName(m_driver);
+        }
+
         if (cls == null)
           cls = Class.forName(m_driver);
 
         // We have also had problems with drivers unloading
         // load an instance that will get freed with the class.
-        m_Driver = cls.newInstance();
+        m_Driver = (Driver) cls.newInstance();
 
+        // Register the Driver that was loaded with the Contect Classloader
+        // but we will ask for connections directly from the Driver
+        // instance
+        DriverManager.registerDriver(m_Driver);
 
      }
      catch(ClassNotFoundException e)
@@ -606,15 +611,20 @@ public class DefaultConnectionPool implements ConnectionPool
    * The Pool can be Enabled and Disabled. Disabling the pool
    * closes all the outstanding Unused connections and any new
    * connections will be closed upon release.
-   * @param flag Control the Connection Pool. If it is enabled then Connections will actuall be held
-   * around. If disabled then all unused connections will be instantly closed and as
-   * connections are released they are closed and removed from the pool.
+   *
+   * @param flag Control the Connection Pool.
+   * If it is enabled then Connections will actuall be held
+   * around. If disabled then all unused connections will be instantly
+   * closed and as connections are released they are closed and removed
+   * from the pool.
+   *
    * @return
    */
-  public void setPoolEnabled( final boolean flag )
+  public void setPoolEnabled( boolean flag )
   {
-
+     m_IsActive = flag;
+     if ( ! flag )
+      freeUnused();
   }
-
 
 }

@@ -419,7 +419,7 @@ public class NodeSetDTM extends NodeVector
    * iterator in the set. After a DTMIterator is created, the first call
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
-   *   <code>null</code> if there are no more members in that set.
+   *   <code>DTM.NULL</code> if there are no more members in that set.
    * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
@@ -443,7 +443,7 @@ public class NodeSetDTM extends NodeVector
    *  Returns the previous node in the set and moves the position of the
    * iterator backwards in the set.
    * @return  The previous <code>Node</code> in the set being iterated over,
-   *   or<code>null</code> if there are no more members in that set.
+   *   or<code>DTM.NULL</code> if there are no more members in that set.
    * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.

@@ -997,7 +997,7 @@ public abstract class DTMDefaultBase implements DTM
       for (firstChild = _firstch(makeNodeIdentity(nodeHandle));
            firstChild != DTM.NULL;
            firstChild = _nextsib(firstChild)) {
-    	if (_exptype(firstChild) == nodeType) {
+        if (_exptype(firstChild) == nodeType) {
           return makeNodeHandle(firstChild);
         }
       }
@@ -1916,6 +1916,7 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
+   * <meta name="usage" content="internal"/>
    * Return the name of the character encoding scheme
    *        in which the document entity is expressed.
    *
