@@ -64,33 +64,65 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.apache.xalan.xsltc.TransletException;
+import org.xml.sax.SAXException;
 
-public final class StringValueHandler extends TransletOutputBase {
+import org.apache.xml.serializer.EmptySerializer;
 
-    private char[] _buffer = new char[32];
-    private int _free = 0;
+public final class StringValueHandler extends EmptySerializer {
+
+    private StringBuffer _buffer = new StringBuffer();
+    private String _str = null;
+    private static final String EMPTY_STR = "";
+    private boolean m_escaping = false;
 	
     public void characters(char[] ch, int off, int len) 
-	throws TransletException 
+	throws SAXException 
     {
-	if (_free + len >= _buffer.length) {
-	    char[] newBuffer = new char[_free + len + 32];
-	    System.arraycopy(_buffer, 0, newBuffer, 0, _free);
-	    _buffer = newBuffer;
+	if (_str != null) {
+	    _buffer.append(_str);
+	    _str = null;
 	}
-	System.arraycopy(ch, off, _buffer, _free, len);
-	_free += len;
+	_buffer.append(ch, off, len);
     }
 
     public String getValue() {
-	final int length = _free;
-	_free = 0;		// getValue resets
-	return new String(_buffer, 0, length);
+	if (_buffer.length() != 0) {
+	    String result = _buffer.toString();
+	    _buffer.setLength(0);
+	    return result;
+	}
+	else {
+	    String result = _str;
+	    _str = null;
+	    return (result != null) ? result : EMPTY_STR;
+	}
     }
 
-    public void characters(String characters) throws TransletException {
-	characters(characters.toCharArray(), 0, characters.length());
+    public void characters(String characters) throws SAXException {
+	if (_str == null && _buffer.length() == 0) {
+	    _str = characters;
+	}
+	else {
+	    if (_str != null) {
+	        _buffer.append(_str);
+	        _str = null;
+	    }
+	    
+	    _buffer.append(characters);
+	}
+    }
+    
+    public void startElement(String qname) throws SAXException {
+        throw new SAXException(EmptySerializer.ERR);
+    }
+
+    // Override the setEscaping method just to indicate that this class is
+    // aware that that method might be called.
+    public boolean setEscaping(boolean bool) {
+        boolean oldEscaping = m_escaping;
+        m_escaping = bool;
+
+        return bool;
     }
 
     /**

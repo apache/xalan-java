@@ -70,18 +70,18 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Vector;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.dom.KeyIndex;
+import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.serializer.SerializationHandler;
 
 public abstract class AbstractTranslet implements Translet {
 
@@ -96,17 +96,23 @@ public abstract class AbstractTranslet implements Translet {
     public String  _doctypeSystem = null;
     public boolean _indent = false;
     public String  _mediaType = null;
-    public Hashtable _cdata = null;
+    public Vector _cdata = null;
 
     // DOM/translet handshaking - the arrays are set by the compiled translet
     protected String[] namesArray;
     protected String[] namespaceArray;
+    
+    // Boolean flag to indicate whether this translet has id functions.
+    protected boolean _hasIdCall = false;
 
     // TODO - these should only be instanciated when needed
     protected StringValueHandler stringValueHandler = new StringValueHandler();
 
     // Use one empty string instead of constantly instanciating String("");
     private final static String EMPTYSTRING = "";
+
+    // This is the name of the index used for ID attributes
+    private final static String ID_INDEX_NAME = "##id";
 
     
     /************************************************************************
@@ -131,10 +137,7 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final DOMAdapter makeDOMAdapter(DOM dom)
 	throws TransletException {
-	if (dom instanceof DOMImpl)
-	    return new DOMAdapter((DOMImpl)dom, namesArray, namespaceArray);
-	BasisLibrary.runTimeError(BasisLibrary.DOM_ADAPTER_INIT_ERR);
-	return null;
+	return new DOMAdapter(dom, namesArray, namespaceArray);
     }
 
     /************************************************************************
@@ -296,56 +299,60 @@ public abstract class AbstractTranslet implements Translet {
 	return(null);
     }
 
-    /************************************************************************
-     * Unparsed entity URI handling - implements unparsed-entity-uri()
-     ************************************************************************/
-
-    // Keeps all unparsed entity URIs specified in the XML input
-    public Hashtable _unparsedEntities = null;
-
     /**
-     * Get the value of an unparsed entity URI.
-     * This method is used by the compiler/UnparsedEntityUriCall class.
+     * Give the translet an opportunity to perform a prepass on the document
+     * to extract any information that it can store in an optimized form.
+     *
+     * Currently, it only extracts information about attributes of type ID.
      */
-    public final String getUnparsedEntity(String name) {
-	final String uri = (String)_unparsedEntities.get(name);
-	return uri == null ? EMPTYSTRING : uri;
+    public final void prepassDocument(DOM document) {
+        setIndexSize(document.getSize());
+        buildIDIndex(document);
     }
 
     /**
-     * Add an unparsed entity URI. The URI/value pairs are passed from the
-     * DOM builder to the translet.
+     * Leverages the Key Class to implement the XSLT id() function.
+     * buildIdIndex creates the index (##id) that Key Class uses.
+     * The index contains the element node index (int) and Id value (String).
      */
-    public final void addUnparsedEntity(String name, String uri) {
-	if (_unparsedEntities == null)
-	    _unparsedEntities = new Hashtable();
-	if (_unparsedEntities.containsKey(name) == false)
-	    _unparsedEntities.put(name, uri);
-    }
-    
-    /**
-     * Add an unparsed entity URI. The URI/value pairs are passed from the
-     * DOM builder to the translet.
-     */
-    public final void setUnparsedEntityURIs(Hashtable table) {
-	if (_unparsedEntities == null)
-	    _unparsedEntities = table;
-	else {
-	    Enumeration keys = table.keys();
-	    while (keys.hasMoreElements()) {
-		String name = (String)keys.nextElement();
-		_unparsedEntities.put(name,table.get(name));
-	    }
-	}
-    }
+    private final void buildIDIndex(DOM document) {
+        
+        if (document instanceof SAXImpl) {
+            SAXImpl saxImpl = (SAXImpl)document;
+            
+            // If the input source is DOMSource, the KeyIndex table is not
+            // built at this time. It will be built later by the lookupId()
+            // and containsId() methods of the KeyIndex class.
+            if (saxImpl.hasDOMSource()) {
+                buildKeyIndex(ID_INDEX_NAME, document);
+                return;
+            }
+            else {
+                final Hashtable elementsByID = saxImpl.getElementsWithIDs();
 
-    /**
-     * The DTD monitor used by the DOM builder scans the input document DTD
-     * for unparsed entity URIs. These are passed to the translet using
-     * this method.
-     */
-    public final void setDTDMonitor(DTDMonitor monitor) {
-	setUnparsedEntityURIs(monitor.getUnparsedEntityURIs());
+                if (elementsByID == null) {
+            	    return;
+                }
+
+                // Given a Hashtable of DTM nodes indexed by ID attribute values,
+                // loop through the table copying information to a KeyIndex
+                // for the mapping from ID attribute value to DTM node
+                final Enumeration idValues = elementsByID.keys();
+                boolean hasIDValues = false;
+
+                while (idValues.hasMoreElements()) {
+            	    final Object idValue = idValues.nextElement();
+            	    final int element = ((Integer)elementsByID.get(idValue)).intValue();
+
+            	    buildKeyIndex(ID_INDEX_NAME, element, idValue);
+            	    hasIDValues = true;
+                }
+
+                if (hasIDValues) {
+            	    setKeyIndexDom(ID_INDEX_NAME, document);
+                }
+            }
+        }
     }
 
     /************************************************************************
@@ -389,6 +396,21 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
+     * Create an empty KeyIndex in the DOM case
+     *   @name is the name of the index (the key or ##id)
+     *   @node is the DOM
+     */
+    public void buildKeyIndex(String name, DOM dom) {
+	if (_keyIndexes == null) _keyIndexes = new Hashtable();
+	
+	KeyIndex index = (KeyIndex)_keyIndexes.get(name);
+	if (index == null) {
+	    _keyIndexes.put(name, index = new KeyIndex(_indexSize));
+	}
+	index.setDom(dom);
+    }
+
+    /**
      * Returns the index for a given key (or id).
      * The index implements our internal iterator interface
      */
@@ -409,9 +431,19 @@ public abstract class AbstractTranslet implements Translet {
      * This method builds key indexes - it is overridden in the compiled
      * translet in cases where the <xsl:key> element is used
      */
-    public void buildKeys(DOM document, NodeIterator iterator,
-			  TransletOutputHandler handler,
+    public void buildKeys(DOM document, DTMAxisIterator iterator,
+			  SerializationHandler handler,
 			  int root) throws TransletException {
+			  	
+    }
+    
+    /**
+     * This method builds key indexes - it is overridden in the compiled
+     * translet in cases where the <xsl:key> element is used
+     */
+    public void setKeyIndexDom(String name, DOM document) {
+    	getKeyIndex(name).setDom(document);
+			  	
     }
 
     /************************************************************************
@@ -442,7 +474,7 @@ public abstract class AbstractTranslet implements Translet {
      * See compiler/TransletOutput for actual implementation.
      ************************************************************************/
 
-    public TransletOutputHandler openOutputHandler(String filename, boolean append) 
+    public SerializationHandler openOutputHandler(String filename, boolean append) 
 	throws TransletException 
     {
 	try {
@@ -454,8 +486,8 @@ public abstract class AbstractTranslet implements Translet {
 	    factory.setWriter(new FileWriter(filename, append));
 	    factory.setOutputType(TransletOutputHandlerFactory.STREAM);
 
-	    final TransletOutputHandler handler 
-		= factory.getTransletOutputHandler();
+	    final SerializationHandler handler 
+		= factory.getSerializationHandler();
 
 	    transferOutputSettings(handler);
 	    handler.startDocument();
@@ -466,13 +498,13 @@ public abstract class AbstractTranslet implements Translet {
 	}
     }
 
-    public TransletOutputHandler openOutputHandler(String filename) 
+    public SerializationHandler openOutputHandler(String filename) 
        throws TransletException 
     {
        return openOutputHandler(filename, false);
     }
 
-    public void closeOutputHandler(TransletOutputHandler handler) {
+    public void closeOutputHandler(SerializationHandler handler) {
 	try {
 	    handler.endDocument();
 	    handler.close();
@@ -489,14 +521,14 @@ public abstract class AbstractTranslet implements Translet {
     /**
      * Main transform() method - this is overridden by the compiled translet
      */
-    public abstract void transform(DOM document, NodeIterator iterator,
-				   TransletOutputHandler handler)
+    public abstract void transform(DOM document, DTMAxisIterator iterator,
+				   SerializationHandler handler)
 	throws TransletException;
 
     /**
      * Calls transform() with a given output handler
      */
-    public final void transform(DOM document, TransletOutputHandler handler) 
+    public final void transform(DOM document, SerializationHandler handler) 
 	throws TransletException {
 	transform(document, document.getIterator(), handler);
     }
@@ -506,33 +538,52 @@ public abstract class AbstractTranslet implements Translet {
      * output handler
      */
     public final void characters(final String string,
-				 TransletOutputHandler handler) 
+				 SerializationHandler handler) 
 	throws TransletException {
-	final int length = string.length();
-	handler.characters(string.toCharArray(), 0, length);
+        if (string != null) {
+           //final int length = string.length();
+           try {
+               handler.characters(string);
+           } catch (Exception e) {
+               throw new TransletException(e);
+           }
+        }   
     }
 
     /**
      * Add's a name of an element whose text contents should be output as CDATA
      */
     public void addCdataElement(String name) {
-	if (_cdata == null) _cdata = new Hashtable();
-	_cdata.put(name, name);
+	if (_cdata == null) {
+            _cdata = new Vector();
+        }
+
+        int lastColon = name.lastIndexOf(':');
+
+        if (lastColon > 0) {
+            String uri = name.substring(0, lastColon);
+            String localName = name.substring(lastColon+1);
+	    _cdata.addElement(uri);
+	    _cdata.addElement(localName);
+        } else {
+	    _cdata.addElement(null);
+	    _cdata.addElement(name);
+        }
     }
 
     /**
      * Transfer the output settings to the output post-processor
      */
-    protected void transferOutputSettings(TransletOutputHandler handler) {
+    protected void transferOutputSettings(SerializationHandler handler) {
 	if (_method != null) {
 	    if (_method.equals("xml")) {
 	        if (_standalone != null) {
 		    handler.setStandalone(_standalone);
 		}
 		if (_omitHeader) {
-		    handler.omitHeader(true);
+		    handler.setOmitXMLDeclaration(true);
 		}
-		handler.setCdataElements(_cdata);
+		handler.setCdataSectionElements(_cdata);
 		if (_version != null) {
 		    handler.setVersion(_version);
 		}
@@ -550,7 +601,7 @@ public abstract class AbstractTranslet implements Translet {
 	    }
 	}
 	else {
-	    handler.setCdataElements(_cdata);
+	    handler.setCdataSectionElements(_cdata);
 	    if (_version != null) {
 		handler.setVersion(_version);
 	    }
@@ -558,7 +609,7 @@ public abstract class AbstractTranslet implements Translet {
 		handler.setStandalone(_standalone);
 	    }
 	    if (_omitHeader) {
-		handler.omitHeader(true);
+		handler.setOmitXMLDeclaration(true);
 	    }
 	    handler.setIndent(_indent);
 	    handler.setDoctype(_doctypeSystem, _doctypePublic);
@@ -583,5 +634,9 @@ public abstract class AbstractTranslet implements Translet {
     }
     public String[] getNamespaceArray() {
 	return namespaceArray;
+    }
+    
+    public boolean hasIdCall() {
+    	return _hasIdCall;
     }
 }

@@ -80,11 +80,13 @@ public class AttributeList implements org.xml.sax.Attributes {
      * AttributeList constructor
      */
     public AttributeList() {
+	/*
 	_attributes = new Hashtable();
 	_names  = new Vector();
 	_values = new Vector();
 	_qnames = new Vector();
 	_uris   = new Vector();
+	*/
 	_length = 0;
     }
 
@@ -99,6 +101,20 @@ public class AttributeList implements org.xml.sax.Attributes {
 		add(attributes.getQName(i),attributes.getValue(i));
 	    }
 	}
+    }
+    
+    /**
+     * Allocate memory for the AttributeList
+     * %OPT% Use on-demand allocation for the internal vectors. The memory
+     * is only allocated when there is an attribute. This reduces the cost 
+     * of creating many small RTFs.
+     */
+    private void alloc() {
+	_attributes = new Hashtable();
+	_names  = new Vector();
+	_values = new Vector();
+	_qnames = new Vector();
+	_uris   = new Vector();        
     }
 
     /**
@@ -149,14 +165,14 @@ public class AttributeList implements org.xml.sax.Attributes {
      * SAX2: Look up the index of an attribute by Namespace name.
      */
     public int getIndex(String namespaceURI, String localPart) {
-	return(0);
+	return(-1);
     }
 
     /**
      * SAX2: Look up the index of an attribute by XML 1.0 qualified name.
      */
     public int getIndex(String qname) {
-	return(0);
+	return(-1);
     }
 
     /**
@@ -187,9 +203,13 @@ public class AttributeList implements org.xml.sax.Attributes {
      * SAX2: Look up an attribute's value by qname.
      */
     public String getValue(String qname) {
-	final Integer obj = (Integer)_attributes.get(qname);
-	if (obj == null) return null;
-	return(getValue(obj.intValue()));
+	if (_attributes != null) {
+	    final Integer obj = (Integer)_attributes.get(qname);
+	    if (obj == null) return null;
+	    return(getValue(obj.intValue()));
+	}
+	else
+	    return null;
     }
 
     /**
@@ -203,6 +223,10 @@ public class AttributeList implements org.xml.sax.Attributes {
      * Adds an attribute to the list
      */
     public void add(String qname, String value) {
+	// Initialize the internal vectors at the first usage.
+	if (_attributes == null)
+	    alloc();
+	
 	// Stuff the QName into the names vector & hashtable
 	Integer obj = (Integer)_attributes.get(qname);
 	if (obj == null) {
@@ -230,11 +254,13 @@ public class AttributeList implements org.xml.sax.Attributes {
      */
     public void clear() {
 	_length = 0;
-	_attributes.clear();
-	_names.removeAllElements();
-	_values.removeAllElements();
-	_qnames.removeAllElements();
-	_uris.removeAllElements();
+	if (_attributes != null) {
+	    _attributes.clear();
+	    _names.removeAllElements();
+	    _values.removeAllElements();
+	    _qnames.removeAllElements();
+	    _uris.removeAllElements();
+	}
     }
     
 }
