@@ -102,6 +102,7 @@ public class SimpleNode implements Node
                 break;
 
             case XPathTreeConstants.JJTSTEPEXPR:
+			case XPathTreeConstants.JJTPATTERNSTEP:            
                 newNode = nodeFactory.createStepNode(id);
 
                 if (newNode == null)
@@ -166,6 +167,7 @@ public class SimpleNode implements Node
                 break;
 
             case XPathTreeConstants.JJTPATHEXPR:
+			case XPathTreeConstants.JJTPATHPATTERN:
                 newNode = nodeFactory.createPathNode(id);
 
                 if (newNode == null)
@@ -184,6 +186,8 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTOREXPR:
             case XPathTreeConstants.JJTANDEXPR:
             case XPathTreeConstants.JJTCOMPARISONEXPR:
+			case XPathTreeConstants.JJTPATTERN: 
+			case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR:   
                 newNode = nodeFactory.createOperatorNode(id);
 
                 if (newNode == null)
@@ -194,6 +198,7 @@ public class SimpleNode implements Node
                 break;
 
             case XPathTreeConstants.JJTFUNCTIONCALL:
+			case XPathTreeConstants.JJTIDKEYPATTERN:
                 newNode = nodeFactory.createFunctionCallNode(id);
 
                 if (newNode == null)
@@ -274,12 +279,13 @@ public class SimpleNode implements Node
 
                 break;
 
-            case XPathTreeConstants.JJTXPATH:
+            case XPathTreeConstants.JJTXPATH:         
                 newNode = XPathNode.m_singleton;
 
                 break;
 
             case XPathTreeConstants.JJTXPATH2:
+			case XPathTreeConstants.JJTMATCHPATTERN:
                 newNode = XPath2Node.m_singleton;
 
                 break;
@@ -447,28 +453,24 @@ public class SimpleNode implements Node
                 break;
 
             // Below: xpath grammar unit not implemented yet
-            case XPathTreeConstants.JJTMATCHPATTERN:
-            case XPathTreeConstants.JJTPATTERN:
-            case XPathTreeConstants.JJTPATHPATTERN:
-            case XPathTreeConstants.JJTVOID:
-            case XPathTreeConstants.JJTPATTERNSTEP:
-            case XPathTreeConstants.JJTIDKEYPATTERN:
+            case XPathTreeConstants.JJTVOID: //?
             case XPathTreeConstants.JJTRETURN:
             case XPathTreeConstants.JJTSOME:
             case XPathTreeConstants.JJTEVERY:
             case XPathTreeConstants.JJTIN:
-            case XPathTreeConstants.JJTSATISFIES:
-            case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR: //37;           
-            case XPathTreeConstants.JJTVALIDATEEXPR: //44;
-            case XPathTreeConstants.JJTRBRACE: //47;
-            case XPathTreeConstants.JJTSCHEMACONTEXT: //84;
-            case XPathTreeConstants.JJTSCHEMAGLOBALCONTEXT: //85;
-            case XPathTreeConstants.JJTSCHEMACONTEXTSTEP: //87;
-            case XPathTreeConstants.JJTUNTYPED: //99;
-            case XPathTreeConstants.JJTATOMICVALUE: //100;
-            case XPathTreeConstants.JJTELEMORATTRTYPE: //101;
-            case XPathTreeConstants.JJTSCHEMATYPE: //102;
-            case XPathTreeConstants.JJTOFTYPE: //103;
+            case XPathTreeConstants.JJTSATISFIES:           
+            case XPathTreeConstants.JJTVALIDATEEXPR: 
+            case XPathTreeConstants.JJTRBRACE: 
+            
+            // types..
+            case XPathTreeConstants.JJTSCHEMACONTEXT: 
+            case XPathTreeConstants.JJTSCHEMAGLOBALCONTEXT: 
+            case XPathTreeConstants.JJTSCHEMACONTEXTSTEP: 
+            case XPathTreeConstants.JJTUNTYPED:
+            case XPathTreeConstants.JJTATOMICVALUE: 
+            case XPathTreeConstants.JJTELEMORATTRTYPE: 
+            case XPathTreeConstants.JJTSCHEMATYPE: 
+            case XPathTreeConstants.JJTOFTYPE: 
 
             default:
 

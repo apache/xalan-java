@@ -68,6 +68,8 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
  */
 public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 
+	// TODO: Define (at least) two functions: id and key (used for patterns)
+
 	/**
 	 * Name of the function
 	 */

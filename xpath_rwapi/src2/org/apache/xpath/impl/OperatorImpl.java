@@ -127,18 +127,22 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
                 break;
 
             case XPathTreeConstants.JJTPATHEXPR:
+            case XPathTreeConstants.JJTPATHPATTERN:
                 m_exprType = PATH_EXPR;
                 m_opType = SLASH_STEP;
 
                 break;
 
             case XPathTreeConstants.JJTUNIONEXPR:
+			case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR:
+            case XPathTreeConstants.JJTPATTERN:
                 m_exprType = COMBINE_EXPR;
 
                 // opType is not known yet
                 break;
 
             case XPathTreeConstants.JJTFUNCTIONCALL:
+            case XPathTreeConstants.JJTIDKEYPATTERN:
 
                 // ignore : see FunctionCallImpl subclass
                 break;
@@ -200,7 +204,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         m_exprType = expr.m_exprType;
         m_opType = expr.m_opType;
 
-       m_children = expr.cloneChildren();
+        m_children = expr.cloneChildren();
     }
 
     /**
@@ -323,9 +327,12 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         {
             if (((SimpleNode) n).canBeReduced())
             {
-                if ((m_exprType == SEQUENCE_EXPR)
+                if (((m_exprType == SEQUENCE_EXPR)
                         && (n.jjtGetNumChildren() > 0)
                         && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTEXPRSEQUENCE))
+                        || ((id == XPathTreeConstants.JJTPATTERN)
+                        && (n.jjtGetNumChildren() > 0)
+                        && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTPATTERN)))
                 {
                     super.jjtInsertNodeChildren(n.jjtGetChild(0));
                 }
@@ -346,10 +353,11 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      */
     public boolean canBeReduced()
     {
-        if (m_exprType == SEQUENCE_EXPR)
+        if (m_exprType == SEQUENCE_EXPR || id == XPathTreeConstants.JJTPATTERN)
         {
             return (m_children == null) || (m_children.length <= 1);
         }
+        		
 
         return super.canBeReduced();
     }

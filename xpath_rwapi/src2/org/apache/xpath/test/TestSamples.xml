@@ -988,7 +988,47 @@
 			</node>			
 		</ast>
 	</expr-->
-
+	
+	
+	<!-- Match pattern expr -->
+	
+	<expr value="a" pattern="true">
+		<ast>
+			<node name="PathPattern">
+				<node name="PatternStep">
+					<node name="NameTest"/>	
+				</node>			
+			</node>
+		</ast>
+	</expr>
+		
+	
+	<expr value="a|b" pattern="true">
+		<ast>
+			<node name="Pattern">
+				<node name="PathPattern">
+					<node name="PatternStep">
+						<node name="NameTest"/>	
+					</node>
+				</node>
+				<node name="PathPattern">
+					<node name="PatternStep">
+						<node name="NameTest"/>	
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="id('a')" pattern="true">
+		<ast>
+			<node name="IdKeyPattern">
+				<node name="StringLiteral"/>	
+			</node>
+		</ast>
+	</expr>
+	
+	
 	<!-- Semantically invalid expression (parser should return an error) -->	
 	
 	<expr value="toto/(45+23)" valid="false"/>

@@ -85,6 +85,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import java.io.StringReader;
+
 import java.math.BigInteger;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -161,17 +162,18 @@ public class TestSamples
                 + pathExpr.getString(false));
 
             StepExpr se = (StepExpr) pathExpr.getOperand(0); // first step
-            se.appendPredicate(exprFct.createIntegerLiteralExpr(BigInteger.valueOf(50)));
+            se.appendPredicate(exprFct.createIntegerLiteralExpr(
+                    BigInteger.valueOf(50)));
             System.out.println("/toto[50]/descendant::titi =? "
                 + pathExpr.getString(true));
             System.out.println("/child::toto[50]/descendant::titi =? "
                 + pathExpr.getString(false));
-                
+
             pathExpr.removeOperand(se);
-			System.out.println("/descendant::titi =? "
-							+ pathExpr.getString(true));
-						System.out.println("/descendant::titi =? "
-							+ pathExpr.getString(false));
+            System.out.println("/descendant::titi =? "
+                + pathExpr.getString(true));
+            System.out.println("/descendant::titi =? "
+                + pathExpr.getString(false));
 
             // Test visitor - anonymous class used
             pathExpr.visit(new Visitor()
@@ -270,84 +272,57 @@ public class TestSamples
         SimpleNode tree;
         XPath parser;
 
+        parser = new XPath(new StringReader(xpathString));
+
+        boolean isPattern = "true".equals(((Element) node).getAttribute(
+                    "pattern"));
+
         try
         {
-            parser = new XPath(new StringReader(xpathString));
-
-            try
+            if (isPattern)
+            {
+                tree = parser.MatchPattern();
+            }
+            else
             {
                 tree = parser.XPath2();
+            }
 
-                if ("false".equals(((Element) node).getAttribute("valid")))
+            if ("false".equals(((Element) node).getAttribute("valid")))
+            {
+                // the parser should have raise an exception
+                System.err.println(
+                    "The expression has not been detected as invalid!");
+                testOK = false;
+            }
+            else
+            {
+                if (SimpleNode.PRODUCE_RAW_TREE)
                 {
-                    // the parser should have raise an exception
-                    System.err.println(
-                        "The expression has not been detected as invalid!");
-                    testOK = false;
+                    //  if (dumpTree)
+                    //{
+                    tree.dump("|");
+
+                    //   }
                 }
                 else
                 {
-                    if (SimpleNode.PRODUCE_RAW_TREE)
+                    Expr expr = (Expr) tree.jjtGetChild(0);
+
+                    // Gets the reference AST to compare with
+                    NodeList astNodes = ((Element) node).getElementsByTagName(
+                            "ast");
+
+                    if ((astNodes != null) && (astNodes.getLength() >= 1))
                     {
-                        //  if (dumpTree)
-                        //{
-                        tree.dump("|");
+                        Node astNode = astNodes.item(0);
 
-                        //   }
-                    }
-                    else
-                    {
-                        Expr expr = (Expr) tree.jjtGetChild(0);
-
-                        // Gets the reference AST to compare with
-                        NodeList astNodes = ((Element) node)
-                            .getElementsByTagName("ast");
-
-                        if ((astNodes != null) && (astNodes.getLength() >= 1))
+                        if (!checkAST((SimpleNode) expr,
+                                    (Element) ((Element) astNode).getElementsByTagName(
+                                        "node").item(0)))
                         {
-                            Node astNode = astNodes.item(0);
-
-                            if (!checkAST((SimpleNode) expr,
-                                        (Element) ((Element) astNode).getElementsByTagName(
-                                            "node").item(0)))
-                            {
-                                System.err.println(
-                                    "Generated AST doesn't match the reference one");
-
-                                tree.dump("|");
-
-                                // Produce the raw tree
-                                System.err.println("Raw tree is");
-
-                                SimpleNode.PRODUCE_RAW_TREE = true;
-
-                                parser = new XPath(new StringReader(xpathString));
-                                tree = parser.XPath2();
-                                tree.dump("|");
-
-                                SimpleNode.PRODUCE_RAW_TREE = false;
-                            }
-                        }
-                        else
-                        {
-                            System.err.println("No reference AST provided");
-                        }
-
-                        String ab = expr.getString(true);
-
-                        String norm = ((Element) node).getAttribute(
-                                "normalized-round-trip");
-
-                        if ("".equals(norm))
-                        {
-                            norm = xpathString;
-                        }
-
-                        if (!ab.equals(norm))
-                        {
-                            System.err.print(
-                                "Bad external or internal representation: ");
-                            System.err.println(ab + "  !=  " + xpathString);
+                            System.err.println(
+                                "Generated AST doesn't match the reference one");
 
                             tree.dump("|");
 
@@ -357,19 +332,71 @@ public class TestSamples
                             SimpleNode.PRODUCE_RAW_TREE = true;
 
                             parser = new XPath(new StringReader(xpathString));
-                            tree = parser.XPath2();
+
+                            if (isPattern)
+                            {
+                                tree = parser.MatchPattern();
+                            }
+                            else
+                            {
+                                tree = parser.XPath2();
+                            }
+
                             tree.dump("|");
 
                             SimpleNode.PRODUCE_RAW_TREE = false;
-                            testOK = false;
                         }
+                    }
+                    else
+                    {
+                        System.err.println("No reference AST provided");
+                    }
+
+                    String ab = expr.getString(true);
+
+                    String norm = ((Element) node).getAttribute(
+                            "normalized-round-trip");
+
+                    if ("".equals(norm))
+                    {
+                        norm = xpathString;
+                    }
+
+                    if (!ab.equals(norm))
+                    {
+                        System.err.print(
+                            "Bad external or internal representation: ");
+                        System.err.println(ab + "  !=  " + xpathString);
+
+                        tree.dump("|");
+
+                        // Produce the raw tree
+                        System.err.println("Raw tree is");
+
+                        SimpleNode.PRODUCE_RAW_TREE = true;
+
+                        parser = new XPath(new StringReader(xpathString));
+
+                        if (isPattern)
+                        {
+                            tree = parser.MatchPattern();
+                        }
+                        else
+                        {
+                            tree = parser.XPath2();
+                        }
+
+                        tree.dump("|");
+
+                        SimpleNode.PRODUCE_RAW_TREE = false;
+                        testOK = false;
                     }
                 }
             }
-            catch (ParseException e)
-            {
-                System.err.println("Parsing error occurs: " + e.getMessage());
-            }
+        }
+        catch (ParseException e)
+        {
+            System.err.println("Parsing error occurs: " + e.getMessage());
         }
         catch (RuntimeException e)
         {
@@ -379,7 +406,16 @@ public class TestSamples
             SimpleNode.PRODUCE_RAW_TREE = true;
 
             parser = new XPath(new StringReader(xpathString));
-            tree = parser.XPath2();
+
+            if (isPattern)
+            {
+                tree = parser.MatchPattern();
+            }
+            else
+            {
+                tree = parser.XPath2();
+            }
+
             tree.dump("|");
 
             SimpleNode.PRODUCE_RAW_TREE = false;
