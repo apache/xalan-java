@@ -196,8 +196,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public boolean isElement(final int node) 
     {
-      final int type = getType(node); //_type[node];
-	  return (((node < _firstAttributeNode) && (type >= DTM.NTYPES)) || getNodeType(node) == DTM.ELEMENT_NODE);
+      return (((node < _firstAttributeNode) && (getType(node) >= DTM.NTYPES)) || getNodeType(node) == DTM.ELEMENT_NODE);
     }
 
     /**
@@ -205,8 +204,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public boolean isAttribute(final int node) 
     {
-      final int type = getType(node); //_type[node];
-	    return ((node >= _firstAttributeNode) && (type >= DTM.NTYPES));
+      return ((node >= _firstAttributeNode) && (getType(node) >= DTM.NTYPES));
     }
 
     /**
@@ -1152,35 +1150,49 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     /**************************************************************
      * Iterator that returns namespace nodes
      */
-    /*
+    
     private final class TypedNamespaceIterator extends NamespaceIterator {
 
-	final int _uriType;
+	/** The extended type ID that was requested. */
+    private final int _nodeType;
 
-	public TypedNamespaceIterator(int type) {
-	    _uriType = type;
-	}
+    /**
+     * Constructor TypedChildrenIterator
+     *
+     *
+     * @param nodeType The extended type ID being requested.
+     */
+	public TypedNamespaceIterator(int nodeType)
+    {
+      super();
+      _nodeType = nodeType;
+    }
 
-	public int next() {
-	    int node;
+	/**
+     * Get the next node in the iteration.
+     *
+     * @return The next node handle in the iteration, or END.
+     */
+    public int next()
+    {
+    	int node; 
 
-	    while ((node = _ns) != DOM.NULL) {
-		_ns = _nextSibling[_ns];
-		while ((_ns == DOM.NULL) && (_node != DOM.NULL)) {
-		    _node = _parent[_node];
-		    _ns = _lengthOrAttr[_node];
-		    while ((_ns != DOM.NULL) && (_type[_ns] != NAMESPACE)) {
-			_ns = _nextSibling[_ns];
-		    }
-		}
-		if (_prefix[node] == _uriType) return returnNode(node);
-	    }
-	    return DOM.NULL;
-	}
-         
-    } // end of TypedNamespaceIterator
+      for (node = super.next(); node != END; node = super.next())
+      {
+      	if (getExpandedTypeID(node) == _nodeType || getNodeType(node) == _nodeType
+             || getNamespaceType(node) == _nodeType)
+        {
+          //_currentNode = node;
 
-*/
+          return returnNode(node);
+        }
+      }
+
+      return (END);
+    }
+  }  // end of TypedNamespaceIterator
+
+/*
     /**************************************************************
      * Iterator that returns preceding siblings of a given node
      */
@@ -2178,10 +2190,11 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       final int nNames = namesArray.length;
       // Padding with number of names, because they
       // may need to be added, i.e for RTFs. See copy03  
-      final int[] types = new int[m_expandedNameTable.getSize() + nNames]; //(nNames);
+      final int[] types = new int[m_expandedNameTable.getSize() /*+ nNames*/]; //(nNames);
       for (int i = 0; i < nNames; i++)      {
         //types.put(namesArray[i], new Integer(i + DTM.NTYPES));
-          types[getGeneralizedType(namesArray[i])] = getGeneralizedType(namesArray[i]); //(i + DTM.NTYPES);
+          int type = getGeneralizedType(namesArray[i]);
+          types[type] = type; //(i + DTM.NTYPES);
       }
       return types;
     }
@@ -2235,7 +2248,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       for (i = NTYPES; i < exLength; i++) 
       	result[i] = m_expandedNameTable.getType(i); 
       	
-
+/*
       // extended types initialized to "beyond caller's types"
       // unknown element or Attr
       for (i = NTYPES; i < mappingLength; i++) {
@@ -2258,7 +2271,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
           result[getGeneralizedType(name)] = DTM.ATTRIBUTE_NODE;
         else
           result[getGeneralizedType(name)] = DTM.ELEMENT_NODE;      	
-      }
+      }*/
 
       // actual mapping of caller requested names
       for (i = 0; i < namesLength; i++) {
@@ -2416,7 +2429,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       _text          = (char[])in.readObject();
       _namesArray    = (String[])in.readObject();
       _uriArray      = (String[])in.readObject();
-     // _prefixArray   = (String[])in.readObject();
+      _prefixArray   = (Hashtable)in.readObject();
 
       _whitespace    = (BitArray)in.readObject();
 
@@ -3557,9 +3570,9 @@ public String getNodeName(final int node)
 	 */
 	private void storeTextRef(final int node) 
   {
-	    final int length = _currentOffset - _baseOffset;
-	    _offsetOrChild[node] = maybeReuseText(length);
-	    _lengthOrAttr[node]  = length;
+	    //final int length = _currentOffset - _baseOffset;
+	    //_offsetOrChild[node] = maybeReuseText(length);
+	    //_lengthOrAttr[node]  = length;
 	}
 	
 	/**
@@ -3568,7 +3581,7 @@ public String getNodeName(final int node)
   private int makeTextNode(boolean isWhitespace) 
   {
   	//if (_currentOffset > _baseOffset)
-    {
+    //{
       final int node = getNumberOfNodes()-1; //nextNode();
  //     System.out.println("text ");
       //for (int i =  0; i< _text.length; i++)
@@ -3586,7 +3599,7 @@ public String getNodeName(final int node)
       	while (_currentNode < node)
       	{
       		int nodeh = makeNodeHandle(++_currentNode);
-       if(getNodeType(nodeh) == DTM.TEXT_NODE)
+    /*   if(getNodeType(nodeh) == DTM.TEXT_NODE)
       {
         int i = 0;  //_baseOffset;
          char[] chars = getNodeValue(nodeh).toCharArray();
@@ -3595,11 +3608,13 @@ public String getNodeName(final int node)
          while (isWhitespaceChar(chars[i++]) && i < limit);
       //  if ((i == limit) && isWhitespaceChar(_text[i-1]))
          if ((i == limit) && isWhitespaceChar(chars[i-1])) 
+         */
+         if (isWhitespace(nodeh))
         {
         	//System.out.println("<<<set bit2 " + SAXImpl.this.getNodeIdent(node)+ " " + node); 
           _whitespace.setBit(_currentNode);
         }
-      }
+     // }
       }
       }
       //_type[node] = DTM.TEXT_NODE;
@@ -3607,7 +3622,7 @@ public String getNodeName(final int node)
       //linkChildren(node);
       storeTextRef(node);
       return node;
-    }
+    //}
     //return -1;
   }
 
@@ -3619,8 +3634,8 @@ public String getNodeName(final int node)
 	private void storeAttrValRef(final int attributeNode) 
   {
 	    final int length = _currentOffset - _baseOffset;
-	    _offset[attributeNode] = maybeReuseText(length);
-	    _length[attributeNode] = length;
+	   // _offset[attributeNode] = maybeReuseText(length);
+	    //_length[attributeNode] = length;
 	}
 
 	private int makeNamespaceNode(String prefix, String uri)
@@ -3630,7 +3645,7 @@ public String getNodeName(final int node)
     	    final int node = nextAttributeNode();
 	    _type2[node] = DTM.NAMESPACE_NODE;
 	    characters(uri);
-	    storeAttrValRef(node);
+	    //storeAttrValRef(node);
 	    return node;	    
 	}
 
@@ -3680,14 +3695,14 @@ public String getNodeName(final int node)
       _type2[node] = (short)obj.intValue();
     }
 
-    final int col = qname.lastIndexOf(':');
-    if (col > 0) 
-    {
-      _prefix2[node] = registerPrefix(qname.substring(0, col));
-    }
+    //final int col = qname.lastIndexOf(':');
+   // if (col > 0) 
+   // {
+   //   _prefix2[node] = registerPrefix(qname.substring(0, col));
+   // }
 
     characters(attList.getValue(i));
-    storeAttrValRef(node);
+    //storeAttrValRef(node);
     return node;
   }
 
@@ -3951,7 +3966,7 @@ public String getNodeName(final int node)
 
     // Check if the URI already exists before pushing on stack
     Integer idx;
-        Integer eType = new Integer (getExpandedTypeID(uri, (String)_prefixArray.get(uri), DTM.NAMESPACE_NODE));
+        Integer eType = new Integer (getExpandedTypeID(uri, prefix, DTM.NAMESPACE_NODE));
     if ((idx = (Integer)_nsIndex.get(eType)) == null)
     {
          _prefixArray.put(uri, prefix);
