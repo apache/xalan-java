@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights  
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -92,7 +92,7 @@ import org.apache.xerces.xni.parser.XMLParserConfiguration;
  * configuration and must not be used other than for DOM revalidation.
  * 
  * @author Elena Litani, IBM
- * @version $Id$
+ * @@version $Id$
  */
 public class DOMValidationConfigurationSwipedFromXerces extends ParserConfigurationSettings
     implements XMLParserConfiguration {
