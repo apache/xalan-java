@@ -81,13 +81,13 @@ public class DOMBuilder
   public Document m_doc;
 
   /** Current node           */
-  Node m_currentNode = null;
+  protected Node m_currentNode = null;
 
   /** First node of document fragment or null if not a DocumentFragment     */
   public DocumentFragment m_docFrag = null;
 
   /** Vector of element nodes          */
-  NodeVector m_elemStack = new NodeVector();
+  protected NodeVector m_elemStack = new NodeVector();
 
   /**
    * DOMBuilder instance constructor... it will add the DOM nodes
@@ -319,25 +319,30 @@ public class DOMBuilder
           setIDAttribute(atts.getValue(i), elem);
 
         String attrNS = atts.getURI(i);
+        
+        if(attrNS == null)
+          attrNS = ""; // defensive, shouldn't have to do this.
 
         // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
         //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
         // Crimson won't let us set an xmlns: attribute on the DOM.
-        if ((null == attrNS) || (attrNS.length() == 0) || atts.getQName(i).startsWith("xmlns:"))
+        if ((attrNS.length() == 0) || atts.getQName(i).startsWith("xmlns:"))
           elem.setAttribute(atts.getQName(i), atts.getValue(i));
         else
         {
 
           // elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
-          elem.setAttributeNS(atts.getURI(i), atts.getQName(i),
-                              atts.getValue(i));
+          elem.setAttributeNS(attrNS, atts.getQName(i), atts.getValue(i));
         }
       }
     }
+    
+    // append(elem);
 
     m_elemStack.push(elem);
 
     m_currentNode = elem;
+    
   }
 
   /**
