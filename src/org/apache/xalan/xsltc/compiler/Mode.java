@@ -104,7 +104,7 @@ final class Mode implements Constants {
     private Hashtable _templateILs = new Hashtable();
     private LocationPathPattern _rootPattern = null;
 
-    private HashSet _importLevels = null;
+    private Hashtable _importLevels = null;
 
     private Hashtable _keys = null;
 
@@ -139,10 +139,10 @@ final class Mode implements Constants {
 	return _methodName;
     }
 
-    public String functionName(int precedence) {
-	if (_importLevels == null) _importLevels = new HashSet();
-	_importLevels.add(new Integer(precedence));
-	return _methodName+'_'+precedence;
+    public String functionName(int min, int max) {
+	if (_importLevels == null) _importLevels = new Hashtable();
+	_importLevels.put(new Integer(max), new Integer(min));
+	return _methodName+'_'+max;
     }
 
     /**
@@ -813,21 +813,23 @@ final class Mode implements Constants {
 
 	// Compile method(s) for <xsl:apply-imports/> for this mode
 	if (_importLevels != null) {
-	    Iterator levels = _importLevels.iterator();
-	    while (levels.hasNext()) {
-		Integer level = (Integer)levels.next();
-		compileApplyImports(classGen, level.intValue());
+	    Enumeration levels = _importLevels.keys();
+	    while (levels.hasMoreElements()) {
+		Integer max = (Integer)levels.nextElement();
+		Integer min = (Integer)_importLevels.get(max);
+		compileApplyImports(classGen, min.intValue(), max.intValue());
 	    }
 	}
     }
 
     private void compileTemplateCalls(ClassGenerator classGen,
 				      MethodGenerator methodGen,
-				      InstructionHandle next, int level) {
+				      InstructionHandle next, int min, int max){
         Enumeration templates = _neededTemplates.keys();
 	while (templates.hasMoreElements()) {
 	    final Template template = (Template)templates.nextElement();
-	    if (template.getImportPrecedence() < level) {
+	    final int prec = template.getImportPrecedence();
+	    if ((prec >= min) && (prec < max)) {
 		if (template.hasContents()) {
 		    InstructionList til = template.compile(classGen, methodGen);
 		    til.append(new GOTO_W(next));
@@ -843,7 +845,7 @@ final class Mode implements Constants {
     }
 
 
-    public void compileApplyImports(ClassGenerator classGen, int level) {
+    public void compileApplyImports(ClassGenerator classGen, int min, int max) {
 	final XSLTC xsltc = classGen.getParser().getXSLTC();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final Vector names      = xsltc.getNamesIndex();
@@ -856,13 +858,19 @@ final class Mode implements Constants {
 	_patternGroups = new Vector[32];
 	_rootPattern = null;
 
+	// IMPORTANT: Save orignal & complete set of templates!!!!
 	Vector oldTemplates = _templates;
+
+	// Gather templates that are within the scope of this import
 	_templates = new Vector();
 	final Enumeration templates = oldTemplates.elements();
 	while (templates.hasMoreElements()) {
 	    final Template template = (Template)templates.nextElement();
-	    if (template.getImportPrecedence() < level) addTemplate(template);
+	    final int prec = template.getImportPrecedence();
+	    if ((prec >= min) && (prec < max)) addTemplate(template);
 	}
+
+	// Process all patterns from those templates
 	processPatterns(_keys);
 
 	// (*) Create the applyTemplates() method
@@ -881,10 +889,23 @@ final class Mode implements Constants {
 	final MethodGenerator methodGen =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL, 
 				de.fub.bytecode.generic.Type.VOID,
-				argTypes, argNames, functionName()+'_'+level,
+				argTypes, argNames, functionName()+'_'+max,
 				getClassName(), mainIL,
 				classGen.getConstantPool());
 	methodGen.addException("org.apache.xalan.xsltc.TransletException");
+
+	// No templates? Then just stuff in a single 'return' instruction
+	if (_neededTemplates.size() == 0) {
+	    mainIL.append(new RETURN());
+	    methodGen.stripAttributes(true);
+	    methodGen.setMaxLocals();
+	    methodGen.setMaxStack();
+	    methodGen.removeNOPs();
+	    classGen.addMethod(methodGen.getMethod());
+	    // Restore original/complete set of templates for the transformation
+	    _templates = oldTemplates;
+	    return;
+	}
 
 	// (*) Create the local variablea
 	final LocalVariableGen current;
@@ -936,7 +957,7 @@ final class Mode implements Constants {
 	}
 
 	// (*) Compile all templates - regardless of pattern type
-	compileTemplateCalls(classGen, methodGen, ihLoop, level);
+	compileTemplateCalls(classGen, methodGen, ihLoop, min, max);
 
 	// (*) Handle template with explicit "*" pattern
 	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
@@ -1114,6 +1135,9 @@ final class Mode implements Constants {
 	methodGen.setMaxStack();
 	methodGen.removeNOPs();
 	classGen.addMethod(methodGen.getMethod());
+
+	// Restore original (complete) set of templates for this transformation
+	_templates = oldTemplates;
     }
 
     /**

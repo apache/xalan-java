@@ -103,7 +103,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     //  The name of the class being generated.
     private String _className;
     
-    // Contains all templates dedined in this stylesheet
+    // Contains all templates defined in this stylesheet
     private final Vector _templates = new Vector();
 
     private int _nextModeSerial = 1;

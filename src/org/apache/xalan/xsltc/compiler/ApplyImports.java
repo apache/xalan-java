@@ -56,8 +56,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Jacek Ambroziak
- * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -65,10 +64,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Enumeration;
-
-import javax.xml.parsers.*;
-
-import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
@@ -100,6 +95,41 @@ final class ApplyImports extends Instruction {
     }
 
     /**
+     * Determine the lowest import precedence for any stylesheet imported
+     * or included by the stylesheet in which this <xsl:apply-imports/>
+     * element occured. The templates that are imported by the stylesheet in
+     * which this element occured will all have higher import precedence than
+     * the integer returned by this method.
+     */
+    private int getMinPrecedence(int max) {
+	Stylesheet stylesheet = getStylesheet();
+	Stylesheet root = getParser().getTopLevelStylesheet();
+
+	int min = max;
+
+	Enumeration templates = root.getContents().elements();
+	while (templates.hasMoreElements()) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)templates.nextElement();
+	    if (child instanceof Template) {
+		Stylesheet curr = child.getStylesheet();
+		while ((curr != null) && (curr != stylesheet)) {
+		    if (curr._importedFrom != null)
+			curr = curr._importedFrom;
+		    else if (curr._includedFrom != null)
+			curr = curr._includedFrom;
+		    else
+			curr = null;
+		}
+		if (curr == stylesheet) {
+		    int prec = child.getStylesheet().getImportPrecedence();
+		    if (prec < min) min = prec;
+		}
+	    }
+	}
+	return (min);
+    }
+
+    /**
      * Parse the attributes and contents of an <xsl:apply-imports/> element.
      */
     public void parseContents(Parser parser) {
@@ -115,7 +145,13 @@ final class ApplyImports extends Instruction {
 
 	// Get the method name for <xsl:apply-imports/> in this mode
 	stylesheet = parser.getTopLevelStylesheet();
-	_functionName = stylesheet.getMode(_modeName).functionName(_precedence);
+
+	// Get the [min,max> precedence of all templates imported under the
+	// current stylesheet
+	final int maxPrecedence = _precedence;
+	final int minPrecedence = getMinPrecedence(maxPrecedence);
+	final Mode mode = stylesheet.getMode(_modeName);
+	_functionName = mode.functionName(minPrecedence, maxPrecedence);
 
 	parseChildren(parser);	// with-params
     }
