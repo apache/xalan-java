@@ -62,7 +62,7 @@ package org.apache.xalan.lib.sql;
  * Description:  <p>
  * Copyright:    Copyright (c) <p>
  * Company:      <p>
- * @author
+ * @author John Gentilin
  * @version 1.0
  */
 

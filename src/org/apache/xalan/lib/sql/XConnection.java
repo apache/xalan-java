@@ -535,8 +535,6 @@ public class XConnection
    *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
-   *
-   * @throws SQLException
    */
   public NodeIterator query(String queryString)
   {
@@ -578,8 +576,6 @@ public class XConnection
    *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
-   *
-   * @throws SQLException
    */
   public NodeIterator pquery(String queryString)
   {
@@ -615,8 +611,6 @@ public class XConnection
    *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
-   *
-   * @throws SQLException
    */
   public NodeIterator pquery(String queryString, String typeInfo)
   {

@@ -75,7 +75,7 @@ import org.w3c.dom.CDATASection;
  * Description:  <p>
  * Copyright:    Copyright (c) <p>
  * Company:      <p>
- * @author
+ * @author John Gentilin
  * @version 1.0
  */
 
