@@ -56,15 +56,20 @@
  */
 package org.apache.xalan.processor;
 
+import org.apache.xalan.utils.TreeWalker;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
+import org.xml.sax.InputSource;
+import org.xml.sax.EntityResolver;
 import java.net.URL;
 import java.io.IOException;
 import org.xml.sax.helpers.XMLReaderFactory;
+import trax.URIResolver;
+import org.w3c.dom.Node;
 
 /**
  * Processor class for xsl:include markup.
@@ -130,20 +135,68 @@ class ProcessorInclude extends XSLTElementProcessor
 
     try
     {
-      XMLReader reader = handler.getStylesheetProcessor().getXMLReader();
+      parse (handler, uri, localName, rawName, attributes);
+    }
+    finally
+    {
+      handler.setStylesheetType(savedStylesheetType);
+      handler.popStylesheet();
+    }
+  }
+  
+  protected void parse (StylesheetHandler handler, 
+                            String uri, String localName,
+                            String rawName, Attributes attributes)
+    throws SAXException
+  {
+    URIResolver uriresolver = handler.getStylesheetProcessor().getURIResolver();
 
-      if(null == reader)
+    try
+    {
+      XMLReader reader = null;
+      boolean tryCreatingReader = true;
+      EntityResolver entityResolver 
+        = handler.getStylesheetProcessor().getEntityResolver();
+
+      if(null != uriresolver)
       {
-        reader = XMLReaderFactory.createXMLReader();
+        tryCreatingReader = false;
+        InputSource inputSource = (null != entityResolver) 
+                                  ? entityResolver.resolveEntity(null, getHref()) : 
+                                    new InputSource(getHref());
+        reader = uriresolver.getXMLReader(inputSource);
+        if(null == reader)
+        {
+          Node node = uriresolver.getDOMNode(inputSource);
+          if(null != node)
+          {
+            TreeWalker walker = new TreeWalker(handler);
+            walker.traverse(node);
+          }
+          else
+            tryCreatingReader = true;
+        }
       }
-      else
+      if(tryCreatingReader)
       {
-        Class readerClass = ((Object)reader).getClass();
-        reader = (XMLReader)readerClass.newInstance();
+        reader = handler.getStylesheetProcessor().getXMLReader();
+        if(null == reader)
+        {
+          reader = XMLReaderFactory.createXMLReader();
+        }
+        else
+        {
+          Class readerClass = ((Object)reader).getClass();
+          reader = (XMLReader)readerClass.newInstance();
+        }
       }
-      
-      reader.setContentHandler(handler);
-      reader.parse(getHref());
+      if(null != reader)
+      {
+        if(null != entityResolver)
+          reader.setEntityResolver(entityResolver);
+        reader.setContentHandler(handler);
+        reader.parse(getHref());
+      }
     }
     catch(InstantiationException ie)
     {
@@ -161,11 +214,7 @@ class ProcessorInclude extends XSLTElementProcessor
     {
       handler.error(XSLTErrorResources.ER_IOEXCEPTION, new Object[] {getHref()}, ioe); 
     }
-    finally
-    {
-      handler.setStylesheetType(savedStylesheetType);
-      handler.popStylesheet();
-    }
   }
+
 
 }

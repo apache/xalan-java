@@ -56,6 +56,7 @@
  */
 package org.apache.xalan.processor;
 
+import org.apache.xalan.utils.TreeWalker;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.res.XSLMessages;
@@ -64,8 +65,12 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.EntityResolver;
 import java.net.URL;
 import java.io.IOException;
+import trax.URIResolver;
+import org.w3c.dom.Node;
 
 /**
  * This class processes parse events for an xsl:import element.
@@ -113,39 +118,10 @@ class ProcessorImport extends ProcessorInclude
     handler.pushImportURL(hrefUrl);
     int savedStylesheetType = handler.getStylesheetType();
     handler.setStylesheetType(StylesheetHandler.STYPE_IMPORT);
-
+    
     try
     {
-      XMLReader reader = handler.getStylesheetProcessor().getXMLReader();
-      if(null == reader)
-      {
-        reader = XMLReaderFactory.createXMLReader();
-      }
-      else
-      {
-        Class readerClass = ((Object)reader).getClass();
-        reader = (XMLReader)readerClass.newInstance();
-      }
-            
-      reader.setContentHandler(handler);
-      reader.parse(getHref());
-
-    }
-    catch(InstantiationException ie)
-    {
-      handler.error("Could not clone parser!", ie);
-    }
-    catch(IllegalAccessException iae)
-    {
-      handler.error("Can not access class!", iae);
-    }
-    catch(IOException ioe)
-    {
-      handler.error(XSLTErrorResources.ER_IOEXCEPTION, new Object[] {hrefUrl}, ioe); 
-    }
-    catch(SAXException ioe)
-    {
-      handler.error(XSLTErrorResources.ER_IOEXCEPTION, new Object[] {hrefUrl}, ioe); 
+      parse (handler, uri, localName, rawName, attributes);
     }
     finally
     {
