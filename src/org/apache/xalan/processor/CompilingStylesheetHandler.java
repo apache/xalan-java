@@ -95,7 +95,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 // Java Compiler support, being swiped from BSF
-// TODO: ADOPT OR ADAPT THIS LOGIC *****
+// TODO: ADOPT OR ADAPT THIS LOGIC, TO REMOVE THIS DEPENDENCY *****
 import com.ibm.cs.util.JavaUtils;
 
 /**

@@ -1,15 +1,20 @@
-/** Abstract superclass for generated template classes
-  (It had been a template, but I want to factor out some "boilerplate" code)
+/** Abstract superclass for generated template classes produced
+ * by the CompilingStylesheetProcessor/CompilingStylesheetHandler.
+ * (This had been an interface, but I want to factor out some 
+ * "boilerplate" code rather than regenerating it each time.)
  */
 package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplate;
 
 public abstract class CompiledTemplate
 extends ElemTemplate 
+implements java.io.Serializable
 {
-  // Object[] m_interpretArray is used to
-  // bind to nodes we don't yet know how to compile.
-  // Set at construction. ElemTemplateElements and AVTs...
+  // Object[] m_interpretArray is used to bind to nodes we don't yet
+  // know how to compile. Set at construction.
+  // This array resembles the DOM's getChildren().item(), but includes
+  // some things that aren't children, and is our primary access
+  // point for its contents even when they are kids.
   protected java.lang.Object[] m_interpretArray;
 
   // Namespace context tracking. Note that this is dynamic state
@@ -18,8 +23,7 @@ extends ElemTemplate
   // be set in execute() but testable in getNamespaceForPrefix --
   // and the latter, most unfortunately, is not passed the xctxt so
   // making that threadsafe is a bit ugly. 
-  protected java.util.Hashtable m_nsThreadContexts=new java.util.Hashtable();
-
+  transient protected java.util.Hashtable m_nsThreadContexts=new java.util.Hashtable();
 
   /** Accessor to let interpretive children query current namespace state.
    * Note that unlike the interpreted version, the namespace state of this
@@ -90,8 +94,8 @@ extends ElemTemplate
 	  }
       }
   } // Constructor initialization ends
-
-
+  
+  
   /** Main entry point for the Template transformation.
    * It's abstract in CompiledTemplate, but is filled in
    * when the actual template code is synthesized.
@@ -101,4 +105,15 @@ extends ElemTemplate
 		      org.w3c.dom.Node sourceNode,
 		      org.apache.xalan.utils.QName mode)
        throws org.xml.sax.SAXException;
+  
+  /** During deserialization, reinstantiate the transient thread-table
+   */
+  private void readObject(java.io.ObjectInputStream in)
+     throws java.io.IOException, ClassNotFoundException
+  {
+	in.defaultReadObject();   
+
+	m_nsThreadContexts=new java.util.Hashtable();
+  }
+  
 }
