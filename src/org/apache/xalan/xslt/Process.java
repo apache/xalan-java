@@ -463,7 +463,7 @@ public class Process
             try
             {
               uriResolver =
-                (URIResolver) Class.forName(argv[++i]).newInstance();
+                (URIResolver) Class.forName(argv[++i],true,ClassLoader.getSystemClassLoader()).newInstance();
 
               tfactory.setURIResolver(uriResolver);
             }
@@ -492,7 +492,7 @@ public class Process
             try
             {
               entityResolver =
-                (EntityResolver) Class.forName(argv[++i]).newInstance();
+                (EntityResolver) Class.forName(argv[++i],true,ClassLoader.getSystemClassLoader()).newInstance();
             }
             catch (Exception cnfe)
             {
@@ -519,7 +519,7 @@ public class Process
             try
             {
               contentHandler =
-                (ContentHandler) Class.forName(argv[++i]).newInstance();
+                (ContentHandler) Class.forName(argv[++i],true,ClassLoader.getSystemClassLoader()).newInstance();
             }
             catch (Exception cnfe)
             {
