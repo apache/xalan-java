@@ -191,7 +191,7 @@ public class TransformerFactoryImpl
 	throws IllegalArgumentException { 
 	if (name.equals("translet-name"))
 	    return(_defaultTransletName);
-	return(null);
+	throw new IllegalArgumentException(INVALID_ATTRIBUTE+name);
     }
 
     /**
