@@ -124,6 +124,39 @@ public class StylesheetProcessor extends Processor
       throw new ProcessorException("processFromNode failed", se);
     }
   }
+  
+  /**
+   * The systemID that was specified in 
+   * processFromNode(Node node, String systemID).
+   */
+  private String m_DOMsystemID = "";
+  
+  /**
+   * The systemID that was specified in 
+   * processFromNode(Node node, String systemID).
+   */
+  String getDOMsystemID()
+  {
+    return m_DOMsystemID;
+  }
+  
+  /**
+   * Process the stylesheet from a DOM tree, if the 
+   * processor supports the "http://xml.org/trax/features/dom/input" 
+   * feature.    
+   * 
+   * @param node A DOM tree which must contain 
+   * valid transform instructions that this processor understands.
+   * @param systemID The systemID from where xsl:includes and xsl:imports 
+   * should be resolved from.
+   * @returns A Templates object capable of being used for transformation purposes.
+   */
+  public Templates processFromNode(Node node, String systemID)
+    throws ProcessorException
+  {
+    m_DOMsystemID = systemID;
+    return processFromNode(node);
+  }
 
   /**
    * Process a series of inputs, treating them in import or cascade 
