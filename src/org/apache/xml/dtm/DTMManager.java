@@ -539,7 +539,12 @@ public abstract class DTMManager
   /** When this bitmask is ANDed with a DTM node handle number, the result
    * is the DTM's document identity number.
    */
-  public static final int IDENT_DTM_DEFAULT = -1 ^ IDENT_NODE_DEFAULT;
+  public static final int IDENT_DTM_DEFAULT = ~IDENT_NODE_DEFAULT;
+
+  /** This is the maximum number of DTMs available.  The highest DTM is
+    * one less than this.
+   */
+  public static final int IDENT_MAX_DTMS = (IDENT_DTM_DEFAULT >>> IDENT_DTM_NODE_BITS) + 1;
 
 
   /**

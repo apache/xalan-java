@@ -105,7 +105,7 @@ public class DTMManagerDefault extends DTMManager
   /** 
    * Vector of DTMs that this manager manages. 
    */
-  protected DTM m_dtms[] = new DTM[4095];
+  protected DTM m_dtms[] = new DTM[IDENT_MAX_DTMS];
     
   /**
    * Add a DTM to the DTM table.
@@ -546,7 +546,7 @@ public class DTMManagerDefault extends DTMManager
   {
 
     // Performance critical function.
-    return m_dtms[nodeHandle >> IDENT_DTM_NODE_BITS];
+    return m_dtms[nodeHandle >>> IDENT_DTM_NODE_BITS];
   }
 
   /**
