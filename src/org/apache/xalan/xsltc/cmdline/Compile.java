@@ -80,6 +80,12 @@ import org.apache.xalan.xsltc.cmdline.getopt.*;
 
 public final class Compile {
 
+    // Versioning numbers  for the compiler -v option output
+    private static int VERSION_MAJOR = 1;
+    private static int VERSION_MINOR = 0;
+    private static int VERSION_DELTA = 0;
+ 
+
     // This variable should be set to false to prevent any methods in this 
     // class from calling System.exit(). As this is a command-line tool,
     // calling System.exit() is normally OK, but we also want to allow for
@@ -87,7 +93,11 @@ public final class Compile {
     private static boolean _allowExit = true;
 
     public static void printUsage() {
-	System.err.println(new ErrorMsg(ErrorMsg.COMPILE_USAGE_STR));
+        StringBuffer vers = new StringBuffer("XSLTC version " + 
+	    VERSION_MAJOR + "." + VERSION_MINOR + 
+	    ((VERSION_DELTA > 0) ? ("."+VERSION_DELTA) : ("")));
+	System.err.println(vers + "\n" + 
+		new ErrorMsg(ErrorMsg.COMPILE_USAGE_STR));
 	if (_allowExit) System.exit(-1);
     }
 
@@ -103,8 +113,7 @@ public final class Compile {
 	    boolean inputIsURL = false;
 	    boolean useStdIn = false;
 	    boolean classNameSet = false;
-
-	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhsin");
+	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhsinv");
 	    if (args.length < 1) printUsage();
 
 	    final XSLTC xsltc = new XSLTC();
@@ -141,6 +150,8 @@ public final class Compile {
 		case 'n':
 		    xsltc.setTemplateInlining(false);
 		    break;
+		case 'v':
+		    // fall through to case h
 		case 'h':
 		default:
 		    printUsage();
