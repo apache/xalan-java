@@ -1,12 +1,33 @@
 <s3 title="Open bugs and bug reporting">
 <p>We are aware of the following limitations and problems in this alpha release:</p>
 <ul>
-<li>The processor cannot yet handle XML source documents with stylesheet processing instructions. You must explicitly indicate the styleshee when you perform a transformation.t<br/><br/></li>
-<li>??<br/><br/></li>
-<li>??<br/><br/></li>
-<li><br/><br/></li>
-<li><br/><br/></li>
-<li><br/><br/></li>
+<li>When format-number() should format NaN or infinity, it generates the wrong string if default strings are used. <em>Workaround:</em> declare the strings in an xsl:decimal-format instruction at the top of the stylesheet.<br/><br/></li>
+<li>Text nodes containing entity references are split into multiple nodes.<br/><br/></li>
+
+<li>The contains() function does not always recognize a character entity.<br/><br/></li>
+<li>There are differences in the way 1.x and 2.0. handle space and linefeed characters.<br/><br/></li>
+<li>In some cases, a named character (&quot; etc.) will be output when the literal character would have worked.<br/><br/></li>
+<li>In some cases, a named character (&copy; etc.) will be output where 1.x would put out &amp;#ddd; or %hh encoding.<br/><br/></li>
+<li>In some cases, a linefeed will be output where 1.x put out &amp;#10;.<br/><br/></li>
+<li>In some cases, %hh encoding will be used in HTML attributes instead of a named character (e.g., &auml;).<br/><br/></li>
+<li>In some cases, &amp;#ddd; encoding will be used in HTML attributes instead of %hh encoding.<br/><br/></li>
+<li>Sometimes an &lt;?xml...?&gt; header is not being output when it should be.<br/><br/></li>
+<li>Sometimes a META tag is output as it should be, but sometimes it's still missing or in the wrong place.<br/><br/></li>
+<li>Sometimes a namespace declaration is missing or placed differently than before.<br/><br/></li>
+<li>Sometimes a declaration for the default or XSLT namespace is added when not needed.<br/><br/></li>
+<li>Some torturous axis paths came back with too many nodes.<br/><br/></li>
+<li>The function-available and element-available tests don't report true for XSLT elements.<br/><br/></li>
+<li>The namespace-alias capability is putting out the wrong prefix (needs research).<br/><br/></li>
+<li>The name() function is not returning the null string for text and comments, as it should.<br/><br/></li>
+<li>Some required CDATA markers are not being put out.<br/><br/></li>
+<li>The special technique for generating boolean attributes in HTML doesn't work.<br/><br/></li>
+<li>The xsl:version put out by system-property is not the spec version, as it should be.<br/><br/></li>
+<li>A top-level variable/parameter declaration in an imported/included stylesheet is not global, as it should be.<br/><br/></li>
+<li>Path steps beyond a union causes an invalid axis error.<br/><br/></li>
+<li>Unable to select a variable with a QName.<br/><br/></li>
+<li>Use of key() in match pattern has problems with descendants.<br/><br/></li>
+<li>The unparsed-entity-uri() function fails.<br/><br/></li>
+<li>The @namespace:* pattern is not assigned the appropriate priority for conflict resolution.</li>
 </ul>
 <p>The Apache XML Bug Tracking System is currently not working. If you find a bug, please report it (with "Xalan-J 2 bug" in the subject line) to the <human-resource-ref idref="xalandev"/>.</p>
 </s3>

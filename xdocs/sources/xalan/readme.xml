@@ -62,6 +62,7 @@
  -->
 <s1 title="Release Notes">
 <p>&xslt4j-current;</p>
+<p>It is our pleasure to thank two new contributors, Gary Peskin and Costin Manolache, for the fantastic help they have provided in producing this first release of Xalan-Java 2, and for the new ideas and creative work we are sure they will continue to provide in the ongoing &xslt4j; saga.</p>
  <ul>
   <li><link anchor="status">Status</link></li>
   <li><link anchor="build">Build Notes</link></li>
@@ -104,7 +105,7 @@
        If you are using JDK 1.1.8, you must also put classes.zip in the JDK bin directory on the classpath. You can use Ant 
        with JDK 1.1.8 to compile and jar the &xslt4j; source files, but you must have JDK 1.2.2 or higher to build the
        documentation.<br/><br/></li>
-       <li>Depending on your environment, run the batch file (build.bat) or shell file (bmild.sh) from the &xslt4j; root
+       <li>Depending on your environment, run the batch file (build.bat) or shell file (build.sh) from the &xslt4j; root
        directory, optionally with arguments (see the table of targets below).<br/><br/>
        The batch/shell file adds several JAR files to the classpath and launches Ant with any arguments you provide. If you
        provide no target, Ant compiles the source files and rebuilds xalan.jar (the "jar" target).</li>
