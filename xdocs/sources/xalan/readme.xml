@@ -77,7 +77,7 @@
    </ul>
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.2">
-     <p>&xslt4j-current; includes a couple of global adjustments:</p>
+     <p>&xslt4j-current; includes two global adjustments:</p>
      <ul>
      <li>This release is integrated with release 2 of &xml4j;.</li>
      <li>This release does not include support for the deprecated &xslt4j; 1 compatability API. The &xslt4j; 1 compatability code does 
@@ -86,7 +86,9 @@
      <p>Our <link idref="samples" anchor="sql">SQL extension samples</link> continue to use InstantDB, but based on our realization of changes 
      that have occurred in the licensing of InstantDB, we no longer include InstantDB and the associated sample database with our distibution.
      We do, however, provide information on how to <link idref="samples" anchor="instantdbsetup">set up InstantDB</link> to support our SQL 
-     extension samples.</p>    
+     extension samples.</p>
+     <p>Documentation updates: We have subdivided the release notes into multiple files to accelerate HTML document loading, and we have added a
+     document on <link idref="features">Transform features</link>.</p>    
      &done-j;
      </s3>
      <anchor name="other"/>
