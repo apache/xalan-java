@@ -74,6 +74,8 @@ public class Examples
     exampleDOM2DOM("xml/foo.xml", "xsl/foo.xsl");
     System.out.println("\n\n==== exampleParam ====");
     exampleParam("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleTransformerReuse ====");
+    exampleTransformerReuse("xml/foo.xml", "xsl/foo.xsl");
     System.out.println("\n\n==== exampleOutputProperties ====");
     exampleOutputProperties("xml/foo.xml", "xsl/foo.xsl");
     System.out.println("\n\n==== exampleUseAssociated ====");
@@ -419,7 +421,9 @@ public class Examples
   } 
 
   /**
-   * This shows how to set a parameter for use by the templates.
+   * This shows how to set a parameter for use by the templates. Use 
+   * two transformers to show that different parameters may be set 
+   * on different transformers.
    */
   public static void exampleParam(String sourceID, 
                                   String xslID)
@@ -439,6 +443,38 @@ public class Examples
     
     transformer2.setOutputProperty(OutputKeys.INDENT, "yes");
     transformer2.transform(new StreamSource(sourceID),
+                           new StreamResult(System.out));
+  }
+  
+  /**
+   * Show the that a transformer can be reused, and show resetting 
+   * a parameter on the transformer.
+   */
+  public static void exampleTransformerReuse(String sourceID, String xslID)
+    throws TransformerException, TransformerConfigurationException
+  {
+    // Create a transform factory instance.
+    TransformerFactory tfactory = TransformerFactory.newInstance();
+    
+    // Create a transformer for the stylesheet.
+    Transformer transformer 
+      = tfactory.newTransformer(new StreamSource(xslID));
+    
+    transformer.setParameter("a-param",
+                              "hello to you!");
+    
+    // Transform the source XML to System.out.
+    transformer.transform( new StreamSource(sourceID),
+                           new StreamResult(System.out));
+
+    System.out.println("\n=========\n");
+
+    transformer.setParameter("a-param",
+                              "hello to me!");
+    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+    // Transform the source XML to System.out.
+    transformer.transform( new StreamSource(sourceID),
                            new StreamResult(System.out));
   }
 
