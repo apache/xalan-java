@@ -378,25 +378,13 @@ public class XNodeSet extends XObject
    */
   public DTMIterator iter()
   {
-
-    // System.out.println("In XNodeSet.iter()");
-    DTMIterator ns = (DTMIterator) m_obj;
-
-    // System.out.println("Is a ContextNodeList: "+ns);
-    if (ns.isFresh())  // bit of a hack...
+    try
     {
-      return ns;
+      return ((DTMIterator) m_obj).cloneWithReset();
     }
-    else
+    catch (CloneNotSupportedException cnse)
     {
-      try
-      {
-        return ns.cloneWithReset();
-      }
-      catch (CloneNotSupportedException cnse)
-      {
-        throw new RuntimeException(cnse.getMessage());
-      }
+      throw new RuntimeException(cnse.getMessage());
     }
   }
 

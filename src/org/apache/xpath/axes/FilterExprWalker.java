@@ -144,7 +144,6 @@ public class FilterExprWalker extends AxesWalker
       // so we have to set up the variable context, execute the expression, 
       // and then restore the variable context.
 
-      XObject obj;
       if(m_lpi.getIsTopLevel())
       {
         // System.out.println("calling m_expr.execute(m_lpi.getXPathContext())");
@@ -154,17 +153,14 @@ public class FilterExprWalker extends AxesWalker
         int savedStart = vars.getStackFrame();
         vars.setStackFrame(m_lpi.m_stackFrame);
         
-        obj = m_expr.execute(m_lpi.getXPathContext());
+        m_nodeSet = m_expr.asIterator(xctxt, root);
         
         // These two statements need to be combined into one operation.
         vars.setStackFrame(savedStart);
       }
       else
-        obj = m_expr.execute(m_lpi.getXPathContext());
-      
-      // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
-      m_nodeSet = (null != obj) ? obj.iter() : null;
-      
+        m_nodeSet = m_expr.asIterator(xctxt, root);
+            
       m_peek = DTM.NULL;
     }
     catch (javax.xml.transform.TransformerException se)
