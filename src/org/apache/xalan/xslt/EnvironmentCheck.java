@@ -69,6 +69,11 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+// Used in append* methods only
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
 /**
  * Utility class to report simple information about the environment.
  * Simplistic reporting about certain classes found in your JVM may 
@@ -78,12 +83,26 @@ import java.util.Vector;
  * <code>
  * java org.apache.xalan.xslt.EnvironmentCheck [-out outFile]
  * </code></p>
+ * 
  * <p>Usage-from program:  
  * <code>
  * boolean environmentOK = 
  * (new EnvironmentCheck()).checkEnvironment(yourPrintWriter);
  * </code></p>
  *
+ * <p>Usage-from stylesheet:  
+ * <code><pre>
+ *    &lt;?xml version="1.0"?&gt;
+ *    &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+ *        xmlns:xalan="http://xml.apache.org/xalan"
+ *        exclude-result-prefixes="xalan"&gt;
+ *    &lt;xsl:output indent="yes"/&gt;
+ *    &lt;xsl:template match="/"&gt;
+ *      &lt;xsl:copy-of select="xalan:checkEnvironment()"/&gt;
+ *    &lt;/xsl:template&gt;
+ *    &lt;/xsl:stylesheet&gt;
+ * </pre></code></p>
+ *  
  * <p>Xalan users reporting problems are encouraged to use this class 
  * to see if there are potential problems with their actual 
  * Java environment <b>before</b> reporting a bug.  Note that you 
@@ -113,6 +132,8 @@ public class EnvironmentCheck
 
   /**
    * Command line runnability: checks for [-out outFilename] arg.
+   * <p>Command line entrypoint; Sets output and calls 
+   * {@link #checkEnvironment(PrintWriter)}.</p>
    * @param args command line args
    */
   public static void main(String[] args)
@@ -152,7 +173,8 @@ public class EnvironmentCheck
   }
 
   /**
-   * Report on basic environment settings that affect Xalan.
+   * Programmatic entrypoint: Report on basic Java environment 
+   * and CLASSPATH settings that affect Xalan.
    *
    * <p>Note that this class is not advanced enough to tell you 
    * everything about the environment that affects Xalan, and 
@@ -172,6 +194,7 @@ public class EnvironmentCheck
    * to System.out if null
    * @return true if your environment appears to have no major 
    * problems; false if potential environment problems found
+   * @see #getEnvironmentHash()
    */
   public boolean checkEnvironment(PrintWriter pw)
   {
@@ -211,6 +234,18 @@ public class EnvironmentCheck
    * Fill a hash with basic environment settings that affect Xalan.
    *
    * <p>Worker method called from various places.</p>
+   * <p>Various system and CLASSPATH, etc. properties are put into 
+   * the hash as keys with a brief description of the current state 
+   * of that item as the value.  Any serious problems will be put in 
+   * with a key that is prefixed with {@link #ERROR 'ERROR.'} so it
+   * stands out in any resulting report; also a key with just that 
+   * constant will be set as well for any error.</p>
+   * <p>Note that some legitimate cases are flaged as potential 
+   * errors - namely when a developer recompiles xalan.jar on their 
+   * own - and even a non-error state doesn't guaruntee that 
+   * everything in the environment is correct.  But this will help 
+   * point out the most common classpath and system property
+   * problems that we've seen.</p>   
    *
    * @return Hashtable full of useful environment info about Xalan 
    * and related system properties, etc.
@@ -227,23 +262,25 @@ public class EnvironmentCheck
     checkProcessorVersion(hash);
     checkParserVersion(hash);
     checkDOMVersion(hash);
-    // checkSAXVersion(hash); // not yet
+    checkSAXVersion(hash);
     checkSystemProperties(hash);
 
     return hash;
   }
 
   /**
-   * Dump a basic Xalan environment report 
+   * Dump a basic Xalan environment report to outWriter.  
    *
-   * This dumps a simple header and then each of the entries in 
+   * <p>This dumps a simple header and then each of the entries in 
    * the Hashtable to our PrintWriter; it does special processing 
-   * for entries that are .jars found in the classpath.  
+   * for entries that are .jars found in the classpath.</p>
    *
    * @param h Hashtable of items to report on; presumably
    * filled in by our various check*() methods
    * @return true if your environment appears to have no major 
    * problems; false if potential environment problems found
+   * @see #appendEnvironmentReport(Node, Document, Hashtable)
+   * for an equivalent that appends to a Node instead
    */
   protected boolean writeEnvironmentReport(Hashtable h)
   {
@@ -266,23 +303,26 @@ public class EnvironmentCheck
         )
     {
       Object key = enum.nextElement();
+      String keyStr = (String) key;
       try
       {
-        //@todo ensure all keys are Strings
-        String keyStr = (String) key;
-
+        // Special processing for classes found..
         if (keyStr.startsWith(FOUNDCLASSES))
         {
           Vector v = (Vector) h.get(keyStr);
           errors |= logFoundJars(v, keyStr);
         }
-        else if (keyStr.startsWith(ERROR))
-        {
-          errors = true;
-          logMsg(keyStr + "=" + h.get(keyStr));
-        }
+        // ..normal processing for all other entries
         else
         {
+          // Note: we could just check for the ERROR key by itself, 
+          //    since we now set that, but since we have to go 
+          //    through the whole hash anyway, do it this way,
+          //    which is safer for maintenance
+          if (keyStr.startsWith(ERROR))
+          {
+            errors = true;
+          }
           logMsg(keyStr + "=" + h.get(keyStr));
         }
       }
@@ -298,8 +338,14 @@ public class EnvironmentCheck
     return errors;
   }
 
-  /** Prefixed to hash keys that signify potential problems.  */
+  /** Prefixed to hash keys that signify serious problems.  */
   public static final String ERROR = "ERROR.";
+
+  /** Added to descriptions that signify potential problems.  */
+  public static final String WARNING = "WARNING.";
+
+  /** Value for any error found.  */
+  public static final String ERROR_FOUND = "At least one error was found!";
 
   /** Prefixed to hash keys that signify version numbers.  */
   public static final String VERSION = "version.";
@@ -320,11 +366,9 @@ public class EnvironmentCheck
     "xerces.jar", 
     "testxsl.jar", 
     "crimson.jar", 
-    "jaxp.jar", "parser.jar", "dom.jar", "sax.jar", "xml.jar"
-
-    /* @todo add other jars that commonly include either
-     * SAX, DOM, or JAXP interfaces in them
-     */
+    "lotusxsl.jar", 
+    "jaxp.jar", "parser.jar", "dom.jar", "sax.jar", "xml.jar", 
+    "xsltc.jar"
   };
 
   /**
@@ -354,18 +398,15 @@ public class EnvironmentCheck
     {
       Hashtable subhash = (Hashtable) v.elementAt(i);
 
-      for (Enumeration enum = subhash.keys(); enum.hasMoreElements();
-
-      /* no increment portion */
-      )
+      for (Enumeration enum = subhash.keys(); 
+           enum.hasMoreElements();
+           /* no increment portion */
+          )
       {
         Object key = enum.nextElement();
-
+        String keyStr = (String) key;
         try
         {
-
-          //@todo ensure all keys are Strings
-          String keyStr = (String) key;
           if (keyStr.startsWith(ERROR))
           {
             errors = true;
@@ -383,6 +424,159 @@ public class EnvironmentCheck
 
     logMsg("#----- END Listing XML-related jars in: " + desc + " -----");
 
+    return errors;
+  }
+
+  /**
+   * Stylesheet extension entrypoint: Dump a basic Xalan 
+   * environment report from getEnvironmentHash() to a Node.  
+   * 
+   * <p>Copy of writeEnvironmentReport that creates a Node suitable 
+   * for other processing instead of a properties-like text output.
+   * </p>
+   * @param container Node to append our report to
+   * @param factory Document providing createElement, etc. services
+   * @param h Hash presumably from {@link #getEnvironmentHash()}
+   * @see #writeEnvironmentReport(Hashtable)
+   * for an equivalent that writes to a PrintWriter instead
+   */
+  public void appendEnvironmentReport(Node container, Document factory, Hashtable h)
+  {
+    if ((null == container) || (null == factory))
+    {
+      return;
+    }
+  
+    try
+    {
+      Element envCheckNode = factory.createElement("EnvironmentCheck");
+      envCheckNode.setAttribute("version", "$Revision$");
+      container.appendChild(envCheckNode);
+
+      if (null == h)
+      {
+        Element statusNode = factory.createElement("status");
+        statusNode.setAttribute("result", "ERROR");
+        statusNode.appendChild(factory.createTextNode("appendEnvironmentReport called with null Hashtable!"));
+        envCheckNode.appendChild(statusNode);
+        return;
+      }
+
+      boolean errors = false;
+
+      Element hashNode = factory.createElement("environment");
+      envCheckNode.appendChild(hashNode);
+      
+      for (Enumeration enum = h.keys(); 
+           enum.hasMoreElements();
+          /* no increment portion */
+          )
+      {
+        Object key = enum.nextElement();
+        String keyStr = (String) key;
+        try
+        {
+          // Special processing for classes found..
+          if (keyStr.startsWith(FOUNDCLASSES))
+          {
+            Vector v = (Vector) h.get(keyStr);
+            // errors |= logFoundJars(v, keyStr);
+            errors |= appendFoundJars(hashNode, factory, v, keyStr);
+          }
+          // ..normal processing for all other entries
+          else 
+          {
+            // Note: we could just check for the ERROR key by itself, 
+            //    since we now set that, but since we have to go 
+            //    through the whole hash anyway, do it this way,
+            //    which is safer for maintenance
+            if (keyStr.startsWith(ERROR))
+            {
+              errors = true;
+            }
+            Element node = factory.createElement("item");
+            node.setAttribute("key", keyStr);
+            node.appendChild(factory.createTextNode((String)h.get(keyStr)));
+            hashNode.appendChild(node);
+          }
+        }
+        catch (Exception e)
+        {
+          errors = true;
+          Element node = factory.createElement("item");
+          node.setAttribute("key", keyStr);
+          node.appendChild(factory.createTextNode(ERROR + " Reading " + key + " threw: " + e.toString()));
+          hashNode.appendChild(node);
+        }
+      } // end of for...
+
+      Element statusNode = factory.createElement("status");
+      statusNode.setAttribute("result", (errors ? "ERROR" : "OK" ));
+      envCheckNode.appendChild(statusNode);
+    }
+    catch (Exception e2)
+    {
+      System.err.println("appendEnvironmentReport threw: " + e2.toString());
+      e2.printStackTrace();
+    }
+  }    
+
+  /**
+   * Print out report of .jars found in a classpath. 
+   *
+   * Takes the information encoded from a checkPathForJars() 
+   * call and dumps it out to our PrintWriter.
+   *
+   * @param container Node to append our report to
+   * @param factory Document providing createElement, etc. services
+   * @param v Vector of Hashtables of .jar file info
+   * @param desc description to print out in header
+   *
+   * @return false if OK, true if any .jars were reported 
+   * as having errors
+   * @see #checkPathForJars(String, String[])
+   */
+  protected boolean appendFoundJars(Node container, Document factory, 
+        Vector v, String desc)
+  {
+
+    if ((null == v) || (v.size() < 1))
+      return false;
+
+    boolean errors = false;
+
+    for (int i = 0; i < v.size(); i++)
+    {
+      Hashtable subhash = (Hashtable) v.elementAt(i);
+
+      for (Enumeration enum = subhash.keys(); 
+           enum.hasMoreElements();
+           /* no increment portion */
+          )
+      {
+        Object key = enum.nextElement();
+        try
+        {
+          String keyStr = (String) key;
+          if (keyStr.startsWith(ERROR))
+          {
+            errors = true;
+          }
+          Element node = factory.createElement("foundJar");
+          node.setAttribute("name", keyStr.substring(0, keyStr.indexOf("-")));
+          node.setAttribute("desc", keyStr.substring(keyStr.indexOf("-") + 1));
+          node.appendChild(factory.createTextNode((String)subhash.get(keyStr)));
+          container.appendChild(node);
+        }
+        catch (Exception e)
+        {
+          errors = true;
+          Element node = factory.createElement("foundJar");
+          node.appendChild(factory.createTextNode(ERROR + " Reading " + key + " threw: " + e.toString()));
+          container.appendChild(node);
+        }
+      }
+    }
     return errors;
   }
 
@@ -471,7 +665,7 @@ public class EnvironmentCheck
     {
       // For applet context, etc.
       h.put(
-        "java.version",
+        "java.class.path",
         "WARNING: SecurityException thrown accessing system classpath properties");
     }
   }
@@ -490,6 +684,7 @@ public class EnvironmentCheck
    * @return Vector of Hashtables filled with info about found .jars
    * @see #jarNames
    * @see #logFoundJars(Vector, String)
+   * @see #appendFoundJars(Node, Document, Vector, String )
    * @see #getApparentVersion(String, long)
    */
   protected Vector checkPathForJars(String cp, String[] jars)
@@ -521,12 +716,10 @@ public class EnvironmentCheck
             //  the details of that .jar file
             try
             {
-              Hashtable h = new Hashtable(5);
-
-              //h.put(jars[i] + ".jarname", jars[i]);
-              // h.put(jars[i] + ".lastModified", String.valueOf(f.lastModified()));
-              h.put(jars[i] + ".path", f.getAbsolutePath());
-              h.put(jars[i] + ".apparent.version",
+              Hashtable h = new Hashtable(2);
+              // Note "-" char is looked for in appendFoundJars
+              h.put(jars[i] + "-path", f.getAbsolutePath());
+              h.put(jars[i] + "-apparent.version",
                     getApparentVersion(jars[i], f.length()));
               v.addElement(h);
             }
@@ -538,8 +731,12 @@ public class EnvironmentCheck
           }
           else
           {
-            logMsg("# Warning: Classpath entry: " + filename
-                   + " does not exist.");
+            Hashtable h = new Hashtable(2);
+            // Note "-" char is looked for in appendFoundJars
+            h.put(jars[i] + "-path", WARNING + " Classpath entry: " 
+                  + filename + " does not exist");
+            h.put(jars[i] + "-apparent.version", CLASS_NOTPRESENT);
+            v.addElement(h);
           }
         }
       }
@@ -576,6 +773,7 @@ public class EnvironmentCheck
     // key=jarsize, value=jarname ' from ' distro name
     // Note assumption: two jars cannot have the same size!
     // Note: hackish Hashtable, this could use improvement
+    jarVersions.put(new Long(857192), "xalan.jar from xalan-j_1_1");
     jarVersions.put(new Long(440237), "xalan.jar from xalan-j_1_2");
     jarVersions.put(new Long(436094), "xalan.jar from xalan-j_1_2_1");
     jarVersions.put(new Long(426249), "xalan.jar from xalan-j_1_2_2");
@@ -585,8 +783,11 @@ public class EnvironmentCheck
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
     jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_2");
+    // If the below were more common I would update it to report 
+    //  errors better; but this is so old hardly anyone has it
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
 
+    jarVersions.put(new Long(1591855), "xerces.jar from xalan-j_1_1 from xerces-1...");
     jarVersions.put(new Long(1498679), "xerces.jar from xalan-j_1_2 from xerces-1_2_0.bin");
     jarVersions.put(new Long(1484896), "xerces.jar from xalan-j_1_2_1 from xerces-1_2_1.bin");
     jarVersions.put(new Long(804460),  "xerces.jar from xalan-j_1_2_2 from xerces-1_2_2.bin");
@@ -618,6 +819,19 @@ public class EnvironmentCheck
     jarVersions.put(new Long(136198),
                     "parser.jar from jakarta-ant-1.3 or 1.2");
 
+    // Various LotusXSL versions, which are based on Xalan code 
+    //  (LotusXSL was donated by Lotus to Apache to become Xalan)
+    jarVersions.put(new Long(120274), "lotusxsl.jar from lotusxsl-0_16_4");
+    jarVersions.put(new Long(120293), "lotusxsl.jar from lotusxsl-0_16_5");
+    jarVersions.put(new Long(283777), "lotusxsl.jar from lotusxsl-0_17_2");
+    jarVersions.put(new Long(305577), "lotusxsl.jar from lotusxsl-0_17_3");
+    jarVersions.put(new Long(304500), "lotusxsl.jar from lotusxsl-0_17_4");
+    jarVersions.put(new Long(714959), "lotusxsl.jar from lotusxsl-0_18_1");
+    jarVersions.put(new Long(717674), "lotusxsl.jar from lotusxsl-0_18_2");
+    jarVersions.put(new Long(752343), "lotusxsl.jar from lotusxsl-0_18_3");
+    jarVersions.put(new Long(907101), "lotusxsl.jar from lotusxsl-0_18_4");
+    
+
     // If we found a matching size and it's for our 
     //  jar, then return it's description
     String foundSize = (String) jarVersions.get(new Long(jarSize));
@@ -635,7 +849,7 @@ public class EnvironmentCheck
         // For xalan.jar and xerces.jar, which we ship together:
         // The jar is not from a shipped copy of xalan-j, so 
         //  it's up to the user to ensure that it's compatible
-        return jarName + " potential-ERROR " + CLASS_PRESENT;
+        return jarName + " " + WARNING + CLASS_PRESENT;
       }
       else
       {
@@ -684,13 +898,15 @@ public class EnvironmentCheck
         // We must have found the class itself, just not the 
         //  method, so we (probably) have JAXP 1.0.1
         h.put(ERROR + VERSION + "JAXP", "1.0.1");
+        h.put(ERROR, ERROR_FOUND);
       }
       else
       {
 
         // We couldn't even find the class, and don't have 
         //  any JAXP support at all
-        h.put(ERROR + VERSION + "JAXP", "none");
+        h.put(ERROR + VERSION + "JAXP", CLASS_NOTPRESENT);
+        h.put(ERROR, ERROR_FOUND);
       }
     }
   }
@@ -879,6 +1095,7 @@ public class EnvironmentCheck
         method = clazz.getMethod(DOM_LEVEL2WD_METHOD, twoStringArgs);
 
         h.put(ERROR + VERSION + "DOM.draftlevel", "2.0wd");
+        h.put(ERROR, ERROR_FOUND);
       }
       catch (Exception e2)
       {
@@ -894,6 +1111,7 @@ public class EnvironmentCheck
         catch (Exception e3)
         {
           h.put(ERROR + VERSION + "DOM.draftlevel", "2.0unknown");
+          h.put(ERROR, ERROR_FOUND);
         }
       }
     }
@@ -901,6 +1119,7 @@ public class EnvironmentCheck
     {
       h.put(ERROR + VERSION + "DOM",
             "ERROR attempting to load DOM level 2 class: " + e.toString());
+      h.put(ERROR, ERROR_FOUND);
     }
 
     //@todo load an actual DOM implmementation and query it as well
@@ -912,8 +1131,8 @@ public class EnvironmentCheck
   /**
    * Report version info from SAX interfaces. 
    *
-   * Currently distinguishes between SAX 2, SAX 1, 
-   * and not found. NOT CORRECTLY IMPLEMENTED YET
+   * Currently distinguishes between SAX 2, SAX 2.0beta2, 
+   * SAX1, and not found.
    *
    * @param h Hashtable to put information in
    */
@@ -923,46 +1142,69 @@ public class EnvironmentCheck
     if (null == h)
       h = new Hashtable();
 
-    final String SAX_VERSION1_CLASS = "org.w3c.dom.Document";
-    final String SAX_VERSION1_METHOD = "createElementNS";  // String, String
-    final String SAX_VERSION2_CLASS = "org.w3c.dom.Node";
-    final String SAX_VERSION2_METHOD = "supported";  // String, String
-    final Class twoStringArgs[] = { java.lang.String.class,
-                                    java.lang.String.class };
+    final String SAX_VERSION1_CLASS = "org.xml.sax.Parser";
+    final String SAX_VERSION1_METHOD = "parse";  // String
+    final String SAX_VERSION2_CLASS = "org.xml.sax.XMLReader";
+    final String SAX_VERSION2_METHOD = "parse";  // String
+    final String SAX_VERSION2BETA_CLASSNF = "org.xml.sax.helpers.AttributesImpl";
+    final String SAX_VERSION2BETA_METHODNF = "setAttributes";  // Attributes
+    final Class oneStringArg[] = { java.lang.String.class };
+    // Note this introduces a minor dependency on SAX...
+    final Class attributesArg[] = { org.xml.sax.Attributes.class };
 
     try
     {
-      Class clazz = Class.forName(SAX_VERSION2_CLASS);
-      Method method = clazz.getMethod(SAX_VERSION2_METHOD, twoStringArgs);
+      // This method was only added in the final SAX 2.0 release; 
+      //  see changes.html "Changes from SAX 2.0beta2 to SAX 2.0prerelease"
+      Class clazz = Class.forName(SAX_VERSION2BETA_CLASSNF);
+      Method method = clazz.getMethod(SAX_VERSION2BETA_METHODNF, attributesArg);
 
       // If we succeeded, we have loaded interfaces from a 
-      //  SAX version 2.0 somewhere
+      //  real, final SAX version 2.0 somewhere
       h.put(VERSION + "SAX", "2.0");
     }
     catch (Exception e)
     {
-      // If we didn't find the SAX 2.0 class, look for a 1.0 one
-      // Note that either 1.0 or no SAX are both errors
+      // If we didn't find the SAX 2.0 class, look for a 2.0beta2
       h.put(ERROR + VERSION + "SAX",
             "ERROR attempting to load SAX version 2 class: " + e.toString());
+      h.put(ERROR, ERROR_FOUND);
             
       try
       {
-        Class clazz = Class.forName(SAX_VERSION1_CLASS);
-        Method method = clazz.getMethod(SAX_VERSION1_METHOD, twoStringArgs);
+        Class clazz = Class.forName(SAX_VERSION2_CLASS);
+        Method method = clazz.getMethod(SAX_VERSION2_METHOD, oneStringArg);
 
         // If we succeeded, we have loaded interfaces from a 
-        //  SAX version 1.0 somewhere; which won't work very 
-        //  well for JAXP 1.1 or beyond!
-        h.put(VERSION + "SAX-backlevel", "1.0");
+        //  SAX version 2.0beta2 or earlier; these might work but 
+        //  you should really have the final SAX 2.0 
+        h.put(VERSION + "SAX-backlevel", "2.0beta2-or-earlier");
       }
       catch (Exception e2)
       {
-        // If we didn't find the SAX 2.0 class, look for a 1.0 one
-        // Note that either 1.0 or no SAX are both errors
-        h.put(ERROR + VERSION + "SAX-backlevel",
-              "ERROR attempting to load SAX version 1 class: " + e2.toString());
+        // If we didn't find the SAX 2.0beta2 class, look for a 1.0 one
+        h.put(ERROR + VERSION + "SAX",
+              "ERROR attempting to load SAX version 2 class: " + e.toString());
+        h.put(ERROR, ERROR_FOUND);
           
+        try
+        {
+          Class clazz = Class.forName(SAX_VERSION1_CLASS);
+          Method method = clazz.getMethod(SAX_VERSION1_METHOD, oneStringArg);
+
+          // If we succeeded, we have loaded interfaces from a 
+          //  SAX version 1.0 somewhere; which won't work very 
+          //  well for JAXP 1.1 or beyond!
+          h.put(VERSION + "SAX-backlevel", "1.0");
+        }
+        catch (Exception e3)
+        {
+          // If we didn't find the SAX 2.0 class, look for a 1.0 one
+          // Note that either 1.0 or no SAX are both errors
+          h.put(ERROR + VERSION + "SAX-backlevel",
+                "ERROR attempting to load SAX version 1 class: " + e3.toString());
+            
+        }
       }
     }
   }

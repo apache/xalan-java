@@ -82,6 +82,9 @@ import java.util.StringTokenizer;
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+// Note: we should consider loading EnvironmentCheck at runtime
+//  to simplify inter-package dependencies Sep-01 -sc
+import org.apache.xalan.xslt.EnvironmentCheck;
 
 import javax.xml.parsers.*;
 
@@ -410,4 +413,54 @@ public class Extensions
   {
     return tokenize(myContext, toTokenize, " \t\n\r");
   }
+
+  /**
+   * Return a Node of basic debugging information from the 
+   * EnvironmentCheck utility about the Java environment.
+   *
+   * <p>Simply calls the {@link org.apache.xalan.xslt.EnvironmentCheck}
+   * utility to grab info about the Java environment and CLASSPATH, 
+   * etc., and then returns the resulting Node.  Stylesheets can 
+   * then maniuplate this data or simply xsl:copy-of the Node.</p>
+   *
+   * <p>We throw a WrappedRuntimeException in the unlikely case 
+   * that reading information from the environment throws us an 
+   * exception. (Is this really the best thing to do?)</p>
+   *
+   * @param myContext an <code>ExpressionContext</code> passed in by the
+   *                  extension mechanism.  This must be an XPathContext.
+   * @return a Node as described above.
+   */
+  public static Node checkEnvironment(ExpressionContext myContext)
+  {
+
+    Document factoryDocument;
+    try
+    {
+      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      DocumentBuilder db = dbf.newDocumentBuilder();
+      factoryDocument = db.newDocument();
+    }
+    catch(ParserConfigurationException pce)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
+    }
+
+    Node resultNode = null;
+    try
+    {
+      resultNode = factoryDocument.createElement("checkEnvironmentExtension");
+      EnvironmentCheck envChecker = new EnvironmentCheck();
+      Hashtable h = envChecker.getEnvironmentHash();
+      envChecker.appendEnvironmentReport(resultNode, factoryDocument, h);
+      envChecker = null;
+    }
+    catch(Exception e)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(e);
+    }
+
+    return resultNode;
+  }
+
 }
