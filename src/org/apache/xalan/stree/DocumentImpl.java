@@ -263,7 +263,27 @@ public class DocumentImpl extends Parent
    */
   public Element getElementById(String elementId)
   {
-    return (Element)m_idAttributes.get(elementId);    
+    Element elem = (Element)m_idAttributes.get(elementId); 
+    // Make sure we're done parsing.
+    if (elem == null && !isComplete())
+    {    
+      synchronized (this)
+      {
+        try
+        {
+          // Don't really know why we should need the while loop,
+          // but we seem to come out of wait() too soon! 
+          while (!isComplete())
+            wait();
+        }
+        catch (InterruptedException e)
+        {          
+          // That's OK, it's as good a time as any to check again
+        }        
+      }
+      elem = (Element)m_idAttributes.get(elementId); 
+    }    
+    return elem;
   }
   
   
