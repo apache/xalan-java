@@ -48,18 +48,21 @@
 
   <!-- Move to completed section when done. -->
 
-   <action context="code" category="performance" who="SB">
-    Optimize "/foo/baz" patterns to use simple child walkers.
+   <action context="code" category="bugs" who="SB">
+    Fix bug with Shane's s2s test hang.
    </action>
-
-   <action context="code" category="performance" who="SB">
-    Optimize "/foo/baz" patterns that have no variability, to a global space, 
-    and don't re-evaluate each time.
+   
+   <action context="code" category="bugs" who="SB, JK">
+    Fix bug with rare intermittent failures, probably in the STree.
    </action>
- 
+  
    <action context="code" category="error-handling" who="SB">
-    Simplify some of the exception nesting, maybe, and make sure error listener. 
+    Simplify some of the exception nesting, maybe, and make sure error listeners 
     are being called for all cases.
+   </action>
+   
+   <action context="code" category="performance" who="SB">
+    Optimize "." patterns to be ultra simple iterator.
    </action>
 
    <action context="code" category="documentation" who="SB">
@@ -72,18 +75,10 @@
    </action>
 
    <action context="code" category="performance" who="SB">
-    Delete nodes in the source tree when possible.  (?? Note sure if this 
-    is do-able by beta2.)
+    Optimize "/foo/baz" patterns that have no variability, to a global space, 
+    and don't re-evaluate each time.
    </action>
-   
-   <action context="code" category="bugs" who="SB">
-    Fix bug with rare intermittent failures, probably in the STree.
-   </action>
-  
-   <action context="code" category="bugs" who="SB">
-    Fix bug with Shane's s2s test hang.
-   </action>
-
+    
    <action context="code" category="conformance" who="GP">
       Verify that the recomposing procedure for each of the recomposable
       elements matches the standard (including errata).
@@ -175,6 +170,24 @@
     <goal type="api">API Complete.</goal>
     <goal type="documentation">Documentation functionally complete.</goal>
    </target-release-description>
+   
+   <action context="code" category="performance" who="SB">
+    Delete nodes in the source tree when possible.  (?? Note sure if this 
+    is do-able by beta2.)
+    <psuedo-code>
+      1) For each expression, tell if expression can traverse outside it's 
+         subtree.
+      2) For each element, tell if any following elements may need to  
+         access that node.
+      3) In instructions that traverse nodes, once the processing of the 
+         node is completed, remove the node if no following elements may 
+         need to access that node.
+      4) Keep the parse events from getting too far ahead of the transform.
+      
+      TODO: In StepPattern, Ancestors tests with predicates are problematic, 
+      and will require special treatment.
+    </psuedo-code>
+   </action>
 
   <action context="code" category="feature">
     XPointer built on the XPath package.
@@ -208,6 +221,10 @@
 
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
+  
+   <action context="code" category="performance" who="SB" completed="12/26/00">
+    Optimize "/foo/baz" patterns to use simple child walkers.
+   </action>
   
   <action context="test" who="SC" category="minitest" priority="medium" completed="12/08/00">
     Create Minitest automated test for developers to run before checkin; 
