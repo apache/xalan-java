@@ -210,6 +210,16 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
+     * Closes the output stream
+     */
+    public void close() {
+	if ((_saxHandler != null) &&
+	    (_saxHandler instanceof DefaultSAXOutputHandler)) {
+	    ((DefaultSAXOutputHandler)_saxHandler).close();
+	}
+    }
+
+    /**
      * This method is used internally when the output type was initially
      * undefined and the type is set (by this handler) based on the contents
      * of the output. Set the default values for some output paramters.

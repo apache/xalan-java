@@ -86,4 +86,5 @@ public interface TransletOutputHandler {
     public void omitHeader(boolean value);
     public boolean setEscaping(boolean escape) throws TransletException;
     public void setCdataElements(Hashtable elements);
+    public void close();
 }

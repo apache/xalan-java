@@ -64,6 +64,7 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+import java.io.File;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.text.DecimalFormat;
@@ -458,11 +459,32 @@ public abstract class AbstractTranslet implements Translet {
      * See compiler/TransletOutput for actual implementation.
      ************************************************************************/
 
-    public TransletOutputHandler openOutputHandler(String filename) {
-	return(null);
+    public TransletOutputHandler openOutputHandler(String filename) 
+	throws TransletException {
+	try {
+	    // Use the default SAX handler to send the output to the file
+	    DefaultSAXOutputHandler handler =
+		new DefaultSAXOutputHandler(filename, _encoding);
+
+	    // Create a translet output handler and plug in the SAX handler
+	    TextOutput text = new TextOutput(handler, handler, _encoding);
+	    transferOutputSettings(text);
+	    text.startDocument();
+	    return(text);
+	}
+	catch (Exception e) {
+	    throw new TransletException(e);
+	}
     }
 
     public void closeOutputHandler(TransletOutputHandler handler) {
+	try {
+	    handler.endDocument();
+	    handler.close();
+	}
+	catch (Exception e) {
+	    // what can you do?
+	}
     }
 
     /************************************************************************

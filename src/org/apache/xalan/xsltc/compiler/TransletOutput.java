@@ -145,7 +145,7 @@ final class TransletOutput extends Instruction {
 
 	// Close the output handler (close file)
 	il.append(classGen.loadTranslet());
-	il.append(methodGen.storeHandler());
+	il.append(methodGen.loadHandler());
 	il.append(new INVOKEVIRTUAL(close));
 
 	// Restore old output handler from stack

@@ -188,6 +188,18 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
     }
 
     /**
+     * Close the output stream
+     */
+    public void close() {
+	try {
+	    if (_writer != null) _writer.close();
+	}
+	catch (IOException e) {
+	    // what can you do?
+	}
+    }
+
+    /**
      * Utility method - outputs an XML header
      */
     private void emitHeader() throws SAXException {

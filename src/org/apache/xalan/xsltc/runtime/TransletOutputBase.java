@@ -89,4 +89,5 @@ public class TransletOutputBase implements TransletOutputHandler {
     public void setIndent(boolean indent) {}
     public void omitHeader(boolean value) {}
     public void setCdataElements(Hashtable elements) {}
+    public void close() {}
 }
