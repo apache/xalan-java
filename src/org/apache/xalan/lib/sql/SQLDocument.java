@@ -586,7 +586,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
     m_firstch.setElementAt(data,elementIdx);
 
     m_exptype.setElementAt(m_TextNode_TypeID, data);
-    m_level.setElementAt((byte)(level), data);
+    // m_level.setElementAt((byte)(level), data);
     m_parent.setElementAt(elementIdx, data);
 
     m_prevsib.setElementAt(DTM.NULL, data);
@@ -612,7 +612,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
 
       m_parent.setElementAt(parent, node);
       m_firstch.setElementAt(DTM.NULL, node);
-      m_level.setElementAt((byte)level, node);
+      // m_level.setElementAt((byte)level, node);
       m_attribute.setElementAt(DTM.NULL, node);
 
       if (prevsib != DTM.NULL)
@@ -639,7 +639,10 @@ public class SQLDocument extends DTMDefaultBaseIterators
     catch(Exception e)
     {
       // Let's just return DTM.NULL now
-      error("");
+//      System.err.println("====================");
+//      e.printStackTrace(System.err);
+//      System.err.println("====================");
+      error("Error in addElement: "+e.getMessage());
     }
 
     return node;
@@ -669,8 +672,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
 
       m_attribute.setElementAt(DTM.NULL, attrib);
       m_exptype.setElementAt(extendedType, attrib);
-      m_level.setElementAt((byte)0, attrib);
-
+      // m_level.setElementAt((byte)0, attrib);
 
       // Clear the sibling references
       m_nextsib.setElementAt(DTM.NULL, attrib);
@@ -695,8 +697,11 @@ public class SQLDocument extends DTMDefaultBaseIterators
     }
     catch(Exception e)
     {
+//      System.err.println("=================");
+//      e.printStackTrace(System.err);
+//      System.err.println("=================");
       // Let's just return DTM.NULL now
-      error("");
+      error("Error in addAttributeToNode: "+e.getMessage());
     }
 
     return attrib;
