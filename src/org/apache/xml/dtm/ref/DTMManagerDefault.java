@@ -121,6 +121,8 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
+  static final boolean JJK_ENABLE_XNI=true;
+	
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
 
@@ -273,7 +275,6 @@ public class DTMManagerDefault extends DTMManager
                                  DTMWSFilter whiteSpaceFilter,
                                  boolean incremental, boolean doIndexing)
   {
-
     if(DEBUG && null != source)
       System.out.println("Starting "+
                          (unique ? "UNIQUE" : "shared")+
@@ -336,7 +337,7 @@ public class DTMManagerDefault extends DTMManager
       return dtm;
     }
 
-    if (source instanceof StreamSource)
+    if (JJK_ENABLE_XNI && source instanceof StreamSource)
     {
  
       // Try processing it as XNI first, to get PSVI information!
@@ -415,8 +416,8 @@ public class DTMManagerDefault extends DTMManager
     } // if streamsource
         
         
-    // if ((source instanceof SAXSource) || (source instanceof StreamSource))
-    if (source instanceof SAXSource)
+    if ((source instanceof SAXSource) || (source instanceof StreamSource))
+    // if (source instanceof SAXSource)
     {
       XMLReader reader;
       InputSource xmlSource;

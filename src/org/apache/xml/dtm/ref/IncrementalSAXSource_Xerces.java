@@ -378,22 +378,15 @@ public class IncrementalSAXSource_Xerces
    * but as a wrapper around the Xerces XNI layer; its primary purpose
    * is to simplify the logic in DTMManagerDefault.java
    * */
-  public void deliverAllNodes ()
+  public void deliverAllNodes () throws SAXException
   {
   	try
   	{
 		Object ret=(Boolean)(fConfigParse.invoke(fPullParserConfig,parmstrue));
   	}
-  	catch(IllegalAccessException e)
-  	{
-  		// %REVIEW% shouldn't happen
-  		e.printStackTrace();
-  	}
-  	catch(java.lang.reflect.InvocationTargetException e)
-  	{
-  		//  %REVIEW% shouldn't happen
-  		e.printStackTrace();
-  	}
+	catch (Exception ex) {
+      throw new SAXException(ex);
+    }
   }
   
   	// Private methods -- conveniences to hide the reflection details
