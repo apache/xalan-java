@@ -364,6 +364,7 @@ public class LocPathIterator extends Expression
     m_lastFetched = null;
     m_lastUsedWalker = m_firstWalker;
     m_firstWalker.setRoot(m_context);
+    m_waiting.removeAllElements();
   }
   
   /**
