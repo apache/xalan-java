@@ -102,9 +102,9 @@ interpreter, a message is printed and the option is ignored.</p>
   <li><code>-XP package_name</code><br/>
   Specify a package name prefix for all generated translet classes</li>
   <li><code>-XN</code><br/>
-  Enables template inlining</li>
+  Enable XSL template inlining into one big method</li>
   <li><code>-XX</code><br/>
-  Turns on additional debugging message output</li>
+  Turn on additional debugging message output</li>
   <li><code>-XT</code><br/>
   Use translet to transform if possible</li>
 </ul>
@@ -178,7 +178,7 @@ using the <code>-XO</code> option because there is no default translet name in t
 <p><em>Q:</em> I only want to compile the stylesheet. I don't want to do a transformation.</p>
 <p><em>A:</em> TrAX has no notion of compiling a stylesheet. However, you can achieve the same effect by 
 running a dummy transformation and tell XSLTC to save the translet class. Example:</p>
-<p>&gt; <code>java org.apache.xalan.xslt.Process -xsl test.xsl -xo</code></p>
+<p>&gt; <code>java org.apache.xalan.xslt.Process -xsl test.xsl -xsltc <br/>-xo</code></p>
 <p>This command runs a transformation on an empty input and generates the translet <code>test.class</code>.</p>
 </s2>
 
@@ -186,7 +186,7 @@ running a dummy transformation and tell XSLTC to save the translet class. Exampl
 <s2 title="Using the new options from TrAX">
 
 <p>If you use the TrAX interface for XSLTC, you could not tell it to use translets before. It always compiled 
-the xsl on the fly and used the bytecode im memory for transformation.  Now you can use some of 
+the xsl on the fly and used the bytecode in memory for transformation.  Now you can use some of 
 the new attributes in XSLTC's <code>TransformerFactoryImpl</code> class to customize the translet behaviors from TrAX.</p>
 
 <p>Here is the list of attributes in <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code> and their 
@@ -244,6 +244,11 @@ corresponding Process command line options:</p>
 The four attributes <code>translet-name, destination-directory, package-name and jar-name</code> are transient. 
 They only apply to the next <code>newTemplates()</code> or <code>newTransformer()</code> call. Their values are reset to 
 the default after the call.</p>
+
+<p>The <code>generate-translet</code> attribute does not have a corresponding command line option. This attribute is
+implied when the <code>-XO</code> or <code>-XJ</code> option is used. The purpose is to make the command line
+usage syntax a little bit simpler. Setting the <code>generate-attribute</code> attribute to true from TrAX is 
+equivalent to using the <code>-XO</code> option without the optional translet name from the Process command line.</p>
 
 <p>The following example shows you how to do the same thing from TrAX for the question 2 in the FAQ.</p>
 

@@ -124,7 +124,7 @@
 -XD destinationDirectory (specify a destination directory for translet)
 -XJ jarfile (package translet classes into a jar file of name &lt;jarfile&gt;)
 -XP package (specify a package name prefix for all generated translet classes)
--XN (enable template inlining)
+-XN (enable XSL template inlining into one big method)
 -XX (turn on additional debugging message output)
 -XT (use translet to transform if possible)
 </source>
