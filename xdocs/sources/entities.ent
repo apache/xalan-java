@@ -11,10 +11,10 @@
 <!ENTITY xml4j1 "Xerces-Java 1">
 <!ENTITY xml4j2 "Xerces-Java 2">
 <!ENTITY xml4j-used "&xml4j; 2.0.0">
-<!ENTITY xml4j-jar "xercesImpl.jar (xerces.jar for &xml4j1;)">
+<!ENTITY xml4j-jar "xercesImpl.jar">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
-<!ENTITY download "The &xslt4j-current; download from xml.apache.org includes xerces.jar from &xml4j-used;.">
+<!ENTITY download "The &xslt4j-current; download from xml.apache.org includes &xml4j-jar; from &xml4j-used;.">
 
 <!ENTITY xsltcwhatsnewhead '<li><link anchor="xsltc">XSLTC</link></li>'>
                          

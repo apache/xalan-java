@@ -64,24 +64,26 @@
 </ul>
 <anchor name="factoryfeature"/>
 <s2 title="Standard TransformerFactory features">
-<p>The JAXP 1.1 Transformation API for XML (<link idref="trax">TrAX</link>) defines objects and methods for processing input and producing output in a variety of formats, including character streams, SAX event streams, and DOM Documents.</p>
-<p>JAXP 1.1 defines the following feature URIs:</p>
+<p>The JAXP 1.1 Transformation API for XML (<link idref="trax">TrAX</link>) defines objects and methods for processing input and producing 
+output in a variety of formats, including character streams, SAX event streams, and DOM Documents.</p>
+<p>JAXP 1.1 defines the following features:</p>
 <ul>
-<li><link anchor="streamsource">"http://javax.xml.transform.stream.StreamSource/feature"</link></li>
-<li><link anchor="streamresult">"http://javax.xml.transform.stream.StreamResult/feature"</link></li>
-<li><link anchor="domsource">"http://javax.xml.transform.dom.DOMSource/feature"</link></li>
-<li><link anchor="domresult">"http://javax.xml.transform.dom.DOMResult/feature"</link></li>
-<li><link anchor="saxsource">"http://javax.xml.transform.dom.SAXSource/feature"</link></li>
-<li><link anchor="saxresult">"http://javax.xml.transform.dom.SAXResult/feature"</link></li>
-<li><link anchor="saxtransformerfactory">"http://javax.xml.transform.sax.SAXTransformerFactory/feature"</link></li>
-<li><link anchor="xmlfilter">"http://javax.xml.transform.sax.SAXTransformerFactory/feature/xmlfilter"</link></li>
+<li><link anchor="streamsource">StreamSource feature</link></li>
+<li><link anchor="streamresult">StreamResult feature</link></li>
+<li><link anchor="domsource">DOMSource feature</link></li>
+<li><link anchor="domresult">DOMResult feature</link></li>
+<li><link anchor="saxsource">SAXSource feature</link></li>
+<li><link anchor="saxresult">SAXResult feature</link></li>
+<li><link anchor="saxtransformerfactory">SAXTransformerFactory feature</link></li>
+<li><link anchor="xmlfilter">XMLFilter feature</link></li>
 </ul>
 <p>You can use the 
  <jump href="apidocs/javax/xml/transform/TransformerFactory.html#getFeature(java.lang.String)">TransformerFactory.getFeature(String)</jump> 
 method to return a boolean indicating whether the implementation you are using supports the use of one of these objects or methods. For the String argument, provide the static String variable or literal URI String as detailed below.</p>
 <p>&xslt4j; supports <em>all</em> TransformerFactory features.</p>
 <anchor name="streamsource"/>
-<s3 title='"http://javax.xml.transform.stream.StreamSource/feature"'>
+<s3 title="StreamSource feature">
+<p><em>URI:</em> "http://javax.xml.transform.stream.StreamSource/feature"</p>
 <p>The implementation supports the processing of <jump href="apidocs/javax/xml/transform/stream/StreamSource.html">StreamSource</jump> input objects.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static StreamSource.FEATURE variable  (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -94,7 +96,8 @@ if (tFact.getFeature(StreamSource.FEATURE)){
 }</source>
 <p>For a example that uses this feature, see <link idref="samples" anchor="simpletransform">SimpleTransform</link>.</p>
 </s3><anchor name="streamresult"/>
-<s3 title='"http://javax.xml.transform.stream.StreamResult/feature"'>
+<s3 title="StreamResult feature">
+<p><em>URI:</em> "http://javax.xml.transform.stream.StreamResult/feature"</p>
 <p>The implementation supports the production of transformation output in the form of <jump href="apidocs/javax/xml/transform/stream/StreamResult.html">StreamResult</jump> objects.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static StreamResult.FEATURE variable  (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -107,7 +110,8 @@ if (tFact.getFeature(StreamResult.FEATURE)){
 }</source>
 <p>For a example that uses this feature, see <link idref="samples" anchor="simpletransform">SimpleTransform</link>.</p>
 </s3><anchor name="domsource"/>
-<s3 title='"http://javax.xml.transform.dom.DOMSource/feature"'>
+<s3 title="DOMSource feature">
+<p><em>URI:</em> "http://javax.xml.transform.dom.DOMSource/feature"</p>
 <p>The implementation supports the processing of XML input in the form of <jump href="apidocs/javax/xml/transform/dom/DOMSource.html">DOMSource</jump> objects.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static DOMSource.FEATURE string variable (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -120,7 +124,8 @@ if (tFact.getFeature(DOMSource.FEATURE)){
 }</source>
 <p>For a example that uses this feature, see <link idref="samples" anchor="dom2dom">DOM2DOM</link>.</p>
 </s3><anchor name="domresult"/>
-<s3 title='"http://javax.xml.transform.dom.DOMResult/feature"'>
+<s3 title="DOMResult feature">
+<p><em>URI:</em> "http://javax.xml.transform.dom.DOMResult/feature"</p>
 <p>The implementation supports the production of transformation output in the form of <jump href="apidocs/javax/xml/transform/dom/DOMResult.html">DOMResult</jump> objects.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static DOMResult.FEATURE variable  (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -133,7 +138,8 @@ if (tFact.getFeature(DOMResult.FEATURE)){
 }</source>
 <p>For a example that uses this feature, see <link idref="samples" anchor="dom2dom">DOM2DOM</link>.</p>
 </s3><anchor name="saxsource"/>
-<s3 title='"http://javax.xml.transform.dom.SAXSource/feature"'>
+<s3 title="SAXSource feature">
+<p><em>URI:</em> "http://javax.xml.transform.dom.SAXSource/feature"</p>
 <p>The implementation supports the processing of XML input in the form of <jump href="apidocs/javax/xml/transform/sax/SAXSource.html">SAXSource</jump> objects.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static SAXSource.FEATURE string variable (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -145,7 +151,8 @@ if (tFact.getFeature(SAXSource.FEATURE)){
   ..
 }</source>
 </s3><anchor name="saxresult"/>
-<s3 title='"http://javax.xml.transform.dom.SAXResult/feature"'>
+<s3 title="SAXResult feature">
+<p><em>URI:</em> "http://javax.xml.transform.dom.SAXResult/feature"</p>
 <p>The implementation supports the production of transformation output in the form of <jump href="apidocs/javax/xml/transform/sax/SAXResult.html">SAXResult</jump> objects.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static SAXResult.FEATURE variable  (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -158,7 +165,8 @@ if (tFact.getFeature(SAXResult.FEATURE)){
 }</source>
 <p>For a example that uses this feature, see <link idref="samples" anchor="sax2sax">SAX2SAX</link>.</p>
 </s3><anchor name="saxtransformerfactory"/>
-<s3 title='"http://javax.xml.transform.sax.SAXTransformerFactory/feature"'>
+<s3 title="SAXTransformerFactory feature">
+<p><em>URI:</em> "http://javax.xml.transform.sax.SAXTransformerFactory/feature"</p>
 <p>The implementation provides a <jump href="apidocs/javax/xml/transform/sax/SAXTransformerFactory.html">SAXTransformerFactory</jump>. 
 You may safely cast the TransformerFactory returned by TransformerFactory.newInstance() to a SAXTransformerFactory.</p>
 <p>To determine whether your implementation supports this feature (&xslt4j; does), you can use the static SAXTransformerFactory.FEATURE 
@@ -173,7 +181,8 @@ if (tFact.getFeature(SAXTransformerFactory.FEATURE)){
 }</source>
 <p>For a example that uses this feature, see <link idref="samples" anchor="sax2sax">SAX2SAX</link>.</p>
 </s3><anchor name="xmlfilter"/>
-<s3 title='"http://javax.xml.transform.sax.SAXTransformerFactory/feature/xmlfilter"'>
+<s3 title="XMLFilter feature">
+<p><em>URI: </em>"http://javax.xml.transform.sax.SAXTransformerFactory/feature/xmlfilter"</p>
 <p>The implementation supports the use of <jump href="apidocs/org/xml/sax/XMLFilter.html">XMLFilter</jump> to use the output of one 
 transformation as input for another transformation. The SAXTransformerFactory newXMLFilter(Source) and newXMLFilter(Templates) methods 
 are supported.</p>
@@ -187,24 +196,26 @@ if (tFact.getFeature(SAXTransformerFactory.FEATURE_XMLFILTER))){
   // Can use SAXTransformerFactory to get XMLFilters.
   ..
 }</source>
-<p>For an example, see <link idref="samples" anchor="usexmlfilters">UseXMLFilters</link>.</p>
+<p>For an example that uses this feature to chain together a series of transformations, see 
+<link idref="samples" anchor="usexmlfilters">UseXMLFilters</link>.</p>
 </s3>
 </s2><anchor name="factoryattribute"/>
 <s2 title="&xslt4j; TransformerFactory attributes">
-<p>A given implementation may provide TransformerFactory attributes that you can set and get. &xslt4j; uses the <link idref="dtm">
-DTM (Document Table Model)</link> to support three such attributes:</p>
+<p>A given implementation may provide TransformerFactory attributes for which you can set and get values. &xslt4j; uses the 
+<link idref="dtm"> DTM (Document Table Model)</link> to support three attributes which can be set to true or false:</p>
 <ul>
-<li><link anchor="optimize">"http://apache.org/xalan/features/optimize"</link></li>
-<li><link anchor="incremental">"http://apache.org/xalan/features/incremental"</link></li>
-<li><link anchor="source_location">"http://apache.org/xalan/features/source_location"</link></li>
+<li><link anchor="optimize">optimize attribute</link></li>
+<li><link anchor="incremental">incremental attribute</link></li>
+<li><link anchor="source_location">source_location attribute</link></li>
 </ul>
 <p>To get an attribute setting, use the TransformerFactory.getAttribute(String) method, which returns an Object. For these three &xslt4j; 
 attributes, you can cast the return value to a boolean. To set an attribute, use the TransformerFactory.setAttribute(String, Object) method. 
 For the String argument, provide the static String variable or literal URI String as detailed below. For the Object argument, use 
-Boolean.TRUE or Boolean.FALSE.</p><anchor name="optimize"/>
-<s3 title='"http://apache.org/xalan/features/optimize"'>
+Boolean.TRUE or Boolean.FALSE (or the Strings "true" or "false").</p><anchor name="optimize"/>
+<s3 title="optimize attribute">
+<p><em>URI:</em> "http://apache.org/xalan/features/optimize"</p>
 <p>Optimize stylesheet processing. By default, this attribute is set to true. You may need to set it to false for tooling applications. 
-For more information, see <link idref="dtm" anchor="optimize">optimize</link>.</p>
+For more information, see <link idref="dtm" anchor="optimize">DTM optimize</link>.</p>
 <p>To turn optimization off, you can use the TransformerFactoryImpl.FEATURE_OPTIMIZE static variable (equivalent to the URI String above) 
 as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
@@ -216,10 +227,11 @@ if (tFact instanceof TransformerFactoryImpl) {
                      Boolean.FALSE);
 }</source>
 </s3><anchor name="incremental"/>
-<s3 title='"http://apache.org/xalan/features/incremental"'>
+<s3 title="incremental attribute">
+<p><em>URI:</em> "http://apache.org/xalan/features/incremental"</p>
 <p>Produce output incrementally, rather than waiting to finish parsing the input before generating any output. By default this attribute is set
 to false. You can turn this attribute on to transform large documents where the stylesheet structure is optimized to execute individual templates 
-without having to parse the entire document. For more information, see <link idref="dtm" anchor="incremental">incremental</link>.</p>
+without having to parse the entire document. For more information, see <link idref="dtm" anchor="incremental">DTM incremental</link>.</p>
 <p>To turn incremental transformations on, you can use the TransformerFactoryImpl.FEATURE_INCREMENTAL static variable (equivalent to the URI String above) as follows:</p>
 <source>import javax.xml.transform.TransformerFactory;
 import org.apache.xalan.processor.TransformerFactoryImpl;
@@ -230,7 +242,8 @@ if (tFact instanceof TransformerFactoryImpl) {
                      Boolean.FALSE);
 }</source>
 </s3><anchor name="source_location"/>
-<s3 title='"http://apache.org/xalan/features/source_location"'>
+<s3 title="source_location attribute">
+<p><em>URI:</em> "http://apache.org/xalan/features/source_location"</p>
 <p>Provide a <jump href="apidocs/javax/xml/transform/SourceLocator.html">SourceLocator</jump> that can be used during a transformation
 to obtain the location of individual nodes in a source document (system ID, line number, and column number).</p>
 <p>By default, this attribute is set to false. Setting this attribute to true involves a substantial increase in storage cost per source 

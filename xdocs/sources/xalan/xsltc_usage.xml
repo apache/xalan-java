@@ -70,7 +70,7 @@
 <p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
 <anchor name="intro"/>
 <s2 title="Introduction">
-<p>XSLT provides a compiler and a runtime processor. Use the compiler to compile an XSL stylesheet into a translet, a set of Java classes. Use the runtime processor to apply the translet to an XML document and perform a transformation.</p>
+<p>XSLTC provides a compiler and a runtime processor. Use the compiler to compile an XSL stylesheet into a translet, a set of Java classes. Use the runtime processor to apply the translet to an XML document and perform a transformation.</p>
 <note>To compile translets, you must be running the JDK or JRE 1.2 or higher. You can run translets with the JDK or JRE 1.1.8 or higher.</note>
 </s2><anchor name="classpath"/>
 <s2 title="Setting the system classpath for XSLTC">

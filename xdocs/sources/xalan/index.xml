@@ -72,12 +72,13 @@
      <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
   </s2>
   <s2 title="How about this release?">
-  <p>&xslt4j-current; incorporates the <link idref="dtm">DTM (Document Table Model)</link> and has been tested with &xml4j; version 2. As of
-  this release, support for the &xslt4j; release 1 API, which predates the design of the <resource-ref idref="jaxp11"/>JAXP 1.1/<link idref="trax">TrAX
+  <p>&xslt4j-current; works with &xml4j; version 2, and the distribution includes xercesImpl.jar from &xml4j-used;. For the time being, &xslt4j; 
+  maintains backwards compatiblity with &xml4j; version 1.</p>
+  <p>Support for the &xslt4j; release 1 API, which predates the design of the <resource-ref idref="jaxp11"/>JAXP 1.1/<link idref="trax">TrAX
   </link> interfaces, has been dropped.</p>
-  <p>Starting with 2.2.D12, we have reduced xalan.jar to just include the &xslt4j; implementation, placing the SAX, DOM, 
-  and JAVAX interfaces in xml-apis.jar. These interfaces are shared by a number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a 
-  separate JAR simplifies coordination and reduces risk of duplication. <em>Be sure to put both JAR files on your classpath!</em></p>
+  <p>The &xslt4j; implementation is in xalan.jar. The SAX, DOM, and JAVAX interfaces are in xml-apis.jar. These interfaces are shared by a 
+  number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a separate JAR simplifies coordination and reduces risk of duplication. 
+  <em>Be sure to put both JAR files (and xercesImpl.jar or another JAXP 1.1-compliant XML parser) on your classpath!</em></p>
   </s2> 
   <s2 title="How do I get it?">
     <p>To get the binary distribution (all you need to use and develop applications with &xslt4j;), download and unzip either of the following:</p>
@@ -93,14 +94,14 @@
   </s2>
   
   <s2 title="Where do I get Xerces?">
-    <p>The Xalan download includes &xml4j-jar; from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
-    You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>. If you are interested in testing
-    or prototyping &xml4j2;, you can run &xslt4j-current; with &xml4j; 2.0.0.beta4.</p>
+    <p>The Xalan download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, this is all you need to run Xalan with 
+    the Xerces XML parser. You can, however, download the complete Xerces binary or source distribution from the 
+    <resource-ref idref="xml4j-distdir"/>.</p>
     <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer
      and XML parser</link>.</note> 
   </s2>
   <s2 title="What else do I need?">
-    <p>You need the Java Development Kit or Java Runtime 1.1.8, 1.2.2, or 1.3, which you can obtain from <jump
+    <p>You need the Java Development Kit or Java Runtime 1.2.2, or 1.3.x, which you can obtain from <jump
     href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
   </s2>  
     <s2 title="For more information...">
