@@ -234,8 +234,8 @@ public class ErrorMessages extends ResourceBundle {
  	"                  name specified as <jarfile>\n"+
 	"   -p <package>   specifies a package name prefix for all generated\n"+
 	"                  translet classes.\n" +
-	"   -n             disables template inlining to reduce method\n" +
-	"                  length.\n"+
+	"   -n             enables template inlining (default behavior better\n"+
+        "                  on average).\n" +
 	"   -x             turns on additional debugging message output\n" +
 	"   -s             disables calling System.exit\n" +
 	"   -u             interprets <stylesheet> arguments as URLs\n" +
