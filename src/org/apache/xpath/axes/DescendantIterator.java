@@ -113,6 +113,10 @@ public class DescendantIterator extends LocPathIterator
       firstStepPos += 8;
     }
     
+    // Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336
+    if((analysis & WalkerFactory.BIT_CHILD) != 0)
+      orSelf = false;
+      
     if(fromRoot)
     {
       if(orSelf)
