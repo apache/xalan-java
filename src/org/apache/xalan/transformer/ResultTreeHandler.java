@@ -230,11 +230,15 @@ public class ResultTreeHandler extends QueuedEvents
 
     if (DEBUG)
     {
-      if (null != qse)
-        System.out.println("(ResultTreeHandler - pended: " + qse.getURL() + "#"
+      if (null != qse && qse.isPending)
+        System.out.println("(ResultTreeHandler#startElement - pended: " + qse.getURL() + "#"
                            + qse.getLocalName());
 
-      System.out.println("ResultTreeHandler - startElement: " + ns + "#" + localName);
+      System.out.println("ResultTreeHandler#startElement: " + ns + "#" + localName);
+      if(null == ns)
+      {
+        (new RuntimeException(localName+" has a null namespace!")).printStackTrace();
+      }
     }
 
     checkForSerializerSwitch(ns, localName);
@@ -243,7 +247,7 @@ public class ResultTreeHandler extends QueuedEvents
     if (!m_nsContextPushed)
     {
       if (DEBUG) 
-        System.out.println("push(startElement)");
+        System.out.println("ResultTreeHandler#startElement - push(startElement)");
 
       m_nsSupport.pushContext();
     }
@@ -269,11 +273,11 @@ public class ResultTreeHandler extends QueuedEvents
     if (DEBUG)
     {
       QueuedStartElement qse = getQueuedElem();
-      if (null != qse)
-        System.out.println("(ResultTreeHandler - pended: " + qse.getURL() + "#"
+      if (null != qse && qse.isPending)
+        System.out.println("(ResultTreeHandler#endElement - pended: " + qse.getURL() + "#"
                            + qse.getLocalName());
 
-      System.out.println("ResultTreeHandler - endElement: " + ns + "#" + localName);
+      System.out.println("ResultTreeHandler#endElement: " + ns + "#" + localName);
     }
 
     flushPending(EVT_ENDELEMENT);
@@ -292,7 +296,7 @@ public class ResultTreeHandler extends QueuedEvents
     popEvent();
 
     if (DEBUG)
-      System.out.println("pop: " + localName);
+      System.out.println("ResultTreeHandler#startElement pop: " + localName);
 
     m_nsSupport.popContext();
   }
@@ -335,7 +339,7 @@ public class ResultTreeHandler extends QueuedEvents
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
   {
-    startPrefixMapping(prefix, uri, false);
+    startPrefixMapping(prefix, uri, true);
   }
 
   /**
@@ -359,7 +363,7 @@ public class ResultTreeHandler extends QueuedEvents
     if (!m_nsContextPushed)
     {
       if (DEBUG)
-        System.out.println("push(startPrefixMapping: " + prefix + ")");
+        System.out.println("ResultTreeHandler#startPrefixMapping push(startPrefixMapping: " + prefix + ")");
 
       m_nsSupport.pushContext();
 
@@ -375,8 +379,8 @@ public class ResultTreeHandler extends QueuedEvents
     {
       if (DEBUG)
       {
-        System.out.println("Prefix: " + prefix);
-        System.out.println("uri: " + uri);
+        System.out.println("ResultTreeHandler#startPrefixMapping Prefix: " + prefix);
+        System.out.println("ResultTreeHandler#startPrefixMapping uri: " + uri);
       }
 
       m_nsSupport.declarePrefix(prefix, uri);
@@ -420,6 +424,20 @@ public class ResultTreeHandler extends QueuedEvents
     /*if (m_startDoc.isPending
     && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
     return;*/
+    
+    if(DEBUG)
+    {
+      System.out.print("ResultTreeHandler#characters: ");
+      int n = start+length;
+      for (int i = start; i < n; i++) 
+      {
+        if(Character.isWhitespace(ch[i]))
+          System.out.print("\\"+((int)ch[i]));
+        else
+          System.out.print(ch[i]);
+      }   
+      System.out.println("");    
+    }
 
     flushPending(EVT_CHARACTERS);
     m_contentHandler.characters(ch, start, length);
@@ -745,8 +763,21 @@ public class ResultTreeHandler extends QueuedEvents
         addNSDeclsToAttrs();
 
       sendStartPrefixMappings();
-      qe.flush();
+      
+      if(DEBUG)
+      {
+        System.out.println("ResultTreeHandler#flushPending - start flush: "
+                          +qe.getName());
+      }
 
+      qe.flush();
+      
+      if(DEBUG)
+      {
+        System.out.println("ResultTreeHandler#flushPending - after flush, isPending: "
+                          +qe.isPending);
+      }
+      
       m_nsContextPushed = false;
     }
   }
@@ -978,7 +1009,7 @@ public class ResultTreeHandler extends QueuedEvents
 
             if (!srcURI.equalsIgnoreCase(desturi))
             {
-              this.startPrefixMapping(prefix, srcURI);
+              this.startPrefixMapping(prefix, srcURI, false);
             }
           }
         }
@@ -1143,6 +1174,9 @@ public class ResultTreeHandler extends QueuedEvents
 
     if (!qe.nsDeclsHaveBeenAdded())
       addNSDeclsToAttrs();
+      
+    if(null == uri) // defensive, should not really need this.
+      uri = "";
 
     try
     {
@@ -1155,7 +1189,7 @@ public class ResultTreeHandler extends QueuedEvents
     }
 
     if (DEBUG)
-      System.out.println("Adding attr: " + localName + ", " + uri);
+      System.out.println("ResultTreeHandler#addAttribute Adding attr: " + localName + ", " + uri);
 
     if(!isDefinedNSDecl(rawName, value))
       qe.addAttribute(uri, localName, rawName, type, value);
@@ -1241,8 +1275,12 @@ public class ResultTreeHandler extends QueuedEvents
       return;
 
     DOMHelper helper = m_transformer.getXPathContext().getDOMHelper();
+    
+    String ns = helper.getNamespaceOfNode(attr);
+    if(ns == null)
+      ns = "";
 
-    addAttribute(helper.getNamespaceOfNode(attr),
+    addAttribute(ns,
                  helper.getLocalNameOfNode(attr), attr.getNodeName(),
                  "CDATA", attr.getValue());
   }  // end copyAttributeToTarget method
