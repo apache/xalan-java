@@ -1801,8 +1801,8 @@ abstract public class ToStream extends SerializerBase
         m_elemContext = m_elemContext.push(namespaceURI,localName,name);
         m_isprevtext = false;
 
-		if (m_tracer != null)
-			firePseudoAttributes();
+        if (m_tracer != null)
+            firePseudoAttributes();
     }
 
     /**
@@ -2799,13 +2799,12 @@ abstract public class ToStream extends SerializerBase
             {
                 // flush out the "<elemName" if not already flushed
                 m_writer.flush();
-
+                
+                // make a StringBuffer to write the name="value" pairs to.
+                StringBuffer sb = new StringBuffer();
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
                 {
-                    // make a StringBuffer to write the name="value" pairs to.
-                    StringBuffer sb = new StringBuffer();
-
                     // make a writer that internally appends to the same
                     // StringBuffer
                     java.io.Writer writer =
@@ -2815,17 +2814,17 @@ abstract public class ToStream extends SerializerBase
                     // Don't clear the attributes! 
                     // We only want to see what would be written out
                     // at this point, we don't want to loose them.
-
-                    // convert the StringBuffer to a char array and
-                    // emit the trace event that these characters "might"
-                    // be written
-                    char ch[] = sb.toString().toCharArray();
-                    m_tracer.fireGenerateEvent(
-                        SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
-                        ch,
-                        0,
-                        ch.length);
                 }
+                sb.append('>');  // the potential > after the attributes.
+                // convert the StringBuffer to a char array and
+                // emit the trace event that these characters "might"
+                // be written                
+                char ch[] = sb.toString().toCharArray();
+                m_tracer.fireGenerateEvent(
+                    SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
+                    ch,
+                    0,
+                    ch.length);                
             }
             catch (IOException ioe)
             {
