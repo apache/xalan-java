@@ -69,7 +69,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXNotSupportedException;
 import java.util.Hashtable;
-
+import java.util.StringTokenizer;
 
 import org.apache.xalan.extensions.ExpressionContext;
 
@@ -237,5 +237,50 @@ public class Extensions {
     else
       throw new SAXNotSupportedException("Invalid context passed to evaluate " + myContext);
 	}  
+
+	/**
+	 * Returns a NodeSet containing one text node for each token in the first argument.
+   * Delimiters are specified in the second argument.
+   * Tokens are determined by a call to <code>StringTokenizer</code>.
+   * If the first argument is an empty string or contains only delimiters, the result
+   * will be an empty NodeSet.
+   * Contributed to XalanJ1 by <a href="mailto:benoit.cerrina@writeme.com">Benoit Cerrina</a>.  
+	 * @param myContext an <code>ExpressionContext</code> passed in by the
+   *                  extension mechanism.  This must be an XPathContext.
+	 * @param toTokenize The string to be split into text tokens.
+   * @param delims The delimiters to use.
+	 * @return a NodeSet as described above.
+   *
+	 */	
+	public static NodeSet tokenize(ExpressionContext myContext, String toTokenize, String delims)
+	{
+    Document lDoc = myContext.getContextNode().getOwnerDocument();
+    StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
+    NodeSet resultSet = new NodeSet();
+    while (lTokenizer.hasMoreTokens())
+    {
+      resultSet.addNode(lDoc.createTextNode(lTokenizer.nextToken()));
+    }
+    return resultSet;
+}  
+
+	/**
+	 * Returns a NodeSet containing one text node for each token in the first argument.
+   * Delimiters are whitespace.  That is, the delimiters that are used are tab (&#x09),
+   * linefeed (&#x0A), return (&#x0D), and space (&#x20).
+   * Tokens are determined by a call to <code>StringTokenizer</code>.
+   * If the first argument is an empty string or contains only delimiters, the result
+   * will be an empty NodeSet.
+   * Contributed to XalanJ1 by <a href="mailto:benoit.cerrina@writeme.com">Benoit Cerrina</a>.  
+	 * @param myContext an <code>ExpressionContext</code> passed in by the
+   *                  extension mechanism.  This must be an XPathContext.
+	 * @param toTokenize The string to be split into text tokens.
+	 * @return a NodeSet as described above.
+   *
+	 */	
+	public static NodeSet tokenize(ExpressionContext myContext, String toTokenize)
+	{
+    return tokenize(myContext, toTokenize, " \t\n\r");
+  }  
 
 }
