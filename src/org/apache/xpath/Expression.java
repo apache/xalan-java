@@ -120,10 +120,17 @@ public abstract class Expression
     else
     {
       // Where to send diagnostics in this case?
-      SourceLocator slocator = m_xpath.getLocator();
-      System.out.println(fmsg + "; file " + slocator.getSystemId()
-                         + "; line " + slocator.getLineNumber() + "; column "
-                         + slocator.getColumnNumber());    
+      if(null != m_xpath)
+      {
+        SourceLocator slocator = m_xpath.getLocator();
+        System.out.println(fmsg + "; file " + slocator.getSystemId()
+                           + "; line " + slocator.getLineNumber() + "; column "
+                           + slocator.getColumnNumber()); 
+      }
+      else
+      {
+        System.out.println(fmsg); 
+      }
     }
   }
 
@@ -176,10 +183,17 @@ public abstract class Expression
     }
     else
     {
-      SourceLocator slocator = m_xpath.getLocator();
-      System.out.println(fmsg + "; file " + slocator.getSystemId()
-                         + "; line " + slocator.getLineNumber() + "; column "
-                         + slocator.getColumnNumber());
+      if(null != m_xpath)
+      {
+        SourceLocator slocator = m_xpath.getLocator();
+        System.out.println(fmsg + "; file " + slocator.getSystemId()
+                           + "; line " + slocator.getLineNumber() + "; column "
+                           + slocator.getColumnNumber());
+      }
+      else
+      {
+        System.out.println(fmsg);
+      }
     }
     
   }
