@@ -27,6 +27,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.xml.transform.Templates;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xml.dtm.DTM;
 
@@ -714,4 +717,18 @@ public abstract class AbstractTranslet implements Translet {
     public void setTemplates(Templates templates) {
     	_templates = templates;
     }    
+    
+    /************************************************************************
+     * DOMBuilderFactory caching
+     ************************************************************************/
+    protected DocumentBuilderFactory _domFactory = null;
+    
+    public DocumentBuilder newDocumentBuilder() 
+        throws ParserConfigurationException 
+    {
+        if (_domFactory == null) {
+            _domFactory = DocumentBuilderFactory.newInstance();
+        }
+        return _domFactory.newDocumentBuilder();
+    }
 }

@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.xsltc.DOM;
@@ -1175,15 +1174,15 @@ public final class BasisLibrary implements Operators {
                                     	Translet translet, DOM dom) 
     {
 	// w3c NodeList -> w3c DOM
-	DocumentBuilderFactory dfac = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docbldr = null;
 	try {
-	    docbldr = dfac.newDocumentBuilder();
-	} catch (javax.xml.parsers.ParserConfigurationException e) {
+	    docbldr = ((AbstractTranslet) translet).newDocumentBuilder();
+	} 
+        catch (javax.xml.parsers.ParserConfigurationException e) {
 	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
             return null;
-
 	}
+        
 	// create new w3c DOM
 	Document doc = docbldr.newDocument();	
         org.w3c.dom.Node topElementNode = 
