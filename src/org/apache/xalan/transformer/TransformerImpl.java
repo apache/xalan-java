@@ -313,6 +313,13 @@ public class TransformerImpl extends Transformer
   BoolStack m_currentTemplateRuleIsNull = new BoolStack();
 
   /**
+   * Keeps track of the result delivered by any EXSLT <code>func:result</code>
+   * instruction that has been executed for the currently active EXSLT
+   * <code>func:function</code>
+   */
+  ObjectStack m_currentFuncResult = new ObjectStack();
+  
+  /**
    * The message manager, which manages error messages, warning
    * messages, and other types of message events.   
    */
@@ -3008,6 +3015,39 @@ public class TransformerImpl extends Transformer
   public void popCurrentTemplateRuleIsNull()
   {
     m_currentTemplateRuleIsNull.pop();
+  }
+
+  /**
+   * Push a funcion result for the currently active EXSLT
+   * <code>func:function</code>.
+   * 
+   * @param val the result of executing an EXSLT
+   * <code>func:result</code> instruction for the current
+   * <code>func:function</code>.
+   */
+  public void pushCurrentFuncResult(Object val) {
+    m_currentFuncResult.push(val);
+  }
+
+  /**
+   * Pops the result of the currently active EXSLT <code>func:function</code>.
+   * 
+   * @return the value of the <code>func:function</code>
+   */
+  public Object popCurrentFuncResult() {
+    return m_currentFuncResult.pop();
+  }
+
+  /**
+   * Determines whether an EXSLT <code>func:result</code> instruction has been
+   * executed for the currently active EXSLT <code>func:function</code>.
+   * 
+   * @return <code>true</code> if and only if a <code>func:result</code>
+   * instruction has been executed
+   */
+  public boolean currentFuncResultSeen() {
+    return !m_currentFuncResult.empty()
+               && m_currentFuncResult.peek() != null;
   }
 
   /**

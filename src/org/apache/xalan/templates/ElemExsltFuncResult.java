@@ -76,28 +76,26 @@ public class ElemExsltFuncResult extends ElemVariable
   public void execute(TransformerImpl transformer) throws TransformerException
   {    
     XPathContext context = transformer.getXPathContext();
-    ElemExsltFunction owner = getOwnerFunction();
 
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
     
-    if (owner != null)
-    {
-      // Verify that result has not already been set by another result
-      // element. Recursion is allowed: intermediate results are cleared 
-      // in the owner ElemExsltFunction execute().
-      if (owner.isResultSet())
+    // Verify that result has not already been set by another result
+    // element. Recursion is allowed: intermediate results are cleared 
+    // in the owner ElemExsltFunction execute().
+    if (transformer.currentFuncResultSeen()) {
         throw new TransformerException("An EXSLT function cannot set more than one result!");
-      
-      int sourceNode = context.getCurrentNode();
-      // Set the return value;
-      XObject var = getValue(transformer, sourceNode);
-      owner.setResult(var);
     }
+
+    int sourceNode = context.getCurrentNode();
+
+    // Set the return value;
+    XObject var = getValue(transformer, sourceNode);
+    transformer.popCurrentFuncResult();
+    transformer.pushCurrentFuncResult(var);
 
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEndEvent(this);    
-    
   }
 
   /**
@@ -123,19 +121,4 @@ public class ElemExsltFuncResult extends ElemVariable
   {
     return Constants.EXSLT_ELEMNAME_FUNCRESULT_STRING;
   }
-  
-  /**
-   * Get the ElemExsltFunction that contains the ElemResult so we can set an ElemExsltFunction variable
-   * to the local variable stack index to the return value.
-   */
-  public ElemExsltFunction getOwnerFunction()
-  {
-  	ElemTemplateElement elem = this;
-  	while((elem != null) && !(elem instanceof ElemExsltFunction))
-  	{
-    	elem = elem.getParentElem();
-  	}
-  	return (ElemExsltFunction)elem;
-  }
-  
 }
