@@ -230,8 +230,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    _escapeChars = true;
 	}
 	else if (type == HTML) {
-	    _escapeChars = true;
 	    setIndent(true);
+	    _escapeChars = true;
 	}
 	setType(type);
     }
@@ -298,6 +298,7 @@ public final class TextOutput implements TransletOutputHandler {
      * CDATA sections in output XML documents.
      */
     public boolean setEscaping(boolean escape) throws TransletException {
+
 	// Set output type to XML (the default) if still unknown.
 	if (_outputType == UNKNOWN) setTypeInternal(XML);
 
@@ -376,11 +377,13 @@ public final class TextOutput implements TransletOutputHandler {
 		_saxHandler.characters(AMP, 0, AMP_length);
 		offset = i + 1;
 		break;
+		/* Quotes should only be escaped inside attribute values
 	    case '"':
 		_saxHandler.characters(ch, offset, i - offset);
 		_saxHandler.characters(QUOTE, 0, QUOTE_length);
 		offset = i + 1;
 		break;
+		*/
 	    case '<':
 		_saxHandler.characters(ch, offset, i - offset);
 		_saxHandler.characters(LT, 0, LT_length);
