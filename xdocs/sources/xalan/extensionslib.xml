@@ -94,6 +94,8 @@ functions (some are calls to extension already in the Xalan namespace). For the 
 <li><jump href="apidocs/org/apache/xalan/lib/ExsltCommon.html">EXSLT common functions</jump></li>
 <li><jump href="apidocs/org/apache/xalan/lib/ExsltMath.html">EXSLT math functions</jump></li>
 <li><jump href="apidocs/org/apache/xalan/lib/ExsltSets.html">EXSLT set function</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltDatetime.html">EXSLT date-and-time function</jump></li>
+<li>The EXSLT func:function and func:result elements (see <jump href="http://www.exslt.org/func/elements/function/index.html">EXSLT - func:function)</jump></li>
 </ul>
 <p>Work is currently underway on <jump href="http://www.exslt.org/date/index.html">EXSLT date and time functions</jump> 
 and <jump href="http://www.exslt.org/func/index.html">and user defined EXSLT functions (with the function and result 
