@@ -104,7 +104,7 @@ public class TransformerFactoryConfigurationError extends Error {
      */
     public TransformerFactoryConfigurationError(Exception e) {
 
-        super();
+        super(e.toString());
 
         this.exception = e;
     }

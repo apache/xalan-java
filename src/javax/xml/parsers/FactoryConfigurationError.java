@@ -105,7 +105,7 @@ public class FactoryConfigurationError extends Error {
      */
     
     public FactoryConfigurationError(Exception e) {
-        super();
+        super(e.toString());
         this.exception = e;
     }
 
