@@ -253,27 +253,13 @@ public class ExtensionsTable
           result = extNS.callFunction(funcName, argVec, methodKey,
                                       exprContext);
         }
+        catch (javax.xml.transform.TransformerException e)
+        {
+          throw e;
+        }
         catch (Exception e)
         {
-          e.printStackTrace();
-
-          // throw new XPathProcessorException ("Extension function '" + ns +
-          //  ":" + funcName +
-          //  "', threw exception: " + e, e);
-          String msg = e.getMessage();
-
-          if (null != msg)
-          {
-            if (msg.startsWith("Stopping after fatal error:"))
-            {
-              msg = msg.substring("Stopping after fatal error:".length());
-            }
-
-            // System.out.println("Call to extension function failed: "+msg);
-            result = new XNull();
-
-            // throw new javax.xml.transform.TransformerException(e);
-          }
+          throw new javax.xml.transform.TransformerException(e);
         }
       }
       else
