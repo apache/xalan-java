@@ -705,7 +705,26 @@ public class TransformerImpl extends Transformer
     OutputFormat ofe = m_outputFormat;
     if(null == ofe)
       ofe = m_stylesheetRoot.getOutputComposed();
-    if(name.equals(OutputKeys.METHOD))
+    
+    if(name == OutputKeys.METHOD)
+      ofe.setMethod(value);
+    else if(name == OutputKeys.INDENT)
+      ofe.setIndent(value.equals("yes"));
+    else if(name == OutputKeys.DOCTYPE_PUBLIC)
+      ofe.setDoctypePublicId(value);
+    else if(name == OutputKeys.DOCTYPE_SYSTEM)
+      ofe.setDoctypeSystemId(value);
+    else if(name == OutputKeys.MEDIA_TYPE)
+      ofe.setMediaType(value);
+    else if(name == OutputKeys.OMIT_XML_DECLARATION)
+      ofe.setOmitXMLDeclaration(value.equals("yes"));
+    else if(name == OutputKeys.STANDALONE)
+      ofe.setStandalone(value.equals("yes"));
+    else if(name == OutputKeys.ENCODING)
+      ofe.setEncoding(value);
+    else if(name == OutputKeys.VERSION)
+      ofe.setVersion(value);
+    else if(name == OutputKeys.METHOD)
       ofe.setMethod(value);
     else if(name.equals(OutputKeys.INDENT))
       ofe.setIndent(value.equals("yes"));
@@ -1058,15 +1077,30 @@ public class TransformerImpl extends Transformer
       }
 
       // ===========
+      // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
       this.applyTemplateToNode(null, null, node, null);
+      // System.out.println("Done with applyTemplateToNode - "+Thread.currentThread().getName());
 
       if (null != m_resultTreeHandler)
       {
         m_resultTreeHandler.endDocument();
       }
     }
-    catch (SAXException se)
+    catch (Exception se)
     {
+      // System.out.println(Thread.currentThread().getName()+" threw an exception! "
+      //                   +se.getMessage());
+      // If an exception was thrown, we need to make sure that any waiting 
+      // handlers can terminate, which I guess is best done by sending 
+      // an endDocument.
+      if (null != m_resultTreeHandler)
+      {
+        try
+        {
+          m_resultTreeHandler.endDocument();
+        }
+        catch(Exception e){}
+      }
       throw new TransformerException(se);
     }
   }
