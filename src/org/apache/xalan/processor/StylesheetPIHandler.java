@@ -359,4 +359,18 @@ public class StylesheetPIHandler extends DefaultHandler
   {
     throw new StopParseException();
   }
+
+  /**
+    * Added additional getter and setter methods for the Base Id
+    * to fix bugzilla bug 24187
+    * 
+    */
+   public void setBaseId(String baseId) {
+       m_baseID = baseId;
+ 
+   }
+   public String  getBaseId() {
+       return m_baseID ;
+   }
+
 }

@@ -80,6 +80,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.SAXParser;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -97,14 +98,19 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.processor.StylesheetPIHandler;
+import org.apache.xalan.processor.StopParseException;
+
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
+
 import org.apache.xml.utils.ObjectFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Implementation of a JAXP1.1 TransformerFactory for Translets.
@@ -472,18 +478,77 @@ public class TransformerFactoryImpl
      * @return A Source object suitable for passing to the TransformerFactory.
      * @throws TransformerConfigurationException
      */
-    public Source getAssociatedStylesheet(Source source, String media,
+    public Source  getAssociatedStylesheet(Source source, String media,
 					  String title, String charset)
-	throws TransformerConfigurationException 
-    {
-	// First create a hashtable that maps Source refs. to parameters
-	if (_piParams == null) {
-	    _piParams = new Hashtable();
-	}
-	// Store the parameters for this Source in the Hashtable
-	_piParams.put(source, new PIParamWrapper(media, title, charset));
-	// Return the same Source - we'll locate the stylesheet later
-	return source;
+	throws TransformerConfigurationException {
+
+        String baseId;
+        XMLReader reader = null;
+        InputSource isource = null;
+
+
+        /**
+         * Fix for bugzilla bug 24187
+         */
+        StylesheetPIHandler _stylesheetPIHandler = new StylesheetPIHandler(null,media,title,charset);
+
+        try {
+  
+            if (source instanceof DOMSource ) {
+                final DOMSource domsrc = (DOMSource) source;
+                baseId = domsrc.getSystemId();
+                final org.w3c.dom.Node node = domsrc.getNode();
+                final DOM2SAX dom2sax = new DOM2SAX(node);
+
+                _stylesheetPIHandler.setBaseId(baseId);
+
+                dom2sax.setContentHandler( _stylesheetPIHandler);
+                dom2sax.parse();
+            } else {
+                isource = SAXSource.sourceToInputSource(source);
+                baseId = isource.getSystemId();
+
+                SAXParserFactory factory = SAXParserFactory.newInstance();
+                factory.setNamespaceAware(true);
+                SAXParser jaxpParser = factory.newSAXParser();
+
+                reader = jaxpParser.getXMLReader();
+                if (reader == null) {
+                    reader = XMLReaderFactory.createXMLReader();
+                }
+
+                _stylesheetPIHandler.setBaseId(baseId);
+                reader.setContentHandler(_stylesheetPIHandler);
+                reader.parse(isource);
+
+            }
+
+            if (_uriResolver != null ) {
+                _stylesheetPIHandler.setURIResolver(_uriResolver);
+            }
+
+        } catch (StopParseException e ) {
+          // startElement encountered so do not parse further
+
+        } catch (javax.xml.parsers.ParserConfigurationException e) {
+
+             throw new TransformerConfigurationException(
+             "getAssociatedStylesheets failed", e);
+
+        } catch (org.xml.sax.SAXException se) {
+
+             throw new TransformerConfigurationException(
+             "getAssociatedStylesheets failed", se);
+
+
+        } catch (IOException ioe ) {
+           throw new TransformerConfigurationException(
+           "getAssociatedStylesheets failed", ioe);
+
+        }
+
+         return _stylesheetPIHandler.getAssociatedStylesheet();
+
     }
 
     /**
