@@ -60,7 +60,6 @@
 <ul>
  <li><link anchor="intro">Introduction</link></li>
  <li><link anchor="terminology">General Terminology</link></li>
- <li><link anchor="requirements">Requirements</link></li>
  <li><link anchor="model">Model</link></li>
  <li><link anchor="patterns">Patterns</link></li> 
 </ul><anchor name="intro"/>
@@ -76,19 +75,13 @@
 	 by Java code, Perl code, <jump href="http://www.w3.org/TR/xslt">XSLT</jump>
 	 Stylesheets, other types of script, or by proprietary formats. The inputs, one
 	 or multiple, to a transformation, may be a URL, XML stream, a DOM tree, SAX
-	 Events, or a proprietary format or data structure. The output types are the
+	 Events, or a proprietary format or data structure. The output types are 
 	 pretty much the same types as the inputs, but different inputs may need to be
 	 combined with different outputs.</p> 
   
 <p>The great challenge of a transformation API is how to deal with all the
 	 possible combinations of inputs and outputs, without becoming specialized for
 	 any of the given types.</p> 
-  
-<p>The Java community will greatly benefit from a common API that will
-	 allow them to understand and apply a single model, write to consistent
-	 interfaces, and apply the transformations polymorphically. TrAX attempts to
-	 define a model that is clean and generic, yet fills general application
-	 requirements across a wide variety of uses. </p> 
    
 </s2><anchor name="terminology"/>	 
 <s2 title="General Terminology"> 
@@ -187,66 +180,7 @@
 			 <jump href="http://www.megginson.com/SAX/SAX2">SAX 2.0
 			 release</jump>.</item>
 </gloss> 
-</s2> <anchor name="requirements"/>
-<s2 title="Requirements"> 
-  
-<p>The following requirements have been determined from broad experience
-	 with XML projects from the various members participating on the JCP.</p> 
-  
-<ul>
-<li>TrAX must provide a clean, simple
-		interface for simple uses.</li>
-<li>TrAX must be powerful enough to be
-		applied to a wide range of uses, such as, e-commerce, content management,
-		server content delivery, and client applications.</li>
-<li>A processor that implements a TrAX
-		interface must be optimizeable. Performance is a critical issue for most
-		transformation use cases.</li>
-<li>As a specialization of the above
-		requirement, a TrAX processor must be able to support a compiled model, so that
-		a single set of transformation instructions can be compiled, optimized, and
-		applied to a large set of input sources.</li>
-<li>TrAX must not be dependent an any
-		given type of transformation instructions. For instance, it must remain
-		independent of <jump href="http://www.w3.org/TR/xslt">XSLT</jump>.</li>
-<li>TrAX must be able to allow processors
-		to transform DOM trees.</li>
-<li>TrAX must be able to allow processors to
-		produce DOM trees.</li>
-<li>TrAX must allow processors to transform
-		SAX events.</li>
-<li>TrAX must allow processors to produce SAX
-		events.</li>
-<li>TrAX must allow processors to
-		transform streams of XML.</li>
-<li>TrAX must allow processors to produce
-		XML, HTML, and other types of streams.</li>
-<li>TrAX must allow processors to
-		implement the various combinations of inputs and outputs within a single
-		processor.</li>
-<li>TrAX must allow processors
-		to implement only a limited set of inputs. For instance, it should be possible
-		to write a processor that implements the TrAX interfaces and that only
-		processes DOM trees, not streams or SAX events.</li>
-<li>TrAX should allow a
-		processor to implement transformations of proprietary data structures. For
-		instance, it should be possible to implement a processor that provides TrAX
-		interfaces that performs transformation of JDOM trees.</li>
-<li>TrAX must allow the setting
-		of serialization properties, without constraint as to what the details of those
-		properties are.</li>
-<li>TrAX must allow the setting
-		of parameters to the transformation instructions.</li>
-<li>TrAX must support the
-		setting of parameters and properties as XML Namespaced items (i.e., qualified
-		names).</li>
-<li>TrAX must support URL
-		resolution from within the transformation, and have it return the needed data
-		structure.</li>
-<li>TrAX must have a mechanism for
-		reporting errors and warnings to the calling application.</li>
-</ul>  
-   
+
 </s2> <anchor name="model"/>
 <s2 title="Model"> 
   
@@ -263,7 +197,7 @@
   
 <p>To use the TrAX interface, you create a
 	 <link anchor="pattern-TransformerFactory">TransformerFactory</link>,
-	 which may directly provide a <link anchor="pattern-Transformer">Transformers</link>, or which can provide
+	 which may directly provide a <link anchor="pattern-Transformer">Transformer</link>, or which can provide
 	 <link anchor="pattern-Templates">Templates</link> from a variety of
 	 <link anchor="pattern-Source">Source</link>s. The
 	 <link anchor="pattern-Templates">Templates</link> object is a processed
@@ -276,8 +210,7 @@
   
 <p>The process of transformation from a tree, either in the form of an
 	 object model, or in the form of parse events, into a stream, is known as
-	 <ref>serialization</ref>. We believe this is the most suitable term for
-	 this process, despite the overlap with Java object serialization.</p> 
+	 <ref>serialization</ref>.</p> 
 </s2><anchor name="patterns"/>
 <s2 title="TrAX Patterns">
 <p>The intent, responsibilities, and thread safety of TrAX objects:</p>
@@ -364,7 +297,6 @@
 </gloss>  
 </s3><anchor name="pattern-Result"/>
 <s3 title="Result">
-<p>Alternative name: ResultTarget.</p>
 <gloss>
 <label>Intent</label>
 <item>Serve

@@ -76,9 +76,8 @@
 <note>XSL also includes a vocabulary for formatting documents, which is not part of &xslt4j;. 
       For more information, see <resource-ref idref="xsl"/> and the <jump
       href="http://xml.apache.org/fop">Apache XML FOP (Formatting Objects Project)</jump>.</note>
-<p>You use the XSLT language to compose XSL stylesheets. An XSL stylesheet contains instructions 
-   for transforming XML documents from one document type into another document type (XML, HTML, 
-   or other). In structural terms, an XSL stylesheet specifies the transformation of one tree of 
+<p>XSL stylesheets are written in the XSLT language. An XSL stylesheet contains instructions 
+   for transforming XML documents into XML, HTML, XHTML or plain text. In structural terms, an XSL stylesheet specifies the transformation of one tree of 
    nodes (the XML input) into another tree of nodes (the output or transformation result).</p>
 <note>The XSL stylesheet may generate and refer to cascading style sheets (<jump
       href="http://www.w3.org/Style/CSS/">CSS</jump>) as part of its output.</note> 
@@ -95,7 +94,7 @@
 &lt;/xsl:stylesheet></source>
 <p>foo.out:</p>
 <source>&lt;out>Hello&lt;/out></source>
-<p>By default, &xslt4j; uses &xml4j;, and it may be configured with system properties to work with 
+<p>By default, &xslt4j; uses &xml4j;, but it may be configured with system properties to work with 
    other XML parsers (see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and 
    XML parser</link>). The input may be submitted in the form of a stream of XML markup (from a URI, 
    a character or byte stream, or another transformation), a SAX InputStream, or a DOM Node.</p>
@@ -114,7 +113,7 @@
   <li>Implements <link idref="trax">TrAX (Transformation API for XML)</link>, now part of 
       <resource-ref idref="jaxp12"/>, and builds on <resource-ref idref="sax2"/> and 
       <resource-ref idref="dom2"/>.<br/><br/></li>
-  <li>May be configured to work with any XML parser, such
+  <li>May be configured to work with any XML parser, such as
       <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j;</jump>, that implements 
       <resource-ref idref="jaxp12"/> (see <link idref="usagepatterns" anchor="plug">Plugging in an XML
       parser</link>).<br/><br/></li>
