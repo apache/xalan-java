@@ -104,6 +104,12 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 
+import javax.xml.transform.dom.*;
+import javax.xml.parsers.*;
+import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+
 // Needed Serializer classes
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
@@ -178,6 +184,8 @@ public class Process
     XSLTErrorResources resbundle =
       (XSLTErrorResources) (XSLMessages.loadResourceBundle(
         org.apache.xml.utils.res.XResourceBundle.ERROR_RESOURCES));
+        
+    String flavor = "s2s";
 
     // loadPropertyFileToSystem(XSLT_PROPERTIES);
     if (argv.length < 1)
@@ -310,6 +318,18 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-XSL" }));  //"Missing argument for);
         }
+        else if ("-FLAVOR".equalsIgnoreCase(argv[i]))
+        {
+          if (i + 2 < argv.length)
+          {
+            flavor = argv[++i];
+          }
+          else
+            System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                new Object[]{ "-FLAVOR" }));  //"Missing argument for);
+        }
         else if ("-PARAM".equalsIgnoreCase(argv[i]))
         {
           if (i + 2 < argv.length)
@@ -430,11 +450,12 @@ public class Process
                                     ? new FileOutputStream(outFileName)
                                     : (OutputStream) System.out;
 
+        SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
+
         // Did they pass in a stylesheet, or should we get it from the 
         // document?
         if (null == stylesheet)
         {
-          SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
           Source source =
             stf.getAssociatedStylesheet(new StreamSource(inFileName),
                                                media, null, null);
@@ -486,8 +507,26 @@ public class Process
 
           if (null != inFileName)
           {
-            transformer.transform(new StreamSource(inFileName),
-                                  new StreamResult(outputStream));
+            if(flavor.equals("d2d"))
+            {
+              // Parse in the xml data into a DOM
+              DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+              DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+              Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
+              Document outNode = docBuilder.newDocument();
+              transformer.transform(new DOMSource(xmlDoc), 
+                                    new DOMResult(outNode));
+                                    
+              // Now serialize output to disk with identity transformer
+              Transformer serializer = stf.newTransformer();
+              serializer.transform(new DOMSource(outNode), 
+                                   new StreamResult(outputStream));
+           }
+            else
+            {
+              transformer.transform(new StreamSource(inFileName),
+                                    new StreamResult(outputStream));
+            }
           }
           else
           {
