@@ -96,9 +96,6 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 public class TransformerFactoryImpl
     extends SAXTransformerFactory implements SourceLoader, ErrorListener {
 
-    // This constant should be removed once all abstract methods are impl'ed.
-    private static final String NYI = "Not yet implemented";
-
     // This error listener is used only for this factory and is not passed to
     // the Templates or Transformer objects that we create!!!
     private ErrorListener _errorListener = this; 
@@ -512,6 +509,8 @@ public class TransformerFactoryImpl
 		passErrorsToListener(xsltc.getErrors());
 	    else
 		xsltc.printErrors();
+	    System.err.println("java.class.path is "+System.getProperty("java.class.path"));
+	    System.err.println("class loader "+this.getClass().getClassLoader());
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
 	    throw new TransformerConfigurationException(err.toString());
 	}

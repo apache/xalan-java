@@ -68,10 +68,13 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
 import java.lang.reflect.*;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.runtime.TransletLoader;
 
 class FunctionCall extends Expression {
 
@@ -100,7 +103,7 @@ class FunctionCall extends Expression {
 
     // Legal conversions between Java and internal types.
     private static final Hashtable _java2Internal = new Hashtable();
-	
+
     /**
      * Defines 2 conversion tables:
      * 1. From internal types to Java types and
@@ -486,7 +489,9 @@ class FunctionCall extends Expression {
 	    namespace.startsWith(JAVA_EXT_XALAN)) {
 	    final int nArgs = _arguments.size();
 	    try {
-		final Class clazz = Class.forName(_className);
+		TransletLoader loader = new TransletLoader();
+		final Class clazz = loader.loadClass(_className);
+
 		if (clazz == null) {
 		    final ErrorMsg msg =
 			new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
