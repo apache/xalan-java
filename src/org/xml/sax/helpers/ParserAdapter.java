@@ -565,7 +565,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
 		} catch (SAXException e) {
 		    if (exceptions == null)
 			exceptions = new Vector();
-		    exceptions.add(e);
+		    exceptions.addElement(e); // add() not available in Java 1.1
 		    atts.addAttribute("", attQName, attQName, type, value);
 		}
 	    }
@@ -588,7 +588,7 @@ public class ParserAdapter implements XMLReader, DocumentHandler
 	    }
 	} else if (exceptions != null && errorHandler != null) {
 	    for (int i = 0; i < exceptions.size(); i++)
-		errorHandler.error((SAXParseException)(exceptions.get(i)));
+		errorHandler.error((SAXParseException)(exceptions.elementAt(i))); // get() not available in Java 1.1
 	}
 
 				// OK, finally report the event.
