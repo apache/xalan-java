@@ -2083,7 +2083,7 @@ public class SerializerToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  protected final int accumDefaultEntity(
+  protected int accumDefaultEntity(
           char ch, int i, char[] chars, int len, boolean escLF)
             throws org.xml.sax.SAXException
   {
@@ -2135,7 +2135,7 @@ public class SerializerToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  protected final int accumDefaultEscape(
+  protected int accumDefaultEscape(
           char ch, int i, char[] chars, int len, boolean escLF)
             throws org.xml.sax.SAXException
   {
