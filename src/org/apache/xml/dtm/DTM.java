@@ -92,8 +92,25 @@ import javax.xml.transform.SourceLocator;
  * implementation of DTM can be created that wraps a DOM and vice
  * versa.</p>
  *
- * <p>State: In progress!!</p>
- */
+ * <p><strong>Please Note:</strong> The DTM API is still
+ * <strong>Subject To Change.</strong> This wouldn't affect most
+ * users, but might require updating some extensions.</p>
+ *
+ * <p> The largest change being contemplated is a reconsideration of
+ * the Node Handle representation.  We are still not entirely sure
+ * that an integer packed with two numeric subfields is really the
+ * best solution. It has been suggested that we move up to a Long, to
+ * permit more nodes per document without having to reduce the number
+ * of slots in the DTMManager. There's even been a proposal that we
+ * replace these integers with "cursor" objects containing the
+ * internal node id and a pointer to the actual DTM object; this might
+ * reduce the need to continuously consult the DTMManager to retrieve
+ * the latter, and might provide a useful "hook" back into normal Java
+ * heap management.  But changing this datatype would have huge impact
+ * on Xalan's internals -- especially given Java's lack of C-style
+ * typedefs -- so we won't cut over unless we're convinced the new
+ * solution really would be an improvement!</p>
+ * */
 public interface DTM
 {
 
