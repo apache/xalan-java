@@ -621,7 +621,7 @@ public class DTMManagerDefault extends DTMManager
    * not currently in use for another parse().
    *
    * @param inputSource The value returned from the URIResolver.
-   * @returns a SAX2 XMLReader to use to resolve the inputSource argument.
+   * @return  a SAX2 XMLReader to use to resolve the inputSource argument.
    *
    * @return non-null XMLReader reference ready to parse.
    */

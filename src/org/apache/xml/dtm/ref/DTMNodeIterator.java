@@ -188,7 +188,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
   /** @return the next node in the set and advance the position of the
    * iterator in the set.
    *
-   * @throw DOMException - INVALID_STATE_ERR Raised if this method is
+   * @throws DOMException - INVALID_STATE_ERR Raised if this method is
    * called after the detach method was invoked.
    *  */
   public Node nextNode() throws DOMException
@@ -206,7 +206,7 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
   /** @return the next previous in the set and advance the position of the
    * iterator in the set.
    *
-   * @throw DOMException - INVALID_STATE_ERR Raised if this method is
+   * @throws DOMException - INVALID_STATE_ERR Raised if this method is
    * called after the detach method was invoked.
    *  */
   public Node previousNode() 
