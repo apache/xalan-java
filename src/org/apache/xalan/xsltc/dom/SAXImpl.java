@@ -225,15 +225,17 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
      */
     public boolean isElement(final int node)
     {
-      return (((node < _firstAttributeNode) && (getType(node) >= DTM.NTYPES)) || getNodeType(node) == DTM.ELEMENT_NODE);
+      return (((node < _firstAttributeNode) && (getType(node) >= DTM.NTYPES))
+              || getNodeType(node) == DTM.ELEMENT_NODE);
     }
 
     /**
-     * Returns 'true' if a specific node is an element (of any type)
+     * Returns 'true' if a specific node is an attribute (of any type)
      */
     public boolean isAttribute(final int node)
     {
-      return (((node >= _firstAttributeNode) && (getType(node) >= DTM.NTYPES)) || getNodeType(node) == DTM.ATTRIBUTE_NODE);
+      return (((node >= _firstAttributeNode) && (getType(node) >= DTM.NTYPES))
+              || getNodeType(node) == DTM.ATTRIBUTE_NODE);
     }
 
     /**
@@ -748,8 +750,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	return _parent[node];
     }  use DTM's */
 
-    public int getElementPosition(int node)
-    {
+    public int getElementPosition(int node) {
       // Initialize with the first sbiling of the current node
       int match = 0;
       int curr  = getFirstChild(getParent(node));
@@ -902,16 +903,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     /**
      * Sets up a translet-to-dom type mapping table
      */
-    private int[] setupMapping(String[] namesArray)
-    {
-      final int nNames = namesArray.length;
+    private int[] setupMapping(String[] namesArray, int nNames) {
       // Padding with number of names, because they
       // may need to be added, i.e for RTFs. See copy03  
-      final int[] types = new int[m_expandedNameTable.getSize() /*+ nNames*/]; //(nNames);
+      final int[] types = new int[m_expandedNameTable.getSize()];
       for (int i = 0; i < nNames; i++)      {
-        //types.put(namesArray[i], new Integer(i + DTM.NTYPES));
           int type = getGeneralizedType(namesArray[i]);
-          types[type] = type; //(i + DTM.NTYPES);
+          types[type] = type;
       }
       return types;
     }
@@ -1123,7 +1121,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	    _dontEscape = null;
         }
 
-      _types         = setupMapping(_namesArray);
+      _types         = setupMapping(_namesArray, _namesArray.length);
     }
 
     /*
@@ -2068,8 +2066,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
 	/**
 	 * Generate the internal type for an element's expanded QName
-	 */
-	public short makeElementNode(String uri, String localname)
+	public void makeElementNode(String uri, String localname)
 	    throws SAXException
   {
 
@@ -2080,18 +2077,15 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       name = localname;
 
     // Stuff the QName into the names vector & hashtable
-    Integer obj = (Integer)_names.get(name);
-    if (obj == null)
+    if (_names.get(name) == null)
     {
-      _names.put(name, obj = new Integer(_nextNameCode++));
+      _names.put(name, new Integer(_nextNameCode++));
     }
-    return (short)obj.intValue();
   }
 
 	/**
 	 * Generate the internal type for an element's expanded QName
-	 */
-	private short makeElementNode(String name, int col)
+	private void makeElementNode(String name, int col)
 	    throws SAXException
   {
     // Expand prefix:localname to full QName
@@ -2108,13 +2102,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     }
 
     // Stuff the QName into the names vector & hashtable
-    Integer obj = (Integer)_names.get(name);
-    if (obj == null)
+    if (_names.get(name) == null)
     {
-      _names.put(name, obj = new Integer(_nextNameCode++));
+      _names.put(name, new Integer(_nextNameCode++));
     }
-    return (short)obj.intValue();
   }
+*/
 
 	/**
 	 *
@@ -2125,7 +2118,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     if (stack != null)
     {
       Integer obj = (Integer)stack.elementAt(0);
-      return (short)obj.intValue();
+      return obj.shortValue();
     }
     return 0;
   }
@@ -2232,8 +2225,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
 	/**
 	 * Creates an attribute node
-	 */
-  private int makeAttributeNode(int parent, Attributes attList, int i)
+  private void makeAttributeNode(int parent, Attributes attList, int i)
     throws SAXException
   {
     final int node = nextAttributeNode();
@@ -2252,24 +2244,23 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
     // Create the internal attribute node name (uri+@+localname)
     final String uri = attList.getURI(i);
-    if (uri != null && !uri.equals(EMPTYSTRING))
-    {
+    if (uri != null && !uri.equals(EMPTYSTRING)) {
       namebuf.append(uri);
-      namebuf.append(':');
+      namebuf.append(":@");
+    } else {
+      namebuf.append('@');
     }
-    namebuf.append('@');
     namebuf.append((localName.length() != 0) ? localName : qname);
 
     String name = namebuf.toString();
 
     // Get the index of the attribute node name (create new if non-ex).
-    Integer obj = (Integer)_names.get(name);
-    if (obj == null)
+    if (_names.get(name) == null)
     {
-      _names.put(name, obj = new Integer(_nextNameCode++));
+      _names.put(name, new Integer(_nextNameCode++));
     }
-    return node;
   }
+	 */
 
 	/****************************************************************/
 	/*               SAX Interface Starts Here                      */
@@ -2327,20 +2318,35 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     makeTextNode(false);
 
     _shortTexts = null;
-    final int namesSize = _nextNameCode - DTM.NTYPES;
+    final int namesSize = m_expandedNameTable.getSize() - DTM.NTYPES;
 
     // Fill the _namesArray[] array
-    _namesArray = new String[namesSize];
-    Enumeration keys = _names.keys();
-    while (keys.hasMoreElements())
-    {
-      final String name = (String)keys.nextElement();
-      final Integer idx = (Integer)_names.get(name);
-      _namesArray[idx.intValue() - DTM.NTYPES] = name;
+    String[] namesArray = new String[namesSize];
+    int nameCount = 0;
+
+    for (int i = 0; i < namesSize; i++) {
+        final short nodeType =
+                        m_expandedNameTable.getType(i+DTM.NTYPES);
+        final boolean isAttr = (nodeType == DTM.ATTRIBUTE_NODE);
+        if (isAttr || nodeType == DTM.ELEMENT_NODE) {
+            final String uri = m_expandedNameTable
+                                        .getNamespace(i+DTM.NTYPES);
+            final String lName = m_expandedNameTable
+                                        .getLocalName(i+DTM.NTYPES);
+
+            if (uri != null && uri.length() != 0) {
+                namesArray[nameCount++] = isAttr ? (uri + ":@" + lName)
+                                               : uri + ":" + lName;
+            } else {
+                namesArray[nameCount++] = isAttr ? ("@"+lName) : lName;
+            }
+        }
     }
+    _namesArray = namesArray;
+    _nextNameCode = nameCount;
 
     _names = null;
-    _types = setupMapping(_namesArray);
+    _types = setupMapping(_namesArray, nameCount);
 
     // trim arrays' sizes
     //resizeTextArray(_currentOffset);
@@ -2352,9 +2358,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     //_treeNodeLimit = _currentNode + _currentAttributeNode;
 
     // Fill the _namespace[] and _uriArray[] array
-    _namespace = new short[namesSize];
+    _namespace = new short[nameCount];
     _uriArray = new String[_uriCount];
-    for (int i = 0; i<namesSize; i++)
+    for (int i = 0; i<nameCount; i++)
     {
       final String qname = _namesArray[i];
       final int col = _namesArray[i].lastIndexOf(':');
@@ -2400,26 +2406,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
     final int count = attributes.getLength();
 
-    // Append any attribute nodes
-    if (count > 0)
-    {
-      for (int i = 0; i<count; i++)
-      {
-        if (!attributes.getQName(i).startsWith(XMLNS_PREFIX)) {
-          makeAttributeNode(node, attributes, i);
-        }
+    // Look for any xml:space attributes
+    for (int i = 0; i<count; i++) {
+      if (attributes.getQName(i).equals(XMLSPACE_STRING)) {
+        xmlSpaceDefine(attributes.getValue(i), node);
       }
     }
-
-    final int col = qname.lastIndexOf(':');
-
-// %HZ% Fix comments - no assignment is happening anymore
-    // Assign an internal type to this element (may exist)
-    if ((uri != null) && (localName.length() > 0))
-        makeElementNode(uri, localName);
-    else
-        makeElementNode(qname, col);
-
   }
 
 	/**
