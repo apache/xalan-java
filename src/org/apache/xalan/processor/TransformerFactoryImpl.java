@@ -571,11 +571,14 @@ public javax.xml.transform.Templates processFromNode(Node node)
    */
   public Object getAttribute(String name) throws IllegalArgumentException
   {
-    // Please implement this method for testing purposes 25-Jun-01 -sc
     if (name.equals(FEATURE_INCREMENTAL))
-      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_FOUND, new Object[]{name})); //name + " attribute value not found");
+    {
+      return new Boolean(org.apache.xml.dtm.DTMManager.getIncremental());            
+    }
     else if (name.equals(FEATURE_OPTIMIZE))
-      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_FOUND, new Object[]{name})); //name + " attribute value not found");
+    {
+      return new Boolean(m_optimize);
+    }
     else
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");
   }
