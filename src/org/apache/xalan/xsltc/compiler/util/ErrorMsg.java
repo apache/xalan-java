@@ -163,11 +163,22 @@ public final class ErrorMsg {
     public static final int TRANSFORM_USAGE_STR     = 73;
 
     // Recently added error messages
-    public static final int STRAY_SORT_ERR          = 74;
-    public static final int UNSUPPORTED_ENCODING    = 75;
-    public static final int SYNTAX_ERR              = 76;
-    public static final int CONSTRUCTOR_NOT_FOUND   = 77;
-    public static final int NO_JAVA_FUNCT_THIS_REF  = 78;
+    public static final int STRAY_SORT_ERR              = 74;
+    public static final int UNSUPPORTED_ENCODING        = 75;
+    public static final int SYNTAX_ERR                  = 76;
+    public static final int CONSTRUCTOR_NOT_FOUND       = 77;
+    public static final int NO_JAVA_FUNCT_THIS_REF      = 78;
+    public static final int TYPE_CHECK_ERR              = 79;
+    public static final int TYPE_CHECK_UNK_LOC_ERR      = 80;
+    public static final int ILLEGAL_CMDLINE_OPTION_ERR  = 81;
+    public static final int OPTION_MISSING_ARG_ERR      = 82;
+    public static final int CMDLINE_OPT_MISSING_ARG_ERR = 83;
+    public static final int WARNING_PLUS_WRAPPED_MSG    = 84;
+    public static final int WARNING_MSG                 = 85;
+    public static final int FATAL_ERR_PLUS_WRAPPED_MSG  = 86;
+    public static final int FATAL_ERR_MSG               = 87;
+    public static final int ERROR_PLUS_WRAPPED_MSG      = 88;
+    public static final int ERROR_MSG                   = 89;
 
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.

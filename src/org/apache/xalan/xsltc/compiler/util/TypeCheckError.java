@@ -96,16 +96,15 @@ public class TypeCheckError extends Exception {
     public String toString() {
 	String result;
 
-	if (_error != null) {
-	    result = _error.toString();
-	}
-	else if (_node != null) {
-	    result = "Type check error in " + _node.toString() + ".";
-	}
-	else {
-	    result = "Type check error (no line information).";
-	}
+	if (_error == null) {
+            if (_node != null) {
+                _error = new ErrorMsg(ErrorMsg.TYPE_CHECK_ERR,
+                                      _node.toString());
+	    } else {
+	        _error = new ErrorMsg(ErrorMsg.TYPE_CHECK_UNK_LOC_ERR);
+	    }
+        }
 
-	return result;
+	return _error.toString();
     }
 }
