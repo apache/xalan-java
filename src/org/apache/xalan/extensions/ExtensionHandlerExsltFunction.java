@@ -80,8 +80,11 @@ import org.apache.xml.utils.QName;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.functions.FuncExtFunction;
+
 import javax.xml.transform.TransformerException;
 
 /**
@@ -206,6 +209,32 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
       String funcName, Vector args, Object methodKey,
       ExpressionContext exprContext) throws TransformerException
   {
+    throw new TransformerException("This method should not be called.");
+  }
+
+  /**
+   * Execute the EXSLT function and return the result value.
+   *
+   * @param extFunction The XPath extension function
+   * @param args The arguments of the function call.
+   * @param exprContext The context in which this expression is being executed.
+   * @return the return value of the function evaluation.
+   * @throws TransformerException
+   */
+  public Object callFunction(FuncExtFunction extFunction,
+                             Vector args,
+                             ExpressionContext exprContext)
+      throws TransformerException
+  {
+    // Find the template which invokes this EXSLT function.
+    ExpressionNode parent = extFunction.exprGetParent();
+    while (parent != null && !(parent instanceof ElemTemplate))
+    {
+      parent = parent.exprGetParent();
+    }
+    
+    ElemTemplate callerTemplate = (parent != null) ? (ElemTemplate)parent: null;
+    
     XObject[] methodArgs;
     methodArgs = new XObject[args.size()];
     try
@@ -214,24 +243,36 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
       {
         methodArgs[i] =  XObject.create(args.elementAt(i));
       }
-      ElemExsltFunction elemFunc = getFunction(funcName);
+      
+      ElemExsltFunction elemFunc = getFunction(extFunction.getFunctionName());
       XPathContext context = exprContext.getXPathContext();
       TransformerImpl transformer = (TransformerImpl)context.getOwnerObject();
+      
+      // Reset the frame bottom before calling the EXSLT function.
+      if (callerTemplate != null)
+        elemFunc.setCallerFrameSize(callerTemplate.m_frameSize);
+      else
+        elemFunc.setCallerFrameSize(0);
+      
       elemFunc.execute(transformer, methodArgs);
       
-      VariableStack varStack = context.getVarStack();
       XObject val = new XString(""); // value returned if no result element.
-      
-      int resultIndex = elemFunc.getResultIndex();   
-      if (varStack.isLocalSet(resultIndex))
-        val = varStack.getLocalVariable(context, resultIndex);
+      if (elemFunc.isResultSet())
+      {
+        val = elemFunc.getResult();
+        elemFunc.clearResult();
+      }
+              
       return val;
+    }
+    catch (TransformerException e)
+    {
+      throw e;
     }
     catch (Exception e)
     {
-      // e.printStackTrace();
       throw new TransformerException(e);
-    }
+    }    
   }
   
 }

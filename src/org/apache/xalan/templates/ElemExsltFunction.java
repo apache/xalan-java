@@ -91,6 +91,15 @@ import org.apache.xalan.extensions.ExtensionHandlerExsltFunction;
 public class ElemExsltFunction extends ElemTemplate
 {
   
+  // A flag indicating whether the return result is set
+  private boolean m_isResultSet = false;
+  
+  // The return result
+  private XObject m_result;
+  
+  // The frame size of the current caller
+  private int m_callerFrameSize = 0;
+  
   /**
    * Get an integer representation of the element type.
    *
@@ -118,8 +127,17 @@ public class ElemExsltFunction extends ElemTemplate
   public void execute(TransformerImpl transformer, XObject[] args)
           throws TransformerException
   {
+    // Reset the result before starting a function execution.
+    m_isResultSet = false;
+    m_result = null;
+    
     XPathContext xctxt = transformer.getXPathContext();
     VariableStack vars = xctxt.getVarStack();
+    
+    // Increment the frame bottom of the variable stack by the
+    // frame size of the caller template or EXSLT function.
+    int oldStackFrame = vars.getStackFrame();
+    vars.setStackFrame(m_callerFrameSize + oldStackFrame);
     
     // Set parameters.
     NodeList children = this.getChildNodes();
@@ -131,7 +149,7 @@ public class ElemExsltFunction extends ElemTemplate
       {
         numparams++;
         ElemParam param = (ElemParam)children.item(i);
-        vars.setLocalVariable (param.m_index, args[i]);
+        vars.setLocalVariable (param.getIndex(), args[i]);
       }
     }
     if (numparams < args.length)
@@ -145,10 +163,11 @@ public class ElemExsltFunction extends ElemTemplate
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
     
-    // Be sure the return value is not set (so can verify that only one result
-    // is generated per ElemExsltFunction execute).
-    vars.setLocalVariable(_resultIndex, null);
-    transformer.executeChildTemplates(this, true); 
+    transformer.executeChildTemplates(this, true);
+    
+    // Reset the stack frame after the function call
+    vars.setStackFrame(oldStackFrame);
+    m_callerFrameSize = 0;
 
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEndEvent(this);
@@ -157,24 +176,16 @@ public class ElemExsltFunction extends ElemTemplate
     // xctxt.popRTFContext(); 
     
   }
-  //int m_inArgsSize;
-  //public int m_frameSize;  
   
   /**
    * Called after everything else has been
    * recomposed, and allows the function to set remaining
    * values that may be based on some other property that
-   * depends on recomposition. Also adds a slot to the variable
-   * stack for the return value. The result element will place
-   * its value in this slot.
+   * depends on recomposition.
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
     super.compose(sroot);
-    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    // Add a position on the variable stack for the return value.
-    setResultIndex(cstate.addVariableName
-      (new QName(Constants.S_EXSLT_COMMON_URL, "result")));
     
     // Register the function namespace (if not already registered).
     String namespace = getName().getNamespace();
@@ -195,48 +206,52 @@ public class ElemExsltFunction extends ElemTemplate
   }
   
   /**
-   * Add the namespace to the StylesheetRoot vector of extension namespaces. Be sure the
-   * exslt:function namespace is also added.
+   * Return the result of this EXSLT function
+   *
+   * @return The result of this EXSLT function
    */
-/*  public void runtimeInit(TransformerImpl transformer) throws TransformerException
+  public XObject getResult()
   {
-    //System.out.println("ElemExsltFunction.runtimeInit()");
-    String namespace = getName().getNamespace();
-    ExtensionsTable etable = transformer.getExtensionsTable();
-    StylesheetRoot sroot = transformer.getStylesheet();
-    ExtensionHandlerExsltFunction exsltHandler =
-             new ExtensionHandlerExsltFunction(namespace, sroot);
-    //etable.addExtensionNamespace(namespace, exsltHandler);
-    // Make sure there is a handler for the EXSLT functions namespace
-    // -- for isElementAvailable().
-    if (!(namespace.equals(Constants.S_EXSLT_FUNCTIONS_URL)))
-    {
-      exsltHandler = new ExtensionHandlerExsltFunction(
-                                   Constants.S_EXSLT_FUNCTIONS_URL, 
-                                   sroot);
-     // etable.addExtensionNamespace(Constants.S_EXSLT_FUNCTIONS_URL, 
-     //                              exsltHandler);
-    }
-  }
-*/  
-
-  private int _resultIndex;
-  
-  /**
-   * Sets aside a position on the local variable stack index 
-   * to refer to the result element return value.
-   */
-  void setResultIndex(int stackIndex)
-  { 
-      _resultIndex = stackIndex;
+    return m_result;
   }
   
   /**
-   * Provides the EXSLT extension handler access to the return value.
+   * Set the return result of this EXSLT function
+   *
+   * @param result The return result
    */
-  public int getResultIndex()
+  public void setResult(XObject result)
   {
-    return _resultIndex;
+    m_isResultSet = true;
+    m_result = result;
   }
   
+  /**
+   * Return true if the result has been set
+   *
+   * @return true if the result has been set
+   */
+  public boolean isResultSet()
+  {
+    return m_isResultSet;
+  }
+  
+  /**
+   * Clear the return result of this EXSLT function
+   */
+  public void clearResult()
+  {
+    m_isResultSet = false;
+    m_result = null;    
+  }
+  
+  /**
+   * Set the frame size of the current caller for use in the variable stack.
+   *
+   * @param callerFrameSize The frame size of the caller
+   */
+  public void setCallerFrameSize(int callerFrameSize)
+  {
+    m_callerFrameSize = callerFrameSize;
+  }
 }

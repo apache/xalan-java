@@ -134,6 +134,7 @@ import org.xml.sax.ext.LexicalHandler;
 //dml
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xalan.extensions.ExtensionsTable;
+import org.apache.xpath.functions.FuncExtFunction;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -461,6 +462,13 @@ public class TransformerImpl extends Transformer
     return getExtensionsTable().extFunction(ns, funcName, 
                                         argVec, methodKey,
                                         getXPathContext().getExpressionContext());   
+  }
+
+  public Object extFunction(FuncExtFunction extFunction, Vector argVec)
+            throws javax.xml.transform.TransformerException
+  {
+    return getExtensionsTable().extFunction(extFunction, argVec,
+                                            getXPathContext().getExpressionContext());   
   }
   
   //=========================

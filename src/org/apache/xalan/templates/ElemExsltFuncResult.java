@@ -33,22 +33,19 @@ public class ElemExsltFuncResult extends ElemVariable
   public void execute(TransformerImpl transformer) throws TransformerException
   {    
     XPathContext context = transformer.getXPathContext();
-    VariableStack varStack = context.getVarStack();
-    // ElemExsltFunc result should always be within an ElemExsltFunction.
     ElemExsltFunction owner = getOwnerFunction();
     if (owner != null)
     {
-      int resultIndex = owner.getResultIndex();
       // Verify that result has not already been set by another result
       // element. Recursion is allowed: intermediate results are cleared 
       // in the owner ElemExsltFunction execute().
-      if (varStack.isLocalSet(resultIndex))
-        throw new TransformerException
-          ("An EXSLT function cannot set more than one result!");
+      if (owner.isResultSet())
+        throw new TransformerException("An EXSLT function cannot set more than one result!");
+      
       int sourceNode = context.getCurrentNode();
       // Set the return value;
-      XObject var = getValue(transformer, sourceNode);   
-      varStack.setLocalVariable(resultIndex, var);
+      XObject var = getValue(transformer, sourceNode);
+      owner.setResult(var);
     }    
   }
 
