@@ -194,8 +194,8 @@ public class KeyWalker extends DescendantOrSelfWalker
                                                    testNode);
 
         if (score == kd.getMatch().MATCH_SCORE_NONE)
-          continue;
-
+          continue;        
+                
         // Query from the node, according the the select pattern in the
         // use attribute in xsl:key.
         XObject xuse = kd.getUse().execute(ki.getXPathContext(), testNode,
@@ -204,7 +204,8 @@ public class KeyWalker extends DescendantOrSelfWalker
         if (xuse.getType() != xuse.CLASS_NODESET)
         {
           String exprResult = xuse.str();
-
+          ((KeyIterator)m_lpi).addRefNode(exprResult, testNode);
+          
           if (lookupKey.equals(exprResult))
             return this.FILTER_ACCEPT;
         }
@@ -212,15 +213,32 @@ public class KeyWalker extends DescendantOrSelfWalker
         {
           NodeIterator nl = xuse.nodeset();
           Node useNode;
-
+          short result = -1;
+          /*
+          We are walking through all the nodes in this nodeset
+          rather than stopping when we find the one we're looking
+          for because we don't currently save the state of KeyWalker
+          such that the next time it gets called it would continue
+          to look in this nodeset for any further matches. 
+          TODO: Try to save the state of KeyWalker, i.e. keep this node
+          iterator saved somewhere and finish walking through its nodes
+          the next time KeyWalker is called before we look for any new
+          matches. What if the next call is for the same match+use 
+          combination??
+          */
           while (null != (useNode = nl.nextNode()))
           {
             String exprResult = m_lpi.getDOMHelper().getNodeData(useNode);
-
+            ((KeyIterator)m_lpi).addRefNode(exprResult, testNode); 
+            
             if ((null != exprResult) && lookupKey.equals(exprResult))
-              return this.FILTER_ACCEPT;
+              result = this.FILTER_ACCEPT;
+              //return this.FILTER_ACCEPT;
           }
-        }
+          if (-1 != result)
+            return result;
+        }       
+        
       }  // end for(int i = 0; i < nDeclarations; i++)
     }
     catch (TransformerException se)
@@ -231,4 +249,22 @@ public class KeyWalker extends DescendantOrSelfWalker
 
     return this.FILTER_REJECT;
   }
+  
+   /**
+   *  Moves the <code>TreeWalker</code> to the next visible node in document
+   * order relative to the current node, and returns the new node. If the
+   * current node has no next node,  or if the search for nextNode attempts
+   * to step upward from the TreeWalker's root node, returns
+   * <code>null</code> , and retains the current node.
+   * @return  The new node, or <code>null</code> if the current node has no
+   *   next node  in the TreeWalker's logical view.
+   */
+  public Node nextNode()
+  {
+    Node node = super.nextNode();
+    if (node == null)
+      ((KeyIterator)m_lpi).setLookForMoreNodes(false);
+    return node;
+  }
+  
 }

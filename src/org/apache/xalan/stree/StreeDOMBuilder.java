@@ -323,6 +323,9 @@ public class StreeDOMBuilder extends DOMBuilder
    */
   void appendAccumulatedText(Node currentNode, char ch[], int start, int length)
   {
+    // Get the text node. It should be the last node that was 
+    // added to the current node. (Text nodes are never made to be
+    // the currentNode).
     TextImpl textNode = (TextImpl)((Parent)currentNode).m_last;
     textNode.appendText(ch, start, length);
   }

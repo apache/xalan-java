@@ -59,68 +59,44 @@ package org.apache.xalan.transformer;
 import java.util.Vector;
 
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.templates.KeyDeclaration;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.DescendantOrSelfWalker;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPath;
+import org.apache.xpath.NodeSet;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.traversal.NodeIterator;
-
-import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
  * NEEDSDOC Class KeyIterator <needs-comment/>
  */
-public class KeyIterator extends LocPathIterator
+public class KeyRefIterator extends LocPathIterator
 {
-  
-  /** The key table this iterator is associated to          */
-  private KeyTable m_keyTable;
 
-  /** NEEDSDOC Field m_name          */
-  private QName m_name;
+  /** Key name          */
+  private QName m_name;    
   
-  /** 
-   * Flag indicating whether the whole source tree has been walked.     
-   * True if we still need to finish walking the tree.
-   * */
-  private boolean m_lookForMoreNodes = true;
-
+  /** Use field of key function          */
+  private String m_lookupKey;  
+  
+  /** Main Key iterator for this iterator     */
+  private KeyIterator m_ki;    
+  
   /**
-   * NEEDSDOC Method getName 
+   * Get key name
    *
    *
-   * NEEDSDOC (getName) @return
+   * @return Key name
    */
   public QName getName()
   {
     return m_name;
   }
-
-  /** NEEDSDOC Field m_keyDeclarations          */
-  private Vector m_keyDeclarations;
-
-  /**
-   * NEEDSDOC Method getKeyDeclarations 
-   *
-   *
-   * NEEDSDOC (getKeyDeclarations) @return
-   */
-  public Vector getKeyDeclarations()
-  {
-    return m_keyDeclarations;
-  }
+  
+  
 
   /**
-   * Constructor KeyIterator
+   * Constructor KeyRefIterator
    *
    *
    * NEEDSDOC @param doc
@@ -129,99 +105,102 @@ public class KeyIterator extends LocPathIterator
    * NEEDSDOC @param keyDeclarations
    * NEEDSDOC @param xctxt
    */
-  public KeyIterator(Node doc, PrefixResolver nscontext, QName name,
-                     Vector keyDeclarations, XPathContext xctxt)
+  public KeyRefIterator(String ref, KeyIterator ki)
   {
 
-    super(nscontext);
-
-    initContext(xctxt);
-
-    m_name = name;
-    m_keyDeclarations = keyDeclarations;
-    m_firstWalker = new KeyWalker(this);
-
-    this.setLastUsedWalker(m_firstWalker);
+    super(ki.getPrefixResolver());
+    setShouldCacheNodes(true);
+    m_ki = ki;
+    m_name = ki.getName();
+    m_lookupKey = ref;
+    this.m_execContext = ki.getXPathContext();
+    this.m_dhelper = ki.getDOMHelper();
   }
 
   /**
-   * NEEDSDOC Method nextNode 
-   *
-   *
-   * NEEDSDOC (nextNode) @return
-   *
-   * @throws DOMException
+   *  Returns the next node in the set and advances the position of the
+   * iterator in the set. After a NodeIterator is created, the first call
+   * to nextNode() returns the first node in the set.
+   * 
+   * @return  The next <code>Node</code> in the set being iterated over, or
+   *   <code>null</code> if there are no more members in that set.
+   * 
+   * @exception DOMException
+   *    INVALID_STATE_ERR: Raised if this method is called after the
+   *   <code>detach</code> method was invoked.
    */
   public Node nextNode() throws DOMException
   {
 
+    if (m_foundLast)
+      return null;
+    
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
-    Node n = super.nextNode();
+    NodeSet m_cachedNodes = getCachedNodes();
+    
+    // We are not using the NodeSet methods getCurrentPos() and nextNode()
+    // in this case because the nodeset is not cloned and therefore
+    // the positions it indicates may not be associated with the 
+    // current iterator.
+    if ((null != m_cachedNodes)
+            && (m_next < m_cachedNodes.size()))        
+    {
+      Node next = m_cachedNodes.elementAt(m_next); 
+      this.setCurrentPos(++m_next); 
+      m_lastFetched = next;
+      return next;
+    }    
 
-    // System.out.println("--> "+((null == n) ? "null" : n.getNodeName()));
-    return n;
-  }
-
-  /**
-   * NEEDSDOC Method setLookupKey 
-   *
-   *
-   * NEEDSDOC @param lookupKey
-   */
-  public void setLookupKey(String lookupKey)
-  {
-
-    // System.out.println("setLookupKey - lookupKey: "+lookupKey);
-    ((KeyWalker) m_firstWalker).m_lookupKey = lookupKey;
-
-    m_firstWalker.setRoot(
-      (this.getContext().getNodeType() == Node.DOCUMENT_NODE)
-      ? this.getContext() : this.getContext().getOwnerDocument());
-    this.setLastUsedWalker(m_firstWalker);
-    this.setNextPosition(0);
+    Node next = null;       
+    if ( m_ki.getLookForMoreNodes()) 
+    {
+      ((KeyWalker)m_ki.getFirstWalker()).m_lookupKey = m_lookupKey;
+      next = m_ki.nextNode();        
+    }
+    
+    if (null != next)
+    {  
+      m_lastFetched = next;
+      this.setCurrentPos(++m_next);
+      return next;
+    }
+    else
+      m_foundLast = true;                      
+    
+    m_lastFetched = null;
+    return null;
   }
   
   /**
-   * Set the KeyTable associated with this iterator  
+   * Get a cloned LocPathIterator that holds the same 
+   * position as this iterator.
    *
+   * @return A clone of this iterator that holds the same node position.
    *
-   * @param keyTable, the KeyTable associated with this iterator
+   * @throws CloneNotSupportedException 
    */
-  void setKeyTable(KeyTable keyTable)
+  public Object clone() throws CloneNotSupportedException
   {
-    m_keyTable = keyTable;
+    KeyRefIterator clone = (KeyRefIterator)super.clone();
+    clone.m_foundLast = false;
+    clone.m_lastFetched = null;
+    clone.m_next = 0; 
+    clone.setCurrentPos(0);
+    return clone;
+  }
+  
+  /**
+   * Add a node matching this ref to the cached nodes for this iterator 
+   *
+   *
+   * @param node Node to add to cached nodes
+   */
+  public void addNode(Node node) 
+  {
+    NodeSet m_cachedNodes = getCachedNodes();
+    if (null != m_cachedNodes)
+      m_cachedNodes.addElement(node);
   }  
-  
-  /**
-   * Add this ref to the refsTable in KeyTable  
-   *
-   *
-   * @param ref Key ref(from key use field)
-   * @param node Node matching that ref 
-   */
-  void addRefNode(String ref, Node node)
-  {
-    m_keyTable.addRefNode(ref, node);
-  }
-  
-  /**
-   * Indicate whether we have walked the whole tree  
-   *
-   * @param b False if we have walked the whole tree
-   */
-  void setLookForMoreNodes(boolean b)
-  {
-    m_lookForMoreNodes = b;
-  }
-  
-  /**
-   * Get flag indicating whether we have walked the whole tree  
-   *
-   */
-  boolean getLookForMoreNodes()
-  {
-    return m_lookForMoreNodes;
-  }
-  
+       
 }

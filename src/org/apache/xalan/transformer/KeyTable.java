@@ -63,6 +63,7 @@ import org.w3c.dom.NodeList;
 
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.Enumeration;
 
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
@@ -111,6 +112,8 @@ public class KeyTable
    * b) with a value that is a KeyIterator.
    */
   private KeyIterator m_keyIter;
+  
+  private Hashtable defsTable;
 
   /**
    * Build a keys table.
@@ -131,35 +134,64 @@ public class KeyTable
     m_docKey = doc;
     m_keyIter = new KeyIterator(doc, nscontext, name, keyDeclarations,
                                 xmlLiaison);
+    m_keyIter.setKeyTable(this);
   }  // end buildKeysTable method
 
   /**
    * Given a valid element key, return the corresponding node list.
    * @param The name of the key, which must match the 'name' attribute on xsl:key.
    *
-   * NEEDSDOC @param name
+   * @param name The name of the key
    * @param ref The value that must match the value found by the 'match' attribute on xsl:key.
    * @return If the name was not declared with xsl:key, this will return null,
    * if the identifier is not found, it will return null,
    * otherwise it will return a LocPathIterator instance.
    */
-  public KeyIterator getNodeSetByKey(QName name, String ref)
+  public LocPathIterator getNodeSetByKey(QName name, String ref)
   {
 
     KeyIterator ki;
+    KeyRefIterator kiRef;
+    Hashtable refsTable = null;
 
-    try
+    if (defsTable != null)
     {
-      ki = (KeyIterator) m_keyIter.clone();
-
-      ki.setLookupKey(ref);
+      refsTable = (Hashtable)defsTable.get(name);
+      if (refsTable != null)
+      {
+        Object kiObj = refsTable.get(ref);
+        if (kiObj != null)
+        {
+          try
+          {
+            // clone with reset??
+            kiRef = (KeyRefIterator)((KeyRefIterator)kiObj).clone();
+            return kiRef;
+          }
+          catch (CloneNotSupportedException cnse)
+          {
+            ki = null;
+          }
+        }
+      }
     }
-    catch (CloneNotSupportedException cnse)
+
     {
-      ki = null;
-    }
-
-    return ki;
+      if (defsTable == null)
+        defsTable = new Hashtable();
+      if (refsTable == null)
+        refsTable = new Hashtable();
+      
+      // initialize walker only once!
+      if (m_keyIter.getFirstWalker().getRoot() == null)
+        m_keyIter.setLookupKey(ref);
+      else
+        ((KeyWalker)m_keyIter.getFirstWalker()).m_lookupKey = ref;
+      kiRef = new KeyRefIterator(ref, m_keyIter);
+      refsTable.put(ref, kiRef);
+      defsTable.put(name,refsTable);
+      return kiRef;              
+    } 
   }
 
   /**
@@ -172,4 +204,44 @@ public class KeyTable
   {
     return m_keyIter.getName();
   }
+  
+  /**
+   * Add this ref to the refsTable  
+   *
+   *
+   * @param ref Key ref(from key use field)
+   * @param node Node matching that ref 
+   */
+  void addRefNode(String ref, Node node)
+  {
+    KeyRefIterator kiRef = null;
+    Hashtable refsTable = null;
+    if (defsTable != null)
+    {
+      refsTable = (Hashtable)defsTable.get(getKeyTableName());
+      if (refsTable != null)
+      {
+        Object kiObj = refsTable.get(ref);
+        if (kiObj != null)
+        {          
+          kiRef = (KeyRefIterator)kiObj;            
+        }
+      }
+    }
+    if (kiRef == null)
+    {  
+      if (defsTable == null)
+        defsTable = new Hashtable();
+      if (refsTable == null)
+      {  
+        refsTable = new Hashtable();
+        defsTable.put(getKeyTableName(),refsTable);
+      }
+      kiRef = new KeyRefIterator(ref, m_keyIter);
+      refsTable.put(ref, kiRef);      
+    }
+    kiRef.addNode(node); 
+  }
+  
+  
 }

@@ -111,7 +111,7 @@ public class LocPathIterator extends Expression
   ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /** The last node that was fetched, usually by nextNode. */
-  Node m_lastFetched;
+  public Node m_lastFetched;
 
   /** If this iterator needs to cache nodes that are fetched, they
    * are stored here.   */
@@ -350,6 +350,16 @@ public class LocPathIterator extends Expression
       m_cachedNodes = new NodeSet();
     else
       m_cachedNodes = null;
+  }
+  
+  /**
+   * Get cached nodes.
+   *
+   * @return Cached nodes.
+   */
+  public NodeSet getCachedNodes()
+  {
+    return m_cachedNodes;
   }
 
   /**
