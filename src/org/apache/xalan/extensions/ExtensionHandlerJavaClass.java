@@ -68,6 +68,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
@@ -236,7 +237,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
           methodArgs[i] = args.elementAt(i);
         }
         Constructor c = (Constructor) getFromCache(methodKey, null, methodArgs);
-        if (c != null)
+        if (c != null && !TransformerImpl.S_DEBUG)
         {
           try
           {
@@ -258,7 +259,20 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
                                           convertedArgs,
                                           exprContext);
         putToCache(methodKey, null, methodArgs, c);
-        return c.newInstance(convertedArgs[0]);
+        if (TransformerImpl.S_DEBUG) {
+            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+            trans.getTraceManager().fireExtensionEvent(new ExtensionEvent(trans, c, convertedArgs[0]));
+            Object result;
+            try {            
+                result = c.newInstance(convertedArgs[0]);
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                trans.getTraceManager().fireExtensionEndEvent(new ExtensionEvent(trans, c, convertedArgs[0]));
+            }
+            return result;
+        } else
+            return c.newInstance(convertedArgs[0]);
       }
 
       else
@@ -273,7 +287,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
           methodArgs[i] = args.elementAt(i);
         }
         Method m = (Method) getFromCache(methodKey, null, methodArgs);
-        if (m != null)
+        if (m != null && !TransformerImpl.S_DEBUG)
         {
           try
           {
@@ -337,19 +351,71 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
                                      resolveType);
         putToCache(methodKey, null, methodArgs, m);
 
-        if (MethodResolver.DYNAMIC == resolveType)          // First argument was object type
-          return m.invoke(targetObject, convertedArgs[0]);
+        if (MethodResolver.DYNAMIC == resolveType) {         // First argument was object type
+          if (TransformerImpl.S_DEBUG) {
+            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+            trans.getTraceManager().fireExtensionEvent(m, targetObject, convertedArgs[0]);
+            Object result;
+            try {
+                result = m.invoke(targetObject, convertedArgs[0]);
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                trans.getTraceManager().fireExtensionEndEvent(m, targetObject, convertedArgs[0]);
+            }
+            return result;
+          } else                  
+            return m.invoke(targetObject, convertedArgs[0]);
+        }
         else                                  // First arg was not object.  See if we need the implied object.
         {
-          if (Modifier.isStatic(m.getModifiers()))
-            return m.invoke(null, convertedArgs[0]);
+          if (Modifier.isStatic(m.getModifiers())) {
+            if (TransformerImpl.S_DEBUG) {
+              TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+              trans.getTraceManager().fireExtensionEvent(m, null, convertedArgs[0]);
+              Object result;
+              try {
+                  result = m.invoke(null, convertedArgs[0]);
+              } catch (Exception e) {
+                throw e;
+              } finally {
+                trans.getTraceManager().fireExtensionEndEvent(m, null, convertedArgs[0]);
+              }
+              return result;
+            } else                  
+              return m.invoke(null, convertedArgs[0]);
+          }
           else
           {
             if (null == m_defaultInstance)
             {
-              m_defaultInstance = m_classObj.newInstance();
+              if (TransformerImpl.S_DEBUG) {
+                TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+                trans.getTraceManager().fireExtensionEvent(new ExtensionEvent(trans, m_classObj));
+                try {
+                    m_defaultInstance = m_classObj.newInstance();
+                } catch (Exception e) {
+                    throw e;
+                } finally {
+                    trans.getTraceManager().fireExtensionEndEvent(new ExtensionEvent(trans, m_classObj));
+                }
+              }    else
+                  m_defaultInstance = m_classObj.newInstance();
             }
-            return m.invoke(m_defaultInstance, convertedArgs[0]);
+            if (TransformerImpl.S_DEBUG) {
+              TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+              trans.getTraceManager().fireExtensionEvent(m, m_defaultInstance, convertedArgs[0]);
+              Object result;
+              try {
+                result = m.invoke(m_defaultInstance, convertedArgs[0]);
+              } catch (Exception e) {
+                throw e;
+              } finally {
+                trans.getTraceManager().fireExtensionEndEvent(m, m_defaultInstance, convertedArgs[0]);
+              }
+              return result;
+            } else                  
+              return m.invoke(m_defaultInstance, convertedArgs[0]);
           }  
         }
 
@@ -427,8 +493,19 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
       try
       {
         m = MethodResolver.getElementMethod(m_classObj, localPart);
-        if ( (null == m_defaultInstance) && !Modifier.isStatic(m.getModifiers()) )
-          m_defaultInstance = m_classObj.newInstance();
+        if ( (null == m_defaultInstance) && !Modifier.isStatic(m.getModifiers()) ) {
+          if (TransformerImpl.S_DEBUG) {            
+            transformer.getTraceManager().fireExtensionEvent(new ExtensionEvent(transformer, m_classObj));
+            try {
+              m_defaultInstance = m_classObj.newInstance();
+            } catch (Exception e) {
+              throw e;
+            } finally {
+              transformer.getTraceManager().fireExtensionEndEvent(new ExtensionEvent(transformer, m_classObj));
+            }
+          } else 
+            m_defaultInstance = m_classObj.newInstance();
+        }
       }
       catch (Exception e)
       {
@@ -443,7 +520,17 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
     try
     {
-      result = m.invoke(m_defaultInstance, new Object[] {xpc, element});
+      if (TransformerImpl.S_DEBUG) {
+        transformer.getTraceManager().fireExtensionEvent(m, m_defaultInstance, new Object[] {xpc, element});
+        try {
+          result = m.invoke(m_defaultInstance, new Object[] {xpc, element});
+        } catch (Exception e) {
+          throw e;
+        } finally {
+          transformer.getTraceManager().fireExtensionEndEvent(m, m_defaultInstance, new Object[] {xpc, element});
+        }
+      } else                  
+        result = m.invoke(m_defaultInstance, new Object[] {xpc, element});
     }
     catch (InvocationTargetException e)
     {

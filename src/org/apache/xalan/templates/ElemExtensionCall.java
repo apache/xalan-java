@@ -237,6 +237,8 @@ public class ElemExtensionCall extends ElemLiteralResult
             throws TransformerException
   {
 
+	if (TransformerImpl.S_DEBUG)
+		transformer.getTraceManager().fireTraceEvent(this);
     try
     {
       transformer.getResultTreeHandler().flushPending();
@@ -295,6 +297,8 @@ public class ElemExtensionCall extends ElemLiteralResult
     {
       transformer.getErrorListener().fatalError(e);
     }
+	if (TransformerImpl.S_DEBUG)
+		transformer.getTraceManager().fireTraceEndEvent(this);
   }
 
   /**

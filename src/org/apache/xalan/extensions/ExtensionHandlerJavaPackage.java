@@ -69,6 +69,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
@@ -293,7 +294,20 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                                           convertedArgs,
                                           exprContext);
         putToCache(methodKey, null, methodArgs, c);
-        return c.newInstance(convertedArgs[0]);
+        if (TransformerImpl.S_DEBUG) {
+            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+            trans.getTraceManager().fireExtensionEvent(new ExtensionEvent(trans, c, convertedArgs[0]));            
+            Object result;
+            try {
+                result = c.newInstance(convertedArgs[0]);
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                trans.getTraceManager().fireExtensionEndEvent(new ExtensionEvent(trans, c, convertedArgs[0]));
+            }
+            return result;
+        } else
+            return c.newInstance(convertedArgs[0]);
       }
 
       else if (-1 != lastDot) {                         // Handle static method call
@@ -305,7 +319,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           methodArgs[i] = args.elementAt(i);
         }
         Method m = (Method) getFromCache(methodKey, null, methodArgs);
-        if (m != null)
+        if (m != null && !TransformerImpl.S_DEBUG)
         {
           try
           {
@@ -339,7 +353,21 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                                      exprContext,
                                      MethodResolver.STATIC_ONLY);
         putToCache(methodKey, null, methodArgs, m);
-        return m.invoke(null, convertedArgs[0]);
+        if (TransformerImpl.S_DEBUG) {
+            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+            trans.getTraceManager().fireExtensionEvent(m, null, convertedArgs[0]);            
+            Object result;
+            try {
+                result = m.invoke(null, convertedArgs[0]);
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                trans.getTraceManager().fireExtensionEndEvent(m, null, convertedArgs[0]);
+            }
+            return result;
+        }
+        else
+            return m.invoke(null, convertedArgs[0]);
       }
 
       else {                                            // Handle instance method call
@@ -384,7 +412,20 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                                      exprContext,
                                      MethodResolver.INSTANCE_ONLY);
         putToCache(methodKey, targetObject, methodArgs, m);
-        return m.invoke(targetObject, convertedArgs[0]);
+        if (TransformerImpl.S_DEBUG) {
+            TransformerImpl trans = (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+            trans.getTraceManager().fireExtensionEvent(m, targetObject, convertedArgs[0]);            
+            Object result;
+            try {
+                result = m.invoke(targetObject, convertedArgs[0]);
+            } catch (Exception e) {
+                throw e;
+            } finally {
+                trans.getTraceManager().fireExtensionEndEvent(m, targetObject, convertedArgs[0]);
+            }
+            return result;
+        } else       
+            return m.invoke(targetObject, convertedArgs[0]);
       }
     }
     catch (InvocationTargetException ite)
@@ -488,7 +529,17 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 
     try
     {
-      result = m.invoke(null, new Object[] {xpc, element});
+      if (TransformerImpl.S_DEBUG) {
+          transformer.getTraceManager().fireExtensionEvent(m, null, new Object[] {xpc, element});
+        try {
+            result = m.invoke(null, new Object[] {xpc, element});
+        } catch (Exception e) {
+            throw e;
+        } finally {            
+            transformer.getTraceManager().fireExtensionEndEvent(m, null, new Object[] {xpc, element});
+        }
+      } else
+        result = m.invoke(null, new Object[] {xpc, element});
     }
     catch (InvocationTargetException ite)
     {

@@ -56,6 +56,7 @@
  */
 package org.apache.xalan.trace;
 
+import java.lang.reflect.Method;
 import java.util.TooManyListenersException;
 import java.util.Vector;
 
@@ -63,7 +64,6 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
-
 import org.w3c.dom.Node;
 
 /**
@@ -349,6 +349,112 @@ public class TraceManager
         TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
 
         tl.selected(se);
+      }
+    }
+  }
+  
+
+  /**
+   * Fire an end extension event.
+   *
+   * @see java.lang.reflect.Method#invoke
+   * 
+   * @param method The java method about to be executed
+   * @param instance The instance the method will be executed on
+   * @param arguments Parameters passed to the method.
+   */
+  public void fireExtensionEndEvent(Method method, Object instance, Object[] arguments)
+  {
+      ExtensionEvent ee = new ExtensionEvent(m_transformer, method, instance, arguments);
+
+    if (hasTraceListeners())
+    {
+      int nListeners = m_traceListeners.size();
+
+      for (int i = 0; i < nListeners; i++)
+      {
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+        if(tl instanceof TraceListenerEx3)
+        {
+          ((TraceListenerEx3)tl).extensionEnd(ee);
+        }
+      }
+    }
+  }
+
+  /**
+   * Fire an end extension event.
+   *
+   * @see java.lang.reflect.Method#invoke
+   * 
+   * @param method The java method about to be executed
+   * @param instance The instance the method will be executed on
+   * @param arguments Parameters passed to the method.
+   */
+  public void fireExtensionEvent(Method method, Object instance, Object[] arguments)
+  {
+    ExtensionEvent ee = new ExtensionEvent(m_transformer, method, instance, arguments);
+
+    if (hasTraceListeners())
+    {
+      int nListeners = m_traceListeners.size();
+
+      for (int i = 0; i < nListeners; i++)
+      {
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+        if(tl instanceof TraceListenerEx3)
+        {
+          ((TraceListenerEx3)tl).extension(ee);
+        }
+      }
+    }
+  }
+
+  /**
+   * Fire an end extension event.
+   *
+   * @see java.lang.reflect.Method#invoke
+   * 
+   * @param ee the ExtensionEvent to fire
+   */
+  public void fireExtensionEndEvent(ExtensionEvent ee)
+  {
+    if (hasTraceListeners())
+    {
+      int nListeners = m_traceListeners.size();
+
+      for (int i = 0; i < nListeners; i++)
+      {
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+        if(tl instanceof TraceListenerEx3)
+        {
+          ((TraceListenerEx3)tl).extensionEnd(ee);
+        }
+      }
+    }
+  }
+
+  /**
+   * Fire an end extension event.
+   *
+   * @see java.lang.reflect.Method#invoke
+   * 
+   * @param ee the ExtensionEvent to fire
+   */
+  public void fireExtensionEvent(ExtensionEvent ee)
+  {    
+      
+    if (hasTraceListeners())
+    {
+      int nListeners = m_traceListeners.size();
+
+      for (int i = 0; i < nListeners; i++)
+      {
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+        if(tl instanceof TraceListenerEx3)
+        {
+          ((TraceListenerEx3)tl).extension(ee);
+        }
       }
     }
   }
