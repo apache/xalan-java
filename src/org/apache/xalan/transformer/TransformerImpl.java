@@ -597,11 +597,15 @@ public class TransformerImpl extends Transformer
 
       if (null != e)
       {
-        if (e instanceof javax.xml.transform.TransformerException)
+        if (e instanceof javax.xml.transform.TransformerException) 
+        {
           throw (javax.xml.transform.TransformerException) e;
-        else if (e instanceof org.apache.xml.utils.WrappedRuntimeException)
+        }
+        else if (e instanceof org.apache.xml.utils.WrappedRuntimeException) 
+        {
           throw new javax.xml.transform.TransformerException(
             ((org.apache.xml.utils.WrappedRuntimeException) e).getException());
+        }
         else
         {
           throw new javax.xml.transform.TransformerException(e);
@@ -615,7 +619,6 @@ public class TransformerImpl extends Transformer
     catch (org.apache.xml.utils.WrappedRuntimeException wre)
     {
       Throwable throwable = wre.getException();
-
       while (throwable
              instanceof org.apache.xml.utils.WrappedRuntimeException)
       {
@@ -624,6 +627,21 @@ public class TransformerImpl extends Transformer
       }
 
       throw new TransformerException(wre.getException());
+    }
+    // Patch attributed to David Eisenberg <david@catcode.com>
+    catch (org.xml.sax.SAXParseException spe)
+    {
+       String msg = spe.getMessage();
+       if (spe.getLineNumber() >= 0 && spe.getColumnNumber() >= 0)
+       {
+         msg += "\nLine " + spe.getLineNumber() +
+                         " Column " + spe.getColumnNumber();
+       }
+       else
+       {
+         msg += "\n(no line number info available)";
+       }
+       throw new TransformerException( msg );
     }
     catch(org.xml.sax.SAXException se)
     {
