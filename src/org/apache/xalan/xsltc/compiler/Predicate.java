@@ -94,6 +94,12 @@ final class Predicate extends Expression {
     }
 
     public boolean isNthPositionFilter() {
+	if (_exp instanceof EqualityExpr) {
+	    EqualityExpr eq = (EqualityExpr)_exp;
+	    if ((eq.getLeft() instanceof PositionCall) &&
+		(eq.getRight() instanceof IntExpr))
+		_nthPositionFilter = true;
+	}
 	return _nthPositionFilter;
     }
     
@@ -216,6 +222,7 @@ final class Predicate extends Expression {
 	}
 
 	_nthPositionFilter = false;
+
 	return _type = Type.Boolean;
     }
 	
@@ -285,7 +292,6 @@ final class Predicate extends Expression {
 	testGen.setMaxLocals();
 	testGen.setMaxStack();
 	testGen.removeNOPs();
-
 	filterGen.addEmptyConstructor(ACC_PUBLIC);
 	filterGen.addMethod(testGen.getMethod());
 		
@@ -375,7 +381,6 @@ final class Predicate extends Expression {
 	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
 	    if (right instanceof Step) _step = (Step)right;
 	}
-	//if ((_step != null) && (_step.isAbbreviatedDot())) _step = null;
 	return _step;
     }
 

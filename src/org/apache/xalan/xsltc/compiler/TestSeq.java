@@ -202,6 +202,9 @@ final class TestSeq {
 	return (LocationPathPattern)_patterns.elementAt(n);
     }
 
+
+    private InstructionHandle _start = null;
+
     /**
      * Copile the code for this test sequence. The code will first test for
      * the pattern with the highest priority, then go on to the next ones,
@@ -212,6 +215,8 @@ final class TestSeq {
 				     InstructionHandle continuation) {
 
 	final int count = _patterns.size();
+	
+	if (_start != null) return(_start);
 
 	// EZ DC if there is only one (default) pattern
 	if (count == 0) getTemplateHandle(_default);
@@ -220,7 +225,7 @@ final class TestSeq {
 	// test fails. It is updated in each iteration, so that the tests
 	// are linked together in the  if-elseif-elseif-else fashion.
 	InstructionHandle fail;
-
+	
 	// Initialize 'fail' to either the code for the default template
 	if (_default != null)
 	    fail = getTemplateHandle(_default);
@@ -254,7 +259,7 @@ final class TestSeq {
 	    // Set current instruction list to be this one.
 	    _instructionList = il;
 	}
-	return fail;
+	return(_start = fail);
     }
 
     /**

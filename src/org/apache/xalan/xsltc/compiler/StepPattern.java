@@ -65,6 +65,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
@@ -190,10 +191,12 @@ final class StepPattern extends RelativePathPattern {
 	    // Create an instance of Step to do the translation
 	    if (_contextCase == SIMPLE_CONTEXT) {
 		_step = new Step(_axis, _nodeType, null);
+		_step.setParser(getParser());
 		_step.typeCheck(stable);
 	    }
 	    else if (_contextCase == GENERAL_CONTEXT) {
 		_step = new Step(_axis, _nodeType, _predicates);
+		_step.setParser(getParser());
 		_step.typeCheck(stable);
 	    }
 	}
@@ -205,19 +208,28 @@ final class StepPattern extends RelativePathPattern {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	
-	// context node is on the stack
-	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
-	il.append(methodGen.loadDOM());
-	il.append(SWAP);
-	il.append(new INVOKEINTERFACE(getType, 2));
-	il.append(new PUSH(cpg, _nodeType));
+	if ((_nodeType == DOM.ELEMENT) && (hasPredicates())) {
+	    // TODO: insert check to see if current node is element
+	    il.append(POP);
+	}
+	else if ((_nodeType == DOM.ATTRIBUTE) && (hasPredicates())) {
+	    // TODO: insert check to see if current node is attribute
+	    il.append(POP);
+	}
+	else {
+	    // context node is on the stack
+	    final int getType = cpg.addInterfaceMethodref(DOM_INTF,
+							  "getType", "(I)I");
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	    il.append(new INVOKEINTERFACE(getType, 2));
+	    il.append(new PUSH(cpg, _nodeType));
 	
-	// Need to allow for long jumps here - don't know if 100% correct
-	//_falseList.add(il.append(new IF_ICMPNE(null)));
-	final BranchHandle icmp = il.append(new IF_ICMPEQ(null));
-	_falseList.add(il.append(new GOTO_W(null)));
-	icmp.setTarget(il.append(NOP));
+	    // Need to allow for long jumps here
+	    final BranchHandle icmp = il.append(new IF_ICMPEQ(null));
+	    _falseList.add(il.append(new GOTO_W(null)));
+	    icmp.setTarget(il.append(NOP));
+	}
     }
 
     private void translateNoContext(ClassGenerator classGen, 
@@ -241,8 +253,8 @@ final class StepPattern extends RelativePathPattern {
 	// Compile the expressions within the predicates
 	final int n = _predicates.size();
 	for (int i = 0; i < n; i++) {
-	    final Predicate pred = (Predicate)_predicates.elementAt(i);
-	    final Expression exp = pred.getExpr();
+	    Predicate pred = (Predicate)_predicates.elementAt(i);
+	    Expression exp = pred.getExpr();
 	    exp.translateDesynthesized(classGen, methodGen);
 	    _trueList.append(exp._trueList);
 	    _falseList.append(exp._falseList);
@@ -309,14 +321,14 @@ final class StepPattern extends RelativePathPattern {
 	il.append(new ILOAD(match.getIndex()));
 	il.append(methodGen.storeCurrentNode());
 
+
 	// Translate the expression of the predicate 
-	final Predicate pred = (Predicate) _predicates.elementAt(0);
-	final Expression exp = pred.getExpr();
+	Predicate pred = (Predicate) _predicates.elementAt(0);
+	Expression exp = pred.getExpr();
 	exp.translateDesynthesized(classGen, methodGen);
 
 	// Backpatch true list and restore current iterator/node
-	InstructionHandle restore;
-	restore = il.append(methodGen.storeIterator());
+	InstructionHandle restore = il.append(methodGen.storeIterator());
 	il.append(methodGen.storeCurrentNode());
 	exp.backPatchTrueList(restore);
 	BranchHandle skipFalse = il.append(new GOTO(null));
