@@ -131,32 +131,17 @@ public final class TemplatesImpl implements Templates, Serializable {
     // Temporary
     private boolean _oldOutputSystem;
 
-    // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
 
 	protected TransletClassLoader(ClassLoader parent){
 	    super(parent);
 	}
-
 	public Class defineClass(byte[] b) {
 	    return super.defineClass(null, b, 0, b.length);
 	}
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
-	out.writeObject(_name);
-	out.writeObject(_bytecodes);
-	out.flush();
-    }
-
-    public void readExternal(ObjectInput in)
-	throws IOException, ClassNotFoundException {
-	_name      = (String)in.readObject();
-	_bytecodes = (byte[][])in.readObject();
-	_class     = null; // must be created again...
-    }
-
-    /**
+   /**
      * The only way to create an XSLTC emplate object
      * The bytecodes for the translet and auxiliary classes, plus the name of
      * the main translet class, must be supplied
@@ -172,10 +157,26 @@ public final class TemplatesImpl implements Templates, Serializable {
 	_oldOutputSystem = oldOutputSystem;
     }
 
-    /**
+    public synchronized void writeExternal(ObjectOutput out) 
+	throws IOException 
+    {
+	out.writeObject(_name);
+	out.writeObject(_bytecodes);
+	out.flush();
+    }
+
+    public synchronized void readExternal(ObjectInput in)
+	throws IOException, ClassNotFoundException 
+    {
+	_name      = (String)in.readObject();
+	_bytecodes = (byte[][])in.readObject();
+	_class     = null; // must be created again...
+    }
+
+     /**
      * Store URIResolver needed for Transformers.
      */
-    public void setURIResolver(URIResolver resolver) {
+    public synchronized void setURIResolver(URIResolver resolver) {
 	_uriResolver = resolver;
     }
 
@@ -183,21 +184,21 @@ public final class TemplatesImpl implements Templates, Serializable {
      * The TransformerFactory must pass us the translet bytecodes using this
      * method before we can create any translet instances
      */
-    protected void setTransletBytecodes(byte[][] bytecodes) {
+    protected synchronized void setTransletBytecodes(byte[][] bytecodes) {
 	_bytecodes = bytecodes;
     }
 
     /**
      * Returns the translet bytecodes stored in this template
      */
-    public byte[][] getTransletBytecodes() {
+    public synchronized byte[][] getTransletBytecodes() {
 	return _bytecodes;
     }
 
     /**
      * Returns the translet bytecodes stored in this template
      */
-    public Class[] getTransletClasses() {
+    public synchronized Class[] getTransletClasses() {
 	try {
 	    if (_class == null) defineTransletClasses();
 	}
@@ -210,7 +211,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     /**
      * Returns the index of the main class in array of bytecodes
      */
-    public int getTransletIndex() {
+    public synchronized int getTransletIndex() {
 	try {
 	    if (_class == null) defineTransletClasses();
 	}
@@ -223,14 +224,14 @@ public final class TemplatesImpl implements Templates, Serializable {
     /**
      * The TransformerFactory should call this method to set the translet name
      */
-    protected void setTransletName(String name) {
+    protected synchronized void setTransletName(String name) {
 	_name = name;
     }
 
     /**
      * Returns the name of the main translet class stored in this template
      */
-    protected String getTransletName() {
+    protected synchronized String getTransletName() {
 	return _name;
     }
 
@@ -328,7 +329,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      *
      * @throws TransformerConfigurationException
      */
-    public Transformer newTransformer()
+    public synchronized Transformer newTransformer()
 	throws TransformerConfigurationException 
     {
 	final TransformerImpl transformer =
@@ -346,7 +347,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      * we might as well just instanciate a Transformer and use its
      * implementation of this method.
      */
-    public Properties getOutputProperties() { 
+    public synchronized Properties getOutputProperties() { 
 	try {
 	    return newTransformer().getOutputProperties();
 	}
