@@ -1254,7 +1254,7 @@ public final class SAXImpl extends SAX2DTM2
     }
 
     /**
-     * Do not thing that this returns an iterator for the namespace axis.
+     * Do not think that this returns an iterator for the namespace axis.
      * It returns an iterator with nodes that belong in a certain namespace,
      * such as with <xsl:apply-templates select="blob/foo:*"/>
      * The 'axis' specifies the axis for the base iterator from which the
@@ -1275,12 +1275,294 @@ public final class SAXImpl extends SAX2DTM2
                 case Axis.ATTRIBUTE:
                     return new NamespaceAttributeIterator(ns);
                 default:
-                    BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-                        Axis.names[axis]);
+                    return new NamespaceWildcardIterator(axis, ns);
             }
         }
-        return null;
     }
+
+    /**
+     * Iterator that handles node tests that test for a namespace, but have
+     * a wild card for the local name of the node, i.e., node tests of the
+     * form <axis>::<prefix>:*
+     */
+    public final class NamespaceWildcardIterator
+        extends InternalAxisIteratorBase
+    {
+        /**
+         * The namespace type index.
+         */
+        protected int m_nsType;
+
+        /**
+         * A nested typed axis iterator that retrieves nodes of the principal
+         * node kind for that axis.
+         */
+        protected DTMAxisIterator m_baseIterator;
+
+        /**
+         * Constructor NamespaceWildcard
+         *
+         * @param axis The axis that this iterator will traverse
+         * @param nsType The namespace type index
+         */
+        public NamespaceWildcardIterator(int axis, int nsType) {
+            m_nsType = nsType;
+
+            // Create a nested iterator that will select nodes of
+            // the principal node kind for the selected axis.
+            switch (axis) {
+                case Axis.ATTRIBUTE: {
+                    // For "attribute::p:*", the principal node kind is
+                    // attribute
+                    m_baseIterator = getAxisIterator(axis);
+                }
+                case Axis.NAMESPACE: {
+                    // This covers "namespace::p:*".  It is syntactically
+                    // correct, though it doesn't make much sense.
+                    m_baseIterator = getAxisIterator(axis);
+                }
+                default: {
+                    // In all other cases, the principal node kind is
+                    // element
+                    m_baseIterator = getTypedAxisIterator(axis,
+                                                          DTM.ELEMENT_NODE);
+                }
+            }
+        }
+
+        /**
+         * Set start to END should 'close' the iterator,
+         * i.e. subsequent call to next() should return END.
+         *
+         * @param node Sets the root of the iteration.
+         *
+         * @return A DTMAxisIterator set to the start of the iteration.
+         */
+        public DTMAxisIterator setStartNode(int node) {
+            if (_isRestartable) {
+                _startNode = node;
+                m_baseIterator.setStartNode(node);
+                resetPosition();
+            }
+            return this;
+        }
+
+        /**
+         * Get the next node in the iteration.
+         *
+         * @return The next node handle in the iteration, or END.
+         */
+        public int next() {
+            int node;
+
+            while ((node = m_baseIterator.next()) != END) {
+                // Return only nodes that are in the selected namespace
+                if (getNSType(node) == m_nsType) {
+                    return returnNode(node);
+                }
+            }
+
+            return END;
+        }
+
+        /**
+         * Returns a deep copy of this iterator.  The cloned iterator is not
+         * reset.
+         *
+         * @return a deep copy of this iterator.
+         */
+        public DTMAxisIterator cloneIterator() {
+            try {
+                DTMAxisIterator nestedClone = m_baseIterator.cloneIterator();
+                NamespaceWildcardIterator clone =
+                    (NamespaceWildcardIterator) super.clone();
+
+                clone.m_baseIterator = nestedClone;
+                clone.m_nsType = m_nsType;
+                clone._isRestartable = false;
+
+                return clone;
+            } catch (CloneNotSupportedException e) {
+                BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+                                          e.toString());
+                return null;
+            }
+        }
+
+        /**
+         * True if this iterator has a reversed axis.
+         *
+         * @return <code>true</code> if this iterator is a reversed axis.
+         */
+        public boolean isReverse() {
+            return m_baseIterator.isReverse();
+        }
+
+        public void setMark() {
+            m_baseIterator.setMark();
+        }
+
+        public void gotoMark() {
+            m_baseIterator.gotoMark();
+        }
+    }
+
+    /**
+     * Iterator that returns children within a given namespace for a
+     * given node. The functionality chould be achieved by putting a
+     * filter on top of a basic child iterator, but a specialised
+     * iterator is used for efficiency (both speed and size of translet).
+     */
+    public final class NamespaceChildrenIterator
+        extends InternalAxisIteratorBase
+    {
+
+        /** The extended type ID being requested. */
+        private final int _nsType;
+
+        /**
+         * Constructor NamespaceChildrenIterator
+         *
+         *
+         * @param type The extended type ID being requested.
+         */
+        public NamespaceChildrenIterator(final int type) {
+            _nsType = type;
+        }
+
+        /**
+         * Set start to END should 'close' the iterator,
+         * i.e. subsequent call to next() should return END.
+         *
+         * @param node Sets the root of the iteration.
+         *
+         * @return A DTMAxisIterator set to the start of the iteration.
+         */
+        public DTMAxisIterator setStartNode(int node) {
+            //%HZ%: Added reference to DTMDefaultBase.ROOTNODE back in, temporarily
+            if (node == DTMDefaultBase.ROOTNODE) {
+                node = getDocument();
+            }
+
+            if (_isRestartable) {
+                _startNode = node;
+                _currentNode = (node == DTM.NULL) ? DTM.NULL : NOTPROCESSED;
+
+                return resetPosition();
+            }
+
+            return this;
+        }
+
+        /**
+         * Get the next node in the iteration.
+         *
+         * @return The next node handle in the iteration, or END.
+         */
+        public int next() {
+            if (_currentNode != DTM.NULL) {
+                for (int node = (NOTPROCESSED == _currentNode)
+                                     ? _firstch(makeNodeIdentity(_startNode))
+                                     : _nextsib(_currentNode);
+                     node != END;
+                     node = _nextsib(node)) {
+                    int nodeHandle = makeNodeHandle(node);
+
+                    if (getNSType(nodeHandle) == _nsType) {
+                        _currentNode = node;
+
+                        return returnNode(nodeHandle);
+                    }
+                }
+            }
+
+            return END;
+        }
+    }  // end of NamespaceChildrenIterator
+
+    /**
+     * Iterator that returns attributes within a given namespace for a node.
+     */
+    public final class NamespaceAttributeIterator
+            extends InternalAxisIteratorBase
+    {
+
+        /** The extended type ID being requested. */
+        private final int _nsType;
+
+        /**
+         * Constructor NamespaceAttributeIterator
+         *
+         *
+         * @param nsType The extended type ID being requested.
+         */
+        public NamespaceAttributeIterator(int nsType) {
+            super();
+
+            _nsType = nsType;
+        }
+
+        /**
+         * Set start to END should 'close' the iterator,
+         * i.e. subsequent call to next() should return END.
+         *
+         * @param node Sets the root of the iteration.
+         *
+         * @return A DTMAxisIterator set to the start of the iteration.
+         */
+        public DTMAxisIterator setStartNode(int node) {
+            //%HZ%: Added reference to DTMDefaultBase.ROOTNODE back in, temporarily
+            if (node == DTMDefaultBase.ROOTNODE) {
+                node = getDocument();
+            }
+
+            if (_isRestartable) {
+                int nsType = _nsType;
+
+                _startNode = node;
+
+                for (node = getFirstAttribute(node);
+                     node != END;
+                     node = getNextAttribute(node)) {
+                    if (getNSType(node) == nsType) {
+                        break;
+                    }
+                }
+
+                _currentNode = node;
+                return resetPosition();
+            }
+
+            return this;
+        }
+
+        /**
+         * Get the next node in the iteration.
+         *
+         * @return The next node handle in the iteration, or END.
+         */
+        public int next() {
+            int node = _currentNode;
+            int nsType = _nsType;
+            int nextNode;
+
+            if (node == END) {
+                return END;
+            }
+
+            for (nextNode = getNextAttribute(node);
+                 nextNode != END;
+                 nextNode = getNextAttribute(nextNode)) {
+                if (getNSType(nextNode) == nsType) {
+                    break;
+                }
+            }
+
+            _currentNode = nextNode;
+
+            return returnNode(node);
+        }
+    }  // end of NamespaceAttributeIterator
 
     /**
      * Returns an iterator with all descendants of a node that are of
