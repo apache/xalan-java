@@ -588,6 +588,7 @@ public class TransformerImpl extends Transformer
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
       DTM dtm = mgr.getDTM(source, false, this, true, true);
+      dtm.setDocumentBaseURI(base);
       
       boolean hardDelete = true;  // %REVIEW% I have to think about this. -sb
 
