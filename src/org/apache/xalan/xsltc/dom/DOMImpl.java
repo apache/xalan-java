@@ -1008,9 +1008,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _nodeType = nodeType;
 	}
                   
-	// assumes caller will pass element nodes
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		// If not an element node, then set iterator at END
+		if (!isElement(node)) {
+		    _attribute = END;
+		    return resetPosition();
+		}
+
 		for (node = _lengthOrAttr[_startNode = node];
 		     node != NULL && _type[node] != _nodeType;
 		     node = _nextSibling[node]);
