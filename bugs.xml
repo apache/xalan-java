@@ -541,7 +541,7 @@
 <DateCreated>1/19/2001 </DateCreated>
 <State>Open</State>
 <TestID>problemlistenertest.java</TestID>
-<TestDesc>xalanj1compat.jar: setProblemListeners are never used</TestDesc>
+<TestDesc>xalanj1compat.jar: setProblemListeners are never (sometimes) used</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -563,7 +563,7 @@
 <Spr>
 <Name>SCUU4T9L4D</Name>
 <DateCreated>1/23/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>problemlistenertest.java</TestID>
 <TestDesc>xalanj1compat.jar: XSLTProcessorImpl.getProblemListener() throws npe</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -574,6 +574,14 @@
 <State>Open</State>
 <TestID>stylesheetreusetest.java</TestID>
 <TestDesc>xalanj1compat.jar: processStylesheet() does not set that stylesheet into processor</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4TBSTG</Name>
+<DateCreated>1/25/2001 </DateCreated>
+<State>Open</State>
+<TestID>paramtest.java</TestID>
+<TestDesc>compat.jar: setParam... then multiple processes throws ClassCastException:XString</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
