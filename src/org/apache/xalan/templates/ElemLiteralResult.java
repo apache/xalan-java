@@ -195,10 +195,51 @@ public class ElemLiteralResult extends ElemUse
   }
 
   /**
-   * Move this to the processer package.
+   * The "extension-element-prefixes" property, actually contains URIs. 
    */
-  public String m_extensionElementPrefixes[] = null;  
+  private StringVector m_ExtensionElementURIs;
+
+  /**
+   * Set the "extension-element-prefixes" property. 
+   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   */
+  public void setExtensionElementPrefixes (StringVector v)
+  {
+    m_ExtensionElementURIs = v;
+  }
+
+  /**
+   * Get and "extension-element-prefix" property. 
+   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   */
+  public String getExtensionElementPrefix(int i)
+    throws ArrayIndexOutOfBoundsException
+  {
+    if(null == m_ExtensionElementURIs)
+      throw new ArrayIndexOutOfBoundsException();
+    return m_ExtensionElementURIs.elementAt(i);
+  }
   
+  /**
+   * Get the number of "extension-element-prefixes" Strings. 
+   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   */
+  public int getExtensionElementPrefixCount()
+  {
+    return (null != m_ExtensionElementURIs) 
+           ? m_ExtensionElementURIs.size() : 0;
+  }
+  
+  /**
+   * Get and "extension-element-prefix" property. 
+   * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   */
+  public boolean containsExtensionElementURI(String uri)
+  {
+    if(null == m_ExtensionElementURIs)
+      return false;
+    return m_ExtensionElementURIs.contains(uri);
+  }  
 
   /**
    * Get an int constant identifying the type of element.
