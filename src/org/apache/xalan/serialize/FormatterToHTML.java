@@ -1225,6 +1225,12 @@ public class FormatterToHTML extends FormatterToXML
         this.accum(" ");
 
       this.accum(data + ">");  // different from XML
+      
+      // Always output a newline char if not inside of an 
+      // element. The whitespace is not significant in that
+      // case.
+      if (m_elemStack.isEmpty())
+         outputLineSep();
 
       m_startNewLine = true;
     }

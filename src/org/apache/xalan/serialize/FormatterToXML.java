@@ -1042,6 +1042,12 @@ public class FormatterToXML
       accum(data);
       accum('?');
       accum('>');
+      
+      // Always output a newline char if not inside of an 
+      // element. The whitespace is not significant in that
+      // case.
+      if (m_elemStack.isEmpty())
+         outputLineSep();
 
       m_startNewLine = true;
     }
