@@ -64,6 +64,7 @@
   <li><link anchor="compile">Compiling translets from the command line</link></li>
   <li><link anchor="run">Running translets from the command line</link></li>
   <li><link anchor="api">Calling XSLTC with the TrAX/JAXP API</link></li>
+  <li><link anchor="nativeapi">Calling XSLTC with the native API</link></li>
   <li><link anchor="constraints">XSLTC usage constraints</link></li>  
 </ul>
 <p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
@@ -384,7 +385,10 @@ transformer.transform(new StreamSource(xmlInURI),
                       new StreamResult(new FileOutputStream(htmlOutURI)));</source>
 <p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc2">JAXPTransletMultipleTransformations</link>.</p>
 </s3>
-</s2><anchor name="constraints"/>
+</s2>
+<s3 title="Calling XSLTC with the native API">
+<p></p>
+</s3><anchor name="constraints"/>
 <s2 title="XSLTC usage constraints">
 <p>See <link idref="readme" anchor="xsltcconf">Conformance issues</link> and <link idref="readme" 
 anchor="xsltcknownproblems">Known problems</link>.</p>
