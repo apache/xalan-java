@@ -282,11 +282,17 @@ public final class NodeType extends Type {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+        String className = clazz.getName();
+        if (className.equals("java.lang.String")) {
+           translateTo(classGen, methodGen, Type.String);
+           return;
+        }
+
 	il.append(methodGen.loadDOM());
 	il.append(SWAP);		// dom ref must be below node index
 
-	String className = clazz.getName();
-	if (className.equals("org.w3c.dom.Node")) {
+        if (className.equals("org.w3c.dom.Node") ||
+            className.equals("java.lang.Object")) {
 	    int index = cpg.addInterfaceMethodref(DOM_INTF,
 						  MAKE_NODE,
 						  MAKE_NODE_SIG);

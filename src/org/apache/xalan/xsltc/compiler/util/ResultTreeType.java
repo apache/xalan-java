@@ -433,6 +433,9 @@ public final class ResultTreeType extends Type {
 	else if (className.equals("java.lang.Object")) {
 	    il.append(NOP);
 	}
+        else if (className.equals("java.lang.String")) {
+            translateTo(classGen, methodGen, Type.String);
+        }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);

@@ -271,12 +271,26 @@ public final class NodeSetType extends Type {
 						  MAKE_NODE_SIG2);
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
-	else if (className.equals("org.w3c.dom.NodeList")) {
+        else if (className.equals("org.w3c.dom.NodeList") || 
+                 className.equals("java.lang.Object")) {
 	    int index = cpg.addInterfaceMethodref(DOM_INTF,
 						  MAKE_NODE_LIST,
 						  MAKE_NODE_LIST_SIG2);
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
+        else if (className.equals("java.lang.String")) {
+            int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
+                                                 "next", "()I");
+            int index = cpg.addInterfaceMethodref(DOM_INTF,
+                                                 GET_NODE_VALUE,
+                                                 "(I)"+STRING_SIG);
+
+            // Get next node from the iterator
+            il.append(new INVOKEINTERFACE(next, 1));
+            // Get the node's string value (from the DOM)
+            il.append(new INVOKEINTERFACE(index, 2));
+                       
+        }
 	else if (className.equals("int")) {
 	    int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
 						  "next", "()I");
