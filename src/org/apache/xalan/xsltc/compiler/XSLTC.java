@@ -82,7 +82,6 @@ import java.util.jar.*;
 import org.xml.sax.*;
 
 import javax.xml.parsers.*;
-import javax.xml.transform.ErrorListener;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.cmdline.getopt.*;
@@ -91,8 +90,11 @@ import de.fub.bytecode.classfile.JavaClass;
 
 public final class XSLTC {
 
-    // A reference to the main parsergobject.
+    // A reference to the main stylesheet parser object.
     private final Parser _parser;
+
+    // A reference to an external XMLReader (SAX parser) passed to us
+    private XMLReader _reader = null;
     
     // A reference to the stylesheet being compiled.
     private Stylesheet _stylesheet = null;
@@ -134,7 +136,7 @@ public final class XSLTC {
 
     private Vector  _classes;
     private boolean _multiDocument = false;
-    
+
     /**
      * XSLTC compiler constructor
      */
@@ -154,6 +156,7 @@ public final class XSLTC {
      * Initializes the compiler to produce a new translet
      */
     private void reset() {
+	_reader = null;
 	_nextGType      = DOM.NTYPES;
 	_elements       = new Hashtable();
 	_attributes     = new Hashtable();
@@ -178,81 +181,91 @@ public final class XSLTC {
     
     /**
      * Compiles an XSL stylesheet pointed to by a URL
+     * @param url An URL containing the input XSL stylesheet
      */
-    public boolean compile(URL url) { 
-	return compile(url, (ErrorListener)null);
+    public boolean compile(URL url) {
+	try {
+	    // Open input stream from URL and wrap inside InputSource
+	    final InputStream stream = url.openStream();
+	    final InputSource input = new InputSource(stream);
+	    input.setSystemId(url.toString());
+	    return compile(input, _className);
+	}
+	catch (IOException e) {
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    return false;
+	}
     }
 
     /**
      * Compiles an XSL stylesheet pointed to by a URL
-     *   @listener parameter may be null
+     * @param url An URL containing the input XSL stylesheet
+     * @param name The name to assign to the translet class
      */
-    public boolean compile(URL url, ErrorListener listener) {
+    public boolean compile(URL url, String name) {
 	try {
-	    // Open input stream from URL
-	    final InputStream input = url.openStream();
-	    // Get class name from URL if not explicitly set
-	    if (_className == null) {
-		final String name = Util.baseName(url.getFile());
-		return compile(input, name, url, listener);
-	    }
-	    else {
-		return compile(input, _className, url, listener);
-	    }
-	}
-	catch (MalformedURLException e) {
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
-	    _parser.printErrors();
-	    return false;
+	    // Open input stream from URL and wrap inside InputSource
+	    final InputStream stream = url.openStream();
+	    final InputSource input = new InputSource(stream);
+	    input.setSystemId(url.toString());
+	    return compile(input, name);
 	}
 	catch (IOException e) {
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
-	    _parser.printErrors();
 	    return false;
 	}
     }
 
     /**
      * Compiles an XSL stylesheet passed in through an InputStream
-     *   @transletName parameter must be set since the compiler cannot get
-     *   the XSL stylesheet name from the input stream
+     * @param input An InputStream that will pass in the stylesheet contents
+     * @param name The name of the translet class to generate
+     * @return 'true' if the compilation was successful
      */
-    public boolean compile(InputStream input, String transletName) {
-	return compile(input, transletName, null, null);
+    public boolean compile(InputStream stream, String name) {
+	final InputSource input = new InputSource(stream);
+	input.setSystemId(name); // We have nothing else!!!
+	return compile(input, name);
     }
 
     /**
      * Compiles an XSL stylesheet passed in through an InputStream
-     *   @input passes the stylesheet to the compiler
-     *   @transletName may be set, name taken from URL if this param is null
-     *   @url parameter must be set
-     *   @listener parameter may be null
+     * @param input An InputStream that will pass in the stylesheet contents
+     * @param name The name of the translet class to generate - can be null
+     * @param url Identifies the original stylesheet location
+     * @return 'true' if the compilation was successful
      */
-    public boolean compile(InputStream input,
-			   String transletName,
-			   URL url,
-			   ErrorListener listener) {
-
-	// Set the parser's error listener if defined
-	if (listener != null) _parser.setErrorListener(listener);
+    public boolean compile(InputSource input, String name) {
 
 	try {
 	    // Reset globals in case we're called by compile(Vector v);
 	    reset();
 
-	    // Set the translet's class name
-	    if (transletName == null) 
-		transletName = Util.baseName(url.getFile());
-	    setClassName(transletName);
+	    // The systemId may not be set, so we'll have to check the URL
+	    String systemId = input.getSystemId();
+
+	    // Set the translet class name if not already set
+	    if (_className == null) {
+		if (name != null)
+		    setClassName(name);
+		else if (systemId != null)
+		    setClassName(Util.baseName(systemId));
+		else
+		    setClassName("GregorSamsa"); // default translet name
+	    }
 
 	    // Get the root node of the abstract syntax tree
-	    final SyntaxTreeNode element = _parser.parse(input);
+	    SyntaxTreeNode element = null;
+	    if (_reader == null)
+		element = _parser.parse(input);
+	    else
+		element = _parser.parse(_reader, input);
 
 	    // Compile the translet - this is where the work is done!
 	    if ((!_parser.errorsFound()) && (element != null)) {
 		// Create a Stylesheet element from the root node
 		_stylesheet = _parser.makeStylesheet(element);
-		_stylesheet.setURL(url);
+		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
 		_parser.setCurrentStylesheet(_stylesheet);
 		// Create AST under the Stylesheet element (parse & type-check)
@@ -268,14 +281,14 @@ public final class XSLTC {
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
 	}
 	finally {
-	    _parser.printErrors();
-	    _parser.printWarnings();
 	    return !_parser.errorsFound();
 	}
     }
 
     /**
      * Compiles a set of stylesheets pointed to by a Vector of URLs
+     * @param stylesheets A Vector containing URLs pointing to the stylesheets
+     * @return 'true' if the compilation was successful
      */
     public boolean compile(Vector stylesheets) {
 	// Get the number of stylesheets (ie. URLs) in the vector
@@ -309,42 +322,110 @@ public final class XSLTC {
     /**
      * Compiles a stylesheet pointed to by a URL. The result is put in a
      * set of byte arrays. One byte array for each generated class.
+     * @param name The name of the translet class to generate
+     * @param input An InputSource that will pass in the stylesheet contents
+     * @return JVM bytecodes that represent translet class definition
      */
-    public byte[][] compile(URL stylesheetURL, String className) {
+    public byte[][] compile(String name, InputSource input) {
 	_outputType = BYTEARRAY_OUTPUT;
-	setClassName(className);
-	if (compile(stylesheetURL)) {
+	if (compile(input, name)) {
 	    final int count = _classes.size();
 	    final byte[][] result = new byte[count][1];
 	    for (int i = 0; i < count; i++)
 		result[i] = (byte[])_classes.elementAt(i);
 	    return result;
 	}
+	/*
+	catch (IOException e) {
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    return null;
+	}
+	*/
 	return null;
     }
 
     /**
      * Compiles a stylesheet pointed to by a URL. The result is put in a
      * set of byte arrays. One byte array for each generated class.
+     * @param name The name of the translet class to generate
+     * @param input An InputStream that will pass in the stylesheet contents
+     * @return JVM bytecodes that represent translet class definition
      */
-    public byte[][] compile(InputStream source, String className, int dummy) {
+    /*
+    public byte[][] compile(InputStream stream, String systemId, String name) {
 	_outputType = BYTEARRAY_OUTPUT;
-	setClassName(className);
-	if (compile(source, className)) {
-	    final int count = _classes.size();
-	    final byte[][] result = new byte[1][count];
-	    for (int i = 0; i < count; i++)
-		result[i] = (byte[])_classes.elementAt(i);
-	    return result;
-	}
-	return null;
+	final InputSource input = new InputSource(stream);
+	input.setSystemId(systemId);
+	if (compile(input, name, null))
+	    return getBytecodes();
+	else
+	    return null;
     }
+    */
+
+    /**
+     * Compiles a stylesheet pointed to by a URL. The result is put in a
+     * set of byte arrays. One byte array for each generated class.
+     * @param name The name of the translet class to generate
+     * @param reader The Reader object to get the stylesheet contents from
+     * @return JVM bytecodes that represent translet class definition
+     */
+    /*
+    public byte[][] compile(Reader reader, String systemId, String name) {
+	_outputType = BYTEARRAY_OUTPUT;
+	final InputSource input = new InputSource(reader);
+	input.setSystemId(systemId);
+	if (compile(input, name, null))
+	    return getBytecodes();
+	else
+	    return null;
+    }
+    */
+    
+    /**
+     * Set the XMLReader to use for parsing the next input stylesheet
+     * @param reader XMLReader (SAX2 parser) to use
+     */
+    public void setXMLReader(XMLReader reader) {
+	_reader = reader;
+    }
+
+    /**
+     * Get a Vector containing all compile error messages
+     * @return A Vector containing all compile error messages
+     */
+    public Vector getErrors() {
+	return _parser.getErrors();
+    }
+
+    /**
+     * Get a Vector containing all compile warning messages
+     * @return A Vector containing all compile error messages
+     */
+    public Vector getWarnings() {
+	return _parser.getWarnings();
+    }
+
+    /**
+     * Print all compile error messages to standard output
+     */
+    public void printErrors() {
+	_parser.printErrors();
+    }
+
+    /**
+     * Print all compile warning messages to standard output
+     */
+    public void printWarnings() {
+	_parser.printWarnings();
+    }
+
 
     /**
      * This method is called by the XPathParser when it encounters a call
      * to the document() function. Affects the DOM used by the translet.
      */
-    public void setMultiDocument(boolean flag) {
+    protected void setMultiDocument(boolean flag) {
 	_multiDocument = flag;
     }
 
@@ -352,6 +433,7 @@ public final class XSLTC {
      * Set the class name for the generated translet. This class name is
      * overridden if multiple stylesheets are compiled in one go using the
      * compile(Vector urls) method.
+     * @param className The name to assign to the translet class
      */
     public void setClassName(String className) {
 	final String base  = Util.baseName(className);
@@ -564,7 +646,7 @@ public final class XSLTC {
     /**
      * File separators are converted to forward slashes for ZIP files.
      */
-    private String entryName( File f ) throws IOException {
+    private String entryName(File f) throws IOException {
 	return f.getName().replace(File.separatorChar, '/');
     }
     
@@ -574,8 +656,8 @@ public final class XSLTC {
     public void outputToJar() throws IOException {
 	// create the manifest
 	final Manifest manifest = new Manifest();
-	manifest.getMainAttributes()
-	    .put(java.util.jar.Attributes.Name.MANIFEST_VERSION, "1.0");
+	final java.util.jar.Attributes atrs = manifest.getMainAttributes();
+	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.0");
 
 	final Map map = manifest.getEntries();
 	// create manifest
@@ -585,8 +667,7 @@ public final class XSLTC {
 	    new java.util.jar.Attributes.Name("Date");
 	while (classes.hasMoreElements()) {
 	    final JavaClass clazz = (JavaClass)classes.nextElement();
-	    final java.util.jar.Attributes attr = 
-		new java.util.jar.Attributes();
+	    final java.util.jar.Attributes attr = new java.util.jar.Attributes();
 	    attr.put(dateAttr, now);
 	    map.put(classFileName(clazz.getClassName()), attr);
 	}

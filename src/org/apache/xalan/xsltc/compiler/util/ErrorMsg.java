@@ -98,6 +98,7 @@ public final class ErrorMsg {
     public static final int ILLEG_PI_ERR = 18;
     public static final int ATTROUTS_ERR = 19;
     public static final int ILL_ATTR_ERR = 20;
+    public static final int CIRCULAR_INC = 21;
 
     static final String messages_d[] = { 
 	"More than one stylesheet defined in the same file.",
@@ -120,7 +121,8 @@ public final class ErrorMsg {
 	"Illegal use of function ''{0}''.",
 	"Illegal name ''{0}'' for processing instruction.",
 	"Attribute ''{0}'' outside of element.",
-	"Illegal attribute name ''{0}''."
+	"Illegal attribute name ''{0}''.",
+	"Circular import/include. Stylesheet ''{0}'' already loaded."
     };
 
     public ErrorMsg(int code) {
@@ -184,11 +186,7 @@ public final class ErrorMsg {
     }
 
     private String getFileName(SyntaxTreeNode node) {
-	final URL url = node.getStylesheet().getURL();
-	if (url != null)
-	    return url.toString();
-	else
-	    return null;
+	return node.getStylesheet().getSystemId();
     }
 
     private String formatLine() {

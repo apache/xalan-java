@@ -78,9 +78,6 @@ import java.net.MalformedURLException;
 
 import javax.xml.parsers.*;
 
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -98,8 +95,6 @@ public final class Parser implements Constants, ContentHandler {
     private XPathParser _xpathParser; // Reference to the XPath parser.
     private Vector _errors;           // Contains all compilation errors
     private Vector _warnings;        // Contains all compilation errors
-
-    private ErrorListener _errorListener = null;
 
     private Hashtable   _instructionClasses; // Maps instructions to classes
     private Hashtable   _qNames;
@@ -170,10 +165,6 @@ public final class Parser implements Constants, ContentHandler {
 	    output.disable();
     }
 
-    public void setErrorListener(ErrorListener listener) {
-	_errorListener = listener;
-    } 
-    
     public void addVariable(Variable var) {
 	_variableScope.put(var.getName(), var);
     }
@@ -360,39 +351,23 @@ public final class Parser implements Constants, ContentHandler {
 	}
     }
 
-    // GTM prototype:
-    public SyntaxTreeNode parse(InputStream input){
+    /**
+     * Parses a stylesheet and builds the internal abstract syntax tree
+     * @param reader A SAX2 SAXReader (parser)
+     * @param input A SAX2 InputSource can be passed to a SAX reader
+     * @return The root of the abstract syntax tree
+     */
+    public SyntaxTreeNode parse(XMLReader reader, InputSource input) {
 	try {
-	    // Create a SAX parser and get the XMLReader object it uses
-	    final SAXParserFactory factory = SAXParserFactory.newInstance();
-	    try {
-		factory.setFeature(Constants.NAMESPACE_FEATURE,true);
-	    }
-	    catch (Exception e) {
-		factory.setNamespaceAware(true);
-	    }
-	    final SAXParser parser = factory.newSAXParser();
-	    final XMLReader reader = parser.getXMLReader();
-
 	    // Parse the input document and build the abstract syntax tree
 	    reader.setContentHandler(this);
-	    InputSource is = new InputSource(input);
-	    reader.parse(new InputSource(input));
-
+	    reader.parse(input);
 	    // Find the start of the stylesheet within the tree
-	    return (SyntaxTreeNode)getStylesheet(_root);
-	}
-	catch (ParserConfigurationException e) {
-	    reportError(Constants.ERROR,
-		new ErrorMsg("JAXP parser not configured correctly"));
+	    return (SyntaxTreeNode)getStylesheet(_root);	
 	}
 	catch (IOException e) {
 	    reportError(Constants.ERROR,
 		new ErrorMsg(e.getMessage()));
-	}
-	catch (SAXParseException e){
-	    reportError(Constants.ERROR,
-		new ErrorMsg(e.getMessage(),e.getLineNumber()));
 	}
 	catch (SAXException e) {
 	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
@@ -404,16 +379,11 @@ public final class Parser implements Constants, ContentHandler {
     }
 
     /**
-     * Instanciates a SAX2 parser and generate the AST from the input.
+     * Parses a stylesheet and builds the internal abstract syntax tree
+     * @param input A SAX2 InputSource can be passed to a SAX reader
+     * @return The root of the abstract syntax tree
      */
-    public SyntaxTreeNode parse(URL url) {
-	return(parse(url.toString(), true));
-    }
-
-    /**
-     * Instanciates a SAX2 parser and generate the AST from the input.
-     */
-    public SyntaxTreeNode parse(String location, boolean isURL) {
+    public SyntaxTreeNode parse(InputSource input) {
 	try {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -425,33 +395,17 @@ public final class Parser implements Constants, ContentHandler {
 	    }
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
-
-	    // Parse the input document and build the abstract syntax tree
-	    reader.setContentHandler(this);
-	    if (isURL)
-		reader.parse(location);
-	    else
-		reader.parse("file:"+(new File(location).getAbsolutePath()));
-
-	    // Find the start of the stylesheet within the tree
-	    return (SyntaxTreeNode)getStylesheet(_root);
+	    return(parse(reader, input));
 	}
 	catch (ParserConfigurationException e) {
 	    reportError(Constants.ERROR,
 		new ErrorMsg("JAXP parser not configured correctly"));
-	}
-	catch (IOException e) {
-	    reportError(Constants.ERROR,
-		new ErrorMsg(ErrorMsg.FILECANT_ERR, location));
 	}
 	catch (SAXParseException e){
 	    reportError(Constants.ERROR,
 		new ErrorMsg(e.getMessage(),e.getLineNumber()));
 	}
 	catch (SAXException e) {
-	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
-	}
-	catch (CompilerException e) {
 	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
 	}
 	return null;
@@ -511,14 +465,18 @@ public final class Parser implements Constants, ContentHandler {
     /**
      * For embedded stylesheets: Load an external file with stylesheet
      */
-    private SyntaxTreeNode loadExternalStylesheet(String url)
+    private SyntaxTreeNode loadExternalStylesheet(String location)
 	throws CompilerException {
 
-	// Check if the URL is a local file
-	if ((new File(url)).exists()) url = "file:"+url;
+	InputSource source;
 
-	SyntaxTreeNode external = (SyntaxTreeNode)parse(url, true);
+	// Check if the location is URL or a local file
+	if ((new File(location)).exists())
+	    source = new InputSource("file:"+location);
+	else
+	    source = new InputSource(location);
 
+	SyntaxTreeNode external = (SyntaxTreeNode)parse(source);
 	return(external);
     }
 
@@ -930,7 +888,6 @@ public final class Parser implements Constants, ContentHandler {
      * Prints all compile-time errors
      */
     public void printErrors() {
-	if (_errorListener != null) return;   //support for TrAX Error Listener
 	final int size = _errors.size();
 	if (size > 0) {
 	    System.err.println("Compile errors:");
@@ -944,7 +901,6 @@ public final class Parser implements Constants, ContentHandler {
      * Prints all compile-time warnings
      */
     public void printWarnings() {
-	if (_errorListener != null) return;  //support for TrAX Error Listener 
 	final int size = _warnings.size();
 	if (size > 0) {
 	    System.err.println("Warning:");
@@ -958,66 +914,41 @@ public final class Parser implements Constants, ContentHandler {
      * Common error/warning message handler
      */
     public void reportError(final int category, final ErrorMsg error) {
-	try {
-	    switch (category) {
-	    case Constants.INTERNAL:
-		// Unexpected internal errors, such as null-ptr exceptions, etc.
-		// Immediately terminates compilation, no translet produced
-		_errors.addElement(error);
-		if (_errorListener != null) {
-		    _errorListener.fatalError(new TransformerException(
-			error.toString()));
-		}
-		break;
-	    case Constants.UNSUPPORTED:
-		// XSLT elements that are not implemented and unsupported ext.
-		// Immediately terminates compilation, no translet produced
-		_errors.addElement(error);
-		if (_errorListener != null) {
-		    final String msg = error.toString();
-                    _errorListener.fatalError(new TransformerException(
-                        "Not Implemented, Unsupported Extension: " +
-			msg));
-                }
-
-		break;
-	    case Constants.FATAL:
-		// Fatal error in the stylesheet input (parsing or content)
-		// Immediately terminates compilation, no translet produced
-
-        	_errors.addElement(error);
-        	if (_errorListener != null ) {
-		    final String msg = error.toString();
-		    _errorListener.fatalError(new TransformerException(
-                        "Stylesheet Parsing Fatal Error: " + msg));
-        	}
-		break;
-	    case Constants.ERROR:
-		// Other error in the stylesheet input (parsing or content)
-		// Does not terminate compilation, no translet produced
-		_errors.addElement(error);
-		if (_errorListener != null) {
-		    final String msg = error.toString();
-		    _errorListener.error(new TransformerException(
-		        "Stylesheet Parsing Error: " + msg));
-		}
-		break;
-	    case Constants.WARNING:
-		// Other error in the stylesheet input (content errors only)
-		// Does not terminate compilation, a translet is produced
-		_warnings.addElement(error);
-		if (_errorListener != null) {
-		    final String msg = error.toString();
-		    _errorListener.warning(new TransformerException(
-		        "Stylesheet Parsing Warning: " + msg));
-		}
-		break;
-	    }
+	switch (category) {
+	case Constants.INTERNAL:
+	    // Unexpected internal errors, such as null-ptr exceptions, etc.
+	    // Immediately terminates compilation, no translet produced
+	    _errors.addElement(error);
+	    break;
+	case Constants.UNSUPPORTED:
+	    // XSLT elements that are not implemented and unsupported ext.
+	    // Immediately terminates compilation, no translet produced
+	    _errors.addElement(error);
+	    break;
+	case Constants.FATAL:
+	    // Fatal error in the stylesheet input (parsing or content)
+	    // Immediately terminates compilation, no translet produced
+	    _errors.addElement(error);
+	    break;
+	case Constants.ERROR:
+	    // Other error in the stylesheet input (parsing or content)
+	    // Does not terminate compilation, no translet produced
+	    _errors.addElement(error);
+	    break;
+	case Constants.WARNING:
+	    // Other error in the stylesheet input (content errors only)
+	    // Does not terminate compilation, a translet is produced
+	    _warnings.addElement(error);
+	    break;
 	}
-	catch (TransformerException e) {
-	    // If the error listener does not handle the exception then
-	    // we're certainly not doing anything about it....
-	}
+    }
+
+    public Vector getErrors() {
+	return _errors;
+    }
+
+    public Vector getWarnings() {
+	return _warnings;
     }
 
     /************************ SAX2 ContentHandler INTERFACE *****************/

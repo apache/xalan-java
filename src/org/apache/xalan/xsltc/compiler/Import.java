@@ -88,17 +88,20 @@ final class Import extends TopLevelElement {
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
 	try {
-	    final String href = getAttribute("href");
-	    final URL toImport = new URL(context.getURL(), href);
-	    if (context.checkForLoop(toImport))
-		throw new Exception(toImport.toString() + " already loaded");
+	    final String systemId = getAttribute("href");
+	    if (context.checkForLoop(systemId)) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.CIRCULAR_INC,systemId,this);
+		parser.reportError(Constants.FATAL, msg);
+		return;
+	    }
 
-	    final SyntaxTreeNode root = parser.parse(toImport);
+	    InputSource input = new InputSource(systemId);
+	    final SyntaxTreeNode root = parser.parse(input);
 	    if (root == null) return;
 	    final Stylesheet _imported = parser.makeStylesheet(root);
 	    if (_imported == null) return;
 
-	    _imported.setURL(toImport);
+	    _imported.setSystemId(systemId);
 	    _imported.setParentStylesheet(context);
 
 	    // precedence for the including stylesheet

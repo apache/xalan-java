@@ -57,41 +57,32 @@
  * <http://www.apache.org/>.
  *
  * @author G. Todd Miller 
+ * @author Morten Jorgensen
  *
  */
 
 
 package org.apache.xalan.xsltc.trax;
 
-import javax.xml.transform.Templates; 
-import javax.xml.transform.Transformer; 
-import javax.xml.transform.TransformerFactory; 
-import javax.xml.transform.TransformerException; 
-import javax.xml.transform.ErrorListener; 
-import javax.xml.transform.Source; 
-import javax.xml.transform.stream.StreamSource; 
-import javax.xml.transform.stream.StreamResult; 
-import javax.xml.transform.URIResolver; 
-import javax.xml.transform.TransformerConfigurationException; 
+import java.io.Reader;
+import java.io.InputStream;
+import java.io.ByteArrayInputStream;
+import java.net.URL;
+import java.net.MalformedURLException;
+import java.util.Vector;
 
-import javax.xml.transform.sax.SAXTransformerFactory; 
-import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.sax.*;
 
 import org.xml.sax.XMLFilter;
+import org.xml.sax.InputSource;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
-import java.net.URL;
-import java.net.MalformedURLException;
-
 
 /**
  * Implementation of a JAXP1.1 SAXTransformerFactory for Translets.
@@ -119,12 +110,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     // All used error messages should be listed here
     private static final String ERROR_LISTENER_NULL =
 	"Attempting to set ErrorListener for TransformerFactory to null";
-    private static final String SOURCE_NOT_SUPPORTED =
+    private static final String UNKNOWN_SOURCE_ERR =
 	"Only StreamSource is supported by XSLTC";
-    private static final String STREAM_SOURCE_ERROR =
-	"StreamSource must have a system id or be an InputStream";
-    private static final String COMPILATION_ERROR =
+    private static final String COMPILE_ERR =
 	"Could not compile stylesheet";
+    private static final String SOURCE_CONTENTS_ERR =
+	"The input Source contains an invalid system id";
 
 
     /**
@@ -275,12 +266,14 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
 
 	// Compile the default copy-stylesheet
 	byte[] bytes = COPY_TRANSLET_CODE.getBytes();
-	ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-	bytecodes = xsltc.compile(inputStream, COPY_TRANSLET_NAME, 77);
+	ByteArrayInputStream bytestream = new ByteArrayInputStream(bytes);
+	InputSource input = new InputSource(bytestream);
+	input.setSystemId(COPY_TRANSLET_NAME);
+	bytecodes = xsltc.compile(COPY_TRANSLET_NAME, input);
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
-	    throw new TransformerConfigurationException(COMPILATION_ERROR);
+	    throw new TransformerConfigurationException(COMPILE_ERR);
 	}
 
 	// Create a Transformer object and store for other calls
@@ -306,6 +299,48 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     }
 
     /**
+     * Pass warning messages from the compiler to the error listener
+     */
+    private void passWarningsToListener(Vector messages) {
+	try {
+	    // Nothing to do if there is no registered error listener
+	    if (_errorListener == null) return;
+	    // Nothing to do if there are not warning messages
+	    if (messages == null) return;
+	    // Pass messages to listener, one by one
+	    final int count = messages.size();
+	    for (int pos=0; pos<count; pos++) {
+		String message = messages.elementAt(pos).toString();
+		_errorListener.warning(new TransformerException(message));
+	    }
+	}
+	catch (TransformerException e) {
+	    // nada
+	}
+    }
+
+    /**
+     * Pass error messages from the compiler to the error listener
+     */
+    private void passErrorsToListener(Vector messages) {
+	try {
+	    // Nothing to do if there is no registered error listener
+	    if (_errorListener == null) return;
+	    // Nothing to do if there are not warning messages
+	    if (messages == null) return;
+	    // Pass messages to listener, one by one
+	    final int count = messages.size();
+	    for (int pos=0; pos<count; pos++) {
+		String message = messages.elementAt(pos).toString();
+		_errorListener.error(new TransformerException(message));
+	    }
+	}
+	catch (TransformerException e) {
+	    // nada
+	}
+    }
+
+    /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Process the Source into a Templates object, which is a a compiled
      * representation of the source.
@@ -316,51 +351,68 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
      * @return A Templates object that can be used to create Transformers.
      * @throws TransformerConfigurationException
      */
-    public Templates newTemplates(Source stylesheet)
+    public Templates newTemplates(Source source)
 	throws TransformerConfigurationException {
 
-	byte[][] bytecodes = null; // The translet classes go in here
+	// Create a placeholder for the translet bytecodes
+	byte[][] bytecodes = null;
 
+	// Create and initialize a stylesheet compiler
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
-	// Attempt using the URL returned by the Source's getSystemId() method
-        final String stylesheetName = stylesheet.getSystemId();
-        String transletName = "undefined";
-	URL url = null;
-	if (stylesheetName != null) {
-	    final String base  = Util.baseName(stylesheetName);
-	    final String noext = Util.noExtName(base);
-            transletName = Util.toJavaName(noext);
-	    try {
-		if (stylesheetName.startsWith("file:/")) {
-		    url = new URL(stylesheetName);
-		} else {
-		    url = (new File(stylesheetName)).toURL();
-		}
-	    }
-	    catch (MalformedURLException e) { url = null; }
-	}
+	// Handle SAXSource input
+	if (source instanceof SAXSource) {
+	    final SAXSource sax = (SAXSource)source;
+	    InputSource input = sax.getInputSource();
+	    String systemId = sax.getSystemId();
 
-	// Now do the actual compilation - store results in the bytecodes array
-	if (url != null) {
-	    bytecodes = xsltc.compile(url, transletName);
+	    // Pass the SAX parser to the compiler
+	    xsltc.setXMLReader(sax.getXMLReader());
+
+	    // Then pass the XSL stylesheet doc to the compiler
+	    if ((input == null) && (systemId != null))
+		input = new InputSource(systemId);
+	    // Pass system id to InputSource just to be on the safe side
+	    input.setSystemId(systemId);
+	    // Compile the stylesheet
+	    bytecodes = xsltc.compile(null, input);
 	}
-	else if (stylesheet instanceof StreamSource) {
-	    StreamSource streamSource = (StreamSource)stylesheet;
-	    InputStream inputStream = streamSource.getInputStream();
-	    if (inputStream != null)
-		bytecodes = xsltc.compile(inputStream, transletName, 77);
+	// Handle StreamSource input
+	else if (source instanceof StreamSource) {
+	    final StreamSource stream = (StreamSource)source;
+	    final InputStream input = stream.getInputStream();
+	    final Reader reader = stream.getReader();
+	    final String systemId = stream.getSystemId();
+
+	    InputSource blob;
+	    if (input != null)
+		blob = new InputSource(input);
+	    else if (reader != null)
+		blob = new InputSource(reader);
+	    else if (systemId != null)
+		blob = new InputSource(systemId);
+	    else
+		blob = null; // TODO - signal error!!!!
+
+	    blob.setSystemId(systemId);
+	    bytecodes = xsltc.compile(null, blob);
 	}
 	else {
-	    throw new TransformerConfigurationException(STREAM_SOURCE_ERROR);
+	    throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
 	}
+
+	final String transletName = xsltc.getClassName();
+
+	// Pass compiler warnings to the error listener
+	passWarningsToListener(xsltc.getWarnings());
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
-	    throw new TransformerConfigurationException(COMPILATION_ERROR);
+	    // Pass compiler errors to the error listener
+	    passErrorsToListener(xsltc.getErrors());
+	    throw new TransformerConfigurationException(COMPILE_ERR);
 	}
-
 	return(new TemplatesImpl(bytecodes, transletName));
     }
 

@@ -459,6 +459,9 @@ public final class TransformerImpl extends Transformer {
      */
     private void setOutputProperties(AbstractTranslet translet,
 				     Properties properties) {
+	// Return right now if no properties are set
+	if (properties == null) return;
+
 	// Get a list of all the defined properties
 	Enumeration names = properties.propertyNames();
 	while (names.hasMoreElements()) {

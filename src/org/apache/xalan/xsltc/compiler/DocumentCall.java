@@ -110,7 +110,7 @@ final class DocumentCall extends FunctionCall {
 						"to document() function");
 		    throw new TypeCheckError(msg);
 		}
-		_uri = new LiteralExpr(stylesheet.getURL().toString(),
+		_uri = new LiteralExpr(stylesheet.getSystemId(),
 				       Constants.EMPTYSTRING);
 	    }
 	}

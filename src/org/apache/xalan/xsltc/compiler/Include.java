@@ -88,17 +88,19 @@ final class Include extends TopLevelElement {
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
 	try {
-	    final String href = getAttribute("href");
-	    final URL toInclude = new URL(context.getURL(), href);
-	    if (context.checkForLoop(toInclude))
-		throw new Exception(toInclude.toString() + " already loaded");
-
-	    final SyntaxTreeNode root = parser.parse(toInclude);
+	    final String systemId = getAttribute("href");
+	    if (context.checkForLoop(systemId)) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.CIRCULAR_INC,systemId,this);
+		parser.reportError(Constants.FATAL, msg);
+		return;
+	    }
+	    InputSource input = new InputSource(systemId);
+	    final SyntaxTreeNode root = parser.parse(input);
 	    if (root == null) return;
 	    final Stylesheet _included = parser.makeStylesheet(root);
 	    if (_included == null) return;
 
-	    _included.setURL(toInclude);
+	    _included.setSystemId(systemId);
 	    _included.setParentStylesheet(context);
 
 	    // An included stylesheet gets the same import precedence

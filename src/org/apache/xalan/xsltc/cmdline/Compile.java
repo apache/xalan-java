@@ -147,29 +147,30 @@ public final class Compile {
 	    final String[] stylesheetNames = getopt.getCmdArgs();
 	    final Vector   stylesheetVector = new Vector();
 	    for (int i = 0; i < stylesheetNames.length; i++) {
-		final String stylesheetName = stylesheetNames[i];
-		final URL    stylesheetURL;
-		if (inputIsURL) {
-		    stylesheetVector.addElement(new URL(stylesheetName));
-		}
-		else {
-		    stylesheetVector.addElement((new File(stylesheetName)).toURL());
-		}
-
+		final String name = stylesheetNames[i];
+		URL url;
+		if (inputIsURL)
+		    url = new URL(name);
+		else
+		    url = (new File(name)).toURL();
+		stylesheetVector.addElement(url);
 	    }
 
 	    // Compile the stylesheet and output class/jar file(s)
 	    if (xsltc.compile(stylesheetVector)) {
+		xsltc.printWarnings();
 		if (xsltc.getJarFileName() != null) xsltc.outputToJar();
+		System.exit(0);
 	    }
 	    else {
-		Util.println("compilation failed");
-		System.exit(-1); return;
+		xsltc.printWarnings();
+		xsltc.printErrors();
+		System.exit(-1);
 	    }
 	}
 	catch (GetOptsException ex) {
 	    System.err.println(ex);
-	    printUsage();
+	    printUsage(); // exits with code '-1'
 	}
 	catch (Exception e) {
 	    e.printStackTrace();

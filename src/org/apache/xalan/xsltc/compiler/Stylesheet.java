@@ -91,7 +91,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private String       _version;
 
     private QName        _name;
-    private URL          _url;
+    private String       _systemId;
     private Stylesheet   _parentStylesheet;
 	
     // Contains global variables and parameters defined in the stylesheet
@@ -172,9 +172,15 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _importPrecedence;
     }
 
-    public boolean checkForLoop(URL url) {
-	return _url.sameFile(url) ||
-	    _parentStylesheet != null && _parentStylesheet.checkForLoop(url);
+    public boolean checkForLoop(String systemId) {
+	// Return true if this stylesheet includes/imports itself
+	if (_systemId.equals(systemId))
+	    return true;
+	// Then check with any stylesheets that included/imported this one
+	if (_parentStylesheet != null) 
+	    return _parentStylesheet.checkForLoop(systemId);
+	// Otherwise OK
+	return false;
     }
     
     public void setParser(Parser parser) {
@@ -190,12 +196,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _parentStylesheet;
     }
 
-    public void setURL(URL url) {
-	_url = url;
+    public void setSystemId(String systemId) {
+	_systemId = systemId;
     }
     
-    public URL getURL() {
-	return _url;
+    public String getSystemId() {
+	return _systemId;
     }
 
     private QName makeStylesheetName(String prefix) {
