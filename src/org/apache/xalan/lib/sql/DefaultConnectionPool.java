@@ -68,8 +68,10 @@ import java.util.*;
 import java.sql.*;
 
 /**
+ * For internal connectiones, i.e. Connection information supplies in the
+ * Stylesheet. The Default Connection Pool will be used.
  */
-public class DefaultConnectionPool  implements ConnectionPool
+public class DefaultConnectionPool implements ConnectionPool
 {
   /**
    */
@@ -114,27 +116,7 @@ public class DefaultConnectionPool  implements ConnectionPool
    */
   public DefaultConnectionPool( ) {}
 
-  ///**
-//   * Are we active, if not then released connections will be
-//   * closed on release and new connections will be refused.
-//   * @return
-//   */
-//  public void disablePool( )
-//  {
-//    m_IsActive = false;
-//    freeUnused();
-//  }
 
-  
-  ///**
-//   * @return
-//   */
-//  public void enablePool( )
-//  {
-//    m_IsActive = true;
-//  }
-
-  
   /**
    * Return our current Active state
    * @return
@@ -224,7 +206,7 @@ public class DefaultConnectionPool  implements ConnectionPool
     m_ConnectionProtocol.put("user", u);
   }
 
-  ///**
+///**
 //   * Copy the properties from the source to our properties
 //   * @param p
 //   * @return
@@ -241,7 +223,7 @@ public class DefaultConnectionPool  implements ConnectionPool
 //
 //  }
 
-  
+
   /**
    * Override the current number of connections to keep in the pool. This
    * setting will only have effect on a new pool or when a new connection
@@ -308,21 +290,11 @@ public class DefaultConnectionPool  implements ConnectionPool
 
   // Find an available connection
   /**
-   * @return
+   * @return Connection
    * @throws SQLException
-   * @throws IllegalArgumentException
-   * @return
-   * @throws IllegalArgumentException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws IllegalArgumentException
-   * @return
-   * @throws SQLException
-   * @return
    * @throws IllegalArgumentException
    */
-  public synchronized Connection getConnection( )throws IllegalArgumentException, SQLException          
+  public synchronized Connection getConnection( )throws IllegalArgumentException, SQLException
   {
 
     PooledConnection pcon = null;
@@ -374,18 +346,8 @@ public class DefaultConnectionPool  implements ConnectionPool
    * @param con
    * @return
    * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
    */
-  public synchronized void releaseConnection( Connection con )throws SQLException          
+  public synchronized void releaseConnection( Connection con )throws SQLException
   {
 
     // find the PooledConnection Object
@@ -426,22 +388,46 @@ public class DefaultConnectionPool  implements ConnectionPool
   }
 
 
+  /**
+   * @param con
+   * @return
+   * @throws SQLException
+   */
+  public synchronized void releaseConnectionOnError( Connection con )throws SQLException
+  {
+
+    // find the PooledConnection Object
+    for ( int x = 0; x < m_pool.size(); x++ )
+    {
+
+      PooledConnection pcon =
+        (PooledConnection) m_pool.elementAt(x);
+
+      // Check for correct Connection
+      if ( pcon.getConnection() == con )
+      {
+        if (DEBUG)
+        {
+          System.out.println("Releasing Connection On Error" + x);
+        }
+
+        con.close();
+        m_pool.removeElementAt(x);
+        if (DEBUG)
+        {
+          System.out.println("-->Inactive Pool, Closing connection");
+        }
+        break;
+      }
+    }
+  }
+
 
   /**
    * @return
    * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws SQLException
    */
-  private Connection createConnection( )throws SQLException          
+  private Connection createConnection( )throws SQLException
   {
     Connection con = null;
 
@@ -454,20 +440,10 @@ public class DefaultConnectionPool  implements ConnectionPool
   // Initialize the pool
   /**
    * @return
+   * @throws IllegalArgumentException
    * @throws SQLException
-   * @throws IllegalArgumentException
-   * @return
-   * @throws IllegalArgumentException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws IllegalArgumentException
-   * @return
-   * @throws SQLException
-   * @return
-   * @throws IllegalArgumentException
    */
-  public synchronized void initializePool( )throws IllegalArgumentException, SQLException          
+  public synchronized void initializePool( )throws IllegalArgumentException, SQLException
   {
 
      // Check our initial values
@@ -539,18 +515,8 @@ public class DefaultConnectionPool  implements ConnectionPool
   /**
    * @return
    * @throws Throwable
-   * @return
-   * @throws Throwable
-   * @return
-   * @throws Throwable
-   * @return
-   * @throws Throwable
-   * @return
-   * @throws Throwable
-   * @return
-   * @throws Throwable
    */
-  protected void finalize( )throws Throwable          
+  protected void finalize( )throws Throwable
   {
     if (DEBUG)
     {
@@ -612,8 +578,8 @@ public class DefaultConnectionPool  implements ConnectionPool
    */
   public void setPoolEnabled( final boolean flag )
   {
-    
+
   }
-  
-  
+
+
 }

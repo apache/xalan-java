@@ -66,28 +66,24 @@ import java.sql.ResultSet;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.sql.Time;
-
 import java.util.Properties;
 import java.util.Vector;
 import java.util.StringTokenizer;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
-
 import java.util.Vector;
 import java.util.Enumeration;
-
 import java.math.BigDecimal;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
-
 import org.apache.xpath.XPathContext;
-
 import org.apache.xalan.extensions.ExpressionContext;
+import org.w3c.dom.*;
+import java.sql.*;
+import java.util.*;
 
 /**
  * An XSLT extension that allows a stylesheet to
@@ -108,7 +104,7 @@ public class XConnection
   /**
    * Flag for DEBUG mode
    */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   /**
    * The Current Connection Pool in Use. An XConnection can only
@@ -122,7 +118,6 @@ public class XConnection
    * to be created. Due to the archititure of the Xalan Extensions,
    * there is no notification of when the Extension is being unloaded and
    * as such, there is a good chance that JDBC COnnections are not closed.
-   *
    * A finalized is provided to try and catch this situation but since
    * support of finalizers is inconsistant across JVM's this may cause
    * a problem. The robustness of the JDBC Driver is also at issue here.
@@ -159,11 +154,12 @@ public class XConnection
    * Allow the SQL Extensions to return null on error. The Error information will
    * be stored in a seperate Error Document that can easily be retrived using the
    * getError() method.
-   *
    * %REVIEW% This functionality will probably be buried inside the SQLDocument.
    */
   private SQLErrorDocument m_Error = null;
 
+  /**
+   */
   private boolean m_IsDefaultPool = false;
 
   /**
@@ -171,7 +167,6 @@ public class XConnection
    * Streaming mode. Streeaming Mode will reduce the memory footprint
    * to a fixed amount but will not let you traverse the tree more than
    * once since the Row data will be reused for every Row in the Query.
-   *
    */
   private boolean m_IsStreamingEnabled = false;
 
@@ -186,48 +181,52 @@ public class XConnection
   // connect method to receive full error information.
   //
   /**
+   * @param exprContext
    * @param ConnPoolName
    */
-  public XConnection(ExpressionContext exprContext, String ConnPoolName )
+  public XConnection( ExpressionContext exprContext, String ConnPoolName )
   {
     connect(exprContext, ConnPoolName);
   }
 
   /**
+   * @param exprContext
    * @param driver
    * @param dbURL
    */
-  public XConnection(ExpressionContext exprContext, String driver, String dbURL )
+  public XConnection( ExpressionContext exprContext, String driver, String dbURL )
   {
     connect(exprContext, driver, dbURL);
   }
 
   /**
+   * @param exprContext
    * @param list
    */
-  public XConnection(ExpressionContext exprContext, NodeList list )
+  public XConnection( ExpressionContext exprContext, NodeList list )
   {
     connect(exprContext, list);
   }
 
   /**
+   * @param exprContext
    * @param driver
    * @param dbURL
    * @param user
    * @param password
    */
-  public XConnection(ExpressionContext exprContext, String driver, String dbURL, String user, String password )
+  public XConnection( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
   {
     connect(exprContext, driver, dbURL, user, password);
   }
 
   /**
+   * @param exprContext
    * @param driver
    * @param dbURL
    * @param protocolElem
    */
-  public XConnection(
-    ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
+  public XConnection( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
   {
     connect(exprContext, driver, dbURL, protocolElem);
   }
@@ -235,10 +234,11 @@ public class XConnection
 
   /**
    * Create an XConnection using the name of an existing Connection Pool
+   * @param exprContext
    * @param ConnPoolName
    * @return
    */
-  public XConnection connect(ExpressionContext exprContext, String ConnPoolName )
+  public XConnection connect( ExpressionContext exprContext, String ConnPoolName )
   {
     try
     {
@@ -246,11 +246,6 @@ public class XConnection
       m_IsDefaultPool = false;
       return this;
     }
-//    catch(SQLException e)
-//    {
-//      m_Error = new SQLErrorDocument(e);
-//      return null;
-//    }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
@@ -261,11 +256,12 @@ public class XConnection
 
   /**
    * Create an XConnection object with just a driver and database URL.
+   * @param exprContext
    * @param driver JDBC driver of the form foo.bar.Driver.
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @return
    */
-  public XConnection connect(ExpressionContext exprContext, String driver, String dbURL )
+  public XConnection connect( ExpressionContext exprContext, String driver, String dbURL )
   {
     try
     {
@@ -285,10 +281,11 @@ public class XConnection
   }
 
   /**
+   * @param exprContext
    * @param protocolElem
    * @return
    */
-  public XConnection connect(ExpressionContext exprContext, Element protocolElem )
+  public XConnection connect( ExpressionContext exprContext, Element protocolElem )
   {
     try
     {
@@ -308,10 +305,11 @@ public class XConnection
   }
 
   /**
+   * @param exprContext
    * @param list
    * @return
    */
-  public XConnection connect(ExpressionContext exprContext, NodeList list )
+  public XConnection connect( ExpressionContext exprContext, NodeList list )
   {
     try
     {
@@ -332,15 +330,14 @@ public class XConnection
 
   /**
    * Create an XConnection object with user ID and password.
+   * @param exprContext
    * @param driver JDBC driver of the form foo.bar.Driver.
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @param user user ID.
    * @param password connection password.
    * @return
    */
-  public XConnection connect(
-    ExpressionContext exprContext,
-    String driver, String dbURL, String user, String password )
+  public XConnection connect( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
   {
     try
     {
@@ -367,15 +364,14 @@ public class XConnection
 
   /**
    * Create an XConnection object with a connection protocol
+   * @param exprContext
    * @param driver JDBC driver of the form foo.bar.Driver.
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @param protocolElem list of string tag/value connection arguments,
    * normally including at least "user" and "password".
    * @return
    */
-  public XConnection connect(
-    ExpressionContext exprContext,
-    String driver, String dbURL, Element protocolElem )
+  public XConnection connect( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
   {
     try
     {
@@ -428,8 +424,11 @@ public class XConnection
    * and its value as the elements value.
    * <protocol name="name of value">value</protocol>
    * </DBINFO-TAG>
+   * @param e
+   * @return
+   * @throws SQLException
    */
-  private void initFromElement( Element e )throws SQLException
+  private void initFromElement( Element e )throws SQLException 
   {
 
     Properties prop = new Properties();
@@ -514,8 +513,13 @@ public class XConnection
    * Initilize is being called because we did not have an
    * existing Connection Pool, so let's see if we created one
    * already or lets create one ourselves.
+   * @param driver
+   * @param dbURL
+   * @param prop
+   * @return
+   * @throws SQLException
    */
-  private void init( String driver, String dbURL, Properties prop )throws SQLException
+  private void init( String driver, String dbURL, Properties prop )throws SQLException 
   {
     if (DEBUG)
       System.out.println("XConnection, Connection Init");
@@ -567,6 +571,7 @@ public class XConnection
 
   /**
    * Execute a query statement by instantiating an
+   * @param exprContext
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
    * @throws SQLException
@@ -576,9 +581,15 @@ public class XConnection
    * @link org.apache.xalan.lib.sql.RowSet RowSet},
    * a row-set element.
    */
-//  public DTMAxisIterator query(ExpressionContext exprContext, String queryString)
-  public DTM query(ExpressionContext exprContext, String queryString)
+  public DTM query( ExpressionContext exprContext, String queryString )
   {
+    Connection con = null;
+    Statement stmt = null;
+    ResultSet rs = null;
+
+    DTMManagerDefault mgrDefault = null;
+    SQLDocument doc = null;
+
     try
     {
       if (DEBUG) System.out.println("query()");
@@ -588,19 +599,43 @@ public class XConnection
         return null;
       }
 
-      Connection con = m_ConnectionPool.getConnection();
-      Statement stmt = con.createStatement();
-      ResultSet rs = stmt.executeQuery(queryString);
+      try
+      {
+        con = m_ConnectionPool.getConnection();
+        stmt = con.createStatement();
+        rs = stmt.executeQuery(queryString);
+      }
+      catch(SQLException e)
+      {
+        // We have not created a document yet, so lets close the
+        // connection ourselves then let the process deal with the
+        // error.
+        //
+        try  { if (null != rs) rs.close(); }
+        catch(Exception e1) {}
+        try  { if (null != stmt) stmt.close(); }
+        catch(Exception e1) { }
+        try  {
+          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
+        } catch(Exception e1) { }
+
+        // Re throw the error so the process can handle the error
+        // normally
+        throw e;
+      }
 
       if (DEBUG) System.out.println("..creatingSQLDocument");
 
       DTMManager mgr =
         ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
-      DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
+      mgrDefault = (DTMManagerDefault) mgr;
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
-      SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << 20 , con, stmt, rs, m_IsStreamingEnabled);
+      doc =
+        new SQLDocument(
+          mgr, dtmIdent << 20 ,
+          m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
+
       if (null != doc)
       {
         if (DEBUG) System.out.println("..returning Document");
@@ -614,17 +649,27 @@ public class XConnection
       }
       else
       {
-        // Build Error Doc, BAD Result Set
         return null;
       }
     }
     catch(SQLException e)
     {
+      if ((doc != null) && (mgrDefault != null))
+      {
+        doc.closeOnError();
+        mgrDefault.release(doc, true);
+      }
       buildErrorDocument(exprContext, e);
       return null;
     }
     catch (Exception e)
     {
+      if ((doc != null) && (mgrDefault != null))
+      {
+        doc.closeOnError();
+        mgrDefault.release(doc, true);
+      }
+
       if (DEBUG) System.out.println("exception in query()");
       buildErrorDocument(exprContext, e);
       return null;
@@ -637,6 +682,7 @@ public class XConnection
 
   /**
    * Execute a parameterized query statement by instantiating an
+   * @param exprContext
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
    * @throws SQLException
@@ -646,14 +692,37 @@ public class XConnection
    * @link org.apache.xalan.lib.sql.RowSet RowSet},
    * a row-set element.
    */
-  public DTM pquery(ExpressionContext exprContext, String queryString )
+  public DTM pquery( ExpressionContext exprContext, String queryString )
   {
+    Connection con = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
     try
     {
       int indx;
 
-      Connection con = m_ConnectionPool.getConnection();
-      PreparedStatement stmt = con.prepareStatement(queryString);
+      try
+      {
+        con = m_ConnectionPool.getConnection();
+        stmt = con.prepareStatement(queryString);
+      }
+      catch(SQLException e)
+      {
+        // We have not created a document yet, so lets close the
+        // connection ourselves then let the process deal with the
+        // error.
+        //
+        try { if (null != stmt) stmt.close(); }
+        catch(Exception e1) { }
+        try {
+          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
+        }  catch(Exception e1) {}
+
+        // Re throw the error so the process can handle the error
+        // normally
+        throw e;
+      }
 
       if (DEBUG) System.out.println("..building Prepared Statement");
 
@@ -666,7 +735,28 @@ public class XConnection
         indx++;
       }
 
-      ResultSet rs = stmt.executeQuery();
+      try
+      {
+        rs = stmt.executeQuery();
+      }
+      catch(SQLException e)
+      {
+        // We have not created a document yet, so lets close the
+        // connection ourselves then let the process deal with the
+        // error.
+        //
+        try { if (null != rs) rs.close();  }
+        catch(Exception e1) {  }
+        try { if (null != stmt) stmt.close(); }
+        catch(Exception e1) {  }
+        try  {
+          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
+        } catch(Exception e1) { }
+
+        // Re throw the error so the process can handle the error
+        // normally
+        throw e;
+      }
 
       if (DEBUG) System.out.println("..creatingSQLDocument");
 
@@ -676,7 +766,9 @@ public class XConnection
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
       SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << 20 , con, stmt, rs, m_IsStreamingEnabled);
+        new SQLDocument(mgr, dtmIdent << 20 ,
+        m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
+
       if (null != doc)
       {
         if (DEBUG) System.out.println("..returning Document");
@@ -709,6 +801,7 @@ public class XConnection
 
   /**
    * Execute a parameterized query statement by instantiating an
+   * @param exprContext
    * @param queryString the SQL query.
    * @param typeInfo
    * @return XStatement implements NodeIterator.
@@ -723,8 +816,12 @@ public class XConnection
    * the parameter types will be used to overload the current types
    * in the current parameter list.
    */
-  public DTM pquery(ExpressionContext exprContext, String queryString, String typeInfo)
+  public DTM pquery( ExpressionContext exprContext, String queryString, String typeInfo )
   {
+    Connection con = null;
+    PreparedStatement stmt = null;
+    ResultSet rs = null;
+
     try
     {
       int indx;
@@ -750,8 +847,29 @@ public class XConnection
         indx++;
       }
 
-      Connection con = m_ConnectionPool.getConnection();
-      PreparedStatement stmt = con.prepareStatement(queryString);
+      try
+      {
+        con = m_ConnectionPool.getConnection();
+        stmt = con.prepareStatement(queryString);
+      }
+      catch(SQLException e)
+      {
+        // We have not created a document yet, so lets close the
+        // connection ourselves then let the process deal with the
+        // error.
+        //
+        try { if (null != stmt) stmt.close(); }
+        catch(Exception e1) { }
+        try {
+          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
+        } catch(Exception e1) { }
+
+        // Re throw the error so the process can handle the error
+        // normally
+        throw e;
+      }
+
+
 
       if (DEBUG) System.out.println("..building Prepared Statement");
 
@@ -765,7 +883,29 @@ public class XConnection
       }
 
 
-      ResultSet rs = stmt.executeQuery();
+      try
+      {
+        rs = stmt.executeQuery();
+      }
+      catch(SQLException e)
+      {
+        // We have not created a document yet, so lets close the
+        // connection ourselves then let the process deal with the
+        // error.
+        //
+        try { if (null != rs) rs.close(); }
+        catch(Exception e1) { /* Empty */ }
+        try { if (null != stmt) stmt.close(); }
+        catch(Exception e1) { /* Empty */  }
+        try {
+          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
+        } catch(Exception e1) { /* Empty */ }
+
+        // Re throw the error so the process can handle the error
+        // normally
+        throw e;
+      }
+
 
       if (DEBUG) System.out.println("..creatingSQLDocument");
 
@@ -775,7 +915,9 @@ public class XConnection
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
       SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << 20 , con, stmt, rs, m_IsStreamingEnabled);
+        new SQLDocument(mgr, dtmIdent << 20 ,
+        m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
+
       if (null != doc)
       {
         if (DEBUG) System.out.println("..returning Document");
@@ -924,6 +1066,13 @@ public class XConnection
     } while ( (n = n.getNextSibling()) != null);
   }
 
+  /**
+   * @return
+   */
+  public void clearParameters( )
+  {
+    m_ParameterList.removeAllElements();
+  }
 
   /**
    * There is a problem with some JDBC drivers when a Connection
@@ -974,6 +1123,7 @@ public class XConnection
    * memory consumption is greatly reduces so you can have queries
    * of unlimited size but it will not let you traverse the data
    * more than once.
+   * @return
    */
   public void enableStreamingMode( )
   {
@@ -989,6 +1139,7 @@ public class XConnection
    * memory consumption is greatly reduces so you can have queries
    * of unlimited size but it will not let you traverse the data
    * more than once.
+   * @return
    */
   public void disableStreamingMode( )
   {
@@ -1000,9 +1151,21 @@ public class XConnection
   }
 
   /**
-   * Close the connection to the data source.
+   * Provide access to the last error that occued. This error
+   * may be over written when the next operation occurs.
+   * @return
    */
-  public void close( )throws SQLException
+  public DTM getError( )
+  {
+    return m_Error;
+  }
+
+  /**
+   * Close the connection to the data source.
+   * @return
+   * @throws SQLException
+   */
+  public void close( )throws SQLException 
   {
 
     if (DEBUG)
@@ -1019,13 +1182,19 @@ public class XConnection
       m_OpenSQLDocuments.removeElementAt(0);
     }
 
+    if (DEBUG)
+      System.out.println("Exiting XConnection.close");
+
   }
 
   /**
    * Close the connection to the data source. Only close the connections
    * for a single document.
+   * @param sqldoc
+   * @return
+   * @throws SQLException
    */
-  public void close(SQLDocument sqldoc)throws SQLException
+  public void close( SQLDocument sqldoc )throws SQLException 
   {
     if (DEBUG)
       System.out.println("Entering XConnection.close");
@@ -1045,10 +1214,13 @@ public class XConnection
 
   /**
    * Set the parameter for a Prepared Statement
-   *
+   * @param pos
+   * @param stmt
+   * @param p
+   * @return
+   * @throws SQLException
    */
-  public void setParameter(int pos, PreparedStatement stmt, QueryParameter p)
-    throws SQLException
+  public void setParameter( int pos, PreparedStatement stmt, QueryParameter p )throws SQLException 
   {
     String type = p.getType();
     if (type.equalsIgnoreCase("string"))
@@ -1115,7 +1287,12 @@ public class XConnection
 
   }
 
-  private void buildErrorDocument(ExpressionContext exprContext, SQLException excp)
+  /**
+   * @param exprContext
+   * @param excp
+   * @return
+   */
+  private void buildErrorDocument( ExpressionContext exprContext, SQLException excp )
   {
     try
     {
@@ -1124,7 +1301,10 @@ public class XConnection
       DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
-      m_Error = new SQLErrorDocument(mgr, dtmIdent, excp);
+      m_Error = new SQLErrorDocument(mgr, dtmIdent << 20, excp);
+
+      // Register our document
+      mgrDefault.addDTM(m_Error, dtmIdent);
 
     }
     catch(Exception e)
@@ -1133,7 +1313,12 @@ public class XConnection
     }
   }
 
-  private void buildErrorDocument(ExpressionContext exprContext, Exception excp)
+  /**
+   * @param exprContext
+   * @param excp
+   * @return
+   */
+  private void buildErrorDocument( ExpressionContext exprContext, Exception excp )
   {
     try
     {
@@ -1142,7 +1327,10 @@ public class XConnection
       DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
-      m_Error = new SQLErrorDocument(mgr, dtmIdent, excp);
+      m_Error = new SQLErrorDocument(mgr, dtmIdent<<20, excp);
+
+      // Register our document
+      mgrDefault.addDTM(m_Error, dtmIdent);
 
     }
     catch(Exception e)

@@ -3,13 +3,16 @@ package org.apache.xalan.lib.sql;
 import java.util.Vector;
 
 /**
- * Provide a simple Array storage mechinsim where  native Arrays will be use as the basic storage mechinism but the Arrays will be stored as blocks. The size of the
- * Array blocks is determine during object construction. This is intended to be a
- * simple storage mechinsim where the storage only can grow. Array elements can
- * not be removed, only added to.
+ * Provide a simple Array storage mechinsim where  native Arrays will be use as
+ * the basic storage mechinism but the Arrays will be stored as blocks.
+ * The size of the Array blocks is determine during object construction.
+ * This is intended to be a simple storage mechinsim where the storage only
+ * can grow. Array elements can not be removed, only added to.
  */
 public class ObjectArray
 {
+  /**
+   */
   private int m_minArraySize = 10;
   /**
    * The container of all the sub arrays
@@ -30,9 +33,8 @@ public class ObjectArray
 
 
   /**
-   * @param minArraySize The size of the Arrays stored in the Vector
    */
-  public ObjectArray()
+  public ObjectArray( )
   {
     //
     // Default constructor will work with a minimal fixed size
@@ -48,7 +50,11 @@ public class ObjectArray
     init(minArraySize);
   }
 
-  private void init(int size)
+  /**
+   * @param size
+   * @return
+   */
+  private void init( int size )
   {
     m_minArraySize = size;
     m_currentArray = new _ObjectArray(m_minArraySize);
@@ -84,7 +90,7 @@ public class ObjectArray
 
   /**
    * @param idx Index of the Object in the Array
-   * @param obj, The value to set in the Array
+   * @param obj , The value to set in the Array
    * @return
    */
   public void setAt( final int idx, final Object obj )
@@ -136,16 +142,27 @@ public class ObjectArray
   }
 
 
-  protected class _ObjectArray
+  /**
+   */
+  class _ObjectArray
   {
+    /**
+     */
     public Object[] objects;
-    public _ObjectArray(int size)
+    /**
+     * @param size
+     */
+    public _ObjectArray( int size )
     {
       objects = new Object[size];
     }
   }
 
-  public static void main(String[] args)
+  /**
+   * @param args
+   * @return
+   */
+  public static void main( String[] args )
   {
     String[] word={
       "Zero","One","Two","Three","Four","Five",

@@ -60,15 +60,14 @@
 
 package org.apache.xalan.lib.sql;
 
-
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTM;
-
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * The SQL Document is the main controlling class the executesa SQL Query
@@ -76,61 +75,145 @@ import java.sql.SQLException;
 public class SQLDocument extends DTMDocument
 {
 
-  private boolean DEBUG = true;
+  /**
+   */
+  private boolean DEBUG = false;
 
+  /**
+   */
   private static final String S_NAMESPACE = "http://xml.apache.org/xalan/SQLExtension";
 
 
+  /**
+   */
   private static final String S_COLUMN_HEADER = "column-header";
+  /**
+   */
   private static final String S_ROW_SET = "row-set";
+  /**
+   */
   private static final String S_ROW = "row";
+  /**
+   */
   private static final String S_COL = "col";
 
+  /**
+   */
   private static final String S_CATALOGUE_NAME = "catalogue-name";
+  /**
+   */
   private static final String S_DISPLAY_SIZE = "column-display-size";
+  /**
+   */
   private static final String S_COLUMN_LABEL = "column-label";
+  /**
+   */
   private static final String S_COLUMN_NAME = "column-name";
+  /**
+   */
   private static final String S_COLUMN_TYPE = "column-type";
+  /**
+   */
   private static final String S_COLUMN_TYPENAME = "column-typename";
+  /**
+   */
   private static final String S_PRECISION = "precision";
+  /**
+   */
   private static final String S_SCALE = "scale";
+  /**
+   */
   private static final String S_SCHEMA_NAME = "schema-name";
+  /**
+   */
   private static final String S_TABLE_NAME = "table-name";
+  /**
+   */
   private static final String S_CASESENSITIVE = "case-sensitive";
+  /**
+   */
   private static final String S_DEFINITLEYWRITABLE = "definitley-writable";
+  /**
+   */
   private static final String S_ISNULLABLE = "nullable";
+  /**
+   */
   private static final String S_ISSIGNED = "signed";
+  /**
+   */
   private static final String S_ISWRITEABLE = "writable";
+  /**
+   */
   private static final String S_ISSEARCHABLE = "searchable";
 
-  private int         m_ColumnHeader_TypeID = 0;
-  private int         m_RowSet_TypeID = 0;
-  private int         m_Row_TypeID = 0;
-  private int         m_Col_TypeID = 0;
+  /**
+   */
+  private int m_ColumnHeader_TypeID = 0;
+  /**
+   */
+  private int m_RowSet_TypeID = 0;
+  /**
+   */
+  private int m_Row_TypeID = 0;
+  /**
+   */
+  private int m_Col_TypeID = 0;
 
-  private int         m_ColAttrib_CATALOGUE_NAME_TypeID = 0;
-  private int         m_ColAttrib_DISPLAY_SIZE_TypeID = 0;
-  private int         m_ColAttrib_COLUMN_LABEL_TypeID = 0;
-  private int         m_ColAttrib_COLUMN_NAME_TypeID = 0;
-  private int         m_ColAttrib_COLUMN_TYPE_TypeID = 0;
-  private int         m_ColAttrib_COLUMN_TYPENAME_TypeID = 0;
-  private int         m_ColAttrib_PRECISION_TypeID = 0;
-  private int         m_ColAttrib_SCALE_TypeID = 0;
-  private int         m_ColAttrib_SCHEMA_NAME_TypeID = 0;
-  private int         m_ColAttrib_TABLE_NAME_TypeID = 0;
-  private int         m_ColAttrib_CASESENSITIVE_TypeID = 0;
-  private int         m_ColAttrib_DEFINITLEYWRITEABLE_TypeID = 0;
-  private int         m_ColAttrib_ISNULLABLE_TypeID = 0;
-  private int         m_ColAttrib_ISSIGNED_TypeID = 0;
-  private int         m_ColAttrib_ISWRITEABLE_TypeID = 0;
-  private int         m_ColAttrib_ISSEARCHABLE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_CATALOGUE_NAME_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_DISPLAY_SIZE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_COLUMN_LABEL_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_COLUMN_NAME_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_COLUMN_TYPE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_COLUMN_TYPENAME_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_PRECISION_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_SCALE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_SCHEMA_NAME_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_TABLE_NAME_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_CASESENSITIVE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_DEFINITLEYWRITEABLE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_ISNULLABLE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_ISSIGNED_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_ISWRITEABLE_TypeID = 0;
+  /**
+   */
+  private int m_ColAttrib_ISSEARCHABLE_TypeID = 0;
 
   /**
    * The DBMS Connection used to produce this SQL Document.
    * Will be used to clear free up the database resources on
    * close.
    */
-  private Connection  m_Connection = null;
+  private Connection m_Connection = null;
 
   /**
    * The Statement used to extract the data from the Database connection.
@@ -139,63 +222,74 @@ public class SQLDocument extends DTMDocument
    * is closed prior to reading all the data needed. So as long as we are
    * using the ResultSet, we will track the Statement used to produce it.
    */
-  private Statement   m_Statement = null;
+  private Statement m_Statement = null;
 
   /**
    * The conduit to our data that will be used to fill the document.
    */
-  private ResultSet   m_ResultSet = null;
+  private ResultSet m_ResultSet = null;
+
+  /**
+   * The Connection Pool that originally produced the connection.
+   */
+  private ConnectionPool m_ConnectionPool = null;
+
 
   /**
    * As the column header array is built, keep the node index
    * for each Column.
-   *
    * The primary use of this is to locate the first attribute for
    * each column in each row as we add records.
    */
-  private int[]     m_ColHeadersIdx;
+  private int[] m_ColHeadersIdx;
 
   /**
    * An indicator on how many columns are in this query
    */
-  private int       m_ColCount;
+  private int m_ColCount;
   /**
    * The index of the Row Set node. This is the sibling directly after
    * the last Column Header.
    */
-  private int       m_RowSetIdx = DTM.NULL;
+  private int m_RowSetIdx = DTM.NULL;
 
   /**
    * Demark the first row element where we started adding rows into the
    * Document.
    */
-  private int     m_FirstRowIdx = DTM.NULL;
+  private int m_FirstRowIdx = DTM.NULL;
 
   /**
    * Keep track of the Last row inserted into the DTM from the ResultSet.
    * This will be used as the index of the parent Row Element when adding
    * a row.
    */
-  private int     m_LastRowIdx = DTM.NULL;
+  private int m_LastRowIdx = DTM.NULL;
 
   /**
    * Streaming Mode Control, In Streaming mode we reduce the memory
    * footprint since we only use a single row instance.
    */
-
   private boolean m_StreamingMode = true;
 
-  public SQLDocument(
-    DTMManager mgr, int ident,
-    Connection con, Statement stmt, ResultSet data,
-    boolean streamingMode)
-    throws SQLException
+  /**
+   * @param mgr
+   * @param ident
+   * @param pool
+   * @param con
+   * @param stmt
+   * @param data
+   * @param streamingMode
+   * @throws SQLException
+   */
+  public SQLDocument( DTMManager mgr, int ident, ConnectionPool pool, Connection con, Statement stmt, ResultSet data, boolean streamingMode )throws SQLException 
   {
     super(mgr, ident);
 
     m_Connection = con;
     m_Statement  = stmt;
     m_ResultSet  = data;
+    m_ConnectionPool = pool;
     m_StreamingMode = streamingMode;
 
     createExpandedNameTable();
@@ -211,9 +305,10 @@ public class SQLDocument extends DTMDocument
 
   /**
    * Extract the Meta Data and build the Column Attribute List.
+   * @param meta
    * @return
    */
-  private void extractSQLMetaData(ResultSetMetaData meta)
+  private void extractSQLMetaData( ResultSetMetaData meta )
   {
     // Build the Node Tree, just add the Column Header
     // branch now, the Row & col elements will be added
@@ -459,16 +554,11 @@ public class SQLDocument extends DTMDocument
   /**
    * Populate the Expanded Name Table with the Node that we will use.
    * Keep a reference of each of the types for access speed.
-   *
+   * @return
    */
-  private void createExpandedNameTable()
+  protected void createExpandedNameTable( )
   {
-
-    m_Document_TypeID =
-      m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_DOCUMENT, DTM.DOCUMENT_NODE);
-
-    m_TextNode_TypeID =
-      m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_TEXT_NODE, DTM.TEXT_NODE);
+    super.createExpandedNameTable();
 
     m_ColumnHeader_TypeID =
       m_expandedNameTable.getExpandedTypeID(S_NAMESPACE, S_COLUMN_HEADER, DTM.ELEMENT_NODE);
@@ -521,8 +611,9 @@ public class SQLDocument extends DTMDocument
    * keep copying the data into the same row. This will keep the memory
    * footprint constint independant of the RecordSet Size. If we are not
    * in Streaming mode then create ROWS for the whole tree.
+   * @return
    */
-  private boolean addRowToDTMFromResultSet()
+  private boolean addRowToDTMFromResultSet( )
   {
     try
     {
@@ -631,37 +722,44 @@ public class SQLDocument extends DTMDocument
   }
 
 
-  public void close()
+  /**
+   * Clean up our ties to the database but this does not necessarly
+   * clean up the document.
+   * @return
+   */
+  public void close( )
   {
     if (DEBUG) System.out.println("close()");
 
-    try
-    {
-      if (null != m_ResultSet) m_ResultSet.close();
-    }
-    catch(Exception e)
-    {
-      /* Empty */
-    }
-
-    try
-    {
-      if (null != m_Statement) m_Statement.close();
-    }
-    catch(Exception e)
-    {
-      /* Empty */
-    }
-
-    try
-    {
-      if (null != m_Connection) m_Connection.close();
-    }
-    catch(Exception e)
-    {
-      /* Empty */
-    }
+    try { if (null != m_ResultSet) m_ResultSet.close(); }
+    catch(Exception e) { }
+    try { if (null != m_Statement) m_Statement.close(); }
+    catch(Exception e) { }
+    try {
+      if (null != m_Connection)
+        m_ConnectionPool.releaseConnection(m_Connection);
+    } catch(Exception e) { }
   }
+
+  /**
+   * When an error occurs, the XConnection will call this method
+   * do that we can deal with the Connection properly
+   * @return
+   */
+  public void closeOnError( )
+  {
+    if (DEBUG) System.out.println("close()");
+
+    try  { if (null != m_ResultSet) m_ResultSet.close();   }
+    catch(Exception e) { }
+    try  { if (null != m_Statement) m_Statement.close();
+    } catch(Exception e) { }
+    try {
+      if (null != m_Connection)
+        m_ConnectionPool.releaseConnectionOnError(m_Connection);
+    } catch(Exception e) { }
+  }
+
 
 
   /**
@@ -681,7 +779,11 @@ public class SQLDocument extends DTMDocument
     }
   }
 
-  protected int _nextsib(int identity)
+  /**
+   * @param identity
+   * @return
+   */
+  protected int _nextsib( int identity )
   {
     // If we are asking for the next row and we have not
     // been there yet then let's see if we can get another

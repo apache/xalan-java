@@ -61,7 +61,7 @@ import java.sql.Connection;
 
 /**
  */
-public class PooledConnection          
+public class PooledConnection
 {
 
   // Real JDBC Connection
@@ -83,9 +83,9 @@ public class PooledConnection
     if ( value != null ) { connection = value; }
   }
 
-  // Returns a reference to the JDBC Connection
   /**
-   * @return
+   * Returns a reference to the JDBC Connection
+   * @return Connection
    */
   public Connection getConnection( )
   {
@@ -93,8 +93,9 @@ public class PooledConnection
     return connection;
   }
 
-  // Set the status of the PooledConnection.
   /**
+   * Set the status of the PooledConnection.
+   *
    * @param value
    * @return
    */
@@ -103,14 +104,14 @@ public class PooledConnection
     inuse = value;
   }
 
-  // Returns the current status of the PooledConnection.
   /**
+   * Returns the current status of the PooledConnection.
    * @return
    */
   public boolean inUse( ) { return inuse; }
 
-  // Close the real JDBC Connection
   /**
+   *  Close the real JDBC Connection
    * @return
    */
   public void close( )

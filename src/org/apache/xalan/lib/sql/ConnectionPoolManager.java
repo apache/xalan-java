@@ -60,13 +60,12 @@
 
 import java.util.Hashtable;
 import java.lang.IllegalArgumentException;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  */
-public class ConnectionPoolManager    
+public class ConnectionPoolManager
 {
   /**
    */
@@ -108,14 +107,10 @@ public class ConnectionPoolManager
    * @param name
    * @param pool
    * @return
+   * @link org.apache.xalan.lib.sql.ConnectionPool}
    * @return
    * @throws <code>IllegalArgumentException</code>, throw this exception
    * if a pool with the same name currently exists.
-   * @return
-   * @return
-   * @return
-   * @return
-   * @link org.apache.xalan.lib.sql.ConnectionPool}
    */
   public synchronized void registerPool( String name, ConnectionPool pool )
   {
@@ -160,11 +155,6 @@ public class ConnectionPoolManager
   /**
    * Return the connection pool referenced by the name
    * @param name
-   * @return
-   * @return
-   * @return
-   * @return
-   * @return
    * @return
    * @returns <code>ConnectionPool</code> a reference to the ConnectionPool
    * object stored in the Pool Table. If the named pool does not exist, return
