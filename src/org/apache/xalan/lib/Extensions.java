@@ -65,6 +65,8 @@ import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXNotSupportedException;
@@ -89,13 +91,26 @@ public class Extensions {
   /**
    * This method is an extension that implements as a Xalan extension
    * the node-set function also found in xt and saxon.
-   * As described in section 11.1 of XSLT 1.0 Recommendation,
-   * the node-set returned contains just a single root node.  Most of the
+   * If the argument is a Result Tree Fragment, then <code>nodeset</code>
+   * returns a node-set consisting of a single root node as described in
+   * section 11.1 of the XSLT 1.0 Recommendation.  If the argument is a 
+   * node-set, <code>nodeset</code> returns a node-set.  If the argument
+   * is a string, number, or boolean, then <code>nodeset</code> returns
+   * a node-set consisting of a single root node with a single text node
+   * child that is the result of calling the string() function on the 
+   * passed parameter.  If the argument is anything else, then a node-set 
+   * consisting of a single text node is returned which is the value
+   * obtained by calling <code>toString()</code> on the passed argument.
+   * Most of the
    * actual work here is done in <code>MethodResolver</code> and
    * <code>XRTreeFrag</code>.
+   * @param myProcessor Context passed by the extension processor
+   * @param rtf Argument in the stylesheet to the nodeset extension function
    */
 
   public static NodeSet nodeset(ExpressionContext myProcessor, Object rtf) {
+
+    String textNodeValue;
 
     if (rtf instanceof NodeIterator)
     {
@@ -103,8 +118,27 @@ public class Extensions {
     }
     else
     {
-      Text textNode = myProcessor.getContextNode().getOwnerDocument().createTextNode(rtf.toString());
-      return new NodeSet(textNode);
+      if (rtf instanceof String)
+      {
+        textNodeValue = (String) rtf;
+      }
+      else if (rtf instanceof Boolean)
+      {
+        textNodeValue = new XBoolean(((Boolean) rtf).booleanValue()).str();
+      }
+      else if (rtf instanceof Double)
+      {
+        textNodeValue = new XNumber(((Double) rtf).doubleValue()).str();
+      }
+      else
+      {
+        textNodeValue = rtf.toString();
+      }
+      Document myDoc = myProcessor.getContextNode().getOwnerDocument();
+      Text textNode = myDoc.createTextNode(textNodeValue);
+      DocumentFragment docFrag = myDoc.createDocumentFragment();
+      docFrag.appendChild(textNode);
+      return new NodeSet(docFrag);
     }
   }
   
