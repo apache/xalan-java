@@ -182,7 +182,7 @@ public class TransformerException extends Exception {
      */
     public TransformerException(Throwable e) {
 
-        super("TRaX Transform Throwable");
+        super(e.getMessage());
 
         this.containedException = e;
         this.locator            = null;
@@ -201,7 +201,7 @@ public class TransformerException extends Exception {
     public TransformerException(String message, Throwable e) {
 
         super(((message == null) || (message.length() == 0))
-              ? "TRaX Transform Throwable"
+              ? e.getMessage()
               : message);
 
         this.containedException = e;
