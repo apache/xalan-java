@@ -178,13 +178,15 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
 
     if( parser!=null ) {
       setXMLReader(parser);
-      
+    
       fRunningInThread=true;
       org.apache.xalan.transformer.TransformerImpl.runTransformThread(this);
       //Thread t = new Thread(this);
       //t.setDaemon(false);
       //t.start();
     }
+    
+    // System.err.println(fRunningInThread ? "." : "*"); 
   }
     
   /** Bind to the XMLReader. This operation is ignored if the reader has
@@ -616,14 +618,28 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
                                               fAppCoroutineID);
             while(arg!=null)
               {
-                System.err.println(
-                  "Filtering CoroutineSAXParser: unexpected resume parameter, "
-                  +arg.getClass()+" with value=\""+arg+'"');
-                // If you don't do this, it can loop forever with the above
-                // error printing out.  -sb
-                arg = new RuntimeException(
-                  "Filtering CoroutineSAXParser: unexpected resume parameter, "
-                  +arg.getClass()+" with value=\""+arg+'"');
+                // %REVIEW% On short documents, our timing-window fix may mean
+                // arg is actually TRUE (waiting for nodes). In that case
+                // we want to return FALSE (parsing complete). If we get TRUE
+                // at any other time, it's a dialog error, but I don't want
+                // to deal with inventing yet another value right now.
+                // RIGHT FIX will be to redesign the whole coroutine
+                // communications protocol.
+                if(arg==Boolean.TRUE)
+                {
+                  arg=Boolean.FALSE;
+                }
+                else
+                {
+                  System.err.println(
+                    "Filtering CoroutineSAXParser: unexpected resume parameter, "
+                    +arg.getClass()+" with value=\""+arg+'"');
+                  // If you don't do this, it can loop forever with the above
+                  // error printing out.  -sb
+                  arg = new RuntimeException(
+                    "Filtering CoroutineSAXParser: unexpected resume parameter, "
+                    +arg.getClass()+" with value=\""+arg+'"');
+                }
                 arg = fCoroutineManager.co_resume(arg, fParserCoroutineID,
                                                   fAppCoroutineID);
               }
@@ -720,7 +736,8 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
           // You can replicate this sometimes with:
           // testo attribset\attribset01 -flavor th -edump
           // Or with Crimson running, output\output01.
-          throw shutdownException;
+          throw new UserRequestedShutdownException();
+          // throw shutdownException;
         }
 
         else if (arg instanceof Boolean) {
@@ -746,7 +763,8 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
         // "Shut down the garbage smashers on the detention level!"
         e.printStackTrace(System.err);
         fCoroutineManager.co_exit(fParserCoroutineID);
-        throw shutdownException;
+        throw new UserRequestedShutdownException();
+        // throw shutdownException;
       }
   }
 
@@ -997,12 +1015,20 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
   {
     try
       {
-        Object result =
-          fCoroutineManager.co_resume(null, appCoroutineID, fParserCoroutineID);
+        Object result=Boolean.FALSE; // Dummy initial value
+
+        // Timing problem diagnostic/force-to-completion code; better to fix the problem.
+        //while(result!=null)
+          result = fCoroutineManager.co_resume(null, appCoroutineID, fParserCoroutineID);
 
         // Debugging; shouldn't arise in normal operation
         if(result!=null)
-          System.out.println("\nUNEXPECTED: Parser doTerminate answers "+result);
+        {
+          RuntimeException re = new RuntimeException("\nUNEXPECTED: Parser doTerminate answers "+result);
+          // System.out.println("\nUNEXPECTED: Parser doTerminate answers "+result);
+          re.printStackTrace();
+          // throw re;
+        }
       }
     catch(java.lang.NoSuchMethodException e)
       {
