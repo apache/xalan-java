@@ -128,7 +128,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     private SourceLoader _loader = null;
 
-    private boolean _compileTemplatesAsMethods;
+    private boolean _templateInlining = true;
 
     private boolean _forwardReference = false;
 
@@ -136,8 +136,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_forwardReference = true;
     }
 
-    public void compileTemplatesAsMethods() {
-	_compileTemplatesAsMethods = true;
+    public boolean getTemplateInlining() {
+	return _templateInlining;
+    }
+
+    public void setTemplateInlining(boolean flag) {
+	_templateInlining = flag;
     }
 
     public boolean isSimplified() {
@@ -410,9 +414,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
+
 	    // All template code should be compiled as methods if the
 	    // <xsl:apply-imports/> element was ever used in this stylesheet
-	    if (_compileTemplatesAsMethods && (child instanceof Template)) {
+	    if (!_templateInlining && (child instanceof Template)) {
 		Template template = (Template)child;
 		String name = "template$dot$"+template.getPosition();
 		template.setName(parser.getQName(name));

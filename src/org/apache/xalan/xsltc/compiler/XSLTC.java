@@ -323,10 +323,9 @@ public final class XSLTC {
 		_stylesheet.setSourceLoader(_loader);
 		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
-		if (!_templateInlining) {
-		    _stylesheet.compileTemplatesAsMethods();
-		}
+		_stylesheet.setTemplateInlining(_templateInlining);
 		_parser.setCurrentStylesheet(_stylesheet);
+
 		// Create AST under the Stylesheet element (parse & type-check)
 		_parser.createAST(_stylesheet);
 	    }

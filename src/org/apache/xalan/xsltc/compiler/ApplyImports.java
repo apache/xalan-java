@@ -136,7 +136,7 @@ final class ApplyImports extends Instruction {
 	// Indicate to the top-level stylesheet that all templates must be
 	// compiled into separate methods.
 	Stylesheet stylesheet = getStylesheet();
-	stylesheet.compileTemplatesAsMethods();
+	stylesheet.setTemplateInlining(false);
 
 	// Get the mode we are currently in (might not be any)
 	Template template = getTemplate();
