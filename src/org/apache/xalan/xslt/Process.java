@@ -701,6 +701,8 @@ public class Process
             }
             else if (flavor.equals("th"))
             {
+              for (int i = 0; i < 1; i++) // Loop for diagnosing bugs with inconsistent behavior
+              {
               // System.out.println("Testing the TransformerHandler...");
 
               // ===============
@@ -735,6 +737,9 @@ public class Process
                 reader = XMLReaderFactory.createXMLReader();
               }
               
+              stf.setAttribute(org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL, 
+                 Boolean.TRUE);
+                 
               TransformerHandler th = stf.newTransformerHandler(stylesheet);
               
               reader.setContentHandler(th);
@@ -765,7 +770,18 @@ public class Process
               th.setResult(strResult);
               
               // System.out.println("sending parse events to the handler...");
-              reader.parse(new InputSource(inFileName));
+              // for (int i = 0; i < 50; i++) 
+              {
+// System.out.print(".");
+// if((i % 50) == 0)
+//   System.out.println("");
+                reader.parse(new InputSource(inFileName));
+                // Transformer t = ((org.apache.xalan.transformer.TransformerHandlerImpl)th).getTransformer();
+                // System.err.println("Calling reset");
+                // ((TransformerImpl)t).reset();
+              }
+              
+              
 
 //              if (contentHandler != null)
 //              {
@@ -782,6 +798,7 @@ public class Process
 //              }
 
               // ===============
+              }
             }
             else
             {
