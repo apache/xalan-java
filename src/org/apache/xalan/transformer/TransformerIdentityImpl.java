@@ -365,8 +365,6 @@ public class TransformerIdentityImpl extends Transformer
         if (source instanceof SAXSource)
           reader = ((SAXSource) source).getXMLReader();
           
-        boolean isUserReader = (reader != null);
-  
         if (null == reader)
         {
   
@@ -403,11 +401,6 @@ public class TransformerIdentityImpl extends Transformer
         {
           reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
                             true);
-        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de 
-        // about bug 2124.
-//          if(!isUserReader)
-//            reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-//                              true);
         }
         catch (org.xml.sax.SAXException se)
         {
