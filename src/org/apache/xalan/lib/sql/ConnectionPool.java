@@ -185,5 +185,11 @@ public interface ConnectionPool
    */
   public void setPoolEnabled( final boolean flag );
 
+  /**
+   * Used to pass in extra configuration options during the
+   * database connect phase.
+   */
+  public void setProtocol(Properties p);
+
 
 }

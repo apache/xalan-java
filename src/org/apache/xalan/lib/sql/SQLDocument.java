@@ -282,7 +282,7 @@ public class SQLDocument extends DTMDocument
    * @param streamingMode
    * @throws SQLException
    */
-  public SQLDocument( DTMManager mgr, int ident, ConnectionPool pool, Connection con, Statement stmt, ResultSet data, boolean streamingMode )throws SQLException 
+  public SQLDocument( DTMManager mgr, int ident, ConnectionPool pool, Connection con, Statement stmt, ResultSet data, boolean streamingMode )throws SQLException
   {
     super(mgr, ident);
 
@@ -770,8 +770,8 @@ public class SQLDocument extends DTMDocument
     if (DEBUG) System.out.println("nextNode()");
     try
     {
-      // return m_ResultSet.isAfterLast();
       return false;
+//      return m_ResultSet.isAfterLast();
     }
     catch(Exception e)
     {

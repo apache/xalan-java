@@ -563,7 +563,7 @@ public class XConnection
 
       defpool.setDriver(driver);
       defpool.setURL(dbURL);
-//      defpool.setProtocol(prop);
+      defpool.setProtocol(prop);
 
       // Only enable pooling in the default pool if we are explicatly
       // told too.

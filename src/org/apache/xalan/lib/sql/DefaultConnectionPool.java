@@ -206,22 +206,22 @@ public class DefaultConnectionPool implements ConnectionPool
     m_ConnectionProtocol.put("user", u);
   }
 
-///**
-//   * Copy the properties from the source to our properties
-//   * @param p
-//   * @return
-//   */
-//  public void setProtocol( Properties p )
-//  {
-//    Enumeration e = p.keys();
-//
-//    while (e.hasMoreElements())
-//    {
-//      String key = (String) e.nextElement();
-//      m_ConnectionProtocol.put(key, p.getProperty(key));
-//    }
-//
-//  }
+  /**
+   * The Protocol string is used to pass in other connection
+   * properties. A properties file is a general purpose container
+   *
+   * @param p
+   * @return
+   */
+  public void setProtocol( Properties p )
+  {
+    Enumeration e = p.keys();
+    while (e.hasMoreElements())
+    {
+      String key = (String) e.nextElement();
+      m_ConnectionProtocol.put(key, p.getProperty(key));
+    }
+  }
 
 
   /**
