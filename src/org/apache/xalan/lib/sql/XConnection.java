@@ -571,8 +571,10 @@ public class XConnection
 
       m_PoolMgr.registerPool(poolName, defpool);
       m_ConnectionPool = defpool;
-
-
+    }
+    else
+    {
+      m_ConnectionPool = cpool;
     }
 
     m_IsDefaultPool = true;
@@ -651,9 +653,8 @@ public class XConnection
           if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
         } catch(Exception e1) { }
 
-        // Re throw the error so the process can handle the error
-        // normally
-        throw e;
+        buildErrorDocument(exprContext, e);
+        return null;
       }
 
       if (DEBUG) System.out.println("..creatingSQLDocument");
