@@ -364,7 +364,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
                 
         transformer.pushPairCurrentMatched(template, child);
-        transformer.getStackGuard().checkForInfinateLoop();
+        if (check)
+	        guard.checkForInfinateLoop();
 
         int currentFrameBottom;  // See comment with unlink, below
         if(template.m_frameSize > 0)
