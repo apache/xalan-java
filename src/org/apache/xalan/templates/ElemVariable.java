@@ -60,6 +60,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.trace.SelectionEvent;
@@ -235,6 +236,10 @@ public class ElemVariable extends ElemTemplateElement
       if(TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this, 
                                       "select", m_selectPattern, var);
+    }
+    else if (null == getFirstChild())
+    {
+      var = XString.EMPTYSTRING;
     }
     else
     {

@@ -97,6 +97,7 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.Arg;
 import org.apache.xpath.XPathAPI;
@@ -872,6 +873,10 @@ public class TransformerImpl extends XMLFilterImpl
         {
           var = xslParamElement.getSelect().execute(getXPathContext(), sourceNode,
                                                     xslParamElement);
+        }
+        else if (null == xslParamElement.getFirstChild())
+        {
+          var = XString.EMPTYSTRING;
         }
         else
         {
