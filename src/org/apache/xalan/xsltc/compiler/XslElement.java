@@ -122,17 +122,6 @@ final class XslElement extends Instruction {
 	    }
 	}
 
-	// Next check that the local part of the QName is legal (no whitespace)
-	if (qname.getLocalPart().indexOf(' ') > -1) {
-	    final ErrorMsg msg = 
-		new ErrorMsg("You can't call an element \""+
-			     qname.getLocalPart()+"\"");
-	    parser.reportError(Constants.WARNING, msg);
-	    parseChildren(parser);
-	    _ignore = true; // Ignore the element if the local part is invalid
-	    return;
-	}
-
 	// Check if this element belongs in a specific namespace
 	if (namespace != Constants.EMPTYSTRING) {
 	    // Get the namespace requested by the xsl:element
@@ -151,6 +140,18 @@ final class XslElement extends Instruction {
 	}
 
 	_name = AttributeValue.create(this, name, parser);
+
+	// Next check that the local part of the QName is legal (no whitespace)
+	if ((_name instanceof SimpleAttributeValue) &&
+	    (qname.getLocalPart().indexOf(' ') > -1)) {
+	    final ErrorMsg msg = 
+		new ErrorMsg("You can't call an element \""+
+			     qname.getLocalPart()+"\"");
+	    parser.reportError(Constants.WARNING, msg);
+	    parseChildren(parser);
+	    _ignore = true; // Ignore the element if the local part is invalid
+	    return;
+	}
 
 	// Handle the 'use-attribute-sets' attribute
 	final String useSets = getAttribute("use-attribute-sets");
