@@ -54,7 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.processor;
+package org.apache.xml.utils;
 
 /**
  * This is a special exception that is used to stop parsing when 

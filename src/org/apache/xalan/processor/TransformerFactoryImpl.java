@@ -90,6 +90,8 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.StylesheetPIHandler;
+import org.apache.xml.utils.StopParseException;
 
 import org.w3c.dom.Node;
 

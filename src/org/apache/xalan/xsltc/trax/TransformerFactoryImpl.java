@@ -100,8 +100,8 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.processor.StylesheetPIHandler;
-import org.apache.xalan.processor.StopParseException;
+import org.apache.xml.utils.StylesheetPIHandler;
+import org.apache.xml.utils.StopParseException;
 
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.XSLTC;
