@@ -253,7 +253,9 @@ public final class LoadDocument {
             String uri = dom.getStringValueX(node);
             //document(node-set) if true;  document(node-set,node-set) if false
             if (baseURI  == null) {
-                baseURI = getBaseFromURI(dom.getDocumentURI(node));
+               baseURI = dom.getDocumentURI(node);
+               if (!SystemIDResolver.isAbsoluteURI(baseURI))
+                    baseURI = SystemIDResolver.getAbsoluteURIFromRelative(baseURI);
             }
             union.addIterator(document(uri, baseURI, translet, dom));
         }
