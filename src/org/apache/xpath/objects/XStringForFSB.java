@@ -966,6 +966,7 @@ public class XStringForFSB extends XString
     for (i=0;i<m_length;i++)
       if (!XMLCharacterRecognizer.isWhiteSpace(valueString.charAt(i)))
         break;
+    if (i == m_length) return Double.NaN;
     if (valueString.charAt(i) == '-')
       i++;
     for (;i<m_length;i++) {
