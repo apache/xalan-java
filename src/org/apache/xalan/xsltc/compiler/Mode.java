@@ -441,7 +441,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Complete test sequences with "*", "@*" and "node()"
 	if (starGroup != null || atStarGroup != null || _nodeGroup != null) {
-	    final int n = DOM.NTYPES + names.size();
+	    final int n = _patternGroups.length;
 
 	    for (int m, i = DOM.NTYPES; i < n; i++) {
 		if (_patternGroups[i] == null) continue;
