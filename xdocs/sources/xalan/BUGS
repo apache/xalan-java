@@ -1,5 +1,5 @@
 <s3 title="Open bugs and bug reporting">
-<p>We are aware of the following limitations and problems in this alpha release:</p>
+<p>We are aware of the following limitations and problems in this beta release:</p>
 <ul>
 <li>When format-number() should format NaN or infinity, it generates the wrong string if default strings are used. <em>Workaround:</em> declare the strings in an xsl:decimal-format instruction at the top of the stylesheet.<br/><br/></li>
 <li>Text nodes containing entity references are split into multiple nodes.<br/><br/></li>

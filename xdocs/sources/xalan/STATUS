@@ -1,6 +1,6 @@
   <s3 title="Version of Xerces to use"> 
 <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including xerces.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
 <p><em>Important</em> You may experience unpredictable anomalies if your Xalan and Xerces builds are not in synch. If you download an update to Xalan, check the release notes to determine which version of Xerces you should use.</p>
-<note>You can use Xalan with other XMLReaders that implement the <resource-ref idref="jaxp"/>. See 
-<link idref="usagepatterns" anchor="xmlreader">Setting the XMLReader</link>.</note>
+<note>You can use Xalan with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
+<link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
 </s3>
