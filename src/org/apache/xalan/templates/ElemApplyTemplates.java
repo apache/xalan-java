@@ -348,9 +348,13 @@ public class ElemApplyTemplates extends ElemCallTemplate
           case DTM.ATTRIBUTE_NODE :
           case DTM.CDATA_SECTION_NODE :
           case DTM.TEXT_NODE :
-            if(rth.m_elemIsPending || rth.m_docPending)
-              rth.flushPending(true);
-            dtm.dispatchCharactersEvents(child, chandler, false);
+            // if(rth.m_elemIsPending || rth.m_docPending)
+            //  rth.flushPending(true);
+            transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
+            transformer.setCurrentElement(sroot.getDefaultTextRule());
+            // dtm.dispatchCharactersEvents(child, chandler, false);
+            dtm.dispatchCharactersEvents(child, rth, false);
+            transformer.popCurrentMatched();
             continue;
           case DTM.DOCUMENT_NODE :
             template = sroot.getDefaultRootRule();
