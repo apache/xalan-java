@@ -119,11 +119,14 @@ public class SystemIDResolver
     }
 
     // bit of a hack here.  Need to talk to URI person to see if this can be fixed.
+    /*
+    bad hack -sb
     if ((null != base) && urlString.startsWith("file:")
             && (urlString.charAt(5) != '/'))
     {
       urlString = urlString.substring(5);
-    }
+    }   
+    */                
 
     // This is probably a bad idea, we should at least check for quotes...
     if (null != base && (base.indexOf('\\') > -1))
