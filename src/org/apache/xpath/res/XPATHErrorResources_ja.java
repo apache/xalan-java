@@ -80,7 +80,7 @@ public class XPATHErrorResources_ja extends XPATHErrorResources
 
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 108;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -621,36 +621,6 @@ public class XPATHErrorResources_ja extends XPATHErrorResources
 //      "parse (InputSource source) not supported in XPathContext! Can not open {0}"},
 
 
-  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
-  //public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
-
-
-  {
-    ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument() \u306f XPathContext \u3067\u30b5\u30dd\u30fc\u30c8\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002"},
-//      "createDocument() not supported in XPathContext!"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "\u5c5e\u6027 child \u306f\u6240\u6709\u8005\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u3092\u4fdd\u6301\u3057\u3066\u3044\u307e\u305b\u3093\u3002"},
-//      "Attribute child does not have an owner document!"},
-
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
-
-
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "\u5c5e\u6027 child \u306f\u6240\u6709\u8005\u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u8981\u7d20\u3092\u4fdd\u6301\u3057\u3066\u3044\u307e\u305b\u3093\u3002"},
-//      "Attribute child does not have an owner document element!"},
-
-
   /** Field ER_SAX_API_NOT_HANDLED          */
   //public static final int ER_SAX_API_NOT_HANDLED = 57;
 
@@ -710,26 +680,6 @@ public class XPATHErrorResources_ja extends XPATHErrorResources
 //    ER_XERCES_PARSE_ERROR, "DOM2Helper.parse error"},
 
 
-  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
-  //public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
-
-
-  {
-    ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "\u8b66\u544a: \u30c9\u30ad\u30e5\u30e1\u30f3\u30c8\u8981\u7d20\u3088\u308a\u524d\u306b\u30c6\u30ad\u30b9\u30c8\u3092\u51fa\u529b\u3067\u304d\u307e\u305b\u3093\u3002\u7121\u8996\u3057\u307e\u3059..."},
-//      "Warning: can't output text before document element!  Ignoring..."},
-
-
-  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
-  //public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
-
-
-  {
-    ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "DOM \u306b\u306f\u8907\u6570\u306e\u30eb\u30fc\u30c8\u3092\u4fdd\u6301\u3067\u304d\u307e\u305b\u3093\u3002"},
-//      "Can't have more than one root on a DOM!"},
-
-
   /** Field ER_INVALID_UTF16_SURROGATE          */
   //public static final int ER_INVALID_UTF16_SURROGATE = 65;
 
@@ -775,16 +725,6 @@ public class XPATHErrorResources_ja extends XPATHErrorResources
     ER_FUNCTION_TOKEN_NOT_FOUND,
       "\u95a2\u6570\u30c8\u30fc\u30af\u30f3\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002"},
 //      "function token not found."},
-
-  
-   /**  Argument 'localName' is null  */
-  //public static final int ER_ARG_LOCALNAME_NULL = 70;
-
-
-  {
-    ER_ARG_LOCALNAME_NULL,
-       "\u5f15\u6570 'localName' \u304c null \u3067\u3059"},
-//       "Argument 'localName' is null"},
 
   
    /**  Can not deal with XPath type:   */
@@ -1096,32 +1036,6 @@ public class XPATHErrorResources_ja extends XPATHErrorResources
   {
     ER_EXPECTED_REL_PATH_PATTERN,
        "\u25bc\u76f8\u5bfe\u30d1\u30b9\u30d1\u30bf\u30fc\u30f3\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3002"},
-
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  //public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
-
-  {
-    ER_ARG_LOCALNAME_INVALID,
-       "\u25bcQNAME \u5185\u306e\u30ed\u30fc\u30ab\u30eb\u540d\u306f\u6709\u52b9\u306a NCName \u3067\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093"},
-
-  
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** prefix in QNAME should be a valid NCName */
-  //public static final int ER_ARG_PREFIX_INVALID = 102;
-
-
-  {
-    ER_ARG_PREFIX_INVALID,
-       "\u25bcQNAME \u5185\u306e\u63a5\u982d\u8f9e\u306f\u6709\u52b9\u306a NCName \u3067\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093"},
 
 
   // Note to translators:  The substitution text is the name of a data type.  The

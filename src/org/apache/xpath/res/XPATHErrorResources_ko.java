@@ -80,7 +80,7 @@ public class XPATHErrorResources_ko extends XPATHErrorResources
 
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 116;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 108;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -568,33 +568,6 @@ public class XPATHErrorResources_ko extends XPATHErrorResources
       "\uad6c\ubb38 \ubd84\uc11d(InputSource \uc18c\uc2a4)\uc740 XPathContext\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4! {0}\uc744(\ub97c) \uc5f4 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.  "},
  
 
-  /** Field ER_CREATEDOCUMENT_NOT_SUPPORTED          */
-  //public static final int ER_CREATEDOCUMENT_NOT_SUPPORTED = 54;
-
- 
-  {
-    ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "createDocument()\ub294 XPathContext\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4!"},
- 
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT = 55;
-
- 
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "\uc790\uc2dd \uc18d\uc131\uc5d0 \uc18c\uc720\uc790 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4!"},
- 
-
-  /** Field ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT          */
-  //public static final int ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT = 56;
-
- 
-  {
-    ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "\uc790\uc2dd \uc18d\uc131\uc5d0 \uc18c\uc720\uc790 \ubb38\uc11c \uc694\uc18c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4!"},
- 
-
   /** Field ER_SAX_API_NOT_HANDLED          */
   //public static final int ER_SAX_API_NOT_HANDLED = 57;
 
@@ -648,24 +621,6 @@ public class XPATHErrorResources_ko extends XPATHErrorResources
     ER_XERCES_PARSE_ERROR, "DOM2Helper.parse \uc624\ub958"},
  
 
-  /** Field ER_CANT_OUTPUT_TEXT_BEFORE_DOC          */
-  //public static final int ER_CANT_OUTPUT_TEXT_BEFORE_DOC = 63;
-
- 
-  {
-    ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "\uacbd\uace0: \ubb38\uc11c \uc694\uc18c \uc804\uc5d0 \ud14d\uc2a4\ud2b8\ub97c \ucd9c\ub825\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4! \ubb34\uc2dc\ub429\ub2c8\ub2e4..."},
- 
-
-  /** Field ER_CANT_HAVE_MORE_THAN_ONE_ROOT          */
-  //public static final int ER_CANT_HAVE_MORE_THAN_ONE_ROOT = 64;
-
- 
-  {
-    ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "DOM\uc5d0 \ub450 \uac1c \uc774\uc0c1\uc758 \ub8e8\ud2b8\ub97c \uac00\uc9c8 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4!"},
- 
-
   /** Field ER_INVALID_UTF16_SURROGATE          */
   //public static final int ER_INVALID_UTF16_SURROGATE = 65;
 
@@ -706,15 +661,6 @@ public class XPATHErrorResources_ko extends XPATHErrorResources
   {
     ER_FUNCTION_TOKEN_NOT_FOUND,
       "\uae30\ub2a5 \ud1a0\ud070\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."},
- 
-  
-   /**  Argument 'localName' is null  */
-  //public static final int ER_ARG_LOCALNAME_NULL = 70;
-
- 
-  {
-    ER_ARG_LOCALNAME_NULL,
-       "'localName' \uc778\uc790\uac00 \ub110\uc785\ub2c8\ub2e4"},
  
   
    /**  Can not deal with XPath type:   */
@@ -1011,32 +957,6 @@ public class XPATHErrorResources_ko extends XPATHErrorResources
   {
     ER_EXPECTED_REL_PATH_PATTERN,
        "\uc0c1\ub300 \uacbd\ub85c \ud328\ud134\uc774 \uc640\uc57c \ud569\ub2c8\ub2e4."},
- 
-
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The localname is the portion after the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** localname in QNAME should be a valid NCName */
-  //public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
- 
-  {
-    ER_ARG_LOCALNAME_INVALID,
-       "QNAME\uc758 \ub85c\uceec \uc774\ub984\uc740 \uc720\ud6a8\ud55c NCName\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4."},
- 
-  
-  // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
-  // The prefix is the portion before the optional colon; the message indicates
-  // that there is a problem with that part of the QNAME.
-
-  /** prefix in QNAME should be a valid NCName */
-  //public static final int ER_ARG_PREFIX_INVALID = 102;
-
- 
-  {
-    ER_ARG_PREFIX_INVALID,
-       "QNAME\uc758 \uc811\ub450\uc5b4\ub294 \uc720\ud6a8\ud55c NCName\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4."},
  
 
   // Note to translators:  The substitution text is the name of a data type.  The

@@ -6,7 +6,6 @@ import org.apache.xml.dtm.DTMFilter;
 
 import org.apache.xml.utils.XMLString;
 
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.Expression;
 import org.apache.xalan.res.XSLMessages;

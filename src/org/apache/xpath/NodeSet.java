@@ -64,6 +64,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.DOMException;
 
 import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.DOM2Helper;
 import org.apache.xpath.axes.ContextNodeList;
 
 import org.apache.xpath.res.XPATHErrorResources;

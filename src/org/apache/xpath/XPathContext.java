@@ -641,7 +641,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
 
   /** Misnamed string manager for XPath messages.  */
-  private static XSLMessages m_XSLMessages = new XSLMessages();
+  // private static XSLMessages m_XSLMessages = new XSLMessages();
 
   /**
    * Tell the user of an assertion error, and probably throw an
@@ -661,7 +661,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     {
       errorHandler.fatalError(
         new TransformerException(
-          m_XSLMessages.createMessage(
+          XSLMessages.createMessage(
             XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
             new Object[]{ msg }), (SAXSourceLocator)this.getSAXLocator()));
     }
