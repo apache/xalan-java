@@ -75,6 +75,7 @@ import java.util.Vector;
 
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.IFEQ;
+import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
@@ -840,11 +841,19 @@ class FunctionCall extends Expression {
 	    buffer.append(')');
 	    buffer.append(getSignature(_chosenMethod.getReturnType()));
 
-	    index = cpg.addMethodref(clazz,
+	    if (_thisArgument != null && _clazz.isInterface()) {
+	        index = cpg.addInterfaceMethodref(clazz,
 				     _fname.getLocalPart(),
 				     buffer.toString());
-	    il.append(_thisArgument != null ? (InvokeInstruction) new INVOKEVIRTUAL(index) :
+		il.append(new INVOKEINTERFACE(index, n+1));
+            }
+            else {
+	        index = cpg.addMethodref(clazz,
+				     _fname.getLocalPart(),
+				     buffer.toString());
+	        il.append(_thisArgument != null ? (InvokeInstruction) new INVOKEVIRTUAL(index) :
 	    		  (InvokeInstruction) new INVOKESTATIC(index));
+            }
  
 	    // Convert the return type back to our internal type
 	    _type.translateFrom(classGen, methodGen,
