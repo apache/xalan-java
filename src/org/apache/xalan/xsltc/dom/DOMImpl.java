@@ -2773,7 +2773,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    else {
 		final String uri = attList.getURI(i);
-		if (!uri.equals(EMPTYSTRING)) {
+		if ((uri != null) && (!uri.equals(EMPTYSTRING))) {
 		    namebuf.append(uri);
 		    namebuf.append(':');
 		}

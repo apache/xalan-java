@@ -121,7 +121,10 @@ public class SAX2DOM implements ContentHandler {
 	    String namespaceuri = attrs.getURI(i);
 	    String value = attrs.getValue(i);
 	    String qname = attrs.getQName(i);
-	    tmp.setAttributeNS(namespaceuri, qname, value);
+	    if ((namespaceuri == null) || (namespaceuri.equals("")))
+		tmp.setAttribute(qname, value);
+	    else
+		tmp.setAttributeNS(namespaceuri, qname, value);
 	}
 	// append this new node onto current stack node
 	Node last = (Node)_nodeStk.peek();
