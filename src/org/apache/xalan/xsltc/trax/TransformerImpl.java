@@ -1174,7 +1174,7 @@ public final class TransformerImpl extends Transformer
      * Implements JAXP's Transformer.getURIResolver()
      * Set the object currently used to resolve URIs used in document().
      *
-     * @returns The URLResolver object currently in use
+     * @return  The URLResolver object currently in use
      */
     public URIResolver getURIResolver() {
 	return _uriResolver;
