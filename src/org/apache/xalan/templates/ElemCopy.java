@@ -137,7 +137,7 @@ public class ElemCopy extends ElemUse
     {
       short nodeType = sourceNode.getNodeType();
 
-      if ((Node.DOCUMENT_NODE != nodeType))
+      if ((Node.DOCUMENT_NODE != nodeType) && (Node.DOCUMENT_FRAGMENT_NODE != nodeType))
       {
         ResultTreeHandler rthandler = transformer.getResultTreeHandler();
 
