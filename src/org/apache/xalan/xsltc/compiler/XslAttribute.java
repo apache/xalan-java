@@ -128,6 +128,7 @@ final class XslAttribute extends Instruction {
 	    if (item instanceof Choose) continue;
 	    if (item instanceof CopyOf) continue;  // bug fix 3320, g. briem
 	    reportWarning(this, parser, ErrorMsg.STRAY_ATTRIBUTE_ERR, name);
+	    _ignore = true;
 	}
 
 	// Get namespace from namespace attribute?
