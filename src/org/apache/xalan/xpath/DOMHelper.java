@@ -1,6 +1,5 @@
 package org.apache.xalan.xpath;
 
-import java.net.URL;
 import java.util.Hashtable;
 import java.util.Vector;
 import org.w3c.dom.*;
