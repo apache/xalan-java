@@ -789,7 +789,6 @@ public final class TransformerImpl extends Transformer
 	third.setProperty(OutputKeys.INDENT, NO_STRING);
 	third.setProperty(OutputKeys.MEDIA_TYPE, "text/xml");
 	third.setProperty(OutputKeys.OMIT_XML_DECLARATION, NO_STRING);
-	third.setProperty(OutputKeys.STANDALONE, NO_STRING);
 	third.setProperty(OutputKeys.VERSION, "1.0");
 
 	// Level2: Return the property value is set in the translet
