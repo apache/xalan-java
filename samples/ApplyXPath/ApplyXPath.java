@@ -79,11 +79,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 
 // Imported Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.serialize.TextSerializer;
+import serialize.OutputFormat;
+import serialize.Serializer;
+import serialize.SerializerFactory;
+import org.apache.xml.serialize.transition.XMLSerializer;
+import org.apache.xml.serialize.transition.TextSerializer;
 
 /**
  *  Very basic utility for applying an XPath epxression to an xml file and printing information
@@ -157,18 +157,19 @@ public class ApplyXPath
 	  {
 		while ((n = nl.nextNode())!= null)
 		{
-		  // XMLSerializer does not fully work.		  
+		  // XMLSerializer doesn't fully work!		  
 		  XMLSerializer xmlser = new XMLSerializer(System.out, new OutputFormat());
-		  if (n.getNodeType() == n.DOCUMENT_NODE)
+		  if (n.getNodeType() == n.DOCUMENT_NODE)			  
 			xmlser.serialize((Document)n);
-		  else if (n.getNodeType() == n.ELEMENT_NODE)
+          else if (n.getNodeType() == n.ELEMENT_NODE)
 			xmlser.serialize((Element)n);
-		  else
-			  System.out.println
+	      else
+			 System.out.println
 				  ("XMLSerializer cannot serialize: " + n.getNodeName()+ " -- " + n.getNodeValue());
-		  
-		  //TreeWalker tw = new TreeWalker(new XMLSerializer(System.out, new OutputFormat()));
-          //tw.traverse(n);
+//	How about (doesn't yet work, but ??) --	  
+/*		  TreeWalker tw = new TreeWalker(new XMLSerializer(System.out, new OutputFormat()));
+	          tw.traverse(n); 
+*/
 		}
       }
 	  catch (Exception e3)
