@@ -57,7 +57,6 @@
 package org.apache.xalan.xpath;
 
 import org.w3c.dom.Node;
-import java.net.URL;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -66,14 +65,14 @@ import java.net.URL;
  */
 public class SourceTree
 {
-  public SourceTree(Node root, URL url, XLocator locator)
+  public SourceTree(Node root, String url, XLocator locator)
   {
     m_root = root;
     m_locator = locator;
     m_url = url;
   }
   
-  public URL m_url;
+  public String m_url;
   public Node m_root;
   public XLocator m_locator;
 }

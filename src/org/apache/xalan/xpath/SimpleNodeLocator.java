@@ -167,8 +167,8 @@ public class SimpleNodeLocator implements XLocator, Serializable
           try
           {
             String urlString = "file:"+dir.getAbsolutePath()+File.separatorChar+filenames[i];
-            // java.net.URL url = xctxt.getURLFromString(filenames[i], null);
-            java.net.URL url = new java.net.URL(urlString);
+            // java.net.URL url = xctxt.getAbsoluteURI(filenames[i], null);
+            // java.net.URL url = new java.net.URL(urlString);
             // Document doc = xctxt.parseXML(url, null, null);
             Document doc = null; // TBD:
             if(null != doc)
@@ -180,13 +180,13 @@ public class SimpleNodeLocator implements XLocator, Serializable
                 if(null != xnl)
                 {
                   mnl.addNodes(xnl.nodeset());
-                  xctxt.getSourceTreeManager().associateXLocatorToNode(doc, url, this);
+                  xctxt.getSourceTreeManager().associateXLocatorToNode(doc, urlString, this);
                 }
               }
               else
               {
                 mnl.addNode(doc);
-                xctxt.getSourceTreeManager().associateXLocatorToNode(doc, url, this);
+                xctxt.getSourceTreeManager().associateXLocatorToNode(doc, urlString, this);
               }
             }
           }
