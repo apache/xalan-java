@@ -210,7 +210,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
             namespaces.setStartNode(anode);
             while ((nsnode = namespaces.next()) != DTM.NULL) {
-                if (getPrefix(nsnode).equals(prefix)) {
+                if (getLocalName(nsnode).equals(prefix)) {
                     return getNodeValue(nsnode);
                 }
             }

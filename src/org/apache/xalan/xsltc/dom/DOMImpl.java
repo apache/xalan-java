@@ -314,7 +314,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 
             namespaces.setStartNode(anode);
 	    while ((nsnode = namespaces.next()) != DTM.NULL) {
-		if (getPrefix(nsnode).equals(prefix)) {
+		if (getLocalName(nsnode).equals(prefix)) {
 		    return getNodeValue(nsnode);
 		}
 	    }
@@ -623,10 +623,10 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
             _isRestartable = isRestartable;
             _source.setRestartable(isRestartable);
         }
-
+	
 
         public DTMAxisIterator reset() {
-            _source.reset();
+	        _source.reset();
             return this;
         }
 
@@ -635,7 +635,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         }
 
         public void gotoMark() {
-            _source.gotoMark();
+	        _source.gotoMark();
         } 
 
         public int getLast() {
