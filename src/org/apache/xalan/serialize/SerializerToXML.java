@@ -554,7 +554,7 @@ public class SerializerToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  void outputDocTypeDecl(String name) throws org.xml.sax.SAXException
+  void outputDocTypeDecl(String name, boolean closeDecl) throws org.xml.sax.SAXException
   {
 
     accum("<!DOCTYPE ");
@@ -575,10 +575,15 @@ public class SerializerToXML
         accum(" \"");
 
       accum(m_doctypeSystem);
-      //accum("\">");
-      accum("\"");
+			if (closeDecl)
+			{
+				accum("\">");
+				outputLineSep();
+			}
+			else
+				accum("\"");
     }
-    //outputLineSep();
+    
   }
   
   /**
@@ -681,7 +686,7 @@ public class SerializerToXML
 
     if ((true == m_needToOutputDocTypeDecl)) // && (null != m_doctypeSystem))
     {
-      outputDocTypeDecl(name);
+      outputDocTypeDecl(name, false);
     }
 
     m_needToOutputDocTypeDecl = false;
@@ -833,7 +838,7 @@ public class SerializerToXML
 
     if ((true == m_needToOutputDocTypeDecl) && (null != m_doctypeSystem))
     {
-      outputDocTypeDecl(name);
+      outputDocTypeDecl(name, true);			
     }
 
     m_needToOutputDocTypeDecl = false;
