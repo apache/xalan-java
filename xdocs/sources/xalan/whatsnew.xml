@@ -62,12 +62,12 @@
   <li><link anchor="packages">Package layout</link></li>
 </ul><anchor name="design"/>
   <s2 title="New Design">
-  <p>&xslt4j2; represents a fundamental redesign of Xalan. The primary objective of this redesign is an easier-to-use, more understandable, and more modular API that that encourages wider participation in its ongoing development by the open-source XML developer community, and that lends itself to "streaming," the production of transformation output while the input is still being parsed.</p>
+  <p>With respect to &xslt4j; 1.x, &xslt4j2; represents a fundamental redesign of Xalan. The primary objective of this redesign is an easier-to-use, more understandable, and more modular API that that encourages wider participation in its ongoing development by the open-source XML developer community, and that lends itself to "streaming," the production of transformation output while the input is still being parsed.</p>
 <p>As a result of this redesign, the changes are global in nature. The API and the basic usage patterns are different. For the details, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
 <p>To start with, &xslt4j2; implements the <resource-ref idref="trax"/> interfaces. A number of open-source XML tool developers have collaborated on TRaX, a conceptual framework and a standard API for performing XML transformations. We strongly encourage you to use the TRaX framework and interfaces when you use &xslt4j2; to perform XML transformations.</p>
 <p>The basic organization of TRaX is quite simple: use a Processor to process transformation instructions (the stylesheet), producing a Templates object. Use the Templates object to instantiate a Transformer, with which you can apply the Templates object to XML input, producing a result tree. For more detail, see <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
     <p>&xslt4j2; builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the <resource-ref idref="jaxp"/>. For example, &xslt4j2; incorporates the SAX parsing event model in its support for the incremental production of transformation output.</p>
-    <p>In conjunction with TRaX, &xslt4j; gathers basic operational settings from Java system property settings. System properties, for example, identify the stylesheet processor and XMLReader to use, and the serializers that are available for various output methods. You can set these system properties on the command line, in your applications, or by editing the properties files that &xslt4j; uses for system properties that you do not set. The default settings in these files (as shipped) point to the Xalan StylesheetProcessor, the serializers shipped with Xerces, and the Xerces SAXParser.</p>
+    <p>In conjunction with TRaX, &xslt4j; gathers basic operational settings from Java system property settings. System properties, for example, identify the stylesheet processor and XMLReader to use, and the serializers that are available for various output methods. You can set these system properties on the command line, in your applications, or by editing the properties files that &xslt4j; uses for system properties that you do not set. The default settings in these files (as shipped) point to the Xalan StylesheetProcessor, the serializers shipped with Xalan, and the Xerces SAXParser.</p>
 </s2><anchor name="packages"/>
   <s2 title="Package layout">
   <p>The new class package structure is flatter and maps closely to the TRaX framework. For example, you use the
@@ -104,6 +104,10 @@
 	 </gloss>
    <p>Other packages include:</p>
    <gloss>
+  	<label><jump href="apidocs/org/apache/xalan/xslt/package-summary.html">org.apache.xalan.xslt</jump></label>
+      <item>Xalan <link idref="commandline">command-line utility</link> for performing transformations.</item>
+    </gloss>   
+   <gloss>
   	<label><jump href="apidocs/org/apache/xalan/stree/package-summary.html">org.apache.xalan.stree</jump></label>
       <item>Implementation of DOM source tree optimized for node retrieval and XSLT processing.</item>
     </gloss>
@@ -136,11 +140,11 @@
 	 </gloss> 
    <p>Other packages that are included in the xml-xalan source tree and xalan.jar:</p> 
        <gloss>
-    <label><jump href="">javax.xml.parsers</jump></label>
+    <label><jump href="apidocs/org/javax/xml/parsers/package-summary.html">javax.xml.parsers</jump></label>
       <item>The xml.apache.org implementation of <resource-ref idref="jaxp"/>.</item>
 	 </gloss>
    <gloss>
-      <label><jump href="">serialize</jump> packages</label>
+      <label><jump href="apidocs/org/apache/serialize/package-summary.html">org.apache.serialize</jump> and <jump href="apidocs/org/apache/xml/serialize/transition/package-summary.html">org.apache.xml.serialize.transition</jump> packages</label>
       <item>Output transformation result trees as a stream.</item>
 	 </gloss>
    <gloss>
@@ -151,5 +155,6 @@
      <label><jump href="apidocs/org/w3c/dom/package-summary.html">org.w3.dom</jump> packages</label>
      <item>DOM level 2 interfaces.</item>
    </gloss>
+   <note>As actions are taken by the relevant standards organizations, the TrAX and serializer packages are subject to change in future releases.</note>
 </s2>
 </s1>

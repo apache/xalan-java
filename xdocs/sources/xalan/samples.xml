@@ -111,7 +111,7 @@
        and prints the output to System.out. The stylesheet parameter appears as a text node in the output.</p>
     <p>Run this sample from the UseStylesheetParam subdirectory with</p> 
     <p><code>java UseStylesheetParam <ref>param</ref></code></p>
-    <p>where <ref>param</ref> is the stylesheet parameter (a string of your choice).</p>  
+    <p>where <ref>param</ref> is the stylesheet parameter value (a string of your choice).</p>  
     </s2><anchor name="sax2sax"/>
   <s2 title="SAX2SAX">
   <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet, processing the XML input, and producing the output.</p>
@@ -230,7 +230,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       redirected output from the XML input file.</p>
       </s3><anchor name="ext2"/>
       <s3 title="2-basicJscript">
-      <p>What it does: Uses an extension element and extension function implemented in Javascript to compute a
+      <p>What it does: Uses an extension element and extension function implemented in JavaScript to compute a
       deadline for responding to a customer inquiry.</p>
       <p>Run this sample from the extensions subdirectory with</p>
       <p><code>java org.apache.xalan.xslt.Process -in 2-basicJscript.xml</code>
@@ -251,7 +251,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
         <br/>&nbsp;&nbsp;<code>-xsl 4-numlistJava.xsl</code></p>    
       </s3><anchor name="ext5"/>
       <s3 title="5-numlistJscript">
-      <p>What it does: Uses a Javascript  extension to transform a set of name elements into a numbered and
+      <p>What it does: Uses a JavaScript  extension to transform a set of name elements into a numbered and
       alphabetized list. This sample performs the same operations as the preceding Java extension.</p>
     <p>Run this sample from the extensions subdirectory with</p>
       <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>

@@ -97,7 +97,7 @@
 -XML (Use XML formatter and add XML header)
 -TEXT (Use simple Text formatter)
 -HTML (Use HTML formatter)
--PARAM name expression (Set a stylesheet parameter)
+-PARAM name value (Set a stylesheet parameter)
 -DIAG put out timing diagnostics</source>
       <p>Use -IN to specify the XML source document.</p> 
       <p>Use -XSL to specify the XSL stylesheet file.</p>
@@ -106,6 +106,6 @@
       <p>Use -HTML to write 4.0 transitional HTML (some elements, such as &lt;br&gt;, are
       not well formed XML).</p>
       <p>To set stylesheet parameters from the command line, use <br/>
-      <code>TestXSLT -PARAM <ref>name expression</ref></code></p>
+      <code>java org.apache.xalan.xslt.Process -PARAM <ref>name value</ref></code></p>
    </s2>
 </s1>

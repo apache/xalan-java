@@ -35,7 +35,7 @@
     <td><em>Requirements</em></td>
   </tr>
   <tr>
-    <td>Mozilla Rhino<br/><br/></td>
+    <td>Mozilla Rhino (JavaScript)<br/><br/></td>
     <td>1.5<br/><br/></td>
     <td>js.jar available from 
 				    http://www.mozilla.org/rhino<br/><br/></td>
@@ -143,7 +143,6 @@
 <s3 title="1. Declare the lxslt namespace">
 <p><br/><code>xmlns:lxslt="http://xml.apache.org/xslt"</code></p>
 <p>The lxslt namespace provides support for the lxslt:component element and lxslt:script subelement.</p>
-<note>You may also use the LotusXSL alias for this namespace: "http://xsl.lotus.com/".</note>
 </s3>
 <s3 title="2. Declare a unique namespace for each extension prefix">
 <p><br/><code>xmlns:<ref>prefix</ref>=<ref>URI</ref></code></p>
@@ -314,7 +313,6 @@ org.w3c.dom.NodeList (or an org.apache.xalan.xpath.MutableNodeList, which extend
 <p>The java namespace supports the use of extension functions implemented in Java. You cannot use this syntax with extension elements or with extensions implemented in JavaScript or another scripting language.</p>
 <s3 title="Declare the Xalan java namespace">
 <p><code>xmlns:lxslt="http://xml.apache.org/xslt/java"</code></p>
-<note>You may also use the LotusXSL alias for this namespace: "http://xsl.lotus.com/java".</note>
 </s3>
 <s3 title="Use the java namespace when you make extension function calls">
 <p>Use "java" as the prefix with the syntax described in <link anchor="ext-func-calls">Extension function Java calls</link>.</p>
