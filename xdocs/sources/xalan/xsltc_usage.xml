@@ -460,7 +460,7 @@ a successful (zero) value.</p>
 
 <source>import java.io.File;
 import java.net.MalformedURLException; 
-import org.apache.xalan.xsltc.cmdline.Compile;
+import org.apache.xalan.xsltc.compiler.XSLTC;
 ...
   private Translet compileStylesheet(String stylesheetName) {
     Translet retval = null;
@@ -502,7 +502,7 @@ import org.apache.xalan.xsltc.cmdline.Compile;
 series of .class files. Their base name is derived from the name of the 
 stylesheet. </p>
 
-<p>The XSLT compiler object (org.apache.xalan.xsltc.cmdline.Compile), is created,
+<p>The XSLT compiler object (org.apache.xalan.xsltc.compiler.XSLTC), is created,
 initialized and then its compile() method is called passing in a URL
 to the stylesheet itself. Once the .class files have been written,
 the translet is instantiated using Java reflection to create the Class
