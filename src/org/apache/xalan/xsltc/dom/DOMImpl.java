@@ -921,8 +921,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		if (isElement(node)) {
 		    _attribute = _lengthOrAttr[_startNode = node];
 		    // Skip namespace nodes
-		    while ((_attribute != NULL) &&
-			   (_type[_attribute] == NAMESPACE))
+		    while (_type[_attribute] == NAMESPACE)
 			_attribute = _nextSibling[_attribute];
 		}
 		else {
@@ -3109,6 +3108,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _parentStack[0] = ROOTNODE;	// root
 	    _currentNode    = ROOTNODE + 1;
 	    _currentAttributeNode = 1;
+	    _type2[0] = NAMESPACE;
 	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
 	}
 
@@ -3207,7 +3207,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    _lengthOrAttr[node] = attr;
 		for (int i = 0; i<count; i++) {
 		    attr = makeAttributeNode(node, attributes, i);
-		    _parent2[attr] = node;;
+		    _parent2[attr] = node;
 		    _nextSibling2[attr] = attr + 1;
 		}
 		_nextSibling2[attr] = DOM.NULL;
