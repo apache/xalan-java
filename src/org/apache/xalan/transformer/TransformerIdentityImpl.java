@@ -319,7 +319,7 @@ public class TransformerIdentityImpl extends Transformer
               }
               else
               {
-                TreeWalker walker = new TreeWalker(this, new org.apache.xpath.DOM2Helper());
+                TreeWalker walker = new TreeWalker(this, new org.apache.xpath.DOM2Helper(), m_systemID);
                 walker.traverse(dNode);
               }
             }

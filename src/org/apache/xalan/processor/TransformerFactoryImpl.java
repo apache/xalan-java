@@ -190,7 +190,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     try
     {
       TemplatesHandler builder = newTemplatesHandler();
-      TreeWalker walker = new TreeWalker(builder, new org.apache.xpath.DOM2Helper());
+      TreeWalker walker = new TreeWalker(builder, new org.apache.xpath.DOM2Helper(), builder.getSystemId());
 
       walker.traverse(node);
 
@@ -224,11 +224,11 @@ public javax.xml.transform.Templates processFromNode(Node node)
       // Assume it's already been reported to the error listener.
       throw tce;
     }
-    catch (TransformerException tce)
+   /* catch (TransformerException tce)
     {
       // Assume it's already been reported to the error listener.
       throw new TransformerConfigurationException(tce.getMessage(), tce);
-    }
+    }*/
     catch (Exception e)
     {
       if (m_errorListener != null)
@@ -356,7 +356,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     {
       if (null != node)
       {
-        TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper());
+        TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), baseID);
 
         walker.traverse(node);
       }
