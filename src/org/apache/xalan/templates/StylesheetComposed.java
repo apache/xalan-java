@@ -585,6 +585,7 @@ public class StylesheetComposed extends Stylesheet
         m_templateList.setTemplate(included.getTemplate(i));
       }
     }
+    m_templateList.compose();
   }
 
   /**
