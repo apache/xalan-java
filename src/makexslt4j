@@ -1,0 +1,233 @@
+###########################################################
+# Makefile for the XSLT engine.
+#
+# See ../Makefile for important environment notes
+#
+###########################################################
+
+# Include common targets and variables
+include ../make.include
+
+SINCE_FILE       = sincexslt.last
+
+# Define our directory structure
+PROJDIR = org$(PATHSEP)apache$(PATHSEP)xalan
+XPATHDIR = $(PROJDIR)$(PATHSEP)xpath
+XMLLIAISONDIR = $(PROJDIR)$(PATHSEP)xpath$(PATHSEP)xml
+XSLT4JDIR = $(PROJDIR)$(PATHSEP)xslt
+TRANSFORMERDIR = $(PROJDIR)$(PATHSEP)transformer
+PROCESSORDIR = $(PROJDIR)$(PATHSEP)processor
+TEMPLATESDIR = $(PROJDIR)$(PATHSEP)templates
+EXTENSIONSDIR = $(PROJDIR)$(PATHSEP)extensions
+CLIENTDIR = $(PROJDIR)$(PATHSEP)client
+LIBDIR = $(PROJDIR)$(PATHSEP)lib
+TRACEDIR = $(PROJDIR)$(PATHSEP)trace
+RESDIR = $(PROJDIR)$(PATHSEP)res
+STREEDIR = $(PROJDIR)$(PATHSEP)stree
+TRAXDIR = trax
+SUBDIRS = 
+
+SRCS = \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)client$(PATHSEP)XSLTProcessorApplet.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionFunctionHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionNSHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionsTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLProcessorContext.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLTJavaClassEngine.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)Redirect.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorAttributeSet.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorCharacters.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorDecimalFormat.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorGlobalParamDecl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorGlobalVariableDecl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorImport.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorInclude.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorKey.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorLRE.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorNamespaceAlias.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorOutputElem.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorPreserveSpace.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorStripSpace.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorStylesheetDoc.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorStylesheetElement.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorTemplate.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorTemplateElem.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorText.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetProcessor.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)TemplateElementFactory.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)XSLProcessorVersion.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)XSLTAttributeDef.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)XSLTElementDef.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)XSLTElementProcessor.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)XSLTSchema.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLMessages.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLResourceBundle.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTErrorResources.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTErrorResources_en.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResourceBundle.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_cy.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_el.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_en.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_he.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_hy.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ja_JP_A.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ja_JP_HA.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ja_JP_HI.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ja_JP_I.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ka.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_zh_CN.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_zh_TW.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)AttrImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)AttrImplNS.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)CDATASectionImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)Child.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)CommentImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)DocumentFragmentImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)DocumentImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)DocumentTypeImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)DOMImplementationImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ElementImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ElementImplWithNS.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedDocImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedElem.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedElemImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedElemWithNS.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedLocPathIterator.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)IndexedUnionPathIterator.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)LevelIndexer.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)LevelIndexIterator.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)NotationImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)Parent.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ProcessingInstructionImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)SourceTreeHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)StreeDOMHelper.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)StreeLocator.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)TextImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)WhiteSpace.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)AVT.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)AVTPart.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)AVTPartSimple.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)AVTPartXPath.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)Constants.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)DecimalFormatProperties.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemApplyImport.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemApplyTemplates.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemAttribute.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemAttributeSet.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemCallTemplate.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemChoose.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemComment.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemCopy.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemCopyOf.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemElement.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemEmpty.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemExtensionCall.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemFallback.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemForEach.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemIf.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemLiteralResult.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemMessage.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemNumber.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemOtherwise.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemParam.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemPI.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemSort.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemTemplate.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemTemplateElement.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemText.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemTextLiteral.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemUse.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemValueOf.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemVariable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemWhen.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemWithParam.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)FuncDocument.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)FuncFormatNumb.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)FuncKey.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)KeyDeclaration.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)NamespaceAlias.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)OutputFormatExtended.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)Stylesheet.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)StylesheetComposed.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)StylesheetRoot.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)TemplateList.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhiteSpaceInfo.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)XMLNSDecl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)GenerateEvent.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)PrintTraceListener.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)SelectionEvent.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)TraceListener.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)TraceManager.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)TracerEvent.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)Counter.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)CountersTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)DecimalToRoman.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyManager.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)MsgMgr.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)NodeSorter.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)NodeSortKey.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)NumeratorFormatter.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)ResultNameSpace.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)ResultTreeFrag.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)ResultTreeHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)StackGuard.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TransformerImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TreeWalker2Result.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)XSLInfiniteLoopException.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyIterator.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)AttList.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)BoolStack.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)DefaultErrorHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)DOMBuilder.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)ElemDesc.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)IntStack.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)IntVector.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)MutableAttrListImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NameSpace.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeVector.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NSInfo.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)PrefixResolver.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)PrefixResolverDefault.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)QName.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)RawCharacterHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringKey.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringToIntTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringToStringTable.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringToStringTableVector.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringVector.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)SystemIDResolver.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)TreeWalker.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Trie.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)UnImplNode.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrongParserException.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)HeapObject.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)Heap.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)ObjectPool.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)StylesheetSpec.java \
+  trax$(PATHSEP)Examples.java \
+  trax$(PATHSEP)Processor.java \
+  trax$(PATHSEP)ProcessorException.java \
+  trax$(PATHSEP)ProcessorFactoryException.java \
+  trax$(PATHSEP)Result.java \
+  trax$(PATHSEP)Templates.java \
+  trax$(PATHSEP)TemplatesBuilder.java \
+  trax$(PATHSEP)Transformer.java \
+  trax$(PATHSEP)TransformException.java \
+  trax$(PATHSEP)URIResolver.java
+    
+OBJS = $($(subst /,\\,$(SRCS)):%.java=classes/%.class)
+
+all: sincelast makesubdirs
+
+clean::
+	$(RM) $(CLASS_DIR)/$(XSLT4JDIR)/*.class \
+	$(CLASS_DIR)/$(TRACEDIR)/*.class \
+	$(CLASS_DIR)/$(CLIENTDIR)/*.class \
+	$(CLASS_DIR)/$(LIBDIR)/*.class \
+	$(CLASS_DIR)/$(RESDIR)/*.class \
+	$(SINCE_FILE)
+
+include ../make.include2
