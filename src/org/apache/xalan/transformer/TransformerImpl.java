@@ -298,6 +298,8 @@ public class TransformerImpl extends XMLFilterImpl
         reader.setContentHandler( inputHandler );
         reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
         
+        ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
+        
         // Set the reader for cloning purposes.
         getXPathContext().setPrimaryReader(reader);
         
@@ -772,7 +774,18 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public void setURIResolver(URIResolver resolver)
   {
+    getXPathContext().getSourceTreeManager().setURIResolver(resolver);
   }
+  
+  /*
+  * Allow an application to register an entity resolver.
+  */
+  public void setEntityResolver (org.xml.sax.EntityResolver resolver)
+  {
+    super.setEntityResolver(resolver);
+    getXPathContext().getSourceTreeManager().setEntityResolver(resolver);
+  }
+
     
   // ======== End Transformer Implementation ========  
     
@@ -1723,7 +1736,8 @@ public class TransformerImpl extends XMLFilterImpl
   {
     try
     {
-      transformNode(((SourceTreeHandler)getInputContentHandler()).getRoot());
+      Node n = ((SourceTreeHandler)getInputContentHandler()).getRoot();
+      transformNode(n);
     }
     catch(Exception e)
     {
