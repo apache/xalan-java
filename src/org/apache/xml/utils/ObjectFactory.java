@@ -120,7 +120,7 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
-     * @return Class object of factory, never null
+     * @return instance of factory, never null
      *
      * @param factoryId             Name of the factory to find, same as
      *                              a property name
@@ -144,7 +144,7 @@ public class ObjectFactory {
      *  <li>use fallback classname
      * </ol>
      *
-     * @return Class object of factory, never null
+     * @return instance of factory, never null
      *
      * @param factoryId             Name of the factory to find, same as
      *                              a property name
@@ -161,25 +161,152 @@ public class ObjectFactory {
                                       String fallbackClassName)
         throws ConfigurationError
     {
-        debugPrintln("debug is on");
+        Class factoryClass = lookUpFactoryClass(factoryId,
+                                                propertiesFilename,
+                                                fallbackClassName);
 
-        SecuritySupport ss = SecuritySupport.getInstance();
+        if (factoryClass == null) {
+            throw new ConfigurationError(
+                "Provider for " + factoryId + " cannot be found", null);
+        }
+
+        try{
+            Object instance = factoryClass.newInstance();
+            debugPrintln("created new instance of factory " + factoryId);
+            return instance;
+        } catch (Exception x) {
+            throw new ConfigurationError(
+                "Provider for factory " + factoryId
+                    + " could not be instantiated: " + x, x);
+        }
+    } // createObject(String,String,String):Object
+
+    /**
+     * Finds the implementation Class object in the specified order.  The
+     * specified order is the following:
+     * <ol>
+     *  <li>query the system property using <code>System.getProperty</code>
+     *  <li>read <code>$java.home/lib/<i>propertiesFilename</i></code> file
+     *  <li>read <code>META-INF/services/<i>factoryId</i></code> file
+     *  <li>use fallback classname
+     * </ol>
+     *
+     * @return Class object of factory, never null
+     *
+     * @param factoryId             Name of the factory to find, same as
+     *                              a property name
+     * @param propertiesFilename The filename in the $java.home/lib directory
+     *                           of the properties file.  If none specified,
+     *                           ${java.home}/lib/xalan.properties will be used.
+     * @param fallbackClassName     Implementation class name, if nothing else
+     *                              is found.  Use null to mean no fallback.
+     *
+     * @exception ObjectFactory.ConfigurationError
+     */
+    public static Class lookUpFactoryClass(String factoryId) 
+        throws ConfigurationError
+    {
+        return lookUpFactoryClass(factoryId, null, null);
+    } // lookUpFactoryClass(String):Class
+
+    /**
+     * Finds the implementation Class object in the specified order.  The
+     * specified order is the following:
+     * <ol>
+     *  <li>query the system property using <code>System.getProperty</code>
+     *  <li>read <code>$java.home/lib/<i>propertiesFilename</i></code> file
+     *  <li>read <code>META-INF/services/<i>factoryId</i></code> file
+     *  <li>use fallback classname
+     * </ol>
+     *
+     * @return Class object that provides factory service, never null
+     *
+     * @param factoryId             Name of the factory to find, same as
+     *                              a property name
+     * @param propertiesFilename The filename in the $java.home/lib directory
+     *                           of the properties file.  If none specified,
+     *                           ${java.home}/lib/xalan.properties will be used.
+     * @param fallbackClassName     Implementation class name, if nothing else
+     *                              is found.  Use null to mean no fallback.
+     *
+     * @exception ObjectFactory.ConfigurationError
+     */
+    public static Class lookUpFactoryClass(String factoryId,
+                                           String propertiesFilename,
+                                           String fallbackClassName)
+        throws ConfigurationError
+    {
+        String factoryClassName = lookUpFactoryClassName(factoryId,
+                                                         propertiesFilename,
+                                                         fallbackClassName);
         ClassLoader cl = findClassLoader();
+
+        if (factoryClassName == null) {
+            factoryClassName = fallbackClassName;
+        }
+
+        // assert(className != null);
+        try{
+            Class providerClass = findProviderClass(factoryClassName,
+                                                    cl,
+                                                    true);
+            debugPrintln("created new instance of " + providerClass +
+                   " using ClassLoader: " + cl);
+            return providerClass;
+        } catch (ClassNotFoundException x) {
+            throw new ConfigurationError(
+                "Provider " + factoryClassName + " not found", x);
+        } catch (Exception x) {
+            throw new ConfigurationError(
+                "Provider "+factoryClassName+" could not be instantiated: "+x,
+                x);
+        }
+    } // lookUpFactoryClass(String,String,String):Class
+
+    /**
+     * Finds the name of the required implementation class in the specified
+     * order.  The specified order is the following:
+     * <ol>
+     *  <li>query the system property using <code>System.getProperty</code>
+     *  <li>read <code>$java.home/lib/<i>propertiesFilename</i></code> file
+     *  <li>read <code>META-INF/services/<i>factoryId</i></code> file
+     *  <li>use fallback classname
+     * </ol>
+     *
+     * @return name of class that provides factory service, never null
+     *
+     * @param factoryId             Name of the factory to find, same as
+     *                              a property name
+     * @param propertiesFilename The filename in the $java.home/lib directory
+     *                           of the properties file.  If none specified,
+     *                           ${java.home}/lib/xalan.properties will be used.
+     * @param fallbackClassName     Implementation class name, if nothing else
+     *                              is found.  Use null to mean no fallback.
+     *
+     * @exception ObjectFactory.ConfigurationError
+     */
+    public static String lookUpFactoryClassName(String factoryId,
+                                                String propertiesFilename,
+                                                String fallbackClassName)
+    {
+        SecuritySupport ss = SecuritySupport.getInstance();
 
         // Use the system property first
         try {
             String systemProp = ss.getSystemProperty(factoryId);
             if (systemProp != null) {
                 debugPrintln("found system property, value=" + systemProp);
-                return newInstance(systemProp, cl, true);
+                return systemProp;
             }
         } catch (SecurityException se) {
             // Ignore and continue w/ next location
         }
 
-        // Try to read from propertiesFilename, or $java.home/lib/xalan.properties
+        // Try to read from propertiesFilename, or
+        // $java.home/lib/xalan.properties
         String factoryClassName = null;
-        // no properties file name specified; use $JAVA_HOME/lib/xalan.properties:
+        // no properties file name specified; use
+        // $JAVA_HOME/lib/xalan.properties:
         if (propertiesFilename == null) {
             File propertiesFile = null;
             boolean propertiesFileExists = false;
@@ -218,9 +345,11 @@ public class ObjectFactory {
                         } // else, nothing's changed
                     }
                     if(loadProperties) {
-                        // must never have attempted to read xalan.properties before (or it's outdeated)
+                        // must never have attempted to read xalan.properties
+                        // before (or it's outdeated)
                         fXalanProperties = new Properties();
-                        FileInputStream fis = ss.getFileInputStream(propertiesFile);
+                        FileInputStream fis =
+                                         ss.getFileInputStream(propertiesFile);
                         fXalanProperties.load(fis);
                         fis.close();
                     }
@@ -237,7 +366,8 @@ public class ObjectFactory {
             }
         } else {
             try {
-                FileInputStream fis = ss.getFileInputStream(new File(propertiesFilename));
+                FileInputStream fis =
+                           ss.getFileInputStream(new File(propertiesFilename));
                 Properties props = new Properties();
                 props.load(fis);
                 fis.close();
@@ -249,24 +379,14 @@ public class ObjectFactory {
             }
         }
         if (factoryClassName != null) {
-            debugPrintln("found in " + propertiesFilename + ", value=" + factoryClassName);
-            return newInstance(factoryClassName, cl, true);
+            debugPrintln("found in " + propertiesFilename + ", value="
+                          + factoryClassName);
+            return factoryClassName;
         }
 
         // Try Jar Service Provider Mechanism
-        Object provider = findJarServiceProvider(factoryId);
-        if (provider != null) {
-            return provider;
-        }
-
-        if (fallbackClassName == null) {
-            throw new ConfigurationError(
-                "Provider for " + factoryId + " cannot be found", null);
-        }
-
-        debugPrintln("using fallback, value=" + fallbackClassName);
-        return newInstance(fallbackClassName, cl, true);
-    } // createObject(String,String,String):Object
+        return findJarServiceProviderName(factoryId);
+    } // lookUpFactoryClass(String,String):String
 
     //
     // Private static methods
@@ -367,7 +487,7 @@ public class ObjectFactory {
      * Find a Class using the specified ClassLoader
      */ 
     public static Class findProviderClass(String className, ClassLoader cl,
-                                      boolean doFallback)
+                                           boolean doFallback)
         throws ClassNotFoundException, ConfigurationError
     {
         Class providerClass;
@@ -406,13 +526,12 @@ public class ObjectFactory {
         return providerClass;
     }
 
-    /*
-     * Try to find provider using Jar Service Provider Mechanism
+    /**
+     * Find the name of service provider using Jar Service Provider Mechanism
      *
      * @return instance of provider class if found or null
      */
-    private static Object findJarServiceProvider(String factoryId)
-        throws ConfigurationError
+    private static String findJarServiceProviderName(String factoryId)
     {
         SecuritySupport ss = SecuritySupport.getInstance();
         String serviceId = "META-INF/services/" + factoryId;
@@ -483,7 +602,7 @@ public class ObjectFactory {
             // ClassLoader because we want to avoid the case where the
             // resource file was found using one ClassLoader and the
             // provider class was instantiated using a different one.
-            return newInstance(factoryClassName, cl, false);
+            return factoryClassName;
         }
 
         // No provider found
