@@ -563,7 +563,16 @@ public final class BasisLibrary implements Operators {
 	    int rnode;
 	    right.reset();
 	    while ((rnode = right.next()) != DTMAxisIterator.END) {
-		if (compareStrings(lvalue, dom.getStringValueX(rnode), op, dom)) {
+                // String value must be the same if both nodes are the same
+                if (lnode == rnode) {
+                    if (op == EQ) {
+                        return true;
+                    } else if (op == NE) {
+                        continue;
+                    }
+                }
+		if (compareStrings(lvalue, dom.getStringValueX(rnode), op,
+                                   dom)) {
 		    return true;
 		}
 	    }
@@ -580,16 +589,28 @@ public final class BasisLibrary implements Operators {
 
 	switch(op) {
 	case EQ:
-	    value = dom.getStringValueX(node);
-	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
-		if (value.equals(dom.getStringValueX(rnode))) return true;
-	    }
+            rnode = iterator.next();
+            if (rnode != DTMAxisIterator.END) {
+	        value = dom.getStringValueX(node);
+                do {
+		    if (node == rnode
+                          || value.equals(dom.getStringValueX(rnode))) {
+                       return true;
+                    }
+	        } while ((rnode = iterator.next()) != DTMAxisIterator.END);
+            }
 	    break;
 	case NE:
-	    value = dom.getStringValueX(node);
-	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
-		if (!value.equals(dom.getStringValueX(rnode))) return true;
-	    }
+            rnode = iterator.next();
+            if (rnode != DTMAxisIterator.END) {
+	        value = dom.getStringValueX(node);
+                do {
+		    if (node != rnode
+                          && !value.equals(dom.getStringValueX(rnode))) {
+                        return true;
+                    }
+	        } while ((rnode = iterator.next()) != DTMAxisIterator.END);
+            }
 	    break;
 	case LT:
 	    // Assume we're comparing document order here
