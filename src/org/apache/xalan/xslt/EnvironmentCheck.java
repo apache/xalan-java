@@ -1262,10 +1262,11 @@ public class EnvironmentCheck
     jarVersions.put(new Long(732330), "xalan.jar from xalan-j_2_1_0");
     jarVersions.put(new Long(872241), "xalan.jar from xalan-j_2_2_D10");
     jarVersions.put(new Long(882739), "xalan.jar from xalan-j_2_2_D11");
-
     jarVersions.put(new Long(923866), "xalan.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(905872), "xalan.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(906122), "xalan.jar from xalan-j_2_3_0");
+    jarVersions.put(new Long(983402), "xalan.jar from xalan-j_2_4_D1");
+
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
     jarVersions.put(new Long(857692), "xalan.jar from lotusxsl-j_2_2");
@@ -1273,10 +1274,11 @@ public class EnvironmentCheck
     jarVersions.put(new Long(596540), "xsltc.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(590247), "xsltc.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(589914), "xsltc.jar from xalan-j_2_3_0");
+    jarVersions.put(new Long(1306667), "xsltc.jar from xalan-j_2_4_D1");
     jarVersions.put(new Long(1268634), "xsltc.jar-bundled from xalan-j_2_3_0");
 
     jarVersions.put(new Long(100196), "xml-apis.jar from xalan-j_2_2_0 or xalan-j_2_3_D1");
-    jarVersions.put(new Long(108484), "xml-apis.jar from xalan-j_2_3_0 from xml-commons-1.0.b2");
+    jarVersions.put(new Long(108484), "xml-apis.jar from xalan-j_2_3_0,2_4_D1 from xml-commons-1.0.b2");
 
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
@@ -1300,6 +1302,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1812019), "xerces.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(1720292), "xercesImpl.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(1730053), "xercesImpl.jar from xalan-j_2_3_0 from xerces-2_0_0");
+    jarVersions.put(new Long(1728861), "xercesImpl.jar from xalan-j_2_4_D1 from xerces-2_0_1");
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
