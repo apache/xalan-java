@@ -62,12 +62,12 @@
   <s2 title="Definition">
 
   <p>According to Michael Kay's &quot;XSLT Programmer's Reference&quot; page
-  736, a predicate is <i>&quot;An expression used to filter which nodes are
+  736, a predicate is &quot;An expression used to filter which nodes are
   selected by a particular step in a path expression, or to select a subset of
   the nodes in a node-set. A Boolean expression selects the nodes for which the
   predicate is true; a numeric expression selects the node at the position
   given by the value of the expression, for example '[1]' selects the first
-  node.&quot;</i>. Note that a predicate containing a boolean expression can
+  node.&quot;. Note that a predicate containing a boolean expression can
   return zero, one or more nodes, while a predicate containing a numeric
   expression can return only zero or one node.</p>
 
@@ -168,7 +168,7 @@
     <p>Expressions containing just a single predicate have no intermediate step
     and there is no need for any extra iterator. The original iterator
     representing the step the predicate is applied to is used. We call this
-    category <b>SIMPLE_CONTEXT</b>.</p>
+    category SIMPLE_CONTEXT.</p>
 
     </s3>
 
@@ -184,7 +184,7 @@
     <p>has two predicates that can be applied in any order and still produce the
     desired node-set. Such predicates can be merged to:</p><source>
     &lt;xsl:for-each select="//bar[contains(@name,'ogan') &amp; (parent::*/@location = 'Town')]"></source>
-    <p>We call this category <b>NO_CONTEXT</b>.</p>
+    <p>We call this category NO_CONTEXT.</p>
 
     </s3>
 
@@ -197,13 +197,13 @@
     be stored in some other iterator, from which the second predicate can get
     the current position from the iterator's <code>getPosition()</code> and
     <code>getLast()</code> methods. We call this category
-    <b>GENERAL_CONTEXT</b></p>
+    GENERAL_CONTEXT</p>
 
     </s3>
 
     <s3 title="Expressions containing one position predicate">
 
-    <p>There is one expection from the <b>GENERAL_CONTEXT</b> category. If the
+    <p>There is one expection from the GENERAL_CONTEXT category. If the
     predicate-chain contains only one position-predicate, and that predicate is
     the very first one, then that predicate can call the iterator that contains
     the first node-set directly. Just look:</p><source>
@@ -213,7 +213,7 @@
     <code>[parent::*/@location = 'Drumcondra']</code> predicate as well. This
     is only the case when the position predicate is first in the predicate
     chain. These types of predicate chains belong in the
-    <b>NO_CONTEXT</b> category.</p>
+     NO_CONTEXT  category.</p>
 
     </s3>
 
