@@ -1505,6 +1505,8 @@ public class SerializerToXML
   public void characters(char chars[], int start, int length)
           throws org.xml.sax.SAXException
   {
+    if(0 == length)
+      return;
 
     //    if (m_inEntityRef)
     //      return;
