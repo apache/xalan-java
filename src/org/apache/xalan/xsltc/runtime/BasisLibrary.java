@@ -978,21 +978,82 @@ public final class BasisLibrary implements Operators {
 	    return null;
 	}
     }
+    
+    /**
+     * Utility function: used to convert reference to org.w3c.dom.NodeList.
+     */
+    public static NodeList referenceToNodeList(Object obj, DOM dom) {
+        if (obj instanceof Node || obj instanceof NodeIterator) {
+            NodeIterator iter = referenceToNodeSet(obj);
+            return dom.makeNodeList(iter);
+        }
+        else if (obj instanceof DOM) {
+          dom = (DOM)obj;
+          return dom.makeNodeList(DOM.ROOTNODE);
+        }
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
 
+    /**
+     * Utility function: used to convert reference to org.w3c.dom.Node.
+     */
+    public static org.w3c.dom.Node referenceToNode(Object obj, DOM dom) {
+        if (obj instanceof Node || obj instanceof NodeIterator) {
+            NodeIterator iter = referenceToNodeSet(obj);
+            return dom.makeNode(iter);
+        }
+        else if (obj instanceof DOM) {
+          dom = (DOM)obj;
+          NodeIterator iter = dom.getChildren(DOM.ROOTNODE);
+          return dom.makeNode(iter);
+        }
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
+    
+    /**
+     * Utility function used to convert a w3c Node into an internal DOM iterator. 
+     */
+    public static NodeIterator node2Iterator(org.w3c.dom.Node node,
+	Translet translet, DOM dom) 
+    {
+        final org.w3c.dom.Node inNode = node;
+        // Create a dummy NodeList which only contains the given node to make 
+        // use of the nodeList2Iterator() interface.
+        org.w3c.dom.NodeList nodelist = new org.w3c.dom.NodeList() {            
+            public int getLength() {
+                return 1;
+            }
+            
+            public org.w3c.dom.Node item(int index) {
+                if (index == 0)
+                    return inNode;
+                else
+                    return null;
+            }
+        };
+        
+        return nodeList2Iterator(nodelist, translet, dom);
+    }
+    
     /**
      * Utility function used to copy a node list to be under a parent node.
      */
-    private static void copyNodes(org.w3c.dom.NodeList nodeList, org.w3c.dom.Document doc, org.w3c.dom.Node parent)
+    private static void copyNodes(org.w3c.dom.NodeList nodeList, 
+	org.w3c.dom.Document doc, org.w3c.dom.Node parent)
     {
           // copy Nodes from NodeList into new w3c DOM
         for (int i = 0; i < nodeList.getLength(); i++) 
         {
             org.w3c.dom.Node curr = nodeList.item(i);
             int nodeType = curr.getNodeType();
-            if (nodeType == org.w3c.dom.Node.DOCUMENT_NODE) {
-                // ignore the root node of node list
-                continue;
-            }
             String value = null;
             try {
                 value = curr.getNodeValue();
@@ -1005,7 +1066,8 @@ public final class BasisLibrary implements Operators {
             org.w3c.dom.Node newNode = null; 
             switch (nodeType){
                 case org.w3c.dom.Node.ATTRIBUTE_NODE:
-                     newNode = doc.createAttributeNS(curr.getNamespaceURI(), nodeName);
+                     newNode = doc.createAttributeNS(curr.getNamespaceURI(), 
+			nodeName);
                      break;
                 case org.w3c.dom.Node.CDATA_SECTION_NODE: 
                      newNode = doc.createCDATASection(value);
@@ -1016,19 +1078,25 @@ public final class BasisLibrary implements Operators {
                 case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE: 
                      newNode = doc.createDocumentFragment();
                      break;
-                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE: 
-                     // nothing ?
+                case org.w3c.dom.Node.DOCUMENT_NODE:
+                     newNode = doc.createElementNS(null, "__document__");
+                     copyNodes(curr.getChildNodes(), doc, newNode);
+                     break;
+                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE:
+                     // nothing?
                      break;
                 case org.w3c.dom.Node.ELEMENT_NODE: 
-                     // For Element node, also copy the children and the attributes.
-                     org.w3c.dom.Element element = doc.createElementNS(curr.getNamespaceURI(), nodeName);
+                     // For Element node, also copy the children and the 
+		     // attributes.
+                     org.w3c.dom.Element element = doc.createElementNS(
+			curr.getNamespaceURI(), nodeName);
                      if (curr.hasAttributes())
                      {
                        org.w3c.dom.NamedNodeMap attributes = curr.getAttributes();
-                       for (int k = 0; k < attributes.getLength(); k++)
-                       {
+                       for (int k = 0; k < attributes.getLength(); k++) {
                          org.w3c.dom.Node attr = attributes.item(k);
-                         element.setAttribute(attr.getNodeName(), attr.getNodeValue());
+                         element.setAttribute(attr.getNodeName(), 
+			    attr.getNodeValue());
                        }
                      }
                      copyNodes(curr.getChildNodes(), doc, element);
