@@ -70,7 +70,6 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Constants;
-import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
 
 public class SAXOutput extends OutputBase implements Constants { 
     protected ContentHandler _saxHandler;
@@ -170,4 +169,5 @@ public class SAXOutput extends OutputBase implements Constants {
         final int col = qname.lastIndexOf(':');
         return (col > 0) ? qname.substring(col + 1) : null;
     }
+
 }

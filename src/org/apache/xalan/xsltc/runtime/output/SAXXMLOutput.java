@@ -64,14 +64,13 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.util.Stack;
-
+import java.io.IOException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.xml.sax.SAXException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
-import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
 
 public class SAXXMLOutput extends SAXOutput  {
 
@@ -100,14 +99,28 @@ public class SAXXMLOutput extends SAXOutput  {
     private static final char[] CNTCDATA = "]]]]><![CDATA[>".toCharArray();
     
 
-    public SAXXMLOutput(ContentHandler handler, String encoding) {
+    public SAXXMLOutput(ContentHandler handler, String encoding) 
+	throws IOException 
+    {
     	super(handler, encoding);
+	init();
     }
 
     public SAXXMLOutput(ContentHandler handler, LexicalHandler lex, 
-        String encoding)
+        String encoding) throws IOException
     {
         super(handler, lex, encoding);
+	init();
+    }
+
+    private void init() throws IOException {
+	_cdataTagOpen = false;
+	_cdataStack = new Stack();
+	_cdataStack.push(new Integer(-1)); // push dummy value
+	_qnameStack = new Stack();
+
+	// Reset our internal namespace handling
+        initNamespaces();
     }
 
     public void endDocument() throws TransletException {
@@ -268,14 +281,6 @@ public class SAXXMLOutput extends SAXOutput  {
         _cdata = elements;
     }
 
-    /**
-     * Set the XML output document version - should be 1.0
-     */
-    public void setVersion(String version) {
-        if (_saxHandler instanceof DefaultSAXOutputHandler) {
-            ((DefaultSAXOutputHandler)_saxHandler).setVersion(version);
-        }
-    }
 
     /**
      * Start an element in the output document. This might be an XML
@@ -367,6 +372,32 @@ public class SAXXMLOutput extends SAXOutput  {
     }
 
 
+    /**
+     * Declare a prefix to point to a namespace URI
+     */
+    private void pushNamespace(String prefix, String uri) throws SAXException {
+        // Prefixes "xml" and "xmlns" cannot be redefined
+        if (prefix.equals(XML_PREFIX)) return;
+
+        Stack stack;
+        // Get the stack that contains URIs for the specified prefix
+        if ((stack = (Stack)_namespaces.get(prefix)) == null) {
+            stack = new Stack();
+            _namespaces.put(prefix, stack);
+        }
+        // Quit now if the URI the prefix currently maps to is the same as this
+        if (!stack.empty() && uri.equals(stack.peek())) return;
+        // Put this URI on top of the stack for this prefix
+        stack.push(uri);
+
+        _prefixStack.push(prefix);
+        _nodeStack.push(new Integer(_depth));
+
+        // Inform the SAX handler
+        _saxHandler.startPrefixMapping(prefix, uri);
+    }
+
+
 
 
     /**
@@ -393,6 +424,27 @@ public class SAXXMLOutput extends SAXOutput  {
         if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
 
         _cdataTagOpen = true;
+    }
+
+    /**
+     * Send a namespace declaration in the output document. The namespace
+     * declaration will not be include if the namespace is already in scope
+     * with the same prefix.
+     */
+    public void namespace(final String prefix, final String uri)
+        throws TransletException {
+        try {
+            if (_startTagOpen)
+                pushNamespace(prefix, uri);
+            else {
+                if ((prefix == EMPTYSTRING) && (uri == EMPTYSTRING)) return;
+                BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
+                                          prefix, uri);
+            }
+        }
+        catch (SAXException e) {
+            throw new TransletException(e);
+        }
     }
 
 
