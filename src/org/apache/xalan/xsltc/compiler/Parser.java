@@ -198,8 +198,8 @@ public class Parser implements Constants, ContentHandler {
 	_variableScope.remove(name);
     }
 
-    public SyntaxTreeNode lookupVariable(QName name) {
-	return (SyntaxTreeNode)_variableScope.get(name);
+    public VariableBase lookupVariable(QName name) {
+	return((VariableBase)_variableScope.get(name));
     }
 
     public void setXSLTC(XSLTC xsltc) {

@@ -231,7 +231,8 @@ class VariableBase extends TopLevelElement {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
 
 	// Check whether variable/param of the same name is already in scope
-	if (parser.lookupVariable(_name) != null) {
+	VariableBase other = parser.lookupVariable(_name);
+	if ((other != null) && (other.getParent() == getParent())) {
 	    ErrorMsg msg = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
 	    parser.reportError(Constants.ERROR, msg);
 	}
