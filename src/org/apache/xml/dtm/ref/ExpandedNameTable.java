@@ -216,8 +216,12 @@ public class ExpandedNameTable
     }
 
     // Expand the internal HashEntry array if necessary.
-    if (m_nextType > m_threshold)
+    if (m_nextType > m_threshold) {
       rehash();
+      index = hash % m_capacity;
+      if (index < 0)
+        index = -index;
+    }
     
     // Create a new ExtendedType object
     ExtendedType newET = new ExtendedType(type, namespace, localName, hash);
