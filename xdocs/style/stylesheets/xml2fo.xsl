@@ -137,7 +137,7 @@ TBD: - The faq doesn't show in the content
             line-height="20pt"
             space-before.optimum="15pt"
             space-after.optimum="12pt"
-            text-align="center"
+            text-align="start"
             padding-top="3pt"
             >
      <xsl:value-of select="@title"/>
@@ -166,7 +166,7 @@ TBD: - The faq doesn't show in the content
             line-height="13pt"
             space-after.optimum="3pt"
             space-before.optimum="3pt"
-            text-align="justify">
+            text-align="start">
      <xsl:apply-templates/> 
    </fo:block>
 </xsl:template>
@@ -178,7 +178,7 @@ TBD: - The faq doesn't show in the content
             line-height="13pt"
             space-after.optimum="3pt"
             space-before.optimum="3pt"
-            text-align="justify">
+            text-align="start">
         Note:     
      <xsl:apply-templates/> 
    </fo:block>
@@ -391,7 +391,7 @@ TBD: - The faq doesn't show in the content
       </fo:list-item-label>
       <fo:list-item-body>
         <fo:block space-after.optimum="4pt"
-              text-align="justify"
+              text-align="start"
               padding-top="3pt">
           <xsl:apply-templates/> 
        </fo:block>
@@ -410,7 +410,7 @@ TBD: - The faq doesn't show in the content
       </fo:list-item-label>
       <fo:list-item-body>
         <fo:block space-after.optimum="4pt"
-              text-align="justify"
+              text-align="start"
               padding-top="3pt">
           <xsl:apply-templates/> 
        </fo:block>
