@@ -87,6 +87,9 @@ public interface Constants extends InstructionConstants {
 
     public static final String EMPTYSTRING = "";
 
+    public static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
+
     public static final String TRANSLET_INTF
 	= "org.apache.xalan.xsltc.Translet";
     public static final String TRANSLET_INTF_SIG        

@@ -82,6 +82,7 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.compiler.Constants;
 
 final public class DefaultRun {
 
@@ -126,7 +127,12 @@ final public class DefaultRun {
 
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
-	    factory.setFeature("http://xml.org/sax/features/namespaces",true);
+	    try {
+		factory.setFeature(Constants.NAMESPACE_FEATURE,true);
+	    }
+	    catch (Exception e) {
+		factory.setNamespaceAware(true);
+	    }
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
