@@ -151,7 +151,7 @@ public class CoroutineManager
    * sparse-array mechanism, it may be possible to raise or eliminate
    * this boundary.
    */
-  static int m_unreasonableId=1024;
+  static final int m_unreasonableId=1024;
 
   /** Internal field used to hold the data being explicitly passed
    * from one coroutine to another during a co_resume() operation.
