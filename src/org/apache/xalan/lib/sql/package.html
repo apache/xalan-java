@@ -1,11 +1,9 @@
 <html>
   <title>Xalan SQL Extension</title>
   <body>
-    <p><em>**Experimental**</em> Provides extension functions for connecting to a JDBC data source, executing a query,
-    and working incrementally through "streamable" result set.<p>
-   <p><em>The SQL extension use of a single row-set node to incrementally return a query result set is experimental. Keep in mind that you
-   can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for
-   example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>    
+<p>Provides extension functions for connecting to a JDBC data source, executing a query,
+and working incrementally through a "streamable" result set. Streaming (reuse of a single row node to traverse the result set) is the default mode of operation. If you want unlimited access to the entire result set, you can cache the query result set (1 row node for each row in the result set).</p>
+<p><em>If you use streaming mode (the default), you can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>   
     <p>XConnection provides three extension functions that you can use in your stylesheet.</p>
     <ol>
       <li><p>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
@@ -43,11 +41,11 @@
         &lt;xsl:variable name="table" select='sql:query($products, $query)'/&gt;
           &lt;TR&gt;
           &lt;!-- Get column-label attribute from each column-header--&gt;
-          &lt;xsl:for-each select="$table/row-set/column-header"&gt;
+          &lt;xsl:for-each select="$table/sql/metadata/column-header"&gt;
             &lt;TH&gt;&lt;xsl:value-of select="@column-label"/&gt;&lt;/TH&gt;
           &lt;/xsl:for-each&gt;
           &lt;/TR&gt;
-          &lt;xsl:apply-templates select="$table/row-set/row"/&gt;
+          &lt;xsl:apply-templates select="$table/sql/row-set/row"/&gt;
           &lt;xsl:text&gt;&amp;#10;&lt;/xsl:text&gt;
         &lt;/TABLE&gt;
       &lt;/BODY&gt;
