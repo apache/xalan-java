@@ -225,6 +225,7 @@ public class FuncExtFunction extends Function
           throws WrongNumberArgsException
   {
     m_argVec.addElement(arg);
+    arg.exprSetParent(this);
   }
 
   /**
