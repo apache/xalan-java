@@ -214,6 +214,14 @@ abstract class Expression extends SyntaxTreeNode {
 	_falseList.add(il.append(new IFEQ(null)));
     }
 
+    public FlowList getFalseList() {
+	return _falseList;
+    }
+
+    public FlowList getTrueList() {
+	return _trueList;
+    }
+
     public void backPatchFalseList(InstructionHandle ih) {
 	_falseList.backPatch(ih);
     }

@@ -195,7 +195,7 @@ public class ExsltMath
    * @param expCon is passed in by the Xalan extension processor
    * @param ni The NodeIterator for the node-set to be evaluated.
    * 
-   * @return node-set with nodes containing the minimum value found, an empty node-set
+   * @return node-set with nodes containing the maximum value found, an empty node-set
    * if any node cannot be converted to a number.
    */
   public static NodeSet highest (ExpressionContext expCon, NodeIterator ni)
@@ -234,7 +234,7 @@ public class ExsltMath
    * @param expCon is passed in by the Xalan extension processor
    * @param ni The NodeIterator for the node-set to be evaluated.
    * 
-   * @return node-set with nodes containing the maximum value found, an empty node-set
+   * @return node-set with nodes containing the minimum value found, an empty node-set
    * if any node cannot be converted to a number.
    * 
    */

@@ -230,7 +230,6 @@ public final class ReferenceType extends Type {
 	il.append(new INVOKESTATIC(index));
     }
 
-
     /**
      * Subsume reference into ObjectType.
      *
@@ -238,7 +237,7 @@ public final class ReferenceType extends Type {
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    ObjectType type) {
-	    methodGen.getInstructionList().append(NOP);	
+	methodGen.getInstructionList().append(NOP);	
     }
 
     /**

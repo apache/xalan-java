@@ -238,7 +238,16 @@ class ProcessorInclude extends XSLTElementProcessor
         if (null != source && source instanceof DOMSource)
         {
           Node node = ((DOMSource)source).getNode();
-          TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), source.getSystemId());
+          
+          String systemId = source.getSystemId();
+          if (systemId == null)
+          {
+            systemId = SystemIDResolver.getAbsoluteURI(getHref(),
+                         handler.getBaseIdentifier());
+            
+          }
+          
+          TreeWalker walker = new TreeWalker(handler, new org.apache.xpath.DOM2Helper(), systemId);
 
           try
           {
