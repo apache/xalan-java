@@ -231,7 +231,6 @@ class VariableBase extends TopLevelElement {
      */
     public void setName(QName name) {
 	_name = name;
-	_name.clearDefaultNamespace();
 	_variable = Util.escape(name.getLocalPart());
     }
 
@@ -251,7 +250,7 @@ class VariableBase extends TopLevelElement {
 	if (name == null) name = EMPTYSTRING;
 
 	if (name.length() > 0)
-	    setName(parser.getQName(name));
+	    setName(parser.getQNameIgnoreDefaultNs(name));
         else
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 

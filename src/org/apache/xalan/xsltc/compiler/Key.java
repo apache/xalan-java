@@ -87,7 +87,7 @@ final class Key extends TopLevelElement {
     public void parseContents(Parser parser) {
 
 	// Get the required attributes and parser XPath expressions
-	_name = parser.getQName(getAttribute("name"));
+	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
 	_match = parser.parsePattern(this, "match", null);
 	_use = parser.parseExpression(this, "use", null);
 
@@ -111,12 +111,7 @@ final class Key extends TopLevelElement {
      * @return The key's name (from the <xsl:key> elements 'name' attribute).
      */
     public String getName() {
-	String name;
-	if (_name.getPrefix() == null)
-	    name = _name.getLocalPart();
-	else
-	    name = _name.getPrefix()+":"+_name.getLocalPart();
-	return(name);
+	return _name.toString();
     }
 
     /**
@@ -191,7 +186,8 @@ final class Key extends TopLevelElement {
 
 	// Prepare to call buildKeyIndex(String name, int node, String value);
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, getName()));
+	// il.append(new PUSH(cpg, getName()));
+	il.append(new PUSH(cpg, _name.toString()));
 	il.append(new ILOAD(parentNode.getIndex()));
 
 	// Now get the node value and feck it on the parameter stack

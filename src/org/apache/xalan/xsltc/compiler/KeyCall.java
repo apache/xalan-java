@@ -73,6 +73,7 @@ final class KeyCall extends FunctionCall {
     private Expression _name;      // The name of this key
     private Expression _value;     // The value to look up in the key/index
     private Type       _valueType; // The value's data type
+    private QName      _resolvedQName = null;
 
     /**
      * Get the parameters passed to function:
@@ -117,7 +118,13 @@ final class KeyCall extends FunctionCall {
 	// and if it is not it must be converted to one using string() rules.
 	if (_name != null) {
 	    final Type nameType = _name.typeCheck(stable); 
-	    if (!(nameType instanceof StringType)) {
+
+	    if (_name instanceof LiteralExpr) {
+		final LiteralExpr literal = (LiteralExpr) _name;
+		_resolvedQName = 
+		    getParser().getQNameIgnoreDefaultNs(literal.getValue());
+	    }
+	    else if (nameType instanceof StringType == false) {
 		_name = new CastExpr(_name, Type.String);
 	    }
 	}
@@ -241,10 +248,15 @@ final class KeyCall extends FunctionCall {
 
 	    // Initialise the index specified in the first parameter of key()
 	    il.append(classGen.loadTranslet());
-	    if (_name == null) 
+	    if (_name == null) {
 		il.append(new PUSH(cpg,"##id"));
-	    else
+	    }
+	    else if (_resolvedQName != null) {
+		il.append(new PUSH(cpg, _resolvedQName.toString()));
+	    }
+	    else {
 		_name.translate(classGen, methodGen);
+	    }
 
 	    il.append(new INVOKEVIRTUAL(getKeyIndex));
 	    il.append(new ASTORE(searchIndex.getIndex()));
@@ -265,10 +277,12 @@ final class KeyCall extends FunctionCall {
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(new INVOKEINTERFACE(getNodeValue, 2));
-	    if (_name == null)
+	    if (_name == null) {
 		il.append(new INVOKEVIRTUAL(lookupId));
-	    else
+	    }
+	    else {
 		il.append(new INVOKEVIRTUAL(lookupKey));
+	    }
 
 	    // Call to returnIndex.merge(searchIndex);
 	    il.append(new INVOKEVIRTUAL(merge));
@@ -295,10 +309,15 @@ final class KeyCall extends FunctionCall {
 	    // Call getKeyIndex in AbstractTranslet with the name of the key
 	    // to get the index for this key (which is also a node iterator).
 	    il.append(classGen.loadTranslet());
-	    if (_name == null)
+	    if (_name == null) {
 		il.append(new PUSH(cpg,"##id"));
-	    else
+	    }
+	    else if (_resolvedQName != null) {
+		il.append(new PUSH(cpg, _resolvedQName.toString()));
+	    }
+	    else {
 		_name.translate(classGen, methodGen);
+	    }
 	    il.append(new INVOKEVIRTUAL(getKeyIndex));
 
 	    // Now use the value in the second argument to determine what nodes
@@ -318,10 +337,12 @@ final class KeyCall extends FunctionCall {
 		_value.translate(classGen, methodGen);
 	    }
 
-	    if (_name == null)
+	    if (_name == null) {
 		il.append(new INVOKEVIRTUAL(lookupId));
-	    else
+	    }
+	    else {
 		il.append(new INVOKEVIRTUAL(lookupKey));
+	    }
 	}
     }
 }

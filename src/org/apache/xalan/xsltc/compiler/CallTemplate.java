@@ -87,7 +87,7 @@ final class CallTemplate extends Instruction {
     }
 
     public void parseContents(Parser parser) {
-	_name = parser.getQName(getAttribute("name"));
+	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
 	parseChildren(parser);
     }
 		

@@ -265,10 +265,20 @@ public class Parser implements Constants, ContentHandler {
     }
     
     public QName getQName(final String stringRep) {
-	return getQName(stringRep, true);    
+	return getQName(stringRep, true, false);    
+    }
+
+    public QName getQNameIgnoreDefaultNs(final String stringRep) {
+	return getQName(stringRep, true, true);
     }
 
     public QName getQName(final String stringRep, boolean reportError) {
+	return getQName(stringRep, reportError, false);
+    }
+
+    private QName getQName(final String stringRep, boolean reportError,
+	boolean ignoreDefaultNs) 
+    {
 	// parse and retrieve namespace
 	final int colon = stringRep.lastIndexOf(':');
 	if (colon != -1) {
@@ -289,13 +299,14 @@ public class Parser implements Constants, ContentHandler {
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    final String defURI = _symbolTable.lookupNamespace(EMPTYSTRING);
+	    final String defURI = ignoreDefaultNs ? null 
+				  : _symbolTable.lookupNamespace(EMPTYSTRING);
 	    return getQName(defURI, null, stringRep);
 	}
     }
 
     public QName getQName(String namespace, String prefix, String localname) {
-	if (namespace == null) {
+	if (namespace == null || namespace.equals(EMPTYSTRING)) {
 	    QName name = (QName)_qNames.get(localname);
 	    if (name == null) {
 		name = new QName(null, prefix, localname);

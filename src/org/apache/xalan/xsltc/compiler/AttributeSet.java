@@ -119,7 +119,7 @@ final class AttributeSet extends TopLevelElement {
     public void parseContents(Parser parser) {
 	
 	// Get this attribute set's name
-	_name = parser.getQName(getAttribute("name"));
+	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
 	if ((_name == null) || (_name.equals(EMPTYSTRING))) {
 	    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNNAMED_ATTRIBSET_ERR, this);
 	    parser.reportError(Constants.ERROR, msg);
