@@ -60,6 +60,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XString;
@@ -81,6 +82,10 @@ import javax.xml.transform.ErrorListener;
  */
 public class XPathParser
 {
+	// %REVIEW% Is there a better way of doing this?
+	// Upside is minimum object churn. Downside is that we don't have a useful
+	// backtrace in the exception itself -- but we don't expect to need one.
+	static public final XPathProcessorException CONTINUE_EXCEPTION=new XPathProcessorException("CONTINUE_AFTER_FATAL_ERROR");
 
   /**
    * The XPath to be processed.
@@ -144,26 +149,52 @@ public class XPathParser
 
     m_ops.m_opMap[0] = OpCodes.OP_XPATH;
     m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] = 2;
+    
+    
+	// Patch for Christine's gripe. She wants her errorHandler to return from
+	// a fatal error and continue trying to parse, rather than throwing an exception.
+	// Without the patch, that put us into an endless loop.
+	//
+	// %REVIEW% Is there a better way of doing this?
+	// %REVIEW% Are there any other cases which need the safety net?
+	// 	(and if so do we care right now, or should we rewrite the XPath
+	//	grammar engine and can fix it at that time?)
+	try {
 
-    nextToken();
-    Expr();
+      nextToken();
+      Expr();
 
-    if (null != m_token)
-    {
-      String extraTokens = "";
-
-      while (null != m_token)
+      if (null != m_token)
       {
-        extraTokens += "'" + m_token + "'";
+        String extraTokens = "";
 
-        nextToken();
+        while (null != m_token)
+        {
+          extraTokens += "'" + m_token + "'";
 
-        if (null != m_token)
-          extraTokens += ", ";
+          nextToken();
+
+          if (null != m_token)
+            extraTokens += ", ";
+        }
+
+        error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
+              new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
       }
 
-      error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-            new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
+    } 
+    catch (org.apache.xpath.XPathProcessorException e)
+    {
+      // %REVIEW% Should we test object identity instead? I think not.
+	  if(CONTINUE_EXCEPTION.getMessage().equals(e.getMessage()))
+	  {
+		// What I _want_ to do is null out this XPath.
+		// I doubt this has the desired effect, but I'm not sure what else to do.
+		// %REVIEW%!!!
+		initXPath(compiler, "/..",  namespaceContext);
+	  }
+	  else
+		throw e;
     }
 
     compiler.shrink();
@@ -501,7 +532,12 @@ public class XPathParser
     {
       error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND, new Object[]{ expected,
                                                                      m_token });  //"Expected "+expected+", but found: "+m_token);
-    }
+
+	  // Patch for Christina's gripe. She wants her errorHandler to return from
+	  // this error and continue trying to parse, rather than throwing an exception.
+	  // Without the patch, that put us into an endless loop.
+		throw CONTINUE_EXCEPTION;
+	}
   }
 
   /**
@@ -525,6 +561,11 @@ public class XPathParser
       error(XPATHErrorResources.ER_EXPECTED_BUT_FOUND,
             new Object[]{ String.valueOf(expected),
                           m_token });  //"Expected "+expected+", but found: "+m_token);
+
+	  // Patch for Christina's gripe. She wants her errorHandler to return from
+	  // this error and continue trying to parse, rather than throwing an exception.
+	  // Without the patch, that put us into an endless loop.
+		throw CONTINUE_EXCEPTION;
     }
   }
 
