@@ -59,6 +59,7 @@ package org.apache.xalan.utils;
 import org.w3c.dom.*;
 import org.xml.sax.*;
 import org.apache.xpath.DOMHelper;
+import org.apache.xpath.DOM2Helper;
 
 
 /**
@@ -77,7 +78,7 @@ public class AttList implements Attributes
   {
     m_attrs = attrs;
     m_lastIndex = m_attrs.getLength() - 1;
-    m_dh = new DOMHelper();
+    m_dh = new DOM2Helper();
   }
   
   public AttList(NamedNodeMap attrs, DOMHelper dh)

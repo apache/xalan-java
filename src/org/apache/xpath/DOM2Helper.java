@@ -159,6 +159,8 @@ public class DOM2Helper extends DOMHelper
       //  = new org.apache.xerces.parsers.DOMParser();
       DocumentBuilderFactory builderFactory 
         = DocumentBuilderFactory.newInstance();
+      builderFactory.setNamespaceAware(true);
+      builderFactory.setValidating(true);
       DocumentBuilder parser = builderFactory.newDocumentBuilder();
       
       /*
@@ -242,7 +244,7 @@ public class DOM2Helper extends DOMHelper
     return (Node.ATTRIBUTE_NODE == node.getNodeType())
            ? ((Attr)node).getOwnerElement() : node.getParentNode();
   }
-  
+    
   /**
    * Returns the local name of the given node.
    */

@@ -259,6 +259,8 @@ public class Examples
       Templates templates;
       {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        dfactory.setNamespaceAware(true);
+        dfactory.setValidating(true);
         DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
         org.w3c.dom.Document outNode = docBuilder.newDocument();
         Node doc = docBuilder.parse(new InputSource(xslID));

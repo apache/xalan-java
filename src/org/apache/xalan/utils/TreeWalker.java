@@ -76,7 +76,7 @@ public class TreeWalker
   
   // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
   // DOM2Helper m_dh = new DOM2Helper();
-  DOMHelper m_dh = new DOMHelper();
+  DOMHelper m_dh = new DOM2Helper();
   
   /**
    * Get the ContentHandler used for the tree walk.
@@ -205,6 +205,21 @@ public class TreeWalker
       break;
     case Node.ELEMENT_NODE:
       NamedNodeMap atts = ((Element)node).getAttributes();
+      int nAttrs = atts.getLength();
+      for(int i = 0; i < nAttrs; i++)
+      {
+        Node attr = atts.item(i);
+        String attrName = attr.getNodeName();
+        if(attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
+        {
+          int index;
+          String prefix 
+            = (index = attrName.indexOf(":"))< 0 
+              ? null : attrName.substring(index+1);
+          this.m_contentHandler.startPrefixMapping ( prefix, 
+                                                     attr.getNodeValue());
+        }
+      }
       // System.out.println("m_dh.getNamespaceOfNode(node): "+m_dh.getNamespaceOfNode(node));
       // System.out.println("m_dh.getLocalNameOfNode(node): "+m_dh.getLocalNameOfNode(node));
       this.m_contentHandler.startElement (m_dh.getNamespaceOfNode(node), 
@@ -298,7 +313,22 @@ public class TreeWalker
       break;
     case Node.ELEMENT_NODE:
       this.m_contentHandler.endElement("", "", node.getNodeName());
-      break;
+       NamedNodeMap atts = ((Element)node).getAttributes();
+      int nAttrs = atts.getLength();
+      for(int i = 0; i < nAttrs; i++)
+      {
+        Node attr = atts.item(i);
+        String attrName = attr.getNodeName();
+        if(attrName.equals("xmlns") || attrName.startsWith("xmlns:"))
+        {
+          int index;
+          String prefix 
+            = (index = attrName.indexOf(":"))< 0 
+              ? null : attrName.substring(index+1);
+          this.m_contentHandler.endPrefixMapping(prefix);
+        }
+      }
+     break;
     case Node.CDATA_SECTION_NODE:
       break;
     case Node.ENTITY_REFERENCE_NODE:

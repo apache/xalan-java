@@ -871,6 +871,8 @@ public class TransformerImpl extends XMLFilterImpl
       try
       {
         DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+        dfactory.setNamespaceAware(true);
+        dfactory.setValidating(true);
         m_docBuilder = dfactory.newDocumentBuilder();
       }
       catch(ParserConfigurationException pce)

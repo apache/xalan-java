@@ -226,7 +226,7 @@ public class XPathContext implements ExpressionContext
   public DOMHelper getDOMHelper()
   {
     if(null == m_domHelper)
-      m_domHelper = new DOMHelper();
+      m_domHelper = new DOM2Helper();
     return m_domHelper;
   }
   

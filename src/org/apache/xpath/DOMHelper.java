@@ -27,6 +27,8 @@ public class DOMHelper
       // Use an implementation of the JAVA API for XML Parsing 1.0 to
       // create a DOM Document node to contain the result.
       DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+      dfactory.setNamespaceAware(true);
+      dfactory.setValidating(true);
       DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
       Document outNode = docBuilder.newDocument();
       return outNode;
