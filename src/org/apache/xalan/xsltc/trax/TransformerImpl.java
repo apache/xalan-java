@@ -708,8 +708,7 @@ public final class TransformerImpl extends Transformer
 	while (names.hasMoreElements()) {
 	    // Get the next property name and value
 	    String name  = (String)names.nextElement();
-	    // bug fix # 6636- contributed by Tim Elcott
-	    String value = (String)properties.getProperty(name);
+	    String value = (String)properties.get(name);
 
 	    // Pass property value to translet - override previous setting
 	    if (name.equals(OutputKeys.ENCODING))
