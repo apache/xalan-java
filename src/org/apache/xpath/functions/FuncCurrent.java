@@ -63,6 +63,11 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.PredicatedNodeTest;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.axes.SubContextList;
+import org.apache.xpath.patterns.StepPattern;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -81,46 +86,23 @@ public class FuncCurrent extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    // If we're in a predicate, then this will return non-null.
-    Object subContextList = xctxt.getSubContextList();
-    int currentNode;
+   
+    SubContextList subContextList = xctxt.getCurrentNodeList();
+    int currentNode = DTM.NULL;
 
-    // %TBD% Hack city...
-    if (null != subContextList && subContextList instanceof PredicatedNodeTest)
-    {
-      // PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
-      // LocPathIterator lpi = iter.getLocPathIterator();
-      LocPathIterator lpi = xctxt.getCurrentNodeList();
-
-      currentNode = lpi.getCurrentContextNode();  
-        
+    if (null != subContextList) {
+        if (subContextList instanceof PredicatedNodeTest) {
+            LocPathIterator iter = ((PredicatedNodeTest)subContextList)
+                                                          .getLocPathIterator();
+            currentNode = iter.getCurrentContextNode();
+         } else if(subContextList instanceof StepPattern) {
+           throw new RuntimeException(XSLMessages.createMessage(
+              XSLTErrorResources.ER_PROCESSOR_ERROR,null));
+         }
+    } else {
+        // not predicate => ContextNode == CurrentNode
+        currentNode = xctxt.getContextNode();
     }
-    else if(xctxt.getIteratorRoot() != DTM.NULL)
-    {
-      currentNode = xctxt.getIteratorRoot();
-    }
-    else
-    {
-      DTMIterator cnl = xctxt.getContextNodeList();
-
-      if (null != cnl)
-      {
-        // %REVIEW% Not so certain that this is doing the right thing?
-        currentNode = cnl.getCurrentNode();
-      }
-      else
-        currentNode = DTM.NULL;
-    }
-    //  if(DTM.NULL != currentNode)
-    //  {
-    //    DTM dtm = xctxt.getDTM(currentNode);
-    //    System.err.println("current node: "+dtm.getNodeName(currentNode)+"["+Integer.toHexString(currentNode)+"]");
-    //  }
-    //  else
-    //  {
-    //     System.err.println("current node: DTM.NULL");
-    //  }
-
     return new XNodeSet(currentNode, xctxt.getDTMManager());
   }
   
