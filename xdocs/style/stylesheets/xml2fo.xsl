@@ -372,7 +372,14 @@ TBD: - The faq doesn't show in the content
    </fo:basic-link>          
   </xsl:template>
 
-
+<xsl:template match ="source"> 
+   <fo:block font-size="10pt" 
+            font-family="Courier" 
+            text-align="start"
+            white-space-collapse="false">
+     <xsl:apply-templates/> 
+   </fo:block>
+</xsl:template>
 
 <!-- code -->
 <xsl:template match ="*/code">
