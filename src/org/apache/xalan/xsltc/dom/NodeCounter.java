@@ -196,6 +196,11 @@ public abstract class NodeCounter implements Axis {
 
         boolean isFirst = true;
 	boolean separFirst = true;
+	boolean isEmpty = true;
+
+	for (int t=0; t<nValues; t++)
+	    if (values[t] != Integer.MIN_VALUE) isEmpty = false;
+	if (isEmpty) return("");
 
 	/* 
 	 * Tokenize the format string into alphanumeric and non-alphanumeric
