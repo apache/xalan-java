@@ -1137,7 +1137,8 @@ public class ResultTreeHandler extends QueuedEvents
 
     try
     {
-      ensurePrefixIsDeclared(uri, rawName);
+      if(!rawName.equals("xmlns")) // don't handle xmlns default namespace.
+        ensurePrefixIsDeclared(uri, rawName);
     }
     catch(org.xml.sax.SAXException se)
     {
@@ -1147,8 +1148,8 @@ public class ResultTreeHandler extends QueuedEvents
     if (DEBUG)
       System.out.println("Adding attr: " + localName + ", " + uri);
 
-    // if(!isDefinedNSDecl(rawName, value))
-    qe.addAttribute(uri, localName, rawName, type, value);
+    if(!isDefinedNSDecl(rawName, value))
+      qe.addAttribute(uri, localName, rawName, type, value);
   }
 
   /**
