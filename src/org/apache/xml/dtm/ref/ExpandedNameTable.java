@@ -168,7 +168,8 @@ public class ExpandedNameTable
       namespace = "";
       if (null == localName) 
       localName = "";
-    for (int i = 0; i < m_extendedTypes.size(); i++)
+      int length=m_extendedTypes.size();
+    for (int i = 0; i < length; i++)
     {
       ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
       if( type == etype.nodetype && namespace.equals(etype.namespace) && localName.equals(etype.localName)) 
@@ -221,7 +222,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public /*static*/ final int getLocalNameID(int ExpandedNameID)
+  public /*static*/ /*final*/ int getLocalNameID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_LOCALNAME);
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -254,7 +255,7 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this namespace.
    */
-  public /*static*/ final int getNamespaceID(int ExpandedNameID)
+  public /*static*/ /*final*/ int getNamespaceID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
@@ -270,24 +271,58 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @return The id of this local name.
    */
-  public final short getType(int ExpandedNameID)
+  public /*final*/ short getType(int ExpandedNameID)
   {
     //return (short)(ExpandedNameID >> ROTAMOUNT_TYPE);
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
     return (short)etype.nodetype;
   }
   
+  /**
+   * Given an expanded-name ID, return the default schema type object
+   *
+   * @param ExpandedNameID an ID that represents an expanded-name.
+   * @return a schema type object -- probably an XNI PSVI type.
+   */
+  public /*final*/ Object getSchemaType(int ExpandedNameID)
+  {
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    return etype.schemaType;
+  }
   
   /**
-   * Private class representing an extended type object 
+   * Given an expanded-name ID, set the default schema type object if not
+   * previously set.
+   *
+   * @param ExpandedNameID an ID that represents an expanded-name.
+   * @param schemaType a schema type object -- probably an XNI PSVI type.
+   * @return false if previously set to something different
+   *  (as determined by Object.equals), otherwise true.
    */
-  private class ExtendedType
+  public /*final*/ boolean getSchemaType(int ExpandedNameID, Object schemaType)
   {
-    private int nodetype;
-    private String namespace;
-    private String localName;
+    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    Object oldtype=etype.schemaType;
+    if(oldtype==null)
+    {
+      etype.schemaType=schemaType;
+      return true;
+    }
+    else return oldtype.equals(schemaType);
+  }
+  
+  
+  /**
+   * Inner class representing an extended type object.
+   */
+   class ExtendedType
+  {
+     int nodetype;
+     String namespace;
+     String localName;
+    Object schemaType=null; // Default, for XNI PSVI support
     
-    private ExtendedType (int nodetype, String namespace, String localName)
+     ExtendedType (int nodetype, String namespace, String localName)
     {
       this.nodetype = nodetype;
       this.namespace = namespace;

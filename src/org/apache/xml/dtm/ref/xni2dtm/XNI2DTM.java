@@ -846,71 +846,76 @@ public class XNI2DTM
           //String uri, String localName, String qName, Attributes attributes)
             throws XNIException
   {
-	// %REVIEW% I've copied this verbatim and altered it for XNI.
-	// Is that overkill? Can we hand any of it back to the SAX layer?
-	// (I suspect not, darn it....)
+    // %REVIEW% I've copied this verbatim and altered it for XNI.
+    // Is that overkill? Can we hand any of it back to the SAX layer?
+    // (I suspect not, darn it....)
 	
-    // Extract Experimental Xerces PSVI data		
-    ElementPSVImpl elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
-    XSTypeDecl actualType =
+    // Augs might be null if schema support not turned on in parser. 
+    // Shouldn't arise in final operation (?); may arise during debugging
+
+    if(augs!=null)
+    {
+      // Extract Experimental Xerces PSVI data		
+      ElementPSVImpl elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
+      XSTypeDecl actualType =
     	(elemPSVI==null) ? null : elemPSVI.getTypeDefinition();
-    org.apache.xerces.impl.xs.XSElementDecl expectedDecl =  // %REVIEW% OBSOLETE?
+      org.apache.xerces.impl.xs.XSElementDecl expectedDecl =  // %REVIEW% OBSOLETE?
     	(elemPSVI==null) ? null : elemPSVI.getElementDecl();
-    XSTypeDecl expectedType = // %REVIEW% OBSOLETE?
+      XSTypeDecl expectedType = // %REVIEW% OBSOLETE?
     	(expectedDecl==null) ? actualType : expectedDecl.fType;
 
-   if (DEBUG)
-	 {
-      System.out.println("startElement: uri: " + element.uri + 
-      		", localname: " + element.localpart + 
-      		", qname: "+element.rawname+", atts: " + attributes);    
-      String actualExpandedQName=(actualType==null) ? null : actualType.getTargetNamespace()+":"+actualType.getTypeName();
+      if (DEBUG)
+      {
+	System.out.println("startElement: uri: " + element.uri + 
+			   ", localname: " + element.localpart + 
+			   ", qname: "+element.rawname+", atts: " + attributes);    
+	String actualExpandedQName=(actualType==null) ? null : actualType.getTargetNamespace()+":"+actualType.getTypeName();
       
-	  System.out.println("\ttypeDefinition (actual): "+ actualType +
-	  		"\n\t\ttype expanded-qname: " + actualExpandedQName +
-	  		"\n\telementDecl  (expected): " + expectedDecl +
-	  		"\n\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
-	  		"\n\tDerived from builtin string: " + actualType.derivedFrom(SCHEMANS,"string")
-	  		 );
+	System.out.println("\ttypeDefinition (actual): "+ actualType +
+			   "\n\t\ttype expanded-qname: " + actualExpandedQName +
+			   "\n\telementDecl  (expected): " + expectedDecl +
+			   "\n\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
+			   "\n\tDerived from builtin string: " + actualType.derivedFrom(SCHEMANS,"string")
+			   );
 
-			boolean DEBUG_ATTRS=true;
-			if(DEBUG_ATTRS & attributes!=null)
-			{
-				int n = attributes.getLength();
-				if(n==0)
-					System.out.println("\tempty attribute list");
-				else for (int i = 0; i < n; i++)
-				{
-					System.out.println("\t attr: uri: " + attributes.getURI(i) +
-														 ", localname: " + attributes.getLocalName(i) +
-														 ", qname: " + attributes.getQName(i) +
-														 ", type: " + attributes.getType(i) +
-														 ", value: " + attributes.getValue(i)														 
-														 );
-			      // Experimental Xerces PSVI data
-			      // %REVIEW% Having some problems; Sandy Gao is investigating
-			      Augmentations attrAugs=attributes.getAugmentations(i);
-   				  AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
-			      actualType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
-			      org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
-			      	(attrPSVI==null) ? null : attrPSVI.getAttributeDecl();			      
-			      expectedType=(expectedAttrDecl==null) ? actualType : expectedAttrDecl.fType;
-			      actualExpandedQName=(actualType==null) ? null : actualType.getTargetNamespace()+":"+actualType.getTypeName();
-				  System.out.println("\t\ttypeDefinition (actual): "+ actualType +
-				  		"\n\t\t\ttype expanded-qname: " + actualExpandedQName +
-	  					"\n\t\tattrDecl (expected): " + expectedAttrDecl
-	  					);
-				  if(actualType!=null)	  					
-	  				  System.out.println("\n\t\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
-				  		"\n\t\tDerived from builtin string: "+ actualType.derivedFrom(SCHEMANS,"string") +
-						"\n\t\tTyped value: " + _typedValue(actualType,attributes.getValue(i))
-						);
-				}
-			}
-	 }
-		
-    charactersFlush();
+	boolean DEBUG_ATTRS=true;
+	if(DEBUG_ATTRS & attributes!=null)
+	{
+	  int n = attributes.getLength();
+	  if(n==0)
+	    System.out.println("\tempty attribute list");
+	  else for (int i = 0; i < n; i++)
+	  {
+	    System.out.println("\t attr: uri: " + attributes.getURI(i) +
+			       ", localname: " + attributes.getLocalName(i) +
+			       ", qname: " + attributes.getQName(i) +
+			       ", type: " + attributes.getType(i) +
+			       ", value: " + attributes.getValue(i)														 
+			       );
+	    // Experimental Xerces PSVI data
+	    // %REVIEW% Having some problems; Sandy Gao is investigating
+	    Augmentations attrAugs=attributes.getAugmentations(i);
+	    AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
+	    actualType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+	    org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
+	      (attrPSVI==null) ? null : attrPSVI.getAttributeDecl();			      
+	    expectedType=(expectedAttrDecl==null) ? actualType : expectedAttrDecl.fType;
+	    actualExpandedQName=(actualType==null) ? null : actualType.getTargetNamespace()+":"+actualType.getTypeName();
+	    System.out.println("\t\ttypeDefinition (actual): "+ actualType +
+			       "\n\t\t\ttype expanded-qname: " + actualExpandedQName +
+			       "\n\t\tattrDecl (expected): " + expectedAttrDecl
+			       );
+	    if(actualType!=null)	  					
+	      System.out.println("\n\t\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
+				 "\n\t\tDerived from builtin string: "+ actualType.derivedFrom(SCHEMANS,"string") +
+				 "\n\t\tTyped value: " + _typedValue(actualType,attributes.getValue(i))
+				 );
+	  }
+	}
+      }
+    }
     
+    charactersFlush();
 
     int exName = m_expandedNameTable.getExpandedTypeID(element.uri, element.localpart, DTM.ELEMENT_NODE);
     String prefix = getPrefix(element.rawname, element.uri);

@@ -191,6 +191,19 @@ public class IncrementalSAXSource_Xerces
 		}
 		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
 		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+
+		// %REVIEW% Turning on schema support is necessary for some
+		// of the information we'd like to retrieve. Unfortunately,
+		// XERCES currently slows down by 90% (ie, takes twice as
+		// long to run!) with this feature enabled, even if the
+		// document never references schemas. We could make this
+		// optional (resurrect the old -VALIDATE switch?), but it's
+		// really not clear we want the user to have to deal with
+		// manually setting this appropriately for every document.
+		// The default would have to be full validation, slow mode.
+		//
+		// I'm trying to convince Xerces that higher speed should be
+		// given higher priority.
 		try
 		{
 			fIncrementalParser.setFeature("http://apache.org/xml/features/validation/schema",true);
@@ -198,7 +211,7 @@ public class IncrementalSAXSource_Xerces
 		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
 		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
 		
-  }
+   }
 
   /** Create a IncrementalSAXSource_Xerces wrapped around
    * an existing SAXParser. Currently this works only for recent
