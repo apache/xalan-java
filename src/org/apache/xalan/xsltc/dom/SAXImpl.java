@@ -1563,10 +1563,21 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
                                    _lengthOrAttr[node])*/);
         break;
       case DTM.TEXT_NODE:
-              char[] buffer = getNodeValue(node).toCharArray();
-        handler.characters(buffer, 0, buffer.length);/*_text,
-                           _offsetOrChild[node],
-                           _lengthOrAttr[node]);*/
+        boolean oldEscapeSetting = false;
+        boolean escapeBit = false;
+
+        if (_dontEscape != null) {
+            escapeBit = _dontEscape.getBit(getNodeIdent(node));
+            if (escapeBit) {
+                oldEscapeSetting = handler.setEscaping(false);
+            }
+        }
+
+        handler.characters(getNodeValue(node));
+        
+        if (escapeBit) {
+            handler.setEscaping(oldEscapeSetting);
+        }
         break;
       case DTM.ATTRIBUTE_NODE:
         shallowCopy(node, handler);
@@ -2191,13 +2202,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
    */
   private int makeTextNode(boolean isWhitespace)
   {
-  	//if (_currentOffset > _baseOffset)
-    //{
       final int node = getNumberOfNodes()-1; //nextNode();
- //     System.out.println("text ");
-      //for (int i =  0; i< _text.length; i++)
-//      System.out.print( _text[_currentOffset]);
-      //final int limit = _currentOffset;
       // Tag as whitespace node if the parser tells us that it is...
       if (isWhitespace)
       {
@@ -2210,31 +2215,21 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       	while (_currentNode < node)
       	{
       		int nodeh = makeNodeHandle(++_currentNode);
-    /*   if(getNodeType(nodeh) == DTM.TEXT_NODE)
-      {
-        int i = 0;  //_baseOffset;
-         char[] chars = getNodeValue(nodeh).toCharArray();
-         final int limit = chars.length;
-      //  while (isWhitespaceChar(_text[i++]) && i < limit);
-         while (isWhitespaceChar(chars[i++]) && i < limit);
-      //  if ((i == limit) && isWhitespaceChar(_text[i-1]))
-         if ((i == limit) && isWhitespaceChar(chars[i-1])) 
-         */
          if (isWhitespace(nodeh))
-        {
-        	//System.out.println("<<<set bit2 " + SAXImpl.this.getNodeIdent(node)+ " " + node); 
+        { 
           _whitespace.setBit(_currentNode);
         }
-     // }
      }
       }
-      //_type[node] = DTM.TEXT_NODE;
-       // _types.put(new Integer(getExpandedTypeID(node)), new Integer(DTM.TEXT_NODE));
-      //linkChildren(node);
       storeTextRef(node);
+      if (_disableEscaping) {
+          if (_dontEscape == null) {
+              _dontEscape = new BitArray(_whitespace.size());
+          }
+          _dontEscape.setBit(_currentNode);
+          _disableEscaping = false;
+      }
       return node;
-    //}
-    //return -1;
   }
 
 	/**
@@ -2612,115 +2607,42 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     
         }
 
-	private void resizeArrays(final int newSize, int length)
-  {
+	private void resizeArrays(final int newSize, int length) {
     if ((length < newSize) && (newSize == _currentNode))
       length = _currentNode;
-/*
-    // Resize the '_type' array
-    //final short[] newType = new short[newSize];
-   // System.arraycopy(_type, 0, newType, 0, length);
-   // _type = newType;
 
-    // Resize the '_parent' array
-   // final int[] newParent = new int[newSize];
-   // System.arraycopy(_parent, 0, newParent, 0, length);
-   // _parent = newParent;
-
-    // Resize the '_nextSibling' array
-   // final int[] newNextSibling = new int[newSize];
- //   System.arraycopy(_nextSibling, 0, newNextSibling, 0, length);
-  //  _nextSibling = newNextSibling;
-
-    // Resize the '_offsetOrChild' array
-    final int[] newOffsetOrChild = new int[newSize];
-    System.arraycopy(_offsetOrChild, 0, newOffsetOrChild, 0,length);
-    _offsetOrChild = newOffsetOrChild;
-
-    // Resize the '_lengthOrAttr' array
-    final int[] newLengthOrAttr = new int[newSize];
-    System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
-    _lengthOrAttr = newLengthOrAttr;
-*/
     // Resize the '_whitespace' array (a BitArray instance)
     _whitespace.resize(newSize);
-
-    // Resize the '_prefix' array
-  //  final short[] newPrefix = new short[newSize];
-  //  System.arraycopy(_prefix, 0, newPrefix, 0, length);
-  //  _prefix = newPrefix;
+    // Resize the '_dontEscape' array (a BitArray instance)
+    if (_dontEscape != null) {
+        _dontEscape.resize(newSize);
+    }
   }
 
-	private void resizeArrays2(final int newSize, final int length)
-  {
+	private void resizeArrays2(final int newSize, final int length) {
     if (newSize > length)
     {
       // Resize the '_type2' array (attribute types)
       final short[] newType = new short[newSize];
       System.arraycopy(_type2, 0, newType, 0, length);
       _type2 = newType;
-
-      // Resize the '_parent2' array (attribute parent elements)
-     // final int[] newParent = new int[newSize];
-     // System.arraycopy(_parent2, 0, newParent, 0, length);
-     // _parent2 = newParent;
-
-      // Resize the '_nextSibling2' array (you get the idea...)
-    /*  final int[] newNextSibling = new int[newSize];
-      System.arraycopy(_nextSibling2, 0, newNextSibling, 0, length);
-      _nextSibling2 = newNextSibling;  */
-
-      // Resize the '_offset' array (attribute value start)
-  //    final int[] newOffset = new int[newSize];
-  //    System.arraycopy(_offset, 0, newOffset, 0, length);
-  //    _offset = newOffset;
-
-      // Resize the 'length' array (attribute value length)
-  /*    final int[] newLength = new int[newSize];
-      System.arraycopy(_length, 0, newLength, 0, length);
-      _length = newLength; */
-
-      // Resize the '_prefix2' array
-     // final short[] newPrefix = new short[newSize];
-     // System.arraycopy(_prefix2, 0, newPrefix, 0, length);
-     // _prefix2 = newPrefix;
     }
   }
 
-  private void shiftAttributes(final int shift)
-  {
-    int i = 0;
-    int next = 0;
-    final int limit = _currentAttributeNode;
-    int lastParent = -1;
 
-   /* for (i = 0; i < limit; i++)
-    {
-      if (_parent2[i] != lastParent)
-      {
-        lastParent = _parent2[i];
-        _lengthOrAttr[lastParent] = i + shift;
-      }
-     // next = _nextSibling2[i];
-     // _nextSibling2[i] = next != 0 ? next + shift : 0;
-    } */
-  }
-
-	private void appendAttributes()
-  {
-    final int len = _currentAttributeNode;
-    if (len > 0)
-    {
-      final int dst = _currentNode;
-    }
-  }
+        private void appendAttributes() {
+            final int len = _currentAttributeNode;
+            if (len > 0) {
+                final int dst = _currentNode;
+            }
+        }
   
-  public boolean setEscaping(boolean value) {
-	    final boolean temp = _escaping;
-	    _escaping = value; 
-	    return temp;
-    	}
+        public boolean setEscaping(boolean value) {
+            final boolean temp = _escaping;
+            _escaping = value; 
+            return temp;
+        }
 
- } // end of DOMBuilder
+    } // end of DOMBuilder
 
 }
