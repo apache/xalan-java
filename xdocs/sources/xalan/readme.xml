@@ -63,11 +63,11 @@
 <s1 title="Release Notes">
 <p>&xslt4j-current;</p>
  <ul>
-  <li><link anchor="status">Status</link></li>
+  <li><link anchor="status0">Status</link></li>
   <li><link anchor="build">Build Notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
   <li><link anchor="history">History of software changes</link></li>
- </ul>
+ </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
     <li><link anchor="done">Changes since version 2.0</link></li>
