@@ -171,6 +171,7 @@ public class VariableStack implements Cloneable
     // to look one under without having to check if we're at zero.
     // (As long as the caller doesn't screw up link/unlink.)
     _links[_linksTop++] = 0;
+    _sf = new XObject[_sf.length]; 
   }
 
   /**

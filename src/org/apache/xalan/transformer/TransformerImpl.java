@@ -461,9 +461,9 @@ public class TransformerImpl extends Transformer
       m_stackGuard = new StackGuard();
 
       m_xcontext.reset();
-      m_xcontext.getVarStack().clearLocalSlots(0, m_xcontext.getVarStack().size());
-      resetUserParameters();
+      
       m_xcontext.getVarStack().reset();
+      resetUserParameters();
       
 
       int n = m_currentTemplateElements.length;
