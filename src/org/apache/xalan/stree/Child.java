@@ -307,7 +307,7 @@ public class Child extends UnImplNode implements DOMOrder
           // System.out.println("Waiting... getChild " + i + " " + getNodeName());
           while (!m_parent.isComplete())
           {
-            m_doc.wait();
+            m_doc.wait(100);
             throwIfParseError();
 
             if (null != m_next)
