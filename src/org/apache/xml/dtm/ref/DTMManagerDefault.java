@@ -75,10 +75,10 @@ import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 
-/**************************************************************
+/**************************************************************/
 // EXPERIMENTAL 3/22/02
 import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
-**************************************************************/
+/**************************************************************/
 
 // W3C DOM
 import org.w3c.dom.Document;
@@ -121,8 +121,14 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
-  //static final boolean JKESS_XNI_EXPERIMENT=true;
-
+  /** TEMPORARY EXPERIMENTAL: If true, enable Joe's kluge to drag in the
+   * XNI2DTM/XPath2 support. This may be a sloppy solution, mostly because
+   * our getDTM() method is unnecessarily convoluted and needs to be
+   * rationalized. There's also the problem that XNI2DTM requires Xerces2
+   * in order to compile... so we may want reflection here. GRUMP!
+   * */
+  private static final boolean JKESS_XNI_EXPERIMENT=true;	
+	
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
 
@@ -354,14 +360,14 @@ public class DTMManagerDefault extends DTMManager
           dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
                                xstringFactory, doIndexing);
         }
-        /**************************************************************
+        /**************************************************************/
         // EXPERIMENTAL 3/22/02
         else if(JKESS_XNI_EXPERIMENT && m_incremental)
         {        	
           dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
                             xstringFactory, doIndexing);
         }
-        **************************************************************/
+        /**************************************************************/
         else // Create the basic SAX2DTM.
         {
           dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
@@ -412,7 +418,7 @@ public class DTMManagerDefault extends DTMManager
           }
 
 			
-        /**************************************************************
+        /**************************************************************/
         // EXPERIMENTAL 3/22/02
           if(JKESS_XNI_EXPERIMENT && m_incremental & 
           	dtm instanceof XNI2DTM && 
@@ -427,7 +433,7 @@ public class DTMManagerDefault extends DTMManager
           		// Listen to the SAX stream (will fail, diagnostically...)
 				dtm.setIncrementalSAXSource(coParser);
           } else
-          ***************************************************************/
+          /***************************************************************/
           
           // Have the DTM set itself up as the IncrementalSAXSource's listener.
           dtm.setIncrementalSAXSource(coParser);

@@ -2445,5 +2445,71 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    {
    }
 
+   /**
+    * EXPERIMENTAL XPath2 Support:
+    * 
+    * Query schema type name of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the expanded-QName (namespace URI
+    *	rather than prefix) of the type actually
+    *    resolved in the instance document. Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeName(int nodeHandle)
+   { return null; }
+  	
+  /** 
+    * EXPERIMENTAL XPath2 Support:
+    * 
+	* Query schema type namespace of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the namespace URI
+    *	of the type actually resolved in the instance document. This may
+    * 	be null if the default/unspecified namespace was used.
+    *    Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeNamespace(int nodeHandle)
+   { return null; }
+
+  /** EXPERIMENTAL XPath2 Support: Query schema type localname of a given node.
+   * 
+   * %REVIEW% Is this actually needed?
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return null if no type known, else returns the localname of the type
+   *    resolved in the instance document. Note that this may be derived from,
+   *	rather than identical to, the type declared in the schema.
+   */
+  public String getSchemaTypeLocalName(int nodeHandle)
+   { return null; }
+
+  /** EXPERIMENTAL XPath2 Support: Query whether node's type is derived from a specific type
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @param namespace String containing URI of namespace for the type we're intersted in
+   * @param localname String containing local name for the type we're intersted in
+   * @return true if node has a Schema Type which equals or is derived from 
+   *	the specified type. False if the node has no type or that type is not
+   * 	derived from the specified type.
+   */
+  public boolean isNodeSchemaType(int nodeHandle, String namespace, String localname)
+   { return false; }
+  
+  /** EXPERIMENTAL XPath2 Support: Retrieve the typed value(s), based on the schema
+   *  type.
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return XSequence object containing one or more values and their type
+   * information. If no typed value is available, returns an empty sequence.
+   * */
+  public org.apache.xml.dtm.XSequence getTypedValue(int nodeHandle)
+   {return org.apache.xml.dtm.XSequence.EMPTY;}
 
 }

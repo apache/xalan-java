@@ -177,6 +177,27 @@ public class IncrementalSAXSource_Xerces
 			this.fParseSome=dummy.fParseSome;
 			this.fIncrementalParser=dummy.fIncrementalParser;
 		}
+
+		// General SAX-level feature initialization
+		try
+		{
+			fIncrementalParser.setFeature("http://xml.org/sax/features/validation",true);
+		}
+		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
+		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+		try
+		{
+			fIncrementalParser.setFeature("http://apache.org/xml/features/validation/dynamic",true);
+		}
+		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
+		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+		try
+		{
+			fIncrementalParser.setFeature("http://apache.org/xml/features/validation/schema",true);
+		}
+		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
+		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+		
   }
 
   /** Create a IncrementalSAXSource_Xerces wrapped around
@@ -479,6 +500,18 @@ public class IncrementalSAXSource_Xerces
     }
     
   }
+  
+  /** EXPERIMENTAL AS OF 3/22/02: Support for XNI2DTM, allowing us to
+   * bind direct to the parser's XNI stream.
+   * 
+   * %BUG% Gonk -- This requires hard link to Xerces2. Could use reflection
+   * typecasting, but for now... Does anyone still care about Xerces1?
+   * */
+  public org.apache.xerces.xni.parser.XMLPullParserConfiguration getXNIParserConfiguration()
+  {
+  	return (org.apache.xerces.xni.parser.XMLPullParserConfiguration)fPullParserConfig;
+  }
+
 
   
 } // class IncrementalSAXSource_Xerces

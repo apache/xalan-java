@@ -116,11 +116,26 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * between RTFs, and tail-pruning... consider going back to the larger/faster.
    *
    * Made protected rather than private so SAX2RTFDTM can access it.
+   * Minimum chunk size pushed up now that SAX2RTFDTM is in use (larger
+   * minimum allocation, lower overhead as it grows). 
+   * %REVIEW% Variable size disabled in FSB. Consider (13,13).
    */
-  //private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
-  protected FastStringBuffer m_chars = new FastStringBuffer(5, 13);
+  protected FastStringBuffer m_chars = new FastStringBuffer(10, 13);
 
-  /** This vector holds offset and length data.
+  /** This vector holds _integer pairs_ representing the "node value"
+   * referenced by m_dataOrQName. It's basically a kluge to save a word 
+   * per node for nodes which don't carry this information... AND is
+   * overloaded to handle two distinct cases.
+   * 
+   * In: index (and index+1) from m_dataOrQName 
+   * 
+   * Out: Offset and length references into m_chars (for character content)
+   * 	***OR***
+   * 	(IF m_dataOrQName returned a negated index for an Attr node,
+   *    indicating a prefixed attribute):
+   * 	m_valuesOrPrefixes identifiers of prefix and value 
+   *
+   * %REVIEW% Is this really the best solution? I hae me doots!
    */
   protected SuballocatedIntVector m_data;
 
@@ -164,7 +179,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   protected DTMTreeWalker m_walker = new DTMTreeWalker();
 
   /** pool of string values that come as strings. */
-  private DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
+  protected DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
 
   /** End document has been reached.
    * Made protected rather than private so SAX2RTFDTM can access it.
@@ -693,13 +708,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     identity += 1;
 
-    while (identity >= m_size)
-    {
-      if (null == m_incrementalSAXSource)
-        return DTM.NULL;
+    while (identity >= m_size && nextNode())
+    	;
 
-      nextNode();
-    }
+	// If we exited because nextNode ran off the end of the document,
+	// rather than because we found the node we needed, return null.
+	if(identity>=m_size)
+		return DTM.NULL;
 
     return identity;
   }
@@ -749,8 +764,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
   /**
    * This method should try and build one or more nodes in the table.
+   * 
+   * %OPT% When working with Xerces2, an incremental parsing step may not
+   * actually generate a SAX event that causes a node to be built. Our higher-
+   * level code is already looping to see if the desired node was obtained...
+   * but should we also be looping more tightly here?
    *
-   * @return The true if a next node is found or false if
+   * @return True if parsing proceeded normally or false if
    *         there are no more nodes.
    */
   protected boolean nextNode()
@@ -1078,7 +1098,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     int identity = makeNodeIdentity(nodeHandle);
-    int type = getNodeType(identity);
+    int type = _type(identity);
 
     if (DTM.ELEMENT_NODE == type)
     {
@@ -1305,7 +1325,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return The prefix if there is one, or null.
    */
-  private String getPrefix(String qname, String uri)
+  protected String getPrefix(String qname, String uri)
   {
 
     String prefix;
@@ -1682,7 +1702,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     return false;
   }
 	
-	boolean m_pastFirstElement=false;
+	protected boolean m_pastFirstElement=false;
 
   /**
    * Receive notification of the start of an element.
