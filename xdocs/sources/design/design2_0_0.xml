@@ -19,7 +19,7 @@
 	   <li><link anchor="other">Other Packages</link></li>         
 	   <li><link anchor="coding">Coding Conventions</link></li>
 	   <li><link anchor="open">Open Issues</link></li>     
-   <li><jump href="http://xml.apache.org/xalan-j/apidocs/index.html">Xalan-J 2.0 Javadoc</jump></li>
+   <li><jump href="../apidocs/index.html">Xalan-J 2.0 Javadoc</jump></li>
   </ul><anchor name="intro"/>
   <s2 title="Introduction"> 
 	 <p><link>Introduction</link></p> 
@@ -68,23 +68,23 @@
 	 <p>Xalan 2.0 is divided into four major modules, and various smaller
 		modules. The main modules are:</p> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></code></label> 
 		<item>The module that processes the stylesheet, and provides the main
 		  entry point into Xalan.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/templates/package-summary.html">org.apache.xalan.templates</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/templates/package-summary.html">org.apache.xalan.templates</jump></code></label> 
 		<item>The module that defines the stylesheet structures, including the
 		  Stylesheet object, template element instructions, and Attribute Value
 		  Templates. </item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/package-summary.html">org.apache.xalan.transformer</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/transformer/package-summary.html">org.apache.xalan.transformer</jump></code></label> 
 		<item>The module that applies the source tree to the Templates, and
 		  produces a result tree.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xpath/package-summary.html">org.apache.xpath</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xpath/package-summary.html">org.apache.xpath</jump></code></label> 
 		<item>The module that processes both XPath expressions, and XSLT Match
 		  patterns.</item> 
 	 </gloss> 
@@ -100,35 +100,35 @@
 	 <p>In addition to the above packages, there are the following additional
 		packages:</p> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></code></label> 
 		<item>This package has a client applet. I suspect this should be moved
 		  into the samples directory.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/extensions/package-summary.html">org.apache.xalan.extensions</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/extensions/package-summary.html">org.apache.xalan.extensions</jump></code></label> 
 		<item>This holds classes belonging to the Xalan extensions mechanism,
 		  which allows Java code and script to be called from within a stylesheet.</item>
 		
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/lib/package-summary.html">org.apache.xalan.lib</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/lib/package-summary.html">org.apache.xalan.lib</jump></code></label> 
 		<item>This is the built-in Xalan extensions library, which holds
 		  extensions such as Redirect (which allows a stylesheet to produce multiple
 		  output files).</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></code></label> 
 		<item>This holds resource files needed by Xalan, such as error message
 		  resources.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/trace/package-summary.html">org.apache.xalan.trace</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/trace/package-summary.html">org.apache.xalan.trace</jump></code></label> 
 		<item>This package contains classes and interfaces that allow a caller to
 		  add trace listeners to the transformation, allowing an interface to XSLT
 		  debuggers and similar tools.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/xslt/package-summary.html">org.apache.xalan.xslt</jump></code></label> 
+		<label><code><jump href="../apidocs/org/apache/xalan/xslt/package-summary.html">org.apache.xalan.xslt</jump></code></label> 
 		<item>This package is for backwards compatibility with applications that
 		  depend on Xalan 1.x interfaces.</item> 
 	 </gloss> 
@@ -402,7 +402,7 @@
   </s2><anchor name="transformer"/> 
   <s2 title="Transformer Module"> 
 	 <p><link>Transformer Module</link></p> 
-	 <p>The <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/package-summary.html">Transformer</jump> module is in charge of run-time transformations.  The <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump> object, which implements the TrAX <jump href="http://trax.openxml.org/javadoc/trax/Transformer.html">Transformer</jump> interface, and has an association with a <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/templates/StylesheetRoot.html">StylesheetRoot</jump> object, begins the processing of the source tree (or provides a <jump href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/ContentHandler.html">ContentHandler</jump> reference), and performs the transformation.  The Transformer package does as much of the transformation as it can, but element level operations are generally performed in the <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/templates/ElemTemplateElement.html#execute(org.apache.xalan.transformer.TransformerImpl, org.w3c.dom.Node, org.apache.xalan.utils.QName)">ElemTemplateElement.execute(...)</jump> methods.</p><p>Result Tree events are fed into a <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/ResultTreeHandler.html">ResultTreeHandler</jump> object, which acts as a layer between the direct calls to the result 
+	 <p>The <jump href="../apidocs/org/apache/xalan/transformer/package-summary.html">Transformer</jump> module is in charge of run-time transformations.  The <jump href="../apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump> object, which implements the TrAX <jump href="http://trax.openxml.org/javadoc/trax/Transformer.html">Transformer</jump> interface, and has an association with a <jump href="../apidocs/org/apache/xalan/templates/StylesheetRoot.html">StylesheetRoot</jump> object, begins the processing of the source tree (or provides a <jump href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/ContentHandler.html">ContentHandler</jump> reference), and performs the transformation.  The Transformer package does as much of the transformation as it can, but element level operations are generally performed in the <jump href="../apidocs/org/apache/xalan/templates/ElemTemplateElement.html#execute(org.apache.xalan.transformer.TransformerImpl, org.w3c.dom.Node, org.apache.xalan.utils.QName)">ElemTemplateElement.execute(...)</jump> methods.</p><p>Result Tree events are fed into a <jump href="../apidocs/org/apache/xalan/transformer/ResultTreeHandler.html">ResultTreeHandler</jump> object, which acts as a layer between the direct calls to the result 
 tree content handler (often a Serializer), and the Transformer.  For one thing, 
  we have to delay the call to
  startElement(name, atts) because of the
