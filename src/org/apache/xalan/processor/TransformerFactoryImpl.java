@@ -509,7 +509,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
    * implementation.
    *
    * @param name The name of the attribute.
-   * @param value The value of the attribute.
+   * @param value The value of the attribute; Boolean or String="true"|"false"
    *
    * @throws IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
@@ -518,11 +518,45 @@ public javax.xml.transform.Templates processFromNode(Node node)
           throws IllegalArgumentException
   {
     if (name.equals(FEATURE_INCREMENTAL))
-      org.apache.xml.dtm.DTMManager.setIncremental(((Boolean)value).booleanValue());
+    {
+      if(value instanceof Boolean)
+      {
+        // Accept a Boolean object..
+        org.apache.xml.dtm.DTMManager.setIncremental(((Boolean)value).booleanValue());
+      }
+      else if(value instanceof String)
+      {
+        // .. or a String object
+        org.apache.xml.dtm.DTMManager.setIncremental((new Boolean((String)value)).booleanValue());
+      }
+      else
+      {
+        // Give a more meaningful error message
+        throw new IllegalArgumentException(name + " bad value " + value);
+      }
+	}
     else if (name.equals(FEATURE_OPTIMIZE))
-      m_optimize = ((Boolean)value).booleanValue();
+    {
+      if(value instanceof Boolean)
+      {
+        // Accept a Boolean object..
+        m_optimize = ((Boolean)value).booleanValue();
+      }
+      else if(value instanceof String)
+      {
+        // .. or a String object
+        m_optimize = (new Boolean((String)value)).booleanValue();
+      }
+      else
+      {
+        // Give a more meaningful error message
+        throw new IllegalArgumentException(name + " bad value " + value);
+      }
+    }
     else
-      throw new IllegalArgumentException(name);
+    {
+      throw new IllegalArgumentException(name + "not supported");
+    }
   }
 
   /**
@@ -537,7 +571,13 @@ public javax.xml.transform.Templates processFromNode(Node node)
    */
   public Object getAttribute(String name) throws IllegalArgumentException
   {
-    throw new IllegalArgumentException(name);
+    // Please implement this method for testing purposes 25-Jun-01 -sc
+    if (name.equals(FEATURE_INCREMENTAL))
+      throw new IllegalArgumentException(name + " attribute value not found");
+    else if (name.equals(FEATURE_OPTIMIZE))
+      throw new IllegalArgumentException(name + " attribute value not found");
+    else
+      throw new IllegalArgumentException(name + " attribute not recognized");
   }
 
   /**
