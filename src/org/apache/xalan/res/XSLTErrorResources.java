@@ -2402,7 +2402,7 @@ public class XSLTErrorResources extends ListResourceBundle
   {  "optionFLAVOR",  "   [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)] "}, // Added by sboag/scurcuru; experimental
   { "optionDIAG", "   [-DIAG (Print overall milliseconds transform took.)]"},
   { "optionINCREMENTAL",  "   [-INCREMENTAL (request incremental DTM construction by setting http://xml.apache.org/xalan/features/incremental true.)]"},
-  {  "optionNOOPTIMIMIZE",  "   [-NOOPTIMIMIZE (request no stylesheet optimization proccessing by setting http://xml.apache.org/xalan/features/optimize false.)]"},
+  {  "optionNOOPTIMIMIZE",  "   [-NOOPTIMIMIZE (request no stylesheet optimization processing by setting http://xml.apache.org/xalan/features/optimize false.)]"},
   { "optionRL",  "   [-RL recursionlimit (assert numeric limit on stylesheet recursion depth.)]"},
   {   "optionXO",  "   [-XO [transletName] (assign the name to the generated translet)]"},
   {  "optionXD", "   [-XD destinationDirectory (specify a destination directory for translet)]"},
