@@ -117,12 +117,17 @@ transformer.transform
 </s2><anchor name="plug"/>
 <s2 title="Plugging in a Transformer and XML parser">
 <p>The Java API for XML Processing interfaces enable you to isolate your application from the internal implementation details of a given Transformer, SAX parser, or DOM parser. For each of these objects, there is an abstract Factory class with a static newInstance() method that instantiates a concrete Factory which wraps the underlying implementation. These newInstance() methods use system property settings to determine which implementation to instantiate.</p>
-<p>&xslt4j; is distributed with system property settings for the Xalan XSLT Transformer and the Xerces DOM and SAX parsers. These settings are in xalan.jar in META-INF/services (see src/META-INF/services).</p>
+<p>&xslt4j; is distributed with a system property setting for the Xalan XSLT Transformer. This setting is in xalan.jar in META-INF/services (see src/META-INF/services).</p>
 <gloss>
   <label>System property</label>
     <item>Setting</item>
   <label><code>javax.xml.transform.TransformerFactory</code></label>
-   <item><code>org.apache.xalan.processor.TransformerFactoryImpl</code></item>    
+   <item><code>org.apache.xalan.processor.TransformerFactoryImpl</code></item>
+</gloss>
+<p>If you are using Xerces, the XML parser factory settings are as follows:</p>
+<gloss>
+  <label>System property</label>
+    <item>Setting</item>
   <label><code>javax.xml.parsers.DocumentBuilderFactory</code></label>
    <item><code>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</code></item>    
   <label><code>javax.xml.parsers.SAXParserFactory</code></label>
@@ -132,7 +137,7 @@ transformer.transform
 <ol>
   <li>Set the system property from the command line when you launch Java or from within your application.<br/><br/></li>
   <li>Set the system property in jaxp.properties in the JAVA_HOME/lib directory, where JAVA_HOME is the root of the JDK.<br/><br/></li>
-  <li>Revise the entry in src/META-INF/services and rebuild xalan.jar.<br/><br/></li>
+  <li>Revise the entry in src/META-INF/services and rebuild xalan.jar or xerces.jar (depending on which entry you have changed).<br/><br/></li>
 </ol>
 <p>For example, to use the Crimson XML parser in place of the Xerces XML parser, place Crimson on the class path and set the 
 <code>javax.xml.parsers.SAXParserFactory</code> system property to <code>org.apache.crimson.jaxp.SAXParserFactoryImpl</code>.</p>
