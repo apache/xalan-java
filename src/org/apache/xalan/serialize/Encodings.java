@@ -342,8 +342,12 @@ public class Encodings extends Object
   {
     URL url = null;
     try {
-      String urlString =
-        System.getProperty("org.apache.xalan.serialize.encodings", "");
+      String urlString = null;
+      try {
+        urlString = System.getProperty("org.apache.xalan.serialize.encodings", "");
+      }
+      catch (SecurityException e) {}
+      
       if (urlString != null && urlString.length() > 0)
         url = new URL (urlString);
       if (url == null) {
