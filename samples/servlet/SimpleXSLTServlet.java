@@ -96,8 +96,8 @@ public class SimpleXSLTServlet extends HttpServlet {
     {	
       TransformerFactory tFactory = TransformerFactory.newInstance();
       // Get the XML input document and the stylesheet.
-      Source xmlSource = new StreamSource(new URL("file:todo.xml").openStream());
-      Source xslSource = new StreamSource(new URL("file:todo.xsl").openStream());
+      Source xmlSource = new StreamSource(new URL("file:trax.xml").openStream());
+      Source xslSource = new StreamSource(new URL("file:spec.xsl").openStream());
       // Generate the transformer.
       Transformer transformer = tFactory.newTransformer(xslSource);
       // Perform the transformation, sending the output to the response.
