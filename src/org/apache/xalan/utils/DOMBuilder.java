@@ -335,8 +335,7 @@ public class DOMBuilder
         //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
         // First handle a possible ID attribute
         if (atts.getType(i).equalsIgnoreCase("ID"))
-          setIDAttribute(atts.getURI(i), atts.getLocalName(i),
-                         atts.getValue(i), elem);
+          setIDAttribute(atts.getValue(i), elem);
 
         String attrNS = atts.getURI(i);
 
@@ -386,16 +385,12 @@ public class DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method setIDAttribute 
+   * Set an ID string to node association in the ID table.
    *
-   *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   * NEEDSDOC @param value
-   * NEEDSDOC @param elem
+   * @param id The ID string.
+   * @param elem The associated ID.
    */
-  public void setIDAttribute(String namespaceURI, String qualifiedName,
-                             String value, Element elem)
+  public void setIDAttribute(String id, Element elem)
   {
 
     // Do nothing. This method is meant to be overiden.
