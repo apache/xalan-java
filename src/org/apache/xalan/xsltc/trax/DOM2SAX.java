@@ -83,7 +83,8 @@ import org.w3c.dom.Notation;
 
 import org.apache.xalan.xsltc.runtime.AttributeList;
 
-public class DOM2SAX implements XMLReader , Locator {
+class DOM2SAX implements XMLReader , Locator {
+
     private Document _dom = null;
     private ContentHandler _sax = null;
  

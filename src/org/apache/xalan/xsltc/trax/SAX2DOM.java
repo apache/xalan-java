@@ -78,7 +78,7 @@ import org.w3c.dom.Attr;
 import java.util.Stack;
 
 
-public class SAX2DOM implements ContentHandler {
+class SAX2DOM implements ContentHandler {
 
     private Document _document = null;
     private DocumentBuilder _builder = null;
