@@ -78,6 +78,8 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 
 final public class DTDMonitor implements DTDHandler, DeclHandler {
 
+    private final static String EMPTYSTRING = "";
+
     // This is the name of the index used for ID attributes
     private final static String ID_INDEX_NAME = "##id";
     // Stores the names of the ID attributes for the various element types
@@ -199,26 +201,56 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
      */
     public final void buildIdIndex(DOMImpl dom, int mask,
 				   AbstractTranslet translet) {
+
+	// These variables are put up here for speed
+	int node, attr, type, typeCache;
+
 	// Do nothing if there were no ID declarations in the DTD
 	if ((_idAttributes == null) || (_idAttributes.isEmpty())) return;
-	
-	Enumeration elementNames = _idAttributes.keys();
-	while (elementNames.hasMoreElements()) {
-	    String elementName = (String)elementNames.nextElement();
-	    String attrName = getIdAttrName(elementName);
-	    int nodeType = dom.getGeneralizedType(elementName);
-	    NodeIterator niter = dom.getTypedDescendantIterator(nodeType);
-	    
-	    int attributeType = dom.getGeneralizedType(attrName);
-	    int node;
 
-	    while (( node = niter.next()) != NodeIterator.END) {
-		// get id value for the node
-		Object idValue = dom.getAttributeValue(attributeType, node);
-		// add entry into ##id index for KeyCall to handle
-		translet.buildKeyIndex(ID_INDEX_NAME, mask|node, idValue);
+	// Convert the _idAttribute Hashtable so that instead of containing
+	// an element name (String) mapping to an ID attribute name (String),
+	// it contains pairs of element types (Integer) mapping to ID attribute
+	// types (Integer). This eliminates string comparisons, and makes it
+	// possible for us to traverse the input DOM just once.
+	Enumeration elements = _idAttributes.keys();
+	if (elements.nextElement() instanceof String) {
+	    Hashtable newAttributes = new Hashtable();
+	    elements = _idAttributes.keys();
+	    while (elements.hasMoreElements()) {
+		String element = (String)elements.nextElement();
+		String attribute = (String)_idAttributes.get(element);
+		int elemType = dom.getGeneralizedType(element);
+		int attrType = dom.getGeneralizedType(attribute);
+		newAttributes.put(new Integer(elemType), new Integer(attrType));
 	    }
-	} 
+	    _idAttributes = newAttributes;
+	}
+
+	// Get all nodes in the DOM
+	final NodeIterator iter = dom.getAxisIterator(Axis.DESCENDANT);
+	iter.setStartNode(DOM.ROOTNODE);
+
+	Integer E = new Integer(typeCache = 0);
+	Integer A = null;
+
+	while ((node = iter.next()) != NodeIterator.END) {
+	    // Get the node type of this node
+	    type = dom.getType(node);
+	    if (type != typeCache) {
+		E = new Integer(typeCache = type);
+		A = (Integer)_idAttributes.get(E);
+	    }
+
+	    // See if it has a defined ID attribute type
+	    if (A != null) {
+		// Only store the attribute value if the element has this attr.
+		if ((attr = dom.getAttributeNode(A.intValue(), node)) != 0) {
+		    final String value = dom.getNodeValue(attr);
+		    translet.buildKeyIndex(ID_INDEX_NAME, mask|node, value);
+		}
+	    }
+	}
     }
 
 }
