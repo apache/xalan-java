@@ -65,6 +65,7 @@ package org.apache.xalan.xsltc.trax;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 
+import org.xml.sax.Locator;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.*;
@@ -76,12 +77,18 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 
     private String _systemId;
+    private int    _indentNumber;
+
+    // Temporary
+    private boolean _oldOutputSystem;
 
     /**
      * Default constructor
      */
-    protected TemplatesHandlerImpl() {
+    protected TemplatesHandlerImpl(int indentNumber, boolean oldOutputSystem) {
 	super(null);
+	_indentNumber = indentNumber;
+	_oldOutputSystem = oldOutputSystem;
     }
 
     /**
@@ -91,8 +98,9 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	super.setXSLTC(xsltc);
-	xsltc.setParser(this);
 	xsltc.init();
+	super.init();
+	xsltc.setParser(this);
 	xsltc.setOutputType(XSLTC.BYTEARRAY_OUTPUT);
     }
 
@@ -126,51 +134,61 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
      *         process, or null if no Templates object has been created.
      */
     public Templates getTemplates() {
-
 	try {
-	    // Create a placeholder for the translet bytecodes
-	    byte[][] bytecodes = null;
-
 	    final XSLTC xsltc = getXSLTC();
 
 	    // Set the translet class name if not already set
 	    String transletName = TransformerFactoryImpl._defaultTransletName;
-	    if (_systemId != null) transletName = Util.baseName(_systemId);
+	    if (_systemId != null) {
+		transletName = Util.baseName(_systemId);
+	    }
 	    xsltc.setClassName(transletName);
+
+	    // Get java-legal class name from XSLTC module
+	    transletName = xsltc.getClassName();
 
 	    Stylesheet stylesheet = null;
 	    SyntaxTreeNode root = getDocumentRoot();
 
 	    // Compile the translet - this is where the work is done!
-	    if ((!errorsFound()) && (root != null)) {
+	    if (!errorsFound() && root != null) {
 		// Create a Stylesheet element from the root node
 		stylesheet = makeStylesheet(root);
 		stylesheet.setSystemId(_systemId);
 		stylesheet.setParentStylesheet(null);
 		setCurrentStylesheet(stylesheet);
-		// Create AST under the Stylesheet element (parse & type-check)
+		// Create AST under the Stylesheet element 
 		createAST(stylesheet);
 	    }
 
 	    // Generate the bytecodes and output the translet class(es)
-	    if ((!errorsFound()) && (stylesheet != null)) {
+	    if (!errorsFound() && stylesheet != null) {
 		stylesheet.setMultiDocument(xsltc.isMultiDocument());
 		stylesheet.translate();
 	    }
 
-	    xsltc.printWarnings();
-
-	    // Check that the transformation went well before returning
-	    if (bytecodes == null) {
-		xsltc.printErrors();
-		return null;
+	    if (!errorsFound()) {
+		// Check that the transformation went well before returning
+		final byte[][] bytecodes = xsltc.getBytecodes();
+		if (bytecodes != null) {
+		    return new TemplatesImpl(xsltc.getBytecodes(), transletName, 
+			 getOutputProperties(), _indentNumber, _oldOutputSystem);
+		}
 	    }
-
-	    return(new TemplatesImpl(bytecodes, transletName));
 	}
 	catch (CompilerException e) {
-	    return null;
+	    // falls through
 	}
+	return null;
+    }
+
+    /**
+     * recieve an object for locating the origin of SAX document events.
+     * Most SAX parsers will use this method to inform content handler
+     * of the location of the parsed document. 
+     */
+    public void setDocumentLocator(Locator locator) {
+  	setSystemId(locator.getSystemId());
     }
 }
 

@@ -349,7 +349,7 @@ final class Sort extends Instruction {
 	// Class initializer - void NodeSortRecord.<clinit>();
 	final InstructionList il = new InstructionList();
 	final CompareGenerator classInit =
-	    new CompareGenerator(ACC_PUBLIC | ACC_FINAL,
+	    new CompareGenerator(ACC_PUBLIC | ACC_STATIC,
 				 org.apache.bcel.generic.Type.VOID, 
 				 new org.apache.bcel.generic.Type[] { },
 				 new String[] { },

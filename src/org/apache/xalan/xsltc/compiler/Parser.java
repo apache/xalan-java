@@ -70,6 +70,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
@@ -99,6 +100,7 @@ public class Parser implements Constants, ContentHandler {
     private Vector _warnings;         // Contains all compilation errors
 
     private Hashtable   _instructionClasses; // Maps instructions to classes
+    private Hashtable   _instructionAttrs;;  // reqd and opt attrs 
     private Hashtable   _qNames;
     private Hashtable   _namespaces;
     private QName       _useAttributeSets;
@@ -126,6 +128,7 @@ public class Parser implements Constants, ContentHandler {
 	_qNames              = new Hashtable(512);
 	_namespaces          = new Hashtable();
 	_instructionClasses  = new Hashtable();
+	_instructionAttrs    = new Hashtable();
 	_variableScope       = new Hashtable();
 	_template            = null;
 	_errors              = new Vector();
@@ -136,6 +139,7 @@ public class Parser implements Constants, ContentHandler {
 	_currentImportPrecedence = 1;
 	
 	initStdClasses();
+	initInstructionAttrs();
 	initExtClasses();
 	initSymbolTable();
 	
@@ -164,6 +168,10 @@ public class Parser implements Constants, ContentHandler {
 
     public Output getOutput() {
 	return _output;
+    }
+
+    public Properties getOutputProperties() {
+	return getTopLevelStylesheet().getOutputProperties();
     }
 
     public void addVariable(Variable var) {
@@ -252,19 +260,34 @@ public class Parser implements Constants, ContentHandler {
 	    String namespace = null;
 	    
 	    // Get the namespace uri from the symbol table
-	    if (prefix.equals("xmlns") == false) {
+	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null) namespace = EMPTYSTRING;
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    final String uri = _symbolTable.lookupNamespace(EMPTYSTRING);
+	    final String uri = stringRep.equals(XMLNS_PREFIX) ? null
+		: _symbolTable.lookupNamespace(EMPTYSTRING);
 	    return getQName(uri, null, stringRep);
 	}
     }
     
     public QName getQName(final String stringRep) {
+	return getQName(stringRep, true, false);    
+    }
+
+    public QName getQNameIgnoreDefaultNs(final String stringRep) {
+	return getQName(stringRep, true, true);
+    }
+
+    public QName getQName(final String stringRep, boolean reportError) {
+	return getQName(stringRep, reportError, false);
+    }
+
+    private QName getQName(final String stringRep, boolean reportError,
+	boolean ignoreDefaultNs) 
+    {
 	// parse and retrieve namespace
 	final int colon = stringRep.lastIndexOf(':');
 	if (colon != -1) {
@@ -273,9 +296,9 @@ public class Parser implements Constants, ContentHandler {
 	    String namespace = null;
 	    
 	    // Get the namespace uri from the symbol table
-	    if (prefix.equals("xmlns") == false) {
+	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
-		if (namespace == null) {
+		if (namespace == null && reportError) {
 		    final int line = _locator.getLineNumber();
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
 						line, prefix);
@@ -285,13 +308,17 @@ public class Parser implements Constants, ContentHandler {
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    final String defURI = _symbolTable.lookupNamespace(EMPTYSTRING);
+	    if (stringRep.equals(XMLNS_PREFIX)) {
+		ignoreDefaultNs = true;
+	    }
+	    final String defURI = ignoreDefaultNs ? null 
+				  : _symbolTable.lookupNamespace(EMPTYSTRING);
 	    return getQName(defURI, null, stringRep);
 	}
     }
 
     public QName getQName(String namespace, String prefix, String localname) {
-	if (namespace == null) {
+	if (namespace == null || namespace.equals(EMPTYSTRING)) {
 	    QName name = (QName)_qNames.get(localname);
 	    if (name == null) {
 		name = new QName(null, prefix, localname);
@@ -356,7 +383,11 @@ public class Parser implements Constants, ContentHandler {
 		stylesheet.setSimplified();
 		stylesheet.addElement(element);
 		stylesheet.setAttributes(element.getAttributes());
-		element.addPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+
+		// Map the default NS if not already defined
+		if (element.lookupNamespace(EMPTYSTRING) == null) {
+		    element.addPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+		}
 	    }
 	    stylesheet.setParser(this);
 	    return stylesheet;
@@ -567,6 +598,70 @@ public class Parser implements Constants, ContentHandler {
 	return(external);
     }
 
+    private void initAttrTable(String elementName, String[] attrs) {
+	_instructionAttrs.put(getQName(XSLT_URI, XSL, elementName),
+				attrs);
+    }
+
+    private void initInstructionAttrs() {
+	initAttrTable("template", 
+	    new String[] {"match", "name", "priority", "mode"});
+	initAttrTable("stylesheet", 
+	    new String[] {"id", "version", "extension-element-prefixes",
+		"exclude-result-prefixes"});
+	initAttrTable("transform",
+	    new String[] {"id", "version", "extension-element-prefixes",
+		"exclude-result-prefixes"});
+	initAttrTable("text", new String[] {"disable-output-escaping"}); 
+	initAttrTable("if", new String[] {"test"}); 
+	initAttrTable("choose", new String[] {}); 
+	initAttrTable("when", new String[] {"test"}); 
+	initAttrTable("otherwise", new String[] {}); 
+	initAttrTable("for-each", new String[] {"select"}); 
+	initAttrTable("message", new String[] {"terminate"}); 
+	initAttrTable("number", 
+	    new String[] {"level", "count", "from", "value", "format", "lang",
+		"letter-value", "grouping-separator", "grouping-size"});
+		initAttrTable("comment", new String[] {}); 
+	initAttrTable("copy", new String[] {"use-attribute-sets"}); 
+	initAttrTable("copy-of", new String[] {"select"}); 
+	initAttrTable("param", new String[] {"name", "select"}); 
+	initAttrTable("with-param", new String[] {"name", "select"}); 
+	initAttrTable("variable", new String[] {"name", "select"}); 
+	initAttrTable("output", 
+	    new String[] {"method", "version", "encoding", 
+		"omit-xml-declaration", "standalone", "doctype-public",
+		"doctype-system", "cdata-section-elements", "indent",
+		"media-type"}); 
+	initAttrTable("sort", 
+	   new String[] {"select", "order", "case-order", "lang", "data-type"});
+	initAttrTable("key", new String[] {"name", "match", "use"}); 
+	initAttrTable("fallback", new String[] {}); 
+	initAttrTable("attribute", new String[] {"name", "namespace"}); 
+	initAttrTable("attribute-set", 
+	    new String[] {"name", "use-attribute-sets"}); 
+	initAttrTable("value-of", 
+	    new String[] {"select", "disable-output-escaping"}); 
+	initAttrTable("element", 
+	    new String[] {"name", "namespace", "use-attribute-sets"}); 
+	initAttrTable("call-template", new String[] {"name"}); 
+	initAttrTable("apply-templates", new String[] {"select", "mode"}); 
+	initAttrTable("apply-imports", new String[] {}); 
+	initAttrTable("decimal-format", 
+	    new String[] {"name", "decimal-separator", "grouping-separator",
+		"infinity", "minus-sign", "NaN", "percent", "per-mille",
+		"zero-digit", "digit", "pattern-separator"}); 
+	initAttrTable("import", new String[] {"href"}); 
+	initAttrTable("include", new String[] {"href"}); 
+	initAttrTable("strip-space", new String[] {"elements"}); 
+	initAttrTable("preserve-space", new String[] {"elements"}); 
+	initAttrTable("processing-instruction", new String[] {"name"}); 
+	initAttrTable("namespace-alias", 
+	   new String[] {"stylesheet-prefix", "result-prefix"}); 
+    }
+
+
+
     /**
      * Initialize the _instructionClasses Hashtable, which maps XSL element
      * names to Java classes in this package.
@@ -614,8 +709,8 @@ public class Parser implements Constants, ContentHandler {
 				COMPILER_PACKAGE + '.' + className);
     }
 
-    public boolean elementSupported(QName qname) {
-	return(_instructionClasses.get(qname) != null);
+    public boolean elementSupported(String namespace, String localName) {
+	return(_instructionClasses.get(getQName(namespace, XSL, localName)) != null);
     }
 
     public boolean functionSupported(String fname) {
@@ -645,7 +740,6 @@ public class Parser implements Constants, ContentHandler {
 	MethodType R_D  = new MethodType(Type.Real, Type.NodeSet);
 	MethodType R_O  = new MethodType(Type.Real, Type.Reference);
 	MethodType I_I  = new MethodType(Type.Int, Type.Int);
-	MethodType J_J  = new MethodType(Type.Lng, Type.Lng);  //GTM,bug 3592
  	MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
 	MethodType D_V  = new MethodType(Type.NodeSet, Type.Void);
 	MethodType D_S  = new MethodType(Type.NodeSet, Type.String);
@@ -660,6 +754,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType B_V  = new MethodType(Type.Boolean, Type.Void);
 	MethodType B_B  = new MethodType(Type.Boolean, Type.Boolean);
 	MethodType B_S  = new MethodType(Type.Boolean, Type.String);
+	MethodType D_T  = new MethodType(Type.NodeSet, Type.ResultTree);
 	MethodType R_RR = new MethodType(Type.Real, Type.Real, Type.Real);
 	MethodType I_II = new MethodType(Type.Int, Type.Int, Type.Int);
 	MethodType B_RR = new MethodType(Type.Boolean, Type.Real, Type.Real);
@@ -744,6 +839,9 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("normalize-space", S_S);
 	_symbolTable.addPrimop("system-property", S_S);
 
+	// Extensions
+	_symbolTable.addPrimop("nodeset", D_T);
+
 	// Operators +, -, *, /, % defined on real types.
 	_symbolTable.addPrimop("+", R_RR);	
 	_symbolTable.addPrimop("-", R_RR);	
@@ -782,7 +880,6 @@ public class Parser implements Constants, ContentHandler {
 	// Unary minus.
 	_symbolTable.addPrimop("u-", R_R);	
 	_symbolTable.addPrimop("u-", I_I);	
-	_symbolTable.addPrimop("u-", J_J);  // GTM,bug 3592	
     }
 
     public SymbolTable getSymbolTable() {
@@ -814,10 +911,15 @@ public class Parser implements Constants, ContentHandler {
      * until we have received all child elements of an unsupported element to
      * see if any <xsl:fallback> elements exist.
      */
-    public SyntaxTreeNode makeInstance(String uri, String prefix, String local){
+
+    private boolean versionIsOne = true;
+
+    public SyntaxTreeNode makeInstance(String uri, String prefix, 
+	String local, Attributes attributes)
+    {
+	SyntaxTreeNode node = null;
 	QName  qname = getQName(uri, prefix, local);
 	String className = (String)_instructionClasses.get(qname);
-	SyntaxTreeNode node = null;
 
 	if (className != null) {
 	    try {
@@ -825,11 +927,13 @@ public class Parser implements Constants, ContentHandler {
 		node = (SyntaxTreeNode)clazz.newInstance();
 		node.setQName(qname);
 		node.setParser(this);
-		if (_locator != null)
+		if (_locator != null) {
 		    node.setLineNumber(_locator.getLineNumber());
+		}
 		if (node instanceof Stylesheet) {
 		    _xsltc.setStylesheet((Stylesheet)node);
 		}
+		checkForSuperfluousAttributes(node, attributes);
 	    }
 	    catch (ClassNotFoundException e) {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, node);
@@ -882,6 +986,46 @@ public class Parser implements Constants, ContentHandler {
 	}
 	return(node);
     }
+
+    /**
+     * checks the list of attributes against a list of allowed attributes
+     * for a particular element node.
+     */
+    private void checkForSuperfluousAttributes(SyntaxTreeNode node, 
+	Attributes attrs)
+    {
+	QName qname = node.getQName();
+	boolean isStylesheet = (node instanceof Stylesheet); 
+        String[] legal = (String[]) _instructionAttrs.get(qname);
+	if (versionIsOne && legal != null) {
+	    int j;
+	    final int n = attrs.getLength();
+
+	    for (int i = 0; i < n; i++) {
+	        final String attrQName = attrs.getQName(i);
+
+	        if (isStylesheet && attrQName.equals("version")) {
+	            versionIsOne = attrs.getValue(i).equals("1.0");
+	        }
+
+	        if (attrQName.startsWith("xml") || 
+		    attrQName.indexOf(':') > 0) continue;
+
+	        for (j = 0; j < legal.length; j++) {
+	            if (attrQName.equalsIgnoreCase(legal[j])) {
+		        break;
+		    }	
+	        }
+	        if (j == legal.length) {
+	            final ErrorMsg err = 
+		        new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR, 
+				attrQName, node);
+		    reportError(WARNING, err);
+	        }
+	    }
+        }	
+    }
+
 
     /**
      * Parse an XPath expression:
@@ -944,7 +1088,7 @@ public class Parser implements Constants, ContentHandler {
 
 	try {
 	    _xpathParser.setScanner(new XPathLexer(new StringReader(text)));
-	    Symbol result = _xpathParser.parse(line);
+	    Symbol result = _xpathParser.parse(expression, line);
 	    if (result != null) {
 		final SyntaxTreeNode node = (SyntaxTreeNode)result.value;
 		if (node != null) {
@@ -957,14 +1101,12 @@ public class Parser implements Constants, ContentHandler {
 	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
 					    expression, parent));
 	}
-	catch (ClassCastException e) {
+	catch (Exception e) {
+	    if (_xsltc.debug()) e.printStackTrace();
 	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
 					    expression, parent));
 	}
-	catch (Exception e) {
-	    if (_xsltc.debug()) e.printStackTrace();
-	    // Intentional fall through
-	}
+
 	// Return a dummy pattern (which is an expression)
 	SyntaxTreeNode.Dummy.setParser(this);
         return SyntaxTreeNode.Dummy; 
@@ -1072,7 +1214,9 @@ public class Parser implements Constants, ContentHandler {
      *       This has to be passed on to the symbol table!
      */
     public void startPrefixMapping(String prefix, String uri) {
-	if (_prefixMapping == null) _prefixMapping = new Hashtable();
+	if (_prefixMapping == null) {
+	    _prefixMapping = new Hashtable();
+	}
 	_prefixMapping.put(prefix, uri);
     }
 
@@ -1091,13 +1235,10 @@ public class Parser implements Constants, ContentHandler {
 			     String qname, Attributes attributes) 
 	throws SAXException {
 	final int col = qname.lastIndexOf(':');
-	final String prefix;
-	if (col == -1)
-	    prefix = null;
-	else
-	    prefix = qname.substring(0, col);
+	final String prefix = (col == -1) ? null : qname.substring(0, col);
 
-	SyntaxTreeNode element = makeInstance(uri, prefix, localname);
+	SyntaxTreeNode element = makeInstance(uri, prefix, 
+					localname, attributes);
 	if (element == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR,
 					prefix+':'+localname);

@@ -75,22 +75,12 @@ final class QName {
 	_namespace = namespace;
 	_prefix    = prefix;
 	_localname = localname;
-	if ((namespace != null) && (!namespace.equals(Constants.EMPTYSTRING))) {
-	    _stringRep = namespace+':'+localname;
-	}
-	else {
-	    _stringRep = localname;
-	}
+
+	_stringRep = 
+	    (namespace != null && !namespace.equals(Constants.EMPTYSTRING)) ?
+	    (namespace + ':' + localname) : localname;
 
 	_hashCode  = _stringRep.hashCode() + 19; // cached for speed
-    }
-
-    public void clearDefaultNamespace() {
-	if ((_prefix == null) || (_prefix.equals(Constants.EMPTYSTRING))) {
-	    _namespace = null;
-	    _stringRep = _localname;
-	    _hashCode  = _stringRep.hashCode() + 19; // cached for speed
-	}
     }
 
     public void clearNamespace() {
@@ -106,7 +96,7 @@ final class QName {
     }
 
     public boolean equals(Object other) {
-	return this == other;
+	return (this == other);
     }
 
     public String getLocalPart() {
@@ -126,6 +116,7 @@ final class QName {
     }
 
     public String dump() {
-	return(new String("QName: "+_namespace+"("+_prefix+"):"+_localname));
+	return new String("QName: " + _namespace + "(" + _prefix + "):" 
+	    + _localname);
     }
 }

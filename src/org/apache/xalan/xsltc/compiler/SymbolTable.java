@@ -85,12 +85,12 @@ final class SymbolTable {
     private Hashtable _excludedURI = null;
     private Hashtable _decimalFormats = null;
 
-    public DecimalFormatting getDecimalFormatting(String name) {
+    public DecimalFormatting getDecimalFormatting(QName name) {
 	if (_decimalFormats == null) return null;
 	return((DecimalFormatting)_decimalFormats.get(name));
     }
 
-    public void addDecimalFormatting(String name, DecimalFormatting symbols) {
+    public void addDecimalFormatting(QName name, DecimalFormatting symbols) {
 	if (_decimalFormats == null) _decimalFormats = new Hashtable();
 	_decimalFormats.put(name, symbols);
     }
@@ -105,14 +105,12 @@ final class SymbolTable {
 
     public Template addTemplate(Template template) {
 	final QName name = template.getName();
-	name.clearDefaultNamespace();
 	if (_templates == null) _templates = new Hashtable();
 	return (Template)_templates.put(name, template);
     }
 	
     public Template lookupTemplate(QName name) {
 	if (_templates == null) return null;
-	name.clearDefaultNamespace();
 	return (Template)_templates.get(name);
     }
 
@@ -262,11 +260,10 @@ final class SymbolTable {
      * Check if a namespace should not be declared in the output (unless used)
      */
     public boolean isExcludedNamespace(String uri) {
-	if (uri == null) return false;
-	if (_excludedURI == null) return false;
-	final Integer refcnt = (Integer)_excludedURI.get(uri);
-	if (refcnt == null) return false;
-	if (refcnt.intValue() > 0) return true;
+	if (uri != null && _excludedURI != null) {
+	    final Integer refcnt = (Integer)_excludedURI.get(uri);
+	    return (refcnt != null && refcnt.intValue() > 0);
+	}
 	return false;
     }
 

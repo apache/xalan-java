@@ -70,38 +70,36 @@ import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class CurrentNodeListIterator extends NodeIteratorBase {
-    private NodeIterator _source;
+
     private boolean _docOrder;
+    private NodeIterator _source;
     private final CurrentNodeListFilter _filter;
     private IntegerArray _nodes = new IntegerArray();
 	
     private int _current;	// index in _nodes of the next node to try
+    private int _last = -1;		
 	
-    private AbstractTranslet _translet;
     private final int _currentNode;
-    private int _last;		
+    private AbstractTranslet _translet;
 
     public CurrentNodeListIterator(NodeIterator source, 
 				   CurrentNodeListFilter filter,
 				   int currentNode,
-				   AbstractTranslet translet) {
+				   AbstractTranslet translet) 
+    {
 	this(source, !source.isReverse(), filter, currentNode, translet);
     }
 
     public CurrentNodeListIterator(NodeIterator source, boolean docOrder,
 				   CurrentNodeListFilter filter,
 				   int currentNode,
-				   AbstractTranslet translet) {
+				   AbstractTranslet translet) 
+    {
 	_source = source;
 	_filter = filter;
 	_translet = translet;
 	_docOrder = docOrder;
 	_currentNode = currentNode;
-    }
-
-    public NodeIterator forceNaturalOrder() {
-	_docOrder = true;
-	return this;
     }
 
     public void setRestartable(boolean isRestartable) {
@@ -134,14 +132,13 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     }
 
     public int next() {
-	final boolean docOrder = _docOrder;
 	final int last = _nodes.cardinality();
 	final int currentNode = _currentNode;
+	final AbstractTranslet translet = _translet;
 
 	for (int index = _current; index < last; ) {
-	    final int node = _nodes.at(index++); // note increment
-	    final int position = docOrder ? index : last - index + 1;
-	    if (_filter.test(node, position, last, currentNode, _translet, this)) {
+	    final int node = _nodes.at(index++); 	// note increment
+	    if (_filter.test(node, index, last, currentNode, translet, this)) {
 		_current = index;
 		return returnNode(node);
 	    }
@@ -149,29 +146,12 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return END;
     }
 
-    private int computePositionOfLast() {
-	int lastPosition = 0;
-	final boolean docOrder = _docOrder;
-        final int last = _nodes.cardinality();
-        final int currNode = _currentNode;
-
-	for (int index = _current; index < last; ) {
-            int nodeIndex = _nodes.at(index++); // note increment
-            final int pos = docOrder ? index : last - index + 1;
-            if (_filter.test(nodeIndex, pos, last, currNode, _translet, this)) {
-                lastPosition++;
-            }
-        }
-	return lastPosition;
-    }
-
     public NodeIterator setStartNode(int node) {
 	NodeIterator retval = this;
 	
 	if (_isRestartable) {
-	    // iterator is not a clone
 	    _source.setStartNode(_startNode = node);
-	    // including ROOT
+
 	    _nodes.clear();
 	    while ((node = _source.next()) != END) {
 		_nodes.add(node);
@@ -179,13 +159,14 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	    _current = 0;
 	    retval = resetPosition();
 	}
-	// compute position of _last
-  	_last = computePositionOfLast();	
 	return retval;
     }
 	
     public int getLast() {
-	return ( _last == -1 ) ? computePositionOfLast() : _last;
+	if (_last == -1) {
+	    _last = computePositionOfLast();
+	}
+	return _last;
     }
 
     public void setMark() {
@@ -197,4 +178,20 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	_source.gotoMark();
 	_current = _markedNode;
     }
+
+    private int computePositionOfLast() {
+        final int last = _nodes.cardinality();
+        final int currNode = _currentNode;
+	final AbstractTranslet translet = _translet;
+
+	int lastPosition = 0;
+	for (int index = _current; index < last; ) {
+            int nodeIndex = _nodes.at(index++); 	// note increment
+            if (_filter.test(nodeIndex, index, last, currNode, translet, this)) {
+                lastPosition++;
+            }
+        }
+	return lastPosition;
+    }
 }
+

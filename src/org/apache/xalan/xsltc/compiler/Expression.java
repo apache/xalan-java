@@ -103,13 +103,22 @@ abstract class Expression extends SyntaxTreeNode {
     public abstract String toString();
 
     public boolean hasPositionCall() {
-	return true;
+	return false;		// default should be 'false' for StepPattern
     }
 
     public boolean hasLastCall() {
 	return false;
     }
 		
+    /**
+     * Returns an object representing the compile-time evaluation 
+     * of an expression. We are only using this for function-available
+     * and element-available at this time.
+     */
+    public Object evaluateAtCompileTime() {
+	return null;
+    }
+
     /**
      * Type check all the children of this node.
      */

@@ -73,6 +73,7 @@ public interface TransletOutputHandler {
     public void endDocument() throws TransletException;
     public void startElement(String elementName) throws TransletException;
     public void endElement(String elementName) throws TransletException;
+    public void characters(String characters) throws TransletException;
     public void characters(char[] characters, int offset, int length)
 	throws TransletException;
     public void attribute(String attributeName, String attributeValue)
@@ -86,5 +87,10 @@ public interface TransletOutputHandler {
     public void omitHeader(boolean value);
     public boolean setEscaping(boolean escape) throws TransletException;
     public void setCdataElements(Hashtable elements);
+    public void setDoctype(String system, String pub);
+    public void setMediaType(String mediaType);
+    public void setStandalone(String standalone);
+    public void setVersion(String version);
     public void close();
+
 }

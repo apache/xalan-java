@@ -133,14 +133,11 @@ class StepPattern extends RelativePathPattern {
 	else {
 	    switch(_nodeType) {
 	    case -1:
-		return(-0.25);
+		return -0.5;	// node()
 	    case 0:
-		return(0.0);
+		return 0.0;
 	    default:
-		if (_nodeType >= NodeTest.GTYPE)
-		    return(0.0);
-		else
-		    return(-0.5);
+		return (_nodeType >= NodeTest.GTYPE) ? 0.0 : -0.5;
 	    }
 	}
     }
@@ -162,10 +159,12 @@ class StepPattern extends RelativePathPattern {
     private int analyzeCases() {
 	boolean noContext = true;
 	final int n = _predicates.size();
+
 	for (int i = 0; i < n && noContext; i++) {
 	    final Predicate pred = (Predicate)_predicates.elementAt(i);
-	    final Expression exp = pred.getExpr();
-	    if (exp.hasPositionCall()) noContext = false;
+	    if (pred.getExpr().hasPositionCall()) {
+		noContext = false;
+	    }
 	}
 
 	if (noContext) {

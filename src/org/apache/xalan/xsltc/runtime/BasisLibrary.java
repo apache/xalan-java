@@ -79,6 +79,10 @@ import org.xml.sax.AttributeList;
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xalan.xsltc.dom.DOMAdapter;
+import org.apache.xalan.xsltc.dom.MultiDOM;
+import org.apache.xalan.xsltc.dom.AbsoluteIterator;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
 
 /**
@@ -427,7 +431,7 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:version"))
 	    return("1.0");
 	if (name.equals("xsl:vendor"))
-	    return("Apache Xalan XSLTC");
+	    return("Apache Software Foundation (Xalan XSLTC)");
 	if (name.equals("xsl:vendor-url"))
 	    return("http://xml.apache.org/xalan-j");
 	
@@ -445,6 +449,15 @@ public final class BasisLibrary implements Operators {
 	    return value.substring(0, colon);
 	else
 	    return EMPTYSTRING;
+    }
+
+    /**
+     * Implements the nodeset() extension function. 
+     */
+    public static NodeIterator nodesetF(DOM rtf) {
+	final DOMAdapter adapter = (DOMAdapter) rtf;
+	return new SingletonIterator(
+	    DOM.ROOTNODE | adapter.getMultiDOMMask(), true);
     }
 
     //-- Begin utility functions
@@ -877,6 +890,31 @@ public final class BasisLibrary implements Operators {
 	try {
 	    StringBuffer result = new StringBuffer();
 	    formatter.applyLocalizedPattern(pattern);
+
+	    //------------------------------------------------------
+ 	    // bug fix # 9179 - make sure localized pattern contains
+	    //   a leading zero before decimal, handle cases where  
+	    //   decimal is in position zero, and >= to 1. 
+	    //   localized pattern is ###.### convert to ##0.###
+	    //   localized pattern is .###    convert to 0.###
+	    //------------------------------------------------------
+	    String localizedPattern = formatter.toPattern();
+	    int index = localizedPattern.indexOf('.');
+	    if ( index >= 1  && localizedPattern.charAt(index-1) == '#' ) {
+		//insert a zero before the decimal point in the pattern
+		StringBuffer newpattern = new StringBuffer();
+		newpattern.append(localizedPattern.substring(0, index-1));
+                newpattern.append("0");
+                newpattern.append(localizedPattern.substring(index));
+		formatter.applyLocalizedPattern(newpattern.toString());
+	    } else if (index == 0) {
+                // insert a zero before decimal point in pattern
+                StringBuffer newpattern = new StringBuffer();
+                newpattern.append("0");
+                newpattern.append(localizedPattern);
+		formatter.applyLocalizedPattern(newpattern.toString());
+            }
+
 	    formatter.format(number, result, _fieldPosition);
 	    return(result.toString());
 	}
@@ -891,28 +929,31 @@ public final class BasisLibrary implements Operators {
      * obj is an instanceof Node then create a singleton iterator.
      */
     public static NodeIterator referenceToNodeSet(Object obj) {
-	try {
-	    // Convert var/param -> node
-	    if (obj instanceof Node) {
-		return(new SingletonIterator(((Node)obj).node));
-	    }
-	    // Convert var/param -> node-set
-	    else if (obj instanceof NodeIterator) {
-		return(((NodeIterator)obj).cloneIterator());
-	    }
-	    // Convert var/param -> result-tree fragment
-	    else if (obj instanceof DOM) {
-		DOM dom = (DOM)obj;
-		return(dom.getIterator());
-	    }
-	    else {
-		final String className = obj.getClass().getName();
-		runTimeError(DATA_CONVERSION_ERR, "reference", className);
-		return null;
-	    }
+	// Convert var/param -> node
+	if (obj instanceof Node) {
+	    return(new SingletonIterator(((Node)obj).node));
 	}
-	catch (ClassCastException e) {
-	    runTimeError(DATA_CONVERSION_ERR, "reference", "node-set");
+	// Convert var/param -> node-set
+	else if (obj instanceof NodeIterator) {
+	    return(((NodeIterator)obj).cloneIterator());
+	}
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
+
+    /**
+     * Utility function used to convert references to DOMs. 
+     */
+    public static DOM referenceToResultTree(Object obj) {
+	try {
+	    return ((DOM) obj);
+	}
+	catch (IllegalArgumentException e) {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
 	    return null;
 	}
     }
@@ -960,6 +1001,29 @@ public final class BasisLibrary implements Operators {
 	}
     }
     
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    public static String getPrefix(String qname) {
+	final int index = qname.indexOf(':');
+	return (index > 0) ? qname.substring(0, index) : null;
+    }
+
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    private static int prefixIndex = 0;
+    public static String generatePrefix() {
+	return ("ns" + prefixIndex++);
+    }
+
+    /**
+     * This function is used in the execution of xsl:element
+     */
+    public static String makeQName(String localName, String prefix) {
+	return (new StringBuffer(prefix).append(':').append(localName).toString());
+    }
+
     public static final int RUN_TIME_INTERNAL_ERR   = 0;
     public static final int RUN_TIME_COPY_ERR       = 1;
     public static final int DATA_CONVERSION_ERR     = 2;
@@ -1009,6 +1073,32 @@ public final class BasisLibrary implements Operators {
 
     public static void consoleOutput(String msg) {
 	System.out.println(msg);
+    }
+
+    /**
+     * Replace a certain character in a string with a new substring.
+     */
+    public static String replace(String base, char ch, String str) {
+	return (base.indexOf(ch) < 0) ? base : 
+	    replace(base, String.valueOf(ch), new String[] { str });
+    }
+
+    public static String replace(String base, String delim, String[] str) {
+	final int len = base.length();
+	final StringBuffer result = new StringBuffer();
+
+	for (int i = 0; i < len; i++) {
+	    final char ch = base.charAt(i);
+	    final int k = delim.indexOf(ch);
+
+	    if (k >= 0) {
+		result.append(str[k]);
+	    }
+	    else {
+		result.append(ch);
+	    }
+	}
+	return result.toString();
     }
 
     //-- End utility functions

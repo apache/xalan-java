@@ -208,8 +208,8 @@ final class Predicate extends Expression {
 
 		    if (fexp instanceof KeyCall)
 			_canOptimize = false;
-		    //else if (fexp instanceof VariableRefBase)
-		    //    _canOptimize = false;
+		    else if (fexp instanceof VariableRefBase)
+		        _canOptimize = false;
 		    else if (fexp instanceof ParentLocationPath)
 			_canOptimize = false;
 		    else if (fexp instanceof UnionPathExpr)

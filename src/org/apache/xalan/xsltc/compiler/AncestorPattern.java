@@ -69,8 +69,10 @@ import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AncestorPattern extends RelativePathPattern {
+
     private final Pattern _left;	// may be null
     private final RelativePathPattern _right;
+    private InstructionHandle _loop;
 		
     public AncestorPattern(RelativePathPattern right) {
 	this(null, right);
@@ -84,6 +86,10 @@ final class AncestorPattern extends RelativePathPattern {
 	}
     }
 	
+    public InstructionHandle getLoopHandle() {
+	return _loop;
+    }
+
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	if (_left != null) {
@@ -106,17 +112,23 @@ final class AncestorPattern extends RelativePathPattern {
     }
 	
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_left != null) _left.typeCheck(stable);
+	if (_left != null) {
+	    _left.typeCheck(stable);
+	}
 	return _right.typeCheck(stable);
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	InstructionHandle loop, eloop;
+	InstructionHandle parent;
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
+
+	/* 
+	 * The scope of this local var must be the entire method since
+	 * a another pattern may decide to jump back into the loop
+	 */
 	final LocalVariableGen local =
-	    methodGen.addLocalVariable2("app", 
-					Util.getJCRefType(NODE_SIG),
+	    methodGen.addLocalVariable2("app", Util.getJCRefType(NODE_SIG),
 					il.getEnd());
 
 	final org.apache.bcel.generic.Instruction loadLocal =
@@ -133,13 +145,18 @@ final class AncestorPattern extends RelativePathPattern {
 	}
 	else {
 	    _right.translate(classGen, methodGen);
+
+	    if (_right instanceof AncestorPattern) {
+		il.append(methodGen.loadDOM());
+		il.append(SWAP);
+	    }
 	}
 
 	if (_left != null) {
 	    final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
 							    GET_PARENT,
 							    GET_PARENT_SIG);
-	    loop = il.append(new INVOKEINTERFACE(getParent, 2));
+	    parent = il.append(new INVOKEINTERFACE(getParent, 2));
 	    
 	    il.append(DUP);
 	    il.append(storeLocal);
@@ -148,11 +165,10 @@ final class AncestorPattern extends RelativePathPattern {
 
 	    _left.translate(classGen, methodGen);
 
-
 	    final SyntaxTreeNode p = getParent();
-	    if ((p == null) || 
-		(p instanceof Instruction) ||
-		(p instanceof TopLevelElement)) {
+	    if (p == null || p instanceof Instruction ||
+		p instanceof TopLevelElement) 
+	    {
 		// do nothing
 	    }
 	    else {
@@ -160,19 +176,27 @@ final class AncestorPattern extends RelativePathPattern {
 	    }
 
 	    final BranchHandle exit = il.append(new GOTO(null));
-	    eloop = il.append(methodGen.loadDOM());
+	    _loop = il.append(methodGen.loadDOM());
 	    il.append(loadLocal);
-	    local.setEnd(eloop);
-	    il.append(new GOTO(loop));
+	    local.setEnd(_loop);
+	    il.append(new GOTO(parent));
 	    exit.setTarget(il.append(NOP));
-	    _left.backPatchFalseList(eloop);
+	    _left.backPatchFalseList(_loop);
 
 	    _trueList.append(_left._trueList);	
 	}
 	else {
 	    il.append(POP2);
 	}
-	methodGen.removeLocalVariable(local);
+	
+	/* 
+	 * If _right is an ancestor pattern, backpatch this pattern's false
+	 * list to the loop that searches for more ancestors.
+	 */
+	if (_right instanceof AncestorPattern) {
+	    final AncestorPattern ancestor = (AncestorPattern) _right;
+	    _falseList.backPatch(ancestor.getLoopHandle());    // clears list
+	}
 
 	_trueList.append(_right._trueList);
 	_falseList.append(_right._falseList);

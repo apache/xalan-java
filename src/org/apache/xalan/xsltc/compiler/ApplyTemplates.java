@@ -106,7 +106,7 @@ final class ApplyTemplates extends Instruction {
 	}
 	
 	if (mode.length() > 0) {
-	    _modeName = parser.getQName(mode);
+	    _modeName = parser.getQNameIgnoreDefaultNs(mode);
 	}
 	
 	// instantiate Mode if needed, cache (apply temp) function name
@@ -139,6 +139,7 @@ final class ApplyTemplates extends Instruction {
      * some template in the stylesheet uses parameters. 
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+	boolean setStartNodeCalled = false;
 	final Stylesheet stylesheet = classGen.getStylesheet();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -164,6 +165,7 @@ final class ApplyTemplates extends Instruction {
 	    // translate with-params
 	    translateContents(classGen, methodGen);
 	}
+
 
 	il.append(classGen.loadTranslet());
 
@@ -192,6 +194,7 @@ final class ApplyTemplates extends Instruction {
 							     NODE_ITERATOR_SIG);
 		il.append(methodGen.loadCurrentNode());
 		il.append(new INVOKEINTERFACE(setStartNode,2));
+		setStartNodeCalled = true;	
 	    }
 	    else {
 		if (_select == null)
@@ -201,7 +204,7 @@ final class ApplyTemplates extends Instruction {
 	    }
 	}
 
-	if (_select != null) {
+	if (_select != null && !setStartNodeCalled) {
 	    _select.startResetIterator(classGen, methodGen);
 	}
 

@@ -83,7 +83,8 @@ public abstract class NodeIteratorBase implements NodeIterator {
     public NodeIterator reset() {
 	final boolean temp = _isRestartable;
 	_isRestartable = true;
-	setStartNode(_startNode);
+	// Must adjust _startNode if self is included
+	setStartNode(_includeSelf ? _startNode + 1 : _startNode);
 	_isRestartable = temp;
 	return this;
     }

@@ -57,11 +57,13 @@
  * <http://www.apache.org/>.
  *
  * @author G. Todd Miller 
- *
  */
 
 
 package org.apache.xalan.xsltc.trax;
+
+import java.util.Stack;
+import java.util.Vector;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -71,168 +73,168 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.Comment;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.Attr;
-import java.util.Stack;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.SAXException;
 
+import org.apache.xalan.xsltc.runtime.Constants;
 
-class SAX2DOM implements ContentHandler {
+public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 
-    private Document _document = null;
-    private DocumentBuilder _builder = null;
-    private Stack _nodeStk = null;
- 
+    private Document _root = null;
+    private Stack _nodeStk = new Stack();
+    private Vector _namespaceDecls = null;
+
     public SAX2DOM() throws ParserConfigurationException {
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	_builder = factory.newDocumentBuilder();
-	_nodeStk = new Stack();
+	final DocumentBuilderFactory factory = 
+		DocumentBuilderFactory.newInstance();
+	_root = factory.newDocumentBuilder().newDocument();
+    }
+
+    public SAX2DOM(Node root) throws ParserConfigurationException {
+	if (root != null) {
+	    _root = (Document) root;   // TODO: add support for frags and elems
+	}
+	else {
+	    final DocumentBuilderFactory factory = 
+		DocumentBuilderFactory.newInstance();
+	    _root = factory.newDocumentBuilder().newDocument();
+	}
     }
 
     public Node getDOM() {
-	return _document;
+	return _root;
     }
 
     public void characters(char[] ch, int start, int length) {
-	Text text = _document.createTextNode(new String(ch, start, length));
-	Node last = (Node)_nodeStk.peek();
-	last.appendChild(text);
+	final Node last = (Node)_nodeStk.peek();
+
+	// No text nodes can be children of root (DOM006 exception)
+	if (last != _root) {
+	    final String text = new String(ch, start, length);
+	    last.appendChild(_root.createTextNode(text));
+	}
     }
 
     public void startDocument() {
-	_document = _builder.newDocument();
-	Element root = (Element)_document.createElement("root");
-	_document.appendChild(root);
-	_nodeStk.push(root);
+	_nodeStk.push(_root);
     }
 
     public void endDocument() {
-	//printDOM();
     }
 
     public void startElement(String namespace, String localName, String qName,
-	Attributes attrs ) 
+	Attributes attrs) 
     {
-	// create new element
-	Element tmp = (Element)_document.createElementNS(namespace, qName);
-	int nattrs = attrs.getLength();
-	for (int i=0; i<nattrs; i++ ) {
-	    String namespaceuri = attrs.getURI(i);
-	    String value = attrs.getValue(i);
-	    String qname = attrs.getQName(i);
-	    if ((namespaceuri == null) || (namespaceuri.equals("")))
-		tmp.setAttribute(qname, value);
-	    else
-		tmp.setAttributeNS(namespaceuri, qname, value);
+	final Element tmp = (Element)_root.createElementNS(namespace, qName);
+
+	// Add namespace declarations first
+	if (_namespaceDecls != null) {
+	    final int nDecls = _namespaceDecls.size();
+	    for (int i = 0; i < nDecls; i++) {
+		final String prefix = (String) _namespaceDecls.elementAt(i++);
+
+		if (prefix == null || prefix.equals(EMPTYSTRING)) {
+		    tmp.setAttributeNS(XMLNS_URI, XMLNS_PREFIX,
+			(String) _namespaceDecls.elementAt(i));
+		}
+		else {
+		    tmp.setAttributeNS(XMLNS_URI, XMLNS_STRING + prefix, 
+			(String) _namespaceDecls.elementAt(i));
+		}
+	    }
+	    _namespaceDecls.clear();
 	}
-	// append this new node onto current stack node
+
+	// Add attributes to element
+	final int nattrs = attrs.getLength();
+	for (int i = 0; i < nattrs; i++) {
+	    if (attrs.getLocalName(i) == null) {
+		tmp.setAttribute(attrs.getQName(i), attrs.getValue(i));
+	    }
+	    else {
+		tmp.setAttributeNS(attrs.getURI(i), attrs.getQName(i), 
+		    attrs.getValue(i));
+	    }
+	}
+
+	// Append this new node onto current stack node
 	Node last = (Node)_nodeStk.peek();
 	last.appendChild(tmp);
-	// push this node onto stack
+
+	// Push this node onto stack
 	_nodeStk.push(tmp);
     }
 
     public void endElement(String namespace, String localName, String qName) {
-	Node lastActive = (Node)_nodeStk.pop();  
-    }
-
-
-    public void ignorableWhitespace(char[] ch, int start, int length) {
-    }
-
-    public void processingInstruction(String target, String data) {
-    }
-
-    public void setDocumentLocator(Locator locator) {
-    }
-
-    public void skippedEntity(String name) {
+	_nodeStk.pop();  
     }
 
     public void startPrefixMapping(String prefix, String uri) {
+	if (_namespaceDecls == null) {
+	    _namespaceDecls = new Vector(2);
+	}
+	_namespaceDecls.addElement(prefix);
+	_namespaceDecls.addElement(uri);
     }
 
     public void endPrefixMapping(String prefix) {
+	// do nothing
+    }
+
+    /**
+     * This class is only used internally so this method should never 
+     * be called.
+     */
+    public void ignorableWhitespace(char[] ch, int start, int length) {
+    }
+
+    /**
+     * adds processing instruction node to DOM.
+     */
+    public void processingInstruction(String target, String data) {
+	final Node last = (Node)_nodeStk.peek();
+	ProcessingInstruction pi = _root.createProcessingInstruction(
+		target, data);
+	if (pi != null)  last.appendChild(pi);
+    }
+
+    /**
+     * This class is only used internally so this method should never 
+     * be called.
+     */
+    public void setDocumentLocator(Locator locator) {
+    }
+
+    /**
+     * This class is only used internally so this method should never 
+     * be called.
+     */
+    public void skippedEntity(String name) {
     }
 
 
-    // for debugging - will be removed
-    private void printDOM() {
-        System.out.println("SAX2DOM.java:Printing DOM...");
-        Node currNode = _document;
-        while (currNode != null) {
-            // start of node processing
-            switch (currNode.getNodeType()) {
-                case Node.ATTRIBUTE_NODE :
-                    break;
-                case Node.CDATA_SECTION_NODE :
-                    break;
-                case Node.COMMENT_NODE :
-                    break;
-                case Node.DOCUMENT_FRAGMENT_NODE :
-                    break;
-                case Node.DOCUMENT_NODE :
-                    break;
-                case Node.DOCUMENT_TYPE_NODE :
-                    break;
-                case Node.ELEMENT_NODE :
-                    System.out.println("ELEMT NODE " + currNode.getLocalName() +":");
-		     org.w3c.dom.NamedNodeMap map = currNode.getAttributes();
-                    int length = map.getLength();
-                    for (int i=0; i<length; i++ ){
-                        Node attrNode = map.item(i);
-                        short code = attrNode.getNodeType();
-                        System.out.println("\tattr:"+attrNode.getNamespaceURI()+
-                            "," + attrNode.getLocalName() +
-                            "," + attrNode.getNodeName() +
-                            "=" + attrNode.getNodeValue());
-                    }
-                    break;
-                case Node.ENTITY_NODE :
-                    org.w3c.dom.Entity edecl = (org.w3c.dom.Entity)currNode;
-                    String name = edecl.getNotationName();
-                    if ( name != null ) {
-                        System.out.println("ENT NODE: "+currNode.getNodeName()+
-                           ", "+ edecl.getSystemId()+ "," + name);
-                    }
-                    break;
-                case Node.ENTITY_REFERENCE_NODE :
-                    break;
-                case Node.NOTATION_NODE :
-                    break;
-                case Node.PROCESSING_INSTRUCTION_NODE :
-                    break;
-                case Node.TEXT_NODE :
-                    String data = currNode.getNodeValue();
-                    System.out.println("TEXT NODE:" + data);
-                    break;
-            }
+    /**
+     * Lexical Handler method to create comment node in DOM tree.
+     */
+    public void comment(char[] ch, int start, int length) {
+	final Node last = (Node)_nodeStk.peek();
+	Comment comment = _root.createComment(new String(ch,start,length));
+	if (comment != null) last.appendChild(comment);
+    }
 
-            // move to first child
-            Node next = currNode.getFirstChild();
-            if (next != null) {
-                currNode = next;
-                continue;
-            }
-
-            // no child nodes, walk the tree
-            while (currNode != null) {
-                switch (currNode.getNodeType()) {
-                    case Node.DOCUMENT_NODE:
-                        break;
-                    case Node.ELEMENT_NODE:
-                        break;
-                }
-                next = currNode.getNextSibling();
-                if (next != null ) {
-                    currNode = next;
-                    break;
-                }
-                // move up a level
-                currNode = currNode.getParentNode();
-            }
-        }
-   }
+    // Lexical Handler methods- not implemented
+    public void startCDATA() { }
+    public void endCDATA() { }
+    public void startEntity(java.lang.String name) { }
+    public void endDTD() { }
+    public void endEntity(String name) { }
+    public void startDTD(String name, String publicId, String systemId)
+        throws SAXException { }
 
 }

@@ -149,9 +149,9 @@ final class FilterParentPath extends Expression {
 
 	// This is a special case for the //* path with or without predicates
         if (_hasDescendantAxis) {
-	    final int incl = cpg.addMethodref(STEP_ITERATOR_CLASS,
+	    final int incl = cpg.addMethodref(NODE_ITERATOR_BASE,
 					      "includeSelf",
-					      "()"+NODE_ITERATOR_SIG);
+					      "()" + NODE_ITERATOR_SIG);
 	    il.append(new INVOKEVIRTUAL(incl));
 	}
 

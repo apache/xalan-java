@@ -41,8 +41,8 @@
  * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
  * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
  * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES{} LOSS OF
+ * USE, DATA, OR PROFITS{} OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
@@ -56,34 +56,93 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author G. Todd Miller 
+ * @author Santiago Pericas-Geertsen
  *
  */
 
-package org.apache.xalan.xsltc.compiler;
+package org.apache.xalan.xsltc.runtime.output;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.SAXException;
 
-final class LongExpr extends Expression {
-    private final long _value;
+import org.apache.xalan.xsltc.TransletException;
 
-    public LongExpr(long value) {
-        _value = value;
+public class SAXTextOutput extends SAXOutput {
+
+    public SAXTextOutput(ContentHandler handler, String encoding) 
+    {
+    	super(handler, encoding);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return _type = Type.Lng;
+    public SAXTextOutput(ContentHandler handler, LexicalHandler lex, 
+        String encoding)
+    {
+        super(handler, lex, encoding);
     }
 
-    public String toString() {
-	return "long-expr(" + _value + ')';
+    public void startDocument() throws TransletException { 
+	try {
+	    _saxHandler.startDocument();
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
     }
 
-    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	ConstantPoolGen cpg = classGen.getConstantPool();
-	InstructionList il = methodGen.getInstructionList();
-	il.append(new PUSH(cpg, _value));
+    public void endDocument() throws TransletException { 
+	try {
+	    _saxHandler.endDocument();
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
+    }
+
+    public void startElement(String elementName) 
+	throws TransletException 
+    {
+    }
+
+    public void endElement(String elementName) 
+	throws TransletException 
+    {
+    }
+
+    public void characters(String characters) 
+	throws TransletException 
+    { 
+	try {
+	    _saxHandler.characters(characters.toCharArray(), 0, 
+		characters.length());
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
+    }
+
+    public void characters(char[] characters, int offset, int length)
+	throws TransletException 
+    { 
+	try {
+	    _saxHandler.characters(characters, offset, length);
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
+    }
+
+    public void comment(String comment) throws TransletException {
+    }
+
+    public void attribute(String name, String value) 
+	throws TransletException 
+    {
+    }
+
+    public void processingInstruction(String target, String data) 
+	throws TransletException
+    {
     }
 }
+

@@ -165,6 +165,7 @@ public final class ErrorMsg {
     // Recently added error messages
     public static final int STRAY_SORT_ERR          = 74;
     public static final int UNSUPPORTED_ENCODING    = 75;
+    public static final int SYNTAX_ERR              = 76;
 
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.

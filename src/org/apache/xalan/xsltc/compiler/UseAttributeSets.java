@@ -99,7 +99,8 @@ final class UseAttributeSets extends Instruction {
 	if ((setNames != null) && (!setNames.equals(Constants.EMPTYSTRING))) {
 	    final StringTokenizer tokens = new StringTokenizer(setNames);
 	    while (tokens.hasMoreTokens()) {
-		final QName qname = getParser().getQName(tokens.nextToken());
+		final QName qname = 
+		    getParser().getQNameIgnoreDefaultNs(tokens.nextToken());
 		_sets.add(qname);
 	    }
 	}

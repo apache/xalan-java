@@ -73,18 +73,18 @@ import java.util.Enumeration;
 import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
+/**
+ * A test sequence is a sequence of patterns that
+ *
+ *  (1) occured in templates in the same mode
+ *  (2) share the same kernel node type (such as A/B and C/C/B).
+ *
+ * A test sequence may have a default template, which will be run if
+ * none of the patterns do not match. This template is always a template
+ * that matches solely on the shared kernel node type.
+ */
 final class TestSeq {
 
-    /*
-     * A test sequence is a sequence of patterns that
-     *
-     *  (1) occured in templates in the same mode
-     *  (2) share the same kernel node type (such as A/B and C/C/B).
-     *
-     * A test sequence may have a default template, which will be run if
-     * none of the patterns do not match. This template is always a template
-     * that matches solely on the shared kernel node type.
-     */
     private Vector   _patterns = null; // all patterns
     private Mode     _mode     = null; // the shared mode
     private Template _default  = null; // the default template
@@ -107,6 +107,7 @@ final class TestSeq {
     public double getPriority() {
 	double prio = (0 - Double.MAX_VALUE);
 	final int count = _patterns.size();
+
 	for (int i = 0; i < count; i++) {
 	    final Pattern pattern = (Pattern)_patterns.elementAt(i);
 	    final Template template = pattern.getTemplate();
@@ -127,6 +128,7 @@ final class TestSeq {
     public int getPosition() {
 	int pos = Integer.MIN_VALUE;
 	final int count = _patterns.size();
+
 	for (int i = 0; i < count; i++) {
 	    final Pattern pattern = (Pattern)_patterns.elementAt(i);
 	    final Template template = pattern.getTemplate();
@@ -144,7 +146,7 @@ final class TestSeq {
      * Reduce the patterns in this test sequence to exclude the shared
      * kernel node type. After the switch() in the translet's applyTemplates()
      * we already know that we have a hit for the kernel node type, we only
-     * have the check the rest of the pattens.
+     * have the check the rest of the pattern.
      */
     public void reduce() {
 	final Vector newPatterns = new Vector();

@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.util.Iterator;
@@ -117,6 +118,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private int _importPrecedence = 1;
     private Mode _defaultMode;
     private boolean _multiDocument = false;
+    private boolean _callsNodeset = false;
 
     // All named key elements (needed by Key/IdPattern)
     private Hashtable _keys = new Hashtable();
@@ -127,16 +129,22 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     private SourceLoader _loader = null;
 
-    private boolean _compileTemplatesAsMethods;
+    private boolean _templateInlining = true;
 
     private boolean _forwardReference = false;
+
+    private Properties _outputProperties = null;
 
     public void setForwardReference() {
 	_forwardReference = true;
     }
 
-    public void compileTemplatesAsMethods() {
-	_compileTemplatesAsMethods = true;
+    public boolean getTemplateInlining() {
+	return _templateInlining;
+    }
+
+    public void setTemplateInlining(boolean flag) {
+	_templateInlining = flag;
     }
 
     public boolean isSimplified() {
@@ -147,12 +155,36 @@ public final class Stylesheet extends SyntaxTreeNode {
 	_simplified = true;
     }
     
+    public void setOutputProperty(String key, String value) {
+	if (_outputProperties == null) {
+	    _outputProperties = new Properties();
+	}
+	_outputProperties.setProperty(key, value);
+    }
+
+    public void setOutputProperties(Properties props) {
+	_outputProperties = props;
+    }
+
+    public Properties getOutputProperties() {
+	return _outputProperties;
+    }
+
     public void setMultiDocument(boolean flag) {	
 	_multiDocument = flag;
     }
 
     public boolean isMultiDocument() {
 	return _multiDocument;
+    }
+
+    public void setCallsNodeset(boolean flag) {
+	if (flag) setMultiDocument(flag);
+	_callsNodeset = flag;
+    }
+
+    public boolean callsNodeset() {
+	return _callsNodeset;
     }
 
     public void numberFormattingUsed() {
@@ -194,8 +226,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public boolean checkForLoop(String systemId) {
 	// Return true if this stylesheet includes/imports itself
-	if (_systemId.equals(systemId))
+	if (_systemId != null && _systemId.equals(systemId)) {
 	    return true;
+	}
 	// Then check with any stylesheets that included/imported this one
 	if (_parentStylesheet != null) 
 	    return _parentStylesheet.checkForLoop(systemId);
@@ -284,7 +317,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	super.addPrefixMapping(prefix, uri);
     }
 
-
     /**
      * Store extension URIs
      */
@@ -308,8 +340,10 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void excludeExtensionPrefixes(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
     	final String excludePrefixes = getAttribute("exclude-result-prefixes");
-	final String extensionPrefixes = 
-	    getAttribute("extension-element-prefixes");
+	final String extensionPrefixes = getAttribute("extension-element-prefixes");
+	
+	// Exclude XSLT uri 
+	stable.excludeURI(Constants.XSLT_URI);
 	stable.excludeNamespaces(excludePrefixes);
 	stable.excludeNamespaces(extensionPrefixes);
 	extensionURI(extensionPrefixes, stable);
@@ -399,9 +433,10 @@ public final class Stylesheet extends SyntaxTreeNode {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
+
 	    // All template code should be compiled as methods if the
 	    // <xsl:apply-imports/> element was ever used in this stylesheet
-	    if (_compileTemplatesAsMethods && (child instanceof Template)) {
+	    if (!_templateInlining && (child instanceof Template)) {
 		Template template = (Template)child;
 		String name = "template$dot$"+template.getPosition();
 		template.setName(parser.getQName(name));
@@ -692,23 +727,45 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
 
-
+    /**
+     * This method returns a vector with variables in the order in 
+     * which they are to be compiled. The order is determined by the 
+     * dependencies between them and the order in which they were defined 
+     * in the stylesheet. The first step is to close the input vector under
+     * the dependence relation (this is usually needed when variables are
+     * defined inside other variables in a RTF).
+     */
     private Vector resolveReferences(Vector input) {
+
+	// Make sure that the vector 'input' is closed
+	for (int i = 0; i < input.size(); i++) {
+	    final VariableBase var = (VariableBase) input.elementAt(i);
+	    final Vector dep  = var.getDependencies();
+	    final int depSize = (dep != null) ? dep.size() : 0;
+
+	    for (int j = 0; j < depSize; j++) {
+		final VariableBase depVar = (VariableBase) dep.elementAt(j);
+		if (!input.contains(depVar)) {
+		    input.addElement(depVar);
+		}
+	    }
+	}
+
+	/* DEBUG CODE - INGORE
+	for (int i = 0; i < input.size(); i++) {
+	    final VariableBase var = (VariableBase) input.elementAt(i);
+	    System.out.println("var = " + var);
+	}
+	System.out.println("=================================");
+	*/
+
 	Vector result = new Vector();
-
-	int zeroDep = 0;
-
 	while (input.size() > 0) {
 	    boolean changed = false;
 	    for (int i = 0; i < input.size(); ) {
 		final VariableBase var = (VariableBase)input.elementAt(i);
 		final Vector dep = var.getDependencies();
-		if (dep == null) {
-		    result.insertElementAt(var, zeroDep++);
-		    input.remove(i);
-		    changed = true;
-		}
-		else if (result.containsAll(dep)) {
+		if (dep == null || result.containsAll(dep)) {
 		    result.addElement(var);
 		    input.remove(i);
 		    changed = true;
@@ -717,6 +774,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 		    i++;
 		}
 	    }
+
 	    // If nothing was changed in this pass then we have a circular ref
 	    if (!changed) {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
@@ -725,7 +783,16 @@ public final class Stylesheet extends SyntaxTreeNode {
 		return(result);
 	    }
 	}
-	return(result);
+
+	/* DEBUG CODE - INGORE
+	System.out.println("=================================");
+	for (int i = 0; i < result.size(); i++) {
+	    final VariableBase var = (VariableBase) result.elementAt(i);
+	    System.out.println("var = " + var);
+	}
+	*/
+
+	return result;
     }
 
     /**
@@ -878,6 +945,18 @@ public final class Stylesheet extends SyntaxTreeNode {
 					   "("+OUTPUT_HANDLER_SIG+")V");
 	il.append(new INVOKEVIRTUAL(index));
 
+	// Compile buildKeys -- TODO: omit if not needed
+	final String keySig = compileBuildKeys(classGen);
+	final int    keyIdx = cpg.addMethodref(getClassName(),
+					       "buildKeys", keySig);
+	il.append(classGen.loadTranslet());     // The 'this' pointer
+	il.append(classGen.loadTranslet());
+	il.append(new GETFIELD(domField));      // The DOM reference
+	il.append(transf.loadIterator());       // Not really used, but...
+	il.append(transf.loadHandler());        // The output handler
+	il.append(new PUSH(cpg, DOM.ROOTNODE)); // Start with the root node
+	il.append(new INVOKEVIRTUAL(keyIdx));
+
 	// Look for top-level elements that need handling
 	final Enumeration toplevel = elements();
 	if ((_globals.size() > 0) || (toplevel.hasMoreElements())) {
@@ -896,17 +975,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(new INVOKEVIRTUAL(topLevelIdx));
 	}
 	
-	final String keySig = compileBuildKeys(classGen);
-	final int    keyIdx = cpg.addMethodref(getClassName(),
-					       "buildKeys", keySig);
-	il.append(classGen.loadTranslet());     // The 'this' pointer
-	il.append(classGen.loadTranslet());
-	il.append(new GETFIELD(domField));      // The DOM reference
-	il.append(transf.loadIterator());       // Not really used, but...
-	il.append(transf.loadHandler());        // The output handler
-	il.append(new PUSH(cpg, DOM.ROOTNODE)); // Start with the root node
-	il.append(new INVOKEVIRTUAL(keyIdx));
-
 	// start document
 	il.append(transf.loadHandler());
 	il.append(transf.startDocument());

@@ -59,6 +59,7 @@
  * @author Morten Jorgensen
  * @author G. Todd Millerj
  * @author Jochen Cordes <Jochen.Cordes@t-online.de>
+ * @author Santiago Pericas-Geertsen 
  *
  */
 
@@ -96,6 +97,13 @@ public final class TemplatesImpl implements Templates, Serializable {
     // and _bytecodes arrays (above).
     private int _transletIndex = -1;
     
+    private Properties _outputProperties; 
+
+    private int _indentNumber;
+
+    // Temporary
+    private boolean _oldOutputSystem;
+
     // Our own private class loader - builds Class definitions from bytecodes
     private class TransletClassLoader extends ClassLoader {
 
@@ -126,9 +134,15 @@ public final class TemplatesImpl implements Templates, Serializable {
      * The bytecodes for the translet and auxiliary classes, plus the name of
      * the main translet class, must be supplied
      */
-    protected TemplatesImpl(byte[][] bytecodes, String transletName) {
+    protected TemplatesImpl(byte[][] bytecodes, String transletName,
+	Properties outputProperties, int indentNumber,
+	boolean oldOutputSystem) 
+    {
 	_bytecodes = bytecodes;
 	_name      = transletName;
+	_outputProperties = outputProperties;
+	_indentNumber = indentNumber;
+	_oldOutputSystem = oldOutputSystem;
     }
 
     /**
@@ -176,8 +190,13 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    (TransletClassLoader) AccessController.doPrivileged(
 		new PrivilegedAction() {
 			public Object run() {
-			    ClassLoader current = getClass().getClassLoader();
-			    return new TransletClassLoader(current);
+			    /* 
+			     * Get the loader from the current thread instead of
+			     * the class. This is important for translets that load
+			     * external Java classes and run in multi-threaded envs.
+			     */
+			    return new TransletClassLoader(
+				Thread.currentThread().getContextClassLoader());
 			}
 		    }
 		);
@@ -250,7 +269,8 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     public Transformer newTransformer()
 	throws TransformerConfigurationException {
-        return(new TransformerImpl(getTransletInstance()));
+        return new TransformerImpl(getTransletInstance(), _outputProperties,
+	    _indentNumber, _oldOutputSystem);
     }
 
     /**

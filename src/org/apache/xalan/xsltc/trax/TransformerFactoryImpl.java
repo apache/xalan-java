@@ -140,8 +140,11 @@ public class TransformerFactoryImpl
 	}
     }
 
-    // This flag is passed to the compiler - will produce stack traces etc.
+    // This flags are passed to the compiler
     private boolean _debug = false;
+    private boolean _disableInlining = false;
+    private boolean _oldOutputSystem = false;
+    private int     _indentNumber    = -1;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -206,20 +209,64 @@ public class TransformerFactoryImpl
      * @throws IllegalArgumentException
      */
     public void setAttribute(String name, Object value) 
-	throws IllegalArgumentException { 
+	throws IllegalArgumentException 
+    { 
 	// Set the default translet name (ie. class name), which will be used
 	// for translets that cannot be given a name from their system-id.
-	if ((name.equals("translet-name")) && (value instanceof String)) {
-	    _defaultTransletName = (String)value;
+	if (name.equals("translet-name") && value instanceof String) {
+	    _defaultTransletName = (String) value;
+	    return;
 	}
 	else if (name.equals("debug")) {
-	    _debug = true;
+	    if (value instanceof Boolean) {
+		_debug = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_debug = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
-	else {
-	    // Throw an exception for all other attributes
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
-	    throw new IllegalArgumentException(err.toString());
+	else if (name.equals("disable-inlining")) {
+	    if (value instanceof Boolean) {
+		_disableInlining = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_disableInlining = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
 	}
+	else if (name.equals("old-output")) {
+	    if (value instanceof Boolean) {
+		_oldOutputSystem = ((Boolean) value).booleanValue();
+		return;
+	    }
+	    else if (value instanceof String) {
+		_oldOutputSystem = ((String) value).equalsIgnoreCase("true");
+		return;
+	    }
+	}
+	else if (name.equals("indent-number")) {
+	    if (value instanceof String) {
+		try {
+		    _indentNumber = Integer.parseInt((String) value);
+		    return;
+		}
+		catch (NumberFormatException e) {
+		    // Falls through
+		}
+	    }
+	    else if (value instanceof Integer) {
+		_indentNumber = ((Integer) value).intValue();
+		return;
+	    }
+	}
+
+	// Throw an exception for all other attributes
+	final ErrorMsg err 
+	    = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
+	throw new IllegalArgumentException(err.toString());
     }
 
     /**
@@ -320,6 +367,7 @@ public class TransformerFactoryImpl
 
 	XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
+	if (_disableInlining) xsltc.setTemplateInlining(false);
 	xsltc.init();
 
 	// Compile the default copy-stylesheet
@@ -336,10 +384,14 @@ public class TransformerFactoryImpl
 	}
 
 	// Create a Transformer object and store for other calls
-	Templates templates = new TemplatesImpl(bytecodes,_defaultTransletName);
+	Templates templates = new TemplatesImpl(bytecodes, _defaultTransletName,
+	    xsltc.getOutputProperties(), _indentNumber, _oldOutputSystem);
+
 	_copyTransformer = templates.newTransformer();
-	if (_uriResolver != null) _copyTransformer.setURIResolver(_uriResolver);
-	return(_copyTransformer);
+	if (_uriResolver != null) {
+	    _copyTransformer.setURIResolver(_uriResolver);
+	}
+	return _copyTransformer;
     }
 
     /**
@@ -363,21 +415,18 @@ public class TransformerFactoryImpl
     /**
      * Pass warning messages from the compiler to the error listener
      */
-    private void passWarningsToListener(Vector messages) {
-	try {
-	    // Nothing to do if there is no registered error listener
-	    if (_errorListener == null) return;
-	    // Nothing to do if there are not warning messages
-	    if (messages == null) return;
-	    // Pass messages to listener, one by one
-	    final int count = messages.size();
-	    for (int pos=0; pos<count; pos++) {
-		String message = messages.elementAt(pos).toString();
-		_errorListener.warning(new TransformerException(message));
-	    }
+    private void passWarningsToListener(Vector messages) 
+	throws TransformerException 
+    {
+	if (_errorListener == null || messages == null ) {
+	    return;
 	}
-	catch (TransformerException e) {
-	    // nada
+	// Pass messages to listener, one by one
+	final int count = messages.size();
+	for (int pos = 0; pos < count; pos++) {
+	    String message = messages.elementAt(pos).toString();
+	    _errorListener.error(
+		new TransformerConfigurationException(message));
 	}
     }
 
@@ -429,6 +478,9 @@ public class TransformerFactoryImpl
 		xsltc.setXMLReader(dom2sax);  
 	        // try to get SAX InputSource from DOM Source.
 		input = SAXSource.sourceToInputSource(source);
+		if (input == null){
+			input = new InputSource(domsrc.getSystemId());
+		}
 	    }
 	    // Try to get InputStream or Reader from StreamSource
 	    else if (source instanceof StreamSource) {
@@ -474,10 +526,10 @@ public class TransformerFactoryImpl
      */
     public Templates newTemplates(Source source)
 	throws TransformerConfigurationException {
-
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
+	if (_disableInlining) xsltc.setTemplateInlining(false);
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined
@@ -499,10 +551,17 @@ public class TransformerFactoryImpl
 	final String transletName = xsltc.getClassName();
 
 	// Pass compiler warnings to the error listener
-	if (_errorListener != null)
-	    passWarningsToListener(xsltc.getWarnings());
-	else
+	if (_errorListener != this) {
+	    try {
+		passWarningsToListener(xsltc.getWarnings());
+	    }
+	    catch (TransformerException e) {
+		throw new TransformerConfigurationException(e);
+	    }
+	}
+	else {
 	    xsltc.printWarnings();
+	}
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
@@ -514,7 +573,8 @@ public class TransformerFactoryImpl
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
 	    throw new TransformerConfigurationException(err.toString());
 	}
-	return(new TemplatesImpl(bytecodes, transletName));
+	return new TemplatesImpl(bytecodes, transletName, 
+	    xsltc.getOutputProperties(), _indentNumber, _oldOutputSystem);
     }
 
     /**
@@ -527,7 +587,10 @@ public class TransformerFactoryImpl
      */
     public TemplatesHandler newTemplatesHandler() 
 	throws TransformerConfigurationException { 
-	return(new TemplatesHandlerImpl());
+	final TemplatesHandlerImpl handler = 
+	    new TemplatesHandlerImpl(_indentNumber, _oldOutputSystem);
+	handler.init();
+	return handler;
     }
 
     /**
