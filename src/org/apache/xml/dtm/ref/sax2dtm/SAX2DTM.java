@@ -2481,7 +2481,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * @throws SAXException The application may raise an exception.
    * @see #endCDATA
    */
-  public void startCDATA() throws SAXException
+  public void startCDATA()
   {
     m_textType = DTM.CDATA_SECTION_NODE;
   }
@@ -2492,7 +2492,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * @throws SAXException The application may raise an exception.
    * @see #startCDATA
    */
-  public void endCDATA() throws SAXException
+  public void endCDATA()
   {
     m_textType = DTM.TEXT_NODE;
   }

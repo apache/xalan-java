@@ -88,11 +88,9 @@ import org.xml.sax.SAXParseException;
 /**
  * This class implements a DTM that is constructed via an XNI data stream.
  * 
- * Please note that it this is a PROTOTYPE, since the Xerces post-schema 
+ * Please note that this is a PROTOTYPE, since the Xerces post-schema 
  * validation infoset (PSVI) APIs it is using are themselves prototypes and
- * subject to change without warning. The most recent such change was from
- * "lightweight" to "heavyweight" schema models -- the former are no longer
- * supported.
+ * subject to change without warning.
  * 
  * This version is derived from SAX2DTM for ease of implementation and
  * support. We probably want to fold it back into SAX2DTM, removing the
@@ -104,12 +102,11 @@ import org.xml.sax.SAXParseException;
  * Note to developers: Both XNI and Xalan have classes called XMLString.
  * Don't confuse them!
  * 
- * %REVIEW% Should we re-unify this with SAX2(RTF)DTM?
+ * %REVIEW% Should we re-unify this with SAX2DTM?
  * 	(Since we'll want to create typed temporary trees, definitely an issue...)
  *  To actually _USE_ as a temporary tree, we'd need to accept SAX
  *     rather than blocking it, and/or rewrite Xalan core to be XNI-based,
  *     and/or do some bypassing to add types to SAX stream.
- *  Test confirms we can successfully derive from either.
  */
 public class XNI2DTM 
   extends org.apache.xml.dtm.ref.sax2dtm.SAX2DTM
@@ -118,7 +115,7 @@ public class XNI2DTM
   /** DEBUGGING FLAG: Set true to monitor XNI events and similar diagnostic info. */
   private static final boolean DEBUG = false;  
   
-  /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as instantiated.
+  /** Schema Type information, datatype as instantiated.
    * See discussion in addNode */
   protected SparseVector m_schemaTypeOverride=new SparseVector();
   
@@ -148,7 +145,7 @@ public class XNI2DTM
 
   /**
    * Construct a XNI2DTM object ready to be constructed from XNI
-   * ContentHandler events.
+   * ContentHandler events. (C'tors don't inherit.)
    *
    * @param mgr The DTMManager who owns this DTM.
    * @param source the JAXP 1.1 Source object for this DTM.
@@ -174,6 +171,10 @@ public class XNI2DTM
    * Construct the node map from the node. EXTENDED to carry PSVI type data
    * delivered via XNI. This is currently using non-published Xerces APIs, which
    * are subject to change as their PSVI support becomes more official.
+   * 
+   * Note that nodes which are never typed may want to call the untyped
+   * version of this method directly. Only element/attr need to use
+   * this one.
    *
    * @param type raw type ID, one of DTM.XXX_NODE.
    * @param expandedTypeID The expended type ID.
@@ -204,9 +205,6 @@ public class XNI2DTM
     // optimize we would have to rewrite data to make the default the most
     // common -- and since Scott insists that overrides will be uncommon,
     // I don't want to go there.
-    //
-    // NOTE: Element schema-types aren't fully resolved until endElement, and
-    // need to be dealt with there.
     if(type!=ELEMENT_NODE)
     {
       // Try to record as default for this nodetype
@@ -336,8 +334,9 @@ public class XNI2DTM
   }
   
   /** ADDED FOR XPATH2: Retrieve the typed value(s), based on the schema type.
-   * This is "the error value" for non-nodes, document, namespace, comment or 
-   * processing instruction nodes.
+   * Should be "the error value" for non-nodes, document, namespace, comment or 
+   * processing instruction nodes... but we haven't yet defined Error.
+   * %REVIEW%
    * */
   public DTMSequence getTypedValue(int nodeHandle)
   {
@@ -386,8 +385,6 @@ public class XNI2DTM
     String textvalue=getStringValue(nodeHandle).toString();
     
     // DTM node should provide the namespace context.
-    // Do we have an existing encapulation for that concept?
-        
     return actualType.typedValue(textvalue, 
     	new org.apache.xml.dtm.ref.xni2dtm.NamespaceSupportAtDTMNode(this,nodeHandle));
   }
@@ -430,14 +427,7 @@ public class XNI2DTM
    */
   public void setIncrementalXNISource(XMLPullParserConfiguration incrementalXNISource)
   {
-
     // Establish coroutine link so we can request more data
-    //
-    // Note: It's possible that some versions of IncrementalXNISource may
-    // not actually use a CoroutineManager, and hence may not require
-    // that we obtain an Application Coroutine ID. (This relies on the
-    // coroutine transaction details having been encapsulated in the
-    // IncrementalXNISource.do...() methods.)
     m_incrementalXNISource = incrementalXNISource;
 
     // Establish XNI-stream link so we can receive the requested data
@@ -474,14 +464,12 @@ public class XNI2DTM
    */
   protected boolean nextNode()
   {
-
     if (null == m_incrementalXNISource)
       return false;
 
     if (m_endDocumentOccured)
     {
       clearCoRoutine();
-
       return false;
     }
 
@@ -500,10 +488,6 @@ public class XNI2DTM
     {      throw e;    }
     catch(Exception e)
     {      throw new WrappedRuntimeException(e);    }
-
-    // %REVIEW% dead code
-    //clearCoRoutine();
-    //return false;
   }
   
   ////////////////////////////////////////////////////////////////////
@@ -516,11 +500,8 @@ public class XNI2DTM
   ////////////////////////////////////////////////////////////////////
 
   /**
-   * Receive notification of a notation declaration.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass if they wish to keep track of the notations
-   * declared in a document.</p>
+   * XNI XMLDocumentHandler: Receive notification of a notation declaration.
+   * Normally a no-op.
    *
    * @param name The notation name.
    * @param publicId The notation public identifier, or null if not
@@ -534,16 +515,11 @@ public class XNI2DTM
    */
   public void notationDecl(String name, String publicId, String systemId)
     throws XNIException
-  {
-    // no op
-  }
+  {    /*no op*/  }
 
   /**
-   * Receive notification of an unparsed entity declaration.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass to keep track of the unparsed entities
-   * declared in a document.</p>
+   * XNI XMLDocumentHandler: Receive notification of an unparsed entity declaration.
+   * Normally a no-op.
    *
    * @param name The entity name.
    * @param publicId The entity public identifier, or null if not
@@ -567,11 +543,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive a Locator object for document events.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass if they wish to store the locator for use
-   * with other document events.</p>
+   * XNI XMLDocumentHandler: Receive a Locator object for document events.
    *
    * @param locator A locator for all XNI document events.
    * @see org.xml.sax.ContentHandler#setDocumentLocator
@@ -584,7 +556,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of the beginning of the document.
+   * XNI XMLDocumentHandler: Receive notification of the beginning of the document.
    *
    * @throws XNIException Any XNI exception, possibly
    *            wrapping another exception.
@@ -600,7 +572,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of the end of the document.
+   * XNI XMLDocumentHandler: Receive notification of the end of the document.
    *
    * @throws XNIException Any XNI exception, possibly
    *            wrapping another exception.
@@ -615,11 +587,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of the start of a Namespace mapping.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass to take specific actions at the start of
-   * each Namespace prefix scope (such as storing the prefix mapping).</p>
+   * XNI XMLDocumentHandler: Receive notification of the start of a Namespace mapping.
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI mapped to the prefix.
@@ -652,11 +620,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of the end of a Namespace mapping.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass to take specific actions at the end of
-   * each prefix mapping.</p>
+   * XNI XMLDocumentHandler: Receive notification of the end of a Namespace mapping.
    *
    * @param prefix The Namespace prefix being declared.
    * @throws XNIException Any XNI exception, possibly
@@ -687,12 +651,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of the start of an element.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass to take specific actions at the start of
-   * each element (such as allocating a new tree node or writing
-   * output to a file).</p>
+   * XNI XMLDocumentHandler: Receive notification of the start of an element.
    *
    * @param name The element type name.
    *
@@ -748,7 +707,6 @@ public class XNI2DTM
 
         System.out.println("\ttypeDefinition (actual): "+ actualType +
                            "\n\t\ttype expanded-qname: " + actualExpandedQName +
-//                           "\n\tDerived from builtin string: " + actualType.derivedFrom(SCHEMANS,"string") +
                            "\n\tSynthesized by DTM2XNI: "+syntheticElement
                            );
       } //DEBUG
@@ -970,7 +928,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of the end of an element.
+   * XNI XMLDocumentHandler: Receive notification of the end of an element.
    *
    * @param name The element type name.
    * @param attributes The specified or defaulted attributes.
@@ -1049,7 +1007,7 @@ public class XNI2DTM
     }
   }
 
-  /** An empty element.
+  /** XNI XMLDocumentHandler: An empty element.
    * 
    * @param element - The name of the element.
    * @param attributes - The element attributes.
@@ -1067,12 +1025,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of character data inside an element.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method to take specific actions for each chunk of character data
-   * (such as adding the data to a node or buffer, or printing it to
-   * a file).</p>
+   * XNI XMLDocumentHandler: Receive notification of character data inside an element.
    *
    * @param ch The characters.
    * @param start The start position in the character array.
@@ -1091,12 +1044,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of ignorable whitespace in element content.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method to take specific actions for each chunk of ignorable
-   * whitespace (such as adding data to a node or buffer, or printing
-   * it to a file).</p>
+   * XNI XMLDocumentHandler: Receive notification of ignorable whitespace in element content.
    *
    * @param ch The whitespace characters.
    * @param start The start position in the character array.
@@ -1118,7 +1066,7 @@ public class XNI2DTM
   }
 
   /**
-   * Receive notification of a processing instruction.
+   * XNI XMLDocumentHandler: Receive notification of a processing instruction.
    *
    * <p>By default, do nothing.  Application writers may override this
    * method in a subclass to take specific actions for each
@@ -1147,7 +1095,7 @@ public class XNI2DTM
   }
 
   /**
-   * Report the beginning of an entity in content.
+   * XNI XMLDocumentHandler: Report the beginning of an entity in content.
    *
    * <p><strong>NOTE:</entity> entity references in attribute
    * values -- and the start and end of the document entity --
@@ -1171,23 +1119,19 @@ public class XNI2DTM
   public void startGeneralEntity(String name,XMLResourceIdentifier identifier,
                                  String encoding,Augmentations augs) 
     throws XNIException
-  {
-    // no op
-  }
+  {    /*no op*/  }
 
   /**
-   * Report the end of an entity.
+   * XNI XMLDocumentHandler: Report the end of an entity.
    *
    * @param name The name of the entity that is ending.
    * @throws SAXException The application may raise an exception.
    * @see #startEntity
    */
   public void endGeneralEntity(String name,Augmentations augs) throws XNIException
-  {
-	// no op
-  }
+  {	/*no op*/  }
   
-  /** Notifies of the presence of an XMLDecl line in the document. 
+  /** XNI XMLDocumentHandler: Notifies of the presence of an XMLDecl line in the document. 
    * If present, this method will be called immediately following 
    * the startDocument call.
    * @param version - The XML version.
@@ -1200,13 +1144,10 @@ public class XNI2DTM
   public void xmlDecl(String version,String encoding,String standalone,
                       Augmentations augs)
     throws XNIException
-  {
-
-    // no op
-  }
+  { /*no op*/  }
              
         
-  /** Notifies of the presence of a TextDecl line in an entity. If present, this
+  /** XNI XMLDocumentHandler: Notifies of the presence of a TextDecl line in an entity. If present, this
    * method will be called immediately following the startEntity call. 
    * 
    * Note: This method will never be called for the document entity; it is only
@@ -1221,13 +1162,11 @@ public class XNI2DTM
    * */
   public void textDecl(String version,String encoding,Augmentations augs)
     throws XNIException
-  {
-    // no op
-  }
+  {    /*no op*/  }
               
 
   /**
-   * Report the start of a CDATA section.
+   * XNI XMLDocumentHandler: Report the start of a CDATA section.
    *
    * <p>The contents of the CDATA section will be reported through
    * the regular {@link org.xml.sax.ContentHandler#characters
@@ -1238,29 +1177,22 @@ public class XNI2DTM
    */
   public void startCDATA(Augmentations augs) throws XNIException
   {
-    try
-    {      super.startCDATA();    } 
-    catch(SAXException e)
-    {      throw new XNIException(e);    }
-        
+    super.startCDATA();        
   }
 
   /**
-   * Report the end of a CDATA section.
+   * XNI XMLDocumentHandler: Report the end of a CDATA section.
    *
    * @throws SAXException The application may raise an exception.
    * @see #startCDATA
    */
   public void endCDATA(Augmentations augs) throws XNIException
   {
-    try
-    {      super.endCDATA();    } 
-    catch(SAXException e)
-    {      throw new XNIException(e);    }
+    super.endCDATA();
   }
 
   /**
-   * Report an XML comment anywhere in the document.
+   * XNI XMLDocumentHandler: Report an XML comment anywhere in the document.
    *
    * <p>This callback will be used for comments inside or outside the
    * document element, including comments in the external DTD
@@ -1316,7 +1248,7 @@ public class XNI2DTM
     }
   }
   
-  /** Notifies of the presence of the DOCTYPE line in the document.
+  /** XNI XMLDocumentHandler: Notifies of the presence of the DOCTYPE line in the document.
          *  @param rootElement - The name of the root element.
          * @param publicId - The public identifier if an external DTD or null if the
          *        external DTD is specified using SYSTEM.
@@ -1327,9 +1259,7 @@ public class XNI2DTM
   public void doctypeDecl(String rootElement,String publicId,String systemId,
                           Augmentations augs)
     throws XNIException
-  {
-    // no op
-  }
+  {    /*no op*/  }
     
   ////////////////////////////////////////////////////////////////////
   // XNI error handler
@@ -1369,7 +1299,11 @@ public class XNI2DTM
   // have to accept the other calls... which means we need to know the start
   // and end of the DTD to prevent DTD comments from being taken as
   // part of the main document.
-  
+
+  /* We need to know when DTDs start and end so we can ignore
+   * comments found within the DTD (since they're otherwise
+   * indistingishable from content comments).
+   * */
   public void startDTD(XMLLocator locator,
                        Augmentations augmentations)
     throws XNIException
@@ -1380,118 +1314,10 @@ public class XNI2DTM
     {      throw new XNIException(e);    }
   }
   
-  public void startParameterEntity(java.lang.String name,
-                                   XMLResourceIdentifier identifier,
-                                   java.lang.String encoding,
-                                   Augmentations augmentations)
-    throws XNIException
-  {
-    // no op
-  }
-  
-  // textDecl already handled
-  
-  public void endParameterEntity(java.lang.String name,
-                                 Augmentations augmentations)
-    throws XNIException  
-  {
-    // no op
-  }
-  public void startExternalSubset(XMLResourceIdentifier resource,Augmentations augmentations)
-    throws XNIException  
-  {
-    // no op
-  }
-  public void endExternalSubset(Augmentations augmentations)
-    throws XNIException  
-  {
-    // no op
-  }  
-  
-  // comment already handled, including suppression during the DTD
-  // processing instruction already handled. NOT currently suppressed during DTD?
-  
-  public void elementDecl(java.lang.String name,
-                          java.lang.String contentModel,
-                          Augmentations augmentations)
-    throws XNIException
-  {
-    //no op
-  }
-  public void startAttlist(java.lang.String elementName,
-                           Augmentations augmentations)
-    throws XNIException
-  {
-    //no op
-  }
-  
-  public void attributeDecl(String elementName,String attributeName, 
-                            java.lang.String type, java.lang.String[] enumeration, 
-                            String defaultType, XMLString defaultValue,
-                            XMLString nonNormalizedDefaultValue, Augmentations augmentations)
-    throws XNIException
-  { 
-    // no op
-  }
-  
-  public void endAttlist(Augmentations augmentations)
-    throws XNIException  
-  {
-    //no op
-  }
-  public void internalEntityDecl(String name, XMLString text, 
-                                 XMLString nonNormalizedText,
-                                 Augmentations augmentations) 
-    throws XNIException
-  {
-    //no op
-  }
-  public void externalEntityDecl(java.lang.String name,
-                                 XMLResourceIdentifier identifier,
-                                 Augmentations augmentations)
-    throws XNIException
-  {
-    //no op
-  }
-  
-  public void unparsedEntityDecl(java.lang.String name,
-                                 XMLResourceIdentifier identifier,
-                                 java.lang.String notation,
-                                 Augmentations augmentations)
-    throws XNIException
-  {
-    // This one's the wnole point of the exercise...
-    try
-    {      super.unparsedEntityDecl(name,identifier.getPublicId(),identifier.getLiteralSystemId(),notation);    } 
-    catch(SAXException e)
-    {      throw new XNIException(e);    }
-  }     
- 
-  public void notationDecl(java.lang.String name,
-                           XMLResourceIdentifier identifier,
-                           Augmentations augmentations)
-    throws XNIException
-  {
-    // no op
-  }
-  public void startConditional(short type,
-                               Augmentations augmentations)
-    throws XNIException
-  {
-    // no op
-  }
-  
-  public void ignoredCharacters(XMLString text, Augmentations augmentations)
-    throws XNIException
-  {
-    // no op
-  }
-  public void endConditional(Augmentations augmentations)
-    throws XNIException
-  {
-    // no op
-  }
-  
+  /* We need to know when DTDs start and end so we can ignore
+   * comments found within the DTD (since they're otherwise
+   * indistingishable from content comments).
+   * */
   public void endDTD(Augmentations augmentations)
     throws XNIException
   {
@@ -1500,5 +1326,84 @@ public class XNI2DTM
     catch(SAXException e)
     {      throw new XNIException(e);    }
   }     
+  
+  /* We need to know about unparsed entities, as they arise.
+   * */  
+  public void unparsedEntityDecl(java.lang.String name,
+                                 XMLResourceIdentifier identifier,
+                                 java.lang.String notation,
+                                 Augmentations augmentations)
+    throws XNIException
+  {
+    try
+    {      super.unparsedEntityDecl(name,identifier.getPublicId(),identifier.getLiteralSystemId(),notation);    } 
+    catch(SAXException e)
+    {      throw new XNIException(e);    }
+  }     
+
+  // textDecl already handled
+  // comment already handled, including suppression during the DTD
+  // processing instruction already handled. NOT currently suppressed during DTD?
+
+  // All other DTD events not shown above need to be defined as no-ops.
+
+  public void startParameterEntity(java.lang.String name,
+                                   XMLResourceIdentifier identifier,
+                                   java.lang.String encoding,
+                                   Augmentations augmentations)
+    throws XNIException
+  {    /*no op*/  }
+  public void endParameterEntity(java.lang.String name,
+                                 Augmentations augmentations)
+    throws XNIException  
+  {    /*no op*/  }
+  public void startExternalSubset(XMLResourceIdentifier resource,Augmentations augmentations)
+    throws XNIException  
+  {    /*no op*/  }
+  public void endExternalSubset(Augmentations augmentations)
+    throws XNIException  
+  {    /*no op*/  }  
+  public void elementDecl(java.lang.String name,
+                          java.lang.String contentModel,
+                          Augmentations augmentations)
+    throws XNIException
+  {    /*no op*/  }
+  public void startAttlist(java.lang.String elementName,
+                           Augmentations augmentations)
+    throws XNIException
+  {    /*no op*/  }
+  public void attributeDecl(String elementName,String attributeName, 
+                            java.lang.String type, java.lang.String[] enumeration, 
+                            String defaultType, XMLString defaultValue,
+                            XMLString nonNormalizedDefaultValue, Augmentations augmentations)
+    throws XNIException
+  {     /*no op*/  }
+  public void endAttlist(Augmentations augmentations)
+    throws XNIException  
+  {    /*no op*/  }
+  public void internalEntityDecl(String name, XMLString text, 
+  								XMLString nonNormalizedText,
+                                Augmentations augmentations) 
+    throws XNIException
+  {    /*no op*/  }
+  public void externalEntityDecl(java.lang.String name,
+  								XMLResourceIdentifier identifier,
+  								Augmentations augmentations)
+    throws XNIException
+  { /*no op*/  }
+  
+  
  
+  public void notationDecl(java.lang.String name,XMLResourceIdentifier identifier,Augmentations augmentations)
+    throws XNIException
+  {    /*no op*/  }
+  public void startConditional(short type,Augmentations augmentations)
+    throws XNIException
+  {    /*no op*/  }
+  public void ignoredCharacters(XMLString text,Augmentations augmentations)
+    throws XNIException
+  {    /*no op*/  }
+  public void endConditional(Augmentations augmentations)
+    throws XNIException
+  {  /*no op*/  } 
 } // XNI2DTM
