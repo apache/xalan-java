@@ -73,7 +73,7 @@ import org.apache.xalan.templates.ElemTemplate;
  * queud stack events.  In truth, we don't need a stack,
  * so I may change this down the line a bit.
  */
-abstract class QueuedEvents
+public abstract class QueuedEvents
 {
 
   /** The number of events queued          */
