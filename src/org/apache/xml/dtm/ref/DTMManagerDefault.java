@@ -76,12 +76,14 @@ import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.XMLReaderManager;
 import org.apache.xml.utils.XMLStringFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
@@ -141,6 +143,12 @@ public class DTMManagerDefault extends DTMManager
    * which is why this is not Protected or Private.)
    */
   int m_dtm_offsets[] = new int[256];
+
+  /**
+   * The cache for XMLReader objects to be used if the user did not
+   * supply an XMLReader for a SAXSource or supplied a StreamSource.
+   */
+  protected XMLReaderManager m_readerManager = null;
 
   /**
    * Add a DTM to the DTM table. This convenience call adds it as the 
@@ -292,218 +300,195 @@ public class DTMManagerDefault extends DTMManager
       boolean isStreamSource = (null != source)
         ? (source instanceof StreamSource) : false;
 
-      if (isSAXSource || isStreamSource)
-      {
-        XMLReader reader;
-        InputSource xmlSource;
+      if (isSAXSource || isStreamSource) {
+        XMLReader reader = null;
 
-        if (null == source)
-        {
-          xmlSource = null;
-          reader = null;
-        }
-        else
-        {
-          reader = getXMLReader(source);
-          xmlSource = SAXSource.sourceToInputSource(source);
+        try {
+          InputSource xmlSource;
 
-          String urlOfSource = xmlSource.getSystemId();
+          if (null == source) {
+            xmlSource = null;
+          } else {
+            reader = getXMLReader(source);
+            xmlSource = SAXSource.sourceToInputSource(source);
 
-          if (null != urlOfSource)
-          {
-            try
-            {
-              urlOfSource = SystemIDResolver.getAbsoluteURI(urlOfSource);
+            String urlOfSource = xmlSource.getSystemId();
+
+            if (null != urlOfSource) {
+              try {
+                urlOfSource = SystemIDResolver.getAbsoluteURI(urlOfSource);
+              } catch (Exception e) {
+                // %REVIEW% Is there a better way to send a warning?
+                System.err.println("Can not absolutize URL: " + urlOfSource);
+              }
+
+              xmlSource.setSystemId(urlOfSource);
             }
-            catch (Exception e)
-            {
-
-              // %REVIEW% Is there a better way to send a warning?
-              System.err.println("Can not absolutize URL: " + urlOfSource);
-            }
-
-            xmlSource.setSystemId(urlOfSource);
           }
-        }
 
-        SAX2DTM dtm;
-        if(source==null && unique && !incremental && !doIndexing)
-        {
-          // Special case to support RTF construction into shared DTM.
-          // It should actually still work for other uses,
-          // but may be slightly deoptimized relative to the base
-          // to allow it to deal with carrying multiple documents.
-          //
-          // %REVIEW% This is a sloppy way to request this mode;
-          // we need to consider architectural improvements.
-          dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
-                               xstringFactory, doIndexing);
-        }
-        /**************************************************************
-        // EXPERIMENTAL 3/22/02
-        else if(JKESS_XNI_EXPERIMENT && m_incremental)
-        {        	
-          dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
-                            xstringFactory, doIndexing);
-        }
-        **************************************************************/
-        else // Create the basic SAX2DTM.
-        {
-          dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
-                            xstringFactory, doIndexing);
-        }
+          SAX2DTM dtm;
+          if (source==null && unique && !incremental && !doIndexing) {
+            // Special case to support RTF construction into shared DTM.
+            // It should actually still work for other uses,
+            // but may be slightly deoptimized relative to the base
+            // to allow it to deal with carrying multiple documents.
+            //
+            // %REVIEW% This is a sloppy way to request this mode;
+            // we need to consider architectural improvements.
+            dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
+                                 xstringFactory, doIndexing);
+          }
+          /**************************************************************
+          // EXPERIMENTAL 3/22/02
+          else if(JKESS_XNI_EXPERIMENT && m_incremental) {        	
+            dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
+                              xstringFactory, doIndexing);
+          }
+          **************************************************************/
+          // Create the basic SAX2DTM.
+          else {
+            dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
+                              xstringFactory, doIndexing);
+          }
 
-        // Go ahead and add the DTM to the lookup table.  This needs to be
-        // done before any parsing occurs. Note offset 0, since we've just
-        // created a new DTM.
-        addDTM(dtm, dtmPos, 0);
+          // Go ahead and add the DTM to the lookup table.  This needs to be
+          // done before any parsing occurs. Note offset 0, since we've just
+          // created a new DTM.
+          addDTM(dtm, dtmPos, 0);
 
 
-        boolean haveXercesParser =
-          (null != reader)
-          && (reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser") );
+          boolean haveXercesParser =
+                     (null != reader)
+                     && (reader.getClass()
+                               .getName()
+                               .equals("org.apache.xerces.parsers.SAXParser") );
         
-        if (haveXercesParser)
-          incremental = true;  // No matter what.  %REVIEW%
+          if (haveXercesParser) {
+            incremental = true;  // No matter what.  %REVIEW%
+          }
         
-        // If the reader is null, but they still requested an incremental build,
-        // then we still want to set up the IncrementalSAXSource stuff.
-        if (m_incremental && incremental /* || ((null == reader) && incremental) */)
-        {
-          IncrementalSAXSource coParser=null;
+          // If the reader is null, but they still requested an incremental
+          // build, then we still want to set up the IncrementalSAXSource stuff.
+          if (m_incremental && incremental
+               /* || ((null == reader) && incremental) */) {
+            IncrementalSAXSource coParser=null;
 
-          if (haveXercesParser)
-          {
-            // IncrementalSAXSource_Xerces to avoid threading.
-            try {
-              coParser =(IncrementalSAXSource)
-                Class.forName("org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces").newInstance();  
-            }  catch( Exception ex ) {
-              ex.printStackTrace();
-              coParser=null;
-            }
-          }
-
-          if( coParser==null ) {
-            // Create a IncrementalSAXSource that will run on the secondary thread.
-            if (null == reader)
-              coParser = new IncrementalSAXSource_Filter();
-            else
-            {
-              IncrementalSAXSource_Filter filter=new IncrementalSAXSource_Filter();
-              filter.setXMLReader(reader);
-              coParser=filter;
+            if (haveXercesParser) {
+              // IncrementalSAXSource_Xerces to avoid threading.
+              try {
+                coParser =(IncrementalSAXSource)
+                  Class.forName("org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces").newInstance();  
+              }  catch( Exception ex ) {
+                ex.printStackTrace();
+                coParser=null;
+              }
             }
 
-          }
+            if (coParser==null ) {
+              // Create a IncrementalSAXSource to run on the secondary thread.
+              if (null == reader) {
+                coParser = new IncrementalSAXSource_Filter();
+              } else {
+                IncrementalSAXSource_Filter filter =
+                         new IncrementalSAXSource_Filter();
+                filter.setXMLReader(reader);
+                coParser=filter;
+              }
+            }
 
 			
-        /**************************************************************
-        // EXPERIMENTAL 3/22/02
-          if(JKESS_XNI_EXPERIMENT && m_incremental & 
-          	dtm instanceof XNI2DTM && 
-          	coParser instanceof IncrementalSAXSource_Xerces)
-          {          	
-       		org.apache.xerces.xni.parser.XMLPullParserConfiguration xpc=
-       			((IncrementalSAXSource_Xerces)coParser).getXNIParserConfiguration();
-       		if(xpc!=null)	
-       			// Bypass SAX; listen to the XNI stream
-          		((XNI2DTM)dtm).setIncrementalXNISource(xpc);
-          	else
-          		// Listen to the SAX stream (will fail, diagnostically...)
-				dtm.setIncrementalSAXSource(coParser);
-          } else
-          ***************************************************************/
+            /**************************************************************
+            // EXPERIMENTAL 3/22/02
+            if (JKESS_XNI_EXPERIMENT && m_incremental &&
+                  dtm instanceof XNI2DTM && 
+                  coParser instanceof IncrementalSAXSource_Xerces) {
+                org.apache.xerces.xni.parser.XMLPullParserConfiguration xpc=
+                      ((IncrementalSAXSource_Xerces)coParser)
+                                           .getXNIParserConfiguration();
+              if (xpc!=null) {
+                // Bypass SAX; listen to the XNI stream
+                ((XNI2DTM)dtm).setIncrementalXNISource(xpc);
+              } else {
+                  // Listen to the SAX stream (will fail, diagnostically...)
+                dtm.setIncrementalSAXSource(coParser);
+              }
+            } else
+            ***************************************************************/
           
-          // Have the DTM set itself up as the IncrementalSAXSource's listener.
-          dtm.setIncrementalSAXSource(coParser);
+            // Have the DTM set itself up as IncrementalSAXSource's listener.
+            dtm.setIncrementalSAXSource(coParser);
 
-          if (null == xmlSource)
-          {
+            if (null == xmlSource) {
 
-            // Then the user will construct it themselves.
-            return dtm;
+              // Then the user will construct it themselves.
+              return dtm;
+            }
+
+            if (null == reader.getErrorHandler()) {
+              reader.setErrorHandler(dtm);
+            }
+            reader.setDTDHandler(dtm);
+
+            try {
+              // Launch parsing coroutine.  Launches a second thread,
+              // if we're using IncrementalSAXSource.filter().
+
+              coParser.startParse(xmlSource);
+            } catch (RuntimeException re) {
+
+              dtm.clearCoRoutine();
+
+              throw re;
+            } catch (Exception e) {
+
+              dtm.clearCoRoutine();
+
+              throw new org.apache.xml.utils.WrappedRuntimeException(e);
+            }
+          } else {
+            if (null == reader) {
+
+              // Then the user will construct it themselves.
+              return dtm;
+            }
+
+            // not incremental
+            reader.setContentHandler(dtm);
+            reader.setDTDHandler(dtm);
+            if (null == reader.getErrorHandler()) {
+              reader.setErrorHandler(dtm);
+            }
+
+            try {
+              reader.setProperty(
+                               "http://xml.org/sax/properties/lexical-handler",
+                               dtm);
+            } catch (SAXNotRecognizedException e){}
+              catch (SAXNotSupportedException e){}
+
+            try {
+              reader.parse(xmlSource);
+            } catch (RuntimeException re) {
+              dtm.clearCoRoutine();
+
+              throw re;
+            } catch (Exception e) {
+              dtm.clearCoRoutine();
+
+              throw new org.apache.xml.utils.WrappedRuntimeException(e);
+            }
           }
 
-          if(null == reader.getErrorHandler())
-            reader.setErrorHandler(dtm);
-          reader.setDTDHandler(dtm);
-
-          try
-          {
-
-            // Launch parsing coroutine.  Launches a second thread,
-            // if we're using IncrementalSAXSource.filter().
-            coParser.startParse(xmlSource);
+          if (DUMPTREE) {
+            System.out.println("Dumping SAX2DOM");
+            dtm.dumpDTM(System.err);
           }
-          catch (RuntimeException re)
-          {
 
-            dtm.clearCoRoutine();
-
-            throw re;
-          }
-          catch (Exception e)
-          {
-
-            dtm.clearCoRoutine();
-
-            throw new org.apache.xml.utils.WrappedRuntimeException(e);
-          }
+          return dtm;
+        } finally {
+          releaseXMLReader(reader);
         }
-        else
-        {
-          if (null == reader)
-          {
-
-            // Then the user will construct it themselves.
-            return dtm;
-          }
-
-          // not incremental
-          reader.setContentHandler(dtm);
-          reader.setDTDHandler(dtm);
-          if(null == reader.getErrorHandler())
-            reader.setErrorHandler(dtm);
-
-          try
-          {
-            reader.setProperty(
-                               "http://xml.org/sax/properties/lexical-handler", dtm);
-          }
-          catch (SAXNotRecognizedException e){}
-          catch (SAXNotSupportedException e){}
-
-          try
-          {
-            reader.parse(xmlSource);
-          }
-          catch (RuntimeException re)
-          {
-
-            dtm.clearCoRoutine();
-
-            throw re;
-          }
-          catch (Exception e)
-          {
-
-            dtm.clearCoRoutine();
-
-            throw new org.apache.xml.utils.WrappedRuntimeException(e);
-          }
-        }
-
-        if (DUMPTREE)
-        {
-          System.out.println("Dumping SAX2DOM");
-          dtm.dumpDTM(System.err);
-        }
-
-        return dtm;
-      }
-      else
-      {
+      } else {
 
         // It should have been handled by a derived class or the caller
         // made a mistake.
@@ -617,8 +602,9 @@ public class DTMManagerDefault extends DTMManager
    * obtained from this URI.
    * It may return null if any SAX2-conformant XML parser can be used,
    * or if getInputSource() will also return null. The parser must
-   * be free for use (i.e.
-   * not currently in use for another parse().
+   * be free for use (i.e., not currently in use for another parse().
+   * After use of the parser is completed, the releaseXMLReader(XMLReader)
+   * must be called.
    *
    * @param inputSource The value returned from the URIResolver.
    * @return  a SAX2 XMLReader to use to resolve the inputSource argument.
@@ -633,51 +619,35 @@ public class DTMManagerDefault extends DTMManager
       XMLReader reader = (inputSource instanceof SAXSource)
                          ? ((SAXSource) inputSource).getXMLReader() : null;
 
-      if (null == reader)
-      {
-        try
-        {
-          javax.xml.parsers.SAXParserFactory factory =
-            javax.xml.parsers.SAXParserFactory.newInstance();
-
-          factory.setNamespaceAware(true);
-
-          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
-
-          reader = jaxpParser.getXMLReader();
+      // If user did not supply a reader, ask for one from the reader manager
+      if (null == reader) {
+        if (m_readerManager == null) {
+            m_readerManager = XMLReaderManager.getInstance();
         }
-        catch (javax.xml.parsers.ParserConfigurationException ex)
-        {
-          throw new org.xml.sax.SAXException(ex);
-        }
-        catch (javax.xml.parsers.FactoryConfigurationError ex1)
-        {
-          throw new org.xml.sax.SAXException(ex1.toString());
-        }
-        catch (NoSuchMethodError ex2){}
-        catch (AbstractMethodError ame){}
 
-        if (null == reader)
-          reader = XMLReaderFactory.createXMLReader();
-      }
-
-      try
-      {
-        reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
-                          true);
-      }
-      catch (org.xml.sax.SAXException se)
-      {
-
-        // What can we do?
-        // TODO: User diagnostics.
+        reader = m_readerManager.getXMLReader();
       }
 
       return reader;
-    }
-    catch (org.xml.sax.SAXException se)
-    {
+
+    } catch (SAXException se) {
       throw new DTMException(se.getMessage(), se);
+    }
+  }
+
+  /**
+   * Indicates that the XMLReader object is no longer in use for the transform.
+   *
+   * Note that the getXMLReader method may return an XMLReader that was
+   * specified on the SAXSource object by the application code.  Such a
+   * reader should still be passed to releaseXMLReader, but the reader manager
+   * will only re-use XMLReaders that it created.
+   *
+   * @param reader The XMLReader to be released.
+   */
+  synchronized public void releaseXMLReader(XMLReader reader) {
+    if (m_readerManager != null) {
+      m_readerManager.releaseXMLReader(reader);
     }
   }
 
