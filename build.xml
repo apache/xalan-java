@@ -1151,6 +1151,7 @@ Copyright:
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/${stylebook.jar.name}"/>
       <include name="${dist.file}/bin/${doclet.jar.name}"/>
+      <include name="${dist.file}/bin/${taglet.jar.name}"/>
       <include name="${dist.file}/bin/*.LICENSE.txt"/>
       <include name="${dist.file}/bin/*.README.txt"/>
       <include name="${dist.file}/samples/"/>
