@@ -334,6 +334,11 @@ public class ElemValueOf extends ElemTemplateElement
     {
       throw new TransformerException(se);
     }
+    catch (RuntimeException re) {
+    	TransformerException te = new TransformerException(re);
+    	te.setLocator(this);
+    	throw te;
+    }
     finally
     {
       if (TransformerImpl.S_DEBUG)
