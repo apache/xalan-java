@@ -1265,6 +1265,10 @@ public class EnvironmentCheck
     jarVersions.put(new Long(923866), "xalan.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(905872), "xalan.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(906122), "xalan.jar from xalan-j_2_3_0");
+    jarVersions.put(new Long(906248), "xalan.jar from xalan-j_2_3_1");
+    jarVersions.put(new Long(997276), "xalan.jar from xalan-j_2_4_0");
+
+
     // Impossible to get exact number, so don't use this: jarVersions.put(new Long(), "xalan.jar from xalan-j_2_4_D1");
 
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
@@ -1274,11 +1278,14 @@ public class EnvironmentCheck
     jarVersions.put(new Long(596540), "xsltc.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(590247), "xsltc.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(589914), "xsltc.jar from xalan-j_2_3_0");
-    jarVersions.put(new Long(1306667), "xsltc.jar from xalan-j_2_4_D1");
+    jarVersions.put(new Long(589915), "xsltc.jar from xalan-j_2_3_1");
+    jarVersions.put(new Long(1328227), "xsltc.jar from xalan-j_2_4_0");
     jarVersions.put(new Long(1268634), "xsltc.jar-bundled from xalan-j_2_3_0");
 
     jarVersions.put(new Long(100196), "xml-apis.jar from xalan-j_2_2_0 or xalan-j_2_3_D1");
-    jarVersions.put(new Long(108484), "xml-apis.jar from xalan-j_2_3_0,2_4_D1 from xml-commons-1.0.b2");
+    jarVersions.put(new Long(108484), "xml-apis.jar from xalan-j_2_3_0, or xalan-j_2_3_1 from xml-commons-1.0.b2");
+    jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0 from xml-commons RIVERCOURT1 branch");
+    
 
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
@@ -1301,14 +1308,15 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1803877), "xerces.jar from XML4J-3_2_1");
     jarVersions.put(new Long(1812019), "xerces.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(1720292), "xercesImpl.jar from xalan-j_2_3_D1");
-    jarVersions.put(new Long(1730053), "xercesImpl.jar from xalan-j_2_3_0 from xerces-2_0_0");
-    jarVersions.put(new Long(1728861), "xercesImpl.jar from xalan-j_2_4_D1 from xerces-2_0_1");
+    jarVersions.put(new Long(1730053), "xercesImpl.jar from xalan-j_2_3_0 or xalan-j_2_3_1 from xerces-2_0_0");
+    jarVersions.put(new Long(972027), "xercesImpl.jar from xalan-j_2_4_0 from xerces-2_1");
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
 
     jarVersions.put(new Long(18779), "xalanservlet.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(21453), "xalanservlet.jar from xalan-j_2_0_1");
+    jarVersions.put(new Long(24826), "xalanservlet.jar from xalan-j_2_3_1 or xalan-j_2_4_0");
 
     // For those who've downloaded JAXP from sun
     jarVersions.put(new Long(5618), "jaxp.jar from jaxp1.0.1");
