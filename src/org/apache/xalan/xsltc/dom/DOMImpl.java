@@ -3273,7 +3273,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void characters(char[] ch, int start, int length) {
 	    if (_currentOffset + length > _text.length) {
-		resizeTextArray(_text.length * 2);
+		// GTM resizeTextArray(_text.length * 2);
+		// bug fix 6189, contributed by Mirko Seifert
+		resizeTextArray(
+		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
@@ -3543,7 +3546,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	private void characters(final String string) {
 	    final int length = string.length();
 	    if (_currentOffset + length > _text.length) {
-		resizeTextArray(_text.length * 2);
+		// GTM: resizeTextArray(_text.length * 2);
+		// bug fix 6189, contributed by Mirko Seifert
+		resizeTextArray(
+		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
 	    string.getChars(0, length, _text, _currentOffset);
 	    _currentOffset += length;
