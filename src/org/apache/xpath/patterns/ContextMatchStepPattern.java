@@ -158,11 +158,12 @@ public class ContextMatchStepPattern extends StepPattern
 
           if (score != NodeTest.SCORE_NONE)
           {
-            score = executePredicates( xctxt, prevStep, SCORE_OTHER, 
-                       predContext, relative);
-
-            if (score != NodeTest.SCORE_NONE)
-              return score;
+	      //score = executePredicates( xctxt, prevStep, SCORE_OTHER, 
+	      //       predContext, relative);
+	      if (executePredicates(xctxt, dtm, context))
+		  return score;
+	      
+	      score = NodeTest.SCORE_NONE;
           }
           
           if(needToTraverseAttrs && iterRootIsAttr
@@ -185,8 +186,8 @@ public class ContextMatchStepPattern extends StepPattern
         
                   if (score != NodeTest.SCORE_NONE)
                   {
-                    score = executePredicates( xctxt, prevStep, SCORE_OTHER, 
-                               predContext, arelative);
+		      //score = executePredicates( xctxt, prevStep, SCORE_OTHER, 
+		      //       predContext, arelative);
         
                     if (score != NodeTest.SCORE_NONE)
                       return score;

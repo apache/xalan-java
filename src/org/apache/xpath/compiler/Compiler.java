@@ -936,7 +936,7 @@ private static final boolean DEBUG = false;
       // translate this to a select pattern from the node being tested, 
       // which is really how we're treating match patterns, it works out to 
       // self::foo/parent::node[child::foo[3]]", or close enough.
-      if(addMagicSelf && pattern.getPredicateCount() > 0)
+	/*      if(addMagicSelf && pattern.getPredicateCount() > 0)
       {
         StepPattern selfPattern = new StepPattern(DTMFilter.SHOW_ALL, 
                                                   Axis.PARENT, Axis.CHILD);
@@ -945,7 +945,7 @@ private static final boolean DEBUG = false;
         pattern.setRelativePathPattern(selfPattern);
         pattern.setStaticScore(score);
         selfPattern.setStaticScore(score);
-      }
+	}*/
     }
     else
     {

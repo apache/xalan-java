@@ -834,7 +834,7 @@ public class WalkerFactory
          pat = pat.getRelativePathPattern()) 
     {
       int nextAxis = pat.getAxis();
-      int nextPaxis = pat.getPredicateAxis();
+      //int nextPaxis = pat.getPredicateAxis();
       pat.setAxis(axis);
       
       // The predicate axis can't be moved!!!  Test Axes103
@@ -871,7 +871,8 @@ public class WalkerFactory
           StepPattern attrPat = new StepPattern(whatToShow, 
                                     pat.getNamespace(),
                                     pat.getLocalName(),
-                                    newAxis, pat.getPredicateAxis());
+				//newAxis, pat.getPredicateAxis);
+						newAxis, 0); // don't care about the predicate axis
           XNumber score = pat.getStaticScore();
           pat.setNamespace(null);
           pat.setLocalName(NodeTest.WILD);
@@ -903,7 +904,7 @@ public class WalkerFactory
         }
       }
       axis = nextAxis;
-      paxis = nextPaxis;
+      //paxis = nextPaxis;
       tail = pat;
     }
     
