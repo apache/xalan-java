@@ -30,7 +30,23 @@ public class ProcessorException extends SAXParseException
   //////////////////////////////////////////////////////////////////////
   // Constructors.
   //////////////////////////////////////////////////////////////////////
-    
+
+  /**
+   * Create a new ProcessorException from a message.
+   *
+   * <p>This constructor is especially useful when an application is
+   * creating its own exception from within a DocumentHandler
+   * callback.</p>
+   *
+   * @param message The error or warning message.
+   * @see org.xml.sax.Locator
+   * @see org.xml.sax.Parser#setLocale 
+   */
+  public ProcessorException (String message) 
+  {
+    super(message, null);
+  }
+
   /**
    * Create a new ProcessorException from a message and a Locator.
    *

@@ -127,9 +127,7 @@ public class Result
   // Internal state.
   //////////////////////////////////////////////////////////////////////
 
-  private String fileName;
   private OutputStream byteStream;
-  private String encoding;
   private Writer characterStream;
   private Node node;
 }

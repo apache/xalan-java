@@ -151,17 +151,4 @@ public interface Transformer extends XMLFilter
    */
   void setURIResolver(URIResolver resolver);
   
-  /**
-   * Set an XML parser for the source tree.  Note that if 
-   * Transformer.setXMLReader is not called, the parser set 
-   * with Processor.setXMLReader will be used.
-   */
-  public void setXMLReader(XMLReader reader);
-
-  /**
-   * Get the XML parser used for the source tree.  Note that 
-   * if Transformer.setXMLReader is not called, the parser set 
-   * with Processor.setXMLReader will be used.
-   */
-  public XMLReader getXMLReader();
 }
