@@ -3355,8 +3355,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void characters(char[] ch, int start, int length) {
 	    if (_currentOffset + length > _text.length) {
-		// GTM resizeTextArray(_text.length * 2);
-		// bug fix 6189, contributed by Mirko Seifert
 		resizeTextArray(
 		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
@@ -3556,7 +3554,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void ignorableWhitespace(char[] ch, int start, int length) {
 	    if (_currentOffset + length > _text.length) {
-		resizeTextArray(_text.length * 2);
+		resizeTextArray(
+		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
@@ -3627,7 +3626,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void comment(char[] ch, int start, int length) {
 	    makeTextNode(false);
 	    if (_currentOffset + length > _text.length) {
-		resizeTextArray(_text.length * 2);
+		resizeTextArray(
+		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
@@ -3652,8 +3652,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	private void characters(final String string) {
 	    final int length = string.length();
 	    if (_currentOffset + length > _text.length) {
-		// GTM: resizeTextArray(_text.length * 2);
-		// bug fix 6189, contributed by Mirko Seifert
 		resizeTextArray(
 		    Math.max(_text.length * 2, _currentOffset + length));
 	    }
