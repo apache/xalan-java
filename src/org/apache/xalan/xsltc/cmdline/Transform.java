@@ -92,7 +92,12 @@ import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
+import org.apache.xalan.xsltc.runtime.output.*;
+
 final public class Transform {
+
+    // Temporary
+    static private boolean _useExperimentalOutputSystem = false;
 
     private TransletOutputHandler _handler;
 
@@ -196,18 +201,39 @@ final public class Transform {
 	    }
 
 	    // Transform the document
-	    String encoding = _translet._encoding;
+	    final String method = _translet._method;
+	    final String encoding = _translet._encoding;
 
-	    // Create our default SAX/DTD handler
-	    DefaultSAXOutputHandler saxHandler =
-		new DefaultSAXOutputHandler(System.out, encoding);
-	    // Create a translet output handler and plug in the SAX/DTD handler
-	    TextOutput textOutput =
-		new TextOutput((ContentHandler)saxHandler,
-			       (LexicalHandler)saxHandler, encoding);
+	    TransletOutputHandler handler = null;
+
+	    if (_useExperimentalOutputSystem) {
+		if (method != null) {
+		    if (method.equals("xml")) {
+			handler = new StreamXMLOutput(System.out, encoding);
+		    }
+		    else if (method.equals("html")) {
+			handler = new StreamHTMLOutput(System.out, encoding);
+		    }
+		    else if (method.equals("text")) {
+			handler = null;		// TODO
+		    }
+		}
+		else {
+		    // TODO
+		    handler = new StreamXMLOutput(System.out, encoding);
+		}
+	    }
+	    else {
+		// Create our default SAX/DTD handler
+		DefaultSAXOutputHandler saxHandler =
+		    new DefaultSAXOutputHandler(System.out, encoding);
+		// Create a translet output handler and plug in the SAX/DTD handler
+		handler = new TextOutput((ContentHandler)saxHandler,
+				         (LexicalHandler)saxHandler, encoding);
+	    }
 
 	    // Transform and pass output to the translet output handler
-	    translet.transform(dom, textOutput);
+	    translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
@@ -297,6 +323,9 @@ final public class Transform {
 		    else if (args[i].equals("-j")) {
 			isJarFileSpecified = true;	
 			jarFile = args[++i];
+		    }
+		    else if (args[i].equals("-e")) {
+			_useExperimentalOutputSystem = true;
 		    }
 		    else {
 			printUsage();
