@@ -47,11 +47,18 @@ samples: makesamples
 
 jars: makesubdirs $(JARNAME)
 
+compat: makecompat compatjars
+
 PROPPATH = org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res
 $(JARNAME)::
 	$(CP) src/$(PROPPATH)/*.properties src/$(CLASS_DIR)/$(PROPPATH)/.; \
 	echo -n "Jarring ../bin/$@ .. "; \
 	cd src/$(CLASS_DIR); $(JAR) $(JARFLAGS) ../../bin/$@ org trax; \
+	echo "done"
+
+compatjars:
+	echo -n "Jarring ../bin/$@ .. "; \
+	cd src/$(CLASS_DIR); $(JAR) $(JARFLAGS) ../../bin/$@.jar org/apache/xalan/xslt org/apache/xalan/xpath; \
 	echo "done"
 
 # Note: When making dist, copy the built docs up one level
@@ -76,4 +83,6 @@ makedist:
 
 # Subsidiary targets are defined in make.include
 clean:: cleansubdirs cleandocs cleansamples
+
+compatclean:: cleancompat
 

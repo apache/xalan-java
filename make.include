@@ -106,6 +106,14 @@ makesubdirs:
 	$(MAKE) CURRENT_DIR=$(CURRENT_DIR)/$$i $(MFLAGS) -f makexslt4j JAVACFLAGS="$(JAVACFLAGS)" all); \
 	done
 
+.PHONY: makecompat
+makecompat:
+	@for i in $(SUBDIRS) ; \
+	do \
+	(cd $$i; echo making compat engine in "$(CURRENT_DIR)/$$i...";pwd; \
+	$(MAKE) CURRENT_DIR=$(CURRENT_DIR)/$$i $(MFLAGS) -f makecompat JAVACFLAGS="$(JAVACFLAGS)" all); \
+	done
+
 .PHONY: makedocs
 makedocs:
 	@for i in xdocs ; \
@@ -130,6 +138,14 @@ cleansubdirs:
 	$(MAKE) CURRENT_DIR=$(CURRENT_DIR)/$$i -f makexpath4j $(MFLAGS) clean); \
 	(cd $$i; echo cleaning in "$(CURRENT_DIR)/$$i..."; \
 	$(MAKE) CURRENT_DIR=$(CURRENT_DIR)/$$i -f makexslt4j $(MFLAGS) clean); \
+	done
+
+.PHONY: cleancompat
+cleancompat:
+	-@for i in $(SUBDIRS) ; \
+	do \
+	(cd $$i; echo cleaning in "$(CURRENT_DIR)/$$i..."; \
+	$(MAKE) CURRENT_DIR=$(CURRENT_DIR)/$$i -f makecompat $(MFLAGS) clean); \
 	done
 
 .PHONY: cleandocs
