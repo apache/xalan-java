@@ -2908,4 +2908,15 @@ abstract public class ToStream extends SerializerBase
          // this.m_writer = null;        
  
     }        
+    
+    /**
+      * Sets the character encoding coming from the xsl:output encoding stylesheet attribute.
+      * @param encoding the character encoding
+      */
+     public void setEncoding(String encoding)
+     {
+         super.setEncoding(encoding);         
+         m_maxCharacter = Encodings.getLastPrintable(encoding);
+         return;
+     }
 }
