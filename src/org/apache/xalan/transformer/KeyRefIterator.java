@@ -212,9 +212,7 @@ public class KeyRefIterator extends LocPathIterator
    */
   public void reset()
   {
-    // I don't think we want to reset anything but the current position 
-    // for this specialized iterator.
-    // super.reset();
+    super.reset();
     // setShouldCacheNodes(true);
     setCurrentPos(0);
   }
