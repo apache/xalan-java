@@ -801,7 +801,7 @@ public final class TransformerImpl extends Transformer
 		final String name = (String) names.nextElement();
 
 		// Ignore lower layer properties
-		if (isDefaultProperty(name)) continue;
+		if (isDefaultProperty(name, properties)) continue;
 
 		if (validOutputProperty(name)) {
 		    _properties.setProperty(name, properties.getProperty(name));
@@ -962,8 +962,8 @@ public final class TransformerImpl extends Transformer
     /**
      * Checks if a given output property is default (2nd layer only)
      */
-    private boolean isDefaultProperty(String name) {
-	return (_properties.get(name) == null);
+    private boolean isDefaultProperty(String name, Properties properties) {
+	return (properties.get(name) == null);
     }
 
     /**
