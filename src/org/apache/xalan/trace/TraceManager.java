@@ -171,7 +171,8 @@ public class TraceManager
       Node source = m_transformer.getXPathContext().getDTM(
         sourceNode).getNode(sourceNode);
 
-      fireTraceEvent(new TracerEvent(m_transformer, source, null,  /*sourceNode, mode,*/
+      fireTraceEvent(new TracerEvent(m_transformer, source, 
+                     m_transformer.getMode(),  /*sourceNode, mode,*/
                                      styleNode));
     }
   }
