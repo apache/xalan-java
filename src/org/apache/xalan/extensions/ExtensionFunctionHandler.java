@@ -241,7 +241,7 @@ public class ExtensionFunctionHandler
    */
   public Object callJava (Object object, String method, Object[] args, 
                           Object methodKey) 
-    throws BSFException
+    throws SAXException
   {
     // if the function name has a "." in it, then its a static
     // call with the args being arguments to the call. If it 
@@ -275,11 +275,14 @@ public class ExtensionFunctionHandler
       }
       catch (ClassNotFoundException e) 
       {
-        throw new BSFException(1, "unable to load class '" + 
-          className + "'", e);
+        // throw new BSFException(1, "unable to load class '" + 
+        //  className + "'", e);
+        throw new SAXException(e);
       }
     }
-    
+    Object[] convertedArgs = (methodArgs.length > 0) 
+                             ? new Object[methodArgs.length] : null;
+   
     if((null != m_cachedMethods) && !isNew && (null != object))
     {
       try
@@ -287,6 +290,9 @@ public class ExtensionFunctionHandler
         Method thisMethod = (Method)m_cachedMethods.get(methodKey);
         if(null != thisMethod)
         {
+          Class[] paramTypes = thisMethod.getParameterTypes();
+          MethodResolver.convertParams(methodArgs, convertedArgs, paramTypes);
+                     
           return thisMethod.invoke (object, methodArgs);
         }
       }
@@ -297,171 +303,56 @@ public class ExtensionFunctionHandler
     
     }
 
-    // determine the argument types as they are given
-    Class[] argTypes = null;
-    if (methodArgs != null) 
-    {
-      argTypes = new Class[methodArgs.length];
-      for (int i = 0; i < argTypes.length; i++) 
-      {
-        argTypes[i] = (methodArgs[i]!=null) ? methodArgs[i].getClass() : null;
-      }
-    }
-
     // try to find the method and run it, taking into account the special
-    // type conversions we want. If an arg is a Double, we first try with
-    // double and then with Double. Same for Boolean/boolean. This is done
-    // wholesale tho - that is, if there are two Double args both are
-    // tried double first and then Double.
-    boolean done = false;
-    boolean toggled = false;
+    // type conversions we want.
     try 
     {
-      while (!done) 
+      if (isNew) 
       {
-        if (methodArgs == null) 
-        {
-          done = true; // nothing to retry - do as-is or give up
-        }
-        else 
-        {
-          if (!toggled) 
-          {
-            for (int i = 0; i < argTypes.length; i++) 
-            {
-              Class cl = argTypes[i];
-              if (cl != null) 
-              {
-                if (cl == Double.class) 
-                {
-                  cl = double.class;
-                }
-                if (cl == Float.class) 
-                {
-                  cl = float.class;
-                }
-                else if (cl == Boolean.class) 
-                {
-                  cl = boolean.class;
-                }
-                else if (cl == Byte.class) 
-                {
-                  cl = byte.class;
-                }
-                else if (cl == Character.class) 
-                {
-                  cl = char.class;
-                }
-                else if (cl == Short.class) 
-                {
-                  cl = short.class;
-                }
-                else if (cl == Integer.class) 
-                {
-                  cl = int.class;
-                }
-                else if (cl == Long.class) 
-                {
-                  cl = long.class;
-                }
-                argTypes[i] = cl;
-              }
-            }
-            toggled = true;
-          }
-          else 
-          {
-            for (int i = 0; i < argTypes.length; i++) 
-            {
-              Class cl = argTypes[i];
-              if (cl != null) 
-              {
-                if (cl == double.class) 
-                {
-                  cl = Double.class;
-                }
-                if (cl == float.class) 
-                {
-                  cl = Float.class;
-                }
-                else if (cl == boolean.class) 
-                {
-                  cl = Boolean.class;
-                }
-                else if (cl == byte.class) 
-                {
-                  cl = Byte.class;
-                }
-                else if (cl == char.class) 
-                {
-                  cl = Character.class;
-                }
-                else if (cl == short.class) 
-                {
-                  cl = Short.class;
-                }
-                else if (cl == int.class) 
-                {
-                  cl = Integer.class;
-                }
-                else if (cl == long.class) 
-                {
-                  cl = Long.class;
-                }
-                argTypes[i] = cl;
-              }
-            }
-            done = true;
-          }
-        }
-        
-        // now find method with the right signature, call it and return result.
-        try 
-        {
-          if (isNew) 
-          {
-            // if its a "new" call then need to find and invoke a constructor
-            // otherwise find and invoke the appropriate method. The method
-            // searching logic is the same of course.
-            Constructor c =
-                           ReflectionUtils.getConstructor ((Class) object, argTypes);
-            Object obj = c.newInstance (methodArgs);
-            return obj;
-          }
-          else 
-          {
-            Method m = ReflectionUtils.getMethod (object, method, argTypes);
-            Object returnObj = m.invoke (object, methodArgs);
-            if(!isNew)
-            {
-              if(null == m_cachedMethods)
-                m_cachedMethods = new Hashtable();
-              m_cachedMethods.put(methodKey, m);
-            }
-            return returnObj;
-          }
-        }
-        catch (NoSuchMethodException e) 
-        {
-          // ignore if not done looking
-          if (done) 
-          {
-            throw e;
-          }
-        }
+        // if its a "new" call then need to find and invoke a constructor
+        // otherwise find and invoke the appropriate method. The method
+        // searching logic is the same of course.
+        Constructor c = MethodResolver.getConstructor((Class) object, 
+                                                      methodArgs, convertedArgs);
+        Object obj = c.newInstance (convertedArgs);
+        return obj;
       }
+      else 
+      {
+        Class cl = (object instanceof Class) ? ((Class)object) : object.getClass();
+        Method m = MethodResolver.getMethod(cl, method,
+                                            methodArgs, 
+                                            convertedArgs);
+        Object returnObj = m.invoke (object, convertedArgs);
+        if(!isNew)
+        {
+          if(null == m_cachedMethods)
+            m_cachedMethods = new Hashtable();
+          m_cachedMethods.put(methodKey, m);
+        }
+        return returnObj;
+      }
+    }
+    catch (NoSuchMethodException nsme) 
+    {
+      throw new SAXException(nsme);
+      // throw new BSFException (BSFException.REASON_OTHER_ERROR,
+      //  "NoSuchMethodException: " + nsme);
     }
     catch (Exception e) 
     {
+      throw new SAXException(e);
+      /*
       Throwable t = (e instanceof InvocationTargetException) ?
                     ((InvocationTargetException)e).getTargetException () :
                     null;
       throw new BSFException (BSFException.REASON_OTHER_ERROR,
         "method call/new failed: " + e +
         ((t==null)?"":(" target exception: "+t)), t);
+      */
     }
     // should not get here
-    return null;
+    // return null;
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -486,12 +377,10 @@ public class ExtensionFunctionHandler
                               Object methodKey, Class javaClass)
     throws SAXException 
   {
-    /*
     if (!componentStarted) 
     {
       startupComponent (javaClass);
     }
-    */
 
     boolean isJava = false;
     try 
@@ -509,16 +398,21 @@ public class ExtensionFunctionHandler
       // case 'cause of the funky method selection rules. That engine 
       // expects the first arg to be the object on which to make the call.
       boolean isCTorCall = false;
-      if (scriptLang.equals ("javaclass")) 
+      // System.out.println("scriptLang: "+scriptLang);
+      if (scriptLang.equals ("javaclass") || scriptLang.equals ("xslt-javaclass")) 
       {
         isJava = true;
-        isCTorCall = funcName.equals("new");
+        // isCTorCall = funcName.equals("new");
+        isCTorCall = funcName.endsWith(".new") || funcName.equals("new");
         e = mgr.loadScriptingEngine ("xslt-javaclass");
         if(isCTorCall)
         {
           argArray = new Object[args.size ()];
           argStart = 0;
-          funcName = this.classObject.getName()+".new";
+          if(null != this.classObject)
+          {
+            funcName = this.classObject.getName()+".new";
+          }
           javaObject = null;
           hasCalledCTor = true;
         }
@@ -559,7 +453,7 @@ public class ExtensionFunctionHandler
         argArray[i+argStart] = 
                               (o instanceof XObject) ? ((XObject)o).object () : o;
       }
-      
+
       if(isJava)
         return callJava(javaObject, funcName, argArray, methodKey);
       else
@@ -574,15 +468,16 @@ public class ExtensionFunctionHandler
         {
           msg = msg.substring("Stopping after fatal error:".length());
         }
-        System.out.println("Call to extension function failed: "+msg);
+        // System.out.println("Call to extension function failed: "+msg);
+        throw new SAXException (e);
       }
       else
       {
         // Should probably make a TRaX Extension Exception.
-        throw new SAXException ("Extension not found");
+        throw new SAXException ("Could not create extension: "+funcName+" because of: "+e);
       }
     }
-    return new XNull();
+    // return new XNull();
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -601,8 +496,7 @@ public class ExtensionFunctionHandler
    * 
    * @exception XPathProcessorException if something bad happens.
    */
-  protected void startupComponent (TransformerImpl transformer,
-                                   Class classObj) 
+  protected void startupComponent (Class classObj) 
     throws  SAXException 
   {
     if(!bsfInitialized)

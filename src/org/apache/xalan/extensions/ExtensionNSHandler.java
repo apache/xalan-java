@@ -247,7 +247,7 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
     {
       try
       {
-        startupComponent (transformer, classObj);
+        startupComponent (classObj);
       }
       catch (XPathProcessorException e)
       {
@@ -292,8 +292,7 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
    *
    * @exception XPathProcessorException if something bad happens.
    */
-  protected void startupComponent (TransformerImpl transformer, 
-                                   Class classObj) 
+  protected void startupComponent (Class classObj) 
     throws  SAXException
   {
     if(!bsfInitialized)
@@ -318,7 +317,7 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
         throw new XPathProcessorException (e.getMessage (), e);
       }
     }
-    super.startupComponent (transformer, classObj);
+    super.startupComponent (classObj);
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -354,7 +353,7 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
     }
 
     // parse the document at the URI of the extension, if any
-    URL url = null; // xslp.getURLFromString(namespaceUri,
+    String url = null; // xslp.getAbsoluteURI(namespaceUri,
                      //               xslp.m_stylesheetRoot.getBaseIdentifier());
     // System.out.println("Extension URI: "+url.toString());
     org.apache.xalan.xpath.XPathContext liaison = xslp.getXPathContext();

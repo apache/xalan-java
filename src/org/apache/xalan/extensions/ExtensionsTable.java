@@ -246,6 +246,7 @@ public class ExtensionsTable
             }
             System.out.println("Call to extension function failed: "+msg);
             result = new XNull();
+            throw new org.xml.sax.SAXException(e);
           }
         }
       }

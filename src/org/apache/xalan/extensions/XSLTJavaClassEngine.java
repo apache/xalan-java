@@ -130,152 +130,33 @@ public class XSLTJavaClassEngine extends BSFEngineImpl
       }
     }
 
-    // determine the argument types as they are given
-    Class[] argTypes = null;
-    if (methodArgs != null) 
-    {
-      argTypes = new Class[methodArgs.length];
-      for (int i = 0; i < argTypes.length; i++) 
-      {
-        argTypes[i] = (methodArgs[i]!=null) ? methodArgs[i].getClass() : null;
-      }
-    }
-
-    // try to find the method and run it, taking into account the special
-    // type conversions we want. If an arg is a Double, we first try with
-    // double and then with Double. Same for Boolean/boolean. This is done
-    // wholesale tho - that is, if there are two Double args both are
-    // tried double first and then Double.
-    boolean done = false;
-    boolean toggled = false;
+    Object[] convertedArgs = (methodArgs.length > 0) 
+                             ? new Object[methodArgs.length] : null;
     try 
     {
-      while (!done) 
+      if (isNew) 
       {
-        if (methodArgs == null) 
-        {
-          done = true; // nothing to retry - do as-is or give up
-        }
-        else 
-        {
-          if (!toggled) 
-          {
-            for (int i = 0; i < argTypes.length; i++) 
-            {
-              Class cl = argTypes[i];
-              if (cl != null) 
-              {
-                if (cl == Double.class) 
-                {
-                  cl = double.class;
-                }
-                if (cl == Float.class) 
-                {
-                  cl = float.class;
-                }
-                else if (cl == Boolean.class) 
-                {
-                  cl = boolean.class;
-                }
-                else if (cl == Byte.class) 
-                {
-                  cl = byte.class;
-                }
-                else if (cl == Character.class) 
-                {
-                  cl = char.class;
-                }
-                else if (cl == Short.class) 
-                {
-                  cl = short.class;
-                }
-                else if (cl == Integer.class) 
-                {
-                  cl = int.class;
-                }
-                else if (cl == Long.class) 
-                {
-                  cl = long.class;
-                }
-                argTypes[i] = cl;
-              }
-            }
-            toggled = true;
-          }
-          else 
-          {
-            for (int i = 0; i < argTypes.length; i++) 
-            {
-              Class cl = argTypes[i];
-              if (cl != null) 
-              {
-                if (cl == double.class) 
-                {
-                  cl = Double.class;
-                }
-                if (cl == float.class) 
-                {
-                  cl = Float.class;
-                }
-                else if (cl == boolean.class) 
-                {
-                  cl = Boolean.class;
-                }
-                else if (cl == byte.class) 
-                {
-                  cl = Byte.class;
-                }
-                else if (cl == char.class) 
-                {
-                  cl = Character.class;
-                }
-                else if (cl == short.class) 
-                {
-                  cl = Short.class;
-                }
-                else if (cl == int.class) 
-                {
-                  cl = Integer.class;
-                }
-                else if (cl == long.class) 
-                {
-                  cl = Long.class;
-                }
-                argTypes[i] = cl;
-              }
-            }
-            done = true;
-          }
-        }
-        
-        // now find method with the right signature, call it and return result.
-        try 
-        {
-          if (isNew) 
-          {
-            // if its a "new" call then need to find and invoke a constructor
-            // otherwise find and invoke the appropriate method. The method
-            // searching logic is the same of course.
-            Constructor c =
-                           ReflectionUtils.getConstructor ((Class) object, argTypes);
-            Object obj = c.newInstance (methodArgs);
-            return obj;
-          }
-          else 
-          {
-            Method m = ReflectionUtils.getMethod (object, method, argTypes);
-            return m.invoke (object, methodArgs);
-          }
-        }
-        catch (NoSuchMethodException e) 
-        {
-          // ignore if not done looking
-          if (done) 
-          {
-            throw e;
-          }
-        }
+        // if its a "new" call then need to find and invoke a constructor
+        // otherwise find and invoke the appropriate method. The method
+        // searching logic is the same of course.
+        Constructor c = MethodResolver.getConstructor((Class) object, 
+                                                      methodArgs, convertedArgs);
+        Object obj = c.newInstance (methodArgs);
+        return obj;
       }
+      else 
+      {
+        Method m = MethodResolver.getMethod(object.getClass(), method,
+                                                      methodArgs, 
+                                                      convertedArgs);
+        return m.invoke (object, methodArgs);
+      }
+    }
+    catch (NoSuchMethodException nsme) 
+    {
+      // ignore if not done looking
+      throw new BSFException (BSFException.REASON_OTHER_ERROR,
+        "NoSuchMethodException: " + nsme);
     }
     catch (Exception e) 
     {
@@ -287,7 +168,7 @@ public class XSLTJavaClassEngine extends BSFEngineImpl
         ((t==null)?"":(" target exception: "+t)), t);
     }
     // should not get here
-    return null;
+    // return null;
   }
 }
 
