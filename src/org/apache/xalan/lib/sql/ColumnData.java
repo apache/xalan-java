@@ -144,14 +144,15 @@ public class ColumnData extends StreamableNode implements Text
 
       if (columnIndex < m_parent.m_parent.m_childCount)
       {
-        return rs.getString(columnIndex + 1);
+        String s = rs.getString(columnIndex + 1);
+        return (null != s) ? s : "";
       }
       else
-        return null;
+        return "";
     }
     catch (SQLException sqle)
     {
-      return null;
+      return "";
     }
   }
 
