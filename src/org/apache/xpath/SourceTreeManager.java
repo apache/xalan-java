@@ -121,6 +121,17 @@ public class SourceTreeManager
     m_uriResolver = resolver;
   }
 
+  /**
+   * Get the object that will be used to resolve URIs used in
+   * document(), etc.
+   * @return An object that implements the URIResolver interface,
+   * or null.
+   */
+  public URIResolver getURIResolver()
+  {
+    return m_uriResolver;
+  }
+
   /** NEEDSDOC Field m_entityResolver          */
   EntityResolver m_entityResolver;
 
