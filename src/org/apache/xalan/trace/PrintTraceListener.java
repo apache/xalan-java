@@ -189,7 +189,8 @@ public class PrintTraceListener implements TraceListener
       SourceLocator locator = ((DTMNodeProxy)sourceNode).getDTM()
         .getSourceLocatorFor(nodeHandler);
 
-      m_pw.println("Selected source node '" + sourceNode.getNodeName()
+      if (locator != null)      
+        m_pw.println("Selected source node '" + sourceNode.getNodeName()
                  + "', at " + locator);
 
       if (ev.m_styleNode.getLineNumber() == 0)
