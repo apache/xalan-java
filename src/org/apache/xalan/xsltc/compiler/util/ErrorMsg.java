@@ -162,7 +162,6 @@ public final class ErrorMsg {
     public static final int COMPILE_USAGE_STR       = 72;
     public static final int TRANSFORM_USAGE_STR     = 73;
 
-
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.
     private static String[] _errorMessages;
@@ -176,9 +175,7 @@ public final class ErrorMsg {
     public final static String RUNTIME_ERROR_KEY    = "runtime-error";
 
     static {
-	Locale locale = Locale.getDefault();
-	//Locale locale = new Locale("no","NO");
-	ResourceBundle bundle = ResourceBundle.getBundle("org.apache.xalan.xsltc.compiler.util.ErrorMessages", locale);
+	ResourceBundle bundle = ResourceBundle.getBundle("org.apache.xalan.xsltc.compiler.util.ErrorMessages", Locale.getDefault());
 	_errorMessages  = bundle.getStringArray(ERROR_MESSAGES_KEY);
 	_compileError   = bundle.getString(COMPILER_ERROR_KEY);
 	_compileWarning = bundle.getString(COMPILER_WARNING_KEY);

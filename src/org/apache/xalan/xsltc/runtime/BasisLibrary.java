@@ -66,6 +66,9 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import java.text.MessageFormat;
 import java.text.FieldPosition;
 import java.text.DecimalFormat;
@@ -956,46 +959,26 @@ public final class BasisLibrary implements Operators {
     public static final int NAMESPACE_PREFIX_ERR    = 12;
     public static final int DOM_ADAPTER_INIT_ERR    = 13;
 
-    private final static String[] errorMessages = {
-	// RUN_TIME_INTERNAL_ERR
-	"Run-time internal error in ''{0}''",
-	// RUN_TIME_COPY_ERR
-	"Run-time error when executing <xsl:copy>.",
-	// DATA_CONVERSION_ERR
-	"Invalid conversion from ''{0}'' to ''{1}''.",
-	// EXTERNAL_FUNC_ERR
-	"External function ''{0}'' not supported by XSLTC.",
-	// EQUALITY_EXPR_ERR
-	"Unknown argument type in equality expression.",
-	// INVALID_ARGUMENT_ERR
-	"Invalid argument type ''{0}'' in call to ''{1}''",
-	// FORMAT_NUMBER_ERR
-	"Attempting to format number ''{0}'' using pattern ''{1}''.",
-	// ITERATOR_CLONE_ERR
-	"Cannot clone iterator ''{0}''.",
-	// AXIS_SUPPORT_ERR
-	"Iterator for axis ''{0}'' not supported.",
-	// TYPED_AXIS_SUPPORT_ERR
-	"Iterator for typed axis ''{0}'' not supported.",
-	// STRAY_ATTRIBUTE_ERR
-	"Attribute ''{0}'' outside of element.",
-	// STRAY_NAMESPACE_ERR
-	"Namespace declaration ''{0}''=''{1}'' outside of element.",
-	// NAMESPACE_PREFIX_ERR
-	"Namespace for prefix ''{0}'' has not been declared.",
-	// DOM_ADAPTER_INIT_ERR
-	"DOMAdapter created using wrong type of source DOM."
-    };
+    // All error messages are localized and are stored in resource bundles.
+    // This array and the following 4 strings are read from that bundle.
+    private static String[] _errorMessages;
+    
+    public final static String ERROR_MESSAGES_KEY   = "error-messages";
+
+    static {
+	ResourceBundle bundle = ResourceBundle.getBundle("org.apache.xalan.xsltc.runtime.ErrorMessages", Locale.getDefault());
+	_errorMessages  = bundle.getStringArray(ERROR_MESSAGES_KEY);
+    }
 
     /**
      * Print a run-time error message.
      */
     public static void runTimeError(int code) {
-	throw new RuntimeException(errorMessages[code]);
+	throw new RuntimeException(_errorMessages[code]);
     }
 
     public static void runTimeError(int code, Object[] args) {
-	final String message = MessageFormat.format(errorMessages[code],args);
+	final String message = MessageFormat.format(_errorMessages[code],args);
 	throw new RuntimeException(message);
     }
 

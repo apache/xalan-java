@@ -959,7 +959,7 @@ public class Parser implements Constants, ContentHandler {
     public void printWarnings() {
 	final int size = _warnings.size();
 	if (size > 0) {
-	    ErrorMsg.getCompileWarningMessage();
+	    System.err.println(ErrorMsg.getCompileWarningMessage());
 	    for (int i = 0; i < size; i++) {
 		System.err.println("  " + _warnings.elementAt(i));
 	    }
