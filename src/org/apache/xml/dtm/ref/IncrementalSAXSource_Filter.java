@@ -732,7 +732,8 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
   //================================================================
   /** Simple unit test. Attempt coroutine parsing of document indicated
    * by first argument (as a URI), report progress.
- */
+   */
+    /*
   public static void main(String args[])
   {
     System.out.println("Starting...");
@@ -799,5 +800,5 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
       }
     } // end for
   }
-  
+    */  
 } // class IncrementalSAXSource_Filter

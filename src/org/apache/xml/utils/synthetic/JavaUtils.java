@@ -163,16 +163,16 @@ public class JavaUtils
                                 fileName
                         };
                                 
-                        try
-                    {
-                                return new sun.tools.javac.Main(System.err, "javac").compile(args);
-                        }
-                        catch (Throwable th)
-                        {
-                                System.err.println("INFORMATIONAL: Unable to load Java compiler API (eg tools.jar).");
-                                System.err.println("\tSwitching to command-line invocation.");
-                                cantLoadCompiler=true;
-                        }
+//                         try
+// 			    {
+//                                 return new sun.tools.javac.Main(System.err, "javac").compile(args);
+//                         }
+//                         catch (Throwable th)
+//                         {
+//                                 System.err.println("INFORMATIONAL: Unable to load Java compiler API (eg tools.jar).");
+//                                 System.err.println("\tSwitching to command-line invocation.");
+//                                 cantLoadCompiler=true;
+//                         }
                 }
     
                 // FALLTHRU:
