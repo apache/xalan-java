@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -63,22 +63,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
-
-import java.util.Vector;
-import java.util.Iterator;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import java.sql.Timestamp;
-import java.sql.Time;
-import java.sql.Date;
-
-import java.lang.Integer;
-import java.lang.Double;
 
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -95,20 +81,14 @@ public class XStatement extends StreamableNode
   /** Flag for DEBUG mode          */
   private static final boolean DEBUG = false;
 
-  /**
-   * Ths JDBC Statement that is used for the query.
-   * It is allocated as a prepared statement but may
-   * only be use as a regular statemwnt.
-   *
-   */
-  private Statement         m_statement;
-  private PreparedStatement m_pstatement;
+  /** JDBC Query statement          */
+  private Statement m_statement;
 
   /** Node counter          */
   private int m_nodeCounter = 0;
 
   /**
-   * Get And Increment Node Counter
+   * Get And Increment Node Counter 
    *
    *
    * @return Node counter
@@ -138,7 +118,7 @@ public class XStatement extends StreamableNode
   ResultSet m_resultSet;
 
   /**
-   * Get the ResultSet from executing the query string
+   * Get the ResultSet from executing the query string 
    *
    *
    * @return ResultSet instance
@@ -195,11 +175,8 @@ public class XStatement extends StreamableNode
 
     // The SQL statement which lets us execute commands against the connection.
     m_xconnection = connection;
-
     m_statement = m_xconnection.m_connection.createStatement();
-
     m_queryString = queryString;
-
     m_resultSet = m_statement.executeQuery(m_queryString);
     m_rowset = new RowSet(this);
 
@@ -207,123 +184,11 @@ public class XStatement extends StreamableNode
       System.out.println("Exiting XStatement constructor");
   }
 
-  public XStatement(XConnection connection, String queryString, Vector pList)
-          throws SQLException
-  {
-
-    super(null);
-
-    if (DEBUG)
-      System.out.println("In XStatement constructor for pquery");
-
-    // The SQL statement which lets us execute commands against the connection.
-    m_xconnection = connection;
-    m_queryString = queryString;
-
-    if (DEBUG)
-    {
-      System.out.println("Executing PQuery: " + m_queryString);
-    }
-    m_pstatement = m_xconnection.m_connection.prepareStatement(m_queryString);
-    Iterator iter = pList.iterator();
-    int indx = 1;
-    while (iter.hasNext())
-    {
-      QueryParameter param = (QueryParameter) iter.next();
-      setParameter(indx, m_pstatement, param);
-      indx++;
-    }
-
-    m_resultSet = m_pstatement.executeQuery();
-    m_rowset = new RowSet(this);
-
-    //
-    // Make a copy of the statement for external access
-    m_statement = m_pstatement;
-
-    if (DEBUG)
-      System.out.println("Exiting XStatement constructor");
-  }
-
-
   /**
-   * Set the parameter for a Prepared Statement
-   *
-   */
-  public void setParameter(int pos, PreparedStatement stmt, QueryParameter p)
-    throws SQLException
-  {
-    String type = p.getType();
-    if (type.equalsIgnoreCase("string"))
-    {
-      stmt.setString(pos, p.getValue());
-    }
-
-    if (type.equalsIgnoreCase("bigdecimal"))
-    {
-      stmt.setBigDecimal(pos, new BigDecimal(p.getValue()));
-    }
-
-    if (type.equalsIgnoreCase("boolean"))
-    {
-      Integer i = new Integer( p.getValue() );
-      boolean b = ((i.intValue() != 0) ? false : true);
-      stmt.setBoolean(pos, b);
-    }
-
-    if (type.equalsIgnoreCase("bytes"))
-    {
-      stmt.setBytes(pos, p.getValue().getBytes());
-    }
-
-    if (type.equalsIgnoreCase("date"))
-    {
-      stmt.setDate(pos, Date.valueOf(p.getValue()));
-    }
-
-    if (type.equalsIgnoreCase("double"))
-    {
-      Double d = new Double(p.getValue());
-      stmt.setDouble(pos, d.doubleValue() );
-    }
-
-    if (type.equalsIgnoreCase("float"))
-    {
-      Float f = new Float(p.getValue());
-      stmt.setFloat(pos, f.floatValue());
-    }
-
-    if (type.equalsIgnoreCase("long"))
-    {
-      Long l = new Long(p.getValue());
-      stmt.setLong(pos, l.longValue());
-    }
-
-    if (type.equalsIgnoreCase("short"))
-    {
-      Short s = new Short(p.getValue());
-      stmt.setShort(pos, s.shortValue());
-    }
-
-    if (type.equalsIgnoreCase("time"))
-    {
-      stmt.setTime(pos, Time.valueOf(p.getValue()) );
-    }
-
-    if (type.equalsIgnoreCase("timestamp"))
-    {
-
-      stmt.setTimestamp(pos, Timestamp.valueOf(p.getValue()) );
-    }
-
-  }
-
-
-  /**
-   * Get the representation of the JDBC Query statement
+   * Get the representation of the JDBC Query statement 
    *
    *
-   * @return the representation of the JDBC Query statement, this
+   * @return the representation of the JDBC Query statement, this 
    */
   public XStatement getXStatement()
   {
@@ -350,7 +215,7 @@ public class XStatement extends StreamableNode
    * iterator. The available set of constants is defined in the
    * <code>NodeFilter</code> interface.
    *
-   * @return which node types are to be presented
+   * @return which node types are to be presented 
    */
   public int getWhatToShow()
   {
@@ -580,7 +445,7 @@ public class XStatement extends StreamableNode
   // ===== ContextNodeList implementation =====
 
   /**
-   * The current node is the RowSet
+   * The current node is the RowSet  
    *
    *
    * @return The row-set
@@ -614,7 +479,7 @@ public class XStatement extends StreamableNode
    * Set whether nodes should be cached - not implemented
    *
    *
-   * @param b Flag indicating whether nodes should be cached
+   * @param b Flag indicating whether nodes should be cached 
    */
   public void setShouldCacheNodes(boolean b)
   {
@@ -635,7 +500,7 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * Not implemented
+   * Not implemented 
    *
    *
    * @param i
@@ -647,7 +512,7 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * Return size
+   * Return size 
    *
    *
    * @return 1
@@ -669,7 +534,7 @@ public class XStatement extends StreamableNode
   }
 
   /**
-   * Overide cloneWithReset method
+   * Overide cloneWithReset method 
    *
    *
    * @return A clone of this which has been reset
@@ -690,7 +555,7 @@ public class XStatement extends StreamableNode
    * Clone this object
    *
    *
-   * @return A clone of this object
+   * @return A clone of this object 
    *
    * @throws CloneNotSupportedException
    */
@@ -701,26 +566,26 @@ public class XStatement extends StreamableNode
 
     return clone;
   }
-
+  
   /** Index of Last node found by this iterator   */
   private int m_last = 0;
-
+  
   /**
-   * Get index of the last found node
+   * Get index of the last found node 
    *
    *
-   * @return index of last found node
+   * @return index of last found node 
    */
   public int getLast()
   {
     return m_last;
   }
-
+  
   /**
-   * Set the index of the last found node
+   * Set the index of the last found node 
    *
    *
-   * @aram index of last found node
+   * @aram index of last found node 
    */
   public void setLast(int last)
   {
