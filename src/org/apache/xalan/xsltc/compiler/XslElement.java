@@ -155,7 +155,7 @@ final class XslElement extends Instruction {
 	// Handle the 'use-attribute-sets' attribute
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
-	    addElement(new UseAttributeSets(useSets, parser));
+	    setFirstElement(new UseAttributeSets(useSets, parser));
 	}
 
 	parseChildren(parser);

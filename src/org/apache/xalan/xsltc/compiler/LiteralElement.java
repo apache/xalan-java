@@ -197,6 +197,16 @@ final class LiteralElement extends Instruction {
 	_attributeElements.add(attribute);
     }
 
+    /**
+     *
+     */
+    public void addLocalAttribute(SyntaxTreeNode attribute) {
+	if (_attributeElements == null) {
+	    _attributeElements = new Vector(2);
+	}
+	_attributeElements.insertElementAt(attribute,0);
+    }
+
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	// Type-check all attributes
@@ -265,6 +275,10 @@ final class LiteralElement extends Instruction {
 	    if (qname == parser.getUseAttributeSets()) {
 		addAttribute(new UseAttributeSets(val, parser));
 	    }
+	    // Ignore other attributes in XSL namespace
+	    else if (qname.getNamespace().equals(XSLT_URI)) {
+
+	    }
 	    // Handle xsl:extension-element-prefixes
 	    else if (qname == parser.getExtensionElementPrefixes()) {
 		stable.excludeNamespaces(val);
@@ -272,10 +286,6 @@ final class LiteralElement extends Instruction {
 	    // Handle xsl:exclude-result-prefixes
 	    else if (qname == parser.getExcludeResultPrefixes()) {
 		stable.excludeNamespaces(val);
-	    }
-	    // Ignore other attributes in XSL namespace
-	    else if (qname.getNamespace() == XSLT_URI) {
-		
 	    }
 	    // Handle literal attributes (attributes not in XSL namespace)
 	    else {

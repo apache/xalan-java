@@ -403,6 +403,11 @@ public abstract class SyntaxTreeNode implements Constants {
 	element.setParent(this);
     }
 
+    public final void setFirstElement(SyntaxTreeNode element) {
+	_contents.insertElementAt(element,0);
+	element.setParent(this);
+    }
+
     public final void removeElement(SyntaxTreeNode element) {
 	_contents.remove(element);
 	element.setParent(null);

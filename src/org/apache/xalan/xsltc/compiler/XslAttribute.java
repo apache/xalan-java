@@ -115,13 +115,12 @@ final class XslAttribute extends Instruction {
 	for (int i = 0; i < parent.elementCount(); i++) {
 	    SyntaxTreeNode item = (SyntaxTreeNode)siblings.elementAt(i);
 	    if (item == this) break;
-	    if (!(item instanceof XslAttribute) &&
-		!(item instanceof UseAttributeSets) &&
-		!(item instanceof LiteralAttribute)) {
-		_ignore = true;
-		reportWarning(this, parser, ErrorMsg.ATTROUTS_ERR, name);
-		return;
-	    }
+	    if (item instanceof XslAttribute) continue;
+	    if (item instanceof UseAttributeSets) continue;
+	    if (item instanceof LiteralAttribute) continue;
+	    _ignore = true;
+	    reportWarning(this, parser, ErrorMsg.ATTROUTS_ERR, name);
+	    return;
 	}
 
 	// Get namespace from namespace attribute?
@@ -169,6 +168,9 @@ final class XslAttribute extends Instruction {
 	    }
 	}
 
+	if (parent instanceof LiteralElement) {
+	    ((LiteralElement)parent).addLocalAttribute(this);
+	}
 
 	_name = AttributeValue.create(this, name, parser);
 	parseChildren(parser);
@@ -194,6 +196,7 @@ final class XslAttribute extends Instruction {
 	final InstructionList il = methodGen.getInstructionList();
 
 	if (_ignore) return;
+	_ignore = true;
 
 	// Compile code that emits any needed namespace declaration
 	if (_namespace != null) {
