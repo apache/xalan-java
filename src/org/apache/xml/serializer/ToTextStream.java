@@ -357,11 +357,28 @@ void writeNormalizedChars(
                 }
                 else
                 {
+                    /* The character is greater than the allowed 
+                     * maximum value and it is not part of a UTF-16
+                     * pair that would be put out as a character reference.
+                     */
                     String encoding = getEncoding();
-                    String integralValue = Integer.toString(c);
-                    throw new SAXException(XMLMessages.createXMLMessage(
-                        XMLErrorResources.ER_ILLEGAL_CHARACTER,
-                        new Object[]{ integralValue, encoding}));
+                    if (encoding != null)
+                    {
+                        /* The output encoding is known, 
+                         * so somthing is wrong.
+                         */ 
+                        String integralValue = Integer.toString(c);
+                        throw new SAXException(XMLMessages.createXMLMessage(
+                            XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                            new Object[]{ integralValue, encoding}));
+                    }
+                    else 
+                    {
+                        /* The output encoding is not known,
+                         * so just write it out as-is.
+                         */                        
+                        writer.write(c);
+                    }
                 }
             }
         }
@@ -388,11 +405,28 @@ void writeNormalizedChars(
             }
             else
             {
+                /* The character is greater than the allowed 
+                 * maximum value and it is not part of a UTF-16
+                 * pair that would be put out as a character reference.
+                 */
                 String encoding = getEncoding();
-                String integralValue = Integer.toString(c);
-                throw new SAXException(XMLMessages.createXMLMessage(
-                    XMLErrorResources.ER_ILLEGAL_CHARACTER,
-                    new Object[]{ integralValue, encoding}));                 
+                if (encoding != null) 
+                {
+                    /* The output encoding is known, 
+                     * so somthing is wrong.
+                     */ 
+                    String integralValue = Integer.toString(c);
+                    throw new SAXException(XMLMessages.createXMLMessage(
+                        XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                        new Object[]{ integralValue, encoding}));
+                }
+                else 
+                {
+                    /* The output encoding is not known,
+                     * so just write it out as-is.
+                     */                        
+                    writer.write(c);
+                }                
             }
         }
     }
