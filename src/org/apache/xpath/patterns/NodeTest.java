@@ -564,7 +564,7 @@ public class NodeTest extends Expression
     // the prefix expands, regardless of the local part of the name."
     case DTMFilter.SHOW_NAMESPACE :
     {
-      String ns = dtm.getNodeValue(context);
+      String ns = dtm.getLocalName(context);
 
       return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
     }
@@ -637,7 +637,7 @@ public class NodeTest extends Expression
     // the prefix expands, regardless of the local part of the name."
     case DTMFilter.SHOW_NAMESPACE :
     {
-      String ns = dtm.getNodeValue(context);
+      String ns = dtm.getLocalName(context);
 
       return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
     }

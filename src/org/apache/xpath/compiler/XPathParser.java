@@ -1843,16 +1843,6 @@ public class XPathParser
       }
       else
       {
-        if (OpCodes.FROM_NAMESPACE == axesType)
-        {
-          String prefix = (String) this.m_ops.m_tokenQueue.elementAt(m_queueMark - 1);
-          String namespace =
-            ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(
-              prefix);
-
-          this.m_ops.m_tokenQueue.setElementAt(namespace,m_queueMark - 1);
-        }
-
         m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
 
         // Minimalist check for an NCName - just check first character
