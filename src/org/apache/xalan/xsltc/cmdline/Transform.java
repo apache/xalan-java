@@ -76,7 +76,7 @@ import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
@@ -149,11 +149,14 @@ final public class Transform {
 	    final XMLReader reader = parser.getXMLReader();
 
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-            XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
+            XSLTCDTMManager dtmManager =
+                (XSLTCDTMManager)XSLTCDTMManager.getDTMManagerClass()
+                                                .newInstance();
 
-            final SAXImpl dom = (SAXImpl)dtmManager.getDTM(
-                             new SAXSource(reader, new InputSource(_fileName)),
-                             false, null, true, false, translet.hasIdCall());
+            final DOMEnhancedForDTM dom =
+                   (DOMEnhancedForDTM)dtmManager.getDTM(
+                            new SAXSource(reader, new InputSource(_fileName)),
+                            false, null, true, false, translet.hasIdCall());
 
 	    dom.setDocumentURI(_fileName);
             translet.prepassDocument(dom);
