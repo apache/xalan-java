@@ -76,6 +76,8 @@ import org.apache.xalan.res.XSLTErrorResources;
  * special treatement, such as entity reference substitution or normalization
  * of a newline character.  It also provides character to entity reference
  * lookup.
+ *
+ * DEVELOPERS: See Known Issue in the constructor.
  */
 public class CharInfo
 {
@@ -170,16 +172,30 @@ public class CharInfo
 
       // Fix Bugzilla#4000: force reading in UTF-8
       //  This creates the de facto standard that Xalan's resource 
-      //  files must be encoded in UTF-8
-			// Problem: MSVJ++ doesn't understand this request. Fallback added.
-			try
-			{
-				reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-			}
-			catch(java.io.UnsupportedEncodingException e)
-			{
-				reader = new BufferedReader(new InputStreamReader(is));
-			}
+      //  files must be encoded in UTF-8. This should work in all JVMs.
+      //
+      // %REVIEW% KNOWN ISSUE: IT FAILS IN MICROSOFT VJ++, which
+      // didn't implement the UTF-8 encoding. Theoretically, we should
+      // simply let it fail in that case, since the JVM is obviously
+      // broken if it doesn't support such a basic standard.  But
+      // since there are still some users attempting to use VJ++ for
+      // development, we have dropped in a fallback which makes a
+      // second attempt using the platform's default encoding. In VJ++
+      // this is apparently ASCII, which is subset of UTF-8... and
+      // since the strings we'll be reading here are also primarily
+      // limited to the 7-bit ASCII range (at least, in English
+      // versions of Xalan), this should work well enough to keep us
+      // on the air until we're ready to officially decommit from
+      // VJ++.
+      try
+      {
+	reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+      }
+      catch(java.io.UnsupportedEncodingException e)
+      {
+	reader = new BufferedReader(new InputStreamReader(is));
+      }
+
       line = reader.readLine();
 
       while (line != null)
