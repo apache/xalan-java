@@ -257,7 +257,12 @@ class FunctionCall extends Expression {
 		}
 	    } 
 	    catch (TypeCheckError e) {
-		getParser().reportError(ERROR, e.getErrorMsg());
+		ErrorMsg errorMsg = e.getErrorMsg();
+		if (errorMsg == null) {
+		    final String name = _fname.getLocalPart();
+		    errorMsg = new ErrorMsg(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
+		}
+		getParser().reportError(ERROR, errorMsg);
 		return _type = Type.Void;
 	    }
 
