@@ -78,7 +78,7 @@
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.2.D7">
+     <s3 title="Changes since &xslt4j; 2.2.D8">
      <p>&xslt4j-current; is a Developer release. For enhanced performance, it incorporates the 
      <link idref="dtm">DTM</link>.</p>
      <note>The SQL Extension library has been updated to work with DTM.</note>

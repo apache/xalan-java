@@ -1,3 +1,107 @@
+<s3 title="Changes for &xslt4j; 2.2.D8>
+<p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Code Update
+ Submitted by:John Gentilin<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Fixed DTM.NULL compile error<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TreeWalker2Result.java<br/><ref>Committer's log entry: </ref>Redundant test removed, possibly redundant code flagged for %REVIEW%<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ java/src/org/apache/xalan/transformer
+ TransformerHandlerImpl.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDocumentImpl.java DTMManagerDefault.java
+ IncrementalSAXSource.java
+ IncrementalSAXSource_Filter.java
+ IncrementalSAXSource_Xerces.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java
+ java/src/org/apache/xml/utils SuballocatedIntVector.java<br/><ref>Committer's log entry: </ref>IncrementalSAXSource replaces CoroutineSAXParser -- simpler API,
+ hence less risk of programming errors introducing timing windows. I hope.
+ A few performance-related tweaks are also included in this check-in.
+ Only very minor gains are expected.<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>07/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql ObjectArray.java
+ SQLDocument.java<br/><ref>Committer's log entry: </ref>Project Update<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Oops.Should have been checked in as part of the IncrementalSAXSource cutover. 
+Sorry!<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java build.xml
+ java/src/org/apache/xml/dtm/ref
+ IncrementalSAXSource_Filter.java
+ java/src/org/apache/xml/utils/synthetic JavaUtils.java<br/><ref>Committer's log entry: </ref>3 small fixes to the build process ( to make it work with jdk1.4 and crimson)
+
+ - exclude IncrementalSAXSource_Xerces if xerces is not detected
+ - comment-out the "main" in IncrementalSAXSource_Filter.java ( it is a
+ test, but has deps on xerces )
+ - don't try to load the compiler in syntetic/JavaUtils. This is a mess,
+ it was debated on tomcat-dev and ant-dev, as you may know some people
+ decided to remove the internal compiler class ( sun.tools.javac.Main ),
+ and that brakes jasper, ant and now xalan.
+
+ It seems right now the only portable way to run the compiler is via command
+ line call in a separate process ( jikes can easily make up for the
+ overhead of creating a new process and doesn't leave garbage ).
+
+ Question: is synthetic used ? Seems like a very usefull package, but if
+ xalan is not using it it might be better to move it to xml-commons or
+ jakarta-commons or some other place.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Don't set m_level anymore, as it looks like Joe commented out it's
+ initialization. m_level is no longer called by Xalan, and the implementation
+ can calculate it when it is called.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java<br/><ref>Committer's log entry: </ref>Fixed bug 2758 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2758). The 
+flag indicating that a call to startDocument() in the resultContentHandler was 
+necessary was not being reset for multiple transforms.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Fix bug 2727 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2727). 
+Attributes which contain a namespace prefix are indicated by placing a negative 
+number in the appropriate entry in the m_dataOrQName array. The absolute value 
+of this number is an entry in m_data. However, in this example, there were no 
+text nodes before the first namespaced attribute so the entry in m_data had an 
+array index of 0. This resulted in an entry of zero, not a negative number, in 
+m_dataOrQName. This situation got several routines which tested for &lt; 0 
+confused. I looked at several ways of fixing this but decided to just always 
+allocate m_data.elementAt(0) entry to a dummy entry. The other solutions 
+involved runtime checking which could slow down this piece of code and I felt 
+that wasting one entry was worth it to not slow down the run time.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>07/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/serialize
+ WriterToUTF8Buffered.java<br/><ref>Committer's log entry: </ref>Fix bugzilla bug 2639 
+(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2639) where buffer was 
+overflowing because the expansion of the Unicode characters into multiple UTF8 
+characters was not being properly taken into account. Many thanks to 
+Gunnlaugur Thor Briem for his "multiply by three" trick.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer NodeSorter.java<br/><ref>Committer's log entry: </ref>Commented out NumberFormat m_formatter = NumberFormat.getNumberInstance();.
+
+ Mukund reported:
+
+ a minor improvement for alphabetize.xsl is to comment out the line
+
+ //NumberFormat m_formatter = NumberFormat.getNumberInstance();
+
+ in NodeSorter.java. The variable m_formatter does not seem to be used 
+anywhere, and the performance difference is:
+
+ Before: alphabetize 10 90 5108 196 156 34.58 
+OK
+ After : alphabetize 10 70 4316 196 156 
+40.93 OK<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>2.2.D8<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>2.2.D8<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer NodeSortKey.java<br/><ref>Committer's log entry: </ref>Submitted fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2851.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Just added some stuff to diagnose bugs for flavor th.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes WalkerFactory.java
+ java/src/org/apache/xpath/compiler Compiler.java
+ java/src/org/apache/xpath/patterns
+ ContextMatchStepPattern.java StepPattern.java<br/><ref>Committer's log entry: </ref>These are changes submitted (offline) by Mukund Raghavachari/Watson/IBM@IBMUS.
+
+ This fixes a bug with match="chapter//footnote[1]" patterns.
+
+ The main change here is minor to remove the automatic attachment of parent::* 
+to simple step patterns.
+
+ He has re-implemented executePredicates to be
+ more efficient. Given a pattern such as row[6], it
+ does not iterate over the entire axis until it reaches
+ the node to see if it is the sixth node. Rather,
+ starting from the current node, it works backwards
+ (preceding siblings) until it either runs out of nodes
+ or finds more than six nodes that match the
+ predicate [I can explain it better if desired].
+ This optimization improves performance slightly
+ overall. It helps decoy and patterns most (by
+ about 10%).
+
+ The other optimization that I implemented was the
+ following. For a pattern foo[][3][][4] ..., where more
+ than one predicate is a number (position check),
+ in checking the predicate [4], the fact that the
+ current node has passed foo[][3] implies that it is
+ the only node that is the third node among its
+ siblings that passes foo[]. Therefore, any
+ subsequent position checks can be true if and
+ only if the position is [1]. This optimization is not
+ used by the xsltmark benchmarks and so does
+ not offer any performance benefits.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/axes DescendantIterator.java<br/><ref>Committer's log entry: </ref>Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336<br/><br/></li></ul><note>This release includes no updates of the compatibility source code (now deprecated).</note>
+
 <s3 title="Changes for &xslt4j; 2.2.D7">
 <p> Core (Non-XSLTC) source code updates:</p><ul><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>07/03/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java<br/><ref>Committer's log entry: </ref>Since the real root of our tree may be a DocumentFragment, we need to
  use getParent to find the root, instead of getOwnerDocument. Otherwise

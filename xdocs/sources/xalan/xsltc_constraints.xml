@@ -12,71 +12,8 @@ for the TrAX API.
     <li><link anchor="xsltchistory">History of XSLTC software changes</link></li>
 </ul>
 <anchor name="xsltcnew"/>
-<s3 title="Changes since &xslt4j; 2.2.D7">
-<p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime
- DefaultSAXOutputHandler.java
- java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added support for SAXSource and SAXResult in TransformerFactoryImpl
- and TransformerFactory. I had to add a new consturctor the the
- default SAX output handler (in the xsltc runtime library) to acommodate
- the SAXResult TrAX output handler.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java
- java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Added default error-reporting behaviour for our trax code (error messages
- are dumped to System.err).
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>in progress, adding DOMSource support<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java<br/><ref>Committer's log entry: </ref>new class, DOM2SAX, supports DOMSources, in progress<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Import.java
- Include.java Stylesheet.java XSLTC.java
- java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/compiler SourceLoader.java<br/><ref>Committer's log entry: </ref>Added a SourceLoader interface to the compiler package. This interface can
- be used to plug in an external document loader for imported and/or
- included stylesheets. The trax.TransformerImpl class is updated to
- implement this interface and act as an adapter between the internal XSLTC
- SourceLoader interface and TrAX's URIResolver interface.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@apache.org
- Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime Constants.java<br/><ref>Committer's log entry: </ref>Added the NAMESPACE_FEATURE constant. Checked to see if it was in
- org.xml.sax first, but it wasn't. Since this constant is used both
- at compile and runtime, it should be in the runtime Constants class
- as well as the compile Constants class. Runtime code needs to be
- kept separate from the compile time code.<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime DefaultRun.java
- java/src/org/apache/xalan/xsltc/cmdline Transform.java
- java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/><ref>Committer's log entry: </ref>Added import for org.apache.xalan.xsltc.runtime.Constants;
- to the runtime classes that need to use the NAMESPACE_FEATURE constant
- and had them reference it rather than define it themselves.<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java<br/><ref>Committer's log entry: </ref>minor changes for DOMSource impl support<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Added DOMSource support for stylesheet<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java<br/><ref>Committer's log entry: </ref>updated convertor which supports DOMSource impl<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java<br/><ref>Committer's log entry: </ref>Added a small fix to the compiler (XSLTC.java) to make sure that the SAX
- parser reference was not reset prior to compiling the translet.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
- TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added support for DOMSource as input to our Transformer implementation<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Import.java
- Sort.java
- java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java
- NodeSortRecordFactory.java<br/><ref>Committer's log entry: </ref>For some reason I decided to optimise the &lt;xsl:sort&gt; functionaility. The
- sort records we used has some global values stored behind methods, but are
- now static fields. Somewhat faster.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Import.java
- Include.java<br/><ref>Committer's log entry: </ref>Fix for problem with import &amp; include introduced with the latest updated
- for TrAX URIResolvers.
- PR: n/a
- Obtained from: n/a
- Submitted by: morten@xml.apache.org
- Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java<br/><ref>Committer's log entry: </ref>Integrated fix for problem with count() function for certain iterators.
- PR: Bugzilla 1407
- Obtained from: n/a
- Submitted by: John Howard &lt;johnh@schemasoft.com&gt;
- Reviewed by: Morten Jorgensen &lt;morten@xml.apache.org&gt;<br/><br/></li></ul>
+<s3 title="Changes since &xslt4j; 2.2.D8">
+<p>TO BE ADDED</p>
 </s3>
 <anchor name="xsltcconf"/>
 <s3 title="XSLT 1.0 Conformance and Extensions">
@@ -226,6 +163,72 @@ The message is of the form:<br/><br/>
 <anchor name="xsltchistory"/>
 <s3 title="History of XSLTC software changes">
 <p>The following sections list XSLT changes back to the incorporation of XSLTC into &xslt4c;.</p>
+<s4 title="XSLTC source code updates for &xslt4j; 2.2.D8">
+<p>XSLTC source code updates:</p><ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime
+ DefaultSAXOutputHandler.java
+ java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added support for SAXSource and SAXResult in TransformerFactoryImpl
+ and TransformerFactory. I had to add a new consturctor the the
+ default SAX output handler (in the xsltc runtime library) to acommodate
+ the SAXResult TrAX output handler.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java
+ java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Added default error-reporting behaviour for our trax code (error messages
+ are dumped to System.err).
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>in progress, adding DOMSource support<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java<br/><ref>Committer's log entry: </ref>new class, DOM2SAX, supports DOMSources, in progress<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Import.java
+ Include.java Stylesheet.java XSLTC.java
+ java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/compiler SourceLoader.java<br/><ref>Committer's log entry: </ref>Added a SourceLoader interface to the compiler package. This interface can
+ be used to plug in an external document loader for imported and/or
+ included stylesheets. The trax.TransformerImpl class is updated to
+ implement this interface and act as an adapter between the internal XSLTC
+ SourceLoader interface and TrAX's URIResolver interface.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@apache.org
+ Reviewed by: morten@apache.org<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime Constants.java<br/><ref>Committer's log entry: </ref>Added the NAMESPACE_FEATURE constant. Checked to see if it was in
+ org.xml.sax first, but it wasn't. Since this constant is used both
+ at compile and runtime, it should be in the runtime Constants class
+ as well as the compile Constants class. Runtime code needs to be
+ kept separate from the compile time code.<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime DefaultRun.java
+ java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/><ref>Committer's log entry: </ref>Added import for org.apache.xalan.xsltc.runtime.Constants;
+ to the runtime classes that need to use the NAMESPACE_FEATURE constant
+ and had them reference it rather than define it themselves.<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java<br/><ref>Committer's log entry: </ref>minor changes for DOMSource impl support<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Added DOMSource support for stylesheet<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax DOM2SAX.java<br/><ref>Committer's log entry: </ref>updated convertor which supports DOMSource impl<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java<br/><ref>Committer's log entry: </ref>Added a small fix to the compiler (XSLTC.java) to make sure that the SAX
+ parser reference was not reset prior to compiling the translet.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added support for DOMSource as input to our Transformer implementation<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Import.java
+ Sort.java
+ java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java
+ NodeSortRecordFactory.java<br/><ref>Committer's log entry: </ref>For some reason I decided to optimise the &lt;xsl:sort&gt; functionaility. The
+ sort records we used has some global values stored behind methods, but are
+ now static fields. Somewhat faster.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Import.java
+ Include.java<br/><ref>Committer's log entry: </ref>Fix for problem with import &amp; include introduced with the latest updated
+ for TrAX URIResolvers.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java<br/><ref>Committer's log entry: </ref>Integrated fix for problem with count() function for certain iterators.
+ PR: Bugzilla 1407
+ Obtained from: n/a
+ Submitted by: John Howard &lt;johnh@schemasoft.com&gt;
+ Reviewed by: Morten Jorgensen &lt;morten@xml.apache.org&gt;<br/><br/></li></ul>
+</s4>
 <s4 title="XSLTC source code updates for &xslt4j; 2.2.D7">
 <ul><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Constants.java
  Param.java StepPattern.java Stylesheet.java
