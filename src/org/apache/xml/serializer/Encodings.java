@@ -67,6 +67,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.security.PrivilegedAction;
+import java.security.AccessController;
 
 import org.apache.xml.utils.ObjectFactory;
 
@@ -105,10 +107,18 @@ public class Encodings extends Object
     private static Method findCharToByteConverterMethod() {
         try
         {
-            Class charToByteConverterClass =
-                Class.forName("sun.io.CharToByteConverter");
-            Class argTypes[] = {String.class};
-            return charToByteConverterClass.getMethod("getConverter", argTypes);
+            AccessController.doPrivileged(new PrivilegedAction() {
+                public Object run() {
+                    try {
+                        Class charToByteConverterClass = (Class) 
+                            Class.forName("sun.io.CharToByteConverter");
+                        Class argTypes[] = {String.class};
+                        return charToByteConverterClass.getMethod("getConverter", argTypes);
+                    }
+                    catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }});
         }
         catch (Exception e)
         {
