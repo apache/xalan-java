@@ -723,7 +723,7 @@ public final class XSLTC {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	final java.util.jar.Attributes atrs = manifest.getMainAttributes();
-	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.0");
+	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.1");
 
 	final Map map = manifest.getEntries();
 	// create manifest
