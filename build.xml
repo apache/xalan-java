@@ -51,7 +51,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Defines variables used by the other targets                         -->
   <!-- =================================================================== -->
-  <property name="version" value="2_0_D06"/>
+  <property name="version" value="2_0_D07"/>
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
@@ -77,6 +77,13 @@ Copyright:
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
+  
+  <!-- Xalan-J1 compatability stuff.  -->
+  <property name="compat.jar" value="xalanj1compat.jar"/>
+  <property name="compat.src.dir" value="./compat_src"/>
+  <property name="build.compat.classes" value="${build.dir}/compat_classes"/>
+  <property name="build.compat.jar" value="${build.dir}/${compat.jar}"/>
+  <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
 
   <!-- Reference to the top level of the test source code area. -->
   <property name="tests.dir" value="../test/java/"/>
@@ -225,6 +232,43 @@ Copyright:
     <!-- OK, what are the 'Apache-standard' names for various targets? -->
     <echo message="package is an alias for jar"/>  
   </target>
+  
+  <!-- =================================================================== -->
+  <!-- Creates the Xalan-J1 compatability JAR                              -->
+  <!-- =================================================================== -->
+  <target name="compat.jar" depends="jar">
+    <echo message="compile and JAR Xalan-J 1 compability API."/>
+    <mkdir dir="${build.compat.classes}"/>
+    <javac srcdir="${compat.src.dir}" classpath="${java.class.path}:${built.xalan.jar}" 
+           destdir="${build.compat.classes}"
+           includes="**/*.java"
+           debug="${debug}"/>
+    <copy todir="${build.compat.classes}">
+          <fileset dir="${compat.src.dir}" excludes="**/classes/**/*,**/msclasses/**/*" 
+                includes="**/*.properties,**/*.res"/>
+    </copy>  
+    <jar jarfile="${built.compat.jar}" manifest="src\MANIFEST.MF" basedir="${build.compat.classes}"/>
+  </target>
+  
+  <!-- =================================================================== -->
+  <!-- Creates the Xalan-J1 compatability javadoc                          -->
+  <!-- =================================================================== -->
+  <target name="compat.apidocs" depends="compile">
+    <mkdir dir="${build.compat.apidocs}"/>
+    <javadoc
+         classpath="${java.class.path}"
+         public="true"
+         sourcepath="${compat.src.dir}"
+         packagenames="org.apache.xalan.*"
+         author="true"
+         version="true"
+         use="true"
+         destdir="${build.compat.apidocs}"
+         windowtitle="Xalan-Java 1 Compatability" 
+         doctitle="Xalan-Java 1 Compatability"
+         bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+    </javadoc>
+  </target>    
 
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
@@ -382,7 +426,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="docs,javadocs,samples,servlet,autodist"
+  <target name="dist" depends="docs,javadocs,samples,servlet,compat.jar,compat.apidocs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -391,9 +435,11 @@ Copyright:
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/bin"/>    
     <mkdir dir="${dist.dir}/src"/>
+    <mkdir dir="${dist.dir}/compat_src"/>    
     <mkdir dir="${dist.dir}/xdocs"/>
     <mkdir dir="${dist.dir}/docs"/>
     <mkdir dir="${dist.dir}/docs/apidocs"/>
+    <mkdir dir="${dist.dir}/docs/compat_apidocs"/>    
     <mkdir dir="${dist.dir}/samples"/>
         
         <!-- Copy bin directory -->
@@ -405,6 +451,9 @@ Copyright:
     <copy todir="${dist.dir}/src">
       <fileset dir="${src.dir}"/>
     </copy>
+    <copy todir="${dist.dir}/compat_src">
+      <fileset dir="${compat.src.dir}"/>
+    </copy>    
     <copy todir="${dist.dir}/xdocs">
       <fileset dir="${xdocs.dir}"/>
     </copy>
@@ -419,8 +468,9 @@ Copyright:
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
-    <!-- Copy xalan jar into the bin directory (subject to change) -->
+    <!-- Copy xalan jar and compability into the bin directory (subject to change) -->
     <copy file="${built.xalan.jar}" todir="${dist.dir}/bin"/>
+    <copy file="${built.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
@@ -451,7 +501,11 @@ Copyright:
     <!-- put in the javadoc -->
     <copy todir="${site.dir}/apidocs">
       <fileset dir="${build.apidocs}"/>
+    </copy>
+    <copy todir="${site.dir}/compat_apidocs">
+      <fileset dir="${build.compat.apidocs}"/>
     </copy>  
+      
   </target>
    
   <!-- =================================================================== -->
