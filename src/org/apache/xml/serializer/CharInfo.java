@@ -82,8 +82,6 @@ import org.apache.xml.utils.SystemIDResolver;
 public class CharInfo
 {
 
-    /** Bit map that tells if a given character should have special treatment. */
-    BitSet m_specialsMap = new BitSet(65535);
 
     /** Lookup table for characters to entity references. */
     private Hashtable m_charToEntityRef = new Hashtable();
@@ -105,10 +103,63 @@ public class CharInfo
 
     /** The carriage return character, which the parser should always normalize. */
     public static char S_CARRIAGERETURN = 0x0D;
+    
+    /** Copy the first 0,1 ... ASCII_MAX values into an array */
+    private static final int ASCII_MAX = 128;
+    
+    /** Array of values is faster access than a set of bits */
+    private boolean[] quickASCII = new boolean[ASCII_MAX];
+
+    private boolean[] isCleanASCII = new boolean[ASCII_MAX];
+
+    /** An array of bits to record if the character is in the set.
+     * Although information in this array is complete, the
+     * quickASCII array is used first because access to its values
+     * is common and faster.
+     */   
+    private int array_of_bits[] = createEmptySetOfIntegers(65535);
+     
+    
+    // 5 for 32 bit words,  6 for 64 bit words ...
+    /*
+     * This constant is used to shift an integer to quickly
+     * calculate which element its bit is stored in.
+     * 5 for 32 bit words (int) ,  6 for 64 bit words (long)
+     */
+    private static final int SHIFT_PER_WORD = 5;
+    
+    /*
+     * A mask to get the low order bits which are used to
+     * calculate the value of the bit within a given word,
+     * that will represent the presence of the integer in the 
+     * set.
+     * 
+     * 0x1F for 32 bit words (int),
+     * or 0x3F for 64 bit words (long) 
+     */
+    private static final int LOW_ORDER_BITMASK = 0x1f;
+    
+    /*
+     * This is used for optimizing the lookup of bits representing
+     * the integers in the set. It is the index of the first element
+     * in the array array_of_bits[] that is not used.
+     */
+    private int firstWordNotUsed;
+
+    /**
+     * This constructor is private, just to force the use
+     * of the getCharInfo(entitiesResource) factory
+     *
+     */
+    private CharInfo()
+    {
+    }
 
     /**
      * Constructor that reads in a resource file that describes the mapping of
      * characters to entity references.
+     * This constructor is private, just to force the use
+     * of the getCharInfo(entitiesResource) factory
      *
      * Resource files must be encoded in UTF-8 and can either be properties
      * files with a .properties extension assumed.  Alternatively, they can
@@ -120,12 +171,12 @@ public class CharInfo
      * quot 34
      * amp 38
      * </pre>
-     *
+     *    
      * @param entitiesResource Name of properties or resource file that should
      * be loaded, which describes that mapping of characters to entity
      * references.
      */
-    public CharInfo(String entitiesResource)
+    private CharInfo(String entitiesResource)
     {
         PropertyResourceBundle entities;
         InputStream is = null;
@@ -152,8 +203,8 @@ public class CharInfo
                 code = Integer.parseInt(value);
                 defineEntity(name, (char) code);
             }
-            m_specialsMap.set(S_LINEFEED);
-            m_specialsMap.set(S_CARRIAGERETURN);
+            set(S_LINEFEED);
+            set(S_CARRIAGERETURN);
         } else {
             // Load user specified resource file by using URL loading, it
             // requires a valid URI as parameter;                
@@ -249,8 +300,8 @@ public class CharInfo
                 }
 
                 is.close();
-                m_specialsMap.set(S_LINEFEED);
-                m_specialsMap.set(S_CARRIAGERETURN);
+                set(S_LINEFEED);
+                set(S_CARRIAGERETURN);
             } catch (Exception except) {
                 throw new RuntimeException(
                     XMLMessages.createXMLMessage(
@@ -267,6 +318,22 @@ public class CharInfo
                 }
             }
         }
+        
+        // initialize the array with a cache of the BitSet values
+        for (int i=0; i<ASCII_MAX; i++)
+            quickASCII[i] = get(i);    
+          
+        // initialize the array with a cache of values
+        // for use by ToStream.character(char[], int , int)
+        for (int ch = 0; ch <ASCII_MAX; ch++)
+        if((((0x20 <= ch || (0x0A == ch || 0x0D == ch || 0x09 == ch)))
+             && (!get(ch)))
+             || ('"' == ch))
+         {
+             isCleanASCII[ch] = true;
+         }
+         else
+             isCleanASCII[ch] = false;     
     }
 
     /**
@@ -285,7 +352,7 @@ public class CharInfo
         CharKey character = new CharKey(value);
 
         m_charToEntityRef.put(character, name);
-        m_specialsMap.set(value);
+        set(value);
     }
 
     private CharKey m_charKey = new CharKey();
@@ -320,10 +387,36 @@ public class CharInfo
      * @return true if the character should have any special treatment, such as
      * when writing out attribute values, or entity references.
      */
-    public boolean isSpecial(char value)
+    public final boolean isSpecial(int value)
     {
-        return m_specialsMap.get(value);
+        // for performance try the values in the boolean array first,
+        // this is faster access than the BitSet for common ASCII values
+
+        if (value < ASCII_MAX)
+            return quickASCII[value];
+
+        // rather than java.util.BitSet, our private
+        // implementation is faster (and less general).
+        return get(value);
     }
+    
+    /**
+     * This method is used to determine if an ASCII character is "clean"
+     * @param value the character to check (0 to 127).
+     * @return true if the character can go to the writer as-is
+     */
+    public final boolean isASCIIClean(int value)
+    {
+        return isCleanASCII[value];
+    }
+    
+//  In the future one might want to use the array directly and avoid
+//  the method call, but I think the JIT alreay inlines this well enough
+//  so don't do it (for now) - bjm    
+//    public final boolean[] getASCIIClean()
+//    {
+//        return isCleanASCII;
+//    }
 
  
     /**
@@ -423,4 +516,79 @@ public class CharInfo
 
     }
     
+    
+
+
+    /**
+     * Returns the array element holding the bit value for the
+     * given integer
+     * @param i the integer that might be in the set of integers
+     * 
+     */
+    private static int arrayIndex(int i) {
+        return (i >> SHIFT_PER_WORD);
+    }
+
+    /**
+     * For a given integer in the set it returns the single bit
+     * value used within a given word that represents whether
+     * the integer is in the set or not.
+     */
+    private static int bit(int i) {
+        int ret = (1 << (i & LOW_ORDER_BITMASK));
+        return ret;
+    }
+
+    /**
+     * Creates a new empty set of integers (characters)
+     * @param max the maximum integer to be in the set.
+     */
+    private int[] createEmptySetOfIntegers(int max) {
+        firstWordNotUsed = 0; // an optimization 
+
+        int[] arr = new int[arrayIndex(max - 1) + 1];
+            return arr;
+ 
+    }
+
+    /**
+     * Adds the integer (character) to the set of integers.
+     * @param i the integer to add to the set, valid values are 
+     * 0, 1, 2 ... up to the maximum that was specified at
+     * the creation of the set.
+     */
+    private final void set(int i) {        
+        int j = (i >> SHIFT_PER_WORD); // this word is used
+        int k = j + 1;       
+        
+        if(firstWordNotUsed < k) // for optimization purposes.
+            firstWordNotUsed = k;
+            
+        array_of_bits[j] |= (1 << (i & LOW_ORDER_BITMASK));
+    }
+
+
+    /**
+     * Return true if the integer (character)is in the set of integers.
+     * 
+     * This implementation uses an array of integers with 32 bits per
+     * integer.  If a bit is set to 1 the corresponding integer is 
+     * in the set of integers.
+     * 
+     * @param i an integer that is tested to see if it is the
+     * set of integers, or not.
+     */
+    private final boolean get(int i) {
+
+        boolean in_the_set = false;
+        int j = (i >> SHIFT_PER_WORD); // wordIndex(i)
+        // an optimization here, ... a quick test to see
+        // if this integer is beyond any of the words in use
+        if(j < firstWordNotUsed)
+            in_the_set = (array_of_bits[j] & 
+                          (1 << (i & LOW_ORDER_BITMASK))
+            ) != 0;  // 0L for 64 bit words
+        return in_the_set;
+    }
+
 }
