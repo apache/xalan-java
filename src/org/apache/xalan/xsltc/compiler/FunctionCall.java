@@ -240,9 +240,10 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0)); 
 
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
-	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass,0));
-	    _internal2Java.put(Type.ResultTree, new JavaType(objectClass,2));
-	    _internal2Java.put(Type.ResultTree, new JavaType(stringClass,3));
+	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass, 0));
+	    _internal2Java.put(Type.ResultTree, new JavaType(objectClass, 2));
+	    _internal2Java.put(Type.ResultTree, new JavaType(stringClass, 3));
+	    _internal2Java.put(Type.ResultTree, new JavaType(Double.TYPE, 4));
 
 	    _internal2Java.put(Type.Reference, new JavaType(objectClass,0));
 
@@ -261,9 +262,9 @@ class FunctionCall extends Expression {
 
 	    _java2Internal.put(objectClass, Type.Reference);
 
-	    // Conversions from org.w3c.dom.Node/NodeList are not supported
-	    // GTM
+	    // Conversions from org.w3c.dom.Node/NodeList to internal NodeSet
 	    _java2Internal.put(nodeListClass, Type.NodeSet);
+	    _java2Internal.put(nodeClass, Type.NodeSet);
 	    
 	    // Initialize the extension namespace table
 	    _extensionNamespaceTable.put(EXT_XALAN, "org.apache.xalan.lib.Extensions");
@@ -602,7 +603,13 @@ class FunctionCall extends Expression {
 		}
 		else {
 		    // no mapping available
-		    if (intType instanceof ObjectType) {
+		    //
+		    // Allow a Reference type to match any external (Java) type at
+		    // the moment. The real type checking is performed at runtime.
+		    if (intType instanceof ReferenceType) {
+		       currMethodDistance += 1; 
+		    }
+		    else if (intType instanceof ObjectType) {
 		        ObjectType object = (ObjectType)intType;
 		        if (extType.getName().equals(object.getJavaClassName()))
 		            currMethodDistance += 0;

@@ -242,12 +242,43 @@ public final class ReferenceType extends Type {
 
     /**
      * Translates a reference into the Java type denoted by <code>clazz</code>. 
-     * Only conversion allowed is to java.lang.Object.
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+	
 	if (clazz.getName().equals("java.lang.Object")) {
-	    methodGen.getInstructionList().append(NOP);	
+	    il.append(NOP);	
+	}
+	else if (clazz == Double.TYPE) {
+	    translateTo(classGen, methodGen, Type.Real);
+	}
+	else if (clazz.getName().equals("java.lang.String")) {
+	    translateTo(classGen, methodGen, Type.String);
+	}
+	else if (clazz.getName().equals("org.w3c.dom.Node")) {
+	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNode", 
+				         "(" 
+				         + OBJECT_SIG 
+				         + DOM_INTF_SIG 
+				         + ")"
+				         + "Lorg/w3c/dom/Node;");
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKESTATIC(index));
+	}
+	else if (clazz.getName().equals("org.w3c.dom.NodeList")) {
+	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNodeList", 
+				         "(" 
+				         + OBJECT_SIG 
+				         + DOM_INTF_SIG 
+				         + ")"
+				         + "Lorg/w3c/dom/NodeList;");
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKESTATIC(index));
+	}
+	else if (clazz.getName().equals("org.apache.xalan.xsltc.DOM")) {
+	    translateTo(classGen, methodGen, Type.ResultTree);
 	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
