@@ -167,7 +167,7 @@ public class Redirect
       boolean mkdirs = (mkdirsExpr != null)
                        ? (mkdirsExpr.equals("true") || mkdirsExpr.equals("yes")) : true;
 	  // ContentHandler fl = 
-	  makeFormatterListener(context, fileName, true, mkdirs);
+	  makeFormatterListener(context, (ElemTemplateElement)elem, fileName, true, mkdirs);
 	  // fl.startDocument();
     }
   }
@@ -194,19 +194,19 @@ public class Redirect
                                                   context.getTransformer());
       boolean mkdirs = (mkdirsExpr != null)
                        ? (mkdirsExpr.equals("true") || mkdirsExpr.equals("yes")) : true;
-      formatter = makeFormatterListener(context, fileName, true, mkdirs);
+      formatter = makeFormatterListener(context, (ElemTemplateElement)elem, fileName, true, mkdirs);
     }
     else
     {
       inTable = true;
       formatter = (ContentHandler)flObject;
     }
-
-    // context.getTransformer().writeChildren( formatter, context.getStylesheet(),
-    //                                        (ElemTemplateElement)elem,
-   //                                         context.getSourceTree(), 
-   //                                         context.getContextNode(), 
-    //                                        context.getMode());
+    
+    TransformerImpl transf = context.getTransformer();
+    
+    transf.executeChildTemplates((ElemTemplateElement)elem,
+                                 context.getContextNode(),
+                                 context.getMode(), formatter);
     
     if(!inTable)
     {
@@ -294,21 +294,24 @@ public class Redirect
    * Create a new ContentHandler, based on attributes of the current ContentHandler.
    */
   private ContentHandler makeFormatterListener(XSLProcessorContext context,
-                                                String fileName,
-                                                boolean shouldPutInTable,
-                                                boolean mkdirs)
+                                               ElemTemplateElement elem,
+                                               String fileName,
+                                               boolean shouldPutInTable,
+                                               boolean mkdirs)
     throws java.net.MalformedURLException,
     java.io.FileNotFoundException,
     java.io.IOException,
     org.xml.sax.SAXException
   {
-    /*
     File file = new File(fileName);
+    TransformerImpl transformer = context.getTransformer();
+
     if(!file.isAbsolute())
     {
-      if(null != context.processor.getOutputFileName())
+      String base = elem.getStylesheet().getSystemId();
+      if(null != base)
       {
-        File baseFile = new File(context.processor.getOutputFileName());
+        File baseFile = new File(base);
         file = new File(baseFile.getParent(), fileName);
       }
     }
@@ -323,13 +326,14 @@ public class Redirect
       }
     }
 
-    StylesheetRoot sr = context.stylesheetTree.m_stylesheetRoot;
-    OutputFormat formatter = sr.getOutput();
+    // This should be worked on so that the output format can be 
+    // defined by a first child of the redirect element.
+    OutputFormat format = transformer.getOutputFormat();
 
     FileOutputStream ostream = new FileOutputStream(file);
-
-    ContentHandler flistener
-      = sr.makeSAXSerializer(ostream, formatter);
+    
+    ContentHandler flistener 
+      = transformer.createResultContentHandler(new trax.Result(ostream), format);
 
     flistener.startDocument();
     if(shouldPutInTable)
@@ -338,7 +342,5 @@ public class Redirect
       m_formatterListeners.put(fileName, flistener);
     }
     return flistener;
-    */
-    return null;
   }
 }
