@@ -67,6 +67,10 @@
     TransformerImpl.
    </action>
 
+   <action context="doc" category="documentation" who="SB">
+    Update and add to architecture documentation, including package headers.
+   </action>
+
    <action context="code" category="performance" who="SB">
     Delete nodes in the source tree when possible.  (?? Note sure if this 
     is do-able by beta2.)
