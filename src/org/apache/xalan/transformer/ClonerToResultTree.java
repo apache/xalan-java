@@ -30,9 +30,7 @@ public class ClonerToResultTree
    * TODO: Fix or figure out node clone failure!
    * the error condition is severe enough to halt processing.
    */
-  public void cloneToResultTree(Stylesheet stylesheetTree, Node node,
-                                boolean shouldCloneWithChildren,
-                                boolean overrideStrip,
+  public void cloneToResultTree(Node node,
                                 boolean shouldCloneAttributes)
     throws SAXException
   {
@@ -44,13 +42,6 @@ public class ClonerToResultTree
     {
     case Node.TEXT_NODE:
       {
-        // If stripWhiteSpace is false, then take this as an override and
-        // just preserve the space, otherwise use the XSL whitespace rules.
-        if(!overrideStrip)
-        {
-          // stripWhiteSpace = isLiteral ? true : shouldStripSourceNode(node);
-          stripWhiteSpace = false;
-        }
         Text tx = (Text)node;
         String data = null;
         // System.out.println("stripWhiteSpace = "+stripWhiteSpace+", "+tx.getData());
