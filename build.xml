@@ -100,6 +100,7 @@ Copyright:
   <property name="apachexml.reldir" value="org/apache/xml"/>
   <property name="xpath.reldir" value="org/apache/xpath"/>
   <property name="xalan.reldir" value="org/apache/xalan"/>
+  <property name="domxpath.reldir" value="org/w3c/dom/xpath"/>
   <property name="xsltc.reldir" value="${xalan.reldir}/xsltc"/>
   <property name="generated.xpathparser" value="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
   <property name="generated.xpathlexer" value="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
@@ -287,6 +288,7 @@ Copyright:
       <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
       <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />
       <include name="${xpath.reldir}/**/*.java" />
+      <include name="${domxpath.reldir}/**/*.java" />      
       <exclude name="**/CoroutineSAXFilterTest.java" 
         unless="xerces.present"	 />
       <exclude name="**/CoroutineSAXParser_Xerces.java" 
@@ -795,7 +797,11 @@ Copyright:
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete dir="${src.dir}/javax" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/xml" includeEmptyDirs="true" quiet="true"/>
-    <delete dir="${src.dir}/org/w3c" includeEmptyDirs="true" quiet="true"/>
+    <delete includeEmptyDirs="true" quiet="true">
+        <fileset dir="${src.dir}/org/w3c">
+          <exclude name="dom/xpath/**"/>
+        </fileset>
+    </delete>
   </target>
  
   <target name="xsltc.clean"
