@@ -1,21 +1,21 @@
 NAME
-	xslt - Sun XSLT runtime processor. 
-
+	xslt - Apache/Xalan XSLT runtime processor. 
 
 SYNOPSIS
-	xslt [-j <jarfile>] {-u <document_url> | <document>} <class> 
+	xslt [-j <jarfile>] [-xhs] {-u <document_url> | <document>} <class>
              [<name1>=<value1> ...]
 
 
 DESCRIPTION
+	This command-line tool is a wrapper for the Java class
+	org.apache.xalan.xsltc.cmdline.Transform
+
 	The Sun XSLT runtime processor is a Java-based tool for 
 	transforming XML document files using a translet (compiled 
 	stylesheet). 
 
 	The XSLT processor can be run on any platform including UNIX,
-	Windows, NT, Mac that supports Java, including a Palm Pilot
-	with J2ME CLDC (Java 2 Micro Edition, Connected Limited Device
-	Configuration).
+	Windows, NT, Mac that supports Java.
 
 OPTIONS
 
@@ -29,6 +29,14 @@ OPTIONS
 		Specifies that the XML <document> location will be a URI
 		such as 'http://myserver/hamlet.xml'.		
 
+	-x
+		Turn debugging messages on.
+
+	-h
+		Output help screen.
+
+	-s
+		Prevent the command line tool from calling System.exit()
 
 OPERANDS
 
@@ -85,13 +93,10 @@ SEE ALSO
 	xsltc, jar.
 
 BUGS
-	Refer to the top-level README included in this release.
+	See the Bugzilla bug database: http://nagoya.apache.org/bugzilla
 
 AUTHORS
-	Jacek Ambroziak,                       jacek.ambroziak@East.Sun.COM
-	Santiago Pericas-Geertsen,    santiago.pericasgeertsen@East.Sun.COM 
-
-	Contributors:
-
-	Morten Jorgensen		   morten.jorgensen@Ireland.Sun.COM
-	G. Todd Miller,                            todd.miller@East.Sun.COM
+	Morten Jorgensen		   morten.jorgensen@ireland.sun.com
+	G. Todd Miller                             todd.miller@east.sun.com
+	Jacek Ambroziak
+	Santiago Pericas-Geertsen

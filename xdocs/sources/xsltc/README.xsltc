@@ -1,14 +1,14 @@
 NAME
-	xsltc - Sun XSLT Compiler 
-
+	xsltc - Apache/Xalan XSLT Compiler 
 
 SYNOPSIS
 	xsltc [-o <output>] [-d <directory>] [-j <jarfile>] 
-	      [-p <package name>]
-              [-u] <stylesheet>... 
-
+	      [-p <package name>] [-uxhsi] [<stylesheet>... ]
 
 DESCRIPTION
+	This command-line tool is a wrapper for the Java class
+	org.apache.xalan.xsltc.cmdline.Compile
+
 	The Sun XSLT Compiler is a Java-based tool for compiling XSLT
 	stylesheets into lightweight and portable Java byte codes 
 	called translets.  
@@ -43,11 +43,23 @@ OPTIONS
 
 	-p <package name>
 		Specify a package name for all generated translet
-		classes.		
+		class.
 
 	-u
 		Specifies that <stylesheet> location will be a URI
-		such as 'http://myserver/stylesheet1.xsl'.		
+		such as 'http://myserver/stylesheet1.xsl'.
+
+	-i
+		Specify that the stylesheet should be read from stdin.
+
+	-x
+		Turn debugging messages on.
+
+	-h
+		Output help screen.
+
+	-s
+		Prevent the command line tool from calling System.exit()
 
 
 OPERANDS
@@ -104,13 +116,10 @@ SEE ALSO
 	xslt, jar.
 
 BUGS
-	Refer to the top-level README included in this release.
+	See the Bugzilla bug database: http://nagoya.apache.org/bugzilla
 
 AUTHORS
-	Jacek Ambroziak,                       jacek.ambroziak@East.Sun.COM
-	Santiago Pericas-Geertsen,    santiago.pericasgeertsen@East.Sun.COM 
-
-	Contributors:
-
-	Morten Jorgensen		   morten.jorgensen@Ireland.Sun.COM
-	G. Todd Miller,                            todd.miller@East.Sun.COM
+	Morten Jorgensen,		   morten.jorgensen@ireland.sun.com
+	G. Todd Miller,                            todd.miller@east.sun.com
+	Santiago Pericas-Geertsen
+	Jacek Ambroziak

@@ -64,11 +64,12 @@
     <p>The following user documentation is currently available:</p>
 
     <ul>
-      <li><link idref="README">XSLTC Installation and Requirements 'README'</link></li>
-      <li><link anchor="user_cmdline">Command-line user document</link></li>
-      <li><link anchor="user_native">XSLTC Native API reference</link></li>
-      <li><link anchor="user_trax">XSLTC TrAX API reference</link></li>
-      <li><link anchor="user_perf">XSLTC Performance Hints</link></li>
+      <li>XSLTC <jump href="README">Installation and Requirements</jump> 'README'</li> (not updated)
+      <li>Command-line <jump href="README.xsltc">compiler</jump> and
+      <jump href="README.xslt">runtime</jump> 'README'</li>
+      <li><link idref="xsltc_native_api">XSLTC Native API reference</link></li>
+      <li><link idref="xsltc_trax_api">XSLTC TrAX API reference</link></li>
+      <li><link idref="xsltc_performance">XSLTC Performance Hints</link></li>
     </ul>
   </s2>
 
