@@ -19,6 +19,6 @@ Transform.java
 
 Usage
      java Compile <stylesheet.xsl>
-     java Transform <xmlfile.xml> <stylesheet>.translet
+     java Transform <xmlfile.xml> <stylesheet>
 ----------------------------------------------------------------------
 END OF README

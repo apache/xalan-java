@@ -73,6 +73,10 @@ public class Compile {
      */
     public void run(String xsl) {
         try {
+            // Set XSLTC's TransformerFactory implementation as the default
+            System.setProperty("javax.xml.transform.TransformerFactory",
+                         "org.apache.xalan.xsltc.trax.TransformerFactoryImpl");
+
 	    // Get an input stream for the XSL stylesheet
 	    StreamSource stylesheet = new StreamSource(xsl);
 
