@@ -423,7 +423,7 @@ public class URI implements Serializable
     {
       if (p_base == null)
       {
-        throw new MalformedURIException("No scheme found in URI.");
+        throw new MalformedURIException("No scheme found in URI: "+uriSpec);
       }
     }
     else
