@@ -70,9 +70,7 @@
      <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
   </s2>
   <s2 title="How about this release?">
-  <p>&xslt4j-current; is a production release. This is the first &xslt4j; release to include the 
-  <link idref="xsltc_usage">XSLTC</link> translet compiler and runtime. This release also incorporates a number of bug fixes.
-   For the details, see <link idref="readme">Release Notes</link>. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
+  <p>&xslt4j-current; is a Developer release. This is the first &xslt4j2; release to use the Document Table Model (<link idref="dtm">DTM</link>) to represent the XML source document to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
   </s2> 
   <s2 title="How do I get it?">
     <p>Download and unzip either of the following:</p>

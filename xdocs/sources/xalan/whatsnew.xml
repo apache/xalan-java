@@ -65,5 +65,14 @@
 <p>&xslt4j2; implements the <resource-ref idref="trax"/> interfaces. The product of extensive open-source collaboration by members of the XML developer community, TrAX provides a conceptual framework and a standard API for performing XML transformations. During its evolution, the TrAX API has undergone several revisions. We believe this API has now reached or is very close to final form. In November 2000, TrAX was incorporated into <resource-ref idref="jsr063"/>, the Java API for XML Processing 1.1 , which has been published for public review (see <resource-ref idref="jaxp11"/>). We strongly encourage you to utilize the TrAX framework when you use &xslt4j2; to perform XML transformations.</p>
 <p>The basic organization of TrAX is quite simple: use a TransformerFactory to process transformation instructions and generate a Transformer, with which you can apply the processed transformation instructions to your XML Source, producing a transformation Result. For more detail, see <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
 <p>As part of the Java API for XML Processing, TraX provides a stable framework for plugging Transformers (like &xslt4j;) and XML parsers (like &xml4j;) into your applications without tying yourself to the internal details of those implementations. See <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
-</s2>&xsltcwhatsnew;
+</s2><anchor name="dtm"/>
+<s2 title="&xslt4j; DTM">
+
+<p>The Document Table Model (DTM) is an interface that mimics the W3C Document Object Model (<resource-ref idref="dom"/>) interface. In place of the DOM object tree of nodes, DTM uses integer arrays and string pools to represent the structure and content of the XML document to be transformed. The motivation behind this model is to optimize performance and minimize storage.</p>
+<p>Specifically, DTM avoids the overhead of instantiating the objects the standard DOM requires to represent a tree of nodes. DTM uses unique integer "handles" to identify nodes, integer ID values to represent URLs, local names, and expanded names, and integer index and length references to a string buffer to represent the text value of each node.</p>
+<p>The Xalan DTM implementation also allows the Xalan processor to begin reading the DTM and performing the transformation while the DTM is still being assembled (the parser is still parsing the XML source).</p>
+<p>For more information, see <link idref="readme" anchor="dtm">DTM Release Notes</link>.</p>
+</s2>
+
+&xsltcwhatsnew;
 </s1>

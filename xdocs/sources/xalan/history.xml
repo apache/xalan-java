@@ -1,3 +1,249 @@
+
+     <s3 title="Changes since &xslt4j; 2.1.0">
+     &xsltcdone;
+     <p>This release also includes a number of bug fixes to &xslt4j; and TrAX. 
+     We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
+     client transformation requests involving the same stylesheet.</p>
+<!--This XML fragment contains a list of source code updates to place in an <s3> section of readme.xml--><p>Core source code updates:</p><ul><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>03/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
+ java/src/org/apache/xpath Expression.java XPath.java
+ XPathContext.java
+ java/src/org/apache/xpath/compiler Compiler.java
+ XPathParser.java<br/><ref>Committer's log entry: </ref>Renamed "assert()" to "assertion()".
+
+ Assert can be a keyword, and brake the compilation.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>03/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer KeyWalker.java<br/><ref>Committer's log entry: </ref>Throw an error message if the key name in a key function was not defined<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/20/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Reworked "chunk growth" algorithm again. Growing mode not
+ yet adequately tested, but fixed-size mode (which is what Xalan
+ is currently using) is simpler code and shows improved performance.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>03/20/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Utility class to check your JVM environment for common problems<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>03/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Added more .jar sizes to jarVersions listing<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>We've reworked the algorithm again. The fixed-chunk-size mode (initial
+ and max. chunk sizes equal) runs essentially unchanged, though with a
+ few cycles less overhead. The variable-chunk-size mode now uses a
+ recursive-encapsulation scheme, where the first chunk may itself be a
+ FastStringBuffer whose total length equals one chunk; every so often
+ we push the existing data down one level and restart with a larger
+ chunk size. The new scheme has been stress-tested and is apparently
+ working. At this writing, however, Xalan uses only the fixed-size
+ mode (initial size equals max size), and no effort has been made to
+ find the optimial values for the tuning parameters. It does appear
+ likely that the best values will vary with usage patterns, but we hope
+ to find a good compromise.
+
+ I'll probably be putting this aside for a while to work on other things.
+ If someone wants to experiment with varying the block sizes and
+ how frequently they grow, and suggest good performance/memory
+ tradeoff points, go for it!<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/22/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>Minor tweak to the javadoc.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>03/23/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>reset() versus setLength(0).<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemForEach.java<br/><ref>Committer's log entry: </ref>Fix for bug# 1116, getMatchedTemplate throws ClassCastException.
+ Don't push template unless it is a xsl:template.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates OutputProperties.java<br/><ref>Committer's log entry: </ref>Patches submitted by Patrick Moore &lt;patrickm@rioport.com&gt;
+ on 03/15/2001 01:25 PM:
+
+ This proposed change does a number of things:
+
+ 1. Problem: HTML output method does not uses XML output properties as
+ default.
+
+ In both org/apache/xalan/templates/output_html.properties and in the java
+ doc for
+ org/apache/xalan/templates/OutputProperties#getDefaultMethodProperties(Strin
+ g) It specifically states that all OutputProperties use the
+ output_xml.properties as a base. In the code this is not true for html. This
+ is now changed to match the comments
+
+ 2. Problem: unclear IOException.
+
+ If there was a problem loading the XML properties file. The wrapped
+ exception now will say which file was trying to be loaded. If the file did
+ not exist I was getting a very strange "Stream closed" IOException message.
+
+ 3. Problem: the streams were not closed after reading the property file.
+
+ Fixed.
+
+ 4. Problem: the double-check locking mechanism does not work in Java (see
+ bug #919)
+
+ &lt;http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-toolbox.html&gt;
+
+ 5. QUESTION: now if there is a default properties (i.e.
+ output_xml.properties has been loaded) but the expected properties file does
+ not exist a error message will be printed to System.err and the processing
+ will continuing using just the default properties (output_xml.properties) I
+ felt that this is the best behavior.
+
+ (comment by sboag: I think it's better to
+ throw a runtime exception in this case.
+ but we can discuss this over time. For now
+ the patch was modified to do the runtime exception).<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLTSchema.java
+ java/src/org/apache/xalan/stree SourceTreeHandler.java
+ java/src/org/apache/xalan/templates ElemForEach.java
+ ElemLiteralResult.java
+ java/src/org/apache/xalan/transformer QueuedSAXEvent.java
+ ResultTreeHandler.java TransformerImpl.java
+ java/src/org/apache/xml/utils BoolStack.java
+ java/src/org/apache/xpath XPathContext.java<br/><ref>Committer's log entry: </ref>This check-in contains a couple things that overlapped on my
+ system, so I'm checking them in together.
+ 1) Unfinished (in progress) implementation of TransformSnapshot mechanism,
+ which will hopefully allow a result ContentHandler to take a snapshot
+ at a given point, and the restart execution from that point at some
+ later time. For tooling support.
+ 2) Check to make sure SourceTreeHandler isn't being entered twice,
+ which is related to the cocoon bug from a couple of weeks ago. This
+ will just help diagnose such a problem in the future.
+ 3) Removed the error stack trace print from postExceptionFromThread.
+ 4) Report exception in SourceTreeHandler#endDocument after
+ the join, if we can determine that the posted exception won't be
+ caught elsewhere.
+ 5) removed some catches that simply rethrew the exception
+ (thanks to Patrick Moore &lt;patrickm@rioport.com&gt;).
+ See my note on 3/27/2001 to Patrick for more info
+ on the last two.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>03/27/2001<br/><ref>Added: </ref>java/src/org/apache/xalan/transformer TransformSnapshot.java
+ TransformSnapshotImpl.java<br/><ref>Committer's log entry: </ref>Unfinished (in progress) implementation of TransformSnapshot mechanism,
+ which will hopefully allow a result ContentHandler to take a snapshot
+ at a given point, and the restart execution from that point at some
+ later time. For tooling support.on the last two.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>03/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ ProcessorStylesheetElement.java
+ ProcessorTemplateElem.java StylesheetHandler.java
+ XSLTElementDef.java XSLTElementProcessor.java
+ XSLTSchema.java<br/><ref>Committer's log entry: </ref>Try to catch element order and required element errors during stylesheet 
+object creation. This new code adds an order and a required field to 
+XSLElementDef objects where it is applicable.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>04/02/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Fix bugzilla bug 1170. If we're trying an xsl:apply-imports at the top level 
+(ie there are no
+ imported stylesheets), we need to indicate that there is no matching template 
+and prevent and infinite recursion by using the built-in template.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>04/02/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions MethodResolver.java<br/><ref>Committer's log entry: </ref>Code cleanup submitted by Art Welch &lt;art_w@EASTPOINT.COM&gt;.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils TreeWalker.java<br/><ref>Committer's log entry: </ref>Add locator support to TreeWalker<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>04/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ QueuedStartElement.java<br/><ref>Committer's log entry: </ref>Small fix made for getCurrentNode.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>04/06/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils TreeWalker.java<br/><ref>Committer's log entry: </ref>Commented out extra call to getData()... this could be a big performance
+ improvement for some stylesheets.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/09/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ TransformSnapshotImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Additional support for tooling. Allow tools to take a snapshot of context and 
+restart execution at that point.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ XSLTElementProcessor.java
+ java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/transformer
+ TransformSnapshotImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Misc stuff left out from previous check in<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/functions FuncCurrent.java<br/><ref>Committer's log entry: </ref>Don't assume that the object returned by getSubContextList() is a 
+PredicatedNodeTest object.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor ProcessorInclude.java
+ TransformerFactoryImpl.java
+ java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java
+ java/src/org/apache/xml/utils TreeWalker.java<br/><ref>Committer's log entry: </ref>Create new TreeWalker constructor that takes a systemId parameter. Change 
+TreeWalker to change fields in the locator and not set it for each node.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>04/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath XPath.java<br/><ref>Committer's log entry: </ref>Fix Bugzilla bug:
+ PR: 1106
+ Submitted by: elharo@metalab.unc.edu<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>04/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql QueryParameter.java
+ SQLExtensionError.java XConnection.java<br/><ref>Committer's log entry: </ref>Minor Javadoc updates (add @author name, remove declared but unthrown @throws)<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>04/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java Row.java RowSet.java
+ StreamableNode.java XConnection.java
+ XStatement.java<br/><ref>Committer's log entry: </ref>Support for Streamable Mode- John Gentilin<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>04/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/objects XObject.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla bug 1015 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1015&gt;.
+ Fix prevents null pointer exceptions when null non-XSLT arguments are
+ passed to an extension function.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>04/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions MethodResolver.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla bug 1015 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1015&gt;.
+ Fix prevents null pointer exceptions when null non-XSLT arguments are
+ passed to an extension function.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Fix copy/paste error. Want to use TransformerFactoryImpl's class loader.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>04/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ TransformSnapshotImpl.java<br/><ref>Committer's log entry: </ref>Keep a copy of current contextNodeList is there is one<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>04/25/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt EnvironmentCheck.java<br/><ref>Committer's log entry: </ref>Added checkDirForJars() which checks java.ext.dirs as well now<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>04/26/2001<br/><ref>Added: </ref>java/src/javax/xml/transform package.html
+ java/src/javax/xml/transform/dom package.html
+ java/src/javax/xml/transform/sax package.html
+ java/src/javax/xml/transform/stream package.html<br/><ref>Committer's log entry: </ref>Add package.html for each package in javax.xml.transform.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>04/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Resolve bug 1496 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1496&gt; 
+where xsl:param statements were not being reset properly if the TransformerImpl 
+was reused.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>04/27/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/stree DocImpl.java<br/><ref>Committer's log entry: </ref>Fix for #1561<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>04/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/functions FuncExtFunction.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla bug 1373 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1373&gt;.
+ Added code to support return of Integer or Long by an external function.
+ Code was contributed by Patrick Moore &lt;patmoore@ieee.org&gt;.<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>05/03/2001<br/><ref>Modified: </ref>java/src/javax/xml/transform/stream StreamResult.java
+ StreamSource.java<br/><ref>Committer's log entry: </ref>Small fix to avoid file:////path that may fail on some JDK.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>05/04/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql package.html<br/><ref>Committer's log entry: </ref>Preliminary updates for John G's work.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>05/07/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Check for a null contextNodeList before returning its clone<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>05/07/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/stree StreeDOMBuilder.java<br/><ref>Committer's log entry: </ref>Set the element's level correctly, before we process attributes.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/08/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer
+ TransformerIdentityImpl.java<br/><ref>Committer's log entry: </ref>Resolve bugzilla 1648 
+(http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1648).
+ TransformerIdentityImpl was improperly using an old LexicalHandler when 
+invoked for a second transform.
+ This bug only affects identity transforms with StreamResults.
+ Many thanks to John Keyes &lt;johnkeyes@yahoo.com&gt; for reporting this bug.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>05/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLProcessorVersion.java<br/><ref>Committer's log entry: </ref>Updated version number to 2.1.0<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>05/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/res XSLTInfo.properties<br/><ref>Committer's log entry: </ref>Updated version number to 2.1.0<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/10/2001<br/><ref>Modified: </ref>java/src/org/apache/xpath/functions FuncExtFunction.java<br/><ref>Committer's log entry: </ref>Change submitted by Patrick Moore &lt;patmoore@ieee.org&gt; as part of bugzilla 
+1373 (http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1373).
+ Return value from extension function is now generalized so that all 
+derivatives of Number are now properly handled.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>05/11/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor XSLTSchema.java<br/><ref>Committer's log entry: </ref>Set the correct order of xsl:include elements<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>05/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java ConnectionPool.java
+ DefaultConnectionPool.java ExtensionError.java
+ PooledConnection.java QueryParameter.java Row.java
+ RowSet.java SQLExtensionError.java
+ StreamableNode.java XConnection.java
+ XConnectionPoolManager.java XStatement.java
+ package.html<br/><ref>Committer's log entry: </ref>Updates Javadocs
+ Submitted by:John Gentilin mailto://johnglinux@eyecatching.com<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Correct typo introduced in revision 1.30 causing problems with transforms on 
+Unix platforms.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/14/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemChoose.java<br/><ref>Committer's log entry: </ref>Correct bugzilla bug 1748 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1748&gt;.
+ When evaluating xsl:when, the xsl:choose element was used to resolve 
+namespace prefixes instead of
+ the xsl:when element itself. This caused namespace prefixes defined on the 
+xsl:when to be ignored.<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>05/15/2001<br/><ref>Modified: </ref>java/src/javax/xml/parsers DocumentBuilderFactory.java
+ SAXParserFactory.java
+ java/src/javax/xml/transform TransformerFactory.java<br/><ref>Committer's log entry: </ref>Use the context class loader if available.
+
+ The implementation is based on ExtensionHandler, and it's needed in order
+ to work in certain environments ( like tomcat ).<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>05/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/extensions ExtensionHandler.java
+ ExtensionHandlerGeneral.java<br/><ref>Committer's log entry: </ref>Make getClassForName a public method. There are few other places in xalan
+ where Class.forName is used, and this can create problems in some cases
+ where the Thread.getContextClassLoader should be used.
+
+ getClassForName uses introspection to call getContextClassLoader
+ ( so it works in JDK1.1 ).
+
+ In ExtensionHandlerGeneral, use the thread loader to find BSF ( it may be
+ possible that xalan is installed in CLASSPATH, but BSF is in a webapp ).<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>05/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ CompilingStylesheetHandler.java
+ java/src/org/apache/xalan/serialize SerializerFactory.java<br/><ref>Committer's log entry: </ref>2 more instances where Class.forName was used.
+
+ Use the method in ExtensionHandler for consistency ( we could move it in
+ org.apache.xml.utils, but for now it's easier to just use it as it is )<br/><br/></li><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>05/15/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/stree SourceTreeHandler.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>This is the "thread pooling hook".
+
+ It slightly changes the API used to create and wait for the transform thread.
+ Instead of using threadCreate() and Thread.start() that creates a new thread
+ and thread.join() that waits for a thread to end, we now use a 
+ThreadControler
+ class that has the equivalent methods:
+ - run( Runnable ) - executes a task in a thread. The default implementation
+ is identical with what we had, using new Thread() and start()
+ - waitTread() - waits for a task to end. The default impl. is identical with
+ the previous code, using thread.join().
+
+ Someone wanting to use a thread pool for xalan will have to extend
+ the ThreadControler and override the 2 methods, then call setThreadController.
+
+ Xalan itself doesn't implement a thread pool right now ( for mosts uses it's
+ not even needed - if you just do few transforms for example ), instead
+ a server that runs xalan could plug it's own thread pool.<br/><br/></li><li><ref>Committed by </ref>Gary L Peskin &lt;garyp@firstech.com&gt;<ref> on </ref>05/15/2001<br/><ref>Committer's log entry: </ref>
+&gt; Use the context class loader if available.
+&gt;
+&gt; The implementation is based on ExtensionHandler, and it's needed in order
+&gt; to work in certain environments ( like tomcat ).
+&gt;
+&gt;<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>05/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql ExtensionError.java<br/><ref>Committer's log entry: </ref>Fixed "conflict" in javadoc comments.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>05/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql package.html<br/><ref>Committer's log entry: </ref>Editing pass.<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>05/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc TransletOutputHandler.java<br/><ref>Committer's log entry: </ref>bug # 1406 fixed, omit xml header implemented<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>05/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xslt Process.java<br/><ref>Committer's log entry: </ref>Update Javadoc and remove commented out reference to properties file
+ PR:Bugzilla1627<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Resolve bug 1330 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1330&gt;.
+ setContentHandler failed to also reset m_lexicalHandler if the ContentHandler
+ was also a LexicalHandler. This caused the old LexicalHandler to be used 
+which
+ was pointing to a previous result tree.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>Resolve bug 1762 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1762&gt;.
+ TransformerFactoryImpl's URIResolver was not propagated to created 
+Transformers.
+ Modified code to propagate.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>05/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/utils TreeWalker.java
+ SystemIDResolver.java<br/><ref>Committer's log entry: </ref>Catch SecurityException whenever accessing System.getProperty("user.dir");
+ minor javadoc update<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>05/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates ElemCopy.java
+ ElemValueOf.java
+ java/src/org/apache/xalan/transformer TreeWalker2Result.java
+ java/src/org/apache/xpath/functions FuncLast.java<br/><ref>Committer's log entry: </ref>Fix for bugs reported by the Eclipse folks for TransformState, where
+ some operations (xsl:value-of, xsl-copy) were not pushing the
+ current node on the current node stack. Addresses
+ http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1524.<br/><br/></li><li><ref>Committed by </ref>curcuru@apache.org<ref> on </ref>05/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates OutputProperties.java<br/><ref>Committer's log entry: </ref>Catch SecurityException as needed
+ PR: Bugzilla1258<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates OutputProperties.java<br/><ref>Committer's log entry: </ref>Fix to the following bug reported by dims@yahoo.com:
+
+ loadPropertiesFile method in org\apache\xalan\templates\OutputProperties.java 
+does not fall back
+ to the Thread Context Class Loader to load properties files like 
+output_xml.properties etc. This
+ is causing problems in ServletExec_3_1+C2.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/templates OutputProperties.java<br/><ref>Committer's log entry: </ref>Correct implementation of ContextClassLoader to support case where properties 
+file is to be loaded by a different ClassLoader than the OutputProperties 
+class. Thanks to Davanum Srinivas &lt;dims@yahoo.com&gt; for this code and for 
+reporting this bug.
+ loadPropertiesFile should eventually be moved into a thread-specific class.<br/><br/></li><li><ref>Committed by </ref>garyp@apache.org<ref> on </ref>05/21/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor
+ TransformerFactoryImpl.java
+ java/src/org/apache/xalan/serialize CharInfo.java
+ java/src/org/apache/xpath/functions FuncSystemProperty.java<br/><ref>Committer's log entry: </ref>Modify getResourceAsStream calls to use the contextClassLoader, if available.
+ This is a temporary fix until we can centralize this function.<br/><br/></li></ul><note>This release includes no updates of the compatibility source code.</note>
+     </s3>
+
 <s3 title="Changes for &xslt4j; 2.0.1">
 <p>This release includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. We have also</p>
 <ul>

@@ -78,12 +78,67 @@
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
-     <s3 title="Changes since &xslt4j; 2.0.1">
-     &xsltcdone;
-     <p>This release also includes a number of bug fixes to &xslt4j; and TrAX. 
-     We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
-     client transformation requests involving the same stylesheet.</p>
-     &done-j;
+     <s3 title="Changes since &xslt4j; 2.2.D1">
+<p>We have moved the DTM_EXP branch to the main branch, incorporating all our work on the <link idref="whatsnew" anchor="dtm">DTM</link> into the Xalan source tree. 
+The branch is not absolutely perfect, but it's pretty damn good, and we think
+any final polishing should be done on the main branch.  We would also like
+to get any ongoing bug fixes into the DTM version instead of the existing
+trunk.</p>
+
+<p>We expect that developers initially might encounter some issues
+with extensions (a fair amount of *internal* api has changed), but we don't
+think we can discover these and resolve them one way or the other until we
+get it in the mainstream.</p>
+
+<p>We will branch the existing trunk, so that people can still work off that if
+they absolutely have to.</p>
+
+<p>We won't immediately merge any of the bug fixes from the last two weeks
+(since we last did a merge to DTM_EXP).  Instead over the next couple of
+days we will merge any bugfixes in, or the bugfix authors can do it.</p>
+
+<p>The SQL extension will be broken to start out with.  John Gentilin is
+working on this, and we hope it will be functional within a week or two.</p>
+<anchor name="dtm"/>
+<p>In general the DTM work (not just the DTM, but all the work on the branch)
+provides faster performance and lower object garbage... though it is an
+ongoing battle.  Brief summary of the work:</p>
+<ul>
+<li>The DTM itself, which presents node identity as 32-bit integer handles.
+The DTM has many features, including direct character dispatch to SAX2,
+native DTM iterators and "traversers", multiple document management, etc.<br/><br/></li>
+<li>Joe Kesselman's CoRoutine parsers, which are in a threaded SAX flavor
+and in a Xerces parseMore() flavor (no threads).  These do away with the
+"race" conditions that occured in the original code, and should make Xalan
+much more robust.<br/><br/></li>
+<li>*Much* more robust XPath itteration.  The "waiting" iterators of old are
+no more, and good riddance.  There is stil lots more we want to do with
+this mechanism.  (There is something here called MatchIterators, but it's
+not being used yet for various reasons.  We will be taking advantage of
+these down the line.)<br/><br/></li>
+<li>A fair amount of XObject creation reduction.  You can now get boolean,
+number, nodeset, and string values directly from an Expression, instead of
+going through an XObject.<br/><br/></li>
+<li> XMLString, which makes it so we can have string objects that don't wrap
+Java's String object, but instead get their character data from an array or
+Fast String Buffer.<br/><br/></li>
+<li>Serializers now only do internal buffering if they know they are writing
+to a FileStream.<br/><br/></li>
+<li>The variable stack mechanism has been redisigned, so that it is no
+longer so interpretive, and we believe it is much more robust.<br/><br/></li>
+<li> Some small amount of stylesheet rewriting (but not yet redundent
+expression elimination), in particular to reduce full RTF creation and
+interpretation.</li>
+</ul>
+<p><em>DTM features:</em></p>
+<p>With the setAttribute feature of the TransformerFactory, the calling application can control overall behavior of the Xalan engine.  The following are feature URLs implemented by Xalan.</p>
+<p><code>FEATURE_INCREMENTAL = "http://xml.apache.org/xalan/features/incremental";</code></p>
+
+<p>This feature allows a user to specify whether or not to try to do an incremental transform. If the feature is set to true and we are using SAX, we will run the transform in one thread and the parse in another. If the feature is set to false, which is the default value, both the transform and the parse will be done on the same thread. If Xerces is the parser being used, we will do an incremental transform on a single thread using the "parse on demand" Xerces feature if this feature is set to true. </p>
+
+ <p><code>FEATURE_OPTIMIZE = "http://xml.apache.org/xalan/features/optimize";</code></p>
+
+<p>This feature allows a tool that uses Xalan to turn off optimizations that may involve structural rewrites of the stylesheet.  If the tool is relying on the structure of the elements being the same as the stylesheet, it should set this value to false.  The default for this value is true.</p>
      </s3>
      <anchor name="other"/>
      <s3 title="Other points of interest">

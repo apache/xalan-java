@@ -2,8 +2,8 @@
 
 <!ENTITY xslt4j "Xalan-Java">
 <!ENTITY xslt4j2 "Xalan-Java 2">
-<!ENTITY xslt4j-dist "xalan-j_2_2_D01">
-<!ENTITY xslt4j-current "&xslt4j; version 2.2.D01">
+<!ENTITY xslt4j-dist "xalan-j_2_2_D1">
+<!ENTITY xslt4j-current "&xslt4j; version 2.2.D1">
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j-used "&xml4j; version 1.4">
 <!ENTITY xslt4c "Xalan-C++">
@@ -14,6 +14,7 @@
 
 <!ENTITY xsltcwhatsnewhead '<ul>
                       <li><link anchor="design">New design</link></li>
+                      <li><link anchor="dtm">Document Table Model (DTM)</link></li>
                       <li><link anchor="xsltc">XSLTC</link></li>
                     </ul><anchor name="design"/>'>
                          

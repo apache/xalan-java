@@ -86,7 +86,7 @@ Copyright:
   <property name="xml.jar" value="${bin.dir}/${xml.jar.name}"/>
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
-  <property name="version" value="2_2_D01"/>
+  <property name="version" value="2_2_D1"/>
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
