@@ -62,7 +62,7 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class does a pre-order walk of the DOM tree, calling the FormatterListener
+ * This class does a pre-order walk of the DOM tree, calling a ContentHandler
  * interface as it goes.
  */
 public class TreeWalker

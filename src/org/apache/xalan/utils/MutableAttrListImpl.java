@@ -63,7 +63,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Implement the SAX Attributes interface, using a single array.
+ * Mutable version of AttributesImpl.
  */
 public class MutableAttrListImpl extends AttributesImpl 
   implements Serializable

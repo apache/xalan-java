@@ -58,7 +58,7 @@ package org.apache.xalan.utils;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class that implements this interface can resolve prefixes 
+ * The class that implements this interface can resolve prefixes 
  * to namespaces.
  */
 public interface PrefixResolver
