@@ -635,17 +635,19 @@ public final class TransformerImpl extends Transformer
 	    else if (name.equals(OutputKeys.VERSION))
 		translet._version = value;
 	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) {
-		if ((value != null) && (value.toLowerCase().equals("true"))) {
+		if ((value != null) && (value.toLowerCase().equals("yes")))
 		    translet._omitHeader = true;
-		}
+		else
+		    translet._omitHeader = false;
 	    }
 	    else if (name.equals(OutputKeys.INDENT)) {
-		if ((value != null) && (value.toLowerCase().equals("true"))) {
+		if ((value != null) && (value.toLowerCase().equals("yes")))
 		    translet._indent = true;
-		}
+		else
+		    translet._indent = false;
 	    }
 	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
-		if ((value != null) && (value.toLowerCase().equals("true"))) {
+		if (value != null) {
 		    translet._cdata = null; // clear previous setting
 		    StringTokenizer e = new StringTokenizer(value);
 		    while (e.hasMoreTokens()) {
@@ -685,8 +687,10 @@ public final class TransformerImpl extends Transformer
 	    value = _translet._method;
 	    if (value != null) second.setProperty(OutputKeys.METHOD, value);
 
-	    value = (new Boolean(_translet._indent)).toString();
-	    if (value != null) second.setProperty(OutputKeys.INDENT, value);
+	    if (_translet._indent)
+		second.setProperty(OutputKeys.INDENT, "yes");
+	    else
+		second.setProperty(OutputKeys.INDENT, "no");
 
 	    value = _translet._doctypePublic;
 	    if (value != null) 
@@ -703,9 +707,10 @@ public final class TransformerImpl extends Transformer
 	    value = _translet._mediaType;
 	    if (value != null) second.setProperty(OutputKeys.MEDIA_TYPE, value);
 
-	    value = (new Boolean(_translet._omitHeader)).toString();
-	    if (value != null) 
-		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, value);
+	    if (_translet._omitHeader)
+		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+	    else
+		second.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
 	    value = _translet._standalone;
 	    if (value != null) second.setProperty(OutputKeys.STANDALONE, value);
