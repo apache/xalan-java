@@ -113,6 +113,9 @@ public final class ReferenceType extends Type {
 	else if (type == Type.Node) {
 	    translateTo(classGen, methodGen, (NodeType) type);
 	}
+	else if (type == Type.ResultTree) {
+	    translateTo(classGen, methodGen, (ResultTreeType) type);
+	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, type.toString());
 	    classGen.getParser().reportError(Constants.FATAL, err);
@@ -208,6 +211,20 @@ public final class ReferenceType extends Type {
 			    NodeType type) {
 	translateTo(classGen, methodGen, Type.NodeSet);
 	Type.NodeSet.translateTo(classGen, methodGen, type);
+    }
+
+    /**
+     * Casts a reference into a ResultTree.
+     *
+     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+			    ResultTreeType type) {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+	int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToResultTree", 
+				     "(" + OBJECT_SIG + ")" + DOM_INTF_SIG);
+	il.append(new INVOKESTATIC(index));
     }
 
     /**

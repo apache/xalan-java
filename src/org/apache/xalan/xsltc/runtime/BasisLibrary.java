@@ -904,28 +904,31 @@ public final class BasisLibrary implements Operators {
      * obj is an instanceof Node then create a singleton iterator.
      */
     public static NodeIterator referenceToNodeSet(Object obj) {
-	try {
-	    // Convert var/param -> node
-	    if (obj instanceof Node) {
-		return(new SingletonIterator(((Node)obj).node));
-	    }
-	    // Convert var/param -> node-set
-	    else if (obj instanceof NodeIterator) {
-		return(((NodeIterator)obj).cloneIterator());
-	    }
-	    // Convert var/param -> result-tree fragment
-	    else if (obj instanceof DOM) {
-		DOM dom = (DOM)obj;
-		return(dom.getIterator());
-	    }
-	    else {
-		final String className = obj.getClass().getName();
-		runTimeError(DATA_CONVERSION_ERR, "reference", className);
-		return null;
-	    }
+	// Convert var/param -> node
+	if (obj instanceof Node) {
+	    return(new SingletonIterator(((Node)obj).node));
 	}
-	catch (ClassCastException e) {
-	    runTimeError(DATA_CONVERSION_ERR, "reference", "node-set");
+	// Convert var/param -> node-set
+	else if (obj instanceof NodeIterator) {
+	    return(((NodeIterator)obj).cloneIterator());
+	}
+	else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    return null;
+	}
+    }
+
+    /**
+     * Utility function used to convert references to DOMs. 
+     */
+    public static DOM referenceToResultTree(Object obj) {
+	try {
+	    return ((DOM) obj);
+	}
+	catch (IllegalArgumentException e) {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
 	    return null;
 	}
     }
