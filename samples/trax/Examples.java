@@ -41,6 +41,10 @@ import java.io.BufferedInputStream;    // dml
 /**
  * Some examples to show how the Simple API for Transformations
  * could be used.
+ * 
+ * Xalan Developers: please see 
+ * xml-xalan/test/java/src/org/apache/qetest/trax/ExamplesTest.java
+ * when updating this file, and update that test file as well.
  *
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
