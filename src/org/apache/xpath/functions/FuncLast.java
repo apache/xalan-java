@@ -81,9 +81,9 @@ public class FuncLast extends Function
   /**
    * Get the position in the current context node list.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt non-null reference to XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The number of nodes in the list.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -91,7 +91,7 @@ public class FuncLast extends Function
           throws javax.xml.transform.TransformerException
   {
 
-    //    assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
+    // assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
     // If we're in a predicate, then this will return non-null.
     SubContextList iter = xctxt.getSubContextList();
 
