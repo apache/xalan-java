@@ -1027,12 +1027,22 @@ public class DOMHelper
   }
 
   /**
-   * Given an ID, return the element.
+   * Given an ID, return the element. This can work only if the document
+   * is interpreted in the context of a DTD or Schema, since otherwise
+   * we don't know which attributes are or aren't IDs.
+   * <p>
+   * Note that DOM Level 1 had no ability to retrieve this information.
+   * DOM Level 2 introduced it but does not promise that it will be
+   * supported in all DOMs; those which can't support it will always
+   * return null.
+   * <p>
+   * TODO: getElementByID is currently unimplemented. Support DOM Level 2?
    *
-   * NEEDSDOC @param id
-   * NEEDSDOC @param doc
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param id The unique identifier to be searched for.
+   * @param doc The document to search within.
+   * @return CURRENTLY HARDCODED TO NULL, but it should be:
+   * The node which has this unique identifier, or null if there
+   * is no such node or this DOM can't reliably recognize it.
    */
   public Element getElementByID(String id, Document doc)
   {
@@ -1044,15 +1054,35 @@ public class DOMHelper
    * entity with the specified name in the same document as the context
    * node (see [3.3 Unparsed Entities]). It returns the empty string if
    * there is no such entity.
-   * Since it states in the DOM draft: "An XML processor may choose to
+   * <p>
+   * XML processors may choose to use the System Identifier (if one
+   * is provided) to resolve the entity, rather than the URI in the
+   * Public Identifier. The details are dependent on the processor, and
+   * we would have to support some form of plug-in resolver to handle
+   * this properly. Currently, we simply return the System Identifier if
+   * present, and hope that it a usable URI or that our caller can
+   * map it to one.
+   * TODO: Resolve Public Identifiers... or consider changing function name.
+   * <p>
+   * If we find a relative URI 
+   * reference, XML expects it to be resolved in terms of the base URI 
+   * of the document. The DOM doesn't do that for us, and it isn't 
+   * entirely clear whether that should be done here; currently that's
+   * pushed up to a higher levelof our application. (Note that DOM Level 
+   * 1 didn't store the document's base URI.)
+   * TODO: Consider resolving Relative URIs.
+   * <p>
+   * (The DOM's statement that "An XML processor may choose to
    * completely expand entities before the structure model is passed
-   * to the DOM; in this case, there will be no EntityReferences in the DOM tree."
-   * So I'm not sure how well this is going to work.
+   * to the DOM" refers only to parsed entities, not unparsed, and hence
+   * doesn't affect this function.)
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param doc
+   * @param name A string containing the Entity Name of the unparsed
+   * entity.
+   * @param doc Document node for the document to be searched.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String containing the URI of the Unparsed Entity, or an
+   * empty string if no such entity exists.
    */
   public String getUnparsedEntityURI(String name, Document doc)
   {
@@ -1068,7 +1098,6 @@ public class DOMHelper
 
       if (null != notationName)  // then it's unparsed
       {
-
         // The draft says: "The XSLT processor may use the public 
         // identifier to generate a URI for the entity instead of the URI 
         // specified in the system identifier. If the XSLT processor does 
@@ -1086,7 +1115,6 @@ public class DOMHelper
         }
         else
         {
-
           // This should be resolved to an absolute URL, but that's hard 
           // to do from here.
         }
@@ -1156,10 +1184,12 @@ public class DOMHelper
   protected Document m_DOMFactory = null;
 
   /**
-   * Get the factory object required to create DOM nodes
-   * in the result tree.
+   * Store the factory object required to create DOM nodes
+   * in the result tree. In fact, that's just the result tree's
+   * Document node...
    *
-   * NEEDSDOC @param domFactory
+   * @param domFactory The DOM Document Node within whose context
+   * the result tree will be built.
    */
   public void setDOMFactory(Document domFactory)
   {
@@ -1167,10 +1197,10 @@ public class DOMHelper
   }
 
   /**
-   * Get the factory object required to create DOM nodes
+   * Retrieve the factory object required to create DOM nodes
    * in the result tree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The result tree's DOM Document Node.
    */
   public Document getDOMFactory()
   {
@@ -1215,19 +1245,25 @@ public class DOMHelper
   }
 
   /**
-   * Get the textual contents of the node. If the node
-   * is an element, apply whitespace stripping rules,
-   * though I'm not sure if this is right (I'll fix
-   * or declare victory when I review the entire
-   * whitespace handling).
+   * Retrieve the text content of a DOM subtree, appending it into a
+   * user-supplied FastStringBuffer object. Note that attributes are
+   * not considered part of the content of an element.
+   * <p>
+   * There are open questions regarding whitespace stripping. 
+   * Currently we make no special effort in that regard, since the standard
+   * DOM doesn't yet provide DTD-based information to distinguish
+   * whitespace-in-element-context from genuine #PCDATA. Note that we
+   * should probably also consider xml:space if/when we address this.
+   * DOM Level 3 may solve the problem for us.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param buf
+   * @param node Node whose subtree is to be walked, gathering the
+   * contents of all Text or CDATASection nodes.
+   * @param buf FastStringBuffer into which the contents of the text
+   * nodes are to be concatenated.
    */
   public static void getNodeData(Node node, FastStringBuffer buf)
   {
 
-    // String data = null;
     switch (node.getNodeType())
     {
     case Node.DOCUMENT_FRAGMENT_NODE :
@@ -1249,11 +1285,9 @@ public class DOMHelper
       buf.append(node.getNodeValue());
       break;
     case Node.PROCESSING_INSTRUCTION_NODE :
-
       // warning(XPATHErrorResources.WG_PARSING_AND_PREPARING);        
       break;
     default :
-
       // ignore
       break;
     }
