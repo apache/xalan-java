@@ -59,6 +59,12 @@ package org.apache.xml.utils;
 /**
  * <meta name="usage" content="internal"/>
  * A very simple table that stores a list of int.
+ *
+ * This version is based on a "realloc" strategy -- a simle array is
+ * used, and when more storage is needed, a larger array is obtained
+ * and all existing data is recopied into it. As a result, read/write
+ * access to existing nodes is O(1) fast but appending may be O(N**2)
+ * slow. See also SuballocatedIntVector.
  */
 public class IntVector
 {
@@ -67,7 +73,7 @@ public class IntVector
   protected int m_blocksize;
 
   /** Array of ints          */
-  public int m_map[];  // expose to package for direct access.
+  protected int m_map[]; // IntStack is trying to see this directly
 
   /** Number of ints in array          */
   protected int m_firstFree = 0;
