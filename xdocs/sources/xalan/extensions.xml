@@ -193,7 +193,7 @@
 <p>To run the preceding example, bsf.jar and js.jar must be on the classpath. Remember that bsf.jar must be on the classpath to run any extension written in a language other than Java. For extensions implemented in a scripting language, see the additional requirements in <link anchor="supported-lang">Supported languages</link>.</p>
 </s2><anchor name="basic-syntax"/>
 <s2 title="Syntax">
-<p>You can always use the pattern illustrated above to set up and use extension elements and extension functions. For extension elements and functions implemented in Java, you can also use an abbreviated syntax, described in <link anchor="java-namespace">Alternative: using the abbreviated syntax for extensions implemented in Java</link>. Unless you are using the abbreviated syntax, do the following:</p>
+<p>You can always use the pattern illustrated above to set up and use extension elements and extension functions. For extension elements and functions implemented in Java, it is recommended that you use the abbreviated syntax, described in <link anchor="java-namespace">Alternative: using the abbreviated syntax for extensions implemented in Java</link>. Unless you are using the abbreviated syntax, do the following:</p>
 <s3 title="1. Declare the xalan namespace">
 <p><br/><code>xmlns:xalan="http://xml.apache.org/xalan"</code></p>
 <p>The xalan namespace provides support for the xalan:component element and xalan:script subelement.</p>
@@ -235,7 +235,10 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
 <p><code>&lt;xalan:script lang="javascript" &gt;</code><br/>
 <code>&nbsp;&nbsp;&lt;!--The implementation script--&gt;</code><br/>
 <code>&lt;/xalan:script&gt;</code></p>
-<p>For other scripting languages supported by BSF, use the same approach as for JavaScript. &xslt4j; plans to add support for using the src attribute to identify another document that contains the implementation script; this feature is not yet supported.</p>
+<p>For other scripting languages supported by BSF, use the same approach as for JavaScript. 
+The src attribute is also supported in the xalan:script element. If it is present, the script will
+be loaded from the URL specified in the src attribute. Otherwise the script is taken from the text child
+of the xalan:script element.</p>
 <p>If the extension is implemented in Java, you have three choices for the format of the src attribute in the xalan:script element.</p>
 <p><code>&lt;xalan:script lang="javaclass" src="xalan://<ref>FQCN</ref>"/&gt;</code>
 <br/>where <ref>FQCN</ref> is the fully qualified class name.

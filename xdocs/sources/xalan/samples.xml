@@ -285,27 +285,31 @@ xslURL=file:spec.xsl</label></gloss>
     <p>To run the servlet: put xalanservlet.jar on the servlet engine classpath, configure your servlet engine so it can find the 
      stylesheets and properties file in the servlet subdirectory (and in xalanservlet.jar), and set up an HTML page to call
      servlet.ApplyXSLT with arguments as illustrated below.</p>
+    <p>The files foo.xml and foo.xsl used in the following example are created by the user. Good 
+    examples for these files are birds.xml/birds.xsl and foo.xml/foo.xsl under the SimpleTransform 
+    sample. If you create these files yourself, be careful that the output method should
+    be set to "xml" in the stylesheet.</p>
      <p>Examples:</p>
 <gloss>
-<label>http://localhost/servlethome/servlet.ApplyXSLT?URL=/data.xml&amp;xslURL=
-/style.xsl</label>
-<item>...applies the style.xsl stylesheet to the data.xml data. Both files are<br/>
+<label>http://localhost/servlethome/servlet.ApplyXSLT?URL=/foo.xml&amp;xslURL=
+/foo.xsl</label>
+<item>...applies the foo.xsl stylesheet to the foo.xml data. Both files are<br/>
 served from the Web server's HTTP document root.<br/><br/></item>
-<label>http://localhost/servlethome/servlet.ApplyXSLT?URL=/data.xml&amp;xslURL=
-/style.xsl&amp;debug=true</label>
+<label>http://localhost/servlethome/servlet.ApplyXSLT?URL=/foo.xml&amp;xslURL=
+/foo.xsl&amp;debug=true</label>
 <item>...ensures that XML and XSL processor messages are returned in the event of problems
-applying style.xsl to data.xml<br/><br/></item>
-<label>http://localhost/servlethome/servlet.ApplyXSLT/data.xml?xslURL=/style.xsl</label>
-<item>...applies the style.xsl stylesheet to the data.xml data, just like the first example.
+applying foo.xsl to foo.xml<br/><br/></item>
+<label>http://localhost/servlethome/servlet.ApplyXSLT/foo.xml?xslURL=/foo.xsl</label>
+<item>...applies the foo.xsl stylesheet to the foo.xml data, just like the first example.
 This is an alternative way of specifying the XML XSLTInputSource by utilizing the HTTP request's path
 information.<br/><br/></item>
-<label>http://localhost/servlethome/servlet.ApplyXSLT/data.xml</label>
-<item>...examines data.xml for an associated XSL stylesheet (a stylesheet Processing Instruction). If multiple XSLs are associated with the data, the stylesheet whose media attribute maps to your browser type will be chosen.  If no mapping is successful, the primary associated stylesheet is used.<br/><br/></item>
-<label>http://localhost/servlet/data.xml</label>
+<label>http://localhost/servlethome/servlet.ApplyXSLT/foo.xml</label>
+<item>...examines foo.xml for an associated XSL stylesheet (a stylesheet Processing Instruction). If multiple XSLs are associated with the data, the stylesheet whose media attribute maps to your browser type will be chosen.  If no mapping is successful, the primary associated stylesheet is used.<br/><br/></item>
+<label>http://localhost/servlet/foo.xml</label>
 <item>...provides the same function as the previous example, but this example assumes
-that /servlet/data.xml has been mapped to be executed by this servlet.  The servlet engine may be configured
+that /servlet/foo.xml has been mapped to be executed by this servlet.  The servlet engine may be configured
 to map all or some *.xml files to this servlet through the use of servlet aliases or filters.<br/><br/></item>
-<label>http://localhost/servlet/data.xml?catalog=http://www.xml.org/dtds/oag.xml</label>
+<label>http://localhost/servlet/foo.xml?catalog=http://www.xml.org/dtds/oag.xml</label>
 <item>...supplements any servlet-configured XCatalog
 with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</item>
 </gloss>     
