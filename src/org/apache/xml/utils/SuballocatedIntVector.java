@@ -150,13 +150,14 @@ public class SuballocatedIntVector
   }
   
   /**
-   * Set the length of the list.
+   * Set the length of the list. This will only work to truncate the list, and
+   * even then it has not been heavily tested and may not be trustworthy.
    *
    * @return length of the list
    */
-  private  void setSize(int sz)
+  public void setSize(int sz)
   {
-    if(m_firstFree<sz)
+    if(m_firstFree>sz) // Whups; had that backward!
       m_firstFree = sz;
   }
 
