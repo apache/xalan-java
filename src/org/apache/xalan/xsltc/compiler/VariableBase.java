@@ -194,7 +194,7 @@ class VariableBase extends TopLevelElement {
 	return _variable;
     }
 
-    private static String replace(String base, char c, String str) {
+    public static String replace(String base, char c, String str) {
 	final int len = base.length() - 1;
 	int pos;
 	while ((pos = base.indexOf(c)) > -1) {

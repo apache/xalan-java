@@ -867,7 +867,7 @@ public final class BasisLibrary implements Operators {
 		return(dom.getIterator());
 	    }
 	    else {
-		runTimeTypeError("reference", "node-set");
+		runTimeTypeError("reference", obj.getClass().getName());
 		return null;
 	    }
 	}
