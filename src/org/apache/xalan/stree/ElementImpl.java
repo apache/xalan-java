@@ -103,7 +103,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public int getChildCount()
   {
-    if (null == m_children || !isComplete())
+    if (null == m_children && !isComplete())
     {
       synchronized (this)
       {
