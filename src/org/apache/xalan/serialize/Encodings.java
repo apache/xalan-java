@@ -66,6 +66,7 @@ import java.net.URL;
 
 import java.util.Enumeration;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 /**
  * Provides information about encodings. Depends on the Java runtime
@@ -382,8 +383,20 @@ public class Encodings extends Object
       }
 
       int totalEntries = props.size();
-      EncodingInfo[] ret = new EncodingInfo[totalEntries];
+      int totalMimeNames = 0;
       Enumeration keys = props.keys();
+      for (int i = 0; i < totalEntries; ++i) {      
+        String javaName = (String) keys.nextElement();
+        String val = props.getProperty(javaName);
+       totalMimeNames++;
+       int pos = val.indexOf(' ');
+        for (int j = 0; j < pos; ++j)
+         if (val.charAt(j) == ',')
+           totalMimeNames++;
+      }
+      EncodingInfo[] ret = new EncodingInfo[totalMimeNames];
+      int j = 0;
+      keys = props.keys();      
       for (int i = 0; i < totalEntries; ++i) {
         String javaName = (String) keys.nextElement();
         String val = props.getProperty(javaName);
@@ -399,12 +412,14 @@ public class Encodings extends Object
           lastPrintable = 0x00FF;
         }
         else
-        {
-          mimeName = val.substring(0, pos);
-          lastPrintable =
-                         Integer.decode(val.substring(pos).trim()).intValue();
-        }
-        ret [i] = new EncodingInfo (mimeName, javaName, lastPrintable);
+        {      
+          lastPrintable = Integer.decode(val.substring(pos).trim()).intValue();
+          StringTokenizer st = new StringTokenizer(val.substring(0, pos),",");
+          while (st.hasMoreTokens()) {
+               mimeName = st.nextToken();
+               ret [j++] = new EncodingInfo (mimeName, javaName, lastPrintable);                         
+          }
+        }        
       }
       return ret;
     } catch (java.net.MalformedURLException mue) {

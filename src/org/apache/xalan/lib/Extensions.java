@@ -93,7 +93,8 @@ public class Extensions
 {
 
   // Reuse the Document object to reduce memory usage.
-  private static Document lDoc = null;
+  private static Document m_doc = null;
+  private static Extensions m_instance = new Extensions();
   
   /**
    * Constructor Extensions
@@ -289,11 +290,17 @@ public class Extensions
    */
   public static NodeList tokenize(String toTokenize, String delims)
   {
-
     try
     {
-      if (lDoc == null)
-        lDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+      // Lock the instance to ensure thread safety
+      if (m_doc == null)
+      {
+        synchronized (m_instance)
+        {
+          if (m_doc == null)
+            m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        }
+      }
     }
     catch(ParserConfigurationException pce)
     {
@@ -303,9 +310,12 @@ public class Extensions
     StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
     NodeSet resultSet = new NodeSet();
 
-    while (lTokenizer.hasMoreTokens())
+    synchronized (m_doc)
     {
-      resultSet.addNode(lDoc.createTextNode(lTokenizer.nextToken()));
+      while (lTokenizer.hasMoreTokens())
+      {
+        resultSet.addNode(m_doc.createTextNode(lTokenizer.nextToken()));
+      }
     }
 
     return resultSet;

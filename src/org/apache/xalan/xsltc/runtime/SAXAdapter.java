@@ -72,9 +72,19 @@ import org.apache.xalan.xsltc.dom.DOMBuilder;
 
 public final class SAXAdapter implements TransletOutputHandler {
 
+    /**
+     * Reference to DOMBuilder that receives the SAX2 events.
+     */
     private final DOMBuilder _domBuilder;
+
+    /**
+     * AttributeList object reused for each element.
+     */
     private final AttributeList  _attributes = new AttributeList();
 
+    /**
+     * Name of last element seen but not yet reported.
+     */
     private String _openElementName;
     
     public SAXAdapter(DOMBuilder domBuilder) {
@@ -159,9 +169,15 @@ public final class SAXAdapter implements TransletOutputHandler {
 	}
     }
     
-    public void namespace(String prefix, String uri)
-	throws TransletException {
-	// ???
+    public void namespace(String prefix, String uri) throws TransletException 
+    {
+	try {
+	    // TODO: housekeeping necessary to emit endPrefixMapping()
+	    _domBuilder.startPrefixMapping(prefix, uri);
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
+	}
     }
 
     public void comment(String comment) throws TransletException {

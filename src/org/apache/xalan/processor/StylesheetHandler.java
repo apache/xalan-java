@@ -117,6 +117,19 @@ public class StylesheetHandler extends DefaultHandler
         implements TemplatesHandler, PrefixResolver, NodeConsumer
 {
 
+
+  static {
+      Function func = new org.apache.xalan.templates.FuncDocument();
+
+      FunctionTable.installFunction("document", func);
+
+      // func = new org.apache.xalan.templates.FuncKey();
+      // FunctionTable.installFunction("key", func);
+      func = new org.apache.xalan.templates.FuncFormatNumb();
+
+      FunctionTable.installFunction("format-number", func);
+
+  }
   /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
@@ -135,42 +148,12 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Static flag to let us know if the XPath functions table
-   * has been initialized.
-   */
-  private static boolean m_xpathFunctionsInited = false;
-
-  /**
    * Do common initialization.
    *
    * @param processor non-null reference to the transformer factory that owns this handler.
    */
   void init(TransformerFactoryImpl processor)
   {
-
-    // Not sure about double-check of this flag, but
-    // it seems safe...
-    if (false == m_xpathFunctionsInited)
-    {
-      synchronized (this)
-      {
-        if (false == m_xpathFunctionsInited)
-        {
-          m_xpathFunctionsInited = true;
-
-          Function func = new org.apache.xalan.templates.FuncDocument();
-
-          FunctionTable.installFunction("document", func);
-
-          // func = new org.apache.xalan.templates.FuncKey();
-          // FunctionTable.installFunction("key", func);
-          func = new org.apache.xalan.templates.FuncFormatNumb();
-
-          FunctionTable.installFunction("format-number", func);
-        }
-      }
-    }
-
     m_stylesheetProcessor = processor;
 
     // Set the initial content handler.

@@ -65,8 +65,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.objects.*;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xml.dtm.DTMIterator;
 
 //import org.w3c.dom.Node;
@@ -160,6 +158,16 @@ public class FuncExtFunction extends Function
   {
     return m_extensionName;
   }
+  
+  /**
+   * Return the method key of the extension function.
+   *
+   * @return The method key of the extension function.
+   */
+  public Object getMethodKey()
+  {
+    return m_methodKey;
+  }
 
   /** 
    * Return the nth argument passed to the extension function.
@@ -230,8 +238,7 @@ public class FuncExtFunction extends Function
     }
     //dml
     ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
-    Object val = extProvider.extFunction(m_namespace, m_extensionName, 
-                                         argVec, m_methodKey);
+    Object val = extProvider.extFunction(this, argVec);
 
     if (null != val)
     {

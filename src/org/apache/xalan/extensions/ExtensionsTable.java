@@ -62,6 +62,7 @@ import org.apache.xml.utils.StringVector;
 
 import org.apache.xpath.objects.XNull;
 import org.apache.xpath.XPathProcessorException;
+import org.apache.xpath.functions.FuncExtFunction;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -243,5 +244,51 @@ public class ExtensionsTable
       }
     }
     return result;    
+  }
+  
+  /**
+   * Handle an extension function.
+   * @param extFunction  the extension function
+   * @param argVec    arguments to the function in a vector
+   * @param exprContext a context which may be passed to an extension function
+   *                  and provides callback functions to access various
+   *                  areas in the environment
+   *
+   * @return result of executing the function
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public Object extFunction(FuncExtFunction extFunction, Vector argVec, 
+                            ExpressionContext exprContext)
+         throws javax.xml.transform.TransformerException
+  {
+    Object result = null;
+    String ns = extFunction.getNamespace();
+    if (null != ns)
+    {
+      ExtensionHandler extNS =
+        (ExtensionHandler) m_extensionFunctionNamespaces.get(ns);
+      if (null != extNS)
+      {
+        try
+        {
+          result = extNS.callFunction(extFunction, argVec, exprContext);
+        }
+        catch (javax.xml.transform.TransformerException e)
+        {
+          throw e;
+        }
+        catch (Exception e)
+        {
+          throw new javax.xml.transform.TransformerException(e);
+        }
+      }
+      else
+      {
+        throw new XPathProcessorException(XSLMessages.createMessage(XSLTErrorResources.ER_EXTENSION_FUNC_UNKNOWN, 
+                                          new Object[]{ns, extFunction.getFunctionName()})); 
+      }
+    }
+    return result;        
   }
 }

@@ -77,6 +77,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.functions.FuncExtFunction;
 import javax.xml.transform.TransformerException;
 
 /**
@@ -412,6 +413,23 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     }
   }
 
+  /**
+   * Process a call to an XPath extension function
+   *
+   * @param extFunction The XPath extension function
+   * @param args The arguments of the function call.
+   * @param exprContext The context in which this expression is being executed.
+   * @return the return value of the function evaluation.
+   * @throws TransformerException
+   */
+  public Object callFunction(FuncExtFunction extFunction,
+                             Vector args,
+                             ExpressionContext exprContext)
+      throws TransformerException
+  {
+    return callFunction(extFunction.getFunctionName(), args, 
+                        extFunction.getMethodKey(), exprContext);
+  }
 
   /**
    * Process a call to this extension namespace via an element. As a side

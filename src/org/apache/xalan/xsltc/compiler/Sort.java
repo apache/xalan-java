@@ -560,46 +560,38 @@ final class Sort extends Instruction implements Closure {
 	    }
 	}
 
-	Method clinit = compileClassInit(sortObjects, sortRecord,
+	Method init = compileInit(sortObjects, sortRecord,
 					 cpg, className);
 	Method extract = compileExtract(sortObjects, sortRecord,
 					cpg, className);
-	sortRecord.addMethod(clinit);
-	sortRecord.addEmptyConstructor(ACC_PUBLIC);
+	sortRecord.addMethod(init);
 	sortRecord.addMethod(extract);
 
-	// Overload NodeSortRecord.getCollator() only if needed
-	for (int i = 0; i < sortObjects.size(); i++) {
-	    if (((Sort)(sortObjects.elementAt(i)))._lang != null) {
-		sortRecord.addMethod(compileGetCollator(sortObjects,
-							sortRecord,
-							cpg,
-							className));
-		i = sortObjects.size();
-	    }
-	}
-	
 	xsltc.dumpClass(sortRecord.getJavaClass());
 	return className;
     }
 
     /**
-     * Create a class constructor for the new class. All this constructor does
-     * is to initialize a couple of tables that contain information on sort
-     * order and sort type. These static tables cannot be in the parent class.
+     * Create a constructor for the new class. Updates the reference to the 
+     * collator in the super calls only when the stylesheet specifies a new
+     * language in xsl:sort.
      */
-    private static Method compileClassInit(Vector sortObjects,
+    private static Method compileInit(Vector sortObjects,
 					   NodeSortRecordGenerator sortRecord,
 					   ConstantPoolGen cpg,
-					   String className) {
-	// Class initializer - void NodeSortRecord.<clinit>();
+					   String className) 
+    {
 	final InstructionList il = new InstructionList();
-	final CompareGenerator classInit =
-	    new CompareGenerator(ACC_PUBLIC | ACC_STATIC,
-				 org.apache.bcel.generic.Type.VOID, 
-				 new org.apache.bcel.generic.Type[] { },
-				 new String[] { },
-				 "<clinit>", className, il, cpg);
+	final MethodGenerator init = 
+	    new MethodGenerator(ACC_PUBLIC, 
+				org.apache.bcel.generic.Type.VOID, 
+				null, null, "<init>", className, 
+				il, cpg);
+
+	// Call the constructor in the NodeSortRecord superclass
+	il.append(ALOAD_0);
+	il.append(new INVOKESPECIAL(cpg.addMethodref(NODE_SORT_RECORD,
+						     "<init>", "()V")));
 
 	final int initLocale =  cpg.addMethodref("java/util/Locale",
 						 "<init>",
@@ -628,41 +620,50 @@ final class Sort extends Instruction implements Closure {
 	Sort sort = (Sort)sortObjects.elementAt(0);
 
 	for (int level = 0; level < levels; level++) {
-	    if (language == null && sort._lang != null)
+	    if (language == null && sort._lang != null) {
 		language = sort._lang;
-	    if (country == null && sort._country != null)
+	    }
+	    if (country == null && sort._country != null) {
 		country = sort._country;
+	    }
 	}
 
-	// Get index to private static reference in NodeSortRecrd
 	final int collator =
 	    cpg.addFieldref(className, "_collator", COLLATOR_SIG);
+	final int locale =
+	    cpg.addFieldref(className, "_locale", LOCALE_SIG);
 
 	if (language != null) {
 	    // Create new Locale object on stack
 	    il.append(new NEW(cpg.addClass("java/util/Locale")));
 	    il.append(DUP);
+	    il.append(DUP);
 	    il.append(new PUSH(cpg, language));
 	    il.append(new PUSH(cpg, (country != null ? country : EMPTYSTRING)));
 	    il.append(new INVOKESPECIAL(initLocale));
+	    il.append(ALOAD_0);
+	    il.append(SWAP);
+	    il.append(new PUTFIELD(locale));
 	    
 	    // Use that Locale object to get the required Collator object
 	    il.append(new INVOKESTATIC(getCollator));
-	    il.append(new PUTSTATIC(collator));
+	    il.append(ALOAD_0);
+	    il.append(SWAP);
+	    il.append(new PUTFIELD(collator));
 	}
 
-	il.append(new GETSTATIC(collator));
+	il.append(ALOAD_0);
+	il.append(new GETFIELD(collator));
 	il.append(new ICONST(Collator.TERTIARY));
 	il.append(new INVOKEVIRTUAL(setStrength));
 
 	il.append(RETURN);
 
-	classInit.stripAttributes(true);
-	classInit.setMaxLocals();
-	classInit.setMaxStack();
-	classInit.removeNOPs();
+	init.stripAttributes(true);
+	init.setMaxLocals();
+	init.setMaxStack();
 
-	return classInit.getMethod();
+	return init.getMethod();
     }
 
 
@@ -732,37 +733,5 @@ final class Sort extends Instruction implements Closure {
 	extractMethod.removeNOPs();
 
 	return extractMethod.getMethod();
-    }
-
-    /**
-     * Compiles a method that overloads NodeSortRecord.getCollator()
-     * This method is only compiled if the "lang" attribute is used.
-     */
-    private static Method compileGetCollator(Vector sortObjects,
-					     NodeSortRecordGenerator sortRecord,
-					     ConstantPoolGen cpg,
-					     String className) {
-	final InstructionList il = new InstructionList();
-	// Collator NodeSortRecord.getCollator();
-	final MethodGenerator getCollator =
-	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
-				Util.getJCRefType(COLLATOR_SIG),
-				new org.apache.bcel.generic.Type[] {},
-				new String[] { },
-				"getCollator", className, il, cpg);
-
-	// Get index to private static reference in NodeSortRecrd
-	final int collator =
-	    cpg.addFieldref(className, "collator", COLLATOR_SIG);
-	// Feck the Collator object on the stack and return it
-	il.append(new GETSTATIC(collator));
-	il.append(ARETURN);
-
-	getCollator.stripAttributes(true);
-	getCollator.setMaxLocals();
-	getCollator.setMaxStack();
-	getCollator.removeNOPs();
-
-	return getCollator.getMethod();
     }
 }

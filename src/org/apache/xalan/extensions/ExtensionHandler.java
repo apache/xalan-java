@@ -69,6 +69,7 @@ import org.w3c.dom.Node;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.functions.FuncExtFunction;
 
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
@@ -193,6 +194,21 @@ public abstract class ExtensionHandler
    */
   public abstract Object callFunction(
     String funcName, Vector args, Object methodKey,
+      ExpressionContext exprContext) throws TransformerException;
+
+  /**
+   * Process a call to a function.
+   *
+   * @param extFunction The XPath extension function.
+   * @param args     The arguments of the function call.
+   * @param exprContext The context in which this expression is being executed.
+   *
+   * @return the return value of the function evaluation.
+   *
+   * @throws TransformerException          if parsing trouble
+   */
+  public abstract Object callFunction(
+    FuncExtFunction extFunction, Vector args,
       ExpressionContext exprContext) throws TransformerException;
 
   /**

@@ -189,7 +189,7 @@ public class OutputProperties extends ElemTemplateElement
    * @param resourceName non-null reference to resource name.
    * @param defaults Default properties, which may be null.
    */
-  static private Properties loadPropertiesFile(String resourceName, Properties defaults)
+  static private Properties loadPropertiesFile(final String resourceName, Properties defaults)
     throws IOException
   {
 
@@ -201,19 +201,73 @@ public class OutputProperties extends ElemTemplateElement
 
     InputStream is = null;
     BufferedInputStream bis = null;
+    Class accessControllerClass = null;
 
     try {
       try {
-        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
-        if (getCCL != null) {
-          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-          is = contextClassLoader.getResourceAsStream("org/apache/xalan/templates/" + resourceName);
-        }
+	try {	
+
+	  // This Class was introduced in JDK 1.2. With the re-architecture of
+	  // security mechanism ( starting in JDK 1.2 ), we have option of
+	  // giving privileges to certain part of code using doPrivileged block.
+	  // In JDK1.1.X applications won't be having security manager and if 
+	  // there is security manager ( in applets ), code need to be signed
+	  // and trusted for having access to resources. 
+
+	  accessControllerClass=Class.forName("java.security.AccessController"); 
+
+	  // If we are here means user is using JDK >= 1.2. 
+	  // Using doPrivileged to be able to read property file without opening
+          // up secured container permissions like J2EE container
+
+	  is =(InputStream)java.security.AccessController.doPrivileged (
+            new java.security.PrivilegedAction() {
+
+            public Object run() {
+              try {
+                java.lang.reflect.Method getCCL = Thread.class.getMethod(
+                    "getContextClassLoader", NO_CLASSES);
+                if (getCCL != null) {
+                  ClassLoader contextClassLoader = (ClassLoader)
+                      getCCL.invoke(Thread.currentThread(), NO_OBJS);
+                  return ( contextClassLoader.getResourceAsStream (
+                      "org/apache/xalan/templates/" + resourceName) );
+                }
+              } catch ( Exception e ) { }
+
+              return null;
+
+            }
+          });
+	} catch ( ClassNotFoundException e ) {
+	  //User may be using older JDK ( JDK <1.2 ). Allow him/her to use it.  
+	  // But don't try to use doPrivileged
+	  try {
+                java.lang.reflect.Method getCCL = Thread.class.getMethod(
+                    "getContextClassLoader", NO_CLASSES);
+                if (getCCL != null) {
+                  ClassLoader contextClassLoader = (ClassLoader)
+                      getCCL.invoke(Thread.currentThread(), NO_OBJS);
+                  is = contextClassLoader.getResourceAsStream (
+                      "org/apache/xalan/templates/" + resourceName );
+                }
+	  } catch ( Exception exception ) { }
+	}	  
       }
       catch (Exception e) {}
 
       if ( is == null ) {
-        is = OutputProperties.class.getResourceAsStream(resourceName);
+	if ( accessControllerClass != null ) {
+          is=(InputStream)java.security.AccessController.doPrivileged( 
+	      new java.security.PrivilegedAction(){
+	    public Object run() {
+              return OutputProperties.class.getResourceAsStream(resourceName);
+            }
+          });
+	} else {
+	  // User may be using older JDK ( JDK < 1.2 )
+	  is = OutputProperties.class.getResourceAsStream(resourceName);
+	}
       }
       
       bis = new BufferedInputStream(is);
