@@ -126,6 +126,7 @@ final public class DefaultRun {
 
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    factory.setFeature("http://xml.org/sax/features/namespaces",true);
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
