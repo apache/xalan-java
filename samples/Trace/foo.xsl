@@ -13,6 +13,7 @@
    <xsl:variable name="product-list" 
             select="//product[not(.=following::product)]" />
      
+   <xsl:output indent="yes"/>
 <xsl:template match="/">
   <xsl:variable name="my-test"><a><b/></a></xsl:variable>
   <html>
