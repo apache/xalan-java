@@ -43,6 +43,19 @@ import org.w3c.dom.traversal.NodeFilter;
 
 public class Compiler extends OpMap
 {  
+  public Compiler(ErrorHandler errorHandler,
+                  Locator locator)
+  {
+    m_errorHandler = errorHandler;
+    m_locator = locator;
+  }
+
+  public Compiler()
+  {
+    m_errorHandler = null;
+    m_locator = null;
+  }
+  
   /**
    * <meta name="usage" content="advanced"/>
    * Execute the XPath object from a given opcode position.
@@ -57,6 +70,7 @@ public class Compiler extends OpMap
     throws org.xml.sax.SAXException
   {
     int op = m_opMap[opPos];
+    // System.out.println(getPatternString()+"op: "+op);
     switch(op)
     {
     case OpCodes.OP_XPATH: return compile(opPos+2);
@@ -781,10 +795,11 @@ public class Compiler extends OpMap
       m_errorHandler.fatalError(te);
     else
     {
-      System.out.println(te.getMessage()
-                         +"; file "+te.getSystemId()
-                         +"; line "+te.getLineNumber()
-                         +"; column "+te.getColumnNumber());
+      // System.out.println(te.getMessage()
+      //                    +"; file "+te.getSystemId()
+      //                    +"; line "+te.getLineNumber()
+      //                    +"; column "+te.getColumnNumber());
+      throw te;
     }
   }
   
