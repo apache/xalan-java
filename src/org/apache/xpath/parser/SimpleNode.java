@@ -318,8 +318,14 @@ m_builtInFunctions.put(
       new QName("node-kind"),
       new FuncNodeKind());
 m_builtInFunctions.put(
+      new QName("node-name"),
+      new FuncNodeName());
+m_builtInFunctions.put(
       new QName("base-uri"),
       new FuncBaseURI());
+m_builtInFunctions.put(
+      new QName("unique-ID"),
+      new FuncUniqueID());
 m_builtInFunctions.put(
       new QName("matches"),
       new FuncMatches());
