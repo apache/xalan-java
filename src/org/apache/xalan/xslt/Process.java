@@ -103,12 +103,18 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 
 import javax.xml.transform.dom.*;
+import javax.xml.transform.sax.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 // Needed Serializer classes
 import org.apache.xalan.serialize.Serializer;
@@ -157,6 +163,9 @@ public class Process
       "   [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)]"); // Added by sboag/scurcuru; experimental
     System.out.println(
       "   [-DIAG (Print overall milliseconds transform took.)]");
+		System.out.println(resbundle.getString("optionURIRESOLVER"));  //"   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]");
+		System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
+		System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
   }
 
   /** Default properties file          */
@@ -228,6 +237,9 @@ public class Process
       String media = null;
       Vector params = new Vector();
       boolean quietConflictWarnings = false;
+			URIResolver uriResolver = null;
+			EntityResolver entityResolver = null;
+			ContentHandler contentHandler = null;
 
       for (int i = 0; i < argv.length; i++)
       {
@@ -431,6 +443,82 @@ public class Process
             dumpFileName = argv[++i];
           }
         }
+				else if ("-URIRESOLVER".equalsIgnoreCase(argv[i])) 
+        {
+          if (i + 1 < argv.length)
+					{	
+						try{
+							uriResolver = (URIResolver)Class.forName(argv[++i]).newInstance();
+							tfactory.setURIResolver(uriResolver);
+						}
+						catch(Exception cnfe)
+						{
+							System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                new Object[]{ "-URIResolver" })); 
+							System.exit(-1);
+						}
+					}
+					else
+					{
+            System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                new Object[]{ "-URIResolver" }));  //"Missing argument for);
+						System.exit(-1);
+					}
+				}
+				else if ("-ENTITYRESOLVER".equalsIgnoreCase(argv[i])) 
+        {
+          if (i + 1 < argv.length)
+					{	
+						try{
+							entityResolver = (EntityResolver)Class.forName(argv[++i]).newInstance();							
+						}
+						catch(Exception cnfe)
+						{
+							System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                new Object[]{ "-EntityResolver" }));
+							System.exit(-1);
+						}
+					}
+          else
+					{
+            System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                new Object[]{ "-EntityResolver" }));  //"Missing argument for);
+						System.exit(-1);
+					}
+        }
+				else if ("-CONTENTHANDLER".equalsIgnoreCase(argv[i])) 
+        {
+          if (i + 1 < argv.length)
+					{	
+						try{
+							contentHandler = (ContentHandler)Class.forName(argv[++i]).newInstance();							
+						}
+						catch(Exception cnfe)
+						{
+							System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
+                new Object[]{ "-ContentHandler" }));
+							System.exit(-1);
+						}
+					}
+          else
+					{
+            System.err.println(
+              XSLMessages.createMessage(
+                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                new Object[]{ "-ContentHandler" }));  //"Missing argument for);
+						System.exit(-1);
+					}
+        }
         else
           System.err.println(
             XSLMessages.createMessage(
@@ -464,7 +552,7 @@ public class Process
             DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
             dfactory.setNamespaceAware(true);
             DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-            Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
+						Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
             stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
           }
           else
@@ -533,6 +621,8 @@ public class Process
             transformer.setParameter((String) params.elementAt(i),
                                      (String) params.elementAt(i + 1));
           }
+					if (uriResolver != null)
+						transformer.setURIResolver(uriResolver);
 
           if (null != inFileName)
           {
@@ -543,6 +633,8 @@ public class Process
               dfactory.setCoalescing(true);
               dfactory.setNamespaceAware(true);
               DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+							if (entityResolver != null)
+								docBuilder.setEntityResolver(entityResolver);
               Node xmlDoc = docBuilder.parse(new InputSource(inFileName));
               Document doc = docBuilder.newDocument();
               org.w3c.dom.DocumentFragment outNode = doc.createDocumentFragment();
@@ -553,13 +645,42 @@ public class Process
               Transformer serializer = stf.newTransformer();
               Properties serializationProps = stylesheet.getOutputProperties();
               serializer.setOutputProperties(serializationProps);
-              serializer.transform(new DOMSource(outNode), 
+							if (contentHandler != null)
+							{
+								SAXResult result = new SAXResult(contentHandler);
+								serializer.transform(new DOMSource(outNode), result);
+							}
+							else
+								serializer.transform(new DOMSource(outNode), 
                                    new StreamResult(outputStream));
            }
             else
             {
-              transformer.transform(new StreamSource(inFileName),
-                                    new StreamResult(outputStream));
+							if (entityResolver != null)
+							{
+								XMLReader reader = XMLReaderFactory.createXMLReader();
+								reader.setEntityResolver(entityResolver);
+								if (contentHandler != null)
+								{
+									SAXResult result = new SAXResult(contentHandler);
+									transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
+																				result);
+								}
+								else
+								{
+									transformer.transform(new SAXSource(reader, new InputSource(inFileName)),
+																			new StreamResult(outputStream));
+								}
+							}
+							else if (contentHandler != null)
+							{
+								SAXResult result = new SAXResult(contentHandler);
+								transformer.transform(new StreamSource(inFileName),
+																			result);
+							}
+							else
+								transformer.transform(new StreamSource(inFileName),
+																			new StreamResult(outputStream));
             }
           }
           else

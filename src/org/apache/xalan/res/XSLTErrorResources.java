@@ -86,13 +86,13 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 108;          
+  public static final int MAX_CODE = 109;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 26;
 
   /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 41;
+  public static final int MAX_OTHERS = 44;
 
   /** Maximum total warnings and error messages.          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
@@ -1083,6 +1083,15 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[ER_ILLEGAL_DOMSOURCE_INPUT][1] =
       "The input node can not be null for a DOMSource for newTemplates!";
   }
+	
+	/** Class not found for option         */
+  public static final int ER_CLASS_NOT_FOUND_FOR_OPTION = 109;
+
+  static
+  {
+    contents[ER_CLASS_NOT_FOUND_FOR_OPTION][1] =
+			"Class file not found for option {0}";
+  }
   
 
   // Warnings...
@@ -1428,6 +1437,13 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[MAX_MESSAGES + 41][0] = "noParsermsg5";
     contents[MAX_MESSAGES + 41][1] =
       "IBM's AlphaWorks: http://www.alphaworks.ibm.com/formula/xml";
+		contents[MAX_MESSAGES + 42][0] = "optionURIRESOLVER";
+    contents[MAX_MESSAGES + 42][1] = "   [-URIRESOLVER full class name (URIResolver to be used to resolve URIs)]";
+		contents[MAX_MESSAGES + 43][0] = "optionENTITYRESOLVER";
+    contents[MAX_MESSAGES + 43][1] = "   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]";
+		contents[MAX_MESSAGES + 44][0] = "optionCONTENTHANDLER";
+    contents[MAX_MESSAGES + 44][1] = "   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]";
+		
   }
 
   // ================= INFRASTRUCTURE ======================
