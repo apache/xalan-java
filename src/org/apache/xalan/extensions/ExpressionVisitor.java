@@ -64,7 +64,7 @@ import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 
 /**
- * When {@link org.apache.xalan.templates.StylesheetHandler} creates 
+ * When {@link org.apache.xalan.processor.StylesheetHandler} creates 
  * an {@link org.apache.xpath.XPath}, the ExpressionVisitor
  * visits the XPath expression. For any extension functions it 
  * encounters, it instructs StylesheetRoot to register the
