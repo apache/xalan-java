@@ -1140,7 +1140,10 @@ public class TransformerImpl extends Transformer
   {
 
     if (null == m_inputContentHandler)
+    {
       m_inputContentHandler = new SourceTreeHandler(this);
+      ((SourceTreeHandler)m_inputContentHandler).setUseMultiThreading(true);
+    }
 
     return m_inputContentHandler;
   }
