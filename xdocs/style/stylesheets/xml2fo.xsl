@@ -73,7 +73,7 @@ TBD: - The faq doesn't show in the content
             Content
          </fo:block>
 
-         <fo:table             break-after="page">
+         <fo:table>
             <fo:table-column column-width="1cm"/>
             <fo:table-column column-width="10cm"/>
             <fo:table-column column-width="5cm"/>
@@ -257,7 +257,6 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="18pt" 
             font-family="sans-serif" 
             line-height="24pt"
-            break-before="page"            
             space-before.optimum="15pt"
             space-after.optimum="15pt"
             background-color="blue"
