@@ -296,6 +296,8 @@ public class StepExprImpl extends ExprImpl implements StepExpr
             case XPathTreeConstants.JJTAXISPRECEDINGSIBLING:
             case XPathTreeConstants.JJTAXISPRECEDING:
             case XPathTreeConstants.JJTAXISANCESTORORSELF:
+			case XPathTreeConstants.JJTAXISATTRIBUTE:
+
                 m_axisType = ((Axis) n).getAxis();
 
                 break;

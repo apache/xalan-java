@@ -70,43 +70,47 @@ package org.apache.xpath.rwapi.expression;
 public interface Expr extends Visitable {
 
     /**
-     * Path expression type
+     * Path expression type.
      */
     short PATH_EXPR = 0;
     
     /**
      * Logical expression type. 
-     * Modelise 'or' and 'and' expressions
+     * Represents 'or' and 'and' expressions
      */
     short LOGICAL_EXPR = 1;
     
     /**
      * Conditionnal expression type. 
-     * Modelise 'if' expressions
+     * Represents 'if' expressions
      */
     short CONDITIONAL_EXPR = 2;
     
     /**
      * Iteration expression type.
-     * Modelise 'for' expressions
+     * Represents 'for' expressions
      */
     short ITERATION_EXPR = 3;
     
     /**
-     * Quantified expression type.
-     * Modelise 'every' and 'some' expressions
+     * 'Every' expression type.     
      */
-    short QUANTIFIED_EXPR = 4;
+    short EVERY_EXPR = 4;
+    
+	/**
+	 * 'Some' expression type.     
+	 */
+	short SOME_EXPR = 22;
     
     /**
-     * Comparison expression type. Modelise value comparisons, general
+     * Comparison expression type. Represents value comparisons, general
      * comparisons, node comparisons, and order comparisons.
      */
     short COMPARISON_EXPR = 5;
     
     /**
      * Arithmetic expression type.
-     * Modelise arithmetic operators for addition, subtraction, multiplication, division, and modulus
+     * Represents arithmetic operators for addition, subtraction, multiplication, division, and modulus
      */
     short ARITHMETIC_EXPR = 6;
     

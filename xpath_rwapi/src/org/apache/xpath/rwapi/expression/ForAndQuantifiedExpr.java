@@ -73,7 +73,7 @@ public interface ForAndQuantifiedExpr extends Expr {
      * 
      * @return String
      */
-    String getClauseVarName( int i );
+    Variable getClauseVarName( int i );
     
     /**
      * 
@@ -86,14 +86,9 @@ public interface ForAndQuantifiedExpr extends Expr {
     int getClauseCount();
     
     /**
-     * @throws XPathException when expression type isn't a 'for' one.
+     * 
      */
-    Expr getReturnExpr() throws XPathException;
-    
-    /**
-     * @throws XPathException when expression type isn't a quantified one.
-     */
-    Expr getSatisfyExpr() throws XPathException;
+    Expr getResultingExpr();
     
     /**
      * 

@@ -237,6 +237,6 @@ public class KindTestImpl extends ExprImpl implements NodeTest
     {
         return XPathTreeConstants.jjtNodeName[id] + " " 
                 + getClass() + " " 
-                + getString(false);
+                + getString(true);
     }
 }

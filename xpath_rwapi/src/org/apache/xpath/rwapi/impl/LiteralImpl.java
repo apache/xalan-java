@@ -231,7 +231,7 @@ public class LiteralImpl extends ExprImpl implements Literal
             case XPathTreeConstants.JJTDOUBLELITERAL:
                 m_literal = new Double(token.image);
 
-            //break;
+                break;
             case XPathTreeConstants.JJTSTRINGLITERAL:
                 m_literal = token.image;
 
@@ -294,5 +294,16 @@ public class LiteralImpl extends ExprImpl implements Literal
     {
         m_literal = new Double(value);
         id = XPathTreeConstants.JJTDOUBLELITERAL;
+    }
+
+    /**
+     * Override to print out useful instance data.  
+     * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#toString()
+     */
+    public String toString()
+    {
+        return XPathTreeConstants.jjtNodeName[id] + " " 
+                + getClass() + " " 
+                + getString(false);
     }
 }

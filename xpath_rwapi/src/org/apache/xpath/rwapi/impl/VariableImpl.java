@@ -89,7 +89,7 @@ public class VariableImpl extends ExprImpl implements Variable {
 	 * @see org.apache.xpath.rwapi.expression.Variable#getVariableName()
 	 */
 	public String getVariableName() {
-		return null;
+		return m_varName;
 	}
 
 	/**
@@ -103,6 +103,7 @@ public class VariableImpl extends ExprImpl implements Variable {
 	 * @see org.apache.xpath.rwapi.expression.Expr#cloneExpression()
 	 */
 	public Expr cloneExpression() {
+		// TODO
 		return null;
 	}
 

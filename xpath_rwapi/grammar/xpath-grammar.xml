@@ -1733,7 +1733,7 @@ apply.
   </production>
 
   <!-- SimpleForClause is slightly different now for XQuery vs. XPath.  -sb -->
-  <production name="SimpleForClause" if="xpath">
+  <production name="SimpleForClause" if="xpath" node-type="void">
     <ref name="ForVariable"/>
     <ref name="VarName"/>
     <ref name="In"/>

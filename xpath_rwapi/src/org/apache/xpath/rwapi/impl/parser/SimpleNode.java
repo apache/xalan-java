@@ -388,6 +388,7 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTOCCURRENCEINDICATOR: //105;
             case XPathTreeConstants.JJTMULTIPLY: //106;
             case XPathTreeConstants.JJTQMARK: //107;
+            
 
             default:
 

@@ -40,6 +40,10 @@ Copyright:
 
   <property name="build.dir" value="../build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
+  <property name="build.debug" value="on"/>
+  <property name="bin.dir" value="../bin"/>
+  <property name="jarfilename" value="xpathapi.jar"/>
+
   <property name="spec" value="xpath"/>
   <property name="grammar.dir" value="grammar"/>
   <property name="tree.xsl" value="${grammar.dir}/etree.xsl"/>
@@ -52,13 +56,19 @@ Copyright:
   <property name="test.expr" value="a/b/c"/>
   
   <path id="classpath">
-    <fileset dir="../bin" includes="*.jar"/>
+    <fileset dir="${bin.dir}" includes="*.jar"/>
   </path>
 
   <path id="test.classpath">
-    <fileset dir="build" includes="*.jar"/>
-    <fileset dir="../bin" includes="*.jar"/>
+    <fileset dir="${build.dir}" includes="*.jar"/>
+    <fileset dir="${bin.dir}" includes="*.jar"/>
   </path>
+
+  <target name="clean"
+    description="Clean up ALL classfiles and jars (but not generated .java source)">
+    <delete dir="${build.classes}"/>
+    <delete file="${build.dir}/${jarfilename}"/>
+  </target>
 
   <target name="gen-grammar">
       <mkdir dir="${target.parser}"/>
@@ -77,7 +87,7 @@ Copyright:
   
   <target name="jjtree" depends="gen-grammar">
     <jjtree target="${target.parser}/xpath-grammar.jjt" 
-    		javacchome="../bin" 
+    		javacchome="${bin.dir}" 
     		outputdirectory="${target.parser}"
     		static="false"/>
   </target>
@@ -85,7 +95,7 @@ Copyright:
   <target name="javacc" depends="jjtree">
   	
     <javacc target="${target.parser}/xpath-grammar.jj" 
-	    javacchome="../bin"
+	    javacchome="${bin.dir}"
 	    debugtokenmanager="${debug}"
 	    debugparser="${debug}"
 	    sanitycheck="true"
@@ -100,14 +110,13 @@ Copyright:
 	</target>
   
   <target name="compile" depends="prepare">
-  	<javac srcdir="src" destdir="${build.classes}">
+  	<javac srcdir="src" destdir="${build.classes}" debug="${build.debug}">
 	  	<classpath refid="classpath"/>
 	</javac>
   </target>
   
   <target name="jar" depends="compile">
-    <echo message="Jarring classes in: ${build.classes} spec: ${rwapi.package}/**"/>
-    <jar jarfile="${build.dir}/xpathapi.jar">
+    <jar jarfile="${build.dir}/${jarfilename}">
       <fileset dir="${build.classes}"
                includes="${rwapi.package}/**"/>
     </jar>

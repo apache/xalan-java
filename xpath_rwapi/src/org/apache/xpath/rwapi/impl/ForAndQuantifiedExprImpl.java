@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,128 +55,217 @@
  */
 package org.apache.xpath.rwapi.impl;
 
-import org.apache.xpath.rwapi.XPathException;
 import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr;
+import org.apache.xpath.rwapi.expression.Variable;
 import org.apache.xpath.rwapi.expression.Visitor;
 import org.apache.xpath.rwapi.impl.parser.Node;
 import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.XPath;
+import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
+
 
 /**
- *
+ * AST node for 'for' and quantified (some, every) expressions
  */
-public class ForAndQuantifiedExprImpl extends SimpleNode implements ForAndQuantifiedExpr {
-
-	/**
-	 * Constructor for ForAndQuantifiedExprImpl.
-	 * @param i
-	 */
-	public ForAndQuantifiedExprImpl(int i) {
-		super(i);
-	}
-
-	/**
-	 * Constructor for ForAndQuantifiedExprImpl.
-	 * @param p
-	 * @param i
-	 */
-	public ForAndQuantifiedExprImpl(XPath p, int i) {
-		super(p, i);
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getClauseVarName(int)
-	 */
-	public String getClauseVarName(int i) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getClauseExpr(int)
-	 */
-	public Expr getClauseExpr(int i) {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getClauseCount()
-	 */
-	public int getClauseCount() {
-		return 0;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getReturnExpr()
-	 */
-	public Expr getReturnExpr() throws XPathException {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getSatisfyExpr()
-	 */
-	public Expr getSatisfyExpr() throws XPathException {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#addClause(String, Expr)
-	 */
-	public void addClause(String varName, Expr expr) {
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#removeClause(String)
-	 */
-	public void removeClause(String varName) {
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Expr#getExprType()
-	 */
-	public short getExprType() {
-		return 0;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Expr#cloneExpression()
-	 */
-	public Expr cloneExpression() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Expr#getString(boolean)
-	 */
-	public String getString(boolean abbreviate) {
-		return null;
-	}
-	
-    
-     /**
-     * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
+public class ForAndQuantifiedExprImpl extends ExprImpl
+    implements ForAndQuantifiedExpr
+{
+    /**
+     * The expression of for/quantified clauses
      */
-    public void jjtAddChild(Node n, int i) {
-       if (((SimpleNode) n).canBeReduced()) {
+    ExprImpl[] m_exprs;
+
+    /**
+     * The variable name of for/quantified clauses
+     */
+    VariableImpl[] m_varNames;
+
+    /**
+     * The return/satisfies expr
+     */
+    ExprImpl m_resExpr;
+
+    /**
+     * Constructor for ForAndQuantifiedExprImpl.
+     * @param i
+     */
+    public ForAndQuantifiedExprImpl(int i)
+    {
+        super(i);
+    }
+
+    /**
+     * Constructor for ForAndQuantifiedExprImpl.
+     * @param p
+     * @param i
+     */
+    public ForAndQuantifiedExprImpl(XPath p, int i)
+    {
+        super(p, i);
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getClauseVarName(int)
+     */
+    public Variable getClauseVarName(int i) throws IndexOutOfBoundsException
+    {
+        return m_varNames[i];
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getClauseExpr(int)
+     */
+    public Expr getClauseExpr(int i) throws IndexOutOfBoundsException
+    {
+        return m_exprs[i];
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getClauseCount()
+     */
+    public int getClauseCount()
+    {
+        return (m_varNames == null) ? 0 : m_varNames.length;
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#getResultingExpr()
+     */
+    public Expr getResultingExpr()
+    {
+        return m_resExpr;
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#addClause(String, Expr)
+     */
+    public void addClause(String varName, Expr expr)
+    {
+        // TODO
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.ForAndQuantifiedExpr#removeClause(String)
+     */
+    public void removeClause(String varName)
+    {
+        // TODO
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.Expr#getExprType()
+     */
+    public short getExprType()
+    {
+        switch (id)
+        {
+            case XPathTreeConstants.JJTFLWREXPR:
+                return ITERATION_EXPR;
+
+            case XPathTreeConstants.JJTEVERY:
+                return EVERY_EXPR;
+
+            case XPathTreeConstants.JJTSOME:
+                return SOME_EXPR;
+        }
+
+        // bug
+        throw new RuntimeException("Invalid object state");
+    }
+
+    /**
+     * @see org.apache.xpath.rwapi.expression.Expr#cloneExpression()
+     */
+    public Expr cloneExpression()
+    {
+        // TODO
+        return null;
+    }
+
+    /**
+    * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
+    */
+    final public void jjtAddChild(Node n, int i)
+    {
+    	
+        if (((SimpleNode) n).canBeReduced())
+        {
             super.jjtAddChild(n.jjtGetChild(0), i);
-        } else {
-             super.jjtAddChild(n, i);
+        }
+        else
+        {
+            super.jjtAddChild(n, i);
         }
     }
-    
+
     /**
      * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#canBeReduced()
      */
-    public boolean canBeReduced() {
+    public boolean canBeReduced()
+    {
         return children.length == 1; // means that there is no???
     }
 
-	/**
-	 * @see org.apache.xpath.rwapi.expression.Visitable#visit(Visitor)
-	 */
-	public void visit(Visitor visitor) {
+    /**
+     * @see org.apache.xpath.rwapi.expression.Visitable#visit(Visitor)
+     */
+    public void visit(Visitor visitor)
+    {
         // TODO:
-	}
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(java.lang.StringBuffer, boolean)
+     */
+    protected void getString(StringBuffer expr, boolean abbreviate)
+    {
+        switch (getExprType())
+        {
+            case ITERATION_EXPR:
+                expr.append("for ");
+
+                break;
+
+            case EVERY_EXPR:
+                expr.append("every ");
+
+                break;
+
+            case SOME_EXPR:
+                expr.append("some ");
+
+                break;
+
+            default:
+                throw new RuntimeException("Invalid object state");
+        }
+
+        for (int i = 0; i < m_varNames.length; i++)
+        {
+            expr.append(m_varNames[i].getVariableName()).append(" in ");
+            m_exprs[i].getString(expr, abbreviate);
+        }
+
+        switch (getExprType())
+        {
+            case ITERATION_EXPR:
+                expr.append(" return ");
+
+                break;
+
+            case EVERY_EXPR:
+            case SOME_EXPR:
+                expr.append(" satifies ");
+
+                break;
+
+            default:
+                throw new RuntimeException("Invalid object state");
+        }
+
+        m_resExpr.getString(expr, abbreviate);
+    }
+	
 
 }

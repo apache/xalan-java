@@ -289,8 +289,20 @@
 	</expr>
 
 	
-	<!-- reverse axis -->
+	<!-- axis -->
 	<expr value="ancestor::toto">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="attribute::*">
 		<ast>
 			<node name="ExprSequence">
 				<node name="PathExpr">
@@ -784,8 +796,83 @@
 		</ast>
 	</expr>
 	
+	
+	<!-- For expr -->
+	
+	<expr value="for $a in a return b">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FLWRExpr">
+					<node name="Variable"/>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>					
+				</node>
+			</node>			
+		</ast>
+	</expr>
+	
+	<expr value="for $a in a, $b in b return ($a,$b)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FLWRExpr">
+					<node name="Variable"/>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>	
+					<node name="Variable"/>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="ExprSequence">
+						<node name="PathExpr">
+							<node name="VarName"/>		
+						</node>	
+						<node name="PathExpr">
+							<node name="VarName"/>
+						</node>				
+					</node>
+				</node>
+			</node>			
+		</ast>
+	</expr>
+	
+	<!-- Quantified expr -->
+	
+	<expr value="some $a in a satisfies b">
+		<ast>
+			<node name="ExprSequence">
+				<node name="QuantifiedExpr">
+					<node name="Variable"/>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>					
+				</node>
+			</node>			
+		</ast>
+	</expr>
 
 	<!-- Semantically invalid expression (parser should return an error) -->
+	<expr value="9876543210" valid="false"/>
+	
 	<expr value="toto/(45+23)" valid="false"/>
 	<expr value="a/(b,c)/d" valid="false"/>
 	
