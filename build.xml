@@ -215,7 +215,13 @@ Copyright:
            debug="${debug}"/>
    <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}"/>                                  
+           debug="${debug}"/>
+    <javac srcdir="${samples.dir}/UseStylesheetPI" classpath="${java.class.path}:${build.dir}/${xalan.jar}"  
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samples.dir}/Trace" classpath="${java.class.path}:${build.dir}/${xalan.jar}"  
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>                                                        
    <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.dir}/${xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/> 

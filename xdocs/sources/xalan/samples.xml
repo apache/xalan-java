@@ -59,6 +59,7 @@
 <s1 title="&xslt4j2; Samples">
 <ul>
 <li><link anchor="simpletransform">SimpleTransform</link></li>
+<li><link anchor="usestylesheetpi">UseStylesheetPI</link></li>
 <li><link anchor="transformtodom">TransformToDom</link></li>
 <li><link anchor="usestylesheetparam">UseStylesheetParam</link></li>
 <li><link anchor="sax2sax">SAX2SAX</link></li>
@@ -68,6 +69,7 @@
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
 <li><link anchor="servlet">Servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
+<li><link anchor="trace">Trace</link></li>
 </ul>  
 	  <s2 title="Samples to help you get started">
     <p>Each of the subdirectories in the &xslt4j; java/samples directory contains the source files for one or more
@@ -99,6 +101,13 @@
      output to System.out.</p>
     <p>You can run it from the SimpleTransform subdirectory with</p>
     <p><code>java SimpleTransform</code></p>
+    </s2><anchor name="usestylesheetpi"/>
+    <s2 title="UseStylesheetPI">
+    <p>What it does: The UseStylesheetPI class uses the styesheet processing insturction in the XML source document to determine
+     which stylesheet to use to perform the transformation.</p>
+     <p>You can run it from the UseStylesheetPI subdirectory with</p>
+     <p><code>java UseStylesheetPI</code></p>
+     <p>For more information, see <link idref="usagepatterns" anchor="embed">Working with embedded stylesheets</link>.</p>
     </s2><anchor name="transformtodom"/>
     <s2 title="TransformToDom">
     <p>What it does: The TransformToDom class uses the foo.xsl stylesheet to transform foo.xml, produces an output
@@ -259,5 +268,12 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
         <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
       </s3>
-    </s2>    
+    </s2><anchor name="trace"/>
+    <s2 title="Trace">
+      <p>What it does: Trace uses the TraceListener and TraceManager classes to log transformation events.</p>
+      <p>Run this sample from the Trace subdirectory with</p>
+      <p><code>java Trace</code></p>
+      <p>and examine the result in events.log. For more information, see <link idref="usagepatterns" anchor="debugging">Debugger
+      Interface</link></p>
+     </s2>
 </s1>
