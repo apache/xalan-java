@@ -135,7 +135,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
       int lastDot = fullName.lastIndexOf(".");
       if (lastDot >= 0)
       {
-        Class myClass = Class.forName(fullName.substring(0, lastDot));
+        Class myClass = getClassForName(fullName.substring(0, lastDot));
         Method[] methods = myClass.getMethods();
         int nMethods = methods.length;
         function = fullName.substring(lastDot + 1);
@@ -168,7 +168,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
       int lastDot = fullName.lastIndexOf(".");
       if (lastDot >= 0)
       {
-        Class myClass = Class.forName(fullName.substring(0, lastDot));
+        Class myClass = getClassForName(fullName.substring(0, lastDot));
         Method[] methods = myClass.getMethods();
         int nMethods = methods.length;
         element = fullName.substring(lastDot + 1);
@@ -283,7 +283,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         className = m_className + funcName.substring(0, lastDot);
         try
         {
-          classObj = Class.forName(className);
+          classObj = getClassForName(className);
         }
         catch (ClassNotFoundException e) 
         {
@@ -323,7 +323,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         methodName = funcName.substring(lastDot + 1);
         try
         {
-          classObj = Class.forName(className);
+          classObj = getClassForName(className);
         }
         catch (ClassNotFoundException e) 
         {
@@ -439,7 +439,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           throw new TransformerException("Invalid element name specified " + fullName);
         try
         {
-          classObj = Class.forName(fullName.substring(0, lastDot));
+          classObj = getClassForName(fullName.substring(0, lastDot));
         }
         catch (ClassNotFoundException e) 
         {

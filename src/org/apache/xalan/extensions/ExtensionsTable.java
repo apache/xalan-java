@@ -317,7 +317,7 @@ public class ExtensionsTable
 
     try
     {
-      Class.forName(className);
+      ExtensionHandler.getClassForName(className);
 
       return new ExtensionHandlerJavaClass(ns, "javaclass", className);
     }

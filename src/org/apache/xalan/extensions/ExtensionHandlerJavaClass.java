@@ -117,7 +117,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     super(namespaceUri, scriptLang, className);
     try
     {
-      m_classObj = Class.forName(className);
+      m_classObj = getClassForName(className);
     }
     catch (ClassNotFoundException e)
     {

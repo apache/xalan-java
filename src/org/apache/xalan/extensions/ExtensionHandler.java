@@ -57,6 +57,7 @@
 package org.apache.xalan.extensions;
 
 import java.util.Vector;
+import java.lang.reflect.Method;
 
 import java.io.IOException;
 
@@ -88,6 +89,58 @@ public abstract class ExtensionHandler
 
   /** scripting language of implementation          */
   protected String m_scriptLang;
+
+  /** a zero length Object array used in getClassForName() */
+  private static final Object NO_OBJS[] = new Object[0];
+
+  /** the Method object for getContextClassLoader */
+  private static Method getCCL;
+
+  static
+  {
+    try
+    {
+      getCCL = Thread.class.getMethod("getContextClassLoader", new Class[0]);
+    }
+    catch (Exception e)
+    {
+      getCCL = null;
+    }
+  }
+
+  /**
+   * Replacement for Class.forName.  This method loads a class using the context class loader
+   * if we're running under Java2 or higher.  If we're running under Java1, this
+   * method just uses Class.forName to load the class.
+   */
+  static Class getClassForName(String className)
+      throws ClassNotFoundException
+  {
+    Class result = null;
+    if (getCCL != null)
+    {
+      try {
+        ClassLoader contextClassLoader =
+                              (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
+        result = contextClassLoader.loadClass(className);
+      }
+      catch (ClassNotFoundException cnfe)
+      {
+        throw cnfe;
+      }
+      catch (Exception e)
+      {
+        getCCL = null;
+        result = Class.forName(className);
+      }
+    }
+
+    else
+       result = Class.forName(className);
+
+    return result;
+ }
+
 
   /**
    * Construct a new extension namespace handler given all the information
