@@ -400,10 +400,22 @@ public final class ResultTreeType extends Type {
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) {
 	final String className = clazz.getName();
-	if (className.equals("org.w3c.dom.Node") ||
-	    className.equals("org.w3c.dom.NodeList")) {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	if (className.equals("org.w3c.dom.Node")) {
 	    translateTo(classGen, methodGen, Type.NodeSet);
-	    Type.NodeSet.translateTo(classGen, methodGen, clazz);
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  MAKE_NODE,
+						  MAKE_NODE_SIG2);
+	    il.append(new INVOKEINTERFACE(index, 2));
+	}
+	else if (className.equals("org.w3c.dom.NodeList")) {
+	    translateTo(classGen, methodGen, Type.NodeSet);
+	    int index = cpg.addInterfaceMethodref(DOM_INTF,
+						  MAKE_NODE_LIST,
+						  MAKE_NODE_LIST_SIG2);
+	    il.append(new INVOKEINTERFACE(index, 2));
 	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
