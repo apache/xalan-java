@@ -69,13 +69,37 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.5.D1</link></li>
+    <li><link anchor="done">Changes since version 2.5.0</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
+   <s3 title="Changes since &xslt4j; 2.5.0">
+     <p>&xslt4j; 2.5.1 contains bug fixes and performance enhancements.</p>
+      <p>Fixes in this release include the following: </p>
+     <ul>
+     <li>
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15200">15200</jump>,     
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=18585">18585</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=18926">18926</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19029">19029</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19388">19388</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19471">19471</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19474">19474</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19522">19522</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19640">19640</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19900">19900</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=19960">19960</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20237">20237</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=20273">20273</jump>
+     </li>
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+      <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.
+     </li>         
+     </ul>
+   </s3>
      <s3 title="Changes since &xslt4j; 2.5.D1">
      <p>&xslt4j; 2.5.0 contains a variety of features, bug fixes and 
         performance enhancements.</p>
