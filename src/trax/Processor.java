@@ -205,7 +205,6 @@ public abstract class Processor
     }
     catch (Exception ex)
     {
-      ex.printStackTrace();
     }
   }
   
