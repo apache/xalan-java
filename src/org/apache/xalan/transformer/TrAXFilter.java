@@ -91,12 +91,28 @@ public class TrAXFilter extends XMLFilterImpl
                           true);
       }
       catch (SAXException se){}
-      setParent (parent);
+      // setParent calls setupParse...
+      setParent(parent);
     }
     else
+    {
+      // Make sure everything is set up.
       setupParse ();
+    }
+    if(null == m_transformer.getContentHandler())
+    {
+      throw new SAXException("parse can not be called if the ContentHandler has not been set!");
+    }
 
     getParent().parse(input);
+    Exception e = m_transformer.getExceptionThrown();
+    if(null != e)
+    {
+      if(e instanceof SAXException)
+        throw (SAXException)e;
+      else
+        throw new SAXException(e);
+    }
   }
   
   /**
@@ -163,7 +179,7 @@ public class TrAXFilter extends XMLFilterImpl
   public void setContentHandler (ContentHandler handler)
   {
     m_transformer.setContentHandler(handler);
-    super.setContentHandler(m_transformer.getResultTreeHandler());
+    // super.setContentHandler(m_transformer.getResultTreeHandler());
   }
   
   public void setErrorHandler (ErrorHandler handler)
