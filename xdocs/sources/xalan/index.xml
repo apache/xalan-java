@@ -64,15 +64,13 @@
   </s2>
   <s2 title="I've heard of &xslt4j;, but what is version 2?">
     <p>&xslt4j; version 2 recasts Xalan as an implementation of the <resource-ref idref="trax"/> interfaces, part of the <resource-ref idref="jaxp11"/>. TRaX provides a
-    modular framework and a standard API for performing XML transformations, and it utilizies system properties to determine which Transformer and which XML parser to use.</p>
+    modular framework and a standard API for performing XML transformations, and it utilizes system properties to determine which Transformer and which XML parser to use.</p>
      <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the XML parser API in
      <resource-ref idref="jaxp"/>.</p>
      <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
   </s2>
   <s2 title="How about this release?">
-    <p>&xslt4j-current; is a beta Developer's release of &xslt4j2;. It represents a stable build that conforms to the XSLT 
-    and XPath 1.0 specifications.</p>
-    <p>Along with performance enhancements and bug fixes, this releasse includes a new compatablity layer that lets you rebuild your existing Xalan-Java 1.x applications to work with and take advantage of the performance and conformance enhancements in Xalan-Java 2. For the details, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, 
+    <p>&xslt4j-current; is a beta Developer's release of &xslt4j2;. Along with performance enhancements and bug fixes, this release includes a new compatibility layer that lets you rebuild your existing Xalan-Java 1.x applications to take advantage of the performance and conformance enhancements in &xslt4j2;. For the details, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, 
     and feedback to the <human-resource-ref idref="xalandev"/>.</p>
   </s2> 
   <s2 title="How do I get it?">
