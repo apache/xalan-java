@@ -168,10 +168,10 @@ public class ElemExtensionCall extends ElemLiteralResult
   {
     ElemExtensionDecl decl = null;
         
-    int n = stylesheet.getImportCountComposed();
+    int n = stylesheet.getGlobalImportCount();
     for(int i = 0; i < n; i++)
     {
-      Stylesheet imported = stylesheet.getImportComposed(i);
+      Stylesheet imported = stylesheet.getGlobalImport(i);
       for(ElemTemplateElement child = imported.getFirstChildElem();
           child != null; child = child.getNextSiblingElem())
       {

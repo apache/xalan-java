@@ -140,7 +140,7 @@ public class ProcessorLRE extends ProcessorTemplateElem
       p = p.getParentElem();
     }
     
-    ElemLiteralResult elem = null;
+    ElemTemplateElement elem = null;
     try
     {
       if(isExtension)
@@ -150,22 +150,26 @@ public class ProcessorLRE extends ProcessorTemplateElem
       }
       else if(isComponentDecl)
       {
+        elem = (ElemTemplateElement)classObject.newInstance();
       }
       else if(isUnknownTopLevel)
       {
         // TBD: Investigate, not sure about this.  -sb
-        elem = (ElemLiteralResult)classObject.newInstance();
+        elem = (ElemTemplateElement)classObject.newInstance();
       }
       else
       {
-        elem = (ElemLiteralResult)classObject.newInstance();
+        elem = (ElemTemplateElement)classObject.newInstance();
       }
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());
-      elem.setNamespace(uri);
-      elem.setLocalName(localName);
-      elem.setRawName(rawName);
+      if(elem instanceof ElemLiteralResult)
+      {
+        ((ElemLiteralResult)elem).setNamespace(uri);
+        ((ElemLiteralResult)elem).setLocalName(localName);
+        ((ElemLiteralResult)elem).setRawName(rawName);
+      }
     }
     catch(InstantiationException ie)
     {
@@ -179,18 +183,18 @@ public class ProcessorLRE extends ProcessorTemplateElem
     setPropertiesFromAttributes(handler, rawName, attributes, elem);
     
     // bit of a hack here...
-    if(!isExtension)
+    if(!isExtension  && (elem instanceof ElemLiteralResult))
     {
-      isExtension = elem.containsExtensionElementURI(uri);
+      isExtension = ((ElemLiteralResult)elem).containsExtensionElementURI(uri);
       if(isExtension)
       {
         // System.out.println("Creating extension(2): "+uri);
         elem = new ElemExtensionCall();
         elem.setLocaterInfo(handler.getLocator());
         elem.setPrefixes(handler.getNamespaceSupport());
-        elem.setNamespace(uri);
-        elem.setLocalName(localName);
-        elem.setRawName(rawName);
+        ((ElemLiteralResult)elem).setNamespace(uri);
+        ((ElemLiteralResult)elem).setLocalName(localName);
+        ((ElemLiteralResult)elem).setRawName(rawName);
         setPropertiesFromAttributes(handler, rawName, attributes, elem);
       }
     }

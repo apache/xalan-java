@@ -214,7 +214,7 @@ public class StylesheetRoot
     for(ElemTemplateElement child = templ.getFirstChildElem();
           child != null; child = child.getNextSiblingElem())
     {
-      child.compose();
+      composeTemplates(child);
     }
   }
   

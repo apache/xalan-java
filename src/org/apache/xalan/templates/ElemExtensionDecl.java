@@ -4,6 +4,7 @@ import java.util.Vector;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.NameSpace;
 import org.apache.xalan.utils.StringToStringTable;
+import org.apache.xalan.utils.StringVector;
 import org.apache.xalan.extensions.ExtensionNSHandler;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -15,7 +16,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
 {
   public ElemExtensionDecl()
   {
-    System.out.println("ElemExtensionDecl ctor");
+    // System.out.println("ElemExtensionDecl ctor");
   }
   
   private String m_prefix = null;
@@ -30,14 +31,14 @@ public class ElemExtensionDecl extends ElemTemplateElement
     return m_prefix;
   }
 
-  private Vector m_functions = new Vector();
+  private StringVector m_functions = new StringVector();
   
-  public void setFunctions(Vector v)
+  public void setFunctions(StringVector v)
   {
     m_functions = v;
   }
 
-  public Vector getFunctions()
+  public StringVector getFunctions()
   {
     return m_functions;
   }
@@ -57,14 +58,14 @@ public class ElemExtensionDecl extends ElemTemplateElement
   }
 
   
-  private Vector m_elements = null;
+  private StringVector m_elements = null;
   
-  public void setElements(Vector v)
+  public void setElements(StringVector v)
   {
     m_elements = v;
   }
 
-  public Vector getElements()
+  public StringVector getElements()
   {
     return m_elements;
   }
@@ -124,18 +125,20 @@ public class ElemExtensionDecl extends ElemTemplateElement
             scriptSrc = new String(chars);
           }
         }
-        break;
       }
-      XPathContext liaison = ((XPathContext)transformer.getXPathContext());
-      ExtensionsTable etable = liaison.getExtensionsTable();
-      ExtensionNSHandler nsh = etable.get(declNamespace);
+    }
+    XPathContext liaison = ((XPathContext)transformer.getXPathContext());
+    ExtensionsTable etable = liaison.getExtensionsTable();
+    ExtensionNSHandler nsh = etable.get(declNamespace);
 
-      if(null == nsh)
-      {
-        nsh = new ExtensionNSHandler (declNamespace);
-        nsh.setScript (lang, srcURL, scriptSrc);
-        etable.addExtensionElementNamespace(declNamespace, nsh);
-      }
+    if(null == nsh)
+    {
+      nsh = new ExtensionNSHandler (declNamespace);
+      // System.out.println("Adding NS Handler: declNamespace = "+
+      //                   declNamespace+", lang = "+lang+", srcURL = "+
+      //                   srcURL+", scriptSrc="+scriptSrc);
+      nsh.setScript (lang, srcURL, scriptSrc);
+      etable.addExtensionElementNamespace(declNamespace, nsh);
     }
   }
 

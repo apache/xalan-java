@@ -4,7 +4,7 @@ public class ElemExtensionScript extends ElemTemplateElement
 {
   public ElemExtensionScript()
   {
-    System.out.println("ElemExtensionScript ctor");
+    // System.out.println("ElemExtensionScript ctor");
   }
 
   private String m_lang = null;

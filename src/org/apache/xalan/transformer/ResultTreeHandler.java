@@ -331,19 +331,22 @@ public class ResultTreeHandler
           try
           {
             Serializer oldSerializer = m_transformer.getSerializer();
-            Serializer serializer = SerializerFactory.getSerializer(oformat);
-            Writer writer = oldSerializer.getWriter();
-            if(null != writer)
-              serializer.setWriter(writer);
-            else
+            if(null != oldSerializer)
             {
-              OutputStream os = serializer.getOutputStream();
-              serializer.setOutputStream(os);
+              Serializer serializer = SerializerFactory.getSerializer(oformat);
+              Writer writer = oldSerializer.getWriter();
+              if(null != writer)
+                serializer.setWriter(writer);
+              else
+              {
+                OutputStream os = serializer.getOutputStream();
+                serializer.setOutputStream(os);
+              }
+              m_transformer.setSerializer(serializer);
+              ContentHandler ch = serializer.asContentHandler();
+              m_transformer.setContentHandler(ch);
+              m_contentHandler = ch;
             }
-            m_transformer.setSerializer(serializer);
-            ContentHandler ch = serializer.asContentHandler();
-            m_transformer.setContentHandler(ch);
-            m_contentHandler = ch;
           }
           catch(java.io.IOException e)
           {
