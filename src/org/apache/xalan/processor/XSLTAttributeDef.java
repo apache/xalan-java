@@ -92,8 +92,8 @@ public class XSLTAttributeDef
    *
    * @param namespace The Namespace URI, or an empty string.
    * @param name The local name (without prefix), or empty string if not namespace processing.
-   * @param type One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR, 
-   * T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST, 
+   * @param type One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR,
+   * T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST,
    * T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST.
    * @param required true if this is attribute is required by the XSLT specification.
    */
@@ -111,8 +111,8 @@ public class XSLTAttributeDef
    *
    * @param namespace The Namespace URI, or an empty string.
    * @param name The local name (without prefix), or empty string if not namespace processing.
-   * @param type One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, 
-   * T_CHAR, T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, 
+   * @param type One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR,
+   * T_CHAR, T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM,
    * T_SIMPLEPATTERNLIST, T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST.
    * @param defaultVal The default value for this attribute.
    */
@@ -213,58 +213,61 @@ public class XSLTAttributeDef
     m_enums.put(k3, v3);
     m_enums.put(k4, v4);
   }
- 
-  /** Type values that represent XSLT attribute types.    */
+
+  /** Type values that represent XSLT attribute types. */
   static final int T_CDATA = 1,
 
-    // <!-- Used for the type of an attribute value that is a URI reference.-->
-    T_URL = 2,
+  // <!-- Used for the type of an attribute value that is a URI reference.-->
+  T_URL = 2,
 
-    // <!-- Used for the type of an attribute value that is an
-    // attribute value template.-->
-    T_AVT = 3,  // Attribute Value Template
+  // <!-- Used for the type of an attribute value that is an
+  // attribute value template.-->
+  T_AVT = 3,  // Attribute Value Template
 
-    // <!-- Used for the type of an attribute value that is a pattern.-->
-    T_PATTERN = 4,
+  // <!-- Used for the type of an attribute value that is a pattern.-->
+  T_PATTERN = 4,
 
-    // <!-- Used for the type of an attribute value that is an expression.-->
-    T_EXPR = 5,
+  // <!-- Used for the type of an attribute value that is an expression.-->
+  T_EXPR = 5,
 
-    // <!-- Used for the type of an attribute value that consists
-    // of a single character.-->
-    T_CHAR = 6,
+  // <!-- Used for the type of an attribute value that consists
+  // of a single character.-->
+  T_CHAR = 6,
 
-    // <!-- Used for the type of an attribute value that is a priority. -->
-    T_PRIORITY = 7,
+  // <!-- Used for the type of an attribute value that is a priority. -->
+  T_PRIORITY = 7,
 
-    // Used for boolean values
-    T_YESNO = 8,
+  // Used for boolean values
+  T_YESNO = 8,
 
-    // <!-- Used for the type of an attribute value that is a QName; the prefix
-    // gets expanded by the XSLT processor. -->
-    T_QNAME = 9,
+  // <!-- Used for the type of an attribute value that is a QName; the prefix
+  // gets expanded by the XSLT processor. -->
+  T_QNAME = 9,
 
-    // <!-- Like qname but a whitespace-separated list of QNames. -->
-    T_QNAMES = 10,
+  // <!-- Like qname but a whitespace-separated list of QNames. -->
+  T_QNAMES = 10,
 
-    // <!-- Used for enumerated values -->
-    T_ENUM = 11,
+  // <!-- Used for enumerated values -->
+  T_ENUM = 11,
 
-    // Used for simple match patterns, i.e. xsl:strip-space spec.
-    T_SIMPLEPATTERNLIST = 12,
+  // Used for simple match patterns, i.e. xsl:strip-space spec.
+  T_SIMPLEPATTERNLIST = 12,
 
-    // Used for a known token.
-    T_NMTOKEN = 13,
+  // Used for a known token.
+  T_NMTOKEN = 13,
 
-    // Used for a list of white-space delimited strings.
-    T_STRINGLIST = 14,
+  // Used for a list of white-space delimited strings.
+  T_STRINGLIST = 14,
 
-    // Used for a list of white-space delimited strings.
-    T_PREFIX_URLLIST = 15;
+  // Used for a list of white-space delimited strings.
+  T_PREFIX_URLLIST = 15;
 
-  /** Representation for an attribute in a foreign namespace.  */
+  /** Representation for an attribute in a foreign namespace. */
   static XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
-                                                               XSLTAttributeDef.T_CDATA, false);
+                                            XSLTAttributeDef.T_CDATA, false);
+
+  /** Method name that objects may implement if they wish to have forein attributes set. */
+  static String S_FOREIGNATTR_SETTER = "setForeignAttr";
 
   /**
    * The allowed namespace for this element.
@@ -304,8 +307,8 @@ public class XSLTAttributeDef
   /**
    * Get the type of this attribute value.
    *
-   * @return One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR, 
-   * T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST, 
+   * @return One of T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR,
+   * T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST,
    * T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST.
    */
   int getType()
@@ -374,18 +377,20 @@ public class XSLTAttributeDef
     return m_required;
   }
 
-  /** String that should represent the setter method which which 
-   * may be used on objects to set a value that represents this attribute  */
+  /**
+   * String that should represent the setter method which which
+   * may be used on objects to set a value that represents this attribute  
+   */
   String m_setterString = null;
 
   /**
    * Return a string that should represent the setter method.
-   * The setter method name will be created algorithmically the 
+   * The setter method name will be created algorithmically the
    * first time this method is accessed, and then cached for return
    * by subsequent invocations of this method.
    *
-   * @return String that should represent the setter method which which 
-   * may be used on objects to set a value that represents this attribute, 
+   * @return String that should represent the setter method which which
+   * may be used on objects to set a value that represents this attribute,
    * of null if no setter method should be called.
    */
   public String getSetterMethodName()
@@ -395,7 +400,7 @@ public class XSLTAttributeDef
     {
       if (m_foreignAttr == this)
       {
-        return null;
+        return S_FOREIGNATTR_SETTER;
       }
       else if (m_name.equals("*"))
       {
@@ -405,9 +410,11 @@ public class XSLTAttributeDef
       }
 
       StringBuffer outBuf = new StringBuffer();
+
       outBuf.append("set");
 
-      if ((m_namespace != null) && m_namespace.equals(Constants.S_XMLNAMESPACEURI))
+      if ((m_namespace != null)
+              && m_namespace.equals(Constants.S_XMLNAMESPACEURI))
       {
         outBuf.append("Xml");
       }
@@ -451,22 +458,22 @@ public class XSLTAttributeDef
    *
    * @return An AVT object that may be used to evaluate the Attribute Value Template.
    *
-   * @throws org.xml.sax.SAXException which will wrap a 
-   * {@link javax.xml.transform.TransformerException}, if there is a syntax error 
+   * @throws org.xml.sax.SAXException which will wrap a
+   * {@link javax.xml.transform.TransformerException}, if there is a syntax error
    * in the attribute value template string.
    */
   AVT processAVT(
-                 StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
-    
+
     try
     {
       AVT avt = new AVT(handler, uri, name, rawName, value);
 
       return avt;
     }
-    catch(TransformerException te)
+    catch (TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);
     }
@@ -484,8 +491,8 @@ public class XSLTAttributeDef
    *
    * @return The value argument.
    */
-  Object processCDATA(
-                      StylesheetHandler handler, String uri, String name, String rawName, String value)
+  Object processCDATA(StylesheetHandler handler, String uri, String name,
+                      String rawName, String value)
   {
     return value;
   }
@@ -505,14 +512,14 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException if the string is not a length of 1.
    */
   Object processCHAR(
-                     StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     if (value.length() != 1)
     {
       handler.error(
-                    "An XSLT attribute of type T_CHAR must be only 1 character!", null);
+        "An XSLT attribute of type T_CHAR must be only 1 character!", null);
     }
 
     return new Character(value.charAt(0));
@@ -526,13 +533,13 @@ public class XSLTAttributeDef
    * @param uri The Namespace URI, or an empty string.
    * @param name The local name (without prefix), or empty string if not namespace processing.
    * @param rawName The qualified name (with prefix).
-   * @param value non-null string that represents an enumerated value that is 
+   * @param value non-null string that represents an enumerated value that is
    * valid for this element.
    *
    * @return An Integer representation of the enumerated value.
    */
-  Object processENUM(
-                     StylesheetHandler handler, String uri, String name, String rawName, String value)
+  Object processENUM(StylesheetHandler handler, String uri, String name,
+                     String rawName, String value)
   {
 
     int enum = this.getEnum(value);
@@ -552,13 +559,13 @@ public class XSLTAttributeDef
    *
    * @return an XPath object that may be used for evaluation.
    *
-   * @throws org.xml.sax.SAXException that wraps a 
-   * {@link javax.xml.transform.TransformerException} if the expression 
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the expression
    * string contains a syntax error.
    */
   Object processEXPR(
-                     StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     try
@@ -567,7 +574,7 @@ public class XSLTAttributeDef
 
       return expr;
     }
-    catch(TransformerException te)
+    catch (TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);
     }
@@ -585,8 +592,8 @@ public class XSLTAttributeDef
    *
    * @return the value argument.
    */
-  Object processNMTOKEN(
-                        StylesheetHandler handler, String uri, String name, String rawName, String value)
+  Object processNMTOKEN(StylesheetHandler handler, String uri, String name,
+                        String rawName, String value)
   {
     return value;
   }
@@ -603,13 +610,13 @@ public class XSLTAttributeDef
    *
    * @return An XPath pattern that may be used to evaluate the XPath.
    *
-   * @throws org.xml.sax.SAXException that wraps a 
-   * {@link javax.xml.transform.TransformerException} if the match pattern 
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if the match pattern
    * string contains a syntax error.
    */
   Object processPATTERN(
-                        StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     try
@@ -618,7 +625,7 @@ public class XSLTAttributeDef
 
       return pattern;
     }
-    catch(TransformerException te)
+    catch (TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);
     }
@@ -636,21 +643,24 @@ public class XSLTAttributeDef
    *
    * @return A Double object.
    *
-   * @throws org.xml.sax.SAXException that wraps a 
-   * {@link javax.xml.transform.TransformerException} 
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException}
    * if the string does not contain a parsable number.
    */
   Object processPRIORITY(
-                         StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
+
     try
     {
       return Double.valueOf(value);
     }
-    catch(NumberFormatException nfe)
+    catch (NumberFormatException nfe)
     {
-      handler.error("Priority value does not contain a parsable number.", nfe);
+      handler.error("Priority value does not contain a parsable number.",
+                    nfe);
+
       return new Double(0.0);
     }
   }
@@ -667,12 +677,12 @@ public class XSLTAttributeDef
    *
    * @return A QName object.
    *
-   * @throws org.xml.sax.SAXException if the string contains a prefix that can not be 
+   * @throws org.xml.sax.SAXException if the string contains a prefix that can not be
    * resolved, or the string contains syntax that is invalid for a qualified name.
    */
   Object processQNAME(
-                      StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
     return new QName(value, handler);
   }
@@ -690,12 +700,12 @@ public class XSLTAttributeDef
    * @return a Vector of QName objects.
    *
    * @throws org.xml.sax.SAXException if the one of the qualified name strings
-   * contains a prefix that can not be 
+   * contains a prefix that can not be
    * resolved, or a qualified name contains syntax that is invalid for a qualified name.
    */
   Vector processQNAMES(
-                       StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -722,13 +732,13 @@ public class XSLTAttributeDef
    *
    * @return A Vector of XPath objects.
    *
-   * @throws org.xml.sax.SAXException that wraps a 
-   * {@link javax.xml.transform.TransformerException} if one of the match pattern 
+   * @throws org.xml.sax.SAXException that wraps a
+   * {@link javax.xml.transform.TransformerException} if one of the match pattern
    * strings contains a syntax error.
    */
   Vector processSIMPLEPATTERNLIST(
-                                  StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     try
@@ -739,17 +749,18 @@ public class XSLTAttributeDef
 
       for (int i = 0; i < nPatterns; i++)
       {
-        XPath pattern = handler.createMatchPatternXPath(tokenizer.nextToken());
+        XPath pattern =
+          handler.createMatchPatternXPath(tokenizer.nextToken());
 
         patterns.addElement(pattern);
       }
+
       return patterns;
     }
-    catch(TransformerException te)
+    catch (TransformerException te)
     {
       throw new org.xml.sax.SAXException(te);
     }
-
   }
 
   /**
@@ -764,8 +775,8 @@ public class XSLTAttributeDef
    *
    * @return A StringVector of the tokenized strings.
    */
-  StringVector processSTRINGLIST(
-                                 StylesheetHandler handler, String uri, String name, String rawName, String value)
+  StringVector processSTRINGLIST(StylesheetHandler handler, String uri,
+                                 String name, String rawName, String value)
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -795,8 +806,8 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException if one of the prefixes can not be resolved.
    */
   StringVector processPREFIX_URLLIST(
-                                     StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -829,9 +840,10 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException if the URL does not conform to the URL syntax.
    */
   String processURL(
-                    StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
+
     // TODO: syntax check URL value.
     // return SystemIDResolver.getAbsoluteURI(value, 
     //                                         handler.getBaseIdentifier());
@@ -853,13 +865,15 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException
    */
   private Boolean processYESNO(
-                               StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
+
     // Is this already checked somewhere else?  -sb
-    if(!(value.equals("yes") || value.equals("no")))
-      handler.error("Value for "+name+" should equal 'yes' or 'no'", null);
-      
+    if (!(value.equals("yes") || value.equals("no")))
+      handler.error("Value for " + name + " should equal 'yes' or 'no'",
+                    null);
+
     return new Boolean(value.equals("yes") ? true : false);
   }
 
@@ -877,8 +891,8 @@ public class XSLTAttributeDef
    * @throws org.xml.sax.SAXException if the attribute value can not be processed.
    */
   Object processValue(
-                      StylesheetHandler handler, String uri, String name, String rawName, String value)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String uri, String name, String rawName, String value)
+            throws org.xml.sax.SAXException
   {
 
     int type = getType();
@@ -945,11 +959,11 @@ public class XSLTAttributeDef
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param elem The object on which the property will be set.
    *
-   * @throws org.xml.sax.SAXException wraps an invocation exception if the 
+   * @throws org.xml.sax.SAXException wraps an invocation exception if the
    * setter method can not be invoked on the object.
    */
   void setDefAttrValue(StylesheetHandler handler, Object elem)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
     setAttrValue(handler, this.getNamespace(), this.getName(),
                  this.getName(), this.getDefault(), elem);
@@ -1019,13 +1033,13 @@ public class XSLTAttributeDef
    * @param attrLocalName The local name (without prefix), or empty string if not namespace processing.
    * @param attrRawName The raw name of the attribute, including possible prefix.
    * @param attrValue The attribute's value.
-   * @param elem The object what should contain a property that represents the attribute.
+   * @param elem The object that should contain a property that represents the attribute.
    *
    * @throws org.xml.sax.SAXException
    */
   void setAttrValue(
-                    StylesheetHandler handler, String attrUri, String attrLocalName, String attrRawName, String attrValue, Object elem)
-    throws org.xml.sax.SAXException
+          StylesheetHandler handler, String attrUri, String attrLocalName, String attrRawName, String attrValue, Object elem)
+            throws org.xml.sax.SAXException
   {
 
     String setterString = getSetterMethodName();
@@ -1034,36 +1048,53 @@ public class XSLTAttributeDef
     // do not process it.
     if (null != setterString)
     {
-      Object value = processValue(handler, attrUri, attrLocalName,
-                                  attrRawName, attrValue);
-
       try
       {
         Method meth;
+        Object[] args;
 
-        // First try to match with the primative value.
-        Class[] argTypes = new Class[]{ getPrimativeClass(value) };
-
-        try
+        if(setterString.equals(S_FOREIGNATTR_SETTER))
         {
+          // First try to match with the primative value.
+          Class sclass = attrUri.getClass();
+          Class[] argTypes = new Class[]{ sclass, sclass,
+                                      sclass, sclass };
+  
           meth = elem.getClass().getMethod(setterString, argTypes);
+  
+          args = new Object[]{ attrUri, attrLocalName,
+                                      attrRawName, attrValue };
         }
-        catch (NoSuchMethodException nsme)
+        else
         {
-          Class cl = ((Object) value).getClass();
-
-          // If this doesn't work, try it with the non-primative value;
-          argTypes[0] = cl;
-          meth = elem.getClass().getMethod(setterString, argTypes);
+          Object value = processValue(handler, attrUri, attrLocalName,
+                                      attrRawName, attrValue);
+                                      
+          // First try to match with the primative value.
+          Class[] argTypes = new Class[]{ getPrimativeClass(value) };
+  
+          try
+          {
+            meth = elem.getClass().getMethod(setterString, argTypes);
+          }
+          catch (NoSuchMethodException nsme)
+          {
+            Class cl = ((Object) value).getClass();
+  
+            // If this doesn't work, try it with the non-primative value;
+            argTypes[0] = cl;
+            meth = elem.getClass().getMethod(setterString, argTypes);
+          }
+  
+          args = new Object[]{ value };
         }
-
-        Object[] args = new Object[]{ value };
 
         meth.invoke(elem, args);
       }
       catch (NoSuchMethodException nsme)
       {
-        handler.error("Failed calling " + setterString + " method!", nsme);
+        if (!setterString.equals(S_FOREIGNATTR_SETTER))
+          handler.error("Failed calling " + setterString + " method!", nsme);
       }
       catch (IllegalAccessException iae)
       {
