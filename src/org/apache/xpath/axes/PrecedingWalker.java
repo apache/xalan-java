@@ -94,7 +94,9 @@ public class PrecedingWalker extends ReverseAxesWalker
   {
 
     if (Node.ATTRIBUTE_NODE == root.getNodeType())
-      root = root.getParentNode();
+    {
+      root = m_lpi.getDOMHelper().getParentOfNode(root);
+    }
 
     super.setRoot(root);
 
