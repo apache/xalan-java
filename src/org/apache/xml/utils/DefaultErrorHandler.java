@@ -94,7 +94,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   public void warning(SAXParseException exception) throws SAXException
   {
     printLocation(exception);
-    System.out.println("Parser warning: " + exception.getMessage());
+    System.err.println("Parser warning: " + exception.getMessage());
   }
 
   /**
@@ -121,6 +121,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   public void error(SAXParseException exception) throws SAXException
   {
     printLocation(exception);
+    System.err.println(exception.getMessage());
 
     throw exception;
   }
@@ -147,6 +148,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   public void fatalError(SAXParseException exception) throws SAXException
   {
     printLocation(exception);
+    System.err.println(exception.getMessage());
 
     throw exception;
   }
@@ -172,7 +174,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   {
     printLocation(exception);
 
-    System.out.println(exception.getMessage());
+    System.err.println(exception.getMessage());
   }
 
   /**
@@ -233,11 +235,11 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   
   private void printLocation(org.xml.sax.SAXParseException exception)
   {
-    // System.out.println("Parser fatal error: "+exception.getMessage());
+    // System.err.println("Parser fatal error: "+exception.getMessage());
     String id = (null != exception.getSystemId())
                 ? exception.getSystemId() : "SystemId Unknown";
 
-    System.out.print(id + "; Line " + exception.getLineNumber()
+    System.err.print(id + "; Line " + exception.getLineNumber()
                        + "; Column " + exception.getColumnNumber()+"; ");
   }
 
@@ -248,13 +250,13 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
     
     if(null != locator)
     {
-      // System.out.println("Parser fatal error: "+exception.getMessage());
+      // System.err.println("Parser fatal error: "+exception.getMessage());
       String id = (locator.getPublicId() != locator.getPublicId())
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())
                       ? locator.getSystemId() : "SystemId Unknown";
 
-      System.out.print(id + "; Line " + locator.getLineNumber()
+      System.err.print(id + "; Line " + locator.getLineNumber()
                          + "; Column " + locator.getColumnNumber()+"; ");
     }
   }
