@@ -648,7 +648,7 @@ public class TransformerFactoryImpl
 	throws TransformerException {
 	System.err.println("ERROR: "+e.getMessageAndLocation());
 	Throwable wrapped = e.getException();
-	if (e != null)
+	if (wrapped != null)
 	    System.err.println("     : "+wrapped.getMessage());
 	throw(e); 	
     }
@@ -670,7 +670,7 @@ public class TransformerFactoryImpl
 	throws TransformerException {
 	System.err.println("FATAL: "+e.getMessageAndLocation());
 	Throwable wrapped = e.getException();
-	if (e != null)
+	if (wrapped != null)
 	    System.err.println("     : "+wrapped.getMessage());
 	throw(e);
     }
@@ -692,7 +692,7 @@ public class TransformerFactoryImpl
 	throws TransformerException {
 	System.err.println("WARNING: "+e.getMessageAndLocation());
 	Throwable wrapped = e.getException();
-	if (e != null)
+	if (wrapped != null)
 	    System.err.println("       : "+wrapped.getMessage());
     }
 
