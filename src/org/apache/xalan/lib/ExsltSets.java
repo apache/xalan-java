@@ -57,34 +57,15 @@
 package org.apache.xalan.lib;
 
 import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
 
 import org.apache.xpath.NodeSet;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XBoolean;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XRTreeFrag;
-
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.ref.DTMNodeIterator;
-import org.apache.xml.utils.XMLString;
-
-import org.xml.sax.SAXNotSupportedException;
-
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 
 import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.xslt.EnvironmentCheck;
 
 import javax.xml.parsers.*;
 
@@ -109,29 +90,30 @@ public class ExsltSets
    * the first node in the second node set is not contained in the first node set, then an empty
    * node set is returned. If the second node set is empty, then the first node set is returned.
    * 
-   * @param ni1 NodeIterator for first node-set.
-   * @param ni2 NodeIterator for second node-set.
-   * @return a node-set containing the nodes in ni1 that precede in document order the first
-   * node in ni2; an empty node-set if the first node in ni2 is not in ni1; all of ni1 if n12
+   * @param nl1 NodeList for first node-set.
+   * @param nl2 NodeList for second node-set.
+   * @return a NodeList containing the nodes in nl1 that precede in document order the first
+   * node in nl2; an empty node-set if the first node in nl2 is not in nl1; all of nl1 if nl2
    * is empty.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static NodeSet leading (NodeIterator ni1, NodeIterator ni2)
+  public static NodeList leading (NodeList nl1, NodeList nl2)
   {
-    NodeSet ns1 = new NodeSet(ni1);
-    NodeSet ns2 = new NodeSet(ni2);
+    if (nl2.getLength() == 0)
+      return nl1;
+      
+    NodeSet ns1 = new NodeSet(nl1);
     NodeSet leadNodes = new NodeSet();
-    if (ns2.getLength() == 0)
-      return ns1;
-    Node endNode = ns2.elementAt(0);
+    Node endNode = nl2.item(0);
     if (!ns1.contains(endNode))
       return leadNodes; // empty NodeSet
-    for (int i = 0; i < ns1.getLength(); i++)
+      
+    for (int i = 0; i < nl1.getLength(); i++)
     {
-      Node testNode = ns1.elementAt(i);
+      Node testNode = nl1.item(i);
       if (DOMHelper.isNodeAfter(testNode, endNode) 
-          && !(DOMHelper.isNodeTheSame(testNode, endNode)))
+          && !(testNode == endNode || DOMHelper.isNodeTheSame(testNode, endNode)))
         leadNodes.addElement(testNode);
     }
     return leadNodes;
@@ -143,29 +125,30 @@ public class ExsltSets
    * the first node in the second node set is not contained in the first node set, then an empty 
    * node set is returned. If the second node set is empty, then the first node set is returned. 
    * 
-   * @param ni1 NodeIterator for first node-set.
-   * @param ni2 NodeIterator for second node-set.
-   * @return a node-set containing the nodes in ni1 that follow in document order the first
-   * node in ni2; an empty node-set if the first node in ni2 is not in ni1; all of ni1 if ni2
+   * @param nl1 NodeList for first node-set.
+   * @param nl2 NodeList for second node-set.
+   * @return a NodeList containing the nodes in nl1 that follow in document order the first
+   * node in nl2; an empty node-set if the first node in nl2 is not in nl1; all of nl1 if nl2
    * is empty.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static NodeSet trailing (NodeIterator ni1, NodeIterator ni2)
+  public static NodeList trailing (NodeList nl1, NodeList nl2)
   {
-    NodeSet ns1 = new NodeSet(ni1);
-    NodeSet ns2 = new NodeSet(ni2);
+    if (nl2.getLength() == 0)
+      return nl1;
+      
+    NodeSet ns1 = new NodeSet(nl1);
     NodeSet trailNodes = new NodeSet();
-    if (ns2.getLength() == 0)
-      return ns1;
-    Node startNode = ns2.elementAt(0);
+    Node startNode = nl2.item(0);
     if (!ns1.contains(startNode))
       return trailNodes; // empty NodeSet
-    for (int i = 0; i < ns1.getLength(); i++)
+      
+    for (int i = 0; i < nl1.getLength(); i++)
     {
-      Node testNode = ns1.elementAt(i);
+      Node testNode = nl1.item(i);
       if (DOMHelper.isNodeAfter(startNode, testNode) 
-          && !(DOMHelper.isNodeTheSame(startNode, testNode)))
+          && !(startNode == testNode || DOMHelper.isNodeTheSame(startNode, testNode)))
         trailNodes.addElement(testNode);          
     }
     return trailNodes;
@@ -175,19 +158,30 @@ public class ExsltSets
    * The set:intersection function returns a node set comprising the nodes that are within 
    * both the node sets passed as arguments to it.
    * 
-   * @param ni1 NodeIterator for first node-set.
-   * @param ni2 NodeIterator for second node-set.
-   * @return a NodeSet containing the nodes in ni1 that are also
-   * in ni2.
-   * 
-   * Note: Already implemented in the xalan namespace.
+   * @param nl1 NodeList for first node-set.
+   * @param nl2 NodeList for second node-set.
+   * @return a NodeList containing the nodes in nl1 that are also
+   * in nl2.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static NodeSet intersection(NodeIterator ni1, NodeIterator ni2)
-          throws javax.xml.transform.TransformerException
+  public static NodeList intersection(NodeList nl1, NodeList nl2)
   {
-    return Extensions.intersection(ni1, ni2);
+    NodeSet ns1 = new NodeSet(nl1);
+    NodeSet ns2 = new NodeSet(nl2);
+    NodeSet inter = new NodeSet();
+
+    inter.setShouldCacheNodes(true);
+
+    for (int i = 0; i < ns1.getLength(); i++)
+    {
+      Node n = ns1.elementAt(i);
+
+      if (ns2.contains(n))
+        inter.addElement(n);
+    }
+
+    return inter;
   }
   
   /**
@@ -195,19 +189,30 @@ public class ExsltSets
    * are in the node set passed as the first argument that are not in the node set passed as the 
    * second argument.
    * 
-   * @param ni1 NodeIterator for first node-set.
-   * @param ni2 NodeIterator for second node-set.
-   * @return a NodeSet containing the nodes in ni1 that are not
-   * in ni2.
-   * 
-   * Note: Already implemented in the xalan namespace.
+   * @param nl1 NodeList for first node-set.
+   * @param nl2 NodeList for second node-set.
+   * @return a NodeList containing the nodes in nl1 that are not in nl2.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static NodeSet difference(NodeIterator ni1, NodeIterator ni2)
-          throws javax.xml.transform.TransformerException
+  public static NodeList difference(NodeList nl1, NodeList nl2)
   {
-    return Extensions.difference(ni1, ni2);
+    NodeSet ns1 = new NodeSet(nl1);
+    NodeSet ns2 = new NodeSet(nl2);
+
+    NodeSet diff = new NodeSet();
+
+    diff.setShouldCacheNodes(true);
+
+    for (int i = 0; i < ns1.getLength(); i++)
+    {
+      Node n = ns1.elementAt(i);
+
+      if (!ns2.contains(n))
+        diff.addElement(n);
+    }
+
+    return diff;
   }
   
   /**
@@ -215,20 +220,39 @@ public class ExsltSets
    * as the first argument. Specifically, it selects a node N if there is no node in NS that has 
    * the same string value as N, and that precedes N in document order. 
    * 
-   * @param myContext Passed in by Xalan extension processor.
-   * @param ni NodeIterator for node-set.
-   * @return a NodeSet with nodes from ni containing distinct string values.
-   * In other words, if more than one node in ni contains the same string value,
+   * @param nl NodeList for the node-set.
+   * @return a NodeList with nodes from nl containing distinct string values.
+   * In other words, if more than one node in nl contains the same string value,
    * only include the first such node found.
-   * 
-   * Note: Already implemented in the xalan namespace.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static NodeSet distinct(ExpressionContext myContext, NodeIterator ni)
-          throws javax.xml.transform.TransformerException
+  public static NodeList distinct(NodeList nl)
   {
-    return Extensions.distinct(myContext, ni);
+    NodeSet dist = new NodeSet();
+    dist.setShouldCacheNodes(true);
+
+    Hashtable stringTable = new Hashtable();
+    
+    for (int i = 0; i < nl.getLength(); i++)
+    {
+      Node currNode = nl.item(i);
+      String key = null;
+      if (currNode instanceof DTMNodeProxy)
+        key = ((DTMNodeProxy)currNode).getStringValue();
+      else
+        key = currNode.getNodeValue();
+      
+      if (key == null)
+        dist.addElement(currNode);
+      else if (!stringTable.containsKey(key))
+      {
+        stringTable.put(key, currNode);
+        dist.addElement(currNode);      	
+      }
+    }
+
+    return dist;
   }
   
   /**
@@ -244,11 +268,11 @@ public class ExsltSets
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static boolean hasSameNode(NodeIterator ni1, NodeIterator ni2)
+  public static boolean hasSameNode(NodeList nl1, NodeList nl2)
   {
     
-    NodeSet ns1 = new NodeSet(ni1);
-    NodeSet ns2 = new NodeSet(ni2);
+    NodeSet ns1 = new NodeSet(nl1);
+    NodeSet ns2 = new NodeSet(nl2);
 
     for (int i = 0; i < ns1.getLength(); i++)
     {
