@@ -87,24 +87,39 @@ public class ExceptPathIterator
 
     super();
   }
-
+  
   /**
-   *  Get a cloned Iterator that is reset to the beginning
-   *  of the query.
-   * 
-   *  @return A cloned NodeIterator set of the start of the query.
-   * 
-   *  @throws CloneNotSupportedException
+   * Initialize the context values for this expression 
+   * after it is cloned.
+   *
+   * @param execContext The XPath runtime context for this 
+   * transformation.
    */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+  public void initIterators(int context)
   {
+    try
+    {
+      if (null != m_exprs)
+      {
+        int n = m_exprs.length;
+        DTMIterator newIters[] = new DTMIterator[n];
 
-    ExceptPathIterator clone = (ExceptPathIterator) super.cloneWithReset();
-
-    clone.resetProximityPositions();
-
-    return clone;
+        for (int i = 0; i < n; i++)
+        {
+          DTMIterator iter = m_exprs[i].asIterator(m_execContext, context);
+          newIters[i] = iter;
+          iter.setShouldCache(true);
+          iter.nextNode();
+        }
+        m_iterators = newIters;
+      }
+    }
+    catch (Exception e)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(e);
+    }
   }
+
 
   /**
    *  Returns the next node in the set and advances the position of the
@@ -218,19 +233,24 @@ public class ExceptPathIterator
   	 accept = super.acceptNode(n);
   	if (accept == DTMIterator.FILTER_ACCEPT)
   	{
-  	  try
-  	  {
-  	    DTMIterator iterator = (DTMIterator)m_iterators[1].clone();
-  		int node = iterator.getCurrentNode();
+  	    DTMIterator iterator = (DTMIterator)m_iterators[1];
+  	    int node;
+  	    if (iterator.isFresh())
+  	      node = iterator.nextNode();
+  	    else
+  		  node = iterator.getCurrentNode();
   		while (node != DTM.NULL)
   		{
   			if (n ==  node)
-  			return DTMIterator.FILTER_SKIP;
+  			{
+  			  iterator.reset();
+  			  return DTMIterator.FILTER_SKIP;
+  			}
   			node = iterator.nextNode();
   		}
-  	  }
-  	  catch (CloneNotSupportedException ex) {} 
+  		iterator.reset();
   	}
+  	
   	return accept;
   }
 

@@ -105,7 +105,18 @@ public class UnionPathIterator
   public void setRoot(int context, Object environment)
   {
     super.setRoot(context, environment);
-
+    initIterators(context); 
+  }
+  
+   /**
+   * Initialize the context values for this expression 
+   * after it is cloned.
+   *
+   * @param execContext The XPath runtime context for this 
+   * transformation.
+   */
+  public void initIterators(int context)
+  {
     try
     {
       if (null != m_exprs)

@@ -87,24 +87,6 @@ public class IntersectPathIterator
 
     super();
   }
-
-  /**
-   *  Get a cloned Iterator that is reset to the beginning
-   *  of the query.
-   * 
-   *  @return A cloned NodeIterator set of the start of the query.
-   * 
-   *  @throws CloneNotSupportedException
-   */
-  public DTMIterator cloneWithReset() throws CloneNotSupportedException
-  {
-
-    IntersectPathIterator clone = (IntersectPathIterator) super.cloneWithReset();
-
-    clone.resetProximityPositions();
-
-    return clone;
-  }
   
   /**
    *  Test whether a specified node is visible in the logical view of a
