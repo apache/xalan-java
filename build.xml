@@ -366,6 +366,59 @@ Copyright:
       </patternset>
     </jar>
   </target>
+
+
+  <target name="xsltc.bundledjar" depends="xsltc.compile"
+     description="Jar xsltc, BCEL.jar, JLex.jar, java_cup.jar, runtime.jar">
+    <!-- make a tmp directory to work in -->
+    <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
+    <mkdir  dir="${build.dir}/xsltctmp" />
+
+    <!-- create jar of xsltc classes in the tmp directory -->
+    <jar jarfile="${build.dir}/xsltctmp/xsltc.jar"
+        basedir="${build.dir}/classes"
+        includes="org/apache/xalan/xsltc/**" />
+
+    <!-- copy the xsltc 3rd party support jar files to tmp dist dir -->
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/BCEL.jar"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/JLex.jar"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/java_cup.jar"/>
+    <copy todir="${build.dir}/xsltctmp"
+      file="${bin.dir}/runtime.jar"/>
+
+    <!-- unjar all jars -->
+    <unjar src="${build.dir}/xsltctmp/xsltc.jar"
+           dest="${build.dir}/xsltctmp" />
+    <unjar src="${build.dir}/xsltctmp/BCEL.jar"
+           dest="${build.dir}/xsltctmp" />
+    <unjar src="${build.dir}/xsltctmp/JLex.jar"
+           dest="${build.dir}/xsltctmp" />
+    <unjar src="${build.dir}/xsltctmp/java_cup.jar"
+           dest="${build.dir}/xsltctmp" />
+    <unjar src="${build.dir}/xsltctmp/runtime.jar"
+           dest="${build.dir}/xsltctmp" />
+
+    <!-- remove jar files -->
+    <delete file="${build.dir}/xsltctmp/xsltc.jar" />
+    <delete file="${build.dir}/xsltctmp/BCEL.jar" />
+    <delete file="${build.dir}/xsltctmp/JLex.jar" />
+    <delete file="${build.dir}/xsltctmp/java_cup.jar" />
+    <delete file="${build.dir}/xsltctmp/runtime.jar" />
+
+    <!-- remove old META-INF dir -->
+    <delete dir="${build.dir}/xsltctmp/META-INF"
+        includeEmptyDirs="true" quiet="true"/>
+
+    <!-- make bundled jar named xsltc.jar -->
+    <jar jarfile="${build.dir}/xsltc.jar"
+         basedir="${build.dir}/xsltctmp" />
+
+    <!-- clean up tmp directory -->
+    <delete dir="${build.dir}/xsltctmp" includeEmptyDirs="true" quiet="true"/>
+  </target>
   
   <!-- =================================================================== -->
   <!-- Creates the xalan JAR                                               -->
