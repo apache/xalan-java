@@ -1174,7 +1174,8 @@ public final class DOMImpl implements DOM, Externalizable {
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
-		BasisLibrary.runTimeError("Iterator clone not supported.");
+		BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+					  e.toString());
 		return null;
 	    }
 	}
@@ -1326,8 +1327,10 @@ public final class DOMImpl implements DOM, Externalizable {
 		final AncestorIterator clone = (AncestorIterator)super.clone();
 		clone._startNode = _startNode;
 		return clone.reset();
-	    } catch (CloneNotSupportedException e) {
-		BasisLibrary.runTimeError("Iterator clone not supported.");
+	    }
+	    catch (CloneNotSupportedException e) {
+		BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+					  e.toString());
 		return null;
 	    }
 	}
@@ -1711,7 +1714,8 @@ public final class DOMImpl implements DOM, Externalizable {
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
-		BasisLibrary.runTimeError("Iterator clone not supported."); 
+		BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+					  e.toString());
 		return null;
 	    }
 	}
@@ -2336,9 +2340,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    iterator = new NamespaceIterator();
 	    break;
 	default:
-	    BasisLibrary.runTimeError("Error: iterator for axis '" + 
-				      Axis.names[axis] + "' not implemented");
-	    System.exit(1);
+	    BasisLibrary.runTimeError(BasisLibrary.AXIS_SUPPORT_ERR,
+				      Axis.names[axis]);
 	}
 	return(iterator);
     }
@@ -2403,11 +2406,11 @@ public final class DOMImpl implements DOM, Externalizable {
 		    iterator = new TypedNamespaceIterator(type);
 		break;
 	    default:
-		BasisLibrary.runTimeError("Error: typed iterator for axis " + 
-					  Axis.names[axis]+"not implemented");
+		BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
+					  Axis.names[axis]);
 	    }
 	}
-	    return(iterator);
+	return(iterator);
     }
 
     /**
@@ -2433,8 +2436,8 @@ public final class DOMImpl implements DOM, Externalizable {
 		iterator = new NamespaceAttributeIterator(ns);
 		break;
 	    default:
-		BasisLibrary.runTimeError("Error: typed iterator for axis " + 
-					  Axis.names[axis]+"not implemented");
+		BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
+					  Axis.names[axis]);
 	    }
 	}
 	return(iterator);

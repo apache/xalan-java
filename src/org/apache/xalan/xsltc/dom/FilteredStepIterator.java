@@ -90,7 +90,8 @@ public final class FilteredStepIterator extends NodeIteratorBase {
 	    return clone.resetPosition();
 	}
 	catch (CloneNotSupportedException e) {
-	    BasisLibrary.runTimeError("Iterator clone not supported.");
+	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+				      e.toString());
 	    return null;
 	}
     }

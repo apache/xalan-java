@@ -197,7 +197,8 @@ public final class MultiDOM implements DOM {
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
-		BasisLibrary.runTimeError("Iterator clone not supported."); 
+		BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+					  e.toString());
 		return null;
 	    }
 	}
