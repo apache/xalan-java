@@ -100,6 +100,10 @@ public class Encodings extends Object
         {
           return new OutputStreamWriter(output, _encodings[i].javaName);
         }
+        catch( java.lang.IllegalArgumentException iae) // java 1.1.8
+        {
+          // keep trying
+        }
         catch (UnsupportedEncodingException usee)
         {
 
@@ -108,7 +112,14 @@ public class Encodings extends Object
       }
     }
 
-    return new OutputStreamWriter(output, encoding);
+    try
+    {
+      return new OutputStreamWriter(output, encoding);
+    }
+    catch( java.lang.IllegalArgumentException iae) // java 1.1.8
+    {
+      throw new UnsupportedEncodingException(encoding);
+    }
   }
 
   /**
