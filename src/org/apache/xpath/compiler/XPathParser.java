@@ -1575,6 +1575,8 @@ public class XPathParser
       m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH) - 1, OpCodes.NODETYPE_ROOT);
 
       nextToken();
+    } else if (m_token == null) {
+      error(XPATHErrorResources.ER_EXPECTED_LOC_PATH_AT_END_EXPR, null);
     }
 
     if (m_token != null)

@@ -285,6 +285,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 	 "ER_EXPECTED_REL_LOC_PATH";
   /** Problem with LocationPath */
   public static final String ER_EXPECTED_LOC_PATH = "ER_EXPECTED_LOC_PATH";
+  public static final String ER_EXPECTED_LOC_PATH_AT_END_EXPR =
+                                        "ER_EXPECTED_LOC_PATH_AT_END_EXPR";
   /** Problem with Step */
   public static final String ER_EXPECTED_LOC_STEP = "ER_EXPECTED_LOC_STEP";
   /** Problem with NodeTest */
@@ -350,18 +352,18 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 	 "WG_ILLEGAL_VARIABLE_REFERENCE";
   public static final String WG_UNSUPPORTED_ENCODING ="WG_UNSUPPORTED_ENCODING";
 
-/**  detach() not supported by XRTreeFragSelectWrapper   */
-public static final String ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
-	"ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
-/**  num() not supported by XRTreeFragSelectWrapper   */
-public static final String ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
-	"ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
-/**  xstr() not supported by XRTreeFragSelectWrapper   */
-public static final String ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
-	"ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
-/**  str() not supported by XRTreeFragSelectWrapper   */
-public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
-	"ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+  /**  detach() not supported by XRTreeFragSelectWrapper   */
+  public static final String ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	 "ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+  /**  num() not supported by XRTreeFragSelectWrapper   */
+  public static final String ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	 "ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+  /**  xstr() not supported by XRTreeFragSelectWrapper   */
+  public static final String ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	 "ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+  /**  str() not supported by XRTreeFragSelectWrapper   */
+  public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	 "ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
 
   // Error messages...
 
@@ -980,6 +982,12 @@ public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 
   { ER_EXPECTED_LOC_PATH,
        "A location path was expected, but the following token was encountered\u003a  {0}"},
+
+  // Note to translators:  A location path is a form of XPath expression.
+  // The message indicates that syntactically such a subexpression was expected,
+  // but no more characters were found in the expression.
+  { ER_EXPECTED_LOC_PATH_AT_END_EXPR,
+       "A location path was expected, but the end of the XPath expression was found instead."},
 
   // Note to translators:  A location step is part of an XPath expression.
   // The message indicates that syntactically such an expression was expected
