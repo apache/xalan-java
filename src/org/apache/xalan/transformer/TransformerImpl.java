@@ -281,7 +281,7 @@ public class TransformerImpl extends Transformer
    * Object to guard agains infinite recursion when
    * doing queries.
    */
-  private StackGuard m_stackGuard = new StackGuard();
+  private StackGuard m_stackGuard;
 
   /**
    * Output handler to bottleneck SAX events.
@@ -396,6 +396,7 @@ public class TransformerImpl extends Transformer
     setStylesheet(stylesheet);
     setXPathContext(new XPathContext(this));
     getXPathContext().setNamespaceContext(stylesheet);
+    m_stackGuard = new StackGuard(this);
   }
 
   /**
@@ -423,7 +424,6 @@ public class TransformerImpl extends Transformer
       // I need to look more carefully at which of these really
       // needs to be reset.
       m_countersTable = null;
-      m_stackGuard = new StackGuard();
 
       m_xcontext.reset();
       
@@ -440,7 +440,7 @@ public class TransformerImpl extends Transformer
       
       m_currentMatchTemplates.removeAllElements();
       m_currentMatchedNodes.removeAllElements();
-
+      
       m_resultTreeHandler = null;
       m_outputTarget = null;
       m_keyManager = new KeyManager();
@@ -2396,6 +2396,29 @@ public class TransformerImpl extends Transformer
   		}
   	}
   	return elems;
+  }
+  
+  /**
+   * Get the count of how many elements are 
+   * active.
+   * @return The number of active elements on 
+   * the currentTemplateElements stack.
+   */
+  public int getCurrentTemplateElementsCount()
+  {
+  	return m_currentTemplateElementsTop;
+  }
+  
+  
+  /**
+   * Get the count of how many elements are 
+   * active.
+   * @return The number of active elements on 
+   * the currentTemplateElements stack.
+   */
+  public ElemTemplateElement[] getCurrentTemplateElements()
+  {
+  	return m_currentTemplateElements;
   }
 
   /**

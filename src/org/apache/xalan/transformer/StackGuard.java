@@ -59,13 +59,12 @@ package org.apache.xalan.transformer;
 //import org.w3c.dom.Node;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.Element;
-import org.apache.xml.dtm.DTM;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.xml.transform.TransformerException;
-
+import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 
 /**
@@ -84,6 +83,8 @@ public class StackGuard
    * Post version 1.0.0, we'll make this a runtime feature.
    */
   public static int m_recursionLimit = -1;
+  
+  TransformerImpl m_transformer;
 
   /**
    * Get the recursion limit.
@@ -119,21 +120,6 @@ public class StackGuard
     m_recursionLimit = limit;
   }
 
-  /** Stylesheet Template node          */
-  ElemTemplateElement m_xslRule;
-
-  /** Source node          */
-  int m_sourceXML;
-
-  /** Stack where ElemTempalteElements will be pushed          */
-  java.util.Stack stack = new java.util.Stack();
-
-  /**
-   * Constructor StackGuard
-   *
-   */
-  public StackGuard(){}
-
   /**
    * Constructor StackGuard
    *
@@ -141,10 +127,9 @@ public class StackGuard
    * @param xslTemplate Current template node
    * @param sourceXML Source Node
    */
-  public StackGuard(ElemTemplateElement xslTemplate, int sourceXML)
+  public StackGuard(TransformerImpl transformerImpl)
   {
-    m_xslRule = xslTemplate;
-    m_sourceXML = sourceXML;
+    m_transformer = transformerImpl;
   }
 
   /**
@@ -155,41 +140,42 @@ public class StackGuard
    *
    * @return True if the given object matches this StackGuard object
    */
-  public boolean equals(Object obj)
+  public int countLikeTemplates(ElemTemplate templ, int pos)
   {
-
-    if (((StackGuard) obj).m_xslRule.equals(m_xslRule)
-            && ((StackGuard) obj).m_sourceXML == m_sourceXML)
+  	ElemTemplateElement[] elems = m_transformer.getCurrentTemplateElements();
+  	int count = 1;
+    for (int i = pos-1; i >= 0; i--)
     {
-      return true;
+    	if(elems[i] == templ)
+    		count++;
     }
-
-    return false;
+	
+    return count;
   }
 
+  
   /**
-   * Output diagnostics if in an infinite loop
-   *
-   *
-   * @param pw Non-null PrintWriter instance to use
+   * Get the next named or match template down from and including 
+   * the given position.
+   * @param pos the current index position in the stack.
+   * @return null if no matched or named template found, otherwise 
+   * the next named or matched template at or below the position.
    */
-  public void print(PrintWriter pw)
+  private ElemTemplate getNextMatchOrNamedTemplate(int pos)
   {
-
-    // for the moment, these diagnostics are really bad...
-    // %DTBD% We need an execution context.
-//    if (m_sourceXML instanceof Text)
-//    {
-//      Text tx = (Text) m_sourceXML;
-//
-//      pw.println(tx.getData());
-//    }
-//    else if (m_sourceXML instanceof Element)
-//    {
-//      Element elem = (Element) m_sourceXML;
-//
-//      pw.println(elem.getNodeName());
-//    }
+  	ElemTemplateElement[] elems = m_transformer.getCurrentTemplateElements();
+    for (int i = pos; i >= 0; i--)
+    {
+    	ElemTemplateElement elem = elems[i];
+    	if(null != elem)
+    	{
+	    	if(elem.getXSLToken() == Constants.ELEMNAME_TEMPLATE)
+	    	{
+	    		return (ElemTemplate)elem;
+	    	}
+    	}
+    }
+  	return null;
   }
 
   /**
@@ -200,73 +186,34 @@ public class StackGuard
    *
    * @throws TransformerException
    */
-  public void checkForInfinateLoop(StackGuard guard) throws TransformerException
+  public void checkForInfinateLoop() throws TransformerException
   {
-
-    int nRules = stack.size();
-    int loopCount = 0;
-
-    for (int i = (nRules - 1); i >= 0; i--)
+    int nTemplates = m_transformer.getCurrentTemplateElementsCount();
+    if(nTemplates < m_recursionLimit)
+    	return;
+    	
+    if(m_recursionLimit <= 0)
+    	return;  // Safety check.
+    	
+    // loop from the top index down to the recursion limit (I don't think 
+    // there's any need to go below that).
+    for (int i = (nTemplates - 1); i >= m_recursionLimit; i--)
     {
-      if (stack.elementAt(i).equals(guard))
-      {
-        loopCount++;
-      }
-
-      if (loopCount >= m_recursionLimit)
-      {
-
-        // Print out really bad diagnostics.
-        StringWriter sw = new StringWriter();
-        PrintWriter pw = new PrintWriter(sw);
-
-        pw.println("Infinite loop diagnosed!  Stack trace:");
-
-        int k;
-
-        for (k = 0; k < nRules; k++)
-        {
-          pw.println("Source Elem #" + k + " ");
-
-          StackGuard guardOnStack = (StackGuard) stack.elementAt(i);
-
-          guardOnStack.print(pw);
-        }
-
-        pw.println("Source Elem #" + k + " ");
-        guard.print(pw);
-        pw.println("End of infinite loop diagnosis.");
-
-        throw new TransformerException(sw.getBuffer().toString());
-      }
+    	ElemTemplate template = getNextMatchOrNamedTemplate(i);
+    	
+    	if(null == template)
+    		break;
+    		
+    	int loopCount = countLikeTemplates(template, i);
+    	
+    	if (loopCount >= m_recursionLimit)
+    	{
+    		throw new TransformerException("Template nesting too deep. nesting = "+loopCount+
+    		   ", template "+((null == template.getName()) ? "name = " : "match = ")+
+    		   ((null != template.getName()) ? template.getName().toString() 
+    		   : template.getMatch().getPatternString()));
+    	}
     }
   }
 
-  /**
-   * Push in a StackGuard object mathing given template 
-   *
-   *
-   * @param xslTemplate Current template being processed
-   * @param sourceXML Current Source Node 
-   *
-   * @throws TransformerException
-   */
-  public void push(ElemTemplateElement xslTemplate, int sourceXML)
-          throws TransformerException
-  {
-
-    StackGuard guard = new StackGuard(xslTemplate, sourceXML);
-
-    checkForInfinateLoop(guard);
-    stack.push(guard);
-  }
-
-  /**
-   * Pop out Stack of StackGuard objects 
-   *
-   */
-  public void pop()
-  {
-    stack.pop();
-  }
 }
