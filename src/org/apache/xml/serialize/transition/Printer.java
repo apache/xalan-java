@@ -326,7 +326,7 @@ public class Printer
                 _writer.write( _buffer );
                 _pos = 0;
             }
-            else if((0x0A == ch) || ('\n' == ch))
+            if((0x0A == ch) || ('\n' == ch))
             {
               breakLine();
             }
