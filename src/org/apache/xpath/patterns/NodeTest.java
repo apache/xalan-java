@@ -180,6 +180,7 @@ public class NodeTest extends Expression
     switch(nodeBit)
     {
     case NodeFilter.SHOW_DOCUMENT:
+      return SCORE_OTHER;
     case NodeFilter.SHOW_COMMENT:
       return m_score;
       
