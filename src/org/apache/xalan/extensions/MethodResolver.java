@@ -2,6 +2,7 @@ package org.apache.xalan.extensions;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -11,6 +12,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 import org.w3c.xslt.ExpressionContext;
+import org.xml.sax.SAXException;
 
 /**
  * Utility class to help resolve method overloading with Xalan XSLT 
@@ -18,6 +20,30 @@ import org.w3c.xslt.ExpressionContext;
  */
 public class MethodResolver
 {
+
+  /**
+   * Specifies a search for static methods only.
+   */
+  public static final int STATIC_ONLY         = 1;
+
+  /**
+   * Specifies a search for instance methods only.
+   */
+  public static final int INSTANCE_ONLY       = 2;
+
+  /**
+   * Specifies a search for both static and instance methods.
+   */
+  public static final int STATIC_AND_INSTANCE = 3;
+
+  /**
+   * Specifies a Dynamic method search.  If the method being
+   * evaluated is a static method, all arguments are used.
+   * Otherwise, it is an instance method and only arguments
+   * beginning with the second argument are used.
+   */
+  public static final int DYNAMIC             = 4;
+
   /**
    * Given a class, figure out the resolution of 
    * the Java Constructor from the XSLT argument types, and perform the 
@@ -36,13 +62,14 @@ public class MethodResolver
                                            ExpressionContext exprContext)
     throws NoSuchMethodException,
            SecurityException,
-           org.xml.sax.SAXException
+           SAXException
   {
     Constructor bestConstructor = null;
     Class[] bestParamTypes = null;
     Constructor[] constructors = classObj.getConstructors();
     int nMethods = constructors.length;
     int bestScore = Integer.MAX_VALUE;
+    int bestScoreCount = 0;
     for(int i = 0; i < nMethods; i++)
     {
       Constructor ctor = constructors[i];
@@ -66,7 +93,7 @@ public class MethodResolver
           // System.out.println("Incrementing paramStart: "+paramStart);
         }
         else
-          scoreStart = 100;
+          continue;
       }
       else
           scoreStart = 100;
@@ -76,7 +103,7 @@ public class MethodResolver
         // then we have our candidate.
         int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
         // System.out.println("score: "+score);
-        if(-1 == score)
+        if(-1 == score)	
           continue;
         if(score < bestScore)
         {
@@ -84,12 +111,20 @@ public class MethodResolver
           bestConstructor = ctor;
           bestParamTypes = paramTypes;
           bestScore = score;
+          bestScoreCount = 1;
         }
+        else if (score == bestScore)
+          bestScoreCount++;
       }
     }
 
     if(null == bestConstructor)
       throw new NoSuchMethodException(classObj.getName()); // Should give more info...
+    /*** This is commented out until we can do a better object -> object scoring 
+    else if (bestScoreCount > 1)
+      throw new SAXException("More than one best match for constructor for "
+                                                                   + classObj.getName());
+    ***/
     else
       convertParams(argsIn, argsOut, bestParamTypes, exprContext);
     
@@ -110,13 +145,15 @@ public class MethodResolver
    * @exception SAXException may be thrown for Xalan conversion
    * exceptions.
    */
-  public static Method getMethod(Class classObj, String name, 
+  public static Method getMethod(Class classObj,
+                                 String name, 
                                  Object[] argsIn, 
                                  Object[][] argsOut,
-                                 ExpressionContext exprContext)
+                                 ExpressionContext exprContext,
+                                 int searchMethod)
     throws NoSuchMethodException,
            SecurityException,
-           org.xml.sax.SAXException
+           SAXException
   {
     // System.out.println("---> Looking for method: "+name);
     // System.out.println("---> classObj: "+classObj);
@@ -125,42 +162,69 @@ public class MethodResolver
     Method[] methods = classObj.getMethods();
     int nMethods = methods.length;
     int bestScore = Integer.MAX_VALUE;
+    int bestScoreCount = 0;
+    boolean isStatic;
     for(int i = 0; i < nMethods; i++)
     {
       Method method = methods[i];
       // System.out.println("looking at method: "+method);
+      int xsltParamStart = 0;
       if(method.getName().equals(name))
       {
+        isStatic = Modifier.isStatic(method.getModifiers());
+        switch(searchMethod)
+        {
+          case STATIC_ONLY:
+            if (!isStatic)
+            {
+              continue;
+            }
+            break;
+
+          case INSTANCE_ONLY:
+            if (isStatic)
+            {
+              continue;
+            }
+            break;
+
+          case STATIC_AND_INSTANCE:
+            break;
+
+          case DYNAMIC:
+            if (!isStatic)
+              xsltParamStart = 1;
+        }
+        int javaParamStart = 0;
         Class[] paramTypes = method.getParameterTypes();
         int numberMethodParams = paramTypes.length;
-        int paramStart = 0;
         boolean isFirstExpressionContext = false;
         int scoreStart;
         // System.out.println("numberMethodParams: "+numberMethodParams);
         // System.out.println("argsIn.length: "+argsIn.length);
         // System.out.println("exprContext: "+exprContext);
         int argsLen = (null != argsIn) ? argsIn.length : 0;
-        if(numberMethodParams == (argsLen+1))
+        if(numberMethodParams == (argsLen-xsltParamStart+1))
         {
           Class javaClass = paramTypes[0];
           if(org.w3c.xslt.ExpressionContext.class.isAssignableFrom(javaClass))
           {
             isFirstExpressionContext = true;
             scoreStart = 0;
-            paramStart++;
+            javaParamStart++;
           }
           else
           {
-            scoreStart = 100;
+            continue;
           }
         }
         else
             scoreStart = 100;
         
-        if(argsLen == (numberMethodParams - paramStart))
+        if((argsLen - xsltParamStart) == (numberMethodParams - javaParamStart))
         {
           // then we have our candidate.
-          int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
+          int score = scoreMatch(paramTypes, javaParamStart, argsIn, scoreStart);
           // System.out.println("score: "+score);
           if(-1 == score)
             continue;
@@ -170,19 +234,97 @@ public class MethodResolver
             bestMethod = method;
             bestParamTypes = paramTypes;
             bestScore = score;
+            bestScoreCount = 1;
           }
+          else if (score == bestScore)
+            bestScoreCount++;
         }
       }
     }
     
-    if(null == bestMethod)
+    if (null == bestMethod)
       throw new NoSuchMethodException(name); // Should give more info...
+    /*** This is commented out until we can do a better object -> object scoring 
+    else if (bestScoreCount > 1)
+      throw new SAXException("More than one best match for method " + name);
+    ***/
     else
       convertParams(argsIn, argsOut, bestParamTypes, exprContext);
     
     return bestMethod;
   }
+
   
+  /**
+   * Given the name of a method, figure out the resolution of 
+   * the Java Method
+   * @param classObj The Class of the object that should have the method.
+   * @param name The name of the method to be invoked.
+   * @return A method that will work to be called as an element.
+   * @exception SAXException may be thrown for Xalan conversion
+   * exceptions.
+   */
+  public static Method getElementMethod(Class classObj,
+                                        String name)
+    throws NoSuchMethodException,
+           SecurityException,
+           SAXException
+  {
+    // System.out.println("---> Looking for element method: "+name);
+    // System.out.println("---> classObj: "+classObj);
+    Method bestMethod = null;
+    Method[] methods = classObj.getMethods();
+    int nMethods = methods.length;
+    int bestScore = Integer.MAX_VALUE;
+    int bestScoreCount = 0;
+    for(int i = 0; i < nMethods; i++)
+    {
+      Method method = methods[i];
+      // System.out.println("looking at method: "+method);
+      if(method.getName().equals(name))
+      {
+        Class[] paramTypes = method.getParameterTypes();
+        if ( (paramTypes.length == 2)
+           && org.w3c.dom.Element.class.isAssignableFrom(paramTypes[1]) )
+        {
+          int score = -1;
+          if (paramTypes[0].isAssignableFrom(
+                                      org.apache.xalan.extensions.XSLProcessorContext.class))
+          {
+            score = 10;
+          }
+          /*******
+          else if (paramTypes[0].isAssignableFrom(
+                                      org.apace.xalan.xslt.XSLProcessorContext.class))
+          {
+            score = 5;
+          }
+          ********/
+          else 
+            continue;
+
+          if (score < bestScore)
+          {
+            // System.out.println("Assigning best method: "+method);
+            bestMethod = method;
+            bestScore = score;
+            bestScoreCount = 1;
+          }
+          else if (score == bestScore)
+            bestScoreCount++;
+        }
+      }
+    }
+    
+    if (null == bestMethod)
+      throw new NoSuchMethodException(name); // Should give more info...
+    else if (bestScoreCount > 1)
+      throw new SAXException("More than one best match for element method " + name);
+    
+    return bestMethod;
+  }
+  
+
   /**
    * Convert a set of parameters based on a set of paramTypes.
    * @param argsIn An array of XSLT/XPath arguments.
@@ -199,25 +341,29 @@ public class MethodResolver
     throws org.xml.sax.SAXException
   {
     // System.out.println("In convertParams");
-    int nMethods = (null != argsIn) ? argsIn.length : 0;
-    int paramIndex = 0;
-    if((paramTypes.length > 0) 
-       && org.w3c.xslt.ExpressionContext.class.isAssignableFrom(paramTypes[0]))
-    {
-      argsOut[0] = new Object[nMethods+1];
-      argsOut[0][0] = exprContext;
-      // System.out.println("Incrementing paramIndex in convertParams: "+paramIndex);
-      paramIndex++;
-    }
+    if (paramTypes == null)
+      argsOut[0] = null;
     else
     {
-      argsOut[0] = (nMethods > 0) ? new Object[nMethods] : null;
-    }
+      int nParams = paramTypes.length;
+      argsOut[0] = new Object[nParams];
+      int paramIndex = 0;
+      if((nParams > 0) 
+         && org.w3c.xslt.ExpressionContext.class.isAssignableFrom(paramTypes[0]))
+      {
+        argsOut[0][0] = exprContext;
+        // System.out.println("Incrementing paramIndex in convertParams: "+paramIndex);
+        paramIndex++;
+      }
 
-    for(int i = 0; i < nMethods; i++, paramIndex++)
-    {
-      // System.out.println("paramTypes[i]: "+paramTypes[i]);
-      argsOut[0][paramIndex] = convert(argsIn[i], paramTypes[paramIndex]);
+      if (argsIn != null)
+      {
+        for(int i = argsIn.length - nParams + paramIndex ; paramIndex < nParams; i++, paramIndex++)
+        {
+          // System.out.println("paramTypes[i]: "+paramTypes[i]);
+          argsOut[0][paramIndex] = convert(argsIn[i], paramTypes[paramIndex]);
+        }
+      }
     }
   }
   
@@ -363,7 +509,7 @@ public class MethodResolver
    * If any invocations of this function for a method with 
    * the same name return the same positive value, then a conflict 
    * has occured, and an error should be signaled.
-   * @param javeParamTypes Must be filled with valid class names, and 
+   * @param javaParamTypes Must be filled with valid class names, and 
    * of the same length as xsltArgs.
    * @param xsltArgs Must be filled with valid object instances, and 
    * of the same length as javeParamTypes.
@@ -371,19 +517,21 @@ public class MethodResolver
    * that is closer to zero for more preferred, or further from 
    * zero for less preferred.
    */
-  public static int scoreMatch(Class[] javeParamTypes, int paramTypesStart,
+  public static int scoreMatch(Class[] javaParamTypes, int javaParamsStart,
                                Object[] xsltArgs, int score)
   {
-    int nParams = (null != xsltArgs) ? xsltArgs.length : 0;
-    for(int i = 0, paramTypesIndex = paramTypesStart; 
+    if ((xsltArgs == null) || (javaParamTypes == null))
+      return score;
+    int nParams = xsltArgs.length;
+    for(int i = nParams - javaParamTypes.length + javaParamsStart, javaParamTypesIndex = javaParamsStart; 
         i < nParams; 
-        i++, paramTypesIndex++)
+        i++, javaParamTypesIndex++)
     {
       Object xsltObj = xsltArgs[i];
       int xsltClassType = (xsltObj instanceof XObject) 
                           ? ((XObject)xsltObj).getType() 
                             : XObject.CLASS_UNKNOWN;
-      Class javaClass = javeParamTypes[paramTypesIndex];
+      Class javaClass = javaParamTypes[javaParamTypesIndex];
       
       // System.out.println("Checking xslt: "+xsltObj.getClass().getName()+
       //                   " against java: "+javaClass.getName());
