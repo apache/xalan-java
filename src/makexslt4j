@@ -179,6 +179,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)TraceManager.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)trace$(PATHSEP)TracerEvent.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)Counter.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)ClonerToResultTree.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)CountersTable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)DecimalToRoman.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)KeyIterator.java \
