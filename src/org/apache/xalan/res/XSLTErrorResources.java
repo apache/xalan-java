@@ -86,7 +86,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 107;          
+  public static final int MAX_CODE = 108;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 26;
@@ -1074,6 +1074,16 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[ER_REFERENCING_ITSELF][1] =
       "Variable {0} is directly or indirectly referencing itself!";
   }
+  
+  /** Illegal DOMSource input          */
+  public static final int ER_ILLEGAL_DOMSOURCE_INPUT = 108;
+
+  static
+  {
+    contents[ER_ILLEGAL_DOMSOURCE_INPUT][1] =
+      "The input node can not be null for a DOMSource for newTemplates!";
+  }
+  
 
   // Warnings...
 

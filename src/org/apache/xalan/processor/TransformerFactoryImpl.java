@@ -73,6 +73,8 @@ import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TrAXFilter;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -670,7 +672,13 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       DOMSource dsource = (DOMSource) source;
       Node node = dsource.getNode();
 
-      return processFromNode(node, baseID);
+      if (null != node)
+        return processFromNode(node, baseID);
+      else
+      {
+        String messageStr = XSLMessages.createMessage(XSLTErrorResources.ER_ILLEGAL_DOMSOURCE_INPUT, null);
+        throw new IllegalArgumentException(messageStr);
+      }        
     }
 
     try
