@@ -418,7 +418,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * Warn the user of an problem.
    *
    * @param xctxt The XPath runtime context.
-   * @param msg An error number that corresponds to one of the numbers found
+   * @param msg An error msgkey that corresponds to one of the conststants found
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which
@@ -429,7 +429,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void warn(XPathContext xctxt, int msg, Object[] args)
+  public void warn(XPathContext xctxt, String msg, Object[] args)
           throws javax.xml.transform.TransformerException
   {
 
@@ -473,7 +473,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    * exception.
    *
    * @param xctxt The XPath runtime context.
-   * @param msg An error number that corresponds to one of the numbers found
+   * @param msg An error msgkey that corresponds to one of the constants found
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which
@@ -484,7 +484,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void error(XPathContext xctxt, int msg, Object[] args)
+  public void error(XPathContext xctxt, String msg, Object[] args)
           throws javax.xml.transform.TransformerException
   {
 

@@ -493,7 +493,7 @@ public class XPath implements Serializable, ExpressionOwner
    *
    * @param xctxt The XPath runtime context.
    * @param sourceNode Not used.
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -503,7 +503,7 @@ public class XPath implements Serializable, ExpressionOwner
    *                              throw an exception.
    */
   public void warn(
-          XPathContext xctxt, int sourceNode, int msg, Object[] args)
+          XPathContext xctxt, int sourceNode, String msg, Object[] args)
             throws javax.xml.transform.TransformerException
   {
 
@@ -546,7 +546,7 @@ public class XPath implements Serializable, ExpressionOwner
    *
    * @param xctxt The XPath runtime context.
    * @param sourceNode Not used.
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -556,7 +556,7 @@ public class XPath implements Serializable, ExpressionOwner
    *                              throw an exception.
    */
   public void error(
-          XPathContext xctxt, int sourceNode, int msg, Object[] args)
+          XPathContext xctxt, int sourceNode, String msg, Object[] args)
             throws javax.xml.transform.TransformerException
   {
 
