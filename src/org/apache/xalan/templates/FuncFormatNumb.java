@@ -155,7 +155,7 @@ public class FuncFormatNumb extends Function3Args
         }
         else
         {
-          dfs = new java.text.DecimalFormatSymbols();
+          dfs = new java.text.DecimalFormatSymbols(java.util.Locale.US);
 
           dfs.setInfinity(Constants.ATTRVAL_INFINITY);
           dfs.setNaN(Constants.ATTRVAL_NAN);
