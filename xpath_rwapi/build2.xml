@@ -159,6 +159,14 @@ Copyright:
     </java>
   </target>
   
+  <target name="exportsrc" depends="jar"
+    description="Create exportable files for inclusion in other projects (experimental!)">
+    <zip zipfile="${build.dir}/xpath-src.zip" >
+      <zipfileset dir="${src.dir}">
+      </zipfileset>
+    </zip>
+  </target>
+
   <!-- ==== Documentation targets ==== -->
   
   <target name="apidocs" depends="jar" description="[6]Build API documentation">
