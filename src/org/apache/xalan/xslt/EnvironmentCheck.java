@@ -1290,7 +1290,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0 from xml-commons RIVERCOURT1 branch");
     jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0, lotusxsl-j_2_3_2 or lotusxsl-j_2_3_3 from xml-commons RIVERCOURT1");
     jarVersions.put(new Long(113749), "xml-apis.jar from xalan-j_2_4_1, lotusxsl-j_2_3_4 or lotusxsl-j_2_3_5 from factoryfinder-build of xml-commons RIVERCOURT1");
-    jarVersions.put(new Long(124704), "xml-apis.jar from xalan-j_2_5_D1 from from tck-jaxp-1_2_0 branch of xml-commons");    
+    jarVersions.put(new Long(124704), "xml-apis.jar from xalan-j_2_5_0 from from tck-jaxp-1_2_0 branch of xml-commons");    
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
@@ -1316,7 +1316,8 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1728861), "xercesImpl.jar from xalan-j_2_4_D1 from xerces-2_0_1");    
     jarVersions.put(new Long(972027), "xercesImpl.jar from xalan-j_2_4_0 from xerces-2_1");
     jarVersions.put(new Long(831587), "xercesImpl.jar from xalan-j_2_4_1 from xerces-2_2"); 
-    jarVersions.put(new Long(891817), "xercesImpl.jar from xalan-j_2_5_D1 from xerces-2_3");           
+    jarVersions.put(new Long(891817), "xercesImpl.jar from xalan-j_2_5_D1 from xerces-2_3");  
+    jarVersions.put(new Long(895924), "xercesImpl.jar from xalan-j_2_5_0 from xerces-2_4");                    
     jarVersions.put(new Long(1729063), "xercesImpl.jar from lotusxsl-j_2_3_1 from XML4J-4_0_0");
     jarVersions.put(new Long(1738551), "xercesImpl.jar from lotusxsl-j_2_3_2 from XML4J-4_0_2");
     jarVersions.put(new Long(3243826), "xercesImpl.jar from lotusxsl-j_2_3_3 from XML4J-4_0_5");
@@ -1324,6 +1325,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1174955), "xercesImpl.jar from lotusxsl-j_2_3_5 from XML4J-4_0_8");
     jarVersions.put(new Long(1173922), "xercesImpl.jar from lotusxsl-j_2_3_6 from XML4J-4_0_9");
     jarVersions.put(new Long(831828), "xercesImpl.jar from lotusxsl-j_2_4_0 from XML4J-4_1_1");
+  
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
