@@ -56,7 +56,9 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  -->
-<s1 title="&xslt4j2; Samples">
+<s1 title="&xslt4j; Samples">
+
+<p>&xslt4ji; samples:</p>
 <ul>
 <li><link anchor="simpletransform">SimpleTransform</link></li>
 <li><link anchor="usestylesheetpi">UseStylesheetPI</link></li>
@@ -68,28 +70,51 @@
 <li><link anchor="applyxpath">ApplyXPath</link></li>
 <li><link anchor="applyxpathdom">ApplyXPathDOM</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
-<li><link anchor="servlet">servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
 <li><link anchor="trace">Trace</link></li>
 <li><link anchor="validate">Validate</link></li>
-<li><link anchor="trax">trax</link></li>&xsltcsampleshead;
-</ul>  
-	  <s2 title="Samples to help you get started">
-    <p>Each of the subdirectories in the &xslt4j; java/samples directory contains the source files for one or more
-     sample applications. The class files for the samples are in xalansamples.jar (everything except the servlet) and xalanservlet.jar, so to run the samples, you should place these JAR files on the system classpath.</p>
-     <p>With most of the samples, you can use the following procedure:</p>
-     <ol>
-     <li>Be sure xalan.jar, xml-apis.jar, xalansamples.jar, and &xml4j-jar; are on the system class
-      path. For the extension examples, bsf.jar and (for the JavaScript extensions) js.jar must also be on the class
-      path.</li>
-     <li>Be sure the java executable is on your path.</li>
-     <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
-     <li>Run the sample from the command line (as indicated below).</li>
-    <li>Examine the application source files. You may also want to modify the source files. Remember that if you
-     modify a java file, you must recompile the class and place it on the classpath before you can run the
-     modified application.</li>
-     </ol>      
-    <p>The basic command line for running most of the samples is </p> 
+<li><link anchor="trax">trax</link></li>
+</ul>
+<p>&xslt4ji; servlet samples:</p>
+<ul>
+<li><link anchor="servlet">servlet</link></li>
+</ul>
+<p>&xslt4jc-long; samples:</p>
+<ul>
+&xsltcsampleshead;
+</ul>
+<s2 title="Samples to help you get started">
+<p>Each of the subdirectories in the &xslt4j; java/samples directory
+   contains the source files for one or more sample applications.  The class
+   files for the samples are in the following jar files:</p>
+<table>
+<tr>
+  <th>JAR file</th>
+  <th>Content</th>
+</tr>
+<tr>
+  <td>xalansamples.jar</td>
+  <td>Everything except the &xslt4ji; servlet sample and some
+      &xslt4jc-short; samples</td>
+</tr>
+<tr>
+  <td>xalanservlet.jar</td>
+  <td>&xslt4ji; servlet sample</td>
+</tr>
+</table>
+<p>With most of the samples, you can use the following procedure:</p>
+ <ol>
+   <li>Be sure xalan.jar, xml-apis.jar, the appropriate samples JAR file, and &xml4j-jar; are on the system class
+       path. For the extension examples, bsf.jar and (for the JavaScript extensions) js.jar must also be on the class
+       path.</li>
+   <li>Be sure the java executable is on your path.</li>
+   <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
+   <li>Run the sample from the command line (as indicated below).</li>
+   <li>Examine the application source files. You may also want to modify the source files. Remember that if you
+       modify a java file, you must recompile the class and place it on the classpath before you can run the
+       modified application.</li>
+ </ol>      
+<p>The basic command line for running most of the samples is </p> 
     <p><code>java <ref>classname args</ref></code></p>
     <p>where <ref>classname</ref> is the sample class and <ref>args</ref> are the arguments, if any. As described in
      the following sections, some samples take no arguments. The UseStylesheetParam sample takes an
@@ -165,16 +190,6 @@
     <p>and</p>
     <p><code>java ApplyXPath foo.xml /doc/name/@first</code></p>
     <p>For more information, see <link idref="usagepatterns" anchor="xpath">Working with XPath expressions</link>.</p>
-    </s2><anchor name="appletxmltohtml"/>
-    <s2 title="AppletXMLtoHTML">
-    <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
-     stylesheet, and the HTML output.</p>
-    <p>How to run it: Open appletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
-    <note>For information about running &xslt4j; applets in Netscape Communicator, see <link idref="usagepatterns" anchor="netscape">Problems
-    with Netscape</link>.<br/><br/>
-    This applet looks for xalan.jar, xml-apis.jar, and xercesImpl.jar (Xerces-J2) or xerces.jar (Xerces-J 1) in the bin 
-    subdirectory. If you have placed these JAR files
-    elsewhere, adjust the applet archive setting in client.html accordingly.</note>
     </s2><anchor name="applyxpathdom"/>
     <s2 title="ApplyXPathDOM">
     <p>What it does: ApplyXPathDOM is very similar to the <link anchor="applyxpath">ApplyXPath</link> sample, but it uses the API 
@@ -214,7 +229,7 @@
     Copy the xalanservlet.war to %Tomcat_Home%/webapps. For more detail about deploying
     servlet on Tomcat, please refer to <jump href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/appdev/deployment.html">Deployment Organization</jump>.</p>
     <note>Dependency on Tomcat version. If encountering "java.lang.VerifyError: Cannot inherit from final class" error, 
-    replace XercesImpl.jar under %Tomcat_Home%/common/endorsed with the one included with &xslt4j; .</note>
+    replace xercesImpl.jar under %Tomcat_Home%/common/endorsed with the one included with &xslt4j; .</note>
     <p><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link> applies a particular stylesheet to a particular 
     XML document.</p> 
     <p><link anchor="usestylesheetparamservlet">servlet.UseStylesheetParamServlet</link> sets a stylesheet parameter 
@@ -318,8 +333,10 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
      </s2><anchor name="extensions"/>
     <s2 title="Extensions">
     <p>For an introduction to the creation and use of extension elements and extension functions, and
-    for information about the extensions library distributed with &xslt4j;, see
-    <link idref="extensions">Extensions</link>.</p>
+    for information about the extensions library distributed with the &xslt4j; Interpretive processor, 
+    see <link idref="extensions">Extensions</link>. Extensions are also supported for the &xslt4j; 
+    Compiling processor (XSLTC), however no samples exist at this time.  See 
+    <link idref="extensions_xsltc">Extensions for XSLTC</link>.</p>
     <ul>
       <li><link anchor="ext1">1-redir</link></li>
       <li><link anchor="ext2">2-basicJscript</link></li>
@@ -328,7 +345,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <li><link anchor="ext5">5-numlistJScript</link></li>
       <li><link anchor="sql">SQL library extensions</link></li>
     </ul>
-    <p>The extensions subdirectory contains six samples with &xslt4j; extensions. Two of the samples use
+    <p>The extensions subdirectory contains six samples with &xslt4j; Interpretive extensions. Two of the samples use
      extensions implemented in JavaScript, and four of the samples use extensions implemented in Java.</p>
      <p>To run these examples, you must place bsf.jar (distributed with &xslt4j;), and js.jar
       (version 1.5, available from 

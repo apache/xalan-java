@@ -65,18 +65,72 @@
   <li><link anchor="status0">Status</link></li>
   <li><link anchor="build">Build distributions and notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
-  <li><link idref="xsltc_usage" anchor="constraints">XSLTC usage constraints</link></li>
   <li><link idref="history">History of software changes</link></li>
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.4.0</link></li>
+    <li><link anchor="done">Changes since version 2.4.1</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
+     <s3 title="Changes since &xslt4j; 2.4.1">
+     <p>This developer's release, Xalan-Java 2.5.D1, is primarily for the purpose of releasing 
+        various bug fixes to the community.  These will eventually be released officially in 
+        a future Xalan-Java 2.5 version, along with some new function.</p>
+     <p>Fixes in this release include the following: </p>
+     <ul>
+     <li><jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=4858">4858</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=5140">5140</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6075">6075</jump>,        
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=6157">6157</jump>,   
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10053">10053</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=10626">10626</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12481">12481</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13414">13414</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13651">13651</jump>,          
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13774">13774</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13775">13775</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13977">13977</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14112">14112</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14148">14148</jump>,               
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14157">14157</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14178">14178</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14229">14229</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14236">14236</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14237">14237</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14241">14241</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14244">14244</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14300">14300</jump>,          
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14322">14322</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14324">14324</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14365">14365</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14368">14368</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14406">14406</jump>,     
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14578">14578</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14753">14753</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14856">14856</jump>,               
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14862">14862</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14965">14965</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15074">15074</jump>,               
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15094">15094</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15218">15218</jump>,          
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15254">15254</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15373">15373</jump>,          
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15586">15586</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=16745">16745</jump>,          
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=17030">17030</jump>,
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=17136">17136</jump></li>
+     <li>Support for and bundling of Xerces Java 2.3.</li>     
+     <li>Support for and bundling of xml-apis.jar from the tck-jaxp-1_2_0 branch of xml-commons.
+         This version of the Java APIs for XML Processing successfully passes the JAXP 1.1 and 
+         JAXP 1.2 TCKs.</li>     
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+     <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.</li>         
+     </ul>     
+     </s3>     
      <s3 title="Changes since &xslt4j; 2.4.0">
      <ul>
       <li>Performance fixes and enhancements to address the degradation of performance between Xalan-Java
@@ -148,7 +202,7 @@
      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13754">13754</jump>,
      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13863">13863</jump>,          
      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=13944">13944</jump>,
-     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14022">14022</jump></li>. 
+     <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=14022">14022</jump></li> 
      <li>Support for and bundling of Xerces Java 2.2.</li>
      <li>Support for and bundling of xml-apis.jar from the factoryfinder-build of the RIVERCOURT1 branch of xml-commons.  This version of the Java
      APIs for XML Processing successfully passes the JAXP 1.1 and JAXP 1.2 TCKs.</li>
@@ -291,7 +345,7 @@
      <s3 title="Version of Xerces to use"> 
        <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; and xml-apis.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
        <p><em>Important</em> You may experience unpredictable anomalies if your &xslt4j; and &xml4j; builds are not in synch. If you download an update to &xslt4j;, check the release notes to determine which version of &xml4j; you should use.</p>
-       <note>You can use &xslt4j; with other XML parsers that implement the <resource-ref idref="jaxp"/>. See 
+       <note>You can use &xslt4j; with other XML parsers that implement the <resource-ref idref="jaxp12"/>. See 
        <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
      </s3>
   </s2>
@@ -299,7 +353,7 @@
   <s2 title="Build Notes">
   <p>We provide two distributions: a binary distribution, and a source distribution. See <link idref="getstarted" anchor="download">Downloading
   what you need</link>. If you have downloaded the binary distribution, you already have a build. If you downloaded the source
-  distribution, you can use Ant to build &xslt4j;, including xalan.jar, xalansamples.jar, xalanservlet.jar, the
+  distribution, you can use Ant to build &xslt4j;, including xalan.jar, xalansamples.jar, xalanservlet.war, the
   user documentation, and the Javadoc API documentation. You need the source distribution to do builds. Keep in mind that if you have also
   downloaded the binary distribution, any builds you run will overwrite that binary distribution.</p>
 <ul>
@@ -318,16 +372,16 @@
      <p><em>Instructions for using Ant</em></p>
      <ol>
        <li>Set the JAVA_HOME environment variable to the JDK root directory.<br/><br/>
-       If you are using JDK 1.1.8, you must also put classes.zip in the JDK bin directory on the classpath. You can use Ant 
-       with JDK 1.1.8 to compile and jar the &xslt4j; source files, but you must have JDK 1.2.2 or higher to build the
-       documentation.<br/><br/></li>
-       <li>Depending on your environment, run the batch file (build.bat) or shell file (build.sh) from the &xslt4j; root
-       directory, optionally with arguments (see the table of targets below).<br/><br/>
-       The batch/shell file adds several JAR files to the classpath and launches Ant with any arguments you provide. If you
-       provide no target, Ant compiles the source files and rebuilds xalan.jar (the "jar" target).</li>
+       JDK 1.2.2 or higher is required to build &xslt4j;. You must put tools.jar from the JDK
+       bin directory on the classpath.<br/><br/></li>
+       <li>Depending on your environment, run the batch file (build.bat) or shell file (build.sh) 
+       from the &xslt4j; root directory, optionally with arguments (see the table of targets below).<br/><br/>
+       The batch/shell file adds several JAR files to the classpath and launches Ant with any arguments 
+       you provide. If you provide no target, Ant compiles the source files and rebuilds xalan.jar 
+       (the "jar" target).</li>
      </ol>
-     <p>You can also set up your classpath manually (see build.bat or build.sh for the details), and then run Ant as
-     follows:<br/><br/>
+     <p>You can also set up your classpath manually (see build.bat or build.sh for the details), and 
+     then run Ant as follows:<br/><br/>
      <code>java org.apache.tools.ant.Main <ref>target</ref></code><br/><br/>
      where <ref>target</ref> is nothing (for the default target) or one of the following.</p>
      <table>
@@ -335,7 +389,7 @@
        <tr><td>compile</td><td>compiles &xslt4j; in build/classes.</td></tr>
        <tr><td>jar (the default)</td><td>creates xalan.jar in the build directory</td></tr>
        <tr><td>samples</td><td>compiles and jars the sample apps in build/xalansamples.jar</td></tr>
-       <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.war</td></tr>       
+       <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.jar</td></tr>
        <tr><td>docs</td><td>creates the HTML User's Guide in build/docs</td></tr>
        <tr><td>javadocs</td><td>generates the API documentation in ./build/docs/apidocs</td></tr>
        <tr><td>dist</td><td>generates a complete distribution tree with zip and tar.gz distribution files in build</td></tr>
@@ -349,7 +403,7 @@
      Ant</link>.</p>
      <p>If you want to do the build without Ant, keep the following in mind:</p>
      <ul>
-     <li>Set the classpath to include the src directory, &xml4j-jar;, bsf.jar, and bsfengines.jar.</li>
+     <li>Set the classpath to include the src directory, &xml4j-jar;, and bsf.jar.</li>
      <li>Use a Java compiler (such as the IBM Just-In-Time compiler or the Sun javac) to compile all the .java files in the src
      tree. </li>
      <li>Use the Sun jar utility to store the resulting .class files in xalan.jar</li>
@@ -357,9 +411,10 @@
    </s3><anchor name="samples"/>
    <s3 title="Rebuilding a sample application">
    <p>If you modify a sample and want to recompile it, you can run the Java compiler in the directory containing the
-   example. Be sure xalan.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. To recompile (and run!) the class files in the
-   Servlet subdirectory, the javax.servlet and javax.servlet.http packages must also be on the classpath. Sun
-   distributes these packages in the JSWDK 1.0.1 servlet.jar file.</p> 
+   example. Be sure xalan.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. </p>
+   <p>To recompile and run the class files in the servlet subdirectory, the javax.servlet and 
+   javax.servlet.http packages must also be on the classpath. Sun distributes these packages in 
+   the JSWDK 1.0.1 servlet.jar file.</p>
    <p>After recompiling a sample, you can use the Sun jar utility to place your new .class files in
     xalansamples.jar.</p>
     <p>You can use Ant with the samples target to recompile the samples and place the unpackaged class files in xalansamples.jar.
@@ -369,7 +424,7 @@
    </s3><anchor name="doc"/>
    <s3 title="Rebuilding the &xslt4j; documentation">
      <p>&xslt4j; includes a number of XML source files, XSL stylesheets, document type definition (DTD)
-      files, entity relationship (ENT) files, graphics, and a JavaScript file that provide the input for the Xalan
+      files, entity relationship (ENT) files, graphics, and a JavaScript file that provide the input for the &xslt4j;
       HTML User's Guide, and the overview and package-level documents used during the generation of Javadoc.</p>
       <p>To rebuild the documentation, you must use the StyleBook tool and the JDK 1.2.2 java and javadoc
       tools. StyleBook (which uses Xalan and Xerces) is in stylebook-1.0-b2.jar. Some of the document definition files,
@@ -437,8 +492,10 @@ javadoc -doclet xalanjdoc.Standard
   </s3>    
  </s2><anchor name="contact"/>
  <s2 title="Getting in Touch">
-  <p>Your feedback is more than welcome. Offers of help are even more so! Perhaps you would like to take on an active role in the ongoing development, testing, and documentation of &xslt4j;?</p> 
-<p>Please email your comments, questions, suggestions, and offers to join the Xalan team to <human-resource-ref idref="xalandev"/>.</p>
+  <p>Your feedback is more than welcome. Offers of help are even more so! Perhaps you would like to 
+  take on an active role in the ongoing development, testing, and documentation of &xslt4j;?</p> 
+<p>Please email your comments, questions, suggestions, and offers to join the Xalan team 
+to <human-resource-ref idref="xalandev"/>.</p>
  </s2><anchor name="developer-list"/>
  <s2 title="Developers">
 <p>A list of some of people currently working on working on &xslt4j;:</p>

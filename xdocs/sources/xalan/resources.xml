@@ -4,13 +4,11 @@
   %externalEntity;
   <!ELEMENT resources (resource|human-resource)+>
   <!ELEMENT resource EMPTY>
-  <!ATTLIST resource 		
-        id CDATA #IMPLIED
+  <!ATTLIST resource 		id CDATA #IMPLIED
 				title CDATA #IMPLIED
 				location CDATA #IMPLIED>
   <!ELEMENT human-resource EMPTY>
-  <!ATTLIST human-resource 	
-        id CDATA #IMPLIED
+  <!ATTLIST human-resource 	id CDATA #IMPLIED
 				name CDATA #IMPLIED
 				mailto CDATA #IMPLIED>
    ]>  
@@ -60,22 +58,26 @@
             location="http://xml.apache.org/dist/LICENSE.txt"/>
   <resource id="bugzilla"
             title="Bugzilla (the Apache bug database)"
-            location="http://nagoya.apache.org/bugzilla"/>
+            location="http://nagoya.apache.org/bugzilla/"/>
   <resource id="buglist"
             title="XalanJ2 open bugs"         
-            location="http://nagoya.apache.org/bugzilla/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=&amp;emailtype1=substring&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=substring&amp;emailreporter2=1&amp;bugidtype=include&amp;bug_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;product=XalanJ2&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;bug_file_loc=&amp;bug_file_loc_type=substring&amp;keywords=&amp;keywords_type=anywords&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=%27Importance%27"/>                   
+            location="http://nagoya.apache.org/bugzilla/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=&amp;emailtype1=substring&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=substring&amp;emailreporter2=1&amp;bugidtype=include&amp;bug_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;product=XalanJ2&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;bug_file_loc=&amp;bug_file_loc_type=substring&amp;keywords=&amp;keywords_type=anywords&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=%27Importance%27"/>
   <resource id="bsf"
             title="Bean Scripting Framework (BSF)"
-            location="http://oss.software.ibm.com/developerworks/projects/bsf"/>     
-	
+            location="http://oss.software.ibm.com/developerworks/projects/bsf"/>
+
   <resource id="Readme" 
             title="Xalan Repository Release Notes" 
             location="http://www.apache.org/websrc/cvsweb.cgi/xml-xalan/README"/>
-            
-  <resource id="mulberryxsl-list" title="Mulberry XSL Mailing List" location="http://mulberrytech.com/xsl/xsl-list/index.html"/>
 
-  <resource id="dpawsonxslfaq" title="XSL Frequently Asked Questions" location="http://www.dpawson.co.uk/xsl/xslfaq.html"/>
-  
+  <resource id="mulberryxsl-list" 
+            title="Mulberry XSL Mailing List" 
+            location="http://mulberrytech.com/xsl/xsl-list/index.html"/>
+
+  <resource id="dpawsonxslfaq" 
+            title="XSL Frequently Asked Questions" 
+            location="http://www.dpawson.co.uk/xsl/xslfaq.html"/>
+
   <resource id="xsl" 
             title="Extensible Stylesheet Language (XSL) Version 1.0"
             location="http://www.w3.org/TR/xsl"/>
@@ -83,11 +85,11 @@
   <resource id="xslt" 
             title="XSL Transformations (XSLT) Version 1.0"
             location="http://www.w3.org/TR/xslt"/>
-  
+
   <resource id="xpath" 
             title="XML Path Language (XPath) Version 1.0" 
             location="http://www.w3.org/TR/xpath"/>            
-            
+
   <resource id="dom" 
             title="DOM" 
             location="http://www.w3.org/DOM"/>
@@ -100,29 +102,32 @@
             location="http://www.megginson.com/SAX/sax.html"/>
   <resource id="sax2" 
             title="SAX 2" 
-            location="http://www.megginson.com/SAX/Java/index.html"/>
+            location="http://sax.sourceforge.net"/>
   <resource id="jaxp" 
             title="Java API for XML Parsing 1.0" 
             location="http://java.sun.com/xml/docs/api/index.html"/>
   <resource id="jaxp11" 
             title="Java API for XML Processing 1.1" 
             location="http://java.sun.com/xml/jaxp/dist/1.1/jaxp-1_1-spec.pdf"/>
+  <resource id="jaxp12" 
+            title="Java API for XML Processing 1.2" 
+            location="http://java.sun.com/xml/jaxp/index.html"/>            
   <resource id="jsr063"
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
-            
+
   <resource id="xmlapirepository"
             title="xml-commons/java/external/src"
             location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>
-            
+
   <resource id="endorsed"
             title="Endorsed Standards Override Mechanism"
             location="http://java.sun.com/j2se/1.4/docs/guide/standards/"/>
-           
+
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
                   mailto="xalan-dev@xml.apache.org"/>
-                  
+
   <human-resource id="sboag"
                   name="Scott Boag"
                   mailto="scott_boag@us.ibm.com"/>
@@ -162,5 +167,5 @@
   <human-resource id="zongaro"
                   name="Henry Zongaro"
                   mailto="zongaro@ca.ibm.com"/>
-                  
+
 </resources>

@@ -213,7 +213,7 @@ development need to stay with a different version of these projects.</p>
 features or major functionality changes are properly documented.</p>
 <p>Update the commits list and the 'what was done' list in xdocs/sources/xalan/readme.xml 
 and whatsnew.xml.  Note that currently some of the status information for the 
-xsltc portion of &xslt4j; is stored separately in xsltc_history.xml and XSLTCDONE
+&xslt4jc-short; portion of &xslt4j; is stored separately in xsltc_history.xml and XSLTCDONE
 </p>
 <p>Check in all your work!</p>
 

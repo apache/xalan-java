@@ -64,9 +64,10 @@
 </ul>
 <anchor name="factoryfeature"/>
 <s2 title="Standard TransformerFactory features">
-<p>The JAXP 1.1 Transformation API for XML (<link idref="trax">TrAX</link>) defines objects and methods for processing input and producing 
+<p>The JAXP 1.2 Transformation API for XML (<link idref="trax">TrAX</link>) defines objects and 
+methods for processing input and producing 
 output in a variety of formats, including character streams, SAX event streams, and DOM Documents.</p>
-<p>JAXP 1.1 defines the following features:</p>
+<p>JAXP 1.2 defines the following features:</p>
 <ul>
 <li><link anchor="streamsource">StreamSource feature</link></li>
 <li><link anchor="streamresult">StreamResult feature</link></li>
@@ -241,7 +242,9 @@ if (tFact instanceof TransformerFactoryImpl) {
   tFact.setAttribute(TransformerFactoryImpl.FEATURE_INCREMENTAL, 
                      Boolean.FALSE);
 }</source>
-</s3><anchor name="source_location"/>
+<note>The incremental feature is not currently supported by XSLTC.</note>
+</s3>
+<anchor name="source_location"/>
 <s3 title="source_location attribute">
 <p><em>URI:</em> "http://apache.org/xalan/features/source_location"</p>
 <p>Provide a <jump href="apidocs/javax/xml/transform/SourceLocator.html">SourceLocator</jump> that can be used during a transformation

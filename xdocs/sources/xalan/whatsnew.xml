@@ -58,18 +58,37 @@
  -->
 <s1 title="What's new in &xslt4j2;">
 <ul>
-     <li><link anchor="design">New design</link></li>
-     <li><link anchor="dtm">Document Table Model (DTM)</link></li>
-  </ul><anchor name="design"/>
-  <s2 title="New Design">
-  <p>&xslt4j2; represents a fundamental redesign of &xslt4j;. The primary objective of this redesign is an easier-to-use, more understandable, and more modular API that encourages wider participation in its ongoing development by the open-source XML developer community, and that lends itself to "streaming," the production of transformation output while the input is still being parsed.</p>
-<p>&xslt4j2; builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the <resource-ref idref="jaxp"/>. For example, &xslt4j2; incorporates the SAX parsing event model in its support for the incremental production of transformation output. &xslt4j2; also implements the  standard TrAX API (see below) that enables you to code your XML applications without reference to the internal details of a particular Transformer or XML parser.</p>
-<p>Given the scope of the redesign, the changes with respect to &xslt4j; 1 (no longer available) are global in nature. For an introduction to the &xslt4j2; usage patterns, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
-<p>&xslt4j2; implements the <link idref="trax">TRaX (Transformation API for XML)</link> interfaces. The product of extensive open-source collaboration by members of the XML developer community, TrAX provides a conceptual framework and a standard API for performing XML transformations. During its evolution, the TrAX API has undergone several revisions. We believe this API has now reached or is very close to final form. In November 2000, TrAX was incorporated into <resource-ref idref="jsr063"/>, the Java API for XML Processing 1.1 , which has been published for public review (see <resource-ref idref="jaxp11"/>). We strongly encourage you to utilize the TrAX framework when you use &xslt4j2; to perform XML transformations.</p>
-<p>The basic organization of TrAX is quite simple: use a TransformerFactory to process transformation instructions and generate a Transformer, with which you can apply the processed transformation instructions to your XML Source, producing a transformation Result. For more detail, see <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
-<p>As part of the Java API for XML Processing, TraX provides a stable framework for plugging Transformers (like &xslt4j;) and XML parsers (like &xml4j;) into your applications without tying yourself to the internal details of those implementations. See <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
-</s2><anchor name="dtm"/>
-<s2 title="&xslt4j; DTM">
-<p>In place of the DOM object tree of nodes, the Document Table Model (DTM) uses integer arrays and string pools to represent the structure and content of the XML document to be transformed. The motivation behind this model is to optimize performance and minimize storage. For more information, see <link idref="dtm">DTM</link>.</p>
+  <li><link anchor="design">New design</link></li>
+</ul>
+
+<anchor name="design"/>
+<s2 title="New Design">
+<p>&xslt4j2; represents a fundamental redesign of &xslt4j;. The primary objective of this redesign is 
+   an easier-to-use, more understandable, and more modular API that encourages wider participation in 
+   its ongoing development by the open-source XML developer community, and that lends itself to 
+   "streaming," the production of transformation output while the input is still being parsed.</p>
+<p>&xslt4j2; builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the 
+   <resource-ref idref="jaxp12"/>. For example, &xslt4j2; incorporates the SAX parsing event model in 
+   its support for the incremental production of transformation output. &xslt4j2; also implements the
+   standard TrAX API (see below) that enables you to code your XML applications without reference to 
+   the internal details of a particular Transformer or XML parser.</p>
+<p>Given the scope of the redesign, the changes with respect to &xslt4j; 1 (no longer available) are 
+   global in nature. For an introduction to the &xslt4j2; usage patterns, see 
+   <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
+<p>&xslt4j2; implements the <link idref="trax">TRaX (Transformation API for XML)</link> interfaces. The 
+   product of extensive open-source collaboration by members of the XML developer community, TrAX provides 
+   a conceptual framework and a standard API for performing XML transformations. In November 2000, TrAX 
+   was incorporated into <resource-ref idref="jsr063"/>, the Java API for 
+   XML Processing 1.2 (see <resource-ref idref="jaxp12"/>). 
+   We strongly encourage you to utilize the TrAX framework when you use &xslt4j2; to perform XML 
+   transformations.</p>
+<p>The basic organization of TrAX is quite simple: use a TransformerFactory to process transformation 
+   instructions and generate a Transformer, with which you can apply the processed transformation 
+   instructions to your XML Source, producing a transformation Result. For more detail, see 
+   <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
+<p>As part of the Java API for XML Processing, TraX provides a stable framework for plugging 
+   Transformers (like &xslt4j;) and XML parsers (like &xml4j;) into your applications without tying 
+   yourself to the internal details of those implementations. See 
+   <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
 </s2>
 </s1>

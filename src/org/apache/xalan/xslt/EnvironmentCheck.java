@@ -1264,6 +1264,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(906248), "xalan.jar from xalan-j_2_3_1");
     jarVersions.put(new Long(983377), "xalan.jar from xalan-j_2_4_D1");    
     jarVersions.put(new Long(997276), "xalan.jar from xalan-j_2_4_0");
+    jarVersions.put(new Long(1031036), "xalan.jar from xalan-j_2_4_1");    
     
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
@@ -1280,6 +1281,8 @@ public class EnvironmentCheck
     jarVersions.put(new Long(589915), "xsltc.jar from xalan-j_2_3_1");
     jarVersions.put(new Long(1306667), "xsltc.jar from xalan-j_2_4_D1");     
     jarVersions.put(new Long(1328227), "xsltc.jar from xalan-j_2_4_0");
+    jarVersions.put(new Long(1344009), "xsltc.jar from xalan-j_2_4_1");
+    jarVersions.put(new Long(1348312), "xsltc.jar from xalan-j_2_5_D1");    
     jarVersions.put(new Long(1268634), "xsltc.jar-bundled from xalan-j_2_3_0");
 
     jarVersions.put(new Long(100196), "xml-apis.jar from xalan-j_2_2_0 or xalan-j_2_3_D1");
@@ -1287,6 +1290,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0 from xml-commons RIVERCOURT1 branch");
     jarVersions.put(new Long(109049), "xml-apis.jar from xalan-j_2_4_0, lotusxsl-j_2_3_2 or lotusxsl-j_2_3_3 from xml-commons RIVERCOURT1");
     jarVersions.put(new Long(113749), "xml-apis.jar from xalan-j_2_4_1, lotusxsl-j_2_3_4 or lotusxsl-j_2_3_5 from factoryfinder-build of xml-commons RIVERCOURT1");
+    jarVersions.put(new Long(124704), "xml-apis.jar from xalan-j_2_5_D1 from from tck-jaxp-1_2_0 branch of xml-commons");    
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
     jarVersions.put(new Long(424490), "xalan.jar from Xerces Tools releases - ERROR:DO NOT USE!");
@@ -1319,6 +1323,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(1174955), "xercesImpl.jar from lotusxsl-j_2_3_5 from XML4J-4_0_8");
     jarVersions.put(new Long(1173922), "xercesImpl.jar from lotusxsl-j_2_3_6 from XML4J-4_0_9");
     jarVersions.put(new Long(831828), "xercesImpl.jar from lotusxsl-j_2_4_0 from XML4J-4_1_1");
+    jarVersions.put(new Long(891817), "xercesImpl.jar from lotusxsl-j_2_4_0 from xerces-2_3");    
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");
@@ -1327,7 +1332,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(21453), "xalanservlet.jar from xalan-j_2_0_1");
     jarVersions.put(new Long(24826), "xalanservlet.jar from xalan-j_2_3_1 or xalan-j_2_4_1 or lotusxsl-j_2_3_1 to lotusxsl-j-2_3_5");    
     jarVersions.put(new Long(24831), "xalanservlet.jar from xalan-j_2_4_1");
-
+    
     // For those who've downloaded JAXP from sun
     jarVersions.put(new Long(5618), "jaxp.jar from jaxp1.0.1");
     jarVersions.put(new Long(136133), "parser.jar from jaxp1.0.1");

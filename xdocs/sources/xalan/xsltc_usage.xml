@@ -56,34 +56,38 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  -->
-<s1 title="Using XSLTC">
+<s1 title="Getting Started with &xslt4jc-short;">
 
 <ul>
 <li><link anchor="intro">Introduction</link></li>
-  <li><link anchor="classpath">Setting the system classpath for XSLTC</link></li>
+  <li><link anchor="classpath">Setting the system classpath for &xslt4jc-short;</link></li>
   <li><link anchor="compile">Compiling translets from the command line</link></li>
   <li><link anchor="run">Running translets from the command line</link></li>
-  <li><link anchor="api">Calling XSLTC with the TrAX/JAXP API</link></li>
+  <li><link anchor="api">Calling &xslt4jc-short; with the TrAX/JAXP API</link></li>
   <li><link anchor="xsltcsmart">Smart Transformer Switch</link></li>
-  <li><link anchor="native_api">Calling XSLTC with the native API</link></li>
+  <li><link anchor="native_api">Calling &xslt4jc-short; with the native API</link></li>
   <li><link anchor="constraints">Usage constraints</link></li>
   <li><link idref="samples" anchor="translets">Sample translets</link></li>
-  <li><link idref="extensions_xsltc">Extensions for XSLTC</link></li>  
+  <li><link idref="extensions_xsltc">Extensions for &xslt4jc-short;</link></li>  
 </ul>
-<p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
+<p>See also: <jump href="xsltc/index.html">&xslt4jc-short; Design</jump></p>
+<note>Unless otherwise specified, the usage discussed in this section refers to 
+the &xslt4j; Compiling processor, XSLTC. See <link idref="usagepatterns">Basic Usage 
+Patterns</link> for information on using the &xslt4j; Interpretive processor.</note><br></br>
 <anchor name="intro"/>
 <s2 title="Introduction">
-<p>XSLTC provides a compiler and a runtime processor. 
-Use the compiler to compile an XSL stylesheet into a translet (i.e. a set of Java 
-classes). Use the runtime processor to apply the translet to an XML document and 
-perform a transformation.</p>
-<note>To compile and run translets you must have a JDK or a JRE 1.2 or higher.</note>
+<p>The &xslt4jc-long; processor provides a compiler and a runtime processor. 
+Use the compiler to compile an XSL stylesheet into a translet (i.e., a set of
+Java classes). Use the runtime processor to apply the translet to an XML
+document and perform a transformation.</p>
+<note>To compile and run translets, you must have a JDK or a JRE 1.2 or
+higher.</note>
 </s2><anchor name="classpath"/>
-<s2 title="Setting the system classpath for XSLTC">
+<s2 title="Setting the system classpath for &xslt4jc-short;">
 
 <p>
-The jar file structure of the XSLTC component has changed. In the original
-structure the xsltc.jar file contained only XSLTC classes, and the
+The jar file structure of the &xslt4jc-short; component has changed. In the original
+structure the xsltc.jar file contained only &xslt4jc-short; classes, and the
 other support jar files needed to be in the user's class path.
  If you want to use this model refer to the subsection below 
 'Unbundled System Classpath'.  In the newer model, all of the support 
@@ -100,15 +104,21 @@ To use this newer approach, simply put xsltc.jar in your classpath.
 No need to mention the others (BCEL.jar, JLex.jar, regexp.jar, java_cup.jar,
 runtime.jar). 
 </p>
-<note>In order to compile and run translets you must have a JAXP-compliant XML parser 
-installed. Our distribution 
-includes<jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
+<note>In order to compile and run translets you must have a JAXP 1.2 compliant XML
+parser installed. Our distribution includes 
+<jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
 (just include xercesImpl.jar and xml-apis.jar in your class path).
 </note>
 </s3>
 
 <s3 title="Unbundled System Classpath">
-<p>To compile translets, run translets, and use the XSLTC API, put the following on the system classpath:</p>
+<p>The binary distribution contains a bundled xsltc.jar which contains all
+of the support classes in a single jar.  To use the unbundled approach, rebuild 
+the xsltc.jar file using the xsltc.unbundledjar target. The support jars that 
+you'll need to add to your classpath are available in the Xalan Java bin 
+directory.</p>
+<p>To compile translets, run translets, and use the &xslt4jc-short; API, using
+the unbundled jar approach, put the following on the system classpath:</p>
 <table>
 <tr>
   <th>Classes or JAR</th>
@@ -152,8 +162,8 @@ includes<jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
 </tr>
 </table>
 <p>The JAR files listed above are installed in the &xslt4j; bin directory. 
-The translet is the set of class files or the JAR file that you generate with the 
-compiler; see <link anchor="compile">Compiling translets</link>.</p>
+The translet is the set of class files or the JAR file that you generate with
+the compiler; see <link anchor="compile">Compiling translets</link>.</p>
 </s3>
 <anchor name="compile"/>
 <s2 title="Compiling translets from the command line">
@@ -162,15 +172,18 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
       <li><link anchor="comp-args">Flags and arguments</link></li>
       <li><link anchor="comp-examples">Examples</link></li>
     </ul>
-	<p>The XSLT Compiler is a Java-based tool for compiling XSLT
-	stylesheets into lightweight and portable Java byte codes 
-	called translets.</p>  
+    <p>The XSLT Compiler is a Java-based tool for compiling XSLT
+    stylesheets into lightweight and portable Java byte codes 
+    called translets.</p>  
 
     <p>To run the compiler from the command line or from a script, 
     <link anchor="classpath">set the classpath</link> and 
-    run the class org.apache.xalan.xsltc.cmdline.Compile. The synopsis
-    of the options and arguments accepted by this class is shown below.
+    run the class <code>org.apache.xalan.xsltc.cmdline.Compile</code>. The
+    synopsis of the options and arguments accepted by this class is shown below.
     </p>
+    <note>You can also use the
+    <jump href="commandline.html">&xslt4j; command-line utility</jump>, to
+          compile or run XSLTC translets.</note>
     <anchor name="comp-synopsis"/>
 <s3 title="Synopsis">
 <p>
@@ -181,16 +194,16 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
 
 </s3><anchor name="comp-args"/>
 <s3 title="Flags and arguments">
-	<p>The following flags and arguments are supported:</p>
+    <p>The following flags and arguments are supported:</p>
 
 <source>-o &lt;output&gt;
    Specifies the name of the generated translet class.
    If you omit this argument, the translet class is
-   named &lt;stylesheet&gt;. Translets are written as 
+   named &lt;stylesheet&gt;.  Translets are written as 
    .class files.
 
 -d &lt;directory&gt;
-   Specifies the destination directory. If you omit
+   Specifies the destination directory.  If you omit
    this argument, the translet class files are placed
    in the current working directory.
 
@@ -216,7 +229,7 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
    &lt;stylesheet&gt;
    (No flag) The pathname of the stylesheet file.
 
--i Force input to be read from stdin
+-i Force stylesheet to be read from stdin
 
 -v Prints version of compiler
 
@@ -224,36 +237,40 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
 
 </s3><anchor name="comp-examples"/>
 <s3 title="Examples">
-	<p>The following examples assume that you have already set the classpath to include the translet and the required JAR
+    <p>The following examples assume that you have already set the
+           classpath to include the translet and the required JAR
     files (see <link anchor="classpath">setting the system classpath</link>).</p>
 
-	<p><em>Example 1:</em>  Creating a translet from the hamlet.xsl stylesheet.</p>
-	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
+    <p><em>Example 1:</em>  Creating a translet from the hamlet.xsl
+       stylesheet.</p>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet.xsl</code></p>    
-    <p>Example 1 produces a set of class files such as hamlet.class, hamlet$0.class, hamlet$1.class.</p>	
+    <p>Example 1 produces a set of class files such as hamlet.class, hamlet$0.class, hamlet$1.class.</p>
 
-	<p><em>Example 2:</em>  Outputting to a JAR file.</p>
+    <p><em>Example 2:</em>  Outputting to a JAR file.</p>
     <p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; -j hamlet.jar hamlet.xsl</code></p>
-    <p>Example 2 produces hamlet.jar, which contains the translet class files.</p>	
+    <p>Example 2 produces hamlet.jar, which contains the translet class
+       files.</p>
 
-	<p><em>Example 3:</em> Specifying the translet class name. </p> 
-	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
+    <p><em>Example 3:</em> Specifying the translet class name. </p> 
+    <p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; -o newhamlet hamlet.xsl</code></p>
-    <p>Example 3 producs a set of class files such as newhamlet.class, newhamlet$0.class, etc., rather than hamlet.class,
-    hamles$0.class, etc.</p>
+    <p>Example 3 produces a set of class files such as newhamlet.class,
+       newhamlet$0.class, etc., rather than hamlet.class, hamlet$0.class,
+       etc.</p>
 
 
-	<p><em>Example 4:</em> Compiling multiple stylesheets.</p>
-	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
+    <p><em>Example 4:</em> Compiling multiple stylesheets.</p>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet1.xsl hamlet2.xsl hamlet3.xsl</code></p>
     <p>Example 4 produces three translets and set of class files derived from the three stylesheets.</p>
 
-	<p><em>Example 5:</em> Package Specification.</p>
-	<p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
+    <p><em>Example 5:</em> Package Specification.</p>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
     <code>&nbsp;&nbsp;&nbsp;&nbsp; -p com.mycompany.translets hamlet.xsl</code></p>
     <p>Example 5 produces a set of class files such as com/mycompany/translets/hamlet.class,
-	com/mycompany/translets/hamlet$0.class', etc.</p>
+    com/mycompany/translets/hamlet$0.class', etc.</p>
 </s3>
 </s2><anchor name="run"/>
 <s2 title="Running translets from the command line">
@@ -263,17 +280,23 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
       <li><link anchor="run-examples">Examples</link></li>
     </ul>
 
-    <p>The XSLT runtime processor is a Java-based tool for 
-	transforming XML document files using a translet (compiled 
-	stylesheet). </p>
+    <p>The XSLTC runtime processor is a Java-based tool for 
+    transforming XML document files using a translet (compiled 
+    stylesheet). </p>
 
-	<p>The XSLT processor can be run on any platform including UNIX,
-	Windows, NT, Mac that supports Java, including a Palm Pilot
-	with J2ME CLDC (Java 2 Micro Edition, Connected Limited Device
-	Configuration).</p>
-    
-    <p>To run a  translet from the command line or a script, <link anchor="classpath">set the classpath</link> (be sure to include
-     the translet) and run the translet with the appropriate flags and arguments (described below).</p>
+    <p>The XSLTC processor can be run on any platform including UNIX,
+    Windows, NT, Mac that supports Java, including a Palm Pilot
+    with J2ME CLDC (Java 2 Micro Edition, Connected Limited Device
+    Configuration).</p>
+
+    <p>To run a translet from the command line or a script,
+     <link anchor="classpath">set the classpath</link> (be sure to include
+     the translet) and run the translet with the appropriate flags and arguments
+     (described below).</p>
+
+    <note>You can also use the
+    <jump href="commandline.html">&xslt4j; Command-line Utility</jump>, to
+          compile or run XSLTC translets.</note>
 <anchor name="run-synopsis"/>
 <s3 title="Synopsis">
 <p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
@@ -283,7 +306,7 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
 </s3><anchor name="run-args"/>
 <s3 title="Flags and arguments">
 
-	<p>The following flags and arguments are supported:</p>
+    <p>The following flags and arguments are supported:</p>
 
 <source>
 
@@ -294,14 +317,14 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
 -s Disables calling System.exit
 
 -u Specifies the XML input &lt;document&gt; with a URI,
-   such as 'http://myserver/hamlet.xml'.		
+   such as 'http://myserver/hamlet.xml'.
 
-Arguments wirhout flags:
+Arguments without flags:
 
-   &lt;document&gt;     		
+   &lt;document&gt;
    Filename of the XML input document. 
    
-   &lt;document_url&gt;     	
+   &lt;document_url&gt;
    URI of the XML input document (see the -u flag above). 
 
    &lt;class&gt;
@@ -312,7 +335,7 @@ Arguments wirhout flags:
 </s3><anchor name="run-examples"/>
 <s3 title="Examples">
 
-	<p>The following examples assume that you have already set the classpath to include the translet and the required JAR
+    <p>The following examples assume that you have already set the classpath to include the translet and the required JAR
     files (see <link anchor="classpath">setting the system classpath</link>).</p>
     <p>A possible variation: You have set the classpath to include the required JAR files, but when you run the translet,
     you use the java -cp flag to add the current working directory (containing the translet class files you have just generated)
@@ -322,49 +345,155 @@ Arguments wirhout flags:
     
     <p><em>Example 1:</em> Processing an XML document.</p>
 
-	<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp;  hamlet.xml hamlet</code></p> 
 
-	<p>Example 1 uses the specified translet (hamlet) to transform the specified XML input document (hamlet.xml). 
+    <p>Example 1 uses the specified translet (hamlet) to transform the specified XML input document (hamlet.xml). 
     The XML input document is in the current working directory. The translet was created by using
     org.apache.xalan.xslt.cmdline.Compile to compile an XSL stylesheet (hamlet.xsl). </p>
 
-	<p><em>Example 2:</em> Passing stylesheet parameters to the translet.</p>
+    <p><em>Example 2:</em> Passing stylesheet parameters to the translet.</p>
 
-	<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp; hamlet.xml hamlet</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp; speaker=HAMLET 'scene=SCENE IV'</code></p>
 
-	<p>Example 2 passes "HAMLET" to the stylesheet for the stylesheet parameter named speaker, and "SCENE IV" for the
+    <p>Example 2 passes "HAMLET" to the stylesheet for the stylesheet parameter named speaker, and "SCENE IV" for the
     stylesheet parameter named scene. The second name-value pair was placed in single quotes to 
     specify a value containing a space.</p>
     
     <p><em>Example 3:</em> Processing an XML input document specified with a URI.</p>
 
-	<p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
+    <p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
        <code>&nbsp;&nbsp;&nbsp;&nbsp;  -u http://zarya.east/test.xml hamlet</code></p>
 
-	<p>Example 3 applies the translet (hamlet) to the XML input document (http://zarya.east/test.xml hamlet). Inclusion of
+    <p>Example 3 applies the translet (hamlet) to the XML input document (http://zarya.east/test.xml hamlet). Inclusion of
     the flag (-u) is optional.</p>
 </s3>
 </s2><anchor name="api"/>
 <s2 title="Calling XSLTC with the TrAX/JAXP API">
-<p>XSLTC translets are integrated with the TrAX/JAXP 1.1 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
+<ul>
+<li><link anchor="api-attributes">XSLTC TransformerFactory attributes</link></li>
+<li><link anchor="api-examples">Examples</link></li>
+</ul>
+<p>XSLTC translets are integrated with the TrAX/JAXP 1.2 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
 
+<p>When you use the JAXP 1.2 API to run &xslt4j;, the
+<code>javax.xml.transform.TransformerFactory</code> system property is set to
+<code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently
+stands, this &xslt4j; implementation of TransformerFactory always uses the &xslt4j;
+Interpretive processor to perform transformations.  To use translets to perform
+transformations, set this system property to
+<code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code>. For
+information on setting this and related system properties designating XML
+parsers and XSL transformers, see
+<link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML
+parser</link>.</p>
 
-<p>When you use the JAXP 1.1 API to run &xslt4j;, the <code>javax.xml.transform.TransformerFactory</code> system property is set to <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently stands, this Xalan implementation of TransformerFactory always uses the Xalan Transformer to perform transformations. To use translets to perform transformations, set this system property to <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code>. For information on setting this and related system properties designating XML parsere and XSL transformer, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
-<p>To Use the JAXP 1.1 API to perform transformations with translets do the following:</p>
+<p>To use the JAXP 1.2 API to perform transformations with translets do the
+   following:</p>
 <ol>
-  <li>Set the <code>javax.xml.transform.TransformerFactory</code> system property as indicated above.<br/><br/></li>
-  <li>Instantiate a TransformerFactory.<br/><br/></li>
-  <li>Assuming you want to perform a series of transformations with the same translet, use the TransformerFactory and a
-   StreamSource XSL stylesheet to generate a Templates object (the translet). If you are performing a single
-   transformation, use the TransformerFactory and the StreamSource object to instantiate a Transformer.<br/><br/></li>
-  <li>Perform the transformation, using a StreamSource object for the XML input and a StreamResult object to hold the
-   transformation output.</li>
+  <li>Set the <code>javax.xml.transform.TransformerFactory</code> system
+      property as indicated above.<br/><br/></li>
+  <li>Instantiate a <code>TransformerFactory</code>.<br/><br/></li>
+  <li>Instantiate a <code>Transformer</code> object either directly from
+      the <code>TransformerFactory</code> or through a <code>Templates</code>
+      object.  A <code>Transformer</code> is a processed instance of a
+      stylesheet (a translet) that can be used to perform a
+      transformation.  See below for more information on when you should use
+      a <code>Templates</code> object.<br/><br/></li>
+  <li>Perform the transformation, using a StreamSource object for the XML
+      input and a StreamResult object to hold the transformation output.</li>
 </ol>
+<p>Both a <code>Templates</code> object and a <code>Tranformer</code> object are
+   processed representations of a stylesheet, but you cannot use a
+   <code>Templates</code> object to perform transformations.  Instead,
+   you can use a <code>Templates</code> object to create new
+   <code>Transformer</code> instances, without having to reprocess the
+   stylesheet each time.  You can use a <code>TransformerFactory</code> to
+   generate a <code>Templates</code> object or a <code>Transformer</code>
+   object directly.  You can use a <code>Transformer</code> more than once,
+   but you cannot use it concurrently on more than one thread.  If you need
+   to use the same stylesheet to perform transformations on more than one
+   thread at the same time, use a <code>Templates</code> object and create
+   as many <code>Transformer</code> objects as you require.</p>
+
+<p>XSLTC also defines a set of attributes that you can set on the
+<code>TransformerFactory</code> in order to save and subsequently use those
+translets by way of the JAXP Transform API - without having to recompile the
+stylesheet each time.</p><anchor name="api-attributes"/>
+<s3 title="&xslt4jc-short; TransformerFactory attributes">
+The JAXP Transform API defines a <code><jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute</jump>
+</code> method that you can use to set implementation-defined attributes.
+<table>
+<tr>
+  <th>Attribute</th><th>Purpose</th>
+  <th>Type of value</th><th>Default value</th>
+</tr>
+<tr>
+  <td>translet-name</td>
+  <td>Specifies the name of the translet</td>
+  <td>String</td>
+  <td>"GregorSamsa"</td>
+</tr>
+<tr>
+  <td>destination-directory</td>
+  <td>Specifies where to save translet class files</td>
+  <td>String</td>
+  <td>null</td>
+</tr>
+<tr>
+  <td>package-name</td>
+  <td>Specifies which package translet class files will be in</td>
+  <td>String</td>
+  <td>null</td>
+</tr>
+<tr>
+  <td>jar-name</td>
+  <td>Specifies the name of a jar file in which translets should be saved</td>
+  <td>String</td>
+  <td>null</td>
+</tr>
+<tr>
+  <td>generate-translet</td>
+  <td>Specifies whether translet class files should be generated</td>
+  <td>Boolean</td>
+  <td>Boolean.FALSE</td>
+</tr>
+<tr>
+  <td>auto-translet</td>
+  <td>Specifies that time-stamp of translet file, if any, should be compared with that of stylesheet to decide whether to recompile the stylesheet</td>
+  <td>Boolean</td>
+  <td>Boolean.FALSE</td>
+</tr>
+<tr>
+  <td>use-classpath</td>
+  <td>Specifies that precompiled translet classes should be looked up from the classpath when a new transformer or templates is created</td>
+  <td>Boolean</td>
+  <td>Boolean.FALSE</td>
+</tr>
+<tr>
+  <td>enable-inlining</td>
+  <td>Specifies whether methods that represent templates should be inlined.  See <link anchor="constraints">Usage constraints</link></td>
+  <td>Boolean</td>
+  <td>Boolean.FALSE</td>
+</tr>
+<tr>
+  <td>debug</td>
+  <td>Enables debugging messages</td>
+  <td>Boolean</td>
+  <td>Boolean.FALSE</td>
+</tr>
+</table>
+<p>The <code>translet-name</code>, <code>destination-directory</code>,
+<code>package-name</code> and <code>jar-name</code> attributes are transient.
+They only apply to the next invocation of either the <code>newTemplates</code>
+or the <code>newTransformer</code> method on that
+<code>TransformerFactory</code>.</p>
+</s3><anchor name="api-examples"/>
 <s3 title="Examples">
-<p><em>Example 1:</em> Using a translet/Templates object for multiple transformations</p>
+<p><em>Example 1:</em> Using a translet/Templates object for multiple
+concurrent transformations</p>
 <source>import java.util.Properties;
 import javax.xml.transform.Transformer;
 import java.io.FileOutputStream;
@@ -382,19 +511,23 @@ props.put(key, value);
 System.setProperties(props);
 ...
 String xslInURI;
-// Instantiate the TransformerFactory, and use it along with a SteamSource
+// Instantiate the TransformerFactory, and use it with a StreamSource
 // XSL stylesheet to create a translet as a Templates object.
 TransformerFactory tFactory = TransformerFactory.newInstance();
 Templates translet = tFactory.newTemplates(new StreamSource(xslInURI));
 ...
 String xmlInURI;
 String htmlOutURI;
+String xmlInURI2;
+String htmlOutURI2;
 ...
-// For each transformation, instantiate a new Transformer, and perform
-// the transformation from a StreamSource to a StreamResult;
+// For each thread, instantiate a new Transformer, and perform the
+// transformations on that thread from a StreamSource to a StreamResult;
 Transformer transformer = translet.newTransformer();
 transformer.transform(new StreamSource(xmlInURI),
-                      new StreamResult(new FileOutputStream(htmlOutURI)));
+                  new StreamResult(new FileOutputStream(htmlOutURI)));
+transformer.transform(new StreamSource(xmlInURI2),
+                  new StreamResult(new FileOutputStream(htmlOutURI2)));
 ...</source>
 <p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc1">JAXPTransletOneTransformation</link>.</p>
 <p><em>Example 2:</em> Compiling a translet/Templates object for a single transformation</p>
@@ -415,293 +548,44 @@ System.setProperties(props);
 ...
 String xslInURI;
 String xmlInURI;
+String xmlInURI2;
 String htmlOutURI;
-// Instantiate the TransformerFactory, and use it along with a SteamSource
+String htmlOutURI2;
+// Instantiate the TransformerFactory, and use it along with a StreamSource
 // XSL stylesheet to create a Transformer.
 TransformerFactory tFactory = TransformerFactory.newInstance();
-Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
+Transformer transformer =
+                 tFactory.newTransformer(new StreamSource(xslInURI));
 // Perform the transformation from a StreamSource to a StreamResult;
 transformer.transform(new StreamSource(xmlInURI),
-                      new StreamResult(new FileOutputStream(htmlOutURI)));</source>
+                  new StreamResult(new FileOutputStream(htmlOutURI)));
+// Re-use the same transformer for a second transformation
+transformer.transform(new StreamSource(xmlInURI2),
+                  new StreamResult(new FileOutputStream(htmlOutURI2)));</source>
 <p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc2">JAXPTransletMultipleTransformations</link>.</p>
 </s3>
 </s2>
 <anchor name="xsltcsmart"/>
 <s2 title="Smart Transformer Switch">
-<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching between Xalan and XSLTC 
-processors within your application. It uses Xalan to create your 
- <code>Transformer</code> objects, and uses XSLTC to create your <code>Templates</code> objects.</p>
+<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching 
+between the Interpretive and the Compiling processors within your application. It uses the Interpretive
+processor to create your <code>Transformer</code> objects, and uses &xslt4jc-short; to create your 
+<code>Templates</code> objects.</p>
 <p>To use the switch, you set the TrAX system property,
-<code>javax.xml.transform.TransformerFactory</code>, to <code>org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl</code>. 
-For one-time transformations or transformations that require extensions supported by Xalan, and not XSLTC,
-you would use Transformer objects. For a repeated transformation where performance is critical, you would 
-use Templates objects.</p> 
+<code>javax.xml.transform.TransformerFactory</code>, to
+<code>org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl</code>. 
+For one-time transformations or transformations that require extensions
+supported by the Interpretive processor, and not XSLTC, you would use the
+<code>SmartTransformerFactoryImpl</code> to create <code>Transformer</code>
+objects. For a repeated transformation where performance is critical, you would
+create a <code>Templates</code> object from which you would create your
+<code>Transformer</code> objects.</p> 
 </s2>
 <anchor name="native_api"/>
-<s2 title="Calling XSLTC with the native API">
-<p>This section demonstrates how to use the native XSLTC API in a standalone Java application.</p> 
-<note>Using XSLTC with the native API is not supported. Applications using the native API may break when the 
-underlying implementation changes in the future.</note>
-<p>Processing an XML document with a translet involves three main steps:</p>
-<ol> 
-  <li><link anchor="native_compile">Compile the stylesheet to a translet</link>.</li>
-  <li><link anchor="native_parse">Parse the input XML document</link>.</li> 
-  <li><link anchor="native_transform">Use the translet to transform the XML document</link>.</li>
-</ol><anchor name="native_overview"/>
-<s3 title="Code overview">
-<p>XsltApp.java illustrates the basic structure for coding a transformation with the native XSLTC API. In the following listing, the method for performing each of the three steps is an empty shell. The methods are filled in the listings in subsequent sections.</p>
-<source>import org.apache.xalan.xsltc.Translet;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-
-public class XsltApp {
-  public static void main(String[] args) {
-    XsltApp proc = new XsltApp();
-    proc.run(args);
-  }
-
-  public void run(String[] args) {
-    if (args.length != 2) {
-      System.err.println("Usage:\n\tprocessor &lt;xmlfile&gt; &lt;xslfile&gt;" +
-            "\n\n\twhere &lt;xmlfile&gt; = xml input filename, and" +
-            "\n\t      &lt;xslfile&gt; = stylesheet filename.");
-      System.exit(1);
-    }
-    String xmldocFilename     = args[0];
-    String stylesheetFilename = args[1];
-
-    // Compile the stylesheet to a translet
-    Translet translet = compileStylesheet(stylesheetFilename);
-
-    // Parse the input XML document
-    DOMImpl dom = getDOM(xmldocFilename);
-
-    // Transform the XML document against the translet
-    doTransform(translet, dom);
-    System.exit(0);
-  }
-  
-  // compile the stylesheet [Empty shell: see below]
-  private Translet compileStylesheet(String stylesheetName) { return null; }
-
-  // parse the input XML document [Empty shell: see below]
-  private DOMImpl getDOM(String xmldocname) { return null; }
-
-  // transform the XML document [Empty shell: see below]
-  private void doTransform(Translet translet, DOMImpl dom) { }
-}</source>
-
-<p>XsltApp takes two command line arguments: the input XML document filename, and the
-XSL stylesheet filename. The public run() method processes the commandline args,
-and then carries out the three steps.</p> 
-<p>The first step is accomplished by calling the compileStylesheet() method. This method
-takes the stylesheet filename as input (String), and returns an instance
-of the translet, as type org.apache.xalan.xsltc.Translet.</p>
-
-<p>The input XML document now needs to be parsed. This is accomplished by the getDOM() method. This method takes the XML document's filename (String)
-and returns the Document Object Model for the document, as an object of
-type org.apache.xalan.xsltc.dom.DOMImpl. </p>
-
-<p>Finally, the transformation prescribed by the stylesheet is carried out by
-calling the doTransform() method. This method takes the translet (compiled
-stylesheet) and the dom (Document Object Model for the XML document) as
-input parameters. In this example, the results of the transformation are
-output to standard output, so this method returns nothing. </p>
-
-<p>If all three steps are carried out successfully, the application exits with
-a successful (zero) value.</p>
-
-<p>The following sections examine each of the three steps in detail.</p>
-</s3><anchor name="native_compile"/>
-<s3 title="1. Compiling the Stylesheet to a Translet">
-<p>The 'compileStylesheet' method:</p>
-
-<source>import java.io.File;
-import java.net.MalformedURLException; 
-import org.apache.xalan.xsltc.compiler.XSLTC;
-...
-  private Translet compileStylesheet(String stylesheetName) {
-    Translet retval = null;
-    String transletName = stylesheetName.substring(0,
-                              stylesheetName.indexOf('.'));
-    try {
-      XSLTC xsltc = new XSLTC();
-      xsltc.init();
-      File stylesheet = new File(stylesheetName);
-      xsltc.compile(stylesheet.toURL());
-      Class clazz = Class.forName(transletName);
-      retval = (Translet)clazz.newInstance();
-    } 
-    catch (MalformedURLException e) {
-      System.err.println("Could not create URL to stylesheet file: " +
-                          stylesheetName + ".\n" + e.getMessage());
-      System.exit(1);
-    } 
-    catch (ClassNotFoundException e) {
-      System.err.println("Could not find class file: " +
-                          transletName + ".class .\n" + e.getMessage());
-      System.exit(1);
-    } 
-    catch (InstantiationException e) {
-      System.err.println("Could not instantiate class file: " +
-                          transletName + ".class .\n" + e.getMessage());
-      System.exit(1);
-    } 
-    catch (IllegalAccessException e) {
-      System.err.println("Could not instantiate class file: " +
-            transletName + ".class, illegal access.\n" + e.getMessage());
-      System.exit(1);
-    }
-    return retval;
-  }</source>
-
-<p>This method reads in the stylesheet file, compiles it to Java bytecodes 
-(the translet), and then writes the bytecodes to the filesystem, as a 
-series of .class files. Their base name is derived from the name of the 
-stylesheet. </p>
-
-<p>The XSLT compiler object (org.apache.xalan.xsltc.compiler.XSLTC), is created,
-initialized and then its compile() method is called passing in a URL
-to the stylesheet itself. Once the .class files have been written,
-the translet is instantiated using Java reflection to create the Class
-and then a new instance of the Class as 'retval' of type 
-org.apache.xalan.xsltc.Translet. </p>
-
-<p>Notice all of the various exceptions that could be thrown in the process
-have been handled with explicit warning messages and a System.exit with a non-zero return value. 
-In your applications, you may want to handle these exceptions differently.</p>
-
-</s3><anchor name="native_parse"/>
-<s3 title="2. Parsing the XML Document">
-
-<p>Parsing the input XML document is handled in the getDOM() method:</p>
-
-<source>import java.io.IOException;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.ParserConfigurationException;
-import org.apache.xalan.xsltc.compiler.Constants;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-...
-  private DTDMonitor _dtdMonitor = null;
-
-  private DOMImpl getDOM(String xmldocname) {
-    final SAXParserFactory factory = SAXParserFactory.newInstance();
-    try {
-      factory.setFeature(Constants.NAMESPACE_FEATURE, true);
-    } 
-    catch (Exception e) {
-      factory.setNamespaceAware(true);
-    }
-    final DOMImpl dom = new DOMImpl();
-    dom.setDocumentURI(xmldocname);
-    XMLReader reader = null;
-    SAXParser parser = null;
-    _dtdMonitor = new DTDMonitor();
-    try {
-      parser = factory.newSAXParser();
-      reader = parser.getXMLReader();
-      reader.setContentHandler(dom.getBuilder());
-      _dtdMonitor.handleDTD(reader);
-      reader.parse(xmldocname);
-    } 
-    catch (ParserConfigurationException e) {
-      System.err.println("SAX Parser is not configured properly.\n"+
-                          e.getMessage());
-      System.exit(1);
-    } 
-    catch (SAXException e ) {
-      System.err.println("SAX Parser could not be created.\n"+
-                          e.getMessage());
-      System.exit(1);
-    } 
-    catch (IOException e ) {
-      System.err.println("XML Reader could not read xml document '"+
-                          xmldocname + "'," + e.getMessage());
-      System.exit(1);
-    }
-    return dom;
-  }</source>
-
-<p>The method parses the input XML document and creates a Document
-Object Model to return to the run() method for later use. To parse the 
-document we use a javax.xml.parsers.SAXParser, from the JAXP.  The JAXP
-model uses a factory method; accordingly we first create the factory,
-which is of type javax.xml.parsers.SAXParserFactory. After configuring 
-the factory to handle namespaces, the procedure gets an org.xml.sax.XMLReader
-from the SAXParser. The reader is registered
-with the class DTDMonitor, and then the reader is instructed to parse
-the XML document. The DOMImpl object is returned to the main() method.</p> 
-
-<note>Before the document is parsed, the DOMImpl is configured with the
-XML document's URI with a call to the setDocumentURI() method. This
-is necessary to define the origin of the document from which the DOM tree
-is built. This information is needed for xsl:import, xsl:include, and
-the document() function.</note>
-</s3><anchor name="native_transform"/>
-<s3 title="3. Doing the Transformation">
-
-<p>Now everything is set to carry out the XSL transformation. The doTransform()
-method takes a reference to the Translet object generated 
-from the stylesheet, and the DOMImpl object created from the XML document.</p>
-
-<source>import java.io.IOException;
-import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
-import org.apache.xalan.xsltc.runtime.TextOutput;
-import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.TransletException;
-...
-  private void doTransform(Translet translet, DOMImpl dom) {
-    DefaultSAXOutputHandler outputhandlr = null;
-    TextOutput textoutput = null;
-    try {
-      outputhandlr= new DefaultSAXOutputHandler(System.out, "utf-8");
-      textoutput = new TextOutput(outputhandlr, "utf-8");
-    } 
-    catch (IOException e) {
-      System.err.println("Could not create SAX Output Handler."+
-                          e.getMessage());
-      System.exit(1);
-    }
-  
-    // for XSL keys
-    AbstractTranslet absTranslet = (AbstractTranslet)translet;
-    absTranslet.setIndexSize(dom.getSize());
-    _dtdMonitor.buildIdIndex(dom, 0, absTranslet);
-
-    try {
-      absTranslet.transform(dom, textoutput);
-    } 
-    catch (TransletException e) {
-      System.err.println("Could not transform XML document."+
-                          e.getMessage());
-      System.exit(1);
-    }
-  }</source>
-
-<p>The Translet's transform() method takes two arguments: the DOMImpl
-reference created in the getDOM() method, and an xsltc.runtime.TextOutput
-object. TextOutput is a ContentHandler wrapper class that implements the
-xsltc.TransletOutputHandler interface. In this example, the content
-handler (DefaultSAXOutputHandler) is wrapped.</p>     
-
-<p>Translet is an interface. AbstractTranslet is a class that implements that
-interface. Before the transform() method is called, setIndexSize(int)
-is called to pass in the maximum DOM size to the translet and the DTDMonitor
-is called to build the node index that the Key (xsl:key implementation)
-class uses. This is a general case, if you are not using keys, then you
-do not need to set the index size, consequently you would not need to
-work with the AbstractTranslet either. In that case, you can  use the
-Translet directly by calling translet.transform(dom, textoutput). </p>
-</s3><anchor name="native_conclusion"/>
-<s3 title="Conclusion">
-<p>The native XSLT compiler API provides a way to compile an XSL stylesheet
-into a translet. The translet can then be used to transform the DOMImpl
-of an input XML document.   This example demonstrated how to compile a
-stylesheet into a translet, parse an input XML document, and then transform
-the XML document using the translet.</p>
-</s3></s2>
+<s2 title="Calling &xslt4jc-short; with the native API">
+<p>The &xslt4jc-short; Native API is no longer supported.  Instead, you should always
+use &xslt4jc-short; with the JAXP Transform API.</p>
+</s2>
 <anchor name="constraints"/>
 <s2 title="Usage constraints">
 <ul>
@@ -712,7 +596,7 @@ the XML document using the translet.</p>
   <li>The default for template inlining has been changed. Previously,
     by default, inlining (putting all the templates into one big method) was on and 
     the <code>&quot;-n&quot;</code> option to the compile command line disabled inlining. 
-    With inlining on, XSLTC can generate methods that are too long (<em>&gt; 64K length</em>) 
+    With inlining on, &xslt4jc-short; can generate methods that are too long (<em>&gt; 64K length</em>) 
     to run, or contain jump offsets that are too large for the JVM to handle. 
     Now the default is not to inline templates. Instead, compilation creates separate 
     methods for each template. Inlining was thought to improve performance, 
@@ -721,11 +605,12 @@ the XML document using the translet.</p>
     to turn on inlining, or with TrAX set the &quot;enable-inlining&quot; attribute to the TransformerFactory. 
     For example, 
       <source>TransformerFactory tfac = new TransformerFactory(); 
-tfac.setAttribute(&quot;enable-inlining&quot;, Boolean.TRUE)</source><br/></li>
+tfac.setAttribute(&quot;enable-inlining&quot;, Boolean.TRUE);</source><br/></li>
   <li>XSLTC tries to determine the order in which global variables are initialized 
     by tracking the dependencies between them. In some cases, the value of a variable 
-    may depend on a template, e.g., if <code>xsl:call-template</code> is used to initialized 
-    a variable whose type is RTF. If this happens, a NPE may be thrown at runtime 
+    may depend on a template, e.g., if <code>xsl:call-template</code> is used to initialized
+    a variable whose type is RTF. If this happens, a
+    <code>NullPointerException</code> may be thrown at run-time 
     when the translet attempts to access a variable that has not been properly 
     initialized. In most cases, this problem can be avoided by reordering the 
     variable declarations.<br/></li>
