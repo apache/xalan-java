@@ -190,6 +190,7 @@ public class XMLErrorResources extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";  
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";  
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";  
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   // Message keys used by the serializer
   public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
@@ -408,6 +409,9 @@ public class XMLErrorResources extends ListResourceBundle
     // that there is a problem with that part of the QNAME.
     { ER_ARG_PREFIX_INVALID,
        "Prefix in QNAME should be a valid NCName"},
+       
+    { ER_NAME_CANT_START_WITH_COLON,
+      "Name cannot start with a colon"},
        
     { "BAD_CODE", "Parameter to createMessage was out of bounds"},
     { "FORMAT_FAILED", "Exception thrown during messageFormat call"},
