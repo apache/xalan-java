@@ -57,6 +57,7 @@
 package org.apache.xalan.processor;
 
 import java.lang.StringBuffer;
+import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 
@@ -96,7 +97,7 @@ public class ProcessorCharacters extends XSLTElementProcessor
     {
       ElemTextLiteral elem = new ElemTextLiteral();
 
-      elem.setDOMBackPointer(handler.getOriginatingNode());
+      elem.setDOMBackPointer(m_firstBackPointer);
       elem.setLocaterInfo(handler.getLocator());
       try
       {
@@ -124,7 +125,10 @@ public class ProcessorCharacters extends XSLTElementProcessor
     }
 
     m_accumulator.setLength(0);
+    m_firstBackPointer = null;
   }
+  
+  protected Node m_firstBackPointer = null;
 
   /**
    * Receive notification of character data inside an element.
@@ -145,6 +149,9 @@ public class ProcessorCharacters extends XSLTElementProcessor
   {
 
     m_accumulator.append(ch, start, length);
+    
+    if(null == m_firstBackPointer)
+      m_firstBackPointer = handler.getOriginatingNode();
 
     // Catch all events until a non-character event.
     if (this != handler.getCurrentProcessor())
