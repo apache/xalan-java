@@ -110,6 +110,7 @@ import org.apache.xml.dtm.Axis;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.IntStack;
 
 import org.apache.xpath.axes.DescendantIterator;
 
@@ -124,6 +125,7 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
 {
+	IntStack m_last_pushed_rtfdtm=new IntStack();	
   /**
    * Stack of cached "reusable" DTMs for Result Tree Fragments.
    * This is a kluge to handle the problem of starting an RTF before
@@ -1270,6 +1272,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     m_rtfdtm_stack.addElement(rtfdtm);
 		++m_which_rtfdtm;
 	}
+	else if(m_which_rtfdtm<0)
+	{
+		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(++m_which_rtfdtm);
+	}
 	else
 	{
 		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
@@ -1277,8 +1283,9 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  	// It might already be under construction -- the classic example would be
  	 	// an xsl:variable which uses xsl:call-template as part of its value. To
   		// handle this recursion, we have to start a new RTF DTM, pushing the old
-  		// one onto a stack so we can return to it. It is hoped that
-	  	// this is an uncommon case!
+  		// one onto a stack so we can return to it. This is not as uncommon a case
+  		// as we might wish, unfortunately, as some folks insist on coding XSLT
+  		// as if it were a procedural language...
   		if(rtfdtm.isTreeIncomplete())
 	  	{
 	  		if(++m_which_rtfdtm < m_rtfdtm_stack.size())
@@ -1290,6 +1297,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	  		}
  	 	}
 	}
+		
     return rtfdtm;
   }
   
@@ -1299,6 +1307,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * */
   public void pushRTFContext()
   {
+  	m_last_pushed_rtfdtm.push(m_which_rtfdtm);
   	if(null!=m_rtfdtm_stack)
 	  	((SAX2RTFDTM)(getRTFDTM())).pushRewindMark();
   }
@@ -1321,11 +1330,22 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   {
   	if(null==m_rtfdtm_stack)
   		return;
-  		
-	boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
-	if(isEmpty && m_which_rtfdtm>0)
-	{
-		--m_which_rtfdtm;
-	}
+  
+  	int previous=m_last_pushed_rtfdtm.pop();
+  	if(m_which_rtfdtm==previous)
+  	{
+  		if(previous>=0) // guard against none-active
+  		{
+	  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(previous))).popRewindMark();
+  		}
+  	}
+  	else while(m_which_rtfdtm!=previous)
+  	{
+  		// Empty each DTM before popping, so it's ready for reuse
+  		// _DON'T_ pop the previous, since it's still open (which is why we
+  		// stacked up more of these) and did not receive a mark.
+  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
+  		--m_which_rtfdtm; 
+  	}
   }
 }
