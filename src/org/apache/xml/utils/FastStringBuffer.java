@@ -58,7 +58,9 @@ package org.apache.xml.utils;
 
 /**
  * Bare-bones, unsafe, fast string buffer. No thread-safety, no
- * parameter range checking, exposed fields.
+ * parameter range checking, exposed fields. Note that in typical
+ * applications, thread-safety of a StringBuffer is a somewhat 
+ * dubious concept in any case.
  */
 public class FastStringBuffer
 {
