@@ -96,6 +96,31 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
   }
 
   /**
+   * Construct a DTMDefaultBaseTraversers object from a DOM node.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param domSource the DOM source that this DTM will wrap.
+   * @param source The object that is used to specify the construction source.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory The factory to use for creating XMLStrings.
+   * @param doIndexing true if the caller considers it worth it to use 
+   *                   indexing schemes.
+   * @param blocksize The block size of the DTM.
+   */
+  public DTMDefaultBaseIterators(DTMManager mgr, Source source,
+                                 int dtmIdentity,
+                                 DTMWSFilter whiteSpaceFilter,
+                                 XMLStringFactory xstringfactory,
+                                 boolean doIndexing,
+                                 int blocksize)
+  {
+    super(mgr, source, dtmIdentity, whiteSpaceFilter, 
+          xstringfactory, doIndexing, blocksize);
+  }
+
+  /**
    * Get an iterator that can navigate over an XPath Axis, predicated by
    * the extended type ID.
    * Returns an iterator that must be initialized

@@ -1022,7 +1022,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     static private final int DEFAULT_TEXT_FACTOR = 10;
 
     /**
-     * Constructor - defaults to 32K nodes
+     * Construct a SAXImpl object using the default block size.
      */
     public SAXImpl(DTMManager mgr, Source saxSource,
                  int dtmIdentity, DTMWSFilter whiteSpaceFilter,
@@ -1030,17 +1030,20 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
                  boolean doIndexing)
     {
       this(mgr, saxSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
-           doIndexing, DEFAULT_INIT_SIZE);
+           doIndexing, m_initialblocksize);
     }
 
+    /**
+     * Construct a SAXImpl object using the given block size.
+     */
     public SAXImpl(DTMManager mgr, Source saxSource,
                  int dtmIdentity, DTMWSFilter whiteSpaceFilter,
                  XMLStringFactory xstringfactory,
-                 boolean doIndexing, int size)
+                 boolean doIndexing, int blocksize)
     {
       super(mgr, saxSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
-            doIndexing);
-      _size = size;
+            doIndexing, blocksize);
+      _size = blocksize;
       //initialize(size, size < 128 ? SMALL_TEXT_SIZE
       //                            : size * DEFAULT_TEXT_FACTOR);
                                   

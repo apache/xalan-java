@@ -245,10 +245,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   protected IntVector m_sourceColumn;
   
-
   /**
-   * Construct a SAX2DTM object ready to be constructed from SAX2
-   * ContentHandler events.
+   * Construct a SAX2DTM object using the default block size.
    *
    * @param mgr The DTMManager who owns this DTM.
    * @param source the JAXP 1.1 Source object for this DTM.
@@ -265,18 +263,43 @@ public class SAX2DTM extends DTMDefaultBaseIterators
                  boolean doIndexing)
   {
 
+    this(mgr, source, dtmIdentity, whiteSpaceFilter,
+          xstringfactory, doIndexing, m_initialblocksize);
+  }
+  
+  /**
+   * Construct a SAX2DTM object ready to be constructed from SAX2
+   * ContentHandler events.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param source the JAXP 1.1 Source object for this DTM.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory XMLString factory for creating character content.
+   * @param doIndexing true if the caller considers it worth it to use
+   *                   indexing schemes.
+   * @param blocksize The block size of the DTM.
+   */
+  public SAX2DTM(DTMManager mgr, Source source, int dtmIdentity,
+                 DTMWSFilter whiteSpaceFilter,
+                 XMLStringFactory xstringfactory,
+                 boolean doIndexing,
+                 int blocksize)
+  {
+
     super(mgr, source, dtmIdentity, whiteSpaceFilter,
-          xstringfactory, doIndexing);
+          xstringfactory, doIndexing, blocksize);
 
           
     // %REVIEW%  Initial size pushed way down to reduce weight of RTFs
     // (I'm not entirely sure 0 would work, so I'm playing it safe for now.)
     //m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
-    m_data = new SuballocatedIntVector(m_initialblocksize);
+    m_data = new SuballocatedIntVector(blocksize);
 
     m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
-    m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
+    m_dataOrQName = new SuballocatedIntVector(blocksize);
     
     // m_useSourceLocationProperty=org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
     m_useSourceLocationProperty = m_source_location;

@@ -135,10 +135,10 @@ public abstract class DTMDefaultBase implements DTM
   protected int[][][] m_elemIndexes;
 
   /** The default initial block size of the node arrays */
-  protected int m_initialblocksize = 512;  // favor small docs.
+  protected static final int m_initialblocksize = 512;  // favor small docs.
 
-  /** Size of blocks to allocate */
-  protected int m_blocksize = 2 * 1024;
+  /** The block size of the node arrays */
+  protected final int m_blocksize;
 
   /**
    * The value to use when the information has not been built yet.
@@ -194,7 +194,7 @@ public abstract class DTMDefaultBase implements DTM
   protected boolean m_indexing;
 
   /**
-   * Construct a DTMDefaultBase object from a DOM node.
+   * Construct a DTMDefaultBase object using the default block size.
    *
    * @param mgr The DTMManager who owns this DTM.
    * @param domSource the DOM source that this DTM will wrap.
@@ -207,14 +207,38 @@ public abstract class DTMDefaultBase implements DTM
    *                   indexing schemes.
    */
   public DTMDefaultBase(DTMManager mgr, Source source, int dtmIdentity,
-                        DTMWSFilter whiteSpaceFilter,
-                        XMLStringFactory xstringfactory, boolean doIndexing)
+  			DTMWSFilter whiteSpaceFilter,
+  			XMLStringFactory xstringfactory, boolean doIndexing)
   {
-    m_exptype = new SuballocatedIntVector(m_initialblocksize);
-    m_firstch = new SuballocatedIntVector(m_initialblocksize);
-    m_nextsib = new SuballocatedIntVector(m_initialblocksize);
-    m_prevsib = new SuballocatedIntVector(m_initialblocksize);
-    m_parent = new SuballocatedIntVector(m_initialblocksize);
+    this(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
+         doIndexing, m_initialblocksize);
+  }
+
+  /**
+   * Construct a DTMDefaultBase object from a DOM node.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param domSource the DOM source that this DTM will wrap.
+   * @param source The object that is used to specify the construction source.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory The factory to use for creating XMLStrings.
+   * @param doIndexing true if the caller considers it worth it to use
+   *                   indexing schemes.
+   * @param blocksize The block size of the DTM.
+   */
+  public DTMDefaultBase(DTMManager mgr, Source source, int dtmIdentity,
+                        DTMWSFilter whiteSpaceFilter,
+                        XMLStringFactory xstringfactory, boolean doIndexing,
+                        int blocksize)
+  {
+    m_blocksize = blocksize;
+    m_exptype = new SuballocatedIntVector(blocksize);
+    m_firstch = new SuballocatedIntVector(blocksize);
+    m_nextsib = new SuballocatedIntVector(blocksize);
+    m_prevsib = new SuballocatedIntVector(blocksize);
+    m_parent  = new SuballocatedIntVector(blocksize);
 
     m_mgr = mgr;
     if(mgr instanceof DTMManagerDefault)

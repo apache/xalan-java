@@ -101,6 +101,31 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
   }
 
   /**
+   * Construct a DTMDefaultBaseTraversers object from a DOM node.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param domSource the DOM source that this DTM will wrap.
+   * @param source The object that is used to specify the construction source.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory The factory to use for creating XMLStrings.
+   * @param doIndexing true if the caller considers it worth it to use
+   *                   indexing schemes.
+   * @param blocksize The block size of the DTM.
+   */
+  public DTMDefaultBaseTraversers(DTMManager mgr, Source source,
+                                  int dtmIdentity,
+                                  DTMWSFilter whiteSpaceFilter,
+                                  XMLStringFactory xstringfactory,
+                                  boolean doIndexing,
+                                  int blocksize)
+  {
+    super(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
+          doIndexing, blocksize);
+  }
+
+  /**
    * This returns a stateless "traverser", that can navigate
    * over an XPath axis, though perhaps not in document order.
    *
