@@ -148,7 +148,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     public XMLFilter newXMLFilter(Source src) 
 	throws TransformerConfigurationException 
     {
-System.out.println("GTM> In newXMLFilter Source");
 	Templates templates = newTemplates(src);
 	if (templates == null ) {
 	    return null; 
@@ -159,7 +158,6 @@ System.out.println("GTM> In newXMLFilter Source");
     public XMLFilter newXMLFilter(Templates templates) 
 	throws TransformerConfigurationException 
     {
-System.out.println("GTM> In newXMLFilter Templates");
 	try {
       	    return new org.apache.xalan.xsltc.runtime.TrAXFilter(templates);
     	} catch( TransformerConfigurationException ex ) {
@@ -298,7 +296,6 @@ System.out.println("GTM> In newXMLFilter Templates");
 
 	Translet translet = null;
 	try {
-System.out.println("GTM> doing Class.forName on translet");
 	    Class clazz = Class.forName(transletName);
 	    translet = (Translet)clazz.newInstance();
 	    ((AbstractTranslet)translet).setTransletName(transletName);
