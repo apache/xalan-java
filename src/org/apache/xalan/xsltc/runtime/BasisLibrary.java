@@ -795,7 +795,7 @@ public final class BasisLibrary implements Operators {
 	    }
 	    else if (right instanceof DOM) {
 		result = compare(iter, ((DOM)right).getStringValue(),
-				 op, node, dom);
+				 op, dom);
 	    }
 	    else if (right == null) {
 		return(false);
