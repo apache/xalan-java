@@ -1292,6 +1292,7 @@ public class SAX2DTM2 extends SAX2DTM
       if (_isRestartable)
       {
         int nodeID = makeNodeIdentity(node);
+        m_size = 0;
         
         if (nodeID == DTM.NULL) {
           _currentNode = DTM.NULL;
@@ -1418,6 +1419,7 @@ public class SAX2DTM2 extends SAX2DTM
       if (_isRestartable)
       {
         int nodeID = makeNodeIdentity(node);
+        m_size = 0;
         
         if (nodeID == DTM.NULL) {
           _currentNode = DTM.NULL;
