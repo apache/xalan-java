@@ -73,11 +73,11 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Validate the XML input by using SAXParserFactory to turn on namespace awareness and 
- * validation, and a SAX XMLReader to parse the input and report problems to a very
- * simple error handler. 
+ * validation, and a SAX XMLReader to parse the input and report problems to an error 
+ * handler.
  * 
- * This sample uses birds.xml with an internal doctype declaration. As shipped, birds.xml
- * contains an element that violates the doctype.
+ * This sample uses birds.xml with an internal DOCTYPE declaration. As shipped, birds.xml
+ * contains an element that violates the declared document type.
  */
 public class ValidateXMLInput
 {
@@ -102,7 +102,12 @@ public class ValidateXMLInput
       pfactory.setValidating(true);
       // Get an XMLReader.
       XMLReader reader = pfactory.newSAXParser().getXMLReader();
-      
+  
+      // Instantiate an error handler (see the Handler inner class below) that will report any
+      // errors or warnings that occur as the XMLReader is parsing the XML input.
+      Handler handler = new Handler();
+      reader.setErrorHandler(handler);
+  
       // Standard way of creating a transformer from a URL.
       Transformer t = tfactory.newTransformer(
         new StreamSource("birds.xsl"));
@@ -111,31 +116,15 @@ public class ValidateXMLInput
       SAXSource source = new SAXSource(reader,
         new InputSource("birds.xml"));
       
-      try
-      {
-        // Transform to a file.
-        t.transform(source, new StreamResult("birds.out"));
-      }
-      catch(TransformerException te)
-      {
-        // The operation failed, so parse the entire XML input to get a complete listing of 
-        // warnings and errors from the Handler inner class (see below).
-        Handler handler = new Handler();
-        reader.setErrorHandler(handler);
-        reader.parse("birds.xml");
-        
-        // Note: If you are satisifed with reporting just the first exception, you can
-        // eliminate the preceding 3 statements and Handler inner class, and then report
-        // the first TransformerException as follows:
-        // System.out.println(te.getMessage());
-      }
-      System.out.println("Done!");
+      // Transform to a file.
+      t.transform(source, new StreamResult("birds.out"));
+      System.out.println("=====Done=====");
     }
     else
       System.out.println("tfactory does not support SAX features!");
   }
 
-  // Catch any errors or warnings from the XMLReader parse operation.
+  // Catch any errors or warnings from the XMLReader.
   class Handler extends DefaultHandler
   {
     public void warning (SAXParseException spe)
