@@ -4,6 +4,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.VariableStack;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.BoolStack;
+import org.apache.xalan.serialize.SerializerToXML;
 import java.util.Stack;
 import org.xml.sax.helpers.NamespaceSupport;
 import java.util.Enumeration;
@@ -86,8 +87,8 @@ class TransformSnapshotImpl implements TransformSnapshot
 
   /** Queued start element          */
   QueuedStartElement m_startElement;
-  
-  TransformSnapshotImpl(TransformerImpl transformer)
+	
+	TransformSnapshotImpl(TransformerImpl transformer)
   {
     try
     {
@@ -97,7 +98,7 @@ class TransformSnapshotImpl implements TransformSnapshot
       
       m_startElement = (QueuedStartElement)rtf.m_startElement.clone();
       m_startDoc = (QueuedStartDocument)rtf.m_startDoc.clone();
-      m_eventCount = rtf.m_eventCount;
+			m_eventCount = rtf.m_eventCount;
             
       // yuck.  No clone. Hope this is good enough.
       m_nsSupport = new NamespaceSupport();
@@ -122,8 +123,9 @@ class TransformSnapshotImpl implements TransformSnapshot
       m_currentTemplateRuleIsNull = (BoolStack)transformer.m_currentTemplateRuleIsNull.clone();
       m_currentTemplateElements = (NodeVector)transformer.m_currentTemplateElements.clone();
       m_currentMatchTemplates = (NodeVector)transformer.m_currentMatchTemplates.clone();
-      m_countersTable = (CountersTable)transformer.m_countersTable.clone();
-      m_attrSetStack = (Stack)transformer.m_attrSetStack.clone();
+      m_countersTable = (CountersTable)transformer.getCountersTable().clone();
+			if (transformer.m_attrSetStack  != null)
+				m_attrSetStack = (Stack)transformer.m_attrSetStack.clone();
     }
     catch(CloneNotSupportedException cnse)
     {
@@ -138,23 +140,24 @@ class TransformSnapshotImpl implements TransformSnapshot
       // Are all these clones deep enough?
 
       ResultTreeHandler rtf = transformer.getResultTreeHandler();
-      
-      rtf.m_startElement = (QueuedStartElement)m_startElement.clone();
-      rtf.m_startDoc = (QueuedStartDocument)m_startDoc.clone();
-      rtf.m_eventCount = m_eventCount;
-      
-      // yuck.  No clone. Hope this is good enough.
-      rtf.m_nsSupport = new NamespaceSupport();
-      Enumeration prefixes = m_nsSupport.getPrefixes();
-      while(prefixes.hasMoreElements())
-      {
-        String prefix = (String)prefixes.nextElement();
-        String uri = m_nsSupport.getURI(prefix);
-        rtf.m_nsSupport.declarePrefix(prefix, uri);
-      }
-      
-      rtf.m_nsContextPushed = m_nsContextPushed;
-      
+			if (rtf != null)
+			{
+				rtf.m_startElement = (QueuedStartElement)m_startElement.clone();
+				rtf.m_startDoc = (QueuedStartDocument)m_startDoc.clone();
+				rtf.m_eventCount = 1; //1 for start document event! m_eventCount;
+				
+				// yuck.  No clone. Hope this is good enough.
+				rtf.m_nsSupport = new NamespaceSupport();
+				Enumeration prefixes = m_nsSupport.getPrefixes();
+				while(prefixes.hasMoreElements())
+				{
+					String prefix = (String)prefixes.nextElement();
+					String uri = m_nsSupport.getURI(prefix);
+					rtf.m_nsSupport.declarePrefix(prefix, uri);
+				}
+				
+				rtf.m_nsContextPushed = m_nsContextPushed;
+			}
       XPathContext xpc = transformer.getXPathContext();
       
       xpc.setVarStack((VariableStack)m_variableStacks.clone());
@@ -167,7 +170,8 @@ class TransformSnapshotImpl implements TransformSnapshot
       transformer.m_currentTemplateElements = (NodeVector)m_currentTemplateElements.clone();
       transformer.m_currentMatchTemplates = (NodeVector)m_currentMatchTemplates.clone();
       transformer.m_countersTable = (CountersTable)m_countersTable.clone();
-      transformer.m_attrSetStack = (Stack)m_attrSetStack.clone();
+			if (m_attrSetStack  != null)
+				transformer.m_attrSetStack = (Stack)m_attrSetStack.clone();
     }
     catch(CloneNotSupportedException cnse)
     {

@@ -356,7 +356,14 @@ public class TransformerImpl extends Transformer
   private boolean m_isTransformDone = false;
   
   private boolean m_hasBeenReset = false;
-  
+	private boolean m_shouldReset = true;
+
+	public void setShouldReset(boolean shouldReset)
+	{
+		m_shouldReset = shouldReset;
+	}
+	
+	
   //==========================================================
   // SECTION: Constructors
   //==========================================================
@@ -380,7 +387,7 @@ public class TransformerImpl extends Transformer
    */
   public void reset()
   {
-    if(!m_hasBeenReset)
+    if(!m_hasBeenReset && m_shouldReset)
     {
       m_hasBeenReset = true;
       
@@ -504,7 +511,7 @@ public class TransformerImpl extends Transformer
     if(null == xmlSource)
     {
       m_errorHandler.fatalError(new TransformerException("Can't transform a Source of type "+
-        source.getClass().getName()+"!"));
+																												 ((source == null)? "null" : source.getClass().getName())+"!"));
     }
     
     if (null != xmlSource.getSystemId())
@@ -3006,8 +3013,23 @@ public class TransformerImpl extends Transformer
    * from the snapshot point.
    */
   public void executeFromSnapshot(TransformSnapshot ts)
+		throws TransformerException
   {
-    ((TransformSnapshotImpl)ts).apply(this);
+    ElemTemplateElement template = getMatchedTemplate();
+		Node child = getMatchedNode();
+		pushElemTemplateElement(template); //needed??
+    m_xcontext.pushCurrentNode(child); //needed??
+		this.executeChildTemplates(template, child, null, true); // getResultTreeHandler());
+  }
+	
+	/**
+   * This will execute the following XSLT instructions
+   * from the snapshot point.
+   */
+  public void resetToStylesheet(TransformSnapshot ts)
+		//throws TransformerException
+  {
+    ((TransformSnapshotImpl)ts).apply(this);		
   }
   
   public void stopTransformation()
