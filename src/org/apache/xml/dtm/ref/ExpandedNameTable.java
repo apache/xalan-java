@@ -146,7 +146,9 @@ public class ExpandedNameTable
     int i;
     for (i = 0; i < DTM.NTYPES; i++)
     {
-      m_extendedTypes.addElement(new ExtendedType(i, "", "") ); 
+      ExtendedType newET = new ExtendedType(i, "", ""); 
+      m_extendedTypes.addElement(newET); 
+      m_hashtable.put(newET, new Integer(i));
     }
     m_nextType = m_extendedTypes.size();
   }
@@ -202,7 +204,7 @@ public class ExpandedNameTable
    */
   public int getExpandedTypeID(int type)
   {    
-        return type;    
+    return type;    
   }
 
   /**
