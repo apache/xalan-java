@@ -525,7 +525,7 @@ public class ExsltDatetime
       if (datetime == null) 
         return new XNumber(Double.NaN);            
       
-      String[] formats = {d, t};
+      String[] formats = {dt, t};
       return new XNumber(getNumber(datetime, formats, Calendar.HOUR_OF_DAY));
     }
     
@@ -874,9 +874,7 @@ public class ExsltDatetime
     
     /**
      * Attempt to parse an input string with the allowed formats, returning
-     * null if none of the formats work. Input formats are passed in longest to shortest,
-     * so if any parse operation fails with a parse error in the string, can
-     * immediately return null.
+     * null if none of the formats work.
      */
     private static Date testFormats (String in, String[] formats)
       throws ParseException
@@ -891,8 +889,6 @@ public class ExsltDatetime
         }
         catch (ParseException pe)
         {
-          if (pe.getErrorOffset() < in.length())
-            return null;
         }
       }
       return null;
