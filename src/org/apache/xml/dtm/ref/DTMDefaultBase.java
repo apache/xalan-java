@@ -57,7 +57,7 @@
 package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.*;
-import org.apache.xml.utils.IntVector;
+import org.apache.xml.utils.ChunkedIntVector;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.StringBufferPool;
@@ -93,32 +93,32 @@ public abstract class DTMDefaultBase implements DTM
   protected int m_size = 0;
 
   /** The expanded names, one array element for each node. */
-  protected int[] m_exptype;
+  protected ChunkedIntVector m_exptype;
 
   /** levels deep, one array element for each node. */
   protected byte[] m_level;
 
   /** First child values, one array element for each node. */
-  protected int[] m_firstch;
+  protected ChunkedIntVector m_firstch;
 
   /** Next sibling values, one array element for each node. */
-  protected int[] m_nextsib;
+  protected ChunkedIntVector m_nextsib;
 
   /** Previous sibling values, one array element for each node. */
-  protected int[] m_prevsib;
+  protected ChunkedIntVector m_prevsib;
 
   /** Previous sibling values, one array element for each node. */
-  protected int[] m_parent;
+  protected ChunkedIntVector m_parent;
   
   /** Experemental.  -sb */
 //  protected boolean m_haveSeenNamespace = false;
   
-  /** Vector of IntVectors of NS decl sets  -jjk */
+  /** Vector of ChunkedIntVectors of NS decl sets  -jjk */
   protected Vector m_namespaceDeclSets = null;
   
-  /** IntVector  of elements at which corresponding
+  /** ChunkedIntVector  of elements at which corresponding
    * namespaceDeclSets were defined -jjk */
-  protected IntVector m_namespaceDeclSetElements = null;
+  protected ChunkedIntVector m_namespaceDeclSetElements = null;
 
   /**
    * These hold indexes to elements based on namespace and local name.
@@ -205,12 +205,12 @@ public abstract class DTMDefaultBase implements DTM
       m_blocksize = 16;
     }
 
-    m_exptype = new int[m_initialblocksize];
+    m_exptype = new ChunkedIntVector(m_initialblocksize);
     m_level = new byte[m_initialblocksize];
-    m_firstch = new int[m_initialblocksize];
-    m_nextsib = new int[m_initialblocksize];
-    m_prevsib = new int[m_initialblocksize];
-    m_parent = new int[m_initialblocksize];
+    m_firstch = new ChunkedIntVector(m_initialblocksize);
+    m_nextsib = new ChunkedIntVector(m_initialblocksize);
+    m_prevsib = new ChunkedIntVector(m_initialblocksize);
+    m_parent = new ChunkedIntVector(m_initialblocksize);
     m_mgr = mgr;
     m_documentBaseURI = (null != source) ? source.getSystemId() : null;
     m_dtmIdent = dtmIdentity;
@@ -440,37 +440,20 @@ public abstract class DTMDefaultBase implements DTM
   protected void ensureSize(int index)
   {
 
-    int capacity = m_exptype.length;
+    int capacity = m_level.length;
 
     if (capacity <= index)
     {
       int newcapacity = capacity + m_blocksize;
       // ps.println("resizing to new capacity: "+newcapacity);
 
-      // %OPT% Compilers might be happier if we operated on one array
-      // at a time, though the parallel code might be a trifle less
-      // obvious.
-      int[] exptype = m_exptype;
+      // We've cut over to ChunkedIntVector, which is self-
+	  // sizing. 
+	  // %OPT% May want to define a ByteVector as well, though for now we can
+	  // handle m_level the old way...
       byte[] level = m_level;
-      int[] firstch = m_firstch;
-      int[] nextsib = m_nextsib;
-      int[] prevsib = m_prevsib;
-      int[] parent = m_parent;
-
-      m_exptype = new int[newcapacity];
       m_level = new byte[newcapacity];
-      m_firstch = new int[newcapacity];
-      m_nextsib = new int[newcapacity];
-      m_prevsib = new int[newcapacity];
-      m_parent = new int[newcapacity];
-
-      System.arraycopy(exptype, 0, m_exptype, 0, capacity);
       System.arraycopy(level, 0, m_level, 0, capacity);
-      System.arraycopy(firstch, 0, m_firstch, 0, capacity);
-      System.arraycopy(nextsib, 0, m_nextsib, 0, capacity);
-      System.arraycopy(prevsib, 0, m_prevsib, 0, capacity);
-      System.arraycopy(parent, 0, m_parent, 0, capacity);
-
       // %REVIEW%
       m_blocksize = m_blocksize + m_blocksize;
       if(m_blocksize >= (1024*8))
@@ -507,7 +490,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     if (identity < m_size)
-      return m_exptype[identity];
+      return m_exptype.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -519,7 +502,7 @@ public abstract class DTMDefaultBase implements DTM
       if (!isMore)
         return NULL;
       else if (identity < m_size)
-        return m_exptype[identity];
+        return m_exptype.elementAt(identity);
     }
   }
 
@@ -561,7 +544,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     // Boiler-plate code for each of the _xxx functions, except for the array.
-    int info = (identity >= m_size) ? NOTPROCESSED : m_firstch[identity];
+    int info = (identity >= m_size) ? NOTPROCESSED : m_firstch.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -573,7 +556,7 @@ public abstract class DTMDefaultBase implements DTM
       if (identity >= m_size &&!isMore)
         return NULL;
       else
-        info = m_firstch[identity];
+        info = m_firstch.elementAt(identity);
     }
 
     return info;
@@ -590,7 +573,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     // Boiler-plate code for each of the _xxx functions, except for the array.
-    int info = (identity >= m_size) ? NOTPROCESSED : m_nextsib[identity];
+    int info = (identity >= m_size) ? NOTPROCESSED : m_nextsib.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -602,7 +585,7 @@ public abstract class DTMDefaultBase implements DTM
       if (identity >= m_size &&!isMore)
         return NULL;
       else
-        info = m_nextsib[identity];
+        info = m_nextsib.elementAt(identity);
     }
 
     return info;
@@ -619,7 +602,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     if (identity < m_size)
-      return m_prevsib[identity];
+      return m_prevsib.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -631,7 +614,7 @@ public abstract class DTMDefaultBase implements DTM
       if (!isMore)
         return NULL;
       else if (identity < m_size)
-        return m_prevsib[identity];
+        return m_prevsib.elementAt(identity);
     }
   }
 
@@ -646,7 +629,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     if (identity < m_size)
-      return m_parent[identity];
+      return m_parent.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -658,7 +641,7 @@ public abstract class DTMDefaultBase implements DTM
       if (!isMore)
         return NULL;
       else if (identity < m_size)
-        return m_parent[identity];
+        return m_parent.elementAt(identity);
     }
   }
 
@@ -996,8 +979,8 @@ public abstract class DTMDefaultBase implements DTM
 
   /** Build table of namespace declaration
    * locations during DTM construction. Table is a Vector of
-   * IntVectors containing the namespace node HANDLES declared at
-   * that ID, plus an IntVector of the element node INDEXES at which
+   * ChunkedIntVectors containing the namespace node HANDLES declared at
+   * that ID, plus an ChunkedIntVector of the element node INDEXES at which
    * these declarations appeared.
    *
    * NOTE: Since this occurs during model build, nodes will be encountered
@@ -1009,15 +992,15 @@ public abstract class DTMDefaultBase implements DTM
    * */
   protected void declareNamespaceInContext(int elementNodeIndex,int namespaceNodeIndex)
   {
-    IntVector nsList=null;
+    ChunkedIntVector nsList=null;
     if(m_namespaceDeclSets==null)
       {
 
         // First
-        m_namespaceDeclSetElements=new IntVector();
+        m_namespaceDeclSetElements=new ChunkedIntVector();
         m_namespaceDeclSetElements.addElement(elementNodeIndex);
         m_namespaceDeclSets=new Vector();
-        nsList=new IntVector();
+        nsList=new ChunkedIntVector();
         m_namespaceDeclSets.addElement(nsList);
       }
     else
@@ -1029,17 +1012,17 @@ public abstract class DTMDefaultBase implements DTM
         if(elementNodeIndex==
            m_namespaceDeclSetElements.elementAt(last))
           {
-            nsList=(IntVector)m_namespaceDeclSets.elementAt(last);
+            nsList=(ChunkedIntVector)m_namespaceDeclSets.elementAt(last);
 
           }
       }
     if(nsList==null)
       {
         m_namespaceDeclSetElements.addElement(elementNodeIndex);
-        nsList=new IntVector();
+        nsList=new ChunkedIntVector();
         m_namespaceDeclSets.addElement(nsList);
                 
-        IntVector inherited= findNamespaceContext(_parent(elementNodeIndex));
+        ChunkedIntVector inherited= findNamespaceContext(_parent(elementNodeIndex));
 
         if(inherited!=null)
           {
@@ -1072,22 +1055,22 @@ public abstract class DTMDefaultBase implements DTM
   }
     
   /** Retrieve list of namespace declaration locations
-     * active at this node. List is an IntVector whose
+     * active at this node. List is an ChunkedIntVector whose
      * entries are the namespace node HANDLES declared at that ID.
      *
      * %REVIEW% Directly managed arrays rather than vectors?
      * %REVIEW% Handles or IDs? Given usage, I think handles.
      * */
-  protected IntVector findNamespaceContext(int elementNodeIndex)
+  protected ChunkedIntVector findNamespaceContext(int elementNodeIndex)
   {
     if (null!=m_namespaceDeclSetElements)
       {
         // %OPT% Is binary-search really saving us a lot versus linear?
         // (... It may be, in large docs with many NS decls.)
-        int wouldBeAt=findInSortedIntVector(m_namespaceDeclSetElements,
+        int wouldBeAt=findInSortedChunkedIntVector(m_namespaceDeclSetElements,
                                             elementNodeIndex);
         if(wouldBeAt>=0) // Found it
-          return (IntVector) m_namespaceDeclSets.elementAt(wouldBeAt);
+          return (ChunkedIntVector) m_namespaceDeclSets.elementAt(wouldBeAt);
         if(wouldBeAt == -1) // -1-wouldbeat == 0
           return null; // Not after anything; definitely not found
 
@@ -1103,7 +1086,7 @@ public abstract class DTMDefaultBase implements DTM
             candidate=m_namespaceDeclSetElements.elementAt(wouldBeAt); 
 
             if(candidate==ancestor) // Found ancestor in list
-                return (IntVector)m_namespaceDeclSets.elementAt(wouldBeAt);
+                return (ChunkedIntVector)m_namespaceDeclSets.elementAt(wouldBeAt);
             else if(candidate<ancestor) // Too deep in tree
                 ancestor=_parent(ancestor);
             else // Too late in list
@@ -1119,7 +1102,7 @@ public abstract class DTMDefaultBase implements DTM
      * m_namespaceDeclSetElements, or the last element which
      * preceeds it in document order
      *
-     * %REVIEW% Inlne this into findNamespaceContext? Create SortedIntVector type?
+     * %REVIEW% Inlne this into findNamespaceContext? Create SortedChunkedIntVector type?
      *
      * @param elementNodeIndex Index of a node to look up.
      *
@@ -1129,7 +1112,7 @@ public abstract class DTMDefaultBase implements DTM
      * it from -1. (Encoding because I don't want to recompare the strings
      * but don't want to burn bytes on a datatype to hold a flagged value.)
      */
-  protected int findInSortedIntVector(IntVector vector, int lookfor)
+  protected int findInSortedChunkedIntVector(ChunkedIntVector vector, int lookfor)
   {
     // Binary search
     int i = 0;
@@ -1177,7 +1160,7 @@ public abstract class DTMDefaultBase implements DTM
   {
         if(inScope)
         {      
-            IntVector nsContext=findNamespaceContext(nodeHandle & m_mask);
+            ChunkedIntVector nsContext=findNamespaceContext(nodeHandle & m_mask);
             if(nsContext==null || nsContext.size()<1)
               return NULL;
 
@@ -1224,9 +1207,9 @@ public abstract class DTMDefaultBase implements DTM
             //Since we've been given the base, try direct lookup
             //(could look from nodeHandle but this is at least one
             //comparison/get-parent faster)
-            //IntVector nsContext=findNamespaceContext(nodeHandle & m_mask);
+            //ChunkedIntVector nsContext=findNamespaceContext(nodeHandle & m_mask);
 
-                IntVector nsContext=findNamespaceContext(baseHandle & m_mask);
+                ChunkedIntVector nsContext=findNamespaceContext(baseHandle & m_mask);
 
             if(nsContext==null)
               return NULL;

@@ -67,7 +67,7 @@ import org.xml.sax.ext.*;
 import javax.xml.transform.Source;
 
 import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.IntVector;
+import org.apache.xml.utils.ChunkedIntVector;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.SystemIDResolver;
@@ -122,7 +122,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
 
   /** This vector holds offset and length data. */
-  protected IntVector m_data;
+  protected ChunkedIntVector m_data;
 
   /** The parent stack, needed only for construction. */
   transient private IntStack m_parents = new IntStack();
@@ -162,7 +162,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   private boolean m_endDocumentOccured = false;
 
   /** Data or qualified name values, one array element for each node. */
-  protected int[] m_dataOrQName;
+  protected ChunkedIntVector m_dataOrQName;
 
   /**
    * This table holds the ID string to node associations, for
@@ -231,9 +231,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     super(mgr, source, dtmIdentity, whiteSpaceFilter, 
           xstringfactory, doIndexing);
           
-    m_data = new IntVector(doIndexing ? (1024*2) : 512, 1024);
+    m_data = new ChunkedIntVector(doIndexing ? (1024*2) : 512, 1024);
 
-    m_dataOrQName = new int[m_initialblocksize];
+    m_dataOrQName = new ChunkedIntVector(m_initialblocksize);
 
     int doc = addNode(DTM.DOCUMENT_NODE,
                       m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
@@ -257,7 +257,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     if (identity < m_size)
-      return m_dataOrQName[identity];
+      return m_dataOrQName.elementAt(identity);
 
     // Check to see if the information requested has been processed, and, 
     // if not, advance the iterator until we the information has been 
@@ -269,7 +269,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       if (!isMore)
         return NULL;
       else if (identity < m_size)
-        return m_dataOrQName[identity];
+        return m_dataOrQName.elementAt(identity);
     }
   }
 
@@ -469,7 +469,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     if (isTextType(type))
     {
-      int dataIndex = m_dataOrQName[identity];
+      int dataIndex = m_dataOrQName.elementAt(identity);
       int offset = m_data.elementAt(dataIndex);
       int length = m_data.elementAt(dataIndex + 1);
       
@@ -576,7 +576,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
     else
     {
-      int qnameIndex = m_dataOrQName[nodeHandle & m_mask];
+      int qnameIndex = m_dataOrQName.elementAt(nodeHandle & m_mask);
 
       if (qnameIndex < 0)
       {
@@ -614,7 +614,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
     else
     {
-      int qnameIndex = m_dataOrQName[nodeHandle & m_mask];
+      int qnameIndex = m_dataOrQName.elementAt(nodeHandle & m_mask);
 
       if (qnameIndex < 0)
       {
@@ -808,22 +808,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   protected void ensureSize(int index)
   {
-
-    int capacity = m_dataOrQName.length;
-
-    if (capacity <= index)
-    {
-      int[] dataOrQName = m_dataOrQName;
-      int newcapacity = capacity + m_blocksize;
-
-      m_dataOrQName = new int[newcapacity];
-
-      System.arraycopy(dataOrQName, 0, m_dataOrQName, 0, capacity);
-      
-      // We have to do this after we do our resize, since DTMDefaultBase 
-      // will change m_blocksize before it exits.
+	// dataOrQName is an ChunkedIntVector and hence self-sizing.
+	// But DTMDefaultBase may need fixup.
       super.ensureSize(index);
-    }
   }
 
   /**
@@ -851,24 +838,24 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     // Do the hard casts here, so we localize changes that may have to be made.
     m_level[nodeIndex] = (byte) level;
-    m_firstch[nodeIndex] = canHaveFirstChild ? NOTPROCESSED : DTM.NULL;
-    m_nextsib[nodeIndex] = NOTPROCESSED;
-    m_prevsib[nodeIndex] = previousSibling;
-    m_parent[nodeIndex] = parentIndex;
-    m_exptype[nodeIndex] = expandedTypeID;
-    m_dataOrQName[nodeIndex] = dataOrPrefix;    
+    m_firstch.setElementAt(canHaveFirstChild ? NOTPROCESSED : DTM.NULL,nodeIndex);
+    m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
+    m_prevsib.setElementAt(previousSibling,nodeIndex);
+    m_parent.setElementAt(parentIndex,nodeIndex);
+    m_exptype.setElementAt(expandedTypeID,nodeIndex);
+    m_dataOrQName.setElementAt(dataOrPrefix,nodeIndex);    
 
     if (DTM.NULL != parentIndex && type != DTM.ATTRIBUTE_NODE
             && type != DTM.NAMESPACE_NODE)
     {
-      if (NOTPROCESSED == m_firstch[parentIndex])
-        m_firstch[parentIndex] = nodeIndex;
+      if (NOTPROCESSED == m_firstch.elementAt(parentIndex))
+        m_firstch.setElementAt(nodeIndex,parentIndex);
     }
 
     // Note that we don't want nextSibling to be processed until
     // charactersFlush() is called.
     if (DTM.NULL != previousSibling)
-      m_nextsib[previousSibling] = nodeIndex;
+      m_nextsib.setElementAt(nodeIndex,previousSibling);
 
     if(type == DTM.NAMESPACE_NODE)
                 declareNamespaceInContext(parentIndex,nodeIndex);
@@ -1514,13 +1501,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     charactersFlush();
 
-    m_nextsib[0] = NULL;
+    m_nextsib.setElementAt(NULL,0);
 
-    if (m_firstch[0] == NOTPROCESSED)
-      m_firstch[0] = NULL;
+    if (m_firstch.elementAt(0) == NOTPROCESSED)
+      m_firstch.setElementAt(NULL,0);
 
     if (DTM.NULL != m_previous)
-      m_nextsib[m_previous] = DTM.NULL;
+      m_nextsib.setElementAt(DTM.NULL,m_previous);
 
     m_parents = null;
     m_prefixMappings = null;
@@ -1729,7 +1716,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
 
     if (DTM.NULL != prev)
-      m_nextsib[prev] = DTM.NULL;
+      m_nextsib.setElementAt(DTM.NULL,prev);
 
     if (null != m_wsfilter)
     {
@@ -1789,10 +1776,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     m_previous = m_parents.pop();
 
-    if (NOTPROCESSED == m_firstch[m_previous])
-      m_firstch[m_previous] = DTM.NULL;
+    if (NOTPROCESSED == m_firstch.elementAt(m_previous))
+      m_firstch.setElementAt(DTM.NULL,m_previous);
     else if (DTM.NULL != lastNode)
-      m_nextsib[lastNode] = DTM.NULL;
+      m_nextsib.setElementAt(DTM.NULL,lastNode);
 
     popShouldStripWhitespace();
   }

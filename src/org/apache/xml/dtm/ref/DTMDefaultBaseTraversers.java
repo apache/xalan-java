@@ -210,7 +210,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int next(int context, int current)
     {
-      return m_parent[current & m_mask] | m_dtmIdent;
+      return m_parent.elementAt(current & m_mask) | m_dtmIdent;
     }
 
     /**
@@ -228,9 +228,9 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       current = current & m_mask;
 
-      while (DTM.NULL != (current = m_parent[current]))
+      while (DTM.NULL != (current = m_parent.elementAt(current)))
       {
-        if (m_exptype[current] == extendedTypeID)
+        if (m_exptype.elementAt(current) == extendedTypeID)
           return current | m_dtmIdent;
       }
 
@@ -272,7 +272,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int extendedTypeID)
     {
-      return (m_exptype[context & m_mask] == extendedTypeID)
+      return (m_exptype.elementAt(context & m_mask) == extendedTypeID)
              ? context : next(context, context, extendedTypeID);
     }
   }
@@ -315,7 +315,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       do
       {
-        if (m_exptype[current] == extendedTypeID)
+        if (m_exptype.elementAt(current) == extendedTypeID)
           return current;
       }
       while (DTM.NULL != (current = getNextAttribute(current)));
@@ -355,7 +355,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
         if (NOTPROCESSED != next)
         {
-          int parent = m_parent[next];
+          int parent = m_parent.elementAt(next);
           
           // Is it a child?
           if(parent == axisRoot)
@@ -373,7 +373,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
           // root, in which case we continue to look.
           do
           {
-            parent = m_parent[parent];
+            parent = m_parent.elementAt(parent);
             if(parent < axisRoot)
               return NULL;
           }
@@ -386,7 +386,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
         nextNode();
         
-        if(!(m_nextsib[axisRoot] == NOTPROCESSED))
+        if(!(m_nextsib.elementAt(axisRoot) == NOTPROCESSED))
           break;
       }
 
@@ -441,7 +441,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
              DTM.NULL != current; 
              current = _nextsib(current)) 
         {
-          if (m_exptype[current] == extendedTypeID)
+          if (m_exptype.elementAt(current) == extendedTypeID)
               return current | m_dtmIdent;
         }
         return NULL;
@@ -479,7 +479,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
            DTM.NULL != current; 
            current = _nextsib(current)) 
       {
-        if (m_exptype[current] == extendedTypeID)
+        if (m_exptype.elementAt(current) == extendedTypeID)
             return current | m_dtmIdent;
       }
       
@@ -603,7 +603,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected boolean axisHasBeenProcessed(int axisRoot)
     {
-      return !(m_nextsib[axisRoot] == NOTPROCESSED);
+      return !(m_nextsib.elementAt(axisRoot) == NOTPROCESSED);
     }
     
     /**
@@ -653,7 +653,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
       {
         if(identity == axisRoot)
           return false;
-        identity = m_parent[identity];
+        identity = m_parent.elementAt(identity);
       }
         while(identity >= axisRoot);
         
@@ -1002,7 +1002,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       while (DTM.NULL != (current = getNextSibling(current)))
       {
-        if (m_exptype[current & m_mask] == extendedTypeID)
+        if (m_exptype.elementAt(current & m_mask) == extendedTypeID)
           return current;
       }
 
@@ -1051,7 +1051,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       do
       {
-        if (m_exptype[current] == extendedTypeID)
+        if (m_exptype.elementAt(current) == extendedTypeID)
           return current;
       }
       while (DTM.NULL
@@ -1102,7 +1102,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       do
       {
-        if (m_exptype[current] == extendedTypeID)
+        if (m_exptype.elementAt(current) == extendedTypeID)
           return current;
       }
       while (DTM.NULL
@@ -1131,7 +1131,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return m_parent[context & m_mask] | m_dtmIdent;
+      return m_parent.elementAt(context & m_mask) | m_dtmIdent;
     }
   
     /**
@@ -1152,9 +1152,9 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       current = current & m_mask;
 
-      while (NULL != (current = m_parent[current]))
+      while (NULL != (current = m_parent.elementAt(current)))
       {
-        if (m_exptype[current] == extendedTypeID)
+        if (m_exptype.elementAt(current) == extendedTypeID)
           return (current | m_dtmIdent);
       }
 
@@ -1213,8 +1213,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     protected boolean isAncestor(int contextIdent, int currentIdent)
     {
 
-      for (contextIdent = m_parent[contextIdent]; DTM.NULL != contextIdent;
-              contextIdent = m_parent[contextIdent])
+      for (contextIdent = m_parent.elementAt(contextIdent); DTM.NULL != contextIdent;
+              contextIdent = m_parent.elementAt(contextIdent))
       {
         if (contextIdent == currentIdent)
           return true;
@@ -1238,7 +1238,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       for (current = (current & m_mask) - 1; current >= 0; current--)
       {
-        int exptype = m_exptype[current];
+        int exptype = m_exptype.elementAt(current);
         short type = ExpandedNameTable.getType(exptype);
 
         if (ATTRIBUTE_NODE == type || NAMESPACE_NODE == type
@@ -1268,7 +1268,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       for (current = (current & m_mask) - 1; current >= 0; current--)
       {
-        int exptype = m_exptype[current];
+        int exptype = m_exptype.elementAt(current);
         short type = ExpandedNameTable.getType(exptype);
 
         if (exptype != extendedTypeID
@@ -1304,7 +1304,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       for (current = (current & m_mask) - 1; current >= 0; current--)
       {
-        int exptype = m_exptype[current];
+        int exptype = m_exptype.elementAt(current);
         short type = ExpandedNameTable.getType(exptype);
 
         if (ATTRIBUTE_NODE == type || NAMESPACE_NODE == type)
@@ -1333,7 +1333,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       for (current = (current & m_mask) - 1; current >= 0; current--)
       {
-        int exptype = m_exptype[current];
+        int exptype = m_exptype.elementAt(current);
         short type = ExpandedNameTable.getType(exptype);
 
         if (exptype != extendedTypeID)
@@ -1380,7 +1380,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 
       while (DTM.NULL != (current = getPreviousSibling(current)))
       {
-        if (m_exptype[current & m_mask] == extendedTypeID)
+        if (m_exptype.elementAt(current & m_mask) == extendedTypeID)
           return current;
       }
 
@@ -1422,7 +1422,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int extendedTypeID)
     {
-      return (m_exptype[context & m_mask] == extendedTypeID) ? context : NULL;
+      return (m_exptype.elementAt(context & m_mask) == extendedTypeID) ? context : NULL;
     }
 
     /**
@@ -1482,7 +1482,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int extendedTypeID)
     {
-      return (m_exptype[getDocument() & m_mask] == extendedTypeID)
+      return (m_exptype.elementAt(getDocument() & m_mask) == extendedTypeID)
              ? context : next(context, context, extendedTypeID);
     }
 

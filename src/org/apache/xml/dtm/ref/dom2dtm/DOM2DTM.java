@@ -58,7 +58,7 @@ package org.apache.xml.dtm.ref.dom2dtm;
 
 import org.apache.xml.dtm.ref.*;
 import org.apache.xml.dtm.*;
-import org.apache.xml.utils.IntVector;
+import org.apache.xml.utils.ChunkedIntVector;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.StringBufferPool;
@@ -148,9 +148,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         // Initialize DTM navigation
     m_last_parent=m_last_kid=NULL;
     m_last_kid=addNode(m_root, 0, m_last_parent,m_last_kid, NULL);
-        m_level[0]=0;           // Unnecessary, included for paranoia
-    m_nextsib[0]=NOTPROCESSED;  // Unnecessary, included for paranoia
-    m_firstch[0]=NOTPROCESSED;  // Unnecessary, included for paranoia
         // Initialize DTM-completed status 
     m_nodesAreProcessed = false;
   }
@@ -216,18 +213,18 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       }
     }
     
-    m_firstch[nodeIndex] = NOTPROCESSED;
-    m_nextsib[nodeIndex] = NOTPROCESSED;
-    m_prevsib[nodeIndex] = previousSibling;
-    m_parent[nodeIndex] = parentIndex;
+    m_firstch.setElementAt(NOTPROCESSED,nodeIndex);
+    m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
+    m_prevsib.setElementAt(previousSibling,nodeIndex);
+    m_parent.setElementAt(parentIndex,nodeIndex);
     
     if(DTM.NULL != parentIndex && 
        type != DTM.ATTRIBUTE_NODE && 
        type != DTM.NAMESPACE_NODE)
     {
       // If the DTM parent had no children, this becomes its first child.
-      if(NOTPROCESSED == m_firstch[parentIndex])
-        m_firstch[parentIndex] = nodeIndex;
+      if(NOTPROCESSED == m_firstch.elementAt(parentIndex))
+        m_firstch.setElementAt(nodeIndex,parentIndex);
     }
     
     String nsURI = node.getNamespaceURI();
@@ -264,12 +261,12 @@ public class DOM2DTM extends DTMDefaultBaseIterators
        ? exnt.getExpandedTypeID(nsURI, localName, type) :
          exnt.getExpandedTypeID(type);
 
-    m_exptype[nodeIndex]  = expandedNameID;
+    m_exptype.setElementAt(expandedNameID,nodeIndex);
     
     indexNode(expandedNameID, nodeIndex);
 
     if (DTM.NULL != previousSibling)
-      m_nextsib[previousSibling] = nodeIndex;
+      m_nextsib.setElementAt(nodeIndex,previousSibling);
 
     return nodeIndex;
   }
@@ -345,8 +342,8 @@ public class DOM2DTM extends DTMDefaultBaseIterators
               {
                 // Last node posted at this level had no more children
                 // If it has _no_ children, we need to record that.
-                if(m_firstch[m_last_kid]==NOTPROCESSED)
-                  m_firstch[m_last_kid]=NULL;
+                if(m_firstch.elementAt(m_last_kid)==NOTPROCESSED)
+                  m_firstch.setElementAt(NULL,m_last_kid);
               }
                         
             while(m_last_parent != NULL)
@@ -386,10 +383,10 @@ public class DOM2DTM extends DTMDefaultBaseIterators
                     popShouldStripWhitespace();
                     // Fix and pop DTM
                     if(m_last_kid==NULL)
-                      m_firstch[m_last_parent]=NULL; // Popping from an element
+                      m_firstch.setElementAt(NULL,m_last_parent); // Popping from an element
                     else
-                      m_nextsib[m_last_kid]=NULL; // Popping from anything else
-                    m_last_parent=m_parent[m_last_kid=m_last_parent];
+                      m_nextsib.setElementAt(NULL,m_last_kid); // Popping from anything else
+                    m_last_parent=m_parent.elementAt(m_last_kid=m_last_parent);
                   }
               }
             if(m_last_parent==NULL)
@@ -412,7 +409,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     // Did we run out of the tree?
     if(next==null)
       {
-        m_nextsib[0] = NULL;
+        m_nextsib.setElementAt(NULL,0);
         m_nodesAreProcessed = true;
         m_pos=null;
                 
@@ -420,7 +417,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
           {
             System.out.println("***** DOM2DTM Crosscheck:");
             for(int i=0;i<m_nodes.size();++i)
-              System.out.println(i+":\t"+m_firstch[i]+"\t"+m_nextsib[i]);
+              System.out.println(i+":\t"+m_firstch.elementAt(i)+"\t"+m_nextsib.elementAt(i));
           }
                 
         return false;
@@ -508,11 +505,11 @@ public class DOM2DTM extends DTMDefaultBaseIterators
                     // Attr to Namespace if necessary.
                     attrIndex=addNode(attrs.item(i),attrlevel,
                                       nextindex,attrIndex,NULL);
-                    m_firstch[attrIndex]=DTM.NULL;
+                    m_firstch.setElementAt(DTM.NULL,attrIndex);
                   }
                 // Terminate list of attrs, and make sure they aren't
                 // considered children of the element
-                m_nextsib[attrIndex]=DTM.NULL;
+                m_nextsib.setElementAt(DTM.NULL,attrIndex);
               } // if attrs exist
           } //if(ELEMENT_NODE)
       } // (if !suppressNode)
