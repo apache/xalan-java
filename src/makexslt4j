@@ -34,6 +34,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionsTable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLProcessorContext.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLTJavaClassEngine.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)MethodResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)Redirect.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorAttributeSet.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorCharacters.java \
