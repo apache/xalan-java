@@ -397,6 +397,7 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_FUNCTION_NOT_FOUND"; 
   public static final String ER_CANT_HAVE_CONTENT_AND_SELECT = 
      "ER_CANT_HAVE_CONTENT_AND_SELECT";
+  public static final String ER_INVALID_SET_PARAM_VALUE = "ER_INVALID_SET_PARAM_VALUE";    
      
   public static final String WG_FOUND_CURLYBRACE = "WG_FOUND_CURLYBRACE";
   public static final String WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR = 
@@ -2118,6 +2119,12 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_CANT_HAVE_CONTENT_AND_SELECT,
      "The {0} element must not have both content and a select attribute."},
 
+    // Note to translators:  This message indicates that the value argument
+    // of setParameter must be a valid Java Object.
+//  ER_INVALID_SET_PARAM_VALUE
+//  public static final int ER_INVALID_SET_PARAM_VALUE = 256;
+    { ER_INVALID_SET_PARAM_VALUE,
+     "The value of param {0} must be a valid Java Object"},
 
 
 

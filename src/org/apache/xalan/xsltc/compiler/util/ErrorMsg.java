@@ -115,7 +115,8 @@ public final class ErrorMsg {
     public static final String JAXP_UNKNOWN_PROP_ERR = "JAXP_UNKNOWN_PROP_ERR";
     public static final String SAX2DOM_ADAPTER_ERR = "SAX2DOM_ADAPTER_ERR";
     public static final String XSLTC_SOURCE_ERR = "XSLTC_SOURCE_ERR";
-    public static final String ER_RESULT_NULL = "ER_RESULT_NULL";    
+    public static final String ER_RESULT_NULL = "ER_RESULT_NULL";
+    public static final String JAXP_INVALID_SET_PARAM_VALUE = "JAXP_INVALID_SET_PARAM_VALUE";        
 
     // Command-line error messages
     public static final String COMPILE_STDIN_ERR = "COMPILE_STDIN_ERR";

@@ -492,7 +492,10 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void setParameter(String name, Object value)
   {
-
+    if (value == null) {
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_SET_PARAM_VALUE, new Object[]{name}));
+    }
+    
     if (null == m_params)
     {
       m_params = new Hashtable();

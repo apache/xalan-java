@@ -1491,6 +1491,10 @@ public class TransformerImpl extends Transformer
    */
   public void setParameter(String name, Object value)
   {
+    
+    if (value == null) {
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_SET_PARAM_VALUE, new Object[]{name}));
+    }    
 
     StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
 

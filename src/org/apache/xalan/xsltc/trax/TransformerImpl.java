@@ -1020,7 +1020,13 @@ public final class TransformerImpl extends Transformer
      * @param name The name of the parameter
      * @param value The value to assign to the parameter
      */
-    public void setParameter(String name, Object value) { 
+    public void setParameter(String name, Object value) {
+        
+        if (value == null) {
+            ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE, name);
+            throw new IllegalArgumentException(err.toString());
+        }
+             
 	if (_isIdentity) {
 	    if (_parameters == null) {
 		_parameters = new Hashtable();
