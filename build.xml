@@ -591,7 +591,12 @@ Copyright:
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
       <classpath refid="samples.class.path" />
-    </javac>           
+    </javac>
+    <javac srcdir="${samples.dir}/ApplyXPathDOM"  
+           destdir="${build.samples}" excludes="${exclude}" 
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
+      <classpath refid="samples.class.path" />
+    </javac>             
     <javac srcdir="${samples.dir}/trax"  
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
