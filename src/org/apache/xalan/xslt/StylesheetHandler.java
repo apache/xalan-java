@@ -91,4 +91,12 @@ public class StylesheetHandler extends org.apache.xalan.processor.StylesheetHand
   public void startElement (String name, AttributeList atts)
     throws SAXException
   {}
+  
+  /**
+   * Return the stylesheet that this handler is constructing.
+   */
+  void pushStylesheet(org.apache.xalan.templates.Stylesheet s)
+  {
+    this.pushStylesheet(s);
+  }
 }

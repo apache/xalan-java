@@ -250,6 +250,9 @@ public class XSLTSchema extends XSLTElementDef
 
     XSLTAttributeDef resultAttr
       = new XSLTAttributeDef(null, "*", XSLTAttributeDef.T_AVT, false);
+    
+    XSLTAttributeDef xslResultAttr
+      = new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*", XSLTAttributeDef.T_CDATA, false);
 
     XSLTElementDef[] templateElements = new XSLTElementDef[20];
     XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[21];
@@ -264,7 +267,7 @@ public class XSLTSchema extends XSLTElementDef
                            xslExcludeResultPrefixesAttr, 
                            xslExtensionElementPrefixesAttr,
                            xslUseAttributeSetsAttr, 
-                           xslVersionAttr, resultAttr}, 
+                           xslVersionAttr, xslResultAttr, resultAttr}, 
                            new ProcessorLRE(), 
                            ElemLiteralResult.class /* class object */ );
                            

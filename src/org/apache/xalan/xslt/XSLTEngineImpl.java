@@ -473,8 +473,9 @@ public class XSLTEngineImpl implements  XSLTProcessor
            IOException, SAXException
   {
     if (baseIdentifier == null)
-      return new StylesheetRoot(this, baseIdentifier); 
-    
+    {  
+      return new StylesheetRoot(this, baseIdentifier);      
+    }      
     Templates templates = m_processor.process(new InputSource(baseIdentifier));
     return (StylesheetRoot)((StylesheetHandler)(m_processor.getTemplatesBuilder())).getStylesheetRoot();
     //this, baseIdentifier);
@@ -715,6 +716,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
     FileNotFoundException,
     IOException
   {
+    //TODO:Question for Scott: StylesheetPIHandler??
+    
     StylesheetRoot m_stylesheetRoot = null;
     Stylesheet stylesheet = null;
     String[] stringHolder =

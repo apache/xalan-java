@@ -270,7 +270,11 @@ class XSLTElementDef
       XSLTAttributeDef attrDef = attrDefs[k];
       String uriDef = attrDef.getNamespace();
       String nameDef = attrDef.getName();
-      if(nameDef.equals("*"))
+      if(nameDef.equals("*") && equalsMayBeNullOrZeroLen(uri, uriDef))
+      {
+        return attrDef;
+      }
+      else if(nameDef.equals("*") )
       {
         // In this case, all attributes are legal, so return 
         // this as the last resort.

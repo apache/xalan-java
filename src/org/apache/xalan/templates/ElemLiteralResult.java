@@ -65,6 +65,7 @@ import org.apache.xalan.utils.NameSpace;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.NameSpace;
+import org.apache.xalan.utils.StringVector;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
@@ -87,14 +88,26 @@ public class ElemLiteralResult extends ElemUse
    */
   private Vector m_avts = null;
   
+  private Vector m_xslAttr = null;
+  
   /**
-   * Set a literal result attribute.
+   * Set a literal result attribute (AVTs only).
    */
   public void addLiteralResultAttribute(AVT avt)
   {
     if(null == m_avts)
       m_avts = new Vector();
-    m_avts.addElement(avt);
+    m_avts.addElement(avt);     
+  }
+  
+  /**
+   * Set a literal result attribute (used for xsl attributes).
+   */
+  public void addLiteralResultAttribute(String att)
+  {
+    if(null == m_xslAttr)
+      m_xslAttr = new Vector();
+    m_xslAttr.addElement(att);      
   }
   
   /**
@@ -115,7 +128,7 @@ public class ElemLiteralResult extends ElemUse
       } // end for
     }
     return null;  
-  }
+  } 
   
   /**
    * The namespace of the element to be created.
@@ -209,6 +222,7 @@ public class ElemLiteralResult extends ElemUse
     // TODO: Need prefix.
     return m_rawName;
   }
+  
 
   /**
    * Copy a Literal Result Element into the Result tree, copy the 
@@ -227,6 +241,8 @@ public class ElemLiteralResult extends ElemUse
     
     // Process any possible attributes from xsl:use-attribute-sets first
     super.execute(transformer, sourceNode, mode);
+    
+    //xsl:version, excludeResultPrefixes???
     
     // Add namespace declarations.
     executeNSDecls(transformer);

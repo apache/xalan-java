@@ -98,7 +98,7 @@ public class Child extends UnImplNode
   /**
    * <meta name="usage" content="internal"/>
    * Get the value of K.  K is the maximum width of the tree.
-   */
+   *
   public int getK()
   {
     return getDocumentImpl().getK();
@@ -108,7 +108,7 @@ public class Child extends UnImplNode
    * <meta name="usage" content="internal"/>
    * Get the value of Y.  Y is the maximum depth of the tree.
    * Needed to calculate depth-first (document order) numbering.
-   */
+   *
   public int getY()
   {
     return getDocumentImpl().getY();
