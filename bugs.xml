@@ -163,7 +163,7 @@
 <Spr>
 <Name>DMAN4TAUPZ</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>messageerr03</TestID>
 <TestDesc>No message from xsl:message with terminate="yes"</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -273,6 +273,14 @@
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
+<Name>DMAN4TBURA</Name>
+<DateCreated>1/25/2001 </DateCreated>
+<State>Open</State>
+<TestID>prod/spr/spr02</TestID>
+<TestDesc>Need an error message for bad juxtaposition of number and /</TestDesc>
+<Subsystem>XPath</Subsystem>
+</Spr>
+<Spr>
 <Name>PDIK4HUPLA</Name>
 <DateCreated>3/28/2000 </DateCreated>
 <State>Closed</State>
@@ -283,7 +291,7 @@
 <Spr>
 <Name>PDIK4T9SZR</Name>
 <DateCreated>1/23/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>impincl12</TestID>
 <TestDesc>Import/Include over the net w/i firewall is failing</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -515,7 +523,7 @@
 <Spr>
 <Name>SCUU4SUQXU</Name>
 <DateCreated>1/10/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>systemidtest.java</TestID>
 <TestDesc>SystemId: transform(..."bad name") does not always have a good exception.toString()</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -531,7 +539,7 @@
 <Spr>
 <Name>SCUU4T5QEC</Name>
 <DateCreated>1/19/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>paramtest.java</TestID>
 <TestDesc>xalanj1compat.jar: resetting of parameters works differently 1.x/2.x</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -571,7 +579,7 @@
 <Spr>
 <Name>SCUU4T9V7F</Name>
 <DateCreated>1/23/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>stylesheetreusetest.java</TestID>
 <TestDesc>xalanj1compat.jar: processStylesheet() does not set that stylesheet into processor</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -579,7 +587,7 @@
 <Spr>
 <Name>SCUU4TBSTG</Name>
 <DateCreated>1/25/2001 </DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>paramtest.java</TestID>
 <TestDesc>compat.jar: setParam... then multiple processes throws ClassCastException:XString</TestDesc>
 <Subsystem>XSLT</Subsystem>
