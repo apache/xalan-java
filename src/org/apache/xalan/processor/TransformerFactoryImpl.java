@@ -85,6 +85,7 @@ import org.apache.xalan.transformer.TrAXFilter;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
+
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.SystemIDResolver;
@@ -107,7 +108,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
   /** 
    * The path/filename of the property file: XSLTInfo.properties  
-   * Maintenance note: see also org.apache.xpath.functions.FuncSystemProperty.XSLT_PROPERTIES
+   * Maintenance note: see also
+   * <code>org.apache.xpath.functions.FuncSystemProperty.XSLT_PROPERTIES</code>
    */
   public static final String XSLT_PROPERTIES =
     "org/apache/xalan/res/XSLTInfo.properties";
@@ -121,63 +123,16 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   }
 
   /** Static string to be used for incremental feature */
-  public static final String FEATURE_INCREMENTAL = "http://xml.apache.org/xalan/features/incremental";
+  public static final String FEATURE_INCREMENTAL =
+                             "http://xml.apache.org/xalan/features/incremental";
 
   /** Static string to be used for optimize feature */
-  public static final String FEATURE_OPTIMIZE = "http://xml.apache.org/xalan/features/optimize";
+  public static final String FEATURE_OPTIMIZE =
+                             "http://xml.apache.org/xalan/features/optimize";
 
   /** Static string to be used for source_location feature */
-  public static final String FEATURE_SOURCE_LOCATION = XalanProperties.SOURCE_LOCATION;
-
-  /**
-   * Retrieve a propery bundle from XSLT_PROPERTIES and load it
-   * into the System properties.
-   * Maintenance Note: Consider this to be removed. Setting system properties
-   * from a library might have undesirable side effects and should be avoided.
-   */
-  static 
-  {
-      try
-      {
-        InputStream is = null;
-
-        try
-        {
-          Properties props = new Properties();
-
-          is = TransformerFactoryImpl.class.getResourceAsStream("/" + XSLT_PROPERTIES);
-
-          // get a buffered version
-          BufferedInputStream bis = new BufferedInputStream(is);
-
-          props.load(bis);  // and load up the property bag from this
-          bis.close();  // close out after reading
-
-          // OK, now we only want to set system properties that 
-          // are not already set.
-          Properties systemProps = System.getProperties();
-          Enumeration propEnum = props.propertyNames();
-
-          while (propEnum.hasMoreElements())
-          {
-            String prop = (String) propEnum.nextElement();
-
-            if (!systemProps.containsKey(prop))
-              systemProps.put(prop, props.getProperty(prop));
-          }
-
-          System.setProperties(systemProps);
-
-        }
-        catch (Exception ex){}
-      }
-      catch (SecurityException se)
-      {
-
-        // In this case the caller is required to have 
-        // the needed attributes already defined.
-      }
-  }
+  public static final String FEATURE_SOURCE_LOCATION =
+                             XalanProperties.SOURCE_LOCATION;
 
   public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
@@ -186,7 +141,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     try
     {
       TemplatesHandler builder = newTemplatesHandler();
-      TreeWalker walker = new TreeWalker(builder, new org.apache.xml.utils.DOM2Helper(), builder.getSystemId());
+      TreeWalker walker = new TreeWalker(builder,
+                                         new org.apache.xml.utils.DOM2Helper(),
+                                         builder.getSystemId());
 
       walker.traverse(node);
 
