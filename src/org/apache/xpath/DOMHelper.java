@@ -188,8 +188,10 @@ public class DOMHelper
    * Figure out whether node2 should be considered as being later
    * in the document than node1, in Document Order as defined
    * by the XPath model. This may not agree with the ordering defined
-   * by other XML applications, and there are some cases where the
-   * order isn't defined and we're just returning noise.
+   * by other XML applications.
+   * <p>
+   * There are some cases where ordering isn't defined, and neither are
+   * the results of this function -- though we'll generally return true.
    * 
    * TODO: Make sure this does the right thing with attribute nodes!!!
    *
@@ -205,7 +207,9 @@ public class DOMHelper
     if (node1 == node2)
       return true;
 
-    boolean isNodeAfter = false;  // return value.
+	// Default return value, if there is no defined ordering
+    boolean isNodeAfter = true;
+	
     Node parent1 = getParentOfNode(node1);
     Node parent2 = getParentOfNode(node2);
 
@@ -216,30 +220,30 @@ public class DOMHelper
         isNodeAfter = isNodeAfterSibling(parent1, node1, node2);
       else
       {
-		  // TODO: If both parents are null, ordering is not defined.
-		  // We're returning true in lieu of throwing an exception.
+		  // If both parents are null, ordering is not defined.
+		  // We're returning a value in lieu of throwing an exception.
 		  // Not a case we expect to arise in XPath, but beware if you
 		  // try to reuse this method.
 		  
-		  /* TODO: This case can't arise; dead code.
-			 if (node1 == node2)  // Same document?
-			    return false;
-			 else
-		  */
-          return true;
+		  // We can just fall through in this case, which allows us
+		  // to hit the debugging code at the end of the function.
+          //return isNodeAfter;
       }
     }
     else
     {
 
       // General strategy: Figure out the lengths of the two 
-      // ancestor chains, and walk up them looking for the 
-      // first common ancestor, at which point we can do a 
-      // sibling compare.  Edge condition where one is the 
-      // ancestor of the other.
-      // Count parents, so we can see if one of the chains 
-      // needs to be equalized.
-      int nParents1 = 2, nParents2 = 2;  // count node & parent obtained above
+      // ancestor chains, reconcile the lengths, and look for
+	  // the lowest common ancestor. If that ancestor is one of
+	  // the nodes being compared, it comes before the other.
+      // Otherwise perform a sibling compare. 
+		//
+		// NOTE: If no common ancestor is found, ordering is undefined
+		// and we return the default value of isNodeAfter.
+		
+      // Count parents in each ancestor chain
+      int nParents1 = 2, nParents2 = 2;  // include node & parent obtained above
 
       while (parent1 != null)
       {
@@ -255,14 +259,15 @@ public class DOMHelper
         parent2 = getParentOfNode(parent2);
       }
 
-      Node startNode1 = node1, startNode2 = node2;  // adjustable starting points
+	  // Initially assume scan for common ancestor starts with
+	  // the input nodes.
+      Node startNode1 = node1, startNode2 = node2;
 
-      // Do I have to adjust the start point in one of 
-      // the ancesor chains?
+      // If one ancestor chain is longer, adjust its start point
+	  // so we're comparing at the same depths
       if (nParents1 < nParents2)
       {
-
-        // adjust startNode2
+        // Adjust startNode2 to depth of startNode1
         int adjust = nParents2 - nParents1;
 
         for (int i = 0; i < adjust; i++)
@@ -272,8 +277,7 @@ public class DOMHelper
       }
       else if (nParents1 > nParents2)
       {
-
-        // adjust startNode1
+        // adjust startNode1 to depth of startNode2
         int adjust = nParents1 - nParents2;
 
         for (int i = 0; i < adjust; i++)
@@ -284,7 +288,7 @@ public class DOMHelper
 
       Node prevChild1 = null, prevChild2 = null;  // so we can "back up"
 
-      // Loop up the ancestor chain looking for common parent.
+      // Loop up the ancestor chain looking for common parent
       while (null != startNode1)
       {
         if (startNode1 == startNode2)  // common parent?
@@ -297,8 +301,9 @@ public class DOMHelper
 
             break;  // from while loop
           }
-          else
+          else 
           {
+			// Compare ancestors below lowest-common as siblings
             isNodeAfter = isNodeAfterSibling(startNode1, prevChild1,
                                              prevChild2);
 
@@ -306,13 +311,17 @@ public class DOMHelper
           }
         }  // end if(startNode1 == startNode2)
 
+		// Move up one level and try again
         prevChild1 = startNode1;
         startNode1 = getParentOfNode(startNode1);
         prevChild2 = startNode2;
         startNode2 = getParentOfNode(startNode2);
-      }  // end while
-    }  // end big else
-
+      }  // end while(parents exist to examine)
+    }  // end big else (not immediate siblings)
+	
+	// WARNING: The following diagnostic won't report the early
+	// "same node" case. Fix if/when needed.
+	
     /* -- please do not remove... very useful for diagnostics --
     System.out.println("node1 = "+node1.getNodeName()+"("+node1.getNodeType()+")"+
     ", node2 = "+node2.getNodeName()
@@ -323,7 +332,7 @@ public class DOMHelper
 
   /**
    * Figure out if child2 is after child1 in document order.
-   * @param parent Must be the parent of child1 and child2.
+   * @param parent Must be the parent of both child1 and child2.
    * @param child1 Must be the child of parent and not equal to child2.
    * @param child2 Must be the child of parent and not equal to child1.
    * @returns true if child 2 is after child1 in document order.
