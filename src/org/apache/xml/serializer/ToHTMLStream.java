@@ -716,9 +716,14 @@ public class ToHTMLStream extends ToStream
         Attributes atts)
         throws org.xml.sax.SAXException
     {
-        // System.out.println("SerializerToHTML#startElement("+namespaceURI+", "+localName+", "+name+", ...);");
 
-        if (m_cdataTagOpen)
+        // clean up any pending things first
+        if (m_startTagOpen)
+        {
+            closeStartTag();
+            m_startTagOpen = false;
+        }
+        else if (m_cdataTagOpen)
         {
             closeCDATA();
             m_cdataTagOpen = false;
@@ -728,103 +733,92 @@ public class ToHTMLStream extends ToStream
             startDocumentInternal();
             m_needToCallStartDocument = false;
         }
-            
-//        if (m_needToOutputDocTypeDecl 
-//        && ( (null != getDoctypeSystem()) || (null!= getDoctypePublic())))
-//        {
-//            outputDocTypeDecl(name, true);
-//        }
-//        m_needToOutputDocTypeDecl = false;
 
 
+        // if this element has a namespace then treat it like XML
         if (null != namespaceURI && namespaceURI.length() > 0)
         {
             super.startElement(namespaceURI, localName, name, atts);
 
             return;
         }
-
+        
         try
         {
-        boolean savedDoIndent = m_doIndent;
-        boolean noLineBreak;
-        if (m_startTagOpen)
-        {
-            closeStartTag();
-            m_startTagOpen = false;
-        }
-
-        ElemDesc elemDesc = getElemDesc(name);
- 
-        
-        // ElemDesc parentElemDesc = getElemDesc(m_currentElementName);
-        boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
-        boolean isHeadElement = elemDesc.is(ElemDesc.HEADELEM);
-
-        // boolean isWhiteSpaceSensitive = elemDesc.is(ElemDesc.WHITESPACESENSITIVE);
-        if (m_ispreserve)
-            m_ispreserve = false;
-        else if (
-            m_doIndent
-            && (null != m_elementName)
-            && (!m_inBlockElem || isBlockElement) /* && !isWhiteSpaceSensitive */
-            )
-        {
-            m_startNewLine = true;
-
-            indent();
-        }
-
-        m_inBlockElem = !isBlockElement;
-        
-        // remember for later
-         m_elementLocalName = localName;
-         m_elementURI = namespaceURI;
-         m_elementName = name;
-         m_elementDesc = elemDesc;        
-
-        m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
-
-        // m_parents.push(m_currentElementName);
-        m_writer.write('<');
-        m_writer.write(name);
-
-        if (atts != null)
-            addAttributes(atts);
-
-        // mark that the closing '>' of the starting tag is not yet written out
-        m_startTagOpen = true;
-        m_currentElemDepth++; // current element is one element deeper
-        m_isprevtext = false;
-        m_doIndent = savedDoIndent;
-
-        if (isHeadElement)
-        {
-            if (m_startTagOpen)
+            ElemDesc elemDesc = getElemDesc(name);
+            // deal with indentation issues first
+            if (m_doIndent)
             {
-                closeStartTag();
-                m_startTagOpen = false;
-            }
 
-            if (!m_omitMetaTag)
-            {
-                if (m_doIndent)
+                boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
+                isBlockElement = elemDesc.is(ElemDesc.BLOCK);
+                if (m_ispreserve)
+                    m_ispreserve = false;
+                else if (
+                    (null != m_elementName)
+                    && (!m_inBlockElem
+                        || isBlockElement) /* && !isWhiteSpaceSensitive */
+                    )
+                {
+                    m_startNewLine = true;
+
                     indent();
 
-                m_writer.write("<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
+                }
+                m_inBlockElem = !isBlockElement;
+            }
 
-                // String encoding = Encodings.getMimeEncoding(m_encoding).toLowerCase();
-                String encoding = getEncoding();
-                String encode = Encodings.getMimeEncoding(encoding);
+            // save any attributes for later processing
+            if (atts != null)
+                addAttributes(atts);            
 
-                m_writer.write(encode);
-                //m_writer.write('"');
-                //m_writer.write('>');
-                m_writer.write("\">");
+            // deal with the opening tag itself
+            m_startTagOpen = true;
+            m_elementDesc = elemDesc;
+            m_isprevtext = false;
+            m_writer.write('<');
+            m_writer.write(name);
+            
+            
+            // OPTIMIZE-EMPTY 
+            if (elemDesc.is(ElemDesc.EMPTY))
+            {
+                // if the element is empty (has no children) then we can quit early and
+                // not update all the other state information because the endElement() is
+                // coming right away.  If you want to kill this optimization the corresponding
+                // optimization "OPTIMIZE-EMPTY in endElement() must be killed too.
+                return;
+            }
+
+            // update any state information
+            m_elementLocalName = localName;
+            m_elementURI = namespaceURI;
+            m_elementName = name;
+            m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
+            m_currentElemDepth++; // current element is one element deeper
+            
+            if (elemDesc.is(ElemDesc.HEADELEM))
+            {
+                // This is the <HEAD> element, do some special processing
+                if (m_startTagOpen)
+                {
+                    closeStartTag();
+                    m_startTagOpen = false;
+                }
+                if (!m_omitMetaTag)
+                {
+                    if (m_doIndent)
+                        indent();
+                    m_writer.write(
+                        "<META http-equiv=\"Content-Type\" content=\"text/html; charset=");
+                    String encoding = getEncoding();
+                    String encode = Encodings.getMimeEncoding(encoding);
+                    m_writer.write(encode);
+                    m_writer.write("\">");
+                }
             }
         }
-        }
-        catch(IOException e)
+        catch (IOException e)
         {
             throw new SAXException(e);
         }
@@ -841,16 +835,16 @@ public class ToHTMLStream extends ToStream
      *             wrapping another exception.
      */
     public final void endElement(
-        String namespaceURI,
-        String localName,
-        String name)
+        final String namespaceURI,
+        final String localName,
+        final String name)
         throws org.xml.sax.SAXException
     {
-        // System.out.println("SerializerToHTML#endElement("+namespaceURI+", "+localName+", "+name+");");
-
+        // deal with any pending issues
         if (m_cdataTagOpen)
             closeCDATA();
 
+        // if the element has a namespace, treat it like XML, not HTML
         if (null != namespaceURI && namespaceURI.length() > 0)
         {
             super.endElement(namespaceURI, localName, name);
@@ -858,113 +852,118 @@ public class ToHTMLStream extends ToStream
             return;
         }
 
-        m_currentElemDepth--;
-
-        // System.out.println(m_currentElementName);
-        // m_parents.pop();
-        m_isRawStack.pop();
-
-        ElemDesc elemDesc = getElemDesc(name);
-        m_elementDesc = elemDesc;
-
-        // ElemDesc parentElemDesc = getElemDesc(m_currentElementName);
-        boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
-        boolean shouldIndent = false;
-
-        if (m_ispreserve)
-        {
-            m_ispreserve = false;
-        }
-        else if (m_doIndent && (!m_inBlockElem || isBlockElement))
-        {
-            m_startNewLine = true;
-            shouldIndent = true;
-
-            // indent(m_currentIndent);
-        }
-
-        m_inBlockElem = !isBlockElement;
-
         try
         {
-        if (!m_startTagOpen)
-        {
-            // this block is like a copy of closeStartTag()
-            // except that 
-            if (shouldIndent)
-                indent();
 
-            m_writer.write("</");
-            m_writer.write(name);
-            m_writer.write('>');
+            final ElemDesc elemDesc = getElemDesc(name);
+            m_elementDesc = elemDesc;
+            final boolean elemEmpty = elemDesc.is(ElemDesc.EMPTY);
 
-            m_elementName = name;
-
-            if (m_cdataSectionElements != null)
-                m_cdataSectionStates.pop();
-            if (m_doIndent && !m_preserves.isEmpty())
-                m_preserves.pop();
-        }
-        else
-        {
-            if (m_tracer != null)
-                super.fireStartElem(m_elementName);
-            /* process any attributes gathered after the
-             * startElement(String) call
-             */
-            int nAttrs = m_attributes.getLength();
-            if (nAttrs > 0)
-                processAttributes(nAttrs);
-            if (!elemDesc.is(ElemDesc.EMPTY))
+            // deal with any indentation issues
+            if (m_doIndent)
             {
+                boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
+                boolean shouldIndent = false;
 
-                // As per Dave/Paul recommendation 12/06/2000
-                // if (shouldIndent)
-                // m_writer.write('>');
-                //  indent(m_currentIndent);
+                if (m_ispreserve)
+                {
+                    m_ispreserve = false;
+                }
+                else if (m_doIndent && (!m_inBlockElem || isBlockElement))
+                {
+                    m_startNewLine = true;
+                    shouldIndent = true;
+                }
+                if (!m_startTagOpen && shouldIndent)
+                    indent();
+                m_inBlockElem = !isBlockElement;
+            }
 
-                m_writer.write("></");
+            if (!m_startTagOpen)
+            {
+                m_writer.write("</");
                 m_writer.write(name);
                 m_writer.write('>');
             }
             else
             {
-                m_writer.write('>');
+                // the start-tag was already closed.
+                
+                if (m_tracer != null)
+                    super.fireStartElem(m_elementName);
+
+                // the starting tag was still open when we received this endElement() call
+                // so we need to process any gathered attributes NOW, before they go away.
+                int nAttrs = m_attributes.getLength();
+                if (nAttrs > 0)
+                    processAttributes(nAttrs);
+                if (!elemEmpty)
+                {
+                    // As per Dave/Paul recommendation 12/06/2000
+                    // if (shouldIndent)
+                    // m_writer.write('>');
+                    //  indent(m_currentIndent);
+
+                    m_writer.write("></");
+                    m_writer.write(name);
+                    m_writer.write('>');
+                }
+                else
+                {
+                    m_writer.write('>');
+                }
+
+                /* no need to call m_cdataSectionStates.pop();
+                 * because pushCdataSectionState() was never called
+                 * ... the endElement call came before we had a chance
+                 * to push the state.
+                 */
+
+            }
+            
+            // clean up because the element has ended
+            if (elemDesc.is(ElemDesc.WHITESPACESENSITIVE))
+                m_ispreserve = true;
+            m_isprevtext = false;
+            m_elementURI = null;
+            m_elementLocalName = null;
+
+            // fire off the end element event
+            if (m_tracer != null)
+                super.fireEndElem(name);            
+                           
+            // OPTIMIZE-EMPTY                
+            if (elemEmpty)
+            {
+                // a quick exit if the HTML element had no children.
+                // This block of code can be removed if the corresponding block of code
+                // in startElement() also labeled with "OPTIMIZE-EMPTY" is also removed
+                m_startTagOpen = false;
+                return;
             }
 
-            /* no need to call m_cdataSectionStates.pop();
-             * because pushCdataSectionState() was never called
-             * ... the endElement call came before we had a chance
-             * to push the state.
-             */
+            // some more clean because the element has ended. 
+            if (!m_startTagOpen)
+            {
+                if (m_cdataSectionElements != null)
+                    m_cdataSectionStates.pop();
+                if (m_doIndent && !m_preserves.isEmpty())
+                    m_preserves.pop();
+            }
+            else
+                m_startTagOpen = false;
+            /* At this point m_startTagOpen is always false because
+             * we don't have any open tags anymore, since we just 
+             * wrote out a closing ">" 
+             */ 
 
+            m_currentElemDepth--;
+            m_isRawStack.pop();
         }
-
-        if (elemDesc.is(ElemDesc.WHITESPACESENSITIVE))
-            m_ispreserve = true;
-
-        /* we don't have any open tags anymore, since we just 
-         * wrote out a closing ">" 
-         */
-        m_startTagOpen = false;
-
-        m_isprevtext = false;
-        
-        }
-        catch(IOException e)
+        catch (IOException e)
         {
             throw new SAXException(e);
         }
-        
-
-        m_elementURI = null;
-        m_elementLocalName = null;
-
-        // fire off the end element event
-
-        if (m_tracer != null)
-            super.fireEndElem(name);        
- 
     }
 
     /**
