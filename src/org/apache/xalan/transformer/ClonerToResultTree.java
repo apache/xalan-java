@@ -211,22 +211,22 @@ public class ClonerToResultTree
         break;
       case DTM.ELEMENT_NODE :
         {
-          Attributes atts;
-
+          // SAX expects "no namespace" to be represented
+          // as "" rather than null.
+          String ns = dtm.getNamespaceURI(node);
+          if(ns==null)ns="";
+          String localName = dtm.getLocalName(node);
+          rth.startElement(ns, localName, dtm.getNodeNameX(node), null);
+          
+          // ResultTreeHandler expects Element events to _preceed_
+          // any Attribute events associated with that element.	
+          // (Think of xsl:attribute.)
           if (shouldCloneAttributes)
           {
             rth.addAttributes(node);
             rth.processNSDecls(node, nodeType, dtm);
           }
 
-          String ns = dtm.getNamespaceURI(node);
-          // JJK SAX apparently expects "no namespace" to be represented
-          // as "" rather than null.
-          if(ns==null)ns="";
-
-          String localName = dtm.getLocalName(node);
-
-          rth.startElement(ns, localName, dtm.getNodeNameX(node), null);
         }
         break;
       case DTM.CDATA_SECTION_NODE :
