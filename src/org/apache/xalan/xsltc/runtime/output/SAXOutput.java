@@ -92,14 +92,15 @@ public class SAXOutput extends OutputBase implements Constants {
 
     public SAXOutput(ContentHandler handler, String encoding) {
 	_saxHandler = handler;
-	_encoding = encoding;
+	_encoding = encoding;	
     } 
 
     public SAXOutput(ContentHandler hdler, LexicalHandler lex, String encoding){
 	_saxHandler = hdler;
 	_lexHandler = lex;
 	_encoding = encoding;
-    } 
+    }
+
 
     public void startDocument() throws TransletException {
 	try {

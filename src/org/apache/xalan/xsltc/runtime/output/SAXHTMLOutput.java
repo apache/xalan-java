@@ -69,20 +69,29 @@ import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.AttributeList;
-
+import java.io.IOException;
+import java.util.Stack;
 
 public class SAXHTMLOutput extends SAXOutput  { 
     private boolean   _headTagOpen = false;
     private String _mediaType = "text/html";
 
-    public SAXHTMLOutput(ContentHandler handler, String encoding) {
+    public SAXHTMLOutput(ContentHandler handler, String encoding) throws
+	IOException 
+    {
 	super(handler, encoding);
+	init();
     }
 
     public SAXHTMLOutput(ContentHandler handler, LexicalHandler lex, 
-	String encoding)
+	String encoding) throws IOException
     {
 	super(handler, lex, encoding);
+	init();
+    }
+   
+    private void init() throws IOException {
+	_qnameStack = new Stack();
     }
 
 
