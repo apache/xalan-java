@@ -1,0 +1,6 @@
+Tidy Jar -  Java version of a HTML syntax checker and pretty printer
+
+Sourced From:   http://sourceforge.net/projects/jtidy	
+Used By: 	xml-xalan/test 
+
+See jtidy.LICENSE.txt and web site for further information
