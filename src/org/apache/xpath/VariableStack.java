@@ -97,7 +97,7 @@ public class VariableStack implements Cloneable
     VariableStack vs = (VariableStack) super.clone();
 
     // I *think* I can get away with a shallow clone here?
-    vs._sf = (XObject[]) _sf.clone();
+    vs._stackFrames = (XObject[]) _stackFrames.clone();
     vs._links = (int[]) _links.clone();
 
     return vs;
@@ -107,19 +107,19 @@ public class VariableStack implements Cloneable
    * The stack frame where all variables and params will be kept.
    * @serial
    */
-  XObject[] _sf = new XObject[XPathContext.RECURSIONLIMIT * 2];
+  XObject[] _stackFrames = new XObject[XPathContext.RECURSIONLIMIT * 2];
 
   /**
-   * The top of the stack frame (<code>_sf</code>).
+   * The top of the stack frame (<code>_stackFrames</code>).
    * @serial
    */
-  int _top;
+  int _frameTop;
 
   /**
-   * The bottom index of the current frame (relative to <code>_sf</code>).
+   * The bottom index of the current frame (relative to <code>_stackFrames</code>).
    * @serial
    */
-  private int _cfb;
+  private int _currentFrameBottom;
 
   /**
    * The stack of frame positions.  I call 'em links because of distant
@@ -143,7 +143,7 @@ public class VariableStack implements Cloneable
    */
   public XObject elementAt(final int i)
   {
-    return _sf[i];
+    return _stackFrames[i];
   }
 
   /**
@@ -153,7 +153,7 @@ public class VariableStack implements Cloneable
    */
   public int size()
   {
-    return _top;
+    return _frameTop;
   }
 
   /**
@@ -164,14 +164,14 @@ public class VariableStack implements Cloneable
   public void reset()
   {
 
-    _top = 0;
+    _frameTop = 0;
     _linksTop = 0;
 
     // Adding one here to the stack of frame positions will allow us always 
     // to look one under without having to check if we're at zero.
     // (As long as the caller doesn't screw up link/unlink.)
     _links[_linksTop++] = 0;
-    _sf = new XObject[_sf.length]; 
+    _stackFrames = new XObject[_stackFrames.length]; 
   }
 
   /**
@@ -181,7 +181,7 @@ public class VariableStack implements Cloneable
    */
   public void setStackFrame(int sf)
   {
-    _cfb = sf;
+    _currentFrameBottom = sf;
   }
 
   /**
@@ -193,7 +193,7 @@ public class VariableStack implements Cloneable
    */
   public int getStackFrame()
   {
-    return _cfb;
+    return _currentFrameBottom;
   }
 
   /**
@@ -214,16 +214,16 @@ public class VariableStack implements Cloneable
   public int link(final int size)
   {
 
-    _cfb = _top;
-    _top += size;
+    _currentFrameBottom = _frameTop;
+    _frameTop += size;
 
-    if (_top >= _sf.length)
+    if (_frameTop >= _stackFrames.length)
     {
-      XObject newsf[] = new XObject[_sf.length + (1024 * 4) + size];
+      XObject newsf[] = new XObject[_stackFrames.length + (1024 * 4) + size];
 
-      System.arraycopy(_sf, 0, newsf, 0, _sf.length);
+      System.arraycopy(_stackFrames, 0, newsf, 0, _stackFrames.length);
 
-      _sf = newsf;
+      _stackFrames = newsf;
     }
 
     if (_linksTop + 1 >= _links.length)
@@ -235,9 +235,9 @@ public class VariableStack implements Cloneable
       _links = newlinks;
     }
 
-    _links[_linksTop++] = _cfb;
+    _links[_linksTop++] = _currentFrameBottom;
 
-    return _cfb;
+    return _currentFrameBottom;
   }
 
   /**
@@ -246,8 +246,8 @@ public class VariableStack implements Cloneable
    */
   public  void unlink()
   {
-    _top = _links[--_linksTop];
-    _cfb = _links[_linksTop - 1];
+    _frameTop = _links[--_linksTop];
+    _currentFrameBottom = _links[_linksTop - 1];
   }
   
   /**
@@ -258,8 +258,8 @@ public class VariableStack implements Cloneable
    */
   public  void unlink(int currentFrame)
   {
-    _top = _links[--_linksTop];
-    _cfb = currentFrame; 
+    _frameTop = _links[--_linksTop];
+    _currentFrameBottom = currentFrame; 
   }
 
   /**
@@ -273,7 +273,7 @@ public class VariableStack implements Cloneable
    */
   public void setLocalVariable(int index, XObject val)
   {
-    _sf[index + _cfb] = val;
+    _stackFrames[index + _currentFrameBottom] = val;
   }
 
   /**
@@ -288,7 +288,7 @@ public class VariableStack implements Cloneable
    */
   public void setLocalVariable(int index, XObject val, int stackFrame)
   {
-    _sf[index + stackFrame] = val;
+    _stackFrames[index + stackFrame] = val;
   }
 
   /**
@@ -309,16 +309,16 @@ public class VariableStack implements Cloneable
           throws TransformerException
   {
 
-    index += _cfb;
+    index += _currentFrameBottom;
 
-    XObject val = _sf[index];
+    XObject val = _stackFrames[index];
     
     if(null == val)
       throw new TransformerException("Variable accessed before it is bound!", xctxt.getSAXLocator());
 
     // Lazy execution of variables.
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
-      return (_sf[index] = val.execute(xctxt));
+      return (_stackFrames[index] = val.execute(xctxt));
 
     return val;
   }
@@ -341,7 +341,7 @@ public class VariableStack implements Cloneable
 
     index += frame;
 
-    XObject val = _sf[index];
+    XObject val = _stackFrames[index];
 
     return val;
   }
@@ -358,7 +358,7 @@ public class VariableStack implements Cloneable
    */
   public boolean isLocalSet(int index) throws TransformerException
   {
-    return (_sf[index + _cfb] != null);
+    return (_stackFrames[index + _currentFrameBottom] != null);
   }
 
   /** NEEDSDOC Field m_nulls          */
@@ -376,9 +376,9 @@ public class VariableStack implements Cloneable
   public void clearLocalSlots(int start, int len)
   {
 
-    start += _cfb;
+    start += _currentFrameBottom;
 
-    System.arraycopy(m_nulls, 0, _sf, start, len);
+    System.arraycopy(m_nulls, 0, _stackFrames, start, len);
   }
 
   /**
@@ -392,7 +392,7 @@ public class VariableStack implements Cloneable
    */
   public void setGlobalVariable(final int index, final XObject val)
   {
-    _sf[index] = val;
+    _stackFrames[index] = val;
   }
 
   /**
@@ -413,11 +413,11 @@ public class VariableStack implements Cloneable
           throws TransformerException
   {
 
-    XObject val = _sf[index];
+    XObject val = _stackFrames[index];
 
     // Lazy execution of variables.
     if (val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
-      return (_sf[index] = val.execute(xctxt));
+      return (_stackFrames[index] = val.execute(xctxt));
 
     return val;
   }

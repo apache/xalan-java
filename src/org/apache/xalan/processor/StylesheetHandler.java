@@ -725,6 +725,7 @@ public class StylesheetHandler extends DefaultHandler
     {
 
       // If it's whitespace, just ignore it, otherwise flag an error.
+      // %ISSUE% What about whitesace within scope of xsl:space="preserve"?
       if (!XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
         error(
           "Non-whitespace text is not allowed in this position in the stylesheet!",

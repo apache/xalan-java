@@ -1724,23 +1724,61 @@ public class TransformerImpl extends Transformer
   /**
    * <meta name="usage" content="advanced"/>
    * Given a stylesheet element, create a result tree fragment from it's
-   * contents.
+   * contents. The fragment will be built within the shared RTF DTM system
+   * used as a variable stack.
    * @param templateParent The template element that holds the fragment.
-   * @param sourceNode The current source context node.
-   * @param mode The mode under which the template is operating.
-   * @return An object that represents the result tree fragment.
+   * @return the NodeHandle for the root node of the resulting RTF.
    *
    * @throws TransformerException
    */
   public int transformToRTF(ElemTemplateElement templateParent)
           throws TransformerException
   {
+    // Retrieve a DTM to contain the RTF. At this writing, this may be a
+    // multi-document DTM (SAX2RTFDTM).
+    DTM dtmFrag = m_xcontext.getRTFDTM();
+    return transformToRTF(templateParent,dtmFrag);
+  }
+  
+  /**
+   * <meta name="usage" content="advanced"/>
+   * Given a stylesheet element, create a result tree fragment from it's
+   * contents. The fragment will also use the shared DTM system, but will
+   * obtain its space from the global variable pool rather than the dynamic
+   * variable stack. This allows late binding of XUnresolvedVariables without
+   * the risk that their content will be discarded when the variable stack
+   * is popped.
+   * 
+   * @param templateParent The template element that holds the fragment.
+   * @return the NodeHandle for the root node of the resulting RTF.
+   *
+   * @throws TransformerException
+   */
+  public int transformToGlobalRTF(ElemTemplateElement templateParent)
+          throws TransformerException
+  {
+    // Retrieve a DTM to contain the RTF. At this writing, this may be a
+    // multi-document DTM (SAX2RTFDTM).
+    DTM dtmFrag = m_xcontext.getGlobalRTFDTM();
+    return transformToRTF(templateParent,dtmFrag);
+  }
+  
+  /**
+   * <meta name="usage" content="advanced"/>
+   * Given a stylesheet element, create a result tree fragment from it's
+   * contents.
+   * @param templateParent The template element that holds the fragment.
+   * @param dtmFrag The DTM to write the RTF into
+   * @return the NodeHandle for the root node of the resulting RTF.
+   *
+   * @throws TransformerException
+   */
+  private int transformToRTF(ElemTemplateElement templateParent,DTM dtmFrag)
+          throws TransformerException
+  {
 
     XPathContext xctxt = m_xcontext;
     
-    // Retrieve a DTM to contain the RTF. At this writing, this may be a
-    // multi-document DTM (SAX2RTFDTM).
-    DTM dtmFrag = xctxt.getRTFDTM();
     ContentHandler rtfHandler = dtmFrag.getContentHandler();
 
     // Obtain the ResultTreeFrag's root node.

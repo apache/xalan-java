@@ -138,6 +138,12 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   /** Index of currently active RTF DTM in m_rtfdtm_stack */
   private int m_which_rtfdtm=-1;
   
+ /**
+   * Most recent "reusable" DTM for Global Result Tree Fragments. No stack is
+   * required since we're never going to pop these.
+   */
+  private SAX2RTFDTM m_global_rtfdtm=null;
+  
 	
   /**
    * Though XPathContext context extends 
@@ -1185,8 +1191,49 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
   }
 
+ /**
+   * Get a DTM to be used as a container for a global Result Tree
+   * Fragment. This will always be an instance of (derived from? equivalent to?) 
+   * SAX2DTM, since each RTF is constructed by temporarily redirecting our SAX 
+   * output to it. It may be a single DTM containing for multiple fragments, 
+   * if the implementation supports that.
+   * 
+   * Note: The distinction between this method and getRTFDTM() is that the latter
+   * allocates space from the dynamic variable stack (m_rtfdtm_stack), which may
+   * be pruned away again as the templates which defined those variables are exited.
+   * Global variables may be bound late (see XUnresolvedVariable), and never want to
+   * be discarded, hence we need to allocate them separately and don't actually need
+   * a stack to track them.
+   * 
+   * @return a non-null DTM reference.
+   */
+  public DTM getGlobalRTFDTM()
+  {
+  	// We probably should _NOT_ be applying whitespace filtering at this stage!
+  	//
+  	// Some magic has been applied in DTMManagerDefault to recognize this set of options
+  	// and generate an instance of DTM which can contain multiple documents
+  	// (SAX2RTFDTM). Perhaps not the optimal way of achieving that result, but
+  	// I didn't want to change the manager API at this time, or expose 
+  	// too many dependencies on its internals. (Ideally, I'd like to move
+  	// isTreeIncomplete all the way up to DTM, so we wouldn't need to explicitly
+  	// specify the subclass here.)
+
+	// If it doesn't exist, or if the one already existing is in the middle of
+	// being constructed, we need to obtain a new DTM to write into. I'm not sure
+	// the latter will ever arise, but I'd rather be just a bit paranoid..
+	if( m_global_rtfdtm==null || m_global_rtfdtm.isTreeIncomplete() )
+	{
+  		m_global_rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
+	}
+    return m_global_rtfdtm;
+  }
+  
+
+
+
   /**
-   * Get a DTM to be used as a container for a Result Tree
+   * Get a DTM to be used as a container for a dynamic Result Tree
    * Fragment. This will always be an instance of (derived from? equivalent to?) 
    * SAX2DTM, since each RTF is constructed by temporarily redirecting our SAX 
    * output to it. It may be a single DTM containing for multiple fragments, 

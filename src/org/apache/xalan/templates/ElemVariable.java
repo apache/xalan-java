@@ -323,8 +323,16 @@ public class ElemVariable extends ElemTemplateElement
       else
       {
 
-        // Use result tree fragment
-        int df = transformer.transformToRTF(this);
+        // Use result tree fragment.
+        // Global variables may be deferred (see XUnresolvedVariable) and hence
+        // need to be assigned to a different set of DTMs than local variables
+        // so they aren't popped off the stack on return from a template.
+        int df;
+
+	    if(m_parentNode instanceof Stylesheet) // Global variable
+	        df = transformer.transformToGlobalRTF(this);
+	    else        
+	        df = transformer.transformToRTF(this);
 
         var = new XRTreeFrag(df, xctxt);
       }

@@ -351,11 +351,14 @@ public class DTMManagerDefault extends DTMManager
 		{
 		  dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
 				    xstringFactory, doIndexing);
-		}
+
+       	}
 
         // Go ahead and add the DTM to the lookup table.  This needs to be
-        // done before any parsing occurs.
-        addDTM(dtm, dtmPos, 0);
+        // done before any parsing occurs. Note offset 0, since we've just
+        // created a new DTM.
+ 	    addDTM(dtm, dtmPos, 0);
+
 
         boolean haveXercesParser =
           (null != reader)
