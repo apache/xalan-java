@@ -85,8 +85,8 @@ public class ExpandedNameTable
   /** Probably a reference to static pool.   */
   //private DTMStringPool m_namespaceNames;
 
-  /** Vector of extended types for this document   */
-  private /*static*/ Vector m_extendedTypes;
+  /** Array of extended types for this document   */
+  private /*static*/ ExtendedType[] m_extendedTypes;
 
   /** Next available extended type   */
   // %REVIEW% Since this is (should be) always equal 
@@ -115,20 +115,20 @@ public class ExpandedNameTable
   ExtendedType hashET=new ExtendedType(-1,"","");
 
   private static Hashtable m_defaultHashtable;
-  private static Vector m_defaultExtendedTypes;
+  private static ExtendedType[] m_defaultExtendedTypes;
 
   /**
    *  Init default vales
    */
   static {
     // use bigger values than default, to avoid reallocation in the future
-    m_defaultExtendedTypes = new Vector(23);
+    m_defaultExtendedTypes = new ExtendedType[23];
     m_defaultHashtable = new Hashtable(23, 0.75f);
 
     for (int i = 0; i < DTM.NTYPES; i++)
     {
       ExtendedType newET = new ExtendedType(i, "", "");
-      m_defaultExtendedTypes.addElement(newET);
+      m_defaultExtendedTypes[i] = newET;
       m_defaultHashtable.put(newET, new Integer(i));
     }
   }
@@ -163,11 +163,14 @@ public class ExpandedNameTable
    */
   private void initExtendedTypes()
   {
-    // Since objects in the Vector a m_extendedTypes and m_hashtable are never changed
+    // Since objects in m_extendedTypes and m_hashtable are never changed
     // it should be safe to copy default tables
-    m_extendedTypes = (Vector)m_defaultExtendedTypes.clone();
+    m_extendedTypes = new ExtendedType[m_defaultExtendedTypes.length];
+    for (int i = 0; i < DTM.NTYPES; i++) {
+        m_extendedTypes[i] = m_defaultExtendedTypes[i];
+    }
     m_hashtable = (Hashtable)m_defaultHashtable.clone();
-    m_nextType = m_extendedTypes.size();
+    m_nextType = DTM.NTYPES;
   }
 
   /**
@@ -205,7 +208,13 @@ public class ExpandedNameTable
       return ((Integer)eType).intValue();
 
     ExtendedType newET=new ExtendedType(type, namespace, localName);
-    m_extendedTypes.addElement(newET);
+    if (m_extendedTypes.length == m_nextType) {
+        ExtendedType[] newArray = new ExtendedType[m_extendedTypes.length*2];
+        System.arraycopy(m_extendedTypes, 0, newArray, 0,
+                         m_extendedTypes.length);
+        m_extendedTypes = newArray;
+    }
+    m_extendedTypes[m_nextType] = newET;
     m_hashtable.put(newET, new Integer(m_nextType));
     return m_nextType++;
   }
@@ -233,7 +242,7 @@ public class ExpandedNameTable
   public String getLocalName(int ExpandedNameID)
   {
     //return m_locNamesPool.indexToString(ExpandedNameID & MASK_LOCALNAME);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    ExtendedType etype = m_extendedTypes[ExpandedNameID];
     return etype.localName;
   }
 
@@ -246,7 +255,7 @@ public class ExpandedNameTable
   public final int getLocalNameID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_LOCALNAME);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    ExtendedType etype = m_extendedTypes[ExpandedNameID];
     if (etype.localName.equals(""))
       return 0;
     else
@@ -266,7 +275,7 @@ public class ExpandedNameTable
 
     //int id = (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
     //return (0 == id) ? null : m_namespaceNames.indexToString(id);
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    ExtendedType etype = m_extendedTypes[ExpandedNameID];
     return (etype.namespace.equals("") ? null : etype.namespace);
   }
 
@@ -279,7 +288,7 @@ public class ExpandedNameTable
   public final int getNamespaceID(int ExpandedNameID)
   {
     //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    ExtendedType etype = m_extendedTypes[ExpandedNameID];
     if (etype.namespace.equals(""))
       return 0;
     else
@@ -294,7 +303,7 @@ public class ExpandedNameTable
    */
   public final short getType(int ExpandedNameID)
   {
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    ExtendedType etype = m_extendedTypes[ExpandedNameID];
     return (short)etype.nodetype;
   }
   
@@ -307,7 +316,7 @@ public class ExpandedNameTable
   /**
    * Private class representing an extended type object
    */
-  private static class ExtendedType
+  private final static class ExtendedType
   {
     protected int nodetype;
     protected String namespace;
@@ -364,6 +373,7 @@ public class ExpandedNameTable
               return false;
       }
     }
+
   }
 
 }
