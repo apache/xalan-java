@@ -161,7 +161,18 @@ public class TransformerHandlerImpl
         CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
 
         if(m_insideParse)
-            sp.doMore(false, sax2dtm.getAppCoroutineID());  
+        {
+          // %REVIEW% Joe needs to review this.
+          // If we are in a condition where the parser threw an exception, 
+          // we have to make sure that doMore doesn't call to wait on 
+          // the other thread, so in this case we first clear the parser 
+          // thread from the CoRoutine manager.  
+          if(null != ex)
+          {
+            sp.getCoroutineManager().co_exit(sp.getParserCoroutineID());
+          }
+          sp.doMore(false, sax2dtm.getAppCoroutineID()); 
+        }
       }
       
       sax2dtm.clearCoRoutine(true);
@@ -682,7 +693,7 @@ public class TransformerHandlerImpl
    */
   public void fatalError(SAXParseException e) throws SAXException
   {
-
+System.err.println("In fatalError!");
     clearCoRoutine(e);
 
     if (m_errorHandler != null)
