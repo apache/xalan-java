@@ -223,6 +223,23 @@ public class ElemExtensionCall extends ElemLiteralResult
     }
 
   }
+  
+  /**
+   * Return true if this extension element has a <xsl:fallback> child element.
+   *
+   * @return true if this extension element has a <xsl:fallback> child element.
+   */
+  public boolean hasFallbackChildren()
+  {
+    for (ElemTemplateElement child = m_firstChild; child != null;
+             child = child.m_nextSibling)
+    {
+      if (child.getXSLToken() == Constants.ELEMNAME_FALLBACK)
+        return true;
+    }
+    
+    return false;
+  }
 
 
   /**
@@ -234,8 +251,7 @@ public class ElemExtensionCall extends ElemLiteralResult
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
+  public void execute(TransformerImpl transformer)
             throws TransformerException
   {
 
@@ -248,7 +264,17 @@ public class ElemExtensionCall extends ElemLiteralResult
 
       if (null == nsh)
       {
-        executeFallbacks(transformer);
+        if (hasFallbackChildren())
+        {
+          executeFallbacks(transformer);
+        }
+        else
+        {
+	  TransformerException te = new TransformerException(XSLMessages.createMessage(
+	  	XSLTErrorResources.ER_CALL_TO_EXT_FAILED, new Object[]{getNodeName()}));
+	  transformer.getErrorListener().fatalError(te);
+        }
+        
         return;
       }
 
@@ -260,42 +286,27 @@ public class ElemExtensionCall extends ElemLiteralResult
       catch (Exception e)
       {
 
-        // System.out.println(e);
-        // e.printzStackTrace();
-        String msg = e.getMessage();
-        
-        TransformerException te;
-        if(e instanceof TransformerException)
-        {
-          te = (TransformerException)e;
-        }
-        else
-        {
-          if(null != msg)
-            te = new TransformerException(e);
-          else
-            te = new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_UNKNOWN_ERROR_CALLING_EXTENSION, null), e); //"Unknown error when calling extension!", e);
-        }
-        if(null == te.getLocator())
-          te.setLocator(this);
-
-        if (null != msg)
-        {
-          if (msg.indexOf("fatal") >= 0)
+	if (hasFallbackChildren())
+	  executeFallbacks(transformer);
+	else
+	{
+          if(e instanceof TransformerException)
           {
-            transformer.getErrorListener().fatalError(te);
+            TransformerException te = (TransformerException)e;
+            if(null == te.getLocator())
+              te.setLocator(this);
+            
+            transformer.getErrorListener().fatalError(te);            
           }
-          else if(e instanceof RuntimeException)      
-            transformer.getErrorListener().error(te); // ??
+          else if (e instanceof RuntimeException)
+          {
+            transformer.getErrorListener().fatalError(new TransformerException(e));
+          }
           else
-            transformer.getErrorListener().warning(te);
-
+          {
+            transformer.getErrorListener().warning(new TransformerException(e));
+          }
         }
-        else      
-          transformer.getErrorListener().error(te); // ??
-
-        executeFallbacks(
-          transformer);
       }
     }
     catch(org.xml.sax.SAXException se)
