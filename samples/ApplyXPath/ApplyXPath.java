@@ -58,6 +58,7 @@
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Properties;
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xpath.XPathAPI;
 import org.apache.xml.utils.TreeWalker;
@@ -77,11 +78,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 
 // Imported Serializer classes
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
-import org.apache.xalan.serialize.DOMSerializer;
-import org.apache.xalan.serialize.Method;
-import org.apache.xalan.templates.OutputProperties;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
+import javax.xml.transform.dom.*;
 
 /**
  *  Very basic utility for applying an XPath epxression to an xml file and printing information
@@ -101,6 +100,7 @@ public class ApplyXPath
 
   /** Process input args and execute the XPath.  */
   public void doMain(String[] args)
+    throws Exception
   {
     filename = args[0];
     xpath = args[1];
@@ -108,65 +108,34 @@ public class ApplyXPath
     if ((filename != null) && (filename.length() > 0)
         && (xpath != null) && (xpath.length() > 0))
     {
-      InputSource in;
-      try
-      {
-        in = new InputSource(new FileInputStream(filename));
+      // Tell that we're loading classes and parsing, so the time it 
+      // takes to do this doesn't get confused with the time to do 
+      // the actual query and serialization.
+      System.out.println("Loading classes, parsing "+filename+", and setting up serializer");
+      
+      // Set up a DOM tree to query.
+      InputSource in = new InputSource(new FileInputStream(filename));
+      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+      Document doc = dfactory.newDocumentBuilder().parse(in);
+      
+      // Set up an identity transformer to use as serializer.
+      Transformer serializer = TransformerFactory.newInstance().newTransformer();
+      serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+
+      // Use the simple XPath API to select a nodeIterator.
+      System.out.println("Querying DOM using "+xpath);
+      NodeIterator nl = XPathAPI.selectNodeIterator(doc, xpath);
+
+      // Serialize the found nodes to System.out.
+      System.out.println("<output>");
+                  
+      Node n;
+      while ((n = nl.nextNode())!= null)
+      {         
+        serializer.transform(new DOMSource(n), new StreamResult(System.out));
+        System.out.println();
       }
-      catch (FileNotFoundException fnf)
-      {
-        System.err.println("FileInputStream of " + filename + " threw: " + fnf.toString());
-        fnf.printStackTrace();
-        return;
-      }
-      Document doc = null;
-      try
-      {
-  	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
-	      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-        doc = docBuilder.parse(in);
-      }
-	    catch (ParserConfigurationException pce)
-      {
-	      pce.printStackTrace();
-      }
-      catch(Exception e1)
-      {
-        System.err.println("Parsing " + filename + " threw: " + e1.toString());
-        e1.printStackTrace();
-        return;
-      }
-      NodeIterator nl = null;
-      try
-      {
-        // Use the simple XPath API to select a nodeIterator.
-        nl = XPathAPI.selectNodeIterator(doc, xpath);
-	    }
-      catch (Exception e2)
-      {
-        System.err.println("selectNodeIterator threw: " + e2.toString() + " perhaps your xpath didn't select any nodes");
-        e2.printStackTrace();
-        return;
-      }
-	    try
-	    {
-        // Get a Serializer
-   	    Serializer ser = SerializerFactory.getSerializer
-                              (OutputProperties.getDefaultMethodProperties("xml"));          
-        // Serialize to the screen.
-        ser.setOutputStream(System.out);
-        
-	      Node n = null;
-        while ((n = nl.nextNode())!= null)
-		    { //System.out.println("Node is " + n.getNodeName());          
-          ser.asDOMSerializer().serialize(n);
-		    }
-      }
-	    catch (Exception e3)
-      {
-        e3.printStackTrace();
-        return;
-      }
+      System.out.println("</output>");
     }
     else
     {
@@ -176,6 +145,7 @@ public class ApplyXPath
   
   /** Main method to run from the command line.    */
   public static void main (String[] args)
+    throws Exception
   {
     if (args.length != 2)
     {
@@ -183,10 +153,9 @@ public class ApplyXPath
                          + "Reads filename.xml and applies the xpath; prints the nodelist found.");
       return;
     }
+        
     ApplyXPath app = new ApplyXPath();
-    System.out.println("<output>");
     app.doMain(args);
-    System.out.println("</output>");
   }	
   
 } // end of class ApplyXPath
