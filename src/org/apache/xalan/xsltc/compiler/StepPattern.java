@@ -87,6 +87,8 @@ class StepPattern extends RelativePathPattern {
     private boolean _isEpsilon = false;
     private int     _contextCase;
 
+    private double  _priority = Double.MAX_VALUE;
+
     public StepPattern(int axis, int nodeType, Vector predicates) {
 	_axis = axis;
 	_nodeType = nodeType;
@@ -108,6 +110,10 @@ class StepPattern extends RelativePathPattern {
     public int getNodeType() {
 	return _nodeType;
     }
+
+    public void setPriority(double priority) {
+	_priority = priority;
+    }
     
     public StepPattern getKernelPattern() {
 	return this;
@@ -127,6 +133,10 @@ class StepPattern extends RelativePathPattern {
     }
 
     public double getDefaultPriority() {
+	if (_priority != Double.MAX_VALUE) {
+	    return _priority;
+	}
+
 	if (hasPredicates()) {
 	    return 0.5;
 	}

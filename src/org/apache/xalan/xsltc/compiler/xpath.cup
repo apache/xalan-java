@@ -129,6 +129,84 @@ parser code {:
           _xsltc.setCallsNodeset(flag);
     }
 
+    /**
+     * This method is similar to findNodeType(int, Object) except that it
+     * creates a StepPattern instead of just returning a node type. It also 
+     * differs in the way it handles "{uri}:*" and "{uri}:@*". The last two 
+     * patterns are expanded as "*[namespace-uri() = 'uri']" and 
+     * "@*[namespace-uri() = 'uri']", respectively. This expansion considerably 
+     * simplifies the grouping of patterns in the Mode class. For this
+     * expansion to be correct, the priority of the pattern/template must be
+     * set to -0.25 (when no other predicates are present).
+     */
+    public StepPattern createStepPattern(int axis, Object test, Vector predicates) {
+	int nodeType;
+
+	if (test == null) {  // "*"
+	    nodeType = (axis == Axis.ATTRIBUTE) ? NodeTest.ATTRIBUTE : 
+		(axis == Axis.NAMESPACE) ? -1 : NodeTest.ELEMENT;
+
+	    return new StepPattern(axis, nodeType, predicates);
+        }
+        else if (test instanceof Integer) {
+	    nodeType = ((Integer) test).intValue();
+
+	    return new StepPattern(axis, nodeType, predicates);
+        }
+        else {
+	    QName name = (QName)test;
+	    boolean setPriority = false;
+
+	    if (axis == Axis.NAMESPACE) {
+		nodeType = (name.toString().equals("*")) ? -1
+				: _xsltc.registerNamespace(name);
+            }
+	    else {
+		final String uri = name.getNamespace();
+		final String local = name.getLocalPart();
+		final QName namespace_uri = 
+		    _parser.getQNameIgnoreDefaultNs("namespace-uri");
+
+		// Expand {uri}:* to *[namespace-uri() = 'uri'] - same for @*
+		if (uri != null && (local.equals("*") || local.equals("@*"))) {
+		    if (predicates == null) {
+			predicates = new Vector(2);
+		    }
+
+		    // Priority is set by hand if no other predicates exist
+		    setPriority = (predicates.size() == 0);
+
+		    predicates.add(
+			new Predicate(
+			    new EqualityExpr(Operators.EQ, 
+				new NamespaceUriCall(namespace_uri), 
+				new LiteralExpr(uri))));
+		}
+
+		if (local.equals("*")) {
+		    nodeType = (axis == Axis.ATTRIBUTE) ? NodeTest.ATTRIBUTE
+			: NodeTest.ELEMENT;
+		}
+		else if (local.equals("@*")) {
+		    nodeType = NodeTest.ATTRIBUTE;
+		}
+		else {
+		    nodeType = (axis == Axis.ATTRIBUTE) ? _xsltc.registerAttribute(name)
+			: _xsltc.registerElement(name); 
+		}
+	    }
+
+	    final StepPattern result = new StepPattern(axis, nodeType, predicates); 
+
+	    // Set priority for case prefix:* and prefix:@* (no predicates)
+	    if (setPriority) {
+		result.setPriority(-0.25);
+	    }
+
+	    return result;
+	}
+    }
+
     public int findNodeType(int axis, Object test) {
 	if (test == null) {  // *
 	    return (axis == Axis.ATTRIBUTE) ? 
@@ -353,16 +431,12 @@ RelativePathPattern ::= StepPattern:sp
 
 StepPattern ::= NodeTestPattern:nt
             {: 
-	        final int nodeType = parser.findNodeType(Axis.CHILD, nt);
-		RESULT = new StepPattern(
-		     (nodeType == NodeTest.ATTRIBUTE) ? Axis.ATTRIBUTE : Axis.CHILD,
-		     nodeType, null);
+		RESULT = parser.createStepPattern(Axis.CHILD, nt, null);
             :}
 
             | NodeTestPattern:nt Predicates:pp
-            {: RESULT = new StepPattern(Axis.CHILD,
-                                        parser.findNodeType(Axis.CHILD, nt),
-                                        pp);
+            {: 
+		RESULT = parser.createStepPattern(Axis.CHILD, nt, pp);
             :}
 
             | ProcessingInstructionPattern:pip
@@ -372,16 +446,14 @@ StepPattern ::= NodeTestPattern:nt
             {: RESULT = (ProcessingInstructionPattern)pip.setPredicates(pp); :}
 
             | ChildOrAttributeAxisSpecifier:axis NodeTestPattern:nt
-            {: RESULT=new StepPattern(axis.intValue(),
-                                      parser.findNodeType(axis.intValue(), nt),
-                                      null);
+            {: 
+	       RESULT = parser.createStepPattern(axis.intValue(), nt, null);
             :}
 
 	    | ChildOrAttributeAxisSpecifier:axis
 		  NodeTestPattern:nt Predicates:pp
-            {: RESULT = new StepPattern(axis.intValue(),
-                                        parser.findNodeType(axis.intValue(),nt),
-                                        pp);
+            {: 
+	       RESULT = parser.createStepPattern(axis.intValue(), nt, pp);
             :}
 
             | ChildOrAttributeAxisSpecifier:axis ProcessingInstructionPattern:pip

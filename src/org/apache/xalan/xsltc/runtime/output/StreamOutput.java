@@ -74,6 +74,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 abstract public class StreamOutput extends OutputBase {
 
@@ -314,5 +315,74 @@ abstract public class StreamOutput extends OutputBase {
 	    _buffer.append(' ');
 	}
 	_buffer.append("-->");
+    }
+
+    public void namespace(final String prefix, final String uri)
+	throws TransletException 
+    {
+// System.out.println("namespace prefix = " + prefix + " uri = " + uri);
+	final String escaped = escapeString(uri);
+
+	if (_startTagOpen) {
+	    if (pushNamespace(prefix, escaped)) {
+		if (prefix != null && prefix != EMPTYSTRING) {
+		    // Ignore if not default NS and if uri is ""
+		    if (escaped.length() > 0) {
+			_buffer.append(' ').append(XMLNS_PREFIX)
+			       .append(':').append(prefix)
+			       .append("=\"").append(escaped).append('"');
+		    }
+		}
+		else {
+		    _buffer.append(' ').append(XMLNS_PREFIX)
+		           .append("=\"").append(escaped).append('"');
+		}
+
+	    }
+	}
+	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
+	    BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
+				      prefix, escaped);
+	}
+    }
+
+    /**
+     * This method escapes special characters used in attribute values
+     */
+    protected String escapeString(String value) {
+	final char[] ch = value.toCharArray();
+	final int limit = ch.length;
+	StringBuffer result = new StringBuffer();
+	
+	int offset = 0;
+	for (int i = 0; i < limit; i++) {
+	    switch (ch[i]) {
+	    case '&':
+		result.append(ch, offset, i - offset).append(AMP);
+		offset = i + 1;
+		break;
+	    case '"':
+		result.append(ch, offset, i - offset).append(QUOT);
+		offset = i + 1;
+		break;
+	    case '<':
+		result.append(ch, offset, i - offset).append(LT);
+		offset = i + 1;
+		break;
+	    case '>':
+		result.append(ch, offset, i - offset).append(GT);
+		offset = i + 1;
+		break;
+	    case '\n':
+		result.append(ch, offset, i - offset).append(CRLF);
+		offset = i + 1;
+		break;
+	    }
+	}
+
+	if (offset < limit) {
+	    result.append(ch, offset, limit - offset);
+	}
+	return result.toString();
     }
 }

@@ -99,6 +99,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	super(output);
 	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
+	initNamespaces();
 // System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
@@ -106,6 +107,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	super(writer, encoding);
 	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
+	initNamespaces();
 //System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
@@ -115,6 +117,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	super(out, encoding);
 	_buffer = new WriterOutputBuffer(_writer);
 	setIndent(true);  // default for HTML
+	initNamespaces();
 //System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
@@ -301,11 +304,6 @@ public class StreamHTMLOutput extends StreamOutput {
 	catch (Exception e) {
 	    // ignore
 	}
-    }
-
-    public void namespace(String prefix, String uri) throws TransletException 
-    { 
-	// ignore when method type is HTML
     }
 
     public void setCdataElements(Hashtable elements) { 

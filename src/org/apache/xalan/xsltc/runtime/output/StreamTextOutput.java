@@ -123,5 +123,10 @@ public class StreamTextOutput extends StreamOutput {
 	throws TransletException
     {
     }
+
+    public void namespace(final String prefix, final String uri)
+	throws TransletException 
+    {
+    }
 }
 

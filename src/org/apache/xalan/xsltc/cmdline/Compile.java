@@ -82,8 +82,8 @@ public final class Compile {
 
     // Versioning numbers  for the compiler -v option output
     private static int VERSION_MAJOR = 1;
-    private static int VERSION_MINOR = 2;
-    private static int VERSION_DELTA = 1;
+    private static int VERSION_MINOR = 4;
+    private static int VERSION_DELTA = 0;
  
 
     // This variable should be set to false to prevent any methods in this 

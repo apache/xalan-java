@@ -423,7 +423,7 @@ for (int i = 0; i < _templates.size(); i++) {
 		_patternGroups[kernelType];
 	}
 
-	if (patterns == null) {
+	if (patterns.size() == 0) {
 	    patterns.addElement(pattern);
 	}
 	else {
