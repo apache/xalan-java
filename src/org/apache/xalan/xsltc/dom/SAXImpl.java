@@ -211,10 +211,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         throws TransletException
     {
         int anode, nsnode;
-        final org.apache.xml.dtm.ref.DTMDefaultBaseIterators.AncestorIterator
-              ancestors =
-                 new org.apache.xml.dtm.ref.DTMDefaultBaseIterators
-                                           .AncestorIterator();
+        final AncestorIterator ancestors = new AncestorIterator();
 
         if (isElement(node)) {
             ancestors.includeSelf();
@@ -222,10 +219,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
 
         ancestors.setStartNode(node);
         while ((anode = ancestors.next()) != DTM.NULL) {
-            final org.apache.xml.dtm.ref.DTMDefaultBaseIterators
-                     .NamespaceIterator namespaces =
-                             new org.apache.xml.dtm.ref.DTMDefaultBaseIterators
-                                                       .NamespaceIterator();
+            final NamespaceIterator namespaces = new NamespaceIterator();
 
             namespaces.setStartNode(anode);
             while ((nsnode = namespaces.next()) != DTM.NULL) {
@@ -359,20 +353,16 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         if (_elementFilter == null) {
             _elementFilter = new DTMFilter() {
                   public short acceptNode(int node, int whatToShow) {
-                      short nodeType = getNodeType(node);
-                      int nodebit = DTMFilter.SHOW_ELEMENT
-                                        & (0x00000001 << (nodeType -1)) ;
-                      return (nodebit == 0) ? DTMIterator.FILTER_REJECT
-                                            : DTMIterator.FILTER_ACCEPT;
+                      return (getNodeType(node) == DTM.ELEMENT_NODE)
+                                      ? DTMIterator.FILTER_ACCEPT
+                                      : DTMIterator.FILTER_REJECT;
                   }
                   public short acceptNode(int node, int whatToShow,
                                           int expandedName)
                   {
-                      short nodeType = getNodeType(node);
-                      int nodebit = DTMFilter.SHOW_ELEMENT
-                                        & (0x00000001 << (nodeType -1)) ;
-                      return (nodebit == 0) ? DTMIterator.FILTER_REJECT
-                                            : DTMIterator.FILTER_ACCEPT;
+                      return (getNodeType(node) == DTM.ELEMENT_NODE)
+                                      ? DTMIterator.FILTER_ACCEPT
+                                      : DTMIterator.FILTER_REJECT;
                   }
              };
         }
@@ -1499,9 +1489,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      */
     public DTMAxisIterator getChildren(final int node)
     {
+/*
       return hasChildren(node)
-                ? new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.ChildrenIterator()
+                ? new ChildrenIterator()
                 : EMPTYITERATOR;
+*/
+      return new ChildrenIterator();
     }
 
     /**
@@ -1510,7 +1503,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      */
     public DTMAxisIterator getTypedChildren(final int type)
     {
-      return(new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedChildrenIterator(type));
+      return(new TypedChildrenIterator(type));
     }
 
     /**
@@ -1526,29 +1519,29 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
       case Axis.SELF:
         return new SingletonIterator();
       case Axis.CHILD:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.ChildrenIterator();
+        return new ChildrenIterator();
       case Axis.PARENT:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.ParentIterator();
+        return new ParentIterator();
       case Axis.ANCESTOR:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.AncestorIterator();
+        return new AncestorIterator();
       case Axis.ANCESTORORSELF:
-        return (new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.AncestorIterator()).includeSelf();
+        return (new AncestorIterator()).includeSelf();
       case Axis.ATTRIBUTE:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.AttributeIterator();
+        return new AttributeIterator();
       case Axis.DESCENDANT:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.DescendantIterator();
+        return new DescendantIterator();
       case Axis.DESCENDANTORSELF:
-        return (new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.DescendantIterator()).includeSelf();
+        return (new DescendantIterator()).includeSelf();
       case Axis.FOLLOWING:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.FollowingIterator();
+        return new FollowingIterator();
       case Axis.PRECEDING:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.PrecedingIterator();
+        return new PrecedingIterator();
       case Axis.FOLLOWINGSIBLING:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.FollowingSiblingIterator();
+        return new FollowingSiblingIterator();
       case Axis.PRECEDINGSIBLING:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.PrecedingSiblingIterator();
+        return new PrecedingSiblingIterator();
       case Axis.NAMESPACE:
-        return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceIterator();
+        return new NamespaceIterator();
       default:
         BasisLibrary.runTimeError(BasisLibrary.AXIS_SUPPORT_ERR,
                                   Axis.names[axis]);
@@ -1569,49 +1562,45 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
 
       // Most common case handled first
       if (axis == Axis.CHILD && type != DTM.ELEMENT_NODE) {
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedChildrenIterator(type);
+          return new TypedChildrenIterator(type);
       }
 
       if (type == NO_TYPE)
       {
         return(EMPTYITERATOR);
       }
-      else if ((type == DTM.ELEMENT_NODE) && (axis != Axis.NAMESPACE))
-      {
-        return new FilterIterator(getAxisIterator(axis), getElementFilter());
-      }
       else
       {
         switch (axis)
         {
         case Axis.SELF:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedSingletonIterator(type);
+          return new TypedSingletonIterator(type);
         case Axis.CHILD:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedChildrenIterator(type);
+          return new TypedChildrenIterator(type);
         case Axis.PARENT:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.ParentIterator().setNodeType(type);
+          return new ParentIterator().setNodeType(type);
         case Axis.ANCESTOR:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedAncestorIterator(type);
+          return new TypedAncestorIterator(type);
         case Axis.ANCESTORORSELF:
-          return (new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedAncestorIterator(type)).includeSelf();
+          return (new TypedAncestorIterator(type)).includeSelf();
         case Axis.ATTRIBUTE:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedAttributeIterator(type);
+          return new TypedAttributeIterator(type);
         case Axis.DESCENDANT:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedDescendantIterator(type);
+          return new TypedDescendantIterator(type);
         case Axis.DESCENDANTORSELF:
-          return (new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedDescendantIterator(type)).includeSelf();
+          return (new TypedDescendantIterator(type)).includeSelf();
         case Axis.FOLLOWING:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedFollowingIterator(type);
+          return new TypedFollowingIterator(type);
         case Axis.PRECEDING:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedPrecedingIterator(type);
+          return new TypedPrecedingIterator(type);
         case Axis.FOLLOWINGSIBLING:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedFollowingSiblingIterator(type);
+          return new TypedFollowingSiblingIterator(type);
         case Axis.PRECEDINGSIBLING:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedPrecedingSiblingIterator(type);
+          return new TypedPrecedingSiblingIterator(type);
         case Axis.NAMESPACE:
           return (type == DTM.ELEMENT_NODE)
-            ? new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceIterator()
-            : new /*org.apache.xml.dtm.ref.DTMDefaultBaseIterators.*/TypedNamespaceIterator(type);
+                       ? new NamespaceIterator()
+                       : new TypedNamespaceIterator(type);
         default:
           BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
                                     Axis.names[axis]);
@@ -1638,9 +1627,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
       else {
         switch (axis) {
         case Axis.CHILD:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceChildrenIterator(ns);
+          return new NamespaceChildrenIterator(ns);
         case Axis.ATTRIBUTE:
-          return new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceAttributeIterator(ns);
+          return new NamespaceAttributeIterator(ns);
         default:
           BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
                                     Axis.names[axis]);
@@ -1655,10 +1644,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      */
     public DTMAxisIterator getTypedDescendantIterator(int type)
     {
+/*
       return (type == DTM.ELEMENT_NODE)
-              ? (DTMAxisIterator) new FilterIterator(new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.DescendantIterator(),
+              ? (DTMAxisIterator) new FilterIterator(new DescendantIterator(),
                                    getElementFilter())
-              : (DTMAxisIterator) new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedDescendantIterator(type);
+              : 
+*/
+      return new TypedDescendantIterator(type);
     }
 
     /**
@@ -1670,11 +1662,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
              (type == DTM.ELEMENT_NODE)
                    ? (DTMAxisIterator) new FilterIterator(new DescendantIterator(),
                                         getElementFilter())
-                   : (DTMAxisIterator) new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.TypedDescendantIterator(type);
+                   : (DTMAxisIterator) new TypedDescendantIterator(type);
       // %HZ% Need to do something here???
       //TODO?? if (includeself)
       //  ((NodeIteratorBase)source).includeSelf();
-      return(new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NthDescendantIterator(n));
+      return(new NthDescendantIterator(n));
     }
 
     /**
