@@ -230,14 +230,16 @@ public class ElemElement extends ElemUse
           // Check if valid QName. Assuming that if the prefix is defined,
           // it is valid.
           int len = elemNameSpace.length();
-          if (len > 0 && ((indexOfNSSep + 1 == len)
-              ||!isValidNCName(elemName.substring(indexOfNSSep + 1))))
+          if ((len > 0 && ((indexOfNSSep + 1 == len)
+              ||!isValidNCName(elemName.substring(indexOfNSSep + 1)))) ||
+              ((indexOfNSSep <= 0) && !isValidNCName(elemName)))
           {
             transformer.getMsgMgr().warn(this,
                                          XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
                                          new Object[]{ elemName });
             elemName = null;
           }
+          
         }
         catch (Exception ex)
         {
