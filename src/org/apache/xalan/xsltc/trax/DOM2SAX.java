@@ -108,101 +108,95 @@ public class DOM2SAX implements XMLReader , Locator {
     {
     }
 
-    // Input is not used.
-    public void parse(InputSource input) throws IOException, SAXException {
-	Node currNode = _dom; 
-	while (currNode != null) {
-	    // start of node processing
-	    switch (currNode.getNodeType()) {
-		case Node.ATTRIBUTE_NODE : 
-		    break;
-		case Node.CDATA_SECTION_NODE : 
-		    break;
-		case Node.COMMENT_NODE : 
-		    break;
-		case Node.DOCUMENT_FRAGMENT_NODE : 
-		    break;
-		case Node.DOCUMENT_NODE : 
-		    _contentHdlr.setDocumentLocator(this);
-		    _contentHdlr.startDocument(); 	    
-		    break;
-		case Node.DOCUMENT_TYPE_NODE : 
-		    break;
-		case Node.ELEMENT_NODE : 
-		    AttributesImpl attrList = new AttributesImpl();
-		    NamedNodeMap map = currNode.getAttributes();
-		    int length = map.getLength();
-		    for (int i=0; i<length; i++ ){
-			Node attrNode = map.item(i);
-			short code = attrNode.getNodeType();
-			attrList.addAttribute(attrNode.getNamespaceURI(),
-			    attrNode.getLocalName(),
-			    attrNode.getNodeName(),
-			    getNodeTypeFromCode(code),  // must be better way
-			    attrNode.getNodeValue());
-		    }
-		    _contentHdlr.startElement(currNode.getNamespaceURI(),
-		        currNode.getLocalName(), currNode.getNodeName(),
-			attrList); 
-		    break;
-		case Node.ENTITY_NODE : 
-		   /***
-		    Entity edecl = (Entity)currNode;
-		    String name = edecl.getNotationName();
-		    if ( name != null ) {
-			_contentHdlr.unparsedEntityDecl(currNode.getNodeName(),
-			    edecl.getPublicId(), edecl.getSystemId(), name);
-		    } 
-		    **/
-		    break;
-		case Node.ENTITY_REFERENCE_NODE : 
-		    break;
-		case Node.NOTATION_NODE :
-		    /***
-		    Notation ndecl = (Notation)currNode;
-		    _contentHdlr.notationDecl(currNode.getNodeName(),
-			ndecl.getPublicId(), ndecl.getSystemId());
-		    **/
-		    break;
-		case Node.PROCESSING_INSTRUCTION_NODE : 
-		    _contentHdlr.processingInstruction(currNode.getNodeName(),
-			currNode.getNodeValue());
-		    break;
-		case Node.TEXT_NODE : 
-		    String data = currNode.getNodeValue();
-		    length = data.length();
-		    char[] array = new char[length];
-		    data.getChars(0, length, array, 0);
-		    _contentHdlr.characters(array, 0, length); 
-		    break;
-	    }
-
-	    // move to first child
-	    Node next = currNode.getFirstChild();
-	    if (next != null) {
-		currNode = next;
-		continue;
-	    }
-
-	    // no child nodes, walk the tree
-	    while (currNode != null) {
-		switch (currNode.getNodeType()) {
-		    case Node.DOCUMENT_NODE: 
-			break;
-		    case Node.ELEMENT_NODE: 
-			break;
-		}
-		next = currNode.getNextSibling();
-		if (next != null ) {
-		    currNode = next;
-		    break;
-		}
-		// move up a level
-		currNode = currNode.getParentNode();
-	    }
-	}
+    public void parse(InputSource unused) throws IOException, SAXException {
+        Node currNode = _dom;
+        parse(currNode);
     }
+
+    private void parse(Node currNode) throws IOException, SAXException {
+        Node first = null;
+ 	if (currNode == null ) return;
+
+        switch (currNode.getNodeType()) {
+            case Node.ATTRIBUTE_NODE :
+                    break;
+            case Node.CDATA_SECTION_NODE :
+                    break;
+            case Node.COMMENT_NODE :
+                    break;
+            case Node.DOCUMENT_FRAGMENT_NODE :
+                    break;
+            case Node.DOCUMENT_NODE :
+                    _contentHdlr.setDocumentLocator(this);
+                    _contentHdlr.startDocument();
+                    first = currNode.getFirstChild();
+                    parse(first);
+                    Node next = currNode.getNextSibling();
+                    while ( next != null ) {
+                        parse(next);
+                        next = next.getNextSibling();
+                    }
+                    _contentHdlr.endDocument();
+                    break;
+            case Node.DOCUMENT_TYPE_NODE :
+                    break;
+            case Node.ELEMENT_NODE :
+                    AttributesImpl attrList = new AttributesImpl();
+                    NamedNodeMap map = currNode.getAttributes();
+                    int length = map.getLength();
+                    for (int i=0; i<length; i++ ){
+                        Node attrNode = map.item(i);
+                        short code = attrNode.getNodeType();
+                        attrList.addAttribute(attrNode.getNamespaceURI(),
+                            attrNode.getLocalName(),
+                            attrNode.getNodeName(),
+                            getNodeTypeFromCode(code),  // must be better way
+                            attrNode.getNodeValue());
+                    }
+                    _contentHdlr.startElement(currNode.getNamespaceURI(),
+                        currNode.getLocalName(), currNode.getNodeName(),
+                        attrList);
+                    first = currNode.getFirstChild();
+                    parse(first);
+                    next = currNode.getNextSibling();
+                    while ( next != null ) {
+                        parse(next);
+                        next = next.getNextSibling();
+                    }
+                    _contentHdlr.endElement(currNode.getNamespaceURI(),
+                        currNode.getLocalName(), currNode.getNodeName());
+                    break;
+            case Node.ENTITY_NODE :
+                    //Entity edecl = (Entity)currNode;
+                    //String name = edecl.getNotationName();
+                    //if ( name != null ) {
+                    //   _contentHdlr.unparsedEntityDecl(currNode.getNodeName(),
+                    //      edecl.getPublicId(), edecl.getSystemId(), name);
+                    //}
+                    break;
+             case Node.ENTITY_REFERENCE_NODE :
+                    break;
+             case Node.NOTATION_NODE :
+                    //Notation ndecl = (Notation)currNode;
+                    //_contentHdlr.notationDecl(currNode.getNodeName(),
+                     //   ndecl.getPublicId(), ndecl.getSystemId());
+                    break;
+             case Node.PROCESSING_INSTRUCTION_NODE :
+                    _contentHdlr.processingInstruction(currNode.getNodeName(),
+                        currNode.getNodeValue());
+                    break;
+             case Node.TEXT_NODE :
+                    String data = currNode.getNodeValue();
+                    length = data.length();
+                    char[] array = new char[length];
+                    data.getChars(0, length, array, 0);
+                    _contentHdlr.characters(array, 0, length);
+                    break;
+            }
+    }
+
     public void parse(String sysId) throws IOException, SAXException {
+	throw new IOException("This method is not yet implemented.");
     }
     public void setContentHandler(ContentHandler handler) throws 
 	NullPointerException 
