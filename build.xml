@@ -28,13 +28,14 @@ Build targets
     - javadocs [or apidocs] generates the API documentation in ./build/docs/apidocs
     - compat.jar compiles compatibility tree and creates ./build/xalanj1compat.jar
     - compat.apidocs generates javadoc for the compatibility jar
+    - xsltc.docs creates the XSLTC design documentation.
     - clean    purges the build tree.
     - dist     creates a complete distribution in ./xalan-j_x_x_x
     - auto*    targets used by automated build programs, without dependencies
-    - minitest compile and run the minitest in xml-xalan\test
-    - conftest compile and run the conftest in xml-xalan\test
-    - smoketest run a pre-checkin smoketest (5 to 10 minutes).
-    - print.docs create PDF documentation (requires fop.jar and w3c.jar).
+    - minitest compiles and runs the minitest in xml-xalan\test
+    - conftest compiles and runs the conftest in xml-xalan\test
+    - smoketest runs a pre-checkin smoketest (5 to 10 minutes).
+    - print.docs creates PDF documentation (requires fop.jar and w3c.jar).
         
 If you build a target that depends on other targets, those other targets are created in 
 the correct order.
@@ -566,7 +567,7 @@ Copyright:
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,commits.xml"/>
+      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,xsltc_todo.xml,todo.xsl,commits.xml"/>
     </copy>
           
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
@@ -798,6 +799,29 @@ Copyright:
         </copy>  		         
     <jar jarfile="${build.compat.samples}/xalancompatservlet.jar" basedir="${build.compat.samples}"
          includes="servlet/**"/>
+ </target>
+ 
+  <!-- =================================================================== -->
+  <!-- Build XSLTC design documentation. Eventually intend to incorporate -->
+  <!-- XSLTC into the Xalan book.                                         -->
+  <!-- =================================================================== -->
+
+
+  <target name="xsltc.prepare.docs" depends="prepare.docs">
+      <echo message="Transform xsltc_todo.xml and put the result in ${build.docs}/xsltc"/>
+    <java fork="yes" classname="${xalan.cmdline.class}">
+      <classpath refid="docs.class.path" />
+      <arg line="-in xsltc_todo.xml -xsl todo.xsl -out ${build.docs}/xsltc/todo.html"/>
+    </java>
+  </target>  
+ 
+ <target name="xsltc.docs" depends="xsltc.prepare.docs">
+   <echo message="Build the XSLTC Architectural documentation"/>
+   <java fork="yes" 
+         classname="${doc.generator}" 
+         classpathref="docs.class.path" >
+      <arg line="targetDirectory=${build.docs}/xsltc ${xdocs.dir}/sources/xsltc.xml ${xdocs.style}"/>
+    </java>	 
  </target>
  
 </project>
