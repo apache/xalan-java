@@ -12,6 +12,8 @@
     <action category="feature">xsl:sort-key</action>
     <action category="feature" status="unstable">xsl:namespace</action>
     <action category="feature">Function sort(string,sequence)</action>
+    <action category="feature" who="JK">Add collation argument to starts-with, contains, substring-before, substring-after
+      <issue id="collations">What are we going to do about collations? Anything?</issue></action>
     <action category="feature" who="MM">regex-group(integer)</action>
     <action category="feature">Function unparsed-text(sequence, string?)</action>
     <action category="feature">Function unparsed-entity-public-id(string)</action>
@@ -21,33 +23,36 @@
     <action category="feature">xf:normalize-unicode()</action>
     <action category="feature">xf:upper-case() and xf:lower-case()</action>
     <action category="feature">xf:string-pad()</action>
-    <action category="feature">xf:escape-URI()</action>
-    <action category="feature">xf:resolve-URI()</action>
+    <action category="feature">xf:escape-uri()</action>
+    <action category="feature">xf:resolve-uri()</action>
     <action category="feature" status="unstable">xf:deep-equal()</action>
     <action category="feature">xf:copy()</action>
     <action category="feature">xf:shallow()</action>
     <action category="feature">xf:root()</action>
     <action category="feature">xf:if-absent()</action>
     <action category="feature">xf:if-empty()</action>
-    <action category="feature" who="MM">xf:item-at()</action>
-    <action category="feature" who="MM">xf:index-of()</action>
-    <action category="feature" who="MM">xf:empty()</action>
-    <action category="feature" who="MM">xf:exists()</action>
-    <action category="feature" who="MM">xf:distinct-nodes()</action>
-    <action category="feature" who="MM">xf:distinct-values()</action>
-    <action category="feature" who="MM">xf:insert()</action>
-    <action category="feature" who="MM">xf:remove()</action>
-    <action category="feature" who="MM">xf:subsequence()</action>
     <action category="feature">xf:sequence-deep-equal()</action>
     <action category="feature">xf:sequence-node-equal()</action>
-    <action category="feature">xf:avg()</action>
     <action category="feature">xf:max() and xf:min()</action>
     <action category="feature">xf:idref()</action>
     <action category="feature">xf:collection()</action>
     <action category="feature" who="MM">xf:input()</action>
+    <action category="feature">xf:sum() takes sequence as input; raises error if any non-numeric inputs</action>
+    <action category="feature">xf:id() takes sequence of IDREFs as input</action>
+    <action category="feature">xf:context-item()</action>
+    <action category="feature">xf:context-document()</action>
+    <action category="feature">xf:ends-with()</action>
+    <action category="feature" who="JK">constructor functions for hexBinary, base64Binary, anyURI, Name, NCName, QName</action>
+    <action category="feature" who="JK">constructor functions for normalizedString, token, language, NMTOKEN, NMTOKENS</action>
+    <action category="feature" who="JK">constructor functions for NOTATION, ID, IDREF, IDREFS, ENTITY, ENTITIES</action>
+    <action category="feature" who="JK">constructor functions for [unsigned]long, int, short, byte</action>
+    <action category="feature" who="JK">constructor functions for [non][positive/negative]integer</action>
+    <action category="feature" who="JK">constructor functions for decimal, float, double</action>
     <action category="feature" status="partial">XPath keywords: type, of type, untyped, in</action>
     <action category="feature" status="partial" who="MM">union, intersect, except</action>
     <action category="feature">operators &lt;&lt; (before) and &gt;&gt; (after)</action>
+    <action category="feature">Allow inequality relations for booleans (see Operators 7.2)</action>
+    <action category="feature">equality test for QName, anyURI, hexBinary, base64Binary</action>
     <action category="feature" status="unstable" who="JK">cast as, treat as</action>
     <action category="feature" status="unstable">ValidateExpr::= "validate" SchemaContext? "{" Expr "}"</action>
     <action category="feature">exclude-prefixes, default-xpath-namespace standard attributes, allowed everywhere</action>
@@ -81,6 +86,16 @@
     <action category="feature" who="MM">analyze-string and sub-elements matching-substring, non-matching-substring</action>
     <action category="feature" status="bugs" who="MM">xf:matches(), xf:replace(), xf:tokenize()</action>
     <action category="feature" who="MM">Quantified expressions: some, every</action>
+    <action category="feature" who="MM">xf:item-at()</action>
+    <action category="feature" who="MM">xf:index-of()</action>
+    <action category="feature" who="MM">xf:empty()</action>
+    <action category="feature" who="MM">xf:exists()</action>
+    <action category="feature" who="MM">xf:distinct-nodes()</action>
+    <action category="feature" who="MM">xf:distinct-values()</action>
+    <action category="feature" who="MM">xf:insert()</action>
+    <action category="feature" who="MM">xf:remove()</action>
+    <action category="feature" who="MM">xf:subsequence()</action>
+    <action category="feature">xf:avg()</action>
   </completed>
  <devs>
   <!-- in alphabetical order, by last name -->
