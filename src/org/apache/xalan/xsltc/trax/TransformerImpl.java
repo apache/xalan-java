@@ -645,13 +645,14 @@ public final class TransformerImpl extends Transformer
 		}
 	    }
 	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
-		translet._cdata = null; // Important - clear previous setting
-		StringTokenizer e = new StringTokenizer(value);
-		while (e.hasMoreTokens()) {
-		    translet.addCdataElement(e.nextToken());
+		if ((value != null) && (value.toLowerCase().equals("true"))) {
+		    translet._cdata = null; // clear previous setting
+		    StringTokenizer e = new StringTokenizer(value);
+		    while (e.hasMoreTokens()) {
+			translet.addCdataElement(e.nextToken());
+		    }
 		}
 	    }
-
 	}
     }
 
