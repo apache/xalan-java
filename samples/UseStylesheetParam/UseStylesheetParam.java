@@ -70,7 +70,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 // Imported java classes
-import java.io.FileWriter;
 import java.io.IOException;
 
   /**
