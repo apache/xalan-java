@@ -118,14 +118,17 @@ public class CompiledStylesheetBundle
 	* to support it. Nominally this should be a jarfile, but zipfiles work
 	* and jarfile support wasn't added to the JDK until 1.2.
 	* <P>
+	* The output file's name is currently derived from the Stylesheet's System
+	* ID, by stripping out the "local" name and adding the suffix .xsb (Xalan
+	* Stylesheet Bundle). If that approach doesn't work, we fall back on 
+	* the name UnidentifiedStylesheet.xsb.
+	* <P>
 	* TODO: Open issues in CompiledStylesheetBundle.createBundle()
 	* <ul>
-	* <li> We need to copy classfiles from the directory that the code was
+	* <li>We need to copy classfiles from the directory that the code was
 	* generated into. Currently that's hardwired as "." -- but when we
 	* parameterize the code-gen operations we'll need to update this too.
-	* <li> What filename should we give the bundle, and where should we
-	* output it? Currently that's hardcoded, but it really should be
-	* parameterized and/or derived from the stylesheet's Public/System IDs.
+	* <li>What directory should we output to? Same?
 	* <li>Should we really be writing to a file, or should we be generating
 	* a stream which the caller directs appropriately?
 	* <li>Should we really be invoked as part of the compilation? Or are we
@@ -145,8 +148,33 @@ public class CompiledStylesheetBundle
 
 		try 
 		{
+			// Output filename is based on the System ID of the stylesheet.
+			// It's possible there isn't a useful ID (eg if the file
+			// came from a stream); in that case I fall back on a standard
+			// name as "better than nothing"... but folks really should
+			// establish a real ID earlier in the process.
+			String zipname=null;
+			String systemID=root.getSystemId();
+			if(systemID!=null)
+			{
+				// Try to parse the terminal name out of the System ID, which
+				// may be a URI Reference (though I'd be much happier if it
+				// could be counted on to be an Absolute URI instead!)
+				// TODO: Should we strip off extension, or retain?
+				// This may be a platform issue; repeated .'s aren't always
+				// legal...
+				int namestart=systemID.lastIndexOf('/')+1;
+				int nameend=systemID.lastIndexOf('#',namestart);
+				if(nameend<0)
+					nameend=systemID.length();
+				if(namestart<nameend)
+					zipname=systemID.substring(namestart,nameend);
+			}
+			if(zipname==null)
+				zipname="UnidentifiedStylesheet";
+			
 			java.io.FileOutputStream f=
-				new java.io.FileOutputStream(outdir+"CompiledStylesheet.zip");
+				new java.io.FileOutputStream(outdir+zipname+".xsb");
 			java.util.zip.ZipOutputStream zf=new java.util.zip.ZipOutputStream(f);
 			zf.setMethod(zf.DEFLATED);
 		
