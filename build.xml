@@ -350,6 +350,8 @@ Copyright:
     <java fork="yes" failonerror="true" 
        classname="org.apache.xalan.xsltc.util.JavaCupRedirect" >
       <classpath refid="xsltc.class.path" />
+      <!-- need to bootclasspath java_cup for JDKs that include JavaCupRedirect -->
+      <jvmarg value="-Xbootclasspath/p:${java_cup.jar}${path.separator}${runtime.jar}"/>
       <!-- We're using JavaCupRedirect to call the java_cup application -->
       <arg line="-parser XPathParser -expect 0 
          -stdin ${src.dir}/${xsltc.reldir}/compiler/xpath.cup"/>
