@@ -65,9 +65,7 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
-import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.IFNE;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
@@ -84,16 +82,8 @@ final class RoundCall extends FunctionCall {
 	final InstructionList il = methodGen.getInstructionList();
 
 	// Get two copies of the argument on the stack
-	argument().translate(classGen, methodGen);
-	il.append(DUP2);
-
-	// Check if the argument is NaN
-	il.append(new INVOKESTATIC(cpg.addMethodref("java.lang.Double",
-						    "isNaN", "(D)Z")));
-	final BranchHandle skip = il.append(new IFNE(null));
-	il.append(new INVOKESTATIC(cpg.addMethodref(MATH_CLASS,
-						    "round", "(D)J")));
-	il.append(L2D);
-	skip.setTarget(il.append(NOP));
+        argument().translate(classGen, methodGen);    
+                il.append(new INVOKESTATIC(cpg.addMethodref(BASIS_LIBRARY_CLASS,
+                                                            "roundF", "(D)D")));
     }
 }

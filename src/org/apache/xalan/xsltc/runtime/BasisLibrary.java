@@ -228,6 +228,15 @@ public final class BasisLibrary implements Operators {
     }
 
     /**
+     * XSLT Standard function round()
+     */
+    public static double roundF(double d) {
+            if (d >= -0.5 && d < 0) return -0.0;
+            if (d == 0.0) return d;
+            else return Math.floor(d + 0.5);
+    }
+
+    /**
      * XSLT Standard function boolean()
      */
     public static boolean booleanF(Object obj) {
