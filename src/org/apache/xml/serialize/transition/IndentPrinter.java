@@ -116,9 +116,19 @@ class IndentPrinter
     /**
      * The line width at which to wrap long lines when indenting.
      */
-    private int _lineWidth = 72;
+    private int _lineWidth = 7200;
     // -sb Moved from OutputFormat
-
+    
+    private static char[] _spacechars;
+    
+    static
+    {
+      _spacechars = new char[200];
+      for(int i = 0; i < 200; i++)
+      {
+        _spacechars[i] = ' ';
+      }
+    }
 
     IndentPrinter( Writer writer, OutputFormat format)
     {
@@ -207,103 +217,25 @@ class IndentPrinter
      */
     public void printText( String text )
     {
-      // _text.append( text );
-      // Need linefeed normalization.  Yuck.  -sb
-      int n = text.length();
-      for(int i = 0; i < n; i++)
-      {
-        char c = text.charAt( i );
-        if ((0x0D == c) && ((i+1) < n) && (0x0A==text.charAt( i+1 ))) 
-        {
-          breakLine();
-          i++;
-        }
-        else if ((0x0A == c) && ((i+1) < n) && (0x0D==text.charAt( i+1 ))) 
-        {
-          breakLine();
-          i++;
-        }
-        else if((0x0A == c) || ('\n' == c))
-        {
-          breakLine();
-        }
-        else
-        {
-          _text.append(c);
-        }
-      }
+        _text.append( text );
     }
     
     
     public void printText( StringBuffer text )
     {
-        // _text.append( text );
-      // Need linefeed normalization.  Yuck.  -sb
-      int n = text.length();
-      for(int i = 0; i < n; i++)
-      {
-        char c = text.charAt( i );
-        if ((0x0D == c) && ((i+1) < n) && (0x0A==text.charAt( i+1 ))) 
-        {
-          breakLine();
-          i++;
-        }
-        else if ((0x0A == c) && ((i+1) < n) && (0x0D==text.charAt( i+1 ))) 
-        {
-          breakLine();
-          i++;
-        }
-        else if((0x0A == c) || ('\n' == c))
-        {
-          breakLine();
-        }
-        else
-        {
-          _text.append(c);
-        }
-      }
+        _text.append( text );
     }
 
 
     public void printText( char ch )
-    {       
-      if((0x0A == ch) || ('\n' == ch))
-      {
-        breakLine();
-      }
-      else
-      {
+    {     
         _text.append( ch );
-      }
     }
 
 
     public void printText( char[] chars, int start, int length )
     {
-       //  _text.append( chars, start, length );
-      while ( length-- > 0 ) {
-        // -sb Normalize linebreaks.
-        char c = chars[ start ];
-        if ((0x0D == c) && (length>1) && (0x0A==chars[ start+1 ])) 
-        {
-          breakLine();
-          ++start;
-        }
-        else if ((0x0A == c) && (length>1) && (0x0D==chars[ start+1 ])) 
-        {
-          breakLine();
-          ++start;
-        }
-        else if((0x0A == c) || ('\n' == c))
-        {
-          breakLine();
-        }
-        else
-        {
-          _text.append(c);
-        }
-        ++start;
-      }
+        _text.append( chars, start, length );
    }
     
 
@@ -331,17 +263,22 @@ class IndentPrinter
         // If text was accumulated with printText(), then the space
         // means we have to move that text into the line and
         // start accumulating new text with printText().
-        if ( _text.length() > 0 ) {
+        int textLen = _text.length();
+        if ( textLen > 0 ) {
           // If the text breaks a line bounary, wrap to the next line.
           // The printed line size consists of the indentation we're going
           // to use next, the accumulated line so far, some spaces and the
           // accumulated text so far.
-          if ( /* _format. -sb */ getLineWidth() > 0 &&
-                                  _thisIndent + _line.length() + _spaces + _text.length() > /* _format. -sb */ getLineWidth() ) {
+          /*
+          int lineWidth = getLineWidth();
+          if ( lineWidth > 0 
+               && _thisIndent + _line.length() 
+                  + _spaces + textLen > lineWidth ) 
+          {
             flushLine( false );
             try {
               // Print line and new line, then zero the line contents.
-              _writer.write( /* _format. -sb */ getLineSeparator() );
+              _writer.write( getLineSeparator() );
             } catch ( IOException except ) {
               // We don't throw an exception, but hold it
               // until the end of the document.
@@ -349,15 +286,17 @@ class IndentPrinter
                 _exception = except;
             }
           }
+          */
             
             // Add as many spaces as we accumulaed before.
             // At the end of this loop, _spaces is zero.
-            while ( _spaces > 0 ) {
-                _line.append( ' ' );
-                --_spaces;
+            if(_spaces > 0)
+            {
+              _line.append(_spacechars, 0, _spaces);
+              _spaces = 0;
             }
             _line.append( _text );
-            _text = new StringBuffer( 20 );
+            _text.setLength(0);
         }
         // Starting a new word: accumulate the text between the line
         // and this new word; not a new word: just add another space.
@@ -380,12 +319,13 @@ class IndentPrinter
 
     public void breakLine( boolean preserveSpace )
     {
+      preserveSpace = true;
         // Equivalent to calling printSpace and forcing a flushLine.
         if ( _text.length() > 0 ) 
         {
-            while ( _spaces > 0 ) {
-                _line.append( ' ' );
-                --_spaces;
+            if ( _spaces > 0 ) {
+                _line.append(_spacechars, 0, _spaces);
+                _spaces = 0;
             }
             _line.append( _text );
             _text = new StringBuffer( 20 );
@@ -402,7 +342,6 @@ class IndentPrinter
         }
     }
     
-
     /**
      * Flushes the line accumulated so far to the writer and get ready
      * to accumulate the next line. This method is called by {@link
@@ -412,33 +351,34 @@ class IndentPrinter
      */
     public void flushLine( boolean preserveSpace )
     {
+      preserveSpace = true;
         int     indent;
         
         if ( _line.length() > 0 ) 
         {
             try {
-                
                 if ( _format.getIndent() && ! preserveSpace ) {
                     // Make sure the indentation does not blow us away.
                     indent = _thisIndent;
-                    if ( ( 2 * indent ) > /* _format. -sb */ getLineWidth() && /* _format. -sb */getLineWidth() > 0 )
-                        indent = /* _format. -sb */ getLineWidth() / 2;
+                    int lw = getLineWidth();
+                    if ( ( 2 * indent ) > lw && lw > 0 )
+                        indent = lw / 2;
                     // Print the indentation as spaces and set the current
                     // indentation to the next expected indentation.
-                    while ( indent > 0 ) {
-                        _writer.write( ' ' );
-                        --indent;
-                    }
+                    
+                    _writer.write( _spacechars, 0, indent );
                 }
+
                 _thisIndent = _nextIndent;
                 
                 // There is no need to print the spaces at the end of the line,
                 // they are simply stripped and replaced with a single line
                 // separator.
                 _spaces = 0;
-                _writer.write( _line.toString() );
+                String s = _line.toString();
+                _writer.write( s );
                 
-                _line = new StringBuffer( 40 );
+                _line.setLength(0);
             } catch ( IOException except ) {
                 // We don't throw an exception, but hold it
                 // until the end of the document.

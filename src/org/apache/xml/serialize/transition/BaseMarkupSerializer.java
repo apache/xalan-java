@@ -412,7 +412,9 @@ public abstract class BaseMarkupSerializer
           try
           {
             if ( _format.getEncoding() == null )
+            {
               _writer = new OutputStreamWriter( _output );
+            }
             else
               _writer = Encodings.getWriter( _output, _format.getEncoding() );
           }
@@ -1275,18 +1277,29 @@ public abstract class BaseMarkupSerializer
         char ch;
 
         if ( preserveSpace ) {
-            // Preserving spaces: the text must print exactly as it is,
-            // without breaking when spaces appear in the text and without
-            // consolidating spaces. If a line terminator is used, a line
-            // break will occur.
+          // Preserving spaces: the text must print exactly as it is,
+          // without breaking when spaces appear in the text and without
+          // consolidating spaces. If a line terminator is used, a line
+          // break will occur.
+          if(unescaped)
+          {
             while ( length-- > 0 ) {
-                ch = chars[ start ];
-                ++start;
-                if ( ch == '\n' || ch == '\r' || unescaped )
-                    _printer.printText( ch );
-                else
-                    printEscaped( ch );
+              ch = chars[ start ];
+              ++start;
+              _printer.printText( ch );
             }
+          }
+          else
+          {
+            while ( length-- > 0 ) {
+              ch = chars[ start ];
+              ++start;
+              if ( ch == '\n' || ch == '\r' )
+                _printer.printText( ch );
+              else
+                printEscaped( ch );
+            }
+          }
         } else {
             // Not preserving spaces: print one part at a time, and
             // use spaces between parts to break them into different
@@ -1296,10 +1309,11 @@ public abstract class BaseMarkupSerializer
             while ( length-- > 0 ) {
                 ch = chars[ start ];
                 ++start;
-                if ( ch == ' ' || ch == '\f' || ch == '\t' || ch == '\n' || ch == '\r' )
-                    _printer.printSpace();
-                else if ( unescaped )
-                    _printer.printText( ch );
+                // if ( ch == ' ' || ch == '\f' || ch == '\t' || ch == '\n' || ch == '\r' )
+                //     _printer.printSpace();
+                // else 
+                if ( unescaped )
+                  _printer.printText( ch );
                 else
                     printEscaped( ch );
             }
@@ -1331,13 +1345,14 @@ public abstract class BaseMarkupSerializer
             // by printing mechanism. Line terminator is treated
             // no different than other text part.
             for ( index = 0 ; index < text.length() ; ++index ) {
-                ch = text.charAt( index );
-                if ( ch == ' ' || ch == '\f' || ch == '\t' || ch == '\n' || ch == '\r' )
-                    _printer.printSpace();
-                else if ( unescaped )
-                    _printer.printText( ch );
-                else
-                    printEscaped( ch );
+              ch = text.charAt( index );
+              // if ( ch == ' ' || ch == '\f' || ch == '\t' || ch == '\n' || ch == '\r' )
+              //    _printer.printSpace();
+              // else 
+              if ( unescaped )
+                _printer.printText( ch );
+              else
+                printEscaped( ch );
             }
         }
     }
@@ -1402,8 +1417,12 @@ public abstract class BaseMarkupSerializer
      */
     protected void printEscaped( String source )
     {
-        for ( int i = 0 ; i < source.length() ; ++i )
-            printEscaped( source.charAt( i ) );
+      int n = source.length();
+      for ( int i = 0 ; i < n ; ++i )
+      {
+        char c = source.charAt( i );
+        printEscaped( c );
+      }
     }
 
 

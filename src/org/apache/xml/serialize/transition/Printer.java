@@ -208,27 +208,8 @@ public class Printer
                     _writer.write( _buffer );
                     _pos = 0;
                 }
-                // -sb Normalize linebreaks.
-                char c = text.charAt( i );
-                if ((0x0D == c) && ((i+1) < length) && (0x0A==text.charAt( i+1 ))) 
-                {
-                  breakLine();
-                  i++;
-                }
-                else if ((0x0A == c) && ((i+1) < length) && (0x0D==text.charAt( i+1 ))) 
-                {
-                  breakLine();
-                  i++;
-                }
-                else if((0x0A == c) || ('\n' == c))
-                {
-                  breakLine();
-                }
-                else
-                {
-                  _buffer[ _pos ] = text.charAt( i );
-                  ++_pos;
-                }
+                _buffer[ _pos ] = text.charAt( i );
+                ++_pos;
             }
         } catch ( IOException except ) {
             // We don't throw an exception, but hold it
@@ -248,27 +229,8 @@ public class Printer
                     _writer.write( _buffer );
                     _pos = 0;
                 }
-                // -sb Normalize linebreaks.
-                char c = text.charAt( i );
-                if ((0x0D == c) && ((i+1) < length) && (0x0A==text.charAt( i+1 ))) 
-                {
-                  breakLine();
-                  i++;
-                }
-                else if ((0x0A == c) && ((i+1) < length) && (0x0D==text.charAt( i+1 ))) 
-                {
-                  breakLine();
-                  i++;
-                }
-                else if((0x0A == c) || ('\n' == c))
-                {
-                  breakLine();
-                }
-                else
-                {
-                  _buffer[ _pos ] = text.charAt( i );
-                  ++_pos;
-                }
+                _buffer[ _pos ] = text.charAt( i );
+                ++_pos;
             }
         } catch ( IOException except ) {
             // We don't throw an exception, but hold it
@@ -287,27 +249,8 @@ public class Printer
                     _writer.write( _buffer );
                     _pos = 0;
                 }
-                // -sb Normalize linebreaks.
-                char c = chars[ start ];
-                if ((0x0D == c) && (length>1) && (0x0A==chars[ start+1 ])) 
-                {
-                  breakLine();
-                  ++start;
-                }
-                else if ((0x0A == c) && (length>1) && (0x0D==chars[ start+1 ])) 
-                {
-                  breakLine();
-                  ++start;
-                }
-                else if((0x0A == c) || ('\n' == c))
-                {
-                  breakLine();
-                }
-                else
-                {
-                  _buffer[ _pos ] = chars[ start ];
-                  ++_pos;
-                }
+                _buffer[ _pos ] = chars[ start ];
+                ++_pos;
                 ++start;
             }
         } catch ( IOException except ) {
@@ -326,15 +269,8 @@ public class Printer
                 _writer.write( _buffer );
                 _pos = 0;
             }
-            if((0x0A == ch) || ('\n' == ch))
-            {
-              breakLine();
-            }
-            else
-            {
-              _buffer[ _pos ] = ch;
-              ++_pos;
-            }
+            _buffer[ _pos ] = ch;
+            ++_pos;
         } catch ( IOException except ) {
             // We don't throw an exception, but hold it
             // until the end of the document.
