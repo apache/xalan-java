@@ -56,299 +56,37 @@
  */
 package org.apache.xalan.utils;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.io.File;
-import java.util.StringTokenizer;
 import org.xml.sax.SAXException;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xerces.utils.URI;
+import org.apache.xerces.utils.URI.MalformedURIException;
 
 public class SystemIDResolver
 {
   /**
-   * Take a user string and try and parse XML, and also return 
-   * the url.
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide 
-   * the error condition is severe enough to halt processing.
+   * Take a SystemID string and try and turn it into a good absolute URL.
+   * @exception SAXException thrown if the string can't be turned into a URL.
    */
-  public static URL getURLFromString(String urlString, String base)
+  public static String getAbsoluteURI(String urlString, String base)
     throws SAXException 
   {
-    String origURLString = urlString;
-    String origBase = base;
-    
-    // System.out.println("getURLFromString - urlString: "+urlString+", base: "+base);
-    Object doc;
-    URL url = null;
-    int fileStartType = 0;
+    URI uri;
     try
     {
-      
-      if(null != base)
+      if((null == base) || (base.length() == 0))
       {
-        if(base.toLowerCase().startsWith("file:/"))
-        {
-          fileStartType = 1;
-        }
-        else if(base.toLowerCase().startsWith("file:"))
-        {
-          fileStartType = 2;
-        }
-      }
-      
-      boolean isAbsoluteURL;
-      
-      // From http://www.ics.uci.edu/pub/ietf/uri/rfc1630.txt
-      // A partial form can be distinguished from an absolute form in that the
-      // latter must have a colon and that colon must occur before any slash
-      // characters. Systems not requiring partial forms should not use any
-      // unencoded slashes in their naming schemes.  If they do, absolute URIs
-      // will still work, but confusion may result.
-      int indexOfColon = urlString.indexOf(':');
-      int indexOfSlash = urlString.indexOf('/');
-      if((indexOfColon != -1) && (indexOfSlash != -1) && (indexOfColon < indexOfSlash))
-      {
-        // The url (or filename, for that matter) is absolute.
-        isAbsoluteURL = true;
+        uri = new URI(urlString);
       }
       else
       {
-        isAbsoluteURL = false;
-      }
-      
-      if(isAbsoluteURL || (null == base) || (base.length() == 0))
-      {
-        try 
-        {
-          url = new URL(urlString);
-        }
-        catch (MalformedURLException e) {}
-      }
-      // The Java URL handling doesn't seem to handle relative file names.
-      else if(!((urlString.charAt(0) == '.') || (fileStartType > 0)))
-      {
-        try 
-        {
-          URL baseUrl = new URL(base);
-          url = new URL(baseUrl, urlString);
-        }
-        catch (MalformedURLException e) 
-        {
-        }
-      }
-      
-      if(null == url)
-      {
-        // Then we're going to try and make a file URL below, so strip 
-        // off the protocol header.
-        if(urlString.toLowerCase().startsWith("file:/"))
-        {
-          urlString = urlString.substring(6);
-        }
-        else if(urlString.toLowerCase().startsWith("file:"))
-        {
-          urlString = urlString.substring(5);
-        }
-      }
-      
-      if((null == url) && ((null == base) || (fileStartType > 0)))
-      {
-        if(1 == fileStartType)
-        {
-          if(null != base)
-            base = base.substring(6);
-          fileStartType = 1;
-        }
-        else if(2 == fileStartType)
-        {
-          if(null != base)
-            base = base.substring(5);
-          fileStartType = 2;
-        }
-        
-        File f = new File(urlString);
-        
-        if(!f.isAbsolute() && (null != base))
-        {
-          // String dir = f.isDirectory() ? f.getAbsolutePath() : f.getParent();
-          // System.out.println("prebuiltUrlString (1): "+base);
-          StringTokenizer tokenizer = new StringTokenizer(base, "\\/");
-          String fixedBase = null;
-          while(tokenizer.hasMoreTokens())
-          {
-            String token = tokenizer.nextToken();
-            if (null == fixedBase) 
-            {
-              // Thanks to Rick Maddy for the bug fix for UNIX here.
-              if (base.charAt(0) == '\\' || base.charAt(0) == '/') 
-              {
-                fixedBase = File.separator + token;
-              }
-              else 
-              {
-                fixedBase = token;
-              }
-            }
-            else 
-            {
-              fixedBase+= File.separator + token;
-            }
-          }
-          // System.out.println("rebuiltUrlString (1): "+fixedBase);
-          f = new File(fixedBase);
-          String dir = f.isDirectory() ? f.getAbsolutePath() : f.getParent();
-          // System.out.println("dir: "+dir);
-          // System.out.println("urlString: "+urlString);
-          // f = new File(dir, urlString);
-          // System.out.println("f (1): "+f.toString());
-          // urlString = f.getAbsolutePath();
-          f = new File(urlString); 
-          boolean isAbsolute =  f.isAbsolute() 
-                                || (urlString.charAt( 0 ) == '\\')
-                                || (urlString.charAt( 0 ) == '/');
-          if(!isAbsolute)
-          {
-            // Getting more and more ugly...
-            if(dir.charAt( dir.length()-1 ) != File.separator.charAt(0) && 
-               urlString.charAt( 0 ) != File.separator.charAt(0))
-            {
-              urlString = dir + File.separator + urlString;
-            }
-            else
-            {
-              urlString = dir + urlString;
-            }
-
-            // System.out.println("prebuiltUrlString (2): "+urlString);
-            tokenizer = new StringTokenizer(urlString, "\\/");
-            String rebuiltUrlString = null;
-            while(tokenizer.hasMoreTokens())
-            {
-              String token = tokenizer.nextToken();
-              if (null == rebuiltUrlString) 
-              {
-                // Thanks to Rick Maddy for the bug fix for UNIX here.
-                if (urlString.charAt(0) == '\\' || urlString.charAt(0) == '/') 
-                {
-                  rebuiltUrlString = File.separator + token;
-                }
-                else 
-                {
-                  rebuiltUrlString = token;
-                }
-              }
-              else 
-              {
-                rebuiltUrlString+= File.separator + token;
-              }
-            }
-            // System.out.println("rebuiltUrlString (2): "+rebuiltUrlString);
-            if(null != rebuiltUrlString)
-              urlString = rebuiltUrlString;
-          }
-          // System.out.println("fileStartType: "+fileStartType);
-          if(1 == fileStartType)
-          {
-            if (urlString.charAt(0) == '/') 
-            {
-              urlString = "file://"+urlString;
-            }
-            else
-            {
-              urlString = "file:/"+urlString;
-            }
-          }
-          else if(2 == fileStartType)
-          {
-            urlString = "file:"+urlString;
-          }
-          try 
-          {
-            // System.out.println("Final before try: "+urlString);
-            url = new URL(urlString);
-          }
-          catch (MalformedURLException e) 
-          {
-            // System.out.println("Error trying to make URL from "+urlString);
-          }
-        }
-      }
-      if(null == url)
-      {
-        // The sun java VM doesn't do this correctly, but I'll 
-        // try it here as a second-to-last resort.
-        if((null != origBase) && (origBase.length() > 0))
-        {
-          try 
-          {
-            URL baseURL = new URL(origBase);
-            // System.out.println("Trying to make URL from "+origBase+" and "+origURLString);
-            url = new URL(baseURL, origURLString);
-            // System.out.println("Success! New URL is: "+url.toString());
-          }
-          catch (MalformedURLException e) 
-          {
-            // System.out.println("Error trying to make URL from "+origBase+" and "+origURLString);
-          }
-        }
-        
-        if(null == url)
-        {
-          try 
-          {
-            String lastPart;
-            if(null != origBase)
-            {
-              File baseFile = new File(origBase);
-              if(baseFile.isDirectory())
-              {
-                lastPart = new File(baseFile, urlString).getAbsolutePath ();
-              }
-              else
-              {
-                String parentDir = baseFile.getParent();
-                lastPart = new File(parentDir, urlString).getAbsolutePath ();
-              }
-            }
-            else
-            {
-              lastPart = new File (urlString).getAbsolutePath ();
-            }
-            // Hack
-            // if((lastPart.charAt(0) == '/') && (lastPart.charAt(2) == ':'))
-            //   lastPart = lastPart.substring(1, lastPart.length() - 1);
-            
-            String fullpath;
-            if (lastPart.charAt(0) == '\\' || lastPart.charAt(0) == '/') 
-            {
-              fullpath = "file://" + lastPart;
-            }
-            else
-            {
-              fullpath = "file:" + lastPart;
-            }
-            url = new URL(fullpath);
-          }
-          catch (MalformedURLException e2)
-          {
-            throw new SAXException( XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_CREATE_URL, new Object[]{urlString}),e2); //"Cannot create url for: " + urlString, e2 );
-          }
-        }
+        URI baseURI = new URI(base);
+        uri = new URI(baseURI, urlString);
       }
     }
-    catch(SecurityException se)
+    catch(MalformedURIException mue)
     {
-      try
-      {
-        url = new URL("http://xml.apache.org/xslt/"+java.lang.Math.random()); // dummy
-      }
-      catch (MalformedURLException e2)
-      {
-        // I give up
-      }
+      throw new SAXException(mue);
     }
-    // System.out.println("url: "+url.toString());
-    return url;
+    String uriStr = uri.toString();
+    return uriStr;
   }
 }
