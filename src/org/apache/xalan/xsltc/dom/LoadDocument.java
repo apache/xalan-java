@@ -129,8 +129,15 @@ public final class LoadDocument {
 	// Check if this DOM has already been added to the multiplexer
 	int mask = multiplexer.getDocumentMask(uri);
 	if (mask != -1) {
-		DOM newDom = ((DOMAdapter)multiplexer.getDOMAdapter(uri)).getDOMImpl();
-	    return new SingletonIterator(((SAXImpl)newDom).getDocument()/*DTMDefaultBase.ROOTNODE | mask*/, true);
+	    DOM newDom = ((DOMAdapter)multiplexer.getDOMAdapter(uri))
+                                       .getDOMImpl();
+            if (newDom instanceof SAXImpl) {
+	        return new SingletonIterator(((SAXImpl)newDom).getDocument(),
+                                             true);
+            } else {
+	        return new SingletonIterator(((DOMImpl)newDom).getDocument(),
+                                             true);
+            }
 	}
 
 	// Check if we can get the DOM from a DOMCache
@@ -146,8 +153,7 @@ public final class LoadDocument {
 		throw new TransletException(e);
 	    }
 	}
-	else 
-  {
+	else {
 	    // Parse the input document and construct DOM object
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
