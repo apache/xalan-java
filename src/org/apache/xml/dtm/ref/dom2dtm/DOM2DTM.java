@@ -177,9 +177,9 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     
     int type;
     if(NULL==forceNodeType)
-	type = node.getNodeType();
+        type = node.getNodeType();
     else
-	type=forceNodeType;
+        type=forceNodeType;
     
     m_nodes.addElement(node);
     
@@ -238,6 +238,12 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     String localName =  (type == Node.PROCESSING_INSTRUCTION_NODE) ? 
                          node.getNodeName() :
                          node.getLocalName();
+                         
+    // Hack to make DOM1 sort of work...
+    if(((type == Node.ELEMENT_NODE) || (type == Node.ATTRIBUTE_NODE)) 
+        && null == localName)
+      localName = node.getNodeName(); // -sb
+      
     ExpandedNameTable exnt = m_expandedNameTable;
 
     // %TBD% Nodes created with the old non-namespace-aware DOM
@@ -1094,7 +1100,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       return node.getNodeValue();
     
     FastStringBuffer buf = StringBufferPool.get();
-	buf.append(node.getNodeValue());
+        buf.append(node.getNodeValue());
     while(n!=null)
     {
       buf.append(n.getNodeValue());
@@ -1466,15 +1472,15 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       int type = getNodeType(nodeHandle);
       Node node = getNode(nodeHandle);
       dispatchNodeData(node, ch, 0);
-	  // Text coalition -- a DTM text node may represent multiple
-	  // DOM nodes.
-	  if(TEXT_NODE == type || CDATA_SECTION_NODE == type)
-	  {
-		  while( null != (node=logicalNextDOMTextNode(node)) )
-		  {
-		      dispatchNodeData(node, ch, 0);
-		  }
-	  }
+          // Text coalition -- a DTM text node may represent multiple
+          // DOM nodes.
+          if(TEXT_NODE == type || CDATA_SECTION_NODE == type)
+          {
+                  while( null != (node=logicalNextDOMTextNode(node)) )
+                  {
+                      dispatchNodeData(node, ch, 0);
+                  }
+          }
     }
   }
   
@@ -1523,8 +1529,8 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     case Node.COMMENT_NODE :
       if(0 != depth)
         break;
-	// NOTE: Because this operation works in the DOM space, it does _not_ attempt
-	// to perform Text Coalition. That should only be done in DTM space. 
+        // NOTE: Because this operation works in the DOM space, it does _not_ attempt
+        // to perform Text Coalition. That should only be done in DTM space. 
     case Node.TEXT_NODE :
     case Node.CDATA_SECTION_NODE :
     case Node.ATTRIBUTE_NODE :
