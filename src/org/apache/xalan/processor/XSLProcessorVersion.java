@@ -143,7 +143,7 @@ public class XSLProcessorVersion
    * v.r[.dd| <B>D</B>nn]"</CODE>.
    * <P>Semantics of the version string are identical to the Xerces project.</P>
    */
-  public static String S_VERSION = ""+PRODUCT+" "+LANGUAGE+" "
+  public static String S_VERSION = PRODUCT+" "+LANGUAGE+" "
                                    +VERSION+"."+RELEASE+"."
                                    +(DEVELOPMENT > 0 ? ("D"+DEVELOPMENT) 
                                      : (""+MAINTENANCE));
