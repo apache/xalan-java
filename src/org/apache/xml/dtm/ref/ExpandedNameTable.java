@@ -59,6 +59,7 @@ package org.apache.xml.dtm.ref;
 import org.apache.xml.dtm.DTM;
 
 import java.util.Vector;
+import java.util.Hashtable;
 
 /**
  * This is a default implementation of a table that manages mappings from
@@ -76,6 +77,11 @@ import java.util.Vector;
  * */
 public class ExpandedNameTable
 {
+  // A bit of a kluge... We want assign-only-once behavior for the
+  // schemaType field, and null is a legitimate value... so we need
+  // a cheap non-null singleton object to use as the not-yet-set flag.
+  // As it happens, almost anything will work...
+  static final Object UNKNOWN_SCHEMA_TYPE=Boolean.FALSE;    
 
   /** Probably a reference to static pool.     */
   private DTMStringPool m_locNamesPool;
@@ -103,6 +109,12 @@ public class ExpandedNameTable
   public static final int DOCUMENT_FRAGMENT =((int)DTM.DOCUMENT_FRAGMENT_NODE) ;
   public static final int NOTATION = ((int)DTM.NOTATION_NODE) ;
   public static final int NAMESPACE = ((int)DTM.NAMESPACE_NODE) ;
+  
+  Hashtable m_hashtable = new Hashtable();
+  
+	/** Workspace for lookup. NOT THREAD SAFE!
+	 * */
+	ExtendedType hashET=new ExtendedType(-1,"","");  
   
 
   /**
@@ -139,7 +151,9 @@ public class ExpandedNameTable
     int i;
     for (i = 0; i < DTM.NTYPES; i++)
     {
-      m_extendedTypes.addElement(new ExtendedType(i, "", "") ); 
+      ExtendedType newET = new ExtendedType(i, "", ""); 
+      m_extendedTypes.addElement(newET); 
+      m_hashtable.put(newET, new Integer(i));
     }
     m_nextType = m_extendedTypes.size();
   }
@@ -166,16 +180,21 @@ public class ExpandedNameTable
 */
     if (null == namespace) 
       namespace = "";
-      if (null == localName) 
+    if (null == localName) 
       localName = "";
-      int length=m_extendedTypes.size();
-    for (int i = 0; i < length; i++)
-    {
-      ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
-      if( type == etype.nodetype && namespace.equals(etype.namespace) && localName.equals(etype.localName)) 
-        return i;
-    }
-    m_extendedTypes.addElement(new ExtendedType(type, namespace, localName));
+    // Set our reusable ExpandedType so we can look
+    // it up in the hashtable. Not threadsafe, but
+    // avoids creating a new object until we know
+    // this isn't one we've seen before.
+    hashET.redefine(type,namespace,localName);
+    
+    Object eType;
+    if ((eType = m_hashtable.get(hashET)) != null )
+      return ((Integer)eType).intValue();
+    
+    ExtendedType newET=new ExtendedType(type, namespace, localName);
+    m_extendedTypes.addElement(newET);
+    m_hashtable.put(newET, new Integer(m_nextType));
     return m_nextType++;
   }
   
@@ -189,18 +208,8 @@ public class ExpandedNameTable
    * @return the expanded-name id of the node.
    */
   public int getExpandedTypeID(int type)
-  {
-    /*int expandedTypeID = (type << (BITS_PER_NAMESPACE+BITS_PER_LOCALNAME));
-
-    return expandedTypeID;
-    */
-    for (int i = 0; i < m_extendedTypes.size(); i++)
-    {
-      ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt(i);
-      if( type == etype.nodetype ) 
-        return i;
-    }
-    return -1; // something's very wrong!
+  {    
+    return type;    
   }
 
   /**
@@ -278,74 +287,100 @@ public class ExpandedNameTable
     return (short)etype.nodetype;
   }
   
-  /**
-   * Given an expanded-name ID, return the default schema type object
-   *
-   * @param ExpandedNameID an ID that represents an expanded-name.
-   * @return a schema type object -- probably an XNI PSVI type.
-   */
-  public final Object getSchemaType(int ExpandedNameID)
+  /** Store the default schema datatype associated with this expanded
+      name.
+
+      @return true if the default has been set (or if the new value
+      matches the old one), false if the new doesn't match (meaning
+      you'd better record this as a per-node exception).
+  */
+  public boolean setSchemaType(int ExpandedNameID, Object schemaType)
   {
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    return (etype.schemaType==ExtendedType.NULL_SCHEMATYPE) ? null : etype.schemaType;
-  }
-  
-  /**
-   * Given an expanded-name ID, set the default schema type object if not
-   * previously set.
-   *
-   * @param ExpandedNameID an ID that represents an expanded-name.
-   * @param schemaType a schema type object -- probably an XNI PSVI type.
-   * @return false if previously set to something different
-   *  (as determined by Object.equals), otherwise true. False can
-   *  be used as a hint that we should record a type override for this
-   *  node.
-   */
-  public final boolean setSchemaType(int ExpandedNameID, Object schemaType)
-  {
-    ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    Object oldtype=etype.schemaType;
-    if(oldtype==null)
+    ExtendedType et=(ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    if(et.schemaType==UNKNOWN_SCHEMA_TYPE)
     {
-      etype.schemaType=(schemaType==null) ? ExtendedType.NULL_SCHEMATYPE : schemaType;
+      et.schemaType=schemaType;
       return true;
     }
-    else return oldtype.equals(schemaType);
+    else if(et.schemaType==schemaType || 
+    	(et.schemaType!=null && et.schemaType.equals(schemaType)) )
+      return true;
+    else
+      return false;
   }
-  
-  
-  /**
-   * Inner class representing an extended type object.
-   */
-   class ExtendedType
+
+  /** @return the default schema datatype associated with this expanded
+      name, null if none has been bound OR if the type bound was itself
+      null.
+  */
+  public Object getSchemaType(int ExpandedNameID)
   {
-     int nodetype;
-     String namespace;
-     String localName;
-    Object schemaType=null; // Default, for XNI PSVI support
+    ExtendedType et=(ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    return (et.schemaType==UNKNOWN_SCHEMA_TYPE) ? null : et.schemaType;
+  }
 
-    /** We need a value other than NULL which can be used to indicate that
-	the default (first-seen) schemaType really is null rather than
-	not-yet-established. This singleton is a bit of a kluge, but it
-	does the job...
-
-	%REVIEW%
-	This is mostly an issue because I implemented XNI2DTM as a subclass
-	of SAX2DTM and tried to leverage the existing code -- which means
-	we're trying to set the default type _after_ the ExpandedNameTable
-	entry has been constructed. Architecturally, it'd be better to
-	pass this info into the ctor, but that'd require a more
-	substantial rewrite of XNI2DTM.addNode (more code duplication).
-	Worth reconsidering.
-    */
-    public static final String NULL_SCHEMATYPE="NULL_SCHEMATYPE";
+  /**
+   * Private class representing an extended type object 
+   */
+  private class ExtendedType
+  {
+    protected Object schemaType=UNKNOWN_SCHEMA_TYPE;
     
-     ExtendedType (int nodetype, String namespace, String localName)
+    protected int nodetype;
+    protected String namespace;
+    protected String localName;
+    protected int hash;
+    
+    protected ExtendedType (int nodetype, String namespace, String localName)
     {
       this.nodetype = nodetype;
       this.namespace = namespace;
       this.localName = localName;
+      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
     }
+
+	/* This is intended to be used ONLY on the hashET
+	 * object. Using it elsewhere will mess up existing
+	 * hashtable entries!
+	 * */
+    protected void redefine(int nodetype, String namespace, String localName)
+    {
+      this.nodetype = nodetype;
+      this.namespace = namespace;
+      this.localName = localName;
+      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
+    }
+    
+    /* Override super method
+	 * */
+    public int hashCode() 
+    {
+    	return hash;
+    }
+
+    /* Override super method
+	 * */
+	public boolean equals(Object other)
+	{
+		//Usually an optimization, but 
+		// won't arise in our usage:
+		//if(other==this) return true;
+		try
+		{
+			ExtendedType et=(ExtendedType)other;
+			return et.nodetype==this.nodetype &&
+				et.localName.equals(this.localName) &&
+				et.namespace.equals(this.namespace);
+		}
+		catch(ClassCastException e)
+		{
+			return false;
+		}
+		catch(NullPointerException e)
+		{
+			return false;
+		}
+	}
   }
   
 }

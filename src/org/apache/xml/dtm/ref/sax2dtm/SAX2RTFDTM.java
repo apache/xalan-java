@@ -108,9 +108,6 @@ import org.xml.sax.ext.*;
  * */
 public class SAX2RTFDTM extends SAX2DTM
 {
-  /** Set true to monitor SAX events and similar diagnostic info. */
-  private static final boolean DEBUG = false;
-  
   /** Most recently started Document, or null if the DTM is empty.  */
   private int m_currentDocumentNode=NULL;
   
@@ -192,6 +189,29 @@ public class SAX2RTFDTM extends SAX2DTM
 
     return DTM.NULL; // Safety net; should never happen
   }
+
+  /**
+   * Given a node identifier, find the owning document node.  Unlike the DOM,
+   * this considers the owningDocument of a Document to be itself. Note that
+   * in shared DTMs this may not be zero.
+   *
+   * @param nodeId the id of the node.
+   * @return int Node identifier of owning document, or the nodeId if it is
+   *             a Document.
+   */
+  protected int _documentRoot(int nodeIdentifier)
+  {
+  	if(nodeIdentifier==NULL) return NULL;
+  	
+    for(int parent=_parent(nodeIdentifier);
+    	parent!=NULL;
+    	nodeIdentifier=parent,parent=_parent(nodeIdentifier))
+    	;
+    
+    return nodeIdentifier;
+  }
+
+  
   
   /**
    * Receive notification of the beginning of a new RTF document.

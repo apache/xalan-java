@@ -517,7 +517,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       return (m_indexing
               && ExpandedNameTable.ELEMENT
-                 == m_expandedNameTable.getType(expandedTypeID));
+                 == m_expandedNameTable.getType(expandedTypeID)); 
     }
 
     /**
@@ -1256,7 +1256,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context);
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         short type = _type(current);
 
@@ -1285,7 +1286,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// Compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context);
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         int exptype = m_exptype.elementAt(current);
 
@@ -1320,7 +1322,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// Compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context );
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         short type = _type(current);
 
@@ -1348,7 +1351,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// Compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context);
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         int exptype = m_exptype.elementAt(current);
 
@@ -1485,7 +1489,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return getDocument();
+      return getDocumentRoot(context);
     }
 
     /**
@@ -1498,7 +1502,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int expandedTypeID)
     {
-      return (getExpandedTypeID(getDocument()) == expandedTypeID)
+      return (getExpandedTypeID(getDocumentRoot(context)) == expandedTypeID)
              ? context : next(context, context, expandedTypeID);
     }
 
@@ -1618,8 +1622,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected int getSubtreeRoot(int handle)
     {
-			// %REVIEW% Shouldn't this always be 0?
-      return makeNodeIdentity(getDocument());
+      return _documentRoot(makeNodeIdentity(handle));
     }
 
     /**
@@ -1631,7 +1634,35 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return getDocument();
+      return getDocumentRoot(context);
+    }
+    
+    /**
+     * By the nature of the stateless traversal, the context node can not be
+     * returned or the iteration will go into an infinate loop.  So to traverse
+     * an axis, the first function must be used to get the first node.
+     *
+     * <p>This method needs to be overloaded only by those axis that process
+     * the self node. <\p>
+     *
+     * @param context The context node of this traversal. This is the point
+     * of origin for the traversal -- its "root node" or starting point.
+     * @param expandedTypeID The expanded type ID that must match.
+     *
+     * @return the first node in the traversal.
+     */
+    public int first(int context, int expandedTypeID)
+    {
+      if (isIndexed(expandedTypeID))
+      {
+        int identity = _documentRoot(makeNodeIdentity(context));
+        int firstPotential = getFirstPotential(identity);
+
+        return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
+      }
+
+      int root = first(context); 
+      return next(root, root, expandedTypeID);
     }
   }
   
@@ -1652,7 +1683,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected int getFirstPotential(int identity)
     {
-      return _firstch(0);
+      return _firstch(_documentRoot(identity));
     }
 
     /**
@@ -1662,7 +1693,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected int getSubtreeRoot(int handle)
     {
-      return 0;
+      return _documentRoot(makeNodeIdentity(handle));
     }
 
     /**
@@ -1674,8 +1705,37 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return makeNodeHandle(_firstch(0));
+      return makeNodeHandle(_firstch(_documentRoot(makeNodeIdentity(context))));
     }
+    
+    /**
+     * By the nature of the stateless traversal, the context node can not be
+     * returned or the iteration will go into an infinate loop.  So to traverse
+     * an axis, the first function must be used to get the first node.
+     *
+     * <p>This method needs to be overloaded only by those axis that process
+     * the self node. <\p>
+     *
+     * @param context The context node of this traversal. This is the point
+     * of origin for the traversal -- its "root node" or starting point.
+     * @param expandedTypeID The expanded type ID that must match.
+     *
+     * @return the first node in the traversal.
+     */
+    public int first(int context, int expandedTypeID)
+    {
+      if (isIndexed(expandedTypeID))
+      {
+        int identity = _documentRoot(makeNodeIdentity(context)); 
+        int firstPotential = getFirstPotential(identity);
+
+        return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
+      }
+
+      int root = getDocumentRoot(context); 
+      return next(root, root, expandedTypeID);
+    }
+    
   }
 
 }

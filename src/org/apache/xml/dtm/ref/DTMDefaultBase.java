@@ -176,9 +176,6 @@ public abstract class DTMDefaultBase implements DTM
   /** The XMLString factory for creating XMLStrings. */
   protected XMLStringFactory m_xstrf;
 
-  /** The identity of the root node. */
-  public static final int ROOTNODE = 0;
-
   /**
    * The table for exandedNameID lookups.  This may or may not be the same
    * table as is contained in the DTMManagerDefault.
@@ -1404,7 +1401,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getDocument()
   {
-    return m_dtmIdent.elementAt(0); // makeNodeHandle(0)
+    return m_dtmIdent.elementAt(0);
   }
 
   /**
@@ -1439,6 +1436,20 @@ public abstract class DTMDefaultBase implements DTM
   public int getDocumentRoot(int nodeHandle)
   {
     return getDocument();
+  }
+
+  /**
+   * Given a node identifier, find the owning document node.  Unlike the DOM,
+   * this considers the owningDocument of a Document to be itself. Note that
+   * in shared DTMs this may not be zero.
+   *
+   * @param nodeId the id of the node.
+   * @return int Node identifier of owning document, or the nodeId if it is
+   *             a Document.
+   */
+  protected int _documentRoot(int nodeIdentifier)
+  {
+    return 0;
   }
 
   /**

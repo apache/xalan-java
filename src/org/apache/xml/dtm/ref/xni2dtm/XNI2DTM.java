@@ -206,13 +206,12 @@ public class XNI2DTM
 	// The goal is to not consume storage for types unless they actualy exist,
 	// and to minimize per-node overhead.
 	//
-	// %BUG% %OPT% %REVIEW% (and various other expressions of "GONK!"):
-	// The solution shown here does not achieve the latter. It's just a
-	// quick get-the-API-working prototype. I suspect the Right Answer is
-	// going to be to enhance the concept of Expanded Type to include semantic
-	// (schema) types as well as syntactic (QName/nodetype) types.
-	
-	if(actualType != null)
+	// NOTE: Record first-seen as default even if it is null, because
+	// otherwise late changes of type will bash previously recorded
+	// nodes. This is NOT necessarily maximally efficient, but to really
+	// optimize we would have to rewrite data to make the default the most
+	// common -- and since Scott insists that overrides will be uncommon,
+	// I don't want to go there.
 	{
 	  // Try to record as default for this nodetype
 	  if(!m_expandedNameTable.setSchemaType(m_exptype.elementAt(identity),

@@ -402,7 +402,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       _currentNode = END;
 
-      return result;
+      return returnNode(result);
     }
   }  // end of ParentIterator
 
@@ -1131,7 +1131,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     private final int _maxAncestors = 8;
 
     /**
-     * The stack of start node + ancestors up to ROOTNODE,
+     * The stack of start node + ancestors up to the root of the tree,
      *  which we must avoid.
      */
     private int[] _stack = new int[_maxAncestors];
@@ -1196,25 +1196,23 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         int parent, index;
 
         _startNode = node;
-        _currentNode = ROOTNODE;  // Remember it's the identity, not the full handle.
         _stack[index = 0] = node;
 
-        if (node > ROOTNODE)
-        {
-          while ((parent = _parent(node)) != ROOTNODE)
-          {
-            if (++index == _stack.length)
-            {
-              final int[] stack = new int[index + 4];
-
-              System.arraycopy(_stack, 0, stack, 0, index);
-
-              _stack = stack;
-            }
-
-            _stack[index] = node = parent;
-          }
+		parent=node;
+		while ((parent = _parent(parent)) != NULL)
+		{
+			if (++index == _stack.length)
+			{
+				final int[] stack = new int[index + 4];
+				System.arraycopy(_stack, 0, stack, 0, index);
+				_stack = stack;
+			}
+			_stack[index] = parent;
         }
+        if(index>0)
+	        --index; // Pop actual root node (if not start) back off the stack
+
+        _currentNode=_stack[index]; // Last parent before root node
 
         _oldsp = _sp = index;
 

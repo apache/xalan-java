@@ -121,12 +121,14 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
+  /** Set false to disable the new XNI support and force SAX instead
+   * */
   static final boolean JJK_ENABLE_XNI=true;
 	
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
 
-  /** Set this to true if you want a basic diagnostics. */
+  /** Set this to true if you want basic diagnostics. */
   private static final boolean DEBUG = false;
 
   /**
@@ -316,6 +318,8 @@ public class DTMManagerDefault extends DTMManager
         // we need to consider architectural improvements.
         dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
                              xstringFactory, doIndexing);
+        if(DEBUG)
+        	System.out.println("CREATING RTF DTM: "+dtm);
       }
       else // Create the basic SAX2DTM.
       {
@@ -854,10 +858,10 @@ public class DTMManagerDefault extends DTMManager
     {
       System.out.println("Releasing "+
 			 (shouldHardDelete ? "HARD" : "soft")+
-			 " dtm="+
+			 " dtm="+dtm
 			 // Following shouldn't need a nodeHandle, but does...
 			 // and doesn't seem to report the intended value
-			 dtm.getDocumentBaseURI()
+			 +" ("+dtm.getDocumentBaseURI()+")"
 			 );
     }
 
