@@ -41,6 +41,10 @@ SRCS = \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)XPathException.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)XPathFactory.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)XPathProcessorException.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)ChildWalkerMultiStep.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)SelfWalkerOneStep.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)AttributeWalkerOneStep.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)ChildWalkerOneStep.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)AncestorOrSelfWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)AncestorWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)AttributeWalker.java \
@@ -61,6 +65,8 @@ SRCS = \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)RootWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)SelfWalker.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)UnionPathIterator.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)SubContextList.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)axes$(PATHSEP)WalkerFactory.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)compiler$(PATHSEP)Compiler.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)compiler$(PATHSEP)FuncLoader.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)compiler$(PATHSEP)FunctionTable.java \

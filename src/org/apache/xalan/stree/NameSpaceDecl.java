@@ -16,3 +16,4 @@ public class NameSpaceDecl extends AttrImplNS
   }
 
 }
+ 

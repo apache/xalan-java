@@ -36,6 +36,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExtensionsTable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)MethodResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)XSLProcessorContext.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)extensions$(PATHSEP)ExpressionContext.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)Redirect.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)XConnection.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)lib$(PATHSEP)sql$(PATHSEP)XStatement.java \
@@ -65,6 +66,9 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorTemplate.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorTemplateElem.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorText.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)CompiledTemplate.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)CompilingStylesheetHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)CompilingStylesheetProcessor.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetPIHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetProcessor.java \
@@ -92,6 +96,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_ka.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_zh_CN.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)res$(PATHSEP)XSLTResources_zh_TW.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)NameSpaceDecl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)AttrImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)AttrImplNS.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)CDATASectionImpl.java \
@@ -169,6 +174,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)StylesheetComposed.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)StylesheetRoot.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)TemplateList.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)TemplateSubPatternAssociation.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhiteSpaceInfo.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)WhitespaceList.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)XMLNSDecl.java \
@@ -235,6 +241,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)NodeConsumer.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)WrappedRuntimeException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)XMLCharacterRecognizer.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringBufferPool.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)xslt$(PATHSEP)Process.java \
   org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Examples.java \
   org$(PATHSEP)apache$(PATHSEP)trax$(PATHSEP)Processor.java \
@@ -264,7 +271,6 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Field.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Member.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)synthetic$(PATHSEP)reflection$(PATHSEP)Method.java \
-  org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java \
   org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Attr.java \
   org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)CDATASection.java \
   org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)CharacterData.java \
