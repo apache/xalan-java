@@ -270,9 +270,13 @@ public abstract class SerializerFactory
           else 
           {
             try {
-              cls = SerializerFactory.class.getClassLoader().loadClass( clsName );
+              cls = Class.forName(clsName);
+              // Breaks in jview -sb
+              // cls = SerializerFactory.class.getClassLoader().loadClass( clsName );
               _serializers.put( method, cls );
-            } catch ( ClassNotFoundException except ) {
+            } 
+            catch ( ClassNotFoundException except ) 
+            {
               System.err.println( "Could not locate serializer class " + clsName );
             }
           }
@@ -286,9 +290,13 @@ public abstract class SerializerFactory
           else 
           {
             try {
-              cls = SerializerFactory.class.getClassLoader().loadClass( clsName );
+              cls = Class.forName(clsName);
+              // Breaks in jview -sb
+              // cls = SerializerFactory.class.getClassLoader().loadClass( clsName );
               _formats.put( method, cls );
-            } catch ( ClassNotFoundException except ) {
+            } 
+            catch ( ClassNotFoundException except ) 
+            {
               System.err.println( "Could not locate output format class " + clsName );
             }
           }
