@@ -1298,10 +1298,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public int next() {
-	    if (++_node >= (_limit))
-		return(NULL);
-	    else
-		return(returnNode(_node));
+	    while (++_node < _limit) {
+		if (_type[_node] > TEXT)
+		    return(returnNode(_node));
+	    } 
+	    return(NULL);
 	}
 
 	public void setMark() {
@@ -2826,7 +2827,6 @@ public final class DOMImpl implements DOM, Externalizable {
 			_whitespace.setBit(node);
 		    }
 		}
-
 		_type[node] = TEXT;
 		linkChildren(node);
 		storeTextRef(node);
