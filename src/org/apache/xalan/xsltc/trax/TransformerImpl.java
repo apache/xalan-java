@@ -567,13 +567,15 @@ public final class TransformerImpl extends Transformer
 		reader.setContentHandler(builder);
 
 		InputSource input;
-		if (streamInput != null)
+		if (streamInput != null) {
 		    input = new InputSource(streamInput);
-		else if (streamReader != null)
+		    input.setSystemId(systemId); 
+		} else if (streamReader != null) {
 		    input = new InputSource(streamReader);
-		else if (systemId != null)
+		    input.setSystemId(systemId); 
+		} else if (systemId != null) {
 		    input = new InputSource(systemId);
-		else {
+		} else {
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
 		    throw new TransformerException(err.toString());
 		}
