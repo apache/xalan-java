@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,22 +64,22 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.Translet;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 public abstract class SingleNodeCounter extends NodeCounter {
     static private final int[] EmptyArray = new int[] { };
-    NodeIterator _countSiblings = null;
+    DTMAxisIterator _countSiblings = null;
 
     public SingleNodeCounter(Translet translet,
 			     DOM document,
-			     NodeIterator iterator) {
+			     DTMAxisIterator iterator) {
 	super(translet, document, iterator);
     }
 
     public NodeCounter setStartNode(int node) {
 	_node = node;
-	_nodeType = _document.getType(node);
+	_nodeType = _document.getExpandedTypeID(node);
 	_countSiblings = _document.getAxisIterator(PRECEDINGSIBLING);
 	return this;
     }
@@ -120,22 +120,22 @@ public abstract class SingleNodeCounter extends NodeCounter {
 
     public static NodeCounter getDefaultNodeCounter(Translet translet,
 						    DOM document,
-						    NodeIterator iterator) {
+						    DTMAxisIterator iterator) {
 	return new DefaultSingleNodeCounter(translet, document, iterator);
     }
 
     static class DefaultSingleNodeCounter extends SingleNodeCounter {
 	public DefaultSingleNodeCounter(Translet translet,
-					DOM document, NodeIterator iterator) {
+					DOM document, DTMAxisIterator iterator) {
 	    super(translet, document, iterator);
 	}
 
 	public NodeCounter setStartNode(int node) {
 	    _node = node;
-	    _nodeType = _document.getType(node);
+	    _nodeType = _document.getExpandedTypeID(node);
 	    _countSiblings =
 		_document.getTypedAxisIterator(PRECEDINGSIBLING,
-					       _document.getType(node));
+					       _document.getExpandedTypeID(node));
 	    return this;
 	}
 

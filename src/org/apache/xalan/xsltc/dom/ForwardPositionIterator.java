@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,8 +62,9 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
  * This iterator is a wrapper that always returns the position of
@@ -71,15 +72,15 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
  * a call to position() occurs in the context of an XSLT element
  * such as xsl:for-each, xsl:apply-templates, etc. 
  */
-public final class ForwardPositionIterator extends NodeIteratorBase {
+public final class ForwardPositionIterator extends DTMAxisIteratorBase {
 
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
 
-    public ForwardPositionIterator(NodeIterator source) {
+    public ForwardPositionIterator(DTMAxisIterator source) {
 	_source = source;
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final ForwardPositionIterator clone = 
 		(ForwardPositionIterator) super.clone();
@@ -98,18 +99,14 @@ public final class ForwardPositionIterator extends NodeIteratorBase {
 	return returnNode(_source.next());
     }
 	
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	_source.setStartNode(node);
 	return this;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return resetPosition();
-    }
-
-    public int getPosition() {
-	return _position == 0 ? 1 : _position;
     }
 
     public void setMark() {

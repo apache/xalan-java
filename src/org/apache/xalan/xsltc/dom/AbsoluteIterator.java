@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,9 +63,10 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 
 /**
  * Absolute iterators ignore the node that is passed to setStartNode(). 
@@ -78,24 +79,14 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
  * nodes from other DOMs will have no effect (i.e. this iterator cannot 
  * migrate between DOMs).
  */
-public final class AbsoluteIterator extends NodeIteratorBase {
-
-    /**
-     * Initial value for DOM masks.
-     */
-    private static final int NO_MASK = -1;
+public final class AbsoluteIterator extends DTMAxisIteratorBase {
 
     /**
      * Source for this iterator.
      */
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
 
-    /**
-     * DOM mask cached after first call to setStartNode().
-     */
-    private int _mask = NO_MASK;
-	
-    public AbsoluteIterator(NodeIterator source) {
+    public AbsoluteIterator(DTMAxisIterator source) {
 	_source = source;
 // System.out.println("AI source = " + source + " this = " + this);
     }
@@ -105,12 +96,9 @@ public final class AbsoluteIterator extends NodeIteratorBase {
 	_source.setRestartable(isRestartable);
     }
 
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
+	_startNode = DTMDefaultBase.ROOTNODE;
 	if (_isRestartable) {
-	    if (_mask == NO_MASK) {
-		_mask = node & 0xFF000000;
-	    }
-	    _startNode = _mask | DOM.ROOTNODE;
 	    _source.setStartNode(_startNode);
 	    resetPosition();
 	}
@@ -121,7 +109,7 @@ public final class AbsoluteIterator extends NodeIteratorBase {
 	return returnNode(_source.next());
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final AbsoluteIterator clone = (AbsoluteIterator) super.clone();
 	    clone._source = _source.cloneIterator();	// resets source
@@ -136,7 +124,7 @@ public final class AbsoluteIterator extends NodeIteratorBase {
 	}
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return resetPosition();
     }

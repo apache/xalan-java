@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,6 +69,9 @@ import org.apache.xalan.xsltc.CollatorFactory;
 
 public class CollatorFactoryBase implements CollatorFactory {
     
+    public static final Locale DEFAULT_LOCALE = Locale.getDefault();
+    public static final Collator DEFAULT_COLLATOR = Collator.getInstance();
+    
     public CollatorFactoryBase() {
     }
     
@@ -77,6 +80,9 @@ public class CollatorFactoryBase implements CollatorFactory {
     }
     
     public Collator getCollator(Locale locale) {
-        return Collator.getInstance(locale);
+        if (locale == DEFAULT_LOCALE)
+            return DEFAULT_COLLATOR;
+        else
+            return Collator.getInstance(locale);
     }
 }

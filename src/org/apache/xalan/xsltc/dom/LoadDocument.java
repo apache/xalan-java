@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,13 +67,17 @@ import java.io.FileNotFoundException;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
 public final class LoadDocument {
@@ -85,94 +89,94 @@ public final class LoadDocument {
      * Returns an iterator containing a set of nodes from an XML document
      * loaded by the document() function.
      */
-    public static NodeIterator document(String uri, String base,
+    public static DTMAxisIterator document(String uri, String base,
 					AbstractTranslet translet, DOM dom)
 	throws Exception 
     {
-	final String originalUri = uri;
-	MultiDOM multiplexer = (MultiDOM)dom;
+        final String originalUri = uri;
+        MultiDOM multiplexer = (MultiDOM)dom;
 
-	// Return an empty iterator if the URI is clearly invalid
-	// (to prevent some unncessary MalformedURL exceptions).
-	if (uri == null || uri.equals("")) {
-	    return new SingletonIterator(DOM.NULL,true);
-	}
+        // Return an empty iterator if the URI is clearly invalid
+        // (to prevent some unncessary MalformedURL exceptions).
+        if (uri == null || uri.equals("")) {
+            return(new SingletonIterator(DTM.NULL,true));
+        }
 
-	// Prepend URI base to URI (from context)
-	if (base != null && !base.equals("")) {
-	    if (!uri.startsWith(base)     &&   // unless URI contains base
-		!uri.startsWith("/")      &&   // unless URI is abs. file path
-		!uri.startsWith("http:/") &&   // unless URI is abs. http URL
-		!uri.startsWith("file:/")) {   // unless URI is abs. file URL
-		uri = base + uri;
-	    }
-	}
+        // Prepend URI base to URI (from context)
+        if (base != null && !base.equals("")) {
+            if (!uri.startsWith(base)     &&   // unless URI contains base
+                !uri.startsWith("/")      &&   // unless URI is abs. file path
+                !uri.startsWith("http:/") &&   // unless URI is abs. http URL
+                !uri.startsWith("file:/")) {   // unless URI is abs. file URL
+                uri = base + uri;
+            }
+        }
 
-	// Check if this is a local file name
-	final File file = new File(uri);
-	if (file.exists()) {
-	    uri = file.toURL().toExternalForm();
-	}
+        // Check if this is a local file name
+        final File file = new File(uri);
+        if (file.exists()) {
+            uri = file.toURL().toExternalForm();
+        }
 	
-	// Check if this DOM has already been added to the multiplexer
-	int mask = multiplexer.getDocumentMask(uri);
-	if (mask != -1) {
-	    return new SingletonIterator(DOM.ROOTNODE | mask, true);
-	}
+        // Check if this DOM has already been added to the multiplexer
+        int mask = multiplexer.getDocumentMask(uri);
+        if (mask != -1) {
+            DOM newDom = ((DOMAdapter)multiplexer.getDOMAdapter(uri))
+                                       .getDOMImpl();
+            if (newDom instanceof SAXImpl) {
+                return new SingletonIterator(((SAXImpl)newDom).getDocument(),
+                                             true);
+            } 
+        }
 
-	// Check if we can get the DOM from a DOMCache
-	DOMCache cache = translet.getDOMCache();
-	DOMImpl newdom;
+        // Check if we can get the DOM from a DOMCache
+        DOMCache cache = translet.getDOMCache();
+        DOM newdom;
 
-	mask = multiplexer.nextMask(); // peek
+        mask = multiplexer.nextMask(); // peek
 
-	if (cache != null) {
-	    newdom = cache.retrieveDocument(originalUri, mask, translet);
-	    if (newdom == null) {
-		final Exception e = new FileNotFoundException(originalUri);
-		throw new TransletException(e);
-	    }
-	}
-	else {
-	    // Parse the input document and construct DOM object
-	    // Create a SAX parser and get the XMLReader object it uses
-	    final SAXParserFactory factory = SAXParserFactory.newInstance();
-	    try {
-		factory.setFeature(NAMESPACE_FEATURE,true);
-	    }
-	    catch (Exception e) {
-		factory.setNamespaceAware(true);
-	    }
-	    final SAXParser parser = factory.newSAXParser();
-	    final XMLReader reader = parser.getXMLReader();
+        if (cache != null) {
+            //newdom = cache.retrieveDocument(originalUri, mask, translet);
+            newdom = cache.retrieveDocument(uri, mask, translet);
+            if (newdom == null) {
+                final Exception e = new FileNotFoundException(originalUri);
+                throw new TransletException(e);
+            }
+        } else {
+            // Parse the input document and construct DOM object
+            // Create a SAX parser and get the XMLReader object it uses
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            final SAXParser parser = factory.newSAXParser();
+            final XMLReader reader = parser.getXMLReader();
+            try {
+                reader.setFeature(NAMESPACE_FEATURE,true);
+            }
+            catch (Exception e) {
+                throw new TransletException(e);
+            }
 
-	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-	    newdom = new DOMImpl();
-	    reader.setContentHandler(newdom.getBuilder());
-	    // Create a DTD monitor and pass it to the XMLReader object
-	    DTDMonitor dtdMonitor = new DTDMonitor();
-	    dtdMonitor.handleDTD(reader);
+            // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+            XSLTCDTMManager dtmManager = (XSLTCDTMManager)
+                        ((DTMDefaultBase)((DOMAdapter)multiplexer.getMain())
+                                               .getDOMImpl()).m_mgr;
+            newdom = (SAXImpl)dtmManager.getDTM(
+                                 new SAXSource(reader, new InputSource(uri)),
+                                 false, null, true, false, translet.hasIdCall());
 
-	    newdom.setDocumentURI(uri);
-	    reader.parse(uri);
+            translet.prepassDocument(newdom);
 
-	    // Set size of key/id indices
-	    translet.setIndexSize(newdom.getSize());
-	    // Create index for any ID attributes defined in the document DTD
-	    dtdMonitor.buildIdIndex(newdom, mask, translet);
-	    // Pass any unparsed URI elements to the translet
-	    translet.setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
-	}
+            ((SAXImpl)newdom).setDocumentURI(uri);
+        }
 
-	// Wrap the DOM object in a DOM adapter and add to multiplexer
-	final DOMAdapter domAdapter = translet.makeDOMAdapter(newdom);
-	mask = multiplexer.addDOMAdapter(domAdapter);
+        // Wrap the DOM object in a DOM adapter and add to multiplexer
+        final DOMAdapter domAdapter = translet.makeDOMAdapter(newdom);
+        multiplexer.addDOMAdapter(domAdapter);
 
-	// Create index for any key elements
-	translet.buildKeys((DOM)newdom, null, null, DOM.ROOTNODE | mask);
+        // Create index for any key elements
+        translet.buildKeys(domAdapter, null, null, ((SAXImpl)newdom).getDocument());
 
-	// Return a singleton iterator containing the root node
-	return new SingletonIterator(DOM.ROOTNODE | mask, true);
+        // Return a singleton iterator containing the root node
+        return new SingletonIterator(((SAXImpl)newdom).getDocument(), true);
     }
 
     /**
@@ -181,7 +185,7 @@ public final class LoadDocument {
      * iterator containing the requested nodes. Builds a union-iterator if
      * several documents are requested.
      */
-    public static NodeIterator document(Object arg,String xmlURI,String xslURI,
+    public static DTMAxisIterator document(Object arg,String xmlURI,String xslURI,
 					AbstractTranslet translet, DOM dom)
 	throws TransletException {
 	try {
@@ -221,13 +225,13 @@ public final class LoadDocument {
 	    }
 	    // Otherwise we must create a union iterator, add the nodes from
 	    // all the DOMs to this iterator, and return the union in the end.
-	    else if (arg instanceof NodeIterator) {
+	    else if (arg instanceof DTMAxisIterator) {
 		UnionIterator union = new UnionIterator(dom);
-		NodeIterator iterator = (NodeIterator)arg;
+		DTMAxisIterator iterator = (DTMAxisIterator)arg;
 		int node;
 
-		while ((node = iterator.next()) != DOM.NULL) {
-		    String uri = dom.getNodeValue(node);
+		while ((node = iterator.next()) != DTM.NULL) {
+		    String uri = dom.getStringValueX(node);
 		    // Get the URI from this node if no xml URI base is set
 		    if ((xmlURI == null) || xmlURI.equals("")) {
 			xmlURI = dom.getDocumentURI(node);

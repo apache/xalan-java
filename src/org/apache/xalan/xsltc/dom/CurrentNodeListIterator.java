@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,10 +64,11 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
  * Iterators of this kind use a CurrentNodeListFilter to filter a subset of 
@@ -79,8 +80,8 @@ import org.apache.xalan.xsltc.util.IntegerArray;
  * CurrentNodeListFilter.test()). The method getLast() returns the last element 
  * after applying the filter.
  */
-public final class CurrentNodeListIterator extends NodeIteratorBase {
 
+public final class CurrentNodeListIterator extends DTMAxisIteratorBase {
     /**
      * A flag indicating if nodes are returned in document order.
      */
@@ -89,7 +90,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
     /**
      * The source for this iterator.
      */
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
 
     /**
      * A reference to a filter object.
@@ -116,7 +117,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
      */
     private AbstractTranslet _translet;
 
-    public CurrentNodeListIterator(NodeIterator source, 
+    public CurrentNodeListIterator(DTMAxisIterator source, 
 				   CurrentNodeListFilter filter,
 				   int currentNode,
 				   AbstractTranslet translet) 
@@ -124,7 +125,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	this(source, !source.isReverse(), filter, currentNode, translet);
     }
 
-    public CurrentNodeListIterator(NodeIterator source, boolean docOrder,
+    public CurrentNodeListIterator(DTMAxisIterator source, boolean docOrder,
 				   CurrentNodeListFilter filter,
 				   int currentNode,
 				   AbstractTranslet translet) 
@@ -136,6 +137,11 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	_currentNode = currentNode;
     }
 
+    public DTMAxisIterator forceNaturalOrder() {
+	_docOrder = true;
+	return this;
+    }
+
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
@@ -145,7 +151,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return !_docOrder;
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final CurrentNodeListIterator clone =
 		(CurrentNodeListIterator) super.clone();
@@ -161,7 +167,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_currentIndex = 0;
 	return resetPosition();
     }
@@ -175,7 +181,8 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	    final int position = _docOrder ? index + 1 : last - index;
 	    final int node = _nodes.at(index++); 	// note increment
 
-	    if (_filter.test(node, position, last, currentNode, translet, this)) {
+	    if (_filter.test(node, position, last, currentNode, translet,
+                             this)) {
 		_currentIndex = index;
 		return returnNode(node);
 	    }
@@ -183,7 +190,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return END;
     }
 
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    _source.setStartNode(_startNode = node);
 
@@ -222,11 +229,11 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	    final int position = _docOrder ? index + 1 : last - index;
             int nodeIndex = _nodes.at(index++); 	// note increment
 
-            if (_filter.test(nodeIndex, position, last, currNode, translet, this)) {
+            if (_filter.test(nodeIndex, position, last, currNode, translet,
+                             this)) {
                 lastPosition++;
             }
         }
 	return lastPosition;
     }
 }
-

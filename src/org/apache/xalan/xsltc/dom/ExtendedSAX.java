@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,8 +62,11 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
-public interface ExtendedSAX extends ContentHandler, LexicalHandler { 
-    public boolean setEscaping(boolean escape);
+public interface ExtendedSAX extends ContentHandler, LexicalHandler, DTDHandler,
+                                     DeclHandler
+{ 
 }

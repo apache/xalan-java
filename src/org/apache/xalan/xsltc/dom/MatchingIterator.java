@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,8 +63,9 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
  * This is a special kind of iterator that takes a source iterator and a 
@@ -84,29 +85,31 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
  * the parent of N. Also, and still in this example, a call to last() will 
  * return the number of elements in the source (i.e. the number of BOOKs).
  */
-public final class MatchingIterator extends NodeIteratorBase {
+public final class MatchingIterator extends DTMAxisIteratorBase {
 
     /**
      * A reference to a source iterator.
      */
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
 
     /**
      * The node to match.
      */
     private final int _match;
 
-    public MatchingIterator(int match, NodeIterator source) {
+    public MatchingIterator(int match, DTMAxisIterator source) {
 	_source = source;
 	_match = match;
     }
+
 
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
+
 	try {
 	    final MatchingIterator clone = (MatchingIterator) super.clone();
 	    clone._source = _source.cloneIterator();
@@ -120,13 +123,13 @@ public final class MatchingIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    // iterator is not a clone
 	    _source.setStartNode(node);
 
 	    // Calculate the position of the node in the set
-	    _position = 1; _last = -1;
+	    _position = 1;
 	    while ((node = _source.next()) != END && node != _match) {
 		_position++;
 	    }
@@ -134,7 +137,7 @@ public final class MatchingIterator extends NodeIteratorBase {
 	return this;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return resetPosition();
     }
@@ -144,10 +147,10 @@ public final class MatchingIterator extends NodeIteratorBase {
     }
 	
     public int getLast() {
-	if (_last == -1) {
-	    _last = _source.getLast();
-	}
-	return _last;
+        if (_last == -1) {
+            _last = _source.getLast();
+        }
+        return _last;
     }
 
     public int getPosition() {

@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,8 +65,9 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
  * A step iterator is used to evaluate expressions like "BOOK/TITLE". 
@@ -78,29 +79,30 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
  * After this initialization, every node from the inner iterator is 
  * returned (in essence, implementing a "nested loop").
  */
-public class StepIterator extends NodeIteratorBase {
+public class StepIterator extends DTMAxisIteratorBase {
 
     /**
      * A reference to the "outer" iterator.
      */
-    protected NodeIterator _source;
+    protected DTMAxisIterator _source;
 
     /**
      * A reference to the "inner" iterator.
      */
-    protected NodeIterator _iterator;
+    protected DTMAxisIterator _iterator;
 
     /**
      * Temp variable to store a marked position.
      */
     private int _pos = -1;
 
-    public StepIterator(NodeIterator source, NodeIterator iterator) {
+    public StepIterator(DTMAxisIterator source, DTMAxisIterator iterator) {
 	_source = source;
 	_iterator = iterator;
 // System.out.println("SI source = " + source + " this = " + this);
 // System.out.println("SI iterator = " + iterator + " this = " + this);
     }
+
 
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
@@ -108,7 +110,8 @@ public class StepIterator extends NodeIteratorBase {
 	_iterator.setRestartable(true); 	// must be restartable
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
+	_isRestartable = false;
 	try {
 	    final StepIterator clone = (StepIterator) super.clone();
 	    clone._source = _source.cloneIterator();
@@ -124,7 +127,7 @@ public class StepIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    // Set start node for left-hand iterator...
 	    _source.setStartNode(_startNode = node);
@@ -137,7 +140,7 @@ public class StepIterator extends NodeIteratorBase {
 	return this;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	// Special case for //* path - see ParentLocationPath
 	_iterator.setStartNode(_includeSelf ? _startNode : _source.next());
@@ -164,12 +167,12 @@ public class StepIterator extends NodeIteratorBase {
     public void setMark() {
 	_source.setMark();
 	_iterator.setMark();
-	_pos = _position;
+	//_pos = _position;
     }
 
     public void gotoMark() {
 	_source.gotoMark();
 	_iterator.gotoMark();
-	_position = _pos;
+	//_position = _pos;
     }
 }

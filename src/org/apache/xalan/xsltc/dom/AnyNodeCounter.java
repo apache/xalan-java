@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,18 +64,18 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.Translet;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 public abstract class AnyNodeCounter extends NodeCounter {
     public AnyNodeCounter(Translet translet,
-			  DOM document, NodeIterator iterator) {
+			  DOM document, DTMAxisIterator iterator) {
 	super(translet, document, iterator);
     }
 	
     public NodeCounter setStartNode(int node) {
 	_node = node;
-	_nodeType = _document.getType(node);
+	_nodeType = _document.getExpandedTypeID(node);
 	return this;
     }
 
@@ -85,13 +85,24 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	    result = _value;
 	}
 	else {
-	    int next = _node;
+	    int next = _node; 
+            final int root = _document.getDocument();
 	    result = 0;
-	    while (next >= 0 && !matchesFrom(next)) {
+	    while (next >= root && !matchesFrom(next)) {
 		if (matchesCount(next)) {
 		    ++result;	
 		}
-		--next;
+		next--;
+//%HZ%:  Is this the best way of finding the root?  Is it better to check
+//%HZ%:  parent(next)?
+		/*
+		if (next == root) {
+		    break;
+                }
+		else {
+		    --next;		
+                }
+                */
 	    }
 	}
 	return formatNumbers(result);
@@ -99,13 +110,13 @@ public abstract class AnyNodeCounter extends NodeCounter {
 
     public static NodeCounter getDefaultNodeCounter(Translet translet,
 						    DOM document,
-						    NodeIterator iterator) {
+						    DTMAxisIterator iterator) {
 	return new DefaultAnyNodeCounter(translet, document, iterator);
     }
 
     static class DefaultAnyNodeCounter extends AnyNodeCounter {
 	public DefaultAnyNodeCounter(Translet translet,
-				     DOM document, NodeIterator iterator) {
+				     DOM document, DTMAxisIterator iterator) {
 	    super(translet, document, iterator);
 	}
 
@@ -117,12 +128,20 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	    else {
 		int next = _node;
 		result = 0;
-		final int ntype = _document.getType(_node); 
+		final int ntype = _document.getExpandedTypeID(_node);
+                final int root = _document.getDocument();
 		while (next >= 0) {
-		    if (ntype == _document.getType(next)) {
+		    if (ntype == _document.getExpandedTypeID(next)) {
 			result++;
 		    }
-		    next--;
+//%HZ%:  Is this the best way of finding the root?  Is it better to check
+//%HZ%:  parent(next)?
+		    if (next == root) {
+		        break;
+                    }
+		    else {
+		        --next;
+                    }
 		}
 	    }
 	    return formatNumbers(result);

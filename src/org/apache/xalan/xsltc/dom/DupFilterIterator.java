@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,22 +62,23 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 
 /**
  * Removes duplicates and sorts a source iterator. The nodes from the 
  * source are collected in an array upon calling setStartNode(). This
  * array is later sorted and duplicates are ignored in next().
  */
-public final class DupFilterIterator extends NodeIteratorBase {
+public final class DupFilterIterator extends DTMAxisIteratorBase {
 
     /**
      * Reference to source iterator.
      */
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
 
     /**
      * Array to cache all nodes from source.
@@ -99,7 +100,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
      */
     private int _lastNext = END;
 
-    public DupFilterIterator(NodeIterator source) {
+    public DupFilterIterator(DTMAxisIterator source) {
 	_source = source;
 // System.out.println("DFI source = " + source + " this = " + this);
 
@@ -107,15 +108,20 @@ public final class DupFilterIterator extends NodeIteratorBase {
 	// union expressions containing multiple calls to the same index, and
 	// correct as well since start-node is irrelevant for id()/key() exrp.
 	if (source instanceof KeyIndex) {
-	    setStartNode(DOM.ROOTNODE);
+	    setStartNode(DTMDefaultBase.ROOTNODE);
 	}
     }
-
-    public NodeIterator setStartNode(int node) {
+    /**
+     * Set the start node for this iterator
+     * @param node The start node
+     * @return A reference to this node iterator
+     */
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    // KeyIndex iterators are always relative to the root node, so there
 	    // is never any point in re-reading the iterator (and we SHOULD NOT).
-	    if (_source instanceof KeyIndex && _startNode == DOM.ROOTNODE) {
+	    if (_source instanceof KeyIndex
+                    && _startNode == DTMDefaultBase.ROOTNODE) {
 		return this;
 	    }
 
@@ -147,7 +153,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
 	return END;
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final DupFilterIterator clone =
 		(DupFilterIterator) super.clone();
@@ -176,7 +182,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
 	_current = _markedNode;
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_current = 0;
 	_lastNext = END;
 	return resetPosition();

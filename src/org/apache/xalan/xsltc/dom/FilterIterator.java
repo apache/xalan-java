@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,8 +63,11 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
  * Similar to a CurrentNodeListIterator except that the filter has a 
@@ -72,24 +75,24 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
  * It takes a source iterator and a Filter object and returns nodes 
  * from the source after filtering them by calling filter.test(node).
  */
-public final class FilterIterator extends NodeIteratorBase {
+public final class FilterIterator extends DTMAxisIteratorBase {
 
     /**
      * Reference to source iterator.
      */
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
 
     /**
      * Reference to a filter object that to be applied to each node.
      */
-    private final Filter _filter;
+    private final DTMFilter _filter;
 
     /**
      * A flag indicating if position is reversed.
      */
     private final boolean _isReverse;
 	
-    public FilterIterator(NodeIterator source, Filter filter) {
+    public FilterIterator(DTMAxisIterator source, DTMFilter filter) {
 	_source = source;
 // System.out.println("FI souce = " + source + " this = " + this);
 	_filter = filter;
@@ -100,12 +103,14 @@ public final class FilterIterator extends NodeIteratorBase {
 	return _isReverse;
     }
 
+
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
     }
 
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
+
 	try {
 	    final FilterIterator clone = (FilterIterator) super.clone();
 	    clone._source = _source.cloneIterator();
@@ -119,7 +124,7 @@ public final class FilterIterator extends NodeIteratorBase {
 	}
     }
     
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	return resetPosition();
     }
@@ -127,14 +132,14 @@ public final class FilterIterator extends NodeIteratorBase {
     public int next() {
 	int node;
 	while ((node = _source.next()) != END) {
-	    if (_filter.test(node)) {
+	    if (_filter.acceptNode(node, DTMFilter.SHOW_ALL) == DTMIterator.FILTER_ACCEPT) {
 		return returnNode(node);
 	    }
 	}
 	return END;
     }
 
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    _source.setStartNode(_startNode = node); 
 	    return resetPosition();

@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,18 +67,19 @@ package org.apache.xalan.xsltc.dom;
 import java.util.Vector;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.Translet;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 public abstract class NodeCounter implements Axis {
-    public static final int END = DOM.NULL;
+    public static final int END = DTM.NULL;
 
     protected int _node = END;
     protected int _nodeType = DOM.FIRST_TYPE - 1;
     protected int _value = Integer.MIN_VALUE;
 
     public final DOM          _document;
-    public final NodeIterator _iterator;
+    public final DTMAxisIterator _iterator;
     public final Translet     _translet;
 
     protected String _format;
@@ -104,7 +105,7 @@ public abstract class NodeCounter implements Axis {
 	{"", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix"};
 
     protected NodeCounter(Translet translet,
-			  DOM document, NodeIterator iterator) {
+			  DOM document, DTMAxisIterator iterator) {
 	_translet = translet;
 	_document = document;
 	_iterator = iterator;
@@ -225,7 +226,7 @@ public abstract class NodeCounter implements Axis {
      * same type as the starting node.
      */
     public boolean matchesCount(int node) {
-	return _nodeType == _document.getType(node);
+	return _nodeType == _document.getExpandedTypeID(node);
     }
 
     /**

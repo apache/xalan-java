@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 /**
  * Extends a StepIterator by adding the ability to filter nodes. It 
@@ -73,9 +73,9 @@ import org.apache.xalan.xsltc.NodeIterator;
 public final class FilteredStepIterator extends StepIterator {
 
     private Filter _filter;
-	
-    public FilteredStepIterator(NodeIterator source,
-				NodeIterator iterator,
+
+    public FilteredStepIterator(DTMAxisIterator source,
+				DTMAxisIterator iterator,
 				Filter filter) {
 	super(source, iterator);
 	_filter = filter;

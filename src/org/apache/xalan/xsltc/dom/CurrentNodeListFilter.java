@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,10 +64,10 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xml.dtm.DTMAxisIterator;
 
 public interface CurrentNodeListFilter {
     public abstract boolean test(int node, int position, int last, int current,
-				 AbstractTranslet translet, NodeIterator iter);
+				 AbstractTranslet translet, DTMAxisIterator iter);
 }

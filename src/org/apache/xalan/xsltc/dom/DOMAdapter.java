@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,83 +64,169 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.serializer.SerializationHandler;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public final class DOMAdapter implements DOM {
 
-    private final DOMImpl _domImpl;
+    // Mutually exclusive casting of DOM interface to known implementations
+    private SAXImpl _saxImpl;
+
+    private DOM _dom;
+
     private String[] _namesArray;
     private String[] _namespaceArray;
 
     // Cached mappings
     private short[] _mapping = null;
-    private short[] _reverse = null;
+    private int[]   _reverse = null;
     private short[] _NSmapping = null;
     private short[] _NSreverse = null;
 
     private StripFilter _filter = null;
 
     private int _multiDOMMask;
+    
+    public DOMAdapter(DOM dom,
+                      String[] namesArray,
+                      String[] namespaceArray) {
+        if (dom instanceof SAXImpl){
+            _saxImpl = (SAXImpl) dom;
+        }
 
-    public DOMAdapter(DOMImpl dom,
-		      String[] namesArray,
-		      String[] namespaceArray)
-    {
-	_domImpl = dom;
-	_namesArray = namesArray;
-	_namespaceArray = namespaceArray;
+        _dom = dom;
+        _namesArray = namesArray;
+        _namespaceArray = namespaceArray;
     }
 
     public void setupMapping(String[] names, String[] namespaces) {
-	_namesArray = names;
-	_namespaceArray = namespaces;
+        _namesArray = names;
+        _namespaceArray = namespaces;
+    }
+    
+    public String[] getNamesArray() {
+        return _namesArray;
+    }
+    
+    public String[] getNamespaceArray() {
+        return _namespaceArray;
+    }
+    
+    public DOM getDOMImpl() {
+    	return _dom;
     }
 
     private short[] getMapping() {
-	if (_mapping == null) {
-	    _mapping = _domImpl.getMapping(_namesArray);
-	}
-	return _mapping;
+        if (_mapping == null) {
+            if (_saxImpl != null) {
+                _mapping = _saxImpl.getMapping(_namesArray);
+            } 
+        }
+        return _mapping;
     }
 
-    private short[] getReverse() {
+    private int[] getReverse() {
 	if (_reverse == null) {
-	    _reverse = _domImpl.getReverseMapping(_namesArray);
+            if (_saxImpl != null) {
+	        _reverse = _saxImpl.getReverseMapping(_namesArray);
+            }
 	}
 	return _reverse;
     }
 
     private short[] getNSMapping() {
 	if (_NSmapping == null) {
-	    _NSmapping = _domImpl.getNamespaceMapping(_namespaceArray);
+            if (_saxImpl != null) {
+	        _NSmapping = _saxImpl.getNamespaceMapping(_namespaceArray);
+            }
 	}
 	return _NSmapping;
     }
 
     private short[] getNSReverse() {
 	if (_NSreverse == null) {
-	    _NSreverse = _domImpl.getReverseNamespaceMapping(_namespaceArray);
+            if (_saxImpl != null) {
+	        _NSreverse = _saxImpl.getReverseNamespaceMapping(_namespaceArray);
+            }
 	}
 	return _NSreverse;
     }
 
-    /**
-      * Returns singleton iterator containg the document root
+    /** 
+      * Returns singleton iterator containg the document root 
       */
-    public NodeIterator getIterator() {
-	return _domImpl.getIterator();
+    public DTMAxisIterator getIterator() {
+        return _dom.getIterator();
     }
-
+    
     public String getStringValue() {
-	return _domImpl.getStringValue();
+        return _dom.getStringValue();
+    }
+    
+    public DTMAxisIterator getChildren(final int node) {
+        if (_saxImpl != null) {
+            return _saxImpl.getChildren(node);
+        }
+        else {
+            DTMAxisIterator iterator = _dom.getChildren(node);
+            return iterator.setStartNode(node);
+        }
     }
 
+    public void setFilter(StripFilter filter) {
+	_filter = filter;
+    }
+
+    public DTMAxisIterator getTypedChildren(final int type) {
+        final int[] reverse = getReverse();
+
+        if (_saxImpl != null) {
+            return _saxImpl.getTypedChildren(reverse[type]);
+        }
+        else {
+            return _dom.getTypedChildren(type);
+        }      
+    }
+
+    public DTMAxisIterator getNamespaceAxisIterator(final int axis,
+                                                    final int ns) {
+        return _dom.getNamespaceAxisIterator(axis, getNSReverse()[ns]);
+    }
+
+    public DTMAxisIterator getAxisIterator(final int axis) {
+        if (_saxImpl != null) {
+            return _saxImpl.getAxisIterator(axis);
+        }
+        else {
+            return _dom.getAxisIterator(axis);
+        }        
+    }
+    
+    public DTMAxisIterator getTypedAxisIterator(final int axis,
+                                                final int type) {
+        final int[] reverse = getReverse();
+
+        if (axis == Axis.NAMESPACE) {
+            short[] NSReverse = getNSReverse();
+            if (type == NO_TYPE || type > NSReverse.length) {
+                return _dom.getAxisIterator(axis);
+            } else {
+                return _dom.getTypedAxisIterator(axis, NSReverse[type]);
+            }
+        } else if (_saxImpl != null) {
+            return _saxImpl.getTypedAxisIterator(axis, reverse[type]);
+        } else {
+            return _dom.getTypedAxisIterator(axis, type);
+        }      
+    }
+        
     public int getMultiDOMMask() {
 	return _multiDOMMask;
     }
@@ -149,177 +235,230 @@ public final class DOMAdapter implements DOM {
 	_multiDOMMask = mask;
     }
 
-    public NodeIterator getChildren(final int node) {
-	NodeIterator iterator = _domImpl.getChildren(node);
-	if (_filter == null) {
-	    return iterator.setStartNode(node);
-	}
-	else {
-	    iterator = _domImpl.strippingIterator(iterator, getMapping(),
-		_filter);
-	    return iterator.setStartNode(node);
-	}
+    public DTMAxisIterator getNthDescendant(int type, int n,
+                                            boolean includeself) {
+        return _dom.getNthDescendant(getReverse()[type], n, includeself);
     }
 
-    public void setFilter(StripFilter filter) {
-	_filter = filter;
+    public DTMAxisIterator getNodeValueIterator(DTMAxisIterator iterator,
+                                                int type, String value,
+                                                boolean op) {
+        return _dom.getNodeValueIterator(iterator, type, value, op);
     }
 
-    public NodeIterator getTypedChildren(final int type) {
-	final short[] reverse = getReverse();
-
-	NodeIterator iterator = _domImpl.getTypedChildren(reverse[type]);
-	if (reverse[type] == DOM.TEXT && _filter != null) {
-	    return _domImpl.strippingIterator(iterator, getMapping(), _filter);
-	}
-	return iterator;
+    public DTMAxisIterator orderNodes(DTMAxisIterator source, int node) {
+        return _dom.orderNodes(source, node);
     }
-
-    public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
-	return _domImpl.getNamespaceAxisIterator(axis, getNSReverse()[ns]);
-    }
-
-    public NodeIterator getAxisIterator(final int axis) {
-	NodeIterator iterator = _domImpl.getAxisIterator(axis);
-	if (_filter != null) {
-	    return _domImpl.strippingIterator(iterator, getMapping(), _filter);
-	}
-	return iterator;
-    }
-
-    public NodeIterator getTypedAxisIterator(final int axis, final int type) {
-	NodeIterator iterator;
-	final short[] reverse = getReverse();
-	final short[] NSreverse = getNSReverse();
-
-	if (axis == Axis.NAMESPACE) {
-	    iterator = (type == NO_TYPE || type > NSreverse.length) ?
-		_domImpl.getAxisIterator(axis) :
-		_domImpl.getTypedAxisIterator(axis, NSreverse[type]);
-	}
-	else {
-	    iterator = _domImpl.getTypedAxisIterator(axis, reverse[type]);
-	}
-
-	if (reverse[type] == DOM.TEXT && _filter != null) {
-	    iterator = _domImpl.strippingIterator(iterator, getMapping(), _filter);
-	}
-	return iterator;
-    }
-
-    public NodeIterator getNthDescendant(int type, int n, boolean includeself) {
-	return _domImpl.getNthDescendant(getReverse()[type], n, includeself);
-    }
-
-    public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
-					     String value, boolean op)
-    {
-	return _domImpl.getNodeValueIterator(iterator, type, value, op);
-    }
-
-    public NodeIterator orderNodes(NodeIterator source, int node) {
-	return _domImpl.orderNodes(source, node);
-    }
-
-    public int getType(final int node) {
-	return getMapping()[_domImpl.getType(node)];
+    
+    public int getExpandedTypeID(final int node) {
+        if (_saxImpl != null) {
+            return getMapping()[_saxImpl.getExpandedTypeID2(node)];
+        }
+        else {
+            return getMapping()[_dom.getExpandedTypeID(node)];
+        }
     }
 
     public int getNamespaceType(final int node) {
-	return getNSMapping()[_domImpl.getNamespaceType(node)];
+    	return getNSMapping()[_dom.getNSType(node)];
     }
 
+    public int getNSType(int node) {
+	return _dom.getNSType(node);
+    }
+    
     public int getParent(final int node) {
-	return _domImpl.getParent(node);
+        return _dom.getParent(node);
     }
 
     public int getAttributeNode(final int type, final int element) {
-	return _domImpl.getAttributeNode(getReverse()[type], element);
+	return _dom.getAttributeNode(getReverse()[type], element);
     }
-
+    
     public String getNodeName(final int node) {
-	return _domImpl.getNodeName(node);
+    	if (node == DTM.NULL) {
+    	    return "";
+    	}
+        return _dom.getNodeName(node);
     }
-
-    public String getNamespaceName(final int node) {
-	return _domImpl.getNamespaceName(node);
-    }
-
-    public String getNodeValue(final int node) {
-	return _domImpl.getNodeValue(node);
-    }
-
-    public void copy(final int node, TransletOutputHandler handler)
-	throws TransletException {
-	    _domImpl.copy(node, handler);
-    }
-
-    public void copy(NodeIterator nodes, TransletOutputHandler handler)
-	throws TransletException {
-	    _domImpl.copy(nodes, handler);
-    }
-
-    public String shallowCopy(final int node, TransletOutputHandler handler)
-	throws TransletException {
-	    return _domImpl.shallowCopy(node, handler);
-    }
-
-    public boolean lessThan(final int node1, final int node2) {
-	return _domImpl.lessThan(node1, node2);
-    }
-
-    public void characters(final int textNode, TransletOutputHandler handler)
-	throws TransletException {
-	_domImpl.characters(textNode, handler);
-    }
-
-    public Node makeNode(int index) {
-	return _domImpl.makeNode(index);
-    }
-
-    public Node makeNode(NodeIterator iter) {
-	return _domImpl.makeNode(iter);
-    }
-
-    public NodeList makeNodeList(int index) {
-	return _domImpl.makeNodeList(index);
-    }
-
-    public NodeList makeNodeList(NodeIterator iter) {
-	return _domImpl.makeNodeList(iter);
-    }
-
-    public String getLanguage(int node) {
-	return _domImpl.getLanguage(node);
-    }
-
-    public int getSize() {
-	return _domImpl.getSize();
-    }
-
-    public void setDocumentURI(String uri) {
-	_domImpl.setDocumentURI(uri);
-    }
-
-    public String getDocumentURI() {
-	return(_domImpl.getDocumentURI());
-    }
-
-    public String getDocumentURI(int node) {
-	return(_domImpl.getDocumentURI());
-    }
-
-    public boolean isElement(final int node) {
-	return(_domImpl.isElement(node));
-    }
-
-    public boolean isAttribute(final int node) {
-	return(_domImpl.isAttribute(node));
-    }
-
-    public String lookupNamespace(int node, String prefix)
-	throws TransletException
+    
+    public String getNodeNameX(final int node) 
     {
-	return _domImpl.lookupNamespace(node, prefix);
+    	if (node == DTM.NULL) {
+    	    return "";
+    	}
+        return _dom.getNodeNameX(node);
+    }
+
+    public String getNamespaceName(final int node) 
+    {
+    	if (node == DTM.NULL) {
+    	    return "";
+    	}
+        return _dom.getNamespaceName(node);
+    }
+    
+    public String getStringValueX(final int node) 
+    {    	
+    	if (_saxImpl != null) {
+            return _saxImpl.getStringValueX(node);
+        }
+        else {
+            if (node == DTM.NULL) {
+    	        return "";
+    	    }
+            return _dom.getStringValueX(node);
+        }
+    }
+    
+    public void copy(final int node, SerializationHandler handler)
+	throws TransletException 
+    {
+        _dom.copy(node, handler);
+    }
+    
+    public void copy(DTMAxisIterator nodes,SerializationHandler handler)
+	throws TransletException 
+    {
+	_dom.copy(nodes, handler);
+    }
+
+    public String shallowCopy(final int node, SerializationHandler handler)
+	throws TransletException 
+    {
+        if (_saxImpl != null) {
+            return _saxImpl.shallowCopy(node, handler);
+        }
+        else {
+            return _dom.shallowCopy(node, handler);
+        }
+    }
+    
+    public boolean lessThan(final int node1, final int node2) 
+    {
+        return _dom.lessThan(node1, node2);
+    }
+    
+    public void characters(final int textNode, SerializationHandler handler)
+      throws TransletException 
+    {
+        if (_saxImpl != null) {
+            _saxImpl.characters(textNode, handler);
+        }
+        else {
+            _dom.characters(textNode, handler);
+        }
+    }
+
+    public Node makeNode(int index) 
+    {
+        return _dom.makeNode(index);
+    }
+
+    public Node makeNode(DTMAxisIterator iter) 
+    {
+        return _dom.makeNode(iter);
+    }
+
+    public NodeList makeNodeList(int index) 
+    {
+        return _dom.makeNodeList(index);
+    }
+
+    public NodeList makeNodeList(DTMAxisIterator iter) 
+    {
+        return _dom.makeNodeList(iter);
+    }
+
+    public String getLanguage(int node) 
+    {
+        return _dom.getLanguage(node);
+    }
+
+    public int getSize() 
+    {
+        return _dom.getSize();
+    }
+
+    public void setDocumentURI(String uri) 
+    {
+        if (_saxImpl != null) {
+            _saxImpl.setDocumentURI(uri);
+        }
+    }
+
+    public String getDocumentURI()
+    {
+        if (_saxImpl != null) {
+            return _saxImpl.getDocumentURI();
+        }
+        else {
+            return "";
+        }
+    }
+
+    public String getDocumentURI(int node) 
+    {
+        return _dom.getDocumentURI(node);
+    }
+
+    public int getDocument() 
+    {
+        return _dom.getDocument();
+    }
+
+    public boolean isElement(final int node) 
+    {
+        return(_dom.isElement(node));
+    }
+
+    public boolean isAttribute(final int node) 
+    {
+        return(_dom.isAttribute(node));
+    }
+    
+    public int getNodeIdent(int nodeHandle)
+    {
+    	return _dom.getNodeIdent(nodeHandle);
+    }
+    
+    public int getNodeHandle(int nodeId)
+    {
+    	return _dom.getNodeHandle(nodeId);
+    }
+    
+    /**
+     * Return a instance of a DOM class to be used as an RTF
+     */ 
+    public DOM getResultTreeFrag(int initSize, int rtfType)
+    {
+    	if (_saxImpl != null) {
+    	    return _saxImpl.getResultTreeFrag(initSize, rtfType);
+    	}
+    	else {
+    	    return _dom.getResultTreeFrag(initSize, rtfType);
+    	}
+    }
+    
+    /**
+     * Returns a SerializationHandler class wrapped in a SAX adapter.
+     */
+    public SerializationHandler getOutputDomBuilder()
+    {
+    	return _dom.getOutputDomBuilder();
+    }
+
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException 
+    {
+	return _dom.lookupNamespace(node, prefix);
+    }
+
+    public String getUnparsedEntityURI(String entity) {
+        return _dom.getUnparsedEntityURI(entity);
+    }
+
+    public Hashtable getElementsWithIDs() {
+        return _dom.getElementsWithIDs();
     }
 }

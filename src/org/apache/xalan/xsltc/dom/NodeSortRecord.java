@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,13 +88,15 @@ public abstract class NodeSortRecord {
      * A reference to a locale. May be updated by subclass if the stylesheet
      * specifies a different language.
      */
+    protected static final Locale DEFAULT_LOCALE = Locale.getDefault();
     protected Locale _locale = Locale.getDefault();
 
     /**
      * A reference to a collator. May be updated by subclass if the stylesheet
      * specifies a different language (will be updated iff _locale is updated).
      */
-    protected Collator _collator = Collator.getInstance();
+    protected static final Collator DEFAULT_COLLATOR = Collator.getInstance();
+    protected Collator _collator = DEFAULT_COLLATOR;
     protected CollatorFactory _collatorFactory;
 
     protected int   _levels = 1;
@@ -118,6 +120,9 @@ public abstract class NodeSortRecord {
      */ 
     public NodeSortRecord(int node) {
 	_node = node;
+	if (_locale != DEFAULT_LOCALE) {
+	    _collator = Collator.getInstance(_locale);
+	}
     }
 
     public NodeSortRecord() {

@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,9 +63,10 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
-public class SingletonIterator extends NodeIteratorBase {
+public class SingletonIterator extends DTMAxisIteratorBase {
     private int _node;
     private final boolean _isConstant;
 
@@ -86,7 +87,7 @@ public class SingletonIterator extends NodeIteratorBase {
      * Override the value of <tt>_node</tt> only when this
      * object was constructed using the empty constructor.
      */
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isConstant) {
 	    _node = _startNode;
 	    return resetPosition();
@@ -99,7 +100,7 @@ public class SingletonIterator extends NodeIteratorBase {
 	return this;
     }
 	
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	if (_isConstant) {
 	    _node = _startNode;
 	    return resetPosition();
@@ -115,7 +116,7 @@ public class SingletonIterator extends NodeIteratorBase {
     
     public int next() {
 	final int result = _node;
-	_node = NodeIterator.END;
+	_node = DTMAxisIterator.END;
 	return returnNode(result);
     }
 

@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -73,13 +73,16 @@ import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.sax.SAXSource;
 
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Constants;
 
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
@@ -92,6 +95,7 @@ public final class DocumentCache implements DOMCache {
     private int       _current;
     private SAXParser _parser;
     private XMLReader _reader;
+    private XSLTCDTMManager _dtmManager;
 
     private static final int REFRESH_INTERVAL = 1000;
 
@@ -109,8 +113,7 @@ public final class DocumentCache implements DOMCache {
 	private long _buildTime;
 
 	// DOM and DTD handler references
-	private DOMImpl    _dom = null;
-	private DTDMonitor _dtdMonitor = null;
+	private SAXImpl    _dom = null;
 	
 	/**
 	 * Constructor - load document and initialise statistics
@@ -131,15 +134,11 @@ public final class DocumentCache implements DOMCache {
 	 */
 	public void loadDocument(String uri) {
 
-	    _dom = new DOMImpl();
-	    _dtdMonitor = new DTDMonitor();
-
 	    try {
 		final long stamp = System.currentTimeMillis();
-
-		_reader.setContentHandler(_dom.getBuilder());
-		_dtdMonitor.handleDTD(_reader);
-		_reader.parse(uri);
+                _dom = (SAXImpl)_dtmManager.getDTM(
+                                 new SAXSource(_reader, new InputSource(uri)),
+                                 false, null, true, false);
 		_dom.setDocumentURI(uri);
 
 		// The build time can be used for statistics for a better
@@ -152,13 +151,10 @@ public final class DocumentCache implements DOMCache {
 	    }
 	    catch (Exception e) {
 		_dom = null;
-		_dtdMonitor = null;
 	    }
 	}
 
-	public DOMImpl getDocument()       { return(_dom); }
-
-	public DTDMonitor getDTDMonitor()  { return(_dtdMonitor); }
+	public DOM getDocument()       { return(_dom); }
 
 	public long getFirstReferenced()   { return(_firstReferenced); }
 
@@ -191,6 +187,15 @@ public final class DocumentCache implements DOMCache {
      * DocumentCache constructor
      */
     public DocumentCache(int size) throws SAXException {
+        this(size, null);
+        _dtmManager = XSLTCDTMManager.newInstance();
+    }
+
+    /**
+     * DocumentCache constructor
+     */
+    public DocumentCache(int size, XSLTCDTMManager dtmManager) throws SAXException {
+	_dtmManager = dtmManager;
 	_count = 0;
 	_current = 0;
 	_size  = size;
@@ -279,7 +284,7 @@ public final class DocumentCache implements DOMCache {
      * Returns a document either by finding it in the cache or
      * downloading it and putting it in the cache.
      */
-    public final DOMImpl retrieveDocument(String uri, int mask, Translet trs) {
+    public final DOM retrieveDocument(String uri, int mask, Translet trs) {
 	CachedDocument doc;
 
 	// Try to get the document from the cache first
@@ -310,8 +315,7 @@ public final class DocumentCache implements DOMCache {
 	}
 
 	// Get the references to the actual DOM and DTD handler
-	final DOMImpl    dom = doc.getDocument();
-	final DTDMonitor dtd = doc.getDTDMonitor();
+	final DOM dom = doc.getDocument();
 
 	// The dom reference may be null if the URL pointed to a
 	// non-existing document
@@ -321,12 +325,9 @@ public final class DocumentCache implements DOMCache {
 
 	final AbstractTranslet translet = (AbstractTranslet)trs;
 
-	// Set minimum needed size for key/id indices in the translet
-	translet.setIndexSize(dom.getSize());
-	// Create index for any ID attributes defined in the document DTD
-	dtd.buildIdIndex(dom, mask, translet);
-	// Pass all unparsed entities to the translet
-	translet.setUnparsedEntityURIs(dtd.getUnparsedEntityURIs());
+	// Give the translet an early opportunity to extract any
+        // information from the DOM object that it would like.
+	translet.prepassDocument(dom);
 
 	return(doc.getDocument());
     }

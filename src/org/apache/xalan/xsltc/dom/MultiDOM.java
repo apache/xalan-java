@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,12 +65,17 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.StripFilter;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.utils.SuballocatedIntVector;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -79,92 +84,113 @@ public final class MultiDOM implements DOM {
 
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;
     private static final int INITIAL_SIZE = 4;
-    private static final int CLR = 0x00FFFFFF;
-    private static final int SET = 0xFF000000;
-
+    
     private DOM[] _adapters;
+    private DOMAdapter _main;
     private int _free;
     private int _size;
 
     private Hashtable _documents = new Hashtable();
 
-    private final class AxisIterator implements NodeIterator {
-	private final int _axis;
-	private final int _type;
+    private final class AxisIterator extends DTMAxisIteratorBase {
+        // constitutive data
+        private final int _axis;
+        private final int _type;
+        // implementation mechanism
+        private DTMAxisIterator _source;
+        private int _dtmId = -1;
 
-	private int _mask;
-	private NodeIterator _source = null;
+        public AxisIterator(final int axis, final int type) {
+            _axis = axis;
+            _type = type;
+        }
 
-	public AxisIterator(final int axis, final int type) {
-	    _axis = axis;
-	    _type = type;
-	}
+        public int next() {
+            if (_source == null) {
+                return(END);
+            }
+            return _source.next();
+        }
 
-	public int next() {
-	    if (_source == null) return(END);
-	    if (_mask == 0) return _source.next();
-	    final int node = _source.next();
-	    return node != END ? (node | _mask) : END;
-	}
 
-	public void setRestartable(boolean flag) {
-	    _source.setRestartable(flag);
-	}
+        public void setRestartable(boolean flag) {
+            if (_source != null) {
+                _source.setRestartable(flag);
+            }
+        }
 
-	public NodeIterator setStartNode(final int node) {
-	    final int dom = node >>> 24;
-	    final int mask = node & SET;
+        public DTMAxisIterator setStartNode(final int node) {
+            if (node == DTM.NULL) {
+                return this;
+            }
 
-	    // Get a new source first time and when mask changes
-	    if (_source == null || _mask != mask) {
-		if (_type == NO_TYPE) {
-		    _source = _adapters[dom].getAxisIterator(_axis);
-		}
-		else if (_axis == Axis.CHILD && _type != ELEMENT) {
-		    _source = _adapters[dom].getTypedChildren(_type);
-		}
-		else {
-		    _source = _adapters[dom].getTypedAxisIterator(_axis, _type);
-		}
-	    }
+            int dom = node >>> DTMManager.IDENT_DTM_NODE_BITS;
 
-	    _mask = mask;
-	    _source.setStartNode(node & CLR);
-	    return this;
-	}
+            // Get a new source first time and when mask changes
+            if (_source == null || _dtmId != dom) {
+                if (_type == NO_TYPE) {
+                    _source = _adapters[dom].getAxisIterator(_axis);
+                } else if (_axis == Axis.CHILD) {
+                    _source = _adapters[dom].getTypedChildren(_type);
+                } else {
+                    _source = _adapters[dom].getTypedAxisIterator(_axis, _type);
+                }
+            }
 
-	public NodeIterator reset() {
-	    if (_source != null) _source.reset();
-	    return this;
-	}
+            _dtmId = dom;
+            _source.setStartNode(node);
+            return this;
+        }
 
-	public int getLast() {
-	    return _source.getLast();
-	}
+        public DTMAxisIterator reset() {
+            if (_source != null) {
+                _source.reset();
+            }
+            return this;
+        }
+    
+        public int getLast() {
+            if (_source != null) {
+                return _source.getLast();
+            }
+            else {
+                return END;
+            }
+        }
 
-	public int getPosition() {
-	    return _source.getPosition();
-	}
-
-	public boolean isReverse() {
+        public int getPosition() {
+            if (_source != null) {
+                return _source.getPosition();
+            }
+            else {
+                return END;
+            }
+        }
+    
+        public boolean isReverse() {
 	    return Axis.isReverse[_axis];
-	}
-
-	public void setMark() {
-	    _source.setMark();
-	}
-
-	public void gotoMark() {
-	    _source.gotoMark();
-	}
-
-	public NodeIterator cloneIterator() {
-	    final AxisIterator clone = new AxisIterator(_axis, _type);
-	    clone._source = _source.cloneIterator();
-	    clone._mask = _mask;
-	    return clone;
-	}
-
+        }
+    
+        public void setMark() {
+            if (_source != null) {
+                _source.setMark();
+            }
+        }
+    
+        public void gotoMark() {
+            if (_source != null) {
+                _source.gotoMark();
+            }
+        }
+    
+        public DTMAxisIterator cloneIterator() {
+            final AxisIterator clone = new AxisIterator(_axis, _type);
+            if (_source != null) {
+                clone._source = _source.cloneIterator();
+            }
+            clone._dtmId = _dtmId;
+            return clone;
+        }
     } // end of AxisIterator
 
 
@@ -172,283 +198,489 @@ public final class MultiDOM implements DOM {
      * This is a specialised iterator for predicates comparing node or
      * attribute values to variable or parameter values.
      */
-    private final class NodeValueIterator extends NodeIteratorBase {
+    private final class NodeValueIterator extends DTMAxisIteratorBase {
 
-	private NodeIterator _source;
-	private String _value;
-	private boolean _op;
-	private final boolean _isReverse;
-	private int _returnType = RETURN_PARENT;
+        private DTMAxisIterator _source;
+        private String _value;
+        private boolean _op;
+        private final boolean _isReverse;
+        private int _returnType = RETURN_PARENT;
 
-	public NodeValueIterator(NodeIterator source, int returnType,
-				 String value, boolean op) {
-	    _source = source;
-	    _returnType = returnType;
-	    _value = value;
-	    _op = op;
-	    _isReverse = source.isReverse();
-	}
+        public NodeValueIterator(DTMAxisIterator source, int returnType,
+                                 String value, boolean op) {
+            _source = source;
+            _returnType = returnType;
+            _value = value;
+            _op = op;
+            _isReverse = source.isReverse();
+        }
 
-	public boolean isReverse() {
-	    return _isReverse;
-	}
+        public boolean isReverse() {
+            return _isReverse;
+        }
+    
+        public DTMAxisIterator cloneIterator() {
+            try {
+                NodeValueIterator clone = (NodeValueIterator)super.clone();
+                clone._source = _source.cloneIterator();
+                clone.setRestartable(false);
+                return clone.reset();
+            }
+            catch (CloneNotSupportedException e) {
+                BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
+                                          e.toString());
+                return null;
+            }
+        }
 
-	public NodeIterator cloneIterator() {
-	    try {
-		NodeValueIterator clone = (NodeValueIterator)super.clone();
-		clone._source = _source.cloneIterator();
-		clone.setRestartable(false);
-		return clone.reset();
-	    }
-	    catch (CloneNotSupportedException e) {
-		BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-					  e.toString());
-		return null;
-	    }
-	}
 
-	public void setRestartable(boolean isRestartable) {
-	    _isRestartable = isRestartable;
-	    _source.setRestartable(isRestartable);
-	}
+        public void setRestartable(boolean isRestartable) {
+            _isRestartable = isRestartable;
+            _source.setRestartable(isRestartable);
+        }
 
-	public NodeIterator reset() {
-	    _source.reset();
-	    return resetPosition();
-	}
+        public DTMAxisIterator reset() {
+            _source.reset();
+            return resetPosition();
+        }
 
-	public int next() {
+        public int next() {
 
-	    int node;
-	    while ((node = _source.next()) != END) {
-		String val = getNodeValue(node);
-		if (_value.equals(val) == _op) {
-		    if (_returnType == RETURN_CURRENT)
-			return returnNode(node);
-		    else
-			return returnNode(getParent(node));
-		}
-	    }
-	    return END;
-	}
+            int node;
+            while ((node = _source.next()) != END) {
+                String val = getStringValueX(node);
+                if (_value.equals(val) == _op) {
+                    if (_returnType == RETURN_CURRENT)
+                        return returnNode(node);
+                    else
+                        return returnNode(getParent(node));
+                }
+            }
+            return END;
+        }
 
-	public NodeIterator setStartNode(int node) {
-	    if (_isRestartable) {
-		_source.setStartNode(_startNode = node);
-		return resetPosition();
-	    }
-	    return this;
-	}
+        public DTMAxisIterator setStartNode(int node) {
+            if (_isRestartable) {
+                _source.setStartNode(_startNode = node); 
+                return resetPosition();
+            }
+            return this;
+        }
 
-	public void setMark() {
-	    _source.setMark();
-	}
+        public void setMark() {
+            _source.setMark();
+        }
 
-	public void gotoMark() {
-	    _source.gotoMark();
-	}
-    }
+        public void gotoMark() {
+            _source.gotoMark();
+        }
+    }                       
 
     public MultiDOM(DOM main) {
-	_size = INITIAL_SIZE;
-	_free = 1;
-	_adapters = new DOM[INITIAL_SIZE];
-	_adapters[0] = main;
+        _size = INITIAL_SIZE;
+        _free = 1;
+        _adapters = new DOM[INITIAL_SIZE];
+        DOMAdapter adapter = (DOMAdapter)main;
+        _adapters[0] = adapter;
+        _main = adapter;
+
+        // %HZ% %REVISIT% Is this the right thing to do here?  In the old
+        // %HZ% %REVISIT% version, the main document did not get added through
+        // %HZ% %REVISIT% a call to addDOMAdapter, which meant it couldn't be
+        // %HZ% %REVISIT% found by a call to getDocumentMask.  The problem is
+        // %HZ% %REVISIT% TransformerHandler is typically constructed with a
+        // %HZ% %REVISIT% system ID equal to the stylesheet's URI; with SAX
+        // %HZ% %REVISIT% input, it ends up giving that URI to the document.
+        // %HZ% %REVISIT% Then, any references to document('') are resolved
+        // %HZ% %REVISIT% using the stylesheet's URI.
+        // %HZ% %REVISIT% MultiDOM.getDocumentMask is called to verify that
+        // %HZ% %REVISIT% a document associated with that URI has not been
+        // %HZ% %REVISIT% encountered, and that method ends up returning the
+        // %HZ% %REVISIT% mask of the main document, when what we really what
+        // %HZ% %REVISIT% is to read the stylesheet itself!
+        addDOMAdapter(adapter, false);
     }
 
     public int nextMask() {
-	return(_free << 24);
+        return _free;
     }
 
     public void setupMapping(String[] names, String[] namespaces) {
-	// This method only has a function in DOM adapters
+        // This method only has a function in DOM adapters
     }
 
-    public int addDOMAdapter(DOMAdapter dom) {
-	// Add the DOM adapter to the array of DOMs
-	final int domNo = _free++;
-	if (domNo == _size) {
-	    final DOMAdapter[] newArray = new DOMAdapter[_size *= 2];
-	    System.arraycopy(_adapters, 0, newArray, 0, domNo);
-	    _adapters = newArray;
-	}
-	_adapters[domNo] = dom;
-
-	// Store reference to document (URI) in hashtable
-	String uri = dom.getDocumentURI(0);
-	_documents.put(uri, new Integer(domNo));
-
-	// Store mask in DOMAdapter
-	dom.setMultiDOMMask(domNo << 24);
-	return (domNo << 24);
+    public int addDOMAdapter(DOMAdapter adapter) {
+        return addDOMAdapter(adapter, true);
     }
 
+    private int addDOMAdapter(DOMAdapter adapter, boolean indexByURI) {
+        // Add the DOM adapter to the array of DOMs
+        DOM dom = adapter.getDOMImpl();
+        
+        int domNo = 1;
+        int dtmSize = 1;
+        SuballocatedIntVector dtmIds = null;
+        if (dom instanceof DTMDefaultBase) {
+            DTMDefaultBase dtmdb = (DTMDefaultBase)dom;
+            dtmIds = dtmdb.getDTMIDs();
+            dtmSize = dtmIds.size();
+            domNo = dtmIds.elementAt(dtmSize-1) >>> DTMManager.IDENT_DTM_NODE_BITS;
+        }
+        else if (dom instanceof SimpleResultTreeImpl) {
+            SimpleResultTreeImpl simpleRTF = (SimpleResultTreeImpl)dom;
+            domNo = simpleRTF.getDocument() >>> DTMManager.IDENT_DTM_NODE_BITS;
+        }
+                  
+        if (domNo >= _size) {
+            int oldSize = _size;
+            do {
+            	_size *= 2;
+            } while (_size <= domNo);
+            
+            final DOMAdapter[] newArray = new DOMAdapter[_size];
+            System.arraycopy(_adapters, 0, newArray, 0, oldSize);
+            _adapters = newArray;
+        }
+        
+        _free = domNo + 1;
+        
+        if (dtmSize == 1) {
+            _adapters[domNo] = adapter;
+        }
+        else if (dtmIds != null) {
+            int domPos = 0;
+            for (int i = dtmSize - 1; i >= 0; i++) {
+                domPos = dtmIds.elementAt(i) >>> DTMManager.IDENT_DTM_NODE_BITS;
+                _adapters[domPos] = adapter;
+            }
+            domNo = domPos;
+        }
+
+        // Store reference to document (URI) in hashtable
+        if (indexByURI) {
+            String uri = adapter.getDocumentURI(0);
+            _documents.put(uri, new Integer(domNo));
+        }
+        
+        // If the dom is an AdaptiveResultTreeImpl, we need to create a
+        // DOMAdapter around its nested dom object (if it is non-null) and
+        // add the DOMAdapter to the list.
+        if (dom instanceof AdaptiveResultTreeImpl) {
+            AdaptiveResultTreeImpl adaptiveRTF = (AdaptiveResultTreeImpl)dom;
+            DOM nestedDom = adaptiveRTF.getNestedDOM();
+            if (nestedDom != null) {
+                DOMAdapter newAdapter = new DOMAdapter(nestedDom, 
+                                                       adapter.getNamesArray(),
+                                                       adapter.getNamespaceArray());
+                addDOMAdapter(newAdapter);  
+            } 
+        }
+        
+        return domNo;
+    }
+        
     public int getDocumentMask(String uri) {
-	Integer domIdx = (Integer)_documents.get(uri);
-	if (domIdx == null)
-	    return(-1);
-	else
-	    return((domIdx.intValue() << 24));
+        Integer domIdx = (Integer)_documents.get(uri);
+        if (domIdx == null) {
+            return(-1);
+        } else {
+            return domIdx.intValue();
+        }
+    }
+    
+    public DOM getDOMAdapter(String uri) {
+        Integer domIdx = (Integer)_documents.get(uri);
+        if (domIdx == null) {
+            return(null);
+        } else {
+            return(_adapters[domIdx.intValue()]);
+        }
+    }
+    
+    public int getDocument() 
+    {
+        return _main.getDocument();
     }
 
-    /**
-      * Returns singleton iterator containg the document root
+    /** 
+      * Returns singleton iterator containing the document root 
       */
-    public NodeIterator getIterator() {
-	// main source document @ 0
-	return _adapters[0].getIterator();
+    public DTMAxisIterator getIterator() {
+        // main source document @ 0
+        return _main.getIterator();
     }
-
+    
     public String getStringValue() {
-	return _adapters[0].getStringValue();
+        return _main.getStringValue();
+    }
+    
+    public DTMAxisIterator getChildren(final int node) {
+        return _adapters[getDTMId(node)].getChildren(node);
+    }
+    
+    public DTMAxisIterator getTypedChildren(final int type) {
+        return new AxisIterator(Axis.CHILD, type);
+    }
+    
+    public DTMAxisIterator getAxisIterator(final int axis) {
+        return new AxisIterator(axis, NO_TYPE);
+    }
+    
+    public DTMAxisIterator getTypedAxisIterator(final int axis, final int type)
+    {
+        return new AxisIterator(axis, type);
     }
 
-    public NodeIterator getChildren(final int node) {
-	return (node & SET) == 0
-	    ? _adapters[0].getChildren(node)
-	    : getAxisIterator(Axis.CHILD).setStartNode(node);
+    public DTMAxisIterator getNthDescendant(int node, int n,
+                                            boolean includeself)
+    {
+        return _adapters[getDTMId(node)].getNthDescendant(node, n, includeself);
     }
 
-    public NodeIterator getTypedChildren(final int type) {
-	return new AxisIterator(Axis.CHILD, type);
+    public DTMAxisIterator getNodeValueIterator(DTMAxisIterator iterator,
+                                                int type, String value,
+                                                boolean op)
+    {
+        return(new NodeValueIterator(iterator, type, value, op));
     }
 
-    public NodeIterator getAxisIterator(final int axis) {
-	return new AxisIterator(axis, NO_TYPE);
+    public DTMAxisIterator getNamespaceAxisIterator(final int axis,
+                                                    final int ns)
+    {
+        DTMAxisIterator iterator = _main.getNamespaceAxisIterator(axis, ns);
+        return(iterator);        
     }
 
-    public NodeIterator getTypedAxisIterator(final int axis, final int type) {
-	return new AxisIterator(axis, type);
+    public DTMAxisIterator orderNodes(DTMAxisIterator source, int node) {
+        return _adapters[getDTMId(node)].orderNodes(source, node);
     }
 
-    public NodeIterator getNthDescendant(int node, int n, boolean includeself) {
-	return _adapters[node>>>24].getNthDescendant(node & CLR,n,includeself);
-    }
-
-    public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
-					     String value, boolean op) {
-	return(new NodeValueIterator(iterator, type, value, op));
-    }
-
-    public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
-	NodeIterator iterator = _adapters[0].getNamespaceAxisIterator(axis,ns);
-	return(iterator);
-    }
-
-    public NodeIterator orderNodes(NodeIterator source, int node) {
-	return _adapters[node>>>24].orderNodes(source, node & CLR);
-    }
-
-    public int getType(final int node) {
-	return _adapters[node>>>24].getType(node & CLR);
+    public int getExpandedTypeID(final int node) {
+    	if (node != DTM.NULL) {
+            return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getExpandedTypeID(node);
+    	}
+    	else {
+    	    return DTM.NULL;
+    	}
     }
 
     public int getNamespaceType(final int node) {
-	return _adapters[node>>>24].getNamespaceType(node & CLR);
+        return _adapters[getDTMId(node)].getNamespaceType(node);
     }
-
+    
+    public int getNSType(int node)
+   {
+        return _adapters[getDTMId(node)].getNSType(node);
+   }
+    
     public int getParent(final int node) {
-	return _adapters[node>>>24].getParent(node & CLR) | node&SET;
+        if (node == DTM.NULL) {
+            return DTM.NULL;
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getParent(node);
     }
-
+    
     public int getAttributeNode(final int type, final int el) {
-	return _adapters[el>>>24].getAttributeNode(type, el&CLR) | el&SET;
+        if (el == DTM.NULL) {
+            return DTM.NULL;
+        }
+        return _adapters[el >>> DTMManager.IDENT_DTM_NODE_BITS].getAttributeNode(type, el);
     }
-
+    
     public String getNodeName(final int node) {
-	return _adapters[node>>>24].getNodeName(node & CLR);
+        if (node == DTM.NULL) {
+            return "";
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getNodeName(node);
+    }
+    
+    public String getNodeNameX(final int node) {
+        if (node == DTM.NULL) {
+            return "";
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getNodeNameX(node);
     }
 
     public String getNamespaceName(final int node) {
-	return _adapters[node>>>24].getNamespaceName(node & CLR);
+        if (node == DTM.NULL) {
+            return "";
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getNamespaceName(node);
+    }
+    
+    public String getStringValueX(final int node) {
+        if (node == DTM.NULL) {
+            return "";
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getStringValueX(node);
+    }
+    
+    public void copy(final int node, SerializationHandler handler)
+        throws TransletException
+    {
+        if (node != DTM.NULL) {
+            _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].copy(node, handler);
+        }
+    }
+    
+    public void copy(DTMAxisIterator nodes, SerializationHandler handler)
+            throws TransletException
+    {
+        int node;
+        while ((node = nodes.next()) != DTM.NULL) {
+            _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].copy(node, handler);
+        }
     }
 
-    public String getNodeValue(final int node) {
-	return _adapters[node>>>24].getNodeValue(node & CLR);
+
+    public String shallowCopy(final int node, SerializationHandler handler)
+            throws TransletException
+    {
+        if (node == DTM.NULL) {
+            return "";
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].shallowCopy(node, handler);
     }
-
-    public void copy(final int node, TransletOutputHandler handler)
-	throws TransletException {
-	_adapters[node>>>24].copy(node & CLR, handler);
-    }
-
-    public void copy(NodeIterator nodes, TransletOutputHandler handler)
-	throws TransletException {
-	int node;
-	while ((node = nodes.next()) != DOM.NULL) {
-	    _adapters[node>>>24].copy(node & CLR, handler);
-	}
-    }
-
-
-    public String shallowCopy(final int node, TransletOutputHandler handler)
-	throws TransletException {
-	return _adapters[node>>>24].shallowCopy(node & CLR, handler);
-    }
-
+    
     public boolean lessThan(final int node1, final int node2) {
-	final int dom1 = node1>>>24;
-	final int dom2 = node2>>>24;
-	return dom1 == dom2
-	    ? _adapters[dom1].lessThan(node1 & CLR, node2 & CLR)
-	    : dom1 < dom2;
+        if (node1 == DTM.NULL) {
+            return true;
+        }
+        if (node2 == DTM.NULL) {
+            return false;
+        }
+        final int dom1 = getDTMId(node1);
+        final int dom2 = getDTMId(node2);
+        return dom1 == dom2 ? _adapters[dom1].lessThan(node1, node2)
+                            : dom1 < dom2;
     }
-
-    public void characters(final int textNode, TransletOutputHandler handler)
-	throws TransletException {
-	    _adapters[textNode>>>24].characters(textNode & CLR, handler);
+    
+    public void characters(final int textNode, SerializationHandler handler)
+                 throws TransletException
+    {
+        if (textNode != DTM.NULL) {
+            _adapters[textNode >>> DTMManager.IDENT_DTM_NODE_BITS].characters(textNode, handler);
+        }
     }
 
     public void setFilter(StripFilter filter) {
-	for (int dom=0; dom<_free; dom++) {
-	    _adapters[dom].setFilter(filter);
-	}
+        for (int dom=0; dom<_free; dom++) {
+            if (_adapters[dom] != null) {
+                _adapters[dom].setFilter(filter);
+            }
+        }
     }
 
     public Node makeNode(int index) {
-	return _adapters[index>>>24].makeNode(index & CLR);
+        if (index == DTM.NULL) {
+            return null;
+        }
+        return _adapters[getDTMId(index)].makeNode(index);
     }
 
-    public Node makeNode(NodeIterator iter) {
-	// TODO: gather nodes from all DOMs ?
-	return _adapters[0].makeNode(iter);
+    public Node makeNode(DTMAxisIterator iter) {
+        // TODO: gather nodes from all DOMs ?
+        return _main.makeNode(iter);
     }
 
     public NodeList makeNodeList(int index) {
-	return _adapters[index>>>24].makeNodeList(index & CLR);
+        if (index == DTM.NULL) {
+            return null;
+        }
+        return _adapters[getDTMId(index)].makeNodeList(index);
     }
 
-    public NodeList makeNodeList(NodeIterator iter) {
-	// TODO: gather nodes from all DOMs ?
-	return _adapters[0].makeNodeList(iter);
+    public NodeList makeNodeList(DTMAxisIterator iter) {
+        // TODO: gather nodes from all DOMs ?
+        return _main.makeNodeList(iter);
     }
 
     public String getLanguage(int node) {
-	return _adapters[node>>>24].getLanguage(node & CLR);
+        return _adapters[getDTMId(node)].getLanguage(node);
     }
 
     public int getSize() {
-	int size = 0;
-	for (int i=0; i<_size; i++)
-	    size += _adapters[i].getSize();
-	return(size);
+        int size = 0;
+        for (int i=0; i<_size; i++) {
+            size += _adapters[i].getSize();
+        }
+        return(size);
     }
 
     public String getDocumentURI(int node) {
-	return _adapters[node>>>24].getDocumentURI(0);
+        if (node == DTM.NULL) {
+            node = DOM.NULL;
+        }
+        return _adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].getDocumentURI(0);
     }
 
     public boolean isElement(final int node) {
-	return(_adapters[node>>>24].isElement(node & CLR));
+        if (node == DTM.NULL) {
+            return false;
+        }
+        return(_adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].isElement(node));
     }
 
     public boolean isAttribute(final int node) {
-	return(_adapters[node>>>24].isAttribute(node & CLR));
+        if (node == DTM.NULL) {
+            return false;
+        }
+        return(_adapters[node >>> DTMManager.IDENT_DTM_NODE_BITS].isAttribute(node));
+    }
+    
+    public int getDTMId(int nodeHandle)
+    {
+        if (nodeHandle == DTM.NULL)
+            return 0;
+        
+        int id = nodeHandle >>> DTMManager.IDENT_DTM_NODE_BITS;
+        while (id >= 2 && _adapters[id] == _adapters[id-1]) {
+            id--;
+        }
+        return id;
+    }
+    
+    public int getNodeIdent(int nodeHandle)
+    {
+        return _adapters[nodeHandle >>> DTMManager.IDENT_DTM_NODE_BITS].getNodeIdent(nodeHandle);
+    }
+    
+    public int getNodeHandle(int nodeId)
+    {
+        return _main.getNodeHandle(nodeId);
+    }
+    
+    public DOM getResultTreeFrag(int initSize, int rtfType)
+    {
+        return _main.getResultTreeFrag(initSize, rtfType);
+    }
+    
+    public DOM getMain()
+    {
+        return _main;
+    }
+    
+    /**
+     * Returns a DOMBuilder class wrapped in a SAX adapter.
+     */
+    public SerializationHandler getOutputDomBuilder()
+    {
+        return _main.getOutputDomBuilder();
     }
 
-    public String lookupNamespace(int node, String prefix)
-	throws TransletException
+    public String lookupNamespace(int node, String prefix) 
+        throws TransletException
     {
-	return _adapters[node>>>24].lookupNamespace(node & CLR, prefix);
+        return _main.lookupNamespace(node, prefix);
+    }
+
+    // %HZ% Does this method make any sense here???
+    public String getUnparsedEntityURI(String entity) {
+        return _main.getUnparsedEntityURI(entity);
+    }
+
+    // %HZ% Does this method make any sense here???
+    public Hashtable getElementsWithIDs() {
+        return _main.getElementsWithIDs();
     }
 }

@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,8 +64,9 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
 /**
  * UnionIterator takes a set of NodeIterators and produces
@@ -73,7 +74,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
  * The individual iterators are supposed to generate nodes
  * in document order
  */
-public final class UnionIterator extends NodeIteratorBase {
+public final class UnionIterator extends DTMAxisIteratorBase {
     /** wrapper for NodeIterators to support iterator
 	comparison on the value of their next() method
     */
@@ -81,9 +82,9 @@ public final class UnionIterator extends NodeIteratorBase {
 
     private final static class LookAheadIterator {
 	public int node, markedNode;
-	public NodeIterator iterator;
+	public DTMAxisIterator iterator;
 		
-	public LookAheadIterator(NodeIterator iterator) {
+	public LookAheadIterator(DTMAxisIterator iterator) {
 	    this.iterator = iterator;
 	}
 		
@@ -127,7 +128,9 @@ public final class UnionIterator extends NodeIteratorBase {
 	_dom = dom;
     }
 
-    public NodeIterator cloneIterator() {
+
+    public DTMAxisIterator cloneIterator() {
+	_isRestartable = false;
 	final LookAheadIterator[] heapCopy = 
 	    new LookAheadIterator[_heap.length];
 	try {
@@ -146,7 +149,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	}
     }
     
-    public UnionIterator addIterator(NodeIterator iterator) {
+    public UnionIterator addIterator(DTMAxisIterator iterator) {
 	if (_free == _size) {
 	    LookAheadIterator[] newArray = new LookAheadIterator[_size *= 2];
 	    System.arraycopy(_heap, 0, newArray, 0, _free);
@@ -185,7 +188,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	return END;
     }
   
-    public NodeIterator setStartNode(int node) {
+    public DTMAxisIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    _startNode = node;
 	    for (int i = 0; i < _free; i++) {
@@ -234,7 +237,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	}
     }
 
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	for (int i = 0; i < _free; i++) {
 	    _heap[i].iterator.reset();
 	    _heap[i].step();

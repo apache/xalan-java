@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,16 +63,17 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
-public final class NthIterator extends NodeIteratorBase {
+public final class NthIterator extends DTMAxisIteratorBase {
     // ...[N]
-    private NodeIterator _source;
+    private DTMAxisIterator _source;
     private final int _position;
     private boolean _ready;
 
-    public NthIterator(NodeIterator source, int n) {
+    public NthIterator(DTMAxisIterator source, int n) {
 	_source = source;
 	_position = n;
     }
@@ -82,7 +83,7 @@ public final class NthIterator extends NodeIteratorBase {
 	_source.setRestartable(isRestartable);
     }
     
-    public NodeIterator cloneIterator() {
+    public DTMAxisIterator cloneIterator() {
 	try {
 	    final NthIterator clone = (NthIterator) super.clone();
 	    clone._source = _source.cloneIterator();	// resets source
@@ -97,6 +98,12 @@ public final class NthIterator extends NodeIteratorBase {
     }
 
     public int next() {
+	if (_ready) {
+	    _ready = false;
+	    return _source.getNodeByPosition(_position);
+	}
+	return DTMAxisIterator.END;
+	/*
 	if (_ready && _position > 0) {
             final int pos = _source.isReverse()
                                        ? _source.getLast() - _position + 1
@@ -104,16 +111,17 @@ public final class NthIterator extends NodeIteratorBase {
 
 	    _ready = false;
 	    int node;
-	    while ((node = _source.next()) != END) {
+	    while ((node = _source.next()) != DTMAxisIterator.END) {
 		if (pos == _source.getPosition()) {
 		    return node;
 		}
 	    }
 	}
-	return END;
+	return DTMAxisIterator.END;
+	*/
     }
 
-    public NodeIterator setStartNode(final int node) {
+    public DTMAxisIterator setStartNode(final int node) {
 	if (_isRestartable) {
 	    _source.setStartNode(node);
 	    _ready = true;
@@ -121,7 +129,7 @@ public final class NthIterator extends NodeIteratorBase {
 	return this;
     }
 	
-    public NodeIterator reset() {
+    public DTMAxisIterator reset() {
 	_source.reset();
 	_ready = true;
 	return this;
