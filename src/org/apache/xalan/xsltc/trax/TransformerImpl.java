@@ -115,8 +115,9 @@ public final class TransformerImpl extends Transformer
     implements DOMCache, ErrorListener {
 
     private AbstractTranslet _translet = null;
+    private String           _method   = null;
     private String           _encoding = null;
-    private ContentHandler   _handler = null;
+    private ContentHandler   _handler  = null;
 
     private ErrorListener _errorListener = this;
     private URIResolver   _uriResolver = null;
@@ -229,15 +230,17 @@ public final class TransformerImpl extends Transformer
     private TransletOutputHandler getOutputHandler(Result result) 
 	throws TransformerException 
     {
-	// Try to get the encoding from the translet (may not be set)
-	_encoding = (_translet._encoding != null) ? _translet._encoding 
-	    : "UTF-8";
+	// Get output method using get() to ignore defaults 
+	_method = (String) _properties.get(OutputKeys.METHOD);
+
+	// Get encoding using getProperty() to use defaults
+	_encoding = (String) _properties.getProperty(OutputKeys.ENCODING);
 
 	_tohFactory = TransletOutputHandlerFactory.newInstance();
-	_tohFactory.setEncoding(
-	    (String) _properties.getProperty(OutputKeys.ENCODING));
-	_tohFactory.setOutputMethod(
-	    (String) _properties.getProperty(OutputKeys.METHOD));
+	_tohFactory.setEncoding(_encoding);
+	if (_method != null) {
+	    _tohFactory.setOutputMethod(_method);
+	}
 
 	// Return the content handler for this Result object
 	try {
@@ -846,6 +849,9 @@ public final class TransformerImpl extends Transformer
 	    // Note the use of get() instead of getProperty()
 	    String name  = (String) names.nextElement();
 	    String value = (String) properties.get(name);
+
+	    // Ignore default properties
+	    if (value == null) continue;
 
 	    // Pass property value to translet - override previous setting
 	    if (name.equals(OutputKeys.ENCODING)) {
