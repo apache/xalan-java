@@ -420,4 +420,31 @@ public class Keywords
     m_functions.put(new StringKey(FUNC_DOCLOCATION_STRING),
                     new Integer(FunctionTable.FUNC_DOCLOCATION));
   }
+
+  public static boolean functionAvailable(String methName)
+  {
+
+    try
+    {
+      Object tblEntry = m_functions.get(methName);
+      if (null == tblEntry)
+        return false;
+      int funcType = ((Integer) tblEntry).intValue();
+      switch (funcType)
+      {
+        case OpCodes.NODETYPE_COMMENT:
+        case OpCodes.NODETYPE_TEXT:
+        case OpCodes.NODETYPE_PI:
+        case OpCodes.NODETYPE_NODE:
+          return false;                 // These look like functions but they're NodeTests.
+
+        default:
+          return true;
+      }
+    }
+    catch (Exception e)
+    {
+      return false;
+    }
+  }
 }
