@@ -325,7 +325,8 @@ public class ResultTreeHandler
         }
       }
     }
-
+    // System.out.println("m_pendingStartDoc: "+m_pendingStartDoc);
+    // System.out.println("m_mustFlushStartDoc: "+m_mustFlushStartDoc);
     if(m_pendingStartDoc && m_mustFlushStartDoc)
     {
       m_pendingStartDoc = false;
@@ -352,6 +353,18 @@ public class ResultTreeHandler
       */      
       if(!m_nsDeclsHaveBeenAdded)
         addNSDeclsToAttrs();
+      
+      // A start document event may have not occured yet, in which 
+      // case we need to fire one.  There should be a better way to 
+      // handle this case...
+      if(!m_foundStartDoc)
+      {
+        startDocument();
+        m_pendingStartDoc = false;
+        getContentHandler().startDocument();
+        m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
+                                                                            GenerateEvent.EVENTTYPE_STARTDOCUMENT));
+      }
 
       getContentHandler().startElement(m_pendingElementNS, 
                                                      m_pendingElementLName, 
