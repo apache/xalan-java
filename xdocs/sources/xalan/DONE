@@ -25,15 +25,15 @@
   which will make a major difference in getting line number information.<br/><br/></li> 
   <li>xsl:element's handling of namespace attribute and prefix in
   name attribute changed so that it no longer manufactures prefixes...
-  it always tries its best to match the prefix entered.<br/><br/></li>
-  
+  it always tries its best to match the prefix entered.<br/><br/></li>  
   <li>Bug fixed with namespace contexts in the stylesheet processor.
-  The bug could cause &lt;a xmlns:a="x"&gt;&lt;b&gt; to produce &lt;a xmlns:a="x"&gt;&lt;b xmlns:a="x"&gt;.<br/><br/></li>
-  
+  The bug could cause &lt;a xmlns:a="x"&gt;&lt;b&gt; to produce &lt;a xmlns:a="x"&gt;&lt;b xmlns:a="x"&gt;.<br/><br/></li>  
   <li>Modified processing of xsl:message to enhance it as a debugging aid. Line numbers are now output with each
   message. If the terminate attribute is true (the default is false) the message is sent to the console, and an exception is thrown with the
   message "Stylesheet directed termination".<br/><br/></li>
-  <li>In TransformerException, check that the cause != null when checking for a contained exception.</li>
+  <li>In TransformerException, check that the cause != null when checking for a contained exception.<br/><br/></li>
+  <li>Fixed a problem validating non-namespaced attributes and a problem allowing non-namespaced attributes to be children of the
+   stylesheet element.</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
