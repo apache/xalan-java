@@ -68,6 +68,17 @@ import org.apache.xalan.templates.ElemFallback;
 import org.apache.xalan.templates.ElemVariable;
 import org.apache.xalan.templates.ElemParam;
 import org.apache.xalan.templates.ElemValueOf;
+import org.apache.xalan.templates.ElemText;
+import org.apache.xalan.templates.ElemTextLiteral;
+import org.apache.xalan.templates.ElemApplyImport;
+import org.apache.xalan.templates.ElemApplyTemplates;
+import org.apache.xalan.templates.ElemAttribute;
+import org.apache.xalan.templates.ElemCallTemplate;
+import org.apache.xalan.templates.ElemComment;
+import org.apache.xalan.templates.ElemCopy;
+import org.apache.xalan.templates.ElemCopyOf;
+import org.apache.xalan.templates.ElemNumber;
+import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.Constants;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -170,9 +181,22 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
         msg = "func:result has an illegal following sibling (only xsl:fallback allowed)";
         handler.error(msg, new SAXException(msg));
       }
-      if (elem instanceof ElemValueOf ||
-          (elem instanceof ElemLiteralResult || elem instanceof ElemElement)
-          && !(ancestorIsOk(elem)))
+      
+      if((elem instanceof ElemApplyImport
+	 || elem instanceof ElemApplyTemplates
+	 || elem instanceof ElemAttribute
+	 || elem instanceof ElemCallTemplate
+	 || elem instanceof ElemComment
+	 || elem instanceof ElemCopy
+	 || elem instanceof ElemCopyOf
+	 || elem instanceof ElemElement
+	 || elem instanceof ElemLiteralResult
+	 || elem instanceof ElemNumber
+	 || elem instanceof ElemPI
+	 || elem instanceof ElemText
+	 || elem instanceof ElemTextLiteral
+	 || elem instanceof ElemValueOf)
+	&& !(ancestorIsOk(elem)))
       {
         msg ="misplaced literal result in a func:function container.";
         handler.error(msg, new SAXException(msg));
