@@ -110,8 +110,7 @@ final class Variable extends VariableBase {
 	// parse attributes name and select (if present)
 	final String name = getAttribute("name");
 	if (name.length() > 0) {
-	    _name = parser.getQName(name);
-	    _name.clearDefaultNamespace();
+	    setName(parser.getQName(name));
 	}
         else {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
@@ -170,9 +169,12 @@ final class Variable extends VariableBase {
 	    _type = _select.typeCheck(stable);
 	}
 	// Type check the element contents otherwise
-	else {
+	else if (hasContents()) {
 	    typeCheckContents(stable);
 	    _type = Type.ResultTree;
+	}
+	else {
+	    _type = Type.Reference;
 	}
 
 	// The return type is void as the variable element does not leave
@@ -194,10 +196,7 @@ final class Variable extends VariableBase {
 	if (isLocal() && !_refs.isEmpty()) {
 	    // Create a variable slot if none is allocated
 	    if (_local == null) {
-		String name = _name.getLocalPart();
-		name = name.replace('.', '_');
-		name = name.replace('-', '_');
-		_local = methodGen.addLocalVariable2(name,
+		_local = methodGen.addLocalVariable2(_name.getLocalPart(),
 						     _type.toJCType(),
 						     il.getEnd());
 	    }
@@ -240,9 +239,8 @@ final class Variable extends VariableBase {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	String name = _name.getLocalPart();
-	name = name.replace('.', '_');
-        name = name.replace('-', '_');
+
+	final String name = getVariable();
 
 	// Make sure that a variable instance is only compiled once
 	if (_compiled) return;

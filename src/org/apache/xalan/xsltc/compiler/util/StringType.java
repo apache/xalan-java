@@ -215,6 +215,14 @@ public class StringType extends Type {
 	methodGen.getInstructionList().append(NOP);
     }
 
+    /**
+     * Returns the class name of an internal type's external representation.
+     */
+    public String getClassName() {
+	return(STRING_CLASS);
+    }
+
+
     public Instruction LOAD(int slot) {
 	return new ALOAD(slot);
     }

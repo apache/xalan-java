@@ -83,19 +83,17 @@ final class ParameterRef extends VariableRefBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 		
-	final Type parType = _variable.getType();
-	String parName = _variable.getName().getLocalPart();
-	parName = parName.replace('.', '_');
-	parName = parName.replace('-', '_');
+	String name = _variable.getVariable();
 
 	if (_variable.isLocal()) {
 	    if (classGen.isExternal()) {
 		il.append(classGen.loadTranslet());
-		il.append(new PUSH(cpg, parName));
+		il.append(new PUSH(cpg, name));
 		final int index = cpg.addMethodref(TRANSLET_CLASS, 
 						   GET_PARAMETER,
 						   GET_PARAMETER_SIG);
 		il.append(new INVOKEVIRTUAL(index));
+		_type.translateUnBox(classGen, methodGen);
 	    }
 	    else {
 		il.append(_variable.loadInstruction());
@@ -103,15 +101,14 @@ final class ParameterRef extends VariableRefBase {
 	    }
 	}
 	else {
+	    final String signature = _type.toSignature();
 	    final String className = classGen.getClassName();
 	    il.append(classGen.loadTranslet());
 	    // If inside a predicate we must cast this ref down
 	    if (classGen.isExternal()) {
 		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
-	    il.append(new GETFIELD(cpg.addFieldref(className,
-						   parName,
-						   parType.toSignature())));
+	    il.append(new GETFIELD(cpg.addFieldref(className,name,signature)));
 	}
     }
 }

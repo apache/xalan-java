@@ -278,6 +278,14 @@ public final class NodeSetType extends Type {
 	methodGen.getInstructionList().append(NOP);
     }
 
+    /**
+     * Returns the class name of an internal type's external representation.
+     */
+    public String getClassName() {
+	return(NODE_ITERATOR);
+    }
+
+
     public Instruction LOAD(int slot) {
 	return new ALOAD(slot);
     }

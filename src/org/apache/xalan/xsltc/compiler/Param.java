@@ -99,13 +99,24 @@ final class Param extends VariableBase {
 	displayContents(indent + IndentIncrement);
     }
 
+    /**
+     * Returns the parameter's type. This is needed by ParameterRef to
+     * determine the type of the parameter
+     */
+    public Type getType() {
+	return _type;
+    }
+
+    /**
+     * Parse the contents of the <xsl:param> element. This method must read
+     * the 'name' (required) and 'select' (optional) attributes.
+     */
     public void parseContents(Parser parser) {
 	// Parse attributes name and select (if present)
 	final String name = getAttribute("name");
 
 	if (name.length() > 0) {
-	    _name = parser.getQName(name);
-	    _name.clearDefaultNamespace();
+	    setName(parser.getQName(name));
 	}
         else {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
@@ -139,14 +150,27 @@ final class Param extends VariableBase {
 	}
     }
 
+    /**
+     * Type-checks the parameter. The parameter type is determined by the
+     * 'select' expression (if present) or is a result tree if the parameter
+     * element has a body and no 'select' expression.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	// Get the type from the select exrepssion...
 	if (_select != null) {
 	    _type = _select.typeCheck(stable); 
+	    if (_type instanceof ReferenceType == false) {
+		_select = new CastExpr(_select, Type.Reference);
+	    }
 	}
-	else {
+	// ...or set the type to result tree
+	else if (hasContents()) {
 	    typeCheckContents(stable);
-	    _type = Type.ResultTree;
 	}
+	_type = Type.Reference;
+
+	// This element has no type (the parameter does, but the parameter
+	// element itself does not).
 	return Type.Void;
     }
 
@@ -159,6 +183,7 @@ final class Param extends VariableBase {
 	// Compile expression is 'select' attribute if present
 	if (_select != null) {
 	    _select.translate(classGen, methodGen);
+	    _type.translateBox(classGen, methodGen);
 	    _select.startResetIterator(classGen, methodGen);
 	}
 	// If not, compile result tree from parameter body if present.
@@ -182,11 +207,9 @@ final class Param extends VariableBase {
 	if (_compiled) return;
 	_compiled = true;
 
-	// Make name acceptable for use as field name in class
-	// TODO: convert to escape sequence like $dot$ and $dash$
-	String name = _name.getLocalPart(); // TODO: namespace ?
-	name = name.replace('.', '_');
-	name = name.replace('-', '_');
+	final String name = getVariable();
+	final String signature = _type.toSignature();
+	final String className = _type.getClassName();
 
 	if (isLocal()) {
 
@@ -199,6 +222,11 @@ final class Param extends VariableBase {
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
 							 ADD_PARAMETER,
 							 ADD_PARAMETER_SIG)));
+	    if (className != EMPTYSTRING) {
+		il.append(new CHECKCAST(cpg.addClass(className)));
+	    }
+
+	    _type.translateUnBox(classGen, methodGen);
 
 	    if (_refs.isEmpty()) { // nobody uses the value
 		il.append(_type.POP());
@@ -213,7 +241,6 @@ final class Param extends VariableBase {
 	    }
 	}
 	else {
-	    String signature = _type.toSignature();
 	    classGen.addField(new Field(ACC_PUBLIC, cpg.addUtf8(name),
 					cpg.addUtf8(signature),
 					null, cpg.getConstantPool()));
@@ -227,9 +254,16 @@ final class Param extends VariableBase {
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
 							 ADD_PARAMETER,
 							 ADD_PARAMETER_SIG)));
+
+	    _type.translateUnBox(classGen, methodGen);
+
 	    // Cache the result of addParameter() in a field
+	    if (className != EMPTYSTRING) {
+		il.append(new CHECKCAST(cpg.addClass(className)));
+	    }
 	    il.append(new PUTFIELD(cpg.addFieldref(classGen.getClassName(),
 						   name, signature)));
 	}
     }
+
 }

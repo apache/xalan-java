@@ -223,6 +223,21 @@ public final class ReferenceType extends Type {
 	return new FlowList(il.append(new IFEQ(null)));
     }
 
+    /**
+     * Translates an object of this type to its boxed representation.
+     */ 
+    public void translateBox(ClassGenerator classGen,
+			     MethodGenerator methodGen) {
+    }
+
+    /**
+     * Translates an object of this type to its unboxed representation.
+     */ 
+    public void translateUnBox(ClassGenerator classGen,
+			       MethodGenerator methodGen) {
+    }
+
+
     public Instruction LOAD(int slot) {
 	return new ALOAD(slot);
     }

@@ -102,12 +102,9 @@ final class VariableRef extends VariableRefBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 		
-	final Type varType = _variable.getType();
-	String varName = _variable.getName().getLocalPart();
-	varName = varName.replace('.', '_');
-        varName = varName.replace('-', '_');
+	String name = _variable.getVariable();
 
-	if (varType.implementedAsMethod()) {
+	if (_type.implementedAsMethod()) {
 	    // Fall-through for variables that are implemented as methods
 	    return;
 	}
@@ -129,15 +126,14 @@ final class VariableRef extends VariableRefBase {
 	    }
 	}
 	else {
+	    final String signature = _type.toSignature();
 	    final String className = classGen.getClassName();
 	    il.append(classGen.loadTranslet());
 	    // If inside a predicate we must cast this ref down
 	    if (classGen.isExternal()) {
 		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
-	    il.append(new GETFIELD(cpg.addFieldref(className,
-						   varName,
-						   varType.toSignature())));
+	    il.append(new GETFIELD(cpg.addFieldref(className,name,signature)));
 	}
     }
 }

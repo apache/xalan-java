@@ -78,6 +78,7 @@ import org.apache.xalan.xsltc.dom.Axis;
 class VariableBase extends TopLevelElement {
 
     protected QName       _name;            // The name of the variable.
+    protected String      _variable;        // The real name of the variable.
     protected Type        _type;            // The type of this variable.
     protected boolean     _isLocal;         // True if the variable is local.
     protected LocalVariableGen _local;      // Reference to JVM variable
@@ -113,9 +114,7 @@ class VariableBase extends TopLevelElement {
     public void mapRegister(MethodGenerator methodGen) {
         if (_local == null) {
             final InstructionList il = methodGen.getInstructionList();
-	    String name = _name.getLocalPart(); // TODO: namespace ?
-            name = name.replace('.', '_');
-            name = name.replace('-', '_');
+	    final String name = _name.getLocalPart(); // TODO: namespace ?
 	    final de.fub.bytecode.generic.Type varType = _type.toJCType();
             _local = methodGen.addLocalVariable2(name, varType, il.getEnd());
         }
@@ -180,10 +179,54 @@ class VariableBase extends TopLevelElement {
     }
 
     /**
-     * Returns the name of the variable
+     * Returns the name of the variable or parameter as it will occur in the
+     * compiled translet.
      */
     public QName getName() {
 	return _name;
+    }
+
+    /**
+     * Returns the name of the variable or parameter as it occured in the
+     * stylesheet.
+     */
+    public String getVariable() {
+	return _variable;
+    }
+
+    private static String replace(String base, char c, String str) {
+	final int len = base.length() - 1;
+	int pos;
+	while ((pos = base.indexOf(c)) > -1) {
+	    if (pos == 0) {
+		final String after = base.substring(1);
+		base = str + after;
+	    }
+	    else if (pos == len) {
+		final String before = base.substring(0, pos);
+		base = before + str;
+	    }
+	    else {
+		final String before = base.substring(0, pos);
+		final String after = base.substring(pos+1);
+		base = before + str + after;
+	    }
+	}
+	return base;
+    }
+
+    /**
+     * Set the name of the variable or paremeter. Escape all special chars.
+     */
+    public void setName(QName name) {
+	_name = name;
+	_name.clearDefaultNamespace();
+
+	String prefix = name.getPrefix();
+	String local = name.getLocalPart();
+	local = replace(local, '.', "$dot$");
+	local = replace(local, '-', "$dash$");
+	_variable = local;
     }
 
     /**

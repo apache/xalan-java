@@ -227,6 +227,13 @@ public abstract class Type implements Constants {
 	    .notYetImplemented(toString() + " -> unboxed " + toString());
     }
 
+    /**
+     * Returns the class name of an internal type's external representation.
+     */
+    public String getClassName() {
+	return(EMPTYSTRING);
+    }
+
     public Instruction ADD() {
 	return null;		// should never be called
     }

@@ -419,6 +419,13 @@ public final class ResultTreeType extends Type {
 	methodGen.getInstructionList().append(NOP);
     }
 
+    /**
+     * Returns the class name of an internal type's external representation.
+     */
+    public String getClassName() {
+	return(DOM_INTF);
+    }
+
     public Instruction LOAD(int slot) {
 	return new ALOAD(slot);
     }

@@ -306,6 +306,13 @@ public final class NodeType extends Type {
 					       NODE_FIELD_SIG)));
     }
 
+    /**
+     * Returns the class name of an internal type's external representation.
+     */
+    public String getClassName() {
+	return(RUNTIME_NODE_CLASS);
+    }
+
     public Instruction LOAD(int slot) {
 	return new ILOAD(slot);
     }
