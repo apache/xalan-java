@@ -89,7 +89,7 @@ public class JAXPTransletOneTransformation
     // Set the TransformerFactory system property to generate and use a translet.
     String key = "javax.xml.transformer.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
-    Properties props = new Properties(System.getProperties());
+    Properties props = System.getProperties();
     props.put(key, value);
     System.setProperties(props);    
 
