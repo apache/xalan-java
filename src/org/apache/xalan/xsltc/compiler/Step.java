@@ -417,11 +417,12 @@ final class Step extends RelativeLocationPath {
 						GET_NODE_VALUE_ITERATOR,
 						GET_NODE_VALUE_ITERATOR_SIG);
 		il.append(new INVOKEINTERFACE(idx, 5));
-	    }
+	    }            
 	    // Handle '//*[n]' expression
 	    else if (predicate.isNthDescendant()) {
 		il.append(methodGen.loadDOM());
-		il.append(new ICONST(NodeTest.ELEMENT));
+		// il.append(new ICONST(NodeTest.ELEMENT));
+		il.append(new ICONST(predicate.getPosType()));
 		predicate.translate(classGen, methodGen);
 		il.append(new ICONST(0));
 		idx = cpg.addInterfaceMethodref(DOM_INTF,

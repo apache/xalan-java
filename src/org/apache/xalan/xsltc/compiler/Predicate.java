@@ -92,35 +92,114 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class Predicate extends Expression implements Closure {
 
-    private Expression _exp = null; // Expression to be compiled inside pred.
-    private boolean _nthPositionFilter = false;
-    private boolean _nthDescendant = false;
+    /**
+     * The predicate's expression.
+     */
+    private Expression _exp = null; 
+    
+    /**
+     * This flag indicates if optimizations are turned on. The 
+     * method <code>dontOptimize()</code> can be called to turn
+     * optimizations off.
+     */
     private boolean _canOptimize = true;
-    private int     _ptype = -1;
+    
+    /**
+     * Flag indicatig if the nth position optimization is on. It
+     * is set in <code>typeCheck()</code>.
+     */
+    private boolean _nthPositionFilter = false;
+        
+    /**
+     * Flag indicatig if the nth position descendant is on. It
+     * is set in <code>typeCheck()</code>.
+     */
+    private boolean _nthDescendant = false;
 
+    /**
+     * Cached node type of the expression that owns this predicate.
+     */
+    int _ptype = -1;
+
+    /**
+     * Name of the inner class.
+     */
     private String _className = null;
+    
+    /**
+     * List of variables in closure.
+     */
     private ArrayList _closureVars = null;
+    
+    /**
+     * Reference to parent closure.
+     */
     private Closure _parentClosure = null;
 
+    /**
+     * Cached value of method <code>getCompareValue()</code>.
+     */
+    private Expression _value = null;
+    
+    /**
+     * Cached value of method <code>getCompareValue()</code>.
+     */
+    private Step _step = null;
+
+    /**
+     * Initializes a predicate. 
+     */
     public Predicate(Expression exp) {
-	(_exp = exp).setParent(this);
+        _exp = exp;
+        _exp.setParent(this);
+
     }
 
+    /** 
+     * Set the parser for this expression.
+     */
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	_exp.setParser(parser);
     }
 
-    public boolean isNthDescendant() {
-	return _nthDescendant;
-    }
-
+    /**
+     * Returns a boolean value indicating if the nth position optimization
+     * is on. Must be call after type checking!
+     */
     public boolean isNthPositionFilter() {
 	return _nthPositionFilter;
     }
 
+    /**
+     * Returns a boolean value indicating if the nth descendant optimization
+     * is on. Must be call after type checking!
+     */
+    public boolean isNthDescendant() {
+	return _nthDescendant;
+    }
+
+    /**
+     * Turns off all optimizations for this predicate.
+     */
     public void dontOptimize() {
 	_canOptimize = false;
+    }
+    
+    /**
+     * Returns true if the expression in this predicate contains a call 
+     * to position().
+     */
+    public boolean hasPositionCall() {
+	return _exp.hasPositionCall();
+    }
+
+    /**
+     * Returns true if the expression in this predicate contains a call 
+     * to last().
+     */
+    public boolean hasLastCall() {
+	return _exp.hasLastCall();
     }
 
     // -- Begin Closure interface --------------------
@@ -183,6 +262,10 @@ final class Predicate extends Expression implements Closure {
 
     // -- End Closure interface ----------------------
 
+    /**
+     * Returns the node type of the expression owning this predicate. The
+     * return value is cached in <code>_ptype</code>.
+     */
     public int getPosType() {
 	if (_ptype == -1) {
 	    SyntaxTreeNode parent = getParent();
@@ -220,10 +303,7 @@ final class Predicate extends Expression implements Closure {
     }
 
     public String toString() {
-	if (isNthPositionFilter())
-	    return "pred([" + _exp + "],"+getPosType()+")";
-	else
-	    return "pred(" + _exp + ')';
+        return "pred(" + _exp + ')';
     }
 	
     /**
@@ -232,9 +312,12 @@ final class Predicate extends Expression implements Closure {
      * Note that if the expression is a parameter, we cannot distinguish
      * at compile time if its type is number or not. Hence, expressions of 
      * reference type are always converted to booleans.
+     *
+     * This method may be called twice, before and after calling
+     * <code>dontOptimize()</code>. If so, the second time it should honor
+     * the new value of <code>_canOptimize</code>.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-
+    public Type typeCheck(SymbolTable stable) throws TypeCheckError {        
 	Type texp = _exp.typeCheck(stable);
 
 	// We need explicit type information for reference types - no good!
@@ -253,96 +336,50 @@ final class Predicate extends Expression implements Closure {
 
 	// Numerical types will be converted to a position filter
 	if (texp instanceof NumberType) {
-
 	    // Cast any numerical types to an integer
 	    if (texp instanceof IntType == false) {
 		_exp = new CastExpr(_exp, Type.Int);
 	    }
-
-	    SyntaxTreeNode parent = getParent();
-        
-	    // Expand [last()] into [position() = last()]
-	    if ((_exp instanceof LastCall) ||
-                //Fix for bug 22949, check for last() for any expression returns
-                // NumberType            
-                 _exp.hasLastCall()||
-		(parent instanceof Pattern) ||
-		(parent instanceof FilterExpr)) {
-
-		if (parent instanceof Pattern && !(_exp instanceof LastCall)) {
- 		    _nthPositionFilter = _canOptimize;
-		}
-		else if (parent instanceof FilterExpr) {
-		    FilterExpr filter = (FilterExpr)parent;
-		    Expression fexp = filter.getExpr();
-
-		    if (fexp instanceof KeyCall)
-			_canOptimize = false;
-		    else if (fexp instanceof VariableRefBase)
-		        _canOptimize = false;
-		    else if (fexp instanceof ParentLocationPath)
-			_canOptimize = false;
-		    else if (fexp instanceof FilterParentPath)
-			_canOptimize = false;
-		    else if (fexp instanceof UnionPathExpr)
-			_canOptimize = false;
-		    else if (_exp.hasPositionCall() && _exp.hasLastCall())
-			_canOptimize = false;
-		    else if (filter.getParent() instanceof FilterParentPath)
-			_canOptimize = false;
-		    if (_canOptimize)
-			_nthPositionFilter = true;
-		}
-
-                // If this case can be optimized, leave the expression as
-                // an integer.  Otherwise, turn it into a comparison with
-                // the position() function.
+                    
+            if (_canOptimize) {
+                // Nth position optimization. Expression must not depend on context
+                _nthPositionFilter = 
+                    !_exp.hasLastCall() && !_exp.hasPositionCall();
+                
+                // _nthDescendant optimization - only if _nthPositionFilter is on
                 if (_nthPositionFilter) {
-                   return _type = Type.NodeSet;
-                } else {
-                   final QName position =
-                                getParser().getQNameIgnoreDefaultNs("position");
-
-                   final PositionCall positionCall =
-                                               new PositionCall(position);
-                   positionCall.setParser(getParser());
-                   positionCall.setParent(this);
-
-                   _exp = new EqualityExpr(EqualityExpr.EQ, positionCall,
-                                            _exp);
-                   if (_exp.typeCheck(stable) != Type.Boolean) {
-                       _exp = new CastExpr(_exp, Type.Boolean);
-                   }
-
-                   return _type = Type.Boolean;
+                    SyntaxTreeNode parent = getParent();
+                    _nthDescendant = (parent instanceof Step) &&
+                        (parent.getParent() instanceof AbsoluteLocationPath);
+                    return _type = Type.NodeSet;
                 }
-	    }
-	    // Use NthPositionIterator to handle [position()] or [a]
-	    else {
-		if ((parent != null) && (parent instanceof Step)) {
-		    parent = parent.getParent();
-		    if ((parent != null) &&
-			(parent instanceof AbsoluteLocationPath)) {
-			// TODO: Special case for "//*[n]" pattern....
-			_nthDescendant = true;
-			return _type = Type.NodeSet;
-		    }
-		}
-		_nthPositionFilter = true;
-		return _type = Type.NodeSet;
-	    }
-	}
-	else if (texp instanceof BooleanType) {
-	    if (_exp.hasPositionCall())
-		_nthPositionFilter = true;
-	}
-	// All other types will be handled as boolean values
-	else {
-	    _exp = new CastExpr(_exp, Type.Boolean);
-	}
-	_nthPositionFilter = false;
+            }          
 
-	return _type = Type.Boolean;
+           // Reset optimization flags
+            _nthPositionFilter = _nthDescendant = false;
+            
+           // Otherwise, expand [e] to [position() = e]
+           final QName position = 
+                getParser().getQNameIgnoreDefaultNs("position");
+           final PositionCall positionCall =
+                new PositionCall(position);
+           positionCall.setParser(getParser());
+           positionCall.setParent(this);
+
+           _exp = new EqualityExpr(EqualityExpr.EQ, positionCall,
+                                    _exp);
+           if (_exp.typeCheck(stable) != Type.Boolean) {
+               _exp = new CastExpr(_exp, Type.Boolean);
+           }
+           return _type = Type.Boolean;
+	}
+	else {
+            // All other types will be handled as boolean values
+	    if (texp instanceof BooleanType == false) {
+		_exp = new CastExpr(_exp, Type.Boolean);
+            }
+            return _type = Type.Boolean;
+	}
     }
 	
     /**
@@ -447,9 +484,6 @@ final class Predicate extends Expression implements Closure {
 	return (getStep() != null && getCompareValue() != null);
     }
 
-    private Expression _value = null;
-    private Step _step = null;
-
     /**
      * Utility method for optimisation. See isNodeValueTest()
      */
@@ -517,29 +551,6 @@ final class Predicate extends Expression implements Closure {
      * two references on the stack: a reference to a newly created
      * filter object and a reference to the predicate's closure.
      */
-    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	if (_nthPositionFilter || _nthDescendant) {
-	    _exp.translate(classGen, methodGen);
-	}
-	else if (isNodeValueTest() && (getParent() instanceof Step)) {
-	    _value.translate(classGen, methodGen);
-	    il.append(new CHECKCAST(cpg.addClass(STRING_CLASS)));
-	    il.append(new PUSH(cpg, ((EqualityExpr)_exp).getOp()));
-	}
-	else {
-	    translateFilter(classGen, methodGen);
-	}
-    }
-
-    /**
-     * Translate a predicate expression. This translation pushes
-     * two references on the stack: a reference to a newly created
-     * filter object and a reference to the predicate's closure.
-     */
     public void translateFilter(ClassGenerator classGen,
 				MethodGenerator methodGen) 
     {
@@ -588,6 +599,30 @@ final class Predicate extends Expression implements Closure {
 	    il.append(new PUTFIELD(
 		    cpg.addFieldref(_className, var.getVariable(), 
 			varType.toSignature())));
+	}
+    }
+    
+    /**
+     * Translate a predicate expression. If non of the optimizations apply
+     * then this translation pushes two references on the stack: a reference 
+     * to a newly created filter object and a reference to the predicate's 
+     * closure. See class <code>Step</code> for further details.
+     */
+    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	if (_nthPositionFilter || _nthDescendant) {
+	    _exp.translate(classGen, methodGen);
+	}
+	else if (isNodeValueTest() && (getParent() instanceof Step)) {
+	    _value.translate(classGen, methodGen);
+	    il.append(new CHECKCAST(cpg.addClass(STRING_CLASS)));
+	    il.append(new PUSH(cpg, ((EqualityExpr)_exp).getOp()));
+	}
+	else {
+	    translateFilter(classGen, methodGen);
 	}
     }
 }

@@ -80,7 +80,15 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 
 class FilterExpr extends Expression {
+    
+    /**
+     * Primary expression of this filter. I.e., 'e' in '(e)[p1]...[pn]'.
+     */
     private Expression   _primary;
+    
+    /**
+     * Array of predicates in '(e)[p1]...[pn]'.
+     */
     private final Vector _predicates;
 
     public FilterExpr(Expression primary, Vector predicates) {
@@ -117,6 +125,8 @@ class FilterExpr extends Expression {
      * Type check a FilterParentPath. If the filter is not a node-set add a 
      * cast to node-set only if it is of reference type. This type coercion 
      * is needed for expressions like $x where $x is a parameter reference.
+     * All optimizations are turned off before type checking underlying
+     * predicates.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	Type ptype = _primary.typeCheck(stable);
@@ -130,9 +140,11 @@ class FilterExpr extends Expression {
 	    }
 	}
 
+        // Type check predicates and turn all optimizations off
 	int n = _predicates.size();
 	for (int i = 0; i < n; i++) {
-	    Expression pred = (Expression)_predicates.elementAt(i);
+	    Predicate pred = (Predicate) _predicates.elementAt(i);
+            pred.dontOptimize();
 	    pred.typeCheck(stable);
 	}
 	return _type = Type.NodeSet;	
@@ -148,26 +160,26 @@ class FilterExpr extends Expression {
 	}
 	else {
 	    _primary.translate(classGen, methodGen);
-	    _primary.startIterator(classGen, methodGen);
 	}
     }
 
     /**
-     * Translate a sequence of predicates.
-     * Each predicate is translated by constructing an instance
-     * of <code>CurrentNodeListIterator</code> which is initialized from
-     * another iterator (recursive call), a filter and a closure
-     * (call to translate on the predicate) and "this". 
+     * Translate a sequence of predicates. Each predicate is translated 
+     * by constructing an instance of <code>CurrentNodeListIterator</code> 
+     * which is initialized from another iterator (recursive call), a 
+     * filter and a closure (call to translate on the predicate) and "this". 
      */
     public void translatePredicates(ClassGenerator classGen,
 				    MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+        // If not predicates left, translate primary expression
 	if (_predicates.size() == 0) {
 	    translate(classGen, methodGen);
 	}
 	else {
+            // Translate predicates from right to left
 	    final int initCNLI = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
 						  "<init>",
 						  "("+NODE_ITERATOR_SIG+"Z"+
@@ -177,37 +189,19 @@ class FilterExpr extends Expression {
 	    Predicate predicate = (Predicate)_predicates.lastElement();
 	    _predicates.remove(predicate);
 
-	    if (predicate.isNthPositionFilter()) {
-		final int start = cpg.addInterfaceMethodref(NODE_ITERATOR,
-							    "setStartNode", 
-							    "(I)"+
-							    NODE_ITERATOR_SIG);
-		final int reset = cpg.addInterfaceMethodref(NODE_ITERATOR,
-							    "reset",
-							    "()"+
-							    NODE_ITERATOR_SIG);
-		translatePredicates(classGen, methodGen); // get the base itr.
-		predicate.translate(classGen, methodGen); // get the position
-		il.append(new INVOKEINTERFACE(start,2));
-		il.append(new INVOKEINTERFACE(reset,1));
-
-		final int sngl = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-						  "getSingleNode",
-						  "("+NODE_ITERATOR_SIG+")"+
-						  NODE_ITERATOR_SIG);
-		il.append(new INVOKESTATIC(sngl));
-	    }
-	    else {
-		// create new CurrentNodeListIterator
-		il.append(new NEW(cpg.addClass(CURRENT_NODE_LIST_ITERATOR)));
-		il.append(DUP);
-		translatePredicates(classGen, methodGen); // recursive call
-		il.append(ICONST_1);
-		predicate.translate(classGen, methodGen);
-		il.append(methodGen.loadCurrentNode());
-		il.append(classGen.loadTranslet());
-		il.append(new INVOKESPECIAL(initCNLI));
-	    }
+            // Create a CurrentNodeListIterator
+            il.append(new NEW(cpg.addClass(CURRENT_NODE_LIST_ITERATOR)));
+            il.append(DUP);
+            
+            // Translate the rest of the predicates from right to left
+            translatePredicates(classGen, methodGen);
+            
+            // Initialize CurrentNodeListIterator
+            il.append(ICONST_1);
+            predicate.translate(classGen, methodGen);
+            il.append(methodGen.loadCurrentNode());
+            il.append(classGen.loadTranslet());
+            il.append(new INVOKESPECIAL(initCNLI));
 	}
     }
 }

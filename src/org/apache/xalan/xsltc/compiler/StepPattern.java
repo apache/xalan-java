@@ -202,9 +202,11 @@ class StepPattern extends RelativePathPattern {
 	final int n = _predicates.size();
 
 	for (int i = 0; i < n && noContext; i++) {
-	    final Predicate pred = (Predicate)_predicates.elementAt(i);
-	    if (pred.getExpr().hasPositionCall()
-                || pred.isNthPositionFilter()) {
+	    Predicate pred = (Predicate) _predicates.elementAt(i);
+            if (pred.isNthPositionFilter() || 
+                pred.hasPositionCall() || 
+                pred.hasLastCall()) 
+            {
 		noContext = false;
 	    }
 	}
@@ -253,6 +255,7 @@ class StepPattern extends RelativePathPattern {
 
                 step = new Step(_axis, _nodeType, _predicates);
             }
+            
             if (step != null) {
                 step.setParser(getParser());
                 step.typeCheck(stable);
