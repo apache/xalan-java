@@ -1,12 +1,326 @@
 <?xml version="1.0"?>
 <Commits>
-<Commit category="none">
-<Who>sboag,jkesselm,curcuru</Who>
-<DateCommitted>06/12/2001</DateCommitted>
-<Modified>DTM_EXP branch merged</Modified>
-<Log>Due to the significant changes from merging the DTM_EXP 
-branch, we temporarily aren't including the (very very long)
-list of commits between recent builds.  Sorry for the inconvenience!</Log>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/03/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMManagerDefault.java</Modified>
+<Log>Since the real root of our tree may be a DocumentFragment, we need to
+ use getParent to find the root, instead of getOwnerDocument. Otherwise
+ DOM2DTM#getHandleOfNode will be very unhappy.
+ Result of report via private mail by Carsten Ziegeler of breakage
+ in Cocoon.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToHTML.java
+ SerializerToXML.java</Modified>
+<Log>Made m_maxCharacter, accumDefaultEscape,
+ accumDefaultEntity, and m_isRawStack
+ protected by request from Johannes Farrenkopf
+ and Frank Nestel.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/functions FuncNormalizeSpace.java</Modified>
+<Log>In executeCharsToContentHandler check first for
+ DTM.NULL before trying to get the DTM.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils FastStringBuffer.java</Modified>
+<Log>Fix bug reported by "Carsten Ziegeler" &lt;cziegeler@sundn.de&gt;.
+ Test for this is whitespace23.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils SuballocatedIntVector.java</Modified>
+<Log>Drop some bounds tests for cases which shouldn't arise in the first place, 
+since this is an inner-loop method.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils SuballocatedByteVector.java
+ SuballocatedIntVector.java</Modified>
+<Log>Synch SuballocatedByteVector with changed SuballocatedIntVector</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/05/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref CoroutineSAXParser.java</Modified>
+<Log>Revert back to throwing a shutdownException if (arg == null) in co_yield. I 
+see this
+ occur if the parser is Crimson with output\output01, and it causes
+ a hang if the shutdownException is not thrown.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToXML.java</Modified>
+<Log>Make accumDefaultEntity and accumDefaultEscape non-final.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/06/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes ChildTestIterator.java
+ OneStepIterator.java
+ java/src/org/apache/xpath/functions FuncExtFunction.java</Modified>
+<Log>Fix for John G. for the SQL extension: handle return types of
+ DTM and DTMAxisIterator.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Constants.java
+ Param.java StepPattern.java Stylesheet.java
+ SyntaxTreeNode.java Variable.java WithParam.java
+ java/src/org/apache/xalan/xsltc/dom KeyIndex.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java BasisLibrary.java
+ DefaultRun.java Parameter.java TextOutput.java</Modified>
+<Log>Loads of small fixes and a good few comments added to the source code.
+ The major fixes are one fix for variable/parameter handlingi and one for
+ key/id index handling. XSLTC now correctly updates the value of parameters
+ with changing default values, such as with
+ &lt;xsl:param name="foo" select="current()"/&gt;.
+ Also updated bit-arrays to correctly return single node ids, so that the
+ key() and id() functions return the correct number of nodes (they would
+ sometimes skip the first node in the defined node set for the key/id).
+ Added some structure and loads of comments to the Translet base class.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>In executeChildTemplates, somehow there was a popMode without
+ a corresponding pushMode. The pushMode was added.
+ Addresses bug posted by Stephane Bailliez &lt;sbailliez@imediation.com&gt;
+ on the xalan-dev list on 07/09/2001 07:28 AM.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>07/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions ExpressionContext.java
+ java/src/org/apache/xalan/templates StylesheetRoot.java
+ java/src/org/apache/xpath VariableStack.java
+ XPathContext.java</Modified>
+<Log>Resolve bugzilla 2355 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2355&gt;. To make the 
+functionality clearer, I've changed the method name from getVariable to 
+getVariableOrParam since the routine will pick up either one. Also fixed a 
+bug where top level variables and parameters were not getting marked as such.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>07/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib Extensions.java
+ java/src/org/apache/xpath XPathContext.java</Modified>
+<Log>Resolve bugzilla 2523 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2523&gt;. evaluate extension 
+function was not refactored with DTM. Also need to add function to 
+XPathContext.XPathExpressionContext to allow an extension to obtain the 
+associated XPathContext.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>07/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/axes DescendantIterator.java</Modified>
+<Log>Fix problem with descendant-or-self and from root pattern. When from root, 
+descedant or self was not recognized.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler
+ AncestorPattern.java AttributeSet.java
+ CallTemplate.java CastExpr.java EqualityExpr.java
+ Expression.java FunctionCall.java If.java
+ Import.java Include.java Mode.java NameBase.java
+ Param.java ParameterRef.java Parser.java
+ StepPattern.java SyntaxTreeNode.java Template.java
+ TestSeq.java Variable.java VariableRef.java
+ XSLTC.java XslAttribute.java
+ java/src/org/apache/xalan/xsltc/compiler/util ErrorMsg.java
+ ReferenceType.java
+ java/src/org/apache/xalan/xsltc/dom MultiDOM.java
+ StepIterator.java
+ java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>A wide range of fixes provided by Erwin Bolwidt.
+ o) fix for long IF and GOTO instructions inside translets.
+ 'wide' GOTOs are now used (GOTO_W) instead of plain GOTO
+ to allow longer jump offsets
+ o) fix for illegal field/method names in the translet.
+ Methods and fields no longer contain the '.' or '-' characters
+ o) source filenames (and if possible also line numbers) are now
+ provided with error and warning messages
+ o) external functions that are not supported by XSLTC do not cause
+ compile errors. They will still cause a warning message at
+ compile-time if they are not wrapped in proper &lt;xsl:if&gt; or
+ &lt;xsl:when&gt; elements that test on the availability of the function,
+ and will cause a runtime error if the function is attempted called.
+ o) added type cast from reference-type to node-type
+ o) some other smaller fixes to prevent null-pointer exceptions
+ Other changes:
+ o) code cleanup and some added comments
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: Erwin Bolwidt &lt;ejb@klomp.org&gt;
+ Reviewed by: Morten Jorgensen &lt;morten@xml.apache.org></Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java</Modified>
+<Log>Quick patch to handle case where someone wants to build a DTM from
+ an Element rather than from a Document. The Attr handling might want to
+ move down into addNode.
+
+ This opens several cans of worms -- what if the next user wants the
+ root of their DTM to be an EntityReference node, which has no DTM
+ node equivalent -- but we'll eat those when we get to them.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>07/10/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib Extensions.java</Modified>
+<Log>Modify distinct() extension so that it no longer relies on DOMHelper which is 
+deprecated but uses ExpressionContext.toString().</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/trace PrintTraceListener.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xalan/xslt Process.java
+ java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDocumentImpl.java
+ ExpandedNameTable.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Added>java/src/org/apache/xalan/lib NodeInfo.java
+ java/src/org/apache/xalan/transformer XalanProperties.java
+ java/src/org/apache/xml/dtm/ref NodeLocator.java</Added>
+<Log>Application of patch submitted by Ovidiu Predescu &lt;ovidiu@cup.hp.com&gt;
+ for file, line, column number information for XML source document.
+
+ [A made one change: m_sourceSystemId, m_sourceLine, and
+ m_sourceColumn are not created with the member variable
+ initializer, since they are initialized in setProperty.]
+
+ The following patch is a rework of a previous patch I've submitted on
+ May 24 against the Stree model, current at that time. This time the
+ patch is against the DTM model, and makes use of DTM features to
+ optimize the lookup time and storage requirements. I hope this time
+ the patch gets incorporated in the CVS repository, before any major
+ rework happens again ;-).
+
+ As with the previous patch, there is no overhead in space or time if
+ source information is not needed.
+
+ From a user perspective, this feature can be turned on by passing the
+ -L flag to Xalan when invoking it from the command
+ line. Programmatically you can also enable it by invoking the
+ setProperty method on the TransformerImpl:
+
+ TransformerImpl impl = ((TransformerImpl) transformer);
+ 
+impl.setProperty(org.apache.xalan.transformer.XalanProperties.SOURCE_LOCATION,
+ Boolean.TRUE);
+
+ A Transformer "property" is different from a "feature": while a
+ feature is specific to all the transformer instances and usually
+ refers to an implementation aspect, a property is a runtime capability
+ that is set per Transformer instance. Currently the only property
+ added by this patch is the source location in the XML source document.
+
+ The patch adds two methods to the DTM interface:
+
+ public void setProperty(String property, Object value);
+ public SourceLocator getSourceLocatorFor(int node);
+
+ The second method is used to obtain the source location given a node
+ handle.
+
+ There are two ways you can make use of the source location. The first
+ one is from within a stylesheet, where you can have something like
+ this:
+
+ &lt;xsl:stylesheet
+ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+ xmlns:nodeinfo="xalan://org.apache.xalan.lib.NodeInfo"
+ version="1.0"&gt;
+
+ &lt;xsl:template match="*"&gt;
+ //node &lt;xsl:value-of select="name()"/&gt;
+ //file &lt;xsl:value-of select="nodeinfo:systemId()"/&gt;
+ //line &lt;xsl:value-of select="nodeinfo:lineNumber()"/&gt;
+ //column &lt;xsl:value-of select="nodeinfo:columnNumber()"/&gt;
+ &lt;xsl:apply-templates/&gt;
+ &lt;/xsl:template&gt;
+
+ &lt;/xsl:stylesheet&gt;
+
+ If no arguments are passed to the systemId(), lineNumber() or
+ columnNumber() functions, the corresponding information of the current
+ context node is returned. A node can be passed as argument to the
+ above functions, in which case the corresponding information about
+ that node is returned. If a node set containing multiple nodes is
+ passed as argument, only the information of the first node in the set
+ is returned.
+
+ The second way of obtaining the source location is
+ programmatically. Given a Node instance, one can obtain the owner DTM
+ and the node handle (an integer) that represents the
+ node. Unfortunately I didn't see any way of hiding this: if you find
+ one please let me know and I'll fix it.
+
+ The following example is extracted from PrintTraceListener and
+ illustrates the API:
+
+ Node sourceNode = ev.m_sourceNode;
+ int nodeHandler = ((DTMNodeProxy)sourceNode).getDTMNodeNumber();
+ SourceLocator locator = ((DTMNodeProxy)sourceNode).getDTM()
+ .getSourceLocatorFor(nodeHandler);
+
+ m_pw.println("Selected source node '" + sourceNode.getNodeName()
+ + "', at " + locator);</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath/compiler Compiler.java</Modified>
+<Log>Fix bug 2175 &lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2175&gt; by 
+adding the current time to the method key to ensure method key uniqueness. 
+Multiple Compilers were getting the same hashCode, particularly in Visual Age 
+for Java, due to aggressive garbage collection. Added the current time in 
+mills to distinguish between the different functions being compiled.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemVariable.java
+ StylesheetRoot.java
+ java/src/org/apache/xpath VariableStack.java
+ java/src/org/apache/xpath/operations Variable.java</Modified>
+<Log>Resolve bugzilla 2355 
+&lt;http://nagoya.apache.org/bugzilla/show_bug.cgi?id=2355&gt;. Added code to 
+populate m_index for global variables and parameters. If the backward search 
+for templates reaches the top level, use the list of composed top-level 
+variables and parameters from StylesheetRoot.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java</Modified>
+<Log>Now implements DocumentFragment.</Log>
 </Commit>
 </Commits>
-
