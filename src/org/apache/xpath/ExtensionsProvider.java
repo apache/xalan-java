@@ -56,6 +56,7 @@
  */
 package org.apache.xpath;
 
+import org.apache.xpath.functions.FuncExtFunction;
 import java.util.Vector;
 
 /**
@@ -83,5 +84,12 @@ public interface ExtensionsProvider
    */
   public Object extFunction(String ns, String funcName, 
                             Vector argVec, Object methodKey)
+            throws javax.xml.transform.TransformerException;
+
+  /**
+   * Execute the extension function.
+   */
+  public Object extFunction(FuncExtFunction extFunction, 
+                            Vector argVec)
             throws javax.xml.transform.TransformerException;
 }
