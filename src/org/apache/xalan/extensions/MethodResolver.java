@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Constructor;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
 import org.apache.xpath.objects.XObject;
@@ -243,15 +244,15 @@ public class MethodResolver
    * (i.e. some unknown Java object) to allowed Java types.
    */
   static ConversionInfo[] m_javaObjConversions = {
-    new ConversionInfo(java.lang.Object.class, 0),
-    new ConversionInfo(Double.TYPE, 1),
-    new ConversionInfo(Float.TYPE, 2),
-    new ConversionInfo(Long.TYPE, 3),
-    new ConversionInfo(Integer.TYPE, 4),
-    new ConversionInfo(Short.TYPE, 5),
-    new ConversionInfo(Character.TYPE, 6),
-    new ConversionInfo(Byte.TYPE, 7),
-    new ConversionInfo(java.lang.String.class, 8)
+    new ConversionInfo(Double.TYPE, 0),
+    new ConversionInfo(Float.TYPE, 1),
+    new ConversionInfo(Long.TYPE, 2),
+    new ConversionInfo(Integer.TYPE, 3),
+    new ConversionInfo(Short.TYPE, 4),
+    new ConversionInfo(Character.TYPE, 5),
+    new ConversionInfo(Byte.TYPE, 6),
+    new ConversionInfo(java.lang.String.class, 7),
+    new ConversionInfo(java.lang.Object.class, 8)
   };
   
   /**
@@ -327,18 +328,19 @@ public class MethodResolver
    */
   static ConversionInfo[] m_nodesetConversions = {
     new ConversionInfo(org.w3c.dom.traversal.NodeIterator.class, 0),
-    new ConversionInfo(org.w3c.dom.Node.class, 1),
-    new ConversionInfo(java.lang.String.class, 2),
-    new ConversionInfo(Boolean.TYPE, 3),
-    new ConversionInfo(java.lang.Object.class, 4),
-    new ConversionInfo(Character.TYPE, 5),
-    new ConversionInfo(Double.TYPE, 6),
-    new ConversionInfo(Float.TYPE, 6),
-    new ConversionInfo(Long.TYPE, 6),
-    new ConversionInfo(Integer.TYPE, 6),
-    new ConversionInfo(Short.TYPE, 6),
-    new ConversionInfo(Byte.TYPE, 6),
-    new ConversionInfo(Boolean.TYPE, 7)
+    new ConversionInfo(org.w3c.dom.NodeList.class, 1),
+    new ConversionInfo(org.w3c.dom.Node.class, 2),
+    new ConversionInfo(java.lang.String.class, 3),
+    new ConversionInfo(Boolean.TYPE, 4),
+    new ConversionInfo(java.lang.Object.class, 5),
+    new ConversionInfo(Character.TYPE, 6),
+    new ConversionInfo(Double.TYPE, 7),
+    new ConversionInfo(Float.TYPE, 7),
+    new ConversionInfo(Long.TYPE, 7),
+    new ConversionInfo(Integer.TYPE, 7),
+    new ConversionInfo(Short.TYPE, 7),
+    new ConversionInfo(Byte.TYPE, 7),
+    new ConversionInfo(Boolean.TYPE, 8)
   };
   
   /**
@@ -521,8 +523,10 @@ public class MethodResolver
           if((NodeIterator.class.isAssignableFrom(javaClass)) ||
              (javaClass == java.lang.Object.class))
           {
-            // This will fail in Xalan right now, since RTFs aren't 
-            // convertable to node-sets.
+            return xobj.nodeset();
+          }
+          else if(NodeList.class.isAssignableFrom(javaClass))
+          {
             return xobj.nodeset();
           }
           else if(Node.class.isAssignableFrom(javaClass))

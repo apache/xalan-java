@@ -161,6 +161,46 @@ public class ExtensionFunctionHandler
       functions.put (tok, junk); // just stick it in there basically
     }
   }
+  
+  /**
+   * Set function local parts of extension NS.
+   *
+   * @param functions whitespace separated list of function names defined
+   *        by this extension namespace.
+   */
+  public void setFunctions (org.apache.xalan.utils.StringVector funcNames) 
+  {
+    if (funcNames == null) 
+      return;
+
+    Object junk = new Object ();
+    int n = funcNames.size();
+    for(int i = 0; i < n; i++)
+    {
+      String tok = funcNames.elementAt(i);
+      functions.put (tok, junk); // just stick it in there basically
+    }
+  }
+  
+  /**
+   * Set element local parts of extension NS.
+   *
+   * @param elements whitespace separated list of element names defined
+   *        by this extension namespace.
+   */
+  public void setElements (org.apache.xalan.utils.StringVector funcNames) 
+  {
+    if (funcNames == null) 
+      return;
+
+    Object junk = new Object ();
+    int n = funcNames.size();
+    for(int i = 0; i < n; i++)
+    {
+      String tok = funcNames.elementAt(i);
+      elements.put (tok, junk); // just stick it in there basically
+    }
+  }
 
   /**
    * Set element local parts of extension NS.
@@ -254,14 +294,36 @@ public class ExtensionFunctionHandler
     if (dotPos == -1) 
     {
       methodArgs = args;
-      object = args[0];
-      if (args.length > 1) 
+      
+      // If we don't have an object yet, and we have a script/class 
+      // URL, and the class object hasn't been found yet, then assume 
+      // this is a static call, and set the object to the class.
+      if((null == object) && (null != scriptSrcURL) &&
+         (scriptSrcURL.lastIndexOf (":") == -1) && (classObject == null))
       {
-        methodArgs = new Object[args.length-1];
-        System.arraycopy (args, 1, methodArgs, 0, args.length - 1);
+        try 
+        {
+          object = Class.forName (scriptSrcURL);
+        }
+        catch (ClassNotFoundException e) 
+        {
+          // Try for an object.
+        }
       }
-      else
-        methodArgs = null;
+      // If we don't have an object yet, assume the first 
+      // argument is the object for the method.
+      if(null == object)
+      {
+        methodArgs = args;
+        object = args[0];
+        if (args.length > 1) 
+        {
+          methodArgs = new Object[args.length-1];
+          System.arraycopy (args, 1, methodArgs, 0, args.length - 1);
+        }
+        else
+          methodArgs = null;
+      }
     }
     else 
     {
@@ -319,6 +381,8 @@ public class ExtensionFunctionHandler
       }
       else 
       {
+        if(object == null)
+          return null;
         Class cl = (object instanceof Class) ? ((Class)object) : object.getClass();
         Method m = MethodResolver.getMethod(cl, method,
                                             methodArgs, 
@@ -335,22 +399,14 @@ public class ExtensionFunctionHandler
     }
     catch (NoSuchMethodException nsme) 
     {
-      throw new SAXException(nsme);
-      // throw new BSFException (BSFException.REASON_OTHER_ERROR,
-      //  "NoSuchMethodException: " + nsme);
+      // Error handling here is in need of dire help.
+      System.out.println("Extension method not found: "+nsme);
+      return null;
     }
     catch (Exception e) 
     {
-      e.printStackTrace();
+      // e.printStackTrace();
       throw new SAXException(e);
-      /*
-      Throwable t = (e instanceof InvocationTargetException) ?
-                    ((InvocationTargetException)e).getTargetException () :
-                    null;
-      throw new BSFException (BSFException.REASON_OTHER_ERROR,
-        "method call/new failed: " + e +
-        ((t==null)?"":(" target exception: "+t)), t);
-      */
     }
     // should not get here
     // return null;
@@ -438,14 +494,12 @@ public class ExtensionFunctionHandler
                 javaObject = this.classObject;
             }
             
-            argArray = new Object[args.size () + 1];
-            
-            argArray[0] = javaObject;
+            argArray = new Object[args.size ()];
             
             for (int i = 0; i < args.size(); i++) 
             {
               Object o = args.elementAt (i);
-              argArray[i+1] = o;
+              argArray[i] = o;
             }
           }
           else
@@ -465,7 +519,7 @@ public class ExtensionFunctionHandler
             {
               argArray = new Object[1];
               Object o = args.elementAt (0);
-              argArray[0] = (o instanceof XObject) ? ((XObject)o).object () : o;
+              argArray[0] = o;
             }
           }
         }
@@ -481,7 +535,6 @@ public class ExtensionFunctionHandler
           Object o = args.elementAt (i);
           argArray[i] = (o instanceof XObject) ? ((XObject)o).object () : o;
         }
-        
         return e.call (null, funcName, argArray);
       }
 
@@ -555,45 +608,50 @@ public class ExtensionFunctionHandler
     }
     else // classObj = null
     {
-      if(null == scriptSrcURL)
-        scriptSrcURL = namespaceUri; // Use the namespace URL
-
-      if (scriptLang.equals ("javaclass") && (scriptSrcURL != null)) 
+      if (scriptLang.equals ("javaclass")) 
       {
-        try 
+        if(null == scriptSrcURL)
+          scriptSrcURL = namespaceUri; // Use the namespace URL
+        
+        if(null != scriptSrcURL)
         {
-          String cname = scriptSrcURL;
-          boolean isClass = false;
-          if (scriptSrcURL.startsWith ("class:")) 
+          try 
           {
-            cname = scriptSrcURL.substring (6);
-            isClass = true;
+            String cname = scriptSrcURL;
+            boolean isClass = false;
+            if (scriptSrcURL.startsWith ("class:")) 
+            {
+              cname = scriptSrcURL.substring (6);
+              isClass = true;
+            }
+            else
+            {
+              // ?? -sb
+              cname = scriptSrcURL;
+              // isClass = true;
+            }
+            classObject = Class.forName (cname);
+            // System.out.println("classObject: "+classObject);
+            
+            if (isClass) 
+            {
+              javaObject = classObject;
+            }
+            else
+            {
+              // We'll only do this if they haven't called a ctor.
+              // javaObject = classObject.newInstance ();
+            }
+            componentStarted = true;
+            return;
           }
-          else
+          catch (Exception e) 
           {
-            // ?? -sb
-            cname = scriptSrcURL;
-            // isClass = true;
+            // Should be diagnostics.
+            System.out.println("Extension error: "+e.getMessage ());
+            return;
+            // throw new SAXException (e.getMessage (), e);
           }
-          classObject = Class.forName (cname);
-          // System.out.println("classObject: "+classObject);
-          
-          if (isClass) 
-          {
-            javaObject = classObject;
-          }
-          else
-          {
-            // We'll only do this if they haven't called a ctor.
-            // javaObject = classObject.newInstance ();
-          }
-          componentStarted = true;
-          return;
-        }
-        catch (Exception e) 
-        {
-          // System.out.println("Extension error: "+e.getMessage ());
-          throw new SAXException (e.getMessage (), e);
         }
       }
     }
@@ -602,6 +660,7 @@ public class ExtensionFunctionHandler
     if ((scriptSrcURL != null) && !(scriptLang.equals ("javaclass") 
                                     || scriptLang.equals ("xslt-javaclass"))) 
     {
+      System.out.println("scriptSrcURL: "+scriptSrcURL);
       throw new SAXException ("src attr not supported (yet) for: "+scriptLang);
     }
 

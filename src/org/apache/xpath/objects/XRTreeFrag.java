@@ -57,6 +57,8 @@
 package org.apache.xpath.objects;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.traversal.NodeFilter;
 import org.apache.xpath.DOMHelper;
 
 /**
@@ -163,6 +165,18 @@ public class XRTreeFrag extends XObject
   }
   
   /**
+   * Cast result object to a nodelist.
+   */
+  public NodeIterator nodeset()
+  {
+    System.out.println("**m_obj: "+((Object)m_obj).getClass().getName());
+    if(m_obj instanceof NodeIterator)
+      return (NodeIterator)m_obj;
+    else 
+      return new NodeIteratorWrapper(rtree());
+  }
+  
+  /**
    * Cast result object to a nodelist. (special function).
    */
   public NodeList convertToNodeset()
@@ -207,6 +221,141 @@ public class XRTreeFrag extends XObject
     else
     {
       return super.equals(obj2);
+    }
+  }
+  
+  class NodeIteratorWrapper implements NodeIterator, NodeList
+  {
+    int m_pos = -1;
+    DocumentFragment m_docFrag;
+    NodeList m_nl;
+    
+    NodeIteratorWrapper(DocumentFragment df)
+    {
+      m_docFrag = df;
+      m_nl = df.getChildNodes();
+    }
+    
+    /**
+     *  Returns the <code>index</code> th item in the collection. If 
+     * <code>index</code> is greater than or equal to the number of nodes in 
+     * the list, this returns <code>null</code> .
+     * @param index  Index into the collection.
+     * @return  The node at the <code>index</code> th position in the 
+     *   <code>NodeList</code> , or <code>null</code> if that is not a valid 
+     *   index.
+     */
+    public Node item(int index)
+    {
+      return m_nl.item(index);
+    }
+
+    /**
+     *  The number of nodes in the list. The range of valid child node indices 
+     * is 0 to <code>length-1</code> inclusive. 
+     */
+    public int getLength()
+    {
+      return m_nl.getLength();
+    }
+    
+    /**
+     *  The root node of the Iterator, as specified when it was created.
+     */
+    public Node getRoot()
+    {
+      return null;
+    }
+
+    /**
+     *  This attribute determines which node types are presented via the 
+     * iterator. The available set of constants is defined in the 
+     * <code>NodeFilter</code> interface.
+     */
+    public int getWhatToShow()
+    {
+      return NodeFilter.SHOW_ALL;
+    }
+
+    /**
+     *  The filter used to screen nodes.
+     */
+    public NodeFilter getFilter()
+    {
+      return null;
+    }
+
+    /**
+     *  The value of this flag determines whether the children of entity 
+     * reference nodes are visible to the iterator. If false, they will be 
+     * skipped over.
+     * <br> To produce a view of the document that has entity references 
+     * expanded and does not expose the entity reference node itself, use the 
+     * whatToShow flags to hide the entity reference node and set 
+     * expandEntityReferences to true when creating the iterator. To produce 
+     * a view of the document that has entity reference nodes but no entity 
+     * expansion, use the whatToShow flags to show the entity reference node 
+     * and set expandEntityReferences to false.
+     */
+    public boolean getExpandEntityReferences()
+    {
+      return true;
+    }
+
+    /**
+     *  Returns the next node in the set and advances the position of the 
+     * iterator in the set. After a NodeIterator is created, the first call 
+     * to nextNode() returns the first node in the set.
+     * @return  The next <code>Node</code> in the set being iterated over, or
+     *   <code>null</code> if there are no more members in that set.
+     * @exception DOMException
+     *    INVALID_STATE_ERR: Raised if this method is called after the
+     *   <code>detach</code> method was invoked.
+     */
+    public Node nextNode()
+                         throws DOMException
+    {
+      int next = m_pos+1;
+      if((next >= 0) && (next < m_nl.getLength()))  
+      {
+        m_pos++;
+        return m_nl.item(next);
+      }
+      else
+        return null;
+    }
+
+    /**
+     *  Returns the previous node in the set and moves the position of the 
+     * iterator backwards in the set.
+     * @return  The previous <code>Node</code> in the set being iterated over, 
+     *   or<code>null</code> if there are no more members in that set. 
+     * @exception DOMException
+     *    INVALID_STATE_ERR: Raised if this method is called after the
+     *   <code>detach</code> method was invoked.
+     */
+    public Node previousNode()
+                             throws DOMException
+    {
+      int prev = m_pos-1;
+      if((prev >= 0) && (prev < m_nl.getLength()))  
+      {
+        m_pos--;
+        return m_nl.item(prev);
+      }
+      else
+        return null;
+    }
+
+    /**
+     *  Detaches the iterator from the set which it iterated over, releasing 
+     * any computational resources and placing the iterator in the INVALID 
+     * state. After<code>detach</code> has been invoked, calls to 
+     * <code>nextNode</code> or<code>previousNode</code> will raise the 
+     * exception INVALID_STATE_ERR.
+     */
+    public void detach()
+    {
     }
   }
 

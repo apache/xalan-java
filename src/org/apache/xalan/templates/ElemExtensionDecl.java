@@ -123,10 +123,14 @@ public class ElemExtensionDecl extends ElemTemplateElement
             ElemTextLiteral tl = (ElemTextLiteral)childOfSDecl;
             char[] chars = tl.getChars();
             scriptSrc = new String(chars);
+            if(scriptSrc.trim().length() == 0)
+              scriptSrc = null;
           }
         }
       }
     }
+    if(null == lang)
+      lang = "javaclass";
     XPathContext liaison = ((XPathContext)transformer.getXPathContext());
     ExtensionsTable etable = liaison.getExtensionsTable();
     ExtensionNSHandler nsh = etable.get(declNamespace);
@@ -138,6 +142,8 @@ public class ElemExtensionDecl extends ElemTemplateElement
       //                   declNamespace+", lang = "+lang+", srcURL = "+
       //                   srcURL+", scriptSrc="+scriptSrc);
       nsh.setScript (lang, srcURL, scriptSrc);
+      nsh.setElements(this.m_elements);
+      nsh.setFunctions(this.m_functions);
       etable.addExtensionElementNamespace(declNamespace, nsh);
     }
   }

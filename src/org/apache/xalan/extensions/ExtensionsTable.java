@@ -245,9 +245,9 @@ public class ExtensionsTable
             {
               msg = msg.substring("Stopping after fatal error:".length());
             }
-            System.out.println("Call to extension function failed: "+msg);
+            // System.out.println("Call to extension function failed: "+msg);
             result = new XNull();
-            throw new org.xml.sax.SAXException(e);
+            // throw new org.xml.sax.SAXException(e);
           }
         }
       }

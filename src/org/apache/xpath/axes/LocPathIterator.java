@@ -67,6 +67,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.Node;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.NodeList;
 
 // Xalan imports
 import org.apache.xpath.res.XPATHErrorResources;
@@ -100,7 +101,7 @@ import org.apache.xpath.axes.AxesWalker;
  * in which case the UnionPathIterator will cache the nodes.</p>
  */
 public class LocPathIterator extends Expression 
-  implements Cloneable, NodeIterator, ContextNodeList
+  implements Cloneable, NodeIterator, ContextNodeList, NodeList
 { 
   /**
    * Create a LocPathIterator object.
@@ -221,6 +222,45 @@ public class LocPathIterator extends Expression
       return 0;
     return m_cachedNodes.size();
   }
+  
+  /**
+   *  Returns the <code>index</code> th item in the collection. If 
+   * <code>index</code> is greater than or equal to the number of nodes in 
+   * the list, this returns <code>null</code> .
+   * @param index  Index into the collection.
+   * @return  The node at the <code>index</code> th position in the 
+   *   <code>NodeList</code> , or <code>null</code> if that is not a valid 
+   *   index.
+   */
+  public Node item(int index)
+  {
+    resetToCachedList();
+    return m_cachedNodes.item(index);
+  }
+
+  /**
+   *  The number of nodes in the list. The range of valid child node indices 
+   * is 0 to <code>length-1</code> inclusive. 
+   */
+  public int getLength()
+  {
+    resetToCachedList();
+    return m_cachedNodes.getLength();
+  }
+  
+  /**
+   * In order to implement NodeList (for extensions), try to reset
+   * to a cached list for random access.
+   */
+  private void resetToCachedList()
+  {
+    int pos = this.getCurrentPos();
+    if((null == m_cachedNodes) || (pos != 0))
+      this.setShouldCacheNodes(true);
+    runTo(-1);
+    this.setCurrentPos(pos);
+  }
+
   
   /**
    * Tells if this NodeSet is "fresh", in other words, if 
