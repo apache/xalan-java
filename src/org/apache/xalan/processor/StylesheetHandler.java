@@ -613,7 +613,17 @@ public class StylesheetHandler extends DefaultHandler
     //m_prefixMappings.clear(); // JDK 1.2+ only -sc
     m_prefixMappings.removeAllElements(); // JDK 1.1.x compat -sc
 
-    m_elementID++;		
+    m_elementID++;
+
+    // This check is currently done for all elements.  We should possibly consider
+    // limiting this check to xsl:stylesheet elements only since that is all it really
+    // applies to.  Also, it could be bypassed if m_shouldProcess is already true.
+    // In other words, it would be under the following 'if' statement:
+    // if (!m_shouldProcess && 
+    //     localName.equals(Constants.ELEMNAME_STYLESHEET_STRING) &&
+    //     url.equals(Constants.S_XSLNAMESPACEURL))
+    // I didn't include this 'if' statement at this time because it is a small performance
+    // hit and I was waiting to see if its absence caused a problem. - GLP
 
     checkForFragmentID(attributes);
 
@@ -1025,9 +1035,9 @@ public class StylesheetHandler extends DefaultHandler
 
         for (int i = 0; i < n; i++)
         {
-          String type = attributes.getType(i);
+          String name = attributes.getQName(i);
 
-          if (type.equalsIgnoreCase("ID"))
+          if (name.equals(Constants.ATTRNAME_ID))
           {
             String val = attributes.getValue(i);
 
