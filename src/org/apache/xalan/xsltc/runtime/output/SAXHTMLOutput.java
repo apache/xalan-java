@@ -74,7 +74,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.AttributeList;
 
 public class SAXHTMLOutput extends SAXOutput { 
-    private boolean _headTagOpen = false;
+
     private String  _mediaType   = "text/html";
 
     public SAXHTMLOutput(ContentHandler handler, String encoding) 
@@ -89,6 +89,67 @@ public class SAXHTMLOutput extends SAXOutput {
 	super(handler, lex, encoding);
     }
    
+    public void endDocument() throws TransletException {
+        try {
+            // Close any open start tag
+            if (_startTagOpen) {
+		closeStartTag();
+	    }
+
+            // Close output document
+            _saxHandler.endDocument();
+        } 
+	catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
+    /**
+     * Start an element in the output document. This might be an XML
+     * element (<elem>data</elem> type) or a CDATA section.
+     */
+    public void startElement(String elementName) throws TransletException {
+    	try {
+	    // Close any open start tag
+            if (_startTagOpen) {
+		closeStartTag();
+	    }
+
+            // Handle document type declaration (for first element only)
+            if (_lexHandler != null) {
+                if ((_doctypeSystem != null) || (_doctypePublic != null))
+                    _lexHandler.startDTD(elementName,
+                             _doctypePublic,_doctypeSystem);
+                _lexHandler = null;
+            }
+
+            _depth++;
+            _elementName = elementName;
+            _attributes.clear();
+            _startTagOpen = true;
+        } 
+	catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
+    /**
+     * End an element or CDATA section in the output document
+     */
+    public void endElement(String elementName) throws TransletException {
+        try {
+            // Close any open element
+            if (_startTagOpen) {
+		closeStartTag();
+	    }
+            _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, elementName);
+        } 
+	catch (SAXException e) {
+            throw new TransletException(e);
+        }
+
+    }
+
     public void attribute(String name, final String value) 
 	throws TransletException
     {
@@ -137,101 +198,16 @@ public class SAXHTMLOutput extends SAXOutput {
             // Now is time to send the startElement event
             _saxHandler.startElement(null, _elementName, _elementName, 
 		_attributes);
-
-            // Insert <META> tag directly after <HEAD> element in HTML output
-            if (_headTagOpen) {
-                emitHeader();
-                _headTagOpen = false;
-            }
         }
         catch (SAXException e) {
             throw new TransletException(e);
         }
     }
 
-
-    /**
-     * Emit header through the SAX handler
-     */
-    private void emitHeader() throws SAXException {
-        AttributeList attrs = new AttributeList();
-        attrs.add("http-equiv", "Content-Type");
-        attrs.add("content", _mediaType+"; charset="+_encoding);
-        _saxHandler.startElement(EMPTYSTRING, EMPTYSTRING, "meta", attrs);
-        _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, "meta");
-    }
-
-    /**
-     * Start an element in the output document. This might be an XML
-     * element (<elem>data</elem> type) or a CDATA section.
-     */
-    public void startElement(String elementName) throws TransletException {
-    	try {
-	    // Close any open start tag
-            if (_startTagOpen) closeStartTag();
-
-            // Handle document type declaration (for first element only)
-            if (_lexHandler != null) {
-                if ((_doctypeSystem != null) || (_doctypePublic != null))
-                    _lexHandler.startDTD(elementName,
-                             _doctypePublic,_doctypeSystem);
-                _lexHandler = null;
-            }
-
-            _depth++;
-            _elementName = elementName;
-            _attributes.clear();
-            _startTagOpen = true;
-
-            // Insert <META> tag directly after <HEAD> element in HTML doc
-            if (elementName.toLowerCase().equals("head")) {
-                _headTagOpen = true;
-	    }
-        } catch (SAXException e) {
-            throw new TransletException(e);
-        }
-    }
-
-    /**
-     * End an element or CDATA section in the output document
-     */
-    public void endElement(String elementName) throws TransletException {
-        try {
-            // Close any open element
-            if (_startTagOpen) {
-		closeStartTag();
-	    }
-            _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, elementName);
-        } 
-	catch (SAXException e) {
-            throw new TransletException(e);
-        }
-
-    }
-
     /**
      * Set the output media type - only relevant for HTML output
      */
     public void setMediaType(String mediaType) {
-        // This value does not have to be passed to the SAX handler. This
-        // handler creates the HTML <meta> tag in which the media-type
-        // (MIME-type) will be used.
 	_mediaType = mediaType;
-    }
-
-
-    /**
-     * Ends the document output.
-     */
-    public void endDocument() throws TransletException {
-        try {
-            // Close any open start tag
-            if (_startTagOpen) closeStartTag();
-
-            // Close output document
-            _saxHandler.endDocument();
-        } catch (SAXException e) {
-            throw new TransletException(e);
-        }
     }
 }
