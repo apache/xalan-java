@@ -252,14 +252,15 @@ public class Parser implements Constants, ContentHandler {
 	    String namespace = null;
 	    
 	    // Get the namespace uri from the symbol table
-	    if (prefix.equals("xmlns") == false) {
+	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null) namespace = EMPTYSTRING;
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    final String uri = _symbolTable.lookupNamespace(EMPTYSTRING);
+	    final String uri = stringRep.equals(XMLNS_PREFIX) ? null
+		: _symbolTable.lookupNamespace(EMPTYSTRING);
 	    return getQName(uri, null, stringRep);
 	}
     }
@@ -287,7 +288,7 @@ public class Parser implements Constants, ContentHandler {
 	    String namespace = null;
 	    
 	    // Get the namespace uri from the symbol table
-	    if (prefix.equals("xmlns") == false) {
+	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null && reportError) {
 		    final int line = _locator.getLineNumber();
@@ -299,6 +300,9 @@ public class Parser implements Constants, ContentHandler {
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
+	    if (stringRep.equals(XMLNS_PREFIX)) {
+		ignoreDefaultNs = true;
+	    }
 	    final String defURI = ignoreDefaultNs ? null 
 				  : _symbolTable.lookupNamespace(EMPTYSTRING);
 	    return getQName(defURI, null, stringRep);
