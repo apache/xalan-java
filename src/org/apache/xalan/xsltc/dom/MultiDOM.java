@@ -87,8 +87,6 @@ public final class MultiDOM implements DOM {
 
     private Hashtable _documents = new Hashtable();
 
-    private int _currentDOM = 0;
-
     private final class AxisIterator implements NodeIterator {
 	// constitutive data
 	private final int _axis;
@@ -111,7 +109,7 @@ public final class MultiDOM implements DOM {
 	
 	public NodeIterator setStartNode(final int node) {
 	    _mask = node & SET;
-	    int dom = _currentDOM = node >>> 24;
+	    int dom = node >>> 24;
 	    // consider caching these
 	    if ((_type == NO_TYPE) || (_type == DOM.ELEMENT)) {
 		_source = _adapters[dom].getAxisIterator(_axis);
@@ -155,13 +153,12 @@ public final class MultiDOM implements DOM {
 	}
     
 	public NodeIterator cloneIterator() {
-	    //!! not entirely good
-	    //!! not clear when cloning is performed
-	    // and what's the desired state of the new clone
-	    final NodeIterator clone = new AxisIterator(_axis, _type);
-	    //return clone.reset();
+	    final AxisIterator clone = new AxisIterator(_axis, _type);
+	    clone._source = _source.cloneIterator();
+	    clone._mask = _mask;	    
 	    return clone;
 	}
+
     } // end of AxisIterator
 
 
