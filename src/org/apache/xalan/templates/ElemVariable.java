@@ -394,7 +394,7 @@ public class ElemVariable extends ElemTemplateElement
     {
       m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
     }
-    else
+    else if (m_parentNode instanceof Stylesheet)
     {
     	// If this is a global, then we need to treat it as if it's a xsl:template, 
     	// and count the number of variables it contains.  So we set the count to 
