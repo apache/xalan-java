@@ -5,7 +5,10 @@ import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.NameSpace;
 import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.StringVector;
-import org.apache.xalan.extensions.ExtensionNSHandler;
+import org.apache.xalan.extensions.ExtensionHandler;
+import org.apache.xalan.extensions.ExtensionHandlerGeneral;
+import org.apache.xalan.extensions.ExtensionHandlerJavaClass;
+import org.apache.xalan.extensions.ExtensionHandlerJavaPackage;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.xml.sax.SAXException;
@@ -131,22 +134,44 @@ public class ElemExtensionDecl extends ElemTemplateElement
     }
     if(null == lang)
       lang = "javaclass";
+
+    if ( ("javaclass" == lang) && (scriptSrc != null) )
+      throw new SAXException("Element content not allowed for lang=javaclass " + scriptSrc);
+
     XPathContext liaison = ((XPathContext)transformer.getXPathContext());
     ExtensionsTable etable = liaison.getExtensionsTable();
-    ExtensionNSHandler nsh = etable.get(declNamespace);
+    ExtensionHandler nsh = etable.get(declNamespace);
+
+    // If we have no prior ExtensionHandler for this namespace, we need to
+    // create one.
+    // If the script element is for javaclass, this is our special compiled java.
+    // Element content is not supported for this so we throw an exception if
+    // it is provided.  Otherwise, we look up the srcURL to see if we already have
+    // an ExtensionHandler.
 
     if(null == nsh)
     {
-      nsh = new ExtensionNSHandler (declNamespace);
-      // System.out.println("Adding NS Handler: declNamespace = "+
-      //                   declNamespace+", lang = "+lang+", srcURL = "+
-      //                   srcURL+", scriptSrc="+scriptSrc);
-      nsh.setScript (lang, srcURL, scriptSrc);
-      nsh.setElements(this.m_elements);
-      nsh.setFunctions(this.m_functions);
-      etable.addExtensionElementNamespace(declNamespace, nsh);
+      if (lang.equals("javaclass")) {
+        nsh = etable.get(srcURL);
+        if (null == nsh) {
+          nsh = etable.makeJavaNamespace(srcURL);
+        }
+      }
+      else     // not java
+      {
+        nsh = new ExtensionHandlerGeneral(declNamespace,
+                                          this.m_elements,
+                                          this.m_functions,
+                                          lang,
+                                          srcURL,
+                                          scriptSrc);
+        // System.out.println("Adding NS Handler: declNamespace = "+
+        //                   declNamespace+", lang = "+lang+", srcURL = "+
+        //                   srcURL+", scriptSrc="+scriptSrc);
+      }
+
+      etable.addExtensionNamespace (declNamespace, nsh);
+
     }
   }
-
-
 }

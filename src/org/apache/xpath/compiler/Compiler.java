@@ -729,10 +729,9 @@ public class Compiler extends OpMap
     opPos++;
     java.lang.String funcName = (java.lang.String)m_tokenQueue[m_opMap[opPos]];
     opPos++;
-    Function extension 
-      = new FuncExtFunction(ns, funcName, 
+    Function extension = new FuncExtFunction(ns, funcName, 
                             // Create a method key, for faster lookup.
-                            String.valueOf(m_opMap[opPos])+String.valueOf(((Object)this).hashCode()));
+                            String.valueOf(opPos)+String.valueOf(hashCode()));
     
     try
     {

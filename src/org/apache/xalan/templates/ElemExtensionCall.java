@@ -71,7 +71,7 @@ import org.apache.xalan.utils.MutableAttrListImpl;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.extensions.ExtensionNSHandler;
+import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
 
@@ -89,7 +89,6 @@ public class ElemExtensionCall extends ElemLiteralResult
   String m_lang;
   String m_srcURL;
   String m_scriptSrc;
-  Class m_javaClass = null;
   ElemExtensionDecl m_decl = null;
 
   /**
@@ -204,13 +203,25 @@ public class ElemExtensionCall extends ElemLiteralResult
       
       XPathContext liaison = ((XPathContext)transformer.getXPathContext());
       ExtensionsTable etable = liaison.getExtensionsTable();
-      ExtensionNSHandler nsh = etable.get(m_extns);
+      ExtensionHandler nsh = etable.get(m_extns);
 
-      nsh.processElement (this.getLocalName(), this,
-                          transformer, 
-                          getStylesheet(),
-                          sourceNode.getOwnerDocument(), 
-                          sourceNode, mode, m_javaClass, this);
+      // We're seeing this extension namespace used for the first time.  Try to
+      // autodeclare it as a java namespace.
+
+      if (null == nsh)
+      {
+        nsh = etable.makeJavaNamespace(m_extns);
+        etable.addExtensionNamespace(m_extns, nsh);
+      }
+
+      nsh.processElement(this.getLocalName(),
+                         this,
+                         transformer, 
+                         getStylesheet(),
+                         sourceNode.getOwnerDocument(), 
+                         sourceNode,
+                         mode,
+                         this);
     }
     catch(Exception e)
     {
