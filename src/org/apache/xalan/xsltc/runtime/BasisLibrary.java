@@ -825,17 +825,30 @@ public final class BasisLibrary implements Operators {
 	}
     }
 
+    private static double lowerBounds = 0.001;
+    private static double upperBounds = 10000000;
+    private static DecimalFormat defaultFormatter = new DecimalFormat();
+    private static String defaultPattern = "####################.#########";
+
     /**
      * Utility function: used in RealType to convert a real to a string.
      * Removes the decimal if null.
      */
     public static String realToString(double d) {
-	final String result = Double.toString(d);
-	final int length = result.length();
-	if (result.charAt(length-2) == '.' && result.charAt(length-1) == '0') {
-	    return result.substring(0, length-2);
+	final double m = Math.abs(d);
+	if ((m >= lowerBounds) && (m < upperBounds)) {
+	    final String result = Double.toString(d);
+	    final int length = result.length();
+	    // Remove leading zeros.
+	    if ((result.charAt(length-2) == '.') &&
+		(result.charAt(length-1) == '0'))
+		return result.substring(0, length-2);
+	    else
+		return result;
 	}
-	return result;
+	else {
+	    return formatNumber(d, defaultPattern, defaultFormatter);
+	}
     }
 
     /**
