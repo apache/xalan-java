@@ -246,10 +246,8 @@ final class Step extends RelativeLocationPath {
 	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
 	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
 
-	    // Do not reverse nodes if we have a parent step that will reverse
-	    // the nodes for us.
-	    if (hasParentPattern()) return false;
-	    if (hasPredicates()) return false;
+	    // Do not reverse nodes if we had predicates
+	    if (_hadPredicates) return false;
 	    
 	    // Check if this step occured under an <xsl:apply-templates> element
 	    SyntaxTreeNode parent = this;
@@ -263,11 +261,9 @@ final class Step extends RelativeLocationPath {
 		if (parent instanceof ForEach) return true;
 		if (parent instanceof FilterParentPath) return true;
 		if (parent instanceof WithParam) return true;
+		if (parent instanceof ValueOf) return true;
 
-		// No not order node set if descendant of these elements:
-		if (parent instanceof ValueOf) return false;
-
-	    } while (parent != null);
+	    } while (parent != null && parent instanceof Instruction == false);
 	}
 	return false;
     }
@@ -506,6 +502,8 @@ final class Step extends RelativeLocationPath {
 			      MethodGenerator methodGen) {
 	// First test if nodes are in reverse document order
 	if (!reverseNodeSet()) return;
+
+// System.out.println("### Order iterator");
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
