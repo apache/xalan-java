@@ -61,6 +61,7 @@ import java.util.Vector;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.io.IOException;
 
 import org.w3c.dom.Element;
@@ -341,9 +342,17 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
       }
     }
+    catch (InvocationTargetException ite)
+    {
+      Throwable realException = ite.getTargetException();
+      if (realException instanceof Exception)
+        throw new SAXException((Exception) realException);
+      else
+        throw new SAXException(ite);
+    }
     catch (Exception e)
     {
-      e.printStackTrace();
+      // e.printStackTrace();
       throw new SAXException(e);
     }
   }

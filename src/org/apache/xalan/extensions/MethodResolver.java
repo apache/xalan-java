@@ -153,7 +153,7 @@ public class MethodResolver
           continue;
       }
       else
-          scoreStart = 100;
+          scoreStart = 1000;
       
       if(argsIn.length == (numberMethodParams - paramStart))
       {
@@ -176,7 +176,10 @@ public class MethodResolver
     }
 
     if(null == bestConstructor)
-      throw new NoSuchMethodException(classObj.getName()); // Should give more info...
+    {
+      throw new NoSuchMethodException(errString("function", "constructor", classObj,
+                                                                        "", 0, argsIn));
+    }
     /*** This is commented out until we can do a better object -> object scoring 
     else if (bestScoreCount > 1)
       throw new SAXException("More than one best match for constructor for "
@@ -276,7 +279,7 @@ public class MethodResolver
           }
         }
         else
-            scoreStart = 100;
+            scoreStart = 1000;
         
         if((argsLen - xsltParamStart) == (numberMethodParams - javaParamStart))
         {
@@ -300,7 +303,10 @@ public class MethodResolver
     }
     
     if (null == bestMethod)
-      throw new NoSuchMethodException(name); // Should give more info...
+    {
+      throw new NoSuchMethodException(errString("function", "method", classObj,
+                                                                name, searchMethod, argsIn));
+    }
     /*** This is commented out until we can do a better object -> object scoring 
     else if (bestScoreCount > 1)
       throw new SAXException("More than one best match for method " + name);
@@ -374,7 +380,10 @@ public class MethodResolver
     }
     
     if (null == bestMethod)
-      throw new NoSuchMethodException(name); // Should give more info...
+    {
+      throw new NoSuchMethodException(errString("element", "method", classObj,
+                                                                        name, 0, null));
+    }
     else if (bestScoreCount > 1)
       throw new SAXException("More than one best match for element method " + name);
     
@@ -447,15 +456,14 @@ public class MethodResolver
    * (i.e. some unknown Java object) to allowed Java types.
    */
   static ConversionInfo[] m_javaObjConversions = {
-    new ConversionInfo(Double.TYPE, 0),
-    new ConversionInfo(Float.TYPE, 1),
-    new ConversionInfo(Long.TYPE, 2),
-    new ConversionInfo(Integer.TYPE, 3),
-    new ConversionInfo(Short.TYPE, 4),
-    new ConversionInfo(Character.TYPE, 5),
-    new ConversionInfo(Byte.TYPE, 6),
-    new ConversionInfo(java.lang.String.class, 7),
-    new ConversionInfo(java.lang.Object.class, 8)
+    new ConversionInfo(Double.TYPE, 11),
+    new ConversionInfo(Float.TYPE, 12),
+    new ConversionInfo(Long.TYPE, 13),
+    new ConversionInfo(Integer.TYPE, 14),
+    new ConversionInfo(Short.TYPE, 15),
+    new ConversionInfo(Character.TYPE, 16),
+    new ConversionInfo(Byte.TYPE, 17),
+    new ConversionInfo(java.lang.String.class, 18)
   };
   
   /**
@@ -619,8 +627,30 @@ public class MethodResolver
           break; // from k loop
         }
       }
-      if(k == nConversions)
-        return -1; // no match
+
+      if (k == nConversions)
+      {
+        // If we get here, we haven't made a match on this parameter using 
+        // the ConversionInfo array.  We now try to handle the object -> object
+        // mapping which we can't handle through the array mechanism.
+        // TODO:  This needs to be improved to assign relative scores to subclasses,
+        // etc.  I plan to do this very soon.  Gary Peskin 29-Oct-2000.
+
+        if (XObject.CLASS_UNKNOWN == xsltClassType)
+        {
+          Class realClass = (xsltObj instanceof XObject)
+                              ? ((XObject) xsltObj).object().getClass()
+                              : xsltObj.getClass();
+          if (javaClass.isAssignableFrom(realClass))
+          {
+            score += 0;         // TODO: To be assigned based on subclass "distance"
+          }
+          else
+            return -1;
+        }
+        else
+          return -1;
+      }
     }
     return score;
   }
@@ -867,6 +897,71 @@ public class MethodResolver
     {
       return new Double(num);
     }
+  }
+
+
+  /**
+   * Format the message for the NoSuchMethodException containing 
+   * all the information about the method we're looking for.
+   */
+  private static String errString(String callType,    // "function" or "element"
+                                  String searchType,  // "method" or "constructor"
+                                  Class classObj,
+                                  String funcName,
+                                  int searchMethod,
+                                  Object[] xsltArgs)
+  {
+    String resultString = "For extension " + callType
+                                              + ", could not find " + searchType + " ";
+    switch (searchMethod)
+    {
+      case STATIC_ONLY:
+        return resultString + "static " + classObj.getName() + "." 
+                            + funcName + "([ExpressionContext,] " + errArgs(xsltArgs, 0) + ").";
+
+      case INSTANCE_ONLY:
+        return resultString + classObj.getName() + "."
+                            + funcName + "([ExpressionContext,] " + errArgs(xsltArgs, 0) + ").";
+
+      case STATIC_AND_INSTANCE:
+        return resultString + classObj.getName() + "." + funcName + "([ExpressionContext,] " + errArgs(xsltArgs, 0) + ").\n"
+                            + "Checked both static and instance methods.";
+
+      case DYNAMIC:
+        return resultString + "static " + classObj.getName() + "." + funcName
+                            + "([ExpressionContext, ]" + errArgs(xsltArgs, 0) + ") nor\n"
+                            + classObj + "." + funcName + "([ExpressionContext,] " + errArgs(xsltArgs, 1) + ").";
+
+      default:
+        if (callType.equals("function"))      // must be a constructor
+        {
+          return resultString + classObj.getName()
+                                  + "([ExpressionContext,] " + errArgs(xsltArgs, 0) + ").";
+        }
+        else                                  // must be an element call
+        {
+          return resultString + classObj.getName() + "." + funcName
+                    + "(org.apache.xalan.extensions.XSLProcessorContext, "
+                    + "org.apache.xalan.templates.ElemExtensionCall).";
+        }
+    }
+    
+  }
+
+
+  private static String errArgs(Object[] xsltArgs, int startingArg)
+  {
+    StringBuffer returnArgs = new StringBuffer();
+    for (int i = startingArg; i < xsltArgs.length; i++)
+    {
+      if (i != startingArg)
+        returnArgs.append(", ");
+      if (xsltArgs[i] instanceof XObject)
+        returnArgs.append(((XObject) xsltArgs[i]).getTypeString());      
+      else
+        returnArgs.append(xsltArgs[i].getClass().getName());
+    }
+    return returnArgs.toString();
   }
 
 }

@@ -61,6 +61,7 @@ import java.util.Vector;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.io.IOException;
 
 import org.w3c.dom.Element;
@@ -379,9 +380,17 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         return m.invoke(targetObject, convertedArgs[0]);
       }
     }
+    catch (InvocationTargetException ite)
+    {
+      Throwable realException = ite.getTargetException();
+      if (realException instanceof Exception)
+        throw new SAXException((Exception) realException);
+      else
+        throw new SAXException(ite);
+    }
     catch (Exception e)
     {
-      e.printStackTrace();
+      // e.printStackTrace();
       throw new SAXException(e);
     }
   }
@@ -444,7 +453,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
       catch (Exception e)
       {
         // e.printStackTrace ();
-        throw new SAXException (e.getMessage (), e);
+        throw new SAXException (e);
       }
       putToCache(methodKey, null, null, m);
     }
@@ -462,7 +471,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     catch (Exception e)
     {
       // e.printStackTrace ();
-      throw new SAXException (e.getMessage (), e);
+      throw new SAXException (e);
     }
 
     if (result != null)
