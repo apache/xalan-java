@@ -119,6 +119,7 @@ public final class TextOutput implements TransletOutputHandler {
     private Hashtable _namespaces;
     private Stack     _nodeStack;
     private Stack     _prefixStack;
+    private Stack     _qnameStack;
 
     // Holds the current tree depth (see startElement() and endElement()).
     private int _depth = 0;
@@ -155,6 +156,8 @@ public final class TextOutput implements TransletOutputHandler {
 	_outputType   = UNKNOWN;
 	_header       = null;
 	_encoding     = "utf-8";
+
+	_qnameStack   = new Stack();
 
 	// Empty all our hashtables
 	_attributeTemplates.clear();
@@ -471,6 +474,8 @@ public final class TextOutput implements TransletOutputHandler {
 	    _attributes.clear();
 	    _startTagOpen = true;
 
+	    _qnameStack.push(elementName);
+
 	    // Insert <META> tag directly after <HEAD> element in HTML doc
 	    if (_outputType == HTML) {
 		if (elementName.toLowerCase().equals("head")) {
@@ -554,17 +559,18 @@ public final class TextOutput implements TransletOutputHandler {
      * End an element or CDATA section in the output document
      */
     public void endElement(String elementName) throws TransletException {
-        try {
+	try {
 	    // Close any open element
 	    if (_startTagOpen) {
 		closeStartTag();
 	    }
-            else if (_cdataTagOpen) {
-                characters(ENDCDATA);
-                _cdataTagOpen = false;
-            }
+	    else if (_cdataTagOpen) {
+		characters(ENDCDATA);
+		_cdataTagOpen = false;
+	    }
 
-            _saxHandler.endElement(null, null, elementName);
+	    final String qname = (String)(_qnameStack.pop());
+            _saxHandler.endElement(null, null, qname);
 
             popNamespaces();
             _depth--;
