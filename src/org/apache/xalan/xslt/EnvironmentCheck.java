@@ -708,7 +708,7 @@ public class EnvironmentCheck
     {
 
       // Look at each classpath entry for each of our requested jarNames
-      String filename = st.nextToken().toLowerCase();
+      String filename = st.nextToken();
 
       for (int i = 0; i < jars.length; i++)
       {
@@ -1265,7 +1265,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(923866), "xalan.jar from xalan-j_2_2_0");
     jarVersions.put(new Long(905872), "xalan.jar from xalan-j_2_3_D1");
     jarVersions.put(new Long(906122), "xalan.jar from xalan-j_2_3_0");
-    jarVersions.put(new Long(983402), "xalan.jar from xalan-j_2_4_D1");
+    // Impossible to get exact number, so don't use this: jarVersions.put(new Long(), "xalan.jar from xalan-j_2_4_D1");
 
     jarVersions.put(new Long(857171), "xalan.jar from lotusxsl-j_1_0_1");
     jarVersions.put(new Long(802165), "xalan.jar from lotusxsl-j_2_0_0");
