@@ -1,0 +1,623 @@
+<?xml version="1.0" standalone="no"?>
+<!-- 
+ * Copyright (c) 1999 Lotus Development Corporation, Inc. All Rights Reserved.
+ *	This software is provided without a warranty of any kind.
+ *
+-->
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
+
+<s1 title="&xslt4j; Extensions">
+<ul>
+<li><link anchor="intro">Introduction</link></li>
+<li><link anchor="supported-lang">Supported languages</link></li>
+<li><link anchor="basic-pattern">The basic pattern</link></li>
+<li><link anchor="setup-runtime">Setting up the runtime environment</link></li>
+<li><link anchor="basic-syntax">Syntax</link></li>
+<li><link anchor="ext-elements">Using an extension element</link></li>
+<li><link anchor="ext-functions">Using extension functions</link></li>
+<li><link anchor="java-namespace">Alternative: using the predefined java extension namespace</link></li>
+<li>Examples: <link anchor="ex-basic">basic JavaScript example</link>, <link anchor="ex-redirect">the Redirect extension</link>, <link anchor="ex-java-namespace">using the java namespace</link>, <link anchor="ex-java">using a Java Hashtable</link>, <link anchor="ex-javascript">using a JavaScript array</link></li>
+</ul><anchor name="intro"/>
+  <s2 title="Introduction">
+  <p>For those situations where you would like to augment the functionality of XSLT with calls to a procedural language, &xslt4j; supports the creation and use of extension elements and extension functions. An extension (a collection of elements and functions) inhabits a namespace, either a namespace you declare and designate as an extensions namespace, or the predefined java namespace that &xslt4j; provides. For information about XML namespaces, see <jump href="http://www.w3.org/TR/REC-xml-names/">Namespaces in XML</jump>.</p>
+
+<p><em>Extension elements</em>  Unlike a literal result element, which the stylesheet simply transfers to the result tree, an extension element performs an action. For example, you can use the Redirect extension elements shipped with &xslt4j; to redirect portions of your transformation output to one or more files. Extension elements may contain attributes, text nodes, other elements, basically any valid XML. Extension elements may perform quite sophisticated actions, given that the extension routine (the implementation) has direct access to the XSL processor context object and to the element. In many cases the implementation returns void or null; if it does return a value, that value is placed in the transformation result tree.</p>
+
+<p><em>Extension functions</em>You can think of extension functions as extending the core library of functions that XPath provides. An extension function passes arguments to the extension implementation and returns a value. You can use extension functions to return values that XSLT can interact with directly (node-set, result tree fragment, string, boolean, and number) as well as values (of any type) that you pass in turn to other extension functions.</p>
+</s2><anchor name="supported-lang"/>
+<s2 title="Supported languages">
+<p>&xslt4j; uses the <jump href="http://www.alphaworks.ibm.com/tech/bsf">Bean Scripting Framework (BSF)</jump>, an architecture for incorporating scripting into Java applications and applets. BSF allows an application to take advantage of scripting while being independent of any specific scripting language. To date, we have tested extensions implemented in Java and JavaScript. Other languages with BSF support appear in the table below.</p>
+<p>BSF requires two JAR files on the class path: bsf.jar and bsfengines.jar. These two JAR files are shipped with &xslt4j;, and that is all that is required for Java extensions. The additional JAR files or DLLs required to support extensions in other languages are listed in the table below. These files are available from the sources indicated and are not shipped with &xslt4j;.</p>
+<table>
+  <tr>
+    <td><em>Language</em></td>
+    <td><em>Version</em></td>
+    <td><em>Requirements</em></td>
+  </tr>
+  <tr>
+    <td>Mozilla Rhino<br/><br/></td>
+    <td>1.5<br/><br/></td>
+    <td>js.jar available from 
+				    http://www.mozilla.org/rhino<br/><br/></td>
+  </tr>
+  <tr>
+    <td>NetRexx<br/><br/></td>
+    <td>1.148 up <br/><br/></td>
+    <td>NetRexxC.zip available from http://www2.hursley.ibm.com/netrexx<br/><br/></td>
+  </tr>
+    <tr>
+    <td>BML<br/><br/></td>
+    <td>2.4<br/><br/></td>
+    <td>bmlall.jar available from http://www.alphaWorks.ibm.com/formula/bml<br/><br/></td>
+  </tr>
+    <tr>
+    <td>JPython<br/><br/></td>
+    <td>1.1-beta3<br/><br/></td>
+    <td>python.jar available from http://www.jpython.org/<br/><br/></td>
+  </tr>
+    <tr>
+    <td>Jacl<br/><br/></td>
+    <td>1.1.1<br/><br/></td>
+    <td> jacl.jar and tcljava.jar from http://www.scriptics.com/java<br/><br/></td>
+  </tr>
+    <tr>
+    <td>Win32 ActiveScript langs
+	JScript, VBScript<br/><br/></td>
+    <td><br/><br/></td>
+    <td>MSVCP60.DLL from Microsoft, appropriate language DLLs from Microsoft 
+    http://msdn.microsoft.com/scripting<br/><br/></td>
+  </tr>
+    <tr>
+    <td>PerlScript<br/><br/></td>
+    <td><br/><br/></td>
+    <td>ActivePerl from http://www.activestate.com/<br/><br/></td>
+  </tr>  
+</table>
+</s2><anchor name="basic-pattern"/>
+<s2 title="The basic pattern">
+<p>Let's examine a simple example. The stylesheet below uses an extension element and an extension function to transform an element in the XML source into a statement in the output indicating the date by which a customer can expect a response to a given enquiry.</p>
+
+<p>The source element contains a numdays attribute. The extension element contains a multiplier attribute, which is used to set a variable in the extension. The extension function computes the deadline, that is the current date plus numdays * multiplier. So for &lt;deadline numdays="3"/&gt; (in the XML source) and &lt;timelapse multiplier="2"/&gt; (in the stylesheet), the extension computes a deadline 6 days from now, and the stylesheet template  transform the deadline element into a string along the lines of <code>&lt;p&gt;We have received your enquiry and will respond by April 29, 2000 12:07:16 PM EST.&lt;/p&gt;</code></p>
+<note>The extension function could include both numdays and multiplier as arguments, thus bypassing the need for the extension element, but the purpose here is to illustrate the usage pattern for both extension elements and extension functions.</note>
+<p>As you review this stylesheet, please note the following:</p>
+<ol>
+	  <li>The declaration of the Xalan lxslt namespace, which provides support for the component and
+     component/script elements:<br/><br/>
+    <code>xmlns:lxslt="http://xml.apache.org/xslt"</code><br/><br/></li>
+    <li>The declaration of a namespace for this extension:<br/><br/>
+    <code>xmlns:my-ext="ext1"</code><br/><br/></li>
+  	<li>The designation of this namespace prefix as an extension prefix:<br/><br/>
+     <code>extension-element-prefixes="my-ext"</code><br/><br/></li>
+	  <li>The lxslt:component with attributes designating the namespace prefix and the elements and
+     functions this extension provides.<br/><br/></li>
+  	<li>The lxslt:script subelement with a JavaScript implementation of the extension. For Java
+     extensions, the lxslt:script element has a src attribute that you set to identify the Java class.</li>
+  </ol><anchor name="ex-basic"/>   
+<source>&lt;?xml version="1.0"?&gt;
+&lt;!--Namespaces are global if you set them in the stylesheet element--&gt;
+&lt;xsl:stylesheet 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    version="1.0"   
+    xmlns:lxslt="http://xml.apache.org/xslt"
+    xmlns:my-ext="ext1"
+    extension-element-prefixes="my-ext"&gt;
+    
+  &lt;!--The component and its script are in the lxslt namespace and define the 
+    implementation of the extension.--&gt;
+  &lt;lxslt:component prefix="my-ext" elements="timelapse" functions="getdate"&gt;
+    &lt;lxslt:script lang="javascript"&gt;
+      var multiplier=1;
+      // The methods or functions that implement extension elements always take 2
+      // arguments. The first argument is the XSL Processor context; the second 
+      // argument is the element node.
+      function timelapse(xslProcessorContext, elem)
+      {
+        multiplier=parseInt(elem.getAttribute("multiplier"));
+        // The element return value is placed in the result tree.
+        // If you do not want a return value, return null.
+        return null;
+      }
+      function getdate(numdays)
+      {
+        var d = new Date();
+        var totalDays = parseInt(numdays) * multiplier;
+        d.setDate(d.getDate() + totalDays);
+        return d.toLocaleString();
+      }
+    &lt;/lxslt:script&gt;
+  &lt;/lxslt:component&gt;
+      
+  &lt;xsl:template match="deadline"&gt;
+    &lt;p&gt;&lt;my-ext:timelapse multiplier="2"/&gt;We have logged your enquiry and will 
+      respond by &lt;xsl:value-of select="my-ext:getdate(string(@numdays))"/&gt;.&lt;/p&gt;
+  &lt;/xsl:template>
+
+&lt;/xsl:stylesheet&gt;
+</source>
+</s2><anchor name="setup-runtime"/>
+<s2 title="Setting up the runtime environment">
+<p>To run the preceding example, bsf.jar, bsfengines.jar, and js.jar must be on the class path. Remember that bsf.jar and bsfengines.jar must be on the class path to run any extension. For extensions implemented in a scripting language, see the additional requirements in <link anchor="supported-lang">Supported languages</link>.</p>
+</s2><anchor name="basic-syntax"/>
+<s2 title="Syntax">
+<p>You can always use the pattern illustrated above to set up and use extension elements and extension functions. For extension functions implemented in Java, you can also use the java namespace, described in <link anchor="java-namespace">Alternative: using the predefined java extension namespace</link>. Unless you are using the predefined java extension namespace, do the following:</p>
+<s3 title="1. Declare the lxslt namespace">
+<p><br/><code>xmlns:lxslt="http://xml.apache.org/xslt"</code></p>
+<p>The lxslt namespace provides support for the lxslt:component element and lxslt:script subelement.</p>
+<note>You may also use the LotusXSL alias for this namespace: "http://xsl.lotus.com/".</note>
+</s3>
+<s3 title="2. Declare a unique namespace for each extension prefix">
+<p><br/><code>xmlns:<ref>prefix</ref>=<ref>URI</ref></code></p>
+<p>The <ref>prefix</ref> identifies the namespace, and <ref>URI</ref> is one of the following:</p>
+<ul>
+  <li>An arbitrary (but unique) string that matches the prefix attribute of an lxslt:component element in the stylesheet.<br/>
+  Example: <code>xmlns:ext1="xyz"</code><br/><br/></li>
+  <li><code>[class:]<ref>FQCN</ref></code><br/>
+   where <ref>FQCN</ref> is a Java fully qualified class name. If the extension only involves static class method
+   calls (no instance constructors or instance method calls) precede the class name with <code>class:</code>.<br/>
+   Example: <code>xmlns:ext2="java.util.Hashtable"</code><br/><br/></li>
+  <li>The file name or URL for another document that contains the lxslt:component element.<br/>
+  Example: <code>xmlns:ext3="my-component.txt"</code></li>
+</ul>
+<note>&xslt4j; identifies the URI by working through the list above. In other words, if the URI does not match an lxslt:component element prefix in the stylesheet, &xslt4j; attempts to map the URI to a fully qualified class name on the class path, and so on.</note>
+<p>If the stylesheet contains an lxslt:component element with a prefix attribute set to the extension prefix, the only function of the URI is to provide a unique namespace. If the stylesheet does not contain an lxslt:component, the URI must identify a Java class or a document containing the lxslt:component.</p>
+</s3>
+<s3 title="3. Designate the extension prefixes">
+<p>In the stylesheet element:</p> 
+<p><code>extension-element-prefixes="<ref>prefix-1 prefix-2 ...</ref>"</code></p>
+<p>In a literal result element or extension element include the xsl prefix:</p>
+<p><code>xsl:extension-element-prefixes="<ref>prefix1 prefix2 ...</ref>"</code></p>
+<p>Keep in mind that where you declare namespaces and designate extension prefixes determines the scope of those namespaces.To make your extensions available throughout the stylesheet, include these settings and attribute in the stylesheet element.</p>
+<p>By default, namespace declarations are included in the transformation output. To exclude namespaces from the output, use</p>
+<p><code>exclude-result-prefixes="<ref>prefix-1 prefix-2 ...</ref>"</code></p>
+<p>in the stylesheet element or</p>
+<p><code>xsl:exclude-result-prefixes="<ref>prefix-1 prefix-2 ...</ref>"</code></p> 
+<p>in a literal result element or extension element.</p>
+</s3>
+<s3 title="4. Set up an lxslt:component">
+<p>In the scope of the xslt namespace declaration:</p>
+<p><code>&lt;lxslt:component prefix="<ref>prefix</ref>" </code><br/>
+   <code>&nbsp;&nbsp;&nbsp;&nbsp;functions="<ref>func-1 func-2 ...func-n</ref>"</code><br/> 
+   <code>&nbsp;&nbsp;&nbsp;&nbsp;elements="<ref>elem-1 elem-2 ...elem-n</ref>"&gt;</code><br/>
+   <code>&nbsp;&nbsp;&lt;!--See lxslt:script below--&gt;</code><br/>
+   <code>&lt;/lxslt:component&gt;</code></p>
+<p>where <ref>func-1 func-2 ... func-n</ref> and <ref>elem-1 elem-2 ... elem-n</ref> designate the functions and elements the extension provides and the stylesheet uses. You can use the function-available and element-available functions to determine at run time whether a function or element designated in the lxslt:component is actually available.</p>
+<note>If your extension namespace is a fully qualified class name, you do not need to include the lxslt:component. If you do not include it, you cannot use the function-available and element-available functions to determine whether a given element or function is actually available at runtime.</note>
+</s3>
+<s3 title="5. Set up the lxslt:script element">
+<p>In each lxslt:component, you must include an lxslt:script element. If the extension is implemented in Java:</p>
+<p><code>&lt;lxslt:script lang="javaclass" src="<ref>[class:]FQCN</ref>"/&gt;</code></p>
+<p>where <ref>FQCN</ref> is the fully qualified class name. If the extension only involves static class method calls (no instance constructors or instance method calls) precede the class name with <code>class:</code>.<br/>
+Example: <code>&lt;lxslt:script lang="javaclass"</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;src="java.util.Hashtable"/&gt;</code></p>
+<p>If the extension is implemented in JavaScript:</p>
+<p><code>&lt;lxslt:script lang="javascript" &gt;</code><br/>
+<code>&nbsp;&nbsp;&lt;!--The implementation script--&gt;</code><br/>
+<code>&lt;/lxslt:script&gt;</code></p>
+<p>For other scripting languages supported by BSF, use the same approach as for JavaScript. &xslt4j; plans to add support for using the src attribute to identify another document that contains the implementation script; this feature is not yet supported.</p>
+</s3>
+<s3 title="Implicit DTD for lxslt:component">
+<source>&lt;!ELEMENT lxslt:component (lxslt:script)&gt;
+&lt;!ATTLIST lxslt:component
+  prefix CDATA #IMPLIED
+  namespace-uri CDATA #IMPLIED
+  elements NMTOKENS #REQUIRED
+  functions NMTOKENS #REQUIRED&gt;
+
+&lt;!ELEMENT lxslt:script EMPTY)&gt;
+&lt;!ATTLIST lxslt:script
+  lang CDATA #REQUIRED
+  src CDATA #IMPLIED&gt;</source>
+</s3>
+</s2><anchor name="ext-elements"/>
+<s2 title="Using an extension element">
+<p>Extension elements pass the extension two objects:</p>
+<ul>
+<li><jump href="apidocs/org/apache/xalan/extensions/XSLProcessorContext.html">org.apache.xalan.extensions.XSLProcessorContext</jump>, which provides access to the XSL processor, the XML source tree, the stylesheet tree, the current context node, and the current mode (if any).<br/><br/></li>
+<li>org.w3c.dom.Element, which provides the API for interacting with the extension element.</li>
+</ul>
+<p>You can use the Element getAttribute(String name) method, for example, to read element attributes.</p>
+<s3 title="Implementing an extension element">
+<p>For each extension element in a namespace, the implementation must be a Java method with the following signature, or the scripting language equivalent:</p>
+<p><code><ref>Type element</ref>(org.apache.xalan.extensions.XSLProcessorContext, </code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.w3c.dom.Element extensionElement)</code></p>
+<p>where <ref>Type</ref> designates the return type and <ref>element</ref> is the local part of the extension element name (the element name without the namespace prefix).</p>
+<p>If the extension element is implemented in a loosely typed scripting language, such as JavaScript, the arguments and return value are untyped.</p>
+<p><em>Caution:</em> The value returned by an extension element is placed in the transformation result. If you are not interested in a return value, use a public void Java method or return null from a scripting language function.</p>
+<p>Java example: <code>public void myElement</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(org.apache.xalan.xslt.XSLProcessorContext, </code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.w3c.dom.Element extensionElement)</code></p>
+<p>JavaScript example: <code>function myElement(xslProcContext, element)</code></p>
+</s3>
+<s3 title="The Redirect extension">
+<p>The Redirect extension (<jump href = "apidocs/org/apache/xalan/xslt/extensions/Redirect.html">org.apache.xalan.xslt.extensions.Redirect</jump>) is shipped with &xslt4j; (more extensions are on the way!).</p>
+<p>A standard XSL transformation involves three parameters: the XML source tree, an XSL stylesheet, and the transformation result tree. Whether the result tree is output to a file, a character stream, a byte stream, a DOM, or a SAX document handler, the initial transformation sends the entire result to a single target, represented by the <resource-ref idref="XSLTResultTargetDoc"/>.</p> 
+<p>The Redirect extension supplies three extension elements that you can use to redirect portions of your transformation output to multiple files: &lt;open&gt;, &lt;write&gt;, and &lt;close&gt;. If you use the &lt;write&gt; element alone, the extension opens a file, writes to it, and closes the file immediately. If you want explicit control over the opening and closing of files, use &lt;write&gt; in conjunction with the &lt;open&gt; and &lt;close&gt; elements.</p>
+<p>Each of these elements includes a file attribute and/or a select attribute to designate the output file. The file attribute takes a string, so you can use it to directly specify the output file name; The select attribute takes an XPath expression, so you can use it to dynamically generate the output file name. If you include both attributes, the Redirect extension first evaluates the select attribute, and falls back to the file attribute if the select attribute expression does not return a valid file name.</p>
+</s3><anchor name="ex-redirect"/> 
+<s3 title="Example with the Redirect extension">
+<p>Suppose you are outputting the bulk of your result tree to one file, but you want to output the transformation of all &lt;foo&gt; elements and their children to another file. The following example illustrates the basic structure of the XML source:</p>
+<source>&lt;?xml version="1.0"?&gt; 
+&lt;doc&gt;
+  &lt;foo file="foo.out"&gt;
+    Testing Redirect extension:
+      &lt;bar&gt;A foo subelement text node&lt;/bar&gt;
+  &lt;/foo&gt;
+  &lt;main&gt;
+    Everything else
+  &lt;/main&gt;  
+&lt;/doc&gt;</source>
+<p>This stylesheet redirects part of the output to a secondary file:</p>
+<source>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    version="1.0"
+    xmlns:lxslt="http://xml.apache.org/xslt"
+    xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"
+    extension-element-prefixes="redirect"&gt;
+
+  &lt;xsl:template match="/"&gt;
+    &lt;standard-out&gt;
+      Standard output:
+      &lt;xsl:apply-templates/&gt;
+    &lt;/standard-out&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template match="main"&gt;
+    &lt;main&gt;
+      &lt;xsl:apply-templates/&gt;
+    &lt;/main&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template match="/doc/foo"&gt;
+    &lt;redirect:write select="@file"&gt;
+      &lt;foo-out&gt;
+        &lt;xsl:apply-templates/&gt;
+      &lt;/foo-out&gt;
+    &lt;/redirect:write&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template match="bar"&gt;
+    &lt;foobar-out&gt;
+      &lt;xsl:apply-templates/&gt;
+    &lt;/foobar-out&gt;
+  &lt;/xsl:template&gt;
+  
+&lt;/xsl:stylesheet&gt;</source>
+<p>The standard output is:</p>
+<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;standard-out&gt;
+  Standard output:
+  &lt;main&gt;
+    Everything else.
+  &lt;/main&gt;
+&lt;standard-out&gt;</source>
+<p>The output redirected to foo.out is:</p>
+<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;foo-out&gt;
+    Testing Redirect extension:
+    &lt;foobar-out&gt;foo subelement text node&lt;/foobar-out&gt;
+  &lt;/foo-out&gt;</source>
+<p>For more information on using the Redirect extension to send output to multiple files, see <resource-ref idref="RedirectDoc"/>.</p>  
+</s3>
+</s2><anchor name="ext-functions"/>
+<s2 title="Using extension functions">
+<p>Extension functions may include arguments of any type and return a value of any type.</p>
+<p>XSLT recognizes five data types: node-set, result-tree-fragment, string, boolean, and number. You can use XPath expressions to set variables with values of these types. You can also pass literals for string, boolean, and number arguments. If you want to pass an argument of a type that XSLT does not recognize, use another extension function to return an object of that type. The stylesheet that appears in <link anchor="format-date-stylesheet">Formatting a date</link>, for example uses extension functions to return a Date object and a SimpleDateFormat object, and then uses these objects to call another extension function.</p>
+<s3 title="Data type mapping">
+<p>The XSLT data types map to Java data types as follows:</p>
+  <table>
+    <tr>
+      <th>XSLT Type</th>
+      <th>Java Type</th>
+    </tr>
+    <tr>
+       <td>Node-Set</td>
+       <td>org.w3c.dom.NodeList</td>
+    </tr>
+    <tr>
+       <td>String</td>
+       <td>java.lang.String</td>
+    </tr>
+    <tr>
+       <td>Boolean</td>
+       <td>boolean or Boolean</td>
+    </tr>
+    <tr>
+       <td>Number</td>
+       <td>double or Double</td>
+    </tr>
+    <tr>
+       <td>Result Tree Fragment</td>
+       <td>org.w3c.dom.DocumentFragment</td>
+    </tr>
+  </table>
+<p>For the XSLT boolean and number types, &xslt4j; first looks for a method with the corresponding Java primitive type. If it does not find such a method, it looks for a method with the object type. In the case of the foo:bar(10) static method call, for example, &xslt4j; first looks for bar(double). If it does not find such a method, it looks for for bar(java.lang.Double).</p>
+<p>When an extension function is invoked, the arguments are converted as indicated above, and sent to the extension. No conversion takes place for arguments of non-XSLT types.</p>
+<anchor name="ext-func-calls"/>
+</s3>
+<s3 title="Extension function Java calls">
+<p>Use the following syntax to instantiate Java objects and to call methods:</p>
+<p><code><ref>prefix</ref>:<ref>FQCN</ref>.new (<ref>args</ref>)</code></p>
+<p>where <ref>prefix</ref> is the extension namespace prefix and <ref>FQCN</ref> is the fully qualified class name of which a new instance is to be created with the <ref>args</ref> constructor arguments (if any).<br/>
+Example: <code>variable myHash</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select"my-ext:java.util.Hashtable.new()"</code></p>
+
+<p><code><ref>prefix</ref>:<ref>FQCN.methodName</ref> (<ref>args</ref>)</code></p>
+<p>where <ref>FQCN</ref> is the fully qualified class name whose static method <ref>methodName</ref> is to be invoked using the <ref>args</ref> arguments.<br/>
+Example: <code>variable new-pop</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select="my-ext:java.lang.Integer.valueOf(string(@population))"</code></p>
+
+<p><code><ref>prefix</ref>:<ref>methodName</ref> (<ref>object</ref>, <ref>args</ref>)</code></p>
+<p>where <ref>methodName</ref> is the name of the method to invoke on <ref>object</ref> with the <ref>args</ref> arguments.<br/>
+Example: <code>variable old-pop </code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select="my-ext:put($myHash, string(@region), $new-pop)"</code></p>
+</s3>
+
+<s3 title="Passing Nodes to java">
+<p>Please keep in mind that <em>all</em> LocationPath expressions return a node-set, even if the expression only returns a single attribute or a text node (node-sets with one member). You can use the XSLT string() function (as in the syntax examples above) to convert a node-set value to string, and the number() function to convert a node-set value to number (a double).</p>
+<p>If you want to pass a node-set to an extension function, set up a Java method to accept an 
+org.w3c.dom.NodeList (or an org.apache.xalan.xpath.MutableNodeList, which extends NodeList, if you want to modify the nodes).</p>
+<p>Suppose, for example, you have a myExtensions.ProcessNodes class with the following doSomething method:</p>
+<p><code>public static boolean doSomething(org.w3c.dom.NodeList nList)</code></p>
+<p>Assuming you set up this extension in the node-ext namespace, any of the following extension calls from a stylesheet are syntactically possible:</p>
+<p><code>&lt;!--Process the current node--&gt;</code><br/>
+<code>&lt;xsl:variable name="success" select="node-ext:MyExtensions.ProcessNodes.doSomething(.)"/&gt;</code></p>
+<p><code>&lt;!--Process all nodes in current context--></code><br/>
+<code>&lt;xsl:variable name="success" select="node-ext:MyExtensions.ProcessNodes.doSomething(*)"/&gt;</code></p>
+<p><code>&lt;!-- Process all nodes --></code><br/>
+<code>&lt;xsl:variable name="success" select="node-ext:MyExtensions.ProcessNodes.doSomething(/*)"/&gt;</code></p>
+<p><code>&lt;!--Process the foo/baz nodes in current context --></code><br/>
+<code>&lt;xsl:variable name="success" select="node-ext:MyExtensions.ProcessNodes.doSomething(foo/baz)"/&gt;</code></p>
+<p><code>&lt;!--Process the/foo/baz and /bar/saz nodes --></code><br/>
+<code>&lt;xsl:variable name="success" select="node-ext:MyExtensions.ProcessNodes.doSomething(/foo/baz | /bar/saz)"/&gt;</code></p>
+<p>The NodeList is in fact a list of references into the XML document, so keep in mind that getNextSibling(), for example, gets you the next sibling in the document, which may not be the next Node in the NodeList.</p>
+</s3>
+<s3 title="Implementing extension functions">
+<p>For each extension function in a namespace, the implementation must include a Java method with the following signature, or the scripting language equivalent:</p>
+<p><code>public <ref> object function</ref>(<ref>args</ref>)</code></p>
+<p>where <ref>object</ref> is the return type, <ref>function</ref> is the local part of the extension function name (the function name without the namespace prefix), and <ref>args</ref> correspond to the arguments in the function call.</p>
+</s3>
+</s2><anchor name="java-namespace"/>
+<s2 title="Alternative: using the predefined java extension namespace">
+<p>For extension functions implemented in Java, Xalan provides a java namespace. When you declare and use the java namespace, you do not use an lxslt:component to designate the functions.</p>
+<p>The java namespace supports the use of extension functions implemented in Java. You cannot use this syntax with extension elements or with extensions implemented in JavaScript or another scripting language.</p>
+<s3 title="Declare the Xalan java namespace">
+<p><code>xmlns:lxslt="http://xml.apache.org/xslt/java"</code></p>
+<note>You may also use the LotusXSL alias for this namespace: "http://xsl.lotus.com/java".</note>
+</s3>
+<s3 title="Use the java namespace when you make extension function calls">
+<p>Use "java" as the prefix with the syntax described in <link anchor="ext-func-calls">Extension function Java calls</link>.</p>
+<p>That is all. You do not need to set an extension-element-prefixes attribute, and you do not include an lxslt:component element. Given the absence of the lxslt:component element, you cannot use the function-available method to determine at runtime whether a Java method call is actually available. </p>
+<p>Using the java namespace clearly involves less setup than using your own namespace, as long as these restrictions are not a problem. Remember that you always have the option of setting up your own namespace and extra overhead is really minimal.</p>
+</s3><anchor name="ex-java-namespace"/> 
+<s3 title="Example: Formatting a date">
+<p>This example uses extension functions to call the SimpleDateFormat class and the IntDate class. IntDate uses String arguments to set up a Date object:</p>
+<source>import java.util.Date;
+import java.util.Calendar;
+
+public class IntDate
+{
+  public static Date getDate(String year, String month, String day)
+    {
+      // Date(int, int, int) has been deprecated, so use Calendar to
+      // set the year, month, and day.
+      Calendar c = Calendar.getInstance();
+      // Convert each argument to int.
+      c.set(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day));
+      return c.getTime();
+    }
+}</source>
+<p>The template transforms date elements with four attributes. For example, it transforms <code>&lt;date format="EEEE, MMM dd, yyyy" year="2000" month="4" day="27"/&gt;</code> into &lt;p&gt;Date: Thursday, April 27, 2000.&lt;/p&gt;.</p>
+<p>As you review this stylesheet, please keep the following in mind:</p>
+ <ul>
+  <li>The exclude-result-prefixes stylesheet attribute prevents the java namespace declaration from
+   appearing in the output.</li>
+  <li>The XSLT type returned by any LocationPath expression is node-set, so the XSLT string
+    function is used to convert the format, year, month, and day attribute values from node-sets to
+    strings.</li>
+  <li>The format attribute provides a String argument for constructing a java.text.SimpleDateFormat
+    object.</li>
+    <li>The IntDate class uses String values provided by the year, month, and day attributes, to set the
+    date. XSLT can pass number values, but these are converted into doubles.</li>
+  <li>The formatter variable holds a SimpleDateFormat object, and the date variable holds a Date object.
+    XSLT does not understand either of these types, but they are used to call the SimpleDateFormat format
+     method. In that call, $formatter is the object, and $date is the argument. The syntax for calling
+     Java constructors and methods is described above in <link anchor="ext-func-calls">Extension function Java calls</link>.</li>    
+ </ul><anchor name="format-date-stylesheet"/>   
+<source>&lt;?xml version="1.0"?&gt;
+&lt;xsl:stylesheet 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    version="1.0"   
+    xmlns:java="http://xml.apache.org/xslt/java"
+    exclude-result-prefixes="java"&gt;
+    
+  &lt;!--Other templates for transforming the rest of the XML source documents--&gt;
+  
+  &lt;xsl:template match="date"&gt; 
+    &lt;xsl:variable name="year" select="string(./@year)"/&gt;
+    &lt;xsl:variable name="month" select="string(./@month)"/&gt; 
+    &lt;xsl:variable name="day" select="string(./@day)"/&gt;          
+    &lt;xsl:variable name="format" select="string(./@format)"/&gt;
+
+    &lt;xsl:variable name="formatter"       
+        select="java:java.text.SimpleDateFormat.new($format)"/&gt;
+
+    &lt;xsl:variable name="date" 
+        select="java:IntDate.getDate($year, $month, $day)"/&gt;
+
+    &lt;p&gt;Date: &lt;xsl:value-of select="java:format($formatter, $date)"/&gt;&lt;/p&gt;
+  &lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;  
+</source>
+</s3>
+</s2>
+<s2 title="Examples: using Java and JavaScript to implement the same extension">
+<p>This section contains two examples. The first example uses a Java extension to transform a set of name elements  into an alphabetical and numbered list. The second example uses a JavaScript script to do the same. Both examples include equivalent extension elements and an extension function.</p>
+<anchor name="ex-java"/> 
+<s3 title="Java implementation">
+<p>MyCounter.java</p>
+<source>Import java.util.*;
+
+public class MyCounter {
+  Hashtable counters = new Hashtable ();
+
+  public MyCounter () 
+  {}
+
+  public void init(org.apache.xalan.extensions.XSLProcessorContext context, 
+                   org.apache.xalan.xslt.ElemExtensionCall extElem) 
+  {
+    String name = extElem.getAttribute("name");
+    String value = extElem.getAttribute("value");
+    int val;
+    try 
+    {
+      val = Integer.parseInt (value);
+    } 
+    catch (NumberFormatException e) 
+    {
+      e.printStackTrace ();
+      val = 0;
+    }
+    counters.put (name, new Integer (val));
+  }
+
+  public int read(String name) 
+  {
+    Integer cval = (Integer) counters.get (name);
+    return (cval == null) ? 0 : cval.intValue ();
+  }
+
+  public void incr(org.apache.xalan.extensions.XSLProcessorContext context, 
+                   org.apache.xalan.xslt.ElemExtensionCall extElem) {
+    String name = extElem.getAttribute("name");
+    Integer cval = (Integer) counters.get(name);
+    int nval = (cval == null) ? 0 : (cval.intValue () + 1);
+    counters.put (name, new Integer (nval));
+  }
+}
+</source>
+<p>An XML source document:</p>
+<source>&lt;?xml version="1.0"?&gt;
+&lt;doc&gt;
+  &lt;name first="David" last="Marston"/&gt;
+  &lt;name first="David" last="Bertoni"/&gt;
+  &lt;name first="Donald" last="Leslie"/&gt;
+  &lt;name first="Emily" last="Farmer"/&gt;
+  &lt;name first="Jack" last="Donohue"/&gt;
+  &lt;name first="Myriam" last="Midy"/&gt;
+  &lt;name first="Paul" last="Dick"/&gt;
+  &lt;name first="Robert" last="Weir"/&gt;
+  &lt;name first="Scott" last="Boag"/&gt;
+  &lt;name first="Shane" last="Curcuru"/&gt;
+&lt;/doc&gt;</source>
+<p>The stylesheet:</p>
+<source>&lt;?xml version="1.0"?&gt; 
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:lxslt="http://xml.apache.org/xslt"
+                xmlns:counter="MyCounter"
+                extension-element-prefixes="counter"
+                version="1.0"&gt;
+
+  &lt;lxslt:component prefix="counter"
+                   elements="init incr" functions="read"&gt;
+    &lt;lxslt:script lang="javaclass" src="MyCounter"/&gt;
+  &lt;/lxslt:component&gt;
+
+  &lt;xsl:template match="/"&gt;
+    &lt;HTML&gt;
+      &lt;H1&gt;Names in alphabetical order&lt;/H1&gt;
+      &lt;counter:init name="index" value="1"/&gt;
+      &lt;xsl:for-each select="doc/name"&gt;
+        &lt;xsl:sort select="@last"/&gt;
+        &lt;xsl:sort select="@first"/&gt;
+        &lt;p&gt;
+        &lt;xsl:text&gt;[&lt;/xsl:text&gt;
+        &lt;xsl:value-of select="counter:read('index')"/&gt;
+        &lt;xsl:text&gt;]. &lt;/xsl:text&gt;
+        &lt;xsl:value-of select="@last"/&gt;
+        &lt;xsl:text&gt;, &lt;/xsl:text&gt;
+        &lt;xsl:value-of select="@first"/&gt;
+        &lt;/p&gt;
+        &lt;counter:incr name="index"/&gt;
+      &lt;/xsl:for-each&gt;
+    &lt;/HTML&gt;
+  &lt;/xsl:template&gt;
+ 
+&lt;/xsl:stylesheet&gt;
+</source>
+<p>Transformation output:</p>
+<source>&lt;HTML&gt;
+&lt;H1&gt;Names in alphabetical order&lt;/H1&gt;
+&lt;p&gt;[1]. Bertoni, David&lt;/p&gt;
+&lt;p&gt;[2]. Boag, Scott&lt;/p&gt;
+&lt;p&gt;[3]. Curcuru, Shane&lt;/p&gt;
+&lt;p&gt;[4]. Dick, Paul&lt;/p&gt;
+&lt;p&gt;[5]. Donohue, Jack&lt;/p&gt;
+&lt;p&gt;[6]. Farmer, Emily&lt;/p&gt;
+&lt;p&gt;[7]. Leslie, Donald&lt;/p&gt;
+&lt;p&gt;[8]. Marston, David&lt;/p&gt;
+&lt;p&gt;[9]. Midy, Myriam&lt;/p&gt;
+&lt;p&gt;[10]. Weir, Robert&lt;/p&gt;
+&lt;/HTML&gt;</source>
+</s3><anchor name="ex-javascript"/> 
+<s3 title="JavaScript implementation">
+<p></p>
+<source>&lt;?xml version="1.0"?&gt; 
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:lxslt="http://xml.apache.org/xslt"
+                xmlns:counter="MyCounter"
+                extension-element-prefixes="counter"
+                version="1.0"&gt;
+
+  &lt;lxslt:component prefix="counter"
+                   elements="init incr" functions="read"&gt;
+    &lt;lxslt:script lang="javascript"&gt;
+      var counters = new Array();
+
+      function init (xslproc, elem) {
+        name = elem.getAttribute ("name");
+        value = parseInt(elem.getAttribute ("value"));
+        counters[name] = value;
+        return null;
+      }
+
+      function read (name) {
+        // Return a string.
+        return "" + (counters[name]);
+      }
+
+      function incr (xslproc, elem)
+      {
+        name = elem.getAttribute ("name");
+        counters[name]++;
+        return null;
+      }
+    &lt;/lxslt:script&gt;
+  &lt;/lxslt:component&gt;
+
+  &lt;xsl:template match="/"&gt;
+    &lt;HTML&gt;
+      &lt;H1&gt;Names in alphatebical order&lt;/H1&gt;
+      &lt;counter:init name="index" value="1"/&gt;
+      &lt;xsl:for-each select="doc/name"&gt;
+        &lt;xsl:sort select="@last"/&gt;
+        &lt;xsl:sort select="@first"/&gt;
+        &lt;p&gt;
+        &lt;xsl:text&gt;[&lt;/xsl:text&gt;
+        &lt;xsl:value-of select="counter:read('index')"/&gt;
+        &lt;xsl:text&gt;]. &lt;/xsl:text&gt;
+        &lt;xsl:value-of select="@last"/&gt;
+        &lt;xsl:text&gt;, &lt;/xsl:text&gt;
+        &lt;xsl:value-of select="@first"/&gt;
+        &lt;/p&gt;
+        &lt;counter:incr name="index"/&gt;
+      &lt;/xsl:for-each&gt;
+    &lt;/HTML&gt;
+  &lt;/xsl:template&gt;
+ 
+&lt;/xsl:stylesheet&gt;
+</source>
+<p>This stylesheet produces the same output as the preceding example with the Java extension.</p>
+</s3>
+</s2>
+</s1>

@@ -1,0 +1,11 @@
+  <s3 title="Version of Xerces to use"> 
+<p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including xerces.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
+<p><em>Important</em> You may experience unpredictable anomalies if your Xalan and Xerces builds are not in synch. If you download an update to Xalan, check the release notes to determine which version of Xerces you should use.</p>
+<note>You can use Xalan with other conformnant SAX and DOM parsers. </note>
+</s3><anchor name="to-do"/>
+<s3 title="To-do tasks">
+     <p>As part of the xml.apache team, members of the &xslt4j; team are also exploring options to upgrade the integration of all
+     the xml.apache projects, including Xalan, Xerces, Cocoon, and FOP.</p>
+    <p>The more individuals who join in the design, development, testing, documentation, and use of
+    &xslt4j; the better for us all in the xml.apache.org open source community! Watch the <human-resource-ref idref="xalandev"/> for more information and for ideas about how you can get involved.</p>
+</s3> 

@@ -1,4 +1,5 @@
-<?xml version="1.0" standalone="no"?> 
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
 <!--
  * The Apache Software License, Version 1.1
  *
@@ -55,8 +56,6 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  -->
-
-<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
 <s1 title="&xslt4j2; Samples">
 <ul>
 <li><link anchor="simpletransform">SimpleTransform</link></li>
@@ -137,6 +136,30 @@
        xalanservlet.jar) as well as the stylesheets and properties file in the servlet subdirectory.</li>
       <li>Set up an HTML client to call DefaultApplyXSL with arguments as illustrated below.</li>
     </ol>
+        <p>Examples:</p>
+<gloss>
+<label>http://localhost/servlet/DefaultApplyXSL?URL=/data.xml&amp;xslURL=
+/style.xsl</label>
+<item>...applies the style.xsl stylesheet to the data.xml data. Both files are<br/>
+served from the Web server's HTTP XSLTInputSource root.<br/><br/></item>
+<label>http://localhost/servlet/DefaultApplyXSL?URL=/data.xml&amp;xslURL=
+/style.xsl&amp;debug=true</label>
+<item>...ensures that XML and XSL processor messages are returned in the event of problems
+applying style.xsl to data.xml<br/><br/></item>
+<label>http://localhost/servlet/DefaultApplyXSL/data.xml?xslURL=/style.xsl</label>
+<item>...applies the style.xsl stylesheet to the data.xml data, just like the first example.
+This is an alternative way of specifying the XML XSLTInputSource by utilizing the HTTP request's path
+information.<br/><br/></item>
+<label>http://localhost/servlet/DefaultApplyXSL/data.xml</label>
+<item>...examines data.xml for an associated XSL stylesheet. If multiple XSLs are associated with the data, the stylesheet whose media attribute maps to your browser type will be chosen.  If no mapping is successful, the primary associated stylesheet is used.<br/><br/></item>
+<label>http://localhost/servlet/data.xml</label>
+<item>...provides the same function as the previous example, but this example assumes
+that /servlet/data.xml has been mapped to be executed by this servlet.  The servlet engine may be configured
+to map all or some *.xml files to this servlet through the use of servlet aliases or filters.<br/><br/></item>
+<label>http://localhost/servlet/data.xml?catalog=http://www.xml.org/dtds/oag.xml</label>
+<item>...supplements any servlet-configured XCatalog
+with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</item>
+</gloss>
      </s2><anchor name="extensions"/>
     <s2 title="Extensions">
     <ul>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE resources [
+  <!ENTITY % externalEntity SYSTEM "sbk:/sources/entities.ent">
+  %externalEntity;
+  <!ELEMENT resources (resource|human-resource)+>
+  <!ELEMENT resource EMPTY>
+  <!ATTLIST resource 		
+        id CDATA #IMPLIED
+				title CDATA #IMPLIED
+				location CDATA #IMPLIED>
+  <!ELEMENT human-resource EMPTY>
+  <!ATTLIST human-resource 	
+        id CDATA #IMPLIED
+				name CDATA #IMPLIED
+				mailto CDATA #IMPLIED>
+   ]>  
+<resources> 	
+  <resource id="xslt4j-current" 
+            title="&xslt4j-current;" 
+            location="http://xml.apache.org/xalan"/>
+  <resource id="xslt4j-dist-zip" 
+            title="&xslt4j-dist;.zip" 
+            location="http://xml.apache.org/dist/xalan-j/&xslt4j-dist;.zip"/>
+  <resource id="xslt4j-dist-targz" 
+            title="&xslt4j-dist;.tar.gz" 
+            location="http://xml.apache.org/dist/xalan-j/&xslt4j-dist;.tar.gz"/>
+  <resource id="xslt4j-distdir" 
+            title="xalan-j distribution directory" 
+            location="http://xml.apache.org/dist/xalan-j/"/>
+  <resource id="xml4j-used" 
+            title="&xml4j-used;" 
+            location="http://xml.apache.org/xerces-j/index.html"/>
+  <resource id="xml4j-distdir" 
+            title="xerces-j distribution directory" 
+            location="http://xml.apache.org/dist/xerces-j/"/>
+  <resource id="ant" title="Ant" 
+            location="http://jakarta.apache.org/ant/index.html"/>
+  <resource id="ApacheLicense" 
+            title="The Apache Software License, Version 1.1" 
+            location="http://xml.apache.org/dist/LICENSE.txt"/>
+	
+  <resource id="Readme" 
+            title="Xalan Repository Release Notes" 
+            location="http://www.apache.org/websrc/cvsweb.cgi/xml-xalan/README"/>
+  
+  <resource id="xslt" 
+            title="W3C Recommendation 16 November 1999 XSL Transformations (XSLT) Version 1.0"
+            location="http://www.w3.org/TR/xslt"/>
+  
+  <resource id="xpath" 
+            title="XML Path Language (XPath) Version 1.0" 
+            location="http://www.w3.org/TR/xpath"/>
+
+  <resource id="trax" 
+            title="TRaX (Transformations for XML)" 
+            location="http://trax.openxml.org/"/>
+  <resource id="dom" 
+            title="DOM" 
+            location="http://www.w3.org/DOM"/>
+  <resource id="dom2" 
+            title="DOM level 2" 
+            location="http://www.w3.org/TR/DOM-Level-2/"/>
+
+  <resource id="sax" 
+            title="SAX" 
+            location="http://www.megginson.com/SAX/sax.html"/>
+  <resource id="sax2" 
+            title="SAX 2" 
+            location="http://www.megginson.com/SAX/Java/index.html"/>
+  <resource id="jaxp" 
+            title="Java API for XML Parsing" 
+            location="http://java.sun.com/xml/docs/api/index.html"/>            
+            
+  
+  <human-resource id="xalandev" 
+                  name="Xalan Development Mailing List" 
+                  mailto="xalan-dev@xml.apache.org"/>
+</resources>

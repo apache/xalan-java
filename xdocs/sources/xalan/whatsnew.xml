@@ -59,81 +59,18 @@
 <s1 title="What's new in &xslt4j2;">
 <ul>
   <li><link anchor="design">New Design</link></li>
-  <li><link anchor="basic">Basic steps</link></li>
-  <ol>
-    <li><link anchor="processor">Instantiate stylesheet Processor</link></li>
-    <li><link anchor="process">Process stylesheet</link></li>
-    <li><link anchor="transformer">Instantiate Transformer</link></li>
-    <li><link anchor="transformation">Perform transformation</link></li>
-  </ol>
-  <li><link anchor="modules">Modularity</link></li>
-  <li><link anchor="sax">SAX</link></li>
-  <li><link anchor="params">Setting stylesheet parameters</link></li>
-  <li><link anchor="dom">DOM</link></li>
+  <li><link anchor="packages">Package layout</link></li>
 </ul><anchor name="design"/>
   <s2 title="New Design">
-  <p>&xslt4j2; represents a fundamental redesign of Xalan. It differs from &xslt4j; 1 in the following basic ways:</p>
-  <ul>
-    <li>It is more <link anchor="modules">modular</link>.<br/><br/>
-    As the new package structure highlights, the processing of stylesheets and production of stylesheet templates, the application of stylesheet templates to source trees and production of output trees, the evaluation of XPath expressions and XSLT matching patterns, and subsidiary operations and utilities are more clearly segmented and segregated than in &xslt4j; version 1.<br/><br/></li>
-    <li>It implements the <jump href="http://trax.openxml.org/">TRaX (Transformations for XML)</jump> interfaces.
-    <br/><br/>A number of open-source XML tool developers have collaborated on TRaX, a vendor-neutral API for performing an open-ended range of XML transformations. You can see the basic organization of TRaX in the example below.<br/><br/></li>
-    <li>It builds on the <jump href="http://www.megginson.com/SAX/Java/index.html">SAX 2</jump> and <jump href="http://www.w3.org/TR/DOM-Level-2/">DOM level 2</jump> interfaces.
-<br/><br/>For example, &xslt4j2; incorporates the SAX parsing event model in its support for the incremental production of transformation output.<br/><br/></li>
-     <li>TRaX and &xslt4j; gather critical operational information from system property settings.<br/><br/>
-     System properties, for example, identify the stylesheet processor and SAX parser to use, and the serializers that are available for various output methods.<br/><br/></li>
-  </ul>
-  </s2><anchor name="basic"/>
-  <s2 title="Basic steps">
-    <p>The following example highlights the four basic steps involved in performing a transformation.</p>
-    <source>// 1. Instantiate a stylesheet Processor.
-trax.Processor processor = trax.Processor.newInstance("xslt");
-
-// 2. Process the stylesheet, producing a Templates object.
-trax.Templates templates = processor.process
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new org.xml.sax.InputSource("foo.xsl"));
-
-// 3. Use the Templates object to instantiate a Transformer.
-trax.Transformer transformer = templates.newTransformer();
-
-// 4. Use the Transformer to apply the Templates object to an XML
-//&nbsp;&nbsp;&nbsp;&nbsp;source and send the output to a Result object.
-transformer.transform
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new org.xml.sax.InputSource("foo.xml"), 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new trax.Result(new java.io.FileWriter("foo.out")));</source>
-  <note>For a working example of this model at its simplest, see SimpleTransform.java in the java/samples/SimpleTransform subdirectory.</note>
-  </s2><anchor name="processor"/>
-  <s2 title="1. Instantiate a stylesheet Processor">
-  <p>The trax.Processor static newInstance() method with "xslt" as its argument instantiates the processor designated by the trax.processor.xslt system property.</p>
-  <p>If this system property has not already been set, trax.Processor sets it from a file.</p>
-  <p>For &xslt4j;, this system property should be set to org.apache.xalan.processor.StylesheetProcessor.</p>
-</s2><anchor name="process"/>
-  <s2 title="2. Process the stylesheet, producing a Templates object">
-  <p>The Templates object is an immutable runtime representation of the structure and content of a stylesheet (which may include
-  and import multiple stylesheet sources).</p>
-<p>A given Templates object may be used repeatedly and by multiple concurrent threads for the transformation of XML input. Each Templates object also incorporates XSLTSchema, which encapsulates the underlying XSLT stylesheet schema.</p>
-  <p>You may provide the stylesheet as a SAX input source (from a file or stream) or as a DOM tree.</p>
-  <p>Use the Processor process() method with a SAX input source (as in the example above), or the processFromNode() method with a DOM tree to generate a Templates object.</p>
-<p>To perform this operation with a SAX input source, the processor uses a trax.TemplatesBuilder (extending the SAX ContentHandler interface) and a SAX XMLReader.</p>
-<p>The XMLReader parses the input, sending parse events to the TemplatesBuilder, which responds by building the Templates object.</p>
-<note>Templates and TemplatesBuilder are TRaX interfaces, and XMLReader is a SAX interface. &xslt4j; uses org.apache.xalan.templates.StylesheetRoot to implement Templates, and org.apache.xalan.processor.StylesheetHandler to implement TemplatesBuilder. XMLReader is a SAX interface. The &xslt4j; StylesheetProcessor uses org.xml.sax.XMLReaderFactory to instantiate an XMLReader as designated by the org.xml.sax.driver system property. If you are using &xml4j;, this system property should be set to org.apache.xerces.parsers.SAXParser</note>
-<p>If you use the processFromNode() method with a DOM representation of the stylesheet, the processor uses org.apache.xalan.utils.TreeWalker to traverse the DOM, sending SAX events to the TemplatesBuilder.</p>
-</s2><anchor name="transformer"/>
-<s2 title="3. Instantiate a Transformer">
-<p>To transform an XML document, you need an implementation of the trax.Transformer interface.</p>
-<p>&xslt4j; implements the Transformer interface with org.apache.xalan.transformer.TransformerImpl.</p>
-<p>You can use a Templates object for multiple transformations (even performed concurrently), but you should use the Templates object to instantiate a separate Transformer for each transformation you perform. The Templates object contains the stylesheet structure and data and XSLT schema, which are immutable, whereas the Transformer tracks state information as it performs the transformation.</p>
-</s2><anchor name="transformation"/>
-<s2 title="4. Perform a transformation">
-<p>Supply the XML input, a target or "holder" for the transformation output, and instruct the Transformer to perform the transformation.</p>
-<p>Just as with the stylesheet, you can supply the XML input in the form of a SAX input source (from a URL or stream) or a DOM tree.</p>
-<p>TRaX provides the holder for the output: trax.Result. You can set up a Result object to send the transformation result to a file or stream or to build a DOM tree.</p>
-<p>The Transformer uses the SAX XMLParser to parse the XML input and sends parse events to an input SAX ContentHandler, org.apache.xalan.stree.SourceTreeHandler, which in turn uses org.apache.xalan.utils.DOMBuilder to assemble the input into a DOM tree. Of course this operation is unnecessary if the XML input is submitted as a DOM.</p>
-<p>For each node in the XML source, the Transformer uses the Templates object and underlying XSLT schema to determine which template to apply: one of the templates in the Templates object, a default template rule as specified in the XSLT spec, or none.</p>
-<p>The Transformer works with org.apache.xalan.transformer.ResultTreeHandler to forward the SAX events produced by this process to the appropriate output ContentHandler, a serializer if the Result object has been set up to write to a stream or file, a DOMBuilder utility if the output is to be a DOM tree.</p>
-<p>To the degree possible, the parsing of the XML source and application of the Templates object to that source are performed concurrently in separate threads. When necessary, the Transformer waits for the parse events that must be in place before a given template may be applied.</p>
-</s2><anchor name="modules"/>
-  <s2 title="Modularity">
+  <p>&xslt4j2; represents a fundamental redesign of Xalan. The goal of this redesign is an easier-to-use, more understandable, and more modular API that that lends itself to "streaming," the production of transformation output while the input is still being parsed, and that encourages wider participation in its ongoing development by the open-source XML developer community.</p>
+<p>As a result of this redesign, the changes are global in nature. The API and the basic usage patterns are different. For the details, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
+<p>To start with, &xslt4j2; implements the <resource-ref idref="trax"/> interfaces. A number of open-source XML tool developers have collaborated on TRaX, a conceptual framework and a standard API for performing an open-ended range of XML transformations. We strongly encourage you to use the TRaX framework and interfaces when you peform XML transformations.</p>
+<p>The basic organization of TRaX is quite simple: use a Processor to process transformation instructions (the stylesheet), producing a Templates object. Use the Templates object to instantiate a Transformer, with which you can apply the Templates object to XML input, producing a result tree. For more detail, see <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
+    <p>&xslt4j2; builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the <resource-ref idref="jaxp"/>. For example, &xslt4j2; incorporates the SAX parsing event model in its support for the incremental production of transformation output.</p>
+    <p>In conjunction with TRaX, &xslt4j; gathers basic operational settings from system properties. System properties, for example, identify the stylesheet processor and SAX parser to use, and the serializers that are available for various output methods. The default settings point to the Xalan StylesheetProcessor, the Xerces SAXParser, and the serializers shipped with Xerces.</p>
+</s2><anchor name="packages"/>
+  <s2 title="Package layout">
+  <p>As the new package structure (outline below) highlights, the processing of stylesheets and production of stylesheet templates, the application of stylesheet templates to source trees and production of output trees, the evaluation of XPath expressions and XSLT matching patterns, and subsidiary operations and utilities are more clearly segmented than in &xslt4j; version 1.</p> 
 <p>&xslt4j2; is made up of four major and several minor modules. The four major modules are:</p>
 <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></label> 
@@ -152,6 +89,26 @@ transformer.transform
 		<item>Evaluates XPath expressions and XSLT match patterns.</item> 
 	 </gloss>
   <p>Other modules include:</p>
+  <gloss>
+		<label><jump href="apidocs/org/apache/xalan/stree/package-summary.html">org.apache.xalan.stree</jump></label>
+      <item>Implementation of DOM source tree optimized for node retrieval and XSLT processing.</item>
+	 </gloss>
+     <gloss>
+		<label><jump href="apidocs/org/apache/xalan/utils/package-summary.html">org.apache.xalan.utils</jump></label>
+      <item>Xalan utilities used by the other packages.</item>
+	 </gloss>
+   <gloss> 
+		<label><jump href="apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></label>
+      <item>&xslt4j; resource files (such as error message).</item>
+	 </gloss> 
+   <gloss> 
+		<label><jump href="apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></label>
+      <item>Provides an applet interface for performing XSLT transformations.</item>
+	 </gloss> 
+   <gloss> 
+		<label><jump href="apidocs/org/apache/xalan/trace/package-summary.html">org.apache.xalan.trace</jump></label>
+     <item>Enables XSLT debuggers and similar tools to add trace listeners to transformation operations.</item>
+	 </gloss>    
   <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/extensions/package-summary.html">org.apache.xalan.extensions</jump></label>
       <item>Support for extension elements and extension functions, which allow you to call Java code and scripts from within a stylesheet.</item>
@@ -161,96 +118,8 @@ transformer.transform
       <item>The &xslt4j; extensions library. To date this library includes a Redirect extension, which allows a stylesheet to produce multiple output files, and a preliminary version of an SQL extension with which you can connect to and submit queries to a JDBC data source, and incrementally "stream" the result set into an XML target.</item>
 	 </gloss> 
    <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/trace/package-summary.html">org.apache.xalan.trace</jump></label>
-     <item>Enables XSLT debuggers and similar tools to add trace listeners to transformation operations.</item>
-	 </gloss> 
-   <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></label>
-      <item>Provides an applet interface for performing XSLT transformations.</item>
-	 </gloss> 
-   <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></label>
-      <item>&xslt4j; resource files (such as error message).</item>
-	 </gloss> 
-   <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/xslt/package-summary.html">org.apache.xalan.xslt</jump> and <jump href="apidocs/org/apache/xalan/xpath/package-summary.html">org.apache.xalan.xpath</jump></label>
-      <item>For compatibility, these packages provide an &xslt4j; 1 interface to &xslt4j2;</item>
+      <item>Provide &xslt4j; 1 applications an interface to &xslt4j2;</item>
     </gloss>  
-</s2><anchor name="params"/>
-<s2 title="Setting stylesheet parameters">
-<p>An XSLT stylesheet may include parameters that are set at run time each time a transformation takes place. To set a stylesheet parameter, use the trax.Transformer <jump href="apidocs/trax/Transformer.html#setParameter(java.lang.String,java.lang.String,java.lang.Object)">setParameter(String name, String namespace, Object value)</jump> method. If the parameter QName only includes a local name (as is often the case), the namespace argument is null. For a working example, see UseStylesheetParam.java in the  java/samples/UseStylesheetParam subdirectory.</p>
-<p>You can also set a parameter with the command-line utility by including the -param flag. For example:</p>
-<p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 boo</code></p>
-<p>or</p>
-<p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 org/myorg/xyz boo</code></p>
-<p>where <code>org/myorg/xyz</code> is the parameter namespace. [not yet working]</p>
-</s2><anchor name="sax"/>
-<s2 title="SAX">
-  <p>&xslt4j; uses the SAX event model to process stylesheets, to parse XML input documents, and to produce output. For each of these operations, an XMLReader reads input, firing parse events, and a ContentHandler listens to the XMLReader and performs parse event methods.</p>
-<p>When you use the "basic" procedure for performing transformations illustrated above, &xslt4j; takes care of many of the SAX details under the covers. You are free to make these details explicit, which simply means that you can intervene in the procedure to accommodate the specific conditions in which your application operates.</p>
-<p>Suppose, for example, you are using a custom XMLReader (perhaps doing something beyond simply parsing existing static XML documents) to feed &xslt4j; SAX parse events. You can instruct the Transformer to provide the ContentHandler for this XMLReader. You might even have a custom reader for producing/processing stylesheets, in which case you simply set the trax.TemplatesBuilder (implemented by the org.apache.xalan.processor.StylesheetHandler) as the ContentHandler for this reader.</p>
-  <p>The following example replicates the <link anchor="basic">Basic 4 steps</link> described above</p>
-  <source>// 1. Instantiate  stylesheet processor.
-trax.Processor processor = trax.Processor.newInstance("xslt");
-
-// 2. Process the stylesheet. producing a Templates object.
-// Get the XMLReader.
-org.xml.sax.XMLReader reader = 
-                  org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
-// Set the ContentHandler.
-trax.TemplatesBuilder templatesBuilder = processor.getTemplatesBuilder();
-reader.setContentHandler(templatesBuilder);
-// Set the ContentHandler to also function as a LexicalHandler, which
-// includes "lexical" (e.g., comments and CDATA) events. The Xalan
-// TemplatesBuilder -- org.apache.xalan.processor.StylesheetHandler -- is
-// also a LexicalHandler).
-if(templatesBuilder instanceof org.xml.sax.ext.LexicalHandler)
-   reader.setProperty("http://xml.org/sax/properties/lexical-handler", 
-                       templatesBuilder);
-// Parse the stylesheet.                       
-reader.parse("foo.xsl");
-//Get the Templates object from the ContentHandler.
-trax.Templates templates = templatesBuilder.getTemplates();
-
-// 3. Use the Templates object to instantiate a Transformer.
-trax.Transformer transformer = templates.newTransformer();
-
-// 4. Perform the transformation.
-// Set up the ContentHandler (a serializer) for the output.
-trax.Result result = new trax.Result(new java.io.FileWriter("foo.out"));
-org.apache.xml.serialize.SerializerFactory sfactory = 
-      org.apache.xml.serialize.SerializerFactory.getSerializerFactory("xml");
-org.apache.xml.serialize.Serializer serializer = sfactory.makeSerializer
-                               (result.getCharacterStream(), 
-                                new org.apache.xml.serialize.OutputFormat());
-transformer.setContentHandler(serializer.asContentHandler());
-// Set up the ContentHandler for the input.
-org.xml.sax.ContentHandler chandler = transformer.getInputContentHandler();
-reader.setContentHandler(chandler);
-if(chandler instanceof org.xml.sax.ext.LexicalHandler)
-  reader.setProperty("http://xml.org/sax/properties/lexical-handler",chandler);
-else
-  reader.setProperty("http://xml.org/sax/properties/lexical-handler", null);
-// Parse the XML input document. The input and output ContentHandlers work in
-// separate threads to optimize performance.
-reader.parse("foo.xml");</source>
-</s2><anchor name="dom"/>
-<s2 title="DOM">
-  <p>In some cases, the input and/or desired output for a transformation may be a DOM tree object,  rather than a file or stream.</p>
-<p>To process DOM input, use one of the trax.Transformer <jump href="apidocs/trax/Transformer.html#transformNode(org.w3c.dom.Node, trax.Result)">transformNode()</jump> methods.</p>
-  <p>To produce a transformation result in the form of a DOM tree, use the <jump href="http://java.sun.com/xml/docs/api/index.html">Java API for XML Parsing</jump> as indicated below to instantiate an empty DOM Document to hold the result tree.</p>
-  <ol>
-    <li>The javax.xml.parsers.DocumentBuilderFactory abstract class contains a static newInstance() method for instantiating a factory designated by the javax.xml.parsers.DocumentBuilderFactory system property.<br/><br/></li>
-    <li>In turn, the factory provides a newDocumentBuilder() method with which you instantiate a DocumentBuilder.<br/><br/></li>
-    <li>Use the DocumentBuilder to instantiate an empty DOM Document.<br/><br/></li>
-    <li>Use this DOM Document node to construct the trax.Result object for the transformation result tree.</li>
-  </ol>
-<source>javax.xml.parsers.DocumentBuilderFactory dfactory =
-                      javax.xml.parsers.DocumentBuilderFactory.newInstance();
-javax.xml.parsers.DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-org.w3c.dom.Document resultDoc = docBuilder.newDocument();
-trax.Result result = new trax.Result(resultDoc);
-</source>
-<note>If you are using the Xerces implementation of the <ref>Java API for XML Parsing</ref> (in xerces.jar), the default value for the javax.xml.parsers.DocumentBuilderFactory system property is org.apache.xerces.jaxp.DocumentBuilderFactoryImpl. The Xerces implementations of DocumentBuilder and DOM Document are org.apache.xerces.jaxp.DocumentBuilderImpl and org.apache.xerces.dom.DocumentImpl.</note>
 </s2>
 </s1>

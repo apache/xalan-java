@@ -1,0 +1,64 @@
+<?xml version="1.0" standalone="no"?>  
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
+
+<s1 title="Getting Started">
+<ul>
+<li><link anchor="download">Downloading what you need</link></li>
+<li><link anchor="classpath">Setting up the system class path</link></li>
+<li><link anchor="samples">Trying out the samples</link></li>
+<li><link anchor="commandline">Performing your own transformations from the command line</link></li>
+<li><link anchor="java-apps">Setting up your own XSLT applications</link></li>
+</ul>
+<anchor name="download"/>
+<s2 title="Downloading what you need">
+<p>To use Xalan, you need the following:</p>
+<ul>
+<li>The JDK or JRE 1.1.8 or 1.2.2</li>
+<li>xalan.jar</li>
+<li>xerces.jar</li>
+</ul>
+<p>You can get the JDK or JRE from <jump href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
+<p>Download <resource-ref idref="xslt4j-dist-zip"/> or <resource-ref idref="xslt4j-dist-targz"/>. Both of these files contain <resource-ref idref="xslt4j-current"/> (with xalan.jar) and xerces.jar from <resource-ref idref="xml4j-used"/>. You can use a zip or tar utility to expand these files into a full build.</p>
+
+<p>If you plan to run <link idref="extensions">XSLT extensions</link>, you need bsf.jar and bsfengines.jar, both of which are included in the &xslt4j; distribution. If you plan to run XSLT extensions implemented in JavaScript or another scripting language, you will need one or more additional files as indicated in <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>
+</s2><anchor name="classpath"/>
+<s2 title="Setting up the system class path">
+<p>At the very minimum, you must include xalan.jar and xerces.jar on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar and bsfengines.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
+<p>If you are using JDK or JRE 1.1.8, also include classes.zip on the class path.</p>
+</s2><anchor name="samples"/>
+<s2 title="Trying out the samples">
+<p>The &xslt4j; distribution includes a number of basic sample applications. These samples are easy to run, and you can review the source files -- all of which are brief -- to see just how they work.</p>
+<p>To run the samples, do the following:</p>
+<ol>
+<li>Set up your class path (see above), including xalansamples.jar and (for the servlet) xalanservlet.jar.</li>
+<li>Be sure the java executable is on your path.</li>
+<li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
+<li>Use the java executable to run the sample from the command line.</li>
+<li>Examine the application source files.</li>
+</ol>
+<p>For example, go to the SimpleTransform subdirectory and issue the following command:</p>
+<p><code>java SimpleTransform</code></p>
+<p>The sample writes the transformation result  to a file (foo.out). To see how the example works, examine the source files: foo.xml, foo.xsl, and SimpleTransform.java.</p>
+<p>The extensions examples require additional JAR files on the class path, and the procedure for running the sample applet and sample servlet is different. For more information about all the samples, see <link idref="samples">&xslt4j; Samples</link>.</p>
+</s2><anchor name="commandline"/>
+<s2 title="Performing your own transformations from the command line">
+<p>java.org.apache.xalan.xslt.Process provides a basic utility for performing transformations from the command line. You use this utility, for example, to run the extensions samples. The command line for most standard transformations is as follows:</p>
+<p><code>java org.apache.xalan.xslt.Process -in <ref>xmlSource</ref></code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp;-xsl <ref>stylesheet</ref> -out <ref>outputfile</ref></code></p>
+<p>where <ref>xmlSource</ref> is the XML source file name, <ref>stylesheet</ref> is the XSL stylesheet file name, and <ref>outputfile</ref> is the output file name.</p>
+<p>If you want the output to be displayed on the screen, simply omit the -out flag and argument.</p>
+<p>You can use this utility to try out XSL stylesheets you have written, to make sure they do what you expect with the XML source files they are designed to transform. The utility provides useful messages if the source file or stylesheet is not well formed. If you include a DOCTYPE statement in your XML source files and include the -validate flag on the command line, the utility will also let you know whether the XML document is valid (conforms to that DOCTYPE). For more information, see <link idref="commandline">Command-Line Utility</link>.</p>
+</s2><anchor name="java-apps"/>
+<s2 title="Setting up your own Java applications">
+<p>You can start by using your own XML source files and XSL stylesheets with the sample applications, which illustrate a number of the <link idref="usagepatterns">basic usage patterns</link>.</p>
+<p>Here is the basic TRaX procedure to keep in mind when you set up a transformation:</p>
+<ol>
+<li>Use trax.Processor.newInstance("xslt") to instantiate a stylesheet processor -- a TRaX <jump href="apidocs/trax/Processor.html">Processor</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetProcessor.html">StylesheetProcessor</jump>.<br/><br/></li>
+<li>Use the Processor process() or processFromNode() method to process the stylesheet (a SAX InputSource or DOM Node) and generate a Templates object -- a TRaX <jump href="apidocs/trax/Templates.html">Templates</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/processor/StylesheetRoot.html">StylesheetRoot</jump><br/><br/></li>
+<li>Use the Templates newTransformer() method to instantiate a Transformer -- a TRaX
+<jump href="apidocs/trax/Transformer.html">Transformer</jump> object implemented by the Xalan <jump href="apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump>.<br/><br/></li>
+<li>Use one of the Transformer transform() or transformNode() methods to apply the Templates object to an XML document (a SAX InputSource or DOM Node) and perform the transformation, placing the output in a TRaX <jump href="apidocs/trax/Result.html">Result</jump> object.</li>
+</ol>
+<p>For more information about this procedure and its variations, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
+</s2>
+</s1>
