@@ -104,17 +104,6 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 
-// Needed SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.ParserAdapter;
-import org.xml.sax.helpers.XMLReaderFactory;
-import org.xml.sax.ContentHandler;
-
-// Needed DOM classes
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-
 // Needed Serializer classes
 import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;

@@ -82,7 +82,29 @@ public class TrAXFilter extends XMLFilterImpl
   {
     if(null == getParent())
     {
-      XMLReader parent = XMLReaderFactory.createXMLReader();
+      XMLReader reader=null;
+
+      // Use JAXP1.1 ( if possible )
+      try {
+	  javax.xml.parsers.SAXParserFactory factory=
+	      javax.xml.parsers.SAXParserFactory.newInstance();
+	  factory.setNamespaceAware( true );
+	  javax.xml.parsers.SAXParser jaxpParser=
+	      factory.newSAXParser();
+	  reader=jaxpParser.getXMLReader();
+	  
+      } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+	  throw new org.xml.sax.SAXException( ex );
+      } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+	  throw new org.xml.sax.SAXException( ex1.toString() );
+      } catch( NoSuchMethodError ex2 ) {
+      }
+
+      XMLReader parent;
+      if( reader==null )
+	  parent= XMLReaderFactory.createXMLReader();
+      else
+	  parent=reader;
       try
       {
         parent.setFeature("http://xml.org/sax/features/namespace-prefixes",

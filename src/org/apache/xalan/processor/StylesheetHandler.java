@@ -396,8 +396,9 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor elemProcessor = def.getProcessorFor(uri, localName);
 
     if (null == elemProcessor
-        && Double.valueOf(getStylesheet().getVersion()).doubleValue()
-           > Constants.XSLTVERSUPPORTED)
+        && ( null==getStylesheet() 
+	     || Double.valueOf(getStylesheet().getVersion()).doubleValue()
+	     > Constants.XSLTVERSUPPORTED) )
     {
       elemProcessor = def.getProcessorForUnknown(uri, localName);
     }
