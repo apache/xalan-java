@@ -340,8 +340,10 @@ public class XNodeSet extends XObject
     else if(XObject.CLASS_RTREEFRAG == type)
     {
       // hmmm... 
+      // Try first to treat it as a number, so that numeric 
+      // comparisons can be done with it.  I suspect this is bogus...
       double num2 = obj2.num();
-      if(num2 != Double.NaN)
+      if(!Double.isNaN(num2))
       {
         NodeIterator list1 = nodeset();
         Node node;
