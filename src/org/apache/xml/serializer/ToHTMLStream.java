@@ -89,6 +89,9 @@ public class ToHTMLStream extends ToStream
      */
     protected BoolStack m_isRawStack = new BoolStack();
 
+    /** This flag is set while receiving events from the DTD */
+    protected boolean m_inDTD = false;
+
     /** True if the current element is a block element.  (seems like 
      *  this needs to be a stack. -sb). */
     private boolean m_inBlockElem = false;
@@ -1728,15 +1731,72 @@ public class ToHTMLStream extends ToStream
             startPrefixMapping(prefix,uri,false);
         }
 
-        /**
-         * Report the end of DTD declarations.
-         * @throws org.xml.sax.SAXException The application may raise an exception.
-         * @see #startDTD
+    public void startDTD(String name, String publicId, String systemId)
+        throws SAXException
+    {
+        m_inDTD = true;
+        super.startDTD(name, publicId, systemId);
+    }
+
+    /**
+     * Report the end of DTD declarations.
+     * @throws org.xml.sax.SAXException The application may raise an exception.
+     * @see #startDTD
+     */
+    public void endDTD() throws org.xml.sax.SAXException
+    {
+        m_inDTD = false;
+        /* for ToHTMLStream the DOCTYPE is entirely output in the
+         * startDocumentInternal() method, so don't do anything here
          */
-        public void endDTD() throws org.xml.sax.SAXException
-        {
-			/* for ToHTMLStream the DOCTYPE is entirely output in the
-			 * startDocumentInternal() method, so don't do anything here
-			 */ 
-        }
+    }
+    /**
+     * This method does nothing.
+     */
+    public void attributeDecl(
+        String eName,
+        String aName,
+        String type,
+        String valueDefault,
+        String value)
+        throws SAXException
+    {
+        // The internal DTD subset is not serialized by the ToHTMLStream serializer
+    }
+
+    /**
+     * This method does nothing.
+     */
+    public void elementDecl(String name, String model) throws SAXException
+    {
+        // The internal DTD subset is not serialized by the ToHTMLStream serializer
+    }
+    /**
+     * This method does nothing.
+     */
+    public void internalEntityDecl(String name, String value)
+        throws SAXException
+    {
+        // The internal DTD subset is not serialized by the ToHTMLStream serializer
+    }
+    /**
+     * This method does nothing.
+     */
+    public void externalEntityDecl(
+        String name,
+        String publicId,
+        String systemId)
+        throws SAXException
+    {
+        // The internal DTD subset is not serialized by the ToHTMLStream serializer
+    }
+
+    public void comment(char ch[], int start, int length)
+            throws SAXException
+    {
+        // The internal DTD subset is not serialized by the ToHTMLStream serializer
+        if (m_inDTD)
+            return;
+        super.comment(ch, start, length);
+    }
 }
