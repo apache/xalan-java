@@ -195,9 +195,9 @@ public abstract class AxesWalker extends NodeTest
                        this.m_proximityPositions.length);
     }
 
-    clone.setCurrentNode(clone.m_root);
+    //clone.setCurrentNode(clone.m_root);
 
-    clone.m_isFresh = true;
+    // clone.m_isFresh = true;
 
     return clone;
   }
