@@ -73,7 +73,7 @@ import javax.xml.transform.TransformerException;
  * <p>This has been changed from the previous incarnations of this
  * class to be fairly low level.</p>
  */
-public final class VariableStack implements Cloneable
+public class VariableStack implements Cloneable
 {
 
   /**
@@ -141,7 +141,7 @@ public final class VariableStack implements Cloneable
    *
    * @return The item at the given index.
    */
-  public final XObject elementAt(final int i)
+  public XObject elementAt(final int i)
   {
     return _sf[i];
   }
@@ -151,7 +151,7 @@ public final class VariableStack implements Cloneable
    *
    * @return the total size of the execution stack.
    */
-  public final int size()
+  public int size()
   {
     return _top;
   }
@@ -161,7 +161,7 @@ public final class VariableStack implements Cloneable
    *
    * @return the total size of the execution stack.
    */
-  public final void reset()
+  public void reset()
   {
 
     _top = 0;
@@ -178,7 +178,7 @@ public final class VariableStack implements Cloneable
    *
    * @param sf The new stack frame position.
    */
-  public final void setStackFrame(int sf)
+  public void setStackFrame(int sf)
   {
     _cfb = sf;
   }
@@ -190,7 +190,7 @@ public final class VariableStack implements Cloneable
    *
    * @return The current stack frame position.
    */
-  public final int getStackFrame()
+  public int getStackFrame()
   {
     return _cfb;
   }
@@ -210,7 +210,7 @@ public final class VariableStack implements Cloneable
    * @return The bottom of the stack frame, from where local variable addressing
    * should start from.
    */
-  public final int link(final int size)
+  public int link(final int size)
   {
 
     _cfb = _top;
@@ -243,7 +243,7 @@ public final class VariableStack implements Cloneable
    * Free up the stack frame that was last allocated with
    * {@link link(int size)}.
    */
-  public final void unlink()
+  public  void unlink()
   {
     _top = _links[--_linksTop];
     _cfb = _links[_linksTop - 1];
@@ -258,7 +258,7 @@ public final class VariableStack implements Cloneable
    *
    * @param val The value of the variable that is being set.
    */
-  public final void setLocalVariable(int index, XObject val)
+  public void setLocalVariable(int index, XObject val)
   {
     _sf[index + _cfb] = val;
   }
@@ -273,7 +273,7 @@ public final class VariableStack implements Cloneable
    *
    * @param val The value of the variable that is being set.
    */
-  public final void setLocalVariable(int index, XObject val, int stackFrame)
+  public void setLocalVariable(int index, XObject val, int stackFrame)
   {
     _sf[index + stackFrame] = val;
   }
@@ -292,7 +292,7 @@ public final class VariableStack implements Cloneable
    *
    * @throws TransformerException
    */
-  public final XObject getLocalVariable(XPathContext xctxt, int index)
+  public XObject getLocalVariable(XPathContext xctxt, int index)
           throws TransformerException
   {
 
@@ -322,7 +322,7 @@ public final class VariableStack implements Cloneable
    *
    * @throws TransformerException
    */
-  public final XObject getLocalVariable(int index, int frame)
+  public XObject getLocalVariable(int index, int frame)
           throws TransformerException
   {
 
@@ -343,7 +343,7 @@ public final class VariableStack implements Cloneable
    *
    * @throws TransformerException
    */
-  public final boolean isLocalSet(int index) throws TransformerException
+  public boolean isLocalSet(int index) throws TransformerException
   {
     return (_sf[index + _cfb] != null);
   }
@@ -360,7 +360,7 @@ public final class VariableStack implements Cloneable
    * @param start The start position, relative to the current local stack frame.
    * @param len The number of slots to be cleared.
    */
-  public final void clearLocalSlots(int start, int len)
+  public void clearLocalSlots(int start, int len)
   {
 
     start += _cfb;
@@ -377,7 +377,7 @@ public final class VariableStack implements Cloneable
    *
    * @param val The value of the variable that is being set.
    */
-  public final void setGlobalVariable(final int index, final XObject val)
+  public void setGlobalVariable(final int index, final XObject val)
   {
     _sf[index] = val;
   }
@@ -396,7 +396,7 @@ public final class VariableStack implements Cloneable
    *
    * @throws TransformerException
    */
-  public final XObject getGlobalVariable(XPathContext xctxt, final int index)
+  public XObject getGlobalVariable(XPathContext xctxt, final int index)
           throws TransformerException
   {
 
@@ -422,7 +422,7 @@ public final class VariableStack implements Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public final XObject getVariableOrParam(
+  public XObject getVariableOrParam(
           XPathContext xctxt, org.apache.xml.utils.QName qname)
             throws javax.xml.transform.TransformerException
   {
