@@ -103,9 +103,9 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     // Commonly used strings are stored as char arrays for speed
     private static final char[] BEGPI    = "<?".toCharArray();
     private static final char[] ENDPI    = "?>".toCharArray();
-    private static final char[] GT_CR    = ">\n".toCharArray();
+    private static final char[] GT_CR    = ">".toCharArray();
     private static final char[] GT_LT_SL = "></".toCharArray();
-    private static final char[] SL_GT    = "/>\n".toCharArray();
+    private static final char[] SL_GT    = "/>".toCharArray();
     private static final char[] XMLNS    = " xmlns".toCharArray();
 
     // All of these are used to control/track output indentation
@@ -316,15 +316,14 @@ public class DefaultSAXOutputHandler implements ContentHandler {
                 char[] endTag = (char[])_endTags.get(elementName);
                 if (endTag == null) {
 		    // We dont' want to concatenate String objects!!!!
-		    // endTag = ("</"+elementName+">\n").toCharArray();
+		    // endTag = ("</"+elementName+">").toCharArray();
 		    final int len = elementName.length();
 		    final char[] src = elementName.toCharArray();
-		    endTag = new char[len+4];
+		    endTag = new char[len+3];
 		    System.arraycopy(src, 0, endTag, 2, len);
 		    endTag[0] = '<';
 		    endTag[1] = '/';
 		    endTag[len+2] = '>';
-		    endTag[len+3] = '\n';
                     _endTags.put(elementName,endTag);
                 }
                 _writer.write(endTag);

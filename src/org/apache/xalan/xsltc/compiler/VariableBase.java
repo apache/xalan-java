@@ -126,7 +126,7 @@ class VariableBase extends TopLevelElement {
      * Called when we leave the AST scope of the variable's declaration
      */
     public void unmapRegister(MethodGenerator methodGen) {
-	if (_refs.isEmpty()) {
+	if (_refs.isEmpty() && (_local != null)) {
 	    _local.setEnd(methodGen.getInstructionList().getEnd());
 	    methodGen.removeLocalVariable(_local);
 	    _refs = null;
