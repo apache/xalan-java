@@ -78,7 +78,7 @@ final class ElementAvailableCall extends FunctionCall {
     /**
      * Force the argument to this function to be a literal string.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (argument() instanceof LiteralExpr) {
 	    return _type = Type.Boolean;
 	}

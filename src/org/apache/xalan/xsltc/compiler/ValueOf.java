@@ -87,8 +87,8 @@ final class ValueOf extends Instruction {
 	if ((str != null) && (str.equals("yes"))) _escaping = false;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	Type type = _select.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	Type type = _select.typeCheck(ccontext);
 	if ((type != null) && (type.identicalTo(Type.String) == false))
 	    _select = new CastExpr(_select, Type.String);
 	return Type.Void;

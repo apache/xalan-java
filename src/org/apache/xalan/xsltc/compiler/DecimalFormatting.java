@@ -89,7 +89,7 @@ final class DecimalFormatting extends TopLevelElement {
     /**
      * No type check needed for the <xsl:decimal-formatting/> element
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return Type.Void;
     }
 
@@ -105,14 +105,15 @@ final class DecimalFormatting extends TopLevelElement {
 	    _name = parser.getQNameIgnoreDefaultNs(EMPTYSTRING);
 	}
 
-	// Check if a set of symbols has already been registered under this name
-	SymbolTable stable = parser.getSymbolTable();
-	if (stable.getDecimalFormatting(_name) != null) {
+	// Check if a set of symbols has already been registered 
+	// under this name
+	StaticContextImpl scontext = getStaticContext();
+	if (scontext.getDecimalFormatting(_name) != null) {
 	    reportWarning(this, parser, ErrorMsg.SYMBOLS_REDEF_ERR,
 		_name.toString());
 	}
 	else {
-	    stable.addDecimalFormatting(_name, this);
+	    scontext.addDecimalFormatting(_name, this);
 	}
     }
 

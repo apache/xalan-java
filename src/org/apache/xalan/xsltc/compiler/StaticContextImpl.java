@@ -107,9 +107,16 @@ final class StaticContextImpl implements StaticContext {
         if (result == null) {
             _staticContext.set(result = new StaticContextImpl());
         }
-        result._currentNode = current;
+        result.setCurrentNode(current);
 	result.clearCache();
         return result;
+    }
+
+    /**
+     * Set current node.
+     */
+    public void setCurrentNode(SyntaxTreeNode currentNode) {
+	_currentNode = currentNode;
     }
 
     // -- Decimal Formats ------------------------------------------------
@@ -453,7 +460,7 @@ final class StaticContextImpl implements StaticContext {
      * Register a namespace URI so that it will not be declared in the
      * output unless it is actually referenced in the output.
      */
-    public void setExcludeUri(String uri) {
+    public void setExcludeURI(String uri) {
         // The null-namespace cannot be excluded
         if (uri == null) return;
 
@@ -483,7 +490,7 @@ final class StaticContextImpl implements StaticContext {
                     uri = getNamespace(Constants.EMPTYSTRING);
                 else
                     uri = getNamespace(prefix);
-                if (uri != null) setExcludeUri(uri);
+                if (uri != null) setExcludeURI(uri);
             }
         }
     }
@@ -522,16 +529,6 @@ final class StaticContextImpl implements StaticContext {
     }
 
     // -- SHOULD BE MOVED OUT OF THIS CLASS !!!! -------------------------
-
-    /**
-     * This is used for xsl:attribute elements that have a "namespace"
-     * attribute that is currently not defined using xmlns:
-     */
-    private int _nsCounter = 0;
-
-    public String generateNamespacePrefix() {
-        return(new String("ns"+(_nsCounter++)));
-    }
 
     private final HashMap _stylesheets = new HashMap();
 

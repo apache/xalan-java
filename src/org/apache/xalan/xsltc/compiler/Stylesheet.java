@@ -322,12 +322,12 @@ public final class Stylesheet extends SyntaxTreeNode {
     /**
      * Store extension URIs
      */
-    private void extensionURI(String prefixes, SymbolTable stable) {
+    private void extensionURI(String prefixes, StaticContext scontext) {
 	if (prefixes != null) {
 	    StringTokenizer tokens = new StringTokenizer(prefixes);
 	    while (tokens.hasMoreTokens()) {
 		final String prefix = tokens.nextToken();
-		final String uri = lookupNamespace(prefix);
+		final String uri = scontext.getNamespace(prefix);
 		if (uri != null) {
 		    _extensions.put(uri, prefix);
 		}
@@ -340,15 +340,15 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void excludeExtensionPrefixes(Parser parser) {
-	final SymbolTable stable = parser.getSymbolTable();
+	final StaticContextImpl scontext = getStaticContext();
     	final String excludePrefixes = getAttribute("exclude-result-prefixes");
 	final String extensionPrefixes = getAttribute("extension-element-prefixes");
 
 	// Exclude XSLT uri
-	stable.excludeURI(Constants.XSLT_URI);
-	stable.excludeNamespaces(excludePrefixes);
-	stable.excludeNamespaces(extensionPrefixes);
-	extensionURI(extensionPrefixes, stable);
+	scontext.setExcludeURI(Constants.XSLT_URI);
+	scontext.setExcludePrefixes(excludePrefixes);
+	scontext.setExcludePrefixes(extensionPrefixes);
+	extensionURI(extensionPrefixes, scontext);
     }
 
     /**
@@ -358,7 +358,7 @@ public final class Stylesheet extends SyntaxTreeNode {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-	final SymbolTable stable = parser.getSymbolTable();
+	final StaticContextImpl scontext = getStaticContext();
 
 	/*
 	// Make sure the XSL version set in this stylesheet
@@ -375,7 +375,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	addPrefixMapping("xml", "http://www.w3.org/XML/1998/namespace");
 
 	// Report and error if more than one stylesheet defined
-	final Stylesheet sheet = stable.addStylesheet(_name, this);
+	final Stylesheet sheet = scontext.addStylesheet(_name, this);
 	if (sheet != null) {
 	    // Error: more that one stylesheet defined
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.MULTIPLE_STYLESHEET_ERR,this);
@@ -388,10 +388,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// method) as its only child, so the Template class has a special
 	// method that handles this (parseSimplified()).
 	if (_simplified) {
-	    stable.excludeURI(XSLT_URI);
+	    scontext.setExcludeURI(XSLT_URI);
 	    Template template = new Template();
-            StaticContextImpl scontextImpl = getStaticContext();
-            // TODO: update static context - scontextImpl.addStylesheet()
 	    template.parseSimplified(ccontext);
 	}
 	// Parse the children of this node
@@ -414,7 +412,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
 	    if ((child instanceof VariableBase) ||
 		(child instanceof NamespaceAlias)) {
-		parser.getSymbolTable().setCurrentNode(child);
 		child.parse(ccontext);
 	    }
 	}
@@ -424,7 +421,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
 	    if (!(child instanceof VariableBase) &&
 		!(child instanceof NamespaceAlias)) {
-		parser.getSymbolTable().setCurrentNode(child);
 		child.parse(ccontext);
 	    }
 
@@ -478,13 +474,13 @@ public final class Stylesheet extends SyntaxTreeNode {
     /**
      * Type check all the children of this node.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	final int count = _globals.size();
 	for (int i = 0; i < count; i++) {
 	    final VariableBase var = (VariableBase)_globals.get(i);
-	    var.typeCheck(stable);
+	    var.typeCheck(ccontext);
 	}
-	return typeCheckContents(stable);
+	return typeCheckContents(ccontext);
     }
 
     /**

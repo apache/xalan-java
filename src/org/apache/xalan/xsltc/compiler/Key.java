@@ -131,12 +131,12 @@ final class Key extends TopLevelElement {
 	return _name.toString();
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	// Type check match pattern
-	_match.typeCheck(stable);
+	_match.typeCheck(ccontext);
 
 	// Cast node values to string values (except for nodesets)
-	_useType = _use.typeCheck(stable);
+	_useType = _use.typeCheck(ccontext);
 	if (_useType instanceof StringType == false &&
 	    _useType instanceof NodeSetType == false)
 	{

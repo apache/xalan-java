@@ -338,7 +338,7 @@ class FunctionCall extends Expression {
      * Type check a function call. Since different type conversions apply,
      * type checking is different for standard and external (Java) functions.
      */
-    public Type typeCheck(SymbolTable stable)
+    public Type typeCheck(CompilerContext ccontext)
 	throws TypeCheckError
     {
         if (_type != null) return _type;
@@ -348,10 +348,10 @@ class FunctionCall extends Expression {
 
 	if (isExtension()) {
 	    _fname = new QName(null, null, local);
-	    return typeCheckStandard(stable);
+	    return typeCheckStandard(ccontext);
 	}
 	else if (isStandard()) {
-	    return typeCheckStandard(stable);
+	    return typeCheckStandard(ccontext);
 	}
 	// Handle extension functions (they all have a namespace)
 	else {
@@ -393,13 +393,13 @@ class FunctionCall extends Expression {
 		    String extFunction = (String)_extensionFunctionTable.get(namespace + ":" + local);
 		    if (extFunction != null) {
 		      	_fname = new QName(null, null, extFunction);
-		      	return typeCheckStandard(stable);
+		      	return typeCheckStandard(ccontext);
 		    }
 		    else
 		      	_fname = new QName(namespace, null, local);
 		}
 
-		return typeCheckExternal(stable);
+		return typeCheckExternal(ccontext);
 	    }
 	    catch (TypeCheckError e) {
 		ErrorMsg errorMsg = e.getErrorMsg();
@@ -418,14 +418,16 @@ class FunctionCall extends Expression {
      * If as a result of the insertion of a CastExpr a type check error is
      * thrown, then catch it and re-throw it with a new "this".
      */
-    public Type typeCheckStandard(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheckStandard(CompilerContext ccontext)
+        throws TypeCheckError
+    {
 	_fname.clearNamespace(); 	// HACK!!!
 
 	final int n = _arguments.size();
-	final ArrayList argsType = typeCheckArgs(stable);
+	final ArrayList argsType = typeCheckArgs(ccontext);
 	final MethodType args = new MethodType(Type.Void, argsType);
 	final MethodType ptype =
-	    lookupPrimop(stable, _fname.getLocalPart(), args);
+	    lookupPrimop(getStaticContext(), _fname.getLocalPart(), args);
 
 	if (ptype != null) {
 	    for (int i = 0; i < n; i++) {
@@ -446,9 +448,9 @@ class FunctionCall extends Expression {
 	throw new TypeCheckError(this);
     }
 
-
-
-    public Type typeCheckConstructor(SymbolTable stable) throws TypeCheckError{
+    public Type typeCheckConstructor(CompilerContext ccontext)
+        throws TypeCheckError
+    {
         final ArrayList constructors = findConstructors();
 	if (constructors == null) {
             // Constructor not found in this class
@@ -459,7 +461,7 @@ class FunctionCall extends Expression {
 
 	final int nConstructors = constructors.size();
 	final int nArgs = _arguments.size();
-	final ArrayList argsType = typeCheckArgs(stable);
+	final ArrayList argsType = typeCheckArgs(ccontext);
 
 	// Try all constructors
 	int bestConstrDistance = Integer.MAX_VALUE;
@@ -514,13 +516,15 @@ class FunctionCall extends Expression {
      * Every method of name <code>_fname</code> is inspected
      * as a possible candidate.
      */
-    public Type typeCheckExternal(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheckExternal(CompilerContext ccontext)
+        throws TypeCheckError
+    {
 	int nArgs = _arguments.size();
 	final String name = _fname.getLocalPart();
 
  	// check if function is a contructor 'new'
 	if (_fname.getLocalPart().equals("new")) {
-	    return typeCheckConstructor(stable);
+	    return typeCheckConstructor(ccontext);
 	}
 	// check if we are calling an instance method
 	else {
@@ -535,7 +539,7 @@ class FunctionCall extends Expression {
 	   	    hasThisArgument = true;
 
 	  	Expression firstArg = (Expression)_arguments.get(0);
-	  	Type firstArgType = (Type)firstArg.typeCheck(stable);
+	  	Type firstArgType = (Type)firstArg.typeCheck(ccontext);
 
 	  	if (_namespace_format == NAMESPACE_FORMAT_CLASS
 	  	    && firstArgType instanceof ObjectType
@@ -579,7 +583,7 @@ class FunctionCall extends Expression {
 
 	Class extType = null;
 	final int nMethods = methods.size();
-	final ArrayList argsType = typeCheckArgs(stable);
+	final ArrayList argsType = typeCheckArgs(ccontext);
 
 	// Try all methods to identify the best fit
 	int bestMethodDistance  = Integer.MAX_VALUE;
@@ -662,12 +666,14 @@ class FunctionCall extends Expression {
     /**
      * Type check the actual arguments of this function call.
      */
-    public ArrayList typeCheckArgs(SymbolTable stable) throws TypeCheckError {
+    public ArrayList typeCheckArgs(CompilerContext ccontext)
+        throws TypeCheckError
+    {
 	final ArrayList result = new ArrayList();
 	final Iterator e = _arguments.iterator();
 	while (e.hasNext()) {
 	    final Expression exp = (Expression)e.next();
-	    result.add(exp.typeCheck(stable));
+	    result.add(exp.typeCheck(ccontext));
 	}
 	return result;
     }

@@ -108,9 +108,13 @@ public class Parser implements Constants, ContentHandler {
     private QName       _extensionElementPrefixes;
     private HashMap   _variableScope;
     private Stylesheet  _currentStylesheet;
-    private SymbolTable _symbolTable; // Maps QNames to syntax-tree nodes
     private Output      _output = null;
     private Template    _template;    // Reference to the template being parsed.
+
+    /**
+     * A reference to the static context implementation.
+     */
+    private StaticContextImpl _staticContext;
 
     private boolean     _rootNamespaceDef = false; // Used for validity check
 
@@ -133,15 +137,16 @@ public class Parser implements Constants, ContentHandler {
 	_template            = null;
 	_errors              = new ArrayList();
 	_warnings            = new ArrayList();
-	_symbolTable         = new SymbolTable();
-	_xpathParser         = new XPathParser(this);
 	_currentStylesheet   = null;
 	_currentImportPrecedence = 1;
+	_staticContext       = StaticContextImpl.getInstance(null);
+        _xpathParser         =
+            new XPathParser(CompilerContextImpl.getInstance(), _staticContext);
 
 	initStdClasses();
 	initInstructionAttrs();
 	initExtClasses();
-	initSymbolTable();
+	initStaticContextPrimops();
 
 	_useAttributeSets =
 	    getQName(XSLT_URI, XSL, "use-attribute-sets");
@@ -254,6 +259,9 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public QName getQNameSafe(final String stringRep) {
+	StaticContext scontext =
+            StaticContextImpl.getInstance(_currentStylesheet);
+
 	// parse and retrieve namespace
 	final int colon = stringRep.lastIndexOf(':');
 	if (colon != -1) {
@@ -263,14 +271,14 @@ public class Parser implements Constants, ContentHandler {
 
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals(XMLNS_PREFIX) == false) {
-		namespace = _symbolTable.lookupNamespace(prefix);
+		namespace = _staticContext.getNamespace(prefix);
 		if (namespace == null) namespace = EMPTYSTRING;
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
 	    final String uri = stringRep.equals(XMLNS_PREFIX) ? null
-		: _symbolTable.lookupNamespace(EMPTYSTRING);
+		: _staticContext.getNamespace(EMPTYSTRING);
 	    return getQName(uri, null, stringRep);
 	}
     }
@@ -299,7 +307,7 @@ public class Parser implements Constants, ContentHandler {
 
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals(XMLNS_PREFIX) == false) {
-		namespace = _symbolTable.lookupNamespace(prefix);
+		namespace = _staticContext.getNamespace(prefix);
 		if (namespace == null && reportError) {
 		    final int line = _locator.getLineNumber();
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
@@ -314,7 +322,7 @@ public class Parser implements Constants, ContentHandler {
 		ignoreDefaultNs = true;
 	    }
 	    final String defURI = ignoreDefaultNs ? null
-				  : _symbolTable.lookupNamespace(EMPTYSTRING);
+				  : _staticContext.getNamespace(EMPTYSTRING);
 	    return getQName(defURI, null, stringRep);
 	}
     }
@@ -418,7 +426,7 @@ public class Parser implements Constants, ContentHandler {
 		    }
 		}
 		if (!errorsFound()) {
-		    stylesheet.typeCheck(_symbolTable);
+		    stylesheet.typeCheck(CompilerContextImpl.getInstance());
 		}
 	    }
 	}
@@ -715,7 +723,7 @@ public class Parser implements Constants, ContentHandler {
     }
 
     public boolean functionSupported(String fname) {
-	return(_symbolTable.lookupPrimop(fname) != null);
+	return (_staticContext.getPrimop(fname) != null);
     }
 
     private void initExtClasses() {
@@ -734,9 +742,9 @@ public class Parser implements Constants, ContentHandler {
     }
 
     /**
-     * Add primops and base functions to the symbol table.
+     * Add primops and base functions to the static context.
      */
-    private void initSymbolTable() {
+    private void initStaticContextPrimops() {
 	MethodType I_V  = new MethodType(Type.Int, Type.Void);
 	MethodType I_R  = new MethodType(Type.Int, Type.Real);
 	MethodType I_S  = new MethodType(Type.Int, Type.String);
@@ -795,103 +803,99 @@ public class Parser implements Constants, ContentHandler {
 
 	// The following functions are inlined
 
-	_symbolTable.addPrimop("current", A_V);
-	_symbolTable.addPrimop("last", I_V);
-	_symbolTable.addPrimop("position", I_V);
-	_symbolTable.addPrimop("true", B_V);
-	_symbolTable.addPrimop("false", B_V);
-	_symbolTable.addPrimop("not", B_B);
-	_symbolTable.addPrimop("name", S_V);
-	_symbolTable.addPrimop("name", S_A);
-	_symbolTable.addPrimop("generate-id", S_V);
-	_symbolTable.addPrimop("generate-id", S_A);
-	_symbolTable.addPrimop("ceiling", R_R);
-	_symbolTable.addPrimop("floor", R_R);
-	_symbolTable.addPrimop("round", R_R);
-	_symbolTable.addPrimop("contains", B_SS);
-	_symbolTable.addPrimop("number", R_O);
-	_symbolTable.addPrimop("number", R_V);
-	_symbolTable.addPrimop("boolean", B_O);
-	_symbolTable.addPrimop("string", S_O);
-	_symbolTable.addPrimop("string", S_V);
-	_symbolTable.addPrimop("translate", S_SSS);
-	_symbolTable.addPrimop("string-length", I_V);
-	_symbolTable.addPrimop("string-length", I_S);
-	_symbolTable.addPrimop("starts-with", B_SS);
-	_symbolTable.addPrimop("format-number", S_DS);
-	_symbolTable.addPrimop("format-number", S_DSS);
-	_symbolTable.addPrimop("unparsed-entity-uri", S_S);
-	_symbolTable.addPrimop("key", D_SS);
-	_symbolTable.addPrimop("key", D_SD);
-	_symbolTable.addPrimop("id", D_S);
-	_symbolTable.addPrimop("id", D_D);
-	_symbolTable.addPrimop("namespace-uri", S_V);
-	_symbolTable.addPrimop("function-available", B_S);
-	_symbolTable.addPrimop("element-available", B_S);
-	_symbolTable.addPrimop("document", D_S);
-	_symbolTable.addPrimop("document", D_V);
+	_staticContext.addPrimop("current", A_V);
+	_staticContext.addPrimop("last", I_V);
+	_staticContext.addPrimop("position", I_V);
+	_staticContext.addPrimop("true", B_V);
+	_staticContext.addPrimop("false", B_V);
+	_staticContext.addPrimop("not", B_B);
+	_staticContext.addPrimop("name", S_V);
+	_staticContext.addPrimop("name", S_A);
+	_staticContext.addPrimop("generate-id", S_V);
+	_staticContext.addPrimop("generate-id", S_A);
+	_staticContext.addPrimop("ceiling", R_R);
+	_staticContext.addPrimop("floor", R_R);
+	_staticContext.addPrimop("round", R_R);
+	_staticContext.addPrimop("contains", B_SS);
+	_staticContext.addPrimop("number", R_O);
+	_staticContext.addPrimop("number", R_V);
+	_staticContext.addPrimop("boolean", B_O);
+	_staticContext.addPrimop("string", S_O);
+	_staticContext.addPrimop("string", S_V);
+	_staticContext.addPrimop("translate", S_SSS);
+	_staticContext.addPrimop("string-length", I_V);
+	_staticContext.addPrimop("string-length", I_S);
+	_staticContext.addPrimop("starts-with", B_SS);
+	_staticContext.addPrimop("format-number", S_DS);
+	_staticContext.addPrimop("format-number", S_DSS);
+	_staticContext.addPrimop("unparsed-entity-uri", S_S);
+	_staticContext.addPrimop("key", D_SS);
+	_staticContext.addPrimop("key", D_SD);
+	_staticContext.addPrimop("id", D_S);
+	_staticContext.addPrimop("id", D_D);
+	_staticContext.addPrimop("namespace-uri", S_V);
+	_staticContext.addPrimop("function-available", B_S);
+	_staticContext.addPrimop("element-available", B_S);
+	_staticContext.addPrimop("document", D_S);
+	_staticContext.addPrimop("document", D_V);
 
 	// The following functions are implemented in the basis library
-	_symbolTable.addPrimop("count", I_D);
-	_symbolTable.addPrimop("sum", R_D);
-	_symbolTable.addPrimop("local-name", S_V);
-	_symbolTable.addPrimop("local-name", S_D);
-	_symbolTable.addPrimop("namespace-uri", S_V);
-	_symbolTable.addPrimop("namespace-uri", S_D);
-	_symbolTable.addPrimop("substring", S_SR);
-	_symbolTable.addPrimop("substring", S_SRR);
-	_symbolTable.addPrimop("substring-after", S_SS);
-	_symbolTable.addPrimop("substring-before", S_SS);
-	_symbolTable.addPrimop("normalize-space", S_V);
-	_symbolTable.addPrimop("normalize-space", S_S);
-	_symbolTable.addPrimop("system-property", S_S);
+	_staticContext.addPrimop("count", I_D);
+	_staticContext.addPrimop("sum", R_D);
+	_staticContext.addPrimop("local-name", S_V);
+	_staticContext.addPrimop("local-name", S_D);
+	_staticContext.addPrimop("namespace-uri", S_V);
+	_staticContext.addPrimop("namespace-uri", S_D);
+	_staticContext.addPrimop("substring", S_SR);
+	_staticContext.addPrimop("substring", S_SRR);
+	_staticContext.addPrimop("substring-after", S_SS);
+	_staticContext.addPrimop("substring-before", S_SS);
+	_staticContext.addPrimop("normalize-space", S_V);
+	_staticContext.addPrimop("normalize-space", S_S);
+	_staticContext.addPrimop("system-property", S_S);
 
 	// Extensions
-        _symbolTable.addPrimop("nodeset", D_O);
-        _symbolTable.addPrimop("objectType", S_O);
+        _staticContext.addPrimop("nodeset", D_O);
+        _staticContext.addPrimop("objectType", S_O);
 
 	// Operators +, -, *, /, % defined on real types.
-	_symbolTable.addPrimop("+", R_RR);
-	_symbolTable.addPrimop("-", R_RR);
-	_symbolTable.addPrimop("*", R_RR);
-	_symbolTable.addPrimop("/", R_RR);
-	_symbolTable.addPrimop("%", R_RR);
+	_staticContext.addPrimop("+", R_RR);
+	_staticContext.addPrimop("-", R_RR);
+	_staticContext.addPrimop("*", R_RR);
+	_staticContext.addPrimop("/", R_RR);
+	_staticContext.addPrimop("%", R_RR);
 
 	// Operators +, -, * defined on integer types.
 	// Operators / and % are not  defined on integers (may cause exception)
-	_symbolTable.addPrimop("+", I_II);
-	_symbolTable.addPrimop("-", I_II);
-	_symbolTable.addPrimop("*", I_II);
+	_staticContext.addPrimop("+", I_II);
+	_staticContext.addPrimop("-", I_II);
+	_staticContext.addPrimop("*", I_II);
 
 	 // Operators <, <= >, >= defined on real types.
-	_symbolTable.addPrimop("<",  B_RR);
-	_symbolTable.addPrimop("<=", B_RR);
-	_symbolTable.addPrimop(">",  B_RR);
-	_symbolTable.addPrimop(">=", B_RR);
+	_staticContext.addPrimop("<",  B_RR);
+	_staticContext.addPrimop("<=", B_RR);
+	_staticContext.addPrimop(">",  B_RR);
+	_staticContext.addPrimop(">=", B_RR);
 
 	// Operators <, <= >, >= defined on int types.
-	_symbolTable.addPrimop("<",  B_II);
-	_symbolTable.addPrimop("<=", B_II);
-	_symbolTable.addPrimop(">",  B_II);
-	_symbolTable.addPrimop(">=", B_II);
+	_staticContext.addPrimop("<",  B_II);
+	_staticContext.addPrimop("<=", B_II);
+	_staticContext.addPrimop(">",  B_II);
+	_staticContext.addPrimop(">=", B_II);
 
 	// Operators <, <= >, >= defined on boolean types.
-	_symbolTable.addPrimop("<",  B_BB);
-	_symbolTable.addPrimop("<=", B_BB);
-	_symbolTable.addPrimop(">",  B_BB);
-	_symbolTable.addPrimop(">=", B_BB);
+	_staticContext.addPrimop("<",  B_BB);
+	_staticContext.addPrimop("<=", B_BB);
+	_staticContext.addPrimop(">",  B_BB);
+	_staticContext.addPrimop(">=", B_BB);
 
 	// Operators 'and' and 'or'.
-	_symbolTable.addPrimop("or", B_BB);
-	_symbolTable.addPrimop("and", B_BB);
+	_staticContext.addPrimop("or", B_BB);
+	_staticContext.addPrimop("and", B_BB);
 
 	// Unary minus.
-	_symbolTable.addPrimop("u-", R_R);
-	_symbolTable.addPrimop("u-", I_I);
-    }
-
-    public SymbolTable getSymbolTable() {
-	return _symbolTable;
+	_staticContext.addPrimop("u-", R_R);
+	_staticContext.addPrimop("u-", I_I);
     }
 
     public Template getTemplate() {
@@ -1274,7 +1278,6 @@ public class Parser implements Constants, ContentHandler {
 	    // Extension elements and excluded elements have to be
 	    // handled at this point in order to correctly generate
 	    // Fallback elements from <xsl:fallback>s.
-	    getSymbolTable().setCurrentNode(element);
 	    ((Stylesheet)element).excludeExtensionPrefixes(this);
 	}
 

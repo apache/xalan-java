@@ -72,8 +72,8 @@ class TopLevelElement extends SyntaxTreeNode {
     /**
      * Type check all the children of this node.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return typeCheckContents(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	return typeCheckContents(ccontext);
     }
 
     /**

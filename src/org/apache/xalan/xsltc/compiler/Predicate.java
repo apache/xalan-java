@@ -212,9 +212,9 @@ final class Predicate extends Expression implements Closure {
      * at compile time if its type is number or not. Hence, expressions of
      * reference type are always converted to booleans.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 
-	Type texp = _exp.typeCheck(stable);
+	Type texp = _exp.typeCheck(ccontext);
 
 	// We need explicit type information for reference types - no good!
 	if (texp instanceof ReferenceType) {
@@ -227,7 +227,7 @@ final class Predicate extends Expression implements Closure {
 	if (texp instanceof ResultTreeType) {
 	    _exp = new CastExpr(_exp, Type.Boolean);
 	    _exp = new CastExpr(_exp, Type.Real);
-	    texp = _exp.typeCheck(stable);
+	    texp = _exp.typeCheck(ccontext);
 	}
 
 	// Numerical types will be converted to a position filter
@@ -250,7 +250,7 @@ final class Predicate extends Expression implements Closure {
 		positionCall.setParent(this);
 
 		_exp = new EqualityExpr(EqualityExpr.EQ, positionCall, _exp);
-		if (_exp.typeCheck(stable) != Type.Boolean) {
+		if (_exp.typeCheck(ccontext) != Type.Boolean) {
 		    _exp = new CastExpr(_exp, Type.Boolean);
 		}
 

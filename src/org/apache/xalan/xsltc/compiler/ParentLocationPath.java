@@ -107,9 +107,9 @@ final class ParentLocationPath extends RelativeLocationPath {
 	return "ParentLocationPath(" + _path + ", " + _step + ')';
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	stype = _step.typeCheck(stable);
-	_path.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	stype = _step.typeCheck(ccontext);
+	_path.typeCheck(ccontext);
 
 	if (_axisMismatch) enableNodeOrdering();
 

@@ -142,12 +142,12 @@ final class AttributeValueTemplate extends AttributeValue {
 	return(result);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	final ArrayList contents = getContents();
 	final int n = contents.size();
 	for (int i = 0; i < n; i++) {
 	    final Expression exp = (Expression)contents.get(i);
-	    if (!exp.typeCheck(stable).identicalTo(Type.String)) {
+	    if (!exp.typeCheck(ccontext).identicalTo(Type.String)) {
 		contents.set(i, new CastExpr(exp, Type.String));
 	    }
 	}

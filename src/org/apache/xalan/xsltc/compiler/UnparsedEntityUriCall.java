@@ -78,8 +78,8 @@ final class UnparsedEntityUriCall extends FunctionCall {
 	_entity = argument();
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type entity = _entity.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type entity = _entity.typeCheck(ccontext);
 	if (entity instanceof StringType == false) {
 	    _entity = new CastExpr(_entity, Type.String);
 	}

@@ -94,7 +94,7 @@ class NameBase extends FunctionCall {
      * Check that we either have no parameters or one parameter that is
      * either a node or a node-set.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 
 	// Check the argument type (if any)
 	switch(argumentCount()) {
@@ -102,7 +102,7 @@ class NameBase extends FunctionCall {
 	    _paramType = Type.Node;
 	    break;
 	case 1:
-	    _paramType = _param.typeCheck(stable);
+	    _paramType = _param.typeCheck(ccontext);
 	    break;
 	default:
 	    throw new TypeCheckError(this);

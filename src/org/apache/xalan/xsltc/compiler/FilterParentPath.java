@@ -93,8 +93,8 @@ final class FilterParentPath extends Expression {
      * cast to node-set only if it is of reference type. This type coercion is
      * needed for expressions like $x/LINE where $x is a parameter reference.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type ftype = _filterExpr.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type ftype = _filterExpr.typeCheck(ccontext);
 	if (ftype instanceof NodeSetType == false) {
 	    if (ftype instanceof ReferenceType)  {
 		_filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
@@ -113,7 +113,7 @@ final class FilterParentPath extends Expression {
 	}
 
 	// Wrap single node path in a node set
-	final Type ptype = _path.typeCheck(stable);
+	final Type ptype = _path.typeCheck(ccontext);
 	if (!(ptype instanceof NodeSetType)) {
 	    _path = new CastExpr(_path, Type.NodeSet);
 	}

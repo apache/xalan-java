@@ -87,11 +87,11 @@ final class Copy extends Instruction {
 	parseContents(ccontext);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_useSets != null) {
-	    _useSets.typeCheck(stable);
+	    _useSets.typeCheck(ccontext);
 	}
-	typeCheckContents(stable);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 

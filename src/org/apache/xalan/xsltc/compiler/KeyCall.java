@@ -127,13 +127,13 @@ final class KeyCall extends FunctionCall {
      * @param stable The parser's symbol table
      * @throws TypeCheckError When the parameters have illegal type
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type returnType = super.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type returnType = super.typeCheck(ccontext);
 
 	// Run type check on the key name (first argument) - must be a string,
 	// and if it is not it must be converted to one using string() rules.
 	if (_name != null) {
-	    final Type nameType = _name.typeCheck(stable);
+	    final Type nameType = _name.typeCheck(ccontext);
 
 	    if (_name instanceof LiteralExpr) {
 		final LiteralExpr literal = (LiteralExpr) _name;
@@ -152,7 +152,7 @@ final class KeyCall extends FunctionCall {
 	// this process (convert to string, then do lookup) should be applied
 	// to every node in the set, and the result from all lookups should
 	// be added to the resulting node-set.
-	_valueType = _value.typeCheck(stable);
+	_valueType = _value.typeCheck(ccontext);
 
 	if (_valueType != Type.NodeSet && _valueType != Type.ResultTree
 		&& _valueType != Type.String)

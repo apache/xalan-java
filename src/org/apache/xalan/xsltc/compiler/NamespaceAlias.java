@@ -84,10 +84,10 @@ final class NamespaceAlias extends TopLevelElement {
         final Parser parser = ccontext.getParser();
 	sPrefix = getAttribute("stylesheet-prefix");
 	rPrefix = getAttribute("result-prefix");
-	parser.getSymbolTable().addPrefixAlias(sPrefix,rPrefix);
+	getStaticContext().addPrefixAlias(sPrefix, rPrefix);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return Type.Void;
     }
 

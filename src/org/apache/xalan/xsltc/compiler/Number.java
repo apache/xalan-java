@@ -198,33 +198,33 @@ final class Number extends Instruction implements Closure {
 	}
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_value != null) {
-	    Type tvalue = _value.typeCheck(stable);
+	    Type tvalue = _value.typeCheck(ccontext);
 	    if (tvalue instanceof RealType == false) {
 		_value = new CastExpr(_value, Type.Real);
 	    }
 	}
 	if (_count != null) {
-	    _count.typeCheck(stable);
+	    _count.typeCheck(ccontext);
 	}
 	if (_from != null) {
-	    _from.typeCheck(stable);
+	    _from.typeCheck(ccontext);
 	}
 	if (_format != null) {
-	    _format.typeCheck(stable);
+	    _format.typeCheck(ccontext);
 	}
 	if (_lang != null) {
-	    _lang.typeCheck(stable);
+	    _lang.typeCheck(ccontext);
 	}
 	if (_letterValue != null) {
-	    _letterValue.typeCheck(stable);
+	    _letterValue.typeCheck(ccontext);
 	}
 	if (_groupingSeparator != null) {
-	    _groupingSeparator.typeCheck(stable);
+	    _groupingSeparator.typeCheck(ccontext);
 	}
 	if (_groupingSize != null) {
-	    _groupingSize.typeCheck(stable);
+	    _groupingSize.typeCheck(ccontext);
 	}
 	return Type.Void;
     }

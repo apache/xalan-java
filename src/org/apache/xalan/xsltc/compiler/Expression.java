@@ -75,7 +75,7 @@ import org.apache.bcel.generic.*;
 
 abstract class Expression extends SyntaxTreeNode {
     /**
-     * The type of this expression. It is set after calling 
+     * The type of this expression. It is set after calling
      * <code>typeCheck()</code>.
      */
     protected Type _type;
@@ -109,9 +109,9 @@ abstract class Expression extends SyntaxTreeNode {
     public boolean hasLastCall() {
 	return false;
     }
-		
+
     /**
-     * Returns an object representing the compile-time evaluation 
+     * Returns an object representing the compile-time evaluation
      * of an expression. We are only using this for function-available
      * and element-available at this time.
      */
@@ -122,8 +122,8 @@ abstract class Expression extends SyntaxTreeNode {
     /**
      * Type check all the children of this node.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return typeCheckContents(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	return typeCheckContents(ccontext);
     }
 
     /**
@@ -134,7 +134,7 @@ abstract class Expression extends SyntaxTreeNode {
 				    getClass(), this);
 	getParser().reportError(FATAL, msg);
     }
-	
+
     /**
      * Translate this node into a fresh instruction list.
      * The original instruction list is saved and restored.
@@ -163,7 +163,7 @@ abstract class Expression extends SyntaxTreeNode {
      * Expects an object on the stack and if this object can be proven
      * to be a node iterator then the iterator is reset or started
      * depending on the type of this expression.
-     * If this expression is a var reference then the iterator 
+     * If this expression is a var reference then the iterator
      * is reset, otherwise it is started.
      */
     public void startResetIterator(ClassGenerator classGen,
@@ -187,7 +187,7 @@ abstract class Expression extends SyntaxTreeNode {
     }
 
     /**
-     * Synthesize a boolean expression, i.e., either push a 0 or 1 onto the 
+     * Synthesize a boolean expression, i.e., either push a 0 or 1 onto the
      * operand stack for the next statement to succeed. Returns the handle
      * of the instruction to be backpatched.
      */
@@ -223,16 +223,18 @@ abstract class Expression extends SyntaxTreeNode {
     }
 
     /**
-     * Search for a primop in the symbol table that matches the method type 
+     * Search for a primop in the symbol table that matches the method type
      * <code>ctype</code>. Two methods match if they have the same arity.
      * If a primop is overloaded then the "closest match" is returned. The
-     * first entry in the vector of primops that has the right arity is 
+     * first entry in the vector of primops that has the right arity is
      * considered to be the default one.
      */
-    public MethodType lookupPrimop(SymbolTable stable, String op,
-				   MethodType ctype) {
+    public MethodType lookupPrimop(StaticContext scontext, String op,
+        MethodType ctype)
+    {
 	MethodType result = null;
-	final ArrayList primop = stable.lookupPrimop(op);
+	final ArrayList primop = scontext.getPrimop(op);
+
 	if (primop != null) {
 	    final int n = primop.size();
 	    int minDistance = Integer.MAX_VALUE;
@@ -242,7 +244,7 @@ abstract class Expression extends SyntaxTreeNode {
 		if (ptype.argsCount() != ctype.argsCount()) {
 		    continue;
 		}
-				
+
 		// The first method with the right arity is the default
 		if (result == null) {
 		    result = ptype;		// default method
@@ -254,8 +256,8 @@ abstract class Expression extends SyntaxTreeNode {
 		    minDistance = distance;
 		    result = ptype;
 		}
-	    }		
-	}	
+	    }
+	}
 	return result;
-    }	
+    }
 }

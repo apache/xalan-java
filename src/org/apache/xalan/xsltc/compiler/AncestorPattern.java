@@ -103,11 +103,11 @@ final class AncestorPattern extends RelativePathPattern {
 	_right.reduceKernelPattern();
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_left != null) {
-	    _left.typeCheck(stable);
+	    _left.typeCheck(ccontext);
 	}
-	return _right.typeCheck(stable);
+	return _right.typeCheck(ccontext);
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

@@ -106,14 +106,14 @@ final class When extends Instruction {
      * the support of a non-available element, and the <xsl:when> body contains
      * this non-available element.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	// Type-check the test expression
-	if (_test.typeCheck(stable) instanceof BooleanType == false) {
+	if (_test.typeCheck(ccontext) instanceof BooleanType == false) {
 	    _test = new CastExpr(_test, Type.Boolean);
 	}
 	// Type-check the contents (if necessary)
 	if (!_ignore) {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	}
 
 	return Type.Void;

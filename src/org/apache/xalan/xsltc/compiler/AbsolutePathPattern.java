@@ -80,8 +80,8 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	}
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return _left == null ? Type.Root : _left.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	return _left == null ? Type.Root : _left.typeCheck(ccontext);
     }
 
     public boolean isWildcard() {

@@ -207,7 +207,7 @@ final class Step extends RelativeLocationPath {
      * assigned type node if they have no predicates. All other steps
      * have type node-set.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 
 	// Save this value for later - important for testing for special
 	// combinations of steps and patterns than can be optimised
@@ -229,7 +229,7 @@ final class Step extends RelativeLocationPath {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
 		final Expression pred = (Expression)_predicates.get(i);
-		pred.typeCheck(stable);
+		pred.typeCheck(ccontext);
 	    }
 	}
 
@@ -395,7 +395,7 @@ final class Step extends RelativeLocationPath {
 		else {
 		    ParentLocationPath path = new ParentLocationPath(this,step);
 		    try {
-			path.typeCheck(getParser().getSymbolTable());
+			path.typeCheck(CompilerContextImpl.getInstance());
 		    }
 		    catch (TypeCheckError e) { }
 		    path.translate(classGen, methodGen);

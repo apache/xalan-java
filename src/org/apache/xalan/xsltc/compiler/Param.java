@@ -101,8 +101,10 @@ final class Param extends VariableBase {
 	if (parent instanceof Stylesheet) {
 	    // Mark this as a global parameter
 	    _isLocal = false;
+
 	    // Check if a global variable with this name already exists...
-	    Param param = parser.getSymbolTable().lookupParam(_name);
+	    Param param = (Param) getStaticContext().getVariable(_name);
+
 	    // ...and if it does we need to check import precedence
 	    if (param != null) {
 		final int us = this.getImportPrecedence();
@@ -123,7 +125,7 @@ final class Param extends VariableBase {
 	    }
 	    // Add this variable if we have higher precedence
 	    ((Stylesheet)parent).addParam(this);
-	    parser.getSymbolTable().addParam(this);
+	    getStaticContext().addVariable(this);
 	}
 	else if (parent instanceof Template) {
 	    _isLocal = true;
@@ -136,15 +138,15 @@ final class Param extends VariableBase {
      * 'select' expression (if present) or is a result tree if the parameter
      * element has a body and no 'select' expression.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_select != null) {
-	    _type = _select.typeCheck(stable);
+	    _type = _select.typeCheck(ccontext);
 	    if (_type instanceof ReferenceType == false) {
 		_select = new CastExpr(_select, Type.Reference);
 	    }
 	}
 	else if (hasContents()) {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	}
 	_type = Type.Reference;
 

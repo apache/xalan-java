@@ -104,7 +104,7 @@ final class FunctionAvailableCall extends FunctionCall {
      * Argument of function-available call must be literal, typecheck
      * returns the type of function-available to be boolean.  
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_type != null) {
 	   return _type;
 	}

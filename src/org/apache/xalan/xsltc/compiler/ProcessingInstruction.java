@@ -82,9 +82,9 @@ final class ProcessingInstruction extends Instruction {
 	parseContents(ccontext);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_name.typeCheck(stable);
-	typeCheckContents(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_name.typeCheck(ccontext);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 

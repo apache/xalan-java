@@ -165,7 +165,7 @@ final class CastExpr extends Expression {
 	// check if conversion is valid
 	setParent(left.getParent());
 	left.setParent(this);
-	typeCheck(left.getParser().getSymbolTable());
+	typeCheck(getCompilerContext());
     }
 
     public Expression getExpr() {
@@ -194,10 +194,10 @@ final class CastExpr extends Expression {
      * type checking, but typeCheck() is usually not called on them.
      * As a result, this method is called from the constructor.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	Type tleft = _left.getType();
 	if (tleft == null) {
-	    tleft = _left.typeCheck(stable);
+	    tleft = _left.typeCheck(ccontext);
 	}
 	if (tleft instanceof NodeType) {
 	    tleft = Type.Node;	// multiple instances

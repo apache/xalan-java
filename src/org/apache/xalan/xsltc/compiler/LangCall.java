@@ -84,8 +84,8 @@ final class LangCall extends FunctionCall {
     /**
      *
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_langType = _lang.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_langType = _lang.typeCheck(ccontext);
 	if (!(_langType instanceof StringType)) {
 	    _lang = new CastExpr(_lang, Type.String);
 	}

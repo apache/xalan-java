@@ -88,9 +88,9 @@ final class ParentPattern extends RelativePathPattern {
 	_right.reduceKernelPattern();
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_left.typeCheck(stable);
-	return _right.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_left.typeCheck(ccontext);
+	return _right.typeCheck(ccontext);
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

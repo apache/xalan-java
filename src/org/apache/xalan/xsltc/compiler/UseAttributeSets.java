@@ -108,7 +108,7 @@ final class UseAttributeSets extends Instruction {
     /**
      * Do nada.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return Type.Void;
     }
 
@@ -116,17 +116,15 @@ final class UseAttributeSets extends Instruction {
      * Generate a call to the method compiled for this attribute set
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final SymbolTable symbolTable = getParser().getSymbolTable();
 
 	// Go through each attribute set and generate a method call
 	for (int i=0; i<_sets.size(); i++) {
 	    // Get the attribute set name
 	    final QName name = (QName)_sets.get(i);
 	    // Get the AttributeSet reference from the symbol table
-	    final AttributeSet attrs = symbolTable.lookupAttributeSet(name);
+	    final AttributeSet attrs = getStaticContext().getAttributeSet(name);
 	    // Compile the call to the set's method if the set exists
 	    if (attrs != null) {
 		final String methodName = attrs.getMethodName();

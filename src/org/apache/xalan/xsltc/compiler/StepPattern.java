@@ -184,13 +184,13 @@ class StepPattern extends RelativePathPattern {
 	return  "__step_pattern_iter_" + getXSLTC().nextStepPatternSerial();
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (hasPredicates()) {
 	    // Type check all the predicates (e -> position() = e)
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
 		final Predicate pred = (Predicate)_predicates.get(i);
-		pred.typeCheck(stable);
+		pred.typeCheck(ccontext);
 	    }
 
 	    // Analyze context cases
@@ -200,7 +200,7 @@ class StepPattern extends RelativePathPattern {
 	    if (_contextCase == SIMPLE_CONTEXT) {
 		_step = new Step(_axis, _nodeType, null);
 		_step.setParser(getParser());
-		_step.typeCheck(stable);
+		_step.typeCheck(ccontext);
 	    }
 	    else if (_contextCase == GENERAL_CONTEXT) {
 		final int len = _predicates.size();
@@ -208,7 +208,7 @@ class StepPattern extends RelativePathPattern {
 		    ((Predicate)_predicates.get(i)).dontOptimize();
 		_step = new Step(_axis, _nodeType, _predicates);
 		_step.setParser(getParser());
-		_step.typeCheck(stable);
+		_step.typeCheck(ccontext);
 	    }
 	}
 	return _axis == Axis.CHILD ? Type.Element : Type.Attribute;

@@ -81,9 +81,9 @@ final class Fallback extends Instruction {
     /**
      * This element never produces any data on the stack
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_active) {
-	    return(typeCheckContents(stable));
+	    return(typeCheckContents(ccontext));
 	}
 	else {
 	    return Type.Void;

@@ -84,8 +84,8 @@ final class Comment extends Instruction {
 	parseContents(ccontext);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	typeCheckContents(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	typeCheckContents(ccontext);
 	return Type.String;
     }
 

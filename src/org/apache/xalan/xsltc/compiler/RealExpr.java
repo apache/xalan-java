@@ -74,7 +74,7 @@ final class RealExpr extends Expression {
 	_value = value;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return _type = Type.Real;
     }
 

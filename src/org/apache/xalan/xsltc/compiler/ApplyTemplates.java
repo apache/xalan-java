@@ -110,21 +110,21 @@ final class ApplyTemplates extends Instruction {
 	parseContents(ccontext);// with-params
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_select != null) {
-	    _type = _select.typeCheck(stable);
+	    _type = _select.typeCheck(ccontext);
 	    if (_type instanceof NodeType || _type instanceof ReferenceType) {
 		_select = new CastExpr(_select, Type.NodeSet);
 		_type = Type.NodeSet;
 	    }
 	    if (_type instanceof NodeSetType||_type instanceof ResultTreeType) {
-		typeCheckContents(stable); // with-params
+		typeCheckContents(ccontext); // with-params
 		return Type.Void;
 	    }
 	    throw new TypeCheckError(this);
 	}
 	else {
-	    typeCheckContents(stable);		// with-params
+	    typeCheckContents(ccontext);		// with-params
 	    return Type.Void;
 	}
     }

@@ -82,11 +82,10 @@ final class UnaryOpExpr extends Expression {
 	return(_left.hasPositionCall());
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tleft = _left.typeCheck(stable);
-	final MethodType ptype = lookupPrimop(stable, "u-",
-					      new MethodType(Type.Void,
-							     tleft));
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type tleft = _left.typeCheck(ccontext);
+	final MethodType ptype = lookupPrimop(getStaticContext(), "u-",
+            new MethodType(Type.Void, tleft));
 
 	if (ptype != null) {
 	    final Type arg1 = (Type) ptype.argsType().get(0);

@@ -107,14 +107,14 @@ final class LiteralElement extends Instruction {
      * this literal element and its attributes. The output must contain a
      * definition for each namespace, so we stuff them in a hashtable.
      */
-    public void registerNamespace(String prefix, String uri,
-				  SymbolTable stable, boolean declared) {
+    public void registerNamespace(String prefix, String uri, boolean declared) {
+	StaticContextImpl scontext = getStaticContext();
 
 	// Check if the parent has a declaration for this namespace
 	if (_literalElemParent != null) {
 	    final String parentUri = _literalElemParent.accessedNamespace(prefix);
 	    if (parentUri == null) {
-		_literalElemParent.registerNamespace(prefix, uri, stable, declared);
+		_literalElemParent.registerNamespace(prefix, uri, declared);
 		return;
 	    }
 	    if (parentUri.equals(uri)) return;
@@ -132,7 +132,7 @@ final class LiteralElement extends Instruction {
 		    if (old.equals(uri))
 			return;
 		    else
-			prefix = stable.generateNamespacePrefix();
+			prefix = getCompilerContext().generateNamespacePrefix();
 		}
 	    }
 	}
@@ -147,21 +147,24 @@ final class LiteralElement extends Instruction {
      * the attributes of xsl:stylesheet. Also registers a QName to assure
      * that the output element contains the necessary namespace declarations.
      */
-    private String translateQName(QName qname, SymbolTable stable) {
+    private String translateQName(QName qname) {
 	// Break up the QName and get prefix:localname strings
 	String localname = qname.getLocalPart();
 	String prefix = qname.getPrefix();
 
 	// Treat default namespace as "" and not null
-	if (prefix == null)
+	if (prefix == null) {
 	    prefix = Constants.EMPTYSTRING;
-	else if (prefix.equals(XMLNS_STRING))
-	    return(XMLNS_STRING);
+	}
+	else if (prefix.equals(XMLNS_STRING)) {
+	    return XMLNS_STRING;
+	}
 
 	// Check if we must translate the prefix
-	final String alternative = stable.lookupPrefixAlias(prefix);
+	StaticContextImpl scontext = getStaticContext();
+	final String alternative = scontext.getPrefixAlias(prefix);
 	if (alternative != null) {
-	    stable.excludeNamespaces(prefix);
+	    scontext.setExcludePrefixes(prefix);
 	    prefix = alternative;
 	}
 
@@ -170,7 +173,7 @@ final class LiteralElement extends Instruction {
 	if (uri == null) return(localname);
 
 	// Register the namespace as accessed
-	registerNamespace(prefix, uri, stable, false);
+	registerNamespace(prefix, uri, false);
 
 	// Construct the new name for the element (may be unchanged)
 	if (prefix != Constants.EMPTYSTRING)
@@ -203,17 +206,17 @@ final class LiteralElement extends Instruction {
      * Type-check the contents of this element. The element itself does not
      * need any type checking as it leaves nothign on the JVM's stack.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	// Type-check all attributes
 	if (_attributeElements != null) {
 	    final int count = _attributeElements.size();
 	    for (int i = 0; i < count; i++) {
 		SyntaxTreeNode node =
 		    (SyntaxTreeNode)_attributeElements.get(i);
-		node.typeCheck(stable);
+		node.typeCheck(ccontext);
 	    }
 	}
-	typeCheckContents(stable);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 
@@ -247,9 +250,7 @@ final class LiteralElement extends Instruction {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-
-	final SymbolTable stable = parser.getSymbolTable();
-	stable.setCurrentNode(this);
+	final StaticContextImpl scontext = getStaticContext();
 
 	// Find the closest literal element ancestor (if there is one)
 	SyntaxTreeNode _literalElemParent = getParent();
@@ -261,7 +262,7 @@ final class LiteralElement extends Instruction {
 	    _literalElemParent = null;
 	}
 
-	_name = translateQName(_qname, stable);
+	_name = translateQName(_qname);
 
 	// Process all attributes and register all namespaces they use
 	final int count = _attributes.getLength();
@@ -278,11 +279,11 @@ final class LiteralElement extends Instruction {
 	    }
 	    // Handle xsl:extension-element-prefixes
 	    else if (qname == parser.getExtensionElementPrefixes()) {
-		stable.excludeNamespaces(val);
+		scontext.setExcludePrefixes(val);
 	    }
 	    // Handle xsl:exclude-result-prefixes
 	    else if (qname == parser.getExcludeResultPrefixes()) {
-		stable.excludeNamespaces(val);
+		scontext.setExcludePrefixes(val);
 	    }
 	    else {
 		// Ignore special attributes (e.g. xmlns:prefix and xmlns)
@@ -295,7 +296,7 @@ final class LiteralElement extends Instruction {
 		}
 
 		// Handle all other literal attributes
-		final String name = translateQName(qname, stable);
+		final String name = translateQName(qname);
 		LiteralAttribute attr = new LiteralAttribute(name, val, parser);
 		addAttribute(attr);
 		attr.setParent(this);
@@ -310,8 +311,8 @@ final class LiteralElement extends Instruction {
 	    final String prefix = (String)include.next();
 	    if (!prefix.equals("xml")) {
 		final String uri = lookupNamespace(prefix);
-		if (uri != null && !stable.isExcludedNamespace(uri)) {
-		    registerNamespace(prefix, uri, stable, true);
+		if (uri != null && !scontext.getExcludeUri(uri)) {
+		    registerNamespace(prefix, uri, true);
 		}
 	    }
 	}
@@ -325,11 +326,11 @@ final class LiteralElement extends Instruction {
 
 	    // Handle xsl:extension-element-prefixes
 	    if (qname == parser.getExtensionElementPrefixes()) {
-		stable.unExcludeNamespaces(val);
+		scontext.setUnexcludePrefixes(val);
 	    }
 	    // Handle xsl:exclude-result-prefixes
 	    else if (qname == parser.getExcludeResultPrefixes()) {
-		stable.unExcludeNamespaces(val);
+		scontext.setUnexcludePrefixes(val);
 	    }
 	}
     }

@@ -352,7 +352,7 @@ public abstract class SyntaxTreeNode implements Constants {
      *
      * @param stable The compiler/parser's symbol table
      */
-    public abstract Type typeCheck(SymbolTable stable)
+    public abstract Type typeCheck(CompilerContext ccontext)
         throws TypeCheckError;
 
     /**
@@ -360,13 +360,13 @@ public abstract class SyntaxTreeNode implements Constants {
      *
      * @param stable The compiler/parser's symbol table
      */
-    protected Type typeCheckContents(SymbolTable stable)
+    protected Type typeCheckContents(CompilerContext ccontext)
         throws TypeCheckError
     {
 	final int n = elementCount();
 	for (int i = 0; i < n; i++) {
 	    SyntaxTreeNode item = (SyntaxTreeNode)_contents.get(i);
-	    item.typeCheck(stable);
+	    item.typeCheck(ccontext);
 	}
 	return Type.Void;
     }
@@ -570,11 +570,6 @@ public abstract class SyntaxTreeNode implements Constants {
     // TEMP - this should go away !
     protected final XSLTC getXSLTC() {
         return getCompilerContext().getXSLTC();
-    }
-
-    // TEMP - this should go away !
-    protected final SymbolTable getSymbolTable() {
-        return null;
     }
 
     // TEMP - this should go away !

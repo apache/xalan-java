@@ -75,10 +75,10 @@ final class ConcatCall extends FunctionCall {
 	super(fname, arguments);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	for (int i = 0; i < argumentCount(); i++) {
 	    final Expression exp = argument(i);
-	    if (!exp.typeCheck(stable).identicalTo(Type.String)) {
+	    if (!exp.typeCheck(ccontext).identicalTo(Type.String)) {
 		setArgument(i, new CastExpr(exp, Type.String));
 	    }
 	}

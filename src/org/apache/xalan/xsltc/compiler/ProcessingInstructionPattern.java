@@ -102,13 +102,13 @@ final class ProcessingInstructionPattern extends StepPattern {
 	return false;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (hasPredicates()) {
 	    // Type check all the predicates (e -> position() = e)
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
 		final Predicate pred = (Predicate)_predicates.get(i);
-		pred.typeCheck(stable);
+		pred.typeCheck(ccontext);
 	    }
 	}
 	return Type.NodeSet;

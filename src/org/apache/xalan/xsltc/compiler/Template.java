@@ -160,8 +160,6 @@ public final class Template extends TopLevelElement {
     private boolean resolveNamedTemplates(Template other, Parser parser) {
 	if (other == null) return true;
 
-	SymbolTable stable = parser.getSymbolTable();
-
 	final int us = this.getImportPrecedence();
 	final int them = other.getImportPrecedence();
 
@@ -170,7 +168,7 @@ public final class Template extends TopLevelElement {
 	    return true;
 	}
 	else if (us < them) {
-	    stable.addTemplate(other);
+	    getStaticContext().addTemplate(other);
 	    this.disable();
 	    return true;
 	}
@@ -220,7 +218,7 @@ public final class Template extends TopLevelElement {
 
 	// Add the (named) template to the symbol table
 	if (_name != null) {
-	    Template other = parser.getSymbolTable().addTemplate(this);
+	    Template other = getStaticContext().addTemplate(this);
 	    if (!resolveNamedTemplates(other, parser)) {
 		ErrorMsg err =
 		    new ErrorMsg(ErrorMsg.TEMPLATE_REDEF_ERR, _name, this);
@@ -270,12 +268,12 @@ public final class Template extends TopLevelElement {
 	}
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_pattern != null) {
-	    _pattern.typeCheck(stable);
+	    _pattern.typeCheck(ccontext);
 	}
 
-	return typeCheckContents(stable);
+	return typeCheckContents(ccontext);
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

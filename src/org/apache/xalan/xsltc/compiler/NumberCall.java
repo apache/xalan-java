@@ -74,9 +74,9 @@ final class NumberCall extends FunctionCall {
 	super(fname, arguments);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (argumentCount() > 0) {
-	    argument().typeCheck(stable);
+	    argument().typeCheck(ccontext);
 	}
 	return _type = Type.Real;
     }

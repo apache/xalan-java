@@ -83,7 +83,7 @@ final class SimpleAttributeValue extends AttributeValue {
      * Returns this attribute value's type (String).
      * @param stable The compiler/parser's symbol table
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return _type = Type.String;
     }
     

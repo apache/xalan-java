@@ -169,5 +169,15 @@ class CompilerContextImpl implements CompilerContext {
     public void setCurrentMethod(CmMethodDecl currentMethod) {
         _currentMethod = currentMethod;
     }
+
+    /**
+     * This is used for xsl:attribute elements that have a "namespace"
+     * attribute that is currently not defined using xmlns:
+     */
+    private int _nsCounter = 0;
+
+    public String generateNamespacePrefix() {
+        return new String("ns" + _nsCounter++);
+    }
 }
 

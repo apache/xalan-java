@@ -77,8 +77,8 @@ final class BooleanCall extends FunctionCall {
 	_arg = argument(0);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_arg.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_arg.typeCheck(ccontext);
 	return _type = Type.Boolean;
     }
 

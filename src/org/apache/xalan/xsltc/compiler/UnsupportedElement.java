@@ -139,11 +139,11 @@ final class UnsupportedElement extends SyntaxTreeNode {
     /**
      * Run type check on the fallback element (if any).
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_fallback == null) {
 	    throw new TypeCheckError(_message);
 	}
-	return(_fallback.typeCheck(stable));
+	return(_fallback.typeCheck(ccontext));
     }
 
     /**

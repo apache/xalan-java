@@ -91,7 +91,7 @@ final class LiteralExpr extends Expression {
 	_namespace = namespace.equals(Constants.EMPTYSTRING) ? null : namespace;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return _type = Type.String;
     }
 

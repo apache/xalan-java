@@ -99,16 +99,16 @@ final class ForEach extends Instruction {
 	}
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_type = _select.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_type = _select.typeCheck(ccontext);
 
 	if (_type instanceof ReferenceType || _type instanceof NodeType) {
 	    _select = new CastExpr(_select, Type.NodeSet);
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	    return Type.Void;
 	}
 	if (_type instanceof NodeSetType||_type instanceof ResultTreeType) {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	    return Type.Void;
 	}
 	throw new TypeCheckError(this);

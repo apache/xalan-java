@@ -88,10 +88,11 @@ final class CallTemplate extends Instruction {
     /**
      * Verify that a template with this name exists.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Template template = stable.lookupTemplate(_name);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Template template = getStaticContext().getTemplate(_name);
+
 	if (template != null) {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.TEMPLATE_UNDEF_ERR,_name,this);

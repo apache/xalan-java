@@ -83,21 +83,21 @@ final class FormatNumberCall extends FunctionCall {
 	_name = argumentCount() == 3 ? argument(2) : null;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 
 	// Inform stylesheet to instantiate a DecimalFormat object
 	getStylesheet().numberFormattingUsed();
 
-	final Type tvalue = _value.typeCheck(stable);
+	final Type tvalue = _value.typeCheck(ccontext);
 	if (tvalue instanceof RealType == false) {
 	    _value = new CastExpr(_value, Type.Real);
 	}
-	final Type tformat = _format.typeCheck(stable);
+	final Type tformat = _format.typeCheck(ccontext);
 	if (tformat instanceof StringType == false) {
 	    _format = new CastExpr(_format, Type.String);
 	}
 	if (argumentCount() == 3) {
-	    final Type tname = _name.typeCheck(stable);
+	    final Type tname = _name.typeCheck(ccontext);
 
 	    if (_name instanceof LiteralExpr) {
 		final LiteralExpr literal = (LiteralExpr) _name;

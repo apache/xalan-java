@@ -90,7 +90,7 @@ final class DocumentCall extends FunctionCall {
      * argument can be any type (we must cast it to a string) and contains the
      * URI of the document
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	// At least one argument - two at most
 	final int ac = argumentCount();
 	if ((ac < 1) || (ac > 2)) {
@@ -112,7 +112,7 @@ final class DocumentCall extends FunctionCall {
 	    }
 	}
 
-	_uriType = _uri.typeCheck(stable);
+	_uriType = _uri.typeCheck(ccontext);
 	if ((_uriType != Type.NodeSet) && (_uriType != Type.String)) {
 	    _uri = new CastExpr(_uri, Type.String);
 	}
@@ -120,7 +120,7 @@ final class DocumentCall extends FunctionCall {
 	// Parse the second argument - the document URI base
 	if (ac == 2) {
 	    _base = argument(1);
-	    final Type baseType = _base.typeCheck(stable);
+	    final Type baseType = _base.typeCheck(ccontext);
 	    
 	    if (baseType.identicalTo(Type.Node)) {
 		_base = new CastExpr(_base, Type.NodeSet);

@@ -129,7 +129,7 @@ class VariableRefBase extends Expression {
 	return "variable-ref("+_variable.getName()+'/'+_variable.getType()+')';
     }
 
-    public Type typeCheck(SymbolTable stable) 
+    public Type typeCheck(CompilerContext ccontext) 
 	throws TypeCheckError 
     {
 	// Returned cached type if available
@@ -164,7 +164,7 @@ class VariableRefBase extends Expression {
         // If that does not work we must force a type-check (this is normally
         // only needed for globals in included/imported stylesheets
         if (_type == null) {
-            _variable.typeCheck(stable);
+            _variable.typeCheck(ccontext);
             _type = _variable.getType();
         }
 

@@ -69,8 +69,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Otherwise extends Instruction {
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	typeCheckContents(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 

@@ -174,7 +174,7 @@ final class Sort extends Instruction implements Closure {
 	val = getAttribute("data-type");
 	if (val.length() == 0) {
 	    try {
-		final Type type = _select.typeCheck(parser.getSymbolTable());
+		final Type type = _select.typeCheck(getCompilerContext());
 		if (type instanceof IntType)
 		    val = "number";
 		else
@@ -202,8 +202,8 @@ final class Sort extends Instruction implements Closure {
      * Run type checks on the attributes; expression must return a string
      * which we will use as a sort key
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tselect = _select.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type tselect = _select.typeCheck(ccontext);
 
 	// If the sort data-type is not set we use the natural data-type
 	// of the data we will sort
@@ -211,9 +211,9 @@ final class Sort extends Instruction implements Closure {
 	    _select = new CastExpr(_select, Type.String);
 	}
 
-	_order.typeCheck(stable);
-	_caseOrder.typeCheck(stable);
-	_dataType.typeCheck(stable);
+	_order.typeCheck(ccontext);
+	_caseOrder.typeCheck(ccontext);
+	_dataType.typeCheck(ccontext);
 	return Type.Void;
     }
 

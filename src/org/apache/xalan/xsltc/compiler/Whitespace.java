@@ -176,7 +176,6 @@ final class Whitespace extends TopLevelElement {
 	    return;
 	}
 
-	final SymbolTable stable = parser.getSymbolTable();
 	StringTokenizer list = new StringTokenizer(_elementList);
 	StringBuffer elements = new StringBuffer(Constants.EMPTYSTRING);
 
@@ -565,7 +564,7 @@ final class Whitespace extends TopLevelElement {
     /**
      * Type-check contents/attributes - nothing to do...
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return Type.Void; // We don't return anything.
     }
 

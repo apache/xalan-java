@@ -93,7 +93,7 @@ final class ContainsCall extends FunctionCall {
     /**
      * Type check the two parameters for this function
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 
 	// Check that the function was passed exactly two arguments
 	if (argumentCount() != 2) {
@@ -102,13 +102,13 @@ final class ContainsCall extends FunctionCall {
 
 	// The first argument must be a String, or cast to a String
 	_base = argument(0);
-	Type baseType = _base.typeCheck(stable);	
+	Type baseType = _base.typeCheck(ccontext);	
 	if (baseType != Type.String)
 	    _base = new CastExpr(_base, Type.String);
 
 	// The second argument must also be a String, or cast to a String
 	_token = argument(1);
-	Type tokenType = _token.typeCheck(stable);	
+	Type tokenType = _token.typeCheck(ccontext);	
 	if (tokenType != Type.String)
 	    _token = new CastExpr(_token, Type.String);
 

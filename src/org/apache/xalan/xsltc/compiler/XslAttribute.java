@@ -91,7 +91,6 @@ final class XslAttribute extends Instruction {
     public void parse(CompilerContext ccontext) {
 	boolean generated = false;
         final Parser parser = ccontext.getParser();
-	final SymbolTable stable = parser.getSymbolTable();
 
 	String name = getAttribute("name");
 	String namespace = getAttribute("namespace");
@@ -148,7 +147,7 @@ final class XslAttribute extends Instruction {
 		    _prefix = prefix;
 		}
 		else {
-		    _prefix = stable.generateNamespacePrefix();
+		    _prefix = ccontext.generateNamespacePrefix();
 		    generated = true;
 		}
 	    }
@@ -165,8 +164,7 @@ final class XslAttribute extends Instruction {
 	     */
 	    if ((parent instanceof LiteralElement) && (!generated)) {
 		((LiteralElement)parent).registerNamespace(_prefix,
-							   namespace,
-							   stable, false);
+                    namespace, false);
 	    }
 	}
 
@@ -183,13 +181,13 @@ final class XslAttribute extends Instruction {
 	parseContents(ccontext);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (!_ignore) {
-	    _name.typeCheck(stable);
+	    _name.typeCheck(ccontext);
 	    if (_namespace != null) {
-		_namespace.typeCheck(stable);
+		_namespace.typeCheck(ccontext);
 	    }
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	}
 	return Type.Void;
     }

@@ -106,12 +106,12 @@ final class TransletOutput extends Instruction {
     /**
      * Type checks the 'file' attribute (must be able to convert it to a str).
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type type = _filename.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type type = _filename.typeCheck(ccontext);
 	if (type instanceof StringType == false) {
 	    _filename = new CastExpr(_filename, Type.String);
 	}
-	typeCheckContents(stable);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 

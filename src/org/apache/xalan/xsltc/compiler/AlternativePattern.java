@@ -91,9 +91,9 @@ final class AlternativePattern extends Pattern {
     /**
      * The type of an '|' is not really defined, hence null is returned.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_left.typeCheck(stable);
-	_right.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_left.typeCheck(ccontext);
+	_right.typeCheck(ccontext);
 	return null;
     }
 

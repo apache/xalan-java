@@ -90,16 +90,20 @@ final class UnresolvedRef extends VariableRefBase {
 	return(err);
     }
 
-    private VariableRefBase resolve(Parser parser, SymbolTable stable) {
+    private VariableRefBase resolve(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// At this point the AST is already built and we should be able to
 	// find any declared global variable or parameter
 	VariableBase ref = parser.lookupVariable(_variableName);
-	if (ref == null) ref = (VariableBase)stable.lookupName(_variableName);
+	if (ref == null) {
+            ref = getStaticContext().getVariable(_variableName);
+	}
 	if (ref == null) {
 	    reportError();
 	    return null;
 	}
-	
+
 	// Insert the referenced variable as something the parent variable
 	// is dependent of (this class should only be used under variables)
 	if ((_var = findParentVariable()) != null) _var.addDependency(ref);
@@ -113,14 +117,14 @@ final class UnresolvedRef extends VariableRefBase {
 	    return null;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_ref != null) {
 	    final String name = _variableName.toString();
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
 					name, this);
 	}
-	if ((_ref = resolve(getParser(), stable)) != null) {
-	    return (_type = _ref.typeCheck(stable));
+	if ((_ref = resolve(ccontext)) != null) {
+	    return (_type = _ref.typeCheck(ccontext));
 	}
 	throw new TypeCheckError(reportError());
     }

@@ -74,7 +74,7 @@ public abstract class LocationPathPattern extends Pattern {
     private double _priority = Double.NaN;
     private int _position = 0;
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	return Type.Void;		// TODO
     }
 

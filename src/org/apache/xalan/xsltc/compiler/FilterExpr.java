@@ -107,8 +107,8 @@ class FilterExpr extends Expression {
      * cast to node-set only if it is of reference type. This type coercion
      * is needed for expressions like $x where $x is a parameter reference.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	Type ptype = _primary.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	Type ptype = _primary.typeCheck(ccontext);
 
 	if (ptype instanceof NodeSetType == false) {
 	    if (ptype instanceof ReferenceType)  {
@@ -122,7 +122,7 @@ class FilterExpr extends Expression {
 	int n = _predicates.size();
 	for (int i = 0; i < n; i++) {
 	    Expression pred = (Expression)_predicates.get(i);
-	    pred.typeCheck(stable);
+	    pred.typeCheck(ccontext);
 	}
 	return _type = Type.NodeSet;
     }

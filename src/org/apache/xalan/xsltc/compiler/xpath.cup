@@ -103,14 +103,14 @@ parser code {:
     private int _lineNumber = 0;
 
     /**
-     * Reference to the symbol table.
+     * Reference to the static context.
      */
-    public SymbolTable _symbolTable;
+    public StaticContext _scontext;
 
-    public XPathParser(Parser parser) {
-        _parser = parser;
-	_xsltc = parser.getXSLTC();
-        _symbolTable = parser.getSymbolTable();
+    public XPathParser(CompilerContext ccontext, StaticContext scontext) {
+        _parser = ccontext.getParser();
+	_xsltc = ccontext.getXSLTC();
+	_scontext = scontext;
     }
 
     public int getLineNumber() {
@@ -143,7 +143,7 @@ parser code {:
 
 	    if (axis == Axis.NAMESPACE) {
 		return (name.toString().equals("*")) ? -1
-		    : _xsltc.registerNamespace(name);
+		    : _xsltc.registerNamespace(name, _scontext);
             }
 
 	    if (name.getNamespace() == null) {
@@ -199,7 +199,7 @@ parser code {:
 	if (result != null)
             return(result);
         else
-	    return(_symbolTable.lookupName(name));
+	    return _scontext.getVariable(name);
     }
 
     public final void addError(ErrorMsg error) {
@@ -769,7 +769,7 @@ PrimaryExpr ::= VariableReference:vr
 
 	if (index > 0) {
 	    final String prefix = string.substring(0, index);
-	    namespace = parser._symbolTable.lookupNamespace(prefix);
+	    namespace = parser._scontext.getNamespace(prefix);
 	}
 	RESULT = (namespace == null) ? new LiteralExpr(string)
 		     : new LiteralExpr(string, namespace); 

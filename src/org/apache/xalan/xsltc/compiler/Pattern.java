@@ -71,7 +71,7 @@ public abstract class Pattern extends Expression {
      * A <code>NodeType</code> has a number of subtypes defined by 
      * <code>NodeType._type</code> corresponding to each type of node.
      */
-    public abstract Type typeCheck(SymbolTable stable) throws TypeCheckError;
+    public abstract Type typeCheck(CompilerContext ccontext) throws TypeCheckError;
 
     /**
      * Translate this node into JVM bytecodes. Patterns are translated as

@@ -86,6 +86,7 @@ final class Variable extends VariableBase {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
+        final StaticContextImpl scontext = getStaticContext();
 
 	// Parse 'name' and 'select' attributes plus parameter contents
 	super.parse(ccontext);
@@ -96,7 +97,7 @@ final class Variable extends VariableBase {
 	    // Mark this as a global variable
 	    _isLocal = false;
 	    // Check if a global variable with this name already exists...
-	    Variable var = parser.getSymbolTable().lookupVariable(_name);
+	    Variable var = (Variable) scontext.getVariable(_name);
 	    // ...and if it does we need to check import precedence
 	    if (var != null) {
 		final int us = this.getImportPrecedence();
@@ -117,7 +118,7 @@ final class Variable extends VariableBase {
 		// Add this variable if we have higher precedence
 	    }
 	    ((Stylesheet)parent).addVariable(this);
-	    parser.getSymbolTable().addVariable(this);
+	    scontext.addVariable(this);
 	}
 	else {
 	    _isLocal = true;
@@ -128,15 +129,15 @@ final class Variable extends VariableBase {
      * Runs a type check on either the variable element body or the
      * expression in the 'select' attribute
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 
 	// Type check the 'select' expression if present
 	if (_select != null) {
-	    _type = _select.typeCheck(stable);
+	    _type = _select.typeCheck(ccontext);
 	}
 	// Type check the element contents otherwise
 	else if (hasContents()) {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	    _type = Type.ResultTree;
 	}
 	else {

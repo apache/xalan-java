@@ -77,8 +77,8 @@ class ForwardPositionExpr extends Expression {
 	return "forward-position-expr(" + _expr + ")";
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return (_type = _expr.typeCheck(stable));
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	return (_type = _expr.typeCheck(ccontext));
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

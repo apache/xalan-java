@@ -123,9 +123,9 @@ final class EqualityExpr extends Expression implements Operators {
     /**
      * Typing rules: see XSLT Reference by M. Kay page 345.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tleft = _left.typeCheck(stable);
-	final Type tright = _right.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type tleft = _left.typeCheck(ccontext);
+	final Type tright = _right.typeCheck(ccontext);
 
 	if (tleft.isSimple() && tright.isSimple()) {
 	    if (tleft != tright) {

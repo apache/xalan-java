@@ -112,10 +112,10 @@ final class UnionPathExpr extends Expression {
 	if (getParent() instanceof Expression) _reverse = false;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	final int length = _components.length;
 	for (int i = 0; i < length; i++) {
-	    if (_components[i].typeCheck(stable) != Type.NodeSet) {
+	    if (_components[i].typeCheck(ccontext) != Type.NodeSet) {
 		_components[i] = new CastExpr(_components[i], Type.NodeSet);
 	    }
 	}

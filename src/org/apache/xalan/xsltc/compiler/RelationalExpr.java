@@ -104,9 +104,9 @@ final class RelationalExpr extends Expression implements Operators {
 	    _right.getType() instanceof NodeSetType;
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	Type tleft = _left.typeCheck(stable);
-	Type tright = _right.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	Type tleft = _left.typeCheck(ccontext);
+	Type tright = _right.typeCheck(ccontext);
 
 	//bug fix # 2838, cast to reals if both are result tree fragments
 	if (tleft instanceof ResultTreeType &&
@@ -189,9 +189,9 @@ final class RelationalExpr extends Expression implements Operators {
 	}
 
 	// Lookup the table of primops to find the best match
-	MethodType ptype = lookupPrimop(stable, Operators.names[_op],
-					new MethodType(Type.Void,
-						       tleft, tright));
+	MethodType ptype = lookupPrimop(getStaticContext(),
+            Operators.names[_op],
+            new MethodType(Type.Void, tleft, tright));
 
 	if (ptype != null) {
 	    Type arg1 = (Type) ptype.argsType().get(0);

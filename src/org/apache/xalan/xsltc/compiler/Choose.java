@@ -142,7 +142,7 @@ final class Choose extends Instruction {
 	    if (test instanceof FunctionCall) {
 		FunctionCall call = (FunctionCall)test;
 		try {
-		    Type type = call.typeCheck(getParser().getSymbolTable());
+		    Type type = call.typeCheck(getCompilerContext());
 		    if (type != Type.Boolean) {
 			test._falseList.add(il.append(new IFEQ(null)));
 		    }

@@ -102,15 +102,15 @@ final class WithParam extends Instruction {
      * Type-check either the select attribute or the element body, depending
      * on which is in use.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_select != null) {
-	    final Type tselect = _select.typeCheck(stable);
+	    final Type tselect = _select.typeCheck(ccontext);
 	    if (tselect instanceof ReferenceType == false) {
 		_select = new CastExpr(_select, Type.Reference);
 	    }
 	}
 	else {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	}
 	return Type.Void;
     }

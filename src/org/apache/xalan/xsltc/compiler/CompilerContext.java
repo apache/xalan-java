@@ -88,5 +88,11 @@ interface CompilerContext {
      * codemodel package.
      */
     public CmMethodDecl getCurrentMethod();
+
+    /**
+     * Returns a fresh namespace prefix (used by xsl:attribute and
+     * xsl:element).
+     */
+    public String generateNamespacePrefix();
 }
 

@@ -151,8 +151,8 @@ final class ApplyImports extends Instruction {
     /**
      * Type-check the attributes/contents of an <xsl:apply-imports/> element.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	typeCheckContents(stable);		// with-params
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	typeCheckContents(ccontext);		// with-params
 	return Type.Void;
     }
 

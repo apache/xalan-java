@@ -119,6 +119,7 @@ final class AttributeSet extends TopLevelElement {
      */
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
+        final StaticContextImpl scontext = getStaticContext();
 
 	// Get this attribute set's name
 	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
@@ -137,10 +138,10 @@ final class AttributeSet extends TopLevelElement {
 	// <xsl:attribute> elements. Other elements cause an error.
 	final ArrayList contents = getContents();
 	final int count = contents.size();
-	for (int i=0; i<count; i++) {
+	for (int i = 0; i < count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
 	    if (child instanceof XslAttribute) {
-		parser.getSymbolTable().setCurrentNode(child);
+		scontext.setCurrentNode(child);
 		child.parse(ccontext);
 	    }
 	    else if (child instanceof Text) {
@@ -152,24 +153,23 @@ final class AttributeSet extends TopLevelElement {
 	    }
 	}
 
-	// Point the symbol table back at us...
-	parser.getSymbolTable().setCurrentNode(this);
+	// Set new "current" node in static context;
+	scontext.setCurrentNode(this);
     }
 
     /**
      * Type check the contents of this element
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_ignore) return (Type.Void);
 
         // _mergeSet Point to any previous definition of this attribute set
-	_mergeSet = stable.addAttributeSet(this);
+	_mergeSet = getStaticContext().addAttributeSet(this);
 
 	_method = AttributeSetPrefix + getXSLTC().nextAttributeSetSerial();
 
-	if (_useSets != null) _useSets.typeCheck(stable);
-	typeCheckContents(stable);
+	if (_useSets != null) _useSets.typeCheck(ccontext);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 

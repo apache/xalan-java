@@ -84,9 +84,9 @@ final class LiteralAttribute extends Instruction {
 	_value = AttributeValue.create(this, value, parser);
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	_value.typeCheck(stable);
-	typeCheckContents(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	_value.typeCheck(ccontext);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 

@@ -90,9 +90,9 @@ final class AbsoluteLocationPath extends Expression {
 	    (_path != null ? _path.toString() : "null") + ')';
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (_path != null) {
-	    final Type ptype = _path.typeCheck(stable);
+	    final Type ptype = _path.typeCheck(ccontext);
 	    if (ptype instanceof NodeType) {		// promote to node-set
 		_path = new CastExpr(_path, Type.NodeSet);
 	    }

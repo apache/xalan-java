@@ -106,14 +106,14 @@ final class If extends Instruction {
      * Type-check the "test" expression and contents of this element.
      * The contents will be ignored if we know the test will always fail.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	// Type-check the "test" expression
-	if (_test.typeCheck(stable) instanceof BooleanType == false) {
+	if (_test.typeCheck(ccontext) instanceof BooleanType == false) {
 	    _test = new CastExpr(_test, Type.Boolean);
 	}
 	// Type check the element contents
 	if (!_ignore) {
-	    typeCheckContents(stable);
+	    typeCheckContents(ccontext);
 	}
 	return Type.Void;
     }

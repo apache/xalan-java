@@ -86,8 +86,8 @@ final class CopyOf extends Instruction {
         }
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tselect = _select.typeCheck(stable);
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
+	final Type tselect = _select.typeCheck(ccontext);
 	if (tselect instanceof NodeType ||
 	    tselect instanceof NodeSetType ||
 	    tselect instanceof ReferenceType ||

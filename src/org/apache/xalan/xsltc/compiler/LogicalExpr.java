@@ -141,14 +141,15 @@ final class LogicalExpr extends Expression {
     /**
      * Type-check this expression, and possibly child expressions.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	// Get the left and right operand types
-	Type tleft = _left.typeCheck(stable);
-	Type tright = _right.typeCheck(stable);
+	Type tleft = _left.typeCheck(ccontext);
+	Type tright = _right.typeCheck(ccontext);
 
 	// Check if the operator supports the two operand types
 	MethodType wantType = new MethodType(Type.Void, tleft, tright);
-	MethodType haveType = lookupPrimop(stable, Ops[_op], wantType);
+	MethodType haveType =
+            lookupPrimop(getStaticContext(), Ops[_op], wantType);
 
 	// Yes, the operation is supported
 	if (haveType != null) {

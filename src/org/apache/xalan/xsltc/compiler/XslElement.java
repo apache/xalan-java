@@ -123,7 +123,6 @@ final class XslElement extends Instruction {
 
     public void parse(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
-	final SymbolTable stable = parser.getSymbolTable();
 
 	// Handle the 'name' attribute
 	String name = getAttribute("name");
@@ -177,7 +176,7 @@ final class XslElement extends Instruction {
 		    if (isLiteral(namespace)) {
 			prefix = lookupPrefix(namespace);
 			if (prefix == null) {
-			    prefix = stable.generateNamespacePrefix();
+			    prefix = ccontext.generateNamespacePrefix();
 			}
 		    }
 
@@ -210,14 +209,14 @@ final class XslElement extends Instruction {
     /**
      * Run type check on element name & contents
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(CompilerContext ccontext) throws TypeCheckError {
 	if (!_ignore) {
-	    _name.typeCheck(stable);
+	    _name.typeCheck(ccontext);
 	    if (_namespace != null) {
-		_namespace.typeCheck(stable);
+		_namespace.typeCheck(ccontext);
 	    }
 	}
-	typeCheckContents(stable);
+	typeCheckContents(ccontext);
 	return Type.Void;
     }
 
