@@ -47,7 +47,12 @@
    <li>Fixed a problem reported by Dimitry Voytenko serializing compiled stylesheets.<br/><br/></li>
    <li>For support of applets, modified TransformerFactory System.getProperty() calls to catch SecurityExceptions.<br/><br/></li>
    <li>Fixed a bug reported by Krishna Mohan Meduri setting output properties.<br/><br/></li>
-   <li>Fixed error recovery when xsl:element encounters a bad name or unresolvable prefix.</li>
+   <li>Fixed error recovery when xsl:element encounters a bad name or unresolvable prefix.<br/><br/></li>
+   <li>Added AbstractMethodError handling to existing NoSuchMethodError handling as a fallback to the XMLReaderFactory for XML parsers that do
+       not implement the JAXP parsers interface for creating an XMLReader<br/><br/></li>
+   <li>Fixed bug with cloned iterators reported by Tim Sean.<br/><br/></li>
+   <li>Fixed null pointer exception that could occur with getValue("xxx").<br/><br/></li>
+   <li>Fixed bug reported by Tim Sean handling the xml:space attribute.</li>
 </ul>
 <p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
 <ul>
