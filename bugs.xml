@@ -1,27 +1,20 @@
 <?xml version="1.0"?>
-<Sprs>
-<Spr>
-<Name>SCUU4QWTVZ</Name>
-<DateCreated>11/09/2000</DateCreated>
-<State>Open</State>
-<TestID>org.apache.qetest.trax.transformerapitest r1.2</TestID>
-<TestDesc>Transformer.setParameter(String); getParameter returns XString</TestDesc>
-<Details><![CDATA[(0b09CVS-morning)
+<?xm-well_formed path="E:\xml-xalan\java\bugs.dtd"?>
+<Sprs><Spr><Name>SCUU4QWTVZ</Name><DateCreated>11/09/2000</DateCreated>
+<State>Pending</State><TestID>org.apache.qetest.trax.transformerapitest
+r1.2</TestID><TestDesc>Transformer.setParameter(String); getParameter returns
+XString</TestDesc><Details><![CDATA[(0b09CVS-morning)
 Getting parameters back from a Transformer, they're always XObjects or the 
 like.  They should be the actual object type you set.
 
 To reproduce: run org.apache.qetest.trax.TransformerAPITest r1.2; lines 335-363 
 approx.
 Setting a String returns an XString.
-Setting an Integer returns an XObject.]]></Details>
-</Spr>
-<Spr>
-<Name>SCUU4R3JGY</Name>
-<DateCreated>11/14/2000</DateCreated>
-<State>Open</State>
-<TestID>transformerapitest.java r1.4</TestID>
-<TestDesc>TRAX Transformer.setParameter() will not re-set an existing param</TestDesc>
-<Details><![CDATA[(See TransformerAPITest.java r1.4 lines 374-406)
+Setting an Integer returns an XObject.]]></Details></Spr>
+<Spr><Name>SCUU4R3JGY</Name><DateCreated>11/14/2000</DateCreated>
+<State>Pending</State><TestID>transformerapitest.java
+r1.4</TestID><TestDesc>TRAX Transformer.setParameter() will not re-set an
+existing param</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 374-406)
 Essentially:
 transformer.setParameter("param3s", new Integer(1234));
 Object tmp = transformer.getParameter("param3s");	// OK, is 
@@ -32,15 +25,11 @@ Integer(1234)
 transformer.setParameter("param3s", "string value");
 tmp = transformer.getParameter("param3s");	// BUG: Fails, is still 
 Integer(1234)
-With Xalan 0b14CVS-morning]]></Details>
-</Spr>
-<Spr>
-<Name>SCUU4R3JPH</Name>
-<DateCreated>11/14/2000</DateCreated>
-<State>Open</State>
-<TestID>transformerapitest.java r1.4</TestID>
-<TestDesc>TRAX identityTransformer.getOutputProperty("method") throws NullPointerException</TestDesc>
-<Details><![CDATA[(See TransformerAPITest.java r1.4 lines 374-406)
+With Xalan 0b14CVS-morning]]></Details></Spr><Spr><Name>SCUU4R3JPH</Name>
+<DateCreated>11/14/2000</DateCreated><State>Pending</State>
+<TestID>transformerapitest.java r1.4</TestID><TestDesc>TRAX
+identityTransformer.getOutputProperty("method") throws
+NullPointerException</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 374-406)
 Essentially:
             // See what the default 'identity' transform has by default
             Properties identityProps = 
@@ -61,15 +50,11 @@ org.apache.xalan.transformer.TransformerImpl.getOutputProperty(TransformerImpl.j
 ava:667)
 	at org.apache.qetest.trax.TransformerAPITest.testCase2(Compiled Code)
 
-With Xalan 0b14CVS-morning]]></Details>
-</Spr>
-<Spr>
-<Name>SCUU4R3JRR</Name>
-<DateCreated>11/14/2000</DateCreated>
-<State>Open</State>
-<TestID>transformerapitest.java r1.4; transformerapioutputformat.xsl r1.2</TestID>
-<TestDesc>TRAX transformer.getOutputProperties does not return some xsl:output props</TestDesc>
-<Details><![CDATA[(See TransformerAPITest.java r1.4 lines 499, 538, 555-575)
+With Xalan 0b14CVS-morning]]></Details></Spr><Spr><Name>SCUU4R3JRR</Name>
+<DateCreated>11/14/2000</DateCreated><State>Pending</State>
+<TestID>transformerapitest.java r1.4; transformerapioutputformat.xsl
+r1.2</TestID><TestDesc>TRAX transformer.getOutputProperties does not return
+some xsl:output props</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 499, 538, 555-575)
 Essentially:
             outputTemplates = factory.newTemplates(new 
 StreamSource(outputFormatTest.inputName));
@@ -108,15 +93,11 @@ Note: Should these be returned?  Are there any differences between the
 xsl:output block in the stylesheet and which properties can be accessed 
 programmatically though either transformer.getOutputProperty() or 
 transformer.getOutputProperties()?
-With Xalan 0b14CVS-morning]]></Details>
-</Spr>
-<Spr>
-<Name>SCUU4R3JZ7</Name>
-<DateCreated>11/14/2000</DateCreated>
-<State>Open</State>
-<TestID>transformerapitest.java r1.4</TestID>
-<TestDesc>TRAX transformer.getOutputProperty after a transform throws NullPointerException</TestDesc>
-<Details><![CDATA[(See TransformerAPITest.java r1.4 lines 578-592)
+With Xalan 0b14CVS-morning]]></Details><DeveloperComment>The above values should not be returned, as they are NULL by default, and thus will show up in the property lists only if they are set.</DeveloperComment></Spr><Spr><Name>SCUU4R3JZ7</Name>
+<DateCreated>11/14/2000</DateCreated><State>Pending</State>
+<TestID>transformerapitest.java r1.4</TestID><TestDesc>TRAX
+transformer.getOutputProperty after a transform throws
+NullPointerException</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 lines 578-592)
 Essentially:
 - Create templates, transformer
 - transformer.transform(source, result)
@@ -133,15 +114,10 @@ ava:677)
 Note: May be related to / DUPL of SCUU4R3JPH 
 
 With Xalan 0b14CVS-morning
-]]></Details>
-</Spr>
-<Spr>
-<Name>SCUU4R3K6G</Name>
-<DateCreated>11/14/2000</DateCreated>
-<State>Open</State>
-<TestID>transformerapitest.java r1.4</TestID>
-<TestDesc>TRAX transformer.getErrorListener() is null by default</TestDesc>
-<Details><![CDATA[(See TransformerAPITest.java r1.4 line 686)
+]]></Details></Spr><Spr><Name>SCUU4R3K6G</Name>
+<DateCreated>11/14/2000</DateCreated><State>Pending</State>
+<TestID>transformerapitest.java r1.4</TestID><TestDesc>TRAX
+transformer.getErrorListener() is null by default</TestDesc><Details><![CDATA[(See TransformerAPITest.java r1.4 line 686)
 Essentially:
 - Create templates, transformer
 - transformer.getErrorListener()	// BUG is null
@@ -150,6 +126,4 @@ Javadoc notes this method should never return null.  Note that similar
 TransformerFactoryAPITest with a new transformerFactory.getErrorListener() 
 properly returns org.apache.xalan.utils.DefaultErrorHandler
 With Xalan 0b14CVS-morning
-]]></Details>
-</Spr>
-</Sprs>
+]]></Details></Spr></Sprs>
