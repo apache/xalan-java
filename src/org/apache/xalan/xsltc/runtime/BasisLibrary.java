@@ -410,9 +410,9 @@ public final class BasisLibrary implements Operators {
 	if (name.equals("xsl:version"))
 	    return("1.0");
 	if (name.equals("xsl:vendor"))
-	    return("Sun Microsystems' xsltc");
+	    return("Apache Xalan XSLTC");
 	if (name.equals("xsl:vendor-url"))
-	    return("http://www.sun.com/");
+	    return("http://xml.apache.org/xalan-j");
 	
 	runTimeError("Invalid argument type '"+name+
 		     "' in call to system-property().");
