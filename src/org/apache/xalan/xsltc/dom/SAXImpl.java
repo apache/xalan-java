@@ -642,7 +642,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     int node;
     while ((node = _source.next()) != END)
     {
-      String val = getNodeValue(node);
+      String val = getStringValueX(node);
       if (_value.equals(val) == _op)
       {
         if (_returnType == RETURN_CURRENT)
@@ -829,7 +829,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     /**
      * Returns the (String) value of any node in the tree
      */
-    public String getNodeValue(final int node)
+    public String getStringValueX(final int node)
     {
 	if (node == DTM.NULL) return EMPTYSTRING;
 	switch(getNodeType(node)) {
@@ -1724,7 +1724,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         copyPI(node, handler);
         break;
       case DTM.COMMENT_NODE:
-        handler.comment(getNodeValue(node));
+        handler.comment(getStringValueX(node));
         break;
       case DTM.TEXT_NODE:
         boolean oldEscapeSetting = false;
@@ -1757,7 +1757,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
           for(int a=getFirstAttribute(node); a!=DTM.NULL; a=getNextAttribute(a))
             {
               final String uri = getNamespaceName(a);
-              if (uri != EMPTYSTRING) {
+              if (uri.length() != 0) {
                 final String prefix = getPrefix(a);
                 handler.namespace(prefix, uri);
               }
@@ -1780,7 +1780,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         // Shallow copy of attribute to output handler
         else {
           final String uri = getNamespaceName(node);
-          if (uri != EMPTYSTRING) {
+          if (uri.length() != 0) {
             final String prefix = getPrefix(node);
             handler.namespace(prefix, uri);
           }
@@ -1834,7 +1834,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         copyPI(node, handler);
         return null;
       case DTM.COMMENT_NODE:
-        handler.comment(getNodeValue(node));
+        handler.comment(getStringValueX(node));
         return null;
       case DTM.NAMESPACE_NODE:
         handler.namespace(getNodeNameX(node), //_prefixArray[_prefix[node]],
@@ -1842,7 +1842,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         return null;
       case DTM.ATTRIBUTE_NODE:
       final String uri = getNamespaceName(node);
-          if (uri != EMPTYSTRING) {
+          if (uri.length() != 0) {
             final String prefix = getPrefix(node); // _prefixArray[_prefix[node]];
             handler.namespace(prefix, uri);
           }
@@ -1856,7 +1856,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         else
         {
           final String uri1 = getNamespaceName(node);
-          if (uri1 != EMPTYSTRING) {
+          if (uri1.length() != 0) {
             final String prefix = getPrefix(node); // _prefixArray[_prefix[node]];
             handler.namespace(prefix, uri1);
           }
@@ -1870,24 +1870,16 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
                                TransletOutputHandler handler)
       throws TransletException
     {
-      String name = null;
-      final String prefix = getPrefix(node);
+      final String name = getNodeName(node);
+      final String localName = getLocalName(node);
       final String uri = getNamespaceName(node);
-      final String local = getLocalName(node);
-      name = (prefix.equals(EMPTYSTRING)) ? local : (prefix + ':' + local);
 
-      if (uri != null)
-      {
-        handler.startElement(name);
-        handler.namespace(prefix, uri);
-      }
-      else
-      {
-/*
- * %HZ%:  Should prefix be copied when URI is null?  The MAIN branch avoids
- * %HZ%:  it today.
- */
-        handler.startElement(name);
+      handler.startElement(name);
+
+      if (name.length() != localName.length()) {
+        handler.namespace(getPrefix(node), uri);
+      } else if (uri.length() != 0) {
+        handler.namespace(EMPTYSTRING, uri);
       }
 
       return name;

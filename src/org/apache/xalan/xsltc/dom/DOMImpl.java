@@ -328,7 +328,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
             namespaces.setStartNode(anode);
 	    while ((nsnode = namespaces.next()) != DTM.NULL) {
 		if (getLocalName(nsnode).equals(prefix)) {
-		    return getNodeValue(nsnode);
+		    return getStringValueX(nsnode);
 		}
 	    }
 	}
@@ -776,7 +776,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     int node;
     while ((node = _source.next()) != END) 
     {
-      String val = getNodeValue(node);
+      String val = getStringValueX(node);
       if (_value.equals(val) == _op) 
       {
         if (_returnType == RETURN_CURRENT)
@@ -894,7 +894,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     /**
      * Returns the (String) value of any node in the tree
      */
-    public String getNodeValue(final int node) {
+    public String getStringValueX(final int node) {
 	if (node == DTM.NULL) return EMPTYSTRING;
 	switch(getNodeType(node)) {
 	case DTM.ROOT_NODE:
@@ -1568,7 +1568,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         copyPI(node, handler);
         break;
       case DTM.COMMENT_NODE:
-        handler.comment(getNodeValue(node)/*_text,
+        handler.comment(getStringValueX(node)/*_text,
                                    _offsetOrChild[node],
                                    _lengthOrAttr[node])*/);
         break;
@@ -1588,7 +1588,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
           // Copy element attribute
           for(int a=getFirstAttribute(node); a!=DTM.NULL; a=getNextAttribute(a)){
               final String uri = getNamespaceName(a);
-              if (uri != EMPTYSTRING) {
+              if (uri.length() != 0) {
                 final String prefix = getPrefix(a);
                 handler.namespace(prefix, uri);
               }
@@ -1599,7 +1599,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                     a = getNextNamespaceNode(node, a, true)) 
            {
               handler.namespace(getNodeNameX(a),
-                                getNodeValue(a));
+                                getStringValueX(a));
             }
           
           // Copy element children
@@ -1611,7 +1611,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         // Shallow copy of attribute to output handler
         else {
           final String uri = getNamespaceName(node);
-          if (uri != EMPTYSTRING) {
+          if (uri.length() != 0) {
             final String prefix = getPrefix(node);
             handler.namespace(prefix, uri);
           }
@@ -1667,18 +1667,18 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         copyPI(node, handler);
         return null;
       case DTM.COMMENT_NODE:
-        final String comment = getNodeValue(node); /*)new String(_text,
+        final String comment = getStringValueX(node); /*)new String(_text,
                                           _offsetOrChild[node],
                                           _lengthOrAttr[node]);*/
         handler.comment(comment);
         return null;
       case DTM.NAMESPACE_NODE:
         handler.namespace(getNodeNameX(node), //_prefixArray[_prefix[node]],
-                          getNodeValue(node)); //makeStringValue(node));
+                          getStringValueX(node)); //makeStringValue(node));
         return null;
       case DTM.ATTRIBUTE_NODE:
       final String uri = getNamespaceName(node);
-          if (uri != EMPTYSTRING) {
+          if (uri.length() != 0) {
             final String prefix = getPrefix(node); // _prefixArray[_prefix[node]];
             handler.namespace(prefix, uri);
           }
@@ -1692,7 +1692,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         else
         {
           final String uri1 = getNamespaceName(node);
-          if (uri1 != EMPTYSTRING) {
+          if (uri1.length() != 0) {
             final String prefix = getPrefix(node); // _prefixArray[_prefix[node]];
             handler.namespace(prefix, uri1);
           }
@@ -1706,35 +1706,17 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                                TransletOutputHandler handler)
       throws TransletException 
     {
-
-      String name = null;
-      final String prefix = getPrefix(node);
+      final String name = getNodeName(node);
+      final String localName = getLocalName(node);
       final String uri = getNamespaceName(node);
-      final String local = getLocalName(node);
-      name = (prefix.equals(EMPTYSTRING)) ? local : (prefix + ':' + local);
 
-      if (uri != null)
-      {
-        handler.startElement(name);
-        handler.namespace(prefix, uri);
-      }
-      else
-      {
-/*
- * %HZ%:  Should prefix be copied when URI is null?  The MAIN branch avoids
- * %HZ%:  it today.
- */
-        handler.startElement(name);
-      }
+      handler.startElement(name);
 
-/* %HZ%:  How do namespaces normally get copied?
-      // Copy element's namespaces
-      for (int a = getFirstNamespaceNode(node, false);
-               a != DTM.NULL;
-               a = getNextNamespaceNode(node, a, false)) {
-          handler.namespace(getPrefix(a), getStringValue(a).toString());
+      if (name.length() != localName.length()) {
+        handler.namespace(getPrefix(node), uri);
+      } else if (uri.length() != 0) {
+        handler.namespace(EMPTYSTRING, uri);
       }
-*/
 
       return name;
     }
@@ -1820,7 +1802,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 		int attribute = getFirstAttribute(element);
 		while (attribute != DTM.NULL) {
 		    buffer.append(' ').append(getNodeName(attribute))
-		          .append("=\"").append(getNodeValue(attribute))
+		          .append("=\"").append(getStringValueX(attribute))
 		          .append('"');
 		    attribute = getNextAttribute(attribute);
 		}
@@ -1877,7 +1859,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 
         if (DTM.NULL != langAttr)
         {
-          return getNodeValue(langAttr);     
+          return getStringValueX(langAttr);     
         }
       }
 
