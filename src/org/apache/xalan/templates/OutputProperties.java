@@ -858,7 +858,7 @@ public class OutputProperties extends ElemTemplateElement
       }
       else if (key.equals(OutputKeys.CDATA_SECTION_ELEMENTS))
       {
-        m_properties.put(key, (String) oldValue + (String) src.get(key));
+        m_properties.put(key, (String) oldValue + " " + (String) src.get(key));
       }
     }
   }
