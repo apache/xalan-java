@@ -90,6 +90,7 @@ public class StreamXMLOutput extends StreamOutput {
 	super(writer, encoding);
 	initCDATA();
 	initNamespaces();
+// System.out.println("StreamXMLOutput.<init>");
     }
 
     public StreamXMLOutput(OutputStream out, String encoding) 
@@ -98,6 +99,7 @@ public class StreamXMLOutput extends StreamOutput {
 	super(out, encoding);
 	initCDATA();
 	initNamespaces();
+// System.out.println("StreamXMLOutput.<init>");
     }
 
     public void startDocument() throws TransletException { 

@@ -98,6 +98,8 @@ public class StreamHTMLOutput extends StreamOutput {
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
 
+// System.out.println("StreamHTMLOutput.<init>");
+
 	// Transfer output settings
 	setDoctype(output._doctypeSystem, output._doctypePublic);
 	omitHeader(output._omitHeader);
@@ -109,12 +111,14 @@ public class StreamHTMLOutput extends StreamOutput {
 
     public StreamHTMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
+// System.out.println("StreamHTMLOutput.<init>");
     }
 
     public StreamHTMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	super(out, encoding);
+// System.out.println("StreamHTMLOutput.<init>");
     }
 
     public void startDocument() throws TransletException { 

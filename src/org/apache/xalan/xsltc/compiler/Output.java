@@ -73,7 +73,6 @@ import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.runtime.TextOutput;
 
 final class Output extends TopLevelElement {
 

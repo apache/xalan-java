@@ -171,10 +171,6 @@ public interface Constants extends InstructionConstants {
 	= "org/apache/xalan/xsltc/TransletOutputHandler";
     public static final String OUTPUT_HANDLER_SIG
 	= "Lorg/apache/xalan/xsltc/TransletOutputHandler;";
-    public static final String TEXT_OUTPUT
-	= "org/apache/xalan/xsltc/runtime/TextOutput";
-    public static final String TEXT_OUTPUT_SIG
-	= "Lorg/apache/xalan/xsltc/runtime/TextOutput;";
     public static final String FILTER_INTERFACE   
 	= "org.apache.xalan.xsltc.dom.Filter";
     public static final String FILTER_INTERFACE_SIG   

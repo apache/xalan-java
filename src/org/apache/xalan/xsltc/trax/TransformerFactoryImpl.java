@@ -143,7 +143,7 @@ public class TransformerFactoryImpl
     // This flags are passed to the compiler
     private boolean _debug = false;
     private boolean _disableInlining = false;
-    private boolean _experimentalOutput = false;
+    private boolean _oldOutputSystem = false;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -220,8 +220,8 @@ public class TransformerFactoryImpl
 	else if (name.equals("disable-inlining") && value instanceof Boolean) {
 	    _disableInlining = ((Boolean) value).booleanValue();
 	}
-	else if (name.equals("experimental-output") && value instanceof Boolean) {
-	    _experimentalOutput = ((Boolean) value).booleanValue();
+	else if (name.equals("old-output") && value instanceof Boolean) {
+	    _oldOutputSystem = ((Boolean) value).booleanValue();
 	}
 	else {
 	    // Throw an exception for all other attributes
@@ -346,7 +346,7 @@ public class TransformerFactoryImpl
 
 	// Create a Transformer object and store for other calls
 	Templates templates = new TemplatesImpl(bytecodes, _defaultTransletName,
-					        _experimentalOutput);
+					        _oldOutputSystem);
 	_copyTransformer = templates.newTransformer();
 	if (_uriResolver != null) _copyTransformer.setURIResolver(_uriResolver);
 	return(_copyTransformer);
@@ -527,7 +527,7 @@ public class TransformerFactoryImpl
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_COMPILE_ERR);
 	    throw new TransformerConfigurationException(err.toString());
 	}
-	return new TemplatesImpl(bytecodes, transletName, _experimentalOutput);
+	return new TemplatesImpl(bytecodes, transletName, _oldOutputSystem);
     }
 
     /**
@@ -541,7 +541,7 @@ public class TransformerFactoryImpl
     public TemplatesHandler newTemplatesHandler() 
 	throws TransformerConfigurationException { 
 	final TemplatesHandlerImpl handler = 
-	    new TemplatesHandlerImpl(_experimentalOutput);
+	    new TemplatesHandlerImpl(_oldOutputSystem);
 	handler.init();
 	return handler;
     }

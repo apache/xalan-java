@@ -834,14 +834,6 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 		BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR, patchedName);
 	    }
 
-/*
-System.err.println("TextOutput.attribute() uri = " + uri
-    + " localname = " + localName
-    + " qname = " + name 
-    + "\n value = " + value
-    + " escapeString(value) = " + escapeString(value));
-*/
-
 	    // Output as namespace declaration
 	    if (name.startsWith(XMLNS_PREFIX)) {
 		namespace(name.length() > 6 ? name.substring(6) : EMPTYSTRING, value);

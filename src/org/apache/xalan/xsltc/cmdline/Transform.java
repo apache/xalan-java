@@ -97,7 +97,7 @@ import org.apache.xalan.xsltc.runtime.output.*;
 final public class Transform {
 
     // Temporary
-    static private boolean _useExperimentalOutputSystem = false;
+    static private boolean _useOldOutputSystem = false;
 
     private TransletOutputHandler _handler;
 
@@ -210,16 +210,16 @@ final public class Transform {
 	    tohFactory.setOutputMethod(_translet._method);
 
 	    if (_iterations == -1) {
-		translet.transform(dom, _useExperimentalOutputSystem ?
-					tohFactory.getTransletOutputHandler() :
-					tohFactory.getOldTransletOutputHandler());
+		translet.transform(dom, _useOldOutputSystem ?
+					tohFactory.getOldTransletOutputHandler() :
+					tohFactory.getTransletOutputHandler());
 	    }
 	    else if (_iterations > 0) {
 		long mm = System.currentTimeMillis();
 		for (int i = 0; i < _iterations; i++) {
-		    translet.transform(dom, _useExperimentalOutputSystem ?
-					    tohFactory.getTransletOutputHandler() :
-					    tohFactory.getOldTransletOutputHandler());
+		    translet.transform(dom, _useOldOutputSystem ?
+					    tohFactory.getOldTransletOutputHandler() :
+					    tohFactory.getTransletOutputHandler());
 		}
 		mm = System.currentTimeMillis() - mm;
 
@@ -320,7 +320,7 @@ final public class Transform {
 			jarFile = args[++i];
 		    }
 		    else if (args[i].equals("-e")) {
-			_useExperimentalOutputSystem = true;
+			_useOldOutputSystem = true;
 		    }
 		    else if (args[i].equals("-n")) {
 			try {

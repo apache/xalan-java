@@ -79,14 +79,14 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
     private String _systemId;
 
     // Temporary
-    private boolean _experimentalOutput;
+    private boolean _oldOutputSystem;
 
     /**
      * Default constructor
      */
-    protected TemplatesHandlerImpl(boolean experimentalOutput) {
+    protected TemplatesHandlerImpl(boolean oldOutputSystem) {
 	super(null);
-	_experimentalOutput = experimentalOutput;
+	_oldOutputSystem = oldOutputSystem;
     }
 
     /**
@@ -170,7 +170,7 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 		final byte[][] bytecodes = xsltc.getBytecodes();
 		if (bytecodes != null) {
 		    return new TemplatesImpl(xsltc.getBytecodes(), transletName, 
-					     _experimentalOutput);
+					     _oldOutputSystem);
 		}
 	    }
 	}

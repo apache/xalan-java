@@ -85,6 +85,7 @@ public class StreamUnknownOutput extends StreamOutput {
     public StreamUnknownOutput(Writer writer, String encoding) {
 	super(writer, encoding);
 	_handler = new StreamXMLOutput(writer, encoding);
+// System.out.println("StreamUnknownOutput.<init>");
     }
 
     public StreamUnknownOutput(OutputStream out, String encoding) 
@@ -92,6 +93,7 @@ public class StreamUnknownOutput extends StreamOutput {
     {
 	super(out, encoding);
 	_handler = new StreamXMLOutput(out, encoding);
+// System.out.println("StreamUnknownOutput.<init>");
     }
 
     public void startDocument() throws TransletException { 

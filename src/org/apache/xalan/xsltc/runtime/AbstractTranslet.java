@@ -77,6 +77,7 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.KeyIndex;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.util.IntegerArray;
+import org.apache.xalan.xsltc.runtime.output.*;
 
 public abstract class AbstractTranslet implements Translet {
 
@@ -487,17 +488,22 @@ public abstract class AbstractTranslet implements Translet {
      ************************************************************************/
 
     public TransletOutputHandler openOutputHandler(String filename) 
-	throws TransletException {
+	throws TransletException 
+    {
 	try {
-	    // Use the default SAX handler to send the output to the file
-	    DefaultSAXOutputHandler handler =
-		new DefaultSAXOutputHandler(filename, _encoding);
+	    final TransletOutputHandlerFactory factory 
+		= TransletOutputHandlerFactory.newInstance();
 
-	    // Create a translet output handler and plug in the SAX handler
-	    TextOutput text = new TextOutput(handler, handler, _encoding);
-	    transferOutputSettings(text);
-	    text.startDocument();
-	    return(text);
+	    factory.setEncoding(_encoding);
+	    factory.setOutputMethod(_method);
+	    factory.setOutputType(TransletOutputHandlerFactory.STREAM);
+
+	    final TransletOutputHandler handler 
+		= factory.getTransletOutputHandler();
+
+	    transferOutputSettings(handler);
+	    handler.startDocument();
+	    return handler;
 	}
 	catch (Exception e) {
 	    throw new TransletException(e);
@@ -556,38 +562,42 @@ public abstract class AbstractTranslet implements Translet {
      * Transfer the output settings to the output post-processor
      */
     protected void transferOutputSettings(TransletOutputHandler handler) {
-	// Transfer the output method setting
 	if (_method != null) {
-	    // Transfer all settings relevant to XML output
 	    if (_method.equals("xml")) {
-	        if (_standalone != null) handler.setStandalone(_standalone);
-		if (_omitHeader) handler.omitHeader(true);
-		handler.setType(TextOutput.XML);
+	        if (_standalone != null) {
+		    handler.setStandalone(_standalone);
+		}
+		if (_omitHeader) {
+		    handler.omitHeader(true);
+		}
 		handler.setCdataElements(_cdata);
-		if (_version != null) handler.setVersion(_version);
+		if (_version != null) {
+		    handler.setVersion(_version);
+		}
 		handler.setIndent(_indent);
-		if (_doctypeSystem != null)
+		if (_doctypeSystem != null) {
 		    handler.setDoctype(_doctypeSystem, _doctypePublic);
+		}
 	    }
-	    // Transfer all output settings relevant to HTML output
 	    else if (_method.equals("html")) {
-		handler.setType(TextOutput.HTML);
 		handler.setIndent(_indent);
 		handler.setDoctype(_doctypeSystem, _doctypePublic);
-		if (_mediaType != null) handler.setMediaType(_mediaType);
-	    }
-	    else if (_method.equals("text")) {
-		handler.setType(TextOutput.TEXT);
-	    }
-	    else {
-		handler.setType(TextOutput.QNAME);
+		if (_mediaType != null) {
+		    handler.setMediaType(_mediaType);
+		}
 	    }
 	}
 	else {
 	    handler.setCdataElements(_cdata);
-	    if (_version != null) handler.setVersion(_version);
-	    if (_standalone != null) handler.setStandalone(_standalone);
-	    if (_omitHeader) handler.omitHeader(true);
+	    if (_version != null) {
+		handler.setVersion(_version);
+	    }
+	    if (_standalone != null) {
+		handler.setStandalone(_standalone);
+	    }
+	    if (_omitHeader) {
+		handler.omitHeader(true);
+	    }
 	    handler.setIndent(_indent);
 	    handler.setDoctype(_doctypeSystem, _doctypePublic);
 	}

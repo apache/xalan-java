@@ -141,16 +141,16 @@ public final class TransformerImpl extends Transformer
     private TransletOutputHandlerFactory _tohFactory = null;
 
     // Temporary
-    private boolean _experimentalOutput;
+    private boolean _oldOutputSystem;
 
     /**
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
      */
-    protected TransformerImpl(Translet translet, boolean experimentalOutput) {
+    protected TransformerImpl(Translet translet, boolean oldOutputSystem) {
 	_translet = (AbstractTranslet)translet;
 	_properties = createOutputProperties();
-	_experimentalOutput = experimentalOutput;
+	_oldOutputSystem = oldOutputSystem;
     }
 
     /**
@@ -178,9 +178,8 @@ public final class TransformerImpl extends Transformer
 	// Pass output properties to the translet
 	setOutputProperties(_translet, _properties);
 	    
-	if (_experimentalOutput) {
-	    final TransletOutputHandler toHandler = 
-		getExperimentalOutputHandler(result);
+	if (!_oldOutputSystem) {
+	    final TransletOutputHandler toHandler = getOutputHandler(result);
 
 	    if (toHandler == null) {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
@@ -198,7 +197,7 @@ public final class TransformerImpl extends Transformer
 	    }
 	}
 	else {
-	    _handler = getOutputHandler(result);
+	    _handler = getOldOutputHandler(result);
 	    if (_handler == null) {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
 		throw new TransformerException(err.toString());
@@ -224,7 +223,7 @@ public final class TransformerImpl extends Transformer
      * the type and contents of the TrAX Result object passed to the 
      * transform() method. 
      */
-    private TransletOutputHandler getExperimentalOutputHandler(Result result) 
+    private TransletOutputHandler getOutputHandler(Result result) 
 	throws TransformerException 
     {
 	// Try to get the encoding from the translet (may not be set)
@@ -335,7 +334,7 @@ public final class TransformerImpl extends Transformer
      * based on the type and contents of the TrAX Result object passed to
      * the transform() method. 
      */
-    private ContentHandler getOutputHandler(Result result) throws 
+    private ContentHandler getOldOutputHandler(Result result) throws 
  	TransformerException 
     {
 	// Try to get the encoding from the translet (may not be set)
