@@ -170,9 +170,12 @@ public class TemplatesHandlerImpl extends Parser
 	    }
 
 	    // Set the translet class name if not already set
-	    String transletName = TransformerFactoryImpl._transletName;
+	    String transletName = null;
 	    if (_systemId != null) {
 		transletName = Util.baseName(_systemId);
+	    }
+	    else {
+	    	transletName = (String)_tfactory.getAttribute("translet-name");
 	    }
 	    xsltc.setClassName(transletName);
 
