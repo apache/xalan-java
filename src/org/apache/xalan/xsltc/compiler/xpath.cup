@@ -905,7 +905,7 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
             RESULT = new NamespaceUriCall(fname, argl);
 	  }
 	  // Special case for extension function nodeset()
-          else if (fname.getLocalPart().equals("nodeset")) {
+          else if (fname.getLocalPart().equals("nodeset") || fname.getLocalPart().equals("node-set")) {
 	    parser.setCallsNodeset(true);  // implies MultiDOM
             RESULT = new FunctionCall(fname, argl);
 	  }
