@@ -277,6 +277,11 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
     int nAtts = atts.getLength();
     for(int i = 0; i < nAtts; i++)
     {
+      //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
+      // First handle a possible ID attribute
+      if (atts.getType(i).equalsIgnoreCase("ID"))
+        setIDAttribute(atts.getURI(i), atts.getLocalName(i), atts.getValue(i), elem);
+      
       String attrNS = atts.getURI(i);
       // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
       //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
@@ -321,6 +326,14 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
     {
       m_currentNode = null;
     }
+  }
+  
+  public void setIDAttribute(String namespaceURI,
+                             String qualifiedName,
+                             String value,
+                             Element elem)
+  {
+    // Do nothing. This method is meant to be overiden.
   }
 
   /**

@@ -106,7 +106,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     ((DocumentImpl)m_root).setSourceTreeHandler(this);
     ((DocumentImpl)m_root).setUid(1);
     ((DocumentImpl)m_root).setLevel(new Integer(1).shortValue());
-    m_sourceTreeHandler = new DOMBuilder(m_root);
+    m_sourceTreeHandler = new StreeDOMBuilder(m_root);
     setShouldStripWhitespace(false);
     
     if(m_useMultiThreading && (null != m_transformer))

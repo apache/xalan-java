@@ -144,6 +144,7 @@ public class FuncKey extends Function2Args
         upi.addIterator(nl);
         //mnodeset.addNodesInDocOrder(nl, xctxt); needed??
       }
+      upi.initContext(xctxt);
       nodes = new XNodeSet(upi);
     }
     else

@@ -147,6 +147,11 @@ public class KeyTable
     
     return ki;
   }
+  
+  public QName getKeyTableName()
+  {
+    return m_keyIter.getName();
+  }  
 
   
 }

@@ -12,6 +12,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMException;
 
+import java.util.Hashtable;
+
+
 public class DocumentImpl extends Parent
 {
   DocumentImpl()
@@ -96,6 +99,21 @@ public class DocumentImpl extends Parent
   public Element getDocumentElement() 
   {
     return m_docElement;
+  }
+  
+  Hashtable m_idAttributes = new Hashtable();
+  
+  public Hashtable getIDAttributes()
+  {
+    return m_idAttributes;
+  } 
+  
+  public void setIDAttribute(String namespaceURI,
+                             String qualifiedName,
+                             String value,
+                             Element elem)
+  {
+    m_idAttributes.put(value, elem);
   }
   
   /**
@@ -206,6 +224,14 @@ public class DocumentImpl extends Parent
     throws DOMException
   {
     return super.createAttributeNS(namespaceURI, qualifiedName);
+  }
+  
+  /**
+   * Given an ID, return the element.
+   */
+  public Element getElementById(String elementId)
+  {
+    return (Element)m_idAttributes.get(elementId);    
   }
   
   

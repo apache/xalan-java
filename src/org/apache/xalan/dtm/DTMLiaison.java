@@ -288,6 +288,14 @@ public class DTMLiaison extends DOM2Helper
   {
     return ((DTMProxy)doc).getDTM().getIdentifier(id);
   }
+  
+  public void setIDAttribute(String namespaceURI,
+                             String qualifiedName,
+                             String value,
+                             Element elem)
+  {
+    ((org.apache.xalan.stree.DocumentImpl)this.getDocument()).setIDAttribute(namespaceURI, qualifiedName, value, elem);
+  }
 
   /**
    * The getUnparsedEntityURI function returns the URI of the unparsed

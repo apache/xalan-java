@@ -189,6 +189,13 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     }        
   }
   
+  public void setIDAttribute(String namespaceURI,
+                                           String qualifiedName,
+                                           String value)
+  {
+    getDocumentImpl().setIDAttribute(namespaceURI, qualifiedName, value, this);
+  }
+  
   /**
    *  Create an attribute node. 
    */

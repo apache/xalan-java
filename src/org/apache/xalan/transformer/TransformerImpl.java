@@ -89,6 +89,7 @@ import org.apache.xalan.utils.DOMBuilder;
 import org.apache.xalan.utils.NodeVector;
 import org.apache.xalan.utils.BoolStack;
 import org.apache.xalan.utils.QName;
+import org.apache.xalan.utils.PrefixResolver;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
@@ -179,6 +180,7 @@ public class TransformerImpl extends XMLFilterImpl
   {
     setStylesheet(stylesheet);
     setXPathContext(new XPathContext(this));
+    getXPathContext().setNamespaceContext(stylesheet);
   }
   
   /**
@@ -291,7 +293,7 @@ public class TransformerImpl extends XMLFilterImpl
         }
         
         // Get the input content handler, which will handle the 
-        // parse events and create the source tree.
+        // parse events and create the source tree. 
         ContentHandler inputHandler = getInputContentHandler();
         reader.setContentHandler( inputHandler );
         reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
@@ -1030,9 +1032,19 @@ public class TransformerImpl extends XMLFilterImpl
     {
       // Find the XSL template that is the best match for the 
       // element.        
-      template = stylesheetTree.getTemplateComposed(xctxt, 
-                                                    child, mode,
-                                                    getQuietConflictWarnings());
+      PrefixResolver savedPrefixResolver = xctxt.getNamespaceContext();
+      try
+      {
+        xctxt.setNamespaceContext(xslInstruction);
+
+        template = stylesheetTree.getTemplateComposed(xctxt, 
+                                                      child, mode,
+                                                      getQuietConflictWarnings());
+      }
+      finally
+      {
+        xctxt.setNamespaceContext(savedPrefixResolver);
+      }
       
       // If that didn't locate a node, fall back to a default template rule.
       // See http://www.w3.org/TR/xslt#built-in-rule.

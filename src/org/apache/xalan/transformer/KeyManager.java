@@ -100,7 +100,7 @@ public class KeyManager
         for(int i = 0; i < nKeyTables; i++)
         {
           KeyTable kt = (KeyTable)m_key_tables.elementAt(i);
-          if(doc == kt.getDocKey())
+          if(kt.getKeyTableName().equals(name) &&  doc == kt.getDocKey())
           {
             nl = kt.getNodeSetByKey(name, ref);
             if (nl != null)

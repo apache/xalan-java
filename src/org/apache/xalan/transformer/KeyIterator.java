@@ -58,7 +58,8 @@ public class KeyIterator extends LocPathIterator
   {
     // System.out.println("setLookupKey - lookupKey: "+lookupKey);
     ((KeyWalker)m_firstWalker).m_lookupKey = lookupKey;
-    m_firstWalker.setRoot(getContext());
+    m_firstWalker.setRoot((this.getContext().getNodeType()== Node.DOCUMENT_NODE) ? 
+                          this.getContext() : this.getContext().getOwnerDocument());
     this.setLastUsedWalker(m_firstWalker);
     this.setNextPosition(0);
   }  

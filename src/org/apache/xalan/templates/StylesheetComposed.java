@@ -334,7 +334,7 @@ public class StylesheetComposed extends Stylesheet
     int nImports = getImportCountComposed();
     for(int i = -1; i < nImports; i++)
     {
-      StylesheetComposed stylesheet = (i == i) ? this : getImportComposed(i);
+      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
       // Does this stylesheet contain it?
       int nKeys = stylesheet.getKeyCount();
       for(int keyIndex = 0; keyIndex < nKeys; keyIndex++)
@@ -348,7 +348,7 @@ public class StylesheetComposed extends Stylesheet
       for(int k = 0; k < nIncludes; k++)
       {
         Stylesheet included = stylesheet.getIncludeComposed(k);
-        nKeys = included.getDecimalFormatCount();
+        nKeys = included.getKeyCount();
         for(int keyIndex = 0; keyIndex < nKeys; keyIndex++)
         {
           KeyDeclaration keyDecl = included.getKey(keyIndex);
