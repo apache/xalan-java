@@ -2,7 +2,8 @@
 <!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd"[
 <!ENTITY done-j SYSTEM "DONE">
 <!ENTITY status-j SYSTEM "STATUS">
-<!ENTITY bugs-j SYSTEM "BUGS">]>
+<!ENTITY bugs-j SYSTEM "BUGS">
+<!ENTITY bugs-open SYSTEM "bugs.out">]>
 
 <!--
  * The Apache Software License, Version 1.1
@@ -99,7 +100,20 @@
      attributes.</li>
      </ul>
      </s3><anchor name="bugs"/>
+     <s3 title="Open bugs and bug reporting">
+     <p>&xslt4j-current; passes all conformance tests in our test suite.</p>   
      &bugs-j;
+     <p>Xerces bug in &xml4j-used;:</p>
+     <ul>
+       <li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16
+        documents. Xerces will post a fix shortly.<br/><br/></li>
+     </ul>
+     <p>The Apache XML Bug Tracking System is currently not working. If you find a bug, please report it (with "Xalan-J 2 bug" in the subject
+     line) to the <human-resource-ref idref="xalandev"/>. We strongly encourage you write patches for problems you find and submit them to
+     <human-resource-ref idref="xalandev"/>. We review the patches we receive to make sure they do not break something else, and (assuming they 
+     do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design issues, 
+     we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>
+     </s3>     
      <anchor name="status"/>
      &status-j;
      <anchor name="to-do"/>
