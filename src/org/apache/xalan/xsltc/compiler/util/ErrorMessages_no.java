@@ -244,7 +244,11 @@ public final class ErrorMessages_no extends ErrorMessages {
 	"         <arkiv> er en JAR-fil som klassen leses fra.\n"+
 	"   Annet:\n"+
 	"         -x sl\u00e5r p\u00e5 debug meldinger.\n"+
-	"         -s blokkerer alle kall til System.exit()."
+	"         -s blokkerer alle kall til System.exit().",
+
+	// STRAY_SORT_ERR
+	"<xsl:sort> kan bare brukes under <xsl:for-each> eller <xsl:apply-templates>."
+
     };
 
     public Object handleGetObject(String key) {

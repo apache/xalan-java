@@ -97,6 +97,14 @@ final class Sort extends Instruction {
      * Parse the attributes of the xsl:sort element
      */
     public void parseContents(Parser parser) {
+
+	final SyntaxTreeNode parent = getParent();
+	if (!(parent instanceof ApplyTemplates) &&
+	    !(parent instanceof ForEach)) {
+	    reportError(this, parser, ErrorMsg.STRAY_SORT_ERR, null);
+	    return;
+	}
+
 	// Parse the select expression (node string value if no expression)
 	_select = parser.parseExpression(this, "select", "string(.)");
 

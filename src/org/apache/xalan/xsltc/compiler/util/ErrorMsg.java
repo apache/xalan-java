@@ -162,6 +162,9 @@ public final class ErrorMsg {
     public static final int COMPILE_USAGE_STR       = 72;
     public static final int TRANSFORM_USAGE_STR     = 73;
 
+    // Recently added error messages
+    public static final int STRAY_SORT_ERR          = 74;
+
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.
     private static String[] _errorMessages;

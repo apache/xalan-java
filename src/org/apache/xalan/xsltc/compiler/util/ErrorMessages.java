@@ -244,7 +244,11 @@ public class ErrorMessages extends ResourceBundle {
 	"         with the -j option.\n" +
 	"   Notes:\n"+
 	"         The -x option switches on debug messages.\n"+
-	"         The -s option disables calling System.exit."
+	"         The -s option disables calling System.exit.",
+
+	// STRAY_SORT_ERR
+	"<xsl:sort> can only be used within <xsl:for-each> or <xsl:apply-templates>."
+
     };
 
     private static Vector _keys;
