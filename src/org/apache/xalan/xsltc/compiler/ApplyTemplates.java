@@ -155,7 +155,7 @@ final class ApplyTemplates extends Instruction {
 	}
 
 	// Push a new parameter frame
-	if (stylesheet.hasLocalParams()) {
+	if (stylesheet.hasLocalParams() || hasContents()) {
 	    il.append(classGen.loadTranslet());
 	    final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
 						   PUSH_PARAM_FRAME,
@@ -215,7 +215,7 @@ final class ApplyTemplates extends Instruction {
 	il.append(new INVOKEVIRTUAL(applyTemplates));
 	
 	// Pop parameter frame
-	if (stylesheet.hasLocalParams()) {
+	if (stylesheet.hasLocalParams() || hasContents()) {
 	    il.append(classGen.loadTranslet());
 	    final int popFrame = cpg.addMethodref(TRANSLET_CLASS,
 						  POP_PARAM_FRAME,
