@@ -259,6 +259,7 @@ Copyright:
          classpath="${java.class.path}"
          public="true"
          sourcepath="${compat.src.dir}"
+         overview="${compat.src.dir}/compatOverview.html"         
          packagenames="org.apache.xalan.*"
          author="true"
          version="true"
