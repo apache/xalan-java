@@ -140,6 +140,10 @@ public final class Template extends TopLevelElement {
 	return _name;
     }
 
+    public void setName(QName qname) {
+	if (_name == null) _name = qname;
+    }
+
     public QName getModeName() {
 	return _mode;
     }
@@ -313,9 +317,7 @@ public final class Template extends TopLevelElement {
 	String className = classGen.getClassName();
 
 	if (_compiled && isNamed()){
-
 	    String methodName = Util.escape(_name.toString());
-
 	    il.append(classGen.loadTranslet());
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadIterator());
@@ -331,6 +333,7 @@ public final class Template extends TopLevelElement {
 	    return;
 	}
 
+	if (_compiled) return;
 	_compiled = true; 
 	
 	if (_hasVariableFrame) {

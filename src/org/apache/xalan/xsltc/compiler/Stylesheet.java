@@ -125,6 +125,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     private SourceLoader _loader = null;
 
+    private boolean _compileTemplatesAsMethods;
+
+    public void compileTemplatesAsMethods() {
+	_compileTemplatesAsMethods = true;
+    }
 
     public boolean isSimplified() {
 	return(_simplified);
@@ -351,7 +356,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
 	    if ((child instanceof Import) || (child instanceof Include)) {
 		parser.getSymbolTable().setCurrentNode(child);
-		child.parseContents(parser);
+		child.parseContents(parser);		
 	    }
 	}
 
@@ -363,6 +368,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 		!(child instanceof Include)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
+	    }
+	    if (_compileTemplatesAsMethods && (child instanceof Template)) {
+		Template template = (Template)child;
+		String name = "template$dot$"+template.getPosition();
+		template.setName(parser.getQName(name));
 	    }
 	}
     }

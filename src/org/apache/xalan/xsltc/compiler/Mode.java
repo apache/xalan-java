@@ -65,6 +65,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import java.util.Iterator;
+import java.util.HashSet;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -82,7 +84,7 @@ final class Mode implements Constants {
     private final QName      _name;       // The QName of this mode
     private final Stylesheet _stylesheet; // The owning stylesheet
     private final String     _methodName; // The method name for this mode
-    private final Vector     _templates;  // All templates in this mode
+    private Vector     _templates;  // All templates in this mode
 
     // Pattern/test sequence for pattern with node()-type kernel
     private Vector    _nodeGroup = null;
@@ -96,11 +98,15 @@ final class Mode implements Constants {
     private Vector[]  _patternGroups;
     private TestSeq[] _testSeq;
 
-    private final Hashtable _neededTemplates = new Hashtable();
-    private final Hashtable _namedTemplates = new Hashtable();
-    private final Hashtable _templateIHs = new Hashtable();
-    private final Hashtable _templateILs = new Hashtable();
+    private Hashtable _neededTemplates = new Hashtable();
+    private Hashtable _namedTemplates = new Hashtable();
+    private Hashtable _templateIHs = new Hashtable();
+    private Hashtable _templateILs = new Hashtable();
     private LocationPathPattern _rootPattern = null;
+
+    private HashSet _importLevels = null;
+
+    private Hashtable _keys = null;
 
     // Variable index for the current node - used in code generation
     private int _currentIndex;
@@ -133,6 +139,12 @@ final class Mode implements Constants {
 	return _methodName;
     }
 
+    public String functionName(int precedence) {
+	if (_importLevels == null) _importLevels = new HashSet();
+	_importLevels.add(new Integer(precedence));
+	return _methodName+'_'+precedence;
+    }
+
     /**
      * Shortcut to get the class compiled for this mode (will be inlined).
      */
@@ -152,6 +164,7 @@ final class Mode implements Constants {
      * Process all the test patterns in this mode
      */
     public void processPatterns(Hashtable keys) {
+	_keys = keys;
 	// Traverse all templates
 	final Enumeration templates = _templates.elements();
 	while (templates.hasMoreElements()) {
@@ -768,6 +781,310 @@ final class Mode implements Constants {
 
 	// Append switch() statement - main dispatch loop in applyTemplates()
 	InstructionHandle disp = body.append(new SWITCH(types, targets, ihLoop));
+
+	// Append all the "case:" statements
+	appendTestSequences(body);
+	// Append the actual template code
+	appendTemplateCode(body);
+
+	// Append NS:* node tests (if any)
+	if (nsElem != null) body.append(nsElem);
+	// Append NS:@* node tests (if any)
+	if (nsAttr != null) body.append(nsAttr);
+
+	// Append default action for element and root nodes
+	body.append(ilRecurse);
+	// Append default action for text and attribute nodes
+	body.append(ilText);
+
+	// putting together constituent instruction lists
+	mainIL.append(new GOTO_W(ihLoop));
+	mainIL.append(body);
+	// fall through to ilLoop
+	mainIL.append(ilLoop);
+
+	peepHoleOptimization(methodGen);
+	methodGen.stripAttributes(true);
+	
+	methodGen.setMaxLocals();
+	methodGen.setMaxStack();
+	methodGen.removeNOPs();
+	classGen.addMethod(methodGen.getMethod());
+
+	// Compile method(s) for <xsl:apply-imports/> for this mode
+	if (_importLevels != null) {
+	    Iterator levels = _importLevels.iterator();
+	    while (levels.hasNext()) {
+		Integer level = (Integer)levels.next();
+		compileApplyImports(classGen, level.intValue());
+	    }
+	}
+    }
+
+    private void compileTemplateCalls(ClassGenerator classGen,
+				      MethodGenerator methodGen,
+				      InstructionHandle next, int level) {
+        Enumeration templates = _neededTemplates.keys();
+	while (templates.hasMoreElements()) {
+	    final Template template = (Template)templates.nextElement();
+	    if (template.getImportPrecedence() < level) {
+		if (template.hasContents()) {
+		    InstructionList til = template.compile(classGen, methodGen);
+		    til.append(new GOTO_W(next));
+		    _templateILs.put(template, til);
+		    _templateIHs.put(template, til.getStart());
+		}
+		else {
+		    // empty template
+		    _templateIHs.put(template, next);
+		}
+	    }
+	}
+    }
+
+
+    public void compileApplyImports(ClassGenerator classGen, int level) {
+	final XSLTC xsltc = classGen.getParser().getXSLTC();
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final Vector names      = xsltc.getNamesIndex();
+
+	// Clear some datastructures
+	_namedTemplates = new Hashtable();
+	_neededTemplates = new Hashtable();
+	_templateIHs = new Hashtable();
+	_templateILs = new Hashtable();
+	_patternGroups = new Vector[32];
+	_rootPattern = null;
+
+	Vector oldTemplates = _templates;
+	_templates = new Vector();
+	final Enumeration templates = oldTemplates.elements();
+	while (templates.hasMoreElements()) {
+	    final Template template = (Template)templates.nextElement();
+	    if (template.getImportPrecedence() < level) addTemplate(template);
+	}
+	processPatterns(_keys);
+
+	// (*) Create the applyTemplates() method
+	final de.fub.bytecode.generic.Type[] argTypes =
+	    new de.fub.bytecode.generic.Type[3];
+	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
+	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
+	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
+
+	final String[] argNames = new String[3];
+	argNames[0] = DOCUMENT_PNAME;
+	argNames[1] = ITERATOR_PNAME;
+	argNames[2] = TRANSLET_OUTPUT_PNAME;
+
+	final InstructionList mainIL = new InstructionList();
+	final MethodGenerator methodGen =
+	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL, 
+				de.fub.bytecode.generic.Type.VOID,
+				argTypes, argNames, functionName()+'_'+level,
+				getClassName(), mainIL,
+				classGen.getConstantPool());
+	methodGen.addException("org.apache.xalan.xsltc.TransletException");
+
+	// (*) Create the local variablea
+	final LocalVariableGen current;
+	current = methodGen.addLocalVariable2("current",
+					      de.fub.bytecode.generic.Type.INT,
+					      mainIL.getEnd());
+	_currentIndex = current.getIndex();
+
+	// (*) Create the "body" instruction list that will eventually hold the
+	//     code for the entire method (other ILs will be appended).
+	final InstructionList body = new InstructionList();
+	body.append(NOP);
+
+	// (*) Create an instruction list that contains the default next-node
+	//     iteration
+	final InstructionList ilLoop = new InstructionList();
+	ilLoop.append(methodGen.loadIterator());
+	ilLoop.append(methodGen.nextNode());
+	ilLoop.append(DUP);
+	ilLoop.append(new ISTORE(_currentIndex));
+
+	// The body of this code can get very large - large than can be handled
+	// by a single IFNE(body.getStart()) instruction - need workaround:
+        final BranchHandle ifeq = ilLoop.append(new IFEQ(null));
+	final BranchHandle loop = ilLoop.append(new GOTO_W(null));
+	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
+	final InstructionHandle ihLoop = ilLoop.getStart();
+
+	// (*) Compile default handling of elements (traverse children)
+	InstructionList ilRecurse =
+	    compileDefaultRecursion(classGen, methodGen, ihLoop);
+	InstructionHandle ihRecurse = ilRecurse.getStart();
+
+	// (*) Compile default handling of text/attribute nodes (output text)
+	InstructionList ilText =
+	    compileDefaultText(classGen, methodGen, ihLoop);
+	InstructionHandle ihText = ilText.getStart();
+
+	// Distinguish attribute/element/namespace tests for further processing
+	final int[] types = new int[DOM.NTYPES + names.size()];
+	for (int i = 0; i < types.length; i++) types[i] = i;
+
+	final boolean[] isAttribute = new boolean[types.length];
+	final boolean[] isNamespace = new boolean[types.length];
+	for (int i = 0; i < names.size(); i++) {
+	    final String name = (String)names.elementAt(i);
+	    isAttribute[i+DOM.NTYPES] = isAttributeName(name);
+	    isNamespace[i+DOM.NTYPES] = isNamespaceName(name);
+	}
+
+	// (*) Compile all templates - regardless of pattern type
+	compileTemplateCalls(classGen, methodGen, ihLoop, level);
+
+	// (*) Handle template with explicit "*" pattern
+	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
+	InstructionHandle ihElem = ihRecurse;
+	if (elemTest != null)
+	    ihElem = elemTest.compile(classGen, methodGen, ihRecurse);
+
+	// (*) Handle template with explicit "@*" pattern
+	final TestSeq attrTest = _testSeq[DOM.ATTRIBUTE];
+	InstructionHandle ihAttr = ihLoop;
+	if (attrTest != null)
+	    ihAttr = attrTest.compile(classGen, methodGen, ihAttr);
+
+	// Do tests for id() and key() patterns first
+	InstructionList ilKey = null;
+	if (_idxTestSeq != null) {
+	    loop.setTarget(_idxTestSeq.compile(classGen, methodGen, body.getStart()));
+	    ilKey = _idxTestSeq.getInstructionList();
+	}
+	else {
+	    loop.setTarget(body.getStart());
+	}
+
+	// (*) If there is a match on node() we need to replace ihElem
+	//     and ihText (default behaviour for elements & text).
+	if (_nodeTestSeq != null) {
+	    double nodePrio = -0.5; //_nodeTestSeq.getPriority();
+	    int    nodePos  = _nodeTestSeq.getPosition();
+	    double elemPrio = (0 - Double.MAX_VALUE);
+	    int    elemPos  = Integer.MIN_VALUE;
+	    if (elemTest != null) {
+		elemPrio = elemTest.getPriority();
+		elemPos  = elemTest.getPosition();
+	    }
+	    if ((elemPrio == Double.NaN) || (elemPrio < nodePrio) ||
+		((elemPrio == nodePrio) && (elemPos < nodePos))) {
+		ihElem = _nodeTestSeq.compile(classGen, methodGen, ihLoop);
+		ihText = ihElem;
+	    }
+	}
+
+	// (*) Handle templates with "ns:*" pattern
+	InstructionHandle elemNamespaceHandle = ihElem;
+	InstructionList nsElem = compileNamespaces(classGen, methodGen,
+						   isNamespace, isAttribute,
+						   false, ihElem);
+	if (nsElem != null) elemNamespaceHandle = nsElem.getStart();
+
+	// (*) Handle templates with "ns:@*" pattern
+	InstructionList nsAttr = compileNamespaces(classGen, methodGen,
+						   isNamespace, isAttribute,
+						   true, ihAttr);
+	InstructionHandle attrNamespaceHandle = ihAttr;
+	if (nsAttr != null) attrNamespaceHandle = nsAttr.getStart();
+
+	// (*) Handle templates with "ns:elem" or "ns:@attr" pattern
+	final InstructionHandle[] targets = new InstructionHandle[types.length];
+	for (int i = DOM.NTYPES; i < targets.length; i++) {
+	    final TestSeq testSeq = _testSeq[i];
+	    // Jump straight to namespace tests ?
+	    if (isNamespace[i]) {
+		if (isAttribute[i])
+		    targets[i] = attrNamespaceHandle;
+		else
+		    targets[i] = elemNamespaceHandle;
+	    }
+	    // Test first, then jump to namespace tests
+	    else if (testSeq != null) {
+		if (isAttribute[i])
+		    targets[i] = testSeq.compile(classGen, methodGen,
+						 attrNamespaceHandle);
+		else
+		    targets[i] = testSeq.compile(classGen, methodGen,
+						 elemNamespaceHandle);
+	    }
+	    else {
+		targets[i] = ihLoop;
+	    }
+	}
+
+	// Handle pattern with match on root node - default: loop
+	targets[DOM.ROOT] = _rootPattern != null
+	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
+	    : ihLoop;
+	
+	// Handle any pattern with match on text nodes - default: loop
+	targets[DOM.TEXT] = _testSeq[DOM.TEXT] != null
+	    ? _testSeq[DOM.TEXT].compile(classGen, methodGen, ihText)
+	    : ihText;
+
+	// This DOM-type is not in use - default: process next node
+	targets[DOM.NAMESPACE] = ihLoop;
+
+	// Match unknown element in DOM - default: check for namespace match
+	targets[DOM.ELEMENT] = elemNamespaceHandle;
+
+	// Match unknown attribute in DOM - default: check for namespace match
+	targets[DOM.ATTRIBUTE] = attrNamespaceHandle;
+
+	// Match on processing instruction - default: loop
+	InstructionHandle ihPI = ihLoop;
+	if (_nodeTestSeq != null) ihPI = ihElem;
+	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null)
+	    targets[DOM.PROCESSING_INSTRUCTION] =
+		_testSeq[DOM.PROCESSING_INSTRUCTION].
+		compile(classGen, methodGen, ihPI);
+	else
+	    targets[DOM.PROCESSING_INSTRUCTION] = ihPI;
+	
+	// Match on comments - default: process next node
+	InstructionHandle ihComment = ihLoop;
+	if (_nodeTestSeq != null) ihComment = ihElem;
+	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
+	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
+	    : ihComment;
+
+	// Now compile test sequences for various match patterns:
+	for (int i = DOM.NTYPES; i < targets.length; i++) {
+	    final TestSeq testSeq = _testSeq[i];
+	    // Jump straight to namespace tests ?
+	    if ((testSeq == null) || (isNamespace[i])) {
+		if (isAttribute[i])
+		    targets[i] = attrNamespaceHandle;
+		else
+		    targets[i] = elemNamespaceHandle;
+	    }
+	    // Match on node type
+	    else {
+		if (isAttribute[i])
+		    targets[i] = testSeq.compile(classGen, methodGen,
+						 attrNamespaceHandle);
+		else
+		    targets[i] = testSeq.compile(classGen, methodGen,
+						 elemNamespaceHandle);
+	    }
+	}
+
+	if (ilKey != null) body.insert(ilKey);
+
+	// Append first code in applyTemplates() - get type of current node
+	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
+						      "getType", "(I)I");
+	body.append(methodGen.loadDOM());
+	body.append(new ILOAD(_currentIndex));
+	body.append(new INVOKEINTERFACE(getType, 2));
+
+	// Append switch() statement - main dispatch loop in applyTemplates()
+	InstructionHandle disp = body.append(new SWITCH(types,targets,ihLoop));
 
 	// Append all the "case:" statements
 	appendTestSequences(body);

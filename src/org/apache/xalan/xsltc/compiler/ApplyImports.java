@@ -78,61 +78,52 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ApplyImports extends Instruction {
 
-    private Expression _select;
     private QName      _modeName;
     private String     _functionName;
-	
+    private int        _precedence;
+
     public void display(int indent) {
 	indent(indent);
 	Util.println("ApplyTemplates");
 	indent(indent + IndentIncrement);
-	Util.println("select " + _select.toString());
 	if (_modeName != null) {
 	    indent(indent + IndentIncrement);
 	    Util.println("mode " + _modeName);
 	}
     }
 
+    /**
+     * Returns true if this <xsl:apply-imports/> element has parameters
+     */
     public boolean hasWithParams() {
 	return hasContents();
     }
 
+    /**
+     * Parse the attributes and contents of an <xsl:apply-imports/> element.
+     */
     public void parseContents(Parser parser) {
-	final String select = getAttribute("select");
-	final String mode   = getAttribute("mode");
-	
-	if (select.length() > 0) {
-	    _select = parser.parseExpression(this, "select", null);
-	}
-	
-	if (mode.length() > 0) {
-	    _modeName = parser.getQName(mode);
-	}
-	
+	// Indi
+	Stylesheet stylesheet = getStylesheet();
+	stylesheet.compileTemplatesAsMethods();
+
+	Template template = getTemplate();
+	_modeName = template.getModeName();
+	_precedence = template.getImportPrecedence();
+
 	// instantiate Mode if needed, cache (apply temp) function name
-	_functionName =
-	    parser.getTopLevelStylesheet().getMode(_modeName).functionName();
+	stylesheet = parser.getTopLevelStylesheet();
+	_functionName = stylesheet.getMode(_modeName).functionName(_precedence);
+
 	parseChildren(parser);	// with-params
     }
 
+    /**
+     * Type-check the attributes/contents of an <xsl:apply-imports/> element.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_select != null) {
-	    Type tselect = _select.typeCheck(stable);
-	    if (tselect instanceof NodeType ||
-		tselect instanceof ReferenceType) {
-		_select = new CastExpr(_select, Type.NodeSet);
-		tselect = Type.NodeSet;
-	    }
-	    if (tselect instanceof NodeSetType) {
-		typeCheckContents(stable);		// with-params
-		return Type.Void;
-	    } 
-	    throw new TypeCheckError(this);
-	}
-	else {
-	    typeCheckContents(stable);		// with-params
-	    return Type.Void;
-	}
+	typeCheckContents(stable);		// with-params
+	return Type.Void;
     }
 
     /**
@@ -145,66 +136,34 @@ final class ApplyImports extends Instruction {
 	final InstructionList il = methodGen.getInstructionList();
 	final int current = methodGen.getLocalIndex("current");
 
-	// check if sorting nodes is required
-	final Vector sortObjects = new Vector();
-	final Enumeration children = elements();
-	while (children.hasMoreElements()) {
-	    final Object child = children.nextElement();
-	    if (child instanceof Sort) {
-		sortObjects.addElement(child);
-	    }
-	}
-	
-	// Push a new parameter frame
-	if (stylesheet.hasLocalParams()) {
-	    il.append(classGen.loadTranslet());
-	    final int pushFrame = cpg.addMethodref(TRANSLET_CLASS,
-						   PUSH_PARAM_FRAME,
-						   PUSH_PARAM_FRAME_SIG);
-	    il.append(new INVOKEVIRTUAL(pushFrame));
-	    // translate with-params
-	    translateContents(classGen, methodGen);
-	}
-
-	// push arguments for final call to applyTemplates
+	// Push the arguments that are passed to applyTemplates()
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
-		
-	// compute node iterator for applyTemplates
-	if (sortObjects.size() > 0) {
-	    Sort.translateSortIterator(classGen, methodGen,
-				       _select, sortObjects);
-	}
-	else {
-	    if (_select == null) {
-		Mode.compileGetChildren(classGen, methodGen, current);
-	    }
-	    else {
-		_select.translate(classGen, methodGen);
-	    }
-	}
-	if (_select != null) {
-	    _select.startResetIterator(classGen, methodGen);
-	}
-	
-	//!!! need to instantiate all needed modes
-	final String className = classGen.getStylesheet().getClassName();
+
+	/*
+	il.append(methodGen.loadIterator());
+	// Make a clone of the current iterator (this also resets)
+	final int clone = cpg.addInterfaceMethodref(NODE_ITERATOR,
+						    "cloneIterator",
+						    "()"+NODE_ITERATOR_SIG);
+	il.append(new INVOKEINTERFACE(clone, 1));
+	*/
+	int init = cpg.addMethodref(SINGLETON_ITERATOR,
+				    "<init>", "("+NODE_SIG+")V");
+	il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
+	il.append(DUP);
+	il.append(methodGen.loadCurrentNode());
+	il.append(new INVOKESPECIAL(init));
+
 	il.append(methodGen.loadHandler());
-	final String applyTemplatesSig = classGen.getApplyTemplatesSig();
+
+	// Construct the translet class-name and the signature of the method
+	final String className = classGen.getStylesheet().getClassName();
+	final String signature = classGen.getApplyTemplatesSig();
 	final int applyTemplates = cpg.addMethodref(className,
 						    _functionName,
-						    applyTemplatesSig);
+						    signature);
 	il.append(new INVOKEVIRTUAL(applyTemplates));
-	
-	// Pop parameter frame
-	if (stylesheet.hasLocalParams()) {
-	    il.append(classGen.loadTranslet());
-	    final int popFrame = cpg.addMethodref(TRANSLET_CLASS,
-						  POP_PARAM_FRAME,
-						  POP_PARAM_FRAME_SIG);
-	    il.append(new INVOKEVIRTUAL(popFrame));
-	}
     }
-
 
 }
