@@ -119,12 +119,12 @@ public abstract class Hashtree2Node
             Element hashNode = factory.createElement(elemName);
             container.appendChild(hashNode);
 
-            Enumeration enum = hash.keys();
+            Enumeration keys = hash.keys();
             Vector v = new Vector();
 
-            while (enum.hasMoreElements())
+            while (keys.hasMoreElements())
             {
-                Object key = enum.nextElement();
+                Object key = keys.nextElement();
                 String keyStr = key.toString();
                 Object item = hash.get(key);
 
@@ -157,12 +157,12 @@ public abstract class Hashtree2Node
             }
 
             // Now go back and do the saved hashes
-            enum = v.elements();
-            while (enum.hasMoreElements())
+            keys = v.elements();
+            while (keys.hasMoreElements())
             {
                 // Retrieve name and hash in two steps
-                String n = (String) enum.nextElement();
-                Hashtable h = (Hashtable) enum.nextElement();
+                String n = (String) keys.nextElement();
+                Hashtable h = (Hashtable) keys.nextElement();
 
                 appendHashToNode(h, n, hashNode, factory);
             }

@@ -214,9 +214,9 @@ public class CharInfo
         }
 
         if (entities != null) {
-            Enumeration enum = entities.getKeys();
-            while (enum.hasMoreElements()){
-                String name = (String) enum.nextElement();
+            Enumeration keys = entities.getKeys();
+            while (keys.hasMoreElements()){
+                String name = (String) keys.nextElement();
                 String value = entities.getString(name);
                 int code = Integer.parseInt(value);
                 defineEntity(name, (char) code);

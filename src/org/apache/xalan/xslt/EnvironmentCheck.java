@@ -298,12 +298,12 @@ public class EnvironmentCheck
       "#---- BEGIN writeEnvironmentReport($Revision$): Useful stuff found: ----");
 
     // Fake the Properties-like output
-    for (Enumeration enum = h.keys(); 
-         enum.hasMoreElements();
+    for (Enumeration keys = h.keys(); 
+         keys.hasMoreElements();
         /* no increment portion */
         )
     {
-      Object key = enum.nextElement();
+      Object key = keys.nextElement();
       String keyStr = (String) key;
       try
       {
@@ -401,12 +401,12 @@ public class EnvironmentCheck
     {
       Hashtable subhash = (Hashtable) v.elementAt(i);
 
-      for (Enumeration enum = subhash.keys(); 
-           enum.hasMoreElements();
+      for (Enumeration keys = subhash.keys(); 
+           keys.hasMoreElements();
            /* no increment portion */
           )
       {
-        Object key = enum.nextElement();
+        Object key = keys.nextElement();
         String keyStr = (String) key;
         try
         {
@@ -470,12 +470,12 @@ public class EnvironmentCheck
       Element hashNode = factory.createElement("environment");
       envCheckNode.appendChild(hashNode);
       
-      for (Enumeration enum = h.keys(); 
-           enum.hasMoreElements();
+      for (Enumeration keys = h.keys(); 
+           keys.hasMoreElements();
           /* no increment portion */
           )
       {
-        Object key = enum.nextElement();
+        Object key = keys.nextElement();
         String keyStr = (String) key;
         try
         {
@@ -552,12 +552,12 @@ public class EnvironmentCheck
     {
       Hashtable subhash = (Hashtable) v.elementAt(i);
 
-      for (Enumeration enum = subhash.keys(); 
-           enum.hasMoreElements();
+      for (Enumeration keys = subhash.keys(); 
+           keys.hasMoreElements();
            /* no increment portion */
           )
       {
-        Object key = enum.nextElement();
+        Object key = keys.nextElement();
         try
         {
           String keyStr = (String) key;

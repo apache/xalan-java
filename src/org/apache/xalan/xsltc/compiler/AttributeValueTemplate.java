@@ -197,9 +197,9 @@ final class AttributeValueTemplate extends AttributeValue {
 	    il.append(DUP);
 	    il.append(new INVOKESPECIAL(initBuffer));
 	    // StringBuffer is on the stack
-	    final Enumeration enum = elements();
-	    while (enum.hasMoreElements()) {
-		final Expression exp = (Expression)enum.nextElement();
+	    final Enumeration elements = elements();
+	    while (elements.hasMoreElements()) {
+		final Expression exp = (Expression)elements.nextElement();
 		exp.translate(classGen, methodGen);
 		il.append(append);
 	    }
