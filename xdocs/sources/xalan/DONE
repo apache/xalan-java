@@ -1,3 +1,12 @@
 <s3 title="Changes since &xslt4j; version 2.0.D07">
+<p>This release includes several bug fixes:</p>
+<ul>
+  <li>A threading problem showed up when using multiple processors. We fixed it by using a separate XPathContext object to do whitespace node
+   matches (xsl:strip-space).<br/><br/></li>
+  <li>Fixed a bug running Norm Walsh's docbook stylesheets by not setting the variable stack position if the TreeWalker is not owned by a
+  top-level NodeIterator.<br/><br/></li>
+  <li>In the interest of stability, we now treat "unknown error in XPath" as a fatal error.<br/><br/></li>
+  <li>Fixed a number of bugs in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>.</li>
+</ul>
 <p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s3>
