@@ -1043,7 +1043,14 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
           _currentNode = node;
         }
         else
-          _currentNode = getFirstChild(getParent(node));
+				{
+					// Be careful to handle the Document node properly
+					_currentNode = getParent(node);
+					if(NULL!=_currentNode)	
+						_currentNode = getFirstChild(_currentNode);
+					else
+						_currentNode = node;
+				}
 
         return resetPosition();
       }
