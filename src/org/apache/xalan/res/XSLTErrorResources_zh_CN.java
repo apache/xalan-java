@@ -82,7 +82,7 @@ public class XSLTErrorResources_zh_CN extends XSLTErrorResources
 {
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 200;
+  public static final int MAX_CODE = 201;
   
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 29;
