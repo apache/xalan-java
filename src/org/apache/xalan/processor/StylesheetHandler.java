@@ -406,9 +406,11 @@ public class StylesheetHandler extends DefaultHandler
     if (null == elemProcessor
             && ((null == getStylesheet()
                 || Double.valueOf(getStylesheet().getVersion()).doubleValue()
-                   > Constants.XSLTVERSUPPORTED) ||
-                                                                (!uri.equals(Constants.S_XSLNAMESPACEURL) &&
-                currentProcessor instanceof ProcessorStylesheetElement)))
+                   > Constants.XSLTVERSUPPORTED) 
+                ||(!uri.equals(Constants.S_XSLNAMESPACEURL) &&
+                            currentProcessor instanceof ProcessorStylesheetElement)
+                || getElemVersion() > Constants.XSLTVERSUPPORTED
+        ))
     {
       elemProcessor = def.getProcessorForUnknown(uri, localName);
     }
@@ -1612,6 +1614,24 @@ public class StylesheetHandler extends DefaultHandler
       }
       m_spacePreserveStack.push(m_spacePreserveStack.peek());
     }
+  }
+  
+  private double getElemVersion()
+  {
+    ElemTemplateElement elem = getElemTemplateElement();
+    double version = -1; 
+    while ((version == -1 || version == Constants.XSLTVERSUPPORTED) && elem != null)
+    {
+      try{
+      version = Double.valueOf(elem.getVersion()).doubleValue();
+      }
+      catch (Exception ex)
+      {
+        version = -1;
+      }
+      elem = elem.getParentElem();
+      }
+    return (version == -1)? Constants.XSLTVERSUPPORTED : version;
   }
 }
 

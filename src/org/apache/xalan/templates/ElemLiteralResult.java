@@ -552,6 +552,17 @@ public class ElemLiteralResult extends ElemUse
   {
     m_version = v;
   }
+  
+  /**
+   * Get the "version" property.
+   * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
+   *
+   * @return Version property value
+   */
+  public String getVersion()
+  {
+    return m_version;
+  }
 
   /**
    * The "exclude-result-prefixes" property.
