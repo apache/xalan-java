@@ -446,6 +446,13 @@ Copyright:
     <delete dir="${build.dir}/xsltctmp/META-INF"
         includeEmptyDirs="true" quiet="true"/>
 
+    <!-- create new META-INF dir w/ transformer factory default -->
+    <mkdir dir="${build.dir}/xsltctmp/META-INF"/>
+    <mkdir dir="${build.dir}/xsltctmp/META-INF/services"/>
+    <copy todir="${build.dir}/xsltctmp/META-INF/services"
+      file="${src.dir}/${xsltc.reldir}/javax.xml.transform.TransformerFactory"
+    />
+
     <!-- make bundled jar named xsltc.jar -->
     <jar jarfile="${build.dir}/xsltc.jar"
          basedir="${build.dir}/xsltctmp" />
