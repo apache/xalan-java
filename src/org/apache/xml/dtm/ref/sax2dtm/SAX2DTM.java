@@ -118,7 +118,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * Made protected rather than private so SAX2RTFDTM can access it.
    */
   //private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
-  protected FastStringBuffer m_chars = new FastStringBuffer(5, 13);
+  protected FastStringBuffer m_chars = new FastStringBuffer(10, 13);
 
   /** This vector holds offset and length data.
    */
