@@ -70,7 +70,7 @@
     <p>In conjunction with TRaX, &xslt4j; gathers basic operational settings from system properties. System properties, for example, identify the stylesheet processor and SAX parser to use, and the serializers that are available for various output methods. The default settings point to the Xalan StylesheetProcessor, the Xerces SAXParser, and the serializers shipped with Xerces.</p>
 </s2><anchor name="packages"/>
   <s2 title="Package layout">
-  <p>As the new package structure (outline below) highlights, the processing of stylesheets and production of stylesheet templates, the application of stylesheet templates to source trees and production of output trees, the evaluation of XPath expressions and XSLT matching patterns, and subsidiary operations and utilities are more clearly segmented than in &xslt4j; version 1.</p> 
+  <p>As the new package structure highlights, the processing of stylesheets and production of stylesheet templates, the application of stylesheet templates to source trees and production of output trees, the evaluation of XPath expressions and XSLT matching patterns, and subsidiary operations and utilities are more clearly segmented than in &xslt4j; version 1.</p> 
 <p>&xslt4j2; is made up of four major and several minor modules. The four major modules are:</p>
 <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></label> 

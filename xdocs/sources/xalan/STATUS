@@ -4,6 +4,10 @@
 <note>You can use Xalan with other conformnant SAX and DOM parsers. </note>
 </s3><anchor name="to-do"/>
 <s3 title="To-do tasks">
+  <ul>
+    <li>Complete implementation of &xslt4j2;</li>
+    <li>Add extensions to extensions library</li>
+</ul>
      <p>As part of the xml.apache team, members of the &xslt4j; team are also exploring options to upgrade the integration of all
      the xml.apache projects, including Xalan, Xerces, Cocoon, and FOP.</p>
     <p>The more individuals who join in the design, development, testing, documentation, and use of

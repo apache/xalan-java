@@ -1,4 +1,4 @@
-<?xml version="1.0" standalone="no"?> 
+-<?xml version="1.0" standalone="no"?> 
 <!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
 <!--
  * The Apache Software License, Version 1.1
@@ -118,6 +118,7 @@ transformer.transform
 <s2 title="4. Perform a transformation">
 <p>Supply the XML input, a target or "holder" for the transformation output, and instruct the Transformer to perform the transformation.</p>
 <p>Just as with the stylesheet, you can supply the XML input in the form of a SAX input source (from a URL or stream) or a DOM tree.</p>
+<p>Use the Transformer transform() method with a SAX input source (as in the example above), or the transformNode() method with a DOM tree to perform the transformation.</p>
 <p>TRaX provides the holder for the output: trax.Result. You can set up a Result object to send the transformation result to a file or stream or to build a DOM tree.</p>
 <p>The Transformer uses the SAX XMLParser to parse the XML input and sends parse events to an input SAX ContentHandler, org.apache.xalan.stree.SourceTreeHandler, which in turn uses org.apache.xalan.utils.DOMBuilder to assemble the input into a DOM tree. Of course this operation is unnecessary if the XML input is submitted as a DOM.</p>
 <p>For each node in the XML source, the Transformer uses the Templates object and underlying XSLT schema to determine which template to apply: one of the templates in the Templates object, a default template rule as specified in the XSLT spec, or none.</p>
@@ -130,13 +131,13 @@ transformer.transform
 <p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 boo</code></p>
 <p>or</p>
 <p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 org/myorg/xyz boo</code></p>
-<p>where <code>org/myorg/xyz</code> is the parameter namespace. [not yet working]</p>
+<p>where <code>param</code> is the parameter name, <code>org/myorg/xyz</code> is the parameter namespace. [not yet working], and <code>boo</code> is the parameter value. Unless you have defined a namespace for the parameter, the parameter namespace is null.</p>
 </s2><anchor name="sax"/>
 <s2 title="Explicitly working with SAX">
   <p>&xslt4j; uses the SAX event model to process stylesheets, to parse XML input documents, and to produce output. For each of these operations, an XMLReader reads input, firing parse events, and a ContentHandler listens to the XMLReader and performs parse event methods.</p>
-<p>When you use the basic procedure described above for performing transformations, &xslt4j; takes care of many of the SAX details under the covers. You are free to make these details explicit, which simply means that you can intervene in the procedure to accommodate the specific conditions in which your application operates.</p>
+<p>When you use the basic procedure described above for performing transformations, &xslt4j; takes care of many of the SAX details under the covers. You are free to make these details explicit, which simply means that you can intervene in the procedure to accommodate any custom conditions in which your application operates.</p>
 <p>Suppose, for example, you are using a custom XMLReader (perhaps doing more than just parsing static XML documents) to generate &xslt4j; SAX parse events. You can instruct the Transformer to provide the ContentHandler for this XMLReader. You might even have a custom reader for producing/processing stylesheets, in which case you simply set the trax.TemplatesBuilder (implemented by the org.apache.xalan.processor.StylesheetHandler) as the ContentHandler for this reader.</p>
-  <p>The following example replicates the <link anchor="basic">Basic 4 steps</link> described above</p>
+  <p>The following example explicitly sets up the XMLReader and ContentHandlers, and replicates the <link anchor="basic">basic steps</link> described above.</p>
   <source>// 1. Instantiate  stylesheet processor.
 trax.Processor processor = trax.Processor.newInstance("xslt");
 

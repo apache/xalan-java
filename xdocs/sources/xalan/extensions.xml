@@ -296,7 +296,7 @@ Example: <code>&lt;lxslt:script lang="javaclass"</code><br/>
     Testing Redirect extension:
     &lt;foobar-out&gt;foo subelement text node&lt;/foobar-out&gt;
   &lt;/foo-out&gt;</source>
-<p>For more information on using the Redirect extension to send output to multiple files, see <resource-ref idref="RedirectDoc"/>.</p>  
+<p>For more information on using the Redirect extension to send output to multiple files, examine the <link idref="samples" anchor="ext1">SimpleRedirect</link> sample and see the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump>class Javadoc.</p>  
 </s3>
 </s2><anchor name="ext-functions"/>
 <s2 title="Using extension functions">

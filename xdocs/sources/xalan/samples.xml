@@ -72,7 +72,7 @@
      sample applications. The class files for the samples are in xalansamples.jar (everything except the servlet) and xalanservlet.jar, so to run the samples, you should place these JAR files on the system classpath.</p>
      <p>With most of the samples, you can use the following procedure:</p>
      <ol>
-     <li>Be sure xalan.jar, xalansamples.jar (xalanservlet.jar for the servlet), and xerces.jar are on the system class
+     <li>Be sure xalan.jar, xalansamples.jar, and xerces.jar are on the system class
       path. For the extension examples, bsf.jar, bsfengines.jar, and (for the JavaScript extensions) js.jar must also be on the class
       path.</li>
      <li>Be sure the java executable is on your path.</li>
@@ -85,9 +85,10 @@
     <p>The basic command line for running most of the samples is </p> 
     <p><code>java <ref>classname args</ref></code></p>
     <p>where <ref>classname</ref> is the classname and <ref>args</ref> are the arguments, if any. As described in
-     the following sections, some samples take no arguments. The samples in UseStylesheetParam and xxx take
-     additional arguments. The samples in extensions use the &xslt4j; <link idref="commandline">command-line
-     utility</link>, so they take arguments for the XML source file and the XSL stylesheet.</p>
+     the following sections, some samples take no arguments. The UseStylesheetParam sample takes an
+     additional argument. Several samples in extensions use the &xslt4j; 
+     <link idref="commandline">command-line utility</link>, so they take arguments for the XML source
+     file and the XSL stylesheet.</p>
   	</s2><anchor name="simpletransform"/>
     <s2 title="SimpleTransform">
     <p>What it does: The SimpleTransform class uses the foo.xsl stylesheet to transform foo.xml, and prints the
@@ -112,7 +113,7 @@
     </s2><anchor name="sax2sax"/>
   <s2 title="SAX2SAX">
   <p>What it does: Explicitly set the SAX XMLReader and SAX ContentHandler for processing the stylesheet, processing the XML input, and producing the output.</p>
-  <p>Run this sample from the Pipe subdirectory with</p>
+  <p>Run this sample from the Sax2sax subdirectory with</p>
    <p><code>java SAX2SAX</code></p>
     </s2><anchor name="pipe"/>
     <s2 title="Pipe">
@@ -162,6 +163,9 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
 </gloss>
      </s2><anchor name="extensions"/>
     <s2 title="Extensions">
+    <p>For an introduction to the creation and use of extension elements and extension functions, and
+    for information about the extensions library distributed with &xslt4j;, see
+    <link idref="extensions">Extensions</link>.</p>
     <ul>
       <li><link anchor="ext1">SimpleRedirect</link></li>
       <li><link anchor="ext2">2-basicJscript</link></li>
@@ -172,7 +176,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     <p>The extensions subdirectory contains five samples with &xslt4j; extensions. Two of the samples use
      extensions implemented in JavaScript, and three of the samples use extensions implemented in Java.</p>
      <p>To run these examples, you must place bsf.jar and bsfengines.jar (distributed with &xslt4j;), and js.jar
-      (version 1.4 release 3, available from 
+      (version 1.5, available from 
       <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the class path. 
      You do not need js.jar on the class path for the samples that use Java extensions. </p>
      <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
