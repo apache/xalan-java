@@ -574,7 +574,7 @@ Copyright:
          doctitle="${Name} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
           <classpath refid="docs.class.path" />
-          <doclet name="xalanjdoc.Standard" path="${doclet.jar.name}">
+          <doclet name="xalanjdoc.Standard" path="${doclet.jar}">
             <param name="-d" value="${build.apidocs}"/>
           </doclet>
           <group title="Transformations API for XML (TrAX)" packages="javax.xml.transform*"/>
