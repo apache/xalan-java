@@ -86,56 +86,6 @@ public class GenerateEvent implements java.util.EventListener
    */
   public int m_eventtype;
 
-  /**
-   * Event type generated when a document begins.
-   *
-   */
-  public static final int EVENTTYPE_STARTDOCUMENT = 1;
-
-  /**
-   * Event type generated when a document ends.
-   */
-  public static final int EVENTTYPE_ENDDOCUMENT = 2;
-
-  /**
-   * Event type generated when an element begins (after the attributes have been processed but before the children have been added).
-   */
-  public static final int EVENTTYPE_STARTELEMENT = 3;
-
-  /**
-   * Event type generated when an element ends, after it's children have been added.
-   */
-  public static final int EVENTTYPE_ENDELEMENT = 4;
-
-  /**
-   * Event type generated for character data (CDATA and Ignorable Whitespace have their own events).
-   */
-  public static final int EVENTTYPE_CHARACTERS = 5;
-
-  /**
-   * Event type generated for ignorable whitespace (I'm not sure how much this is actually called.
-   */
-  public static final int EVENTTYPE_IGNORABLEWHITESPACE = 6;
-
-  /**
-   * Event type generated for processing instructions.
-   */
-  public static final int EVENTTYPE_PI = 7;
-
-  /**
-   * Event type generated after a comment has been added.
-   */
-  public static final int EVENTTYPE_COMMENT = 8;
-
-  /**
-   * Event type generate after an entity ref is created.
-   */
-  public static final int EVENTTYPE_ENTITYREF = 9;
-
-  /**
-   * Event type generated after CDATA is generated.
-   */
-  public static final int EVENTTYPE_CDATA = 10;
 
   /**
    * Character data from a character or cdata event.

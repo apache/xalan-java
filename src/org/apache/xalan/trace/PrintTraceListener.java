@@ -64,6 +64,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
+import org.apache.xml.serializer.SerializerTrace;
 
 import org.w3c.dom.Node;
 
@@ -351,42 +352,42 @@ public void selected(SelectionEvent ev)
     {
       switch (ev.m_eventtype)
       {
-      case GenerateEvent.EVENTTYPE_STARTDOCUMENT :
+      case SerializerTrace.EVENTTYPE_STARTDOCUMENT :
         m_pw.println("STARTDOCUMENT");
         break;
-      case GenerateEvent.EVENTTYPE_ENDDOCUMENT :
+      case SerializerTrace.EVENTTYPE_ENDDOCUMENT :
         m_pw.println("ENDDOCUMENT");
         break;
-      case GenerateEvent.EVENTTYPE_STARTELEMENT :
+      case SerializerTrace.EVENTTYPE_STARTELEMENT :
         m_pw.println("STARTELEMENT: " + ev.m_name);
         break;
-      case GenerateEvent.EVENTTYPE_ENDELEMENT :
+      case SerializerTrace.EVENTTYPE_ENDELEMENT :
         m_pw.println("ENDELEMENT: " + ev.m_name);
         break;
-      case GenerateEvent.EVENTTYPE_CHARACTERS :
+      case SerializerTrace.EVENTTYPE_CHARACTERS :
       {
         String chars = new String(ev.m_characters, ev.m_start, ev.m_length);
 
         m_pw.println("CHARACTERS: " + chars);
       }
       break;
-      case GenerateEvent.EVENTTYPE_CDATA :
+      case SerializerTrace.EVENTTYPE_CDATA :
       {
         String chars = new String(ev.m_characters, ev.m_start, ev.m_length);
 
         m_pw.println("CDATA: " + chars);
       }
       break;
-      case GenerateEvent.EVENTTYPE_COMMENT :
+      case SerializerTrace.EVENTTYPE_COMMENT :
         m_pw.println("COMMENT: " + ev.m_data);
         break;
-      case GenerateEvent.EVENTTYPE_PI :
+      case SerializerTrace.EVENTTYPE_PI :
         m_pw.println("PI: " + ev.m_name + ", " + ev.m_data);
         break;
-      case GenerateEvent.EVENTTYPE_ENTITYREF :
+      case SerializerTrace.EVENTTYPE_ENTITYREF :
         m_pw.println("ENTITYREF: " + ev.m_name);
         break;
-      case GenerateEvent.EVENTTYPE_IGNORABLEWHITESPACE :
+      case SerializerTrace.EVENTTYPE_IGNORABLEWHITESPACE :
         m_pw.println("IGNORABLEWHITESPACE");
         break;
       }
