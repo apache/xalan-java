@@ -54,7 +54,7 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
 	super();
 	DEFAULT_catalog = null;
 	setLocalHost();
-	setSystemProperties();
+	// setSystemProperties();
     }
 
     /**
@@ -233,7 +233,7 @@ public class DefaultApplyXSLTProperties extends ApplyXSLTProperties {
     }
 	
 	 /**
-   * Sets required system properties.
+   * I think we no longer need this. Sets the 3 jaxp core system properties.
    */	
     protected void setSystemProperties()
 	{
