@@ -219,7 +219,20 @@ public class StylesheetRoot extends StylesheetComposed
     recomposeTemplates();
     recomposeVariables();
     recomposeWhiteSpaceInfo();
-    composeTemplates(this);
+
+    // Now call the compose() method on every element.
+
+    for (int i = 0; i < n; i++)
+    {
+      StylesheetComposed imported = this.getGlobalImport(i);
+      composeTemplates(imported);
+      int includedCount = imported.getIncludeCountComposed();
+      for (int j = 0; j < includedCount; j++)
+      {
+        Stylesheet included = imported.getIncludeComposed(j);
+        composeTemplates(included);
+      }
+    }
   }
 
   /**
@@ -227,7 +240,7 @@ public class StylesheetRoot extends StylesheetComposed
    *
    * NEEDSDOC @param templ
    */
-  void composeTemplates(ElemTemplateElement templ)
+  static void composeTemplates(ElemTemplateElement templ)
   {
 
     templ.compose();
