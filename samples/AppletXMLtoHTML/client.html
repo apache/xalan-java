@@ -107,11 +107,12 @@
       </table>
     </form>
     <!-- Be sure you have applet archive attribute set
-         so the applet can find xalan.jar and xerces.jar -->  
+         so the applet can find xalan.jar,xml-apis.jar, and xercesImpl.jar (for Xerces-J2) 
+         or xerces.jar (for Xerces-J1)-->  
     <applet  
       name="xslControl"
       code="org.apache.xalan.client.XSLTProcessorApplet.class"
-      archive="../../bin/xalan.jar,../../bin/xerces.jar"
+      archive="../../bin/xalan.jar,../../bin/xml-apis.jar,../../bin/xercesImpl.jar,../../bin/xerces.jar"
       height="0"
       width"0">
       <param name="documentURL" value="xalanApplets.xml"/>  <!--default setting-->
