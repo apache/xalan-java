@@ -730,7 +730,12 @@ public class TransformerImpl extends Transformer
   public void setOutputProperty(String name, String value)
     throws IllegalArgumentException
   {    
-    m_outputFormat = getOutputFormat();
+    // Get the output format that was set by the user, otherwise get the 
+    // output format from the stylesheet.
+    if(null == m_outputFormat)
+    {
+      m_outputFormat = (OutputProperties)getStylesheet().getOutputComposed().clone();
+    }
 
     if(!m_outputFormat.isLegalPropertyKey(name))
       throw new IllegalArgumentException("output property not recognized: "+name);
