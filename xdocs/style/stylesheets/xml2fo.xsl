@@ -109,11 +109,11 @@ TBD: - The faq doesn't show in the content
                            <xsl:value-of select="@id"/>
                            </xsl:attribute>
                           <xsl:value-of select="s1/@title|faqs/@title"/>
-                        </fo:basic-link> 
+                        </fo:basic-link>
                      </fo:block>
                   </fo:table-cell>
                   <fo:table-cell>
-                     <fo:block text-align="end" >
+                     <fo:block text-align="end">                                
                        <fo:page-number-citation ref-id="{@id}"/>
                      </fo:block>
                   </fo:table-cell>
