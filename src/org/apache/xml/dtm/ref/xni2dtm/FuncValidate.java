@@ -17,9 +17,13 @@ import org.apache.xpath.XPathContext;
  * 
  * %REVIEW% Current code validates only a single root element. If we want more,
  * we can do it but it'll take a bit more coding.
+ * 
+ * %BUG% Need to change this to write into the RTFDTM -- which should
+ * be an instance of XNI2DTM for this purpose -- rather than always
+ * instantiating a new DTM.
  * */
 public class FuncValidate {
-	private static final boolean JJK_DISABLE_VALIDATOR=false; // debugging hook
+	private static final boolean JJK_USE_RTFDTM=true; // validate into shared DTM
 	private static final boolean JJK_DUMMY_CODE=true; // debugging hook
 	
 	
@@ -85,9 +89,6 @@ public class FuncValidate {
 		// those through a secondary channel, eg by turning them into custom
 		// annotations until they get back to XNI.
 		XNISource xsrc;
-		if(JJK_DISABLE_VALIDATOR)
-			xsrc=new XNISource(d2x,null); // Test: Just flow thru
-		else
 		{
 			// ISSUE: Do we need to explicitly normalize namespaces?
 			
@@ -172,14 +173,47 @@ public class FuncValidate {
 		// as that thought might be -- the source DTM might be an RTF and
 		// might Go Away. We probably _should_ make it an RTF DTM, but those
 		// currently aren't supported for XNI.
-		DTM newDTM=xctxt.getDTM(xsrc,
-			true, // unique
-			null, // whitespace filter
-			false, // incremental -- not supported at this writing
-			false // doIndexing -- open to debate
-			);
-		
-		return newDTM.getNode(newDTM.getDocument());
+		if(!JJK_USE_RTFDTM)
+		{
+			DTM newDTM=xctxt.getDTM(xsrc,
+				true, // unique
+				null, // whitespace filter
+				false, // incremental -- not supported at this writing
+				false // doIndexing -- open to debate
+				);
+			return newDTM.getNode(newDTM.getDocument());
+		}
+		else
+		{
+			XNI2DTM dtm=(XNI2DTM)xctxt.getRTFDTM();
+    	    xsrc.setDocumentHandler(dtm);
+        	xsrc.setErrorHandler(dtm);
+            // XNI's document scanner does support incremental.
+	        // Would require yet another flavor of incremental-source to
+    	    // glue it to our APIs. For now, just run it to completion.
+        	// MOVE THIS DOWN !!!!!
+	        // %REVIEW%
+	        
+	        try
+    	    {
+	    	    xsrc.reset();
+	        	xsrc.scanDocument(true);	        	
+	        }
+	        catch (RuntimeException re)
+    	    {
+        	  throw re;
+	        }
+    	    catch (Exception e)
+        	{
+	          throw new org.apache.xml.utils.WrappedRuntimeException(e);
+    	    }
+
+			// We need to retrieve this. Requires either removing our
+			// block-getDocument-in-shared-DTMs hook (giving up a safety net)
+			// or creating a separate retrieve-last-document-built call.
+			// See SAX2DTM.getDocument for discussion.          
+			return dtm.getNode(dtm.getDocument());
+		}		
 	}
 }
 

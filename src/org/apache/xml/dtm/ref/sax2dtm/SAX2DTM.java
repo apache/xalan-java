@@ -1797,8 +1797,12 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 	// We _shouldn't_ clear it in non-shared DTMs, since -- at this time,
 	// anyway -- some of the start-up code assumes that getDocument() on the
 	// source document will work after the doc is closed.
-    if(!JJK_LEAVE_DOCUMENT_CURRENT && m_isSharedDTM)
-	    m_currentDocumentNode= NULL; // no longer open
+	//
+	// ISSUE: The validate operation needs to retrieve last doc written to
+	// an RTF. We either need a separate call to obtain that, or we need to
+	// remove this safety net. Gonk
+    //if(!JJK_LEAVE_DOCUMENT_CURRENT && m_isSharedDTM)
+	//   m_currentDocumentNode= NULL; // no longer open
 	    
     m_endDocumentOccured = true;
   }

@@ -313,7 +313,11 @@ public class DTMManagerDefault extends DTMManager
         //
         // %REVIEW% This is a sloppy way to request this mode;
         // we need to consider architectural improvements.
-        dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
+        //
+        // XSLT20 Temporary Trees may want to contain
+        // schema-typed nodes, so we actually need
+        // XNI2DTM rather than SAX2DTM.
+        dtm = new /*SAX2DTM*/XNI2DTM(this, source, documentID, whiteSpaceFilter,
                              xstringFactory, doIndexing, true);
         if(DEBUG)
         	System.out.println("CREATING RTF DTM: "+dtm);
@@ -343,7 +347,7 @@ public class DTMManagerDefault extends DTMManager
     	XNISource xsrc=(XNISource)source;
     	
         XNI2DTM dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
-                              xstringFactory, doIndexing);
+                              xstringFactory, doIndexing, false);
         addDTM(dtm, dtmPos, 0);
         
         xsrc.setDocumentHandler(dtm);
@@ -404,7 +408,7 @@ public class DTMManagerDefault extends DTMManager
       if(reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser")) 
       {         
         DTM dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
-                              xstringFactory, doIndexing);
+                              xstringFactory, doIndexing,false);
         addDTM(dtm, dtmPos, 0);
 
         {

@@ -155,16 +155,18 @@ public class XNI2DTM
    * @param xstringfactory XMLString factory for creating character content.
    * @param doIndexing true if the caller considers it worth it to use 
    *                   indexing schemes.
+   * @param shared true if the caller may want to write multiple documents
+   *    into this DTM and prune them away again. This should be set true
+   *    only for Result-Tree-Fragment/Temporary-Tree DTMs.
    */
   public XNI2DTM(DTMManager mgr, Source source, int dtmIdentity,
                  DTMWSFilter whiteSpaceFilter,
                  org.apache.xml.utils.XMLStringFactory xstringfactory,
-                 boolean doIndexing)
+                 boolean doIndexing, boolean shared)
   {
     super(mgr, source, dtmIdentity, whiteSpaceFilter, 
-          xstringfactory, doIndexing);
+          xstringfactory, doIndexing, shared);
   }
-
   
   /** ADDED for XNI, SUPPLEMENTS non-schema-typed addNode:
    * 
@@ -401,7 +403,6 @@ public class XNI2DTM
    */
   public void clearCoRoutine(boolean callDoTerminate)
   {
-
     if (null != m_incrementalXNISource)
     {
       if (callDoTerminate)
@@ -409,6 +410,8 @@ public class XNI2DTM
 
       m_incrementalXNISource = null;
     }
+    else
+    	super.clearCoRoutine(callDoTerminate);
   }
 
   /** ADDED FOR XNI, REPLACES setIncrementalSAXSource:
@@ -448,7 +451,7 @@ public class XNI2DTM
    */
   public boolean needsTwoThreads()
   {
-    return null != m_incrementalXNISource;
+    return null != m_incrementalXNISource || super.needsTwoThreads();
   }
 
   /** OVERRIDDEN FOR XNI:
@@ -465,29 +468,31 @@ public class XNI2DTM
   protected boolean nextNode()
   {
     if (null == m_incrementalXNISource)
-      return false;
-
-    if (m_endDocumentOccured)
+    	return super.nextNode();
+    else
     {
-      clearCoRoutine();
-      return false;
-    }
+	    if (m_endDocumentOccured)
+    	{
+	      clearCoRoutine();
+    	  return false;
+	    }
 
-    try
-    {
-      boolean gotMore = m_incrementalXNISource.parse(false);
-      if (!gotMore)
-      {
-        // EOF reached without satisfying the request
-        clearCoRoutine();  // Drop connection, stop trying
-        // %TBD% deregister as its listener?
-      }
-      return gotMore;
+	    try
+    	{
+	      boolean gotMore = m_incrementalXNISource.parse(false);
+    	  if (!gotMore)
+	      {
+    	    // EOF reached without satisfying the request
+	        clearCoRoutine();  // Drop connection, stop trying
+    	    // %TBD% deregister as its listener?
+	      }
+    	  return gotMore;
+	    }
+    	catch(RuntimeException e)
+	    { throw e; }
+    	catch(Exception e)
+	    { throw new WrappedRuntimeException(e); }
     }
-    catch(RuntimeException e)
-    {      throw e;    }
-    catch(Exception e)
-    {      throw new WrappedRuntimeException(e);    }
   }
   
   ////////////////////////////////////////////////////////////////////
