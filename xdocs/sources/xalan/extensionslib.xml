@@ -59,13 +59,14 @@
 <s1 title="Extensions library">
 <ul>
 <li><link anchor="intro">Introduction</link></li>
+<li><link anchor="xalanns">Xalan namespace</link></li>
 <li><link anchor="redirect">Redirect</link></li>
-<li><link anchor="nodeset">nodeset</link> <ref>(to be ported from Xalan-J 1)</ref></li>
-<li><link anchor="sql">SQL extensions</link></li>
+<li><link anchor="nodeset">nodeset</link></li>
 <li><link anchor="intersection">intersection</link></li>
 <li><link anchor="difference">difference</link></li>
 <li><link anchor="distinct">distinct</link></li>
 <li><link anchor="hassamenodes">hasSameNodes</link></li>
+<li><link anchor="sql">SQL extensions</link></li>
 <li><link anchor="evaluate">evaluate</link> <ref>(to be done)</ref></li>
 <li><link anchor="groupitem">group and item</link> <ref>(to be done)</ref></li>
 <li><link anchor="type">type</link> <ref>(to be done)</ref></li>
@@ -73,16 +74,21 @@
 <li><link anchor="formatdate">formatDate</link> <ref>(to be done)</ref></li>
 <li><link anchor="grep">grep</link> <ref>(to be done)</ref></li>
 <li><link anchor="foreachtoken">forEachToken</link> <ref>(to be done)</ref></li>
-<li>Examples: <link anchor="ex-redirect">Redirect</link>, <link anchor="ex-sql">SQL library</link></li>
+<li>Examples: <link anchor="ex-redirect">Redirect</link>, <link anchor="ex-nodeset">nodeset</link>, <link anchor="ex-sql">SQL library</link></li>
 </ul><anchor name="intro"/>
 <s2 title= "Introduction">
 <p>Extension elements and functions provide a powerful mechanism
 for extending and simplifying what you can do with an XLST processor like
 Xalan. With input and contributions from the XML open-source developer community, we are working on placing the most useful
 extensions in an extensions library distributed with &xslt4j;. If you have ideas and/or contributions you would like to make, please email us at <human-resource-ref idref="xalandev"/>.</p>
-<p></p>
+</s2><anchor name="xalanns"/>
+<s2 title="Xalan namespace">
+<p>Where it makes sense, we are placing the new Xalan extensions in the org.apache.xalan.lib.Extensions class, and (strictly for ease of use) we have defined a namespace for this class:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan</code>.</p>
+<p>To call any of the extensions implemented in org.apache.xalan.lib.Extensions, you can define this namespace in your stylesheet element, and call the extension using the namespace prefix you have associated with that namespace.</p>
+<note>You do not need to include an extension-element-prefixes attribute for this namespace.</note>
+<p>For an example that uses this namespace, see <link anchor="ex-nodeset">Example with the nodeset extension function</link>.</p>
 </s2><anchor name="redirect"/>
-
 <s2 title= "Redirect">
 <p>A standard XSL transformation involves an XSL stylesheet, an XML source tree, and the transformation result tree. The transformation sends the entire result to a single <jump href="apidocs/org/apache/trax/Result.html">org.apache.trax.Result</jump> object.</p> 
 <p>The Redirect extension 
@@ -152,11 +158,54 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
     &lt;foobar-out&gt;foo subelement text node&lt;/foobar-out&gt;
   &lt;/foo-out&gt;</source>
 <p>For more information on using the Redirect extension to send output to multiple files, examine the <link idref="samples" anchor="ext1">SimpleRedirect</link> sample and see the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump> class Javadoc.</p>  
-</s3>
-
-</s2><anchor name="nodeset"/>
+</s3></s2><anchor name="nodeset"/>
 <s2 title= "nodeset">
-<p><em>To be ported.</em> This extension function casts a result tree fragment into a node-set. Gary L. Peskin posted nodeset to &xslt4j; version 1, and it needs to be ported to &xslt4j2;.</p>
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,
+<code>nodeset (result-tree-fragment)</code>  casts a result tree fragment into a node-set.</p>
+<anchor name="ex-nodeset"/>
+<s3 title="Example with the nodeset extension function">
+<p>The following stylesheet uses the nodeset() extension function to cast a result tree fragment into a node-set. It uses the http://xml.apache.org/xalan namespace to provide access to nodeset(), a method in xml.apache.xalan.lib.Extensions.</p>
+<source>&lt;?xml version="1.0"?&gt;
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+                xmlns:xalan="http://xml.apache.org/xalan"
+                exclude-result-prefixes="xalan"&gt;
+&lt;xsl:template match="/"&gt;
+  &lt;out&gt;
+	  &lt;xsl:variable name="rtf"&gt;
+      &lt;docelem&gt;
+        &lt;elem1&gt;
+          &lt;elem1a&gt;ELEMENT1A&lt;/elem1a&gt;
+          &lt;elem1b&gt;,ELEMENT1B&lt;/elem1b&gt;
+        &lt;/elem1&gt;
+        &lt;elem2&gt;
+          &lt;elem2a&gt;ELEMENT2A&lt;/elem2a&gt;
+        &lt;/elem2&gt;
+      &lt;/docelem&gt;
+    &lt;/xsl:variable&gt;     
+      &lt;xsl:for-each select="xalan:nodeset($rtf)/docelem/*"&gt;
+        &lt;xsl:value-of select="name(.)"/&gt;&lt;xsl:text&gt;,&lt;/xsl:text&gt;
+      &lt;/xsl:for-each>
+  &lt;/out>
+&lt;/xsl:template> 
+&lt;/xsl:stylesheet&gt;</source>
+</s3>
+</s2><anchor name="intersection"/>
+<s2 title="intersection">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,
+<code>intersection (node-set1, node-set2)</code>  function returns a node-set with all nodes that are in ns1 and in ns2 .</p>
+</s2><anchor name="difference"/>
+<s2 title= "difference">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,
+<code>difference(node-set1, node-set2)</code> returns a node-set with the nodes in node-set1 and not in node-set2.</p>
+</s2><anchor name="distinct"/>
+<s2 title= "distinct">
+ <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,
+ distinct (node-set) returns a node-set containing nodes with distinct string values. If more than one node in the node-set 
+ contains the same text node value, distinct only returns the first of these nodes that it finds.</p>
+</s2><anchor name="hassamenodes"/>
+<s2 title= "hasSameNodes">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,
+<code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
 </s2><anchor name="sql"/>
 <s2 title= "SQL library">
 <p>Provides extension functions for connecting to a JDBC data source, executing a query,
@@ -228,24 +277,6 @@ and working incrementally through "streamable" result set.</p>
 &lt;/xsl:stylesheet&gt;
 </source>
 </s3>
-</s2><anchor name="intersection"/>
-<s2 title="intersection">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
-<code>intersection (node-set1, node-set2)</code>  function returns a node-set with all nodes that are in ns1 and in ns2 .</p>
-</s2><anchor name="difference"/>
-
-<s2 title= "difference">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
-<code>difference(node-set1, node-set2)</code> returns a node-set with the nodes in node-set1 and not in node-set2.</p>
-</s2><anchor name="distinct"/>
-<s2 title= "distinct">
- <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
- distinct (node-set) returns a node-set containing nodes with distinct string values. If more than one node in the node-set 
- contains the same text node value, distinct only returns the first of these nodes that it finds.</p>
-</s2><anchor name="hassamenodes"/>
-<s2 title= "hasSameNodes">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
-<code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
 </s2><anchor name="evaluate"/>
 
 <s2 title= "evaluate">
