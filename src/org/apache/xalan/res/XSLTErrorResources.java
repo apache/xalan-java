@@ -1940,16 +1940,29 @@ public class XSLTErrorResources extends ListResourceBundle
      "ErrorListener"},
 
 
+// Note to translators:  The following message should not normally be displayed
+//   to users.  It describes a situation in which the processor has detected
+//   an internal consistency problem in itself, and it provides this message
+//   for the developer to help diagnose the problem.  The name
+//   'ElemTemplateElement' is the name of a class, and should not be
+//   translated.
 // Programmer's error! expr has no ElemTemplateElement parent!
 //  public static final int ER_ASSERT_NO_TEMPLATE_PARENT = 233;
     { ER_ASSERT_NO_TEMPLATE_PARENT,
-     "Programmer's error! expr has no ElemTemplateElement parent!"},
+     "Programmer's error! The expression has no ElemTemplateElement parent!"},
 
 
-// Programmer''s assertion in RundundentExprEliminator: {0}
+// Note to translators:  The following message should not normally be displayed
+//   to users.  It describes a situation in which the processor has detected
+//   an internal consistency problem in itself, and it provides this message
+//   for the developer to help diagnose the problem.  The substitution text
+//   provides further information in order to diagnose the problem.  The name
+//   'RedundentExprEliminator' is the name of a class, and should not be
+//   translated.
+// Programmer''s assertion in RedundentExprEliminator: {0}
 //  public static final int ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR = 234;
     { ER_ASSERT_REDUNDENT_EXPR_ELIMINATOR,
-     "Programmer''s assertion in RundundentExprEliminator: {0}"},
+     "Programmer''s assertion in RedundentExprEliminator: {0}"},
 
 // Axis traverser not supported: {0}
 //  public static final int ER_AXIS_TRAVERSER_NOT_SUPPORTED = 235;
