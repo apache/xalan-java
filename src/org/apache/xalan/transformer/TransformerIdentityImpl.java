@@ -820,6 +820,16 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void setDocumentLocator(Locator locator)
   {
+    try
+    {
+      if (null == m_resultContentHandler)
+        createResultContentHandler(m_result);
+    }
+    catch (TransformerException te)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
+
     m_resultContentHandler.setDocumentLocator(locator);
   }
 
