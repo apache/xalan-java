@@ -110,7 +110,7 @@ import javax.xml.transform.TransformerException;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#number">number in XSLT Specification</a>
  */
-public class ElemNumber extends ElemTemplateElement implements PrefixResolver
+public class ElemNumber extends ElemTemplateElement 
 {
 
     private class MyPrefixResolver implements PrefixResolver {

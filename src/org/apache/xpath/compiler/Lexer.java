@@ -392,7 +392,8 @@ class Lexer
       isNum = false;
       isStartOfPat = mapPatternElemPos(nesting, isStartOfPat, isAttrName);
 
-      if ((-1 != posOfNSSep) || (m_namespaceContext.handlesNullPrefixes()))
+      if ((-1 != posOfNSSep) || 
+         ((m_namespaceContext != null) && (m_namespaceContext.handlesNullPrefixes())))
       {
         posOfNSSep = mapNSTokens(pat, startSubstring, posOfNSSep, nChars);
       }
