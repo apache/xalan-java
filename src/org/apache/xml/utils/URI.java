@@ -396,6 +396,29 @@ public class URI implements Serializable
     {
       initializeScheme(uriSpec);
       uriSpec = uriSpec.substring(colonIndex+1);
+      // This is a fix for XALANJ-2059.
+      if(m_scheme != null && p_base != null)
+      {	  	
+        // a) If <uriSpec> starts with a slash (/), it means <uriSpec> is absolute 
+        //    and p_base can be ignored.
+        //    For example,
+        //    uriSpec = file:/myDIR/myXSLFile.xsl
+        //    p_base = file:/myWork/
+        //
+        //    Here, uriSpec has absolute path after scheme file and :
+        //    Hence p_base can be ignored.
+        // 
+        // b) Similarily, according to RFC 2396, uri is resolved for <uriSpec> relative to <p_base>
+        //    if scheme in <uriSpec> is same as scheme in <p_base>, else p_base can be ignored.
+        // 
+        // c) if <p_base> is not hierarchical, it can be ignored.
+        //
+        if(uriSpec.startsWith("/") || !m_scheme.equals(p_base.m_scheme) || !p_base.getSchemeSpecificPart().startsWith("/"))
+        {
+          p_base = null;
+        }
+      }
+      // Fix for XALANJ-2059  
       uriSpecLen = uriSpec.length();
     }
 
