@@ -68,14 +68,27 @@ import org.apache.xpath.axes.ContextNodeList;
 
 /**
  * <meta name="usage" content="advanced"/>
- * The NodeSet class can act as either a NodeVector,
+ * <p>The NodeSet class can act as either a NodeVector,
  * NodeList, or NodeIterator.  However, in order for it to
  * act as a NodeVector or NodeList, it's required that
  * setShouldCacheNodes(true) be called before the first
  * nextNode() is called, in order that nodes can be added
  * as they are fetched.  Derived classes that implement iterators
  * must override runTo(int index), in order that they may
- * run the iteration to the given index.
+ * run the iteration to the given index. </p>
+ * 
+ * <p>Note that we directly implement the DOM's NodeIterator
+ * interface. We do not emulate all the behavior of the
+ * standard NodeIterator. In particular, we do not guarantee
+ * to present a "live view" of the document ... but in XSLT,
+ * the source document should never be mutated, so this should
+ * never be an issue.</p>
+ * 
+ * <p>Thought: Should NodeSet really implement NodeList and NodeIterator,
+ * or should there be specific subclasses of it which do so? The
+ * advantage of doing it all here is that all NodeSets will respond
+ * to the same calls; the disadvantage is that some of them may return
+ * less-than-enlightening results when you do so.</p>
  */
 public class NodeSet extends NodeVector
         implements NodeList, NodeIterator, Cloneable, ContextNodeList
@@ -90,9 +103,9 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Create an empty nodelist.
+   * Create an empty, using the given block size.
    *
-   * NEEDSDOC @param blocksize
+   * @param blocksize Size of blocks to allocate 
    */
   public NodeSet(int blocksize)
   {
@@ -103,7 +116,7 @@ public class NodeSet extends NodeVector
    * Create a NodeSet, and copy the members of the
    * given nodelist into it.
    *
-   * NEEDSDOC @param nodelist
+   * @param nodelist List of Nodes to be made members of the new set.
    */
   public NodeSet(NodeList nodelist)
   {
@@ -117,7 +130,7 @@ public class NodeSet extends NodeVector
    * Create a NodeSet, and copy the members of the
    * given NodeSet into it.
    *
-   * NEEDSDOC @param nodelist
+   * @param nodelist Set of Nodes to be made members of the new set.
    */
   public NodeSet(NodeSet nodelist)
   {
@@ -129,9 +142,9 @@ public class NodeSet extends NodeVector
 
   /**
    * Create a NodeSet, and copy the members of the
-   * given nodelist into it.
+   * given NodeIterator into it.
    *
-   * NEEDSDOC @param ni
+   * @param ni Iterator which yields Nodes to be made members of the new set.
    */
   public NodeSet(NodeIterator ni)
   {
@@ -142,10 +155,9 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Create a NodeSet, and copy the members of the
-   * given nodelist into it.
+   * Create a NodeSet which contains the given Node.
    *
-   * NEEDSDOC @param node
+   * @param node Single node to be added to the new set.
    */
   public NodeSet(Node node)
   {
@@ -156,9 +168,8 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   *  The root node of the Iterator, as specified when it was created.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @return The root node of the Iterator, as specified when it was created.
+   * For non-Iterator NodeSets, this will be null.
    */
   public Node getRoot()
   {
@@ -166,11 +177,16 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Get a cloned LocPathIterator.
+   * Clone this NodeSet.
+   * At this time, we only expect this to be used with LocPathIterators;
+   * it may not work with other kinds of NodeSets.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a new NodeSet of the same type, having the same state...
+   * though unless overridden in the subclasses, it may not copy all
+   * the state information.
    *
-   * @throws CloneNotSupportedException
+   * @throws CloneNotSupportedException if this subclass of NodeSet
+   * does not support the clone() operation.
    */
   public Object clone() throws CloneNotSupportedException
   {
@@ -181,11 +197,14 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Get a cloned Iterator.
+   * Get a cloned Iterator, and reset its state to the beginning of the
+   * iteration.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a new NodeSet of the same type, having the same state...
+   * except that the reset() operation has been called.
    *
-   * @throws CloneNotSupportedException
+   * @throws CloneNotSupportedException if this subclass of NodeSet
+   * does not support the clone() operation.
    */
   public NodeIterator cloneWithReset() throws CloneNotSupportedException
   {
@@ -198,7 +217,7 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Reset the iterator.
+   * Reset the iterator. May have no effect on non-iterator Nodesets.
    */
   public void reset()
   {
@@ -208,9 +227,14 @@ public class NodeSet extends NodeVector
   /**
    *  This attribute determines which node types are presented via the
    * iterator. The available set of constants is defined in the
-   * <code>NodeFilter</code> interface.
+   * <code>NodeFilter</code> interface. For NodeSets, the mask has been
+   * hardcoded to show all nodes except EntityReference nodes, which have
+   * no equivalent in the XPath data model.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return integer used as a bit-array, containing flags defined in
+   * the DOM's NodeFilter class. The value will be 
+   * <code>SHOW_ALL & ~SHOW_ENTITY_REFERENCE</code>, meaning that
+   * only entity references are suppressed.
    */
   public int getWhatToShow()
   {
@@ -218,9 +242,17 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   *  The filter used to screen nodes.
+   * The filter object used to screen nodes. Filters are applied to
+   * further reduce (and restructure) the NodeIterator's view of the
+   * document. In our case, we will be using hardcoded filters built
+   * into our iterators... but getFilter() is part of the DOM's 
+   * NodeIterator interface, so we have to support it.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null, which is slightly misleading. True, there is no
+   * user-written filter object, but in fact we are doing some very
+   * sophisticated custom filtering. A DOM purist might suggest
+   * returning a placeholder object just to indicate that this is
+   * not going to return all nodes selected by whatToShow.
    */
   public NodeFilter getFilter()
   {
@@ -239,7 +271,9 @@ public class NodeSet extends NodeVector
    * expansion, use the whatToShow flags to show the entity reference node
    * and set expandEntityReferences to false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true for all iterators based on NodeSet, meaning that the
+   * contents of EntityRefrence nodes may be returned (though whatToShow
+   * says that the EntityReferences themselves are not shown.)
    */
   public boolean getExpandEntityReferences()
   {
@@ -279,6 +313,8 @@ public class NodeSet extends NodeVector
    * @exception DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a cached type, and hence doesn't know what the previous node was.
    */
   public Node previousNode() throws DOMException
   {
@@ -298,11 +334,15 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   *  Detaches the iterator from the set which it iterated over, releasing
+   * Detaches the iterator from the set which it iterated over, releasing
    * any computational resources and placing the iterator in the INVALID
    * state. After<code>detach</code> has been invoked, calls to
    * <code>nextNode</code> or<code>previousNode</code> will raise the
    * exception INVALID_STATE_ERR.
+   * <p>
+   * This operation is a no-op in NodeSet, and will not cause 
+   * INVALID_STATE_ERR to be raised by later operations.
+   * </p>
    */
   public void detach(){}
 
@@ -311,7 +351,8 @@ public class NodeSet extends NodeVector
    * the first nextNode() that is called will return the
    * first node in the set.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if nextNode() would return the first node in the set,
+   * false if it would return a later one.
    */
   public boolean isFresh()
   {
@@ -324,7 +365,11 @@ public class NodeSet extends NodeVector
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
    *
-   * NEEDSDOC @param index
+   * @param index Position to advance (or retreat) to, with
+   * 0 requesting the reset ("fresh") position and -1 (or indeed
+   * any out-of-bounds value) requesting the final position.
+   * @exception RuntimeException thrown if this NodeSet is not
+   * one of the types which supports indexing/counting.
    */
   public void runTo(int index)
   {
@@ -343,6 +388,9 @@ public class NodeSet extends NodeVector
    * Returns the <code>index</code>th item in the collection. If
    * <code>index</code> is greater than or equal to the number of nodes in
    * the list, this returns <code>null</code>.
+   * 
+   * NEEDSDOC: What happens if index is out of range?
+   * 
    * @param index Index into the collection.
    * @return The node at the <code>index</code>th position in the
    *   <code>NodeList</code>, or <code>null</code> if that is not a valid
@@ -358,9 +406,11 @@ public class NodeSet extends NodeVector
 
   /**
    * The number of nodes in the list. The range of valid child node indices is
-   * 0 to <code>length-1</code> inclusive.
+   * 0 to <code>length-1</code> inclusive. Note that this operation requires
+   * finding all the matching nodes, which may defeat attempts to defer
+   * that work.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return integer indicating how many nodes are represented by this list.
    */
   public int getLength()
   {
@@ -371,9 +421,12 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Add a node.
+   * Add a node to the NodeSet. Not all types of NodeSets support this
+   * operation
    *
-   * NEEDSDOC @param n
+   * @param n Node to be added
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addNode(Node n)
   {
@@ -387,8 +440,11 @@ public class NodeSet extends NodeVector
   /**
    * Insert a node at a given position.
    *
-   * NEEDSDOC @param n
-   * NEEDSDOC @param pos
+   * @param n Node to be added
+   * @param pos Offset at which the node is to be inserted,
+   * with 0 being the first position.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void insertNode(Node n, int pos)
   {
@@ -402,7 +458,9 @@ public class NodeSet extends NodeVector
   /**
    * Remove a node.
    *
-   * NEEDSDOC @param n
+   * @param n Node to be added
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void removeNode(Node n)
   {
@@ -417,7 +475,10 @@ public class NodeSet extends NodeVector
    * Copy NodeList members into this nodelist, adding in
    * document order.  If a node is null, don't add it.
    *
-   * NEEDSDOC @param nodelist
+   * @param nodelist List of nodes which should now be referenced by
+   * this NodeSet.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addNodes(NodeList nodelist)
   {
@@ -444,10 +505,20 @@ public class NodeSet extends NodeVector
   }
 
   /**
-   * Copy NodeList members into this nodelist, adding in
-   * document order.  If a node is null, don't add it.
+   * <p>Copy NodeList members into this nodelist, adding in
+   * document order.  Only genuine node references will be copied;
+   * nulls appearing in the source NodeSet will
+   * not be added to this one. </p>
+   * 
+   * <p> In case you're wondering why this function is needed: NodeSet
+   * implements both NodeIterator and NodeList. If this method isn't
+   * provided, Java can't decide which of those to use when addNodes()
+   * is invoked. Providing the more-explicit match avoids that
+   * ambiguity.)</p>
    *
-   * NEEDSDOC @param ns
+   * @param ns NodeSet whose members should be merged into this NodeSet.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addNodes(NodeSet ns)
   {
@@ -460,9 +531,11 @@ public class NodeSet extends NodeVector
 
   /**
    * Copy NodeList members into this nodelist, adding in
-   * document order.  If a node is null, don't add it.
+   * document order.  Null references are not added.
    *
-   * NEEDSDOC @param iterator
+   * @param iterator NodeIterator which yields the nodes to be added.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addNodes(NodeIterator iterator)
   {
@@ -487,8 +560,10 @@ public class NodeSet extends NodeVector
    * Copy NodeList members into this nodelist, adding in
    * document order.  If a node is null, don't add it.
    *
-   * NEEDSDOC @param nodelist
+   * @param nodelist List of nodes to be added
    * NEEDSDOC @param support
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addNodesInDocOrder(NodeList nodelist, XPathContext support)
   {
@@ -513,8 +588,10 @@ public class NodeSet extends NodeVector
    * Copy NodeList members into this nodelist, adding in
    * document order.  If a node is null, don't add it.
    *
-   * NEEDSDOC @param iterator
+   * @param iterator NodeIterator which yields the nodes to be added.
    * NEEDSDOC @param support
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addNodesInDocOrder(NodeIterator iterator, XPathContext support)
   {
@@ -541,6 +618,8 @@ public class NodeSet extends NodeVector
    * NEEDSDOC @param support
    *
    * NEEDSDOC ($objectName$) @return
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   private boolean addNodesInDocOrder(int start, int end, int testIndex,
                                      NodeList nodelist, XPathContext support)
@@ -603,6 +682,8 @@ public class NodeSet extends NodeVector
    * @param test true if we should test for doc order
    * NEEDSDOC @param support
    * @return insertIndex.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public int addNodeInDocOrder(Node node, boolean test, XPathContext support)
   {
@@ -678,6 +759,8 @@ public class NodeSet extends NodeVector
    * NEEDSDOC @param support
    *
    * NEEDSDOC ($objectName$) @return
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public int addNodeInDocOrder(Node node, XPathContext support)
   {
@@ -702,6 +785,8 @@ public class NodeSet extends NodeVector
    * Append a Node onto the vector.
    *
    * NEEDSDOC @param value
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void addElement(Node value)
   {
@@ -720,6 +805,8 @@ public class NodeSet extends NodeVector
    *
    * NEEDSDOC @param value
    * NEEDSDOC @param at
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void insertElementAt(Node value, int at)
   {
@@ -734,6 +821,8 @@ public class NodeSet extends NodeVector
    * Append the nodes to the list.
    *
    * NEEDSDOC @param nodes
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void appendNodes(NodeVector nodes)
   {
@@ -749,6 +838,8 @@ public class NodeSet extends NodeVector
    * Each component in this vector with an index greater or equal to
    * the specified index is shifted upward to have an index one greater
    * than the value it had previously.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void removeAllElements()
   {
@@ -769,6 +860,8 @@ public class NodeSet extends NodeVector
    * NEEDSDOC @param s
    *
    * NEEDSDOC ($objectName$) @return
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public boolean removeElement(Node s)
   {
@@ -786,6 +879,8 @@ public class NodeSet extends NodeVector
    * the value it had previously.
    *
    * NEEDSDOC @param i
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void removeElementAt(int i)
   {
@@ -805,6 +900,8 @@ public class NodeSet extends NodeVector
    *
    * NEEDSDOC @param node
    * NEEDSDOC @param index
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a mutable type.
    */
   public void setElementAt(Node node, int index)
   {
@@ -901,6 +998,8 @@ public class NodeSet extends NodeVector
   /**
    * Set the current position in the node set.
    * @param i Must be a valid index.
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a cached type, and thus doesn't permit indexed access.
    */
   public void setCurrentPos(int i)
   {
@@ -916,6 +1015,8 @@ public class NodeSet extends NodeVector
    * Return the last fetched node.  Needed to support the UnionPathIterator.
    *
    * NEEDSDOC ($objectName$) @return
+   * @exception RuntimeException thrown if this NodeSet is not of 
+   * a cached type, and thus doesn't permit indexed access.
    */
   public Node getCurrentNode()
   {
@@ -949,10 +1050,15 @@ public class NodeSet extends NodeVector
 
   /**
    * If setShouldCacheNodes(true) is called, then nodes will
-   * be cached.  They are not cached by default.
+   * be cached.  They are not cached by default. This switch must
+   * be set before the first call to nextNode is made, to ensure
+   * that all nodes are cached.
    *
    * NEEDSDOC @param b
-   */
+   * @exception RuntimeException thrown if an attempt is made to
+   * request caching after we've already begun stepping through the
+   * nodes in this set.
+  */
   public void setShouldCacheNodes(boolean b)
   {
 
