@@ -131,8 +131,9 @@ public class DescendantWalker extends AxesWalker
    */
   public Node firstChild()
   {
-
-    Node next = m_currentNode.getFirstChild();
+    
+    Node next = (m_currentNode.getNodeType() != Node.ATTRIBUTE_NODE) ?
+                m_currentNode.getFirstChild() : null;
 
     m_nextLevelAmount = (null == next) ? 0 : (next.hasChildNodes() ? 1 : 0);
 
