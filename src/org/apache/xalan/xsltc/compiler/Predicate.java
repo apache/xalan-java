@@ -157,7 +157,7 @@ final class Predicate extends Expression {
 
 	// We need explicit type information for reference types - no good!
 	if (texp instanceof ReferenceType) {
-	    throw new TypeCheckError(this);
+	    _exp = new CastExpr(_exp, texp = Type.Real);
 	}
 
 	// A result tree fragment should not be cast directly to a number type,
