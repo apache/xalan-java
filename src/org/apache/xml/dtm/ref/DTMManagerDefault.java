@@ -78,6 +78,7 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 /**************************************************************/
 // EXPERIMENTAL 3/22/02
 import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
+import org.apache.xml.dtm.ref.xni2dtm.XNISource;
 /**************************************************************/
 
 // W3C DOM
@@ -341,11 +342,40 @@ public class DTMManagerDefault extends DTMManager
       return dtm;
     }
 
+    if (JJK_ENABLE_XNI && source instanceof XNISource)
+    {
+    	XNISource xsrc=(XNISource)source;
+    	
+        XNI2DTM dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
+                              xstringFactory, doIndexing);
+        addDTM(dtm, dtmPos, 0);
+        
+        xsrc.getXMLReader().setDocumentHandler(dtm);
+        
+        // XNI's document scanner does support incremental.
+        // Would require yet another flavor of incremental-source to
+        // glue it to our APIs. For now, just run it to completion.
+        // MOVE THIS DOWN !!!!!
+        // %REVIEW%
+        try
+        {
+	        xsrc.getXMLReader().scanDocument(true);
+        }
+        catch (RuntimeException re)
+        {
+          throw re;
+        }
+        catch (Exception e)
+        {
+          throw new org.apache.xml.utils.WrappedRuntimeException(e);
+        }
+          
+        return dtm;
+    } // XNISource
+
     if (JJK_ENABLE_XNI && source instanceof StreamSource)
     {
- 
       // Try processing it as XNI first, to get PSVI information!
-      XMLReader reader = getXMLReader(source);
 
       InputSource xmlSource = SAXSource.sourceToInputSource(source);
       String urlOfSource = xmlSource.getSystemId();
@@ -366,6 +396,7 @@ public class DTMManagerDefault extends DTMManager
       // %REVIEW% Need a better test for whether Xerces2 is available
       // This one involves creating a SAX reader, then discarding
       // it in order to build a lower-level XNI reader. Wasteful.
+      XMLReader reader = getXMLReader(source);
       if(reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser")) 
       {         
         DTM dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
@@ -412,16 +443,17 @@ public class DTMManagerDefault extends DTMManager
       } // If Xerces2
       
       // Fallback: Turn it into a SAX request. (We _could_ just let
-      // it fall through unchanged and put an OR in SAX case, but 
-      // I think making it explicit may be clearer now that we're got
-      // XNI involved in the mix.
+      // it fall through unchanged and put an OR in SAX case, as I do
+      // when disabling this block for debugging purposes... but
+      // I think making it explicit may be clearer.
       source=new SAXSource(reader,xmlSource);
       // FALL THROUGH to SAX processing
     } // if streamsource
         
         
-    if ((source instanceof SAXSource) || (source instanceof StreamSource))
-    // if (source instanceof SAXSource)
+    if ((source instanceof SAXSource) 
+    	|| (!JJK_ENABLE_XNI && source instanceof StreamSource) // debug fallback
+    	)
     {
       XMLReader reader;
       InputSource xmlSource;

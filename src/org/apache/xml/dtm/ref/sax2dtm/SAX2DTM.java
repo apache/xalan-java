@@ -1122,6 +1122,12 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         return getPrefix(qname, null);
       }
     }
+    else if (DTM.NAMESPACE_NODE == type)
+    {
+    	if(!"xmlns".equals(getLocalName(nodeHandle)))
+    		return "xmlns";
+    	// else return "".
+    }
 
     return "";
   }
@@ -1190,8 +1196,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public String getNamespaceURI(int nodeHandle)
   {
+  	int identity=makeNodeIdentity(nodeHandle);
+  	
+  	// DOM says all namespace nodes are in the namespace namespace.
+  	if (_type(identity) == NAMESPACE_NODE)
+  		return "http://www.w3.org/XML/1998/namespace";
 
-    return m_expandedNameTable.getNamespace(_exptype(makeNodeIdentity(nodeHandle)));
+    return m_expandedNameTable.getNamespace(_exptype(identity));
   }
 
   /**

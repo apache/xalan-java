@@ -74,6 +74,7 @@ import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.SparseVector;
 
 //import org.xml.sax.*;
 import org.xml.sax.SAXException;
@@ -100,9 +101,12 @@ import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 
 /**
  * This class implements a DTM that is constructed via an XNI data stream.
- * Please note that it is a PROTOTYPE, since the Xerces post-schema 
+ * 
+ * Please note that it this is a PROTOTYPE, since the Xerces post-schema 
  * validation infoset (PSVI) APIs it is using are themselves prototypes and
- * subject to change without warning
+ * subject to change without warning. Also note that currently Xerces only
+ * implements a subset of the "light weight" PSVI, whereas the official
+ * XPath2 data model requires the heavyweight version. 
  * 
  * This version is derived from SAX2DTM for ease of implementation and
  * support, but deliberately blocks external access to
@@ -115,11 +119,11 @@ import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
  * Should we merge that with SAX2RTFDTM? "And what about Naomi?"
  */
 public class XNI2DTM 
-	extends org.apache.xml.dtm.ref.sax2dtm.SAX2DTM
-	implements XMLDocumentHandler, XMLErrorHandler, XMLDTDHandler
+  extends org.apache.xml.dtm.ref.sax2dtm.SAX2DTM
+  implements XMLDocumentHandler, XMLErrorHandler, XMLDTDHandler
 {
   /** DEBUGGING FLAG: Set true to monitor XNI events and similar diagnostic info. */
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
   
   /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as instantiated.
    * See discussion in addNode */
@@ -188,8 +192,8 @@ public class XNI2DTM
    * @param canHaveFirstChild true if the node can have a first child, false
    *                          if it is atomic.
    * @param expectedType Xerces Schema type object as declared in the schema
-   *	%REVIEW% NOTE that the 3/28/03 query datamodel no longer records the 
-   * 	type-as-declared, so this field can probably be eliminated!
+   *    %REVIEW% NOTE that the 3/28/03 query datamodel no longer records the 
+   *    type-as-declared, so this field can probably be eliminated!
    * @param actualType Schema type object as resolved in actual instance document
    *
    * @return The index identity of the node that was added.
@@ -199,30 +203,34 @@ public class XNI2DTM
                         int dataOrPrefix, boolean canHaveFirstChild,
                         XSTypeDecl actualType)
   {
-  	int identity=super.addNode(type,expandedTypeID,
-                	        parentIndex,previousSibling,
-                 			dataOrPrefix,canHaveFirstChild);
+    int identity=super.addNode(type,expandedTypeID,
+                               parentIndex,previousSibling,
+                               dataOrPrefix,canHaveFirstChild);
 
-	// The goal is to not consume storage for types unless they actualy exist,
-	// and to minimize per-node overhead.
-	//
-	// NOTE: Record first-seen as default even if it is null, because
-	// otherwise late changes of type will bash previously recorded
-	// nodes. This is NOT necessarily maximally efficient, but to really
-	// optimize we would have to rewrite data to make the default the most
-	// common -- and since Scott insists that overrides will be uncommon,
-	// I don't want to go there.
-	{
-	  // Try to record as default for this nodetype
-	  if(!m_expandedNameTable.setSchemaType(m_exptype.elementAt(identity),
-						actualType)
-	     )
-	  {
-	    m_schemaTypeOverride.addElement(identity,actualType);
-	  }
-	}
+    // The goal is to not consume storage for types unless they actualy exist,
+    // and to minimize per-node overhead.
+    //
+    // NOTE: Record first-seen as default even if it is null, because
+    // otherwise late changes of type will bash previously recorded
+    // nodes. This is NOT necessarily maximally efficient, but to really
+    // optimize we would have to rewrite data to make the default the most
+    // common -- and since Scott insists that overrides will be uncommon,
+    // I don't want to go there.
+    //
+    // NOTE: Element schema-types aren't fully resolved until endElement, and
+    // need to be dealt with there.
+    if(type!=ELEMENT_NODE)
+    {
+      // Try to record as default for this nodetype
+      if(!m_expandedNameTable.setSchemaType(m_exptype.elementAt(identity),
+                                            actualType)
+         )
+      {
+        m_schemaTypeOverride.setElementAt(actualType,identity);
+      }
+    }
 
-	return identity;
+    return identity;
   }
 
   /** ADDED FOR XPATH2: Query schema type name of a given node.
@@ -231,60 +239,60 @@ public class XNI2DTM
    * 
    * @param nodeHandle DTM Node Handle of Node to be queried
    * @return null if no type known, else returns the expanded-QName (namespace URI
-   *	rather than prefix) of the type actually
+   *    rather than prefix) of the type actually
    *    resolved in the instance document. Note that this may be derived from,
-   *	rather than identical to, the type declared in the schema.
+   *    rather than identical to, the type declared in the schema.
    */
   public String getSchemaTypeName(int nodeHandle)
   {
-  	int identity=makeNodeIdentity(nodeHandle);
-  	
-  	if(identity!=DTM.NULL)
-  	{
-	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
-	  if(actualType==null)
-	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+    int identity=makeNodeIdentity(nodeHandle);
+        
+    if(identity!=DTM.NULL)
+    {
+      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      if(actualType==null)
+        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
 
-  		if(actualType!=null)
-  		{
-  			String nsuri=actualType.getTargetNamespace();
-  			String local=actualType.getTypeName();
-  			return (nsuri==null)
-  				? local
-  				: nsuri+":"+local;
-  		}
-  	}
-  	
-  	return null;
+      if(actualType!=null)
+      {
+        String nsuri=actualType.getTargetNamespace();
+        String local=actualType.getTypeName();
+        return (nsuri==null)
+          ? local
+          : nsuri+":"+local;
+      }
+    }
+        
+    return null;
   }
-  	
+        
   /** ADDED FOR XPATH2: Query schema type namespace of a given node.
    * 
    * %REVIEW% Is this actually needed?
    * 
    * @param nodeHandle DTM Node Handle of Node to be queried
    * @return null if no type known, else returns the namespace URI
-   *	of the type actually resolved in the instance document. This may
-   * 	be null if the default/unspecified namespace was used.
+   *    of the type actually resolved in the instance document. This may
+   *    be null if the default/unspecified namespace was used.
    *    Note that this may be derived from,
-   *	rather than identical to, the type declared in the schema.
+   *    rather than identical to, the type declared in the schema.
    */
   public String getSchemaTypeNamespace(int nodeHandle)
   {
-  	int identity=makeNodeIdentity(nodeHandle);
-  	
-  	if(identity!=DTM.NULL)
-  	{
-	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
-	  if(actualType==null)
-	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
-  		if(actualType!=null)
-  		{
-  			return actualType.getTargetNamespace();
-  		}
-  	}
-  	
-  	return null;
+    int identity=makeNodeIdentity(nodeHandle);
+        
+    if(identity!=DTM.NULL)
+    {
+      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      if(actualType==null)
+        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+      if(actualType!=null)
+      {
+        return actualType.getTargetNamespace();
+      }
+    }
+        
+    return null;
   }
 
   /** ADDED FOR XPATH2: Query schema type localname of a given node.
@@ -294,24 +302,24 @@ public class XNI2DTM
    * @param nodeHandle DTM Node Handle of Node to be queried
    * @return null if no type known, else returns the localname of the type
    *    resolved in the instance document. Note that this may be derived from,
-   *	rather than identical to, the type declared in the schema.
+   *    rather than identical to, the type declared in the schema.
    */
   public String getSchemaTypeLocalName(int nodeHandle)
   {
-  	int identity=makeNodeIdentity(nodeHandle);
-  	
-  	if(identity!=DTM.NULL)
-  	{
-	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
-	  if(actualType==null)
-	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
-  		if(actualType!=null)
-  		{
-  			return actualType.getTypeName();
-  		}
-  	}
-  	
-  	return null;
+    int identity=makeNodeIdentity(nodeHandle);
+        
+    if(identity!=DTM.NULL)
+    {
+      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      if(actualType==null)
+        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+      if(actualType!=null)
+      {
+        return actualType.getTypeName();
+      }
+    }
+        
+    return null;
   }
 
   /** ADDED FOR XPATH2: Query whether node's type is derived from a specific type
@@ -320,54 +328,54 @@ public class XNI2DTM
    * @param namespace String containing URI of namespace for the type we're intersted in
    * @param localname String containing local name for the type we're intersted in
    * @return true if node has a Schema Type which equals or is derived from 
-   *	the specified type. False if the node has no type or that type is not
-   * 	derived from the specified type.
+   *    the specified type. False if the node has no type or that type is not
+   *    derived from the specified type.
    */
   public boolean isNodeSchemaType(int nodeHandle, String namespace, String localname)
   {
-  	int identity=makeNodeIdentity(nodeHandle);
-  	
-  	if(identity!=DTM.NULL)
-  	{
-	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
-	  if(actualType==null)
-	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
-  		if(actualType!=null)
-  			return actualType.derivedFrom(namespace,localname);
-  	}
-  	
-  	return false;
+    int identity=makeNodeIdentity(nodeHandle);
+        
+    if(identity!=DTM.NULL)
+    {
+      XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+      if(actualType==null)
+        actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+      if(actualType!=null)
+        return actualType.derivedFrom(namespace,localname);
+    }
+        
+    return false;
   }
   
   /** ADDED FOR XPATH2: Retrieve the typed value(s), based on the schema type
    * */
   public XSequence getTypedValue(int nodeHandle)
   {
-  	// Determine whether instance of built-in type, or list thereof
-  	// If so, map to corresponding Java type
-  	// Retrieve string content (as always, for element this spans children
-  	// If type was xs:string (or untyped?) just return that in a collection.
-  	// Else parse into collection object, return that
-  	
-  	int identity=makeNodeIdentity(nodeHandle);
-  	if(identity==DTM.NULL)
-  		return XSequence.EMPTY;
-  		
-	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
-	  if(actualType==null)
-	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+    // Determine whether instance of built-in type, or list thereof
+    // If so, map to corresponding Java type
+    // Retrieve string content (as always, for element this spans children
+    // If type was xs:string (or untyped?) just return that in a collection.
+    // Else parse into collection object, return that
+        
+    int identity=makeNodeIdentity(nodeHandle);
+    if(identity==DTM.NULL)
+      return XSequence.EMPTY;
+                
+    XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+    if(actualType==null)
+      actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
 
-	if(actualType==null)
-  		return XSequence.EMPTY;
-  		
-	/* %REVIEW% Efficiency issues; value may be in FSB, in which case
-		generating a Java String may arguably be wasteful. */
-	//GONK lists;
-	//GONK efficiency;
-	
-	String textvalue=getNodeValue(nodeHandle);
-	
-	return _typedValue(actualType,textvalue);
+    if(actualType==null)
+      return XSequence.EMPTY;
+                
+        /* %REVIEW% Efficiency issues; value may be in FSB, in which case
+                generating a Java String may arguably be wasteful. */
+        //GONK lists;
+        //GONK efficiency;
+        
+    String textvalue=getNodeValue(nodeHandle);
+        
+    return _typedValue(actualType,textvalue);
   }
  
   /** Broken out into a subroutine so I can use it for debugging purposes.
@@ -380,58 +388,58 @@ public class XNI2DTM
    * @return DTM_XSequence containing one or more Java values, as appropriate
    *   to the Built-In Type we have inherited from -- or null if no such 
    *   mapping exists (eg, if actualType was complex)
-   * */ 	
+   * */         
   private XSequence _typedValue(XSTypeDecl actualType,String textvalue)
   {
-	Object value;
-	DTM_XSequence seq=null;
+    Object value;
+    DTM_XSequence seq=null;
 
-	if(actualType instanceof XSSimpleTypeDecl)
-	{		
-		//create an instance of 'ValidatedInfo' to get back information (like actual value,
-		//normalizedValue etc..)after content is validated.
-		ValidatedInfo validatedInfo = new ValidatedInfo(); // %REVIEW% Can we reuse???
+    if(actualType instanceof XSSimpleTypeDecl)
+    {           
+      //create an instance of 'ValidatedInfo' to get back information (like actual value,
+      //normalizedValue etc..)after content is validated.
+      ValidatedInfo validatedInfo = new ValidatedInfo(); // %REVIEW% Can we reuse???
 
-		//get proper validation context , this is very important we need to get appropriate validation context while validating content
-		//validation context passed is generally different while validating content and  creating simple type (applyFacets)
-		ValidationContext validationState = new ValidationState();
-		// This may need to be refined using:
-	    //validationState.setNamespaceSupport(...);
-	    //validationState.setSymbolTable(....);
-		//validationState.setFacetChecking(true);
-		//validationState.setExtraChecking(false);	
+      //get proper validation context , this is very important we need to get appropriate validation context while validating content
+      //validation context passed is generally different while validating content and  creating simple type (applyFacets)
+      ValidationContext validationState = new ValidationState();
+      // This may need to be refined using:
+      //validationState.setNamespaceSupport(...);
+      //validationState.setSymbolTable(....);
+      //validationState.setFacetChecking(true);
+      //validationState.setExtraChecking(false);        
 
-		// Validate and parse the string
-	    try{
-			((XSSimpleTypeDecl)actualType).validate(textvalue, validationState, validatedInfo);
-  	  	} catch(InvalidDatatypeValueException ex){
-  	  		// Should never happen, since we've already validated...?
-			System.err.println(ex.getMessage());
-			ex.printStackTrace();
-		}
+      // Validate and parse the string
+      try{
+        ((XSSimpleTypeDecl)actualType).validate(textvalue, validationState, validatedInfo);
+      } catch(InvalidDatatypeValueException ex){
+        // Should never happen, since we've already validated...?
+        System.err.println(ex.getMessage());
+        ex.printStackTrace();
+      }
 
-		//now 'validatedInfo' object contains information
+      //now 'validatedInfo' object contains information
 
-		// for number types (decimal, double, float, and types derived from them),
-		// Object return is BigDecimal, Double, Float respectively.
-		// Boolean is handled similarly.
-		// Some types (string and derived) just return the string itself.
-		value = validatedInfo.actualValue;
+      // for number types (decimal, double, float, and types derived from them),
+      // Object return is BigDecimal, Double, Float respectively.
+      // Boolean is handled similarly.
+      // Some types (string and derived) just return the string itself.
+      value = validatedInfo.actualValue;
 
-	    //The normalized value of a string type
-	    // (Should we check for stings and return this instead?)
-	    String normalizedValue = validatedInfo.normalizedValue ;
+      //The normalized value of a string type
+      // (Should we check for stings and return this instead?)
+      String normalizedValue = validatedInfo.normalizedValue ;
 
-		// If the type is a union type, then the member type which
-		// actually validated the string value will be:
-	    // XSSimpleType memberType = validatedInfo.memberType ;
+      // If the type is a union type, then the member type which
+      // actually validated the string value will be:
+      // XSSimpleType memberType = validatedInfo.memberType ;
 
-		// %REVIEW% I presume this handles lists by returning arrays...?
-		
-		seq=new DTM_XSequence(value,(XSSimpleTypeDecl)actualType);
-	}
-	
-	return seq==null ? XSequence.EMPTY : seq;
+      // %REVIEW% I presume this handles lists by returning arrays...?
+                
+      seq=new DTM_XSequence(value,(XSSimpleTypeDecl)actualType);
+    }
+        
+    return seq==null ? XSequence.EMPTY : seq;
   }
   
   
@@ -596,24 +604,24 @@ public class XNI2DTM
       return false;
     }
 
-	try
-	{
-	    boolean gotMore = m_incrementalXNISource.parse(false);
-	    if (!gotMore)
-	    {
-	      // EOF reached without satisfying the request
- 	     clearCoRoutine();  // Drop connection, stop trying
-	      // %TBD% deregister as its listener?
- 	   }
-	   return gotMore;
-	}
-	catch(RuntimeException e)
-	{
-        throw e;
+    try
+    {
+      boolean gotMore = m_incrementalXNISource.parse(false);
+      if (!gotMore)
+      {
+        // EOF reached without satisfying the request
+        clearCoRoutine();  // Drop connection, stop trying
+        // %TBD% deregister as its listener?
+      }
+      return gotMore;
+    }
+    catch(RuntimeException e)
+    {
+      throw e;
     }
     catch(Exception e)
     {
-        throw new WrappedRuntimeException(e);
+      throw new WrappedRuntimeException(e);
     }
 
     // %REVIEW% dead code
@@ -634,7 +642,7 @@ public class XNI2DTM
    */
   public String getDocumentTypeDeclarationPublicIdentifier()
   {
-  	return super.getDocumentTypeDeclarationPublicIdentifier();
+    return super.getDocumentTypeDeclarationPublicIdentifier();
   }
 
 
@@ -666,7 +674,7 @@ public class XNI2DTM
    * @throws XNIException
    */
   public void notationDecl(String name, String publicId, String systemId)
-          throws XNIException
+    throws XNIException
   {
     // no op
   }
@@ -690,17 +698,17 @@ public class XNI2DTM
    * @throws XNIException
    */
   public void unparsedEntityDecl(
-          String name, String publicId, String systemId, String notationName)
-            throws XNIException
+                                 String name, String publicId, String systemId, String notationName)
+    throws XNIException
   {
-  	try
-  	{
-  		super.unparsedEntityDecl(name,publicId,systemId,notationName);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.unparsedEntityDecl(name,publicId,systemId,notationName);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -716,7 +724,7 @@ public class XNI2DTM
    */
   public void setDocumentLocator(XMLLocator locator)
   {
-  	m_locator_wrapper.setLocator(locator);
+    m_locator_wrapper.setLocator(locator);
     super.setDocumentLocator(m_locator_wrapper);
   }
 
@@ -728,19 +736,19 @@ public class XNI2DTM
    * @see org.xml.sax.ContentHandler#startDocument
    */
   public void startDocument(XMLLocator locator,String encoding,Augmentations augs)
-                   throws XNIException
+    throws XNIException
   {
     if (DEBUG)
       System.out.println("startDocument");
  
- 	try
- 	{    
-	    super.startDocument();
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {    
+      super.startDocument();
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -757,12 +765,12 @@ public class XNI2DTM
       
     try
     {
-    	super.endDocument();
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+      super.endDocument();
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -779,19 +787,29 @@ public class XNI2DTM
    * @see org.xml.sax.ContentHandler#startPrefixMapping
    */
   public void startPrefixMapping(String prefix,String uri,Augmentations augs)
-          throws XNIException
+    throws XNIException
   {
     if (DEBUG)
       System.out.println("startPrefixMapping: prefix: " + prefix + ", uri: "
                          + uri);
- 	try
- 	{                        
-	    super.startPrefixMapping(prefix,uri);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {                        
+      if(augs!=null &&
+         null!=augs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE))
+      {
+        if (DEBUG)
+          System.out.println("\t***** Added by DTM2XNI; ignored here");
+                  
+        return; // Ignore it!
+      }
+                
+                  
+      super.startPrefixMapping(prefix,uri);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -807,19 +825,28 @@ public class XNI2DTM
    * @see org.xml.sax.ContentHandler#endPrefixMapping
    */
   public void endPrefixMapping(String prefix, Augmentations augs) 
-  throws XNIException
+    throws XNIException
   {
     if (DEBUG)
       System.out.println("endPrefixMapping: prefix: " + prefix);
 
-	try
-	{
-		super.endPrefixMapping(prefix);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      if(augs!=null &&
+         null!=augs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE))
+      {
+        if (DEBUG)
+          System.out.println("\t***** Added by DTM2XNI; ignored here");
+                  
+        return; // Ignore it!
+      }
+                
+      super.endPrefixMapping(prefix);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -846,87 +873,117 @@ public class XNI2DTM
    * @see org.xml.sax.ContentHandler#startElement
    */
   public void startElement(QName element, XMLAttributes attributes,
-                         Augmentations augs)
-          //String uri, String localName, String qName, Attributes attributes)
-            throws XNIException
+                           Augmentations augs)
+    //String uri, String localName, String qName, Attributes attributes)
+    throws XNIException
   {
     // %REVIEW% I've copied this verbatim and altered it for XNI.
     // Is that overkill? Can we hand any of it back to the SAX layer?
     // (I suspect not, darn it....)
-	
+    
+    if (DEBUG)
+    {
+      System.out.println("startElement: uri: " + element.uri + 
+                         ", localname: " + element.localpart + 
+                         ", qname: "+element.rawname+", atts: " + attributes);    
+    }
+      
+    boolean syntheticElement=false;
+        
     // Augs might be null if schema support not turned on in parser. 
     // Shouldn't arise in final operation (?); may arise during debugging
-    XSTypeDecl actualType=null;
+    ElementPSVImpl elemPSVI=null;
+    XSTypeDecl actualType =null;
     if(augs!=null)
     {
-      // Extract Experimental Xerces PSVI data		
-      ElementPSVImpl elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
+      // Node added by DTM2XNI?
+      syntheticElement = null!=augs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE);
+        
+      // Extract Experimental Xerces PSVI data          
+      elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
       actualType =
-    	(elemPSVI==null) ? null : elemPSVI.getTypeDefinition();
+        (elemPSVI==null) ? null : elemPSVI.getTypeDefinition();
       org.apache.xerces.impl.xs.XSElementDecl expectedDecl =  // %REVIEW% OBSOLETE?
-    	(elemPSVI==null) ? null : elemPSVI.getElementDecl();
+        (elemPSVI==null) ? null : elemPSVI.getElementDecl();
       XSTypeDecl expectedType = // %REVIEW% OBSOLETE?
-    	(expectedDecl==null) ? actualType : expectedDecl.fType;
+        (expectedDecl==null) ? actualType : expectedDecl.fType;
 
       if (DEBUG)
       {
-	System.out.println("startElement: uri: " + element.uri + 
-			   ", localname: " + element.localpart + 
-			   ", qname: "+element.rawname+", atts: " + attributes);    
-	String actualExpandedQName=(actualType==null) ? null : actualType.getTargetNamespace()+":"+actualType.getTypeName();
-      
-	System.out.println("\ttypeDefinition (actual): "+ actualType +
-			   "\n\t\ttype expanded-qname: " + actualExpandedQName +
-			   "\n\telementDecl  (expected): " + expectedDecl +
-			   "\n\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
-			   "\n\tDerived from builtin string: " + actualType.derivedFrom(SCHEMANS,"string")
-			   );
+      	String[] typebuf=new String[2];
+      	lightResolveTypeName(elemPSVI,typebuf,true);
+        String actualExpandedQName=typebuf[0]+":"+typebuf[1];
 
-	boolean DEBUG_ATTRS=true;
-	if(DEBUG_ATTRS & attributes!=null)
-	{
-	  int n = attributes.getLength();
-	  if(n==0)
-	    System.out.println("\tempty attribute list");
-	  else for (int i = 0; i < n; i++)
-	  {
-	    System.out.println("\t attr: uri: " + attributes.getURI(i) +
-			       ", localname: " + attributes.getLocalName(i) +
-			       ", qname: " + attributes.getQName(i) +
-			       ", type: " + attributes.getType(i) +
-			       ", value: " + attributes.getValue(i)														 
-			       );
-	    // Experimental Xerces PSVI data
-	    Augmentations attrAugs=attributes.getAugmentations(i);
-	    AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
-	    XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
-	    org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
-	      (attrPSVI==null) ? null : attrPSVI.getAttributeDecl();			      
-	    expectedType=(expectedAttrDecl==null) ? actualAttrType : expectedAttrDecl.fType;
-	    actualExpandedQName=(actualAttrType==null) ? null : actualAttrType.getTargetNamespace()+":"+actualAttrType.getTypeName();
-	    System.out.println("\t\ttypeDefinition (actual): "+ actualAttrType +
-			       "\n\t\t\ttype expanded-qname: " + actualExpandedQName +
-			       "\n\t\tattrDecl (expected): " + expectedAttrDecl
-			       );
-	    if(actualAttrType!=null)	  					
-	      System.out.println("\n\t\tDerived from expected (after null recovery): " + actualAttrType.derivedFrom(expectedType) +
-				 "\n\t\tDerived from builtin string: "+ actualAttrType.derivedFrom(SCHEMANS,"string") +
-				 "\n\t\tTyped value: " + _typedValue(actualAttrType,attributes.getValue(i))
-				 );
-	  }
-	}
-      }
+        System.out.println("\ttypeDefinition (actual): "+ actualType +
+                           "\n\t\ttype expanded-qname: " + actualExpandedQName +
+                           "\n\telementDecl  (expected): " + expectedDecl +
+                           "\n\tDerived from expected (after null recovery): " + actualType.derivedFrom(expectedType) +
+                           "\n\tDerived from builtin string: " + actualType.derivedFrom(SCHEMANS,"string") +
+                           "\n\tSynthesized by DTM2XNI: "+syntheticElement
+                           );
+      } //DEBUG
+    }// augs
+    
+    if(DEBUG && attributes!=null)  
+    {
+      int n = attributes.getLength();
+      if(n==0)
+        System.out.println("\tempty attribute list");
+      else for (int i = 0; i < n; i++)
+      {
+        System.out.println("\t attr: uri: " + attributes.getURI(i) +
+                           ", localname: " + attributes.getLocalName(i) +
+                           ", qname: " + attributes.getQName(i) +
+                           ", type: " + attributes.getType(i) +
+                           ", value: " + attributes.getValue(i)                                                                                                          
+                           );
+        // Experimental Xerces PSVI data
+        Augmentations attrAugs=attributes.getAugmentations(i);
+        AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
+        XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+        org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
+          (attrPSVI==null) ? null : attrPSVI.getAttributeDecl();                              
+        XSTypeDecl expectedType=(expectedAttrDecl==null) ? actualAttrType : expectedAttrDecl.fType;
+        String actualExpandedQName=(actualAttrType==null) ? null : actualAttrType.getTargetNamespace()+":"+actualAttrType.getTypeName();
+        // Node added by DTM2XNI?
+        boolean syntheticAttribute = null!=attrAugs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE);
+
+      	String[] typebuf=new String[2];
+      	lightResolveTypeName(attrPSVI,typebuf,true);
+        actualExpandedQName=typebuf[0]+":"+typebuf[1];
+        
+        System.out.println("\t\ttypeDefinition (actual): "+ actualAttrType +
+                           "\n\t\t\ttype expanded-qname: " + actualExpandedQName +
+                           "\n\t\tattrDecl (expected): " + expectedAttrDecl
+                           );
+        if(actualAttrType!=null)                                                
+          System.out.println("\n\t\tDerived from expected (after null recovery): " + actualAttrType.derivedFrom(expectedType) +
+                             "\n\t\tDerived from builtin string: "+ actualAttrType.derivedFrom(SCHEMANS,"string") +
+                             "\n\t\tTyped value: " + _typedValue(actualAttrType,attributes.getValue(i))+
+                             "\n\t\tSynthesized by DTM2XNI: "+syntheticAttribute
+                             );
+      } // dump all attrs
+    } // DEBUG
+
+    
+    if(syntheticElement)
+    {
+      if (DEBUG)
+        System.out.println("\t***** Added by DTM2XNI; ignored here");
+      
+      return; // Ignore it!
     }
     
     charactersFlush();
 
+
     int exName = m_expandedNameTable.getExpandedTypeID(element.uri, element.localpart, DTM.ELEMENT_NODE);
     String prefix = getPrefix(element.rawname, element.uri);
     int prefixIndex = (null != element.prefix)
-                      ? m_valuesOrPrefixes.stringToIndex(element.rawname) : 0;
+      ? m_valuesOrPrefixes.stringToIndex(element.rawname) : 0;
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true,
-			   actualType);
+                           actualType);
 
     if(m_indexing)
       indexNode(exName, elemNode);
@@ -981,8 +1038,8 @@ public class XNI2DTM
       int nodeType;
 
       if ((null != attrQName)
-              && (attrQName.equals("xmlns")
-                  || attrQName.startsWith("xmlns:")))
+          && (attrQName.equals("xmlns")
+              || attrQName.startsWith("xmlns:")))
       {
         if (declAlreadyDeclared(prefix))
           continue;  // go to the next attribute.
@@ -1022,6 +1079,14 @@ public class XNI2DTM
 
       // Experimental Xerces PSVI data
       Augmentations attrAugs=attributes.getAugmentations(i);
+      boolean syntheticAttribute= null != attrAugs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE);
+      if(syntheticAttribute)
+      {
+        if (DEBUG)
+          System.out.println("\t***** Attr {"+attrUri+"}"+attrLocalName+" added by DTM2XNI; ignored here");
+        return; // Ignore it!
+      }
+      
       AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
       XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
       
@@ -1036,8 +1101,8 @@ public class XNI2DTM
     {
       short wsv = m_wsfilter.getShouldStripSpace(makeNodeHandle(elemNode), this);
       boolean shouldStrip = (DTMWSFilter.INHERIT == wsv)
-                            ? getShouldStripWhitespace()
-                            : (DTMWSFilter.STRIP == wsv);
+        ? getShouldStripWhitespace()
+        : (DTMWSFilter.STRIP == wsv);
 
       pushShouldStripWhitespace(shouldStrip);
     }
@@ -1074,16 +1139,57 @@ public class XNI2DTM
   {
     if (DEBUG)
       System.out.println("endElement: uri: " + element.uri + 
-      	", localname: " + element.localpart + ", qname: "+element.rawname);
+                         ", localname: " + element.localpart + ", qname: "+element.rawname);
+                         
+    if(null!=augs && null!=augs.getItem(DTM2XNI.DTM2XNI_ADDED_STRUCTURE))
+    {
+      if (DEBUG)
+        System.out.println("\t***** Added by DTM2XNI; ignored here");
+      
+      return; // Ignore it!
+    }
 
-	try
-	{
-		super.endElement(element.uri,element.localpart,element.rawname);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.endElement(element.uri,element.localpart,element.rawname);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
+    
+    // The goal is to not consume storage for types unless they actualy exist,
+    // and to minimize per-node overhead.
+    //
+    // NOTE: Record first-seen as default even if it is null, because
+    // otherwise late changes of type will bash previously recorded
+    // nodes. This is NOT necessarily maximally efficient, but to really
+    // optimize we would have to rewrite data to make the default the most
+    // common -- and since Scott insists that overrides will be uncommon,
+    // I don't want to go there.
+    //
+    // NOTE: Element schema-types aren't fully resolved until endElement, and
+    // need to be dealt with there.
+    {
+      // After super.endElement, m_previous is the element we're ending.	
+      // Try to record as default for this nodetype
+      ElementPSVImpl elemPSVI=null;
+      XSTypeDecl actualType =null;
+      if(augs!=null)
+      {
+        elemPSVI=(ElementPSVImpl)augs.getItem(org.apache.xerces.impl.Constants.ELEMENT_PSVI);
+        actualType =
+          (elemPSVI==null) ? null : elemPSVI.getTypeDefinition();
+      }
+
+      if(!m_expandedNameTable.setSchemaType(m_exptype.elementAt(m_previous),
+                                            actualType)
+         )
+      {
+        m_schemaTypeOverride.setElementAt(actualType,m_previous);
+      }
+    }
+    
   }
 
   /** An empty element.
@@ -1094,20 +1200,13 @@ public class XNI2DTM
    * @throws XNIException - Thrown by handler to signal an error.
    * */
   public void emptyElement(QName element,
-                         XMLAttributes attributes,
-                         Augmentations augs)
-                  throws XNIException
+                           XMLAttributes attributes,
+                           Augmentations augs)
+    throws XNIException
   {
-	// %OPT% We could skip the pushes and pops and save some cycles...
-	try
-	{
-		startElement(element,attributes,augs);
-		super.endElement(element.uri,element.localpart,element.rawname);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    // %OPT% We could skip the pushes and pops and save some cycles...
+      startElement(element,attributes,augs);
+      endElement(element,augs);
   }
 
   /**
@@ -1128,14 +1227,14 @@ public class XNI2DTM
    */
   public void characters(org.apache.xerces.xni.XMLString text,Augmentations augs) throws XNIException
   {
-  	try
-  	{
-	  	super.characters(text.ch, text.offset, text.length);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.characters(text.ch, text.offset, text.length);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -1155,18 +1254,18 @@ public class XNI2DTM
    * @see org.xml.sax.ContentHandler#ignorableWhitespace
    */
   public void ignorableWhitespace(org.apache.xerces.xni.XMLString text, Augmentations augs)
-          throws XNIException
+    throws XNIException
   {
     // %OPT% We can probably take advantage of the fact that we know this 
     // is whitespace... or has that been dealt with at the source?
-  	try
-  	{
-	  	super.characters(text.ch, text.offset, text.length);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.characters(text.ch, text.offset, text.length);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -1185,24 +1284,24 @@ public class XNI2DTM
    * @see org.xml.sax.ContentHandler#processingInstruction
    */
   public void processingInstruction(String target,org.apache.xerces.xni.XMLString data,Augmentations augs)
-          throws XNIException
+    throws XNIException
   {
     if (DEBUG)
-		 System.out.println("processingInstruction: target: " + target +", data: "+data);
+      System.out.println("processingInstruction: target: " + target +", data: "+data);
 
-  	try
-  	{
-  		// %REVIEW% Can we avoid toString? I don't think so, given our 
-		// current data structures, but that bears reconsideration
-	  	super.processingInstruction(target,data.toString());
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      // %REVIEW% Can we avoid toString? I don't think so, given our 
+      // current data structures, but that bears reconsideration
+      super.processingInstruction(target,data.toString());
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
- /**
+  /**
    * Report the beginning of an entity in content.
    *
    * <p><strong>NOTE:</entity> entity references in attribute
@@ -1226,7 +1325,7 @@ public class XNI2DTM
    */
   public void startGeneralEntity(String name,XMLResourceIdentifier identifier,
                                  String encoding,Augmentations augs) 
-                                 throws XNIException
+    throws XNIException
   {
 
     // no op
@@ -1255,9 +1354,9 @@ public class XNI2DTM
    * @param augs - Additional information that may include infoset augmentations
    * @throws XNIException - Thrown by handler to signal an error.
    * */
-	public void xmlDecl(String version,String encoding,String standalone,
-                    Augmentations augs)
-             throws XNIException
+  public void xmlDecl(String version,String encoding,String standalone,
+                      Augmentations augs)
+    throws XNIException
   {
 
     // no op
@@ -1278,7 +1377,7 @@ public class XNI2DTM
    * @throws XNIException - Thrown by handler to signal an error.
    * */
   public void textDecl(String version,String encoding,Augmentations augs)
-              throws XNIException
+    throws XNIException
   {
 
     // no op
@@ -1297,15 +1396,15 @@ public class XNI2DTM
    */
   public void startCDATA(Augmentations augs) throws XNIException
   {
-  	try
-  	{
-  		super.startCDATA();
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
-  	
+    try
+    {
+      super.startCDATA();
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
+        
   }
 
   /**
@@ -1316,14 +1415,14 @@ public class XNI2DTM
    */
   public void endCDATA(Augmentations augs) throws XNIException
   {
-  	try
-  	{
-	  	super.endCDATA();
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.endCDATA();
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
   /**
@@ -1340,75 +1439,75 @@ public class XNI2DTM
    */
   public void comment(org.apache.xerces.xni.XMLString text,Augmentations augs) throws XNIException
   {
-  	try
-  	{
-  		super.comment(text.ch,text.offset,text.length);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.comment(text.ch,text.offset,text.length);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
 
 
   /** Helper class: Present XNI Locator info as SAX Locator
    * */
   private class LocatorWrapper 
-  implements org.xml.sax.Locator
+    implements org.xml.sax.Locator
   {
-  	XMLLocator locator;
-  	String publicId=null;
-  	String systemId=null;
-  	
-  	public void setLocator(XMLLocator locator)
-  	{ this.locator=locator; }
-  	
-  	public void setPublicId(String publicId)
-  	{ this.publicId=publicId; }
-  	
-  	public void setSystemId(String systemId)
-  	{ this.systemId=systemId; }
-  	
-	public int getColumnNumber() 
-	{
-		return locator.getColumnNumber();
-	}
-	public int getLineNumber() 
-	{
-		return locator.getLineNumber();
-	}
-	public String getPublicId() 
-	{
-		return publicId;
-	}
-	public String getSystemId()   	
-	{
-		return systemId;
-	}
+    XMLLocator locator;
+    String publicId=null;
+    String systemId=null;
+        
+    public void setLocator(XMLLocator locator)
+    { this.locator=locator; }
+        
+    public void setPublicId(String publicId)
+    { this.publicId=publicId; }
+        
+    public void setSystemId(String systemId)
+    { this.systemId=systemId; }
+        
+    public int getColumnNumber() 
+    {
+      return locator.getColumnNumber();
+    }
+    public int getLineNumber() 
+    {
+      return locator.getLineNumber();
+    }
+    public String getPublicId() 
+    {
+      return publicId;
+    }
+    public String getSystemId()         
+    {
+      return systemId;
+    }
   }
   
-	/** Notifies of the presence of the DOCTYPE line in the document.
-	 *  @param rootElement - The name of the root element.
-	 * @param publicId - The public identifier if an external DTD or null if the
-	 *        external DTD is specified using SYSTEM.
-	 * @param systemId - The system identifier if an external DTD, null otherwise.
-	 * @param augs - Additional information that may include infoset augmentations
-	 * @throws XNIException - Thrown by handler to signal an error.
-	 * */
-	public void doctypeDecl(String rootElement,String publicId,String systemId,
-	                       Augmentations augs)
-	                       throws XNIException
-   {
-   	// no op
-   }
+  /** Notifies of the presence of the DOCTYPE line in the document.
+         *  @param rootElement - The name of the root element.
+         * @param publicId - The public identifier if an external DTD or null if the
+         *        external DTD is specified using SYSTEM.
+         * @param systemId - The system identifier if an external DTD, null otherwise.
+         * @param augs - Additional information that may include infoset augmentations
+         * @throws XNIException - Thrown by handler to signal an error.
+         * */
+  public void doctypeDecl(String rootElement,String publicId,String systemId,
+                          Augmentations augs)
+    throws XNIException
+  {
+    // no op
+  }
     
   ////////////////////////////////////////////////////////////////////
   // XNI error handler
   
   public void warning(java.lang.String domain,
-                    java.lang.String key,
-                    XMLParseException exception)
-	  throws XNIException
+                      java.lang.String key,
+                      XMLParseException exception)
+    throws XNIException
   {
     // %REVIEW% Is there anyway to get the JAXP error listener here?
     System.err.println(exception);
@@ -1416,16 +1515,16 @@ public class XNI2DTM
   public void error(java.lang.String domain,
                     java.lang.String key,
                     XMLParseException exception)
- 	 throws XNIException
+    throws XNIException
   {
-  	throw exception;
+    throw exception;
   }
   public void fatalError(java.lang.String domain,
-                    java.lang.String key,
-                    XMLParseException exception)
-	  throws XNIException
+                         java.lang.String key,
+                         XMLParseException exception)
+    throws XNIException
   {
-  	throw exception;
+    throw exception;
   }
   
   ////////////////////////////////////////////////////////////////////
@@ -1435,147 +1534,147 @@ public class XNI2DTM
   // part of the main document.
   
   public void startDTD(XMLLocator locator,
-                     Augmentations augmentations)
-              throws XNIException
+                       Augmentations augmentations)
+    throws XNIException
   {
-  	try
-  	{
-  		super.startDTD("unknownDocumentTypeName",locator.getPublicId(),locator.getLiteralSystemId());
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
+    try
+    {
+      super.startDTD("unknownDocumentTypeName",locator.getPublicId(),locator.getLiteralSystemId());
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
   }
   
   public void startParameterEntity(java.lang.String name,
-                                 XMLResourceIdentifier identifier,
-                                 java.lang.String encoding,
-                                 Augmentations augmentations)
-                          throws XNIException
+                                   XMLResourceIdentifier identifier,
+                                   java.lang.String encoding,
+                                   Augmentations augmentations)
+    throws XNIException
   {
-  	// no op
+    // no op
   }
   
   // textDecl already handled
   
   public void endParameterEntity(java.lang.String name,
-                               Augmentations augmentations)
-                        throws XNIException  
+                                 Augmentations augmentations)
+    throws XNIException  
   {
-  	// no op
+    // no op
   }
   public void startExternalSubset(Augmentations augmentations)
-                         throws XNIException  
+    throws XNIException  
   {
-  	// no op
+    // no op
   }
   public void endExternalSubset(Augmentations augmentations)
-                         throws XNIException  
+    throws XNIException  
   {
-  	// no op
+    // no op
   }  
   
   // comment already handled, including suppression during the DTD
   // processing instruction already handled. NOT currently suppressed during DTD?
   
   public void elementDecl(java.lang.String name,
-                        java.lang.String contentModel,
-                        Augmentations augmentations)
-                 throws XNIException
+                          java.lang.String contentModel,
+                          Augmentations augmentations)
+    throws XNIException
   {
-  	//no op
+    //no op
   }
   public void startAttlist(java.lang.String elementName,
-                         Augmentations augmentations)
-                  throws XNIException
+                           Augmentations augmentations)
+    throws XNIException
   {
-  	//no op
+    //no op
   }
   
   public void attributeDecl(String elementName,String attributeName, 
-                              java.lang.String type, java.lang.String[] enumeration, 
-                              String defaultType, XMLString defaultValue,
-                              XMLString nonNormalizedDefaultValue, Augmentations augmentations)
-                   throws XNIException
+                            java.lang.String type, java.lang.String[] enumeration, 
+                            String defaultType, XMLString defaultValue,
+                            XMLString nonNormalizedDefaultValue, Augmentations augmentations)
+    throws XNIException
   { 
-  	// no op
+    // no op
   }
   
   public void endAttlist(Augmentations augmentations)
-                throws XNIException  
+    throws XNIException  
   {
-  	//no op
+    //no op
   }
   public void internalEntityDecl(String name, XMLString text, 
-                                   XMLString nonNormalizedText,
-                                   Augmentations augmentations) 
-        throws XNIException
+                                 XMLString nonNormalizedText,
+                                 Augmentations augmentations) 
+    throws XNIException
   {
-  	//no op
+    //no op
   }
   public void externalEntityDecl(java.lang.String name,
-                               XMLResourceIdentifier identifier,
-                               Augmentations augmentations)
-                        throws XNIException
+                                 XMLResourceIdentifier identifier,
+                                 Augmentations augmentations)
+    throws XNIException
   {
-  	//no op
+    //no op
   }
   
   public void unparsedEntityDecl(java.lang.String name,
-                               XMLResourceIdentifier identifier,
-                               java.lang.String notation,
-                               Augmentations augmentations)
-                        throws XNIException
+                                 XMLResourceIdentifier identifier,
+                                 java.lang.String notation,
+                                 Augmentations augmentations)
+    throws XNIException
   {
-  	// This one's the wnole point of the exercise...
-  	try
-  	{
-  		super.unparsedEntityDecl(name,identifier.getPublicId(),identifier.getLiteralSystemId(),notation);
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
-  }  	
+    // This one's the wnole point of the exercise...
+    try
+    {
+      super.unparsedEntityDecl(name,identifier.getPublicId(),identifier.getLiteralSystemId(),notation);
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
+  }     
  
   public void notationDecl(java.lang.String name,
-                        XMLResourceIdentifier identifier,
-                         Augmentations augmentations)
-                  throws XNIException
+                           XMLResourceIdentifier identifier,
+                           Augmentations augmentations)
+    throws XNIException
   {
-  	// no op
+    // no op
   }
   public void startConditional(short type,
-                             Augmentations augmentations)
-                      throws XNIException
+                               Augmentations augmentations)
+    throws XNIException
   {
-  	// no op
+    // no op
   }
   
   public void ignoredCharacters(XMLString text, Augmentations augmentations)
-            throws XNIException
+    throws XNIException
   {
-  	// no op
+    // no op
   }
   public void endConditional(Augmentations augmentations)
-                    throws XNIException
+    throws XNIException
   {
-  	// no op
+    // no op
   }
   
   public void endDTD(Augmentations augmentations)
-            throws XNIException
+    throws XNIException
   {
-  	try
-  	{
-  		super.endDTD();
-  	} 
-  	catch(SAXException e)
-  	{
-  		throw new XNIException(e);
-  	}
-  } 	
+    try
+    {
+      super.endDTD();
+    } 
+    catch(SAXException e)
+    {
+      throw new XNIException(e);
+    }
+  }     
  
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////
@@ -1585,13 +1684,13 @@ public class XNI2DTM
   ////////////////////////////////////////////////////////////////////
   
  
-    // Implementation of DTDHandler interface.
+  // Implementation of DTDHandler interface.
 
   // SAME AS XNI? OR DID WE RETAIN THEM ABOVE FOR OTHER REASONS?
   //public void notationDecl(String name, String publicId, String systemId)
   //        throws SAXException
   // public void unparsedEntityDecl(
-  //	    String name, String publicId, String systemId, String notationName)
+  //        String name, String publicId, String systemId, String notationName)
   //        throws SAXException
 
   // Implementation of ContentHandler interface.
@@ -1609,42 +1708,42 @@ public class XNI2DTM
     throw new SAXException(UNEXPECTED+"endDocument");
   }
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException
+    throws SAXException
   {
     throw new SAXException(UNEXPECTED+"startPrefixMapping");
   }
   public void endPrefixMapping(String prefix) throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"endPrefixMapping");
+    throw new SAXException(UNEXPECTED+"endPrefixMapping");
   }
   public void startElement(
-          String uri, String localName, String qName, org.xml.sax.Attributes attributes)
-            throws SAXException
+                           String uri, String localName, String qName, org.xml.sax.Attributes attributes)
+    throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"startElement");
+    throw new SAXException(UNEXPECTED+"startElement");
   }
   public void endElement(String uri, String localName, String qName)
-          throws SAXException
+    throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"endElement");
+    throw new SAXException(UNEXPECTED+"endElement");
   }
   public void characters(char ch[], int start, int length) throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"characters");
+    throw new SAXException(UNEXPECTED+"characters");
   }
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+    throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"ignorableWhitespace");
+    throw new SAXException(UNEXPECTED+"ignorableWhitespace");
   }
   public void processingInstruction(String target, String data)
-          throws SAXException
+    throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"processingInstruction");
+    throw new SAXException(UNEXPECTED+"processingInstruction");
   }
   public void skippedEntity(String name) throws SAXException
   {
-	throw new SAXException(UNEXPECTED+"skippedEntity");
+    throw new SAXException(UNEXPECTED+"skippedEntity");
   }
   
   // Implementation of SAX error handler
@@ -1670,90 +1769,204 @@ public class XNI2DTM
     throw new SAXException(UNEXPECTED+"elementDecl "+name);
   }
   public void attributeDecl(
-          String eName, String aName, String type, String valueDefault, String value)
-            throws SAXException
+                            String eName, String aName, String type, String valueDefault, String value)
+    throws SAXException
   {
     throw new SAXException(UNEXPECTED+"attributeDecl "+aName);
   }
   public void internalEntityDecl(String name, String value)
-          throws SAXException
+    throws SAXException
   {
     throw new SAXException(UNEXPECTED+"internalEntityDecl "+name);
   }
   public void externalEntityDecl(
-          String name, String publicId, String systemId) throws SAXException
+                                 String name, String publicId, String systemId) throws SAXException
   {
     throw new SAXException(UNEXPECTED+"externalEntityDecl "+name);
   }
 
   // Implementation of the LexicalHandler interface.
   public void startDTD(String name, String publicId, String systemId)
-          throws SAXException
+    throws SAXException
   {
-	    throw new SAXException(UNEXPECTED+"startDTD");
+    throw new SAXException(UNEXPECTED+"startDTD");
   }
   public void endDTD() throws SAXException
   {
-	    throw new SAXException(UNEXPECTED+"endDTD");
+    throw new SAXException(UNEXPECTED+"endDTD");
   }
 
-  
-  /** Defined internally for the moment.
 
-      %REVIEW% FIRST DRAFT: Binary search
-
-      %REVIEW% We really do need a more global solution... though
-      keeping it here would let us change the Objects in the API to
-      XSTypeDecl, avoiding a cast when retrieving. (Do we care?)
-  */
-  class SparseVector
+  //============================================================/  
+  /** Implementation of the XPath2 type-name resolution algorithm
+   * (data model 3.5). 
+   * 
+   * Code donated by Sandy Gao, using the proposed
+   * Heavy-Weight PSVI interfaces (not yet implemented in Xerces)
+   * 
+   * @param psvi  the psvi information for the current node
+   * @param ret   a String array with size 2
+   *              index 0 is used to return the namespace name;
+   *              index 1 is used to return the local name.
+   * @param attr false for element (fallback is xs:anyType)
+   *              true for attribute (fallback is xs:anySimpleType)
+   * */  
+  protected void heavyResolveTypeName(ItemPSVI psvi, String[] ret, boolean attr)
   {
-    int[] m_index=new int[64];
-    Object[] m_value=new Object[64];
-    int last=0;
-
-    /** ASSUMPTION: Elements will be added in index order, though
-	indices may be skipped.
-    */
-    void addElement(int index,Object value)
-    {
-      if(last>=m_index.length)
-      {
-	int[] i=new int[last+64];
-	System.arraycopy(m_index,0,i,0,last);
-	m_index=i;
-	Object[] v=new Object[last+64];
-	System.arraycopy(m_value,0,v,0,last);
-	m_value=v;
-      }
-      m_index[last]=index;
-      m_value[last]=value;
-      ++last;
-    }
-
-    Object elementAt(int index)
-    {
-      int i = 0;
-      int first = 0;
-      int last  = m_index.length - 1;
-
-      while (first <= last) {
-        i = (first + last) / 2;
-        int test = index-m_index[i];
-        if(test == 0) {
-          return m_value[i]; // Found an entry!
+  /*
+  	// NAME OF THIS CONSTANT IS IN FLUX
+  	//int VALID=ItemPSVI.VALIDITY_VALID;
+  	int VALID=ItemPSVI.VALID_VALIDITY;
+  	
+  	
+  	if(ret==null) ret=new String[2];
+  	
+        // check whether the node is valid
+        if (psvi == null ||
+            psvi.getValidity() != VALID) {
+            // if the node is not valid, then return xs:anyType
+            ret[0] = "http://www.w3.org/2001/XMLSchema";
+            ret[1] = attr ? "anySimpleType" : "anyType";
+            return ret;
         }
-        else if (test < 0) {
-          last = i - 1; // looked too late
+        
+        // try to get the member type definition, and return its name
+        XSSimpleTypeDefinition member = psvi.getMemberTypeDefinition();
+        if (member != null) {
+            ret[0] = member.getNamespace();
+            ret[1] = member.getName();
+            return ret;
         }
-        else {
-          first = i + 1; // looked too early
+        
+        // try to get the type definition, and return its name
+        XSTypeDefinition type = psvi.getTypeDefinition();
+        if (type != null) {
+            ret[0] = type.getNamespace();
+            ret[1] = type.getName();
+            return ret;
         }
-      }
-      
-      return null; // not found
-    }
-    
-  } // SparseArray
+        
+        
+  	// Member type definitions promised to be available;
+  	// can't proceed to check names independently
+
+        // all failed, return xs:anyType
+        ret[0] = "http://www.w3.org/2001/XMLSchema";
+        ret[1] = attr ? "anySimpleType" : "anyType";
+        return ret;
+  */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight not yet available");
+  }
   
+  /** Modification of the XPath2 type-name resolution algorithm
+   * to reflect Sandy Gao's concerns about the official version
+   * not tolerating processors that implement the "lightweight" version
+   * of PSVI.
+   * 
+   * Code donated by Sandy Gao, using the proposed
+   * Heavy-Weight PSVI interfaces (not yet implemented in Xerces)
+   * 
+   * @param psvi  the psvi information for the current node
+   * @param ret   a String array with size 2
+   *              index 0 is used to return the namespace name;
+   *              index 1 is used to return the local name.
+   * @param attr false for element (fallback is xs:anyType)
+   *              true for attribute (fallback is xs:anySimpleType)
+   * */  
+  protected void proposedHeavyResolveTypeName(ItemPSVI psvi, String[] ret, boolean attr)
+  {
+  /*
+  	// NAME OF THIS CONSTANT IS IN FLUX
+  	//int VALID=ItemPSVI.VALIDITY_VALID;
+  	int VALID=ItemPSVI.VALID_VALIDITY;
+
+  	if(ret==null) ret=new String[2];
+  	
+        // check whether the node is valid
+        if (psvi == null ||
+            psvi.getValidity() != VALID) {
+            // if the node is not valid, then return xs:anyType
+            ret[0] = "http://www.w3.org/2001/XMLSchema";
+	        ret[1] = attr ? "anySimpleType" : "anyType";
+            return ret;
+        }
+        
+        // try to get the member type definition, and return its name
+        XSSimpleTypeDefinition member = psvi.getMemberTypeDefinition();
+        if (member != null && member.getName() != null) {
+            ret[0] = member.getNamespace();
+            ret[1] = member.getName();
+            return ret;
+        }
+        
+        // try to get the type definition, and return its name
+        XSTypeDefinition type = psvi.getTypeDefinition();
+        if (type != null && type.getName() != null) {
+            ret[0] = type.getNamespace();
+            ret[1] = type.getName();
+            return ret;
+        }
+        
+  	// Member type definitions promised to be available;
+  	// can't proceed to check names independently
+
+        // all failed, return xs:anyType
+        ret[0] = "http://www.w3.org/2001/XMLSchema";
+        ret[1] = attr ? "anySimpleType" : "anyType";
+        return ret;
+  */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight not yet available");
+  }
+  
+  /** Attempt to write a simplified version of the type resolution
+   * algorithm (data model 3.5) using only the Light-Weight PSVI
+   * interfaces currently supported in Xerces (which I believe will be
+   * phased out when heavyweight come into play).
+   * 
+   * Basd on code donated by Sandy Gao
+   * 
+   * @param psvi  the psvi information for the current node
+   * @param ret   a String array with size 2
+   *              index 0 is used to return the namespace name;
+   *              index 1 is used to return the local name.
+   * @param attr false for element (fallback is xs:anyType)
+   *              true for attribute (fallback is xs:anySimpleType)
+   * */  
+  protected String[] lightResolveTypeName(ItemPSVI psvi, String[] ret, boolean attr)
+  {
+  	// NAME OF THIS CONSTANT IS IN FLUX
+  	//int VALID=ItemPSVI.VALIDITY_VALID;
+  	int VALID=ItemPSVI.VALID_VALIDITY;
+
+  	if(ret==null) ret=new String[2];
+  	
+        // check whether the node is valid
+        if (psvi == null ||
+            psvi.getValidity() != VALID) {
+            // if the node is not valid, then return xs:anyType
+            ret[0] = "http://www.w3.org/2001/XMLSchema";
+            ret[1] = attr ? "anySimpleType" : "anyType";
+            return ret;
+        }
+        
+	  	// Member type definitions promised NOT to be available;
+ 	 	// proceed to check names independently
+
+		// Need the second test, apparently
+        if (!psvi.isMemberTypeAnonymous() && null!=psvi.getMemberTypeName() ) {
+            ret[0] = psvi.getMemberTypeNamespace();
+            ret[1] = psvi.getMemberTypeName();
+            return ret;
+        }
+        
+		// Need the second test, apparently
+        if (!psvi.isTypeAnonymous() && null!=psvi.getTypeName()) {
+            ret[0] = psvi.getTypeNamespace();
+            ret[1] = psvi.getTypeName();
+            return ret;
+        }
+        
+        // all failed, return xs:anyType
+        ret[0] = "http://www.w3.org/2001/XMLSchema";
+        ret[1] = attr ? "anySimpleType" : "anyType";
+        return ret;
+  }
 }
