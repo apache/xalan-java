@@ -39,11 +39,11 @@ public class ToXHTMLStream extends ToXMLStream
         final int elemFlags = elemDesc.getFlags();
         final boolean isHeadElement = (elemFlags & ElemDesc.HEADELEM) != 0;
         
-        if ( ((elemFlags & ElemDesc.HTMLELEM) != 0)
-            && (namespaceURI == null || namespaceURI.equals(EMPTYSTRING))) 
-        {
-            this.startPrefixMapping(EMPTYSTRING,"http://www.w3.org/1999/xhtml");
-        }
+//        if ( ((elemFlags & ElemDesc.HTMLELEM) != 0)
+//            && (namespaceURI == null || namespaceURI.equals(EMPTYSTRING))) 
+//        {
+//            this.startPrefixMapping(EMPTYSTRING,"http://www.w3.org/1999/xhtml");
+//        }
 
         if (m_needToCallStartDocument)
         {
