@@ -259,7 +259,7 @@ public class Extensions
     for (int i = 0; i < ns.getLength(); i++)
     {
       Node n = ns.elementAt(i);
-      String key = DOMHelper.getNodeData(n);
+      String key = DOMHelper.getNodeData(n);  // TODO:  Fix this to use DTM
 
       if (!stringTable.containsKey(key))
       {
@@ -318,11 +318,12 @@ public class Extensions
             throws SAXNotSupportedException, Exception
   {
 
-    if (myContext instanceof XPathContext)
+    if (myContext instanceof XPathContext.XPathExpressionContext)
     {
       try
       {
-        XPathContext xctxt = (XPathContext) myContext;
+        XPathContext xctxt =
+                    ((XPathContext.XPathExpressionContext) myContext).getXPathContext();
         XPath dynamicXPath = new XPath(xpathExpr, xctxt.getSAXLocator(),
                                        xctxt.getNamespaceContext(),
                                        XPath.SELECT);

@@ -1040,6 +1040,18 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   public class XPathExpressionContext implements ExpressionContext
   {
     /**
+     * Return the XPathContext associated with this XPathExpressionContext.
+     * Extensions should use this judiciously and only when special processing
+     * requirements cannot be met another way.  Consider requesting an enhancement
+     * to the ExpressionContext interface to avoid having to call this method.
+     * @return the XPathContext associated with this XPathExpressionContext.
+     */
+     public XPathContext getXPathContext()
+     {
+       return XPathContext.this;
+     }
+
+    /**
      * Return the DTMManager object.  Though XPathContext context extends 
      * the DTMManager, it really is a proxy for the real DTMManager.  If a 
      * caller needs to make a lot of calls to the DTMManager, it is faster 
@@ -1101,11 +1113,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
     /**
      * Get a variable based on it's qualified name.
-     *
      * @param qname The qualified name of the variable.
-     *
      * @return The evaluated value of the variable.
-     *
      * @throws javax.xml.transform.TransformerException
      */
 
