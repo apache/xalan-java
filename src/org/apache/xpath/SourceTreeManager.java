@@ -268,7 +268,7 @@ public class SourceTreeManager
     }
     
     Node root = null;
-    
+        
     if(null != m_uriResolver)
       root = m_uriResolver.getDOMNode(source);
     
