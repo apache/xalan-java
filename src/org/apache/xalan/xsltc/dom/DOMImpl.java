@@ -3559,7 +3559,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    stack.push(uri);
 
-	    if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
+	    // TODO: Why are we doing this test?
+	    // if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
 		makeTextNode(false);
 		int attr = makeNamespaceNode(prefix, uri);
 		if (_nextNamespace == DOM.NULL)
@@ -3569,7 +3570,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_nextSibling2[attr] = DOM.NULL;
 		// _prefix2[attr] = idx.shortValue();
 		_prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
-	    }
+	    // }
 	}
 
 	/**
