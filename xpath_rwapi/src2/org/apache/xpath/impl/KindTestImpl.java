@@ -76,6 +76,11 @@ public class KindTestImpl extends SimpleNode implements NodeTest
      * The type of kindtest
      */
     protected short m_kindTest;
+    
+    /**
+     * PI target
+     */
+    protected QName m_pitarget;
 
     /**
      * Creates an any kind test node. Internal uses only
@@ -151,7 +156,14 @@ public class KindTestImpl extends SimpleNode implements NodeTest
      */
     public QName getNameTest() throws XPathException
     {
-        throw new XPathException("Invalid call this method on kind test"); // I18N
+    	if (m_kindTest == PROCESSING_INSTRUCTION_TEST)
+    	{
+    		return m_pitarget;
+    	}
+    	else
+    	{
+        	throw new XPathException("Invalid call this method on kind test"); // I18N
+    	}
     }
 
     /**

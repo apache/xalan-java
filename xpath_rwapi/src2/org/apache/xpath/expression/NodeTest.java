@@ -105,13 +105,13 @@ public interface NodeTest {
 	static final short TEXT_TEST = 3;
 	
 	/**
-	 * The node test is a context item test
+	 * The node test is a context item test (belong to the kind test group)
 	 */
 	static final short CONTEXT_ITEM_TEST = 4;
     
     /**
      * Full name of kind tests. 
-     * This array is synchronized with kind test constants
+     * This array is synchronized with the kind test constants
      */
 	static final String[] KIND_TEST_NAME = { "processing-instruction()", "comment()", "node()", "text()", "." };
     
@@ -128,16 +128,19 @@ public interface NodeTest {
     boolean isKindTest();
     
     /**
-     * Gets the kind test
+     * Gets the kind test code.
      * @return short One of the kind test constant value
      * @throws XPathException whenever this node test isn't a kind test
      */
     short getKindTest() throws XPathException; 
     
     /**
-     * Gets the local part of the name test
+     * Gets the qualified name of the name test or the name of the 'PITarget'
+     * when the node test is pi kind test. For the later, only the local
+     * part of the qualified name is relevant.
      * @return QName The name test or {@link #WILDCARD}
-     * @throws XPathException whenever this node test isn't name test
+     * @throws XPathException whenever this node test isn't a name test
+     * or a pi kind test
      */
     QName getNameTest() throws XPathException;
     
