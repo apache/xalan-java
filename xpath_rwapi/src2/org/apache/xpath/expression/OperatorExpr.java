@@ -59,193 +59,249 @@ import org.apache.xpath.XPathException;
 
 
 /**
- * Represents any expressions with one, two or more operands. This includes the following XPath features:
+ * Represents any expressions which combine one or many operands under
+ * a single operator. 
+ * The following XPath constructors are represented by this interface:
  * <ul>
- *  <li>combining sequences</li>
- *  <li>unary and binary arithmetics expressions</li>
- *  <li>comparison expressions</li>
- *  <li>logical expressions</li>
- *  <li>range expressions</li>
- *  <li>path expressions (see <code>PathExpr</code>)</li>
- *  <li>Parenthesized expression</li>
+ *  <li><strong>Sequence expression</strong>:
+ *    <ul>
+ * 	    <li><strong>By constructing</strong>:
+ * 		  <ul>
+ *          <li>Expression type: {@link Expr#SEQUENCE_EXPR}</li>
+ * 	        <li>Operator type: {@link OperatorExpr#COMMA} or {@link OperatorExpr#TO}</li>
+ *          <li>Example: <code>(10, 1, 2, 3, 4)</code>, <code>1 to 10</code></li>
+ *        </ul>
+ *      </li>
+ *      
+ * 	    <li><strong>By combining</strong>:
+ *        <ul>
+ *          <li>Expression type: {@link Expr#SEQUENCE_EXPR}</li>
+ * 	        <li>Operator type: {@link OperatorExpr#UNION_COMBINE} or
+ * 				{@link OperatorExpr#INTERSECT_COMBINE} or 
+ * 				{@link OperatorExpr#EXCEPT_COMBINE}</li>
+ *          <li>Example: <code>$seq2 union $seq3</code></li>
+ *        </ul> 
+ *      </li>
+ *    </ul>
+ *  </li>
+ *  <li><strong>Arithmetic expressions</strong>:
+ *    <ul>
+ *      <li><strong>Unary expression</strong>:
+ * 		  <ul>
+ *          <li>Expression type: {@link Expr#ARITHMETIC_EXPR}</li>
+ * 	        <li>Operator type: {@link OperatorExpr#PLUS_UNARY} or {@link OperatorExpr#MINUS_UNARY}</li>
+ *          <li>Example: <code>-20</code></li>
+ *        </ul>
+ *      </li>
+ * 		<li><strong>Additive expression</strong>:
+ * 		  <ul>
+ *          <li>Expression type: {@link Expr#ARITHMETIC_EXPR}</li>
+ * 	        <li>Operator type: {@link OperatorExpr#PLUS_ADDITIVE} or {@link OperatorExpr#MINUS_ADDITIVE}</li>
+ *          <li>Example: <code>+20</code></li>
+ *        </ul>
+ *      </li>
+ * 		<li><strong>Multiplicative expression</strong>:
+ * 		  <ul>
+ *          <li>Expression type: {@link Expr#ARITHMETIC_EXPR}</li>
+ * 	        <li>Operator type: {@link OperatorExpr#MULT_DIV} or 
+ * 				{@link OperatorExpr#MULT_IDIV} or
+ *    			{@link OperatorExpr#MULT_MOD} or
+ *    			{@link OperatorExpr#MULT_PRODUCT} </li>
+ *          <li>Example: <code>10 * 20</code></li>
+ *        </ul>
+ *      </li>
+ * 	  </ul>
+ *  </li>
+ *  <li><strong>Comparison expressions</strong>:
+ * 	  <ul>
+ *      <li>Expression type: {@link Expr#COMPARISON_EXPR}</li>
+ * 	    <li>Operator type: XXX_COMPARISON</li>
+ *      <li>Example: <code>$book1/author eq "Kennedy"</code></li>
+ *    </ul>
+ * 	</li>
+ *  <li><strong>Logical expressions</strong>:
+ * 	  <ul>
+ *      <li>Expression type: {@link Expr#LOGICAL_EXPR}</li>
+ * 	    <li>Operator type: {@link OperatorExpr#AND_LOGICAL} or
+ * 			{@link OperatorExpr#OR_LOGICAL}</li>
+ *      <li>Example: <code>1 eq 1 and 2 eq 2</code></li>
+ *    </ul>
+ *  </li>
+ *  <li><strong>Path expressions</strong>: see {@link PathExpr}</li>
  * </ul>
  * @see <a href="http://www.w3.org/TR/xpath20">XPath 2.0 Specification</href>
  */
 public interface OperatorExpr extends Expr
 {
-    /**
-     *
-     */
+	/**
+	 * <code>|</code> or <code>union</code>
+	 */
     short UNION_COMBINE = 0;
 
-    /**
-     *
-     */
+	/**
+	 * <code>intersect</code>
+	 */
     short INTERSECT_COMBINE = 1;
 
     /**
-     *
+     * <code>except</code>
      */
     short EXCEPT_COMBINE = 2;
 
     /**
-     *
+     * <code>+</code>
      */
     short PLUS_ADDITIVE = 3;
 
     /**
-     *
+     * <code>-</code>
      */
     short MINUS_ADDITIVE = 4;
 
     /**
-    *
-    */
-    short RANGE = 5;
+     * <code>to</code>
+     */
+    short TO = 5;
 
     /**
-    *
-    */
+     * <code>eq</code>
+     */
     short EQUAL_VALUE_COMPARISON = 6;
 
     /**
-    *
-    */
+     * <code>neq</code>
+     */
     short NOTEQUAL_VALUE_COMPARISON = 7;
 
     /**
-    *
-    */
+     * <code>lt</code>
+     */
     short LESSTHAN_VALUE_COMPARISON = 8;
 
-    /**
-    *
-    */
+	/**
+	 * <code>le</code>
+	 */
     short LESSOREQUALTHAN_VALUE_COMPARISON = 9;
 
-    /**
-    *
-    */
+	/**
+	 * <code>gt</code>
+	 */
     short GREATTHAN_VALUE_COMPARISON = 10;
 
-    /**
-    *
-    */
+	/**
+	 * <code>ge</code>
+	 */
     short GREATOREQUALTHAN_VALUE_COMPARISON = 11;
 
-    /**
-    *
-    */
-    short EQUAL_GENERAL_COMPARISON = 12;
+	/**
+	 * <code>=</code>
+	 */
+     short EQUAL_GENERAL_COMPARISON = 12;
 
     /**
-    *
-    */
+     * <code>!=</code>
+     */
     short NOTEQUAL_GENERAL_COMPARISON = 13;
 
-    /**
-    *
-    */
+	/**
+	 * <code>&lt;</code>
+	 */
     short LESSTHAN_GENERAL_COMPARISON = 14;
 
     /**
-    *
-    */
+	 * <code>&lt;=</code>
+	 */
     short LESSOREQUALTHAN_GENERAL_COMPARISON = 15;
 
     /**
-    *
-    */
+	 * <code>&gt;</code>
+	 */
     short GREATTHAN_GENERAL_COMPARISON = 16;
 
     /**
-    *
-    */
+	 * <code>&gt;=</code>
+	 */
     short GREATOREQUALTHAN_GENERAL_COMPARISON = 17;
 
     /**
-    *
-    */
+	 * <code>is</code>
+	 */
     short IS_NODE_COMPARISON = 18;
 
     /**
-    *
-    */
+	 * <code>isnot</code>
+	 */
     short ISNOT_NODE_COMPARISON = 19;
 
     /**
-    *
-    */
+	 * <code>&lt;</code>
+	 */
     short EARLIERTHAN_ORDER_COMPARISON = 20;
 
     /**
-    *
-    */
+	 * <code>&gt;&gt;</code>
+	 */
     short LATERTHAN_ORDER_COMPARISON = 21;
 
     /**
-    *
-    */
+	 * <code>and</code>
+	 */
     short AND_LOGICAL = 22;
 
     /**
-    *
-    */
+	 * <code>or</code>
+	 */
     short OR_LOGICAL = 23;
 
     /**
-     *
-     */
+	 * <code>+ expr</code>
+	 */
     short PLUS_UNARY = 24;
 
     /**
-     *
-     */
+	 * <code>- expr</code>
+	 */
     short MINUS_UNARY = 25;
 
     /**
-     *
-     */
+	 * <code>/</code>
+	 */
     short SLASH_STEP = 26;
 
     /**
-     *
-     */
-    short SLASHSLASH_STEP = 27;
-
-    /**
-     *
-     */
+	 * <code>,</code>
+	 */
     short COMMA = 28;
 
     /**
-     *
-     */
+	 * <code>*</code>
+	 */
     short MULT_PRODUCT = 29;
 
     /**
-     *
-     */
+	 * <code>div</code>
+	 */
     short MULT_DIV = 30;
 
     /**
-     *
-     */
+	 * <code>idiv</code>
+	 */
     short MULT_IDIV = 31;
 
     /**
-     *
-     */
+	 * <code>mod</code>
+	 */
     short MULT_MOD = 32;
 
     /**
      * Gets the operator type
-     * @return
+     * @return One one the operator type constants defined in this class
      */
     short getOperatorType();
 
     /**
      * Gets the operand at the ith position.
+     * @throws IndexOutOfBoundsException
      */
     Expr getOperand(int i);
 
@@ -255,7 +311,7 @@ public interface OperatorExpr extends Expr
     int getOperandCount();
 
     /**
-     * Append an operand
+     * Append an operand at the end of this expression.
      */
     void addOperand(Expr operand) throws XPathException;
 
@@ -265,9 +321,11 @@ public interface OperatorExpr extends Expr
     void removeOperand(Expr operand) throws XPathException;
     
     /**
-     * Append the specified expr to the end of this expression. <br>
+     * Append the specified expr at the end of this expression. 
      * The specified expression has to be of the same type of this expression,
-     * otherwise an exception will be raised
+     * otherwise an exception will be raised.
+     * <p>For example, the result of appending <code>c/d</code> 
+     * in the expression <code>a/b</code> is <code>a/b/c/d</code></p>
      * @param expr The expression to append
      */    
     void append(OperatorExpr expr) throws XPathException;

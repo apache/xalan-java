@@ -134,7 +134,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
             case XPathTreeConstants.JJTUNIONEXPR:
 			case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR:
             case XPathTreeConstants.JJTPATTERN:
-                m_exprType = COMBINE_EXPR;
+                m_exprType = SEQUENCE_EXPR;
 
                 // opType is not known yet
                 break;
@@ -166,8 +166,8 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
                 break;
 
             case XPathTreeConstants.JJTRANGEEXPR:
-                m_exprType = RANGE_EXPR;
-                m_opType = RANGE;
+                m_exprType = SEQUENCE_EXPR;
+                m_opType = TO;
 
                 break;
 
@@ -342,7 +342,9 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
             {
                 if (((m_exprType == SEQUENCE_EXPR)
                         && (n.jjtGetNumChildren() > 0)
-                        && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTEXPRSEQUENCE))
+                        && (((Expr) n.jjtGetChild(0)).getExprType() == SEQUENCE_EXPR)
+                        && (((OperatorExpr) n.jjtGetChild(0)).getOperatorType() == m_opType)
+                        )
                         || ((id == XPathTreeConstants.JJTPATTERN)
                         && (n.jjtGetNumChildren() > 0)
                         && (n.jjtGetChild(0).getId() == XPathTreeConstants.JJTPATTERN)))
@@ -387,8 +389,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
 
     /**
      * Tell is spaces are needed around the operator
-     *
-     * @return DOCUMENT ME!
+     * @return
      */
     protected boolean isSpaceNeeded()
     {
@@ -398,8 +399,8 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
     /**
      * Gets expression as external string representation
      *
-     * @param expr DOCUMENT ME!
-     * @param abbreviate DOCUMENT ME!
+     * @param expr 
+     * @param abbreviate 
      */
     public void getString(StringBuffer expr, boolean abbreviate)
     {
@@ -417,7 +418,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
             op = (ExprImpl) getOperand(i);
 
             if ((op.getExprType() == ARITHMETIC_EXPR)
-                    || (op.getExprType() == COMBINE_EXPR))
+                    || (op.getExprType() == SEQUENCE_EXPR))
             {
                 expr.append('(');
             }
@@ -425,7 +426,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
             op.getString(expr, abbreviate);
 
             if ((op.getExprType() == ARITHMETIC_EXPR)
-                    || (op.getExprType() == COMBINE_EXPR))
+                    || (op.getExprType() == SEQUENCE_EXPR))
             {
                 expr.append(')');
             }
@@ -447,9 +448,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         }
     }
 
-    /**
-     * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
-     */
+    
     public void processToken(Token token)
     {
         switch (token.kind)

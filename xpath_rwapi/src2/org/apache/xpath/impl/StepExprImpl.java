@@ -404,9 +404,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
             {
                 ExprImpl p = (ExprImpl) getPrimaryExpr();
 
-                if ((p.getExprType() == SEQUENCE_EXPR)
-                        || (p.getExprType() == COMBINE_EXPR)
-                        || (p.getExprType() == RANGE_EXPR))
+                if ((p.getExprType() == SEQUENCE_EXPR))
                 {
                     expr.append('(');
                     p.getString(expr, abbreviate);

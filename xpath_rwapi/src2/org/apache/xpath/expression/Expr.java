@@ -106,10 +106,6 @@ package org.apache.xpath.expression;
  *      <td>{@link OperatorExpr}</td>
  *    </tr>
  *    <tr>
- *      <td>{@link #COMBINE_EXPR}</td>
- *      <td>{@link OperatorExpr}</td>
- *    </tr>
- *    <tr>
  *      <td>{@link #LITERAL_EXPR}</td>
  *      <td>{@link Literal}</td>
  *    </tr>
@@ -120,10 +116,6 @@ package org.apache.xpath.expression;
  *    <tr>
  *      <td>{@link #VARIABLE_REF_EXPR}</td>
  *      <td>{@link Variable}</td>
- *    </tr>
- *    <tr>
- *      <td>{@link #RANGE_EXPR}</td>
- *      <td>{@link OperatorExpr}</td>
  *    </tr>
  *    <tr>
  *      <td>{@link #STEP}</td>
@@ -243,11 +235,6 @@ public interface Expr
 	static final short SEQUENCE_EXPR = 7;
 
 	/**
-	 * The expression is a combine expression (union and intersection)
-	 */
-	static final short COMBINE_EXPR = 8;
-
-	/**
 	 * The expression is a validate expression 
 	 */
 	static final short VALIDATE_EXPR = 10;
@@ -266,11 +253,6 @@ public interface Expr
 	 * The expression is a variable reference
 	 */
 	static final short VARIABLE_REF_EXPR = 15;
-
-	/**
-	 * The expression is a range expression
-	 */
-	static final short RANGE_EXPR = 16;
 
 	/**
 	 * The expression is a step

@@ -89,12 +89,31 @@ public class XPathUtilities
 		{
 			case Expr.SEQUENCE_EXPR :
 				OperatorExpr op = (OperatorExpr) expr;
-				if (op.getOperandCount() == 1)
+				switch (op.getOperatorType())
 				{
-					result = isMatchDocumentNode(op.getOperand(0));
-				} else
-				{
-					result = false;
+					case OperatorExpr.COMMA :
+
+						if (op.getOperandCount() == 1)
+						{
+							result = isMatchDocumentNode(op.getOperand(0));
+						} else
+						{
+							result = false;
+						}
+						break;
+					case OperatorExpr.UNION_COMBINE :
+						result = false;
+						for (int i = op.getOperandCount() - 1; i >= 0; i--)
+						{
+							if (isMatchDocumentNode(op.getOperand(i)))
+							{
+								result = true;
+								break;
+							}
+						}
+						break;
+					default :
+						result = false;
 				}
 				break;
 			case Expr.PATH_EXPR :
@@ -103,39 +122,23 @@ public class XPathUtilities
 					result =
 						(p.isAbsolute() && p.getOperandCount() == 0) // '/'
 	|| (p.getOperandCount() == 1 && isMatchDocumentNode(p.getOperand(0)));
-				
+
 				break;
 			case Expr.STEP :
 				StepExpr s = (StepExpr) expr;
 				try
 				{
-					result = s.getNodeTest().isKindTest()
-						&& s.getNodeTest().getKindTest() == NodeTest.ANY_KIND_TEST;
+					result =
+						s.getNodeTest().isKindTest()
+							&& s.getNodeTest().getKindTest()
+								== NodeTest.ANY_KIND_TEST;
 				} catch (XPathException e)
 				{
 					// impossible
 					result = false;
 				}
 				break;
-			case Expr.COMBINE_EXPR : // Union, intersect, except
-				OperatorExpr c = (OperatorExpr) expr;
-				// Only union is valid in pattern 
 
-				if (c.getOperatorType() == OperatorExpr.UNION_COMBINE)
-				{
-					result = false;
-					for (int i = c.getOperandCount() - 1; i >= 0; i--)
-					{
-						if (isMatchDocumentNode(c.getOperand(i)))
-						{
-							result = true;
-							break;
-						}
-					}
-				} else
-				{
-					result = false;
-				}
 			default :
 				result = false;
 		}

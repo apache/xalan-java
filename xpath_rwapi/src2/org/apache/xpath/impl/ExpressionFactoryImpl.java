@@ -138,7 +138,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	 * @see org.apache.xpath.expression.ExpressionFactory#createCombineExpr(short)
 	 */
 	public OperatorExpr createCombineExpr(short type) {
-		return new OperatorImpl(Expr.COMBINE_EXPR, type);
+		return new OperatorImpl(Expr.SEQUENCE_EXPR, type);
 	}
 
 	/**

@@ -743,7 +743,7 @@
 	
 	<!-- Range expr -->
 	
-	<expr value="1 to 100">
+	<expr value="(1 to 100)">
 		<ast>
 			<node name="ExprSequence">
 				<node name="RangeExpr">
@@ -754,25 +754,6 @@
 		</ast>
 	</expr>
 	
-	<expr value="(1 to 100)[(5 mod 5) eq 0]">
-		<ast>
-			<node name="ExprSequence">
-				<node name="StepExpr">
-					<node name="RangeExpr">
-						<node name="IntegerLiteral"/>
-						<node name="IntegerLiteral"/>					
-					</node>
-					<node name="ComparisonExpr">
-						<node name="MultiplicativeExpr">
-							<node name="IntegerLiteral"/>
-							<node name="IntegerLiteral"/>
-						</node>
-						<node name="IntegerLiteral"/>
-					</node>
-				</node>
-			</node>			
-		</ast>
-	</expr>
 	
 	<expr value="a&lt;&lt;b">
 		<ast>
@@ -1033,6 +1014,8 @@
 	
 	<expr value="toto/(45+23)" valid="false"/>
 	<expr value="a/(b,c)/d" valid="false"/>
+	<expr value="(1 to 100)[(5 mod 5) eq 0]" valid="false"/>
+	
 	
 	<!-- Expressions for which no common AST has been decided yet -->
 	
