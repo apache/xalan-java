@@ -175,6 +175,7 @@ class FunctionCall extends Expression {
 
 	    _internal2Java.put(Type.ResultTree, nodeClass);
 	    _internal2Java.put(Type.ResultTree, nodeListClass);
+	    _internal2Java.put(Type.ResultTree, objectClass);
 
 	    _internal2Java.put(Type.Reference, objectClass);
 
