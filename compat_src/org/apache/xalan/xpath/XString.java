@@ -57,19 +57,105 @@
 package org.apache.xalan.xpath;
 
 
+import org.w3c.dom.*;
+
+import org.apache.xpath.XPathContext;
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath string object, and is capable of 
  * converting the string to other types, such as a number.
  */
-public class XString extends org.apache.xpath.objects.XString
+public class XString extends XObject
 {
+  
+  org.apache.xpath.objects.XString m_xstring;
+  
   /**
    * Construct a XString object.
    */
   public XString(String val)
   {
     super(val);
+    m_xstring = new org.apache.xpath.objects.XString(val);
+  }
+  
+   /**
+   * Tell that this is a CLASS_STRING.
+   */
+  public int getType()
+  {
+    return m_xstring.getType();
+  }
+  
+  /**
+   * Given a request type, return the equivalent string. 
+   * For diagnostic purposes.
+   */
+  public String getTypeString() // PR:DMAN4MBJ4D Submitted by:<garyp@firstech.com> change to protected
+  {
+    return m_xstring.getTypeString();
+  }
+  
+  /**
+   * Cast a string to a number.
+   */
+  public static double castToNum(String s)
+  {  
+    return org.apache.xpath.objects.XString.castToNum(s);    
+  }
+  
+  /**
+   * Cast result object to a number.
+   */
+  public double num()
+  {
+    return m_xstring.num();
+  }
+
+  /**
+   * Cast result object to a boolean.
+   */
+  public boolean bool()
+  {
+    return m_xstring.bool();
+  }
+
+  /**
+   * Cast result object to a string.
+   */
+  public String str()
+  {
+    return m_xstring.str();
+  }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   */
+  public DocumentFragment rtree(XPathSupport support)
+  {    
+    return m_xstring.rtree((XPathContext)support);
+  }
+  
+  
+  /**
+   * Cast result object to a result tree fragment.
+   *
+   * @param support Xpath context to use for the conversion 
+   *
+   * @return A document fragment with this string as a child node
+   */
+  public DocumentFragment rtree(XPathContext support)
+  {      
+    return m_xstring.rtree(support);
+  }
+  
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xstring.equals(obj2);
   }
 
   

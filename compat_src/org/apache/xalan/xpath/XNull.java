@@ -57,20 +57,103 @@
 package org.apache.xalan.xpath;
 
 import org.w3c.dom.*;
+import org.w3c.dom.traversal.NodeIterator;
+
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath null object, and is capable of 
  * converting the null to other types, such as a string.
  */
-public class XNull extends org.apache.xpath.objects.XNull
+public class XNull extends XObject
 {
+  org.apache.xpath.objects.XNull m_xnull;
   /**
    * Create an XObject.
    */
   public XNull()
   {
     super();
+    m_xnull = new org.apache.xpath.objects.XNull() ;
+  }
+  
+  /**
+   * Tell what kind of class this is.
+   */
+  public int getType()
+  {
+    return m_xnull.getType();
+  }
+
+  /**
+   * Given a request type, return the equivalent string. 
+   * For diagnostic purposes.
+   */
+  public String getTypeString() // PR:DMAN4MBJ4D Submitted by:<garyp@firstech.com> change to protected
+  {
+    return m_xnull.getTypeString();
+  }
+  
+  /**
+   * Cast result object to a number.
+   */
+  public double num()
+  {
+    return m_xnull.num();
+  }
+
+  /**
+   * Cast result object to a boolean.
+   */
+  public boolean bool()
+  {
+    return m_xnull.bool();
+  }
+
+  /**
+   * Cast result object to a string.
+   */
+  public String str()
+  {
+    return m_xnull.str();
+  }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   */
+  public DocumentFragment rtree(XPathSupport support)
+  {
+    return m_xnull.rtree((XPathContext)support);
+  }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   *
+   * @param support XPath context to use for the conversion
+   *
+   * @return The object as a result tree fragment.
+   */
+  public DocumentFragment rtree(XPathContext support)
+  {
+    return m_xnull.rtree(support);
+  }
+
+
+  /**
+   * Cast result object to a nodelist.
+   */
+  public NodeIterator nodeset()
+  {
+    return null;
+  }  
+   
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+  {
+    return m_xnull.equals(obj2);
   }
 
   

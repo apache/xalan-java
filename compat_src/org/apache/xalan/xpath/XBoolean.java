@@ -63,15 +63,76 @@ import org.w3c.dom.*;
  * This class represents an XPath boolean object, and is capable of 
  * converting the boolean to other types, such as a string.
  */
-public class XBoolean extends org.apache.xpath.objects.XBoolean
+public class XBoolean extends XObject
 {
+  org.apache.xpath.objects.XBoolean m_xboolean;
   
   /**
    * Construct a XBoolean object.
    */
   public XBoolean(boolean b)
   {
-    super(b);    
+    super(); 
+     m_xboolean = new org.apache.xpath.objects.XBoolean(b);
+  }
+  
+  /**
+   * Tell that this is a CLASS_BOOLEAN.
+   */
+  public int getType()
+  {
+    return m_xboolean.getType();
+  }
+  
+  /**
+   * Given a request type, return the equivalent string. 
+   * For diagnostic purposes.
+   */
+  public String getTypeString() // PR:DMAN4MBJ4D Submitted by:<garyp@firstech.com> change to protected
+  {
+    return m_xboolean.getTypeString();
+  }
+  
+  /**
+   * Cast result object to a number.
+   */
+  public double num()
+  {
+    return m_xboolean.num();
+  }
+
+  /**
+   * Cast result object to a boolean.
+   */
+  public boolean bool()
+  {
+    return m_xboolean.bool();
+  }
+
+  /**
+   * Cast result object to a string.
+   */
+  public String str()
+  {
+    return m_xboolean.str();
+  }
+  
+  /**
+   * Return a java object that's closes to the represenation 
+   * that should be handed to an extension.
+   */
+  public Object object()
+  {
+    return m_xboolean.object();
+  }
+
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {    
+    return m_xboolean.equals(obj2);
   }
   
   

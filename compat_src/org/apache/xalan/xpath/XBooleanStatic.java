@@ -63,18 +63,27 @@ import org.w3c.dom.*;
  * This class doesn't have any XPathSupport, so override 
  * whatever to ensure it works OK.
  */
-public class XBooleanStatic extends org.apache.xpath.objects.XBooleanStatic
+public class XBooleanStatic extends XBoolean
 {
-  
+  org.apache.xpath.objects.XBooleanStatic m_xboolean;
   
   /**
    * Construct a XNodeSet object.
    */
   public XBooleanStatic(boolean b)
   {
-    super(b);    
+    super(b); 
+    m_xboolean = new org.apache.xpath.objects.XBooleanStatic(b);
   } 
   
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xboolean.equals(obj2);
+  }
 
 }
 

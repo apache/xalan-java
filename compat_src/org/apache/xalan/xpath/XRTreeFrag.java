@@ -63,14 +63,84 @@ import org.w3c.dom.*;
  * This class represents an XPath result tree fragment object, and is capable of 
  * converting the RTF to other types, such as a string.
  */
-public class XRTreeFrag extends org.apache.xpath.objects.XRTreeFrag
-{  
+public class XRTreeFrag extends XObject 
+{ 
+  
+  org.apache.xpath.objects.XRTreeFrag m_xrtreefrag;
+  
   /**
    * Create an XObject.
    */
   public XRTreeFrag(DocumentFragment frag)
   {
     super(frag);
+    m_xrtreefrag = new org.apache.xpath.objects.XRTreeFrag(frag); 
+  }
+  
+  /**
+   * Tell what kind of class this is.
+   */
+  public int getType()
+  {
+    return m_xrtreefrag.getType();
+  }
+
+  /**
+   * Given a request type, return the equivalent string. 
+   * For diagnostic purposes.
+   */
+  public String getTypeString() // PR:DMAN4MBJ4D Submitted by:<garyp@firstech.com> change to protected
+  {
+    return m_xrtreefrag.getTypeString();
+  }
+  
+  /**
+   * Cast result object to a number.
+   */
+  public double num()
+  {    
+    return m_xrtreefrag.num();
+  }
+
+  /**
+   * Cast result object to a boolean.
+   */
+  public boolean bool()
+  {
+    return m_xrtreefrag.bool();
+  }
+
+  /**
+   * Cast result object to a string.
+   */
+  public String str()
+  {
+    return m_xrtreefrag.str();
+  }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   */
+  public DocumentFragment rtree()
+  {
+    return m_xrtreefrag.rtree();
+  }
+  
+  /**
+   * Cast result object to a nodelist. (special function).
+   */
+  public NodeList convertToNodeset()
+  {
+    return m_xrtreefrag.convertToNodeset();
+  }  
+  
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {   
+      return m_xrtreefrag.equals(obj2);    
   }
   
   

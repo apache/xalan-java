@@ -64,16 +64,76 @@ import java.text.DecimalFormat;
  * This class represents an XPath number, and is capable of 
  * converting the number to other types, such as a string.
  */
-public class XNumber extends org.apache.xpath.objects.XNumber
+public class XNumber extends XObject
 {
-    
+  
+  org.apache.xpath.objects.XNumber m_xnumber;
   /**
    * Construct a XNodeSet object.
    */
   public XNumber(double d)
   {
-    super(d);
-   
+    super();
+    m_xnumber = new org.apache.xpath.objects.XNumber(d);
+  }
+  
+  /**
+   * Tell that this is a CLASS_NUMBER.
+   */
+  public int getType()
+  {
+    return m_xnumber.getType();
+  }
+  
+  /**
+   * Given a request type, return the equivalent string. 
+   * For diagnostic purposes.
+   */
+  public String getTypeString() // PR:DMAN4MBJ4D Submitted by:<garyp@firstech.com> change to protected
+  {
+    return m_xnumber.getTypeString();
+  }
+  
+  /**
+   * Cast result object to a number.
+   */
+  public double num()
+  {
+    return m_xnumber.num();
+  }
+
+  /**
+   * Cast result object to a boolean.
+   */
+  public boolean bool()
+  {
+    return m_xnumber.bool();
+  }
+  
+  /**
+   * Cast result object to a string.
+   */
+  public String str()
+  {
+    return m_xnumber.str();
+  }
+  
+  /**
+   * Return a java object that's closes to the represenation 
+   * that should be handed to an extension.
+   */
+  public Object object()
+  {
+    return m_xnumber.object();;
+  }
+
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnumber.equals(obj2);
   }
   
   

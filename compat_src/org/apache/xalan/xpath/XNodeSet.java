@@ -61,19 +61,25 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.NodeFilter;
 import java.text.*;
 
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.NodeSet;
+
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath nodeset object, and is capable of 
  * converting the nodeset to other types, such as a string.
  */
-public class XNodeSet extends org.apache.xpath.objects.XNodeSet
-{  
+public class XNodeSet extends XObject  
+{
+  org.apache.xpath.objects.XNodeSet m_xnodeset;
+  
   /**
    * Construct a XNodeSet object.
    */
   public XNodeSet(NodeList val)
   {
-    super(new NodeIteratorWrapper(val));
+    super();
+    m_xnodeset = new org.apache.xpath.objects.XNodeSet(new NodeIteratorWrapper(val)) ;
   }
   
   /**
@@ -82,6 +88,7 @@ public class XNodeSet extends org.apache.xpath.objects.XNodeSet
   public XNodeSet()
   {
     super();
+    m_xnodeset = new org.apache.xpath.objects.XNodeSet();
   }
 
   /**
@@ -89,9 +96,158 @@ public class XNodeSet extends org.apache.xpath.objects.XNodeSet
    */
   public XNodeSet(Node n)
   {
-    super(n);    
+    super(n); 
+    m_xnodeset = new org.apache.xpath.objects.XNodeSet(n);
   }
   
+  
+  /**
+   * Tell that this is a CLASS_NODESET.
+   */
+  public int getType()
+  {
+    return m_xnodeset.getType();
+  }
+  
+  /**
+   * Given a request type, return the equivalent string. 
+   * For diagnostic purposes.
+   */
+  public String getTypeString() // PR:DMAN4MBJ4D Submitted by:<garyp@firstech.com> change to protected
+  {
+    return m_xnodeset.getTypeString();
+  }
+  
+  /**
+   * Get the string conversion from a single node.
+   */
+  double getNumberFromNode(Node n)
+  {
+    return m_xnodeset.getNumberFromNode(n);
+  }
+
+  /**
+   * Cast result object to a number.
+   */
+  public double num()
+  {
+    return m_xnodeset.num();
+  }
+
+  /**
+   * Cast result object to a boolean.
+   */
+  public boolean bool()
+  {
+    return m_xnodeset.bool();
+  }
+  
+
+  /**
+   * Get the string conversion from a single node.
+   */
+  static String getStringFromNode(Node n)
+  {
+    return org.apache.xpath.objects.XNodeSet.getStringFromNode(n);
+  }
+
+  /**
+   * Cast result object to a string.
+   */
+  public String str()
+  {
+    return m_xnodeset.str();
+  }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   */
+  public DocumentFragment rtree(XPathSupport support)
+  {    
+    return m_xnodeset.rtree((XPathContext) support);
+  }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   *
+   * @param support The XPath context to use for the conversion 
+   *
+   * @return the nodeset as a result tree fragment.
+   */
+  public DocumentFragment rtree(XPathContext support)
+  {
+    return m_xnodeset.rtree(support);
+  }
+
+  /**
+   * Cast result object to a nodelist.
+   */
+  public NodeIterator nodeset()
+  {
+    return m_xnodeset.nodeset();
+  }  
+
+  /**
+   * Cast result object to a nodelist.
+   */
+  public NodeSet mutableNodeset()
+  {
+   return m_xnodeset.mutableNodeset();
+  }  
+  
+  /**
+   * Tell if one object is less than the other.
+   */
+  public boolean lessThan(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnodeset.lessThan(obj2);
+  }
+  
+  /**
+   * Tell if one object is less than or equal to the other.
+   */
+  public boolean lessThanOrEqual(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnodeset.lessThanOrEqual(obj2);
+  }
+  
+  /**
+   * Tell if one object is greater than the other.
+   */
+  public boolean greaterThan(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnodeset.greaterThan(obj2);
+  }
+  
+  /**
+   * Tell if one object is greater than the other.
+   */
+  public boolean greaterThanOrEqual(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnodeset.greaterThanOrEqual(obj2);
+  }   
+  
+  /**
+   * Tell if two objects are functionally equal.
+   */
+  public boolean equals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnodeset.equals(obj2);
+  }  
+  
+  /**
+   * Tell if two objects are functionally not equal.
+   */
+  public boolean notEquals(XObject obj2)
+    throws org.xml.sax.SAXException, javax.xml.transform.TransformerException
+  {
+    return m_xnodeset.notEquals(obj2);
+  }  
  
  static class NodeIteratorWrapper implements NodeIterator
   {
