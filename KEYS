@@ -1,0 +1,40 @@
+This file contains the PGP keys of various Xalan developers.
+Please don't use them for email unless you have to. Their main
+purpose is code signing.
+
+Xalan users: pgp < KEYS
+Xalan developers: pgp -kxa <your name> and append it to this file.
+
+
+Type Bits/KeyID    Date       User ID
+pub  1024/30A21D55 1999/11/04 Shane Curcuru <shane_curcuru@lotus.com>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: PGPfreeware 6.5.1 for non-commercial use <http://www.pgp.com>
+
+mQGiBDghjNIRBADXB4UY4YfZ2DmbSushlzPZCkY00iDPUB+GkW6FQhgnGCLZovgy
+FhCnCsKdN1xyHFq/Ns3PV3HPrMGxFKgVOfRuxREbF8CoXAa/u0qR1WoAm+rlyC9l
+OVsHdXxyOpZ8e4SPGne8LQYZwr2q+LsHiXOZktkaBo8ua8F4EJYkBMFhZQCg/4Iw
+jXmfpt661Essmf8d05cMdAcEAL0r+PrFxCmrU8Ok+r74+eqyclxVbiDbOf7Uef6N
+fEJmC5ihX7p8k8eEf2XepeAo6N0gdOxYVXVwcoRCmqPy7SSg1jnXqKOnA87ylv16
+lOiJ5WUkiVX96WOWEsbbYKuggmWeDL+6iFc9hp6oEP2sf/geC8AEAEHTPfneJzpo
+3z28A/9iX41r4K0iRx5eIJu2KUrjdpPxhn0JPe9dz2XzWZIciNeki+ThrcarEj9h
+lmfvcGLifXbQfXuFid3btMsBRI8dqAbbXmyfvCYYSHDOkXEmoMW66AWfeF4hgfHF
+SA5lmcpH4mtHU69uC0+cvYlRROP+HaeOepYbriA+9A9Qq4MAW7QnU2hhbmUgQ3Vy
+Y3VydSA8c2hhbmVfY3VyY3VydUBsb3R1cy5jb20+iQBOBBARAgAOBQI4IYzSBAsD
+AgECGQEACgkQMuwXWTCiHVXQIQCg1Q1MKkWygIsDGAOhiPaM09pTdlUAniTeCkoO
+I0+2IgD/NtqnGDaSvNDnuQINBDghjNIQCAD2Qle3CH8IF3KiutapQvMF6PlTETlP
+tvFuuUs4INoBp1ajFOmPQFXz0AfGy0OplK33TGSGSfgMg71l6RfUodNQ+PVZX9x2
+Uk89PY3bzpnhV5JZzf24rnRPxfx2vIPFRzBhznzJZv8V+bv9kV7HAarTW56NoKVy
+OtQa8L9GAFgr5fSI/VhOSdvNILSd5JEHNmszbDgNRR0PfIizHHxbLY7288kjwEPw
+pVsYjY67VYy4XTjTNP18F1dDox0YbN4zISy1Kv884bEpQBgRjXyEpwpy1obEAxnI
+Byl6ypUM2Zafq9AKUJsCRtMIPWakXUGfnHy9iUsiGSa6q6Jew1XpMgs7AAICCADO
+79A5u7KQsbA8sKhJAQp941IY86vvArZdKnxzwNLUHaOtUvigf49hvrBWFw13f5e3
+j4/8F+WV6ZFTzQYPq39EehMRmEiGn/fx6sEsl8s+oUNh2Mp/fQQwyMVYiF5yD1Cd
+lJdTZ/sQnbgv7++ei2MDPqFl8m+NvVvW1fc9DVbZ76VMWFLPVFhIrHiawRx7PdnT
+BVqU2paV63e3vxwJlFPh886TIzgLsVu0rpyy8VReQh+7eqDHhpWTwdQjBeQdkPZb
+teIVI+Ey2Bw95QBvcAh5gmz+Ko/gfg3ignwHq1fGakObc/zk+ELiAk4VROGdkoaQ
+u1bB1RqCjxdIoHlVQD9QiQBGBBgRAgAGBQI4IYzSAAoJEDLsF1kwoh1VdL4AoOHI
+nDHTjz5zsBMg1IZ/ojGJdDJhAKDjqkn99zQdVZS8d+OKgNFotBQi/w==
+=Y8LW
+-----END PGP PUBLIC KEY BLOCK-----
