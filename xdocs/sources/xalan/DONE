@@ -8,6 +8,12 @@
 </ol>
 <p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 Compatability Javadoc</jump>. Xalan-Java 1.x extensions, for example, are not covered. If you feel that we should extend our compatablity JAR to support other Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
 <p><em>Other changes</em></p>
-<p>Along with several performance enhancements, we have fixed a bug with whitespace handling.</p>
+<p>Along with performance enhancements, we have fixed a number of bugs found in Xalan-Java 2.0.D06:</p>
+<ol>
+<li>Fixed handling of disable-output-escaping="no".<br/><br/></li>
+<li>Fixed a bug with whitespace handling where Xalan was incorreclty chedking for whitespace stripping before collation of multiple whitespace events into a single text node.<br/><br/></li>
+<li>Fixed exception handling problems in the ExtensionHandler and TransformerImpl.<br/><br/></li>
+<li>Fixed a bug resetting parameters in Transformer clearParameters().</li>
+</ol>
 <p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s3>
