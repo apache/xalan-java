@@ -9,7 +9,7 @@
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
 <xsl:template match="/">
-    <xsl:variable name="db" select="sql:new($driver, 'extpool')"/>
+    <xsl:variable name="db" select="sql:new('extpool')"/>
 
     <HTML>
       <HEAD>

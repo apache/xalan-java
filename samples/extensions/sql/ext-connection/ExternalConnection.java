@@ -63,7 +63,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 
 import org.apache.xalan.lib.sql.DefaultConnectionPool;
-import org.apache.xalan.lib.sql.XConnectionPoolManager;
+import org.apache.xalan.lib.sql.ConnectionPoolManager;
 
 
 // Imported java classes
@@ -91,11 +91,11 @@ public class ExternalConnection
   //cp.setUser("sa");
   //cp.setPassword("");
   cp.setMinConnections(10);
-  cp.enablePool();
+  cp.setPoolEnabled(true);
 
   // Now let's register our connection pool so we can use
   // in a stylesheet
-  XConnectionPoolManager pm = new XConnectionPoolManager();
+  ConnectionPoolManager pm = new ConnectionPoolManager();
   pm.registerPool("extpool", cp);
 
 
@@ -126,6 +126,6 @@ public class ExternalConnection
 
 	System.out.println("************* The result is in dbtest-out.html *************");
   
-  cp.disablePool();
+  cp.setPoolEnabled(false);
   }
 }
