@@ -90,27 +90,17 @@ final class Message extends Instruction {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	
-	// Save the current handler base on the stack
-	il.append(methodGen.loadHandler());
-	// Get the translet's StringValueHandler
-	il.append(classGen.loadTranslet());
-	il.append(new GETFIELD(cpg.addFieldref(TRANSLET_CLASS,
-					       "stringValueHandler",
-					       STRING_VALUE_HANDLER_SIG)));
-	il.append(DUP);
-	il.append(methodGen.storeHandler());
 
-	// Translate contents with substituted handler
-	translateContents(classGen, methodGen);
-
-	// Get string from all children from the handler
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_VALUE_HANDLER,
-						     "getValue",
-						     "()" + STRING_SIG)));
-	// Push the this pointer on the stack
+	// Load the translet (for call to displayMessage() function)
 	il.append(classGen.loadTranslet());
-	il.append(SWAP);
+
+	// Get the contents of the message
+	compileResultTree(classGen, methodGen);
+	// Convert the 
+	final int toStr = cpg.addInterfaceMethodref(DOM_INTF,
+						    "getStringValue",
+						    "()"+STRING_SIG);
+	il.append(new INVOKEINTERFACE(toStr, 1));
 
 	// Send the resulting string to the message handling method
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
@@ -131,9 +121,6 @@ final class Message extends Instruction {
 	    il.append(new INVOKESPECIAL(einit));
 	    il.append(ATHROW);
 	}
-
-	// Clean up: Restore/pop old handler base from stack
-	il.append(methodGen.storeHandler());
     }
     
 }
