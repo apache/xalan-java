@@ -73,17 +73,33 @@ TBD: - The faq doesn't show in the content
             Content
          </fo:block>
 
-         <fo:table>
+         <fo:table             break-after="page">
             <fo:table-column column-width="1cm"/>
-            <fo:table-column column-width="15cm"/>
+            <fo:table-column column-width="10cm"/>
+            <fo:table-column column-width="5cm"/>
             <fo:table-body font-size="12pt" 
                            line-height="16pt"
                            font-family="sans-serif">
+              <fo:table-row>
+                  <fo:table-cell>
+                     <fo:block text-align="end" >
+                     </fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell>
+                     <fo:block text-align="end" >
+                     </fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell>
+                     <fo:block text-align="end" >
+                     page
+                     </fo:block>
+                  </fo:table-cell>
+              </fo:table-row>                                 
               <xsl:for-each select="documentation/chapter"> 
                 <fo:table-row>
                   <fo:table-cell>
                      <fo:block text-align="end" >
-                          <xsl:number value="position()" format="1"/>) 
+                        <xsl:number value="position()" format="I"/>.  
                      </fo:block>
                   </fo:table-cell>
                   <fo:table-cell>
@@ -94,6 +110,11 @@ TBD: - The faq doesn't show in the content
                            </xsl:attribute>
                           <xsl:value-of select="s1/@title|faqs/@title"/>
                         </fo:basic-link> 
+                     </fo:block>
+                  </fo:table-cell>
+                  <fo:table-cell>
+                     <fo:block text-align="end" >
+                       <fo:page-number-citation ref-id="{@id}"/>
                      </fo:block>
                   </fo:table-cell>
                </fo:table-row>
@@ -108,7 +129,7 @@ TBD: - The faq doesn't show in the content
 
 <!--chapter-->
 <xsl:template match="chapter">
-  <fo:block id="{@id}"/>
+  <fo:block id="{@id}" break-before="page"/>
 	<xsl:apply-templates/>   
 </xsl:template>  
 
@@ -117,7 +138,6 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="18pt" 
             font-family="sans-serif" 
             line-height="24pt"
-            break-before="page"
             space-before.optimum="15pt"
             space-after.optimum="15pt"
             background-color="blue"
@@ -136,6 +156,7 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="16pt" 
             font-family="sans-serif" 
             line-height="20pt"
+            keep-with-next="always"            
             space-before.optimum="15pt"
             space-after.optimum="12pt"
             text-align="start"
@@ -151,6 +172,7 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="14pt" 
             font-family="sans-serif" 
             line-height="18pt"
+            keep-with-next="always"            
             space-before.optimum="10pt"
             space-after.optimum="9pt"
             text-align="start"
@@ -261,6 +283,7 @@ TBD: - The faq doesn't show in the content
    <fo:block font-size="14pt" 
             font-family="sans-serif" 
             line-height="18pt"
+            keep-with-next="always"
             space-before.optimum="10pt"
             space-after.optimum="9pt"
             text-align="start"
