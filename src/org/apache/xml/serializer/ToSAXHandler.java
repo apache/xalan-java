@@ -28,8 +28,10 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller 
+ * This class is used to provide a base behavior to be inherited
+ * by other To...SAXHandler serializers.
+ * 
+ * @xsl.usage internal
  */
 abstract public class ToSAXHandler extends SerializerBase 
 {
