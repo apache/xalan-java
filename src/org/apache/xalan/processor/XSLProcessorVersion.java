@@ -136,7 +136,7 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static int DEVELOPMENT = 9;
+  public static int DEVELOPMENT = 10;
   
   /**
    * Version String like <CODE>"<B>Xalan</B> <B>Language</B> 
