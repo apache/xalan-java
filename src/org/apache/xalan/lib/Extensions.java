@@ -70,6 +70,7 @@ import org.apache.xpath.objects.XNumber;
 import org.xml.sax.SAXNotSupportedException;
 
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
@@ -91,6 +92,9 @@ import javax.xml.parsers.*;
 public class Extensions
 {
 
+  // Reuse the Document object to reduce memory usage.
+  private static Document lDoc = null;
+  
   /**
    * Constructor Extensions
    *
@@ -282,14 +286,29 @@ public class Extensions
    * @param toTokenize The string to be split into text tokens.
    * @param delims The delimiters to use.
    * @return a NodeSet as described above.
-   *
-   * Note: The usage of this extension function in the xalan namespace 
-   * is deprecated. Please use the same function in the EXSLT strings extension
-   * (http://exslt.org/strings).
    */
   public static NodeList tokenize(String toTokenize, String delims)
   {
-    return ExsltStrings.tokenize(toTokenize, delims);
+
+    try
+    {
+      if (lDoc == null)
+        lDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+    }
+    catch(ParserConfigurationException pce)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
+    }
+
+    StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
+    NodeSet resultSet = new NodeSet();
+
+    while (lTokenizer.hasMoreTokens())
+    {
+      resultSet.addNode(lDoc.createTextNode(lTokenizer.nextToken()));
+    }
+
+    return resultSet;
   }
 
   /**
@@ -306,10 +325,6 @@ public class Extensions
    *                  extension mechanism.  This must be an XPathContext.
    * @param toTokenize The string to be split into text tokens.
    * @return a NodeSet as described above.
-   *
-   * Note: The usage of this extension function in the xalan namespace 
-   * is deprecated. Please use the same function in the EXSLT strings extension
-   * (http://exslt.org/strings).
    */
   public static NodeList tokenize(String toTokenize)
   {
