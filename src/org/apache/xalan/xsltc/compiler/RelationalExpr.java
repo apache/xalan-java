@@ -171,10 +171,13 @@ final class RelationalExpr extends Expression implements Operators {
 	    if (tright instanceof NodeType) {
 		_right = new CastExpr(_right, Type.NodeSet);
 	    }
-
 	    // Promote integer to doubles to have fewer compares
 	    if (tright instanceof IntType) {
 		_right = new CastExpr(_right, Type.Real);
+	    }
+	    // Promote result-trees to strings
+	    if (tright instanceof ResultTreeType) {
+		_right = new CastExpr(_right, Type.String);
 	    }
 	    return _type = Type.Boolean;
 	}

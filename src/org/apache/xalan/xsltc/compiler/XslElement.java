@@ -178,8 +178,7 @@ final class XslElement extends Instruction {
 		    return;
 		}
 		_prefix = prefix;
-		_namespace = (namespace == EMPTYSTRING) ? null :
-			     new AttributeValueTemplate(namespace, parser, this);
+		_namespace = new AttributeValueTemplate(namespace, parser, this);
 	    }
 	    else {
 		if (prefix == EMPTYSTRING) {

@@ -290,7 +290,14 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
               if (methodArgs.length <= nTargetArgs)
                 return m.invoke(m_defaultInstance, convertedArgs[0]);
               else  
-                return m.invoke(methodArgs[0], convertedArgs[0]);
+              {
+                targetObject = methodArgs[0];
+                
+                if (targetObject instanceof XObject)
+                  targetObject = ((XObject) targetObject).object();
+                  
+                return m.invoke(targetObject, convertedArgs[0]);
+              }
             }
           }
           catch(Exception e)

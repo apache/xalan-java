@@ -800,7 +800,7 @@ public final class BasisLibrary implements Operators {
 	    }
 	    else if (right instanceof DOM) {
 		result = compare(iter, ((DOM)right).getStringValue(),
-				 op, node, dom);
+				 op, dom);
 	    }
 	    else if (right == null) {
 		return(false);
@@ -871,6 +871,9 @@ public final class BasisLibrary implements Operators {
 
     static {
 	NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
+	// set max fraction digits so that truncation does not occur,
+	// see conf test string134
+	f.setMaximumFractionDigits(Integer.MAX_VALUE);
 	defaultFormatter = (f instanceof DecimalFormat) ?
 	    (DecimalFormat) f : new DecimalFormat();
 	defaultFormatter.setGroupingUsed(false);

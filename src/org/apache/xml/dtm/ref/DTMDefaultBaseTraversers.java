@@ -1486,7 +1486,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return getDocument();
+      return getDocumentRoot(context);
     }
 
     /**
@@ -1499,7 +1499,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int expandedTypeID)
     {
-      return (getExpandedTypeID(getDocument()) == expandedTypeID)
+      return (getExpandedTypeID(getDocumentRoot(context)) == expandedTypeID)
              ? context : next(context, context, expandedTypeID);
     }
 
@@ -1632,7 +1632,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return getDocument();
+      return getDocumentRoot(context);
     }
     
     /**
@@ -1730,7 +1730,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
         return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
       }
 
-      int root = getDocument(); 
+      int root = getDocumentRoot(context); 
       return next(root, root, expandedTypeID);
     }
     
