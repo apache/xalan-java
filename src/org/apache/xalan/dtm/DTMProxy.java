@@ -118,7 +118,9 @@ public class DTMProxy extends UnImplNode
     try
     {
       DTMProxy dtmp = (DTMProxy)node;
-      return (dtmp.node == this.node);
+      // return (dtmp.node == this.node);
+      // Patch attributed to Gary L Peskin <garyp@firstech.com>
+      return (dtmp.node == this.node) && (dtmp.dtm == this.dtm);
     }
     catch(ClassCastException cce)
     {
