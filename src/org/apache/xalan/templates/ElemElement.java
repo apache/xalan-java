@@ -275,9 +275,11 @@ public class ElemElement extends ElemUse
             throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(this);
-      
+//    This was causing a duplicate trace event because the parent class, ElemUse
+//    is also firing this.
+//       if (TransformerImpl.S_DEBUG)
+//         transformer.getTraceManager().fireTraceEvent(this);
+
  	SerializationHandler rhandler = transformer.getSerializationHandler();
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
@@ -362,8 +364,10 @@ public class ElemElement extends ElemUse
 
     constructNode(nodeName, prefix, nodeNamespace, transformer);
 
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEndEvent(this);
+//  This was causing a duplicate trace event because the parent class, ElemUse
+//  is also firing this.
+//    if (TransformerImpl.S_DEBUG)
+//      transformer.getTraceManager().fireTraceEndEvent(this);
   }
   
   /**
