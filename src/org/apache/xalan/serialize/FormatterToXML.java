@@ -1039,7 +1039,25 @@ public class FormatterToXML
       if (data.length() > 0 &&!Character.isSpaceChar(data.charAt(0)))
         accum(' ');
 
-      accum(data);
+      int indexOfQLT = data.indexOf("?>");
+      if(indexOfQLT >= 0)
+      {
+        // See XSLT spec on error recovery of "?>" in PIs.
+        if(indexOfQLT > 0)
+        {
+          accum(data.substring(0, indexOfQLT));
+        }
+        accum("? >");  // add space between.
+        if((indexOfQLT+2) < data.length())
+        {
+          accum(data.substring(indexOfQLT+2));
+        }
+      }
+      else
+      {
+        accum(data);
+      }
+
       accum('?');
       accum('>');
       
