@@ -13,13 +13,13 @@
 package org.w3c.dom.range;
 
 /**
+ * This interface can be obtained from the object implementing the 
+ * <code>Document</code> interface using binding-specific casting methods.
  * @since DOM Level 2
  */
 public interface DocumentRange {
     /**
-     *  This interface can be obtained from the object implementing the 
-     * <code>Document</code> interface using binding-specific casting methods.
-     * @return  The initial state of the range returned from this  method is 
+     *   @return  The initial state of the range returned from this  method is 
      *   such that both of its boundary-points are positioned at the 
      *   beginning  of the corresponding  Document, before any content. The 
      *   range returned can only be used to select content associated with 

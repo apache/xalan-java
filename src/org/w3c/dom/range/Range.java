@@ -17,11 +17,12 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 
 /**
+ * A range in a document.
  * @since DOM Level 2
  */
 public interface Range {
     /**
-     *  Node within which the range begins 
+     *  Node within which the range begins.
      * @exception DOMException
      *    INVALID_STATE_ERR: Raised if <code>detach()</code> has already been 
      *   invoked on this object.
