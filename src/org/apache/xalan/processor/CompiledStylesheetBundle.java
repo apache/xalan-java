@@ -93,296 +93,416 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-// Java Compiler support. *****
-// TODO: Merge the Microsoft VJ++ workarounds in this file into that one.
-import org.apache.xalan.utils.synthetic.JavaUtils;
-
 /**
  * <meta name="usage" content="advanced"/>
- * File save and reload for Compiled Stylesheets.
+ * Serialize and reload routines for Compiled Stylesheets. Basically, a
+ * "bundle" is a zipfile containing the generated and compiled java 
+ * classes, plus a .ser (ObjectStream) representation of those classes
+ * as actually instantiated and connected to represent a top-level
+ * Stylesheet. This class provides routines that generate a bundle in
+ * a disk file, and that will reread a bundle from such a file.
+ * 
  * @see CompilingStylesheetHandler
  */
 public class CompiledStylesheetBundle
 {
+	/** Public constructor. The loadBundle() operation requires an actual
+	 * compiledStylesheetBundle object, for reasons discussed there.
+	 */
 	public CompiledStylesheetBundle()
 	{
 	}
 	
-	// Create an executable bundle -- a zipfile
-	// containing the serialized root, the synthesized classes needed
-	// to support it, and a main entry point which retrieves these.
-	//
-	// ***** ISSUE: Need to make sure we're looking in the same directory
-	// that the classes were generated into. Currently that's ".". Should
-	// be parameterized both during compilation and here.
-	// ***** ISSUE: What filename to write to? Hardcoded for initial test,
-	// should be taken from stylesheet's Public/System IDs. Stand-alone
-	// loader entry point ditto?
-	// ***** ISSUE: ZIP or JAR? Zipfile support is in Java 1.1.x, direct
-	// jarfile doesn't appear until 1.2. Main difference is that latter
-	// automatically produces manefest, but a manefest is optional anyway.
-  static void createBundle(Stylesheet root,Vector compiledTemplates)
-  {
-	String outdir="."+File.separator;
-	java.util.Hashtable dirs=new java.util.Hashtable();		
-
-	try {
-		java.io.FileOutputStream f=
-			new java.io.FileOutputStream(outdir+"CompiledStylesheet.zip");
-		java.util.zip.ZipOutputStream zf=new java.util.zip.ZipOutputStream(f);
-		zf.setMethod(zf.DEFLATED);
-		
-		// Copy in the classfiles
-		byte buffer[]=new byte[4096];
-		java.util.zip.ZipEntry ze;
-		for(int i=compiledTemplates.size()-1;i>=0;--i)
-		{
-			// WARNING: I'm assuming that a package name has been specified,
-			// which should be safe in this case. If that changes, this
-			// lazy parse needs to be improved.
-			Class c=compiledTemplates.elementAt(i).getClass();
-			String fullname=c.getName();
-			int start=fullname.lastIndexOf(".");
-			String packagename=fullname.substring(0,start);
-			String shortname=fullname.substring(start+1);
-			// Need to convert as a relative path for the jarfile;
-			// it's "anchored" later when we open for read.
-			String source=packageNameToDirectory(packagename,outdir,File.separator)
-				+shortname+".class";
-			String sink=packageNameToDirectory(packagename,"","/")
-				+shortname+".class";
-
-// I'm not sure whether this is needed or not. The JDK I'm using seems to say
-// it isn't, but I want to keep it around for now in case another JDK
-// disagrees.
-if(false)			
-{	
-			for(int slash=sink.indexOf('/');
-				slash>=0;
-				slash=sink.indexOf('/',slash+1))
-			{
-				String dirname=sink.substring(0,slash+1);
-				if(dirs.get(dirname) == null)
-				{
-					ze=new java.util.zip.ZipEntry(dirname);
-					zf.putNextEntry(ze);
-					zf.closeEntry();
-					dirs.put(dirname,dirname);
-				}
-			}
-}				
-			
- 			ze=new java.util.zip.ZipEntry(sink);
-			zf.putNextEntry(ze);
-			java.io.FileInputStream fis=new java.io.FileInputStream(source);
-			int count=0;
-			for(int got=1;got>=0;)
-			{
-				got=fis.read(buffer);
-				if(got>0)
-				{
-					zf.write(buffer,0,got); 
-					count+=got;
-				}
-			}
-			fis.close();
-			ze.setSize(count); // Ought to get set automagically, BUT....
-			zf.closeEntry();
-		}
-		
-		// Write out the serialized stylesheet
-		ze=new java.util.zip.ZipEntry("Stylesheet.ser");
-		zf.putNextEntry(ze);
-		java.io.ObjectOutputStream of=new java.io.ObjectOutputStream(zf);
-		of.writeObject(root);
-		of.flush(); // ***** Should this be close?
-		zf.closeEntry();
-		
-		// TODO: *****MAKE SELF-LOADABLE!*****
-		// Set up a Classloader pointed at the zipfile and deserialize from?
-		
-		// This may be overkill, but I'm getting complaints about 
-		// "not a ZIP file (END header not found"...
-		zf.finish();
-		zf.flush();
-		zf.close();
-		f.flush();
-		f.close();
-	  }
-	  catch(java.io.IOException e)
-	  {
-		  System.err.println("Exception while packaging compiled stylesheet");
-		  e.printStackTrace(System.err);
-	  }
-  }
-  
-	// Reload an executable bundle -- a zipfile or jarfile
-	// containing the serialized root, the synthesized classes needed
-	// to support it, and a main entry point which retrieves these.
-	// 
-	// Note use of a custom classloader in order to pick these up interactively.
-  public Stylesheet loadBundle(String filename)
-	  throws java.io.IOException,java.lang.ClassNotFoundException
-  {
-	  Stylesheet ss=null;
-
-		java.io.InputStream is;
-		java.io.ObjectInputStream os;
-		if(true)
-		{
-			java.lang.ClassLoader cl=new ZipfileClassLoader(filename);
-			is=cl.getResourceAsStream("Stylesheet.ser");
-			os=new ClassLoaderObjectInputStream(cl,is);
-		}
-		else
-		{
-			is=this.getClass().getResourceAsStream("/Stylesheet.ser");
-			os=new java.io.ObjectInputStream(is);
-		}
-				
-		ss=(Stylesheet)os.readObject();
-		os.close();
-		is.close();
-
-	 return ss;
-  }
-  
-  
-  static String packageNameToDirectory(String packagename,String baseLocation,
-									   String separator)
-  {
-    int fnstart=baseLocation.lastIndexOf(separator);
-    StringBuffer subdir=new StringBuffer(
-        (fnstart>=0)
-        ? baseLocation.substring(0,fnstart+1)
-        : "");
-    StringTokenizer parts=
-        new StringTokenizer(packagename,".");
-    while(parts.hasMoreTokens())
-        subdir.append(parts.nextToken()).append(separator);
-	return subdir.toString();
-  }
-
-  // Custom classloader is needed if we want to load from a
-  // zipfile which wasn't on the classpath at startup time.
-  class ZipfileClassLoader extends ClassLoader 
-  {
-	String filename;
-	java.util.zip.ZipFile zip=null;
-	
-	ZipfileClassLoader(String filename) throws java.io.IOException
+	/** Create an executable bundle -- a zipfile which contains
+	* the serialized Root Stylesheet and the synthesized classes needed
+	* to support it. Nominally this should be a jarfile, but zipfiles work
+	* and jarfile support wasn't added to the JDK until 1.2.
+	* <P>
+	* TODO: Open issues in CompiledStylesheetBundle.createBundle()
+	* <ul>
+	* <li> We need to copy classfiles from the directory that the code was
+	* generated into. Currently that's hardwired as "." -- but when we
+	* parameterize the code-gen operations we'll need to update this too.
+	* <li> What filename should we give the bundle, and where should we
+	* output it? Currently that's hardcoded, but it really should be
+	* parameterized and/or derived from the stylesheet's Public/System IDs.
+	* <li>Should we really be writing to a file, or should we be generating
+	* a stream which the caller directs appropriately?
+	* <li>Should we really be invoked as part of the compilation? Or are we
+	* in fact a "serialization" mechanism for compiled stylesheets?
+	* </ul>
+	* 
+	* @param Stylesheet root The compiled Root Stylesheet, after being
+	* processed by CompilingStylesheetHandler's endDocument() method.
+	* @param Vector compiledTemplates A list of the Class objects that were
+	* generated to support this stylesheet. (Avoids rewalking the tree to
+	* gather than information.)
+	*/ 
+	static void createBundle(Stylesheet root,Vector compiledTemplates)
 	{
-		this.filename=filename;
-		zip=new java.util.zip.ZipFile(filename); 
-	}
+		//TODO: outdir should be parameterized  
+		String outdir="."+File.separator;
 
-	// TODO: ***** RECONSIDER EFFECTIVE CLASSPATH
-	// What I really want is to try system classes, than zipfile, then
-	// user classpath. JDK 1.2 seems to have hooks that will support that,
-	// but I'm not sure about JDK 1.1.
-	public Class findClass(String name) 
-	{
-		Class c=null;
-		try
-		{
-			c=this.getClass().forName(name);
-		}
-		catch (ClassNotFoundException e)
-		{
-			byte[] b = loadClassData(name);
-			if(b!=null)
-				c=defineClass(name,b,0,b.length);
-		}
-		return c;
-	}
-		
-	private byte[] loadClassData(String name) 
-	{
-		int start=name.lastIndexOf(".");
-		String packagename=name.substring(0,start);
-		String shortname=name.substring(start+1);
-		// Need to convert as a relative path for the jarfile;
-		// it's "anchored" later when we open for read.
-		String fn=packageNameToDirectory(packagename,"","/")
-				+shortname+".class";
-		
-		byte[] data=null;
 		try 
 		{
-			java.util.zip.ZipEntry entry=zip.getEntry(fn);
-			
-			// If it isn't in the zipfile, we can't retrieve any data
-			if(entry!=null)
+			java.io.FileOutputStream f=
+				new java.io.FileOutputStream(outdir+"CompiledStylesheet.zip");
+			java.util.zip.ZipOutputStream zf=new java.util.zip.ZipOutputStream(f);
+			zf.setMethod(zf.DEFLATED);
+		
+			// Copy in the classfiles
+			byte buffer[]=new byte[4096];
+			java.util.zip.ZipEntry ze;
+			for(int i=compiledTemplates.size()-1;i>=0;--i)
 			{
-				// This assumes entry length fits in an int. Should be safe.
-				int bufsize = (int)entry.getSize();
-				data=new byte[bufsize];
-				java.io.InputStream is=zip.getInputStream(entry);
-				int len=0, off=0;
-				while (off<bufsize){
-					len = is.read(data,off,bufsize-off);
-					off += len;
+				// WARNING: I'm assuming that a package name has been specified,
+				// which should be safe in this case. If that changes, this
+				// lazy parse needs to be improved.
+				Class c=compiledTemplates.elementAt(i).getClass();
+				String fullname=c.getName();
+				int start=fullname.lastIndexOf(".");
+				String packagename=fullname.substring(0,start);
+				String shortname=fullname.substring(start+1);
+				// Where to copy the classfile from.
+				// TODO: Can we get the bytes direct from the Class object???
+				String source=
+					packageNameToDirectory(packagename,outdir,File.separator)
+					+shortname+".class";
+				// Where to write the class within the jar/zipfile's
+				// directory structure
+				String sink=
+					packageNameToDirectory(packagename,"","/")
+					+shortname+".class";
+			
+ 				ze=new java.util.zip.ZipEntry(sink);
+				zf.putNextEntry(ze);
+				java.io.FileInputStream fis=new java.io.FileInputStream(source);
+				// Need to count how many bytes are transferred; the ZipEntry
+				// does _NOT_ set itself automatically.
+				int count=0;
+				for(int got=1;got>=0;)
+				{
+					got=fis.read(buffer);
+					if(got>0)
+					{
+						zf.write(buffer,0,got); 
+						count+=got;
+					}
 				}
-				is.close();
+				fis.close();
+				ze.setSize(count); // Should be set automagically, but isn't.
+				zf.closeEntry();
 			}
+		
+			// Write out the serialized stylesheet tree which uses the classes
+			// we've just saved.
+			// TODO: Should this name be related to the stylesheet name/filename?
+			ze=new java.util.zip.ZipEntry("Stylesheet.ser");
+			zf.putNextEntry(ze);
+			java.io.ObjectOutputStream of=new java.io.ObjectOutputStream(zf);
+			of.writeObject(root);
+			of.flush();
+			zf.closeEntry();
+		
+			// TODO: Should bundle be self-loadable (generated entry point)?
+		
+			// TODO: The following is undoubtedly massive overkill, but I had
+			// problems with "not a ZIP file (END header not found)"...
+			zf.finish();
+			zf.flush();
+			zf.close();
+			f.flush();
+			f.close();
 		}
 		catch(java.io.IOException e)
 		{
-		  System.err.println("Exception while reloading compiled stylesheet");
-		  e.printStackTrace(System.err);
+			// TODO: Improve bundling diagnostics
+			System.err.println("Exception while bundling compiled stylesheet");
+			e.printStackTrace(System.err);
 		}
-		return data;
-    }
-	
-	public synchronized Class loadClass(String name, boolean resolve) 
-	throws ClassNotFoundException
-	{
-		Class c=findClass(name);
-		if(c!=null && resolve==true)
-			resolveClass(c);
-		return c;
 	}
-		
-	public java.io.InputStream getResourceAsStream(String name)
+  
+	/** Reload an executable bundle -- a zipfile or jarfile
+	* containing the serialized root and the synthesized classes needed
+	* to support it, and a main entry point which retrieves these.
+	* A custom classloader is used so we can pick these up interactively,
+	* along with a customized version of ObjectInputStream that can be told
+	* which classloader to consult.
+	* <p>
+	* TODO: Open issues in CompiledStylesheetBundle.loadBundle()
+	* <ul>
+	* <li>At the moment this is an instance method, because the support
+	* objects mentioned above are declared as inner classes. They're arguably
+	* general enough to be worth factoring out...
+	* <li>Should this be restructured to be able to read from other kinds of
+	* streams? Would require significant changes to the classloader, to preload
+	* it from the stream rather than having it access the zipfile on demand.
+	* </ul>
+	* 
+	* @param String filename Filesystem name of the bundle file to be loaded.
+	* @return Stylesheet as loaded.
+	* @exception java.io.IOException if there are any problems reading the
+	* bundle file
+	* @exception java.lang.ClassNotFoundException if a class used in 
+	* serializing the Stylesheet can't be resolved. This could be a glitch
+	* in the bundle, but is more likely to be incompatable versions if the
+	* Xalan code was changed between when the bundle was created and when it
+	* is being reloaded.
+	*/
+	public Stylesheet loadBundle(String filename)
+		throws java.io.IOException,java.lang.ClassNotFoundException
 	{
 		java.io.InputStream is=null;
-		try 
+		java.io.ObjectInputStream os=null;
+		Stylesheet ss=null;
+		
+		try
 		{
-			java.util.zip.ZipEntry entry=zip.getEntry(name);
-			is=zip.getInputStream(entry);
+			// Create the custom classloader which will consult the bundle
+			java.lang.ClassLoader cl=new ZipfileClassLoader(filename);
+			// Read the .ser file from the bundle, via that classloader		
+			is=cl.getResourceAsStream("Stylesheet.ser");
+			// Read objects from the .ser, loading from bundle if necessary
+			os=new ClassLoaderObjectInputStream(cl,is);
+			ss=(Stylesheet)os.readObject();
 		}
-		catch(java.io.IOException e)
+		finally
 		{
-		  System.err.println("Problem loading compiled stylesheet");
-		  e.printStackTrace();
-		  // TODO: ***** Should this fall back to default classloader?
-		  // is=this.getClass().getResourceAsStream(name);
+			// Whether read succeeded or not, release the file resources
+			if(os!=null) os.close();
+			if(is!=null) is.close();
 		}
-		return is;
+		return ss;
 	}
-  }
-
-  // Kluge: Check a specific classloader when deserializing. Alternative
-  // is to dump a stub object into the zipfile and have it do the deserialize
-  // ... which doesn't strike me as being any prettier.
-  class ClassLoaderObjectInputStream extends java.io.ObjectInputStream
-  {
-	java.lang.ClassLoader cl;
-	public ClassLoaderObjectInputStream(java.lang.ClassLoader cl,java.io.InputStream is)
-		throws java.io.IOException
-	{
-		super(is);
-		this.cl=cl;
-	}
-
-	// Note that this assumes cl knows how to cascade to other classloaders
-	// as appropriate, since it has to resolve _all_ classes that may be
-	// referenced in the object stream -- including system classes.
-	protected Class resolveClass(java.io.ObjectStreamClass v)
-		throws java.io.IOException, ClassNotFoundException
-	{
-		return cl.loadClass(v.getName());
-	}
-  }
   
+	/** Utility function: Take a dot-delimited packagename and a base
+	 * directory, and return a relative directory suitable for locating
+	 * .java and .class files. 
+	 * TODO: This should be moved somewhere more reusable,
+	 * probably into the compiler-invocation support stuff or synthetic.Class.
+	 * 
+	 * @param String packagename dot-delimited packagename, as you'd write it
+	 * in the Java package statement.
+	 * @param String baseLocation Base directory, appended to the front of the
+	 * returned value. We discard anything after the last instance of the 
+	 * separator, to allow passing in a filename ... but that means that if
+	 * you want to pass in a directory, it's your responsibility to make
+	 * sure it ends in the separator character.
+	 * TODO: Clean up directory parsing a bit...
+	 * @param String separator Separator into which the '.'s are converted.
+	 * This is a parameter because I'm using this function to work with
+	 * zipfiles (which insist on '/') as well as the normal filesystem
+	 * (which varies from platform to platform).
+	 */  
+	static String packageNameToDirectory(String packagename,String baseLocation,
+									   String separator)
+	{
+		int fnstart=baseLocation.lastIndexOf(separator);
+	    StringBuffer subdir=new StringBuffer(
+		    (fnstart>=0)
+			? baseLocation.substring(0,fnstart+1)
+			: "");
+		// Simple parse-and-reassemble loop
+		StringTokenizer parts=new StringTokenizer(packagename,".");
+		while(parts.hasMoreTokens())
+			subdir.append(parts.nextToken()).append(separator);
+		return subdir.toString();
+	}
+	
+	//=================================================================
+
+	/** This is a quick-and-dirty classloader which effectively appends
+	 * the specified zipfile to the tail end of the existing classpath
+	 * (by consulting the ClassLoader which loaded _it_ first, and only
+	 * then attempting to load from the file.)
+	 * This allows us to read from files -- in particular, from 
+	 * CompiledStylesheetBundles -- which weren't available at the time the
+	 * applications was launched.
+	 * <p>
+	 * TODO: BEHAVIOR IS INCOMPLETE; consider finishing it properly...
+	 * TODO: This probably should be factored out as an independent object
+	 * rather than an inner class. It's resuable.
+	 * TODO: In Java 1.2.x, this can be replaced to a greater or lesser extent
+	 * by URIClassLoader.
+	 */
+	class ZipfileClassLoader extends ClassLoader 
+	{
+		java.util.zip.ZipFile zip=null;
+	
+		/** Constructor.
+		 * TODO: Should we be able to load from stream as well as string?
+		 * That would require a preload solution or a random-access stream...
+		 * OK for our simple case where we know we're going to use everything
+		 * eventually, not so hot for others.
+		 * 
+		 * @param String filename Name of the zipfile to be read
+		 */	
+		public ZipfileClassLoader(String filename) throws java.io.IOException
+		{
+			zip=new java.util.zip.ZipFile(filename); 
+		}
+
+		/** Find a class within the Zipfile. Note that this does not _resolve_
+		* the class, and hence should probably not be used by the general public.
+		* TODO: Reconsider the resulting effective classpath.
+		* What I really want is to try system classes, than zipfile, then
+		* user classpath. JDK 1.2 seems to have hooks that will support that,
+		* but I'm not sure about JDK 1.1.
+		*
+		* @param String name fully-qualified classname (including package, if any)
+		*/
+		Class findClass(String name) 
+		{
+			Class c=null;
+			try
+			{
+				c=this.getClass().forName(name);
+			}
+			catch (ClassNotFoundException e)
+			{
+				byte[] b = loadClassData(name);
+				if(b!=null)
+					c=defineClass(name,b,0,b.length);
+			}
+			return c;
+		}
+		
+		/** Internal subroutine: Givne the name of a class (or of a resource),
+		 * access the zipfile and retrieve the contents thereof as a byte array.
+		 * TODO: Implement the "leading / means already in filename syntax" trick?
+		 * Or is that irrelevant?
+		 * 
+		 * @param String name Name to be retrieved, in Java package syntax.
+		 * @return byte[] with full contents of "file".
+		 */
+		private byte[] loadClassData(String name) 
+		{
+			int start=name.lastIndexOf(".");
+			String packagename=name.substring(0,start);
+			String shortname=name.substring(start+1);
+			// Need to convert as a relative path for the jarfile;
+			// it's "anchored" later when we open for read.
+			String fn=packageNameToDirectory(packagename,"","/")
+				+shortname+".class";
+		
+			byte[] data=null;
+			try 
+			{
+				java.util.zip.ZipEntry entry=zip.getEntry(fn);
+			
+				// If it isn't in the zipfile, we can't retrieve any data
+				if(entry!=null)
+				{
+					// This assumes entry length fits in an int. Should be safe.
+					int bufsize = (int)entry.getSize();
+					data=new byte[bufsize];
+					java.io.InputStream is=zip.getInputStream(entry);
+					int len=0, off=0;
+					while (off<bufsize)
+					{
+						len = is.read(data,off,bufsize-off);
+						off += len;
+					}
+					is.close();
+				}
+			}
+			catch(java.io.IOException e)
+			{
+			  System.err.println("Exception while reloading compiled stylesheet");
+			  e.printStackTrace(System.err);
+			}
+			return data;
+	    }
+	
+		/** This is one of the main entry points that makes it a "real"
+		 * classloader.
+		 * @see java.io.ClassLoader.loadClass
+		 */
+		public synchronized Class loadClass(String name, boolean resolve) 
+		throws ClassNotFoundException
+		{
+			Class c=findClass(name);
+			if(c!=null && resolve==true)
+				resolveClass(c);
+			return c;
+		}
+			
+		/** This is one of the main entry points that makes it a "real"
+		* classloader.
+		* @see java.io.ClassLoader.getResourceAsStream
+		*/
+		public java.io.InputStream getResourceAsStream(String name)
+		{
+			java.io.InputStream is=null;
+			try 
+			{
+				java.util.zip.ZipEntry entry=zip.getEntry(name);
+				is=zip.getInputStream(entry);
+			}
+			catch(java.io.IOException e)
+			{
+			  System.err.println("Problem loading compiled stylesheet");
+			  e.printStackTrace();
+			  // TODO: ***** Should this fall back to default classloader?
+			  // is=this.getClass().getResourceAsStream(name);
+			}
+			return is;
+		}
+	}
+
+	//===============================================================
+	
+	/** Modified ObjectInputStream which consults a specific ClassLoader
+	 * rather than the default. This was required to allow reloading our
+	 * CompiledStylesheetBundle files, which carry both a serialized
+	 * object tree and the additional classfiles needed to support it.
+	 * <p>
+	 * An alternative solution would have been to put a stub object in
+	 * the bundle file, explicitly load that (setting its default 
+	 * classloader in the process), then have it load the rest of the data,
+	 * but that requires another generated class and I'm not convinced it's
+	 * really cleaner.
+	 * <p>
+	 * TODO: Make this a more complete implementation (other factories, eg)?
+	 * TODO: Move this to somewhere more reusable.
+	 */
+	class ClassLoaderObjectInputStream extends java.io.ObjectInputStream
+	{
+		java.lang.ClassLoader cl;
+		
+		/** Public constructor.
+		 * @param java.lang.ClassLoader cl The custom classloader to be used
+		 * when deserializing these objects. Note that it is the classloader's
+		 * responsibility to deliver _all_ classes for this stream; that will
+		 * probably requre that it understand how to fall back upon a parent
+		 * or default classloader.
+		 * @param java.io.InputStream is The stream from which to read the
+		 * serialized representation of the objects.
+		 */
+		public ClassLoaderObjectInputStream(java.lang.ClassLoader cl,java.io.InputStream is)
+			throws java.io.IOException
+		{
+			super(is);
+			this.cl=cl;
+		}
+
+		/** Overriding this routine is what allows us to consult the specified
+		 * classloader rather than the default. Note that this assumes the
+		 * classloader knows how to cascade to others as appropriate (and with
+		 * the proper priority of search), since it has to resolve _all_ 
+		 * classes that may be referenced in the object stream -- including
+		 * system classes.
+		 * <p>
+		 * Should we have a "backup" fallback here? I'd say no;
+		 * the user may want to distinguish whether the class came from
+		 * the intended classloader, and it's easy enough to handle any
+		 * fallbacks at that level.
+		 */
+		protected Class resolveClass(java.io.ObjectStreamClass v)
+			throws java.io.IOException, ClassNotFoundException
+		{
+			return cl.loadClass(v.getName());
+		}
+	}
+
 }
