@@ -64,7 +64,7 @@ import java.lang.reflect.*;
 import com.ibm.bsf.*;
 import com.ibm.bsf.util.BSFEngineImpl;
 
-import com.ibm.cs.util.ReflectionUtils;
+import com.ibm.bsf.util.ReflectionUtils;
 
 /**
  * <meta name="usage" content="internal"/>

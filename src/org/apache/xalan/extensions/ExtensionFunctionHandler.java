@@ -68,7 +68,7 @@ import org.w3c.xslt.ExpressionContext;
 import org.xml.sax.SAXException;
 
 import com.ibm.bsf.BSFException;
-import com.ibm.cs.util.ReflectionUtils;
+import com.ibm.bsf.util.ReflectionUtils;
 
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;

@@ -984,7 +984,7 @@ public class CompilingStylesheetHandler
         // 1.1 calls), then fall back on command line if necessary.
         // But I'm having some odd problems with it right now under
         // both VisualCafe and VisualJ++.
-        compileOK=com.ibm.cs.util.JavaUtils.JDKcompile(filename,classpath);
+        compileOK=com.ibm.bsf.util.JavaUtils.JDKcompile(filename,classpath);
     }
     else
     {
