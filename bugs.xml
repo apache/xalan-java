@@ -35,7 +35,7 @@
 <Spr>
 <Name>DMAN4TATNH</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Closed</State>
 <TestID>attribseterr02</TestID>
 <TestDesc>Need to catch circular use of attribute-sets</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -52,14 +52,14 @@
 <Name>DMAN4TATTY</Name>
 <DateCreated>1/24/2001 </DateCreated>
 <State>Open</State>
-<TestID>conditionalerr01, conditionalerr02, conditionalerr04, conditionalerr05</TestID>
+<TestID>conditionalerr02, conditionalerr04, conditionalerr05</TestID>
 <TestDesc>Must enforce correct structure of xsl:choose</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
 <Name>DMAN4TATWT</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>conditionalerr06, conditionalerr07, conditionalerr08; matcherr05, matcherr07; namespaceerr01; numberformaterr04; sorterr04</TestID>
 <TestDesc>Need more checks for incorrect attributes in various XSL instructions</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -84,7 +84,7 @@
 <Name>DMAN4TAU4Z</Name>
 <DateCreated>1/24/2001 </DateCreated>
 <State>Open</State>
-<TestID>entreferr02, entref04; idkeyerr07; outputerr04</TestID>
+<TestID>entreferr02, entref04; idkeyerr07</TestID>
 <TestDesc>Need better catching of invalid characters in element/attribute/PI names</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
@@ -107,7 +107,7 @@
 <Spr>
 <Name>DMAN4TAUBY</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Closed</State>
 <TestID>impinclerr02</TestID>
 <TestDesc>Must catch use of xsl:apply-imports when current template rule is null</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -131,7 +131,7 @@
 <Spr>
 <Name>DMAN4TAUHU</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>lreerr05,lreerr06,mdocserr04</TestID>
 <TestDesc>Need an error for top-level elements that have no namespace</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -147,7 +147,7 @@
 <Spr>
 <Name>DMAN4TAULK</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>mdocserr01</TestID>
 <TestDesc>Should raise "file not found" error from first argument to document(), when detectable</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -163,7 +163,7 @@
 <Spr>
 <Name>DMAN4TAUPZ</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>messageerr03</TestID>
 <TestDesc>No message from xsl:message with terminate="yes"</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -180,7 +180,7 @@
 <Name>DMAN4TAUU5</Name>
 <DateCreated>1/24/2001 </DateCreated>
 <State>Open</State>
-<TestID>numberformaterr06, numberformaterr08, numberformaterr09, numberformaterr10, numberformaterr20, numberformaterr21, numberformaterr22, numberformaterr23, numberformaterr24, numberformaterr25, numberformaterr26, numberformaterr27</TestID>
+<TestID>numberformaterr24, numberformaterr25</TestID>
 <TestDesc>Need to report syntax errors with decimal-format pattern</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
@@ -211,7 +211,7 @@
 <Spr>
 <Name>DMAN4TAV77</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Closed</State>
 <TestID>outputerr03</TestID>
 <TestDesc>Need special error check for "xml" names in xsl:processing-instruction</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -235,7 +235,7 @@
 <Spr>
 <Name>DMAN4TAVCL</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>selecterr10, selecterr11, selecterr12, selecterr13, selecterr14, selecterr15, selecterr16</TestID>
 <TestDesc>Need to catch various illegal conversions to node-set in xsl:for-each</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -243,7 +243,7 @@
 <Spr>
 <Name>DMAN4TAVEE</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Open</State>
+<State>Closed</State>
 <TestID>sorterr08</TestID>
 <TestDesc>Should have a message about QName as data-type in xsl:sort</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -253,7 +253,7 @@
 <DateCreated>1/24/2001 </DateCreated>
 <State>Open</State>
 <TestID>sorterr10</TestID>
-<TestDesc>In multi-level sort, must raise error if any level is bad</TestDesc>
+<TestDesc>In multi-level sort, must raise warning if any level is bad</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
@@ -491,7 +491,7 @@
 <Spr>
 <Name>SCUU4SPUML</Name>
 <DateCreated>1/5/2001 5</DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>position70.xsl</TestID>
 <TestDesc>Crimson: position70 has whitespace differences</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -595,7 +595,7 @@
 <Spr>
 <Name>SCUU4TCJG9</Name>
 <DateCreated>1/26/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0D07">Resolved</State>
 <TestID>transformerhandlerapitest.java</TestID>
 <TestDesc>TransformerIdentityImpl.setResult(null) does not throw exception</TestDesc>
 <Subsystem>XSLT</Subsystem>
