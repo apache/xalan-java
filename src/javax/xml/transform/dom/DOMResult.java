@@ -70,7 +70,7 @@ import org.w3c.dom.Node;
  * form of a Document Object Model (DOM) tree. If no output DOM source is set, 
  * the transformation will create a Document node as the holder 
  * for the result of the transformation, which may be retrieved 
- * wiht getNode.
+ * with getNode.
  */
 public class DOMResult implements Result
 {
@@ -82,11 +82,7 @@ public class DOMResult implements Result
     = "http://javax.xml.transform.dom.DOMResult/feature";
 
   /**
-   * Zero-argument default constructor. In practice, 
-   * the node should be a {@link org.w3c.dom.Document} node, 
-   * a {@link org.w3c.dom.DocumentFragment} node, or a 
-   * {@link org.w3c.dom.Element} node.  In other words, a node 
-   * that accepts children.
+   * Zero-argument default constructor.
    */
   public DOMResult(){}
 

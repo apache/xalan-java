@@ -113,7 +113,7 @@ public abstract class TransformerFactory
   {
 
     String classname = findFactory(defaultPropName,
-				   "org.apache.xalan.processor.TransformerFactoryImpl");
+                                   "org.apache.xalan.processor.TransformerFactoryImpl");
 
     if (classname == null)
     {
@@ -204,7 +204,7 @@ public abstract class TransformerFactory
    * document specified in the source parameter, and that match
    * the given criteria.  Note that it is possible to return several 
    * stylesheets, in which case they are applied as if they were
-   * a list of imports or cascades.
+   * a list of imports or cascades in a single stylesheet.
    *
    * @param source The XML source document.
    * @param media The media attribute to be matched.  May be null, in which
@@ -321,12 +321,12 @@ public abstract class TransformerFactory
     // Use the system property first
     try {
       String systemProp =
-	System.getProperty( factoryId );
+        System.getProperty( factoryId );
       if( systemProp!=null) {
-	if( debug ) 
-	  System.err.println("JAXP: found system property" +
-			     systemProp );
-	return systemProp;
+        if( debug ) 
+          System.err.println("JAXP: found system property" +
+                             systemProp );
+        return systemProp;
       }
       
     }catch (SecurityException se) {

@@ -73,7 +73,7 @@ public class OutputKeys
   private OutputKeys(){}
 
   /**
-   * method = "xml" | "html" | "text" | <var>qname-but-not-ncname</var>.
+   * method = "xml" | "html" | "text" | <var>expanded name</var>.
    *
    * <p>The method attribute identifies the overall method that
    * should be used for outputting the result tree.  Other non-namespaced 
@@ -158,7 +158,7 @@ public class OutputKeys
   public static final String DOCTYPE_SYSTEM = "doctype-system";
 
   /**
-   * cdata-section-elements = <var>qnames</var>.
+   * cdata-section-elements = <var>expanded names</var>.
    *
    * <p><code>cdata-section-elements</code> specifies a list of the
    * names of elements whose text node children should be output using

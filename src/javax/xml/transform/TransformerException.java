@@ -84,15 +84,15 @@ public class TransformerException extends Exception
   }
 
   /** Field containedException specifies a wrapped exception.  May be null. */
-  Exception containedException;
+  Throwable containedException;
 
   /**
    * This method retrieves an exception that this exception wraps.
    *
-   * @return An Exception object, or null.
+   * @return An Throwable object, or null.
    * @see #getCause
    */
-  public Exception getException()
+  public Throwable getException()
   {
     return containedException;
   }
@@ -113,8 +113,8 @@ public class TransformerException extends Exception
    * <p>This method can be called at most once.  It is generally called from 
    * within the constructor, or immediately after creating the
    * throwable.  If this throwable was created
-   * with {@link #TransformerException(Exception)} or
-   * {@link #TransformerException(String,Exception)}, this method cannot be called
+   * with {@link #TransformerException(Throwable)} or
+   * {@link #TransformerException(String,Throwable)}, this method cannot be called
    * even once.
    *
    * @param  cause the cause (which is saved for later retrieval by the
@@ -126,8 +126,8 @@ public class TransformerException extends Exception
    *         throwable.  (A throwable cannot
    *         be its own cause.)
    * @throws IllegalStateException if this throwable was
-   *         created with {@link #TransformerException(Exception)} or
-   *         {@link #TransformerException(String,Exception)}, or this method has already
+   *         created with {@link #TransformerException(Throwable)} or
+   *         {@link #TransformerException(String,Throwable)}, or this method has already
    *         been called on this throwable.
    */
   public synchronized Throwable initCause(Throwable cause) {
@@ -135,7 +135,7 @@ public class TransformerException extends Exception
       throw new IllegalStateException("Can't overwrite cause");
     if (cause == this)
       throw new IllegalArgumentException("Self-causation not permitted");
-    this.containedException = (Exception)cause;
+    this.containedException = cause;
     return this;
   }
 
@@ -158,10 +158,10 @@ public class TransformerException extends Exception
    *
    * @param e The exception to be wrapped.
    */
-  public TransformerException(Exception e)
+  public TransformerException(Throwable e)
   {
 
-    super("TRaX Transform Exception");
+    super("TRaX Transform Throwable");
 
     this.containedException = e;
     this.locator = null;
@@ -177,10 +177,10 @@ public class TransformerException extends Exception
    *                use the message from the embedded exception.
    * @param e Any exception
    */
-  public TransformerException(String message, Exception e)
+  public TransformerException(String message, Throwable e)
   {
     super ((message == null || message.length()== 0)? 
-           "TRaX Transform Exception" : message);
+           "TRaX Transform Throwable" : message);
       
 
     this.containedException = e;
@@ -215,7 +215,7 @@ public class TransformerException extends Exception
    * @param e Any exception
    */
   public TransformerException(String message, SourceLocator locator,
-                              Exception e)
+                              Throwable e)
   {
 
     super(message);
@@ -334,10 +334,10 @@ public class TransformerException extends Exception
         s.println(locInfo);
       super.printStackTrace(s);
     }
-    catch(Exception e)
+    catch(Throwable e)
     {
     }
-    Exception exception = getException();
+    Throwable exception = getException();
     
     for(int i = 0; (i < 10) && (null != exception); i++)
     {
@@ -352,7 +352,7 @@ public class TransformerException extends Exception
         }
         exception.printStackTrace(s);
       }
-      catch(Exception e)
+      catch(Throwable e)
       {
         s.println("Could not print stack trace...");
       }
@@ -361,8 +361,8 @@ public class TransformerException extends Exception
         Method meth = ((Object)exception).getClass().getMethod("getException", null);
         if(null != meth)
         {
-          Exception prev = exception;
-          exception = (Exception)meth.invoke(exception, null);
+          Throwable prev = exception;
+          exception = (Throwable)meth.invoke(exception, null);
           if(prev == exception)
             break;
         }

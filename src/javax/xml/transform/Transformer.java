@@ -121,8 +121,7 @@ public abstract class Transformer
    * cannot be determined until the node context is evaluated during
    * the transformation process.
    * 
-   * @return A parameter that has been set with setParameter 
-   * or setParameters.
+   * @return A parameter that has been set with setParameter.
    */
   public abstract Object getParameter(String name);
   
@@ -134,6 +133,9 @@ public abstract class Transformer
   /**
    * Set an object that will be used to resolve URIs used in
    * document().
+   * 
+   * <p>If the resolver argument is null, the URIResolver value will 
+   * be cleared, and the default behavior will be used.</p>
    * 
    * @param resolver An object that implements the URIResolver interface,
    * or null.
@@ -155,7 +157,8 @@ public abstract class Transformer
    * with xsl:output.
    *
    * <p>If argument to this function is null, any properties
-   * previously set are removed.</p>
+   * previously set are removed, and the value will revert to the value 
+   * defined in the templates object.</p>
    * 
    * <p>Pass a qualified property key name as a two-part string, the namespace URI
    * enclosed in curly braces ({}), followed by the local name. If the
@@ -166,11 +169,9 @@ public abstract class Transformer
    * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
    * then the TrAX name would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
    * no prefix is used.</p>
-   * 
-   * <p>If a given property is not supported, it will be silently ignored.</p>
    *
    * @param oformat A set of output properties that will be
-   * used to override any of the same properties in effect
+   * used to override any of the same properties in affect
    * for the transformation.   
    * 
    * @see javax.xml.transform.OutputKeys
@@ -198,6 +199,10 @@ public abstract class Transformer
    * 
    * <p>Note that mutation of the Properties object returned will not 
    * effect the properties that the transformation contains.</p>
+   * 
+   * <p>If any of the argument keys are not recognized and are not 
+   * namespace qualified, the property will be ignored.  In other words the 
+   * behaviour is not orthogonal with setOutputProperties.</p>
    *
    * @returns A copy of the set of output properties in effect
    * for the next transformation.
@@ -220,6 +225,9 @@ public abstract class Transformer
    * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
    * then the TrAX name would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
    * no prefix is used.</p>
+   * 
+   * <p>The Properties object that was passed to {@link #setOutputProperties} won't 
+   * be effected by calling this method.</p>
    * 
    * @param name A non-null String that specifies an output 
    * property name, which may be namespace qualified.

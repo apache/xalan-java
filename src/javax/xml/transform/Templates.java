@@ -84,7 +84,7 @@ public interface Templates
    * Get the static properties for xsl:output.  The object returned will
    * be a clone of the internal values. Accordingly, it can be mutated
    * without mutating the Templates object, and then handed in to
-   * the process method.
+   * {@link javax.xml.transform.Transformer#setOutputProperties}.
    *
    * <p>For XSLT, Attribute Value Templates attribute values will
    * be returned unexpanded (since there is no context at this point).</p>

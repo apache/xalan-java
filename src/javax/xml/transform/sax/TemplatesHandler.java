@@ -70,7 +70,7 @@ import org.xml.sax.ext.LexicalHandler;
 public interface TemplatesHandler extends ContentHandler
 {
   /**
-   * When a TemplatesHandler object is used as a ContentHandler or DocumentHandler
+   * When a TemplatesHandler object is used as a ContentHandler 
    * for the parsing of transformation instructions, it creates a Templates object, 
    * which the caller can get once the SAX events have been completed.
    * 
