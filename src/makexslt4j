@@ -187,6 +187,8 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)ResultTreeHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)StackGuard.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TransformerImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TransformState.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TransformerClient.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)TreeWalker2Result.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)transformer$(PATHSEP)XSLInfiniteLoopException.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)AttList.java \
