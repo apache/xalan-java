@@ -260,6 +260,21 @@ public class VariableStack extends Stack
     }
     frame.push(new Arg(qname, xval, false));
   }
+  
+  /**
+   * Re-mark the variables in the current frame as all 
+   * being parameters.
+   */
+  public void remarkParams()
+  {
+    Stack frame = getCurrentFrame();
+    
+    for (int i = (frame.size() - 1); i >= 0; i--)
+    {
+      Arg arg = (Arg)frame.elementAt(i);
+      arg.setIsParamVar(true);
+    }
+  }
 
 
   /**
