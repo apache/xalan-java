@@ -165,7 +165,7 @@ final public class Transform {
 	    if (_uri)
 		reader.parse(_fileName);
 	    else
-		reader.parse("file:"+(new File(_fileName).getAbsolutePath()));
+		reader.parse(new File(_fileName).toURL().toExternalForm());
 
 	    builder = null;
 
