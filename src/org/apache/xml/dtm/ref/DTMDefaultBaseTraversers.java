@@ -517,7 +517,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       return (m_indexing
               && ExpandedNameTable.ELEMENT
-                 == (expandedTypeID & ExpandedNameTable.MASK_NODETYPE));
+                 == m_expandedNameTable.getType(expandedTypeID));
     }
 
     /**

@@ -584,10 +584,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     int expandedTypeID = getExpandedTypeID(nodeHandle);
-    // If just testing nonzero, no need to shift...
-    //int namespaceID = (expandedTypeID & ExpandedNameTable.MASK_NAMESPACE)
-    //                  >> ExpandedNameTable.BITS_PER_LOCALNAME;
-    int namespaceID = (expandedTypeID & ExpandedNameTable.MASK_NAMESPACE);
+    int namespaceID =  m_expandedNameTable.getNamespaceID(expandedTypeID);
 
     if (0 == namespaceID)
     {
@@ -635,8 +632,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     int expandedTypeID = getExpandedTypeID(nodeHandle);
-    int namespaceID = (expandedTypeID & ExpandedNameTable.MASK_NAMESPACE)
-                      >> ExpandedNameTable.BITS_PER_LOCALNAME;
+    int namespaceID =  m_expandedNameTable.getNamespaceID(expandedTypeID);
 
     if (0 == namespaceID)
     {
