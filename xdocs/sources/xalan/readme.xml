@@ -187,7 +187,7 @@
      where <ref>target</ref> is nothing (for the default target) or one of the following.</p>
      <table>
        <tr><td><em>Target</em></td><td><em>What Ant does</em></td></tr>
-       <tr><td>compile</td><td>compiles Xalan-Java in build/classes.</td></tr>
+       <tr><td>compile</td><td>compiles &xslt4j; in build/classes.</td></tr>
        <tr><td>jar (the default)</td><td>creates xalan.jar in the build directory</td></tr>
        <tr><td>samples</td><td>compiles and jars the sample apps in build/xalansamples.jar</td></tr>
        <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.jar</td></tr>       
@@ -284,8 +284,8 @@ javadoc -doclet xalanjdoc.Standard
  org.apache.xalan.serialize javax.xml.transform  
  javax.xml.transform.dom javax.xml.transform.sax 
  javax.xml.transform.stream javax.xml.parsers
- -d ../build/docs/apidocs -windowtitle "Xalan-Java 2" 
- -doctitle "Xalan-Java 2" -bottom "Copyright &#169; 
+ -d ../build/docs/apidocs -windowtitle "&xslt4j; 2" 
+ -doctitle "xslt4j; 2" -bottom "Copyright &#169; 
   2000 Apache XML Project. All Rights Reserved."
 </code></li>
 </ul>
