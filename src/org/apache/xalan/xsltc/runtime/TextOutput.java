@@ -563,8 +563,6 @@ public final class TextOutput implements TransletOutputHandler, Constants {
 		offset = i + 1;
 		break;
 	    default:
-		// Escape all characters not in the basic ASCII character set
-		// to simple (hexadecimal) character references
 		if ( (current >= '\u007F' && current < '\u00A0') ||
 		     (_is8859Encoded && (current > '\u00FF')) )
 		{
