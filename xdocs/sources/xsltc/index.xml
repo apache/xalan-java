@@ -120,9 +120,6 @@
     design documents for some XSL elements and XPath expressions, patterns
     and functions:</p>
 
-    <table width="90%">
-    <tr>
-    <td>
 
     <s4 title="XSL elements">
       <ul>
@@ -137,8 +134,6 @@
       </ul>
     </s4>
 
-    </td><td>
-
     <s4 title="XPath functions">
       <ul>
         <li><link idref="xsl_key_design">key()</link></li>
@@ -147,8 +142,6 @@
       </ul>
     </s4>
 
-    </td></tr>
-    <tr><td>
 
     <s4 title="XPath expressons">
       <ul>
@@ -156,16 +149,12 @@
       </ul>
     </s4>
 
-    </td><td>
 
     <s4 title="XPath patterns">
       <ul>
         <li>StepPattern</li>
       </ul>
     </s4>
-
-    </td></tr>
-    </table>
 
     </s3>
 
@@ -174,7 +163,7 @@
     <s3 title="XSLTC runtime library design">
 
     <p>The runtime portion of XSLTC has four main components; the internal DOM
-    implementation (<u>not</u> W3C), the translet class(es), the runtime
+    implementation (not W3C), the translet class(es), the runtime
     library and the output processor:</p>
 
     <p><img src="runtime_design.gif" alt="runtime_design.gif"/></p>
