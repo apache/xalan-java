@@ -381,6 +381,19 @@
  Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>09/26/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Step.java<br/><ref>Committer's log entry: </ref>Fix after a regression for preceding-sibling::* iterator.
  Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li>
+ <li><ref>Committed by </ref>morten@apache.org<ref> on </ref>09/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc Translet.java
+ java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/dom
+ NodeSortRecordFactory.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerImpl.java<br/><ref>Committer's log entry: </ref>A fix for the problem with loading auxiliary classes for sorting when
+ called from TrAX API.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org<br/><br/></li></ul>
 </s3><anchor name="xsltcconf"/>
 <s3 title="XSLT 1.0 Conformance and Extensions">

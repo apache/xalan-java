@@ -80,7 +80,8 @@
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.2.D10">
      <p>&xslt4j-current; is a Developer release. For enhanced performance, the current series of Developer releases incorporate
-     the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a
+     the <link idref="dtm">DTM</link>. We have also added version and section information to the xalan.jar manifest.</p> 
+     <p>We believe Xalan with the DTM has reached a level of stability that warrants a
      standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
      <note>The SQL Extension library has been updated to work with DTM.</note>
      &done-j;
