@@ -361,7 +361,7 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
    * @return A compatible SAX serializer
    */
   public DocumentHandler makeSAXSerializer( Writer writer, OutputFormat format )
-    throws IOException
+    throws IOException, SAXException 
   {
     DocumentHandler handler;
     if ( format == null )
@@ -377,8 +377,8 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
       if ( format.getMethod().equalsIgnoreCase( "html" ) )
       {
         FormatterToHTML serializer = new FormatterToHTML(writer);
-        serializer.setOutputFormat(props.getProperties());
-        ((ParserAdapter)handler).setContentHandler(serializer);
+        serializer.getSerializerObject().setOutputFormat(props.getProperties());
+        ((ParserAdapter)handler).setContentHandler(serializer.getSerializerObject());
       }
       else if ( format.getMethod().equalsIgnoreCase( "xml" ) )
       {
@@ -418,7 +418,7 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
    * @return A compatible SAX serializer
    */
   public DocumentHandler makeSAXSerializer( OutputStream ostream, OutputFormat format )
-    throws UnsupportedEncodingException, IOException
+    throws UnsupportedEncodingException, IOException, SAXException
   {
     DocumentHandler handler;
     OutputProperties props;
@@ -435,8 +435,8 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
       if ( format.getMethod().equalsIgnoreCase( "html" ) )
       {
         FormatterToHTML serializer = new FormatterToHTML(ostream);
-        serializer.setOutputFormat(props.getProperties());
-        ((ParserAdapter)handler).setContentHandler(serializer);
+        serializer.getSerializerObject().setOutputFormat(props.getProperties());
+        ((ParserAdapter)handler).setContentHandler(serializer.getSerializerObject());
       }
       else if ( format.getMethod().equalsIgnoreCase( "xml" ) )
       {
@@ -503,7 +503,7 @@ public class StylesheetRoot //extends org.apache.xalan.templates.StylesheetRoot
    * @return A compatible SAX serializer
    */
   public DocumentHandler getSAXSerializer( OutputStream ostream )
-    throws UnsupportedEncodingException, IOException
+    throws UnsupportedEncodingException, IOException, SAXException
   {
    return makeSAXSerializer(ostream, getOutputFormat());
   }

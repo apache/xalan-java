@@ -62,7 +62,9 @@ import org.apache.xalan.serialize.SerializerFactory;
 //import org.apache.xml.serialize.BaseMarkupSerializer;
 import org.apache.xalan.serialize.DOMSerializer;
 import org.apache.xalan.serialize.SerializerToXML;
-//import org.apache.xml.serialize.OutputFormat;
+import org.xml.sax.helpers.ParserAdapter;
+import org.xml.sax.SAXException;
+
 
 /**
  * <meta name="usage" content="general"/>
@@ -70,7 +72,7 @@ import org.apache.xalan.serialize.SerializerToXML;
  * that SAX doesn't handle yet) and adds the result to a document 
  * or document fragment.
  */
-public class FormatterToDOM //extends BaseMarkupSerializer
+public class FormatterToDOM extends ParserAdapter
 { 
   DOMSerializer m_serializer;
     
@@ -78,11 +80,12 @@ public class FormatterToDOM //extends BaseMarkupSerializer
    * FormatterToDOM instance constructor... it will add the DOM nodes 
    * to the document fragment.
    */
-  public FormatterToDOM(Document doc, Element elem)
+  public FormatterToDOM(Document doc, Element elem) throws SAXException
   {
-    //super(new OutputFormat());
+    super(new org.apache.xerces.parsers.SAXParser());
     try{
       m_serializer = (new SerializerToXML()).asDOMSerializer();
+      this.setContentHandler((SerializerToXML)m_serializer);
     }
     catch (java.io.IOException ioe)
     {}
@@ -92,11 +95,12 @@ public class FormatterToDOM //extends BaseMarkupSerializer
    * FormatterToDOM instance constructor... it will add the DOM nodes 
    * to the document fragment.
    */
-  public FormatterToDOM(Document doc, DocumentFragment docFrag)
+  public FormatterToDOM(Document doc, DocumentFragment docFrag) throws SAXException
   {
-    //super(new OutputFormat()); 
+    super(new org.apache.xerces.parsers.SAXParser()); 
     try{
       m_serializer = (new SerializerToXML()).asDOMSerializer();
+      this.setContentHandler((SerializerToXML)m_serializer);
     }
     catch (java.io.IOException ioe)
     {}
@@ -106,11 +110,12 @@ public class FormatterToDOM //extends BaseMarkupSerializer
    * FormatterToDOM instance constructor... it will add the DOM nodes 
    * to the document.
    */
-  public FormatterToDOM(Document doc)
+  public FormatterToDOM(Document doc) throws SAXException
   {
-    //super(new OutputFormat());
+    super(new org.apache.xerces.parsers.SAXParser());
     try{
       m_serializer = (new SerializerToXML()).asDOMSerializer();
+      this.setContentHandler((SerializerToXML)m_serializer);
     }
     catch (java.io.IOException ioe)
     {}

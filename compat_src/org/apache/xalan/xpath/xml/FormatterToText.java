@@ -61,7 +61,8 @@ import java.io.Writer;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.SerializerToText;
-//import org.apache.xml.serialize.OutputFormat;
+import org.xml.sax.helpers.ParserAdapter;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="general"/>
@@ -69,7 +70,7 @@ import org.apache.xalan.serialize.SerializerToText;
  * that SAX doesn't handle yet) and produces simple text only.
  * Warning: this class will be replaced by the Xerces Serializer classes.
  */
-public class FormatterToText //extends TextSerializer
+public class FormatterToText extends ParserAdapter
 {
   
   private SerializerToText m_serializer;
@@ -77,9 +78,12 @@ public class FormatterToText //extends TextSerializer
    * FormatterToText instance constructor... it will add the DOM nodes 
    * to the document fragment.
    */
-  public FormatterToText(Writer pw)
+  public FormatterToText(Writer pw) throws SAXException
   {
-    m_serializer = new SerializerToText(); //super();
+    super(new org.apache.xerces.parsers.SAXParser());
+    m_serializer = new SerializerToText(); 
+    m_serializer.setWriter(pw);
+    this.setContentHandler(m_serializer);
   }
   
   public SerializerToText getSerializerObject()

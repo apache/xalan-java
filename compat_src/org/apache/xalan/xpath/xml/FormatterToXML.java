@@ -66,7 +66,8 @@ import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.SerializerToXML;
 //import org.apache.xml.serialize.BaseMarkupSerializer;
 import org.apache.xalan.serialize.Method;
-//import org.apache.xml.serialize.OutputFormat;
+import org.xml.sax.helpers.ParserAdapter;
+import org.xml.sax.SAXException;
 
 
 /**
@@ -74,12 +75,15 @@ import org.apache.xalan.serialize.Method;
  * FormatterToXML formats SAX-style events into XML.
  * Warning: this class will be replaced by the Xerces Serializer classes.
  */
-public class FormatterToXML //extends BaseMarkupSerializer 
+public class FormatterToXML extends ParserAdapter
 {
   SerializerToXML m_serializer;
-  public void FormatterToXML()
+  
+  public FormatterToXML()
   {
+    super(new org.apache.xerces.parsers.SAXParser());
     m_serializer = new SerializerToXML();
+    this.setContentHandler(m_serializer);
     //super( new OutputFormat( Method.XML, null, false ) );     
   }
   
@@ -87,12 +91,14 @@ public class FormatterToXML //extends BaseMarkupSerializer
    * Constructor using a writer.
    * @param writer        The character output stream to use.
    */
-  public FormatterToXML(Writer writer) 
+  public FormatterToXML(Writer writer) throws SAXException 
   {
+    super(new org.apache.xerces.parsers.SAXParser());
     m_serializer = new SerializerToXML();
    // super( format != null ? format : new OutputFormat( Method.XML, null, false ) );
     //_format.setMethod( Method.XML );
     m_serializer.setWriter( writer );
+    this.setContentHandler(m_serializer);
   }
   
   /**
@@ -100,23 +106,27 @@ public class FormatterToXML //extends BaseMarkupSerializer
    * @param writer        The character output stream to use.
    */
   public FormatterToXML(java.io.OutputStream os) 
-    throws UnsupportedEncodingException
+    throws UnsupportedEncodingException , SAXException 
   {
+    super(new org.apache.xerces.parsers.SAXParser());
     m_serializer = new SerializerToXML();
     //super( format != null ? format : new OutputFormat( Method.XML, null, false ) );
     //_format.setMethod( Method.XML );
     m_serializer.setOutputStream( os );
+    this.setContentHandler(m_serializer);
   }
   
   /**
    * Constructor using a writer.
    * @param writer        The character output stream to use.
    */
-  public FormatterToXML(FormatterToXML xmlListener) 
+  public FormatterToXML(FormatterToXML xmlListener) throws SAXException 
   {
+    super(new org.apache.xerces.parsers.SAXParser());
     m_serializer = new SerializerToXML();
     m_serializer.CopyFrom(xmlListener.m_serializer);
-    //super( new OutputFormat( Method.XML, null, false ) );  
+    //super( new OutputFormat( Method.XML, null, false ) );
+    this.setContentHandler(m_serializer);
   }
   
   public SerializerToXML getSerializerObject()

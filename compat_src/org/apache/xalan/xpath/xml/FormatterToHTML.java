@@ -64,6 +64,8 @@ import java.io.UnsupportedEncodingException;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.SerializerToHTML;
+import org.xml.sax.helpers.ParserAdapter;
+import org.xml.sax.SAXException;
 //import org.apache.xml.serialize.OutputFormat;
 
 /**
@@ -71,41 +73,59 @@ import org.apache.xalan.serialize.SerializerToHTML;
  * FormatterToHTML formats SAX-style events into XML.
  * Warning: this class will be replaced by the Xerces Serializer classes.
  */
-public class FormatterToHTML extends SerializerToHTML 
+public class FormatterToHTML extends ParserAdapter
 { 
-  public FormatterToHTML()
-  {  
-    super();      
+  
+  SerializerToHTML m_serializer;
+  
+  public FormatterToHTML() throws SAXException 
+  {
+    super(new org.apache.xerces.parsers.SAXParser());
+    m_serializer = new SerializerToHTML();
+    this.setContentHandler(m_serializer);  
   }
   
   /**
    * Constructor using a writer.
    * @param writer        The character output stream to use.
    */
-  public FormatterToHTML(Writer writer) 
+  public FormatterToHTML(Writer writer) throws SAXException  
   {
-    super ();
-    this.setWriter(writer);
+    super(new org.apache.xerces.parsers.SAXParser());
+    m_serializer = new SerializerToHTML();
+    m_serializer.setWriter(writer);
+    this.setContentHandler(m_serializer);    
   }
   
   /**
    * Constructor using an output stream, and a simple OutputFormat.
    * @param writer        The character output stream to use.
    */
-  public FormatterToHTML(java.io.OutputStream os) 
-    throws UnsupportedEncodingException
+  public FormatterToHTML(java.io.OutputStream os)  
+    throws UnsupportedEncodingException, SAXException 
   {
-    super ();
-    this.setOutputStream(os);
+    super(new org.apache.xerces.parsers.SAXParser());
+    m_serializer = new SerializerToHTML();
+    m_serializer.setOutputStream(os);
+    this.setContentHandler(m_serializer);
+    
   }
   
   /**
    * Constructor using a writer.
    * @param writer        The character output stream to use.
    */
-  public FormatterToHTML(FormatterToXML xmlListener) 
+  public FormatterToHTML(FormatterToXML xmlListener) throws SAXException 
   {
-    super();
+    super(new org.apache.xerces.parsers.SAXParser());
+    m_serializer = new SerializerToHTML();
+    m_serializer.CopyFrom(xmlListener.m_serializer);
+    this.setContentHandler(m_serializer);
+  }
+  
+  public SerializerToHTML getSerializerObject()
+  {
+    return m_serializer;
   }
   
 }

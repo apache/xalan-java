@@ -67,17 +67,39 @@ import org.apache.xml.utils.AttList;
  * This class does a pre-order walk of the DOM tree, calling the FormatterListener
  * interface as it goes.
  */
-public class TreeWalker extends org.apache.xml.utils.TreeWalker
+public class TreeWalker //extends org.apache.xml.utils.TreeWalker
 {
+  
+  org.apache.xml.utils.TreeWalker m_walker; 
+  
   /**
    * Constructor.
    * @param   formatterListener The implemention of the 
    * FormatterListener operation (toXMLString, digest, ...)
    */
-  public TreeWalker(ContentHandler formatterListener) 
+  public TreeWalker(DocumentHandler formatterListener) 
   {
-    super(formatterListener);
+    if(formatterListener instanceof FormatterToXML)
+      m_walker = new org.apache.xml.utils.TreeWalker(((FormatterToXML)formatterListener).getSerializerObject());
+    //super(formatterListener);
   } 
  
+  /**
+   * Perform a pre-order traversal non-recursive style.
+   */
+  public void traverse(Node pos) throws SAXException 
+  {
+    m_walker.traverse(pos);
+  }
+  
+  /**
+   * Perform a pre-order traversal non-recursive style.
+   */
+  public void traverse(Node pos, Node top) throws SAXException 
+  {
+    m_walker.traverse(pos, top);
+  }
+  
+  
   
 }  //TreeWalker
