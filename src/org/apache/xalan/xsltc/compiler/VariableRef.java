@@ -102,12 +102,12 @@ final class VariableRef extends VariableRefBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 		
-	String name = _variable.getVariable();
-
 	if (_type.implementedAsMethod()) {
 	    // Fall-through for variables that are implemented as methods
 	    return;
 	}
+
+	final String name = _variable.getVariable();
 
 	if (_variable.isLocal()) {
 	    if (classGen.isExternal() || _escaped) {

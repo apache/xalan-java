@@ -123,15 +123,6 @@ final class ParentLocationPath extends RelativeLocationPath {
 	return(false);
     }
 
-    /*
-    public void blockIteratorReset() {
-	if (_path instanceof RelativeLocationPath)
-	    ((RelativeLocationPath)_path).blockIteratorReset();
-	if (_step instanceof Step)
-	    ((Step)_step).blockIteratorReset();
-    }
-    */
-
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();

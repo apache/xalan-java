@@ -89,11 +89,7 @@ public final class BasisLibrary implements Operators {
      * Standard function count(node-set)
      */
     public static int countF(NodeIterator iterator) {
-	int counter = 0;
-	while (iterator.next() != NodeIterator.END) {
-	    ++counter;
-	}
-	return counter;
+	return(iterator.getLast());
     }
 
     /**

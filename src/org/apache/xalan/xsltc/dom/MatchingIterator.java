@@ -69,7 +69,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 public final class MatchingIterator extends NodeIteratorBase {
     private NodeIterator _source;
     private final int    _match;
-    private int _matchPos, _matchLast = -1;
+    private int          _matchPos, _matchLast = -1;
 	
     public MatchingIterator(int match, NodeIterator source) {
 	_source = source;
@@ -92,7 +92,7 @@ public final class MatchingIterator extends NodeIteratorBase {
     public NodeIterator setStartNode(int node) {
 	if (_isRestartable) {
 	    // iterator is not a clone
-	    _source.setStartNode(_startNode = node);
+	    _source.setStartNode(node);
 
 	    // Calculate the position of the node in the set
 	    final int match = _match;
@@ -107,7 +107,8 @@ public final class MatchingIterator extends NodeIteratorBase {
     }
 
     public NodeIterator reset() {
-	return this;	// should not be called
+	_source.reset();
+	return this;
     }
     
     public int next() {

@@ -174,31 +174,6 @@ final class Param extends VariableBase {
 	return Type.Void;
     }
 
-    /**
-     * Compile the value of the parameter, which is either in an expression in
-     * a 'select' attribute, or in the parameter element's body
-     */
-    public void translateValue(ClassGenerator classGen,
-			       MethodGenerator methodGen) {
-	// Compile expression is 'select' attribute if present
-	if (_select != null) {
-	    _select.translate(classGen, methodGen);
-	    _type.translateBox(classGen, methodGen);
-	    _select.startResetIterator(classGen, methodGen);
-	}
-	// If not, compile result tree from parameter body if present.
-	else if (hasContents()) {
-	    compileResultTree(classGen, methodGen);
-	}
-	// If neither are present then store empty string in parameter slot
-	else {
-	    final ConstantPoolGen cpg = classGen.getConstantPool();
-	    final InstructionList il = methodGen.getInstructionList();
-	    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
-	}
-    }
-
-
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();

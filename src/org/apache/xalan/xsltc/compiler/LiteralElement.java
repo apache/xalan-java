@@ -360,16 +360,6 @@ final class LiteralElement extends Instruction {
 	il.append(DUP2); // duplicate these 2 args for endElement
 	il.append(methodGen.startElement());
 
-	// Output all attributes
-	if (_attributeElements != null) {
-	    final int count = _attributeElements.size();
-	    for (int i = 0; i < count; i++) {
-		SyntaxTreeNode node = 
-		    (SyntaxTreeNode)_attributeElements.elementAt(i);
-		node.translate(classGen, methodGen);
-	    }
-	}
-
 	// Compile code to emit namespace attributes
 	if (_accessedPrefixes != null) {
 	    Enumeration e = _accessedPrefixes.keys();
@@ -383,6 +373,16 @@ final class LiteralElement extends Instruction {
 		    il.append(new PUSH(cpg,uri));
 		    il.append(methodGen.namespace());
 		}
+	    }
+	}
+
+	// Output all attributes
+	if (_attributeElements != null) {
+	    final int count = _attributeElements.size();
+	    for (int i = 0; i < count; i++) {
+		SyntaxTreeNode node = 
+		    (SyntaxTreeNode)_attributeElements.elementAt(i);
+		node.translate(classGen, methodGen);
 	    }
 	}
 	

@@ -81,31 +81,38 @@ import java.io.IOException;
 import org.w3c.dom.Entity;
 import org.w3c.dom.Notation;
 
+import org.apache.xalan.xsltc.runtime.AttributeList;
+
 public class DOM2SAX implements XMLReader , Locator {
     private Document _dom = null;
-    private ContentHandler _contentHdlr = null;
+    private ContentHandler _sax = null;
  
     public DOM2SAX(Node root) {
 	_dom = (Document)root;
     }
 
     public ContentHandler getContentHandler() { 
-	return _contentHdlr;
+	return _sax;
     }
+
     public DTDHandler getDTDHandler() { 
 	return null;
     }
+
     public ErrorHandler getErrorHandler() {
 	return null;
     }
+
     public boolean getFeature(String name) throws SAXNotRecognizedException,
 	SAXNotSupportedException
     {
 	return false;
     }
+
     public void setFeature(String name, boolean value) throws 
 	SAXNotRecognizedException, SAXNotSupportedException 
     {
+	
     }
 
     public void parse(InputSource unused) throws IOException, SAXException {
@@ -113,82 +120,69 @@ public class DOM2SAX implements XMLReader , Locator {
         parse(currNode);
     }
 
-    private void parse(Node currNode) throws IOException, SAXException {
+    private void parse(Node node) throws IOException, SAXException {
         Node first = null;
- 	if (currNode == null ) return;
+ 	if (node == null ) return;
 
-        switch (currNode.getNodeType()) {
-            case Node.ATTRIBUTE_NODE :
-                    break;
-            case Node.CDATA_SECTION_NODE :
-                    break;
-            case Node.COMMENT_NODE :
-                    break;
-            case Node.DOCUMENT_FRAGMENT_NODE :
-                    break;
-            case Node.DOCUMENT_NODE :
-                    _contentHdlr.setDocumentLocator(this);
-                    _contentHdlr.startDocument();
-                    Node next = currNode.getFirstChild();
-                    while ( next != null ) {
-                        parse(next);
-                        next = next.getNextSibling();
-                    }
-                    _contentHdlr.endDocument();
-                    break;
-            case Node.DOCUMENT_TYPE_NODE :
-                    break;
-            case Node.ELEMENT_NODE :
-                    AttributesImpl attrList = new AttributesImpl();
-                    NamedNodeMap map = currNode.getAttributes();
-                    int length = map.getLength();
-                    for (int i=0; i<length; i++ ){
-                        Node attrNode = map.item(i);
-                        short code = attrNode.getNodeType();
-                        attrList.addAttribute(attrNode.getNamespaceURI(),
-                            attrNode.getLocalName(),
-                            attrNode.getNodeName(),
-                            getNodeTypeFromCode(code),  // must be better way
-                            attrNode.getNodeValue());
-                    }
-                    _contentHdlr.startElement(currNode.getNamespaceURI(),
-                        currNode.getLocalName(), currNode.getNodeName(),
-                        attrList);
-                    next = currNode.getFirstChild();
-                    while ( next != null ) {
-                        parse(next);
-                        next = next.getNextSibling();
-                    }
-                    _contentHdlr.endElement(currNode.getNamespaceURI(),
-                        currNode.getLocalName(), currNode.getNodeName());
-                    break;
-            case Node.ENTITY_NODE :
-                    //Entity edecl = (Entity)currNode;
-                    //String name = edecl.getNotationName();
-                    //if ( name != null ) {
-                    //   _contentHdlr.unparsedEntityDecl(currNode.getNodeName(),
-                    //      edecl.getPublicId(), edecl.getSystemId(), name);
-                    //}
-                    break;
-             case Node.ENTITY_REFERENCE_NODE :
-                    break;
-             case Node.NOTATION_NODE :
-                    //Notation ndecl = (Notation)currNode;
-                    //_contentHdlr.notationDecl(currNode.getNodeName(),
-                     //   ndecl.getPublicId(), ndecl.getSystemId());
-                    break;
-             case Node.PROCESSING_INSTRUCTION_NODE :
-                    _contentHdlr.processingInstruction(currNode.getNodeName(),
-                        currNode.getNodeValue());
-                    break;
-             case Node.TEXT_NODE :
-                    String data = currNode.getNodeValue();
-                    length = data.length();
-                    char[] array = new char[length];
-                    data.getChars(0, length, array, 0);
-                    _contentHdlr.characters(array, 0, length);
-                    break;
-            }
+        switch (node.getNodeType()) {
+	case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE
+	case Node.COMMENT_NODE:           // should be handled!!!
+	case Node.CDATA_SECTION_NODE:
+	case Node.DOCUMENT_FRAGMENT_NODE:
+	case Node.DOCUMENT_TYPE_NODE :
+	case Node.ENTITY_NODE :
+	case Node.ENTITY_REFERENCE_NODE:
+	case Node.NOTATION_NODE :
+	    // These node types are ignored!!!
+	    break;
+
+	case Node.DOCUMENT_NODE:
+	    _sax.setDocumentLocator(this);
+	    _sax.startDocument();
+	    Node next = node.getFirstChild();
+	    while (next != null) {
+		parse(next);
+		next = next.getNextSibling();
+	    }
+	    _sax.endDocument();
+	    break;
+
+	case Node.ELEMENT_NODE:
+	    // Gather all attribute node of the element
+	    AttributeList attrs = new AttributeList();
+	    NamedNodeMap map = node.getAttributes();
+	    int length = map.getLength();
+	    for (int i=0; i<length; i++ ) {
+		Node attr = map.item(i);
+		attrs.add(attr.getNodeName(), attr.getNodeValue());
+	    }
+
+	    // Generate SAX event to start element
+	    _sax.startElement(node.getNamespaceURI(), node.getLocalName(),
+			      node.getNodeName(), attrs);
+
+	    // Traverse all child nodes of the element (if any)
+	    next = node.getFirstChild();
+	    while ( next != null ) {
+		parse(next);
+		next = next.getNextSibling();
+	    }
+
+	    // Generate SAX event to close element
+	    _sax.endElement(node.getNamespaceURI(),
+				    node.getLocalName(), node.getNodeName());
+	    break;
+
+	case Node.PROCESSING_INSTRUCTION_NODE:
+	    _sax.processingInstruction(node.getNodeName(),
+				       node.getNodeValue());
+	    break;
+
+	case Node.TEXT_NODE:
+	    final String data = node.getNodeValue();
+	    _sax.characters(data.toCharArray(), 0, data.length());
+	    break;
+	}
     }
 
     public void parse(String sysId) throws IOException, SAXException {
@@ -198,7 +192,7 @@ public class DOM2SAX implements XMLReader , Locator {
 	NullPointerException 
     {
 	if (handler == null ) throw new NullPointerException();
-	_contentHdlr = handler;
+	_sax = handler;
     }
     public void setDTDHandler(DTDHandler handler) throws NullPointerException {
 	if (handler == null )  throw new NullPointerException();
@@ -236,30 +230,30 @@ public class DOM2SAX implements XMLReader , Locator {
     private String getNodeTypeFromCode(short code) {
 	String retval = null;
 	switch (code) {
-                case Node.ATTRIBUTE_NODE : 
-		    retval = "ATTRIBUTE_NODE"; break; 
-                case Node.CDATA_SECTION_NODE :
-		    retval = "CDATA_SECTION_NODE"; break; 
-                case Node.COMMENT_NODE :
-		    retval = "COMMENT_NODE"; break; 
-                case Node.DOCUMENT_FRAGMENT_NODE :
-		    retval = "DOCUMENT_FRAGMENT_NODE"; break; 
-                case Node.DOCUMENT_NODE :
-		    retval = "DOCUMENT_NODE"; break; 
-                case Node.DOCUMENT_TYPE_NODE :
-		    retval = "DOCUMENT_TYPE_NODE"; break; 
-                case Node.ELEMENT_NODE :
-		    retval = "ELEMENT_NODE"; break; 
-                case Node.ENTITY_NODE :
-		    retval = "ENTITY_NODE"; break; 
-                case Node.ENTITY_REFERENCE_NODE :
-		    retval = "ENTITY_REFERENCE_NODE"; break; 
-                case Node.NOTATION_NODE :
-		    retval = "NOTATION_NODE"; break; 
-                case Node.PROCESSING_INSTRUCTION_NODE :
-		    retval = "PROCESSING_INSTRUCTION_NODE"; break; 
-                case Node.TEXT_NODE:
-		    retval = "TEXT_NODE"; break; 
+	case Node.ATTRIBUTE_NODE : 
+	    retval = "ATTRIBUTE_NODE"; break; 
+	case Node.CDATA_SECTION_NODE :
+	    retval = "CDATA_SECTION_NODE"; break; 
+	case Node.COMMENT_NODE :
+	    retval = "COMMENT_NODE"; break; 
+	case Node.DOCUMENT_FRAGMENT_NODE :
+	    retval = "DOCUMENT_FRAGMENT_NODE"; break; 
+	case Node.DOCUMENT_NODE :
+	    retval = "DOCUMENT_NODE"; break; 
+	case Node.DOCUMENT_TYPE_NODE :
+	    retval = "DOCUMENT_TYPE_NODE"; break; 
+	case Node.ELEMENT_NODE :
+	    retval = "ELEMENT_NODE"; break; 
+	case Node.ENTITY_NODE :
+	    retval = "ENTITY_NODE"; break; 
+	case Node.ENTITY_REFERENCE_NODE :
+	    retval = "ENTITY_REFERENCE_NODE"; break; 
+	case Node.NOTATION_NODE :
+	    retval = "NOTATION_NODE"; break; 
+	case Node.PROCESSING_INSTRUCTION_NODE :
+	    retval = "PROCESSING_INSTRUCTION_NODE"; break; 
+	case Node.TEXT_NODE:
+	    retval = "TEXT_NODE"; break; 
         }
 	return retval;
     }

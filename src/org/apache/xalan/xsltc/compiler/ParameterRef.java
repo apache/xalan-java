@@ -82,8 +82,8 @@ final class ParameterRef extends VariableRefBase {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-		
-	String name = _variable.getVariable();
+
+	final String name = _variable.getVariable();
 
 	if (_variable.isLocal()) {
 	    if (classGen.isExternal()) {

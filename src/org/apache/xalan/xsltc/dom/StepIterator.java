@@ -105,7 +105,7 @@ public final class StepIterator extends NodeIteratorBase {
     }
 
     public NodeIterator reset() {
-	_source.setStartNode(_startNode);
+	//_source.setStartNode(_startNode);
 	_source.reset();
 	int node = _source.next();
 	_iterator.setStartNode(node);

@@ -1438,7 +1438,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    return END;
 	}
-    
+
+	public NodeIterator reset() {
+	    _source.reset();
+	    return this;
+	}
+
 	public void setMark() {
 	    _source.setMark();
 	}
@@ -1743,7 +1748,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the (String) value of any node in the tree
      */
     public String getNodeValue(final int node) {
-	if (node == NULL) return EMPTYSTRING;
+	if ((node == NULL) || (node > _treeNodeLimit)) return EMPTYSTRING;
 	switch(_type[node]) {
 	case ROOT:
 	    return getNodeValue(_offsetOrChild[node]);
@@ -2460,8 +2465,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	     child != NULL;
 	     child = _nextSibling[child]) {
 	    switch (_type[child]) {
-	    case TEXT:
 	    case COMMENT:
+		break;
+	    case TEXT:
 		buffer.append(_text,
 			      _offsetOrChild[child],
 			      _lengthOrAttr[child]);
@@ -2898,7 +2904,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    shiftAttributes(_currentNode);
 	    resizeArrays(_currentNode + _currentAttributeNode, _currentNode);
 	    appendAttributes();
-	    _treeNodeLimit = _currentNode;
+	    _treeNodeLimit = _currentNode + _currentAttributeNode;
 
 	    // Fill the _namespace[] and _uriArray[] array
 	    _namespace = new short[namesSize];

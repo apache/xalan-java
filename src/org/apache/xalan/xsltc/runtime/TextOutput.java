@@ -461,7 +461,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    // Output escaped characters if required. Non-ASCII characters
             // within HTML attributes should _NOT_ be escaped.
 	    else if (_escapeChars) {
-		if (_outputType == HTML) {
+		if ((_outputType == HTML) && (!_qnameStack.isEmpty())) {
 		    final String qname = (String)_qnameStack.peek();
 		    if ((qname.equals("style")) || (qname.equals("script"))) {
 			_saxHandler.characters(ch, off, len);
@@ -520,7 +520,6 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    _qnameStack.push(elementName);
 
-	    // bug fix 2807, <seth.ford@fmr.com>
 	    if (_cdata != null) {
 		if (_cdata.get(elementName) != null) {
 		    _cdataStack.push(new Integer(_depth));
@@ -596,30 +595,50 @@ public final class TextOutput implements TransletOutputHandler {
 	if (_startTagOpen) {
 
 	    // URL-encode href attributes in HTML output
-	    if ((_outputType == HTML) && (name.equals("href"))) {
-		_attributes.add(name, URLEncoder.encode(value));
-		return;
+	    if (_outputType == HTML) {
+		if  (name.toLowerCase().equals("href")) {
+		    if (value.startsWith("http")) {
+			_attributes.add(name, URLEncoder.encode(value));
+			return;
+		    }
+		}
 	    }
 
 	    // Intercept namespace declarations and handle them separately
-	    if (name.startsWith("xmlns")) {
-		if (name.length() == 5)
-		    namespace(EMPTYSTRING,value);
-		else
-		    namespace(name.substring(6),value);
+	    if (name.startsWith("xml")) {
+		if (name.startsWith("xmlns")) {
+		    if (name.length() == 5)
+			namespace(EMPTYSTRING, value);
+		    else
+			namespace(name.substring(6),value);
+		}
+		else {
+		    namespace(name, value);
+		}
 	    }
 	    else {
-		final int col = name.lastIndexOf(':');
-		if (col > 0) {
-		    final String prefix = name.substring(0,col);
-		    final String localname = name.substring(col+1);
+		// If this attribute was created using an <xsl:attribute>
+		// element with a 'namespace' attribute and a 'name' attribute
+		// containing an AVT, then we might get an attribute name on
+		// a strange format like 'prefix1:prefix2:localpart', where
+		// prefix1 is from the AVT and prefix2 from the namespace.
+		final int endcol = name.lastIndexOf(':');
+		final int startcol = name.indexOf(':');
+		if (endcol > 0) {
+		    final String localname = name.substring(endcol+1);
+		    final String prefix = name.substring(0,startcol);
 		    final String uri = lookupNamespace(prefix);
 		    if (uri == null) {
 			throw new TransletException("Namespace for prefix "+
 						    prefix+" has not been "+
 						    "declared.");
 		    }
-		    if (uri.equals(EMPTYSTRING)) name = localname;
+		    // Omit prefix (use default) if the namespace URI is null
+		    if (uri.equals(EMPTYSTRING))
+			name = localname;
+		    // Construct new QName if we've got two alt. prefixes
+		    else if (endcol != startcol)
+			name = prefix+':'+localname;
 		}
 		if (_outputType == HTML)
 		    _attributes.add(name, value);

@@ -98,11 +98,15 @@ public final class ReverseIterator extends NodeIteratorBase {
 		_data[_last++] = node;
 	    }
 	}
-
-	_current = _last;
+	_startNode = _current = _last;
 	return this;
     }
-	
+
+    public NodeIterator reset() {
+	_current = _startNode;
+	return this;
+    }
+
     public int getPosition() {
 	return (_last - _current);
     }
