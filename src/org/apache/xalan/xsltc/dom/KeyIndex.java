@@ -137,23 +137,27 @@ public class KeyIndex implements DTMAxisIterator {
      * key() function.
      */
     public void lookupId(Object value) {
-	if (value instanceof String) {
-	    final String string = (String)value;
-	    if (string.indexOf(' ') > -1) {
-		StringTokenizer values = new StringTokenizer(string);
-		while (values.hasMoreElements()) {
-		    BitArray nodes = (BitArray)_index.get(values.nextElement());
-		    if (nodes != null) {
-			if (_nodes == null)
-			    _nodes = nodes;
-			else
-			    _nodes = _nodes.merge(nodes);
-		    }
-		}
-		return;
-	    }
-	}
-	_nodes = (BitArray)_index.get(value);
+        if (value instanceof String) {
+            boolean firstTime = true;
+            final String string = (String)value;
+
+            if (string.indexOf(' ') > -1) {
+                StringTokenizer values = new StringTokenizer(string);
+                while (values.hasMoreElements()) {
+                    BitArray nodes = (BitArray)_index.get(values.nextElement());
+                    if (nodes != null) {
+                        if (firstTime) {
+                            _nodes = nodes;
+                            firstTime = false;
+                        } else {
+                            _nodes = _nodes.merge(nodes);
+                        }
+                    }
+                }
+                return;
+            }
+        }
+        _nodes = (BitArray)_index.get(value);
     }
 
     /**
