@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author John Howard <johnh@schemasoft.com>
  *
  */
 
@@ -797,7 +798,7 @@ public final class BasisLibrary implements Operators {
      */
     public static int stringToInt(String s) {
 	try {
-	    return Integer.valueOf(s).intValue();
+	    return Integer.parseInt(s);
 	}
 	catch (NumberFormatException e) {
 	    return(-1); // ???
@@ -821,8 +822,7 @@ public final class BasisLibrary implements Operators {
      * Utility function: used in RealType to convert a real to an integer
      */
     public static int realToInt(double d) {
-	final Double result = new Double(d);
-	return result.intValue();
+	return (int)d;
     }
 
     /**
