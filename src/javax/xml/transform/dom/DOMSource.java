@@ -82,11 +82,9 @@ public class DOMSource implements Source
 
   /**
    * Zero-argument default constructor.  If this is used, and 
-   * no output DOM source is set, then the transformer will 
+   * no DOM source is set, then the Transformer will 
    * create an empty source Document using 
    * {@link javax.xml.parsers.DocumentBuilder#newDocument}.
-   * The created node may be retrieved once the transformation 
-   * is complete, via the getNode method.
    */
   public DOMSource(){}
 
