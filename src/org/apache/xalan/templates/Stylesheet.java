@@ -1521,10 +1521,10 @@ public class Stylesheet extends ElemTemplateElement
       
       if(null != m_NonXslTopLevel)
       {
-      	java.util.Enumeration enum = m_NonXslTopLevel.elements();
-      	while(enum.hasMoreElements())
+      	java.util.Enumeration elements = m_NonXslTopLevel.elements();
+      	while(elements.hasMoreElements())
       	{
-      	  ElemTemplateElement elem = (ElemTemplateElement)enum.nextElement();
+      	  ElemTemplateElement elem = (ElemTemplateElement)elements.nextElement();
           if (visitor.visitTopLevelInstruction(elem))
           {
             elem.callChildVisitors(visitor);

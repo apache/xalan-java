@@ -720,11 +720,11 @@ public class XSLTAttributeDef
 	}    
 	
     // An avt wasn't used.
-  	int enum = this.getEnum(value);
+  	int key = this.getEnum(value);
     
-    if (enum != StringToIntTable.INVALID_KEY) 
+    if (key != StringToIntTable.INVALID_KEY) 
     {
-        if (objToReturn == null) objToReturn = new Integer(enum);
+        if (objToReturn == null) objToReturn = new Integer(key);
     }
 
     // enum not used.  Validate qname-but-not-ncname.

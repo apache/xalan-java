@@ -628,11 +628,11 @@ public class OutputProperties extends ElemTemplateElement
   public void copyFrom(Properties src, boolean shouldResetDefaults)
   {
 
-    Enumeration enum = src.keys();
+    Enumeration keys = src.keys();
 
-    while (enum.hasMoreElements())
+    while (keys.hasMoreElements())
     {
-      String key = (String) enum.nextElement();
+      String key = (String) keys.nextElement();
     
       if (!isLegalPropertyKey(key))
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{key})); //"output property not recognized: "
