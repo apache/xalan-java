@@ -253,14 +253,14 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     }
 
     public void characters(String characters) throws TransletException { 
+// System.out.println("characters() string '" + characters + "'");
 	characters(characters.toCharArray(), 0, characters.length());
     }
 
     public void characters(char[] characters, int offset, int length)
 	throws TransletException 
     {
-// System.out.println("characters() '" + new String(characters, 0, length));
-
+// System.out.println("characters() char '" + new String(characters, offset, length) + "'");
 	if (length <= 0) return;
 
 	if (_startTagOpen) {
@@ -273,14 +273,14 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	} 
 	else if (_escaping) {
 	    if (_cdataTagOpen) {
-		escapeCDATA(characters, 0, length);
+		escapeCDATA(characters, offset, length);
 	    } 
 	    else {
-		escapeCharacters(characters, 0, length);
+		escapeCharacters(characters, offset, length);
 	    }
 	} 
 	else {
-	    _buffer.append(characters, 0, length);
+	    _buffer.append(characters, offset, length);
 	}
     }
 
