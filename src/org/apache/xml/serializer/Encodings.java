@@ -68,6 +68,8 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.xml.utils.ObjectFactory;
+
 /**
  * Provides information about encodings. Depends on the Java runtime
  * to provides writers for the different encodings, but can be used
@@ -89,7 +91,7 @@ public class Encodings extends Object
     /**
      * Standard filename for properties file with encodings data.
      */
-    static final String ENCODINGS_FILE = "Encodings.properties";
+    static final String ENCODINGS_FILE = "org/apache/xml/serializer/Encodings.properties";
 
     /**
      * Standard filename for properties file with encodings data.
@@ -350,6 +352,8 @@ public class Encodings extends Object
         try
         {
             String urlString = null;
+            InputStream is = null;
+
             try
             {
                 urlString = System.getProperty(ENCODINGS_PROP, "");
@@ -358,26 +362,26 @@ public class Encodings extends Object
             {
             }
 
-            if (urlString != null && urlString.length() > 0)
+            if (urlString != null && urlString.length() > 0) {
                 url = new URL(urlString);
-            if (url == null)
-            {
-                url = Encodings.class.getResource(ENCODINGS_FILE);
+                is = url.openStream();
+            }
+
+            if (is == null) {
+                SecuritySupport ss = SecuritySupport.getInstance();
+                is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
+                                            ENCODINGS_FILE);
             }
 
             Properties props = new Properties();
-            if (url != null)
-            {
-                InputStream is = url.openStream();
+            if (is != null) {
                 props.load(is);
                 is.close();
-            }
-            else
-            {
-                // Seems to be no real need to force failure here, let the system
-                //   do its best... The issue is not really very critical, and the
-                //   output will be in any case _correct_ though maybe not always
-                //   human-friendly... :)
+            } else {
+                // Seems to be no real need to force failure here, let the
+                // system do its best... The issue is not really very critical,
+                // and the output will be in any case _correct_ though maybe not
+                // always human-friendly... :)
                 // But maybe report/log the resource problem?
                 // Any standard ways to report/log errors (in static context)?
             }
