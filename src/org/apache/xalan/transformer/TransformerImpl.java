@@ -449,6 +449,11 @@ public class TransformerImpl extends Transformer
       Node dNode = dsource.getNode();
       if (null != dNode)
       {  
+        if(null != m_urlOfSource)
+        {
+          // System.out.println("Putting document in cache: "+m_urlOfSource);
+          this.getXPathContext().getSourceTreeManager().putDocumentInCache(dNode, dsource);
+        }
         this.transformNode(dsource.getNode());
         return;
       }
@@ -757,7 +762,17 @@ public class TransformerImpl extends Transformer
    */
   public void setOutputProperties(Properties oformat)
   {
-    m_outputFormat = new OutputProperties(m_stylesheetRoot.getOutputProperties());
+    if(null != oformat)
+    {
+      // See if an *explicit* method was set.
+      String method = (String)oformat.get(OutputKeys.METHOD);
+      if(null != method)
+        m_outputFormat = new OutputProperties(method);
+      else
+        m_outputFormat = new OutputProperties();
+    }
+    
+    m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
     if(null != oformat)
     {
       m_outputFormat.copyFrom(oformat);
