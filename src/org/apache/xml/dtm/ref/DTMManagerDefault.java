@@ -150,7 +150,7 @@ public class DTMManagerDefault extends DTMManager
   private static final boolean DUMPTREE = false;
 
   /** Set this to true if you want a basic diagnostics. */
-  private static final boolean DEBUG = true;
+  private static final boolean DEBUG = false;
 
   /**
    * Get an instance of a DTM, loaded with the content from the
