@@ -2806,14 +2806,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	    linkChildren(node);
 	    _parentStack[++_sp] = node;
 
-	    int count = attributes.getLength();
+	    final int count = attributes.getLength();
 
-	    // Process attribute list in reverse order and create attr nodes
+	    // Process attribute list and create attr nodes
 	    if (count > 0) {
 		int attr = _currentAttributeNode + 1;
 		_lengthOrAttr[node] = attr;
-		while (count > 0) {
-		    attr = makeAttributeNode(node, attributes, (--count));
+		for (int i = 0; i<count; i++) {
+		    attr = makeAttributeNode(node, attributes, i);
 		    _nextSibling2[attr] = attr + 1;
 		}
 		_nextSibling2[attr] = DOM.NULL;
