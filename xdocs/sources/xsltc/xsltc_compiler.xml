@@ -221,7 +221,7 @@
     either the <code>Expression</code> or <code>Pattern</code> class
     respectively. These nodes are not appended to the <code>_contents</code>
     vectory of each node, but rather stored as individual references in each
-    AST <u>element</u> node. One example is the <code>ForEach</code> class that
+    AST element node. One example is the <code>ForEach</code> class that
     represents the <code>&lt;xsl:for-each&gt;</code> element. This class has
     a variable that contains a reference to the AST sub-tree that represents
     its <code>select</code> attribute:</p><source>
@@ -229,7 +229,7 @@
    
     <p>There is no standard way of storing these XPath expressions and each
     AST node that contains one or more XPath expression/pattern must handle
-    that itself. This <i>handling</i> basically involves passing the attribute's
+    that itself. This handling basically involves passing the attribute's
     value to the XPath parser and receiving back an AST sub-tree.</p>
 
     <p>With all XPath expressions/patterns expanded, the AST will look somewhat
@@ -331,7 +331,7 @@
     <p>The <code>applyTemplates()</code> method determines the node's type and
     passes this type to the <code>switch()</code> statement to look up the
     matching template. The test sequence code (the <code>TestSeq</code> class)
-    is responsible for inserting bytecodes to find <u>one</u> matching template
+    is responsible for inserting bytecodes to find  one  matching template
     in cases where more than one template matches the current node type.</p>
 
     <p>There may be several templates that share the same pattern kernel type.

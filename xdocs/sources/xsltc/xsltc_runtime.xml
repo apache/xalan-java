@@ -145,7 +145,7 @@
     <p>The translet's constructor initializes a table of all the elements we
     want to search for in the XML input document. This table is called the
     <code>namesArray</code>, and maps each element name to an unique integer
-    value, know as the elements <i>&quot;translet-type&quot;</i>.
+    value, know as the elements &quot;translet-type&quot;.
     The DOMAdapter, which acts as a mediator between the DOM and the translet,
     will map these element identifier to the element identifiers used internally
     in the DOM. See the section on <link anchor="types">extern/internal type
