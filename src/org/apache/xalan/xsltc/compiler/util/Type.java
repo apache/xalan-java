@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.NodeTest;
 import org.apache.xalan.xsltc.compiler.FlowList;
@@ -122,7 +122,7 @@ public abstract class Type implements Constants {
 	return false;
     }
 
-    public abstract de.fub.bytecode.generic.Type toJCType();
+    public abstract org.apache.bcel.generic.Type toJCType();
 
     /**
      * Returns the distance between two types. This measure is used to select

@@ -64,8 +64,8 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import java.util.Vector;
-import de.fub.bytecode.generic.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.Type;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.Template;
 
@@ -73,8 +73,8 @@ public final class AttributeSetMethodGenerator extends MethodGenerator {
     private static int HANDLER_INDEX = 1;
     private static int ITERATOR_INDEX = 2;
 
-    private static final de.fub.bytecode.generic.Type[] argTypes =
-	new de.fub.bytecode.generic.Type[2];
+    private static final org.apache.bcel.generic.Type[] argTypes =
+	new org.apache.bcel.generic.Type[2];
     private static final String[] argNames = new String[2];
     
     static {
@@ -90,8 +90,8 @@ public final class AttributeSetMethodGenerator extends MethodGenerator {
     private final Instruction _aloadIterator;
     
     public AttributeSetMethodGenerator(String methodName, ClassGen classGen) {
-	super(de.fub.bytecode.Constants.ACC_PRIVATE,
-	      de.fub.bytecode.generic.Type.VOID,
+	super(org.apache.bcel.Constants.ACC_PRIVATE,
+	      org.apache.bcel.generic.Type.VOID,
 	      argTypes, argNames, methodName, 
 	      classGen.getClassName(),
 	      new InstructionList(),

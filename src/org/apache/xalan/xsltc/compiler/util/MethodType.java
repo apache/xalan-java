@@ -145,7 +145,7 @@ public final class MethodType extends Type {
 	    .toString();
     }
 
-    public de.fub.bytecode.generic.Type toJCType() {
+    public org.apache.bcel.generic.Type toJCType() {
 	return null;	// should never be called
     }
 
