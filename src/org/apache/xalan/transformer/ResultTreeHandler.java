@@ -105,10 +105,26 @@ public class ResultTreeHandler extends QueuedEvents
   private static final boolean DEBUG = false;
   
   /**
+   * Null constructor for object pooling.
+   */
+  public ResultTreeHandler()
+  {
+  }
+    
+  /**
    * Create a new result tree handler.  The real content 
    * handler will be the ContentHandler passed as an argument.
    */
   public ResultTreeHandler(TransformerImpl transformer,
+                           ContentHandler realHandler)
+  {
+    init(transformer, realHandler);
+  }
+  
+  /**
+   * Initializer method.
+   */
+  public void init(TransformerImpl transformer,
                            ContentHandler realHandler)
   {
     m_transformer = transformer;
@@ -238,7 +254,7 @@ public class ResultTreeHandler extends QueuedEvents
   public void startPrefixMapping (String prefix, String uri)
     throws SAXException
   {    
-    startPrefixMapping (prefix, uri, true);
+    startPrefixMapping (prefix, uri, false);
   }
   
   public void startPrefixMapping (String prefix, String uri, boolean shouldFlush)
@@ -295,11 +311,12 @@ public class ResultTreeHandler extends QueuedEvents
     throws SAXException
   {
     QueuedStartDocument qsd = getQueuedDoc();
-    if((null != qsd) && qsd.isPending() 
+    if((null != qsd) && qsd.isPending 
        && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;
     
     flushPending(EVT_CHARACTERS);    
+        
     getContentHandler().characters(ch, start, length);
     m_tracer.fireGenerateEvent(new GenerateEvent(m_transformer,
                                                  GenerateEvent.EVENTTYPE_CHARACTERS,
@@ -313,7 +330,7 @@ public class ResultTreeHandler extends QueuedEvents
     throws SAXException
   {
     QueuedStartDocument qsd = getQueuedDoc();
-    if((null != qsd) && qsd.isPending() 
+    if((null != qsd) && qsd.isPending 
        && XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;
 
@@ -569,12 +586,12 @@ public class ResultTreeHandler extends QueuedEvents
     QueuedStartElement qe = getQueuedElem();
     QueuedStartDocument qdab = getQueuedDocAtBottom();
     
-    if ((type != EVT_STARTPREFIXMAPPING) && qdab.isPending())
+    if ((type != EVT_STARTPREFIXMAPPING) && qdab.isPending)
     {
       qdab.flush();
     }
 
-    if ((null != qe) && qe.isPending())
+    if ((null != qe) && qe.isPending)
     {
       if(!qe.nsDeclsHaveBeenAdded())
         addNSDeclsToAttrs();
@@ -607,16 +624,11 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Clone an element with or without children.
    */
-  public void cloneToResultTree(Stylesheet stylesheetTree, Node node,
-                                boolean shouldCloneWithChildren,
-                                boolean overrideStrip,
+  public void cloneToResultTree(Node node,
                                 boolean shouldCloneAttributes)
     throws SAXException
   {
-    m_cloner.cloneToResultTree(stylesheetTree, node,
-                               shouldCloneWithChildren,
-                               overrideStrip,
-                               shouldCloneAttributes);
+    m_cloner.cloneToResultTree(node, shouldCloneAttributes);
   } 
   
   /**
@@ -690,7 +702,7 @@ public class ResultTreeHandler extends QueuedEvents
     throws SAXException
   {
     QueuedStartDocument qdab = getQueuedDocAtBottom();
-    if(qdab.isPending())
+    if(qdab.isPending)
     {
       SerializerSwitcher.switchSerializerIfHTML(m_transformer, ns, localName);
     }
@@ -886,6 +898,8 @@ public class ResultTreeHandler extends QueuedEvents
       addNSDeclsToAttrs();
     
     ensurePrefixIsDeclared(uri, rawName);
+    if(DEBUG)
+      System.out.println("Adding attr: "+localName+", "+uri);
     qe.addAttribute(uri, localName, rawName, type, value);
   }
   
@@ -943,7 +957,7 @@ public class ResultTreeHandler extends QueuedEvents
   public boolean isElementPending()
   {
     QueuedStartElement qse = getQueuedElem();
-    return (null != qse) ? qse.isPending() : false;
+    return (null != qse) ? qse.isPending : false;
   }
 
   /**
@@ -978,7 +992,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * This class clones nodes to the result tree.
    */
-  private ClonerToResultTree m_cloner;
+  ClonerToResultTree m_cloner;
   
   /**
    * Trace manager for debug support.
