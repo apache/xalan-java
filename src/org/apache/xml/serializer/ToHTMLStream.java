@@ -711,11 +711,13 @@ public class ToHTMLStream extends ToStream
         throws org.xml.sax.SAXException
     {
 
+        ElemContext elemContext = m_elemContext;
+
         // clean up any pending things first
-        if (m_elemContext.m_startTagOpen)
+        if (elemContext.m_startTagOpen)
         {
             closeStartTag();
-            m_elemContext.m_startTagOpen = false;
+            elemContext.m_startTagOpen = false;
         }
         else if (m_cdataTagOpen)
         {
@@ -740,16 +742,17 @@ public class ToHTMLStream extends ToStream
         try
         {
             ElemDesc elemDesc = getElemDesc(name);
+            int elemFlags = elemDesc.getFlags();
+
             // deal with indentation issues first
             if (m_doIndent)
             {
 
-                boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
-                isBlockElement = elemDesc.is(ElemDesc.BLOCK);
+                boolean isBlockElement = (elemFlags & ElemDesc.BLOCK) != 0;
                 if (m_ispreserve)
                     m_ispreserve = false;
                 else if (
-                    (null != m_elemContext.m_elementName)
+                    (null != elemContext.m_elementName)
                     && (!m_inBlockElem
                         || isBlockElement) /* && !isWhiteSpaceSensitive */
                     )
@@ -776,11 +779,11 @@ public class ToHTMLStream extends ToStream
             if (m_tracer != null)
                 firePseudoAttributes();
             
-            if (elemDesc.is(ElemDesc.EMPTY) )  
+            if ((elemFlags & ElemDesc.EMPTY) != 0)  
             {
                 // an optimization for elements which are expected
                 // to be empty.
-                m_elemContext = m_elemContext.push();
+                m_elemContext = elemContext.push();
                 /* XSLTC sometimes calls namespaceAfterStartElement()
                  * so we need to remember the name
                  */
@@ -790,17 +793,18 @@ public class ToHTMLStream extends ToStream
             } 
             else
             {
-                m_elemContext = m_elemContext.push(namespaceURI,localName,name);
-                m_elemContext.m_elementDesc = elemDesc;
-                m_elemContext.m_isRaw = elemDesc.is(ElemDesc.RAW);
+                elemContext = elemContext.push(namespaceURI,localName,name);
+                m_elemContext = elemContext;
+                elemContext.m_elementDesc = elemDesc;
+                elemContext.m_isRaw = (elemFlags & ElemDesc.RAW) != 0;
             }
             
 
-            if (elemDesc.is(ElemDesc.HEADELEM))
+            if ((elemFlags & ElemDesc.HEADELEM) != 0)
             {
                 // This is the <HEAD> element, do some special processing
                 closeStartTag();
-                m_elemContext.m_startTagOpen = false;
+                elemContext.m_startTagOpen = false;
                 if (!m_omitMetaTag)
                 {
                     if (m_doIndent)
@@ -851,13 +855,15 @@ public class ToHTMLStream extends ToStream
         try
         {
 
-            final ElemDesc elemDesc = m_elemContext.m_elementDesc;
-            final boolean elemEmpty = elemDesc.is(ElemDesc.EMPTY);
+            ElemContext elemContext = m_elemContext;
+            final ElemDesc elemDesc = elemContext.m_elementDesc;
+            final int elemFlags = elemDesc.getFlags();
+            final boolean elemEmpty = (elemFlags & ElemDesc.EMPTY) != 0;
 
             // deal with any indentation issues
             if (m_doIndent)
             {
-                final boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
+                final boolean isBlockElement = (elemFlags&ElemDesc.BLOCK) != 0;
                 boolean shouldIndent = false;
 
                 if (m_ispreserve)
@@ -869,13 +875,13 @@ public class ToHTMLStream extends ToStream
                     m_startNewLine = true;
                     shouldIndent = true;
                 }
-                if (!m_elemContext.m_startTagOpen && shouldIndent)
-                    indent(m_elemContext.m_currentElemDepth - 1);
+                if (!elemContext.m_startTagOpen && shouldIndent)
+                    indent(elemContext.m_currentElemDepth - 1);
                 m_inBlockElem = !isBlockElement;
             }
 
             final java.io.Writer writer = m_writer;
-            if (!m_elemContext.m_startTagOpen)
+            if (!elemContext.m_startTagOpen)
             {
                 writer.write("</");
                 writer.write(name);
@@ -916,7 +922,7 @@ public class ToHTMLStream extends ToStream
             }
             
             // clean up because the element has ended
-            if (elemDesc.is(ElemDesc.WHITESPACESENSITIVE))
+            if ((elemFlags & ElemDesc.WHITESPACESENSITIVE) != 0)
                 m_ispreserve = true;
             m_isprevtext = false;
 
@@ -930,17 +936,17 @@ public class ToHTMLStream extends ToStream
                 // a quick exit if the HTML element had no children.
                 // This block of code can be removed if the corresponding block of code
                 // in startElement() also labeled with "OPTIMIZE-EMPTY" is also removed
-                m_elemContext = m_elemContext.m_prev;
+                m_elemContext = elemContext.m_prev;
                 return;
             }
 
             // some more clean because the element has ended. 
-            if (!m_elemContext.m_startTagOpen)
+            if (!elemContext.m_startTagOpen)
             {
                 if (m_doIndent && !m_preserves.isEmpty())
                     m_preserves.pop();
             }
-            m_elemContext = m_elemContext.m_prev;
+            m_elemContext = elemContext.m_prev;
 //            m_isRawStack.pop();
         }
         catch (IOException e)
