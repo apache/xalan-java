@@ -266,6 +266,10 @@ public class ElemExtensionCall extends ElemLiteralResult
     try
     {
 
+      // We set isAvailable to true so that if the extension element processes its
+      // children, and one of those children is an <xsl:fallback>, it won't get invoked.
+
+      isAvailable = true;
       nsh.processElement(this.getLocalName(), this, transformer,
                          getStylesheet(), sourceNode.getOwnerDocument(),
                          sourceNode, mode, this);
