@@ -319,12 +319,12 @@ public class NamespaceMappings
     
     public final void reset()
     {
-    	this.count = 0;
-    	this.m_namespaces.clear();
-    	this.m_nodeStack.clear();
-    	this.m_prefixStack.clear();
-    	
-    	initNamespaces();
+        this.count = 0;
+        this.m_namespaces.clear();
+        this.m_nodeStack.clear();
+        this.m_prefixStack.clear();
+        
+        initNamespaces();
     }
 
 }
