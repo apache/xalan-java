@@ -986,6 +986,7 @@ public class ResultTreeHandler extends QueuedEvents
 	            n = dtm.getNextSibling(n))
 	    {
 	      flushPending(true);  // I think.
+          startPrefixMapping("","");
 	      dtm.dispatchToEvents(n, this);
 	    }
     }
