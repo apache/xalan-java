@@ -1552,7 +1552,7 @@ public class FormatterToHTML extends FormatterToXML
 
     // Use a fairly nasty hack to tell if the next node is supposed to be 
     // unescaped text.
-    if (target.equals("xslt-next-is-raw") && data.equals("formatter-to-dom"))
+    if (target.equals(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING))
     {
       m_disableOutputEscapingStates.setTop(true);
     }
