@@ -512,7 +512,7 @@ public class CompilingStylesheetHandler
                 // Exception won't be thrown, but we've gotta catch
                 try{
                     avtValueExpression=makeQuotedString(
-                        avt.evaluate(null,null,null,null)
+                        avt.evaluate(null,null,null)
                         );
                 }catch(SAXException e)
                 {
@@ -625,7 +625,7 @@ public class CompilingStylesheetHandler
       if(avt.isContextInsensitive())
           try
           {
-            return makeQuotedString(avt.evaluate(null,null,null,null));
+            return makeQuotedString(avt.evaluate(null,null,null));
           } catch(SAXException e)
           {
               // Should never arise
