@@ -16,8 +16,15 @@ public class StreeDOMHelper extends DOM2Helper
   
   public String getUniqueID(Node node)
   {
-    int index = ((Child)node).getUid();
-    return "N"+Integer.toHexString(index);
+    try
+    {
+      int index = ((Child)node).getUid();
+      return "N"+Integer.toHexString(index);
+    }
+    catch(ClassCastException cce)
+    {
+      return super.getUniqueID(node);
+    }
   }
 
   /**
@@ -53,7 +60,14 @@ public class StreeDOMHelper extends DOM2Helper
    */
   public short getLevel(Node node1)
   {
-    return ((Child)node1).getLevel();
+    try
+    {
+      return ((Child)node1).getLevel();
+    }
+    catch(ClassCastException cce)
+    {
+      return super.getLevel(node1);
+    }
   }
   
   /**
@@ -61,7 +75,14 @@ public class StreeDOMHelper extends DOM2Helper
    */
   public boolean isNamespaceNode(Node n)
   {
-    return ((Child)n).isNamespaceNode();
+    try
+    {
+      return ((Child)n).isNamespaceNode();
+    }
+    catch(ClassCastException cce)
+    {
+      return super.isNamespaceNode(n);
+    }
   }
 
 
