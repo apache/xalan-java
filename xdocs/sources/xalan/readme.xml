@@ -109,7 +109,13 @@
      the XML parser normalizes line-breaks to line-feeds when it sends character events to the processor.<br/><br/></li>
      <li>If your XML input is a DOM, use the javax.xml.parsers.DocumentBuilderFactory setCoalescing() method to set coalescing to true (it is
      false by default), if you want to append CDATA sections to adjacent text sections to form a single text node (as the XPath standard calls
-      for), and if the XML parser supports this feature (&xml4j-used; does not).</li>
+      for), and if the XML parser supports this feature (&xml4j-used; does not).<br/><br/></li>
+     <li>When you traverse the namespace axis for a collection of element nodes, &xslt4j; includes <em>one</em> namespace node for each namespace in scope 
+     for one or more of the nodes in that collection. The XPath expression does not return additional (redundant) namespace nodes for each element
+     for which the namespace nodes are in scope.<br/><br/></li>
+     <li>As <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1800">Bugzilla bug 1800</jump> reports, the Transformer does not get the 
+     setTransformState event until after the startDocument event. This could present a problem for tools developers, and we do intend to fix this 
+     bug.</li> 
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Bugs">
