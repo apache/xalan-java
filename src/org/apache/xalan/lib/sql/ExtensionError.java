@@ -75,9 +75,9 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 
 // Imported Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.XMLSerializer;
+//import org.apache.xml.serialize.OutputFormat;
+//import org.apache.xml.serialize.Serializer;
+//import org.apache.xml.serialize.XMLSerializer;
 import java.io.StringWriter;
 
 import java.io.ByteArrayOutputStream;
@@ -271,33 +271,33 @@ public class ExtensionError
   {
   }
 
-  public void dump()
-  {
+//   public void dump()
+//   {
 
-    try
-    {
-      //Serialize DOM
-      OutputFormat		format  = new OutputFormat();
-      //Writer will be a String
-      StringWriter		stringOut = new StringWriter();
+//     try
+//     {
+//       //Serialize DOM
+//       OutputFormat		format  = new OutputFormat();
+//       //Writer will be a String
+//       StringWriter		stringOut = new StringWriter();
 
-      XMLSerializer		serial = new XMLSerializer( stringOut, format );
+//       XMLSerializer		serial = new XMLSerializer( stringOut, format );
 
-      // As a DOM Serializer
-      serial.asDOMSerializer();
+//       // As a DOM Serializer
+//       serial.asDOMSerializer();
 
-      Element e = m_doc.getDocumentElement();
-      serial.serialize(e);
-      System.out.println("Extension Error:");
-      String display = stringOut.toString();
-      System.out.println( display );
-    }
-    catch(Exception e)
-    {
-      // Empty
-    }
+//       Element e = m_doc.getDocumentElement();
+//       serial.serialize(e);
+//       System.out.println("Extension Error:");
+//       String display = stringOut.toString();
+//       System.out.println( display );
+//     }
+//     catch(Exception e)
+//     {
+//       // Empty
+//     }
 
-  }
+//   }
 
   public Node getCurrentNode()
   {
