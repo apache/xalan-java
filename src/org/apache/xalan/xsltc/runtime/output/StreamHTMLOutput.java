@@ -260,7 +260,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	if (_startTagOpen) {
 	    closeStartTag();
 	}
-	_buffer.append("<!--").append(comment).append("-->");
+	appendComment(comment);
     }
 
     public void processingInstruction(String target, String data)

@@ -307,4 +307,33 @@ abstract class StreamOutput extends OutputBase {
 	_buffer.append('>');
 	_startTagOpen = false;
     }
+
+    /**
+     * Ensure that comments do not include the sequence "--" and
+     * that they do not end with "-".
+     */
+    protected void appendComment(String comment) 
+	throws TransletException 
+    {
+	boolean lastIsDash = false;
+	final int n = comment.length();
+
+	_buffer.append("<!--");
+	for (int i = 0; i < n; i++) {
+	    final char ch = comment.charAt(i);
+	    final boolean isDash = (ch == '-');
+
+	    if (lastIsDash && isDash) {
+		_buffer.append(" -");
+	    }
+	    else {
+		_buffer.append(ch);
+	    }
+	    lastIsDash = isDash;
+	}
+	if (lastIsDash) {
+	    _buffer.append(' ');
+	}
+	_buffer.append("-->");
+    }
 }

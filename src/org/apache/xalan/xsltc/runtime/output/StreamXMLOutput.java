@@ -250,8 +250,7 @@ public class StreamXMLOutput extends StreamOutput {
 	else if (_cdataTagOpen) {
 	    closeCDATA();
 	}
-
-	_buffer.append("<!--").append(comment).append("-->");
+	appendComment(comment);
     }
 
     public void processingInstruction(String target, String data)
