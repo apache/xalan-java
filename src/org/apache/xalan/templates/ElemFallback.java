@@ -145,7 +145,7 @@ public class ElemFallback extends ElemTemplateElement
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode,
                 this);
 
-      transformer.executeChildTemplates(this, sourceNode, mode);
+      transformer.executeChildTemplates(this, sourceNode, mode, true);
 
     }
     else

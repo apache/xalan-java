@@ -736,7 +736,7 @@ public class ElemLiteralResult extends ElemUse
 
         // Now process all the elements in this subtree
         // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
-        transformer.executeChildTemplates(this, sourceNode, mode);
+        transformer.executeChildTemplates(this, sourceNode, mode, true);
       }
       catch(TransformerException te)
       {

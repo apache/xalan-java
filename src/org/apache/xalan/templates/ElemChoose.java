@@ -149,7 +149,7 @@ public class ElemChoose extends ElemTemplateElement
 
         if ((null != test) && test.bool())
         {
-          transformer.executeChildTemplates(when, sourceNode, mode);
+          transformer.executeChildTemplates(when, sourceNode, mode, true);
 
           return;
         }
@@ -159,7 +159,7 @@ public class ElemChoose extends ElemTemplateElement
         found = true;
 
         // xsl:otherwise                
-        transformer.executeChildTemplates(childElem, sourceNode, mode);
+        transformer.executeChildTemplates(childElem, sourceNode, mode, true);
 
         return;
       }

@@ -197,7 +197,7 @@ public class ElemCallTemplate extends ElemForEach
       {
         xctxt.setSAXLocator(m_template);
 
-        // template.executeChildTemplates(transformer, sourceNode, mode);
+        // template.executeChildTemplates(transformer, sourceNode, mode, true);
         transformer.pushElemTemplateElement(m_template);
         m_template.execute(transformer, sourceNode, mode);
       }

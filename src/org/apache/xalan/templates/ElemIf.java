@@ -163,7 +163,7 @@ public class ElemIf extends ElemTemplateElement
 
     if (test.bool())
     {
-      transformer.executeChildTemplates(this, sourceNode, mode);
+      transformer.executeChildTemplates(this, sourceNode, mode, true);
     }
   }
 }

@@ -148,7 +148,7 @@ public class ElemCopy extends ElemUse
         {
           super.execute(transformer, sourceNode, mode);
           rthandler.processNSDecls(sourceNode);
-          transformer.executeChildTemplates(this, sourceNode, mode);
+          transformer.executeChildTemplates(this, sourceNode, mode, true);
           
           DOMHelper dhelper = transformer.getXPathContext().getDOMHelper();
           String ns = dhelper.getNamespaceOfNode(sourceNode);
@@ -169,7 +169,7 @@ public class ElemCopy extends ElemUse
           transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
         super.execute(transformer, sourceNode, mode);
-        transformer.executeChildTemplates(this, sourceNode, mode);
+        transformer.executeChildTemplates(this, sourceNode, mode, true);
       }
     }
     catch(org.xml.sax.SAXException se)

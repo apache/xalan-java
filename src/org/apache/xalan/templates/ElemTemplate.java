@@ -377,7 +377,7 @@ public class ElemTemplate extends ElemTemplateElement
 
     if (null != sourceNode)
     {
-      transformer.executeChildTemplates(this, sourceNode, mode);
+      transformer.executeChildTemplates(this, sourceNode, mode, true);
     }
     else  // if(null == sourceNode)
     {

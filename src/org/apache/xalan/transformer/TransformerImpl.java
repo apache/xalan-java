@@ -1770,7 +1770,7 @@ public class TransformerImpl extends Transformer
       m_resultTreeHandler.startDocument();
   
       // Do the transformation of the child elements.
-      executeChildTemplates(templateParent, sourceNode, mode);
+      executeChildTemplates(templateParent, sourceNode, mode, true);
       
       // Make sure everything is flushed!
       this.m_resultTreeHandler.flushPending();
@@ -1870,7 +1870,7 @@ public class TransformerImpl extends Transformer
       this.m_resultTreeHandler.startDocument();
 
       // Do the transformation of the child elements.
-      executeChildTemplates(elem, sourceNode, mode);
+      executeChildTemplates(elem, sourceNode, mode, true);
       this.m_resultTreeHandler.endDocument();
 
       result = sw.toString();
@@ -2026,7 +2026,7 @@ public class TransformerImpl extends Transformer
         if (template.isCompiledTemplate())
           template.execute(this, child, mode);
         else
-          executeChildTemplates(template, child, mode);
+          executeChildTemplates(template, child, mode, true);
       }
     }
     catch(org.xml.sax.SAXException se)
@@ -2065,7 +2065,7 @@ public class TransformerImpl extends Transformer
     {
       getResultTreeHandler().flushPending();
       this.setContentHandler(handler);
-      executeChildTemplates(elem, sourceNode, mode);
+      executeChildTemplates(elem, sourceNode, mode, true);
     }
     catch(org.xml.sax.SAXException se)
     {
@@ -2075,26 +2075,6 @@ public class TransformerImpl extends Transformer
     {
       this.setContentHandler(savedHandler);
     }
-  }
-  
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Execute each of the children of a template element.
-   *
-   * @param transformer The XSLT transformer instance.
-   *
-   * @param elem The ElemTemplateElement that contains the children 
-   * that should execute.
-   * @param sourceNode The current context node.
-   * @param mode The current mode.
-   * 
-   * @throws TransformerException
-   */
-  public void executeChildTemplates(
-          ElemTemplateElement elem, Node sourceNode, QName mode)
-            throws TransformerException
-  {
-    executeChildTemplates(elem, sourceNode, mode, true);
   }
 
   /**
