@@ -69,6 +69,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
+import java.util.Vector;
+
 class StreamOutput extends OutputBase {
 
     protected static final String AMP      = "&amp;";
@@ -109,6 +111,31 @@ class StreamOutput extends OutputBase {
 
     protected String  _doctypeSystem = null;
     protected String  _doctypePublic = null;
+
+    // protected HashSet _attributes = new HashSet();
+    protected Vector _attributes = new Vector();
+
+    static class Attribute {
+	public String name, value;
+
+	Attribute(String name, String value) {
+	    this.name = name; 
+	    this.value = value;
+	}
+
+	public int hashCode() {
+	    return name.hashCode();
+	}
+
+	public boolean equals(Object obj) {
+	    try {
+		return name.equalsIgnoreCase(((Attribute) obj).name);
+	    }
+	    catch (ClassCastException e) {
+		return false;
+	    }
+	}
+    }
 
     protected StreamOutput(StreamOutput output) {
 	_writer = output._writer;
@@ -256,5 +283,27 @@ class StreamOutput extends OutputBase {
 	if (offset < limit) {
 	    _buffer.append(ch, offset, limit - offset);
 	}
+    }
+
+    protected void appendAttributes() {
+	// Append attributes to output buffer
+	if (!_attributes.isEmpty()) {
+	    int i = 0;
+	    final int length = _attributes.size();
+
+	    do {
+		final Attribute attr = (Attribute) _attributes.elementAt(i);
+		_buffer.append(' ').append(attr.name).append("=\"")
+		       .append(attr.value).append('"');
+	    } while (++i < length);
+
+	    _attributes.clear();
+	}
+    }
+
+    protected void closeStartTag() {
+	appendAttributes();
+	_buffer.append('>');
+	_startTagOpen = false;
     }
 }

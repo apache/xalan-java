@@ -63,6 +63,8 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
+import java.util.Vector;
+
 import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -120,10 +122,6 @@ public class StreamHTMLOutput extends StreamOutput {
     }
 
     public void endDocument() throws TransletException { 
-	if (_startTagOpen) {
-	    _buffer.append("/>");
-	}
-
 	// Finally, output buffer to writer
 	outputBuffer();
     }
@@ -164,29 +162,43 @@ public class StreamHTMLOutput extends StreamOutput {
 	}
     }
 
-    public void endElement(String elementName) throws TransletException { 
-	if (_startTagOpen) {
-	    closeStartTag();
+    public void endElement(String elementName) 
+	throws TransletException 
+    { 
+	if (_inStyleScript && 
+	    (elementName.equalsIgnoreCase("style") || 
+	     elementName.equalsIgnoreCase("script"))) 
+	{
+	    _inStyleScript = false;
 	}
 
-	if (_indent) {
-	    _indentLevel --;
-	    if (_indentNextEndTag) {
-		indent(_indentNextEndTag);
+	if (_startTagOpen) {
+	    appendAttributes();
+	    if (_emptyElements.containsKey(elementName.toLowerCase())) {
+		_buffer.append('>');
+	    }
+	    else {
+		_buffer.append("></").append(elementName).append('>');
+	    }
+	    _startTagOpen = false;
+
+	    if (_indent) {
+		_indentLevel--;
 		_indentNextEndTag = true;
 	    }
 	}
+	else {
+	    if (_indent) {
+		_indentLevel--;
 
-	// Empty elements may not have closing tags
-	if (!_emptyElements.containsKey(elementName.toLowerCase())) {
+		if (_indentNextEndTag) {
+		    indent(_indentNextEndTag);
+		    _indentNextEndTag = true;
+		    _lineFeedNextStartTag = true;
+		}
+	    }
 	    _buffer.append("</").append(elementName).append('>');
 	    _indentNextEndTag = true;
-	}
-	else if (_inStyleScript && 
-		 (elementName.equalsIgnoreCase("style") || 
-		  elementName.equalsIgnoreCase("script"))) 
-	{
-	    _inStyleScript = false;
 	}
     }
 
@@ -220,20 +232,29 @@ public class StreamHTMLOutput extends StreamOutput {
 	}
     }
 
-    public void attribute(String attributeName, String attributeValue)
+    public void attribute(String name, String value)
 	throws TransletException 
     { 
+// System.out.println("attribute = " + name + " " + value);
 	if (_startTagOpen) {
-	    _buffer.append(' ').append(attributeName).append("=\"");
+	    int k;
+	    Attribute attr;
 
-	    if (attributeName.equalsIgnoreCase(HREF_STR) || 
-		attributeName.equalsIgnoreCase(SRC_STR)  || 
-		attributeName.equals(CITE_STR)) 
+	    if (name.equalsIgnoreCase(HREF_STR) || 
+		name.equalsIgnoreCase(SRC_STR)  || 
+		name.equals(CITE_STR)) 
 	    {
-		appendEncodedURL(attributeValue).append('"');
+		attr = new Attribute(name, encodeURL(value));
 	    }
 	    else {
-		appendNonURL(attributeValue).append('"');
+		attr = new Attribute(name, escapeNonURL(value));
+	    }
+
+	    if ((k = _attributes.indexOf(attr)) >= 0) {
+		_attributes.setElementAt(attr, k);
+	    }
+	    else {
+		_attributes.add(attr);
 	    }
 	}
     }
@@ -295,26 +316,28 @@ public class StreamHTMLOutput extends StreamOutput {
     /**
      * Replaces whitespaces in a URL with '%20'
      */
-    private StringBuffer appendEncodedURL(String base) {
+    private String encodeURL(String base) {
 	final int length = base.length();
+	final StringBuffer result = new StringBuffer();
 
 	for (int i = 0; i < length; i++) {
 	    final char ch = base.charAt(i);
 	    if (ch == ' ') {
-		_buffer.append("%20");
+		result.append("%20");
 	    }
 	    else {
-		_buffer.append(ch);
+		result.append(ch);
 	    }
 	}
-	return _buffer;
+	return result.toString();
     }
 
     /**
      * Escape non ASCII characters (> u007F) as &#XXX; entities.
      */
-    private StringBuffer appendNonURL(String base) {
+    private String escapeNonURL(String base) {
 	final int length = base.length();
+	final StringBuffer result = new StringBuffer();
 
         for (int i = 0; i < length; i++){
 	    final char ch = base.charAt(i);
@@ -322,15 +345,15 @@ public class StreamHTMLOutput extends StreamOutput {
 	    if ((ch >= '\u007F' && ch < '\u00A0') ||
 		(_is8859Encoded && ch > '\u00FF'))
 	    {
-	        _buffer.append(CHAR_ESC_START)
-		       .append(Integer.toString((int) ch))
-		       .append(';');
+	        result.append(CHAR_ESC_START)
+		      .append(Integer.toString((int) ch))
+		      .append(';');
 	    }
 	    else {
-	        _buffer.append(ch); 
+	        result.append(ch); 
 	    } 
   	}
-	return _buffer;
+	return result.toString();
     }
 
     /**
@@ -338,13 +361,12 @@ public class StreamHTMLOutput extends StreamOutput {
      */
     private void appendHeader() {
 	_buffer.append("<meta http-equiv=\"Content-Type\" content=\"")
-	       .append(_mediaType).append(" charset=\"")
-	       .append(_encoding).append("/>");
+	       .append(_mediaType).append("; charset=")
+	       .append(_encoding).append("\">");
     }
 
-    private void closeStartTag() {
-	_buffer.append('>');
-	_startTagOpen = false;
+    protected void closeStartTag() {
+	super.closeStartTag();
 
 	// Insert <META> tag directly after <HEAD> element in HTML output
 	if (_headTagOpen) {
@@ -352,5 +374,4 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _headTagOpen = false;
 	}
     } 
-
 }

@@ -64,8 +64,7 @@
 package org.apache.xalan.xsltc.runtime.output;
 
 import java.util.Stack;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Vector;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -120,30 +119,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     private Stack _cdataStack;
 
     private boolean _cdataTagOpen = false;
-
-    private HashSet _attributes = new HashSet();
-
-    static class Attribute {
-	public String name, value;
-
-	Attribute(String name, String value) {
-	    this.name = name; 
-	    this.value = value;
-	}
-
-	public int hashCode() {
-	    return name.hashCode();
-	}
-
-	public boolean equals(Object obj) {
-	    try {
-		return name.equalsIgnoreCase(((Attribute) obj).name);
-	    }
-	    catch (ClassCastException e) {
-		return false;
-	    }
-	}
-    }
 
     public StreamXMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
@@ -201,13 +176,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
     public void endDocument() throws TransletException { 
 // System.out.println("endDocument");
-	if (_startTagOpen) {
-	    _buffer.append("/>");
-	}
-	else if (_cdataTagOpen) {
-	    closeCDATA();
-	}
-
 	// Finally, output buffer to writer
 	outputBuffer();
     }
@@ -215,7 +183,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     public void startElement(String elementName) throws TransletException { 
 // System.out.println("startElement = " + elementName);
 	if (_startTagOpen) {
-	    _buffer.append('>');
+	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
 	    closeCDATA();
@@ -244,7 +212,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
 	_depth++;
 	_startTagOpen = true;
-	_attributes.clear();
     }
 
     public void endElement(String elementName) throws TransletException { 
@@ -254,10 +221,14 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	}
 
 	if (_startTagOpen) {
-	    _startTagOpen = false;
+	    appendAttributes();
 	    _buffer.append("/>");
-	    _indentLevel--;
-	    _indentNextEndTag = true;
+	    _startTagOpen = false;
+
+	    if (_indent) {
+		_indentLevel--;
+		_indentNextEndTag = true;
+	    }
 	}
 	else {
 	    if (_indent) {
@@ -270,6 +241,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 		}
 	    }
 	    _buffer.append("</").append(elementName).append('>');
+	    _indentNextEndTag = true;
 	}
 
 	popNamespaces();
@@ -279,8 +251,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     public void characters(String characters) throws TransletException { 
 // System.out.println("characters() '" + characters + "'");
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 
 	final Integer I = (Integer) _cdataStack.peek();
@@ -305,29 +276,33 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     public void characters(char[] characters, int offset, int length)
 	throws TransletException 
     { 
-	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
-	}
+	if (length > 0) {
+	    if (_startTagOpen) {
+		closeStartTag();
+	    }
 
-	if (_escaping) {
-	    escapeCharacters(characters, offset, length);
-	}
-	else {
-	    _buffer.append(characters, offset, length);
+	    if (_escaping) {
+		escapeCharacters(characters, offset, length);
+	    }
+	    else {
+		_buffer.append(characters, offset, length);
+	    }
 	}
     }
 
     public void attribute(String name, String value)
 	throws TransletException 
     { 
-// System.out.println("attribute = " + name);
+// System.out.println("attribute = " + name + " " + value);
 	if (_startTagOpen) {
-	    final Attribute attr = new Attribute(name, value);
+	    int k;
+	    final Attribute attr = 
+		new Attribute(patchName(name), value);
 
-	    if (!_attributes.contains(attr)) {
-		_buffer.append(' ').append(name).append("=\"")
-		       .append(value).append('"');
+	    if ((k = _attributes.indexOf(attr)) >= 0) {
+		_attributes.setElementAt(attr, k);
+	    }
+	    else {
 		_attributes.add(attr);
 	    }
 	}
@@ -335,8 +310,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
     public void comment(String comment) throws TransletException { 
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
 	    closeCDATA();
@@ -350,8 +324,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
     { 
 // System.out.println("PI target = " + target + " data = " + data);
 	if (_startTagOpen) {
-	    _buffer.append('>');
-	    _startTagOpen = false;
+	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
 	    closeCDATA();
@@ -507,5 +480,25 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	if (offset < limit) {
 	    _buffer.append(ch, offset, limit - offset);
 	}
+    }
+
+    /**
+     * TODO: This method is a HACK! Since XSLTC does not have access to the
+     * XML file, it sometimes generates a NS prefix of the form "ns?" for
+     * an attribute. If at runtime, when the qname of the attribute is
+     * known, another prefix is specified for the attribute, then we can get 
+     * a qname of the form "ns?:otherprefix:name". This function patches the 
+     * name by simply ignoring "otherprefix".
+     */
+    private static String patchName(String qname) {
+	final int lastColon = qname.lastIndexOf(':');
+	if (lastColon > 0) {
+	    final int firstColon = qname.indexOf(':');
+	    if (firstColon != lastColon) {
+		return qname.substring(0, firstColon) + 
+		       qname.substring(lastColon);
+	    }
+	}
+	return qname;
     }
 }
