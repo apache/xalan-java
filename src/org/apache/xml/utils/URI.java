@@ -166,7 +166,7 @@ public class URI implements Serializable
   /** If specified, stores the fragment for this URI; otherwise null */
   private String m_fragment = null;
 
-  /** NEEDSDOC Field DEBUG          */
+  /** Indicate whether in DEBUG mode          */
   private static boolean DEBUG = false;
 
   /**

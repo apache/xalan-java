@@ -69,8 +69,10 @@ public class NSInfo
    * Constructor NSInfo
    *
    *
-   * NEEDSDOC @param hasProcessedNS
-   * NEEDSDOC @param hasXMLNSAttrs
+   * @param hasProcessedNS Flag indicating whether namespaces
+   * have been processed for this node 
+   * @param hasXMLNSAttrs Flag indicating whether this node
+   * has XMLNS attributes. 
    */
   public NSInfo(boolean hasProcessedNS, boolean hasXMLNSAttrs)
   {
@@ -87,9 +89,12 @@ public class NSInfo
    * Constructor NSInfo
    *
    *
-   * NEEDSDOC @param hasProcessedNS
-   * NEEDSDOC @param hasXMLNSAttrs
-   * NEEDSDOC @param ancestorHasXMLNSAttrs
+   * @param hasProcessedNS Flag indicating whether namespaces
+   * have been processed for this node 
+   * @param hasXMLNSAttrs Flag indicating whether this node
+   * has XMLNS attributes. 
+   * @param hasXMLNSAttrs Flag indicating whether one of this node's
+   * ancestor has XMLNS attributes.
    */
   public NSInfo(boolean hasProcessedNS, boolean hasXMLNSAttrs,
                 int ancestorHasXMLNSAttrs)
@@ -105,8 +110,9 @@ public class NSInfo
    * Constructor NSInfo
    *
    *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param hasXMLNSAttrs
+   * @param namespace The namespace URI 
+   * @param hasXMLNSAttrs Flag indicating whether this node
+   * has XMLNS attributes.
    */
   public NSInfo(String namespace, boolean hasXMLNSAttrs)
   {
@@ -117,24 +123,24 @@ public class NSInfo
     m_ancestorHasXMLNSAttrs = ANCESTORXMLNSUNPROCESSED;
   }
 
-  /** NEEDSDOC Field m_namespace          */
+  /** The namespace URI          */
   public String m_namespace;
 
-  /** NEEDSDOC Field m_hasXMLNSAttrs          */
+  /** Flag indicating whether this node has an XMLNS attribute          */
   public boolean m_hasXMLNSAttrs;
 
-  /** NEEDSDOC Field m_hasProcessedNS          */
+  /** Flag indicating whether namespaces have been processed for this node */
   public boolean m_hasProcessedNS;
 
-  /** NEEDSDOC Field m_ancestorHasXMLNSAttrs          */
+  /** Flag indicating whether one of this node's ancestor has an XMLNS attribute          */
   public int m_ancestorHasXMLNSAttrs;
 
-  /** NEEDSDOC Field ANCESTORXMLNSUNPROCESSED          */
+  /** Constant for ancestors XMLNS atributes not processed          */
   public static final int ANCESTORXMLNSUNPROCESSED = 0;
 
-  /** NEEDSDOC Field ANCESTORHASXMLNS          */
+  /** Constant indicating an ancestor has an XMLNS attribute           */
   public static final int ANCESTORHASXMLNS = 1;
 
-  /** NEEDSDOC Field ANCESTORNOXMLNS          */
+  /** Constant indicating ancestors don't have an XMLNS attribute           */
   public static final int ANCESTORNOXMLNS = 2;
 }

@@ -587,7 +587,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param value
+   * @return value Node value
    *
    * @throws DOMException
    */
@@ -613,7 +613,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    *  Returns the name of this attribute.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the name of this attribute.
    */
 
   // public String getName()
@@ -955,8 +955,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param importedNode
-   * NEEDSDOC @param deep
+   * @param importedNodeThe node to import.
+   * @param deepIf <code>true</code>, recursively import the subtree under 
+   *   the specified node; if <code>false</code>, import only the node 
+   *   itself, as explained above. This has no effect on <code>Attr</code>
+   *   , <code>EntityReference</code>, and <code>Notation</code> nodes.
    *
    * @return null
    *
@@ -973,8 +976,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
+   * @param namespaceURI Namespace URI for the element
+   * @param qualifiedName Qualified name of the element
    *
    * @return null
    *
@@ -992,8 +995,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
+   * @param namespaceURI Namespace URI of the attribute
+   * @param qualifiedName Qualified name of the attribute
    *
    * @return null
    *
@@ -1011,7 +1014,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param elementId
+   * @param elementId ID of the element to get
    *
    * @return null
    */
@@ -1024,10 +1027,10 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * NEEDSDOC Method setData 
+   * Set Node data 
    *
    *
-   * NEEDSDOC @param data
+   * @param data data to set for this node
    *
    * @throws DOMException
    */
@@ -1039,8 +1042,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param count
+   * @param offset Start offset of substring to extract.
+   * @param count The length of the substring to extract.
    *
    * @return null
    *
@@ -1057,7 +1060,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param arg
+   * @param arg String data to append
    *
    * @throws DOMException
    */
@@ -1069,8 +1072,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param arg
+   * @param offset Start offset of substring to insert.
+   * @param count The length of the substring to insert.
    *
    * @throws DOMException
    */
@@ -1082,8 +1085,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param count
+   * @param offset Start offset of substring to delete.
+   * @param count The length of the substring to delete.
    *
    * @throws DOMException
    */
@@ -1095,9 +1098,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param offset
-   * NEEDSDOC @param count
-   * NEEDSDOC @param arg
+   * @param offset Start offset of substring to replace.
+   * @param count The length of the substring to replace.
+   * @param arg substring to replace with
    *
    * @throws DOMException
    */
@@ -1110,9 +1113,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param offset
+   * @param offset Offset into text to split
    *
-   * @return null
+   * @return null, unimplemented
    *
    * @throws DOMException
    */

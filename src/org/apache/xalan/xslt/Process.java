@@ -118,7 +118,7 @@ public class Process
   /**
    * Prints argument options.
    *
-   * NEEDSDOC @param resbundle
+   * @param resbundle Resource bundle
    */
   protected static void printArgOptions(XSLTErrorResources resbundle)
   {
@@ -148,7 +148,7 @@ public class Process
       "[-MEDIA use media attribute to find stylesheet associated with a document.]");  //"   [-PARAM name expression (Set a stylesheet parameter)]");
   }
 
-  /** NEEDSDOC Field XSLT_PROPERTIES          */
+  /** Default properties file          */
   static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
 
   /**
@@ -157,7 +157,7 @@ public class Process
    *  <p>To set stylesheet parameters from the command line, use -PARAM name expression. If
    *  you want to set the parameter to a string value, enclose the string in single quotes (') to
    *
-   * NEEDSDOC @param argv
+   * @param argv Input parameters from command line
    */
   public static void main(String argv[])
   {
