@@ -535,7 +535,7 @@ public class XPathParser
 	  // Patch for Christina's gripe. She wants her errorHandler to return from
 	  // this error and continue trying to parse, rather than throwing an exception.
 	  // Without the patch, that put us into an endless loop.
-		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);;
+		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
 	}
   }
 
@@ -564,7 +564,7 @@ public class XPathParser
 	  // Patch for Christina's gripe. She wants her errorHandler to return from
 	  // this error and continue trying to parse, rather than throwing an exception.
 	  // Without the patch, that put us into an endless loop.
-		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);;
+		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);
     }
   }
 
