@@ -295,7 +295,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
 
       lastColHeaderIdx = m_ColHeadersIdx[i-1];
       // A bit brute force, but not sure how to clean it up
-/*
+
       try
       {
         addAttributeToNode(
@@ -501,7 +501,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
           S_ATTRIB_NOT_SUPPORTED,
           m_ColAttrib_ISSEARCHABLE_TypeID, lastColHeaderIdx);
       }
-*/
+
     }
 
   }
@@ -579,7 +579,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
   private int addElementWithData(Object o, int level, int extendedType, int parent, int prevsib)
   {
     int elementIdx = addElement(level,extendedType,parent,prevsib);
-/*
+
     int data = allocateNodeObject(o);
     m_firstch.setElementAt(data,elementIdx);
 
@@ -591,7 +591,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
     m_nextsib.setElementAt(DTM.NULL, data);
     m_attribute.setElementAt(DTM.NULL, data);
     m_firstch.setElementAt(DTM.NULL, data);
-*/
+
     return elementIdx;
   }
 
@@ -751,7 +751,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
         // later.
         Object o = m_ResultSet.getObject(i);
         colID = addElementWithData(o,3,m_Col_TypeID, m_LastRowIdx, colID);
-//        cloneAttributeFromNode(colID, m_ColHeadersIdx[i-1]);
+        cloneAttributeFromNode(colID, m_ColHeadersIdx[i-1]);
       }
     }
     catch(Exception e)
