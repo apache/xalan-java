@@ -845,8 +845,11 @@ public class MethodResolver
             // Xalan ensures that iter() always returns an
             // iterator positioned at the beginning.
             DTMIterator ni = xobj.iter();
-            int handle = ni.nextNode();           
-            return ni.getDTM(handle).getNode(handle); // may be null.
+            int handle = ni.nextNode();
+            if (handle != DTM.NULL)
+              return ni.getDTM(handle).getNode(handle); // may be null.
+            else
+              return null;
           }
           else if(javaClass == java.lang.String.class)
           {
