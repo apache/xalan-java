@@ -121,16 +121,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public static String XSLT_PROPERTIES =
     "org/apache/xalan/res/XSLTInfo.properties";
 
-  /** Flag tells if the properties file has been loaded to the system */
-  private static boolean isInited = false;
-
-  /**
+     /**
    * Constructor TransformerFactoryImpl
    *
    */
   public TransformerFactoryImpl()
   {
-    loadPropertyFileToSystem(XSLT_PROPERTIES);
   }
 
   /** a zero length Class array used in loadPropertyFileToSystem() */
@@ -149,16 +145,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public static final String FEATURE_SOURCE_LOCATION = XalanProperties.SOURCE_LOCATION;
 
   /**
-   * Retrieve a propery bundle from a specified file and load it
+   * Retrieve a propery bundle from XSLT_PROPERTIES and load it
    * int the System properties.
-   *
-   * @param file The properties file to be processed.
    */
-  private static void loadPropertyFileToSystem(String file)
+   static 
   {
-
-    if (false == isInited)
-    {
       try
       {
         InputStream is = null;
@@ -171,7 +162,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
             java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
             if (getCCL != null) {
               ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-              is = contextClassLoader.getResourceAsStream(file); // file should be already fully specified
+              is = contextClassLoader.getResourceAsStream(XSLT_PROPERTIES); // file should be already fully specified
             }
           }
           catch (Exception e) {}
@@ -180,7 +171,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
             // NOTE! For the below getResourceAsStream in Sun JDK 1.1.8M
             //  we apparently must add the leading slash character - I 
             //  don't know why, but if it's not there, we throw an NPE from the below loading
-            is = TransformerFactoryImpl.class.getResourceAsStream("/" + file); // file should be already fully specified
+            is = TransformerFactoryImpl.class.getResourceAsStream("/" + XSLT_PROPERTIES); // file should be already fully specified
           }
 
           // get a buffered version
@@ -204,7 +195,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
           System.setProperties(systemProps);
 
-          isInited = true;
         }
         catch (Exception ex){}
       }
@@ -214,8 +204,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         // In this case the caller is required to have 
         // the needed attributes already defined.
       }
-    }
-  }
+   }
 
 public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
