@@ -2,6 +2,7 @@ package org.apache.xalan.transformer;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.BoolStack;
 import java.util.Stack;
@@ -30,9 +31,14 @@ class TransformSnapshotImpl implements TransformSnapshot
   private NodeVector m_currentExpressionNodes;
 
   /**
-   * The current context node list.
+   * The current context node lists stack.
    */
   private Stack m_contextNodeLists;
+	
+	/**
+   * The current context node list.
+   */
+  private ContextNodeList m_contextNodeList;
 
   /**
    * Stack of AxesIterators.
@@ -117,6 +123,8 @@ class TransformSnapshotImpl implements TransformSnapshot
       m_currentNodes = (NodeVector)xpc.getCurrentNodeStack().clone();
       m_currentExpressionNodes = (NodeVector)xpc.getCurrentExpressionNodeStack().clone();
       m_contextNodeLists = (Stack)xpc.getContextNodeListsStack().clone();
+			if (!m_contextNodeLists.empty())
+				m_contextNodeList = (ContextNodeList)xpc.getContextNodeList().clone();
       m_axesIteratorStack = (Stack)xpc.getAxesIteratorStackStacks().clone();
   
       m_currentTemplateRuleIsNull = (BoolStack)transformer.m_currentTemplateRuleIsNull.clone();
@@ -163,6 +171,8 @@ class TransformSnapshotImpl implements TransformSnapshot
       xpc.setCurrentNodeStack((NodeVector)m_currentNodes.clone());
       xpc.setCurrentExpressionNodeStack((NodeVector)m_currentExpressionNodes.clone());
       xpc.setContextNodeListsStack((Stack)m_contextNodeLists.clone());
+			if (m_contextNodeList != null)
+				xpc.pushContextNodeList((ContextNodeList)m_contextNodeList.clone());
       xpc.setAxesIteratorStackStacks((Stack)m_axesIteratorStack.clone());
   
       transformer.m_currentTemplateRuleIsNull = (BoolStack)m_currentTemplateRuleIsNull.clone();
