@@ -1549,6 +1549,8 @@ public class SAX2DTM2 extends SAX2DTM
   protected final int m_SHIFT;
   protected final int m_MASK;
   
+  // A constant for empty string
+  private static final String EMPTY_STR = "";
 
   /**
    * Construct a SAX2DTM2 object using the default block size.
@@ -1645,12 +1647,12 @@ public class SAX2DTM2 extends SAX2DTM
   /**
    * The optimized version of DTMDefaultBase._type().
    */
-  public final short _type2(int identity)
+  public final int _type2(int identity)
   {
-    int info = _exptype2(identity);
+    int eType = _exptype2(identity);
   	
-    if (NULL != info)
-      return m_expandedNameTable.getType(info);
+    if (NULL != eType)
+      return m_extendedTypes[eType].getNodeType();
     else
       return NULL;
   }
@@ -1666,9 +1668,12 @@ public class SAX2DTM2 extends SAX2DTM
   {
     super.endDocument();
     
-    // Add a NULL entry to the end of the m_exptype array as
+    // Add a NULL entry to the end of the node arrays as
     // the end indication.
     m_exptype.addElement(NULL);
+    m_parent.addElement(NULL);
+    m_nextsib.addElement(NULL);
+    m_firstch.addElement(NULL);
     
     // Set the cached references after the document is built.
     m_extendedTypes = m_expandedNameTable.getExtendedTypes();
@@ -1678,4 +1683,225 @@ public class SAX2DTM2 extends SAX2DTM
     m_parent_map  = m_parent.getMap();
   }
 
+  /**
+   * The optimized version of DTMDefaultBase.getNodeType().
+   * 
+   * Given a node handle, return its DOM- style node type.
+   * 
+   * @param  nodeHandle The node id.
+   * @return int Node type, as per the DOM's Node._NODE constants.
+   */
+  public final int getNodeType2(int nodeHandle)
+  {
+    if (nodeHandle == DTM.NULL)
+      return DTM.NULL;
+    else
+      return m_extendedTypes[_exptype2(makeNodeIdentity(nodeHandle))].getNodeType();
+  }
+
+  /**
+   * The optimized version of DTMDefaultBase.getFirstAttribute().
+   * 
+   * Given a node handle, get the index of the node's first attribute.
+   *
+   * @param nodeHandle int Handle of the node.
+   * @return Handle of first attribute, or DTM.NULL to indicate none exists.
+   */
+  public final int getFirstAttribute(int nodeHandle)
+  {
+    int nodeID = makeNodeIdentity(nodeHandle);
+
+    if (nodeID == DTM.NULL)
+      return DTM.NULL;
+    
+    int type = _type2(nodeID);
+
+    if (DTM.ELEMENT_NODE == type)
+    {
+      // Assume that attributes and namespaces immediately follow the element.
+      while (true)
+      {
+        nodeID++;
+	// Assume this can not be null.
+	type = _type2(nodeID);
+
+	if (type == DTM.ATTRIBUTE_NODE)
+	{
+	  return makeNodeHandle(nodeID);
+	}
+	else if (DTM.NAMESPACE_NODE != type)
+	{
+	  break;
+	}
+      }
+    }
+
+    return DTM.NULL;
+  }
+
+  /**
+   * The optimized version of DTMDefaultBase.getTypedAttribute(int, int).
+   * 
+   * Given a node handle and an expanded type ID, get the index of the node's
+   * attribute of that type, if any.
+   *
+   * @param nodeHandle int Handle of the node.
+   * @param attType int expanded type ID of the required attribute.
+   * @return Handle of attribute of the required type, or DTM.NULL to indicate
+   * none exists.
+   */
+  protected final int getTypedAttribute(int nodeHandle, int attType) 
+  {
+          
+    int nodeID = makeNodeIdentity(nodeHandle);
+    
+    if (nodeID == DTM.NULL)
+      return DTM.NULL;
+    
+    int type = _type2(nodeID);
+    
+    if (DTM.ELEMENT_NODE == type)
+    {
+      int expType;
+      while (true)
+      {
+	nodeID++;
+	expType = _exptype2(nodeID);
+	
+	if (expType != DTM.NULL)
+	  type = m_extendedTypes[expType].getNodeType();
+	else
+	  return DTM.NULL;
+
+	if (type == DTM.ATTRIBUTE_NODE)
+	{
+	  if (expType == attType) return makeNodeHandle(nodeID);
+	}
+	else if (DTM.NAMESPACE_NODE != type)
+	{
+	  break;
+	}
+      }
+    }
+
+    return DTM.NULL;
+  }
+
+  /**
+   * The optimized version of SAX2DTM.getNodeNameX().
+   * 
+   * Given  a node handle, return the XPath node name. This should be the name
+   * as described by the XPath data model, NOT the DOM- style name.
+   *
+   * @param nodeHandle the id of the node.
+   * @return String Name of this node, which may be an empty string.
+   */
+  public final String getNodeNameX(int nodeHandle)
+  {
+
+    int nodeID = makeNodeIdentity(nodeHandle);
+    int eType = _exptype2(nodeID);
+    final ExtendedType extType = m_extendedTypes[eType];
+                         
+    if (extType.getNamespace().length() == 0)
+    {
+      return extType.getLocalName();
+    }
+    else
+    {
+      int qnameIndex = m_dataOrQName.elementAt(nodeID);
+
+      if (qnameIndex < 0)
+      {
+	qnameIndex = -qnameIndex;
+	qnameIndex = m_data.elementAt(qnameIndex);
+      }
+
+      return m_valuesOrPrefixes.indexToString(qnameIndex);
+    }
+  }
+
+  /**
+   * The optimized version of SAX2DTM.getStringValue(int).
+   * 
+   * %OPT% This is one of the most often used interfaces. Performance is
+   * critical here. This one is different from SAX2DTM.getStringValue(int) in
+   * that it returns a String instead of a XMLString.
+   * 
+   * Get the string- value of a node as a String object (see http: //www. w3.
+   * org/TR/xpath#data- model for the definition of a node's string- value).
+   *
+   * @param nodeHandle The node ID.
+   *
+   * @return A string object that represents the string-value of the given node.
+   */
+  public final String getStringValueX(final int nodeHandle)
+  {
+    int identity = makeNodeIdentity(nodeHandle);
+    if (identity == DTM.NULL)
+      return EMPTY_STR;
+    
+    int type= _type2(identity);
+
+    if (type == DTM.ELEMENT_NODE || type == DTM.DOCUMENT_NODE)
+    {
+      int firstChild = _firstch2(identity);
+      if (DTM.NULL != firstChild)
+      {
+	int offset = -1;
+	int length = 0;
+	int startNode = identity;
+
+	identity = firstChild;
+
+	do 
+	{
+	  type = _exptype2(identity);
+
+	  if (type == DTM.TEXT_NODE || type == DTM.CDATA_SECTION_NODE)
+	  {
+	    int dataIndex = _dataOrQName(identity);
+
+	    if (-1 == offset)
+	    {
+              offset = m_data.elementAt(dataIndex);
+	    }
+
+	    length += m_data.elementAt(dataIndex + 1);
+	  }
+
+	  identity++;
+	} while (_parent2(identity) >= startNode);
+
+	if (length > 0)
+	{
+	  return m_chars.getString(offset, length);
+	}
+	else
+	  return EMPTY_STR;
+      }
+      else
+        return EMPTY_STR;
+    } 
+    else if (DTM.TEXT_NODE == type || DTM.CDATA_SECTION_NODE == type)
+    {
+      int dataIndex = _dataOrQName(identity);
+      int offset = m_data.elementAt(dataIndex);
+      int length = m_data.elementAt(dataIndex + 1);
+
+      return m_chars.getString(offset, length);
+    }
+    else
+    {
+      int dataIndex = _dataOrQName(identity);
+
+      if (dataIndex < 0)
+      {
+        dataIndex = -dataIndex;
+        dataIndex = m_data.elementAt(dataIndex + 1);
+      }
+      return m_valuesOrPrefixes.indexToString(dataIndex);
+    }
+  }
+  
 }

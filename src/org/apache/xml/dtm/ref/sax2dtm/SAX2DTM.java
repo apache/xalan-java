@@ -166,7 +166,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   protected DTMTreeWalker m_walker = new DTMTreeWalker();
 
   /** pool of string values that come as strings. */
-  private DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
+  protected DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
 
   /** End document has been reached.
    * Made protected rather than private so SAX2RTFDTM can access it.

@@ -819,11 +819,11 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
 
     /**
      * Returns the (String) value of any node in the tree
-     */
+     
     public String getStringValueX(final int node)
     {
 	if (node == DTM.NULL) return EMPTYSTRING;
-/*
+
 	switch(getNodeType(node)) {
 	case DTM.ROOT_NODE:
 	case DTM.DOCUMENT_NODE:
@@ -838,9 +838,10 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
 	default:
 		return getStringValue(node).toString();
 	}
-*/
+
         return getStringValue(node).toString();
-    }   
+    }
+    */
 
     /**
      * Sets up a translet-to-dom type mapping table
