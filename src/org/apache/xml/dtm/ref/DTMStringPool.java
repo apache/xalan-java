@@ -57,8 +57,8 @@
 
 package org.apache.xml.dtm.ref;
 
-// %REVIEW% Should this be based on ChunkedIntVector instead?
-// (Unclear. Pools will rarely be large. But when they are...)
+// %REVIEW% Should this be based on SuballocatedIntVector instead?
+// (Unclear. Pools will rarely be huge. But if they ever are...)
 import org.apache.xml.utils.IntVector;
 import java.util.Vector;
 
