@@ -122,13 +122,11 @@ public class ApplyXPath
         return;
       }
       Document doc = null;
-	  Element root = null;
       try
       {
   	    DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
         doc = docBuilder.parse(in);
-		root = doc.getDocumentElement();
       }
 	    catch (ParserConfigurationException pce)
       {
