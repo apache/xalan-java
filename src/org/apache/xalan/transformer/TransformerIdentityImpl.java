@@ -114,6 +114,8 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void setResult(Result result) throws IllegalArgumentException
   {
+    if(null == result)
+      throw new IllegalArgumentException("Result should not be null");        
     m_result = result;
   }
 
