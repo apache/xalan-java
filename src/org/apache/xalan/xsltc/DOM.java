@@ -130,7 +130,7 @@ public interface DOM {
 	throws TransletException;
     public int getNodeIdent(final int nodehandle);
     public int getNodeHandle(final int nodeId);
-    public DOM getResultTreeFrag();
+    public DOM getResultTreeFrag(int initialSize);
     public TransletOutputHandler getOutputDomBuilder();
     public int getNSType(int node);
     public int getDocument();

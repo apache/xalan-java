@@ -1207,6 +1207,14 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 
     }
 
+    /*
+     * These init sizes have been tuned for the average case. Do not
+     * change these values unless you know exactly what you're doing.
+     */
+    static private final int SMALL_TEXT_SIZE   = 1024; 
+    static private final int DEFAULT_INIT_SIZE = 1024;
+    static private final int DEFAULT_TEXT_FACTOR = 10;
+
     /**
      * Construct a DOMImpl object from a DOM node.
      *
@@ -1224,9 +1232,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                    XMLStringFactory xstringfactory,
                    boolean doIndexing)
     {
-        super(mgr, domSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
-              doIndexing);
-        initSize(8*1024);
+        this(mgr, domSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
+             doIndexing, DEFAULT_INIT_SIZE);
     }
     
     /**
@@ -1249,26 +1256,18 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     {
         super(mgr, domSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
               doIndexing);
-        initSize(size);
+	initialize(size, size < 128 ? SMALL_TEXT_SIZE
+	                            : size * DEFAULT_TEXT_FACTOR);
     }
-    
-    /**
-     * Constructor - defaults to 32K nodes
-     */
-  /*  public DOMImpl() 
-    {
-      //this(32*1024);
-      this(8*1024);
-    }*/
     
     /**
      *  defines initial size
      */
-    public void initSize(int size) 
+    public void initialize(int size, int textsize)
     {
       _offsetOrChild        = new int[size];
       _lengthOrAttr         = new int[size];
-      _text                 = new char[size * 10];
+      _text                 = new char[textsize];
       _whitespace           = new BitArray(size);
       _checkedForWhitespace = new BitArray(size);
     }
@@ -1989,10 +1988,10 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     /**
      * Return a instance of a DOM class to be used as an RTF
      */ 
-    public DOM getResultTreeFrag()
+    public DOM getResultTreeFrag(int initSize)
     {
-    	return ((SAXImpl)m_mgr.getDTM(null, true, m_wsfilter, false, false));
-
+        return (SAXImpl) ((XSLTCDTMManager)m_mgr).getDTM(null, true, m_wsfilter,
+                                                        false, false, initSize);
     }
 
     /**

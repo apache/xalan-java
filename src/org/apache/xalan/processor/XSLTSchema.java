@@ -348,11 +348,11 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[22];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[23];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[23];
+    XSLTElementDef[] templateElements = new XSLTElementDef[23];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[24];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[24];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[23];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[24];
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[15];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -617,6 +617,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslAttribute;
     templateElements[i++] = resultElement;
     templateElements[i++] = unknownElement;
+    templateElements[i++] = exsltFunction;
     templateElements[i++] = exsltResult;
 
     int k;

@@ -719,11 +719,17 @@ public class Parser implements Constants, ContentHandler {
 
     private void initExtClasses() {
 	initExtClass("output", "TransletOutput");
+        initExtClass(REDIRECT_URI, "write", "TransletOutput");
     }
 
     private void initExtClass(String elementName, String className) {
 	_instructionClasses.put(getQName(TRANSLET_URI, TRANSLET, elementName),
 				COMPILER_PACKAGE + '.' + className);
+    }
+
+    private void initExtClass(String namespace, String elementName, String className) {
+        _instructionClasses.put(getQName(namespace, TRANSLET, elementName),
+                                COMPILER_PACKAGE + '.' + className);
     }
 
     /**
@@ -840,7 +846,8 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("system-property", S_S);
 
 	// Extensions
-	_symbolTable.addPrimop("nodeset", D_X);
+        _symbolTable.addPrimop("nodeset", D_O);
+        _symbolTable.addPrimop("objectType", S_O);
 
 	// Operators +, -, *, /, % defined on real types.
 	_symbolTable.addPrimop("+", R_RR);	

@@ -92,7 +92,8 @@ public final class AbsoluteIterator extends DTMAxisIteratorBase {
 
 	if (_isRestartable) {
 	    resetPosition();
-	    return _source.setStartNode(_startNode = DTMDefaultBase.ROOTNODE);
+	    _source.setStartNode(_startNode);
+	    return this;
 	}
 	return reset();
     }

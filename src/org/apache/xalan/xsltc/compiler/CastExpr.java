@@ -85,23 +85,27 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.Boolean, Type.Real);
 	InternalTypeMap.put(Type.Boolean, Type.String);
 	InternalTypeMap.put(Type.Boolean, Type.Reference);
+        InternalTypeMap.put(Type.Boolean, Type.Object);
 
 	InternalTypeMap.put(Type.Real, Type.Real);
 	InternalTypeMap.put(Type.Real, Type.Int);
 	InternalTypeMap.put(Type.Real, Type.Boolean);
 	InternalTypeMap.put(Type.Real, Type.String);
 	InternalTypeMap.put(Type.Real, Type.Reference);
+        InternalTypeMap.put(Type.Real, Type.Object);
 
 	InternalTypeMap.put(Type.Int, Type.Int);
 	InternalTypeMap.put(Type.Int, Type.Real);
 	InternalTypeMap.put(Type.Int, Type.Boolean);
 	InternalTypeMap.put(Type.Int, Type.String);
 	InternalTypeMap.put(Type.Int, Type.Reference);
+        InternalTypeMap.put(Type.Int, Type.Object);
 
 	InternalTypeMap.put(Type.String, Type.String);
 	InternalTypeMap.put(Type.String, Type.Boolean);
 	InternalTypeMap.put(Type.String, Type.Real);
 	InternalTypeMap.put(Type.String, Type.Reference);
+        InternalTypeMap.put(Type.String, Type.Object);
 
 	InternalTypeMap.put(Type.NodeSet, Type.NodeSet);
 	InternalTypeMap.put(Type.NodeSet, Type.Boolean);

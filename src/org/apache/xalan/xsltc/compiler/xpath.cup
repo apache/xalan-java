@@ -70,6 +70,8 @@ import java.util.Vector;
 import java.io.StringReader;
 import java_cup.runtime.*;
 
+import org.apache.xml.dtm.DTM;
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.runtime.Operators;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -228,6 +230,16 @@ parser code {:
 	    addError(new ErrorMsg(ErrorMsg.INTERNAL_ERR, "XPathParser.insertStep"));
 	    return rlp;
 	}
+    }
+
+    /**
+     * Returns true if the axis applies to elements only. The axes
+     * child, attribute, namespace, descendant result in non-empty
+     * nodesets only if the context node is of type element.
+     */
+    public boolean isElementAxis(int axis) {
+	return (axis == Axis.CHILD || axis == Axis.ATTRIBUTE ||
+		axis == Axis.NAMESPACE || axis == Axis.DESCENDANT);
     }
 :}
 
@@ -513,12 +525,22 @@ PathExpr ::= LocationPath:lp
 
         | FilterExpr:fexp DSLASH RelativeLocationPath:rlp
         {:
-           // Expand '//' into '/descendant-or-self::node()/'
-           Step step = new Step(Axis.DESCENDANTORSELF, NodeTest.ANODE, null);
+           // 
+	   // Expand '//' into '/descendant-or-self::node()/' or
+	   // into /descendant-or-self::*/
+	   //
+	   int nodeType = DOM.NO_TYPE;
+	   if (rlp instanceof Step && 
+	       parser.isElementAxis(((Step) rlp).getAxis())) 
+	   {
+	       nodeType = DTM.ELEMENT_NODE;
+	   }
+           final Step step = new Step(Axis.DESCENDANTORSELF, nodeType, null);
            FilterParentPath fpp = new FilterParentPath(fexp, step);
            fpp = new FilterParentPath(fpp, rlp);
-           if (!(fexp instanceof KeyCall))
+           if (fexp instanceof KeyCall == false) {
                fpp.setDescendantAxis();
+	   }
            RESULT = fpp;
         :};
 
@@ -580,13 +602,15 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
                else {
                    // Expand './/step' -> 'descendant-or-self::*/step'
                    if (rlp instanceof Step && ((Step)rlp).isAbbreviatedDot()) {
-                       Step left = new Step(Axis.DESCENDANTORSELF, -1, null);
+                       Step left = new Step(Axis.DESCENDANTORSELF, 
+			    DTM.ELEMENT_NODE, null);
                        RESULT = new ParentLocationPath(left, right);
                    }
                    else {
                        // Expand 'rlp//step' -> 'rlp/descendant-or-self::*/step'
                        RelativeLocationPath left = (RelativeLocationPath)rlp;
-                       Step mid = new Step(Axis.DESCENDANTORSELF, -1, null);
+                       Step mid = new Step(Axis.DESCENDANTORSELF, 
+			    DTM.ELEMENT_NODE, null);
                        ParentLocationPath ppl = new ParentLocationPath(mid, right);
                        RESULT = new ParentLocationPath(left, ppl);
                    }
@@ -595,14 +619,16 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
            else if ((axis == Axis.ATTRIBUTE) || (type == NodeTest.ATTRIBUTE)) {
                // Expand 'rlp//step' -> 'rlp/descendant-or-self::*/step'
                RelativeLocationPath left = (RelativeLocationPath)rlp;
-               Step middle = new Step(Axis.DESCENDANTORSELF, -1, null);
+               Step middle = new Step(Axis.DESCENDANTORSELF, 
+		    DTM.ELEMENT_NODE, null);
                ParentLocationPath ppl = new ParentLocationPath(middle, right);
                RESULT = new ParentLocationPath(left, ppl);
 	   }
 	   else {
 	       // Expand 'rlp//step' -> 'rlp/descendant-or-self::node()/step'
                RelativeLocationPath left = (RelativeLocationPath)rlp;
-	       Step middle = new Step(Axis.DESCENDANTORSELF, -1, null); 
+	       Step middle = new Step(Axis.DESCENDANTORSELF, 
+		    DOM.NO_TYPE, null); 
                ParentLocationPath ppl = new ParentLocationPath(middle, right);
 	       RESULT = new ParentLocationPath(left, ppl);
 	   }
@@ -611,11 +637,19 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
 
 AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
         {:
-	    final Step step = new Step(Axis.DESCENDANTORSELF, -1, null);
-
-	    RESULT = new FilteredAbsoluteLocationPath(
-			new AbsoluteLocationPath(parser.insertStep(step, 
-				(RelativeLocationPath) rlp)));
+           // 
+	   // Expand '//' into '/descendant-or-self::node()/' or
+	   // into /descendant-or-self::*/
+	   //
+	   int nodeType = DOM.NO_TYPE;
+	   if (rlp instanceof Step && 
+	       parser.isElementAxis(((Step) rlp).getAxis())) 
+	   {
+	       nodeType = DTM.ELEMENT_NODE;
+	   }
+	   final Step step = new Step(Axis.DESCENDANTORSELF, nodeType, null);
+	   RESULT = new AbsoluteLocationPath(parser.insertStep(step, 
+				(RelativeLocationPath) rlp));
 	:};
 
 Step ::= NodeTest:ntest
@@ -907,7 +941,7 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
             RESULT = new NamespaceUriCall(fname, argl);
 	  }
 	  // Special case for extension function nodeset()
-          else if (fname.getLocalPart().equals("nodeset")) {
+          else if (fname.getLocalPart().equals("nodeset") || fname.getLocalPart().equals("node-set")) {
 	    parser.setCallsNodeset(true);  // implies MultiDOM
             RESULT = new FunctionCall(fname, argl);
 	  }

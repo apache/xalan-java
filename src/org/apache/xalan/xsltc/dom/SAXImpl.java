@@ -1126,20 +1126,24 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       _types         = setupMapping(_namesArray);
     }
 
+    /*
+     * These init sizes have been tuned for the average case. Do not
+     * change these values unless you know exactly what you're doing.
+     */
+    static private final int SMALL_TEXT_SIZE   = 1024;
+    static private final int DEFAULT_INIT_SIZE = 1024;
+    static private final int DEFAULT_TEXT_FACTOR = 10;
+
     /**
      * Constructor - defaults to 32K nodes
      */
-
     public SAXImpl(DTMManager mgr, Source saxSource,
                  int dtmIdentity, DTMWSFilter whiteSpaceFilter,
                  XMLStringFactory xstringfactory,
                  boolean doIndexing)
     {
-      super(mgr, saxSource,
-                 dtmIdentity, whiteSpaceFilter,
-                 xstringfactory,
-                 doIndexing);
-      initSize(8*1024);
+      this(mgr, saxSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
+           doIndexing, DEFAULT_INIT_SIZE);
     }
 
     public SAXImpl(DTMManager mgr, Source saxSource,
@@ -1147,33 +1151,20 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
                  XMLStringFactory xstringfactory,
                  boolean doIndexing, int size)
     {
-      super(mgr, saxSource,
-                 dtmIdentity, whiteSpaceFilter,
-                 xstringfactory,
-                 doIndexing);
-      initSize(size);
+      super(mgr, saxSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
+            doIndexing);
+      initialize(size, size < 128 ? SMALL_TEXT_SIZE
+                                  : size * DEFAULT_TEXT_FACTOR);
     }
-
-  /*  public DOMImpl()
-    {
-      //this(32*1024);
-      this(8*1024);
-    }*/
 
     /**
      *  defines initial size
      */
-    public void initSize(int size)
+    public void initialize(int size, int textsize)
     {
-      //_type          = new short[size];
-      //_parent        = new int[size];
-      //_nextSibling   = new int[size];
-      _offsetOrChild = new int[size];
-      _lengthOrAttr  = new int[size];
-      //_text          = new char[size * 10];
-      _whitespace    = new BitArray(size);
-     // _prefix        = new short[size];
-      // _namesArray[] and _uriArray[] are allocated in endDocument
+      _offsetOrChild        = new int[size];
+      _lengthOrAttr         = new int[size];
+      _whitespace           = new BitArray(size);
     }
 
     /**
@@ -1905,9 +1896,10 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     /**
      * Return a instance of a DOM class to be used as an RTF
      */ 
-    public DOM getResultTreeFrag()
+    public DOM getResultTreeFrag(int initSize)
     {
-    	return ((SAXImpl)m_mgr.getDTM(null, true, m_wsfilter, false, false));
+    	return (SAXImpl) ((XSLTCDTMManager)m_mgr).getDTM(null, true, m_wsfilter,
+                                                        false, false, initSize);
     }
 
     /**

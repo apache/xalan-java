@@ -599,9 +599,9 @@ public final class MultiDOM implements DOM {
         return _adapters[nodeId>>>24].getNodeHandle(nodeId & CLR);
     }
     
-    public DOM getResultTreeFrag()
+    public DOM getResultTreeFrag(int initSize)
     {
-        return _adapters[0].getResultTreeFrag();
+        return _adapters[0].getResultTreeFrag(initSize);
     }
     
     public DOM getMain()

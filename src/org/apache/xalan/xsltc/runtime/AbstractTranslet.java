@@ -457,7 +457,7 @@ public abstract class AbstractTranslet implements Translet {
      * See compiler/TransletOutput for actual implementation.
      ************************************************************************/
 
-    public TransletOutputHandler openOutputHandler(String filename) 
+    public TransletOutputHandler openOutputHandler(String filename, boolean append) 
 	throws TransletException 
     {
 	try {
@@ -466,7 +466,7 @@ public abstract class AbstractTranslet implements Translet {
 
 	    factory.setEncoding(_encoding);
 	    factory.setOutputMethod(_method);
-	    factory.setWriter(new FileWriter(filename));
+	    factory.setWriter(new FileWriter(filename, append));
 	    factory.setOutputType(TransletOutputHandlerFactory.STREAM);
 
 	    final TransletOutputHandler handler 
@@ -479,6 +479,12 @@ public abstract class AbstractTranslet implements Translet {
 	catch (Exception e) {
 	    throw new TransletException(e);
 	}
+    }
+
+    public TransletOutputHandler openOutputHandler(String filename) 
+       throws TransletException 
+    {
+       return openOutputHandler(filename, false);
     }
 
     public void closeOutputHandler(TransletOutputHandler handler) {

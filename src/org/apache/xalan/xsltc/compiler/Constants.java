@@ -489,6 +489,10 @@ public interface Constants extends InstructionConstants {
 	= "http://www.w3.org/1999/xhtml";
     public static final String TRANSLET_URI
 	= "http://xml.apache.org/xalan/xsltc";
+    public static final String REDIRECT_URI
+        = "http://xml.apache.org/xalan/redirect";
     public static final String FALLBACK_CLASS
 	= "org.apache.xalan.xsltc.compiler.Fallback";
+
+    public static final int RTF_INITIAL_SIZE = 64;
 }

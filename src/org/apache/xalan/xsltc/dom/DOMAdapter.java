@@ -417,9 +417,9 @@ public final class DOMAdapter implements DOM {
     /**
      * Return a instance of a DOM class to be used as an RTF
      */ 
-    public DOM getResultTreeFrag()
+    public DOM getResultTreeFrag(int initSize)
     {
-    	return _domImpl.getResultTreeFrag();
+    	return _domImpl.getResultTreeFrag(initSize);
     }
     
     /**

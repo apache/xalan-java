@@ -269,18 +269,14 @@ public final class ResultTreeType extends Type {
 	    }
 	    il.append(methodGen.loadDOM());
 
-	    // Create new instance of DOM class (with 64 nodes)
+	    // Create new instance of DOM class (with RTF_INITIAL_SIZE nodes)
 	    il.append(methodGen.loadDOM());
 	    int index = cpg.addInterfaceMethodref(DOM_INTF,
 				 "getResultTreeFrag",
-				 "()" + DOM_INTF_SIG);
-	    il.append(new INVOKEINTERFACE(index,1));
-	   // int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	   // il.append(new NEW(cpg.addClass(DOM_IMPL)));
-	   // il.append(DUP);
+				 "(I)" + DOM_INTF_SIG);
+	    il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
+	    il.append(new INVOKEINTERFACE(index,2));
 	    il.append(DUP);
-	   // il.append(new PUSH(cpg, 64));
-	   // il.append(new INVOKESPECIAL(index));
 	    
 	    // Store new DOM into a local variable
 	    newDom = methodGen.addLocalVariable("rt_to_reference_dom", 
@@ -445,6 +441,9 @@ public final class ResultTreeType extends Type {
 	else if (className.equals("java.lang.Object")) {
 	    il.append(NOP);
 	}
+        else if (className.equals("java.lang.String")) {
+            translateTo(classGen, methodGen, Type.String);
+        }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);

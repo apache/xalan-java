@@ -260,6 +260,9 @@ public final class RealType extends NumberType {
 	else if (clazz == Double.TYPE) {
 	    il.append(NOP);
 	}
+        else if (clazz.isAssignableFrom(java.lang.Double.class)) {
+            translateTo(classGen, methodGen, Type.Reference);
+        }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), clazz.getName());

@@ -91,6 +91,7 @@ import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.StepIterator;
+import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -467,6 +468,27 @@ public final class BasisLibrary implements Operators {
 	else
 	    return EMPTYSTRING;
     }
+
+    /**
+     * Implements the object-type() extension function.
+     * 
+     * @see <a href="http://www.exslt.org/">EXSLT</a>
+     */
+    public static String objectTypeF(Object obj)
+    {
+      if (obj instanceof String)
+        return "string";
+      else if (obj instanceof Boolean)
+        return "boolean";
+      else if (obj instanceof Number)
+        return "number";
+      else if (obj instanceof DOMAdapter)
+        return "RTF";
+      else if (obj instanceof NodeIterator)
+        return "node-set";
+      else
+        return "unknown";
+    }  
 
     /**
      * Implements the nodeset() extension function. 
@@ -944,6 +966,89 @@ public final class BasisLibrary implements Operators {
     }
 
     /**
+     * Utility function used to copy a node list to be under a parent node.
+     */
+    private static void copyNodes(org.w3c.dom.NodeList nodeList, org.w3c.dom.Document doc, org.w3c.dom.Node parent)
+    {
+        final int size = nodeList.getLength();
+
+          // copy Nodes from NodeList into new w3c DOM
+        for (int i = 0; i < size; i++) 
+        {
+            org.w3c.dom.Node curr = nodeList.item(i);
+            int nodeType = curr.getNodeType();
+            if (nodeType == org.w3c.dom.Node.DOCUMENT_NODE) {
+                // ignore the root node of node list
+                continue;
+            }
+            String value = null;
+            try {
+                value = curr.getNodeValue();
+            } catch (DOMException ex) {
+                runTimeError(RUN_TIME_INTERNAL_ERR, ex.getMessage());
+                return;
+            }
+            
+            String nodeName = curr.getNodeName();
+            org.w3c.dom.Node newNode = null; 
+            switch (nodeType){
+                case org.w3c.dom.Node.ATTRIBUTE_NODE:
+                     newNode = doc.createAttributeNS(curr.getNamespaceURI(), nodeName);
+                     break;
+                case org.w3c.dom.Node.CDATA_SECTION_NODE: 
+                     newNode = doc.createCDATASection(value);
+                     break;
+                case org.w3c.dom.Node.COMMENT_NODE: 
+                     newNode = doc.createComment(value);
+                     break;
+                case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE: 
+                     newNode = doc.createDocumentFragment();
+                     break;
+                case org.w3c.dom.Node.DOCUMENT_TYPE_NODE: 
+                     // nothing ?
+                     break;
+                case org.w3c.dom.Node.ELEMENT_NODE: 
+                     // For Element node, also copy the children and the attributes.
+                     org.w3c.dom.Element element = doc.createElementNS(curr.getNamespaceURI(), nodeName);
+                     if (curr.hasAttributes())
+                     {
+                       org.w3c.dom.NamedNodeMap attributes = curr.getAttributes();
+                       for (int k = 0; k < attributes.getLength(); k++)
+                       {
+                         org.w3c.dom.Node attr = attributes.item(k);
+                         element.setAttribute(attr.getNodeName(), attr.getNodeValue());
+                       }
+                     }
+                     copyNodes(curr.getChildNodes(), doc, element);
+                     newNode = element;
+                     break;
+                case org.w3c.dom.Node.ENTITY_NODE: 
+                     // nothing ? 
+                     break;
+                case org.w3c.dom.Node.ENTITY_REFERENCE_NODE: 
+                     newNode = doc.createEntityReference(nodeName);
+                     break;
+                case org.w3c.dom.Node.NOTATION_NODE: 
+                     // nothing ? 
+                     break;
+                case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE: 
+                     newNode = doc.createProcessingInstruction(nodeName,
+                        value);
+                     break;
+                case org.w3c.dom.Node.TEXT_NODE: 
+                     newNode = doc.createTextNode(value);
+                     break;
+            }
+            try {
+                parent.appendChild(newNode);
+            } catch (DOMException e) {
+                runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
+                return;
+            }           
+        }
+    }
+
+    /**
      * Utility function used to convert a w3c NodeList into a internal
      * DOM iterator. 
      */
@@ -951,8 +1056,6 @@ public final class BasisLibrary implements Operators {
                                         org.w3c.dom.NodeList nodeList,
                                     	Translet translet, DOM dom) 
     {
-	int size = nodeList.getLength();
-
 	// w3c NodeList -> w3c DOM
 	DocumentBuilderFactory dfac = DocumentBuilderFactory.newInstance();
 	DocumentBuilder docbldr = null;
@@ -968,68 +1071,8 @@ public final class BasisLibrary implements Operators {
         org.w3c.dom.Node topElementNode = 
             doc.appendChild(doc.createElementNS("", "__top__"));
 
-	// copy Nodes from NodeList into new w3c DOM
-	for (int i=0; i<size; i++){
-	    org.w3c.dom.Node curr = nodeList.item(i);
-	    int nodeType = curr.getNodeType();
-	    if (nodeType == org.w3c.dom.Node.DOCUMENT_NODE) {
-		// ignore the root node of node list
-		continue;
-	    }
-	    String value = null;
-	    try {
-	        value = curr.getNodeValue();
-	    } catch (DOMException ex) {
-		runTimeError(RUN_TIME_INTERNAL_ERR, ex.getMessage());
-                return null;
-	    }
-	    String namespaceURI = curr.getNamespaceURI();
-	    String nodeName = curr.getNodeName();
-	    org.w3c.dom.Node newNode = null; 
-	    switch (nodeType){
-		case org.w3c.dom.Node.ATTRIBUTE_NODE: 
-		     newNode = doc.createAttributeNS(namespaceURI,
-			nodeName);
-                     break;
-		case org.w3c.dom.Node.CDATA_SECTION_NODE: 
-		     newNode = doc.createCDATASection(value);
-                     break;
-		case org.w3c.dom.Node.COMMENT_NODE: 
-		     newNode = doc.createComment(value);
-                     break;
-		case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE: 
-		     newNode = doc.createDocumentFragment();
-                     break;
-		case org.w3c.dom.Node.DOCUMENT_TYPE_NODE: 
-		     // nothing ?
-                     break;
-		case org.w3c.dom.Node.ELEMENT_NODE: 
-		     newNode = doc.createElementNS(namespaceURI, nodeName);
-		     break;
-		case org.w3c.dom.Node.ENTITY_NODE: 
-		     // nothing ? 
-                     break;
-		case org.w3c.dom.Node.ENTITY_REFERENCE_NODE: 
-		     newNode = doc.createEntityReference(nodeName);
-		     break;
-		case org.w3c.dom.Node.NOTATION_NODE: 
-		     // nothing ? 
-		     break;
-		case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE: 
-		     newNode = doc.createProcessingInstruction(nodeName,
-			value);
-		     break;
-		case org.w3c.dom.Node.TEXT_NODE: 
-		     newNode = doc.createTextNode(value);
-		     break;
-	    }
-	    try {
-	        topElementNode.appendChild(newNode);
-	    } catch (DOMException e) {
-		runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
-		return null;
-	    }
-	}
+        // Copy all the nodes in the nodelist to be under the top element
+        copyNodes(nodeList, doc, topElementNode);
 
         // w3cDOM -> DTM -> DOMImpl
 	DTMManager dtmManager = XSLTCDTMManager.newInstance(

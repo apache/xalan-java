@@ -184,7 +184,7 @@ public class StringType extends Type {
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) 
     {
-	if (clazz.getName().equals("java.lang.String")) {
+        if (clazz.isAssignableFrom(java.lang.String.class)) {
 	    // same internal representation
 	    methodGen.getInstructionList().append(NOP);
 	}
