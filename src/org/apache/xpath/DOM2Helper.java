@@ -79,7 +79,7 @@ import javax.xml.transform.TransformerException;
 /**
  * <meta name="usage" content="general"/>
  * Provides XSLTProcessor an interface to the Xerces XML parser.  This
- * liaison should be used if Xerces DOM nodes are being process as
+ * liaison should be used if Xerces DOM nodes are being processed as
  * the source tree or as the result tree.
  * @see org.apache.xalan.xslt.XSLTProcessor
  * @see org.apache.xml.parsers
@@ -94,11 +94,16 @@ public class DOM2Helper extends DOMHelper
 
   /**
    * <meta name="usage" content="internal"/>
-   * Check node to see if it matches this liaison.
+   * Check node to see if it was created by a DOM implementation
+   * that this helper is intended to support. This is currently
+   * disabled, and assumes all nodes are acceptable rather than checking
+   * that they implement org.apache.xerces.dom.NodeImpl.
    *
-   * NEEDSDOC @param node
+   * @param node The node to be tested.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the node is not one which this
+   * DOM2Helper can support. If we return without throwing the exception,
+   * the node is compatable.
    */
   public void checkNode(Node node) throws TransformerException
   {
@@ -109,24 +114,28 @@ public class DOM2Helper extends DOMHelper
   }
 
   /**
-   * Returns true that this implementation does support
-   * the SAX ContentHandler interface.
+   * Returns true if the DOM implementation handled by this helper
+   * supports the SAX ContentHandler interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true (since Xerces does).
    */
   public boolean supportsSAX()
   {
     return true;
   }
 
-  /** NEEDSDOC Field m_doc          */
+  /** Field m_doc: Document Node for the document this helper is currently
+   * accessing or building
+   * @see setDocument
+   * @see getDocument
+   *  */
   private Document m_doc;
 
   /**
-   * NEEDSDOC Method setDocument 
-   *
-   *
-   * NEEDSDOC @param doc
+   * Specify which document this helper is currently operating on.
+   * 	
+   * @param doc The DOM Document node for this document.
+   * @see getDocument
    */
   public void setDocument(Document doc)
   {
@@ -134,10 +143,10 @@ public class DOM2Helper extends DOMHelper
   }
 
   /**
-   * NEEDSDOC Method getDocument 
-   *
-   *
-   * NEEDSDOC (getDocument) @return
+   * Query which document this helper is currently operating on.
+   * 	
+   * @return The DOM Document node for this document.
+   * @see setDocument
    */
   public Document getDocument()
   {
@@ -236,12 +245,19 @@ public class DOM2Helper extends DOMHelper
   }
 
   /**
-   * Given an ID, return the element.
+   * Given an XML ID, return the element. This requires assistance from the
+   * DOM and parser, and is meaningful only in the context of a DTD 
+   * or schema which declares attributes as being of type ID. This
+   * information may or may not be available in all parsers, may or
+   * may not be available for specific documents, and may or may not
+   * be available when validation is not turned on.
    *
-   * NEEDSDOC @param id
-   * NEEDSDOC @param doc
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param id The ID to search for, as a String.
+   * @param doc The document to search within, as a DOM Document node.
+   * @return DOM Element node with an attribute of type ID whose value
+   * uniquely matches the requested id string, or null if there isn't
+   * such an element or if the DOM can't answer the question for other
+   * reasons.
    */
   public Element getElementByID(String id, Document doc)
   {
@@ -249,16 +265,22 @@ public class DOM2Helper extends DOMHelper
   }
 
   /**
-   * Figure out if node2 should be placed after node1 when
-   * placing nodes in a list that is to be sorted in
-   * document order.
-   * NOTE: Make sure this does the right thing with attribute nodes!!!
+   * Figure out whether node2 should be considered as being later
+   * in the document than node1, in Document Order as defined
+   * by the XPath model. This may not agree with the ordering defined
+   * by other XML applications.
+   * <p>
+   * There are some cases where ordering isn't defined, and neither are
+   * the results of this function -- though we'll generally return true.
+   * <p>
+   * TODO: Make sure this does the right thing with attribute nodes!!!
    *
-   * NEEDSDOC @param node1
-   * NEEDSDOC @param node2
-   * @return true if node2 should be placed
-   * after node1, and false if node2 should be placed
-   * before node1.
+   * @param node1 DOM Node to perform position comparison on.
+   * @param node2 DOM Node to perform position comparison on .
+   * 
+   * @return false if node2 comes before node1, otherwise return true.
+   * You can think of this as 
+   * <code>(node1.documentOrderPosition &lt;= node2.documentOrderPosition)</code>.
    */
   public boolean isNodeAfter(Node node1, Node node2)
   {
@@ -276,32 +298,41 @@ public class DOM2Helper extends DOMHelper
     {
 
       // isNodeAfter will return true if node is after countedNode 
-      // in document order. isDOMNodeAfter is sloooow (relativly).
+      // in document order. The base isNodeAfter is sloooow (relatively)
       return super.isNodeAfter(node1, node2);
     }
   }
 
   /**
-   * Get the parent of a node.
+   * Get the XPath-model parent of a node.  This version takes advantage
+   * of the DOM Level 2 Attr.ownerElement() method; the base version we
+   * would otherwise inherit is prepared to fall back on exhaustively
+   * walking the document to find an Attr's parent.
    *
-   * NEEDSDOC @param node
+   * @param node Node to be examined
    *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws RuntimeException
+   * @return the DOM parent of the input node, if there is one, or the
+   * ownerElement if the input node is an Attr, or null if the node is
+   * a Document, a DocumentFragment, or an orphan.
    */
-  public Node getParentOfNode(Node node) throws RuntimeException
+  public Node getParentOfNode(Node node)
   {
-    return (Node.ATTRIBUTE_NODE == node.getNodeType())
-           ? ((Attr) node).getOwnerElement() : node.getParentNode();
+	  Node parent=node.getParentNode();
+	  if(parent==null && (Node.ATTRIBUTE_NODE == node.getNodeType()) )
+           parent=((Attr) node).getOwnerElement();
+	  return parent;
   }
 
   /**
-   * Returns the local name of the given node.
+   * Returns the local name of the given node, as defined by the
+   * XML Namespaces specification. This is prepared to handle documents
+   * built using DOM Level 1 methods by falling back upon explicitly
+   * parsing the node name.
    *
-   * NEEDSDOC @param n
+   * @param n Node to be examined
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String containing the local name, or null if the node
+   * was not assigned a Namespace.
    */
   public String getLocalNameOfNode(Node n)
   {
@@ -312,17 +343,28 @@ public class DOM2Helper extends DOMHelper
   }
 
   /**
-   * Returns the namespace of the given node.
+   * Returns the Namespace Name (Namespace URI) for the given node.
+   * In a Level 2 DOM, you can ask the node itself. Note, however, that
+   * doing so conflicts with our decision in getLocalNameOfNode not
+   * to trust the that the DOM was indeed created using the Level 2
+   * methods. If Level 1 methods were used, these two functions will
+   * disagree with each other.
+   * <p>
+   * TODO: Reconcile with getLocalNameOfNode.
    *
-   * NEEDSDOC @param n
+   * @param n Node to be examined
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String containing the Namespace URI bound to this DOM node
+   * at the time the Node was created.
    */
   public String getNamespaceOfNode(Node n)
   {
     return n.getNamespaceURI();
   }
 
-  /** NEEDSDOC Field m_useDOM2getNamespaceURI          */
-  private boolean m_useDOM2getNamespaceURI = false;
+  /** Field m_useDOM2getNamespaceURI is a compile-time flag which
+   *  gates some of the parser options used to build a DOM -- but 
+   * that code is commented out at this time and nobody else
+   * references it, so I've commented this out as well. */
+  //private boolean m_useDOM2getNamespaceURI = false;
 }

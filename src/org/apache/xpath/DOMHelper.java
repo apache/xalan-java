@@ -1004,8 +1004,10 @@ public class DOMHelper
 
 	  // Given how expensive the tree walk may be, we should first ask 
 	  // whether this DOM can answer the question for us. The additional
-	  // test does slow down Level 1 DOMs slightly... should/do
-	  // we have a DOM2Helper, deciding between them when we first connect?
+	  // test does slow down Level 1 DOMs slightly. DOMHelper2, which
+	  // is currently specialized for Xerces, assumes it can use the
+	  // Level 2 solution. We might want to have an intermediate stage,
+	  // which would assume DOM Level 2 but not assume Xerces.
 	  //
 	  // (Shouldn't have to check whether impl is null in a compliant DOM,
 	  // but let's be paranoid for a moment...)
