@@ -615,8 +615,12 @@ public class TransformerImpl extends Transformer
       // As a last resort, use the current user dir.
       if(null == base)
       {
-        String currentDir = System.getProperty("user.dir");
-        
+        String currentDir = "";
+        try {
+          currentDir = System.getProperty("user.dir");
+        }
+        catch (SecurityException se) {}// user.dir not accessible from applet
+              
         if (currentDir.startsWith(java.io.File.separator))
           base = "file://" + currentDir;
         else

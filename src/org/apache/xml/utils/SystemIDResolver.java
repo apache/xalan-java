@@ -86,7 +86,11 @@ public class SystemIDResolver
   public static String getAbsoluteURIFromRelative(String uri)
   {
 
-    String curdir = System.getProperty("user.dir");
+    String curdir = "";
+    try {
+      curdir = System.getProperty("user.dir");
+    }
+    catch (SecurityException se) {}// user.dir not accessible from applet
 
     if (null != curdir)
     {
