@@ -83,6 +83,8 @@ import javax.xml.parsers.*;
  */
 public class ExsltStrings
 {
+  // Reuse the Document object to reduce memory usage.
+  private static Document lDoc = null;
 
   /**
    * The str:align function aligns a string within another string. 
@@ -222,12 +224,10 @@ public class ExsltStrings
    */
   public static NodeList split(String str, String pattern)
   {
-    Document lDoc = null;
     try
     {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      lDoc = db.newDocument();
+      if (lDoc == null)
+        lDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
     }
     catch(ParserConfigurationException pce)
     {
@@ -295,29 +295,47 @@ public class ExsltStrings
    * (i.e. whitespace characters). 
    *
    * If the second argument is an empty string, the function returns a set of token 
-   * elements, each of which holds a single character. 
+   * elements, each of which holds a single character.
+   *
+   * Note: This one is different from the tokenize extension function in the Xalan
+   * namespace. The one in Xalan returns a set of Text nodes, while this one wraps
+   * the Text nodes inside the token Element nodes.
    */
   public static NodeList tokenize(String toTokenize, String delims)
   {
-    Document lDoc;
-
     try
     {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      lDoc = db.newDocument();
+      if (lDoc == null)
+        lDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
     }
     catch(ParserConfigurationException pce)
     {
       throw new org.apache.xml.utils.WrappedRuntimeException(pce);
     }
 
-    StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
     NodeSet resultSet = new NodeSet();
-
-    while (lTokenizer.hasMoreTokens())
+    
+    if (delims != null && delims.length() > 0)
     {
-      resultSet.addNode(lDoc.createTextNode(lTokenizer.nextToken()));
+      StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
+
+      while (lTokenizer.hasMoreTokens())
+      {
+        Element element = lDoc.createElement("token");
+        element.appendChild(lDoc.createTextNode(lTokenizer.nextToken()));
+        resultSet.addNode(element);      
+      }
+    }
+    // If the delimiter is an empty string, create one token Element for 
+    // every single character.
+    else
+    {
+      for (int i = 0; i < toTokenize.length(); i++)
+      {
+        Element element = lDoc.createElement("token");
+        element.appendChild(lDoc.createTextNode(toTokenize.substring(i, i+1)));
+        resultSet.addNode(element);              
+      }
     }
 
     return resultSet;
