@@ -953,12 +953,6 @@ public class Process
                                   true);
               } catch (org.xml.sax.SAXException se) {}
         
-              try
-              {
-                reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-                                  true);
-              } catch (org.xml.sax.SAXException se) {}
-              
               th.setResult(strResult);
               
               reader.parse(new InputSource(inFileName));

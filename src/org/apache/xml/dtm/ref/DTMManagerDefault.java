@@ -632,8 +632,6 @@ public class DTMManagerDefault extends DTMManager
       XMLReader reader = (inputSource instanceof SAXSource)
                          ? ((SAXSource) inputSource).getXMLReader() : null;
 
-      boolean isUserReader = (reader != null);
-
       if (null == reader)
       {
         try
@@ -673,23 +671,6 @@ public class DTMManagerDefault extends DTMManager
         // What can we do?
         // TODO: User diagnostics.
       }
-
-        // Commented out as per discussion with Thomas2.Maesing@bgs-ag.de
-        // about bug 2124.
-//      if(!isUserReader)
-//      {
-//        try
-//        {
-//          reader.setFeature("http://apache.org/xml/features/validation/dynamic",
-//                            true);
-//        }
-//        catch (org.xml.sax.SAXException se)
-//        {
-//
-//          // What can we do?
-//          // TODO: User diagnostics.
-//        }
-//      }
 
       return reader;
     }
