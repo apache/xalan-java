@@ -382,9 +382,17 @@ public final class TransformerImpl extends Transformer
 	    if (source instanceof SAXSource) {
 		// Get all info from the input SAXSource object
 		final SAXSource   sax    = (SAXSource)source;
-		final XMLReader   reader = sax.getXMLReader();
+		XMLReader   reader = sax.getXMLReader();
 		final InputSource input  = sax.getInputSource();
 		final String      systemId = sax.getSystemId();
+
+		// if reader was not set with setXMLReader by user,
+		// then we must create one ourselves.
+		if (reader == null) {
+		    SAXParserFactory pfactory= SAXParserFactory.newInstance();
+		    pfactory.setNamespaceAware(true);
+		    reader = pfactory.newSAXParser().getXMLReader();
+		}
 
 		// Create a DTD monitor to trap all DTD/declarative events
 		dtd = new DTDMonitor();
@@ -544,10 +552,12 @@ public final class TransformerImpl extends Transformer
 	    TextOutput handler;
 
 	    // Check if the ContentHandler also implements LexicalHandler
-	    if (sax instanceof LexicalHandler)
+	    if (sax instanceof LexicalHandler) {
 		handler = new TextOutput(sax, (LexicalHandler)sax, encoding);
-	    else
+	    }
+	    else {
 		handler = new TextOutput(sax, encoding);
+	    }
 	    _translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
