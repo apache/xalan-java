@@ -470,7 +470,6 @@ final class Step extends RelativeLocationPath {
 	if ((_axis == Axis.ANCESTOR)  ||
 	    (_axis == Axis.ANCESTORORSELF) ||
 	    (_axis == Axis.PRECEDING)) {
-	    System.err.println("HERE!");
 	    final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
 					      "("+NODE_ITERATOR_SIG+")V");
 
