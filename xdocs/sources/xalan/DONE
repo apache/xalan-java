@@ -6,14 +6,29 @@
 <li>Recompile your application. It it does not compile, you may be using Xalan-Java 1.x API that the compatability layer does not support. <br/><br/></li>
 <li>Run the recompiled application with xalanj1compat.jar on the system classpath in front of the Xalan-Java 2 xalan.jar.</li>
 </ol>
-<p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are concentrating our efforts to improve performance and fix any outstanding bugs. To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, see <jump href="compat_apidocs/index.html">Xalan-Java 1 Compatability Javadoc</jump>. Xalan-Java 1.x extensions, for example, are not covered. If you feel that we should extend our compatablity JAR to support other Xalan-Java 1.x API calls, please let us know exactly what you would like to see.</p>
+<p>We want our Xalan-Java 1.x users to start using Xalan-Java 2. That is where we are 
+  concentrating our efforts to improve performance and fix any outstanding bugs. 
+  To see what portion of the Xalan-Java 1.x API we have included in xalanj1compat.jar, 
+  see <jump href="compat_apidocs/index.html">Xalan-Java 1 Compatability Javadoc</jump>. 
+  Xalan-Java 1.x extensions, for example, are not covered. If you feel that we should 
+  extend our compatablity JAR to support other Xalan-Java 1.x API calls, please let us 
+  know exactly what you would like to see.  Note that the Xalan1 compatibility layer does 
+  not cover extensions at this time.</p>
 <p><em>Other changes</em></p>
 <p>Along with performance enhancements, we have fixed a number of bugs found in Xalan-Java 2.0.D06:</p>
 <ol>
-<li>Fixed handling of disable-output-escaping="no".<br/><br/></li>
-<li>Fixed a bug with whitespace handling where Xalan was incorreclty chedking for whitespace stripping before collation of multiple whitespace events into a single text node.<br/><br/></li>
-<li>Fixed exception handling problems in the ExtensionHandler and TransformerImpl.<br/><br/></li>
+<li>Fixed handling of disable-output-escaping="no".  Previously, once it was turned on, it could not be turned off.<br/><br/></li>
+<li>Fixed a bug with whitespace handling where Xalan was incorreclty chedking for whitespace 
+    stripping before collation of multiple whitespace events into a single text node.<br/><br/></li>
+<li>Whitespace stripping wasn't working with input DOMs before.  This is now fixed.<br/><br/></li>
+<li>Fixed many exception handling problems and problems with error reporting.<br/><br/></li>
 <li>Fixed a bug resetting parameters in Transformer clearParameters().</li>
+<li>Fixed a bug where CDATA sections were not matching the text() node test.</li>
+<li>Made better memory allocation problem with result tree fragments.</li>
+<li>Made result tree fragment parsing of numbers consistent with strings.</li>
+<li>Exceptions thrown from extensions should now be properly reported via the error listener.</li>
+<li>Fixed hard-coded stack dump set off by m_reportInPostExceptionFromThread variable.</li>
+<li>Fixed intermittent threading problem with text nodes being dropped.</li>
 </ol>
 <p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
 </s3>
