@@ -220,12 +220,12 @@ public class TransformerImpl extends Transformer
    */
   private ContentHandler m_outputContentHandler = null;
 
-  /**
-   * Use member variable to store param variables as they're
-   * being created, use member variable so we don't
-   * have to create a new vector every time.
-   */
-  private Vector m_newVars = new Vector();
+//  /*
+//   * Use member variable to store param variables as they're
+//   * being created, use member variable so we don't
+//   * have to create a new vector every time.
+//   */
+//  private Vector m_newVars = new Vector();
 
   /** The JAXP Document Builder, mainly to create Result Tree Fragments. */
   DocumentBuilder m_docBuilder = null;
@@ -1416,9 +1416,14 @@ public class TransformerImpl extends Transformer
     // of the current stack frame.
     VariableStack vars = xctxt.getVarStack();
     int n = xslCallTemplateElement.getParamElemCount();
+    
+    int paramDeclareContext = vars.getSearchStartOrTop();
+    vars.pushContextMarker();
+    int paramReferenceContext = -1;
 
     for (int i = 0; i < n; i++)
     {
+      vars.setSearchStart(paramDeclareContext);
       ElemWithParam xslParamElement = xslCallTemplateElement.getParamElem(i);
 
       // Get the argument value as either an expression or 
@@ -1444,23 +1449,23 @@ public class TransformerImpl extends Transformer
         var = new XRTreeFrag(df);
       }
 
-      m_newVars.addElement(new Arg(xslParamElement.getName(), var, true));
+      vars.setSearchStart(paramReferenceContext);
+      vars.pushVariableArg(new Arg(xslParamElement.getName(), var, true));
+//      m_newVars.addElement(new Arg(xslParamElement.getName(), var, true));
     }
 
-    vars.pushContextMarker();
-
-    int nNew = m_newVars.size();
-
-    if (nNew > 0)
-    {
-      for (int i = 0; i < nNew; i++)
-      {
-        vars.push((Arg) m_newVars.elementAt(i));
-      }
-
-      // Dragons check: make sure this is nulling the refs.
-      m_newVars.removeAllElements();
-    }
+//    int nNew = m_newVars.size();
+//
+//    if (nNew > 0)
+//    {
+//      for (int i = 0; i < nNew; i++)
+//      {
+//        vars.pushVariableArg((Arg) m_newVars.elementAt(i));
+//      }
+//
+//      // Dragons check: make sure this is nulling the refs.
+//      m_newVars.removeAllElements();
+//    }
   }  // end pushParams method
 
   /**
@@ -1600,7 +1605,8 @@ public class TransformerImpl extends Transformer
     
     // If this is an Stree instance, handle it with SourceTreeHandler
     // and bypass the whole DOM process.
-    if (sourceNode instanceof org.apache.xalan.stree.Child)
+    boolean isSTree = (sourceNode instanceof org.apache.xalan.stree.Child);
+    if (isSTree)
     {      
       rtfHandler = new SourceTreeHandler(this);
       ((SourceTreeHandler)rtfHandler).setUseMultiThreading(false);
@@ -1644,14 +1650,19 @@ public class TransformerImpl extends Transformer
 
     // And make a new handler for the RTF.
     this.m_resultTreeHandler = new ResultTreeHandler(this, rtfHandler);
-
-    // Do the transformation of the child elements.
-    executeChildTemplates(templateParent, sourceNode, mode);
+    
 
     try
     {
+      m_resultTreeHandler.startDocument();
+  
+      // Do the transformation of the child elements.
+      executeChildTemplates(templateParent, sourceNode, mode);
+      
       // Make sure everything is flushed!
       this.m_resultTreeHandler.flushPending();
+      
+      m_resultTreeHandler.endDocument();
     }
     catch(org.xml.sax.SAXException se)
     {
