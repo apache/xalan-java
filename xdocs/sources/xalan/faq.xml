@@ -118,6 +118,20 @@
     NoClassDefFound error from a command-line application, run EnvironmentCheck on the command line with exactly the same 
     classpath. If the error occurs inside your Java application (or in a servlet, etc.), be sure to call the 
     EnvironmentCheck checkEnvironment(...) method from within your running application.</p>
+    <p>Best of all, you can call checkEnvironment from a stylesheet using extensions:</p>
+<source>
+&lt;?xml version="1.0"?&gt;
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+    xmlns:xalan="http://xml.apache.org/xalan"
+    exclude-result-prefixes="xalan"&gt;
+&lt;xsl:output indent="yes"/&gt;
+
+&lt;xsl:template match="/"&gt;
+  &lt;out&gt;
+    &lt;xsl:copy-of select="xalan:checkEnvironment()"/&gt;
+  &lt;/out&gt;
+&lt;/xsl:template&gt;
+&lt;/xsl:stylesheet&gt;</source>
     </a>
    </faq>
  
