@@ -152,7 +152,7 @@ public abstract class DTMDefaultBase implements DTM
 
   /** The document identity number(s). If we have overflowed the addressing
    * range of the first that was assigned to us, we may add others. */
-  protected SuballocatedIntVector m_dtmIdent=new SuballocatedIntVector();
+  protected SuballocatedIntVector m_dtmIdent=new SuballocatedIntVector(32);
 
   /** The mask for the identity.
       %REVIEW% Should this really be set to the _DEFAULT? What if
@@ -1132,10 +1132,10 @@ public abstract class DTMDefaultBase implements DTM
       {
 
         // First
-        m_namespaceDeclSetElements=new SuballocatedIntVector();
+        m_namespaceDeclSetElements=new SuballocatedIntVector(32);
         m_namespaceDeclSetElements.addElement(elementNodeIndex);
         m_namespaceDeclSets=new Vector();
-        nsList=new SuballocatedIntVector();
+        nsList=new SuballocatedIntVector(32);
         m_namespaceDeclSets.addElement(nsList);
       }
     else
@@ -1152,8 +1152,6 @@ public abstract class DTMDefaultBase implements DTM
     if(nsList==null)
       {
         m_namespaceDeclSetElements.addElement(elementNodeIndex);
-        nsList=new SuballocatedIntVector();
-        m_namespaceDeclSets.addElement(nsList);
 
         SuballocatedIntVector inherited= findNamespaceContext(_parent(elementNodeIndex));
 
@@ -1163,11 +1161,19 @@ public abstract class DTMDefaultBase implements DTM
             // be better this way, and if we ever decide we want to
             // keep this ordered by expanded-type...
             int isize=inherited.size();
+            
+            // Base the size of a new namespace list on the 
+            // size of the inherited list - but within reason! 
+            nsList=new SuballocatedIntVector(Math.max(Math.min(isize+16,2048), 32)); 
+            
             for(int i=0;i<isize;++i)
               {
                 nsList.addElement(inherited.elementAt(i));
               }
+          } else { 
+            nsList=new SuballocatedIntVector(32); 
           }
+          m_namespaceDeclSets.addElement(nsList);
       }
 
     // Handle overwriting inherited.
@@ -1736,6 +1742,7 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
+   * <meta name="usage" content="internal"/>
    * Return the name of the character encoding scheme
    *        in which the document entity is expressed.
    *
