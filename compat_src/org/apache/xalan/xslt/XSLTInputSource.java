@@ -84,9 +84,12 @@ public class XSLTInputSource //extends SAXSource
   
   /**
     * Zero-argument default constructor -- Before you can use the new XSLTInputSource object in a transformation,
-    * you must define the document source with setSystemId().
+    * you must define the document source with setSystemId(), setNode(), setInputStream(), or setCharacterStream().
     *
     * @see #setSystemId(String)
+    * @see #setNode(Node)
+    * @see #setInputStream
+    * @see #setCharacterStream
     * @see #setEncoding(String)
     */
   public XSLTInputSource ()
@@ -101,9 +104,14 @@ public class XSLTInputSource //extends SAXSource
 
     * If the system identifier is a URL, it must be fully resolved.
     *
+    * If the system identifier is a URL, it must be fully resolved.
+    *
     * @param systemId The system identifier (URI).
     * @see #setSystemId(String)
+    * @see #setNode(Node)
+    * @see #setInputStream
     * @see #setEncoding(String)
+    * @see #setCharacterStream
     */
   public XSLTInputSource (String systemId)
   {
@@ -114,11 +122,15 @@ public class XSLTInputSource //extends SAXSource
 
 
   /**
-    * Create a new input source with a byte stream.
+    * Create a new input source with a byte stream -- the equivalent of creating an input source
+    * with the zero-argument constructor and setting the new object's ByteStream property.
     *
     * @param byteStream The raw byte stream containing the document.
+    * @see #setInputStream
     * @see #setSystemId(String)
+    * @see #setNode(Node)
     * @see #setEncoding(String)
+    * @see #setCharacterStream
     */
   public XSLTInputSource (InputStream byteStream)
   {
@@ -132,7 +144,10 @@ public class XSLTInputSource //extends SAXSource
     * <p>The character stream shall not include a byte order mark.</p>
     *
     * @param characterStream The character stream containing the document.
+    * @see #setCharacterStream
+    * @see #setInputStream
     * @see #setSystemId(String)
+    * @see #setNode(Node)
     * @see #setEncoding(String)
     */
   public XSLTInputSource (Reader characterStream)
@@ -146,7 +161,11 @@ public class XSLTInputSource //extends SAXSource
     * with the zero-argument constructor and setting the new object's Node property.
     *
     * @param node The DOM Node containing the document.
+    * @see #setNode(Node)
+    * @see #setCharacterStream
+    * @see #setInputStream
     * @see #setSystemId(String)
+    * @see #setEncoding(String)
     */
   public XSLTInputSource (Node node)
   {
@@ -158,9 +177,12 @@ public class XSLTInputSource //extends SAXSource
     * Create a new XSLTInputSource source from a SAX input source.
     * This operation sets the ByteStream, CharacterStream, SystemId, PublicID, and Encoding properties.
     *
-    * @param isource The SAX input source.
+   * @param isource The SAX input source.
+    * @see #setCharacterStream
+    * @see #setInputStream
     * @see #setSystemId(String)
     * @see #setEncoding(String)
+    * @see #setNode(Node)
     */
   public XSLTInputSource (InputSource isource)
   {
@@ -168,16 +190,16 @@ public class XSLTInputSource //extends SAXSource
     saxSource.setInputSource(isource);
     //saxSource.setXMLReader(isource.getCharacterStream());
     this.setEncoding(isource.getEncoding());
-    //this.setPublicId(isource.getPublicId());
     saxSource.setSystemId(isource.getSystemId());
   }
 
   /**
     * Set the DOM Node for this input source.
     *
-    * @param characterStream The character stream containing the
+    * @param node The DOM node containing the
     *        XML document or XSL stylesheet.
     * @see #XSLTInputSource(Node)
+    * @see #getCharacterStream()    * 
     * @see java.io.Reader
     */
   public void setNode (Node node)
@@ -192,6 +214,7 @@ public class XSLTInputSource //extends SAXSource
     *
     * @return The DOM node containing the document, or null if none was supplied.
     * @see #XSLTInputSource(Node)
+    * @see #setNode(Node)
     */
   public Node getNode ()
   {
@@ -321,9 +344,9 @@ public class XSLTInputSource //extends SAXSource
     }
 
     /**
-     * Get the byte stream that was set with setByteStream.
+     * Get the byte stream that was set with setInputStream.
      *
-     * @return The byte stream that was set with setByteStream, or null
+     * @return The byte stream that was set with setInputStream, or null
      * if setByteStream or the ByteStream constructor was not called.
      */
     public InputStream getInputStream() {
