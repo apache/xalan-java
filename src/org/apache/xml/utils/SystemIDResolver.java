@@ -164,7 +164,7 @@ public class SystemIDResolver
     if ((!isAbsouteUrl) && ((null == base)
             || (base.indexOf(':') < 0)))
     {
-      if (base.startsWith(File.separator))
+      if (base != null && base.startsWith(File.separator))
         base = "file://" + base;
       else
         base = getAbsoluteURIFromRelative(base);
