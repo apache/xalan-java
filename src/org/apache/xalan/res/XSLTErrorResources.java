@@ -81,7 +81,7 @@ public class XSLTErrorResources extends XSLResourceBundle
 public static final String ERROR_SUFFIX = "ER";  
 public static final String WARNING_SUFFIX = "WR";
 
-public static final int MAX_CODE = 105;                  // this is needed to keep track of the number of messages          
+public static final int MAX_CODE = 106;                  // this is needed to keep track of the number of messages          
 public static final int MAX_WARNING = 26;             // this is needed to keep track of the number of warnings
 public static final int MAX_OTHERS = 41;
 public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING +1;
@@ -645,6 +645,11 @@ static {contents[ER_IN_ELEMTEMPLATEELEM_READOBJECT][1]
 public static final int ER_DUPLICATE_NAMED_TEMPLATE = 105;
 static {contents[ER_DUPLICATE_NAMED_TEMPLATE][1] 
           = "Found more than one template named: {0}";      
+}
+
+public static final int ER_INVALID_KEY_CALL = 106;
+static {contents[ER_INVALID_KEY_CALL][1] 
+          = "Invalid function call: recursive key() calls are not allowed";      
 }
 
 // Warnings...
