@@ -473,6 +473,18 @@ public class NodeVector implements Serializable, Cloneable
 
     m_firstFree = 0;
   }
+  
+  /**
+   * Set the length to zero, but don't clear the array.
+   */
+  public void RemoveAllNoClear()
+  {
+
+    if (null == m_map)
+      return;
+
+    m_firstFree = 0;
+  }
 
   /**
    * Removes the first occurrence of the argument from this vector.
