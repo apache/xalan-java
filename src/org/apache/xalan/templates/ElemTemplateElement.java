@@ -838,7 +838,6 @@ public class ElemTemplateElement extends UnImplNode
    */
   public String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context)
   {
-
     this.error(XSLTErrorResources.ER_CANT_RESOLVE_NSPREFIX, null);
 
     return null;
@@ -883,6 +882,12 @@ public class ElemTemplateElement extends UnImplNode
     // Not found; ask our ancestors
     if (null != m_parentNode)
       return m_parentNode.getNamespaceForPrefix(prefix);
+
+    // JJK: No ancestors; try implicit
+    // %REVIEW% Are there literals somewhere that we should use instead?
+    // %REVIEW% Is this really the best place to patch?
+    if("xml".equals(prefix))
+      return "http://www.w3.org/XML/1998/namespace";
 
     // No parent, so no definition
     return null;
