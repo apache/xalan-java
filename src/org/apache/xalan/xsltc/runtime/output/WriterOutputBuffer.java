@@ -67,7 +67,16 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 
 class WriterOutputBuffer implements OutputBuffer {
-    protected static final int BUFFER_SIZE = 32 * 1024;
+    private static final int KB = 1024;
+    private static int BUFFER_SIZE = 4 * KB;
+
+    static {
+	// Set a larger buffer size for Solaris
+	final String osName = System.getProperty("os.name");
+	if (osName.equalsIgnoreCase("solaris")) {
+	    BUFFER_SIZE = 32 * KB;
+	}
+    }
 
     private Writer _writer;
 
