@@ -108,7 +108,7 @@ public class ExtensionNamespacesManager
     {
       int predef = namespaceIndex(namespace, m_predefExtensions);
       if (predef !=-1)
-        m_extensions.addElement(m_predefExtensions.get(predef));
+        m_extensions.addElement(m_predefExtensions.elementAt(predef));
       else if (!(m_unregisteredExtensions.contains(namespace)))
         m_unregisteredExtensions.addElement(namespace);       
     }
@@ -281,6 +281,12 @@ public class ExtensionNamespacesManager
     lib = "org.apache.xalan.lib.ExsltDatetime";
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
+                                             
+    uri = "http://exslt.org/dynamic";
+    lib = "org.apache.xalan.lib.ExsltDynamic";
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));
+                                             
   }    
   
 }
