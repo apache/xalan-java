@@ -453,8 +453,12 @@ Copyright:
       file="${src.dir}/${xsltc.reldir}/javax.xml.transform.TransformerFactory"
     />
 
+    <!-- Copy over the manifest, with filtering (for version number) -->
+    <filter token="impl.version" value="${impl.version}"/>
+    <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
+    
     <!-- make bundled jar named xsltc.jar -->
-    <jar jarfile="${build.dir}/xsltc.jar"
+    <jar jarfile="${build.dir}/xsltc.jar" manifest="${build.dir}/manifest.xsltc"
          basedir="${build.dir}/xsltctmp" />
 
     <!-- clean up tmp directory -->
