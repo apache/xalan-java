@@ -632,10 +632,27 @@ public class Compiler extends OpMap
    */
   protected Expression union(int opPos) throws TransformerException
   {
-    return new UnionPathIterator(this, opPos);
+    locPathDepth++;
+    try
+    {
+      return new UnionPathIterator(this, opPos);
+    }
+    finally
+    {
+      locPathDepth--;
+    }
   }
   
   private int locPathDepth = -1;
+  
+  /**
+   * Get the level of the location path or union being constructed.  
+   * @return 0 if it is a top-level path.
+   */
+  public int getLocationPathDepth()
+  {
+    return locPathDepth;
+  }
 
   /**
    * Compile a location path.  The LocPathIterator itself may create
@@ -650,11 +667,17 @@ public class Compiler extends OpMap
   public Expression locationPath(int opPos) throws TransformerException
   {
     locPathDepth++;
-    LocPathIterator iter = WalkerFactory.newLocPathIterator(this, opPos);
-    if(locPathDepth == 0)
-      iter.setIsTopLevel(true);
-    locPathDepth--;
-    return iter;
+    try
+    {
+      LocPathIterator iter = WalkerFactory.newLocPathIterator(this, opPos);
+      if(locPathDepth == 0)
+        iter.setIsTopLevel(true);
+      return iter;
+    }
+    finally
+    {
+      locPathDepth--;
+    }
   }
 
   /**

@@ -477,6 +477,9 @@ public class UnionPathIterator extends Expression
 
         LocPathIterator iter =
           new LocPathIterator(compiler.getNamespaceContext());
+          
+        if(compiler.getLocationPathDepth() <= 0)
+          iter.setIsTopLevel(true);
 
         iter.m_firstWalker = new org.apache.xpath.axes.FilterExprWalker(iter);
 
@@ -504,7 +507,10 @@ public class UnionPathIterator extends Expression
   protected LocPathIterator createLocPathIterator(
           Compiler compiler, int opPos) throws javax.xml.transform.TransformerException
   {
-    return WalkerFactory.newLocPathIterator(compiler, opPos);
+    LocPathIterator lpi = WalkerFactory.newLocPathIterator(compiler, opPos);
+    if(compiler.getLocationPathDepth() <= 0)
+      lpi.setIsTopLevel(true);
+    return lpi;
   }
 
   /** The last node that was fetched, usually by nextNode. */
