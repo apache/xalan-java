@@ -61,6 +61,8 @@ public class OneStepIterator extends ChildTestIterator
     super(null);
     
     m_iterator = iterator;
+    int whatToShow = DTMFilter.SHOW_ALL;
+    initNodeTest(whatToShow);
   }
   
   /**
