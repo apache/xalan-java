@@ -28,6 +28,7 @@ SRCS = \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)Arg.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)DOM2Helper.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)DOMHelper.java \
+    org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)DOMOrder.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)Expression.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)FoundIndex.java \
     org$(PATHSEP)apache$(PATHSEP)xpath$(PATHSEP)NodeSet.java \
