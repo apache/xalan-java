@@ -258,10 +258,14 @@ public class ExtensionNamespacesManager
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
     
-    uri = Constants.S_EXTENSIONS_XALANLIB_URL;
+    uri = Constants.S_BUILTIN_EXTENSIONS_URL;
     handlerClassName = "org.apache.xalan.extensions.ExtensionHandlerJavaClass";
     lang = "javaclass"; // for remaining predefined extension namespaces.    
     lib = "org.apache.xalan.lib.Extensions";
+    m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
+                                             new Object[]{uri, lang, lib}));
+    
+    uri = Constants.S_BUILTIN_OLD_EXTENSIONS_URL;
     m_predefExtensions.addElement(new ExtensionNamespaceSupport(uri, handlerClassName,
                                              new Object[]{uri, lang, lib}));
     
