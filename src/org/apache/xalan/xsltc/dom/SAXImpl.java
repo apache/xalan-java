@@ -1478,26 +1478,50 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
      */ 
     public DOM getResultTreeFrag(int initSize, int rtfType)
     {
+        return getResultTreeFrag(initSize, rtfType, true);
+    }
+        
+    /**
+     * Return a instance of a DOM class to be used as an RTF
+     *
+     * @param initSize The initial size of the DOM.
+     * @param rtfType The type of the RTF
+     * @param addToManager true if the RTF should be registered with the DTMManager.
+     * @return The DOM object which represents the RTF.
+     */ 
+    public DOM getResultTreeFrag(int initSize, int rtfType, boolean addToManager)
+    {
     	if (rtfType == DOM.SIMPLE_RTF) {
-            int dtmPos = _dtmManager.getFirstFreeDTMID();
-    	    SimpleResultTreeImpl rtf = new SimpleResultTreeImpl(_dtmManager,
-    	                               dtmPos << DTMManager.IDENT_DTM_NODE_BITS);
-    	    _dtmManager.addDTM(rtf, dtmPos, 0);
-    	    return rtf;
+            if (addToManager) {
+                int dtmPos = _dtmManager.getFirstFreeDTMID();
+    	        SimpleResultTreeImpl rtf = new SimpleResultTreeImpl(_dtmManager,
+    	                                   dtmPos << DTMManager.IDENT_DTM_NODE_BITS);
+    	        _dtmManager.addDTM(rtf, dtmPos, 0);
+    	        return rtf;
+    	    }
+            else {
+            	return new SimpleResultTreeImpl(_dtmManager, 0);
+            }
     	}
     	else if (rtfType == DOM.ADAPTIVE_RTF) {
-            int dtmPos = _dtmManager.getFirstFreeDTMID();
-    	    AdaptiveResultTreeImpl rtf = new AdaptiveResultTreeImpl(_dtmManager,
+            if (addToManager) {
+                int dtmPos = _dtmManager.getFirstFreeDTMID();
+    	        AdaptiveResultTreeImpl rtf = new AdaptiveResultTreeImpl(_dtmManager,
     	                               dtmPos << DTMManager.IDENT_DTM_NODE_BITS,
     	                               m_wsfilter, initSize, m_buildIdIndex);
-    	    _dtmManager.addDTM(rtf, dtmPos, 0);
-    	    return rtf;
+    	        _dtmManager.addDTM(rtf, dtmPos, 0);
+    	        return rtf;
     	
+    	    }
+    	    else {
+            	return new AdaptiveResultTreeImpl(_dtmManager, 0,
+    	                               m_wsfilter, initSize, m_buildIdIndex);
+            }    	
     	}
     	else {
-    	    return (SAXImpl) _dtmManager.getDTM(null, true, m_wsfilter,
-                                                true, false, false,
-                                                initSize, m_buildIdIndex);
+    	    return (DOM) _dtmManager.getDTM(null, true, m_wsfilter,
+                                            true, false, false,
+                                            initSize, m_buildIdIndex);
         }
     }
 

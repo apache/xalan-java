@@ -621,6 +621,11 @@ public class SimpleResultTreeImpl extends EmptySerializer implements DOM, DTM
         return null;
     }
     
+    public DOM getResultTreeFrag(int initialSize, int rtfType, boolean addToManager)
+    {
+        return null;
+    }
+    
     public SerializationHandler getOutputDomBuilder()
     {
         return this;

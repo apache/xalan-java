@@ -655,6 +655,11 @@ public final class MultiDOM implements DOM {
         return _main.getResultTreeFrag(initSize, rtfType);
     }
     
+    public DOM getResultTreeFrag(int initSize, int rtfType, boolean addToManager)
+    {
+        return _main.getResultTreeFrag(initSize, rtfType, addToManager);
+    }
+    
     public DOM getMain()
     {
         return _main;

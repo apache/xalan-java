@@ -441,6 +441,20 @@ public final class DOMAdapter implements DOM {
     }
     
     /**
+     * Return a instance of a DOM class to be used as an RTF
+     */ 
+    public DOM getResultTreeFrag(int initSize, int rtfType, boolean addToManager)
+    {
+    	if (_saxImpl != null) {
+    	    return _saxImpl.getResultTreeFrag(initSize, rtfType, addToManager);
+    	}
+    	else {
+	    return _dom.getResultTreeFrag(initSize, rtfType, addToManager);
+	}
+    }
+  
+    
+    /**
      * Returns a SerializationHandler class wrapped in a SAX adapter.
      */
     public SerializationHandler getOutputDomBuilder()

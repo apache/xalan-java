@@ -134,6 +134,7 @@ public interface DOM {
     public int getNodeIdent(final int nodehandle);
     public int getNodeHandle(final int nodeId);
     public DOM getResultTreeFrag(int initialSize, int rtfType);
+    public DOM getResultTreeFrag(int initialSize, int rtfType, boolean addToDTMManager);
     public SerializationHandler getOutputDomBuilder();
     public int getNSType(int node);
     public int getDocument();

@@ -662,11 +662,11 @@ public abstract class SyntaxTreeNode implements Constants {
 	il.append(methodGen.loadDOM());
 	int index = cpg.addInterfaceMethodref(DOM_INTF,
 				 "getResultTreeFrag",
-				 "(II)" + DOM_INTF_SIG);
+				 "(IIZ)" + DOM_INTF_SIG);
 	il.append(new PUSH(cpg, RTF_INITIAL_SIZE));
 	il.append(new PUSH(cpg, rtfType));
-	il.append(new INVOKEINTERFACE(index,3));
-
+	il.append(new PUSH(cpg, stylesheet.callsNodeset()));
+	il.append(new INVOKEINTERFACE(index,4));
 	
 	il.append(DUP);
 
@@ -692,7 +692,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	// Check if we need to wrap the DOMImpl object in a DOMAdapter object.
 	// DOMAdapter is not needed if the RTF is a simple RTF and the nodeset()
 	// function is not used.
-	if ((!isSimple || stylesheet.callsNodeset())
+	if (stylesheet.callsNodeset()
 	    && !DOM_CLASS.equals(DOM_IMPL_CLASS)) {
 	    // new org.apache.xalan.xsltc.dom.DOMAdapter(DOMImpl,String[]);
 	    index = cpg.addMethodref(DOM_ADAPTER_CLASS,
