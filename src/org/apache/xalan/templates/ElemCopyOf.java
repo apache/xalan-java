@@ -59,12 +59,13 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TreeWalker2Result;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
+import org.apache.xalan.serialize.SerializerUtils;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -173,7 +174,7 @@ public class ElemCopyOf extends ElemTemplateElement
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                                                         "select", m_selectExpression, value);
 
-      ResultTreeHandler handler = transformer.getResultTreeHandler();
+      SerializationHandler handler = transformer.getSerializationHandler();
 
       if (null != value)
                         {
@@ -215,7 +216,7 @@ public class ElemCopyOf extends ElemTemplateElement
             }
             else if (t == DTM.ATTRIBUTE_NODE)
             {
-              handler.addAttribute(pos);
+              SerializerUtils.addAttribute(handler, pos);
             }
             else
             {
@@ -225,8 +226,8 @@ public class ElemCopyOf extends ElemTemplateElement
           // nl.detach();
           break;
         case XObject.CLASS_RTREEFRAG :
-          handler.outputResultTreeFragment(value,
-                                           transformer.getXPathContext());
+          SerializerUtils.outputResultTreeFragment(
+            handler, value, transformer.getXPathContext());
           break;
         default :
           

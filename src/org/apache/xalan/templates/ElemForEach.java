@@ -61,7 +61,6 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.NodeSorter;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -71,7 +70,6 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.xml.sax.ContentHandler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -375,8 +373,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
       }
 
-      final ResultTreeHandler rth = transformer.getResultTreeHandler();
-      ContentHandler chandler = rth.getContentHandler();
 
       xctxt.pushCurrentNode(DTM.NULL);
 

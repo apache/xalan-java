@@ -60,18 +60,17 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -268,8 +267,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
                 new org.apache.xpath.objects.XNodeSet(sourceNodes));
       }
 
-      final ResultTreeHandler rth = transformer.getResultTreeHandler();
-      ContentHandler chandler = rth.getContentHandler();
+      final SerializationHandler rth = transformer.getSerializationHandler();
+//      ContentHandler chandler = rth.getContentHandler();
       final StylesheetRoot sroot = transformer.getStylesheet();
       final TemplateList tl = sroot.getTemplateListComposed();
       final boolean quiet = transformer.getQuietConflictWarnings();
@@ -319,6 +318,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
         
         final int exNodeType = dtm.getExpandedTypeID(child);
+
         final int nodeType = dtm.getNodeType(child);
 
         final QName mode = transformer.getMode();

@@ -71,7 +71,7 @@ import org.apache.xalan.extensions.ExtensionNamespacesManager;
 import org.apache.xalan.processor.XSLTSchema;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.serialize.Method;
+
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.ExpandedNameTable;
@@ -281,7 +281,9 @@ public class StylesheetRoot extends StylesheetComposed
 
     // We set up the global variables that will hold the recomposed information.
 
-    m_outputProperties = new OutputProperties(Method.XML);
+
+    m_outputProperties = new OutputProperties(org.apache.xml.serializer.Method.UNKNOWN);
+//  m_outputProperties = new OutputProperties(Method.XML);
     
     m_attrSets = new Hashtable();
     m_decimalFormatSymbols = new Hashtable();

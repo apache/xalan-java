@@ -59,8 +59,9 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.NamespaceMappings;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 
 import org.xml.sax.SAXException;
@@ -114,7 +115,7 @@ public class ElemAttribute extends ElemElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+    SerializationHandler rhandler = transformer.getSerializationHandler();
 
     // If they are trying to add an attribute when there isn't an 
     // element pending, it is an error.
@@ -154,7 +155,7 @@ public class ElemAttribute extends ElemElement
    *
    * @return The prefix to be used.
    */
-  protected String resolvePrefix(ResultTreeHandler rhandler,
+  protected String resolvePrefix(SerializationHandler rhandler,
                                  String prefix, String nodeNamespace)
     throws TransformerException
   {
@@ -170,7 +171,8 @@ public class ElemAttribute extends ElemElement
       {
         if(nodeNamespace.length() > 0)
         {
-          prefix = rhandler.getNewUniqueNSPrefix();
+            NamespaceMappings prefixMapping = rhandler.getNamespaceMappings();
+            prefix = prefixMapping.generateNextPrefix();
         }
         else
           prefix = "";
@@ -215,7 +217,7 @@ public class ElemAttribute extends ElemElement
 
     if(null != nodeName && nodeName.length() > 0)
     {
-      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      SerializationHandler rhandler = transformer.getSerializationHandler();
       if(prefix != null && prefix.length() > 0)
       {
         try
@@ -229,7 +231,13 @@ public class ElemAttribute extends ElemElement
       }
       String val = transformer.transformToString(this);
       String localName = QName.getLocalPart(nodeName);
-      rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
+      try 
+      {
+        rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
+      }
+      catch (SAXException e)
+      {
+      }
     }
   }
 

@@ -59,8 +59,8 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
@@ -242,7 +242,7 @@ public class ElemElement extends ElemUse
    *
    * @return The prefix to be used.
    */
-  protected String resolvePrefix(ResultTreeHandler rhandler,
+  protected String resolvePrefix(SerializationHandler rhandler,
                                  String prefix, String nodeNamespace)
     throws TransformerException
   {
@@ -278,7 +278,7 @@ public class ElemElement extends ElemUse
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
       
- 	ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+ 	SerializationHandler rhandler = transformer.getSerializationHandler();
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
     
@@ -390,7 +390,7 @@ public class ElemElement extends ElemUse
 
     try
     {
-      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      SerializationHandler rhandler = transformer.getResultTreeHandler();
 
       if (null == nodeName)
       {
@@ -409,7 +409,7 @@ public class ElemElement extends ElemUse
         }
 
         rhandler.startElement(nodeNamespace, QName.getLocalPart(nodeName),
-                              nodeName, null);
+                              nodeName);
 
         super.execute(transformer);
 

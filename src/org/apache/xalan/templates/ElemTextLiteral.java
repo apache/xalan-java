@@ -58,8 +58,8 @@ package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.SerializationHandler;
 import org.xml.sax.SAXException;
 
 /**
@@ -242,7 +242,7 @@ public class ElemTextLiteral extends ElemTemplateElement
       transformer.getTraceManager().fireTraceEvent(this);
     try
     {
-      ResultTreeHandler rth = transformer.getResultTreeHandler();
+      SerializationHandler rth = transformer.getResultTreeHandler();
       if (m_disableOutputEscaping)
       {
         rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");

@@ -59,9 +59,9 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -250,7 +250,7 @@ public class ElemValueOf extends ElemTemplateElement
   {
 
     XPathContext xctxt = transformer.getXPathContext();
-    ResultTreeHandler rth = transformer.getResultTreeHandler();
+    SerializationHandler rth = transformer.getResultTreeHandler();
 
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);

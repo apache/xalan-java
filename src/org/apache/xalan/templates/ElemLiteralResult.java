@@ -61,8 +61,8 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPathContext;
 
@@ -647,7 +647,7 @@ public class ElemLiteralResult extends ElemUse
 
     try
     {
-      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      SerializationHandler rhandler = transformer.getSerializationHandler();
 			
 			// JJK Bugzilla 3464, test namespace85 -- make sure LRE's
 			// namespace is asserted even if default, since xsl:element
@@ -656,7 +656,7 @@ public class ElemLiteralResult extends ElemUse
 
       // Add namespace declarations.
       executeNSDecls(transformer);
-      rhandler.startElement(getNamespace(), getLocalName(), getRawName(), null);
+      rhandler.startElement(getNamespace(), getLocalName(), getRawName());
 
       try
       {

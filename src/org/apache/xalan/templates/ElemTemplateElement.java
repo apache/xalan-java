@@ -65,8 +65,8 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.ExpressionNode;
@@ -1208,7 +1208,7 @@ public class ElemTemplateElement extends UnImplNode
     {
       if (null != m_prefixTable)
       {
-        ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+        SerializationHandler rhandler = transformer.getResultTreeHandler();
         int n = m_prefixTable.size();
 
         for (int i = n - 1; i >= 0; i--)
@@ -1257,7 +1257,7 @@ public class ElemTemplateElement extends UnImplNode
     {
       if (null != m_prefixTable)
       {
-        ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+        SerializationHandler rhandler = transformer.getResultTreeHandler();
         int n = m_prefixTable.size();
 
         for (int i = 0; i < n; i++)

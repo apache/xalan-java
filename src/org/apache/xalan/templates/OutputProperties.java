@@ -56,9 +56,6 @@
  */
 package org.apache.xalan.templates;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -68,10 +65,10 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.serialize.Method;
+import org.apache.xml.serializer.OutputPropertiesFactory;
+import org.apache.xml.serializer.OutputPropertyUtils;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.QName;
-import org.apache.xml.utils.WrappedRuntimeException;
 
 /**
  * This class provides information from xsl:output elements. It is mainly
@@ -94,7 +91,7 @@ public class OutputProperties extends ElemTemplateElement
    */
   public OutputProperties()
   {
-    this(Method.XML);
+    this(org.apache.xml.serializer.Method.XML);
   }
 
   /**
@@ -119,308 +116,8 @@ public class OutputProperties extends ElemTemplateElement
    */
   public OutputProperties(String method)
   {
-    m_properties = new Properties(getDefaultMethodProperties(method));
-  }
-  
-  static final String S_XSLT_PREFIX = "xslt.output.";
-  static final int S_XSLT_PREFIX_LEN = S_XSLT_PREFIX.length();
-  static final String S_XALAN_PREFIX = "org.apache.xslt.";
-  static final int S_XALAN_PREFIX_LEN = S_XALAN_PREFIX.length();
-  
-  /** Built-in extensions namespace, reexpressed in {namespaceURI} syntax
-   * suitable for prepending to a localname to produce a "universal
-   * name".
-   */
-  static final String S_BUILTIN_EXTENSIONS_UNIVERSAL=
-        "{"+Constants.S_BUILTIN_EXTENSIONS_URL+"}";
-  
-  /**
-   * The old built-in extension namespace
-   */
-  static final String S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL=
-        "{"+Constants.S_BUILTIN_OLD_EXTENSIONS_URL+"}";
-  
-  static final int S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN = S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL.length();
-  
-  /**
-   * Fix up a string in an output properties file according to 
-   * the rules of {@link #loadPropertiesFile}.
-   * 
-   * @param s non-null reference to string that may need to be fixed up.
-   * @return A new string if fixup occured, otherwise the s argument.
-   */
-  static private String fixupPropertyString(String s, boolean doClipping)
-  {
-    int index;
-    if (doClipping && s.startsWith(S_XSLT_PREFIX))
-    {
-      s = s.substring(S_XSLT_PREFIX_LEN);
-    }
-    if (s.startsWith(S_XALAN_PREFIX))
-    {
-      s = S_BUILTIN_EXTENSIONS_UNIVERSAL + s.substring(S_XALAN_PREFIX_LEN);
-    }
-    if ((index = s.indexOf("\\u003a")) > 0)
-    {
-      String temp = s.substring(index+6);
-      s = s.substring(0, index) + ":" + temp;
-
-    }
-    return s;
-  }
-  
-  /**
-   * Load the properties file from a resource stream.  If a 
-   * key name such as "org.apache.xslt.xxx", fix up the start of 
-   * string to be a curly namespace.  If a key name starts with 
-   * "xslt.output.xxx", clip off "xslt.output.".  If a key name *or* a 
-   * key value is discovered, check for \u003a in the text, and 
-   * fix it up to be ":", since earlier versions of the JDK do not 
-   * handle the escape sequence (at least in key names).
-   * 
-   * @param resourceName non-null reference to resource name.
-   * @param defaults Default properties, which may be null.
-   */
-  static private Properties loadPropertiesFile(final String resourceName, Properties defaults)
-    throws IOException
-  {
-
-    // This static method should eventually be moved to a thread-specific class
-    // so that we can cache the ContextClassLoader and bottleneck all properties file
-    // loading throughout Xalan.
-
-    Properties props = new Properties(defaults);
-
-    InputStream is = null;
-    BufferedInputStream bis = null;
-    Class accessControllerClass = null;
-
-    try {
-      try {
-	try {	
-
-	  // This Class was introduced in JDK 1.2. With the re-architecture of
-	  // security mechanism ( starting in JDK 1.2 ), we have option of
-	  // giving privileges to certain part of code using doPrivileged block.
-	  // In JDK1.1.X applications won't be having security manager and if 
-	  // there is security manager ( in applets ), code need to be signed
-	  // and trusted for having access to resources. 
-
-	  accessControllerClass=Class.forName("java.security.AccessController"); 
-
-	  // If we are here means user is using JDK >= 1.2. 
-	  // Using doPrivileged to be able to read property file without opening
-          // up secured container permissions like J2EE container
-
-	  is =(InputStream)java.security.AccessController.doPrivileged (
-            new java.security.PrivilegedAction() {
-
-            public Object run() {
-              try {
-                java.lang.reflect.Method getCCL = Thread.class.getMethod(
-                    "getContextClassLoader", NO_CLASSES);
-                if (getCCL != null) {
-                  ClassLoader contextClassLoader = (ClassLoader)
-                      getCCL.invoke(Thread.currentThread(), NO_OBJS);
-                  return ( contextClassLoader.getResourceAsStream (
-                      "org/apache/xalan/templates/" + resourceName) );
-                }
-              } catch ( Exception e ) { }
-
-              return null;
-
-            }
-          });
-	} catch ( ClassNotFoundException e ) {
-	  //User may be using older JDK ( JDK <1.2 ). Allow him/her to use it.  
-	  // But don't try to use doPrivileged
-	  try {
-                java.lang.reflect.Method getCCL = Thread.class.getMethod(
-                    "getContextClassLoader", NO_CLASSES);
-                if (getCCL != null) {
-                  ClassLoader contextClassLoader = (ClassLoader)
-                      getCCL.invoke(Thread.currentThread(), NO_OBJS);
-                  is = contextClassLoader.getResourceAsStream (
-                      "org/apache/xalan/templates/" + resourceName );
-                }
-	  } catch ( Exception exception ) { }
-	}	  
-      }
-      catch (Exception e) {}
-
-      if ( is == null ) {
-	if ( accessControllerClass != null ) {
-          is=(InputStream)java.security.AccessController.doPrivileged( 
-	      new java.security.PrivilegedAction(){
-	    public Object run() {
-              return OutputProperties.class.getResourceAsStream(resourceName);
-            }
-          });
-	} else {
-	  // User may be using older JDK ( JDK < 1.2 )
-	  is = OutputProperties.class.getResourceAsStream(resourceName);
-	}
-      }
-      
-      bis = new BufferedInputStream(is);
-      props.load(bis);
-    } 
-    catch (IOException ioe) {
-      if ( defaults == null ) {
-        throw ioe;
-      }
-      else {
-        throw new WrappedRuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_LOAD_RESOURCE, new Object[]{resourceName}), ioe); //"Could not load '"+resourceName+"' (check CLASSPATH), now using just the defaults ", ioe);
-      }
-    }
-    catch (SecurityException se) {
-      // Repeat IOException handling for sandbox/applet case -sc
-      if ( defaults == null ) {
-        throw se;
-      }
-      else {
-        throw new WrappedRuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_LOAD_RESOURCE, new Object[]{resourceName}), se); //"Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
-      }
-    } 
-    finally {
-      if ( bis != null ) {
-        bis.close();
-      }
-      if (is != null ) {
-        is.close();
-      }
-    }
-    
-    // Note that we're working at the HashTable level here, 
-    // and not at the Properties level!  This is important 
-    // because we don't want to modify the default properties.
-    // NB: If fixupPropertyString ends up changing the property
-    // name or value, we need to remove the old key and re-add
-    // with the new key and value.  However, then our Enumeration
-    // could lose its place in the HashTable.  So, we first
-    // clone the HashTable and enumerate over that since the
-    // clone will not change.  When we migrate to Collections,
-    // this code should be revisited and cleaned up to use
-    // an Iterator which may (or may not) alleviate the need for
-    // the clone.  Many thanks to Padraig O'hIceadha
-    // <padraig@gradient.ie> for finding this problem.  Bugzilla 2000.
-
-    Enumeration keys = ((Properties) props.clone()).keys();
-    while(keys.hasMoreElements())
-    {
-      String key = (String)keys.nextElement();
-      // Now check if the given key was specified as a 
-      // System property. If so, the system property 
-      // overides the default value in the propery file.
-      String value = null;
-      try {
-        value = System.getProperty(key);
-      }
-      catch (SecurityException se) {
-        // No-op for sandbox/applet case, leave null -sc
-      }
-      if (value == null)      
-        value = (String)props.get(key);                       
-      
-      String newKey = fixupPropertyString(key, true);
-      String newValue = null;
-      try {
-        newValue = System.getProperty(newKey);
-      }
-      catch (SecurityException se) {
-        // No-op for sandbox/applet case, leave null -sc
-      }
-      if (newValue == null)
-        newValue = fixupPropertyString(value, false);
-      else
-        newValue = fixupPropertyString(newValue, false);
-       
-      if(key != newKey || value != newValue)
-      {
-        props.remove(key);
-        props.put(newKey, newValue);
-      }
-      
-    }
-    
-    return props;
-  }
-
-  /**
-   * Creates an empty OutputProperties with the defaults specified by
-   * a property file.  The method argument is used to construct a string of
-   * the form output_[method].properties (for instance, output_html.properties).
-   * The output_xml.properties file is always used as the base.
-   * <p>At the moment, anything other than 'text', 'xml', and 'html', will
-   * use the output_xml.properties file.</p>
-   *
-   * @param   method non-null reference to method name.
-   *
-   * @return Properties object that holds the defaults for the given method.
-   */
-  static public Properties getDefaultMethodProperties(String method)
-  {
-    String fileName = null;
-    Properties defaultProperties = null;
-    // According to this article : Double-check locking does not work
-    // http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-toolbox.html
-    try
-    {
-      synchronized (m_synch_object)
-      {
-        if (null == m_xml_properties)  // double check
-        {
-          fileName = "output_xml.properties";
-          m_xml_properties = loadPropertiesFile(fileName, null);
-        }
-      }
-
-      if (method.equals(Method.XML))
-      {
-        defaultProperties = m_xml_properties;
-      }
-      else if (method.equals(Method.HTML))
-      {
-            if (null == m_html_properties)  // double check
-            {
-              fileName = "output_html.properties";
-              m_html_properties = loadPropertiesFile(fileName,
-                                                     m_xml_properties);
-            }
-
-        defaultProperties = m_html_properties;
-      }
-      else if (method.equals(Method.Text))
-      {
-            if (null == m_text_properties)  // double check
-            {
-              fileName = "output_text.properties";
-              m_text_properties = loadPropertiesFile(fileName,
-                                                     m_xml_properties);
-              if(null == m_text_properties.getProperty(OutputKeys.ENCODING))
-              {
-                String mimeEncoding = org.apache.xalan.serialize.Encodings.getMimeEncoding(null);
-                m_text_properties.put(OutputKeys.ENCODING, mimeEncoding);
-              }
-            }
-
-        defaultProperties = m_text_properties;
-      }
-      else
-      {
-
-        // TODO: Calculate res file from name.
-        defaultProperties = m_xml_properties;
-      }
-    }
-    catch (IOException ioe)
-    {
-      throw new WrappedRuntimeException(
-            "Output method is "+method+" could not load "+fileName+" (check CLASSPATH)",
-             ioe);
-    }
-
-    return defaultProperties;
+    m_properties = new Properties(
+        OutputPropertiesFactory.getDefaultMethodProperties(method));
   }
 
   /**
@@ -473,8 +170,9 @@ public class OutputProperties extends ElemTemplateElement
       setMethodDefaults(value);
     }
     
-    if (key.startsWith(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL))
-      key = S_BUILTIN_EXTENSIONS_UNIVERSAL + key.substring(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN);
+    if (key.startsWith(OutputPropertiesFactory.S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL))
+      key = OutputPropertiesFactory.S_BUILTIN_EXTENSIONS_UNIVERSAL
+         + key.substring(OutputPropertiesFactory.S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN);
     
     m_properties.put(key, value);
   }
@@ -502,10 +200,11 @@ public class OutputProperties extends ElemTemplateElement
    * @param   key   the property key.
    * @return  the value in this property list with the specified key value.
    */
-  public String getProperty(String key)
+  public String getProperty(String key) 
   {
-    if (key.startsWith(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL))
-      key = S_BUILTIN_EXTENSIONS_UNIVERSAL + key.substring(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN);
+    if (key.startsWith(OutputPropertiesFactory.S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL))
+      key = OutputPropertiesFactory.S_BUILTIN_EXTENSIONS_UNIVERSAL 
+        + key.substring(OutputPropertiesFactory.S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN);
     return m_properties.getProperty(key);
   }
 
@@ -562,32 +261,9 @@ public class OutputProperties extends ElemTemplateElement
    */
   public boolean getBooleanProperty(String key)
   {
-    return getBooleanProperty(key, m_properties);
+    return OutputPropertyUtils.getBooleanProperty(key, m_properties);
   }
 
-  /**
-   * Searches for the boolean property with the specified key in the property list.
-   * If the key is not found in this property list, the default property list,
-   * and its defaults, recursively, are then checked. The method returns
-   * <code>false</code> if the property is not found, or if the value is other
-   * than "yes".
-   *
-   * @param   key   the property key.
-   * @param   props   the list of properties that will be searched.
-   * @return  the value in this property list as a boolean value, or false
-   * if null or not "yes".
-   */
-  public static boolean getBooleanProperty(String key, Properties props)
-  {
-
-    String s = props.getProperty(key);
-
-    if (null == s ||!s.equals("yes"))
-      return false;
-    else
-      return true;
-  }
-  
   /**
    * Set an output property.
    *
@@ -641,31 +317,9 @@ public class OutputProperties extends ElemTemplateElement
    */
   public int getIntProperty(String key)
   {
-    return getIntProperty(key, m_properties);
+    return OutputPropertyUtils.getIntProperty(key, m_properties);
   }
 
-  /**
-   * Searches for the int property with the specified key in the property list.
-   * If the key is not found in this property list, the default property list,
-   * and its defaults, recursively, are then checked. The method returns
-   * <code>false</code> if the property is not found, or if the value is other
-   * than "yes".
-   *
-   * @param   key   the property key.
-   * @param   props   the list of properties that will be searched.
-   * @return  the value in this property list as a int value, or 0
-   * if null or not a number.
-   */
-  public static int getIntProperty(String key, Properties props)
-  {
-
-    String s = props.getProperty(key);
-
-    if (null == s)
-      return 0;
-    else
-      return Integer.parseInt(s);
-  }
 
   /**
    * Set an output property with a QName value.  The QName will be turned
@@ -688,14 +342,25 @@ public class OutputProperties extends ElemTemplateElement
    */
   public void setMethodDefaults(String method)
   {
-    String defaultMethod = m_properties.getProperty(OutputKeys.METHOD);
-    if((null == defaultMethod) || !defaultMethod.equals(method))
-    {
-      Properties savedProps = m_properties;
-      Properties newDefaults = getDefaultMethodProperties(method);
-      m_properties = new Properties(newDefaults);
-      copyFrom(savedProps, false);
-    }
+        String defaultMethod = m_properties.getProperty(OutputKeys.METHOD);
+ 
+        if((null == defaultMethod) || !defaultMethod.equals(method)
+         // bjm - add the next condition as a hack
+         // but it is because both output_xml.properties and
+         // output_unknown.properties have the same method=xml
+         // for their default. Otherwise we end up with
+         // a ToUnknownStream wraping a ToXMLStream even
+         // when the users says method="xml"
+         //
+         || defaultMethod.equals("xml")
+         )
+        {
+            Properties savedProps = m_properties;
+            Properties newDefaults = 
+                OutputPropertiesFactory.getDefaultMethodProperties(method);
+            m_properties = new Properties(newDefaults);
+            copyFrom(savedProps, false);
+        }
   }
   
 
@@ -1014,7 +679,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @return true if key is legal.
    */
-  public boolean isLegalPropertyKey(String key)
+  public static boolean isLegalPropertyKey(String key)
   {
 
     return (key.equals(OutputKeys.CDATA_SECTION_ELEMENTS)
@@ -1034,51 +699,5 @@ public class OutputProperties extends ElemTemplateElement
    *  @serial */
   private Properties m_properties = null;
 
-  // Some special Xalan keys.
-
-  /** The number of whitespaces to indent by, if indent="yes". */
-  public static String S_KEY_INDENT_AMOUNT =
-    S_BUILTIN_EXTENSIONS_UNIVERSAL+"indent-amount";
-
-  /**
-   * Fully qualified name of class with a default constructor that
-   *  implements the ContentHandler interface, where the result tree events
-   *  will be sent to.      
-   */
-  public static String S_KEY_CONTENT_HANDLER =
-    S_BUILTIN_EXTENSIONS_UNIVERSAL+"content-handler";
-
-  /** File name of file that specifies character to entity reference mappings. */
-  public static String S_KEY_ENTITIES =
-    S_BUILTIN_EXTENSIONS_UNIVERSAL+"entities";
-
-  /** Use a value of "yes" if the href values for HTML serialization should 
-   *  use %xx escaping. */
-  public static String S_USE_URL_ESCAPING =
-    S_BUILTIN_EXTENSIONS_UNIVERSAL+"use-url-escaping";
-
-  /** Use a value of "yes" if the META tag should be omitted where it would
-   *  otherwise be supplied.
-   */
-  public static String S_OMIT_META_TAG =
-    S_BUILTIN_EXTENSIONS_UNIVERSAL+"omit-meta-tag";
-
-  /** The default properties of all output files. */
-  private static Properties m_xml_properties = null;
-
-  /** The default properties when method="html". */
-  private static Properties m_html_properties = null;
-
-  /** The default properties when method="text". */
-  private static Properties m_text_properties = null;
-
-  /** Synchronization object for lazy initialization of the above tables. */
-  private static Integer m_synch_object = new Integer(1);
-
-  /** a zero length Class array used in loadPropertiesFile() */
-  private static final Class[] NO_CLASSES = new Class[0];
-
-  /** a zero length Object array used in loadPropertiesFile() */
-  private static final Object[] NO_OBJS = new Object[0];
 
 }

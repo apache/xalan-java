@@ -59,9 +59,10 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.ClonerToResultTree;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
+import org.apache.xalan.serialize.SerializerUtils;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPathContext;
 
 /**
@@ -136,7 +137,7 @@ public class ElemCopy extends ElemUse
 
       if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
       {
-        ResultTreeHandler rthandler = transformer.getResultTreeHandler();
+        SerializationHandler rthandler = transformer.getSerializationHandler();
 
         if (TransformerImpl.S_DEBUG)
           transformer.getTraceManager().fireTraceEvent(this);
@@ -148,7 +149,7 @@ public class ElemCopy extends ElemUse
         if (DTM.ELEMENT_NODE == nodeType)
         {
           super.execute(transformer);
-          rthandler.processNSDecls(sourceNode, nodeType, dtm);
+          SerializerUtils.processNSDecls(rthandler, sourceNode, nodeType, dtm);
           transformer.executeChildTemplates(this, true);
           
           String ns = dtm.getNamespaceURI(sourceNode);
