@@ -299,9 +299,11 @@ public class DOMBuilder
           // Crimson won't let us set an xmlns: attribute on the DOM.
           String attrQName = atts.getQName(i);
 
-          // In SAX, xmlns: attributes have an empty namespace, while in DOM they should have the xmlns namespace
-          if (attrQName.startsWith("xmlns:"))
+          // In SAX, xmlns[:] attributes have an empty namespace, while in DOM they 
+          // should have the xmlns namespace
+          if (attrQName.startsWith("xmlns:") || attrQName.equals("xmlns")) {
             attrNS = "http://www.w3.org/2000/xmlns/";
+          }
 
           // ALWAYS use the DOM Level 2 call!
           elem.setAttributeNS(attrNS,attrQName, atts.getValue(i));
