@@ -109,7 +109,18 @@
     and be sure xalanj1compat.jar is on the classpath at run time (see <link idref="usagepatterns" anchor="compat">Using the &xslt4j; version 1
     API)</link>.</li>
     </ol>
-    <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system classpath</link>.</p></a>
+    <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system classpath</link>.</p>
+    <p><em>Using the EnvironmentCheck utility:</em> To help diagnose classpath problems, try running Xalan's environment checking utility, checked in at 
+    xml-xalan/java/src/org/apache/xalan/xslt/EnvironmentCheck.</p>
+    <p>You can run this utility from the command line as follows:</p>
+    <p><code>java org.apache.xalan.xslt.EnvironmentCheck [-out outFile]</code></p>
+    <p>You can also call this utility from within your application. For example,</p>
+    <p><code>boolean environmentOK = (new EnvironmentCheck()).checkEnvironment (yourPrintWriter);</code></p>
+    <p>Be sure to run EnvironmentCheck in the environment where you are experiencing the problem. For example, if you get a 
+    NoClassDefFound error from a command-line application, run EnvironmentCheck on the command line with exactly the same 
+    classpath. If the error occurs inside your Java application (or in a servlet, etc.), be sure to call the 
+    EnvironmentCheck checkEnvironment(...) method from within your running application.</p>
+    </a>
    </faq>
  
 	<faq title="Stylesheet validation">
