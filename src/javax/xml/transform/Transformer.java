@@ -125,7 +125,8 @@ public abstract class Transformer {
      * cannot be determined until the node context is evaluated during
      * the transformation process.
      *
-     * @return A parameter that has been set with setParameter.
+     * @return A parameter that has been set with setParameter, or null if 
+     * a parameter with the given name was not found.
      */
     public abstract Object getParameter(String name);
 
