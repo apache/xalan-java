@@ -73,43 +73,43 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class XSLMessages
 {
 
-  /** NEEDSDOC Field fLocale          */
+  /** The local object to use.  */
   private Locale fLocale = Locale.getDefault();
 
-  /** NEEDSDOC Field XSLTBundle          */
+  /** The language specific resource object for Xalan messages.  */
   private static XResourceBundleBase XSLTBundle = null;
 
-  /** NEEDSDOC Field XPATHBundle          */
+  /** The language specific resource object for XPath messages.  */
   private static XResourceBundleBase XPATHBundle = null;
 
-  /** NEEDSDOC Field XSLT_ERROR_RESOURCES          */
+  /** The class name of the Xalan error message string table.    */
   private static final String XSLT_ERROR_RESOURCES =
     "org.apache.xalan.res.XSLTErrorResources";
 
-  /** NEEDSDOC Field XPATH_ERROR_RESOURCES          */
+  /** The class name of the XPath error message string table.     */
   private static final String XPATH_ERROR_RESOURCES =
     "org.apache.xpath.res.XPATHErrorResources";
 
-  /** NEEDSDOC Field BAD_CODE          */
+  /** String to use if a bad message code is used. */
   private static String BAD_CODE = "BAD_CODE";
 
-  /** NEEDSDOC Field FORMAT_FAILED          */
+  /** String to use if the message format operation failed.  */
   private static String FORMAT_FAILED = "FORMAT_FAILED";
 
   /**
-   *
-   *
-   * NEEDSDOC @param locale
+   * Set the Locale object to use.
+   * 
+   * @param locale non-null reference to Locale object.
    */
-  public void setLocale(Locale locale)
+   public void setLocale(Locale locale)
   {
     fLocale = locale;
   }
 
   /**
-   *
-   *
-   * NEEDSDOC ($objectName$) @return
+   * Get the Locale object that is being used.
+   * 
+   * @return non-null reference to Locale object.
    */
   public Locale getLocale()
   {
@@ -124,7 +124,7 @@ public class XSLMessages
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted warning string.
    */
   public static final String createXPATHWarning(int errorCode, Object args[])  //throws Exception 
   {
@@ -153,7 +153,7 @@ public class XSLMessages
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted message string.
    */
   public static final String createXPATHMessage(int errorCode, Object args[])  //throws Exception 
   {
@@ -180,12 +180,12 @@ public class XSLMessages
    *
    * @param errorCode The key for the message text.
    *
-   * NEEDSDOC @param fResourceBundle
-   * NEEDSDOC @param msgKey
+   * @param fResourceBundle The resource bundle to use.
+   * @param msgKey  The message key to use.
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted message string.
    */
   public static final String createXPATHMsg(XResourceBundleBase fResourceBundle,
                                             String msgKey, Object args[])  //throws Exception 
@@ -247,7 +247,7 @@ public class XSLMessages
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted warning string.
    */
   public static final String createWarning(int errorCode, Object args[])  //throws Exception 
   {
@@ -276,7 +276,7 @@ public class XSLMessages
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted message string.
    */
   public static final String createMessage(int errorCode, Object args[])  //throws Exception 
   {
@@ -303,12 +303,12 @@ public class XSLMessages
    *
    * @param errorCode The key for the message text.
    *
-   * NEEDSDOC @param fResourceBundle
-   * NEEDSDOC @param msgKey
+   * @param fResourceBundle The resource bundle to use.
+   * @param msgKey  The message key to use.
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted message string.
    */
   public static final String createMsg(XResourceBundleBase fResourceBundle,
                                        String msgKey, Object args[])  //throws Exception 
@@ -372,9 +372,9 @@ public class XSLMessages
    * @param args      The arguments to be used as replacement text
    *                  in the message created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The formatted message string.
    *
-   * @throws Exception
+   * @throws Exception if the message can not be loaded.
    */
   public String createMessage(String bundleName, int errorCode, Object args[])
           throws Exception
@@ -442,7 +442,7 @@ public class XSLMessages
    * @param res the name of the resource to load.
    * @param locale the locale to prefer when searching for the bundle
    *
-   * NEEDSDOC @param className
+   * @param className The class name of the resource bundle.
    * @return the ResourceBundle
    * @throws MissingResourceException
    */
@@ -487,7 +487,7 @@ public class XSLMessages
    * for Chinese, we do distinguish between Taiwan and PRC
    *
    * @param locale the locale
-   * @return an String suffix which canbe appended to a resource name
+   * @return an String suffix which can be appended to a resource name
    */
   private static final String getResourceSuffix(Locale locale)
   {
