@@ -80,7 +80,9 @@ import org.xml.sax.XMLReader;
  *
  * &lt;/grumble&gt;</p>
  *
- * <p>Status: In progress</p>
+ * @deprecated Since the ability to start a parse via the
+ * coroutine protocol was not being used and was complicating design.
+ * See {@link IncrementalSAXSource}.
  * */
 public interface CoroutineParser {
 
