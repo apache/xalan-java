@@ -80,6 +80,7 @@ import org.apache.xalan.templates.OutputProperties;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -286,7 +287,10 @@ public class FormatterToXML
    * Map that tells which characters should have special treatment, and it
    *  provides character to entity name lookup.
    */
-  protected static CharInfo m_charInfo;
+  protected CharInfo m_charInfo;
+
+  /** Table of user-specified char infos. */
+  private static Hashtable m_charInfos = null;
 
   /**
    * Flag to quickly tell if the encoding is UTF8.
@@ -415,6 +419,56 @@ public class FormatterToXML
 
     m_isUTF8 = m_encoding.equals(Encodings.DEFAULT_MIME_ENCODING);
     m_maxCharacter = Encodings.getLastPrintable(m_encoding);
+
+    // Access this only from the Hashtable level... we don't want to 
+    // get default properties.
+    String entitiesFileName =
+      (String) format.get(OutputProperties.S_KEY_ENTITIES);
+
+    if (null != entitiesFileName)
+    {
+      try
+      {
+        m_charInfo = null;
+
+        if (null == m_charInfos)
+        {
+          synchronized (m_xmlcharInfo)
+          {
+            if (null == m_charInfos)  // secondary check
+              m_charInfos = new Hashtable();
+          }
+        }
+        else
+        {
+          m_charInfo = (CharInfo) m_charInfos.get(entitiesFileName);
+        }
+
+        if (null == m_charInfo)
+        {
+          String absoluteEntitiesFileName;
+
+          if (entitiesFileName.indexOf(':') < 0)
+          {
+            absoluteEntitiesFileName =
+              SystemIDResolver.getAbsoluteURIFromRelative(entitiesFileName);
+          }
+          else
+          {
+            absoluteEntitiesFileName =
+              SystemIDResolver.getAbsoluteURI(entitiesFileName, null);
+          }
+
+          m_charInfo = new CharInfo(absoluteEntitiesFileName);
+
+          m_charInfos.put(entitiesFileName, m_charInfo);
+        }
+      }
+      catch (javax.xml.transform.TransformerException te)
+      {
+        throw new org.apache.xml.utils.WrappedRuntimeException(te);
+      }
+    }
   }
 
   /**
@@ -1120,7 +1174,7 @@ public class FormatterToXML
 
   /**
    * If a character event is greater than this number, don't bother with
-   *  the local buffer. 
+   *  the local buffer.
    */
   static final int NUMBERBYTESTOWRITEDIRECT = (1024);
 

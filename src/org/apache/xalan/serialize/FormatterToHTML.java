@@ -406,7 +406,7 @@ public class FormatterToHTML extends FormatterToXML
     m_specialEscapeURLs =
       OutputProperties.getBooleanProperty(OutputProperties.S_USE_URL_ESCAPING,
                                           format);
-
+                            
     super.setOutputFormat(format);
   }
 

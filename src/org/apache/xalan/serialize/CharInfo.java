@@ -62,6 +62,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
+import java.net.*;
+
 import java.util.Hashtable;
 
 /**
@@ -115,6 +117,13 @@ public class CharInfo
     try
     {
       is = CharInfo.class.getResourceAsStream(entitiesResource);
+
+      if (is == null)
+      {
+        URL url = new URL(entitiesResource);
+
+        is = url.openStream();
+      }
 
       if (is == null)
         throw new RuntimeException("The resource [" + entitiesResource
