@@ -136,12 +136,9 @@ public final class Util {
     }
 
     public static void println(char ch) {
-	/*
-	  //	if (Parser.debug()) {
-	  if (false) {
-	  System.out.println(ch);
-	  }
-	*/
+	if (false) {
+	    System.out.println(ch);
+	}
     }
 
     public static void TRACE1() {
@@ -155,5 +152,39 @@ public final class Util {
     public static void TRACE3() {
 	System.out.println("TRACE3");
     }
+
+    /**
+     * Replace a certain character in a string with a new substring.
+     */
+    public static String replace(String base, char c, String str) {
+	final int len = base.length() - 1;
+	int pos;
+	while ((pos = base.indexOf(c)) > -1) {
+	    if (pos == 0) {
+		final String after = base.substring(1);
+		base = str + after;
+	    }
+	    else if (pos == len) {
+		final String before = base.substring(0, pos);
+		base = before + str;
+	    }
+	    else {
+		final String before = base.substring(0, pos);
+		final String after = base.substring(pos+1);
+		base = before + str + after;
+	    }
+	}
+	return base;
+    }
+
+    /**
+     * Replace occurances of '.' with '$dot$' and '-' with '$dash$'
+     */
+    public static String escape(String input) {
+	input = replace(input, '.', "$dot$");
+	input = replace(input, '-', "$dash$");
+	return input;
+    }
+
 }
 

@@ -131,7 +131,7 @@ final class CallTemplate extends Instruction {
 
 	final String className = stylesheet.getClassName();
 	// Generate a valid Java method name
-	String methodName = EscapeString.escape(_name.toString());
+	String methodName = Util.escape(_name.toString());
 
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());

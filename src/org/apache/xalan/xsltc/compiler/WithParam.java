@@ -159,7 +159,7 @@ final class WithParam extends Instruction {
 	final InstructionList il = methodGen.getInstructionList();
 
 	// Make name acceptable for use as field name in class
-	String name = EscapeString.escape(_name.getLocalPart());
+	String name = Util.escape(_name.getLocalPart());
 
 	// Load reference to the translet (method is in AbstractTranslet)
 	il.append(classGen.loadTranslet());

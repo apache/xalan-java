@@ -207,7 +207,7 @@ class VariableBase extends TopLevelElement {
     public void setName(QName name) {
 	_name = name;
 	_name.clearDefaultNamespace();
-	_variable = EscapeString.escape(name.getLocalPart());
+	_variable = Util.escape(name.getLocalPart());
     }
 
     /**
