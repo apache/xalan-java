@@ -1557,7 +1557,86 @@ public class FormatterToXML
 
     accum(ch, start, length);
   }
+  
+  /**
+   * Return true if the character is the high member of a surrogate pair.
+   */
+  static final boolean isUTF16Surrogate(char c)
+  {
+    return (c & 0xFC00) == 0xD800;
+  }
+  
+  /**
+   * Once a surrogate has been detected, get the pair as a single 
+   * integer value.
+   * 
+   * @param c the first part of the surrogate.
+   * @param ch Character array.
+   * @param i position Where the surrogate was detected.
+   * @param end The end index of the significant characters.
+   * @return i+1.
+   * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
+   */
+  int getURF16SurrogateValue(char c, char ch[], int i, int end)
+          throws org.xml.sax.SAXException
+  {
+    int next;
+    if (i + 1 >= end)
+    {
+      throw new org.xml.sax.SAXException(
+        XSLMessages.createXPATHMessage(
+          XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
+          new Object[]{ Integer.toHexString((int) c) }));  //"Invalid UTF-16 surrogate detected: "
 
+      //+Integer.toHexString((int)c)+ " ?");
+    }
+    else
+    {
+      next = ch[++i];
+
+      if (!(0xdc00 <= next && next < 0xe000))
+        throw new org.xml.sax.SAXException(
+          XSLMessages.createXPATHMessage(
+            XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
+            new Object[]{
+              Integer.toHexString((int) c) + " "
+              + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
+
+      //+Integer.toHexString((int)c)+" "+Integer.toHexString(next));
+      next = ((c - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
+    }  
+    return next;
+  }
+  
+  /**
+   * Once a surrogate has been detected, write the pair as a single 
+   * character reference.
+   * 
+   * @param c the first part of the surrogate.
+   * @param ch Character array.
+   * @param i position Where the surrogate was detected.
+   * @param end The end index of the significant characters.
+   * @return i+1.
+   * @throws IOException
+   * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
+   */
+  protected int writeUTF16Surrogate(char c, char ch[], int i, int end)
+          throws IOException, org.xml.sax.SAXException
+  {
+      // UTF-16 surrogate
+      int surrogateValue = getURF16SurrogateValue(c, ch, i, end);
+      i++;
+
+      accum('&');
+      accum('#');
+
+      // accum('x');
+      accum(Integer.toString(surrogateValue));
+      accum(';'); 
+      
+      return i;   
+  }
+  
   /**
    * Normalize the characters, but don't escape.
    *
@@ -1589,43 +1668,9 @@ public class FormatterToXML
           accum("]]>");
 
         // This needs to go into a function... 
-        if (0xd800 <= ((int) c) && ((int) c) < 0xdc00)
+        if (isUTF16Surrogate(c))
         {
-
-          // UTF-16 surrogate
-          int next;
-
-          if (i + 1 >= end)
-          {
-            throw new org.xml.sax.SAXException(
-              XSLMessages.createXPATHMessage(
-                XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                new Object[]{ Integer.toHexString((int) c) }));  //"Invalid UTF-16 surrogate detected: "
-
-            //+Integer.toHexString((int)c)+ " ?");
-          }
-          else
-          {
-            next = ch[++i];
-
-            if (!(0xdc00 <= next && next < 0xe000))
-              throw new org.xml.sax.SAXException(
-                XSLMessages.createXPATHMessage(
-                  XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                  new Object[]{
-                    Integer.toHexString((int) c) + " "
-                    + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
-
-            //+Integer.toHexString((int)c)+" "+Integer.toHexString(next));
-            next = ((c - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
-          }
-
-          accum('&');
-          accum('#');
-
-          // accum('x');
-          accum(Integer.toString(next));
-          accum(';');
+          i = writeUTF16Surrogate(c, ch, i, end);
         }
         else
         {
@@ -1656,40 +1701,10 @@ public class FormatterToXML
         }
 
         // This needs to go into a function... 
-        else if (0xd800 <= ((int) c) && ((int) c) < 0xdc00)
+        else if (isUTF16Surrogate(c))
         {
 
-          // UTF-16 surrogate
-          int next;
-
-          if (i + 1 >= end)
-          {
-            throw new org.xml.sax.SAXException(
-              XSLMessages.createXPATHMessage(
-                XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                new Object[]{ Integer.toHexString((int) c) }));  //"Invalid UTF-16 surrogate detected: "
-
-            //+Integer.toHexString((int)c)+ " ?");
-          }
-          else
-          {
-            next = ch[++i];
-
-            if (!(0xdc00 <= next && next < 0xe000))
-              throw new org.xml.sax.SAXException(
-                XSLMessages.createXPATHMessage(
-                  XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                  new Object[]{
-                    Integer.toHexString((int) c) + " "
-                    + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
-
-            //+Integer.toHexString((int)c)+" "+Integer.toHexString(next));
-            next = ((c - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
-          }
-
-          accum("&#");
-          accum(Integer.toString(next));
-          accum(";");
+          i = writeUTF16Surrogate(c, ch, i, end);
         }
         else
         {

@@ -64,11 +64,13 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 import java.util.Properties;
+import java.util.BitSet;
 
 import org.xml.sax.*;
 
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.Trie;
+import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xml.utils.StringToIntTable;
@@ -720,62 +722,149 @@ public class FormatterToHTML extends FormatterToXML
     {
       this.accum(name);
       this.accum('=');
-      this.accum('\"');
 
+      this.accum('\"');
       if (elemDesc.isAttrFlagSet(name, ElemDesc.ATTRURL))
-        writeAttrURI(value, this.m_encoding);
+        writeAttrURI(value, m_specialEscapeURLs);
       else
         writeAttrString(value, this.m_encoding);
-
       this.accum('\"');
+
     }
   }
-
-  /** Mask for high byte. */
-  static final int MASK1 = 0xFF00;
-
-  /** Mask for low byte. */
-  static final int MASK2 = 0x00FF;
+  
+  /**
+   * Tell if a character is an ASCII digit.
+   */
+   private boolean isASCIIDigit(char c)
+   {
+      return (c >= '0' && c <= '9');
+   }
 
   /**
    * Write the specified <var>string</var> after substituting non ASCII characters,
    * with <CODE>%HH</CODE>, where HH is the hex of the byte value.
    *
    * @param   string      String to convert to XML format.
-   * @param   specials    Chracters, should be represeted in chracter referenfces.
-   * @param   encoding    CURRENTLY NOT IMPLEMENTED.
+   * @param doURLEscaping True if we should try to encode as 
+   *                      per http://www.ietf.org/rfc/rfc2396.txt.
    * @see #backReference
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if a bad surrogate pair is detected.
    */
-  public void writeAttrURI(String string, String encoding)
+  public void writeAttrURI(String string, boolean doURLEscaping)
           throws org.xml.sax.SAXException
   {
+    // http://www.ietf.org/rfc/rfc2396.txt says:
+    // A URI is always in an "escaped" form, since escaping or unescaping a
+    // completed URI might change its semantics.  Normally, the only time
+    // escape encodings can safely be made is when the URI is being created
+    // from its component parts; each component may have its own set of
+    // characters that are reserved, so only the mechanism responsible for
+    // generating or interpreting that component can determine whether or
+    // not escaping a character will change its semantics. Likewise, a URI
+    // must be separated into its components before the escaped characters
+    // within those components can be safely decoded.
+    //
+    // ...So we do our best to do limited escaping of the URL, without 
+    // causing damage.  If the URL is already properly escaped, in theory, this 
+    // function should not change the string value.
 
     char[] stringArray = string.toCharArray();
     int len = stringArray.length;
-
+        
     for (int i = 0; i < len; i++)
     {
       char ch = stringArray[i];
 
-      // if first 8 bytes are 0, no need to append them.
-      if ((ch < 9) || (ch > 127)
-              || /*(ch == '"') || -sb, as per #PDIK4L9LZY */ (ch == ' '))
+      if ((ch < 33) || (ch > 126))
       {
-        if (m_specialEscapeURLs)
+        if (doURLEscaping)
         {
-          int b1 = (int) ((((int) ch) & MASK1) >> 8);
-          int b2 = (int) (((int) ch) & MASK2);
-
-          if (b1 != 0)
+          // Encode UTF16 to UTF8.
+          // Reference is Unicode, A Primer, by Tony Graham.
+          // Page 92.
+          
+          if(ch <= 0x7F)
           {
-            accum("%");
-            accum(Integer.toHexString(b1));
+            accum('%');
+            accum(Integer.toHexString(ch).toUpperCase());          
+          }
+          else if(ch <= 0x7FF)
+          {
+            // Clear low 6 bits before rotate, put high 4 bits in low byte, 
+            // and set two high bits.
+            int high = (ch >> 6) | 0xC0;  
+            int low = (ch & 0x3F) | 0x80; // First 6 bits, + high bit
+            accum('%');
+            accum(Integer.toHexString(high).toUpperCase());
+            accum('%');
+            accum(Integer.toHexString(low).toUpperCase());
+          }
+          else if( isUTF16Surrogate(ch) ) // high surrogate
+          {
+            // I'm sure this can be done in 3 instructions, but I choose 
+            // to try and do it exactly like it is done in the book, at least 
+            // until we are sure this is totally clean.  I don't think performance 
+            // is a big issue with this particular function, though I could be 
+            // wrong.  Also, the stuff below clearly does more masking than 
+            // it needs to do.
+            
+            // Clear high 6 bits.
+            int highSurrogate = ((int) ch) & 0x03FF;
+            
+            // Middle 4 bits (wwww) + 1
+            // "Note that the value of wwww from the high surrogate bit pattern
+            // is incremented to make the uuuuu bit pattern in the scalar value 
+            // so the surrogate pair don't address the BMP."
+            int wwww = ((highSurrogate & 0x03C0) >> 6);
+            int uuuuu = wwww+1;  
+            
+            // next 4 bits
+            int zzzz = (highSurrogate & 0x003C) >> 2;
+            
+            // low 2 bits
+            int yyyyyy = ((highSurrogate & 0x0003) << 4) & 0x30;
+            
+            // Get low surrogate character.
+            ch = stringArray[++i];
+            
+            // Clear high 6 bits.
+            int lowSurrogate = ((int) ch) & 0x03FF;
+            
+            // put the middle 4 bits into the bottom of yyyyyy (byte 3)
+            yyyyyy = yyyyyy | ((lowSurrogate & 0x03C0) >> 6);
+            
+            // bottom 6 bits.
+            int xxxxxx = (lowSurrogate & 0x003F);
+            
+            int byte1 = 0xF0 | (uuuuu >> 2); // top 3 bits of uuuuu
+            int byte2 = 0x80 | (((uuuuu & 0x03) << 4) & 0x30) | zzzz;
+            int byte3 = 0x80 | yyyyyy;
+            int byte4 = 0x80 | xxxxxx;
+            
+            accum('%');
+            accum(Integer.toHexString(byte1).toUpperCase());
+            accum('%');
+            accum(Integer.toHexString(byte2).toUpperCase());
+            accum('%');
+            accum(Integer.toHexString(byte3).toUpperCase());
+            accum('%');
+            accum(Integer.toHexString(byte4).toUpperCase());
+          }
+          else 
+          {
+            int high = (ch >> 12) | 0xE0; // top 4 bits
+            int middle = ((ch & 0x0FC0) >> 6) | 0x80; // middle 6 bits
+            int low = (ch & 0x3F) | 0x80; // First 6 bits, + high bit
+            accum('%');
+            accum(Integer.toHexString(high).toUpperCase());
+            accum('%');
+            accum(Integer.toHexString(middle).toUpperCase());
+            accum('%');
+            accum(Integer.toHexString(low).toUpperCase());
           }
 
-          accum("%");
-          accum(Integer.toHexString(b2));
         }
         else if (ch < m_maxCharacter)
         {
@@ -788,20 +877,44 @@ public class FormatterToHTML extends FormatterToXML
           accum(';');
         }
       }
+      else if('%' == ch)
+      {
+        // If the character is a '%' number number, try to avoid double-escaping.
+        // There is a question if this is legal behavior.
+        if(((i+2) < len) && isASCIIDigit(stringArray[i+1])
+            && isASCIIDigit(stringArray[i+2]))
+        {
+         accum(ch);
+        }
+        else
+        {
+          if (doURLEscaping)
+          {
+           accum('%');
+           accum(Integer.toHexString(ch).toUpperCase());
+          }
+          else
+            accum(ch);
+        }   
+               
+      } 
+      // Since http://www.ietf.org/rfc/rfc2396.txt refers to the URI grammar as
+      // not allowing quotes in the URI proper syntax, nor in the fragment 
+      // identifier, we believe that it's OK to double escape quotes.
       else if (ch == '"')
       {
-        accum('&');
-        accum('q');
-        accum('u');
-        accum('o');
-        accum('t');
-        accum(';');
+        // Mike Kay encodes this as &#34;, so he may know something I don't?
+        if (doURLEscaping)
+          accum("%22");
+        else
+          accum("&quot;"); // we have to escape this, I guess.
       }
       else
       {
         accum(ch);
       }
     }
+              
   }
 
   /**
@@ -851,45 +964,16 @@ public class FormatterToHTML extends FormatterToXML
         }
         else
         {
-          if (0xd800 <= ch && ch < 0xdc00)
+          if (isUTF16Surrogate(ch))
           {
-
-            // UTF-16 surrogate
-            int next;
-
-            if (i + 1 >= strLen)
+            try
             {
-              throw new org.xml.sax.SAXException(
-                XSLMessages.createXPATHMessage(
-                  XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                  new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
-
-              //+Integer.toHexString(ch)+ " ?");
+              i = writeUTF16Surrogate(ch, chars, i, strLen);
             }
-            else
+            catch(IOException ioe)
             {
-              next = chars[++i];
-
-              if (!(0xdc00 <= next && next < 0xe000))
-                throw new org.xml.sax.SAXException(
-                  XSLMessages.createXPATHMessage(
-                    XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                    new Object[]{
-                      Integer.toHexString(ch) + " "
-                      + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
-
-              //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
-              next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
+              throw new SAXException(ioe);
             }
-
-            accum("&#");
-            accum(Integer.toString(next));
-            accum(';');
-
-            /*} else if (null != ctbc && !ctbc.canConvert(ch)) {
-            accum("&#x");
-            accum(Integer.toString((int)ch, 16));
-            accum(";");*/
           }
 
           // The next is kind of a hack to keep from escaping in the case 
