@@ -152,8 +152,10 @@ public final class UnionIterator extends NodeIteratorBase {
 	    final int smallest = _heap[0].node;
 	    if (smallest == END) { // iterator _heap[0] is done
 		if (_heapSize > 1) {
-		    // replace it with last
+		    // Swap first and last (iterator must be restartable)
+		    final LookAheadIterator temp = _heap[0];
 		    _heap[0] = _heap[--_heapSize];
+		    _heap[_heapSize] = temp;
 		}
 		else {
 		    return END;

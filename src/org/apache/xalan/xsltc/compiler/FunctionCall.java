@@ -86,8 +86,8 @@ class FunctionCall extends Expression {
     private final static Vector EMPTY_ARG_LIST = new Vector(0);
 
     // Valid namespaces for Java function-call extension
-    private final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
-    private final static String JAVA_EXT_XALAN =
+    protected final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
+    protected final static String JAVA_EXT_XALAN =
 	"http://xml.apache.org/xslt/java";
 
     // External Java function's class/method/signature
@@ -170,6 +170,7 @@ class FunctionCall extends Expression {
     public FunctionCall(QName fname, Vector arguments) {
 	_fname = fname;
 	_arguments = arguments;
+	_type = null;
     }
 
     public FunctionCall(QName fname) {
@@ -192,11 +193,27 @@ class FunctionCall extends Expression {
 	}
     }
 
+    public String getClassNameFromUri(String uri) 
+	throws TypeCheckError
+    {
+	final int length = 
+	    uri.startsWith(JAVA_EXT_PREFIX) ? JAVA_EXT_PREFIX.length() + 1 :
+	    uri.startsWith(JAVA_EXT_XALAN) ? JAVA_EXT_XALAN.length() + 1 : 0;
+
+	if (length == 0) {
+	    throw new TypeCheckError(this);
+	}
+	return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+    }
+
     /**
      * Type check a function call. Since different type conversions apply,
      * type checking is different for standard and external (Java) functions.
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(SymbolTable stable) 
+	throws TypeCheckError 
+    {
+	if (_type != null) return _type;
 
 	final String namespace = _fname.getNamespace();
 	final String local = _fname.getLocalPart();
@@ -207,33 +224,37 @@ class FunctionCall extends Expression {
 	}
 	// Handle extension functions (they all have a namespace)
 	else {
-	    final int len = JAVA_EXT_PREFIX.length();
-	    if (namespace.equals(JAVA_EXT_PREFIX) ||
-		namespace.equals(JAVA_EXT_XALAN)) {
-		final int pos = local.indexOf('.');
-		_className = local.substring(0, pos);
-		_fname = new QName(namespace, null, local.substring(pos+1));
-	    }
-	    else if (namespace.length() >= len &&
-		namespace.substring(0, len).equals(JAVA_EXT_PREFIX)) {
-		_className = namespace.substring(len + 1);
-	    }
-	    else {
-		/*
-		 * Warn user if external function could not be resolved.
-		 * Warning will _NOT_ be issued is the call is properly
-		 * wrapped in an <xsl:if> or <xsl:when> element. For details
-		 * see If.parserContents() and When.parserContents()
-		 */
-		final Parser parser = getParser();
-		if (parser != null) {
-		    reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
-				  _fname.toString());
+	    try {
+		_className = getClassNameFromUri(namespace);
+
+		final int pos = local.lastIndexOf('.');
+		if (pos > 0) {
+		    _className = _className + local.substring(0, pos);
+		    _fname = new QName(namespace, null, local.substring(pos + 1));
 		}
-		unresolvedExternal = true;
-		return _type = Type.Void;
+		else {
+		    _fname = new QName(namespace, null, local);
+		}
+		if (_className.length() > 0) {
+		    return typeCheckExternal(stable);
+		}
+	    } catch (TypeCheckError e) {
+		// Falls through
 	    }
-	    return typeCheckExternal(stable);
+
+	    /*
+	     * Warn user if external function could not be resolved.
+	     * Warning will _NOT_ be issued is the call is properly
+	     * wrapped in an <xsl:if> or <xsl:when> element. For details
+	     * see If.parserContents() and When.parserContents()
+	     */
+	    final Parser parser = getParser();
+	    if (parser != null) {
+		reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
+			      _fname.toString());
+	    }
+	    unresolvedExternal = true;
+	    return _type = Type.Void;
 	}
     }
 

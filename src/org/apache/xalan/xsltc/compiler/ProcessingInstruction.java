@@ -109,13 +109,13 @@ final class ProcessingInstruction extends Instruction {
 
 	// get String out of the handler
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_VALUE_HANDLER,
-						     "getValue",
-						     "()"+STRING_SIG)));
+						     "getValueOfPI",
+						     "()" + STRING_SIG)));
 	// call "processingInstruction"
 	final int processingInstruction =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
 				      "processingInstruction", 
-				      "("+STRING_SIG+STRING_SIG+")V");
+				      "(" + STRING_SIG + STRING_SIG + ")V");
 	il.append(new INVOKEINTERFACE(processingInstruction, 3));
 	// Restore old handler base from stack
 	il.append(methodGen.storeHandler());

@@ -83,4 +83,9 @@ public interface Constants {
     public static final String NAMESPACE_FEATURE =
 	"http://xml.org/sax/features/namespaces";
 
+    public static final String EMPTYSTRING = "";
+    public static final String XML_PREFIX = "xml";
+    public static final String XMLNS_PREFIX = "xmlns";
+    public static final String XMLNS_STRING = "xmlns:";
+    public static final String XMLNS_URI = "http://www.w3.org/2000/xmlns/";
 }

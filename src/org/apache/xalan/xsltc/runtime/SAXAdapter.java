@@ -65,37 +65,32 @@
 package org.apache.xalan.xsltc.runtime;
 
 import org.xml.sax.*;
-import org.xml.sax.ext.LexicalHandler;
-import org.apache.xalan.xsltc.*;
+import org.xml.sax.ext.*;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.dom.DOMBuilder;
 
 public final class SAXAdapter implements TransletOutputHandler {
 
-    private final ContentHandler _saxHandler;
-    private final LexicalHandler _lexHandler;
+    private final DOMBuilder _domBuilder;
     private final AttributeList  _attributes = new AttributeList();
 
     private String _openElementName;
     
-    public SAXAdapter(ContentHandler saxHandler) {
-	_saxHandler = saxHandler;
-	_lexHandler = null;
-    }
-
-    public SAXAdapter(ContentHandler saxHandler, LexicalHandler lexHandler) {
-	_saxHandler = saxHandler;
-	_lexHandler = lexHandler;
+    public SAXAdapter(DOMBuilder domBuilder) {
+	_domBuilder = domBuilder;
     }
 
     private void maybeEmitStartElement() throws SAXException {
 	if (_openElementName != null) {
-	    _saxHandler.startElement(null, null, _openElementName, _attributes);
+	    _domBuilder.startElement(null, null, _openElementName, _attributes);
 	    _openElementName = null;
 	}
     }
 
     public void startDocument() throws TransletException {
 	try {
-	    _saxHandler.startDocument();
+	    _domBuilder.startDocument();
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
@@ -104,7 +99,7 @@ public final class SAXAdapter implements TransletOutputHandler {
     
     public void endDocument() throws TransletException {
 	try {
-	    _saxHandler.endDocument();
+	    _domBuilder.endDocument();
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
@@ -115,7 +110,7 @@ public final class SAXAdapter implements TransletOutputHandler {
 	throws TransletException {
 	try {
 	    maybeEmitStartElement();
-	    _saxHandler.characters(characters, offset, length);
+	    _domBuilder.characters(characters, offset, length);
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
@@ -136,7 +131,7 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void endElement(String elementName) throws TransletException {
 	try {
 	    maybeEmitStartElement();
-	    _saxHandler.endElement(null, null, elementName);
+	    _domBuilder.endElement(null, null, elementName);
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
@@ -161,9 +156,9 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void comment(String comment) throws TransletException {
 	try {
 	    maybeEmitStartElement();
-	    if (_lexHandler != null) {
+	    if (_domBuilder != null) {
 		char[] chars = comment.toCharArray();
-		_lexHandler.comment(chars, 0, chars.length);
+		_domBuilder.comment(chars, 0, chars.length);
 	    }
 	}
 	catch (SAXException e) {
@@ -175,11 +170,15 @@ public final class SAXAdapter implements TransletOutputHandler {
 	throws TransletException {
 	try {
 	    maybeEmitStartElement();
-	    _saxHandler.processingInstruction(target, data);
+	    _domBuilder.processingInstruction(target, data);
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
 	}
+    }
+
+    public boolean setEscaping(boolean escape) throws TransletException {
+	return _domBuilder.setEscaping(escape);
     }
 
     // The SAX handler does not handle these:
@@ -189,8 +188,5 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void omitHeader(boolean value) {}
     public void setCdataElements(Hashtable elements) { }
     public void close() {}
-    public boolean setEscaping(boolean escape) throws TransletException {
-        return(true);
-    }
     public String getPrefix(String uri) { return(""); }
 }

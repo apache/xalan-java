@@ -86,4 +86,29 @@ public final class StringValueHandler extends TransletOutputBase {
 	_free = 0;		// getValue resets
 	return new String(_buffer, 0, length);
     }
+
+    /**
+     * The value of a PI must not contain the substring "?>". Should
+     * that substring be present, replace it by "? >". 
+     */
+    public String getValueOfPI() {
+	final String value = getValue();
+
+	if (value.indexOf("?>") > 0) {
+	    final int n = value.length(); 
+	    final StringBuffer valueOfPI = new StringBuffer();
+
+	    for (int i = 0; i < n;) {
+		final char ch = value.charAt(i++);
+		if (ch == '?' && value.charAt(i) == '>') {
+		    valueOfPI.append("? >"); i++;
+		}
+		else {
+		    valueOfPI.append(ch);
+		}
+	    } 
+	    return valueOfPI.toString();
+	}
+	return value;
+    }
 }

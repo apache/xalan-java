@@ -527,7 +527,9 @@ public class TransformerFactoryImpl
      */
     public TemplatesHandler newTemplatesHandler() 
 	throws TransformerConfigurationException { 
-	return(new TemplatesHandlerImpl());
+	final TemplatesHandlerImpl handler = new TemplatesHandlerImpl();
+	handler.init();
+	return handler;
     }
 
     /**

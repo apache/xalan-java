@@ -103,7 +103,7 @@ abstract class Expression extends SyntaxTreeNode {
     public abstract String toString();
 
     public boolean hasPositionCall() {
-	return true;
+	return false;		// default should be 'false' for StepPattern
     }
 
     public boolean hasLastCall() {
