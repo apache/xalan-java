@@ -62,7 +62,7 @@ package javax.xml.transform.stream;
  * output properties on either Transformer or Templates instances.
  *
  * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
- * XSL Transformations (XSLT) W3C Recommendation</a>.
+ * XSL Transformations (XSLT) W3C Recommendation</a>
  */
 public class OutputKeys
 {
@@ -71,8 +71,9 @@ public class OutputKeys
    *
    * <p>The method attribute identifies the overall method that
    * should be used for outputting the result tree.</p>
+   * 
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String METHOD = "method";
 
@@ -82,7 +83,7 @@ public class OutputKeys
    * <p><code>version</code> specifies the version of the output
    * method.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>. 
+   * XSL Transformations (XSLT) W3C Recommendation</a> 
    */
   public static final String VERSION = "version";
 
@@ -98,7 +99,7 @@ public class OutputKeys
    * Assigned Numbers Authority <a href="#IANA">[IANA]</a>,
    * <a href="#RFC2278">[RFC2278]</a> or start with <code>X-</code>.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String ENCODING = "encoding";
 
@@ -109,7 +110,7 @@ public class OutputKeys
    * processor should output an XML declaration; the value must be
    * <code>yes</code> or <code>no</code>.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String OMIT_XML_DECLARATION = "omit-xml-declaration";
 
@@ -120,7 +121,7 @@ public class OutputKeys
    * should output a standalone document declaration; the value must be
    * <code>yes</code> or <code>no</code>.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String STANDALONE = "standalone";
 
@@ -130,7 +131,7 @@ public class OutputKeys
    * <p><code>doctype-public</code> specifies the public identifier
    * to be used in the document type declaration.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String DOCTYPE_PUBLIC = "doctype-public";
 
@@ -140,7 +141,7 @@ public class OutputKeys
    * <p><code>doctype-system</code> specifies the system identifier
    * to be used in the document type declaration.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String DOCTYPE_SYSTEM = "doctype-system";
 
@@ -150,8 +151,9 @@ public class OutputKeys
    * <p><code>cdata-section-elements</code> specifies a list of the
    * names of elements whose text node children should be output using
    * CDATA sections.</p>
+   * 
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation.</a>
    */
   public static final String CDATA_SECTION_ELEMENTS =
     "cdata-section-elements";
@@ -163,7 +165,7 @@ public class OutputKeys
    * add additional whitespace when outputting the result tree; the value
    * must be <code>yes</code> or <code>no</code>.  </p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String INDENT = "indent";
 
@@ -178,7 +180,7 @@ public class OutputKeys
    * according to the character encoding actually used by the output
    * method.  </p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
-   * XSL Transformations (XSLT) W3C Recommendation</a>.
+   * XSL Transformations (XSLT) W3C Recommendation</a>
    */
   public static final String MEDIA_TYPE = "media-type";
 }

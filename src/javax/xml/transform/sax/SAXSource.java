@@ -89,8 +89,9 @@ public class SAXSource implements Source
    * to be the reader's content handler, and then will call
    * reader.parse(inputSource).
    *
-   * NEEDSDOC @param reader
-   * NEEDSDOC @param inputSource
+   * @param reader An XMLReader to be used for the parse.
+   * @param An input source reference that must be non-null,
+   * that will be passed to the parse method of the reader.
    */
   public SAXSource(XMLReader reader, InputSource inputSource)
   {
@@ -101,12 +102,13 @@ public class SAXSource implements Source
   /**
    * Create a SAXSource, using an InputSource.
    * The Transformer or SAXTransformerFactory will create a
-   * reader via org.xml.sax.helpers.ParserFactory
+   * reader via org.xml.sax.helpers.XMLReaderFactory
    * (if setXMLReader is not used), and will set itself
    * to be the content handler of that reader, and then will call
    * reader.parse(inputSource).
    *
-   * NEEDSDOC @param inputSource
+   * @param inputSource An input source reference that must be non-null,
+   * that will be passed to the parse method of the reader.
    */
   public SAXSource(InputSource inputSource)
   {
@@ -152,6 +154,17 @@ public class SAXSource implements Source
   {
     return inputSource;
   }
+  
+  /**
+   * Get the base ID (URL or system ID) from where URLs 
+   * will be resolved.
+   * 
+   * @return Base URL for the source tree, or null.
+   */
+  public String getBaseID()
+  {
+    return (null != inputSource) ? inputSource.getSystemId() : null;
+  }
 
   /** The XMLReader to be used for the source tree input. OK if null.        */
   private XMLReader reader;
@@ -186,15 +199,4 @@ public class SAXSource implements Source
       return null;
   }
   
-  /**
-   * Get the base ID (URL or system ID) from where URLs 
-   * will be resolved.
-   * 
-   * @return Base URL for the source tree, or null.
-   */
-  public String getBaseID()
-  {
-    return (null != inputSource) ? inputSource.getSystemId() : null;
-  }
-
 }

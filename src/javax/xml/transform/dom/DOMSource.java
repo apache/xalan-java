@@ -66,10 +66,12 @@ import java.io.Writer;
 import org.w3c.dom.Node;
 
 /**
- * Acts as an holder for a transformation Source tree.
+ * Acts as an holder for a transformation Source tree in the 
+ * form of a Document Object Model.
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
+ * @see <a href="http://www.w3.org/TR/DOM-Level-2">Document Object Model (DOM) Level 2 Specification</a>
  */
 public class DOMSource implements Source
 {
@@ -90,9 +92,9 @@ public class DOMSource implements Source
   }
 
   /**
-   * Set the node that will contain the Source DOM tree.
+   * Set the node that will represents a Source DOM tree.
    *
-   * @param node
+   * @param node The node that is to be transformed.
    */
   public void setNode(Node node)
   {
@@ -100,25 +102,14 @@ public class DOMSource implements Source
   }
 
   /**
-   * Get the node that will contain the Source tree.
+   * Get the node that represents a Source DOM tree.
    *
-   * @return
+   * @return The node that is to be transformed.
    */
   public Node getNode()
   {
     return node;
   }
-
-  /**
-   * Field node
-   */
-  private Node node;
-  
-  /**
-   * The base ID (URL or system ID) from where URLs 
-   * will be resolved. 
-   */
-  String baseID;
   
   /**
    * Set the base ID (URL or system ID) from where URLs 
@@ -142,4 +133,20 @@ public class DOMSource implements Source
     return this.baseID;
   }
 
+
+  //////////////////////////////////////////////////////////////////////
+  // Internal state.
+  //////////////////////////////////////////////////////////////////////
+
+  /**
+   * Field node
+   */
+  private Node node;
+  
+  /**
+   * The base ID (URL or system ID) from where URLs 
+   * will be resolved. 
+   */
+  String baseID;
+  
 }

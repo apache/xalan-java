@@ -62,7 +62,8 @@ import java.io.InputStream;
 import java.io.Reader;
 
 /**
- * Acts as an holder for a transformation Source tree.
+ * Acts as an holder for a transformation Source tree as described 
+ * by a stream of XML markup.
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
@@ -76,19 +77,51 @@ public class StreamSource implements Source
   public StreamSource(){}
 
   /**
-   * Constructor StreamSource
+   * Construct a StreamSource from a byte stream.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the XML parser may resolve character encoding specified 
+   * by the XML declaration.
+   * 
+   * <p>If this constructor is used to process a stylesheet, normally 
+   * setSystemId should also be called, so that relative URL references 
+   * may be resolved.</p>
    *
-   * @param byteStream
+   * @param byteStream A valid InputStream reference to an XML stream.
    */
   public StreamSource(InputStream byteStream)
   {
     setByteStream(byteStream);
   }
+  
+  /**
+   * Construct a StreamSource from a byte stream.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the XML parser may resolve character encoding specified 
+   * by the XML declaration.
+   * 
+   * <p>This constructor allows the systemID to be set in addition 
+   * to the input stream, which allows relative URLs to be processed 
+   * that are relative to the stream.</p>
+   *
+   * @param byteStream A valid InputStream reference to an XML stream.
+   * @param systemId Must be a string that conforms to the URL syntax.
+   */
+  public StreamSource(InputStream byteStream, String systemId)
+  {
+    setByteStream(byteStream);
+    setSystemId(systemId);
+  }
+
 
   /**
-   * Constructor StreamSource
+   * Construct a StreamSource from a character reader.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the XML parser may resolve character encoding specified 
+   * by the XML declaration.  However, in many cases the encoding 
+   * of the input stream is already resolved, as in the case of 
+   * reading XML from a StringReader.
    *
-   * @param characterStream
+   * @param characterStream A valid Reader reference to an XML character stream.
    */
   public StreamSource(Reader characterStream)
   {
@@ -96,11 +129,9 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method setCharacterStream
+   * Construct a StreamSource from a URL.
    *
-   * @param characterStream
-   *
-   * NEEDSDOC @param systemId
+   * @param systemId Must be a string that conforms to the URL syntax.
    */
   public StreamSource(String systemId)
   {
@@ -108,9 +139,16 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method setByteStream
+   * Set the byte stream to be used as input.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the XML parser may resolve character encoding specified 
+   * by the XML declaration.
+   * 
+   * <p>If this Source object is used to process a stylesheet, normally 
+   * setSystemId should also be called, so that relative URL references 
+   * may be resolved.</p>
    *
-   * @param byteStream
+   * @param byteStream A valid InputStream reference to an XML stream.
    */
   public void setByteStream(InputStream byteStream)
   {
@@ -118,9 +156,10 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method getByteStream
+   * Get the byte stream that was set with setByteStream.
    *
-   * @return
+   * @return The byte stream that was set with setByteStream, or null
+   * if setByteStream or the byte stream constructor was not called.
    */
   public InputStream getByteStream()
   {
@@ -128,9 +167,14 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method setCharacterStream
+   * Set the input to be a character reader.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the XML parser may resolve character encoding specified 
+   * by the XML declaration.  However, in many cases the encoding 
+   * of the input stream is already resolved, as in the case of 
+   * reading XML from a StringReader.
    *
-   * @param characterStream
+   * @param characterStream A valid Reader reference to an XML character stream.   
    */
   public void setCharacterStream(Reader characterStream)
   {
@@ -138,9 +182,10 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method getCharacterStream
+   * Get the character stream that was set with setCharacterStream.
    *
-   * @return
+   * @return The character stream that was set with setCharacterStream, or null
+   * if setCharacterStream or the character stream constructor was not called.
    */
   public Reader getCharacterStream()
   {
@@ -148,9 +193,13 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method setPublicId
+   * Set the public identifier for this Source.
    *
-   * @param publicId
+   * <p>The public identifier is always optional: if the application
+   * writer includes one, it will be provided as part of the
+   * location information.</p>
+   * 
+   * @param publicId The public identifier as a string.
    */
   public void setPublicId(String publicId)
   {
@@ -158,9 +207,10 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method getPublicId
+   * Get the public identifier that was set with setPublicId.
    *
-   * @return
+   * @return The public identifier that was set with setPublicId, or null
+   * if setPublicId was not called.
    */
   public String getPublicId()
   {
@@ -168,9 +218,16 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method setSystemId
+   * Set the system identifier for this Source.
    *
-   * @param systemId
+   * <p>The system identifier is optional if there is a byte stream
+   * or a character stream, but it is still useful to provide one,
+   * since the application can use it to resolve relative URIs
+   * and can include it in error messages and warnings (the parser
+   * will attempt to open a connection to the URI only if
+   * there is no byte stream or character stream specified).</p>
+   *
+   * @param systemId The system identifier as a URL string.
    */
   public void setSystemId(String systemId)
   {
@@ -178,44 +235,21 @@ public class StreamSource implements Source
   }
 
   /**
-   * Method getSystemId
+   * Get the system identifier that was set with setSystemId.
    *
-   * @return
+   * @return The system identifier that was set with setSystemId, or null
+   * if setSystemId was not called.
    */
   public String getSystemId()
   {
     return systemId;
   }
-
-  /**
-   * Field publicId
-   */
-  private String publicId;
-
-  /**
-   * Field systemId
-   */
-  private String systemId;
-
-  //////////////////////////////////////////////////////////////////////
-  // Internal state.
-  //////////////////////////////////////////////////////////////////////
-
-  /**
-   * Field byteStream
-   */
-  private InputStream byteStream;
-
-  /**
-   * Field characterStream
-   */
-  private Reader characterStream;
   
   /**
    * Get the base ID (URL or system ID) from where URLs 
    * will be resolved.
    * 
-   * <p>In the case of StreamSource, this will set the 
+   * <p>In the case of StreamSource, this will get the 
    * systemID value.</p>
    * 
    * @return Base URL for the source tree.
@@ -225,4 +259,28 @@ public class StreamSource implements Source
     return systemId;
   }
 
+  //////////////////////////////////////////////////////////////////////
+  // Internal state.
+  //////////////////////////////////////////////////////////////////////
+
+  /**
+   * The public identifier for this input source, or null.
+   */
+  private String publicId;
+
+  /**
+   * The system identifier as a URL string, or null.
+   */
+  private String systemId;
+
+  /**
+   * The byte stream for this Source, or null.
+   */
+  private InputStream byteStream;
+
+  /**
+   * The character stream for this Source, or null.
+   */
+  private Reader characterStream;
+  
 }

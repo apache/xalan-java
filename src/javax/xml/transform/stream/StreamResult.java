@@ -68,7 +68,8 @@ import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * Acts as an holder for a transformation result tree.
+ * Acts as an holder for a transformation result, 
+ * which may be XML, plain Text, HTML, or some other form of markup.
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
@@ -82,9 +83,12 @@ public class StreamResult implements Result
   public StreamResult(){}
 
   /**
-   * Constructor StreamResult
+   * Construct a StreamResult from a byte stream.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the transformer may use instructions contained in the 
+   * transformation instructions to control the encoding.
    *
-   * @param byteStream
+   * @param byteStream A valid OutputStream reference.
    */
   public StreamResult(OutputStream byteStream)
   {
@@ -92,9 +96,14 @@ public class StreamResult implements Result
   }
 
   /**
-   * Constructor StreamResult
+   * Construct a StreamResult from a character stream.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the transformer may use instructions contained in the 
+   * transformation instructions to control the encoding.  However, 
+   * there are times when it is useful to write to a character 
+   * stream, such as when using a StringWriter.
    *
-   * @param characterStream
+   * @param characterStream  A valid Writer reference.
    */
   public StreamResult(Writer characterStream)
   {
@@ -102,9 +111,12 @@ public class StreamResult implements Result
   }
 
   /**
-   * Method setByteStream
+   * Set the byte stream that is to be written to.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the transformer may use instructions contained in the 
+   * transformation instructions to control the encoding.
    *
-   * @param byteStream
+   * @param byteStream A valid OutputStream reference.
    */
   public void setByteStream(OutputStream byteStream)
   {
@@ -112,9 +124,10 @@ public class StreamResult implements Result
   }
 
   /**
-   * Method getByteStream
+   * Get the byte stream that was set with setByteStream.
    *
-   * @return
+   * @return The byte stream that was set with setByteStream, or null
+   * if setByteStream or the byte stream constructor was not called.
    */
   public OutputStream getByteStream()
   {
@@ -122,9 +135,14 @@ public class StreamResult implements Result
   }
 
   /**
-   * Method setCharacterStream
+   * Set the character stream that is to be written to.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the transformer may use instructions contained in the 
+   * transformation instructions to control the encoding.  However, 
+   * there are times when it is useful to write to a character 
+   * stream, such as when using a StringWriter.
    *
-   * @param characterStream
+   * @param characterStream  A valid Writer reference.
    */
   public void setCharacterStream(Writer characterStream)
   {
@@ -132,9 +150,10 @@ public class StreamResult implements Result
   }
 
   /**
-   * Method getCharacterStream
+   * Get the character stream that was set with setCharacterStream.
    *
-   * @return
+   * @return The character stream that was set with setCharacterStream, or null
+   * if setCharacterStream or the character stream constructor was not called.
    */
   public Writer getCharacterStream()
   {
@@ -142,9 +161,11 @@ public class StreamResult implements Result
   }
 
   /**
-   * Method setSystemId
+   * Method setSystemId Set the systemID that may be used in association
+   * with the byte or character stream, or, if neither is set, use 
+   * this value as a writeable URL (probably a file name).
    *
-   * @param systemId
+   * @param systemId The system identifier as a URL string.
    */
   public void setSystemId(String systemId)
   {
@@ -152,31 +173,34 @@ public class StreamResult implements Result
   }
 
   /**
-   * Method getSystemId
+   * Get the system identifier that was set with setSystemId.
    *
-   * @return
+   * @return The system identifier that was set with setSystemId, or null
+   * if setSystemId was not called.
    */
   public String getSystemId()
   {
     return systemId;
   }
-
-  /**
-   * Field systemId
-   */
-  private String systemId;
-
+  
   //////////////////////////////////////////////////////////////////////
   // Internal state.
   //////////////////////////////////////////////////////////////////////
 
   /**
-   * Field byteStream
+   * The systemID that may be used in association
+   * with the byte or character stream, or, if neither is set, use 
+   * this value as a writeable URL (probably a file name).
+   */
+  private String systemId;
+
+  /**
+   * The byte stream that is to be written to.
    */
   private OutputStream byteStream;
 
   /**
-   * Field characterStream
+   * The character stream that is to be written to.
    */
   private Writer characterStream;
 }

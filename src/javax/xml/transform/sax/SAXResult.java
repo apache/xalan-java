@@ -82,10 +82,9 @@ public class SAXResult implements Result
   public SAXResult(){}
 
   /**
-   * Create a new output target with a DOM node.
+   * Create a SAXResult that targets a SAX2 ContentHandler.
    *
-   *
-   * @param handler
+   * @param handler Must be a non-null ContentHandler reference.
    */
   public SAXResult(ContentHandler handler)
   {
@@ -93,9 +92,9 @@ public class SAXResult implements Result
   }
 
   /**
-   * Set the node that will contain the result DOM tree.
+   * Set the target to be a SAX2 ContentHandler.
    *
-   * @param handler
+   * @param handler Must be a non-null ContentHandler reference.
    */
   public void setHandler(ContentHandler handler)
   {
@@ -103,9 +102,9 @@ public class SAXResult implements Result
   }
 
   /**
-   * Get the node that will contain the result tree.
+   * Get the ContentHandler that is the result target.
    *
-   * @return
+   * @return The content handler that is to be target of the result output.
    */
   public ContentHandler getHandler()
   {
@@ -114,8 +113,13 @@ public class SAXResult implements Result
 
   /**
    * Set the SAX2 LexicalHandler for the output.
+   * 
+   * <p>This is needed to handle XML comments and the like.  If the 
+   * lexical handler is not set, an attempt should be made by the 
+   * transformer to cast the ContentHandler to a LexicalHandler.</p>
    *
-   * @param handler
+   * @param handler A non-null LexicalHandler for 
+   * handling lexical parse events.
    */
   void setLexicalHandler(LexicalHandler handler)
   {
@@ -124,6 +128,7 @@ public class SAXResult implements Result
 
   /**
    * Get a SAX2 LexicalHandler for the output.
+   * 
    * @return A LexicalHandler, or null.
    */
   LexicalHandler getLexicalHandler()
@@ -136,12 +141,12 @@ public class SAXResult implements Result
   //////////////////////////////////////////////////////////////////////
 
   /**
-   * Field handler
+   * The handler for parse events.
    */
   private ContentHandler handler;
 
   /**
-   * Field lexhandler
+   * The handler for lexical events.
    */
   private LexicalHandler lexhandler;
 }

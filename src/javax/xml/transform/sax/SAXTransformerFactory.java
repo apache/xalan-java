@@ -97,20 +97,23 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    * @param templates The source of the transformation instructions.
    *
    * @return TransformerHandler ready to transform SAX events.
-   * @throws TransformerConfigurationException
+   * 
+   * @throws TransformerConfigurationException If for some reason the 
+   * TransformerHandler can not be created.
    */
   public abstract TransformerHandler newTransformerHandler(Templates templates)
     throws TransformerConfigurationException;
 
   /**
    * Get a TransformerHandler object that can process SAX
-   * ContentHandler events into a Result.
+   * ContentHandler events into a Result. The transformation 
+   * is defined as an identity (or copy) transformation.
    *
-   * @param src The source of the transformation instructions.
-   *
-   *
-   * NEEDSDOC ($objectName$) @return
-   * @throws TransformerConfigurationException
+   * @return A non-null reference to a TransformerHandler, that may 
+   * be used as a ContentHandler for SAX parse events.
+   * 
+   * @throws TransformerConfigurationException If for some reason the 
+   * TransformerHandler can not be created.
    */
   public abstract TransformerHandler newTransformerHandler()
     throws TransformerConfigurationException;
@@ -121,9 +124,11 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    *
    * @param src The source of the transformation instructions.
    *
-   *
-   * NEEDSDOC ($objectName$) @return
-   * @throws TransformerConfigurationException
+   * @return A non-null reference to a TransformerHandler, that may 
+   * be used as a ContentHandler for SAX parse events.
+   * 
+   * @throws TransformerConfigurationException If for some reason the 
+   * TransformerHandler can not be created.
    */
   public abstract TemplatesHandler newTemplatesHandler()
     throws TransformerConfigurationException;
@@ -138,8 +143,8 @@ public abstract class SAXTransformerFactory extends TransformerFactory
    */
   public abstract XMLFilter newXMLFilter(Source src);
   
-  /** NEEDSDOC Field errorHandler          */
-  ErrorHandler errorHandler;
+  /** The error handler used to report parse or transformation errors. */
+  private ErrorHandler errorHandler;
 
   /**
    * Allow an application to register an error event handler.
@@ -182,7 +187,7 @@ public abstract class SAXTransformerFactory extends TransformerFactory
     return errorHandler;
   }
 
-  /** NEEDSDOC Field entityResolver          */
+  /** The entity resolver that will be passed to the reader.  */
   private EntityResolver entityResolver;
 
   /**

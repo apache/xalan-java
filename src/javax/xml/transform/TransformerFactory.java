@@ -70,15 +70,11 @@ import java.util.Enumeration;
  * A TransformerFactory instance creates Transformer and Template
  * objects.
  *
- * A particular TransformerFactory is "plugged" into the platform via
- * Processor in one of two ways: 1) as a platform default,
- * and 2) through external specification by a system property named
- * "javax.xml.transform.xslt" obtained using java.lang.System.getProperty().
- * Or, a given application may set a platform default factory name, which
- * will be used if no system property is found.
- * A derived class with the specified name shall implement a
- * public no-args constructor used by the base abstract class to
- * create a concrete instance of this class.
+ * <p>The system property that controls which Factory implementation
+ * to create is named "javax.xml.transform.TransformerFactory". This
+ * property names a class that is a concrete subclass of this
+ * TransformerFactory abstract class. If no property is defined, 
+ * a platform default will be used.</p>
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
@@ -113,10 +109,8 @@ public abstract class TransformerFactory
    *
    * @return new TransformerFactory instance, never null.
    *
-   * @exception javax.xml.parsers.TransformerConfigurationException
+   * @throws TFactoryConfigurationError
    * if the implmentation is not available or cannot be instantiated.
-   *
-   * @throws TransformerConfigurationException
    */
   public static TransformerFactory newInstance()
           throws TFactoryConfigurationError

@@ -66,16 +66,23 @@ import java.io.Writer;
 import org.w3c.dom.Node;
 
 /**
- * Acts as an holder for a transformation result tree.
+ * Acts as an holder for a transformation result tree, in the 
+ * form of a Document Object Model (DOM).  If no node is set, 
+ * the transformation will create a Document node as the holder 
+ * for the result of the transformation, which may be retreaved 
+ * via getNode.
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
+ * @see <a href="http://www.w3.org/TR/DOM-Level-2">Document Object Model (DOM) Level 2 Specification</a>
  */
 public class DOMResult implements Result
 {
 
   /**
-   * Zero-argument default constructor.
+   * Zero-argument default constructor.  If this constructor 
+   * is used, and setNode is not called, the transformer will 
+   * create a Document node for the result.
    */
   public DOMResult(){}
 
@@ -92,7 +99,8 @@ public class DOMResult implements Result
   /**
    * Set the node that will contain the result DOM tree.
    *
-   * @param node
+   * @param node The node to which the transformation 
+   * will be appended.
    */
   public void setNode(Node node)
   {
@@ -100,17 +108,25 @@ public class DOMResult implements Result
   }
 
   /**
-   * Get the node that will contain the result tree.
+   * Get the node that will contain the result DOM tree. 
+   * If no node was set via setNode, the node will be 
+   * set by the transformation, and may be obtained from 
+   * this method once the transformation is complete.
    *
-   * @return
+   * @return The node to which the transformation 
+   * will be appended.
    */
   public Node getNode()
   {
     return node;
   }
 
+  //////////////////////////////////////////////////////////////////////
+  // Internal state.
+  //////////////////////////////////////////////////////////////////////
+
   /**
-   * Field node
+   * The node to which the transformation will be appended.
    */
   private Node node;
 }

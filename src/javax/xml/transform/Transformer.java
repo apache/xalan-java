@@ -67,10 +67,8 @@ import java.util.Properties;
  * of this class is obtained, XML can be processed from a variety
  * of sources with the output from the transform being written
  * to a variety of sinks.</p>
- * 
  * <p>An object of this class can not be used concurrently over
  * multiple threads.</p>
- * 
  * <p>A Transformer may be used multiple times.  Parameters and 
  * output properties are preserved across transformations.</p>
  *
@@ -93,6 +91,18 @@ public abstract class Transformer
 
   /**
    * Add a parameter for the transformation.
+   * 
+   * <p>In order to pass namespaced names, the name can be passed as 
+   * a two-part string, with
+   * the first part being the URL, the delimiter being the '{' for the start of the
+   * URI and '}' signifies the end, with the local name following. If the qname has
+   * a null URL, then the String object will only contain the local name. An
+   * application can safely check for a non-null URI by testing to see if the first
+   * character of the name is a '{' character.</p> 
+   * <p>For example, if a URI and local name were obtained from an element
+   * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
+   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * no prefix is used.</p>
    *
    * @param name The name of the parameter,
    *             which may have a namespace URI.
@@ -104,6 +114,27 @@ public abstract class Transformer
   public abstract void setParameter(String name, Object value);
   
   /**
+   * Set a bag of parameters for the transformation. Note that 
+   * these will not be additive, they will replace the existing
+   * set of parameters.
+   * 
+   * <p>In order to pass namespaced names, the name can be passed as 
+   * a two-part string, with
+   * the first part being the URL, the delimiter being the '{' for the start of the
+   * URI and '}' signifies the end, with the local name following. If the qname has
+   * a null URL, then the String object will only contain the local name. An
+   * application can safely check for a non-null URI by testing to see if the first
+   * character of the name is a '{' character.</p> 
+   * <p>For example, if a URI and local name were obtained from an element
+   * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
+   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * no prefix is used.</p>
+   *
+   * @param params A list of name-value pairs.
+   */
+  public abstract void setParameters(Properties params);
+  
+  /**
    * Get a parameter that was explicitly set with setParameter 
    * or setParameters.
    *
@@ -113,15 +144,6 @@ public abstract class Transformer
    * a transformation Source to be evaluated).
    */
   public abstract Object getParameter(String name);
-
-  /**
-   * Set a bag of parameters for the transformation. Note that 
-   * these will not be additive, they will replace the existing
-   * set of parameters.
-   *
-   * @param params A list of name-value pairs.
-   */
-  public abstract void setParameters(Properties params);
 
   /**
    * Set an object that will be used to resolve URIs used in
@@ -148,10 +170,24 @@ public abstract class Transformer
    *
    * <p>If argument to this function is null, any properties
    * previously set will be removed.</p>
+   * 
+   * <p>In order to pass namespaced names, the name can be passed as 
+   * a two-part string, with
+   * the first part being the URL, the delimiter being the '{' for the start of the
+   * URI and '}' signifies the end, with the local name following. If the qname has
+   * a null URL, then the String object will only contain the local name. An
+   * application can safely check for a non-null URI by testing to see if the first
+   * character of the name is a '{' character.</p> 
+   * <p>For example, if a URI and local name were obtained from an element
+   * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
+   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * no prefix is used.</p>
    *
    * @param oformat A set of output properties that will be
    * used to override any of the same properties in effect
    * for the transformation.
+   * 
+   * @see javax.xml.transform.stream.OutputKeys
    */
   public abstract void setOutputProperties(Properties oformat);
 
@@ -165,28 +201,53 @@ public abstract class Transformer
    *
    * @returns A copy of the set of output properties in effect
    * for the next transformation.
+   * 
+   * @see javax.xml.transform.stream.OutputKeys
    */
   public abstract Properties getOutputProperties();
 
   /**
-   * Method setProperty
+   * Set an output property that will be in effect for the 
+   * transformation.
+   * 
+   * <p>In order to pass namespaced names, the name can be passed as 
+   * a two-part string, with
+   * the first part being the URL, the delimiter being the '{' for the start of the
+   * URI and '}' signifies the end, with the local name following. If the qname has
+   * a null URL, then the String object will only contain the local name. An
+   * application can safely check for a non-null URI by testing to see if the first
+   * character of the name is a '{' character.</p> 
+   * <p>For example, if a URI and local name were obtained from an element
+   * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
+   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
+   * no prefix is used.</p>
+   * 
+   * @param name A non-null String that specifies an output 
+   * property name, which may be namespace qualified.
+   * @param value The non-null string value of the output property.
    *
-   * @param name
-   * @param value
-   *
-   * @throws TransformerConfigurationException
+   * @throws TransformerException
+   * 
+   * @see javax.xml.transform.stream.OutputKeys
    */
   public abstract void setOutputProperty(String name, String value)
     throws TransformerException;
 
   /**
-   * Method getProperty
+   * Get an output property that is in effect for the 
+   * transformation.  The property specified may be a property 
+   * that was set with setOutputProperty, or it may be a 
+   * property specified in the stylesheet.
    *
-   * @param name
+   * @param name A non-null String that specifies an output 
+   * property name, which may be namespace qualified.
    *
-   * @return
+   * @return The string value of the output property, or null 
+   * if no property was found.
    *
-   * @throws TransformerConfigurationException
+   * @throws TransformerException
+   * 
+   * @see javax.xml.transform.stream.OutputKeys
    */
   public abstract String getOutputProperty(String name)
     throws TransformerException;
