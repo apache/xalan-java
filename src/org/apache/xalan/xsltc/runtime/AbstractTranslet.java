@@ -19,6 +19,7 @@
 
 package org.apache.xalan.xsltc.runtime;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -527,6 +528,12 @@ public abstract class AbstractTranslet implements Translet {
 	try {
 	    final TransletOutputHandlerFactory factory 
 		= TransletOutputHandlerFactory.newInstance();
+
+            String dirStr = new File(filename).getParent();
+            if ((null != dirStr) && (dirStr.length() > 0)) {
+               File dir = new File(dirStr);
+               dir.mkdirs();
+            }
 
 	    factory.setEncoding(_encoding);
 	    factory.setOutputMethod(_method);
