@@ -3,14 +3,14 @@
 <todo title="Credits" project="XSLTC" major-version="1">
 
   <devs>
-   <person name="Jacek Ambroziak" email="jacek_ambroziak@yahoo.com" id="JA" expertise="code">
+   <person name="Jacek Ambroziak" email="jacek_ambroziak@yahoo.com" id="JA" expertise="code" status="emeritus">
      Inventor, architect, former lead developer and evangelist.
    </person>  
    <person name="Tom Amiro" email="Tom.Amiro@Sun.COM" id="TA" expertise="testing">
      Testing.
    </person>  
-   <person name="Morten J&#216;rgensen" email="morten@xml.apache.org" id="MJ" expertise="code, doc">
-     Lead developer - key contributor on design documentation, ID/Keys, performance, JAXP, and continuing development in general.
+   <person name="Morten J&#216;rgensen" email="morten@xml.apache.org" id="MJ" expertise="code, doc" status="emeritus">
+     Key contributor on design documentation, ID/Keys, performance, and JAXP.
    </person>
    <person name="G. Todd Miller" email="Glenn.Miller@Sun.COM" id="TM" expertise="code">
      Developer - key contributor on TrAX.
