@@ -426,12 +426,15 @@ public class UnionPathIterator extends Expression
     // super.reset();
     m_foundLast = false;
     m_next = 0;
+    m_last = 0;
+    m_lastFetched = null;
 
     int n = m_iterators.length;
 
     for (int i = 0; i < n; i++)
     {
       m_iterators[i].reset();
+      m_iterators[i].nextNode();
     }
   }
 
