@@ -517,7 +517,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
             m_chars.sendSAXcharacters(ch, offset, length);
         }
       }
-      else
+      else if(type != DTM.ELEMENT_NODE)
       {
         int dataIndex = _dataOrQName(identity);
 
@@ -1174,7 +1174,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           return m_xstrf.newstr(m_chars, offset, length);
         }
       }
-      else
+      else if(type != DTM.ELEMENT_NODE)
       {
         int dataIndex = _dataOrQName(identity);
 
@@ -1183,7 +1183,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           dataIndex = -dataIndex;
           dataIndex = m_data.elementAt(dataIndex + 1);
         }
-
         return m_xstrf.newstr(m_valuesOrPrefixes.indexToString(dataIndex));
       }
     }
