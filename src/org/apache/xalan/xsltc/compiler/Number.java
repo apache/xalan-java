@@ -63,6 +63,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import java.util.ArrayList;
+
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.bcel.classfile.JavaClass;
@@ -71,10 +73,22 @@ import org.apache.bcel.classfile.Field;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
-final class Number extends Instruction {
+final class Number extends Instruction implements Closure {
     private static final int LEVEL_SINGLE   = 0;
     private static final int LEVEL_MULTIPLE = 1;
     private static final int LEVEL_ANY      = 2;
+
+    static final private String[] ClassNames = { 
+	"org.apache.xalan.xsltc.dom.SingleNodeCounter",	  // LEVEL_SINGLE
+	"org.apache.xalan.xsltc.dom.MultipleNodeCounter", // LEVEL_MULTIPLE
+	"org.apache.xalan.xsltc.dom.AnyNodeCounter"	  // LEVEL_ANY
+    };
+
+    static final private String[] FieldNames = { 
+	"___single_node_counter",		   // LEVEL_SINGLE
+	"___multiple_node_counter",		   // LEVEL_MULTIPLE
+	"___any_node_counter"			   // LEVEL_ANY
+    };
 
     private Pattern _from = null;
     private Pattern _count = null;
@@ -89,19 +103,51 @@ final class Number extends Instruction {
     private int _level = LEVEL_SINGLE;
     private boolean _formatNeeded = false;
 
-    static final private String[] ClassNames = { 
-	"org.apache.xalan.xsltc.dom.SingleNodeCounter",	  // LEVEL_SINGLE
-	"org.apache.xalan.xsltc.dom.MultipleNodeCounter", // LEVEL_MULTIPLE
-	"org.apache.xalan.xsltc.dom.AnyNodeCounter"	  // LEVEL_ANY
-    };
+    private String _className = null;
+    private ArrayList _closureVars = null;
 
-    static final private String[] FieldNames = { 
-	"___single_node_counter",		   // LEVEL_SINGLE
-	"___multiple_node_counter",		   // LEVEL_MULTIPLE
-	"___any_node_counter"			   // LEVEL_ANY
-    };
+     // -- Begin Closure interface --------------------
 
-    public void parseContents(Parser parser) {
+    /**
+     * Returns true if this closure is compiled in an inner class (i.e.
+     * if this is a real closure).
+     */
+    public boolean inInnerClass() {
+	return (_className != null);
+    }
+
+    /**
+     * Returns a reference to its parent closure or null if outermost.
+     */
+    public Closure getParentClosure() {
+	return null;
+    }
+
+    /**
+     * Returns the name of the auxiliary class or null if this predicate 
+     * is compiled inside the Translet.
+     */
+    public String getInnerClassName() {
+	return _className;
+    }
+
+    /**
+     * Add new variable to the closure.
+     */
+    public void addVariable(VariableRefBase variableRef) {
+	if (_closureVars == null) {
+	    _closureVars = new ArrayList();
+	}
+
+	// Only one reference per variable
+	if (!_closureVars.contains(variableRef)) {
+	    _closureVars.add(variableRef);
+	}
+    }
+
+    // -- End Closure interface ----------------------
+
+   public void parseContents(Parser parser) {
 	final int count = _attributes.getLength();
 
 	for (int i = 0; i < count; i++) {
@@ -253,12 +299,11 @@ final class Number extends Instruction {
     }
 
     /**
-     * Compiles a constructor for the class <tt>className</tt> that
+     * Compiles a constructor for the class <tt>_className</tt> that
      * inherits from {Any,Single,Multiple}NodeCounter. This constructor
      * simply calls the same constructor in the super class.
      */
-    private void compileConstructor(ClassGenerator classGen,
-                                    String className) {
+    private void compileConstructor(ClassGenerator classGen) {
 	MethodGenerator cons;
 	final InstructionList il = new InstructionList();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
@@ -275,7 +320,7 @@ final class Number extends Instruction {
 				       "translet",
 				       "iterator"
 				   },
-				   "<init>", className, il, cpg);
+				   "<init>", _className, il, cpg);
 
 	il.append(ALOAD_0);     // this
 	il.append(ALOAD_1);     // translet
@@ -303,13 +348,11 @@ final class Number extends Instruction {
      */
     private void compileLocals(NodeCounterGenerator nodeCounterGen,
 			       MatchGenerator matchGen,
-			       InstructionList il) {
-
-	ConstantPoolGen cpg = nodeCounterGen.getConstantPool();
-	final String className = matchGen.getClassName();
-
-	LocalVariableGen local;
+			       InstructionList il) 
+    {
 	int field;
+	LocalVariableGen local;
+	ConstantPoolGen cpg = nodeCounterGen.getConstantPool();
 
 	// Get NodeCounter._iterator and store locally
 	local = matchGen.addLocalVariable("iterator", 
@@ -338,7 +381,7 @@ final class Number extends Instruction {
 	local = matchGen.addLocalVariable("document", 
 					  Util.getJCRefType(DOM_INTF_SIG),
 					  null, null);
-	field = cpg.addFieldref(className, "_document", DOM_INTF_SIG);
+	field = cpg.addFieldref(_className, "_document", DOM_INTF_SIG);
 	il.append(ALOAD_0); // 'this' pointer on stack
 	il.append(new GETFIELD(field));
 	// Make sure we have the correct DOM type on the stack!!!
@@ -347,16 +390,16 @@ final class Number extends Instruction {
     }
 
     private void compilePatterns(ClassGenerator classGen,
-				 MethodGenerator methodGen) {
-	//!!!  local variables?
+				 MethodGenerator methodGen) 
+    {
 	int current;
 	int field;
 	LocalVariableGen local;
 	MatchGenerator matchGen;
 	NodeCounterGenerator nodeCounterGen;
 
-	final String className = getXSLTC().getHelperClassName();
-	nodeCounterGen = new NodeCounterGenerator(className,
+	_className = getXSLTC().getHelperClassName();
+	nodeCounterGen = new NodeCounterGenerator(_className,
 						  ClassNames[_level],
 						  toString(), 
 						  ACC_PUBLIC | ACC_SUPER,
@@ -365,8 +408,22 @@ final class Number extends Instruction {
 	InstructionList il = null;
 	ConstantPoolGen cpg = nodeCounterGen.getConstantPool();
 
+	// Add a new instance variable for each var in closure
+	final int closureLen = (_closureVars == null) ? 0 : 
+	    _closureVars.size();
+
+	for (int i = 0; i < closureLen; i++) {
+	    VariableBase var = 
+		((VariableRefBase) _closureVars.get(i)).getVariable();
+
+	    nodeCounterGen.addField(new Field(ACC_PUBLIC, 
+					cpg.addUtf8(var.getVariable()),
+					cpg.addUtf8(var.getType().toSignature()),
+					null, cpg.getConstantPool()));
+	}
+
 	// Add a single constructor to the class
-	compileConstructor(nodeCounterGen, className);
+	compileConstructor(nodeCounterGen);
 
 	/*
 	 * Compile method matchesFrom()
@@ -382,7 +439,7 @@ final class Number extends Instruction {
 				   new String[] {
 				       "node",
 				   },
-				   "matchesFrom", className, il, cpg);
+				   "matchesFrom", _className, il, cpg);
 
 	    compileLocals(nodeCounterGen,matchGen,il);
 
@@ -412,7 +469,7 @@ final class Number extends Instruction {
 					  new String[] {
 					      "node",
 					  },
-					  "matchesCount", className, il, cpg);
+					  "matchesCount", _className, il, cpg);
 
 	    compileLocals(nodeCounterGen,matchGen,il);
 	    
@@ -436,17 +493,31 @@ final class Number extends Instruction {
 	cpg = classGen.getConstantPool();
 	il = methodGen.getInstructionList();
 
-	final int index = cpg.addMethodref(className, "<init>", 
+	final int index = cpg.addMethodref(_className, "<init>", 
 					   "(" + TRANSLET_INTF_SIG
 					   + DOM_INTF_SIG 
 					   + NODE_ITERATOR_SIG
 					   + ")V");
-	il.append(new NEW(cpg.addClass(className)));
+	il.append(new NEW(cpg.addClass(_className)));
 	il.append(DUP);
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadIterator());
 	il.append(new INVOKESPECIAL(index));
+
+	// Initialize closure variables
+	for (int i = 0; i < closureLen; i++) {
+	    final VariableRefBase varRef = (VariableRefBase) _closureVars.get(i);
+	    final VariableBase var = varRef.getVariable();
+	    final Type varType = var.getType();
+
+	    // Store variable in new closure
+	    il.append(DUP);
+	    il.append(var.loadInstruction());
+	    il.append(new PUTFIELD(
+		    cpg.addFieldref(_className, var.getVariable(), 
+			varType.toSignature())));
+	}
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

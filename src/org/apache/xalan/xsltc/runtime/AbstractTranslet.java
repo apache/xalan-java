@@ -111,9 +111,6 @@ public abstract class AbstractTranslet implements Translet {
     public void printInternalState() {
 	System.out.println("-------------------------------------");
 	System.out.println("AbstractTranslet this = " + this);
-	System.out.println("vbase = " + vbase);
-	System.out.println("vframe = " + vframe);
-	System.out.println("varsStack.size() = " + varsStack.size());
 	System.out.println("pbase = " + pbase);
 	System.out.println("vframe = " + pframe);
 	System.out.println("paramsStack.size() = " + paramsStack.size());
@@ -137,13 +134,8 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /************************************************************************
-     * Variable and parameter handling
+     * Parameter handling
      ************************************************************************/
-
-    // Variable's stack: <tt>vbase</tt> and <tt>vframe</tt> are used 
-    // to denote the current variable frame.
-    protected int vbase = 0, vframe = 0;
-    protected ArrayList varsStack = new ArrayList();
 
     // Parameter's stack: <tt>pbase</tt> and <tt>pframe</tt> are used 
     // to denote the current parameter frame.
@@ -228,47 +220,6 @@ public abstract class AbstractTranslet implements Translet {
 	    if (param._name.equals(name)) return param._value;
 	}
 	return null;
-    }
-
-    /**
-     * Push a new variable frame.
-     */
-    public final void pushVarFrame(int frameSize) {
-	varsStack.add(vframe, new Integer(vbase));
-	vbase = ++vframe;
-	vframe += frameSize;
-
-	// Clear stack frame
-	for (int i = vbase; i <= vframe + 1; i++) {
-	    varsStack.add(i, null);
-	}
-    }
-
-    /**
-     * Pop the topmost variable frame.
-     */
-    public final void popVarFrame() {
-	if (vbase > 0) {
-	    final int oldvbase = ((Integer)varsStack.get(--vbase)).intValue();
-	    for (int i = vbase; i < vframe; i++) {
-		varsStack.set(i, null);		// for the GC
-	    }
-	    vframe = vbase; vbase = oldvbase;
-	}
-    }
-
-    /**
-     * Get the value of a variable given its index.
-     */
-    public final Object getVariable(int vindex) {
-	return varsStack.get(vbase + vindex);
-    }
-	
-    /**
-     * Set the value of a variable in the current frame.
-     */
-    public final void addVariable(int vindex, Object value) {
-	varsStack.set(vbase + vindex, value);
     }
 
     /************************************************************************

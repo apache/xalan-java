@@ -312,6 +312,8 @@ public interface Constants extends InstructionConstants {
 	= "iterator";
     public static final String DOCUMENT_PNAME     
 	= "document";
+    public static final String TRANSLET_PNAME     
+	= "translet";
 
     public static final String GET_NODE_NAME      
 	= "getNodeName";
@@ -446,22 +448,6 @@ public interface Constants extends InstructionConstants {
 	= "(" + STRING_SIG + ")" + OBJECT_SIG;
     public static final String ADD_PARAMETER_SIG
 	= "(" + STRING_SIG + OBJECT_SIG + "Z)" + OBJECT_SIG;
-    public static final String PUSH_VAR_FRAME
-	= "pushVarFrame";
-    public static final String PUSH_VAR_FRAME_SIG
-	= "(I)V";
-    public static final String POP_VAR_FRAME
-	= "popVarFrame";
-    public static final String POP_VAR_FRAME_SIG
-	= "()V";
-    public static final String ADD_VARIABLE
-	= "addVariable";
-    public static final String ADD_VARIABLE_SIG
-	= "(I" + OBJECT_SIG + ")V";
-    public static final String GET_VARIABLE
-	= "getVariable";
-    public static final String GET_VARIABLE_SIG
-	= "(I)" + OBJECT_SIG;
 
     public static final String STRIP_SPACE
 	= "stripSpace";

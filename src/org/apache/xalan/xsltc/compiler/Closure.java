@@ -56,76 +56,33 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
- * @author Morten Jorgensen
- * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+public interface Closure {
 
-final class ParameterRef extends VariableRefBase {
+    /**
+     * Returns true if this closure is compiled in an inner class (i.e.
+     * if this is a real closure).
+     */
+    public boolean inInnerClass();
 
-    public ParameterRef(Param param) {
-	super(param);
-    }
+    /**
+     * Returns a reference to its parent closure or null if outermost.
+     */
+    public Closure getParentClosure();
 
-    public String toString() {
-	return "parameter-ref("+_variable.getName()+'/'+_variable.getType()+')';
-    }
+    /**
+     * Returns the name of the auxiliary class or null if this predicate 
+     * is compiled inside the Translet.
+     */
+    public String getInnerClassName();
 
-   public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	final String name = _variable.getVariable();
-	final String signature = _type.toSignature();
-
-	if (_variable.isLocal()) {
-	    if (classGen.isExternal()) {
-		Closure variableClosure = _closure;
-		while (variableClosure != null) {
-		    if (variableClosure.inInnerClass()) break;
-		    variableClosure = variableClosure.getParentClosure();
-		}
-	    
-		if (variableClosure != null) {
-		    il.append(ALOAD_0);
-		    il.append(new GETFIELD(
-			cpg.addFieldref(variableClosure.getInnerClassName(), 
-			    name, signature)));
-		}
-		else {
-		    il.append(_variable.loadInstruction());
-		    _variable.removeReference(this);
-		}
-	    }
-	    else {
-		il.append(_variable.loadInstruction());
-		_variable.removeReference(this);
-	    }
-	}
-	else {
-	    final String className = classGen.getClassName();
-	    il.append(classGen.loadTranslet());
-	    if (classGen.isExternal()) {
-		il.append(new CHECKCAST(cpg.addClass(className)));
-	    }
-	    il.append(new GETFIELD(cpg.addFieldref(className,name,signature)));
-	}
-
-	if (_variable.getType() instanceof NodeSetType) {
-	    // The method cloneIterator() also does resetting
-	    final int clone = cpg.addInterfaceMethodref(NODE_ITERATOR,
-						       "cloneIterator",
-						       "()" + 
-							NODE_ITERATOR_SIG);
-	    il.append(new INVOKEINTERFACE(clone, 1));
-	}
-    }
+    /**
+     * Add new variable to the closure.
+     */
+    public void addVariable(VariableRefBase variableRef);
 }

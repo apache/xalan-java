@@ -77,37 +77,14 @@ import org.apache.xalan.xsltc.dom.Axis;
 
 final class Variable extends VariableBase {
 
-    // Index of this variable in the variable stack relative to base ptr
-    private int _stackIndex = -1;
-
-    private boolean _escapes; // 'true' if the variable's value can change
-
-    /**
-     * This method returns 'true' if the variable value can change over time,
-     * such as with varibles inside a for-each loop.
-     */
-    public void setEscapes() {
-	_escapes = true;
-	if (_stackIndex == -1) { // unassigned
-	    Template template = getTemplate();
-	    if (template != null) {
-		_stackIndex = template.allocateIndex(_name);
-	    }
-	}
-    }
-
-    /**
-     *
-     */
-    public int getStackIndex() {
-	return _stackIndex;
+    public int getIndex() {
+	return (_local != null) ? _local.getIndex() : -1;
     }
 
     /**
      * Parse the contents of the variable
      */
     public void parseContents(Parser parser) {
-
 	// Parse 'name' and 'select' attributes plus parameter contents
 	super.parseContents(parser);
 
@@ -210,19 +187,8 @@ final class Variable extends VariableBase {
 	_ignore = true;
 
 	if (isLocal()) {
-	    // Push args to call addVariable()
-	    if (_escapes) {
-		il.append(classGen.loadTranslet());
-		il.append(new PUSH(cpg, _stackIndex));
-	    }
-
 	    // Compile variable value computation
 	    translateValue(classGen, methodGen);
-
-	    // Dup value only when needed
-	    if (_escapes) {
-		il.append(_type.DUP());
-	    }
 
 	    // Add a new local variable and store value
 	    if (_refs.isEmpty()) { // Remove it if nobody uses the value
@@ -232,14 +198,6 @@ final class Variable extends VariableBase {
 	    else {		   // Store in local var slot if referenced
 		if (_local == null) mapRegister(methodGen);
 		il.append(_type.STORE(_local.getIndex()));
-	    }
-
-	    // Store boxed value into the template's variable stack
-	    if (_escapes) {
-		_type.translateBox(classGen, methodGen);
-		il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-							     ADD_VARIABLE,
-							     ADD_VARIABLE_SIG)));
 	    }
 	}
 	else {

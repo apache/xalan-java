@@ -82,7 +82,7 @@ public final class Compile {
 
     // Versioning numbers  for the compiler -v option output
     private static int VERSION_MAJOR = 1;
-    private static int VERSION_MINOR = 1;
+    private static int VERSION_MINOR = 2;
     private static int VERSION_DELTA = 0;
  
 
