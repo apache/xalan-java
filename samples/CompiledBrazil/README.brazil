@@ -1,0 +1,148 @@
+============================================================
+CONTENTS OF THIS DOCUMENT:
+
+  o) HOW TO PROVIDE XSL TRANSFORMATIONS AS A WEB SERVICE
+  o) HOW TO INVOKE TRANSLETS FROM A BRAZIL HANDLER
+  o) BUILDING YOUR OWN DOM CACHE
+
+------------------------------------------------------------
+HOW TO PROVIDE XSL TRANSFORMATIONS AS A WEB SERVICE
+
+This sample code illustrates how Xalan/XSLTC can be used to
+offer XSL transformations as a web service without using a
+full web server. We have chosen to use the Brazil prototype
+for the web interface, available from Sunlabs:
+    http://www.sun.com/research/brazil/
+but we could easily have used some other web interface such
+as Tomcat. The supplied Java code implements a Brazil
+"handler", which very much resembles a servlet.
+
+------------------------------------------------------------
+HOW TO INVOKE TRANSLETS FROM A BRAZIL HANDLER
+
+The XSLTC preview package contains the example source code:
+
+    TransformHandler.java
+
+This file contains a minimal implementation of an XSL
+transformation handler. The handler performs the same basic
+steps as the class implementing the XSLT command-line tool:
+
+    // Obtain a reference to the translet class
+    Class cls = Class.forName(transletName);
+    // Instanciate a translet object (inherits AbstractTranslet)
+    AbstractTranslet translet = (AbstractTranslet)cls.newInstance();
+
+    // Prepare the internal DOM tree
+    final DOMImpl dom = new DOMImpl();
+    dom.setDocumentURI(inputURI);
+
+    // Create a parser for the input document
+    final Parser parser = new Parser();
+    parser.setDocumentHandler(dom.getBuilder());
+
+    // Create a DTDMonitor for handling ID references in the DTD
+    DTDMonitor dtdMonitor = new DTDMonitor();
+    parser.setDTDHandler(dtdMonitor);
+
+    // Create output handler (you can plug in your own)
+    DefaultSAXOutputHandler saxHandler;
+    saxHandler = new DefaultSAXOutputHandler(out);
+
+    // Parse the document and build the internal DOM
+    parser.parse(inputURI);
+
+    // Pass information on id/key indicies to the translet
+    translet.setIndexSize(dom.getSize());
+    dtdMonitor.buildIdIndex(dom, 0, translet);
+    translet.setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
+
+    // Start the transformation
+    translet.transform(dom, new TextOutput(saxHandler));
+
+Alternatively the handler can use a cache for storing
+frequently accessed XML documents. This is not only a matter
+of reading the initial input document from the cache, as
+the translet may load other XML input documents as runtime.
+(If the xsl:document() function was used in the stylesheet.)
+
+    // Get a reference to the translet class
+    Class cls = Class.forName(transletName);
+
+    // Instanciate a translet object (inherits AbstractTranslet)
+    AbstractTranslet translet = (AbstractTranslet)cls.newInstance();
+
+    // The translet needs a reference to the cache in case
+    // in needs to load additional XML documents.
+    translet.setDOMCache(cache);
+
+    // Get the DOM from the DOM cache
+    DOMImpl dom = cache.retrieveDocument(documentURI, 0, translet);
+
+    // Create output handler (you can plug in your own)
+    DefaultSAXOutputHandler saxHandler;
+    saxHandler = new DefaultSAXOutputHandler(out);
+
+    // Start the transformation
+    translet.transform(dom, new TextOutput(saxHandler));
+
+------------------------------------------------------------
+BUILDING YOUR OWN DOM CACHE
+
+The interface for the DOM cache consists of a single method,
+and its definition can be found in:
+
+    org/apache/xalan/xsltc/DOMCache.java
+
+The method contained in the interface is:
+
+    public DOMImpl retrieveDocument(String uri,
+                                    int mask,
+                                    Translet translet);
+
+The responsibilities of this method are:
+
+ A) Build new a DOMImpl and DTDMonitor for XML documents
+    that are not already in the cache:
+
+        // Instanciate a DOMImpl object
+        Parser  parser = new Parser();
+        DOMImpl dom = new DOMImpl();
+        dom.setDocumentURI(uri);
+        parser.setDocumentHandler(dom.getBuilder());
+
+        // Use a DTDMonitor to track ID references in DTD
+        DTDMonitor dtdMonitor = new DTDMonitor();
+        parser.setDTDHandler(dtdMonitor);
+
+        // Parse the input document and build DOM
+        parser.parse(uri);
+
+    At this point the DOMImpl and DTDMonitor objects are
+    populated with the necessary data. The two objects
+    are ready to be put in the cache (using the URI as
+    the lookup key).
+
+ B) For each time a new document is requested by a translet:
+
+        // Expand translet's index array to fit this DOM
+        translet.setIndexSize(dom.getSize());
+
+        // Build indices for this DOM's DTD's ID references
+        dtd.buildIdIndex(dom, mask, translet);
+
+        // Pass unparsed entity URIs to the translet
+        translet.setUnparsedEntityURIs(dtd.getUnparsedEntityURIs());
+
+Step A) must be done every time a document is read into the
+cache, and step B) every time a document is given to a
+translet.
+
+The XSLTC package contains an example implementation of a
+DOM cache, based on a very simple round-robin caching
+algorithm:
+
+    org/apache/xalan/xsltc/dom/DocumentCache.java
+
+------------------------------------------------------------
+END OF README

@@ -1,0 +1,91 @@
+======================================================================
+The Sun XSLT Compiler (XSLTC) is a Java-based tool for compiling XSL
+stylesheets into extremely lightweight and portable Java byte code.
+The XSLTC Java Runtime environment can then process XML files against
+these compiled stylesheets (Translets) to generate any manner of
+output per the stylesheet instructions.
+
+This Applet Demo shows you how translets can be run in a client 
+browser as Java applets to perform XSLT transformations on XML 
+source documents residing on a Web server. Because of XSLTC's small 
+footprint, it is possible to download the compiled stylesheets 
+(translets) and the runtime classes in the applet. Whereas, this
+would not be easy with a fullsize Java-based XSLT processor. 
+
+There are two important advatages of this approach: 
+
+  1) It offloads XSLT processing from the server
+  2) It enables browsers, such as Netscape 4.x, that do not have native 
+     XSLT support to perform XSLT transformations today!
+
+-----------------------------------------------------------------------
+DEMO CONTENTS
+-----------------------------------------------------------------------
+The applet demo is very generic. It will let you run any pre-compiled
+translet through an applet, and it lets you use that on any XML file
+you can refer to using an URL. The contents of this demo are:
+
+  TransformApplet.java -  The applet that wraps the XSLTC runtime 
+      classes and your translet(s).
+
+  index.html - Your main HTML document (displays two frames)
+
+  menu.html  - The HTML document for your dialog frame. This is the
+      document that invokes the TransformApplet
+
+-----------------------------------------------------------------------
+HOW TO SET UP THE DEMO ON YOUR SITE
+-----------------------------------------------------------------------
+1. Install and configure Xalan with XSLTC
+
+2. Compile the stylesheets you want to export. This will result in one
+   or more small Java classes (translets).
+
+3. Create a JAR file with your the applet class (compile it first, of
+   cource), your translet classes and these classes from the xalan/xsltc
+   package:
+
+     org/apache/xalan/xsltc/*.class
+     org/apache/xalan/xsltc/dom/*.class
+     org/apache/xalan/xsltc/runtime/*.class
+     org/apache/xalan/xsltc/util/*.class
+
+   Be sure to make the JAR file world readable!
+
+4. Make your XML source documents readable through a URL (either place
+   them behind a web server or make them readable for your browser as
+   a file).
+
+5. Open the supplied index.html and try out the demo!
+
+----------------------------------------------------------------------
+KNOW PROBLEMS
+----------------------------------------------------------------------
+The following problems are specific to the Netscape 4.x browser.
+
+Class Already Loaded - If you start up the Netscape client browser on 
+a Unix system where you have been running XSLTC, and consequently 
+have a CLASSPATH that includes xml.jar, and xlstcrt.jar, the applet 
+demo fails. You'll see a message saying a class has already been 
+loaded in the Javascript console. To bring up the Javascript console,
+you type
+
+    javascript:
+
+in the location/URL field of the browser. To work around this problem, 
+unset your CLASSPATH before starting Netscape from a terminal window.
+This still may not resolve the problem if Netscape is started from 
+a wrapper that sets your environment from your startup file (e.g., 
+your .cshrc file for the C-shell).
+
+Parser Exception - This problem only applies to Netscape on the 
+Windows platform with XML documents that have an external DTD.
+If you see the following message:
+
+    org.xml.sax.SAXParseException: 
+    External parameter entity "%(DOCTYPE);"
+    has characters after markup.
+
+try removing the reference to an external DTD in your XML source.
+----------------------------------------------------------------------
+END OF README
