@@ -66,7 +66,6 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.NodeSet;
-import org.apache.xpath.axes.AxesWalker;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.axes.SubContextList;
