@@ -201,7 +201,7 @@ compiler; see <link anchor="compile">Compiling translets</link>.</p>
    Specifies a package name for the generated translet
    classes.
 
--n Disables template inlining to reduce method length.
+-n Enables template inlining (default behavior better on average).
 
 -x Turns on additional debugging messages.
 

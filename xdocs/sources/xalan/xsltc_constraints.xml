@@ -131,15 +131,19 @@ and new support for the TrAX API.</p>
     elements=&quot;*&quot;/&gt;</code>, if you do an identity transform by matching on 
     the root node (/) and then do a <code>copy-of select=&quot;.&quot;</code>, the whitespace-only 
     nodes are not stripped out. <code>xsl:strip-space</code> works when you do not do a copy-of.<br/><br/></li>
-  <li>In some cases, XSLTC can generate methods that are too long (<em>&gt; 64K length</em>) 
+  <li>The default for template inlining has been changed. Previously,
+    by default, inlining (putting all the templates into one big method) was on and 
+    the <code>&quot;-n&quot;</code> option to the compile command line disabled inlining. 
+    With inlining on, XSLTC can generate methods that are too long (<em>&gt; 64K length</em>) 
     to run, or contain jump offsets that are too large for the JVM to handle. 
-    You can minimize this by breaking up large templates into smaller templates. 
-    XSLTC has a new compile option to disable template inlining, compiling each 
-    template in a separate method. From the command line, you would use <code>&quot;-n&quot;</code> 
-    to turn off inlining, or with TrAX set the &quot;disable-inlining&quot; attribute to the TransformationFactory. 
+    Now the default is not to inline templates. Instead, compilation creates separate 
+    methods for each template. Inlining was thought to improve performance, 
+    but with recent hotspot technology in the Java 1.4.x JVM, performance is better with 
+    inlining off. From the command line, you would use <code>&quot;-n&quot;</code> 
+    to turn on inlining, or with TrAX set the &quot;enable-inlining&quot; attribute to the TransformerFactory. 
     For example, 
-      <source>TransformationFactory tfac = new TransformationFactory(); 
-tfac.setAttribute(&quot;disable-inlining&quot;, new Boolean(true))</source><br/></li>
+      <source>TransformerFactory tfac = new TransformerFactory(); 
+tfac.setAttribute(&quot;enable-inlining&quot;, Boolean.TRUE)</source><br/></li>
   <li>XSLTC tries to determine the order in which global variables are initialized 
     by tracking the dependencies between them. In some cases, the value of a variable 
     may depend on a template, e.g., if <code>xsl:call-template</code> is used to initialized 
