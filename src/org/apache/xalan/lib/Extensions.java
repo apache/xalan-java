@@ -89,11 +89,6 @@ import org.xml.sax.SAXNotSupportedException;
  */
 public class Extensions
 {
-
-  // Reuse the Document object to reduce memory usage.
-  private static Document m_doc = null;
-  private static Extensions m_instance = new Extensions();
-  
   /**
    * Constructor Extensions
    *
@@ -288,31 +283,18 @@ public class Extensions
    */
   public static NodeList tokenize(String toTokenize, String delims)
   {
-    try
-    {
-      // Lock the instance to ensure thread safety
-      if (m_doc == null)
-      {
-        synchronized (m_instance)
-        {
-          if (m_doc == null)
-            m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        }
-      }
-    }
-    catch(ParserConfigurationException pce)
-    {
-      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
-    }
+
+    Document doc = DocumentHolder.m_doc;
+
 
     StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
     NodeSet resultSet = new NodeSet();
 
-    synchronized (m_doc)
+    synchronized (doc)
     {
       while (lTokenizer.hasMoreTokens())
       {
-        resultSet.addNode(m_doc.createTextNode(lTokenizer.nextToken()));
+        resultSet.addNode(doc.createTextNode(lTokenizer.nextToken()));
       }
     }
 
@@ -446,4 +428,32 @@ public class Extensions
       return null;
     }
   }
+  
+    /**
+     * This class is not loaded until first referenced (see Java Language
+     * Specification by Gosling/Joy/Steele, section 12.4.1)
+     *
+     * The static members are created when this class is first referenced, as a
+     * lazy initialization not needing checking against null or any
+     * synchronization.
+     *
+     */
+    private static class DocumentHolder
+    {
+        // Reuse the Document object to reduce memory usage.
+        private static final Document m_doc;
+        static 
+        {
+            try
+            {
+                m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            }
+
+            catch(ParserConfigurationException pce)
+            {
+                  throw new org.apache.xml.utils.WrappedRuntimeException(pce);
+            }
+
+        }
+    }  
 }

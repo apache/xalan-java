@@ -60,19 +60,16 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.BitSet;
+import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.PropertyResourceBundle;
-import java.util.ResourceBundle;
 import java.util.Locale;
 import java.util.MissingResourceException;
-import java.util.Enumeration;
+import java.util.PropertyResourceBundle;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.CharKey;
-import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.SystemIDResolver;
 /**
  * This class provides services that tell if a character should have
@@ -328,9 +325,7 @@ public class CharInfo
         return m_specialsMap.get(value);
     }
 
-    /** Table of user-specified char infos. */
-    private static Hashtable m_getCharInfo_cache = null;
-
+ 
     /**
      * Factory that reads in a resource file that describes the mapping of
      * characters to entity references.
@@ -350,27 +345,18 @@ public class CharInfo
     public static CharInfo getCharInfo(String entitiesFileName)
     {
         CharInfo retobj = null;
-        if (null == m_getCharInfo_cache)
-        {
-            // synchronize on any object, just to have a lock while creating the cache.
-            synchronized (XML_ENTITIES_RESOURCE)
-            {
-                if (null == m_getCharInfo_cache) // secondary check
-                    m_getCharInfo_cache = new Hashtable();
-            }
-        }
-        else
-        {
-            // the cache already exists, so lets try to find it.
-            retobj = (CharInfo) m_getCharInfo_cache.get(entitiesFileName);
-        }
+     
+        Hashtable getCharInfo_cache = HashtableHolder.m_getCharInfo_cache;
+ 
+        retobj = (CharInfo) getCharInfo_cache.get(entitiesFileName);
+        
         if (retobj == null)
         {
             // try to load it.
             try
             {
                 retobj = new CharInfo(entitiesFileName);
-                m_getCharInfo_cache.put(entitiesFileName, retobj);
+                getCharInfo_cache.put(entitiesFileName, retobj);
             }
             catch (Exception e)
             {
@@ -400,7 +386,7 @@ public class CharInfo
                 }
             }
             retobj = new CharInfo(absoluteEntitiesFileName);
-            m_getCharInfo_cache.put(entitiesFileName, retobj);
+            getCharInfo_cache.put(entitiesFileName, retobj);
         }
         return retobj;
     }
@@ -420,5 +406,21 @@ public class CharInfo
                         return null;
                 }
         }
+    
+    /**
+     * This class is not loaded until first referenced (see Java Language
+     * Specification by Gosling/Joy/Steele, section 12.4.1)
+     * 
+     * The static members are created when this class is first referenced, as a
+     * lazy initialization not needing checking against null or any
+     * synchronization later on.
+     * 
+     */    
+    private static class HashtableHolder
+    {
+        /** Table of user-specified char infos. */
+        private static Hashtable m_getCharInfo_cache = new Hashtable();
+
+    }
     
 }

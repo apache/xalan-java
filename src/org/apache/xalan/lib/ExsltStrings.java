@@ -59,6 +59,7 @@ package org.apache.xalan.lib;
 import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xpath.NodeSet;
@@ -85,10 +86,6 @@ import org.w3c.dom.Text;
  */
 public class ExsltStrings extends ExsltBase
 {
-  // Reuse the Document object to reduce memory usage.
-  private static Document m_doc = null;
-  private static ExsltStrings m_instance = new ExsltStrings();
-
   /**
    * The str:align function aligns a string within another string. 
    * <p>
@@ -238,22 +235,7 @@ public class ExsltStrings extends ExsltBase
    */
   public static NodeList split(String str, String pattern)
   {
-    try
-    {
-      // Lock the instance to ensure thread safety
-      if (m_doc == null)
-      {
-        synchronized (m_instance)
-        {
-          if (m_doc == null)
-            m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        }
-      }
-    }
-    catch(ParserConfigurationException pce)
-    {
-      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
-    }
+
     
     NodeSet resultSet = new NodeSet();
     resultSet.setShouldCacheNodes(true);
@@ -276,11 +258,12 @@ public class ExsltStrings extends ExsltBase
         done = true;
         token = str.substring(fromIndex);
       }
-        
-      synchronized (m_doc)
+
+      Document doc = DocumentHolder.m_doc;
+      synchronized (doc)
       {
-        Element element = m_doc.createElement("token");
-        Text text = m_doc.createTextNode(token);
+        Element element = doc.createElement("token");
+        Text text = doc.createTextNode(token);
         element.appendChild(text);
         resultSet.addNode(element);      
       }
@@ -332,22 +315,7 @@ public class ExsltStrings extends ExsltBase
    */
   public static NodeList tokenize(String toTokenize, String delims)
   {
-    try
-    {
-      // Lock the instance to ensure thread safety
-      if (m_doc == null)
-      {
-        synchronized (m_instance)
-        {
-          if (m_doc == null)
-            m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-        }
-      }
-    }
-    catch(ParserConfigurationException pce)
-    {
-      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
-    }
+
 
     NodeSet resultSet = new NodeSet();
     
@@ -355,12 +323,13 @@ public class ExsltStrings extends ExsltBase
     {
       StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
 
-      synchronized (m_doc)
+      Document doc = DocumentHolder.m_doc;
+      synchronized (doc)
       {
         while (lTokenizer.hasMoreTokens())
         {
-          Element element = m_doc.createElement("token");
-          element.appendChild(m_doc.createTextNode(lTokenizer.nextToken()));
+          Element element = doc.createElement("token");
+          element.appendChild(doc.createTextNode(lTokenizer.nextToken()));
           resultSet.addNode(element);      
         }
       }
@@ -369,12 +338,14 @@ public class ExsltStrings extends ExsltBase
     // every single character.
     else
     {
-      synchronized (m_doc)
+
+      Document doc = DocumentHolder.m_doc;
+      synchronized (doc)
       {
         for (int i = 0; i < toTokenize.length(); i++)
         {
-          Element element = m_doc.createElement("token");
-          element.appendChild(m_doc.createTextNode(toTokenize.substring(i, i+1)));
+          Element element = doc.createElement("token");
+          element.appendChild(doc.createTextNode(toTokenize.substring(i, i+1)));
           resultSet.addNode(element);              
         }
       }
@@ -390,5 +361,31 @@ public class ExsltStrings extends ExsltBase
   {
     return tokenize(toTokenize, " \t\n\r");
   }
+    /**
+     * This class is not loaded until first referenced (see Java Language
+     * Specification by Gosling/Joy/Steele, section 12.4.1)
+     *
+     * The static members are created when this class is first referenced, as a
+     * lazy initialization not needing checking against null or any
+     * synchronization.
+     *
+     */
+    private static class DocumentHolder 
+    {
+        // Reuse the Document object to reduce memory usage.
+        private static final Document m_doc;
+        static {
+            try
+            {
+                m_doc =DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            }
+           
+            catch(ParserConfigurationException pce)
+            {
+                  throw new org.apache.xml.utils.WrappedRuntimeException(pce);
+            }
+
+        }
+    }
   
 }
