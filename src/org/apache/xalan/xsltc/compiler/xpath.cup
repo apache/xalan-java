@@ -85,8 +85,7 @@ parser code {:
                     return(NodeTest.ELEMENT);
                 else if (local.equals("@*"))
                     return(NodeTest.ATTRIBUTE);
-	        if (local.startsWith("@"))
-                    name = new QName(null,null,local);
+                name = new QName(null,null,local);
             }
 	    return axis == Axis.ATTRIBUTE
 		? _xsltc.registerAttribute(name)
