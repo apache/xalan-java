@@ -21,7 +21,6 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.OutputFormatExtended;
 // SAX2 Imports
 import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.Locator;
@@ -32,7 +31,8 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 
 import org.w3c.dom.*;
-import org.apache.trax.*;
+import javax.xml.transform.*;
+import javax.xml.transform.stream.*;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xpath.objects.XObject;
@@ -195,8 +195,8 @@ public class ApplyXSLT extends HttpServlet
   {
     try
     {	
-      Processor processor = Processor.newInstance("xslt");	  
-      process(processor, request, response);
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+      process(tFactory, request, response);
     }
     catch (Exception e)
     {
@@ -223,7 +223,7 @@ public class ApplyXSLT extends HttpServlet
    * @exception IOException Never thrown
    */
   
-  public void process(Processor processor, 
+  public void process(TransformerFactory tFactory, 
 					  HttpServletRequest request,
                       HttpServletResponse response)
     throws ServletException, IOException, SAXException
@@ -238,8 +238,8 @@ public class ApplyXSLT extends HttpServlet
     ApplyXSLTListener listener = new ApplyXSLTListener("ApplyXSLT");
 	listener.out.println("debug is " + debug);
 
-    InputSource xmlSource = null;
-	InputSource xslSource = null;
+    StreamSource xmlSource = null;
+	StreamSource xslSource = null;
     try
     {
       if ((xmlSource = getDocument(request, listener)) == null)
@@ -260,7 +260,7 @@ public class ApplyXSLT extends HttpServlet
 	{
       try
       {
-	    if ((xslSource = getStylesheet(processor, request, xmlSource, listener)) == null)
+	    if ((xslSource = getStylesheet(tFactory, request, xmlSource, listener)) == null)
 		{
           throw new ApplyXSLTException("getStylesheet() returned null",
                                        new NullPointerException(),
@@ -285,8 +285,8 @@ public class ApplyXSLT extends HttpServlet
 	  {
         listener.out.println("Performing transformation...");
 		
-        Templates templates = processor.process(xslSource);
-        Transformer transformer = templates.newTransformer();	  	  
+        Templates templates = tFactory.newTemplates(xslSource);
+        Transformer transformer = templates.newTransformer();
         {
           try
           {
@@ -302,7 +302,7 @@ public class ApplyXSLT extends HttpServlet
 			}
 			
 			setStylesheetParams(transformer, request);			
-	        transformer.transform(xmlSource, new Result(response.getOutputStream()));
+	        transformer.transform(xmlSource, new StreamResult(response.getOutputStream()));
 			
 			if (debug)              
               writeLog(listener.getMessage(), response.SC_OK);
@@ -361,8 +361,8 @@ public class ApplyXSLT extends HttpServlet
    * @return XML XSLTInputSource DOM, or null if the XSLTInputSource could not be parsed
    * @exception ApplyXSLTException Thrown if exception occurs while handling request
    */
-  protected InputSource getDocument(HttpServletRequest request,
-                                    ApplyXSLTListener listener)
+  protected StreamSource getDocument(HttpServletRequest request,
+                                     ApplyXSLTListener listener)
     throws ApplyXSLTException
   {
     try
@@ -372,22 +372,22 @@ public class ApplyXSLT extends HttpServlet
       if ((xmlURL = request.getPathInfo()) != null)
       {
         listener.out.println("Parsing XML Document from PathInfo: " + xmlURL);
-        return new InputSource(new URL("http", ((DefaultApplyXSLTProperties)
-                                             ourDefaultParameters).getLocalHost(),
-                                             xmlURL.replace('\\', '/')).openStream());		
+        return new StreamSource(new URL("http", ((DefaultApplyXSLTProperties)
+                                         ourDefaultParameters).getLocalHost(),
+                                         xmlURL.replace('\\', '/')).openStream());		
       }
       // document from Request parameter
       if ((xmlURL = ourDefaultParameters.getXMLurl(request)) != null)
       {
         listener.out.println("Parsing XML Document from request parameter: " + xmlURL);
-        return new InputSource(new URL(xmlURL).openStream());
+        return new StreamSource(new URL(xmlURL).openStream());
       }
       // document from chain
       String contentType = request.getContentType();
       if ((contentType != null) && contentType.startsWith("text/xml"))
       {
         listener.out.println("Parsing XML Document from request chain");
-        return new InputSource(request.getInputStream());
+        return new StreamSource(request.getInputStream());
       }
     }
     catch (IOException ioe)
@@ -426,10 +426,10 @@ public class ApplyXSLT extends HttpServlet
    * @see #toAcceptLanguageConnection
    * @exception ApplyXSLTException Thrown if exception occurs while handling request
    */
-  protected InputSource getStylesheet(Processor processor,
-									  HttpServletRequest request,
-                                      InputSource xmlSource,
-                                      ApplyXSLTListener listener)
+  protected StreamSource getStylesheet(TransformerFactory tFactory,
+				   		  			   HttpServletRequest request,
+                                       StreamSource xmlSource,
+                                       ApplyXSLTListener listener)
     throws ApplyXSLTException
   {
     try
@@ -445,7 +445,7 @@ public class ApplyXSLT extends HttpServlet
         // find stylesheet from XML Document, Media tag preference
         if (xmlSource != null){
           listener.out.println("calling getXSLURLfromDoc and getMedia " + getMedia(request) );
-          xslURL = getXSLURLfromDoc(xmlSource, STYLESHEET_ATTRIBUTE, getMedia(request), processor);
+          xslURL = getXSLURLfromDoc(xmlSource, STYLESHEET_ATTRIBUTE, getMedia(request), tFactory);
         }
         if (xslURL != null)
           listener.out.println("Parsing XSL Stylesheet Document from XML Document tag: " + xslURL);
@@ -454,7 +454,7 @@ public class ApplyXSLT extends HttpServlet
           if ((xslURL = ourDefaultParameters.getXSLurl(null)) != null)
             listener.out.println("Parsing XSL Stylesheet Document from configuration: " + xslURL);
       }
-      return new InputSource(xslURL);
+      return new StreamSource(xslURL);
     }
     catch (IOException ioe)
     {
@@ -531,8 +531,8 @@ public class ApplyXSLT extends HttpServlet
       {
         String[] paramVals = request.getParameterValues(paramName);
         if (paramVals != null)
-            transformer.setParameter(paramName, null,
-                                            new XString(paramVals[0]));
+            transformer.setParameter(paramName, new XString(paramVals[0]));
+                                            
       }
       catch (Exception e)
       {
@@ -540,24 +540,24 @@ public class ApplyXSLT extends HttpServlet
     }
     try
     {
-      transformer.setParameter("servlet-RemoteAddr", null,
-                                      new XString(request.getRemoteAddr()));
+      transformer.setParameter("servlet-RemoteAddr", new XString(request.getRemoteAddr()));
+                                      
     }
     catch (Exception e)
     {
     }
     try
     {
-      transformer.setParameter("servlet-RemoteHost", null,
-                                      new XString(request.getRemoteHost()));
+      transformer.setParameter("servlet-RemoteHost", new XString(request.getRemoteHost()));
+                                      
     }
     catch (Exception e)
     {
     }
     try
     {
-      transformer.setParameter("servlet-RemoteUser", null,
-                                      new XString(request.getRemoteUser()));
+      transformer.setParameter("servlet-RemoteUser", new XString(request.getRemoteUser()));
+                                      
     }
     catch (Exception e)
     {
@@ -698,17 +698,17 @@ public class ApplyXSLT extends HttpServlet
    * @return The preferred XSL stylesheet URL, or null if no XSL stylesheet association is found
    * @see #getStylesheet
    */
-  public static String getXSLURLfromDoc(InputSource xmlSource,
+  public static String getXSLURLfromDoc(StreamSource xmlSource,
                                         String attributeName,
                                         String attributeValue,
-                                        Processor processor)
+                                        TransformerFactory tFactory)
   {
     String tempURL = null, returnURL = null;
     try
     {
 	  DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
-      Node sourceTree = docBuilder.parse(xmlSource);
+      Node sourceTree = docBuilder.parse(xmlSource.getByteStream());
       for(Node child=sourceTree.getFirstChild(); null != child; child=child.getNextSibling())
       {
         if(Node.PROCESSING_INSTRUCTION_NODE == child.getNodeType())
