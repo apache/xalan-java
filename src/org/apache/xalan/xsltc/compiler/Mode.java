@@ -537,7 +537,7 @@ final class Mode implements Constants {
      * Auxillary method to determine if a qname describes an attribute/element
      */
     private static boolean isAttributeName(String qname) {
-	final int col = qname.indexOf(':') + 1;
+	final int col = qname.lastIndexOf(':') + 1;
 	if (qname.charAt(col) == '@')
 	    return(true);
 	else
@@ -682,10 +682,10 @@ final class Mode implements Constants {
 	if (nsElem != null) elemNamespaceHandle = nsElem.getStart();
 
 	// (*) Handle templates with "ns:@*" pattern
+	InstructionHandle attrNamespaceHandle = ihAttr;
 	InstructionList nsAttr = compileNamespaces(classGen, methodGen,
 						   isNamespace, isAttribute,
 						   true, ihAttr);
-	InstructionHandle attrNamespaceHandle = ihAttr;
 	if (nsAttr != null) attrNamespaceHandle = nsAttr.getStart();
 
 	// (*) Handle templates with "ns:elem" or "ns:@attr" pattern
