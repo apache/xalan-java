@@ -120,7 +120,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Does nothing.
-     * @see org.apache.xml.serializer.SerializationHandler#indent(int)
+     *
      */
     public void indent(int n) throws SAXException
     {
@@ -452,7 +452,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
      *
      * @throws org.xml.sax.SAXException
      *
-     * @see org.xml.sax.ContentHander#endDocument()
+     *
      */
     public void endDocument() throws SAXException
     {
@@ -673,7 +673,7 @@ public class ToHTMLSAXHandler extends ToSAXHandler
      * that is soon to follow. Need to close any open start tag to make
      * sure than any name space attributes due to this event are associated wih
      * the up comming element, not the current one.
-     * @see org.xml.sax.ExtendedContentHandler#startPrefixMapping
+     * @see org.apache.xml.serializer.ExtendedContentHandler#startPrefixMapping
      *
      * @param prefix The Namespace prefix being declared.
      * @param uri The Namespace URI the prefix is mapped to.

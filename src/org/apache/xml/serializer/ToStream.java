@@ -2098,7 +2098,7 @@ abstract public class ToStream extends SerializerBase
      * that is soon to follow. Need to close any open start tag to make
      * sure than any name space attributes due to this event are associated wih
      * the up comming element, not the current one.
-     * @see org.xml.sax.ExtendedContentHandler#startPrefixMapping
+     * @see org.apache.xml.serializer.ExtendedContentHandler#startPrefixMapping
      *
      * @param prefix The Namespace prefix being declared.
      * @param uri The Namespace URI the prefix is mapped to.

@@ -121,7 +121,7 @@ public class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#indent(int)
+     * Do nothing for SAX.
      */
     public void indent(int n) throws SAXException
     {
@@ -338,8 +338,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
 
     /**
      * @see org.xml.sax.ContentHandler#startPrefixMapping(String, String)
-     * @ param prefix The prefix that maps to the URI
-     * @ param uri The URI for the namespace
+     * @param prefix The prefix that maps to the URI
+     * @param uri The URI for the namespace
      */
     public void startPrefixMapping(String prefix, String uri)
         throws SAXException

@@ -304,7 +304,7 @@ public class NamespaceMappings
  
     /**
      * This method makes a clone of this object.
-     * @see java.lang.Object#clone()
+     *
      */
     public Object clone() throws CloneNotSupportedException {
         NamespaceMappings clone = new NamespaceMappings();

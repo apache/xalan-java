@@ -158,8 +158,8 @@ public class ToTextSAXHandler extends ToSAXHandler
 
     /**
      * Does nothing because 
-     * the indent attribute is ignored for text output
-     * @see org.apache.xml.serializer.SerializationHandler#indent(int)
+     * the indent attribute is ignored for text output.
+     *
      */
     public void indent(int n) throws SAXException
     {

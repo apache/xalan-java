@@ -568,7 +568,7 @@ public class EmptySerializer implements SerializationHandler
         return null;
     }
     /**
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setCdataSectionElements(java.util.Hashtable)
+     * @see org.apache.xml.serializer.XSLOutputAttributes#setCdataSectionElements
      */
     public void setCdataSectionElements(Hashtable h) throws Exception
     {
