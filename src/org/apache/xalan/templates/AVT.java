@@ -316,6 +316,33 @@ public class AVT implements java.io.Serializable
   }
   
   /**
+   * Get the AVT as the original string.
+   */
+  public String getSimpleString()
+  {
+    if(null != m_simpleString)
+    {
+      return m_simpleString;
+    }
+    else if(null != m_parts)
+    {
+      StringBuffer buf = new StringBuffer();
+      buf.setLength(0);
+      int n = m_parts.size();
+      for(int i = 0; i < n; i++)
+      {
+        AVTPart part = (AVTPart)m_parts.elementAt(i);
+        buf.append(part.getSimpleString());
+      }
+      return buf.toString();
+    }
+    else
+    {
+      return "";
+    }
+  }
+  
+  /**
    * Evaluate the AVT and return a String.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).

@@ -80,6 +80,14 @@ public class AVTPartSimple extends AVTPart
   }
   
   /**
+   * Get the AVT part as the original string.
+   */
+  public String getSimpleString()
+  {
+    return m_val;
+  }
+  
+  /**
    * Write the value into the buffer.
    * @param buf Buffer to write into.
    * @param context The current source tree context.

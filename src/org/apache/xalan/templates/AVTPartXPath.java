@@ -95,6 +95,14 @@ public class AVTPartXPath extends AVTPart
   }
   
   /**
+   * Get the AVT part as the original string.
+   */
+  public String getSimpleString()
+  {
+    return "{"+m_xpath.getPatternString()+"}";
+  }
+  
+  /**
    * Write the value into the buffer.
    * @param buf Buffer to write into.
    * @param context The current source tree context.

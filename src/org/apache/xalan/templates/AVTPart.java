@@ -74,6 +74,11 @@ public abstract class AVTPart implements java.io.Serializable
   }
   
   /**
+   * Get the AVT part as the original string.
+   */
+  public abstract String getSimpleString();
+  
+  /**
    * Write the evaluated value into the given 
    * string buffer.
    * @param buf Buffer to write into.

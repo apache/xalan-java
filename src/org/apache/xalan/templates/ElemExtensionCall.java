@@ -85,9 +85,6 @@ public class ElemExtensionCall extends ElemLiteralResult
   // ExtensionNSHandler nsh;
   String m_extns;
   String m_extHandlerLookup;
-  // String localPart;
-  Attributes m_attrs;
-  // public Vector m_avts = null;
   transient boolean isAvailable = false;
   String m_lang;
   String m_srcURL;
@@ -204,10 +201,14 @@ public class ElemExtensionCall extends ElemLiteralResult
   /**
    * Return the raw value of the attribute.
    */
-  public String getAttribute(String name)
+  public String getAttribute(String rawName)
   {
-    String value = m_attrs.getValue(name);  
-    return value;
+    AVT avt = getLiteralResultAttribute(rawName);
+    if((null != avt) && avt.getRawName().equals(rawName))
+    {
+      return avt.getSimpleString();        
+    }
+    return null;    
   }
 
   /**
