@@ -105,49 +105,83 @@ public class LocPathIterator extends Expression
   ContextNodeList, NodeList, java.io.Serializable 
 {
 
-  /** NEEDSDOC Field m_pool          */
+  /** The pool for cloned iterators.  Iterators need to be cloned 
+   * because the hold running state, and thus the original iterator 
+   * expression from the stylesheet pool can not be used.          */
   ObjectPool m_pool = new ObjectPool();
 
-  /** NEEDSDOC Field m_lastFetched          */
+  /** The last node that was fetched, usually by nextNode. */
   Node m_lastFetched;
 
-  /** NEEDSDOC Field m_cachedNodes          */
+  /** If this iterator needs to cache nodes that are fetched, they
+   * are stored here.   */
   NodeSet m_cachedNodes;
 
-  /** NEEDSDOC Field m_lastUsedWalker          */
+  /** The last used step walker in the walker list.      */
   protected AxesWalker m_lastUsedWalker;
 
-  /** NEEDSDOC Field m_firstWalker          */
+  /** The head of the step walker list.     */
   protected AxesWalker m_firstWalker;
 
-  /** NEEDSDOC Field m_foundLast          */
+  /** This is true if nextNode returns null.  */
   protected boolean m_foundLast = false;
 
-  /** NEEDSDOC Field m_dhelper          */
+  /** Quicker access to the DOM helper than going through the  
+   * XPathContext object.   */
   protected DOMHelper m_dhelper;
 
-  /** NEEDSDOC Field m_context          */
+  /** The context node for this iterator, which doesn't change through 
+   * the course of the iteration.  */
   protected Node m_context;
 
-  /** NEEDSDOC Field m_currentContextNode          */
+  /** The node context from where the expression is being
+   * executed from (i.e. for current() support).  Different 
+   * from m_context in that this is the context for the entire 
+   * expression, rather than the context for the subexpression.
+   */
   protected Node m_currentContextNode;
 
-  /** NEEDSDOC Field m_prefixResolver          */
+  /** Fast access to the current prefix resolver.  It isn't really 
+   * clear that this is needed.  */
   protected PrefixResolver m_prefixResolver;
 
-  /** NEEDSDOC Field m_execContext          */
+  /** The XPathContext reference, needed for execution of many 
+   * operations.    */
   protected XPathContext m_execContext;
 
-  /** NEEDSDOC Field m_next          */
+  /** The index of the next node to be fetched.  Useful if this 
+   * is a cached iterator, and is being used as random access 
+   * NodeList.   */
   protected int m_next = 0;
 
-  /** NEEDSDOC Field m_waiting          */
+  /** The list of "waiting" step walkers.
+   * @see org.apache.xpath.axes.AxesWalker     */
   public Vector m_waiting = new Vector();
+  
+  /** An index to the point in the variable stack where we should
+   * begin variable searches for this iterator.
+   * This is -1 if m_isTopLevel is false. 
+   **/
+  int m_varStackPos = -1;
+
+  /** An index into the variable stack where the variable context 
+   * ends, i.e. at the point we should terminate the search and 
+   * go looking for global variables. 
+   **/
+  int m_varStackContext;
+  
+  /**
+   * Value determined at compile time, indicates that this is an
+   * iterator at the top level of the expression, rather than inside 
+   * a predicate.
+   */
+  private boolean m_isTopLevel = false;
 
   /**
    * Create a LocPathIterator object.
    *
-   * NEEDSDOC @param nscontext
+   * @param nscontext The namespace context for this iterator, 
+   * should be OK if null.
    */
   public LocPathIterator(PrefixResolver nscontext)
   {
@@ -155,10 +189,14 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Create a LocPathIterator object.
+   * Create a LocPathIterator object, including creation 
+   * of step walkers from the opcode list, and call back 
+   * into the Compiler to create predicate expressions.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
+   * @param compiler The Compiler which is creating 
+   * this expression.
+   * @param opPos The position of this iterator in the 
+   * opcode list from the compiler.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -169,11 +207,17 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Create a LocPathIterator object.
-   *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param shouldLoadWalkers
+   * Create a LocPathIterator object, including creation 
+   * of step walkers from the opcode list, and call back 
+   * into the Compiler to create predicate expressions.
+   * 
+   * @param compiler The Compiler which is creating 
+   * this expression.
+   * @param opPos The position of this iterator in the 
+   * opcode list from the compiler.
+   * @param shouldLoadWalkers True if walkers should be 
+   * loaded, or false if this is a derived iterator and 
+   * it doesn't wish to load child walkers.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -193,12 +237,14 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute this iterator, meaning create a clone that can  
+   * store state, and initialize it for fast execution from 
+   * the current runtime state.  When this is called, no actual 
+   * query from the current context node is performed.
    *
+   * @param xctxt The XPath execution context.
    *
-   * NEEDSDOC @param xctxt
-   *
-   * NEEDSDOC (execute) @return
+   * @return An XNodeSet reference that holds this iterator.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -216,22 +262,12 @@ public class LocPathIterator extends Expression
 
       return new XNodeSet(clone);
     }
-    catch (CloneNotSupportedException ncse){}
-
-    return null;
+    catch (CloneNotSupportedException ncse)
+    {
+      throw new org.xml.sax.SAXException(ncse);
+    }
   }
-  
-  /** NEEDSDOC Method initContext **/
-  int m_varStackPos = -1;
-
-  /** NEEDSDOC Method initContext **/
-  int m_varStackContext;
-  
-  /**
-   * Value determined at compile time.
-   */
-  private boolean m_isTopLevel = false;
-  
+    
   /**
    * <meta name="usage" content="internal"/>
    * Set if this is an iterator at the upper level of 
@@ -243,10 +279,11 @@ public class LocPathIterator extends Expression
   }
   
   /**
-   * NEEDSDOC Method initContext 
+   * Initialize the context values for this expression 
+   * after it is cloned.
    *
-   *
-   * NEEDSDOC @param execContext
+   * @param execContext The XPath runtime context for this 
+   * transformation.
    */
   public void initContext(XPathContext execContext)
   {
@@ -265,17 +302,15 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method setNextPosition 
+   * Set the next position index of this iterator. 
    *
-   *
-   * NEEDSDOC @param next
+   * @param next A value greater than or equal to zero that indicates the next 
+   * node position to fetch.
    */
   protected void setNextPosition(int next)
   {
 
     m_next = next;
-
-    // System.out.println("setNextPosition to: "+m_next);
   }
 
   /**
@@ -284,7 +319,8 @@ public class LocPathIterator extends Expression
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A value greater than or equal to zero that indicates the next 
+   * node position to fetch.
    */
   public final int getCurrentPos()
   {
@@ -292,22 +328,18 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method incrementNextPosition 
-   *
+   * Add one to the current node index. 
    */
   void incrementNextPosition()
   {
-
     m_next++;
-
-    // System.out.println("incrementNextPosition to: "+m_next);
   }
 
   /**
    * If setShouldCacheNodes(true) is called, then nodes will
    * be cached.  They are not cached by default.
    *
-   * NEEDSDOC @param b
+   * @param b True if this iterator should cache nodes.
    */
   public void setShouldCacheNodes(boolean b)
   {
@@ -320,7 +352,9 @@ public class LocPathIterator extends Expression
 
   /**
    * Set the current position in the node set.
-   * @param i Must be a valid index.
+   * 
+   * @param i Must be a valid index greater 
+   * than or equal to zero and less than m_cachedNodes.size().
    */
   public void setCurrentPos(int i)
   {
@@ -337,9 +371,14 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Get the length of the list.
+   * Get the length of the cached nodes.
+   * 
+   * <p>Note: for the moment at least, this only returns 
+   * the size of the nodes that have been fetched to date, 
+   * it doesn't attempt to run to the end to make sure we 
+   * have found everything.  This should be reviewed.</p>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The size of the current cache list.
    */
   public int size()
   {
@@ -371,7 +410,7 @@ public class LocPathIterator extends Expression
    *  The number of nodes in the list. The range of valid child node indices
    * is 0 to <code>length-1</code> inclusive.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The number of nodes in the list, always greater or equal to zero.
    */
   public int getLength()
   {
@@ -402,7 +441,7 @@ public class LocPathIterator extends Expression
    * the first nextNode() that is called will return the
    * first node in the set.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true of nextNode has not been called.
    */
   public boolean isFresh()
   {
@@ -429,11 +468,17 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   *  This attribute determines which node types are presented via the
+   * This attribute determines which node types are presented via the
    * iterator. The available set of constants is defined in the
    * <code>NodeFilter</code> interface.
+   * 
+   * <p>This is somewhat useless at this time, since it doesn't 
+   * really return information that tells what this iterator will 
+   * show.  It is here only to fullfill the DOM NodeIterator 
+   * interface.</p>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return For now, always NodeFilter.SHOW_ALL & ~NodeFilter.SHOW_ENTITY_REFERENCE.
+   * @see org.w3c.dom.traversal.NodeIterator
    */
   public int getWhatToShow()
   {
@@ -443,9 +488,12 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   *  The filter used to screen nodes.
+   *  The filter used to screen nodes.  Not used at this time, 
+   * this is here only to fullfill the DOM NodeIterator 
+   * interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Always null.
+   * @see org.w3c.dom.traversal.NodeIterator
    */
   public NodeFilter getFilter()
   {
@@ -453,9 +501,10 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   *  The root node of the Iterator, as specified when it was created.
+   * The root node of the Iterator, as specified when it was created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The "root" of this iterator, which, in XPath terms, 
+   * is the node context for this iterator.
    */
   public Node getRoot()
   {
@@ -474,7 +523,8 @@ public class LocPathIterator extends Expression
    * expansion, use the whatToShow flags to show the entity reference node
    * and set expandEntityReferences to false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Always true, since entity reference nodes are not 
+   * visible in the XPath model.
    */
   public boolean getExpandEntityReferences()
   {
@@ -502,9 +552,10 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Get a cloned Iterator.
+   * Get a cloned Iterator that is reset to the beginning 
+   * of the query.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A cloned NodeIterator set of the start of the query.
    *
    * @throws CloneNotSupportedException
    */
@@ -519,9 +570,10 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * Get a cloned LocPathIterator.
+   * Get a cloned LocPathIterator that holds the same 
+   * position as this iterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A clone of this iterator that holds the same node position.
    *
    * @throws CloneNotSupportedException
    */
@@ -611,6 +663,14 @@ public class LocPathIterator extends Expression
       return next;
     }
     
+    // If the variable stack position is not -1, we'll have to 
+    // set our position in the variable stack, so our variable access 
+    // will be correct.  Iterators that are at the top level of the 
+    // expression need to reset the variable stack, while iterators 
+    // in predicates do not need to, and should not, since their execution
+    // may be much later than top-level iterators.  
+    // m_varStackPos is set in initContext, which is called 
+    // from the execute method.
     if(-1 == m_varStackPos)
     {
       if (null == m_firstWalker.getRoot())
@@ -625,6 +685,8 @@ public class LocPathIterator extends Expression
     else
     {
       VariableStack vars = m_execContext.getVarStack();
+      
+      // These three statements need to be combined into one operation.
       int savedStart = vars.getSearchStart();
       vars.setSearchStart(m_varStackPos);
       vars.pushContextPosition(m_varStackContext);
@@ -639,6 +701,7 @@ public class LocPathIterator extends Expression
 
       Node n = returnNextNode(m_firstWalker.nextNode());
       
+      // These two statements need to be combined into one operation.
       vars.setSearchStart(savedStart);
       vars.popContextPosition();
 
@@ -650,9 +713,9 @@ public class LocPathIterator extends Expression
    * Bottleneck the return of a next node, to make returns
    * easier from nextNode().
    *
-   * NEEDSDOC @param nextNode
+   * @param nextNode The next node found, may be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The same node that was passed as an argument.
    */
   protected Node returnNextNode(Node nextNode)
   {
@@ -676,7 +739,7 @@ public class LocPathIterator extends Expression
   /**
    * Return the last fetched node.  Needed to support the UnionPathIterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The last fetched node, or null if the last fetch was null.
    */
   public Node getCurrentNode()
   {
@@ -689,7 +752,8 @@ public class LocPathIterator extends Expression
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
    *
-   * NEEDSDOC @param index
+   * @param index The index to run to, or -1 if the iterator 
+   * should run to the end.
    */
   public void runTo(int index)
   {
@@ -714,9 +778,11 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * For internal use.
+   * <meta name="usage" content="internal"/>
+   * Get the head of the walker list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The head of the walker list, or null 
+   * if this iterator does not implement walkers.
    */
   public final AxesWalker getFirstWalker()
   {
@@ -724,9 +790,10 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * For internal use.
+   * <meta name="usage" content="internal"/>
+   * Set the last used walker.
    *
-   * NEEDSDOC @param walker
+   * @param walker The last used walker, or null.
    */
   public final void setLastUsedWalker(AxesWalker walker)
   {
@@ -734,9 +801,10 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * For internal use.
+   * <meta name="usage" content="internal"/>
+   * Get the last used walker.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The last used walker, or null.
    */
   public final AxesWalker getLastUsedWalker()
   {
@@ -744,10 +812,14 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method addToWaitList 
+   * <meta name="usage" content="internal"/>
+   * Add a walker to the waiting list.
    *
-   *
-   * NEEDSDOC @param walker
+   * @param walker A walker that is waiting for 
+   * other step walkers to complete, before it can 
+   * continue.
+   * 
+   * @see org.apache.xpath.axes.AxesWalker
    */
   public final void addToWaitList(AxesWalker walker)
   {
@@ -755,10 +827,12 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method removeFromWaitList 
+   * <meta name="usage" content="internal"/>
+   * Remove a walker from the waiting list.
    *
-   *
-   * NEEDSDOC @param walker
+   * @param walker A walker that is no longer waiting.
+   * 
+   * @see org.apache.xpath.axes.AxesWalker
    */
   public final void removeFromWaitList(AxesWalker walker)
   {
@@ -768,7 +842,7 @@ public class LocPathIterator extends Expression
   /**
    * Tells if we've found the last node yet.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the last nextNode returned null.
    */
   public final boolean getFoundLast()
   {
@@ -778,7 +852,8 @@ public class LocPathIterator extends Expression
   /**
    * The XPath execution context we are operating on.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return XPath execution context this iterator is operating on,
+   * or null if initContext has not been called.
    */
   public final XPathContext getXPathContext()
   {
@@ -788,7 +863,8 @@ public class LocPathIterator extends Expression
   /**
    * The DOM helper for the given context;
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The DOMHelper that should be used, 
+   * or null if initContext has not been called.
    */
   public final DOMHelper getDOMHelper()
   {
@@ -796,9 +872,9 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * The node context for the expression.
+   * The node context for the iterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node context, same as getRoot().
    */
   public final Node getContext()
   {
@@ -809,7 +885,7 @@ public class LocPathIterator extends Expression
    * The node context from where the expression is being
    * executed from (i.e. for current() support).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The top-level node context of the entire expression.
    */
   public final Node getCurrentContextNode()
   {
@@ -817,10 +893,9 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method setCurrentContextNode 
+   * Set the current context node for this iterator.
    *
-   *
-   * NEEDSDOC @param n
+   * @param n Must be a non-null reference to the node context.
    */
   public final void setCurrentContextNode(Node n)
   {
@@ -831,7 +906,7 @@ public class LocPathIterator extends Expression
    * Return the saved reference to the prefix resolver that
    * was in effect when this iterator was created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The prefix resolver or this iterator, which may be null.
    */
   public final PrefixResolver getPrefixResolver()
   {
