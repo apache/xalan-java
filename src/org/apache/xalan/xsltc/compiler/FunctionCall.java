@@ -255,8 +255,10 @@ class FunctionCall extends Expression {
 		if (_className.length() > 0) {
 		    return typeCheckExternal(stable);
 		}
-	    } catch (TypeCheckError e) {
-		// Falls through
+	    } 
+	    catch (TypeCheckError e) {
+		getParser().reportError(ERROR, e.getErrorMsg());
+		return _type = Type.Void;
 	    }
 
 	    /*
@@ -271,7 +273,7 @@ class FunctionCall extends Expression {
 			      _fname.toString());
 	    }
 	    unresolvedExternal = true;
-	    return _type = Type.Void;
+	    return _type = Type.Int;	// use "Int" as "unknown"
 	}
     }
 
@@ -324,6 +326,7 @@ class FunctionCall extends Expression {
 	    throw new TypeCheckError(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
 	}
 
+	Class extType = null;
 	final int nMethods = methods.size();
 	final int nArgs = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
@@ -334,20 +337,20 @@ class FunctionCall extends Expression {
 	    // Check if all paramteters to this method can be converted
 	    final Method method = (Method)methods.elementAt(i);
 	    final Class[] paramTypes = method.getParameterTypes();
+
 	    for (j = 0; j < nArgs; j++) {
 		// Convert from internal (translet) type to external (Java) type
+		extType = paramTypes[j];
 		final Type intType = (Type)argsType.elementAt(j);
-		final Class extType = paramTypes[j];
 		if (!_internal2Java.maps(intType, extType)) break;
 	    }
 
 	    if (j == nArgs) {
 		// Check if the return type can be converted
-		final Class extType = method.getReturnType();
-		if (extType.getName().equals("void"))
-		    _type = Type.Void;
-		else
-		    _type = (Type)_java2Internal.get(extType);
+		extType = method.getReturnType();
+		_type = extType.getName().equals("void") ? Type.Void
+		    : (Type) _java2Internal.get(extType);
+
 		// Use this method if all parameters & return type match
 		if (_type != null) {
 		    _chosenMethod = method;
@@ -357,17 +360,15 @@ class FunctionCall extends Expression {
 	}
 
 	final StringBuffer buf = new StringBuffer(_className);
-	buf.append('.');
-	buf.append(_fname.getLocalPart());
-	buf.append('(');
-	for (int a=0; a<nArgs; a++) {
-	    final Type intType = (Type)argsType.elementAt(a);
+	buf.append('.').append(_fname.getLocalPart()).append('(');
+	for (int i = 0; i < nArgs; i++) {
+	    final Type intType = (Type)argsType.elementAt(i);
 	    buf.append(intType.toString());
-	    if (a < (nArgs-1)) buf.append(", ");
+	    if (i < nArgs - 1) buf.append(", ");
 	}
-	buf.append(");");
-	final String args = buf.toString();
-	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, args);
+	buf.append(')');
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, 
+	    buf.toString());
     }
 
     /**
