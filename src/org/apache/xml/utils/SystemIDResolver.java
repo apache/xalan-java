@@ -147,11 +147,8 @@ public class SystemIDResolver
           throws TransformerException
   {
     boolean isAbsouteUrl = false;
-    boolean needToResolve = false;
-    
-    if (urlString.startsWith("..") && base == null)
-      urlString = new File(urlString).getAbsolutePath();
-    
+    boolean needToResolve = false;    
+ 
     if(urlString.startsWith("file:") && urlString.charAt(5) != '/') 
     {
       needToResolve = true;
@@ -167,7 +164,10 @@ public class SystemIDResolver
     if ((!isAbsouteUrl) && ((null == base)
             || (base.indexOf(':') < 0)))
     {
-      base = getAbsoluteURIFromRelative(base);
+      if (base.startsWith(File.separator))
+        base = "file://" + base;
+      else
+        base = getAbsoluteURIFromRelative(base);
     }
 
     // bit of a hack here.  Need to talk to URI person to see if this can be fixed.
