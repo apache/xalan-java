@@ -476,24 +476,15 @@ public class ApplyXSLT extends HttpServlet
   public String getContentType(Templates templates)
   {
     Properties oprops = templates.getOutputProperties();
-    String encoding = oprops.getProperty(OutputKeys.ENCODING);  
-	  String media = oprops.getProperty(OutputKeys.MEDIA_TYPE);
-	  if (media != null)
-	  {
-      if (encoding != null)
-        return media + "; charset=" + encoding;
-      return media;
-	  }
-	  else
-	  {
-	    String method = oprops.getProperty(OutputKeys.METHOD);
-	    if (method.equals("html"))
-		    return "text/html";
-	    else if (method.equals("text"))
-		    return "text/plain";
-	    else 
-		    return "text/xml";
-	  }
+//  String encoding = oprops.getProperty(OutputKeys.ENCODING);  
+//  String media = oprops.getProperty(OutputKeys.MEDIA_TYPE);
+    String method = oprops.getProperty(OutputKeys.METHOD);
+    if (method.equals("html"))
+	    return "text/html";
+    else if (method.equals("text"))
+	    return "text/plain";
+    else 
+	    return "text/xml";
   }
 
   /**
