@@ -572,11 +572,16 @@ public class DOMHelper
   protected Vector m_candidateNoAncestorXMLNS = new Vector();
 
   /**
-   * Returns the namespace of the given node.
+   * Returns the namespace of the given node. Differs from simply getting
+   * the node's prefix and using getNamespaceForPrefix in that it attempts
+   * to cache some of the data in NSINFO objects, to avoid repeated lookup.
+   * TODO: Should we consider moving that logic into getNamespaceForPrefix?
    *
-   * NEEDSDOC @param n
+   * @param n Node to be examined.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String containing the Namespace Name (uri) for this node.
+   * Note that this is undefined for any nodes other than Elements and
+   * Attributes.
    */
   public String getNamespaceOfNode(Node n)
   {
@@ -777,11 +782,13 @@ public class DOMHelper
   }
 
   /**
-   * Returns the local name of the given node.
+   * Returns the local name of the given node. If the node's name begins
+   * with a namespace prefix, this is the part after the colon; otherwise
+   * it's the full node name.
    *
-   * NEEDSDOC @param n
+   * @param n the node to be examined.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String containing the Local Name
    */
   public String getLocalNameOfNode(Node n)
   {
@@ -793,11 +800,16 @@ public class DOMHelper
   }
 
   /**
-   * Returns the element name with the namespace expanded.
+   * Returns the element name with the namespace prefix (if any) replaced
+   * by the Namespace URI it was bound to. This is not a standard 
+   * representation of a node name, but it allows convenient 
+   * single-string comparison of the "universal" names of two nodes.
    *
-   * NEEDSDOC @param elem
+   * @param elem Element to be examined.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String in the form "namespaceURI:localname" if the node
+   * belongs to a namespace, or simply "localname" if it doesn't.
+   * @see getExpandedAttributeName
    */
   public String getExpandedElementName(Element elem)
   {
@@ -810,11 +822,16 @@ public class DOMHelper
   }
 
   /**
-   * Returns the attribute name with the namespace expanded.
+   * Returns the attribute name with the namespace prefix (if any) replaced
+   * by the Namespace URI it was bound to. This is not a standard 
+   * representation of a node name, but it allows convenient 
+   * single-string comparison of the "universal" names of two nodes.
    *
-   * NEEDSDOC @param attr
+   * @param attr Attr to be examined
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String in the form "namespaceURI:localname" if the node
+   * belongs to a namespace, or simply "localname" if it doesn't.
+   * @see getExpandedElementName
    */
   public String getExpandedAttributeName(Attr attr)
   {
@@ -831,7 +848,10 @@ public class DOMHelper
   //==========================================================
 
   /**
-   * Tell if the node is ignorable whitespace.
+   * Tell if the node is ignorable whitespace. Note that this can
+   * be determined only in the context of a DTD or other Schema,
+   * and that DOM Level 2 has nostandardized DOM API which can
+   * return that information.
    * @deprecated
    *
    * NEEDSDOC @param node
@@ -846,6 +866,9 @@ public class DOMHelper
     // TODO: I can probably do something to figure out if this 
     // space is ignorable from just the information in
     // the DOM tree.
+	// -- You need to be able to distinguish whitespace
+	// that is #PCDATA from whitespace that isn't.  That requires
+	// DTD support, which won't be standardized until DOM Level 3.
     return isIgnorable;
   }
 
@@ -853,9 +876,9 @@ public class DOMHelper
    * Get the first unparented node in the ancestor chain.
    * @deprecated
    *
-   * NEEDSDOC @param node
+   * @param node Starting node, to specify which chain to chase
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the topmost ancestor.
    */
   public Node getRoot(Node node)
   {
@@ -874,10 +897,20 @@ public class DOMHelper
   /**
    * Get the root node of the document tree, regardless of
    * whether or not the node passed in is a document node.
+   * <p>
+   * TODO: This doesn't handle DocumentFragments or "orphaned" subtrees
+   * -- it's currently returning ownerDocument even when the tree is
+   * not actually part of the main Document tree. We should either
+   * rewrite the description to say that it finds the Document node,
+   * or change the code to walk up the ancestor chain.
+
    *
-   * NEEDSDOC @param n
+   * @param n Node to be examined
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the Document node. Note that this is not the correct answer
+   * if n was (or was a child of) a DocumentFragment or an orphaned node,
+   * as can arise if the DOM has been edited rather than being generated
+   * by a parser.
    */
   public Node getRootNode(Node n)
   {
@@ -887,11 +920,14 @@ public class DOMHelper
   }
 
   /**
-   * Tell if the given node is a namespace decl node.
+   * Test whether the given node is a namespace decl node. In DOM Level 2
+   * this can be done in a namespace-aware manner, but in Level 1 DOMs
+   * it has to be done by testing the node name.
    *
-   * NEEDSDOC @param n
+   * @param n Node to be examined.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return boolean -- true iff the node is an Attr whose name is 
+   * "xmlns" or has the "xmlns:" prefix.
    */
   public boolean isNamespaceNode(Node n)
   {
@@ -907,34 +943,63 @@ public class DOMHelper
   }
 
   /**
-   * I have to write this silly, and expensive function,
-   * because the DOM WG decided that attributes don't
-   * have parents.  If Xalan is used with a DOM implementation
-   * that reuses attribute nodes, this will not work correctly.
+   * Obtain the XPath-model parent of a DOM node -- ownerElement for Attrs,
+   * parent for other nodes. 
+   * <p>
+   * Background: The DOM believes that you must be your Parent's
+   * Child, and thus Attrs don't have parents. XPath said that Attrs
+   * do have their owning Element as their parent. This function
+   * bridges the difference, either by using the DOM Level 2 ownerElement
+   * function or by using a "silly and expensive function" in Level 1
+   * DOMs.
+   * <p>
+   * (There's some discussion of future DOMs generalizing ownerElement 
+   * into ownerNode and making it work on all types of nodes. This
+   * still wouldn't help the users of Level 1 or Level 2 DOMs)
+   * <p>
    *
-   * NEEDSDOC @param node
+   * @param node Node whose XPath parent we want to obtain
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the parent of the node, or the ownerElement if it's an
+   * Attr node, or null if the node is an orphan.
    *
-   * @throws RuntimeException
+   * @throws RuntimeException if the Document has no root element.
+   * This can't arise if the Document was created
+   * via the DOM Level 2 factory methods, but is possible if other
+   * mechanisms were used to obtain it
    */
   public Node getParentOfNode(Node node) throws RuntimeException
   {
-
     Node parent;
     short nodeType = node.getNodeType();
 
     if (Node.ATTRIBUTE_NODE == nodeType)
     {
       Document doc = node.getOwnerDocument();
-
-      /*
+	  /*
       TBD:
       if(null == doc)
       {
         throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CHILD_HAS_NO_OWNER_DOCUMENT, null));//"Attribute child does not have an owner document!");
       }
       */
+
+	  // Given how expensive the tree walk may be, we should first ask 
+	  // whether this DOM can answer the question for us. The additional
+	  // test does slow down Level 1 DOMs slightly... should/do
+	  // we have a DOM2Helper, deciding between them when we first connect?
+	  //
+	  // (Shouldn't have to check whether impl is null in a compliant DOM,
+	  // but let's be paranoid for a moment...)
+	  DOMImplementation impl=doc.getImplementation();
+	  if(impl!=null && impl.hasFeature("Core","2.0"))
+	  {
+		  parent=((Attr)node).getOwnerElement();
+		  return parent;
+	  }
+
+	  // DOM Level 1 solution, as fallback. Hugely expensive. 
+
       Element rootElem = doc.getDocumentElement();
 
       if (null == rootElem)
@@ -946,7 +1011,8 @@ public class DOMHelper
       }
 
       parent = locateAttrParent(rootElem, node);
-    }
+
+	}
     else
     {
       parent = node.getParentNode();
@@ -1031,33 +1097,39 @@ public class DOMHelper
   }
 
   /**
-   * Support for getParentOfNode.
+   * Support for getParentOfNode; walks a DOM tree until it finds
+   * the Element which owns the Attr. This is hugely expensive, and
+   * if at all possible you should use the DOM Level 2 Attr.ownerElement()
+   * method instead.
+   *  <p>
+   * The DOM Level 1 developers expected that folks would keep track
+   * of the last Element they'd seen and could recover the info from
+   * that source. Obviously that doesn't work very well if the only
+   * information you've been presented with is the Attr. The DOM Level 2
+   * getOwnerElement() method fixes that, but only for Level 2 and
+   * later DOMs.
    *
-   * NEEDSDOC @param elem
-   * NEEDSDOC @param attr
+   * @param elem Element whose subtree is to be searched for this Attr
+   * @param attr Attr whose owner is to be located.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the first Element whose attribute list includes the provided
+   * attr. In modern DOMs, this will also be the only such Element. (Early
+   * DOMs had some hope that Attrs might be sharable, but this idea has
+   * been abandoned.)
    */
   private Node locateAttrParent(Element elem, Node attr)
   {
 
     Node parent = null;
-    NamedNodeMap attrs = elem.getAttributes();
 
-    if (null != attrs)
-    {
-      int nAttrs = attrs.getLength();
-
-      for (int i = 0; i < nAttrs; i++)
-      {
-        if (attr == attrs.item(i))
-        {
-          parent = elem;
-
-          break;
-        }
-      }
-    }
+	// This should only be called for Level 1 DOMs, so we don't have to
+	// worry about namespace issues. In later levels, it's possible
+	// for a DOM to have two Attrs with the same NodeName but
+	// different namespaces, and we'd need to get getAttributeNodeNS...
+	// but later levels also have Attr.getOwnerElement.
+	Attr check=elem.getAttributeNode(attr.getNodeName());
+	if(check==attr)
+		parent = elem;
 
     if (null == parent)
     {
