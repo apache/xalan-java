@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Created-By: 1.2.2 (Sun Microsystems Inc.)
 Main-Class: org.apache.xalan.xslt.Process
-Class-Path: jaxp.jar xercesImpl.jar crimson.jar xml-apis.jar
+Class-Path: xercesImpl.jar xml-apis.jar
 
 
 Name: org/apache/xalan
