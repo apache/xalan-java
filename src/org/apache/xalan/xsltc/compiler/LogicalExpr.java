@@ -183,18 +183,18 @@ final class LogicalExpr extends Expression {
 	    _falseList.append(_right._falseList.append(_left._falseList));
 
 	    // Special case for OR-expression as a left child of AND
-	    if (_left instanceof LogicalExpr) {
-		LogicalExpr left = (LogicalExpr)_left;
-		if (left.getOp() == OR) left.backPatchTrueList(middle);
+	    if ((_left instanceof LogicalExpr) &&
+		(((LogicalExpr)_left).getOp() == OR)) {
+		((LogicalExpr)_left).backPatchTrueList(middle);
 	    }
 	    else {
 		_trueList.append(_left._trueList);
 	    }
 
 	    // Special case for OR-expression as a right child of AND
-	    if (_right instanceof LogicalExpr) {
-		LogicalExpr right = (LogicalExpr)_right;
-		if (right.getOp() == OR) right.backPatchTrueList(after);
+	    if ((_right instanceof LogicalExpr) &&
+		(((LogicalExpr)_right).getOp() == OR)) {
+		((LogicalExpr)_right).backPatchTrueList(after);
 	    }
 	    else {
 		_trueList.append(_right._trueList);
