@@ -247,13 +247,15 @@ public final class XSLTC {
      * @return 'true' if the compilation was successful
      */
     public boolean compile(InputSource input, String name) {
-
 	try {
 	    // Reset globals in case we're called by compile(Vector v);
-	    reset();
+	    reset();   // GTM,Morten- this reset sets _reader back to null
 
 	    // The systemId may not be set, so we'll have to check the URL
-	    String systemId = input.getSystemId();
+	    String systemId = null; 
+	    if (input != null) {
+	        systemId = input.getSystemId();
+	    }
 
 	    // Set the translet class name if not already set
 	    if (_className == null) {
@@ -267,10 +269,12 @@ public final class XSLTC {
 
 	    // Get the root node of the abstract syntax tree
 	    SyntaxTreeNode element = null;
-	    if (_reader == null)
+	    if (_reader == null) {
 		element = _parser.parse(input);
-	    else
+	    }
+	    else {
 		element = _parser.parse(_reader, input);
+	    }
 
 	    // Compile the translet - this is where the work is done!
 	    if ((!_parser.errorsFound()) && (element != null)) {
