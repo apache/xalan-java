@@ -102,12 +102,15 @@ public class UnionPathIterator extends Expression
     this.m_execContext = execContext;
     this.m_currentContextNode = execContext.getCurrentExpressionNode();
     this.m_context = execContext.getCurrentNode();
-
-    int n = m_iterators.length;
-    for(int i = 0; i < n; i++)
-    {
-      m_iterators[i].initContext(execContext);
-      m_iterators[i].nextNode();
+    
+    if (null != m_iterators)
+    {  
+      int n = m_iterators.length;
+      for(int i = 0; i < n; i++)
+      {
+        m_iterators[i].initContext(execContext);
+        m_iterators[i].nextNode();
+      }
     }
     
   }
@@ -407,46 +410,49 @@ public class UnionPathIterator extends Expression
     // Loop through the iterators getting the current fetched 
     // node, and get the earliest occuring in document order
     Node earliestNode = null;
-    int n = m_iterators.length;
-    int iteratorUsed = -1;
-    for(int i = 0; i < n; i++)
-    {
-      Node node = m_iterators[i].getCurrentNode();
-      if(null == node)
-        continue;
-      else if(null == earliestNode)
+    if (null != m_iterators)
+    {  
+      int n = m_iterators.length;
+      int iteratorUsed = -1;
+      for(int i = 0; i < n; i++)
       {
-        iteratorUsed = i;
-        earliestNode = node;
-      }
-      else
-      {
-        if(node.equals(earliestNode))
+        Node node = m_iterators[i].getCurrentNode();
+        if(null == node)
+          continue;
+        else if(null == earliestNode)
         {
-          // Found a duplicate, so skip past it.
-          m_iterators[i].nextNode();
+          iteratorUsed = i;
+          earliestNode = node;
         }
         else
         {
-          DOMHelper dh = m_execContext.getDOMHelper();
-          if(dh.isNodeAfter(node, earliestNode))
+          if(node.equals(earliestNode))
           {
-            iteratorUsed = i;
-            earliestNode = node;
+            // Found a duplicate, so skip past it.
+            m_iterators[i].nextNode();
+          }
+          else
+          {
+            DOMHelper dh = m_execContext.getDOMHelper();
+            if(dh.isNodeAfter(node, earliestNode))
+            {
+              iteratorUsed = i;
+              earliestNode = node;
+            }
           }
         }
+      }    
+      
+      if(null != earliestNode)
+      {
+        m_iterators[iteratorUsed].nextNode();
+        if(null != m_cachedNodes)
+          m_cachedNodes.addElement(earliestNode);
+        m_next++;
       }
+      else
+        m_foundLast = true;
     }
-    
-    if(null != earliestNode)
-    {
-      m_iterators[iteratorUsed].nextNode();
-      if(null != m_cachedNodes)
-        m_cachedNodes.addElement(earliestNode);
-      m_next++;
-    }
-    else
-      m_foundLast = true;
     
     m_lastFetched = earliestNode;
     return earliestNode;
