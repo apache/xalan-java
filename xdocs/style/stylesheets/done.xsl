@@ -4,8 +4,14 @@
 
 <!-- XSL Style sheet, DTD omitted -->
 
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:lxslt="http://xml.apache.org/xslt"
+    xmlns:redirect="org.apache.xalan.lib.Redirect"
+    extension-element-prefixes="redirect">
+
   <xsl:output method="xml"/>
+  
+  <xsl:param name="xsltcdone" select="'.\XSLTCDONE'"/>
   
   <xsl:template match="Commits">
   <xsl:comment>This XML fragment contains a list of source code updates to place in an &lt;s3&gt; section of readme.xml</xsl:comment>
@@ -31,17 +37,23 @@
     <xsl:if test="count(Commit[@category='compat'])=0">
       <note>This release includes no updates of the compatibility source code (now deprecated).</note>
     </xsl:if>
-    <!--xsl:if test="count(Commit[@category='xsltc'])>0">
-      <p>XSLTC source code updates:</p>
-      <ul>
-      <xsl:for-each select="Commit[@category='xsltc']">
-        <li><xsl:apply-templates select="Who|DateCommitted|Modified|Added|Removed|Log"/></li>
-      </xsl:for-each>
-      </ul>
-    </xsl:if>
+    
+    <xsl:if test="count(Commit[@category='xsltc'])>0">
+      <redirect:write file="{$xsltcdone}">
+        <p>XSLTC source code updates:</p>
+        <ul>
+        <xsl:for-each select="Commit[@category='xsltc']">
+          <li><xsl:apply-templates select="Who|DateCommitted|Modified|Added|Removed|Log"/></li>
+        </xsl:for-each>
+        </ul>
+      </redirect:write>
+    </xsl:if>    
     <xsl:if test="count(Commit[@category='xsltc'])=0">
-      <note>This release includes no updates of the XSLTC source code.</note>
-    </xsl:if-->
+      <redirect:write file="{$xsltcdone}">
+        <note>This release includes no updates of the XSLTC source code.</note>
+      </redirect:write>
+    </xsl:if>
+    
   </xsl:template>
   
   <xsl:template match="Who">
