@@ -1,0 +1,26 @@
+======================================================================
+The Sun XSLT Compiler (XSLTC) is a Java-based tool for compiling XSL
+stylesheets into extremely lightweight and portable Java byte code.
+
+This Compiled JAXP Demo shows you how can compile and use compiled 
+translets with JAXP.
+
+You use the two classes provided, Compile and Transform, just like the 
+org.apache.xalan.xsltc.cmdline Compile and Transform classes.
+
+Compile.java
+     Compiles an XSL stylesheet into a translet, wraps the translet
+     inside a Templates object and serializes it to a 
+     '.translet' file.
+     
+Transform.java
+     Reads a Templates object from the .translet file, the Templates 
+     object creates a translet and wraps it in a Transformer. The 
+     translet performs the transformation on behalf of the 
+     Transformer.transform() method.
+
+Usuage
+     java Compile <stylesheet.xsl>
+     java Transform <xmlfile.xml> <stylesheet>.translet
+----------------------------------------------------------------------
+END OF README
