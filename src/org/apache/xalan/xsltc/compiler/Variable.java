@@ -147,7 +147,11 @@ final class Variable extends VariableBase {
 		}
 		// Ignore this if previous definition has higher precedence
 		else if (them > us) {
+		    _ignore = true;
 		    return;
+		}
+		else {
+		    var.disable();
 		}
 		// Add this variable if we have higher precedence
 	    }
@@ -219,8 +223,8 @@ final class Variable extends VariableBase {
 	final String name = getVariable();
 
 	// Make sure that a variable instance is only compiled once
-	if (_compiled) return;
-	_compiled = true;
+	if (_ignore) return;
+	_ignore = true;
 
 	if (isLocal()) {
 	    // Push args to call addVariable()

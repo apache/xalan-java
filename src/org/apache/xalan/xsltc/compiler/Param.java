@@ -149,21 +149,16 @@ final class Param extends VariableBase {
 		final int them = param.getImportPrecedence();
 		// It is an error if the two have the same import precedence
 		if (us == them) {
-		    System.err.println("FOOOOOOOOOOOOOO!");
-		    System.err.println("us = "+this);
-		    System.err.println("us parent = "+
-				       ((Stylesheet)getParent()).getSystemId());
-		    System.err.println("us prec. = "+us);
-		    System.err.println("them = "+param);
-		    System.err.println("them parent = "+
-				       ((Stylesheet)param.getParent()).getSystemId());
-		    System.err.println("them prec = "+them);
 		    reportError(this, parser, ErrorMsg.VARREDEF_ERR,
 				_name.toString());
 		}
 		// Ignore this if previous definition has higher precedence
 		else if (them > us) {
+		    _ignore = true;
 		    return;
+		}
+		else {
+		    param.disable();
 		}
 	    }
 	    // Add this variable if we have higher precedence
@@ -205,8 +200,8 @@ final class Param extends VariableBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	if (_compiled) return;
-	_compiled = true;
+	if (_ignore) return;
+	_ignore = true;
 
 	final String name = getVariable();
 	final String signature = _type.toSignature();

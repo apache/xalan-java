@@ -90,7 +90,14 @@ class VariableBase extends TopLevelElement {
     protected Vector      _refs = new Vector(2); 
 
     // Used to make sure parameter field is not added twice
-    protected boolean    _compiled = false;
+    protected boolean    _ignore = false;
+
+    /**
+     * Disable this variable/parameter
+     */
+    public void disable() {
+	_ignore = true;
+    }
 
     /**
      * Add a reference to this variable. Called by VariableRef when an

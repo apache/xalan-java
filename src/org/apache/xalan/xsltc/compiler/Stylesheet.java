@@ -141,23 +141,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _multiDocument;
     }
 
-    /*
-    public boolean isImported() {
-	final SyntaxTreeNode parent = getParent();
-	return ((parent != null) && (parent instanceof Import));
-    }
-
-    public boolean isIncluded() {
-	final SyntaxTreeNode parent = getParent();
-	return ((parent != null) && (parent instanceof Include));
-    }
-    */
-
     public void numberFormattingUsed() {
 	_numberFormattingUsed = true;
     }
 
     public void setImportPrecedence(final int precedence) {
+	//System.err.println("PREC="+precedence+" for "+getSystemId());
 	// Set import precedence for this stylesheet
 	_importPrecedence = precedence;
 
