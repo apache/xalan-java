@@ -64,6 +64,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Hashtable;
+import java.util.Enumeration;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -239,6 +241,9 @@ public class XSLTProcessorApplet extends Applet
     // styleURL: Parameter description
     //----------------------------------------------------------------------
     param = getParameter(PARAM_styleURL);
+    
+    // stylesheet parameters
+    m_parameters = new Hashtable();
 
     if (param != null)
       setStyleURL(param);
@@ -392,14 +397,14 @@ public class XSLTProcessorApplet extends Applet
   }
 
   /** 
-   * Stylesheet parameter key
+   * Stylesheet parameter keys
    */
-  transient String m_key;
+  private Enumeration m_keys;
 
   /** 
-   * Stylesheet parameter value
+   * Stylesheet parameter key/value pair stored in a hashtable
    */
-  transient String m_expression;
+  transient Hashtable m_parameters;  
 
   /**
    * Submit a stylesheet parameter.
@@ -410,8 +415,7 @@ public class XSLTProcessorApplet extends Applet
    */
   public void setStylesheetParam(String key, String expr)
   {
-    m_key = key;
-    m_expression = expr;
+    m_parameters.put(key, expr);
   }
 
   /**
@@ -692,10 +696,13 @@ public class XSLTProcessorApplet extends Applet
 
         Transformer transformer = m_tfactory.newTransformer(xslSource);
 
-        if (null != m_key)
-          transformer.setParameter(m_key, m_expression);
-      
-         transformer.transform(xmlSource, result);
+        m_keys = m_parameters.keys();
+        while (m_keys.hasMoreElements()){
+          Object key = m_keys.nextElement();
+          Object expression = m_parameters.get(key);
+          transformer.setParameter((String) key, expression);
+        }
+        transformer.transform(xmlSource, result);
       }
       catch (TransformerConfigurationException tfe)
       {
