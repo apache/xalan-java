@@ -7,24 +7,16 @@
 package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xml.dtm.DTMManager;
 
-public class RTFIterator extends OneStepIteratorForward {
-
-	/**
-	 * Constructor for RTFIterator
-	 */
-	RTFIterator(Compiler compiler, int opPos, int analysis)
-		throws TransformerException {
-		super(compiler, opPos, analysis);
-	}
+public class RTFIterator extends NodeSetDTM {
 
 	/**
 	 * Constructor for RTFIterator
-	 */
-	public RTFIterator(int axis) {
-		super(axis);
+	 */	
+	public RTFIterator(int root, DTMManager manager) {
+		super(root, manager);
 	}
-
 }
 

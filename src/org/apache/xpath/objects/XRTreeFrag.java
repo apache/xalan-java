@@ -350,9 +350,7 @@ public class XRTreeFrag extends XObject implements Cloneable
    */
   public DTMIterator asNodeIterator()
   {
-    DTMIterator iter = new RTFIterator(Axis.SELF);
-    iter.setRoot(m_dtmRoot, m_xctxt);    
-    return iter;
+    return new RTFIterator(m_dtmRoot, m_xctxt.getDTMManager());
   }
 
   /**
