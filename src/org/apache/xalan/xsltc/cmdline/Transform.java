@@ -63,7 +63,7 @@
  *
  */
 
-package org.apache.xalan.xsltc.runtime;
+package org.apache.xalan.xsltc.cmdline;
 
 import java.io.*;
 import java.io.InputStream;
@@ -78,12 +78,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
-import org.apache.xalan.xsltc.*;
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.TransletOutputHandler;
+
+import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 
-final public class DefaultRun {
+final public class Transform {
 
     private static final String NAMESPACE_FEATURE =
 	"http://xml.org/sax/features/namespaces";
@@ -97,10 +102,8 @@ final public class DefaultRun {
     private Vector  _params = null;
     private boolean _uri, _debug;
 
-    AbstractTranslet _translet;
-
-    public DefaultRun(String className, String fileName,
-		      boolean uri, boolean debug) {
+    public Transform(String className, String fileName,
+		     boolean uri, boolean debug) {
 	_fileName = fileName;
 	_className = className;
 	_uri = uri;
@@ -130,7 +133,7 @@ final public class DefaultRun {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
 	    try {
-		factory.setFeature(NAMESPACE_FEATURE, true);
+		factory.setFeature(NAMESPACE_FEATURE,true);
 	    }
 	    catch (Exception e) {
 		factory.setNamespaceAware(true);
@@ -145,7 +148,7 @@ final public class DefaultRun {
 	    final DTDMonitor dtdMonitor = new DTDMonitor();
 	    dtdMonitor.handleDTD(reader);
 
-	    _translet = (AbstractTranslet)translet;
+	    AbstractTranslet _translet = (AbstractTranslet)translet;
 	    dom.setDocumentURI(_fileName);
 	    if (_uri)
 		reader.parse(_fileName);
@@ -194,7 +197,7 @@ final public class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    doSystemExit(1);	    
+	    System.exit(-1);	    
 	}
 	catch (RuntimeException e) {
 	    System.err.println("\nRuntime Error: " + e.getMessage());
@@ -202,39 +205,30 @@ final public class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    doSystemExit(1);
+	    System.exit(-1);
 	}
 	catch (FileNotFoundException e) {
 	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
-	    doSystemExit(1);
+	    System.exit(-1);
 	}
 	catch (MalformedURLException e) {
 	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
-	    doSystemExit(1);
+	    System.exit(-1);
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println("Error: Cannot find class '"+_className+"'.");
-	    doSystemExit(1);
+	    System.exit(-1);
 	}
         catch (UnknownHostException e) {
 	    System.err.println("Error: Can't resolve URI specification '"+ 
 			       _fileName+"'.");
-	    doSystemExit(1);
+	    System.exit(-1);
         }
 	catch (Exception e) {
 	    e.printStackTrace();
 	    System.err.println("Error: internal error.");
-	    doSystemExit(1);
+	    System.exit(-1);
 	}
-    }
-
-    /** If we should call System.exit or not */
-    protected static boolean allowSystemExit = true;
-
-    /** Worker method to call System.exit or not */
-    protected static void doSystemExit(int retVal) {
-        if (allowSystemExit)
-            System.exit(retVal);
     }
 
     private final static String USAGE_STRING =
@@ -250,7 +244,7 @@ final public class DefaultRun {
 
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
-	System.exit(1);
+	System.exit(-1);
     }
 
     public static void main(String[] args) {
@@ -266,9 +260,6 @@ final public class DefaultRun {
 		    if (args[i].equals("-u")) {
 			uri = true;
 		    }
-		    else if (args[i].equals("-s")){
-			allowSystemExit = false;
-		    }
 		    else if (args[i].equals("-x")) {
 			debug = true;
 		    }
@@ -282,25 +273,20 @@ final public class DefaultRun {
 		}
 
 		// Enough arguments left ?
-		if (args.length - i < 2) {
-		    printUsage();
-		}
+		if (args.length - i < 2) printUsage();
 
 		// Get document file and class name
-		DefaultRun handler = new DefaultRun(args[i+1], args[i], 
-						    uri, debug);
+		Transform handler = new Transform(args[i+1],args[i],uri,debug);
 		handler.setJarFileInputSrc(isJarFileSpecified,	jarFile);
 
 		// Parse stylesheet parameters
 		Vector params = new Vector();
 		for (i += 2; i < args.length; i++) {
-		    int equal = args[i].indexOf('=');
+		    final int equal = args[i].indexOf('=');
 		    if (equal > 0) {
-			final Parameter param =
-			    new Parameter(args[i].substring(0, equal), 
-					  args[i].substring(equal + 1,
-							    args[i].length()));
-			params.addElement(param);
+			final String name  = args[i].substring(0, equal);
+			final String value = args[i].substring(equal+1);
+			params.addElement(new Parameter(name, value));
 		    }
 		    else {
 			printUsage();
@@ -310,10 +296,10 @@ final public class DefaultRun {
 		if (i == args.length) {
 		    handler.setParameters(params);
 		    handler.doTransform();
-		    doSystemExit(0);
+		    System.exit(0);
 		}
-	    }else{
-	       printUsage();
+	    } else {
+		printUsage();
 	    }
 	}
 	catch (Exception e) {
