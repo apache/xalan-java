@@ -221,6 +221,10 @@ public class ClonerToResultTree
           }
 
           String ns = dtm.getNamespaceURI(node);
+	  // JJK SAX apparently expects "no namespace" to be represented
+	  // as "" rather than null.
+	  if(ns==null)ns="";
+
           String localName = dtm.getLocalName(node);
 
           rth.startElement(ns, localName, dtm.getNodeNameX(node), null);
