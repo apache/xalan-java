@@ -25,57 +25,57 @@ package javax.xml.transform;
  * transformation factory specified in the system properties cannot be found
  * or instantiated.
  */
-public class TFactoryConfigurationError extends Error {
+public class TransformerFactoryConfigurationError extends Error {
 
     private Exception exception;
 
     /**
-     * Create a new <code>TFactoryConfigurationError</code> with no
+     * Create a new <code>TransformerFactoryConfigurationError</code> with no
      * detail mesage.
      */
 
-     public TFactoryConfigurationError() {
+     public TransformerFactoryConfigurationError() {
          super();
     	 this.exception = null; 
      }
 
     /**
-     * Create a new <code>TFactoryConfigurationError</code> with
+     * Create a new <code>TransformerFactoryConfigurationError</code> with
      * the <code>String </code> specified as an error message.
      *
      * @param msg The error message for the exception.
      */
     
-    public TFactoryConfigurationError(String msg) {
+    public TransformerFactoryConfigurationError(String msg) {
         super(msg);
         this.exception = null;
     }
 
 
     /**
-     * Create a new <code>TFactoryConfigurationError</code> with a
+     * Create a new <code>TransformerFactoryConfigurationError</code> with a
      * given <code>Exception</code> base cause of the error.
      *
      * @param e The exception to be encapsulated in a
-     * TFactoryConfigurationError.
+     * TransformerFactoryConfigurationError.
      */
     
-    public TFactoryConfigurationError(Exception e) {
+    public TransformerFactoryConfigurationError(Exception e) {
         super();
         this.exception = e;
     }
 
     /**
-     * Create a new <code>TFactoryConfigurationError</code> with the
+     * Create a new <code>TransformerFactoryConfigurationError</code> with the
      * given <code>Exception</code> base cause and detail message.
      *
      * @param e The exception to be encapsulated in a
-     * TFactoryConfigurationError
+     * TransformerFactoryConfigurationError
      * @param msg The detail message.
-     * @param e The exception to be wrapped in a TFactoryConfigurationError
+     * @param e The exception to be wrapped in a TransformerFactoryConfigurationError
      */
     
-    public TFactoryConfigurationError(Exception e, String msg) {
+    public TransformerFactoryConfigurationError(Exception e, String msg) {
         super(msg);
         this.exception = e;
     }
