@@ -395,9 +395,9 @@ public abstract class AbstractTranslet implements Translet {
      *   @node is the node id of the node to insert
      *   @value is the value that will look up the node in the given index
      */
-    public void buildKeyIndex(String name, int node, String value) {
+    public void buildKeyIndex(String name, int node, Object value) {
 	if (_keyIndexes == null) _keyIndexes = new Hashtable();
-
+	
 	KeyIndex index = (KeyIndex)_keyIndexes.get(name);
 	if (index == null) {
 	    _keyIndexes.put(name, index = new KeyIndex(_indexSize));

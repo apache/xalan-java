@@ -74,18 +74,31 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 
 final class Key extends TopLevelElement {
-    private QName      _name;
-    private Pattern    _match;
-    private Expression _use;
-    private Type       _useType;
 
+    private QName      _name;     // The name of this key (ie. index)
+    private Pattern    _match;    // The nodes to generate index keys from
+    private Expression _use;      // The nodes to include in the key
+    private Type       _useType;  // The data type of the key's contents
+
+    private final String USE_TYPE_ERR =
+	"The use-attribute of <key> must be node, node-set, string or number.";
+
+    /**
+     * Parse the <xsl:key> element and attributes
+     * @param parser A reference to the stylesheet parser
+     */
     public void parseContents(Parser parser) {
-	// make sure values are provided
+
+	// Get the required attributes and parser XPath expressions
 	_name = parser.getQName(getAttribute("name"));
 	_match = parser.parsePattern(this, "match", null);
 	_use = parser.parseExpression(this, "use", null);
 
-        // make sure required attribute(s) have been set
+        // Make sure required attribute(s) have been set
+        if (_name == null) {
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    return;
+        }
         if (_match.isDummy()) {
 	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "match");
 	    return;
@@ -96,16 +109,9 @@ final class Key extends TopLevelElement {
         }
     }
 
-    public Pattern getPattern() {
-	return(_match);
-    }
-
-    public StepPattern getKernelPattern() {
-	return(((LocationPathPattern)_match).getKernelPattern());
-    }
-
     /**
-     *
+     * Returns a String-representation of this key's name
+     * @return The key's name (from the <xsl:key> elements 'name' attribute).
      */
     public String getName() {
 	String name;
@@ -119,22 +125,28 @@ final class Key extends TopLevelElement {
     /**
      * Run type check on the "use" attribute and make sure it is something
      * we can use to extract some value from nodes.
+     * @param stable The stylesheet parser's symbol table
+     * @return The data-type of this key (always void)
+     * @throws TypeCheckError If the use attribute does not represent a string,
+     *   a node-set or a number
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	_match.typeCheck(stable);
 	_useType = _use.typeCheck(stable);
-	// If the 'use' attribute is not a string...
-	if (!(_useType instanceof StringType)) {
 
-	    // ...it must hold an expression for a node...
-	    if (_useType instanceof NodeType) {
-		_use = new CastExpr(_use, Type.String);
-	    }
-	    // ...or a node-set.
-	    else if (!(_useType instanceof NodeSetType)) {
-		throw new TypeCheckError(this);
-	    }
+	// Cast node values to string values
+	if (_useType instanceof NodeType) {
+	    _use = new CastExpr(_use, Type.String);
+	    _useType = Type.String;
 	}
+
+	// If the 'use' attribute is not a string, node-set or number
+	if (!(_useType instanceof StringType) &&
+	    !(_useType instanceof NodeSetType) &&
+	    !(_useType instanceof RealType)) {
+	    throw new TypeCheckError(new ErrorMsg(USE_TYPE_ERR));
+	}
+
 	return Type.Void;
     }
 
@@ -142,6 +154,8 @@ final class Key extends TopLevelElement {
      * This method is called if the "use" attribute of the key contains a
      * node set. In this case we must traverse all nodes in the set and
      * create one entry in this key's index for each node in the set.
+     * @param classGen The Java class generator
+     * @param methodGen The method generator
      */
     public void traverseNodeSet(ClassGenerator classGen,
 				MethodGenerator methodGen,
@@ -205,6 +219,8 @@ final class Key extends TopLevelElement {
     /**
      * Gather all nodes that match the expression in the attribute "match"
      * and add one (or more) entries in this key's index.
+     * @param classGen The Java class generator
+     * @param methodGen The method generator
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 
@@ -215,7 +231,7 @@ final class Key extends TopLevelElement {
 	// AbstractTranslet.buildKeyIndex(name,node_id,value) => void
 	final int key = cpg.addMethodref(TRANSLET_CLASS,
 					 "buildKeyIndex",
-					 "("+STRING_SIG+"I"+STRING_SIG+")V");
+					 "("+STRING_SIG+"I"+OBJECT_SIG+")V");
 
 	// DOM.getAxisIterator(root) => NodeIterator
 	final int git = cpg.addMethodref(classGen.getDOMClass(),
@@ -247,7 +263,20 @@ final class Key extends TopLevelElement {
 	
 	// If this is just a single node we should convert that to a string
 	// and use that string as the value in the index for this key.
-	if ((_useType instanceof NodeType) || (_useType instanceof StringType)) {
+	if (_useType instanceof RealType) {
+	    final int dbl = cpg.addMethodref(DOUBLE_CLASS,"<init>", "(D)V");
+
+	    il.append(classGen.loadTranslet());
+	    il.append(new PUSH(cpg, _name.toString()));
+	    il.append(methodGen.loadCurrentNode());
+	    il.append(new NEW(cpg.addClass(DOUBLE_CLASS)));
+	    il.append(DUP);
+	    _use.translate(classGen,methodGen);
+	    il.append(new INVOKESPECIAL(dbl));
+	    il.append(new INVOKEVIRTUAL(key));
+
+	}
+	else if (_useType instanceof StringType) {
 	    il.append(classGen.loadTranslet());
 	    il.append(new PUSH(cpg, _name.toString()));
 	    il.append(methodGen.loadCurrentNode());

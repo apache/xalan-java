@@ -494,12 +494,12 @@ AbbreviatedAbsoluteLocationPath ::= DSLASH RelativeLocationPath:rlp
 
 	   // CASE I: no filtering, nodes OK but have dups,
 	   //   results of test suite in file: 'REP_UNFILT'
-	   //RESULT = path; 
+	   RESULT = path; 
 
            // CASE II: Filtered Abs Loc Path -
 	   //    all tests fail except desOrSelf test,
 	   //    results of test suite in file: 'REP-FILT'
-	   RESULT = new FilteredAbsoluteLocationPath(path); 
+	   //RESULT = new FilteredAbsoluteLocationPath(path); 
 
 
 	   // CASE III: Filtered Parent Loc Path -

@@ -69,7 +69,7 @@ import java.text.Collator;
 import java.text.CollationKey;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 /**
  * Base class for sort records containing application specific sort keys 
@@ -86,7 +86,8 @@ public abstract class NodeSortRecord {
     protected static int[] _sortOrder;
     protected static int _levels = 1;
 
-    private Translet _translet = null;
+    private AbstractTranslet _translet = null;
+
     private DOM    _dom = null;
     private int    _node;           // The position in the current iterator
     private int    _last = 0;       // Number of nodes in the current iterator
@@ -112,7 +113,8 @@ public abstract class NodeSortRecord {
      * This method allows the caller to set the values that could not be passed
      * to the default constructor.
      */
-    public final void initialize(int node,int last,DOM dom,Translet translet) {
+    public final void initialize(int node, int last, DOM dom,
+				 AbstractTranslet translet) {
 	_dom = dom;
 	_node = node;
 	_last = last;
@@ -217,6 +219,7 @@ public abstract class NodeSortRecord {
      * Extract the sort value for a level of this key.
      */
     public abstract String extractValueFromDOM(DOM dom, int current, int level,
-					       Translet translet, int last);
+					       AbstractTranslet translet,
+					       int last);
 
 }

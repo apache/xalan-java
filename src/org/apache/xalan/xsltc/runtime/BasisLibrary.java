@@ -82,8 +82,11 @@ import org.apache.xalan.xsltc.dom.SingletonIterator;
  * and the DOM as their last two arguments.
  */
 public final class BasisLibrary implements Operators {
+
+    private final static String EMPTYSTRING = "";
+
     /**
-     * XSLT Standard function count(node-set)
+     * Standard function count(node-set)
      */
     public static int countF(NodeIterator iterator) {
 	int counter = 0;
@@ -211,7 +214,7 @@ public final class BasisLibrary implements Operators {
 	    return  ((Boolean) obj).booleanValue();
 	}
 	else if (obj instanceof String) {
-	    return !((String) obj).equals("");
+	    return !((String) obj).equals(EMPTYSTRING);
 	}
 	else if (obj instanceof NodeIterator) {
 	    NodeIterator iter = (NodeIterator) obj;
@@ -222,7 +225,7 @@ public final class BasisLibrary implements Operators {
 	}
 	else if (obj instanceof DOM) {
 	    String temp = ((DOM) obj).getStringValue();
-	    return !temp.equals("");
+	    return !temp.equals(EMPTYSTRING);
 	}
 	else {
 	    runTimeError("Invalid argument type in call to number().");
@@ -236,13 +239,14 @@ public final class BasisLibrary implements Operators {
      */
     public static String substringF(String value, double start) {
 	try {
-	    final int valuel = value.length();
-	    final int istart = (int)Math.round(start);
+	    final int strlen = value.length();
+	    int istart = (int)Math.round(start);
 
-	    if (Double.isNaN(start)) return("");
+	    if (Double.isNaN(start)) return(EMPTYSTRING);
 
-	    return value.substring(istart < 1 ? 0 : 
-				   istart > valuel ? valuel : istart - 1);
+ 	    if ((istart < 1) || (istart > strlen)) istart = 0;
+
+	    return value.substring(istart);
 	}
 	catch (IndexOutOfBoundsException e) {
 	    runTimeInternalError();
@@ -256,18 +260,19 @@ public final class BasisLibrary implements Operators {
      */
     public static String substringF(String value, double start, double length) {
 	try {
-	    final int valuel  = value.length();
-	    final int istart  = (int)Math.round(start);
-	    final int ilength = (int)Math.round(length);
-	    final int isum    = istart + ilength;
+	    final int strlen  = value.length();
+	    int istart = (int)Math.round(start) - 1;
+	    int isum   = istart + (int)Math.round(length);
 
-	    if (Double.isNaN(start) || Double.isNaN(length)) return("");
+	    if (Double.isNaN(start) || Double.isNaN(length))
+		return(EMPTYSTRING);
 
-	    return value.substring(istart < 1 || istart > valuel
-				   ? 0 : istart - 1, 
-				   ilength < 0
-				   ? 0 : isum - 1 > valuel
-				   ? valuel : isum < 1 ? 0 : isum - 1);
+ 	    if ((istart < 1) || (istart > strlen)) istart = 0;
+
+	    if ((isum < 0) || (isum > strlen))
+		return value.substring(istart);
+	    else
+		return value.substring(istart, isum);
 	}
 	catch (IndexOutOfBoundsException e) {
 	    runTimeInternalError();
@@ -280,7 +285,10 @@ public final class BasisLibrary implements Operators {
      */
     public static String substring_afterF(String value, String substring) {
 	final int index = value.indexOf(substring);
-	return index >= 0 ? value.substring(index + substring.length()) : "";
+	if (index >= 0)
+	    return value.substring(index + substring.length());
+	else
+	    return EMPTYSTRING;
     }
 
     /**
@@ -288,7 +296,10 @@ public final class BasisLibrary implements Operators {
      */
     public static String substring_beforeF(String value, String substring) {
 	final int index = value.indexOf(substring);
-	return index >= 0 ? value.substring(0, index) : "";
+	if (index >= 0)
+	    return value.substring(0, index);
+	else
+	    return EMPTYSTRING;
     }
 
     /**
@@ -351,7 +362,12 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function generate-id(). 
      */
     public static String generate_idF(int node) {
-	return "N" + node;
+	if (node > 0)
+	    // Only generate ID if node exists
+	    return "N" + node;
+	else
+	    // Otherwise return an empty string
+	    return EMPTYSTRING;
     }
     
     /**
@@ -398,7 +414,7 @@ public final class BasisLibrary implements Operators {
 	
 	runTimeError("Invalid argument type '"+name+
 		     "' in call to system-property().");
-	return("");
+	return(EMPTYSTRING);
     }
 
     /**
@@ -407,7 +423,10 @@ public final class BasisLibrary implements Operators {
     public static String namespace_uriF(int node, DOM dom) {
 	final String value = dom.getNodeName(node);
 	final int colon = value.lastIndexOf(':');
-	return colon >= 0 ? value.substring(0, colon) : "";
+	if (colon >= 0)
+	    return value.substring(0, colon);
+	else
+	    return EMPTYSTRING;
     }
 
     //-- Begin utility functions
@@ -821,7 +840,7 @@ public final class BasisLibrary implements Operators {
 	catch (IllegalArgumentException e) {
 	    runTimeError("Attempting to format number '"+ number +
 			 "' using pattern '" + pattern + "'.");
-	    return("");
+	    return(EMPTYSTRING);
 	}
     }
     

@@ -1023,16 +1023,13 @@ public class Parser implements Constants, ContentHandler {
     public void startPrefixMapping(String prefix, String uri) {
 	if (_prefixMapping == null) _prefixMapping = new Hashtable();
 	_prefixMapping.put(prefix, uri);
-	//System.err.println("starting mapping for \""+prefix+"\"=\""+uri+"\"");
     }
 
     /**
      * SAX2: End the scope of a prefix-URI Namespace mapping.
      *       This has to be passed on to the symbol table!
      */
-    public void endPrefixMapping(String prefix) {
-	//System.err.println("ending mapping for \""+prefix+"\"");
-    }
+    public void endPrefixMapping(String prefix) { }
 
     /**
      * SAX2: Receive notification of the beginning of an element.
@@ -1042,11 +1039,6 @@ public class Parser implements Constants, ContentHandler {
     public void startElement(String uri, String localname,
 			     String qname, Attributes attributes) 
 	throws SAXException {
-	/*
-	System.err.println("start element uri=\""+uri+
-			   "\", local=\""+localname+
-			   "\", qname=\""+qname+"\"");
-	*/
 	final int col = qname.lastIndexOf(':');
 	final String prefix;
 	if (col == -1)
@@ -1093,11 +1085,6 @@ public class Parser implements Constants, ContentHandler {
      * SAX2: Receive notification of the end of an element.
      */
     public void endElement(String uri, String localname, String qname) {
-	/*
-	System.err.println("end element uri=\""+uri+
-			   "\", local=\""+localname+
-			   "\", qname=\""+qname+"\"");
-	*/
 	_parentStack.pop();
     }
 

@@ -107,6 +107,10 @@ public final class DupFilterIterator extends NodeIteratorBase {
      * @return A reference to this node iterator
      */
     public NodeIterator setStartNode(int node) {
+	// KeyIndex iterators are always relative to the root node, so there
+	// is never any point in re-reading the iterator (and we SHOULD NOT).
+	if ((_source instanceof KeyIndex) && (_data != null)) return this;
+
 	// If the _data array is populated, and the current start node is
 	// equal to the new start node, we know we already have what we need.
 	if ((_data == null) || (node != _startNode)) {

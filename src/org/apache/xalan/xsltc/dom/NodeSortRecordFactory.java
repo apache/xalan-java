@@ -67,12 +67,14 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 public class NodeSortRecordFactory {
     private final DOM      _dom;
     private final Class    _class;
     private final String   _className;
-    private final Translet _translet;
+
+    private final AbstractTranslet _translet;
 
     /**
      * Creates a NodeSortRecord producing object. The DOM specifies which tree
@@ -87,7 +89,7 @@ public class NodeSortRecordFactory {
 	    _dom = dom;
 	    _className = className;
 	    _class = Class.forName(className);
-	    _translet = translet;
+	    _translet = (AbstractTranslet)translet;
 	}
 	catch (ClassNotFoundException e) {
 	    throw new TransletException("Could not find class " + className);

@@ -65,6 +65,8 @@ package org.apache.xalan.xsltc.compiler.util;
 
 import de.fub.bytecode.generic.Type;
 import de.fub.bytecode.generic.*;
+
+import org.apache.xalan.xsltc.compiler.Constants;
 import org.apache.xalan.xsltc.compiler.Template;
 
 public final class CompareGenerator extends MethodGenerator {
@@ -74,11 +76,14 @@ public final class CompareGenerator extends MethodGenerator {
     private static int LEVEL_INDEX    = 3;
     private static int TRANSLET_INDEX = 4;
     private static int LAST_INDEX     = 5;
+    private int ITERATOR_INDEX = 6;
 
     private final Instruction _iloadCurrent;
     private final Instruction _istoreCurrent;
     private final Instruction _aloadDom;
     private final Instruction _iloadLast;
+    private final Instruction _aloadIterator;
+    private final Instruction _astoreIterator;
 
     public CompareGenerator(int access_flags, Type return_type,
 			    Type[] arg_types, String[] arg_names,
@@ -91,6 +96,16 @@ public final class CompareGenerator extends MethodGenerator {
 	_istoreCurrent = new ISTORE(CURRENT_INDEX);
 	_aloadDom = new ALOAD(DOM_INDEX);
 	_iloadLast = new ILOAD(LAST_INDEX);
+
+	LocalVariableGen iterator =
+	    addLocalVariable("iterator",
+			     Util.getJCRefType(Constants.NODE_ITERATOR_SIG),
+			     null, null);
+	ITERATOR_INDEX = iterator.getIndex();
+	_aloadIterator = new ALOAD(ITERATOR_INDEX);
+	_astoreIterator = new ASTORE(ITERATOR_INDEX);
+	il.append(new ACONST_NULL());
+	il.append(storeIterator());
     }
 
     public Instruction loadLastNode() {
@@ -115,6 +130,14 @@ public final class CompareGenerator extends MethodGenerator {
 
     public int getIteratorIndex() {
 	return INVALID_INDEX;
+    }
+
+    public Instruction storeIterator() {
+	return _astoreIterator;
+    }
+    
+    public Instruction loadIterator() {
+	return _aloadIterator;
     }
 
     //??? may not be used anymore

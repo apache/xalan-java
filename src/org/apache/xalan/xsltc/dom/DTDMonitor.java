@@ -214,7 +214,7 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
 
 	    while (( node = niter.next()) != NodeIterator.END) {
 		// get id value for the node
-		String idValue = dom.getAttributeValue(attributeType, node);
+		Object idValue = dom.getAttributeValue(attributeType, node);
 		// add entry into ##id index for KeyCall to handle
 		translet.buildKeyIndex(ID_INDEX_NAME, mask|node, idValue);
 	    }

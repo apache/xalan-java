@@ -83,6 +83,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 
 final class Sort extends Instruction {
+
     private Expression     _select;
     private AttributeValue _order;
     private AttributeValue _caseOrder;
@@ -419,7 +420,7 @@ final class Sort extends Instruction {
 		                     Util.getJCRefType(DOM_INTF_SIG),
 				     de.fub.bytecode.generic.Type.INT,
 				     de.fub.bytecode.generic.Type.INT,
-				     Util.getJCRefType(TRANSLET_INTF_SIG),
+				     Util.getJCRefType(TRANSLET_SIG),
 				     de.fub.bytecode.generic.Type.INT
 				 },
 				 new String[] { "dom",
