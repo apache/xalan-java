@@ -60,21 +60,30 @@
  *
  */
 
-import java.io.*;
-import java.applet.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.applet.Applet;
+
+import java.awt.BorderLayout;
+import java.awt.Button;
+import java.awt.Frame;
+import java.awt.Label;
+import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.MessageHandler;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 
 import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.dom.*;
 
 /**
  * This applet demonstrates how XSL transformations can be made run in
@@ -214,10 +223,13 @@ public final class TransformApplet extends Applet {
 		AbstractTranslet translet = (AbstractTranslet)tc.newInstance();
 		((AbstractTranslet)translet).setMessageHandler(msgHandler);
 
-		// Initialise the translet's output handler
-		DefaultSAXOutputHandler saxHandler = 
-		    new DefaultSAXOutputHandler(out);
-		TextOutput textOutput = new TextOutput(saxHandler);
+		// Create output handler
+		TransletOutputHandlerFactory tohFactory = 
+		    TransletOutputHandlerFactory.newInstance();
+		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+		tohFactory.setEncoding(translet._encoding);
+		tohFactory.setOutputMethod(translet._method);
+		tohFactory.setWriter(out);
 
 		getDOM(documentUrl);
 
@@ -232,7 +244,7 @@ public final class TransformApplet extends Applet {
 		translet.setUnparsedEntityURIs(_dtdMonitor.
 					       getUnparsedEntityURIs());
 		// Do the actual transformation
-		translet.transform(_dom, textOutput);
+		translet.transform(_dom, tohFactory.getTransletOutputHandler());
 
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");

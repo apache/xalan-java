@@ -60,13 +60,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
-
-import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
+import javax.xml.transform.stream.StreamSource;
 
 public class Compile {
 

@@ -60,24 +60,23 @@
  *
  */
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import java.rmi.RemoteException;
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.XMLReader;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+
 import org.xml.sax.SAXException;
-
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.xml.sax.XMLReader;
 
 public class TransformBean implements SessionBean {
 
@@ -153,13 +152,17 @@ public class TransformBean implements SessionBean {
 		// Read input document from the DOM cache
 		DOMImpl dom = getDOM(document, translet);
 
-		// Initialize the (default) SAX output handler
-		DefaultSAXOutputHandler saxHandler = 
-		    new DefaultSAXOutputHandler(out);
+		// Create output handler
+		TransletOutputHandlerFactory tohFactory = 
+		    TransletOutputHandlerFactory.newInstance();
+		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+		tohFactory.setEncoding(translet._encoding);
+		tohFactory.setOutputMethod(translet._method);
+		tohFactory.setWriter(out);
 
 		// Start the transformation
 		final long start = System.currentTimeMillis();
-		translet.transform(dom, new TextOutput(saxHandler));
+		translet.transform(dom, tohFactory.getTransletOutputHandler());
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
 	    }

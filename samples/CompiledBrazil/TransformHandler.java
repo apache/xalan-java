@@ -59,16 +59,18 @@
  *
  */
 
-import java.io.*;
-import java.util.NoSuchElementException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import java.util.StringTokenizer;
-import java.util.Vector;
 
-import org.xml.sax.*;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+import org.apache.xalan.xsltc.dom.DocumentCache;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
-import org.apache.xalan.xsltc.dom.*;
+import org.xml.sax.SAXException;
 
 import sunlabs.brazil.server.Handler;
 import sunlabs.brazil.server.Request;
@@ -175,13 +177,17 @@ public class TransformHandler implements Handler {
 		    errorMessage("Could not locate: \"<b>"+document+"\"</b>");
 		}
 		else {
-		    // Initialise the translet's output handler
-		    DefaultSAXOutputHandler saxHandler = 
-			new DefaultSAXOutputHandler(_out);
+		    // Create output handler
+		    TransletOutputHandlerFactory tohFactory = 
+			TransletOutputHandlerFactory.newInstance();
+		    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+		    tohFactory.setEncoding(translet._encoding);
+		    tohFactory.setOutputMethod(translet._method);
+		    tohFactory.setWriter(_out);
 
 		    // Do the actual transformation
 		    final long start = System.currentTimeMillis();
-		    translet.transform(dom, new TextOutput(saxHandler));
+		    translet.transform(dom, tohFactory.getTransletOutputHandler());
 		    final long done = System.currentTimeMillis() - start;
 		    _out.println("<!-- transformed by XSLTC in "+done+"ms -->");
 		}
