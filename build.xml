@@ -415,11 +415,11 @@ Copyright:
       file="${bin.dir}/runtime.README.txt"/>
 
     <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/jakarta-regexp-1.2.jar"/>
+      file="${bin.dir}/regexp.jar"/>
     <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/jakarta-regexp-1.2.LICENSE.txt"/>
+      file="${bin.dir}/regexp.LICENSE.txt"/>
     <copy todir="${build.dir}/xsltctmp"
-      file="${bin.dir}/jakarta-regexp-1.2.README.txt"/>
+      file="${bin.dir}/regexp.README.txt"/>
 
     <!-- unjar all jars -->
     <unjar src="${build.dir}/xsltctmp/xsltc.jar"
@@ -432,7 +432,7 @@ Copyright:
            dest="${build.dir}/xsltctmp" />
     <unjar src="${build.dir}/xsltctmp/runtime.jar"
            dest="${build.dir}/xsltctmp" />
-    <unjar src="${build.dir}/xsltctmp/jakarta-regexp-1.2.jar"
+    <unjar src="${build.dir}/xsltctmp/regexp.jar"
            dest="${build.dir}/xsltctmp" />
 
     <!-- remove jar files -->
