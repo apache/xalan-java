@@ -212,7 +212,7 @@ public class ErrorMessages extends ResourceBundle {
 
 	/*
 	 * Note to translators:  As with the preceding message, a namespace
-	 * declaration has the form of a namespace and is only permitted to
+	 * declaration has the form of an attribute and is only permitted to
 	 * appear on an element.  The substitution text {0} is the namespace
 	 * prefix and {1} is the URI that was being used in the erroneous
 	 * namespace declaration.
@@ -251,7 +251,14 @@ public class ErrorMessages extends ResourceBundle {
 	 * declarations.
 	 */
         // NAMESPACES_SUPPORT_ERR
-        "The SAX parser you are using does not have support for XML Namespaces."
+        "The SAX parser you are using does not have support for XML Namespaces.",
+
+        /*
+         * Note to translators:  The substitution text is the URI that was in
+         * error.
+         */
+        // CANT_RESOLVE_RELATIVE_URI_ERR
+        "Could not resolve the URI reference ''{0}''."
     };
 
     private static Vector _keys;
