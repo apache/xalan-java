@@ -59,6 +59,7 @@ package org.apache.xalan.processor;
 import org.apache.xml.utils.StringToIntTable;
 
 import java.lang.IllegalAccessException;
+
 import java.lang.IndexOutOfBoundsException;
 import java.lang.InstantiationException;
 import java.lang.NoSuchMethodException;
