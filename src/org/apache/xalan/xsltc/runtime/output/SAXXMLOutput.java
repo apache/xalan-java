@@ -448,5 +448,22 @@ public class SAXXMLOutput extends SAXOutput  {
     }
 
 
+    /**
+     * Send a processing instruction to the output document
+     */
+    public void processingInstruction(String target, String data)
+        throws TransletException {
+        try {
+            // Close any open element
+            if (_startTagOpen) closeStartTag();
+            if (_cdataTagOpen) closeCDATA();
+
+            // Pass the processing instruction to the SAX handler
+            _saxHandler.processingInstruction(target, data);
+        }
+        catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
 }
 
