@@ -494,8 +494,15 @@ public final class ToHTMLStream extends ToStream
      * it will switch to the new format. This method should not be
      * called while the serializer is in the process of serializing
      * a document.
+     * 
+     * This method can be called multiple times before starting
+     * the serialization of a particular result-tree. In principle
+     * all serialization parameters can be changed, with the exception
+     * of method="html" (it must be method="html" otherwise we
+     * shouldn't even have a ToHTMLStream object here!) 
      *
-     * @param format The output format to use
+     * @param format The output format or serialzation parameters
+     * to use.
      */
     public void setOutputFormat(Properties format)
     {
@@ -1338,10 +1345,10 @@ public final class ToHTMLStream extends ToStream
                     }
                     else
                     */
-                    String entityName = m_charInfo.getOutputStringForChar(ch);
-                    if (null != entityName)
+                    String outputStringForChar = m_charInfo.getOutputStringForChar(ch);
+                    if (null != outputStringForChar)
                     {
-                        writer.write(entityName);
+                        writer.write(outputStringForChar);
                     }
                     else if (escapingNotNeeded(ch))
                     {
@@ -1620,7 +1627,7 @@ public final class ToHTMLStream extends ToStream
         }
     }
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public final void endElement(String elemName) throws SAXException
     {
@@ -1754,7 +1761,7 @@ public final class ToHTMLStream extends ToStream
          * @param uri the URI of the namespace
          * @param prefix the prefix associated with the given URI.
          *
-         * @see org.apache.xml.serializer.ExtendedContentHandler#namespaceAfterStartElement(String, String)
+         * @see ExtendedContentHandler#namespaceAfterStartElement(String, String)
          */
         public void namespaceAfterStartElement(String prefix, String uri)
             throws SAXException
