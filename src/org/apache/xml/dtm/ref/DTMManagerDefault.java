@@ -181,7 +181,7 @@ public class DTMManagerDefault extends DTMManager
       System.out.println("Starting source: "+source.getSystemId());
     XMLStringFactory xstringFactory = m_xsf;
     int dtmPos = getFirstFreeDTMID();
-    int documentID = dtmPos << 20;
+    int documentID = dtmPos << IDENT_DTM_NODE_BITS;
 
     if ((null != source) && source instanceof DOMSource)
     {
@@ -546,7 +546,7 @@ public class DTMManagerDefault extends DTMManager
   {
 
     // Performance critical function.
-    return m_dtms[nodeHandle >> 20];
+    return m_dtms[nodeHandle >> IDENT_DTM_NODE_BITS];
   }
 
   /**

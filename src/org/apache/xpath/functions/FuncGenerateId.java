@@ -89,11 +89,13 @@ public class FuncGenerateId extends FunctionDef1Arg
 
     if (DTM.NULL != which)
     {
-      // Uglieness to get the unique ID to match the test gold.
-      int docID = (which & org.apache.xml.dtm.DTMManager.IDENT_DTM_DEFAULT) >> 20;
-      docID = (docID-1) << 20;
-      int id = ((which & org.apache.xml.dtm.DTMManager.IDENT_NODE_DEFAULT)+1) | docID;
-      return new XString("N" + Integer.toHexString(id).toUpperCase());
+      // Note that this is a different value than in previous releases
+      // of Xalan. It's sensitive to the exact encoding of the node
+      // handle anyway, so fighting to maintain backward compatability
+      // really didn't make sense; it may change again as we continue
+      // to experiment with balancing document and node numbers within
+      // that value.
+      return new XString("N" + Integer.toHexString(which).toUpperCase());
     }
     else
       return XString.EMPTYSTRING;

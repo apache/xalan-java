@@ -152,9 +152,6 @@ public abstract class DTMDefaultBase implements DTM
    */
   protected static final int NOTPROCESSED = DTM.NULL - 1;
 
-  /** Not sure if this is used? */
-  protected static final int NODEIDENTITYBITS = 0x000FFFFF;
-
   /**
    * The DTM manager who "owns" this DTM.
    */
@@ -163,7 +160,9 @@ public abstract class DTMDefaultBase implements DTM
   /** The document identity, which is OR'd with node indexes to make handles. */
   protected int m_dtmIdent;
 
-  /** The mask for the identity.  %REVIEW% static constant? */
+  /** The mask for the identity.
+      %REVIEW% Should this really be set to the _DEFAULT? What if
+      a particular DTM wanted to use another value? */
   protected final static int m_mask = DTMManager.IDENT_NODE_DEFAULT;
 
   /** The base URI for this document. */

@@ -103,7 +103,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
 {
 
         // Number of lower bits used to represent node index.
-        protected static final byte DOCHANDLE_SHIFT = 20;
+        protected static final byte DOCHANDLE_SHIFT = 22;
         // Masks the lower order of node handle.
         // Same as {@link DTMConstructor.IDENT_NODE_DEFAULT}
         protected static final int NODEHANDLE_MASK = (1 << (DOCHANDLE_SHIFT + 1)) - 1; 

@@ -512,11 +512,35 @@ public abstract class DTMManager
     return defaultFactory;
   }
 
-  /** %TBD% Doc */
-  public static final int IDENT_DTM_DEFAULT = 0xFFF00000;
 
-  /** %TBD% Doc */
-  public static final int IDENT_NODE_DEFAULT = 0x000FFFFF;
+  /** This value, set at compile time, controls how many bits of the
+   * DTM node identifier numbers are used to identify a node within a
+   * document, and thus sets the maximum number of nodes per
+   * document. The remaining bits are used to identify the DTM
+   * document which contains this node.
+   *
+   * If you change IDENT_DTM_NODE_BITS, be sure to rebuild _ALL_ the
+   * files which use it... including the IDKey testcases.
+   *
+   * (FuncGenerateKey currently uses the node identifier directly and
+   * thus is sensitive to its format. The IDKEY results will still be
+   * _correct_ (presuming no other breakage), but simple equality
+   * comparison against the previous "golden" files will probably
+   * complain.)  */
+  public static final int IDENT_DTM_NODE_BITS = 22;
+    
+
+  /** When this bitmask is ANDed with a DTM node handle number, the result
+   * is the node's index number within that DTM.
+   */
+  public static final int IDENT_NODE_DEFAULT = (1<<IDENT_DTM_NODE_BITS)-1;
+
+
+  /** When this bitmask is ANDed with a DTM node handle number, the result
+   * is the DTM's document identity number.
+   */
+  public static final int IDENT_DTM_DEFAULT = -1 ^ IDENT_NODE_DEFAULT;
+
 
   /**
    * %TBD% Doc
