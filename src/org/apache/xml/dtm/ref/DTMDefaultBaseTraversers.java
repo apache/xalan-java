@@ -282,7 +282,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
   }
 
   /**
-   * Implements traversal of the Ancestor access, in reverse document order.
+   * Implements traversal of the Attribute access
    */
   private class AttributeTraverser extends DTMAxisTraverser
   {

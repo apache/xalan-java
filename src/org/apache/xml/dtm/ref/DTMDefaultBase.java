@@ -111,14 +111,11 @@ public abstract class DTMDefaultBase implements DTM
   /** Previous sibling values, one array element for each node. */
   protected SuballocatedIntVector m_parent;
 
-  /** Experemental.  -sb */
-//  protected boolean m_haveSeenNamespace = false;
-
-  /** Vector of SuballocatedIntVectors of NS decl sets  -jjk */
+  /** Vector of SuballocatedIntVectors of NS decl sets */
   protected Vector m_namespaceDeclSets = null;
 
   /** SuballocatedIntVector  of elements at which corresponding
-   * namespaceDeclSets were defined -jjk */
+   * namespaceDeclSets were defined */
   protected SuballocatedIntVector m_namespaceDeclSetElements = null;
 
   /**

@@ -1225,7 +1225,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     public int next()
     {
 
-      final int node = _currentNode + 1;
+      int node = _currentNode + 1;
 
       if ((_sp >= 0) && (node < _stack[_sp]))
       {

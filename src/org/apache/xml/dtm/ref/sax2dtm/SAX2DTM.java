@@ -1468,11 +1468,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int doc = addNode(DTM.DOCUMENT_NODE,
                       m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
                       DTM.NULL, DTM.NULL, 0, true);
-
+		
     m_parents.push(doc);
-
     m_previous = DTM.NULL;
-
+				
     m_contextIndexes.push(m_prefixMappings.size());  // for the next element.
   }
 
@@ -1600,6 +1599,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     return false;
   }
+	
+	boolean m_pastFirstElement=false;
 
   /**
    * Receive notification of the start of an element.
@@ -1645,6 +1646,18 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int nDecls = m_prefixMappings.size();
     int prev = DTM.NULL;
 
+    if(!m_pastFirstElement)
+    {
+      // SPECIAL CASE: Implied declaration at root element
+      prefix="xml";
+      String declURL = "http://www.w3.org/XML/1998/namespace";
+      exName = m_expandedNameTable.getExpandedTypeID(null, prefix, DTM.NAMESPACE_NODE);
+      int val = m_valuesOrPrefixes.stringToIndex(declURL);
+      prev = addNode(DTM.NAMESPACE_NODE, exName, elemNode,
+                     prev, val, false);
+      m_pastFirstElement=true;
+    }
+                        
     for (int i = startDecls; i < nDecls; i += 2)
     {
       prefix = (String) m_prefixMappings.elementAt(i);
