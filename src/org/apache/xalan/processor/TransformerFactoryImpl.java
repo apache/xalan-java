@@ -855,6 +855,16 @@ public javax.xml.transform.Templates processFromNode(Node node)
       if (source instanceof SAXSource)
         reader = ((SAXSource) source).getXMLReader();
         
+      // As per JAXP1.2 spec, if a SAXSource is created using a SAX InputSource then
+      // the Transformer or SAXTransformerFactory creates a reader via 
+      // org.xml.sax.helpers.XMLReaderFactory (if setXMLReader is not used), 
+      // sets itself as the reader s org.xml.sax.ContentHandler , and calls 
+      // reader.parse(inputSource).
+      if (null == reader){
+        reader = XMLReaderFactory.createXMLReader();
+        reader.setFeature("http://xml.org/sax/features/namespaces", true);
+      } 
+        
       if (null == reader)
       {
 
@@ -882,8 +892,6 @@ public javax.xml.transform.Templates processFromNode(Node node)
         catch (AbstractMethodError ame){}
       }
 
-      if (null == reader)
-        reader = XMLReaderFactory.createXMLReader();
 
       // If you set the namespaces to true, we'll end up getting double 
       // xmlns attributes.  Needs to be fixed.  -sb
