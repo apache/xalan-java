@@ -188,9 +188,101 @@ public final class TransformerImpl extends Transformer
     /**
      * Create an output handler (SAX2 handler) for the transformation output
      * based on the type and contents of the TrAX Result object passed to
-     * the transform() method. Only StreamResult and SAXResult are currently
-     * handled.
+     * the transform() method. 
      */
+    private ContentHandler getOutputHandler(Result result) throws 
+ 	TransformerException 
+    {
+	// Try to get the encoding from the translet (may not be set)
+	if (_translet._encoding != null) {
+            _encoding = _translet._encoding;
+        }
+        else {
+            _encoding = "UTF-8"; // default output encoding
+        }
+
+	// Return the content handler for this Result object
+	try {
+	    // Result object could be SAXResult, DOMResult, or StreamResult 
+	    if (result instanceof SAXResult) {
+                final SAXResult target = (SAXResult)result;
+                final ContentHandler handler = target.getHandler();
+                // Simple as feck, just pass the SAX handler back...
+                if (handler != null) return handler;
+            }
+	    else if (result instanceof DOMResult) {
+                return (new SAX2DOM());
+            }
+	    else if (result instanceof StreamResult) {
+		// Get StreamResult
+		final StreamResult target = (StreamResult)result;	
+
+		// StreamResult may have been created with a java.io.File,
+		// java.io.Writer, java.io.OutputStream or just a String
+		// systemId. 
+
+		// try to get a Writer from Result object
+		final Writer writer = target.getWriter();
+		if (writer != null) {
+		    return (new DefaultSAXOutputHandler(writer, _encoding));
+		}
+
+		// or try to get an OutputStream from Result object
+		final OutputStream ostream = target.getOutputStream();
+		if (ostream != null) {
+		    return (new DefaultSAXOutputHandler(ostream, _encoding));
+		}
+
+		// or try to get just a systemId string from Result object
+		String systemId = result.getSystemId();
+		if (systemId == null) {
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_RESULT_ERR);
+                    throw new TransformerException(err.toString());
+		}
+
+		// System Id may be in one of several forms, (1) a uri
+		// that starts with 'file:', (2) uri that starts with 'http:'
+		// or (3) just a filename on the local system.
+	        OutputStream os = null;
+		URL url = null;
+		if (systemId.startsWith("file:")) {
+                    url = new URL(systemId);
+                    os = new FileOutputStream(url.getFile());
+		    return (new DefaultSAXOutputHandler(os, _encoding));
+                }
+                else if (systemId.startsWith("http:")) {
+                    url = new URL(systemId);
+                    URLConnection connection = url.openConnection();
+                    os = connection.getOutputStream();
+		    return (new DefaultSAXOutputHandler(os, _encoding));
+                }
+                else {
+                    // system id is just a filename
+                    File tmp = new File(systemId);
+                    url = tmp.toURL();
+                    os = new FileOutputStream(url.getFile());
+		    return (new DefaultSAXOutputHandler(os, _encoding));
+                }
+	    }
+	}
+        // If we cannot write to the location specified by the SystemId
+        catch (UnknownServiceException e) {
+            throw new TransformerException(e);
+        }
+        // If we cannot create a SAX2DOM adapter
+        catch (ParserConfigurationException e) {
+            ErrorMsg err = new ErrorMsg(ErrorMsg.SAX2DOM_ADAPTER_ERR);
+            throw new TransformerException(err.toString());
+        }
+        // If we cannot create the file specified by the SystemId
+        catch (IOException e) {
+            throw new TransformerException(e);
+        }
+	return null;
+    }
+
+
+/*************
     private ContentHandler getOutputHandler(Result result) 
 	throws TransformerException {
 	// Try to get the encoding from Translet (may not be set)
@@ -260,6 +352,8 @@ public final class TransformerImpl extends Transformer
 	    throw new TransformerException(e);
 	}
     }
+
+**********************/
 
     /**
      * Set the internal DOMImpl that will be used for the next transformation
