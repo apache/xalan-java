@@ -398,11 +398,6 @@ public class ElemElement extends ElemUse
       }
       else
       {
-        // Add namespace declarations.
-        // Bugzilla 13414: do not startPrefixMapping on 'prefix'
-        // as it is handled below
-        executeNSDecls(transformer, prefix);
-
         if (null != prefix)
         {
           rhandler.startPrefixMapping(prefix, nodeNamespace, true);
@@ -427,9 +422,6 @@ public class ElemElement extends ElemUse
         {
           rhandler.endPrefixMapping(prefix);
         }
-        // Bugzilla 13414: do not endPrefixMapping on 'prefix'
-        // as it is handled above
-        unexecuteNSDecls(transformer, prefix);
       }
     }
     catch (SAXException se)
