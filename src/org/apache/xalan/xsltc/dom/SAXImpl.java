@@ -203,9 +203,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 
         ancestors.setStartNode(node);
         while ((anode = ancestors.next()) != DTM.NULL) {
-            final org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceIterator namespaces =
-                new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceIterator();
+            final org.apache.xml.dtm.ref.DTMDefaultBaseIterators
+                     .NamespaceIterator namespaces =
+                             new org.apache.xml.dtm.ref.DTMDefaultBaseIterators
+                                                       .NamespaceIterator();
 
+            namespaces.setStartNode(anode);
             while ((nsnode = namespaces.next()) != DTM.NULL) {
                 if (getPrefix(nsnode).equals(prefix)) {
                     return getNodeValue(nsnode);
@@ -1908,6 +1911,31 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     }
 
     /**
+     * %HZ% Need Javadoc
+     */
+    public Hashtable getElementsWithIDs() {
+        if (m_idAttributes == null) {
+            return null;
+        }
+
+        // Convert a java.util.Hashtable to an xsltc.runtime.Hashtable
+        Enumeration idValues = m_idAttributes.keys();
+        if (!idValues.hasMoreElements()) {
+            return null;
+        }
+
+        Hashtable idAttrsTable = new Hashtable();
+
+        while (idValues.hasMoreElements()) {
+            Object idValue = idValues.nextElement();
+
+            idAttrsTable.put(idValue, m_idAttributes.get(idValue));
+        }
+
+        return idAttrsTable;
+    }
+
+    /**
      * Returns true if a character is an XML whitespace character.
      * Order of tests is important for performance ([space] first).
      */
@@ -2267,7 +2295,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
       namebuf.append(':');
     }
     namebuf.append('@');
-    namebuf.append(localName.length() > 0 ? localName : qname);
+    namebuf.append((localName.length() != 0) ? localName : qname);
 
     String name = namebuf.toString();
 
@@ -2573,12 +2601,55 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	/**
 	 * SAX2: Ignored events
 	 */
+        // %HZ%:  Should these events be dispatched to SAX2DTM?
 	public void startCDATA() {}
 	public void endCDATA() {}
 	public void startDTD(String name, String publicId, String systemId) {}
 	public void endDTD() {}
 	public void startEntity(String name) {}
 	public void endEntity(String name) {}
+	public void notationDecl(String name, String publicId,
+                                 String systemId) {}
+
+
+        // %HZ%:  Need Javadoc
+	public void unparsedEntityDecl(String name, String publicId,
+                                       String systemId, String notationName)
+               throws SAXException
+        {
+            SAXImpl.this.unparsedEntityDecl(name, publicId, systemId,
+                                            notationName);
+        }
+
+        // %HZ%:  Need Javadoc
+	public void elementDecl(String name, String model)
+               throws SAXException
+        {
+            SAXImpl.this.elementDecl(name, model);
+        }
+
+        // %HZ%:  Need Javadoc
+	public void attributeDecl(String eName, String aName, String type,
+                                  String valueDefault, String value)
+               throws SAXException
+        {
+            SAXImpl.this.attributeDecl(eName, aName, type, valueDefault, value);
+        }
+
+        // %HZ%:  Need Javadoc
+	public void externalEntityDecl(String name, String publicId,
+                                       String systemId)
+               throws SAXException
+        {
+            SAXImpl.this.externalEntityDecl(name, publicId, systemId);
+        }
+
+        // %HZ%:  Need Javadoc
+	public void internalEntityDecl(String name, String value)
+               throws SAXException
+        {
+            SAXImpl.this.internalEntityDecl(name, value);
+        }
 
 	/**
 	 * Similar to the SAX2 method character(char[], int, int), but this
