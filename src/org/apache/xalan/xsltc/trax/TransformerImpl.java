@@ -1075,7 +1075,7 @@ public final class TransformerImpl extends Transformer
 	    _parameters.put(name, value);
 	}
 	else {
-	    _translet.addParameter(name, value, false);
+	    _translet.addParameter(name, value);
 	}
     }
 
