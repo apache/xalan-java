@@ -599,7 +599,7 @@ public class LocPathIterator extends Expression
    */
   public Object clone() throws CloneNotSupportedException
   {
-
+    
     LocPathIterator clone = (LocPathIterator) super.clone();
     clone.m_varStackPos = this.m_varStackPos;
     clone.m_varStackContext = this.m_varStackContext;

@@ -68,20 +68,21 @@ import org.w3c.dom.traversal.NodeFilter;
 
 /**
  * <meta name="usage" content="advanced"/>
- * This class implements an optimized iterator for 
- * "node()" patterns, that is, any children of the 
- * context node.
+ * This class implements an optimized iterator for
+ * children patterns that have a node test, but no predicate.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator.
  */
 public class ChildTestIterator extends LocPathIterator
 {
+
+  /** The NodeTest for this iterator. */
   NodeTest m_nodeTest;
 
   /**
    * Create a ChildTestIterator object.
    *
    * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the 
+   * @param opPos The position within the op map, which contains the
    * location path expression for this itterator.
    *
    * @throws javax.xml.transform.TransformerException
@@ -89,10 +90,14 @@ public class ChildTestIterator extends LocPathIterator
   public ChildTestIterator(Compiler compiler, int opPos)
           throws javax.xml.transform.TransformerException
   {
+
     super(compiler, opPos, false);
+
     m_nodeTest = new NodeTest();
+
     int firstStepPos = compiler.getFirstChildPos(opPos);
     int whatToShow = compiler.getWhatToShow(firstStepPos);
+
     if ((0 == (whatToShow
                & (NodeFilter.SHOW_ATTRIBUTE | NodeFilter.SHOW_ELEMENT
                   | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) || (whatToShow == NodeFilter.SHOW_ALL))
@@ -108,10 +113,10 @@ public class ChildTestIterator extends LocPathIterator
    *  Returns the next node in the set and advances the position of the
    * iterator in the set. After a NodeIterator is created, the first call
    * to nextNode() returns the first node in the set.
-   * 
+   *
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * 
+   *
    * @exception DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
@@ -135,22 +140,25 @@ public class ChildTestIterator extends LocPathIterator
       return null;
 
     Node next;
+
     do
     {
       m_lastFetched = next = (null == m_lastFetched)
                              ? m_context.getFirstChild()
-                               : m_lastFetched.getNextSibling();
-      if(null != next)
+                             : m_lastFetched.getNextSibling();
+
+      if (null != next)
       {
         try
         {
-        XObject score = m_nodeTest.execute(m_execContext, next);
-        if(NodeTest.SCORE_NONE == score)
-          continue;
-        else
-          break;
+          XObject score = m_nodeTest.execute(m_execContext, next);
+
+          if (NodeTest.SCORE_NONE == score)
+            continue;
+          else
+            break;
         }
-        catch(TransformerException te)
+        catch (TransformerException te)
         {
           throw new org.apache.xml.utils.WrappedRuntimeException(te);
         }
@@ -158,7 +166,7 @@ public class ChildTestIterator extends LocPathIterator
       else
         break;
     }
-      while(next != null);
+    while (next != null);
 
     if (null != next)
     {

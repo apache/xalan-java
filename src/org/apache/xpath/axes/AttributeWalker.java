@@ -149,13 +149,13 @@ public class AttributeWalker extends AxesWalker
     return null;
   }
 
-  /** NEEDSDOC Field m_attributeList          */
+  /** The attribute list for the given context.    */
   NamedNodeMap m_attributeList;
 
-  /** NEEDSDOC Field m_attrListPos          */
+  /** The position within the attribute list.   */
   int m_attrListPos;
 
-  /** NEEDSDOC Field m_nAttrs          */
+  /** The number of attributes within the list.  */
   int m_nAttrs;
 
   /**

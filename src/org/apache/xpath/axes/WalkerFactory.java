@@ -185,6 +185,10 @@ public class WalkerFactory
     {
       return new ChildTestIterator(compiler, opPos);
     }
+    else if(ONESTEP_ATTR_NO_PREDICATES == analysis)
+    {
+      return new AttributeIterator(compiler, opPos);
+    }
     else
     {
       return new LocPathIterator(compiler, opPos, true);
@@ -194,35 +198,26 @@ public class WalkerFactory
   // There is no optimized walker that can handle 
   // this pattern, so use the default.
 
-  /** NEEDSDOC Field NO_OPTIMIZE          */
+  /** Pattern that we do not optimize for.  */
   static final int NO_OPTIMIZE = 1;
 
-  // "."
-
-  /** NEEDSDOC Field ONESTEP_SELF          */
+  /** "."  */
   static final int ONESTEP_SELF = 2;
 
-  // "*"
-
-  /** NEEDSDOC Field ONESTEP_CHILDREN          */
+  /** "*" */
   static final int ONESTEP_CHILDREN = 3;
 
-  // "*"
-
-  /** NEEDSDOC Field ONESTEP_CHILDREN_ANY          */
+  /** "node()"  */
   static final int ONESTEP_CHILDREN_ANY = 7;
 
-  // "foo"
-
-  /** NEEDSDOC Field ONESTEP_ATTR          */
+  /** "@foo[../baz]"  */
   static final int ONESTEP_ATTR = 4;
 
-  // "//foo"
+  /** "@foo"  */
+  static final int ONESTEP_ATTR_NO_PREDICATES = 9;
 
   /** NEEDSDOC Field ONESTEP_DESCENDANTS          */
   static final int ONESTEP_DESCENDANTS = 5;
-
-  // "foo/baz/boo"
 
   /** NEEDSDOC Field MULTISTEP_CHILDREN          */
   static final int MULTISTEP_CHILDREN = 6;
@@ -277,7 +272,10 @@ public class WalkerFactory
       case OpCodes.FROM_ATTRIBUTES :
         if (1 == stepCount)
         {
-          analysisResult = ONESTEP_ATTR;
+          if(predAnalysis == HAS_NOPREDICATE)
+            analysisResult = ONESTEP_ATTR_NO_PREDICATES;
+          else
+            analysisResult = ONESTEP_ATTR;
         }
         else
         {
@@ -451,6 +449,7 @@ public class WalkerFactory
     case OpCodes.FROM_ATTRIBUTES :
       switch (analysis)
       {
+      case ONESTEP_ATTR_NO_PREDICATES:
       case ONESTEP_ATTR :
         ai = new AttributeWalkerOneStep(lpi);
         break;
