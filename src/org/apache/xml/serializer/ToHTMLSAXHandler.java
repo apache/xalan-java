@@ -650,21 +650,13 @@ public class ToHTMLSAXHandler extends ToSAXHandler
     {
 		if (m_needToCallStartDocument)
 		{
-			try {startDocumentInternal();
+			startDocumentInternal();
 			m_needToCallStartDocument = false;
-			} catch (SAXException e) {}
 		}       	
         // Close any open element
         if (m_elemContext.m_startTagOpen)
         {
-            try
-            {
-                closeStartTag();
-            }
-            catch(SAXException se)
-            {
-                // do something ??
-            }
+            closeStartTag();
             m_elemContext.m_startTagOpen = false;
         }
     }

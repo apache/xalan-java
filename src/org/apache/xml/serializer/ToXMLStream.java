@@ -77,7 +77,7 @@ public class ToXMLStream extends ToStream
     /**
      * remembers if we need to write out "]]>" to close the CDATA
      */
-    protected boolean m_cdataTagOpen = false;
+    boolean m_cdataTagOpen = false;
 
 
     /**
@@ -580,7 +580,7 @@ public class ToXMLStream extends ToStream
     private void resetToXMLStream()
     {
         this.m_cdataTagOpen = false;
-        this.m_charInfo = m_xmlcharInfo;
+
     }  
 
 }

@@ -252,14 +252,26 @@ public class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * Closes the open cdata tag
+     * Closes ane open cdata tag, and
+     * unlike the this.endCDATA() method (from the LexicalHandler) interface,
+     * this "internal" method will send the endCDATA() call to the wrapped
+     * handler.
+     * 
      */
     public void closeCDATA() throws SAXException
     {
 
         // Output closing bracket - "]]>"
-        m_saxHandler.characters(ENDCDATA, 0, ENDCDATA.length);
-        m_cdataTagOpen = false;
+        if (m_lexHandler != null && m_cdataTagOpen) {
+            m_lexHandler.endCDATA();
+        }
+        
+
+        // There are no longer any calls made to 
+        // m_lexHandler.startCDATA() without a balancing call to
+        // m_lexHandler.endCDATA()
+        // so we set m_cdataTagOpen to false to remember this.
+        m_cdataTagOpen = false;        
     }
 
     /**
@@ -290,7 +302,7 @@ public class ToXMLSAXHandler extends ToSAXHandler
         m_saxHandler.endElement(namespaceURI, localName, qName);
 
         if (m_tracer != null)
-		    super.fireEndElem(qName);       
+            super.fireEndElem(qName);       
 
         /* Pop all namespaces at the current element depth.
          * We are not waiting for official endPrefixMapping() calls.
@@ -389,28 +401,33 @@ public class ToXMLSAXHandler extends ToSAXHandler
         {
             m_saxHandler.startPrefixMapping(prefix,uri);
             
-            /* bjm: don't know if we really needto do this. The
-             * callers of this object should have injected both
-             * startPrefixMapping and the attributes.  We are
-             * just covering our butt here.
-             */
-            String name;
-            if (EMPTYSTRING.equals(prefix))
+            if (getShouldOutputNSAttr()) 
             {
-                name = "xmlns";
-                addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
-            }
-            else {
-                if (!EMPTYSTRING.equals(uri)) // hack for XSLTC attribset16 test
-                {                             // that maps ns1 prefix to "" URI 
-                    name = "xmlns:" + prefix;
 
-                    /* for something like xmlns:abc="w3.pretend.org"
-             	 	 *  the      uri is the value, that is why we pass it in the
-             	 	 * value, or 5th slot of addAttributeAlways()
-                 	 */
-                    addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
-                }
+	              /* bjm: don't know if we really needto do this. The
+	               * callers of this object should have injected both
+	               * startPrefixMapping and the attributes.  We are
+	               * just covering our butt here.
+	               */
+	              String name;
+  	            if (EMPTYSTRING.equals(prefix))
+  	            {
+  	                name = "xmlns";
+  	                addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
+  	            }
+  	            else 
+                {
+  	                if (!EMPTYSTRING.equals(uri)) // hack for XSLTC attribset16 test
+  	                {                             // that maps ns1 prefix to "" URI 
+  	                    name = "xmlns:" + prefix;
+  	
+  	                    /* for something like xmlns:abc="w3.pretend.org"
+  	             	 	     *  the uri is the value, that is why we pass it in the
+  	             	 	     * value, or 5th slot of addAttributeAlways()
+  	                 	   */
+  	                    addAttributeAlways(XMLNS_URI, prefix, name,"CDATA",uri);
+  	                }
+  	            }
             }
         }
         return pushed;
@@ -435,8 +452,27 @@ public class ToXMLSAXHandler extends ToSAXHandler
      */
     public void endCDATA() throws SAXException
     {
-        if (m_lexHandler != null)
-            m_lexHandler.endCDATA();
+        /* Normally we would do somthing with this but we ignore it.
+         * The neccessary call to m_lexHandler.endCDATA() will be made
+         * in flushPending().
+         * 
+         * This is so that if we get calls like these:
+         *   this.startCDATA();
+         *   this.characters(chars1, off1, len1);
+         *   this.endCDATA();
+         *   this.startCDATA();
+         *   this.characters(chars2, off2, len2);
+         *   this.endCDATA();
+         * 
+         * that we will only make these calls to the wrapped handlers:
+         * 
+         *   m_lexHandler.startCDATA();
+         *   m_saxHandler.characters(chars1, off1, len1);
+         *   m_saxHandler.characters(chars1, off2, len2);
+         *   m_lexHandler.endCDATA();
+         * 
+         * We will merge adjacent CDATA blocks.
+         */ 
     }
 
     /**
@@ -515,22 +551,39 @@ public class ToXMLSAXHandler extends ToSAXHandler
 
     public void characters(char[] ch, int off, int len) throws SAXException
     {
-        // System.out.println("SAXXMLOutput.characters ch = " + new String(ch, off, len));
-
-        flushPending();
-
-        if (m_elemContext.m_isCdataSection)
+        // We do the first two things in flushPending() but we don't
+        // close any open CDATA calls.        
+        if (m_needToCallStartDocument)
         {
-            startCDATA(ch, off, len);
-        }
-        else
-        {
-            m_saxHandler.characters(ch, off, len);
+            startDocumentInternal();
+            m_needToCallStartDocument = false;
         }
 
-		// time to generate characters event
-		if (m_tracer != null)
-		    fireCharEvent(ch, off, len);
+        if (m_elemContext.m_startTagOpen)
+        {
+            closeStartTag();
+            m_elemContext.m_startTagOpen = false;
+        }
+
+        if (m_elemContext.m_isCdataSection && !m_cdataTagOpen
+        && m_lexHandler != null) 
+        {
+            m_lexHandler.startCDATA();
+            // We have made a call to m_lexHandler.startCDATA() with
+            // no balancing call to m_lexHandler.endCDATA()
+            // so we set m_cdataTagOpen true to remember this.
+            m_cdataTagOpen = true;
+        }
+        
+        /* If there are any occurances of "]]>" in the character data
+         * let m_saxHandler worry about it, we've already warned them with
+         * the previous call of m_lexHandler.startCDATA();
+         */ 
+        m_saxHandler.characters(ch, off, len);
+
+        // time to generate characters event
+        if (m_tracer != null)
+            fireCharEvent(ch, off, len);
     }
     
 
@@ -598,47 +651,31 @@ public class ToXMLSAXHandler extends ToSAXHandler
 
     public void startCDATA() throws SAXException
     {
+        /* m_cdataTagOpen can only be true here if we have ignored the
+         * previous call to this.endCDATA() and the previous call 
+         * this.startCDATA() before that is still "open". In this way
+         * we merge adjacent CDATA. If anything else happened after the 
+         * ignored call to this.endCDATA() and this call then a call to 
+         * flushPending() would have been made which would have
+         * closed the CDATA and set m_cdataTagOpen to false.
+         */
+        if (!m_cdataTagOpen ) 
+        {
+            flushPending();
+            if (m_lexHandler != null) {
+                m_lexHandler.startCDATA();
 
-        // Output start bracket - "<![CDATA["
-        m_saxHandler.characters(BEGCDATA, 0, BEGCDATA.length);
-        m_cdataTagOpen = true;
-
+                // We have made a call to m_lexHandler.startCDATA() with
+                // no balancing call to m_lexHandler.endCDATA()
+                // so we set m_cdataTagOpen true to remember this.                
+                m_cdataTagOpen = true;     
+            }              
+        }        
     }
 
     /**
-     * Utility method - pass a whole charactes as CDATA to SAX handler
+     * @see org.xml.sax.ContentHandler#startElement(String, String, String, Attributes)
      */
-    private void startCDATA(char[] ch, int off, int len) throws SAXException
-    {
-        final int limit = off + len;
-        int offset = off;
-
-        // Output start bracket - "<![CDATA["
-        m_saxHandler.characters(BEGCDATA, 0, BEGCDATA.length);
-
-        // Detect any occurence of "]]>" in the character array
-        for (int i = offset; i < limit - 2; i++)
-        {
-            if (ch[i] == ']' && ch[i + 1] == ']' && ch[i + 2] == '>')
-            {
-                m_saxHandler.characters(ch, offset, i - offset);
-                m_saxHandler.characters(CNTCDATA, 0, CNTCDATA.length);
-                offset = i + 3;
-                i += 2; // Skip next chars ']' and '>'
-            }
-        }
-
-        // Output the remaining characters
-        if (offset < limit)
-        {
-            m_saxHandler.characters(ch, offset, limit - offset);
-        }
-        m_cdataTagOpen = true;
-    }
-
-    /**
-    * @see org.xml.sax.ContentHandler#startElement(String, String, String, Attributes)
-    */
     public void startElement(
     String namespaceURI,
     String localName,
@@ -701,14 +738,16 @@ public class ToXMLSAXHandler extends ToSAXHandler
                 {
                     this.startPrefixMapping(prefix, ns, false);
 
-                    // Bugzilla1133: Generate attribute as well as namespace event.
-                    // SAX does expect both.
-                    this.addAttributeAlways(
-                        "http://www.w3.org/2000/xmlns/",
-                        prefix,
-                        "xmlns" + (prefix.length() == 0 ? "" : ":") + prefix,
-                        "CDATA",
-                        ns);
+                    if (getShouldOutputNSAttr()) {
+                        // Bugzilla1133: Generate attribute as well as namespace event.
+                        // SAX does expect both.
+                        this.addAttributeAlways(
+                            "http://www.w3.org/2000/xmlns/",
+                            prefix,
+                            "xmlns" + (prefix.length() == 0 ? "" : ":") + prefix,
+                            "CDATA",
+                            ns);
+                    }
                 }
 
             }

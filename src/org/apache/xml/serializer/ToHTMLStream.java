@@ -1933,7 +1933,6 @@ public class ToHTMLStream extends ToStream
         m_inDTD = false;
 //        m_isRawStack.clear();
         m_omitMetaTag = false;
-        m_specialEscapeURLs = true;   
-        m_charInfo = m_htmlcharInfo;  
+        m_specialEscapeURLs = true;     
     }
 }
