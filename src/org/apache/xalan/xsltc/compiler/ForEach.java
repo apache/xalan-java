@@ -77,22 +77,15 @@ import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ForEach extends Instruction {
-
     private Expression _select;
     private Type       _type;
 
-    public void display(int indent) {
-	indent(indent);
-	Util.println("ForEach");
-	indent(indent + IndentIncrement);
-	Util.println("select " + _select.toString());
-	displayContents(indent + IndentIncrement);
-    }
-		
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	_select = parser.parseExpression(this, "select", null);
 
-	parseChildren(parser);
+	parseContents(ccontext);
 
         // make sure required attribute(s) have been set
         if (_select.isDummy()) {
@@ -102,11 +95,10 @@ final class ForEach extends Instruction {
 	    // Wrap _select in a ForwardPositionExpr
 	    final Expression fpe = new ForwardPositionExpr(_select);
 	    _select.setParent(fpe);
-	    fpe.setParser(_select.getParser());
 	    _select = fpe;
 	}
     }
-	
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	_type = _select.typeCheck(stable);
 
@@ -129,7 +121,7 @@ final class ForEach extends Instruction {
 	// Save current node and current iterator on the stack
 	il.append(methodGen.loadCurrentNode());
 	il.append(methodGen.loadIterator());
-		
+
 	// Collect sort objects associated with this instruction
 	final ArrayList sortObjects = new ArrayList();
 	Iterator children = iterator();
@@ -184,7 +176,7 @@ final class ForEach extends Instruction {
 	final InstructionHandle loop = il.append(NOP);
 
 	translateContents(classGen, methodGen);
-		    
+
 	nextNode.setTarget(il.append(methodGen.loadIterator()));
 	il.append(methodGen.nextNode());
 	il.append(DUP);
@@ -193,7 +185,7 @@ final class ForEach extends Instruction {
 
 	// Restore current DOM (if result tree was used instead for this loop)
 	if ((_type != null) && (_type instanceof ResultTreeType)) {
-	    il.append(methodGen.storeDOM());	    
+	    il.append(methodGen.storeDOM());
 	}
 
 	// Restore current node and current iterator from the stack

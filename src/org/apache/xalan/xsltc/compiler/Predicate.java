@@ -90,11 +90,6 @@ final class Predicate extends Expression implements Closure {
 	(_exp = exp).setParent(this);
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_exp.setParser(parser);
-    }
-
     public boolean isNthDescendant() {
 	return _nthDescendant;
     }
@@ -252,7 +247,6 @@ final class Predicate extends Expression implements Closure {
 
 		final QName position = getParser().getQNameIgnoreDefaultNs("position");
 		final PositionCall positionCall = new PositionCall(position);
-		positionCall.setParser(getParser());
 		positionCall.setParent(this);
 
 		_exp = new EqualityExpr(EqualityExpr.EQ, positionCall, _exp);

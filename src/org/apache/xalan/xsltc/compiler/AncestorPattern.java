@@ -73,7 +73,7 @@ final class AncestorPattern extends RelativePathPattern {
     private final Pattern _left;	// may be null
     private final RelativePathPattern _right;
     private InstructionHandle _loop;
-		
+
     public AncestorPattern(RelativePathPattern right) {
 	this(null, right);
     }
@@ -85,24 +85,16 @@ final class AncestorPattern extends RelativePathPattern {
 	    left.setParent(this);
 	}
     }
-	
+
     public InstructionHandle getLoopHandle() {
 	return _loop;
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	if (_left != null) {
-	    _left.setParser(parser);
-	}
-	_right.setParser(parser);
-    }
-    
     public boolean isWildcard() {
 	//!!! can be wildcard
 	return false;
     }
-	
+
     public StepPattern getKernelPattern() {
 	return _right.getKernelPattern();
     }
@@ -110,7 +102,7 @@ final class AncestorPattern extends RelativePathPattern {
     public void reduceKernelPattern() {
 	_right.reduceKernelPattern();
     }
-	
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_left != null) {
 	    _left.typeCheck(stable);
@@ -123,7 +115,7 @@ final class AncestorPattern extends RelativePathPattern {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	/* 
+	/*
 	 * The scope of this local var must be the entire method since
 	 * a another pattern may decide to jump back into the loop
 	 */
@@ -157,7 +149,7 @@ final class AncestorPattern extends RelativePathPattern {
 							    GET_PARENT,
 							    GET_PARENT_SIG);
 	    parent = il.append(new INVOKEINTERFACE(getParent, 2));
-	    
+
 	    il.append(DUP);
 	    il.append(storeLocal);
 	    _falseList.add(il.append(new IFEQ(null)));
@@ -167,7 +159,7 @@ final class AncestorPattern extends RelativePathPattern {
 
 	    final SyntaxTreeNode p = getParent();
 	    if (p == null || p instanceof Instruction ||
-		p instanceof TopLevelElement) 
+		p instanceof TopLevelElement)
 	    {
 		// do nothing
 	    }
@@ -183,13 +175,13 @@ final class AncestorPattern extends RelativePathPattern {
 	    exit.setTarget(il.append(NOP));
 	    _left.backPatchFalseList(_loop);
 
-	    _trueList.append(_left._trueList);	
+	    _trueList.append(_left._trueList);
 	}
 	else {
 	    il.append(POP2);
 	}
-	
-	/* 
+
+	/*
 	 * If _right is an ancestor pattern, backpatch this pattern's false
 	 * list to the loop that searches for more ancestors.
 	 */

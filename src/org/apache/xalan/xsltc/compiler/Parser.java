@@ -391,7 +391,6 @@ public class Parser implements Constants, ContentHandler {
 		    element.addPrefixMapping(EMPTYSTRING, EMPTYSTRING);
 		}
 	    }
-	    stylesheet.setParser(this);
 	    return stylesheet;
 	}
 	catch (ClassCastException e) {
@@ -401,12 +400,12 @@ public class Parser implements Constants, ContentHandler {
     }
 
     /**
-     * Instanciates a SAX2 parser and generate the AST from the input.
+     * Instantiates a SAX2 parser and generate the AST from the input.
      */
     public void createAST(Stylesheet stylesheet) {
 	try {
 	    if (stylesheet != null) {
-		stylesheet.parseContents(this);
+		stylesheet.parse(CompilerContextImpl.getInstance());
 		final int precedence = stylesheet.getImportPrecedence();
 		final Iterator elements = stylesheet.iterator();
 		while (elements.hasNext()) {
@@ -935,7 +934,6 @@ public class Parser implements Constants, ContentHandler {
 		final Class clazz = Class.forName(className);
 		node = (SyntaxTreeNode)clazz.newInstance();
 		node.setQName(qname);
-		node.setParser(this);
 		if (_locator != null) {
 		    node.setLineNumber(_locator.getLineNumber());
 		}
@@ -1102,7 +1100,6 @@ public class Parser implements Constants, ContentHandler {
 	    if (result != null) {
 		final SyntaxTreeNode node = (SyntaxTreeNode)result.value;
 		if (node != null) {
-		    node.setParser(this);
 		    node.setParent(parent);
 		    node.setLineNumber(line);
 // System.out.println("e = " + text + " " + node);
@@ -1119,7 +1116,6 @@ public class Parser implements Constants, ContentHandler {
 	}
 
 	// Return a dummy pattern (which is an expression)
-	SyntaxTreeNode.Dummy.setParser(this);
         return SyntaxTreeNode.Dummy;
     }
 
@@ -1312,7 +1308,8 @@ public class Parser implements Constants, ContentHandler {
 	// Ignore text nodes that occur directly under <xsl:stylesheet>
 	if (parent instanceof Stylesheet) return;
 
-	SyntaxTreeNode bro = parent.lastChild();
+        // Get last element of parent
+	SyntaxTreeNode bro = parent.get(parent.elementCount() - 1);
 	if ((bro != null) && (bro instanceof Text)) {
 	    Text text = (Text)bro;
 	    if (!text.isTextElement()) {

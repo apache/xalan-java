@@ -87,7 +87,8 @@ final class Include extends TopLevelElement {
 	return _included;
     }
 
-    public void parseContents(final Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final Stylesheet context = parser.getCurrentStylesheet();
 
 	String docToLoad = getAttribute("href");
@@ -137,7 +138,7 @@ final class Include extends TopLevelElement {
 
 	    // Return if we could not resolve the URL
 	    if (input == null) {
-		final ErrorMsg msg = 
+		final ErrorMsg msg =
 		    new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
 		parser.reportError(Constants.FATAL, msg);
 		return;
@@ -159,7 +160,7 @@ final class Include extends TopLevelElement {
 	    final int precedence = context.getImportPrecedence();
 	    _included.setImportPrecedence(precedence);
 	    parser.setCurrentStylesheet(_included);
-	    _included.parseContents(parser);
+	    _included.parse(ccontext);
 
 	    final Iterator elements = _included.iterator();
 	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();
@@ -182,7 +183,7 @@ final class Include extends TopLevelElement {
 	    // Update systemId in parent stylesheet for error reporting
 	    context.setSystemId(getAttribute("href"));
 
-	    final ErrorMsg msg = 
+	    final ErrorMsg msg =
 		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
 	    parser.reportError(Constants.FATAL, msg);
 	}
@@ -190,7 +191,7 @@ final class Include extends TopLevelElement {
 	    // Update systemId in parent stylesheet for error reporting
 	    context.setSystemId(getAttribute("href"));
 
-	    final ErrorMsg msg = 
+	    final ErrorMsg msg =
 		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
 	    parser.reportError(Constants.FATAL, msg);
 	}
@@ -201,11 +202,11 @@ final class Include extends TopLevelElement {
 	    parser.setCurrentStylesheet(context);
 	}
     }
-    
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	return Type.Void;
     }
-    
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	// do nothing
     }

@@ -72,17 +72,11 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class RelationalExpr extends Expression implements Operators {
     private int _op;
     private Expression _left, _right;
-		
+
     public RelationalExpr(int op, Expression left, Expression right) {
 	_op = op;
 	(_left = left).setParent(this);
 	(_right = right).setParent(this);
-    }
-
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-	_right.setParser(parser);
     }
 
     /**
@@ -111,16 +105,16 @@ final class RelationalExpr extends Expression implements Operators {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	Type tleft = _left.typeCheck(stable); 
+	Type tleft = _left.typeCheck(stable);
 	Type tright = _right.typeCheck(stable);
 
 	//bug fix # 2838, cast to reals if both are result tree fragments
 	if (tleft instanceof ResultTreeType &&
-	    tright instanceof ResultTreeType ) 
+	    tright instanceof ResultTreeType )
   	{
 	    _right = new CastExpr(_right, Type.Real);
 	    _left = new CastExpr(_left, Type.Real);
-	    return _type = Type.Boolean; 
+	    return _type = Type.Boolean;
 	}
 
 	// If one is of reference type, then convert the other too
@@ -142,7 +136,7 @@ final class RelationalExpr extends Expression implements Operators {
 		    typeR = var.getType();
 		}
 	    }
-	    // bug fix # 2838 
+	    // bug fix # 2838
 	    if (typeL == null)
 		type = typeR;
 	    else if (typeR == null)
@@ -196,8 +190,8 @@ final class RelationalExpr extends Expression implements Operators {
 
 	// Lookup the table of primops to find the best match
 	MethodType ptype = lookupPrimop(stable, Operators.names[_op],
-					new MethodType(Type.Void, 
-						       tleft, tright)); 
+					new MethodType(Type.Void,
+						       tleft, tright));
 
 	if (ptype != null) {
 	    Type arg1 = (Type) ptype.argsType().get(0);
@@ -206,7 +200,7 @@ final class RelationalExpr extends Expression implements Operators {
 	    }
 	    Type arg2 = (Type) ptype.argsType().get(1);
 	    if (!arg2.identicalTo(tright)) {
-		_right = new CastExpr(_right, arg1);				
+		_right = new CastExpr(_right, arg1);
 	    }
 	    return _type = ptype.resultType();
 	}
@@ -229,7 +223,7 @@ final class RelationalExpr extends Expression implements Operators {
 
 	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "compare",
 					 "("
-					 + _left.getType().toSignature() 
+					 + _left.getType().toSignature()
 					 + _right.getType().toSignature()
 					 + "I"
 					 + DOM_INTF_SIG
@@ -258,7 +252,7 @@ final class RelationalExpr extends Expression implements Operators {
 	    // TODO: optimize if one of the args is 0
 
 	    boolean tozero = false;
-	    Type tleft = _left.getType(); 
+	    Type tleft = _left.getType();
 
 	    if (tleft instanceof RealType) {
 		il.append(tleft.CMP(_op == LT || _op == LE));
@@ -268,21 +262,21 @@ final class RelationalExpr extends Expression implements Operators {
 
 	    switch (_op) {
 	    case LT:
-		bi = tleft.GE(tozero);	
+		bi = tleft.GE(tozero);
 		break;
-		
+
 	    case GT:
 		bi = tleft.LE(tozero);
 		break;
-		
+
 	    case LE:
 		bi = tleft.GT(tozero);
 		break;
-		
+
 	    case GE:
 		bi = tleft.LT(tozero);
 		break;
-		
+
 	    default:
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_RELAT_OP_ERR,this);
 		getParser().reportError(Constants.FATAL, msg);

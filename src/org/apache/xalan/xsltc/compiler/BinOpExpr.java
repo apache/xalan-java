@@ -73,14 +73,14 @@ final class BinOpExpr extends Expression {
     public static final int TIMES = 2;
     public static final int DIV   = 3;
     public static final int MOD   = 4;
-	
+
     private static final String[] Ops = {
 	"+", "-", "*", "/", "%"
     };
 
     private int _op;
     private Expression _left, _right;
-	
+
     public BinOpExpr(int op, Expression left, Expression right) {
 	_op = op;
 	(_left = left).setParent(this);
@@ -97,18 +97,12 @@ final class BinOpExpr extends Expression {
 	return false;
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-	_right.setParser(parser);
-    }
-    
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tleft = _left.typeCheck(stable); 
+	final Type tleft = _left.typeCheck(stable);
 	final Type tright = _right.typeCheck(stable);
 	final MethodType ptype = lookupPrimop(stable, Ops[_op],
 					      new MethodType(Type.Void,
-							     tleft, tright)); 
+							     tleft, tright));
 	if (ptype != null) {
 	    final Type arg1 = (Type) ptype.argsType().get(0);
 	    if (!arg1.identicalTo(tleft)) {
@@ -154,4 +148,4 @@ final class BinOpExpr extends Expression {
     public String toString() {
 	return Ops[_op] + '(' + _left + ", " + _right + ')';
     }
-} 
+}

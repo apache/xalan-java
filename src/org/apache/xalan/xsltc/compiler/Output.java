@@ -104,14 +104,6 @@ final class Output extends TopLevelElement {
     private final static String HTML_VERSION = "4.0";
 
     /**
-     * Displays the contents of this element (for debugging)
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Output " + _method);
-    }
-
-    /**
      * Disables this <xsl:output> element in case where there are some other
      * <xsl:output> element (from a different imported/included stylesheet)
      * with higher precedence.
@@ -135,7 +127,8 @@ final class Output extends TopLevelElement {
     /**
      * Scans the attribute list for the xsl:output instruction
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final Properties outputProperties = new Properties();
 
 	// Ask the parser if it wants this <xsl:output> element
@@ -174,7 +167,7 @@ final class Output extends TopLevelElement {
 	    try {
 		// Create a write to verify encoding support
 		OutputStreamWriter writer =
-		    new OutputStreamWriter(System.out, 
+		    new OutputStreamWriter(System.out,
 		       StreamOutput.getCanonicalEncoding(_encoding));
 	    }
 	    catch (java.io.UnsupportedEncodingException e) {
@@ -239,7 +232,7 @@ final class Output extends TopLevelElement {
 	    if (_cdataToMerge != null) {
 		_cdata = _cdata + _cdataToMerge;
 	    }
-	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, 
+	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS,
 		_cdata);
 	}
 
@@ -349,7 +342,7 @@ final class Output extends TopLevelElement {
 	il.append(DUP);
 	il.append(new PUSH(cpg, _doctypePublic));
 	il.append(new PUTFIELD(field));
-	
+
 	// Add 'medye-type' decaration to output - if used
 	if (_mediaType != null) {
 	    field = cpg.addFieldref(TRANSLET_CLASS, "_mediaType", STRING_SIG);

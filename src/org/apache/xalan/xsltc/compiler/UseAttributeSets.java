@@ -86,7 +86,6 @@ final class UseAttributeSets extends Instruction {
      * Constructur - define initial attribute sets to use
      */
     public UseAttributeSets(String setNames, Parser parser) {
-	setParser(parser);
 	addAttributeSets(setNames);
     }
 
@@ -99,7 +98,7 @@ final class UseAttributeSets extends Instruction {
 	if ((setNames != null) && (!setNames.equals(Constants.EMPTYSTRING))) {
 	    final StringTokenizer tokens = new StringTokenizer(setNames);
 	    while (tokens.hasMoreTokens()) {
-		final QName qname = 
+		final QName qname =
 		    getParser().getQNameIgnoreDefaultNs(tokens.nextToken());
 		_sets.add(qname);
 	    }

@@ -75,22 +75,16 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class CallTemplate extends Instruction {
     private QName _name;
 
-    public void display(int indent) {
-	indent(indent);
-	System.out.print("CallTemplate");
-	Util.println(" name " + _name);
-	displayContents(indent + IndentIncrement);
-    }
-		
     public boolean hasWithParams() {
 	return elementCount() > 0;
     }
 
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
-	parseChildren(parser);
+	parseContents(ccontext);
     }
-		
+
     /**
      * Verify that a template with this name exists.
      */
@@ -120,7 +114,7 @@ final class CallTemplate extends Instruction {
 
 	if (stylesheet.hasLocalParams() || hasContents()) {
 	    // Push parameter frame
-	    final int push = cpg.addMethodref(TRANSLET_CLASS, 
+	    final int push = cpg.addMethodref(TRANSLET_CLASS,
 					      PUSH_PARAM_FRAME,
 					      PUSH_PARAM_FRAME_SIG);
 	    il.append(classGen.loadTranslet());
@@ -146,7 +140,7 @@ final class CallTemplate extends Instruction {
 						     + TRANSLET_OUTPUT_SIG
 						     + NODE_SIG
 						     +")V")));
-	
+
 
 	if (stylesheet.hasLocalParams() || hasContents()) {
 	    // Pop parameter frame
@@ -157,4 +151,4 @@ final class CallTemplate extends Instruction {
 	    il.append(new INVOKEVIRTUAL(pop));
 	}
     }
-} 
+}

@@ -105,8 +105,8 @@ final class Fallback extends Instruction {
      * Parse contents only if this fallback element is put in place of
      * some unsupported element or non-XSLTC extension element
      */
-    public void parseContents(Parser parser) {
-	if (_active) parseChildren(parser);
+    public void parse(CompilerContext ccontext) {
+	if (_active) parseContents(ccontext);
     }
 
     /**

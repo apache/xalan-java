@@ -70,7 +70,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class AlternativePattern extends Pattern {
     private final Pattern _left;
     private final Pattern _right;
-		
+
     /**
      * Construct an alternative pattern. The method <code>setParent</code>
      * should not be called in this case.
@@ -79,13 +79,7 @@ final class AlternativePattern extends Pattern {
 	_left = left;
 	_right = right;
     }
-		
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-	_right.setParser(parser);
-    }
-    
+
     public Pattern getLeft() {
 	return _left;
     }
@@ -106,7 +100,7 @@ final class AlternativePattern extends Pattern {
     public double getPriority() {
 	double left = _left.getPriority();
 	double right = _right.getPriority();
-	
+
 	if (left < right)
 	    return(left);
 	else

@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001 The Apache Software Foundation.  All rights
+ * Copyright (c) 2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,74 +56,37 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author G. Todd Miller
+ * @author Santiago Pericas-Geertsen
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.codemodel.CmClassDecl;
+import org.apache.xalan.xsltc.compiler.codemodel.CmMethodDecl;
 
-final class FilteredAbsoluteLocationPath extends Expression {
-    private Expression _path;	// may be null
+interface CompilerContext {
 
-    public FilteredAbsoluteLocationPath() {
-	_path = null;
-    }
+    /**
+     * Returns a reference to the XSLTC object.
+     */
+    public XSLTC getXSLTC();
 
-    public FilteredAbsoluteLocationPath(Expression path) {
-	_path = path;
-	if (path != null) {
-	    _path.setParent(this);
-	}
-    }
+    /**
+     * Returns a reference to the parser object.
+     */
+    public Parser getParser();
 
-    public Expression getPath() {
-	return(_path);
-    }
+    /**
+     * Returns a reference to the "current" class object from the
+     * codemodel package.
+     */
+    public CmClassDecl getCurrentClass();
 
-    public String toString() {
-	return "FilteredAbsoluteLocationPath(" +
-	    (_path != null ? _path.toString() : "null") + ')';
-    }
-
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_path != null) {
-	    final Type ptype = _path.typeCheck(stable);
-	    if (ptype instanceof NodeType) {		// promote to node-set
-		_path = new CastExpr(_path, Type.NodeSet);
-	    }
-	}
-	return _type = Type.NodeSet;
-    }
-
-    public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-	if (_path != null) {
-	    final int initDFI = cpg.addMethodref(DUP_FILTERED_ITERATOR,
-						"<init>",
-						"("
-						+ NODE_ITERATOR_SIG
-						+ ")V");
-	    // Create new Dup Filter Iterator
-	    il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));
-	    il.append(DUP);
-
-	    // Compile relative path iterator(s)
-	    _path.translate(classGen, methodGen);
-
-	    // Initialize Dup Filter Iterator with iterator from the stack
-	    il.append(new INVOKESPECIAL(initDFI));
-	}
-	else {
-	    final int git = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getIterator",
-						      "()"+NODE_ITERATOR_SIG);
-	    il.append(methodGen.loadDOM());
-	    il.append(new INVOKEINTERFACE(git, 1));
-	}
-    }
+    /**
+     * Returns a reference to the "current" method object from the
+     * codemodel package.
+     */
+    public CmMethodDecl getCurrentMethod();
 }
+

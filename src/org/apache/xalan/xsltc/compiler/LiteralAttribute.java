@@ -84,11 +84,6 @@ final class LiteralAttribute extends Instruction {
 	_value = AttributeValue.create(this, value, parser);
     }
 
-    public void display(int indent) {
-	indent(indent);
-	Util.println("LiteralAttribute name=" + _name + " value=" + _value);
-    }
-
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	_value.typeCheck(stable);
 	typeCheckContents(stable);

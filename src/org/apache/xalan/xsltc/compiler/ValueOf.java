@@ -73,15 +73,9 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class ValueOf extends Instruction {
     private Expression _select;
     private boolean _escaping = true;
-	
-    public void display(int indent) {
-	indent(indent);
-	Util.println("ValueOf");
-	indent(indent + IndentIncrement);
-	Util.println("select " + _select.toString());
-    }
-		
-    public void parseContents(Parser parser) {
+
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	_select = parser.parseExpression(this, "select", null);
 
         // make sure required attribute(s) have been set
@@ -118,7 +112,7 @@ final class ValueOf extends Instruction {
 
 	// Translate the contents.
 	il.append(classGen.loadTranslet());
-	_select.translate(classGen, methodGen);	
+	_select.translate(classGen, methodGen);
 	il.append(methodGen.loadHandler());
 	il.append(new INVOKEVIRTUAL(characters));
 

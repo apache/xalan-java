@@ -163,7 +163,6 @@ final class CastExpr extends Expression {
 	}
 
 	// check if conversion is valid
-	setParser(left.getParser());
 	setParent(left.getParent());
 	left.setParent(this);
 	typeCheck(left.getParser().getSymbolTable());

@@ -78,7 +78,6 @@ abstract class AttributeValue extends Expression {
 	}
 	else {
 	    result = new SimpleAttributeValue(text);
-	    result.setParser(parser);
 	    result.setParent(parent);
 	}
 	return result;

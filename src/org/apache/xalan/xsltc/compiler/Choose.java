@@ -74,16 +74,6 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class Choose extends Instruction {
 
     /**
-     * Display the element contents (a lot of when's and an otherwise)
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Choose");
-	indent(indent + IndentIncrement);
-	displayContents(indent + IndentIncrement);
-    }
-	
-    /**
      * Translate this Choose element. Generate a test-chain for the various
      * <xsl:when> elements and default to the <xsl:otherwise> if present.
      */
@@ -145,7 +135,7 @@ final class Choose extends Instruction {
 
 	    InstructionHandle truec = il.getEnd();
 
-	    if (nextElement != null) 
+	    if (nextElement != null)
 		nextElement.setTarget(il.append(NOP));
 	    test.translateDesynthesized(classGen, methodGen);
 
@@ -157,7 +147,7 @@ final class Choose extends Instruction {
 			test._falseList.add(il.append(new IFEQ(null)));
 		    }
 		}
-		catch (TypeCheckError e) { 
+		catch (TypeCheckError e) {
 		    // handled later!
 		}
 	    }
@@ -178,7 +168,7 @@ final class Choose extends Instruction {
 		test.backPatchFalseList(exit = il.append(NOP));
 	    test.backPatchTrueList(truec.getNext());
 	}
-	
+
 	// Translate any <xsl:otherwise> element
 	if (otherwise != null) {
 	    nextElement.setTarget(il.append(NOP));

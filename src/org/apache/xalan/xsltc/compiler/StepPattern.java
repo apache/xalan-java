@@ -93,13 +93,11 @@ class StepPattern extends RelativePathPattern {
 	_predicates = predicates;
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
+    public void setParent(Parser parser) {
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
 		final Predicate exp = (Predicate)_predicates.get(i);
-		exp.setParser(parser);
 		exp.setParent(this);
 	    }
 	}
@@ -108,11 +106,11 @@ class StepPattern extends RelativePathPattern {
     public int getNodeType() {
 	return _nodeType;
     }
-    
+
     public StepPattern getKernelPattern() {
 	return this;
     }
-	
+
     public boolean isWildcard() {
 	return _isEpsilon && hasPredicates() == false;
     }
@@ -121,7 +119,7 @@ class StepPattern extends RelativePathPattern {
 	_predicates = predicates;
 	return(this);
     }
-    
+
     protected boolean hasPredicates() {
 	return _predicates != null && _predicates.size() > 0;
     }
@@ -141,7 +139,7 @@ class StepPattern extends RelativePathPattern {
 	    }
 	}
     }
-    
+
     public int getAxis() {
 	return _axis;
     }
@@ -149,19 +147,19 @@ class StepPattern extends RelativePathPattern {
     public void reduceKernelPattern() {
 	_isEpsilon = true;
     }
-	
+
     public String toString() {
 	final StringBuffer buffer = new StringBuffer("stepPattern(\"");
 	buffer.append(Axis.names[_axis])
 	    .append("\", ")
-	    .append(_isEpsilon ? 
+	    .append(_isEpsilon ?
 			("epsilon{" + Integer.toString(_nodeType) + "}") :
 			 Integer.toString(_nodeType));
 	if (_predicates != null)
 	    buffer.append(", ").append(_predicates.toString());
 	return buffer.append(')').toString();
     }
-    
+
     private int analyzeCases() {
 	boolean noContext = true;
 	final int n = _predicates.size();
@@ -216,18 +214,18 @@ class StepPattern extends RelativePathPattern {
 	return _axis == Axis.CHILD ? Type.Element : Type.Attribute;
     }
 
-    private void translateKernel(ClassGenerator classGen, 
+    private void translateKernel(ClassGenerator classGen,
 				 MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	
+
 	if (_nodeType == DOM.ELEMENT) {
 	    final int check = cpg.addInterfaceMethodref(DOM_INTF,
 							"isElement", "(I)Z");
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	    il.append(new INVOKEINTERFACE(check, 2));
-	
+
 	    // Need to allow for long jumps here
 	    final BranchHandle icmp = il.append(new IFNE(null));
 	    _falseList.add(il.append(new GOTO_W(null)));
@@ -239,7 +237,7 @@ class StepPattern extends RelativePathPattern {
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	    il.append(new INVOKEINTERFACE(check, 2));
-	
+
 	    // Need to allow for long jumps here
 	    final BranchHandle icmp = il.append(new IFNE(null));
 	    _falseList.add(il.append(new GOTO_W(null)));
@@ -253,7 +251,7 @@ class StepPattern extends RelativePathPattern {
 	    il.append(SWAP);
 	    il.append(new INVOKEINTERFACE(getType, 2));
 	    il.append(new PUSH(cpg, _nodeType));
-	
+
 	    // Need to allow for long jumps here
 	    final BranchHandle icmp = il.append(new IF_ICMPEQ(null));
 	    _falseList.add(il.append(new GOTO_W(null)));
@@ -261,7 +259,7 @@ class StepPattern extends RelativePathPattern {
 	}
     }
 
-    private void translateNoContext(ClassGenerator classGen, 
+    private void translateNoContext(ClassGenerator classGen,
 				    MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -304,7 +302,7 @@ class StepPattern extends RelativePathPattern {
 	skipFalse.setTarget(il.append(NOP));
     }
 
-    private void translateSimpleContext(ClassGenerator classGen, 
+    private void translateSimpleContext(ClassGenerator classGen,
 					MethodGenerator methodGen) {
 	int index;
 	final ConstantPoolGen cpg = classGen.getConstantPool();
@@ -312,7 +310,7 @@ class StepPattern extends RelativePathPattern {
 
 	// Store matching node into a local variable
 	LocalVariableGen match;
-	match = methodGen.addLocalVariable("step_pattern_tmp1", 
+	match = methodGen.addLocalVariable("step_pattern_tmp1",
 					   Util.getJCRefType(NODE_SIG),
 					   il.getEnd(), null);
 	il.append(new ISTORE(match.getIndex()));
@@ -328,7 +326,7 @@ class StepPattern extends RelativePathPattern {
 	il.append(methodGen.loadIterator());
 
 	// Create a new matching iterator using the matching node
-	index = cpg.addMethodref(MATCHING_ITERATOR, "<init>", 
+	index = cpg.addMethodref(MATCHING_ITERATOR, "<init>",
 				 "(I" + NODE_ITERATOR_SIG + ")V");
 	il.append(new NEW(cpg.addClass(MATCHING_ITERATOR)));
 	il.append(DUP);
@@ -342,7 +340,7 @@ class StepPattern extends RelativePathPattern {
 	index = cpg.addInterfaceMethodref(DOM_INTF, GET_PARENT, GET_PARENT_SIG);
 	il.append(new INVOKEINTERFACE(index, 2));
 
-	// Start the iterator with the parent 
+	// Start the iterator with the parent
 	il.append(methodGen.setStartNode());
 
 	// Overwrite current iterator and current node
@@ -350,7 +348,7 @@ class StepPattern extends RelativePathPattern {
 	il.append(new ILOAD(match.getIndex()));
 	il.append(methodGen.storeCurrentNode());
 
-	// Translate the expression of the predicate 
+	// Translate the expression of the predicate
 	Predicate pred = (Predicate) _predicates.get(0);
 	Expression exp = pred.getExpr();
 	exp.translateDesynthesized(classGen, methodGen);
@@ -371,7 +369,7 @@ class StepPattern extends RelativePathPattern {
 	skipFalse.setTarget(il.append(NOP));
     }
 
-    private void translateGeneralContext(ClassGenerator classGen, 
+    private void translateGeneralContext(ClassGenerator classGen,
 					 MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -382,25 +380,25 @@ class StepPattern extends RelativePathPattern {
 	final String iteratorName = getNextFieldName();
 
 	// Store node on the stack into a local variable
-	node = methodGen.addLocalVariable("step_pattern_tmp1", 
+	node = methodGen.addLocalVariable("step_pattern_tmp1",
 					  Util.getJCRefType(NODE_SIG),
 					  il.getEnd(), null);
 	il.append(new ISTORE(node.getIndex()));
 
 	// Create a new local to store the iterator
-	iter = methodGen.addLocalVariable("step_pattern_tmp2", 
+	iter = methodGen.addLocalVariable("step_pattern_tmp2",
 					  Util.getJCRefType(NODE_ITERATOR_SIG),
 					  il.getEnd(), null);
 
 	// Add a new private field if this is the main class
 	if (!classGen.isExternal()) {
 	    final Field iterator =
-		new Field(ACC_PRIVATE, 
+		new Field(ACC_PRIVATE,
 			  cpg.addUtf8(iteratorName),
 			  cpg.addUtf8(NODE_ITERATOR_SIG),
 			  null, cpg.getConstantPool());
 	    classGen.addField(iterator);
-	    iteratorIndex = cpg.addFieldref(classGen.getClassName(), 
+	    iteratorIndex = cpg.addFieldref(classGen.getClassName(),
 					    iteratorName,
 					    NODE_ITERATOR_SIG);
 
@@ -410,7 +408,7 @@ class StepPattern extends RelativePathPattern {
 	    il.append(new ASTORE(iter.getIndex()));
 	    ifBlock = il.append(new IFNONNULL(null));
 	    il.append(classGen.loadTranslet());
-	}	
+	}
 
 	// Compile the step created at type checking time
 	_step.translate(classGen, methodGen);
@@ -435,17 +433,17 @@ class StepPattern extends RelativePathPattern {
 	il.append(SWAP);
 	il.append(methodGen.setStartNode());
 
-	/* 
+	/*
 	 * Inline loop:
 	 *
 	 * int node2;
-	 * while ((node2 = iter.next()) != NodeIterator.END 
+	 * while ((node2 = iter.next()) != NodeIterator.END
 	 *		  && node2 < node);
-	 * return node2 == node; 
+	 * return node2 == node;
 	 */
 	BranchHandle skipNext;
 	InstructionHandle begin, next;
-	node2 = methodGen.addLocalVariable("step_pattern_tmp3", 
+	node2 = methodGen.addLocalVariable("step_pattern_tmp3",
 					   Util.getJCRefType(NODE_SIG),
 					   il.getEnd(), null);
 
@@ -466,7 +464,7 @@ class StepPattern extends RelativePathPattern {
 
 	skipNext.setTarget(begin);
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -476,11 +474,11 @@ class StepPattern extends RelativePathPattern {
 	    case NO_CONTEXT:
 		translateNoContext(classGen, methodGen);
 		break;
-		
+
 	    case SIMPLE_CONTEXT:
 		translateSimpleContext(classGen, methodGen);
 		break;
-		
+
 	    default:
 		translateGeneralContext(classGen, methodGen);
 		break;

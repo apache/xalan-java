@@ -87,26 +87,14 @@ final class Param extends VariableBase {
     }
 
     /**
-     * Display variable in a full AST dump
-     */
-    public void display(int indent) {
-	indent(indent);
-	System.out.println("param " + _name);
-	if (_select != null) {
-	    indent(indent + IndentIncrement);
-	    System.out.println("select " + _select.toString());
-	}
-	displayContents(indent + IndentIncrement);
-    }
-
-    /**
      * Parse the contents of the <xsl:param> element. This method must read
      * the 'name' (required) and 'select' (optional) attributes.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 
 	// Parse 'name' and 'select' attributes plus parameter contents
-	super.parseContents(parser);
+	super.parse(ccontext);
 
 	// Add a ref to this param to its enclosing construct
 	final SyntaxTreeNode parent = getParent();
@@ -150,7 +138,7 @@ final class Param extends VariableBase {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_select != null) {
-	    _type = _select.typeCheck(stable); 
+	    _type = _select.typeCheck(stable);
 	    if (_type instanceof ReferenceType == false) {
 		_select = new CastExpr(_select, Type.Reference);
 	    }

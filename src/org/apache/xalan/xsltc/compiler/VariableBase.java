@@ -191,19 +191,6 @@ class VariableBase extends TopLevelElement {
     }
 
     /**
-     * Display variable in a full AST dump
-     */
-    public void display(int indent) {
-	indent(indent);
-	System.out.println("Variable " + _name);
-	if (_select != null) {
-	    indent(indent + IndentIncrement);
-	    System.out.println("select " + _select.toString());
-	}
-	displayContents(indent + IndentIncrement);
-    }
-
-    /**
      * Returns the type of the variable
      */
     public Type getType() {
@@ -244,7 +231,9 @@ class VariableBase extends TopLevelElement {
     /**
      * Parse the contents of the <xsl:decimal-format> element.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Get the 'name attribute
 	String name = getAttribute("name");
 	if (name == null) name = EMPTYSTRING;
@@ -270,7 +259,7 @@ class VariableBase extends TopLevelElement {
 	}
 
 	// Children must be parsed first -> static scoping
-	parseChildren(parser);
+	parseContents(ccontext);
     }
 
     /**

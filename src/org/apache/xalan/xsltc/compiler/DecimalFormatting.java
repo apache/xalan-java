@@ -96,7 +96,9 @@ final class DecimalFormatting extends TopLevelElement {
     /**
      * Parse the name of the <xsl:decimal-formatting/> element
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Get the name of these decimal formatting symbols
 	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
 	if (_name == null) {
@@ -122,7 +124,7 @@ final class DecimalFormatting extends TopLevelElement {
 
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
-	
+
 	// DecimalFormatSymbols.<init>();
 	final int init = cpg.addMethodref(DFS_CLASS, "<init>", "()V");
 
@@ -154,7 +156,7 @@ final class DecimalFormatting extends TopLevelElement {
 	    il.append(new PUSH(cpg, "Infinity"));
 	    il.append(new INVOKEVIRTUAL(inf));
 	}
-	    
+
 	final int nAttributes = _attributes.getLength();
 	for (int i = 0; i < nAttributes; i++) {
 	    final String name = _attributes.getQName(i);

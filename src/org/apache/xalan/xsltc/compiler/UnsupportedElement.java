@@ -102,17 +102,6 @@ final class UnsupportedElement extends SyntaxTreeNode {
     }
 
     /**
-     * Displays the contents of this element
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Unsupported element = " + _qname.getNamespace() +
-		     ":" + _qname.getLocalPart());
-	displayContents(indent + IndentIncrement);
-    }
-
-
-    /**
      * Scan all descendants and find the first xsl:fallback element (if any)
      */
     private SyntaxTreeNode findFallback(SyntaxTreeNode root) {
@@ -139,11 +128,11 @@ final class UnsupportedElement extends SyntaxTreeNode {
     /**
      * Find any fallback in the descendant nodes; then activate & parse it
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
 	_fallback = (Fallback)findFallback(this);
 	if (_fallback != null) {
 	    _fallback.activate();
-	    _fallback.parseContents(parser);
+	    _fallback.parse(ccontext);
 	}
     }
 

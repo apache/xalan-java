@@ -147,8 +147,9 @@ final class Number extends Instruction implements Closure {
 
     // -- End Closure interface ----------------------
 
-   public void parseContents(Parser parser) {
-	final int count = _attributes.getLength();
+   public void parse(CompilerContext ccontext) {
+       final Parser parser = ccontext.getParser();
+       final int count = _attributes.getLength();
 
 	for (int i = 0; i < count; i++) {
 	    final String name = _attributes.getQName(i);

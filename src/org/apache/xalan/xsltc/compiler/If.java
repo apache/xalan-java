@@ -78,21 +78,11 @@ final class If extends Instruction {
     private boolean    _ignore = false;
 
     /**
-     * Display the contents of this element
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("If");
-	indent(indent + IndentIncrement);
-	System.out.print("test ");
-	Util.println(_test.toString());
-	displayContents(indent + IndentIncrement);
-    }
-
-    /**
      * Parse the "test" expression and contents of this element.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Parse the "test" expression
 	_test = parser.parseExpression(this, "test", null);
 
@@ -109,7 +99,7 @@ final class If extends Instruction {
 	    _ignore = !((Boolean) result).booleanValue();
 	}
 
-	parseChildren(parser);
+	parseContents(ccontext);
     }
 
     /**

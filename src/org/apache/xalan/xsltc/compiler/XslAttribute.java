@@ -86,19 +86,11 @@ final class XslAttribute extends Instruction {
     }
 
     /**
-     * Displays the contents of the attribute
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Attribute " + _name);
-	displayContents(indent + IndentIncrement);
-    }
-		
-    /**
      * Parses the attribute's contents. Special care taken for namespaces.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
 	boolean generated = false;
+        final Parser parser = ccontext.getParser();
 	final SymbolTable stable = parser.getSymbolTable();
 
 	String name = getAttribute("name");
@@ -147,7 +139,7 @@ final class XslAttribute extends Instruction {
 		_namespace = new AttributeValueTemplate(namespace, parser, this);
 	    }
 	}
-	
+
 	// Common handling for namespaces:
 	if (_namespace != null) {
 	    // Generate prefix if we have none
@@ -167,9 +159,9 @@ final class XslAttribute extends Instruction {
 	    name = _prefix + ":" + qname.getLocalPart();
 
 	    /*
-	     * TODO: The namespace URI must be passed to the parent 
-	     * element but we don't yet know what the actual URI is 
-	     * (as we only know it as an attribute value template). 
+	     * TODO: The namespace URI must be passed to the parent
+	     * element but we don't yet know what the actual URI is
+	     * (as we only know it as an attribute value template).
 	     */
 	    if ((parent instanceof LiteralElement) && (!generated)) {
 		((LiteralElement)parent).registerNamespace(_prefix,
@@ -188,9 +180,9 @@ final class XslAttribute extends Instruction {
 	}
 
 	_name = AttributeValue.create(this, name, parser);
-	parseChildren(parser);
+	parseContents(ccontext);
     }
-	
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (!_ignore) {
 	    _name.typeCheck(stable);
@@ -224,7 +216,7 @@ final class XslAttribute extends Instruction {
 	// Save the current handler base on the stack
 	il.append(methodGen.loadHandler());
 	il.append(DUP);		// first arg to "attributes" call
-	
+
 	// Push attribute name
 	_name.translate(classGen, methodGen);// 2nd arg
 

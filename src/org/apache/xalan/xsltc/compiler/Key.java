@@ -84,7 +84,7 @@ final class Key extends TopLevelElement {
     /**
      * The pattern to match starting at the root node.
      */
-    private Pattern _match; 
+    private Pattern _match;
 
     /**
      * The expression that generates the values for this key.
@@ -100,7 +100,8 @@ final class Key extends TopLevelElement {
      * Parse the <xsl:key> element and attributes
      * @param parser A reference to the stylesheet parser
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 
 	// Get the required attributes and parser XPath expressions
 	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
@@ -137,7 +138,7 @@ final class Key extends TopLevelElement {
 	// Cast node values to string values (except for nodesets)
 	_useType = _use.typeCheck(stable);
 	if (_useType instanceof StringType == false &&
-	    _useType instanceof NodeSetType == false) 
+	    _useType instanceof NodeSetType == false)
 	{
 	    _use = new CastExpr(_use, Type.String);
 	}
@@ -233,7 +234,7 @@ final class Key extends TopLevelElement {
 	il.append(methodGen.loadIterator());
 
 	// Get an iterator for all nodes in the DOM
-	il.append(methodGen.loadDOM());	
+	il.append(methodGen.loadDOM());
 	il.append(new PUSH(cpg,Axis.DESCENDANT));
 	il.append(new INVOKEINTERFACE(git, 2));
 
@@ -251,7 +252,7 @@ final class Key extends TopLevelElement {
 	_match.translate(classGen, methodGen);
 	_match.synthesize(classGen, methodGen); // Leaves 0 or 1 on stack
 	final BranchHandle skipNode = il.append(new IFEQ(null));
-	
+
 	// If this is a node-set we must go through each node in the set
 	if (_useType instanceof NodeSetType) {
 	    // Pass current node as parameter (we're indexing on that node)
@@ -265,10 +266,10 @@ final class Key extends TopLevelElement {
 	    _use.translate(classGen, methodGen);
 	    il.append(new INVOKEVIRTUAL(key));
 	}
-	
+
 	// Get the next node from the iterator and do loop again...
 	final InstructionHandle skip = il.append(NOP);
-	
+
 	il.append(methodGen.loadIterator());
 	il.append(methodGen.nextNode());
 	il.append(DUP);
@@ -278,7 +279,7 @@ final class Key extends TopLevelElement {
 	// Restore current node and current iterator from the stack
 	il.append(methodGen.storeIterator());
 	il.append(methodGen.storeCurrentNode());
-	
+
 	nextNode.setTarget(skip);
 	skipNode.setTarget(skip);
     }

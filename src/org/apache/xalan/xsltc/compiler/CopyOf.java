@@ -74,15 +74,10 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class CopyOf extends Instruction {
     private Expression _select;
-	
-    public void display(int indent) {
-	indent(indent);
-	Util.println("CopyOf");
-	indent(indent + IndentIncrement);
-	Util.println("select " + _select.toString());
-    }
 
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	_select = parser.parseExpression(this, "select", null);
         // make sure required attribute(s) have been set
         if (_select.isDummy()) {
@@ -90,21 +85,21 @@ final class CopyOf extends Instruction {
 	    return;
         }
     }
-	
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final Type tselect = _select.typeCheck(stable);
 	if (tselect instanceof NodeType ||
 	    tselect instanceof NodeSetType ||
 	    tselect instanceof ReferenceType ||
 	    tselect instanceof ResultTreeType) {
-	    // falls through 
+	    // falls through
 	}
 	else {
 	    _select = new CastExpr(_select, Type.String);
 	}
 	return Type.Void;
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -120,7 +115,7 @@ final class CopyOf extends Instruction {
 	    il.append(methodGen.loadDOM());
 
 	    // push NodeIterator
-	    _select.translate(classGen, methodGen);	
+	    _select.translate(classGen, methodGen);
 	    _select.startResetIterator(classGen, methodGen);
 
 	    // call copy from the DOM 'library'
@@ -129,12 +124,12 @@ final class CopyOf extends Instruction {
 	}
 	else if (tselect instanceof NodeType) {
 	    il.append(methodGen.loadDOM());
-	    _select.translate(classGen, methodGen);	
+	    _select.translate(classGen, methodGen);
 	    il.append(methodGen.loadHandler());
 	    il.append(new INVOKEINTERFACE(cpy2, 3));
 	}
 	else if (tselect instanceof ResultTreeType) {
-	    _select.translate(classGen, methodGen);	
+	    _select.translate(classGen, methodGen);
 	    // We want the whole tree, so we start with the root node
 	    il.append(ICONST_1);
 	    il.append(methodGen.loadHandler());
@@ -146,9 +141,9 @@ final class CopyOf extends Instruction {
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(methodGen.loadDOM());
 	    final int copy = cpg.addMethodref(BASIS_LIBRARY_CLASS, "copy",
-					      "(" 
-					      + OBJECT_SIG  
-					      + TRANSLET_OUTPUT_SIG 
+					      "("
+					      + OBJECT_SIG
+					      + TRANSLET_OUTPUT_SIG
 					      + NODE_SIG
 					      + DOM_INTF_SIG
 					      + ")V");

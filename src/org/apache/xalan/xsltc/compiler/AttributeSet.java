@@ -80,14 +80,14 @@ final class AttributeSet extends TopLevelElement {
 
     // This prefix is used for the method name of attribute set methods
     private static final String AttributeSetPrefix = "$as$";
-    
+
     // Element contents
     private QName            _name;
     private UseAttributeSets _useSets;
     private AttributeSet     _mergeSet;
     private String           _method;
     private boolean          _ignore = false;
-    
+
     /**
      * Returns the QName of this attribute set
      */
@@ -117,8 +117,9 @@ final class AttributeSet extends TopLevelElement {
      * Parse the contents of this attribute set. Recognised attributes are
      * "name" (required) and "use-attribute-sets" (optional).
      */
-    public void parseContents(Parser parser) {
-	
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Get this attribute set's name
 	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
 	if ((_name == null) || (_name.equals(EMPTYSTRING))) {
@@ -140,7 +141,7 @@ final class AttributeSet extends TopLevelElement {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.get(i);
 	    if (child instanceof XslAttribute) {
 		parser.getSymbolTable().setCurrentNode(child);
-		child.parseContents(parser);
+		child.parse(ccontext);
 	    }
 	    else if (child instanceof Text) {
 		// ignore
@@ -212,7 +213,7 @@ final class AttributeSet extends TopLevelElement {
 	}
 	final InstructionList il = methodGen.getInstructionList();
 	il.append(RETURN);
-	
+
 	methodGen.stripAttributes(true);
 	methodGen.setMaxLocals();
 	methodGen.setMaxStack();

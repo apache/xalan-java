@@ -77,17 +77,8 @@ final class XslElement extends Instruction {
     private String  _prefix;
     private boolean _ignore = false;
     private boolean _isLiteralName = true;
-    private AttributeValueTemplate _name; 
+    private AttributeValueTemplate _name;
     private AttributeValueTemplate _namespace;
-
-    /**
-     * Displays the contents of the element
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Element " + _name);
-	displayContents(indent + IndentIncrement);
-    }
 
     /**
      * This method is now deprecated. The new implemation of this class
@@ -112,7 +103,7 @@ final class XslElement extends Instruction {
 
     /**
      * Simple check to determine if qname is legal. If it returns false
-     * then <param>str</param> is illegal; if it returns true then 
+     * then <param>str</param> is illegal; if it returns true then
      * <param>str</param> may or may not be legal.
      */
     private boolean isLegalName(String str) {
@@ -130,7 +121,8 @@ final class XslElement extends Instruction {
 	return true;
     }
 
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final SymbolTable stable = parser.getSymbolTable();
 
 	// Handle the 'name' attribute
@@ -139,7 +131,7 @@ final class XslElement extends Instruction {
 	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
 					name, this);
 	    parser.reportError(WARNING, msg);
-	    parseChildren(parser);
+	    parseContents(ccontext);
 	    _ignore = true; 	// Ignore the element if the QName is invalid
 	    return;
 	}
@@ -154,7 +146,7 @@ final class XslElement extends Instruction {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
 					    name, this);
 		parser.reportError(WARNING, msg);
-		parseChildren(parser);
+		parseContents(ccontext);
 		_ignore = true; 	// Ignore the element if the QName is invalid
 		return;
 	    }
@@ -162,18 +154,18 @@ final class XslElement extends Instruction {
 	    final QName qname = parser.getQNameSafe(name);
 	    String prefix = qname.getPrefix();
 	    String local = qname.getLocalPart();
-	    
+
 	    if (prefix == null) {
 		prefix = EMPTYSTRING;
 	    }
 
 	    if (!hasAttribute("namespace")) {
-		namespace = lookupNamespace(prefix); 
+		namespace = lookupNamespace(prefix);
 		if (namespace == null) {
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
 						prefix, this);
 		    parser.reportError(WARNING, err);
-		    parseChildren(parser);
+		    parseContents(ccontext);
 		    _ignore = true; 	// Ignore the element if prefix is undeclared
 		    return;
 		}
@@ -209,10 +201,10 @@ final class XslElement extends Instruction {
 
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
-	    setFirstElement(new UseAttributeSets(useSets, parser));
+	    add(0, new UseAttributeSets(useSets, parser));
 	}
 
-	parseChildren(parser);
+	parseContents(ccontext);
     }
 
     /**
@@ -264,7 +256,7 @@ final class XslElement extends Instruction {
      * evaluates the avt for the name, (ii) checks for a prefix in the name
      * (iii) generates a new prefix and create a new qname when necessary
      * (iv) calls startElement() on the handler (v) looks up a uri in the XML
-     * when the prefix is not known at compile time (vi) calls namespace() 
+     * when the prefix is not known at compile time (vi) calls namespace()
      * on the handler (vii) evaluates the contents (viii) calls endElement().
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
@@ -299,9 +291,9 @@ final class XslElement extends Instruction {
 	    // Invoke BasisLibrary.startXslElement()
 	    il.append(new INVOKESTATIC(
 		cpg.addMethodref(BASIS_LIBRARY_CLASS, "startXslElement",
-		      "(" + STRING_SIG 
-			  + STRING_SIG 
-			  + TRANSLET_OUTPUT_SIG 
+		      "(" + STRING_SIG
+			  + STRING_SIG
+			  + TRANSLET_OUTPUT_SIG
 			  + DOM_INTF_SIG + "I)" + STRING_SIG)));
 	}
 

@@ -298,13 +298,11 @@ class FunctionCall extends Expression {
 	return(_fname.toString());
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
+    public void setParent(Parser parser) {
 	if (_arguments != null) {
 	    final int n = _arguments.size();
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = (Expression)_arguments.get(i);
-		exp.setParser(parser);
 		exp.setParent(this);
 	    }
 	}

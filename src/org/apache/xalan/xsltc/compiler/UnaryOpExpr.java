@@ -69,7 +69,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class UnaryOpExpr extends Expression {
     private Expression _left;
-	
+
     public UnaryOpExpr(Expression left) {
 	(_left = left).setParent(this);
     }
@@ -82,17 +82,12 @@ final class UnaryOpExpr extends Expression {
 	return(_left.hasPositionCall());
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-    }
-    
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tleft = _left.typeCheck(stable); 
+	final Type tleft = _left.typeCheck(stable);
 	final MethodType ptype = lookupPrimop(stable, "u-",
 					      new MethodType(Type.Void,
-							     tleft)); 
-	
+							     tleft));
+
 	if (ptype != null) {
 	    final Type arg1 = (Type) ptype.argsType().get(0);
 	    if (!arg1.identicalTo(tleft)) {

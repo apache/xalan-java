@@ -84,7 +84,7 @@ class TopLevelElement extends SyntaxTreeNode {
 				    getClass(), this);
 	getParser().reportError(FATAL, msg);
     }
-	
+
     /**
      * Translate this node into a fresh instruction list.
      * The original instruction list is saved and restored.
@@ -96,11 +96,5 @@ class TopLevelElement extends SyntaxTreeNode {
 	translate(classGen, methodGen);
 	methodGen.setInstructionList(save);
 	return result;
-    }
-
-    public void display(int indent) {
-	indent(indent);
-	Util.println("TopLevelElement");
-	displayContents(indent + IndentIncrement);
     }
 }

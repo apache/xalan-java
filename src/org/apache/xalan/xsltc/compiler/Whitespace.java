@@ -159,7 +159,9 @@ final class Whitespace extends TopLevelElement {
      * Parse the attributes of the xsl:strip/preserve-space element.
      * The element should have not contents (ignored if any).
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Determine if this is an xsl:strip- or preserve-space element
 	_action = _qname.getLocalPart().endsWith("strip-space")
 	    ? STRIP_SPACE : PRESERVE_SPACE;

@@ -157,26 +157,7 @@ public final class Template extends TopLevelElement {
 	    return 0;
     }
 
-    public void display(int indent) {
-	Util.println('\n');
-	indent(indent);
-	if (_name != null) {
-	    indent(indent);
-	    Util.println("name = " + _name);
-	}
-	else if (_pattern != null) {
-	    indent(indent);
-	    Util.println("match = " + _pattern.toString());
-	}
-	if (_mode != null) {
-	    indent(indent);
-	    Util.println("mode = " + _mode);
-	}
-	displayContents(indent + IndentIncrement);
-    }
-
     private boolean resolveNamedTemplates(Template other, Parser parser) {
-
 	if (other == null) return true;
 
 	SymbolTable stable = parser.getSymbolTable();
@@ -204,12 +185,12 @@ public final class Template extends TopLevelElement {
 	return _stylesheet;
     }
 
-    public void parseContents(Parser parser) {
-
+    public void parse(CompilerContext ccontext) {
 	final String name     = getAttribute("name");
 	final String mode     = getAttribute("mode");
 	final String match    = getAttribute("match");
 	final String priority = getAttribute("priority");
+        final Parser parser = ccontext.getParser();
 
 	_stylesheet = super.getStylesheet();
 
@@ -248,7 +229,7 @@ public final class Template extends TopLevelElement {
 	}
 
 	parser.setTemplate(this);	// set current template
-	parseChildren(parser);
+	parseContents(ccontext);
 	parser.setTemplate(null);	// clear template
     }
 
@@ -264,7 +245,9 @@ public final class Template extends TopLevelElement {
      *  o) set the empty Stylesheet as our parent
      *  o) set this template as the Stylesheet's only child
      */
-    public void parseSimplified(Stylesheet stylesheet, Parser parser) {
+    public void parseSimplified(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+        final Stylesheet stylesheet = getStaticContext().getStylesheet();
 
 	_stylesheet = stylesheet;
 	setParent(stylesheet);
@@ -282,7 +265,7 @@ public final class Template extends TopLevelElement {
 	    root.setParent(this);
 	    contents.set(0, this);
 	    parser.setTemplate(this);
-	    root.parseContents(parser);
+	    root.parse(ccontext);
 	    parser.setTemplate(null);
 	}
     }

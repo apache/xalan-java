@@ -72,7 +72,7 @@ final class LogicalExpr extends Expression {
 
     public static final int OR  = 0;
     public static final int AND = 1;
-	
+
     private final int  _op;     // operator
     private Expression _left;   // first operand
     private Expression _right;  // second operand
@@ -100,7 +100,7 @@ final class LogicalExpr extends Expression {
     }
 
     /**
-     * Returns an object representing the compile-time evaluation 
+     * Returns an object representing the compile-time evaluation
      * of an expression. We are only using this for function-available
      * and element-available at this time.
      */
@@ -132,16 +132,6 @@ final class LogicalExpr extends Expression {
     }
 
     /**
-     * Override the SyntaxTreeNode.setParser() method to make sure that the
-     * parser is set for sub-expressions
-     */
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-	_right.setParser(parser);
-    }
-
-    /**
      * Returns a string describing this expression
      */
     public String toString() {
@@ -153,7 +143,7 @@ final class LogicalExpr extends Expression {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	// Get the left and right operand types
-	Type tleft = _left.typeCheck(stable); 
+	Type tleft = _left.typeCheck(stable);
 	Type tright = _right.typeCheck(stable);
 
 	// Check if the operator supports the two operand types
@@ -236,7 +226,7 @@ final class LogicalExpr extends Expression {
 	    else {
 		_trueList.append(_right._trueList);
 	    }
-	} 
+	}
 	// Compile OR-expression
 	else {
 	    // Translate left-hand side expression and produce true/false list
@@ -251,7 +241,7 @@ final class LogicalExpr extends Expression {
 
 	    _left._trueList.backPatch(ih);
 	    _left._falseList.backPatch(ih.getNext());
-			
+
 	    _falseList.append(_right._falseList);
 	    _trueList.add(ih).append(_right._trueList);
 	}

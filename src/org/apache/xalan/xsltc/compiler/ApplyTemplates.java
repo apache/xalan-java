@@ -81,44 +81,33 @@ final class ApplyTemplates extends Instruction {
     private Type       _type = null;
     private QName      _modeName;
     private String     _functionName;
-	
-    public void display(int indent) {
-	indent(indent);
-	Util.println("ApplyTemplates");
-	indent(indent + IndentIncrement);
-	Util.println("select " + _select.toString());
-	if (_modeName != null) {
-	    indent(indent + IndentIncrement);
-	    Util.println("mode " + _modeName);
-	}
-    }
 
     public boolean hasWithParams() {
 	return hasContents();
     }
 
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final String select = getAttribute("select");
 	final String mode   = getAttribute("mode");
-	
+
 	if (select.length() > 0) {
 	    _select = parser.parseExpression(this, "select", null);
 
 	    // Wrap _select in a ForwardPositionExpr
 	    final Expression fpe = new ForwardPositionExpr(_select);
 	    _select.setParent(fpe);
-	    fpe.setParser(_select.getParser());
 	    _select = fpe;
 	}
-	
+
 	if (mode.length() > 0) {
 	    _modeName = parser.getQNameIgnoreDefaultNs(mode);
 	}
-	
+
 	// instantiate Mode if needed, cache (apply temp) function name
 	_functionName =
 	    parser.getTopLevelStylesheet().getMode(_modeName).functionName();
-	parseChildren(parser);// with-params
+	parseContents(ccontext);// with-params
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -142,7 +131,7 @@ final class ApplyTemplates extends Instruction {
 
     /**
      * Translate call-template. A parameter frame is pushed only if
-     * some template in the stylesheet uses parameters. 
+     * some template in the stylesheet uses parameters.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	boolean setStartNodeCalled = false;
@@ -183,7 +172,7 @@ final class ApplyTemplates extends Instruction {
 		getParser().reportError(WARNING, err);
 	    }
 	    // Put the result tree (a DOM adapter) on the stack
-	    _select.translate(classGen, methodGen);	
+	    _select.translate(classGen, methodGen);
 	    // Get back the DOM and iterator (not just iterator!!!)
 	    _type.translateTo(classGen, methodGen, Type.NodeSet);
 	}
@@ -200,7 +189,7 @@ final class ApplyTemplates extends Instruction {
 							     NODE_ITERATOR_SIG);
 		il.append(methodGen.loadCurrentNode());
 		il.append(new INVOKEINTERFACE(setStartNode,2));
-		setStartNodeCalled = true;	
+		setStartNodeCalled = true;
 	    }
 	    else {
 		if (_select == null)
@@ -222,7 +211,7 @@ final class ApplyTemplates extends Instruction {
 						    _functionName,
 						    applyTemplatesSig);
 	il.append(new INVOKEVIRTUAL(applyTemplates));
-	
+
 	// Pop parameter frame
 	if (stylesheet.hasLocalParams() || hasContents()) {
 	    il.append(classGen.loadTranslet());

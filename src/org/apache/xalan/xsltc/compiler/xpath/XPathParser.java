@@ -64,6 +64,7 @@ package org.apache.xalan.xsltc.compiler.xpath;
 
 import java.io.StringReader;
 import org.apache.xpath.parser.*;
+import org.apache.xpath.Expression;
 
 public class XPathParser {
 
@@ -93,12 +94,19 @@ public class XPathParser {
 
     public static void main(String[] args) {
         try {
-            Node tree;
+            SimpleNode tree;
             System.out.println("AST = " +
               (tree = new XPathParser().parseExpression("a/b")));
-            ((SimpleNode)tree.jjtGetChild(0)).dump("|") ;
-            System.out.println("done");
-        }
+            tree = (SimpleNode) tree.jjtGetChild(0);
+            tree.dump("|");
+
+            System.out.println("\n------------------\n");
+
+            if (tree instanceof Expression) {
+                SimpleXPathVisitor visitor = new SimpleXPathVisitor();
+                ((Expression) tree).callVisitors(null, visitor);
+            }
+       }
         catch (Exception e) {
         }
     }

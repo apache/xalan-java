@@ -68,7 +68,7 @@ import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AbsoluteLocationPath extends Expression {
-    private Expression _path;	// may be null 
+    private Expression _path;	// may be null
 
     public AbsoluteLocationPath() {
 	_path = null;
@@ -81,22 +81,15 @@ final class AbsoluteLocationPath extends Expression {
 	}
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	if (_path != null) {
-	    _path.setParser(parser);
-	}
-    }
-
     public Expression getPath() {
 	return(_path);
     }
-    
+
     public String toString() {
 	return "AbsoluteLocationPath(" +
 	    (_path != null ? _path.toString() : "null") + ')';
     }
-	
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_path != null) {
 	    final Type ptype = _path.typeCheck(stable);
@@ -104,9 +97,9 @@ final class AbsoluteLocationPath extends Expression {
 		_path = new CastExpr(_path, Type.NodeSet);
 	    }
 	}
-	return _type = Type.NodeSet;	
+	return _type = Type.NodeSet;
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();

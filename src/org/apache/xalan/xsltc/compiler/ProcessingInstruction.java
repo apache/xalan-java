@@ -70,14 +70,16 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class ProcessingInstruction extends Instruction {
 
     private AttributeValue _name; // name treated as AVT (7.1.3)
-    
-    public void parseContents(Parser parser) {
+
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	final String name  = getAttribute("name");
 	_name = AttributeValue.create(this, name, parser);
 	if (name.equals("xml")) {
 	    reportError(this, parser, ErrorMsg.ILLEGAL_PI_ERR, "xml");
 	}
-	parseChildren(parser);
+	parseContents(ccontext);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -93,7 +95,7 @@ final class ProcessingInstruction extends Instruction {
 	// Save the current handler base on the stack
 	il.append(methodGen.loadHandler());
 	il.append(DUP);		// first arg to "attributes" call
-	
+
 	// push attribute name
 	_name.translate(classGen, methodGen);// 2nd arg
 
@@ -114,7 +116,7 @@ final class ProcessingInstruction extends Instruction {
 	// call "processingInstruction"
 	final int processingInstruction =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
-				      "processingInstruction", 
+				      "processingInstruction",
 				      "(" + STRING_SIG + STRING_SIG + ")V");
 	il.append(new INVOKEINTERFACE(processingInstruction, 3));
 	// Restore old handler base from stack

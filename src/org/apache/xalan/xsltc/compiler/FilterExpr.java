@@ -88,14 +88,11 @@ class FilterExpr extends Expression {
 	    return _primary;
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_primary.setParser(parser);
+    public void setParent(Parser parser) {
 	if (_predicates != null) {
 	    final int n = _predicates.size();
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = (Expression)_predicates.get(i);
-		exp.setParser(parser);
 		exp.setParent(this);
 	    }
 	}

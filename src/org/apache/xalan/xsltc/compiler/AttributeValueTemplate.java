@@ -76,7 +76,6 @@ final class AttributeValueTemplate extends AttributeValue {
 	SyntaxTreeNode parent)
     {
 	setParent(parent);
-	setParser(parser);
 	if (check(value, parser)) {
 	    parseAVTemplate(0, value, parser);
 	}

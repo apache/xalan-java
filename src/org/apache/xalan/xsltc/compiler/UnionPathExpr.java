@@ -81,21 +81,19 @@ final class UnionPathExpr extends Expression {
 
     // linearization for top level UnionPathExprs
     private Expression[] _components;
-    
+
     public UnionPathExpr(Expression pathExpr, Expression rest) {
 	_pathExpr = pathExpr;
 	_rest     = rest;
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
+    public void setParent(Parser parser) {
 	// find all expressions in this Union
 	final ArrayList components = new ArrayList();
 	flatten(components);
 	final int size = components.size();
 	_components = (Expression[])components.toArray(new Expression[size]);
 	for (int i = 0; i < size; i++) {
-	    _components[i].setParser(parser);
 	    _components[i].setParent(this);
 	    if (_components[i] instanceof Step) {
 		final Step step = (Step)_components[i];
@@ -113,7 +111,7 @@ final class UnionPathExpr extends Expression {
 	// No need to reverse anything if another expression lies on top of this
 	if (getParent() instanceof Expression) _reverse = false;
     }
-    
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final int length = _components.length;
 	for (int i = 0; i < length; i++) {
@@ -121,13 +119,13 @@ final class UnionPathExpr extends Expression {
 		_components[i] = new CastExpr(_components[i], Type.NodeSet);
 	    }
 	}
-	return _type = Type.NodeSet;	
+	return _type = Type.NodeSet;
     }
 
     public String toString() {
 	return "union(" + _pathExpr + ", " + _rest + ')';
     }
-	
+
     private void flatten(ArrayList components) {
 	components.add(_pathExpr);
 	if (_rest != null) {

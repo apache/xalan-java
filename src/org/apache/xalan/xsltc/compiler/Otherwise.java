@@ -68,13 +68,7 @@ import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Otherwise extends Instruction {
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Otherwise");
-	indent(indent + IndentIncrement);
-	displayContents(indent + IndentIncrement);
-    }
-	
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	typeCheckContents(stable);
 	return Type.Void;

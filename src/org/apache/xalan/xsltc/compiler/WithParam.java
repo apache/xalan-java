@@ -76,23 +76,12 @@ final class WithParam extends Instruction {
     private Expression _select;
 
     /**
-     * Displays the contents of this element
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("with-param " + _name);
-	if (_select != null) {
-	    indent(indent + IndentIncrement);
-	    Util.println("select " + _select.toString());
-	}
-	displayContents(indent + IndentIncrement);
-    }
-
-    /**
      * The contents of a <xsl:with-param> elements are either in the element's
      * 'select' attribute (this has precedence) or in the element body.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	final String name = getAttribute("name");
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);
@@ -100,13 +89,13 @@ final class WithParam extends Instruction {
         else {
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
         }
-	
+
 	final String select = getAttribute("select");
 	if (select.length() > 0) {
 	    _select = parser.parseExpression(this, "select", null);
 	}
-	
-	parseChildren(parser);
+
+	parseContents(ccontext);
     }
 
     /**

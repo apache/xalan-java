@@ -80,12 +80,6 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	}
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	if (_left != null)
-	    _left.setParser(parser);
-    }
-    
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	return _left == null ? Type.Root : _left.typeCheck(stable);
     }
@@ -93,24 +87,24 @@ final class AbsolutePathPattern extends LocationPathPattern {
     public boolean isWildcard() {
 	return false;
     }
-	
+
     public StepPattern getKernelPattern() {
 	return _left != null ? _left.getKernelPattern() : null;
     }
-	
+
     public void reduceKernelPattern() {
 	_left.reduceKernelPattern();
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
 	if (_left != null) {
 	    if (_left instanceof StepPattern) {
-		final LocalVariableGen local = 
+		final LocalVariableGen local =
 		    // absolute path pattern temporary
-		    methodGen.addLocalVariable2("apptmp", 
+		    methodGen.addLocalVariable2("apptmp",
 						Util.getJCRefType(NODE_SIG),
 						il.getEnd());
 		il.append(DUP);
@@ -134,20 +128,20 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	InstructionHandle begin = il.append(methodGen.loadDOM());
 	il.append(SWAP);
 	il.append(new INVOKEINTERFACE(getParent, 2));
-	if (_left instanceof AncestorPattern) {	
+	if (_left instanceof AncestorPattern) {
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	}
 	il.append(new INVOKEINTERFACE(getType, 2));
 	il.append(new PUSH(cpg, DOM.ROOT));
-	
+
 	final BranchHandle skip = il.append(new IF_ICMPEQ(null));
 	_falseList.add(il.append(new GOTO_W(null)));
 	skip.setTarget(il.append(NOP));
 
 	if (_left != null) {
 	    _left.backPatchTrueList(begin);
-	    
+
 	    /*
 	     * If _left is an ancestor pattern, backpatch this pattern's false
 	     * list to the loop that searches for more ancestors.
@@ -159,7 +153,7 @@ final class AbsolutePathPattern extends LocationPathPattern {
 	    _falseList.append(_left._falseList);
 	}
     }
-	
+
     public String toString() {
 	return "absolutePathPattern(" + (_left != null ? _left.toString() : ")");
     }

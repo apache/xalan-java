@@ -80,8 +80,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Comment extends Instruction {
 
-    public void parseContents(Parser parser) {
-	parseChildren(parser);
+    public void parse(CompilerContext ccontext) {
+	parseContents(ccontext);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

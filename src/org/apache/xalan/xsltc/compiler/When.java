@@ -71,15 +71,6 @@ final class When extends Instruction {
     private Expression _test;
     private boolean _ignore = false;
 
-    public void display(int indent) {
-	indent(indent);
-	Util.println("When");
-	indent(indent + IndentIncrement);
-	System.out.print("test ");
-	Util.println(_test.toString());
-	displayContents(indent + IndentIncrement);
-    }
-		
     public Expression getTest() {
 	return _test;
     }
@@ -88,7 +79,9 @@ final class When extends Instruction {
 	return(_ignore);
     }
 
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	_test = parser.parseExpression(this, "test", null);
 
 	// Ignore xsl:if when test is false (function-available() and
@@ -98,7 +91,7 @@ final class When extends Instruction {
 	    _ignore = !((Boolean) result).booleanValue();
 	}
 
-	parseChildren(parser);
+	parseContents(ccontext);
 
 	// Make sure required attribute(s) have been set
 	if (_test.isDummy()) {

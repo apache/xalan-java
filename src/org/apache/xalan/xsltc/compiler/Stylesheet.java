@@ -236,10 +236,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return false;
     }
 
+/* Removing setParser() - where is _name set?
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	_name = makeStylesheetName("__stylesheet_");
     }
+*/
 
     public void setParentStylesheet(Stylesheet parent) {
 	_parentStylesheet = parent;
@@ -354,7 +356,8 @@ public final class Stylesheet extends SyntaxTreeNode {
      * entry to the symbol table mapping the name <tt>__stylesheet_</tt>
      * to an instance of this class.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final SymbolTable stable = parser.getSymbolTable();
 
 	/*
@@ -387,18 +390,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 	if (_simplified) {
 	    stable.excludeURI(XSLT_URI);
 	    Template template = new Template();
-	    template.parseSimplified(this, parser);
+            StaticContextImpl scontextImpl = getStaticContext();
+            // TODO: update static context - scontextImpl.addStylesheet()
+	    template.parseSimplified(ccontext);
 	}
 	// Parse the children of this node
 	else {
-	    parseOwnChildren(parser);
+	    parseOwnChildren(ccontext);
 	}
     }
 
     /**
      * Parse all direct children of the <xsl:stylesheet/> element.
      */
-    public final void parseOwnChildren(Parser parser) {
+    public final void parseOwnChildren(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final ArrayList contents = getContents();
 	final int count = contents.size();
 
@@ -409,7 +415,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    if ((child instanceof VariableBase) ||
 		(child instanceof NamespaceAlias)) {
 		parser.getSymbolTable().setCurrentNode(child);
-		child.parseContents(parser);
+		child.parse(ccontext);
 	    }
 	}
 
@@ -419,7 +425,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    if (!(child instanceof VariableBase) &&
 		!(child instanceof NamespaceAlias)) {
 		parser.getSymbolTable().setCurrentNode(child);
-		child.parseContents(parser);
+		child.parse(ccontext);
 	    }
 
 	    // All template code should be compiled as methods if the
@@ -1017,12 +1023,6 @@ public final class Stylesheet extends SyntaxTreeNode {
     public int addVariable(Variable global) {
 	_globals.add(global);
 	return _globals.size() - 1;
-    }
-
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Stylesheet");
-	displayContents(indent + IndentIncrement);
     }
 
     // do we need this wrapper ?????

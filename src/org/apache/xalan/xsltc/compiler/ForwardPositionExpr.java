@@ -73,11 +73,6 @@ class ForwardPositionExpr extends Expression {
 	_expr = expr;
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_expr.setParser(parser);
-    }
-    
     public String toString() {
 	return "forward-position-expr(" + _expr + ")";
     }
@@ -85,7 +80,7 @@ class ForwardPositionExpr extends Expression {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	return (_type = _expr.typeCheck(stable));
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	_expr.translate(classGen, methodGen);
 
@@ -93,7 +88,7 @@ class ForwardPositionExpr extends Expression {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
 	    final InstructionList il = methodGen.getInstructionList();
 
-	    final int init = cpg.addMethodref(FORWARD_POSITION_ITERATOR, 
+	    final int init = cpg.addMethodref(FORWARD_POSITION_ITERATOR,
 		"<init>", "(" + NODE_ITERATOR_SIG + ")V");
 	    il.append(new NEW(cpg.addClass(FORWARD_POSITION_ITERATOR)));
 	    il.append(DUP_X1);

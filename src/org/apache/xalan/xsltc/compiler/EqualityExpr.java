@@ -75,19 +75,13 @@ final class EqualityExpr extends Expression implements Operators {
     private final int _op;
     private Expression _left;
     private Expression _right;
-		
+
     public EqualityExpr(int op, Expression left, Expression right) {
 	_op = op;
 	(_left = left).setParent(this);
 	(_right = right).setParent(this);
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-	_right.setParser(parser);
-    }
-    
     public String toString() {
 	return Operators.names[_op] + '(' + _left + ", " + _right + ')';
     }
@@ -130,7 +124,7 @@ final class EqualityExpr extends Expression implements Operators {
      * Typing rules: see XSLT Reference by M. Kay page 345.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type tleft = _left.typeCheck(stable); 
+	final Type tleft = _left.typeCheck(stable);
 	final Type tright = _right.typeCheck(stable);
 
 	if (tleft.isSimple() && tright.isSimple()) {
@@ -141,7 +135,7 @@ final class EqualityExpr extends Expression implements Operators {
 		else if (tright instanceof BooleanType) {
 		    _left = new CastExpr(_left, Type.Boolean);
 		}
-		else if (tleft instanceof NumberType || 
+		else if (tleft instanceof NumberType ||
 			 tright instanceof NumberType) {
 		    _left = new CastExpr(_left, Type.Real);
 		    _right = new CastExpr(_right, Type.Real);
@@ -176,7 +170,7 @@ final class EqualityExpr extends Expression implements Operators {
 	else if (tleft instanceof NodeSetType && tright instanceof NodeType) {
 	    swapArguments();	// for compare(Node, NodeSet)
 	}
-	else {	
+	else {
 	    // At least one argument is of type node, node-set or result-tree
 
 	    // Promote an expression of type node to node-set
@@ -210,7 +204,7 @@ final class EqualityExpr extends Expression implements Operators {
 	if (tleft instanceof BooleanType) {
 	    _left.translate(classGen, methodGen);
 	    _right.translate(classGen, methodGen);
-	    _falseList.add(il.append(_op == Operators.EQ ? 
+	    _falseList.add(il.append(_op == Operators.EQ ?
 				     (BranchInstruction)new IF_ICMPNE(null) :
 				     (BranchInstruction)new IF_ICMPEQ(null)));
 	}
@@ -220,12 +214,12 @@ final class EqualityExpr extends Expression implements Operators {
 
 	    if (tleft instanceof RealType) {
 		il.append(DCMPG);
-		_falseList.add(il.append(_op == Operators.EQ ? 
-					 (BranchInstruction)new IFNE(null) : 
+		_falseList.add(il.append(_op == Operators.EQ ?
+					 (BranchInstruction)new IFNE(null) :
 					 (BranchInstruction)new IFEQ(null)));
 	    }
 	    else {
-		_falseList.add(il.append(_op == Operators.EQ ? 
+		_falseList.add(il.append(_op == Operators.EQ ?
 					 (BranchInstruction)new IF_ICMPNE(null) :
 					 (BranchInstruction)new IF_ICMPEQ(null)));
 	    }
@@ -265,7 +259,7 @@ final class EqualityExpr extends Expression implements Operators {
 	}
 
 	BranchHandle truec, falsec;
-	
+
 	if (tleft instanceof ResultTreeType) {
 	    if (tright instanceof BooleanType) {
 		_right.translate(classGen, methodGen);
@@ -282,8 +276,8 @@ final class EqualityExpr extends Expression implements Operators {
 		_right.translate(classGen, methodGen);
 
 		il.append(DCMPG);
-		falsec = il.append(_op == Operators.EQ ? 
-				   (BranchInstruction) new IFNE(null) : 
+		falsec = il.append(_op == Operators.EQ ?
+				   (BranchInstruction) new IFNE(null) :
 				   (BranchInstruction) new IFEQ(null));
 		il.append(ICONST_1);
 		truec = il.append(new GOTO(null));
@@ -337,7 +331,7 @@ final class EqualityExpr extends Expression implements Operators {
 	    final int cmp = cpg.addMethodref(BASIS_LIBRARY_CLASS,
 					     "compare",
 					     "("
-					     + tleft.toSignature() 
+					     + tleft.toSignature()
 					     + tright.toSignature()
 					     + "I"
 					     + DOM_INTF_SIG
@@ -354,7 +348,7 @@ final class EqualityExpr extends Expression implements Operators {
 
 	// Cast a result tree to a string to use an existing compare
 	if (tright instanceof ResultTreeType) {
-	    tright.translateTo(classGen, methodGen, Type.String);	
+	    tright.translateTo(classGen, methodGen, Type.String);
 	    tright = Type.String;
 	}
 
@@ -365,7 +359,7 @@ final class EqualityExpr extends Expression implements Operators {
 	final int compare = cpg.addMethodref(BASIS_LIBRARY_CLASS,
 					     "compare",
 					     "("
-					     + tleft.toSignature() 
+					     + tleft.toSignature()
 					     + tright.toSignature()
 					     + "I"
 					     + DOM_INTF_SIG

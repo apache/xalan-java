@@ -93,15 +93,6 @@ final class LiteralElement extends Instruction {
     }
 
     /**
-     * Displays the contents of this literal element
-     */
-    public void display(int indent) {
-	indent(indent);
-	Util.println("LiteralElement name = " + _name);
-	displayContents(indent + IndentIncrement);
-    }
-
-    /**
      * Returns the namespace URI for which a prefix is pointing to
      */
     private String accessedNamespace(String prefix) {
@@ -254,7 +245,9 @@ final class LiteralElement extends Instruction {
      * Determines the final QName for the element and its attributes.
      * Registers all namespaces that are used by the element/attributes
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	final SymbolTable stable = parser.getSymbolTable();
 	stable.setCurrentNode(this);
 
@@ -306,7 +299,7 @@ final class LiteralElement extends Instruction {
 		LiteralAttribute attr = new LiteralAttribute(name, val, parser);
 		addAttribute(attr);
 		attr.setParent(this);
-		attr.parseContents(parser);
+		attr.parse(ccontext);
 	    }
 	}
 
@@ -323,7 +316,7 @@ final class LiteralElement extends Instruction {
 	    }
 	}
 
-	parseChildren(parser);
+	parseContents(ccontext);
 
 	// Process all attributes and register all namespaces they use
 	for (int i = 0; i < count; i++) {
@@ -365,10 +358,10 @@ final class LiteralElement extends Instruction {
 
 	// The value of an attribute may depend on a (sibling) variable
 	for (int i = 0; i < elementCount(); i++) {
-	    final SyntaxTreeNode item = (SyntaxTreeNode) get(i);
+	    final SyntaxTreeNode item = get(i);
 	    if (item instanceof Variable) {
 		item.translate(classGen, methodGen);
-		removeElement(item);	// avoid translating it twice
+		remove(item);	// avoid translating it twice
 	    }
 	}
 

@@ -112,18 +112,13 @@ final class Text extends Instruction {
 	    _text = _text + text;
     }
 
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Text");
-	indent(indent + IndentIncrement);
-	Util.println(_text);
-    }
-		
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
         final String str = getAttribute("disable-output-escaping");
 	if ((str != null) && (str.equals("yes"))) _escaping = false;
 
-	parseChildren(parser);
+	parseContents(ccontext);
 
 	if (_text == null) {
 	    if (_textElement) {

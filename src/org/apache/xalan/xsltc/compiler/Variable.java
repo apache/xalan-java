@@ -84,9 +84,11 @@ final class Variable extends VariableBase {
     /**
      * Parse the contents of the variable
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Parse 'name' and 'select' attributes plus parameter contents
-	super.parseContents(parser);
+	super.parse(ccontext);
 
 	// Add a ref to this var to its enclosing construct
 	SyntaxTreeNode parent = getParent();
@@ -205,7 +207,7 @@ final class Variable extends VariableBase {
 
 	    // Global variables are store in class fields
 	    if (classGen.containsField(name) == null) {
-		classGen.addField(new Field(ACC_PUBLIC, 
+		classGen.addField(new Field(ACC_PUBLIC,
 					    cpg.addUtf8(name),
 					    cpg.addUtf8(signature),
 					    null, cpg.getConstantPool()));

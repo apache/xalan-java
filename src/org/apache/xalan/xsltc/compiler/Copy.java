@@ -77,20 +77,14 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Copy extends Instruction {
     private UseAttributeSets _useSets;
-    
-    public void parseContents(Parser parser) {
+
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
 	    _useSets = new UseAttributeSets(useSets, parser);
 	}
-	parseChildren(parser);
-    }
-    
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Copy");
-	indent(indent + IndentIncrement);
-	displayContents(indent + IndentIncrement);
+	parseContents(ccontext);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -100,7 +94,7 @@ final class Copy extends Instruction {
 	typeCheckContents(stable);
 	return Type.Void;
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -123,7 +117,7 @@ final class Copy extends Instruction {
 						  "("
 						  + NODE_SIG
 						  + TRANSLET_OUTPUT_SIG
-						  + ")" + STRING_SIG); 
+						  + ")" + STRING_SIG);
 	il.append(new INVOKEINTERFACE(cpy, 3));
 	il.append(DUP);
 	il.append(new ASTORE(name.getIndex()));
@@ -167,7 +161,7 @@ final class Copy extends Instruction {
 	il.append(methodGen.loadHandler());
 	il.append(new ALOAD(name.getIndex()));
 	il.append(methodGen.endElement());
-	
+
 	final InstructionHandle end = il.append(NOP);
 	ifBlock1.setTarget(end);
 	ifBlock3.setTarget(end);

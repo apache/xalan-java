@@ -77,16 +77,6 @@ final class ApplyImports extends Instruction {
     private String     _functionName;
     private int        _precedence;
 
-    public void display(int indent) {
-	indent(indent);
-	Util.println("ApplyTemplates");
-	indent(indent + IndentIncrement);
-	if (_modeName != null) {
-	    indent(indent + IndentIncrement);
-	    Util.println("mode " + _modeName);
-	}
-    }
-
     /**
      * Returns true if this <xsl:apply-imports/> element has parameters
      */
@@ -132,7 +122,9 @@ final class ApplyImports extends Instruction {
     /**
      * Parse the attributes and contents of an <xsl:apply-imports/> element.
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
+
 	// Indicate to the top-level stylesheet that all templates must be
 	// compiled into separate methods.
 	Stylesheet stylesheet = getStylesheet();
@@ -153,7 +145,7 @@ final class ApplyImports extends Instruction {
 	final Mode mode = stylesheet.getMode(_modeName);
 	_functionName = mode.functionName(minPrecedence, maxPrecedence);
 
-	parseChildren(parser);	// with-params
+	parseContents(ccontext);	// with-params
     }
 
     /**
@@ -166,7 +158,7 @@ final class ApplyImports extends Instruction {
 
     /**
      * Translate call-template. A parameter frame is pushed only if
-     * some template in the stylesheet uses parameters. 
+     * some template in the stylesheet uses parameters.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final Stylesheet stylesheet = classGen.getStylesheet();

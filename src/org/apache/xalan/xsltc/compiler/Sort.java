@@ -147,7 +147,8 @@ final class Sort extends Instruction implements Closure {
     /**
      * Parse the attributes of the xsl:sort element
      */
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 
 	final SyntaxTreeNode parent = getParent();
 	if (!(parent instanceof ApplyTemplates) &&

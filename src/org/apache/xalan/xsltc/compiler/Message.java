@@ -74,12 +74,12 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class Message extends Instruction {
     private boolean _terminate = false;
 	
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
 	String termstr = getAttribute("terminate");
 	if (termstr != null) {
             _terminate = termstr.equals("yes");
 	}
-	parseChildren(parser);
+	parseContents(ccontext);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

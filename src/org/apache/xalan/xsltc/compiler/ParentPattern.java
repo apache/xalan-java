@@ -70,26 +70,20 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class ParentPattern extends RelativePathPattern {
     private final Pattern _left;
     private final RelativePathPattern _right;
-		
+
     public ParentPattern(Pattern left, RelativePathPattern right) {
 	(_left = left).setParent(this);
 	(_right = right).setParent(this);
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_left.setParser(parser);
-	_right.setParser(parser);
-    }
-    
     public boolean isWildcard() {
 	return false;
     }
-	
+
     public StepPattern getKernelPattern() {
 	return _right.getKernelPattern();
     }
-	
+
     public void reduceKernelPattern() {
 	_right.reduceKernelPattern();
     }
@@ -103,10 +97,10 @@ final class ParentPattern extends RelativePathPattern {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	final LocalVariableGen local =
-	    methodGen.addLocalVariable2("ppt", 
+	    methodGen.addLocalVariable2("ppt",
 					Util.getJCRefType(NODE_SIG),
 					il.getEnd());
-	
+
 	final org.apache.bcel.generic.Instruction loadLocal =
 	    new ILOAD(local.getIndex());
 	final org.apache.bcel.generic.Instruction storeLocal =
@@ -119,9 +113,9 @@ final class ParentPattern extends RelativePathPattern {
 	else if (_right instanceof StepPattern) {
 	    il.append(DUP);
 	    il.append(storeLocal);
-	    
+
 	    _right.translate(classGen, methodGen);
-	    
+
 	    il.append(methodGen.loadDOM());
 	    local.setEnd(il.append(loadLocal));
 	}
@@ -140,15 +134,15 @@ final class ParentPattern extends RelativePathPattern {
 	il.append(new INVOKEINTERFACE(getParent, 2));
 
 	final SyntaxTreeNode p = getParent();
-	if (p == null || p instanceof Instruction || 
-	    p instanceof TopLevelElement) 
+	if (p == null || p instanceof Instruction ||
+	    p instanceof TopLevelElement)
 	{
 	    _left.translate(classGen, methodGen);
 	}
 	else {
 	    il.append(DUP);
 	    il.append(storeLocal);
-	    
+
 	    _left.translate(classGen, methodGen);
 
 	    il.append(methodGen.loadDOM());
@@ -156,7 +150,7 @@ final class ParentPattern extends RelativePathPattern {
 	}
 
 	methodGen.removeLocalVariable(local);
-	
+
 	/*
 	 * If _right is an ancestor pattern, backpatch _left false
 	 * list to the loop that searches for more ancestors.

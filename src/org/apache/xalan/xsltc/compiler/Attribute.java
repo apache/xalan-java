@@ -67,16 +67,11 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Attribute extends Instruction {
     private QName _name;
-	
-    public void display(int indent) {
-	indent(indent);
-	Util.println("Attribute " + _name);
-	displayContents(indent + IndentIncrement);
-    }
 
-    public void parseContents(Parser parser) {
+    public void parse(CompilerContext ccontext) {
+        final Parser parser = ccontext.getParser();
 	_name = parser.getQName(getAttribute("name"));
-	parseChildren(parser);
+	parseContents(ccontext);
 	//!!! add text nodes
 	//!!! take care of value templates
     }

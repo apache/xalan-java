@@ -86,7 +86,7 @@ final class ParentLocationPath extends RelativeLocationPath {
 	    _axisMismatch = checkAxisMismatch();
 	}
     }
-		
+
     public void setAxis(int axis) {
 	_path.setAxis(axis);
     }
@@ -103,12 +103,6 @@ final class ParentLocationPath extends RelativeLocationPath {
 	return(_step);
     }
 
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_step.setParser(parser);
-	_path.setParser(parser);
-    }
-    
     public String toString() {
 	return "ParentLocationPath(" + _path + ", " + _step + ')';
     }
@@ -119,7 +113,7 @@ final class ParentLocationPath extends RelativeLocationPath {
 
 	if (_axisMismatch) enableNodeOrdering();
 
-	return _type = Type.NodeSet;	
+	return _type = Type.NodeSet;
     }
 
     public void enableNodeOrdering() {

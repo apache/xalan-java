@@ -79,13 +79,7 @@ final class FilterParentPath extends Expression {
 	(_path = path).setParent(this);
 	(_filterExpr = filterExpr).setParent(this);
     }
-		
-    public void setParser(Parser parser) {
-	super.setParser(parser);
-	_filterExpr.setParser(parser);
-	_path.setParser(parser);
-    }
-    
+
     public String toString() {
 	return "FilterParentPath(" + _filterExpr + ", " + _path + ')';
     }
@@ -95,7 +89,7 @@ final class FilterParentPath extends Expression {
     }
 
     /**
-     * Type check a FilterParentPath. If the filter is not a node-set add a 
+     * Type check a FilterParentPath. If the filter is not a node-set add a
      * cast to node-set only if it is of reference type. This type coercion is
      * needed for expressions like $x/LINE where $x is a parameter reference.
      */
@@ -124,9 +118,9 @@ final class FilterParentPath extends Expression {
 	    _path = new CastExpr(_path, Type.NodeSet);
 	}
 
-	return _type = Type.NodeSet;	
+	return _type = Type.NodeSet;
     }
-	
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
