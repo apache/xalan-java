@@ -268,27 +268,36 @@ public class XPath implements Serializable
     {
       xobj = m_mainExp.execute(xctxt);
     }
-    catch (Exception e)
+    catch (TransformerException te)
     {
-      if (e instanceof javax.xml.transform.TransformerException)
+      te.setLocator(this.getLocator());
+      ErrorListener el = xctxt.getErrorListener();
+      if(null != el) // defensive, should never happen.
       {
-        TransformerException te = (TransformerException)e;
-        throw new TransformerException(te.getMessage(), 
-          (SAXSourceLocator)te.getLocator(), e);
+        el.error(te);
       }
       else
+        throw te;
+    }
+    catch (Exception e)
+    {
+      while (e instanceof org.apache.xml.utils.WrappedRuntimeException)
       {
-        while (e instanceof org.apache.xml.utils.WrappedRuntimeException)
-        {
-          e = ((org.apache.xml.utils.WrappedRuntimeException) e).getException();
-        }
-
-
-        String msg = e.getMessage();
-        msg = (msg == null || msg.length()== 0)? "Error in XPath" : msg;
-        throw new TransformerException(msg,
-                (SAXSourceLocator)getLocator(), e);
+        e = ((org.apache.xml.utils.WrappedRuntimeException) e).getException();
       }
+
+
+      String msg = e.getMessage();
+      msg = (msg == null || msg.length()== 0)? "Unknown error in XPath" : msg;
+      TransformerException te = new TransformerException(msg,
+              getLocator(), e);
+      ErrorListener el = xctxt.getErrorListener();
+      if(null != el) // defensive, should never happen.
+      {
+        el.error(te);
+      }
+      else
+        throw te;
     }
     finally
     {
