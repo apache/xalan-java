@@ -309,7 +309,7 @@ Arguments wirhout flags:
 </s3>
 </s2><anchor name="api"/>
 <s2 title="Calling XSLTC with the TrAX/JAXP API">
-<p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP 1.1 API. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
+<p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP 1.1 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
 
 
 <p>When you use the JAXP 1.1 API to run &xslt4j;, the <code>javax.xml.transformer.TransformerFactory</code> system property is set to <code>org.apache.xalan.Processor.TransformerFactoryImpl</code>. As it currently stands, this Xalan implementation of TransformerFactory always uses the Xalan Transformer to perform transformations. To use translets to perform transformations, set this system property to <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code>. For information on setting this and related system properties designating XML parsere and XSL transformer, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
