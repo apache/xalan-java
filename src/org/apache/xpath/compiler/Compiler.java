@@ -1093,6 +1093,20 @@ private static final boolean DEBUG = false;
     }
   }
 
+  // The current id for extension functions.
+  private static long s_nextMethodId = 0;
+
+  /**
+   * Get the next available method id
+   */
+  synchronized private long getNextMethodId()
+  {
+    if (s_nextMethodId == Long.MAX_VALUE)
+      s_nextMethodId = 0;
+    
+    return s_nextMethodId++;
+  }
+  
   /**
    * Compile an extension function.
    * 
@@ -1123,10 +1137,7 @@ private static final boolean DEBUG = false;
     // can cache the object needed to invoke it.  This way, we only pay the
     // reflection overhead on the first call.
 
-    Function extension = new FuncExtFunction(ns, funcName, 
-         String.valueOf(opPos)
-       + String.valueOf(hashCode())
-       + String.valueOf(System.currentTimeMillis()));
+    Function extension = new FuncExtFunction(ns, funcName, String.valueOf(getNextMethodId()));
 
     try
     {
