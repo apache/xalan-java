@@ -164,7 +164,8 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
 	// represented in a DTD as in:
 	//           <!ATTLIST Person SSN ID #REQUIRED>
 	// where 'Person' would be elemtName and 'SSN' would be the ID attribute
-	_idAttributes.put(element, "@"+attribute);
+	if (type.equals("ID") || (type.equals("IDREF")))
+	    _idAttributes.put(element, "@"+attribute);
     }
     
     /**
