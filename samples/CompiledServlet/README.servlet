@@ -40,11 +40,19 @@ When compiling the java files supplied with the sample, you need to
 add xalan.jar, xml-apis.jar, xercesImpl.jar and servlet.jar 
 (in %Tomcat_Home%/common/lib) to the classpath
 
-o Copy the translet .class file to the %Tomcat_Home%/common/classes 
-  directory
+o Copy the latest xalan.jar to %Tomcat_Home%/common/endorsed
+  
+o Create a JAR file containing your translet classes and a file
+   named META-INF/services/javax.xml.transform.TransformerFactory in
+   your JAR file that contains the following line:
+
+       org.apache.xalan.xsltc.trax.TransformerFactoryImpl
+
+o Copy the JAR file, xalan.jar, xercesImpl.jar and xml-apis.jar to your
+  Web_application_context/WEB-INF/lib 
 
 o Make sure that the value of the "class" parameter is the same as
-  the name of the translet .class
+  the name of the translet .class or a valid xsl URI
 
 o Make sure that the value of the "source" parameter is a valid 
   xml URI

@@ -39,7 +39,7 @@ jar file.
 You can now set up the Brazil server to service requests by
 using the following command:
 
-$ java -Djavax.xml.transform.TransformerFactory=org.apache.xalan.xsltc.TransformerFactoryImpl \
+$ java -Djavax.xml.transform.TransformerFactory=org.apache.xalan.xsltc.trax.TransformerFactoryImpl \
        sunlabs.brazil.server.Main -port 8080 \
        -handler TransformHandler
 

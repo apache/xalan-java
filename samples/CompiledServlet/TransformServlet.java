@@ -102,7 +102,7 @@ public final class TransformServlet extends HttpServlet {
 	PrintWriter out = response.getWriter();
 
 	// Get the two paramters "class" and "source".
-	String transletName = request.getParameter("translet");
+ String transletName = request.getParameter("class");
 	String documentURI  = request.getParameter("source");
 
 	try {
