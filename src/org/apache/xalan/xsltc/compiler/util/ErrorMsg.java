@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -66,12 +67,14 @@ package org.apache.xalan.xsltc.compiler.util;
 
 import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 
+import java.net.URL;
 import java.text.MessageFormat;
 
 public final class ErrorMsg {
     private int _code;
     private int _line;
     private String _message = null;
+    private String _url = null;
     Object[] _params = null;
 	
     public static final int STLREDEF_ERR = 0;
@@ -158,11 +161,13 @@ public final class ErrorMsg {
 
     public ErrorMsg(int code, SyntaxTreeNode node) {
 	_code = code;
+	_url  = getFileName(node);
 	_line = node.getLineNumber();
     }
 
     public ErrorMsg(int code, Object param1, SyntaxTreeNode node) {
 	_code = code;
+	_url  = getFileName(node);
 	_line = node.getLineNumber();
 	_params = new Object[1];
 	_params[0] = param1;
@@ -171,18 +176,33 @@ public final class ErrorMsg {
     public ErrorMsg(int code, Object param1, Object param2,
 		    SyntaxTreeNode node) {
 	_code = code;
+	_url  = getFileName(node);
 	_line = node.getLineNumber();
 	_params = new Object[2];
 	_params[0] = param1;
 	_params[1] = param2;
     }
 
-    String formatLine() {
-	String result = "";
-	if (_line > 0) {
-	    result = "Line " + Integer.toString(_line) + ", ";
+    private String getFileName(SyntaxTreeNode node) {
+	final URL url = node.getStylesheet().getURL();
+	if (url != null)
+	    return url.toString();
+	else
+	    return null;
+    }
+
+    private String formatLine() {
+	StringBuffer result = new StringBuffer();
+	if (_url != null) {
+	    result.append(_url);
+	    result.append(": ");
 	}
-	return result;
+	if (_line > 0) {
+	    result.append("Line ");
+	    result.append(Integer.toString(_line));
+	    result.append(": ");
+	}
+	return result.toString();
     }
 	
     /**

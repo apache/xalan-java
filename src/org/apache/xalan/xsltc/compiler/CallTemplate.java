@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -128,15 +129,20 @@ final class CallTemplate extends Instruction {
 	    // translate with-params
 	    translateContents(classGen, methodGen);
 	}
-	
+
 	final String className = stylesheet.getClassName();
+	// Generate a valid Java method name
+	String methodName = _name.toString();
+	methodName = methodName.replace('.', '$');
+	methodName = methodName.replace('-', '$');
+
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadIterator());
 	il.append(methodGen.loadHandler());
 	il.append(methodGen.loadCurrentNode());
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
-						     _name.toString(),
+						     methodName,
 						     "("
 						     + DOM_CLASS_SIG
 						     + NODE_ITERATOR_SIG

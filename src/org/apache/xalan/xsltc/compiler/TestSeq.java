@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -172,8 +173,10 @@ final class TestSeq {
 		// apply the actual pattern
 		il.append(pattern.compile(classGen, methodGen));
 		// on success (fallthrough) goto template code
-		final InstructionHandle success =
-		    il.append(new GOTO(getTemplateHandle(pattern.getTemplate())));
+		final Template template = pattern.getTemplate();
+		final InstructionHandle gtmpl = getTemplateHandle(template);
+		final InstructionHandle success = il.append(new GOTO_W(gtmpl));
+
 		pattern.backPatchTrueList(success);
 		pattern.backPatchFalseList(fail);
 		// the failure of the preceding test will lead to this test

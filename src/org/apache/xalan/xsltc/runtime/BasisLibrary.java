@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -362,6 +363,19 @@ public final class BasisLibrary implements Operators {
 	idx = value.lastIndexOf('@');
 	if (idx >= 0) value = value.substring(idx + 1);
 	return(value);
+    }
+
+    /**
+     * External functions that cannot be resolved are replaced with a call
+     * to this method. This method will generate a runtime errors. A good
+     * stylesheet checks whether the function exists using conditional
+     * constructs, and never really tries to call it if it doesn't exist.
+     * But simple stylesheets may result in a call to this method.
+     * The compiler should generate a warning if it encounters a call to
+     * an unresolved external function.
+     */
+    public static void unresolved_externalF(String name) {
+	runTimeError("External function '"+name+"' not supported by XSLTC.");
     }
 
     /**

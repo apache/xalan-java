@@ -170,24 +170,62 @@ public final class XSLTC {
 	_multiDocument = flag;
     }
 
-    // GTM: TBD this is a prototype to handle input stream input..
-    public boolean compile(InputStream input, String transletName) {
-	return compile(input, transletName, null);
+    /**
+     *
+     */
+    public boolean compile(URL url) { 
+	return compile(url, null);
     }
-    // GTM: TBD this is a prototype, copied and modified fr compile(URL..)
-    public boolean compile(InputStream input, String transletName,
-	ErrorListener elistener) 
-    {
-	if (elistener != null) {
-	    _parser.setErrorListener(elistener);
-	}
+
+    /**
+     *
+     */
+    public boolean compile(URL url, ErrorListener listener) {
 	try {
+	    final String name = Util.baseName(url.getFile());
+	    final InputStream input = url.openStream();
+	    return compile(input, name, url, listener);
+	}
+	catch (MalformedURLException e) {
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.printErrors();
+	    return false;
+	}
+	catch (IOException e) {
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.printErrors();
+	    return false;
+	}
+    }
+
+    /**
+     *
+     */
+    public boolean compile(InputStream input, String transletName) {
+	return compile(input, transletName, null, null);
+    }
+
+    /**
+     *
+     */
+    public boolean compile(InputStream input,
+			   String transletName,
+			   URL url,
+			   ErrorListener listener) {
+
+	// Set the parser's error listener if defined
+	if (listener != null) _parser.setErrorListener(listener);
+
+	try {
+	    // Reset globals in case we're called by compile(Vector v);
 	    reset();
-	    final String name = transletName;
+
+	    // Set the translet's class name
 	    setClassName(transletName);
 
 	    // Get the root node of the abstract syntax tree
 	    final SyntaxTreeNode element = _parser.parse(input);
+
 	    // Process any error and/or warning messages
 	    _parser.printWarnings();
 	    if (_parser.errorsFound()) {
@@ -195,9 +233,10 @@ public final class XSLTC {
 		return false;
 	    }
 
+	    // Compile the translet - this is where the work is done!
 	    if ((!_parser.errorsFound()) && (element != null)) {
 		_stylesheet = _parser.makeStylesheet(element);
-		//_stylesheet.setURL(url);
+		_stylesheet.setURL(url);
 		// This is the top level stylesheet - it has no parent
 		_stylesheet.setParentStylesheet(null);
 		_parser.setCurrentStylesheet(_stylesheet);
@@ -223,79 +262,7 @@ public final class XSLTC {
 	    return false;  
 	}
     }
-    
-    
-    /**
-     * Compiles the stylesheet into Java bytecode. Returns 'true' if the
-     * compilation was successful - 'false' otherwise.
-     */
-    public boolean compile(URL stylesheet) { 
-	return compile(stylesheet, null);   
-    }
-    
-    /**
-     * Compile stylesheet into Java bytecode. Returns 'true' if compilation
-     * is successful. - 'false' otherwise. ErrorListener arg (may be null)
-     * added to support TrAX API.
-     */
-    public boolean compile(URL url, ErrorListener elistener) {
-	if (elistener != null) {
-	    _parser.setErrorListener(elistener);
-	}
-	try {
-	    reset();
-	    final String name = url.getFile();
-	    if (_className == null) {
-		final String baseName = Util.baseName(name);
-		setClassName(Util.toJavaName(Util.noExtName(baseName)));
-	    }
-	    
-	    // Get the root node of the abstract syntax tree
-	    final SyntaxTreeNode element = _parser.parse(url);
 
-	    // Process any error and/or warning messages found so far...
-	    if ((_parser.errorsFound()) || (element == null)) {
-		_parser.printWarnings();
-		_parser.printErrors();
-		return false;
-	    }
-
-	    // Create the abstract syntax tree and parse each node in it
-	    _stylesheet = _parser.makeStylesheet(element);
-	    _stylesheet.setURL(url);
-	    _stylesheet.setParentStylesheet(null);
-	    _parser.setCurrentStylesheet(_stylesheet);
-	    _parser.createAST(_stylesheet);
-
-	    // Process any error and/or warning messages found so far...
-	    if ((_parser.errorsFound()) || (_stylesheet == null)) {
-		_parser.printWarnings();
-		_parser.printErrors();
-		return false;
-	    }
-
-	    // Compile the translet
-	    _stylesheet.setMultiDocument(_multiDocument);
-	    _stylesheet.translate();
-
-	    // Process any error and/or warning messages found so far...
-	    if ((_parser.errorsFound()) || (_stylesheet == null)) {
-		_parser.printWarnings();
-		_parser.printErrors();
-		return false;
-	    }
-
-	    _parser.printWarnings();
-	    return true;
-	}
-	catch (CompilerException e) {
-	    e.printStackTrace();
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
-	    _parser.printErrors();
-	    return false;  
-	}
-    }
-    
     private boolean compile(Vector stylesheets) {
 	final int nStylesheets = stylesheets.size();
 	/*
@@ -439,37 +406,6 @@ public final class XSLTC {
 	return code.intValue();
     }
     
-    /**
-     * Aborts the execution of the compiler if something found in the source 
-     * file can't be compiled. It also prints which feature is not implemented 
-     * if specified.
-     */
-    /*
-    public void notYetImplemented(String feature) {
-	System.err.println("'"+feature+"' is not supported by XSLTC.");
-	if (debug()) {
-	    _parser.errorsFound(); // print stack
-	}
-	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
-    }
-    */
-
-    /**
-     * Aborts the execution of the compiler if something found in the source 
-     * file can't be compiled. It also prints which feature is not implemented 
-     * if specified.
-     */
-    /*
-    public void extensionNotSupported(String feature) {
-	System.err.println("Extension element '"+feature+
-			   "' is not supported by XSLTC.");
-	if (debug()) {
-	    _parser.errorsFound(); // print stack
-	}
-	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
-    }
-    */
-
     public int nextVariableSerial() {
 	return _variableSerial++;
     }

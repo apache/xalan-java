@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -121,7 +122,7 @@ public final class MultiDOM implements DOM {
 	}
 
 	public NodeIterator reset() {
-	    _source.reset();
+	    if (_source != null) _source.reset();
 	    return this;
 	}
     
@@ -306,7 +307,7 @@ public final class MultiDOM implements DOM {
     }
 
     public void setFilter(StripWhitespaceFilter filter) {
-	for (int dom=0; dom<_adapters.length; dom++) {
+	for (int dom=0; dom<_free; dom++) {
 	    _adapters[dom].setFilter(filter);
 	}
     }

@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -107,6 +108,9 @@ public final class ReferenceType extends Type {
 	}
 	else if (type == Type.NodeSet) {
 	    translateTo(classGen, methodGen, (NodeSetType) type);
+	}
+	else if (type == Type.Node) {
+	    translateTo(classGen, methodGen, (NodeType) type);
 	}
 	else {
 	    classGen.getParser().internalError();		// undefined
@@ -194,11 +198,22 @@ public final class ReferenceType extends Type {
     }
 
     /**
+     * Casts a reference into a Node.
+     *
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateTo
+     */
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
+			    NodeType type) {
+	translateTo(classGen, methodGen, Type.NodeSet);
+	Type.NodeSet.translateTo(classGen, methodGen, type);
+    }
+
+    /**
      * Expects a reference on the stack and translates it to a non-synthesized
      * boolean. It does not push a 0 or a 1 but instead returns branchhandle 
      * list to be appended to the false list.
      *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateToDesynthesized
+     * @see org.apache.xalan.xsltc.compiler.util.Type#translateToDesynthesized
      */
     public FlowList translateToDesynthesized(ClassGenerator classGen, 
 					     MethodGenerator methodGen, 

@@ -58,6 +58,8 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -126,6 +128,7 @@ final class CastExpr extends Expression {
 	InternalTypeMap.put(Type.Reference, Type.Int);
 	InternalTypeMap.put(Type.Reference, Type.Real);
 	InternalTypeMap.put(Type.Reference, Type.String);
+	InternalTypeMap.put(Type.Reference, Type.Node);
 	InternalTypeMap.put(Type.Reference, Type.NodeSet);
 
 	InternalTypeMap.put(Type.Void, Type.String);

@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -117,7 +118,9 @@ final class VariableRef extends Expression {
 	final InstructionList il = methodGen.getInstructionList();
 		
 	final Type varType = _variable.getType();
-	final String varName = _variable.getName().getLocalPart();
+	String varName = _variable.getName().getLocalPart();
+	varName = varName.replace('.', '_');
+        varName = varName.replace('-', '_');
 
 	if (varType.implementedAsMethod()) {
 	    // Fall-through for variables that are implemented as methods

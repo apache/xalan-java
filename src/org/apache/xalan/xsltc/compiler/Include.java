@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -85,8 +86,8 @@ final class Include extends TopLevelElement {
     }
 
     public void parseContents(final Parser parser) {
+	final Stylesheet context = parser.getCurrentStylesheet();
 	try {
-	    final Stylesheet context = parser.getCurrentStylesheet();
 	    final String href = getAttribute("href");
 	    final URL toInclude = new URL(context.getURL(), href);
 	    if (context.checkForLoop(toInclude))
@@ -111,14 +112,17 @@ final class Include extends TopLevelElement {
 	    final Enumeration elements = _included.elements();
 	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();
 	    while (elements.hasMoreElements()) {
-		final TopLevelElement topLevelElement =
-		    (TopLevelElement)elements.nextElement();
-		topStylesheet.addElement(topLevelElement);
+		final Object element = elements.nextElement();
+		if (element instanceof TopLevelElement) {
+		    topStylesheet.addElement((TopLevelElement)element);
+		}
 	    }
-	    parser.setCurrentStylesheet(context);
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
+	}
+	finally {
+	    parser.setCurrentStylesheet(context);
 	}
     }
     

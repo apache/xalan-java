@@ -85,7 +85,7 @@ final class AttributeSet extends TopLevelElement {
 	"Attribute sets can only have <xsl:attribute> child elements.";
 
     // This prefix is used for the method name of attribute set methods
-    private static final String AttributeSetPrefix = "%as";
+    private static final String AttributeSetPrefix = "$as$";
     
     // Element contents
     private QName            _name;

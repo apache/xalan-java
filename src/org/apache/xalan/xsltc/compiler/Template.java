@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -209,7 +210,7 @@ public final class Template extends TopLevelElement {
 
     private Stylesheet _stylesheet = null;
 
-    protected Stylesheet getStylesheet() {
+    public Stylesheet getStylesheet() {
 	return _stylesheet;
     }
 
@@ -313,13 +314,18 @@ public final class Template extends TopLevelElement {
 	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
 
 	if (_compiled && isNamed()){
+
+	    String methodName = _name.toString();
+	    methodName = methodName.replace('.', '$');
+	    methodName = methodName.replace('-', '$');
+
 	    il.append(classGen.loadTranslet());
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadIterator());
 	    il.append(methodGen.loadHandler()); 
 	    il.append(methodGen.loadCurrentNode()); 
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(className,
-						         _name.toString(),
+							 methodName,
 							 "("
 							 + DOM_CLASS_SIG
 							 + NODE_ITERATOR_SIG

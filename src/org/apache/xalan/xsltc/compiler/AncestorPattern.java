@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -105,6 +106,7 @@ final class AncestorPattern extends RelativePathPattern {
     }
 	
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	if (_left != null) _left.typeCheck(stable);
 	return _right.typeCheck(stable);
     }
 
@@ -149,12 +151,15 @@ final class AncestorPattern extends RelativePathPattern {
 
 
 	    final SyntaxTreeNode p = getParent();
-	    if (p instanceof Instruction || p instanceof TopLevelElement) {
+	    if ((p == null) || 
+		(p instanceof Instruction) ||
+		(p instanceof TopLevelElement)) {
 		// do nothing
 	    }
 	    else {
 		il.append(loadLocal);
 	    }
+
 	    final BranchHandle exit = il.append(new GOTO(null));
 	    eloop = il.append(methodGen.loadDOM());
 	    il.append(loadLocal);

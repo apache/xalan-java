@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -952,9 +953,8 @@ public final class Parser implements Constants, ContentHandler {
     }
 
     /**
-     * Suggested common error handler - not in use yet!!!
+     * Common error/warning message handler
      */
-// JUMP
     public void reportError(final int category, final ErrorMsg error) {
 	try {
 	    switch (category) {

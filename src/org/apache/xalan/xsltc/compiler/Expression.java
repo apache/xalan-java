@@ -58,6 +58,8 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -182,7 +184,7 @@ abstract class Expression extends SyntaxTreeNode {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	_trueList.backPatch(il.append(ICONST_1));
-	final BranchHandle truec = il.append(new GOTO(null));
+	final BranchHandle truec = il.append(new GOTO_W(null));
 	_falseList.backPatch(il.append(ICONST_0));
 	truec.setTarget(il.append(NOP));
     }

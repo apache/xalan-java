@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -220,12 +221,18 @@ final class Param extends TopLevelElement {
 
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String name = _name.getLocalPart(); // TODO: namespace ?
 
 	if (_compiled) return;
 	_compiled = true;
+
+	// Make name acceptable for use as field name in class
+	// TODO: convert to escape sequence like $dot$ and $dash$
+	String name = _name.getLocalPart(); // TODO: namespace ?
+	name = name.replace('.', '_');
+	name = name.replace('-', '_');
 
 	if (isLocal()) {
 

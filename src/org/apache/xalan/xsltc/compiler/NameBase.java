@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -107,8 +108,12 @@ class NameBase extends FunctionCall {
 	    throw new TypeCheckError(this);
 	}
 
-	if ((_type != Type.NodeSet) && (_type != Type.Node))
+	// The argument has to be a node, a node-set or a node reference
+	if ((_type != Type.NodeSet) &&
+	    (_type != Type.Node) &&
+	    (_type != Type.Reference)) {
 	    throw new TypeCheckError(this);
+	}
 
 	return Type.String;
     }
@@ -136,6 +141,16 @@ class NameBase extends FunctionCall {
 	// Function was called with node parameter
 	else if (_type == Type.Node) {
 	    _param.translate(classGen, methodGen);
+	}
+	else if (_type == Type.Reference) {
+	    _param.translate(classGen, methodGen);
+	    il.append(new INVOKESTATIC(cpg.addMethodref
+				       (BASIS_LIBRARY_CLASS,
+					"referenceToNodeSet",
+					"(Ljava/lang/Object;)" +
+					"Lorg/apache/xalan/xsltc/" +
+					"NodeIterator;")));
+	    il.append(methodGen.nextNode());
 	}
 	// Function was called with node-set parameter
 	else {

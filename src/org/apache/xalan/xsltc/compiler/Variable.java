@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -307,7 +308,9 @@ final class Variable extends TopLevelElement {
 	if (isLocal() && !_refs.isEmpty()) {
 	    // Create a variable slot if none is allocated
 	    if (_local == null) {
-		final String name = _name.getLocalPart();
+		String name = _name.getLocalPart();
+		name = name.replace('.', '_');
+		name = name.replace('-', '_');
 		_local = methodGen.addLocalVariable2(name,
 						     _type.toJCType(),
 						     il.getEnd());
@@ -351,7 +354,9 @@ final class Variable extends TopLevelElement {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final String name = _name.getLocalPart();
+	String name = _name.getLocalPart();
+	name = name.replace('.', '_');
+        name = name.replace('-', '_');
 
 	// Make sure that a variable instance is only compiled once
 	if (_compiled) return;

@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -72,6 +73,7 @@ import de.fub.bytecode.classfile.Field;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class StepPattern extends RelativePathPattern {
+
     private static final int NO_CONTEXT = 0;
     private static final int SIMPLE_CONTEXT = 1;
     private static final int GENERAL_CONTEXT = 2;
@@ -210,7 +212,12 @@ final class StepPattern extends RelativePathPattern {
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
 						     "getType", "(I)I")));
 	il.append(new PUSH(cpg, _nodeType));
-	_falseList.add(il.append(new IF_ICMPNE(null)));
+	
+	// Need to allow for long jumps here - don't know if 100% correct
+	//_falseList.add(il.append(new IF_ICMPNE(null)));
+	final BranchHandle icmp = il.append(new IF_ICMPEQ(null));
+	_falseList.add(il.append(new GOTO_W(null)));
+	icmp.setTarget(il.append(NOP));
     }
 
     private void translateNoContext(ClassGenerator classGen, 

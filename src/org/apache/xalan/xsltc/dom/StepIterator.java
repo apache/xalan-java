@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -82,7 +83,9 @@ public final class StepIterator extends NodeIteratorBase {
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
 	    // Special case -> _iterator must be restartable
-	    ((NodeIteratorBase)(clone._iterator))._isRestartable = true;
+	    if (clone._iterator instanceof NodeIteratorBase) {
+		((NodeIteratorBase)(clone._iterator))._isRestartable = true;
+	    }
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

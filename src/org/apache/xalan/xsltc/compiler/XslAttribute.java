@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -121,9 +122,14 @@ final class XslAttribute extends Instruction {
 	for (int i = 0; i < parent.elementCount(); i++) {
 	    SyntaxTreeNode item = (SyntaxTreeNode)siblings.elementAt(i);
 	    if (item == this) break;
+	    // These three objects result in one or more attribute output
 	    if (item instanceof XslAttribute) continue;
 	    if (item instanceof UseAttributeSets) continue;
 	    if (item instanceof LiteralAttribute) continue;
+	    // These objects _can_ result in one or more attribute
+	    // The output handler will generate an error if not (at runtime)
+	    if (item instanceof If) continue;
+	    if (item instanceof Choose) continue;
 	    _ignore = true;
 	    reportWarning(this, parser, ErrorMsg.ATTROUTS_ERR, name);
 	    return;

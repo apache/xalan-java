@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -254,6 +255,11 @@ final class Mode implements Constants {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
 	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
+
+	String methodName = template.getName().toString();
+	methodName = methodName.replace('.', '$');
+	methodName = methodName.replace('-', '$');
+
 	final NamedMethodGenerator methodGen =
 	    new NamedMethodGenerator(ACC_PUBLIC,
 				     de.fub.bytecode.generic.Type.VOID,
@@ -269,8 +275,7 @@ final class Mode implements Constants {
 					 TRANSLET_OUTPUT_PNAME,
 					 NODE_PNAME
 				     },
-				     //!!! more name sophistication needed
-				     template.getName().toString(),
+				     methodName,
 				     getClassName(),
 				     il, cpg);
 	
@@ -299,7 +304,7 @@ final class Mode implements Constants {
 	    if (template.hasContents()) {
 		// !!! TODO templates both named and matched
 		InstructionList til = template.compile(classGen, methodGen);
-		til.append(new GOTO(next));
+		til.append(new GOTO_W(next));
 		_templateInstructionLists.put(template, til);
 		_templateInstructionHandles.put(template, til.getStart());
 	    }
@@ -372,7 +377,7 @@ final class Mode implements Constants {
 	il.append(new INVOKEVIRTUAL(getChildren));
 	il.append(methodGen.loadHandler());
 	il.append(new INVOKEVIRTUAL(applyTemplates));
-	il.append(new GOTO(next));
+	il.append(new GOTO_W(next));
 	return il;
     }
 
@@ -393,7 +398,7 @@ final class Mode implements Constants {
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
 						     CHARACTERS,
 						     CHARACTERS_SIG)));
-	il.append(new GOTO(next));
+	il.append(new GOTO_W(next));
 	return il;
     }
 
@@ -530,7 +535,12 @@ final class Mode implements Constants {
 	ilLoop.append(methodGen.nextNode());
 	ilLoop.append(DUP);
 	ilLoop.append(new ISTORE(_currentIndex));
-	ilLoop.append(new IFNE(body.getStart()));
+	// The body of this code can get very large - large than can be handled
+	// by a single IFNE(body.getStart()) instruction - need workaround:
+        final BranchHandle ifeq = ilLoop.append(new IFEQ(null));
+	ilLoop.append(new GOTO_W(body.getStart()));
+	ifeq.setTarget(ilLoop.append(NOP));
+
 	final InstructionHandle ihLoop = ilLoop.getStart();
 
 	// (*) Compile default handling of elements (traverse children)
@@ -700,7 +710,7 @@ final class Mode implements Constants {
 	body.append(ilText);
 
 	// putting together constituent instruction lists
-	mainIL.append(new GOTO(ihLoop));
+	mainIL.append(new GOTO_W(ihLoop));
 	mainIL.append(body);
 	// fall through to ilLoop
 	mainIL.append(ilLoop);

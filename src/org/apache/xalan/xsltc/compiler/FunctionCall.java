@@ -58,6 +58,8 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -82,14 +84,13 @@ class FunctionCall extends Expression {
     private Method     _chosenMethod;
     private MethodType _chosenMethodType;
 
-    /**
-     * Legal conversions between internal and Java types.
-     */
+    // Encapsulates all unsupported external function calls
+    private boolean    unresolvedExternal;
+
+    // Legal conversions between internal and Java types.
     private static final MultiHashtable InternalToJava = new MultiHashtable();
 
-    /**
-     * Legal conversions between Java and internal types.
-     */
+    // Legal conversions between Java and internal types.
     private static final Hashtable JavaToInternal = new Hashtable();
 	
     /**
@@ -199,7 +200,19 @@ class FunctionCall extends Expression {
 		_className = namespace.substring(len + 1);
 	    }			
 	    else {
-		throw new TypeCheckError(ErrorMsg.FUNRESOL_ERR, _fname);
+		/*
+		 * Warn user if external function could not be resolved.
+		 * Warning will _NOT_ be issued is the call is properly
+		 * wrapped in an <xsl:if> or <xsl:when> element. For details
+		 * see If.parserContents() and When.parserContents()
+		 */
+		final Parser parser = getParser();
+		if (parser != null) {
+		    reportWarning(this ,parser, ErrorMsg.FUNRESOL_ERR,
+				  _fname.toString());
+		}
+		unresolvedExternal = true;
+		return _type = Type.Void;
 	    }
 	    return typeCheckExternal(stable);
 	}
@@ -376,6 +389,15 @@ class FunctionCall extends Expression {
 	    // Invoke the method in the basis library
 	    index = cpg.addMethodref(BASIS_LIBRARY_CLASS, name,
 				     _chosenMethodType.toSignature(args));
+	    il.append(new INVOKESTATIC(index));
+	}
+	// Add call to BasisLibrary.unresolved_externalF() to generate
+	// run-time error message for unsupported external functions
+	else if (unresolvedExternal) {
+	    index = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+				     "unresolved_externalF",
+				     "(Ljava/lang/String;)V");
+	    il.append(new PUSH(cpg, _fname.toString()));
 	    il.append(new INVOKESTATIC(index));
 	}
 	// Invoke function calls that are handled in separate classes

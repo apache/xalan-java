@@ -109,6 +109,11 @@ final class If extends Instruction {
 	    _ignore = !call.getResult();
 	    return;
 	}
+	if (_test instanceof FunctionAvailableCall) {
+	    FunctionAvailableCall call = (FunctionAvailableCall)_test;
+	    _ignore = !call.getResult();
+	    return;
+	}
 
 	parseChildren(parser);
     }

@@ -58,6 +58,8 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -89,6 +91,8 @@ final class ParameterRef extends Expression {
 		
 	final Type parType = _param.getType();
 	String parName = _param.getName().getLocalPart();
+	parName = parName.replace('.', '_');
+	parName = parName.replace('-', '_');
 
 	if (_param.isLocal()) {
 	    if (classGen.isExternal()) {

@@ -60,6 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller
  * @author Morten Jorensen
+ * @author Erwin Bolwidt <ejb@klomp.org>
  *
  */
 
@@ -68,6 +69,7 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.net.URL;
 
 import javax.xml.parsers.*;
 
@@ -219,7 +221,7 @@ public abstract class SyntaxTreeNode implements Constants {
 	return _parent;
     }
 
-    protected Stylesheet getStylesheet() {
+    public Stylesheet getStylesheet() {
 	SyntaxTreeNode parent = this;
 	while (parent != null) {
 	    if (parent instanceof Stylesheet)
@@ -510,15 +512,15 @@ public abstract class SyntaxTreeNode implements Constants {
 	return _line;
     }
 
-    protected static void reportError(SyntaxTreeNode element, Parser parser,
-				      int errorCode, String msg) {
-	final ErrorMsg error = new ErrorMsg(errorCode, 0 /*lineNumber*/, msg);
+    protected void reportError(SyntaxTreeNode element, Parser parser,
+			       int errorCode, String message) {
+	final ErrorMsg error = new ErrorMsg(errorCode, message, this);
         parser.reportError(Constants.ERROR, error);
     }
 
-    protected static void reportWarning(SyntaxTreeNode element, Parser parser,
-					int errorCode, String msg) {
-	final ErrorMsg error = new ErrorMsg(errorCode, 0 /*lineNumber*/, msg);
+    protected  void reportWarning(SyntaxTreeNode element, Parser parser,
+				  int errorCode, String message) {
+	final ErrorMsg error = new ErrorMsg(errorCode, message, this);
         parser.reportError(Constants.WARNING, error);
     }
 
