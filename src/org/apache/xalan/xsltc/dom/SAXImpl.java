@@ -1215,37 +1215,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	case DTM.ROOT_NODE:
 	case DTM.DOCUMENT_NODE:
 	case DTM.TEXT_NODE:
-	//case DTM.ELEMENT_NODE:
-	//case DTM.ATTRIBUTE_NODE:
 	case DTM.COMMENT_NODE:
 	    return EMPTYSTRING;
 	case DTM.NAMESPACE_NODE:
-	    //final int index = _prefix[node];
-	   // if (index < _prefixArray.length)
-		return this.getLocalName(nodeh); //_prefixArray[index];
-	    //else
-		//return EMPTYSTRING;
-	/*case DTM.PROCESSING_INSTRUCTION_NODE:
-	    final String pistr = makeStringValue(node);
-	    final int col = pistr.indexOf(' ');
-	    if (col > -1)
-		return(pistr.substring(0,col));
-	    else
-		return pistr;*/
+		return this.getLocalName(nodeh);
 	default:
 	    return super.getNodeName(nodeh);
-	 /*   // Construct the local part (omit '@' for attributes)
-	    String name  = getLocalName(node);
-	    if (node >= _firstAttributeNode)
-		name = name.substring(1);
-
-	    final int pi = _prefix[node];
-	    if (pi > 0) {
-		final String prefix = _prefixArray[pi];
-		if (prefix != EMPTYSTRING)
-		    name = prefix+':'+name;
-	    }
-	    return name;*/
 	}
     }    
 
@@ -1256,8 +1231,8 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
     {
     	if (node == DTM.NULL)
     	return "";
-    	String s;
-      return (( s = getNamespaceURI(node)) == null ? "" : s);
+        String s;
+        return (s = getNamespaceURI(node)) == null ? EMPTYSTRING : s;
     }
 
     /**
