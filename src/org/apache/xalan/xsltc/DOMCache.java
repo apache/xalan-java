@@ -62,7 +62,6 @@
 
 package org.apache.xalan.xsltc;
 
-import org.apache.xalan.xsltc.dom.DOMImpl;
 
 public interface DOMCache {
 
@@ -74,23 +73,18 @@ public interface DOMCache {
      *      Parser  _parser = new Parser();
      *      DOMImpl _dom = new DOMImpl();
      *      _parser.setDocumentHandler(_dom.getBuilder());
+     *      _parser.setDTDHandler(_dom.getBuilder());
      *      _parser.parse(uri);
      *
-     * (2) building indicies for all ID elements (declared in DTD):
+     * (2) giving the translet an early opportunity to extract anything from
+     *     the DOMImpl that it would like
      *
-     *      DTDMonitor _dtdMonitor = new DTDMonitor();
-     *      _parser.setDTDHandler(_dtdMonitor);
-     *      translet.setIndexSize(dom.getSize());
-     *      dtd.buildIdIndex(dom, mask, translet);
+     *      translet.documentPrepass(_dom);
      *
-     * (3) passing unparsed entity URI elements from DTD to translet:
-     *
-     *      translet.setUnparsedEntityURIs(dtd.getUnparsedEntityURIs());
-     *
-     * (4) setting the document URI:
+     * (3) setting the document URI:
      *
      *      _dom.setDocumentURI(uri);
      */
-    public DOMImpl retrieveDocument(String uri, int mask, Translet translet);
+    public DOM retrieveDocument(String uri, int mask, Translet translet);
 
 }
