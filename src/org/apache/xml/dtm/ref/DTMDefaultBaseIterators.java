@@ -62,8 +62,8 @@ import javax.xml.transform.Source;
 
 import org.apache.xml.utils.XMLStringFactory;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 
 /**
@@ -166,7 +166,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         iterator = new TypedRootIterator(type);
         break;
       default :
-        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: typed iterator for axis "
+        throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: typed iterator for axis "
                                //+ Axis.names[axis] + "not implemented");
       }
     }
@@ -230,7 +230,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       iterator = new RootIterator();
       break;
     default :
-      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: iterator for axis '" + Axis.names[axis]
+      throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: iterator for axis '" + Axis.names[axis]
                              //+ "' not implemented");
     }
 
@@ -1289,7 +1289,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       }
       catch (CloneNotSupportedException e)
       {
-        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_ITERATOR_CLONE_NOT_SUPPORTED, null)); //"Iterator clone not supported.");
+        throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_ITERATOR_CLONE_NOT_SUPPORTED, null)); //"Iterator clone not supported.");
       }
     }
 
@@ -1641,7 +1641,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       }
       catch (CloneNotSupportedException e)
       {
-        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_ITERATOR_CLONE_NOT_SUPPORTED, null)); //"Iterator clone not supported.");
+        throw new DTMException(XMLMessages.createXMLMessage(XMLErrorResources.ER_ITERATOR_CLONE_NOT_SUPPORTED, null)); //"Iterator clone not supported.");
       }
     }
 

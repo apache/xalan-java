@@ -60,9 +60,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
-import org.apache.xalan.transformer.XalanProperties;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
@@ -76,6 +73,8 @@ import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 import org.xml.sax.*;
 import org.xml.sax.ext.*;
 
@@ -230,6 +229,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   protected boolean m_useSourceLocationProperty = false;
 
+  /**
+   * Describes whether information about document source location
+   * should be maintained or not. This static flag is set by TransformerFactoryImpl.
+   */
+  protected static boolean m_source_location = false;
 
    /** Made protected for access by SAX2RTFDTM.
    */
@@ -274,14 +278,20 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
     
-    // %REVIEW% 
-    // A public static is not a good way to retrieve the system-level
-    // FEATURE_SOURCE_LOCATION flag, but we didn't want to deal with
-    // changing APIs at this time. MUST reconsider.
-    m_useSourceLocationProperty=org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
+    // m_useSourceLocationProperty=org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
+    m_useSourceLocationProperty = m_source_location;
     m_sourceSystemId = (m_useSourceLocationProperty) ? new StringVector() : null;
  	m_sourceLine = (m_useSourceLocationProperty) ?  new IntVector() : null;
     m_sourceColumn = (m_useSourceLocationProperty) ?  new IntVector() : null; 
+  }
+
+  /**
+   * Set whether information about document source location
+   * should be maintained or not. 
+   */
+  public static void setUseSourceLocation(boolean useSourceLocation)
+  {
+    m_source_location = useSourceLocation;
   }
 
   /**
@@ -678,7 +688,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMDefaultBase abstract method */
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
 
     return null;
   }
@@ -919,7 +929,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       // %REVIEW% Wrong error message, but I've been told we're trying
       // not to add messages right not for I18N reasons.
       // %REVIEW% Should this be a Fatal Error?
-      error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+      error(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
     }
   }
 
@@ -1173,7 +1183,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMDefaultBase abstract method */
-    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
+    error(XMLMessages.createXMLMessage(XMLErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
 
     return null;
   }

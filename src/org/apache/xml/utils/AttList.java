@@ -60,8 +60,8 @@ import org.w3c.dom.*;
 
 import org.xml.sax.*;
 
-import org.apache.xpath.DOMHelper;
-import org.apache.xpath.DOM2Helper;
+import org.apache.xml.utils.DOMHelper;
+import org.apache.xml.utils.DOM2Helper;
 
 /**
  * <meta name="usage" content="internal"/>

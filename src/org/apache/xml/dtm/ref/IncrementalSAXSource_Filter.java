@@ -72,8 +72,9 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import org.apache.xml.dtm.ref.IncrementalSAXSource;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.utils.ThreadControllerWrapper;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 /** <p>IncrementalSAXSource_Filter implements IncrementalSAXSource, using a
  * standard SAX2 event source as its input and parcelling out those
@@ -163,7 +164,7 @@ implements IncrementalSAXSource, ContentHandler, DTDHandler, LexicalHandler, Err
     fControllerCoroutineID = co.co_joinCoroutineSet(controllerCoroutineID);
     fSourceCoroutineID = co.co_joinCoroutineSet(sourceCoroutineID);
     if (fControllerCoroutineID == -1 || fSourceCoroutineID == -1)
-      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COJOINROUTINESET_FAILED, null)); //"co_joinCoroutineSet() failed");
+      throw new RuntimeException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COJOINROUTINESET_FAILED, null)); //"co_joinCoroutineSet() failed");
 
     fNoMoreEvents=false;
     eventcounter=frequency;
@@ -638,14 +639,15 @@ implements IncrementalSAXSource, ContentHandler, DTDHandler, LexicalHandler, Err
   public void startParse(InputSource source) throws SAXException
   {
     if(fNoMoreEvents)
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_INCRSAXSRCFILTER_NOT_RESTARTABLE, null)); //"IncrmentalSAXSource_Filter not currently restartable.");
+      throw new SAXException(XMLMessages.createXMLMessage(XMLErrorResources.ER_INCRSAXSRCFILTER_NOT_RESTARTABLE, null)); //"IncrmentalSAXSource_Filter not currently restartable.");
     if(fXMLReader==null)
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_XMLRDR_NOT_BEFORE_STARTPARSE, null)); //"XMLReader not before startParse request");
+      throw new SAXException(XMLMessages.createXMLMessage(XMLErrorResources.ER_XMLRDR_NOT_BEFORE_STARTPARSE, null)); //"XMLReader not before startParse request");
 
     fXMLReaderInputSource=source;
     
     // Xalan thread pooling...
-    org.apache.xalan.transformer.TransformerImpl.runTransformThread(this);
+    // org.apache.xalan.transformer.TransformerImpl.runTransformThread(this);
+    ThreadControllerWrapper.runThread(this, -1);
   }
   
   /* Thread logic to support startParseThread()

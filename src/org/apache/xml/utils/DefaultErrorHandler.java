@@ -61,8 +61,8 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.res.XMLErrorResources;
  
 import java.io.PrintWriter;
 import java.io.PrintStream;
@@ -338,12 +338,12 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
       String id = (null != locator.getPublicId() )
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())
-                      ? locator.getSystemId() : XSLMessages.createMessage(XSLTErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
+                      ? locator.getSystemId() : XMLMessages.createXMLMessage(XMLErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
 
-      pw.print(id + "; " +XSLMessages.createMessage("line", null) + locator.getLineNumber()
-                         + "; " +XSLMessages.createMessage("column", null) + locator.getColumnNumber()+"; ");
+      pw.print(id + "; " +XMLMessages.createXMLMessage("line", null) + locator.getLineNumber()
+                         + "; " +XMLMessages.createXMLMessage("column", null) + locator.getColumnNumber()+"; ");
     }
     else
-      pw.print("("+XSLMessages.createMessage(XSLTErrorResources.ER_LOCATION_UNKNOWN, null)+")");
+      pw.print("("+XMLMessages.createXMLMessage(XMLErrorResources.ER_LOCATION_UNKNOWN, null)+")");
   }
 }

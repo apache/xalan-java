@@ -60,9 +60,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
-import org.apache.xalan.transformer.XalanProperties;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;

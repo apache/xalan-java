@@ -59,8 +59,8 @@ package org.apache.xml.dtm.ref;
 import java.util.*;
 import org.apache.xml.dtm.*;
 
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 
 
 /**
@@ -298,7 +298,7 @@ public class CoroutineManager
   public synchronized Object co_resume(Object arg_object,int thisCoroutine,int toCoroutine) throws java.lang.NoSuchMethodException
   {
     if(!m_activeIDs.get(toCoroutine))
-      throw new java.lang.NoSuchMethodException(XSLMessages.createMessage(XSLTErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
+      throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
 
     // We expect these values to be overwritten during the notify()/wait()
     // periods, as other coroutines in this set get their opportunity to run.
@@ -326,7 +326,7 @@ public class CoroutineManager
         co_exit(thisCoroutine);
         // And inform this coroutine that its partners are Going Away
         // %REVIEW% Should this throw/return something more useful?
-        throw new java.lang.NoSuchMethodException(XSLMessages.createMessage(XSLTErrorResources.ER_COROUTINE_CO_EXIT, null)); //"CoroutineManager recieved co_exit() request");
+        throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_CO_EXIT, null)); //"CoroutineManager recieved co_exit() request");
       }
     
     return m_yield;
@@ -367,7 +367,7 @@ public class CoroutineManager
   public synchronized void co_exit_to(Object arg_object,int thisCoroutine,int toCoroutine) throws java.lang.NoSuchMethodException
   {
     if(!m_activeIDs.get(toCoroutine))
-      throw new java.lang.NoSuchMethodException(XSLMessages.createMessage(XSLTErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
+      throw new java.lang.NoSuchMethodException(XMLMessages.createXMLMessage(XMLErrorResources.ER_COROUTINE_NOT_AVAIL, new Object[]{Integer.toString(toCoroutine)})); //"Coroutine not available, id="+toCoroutine);
     
     // We expect these values to be overwritten during the notify()/wait()
     // periods, as other coroutines in this set get their opportunity to run.
