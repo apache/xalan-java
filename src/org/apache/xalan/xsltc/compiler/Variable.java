@@ -350,6 +350,38 @@ final class Variable extends TopLevelElement {
 	il.append(methodGen.storeHandler());
     }
 
+    /**
+     * This method is part of a little trick that is needed to use local
+     * variables inside nested for-each loops. See the initializeVariables()
+     * method in the ForEach class for an explanation
+     */
+    public void initialize(ClassGenerator classGen, MethodGenerator methodGen) {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	// This is only done for local variables that are actually used
+	if (isLocal() && !_refs.isEmpty()) {
+	    // Create a variable slot if none is allocated
+	    if (_local == null) {
+		final String name = _name.getLocalPart();
+		_local = methodGen.addLocalVariable2(name,
+						     _type.toJCType(),
+						     il.getEnd());
+	    }
+	    // Push the default value on the JVM's stack
+	    if ((_type instanceof IntType) ||
+		(_type instanceof NodeType) ||
+		(_type instanceof BooleanType))
+		il.append(new ICONST(0)); // 0 for node-id, integer and boolean
+	    else if (_type instanceof RealType)
+		il.append(new FCONST(0)); // 0.0 for floating point numbers
+	    else
+		il.append(new ACONST_NULL()); // and 'null' for anything else
+	    il.append(_type.STORE(_local.getIndex()));
+	}
+    }
+
+
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -397,9 +429,11 @@ final class Variable extends TopLevelElement {
 		_local = null;
 	    }
 	    else {		// normal case
-		_local = methodGen.addLocalVariable2(name,
-						     _type.toJCType(),
-						     il.getEnd());
+		if (_local == null) {
+		    _local = methodGen.addLocalVariable2(name,
+							 _type.toJCType(),
+							 il.getEnd());
+		}
 		il.append(_type.STORE(_local.getIndex()));
 	    }
 

@@ -172,23 +172,17 @@ public class MethodGenerator extends MethodGen
 					     InstructionHandle start,
 					     InstructionHandle end) {
 	
-	//System.out.println("OLD addLocalVariable " + name);
 	return super.addLocalVariable(name, type, start, end);
     }
     
     public LocalVariableGen addLocalVariable2(String name, Type type,
 					      InstructionHandle start) {
-	
-	//System.out.println("addLocalVariable " + name);
-	
 	return super.addLocalVariable(name, type,
 				      _slotAllocator.allocateSlot(type),
 				      start, null);
     }
 
     public void removeLocalVariable(LocalVariableGen lvg) {
-	//final int slot = lvg.getIndex();
-	//System.out.println("removing local " + slot);
 	_slotAllocator.releaseSlot(lvg);
 	super.removeLocalVariable(lvg);
     }
@@ -335,8 +329,6 @@ public class MethodGenerator extends MethodGen
     }
 
     public LocalVariableGen getLocalVariable(String name) {
-	//	System.out.println("getLocalVariable " + name);
-	
 	final LocalVariableGen[] vars = getLocalVariables();
 	for (int i = 0; i < vars.length; i++)
 	    if (vars[i].getName().equals(name))
@@ -362,4 +354,5 @@ public class MethodGenerator extends MethodGen
 
 	super.setMaxLocals(maxLocals);
     }
+
 }

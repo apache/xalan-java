@@ -242,8 +242,10 @@ final class Param extends TopLevelElement {
 	_compiled = true;
 
 	if (isLocal()) {
+
 	    il.append(classGen.loadTranslet());
 	    il.append(new PUSH(cpg, name));
+
 	    if (_select == null) {
 		if (hasContents()) {
 		    compileResultTree(classGen, methodGen);	
@@ -269,7 +271,8 @@ final class Param extends TopLevelElement {
 		_local = null;
 	    }
 	    else {		// normal case
-		_local = methodGen.addLocalVariable2(name, _type.toJCType(),
+		_local = methodGen.addLocalVariable2(name,
+						     _type.toJCType(),
 						     il.getEnd());
 		// Cache the result of addParameter() in a local variable
 		il.append(_type.STORE(_local.getIndex()));
