@@ -66,7 +66,7 @@ import java.util.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XResources_ja_JP_I <needs-comment/>
+ * The Japanese (Katakana) resource bundle.
  */
 public class XResources_ja_JP_I extends XResourceBundle
 {

@@ -69,18 +69,18 @@ abstract public class XResourceBundleBase extends ListResourceBundle
   /**
    * Get the error string associated with the error code
    *
-   * NEEDSDOC @param errorCode
+   * @param errorCode Error code
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return error string associated with the given error code
    */
   abstract public String getMessageKey(int errorCode);
 
   /**
-   * Get the error string associated with the error code
+   * Get the warning string associated with the error code
    *
-   * NEEDSDOC @param errorCode
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param errorCode Error code
+   * 
+   * @return warning string associated with the given error code
    */
   abstract public String getWarningKey(int errorCode);
 }

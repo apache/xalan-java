@@ -77,7 +77,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Throw an error.
    *
-   * NEEDSDOC @param msg
+   * @param msg Message code for the error
    */
   public void error(int msg)
   {
@@ -90,8 +90,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Throw an error.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg Message code for the error
+   * @param args Array of arguments to be used in the error message
    */
   public void error(int msg, Object[] args)
   {
@@ -102,11 +102,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node 
    *
-   * NEEDSDOC @param newChild
+   * @param newChild New node to append to the list of this node's children
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -119,9 +119,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false
    */
   public boolean hasChildNodes()
   {
@@ -132,9 +132,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return 0
    */
   public short getNodeType()
   {
@@ -145,9 +145,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getParentNode()
   {
@@ -158,9 +158,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public NodeList getChildNodes()
   {
@@ -171,9 +171,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getFirstChild()
   {
@@ -184,9 +184,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getLastChild()
   {
@@ -197,9 +197,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getNextSibling()
   {
@@ -210,9 +210,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.NodeList
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return 0
    */
   public int getLength()
   {
@@ -223,11 +223,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }  // getLength():int
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.NodeList
    *
-   * NEEDSDOC @param index
+   * @param index index of a child of this node in its list of children
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node item(int index)
   {
@@ -238,9 +238,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }  // item(int):Node
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Document getOwnerDocument()
   {
@@ -251,9 +251,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getTagName()
   {
@@ -264,9 +264,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getNodeName()
   {
@@ -276,18 +276,18 @@ public class UnImplNode implements Node, Element, NodeList, Document
     return null;
   }
 
-  /** Unimplemented. */
+  /** Unimplemented. See org.w3c.dom.Node */
   public void normalize()
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"normalize not supported!");
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element 
    *
-   * NEEDSDOC @param name
+   * @param name Name of the element
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public NodeList getElementsByTagName(String name)
   {
@@ -298,11 +298,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param oldAttr
+   * @param oldAttr Attribute to be removed from this node's list of attributes
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -315,11 +315,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param newAttr
+   * @param newAttr Attribute node to be added to this node's list of attributes
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -332,12 +332,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * NEEDSDOC Method hasAttribute 
+   * Unimplemented. See org.w3c.dom.Element
    *
    *
-   * NEEDSDOC @param name
+   * @param name Name of an attribute
    *
-   * NEEDSDOC (hasAttribute) @return
+   * @return false
    */
   public boolean hasAttribute(String name)
   {
@@ -348,13 +348,13 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * NEEDSDOC Method hasAttributeNS 
+   * Unimplemented. See org.w3c.dom.Element
    *
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param x
+   * @param name 
+   * @param x
    *
-   * NEEDSDOC (hasAttributeNS) @return
+   * @return false
    */
   public boolean hasAttributeNS(String name, String x)
   {
@@ -365,12 +365,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * NEEDSDOC Method getAttributeNode 
+   * Unimplemented. See org.w3c.dom.Element 
    *
    *
-   * NEEDSDOC @param name
+   * @param name Attribute node name 
    *
-   * NEEDSDOC (getAttributeNode) @return
+   * @return null
    */
   public Attr getAttributeNode(String name)
   {
@@ -381,9 +381,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param name
+   * @param name Attribute node name to remove from list of attributes
    *
    * @throws DOMException
    */
@@ -393,10 +393,10 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param value
+   * @param name Name of attribute to set
+   * @param value Value of attribute
    *
    * @throws DOMException
    */
@@ -406,11 +406,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param name
+   * @param name Name of attribute to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getAttribute(String name)
   {
@@ -421,9 +421,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Introduced in DOM Level 2.
+   * Unimplemented. Introduced in DOM Level 2.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false
    */
   public boolean hasAttributes()
   {
@@ -434,12 +434,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of the element
+   * @param localName Local part of qualified name of the element
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public NodeList getElementsByTagNameNS(String namespaceURI,
                                          String localName)
@@ -451,11 +451,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param newAttr
+   * @param newAttr Attribute to set
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -468,12 +468,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of attribute node to get
+   * @param localName Local part of qualified name of attribute node to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Attr getAttributeNodeNS(String namespaceURI, String localName)
   {
@@ -484,10 +484,10 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of attribute node to remove
+   * @param localName Local part of qualified name of attribute node to remove
    *
    * @throws DOMException
    */
@@ -498,11 +498,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   * NEEDSDOC @param value
+   * @param namespaceURI Namespace URI of attribute node to set
+   * @param localName Local part of qualified name of attribute node to set
+   * @param value value of attribute
    *
    * @throws DOMException
    */
@@ -514,12 +514,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Element
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI Namespace URI of attribute node to get
+   * @param localName Local part of qualified name of attribute node to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getAttributeNS(String namespaceURI, String localName)
   {
@@ -530,9 +530,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node getPreviousSibling()
   {
@@ -543,11 +543,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param deep
+   * @param deep Flag indicating whether to clone deep (clone member variables) 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Node cloneNode(boolean deep)
   {
@@ -558,9 +558,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -573,9 +573,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param nodeValue
+   * @param nodeValue Value to set this node to
    *
    * @throws DOMException
    */
@@ -585,7 +585,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
    * NEEDSDOC @param value
    *
@@ -598,7 +598,13 @@ public class UnImplNode implements Node, Element, NodeList, Document
   //  return null;
   // } 
 
-  /** Unimplemented. */
+  /**
+   * Unimplemented. See org.w3c.dom.Node
+   *
+   * @param value Value to set this node to
+   *
+   * @throws DOMException
+   */
   public void setValue(String value) throws DOMException
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"setValue not supported!");
@@ -614,6 +620,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   // {
   //  return this.getNodeName();
   // }
+  
+  /**
+   * Unimplemented. See org.w3c.dom.Node
+   *
+   * @return null
+   */
   public Element getOwnerElement()
   {
 
@@ -623,9 +635,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return False
    */
   public boolean getSpecified()
   {
@@ -636,9 +648,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public NamedNodeMap getAttributes()
   {
@@ -649,12 +661,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param newChild
-   * NEEDSDOC @param refChild
+   * @param newChild New child node to insert
+   * @param refChild Insert in front of this child
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -667,12 +679,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param newChild
-   * NEEDSDOC @param oldChild
+   * @param newChild Replace existing child with this one 
+   * @param oldChild Existing child to be replaced
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -685,11 +697,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param oldChild
+   * @param oldChild Child to be removed
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -711,8 +723,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    *   Level 2, version 1, this is the string "2.0". If the version is not 
    *   specified, supporting any version of the feature will cause the 
    *   method to return <code>true</code>.
-   * @return Returns <code>true</code> if the specified feature is 
-   *   supported on this node, <code>false</code> otherwise.
+   * @return Returns <code>false</code> 
    * @since DOM Level 2
    */
   public boolean isSupported(String feature, String version)
@@ -721,9 +732,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getNamespaceURI()
   {
@@ -734,9 +745,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getPrefix()
   {
@@ -747,9 +758,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC @param prefix
+   * @param prefix Prefix to set for this node
    *
    * @throws DOMException
    */
@@ -759,9 +770,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getLocalName()
   {
@@ -772,9 +783,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public DocumentType getDoctype()
   {
@@ -785,9 +796,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public DOMImplementation getImplementation()
   {
@@ -798,9 +809,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Element getDocumentElement()
   {
@@ -811,11 +822,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param tagName
+   * @param tagName Element tag name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -828,9 +839,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public DocumentFragment createDocumentFragment()
   {
@@ -841,11 +852,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param data
+   * @param data Data for text node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Text createTextNode(String data)
   {
@@ -856,11 +867,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param data
+   * @param data Data for comment
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Comment createComment(String data)
   {
@@ -871,11 +882,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param data
+   * @param data Data for CDATA section
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -888,12 +899,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param target
-   * NEEDSDOC @param data
+   * @param target Target for Processing instruction
+   * @param data Data for Processing instruction
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -907,11 +918,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param name
+   * @param name Attribute name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -924,11 +935,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
-   * NEEDSDOC @param name
+   * @param name Entity Reference name
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -942,12 +953,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
    * NEEDSDOC @param importedNode
    * NEEDSDOC @param deep
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -960,12 +971,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
    * NEEDSDOC @param namespaceURI
    * NEEDSDOC @param qualifiedName
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -979,12 +990,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
    * NEEDSDOC @param namespaceURI
    * NEEDSDOC @param qualifiedName
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -998,11 +1009,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented. See org.w3c.dom.Document
    *
    * NEEDSDOC @param elementId
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public Element getElementById(String elementId)
   {
@@ -1031,7 +1042,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    * NEEDSDOC @param offset
    * NEEDSDOC @param count
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */
@@ -1101,7 +1112,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    *
    * NEEDSDOC @param offset
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    *
    * @throws DOMException
    */

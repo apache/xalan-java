@@ -1409,7 +1409,7 @@ public class URI implements Serializable
    * contains only alphanumerics, '+','-' and '.'.
    *
    *
-   * NEEDSDOC @param p_scheme
+   * @param p_scheme The sheme name to check
    * @return true if the scheme is conformant, false otherwise
    */
   public static boolean isConformantSchemeName(String p_scheme)
@@ -1449,7 +1449,7 @@ public class URI implements Serializable
    * & by a '.'. See RFC 2396 Section 3.2.2.
    *
    *
-   * NEEDSDOC @param p_address
+   * @param p_address The address string to check
    * @return true if the string is a syntactically valid IPv4 address
    *              or hostname
    */
@@ -1554,7 +1554,7 @@ public class URI implements Serializable
    * Determine whether a char is a digit.
    *
    *
-   * NEEDSDOC @param p_char
+   * @param p_char the character to check
    * @return true if the char is betweeen '0' and '9', false otherwise
    */
   private static boolean isDigit(char p_char)
@@ -1566,7 +1566,7 @@ public class URI implements Serializable
    * Determine whether a character is a hexadecimal character.
    *
    *
-   * NEEDSDOC @param p_char
+   * @param p_char the character to check
    * @return true if the char is betweeen '0' and '9', 'a' and 'f'
    *         or 'A' and 'F', false otherwise
    */
@@ -1580,7 +1580,7 @@ public class URI implements Serializable
    * Determine whether a char is an alphabetic character: a-z or A-Z
    *
    *
-   * NEEDSDOC @param p_char
+   * @param p_char the character to check
    * @return true if the char is alphabetic, false otherwise
    */
   private static boolean isAlpha(char p_char)
@@ -1593,7 +1593,7 @@ public class URI implements Serializable
    * Determine whether a char is an alphanumeric: 0-9, a-z or A-Z
    *
    *
-   * NEEDSDOC @param p_char
+   * @param p_char the character to check
    * @return true if the char is alphanumeric, false otherwise
    */
   private static boolean isAlphanum(char p_char)
@@ -1606,7 +1606,7 @@ public class URI implements Serializable
    * ';', '/', '?', ':', '@', '&', '=', '+', '$' or ','
    *
    *
-   * NEEDSDOC @param p_char
+   * @param p_char the character to check
    * @return true if the string contains any reserved characters
    */
   private static boolean isReservedCharacter(char p_char)
@@ -1618,7 +1618,7 @@ public class URI implements Serializable
    * Determine whether a char is an unreserved character.
    *
    *
-   * NEEDSDOC @param p_char
+   * @param p_char the character to check
    * @return true if the char is unreserved, false otherwise
    */
   private static boolean isUnreservedCharacter(char p_char)
@@ -1632,7 +1632,7 @@ public class URI implements Serializable
    * characters, unreserved characters and escaped characters.
    *
    *
-   * NEEDSDOC @param p_uric
+   * @param p_uric URI string
    * @return true if the string is comprised of uric, false otherwise
    */
   private static boolean isURIString(String p_uric)

@@ -66,23 +66,22 @@ import java.util.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XResources_zh_TW <needs-comment/>
+ * The Chinese(Taiwan) resource bundle.
  */
 public class XResources_zh_TW extends XResourceBundle
 {
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the association list.
    *
-   *
-   * NEEDSDOC (getContents) @return
+   * @return The association list.
    */
   public Object[][] getContents()
   {
     return contents;
   }
 
-  /** NEEDSDOC Field contents          */
+  /** The association list.         */
   static final Object[][] contents =
   {
     { "ui_language", "zh" }, { "help_language", "zh" }, { "language", "zh" },

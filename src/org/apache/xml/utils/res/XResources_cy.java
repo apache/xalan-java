@@ -60,29 +60,26 @@ import org.apache.xml.utils.res.XResourceBundle;
 
 import java.util.*;
 
-//
-//  LangResources_en.properties
-//
+
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XResources_cy <needs-comment/>
+ * The Cyrillic resource bundle.
  */
 public class XResources_cy extends XResourceBundle
 {
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the association list.
    *
-   *
-   * NEEDSDOC (getContents) @return
+   * @return The association list.
    */
   public Object[][] getContents()
   {
     return contents;
   }
 
-  /** NEEDSDOC Field contents          */
+ /** The association list. */
   static final Object[][] contents =
   {
     { "ui_language", "cy" }, { "help_language", "cy" }, { "language", "cy" },

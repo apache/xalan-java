@@ -67,18 +67,21 @@ import java.lang.StringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class SystemIDResolver <needs-comment/>
+ * This class is used to resolve relative URIs and SystemID 
+ * strings into absolute URIs.
  */
 public class SystemIDResolver
 {
 
   /**
-   * NEEDSDOC Method getAbsoluteURIFromRelative 
+   * Get absolute URI from a given relative URI. 
+   * The URI is resolved relative to the system property "user.dir"
    *
    *
-   * NEEDSDOC @param uri
+   * @param uri Relative URI to resolve
    *
-   * NEEDSDOC (getAbsoluteURIFromRelative) @return
+   * @return Resolved absolute URI or the input relative URI if 
+   * it could not be resolved.
    */
   public static String getAbsoluteURIFromRelative(String uri)
   {
@@ -99,10 +102,10 @@ public class SystemIDResolver
   /**
    * Take a SystemID string and try and turn it into a good absolute URL.
    *
-   * NEEDSDOC @param urlString
-   * NEEDSDOC @param base
+   * @param urlString SystemID string
+   * @param base Base URI to use to resolve the given systemID
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The resolved absolute URI
    * @exception TransformerException thrown if the string can't be turned into a URL.
    */
   public static String getAbsoluteURI(String urlString, String base)

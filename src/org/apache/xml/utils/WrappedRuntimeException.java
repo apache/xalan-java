@@ -64,14 +64,14 @@ package org.apache.xml.utils;
 public class WrappedRuntimeException extends RuntimeException
 {
 
-  /** NEEDSDOC Field m_exception          */
+  /** Primary checked exception          */
   private Exception m_exception;
 
   /**
    * Construct a WrappedRuntimeException from a
    * checked exception.
    *
-   * NEEDSDOC @param e
+   * @param e Primary checked exception
    */
   public WrappedRuntimeException(Exception e)
   {
@@ -84,7 +84,7 @@ public class WrappedRuntimeException extends RuntimeException
   /**
    * Get the checked exception that this runtime exception wraps.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The primary checked exception
    */
   public Exception getException()
   {

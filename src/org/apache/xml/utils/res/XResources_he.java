@@ -66,23 +66,22 @@ import java.util.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XResources_he <needs-comment/>
+ * The Hebrew resource bundle.
  */
 public class XResources_he extends XResourceBundle
 {
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the association list.
    *
-   *
-   * NEEDSDOC (getContents) @return
+   * @return The association list.
    */
   public Object[][] getContents()
   {
     return contents;
   }
 
-  /** NEEDSDOC Field contents          */
+  /** The association list.          */
   static final Object[][] contents =
   {
     { "ui_language", "he" }, { "help_language", "he" }, { "language", "he" },

@@ -66,7 +66,7 @@ import java.util.*;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XResources_ja_JP_HI <needs-comment/>
+ * The Japanese (Hiragana) resource bundle.
  */
 public class XResources_ja_JP_HI extends XResourceBundle
 {

@@ -73,19 +73,19 @@ import org.apache.xml.utils.NodeConsumer;
 public class TreeWalker
 {
 
-  /** NEEDSDOC Field m_contentHandler          */
+  /** Local reference to a ContentHandler          */
   private ContentHandler m_contentHandler = null;
 
   // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
   // DOM2Helper m_dh = new DOM2Helper();
 
-  /** NEEDSDOC Field m_dh          */
+  /** DomHelper for this TreeWalker          */
   protected DOMHelper m_dh = new DOM2Helper();
 
   /**
    * Get the ContentHandler used for the tree walk.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the ContentHandler used for the tree walk
    */
   public ContentHandler getcontentHandler()
   {
@@ -105,7 +105,7 @@ public class TreeWalker
   /**
    * Perform a pre-order traversal non-recursive style.
    *
-   * NEEDSDOC @param pos
+   * @param pos Node in the tree where to start traversal
    *
    * @throws TransformerException
    */
@@ -152,8 +152,8 @@ public class TreeWalker
   /**
    * Perform a pre-order traversal non-recursive style.
    *
-   * NEEDSDOC @param pos
-   * NEEDSDOC @param top
+   * @param pos Node in the tree where to start traversal
+   * @param top Node in the tree where to end traversal
    *
    * @throws TransformerException
    */
@@ -209,16 +209,16 @@ public class TreeWalker
   }
   */
 
-  /** NEEDSDOC Field nextIsRaw          */
+  /** Flag indicating whether following text to be processed is raw text          */
   boolean nextIsRaw = false;
 
   /**
-   * NEEDSDOC Method startNode 
+   * Start processing given node
    *
    *
-   * NEEDSDOC @param node
+   * @param node Node to process
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   protected void startNode(Node node) throws org.xml.sax.SAXException
   {
@@ -359,12 +359,12 @@ public class TreeWalker
   }
 
   /**
-   * NEEDSDOC Method endNode 
+   * End processing of given node 
    *
    *
-   * NEEDSDOC @param node
+   * @param node Node we just finished processing
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException
    */
   protected void endNode(Node node) throws org.xml.sax.SAXException
   {

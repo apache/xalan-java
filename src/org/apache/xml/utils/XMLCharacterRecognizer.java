@@ -58,7 +58,8 @@ package org.apache.xml.utils;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class XMLCharacterRecognizer <needs-comment/>
+ * Class used to verify whether the specified <var>ch</var> 
+ * conforms to the XML 1.0 definition of whitespace. 
  */
 public class XMLCharacterRecognizer
 {
@@ -67,8 +68,8 @@ public class XMLCharacterRecognizer
    * Returns whether the specified <var>ch</var> conforms to the XML 1.0 definition
    * of whitespace.  Refer to <A href="http://www.w3.org/TR/1998/REC-xml-19980210#NT-S">
    * the definition of <CODE>S</CODE></A> for details.
-   * @param   ch      Character to check as XML whitespace.
-   * @return          =true if <var>ch</var> is XML whitespace; otherwise =false.
+   * @param ch Character to check as XML whitespace.
+   * @return =true if <var>ch</var> is XML whitespace; otherwise =false.
    */
   public static boolean isWhiteSpace(char ch)
   {
@@ -77,12 +78,12 @@ public class XMLCharacterRecognizer
 
   /**
    * Tell if the string is whitespace.
-   * @param   string      String to be trimmed.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
-   * @return              The trimmed string.
+   * @param ch Character array to check as XML whitespace.
+   * @param start Start index of characters in the array
+   * @param length Number of characters in the array 
+   * @return True if the characters in the array are 
+   * XML whitespace; otherwise, false.
    */
   public static boolean isWhiteSpace(char ch[], int start, int length)
   {
@@ -100,10 +101,9 @@ public class XMLCharacterRecognizer
 
   /**
    * Tell if the string is whitespace.
-   * @param   string      String to be trimmed.
    *
-   * NEEDSDOC @param buf
-   * @return              The trimmed string.
+   * @param buf StringBuffer to check as XML whitespace.
+   * @return True if characters in buffer are XML whitespace, false otherwise
    */
   public static boolean isWhiteSpace(StringBuffer buf)
   {
