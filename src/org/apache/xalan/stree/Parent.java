@@ -37,7 +37,7 @@ public class Parent extends Child
       {
         try
         {
-          //System.out.println("Waiting... getCount " );
+          //System.out.println("Waiting... getCount "+ this.getNodeName() );
           wait();
         }
         catch (InterruptedException e)
@@ -48,6 +48,7 @@ public class Parent extends Child
         
       }
     }
+    //System.out.println("Waiting... Done "+ this.getNodeName() );          
     return (null == m_children) ? 0 : m_children.length;
   }
   
@@ -65,7 +66,7 @@ public class Parent extends Child
       {
         try
         {
-          //System.out.println("Waiting... getCount " );
+          //System.out.println("Waiting... getCount " + this.getNodeName() );
           wait();
         }
         catch (InterruptedException e)
@@ -75,6 +76,7 @@ public class Parent extends Child
         //System.out.println("... getcount " );        
       }
     }
+    //System.out.println("Waiting(haschildnodes)... Done "+ this.getNodeName() );
     return (null == m_children || m_children.length == 0) ? false : true;
   }
   
@@ -109,6 +111,7 @@ public class Parent extends Child
         try
         {
           // System.out.println("Waiting... getChild " + i + " " + getNodeName());
+          
           wait();
         }
         catch (InterruptedException e)
@@ -130,7 +133,7 @@ public class Parent extends Child
    */
   public Node         getFirstChild()
   {
-    if (getChildCount() == 0)
+    if (!hasChildNodes())
       return null;
     else        
       return getChild(0);
@@ -275,6 +278,7 @@ public class Parent extends Child
       // Notify anyone waiting for a child...
       synchronized (this)
       {
+        //System.out.println("notify set complete" + this.getNodeName());
         notifyAll();
       }
     }
