@@ -743,7 +743,7 @@ public class ElemNumber extends ElemTemplateElement
     if (null != m_valueExpr)
     {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
-      int count = (int) countObj.num();
+      int count = (int) java.lang.Math.floor(countObj.num()+ 0.5);
 
       list = new int[1];
       list[0] = count;
