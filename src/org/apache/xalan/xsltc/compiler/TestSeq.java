@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Erwin Bolwidt <ejb@klomp.org>
+ * @author Morten Jorgensen <morten.jorgensen@sun.com>
  *
  */
 
@@ -73,124 +74,186 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class TestSeq {
-    private Vector _patterns;
-    private final Mode _mode;
-    // template to instantiate when all (reduced) tests fail
-    // and the sequence is not extended
-    // when the _template is null, control should go to 'NextNode'
-    private Template _template = null;
+
+    /*
+     * A test sequence is a sequence of patterns that
+     *
+     *  (1) occured in templates in the same mode
+     *  (2) share the same kernel node type (such as A/B and C/C/B).
+     *
+     * A test sequence may have a default template, which will be run if
+     * none of the patterns do not match. This template is always a template
+     * that matches solely on the shared kernel node type.
+     */
+    private Vector   _patterns = null; // all patterns
+    private Mode     _mode     = null; // the shared mode
+    private Template _default  = null; // the default template
+
     private InstructionList _instructionList;
-	
+
+    /**
+     * Creates a new test sequence, given a set of patterns and a mode.
+     */
     public TestSeq(Vector patterns, Mode mode) {
 	_patterns = patterns;
 	_mode = mode;
     }
 
+    /**
+     * The priority is only calculated if the test sequence has a default
+     * template. This is bad, bad, bad. We should get the priority from the
+     * other templates that make up the test sequence.
+     */
     public double getPriority() {
-	if (_template == null)
-	    return(Double.NaN);
-	else
-	    return(_template.getPriority());
+	double prio = Double.MIN_VALUE;
+	final int count = _patterns.size();
+	for (int i = 0; i < count; i++) {
+	    final Pattern pattern = (Pattern)_patterns.elementAt(i);
+	    final Template template = pattern.getTemplate();
+	    final double tp = template.getPriority();
+	    if (tp > prio) prio = tp;
+	}
+	return prio;
     }
 
+    /**
+     * This method should return the last position of any template included
+     * in this test sequence.
+     */
     public int getPosition() {
-	if (_template == null)
-	    return(0);
-	else
-	    return(_template.getPosition());
+	int pos = Integer.MIN_VALUE;
+	final int count = _patterns.size();
+	for (int i = 0; i < count; i++) {
+	    final Pattern pattern = (Pattern)_patterns.elementAt(i);
+	    final Template template = pattern.getTemplate();
+	    final int tp = template.getPosition();
+	    if (tp > pos) pos = tp;
+	}
+	return pos;
     }
 	
-    // careful with test ordering
+    /**
+     * Reduce the patterns in this test sequence to exclude the shared
+     * kernel node type. After the switch() in the translet's applyTemplates()
+     * we already know that we have a hit for the kernel node type, we only
+     * have the check the rest of the pattens.
+     */
     public void reduce() {
-	final int nPatterns = _patterns.size();
-	for (int i = 0; i < nPatterns; i++)
-	    Util.println(_patterns.elementAt(i).toString());
 	final Vector newPatterns = new Vector();
-	for (int i = 0; i < nPatterns; i++) {
+	final int count = _patterns.size();
+
+	// Traverse the existing set of patterns (they are in prioritised order)
+	for (int i = 0; i < count; i++) {
 	    final LocationPathPattern pattern =
 		(LocationPathPattern)_patterns.elementAt(i);
+	    // Reduce this pattern (get rid of kernel node type)
 	    pattern.reduceKernelPattern();
 			
-	    // we only retain nontrivial reduced patterns
-	    // also, anything that could follow a trivial pattern
-	    // can be omitted
+	    // Add this pattern to the new vector of patterns.
 	    if (!pattern.isWildcard()) {
 		newPatterns.addElement(pattern);
 	    }
+	    // Set template as default if its pattern matches purely on kernel
 	    else {
-		// failure of the previous test falls through to this fully
-		// reduced test, succeeding by definition and branching
-		// unconditionally to the test's template
-		_template = pattern.getTemplate();
+		_default = pattern.getTemplate();
+		// Following patterns can be ignored since default has priority
 		break;
 	    }
 	}
 	_patterns = newPatterns;
-	//Util.println("patterns after reduction");
-	for (int i = 0; i < _patterns.size(); i++)
-	    Util.println(_patterns.elementAt(i).toString());
     }
-	
+
+    /**
+     * Returns, by reference, the templates that are included in this test
+     * sequence. Remember that a single template can occur in several test
+     * sequences if its pattern is a union (ex. match="A/B | A/C").
+     */
     public void findTemplates(Dictionary templates) {
-	if (_template != null)
-	    templates.put(_template, this);
+	if (_default != null)
+	    templates.put(_default, this);
 	for (int i = 0; i < _patterns.size(); i++) {
 	    final LocationPathPattern pattern =
 		(LocationPathPattern)_patterns.elementAt(i);
 	    templates.put(pattern.getTemplate(), this);
 	}
     }
-	
+
+    /**
+     * Get the instruction handle to a template's code. This is used when
+     * a single template occurs in several test sequences; that is, if its
+     * pattern is a union of patterns (ex. match="A/B | A/C").
+     */
     private InstructionHandle getTemplateHandle(Template template) {
 	return (InstructionHandle)_mode.getTemplateInstructionHandle(template);
     }
 
+    /**
+     * Returns pattern n in this test sequence
+     */
     private LocationPathPattern getPattern(int n) {
 	return (LocationPathPattern)_patterns.elementAt(n);
     }
 
+    /**
+     * Copile the code for this test sequence. The code will first test for
+     * the pattern with the highest priority, then go on to the next ones,
+     * until it hits or finds the default template.
+     */
     public InstructionHandle compile(ClassGenerator classGen,
 				     MethodGenerator methodGen,
 				     InstructionHandle continuation) {
-	if (_patterns.size() == 0) {
-	    //Util.println("compiling trivial testseq " + _template);
-	    return getTemplateHandle(_template);
-	}
-	else {
-	    // 'fail' represents a branch to go to when test fails
-	    // it is updated in each iteration so that the tests
-	    // are linked together in the 
-	    // if elseif elseif ... else fashion
-	    InstructionHandle fail = _template == null
-		? continuation
-		: getTemplateHandle(_template);
-			
-	    for (int n = _patterns.size() - 1; n >= 0; n--) {
-		final LocationPathPattern pattern = getPattern(n);
-		final InstructionList il = new InstructionList();
-		// patterns expect current node on top of stack
-		il.append(methodGen.loadCurrentNode());
-		// apply the actual pattern
-		il.append(pattern.compile(classGen, methodGen));
-		// on success (fallthrough) goto template code
-		final Template template = pattern.getTemplate();
-		final InstructionHandle gtmpl = getTemplateHandle(template);
-		final InstructionHandle success = il.append(new GOTO_W(gtmpl));
 
-		pattern.backPatchTrueList(success);
-		pattern.backPatchFalseList(fail);
-		// the failure of the preceding test will lead to this test
-		fail = il.getStart();
-		if (_instructionList != null) {
-		    il.append(_instructionList);
-		}
-		_instructionList = il;
-	    }
-	    return fail;
+	final int count = _patterns.size();
+
+	// EZ DC if there is only one (default) pattern
+	if (count == 0) getTemplateHandle(_default);
+
+	// The 'fail' instruction handle represents a branch to go to when
+	// test fails. It is updated in each iteration, so that the tests
+	// are linked together in the  if-elseif-elseif-else fashion.
+	InstructionHandle fail;
+
+	// Initialize 'fail' to either the code for the default template
+	if (_default != null)
+	    fail = getTemplateHandle(_default);
+	// ..or if that does not exist, to a location set by the caller.
+	else
+	    fail = continuation;
+
+	for (int n = (count - 1); n >= 0; n--) {
+	    final LocationPathPattern pattern = getPattern(n);
+	    final Template template = pattern.getTemplate();
+	    final InstructionList il = new InstructionList();
+
+	    // Patterns expect current node on top of stack
+	    il.append(methodGen.loadCurrentNode());
+	    // Apply the test-code compiled for the pattern
+	    il.append(pattern.compile(classGen, methodGen));
+
+	    // On success branch to the template code
+	    final InstructionHandle gtmpl = getTemplateHandle(template);
+	    final InstructionHandle success = il.append(new GOTO_W(gtmpl));
+	    pattern.backPatchTrueList(success);
+	    pattern.backPatchFalseList(fail);
+
+	    // We're working backwards here. The next pattern's 'fail' target
+	    // is this pattern's first instruction
+	    fail = il.getStart();
+
+	    // Append existing instruction list to the end of this one
+	    if (_instructionList != null) il.append(_instructionList);
+
+	    // Set current instruction list to be this one.
+	    _instructionList = il;
 	}
+	return fail;
     }
-	
+
+    /**
+     * Returns the instruction list for this test sequence
+     */
     public InstructionList getInstructionList() {
 	return _instructionList;
     }
+
 }

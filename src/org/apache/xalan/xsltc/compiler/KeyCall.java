@@ -78,6 +78,10 @@ final class KeyCall extends FunctionCall {
      * Get the parameters passed to function:
      *   key(String name, String value)
      *   key(String name, NodeSet value)
+     * The 'arguments' vector should contain two parameters for key() calls,
+     * one holding the key name and one holding the value(s) to look up. The
+     * vector has only one parameter for id() calls (the key name is always
+     * "##id" for id() calls).
      */
     public KeyCall(QName fname, Vector arguments) {
 	super(fname, arguments);
@@ -97,7 +101,9 @@ final class KeyCall extends FunctionCall {
     }
 
     /**
-     *
+     * Type check the parameters for the id() or key() function.
+     * The index name (for key() call only) must be a string or convertable
+     * to a string, and the lookup-value must be a string or a node-set.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final Type returnType = super.typeCheck(stable);
@@ -133,6 +139,29 @@ final class KeyCall extends FunctionCall {
      */
     public void translate(ClassGenerator classGen,
 			  MethodGenerator methodGen) {
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	final int dupInit = cpg.addMethodref(DUP_FILTERED_ITERATOR,
+					     "<init>",
+					     "("+NODE_ITERATOR_SIG+")V");
+
+	// Wrap the KeyIndex (iterator) inside a duplicate filter iterator to
+	// pre-read the indexed nodes and cache them.
+	il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));
+	il.append(DUP);
+
+	translateCall(classGen, methodGen);
+
+	il.append(new INVOKESPECIAL(dupInit));
+    }
+
+    /**
+     * Translate the actual index lookup - leaves KeyIndex (iterator) on stack
+     */
+    public void translateCall(ClassGenerator classGen,
+			      MethodGenerator methodGen) {
+
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 

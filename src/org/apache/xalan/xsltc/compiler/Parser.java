@@ -279,8 +279,8 @@ public class Parser implements Constants, ContentHandler {
 	    else {
 		QName name = (QName)space.get(localname);
 		if (name == null) {
-		    space.put(localname,
-			      name = new QName(namespace, prefix, localname));
+		    name = new QName(namespace, prefix, localname);
+		    space.put(localname, name);
 		}
 		return name;
 	    }
@@ -890,6 +890,10 @@ public class Parser implements Constants, ContentHandler {
 	    } 
 	    reportError(Constants.ERROR,
 		new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
+	}
+	catch (ClassCastException e) {
+	    reportError(Constants.ERROR,
+			new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
 	}
 	catch (Exception e) {
 	    if (_xsltc.debug()) {

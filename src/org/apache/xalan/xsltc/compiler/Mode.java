@@ -78,110 +78,163 @@ import org.apache.xalan.xsltc.DOM;
  * for generating an appropriate applyTemplates + (mode name) function
  */
 final class Mode implements Constants {
-    private final QName _name;
-    
-    // the owning stylesheet
-    private final Stylesheet _stylesheet;
 
-    private final String _functionName;
-    
-    // all the templates in this mode
-    private final Vector _templates = new Vector();
-    
-    // Patterns/test sequences for the stylesheet's templates
-    private Vector[]  _patternGroups = new Vector[32];
-    private TestSeq[] _code2TestSeq;
-    // Pattern/test sequence for pattern with 'node()' kernel
+    private final QName      _name;       // The QName of this mode
+    private final Stylesheet _stylesheet; // The owning stylesheet
+    private final String     _methodName; // The method name for this mode
+    private final Vector     _templates;  // All templates in this mode
+
+    // Pattern/test sequence for pattern with node()-type kernel
     private Vector    _nodeGroup = null;
     private TestSeq   _nodeTestSeq = null;
 
-    private int _currentIndex;
+    // Pattern/test sequence for pattern with id() or key()-type kernel
+    private Vector    _idxGroup = null;
+    private TestSeq   _idxTestSeq = null;
+
+    // Pattern/test sequence for patterns with any other kernel type
+    private Vector[]  _patternGroups;
+    private TestSeq[] _testSeq;
 
     private final Hashtable _neededTemplates = new Hashtable();
     private final Hashtable _namedTemplates = new Hashtable();
-    private final Hashtable _templateInstructionHandles = new Hashtable();
-    private final Hashtable _templateInstructionLists = new Hashtable();
-    private LocationPathPattern _explicitRootPattern = null;
-	
+    private final Hashtable _templateIHs = new Hashtable();
+    private final Hashtable _templateILs = new Hashtable();
+    private LocationPathPattern _rootPattern = null;
+
+    // Variable index for the current node - used in code generation
+    private int _currentIndex;
+
+
+    /**
+     * Creates a new Mode
+     * @param name A textual representation of the mode's QName
+     * @param stylesheet The Stylesheet in which the mode occured
+     * @param suffix A suffix to append to the method name for this mode
+     *               (normally a sequence number - still in a String).
+     */
     public Mode(QName name, Stylesheet stylesheet, String suffix) {
+	// Save global info
 	_name = name;
 	_stylesheet = stylesheet;
-	_functionName = APPLY_TEMPLATES + suffix;
+	_methodName = APPLY_TEMPLATES + suffix;
+	// Initialise some data structures
+	_templates = new Vector();
+	_patternGroups = new Vector[32];
     }
 
+    /**
+     * Returns the name of the method (_not_ function) that will be compiled
+     * for this mode. Normally takes the form 'applyTemplates()' or
+     * 'applyTemplates2()'.
+     * @return Method name for this mode
+     */
     public String functionName() {
-	return _functionName;
+	return _methodName;
     }
 
+    /**
+     * Shortcut to get the class compiled for this mode (will be inlined).
+     */
     private String getClassName() {
 	return _stylesheet.getClassName();
     }
 
+    /**
+     * Add a template to this mode
+     * @param template The template to add
+     */
     public void addTemplate(Template template) {
 	_templates.addElement(template);
-	Util.println("added template, pattern: "+ template.getPattern());
     }
 
+    /**
+     * Process all the test patterns in this mode
+     */
     public void processPatterns(Hashtable keys) {
 	// Traverse all templates
 	final Enumeration templates = _templates.elements();
 	while (templates.hasMoreElements()) {
+	    // Get the next template
 	    final Template template = (Template)templates.nextElement();
-	    // Is this a named template?
-	    if (template.isNamed()) {
-		// Only process template with highest priority when there
-		// are multiple templates with the sanme name
-		if (!template.disabled()) _namedTemplates.put(template, this);
-	    }
-	    processTemplatePattern(template,keys);
+
+	    // Add this template to a table of named templates if it has a name.
+	    // If there are multiple templates with the same name, all but one
+	    // (the one with highest priority) will be disabled.
+	    if (template.isNamed() && !template.disabled())
+		_namedTemplates.put(template, this);
+
+	    // Add this template to a test sequence if it has a pattern
+	    final Pattern pattern = template.getPattern();
+	    if (pattern != null) flattenAlternative(pattern, template, keys);
 	}
 	prepareTestSequences();
     }
-		
-    private void processTemplatePattern(Template template, Hashtable keys) {
-	final Pattern matchPattern = template.getPattern();
-	if (matchPattern != null)
-	    flattenAlternative(matchPattern, template, keys);
-    }
-		
+
+    /**
+     * This method will break up alternative patterns (ie. unions of patterns,
+     * such as match="A/B | C/B") and add the basic patterns to their
+     * respective pattern groups.
+     */
     private void flattenAlternative(Pattern pattern,
 				    Template template,
 				    Hashtable keys) {
-
+	// Patterns on type id() and key() are special since they do not have
+	// any kernel node type (it can be anything as long as the node is in
+	// the id's or key's index).
 	if (pattern instanceof IdKeyPattern) {
-	    // TODO: Cannot handle this kind of core pattern yet!!!
+	    final IdKeyPattern idkey = (IdKeyPattern)pattern;
+	    idkey.setTemplate(template);
+	    if (_idxGroup == null) _idxGroup = new Vector();
+	    _idxGroup.add(pattern);
 	}
+	// Alternative patterns are broken up and re-processed recursively
 	else if (pattern instanceof AlternativePattern) {
 	    final AlternativePattern alt = (AlternativePattern)pattern;
 	    flattenAlternative(alt.getLeft(), template, keys);
 	    flattenAlternative(alt.getRight(), template, keys);
 	}
+	// Finally we have a pattern that can be added to a test sequence!
 	else if (pattern instanceof LocationPathPattern) {
 	    final LocationPathPattern lpp = (LocationPathPattern)pattern;
 	    lpp.setTemplate(template);
 	    addPatternToGroup(lpp);
 	}
-	else
-	    Util.println("Bad pattern: " + pattern);
     }
-    
-    private void addPattern(int code, LocationPathPattern pattern) {
-	if (code >= _patternGroups.length) {
-	    Vector[] newGroups = new Vector[code*2];
-	    System.arraycopy(_patternGroups, 0, newGroups, 0,
-			     _patternGroups.length);
+
+    /**
+     * Adds a pattern to a pattern group
+     */
+    private void addPattern(int kernelType, LocationPathPattern pattern) {
+
+	// Make sure the array of pattern groups is long enough
+	final int oldLength = _patternGroups.length;
+	if (kernelType >= oldLength) {
+	    Vector[] newGroups = new Vector[kernelType * 2];
+	    System.arraycopy(_patternGroups, 0, newGroups, 0, oldLength);
 	    _patternGroups = newGroups;
 	}
 	
-	Vector patterns = code == -1
-	    ? _nodeGroup	// node()
-	    : _patternGroups[code];
-	
+	// Find the vector to put this pattern into
+	Vector patterns;
+
+	// Use the vector for id()/key()/node() patterns if no kernel type
+	if (kernelType == -1)
+	    patterns = _nodeGroup;
+	else
+	    patterns = _patternGroups[kernelType];
+
+	// Create a new vector if needed and insert the very first pattern
 	if (patterns == null) {
 	    patterns = new Vector(2);
 	    patterns.addElement(pattern);
+	    if (kernelType == -1)
+		_nodeGroup = patterns;
+	    else
+		_patternGroups[kernelType] = patterns;
 	}
-	else {	// keep patterns ordered by diminishing precedence/priorities
+	// Otherwise make sure patterns are ordered by precedence/priorities
+	else {
 	    boolean inserted = false;
 	    for (int i = 0; i < patterns.size(); i++) {
 		final LocationPathPattern lppToCompare =
@@ -196,12 +249,6 @@ final class Mode implements Constants {
 		patterns.addElement(pattern);
 	    }
 	}
-	if (code == -1) {
-	    _nodeGroup = patterns;
-	}
-	else {
-	    _patternGroups[code] = patterns;
-	}
     }
     
     /**
@@ -209,14 +256,21 @@ final class Mode implements Constants {
      * Keep them sorted by priority within group
      */
     private void addPatternToGroup(final LocationPathPattern lpp) {
-	// kernel pattern is the last (maybe only) Step
-	final StepPattern kernel = lpp.getKernelPattern();
-	if (kernel != null) {
-	    addPattern(kernel.getNodeType(), lpp);
+	// id() and key()-type patterns do not have a kernel type
+	if (lpp instanceof IdKeyPattern) {
+	    addPattern(-1, lpp);
 	}
-	else if (_explicitRootPattern == null ||
-		 lpp.noSmallerThan(_explicitRootPattern)) {
-	    _explicitRootPattern = lpp;
+	// Otherwise get the kernel pattern from the LPP
+	else {
+	    // kernel pattern is the last (maybe only) Step
+	    final StepPattern kernel = lpp.getKernelPattern();
+	    if (kernel != null) {
+		addPattern(kernel.getNodeType(), lpp);
+	    }
+	    else if (_rootPattern == null ||
+		     lpp.noSmallerThan(_rootPattern)) {
+		_rootPattern = lpp;
+	    }
 	}
     }
 
@@ -225,7 +279,7 @@ final class Mode implements Constants {
      */
     private void prepareTestSequences() {
 	final Vector names = _stylesheet.getXSLTC().getNamesIndex();
-	_code2TestSeq = new TestSeq[DOM.NTYPES + names.size()];
+	_testSeq = new TestSeq[DOM.NTYPES + names.size()];
 	
 	final int n = _patternGroups.length;
 	for (int i = 0; i < n; i++) {
@@ -233,7 +287,7 @@ final class Mode implements Constants {
 	    if (patterns != null) {
 		final TestSeq testSeq = new TestSeq(patterns, this);
 		testSeq.reduce();
-		_code2TestSeq[i] = testSeq;
+		_testSeq[i] = testSeq;
 		testSeq.findTemplates(_neededTemplates);
 	    }
 	}
@@ -243,10 +297,16 @@ final class Mode implements Constants {
 	    _nodeTestSeq.reduce();
 	    _nodeTestSeq.findTemplates(_neededTemplates);
 	}
+
+	if ((_idxGroup != null) && (_idxGroup.size() > 0)) {
+	    _idxTestSeq = new TestSeq(_idxGroup, this);
+	    _idxTestSeq.reduce();
+	    _idxTestSeq.findTemplates(_neededTemplates);
+	}
 	
-	if (_explicitRootPattern != null) {
+	if (_rootPattern != null) {
 	    // doesn't matter what is 'put', only key matters
-	    _neededTemplates.put(_explicitRootPattern.getTemplate(), this);
+	    _neededTemplates.put(_rootPattern.getTemplate(), this);
 	}
     }
 
@@ -305,12 +365,12 @@ final class Mode implements Constants {
 		// !!! TODO templates both named and matched
 		InstructionList til = template.compile(classGen, methodGen);
 		til.append(new GOTO_W(next));
-		_templateInstructionLists.put(template, til);
-		_templateInstructionHandles.put(template, til.getStart());
+		_templateILs.put(template, til);
+		_templateIHs.put(template, til.getStart());
 	    }
 	    else {
 		// empty template
-		_templateInstructionHandles.put(template, next);
+		_templateIHs.put(template, next);
 	    }
 	}
     }
@@ -319,7 +379,7 @@ final class Mode implements Constants {
 	final Enumeration templates = _neededTemplates.keys();
 	while (templates.hasMoreElements()) {
 	    final Object iList =
-		_templateInstructionLists.get(templates.nextElement());
+		_templateILs.get(templates.nextElement());
 	    if (iList != null) {
 		body.append((InstructionList)iList);
 	    }
@@ -327,9 +387,9 @@ final class Mode implements Constants {
     }
 
     private void appendTestSequences(InstructionList body) {
-	final int n = _code2TestSeq.length;
+	final int n = _testSeq.length;
 	for (int i = 0; i < n; i++) {
-	    final TestSeq testSeq = _code2TestSeq[i];
+	    final TestSeq testSeq = _testSeq[i];
 	    if (testSeq != null) {
 		InstructionList il = testSeq.getInstructionList();
 		if (il != null)
@@ -357,7 +417,6 @@ final class Mode implements Constants {
      */
     private InstructionList compileDefaultRecursion(ClassGenerator classGen,
 						    MethodGenerator methodGen,
-						    int node,
 						    InstructionHandle next) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
@@ -373,7 +432,7 @@ final class Mode implements Constants {
 	il.append(methodGen.loadDOM());
 	
 	il.append(methodGen.loadDOM());
-	il.append(new ILOAD(node));
+	il.append(new ILOAD(_currentIndex));
 	il.append(new INVOKEVIRTUAL(getChildren));
 	il.append(methodGen.loadHandler());
 	il.append(new INVOKEVIRTUAL(applyTemplates));
@@ -387,13 +446,12 @@ final class Mode implements Constants {
      */
     private InstructionList compileDefaultText(ClassGenerator classGen,
 					       MethodGenerator methodGen,
-					       int node,
 					       InstructionHandle next) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
 	final String DOM_CLASS = classGen.getDOMClass();
 	il.append(methodGen.loadDOM());
-	il.append(new ILOAD(node));
+	il.append(new ILOAD(_currentIndex));
 	il.append(methodGen.loadHandler());
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
 						     CHARACTERS,
@@ -438,10 +496,10 @@ final class Mode implements Constants {
 		    String namespace = name.substring(0,name.lastIndexOf(':'));
 		    final int type = xsltc.registerNamespace(namespace);
 		    
-		    if ((i < _code2TestSeq.length) &&
-			(_code2TestSeq[i] != null)) {
+		    if ((i < _testSeq.length) &&
+			(_testSeq[i] != null)) {
 			targets[type] =
-			    (_code2TestSeq[i]).compile(classGen,
+			    (_testSeq[i]).compile(classGen,
 						       methodGen,
 						       defaultTarget);
 			compiled = true;
@@ -535,22 +593,22 @@ final class Mode implements Constants {
 	ilLoop.append(methodGen.nextNode());
 	ilLoop.append(DUP);
 	ilLoop.append(new ISTORE(_currentIndex));
+
 	// The body of this code can get very large - large than can be handled
 	// by a single IFNE(body.getStart()) instruction - need workaround:
         final BranchHandle ifeq = ilLoop.append(new IFEQ(null));
-	ilLoop.append(new GOTO_W(body.getStart()));
-	ifeq.setTarget(ilLoop.append(NOP));
-
+	final BranchHandle loop = ilLoop.append(new GOTO_W(null));
+	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
 	final InstructionHandle ihLoop = ilLoop.getStart();
 
 	// (*) Compile default handling of elements (traverse children)
 	InstructionList ilRecurse =
-	  compileDefaultRecursion(classGen, methodGen, _currentIndex, ihLoop);
+	    compileDefaultRecursion(classGen, methodGen, ihLoop);
 	InstructionHandle ihRecurse = ilRecurse.getStart();
 
 	// (*) Compile default handling of text/attribute nodes (output text)
-	InstructionList ilText = compileDefaultText(classGen, methodGen,
-						    _currentIndex, ihLoop);
+	InstructionList ilText =
+	    compileDefaultText(classGen, methodGen, ihLoop);
 	InstructionHandle ihText = ilText.getStart();
 
 	// Distinguish attribute/element/namespace tests for further processing
@@ -569,16 +627,26 @@ final class Mode implements Constants {
 	compileTemplates(classGen, methodGen, ihLoop);
 
 	// (*) Handle template with explicit "*" pattern
-	final TestSeq elemTest = _code2TestSeq[DOM.ELEMENT];
+	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
 	InstructionHandle ihElem = ihRecurse;
 	if (elemTest != null)
 	    ihElem = elemTest.compile(classGen, methodGen, ihRecurse);
 
 	// (*) Handle template with explicit "@*" pattern
-	final TestSeq attrTest = _code2TestSeq[DOM.ATTRIBUTE];
+	final TestSeq attrTest = _testSeq[DOM.ATTRIBUTE];
 	InstructionHandle ihAttr = ihText;
 	if (attrTest != null)
 	    ihAttr = attrTest.compile(classGen, methodGen, ihText);
+
+	// Do tests for id() and key() patterns first
+	InstructionList ilKey = null;
+	if (_idxTestSeq != null) {
+	    loop.setTarget(_idxTestSeq.compile(classGen, methodGen, body.getStart()));
+	    ilKey = _idxTestSeq.getInstructionList();
+	}
+	else {
+	    loop.setTarget(body.getStart());
+	}
 
 	// (*) If there is a match on node() we need to replace ihElem
 	//     and ihText (default behaviour for elements & text).
@@ -612,7 +680,7 @@ final class Mode implements Constants {
 	// (*) Handle templates with "ns:elem" or "ns:@attr" pattern
 	final InstructionHandle[] targets = new InstructionHandle[types.length];
 	for (int i = DOM.NTYPES; i < targets.length; i++) {
-	    final TestSeq testSeq = _code2TestSeq[i];
+	    final TestSeq testSeq = _testSeq[i];
 	    // Jump straight to namespace tests ?
 	    if (isNamespace[i]) {
 		if (isAttribute[i])
@@ -635,13 +703,13 @@ final class Mode implements Constants {
 	}
 
 	// Handle pattern with match on root node - default: traverse children
-	targets[DOM.ROOT] = _explicitRootPattern != null
-	    ? getTemplateInstructionHandle(_explicitRootPattern.getTemplate())
+	targets[DOM.ROOT] = _rootPattern != null
+	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
 	    : ihRecurse;
 	
 	// Handle any pattern with match on text nodes - default: output text
-	targets[DOM.TEXT] = _code2TestSeq[DOM.TEXT] != null
-	    ? _code2TestSeq[DOM.TEXT].compile(classGen, methodGen, ihText)
+	targets[DOM.TEXT] = _testSeq[DOM.TEXT] != null
+	    ? _testSeq[DOM.TEXT].compile(classGen, methodGen, ihText)
 	    : ihText;
 
 	// This DOM-type is not in use - default: process next node
@@ -655,19 +723,19 @@ final class Mode implements Constants {
 
 	// Match on processing instruction - default: process next node
 	targets[DOM.PROCESSING_INSTRUCTION] =
-	    _code2TestSeq[DOM.PROCESSING_INSTRUCTION] != null
-	    ? _code2TestSeq[DOM.PROCESSING_INSTRUCTION]
+	    _testSeq[DOM.PROCESSING_INSTRUCTION] != null
+	    ? _testSeq[DOM.PROCESSING_INSTRUCTION]
 	    .compile(classGen, methodGen, ihLoop)
 	    : ihLoop;
 	
 	// Match on comments - default: process next node
-	targets[DOM.COMMENT] = _code2TestSeq[DOM.COMMENT] != null
-	    ? _code2TestSeq[DOM.COMMENT].compile(classGen, methodGen, ihLoop)
+	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
+	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihLoop)
 	    : ihLoop;
 
 	// Now compile test sequences for various match patterns:
 	for (int i = DOM.NTYPES; i < targets.length; i++) {
-	    final TestSeq testSeq = _code2TestSeq[i];
+	    final TestSeq testSeq = _testSeq[i];
 	    // Jump straight to namespace tests ?
 	    if ((testSeq == null) || (isNamespace[i])) {
 		if (isAttribute[i])
@@ -686,14 +754,17 @@ final class Mode implements Constants {
 	    }
 	}
 
+	if (ilKey != null) body.insert(ilKey);
+
 	// Append first code in applyTemplates() - get type of current node
 	body.append(methodGen.loadDOM());
 	body.append(new ILOAD(_currentIndex));
 	body.append(new INVOKEVIRTUAL(cpg.addMethodref(DOM_CLASS,
 						       "getType", "(I)I")));
-	
+
 	// Append switch() statement - main dispatch loop in applyTemplates()
-	body.append(new SWITCH(types, targets, ihLoop));
+	InstructionHandle disp = body.append(new SWITCH(types, targets, ihLoop));
+
 	// Append all the "case:" statements
 	appendTestSequences(body);
 	// Append the actual template code
@@ -714,7 +785,6 @@ final class Mode implements Constants {
 	mainIL.append(body);
 	// fall through to ilLoop
 	mainIL.append(ilLoop);
-	mainIL.append(RETURN);
 
 	peepHoleOptimization(methodGen);
 	methodGen.stripAttributes(true);
@@ -794,6 +864,7 @@ final class Mode implements Constants {
 	}
 
 	// Removes uncessecary GOTOs
+	/*
 	pattern = "`GOTO'`GOTO'`Instruction'";
 	ih = find.search(pattern);
 	while (ih != null) {
@@ -815,11 +886,12 @@ final class Mode implements Constants {
 	    }
 	    ih = find.search(pattern, match[2]);
 	}
+	*/
 	
 	
     }
 
     public InstructionHandle getTemplateInstructionHandle(Template template) {
-	return (InstructionHandle)_templateInstructionHandles.get(template);
+	return (InstructionHandle)_templateIHs.get(template);
     }
 }

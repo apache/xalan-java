@@ -69,7 +69,6 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 abstract class IdKeyPattern extends LocationPathPattern {
 
-    private StepPattern _kernel = null;
     protected RelativePathPattern _left = null;;
     private String _index = null;
     private String _value = null;;
@@ -93,15 +92,10 @@ abstract class IdKeyPattern extends LocationPathPattern {
     
     public void setLeft(RelativePathPattern left) {
 	_left = left;
-	_kernel = _left.getKernelPattern();
-    }
-
-    public void setKernelPattern(StepPattern kernel) {
-	_kernel = kernel;
     }
 
     public StepPattern getKernelPattern() {
-	return(_kernel);
+	return(null);
     }
     
     public void reduceKernelPattern() { }

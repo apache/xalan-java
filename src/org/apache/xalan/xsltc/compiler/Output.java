@@ -233,16 +233,14 @@ final class Output extends TopLevelElement {
 	}
 
 	// Set system/public doctype only if both are set
-	if (_doctypeSystem != null) {
-	    field = cpg.addFieldref(TRANSLET_CLASS,"_doctypeSystem",STRING_SIG);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, _doctypeSystem));
-	    il.append(new PUTFIELD(field));
-	    field = cpg.addFieldref(TRANSLET_CLASS,"_doctypePublic",STRING_SIG);
-	    il.append(DUP);
-	    il.append(new PUSH(cpg, _doctypePublic));
-	    il.append(new PUTFIELD(field));
-	}
+	field = cpg.addFieldref(TRANSLET_CLASS,"_doctypeSystem",STRING_SIG);
+	il.append(DUP);
+	il.append(new PUSH(cpg, _doctypeSystem));
+	il.append(new PUTFIELD(field));
+	field = cpg.addFieldref(TRANSLET_CLASS,"_doctypePublic",STRING_SIG);
+	il.append(DUP);
+	il.append(new PUSH(cpg, _doctypePublic));
+	il.append(new PUTFIELD(field));
 	
 	// Add 'medye-type' decaration to output - if used
 	if (_mediaType != null) {
