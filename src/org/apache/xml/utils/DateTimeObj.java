@@ -361,21 +361,23 @@ public class DateTimeObj
      */
     private int getZoneStart (String datetime) throws TransformerException
     {
-      if (datetime.indexOf("Z") == datetime.length()-1)
-        return datetime.indexOf("Z");
+    	int len = datetime.length();
+    	int index = -1;
+      if (datetime.indexOf("Z") == len-1)
+        return datetime.indexOf("Z");        
       else if (
-               (datetime.lastIndexOf("-") == datetime.length()-6 &&
-                datetime.charAt(datetime.length()-3) == ':')               
+               ((index = datetime.lastIndexOf("-")) == len-6 &&
+                datetime.charAt(len-3) == ':')               
                 || 
-                (datetime.indexOf("+") == datetime.length() -6)
+                ((index = datetime.indexOf("+")) >= 0)
               )
       {
         try
         {
           SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
           dateFormat.setLenient(false);
-          Date d = dateFormat.parse(datetime.substring(datetime.length() -5));
-          return datetime.length()-6;
+          Date d = dateFormat.parse(datetime.substring(index+1));
+          return index;
         }
         catch (ParseException pe)
         {

@@ -81,7 +81,20 @@ public class Mult extends OperationNormalized
       public XObject operate(XPathContext xctxt, XObject lhs, XObject rhs)
         throws TransformerException
       {
-        return new XDouble(lhs.num() * rhs.num());
+      	if (rhs.getType() == XType.YEARMONTHDURATION)
+      	{
+      	  Duration duration = rhs.duration();
+      	  Duration du = duration.multiplyYMDuration(lhs.num());
+      	  return new XYMDuration(du);
+      	}
+      	else if (rhs.getType() == XType.DAYTIMEDURATION)
+      	{
+      	  Duration duration = rhs.duration();
+      	  Duration du = duration.multiplyDTDuration(lhs.num());
+      	  return new XDTDuration(du);
+      	}
+      	else
+      	  return new XDouble(lhs.num() * rhs.num());
       }
     });
     m_funcs.setFunc(XType.FLOAT, new GenericOpFunc()

@@ -277,7 +277,12 @@ public class XDateTime extends XObject
     int t = obj2.getType();
     if(XObject.CLASS_DATETIME == t ||
 	              XObject.CLASS_DATE == t ||
-	              XObject.CLASS_TIME == t )
+	              XObject.CLASS_TIME == t ||
+	              XObject.CLASS_GDAY == t ||
+	              XObject.CLASS_GMONTH == t ||
+	              XObject.CLASS_GMONTHDAY == t ||
+	              XObject.CLASS_GYEAR == t ||
+	              XObject.CLASS_GYEARMONTH == t)
 	   return m_val.equals(((XDateTime)obj2).m_val);
      else
        return false;

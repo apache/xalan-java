@@ -135,13 +135,13 @@ public class Add extends OperationNormalized
         {
         	DateTimeObj dt = rhs.date();
         	DateTimeObj dateTime = dt.addDTDurationToDate(duration1);
-            return new XDateTime(dateTime);
+            return new XDate(dateTime);
         }
          if(XType.TIME == rhsVT)
         {
         	DateTimeObj dt = rhs.time();
         	DateTimeObj dateTime = dt.addDTDurationToTime(duration1);
-            return new XDateTime(dateTime);
+            return new XTime(dateTime);
         }
         else
         {
@@ -160,7 +160,7 @@ public class Add extends OperationNormalized
       {
       	Duration duration1 = lhs.duration();
       	int rhsVT = rhs.getValueType();
-        if(XType.DATETIME == rhsVT || XType.DATE == rhsVT)
+        if(XType.DATETIME == rhsVT)
         {
         	DateTimeObj dt = rhs.datetime();
         	DateTimeObj dateTime = dt.addYMDurationToDateTime(duration1);
@@ -170,7 +170,7 @@ public class Add extends OperationNormalized
         {
         	DateTimeObj dt = rhs.date();
         	DateTimeObj dateTime = dt.addYMDurationToDate(duration1);
-            return new XDateTime(dateTime);
+            return new XDate(dateTime);
         }
         else
         {
