@@ -150,8 +150,7 @@ public final class TransformerImpl extends Transformer
     protected TransformerImpl(Translet translet, boolean experimentalOutput) {
 	_translet = (AbstractTranslet)translet;
 	_properties = createOutputProperties();
-	// _experimentalOutput = experimentalOutput;
-	_experimentalOutput = true;
+	_experimentalOutput = experimentalOutput;
     }
 
     /**
