@@ -25,7 +25,7 @@
 
   <resource id="xslt4j-distdir-previous" 
             title="xalan-j previously posted builds directory" 
-            location="&xslt4j-distdir;/old"/>
+            location="&xslt4j-distdir;old"/>
 
   <resource id="xslt4j-dist-zip" 
             title="&xslt4j-dist;.zip" 
