@@ -12,16 +12,14 @@
 
 package org.w3c.dom.xpath;
 
+
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
 /**
  * The <code>XPathExpression</code> interface represents a parsed and resolved 
- * XPath expression.The evaluateExpression method should be moved to the 
- * XPathExpression interface so you do not have to use / pass two interfaces 
- * just to use it.Done.XPathExpression should have a public reference to the 
- * XPathEvaluator that created it.No change.Lacks justification.
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.
+ * XPath expression.
+ * <p>See also the <a href='http://www.w3.org/2002/08/WD-DOM-Level-3-XPath-20020820'>Document Object Model (DOM) Level 3 XPath Specification</a>.
  */
 public interface XPathExpression {
     /**
@@ -41,25 +39,28 @@ public interface XPathExpression {
      *   result will be coerced to return the specified type relying on 
      *   XPath conversions and fail if the desired coercion is not possible. 
      *   This must be one of the type codes of <code>XPathResult</code>.
-     * @param result The <code>result</code> specifies a specific 
-     *   <code>XPathResult</code> which may be reused and returned by this 
-     *   method. If this is specified as <code>null</code>or the 
-     *   implementation cannot reuse the specified result, a new 
-     *   <code>XPathResult</code> will be constructed and returned.
-     * @return The result of the evaluation of the XPath expression.
+     * @param result The <code>result</code> specifies a specific result 
+     *   object which may be reused and returned by this method. If this is 
+     *   specified as <code>null</code>or the implementation does not reuse 
+     *   the specified result, a new result object will be constructed and 
+     *   returned.For XPath 1.0 results, this object will be of type 
+     *   <code>XPathResult</code>.
+     * @return The result of the evaluation of the XPath expression.For XPath 
+     *   1.0 results, this object will be of type <code>XPathResult</code>.
      * @exception XPathException
      *   TYPE_ERR: Raised if the result cannot be converted to return the 
      *   specified type.
      * @exception DOMException
      *   WRONG_DOCUMENT_ERR: The Node is from a document that is not supported 
-     *   by the XPathExpression that created this 
-     *   <code>XPathExpression</code>.
+     *   by the XPathEvaluator that created this <code>XPathExpression</code>
+     *   .
      *   <br>NOT_SUPPORTED_ERR: The Node is not a type permitted as an XPath 
-     *   context node.
+     *   context node or the request type is not permitted by this 
+     *   <code>XPathExpression</code>.
      */
-    public XPathResult evaluate(Node contextNode, 
-                                short type, 
-                                XPathResult result)
-                                throws XPathException, DOMException;
+    public Object evaluate(Node contextNode, 
+                           short type, 
+                           Object result)
+                           throws XPathException, DOMException;
 
 }

@@ -66,11 +66,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.apache.xalan.dom3.xpath.XPathEvaluator;
-import org.apache.xalan.dom3.xpath.XPathException;
-import org.apache.xalan.dom3.xpath.XPathExpression;
-import org.apache.xalan.dom3.xpath.XPathNSResolver;
-import org.apache.xalan.dom3.xpath.XPathResult;
+import org.w3c.dom.xpath.*;
 
 /**
  * <meta name="usage" content="experimental"/>

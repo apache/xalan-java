@@ -12,28 +12,17 @@
 
 package org.w3c.dom.xpath;
 
+
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
 /**
  * The <code>XPathResult</code> interface represents the result of the 
- * evaluation of an XPath expression within the context of a particular 
+ * evaluation of an XPath 1.0 expression within the context of a particular 
  * node. Since evaluation of an XPath expression can result in various 
  * result types, this object makes it possible to discover and manipulate 
- * the type and value of the result.Should there be a flag on the result to 
- * say whether an iteration has become invalid?Yes.Added the boolean 
- * attribute <code>invalidIteratorState</code>Should there be a reset method 
- * on the result in case someone wants to iterate the result multiple times?
- * It may be more trouble than it is worth, because the user can request a 
- * new query. See if there are use cases.It might be better to consolidate 
- * the interfaces and just move the snapshot and iterator functions to the 
- * result object.Yes.The result of the consolidation looks good and unless 
- * there are great objections, this is how it will be.There is concern that 
- * the result cannot represent multiple strings, which is a possible result 
- * of XPath 2.0. on them?No change.This is not part of the XPath 1.0 data 
- * model. We cannot plan well for the XPath 2.0 data model at this point. 
- * Most likely a new API will be required for XPath 2.0
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.
+ * the type and value of the result.
+ * <p>See also the <a href='http://www.w3.org/2002/08/WD-DOM-Level-3-XPath-20020820'>Document Object Model (DOM) Level 3 XPath Specification</a>.
  */
 public interface XPathResult {
     // XPathResultType
@@ -104,7 +93,7 @@ public interface XPathResult {
      * is a convenience that permits optimization since the implementation 
      * can stop once any node in the in the resulting set has been found.
      * <br>If there are more than one node in the actual result, the single 
-     * node returned may not be the first in document order.
+     * node returned might not be the first in document order.
      */
     public static final short ANY_UNORDERED_NODE_TYPE   = 8;
     /**
@@ -127,7 +116,11 @@ public interface XPathResult {
     public short getResultType();
 
     /**
-     * The value of this number result.
+     * The value of this number result. If the native double type of the DOM 
+     * binding does not directly support the exact IEEE 754 result of the 
+     * XPath expression, then it is up to the definition of the binding 
+     * binding to specify how the XPath number is converted to the native 
+     * binding number.
      * @exception XPathException
      *   TYPE_ERR: raised if <code>resultType</code> is not 
      *   <code>NUMBER_TYPE</code>.
