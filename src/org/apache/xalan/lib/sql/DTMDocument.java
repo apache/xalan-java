@@ -91,6 +91,10 @@ import org.xml.sax.ext.*;
  */
 public class DTMDocument extends DTMDefaultBaseIterators
 {
+    // Bitmask for the portion of a DTM Node handle which refers only
+    // to the node, without the portion that specifies which DTM it
+    // resides in.
+    static final int NODEIDENTITYBITS=DTMManager.IDENT_NODE_DEFAULT;
 
   /**
    */
