@@ -70,6 +70,7 @@ package org.apache.xalan.xsltc.dom;
  */
 
 public interface Axis {
+
     public static final int ANCESTOR         =  0;
     public static final int ANCESTORORSELF   =  1;
     public static final int ATTRIBUTE        =  2;
@@ -100,5 +101,22 @@ public interface Axis {
 	"preceding",
 	"preceding-sibling",
 	"self"
+    };
+
+    public static final boolean[] isReverse = {
+	true,  // ancestor
+	true,  // ancestor-or-self
+	false, // attribute
+	false, // child
+	false, // descendant
+	false, // descendant-or-self
+	false, // following
+	false, // following-sibling
+	false, // namespace
+	false, // namespace-declarations
+	false, // parent (one node, has no order)
+	true,  // preceding
+	true,  // preceding-sibling
+	false  // self (one node, has no order)
     };
 }
