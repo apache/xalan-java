@@ -653,12 +653,23 @@ public class TransformerImpl extends XMLFilterImpl
       int n = stylesheet.getGlobalImportCount();
       for(int i = 0; i < n; i++)
       {
-        Stylesheet imported = stylesheet.getGlobalImport(i);
+        StylesheetComposed imported = stylesheet.getGlobalImport(i);
         imported.runtimeInit(this);
         for(ElemTemplateElement child = imported.getFirstChildElem();
             child != null; child = child.getNextSiblingElem())
         {
           child.runtimeInit(this);
+        }
+        int includedCount = imported.getIncludeCountComposed();
+        for (int j = 0; j < includedCount; j++)
+        {
+          Stylesheet included = imported.getIncludeComposed(i);
+          included.runtimeInit(this);
+          for(ElemTemplateElement child = included.getFirstChildElem();
+              child != null; child = child.getNextSiblingElem())
+          {
+            child.runtimeInit(this);
+          }
         }
       }
       // ===========
