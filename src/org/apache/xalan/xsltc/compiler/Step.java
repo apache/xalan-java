@@ -164,6 +164,17 @@ final class Step extends RelativeLocationPath {
 	return _predicates != null && _predicates.size() > 0;
     }
 
+    /**
+     * Returns 'true' if this step is used within a predicate
+     */
+    private boolean isPredicate() {
+	SyntaxTreeNode parent = this;
+	while (parent != null) {
+	    parent = parent.getParent();
+	    if (parent instanceof Predicate) return true;
+	}
+	return false;
+    }
 
     /**
      * True if this step is the abbreviated step '.'
@@ -205,7 +216,7 @@ final class Step extends RelativeLocationPath {
 	else {
 	    // Special case for '@attr' with no parent or predicates
 	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
-		(!hasParentPattern()) && (!_hadPredicates)) {
+		(!hasParentPattern()) && (!_hadPredicates) && (!isPredicate())) {
 		_type = Type.Node;
 	    }
 	    else {
