@@ -76,7 +76,7 @@ final class XslElement extends Instruction {
 
     private AttributeValue _name; // name treated as AVT (7.1.3)
     private AttributeValueTemplate _namespace = null;
-    private String _namespacePrefix;
+    private String  _prefix;
     private boolean _ignore = false;
 
     /**
@@ -104,9 +104,9 @@ final class XslElement extends Instruction {
 
 	// Get the "name" attribute of the <xsl:element> element
 	String name = getAttribute("name");
-	if ((name == null) || (name.equals(Constants.EMPTYSTRING))) {
+	if ((name == null) || (name.equals(EMPTYSTRING))) {
 	    final ErrorMsg msg = new ErrorMsg("You can't call an element \"\"");
-	    parser.reportError(Constants.WARNING, msg);
+	    parser.reportError(WARNING, msg);
 	    _ignore = true; // Ignore the element if the QName is invalid
 	    return;
 	}
@@ -120,38 +120,39 @@ final class XslElement extends Instruction {
 	String namespace = getAttribute("namespace");
 
 	// Then try to get it from the "name" attribute QName prefix
-	if (namespace == null) {
+	if ((namespace == null) || (namespace.equals(EMPTYSTRING))) {
 
 	    // We are supposed to use the default namespace URI if the QName
 	    // from the "name" attribute is not prefixed, so check that first
-	    if (prefix == null) prefix = Constants.EMPTYSTRING;
+	    if (prefix == null) prefix = EMPTYSTRING;
 	    // Then look up the URI that is in scope for the prefix
 	    namespace = lookupNamespace(prefix); 
 
 	    // Signal error if the prefix does not map to any namespace URI 
 	    if (namespace == null) {
 		final ErrorMsg msg = new ErrorMsg(ErrorMsg.NSPUNDEF_ERR,prefix);
-		parser.reportError(Constants.WARNING, msg);
+		parser.reportError(WARNING, msg);
 		parseChildren(parser);
 		_ignore = true; // Ignore the element if prefix is undeclared
 		return;
 	    }
+	    _namespace = new AttributeValueTemplate(namespace, parser);
+	    _prefix = prefix;
 	}
 	// Check if this element belongs in a specific namespace
-	else if (namespace != Constants.EMPTYSTRING) {
+	else if (namespace != EMPTYSTRING) {
 	    // Get the namespace requested by the xsl:element
 	    _namespace = new AttributeValueTemplate(namespace, parser);
 	    // Get the current prefix for that namespace (if any)
-	    _namespacePrefix = lookupPrefix(namespace);
+	    _prefix = lookupPrefix(namespace);
 	    // Is it the default namespace?
-	    if ((_namespacePrefix = prefix) == null)
-		_namespacePrefix = Constants.EMPTYSTRING;
+	    if ((_prefix = prefix) == null) _prefix = EMPTYSTRING;
 
 	    // Construct final element QName
-	    if (_namespacePrefix == Constants.EMPTYSTRING)
+	    if (_prefix == EMPTYSTRING)
 		name = qname.getLocalPart();
 	    else
-		name = _namespacePrefix+":"+qname.getLocalPart();
+		name = _prefix+":"+qname.getLocalPart();
 	}
 
 	_name = AttributeValue.create(this, name, parser);
@@ -160,7 +161,7 @@ final class XslElement extends Instruction {
 	if ((_name instanceof SimpleAttributeValue) &&
 	    (local.indexOf(' ') > -1)) {
 	    final String errmsg = "You can't call an element \""+local+"\"";
-	    parser.reportError(Constants.WARNING, new ErrorMsg(errmsg));
+	    parser.reportError(WARNING, new ErrorMsg(errmsg));
 	    parseChildren(parser);
 	    _ignore = true; // Ignore the element if the local part is invalid
 	    return;
@@ -210,7 +211,7 @@ final class XslElement extends Instruction {
 	    if (_namespace != null) {
 		// public void attribute(final String name, final String value)
 		il.append(methodGen.loadHandler());
-		il.append(new PUSH(cpg,_namespacePrefix));
+		il.append(new PUSH(cpg, _prefix));
 		_namespace.translate(classGen,methodGen);
 		il.append(methodGen.namespace());
 	    }
