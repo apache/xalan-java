@@ -1348,13 +1348,13 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[MAX_MESSAGES + 10][0] = "xsldone";
     contents[MAX_MESSAGES + 10][1] = "XSLProcessor: done";
     contents[MAX_MESSAGES + 11][0] = "xslProc_option";
-    contents[MAX_MESSAGES + 11][1] = "=xslproc options:";
+    contents[MAX_MESSAGES + 11][1] = "Xalan-J command line Process class options:";
     contents[MAX_MESSAGES + 12][0] = "optionIN";
     contents[MAX_MESSAGES + 12][1] = "    -IN inputXMLURL";
     contents[MAX_MESSAGES + 13][0] = "optionXSL";
     contents[MAX_MESSAGES + 13][1] = "   [-XSL XSLTransformationURL]";
     contents[MAX_MESSAGES + 14][0] = "optionOUT";
-    contents[MAX_MESSAGES + 14][1] = "   [-XSL XSLTransformationURL]";
+    contents[MAX_MESSAGES + 14][1] = "   [-OUT outputFileName]";
     contents[MAX_MESSAGES + 15][0] = "optionLXCIN";
     contents[MAX_MESSAGES + 15][1] =
       "   [-LXCIN compiledStylesheetFileNameIn]";
