@@ -87,6 +87,10 @@ public abstract class DTMManager
   /** The default property name to load the manager. */
   private static final String defaultPropName =
     "org.apache.xml.dtm.DTMManager";
+  
+  /** The default class name to use as the manager. */
+  private static String defaultClassName =
+  "org.apache.xml.dtm.ref.DTMManagerDefault";
 
   /**
    * Factory for creating XMLString objects.
@@ -164,12 +168,11 @@ public abstract class DTMManager
            throws DTMConfigurationException
   {
 
- 
      DTMManager factoryImpl = null;
      try {
         factoryImpl = (DTMManager) FactoryFinder.find(defaultPropName,
               /* The fallback implementation class name */
-              "org.apache.xml.dtm.ref.DTMManagerDefault");
+                                                      defaultClassName);
      } catch (FactoryFinder.ConfigurationError e) {
            throw new DTMConfigurationException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
      }
