@@ -145,7 +145,13 @@ public class IntStack extends IntVector
    */
   public int peek()
   {
-    return m_map[m_firstFree - 1];
+    try {
+      return m_map[m_firstFree - 1];
+    }
+    catch (ArrayIndexOutOfBoundsException e)
+    {
+      throw new EmptyStackException();
+    }
   }
 
   /**
@@ -157,7 +163,13 @@ public class IntStack extends IntVector
    */
   public int peek(int n)
   {
-    return m_map[m_firstFree-(1+n)];
+    try {
+      return m_map[m_firstFree-(1+n)];
+    }
+    catch (ArrayIndexOutOfBoundsException e)
+    {
+      throw new EmptyStackException();
+    }
   }
 
   /**
@@ -169,7 +181,13 @@ public class IntStack extends IntVector
    */
   public void setTop(int val)
   {
-    m_map[m_firstFree - 1] = val;
+    try {
+      m_map[m_firstFree - 1] = val;
+    }
+    catch (ArrayIndexOutOfBoundsException e)
+    {
+      throw new EmptyStackException();
+    }
   }
 
   /**
