@@ -487,10 +487,19 @@ public class QName implements java.io.Serializable
             XMLErrorResources.ER_PREFIX_MUST_RESOLVE,
             new Object[]{ prefix }));  //"Prefix must resolve to a namespace: "+prefix);
       }
+      _localName = qname.substring(indexOfNSSep + 1);
     }
-
-	_localName = (indexOfNSSep < 0)
-                 ? qname : qname.substring(indexOfNSSep + 1);   
+    else if (indexOfNSSep == 0) 
+    {
+      throw new RuntimeException(
+         XMLMessages.createXMLMessage(
+           XMLErrorResources.ER_NAME_CANT_START_WITH_COLON,
+           null));
+    }
+    else
+    {
+      _localName = qname;
+    }   
                  
     if (validate)
     {
