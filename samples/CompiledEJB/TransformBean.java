@@ -88,6 +88,9 @@ public class TransformBean implements SessionBean {
 	"<p>'null' parameters sent to the XSL transformation bean's "+
 	"<tt>transform(String document, String translet)</tt> method.</p>";
 
+    private static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
+
     /**
      * Read the input document and build the internal "DOM" tree.
      */
@@ -96,6 +99,12 @@ public class TransformBean implements SessionBean {
 
 	// Create a SAX parser and get the XMLReader object it uses
 	final SAXParserFactory factory = SAXParserFactory.newInstance();
+	try {
+	    factory.setFeature(NAMESPACE_FEATURE,true);
+	}
+	catch (Exception e) {
+	    factory.setNamespaceAware(true);
+	}
 	final SAXParser parser = factory.newSAXParser();
 	final XMLReader reader = parser.getXMLReader();
 

@@ -91,6 +91,9 @@ public final class TransformApplet extends Applet {
     private DOMImpl _dom = null;
     private DTDMonitor _dtdMonitor = null;
 
+    private static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
+
     /**
      * This class implements a dialog box used for XSL messages/comments
      */
@@ -153,6 +156,12 @@ public final class TransformApplet extends Applet {
 
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    try {
+		factory.setFeature(NAMESPACE_FEATURE,true);
+	    }
+	    catch (Exception e) {
+		factory.setNamespaceAware(true);
+	    }
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
