@@ -1,1 +1,2 @@
-org.apache.xalan.processor.StylesheetProcessor
+# org.apache.crimson.jaxp.SAXParserFactoryImpl
+org.apache.xerces.jaxp.SAXParserFactoryImpl
