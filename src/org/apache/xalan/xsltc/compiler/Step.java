@@ -244,43 +244,36 @@ final class Step extends RelativeLocationPath {
      * nodes in the order of the axis in use.
      */
     private boolean reverseNodeSet() {
-	// Check if axis returned nodes in reverse document order
+        // Check if axis returned nodes in reverse document order
         // The sense of the following might appear to be reversed, but in
         // fact, the DTM ancestor and preceding iterators return nodes in
         // document order, rather than reverse document order.  In
         // cases where we want the nodes returned in document order from
         // those iterators, this method must return false.
-	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
-	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
+        if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
+            (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
 
-	    // If there were any predicates, put nodes in reverse document order
-	    if (hasPredicates()) return true;
-	    if (_hadPredicates) return true;
-	    
-	    // Check if this step occured under an <xsl:apply-templates> element
-	    SyntaxTreeNode parent = this;
-	    // Get the next ancestor element and check its type
-	    parent = parent.getParent();
-
-	    // Order node set if descendant of these elements:
-	    if (parent instanceof ApplyImports) return false;
-	    if (parent instanceof ApplyTemplates) return false;
-	    if (parent instanceof ForEach) return false;
-	    if (parent instanceof FilterExpr) return false;
-/*
- * %HZ%  Not sure about following three lines.  Myriam had changed
- * %HZ%  FilterParentPath to FilterExpr in XSLTC_DTM branch, but FilterExpr
- * %HZ%  was subsequently added on MAIN branch.  Also, XSLTC_DTM had action
- * %HZ%  for ValueOf commented out, but in MAIN branch the result for ValueOf
- * %HZ%  changed.
- */
-	    if (parent instanceof FilterParentPath) return false;
-	    if (parent instanceof WithParam) return false;
-	    if (parent instanceof ValueOf) return false;
-
-	    return true;
-	}
-	return false;
+            // If there were any predicates, put nodes in reverse document order
+            if (hasPredicates()) return true;
+            if (_hadPredicates) return true;
+            
+            // Order node set if it's a descendant of any of following:
+            for (SyntaxTreeNode parent = this.getParent();
+                 parent != null;
+                 parent = parent.getParent()) {
+                if (parent instanceof ApplyImports
+                     || parent instanceof ApplyTemplates
+                     || parent instanceof ForEach
+                     || parent instanceof FilterExpr
+                     || parent instanceof FilterParentPath
+                     || parent instanceof WithParam
+                     || parent instanceof ValueOf) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
