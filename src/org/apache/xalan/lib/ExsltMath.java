@@ -102,29 +102,27 @@ public class ExsltMath
    * 
    * @param nl The NodeList for the node-set to be evaluated.
    * 
-   * @return String representation of the maximum value found, NaN if any node cannot be 
-   * converted to a number.
+   * @return the maximum value found, NaN if any node cannot be converted to a number.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static String max (NodeList nl)
+  public static double max (NodeList nl)
   {
-  	Node maxNode = null;
-  	double m = Double.MIN_VALUE;
-  	for (int i = 0; i < nl.getLength(); i++)
-  	{
-  		Node n = nl.item(i);
-  		double d = toNumber(n);
-  		if (Double.isNaN(d))
-  		  return "NaN";
-  		else if (d > m)
-  		{
-  			m = d;
-  			maxNode = n;
-  		}
-  	}
+    if (nl == null || nl.getLength() == 0)
+      return Double.NaN;
+      
+    double m = Double.MIN_VALUE;
+    for (int i = 0; i < nl.getLength(); i++)
+    {
+      Node n = nl.item(i);
+      double d = toNumber(n);
+      if (Double.isNaN(d))
+        return Double.NaN;
+      else if (d > m)
+        m = d;
+    }
   	
-  	return toString(maxNode);  	
+    return m;  	
   }
 
   /**
@@ -139,28 +137,27 @@ public class ExsltMath
    * 
    * @param nl The NodeList for the node-set to be evaluated.
    * 
-   * @return String representation of the minimum value found, NaN if any node cannot be 
-   * converted to a number.
+   * @return the minimum value found, NaN if any node cannot be converted to a number.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>
    */
-  public static String min (NodeList nl)
+  public static double min (NodeList nl)
   {
-    Node minNode = null;
+    if (nl == null || nl.getLength() == 0)
+      return Double.NaN;
+
     double m = Double.MAX_VALUE;
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node n = nl.item(i);
       double d = toNumber(n);
       if (Double.isNaN(d))
-        return "NaN";
+        return Double.NaN;
       else if (d < m)
-      {
         m = d;
-        minNode = n;
-      }
     }
-    return toString(minNode);
+    
+    return m;
   }
   
   /**
@@ -181,19 +178,20 @@ public class ExsltMath
    * if any node cannot be converted to a number.
    */
   public static NodeList highest (NodeList nl)
-  {    
-    double high = new Double(max(nl)).doubleValue();
+  {        
+    double maxValue = max(nl);
+
     NodeSet highNodes = new NodeSet();
-    highNodes.setShouldCacheNodes(true);
+    highNodes.setShouldCacheNodes(true);    
     
-    if (Double.isNaN(high))
+    if (Double.isNaN(maxValue))
       return highNodes;  // empty Nodeset
     
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node n = nl.item(i);
       double d = toNumber(n); 
-      if (d == high)
+      if (d == maxValue)
         highNodes.addElement(n);
     }
     return highNodes;
@@ -218,19 +216,19 @@ public class ExsltMath
    */
   public static NodeList lowest (NodeList nl)
   {
-    double low = new Double(min(nl)).doubleValue();
+    double minValue = min(nl);
 
     NodeSet lowNodes = new NodeSet();
     lowNodes.setShouldCacheNodes(true);
     
-    if (Double.isNaN(low))
+    if (Double.isNaN(minValue))
       return lowNodes;  // empty Nodeset
     
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node n = nl.item(i);
       double d = toNumber(n); 
-      if (d == low)
+      if (d == minValue)
         lowNodes.addElement(n);
     }
     return lowNodes;
@@ -372,14 +370,15 @@ public class ExsltMath
   /**
    * The math:constant function returns the specified constant to a set precision. 
    * The possible constants are:
-   *
-   * PI
-   * E
-   * SQRRT2
-   * LN2
-   * LN10
-   * LOG2E
-   * SQRT1_2 
+   * <pre>
+   *  PI
+   *  E
+   *  SQRRT2
+   *  LN2
+   *  LN10
+   *  LOG2E
+   *  SQRT1_2
+   * </pre>
    */
    public static double constant(String name, double precision)
    {

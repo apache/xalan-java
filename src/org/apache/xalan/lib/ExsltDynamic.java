@@ -484,7 +484,9 @@ public class ExsltDynamic
    * as the first argument, then on the node set resulting from that and so on until no 
    * more nodes are found. For example: 
    *
+   * <pre>
    *  dyn:closure(., '*')
+   * </pre>
    *
    * returns all the descendant elements of the node (its element children, their 
    * children, their children's children and so on). 

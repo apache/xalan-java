@@ -213,12 +213,14 @@ public class ExsltStrings
    * string. The string given by the first argument is split at any occurrence of 
    * this pattern. For example: 
    *
+   * <pre>
    * str:split('a, simple, list', ', ')      
    *   Gives the node set consisting of: 
    *
    * <token>a</token>
    * <token>simple</token>
    * <token>list</token>
+   * </pre>
    *
    * If the second argument is omitted, the default is the string '&#x20;' (i.e. a space).
    */
@@ -281,7 +283,8 @@ public class ExsltStrings
    * string consisting of a number of characters. Each character in this string is 
    * taken as a delimiting character. The string given by the first argument is split 
    * at any occurrence of any of these characters. For example: 
-   *
+   * 
+   * <pre>
    * str:tokenize('2001-06-03T11:40:23', '-T:')      
    *   Gives the node set consisting of: 
    *
@@ -291,6 +294,8 @@ public class ExsltStrings
    * <token>11</token>
    * <token>40</token>
    * <token>23</token>
+   * </pre>
+   
    * If the second argument is omitted, the default is the string '&#x9;&#xA;&#xD;&#x20;' 
    * (i.e. whitespace characters). 
    *
