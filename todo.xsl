@@ -138,7 +138,7 @@
     </xsl:for-each>
     </ul>
     <xsl:if test="boolean(devs/person[@status = 'emeritus'])">
-        <p>And the Hall-of-Fame list of past developers on <xsl:value-of select="/todo/@project"/>:</p>
+        <p>And the Hall-of-Fame list of past developers on:</p>
         <ul>
         <xsl:for-each select="devs/person[@status = 'emeritus']">
           <li>
