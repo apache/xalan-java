@@ -1967,13 +1967,17 @@ public class TransformerImpl extends Transformer
 
     try
     {
+      if(null != mode)
+        pushMode(mode);
       xctxt.pushCurrentNode(xctxt.getDTMHandleFromNode(context));
       executeChildTemplates(elem, handler);
     }
     finally
     {
       xctxt.popCurrentNode();
-
+      
+      // I'm not sure where or why this was here.  It is clearly in 
+      // error though, without a corresponding pushMode().
       if (null != mode)
         popMode();
     }
