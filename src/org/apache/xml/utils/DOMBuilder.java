@@ -399,6 +399,9 @@ public class DOMBuilder
    */
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
+    if(isOutsideDocElem()
+       && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
+      return;  // avoid DOM006 Hierarchy request error
 
     if (m_inCData)
     {
@@ -426,6 +429,10 @@ public class DOMBuilder
   public void charactersRaw(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
+    if(isOutsideDocElem()  
+       && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
+      return;  // avoid DOM006 Hierarchy request error
+
 
     String s = new String(ch, start, length);
 
@@ -498,11 +505,23 @@ public class DOMBuilder
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
+    if(isOutsideDocElem())
+      return;  // avoid DOM006 Hierarchy request error
 
     String s = new String(ch, start, length);
 
     append(m_doc.createTextNode(s));
   }
+  
+  /**
+   * Tell if the current node is outside the document element.
+   * 
+   * @return true if the current node is outside the document element.
+   */
+   private boolean isOutsideDocElem()
+   {
+      return m_elemStack.size() == 0 && (null == m_currentNode || m_currentNode.getNodeType() == Node.DOCUMENT_NODE);
+   }
 
   /**
    * Receive notification of a processing instruction.
@@ -589,6 +608,9 @@ public class DOMBuilder
    */
   public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
+    if(isOutsideDocElem()  
+       && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
+      return;  // avoid DOM006 Hierarchy request error
 
     String s = new String(ch, start, length);
 
