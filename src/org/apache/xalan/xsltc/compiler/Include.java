@@ -64,6 +64,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import java.io.File;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
@@ -96,7 +97,7 @@ final class Include extends TopLevelElement {
 		return;
 	    }
 
-	    final String currLoadedDoc = context.getSystemId();
+	    String currLoadedDoc = context.getSystemId();
 	    SourceLoader loader = context.getSourceLoader();
 	    InputSource input = null;
 
@@ -105,6 +106,8 @@ final class Include extends TopLevelElement {
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
 	    }
 	    else {
+		File file = new File(currLoadedDoc);
+		if (file.exists()) currLoadedDoc = "file:"+currLoadedDoc;
 		final URL url = new URL(new URL(currLoadedDoc), docToLoad);
 		docToLoad = url.toString();
 		input = new InputSource(docToLoad);
