@@ -706,7 +706,8 @@ public final class TextOutput implements TransletOutputHandler {
 		        buf.append(Integer.toHexString((int)ch[i]));
 		        break;
 		    case '\u0026' :
-			buf.append("&amp;");
+			//bug fix for customer/murphy3: buf.append("&amp;");
+			buf.append("&");
 			break;
 		    default:	
 		        buf.append(ch[i]); break;
