@@ -869,6 +869,10 @@ public class ElemTemplateElement extends UnImplNode
     if (null != nsDecls)
     {
       int n = nsDecls.size();
+      if(prefix.equals(Constants.ATTRVAL_DEFAULT_PREFIX))
+      {
+        prefix = "";
+      }
 
       for (int i = 0; i < n; i++)
       {
