@@ -318,7 +318,9 @@ public class ResultTreeHandler
            && (null == m_nsSupport.getURI("")))
         {
           // System.out.println("Setting the method automatically to HTML");
-          SerializerFactory factory = SerializerFactory.getSerializerFactory(Method.HTML);
+          
+          /* TBD: I don't think this works yet? */
+          // SerializerFactory factory = SerializerFactory.getSerializerFactory(Method.HTML);
           OutputFormat oformat = m_stylesheetRoot.getOutputFormat();
           oformat.setMethod(Method.HTML);
           // m_flistener = factory.makeSerializer(oformat).asContentHandler();
@@ -326,17 +328,23 @@ public class ResultTreeHandler
       }
     }
     // System.out.println("m_pendingStartDoc: "+m_pendingStartDoc);
-    // System.out.println("m_mustFlushStartDoc: "+m_mustFlushStartDoc);
-    if(m_pendingStartDoc && m_mustFlushStartDoc)
+    // System.out.println("m_haveDocContent: "+m_haveDocContent);
+    if (!m_foundStartDoc && m_haveDocContent)
+    {
+      startDocument();
+      m_haveDocContent = true;
+    }
+
+    if (m_pendingStartDoc && m_haveDocContent)
     {
       m_pendingStartDoc = false;
-      
       getContentHandler().startDocument();
       m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
                                                                           GenerateEvent.EVENTTYPE_STARTDOCUMENT));
     }
 
-    if((null != m_pendingElementName) && m_mustFlushStartDoc)
+//    if((null != m_pendingElementName) && m_haveDocContent)
+    if (null != m_pendingElementName)
     {
       /*
       if(null != m_stylesheetRoot.getCDataSectionElems())
@@ -353,18 +361,6 @@ public class ResultTreeHandler
       */      
       if(!m_nsDeclsHaveBeenAdded)
         addNSDeclsToAttrs();
-      
-      // A start document event may have not occured yet, in which 
-      // case we need to fire one.  There should be a better way to 
-      // handle this case...
-      if(!m_foundStartDoc)
-      {
-        startDocument();
-        m_pendingStartDoc = false;
-        getContentHandler().startDocument();
-        m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                                            GenerateEvent.EVENTTYPE_STARTDOCUMENT));
-      }
 
       // System.out.print("Calling start element: "+m_pendingElementName+"... ");
       // System.out.print(" on: "+getContentHandler()+"... ");
@@ -391,6 +387,9 @@ public class ResultTreeHandler
   }
   
   public boolean getFoundStartDoc() { return m_foundStartDoc; }
+  /**
+   * Flag to indicate whether or not our startDocument() method has been called.
+   */
   private boolean m_foundStartDoc = false;
 
   public boolean getFoundEndDoc() { return m_foundEndDoc; }
@@ -405,7 +404,7 @@ public class ResultTreeHandler
     // m_uniqueNSValue = 0;
     m_foundStartDoc = true;
     m_pendingStartDoc = true;
-    m_mustFlushStartDoc = false;
+    m_haveDocContent = false;
     // m_flistener.startDocument();
     m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
                                                       GenerateEvent.EVENTTYPE_STARTDOCUMENT));
@@ -424,7 +423,7 @@ public class ResultTreeHandler
     throws SAXException
   {
     m_foundEndDoc = true;
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     getContentHandler().endDocument();
     m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
@@ -443,7 +442,7 @@ public class ResultTreeHandler
     flushPending();
     m_nsSupport.pushContext();
     setPendingElementName (ns, localName, name);
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
   }
 
   /**
@@ -460,7 +459,7 @@ public class ResultTreeHandler
     m_pendingAttributes.clear(); // Is this needed?? -sb
     m_pendingAttributes.addAttributes(atts);
     setPendingElementName (ns, localName, name);
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
   }
 
   /**
@@ -486,7 +485,7 @@ public class ResultTreeHandler
   public void characters (char ch[], int start, int length)
     throws SAXException
   {
-    if(!m_mustFlushStartDoc)
+    if(!m_haveDocContent)
     {
       int n = ch.length;
       for(int i = 0; i < n; i++)
@@ -494,25 +493,12 @@ public class ResultTreeHandler
         // todo: isSpaceChar doesn't seem to be recognizing 0x0A.  (??) -sb
         if(!Character.isSpaceChar(ch[i]))
         {
-          m_mustFlushStartDoc = true;
-          if(!m_foundStartDoc)
-          {
-            // Then we have a strange case, where non-whitespace text 
-            // is being output before an element.  While this might be 
-            // considered illegal, let's try and be nice and make the 
-            // xml decl be flushed.
-            // (experemental... these same sort of changes will need to be
-            // made to the charactersRaw function, etc.  See Myriam's note to 
-            // Gary Peskin on 9/26/2000.. the right way to fix this is 
-            // probably to supress the xml decl).
-            m_pendingStartDoc = true;
-            
-          }
+          m_haveDocContent = true;
           break;
         }
       }
     }
-    if(m_mustFlushStartDoc)
+    if(m_haveDocContent)
     {
       flushPending();
       /*
@@ -551,7 +537,7 @@ public class ResultTreeHandler
   public void charactersRaw (char ch[], int start, int length)
     throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     /*
     if(m_flistener instanceof org.apache.xml.serialize.BaseSerializer)
@@ -583,7 +569,7 @@ public class ResultTreeHandler
   public void ignorableWhitespace (char ch[], int start, int length)
     throws SAXException
   {
-    if(m_mustFlushStartDoc)
+    if(m_haveDocContent)
     {
       flushPending();
       getContentHandler().ignorableWhitespace(ch, start, length);
@@ -599,7 +585,7 @@ public class ResultTreeHandler
   public void processingInstruction (String target, String data)
     throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     getContentHandler().processingInstruction(target, data);
     m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
@@ -612,7 +598,7 @@ public class ResultTreeHandler
    */
   public void comment(String data) throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     if(getContentHandler() instanceof LexicalHandler)
     {
@@ -628,7 +614,7 @@ public class ResultTreeHandler
    */
   public void comment(char ch[], int start, int length) throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     if(getContentHandler() instanceof LexicalHandler)
     {
@@ -645,7 +631,7 @@ public class ResultTreeHandler
    */
   public void entityReference(String name) throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     if(getContentHandler() instanceof LexicalHandler)
     {
@@ -662,7 +648,7 @@ public class ResultTreeHandler
    */
   public void startEntity(String name) throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     if(getContentHandler() instanceof LexicalHandler)
     {
@@ -675,7 +661,7 @@ public class ResultTreeHandler
    */
   public void endEntity(String name) throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     if(getContentHandler() instanceof LexicalHandler)
     {
@@ -790,7 +776,7 @@ public class ResultTreeHandler
   public void cdata (char ch[], int start, int length)
     throws SAXException
   {
-    m_mustFlushStartDoc = true;
+    m_haveDocContent = true;
     flushPending();
     /*
     if((null != m_stylesheetRoot.getCDataSectionElems()) &&
@@ -1085,7 +1071,11 @@ public class ResultTreeHandler
     return S_NAMESPACEPREFIX+String.valueOf(getUniqueNSValue());
   }
 
-  private boolean m_mustFlushStartDoc = false;
+  /**
+   * Flag to indicate that we have some document content since the last
+   * call to startDocument()
+   */
+  private boolean m_haveDocContent = false;
   
   /**
    * The pending element, namespace, and local name.
@@ -1134,7 +1124,7 @@ public class ResultTreeHandler
   }
 
   /**
-   * Flag to tell if a StartDocument event is pending.
+   * Flag to tell if a call to getContentHandler().startDocument is pending.
    */
   private boolean m_pendingStartDoc = false;
 
