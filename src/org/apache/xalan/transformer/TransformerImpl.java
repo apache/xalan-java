@@ -1059,7 +1059,14 @@ public class TransformerImpl extends Transformer
         else 
         {
             xoh = new ToXMLSAXHandler(handler, lexHandler, encoding);    
-        }       
+        } 
+
+        String publicID = format.getProperty(OutputKeys.DOCTYPE_PUBLIC); 
+        String systemID = format.getProperty(OutputKeys.DOCTYPE_SYSTEM); 
+        if (systemID != null)
+            xoh.setDoctypeSystem(systemID);
+        if (publicID != null)
+            xoh.setDoctypePublic(publicID);
         
         if (handler instanceof TransformerClient) {
             XalanTransformState state = new XalanTransformState();
