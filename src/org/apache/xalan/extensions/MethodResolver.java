@@ -1,3 +1,60 @@
+/*
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
+
 package org.apache.xalan.extensions;
 
 import java.lang.reflect.Method;
@@ -10,6 +67,7 @@ import org.w3c.dom.traversal.NodeIterator;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XRTreeFrag;
 
 import org.xml.sax.SAXException;
 
@@ -602,6 +660,8 @@ public class MethodResolver
         {
           if(javaClass == java.lang.String.class)
             return xobj.str();
+          else if(javaClass == Boolean.TYPE)
+            return new Boolean(xobj.bool());
           else 
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
@@ -622,6 +682,8 @@ public class MethodResolver
             else
               return null; // ??
           }
+          else if(javaClass == Boolean.TYPE)
+            return new Boolean(xobj.bool());
           else 
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
@@ -631,24 +693,26 @@ public class MethodResolver
         
       case XObject.CLASS_RTREEFRAG:
         {
-          if((NodeIterator.class.isAssignableFrom(javaClass)) ||
-             (javaClass == java.lang.Object.class))
+          // GLP:  I don't see the reason for the isAssignableFrom call
+          //       instead of an == test as is used everywhere else.
+          //       Besides, if the javaClass is a subclass of NodeIterator
+          //       the condition will be true and we'll create a NodeIterator
+          //       which may not match the javaClass, causing a RuntimeException.
+          // if((NodeIterator.class.isAssignableFrom(javaClass)) ||
+          if ( (javaClass == NodeIterator.class) ||
+               (javaClass == java.lang.Object.class) )
           {
-            // This will fail in Xalan right now, since RTFs aren't 
-            // convertable to node-sets.
-            return xobj.nodeset();
+            return ((XRTreeFrag) xobj).asNodeIterator();
           }
-          else if(Node.class.isAssignableFrom(javaClass))
+          else if (javaClass == NodeList.class)
           {
-            // This will return a Document fragment in Xalan right 
-            // now, which isn't what the we specify.
-            return xobj.rtree();
+            return ((XRTreeFrag) xobj).convertToNodeset();
           }
-          else if(org.w3c.dom.DocumentFragment.class.isAssignableFrom(javaClass))
+          // Same comment as above
+          // else if(Node.class.isAssignableFrom(javaClass))
+          else if(javaClass == Node.class)
           {
-            // This will return a Document fragment in Xalan right 
-            // now, which isn't what the we specify.
-            return xobj.rtree();
+            return xobj.rtree().getFirstChild();
           }
           else if(javaClass == java.lang.String.class)
           {
@@ -658,25 +722,43 @@ public class MethodResolver
           {
             return new Boolean(xobj.bool());
           }
-          else
+          else if(javaClass.isPrimitive())
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
+          }
+          else
+          {
+            Node child = xobj.rtree().getFirstChild();
+            if(javaClass.isAssignableFrom(child.getClass()))
+              return child;
+            else
+              return null;
           }
         }
         // break; Unreachable
         
       case XObject.CLASS_NODESET:
         {
-          if((NodeIterator.class.isAssignableFrom(javaClass)) ||
-             (javaClass == java.lang.Object.class))
+          // GLP:  I don't see the reason for the isAssignableFrom call
+          //       instead of an == test as is used everywhere else.
+          //       Besides, if the javaClass is a subclass of NodeIterator
+          //       the condition will be true and we'll create a NodeIterator
+          //       which may not match the javaClass, causing a RuntimeException.
+          // if((NodeIterator.class.isAssignableFrom(javaClass)) ||
+          if ( (javaClass == NodeIterator.class) ||
+               (javaClass == java.lang.Object.class) )
           {
             return xobj.nodeset();
           }
-          else if(NodeList.class.isAssignableFrom(javaClass))
+          // Same comment as above
+          // else if(NodeList.class.isAssignableFrom(javaClass))
+          else if(javaClass == NodeList.class)
           {
-            return xobj.nodeset();
+            return xobj.mutableNodeset();
           }
-          else if(Node.class.isAssignableFrom(javaClass))
+          // Same comment as above
+          // else if(Node.class.isAssignableFrom(javaClass))
+          else if(javaClass == Node.class)
           {
             // Xalan ensures that nodeset() always returns an
             // iterator positioned at the beginning.
@@ -691,9 +773,17 @@ public class MethodResolver
           {
             return new Boolean(xobj.bool());
           }
-          else
+          else if(javaClass.isPrimitive())
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
+          }
+          else
+          {
+            Node child = xobj.nodeset().nextNode();
+            if(javaClass.isAssignableFrom(child.getClass()))
+              return child;
+            else
+              return null;
           }
         }
         // break; Unreachable
@@ -715,6 +805,10 @@ public class MethodResolver
       XString xstr = new XString(xsltObj.toString());
       double num = xstr.num();
       return convertDoubleToNumber(num, javaClass);
+    }
+    else if(javaClass == java.lang.Class.class)
+    {
+      return xsltObj.getClass();
     }
     else
     {
@@ -769,9 +863,8 @@ public class MethodResolver
       // See http://java.sun.com/docs/books/jls/html/5.doc.html#175672
       return new Byte((byte)num);
     }
-    else
+    else     // Some other type of object
     {
-      // Should never get here??
       return new Double(num);
     }
   }
