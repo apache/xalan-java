@@ -292,7 +292,7 @@ public class Examples
     TransformerFactory tfactory = TransformerFactory.newInstance();
 
     // Does this factory support SAX features?
-    if (tfactory.getFeature(Features.SAX))
+    if (tfactory.getFeature(SAXSource.FEATURE))
     {
       // If so, we can safely cast.
       SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
@@ -307,7 +307,24 @@ public class Examples
       handler.setResult(result);
       
       // Create a reader, and set it's content handler to be the TransformerHandler.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
+      XMLReader reader=null;
+
+      // Use JAXP1.1 ( if possible )
+      try {
+	  javax.xml.parsers.SAXParserFactory factory=
+	      javax.xml.parsers.SAXParserFactory.newInstance();
+	  factory.setNamespaceAware( true );
+	  javax.xml.parsers.SAXParser jaxpParser=
+	      factory.newSAXParser();
+	  reader=jaxpParser.getXMLReader();
+	  
+      } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+	  throw new org.xml.sax.SAXException( ex );
+      } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+	  throw new org.xml.sax.SAXException( ex1.toString() );
+      } catch( NoSuchMethodError ex2 ) {
+      }
+      if( reader==null ) reader = XMLReaderFactory.createXMLReader();
       reader.setContentHandler(handler);
       
       // It's a good idea for the parser to send lexical events.
@@ -333,7 +350,7 @@ public class Examples
           throws TransformerException, TransformerConfigurationException, SAXException, IOException    // , ParserConfigurationException
   {
     TransformerFactory tfactory = TransformerFactory.newInstance();
-    if(tfactory.getFeature(Features.SAX))
+    if(tfactory.getFeature(SAXSource.FEATURE))
     {
       XMLReader reader 
         = ((SAXTransformerFactory) tfactory).newXMLFilter(new StreamSource(xslID));
@@ -357,8 +374,25 @@ public class Examples
   {
     TransformerFactory tfactory = TransformerFactory.newInstance();
 
+    XMLReader reader=null;
+    
+    // Use JAXP1.1 ( if possible )
+    try {
+	javax.xml.parsers.SAXParserFactory factory=
+	    javax.xml.parsers.SAXParserFactory.newInstance();
+	  factory.setNamespaceAware( true );
+	  javax.xml.parsers.SAXParser jaxpParser=
+	    factory.newSAXParser();
+	reader=jaxpParser.getXMLReader();
+	
+    } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+	throw new org.xml.sax.SAXException( ex );
+    } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+	throw new org.xml.sax.SAXException( ex1.toString() );
+    } catch( NoSuchMethodError ex2 ) {
+    }
+    if( reader==null ) reader = XMLReaderFactory.createXMLReader();
     // The transformer will use a SAX parser as it's reader.    
-    XMLReader reader = XMLReaderFactory.createXMLReader();
     reader.setContentHandler(new ExampleContentHandler());
     try
     {
@@ -401,10 +435,27 @@ public class Examples
     Transformer transformer1 = stylesheet1.newTransformer();
     
      // If one success, assume all will succeed.
-    if (tfactory.getFeature(Features.SAX))
+    if (tfactory.getFeature(SAXSource.FEATURE))
     {
       SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
-      XMLReader reader = XMLReaderFactory.createXMLReader();
+      XMLReader reader=null;
+
+      // Use JAXP1.1 ( if possible )
+      try {
+	  javax.xml.parsers.SAXParserFactory factory=
+	      javax.xml.parsers.SAXParserFactory.newInstance();
+	  factory.setNamespaceAware( true );
+	  javax.xml.parsers.SAXParser jaxpParser=
+	      factory.newSAXParser();
+	  reader=jaxpParser.getXMLReader();
+	  
+      } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+	  throw new org.xml.sax.SAXException( ex );
+      } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+	  throw new org.xml.sax.SAXException( ex1.toString() );
+      } catch( NoSuchMethodError ex2 ) {
+      }
+      if( reader==null ) reader = XMLReaderFactory.createXMLReader();
 
       XMLFilter filter1 = stf.newXMLFilter(new StreamSource(xslID_1));
       XMLFilter filter2 = stf.newXMLFilter(new StreamSource(xslID_2));
@@ -458,7 +509,7 @@ public class Examples
   {
     TransformerFactory tfactory = TransformerFactory.newInstance();
 
-    if (tfactory.getFeature(Features.DOM))
+    if (tfactory.getFeature(DOMSource.FEATURE))
     {
       Templates templates;
 
@@ -473,7 +524,7 @@ public class Examples
         DOMSource dsource = new DOMSource(doc);
         // If we don't do this, the transformer won't know how to 
         // resolve relative URLs in the stylesheet.
-        dsource.setBaseID(xslID);
+        dsource.setSystemId(xslID);
 
         templates = tfactory.newTemplates(dsource);
       }
@@ -618,8 +669,8 @@ public class Examples
 
     // Make sure the transformer factory we obtained supports both
     // DOM and SAX.
-    if (tfactory.getFeature(Features.SAX)
-        && tfactory.getFeature(Features.DOM))
+    if (tfactory.getFeature(SAXSource.FEATURE)
+        && tfactory.getFeature(DOMSource.FEATURE))
     {
       // We can now safely cast to a SAXTransformerFactory.
       SAXTransformerFactory sfactory = (SAXTransformerFactory) tfactory;
@@ -638,7 +689,24 @@ public class Examples
       
       // Create a reader and set it's ContentHandler to be the 
       // transformer.
-      XMLReader reader = XMLReaderFactory.createXMLReader();
+      XMLReader reader=null;
+
+      // Use JAXP1.1 ( if possible )
+      try {
+	  javax.xml.parsers.SAXParserFactory factory=
+	      javax.xml.parsers.SAXParserFactory.newInstance();
+	  factory.setNamespaceAware( true );
+	  javax.xml.parsers.SAXParser jaxpParser=
+	      factory.newSAXParser();
+	  reader=jaxpParser.getXMLReader();
+	  
+      } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+	  throw new org.xml.sax.SAXException( ex );
+      } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+	  throw new org.xml.sax.SAXException( ex1.toString() );
+      } catch( NoSuchMethodError ex2 ) {
+      }
+      if( reader==null ) reader= XMLReaderFactory.createXMLReader();
       reader.setContentHandler(handler);
       reader.setProperty("http://xml.org/sax/properties/lexical-handler",
                          handler);
@@ -713,6 +781,12 @@ public class Examples
       System.out.println("Internal exception: " );
       Exception ex1=((TransformerConfigurationException)ex).getException();
       ex1.printStackTrace();
+
+      if( ex1 instanceof SAXException ) {
+	  Exception ex2=((SAXException)ex1).getException();
+	  System.out.println("Internal sub-exception: " );
+	  ex2.printStackTrace();
+      }
     }
   }
 
