@@ -703,12 +703,31 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
 
-
+    /**
+     * This method returns a vector with variables in the order in which
+     * they are to be compiled. The order is determined by the dependencies
+     * between them. The first step is to close the input vector under
+     * the dependence relation (this is usually needed when variables are
+     * defined inside other variables in a RTF).
+     */
     private Vector resolveReferences(Vector input) {
+
+	// Make sure that the vector 'input' is closed
+	for (int i = 0; i < input.size(); i++) {
+	    final VariableBase var = (VariableBase) input.elementAt(i);
+	    final Vector dep  = var.getDependencies();
+	    final int depSize = (dep != null) ? dep.size() : 0;
+
+	    for (int j = 0; j < depSize; j++) {
+		final VariableBase depVar = (VariableBase) dep.elementAt(j);
+		if (!input.contains(depVar)) {
+		    input.addElement(depVar);
+		}
+	    }
+	}
+
 	Vector result = new Vector();
-
 	int zeroDep = 0;
-
 	while (input.size() > 0) {
 	    boolean changed = false;
 	    for (int i = 0; i < input.size(); ) {
@@ -728,6 +747,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 		    i++;
 		}
 	    }
+
+
 	    // If nothing was changed in this pass then we have a circular ref
 	    if (!changed) {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
