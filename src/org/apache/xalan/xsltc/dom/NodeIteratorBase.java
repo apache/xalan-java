@@ -99,6 +99,7 @@ public abstract class NodeIteratorBase implements NodeIterator {
 	    gotoMark();
 	    _position = temp;
 	}
+	System.err.println("getLast() returning "+_last);
 	return _last;
     }
 

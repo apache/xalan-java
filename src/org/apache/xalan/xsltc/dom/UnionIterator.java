@@ -113,7 +113,7 @@ public final class UnionIterator extends NodeIteratorBase {
   
     // last node returned by this UnionIterator to the caller of next
     // used to prune duplicates
-    private int _last;
+    private int _returnedLast;
 
     public UnionIterator(DOM dom) {
 	_dom = dom;
@@ -158,13 +158,13 @@ public final class UnionIterator extends NodeIteratorBase {
 		    return END;
 		}
 	    }
-	    else if (smallest == _last) {	// duplicate
+	    else if (smallest == _returnedLast) {	// duplicate
 		_heap[0].step(); // value consumed
 	    }
 	    else {
 		_heap[0].step(); // value consumed
 		heapify(0);
-		return returnNode(_last = smallest);
+		return returnNode(_returnedLast = smallest);
 	    }
 	    // fallthrough if not returned above
 	    heapify(0);
@@ -183,7 +183,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	    for (int i = (_heapSize = _free)/2; i >= 0; i--) {
 		heapify(i);
 	    }
-	    _last = END;
+	    _returnedLast = END;
 	    return resetPosition();
 	}
 	return this;
@@ -220,4 +220,13 @@ public final class UnionIterator extends NodeIteratorBase {
 	    _heap[i].gotoMark();
 	}
     }
+
+    public NodeIterator reset() {
+	super.reset();
+	for (int i = 0; i < _free; i++) {
+	    _heap[i].iterator.reset();
+	}
+	return(this);
+    }
+
 }
