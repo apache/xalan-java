@@ -302,7 +302,7 @@ public class ToXMLSAXHandler extends ToSAXHandler
         m_saxHandler.endElement(namespaceURI, localName, qName);
 
         if (m_tracer != null)
-		    super.fireEndElem(qName);       
+            super.fireEndElem(qName);       
 
         /* Pop all namespaces at the current element depth.
          * We are not waiting for official endPrefixMapping() calls.
@@ -581,9 +581,9 @@ public class ToXMLSAXHandler extends ToSAXHandler
          */ 
         m_saxHandler.characters(ch, off, len);
 
-		// time to generate characters event
-		if (m_tracer != null)
-		    fireCharEvent(ch, off, len);
+        // time to generate characters event
+        if (m_tracer != null)
+            fireCharEvent(ch, off, len);
     }
     
 
