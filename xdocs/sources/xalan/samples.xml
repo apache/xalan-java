@@ -67,6 +67,7 @@
 <li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
+<li><link anchor="get-todo-list">get-todo-list</link></li>
 <li><link anchor="servlet">Servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
 <li><link anchor="trace">Trace</link></li>
@@ -166,8 +167,18 @@
     <s2 title="AppletXMLtoHTML">
     <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>
-    <p>How to run it: Copy xalan.jar and xerces.jar to the AppletXMLtoHTML subdirectory, and open AppletXMLtoHTML.hmtl in a
-    browser (it has been tested with Netscape 4.7 and Internet Explorer 5).</p>
+    <p>How to run it: Open AppletXMLtoHTML.hmtl in the Internet Explorer 5 browser.</p>
+    <note>This and the following sample applet do not work in the Netscape Communicator 4.7. We have some work to do to get
+    our basic strategy of using system properties to identify the Transformer and XML Parser to work in the Netscape applet
+    sandbox.<br/><br/>
+    Both applets look for xalan.jar and xerces.jar in the bin subdirectory. If you have placed these JAR files
+    elsewhere, adjust the applet archive setting in client.html and get-todo-list.html accordingly.</note>
+    </s2><anchor name="get-todo-list"/>
+    <s2 title="get-todo-list">
+    <p>This applet uses todo.xsl to transform todo.xml and display the result. The XML source (todo.xml) is a snapshot of an
+     ongoing list of tasks and task completions for the &xslt4j2; project that is maintained in the xml-xalan/java
+     subdirectory of the Apache CVS repository.</p>
+     <p>How to run it: Open get-todo-list.html in the Internet Explorer 5 browser.</p>
     </s2><anchor name="servlet"/>
     <s2 title="Servlet">
     <p>What it does: The client (which you must set up) specifies an XML document and a stylesheet. The servlet
