@@ -41,8 +41,16 @@
 <Subsystem>XSLT</Subsystem>
 </Spr>
 <Spr>
+<Name>PDIK4T9SZR</Name>
+<DateCreated>1/23/2001 </DateCreated>
+<State>Open</State>
+<TestID>impincl12</TestID>
+<TestDesc>Import/Include over the net w/i firewall is failing</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
 <Name>SBOG4SPP2F</Name>
-<DateCreated>1/5/2001 9</DateCreated>
+<DateCreated>1/5/2001 1</DateCreated>
 <State>Pending</State>
 <TestID></TestID>
 <TestDesc>disable-output-escaping="no" does not work</TestDesc>
@@ -50,7 +58,7 @@
 </Spr>
 <Spr>
 <Name>SBOG4SSQZW</Name>
-<DateCreated>1/8/2001 1</DateCreated>
+<DateCreated>1/8/2001 2</DateCreated>
 <State build="2.0D06">Resolved</State>
 <TestID></TestID>
 <TestDesc>Stack Traces to System.err re m_reportInPostExceptionFromThread</TestDesc>
@@ -234,7 +242,7 @@
 </Spr>
 <Spr>
 <Name>SCUU4SPUML</Name>
-<DateCreated>1/5/2001 2</DateCreated>
+<DateCreated>1/5/2001 5</DateCreated>
 <State>Pending</State>
 <TestID>position70.xsl</TestID>
 <TestDesc>Crimson: position70 has whitespace differences</TestDesc>
@@ -242,7 +250,7 @@
 </Spr>
 <Spr>
 <Name>SCUU4SPUV3</Name>
-<DateCreated>1/5/2001 2</DateCreated>
+<DateCreated>1/5/2001 5</DateCreated>
 <State>Pending</State>
 <TestID>extend01.xsl</TestID>
 <TestDesc>JDK 1.1.8 only: extend01.xsl throws TransformerException...transformNode()</TestDesc>
@@ -250,7 +258,7 @@
 </Spr>
 <Spr>
 <Name>SCUU4SPUXC</Name>
-<DateCreated>1/5/2001 2</DateCreated>
+<DateCreated>1/5/2001 5</DateCreated>
 <State>Pending</State>
 <TestID>output77.xsl</TestID>
 <TestDesc>JDK 1.1.8 only: output77.xsl throws IllegalArgumentException: sun.io.CharToByteBig-Deal</TestDesc>
@@ -270,6 +278,62 @@
 <State>Open</State>
 <TestID>systemidtest.java</TestID>
 <TestDesc>SystemId: transform(..."bad name") does not always have a good exception.toString()</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T5Q3W</Name>
+<DateCreated>1/19/2001 </DateCreated>
+<State>Pending</State>
+<TestID>paramtest.java</TestID>
+<TestDesc>compat.jar: setStylesheetParam evaluates expression differently 1.x/2.x</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T5QEC</Name>
+<DateCreated>1/19/2001 </DateCreated>
+<State>Open</State>
+<TestID>paramtest.java</TestID>
+<TestDesc>compat.jar: resetting of parameters works differently 1.x/2.x</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T5QMH</Name>
+<DateCreated>1/19/2001 </DateCreated>
+<State>Open</State>
+<TestID>problemlistenertest.java</TestID>
+<TestDesc>compat.jar: setProblemListeners are never used</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T5UQX</Name>
+<DateCreated>1/19/2001 </DateCreated>
+<State>Pending</State>
+<TestID>conformancetest.java</TestID>
+<TestDesc>compat.jar: process() after setDiagnosticsOutput throws ClassCastException: java.lang.Long</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T8PSH</Name>
+<DateCreated>1/22/2001 </DateCreated>
+<State>Open</State>
+<TestID>threadtest.java</TestID>
+<TestDesc>compat.jar: TestThreadsX1 throws SAXExceptions (XSLTEngineImpl.java:479)</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T9L4D</Name>
+<DateCreated>1/23/2001 </DateCreated>
+<State>Open</State>
+<TestID>problemlistenertest.java</TestID>
+<TestDesc>compat.jar: XSLTProcessorImpl.getProblemListener() throws npe</TestDesc>
+<Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>SCUU4T9V7F</Name>
+<DateCreated>1/23/2001 </DateCreated>
+<State>Open</State>
+<TestID>stylesheetreusetest.java</TestID>
+<TestDesc>compat.jar: processStylesheet() does not set that stylesheet into processor</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
