@@ -204,7 +204,7 @@ final class Param extends VariableBase {
 	if (_ignore) return;
 	// _ignore = true;
 
-	final String name = getVariable();
+	final String name = getEscapedName();
 	final String signature = _type.toSignature();
 	final String className = _type.getClassName();
 

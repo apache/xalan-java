@@ -88,7 +88,7 @@ final class ParameterRef extends VariableRefBase {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	final String name = _variable.getVariable();
+	final String name = _variable.getEscapedName();
 	final String signature = _type.toSignature();
 
 	if (_variable.isLocal()) {
