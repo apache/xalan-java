@@ -383,7 +383,7 @@ public class NodeTest extends Expression
     short nodeType = context.getNodeType();
     
     // Yuck!  Blech!  -sb
-    if(Node.TEXT_NODE == nodeType && !context.isSupported(SUPPORTS_PRE_STRIPPING, null))
+    if((Node.TEXT_NODE == nodeType || Node.CDATA_SECTION_NODE == nodeType) && !context.isSupported(SUPPORTS_PRE_STRIPPING, null))
     {
       Node parent = context.getParentNode();
       if(null != parent && Node.ELEMENT_NODE == parent.getNodeType())
