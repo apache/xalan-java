@@ -251,6 +251,16 @@ public class TransformerImpl extends Transformer
     m_textformat = new OutputProperties(Method.Text);
   }
   
+  /**
+   * Flag to let us know if an exception should be reported inside the 
+   * postExceptionFromThread method.  This is needed if the transform is 
+   * being generated from SAX events, and thus there is no central place 
+   * to report the exception from.  (An exception is usually picked up in 
+   * the main thread from the transform thread in {@link #transform(Source source)} 
+   * from {@link #getExceptionThrown()}. )
+   */
+  private boolean m_reportInPostExceptionFromThread = true;
+  
   /** A node vector used as a stack to track the current 
    * ElemTemplateElement.  Needed for the 
    * org.apache.xalan.transformer.TransformState interface,  
@@ -402,6 +412,8 @@ public class TransformerImpl extends Transformer
     
     // For now, reset the document cache each time.
     getXPathContext().getSourceTreeManager().reset();
+    
+    m_reportInPostExceptionFromThread = false;
   }
 
   // ========= Transformer Interface Implementation ==========
@@ -578,7 +590,7 @@ public class TransformerImpl extends Transformer
           else
           {
             Thread t = new Thread(this);
-
+            m_reportInPostExceptionFromThread = true;
             t.start();
             transformNode(doc);
           }
@@ -663,11 +675,42 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * Get the value of a property.  Recognized properties are:
+   * Get an output property that is in effect for the
+   * transformation.  The property specified may be a property
+   * that was set with setOutputProperty, or it may be a
+   * property specified in the stylesheet.
    *
-   * <p>"http://xml.apache.org/xslt/sourcebase" - the base URL for the
-   * source, which is needed when pure SAX ContentHandler transformation
-   * is to be done.</p>
+   * @param name A non-null String that specifies an output
+   * property name, which may be namespace qualified.
+   *
+   * @return The string value of the output property, or null
+   * if no property was found.
+   *
+   * @throws IllegalArgumentException If the property is not supported.
+   *
+   * @see javax.xml.transform.OutputKeys
+   */
+  public String getOutputProperty(String qnameString)
+    throws IllegalArgumentException
+  {    
+    String value = null;
+    
+    OutputProperties props = getOutputFormat();    
+    
+    value = props.getProperty(qnameString);
+    
+    if(null == value)
+    {
+      if(!props.isLegalPropertyKey(qnameString))
+        throw new IllegalArgumentException("output property not recognized: "+qnameString);
+    }
+    return value;
+  }
+  
+  /**
+   * Get the value of a property, without using the default properties.  This 
+   * can be used to test if a property has been explicitly set by the stylesheet 
+   * or user.
    *
    * @param name The property name, which is a fully-qualified URI.
    *
@@ -681,14 +724,14 @@ public class TransformerImpl extends Transformer
    * @throws IllegalArgumentException If the property is not supported, 
    * and is not namespaced.
    */
-  public String getOutputProperty(String qnameString)
+  public String getOutputPropertyNoDefault(String qnameString)
     throws IllegalArgumentException
   {    
     String value = null;
     
     OutputProperties props = getOutputFormat();    
     
-    value = props.getProperty(qnameString);
+    value = (String)props.getProperties().get(qnameString);
     
     if(null == value)
     {
@@ -1129,19 +1172,35 @@ public class TransformerImpl extends Transformer
       throw new TransformerException(se.getMessage(), se);
     }
   }
-
+  
   /**
    * Get a SAX2 ContentHandler for the input.
+   * 
    * @return A valid ContentHandler, which should never be null, as
    * long as getFeature("http://xml.org/trax/features/sax/input")
    * returns true.
    */
   public ContentHandler getInputContentHandler()
   {
+    return getInputContentHandler(false);
+  }
+
+  /**
+   * Get a SAX2 ContentHandler for the input.
+   * 
+   * @param doDocFrag true if a DocumentFragment should be created as 
+   * the root, rather than a Document.
+   * 
+   * @return A valid ContentHandler, which should never be null, as
+   * long as getFeature("http://xml.org/trax/features/sax/input")
+   * returns true.
+   */
+  public ContentHandler getInputContentHandler(boolean doDocFrag)
+  {
 
     if (null == m_inputContentHandler)
     {
-      m_inputContentHandler = new SourceTreeHandler(this);
+      m_inputContentHandler = new SourceTreeHandler(this, doDocFrag);
       ((SourceTreeHandler)m_inputContentHandler).setUseMultiThreading(true);
     }
 
@@ -1612,13 +1671,11 @@ public class TransformerImpl extends Transformer
     boolean isSTree = (sourceNode instanceof org.apache.xalan.stree.Child);
     if (isSTree)
     {      
-      rtfHandler = new SourceTreeHandler(this);
+      rtfHandler = new SourceTreeHandler(this, true);
       ((SourceTreeHandler)rtfHandler).setUseMultiThreading(false);
       ((SourceTreeHandler)rtfHandler).setShouldTransformAtEnd(false);
       // Create a ResultTreeFrag object.
-      DocumentImpl doc = (DocumentImpl)((SourceTreeHandler)rtfHandler).getRoot();
-      resultFragment = doc.createDocumentFragment();      
-      ((SourceTreeHandler)rtfHandler).setRoot((DocImpl)resultFragment);
+      resultFragment = (DocumentFragment)((SourceTreeHandler)rtfHandler).getRoot();;      
     }     
     else
     {
@@ -2674,14 +2731,25 @@ public class TransformerImpl extends Transformer
    *
    * @param e The exception that was thrown.
    */
-  private void postExceptionFromThread(Exception e)
+  void postExceptionFromThread(Exception e)
   {
-
+    if(m_reportInPostExceptionFromThread)
+    {
+      // Consider re-throwing the exception if this flag is set.
+      e.printStackTrace();
+    }
+      
     if (m_inputContentHandler instanceof SourceTreeHandler)
     {
       SourceTreeHandler sth = (SourceTreeHandler) m_inputContentHandler;
 
       sth.setExceptionThrown(e);
+    }
+    ContentHandler ch = getContentHandler();
+    if(ch instanceof SourceTreeHandler)
+    {
+      SourceTreeHandler sth = (SourceTreeHandler) ch;
+      ((TransformerImpl)(sth.getTransformer())).postExceptionFromThread(e);
     }
 
     m_isTransformDone = true;
@@ -2727,7 +2795,6 @@ public class TransformerImpl extends Transformer
         }
         catch (Exception e)
         {
-
           // Strange that the other catch won't catch this...
           postExceptionFromThread(e);
         }
