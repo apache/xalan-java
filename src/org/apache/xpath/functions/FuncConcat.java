@@ -104,10 +104,10 @@ public class FuncConcat extends FunctionMultiArgs
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Check that the number of arguments passed to this function is correct.
    *
    *
-   * NEEDSDOC @param argNum
+   * @param argNum The number of arguments that is being passed to the function.
    *
    * @throws WrongNumberArgsException
    */

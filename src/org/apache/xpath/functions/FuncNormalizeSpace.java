@@ -70,8 +70,8 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class FuncNormalizeSpace <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Execute the normalize-space() function.
  */
 public class FuncNormalizeSpace extends FunctionDef1Arg
 {

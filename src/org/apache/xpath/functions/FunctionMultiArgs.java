@@ -59,23 +59,25 @@ package org.apache.xpath.functions;
 import org.apache.xpath.Expression;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class FunctionMultiArgs <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Base class for functions that accept an undetermined number of multiple 
+ * arguments.
  */
 public class FunctionMultiArgs extends Function3Args
 {
 
-  /** NEEDSDOC Field m_args          */
+  /** Argument expressions that are at index 3 or greater.  */
   Expression[] m_args;
 
   /**
-   * NEEDSDOC Method setArg 
+   * Set an argument expression for a function.  This method is called by the 
+   * XPath compiler.
    *
+   * @param arg non-null expression that represents the argument.
+   * @param argNum The argument number index.
    *
-   * NEEDSDOC @param arg
-   * NEEDSDOC @param argNum
-   *
-   * @throws WrongNumberArgsException
+   * @throws WrongNumberArgsException If a derived class determines that the 
+   * number of arguments is incorrect.
    */
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
@@ -105,10 +107,10 @@ public class FunctionMultiArgs extends Function3Args
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Check that the number of arguments passed to this function is correct. 
    *
    *
-   * NEEDSDOC @param argNum
+   * @param argNum The number of arguments that is being passed to the function.
    *
    * @throws WrongNumberArgsException
    */

@@ -63,21 +63,24 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class FunctionDef1Arg <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Base class for functions that accept one argument that can be defaulted if 
+ * not specified.
  */
 public class FunctionDef1Arg extends FunctionOneArg
 {
 
   /**
-   * NEEDSDOC Method getArg0AsNode 
+   * Execute the first argument expression that is expected to return a 
+   * nodeset.  If the argument is null, then return the current context node.
    *
+   * @param xctxt Runtime XPath context.
    *
-   * NEEDSDOC @param xctxt
+   * @return The first node of the executed nodeset, or the current context 
+   *         node if the first argument is null.
    *
-   * NEEDSDOC (getArg0AsNode) @return
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if an error occurs while 
+   *                                   executing the argument expression.
    */
   protected Node getArg0AsNode(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
@@ -89,14 +92,17 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * NEEDSDOC Method getArg0AsString 
+   * Execute the first argument expression that is expected to return a 
+   * string.  If the argument is null, then get the string value from the 
+   * current context node.
    *
+   * @param xctxt Runtime XPath context.
    *
-   * NEEDSDOC @param xctxt
+   * @return The string value of the first argument, or the string value of the 
+   *         current context node if the first argument is null.
    *
-   * NEEDSDOC (getArg0AsString) @return
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if an error occurs while 
+   *                                   executing the argument expression.
    */
   protected String getArg0AsString(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
@@ -108,14 +114,17 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * NEEDSDOC Method getArg0AsNumber 
+   * Execute the first argument expression that is expected to return a 
+   * number.  If the argument is null, then get the number value from the 
+   * current context node.
    *
+   * @param xctxt Runtime XPath context.
    *
-   * NEEDSDOC @param xctxt
+   * @return The number value of the first argument, or the number value of the 
+   *         current context node if the first argument is null.
    *
-   * NEEDSDOC (getArg0AsNumber) @return
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @throws javax.xml.transform.TransformerException if an error occurs while 
+   *                                   executing the argument expression.
    */
   protected double getArg0AsNumber(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
@@ -127,12 +136,11 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Check that the number of arguments passed to this function is correct. 
    *
+   * @param argNum The number of arguments that is being passed to the function.
    *
-   * NEEDSDOC @param argNum
-   *
-   * @throws WrongNumberArgsException
+   * @throws WrongNumberArgsException if the number of arguments is not 0 or 1.
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {

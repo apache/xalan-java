@@ -1022,7 +1022,7 @@ public class Compiler extends OpMap
       {
         java.lang.String name = FunctionTable.m_functions[funcID].getName();
 
-        throw new TransformerException(name + " only allows " + wnae.m_argsExpected
+        throw new TransformerException(name + " only allows " + wnae.getMessage()
                                + " arguments");
       }
 

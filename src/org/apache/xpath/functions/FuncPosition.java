@@ -79,9 +79,10 @@ public class FuncPosition extends Function
   /**
    * Get the position in the current context node list.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt Runtime XPath context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The current position of the itteration in the context node list, 
+   *         or -1 if there is no active context node list.
    */
   public int getPositionInContextNodeList(XPathContext xctxt)
   {

@@ -83,10 +83,11 @@ import org.apache.xpath.objects.XString;
 public class FuncSystemProperty extends FunctionOneArg
 {
 
-  /** NEEDSDOC Field xsltInfo          */
+  /** List of properties where the name of the property argument is 
+   *  to be looked for.  */
   Properties xsltInfo = new Properties();
 
-  /** NEEDSDOC Field XSLT_PROPERTIES          */
+  /** The name of the property file where the name will be stored.  */
   static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
 
   /**
@@ -194,18 +195,12 @@ public class FuncSystemProperty extends FunctionOneArg
       return new XString(result);
   }
 
-  /*
-   * Retrieve a propery bundle from a specified file
-   * @param file The string name of the property file.  The file is loaded from the workplace base directory
-   * @param target The target property bag the file will be placed into.
-   */
-
   /**
-   * NEEDSDOC Method loadPropertyFile 
-   *
-   *
-   * NEEDSDOC @param file
-   * NEEDSDOC @param target
+   * Retrieve a propery bundle from a specified file
+   * 
+   * @param file The string name of the property file.  The file is loaded from 
+   *             the workplace base directory
+   * @param target The target property bag the file will be placed into.
    */
   public void loadPropertyFile(String file, Properties target)
   {

@@ -67,7 +67,7 @@ import org.apache.xpath.objects.XNumber;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Round() function.
+ * Execute the round() function.
  */
 public class FuncRound extends FunctionOneArg
 {

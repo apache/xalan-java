@@ -79,13 +79,14 @@ public class Function extends Expression
 {
 
   /**
-   * NEEDSDOC Method setArg 
+   * Set an argument expression for a function.  This method is called by the 
+   * XPath compiler.
    *
+   * @param arg non-null expression that represents the argument.
+   * @param argNum The argument number index.
    *
-   * NEEDSDOC @param arg
-   * NEEDSDOC @param argNum
-   *
-   * @throws WrongNumberArgsException
+   * @throws WrongNumberArgsException If the argNum parameter is beyond what 
+   * is specified for this function.
    */
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
@@ -94,10 +95,12 @@ public class Function extends Expression
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Check that the number of arguments passed to this function is correct.
+   * This method is meant to be overloaded by derived classes, to check for 
+   * the number of arguments for a specific function type.  This method is 
+   * called by the compiler for static number of arguments checking.
    *
-   *
-   * NEEDSDOC @param argNum
+   * @param argNum The number of arguments that is being passed to the function.
    *
    * @throws WrongNumberArgsException
    */

@@ -68,31 +68,39 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class FuncExtFunction <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * An object of this class represents an extension call expression.  When 
+ * the expression executes, it calls ExtensionsTable#extFunction, and then 
+ * converts the result to the appropriate XObject.
  */
 public class FuncExtFunction extends Function
 {
 
-  /** NEEDSDOC Field m_namespace          */
+  /** The namespace for the extension function, which should not normally 
+   *  be null or empty.    */
   String m_namespace;
 
-  /** NEEDSDOC Field m_extensionName          */
+  /** The local name of the extension.   */
   String m_extensionName;
 
-  /** NEEDSDOC Field m_methodKey          */
+  /** Unique method key, which is passed to ExtensionsTable#extFunction in 
+   *  order to allow caching of the method.  */
   Object m_methodKey;
 
-  /** NEEDSDOC Field m_argVec          */
+  /** Array of static expressions which represent the parameters to the 
+   *  function.   */
   Vector m_argVec = new Vector();
 
   /**
-   * Constructor FuncExtFunction
+   * Create a new FuncExtFunction based on the qualified name of the extension, 
+   * and a unique method key.
    *
-   *
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param extensionName
-   * NEEDSDOC @param methodKey
+   * @param namespace The namespace for the extension function, which should 
+   *                  not normally be null or empty. 
+   * @param extensionName The local name of the extension.
+   * @param methodKey Unique method key, which is passed to 
+   *                  ExtensionsTable#extFunction in order to allow caching 
+   *                  of the method.
    */
   public FuncExtFunction(java.lang.String namespace,
                          java.lang.String extensionName, Object methodKey)
@@ -182,13 +190,14 @@ public class FuncExtFunction extends Function
   }
 
   /**
-   * NEEDSDOC Method setArg 
+   * Set an argument expression for a function.  This method is called by the 
+   * XPath compiler.
    *
+   * @param arg non-null expression that represents the argument.
+   * @param argNum The argument number index.
    *
-   * NEEDSDOC @param arg
-   * NEEDSDOC @param argNum
-   *
-   * @throws WrongNumberArgsException
+   * @throws WrongNumberArgsException If the argNum parameter is beyond what 
+   * is specified for this function.
    */
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
@@ -197,10 +206,10 @@ public class FuncExtFunction extends Function
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Check that the number of arguments passed to this function is correct. 
    *
    *
-   * NEEDSDOC @param argNum
+   * @param argNum The number of arguments that is being passed to the function.
    *
    * @throws WrongNumberArgsException
    */

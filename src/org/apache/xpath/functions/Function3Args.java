@@ -59,20 +59,20 @@ package org.apache.xpath.functions;
 import org.apache.xpath.Expression;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Function3Args <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Base class for functions that accept three arguments.
  */
 public class Function3Args extends Function2Args
 {
 
-  /** NEEDSDOC Field m_arg2          */
+  /** The third argument passed to the function (at index 2).  */
   Expression m_arg2;
 
   /**
-   * NEEDSDOC Method getArg2 
+   * Return the third argument passed to the function (at index 2).
    *
-   *
-   * NEEDSDOC (getArg2) @return
+   * @return An expression that represents the third argument passed to the 
+   *         function.
    */
   public Expression getArg2()
   {
@@ -80,13 +80,13 @@ public class Function3Args extends Function2Args
   }
 
   /**
-   * NEEDSDOC Method setArg 
+   * Set an argument expression for a function.  This method is called by the 
+   * XPath compiler.
    *
+   * @param arg non-null expression that represents the argument.
+   * @param argNum The argument number index.
    *
-   * NEEDSDOC @param arg
-   * NEEDSDOC @param argNum
-   *
-   * @throws WrongNumberArgsException
+   * @throws WrongNumberArgsException If the argNum parameter is greater than 2.
    */
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
@@ -101,10 +101,10 @@ public class Function3Args extends Function2Args
   }
 
   /**
-   * NEEDSDOC Method checkNumberArgs 
+   * Check that the number of arguments passed to this function is correct. 
    *
    *
-   * NEEDSDOC @param argNum
+   * @param argNum The number of arguments that is being passed to the function.
    *
    * @throws WrongNumberArgsException
    */

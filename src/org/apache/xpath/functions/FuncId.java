@@ -83,17 +83,17 @@ public class FuncId extends FunctionOneArg
 {
 
   /**
-   * NEEDSDOC Method getNodesByID 
+   * Fill in a list with nodes that match a space delimited list if ID 
+   * ID references.
    *
+   * @param xctxt The runtime XPath context.
+   * @param docContext The document where the nodes are being looked for.
+   * @param refval A space delimited list of ID references.
+   * @param usedrefs List of references for which nodes were found.
+   * @param nodeSet Node set where the nodes will be added to.
+   * @param mayBeMore true if there is another set of nodes to be looked for.
    *
-   * NEEDSDOC @param xctxt
-   * NEEDSDOC @param docContext
-   * NEEDSDOC @param refval
-   * NEEDSDOC @param usedrefs
-   * NEEDSDOC @param nodeSet
-   * NEEDSDOC @param mayBeMore
-   *
-   * NEEDSDOC (getNodesByID) @return
+   * @return The usedrefs value.
    */
   private StringVector getNodesByID(XPathContext xctxt, Document docContext,
                                     String refval, StringVector usedrefs,
