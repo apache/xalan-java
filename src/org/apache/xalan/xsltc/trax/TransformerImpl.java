@@ -182,6 +182,13 @@ public final class TransformerImpl extends Transformer
      */
     private boolean _isIdentity = false;
 
+    /**
+     * A hashtable to store parameters for the identity transform. These
+     * are not needed during the transformation, but we must keep track of 
+     * them to be fully complaint with the JAXP API.
+     */
+    private Hashtable _parameters = null;
+
     protected TransformerImpl(Properties outputProperties, int indentNumber, 
 	TransformerFactoryImpl tfactory) 
     {
@@ -1010,7 +1017,15 @@ public final class TransformerImpl extends Transformer
      * @param value The value to assign to the parameter
      */
     public void setParameter(String name, Object value) { 
-	_translet.addParameter(name, value, false);
+	if (_isIdentity) {
+	    if (_parameters == null) {
+		_parameters = new Hashtable();
+	    }
+	    _parameters.put(name, value);
+	}
+	else {
+	    _translet.addParameter(name, value, false);
+	}
     }
 
     /**
@@ -1019,7 +1034,12 @@ public final class TransformerImpl extends Transformer
      * parameter stack.
      */
     public void clearParameters() {  
-	_translet.clearParameters();
+	if (_isIdentity && _parameters != null) {
+	    _parameters.clear();
+	}
+	else {
+	    _translet.clearParameters();
+	}
     }
 
     /**
@@ -1031,7 +1051,12 @@ public final class TransformerImpl extends Transformer
      * @return An object that contains the value assigned to the parameter
      */
     public final Object getParameter(String name) {
-	return(_translet.getParameter(name));
+	if (_isIdentity) {
+	    return (_parameters != null) ? _parameters.get(name) : null;
+	}
+	else {
+	    return _translet.getParameter(name);
+	}
     }
 
     /**
