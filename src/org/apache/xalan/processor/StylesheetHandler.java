@@ -761,7 +761,8 @@ public class StylesheetHandler extends DefaultHandler
       // it binds the prefix, I'm going to make this sloppy for
       // testing purposes.
       if(
-	 "xalan:doc-cache-off".equals(target) ||
+        "xalan-doc-cache-off".equals(target) ||
+        "xalan:doc-cache-off".equals(target) ||
 	   ("doc-cache-off".equals(localName) &&
 	    ns.equals("org.apache.xalan.xslt.extensions.Redirect") )
 	 )
