@@ -102,7 +102,7 @@ public class Version
    */
   public static String getProduct()
   {
-    return "Xalan";
+    return org.apache.xalan.processor.XSLProcessorVersion.PRODUCT;
   }
 
   /**
@@ -126,7 +126,6 @@ public class Version
    */
   public static int getMajorVersionNum()
   {
-    // return 2;
     // NOTE: In post 2.2 builds, we should remove XSLProcessorVersion
     //  and simply store this info here or in the build.xml and use 
     //  Ant's filtering capability to replace it here
@@ -144,7 +143,6 @@ public class Version
    */
   public static int getReleaseVersionNum()
   {
-    //return 2;
     return org.apache.xalan.processor.XSLProcessorVersion.RELEASE;
   }
 
@@ -159,7 +157,6 @@ public class Version
    */
   public static int getMaintenanceVersionNum()
   {
-    //return 0;
     return org.apache.xalan.processor.XSLProcessorVersion.MAINTENANCE;
   }
 
@@ -182,7 +179,6 @@ public class Version
    */
   public static int getDevelopmentVersionNum()
   {
-    //return 13;
     return org.apache.xalan.processor.XSLProcessorVersion.DEVELOPMENT;
   }
 }

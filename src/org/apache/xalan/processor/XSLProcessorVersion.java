@@ -107,7 +107,7 @@ public class XSLProcessorVersion
    *            -  API or behaviour change.
    *            -  its designated as a reference release.
    */
-  public static int RELEASE = 2;
+  public static int RELEASE = 3;
 
   /**
    * Maintenance Drop Number.
