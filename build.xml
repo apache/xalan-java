@@ -22,6 +22,8 @@ Build targets
     This build file supports the following targets:
     - compile  compiles Xalan-J in ./build/classes.
     - jar      creates ./build/xalan.jar [the default target]
+    - samples  compiles samples and puts classes in ./build/xalanxamples.jar
+    - servlet compiles sample servlets and puts classes in ./build/xalanservlet.jar
     - docs     generates the human-written documentation in ./build/docs
     - javadocs [or apidocs] generates the API documentation in ./build/docs/apidocs
     - compat.jar compiles compatibility tree and creates ./build/xalanj1compat.jar
@@ -103,7 +105,7 @@ Copyright:
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
-            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/bugs.xsl,stylesheets/done.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl,stylesheets/xml2fo.xsl"/>
+            value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/done.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl,stylesheets/xml2fo.xsl"/>
   <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
   <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
@@ -136,12 +138,7 @@ Copyright:
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
       <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
     </java> 
-    <!-- We use a Notes agent to extract Xalan-Java 2 bugs from our SPR database into commits.xml.  The following operation 
-    transforms bugs.xml (just including open bugs) and puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->
-    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
-      <arg line="-in bugs.xml -xsl ${xdocs.style}/stylesheets/bugs.xsl -out ${xdocs.dir}/sources/xalan/BUGS"/>
-    </java>      
-    <!-- We use a Notes agent to extract Xalan-Java 2 commits from our team database into bugs.xml.  The following operation 
+    <!-- We use a Notes agent to extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
     transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
     readme.xml -->      
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
@@ -489,7 +486,7 @@ Copyright:
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml,commits.xml"/>
+      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,commits.xml"/>
     </copy>
           
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
