@@ -270,7 +270,7 @@ public class OutputFormatExtended extends OutputFormat
   public void setIndent( boolean indent )
   {
     // System.out.println("setIndent( "+indent+" )");
-    setPreserveSpace(false);
+    // setPreserveSpace(false);
     setIndenting(indent);
   }
 
@@ -304,6 +304,7 @@ public class OutputFormatExtended extends OutputFormat
     // System.out.println("setIndenting( "+on+" ), m_shouldRecordHasBeenSet: "+m_shouldRecordHasBeenSet);
     if(m_shouldRecordHasBeenSet)
       m_indentingHasBeenSet = true;
+    setPreserveSpace(!on);
     super.setIndenting(on);
   }
 
