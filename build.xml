@@ -409,14 +409,17 @@ Copyright:
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
    <javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.xalan.jar}" 
-           destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}"/>
+          destdir="${build.samples}" excludes="${exclude}" 
+          debug="${debug}"/>
    <javac srcdir="${samples.dir}/trax" classpath="${java.class.path}:${build.xalan.jar}" 
-           destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}"/>
+          destdir="${build.samples}" excludes="${exclude}" 
+          debug="${debug}"/>
    <javac srcdir="${samples.dir}/extensions" classpath="${java.class.path}:${build.xalan.jar}" 
-           destdir="${build.samples}" excludes="${exclude}" 
-           debug="${debug}"/> 
+          destdir="${build.samples}" excludes="${exclude}" 
+          debug="${debug}"/> 
+   <javac srcdir="${samples.dir}/Validate" classpath="${java.class.path}:${build.xalan.jar}" 
+          destdir="${build.samples}" excludes="${exclude}" 
+          debug="${debug}"/>               
     <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
          includes="*.class"/>                   
   </target>
