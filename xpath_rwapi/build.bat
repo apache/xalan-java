@@ -25,28 +25,30 @@ echo.
 rem Default command used to call java.exe or equivalent
 if "%_JAVACMD%" == "" set _JAVACMD=%JAVA_HOME%\bin\java
 
-rem Default _ANT_HOME to Xalan's checked-in copy if not set
-set _ANT_HOME=%ANT_HOME%
-if "%_ANT_HOME%" == "" set _ANT_HOME=.
+rem Currently, you must use Xalan's checkedin copy of ant etc.
+set _ANT_HOME=..
 
 rem Default locations of jars we depend on to run Ant on our build.xml file
 rem Set our local vars to all start with _underscore
+rem NOTE: *only* include Ant and parser; other .jars must be 
+rem     included in the build.xml file to allow Eclipse use
+rem Except, of course, the JavaCC.zip file which must be present too
 set _ANT_JAR=%ANT_JAR%
-if "%_ANT_JAR%" == "" set _ANT_JAR=..\bin\optional.jar;..\bin\ant.jar;..\bin\JavaCC.jar;..\bin\xalan.jar
+if "%_ANT_JAR%" == "" set _ANT_JAR=%_ANT_HOME%\bin\ant.jar
 set _PARSER_JAR=%PARSER_JAR%
-if "%_PARSER_JAR%" == "" set _PARSER_JAR=..\bin\xercesImpl.jar
+if "%_PARSER_JAR%" == "" set _PARSER_JAR=%_ANT_HOME%\bin\xercesImpl.jar
 set _XML-APIS_JAR=%XML-APIS_JAR%
-if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=..\bin\xml-apis.jar
+if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=%_ANT_HOME%\bin\xml-apis.jar
 
 rem Attempt to automatically add system classes to _CLASSPATH
 rem Use _underscore prefix to not conflict with user's settings
 set _CLASSPATH=%CLASSPATH%
 if exist "%JAVA_HOME%\lib\tools.jar" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
 if exist "%JAVA_HOME%\lib\classes.zip" set _CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
-set _CLASSPATH=%_ANT_JAR%;%_XML-APIS_JAR%;%_PARSER_JAR%;%_CLASSPATH%;..\bin\Tidy.jar
+set _CLASSPATH=%_ANT_JAR%;%_XML-APIS_JAR%;%_PARSER_JAR%;%_CLASSPATH%
 
 @echo on
-"%_JAVACMD%" -mx64m %JAVA_OPTS% -Dant.home="%ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+"%_JAVACMD%" -mx64m %JAVA_OPTS% -Dant.home="%_ANT_HOME%" -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 @echo off
 
 goto end

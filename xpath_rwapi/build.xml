@@ -8,8 +8,6 @@ Setup instructions:
    Before running an Ant build, you must
    
      - set the JAVA_HOME environment variable to the JDK root directory
-     - To build 'servlet' sample: Include Servlet SDK in your classpath
-     - To build docs/javadocs/xsltc: use JDK 1.2.x or higher
    
 Build Instructions:   
   To build, run
@@ -17,23 +15,18 @@ Build Instructions:
   in the directory where this file is located; you should also be 
   able to use an installation of Ant v1.4.1 or later.
    
-  build -projecthelp  will show a list of supported targets.
+  build -projecthelp  will  show a list of supported targets.
    
   Developers: include a description="" attribute in all user-callable targets.
         
-  If you build a target that depends on other targets, those other 
-  targets are *usually* created in the correct order; however a 
-  few of the larger targets like dist do not list all dependencies.
-  
 Authors:
   Shane Curcuru <shane_curcuru@lotus.com>
-  Don Leslie <donald_leslie@lotus.com>
   Scott Boag <scott_boag@us.ibm.com>
   Lionel Villard <villard@us.ibm.com>
 
 Copyright:
-  Copyright (c) 1999-2001 The Apache Software Foundation.
-   $Id: build.xml,v 1.174.2.1 2002/08/14 18:38:41 pauldick Exp $
+  Copyright (c) 1999-2003 The Apache Software Foundation.
+   $Id:$
 ==================================================================== -->
 
 <project name="XPathAPI" default="javacc" basedir=".">
@@ -41,7 +34,8 @@ Copyright:
   <property name="build.dir" value="../build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.debug" value="on"/>
-  <property name="bin.dir" value="../bin"/>
+  <!-- Note bin.dir assumes we're using Xalan's checked-in copy of ant.jar -->
+  <property name="bin.dir" value="${ant.home}/bin"/>
   <property name="jarfilename" value="xpathapi.jar"/>
 
   <property name="spec" value="xpath"/>
@@ -56,44 +50,58 @@ Copyright:
   <property name="test.expr" value="a/b/c"/>
   
   <path id="classpath">
+    <!-- This should include all .jars needed to compile, including 
+         a checked-in copy of xalan.jar and the JavaCC.zip file -->
     <fileset dir="${bin.dir}" includes="*.jar"/>
+    <fileset dir="${bin.dir}" includes="*.zip"/>
   </path>
 
   <path id="test.classpath">
+    <path refid="classpath" />
     <fileset dir="${build.dir}" includes="*.jar"/>
-    <fileset dir="${bin.dir}" includes="*.jar"/>
   </path>
 
   <target name="clean"
-    description="Clean up ALL classfiles and jars (but not generated .java source)">
+    description="Clean up ALL classfiles, generated sources, and ${jarfilename}">
     <delete dir="${build.classes}"/>
     <delete file="${build.dir}/${jarfilename}"/>
+    <delete file="${grammar.dir}/custom-xpath-grammar.xml"/>
+    <delete file="${target.parser}/xpath-grammar.jjt"/>
   </target>
 
-  <target name="gen-grammar">
-      <mkdir dir="${target.parser}"/>
-    
-		<!-- first customized from original xpath-grammar -->
-      <style style="${grammar.dir}/customize.xsl" in="${grammar.dir}/xpath-grammar.xml" 
-	    out="${grammar.dir}/custom-xpath-grammar.xml" force="yes" extension=".xml" destdir="${grammar.dir}"/>
-    
-      <style style="${tree.xsl}" in="${grammar.dir}/custom-xpath-grammar.xml" 
-	    out="${target.parser}/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}">
-      	<param name="spec" expression="${spec}"/>
-      	<param name="package-name" expression="org.apache.xpath.rwapi.impl.parser"/>
-      </style>
+  <target name="init">
+    <echo message="Preset classpath is ${java.class.path}; ant.home is ${ant.home}"/>
+    <mkdir dir="${build.classes}"/>
+    <mkdir dir="${target.parser}"/>
+  </target>
 
+  <!-- ==== Code generation targets ==== -->
+  <target name="gen-grammar" depends="init"
+    description="[1]Use style task to turn grammar into jjt files">
+
+    <!-- first customized from original xpath grammar -->
+    <style style="${grammar.dir}/customize.xsl" in="${grammar.dir}/xpath-grammar.xml" 
+      out="${grammar.dir}/custom-xpath-grammar.xml" force="yes" extension=".xml" 
+      destdir="${grammar.dir}" classpathref="classpath" />
+
+    <style style="${tree.xsl}" in="${grammar.dir}/custom-xpath-grammar.xml" 
+      out="${target.parser}/xpath-grammar.jjt" force="yes" extension=".jjt" 
+      destdir="${spec}" classpathref="classpath" >
+        <param name="spec" expression="${spec}"/>
+        <param name="package-name" expression="org.apache.xpath.rwapi.impl.parser"/>
+    </style>
   </target>
   
-  <target name="jjtree" depends="gen-grammar">
+  <target name="jjtree" depends="gen-grammar"
+    description="[2]Use JJTree to create tree sources">
     <jjtree target="${target.parser}/xpath-grammar.jjt" 
     		javacchome="${bin.dir}" 
     		outputdirectory="${target.parser}"
     		static="false"/>
   </target>
 
-  <target name="javacc" depends="jjtree">
-  	
+  <target name="javacc" depends="jjtree"
+    description="[3]Compile compile the tree sources">
     <javacc target="${target.parser}/xpath-grammar.jj" 
 	    javacchome="${bin.dir}"
 	    debugtokenmanager="${debug}"
@@ -105,25 +113,24 @@ Copyright:
         outputdirectory="${target.parser}"/>
   </target>
   
-  <target name="prepare">
-		<mkdir dir="${build.classes}"/>
-	</target>
-  
-  <target name="compile" depends="prepare">
+  <!-- ==== Code compilation and jar targets ==== -->
+  <target name="compile" depends="init"
+    description="[4]Compile all sources, including generated parser">
   	<javac srcdir="src" destdir="${build.classes}" debug="${build.debug}">
 	  	<classpath refid="classpath"/>
 	</javac>
   </target>
   
-  <target name="jar" depends="compile">
+  <target name="jar" depends="compile"
+    description="[5]Jar standalone XPath engine into ${jarfilename}">
     <jar jarfile="${build.dir}/${jarfilename}">
       <fileset dir="${build.classes}"
                includes="${rwapi.package}/**"/>
     </jar>
-
   </target>
 
-  <target name="test" depends="jar">
+  <target name="test" depends="jar"
+    description="[last]Run a simple test of XPath AST creation">
     <java fork="yes" classname="${test.class}" >
       <classpath refid="test.classpath" />
       <arg line="${test.expr}"/>
