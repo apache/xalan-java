@@ -5,7 +5,9 @@
     <action category="feature">starting node can be designated</action>
     <action category="feature">Can designate a named template to be invoked at startup</action>
     <action category="feature">External parameters: data types?</action>
-    <action category="feature">Default collation</action>
+    <action category="feature">xf:resolve-uri()</action>
+    <action category="feature" who="SB">() constructs empty sequence</action>
+    <action category="feature" who="SB">"instance of empty" test</action>
     <action category="feature">xsl:import-schema</action>
     <action category="feature" status="unstable">format-dateTime() and xsl:datetime-format</action>
     <action category="feature" status="unstable">xsl:principal-result-document</action>
@@ -74,7 +76,7 @@
     <action category="feature">xsl:result-document</action>
     <action category="feature">xsl:for-each-group</action>
     <action category="feature">OccurrenceIndicator::= ("*" |  "+" |  "?")? in match and select</action>
-    <action category="feature">XPath keywords: element, attribute, empty, document, item, atomic value</action>
+    <action category="feature">ItemType keywords: element, attribute, node, document, item, atomic value, etc.</action>
     <action category="feature">ExprComment ::= "{--" [^}]* "--}"</action>
     <action category="feature">to operator</action>
     <action category="feature">idiv (like div)</action>
