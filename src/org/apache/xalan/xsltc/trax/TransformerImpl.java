@@ -88,6 +88,7 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.sax.*;
 import javax.xml.transform.dom.*;
@@ -144,18 +145,27 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     public void transform(Source source, Result result)
 	throws TransformerException {
 
-	if (_translet == null)
+	if (_translet == null) {
 	    throw new TransformerException(TRANSLET_ERR_MSG);
+	}
 
 	_handler = getOutputHandler(result);
-	if (_handler == null)
+	if (_handler == null) { 
 	    throw new TransformerException(HANDLER_ERR_MSG);
+	}
 
-	if (_uriResolver != null)
+	if (_uriResolver != null) {
 	    _translet.setDOMCache(this);
-	
+	}
+
 	// Run the transformation
 	transform(source, _handler, _encoding);
+
+	// If a DOMResult, then we must set the DOM Tree so it can
+	// be retrieved later 
+	if (result instanceof DOMResult) {
+	    ((DOMResult)result).setNode(((SAX2DOM)_handler).getDOM());
+	}
     }
 
     /**
@@ -193,6 +203,10 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		else if (writer != null)
 		    return (new DefaultSAXOutputHandler(writer, _encoding));
 	    }
+	    // Handle DOMResult output handler
+	    else if (result instanceof DOMResult) {
+		return (new SAX2DOM());
+	    }
 
 	    // Common, final handling of all input sources, only used if the
 	    // other contents of the Result object could not be used
@@ -212,6 +226,11 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 	// If we cannot write to the location specified by the SystemId
 	catch (java.net.UnknownServiceException e) {
 	    throw new TransformerException(e);
+	}
+	// If we cannot create a SAX2DOM adapter
+	catch (ParserConfigurationException e) {
+	    throw new TransformerException(
+		"SAX2DOM adapter could not be created, " + e.getMessage());
 	}
 	// If we cannot create the file specified by the SystemId
 	catch (java.io.IOException e) {
@@ -250,8 +269,8 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final DOMSource   domsrc = (DOMSource)source;
 		final Document    tree = (Document)domsrc.getNode();
 		final DOM2SAX     dom2sax = new DOM2SAX(tree);
-		final InputSource input = SAXSource.sourceToInputSource(source);
-		final String      systemId = domsrc.getSystemId();
+		final InputSource input = null; 
+		final String      systemId = null; 
 		dtdMonitor.handleDTD(dom2sax);
 		dom2sax.setContentHandler(inputHandler);
 		dom2sax.parse(input);

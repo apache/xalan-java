@@ -107,6 +107,8 @@ public class DOM2SAX implements XMLReader , Locator {
 	SAXNotRecognizedException, SAXNotSupportedException 
     {
     }
+
+    // Input is not used.
     public void parse(InputSource input) throws IOException, SAXException {
 	Node currNode = _dom; 
 	while (currNode != null) {
