@@ -658,6 +658,15 @@ to the original result URI.
  If this is not available, references are relative to the source URI.</Log>
 </Commit>
 <Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath VariableStack.java</Modified>
+<Log>Added protection for null pointer exception that I discovered when
+ running some Cocoon tests. Since I've never seen this before,
+ I assume this is related to the changes that Gary made, but am
+ unsure as it's 4:00 in the morning and I'm too tired to look into it deeply.</Log>
+</Commit>
+<Commit category="core">
 <Who>curcuru@apache.org</Who>
 <DateCommitted>03/14/2001</DateCommitted>
 <Modified>java/src/org/apache/xalan/xslt Process.java</Modified>
@@ -674,5 +683,11 @@ to the original result URI.
 
  With this change, the parser defined in XSLTInfo.properties will be used
  only if jaxp is not available.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>03/14/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils StringVector.java</Modified>
+<Log>Added missing @serial Javadoc tags.</Log>
 </Commit>
 </Commits>
