@@ -296,6 +296,107 @@ public class SerializerToText extends SerializerToXML
 
     // flushWriter();
   }
+  
+  /**
+   * Once a surrogate has been detected, write the pair as a single
+   * character reference.
+   *
+   * @param c the first part of the surrogate.
+   * @param ch Character array.
+   * @param i position Where the surrogate was detected.
+   * @param end The end index of the significant characters.
+   * @return i+1.
+   * @throws IOException
+   * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
+   */
+  protected int writeUTF16Surrogate(char c, char ch[], int i, int end)
+          throws IOException, org.xml.sax.SAXException
+  {
+
+    // UTF-16 surrogate
+    int surrogateValue = getURF16SurrogateValue(c, ch, i, end);
+
+    i++;
+
+    // m_writer.write('x');
+    m_writer.write(surrogateValue);
+
+    return i;
+  }
+
+  
+  /**
+   * Normalize the characters, but don't escape.  Different from 
+   * SerializerToXML#writeNormalizedChars because it does not attempt to do 
+   * XML escaping at all.
+   *
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
+   * @param isCData true if a CDATA block should be built around the characters.
+   *
+   * @throws IOException
+   * @throws org.xml.sax.SAXException
+   */
+  void writeNormalizedChars(char ch[], int start, int length, boolean isCData)
+          throws IOException, org.xml.sax.SAXException
+  {
+
+    int end = start + length;
+
+    for (int i = start; i < end; i++)
+    {
+      char c = ch[i];
+
+      if (CharInfo.S_LINEFEED == c)
+      {
+        m_writer.write(m_lineSep, 0, m_lineSepLen);
+      }
+      else if (isCData && (c > m_maxCharacter))
+      {
+        if (i != 0)
+          m_writer.write("]]>");
+
+        // This needs to go into a function... 
+        if (isUTF16Surrogate(c))
+        {
+          i = writeUTF16Surrogate(c, ch, i, end);
+        }
+        else
+        {
+          m_writer.write(c);
+        }
+
+        if ((i != 0) && (i < (end - 1)))
+          m_writer.write("<![CDATA[");
+      }
+      else if (isCData
+               && ((i < (end - 2)) && (']' == c) && (']' == ch[i + 1])
+                   && ('>' == ch[i + 2])))
+      {
+        m_writer.write("]]]]><![CDATA[>");
+
+        i += 2;
+      }
+      else
+      {
+        if (c <= m_maxCharacter)
+        {
+          m_writer.write(c);
+        }
+
+        // This needs to go into a function... 
+        else if (isUTF16Surrogate(c))
+        {
+          i = writeUTF16Surrogate(c, ch, i, end);
+        }
+        else
+        {
+          m_writer.write(c);
+        }
+      }
+    }
+  }
 
   /**
    * Receive notification of cdata.
