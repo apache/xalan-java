@@ -180,6 +180,9 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", false,
                            "default", Constants.ATTRVAL_STRIP, "preserve",
                            Constants.ATTRVAL_PRESERVE);
+    XSLTAttributeDef spaceAttrLiteral =
+      new XSLTAttributeDef(Constants.S_XMLNAMESPACEURI, "space", 
+                                          XSLTAttributeDef.T_AVT, false);
     XSLTAttributeDef stylesheetPrefixAttr = new XSLTAttributeDef(null,
                                               "stylesheet-prefix",
                                               XSLTAttributeDef.T_CDATA, true);
@@ -272,6 +275,7 @@ public class XSLTSchema extends XSLTElementDef
                                      null /*alias */,
                                      templateElementsAndParams /* elements */,
                                      new XSLTAttributeDef[]{
+                                       spaceAttrLiteral, // special
                                        xslExcludeResultPrefixesAttr,
                                        xslExtensionElementPrefixesAttr,
                                        xslUseAttributeSetsAttr,

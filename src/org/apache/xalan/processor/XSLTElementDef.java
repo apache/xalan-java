@@ -410,12 +410,13 @@ public class XSLTElementDef
       XSLTAttributeDef attrDef = attrDefs[k];
       String uriDef = attrDef.getNamespace();
       String nameDef = attrDef.getName();
-
-      if (nameDef.equals("*") && equalsMayBeNullOrZeroLen(uri, uriDef))
+      
+      if (nameDef.equals("*") && (equalsMayBeNullOrZeroLen(uri, uriDef) || 
+          (uriDef != null && uri.length() > 0 && uriDef.equals("*"))))
       {
         return attrDef;
       }
-      else if (nameDef.equals("*"))
+      else if (nameDef.equals("*") && (uriDef == null))
       {
 
         // In this case, all attributes are legal, so return 
@@ -431,7 +432,7 @@ public class XSLTElementDef
 
     if (null == defaultDef)
     {
-      if (!equalsMayBeNullOrZeroLen(uri, Constants.S_XSLNAMESPACEURL))
+      if (uri.length() > 0 && !equalsMayBeNullOrZeroLen(uri, Constants.S_XSLNAMESPACEURL))
       {
         return XSLTAttributeDef.m_foreignAttr;
       }

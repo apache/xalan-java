@@ -339,8 +339,8 @@ public class XSLTElementProcessor
         {
 
           // Then barf, because this element does not allow this attribute.
-          handler.error(attributes.getQName(i)
-                        + "attribute is not allowed on the " + rawName
+          handler.error("\""+attributes.getQName(i)+"\""
+                        + " attribute is not allowed on the " + rawName
                         + " element!", null);
         }
         else

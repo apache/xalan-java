@@ -160,6 +160,34 @@ public class ElemLiteralResult extends ElemUse
 
     m_xslAttr.addElement(att);
   }
+  
+  /**
+   * Set the "xml:space" attribute.
+   * A text node is preserved if an ancestor element of the text node
+   * has an xml:space attribute with a value of preserve, and
+   * no closer ancestor element has xml:space with a value of default.
+   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+   *
+   * @param v  Enumerated value, either Constants.ATTRVAL_PRESERVE 
+   * or Constants.ATTRVAL_STRIP.
+   */
+  public void setXmlSpace(AVT avt)
+  {
+    // This function is a bit-o-hack, I guess...
+    addLiteralResultAttribute(avt);
+    String val = avt.getSimpleString();
+    if(val.equals("default"))
+    {
+      super.setXmlSpace(Constants.ATTRVAL_STRIP);
+    }
+    else if(val.equals("preserve"))
+    {
+      super.setXmlSpace(Constants.ATTRVAL_PRESERVE);
+    }
+    // else maybe it's a real AVT, so we can't resolve it at this time.
+  }
+
 
   /**
    * Get a literal result attribute by name.
