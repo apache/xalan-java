@@ -529,7 +529,9 @@ information.<br/><br/></item>
       <p>What it does: Trace uses the TraceListener and TraceManager classes to log transformation events.</p>
       <p>Run this sample from the Trace subdirectory with</p>
       <p><code>java Trace</code></p>
-      <p>and examine the result in events.log. For more information, see <link idref="usagepatterns" anchor="debugging">Debugger
+      <p>and examine the result in events.log. Additionally, run this sample from the extensions subdirectory with</p>
+      <p><code>java Trace 3-java-namespace</code></p>
+      <p>for the trace of a stylesheet with extensions. For more information, see <link idref="usagepatterns" anchor="debugging">Debugger
       Interface</link></p>
      </s2><anchor name="validate"/>
      <s2 title="Validate">

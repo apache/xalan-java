@@ -496,12 +496,14 @@ anchor="usestylesheetparamservlet">UseStylesheetParamServlet</link> and <link id
       <jump href="apidocs/org/apache/xalan/trace/TraceManager.html">TraceManager</jump> associated
       with the Transformer that will perform a given transformation.<br/><br/></li>
 		  <li><jump href="apidocs/org/apache/xalan/trace/TracerEvent.html">TracerEvent</jump> is an event that is 
-		  passed to the TraceListener.trace function. It is called before a node is 'executed' in the stylesheet.<br/><br/></li>
+		  passed to the TraceListener.trace() function. It is called before a node is 'executed' in the stylesheet.<br/><br/></li>
 		  <li><jump href="apidocs/org/apache/xalan/trace/GenerateEvent.html">GenerateEvent</jump> is an event that is 
 		  passed to the TraceListener.generated() function. It is called after an event occurs to create something in the result
       tree.<br/><br/></li>
       <li><jump href="apidocs/org/apache/xalan/trace/SelectionEvent.html">SelectionEvent</jump> is an event triggered by the
        selection of a stylesheet node.</li>
+		  <li><jump href="apidocs/org/apache/xalan/trace/ExtensionEvent.html">ExtensionEvent</jump> is an event that is 
+		  passed to the TraceListener.extension() function. It is called before an extension call is made.<br/><br/></li>
 		</ul>
     <p>The <link idref="commandline">command-line utility</link> uses the debugger interface when you include one or more of the
      following switches: <code>-TT</code>, <code>-TG</code>, <code>-TS</code>, <code>-TTC</code>.</p>
@@ -523,6 +525,8 @@ ptl.m_traceGeneration = true;
 ptl.m_traceSelection = true;
 // Print information whenever a template is invoked.
 ptl.m_traceTemplates = true;
+// Print information whenever an extension is called.
+ptl.m_traceExtension = true;
 
 // Set up the transformation    
 javax.xml.transform.TransformerFactory tFactory = 
