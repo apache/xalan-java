@@ -183,7 +183,15 @@ public class SerializerMessages extends ListResourceBundle {
                 "Warning:  The version of the output document is requested to be ''{0}''.  This version of XML is not supported.  The version of the output document will be ''1.0''." },
 
             {   MsgKey.ER_SCHEME_REQUIRED, 
-                "Scheme is required!" }
+                "Scheme is required!" },
+                
+            /*
+             * Note to translators:  The words 'Properties' and
+             * 'SerializerFactory' in this message are Java class names
+             * and should not be translated.
+             */    
+            {   MsgKey.ER_FACTORY_PROPERTY_MISSING,
+                "The Properties object passed to the SerializerFactory does not have a ''{0}'' property." },
 
         };
 

@@ -93,9 +93,12 @@ public final class SerializerFactory
       {
         String method = format.getProperty(OutputKeys.METHOD);
 
-        if (method == null)
-          throw new IllegalArgumentException(
-            "The output format has a null method name");
+        if (method == null) {
+            String msg = Utils.messages.createMessage(
+                MsgKey.ER_FACTORY_PROPERTY_MISSING,
+                new Object[] { OutputKeys.METHOD});
+            throw new IllegalArgumentException(msg);
+        }
 
         String className =
             format.getProperty(OutputPropertiesFactory.S_KEY_CONTENT_HANDLER);
@@ -108,10 +111,13 @@ public final class SerializerFactory
                 OutputPropertiesFactory.getDefaultMethodProperties(method);
             className = 
             methodDefaults.getProperty(OutputPropertiesFactory.S_KEY_CONTENT_HANDLER);
-                if (null == className)
-                throw new IllegalArgumentException(
-                    "The output format must have a '"
-                    + OutputPropertiesFactory.S_KEY_CONTENT_HANDLER + "' property!");
+            if (null == className) {
+                String msg = Utils.messages.createMessage(
+                    MsgKey.ER_FACTORY_PROPERTY_MISSING,
+                    new Object[] { OutputPropertiesFactory.S_KEY_CONTENT_HANDLER});
+                throw new IllegalArgumentException(msg);
+            }
+
         }
 
 
