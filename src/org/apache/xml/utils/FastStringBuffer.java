@@ -396,9 +396,7 @@ public class FastStringBuffer
    */
   public final void append(char value)
   {
-
-    if (value == null) 
-      return;
+    
     char[] chunk;
 
     // We may have preallocated chunks. If so, all but last should
