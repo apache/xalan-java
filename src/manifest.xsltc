@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Created-By: 1.2.2 (Sun Microsystems Inc.)
+Main-Class: org.apache.xalan.xsltc.compiler.XSLTC
+Class-Path: runtime.jar BCEL.jar Jlex.jar java_cup.jar xerces.jar xml-apis.jar
+
+
+Name: org/apache/xalan/xsltc
+Comment: Main XSLTC engine implementing TrAX/JAXP
+Specification-Title: Java API for XML Processing
+Specification-Vendor: Sun Microsystems Inc.
+Specification-Version: 1.1
+Implementation-Title: org.apache.xalan.xsltc
+Implementation-Version: @impl.version@
+Implementation-Vendor: Apache Software Foundation
+Implementation-URL: http://xml.apache.org/xalan-j/dist/
+
+
+
+
