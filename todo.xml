@@ -104,6 +104,13 @@
     This could be a bunch of stuff added to viewResults.xsl or could 
     be a separate stylesheet. See <b>SC</b> for details.
   </action>
+  
+  <action context="code" who="SB" packages="org.apache.xalan.serialize" category="samples" priority="high">
+    Fix the serializer so it can serialize arbitrary XPath expression results (other than Document nodes).
+    As it currently stands, the ApplyXPath sample only works when you give it an expression that returns 
+    the entire Document.
+  </action>
+  
  </actions>
 
  <actions>
