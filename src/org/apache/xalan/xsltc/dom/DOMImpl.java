@@ -1018,6 +1018,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    }
 		    _stack[_sp++] = parent;
 		}
+		_sp--;
 		_spStart = _sp;
 		return resetPosition();
 	    }
