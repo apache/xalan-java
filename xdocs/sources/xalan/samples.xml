@@ -83,7 +83,7 @@
       path.</li>
      <li>Be sure the java executable is on your path.</li>
      <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
-     <li>Run the sample from the command line (as indicated below)</li>
+     <li>Run the sample from the command line (as indicated below).</li>
     <li>Examine the application source files. You may also want to modify the source files. Remember that if you
      modify a java file, you must recompile the class and place it on the classpath before you can run the
      modified application.</li>
