@@ -436,17 +436,19 @@ public class XSLTEngineImpl implements  XSLTProcessor
         error(XSLTErrorResources.ER_NO_INPUT_STYLESHEET); //"Stylesheet input was not specified!");
       }
       
-      if (m_stylesheetRoot != null)
-      {
-        templates = m_stylesheetRoot.getObject();
-      }      
-
+     
       if(null == templates)
       {
-        error(XSLTErrorResources.ER_FAILED_PROCESS_STYLESHEET); //"Failed to process stylesheet!");
+        if (m_stylesheetRoot != null)
+          templates = m_stylesheetRoot.getObject();
+        else
+        {  
+          error(XSLTErrorResources.ER_FAILED_PROCESS_STYLESHEET); //"Failed to process stylesheet!");
+          return;
+        }  
       }
 
-      else if(null != sourceTree)
+      if(null != sourceTree)
       {
         try{
           m_transformerImpl = (TransformerImpl)templates.newTransformer(); 
