@@ -7,6 +7,7 @@
     <chapter id="whatsnew"><xsl:copy-of select="document('xalan/whatsnew.xml')"/></chapter>
     <chapter id="overview"><xsl:copy-of select="document('xalan/overview.xml')"/></chapter>
     <chapter id="getstarted"><xsl:copy-of select="document('xalan/getstarted.xml')"/></chapter>
+    <chapter id="faq"><xsl:copy-of select="document('xalan/faq.xml')"/></chapter>
     <chapter id="samples"><xsl:copy-of select="document('xalan/samples.xml')"/></chapter>
     <chapter id="commandline"><xsl:copy-of select="document('xalan/commandline.xml')"/></chapter>
     <chapter id="usagepatterns"><xsl:copy-of select="document('xalan/usagepatterns.xml')"/></chapter>
