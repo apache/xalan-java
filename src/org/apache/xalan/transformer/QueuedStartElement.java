@@ -257,7 +257,7 @@ public class QueuedStartElement extends QueuedSAXEvent
   void flush()
     throws SAXException
   {
-    if(isPending())
+    if(isPending)
     {
       if(null != m_name)
       {
@@ -275,7 +275,7 @@ public class QueuedStartElement extends QueuedSAXEvent
   void flushEnd()
     throws SAXException
   {
-    if(!isEnded())
+    if(!this.isEnded)
     {
       if(null != m_name)
       {

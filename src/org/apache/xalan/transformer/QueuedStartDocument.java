@@ -90,7 +90,7 @@ public class QueuedStartDocument extends QueuedSAXEvent
   void flush()
     throws SAXException
   {
-    if(isPending())
+    if(isPending)
     {
       m_contentHandler.startDocument();
       
@@ -113,7 +113,7 @@ public class QueuedStartDocument extends QueuedSAXEvent
   void flushEnd()
     throws SAXException
   {
-    if(!isEnded())
+    if(!this.isEnded)
     {
       m_contentHandler.endDocument();
       

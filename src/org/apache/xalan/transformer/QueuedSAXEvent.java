@@ -77,9 +77,10 @@ public abstract class QueuedSAXEvent
   static final int ELEM = 2;
   protected TraceManager m_traceManager;
   protected TransformerImpl m_transformer;
-  protected boolean m_isPending = false;
-  protected boolean m_isEnded = false;
   protected ContentHandler m_contentHandler;
+  
+  public boolean isPending = false;
+  public boolean isEnded = false;
   
   private int m_type;
   
@@ -121,25 +122,15 @@ public abstract class QueuedSAXEvent
    */
   void clearPending()
   {
-    m_isPending = false;
+    isPending = false;
   }
   
-  boolean isPending()
-  {
-    return m_isPending;
-  }
-
   void setPending(boolean b)
   {
-    m_isPending = b;
-    m_isEnded = !m_isPending;
+    isPending = b;
+    this.isEnded = !isPending;
   } 
   
-  boolean isEnded()
-  {
-    return m_isEnded;
-  }
-
   /**
    * Flush the event.
    */
@@ -156,13 +147,13 @@ public abstract class QueuedSAXEvent
     throws SAXException
   {
     reset();
-    m_isEnded = true;
+    this.isEnded = true;
   }
 
   
   void reset()
   {
-    m_isPending = false;
+    isPending = false;
   }
 
   
