@@ -84,6 +84,14 @@ public class FastStringBuffer
 {
   // If nonzero, forces the inial chunk size.
   /**/static final int DEBUG_FORCE_INIT_BITS=0;
+  
+  	// %BUG% %REVIEW% *****PROBLEM SUSPECTED: If data from an FSB is being copied
+  	// back into the same FSB (variable set from previous variable, for example) 
+  	// and blocksize changes in mid-copy... there's risk of severe malfunction in 
+  	// the read process, due to how the resizing code re-jiggers storage. Arggh. 
+  	// If we want to retain the variable-size-block feature, we need to reconsider 
+  	// that issue. For now, I have forced us into fixed-size mode.
+	static boolean DEBUG_FORCE_FIXED_CHUNKSIZE=true;
 
 	/** Manefest constant: Suppress leading whitespace.
 	 * This should be used when normalize-to-SAX is called for the first chunk of a
@@ -211,6 +219,16 @@ public class FastStringBuffer
                           int rebundleBits)
   {
     if(DEBUG_FORCE_INIT_BITS!=0) initChunkBits=DEBUG_FORCE_INIT_BITS;
+    
+    // %REVIEW%
+    // Should this force to larger value, or smaller? Smaller less efficient, but if
+    // someone requested variable mode it's because they care about storage space.
+    // On the other hand, given the other changes I'm making, odds are that we should
+    // adopt the larger size. Dither, dither, dither... This is just stopgap workaround
+    // anyway; we need a permanant solution.
+    //
+    if(DEBUG_FORCE_FIXED_CHUNKSIZE) maxChunkBits=initChunkBits;
+    //if(DEBUG_FORCE_FIXED_CHUNKSIZE) initChunkBits=maxChunkBits;
 
     m_array = new char[16][];
 
@@ -324,14 +342,6 @@ public class FastStringBuffer
    * if additional storage does exist, its contents are unpredictable.
    * The only safe use for our setLength() is to truncate the FastStringBuffer
    * to a shorter string.
-   * <p>
-   * TODO: %REVEIW% Current setLength code is probably not the best solution.
-   * It releases memory that in theory we shouldn retain and
-   * reuse. Holding onto that would require recursive truncation of
-   * the inner FSB, and extending the append operations to recurse
-   * into the inner FSB when space exists within them. Could be done,
-   * but nontrivial change and adds some overhead to the append
-   * operation. Consider alternatives. 
    *
    * @param l New length. If l<0 or l>=getLength(), this operation will
    * not report an error but future operations will almost certainly fail.
@@ -343,6 +353,7 @@ public class FastStringBuffer
 
     if (m_lastChunk == 0 && m_innerFSB != null)
     {
+      // Replace this FSB with the appropriate inner FSB, truncated
       m_innerFSB.setLength(l, this);
     }
     else
@@ -371,6 +382,7 @@ public class FastStringBuffer
     {
 
       // Undo encapsulation -- pop the innerFSB data back up to root.
+      // Inefficient, but attempts to keep the code simple.
       rootFSB.m_chunkBits = m_chunkBits;
       rootFSB.m_maxChunkBits = m_maxChunkBits;
       rootFSB.m_rebundleBits = m_rebundleBits;
@@ -994,8 +1006,10 @@ public class FastStringBuffer
     if (stopChunk == 0 && m_innerFSB != null)
       m_innerFSB.sendSAXcharacters(ch, startColumn, stopColumn - startColumn);
     else if (stopColumn > startColumn)
+    {
       ch.characters(m_array[stopChunk], startColumn,
                     stopColumn - startColumn);
+    }
   }
   
   /**
@@ -1066,7 +1080,7 @@ public class FastStringBuffer
 		return stateForNextChunk;
   }
   
-  static char[] m_oneChar = {' '};
+  static final char[] SINGLE_SPACE = {' '};
 	  
   /**
    * Internal method to directly normalize and dispatch the character array.
@@ -1149,11 +1163,11 @@ public class FastStringBuffer
             if( len > 0)
             {
               if(needToFlushSpace)
-                handler.characters(m_oneChar, 0, 1);
+                handler.characters(SINGLE_SPACE, 0, 1);
                 
               handler.characters(ch, d, len);
               needToFlushSpace = true;
-              // handler.characters(m_oneChar, 0, 1);
+              // handler.characters(SINGLE_SPACE, 0, 1);
             }
             d = s+1;
           }
@@ -1179,7 +1193,7 @@ public class FastStringBuffer
           {
             if(needToFlushSpace)
             {
-              handler.characters(m_oneChar, 0, 1);
+              handler.characters(SINGLE_SPACE, 0, 1);
               needToFlushSpace = false;
             }
               
@@ -1207,7 +1221,7 @@ public class FastStringBuffer
     if(len > 0 || 0==(edgeTreatmentFlags&SUPPRESS_TRAILING_WS) )
     {
       if(needToFlushSpace)
-        handler.characters(m_oneChar, 0, 1); // Output single space
+        handler.characters(SINGLE_SPACE, 0, 1); // Output single space
 			if(len>0)
 				handler.characters(ch, d, len);
 			else
