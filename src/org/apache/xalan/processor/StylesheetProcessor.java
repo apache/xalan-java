@@ -75,7 +75,8 @@ import trax.TemplatesBuilder;
 
 /**
  * The StylesheetProcessor, which implements the TRaX Processor 
- * interface, processes XSLT Stylesheets into a Templates object.
+ * interface, processes XSLT stylesheets into a Templates object 
+ * (a StylesheetRoot).
  */
 public class StylesheetProcessor extends Processor
 {  

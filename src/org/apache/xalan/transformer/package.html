@@ -2,6 +2,7 @@
   <title>Xalan Transformer Package.</title>
   <body>
     <p>In charge of run-time transformations and the production of result trees.</p>
+    
     <p>TransformerImpl implements the TRaX Transformer interface, and extends the SAX XMLFilterImpl. It uses a SAX XMLParser to
     parse the XML input and sends parse events to an input SAX ContentHandler, org.apache.xalan.stree.SourceTreeHandler, which in
     turn uses org.apache.xalan.utils.DOMBuilder to assemble the input into a DOM tree (this step is unnecessary if the XML input

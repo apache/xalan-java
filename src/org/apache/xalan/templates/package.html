@@ -5,12 +5,13 @@
     
     <p>StylesheetRoot implements trax.Templates and extends StylesheetComposed, which is a Stylesheet composed of itself and its
     included Stylesheet objects. A StylesheetRoot also contains a global list of all imported StylesheetComposed objects. The
-    primary role of these objects is to hold immutable stylesheet data, not to perform procedural tasks associated with the
+    role of these objects is to hold immutable stylesheet data, not to perform procedural tasks associated with the
     construction of the data (the org.apache.xalan.processor package) or with the transformation (the org.apache.xalan.transformer
     package).</p>
-    <p>ElemTemplateElement is the superclass of all XSLT instruction elements, including Stylesheet. The <i>xxx</i>Func classes
-    derive from org.apache.xpath and implement XSLT functions. Unlike the Stylesheet "container" objects, these classes do contain
-    execute() methods that are called during the transformation.</p>
+    <p>ElemTemplateElement is the superclass of all XSLT instruction elements, including Stylesheet. The <i>x</i>Func classes
+    extend members of the org.apache.xpath package and implement XSLT functions. Unlike the Stylesheet "container" objects, the
+    instruction element and function classes do contain procedural execute() methods that are called during the
+    transformation.</p>
     <p>
     <dl>
       <dt><b>Version: </b></dt><dd>xalan-j_2_0_D01, September 6, 2000</dd>
