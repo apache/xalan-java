@@ -202,40 +202,71 @@ public class AttributeIterator extends LocPathIterator
       resetProximityPositions();
     }
 
-    Node next;
-
-    do
+    org.apache.xpath.VariableStack vars;
+    int savedStart;
+    if (-1 != m_varStackPos)
     {
-      m_lastFetched = next =
-        (null == m_attributeList || m_attrListPos >= m_nAttrs)
-        ? null : m_attributeList.item(m_attrListPos++);
+      vars = m_execContext.getVarStack();
 
-      if (null != next)
-      {
-        if(NodeFilter.FILTER_ACCEPT == acceptNode(next))
-          break;
-        else
-          continue;
-      }
-      else
-        break;
-    }
-    while (next != null);
+      // These three statements need to be combined into one operation.
+      savedStart = vars.getSearchStart();
 
-    if (null != next)
-    {
-      if (null != m_cachedNodes)
-        m_cachedNodes.addElement(m_lastFetched);
-
-      m_next++;
-
-      return next;
+      vars.setSearchStart(m_varStackPos);
+      vars.pushContextPosition(m_varStackContext);
     }
     else
     {
-      m_foundLast = true;
-
-      return null;
+      // Yuck.  Just to shut up the compiler!
+      vars = null;
+      savedStart = 0;
+    }
+    
+    try
+    {
+      Node next;
+  
+      do
+      {
+        m_lastFetched = next =
+          (null == m_attributeList || m_attrListPos >= m_nAttrs)
+          ? null : m_attributeList.item(m_attrListPos++);
+  
+        if (null != next)
+        {
+          if(NodeFilter.FILTER_ACCEPT == acceptNode(next))
+            break;
+          else
+            continue;
+        }
+        else
+          break;
+      }
+      while (next != null);
+  
+      if (null != next)
+      {
+        if (null != m_cachedNodes)
+          m_cachedNodes.addElement(m_lastFetched);
+  
+        m_next++;
+  
+        return next;
+      }
+      else
+      {
+        m_foundLast = true;
+  
+        return null;
+      }
+    }
+    finally
+    {
+      if (-1 != m_varStackPos)
+      {
+        // These two statements need to be combined into one operation.
+        vars.setSearchStart(savedStart);
+        vars.popContextPosition();
+      }
     }
   }
   

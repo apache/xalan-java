@@ -206,65 +206,96 @@ public class DescendantIterator extends LocPathIterator
       getSelf = false;  // never process the start node at this point.
     }
     
-    Node top = m_startContext; // tells us when to stop.
-    Node next = null;
-
-    // non-recursive depth-first traversal.
-    while (null != pos)
+    org.apache.xpath.VariableStack vars;
+    int savedStart;
+    if (-1 != m_varStackPos)
     {
-      if(getSelf)
-      {
-        if(NodeFilter.FILTER_ACCEPT == acceptNode(pos))
-        {
-          next = pos;
-          break;
-        }
-      }
-      else
-        getSelf = true;
-       
-      Node nextNode = pos.getFirstChild();
+      vars = m_execContext.getVarStack();
 
-      while (null == nextNode)
-      {
-        if (top.equals(pos))
-          break;
+      // These three statements need to be combined into one operation.
+      savedStart = vars.getSearchStart();
 
-        nextNode = pos.getNextSibling();
-
-        if (null == nextNode)
-        {
-          pos = pos.getParentNode();
-
-          if ((null == pos) || (top.equals(pos)))
-          {
-            nextNode = null;
-
-            break;
-          }
-        }
-      }
-
-      pos = nextNode;
-    }
-    
-    m_lastFetched = next;
-
-    if (null != next)
-    {
-      if (null != m_cachedNodes)
-        m_cachedNodes.addElement(next);
-
-      m_next++;
-
-      return next;
+      vars.setSearchStart(m_varStackPos);
+      vars.pushContextPosition(m_varStackContext);
     }
     else
     {
-      m_foundLast = true;
-      m_startContext = null;
-
-      return null;
+      // Yuck.  Just to shut up the compiler!
+      vars = null;
+      savedStart = 0;
+    }
+    
+    try
+    {
+      Node top = m_startContext; // tells us when to stop.
+      Node next = null;
+  
+      // non-recursive depth-first traversal.
+      while (null != pos)
+      {
+        if(getSelf)
+        {
+          if(NodeFilter.FILTER_ACCEPT == acceptNode(pos))
+          {
+            next = pos;
+            break;
+          }
+        }
+        else
+          getSelf = true;
+         
+        Node nextNode = pos.getFirstChild();
+  
+        while (null == nextNode)
+        {
+          if (top.equals(pos))
+            break;
+  
+          nextNode = pos.getNextSibling();
+  
+          if (null == nextNode)
+          {
+            pos = pos.getParentNode();
+  
+            if ((null == pos) || (top.equals(pos)))
+            {
+              nextNode = null;
+  
+              break;
+            }
+          }
+        }
+  
+        pos = nextNode;
+      }
+      
+      m_lastFetched = next;
+  
+      if (null != next)
+      {
+        if (null != m_cachedNodes)
+          m_cachedNodes.addElement(next);
+  
+        m_next++;
+  
+        return next;
+      }
+      else
+      {
+        m_foundLast = true;
+        m_startContext = null;
+  
+        return null;
+      }
+    }
+    finally
+    {
+      if (-1 != m_varStackPos)
+      {
+        // These two statements need to be combined into one operation.
+        vars.setSearchStart(savedStart);
+        vars.popContextPosition();
+      }
     }
   }
   

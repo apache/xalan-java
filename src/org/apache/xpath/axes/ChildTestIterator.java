@@ -70,7 +70,7 @@ import org.w3c.dom.traversal.NodeIterator;
 /**
  * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
- * children patterns that have a node test, but no predicate.
+ * children patterns that have a node test, and possibly a predicate.
  * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
 public class ChildTestIterator extends LocPathIterator
@@ -160,39 +160,71 @@ public class ChildTestIterator extends LocPathIterator
     }
 
     Node next;
-
-    do
+    
+    org.apache.xpath.VariableStack vars;
+    int savedStart;
+    if (-1 != m_varStackPos)
     {
-      m_lastFetched = next = (null == m_lastFetched)
-                             ? m_context.getFirstChild()
-                             : m_lastFetched.getNextSibling();
+      vars = m_execContext.getVarStack();
 
-      if (null != next)
-      {
-        if(NodeFilter.FILTER_ACCEPT == acceptNode(next))
-          break;
-        else
-          continue;
-      }
-      else
-        break;
-    }
-    while (next != null);
+      // These three statements need to be combined into one operation.
+      savedStart = vars.getSearchStart();
 
-    if (null != next)
-    {
-      if (null != m_cachedNodes)
-        m_cachedNodes.addElement(m_lastFetched);
-
-      m_next++;
-
-      return next;
+      vars.setSearchStart(m_varStackPos);
+      vars.pushContextPosition(m_varStackContext);
     }
     else
     {
-      m_foundLast = true;
-
-      return null;
+      // Yuck.  Just to shut up the compiler!
+      vars = null;
+      savedStart = 0;
+    }
+    
+    try
+    {
+      do
+      {
+        m_lastFetched = next = (null == m_lastFetched)
+                               ? m_context.getFirstChild()
+                               : m_lastFetched.getNextSibling();
+  
+        if (null != next)
+        {
+          if(NodeFilter.FILTER_ACCEPT == acceptNode(next))
+            break;
+          else
+            continue;
+        }
+        else
+          break;
+      }
+      while (next != null);
+  
+      if (null != next)
+      {
+        if (null != m_cachedNodes)
+          m_cachedNodes.addElement(m_lastFetched);
+  
+        m_next++;
+  
+        return next;
+      }
+      else
+      {
+        m_foundLast = true;
+  
+        return null;
+      }
+    }
+    finally
+    {
+      if (-1 != m_varStackPos)
+      {
+        // These two statements need to be combined into one operation.
+        vars.setSearchStart(savedStart);
+        vars.popContextPosition();
+      }
     }
   }
+
 }
