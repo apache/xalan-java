@@ -38,10 +38,8 @@ public abstract class Type implements Constants {
     public static final Type String     = new StringType();
     public static final Type ResultTree = new ResultTreeType();
     public static final Type Reference  = new ReferenceType();
-    public static final Type Void       = new VoidType();
-    
-    public static final Type Object       = new ObjectType(java.lang.Object.class);
-    public static final Type ObjectString = new ObjectType(java.lang.String.class);
+    public static final Type Void       = new VoidType();    
+    public static final Type Object     = new ObjectType(java.lang.Object.class);
 
     public static final Type Node       = new NodeType(NodeTest.ANODE);
     public static final Type Root       = new NodeType(NodeTest.ROOT);
@@ -60,8 +58,8 @@ public abstract class Type implements Constants {
             return Type.Object;
         }
         else if (javaClassName == "java.lang.String") {
-            return Type.ObjectString;
-        }
+            return Type.String;
+        } 
         else {
             return new ObjectType(javaClassName);
         }
@@ -76,7 +74,7 @@ public abstract class Type implements Constants {
             return Type.Object;
         }
         else if (clazz == java.lang.String.class) {
-            return Type.ObjectString;
+            return Type.String;
         }
         else {
             return new ObjectType(clazz);

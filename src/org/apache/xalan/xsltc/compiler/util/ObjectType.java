@@ -61,11 +61,15 @@ public final class ObjectType extends Type {
         _clazz = clazz;
         _javaClassName = clazz.getName();	
     }
-
+    
+    /**
+     * Must return the same value for all ObjectType instances. This is
+     * needed in CastExpr to ensure the mapping table is used correctly.
+     */
     public int hashCode() {
-        return toString().hashCode();
+        return java.lang.Object.class.hashCode();
     }
-
+    
     public boolean equals(Object obj) {
         return (obj instanceof ObjectType);
     }

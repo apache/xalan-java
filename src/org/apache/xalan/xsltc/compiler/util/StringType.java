@@ -79,9 +79,6 @@ public class StringType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType) type);
 	}
-        else if (type == Type.ObjectString) {
-            // NOP -> same representation
-        }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
