@@ -141,7 +141,8 @@ public final class DOMImpl implements DOM, Externalizable {
     private BitArray  _dontEscape = null; 
 
     // The URI to this document
-    private String    _documentURI;
+    private String    _documentURI = null;
+    static private int _documentURIIndex = 0;
 
     // Support for access/navigation through org.w3c.dom API
     private Node[] _nodes;
@@ -163,11 +164,11 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the origin of the document from which the tree was built
      */
     public String getDocumentURI() {
-	return(_documentURI);
+	return (_documentURI != null) ? _documentURI : "rtf" + _documentURIIndex++;
     }
 
     public String getDocumentURI(int node) {
-	return(_documentURI);
+	return getDocumentURI();
     }
 
     public void setupMapping(String[] names, String[] namespaces) {
@@ -1518,7 +1519,9 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int next() {
 	    while (++_node < _limit) {
-		if (_type[_node] > TEXT) return(returnNode(_node));
+		if (_type[_node] > TEXT) {
+		    return(returnNode(_node));
+		}
 	    } 
 	    return(NULL);
 	}

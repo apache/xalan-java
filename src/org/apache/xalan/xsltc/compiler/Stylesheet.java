@@ -117,6 +117,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private int _importPrecedence = 1;
     private Mode _defaultMode;
     private boolean _multiDocument = false;
+    private boolean _callsNodeset = false;
 
     // All named key elements (needed by Key/IdPattern)
     private Hashtable _keys = new Hashtable();
@@ -153,6 +154,15 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public boolean isMultiDocument() {
 	return _multiDocument;
+    }
+
+    public void setCallsNodeset(boolean flag) {
+	if (flag) setMultiDocument(flag);
+	_callsNodeset = flag;
+    }
+
+    public boolean callsNodeset() {
+	return _callsNodeset;
     }
 
     public void numberFormattingUsed() {

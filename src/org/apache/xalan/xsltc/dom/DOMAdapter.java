@@ -80,6 +80,8 @@ public final class DOMAdapter implements DOM {
     private short[] _NSreverse;
 
     private StripFilter _filter = null;
+
+    private int _multiDOMMask;
     
     public DOMAdapter(DOMImpl dom,
 		      String[] namesArray,
@@ -111,6 +113,14 @@ public final class DOMAdapter implements DOM {
 	return _domImpl.getTreeString();
     }
     
+    public int getMultiDOMMask() {
+	return _multiDOMMask;
+    }
+
+    public void setMultiDOMMask(int mask) {
+	_multiDOMMask = mask;
+    }
+
     public NodeIterator getChildren(final int node) {
 	NodeIterator iterator = _domImpl.getChildren(node);
 	if (_filter == null) {
@@ -139,8 +149,9 @@ public final class DOMAdapter implements DOM {
 
     public NodeIterator getAxisIterator(final int axis) {
 	NodeIterator iterator = _domImpl.getAxisIterator(axis);
-	if (_filter != null)
+	if (_filter != null) {
 	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
+	}
 	return(iterator);
     }
     

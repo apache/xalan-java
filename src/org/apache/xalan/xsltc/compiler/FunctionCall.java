@@ -86,9 +86,18 @@ class FunctionCall extends Expression {
     private final static Vector EMPTY_ARG_LIST = new Vector(0);
 
     // Valid namespaces for Java function-call extension
-    protected final static String JAVA_EXT_PREFIX = TRANSLET_URI + "/java";
+    protected final static String EXT_XSLTC = 
+	TRANSLET_URI;
+
+    protected final static String JAVA_EXT_XSLTC = 
+	EXT_XSLTC + "/java";
+
+    protected final static String EXT_XALAN =
+	"http://xml.apache.org/xalan";
+
     protected final static String JAVA_EXT_XALAN =
 	"http://xml.apache.org/xslt/java";
+
 
     // External Java function's class/method/signature
     private String     _className;
@@ -197,7 +206,7 @@ class FunctionCall extends Expression {
 	throws TypeCheckError
     {
 	final int length = 
-	    uri.startsWith(JAVA_EXT_PREFIX) ? JAVA_EXT_PREFIX.length() + 1 :
+	    uri.startsWith(JAVA_EXT_XSLTC) ? JAVA_EXT_XSLTC.length() + 1 :
 	    uri.startsWith(JAVA_EXT_XALAN) ? JAVA_EXT_XALAN.length() + 1 : 0;
 
 	if (length == 0) {
@@ -218,8 +227,11 @@ class FunctionCall extends Expression {
 	final String namespace = _fname.getNamespace();
 	final String local = _fname.getLocalPart();
 
-	// XPath functions have no namespace
-	if (isStandard()) {
+	if (isExtension()) {
+	    _fname = new QName(null, null, local);
+	    return typeCheckStandard(stable);
+	}
+	else if (isStandard()) {
 	    return typeCheckStandard(stable);
 	}
 	// Handle extension functions (they all have a namespace)
@@ -264,8 +276,7 @@ class FunctionCall extends Expression {
      * thrown, then catch it and re-throw it with a new "this".
      */
     public Type typeCheckStandard(SymbolTable stable) throws TypeCheckError {
-
-	_fname.clearNamespace(); // HACK!!!
+	_fname.clearNamespace(); 	// HACK!!!
 
 	final int n = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
@@ -388,8 +399,8 @@ class FunctionCall extends Expression {
      * Update true/false-lists.
      */
     public void translateDesynthesized(ClassGenerator classGen,
-				       MethodGenerator methodGen) {
-
+				       MethodGenerator methodGen) 
+    {
 	Type type = Type.Boolean;
 	if (_chosenMethodType != null)
 	    type = _chosenMethodType.resultType();
@@ -414,7 +425,7 @@ class FunctionCall extends Expression {
 	int index;
 
 	// Translate calls to methods in the BasisLibrary
-	if (isStandard()) {
+	if (isStandard() || isExtension()) {
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
 		exp.translate(classGen, methodGen);
@@ -491,10 +502,13 @@ class FunctionCall extends Expression {
 
     public boolean isStandard() {
 	final String namespace = _fname.getNamespace();
-	if ((namespace == null) || (namespace.equals(Constants.EMPTYSTRING)))
-	    return true;
-	else
-	    return false;
+	return (namespace == null) || (namespace.equals(Constants.EMPTYSTRING));
+    }
+
+    public boolean isExtension() {
+	final String namespace = _fname.getNamespace();
+	return (namespace != null) && (namespace.equals(EXT_XSLTC) 
+	    || namespace.equals(EXT_XALAN));
     }
 
     /**
@@ -506,7 +520,7 @@ class FunctionCall extends Expression {
 	Vector result = null;
 	final String namespace = _fname.getNamespace();
 
-	if (namespace.startsWith(JAVA_EXT_PREFIX) ||
+	if (namespace.startsWith(JAVA_EXT_XSLTC) ||
 	    namespace.startsWith(JAVA_EXT_XALAN)) {
 	    final int nArgs = _arguments.size();
 	    try {

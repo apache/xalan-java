@@ -114,6 +114,7 @@ public final class MultiDOM implements DOM {
 	public NodeIterator setStartNode(final int node) {
 	    _mask = node & SET;
 	    int dom = node >>> 24;
+
 	    // consider caching these
 	    if ((_type == NO_TYPE) || (_type == DOM.ELEMENT)) {
 		_source = _adapters[dom].getAxisIterator(_axis);
@@ -262,8 +263,7 @@ public final class MultiDOM implements DOM {
 	// This method only has a function in DOM adapters
     }
 
-    public int addDOMAdapter(DOM dom) {
-
+    public int addDOMAdapter(DOMAdapter dom) {
 	// Add the DOM adapter to the array of DOMs
 	final int domNo = _free++;
 	if (domNo == _size) {
@@ -275,9 +275,11 @@ public final class MultiDOM implements DOM {
 
 	// Store reference to document (URI) in hashtable
 	String uri = dom.getDocumentURI(0);
-	_documents.put(uri,new Integer(domNo));
+	_documents.put(uri, new Integer(domNo));
 	
-	return domNo << 24;
+	// Store mask in DOMAdapter
+	dom.setMultiDOMMask(domNo << 24);
+	return (domNo << 24);
     }
     
     public int getDocumentMask(String uri) {

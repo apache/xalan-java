@@ -79,6 +79,10 @@ import org.xml.sax.AttributeList;
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xalan.xsltc.dom.DOMAdapter;
+import org.apache.xalan.xsltc.dom.MultiDOM;
+import org.apache.xalan.xsltc.dom.AbsoluteIterator;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
 
 /**
@@ -445,6 +449,15 @@ public final class BasisLibrary implements Operators {
 	    return value.substring(0, colon);
 	else
 	    return EMPTYSTRING;
+    }
+
+    /**
+     * Implements the nodeset() extension function. 
+     */
+    public static NodeIterator nodesetF(DOM rtf) {
+	final DOMAdapter adapter = (DOMAdapter) rtf;
+	return new SingletonIterator(
+	    DOM.ROOTNODE | adapter.getMultiDOMMask(), true);
     }
 
     //-- Begin utility functions
