@@ -191,14 +191,14 @@ public class ElemTextLiteral extends ElemTemplateElement
   {
     if(TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-    if(!m_disableOutputEscaping)
+    if(m_disableOutputEscaping)
     {
-      transformer.getResultTreeHandler().characters(m_ch, 0, m_ch.length);
+      transformer.getResultTreeHandler().startNonEscaping();
     }
-    else
+    transformer.getResultTreeHandler().characters(m_ch, 0, m_ch.length);
+    if(m_disableOutputEscaping)
     {
-      transformer.getResultTreeHandler().charactersRaw(m_ch, 0, m_ch.length);
+      transformer.getResultTreeHandler().endNonEscaping();
     }
   }
 }

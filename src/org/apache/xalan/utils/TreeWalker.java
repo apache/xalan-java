@@ -63,6 +63,8 @@ import org.apache.xpath.DOM2Helper;
 import org.apache.xpath.DOMHelper;
 import org.apache.xalan.utils.NodeConsumer;
 
+import serialize.SerializerHandler;
+
 /**
  * <meta name="usage" content="advanced"/>
  * This class does a pre-order walk of the DOM tree, calling a ContentHandler
@@ -215,7 +217,7 @@ public class TreeWalker
         ProcessingInstruction pi = (ProcessingInstruction)node;
         String name = pi.getNodeName();
         // String data = pi.getData();
-        if(name.equals("xslt-next-is-raw") && name.equals("formatter-to-dom"))
+        if(name.equals("xslt-next-is-raw"))
         {
           nextIsRaw = true;
         }
@@ -249,14 +251,18 @@ public class TreeWalker
         if(nextIsRaw)
         {
           nextIsRaw = false;
-          if(this.m_contentHandler instanceof RawCharacterHandler)
+          boolean isSerH = (m_contentHandler instanceof SerializerHandler);
+          SerializerHandler serH = isSerH ? ((SerializerHandler)this.m_contentHandler) : null;
+          if(isSerH)
           {
-            ((RawCharacterHandler)this.m_contentHandler).charactersRaw(data.toCharArray(), 0, data.length());
+            serH.startNonEscaping();
           }
-          else
+          this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
           {
-            System.out.println("Warning: can't output raw characters!");
-            this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
+            if(isSerH)
+            {
+              serH.endNonEscaping();
+            }
           }
         }
         else

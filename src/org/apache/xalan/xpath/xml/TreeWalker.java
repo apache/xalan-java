@@ -61,7 +61,7 @@ import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.utils.AttList;
-import org.apache.xalan.utils.RawCharacterHandler;
+
 /**
  * <meta name="usage" content="advanced"/>
  * This class does a pre-order walk of the DOM tree, calling the FormatterListener

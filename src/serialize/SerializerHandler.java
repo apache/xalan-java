@@ -56,6 +56,7 @@
  */
 package serialize;
 
+import org.xml.sax.SAXException;
 
 /**
  * Interface that supplements {@link org.xml.sax.DocumentHandler} and
@@ -68,8 +69,6 @@ package serialize;
  */
 public interface SerializerHandler
 {
-
-
     /**
      * Starts an un-escaping section. All characters printed within an
      * un-escaping section are printed as is, without escaping special
@@ -79,7 +78,8 @@ public interface SerializerHandler
      * The contents of the un-escaping section will be delivered through
      * the regular <tt>characters</tt> event.
      */
-    public void startNonEscaping();
+    public void startNonEscaping()    
+      throws SAXException;
 
 
     /**
@@ -87,7 +87,8 @@ public interface SerializerHandler
      *
      * @see #startNonEscaping
      */
-    public void endNonEscaping();
+    public void endNonEscaping()    
+      throws SAXException;
 
 
     /**
@@ -100,7 +101,8 @@ public interface SerializerHandler
      * The contents of the whitespace preserving section will be delivered
      * through the regular <tt>characters</tt> event.
      */
-    public void startPreserving();
+    public void startPreserving()    
+      throws SAXException;
 
 
     /**
@@ -108,7 +110,8 @@ public interface SerializerHandler
      *
      * @see #startPreserving
      */
-    public void endPreserving();
+    public void endPreserving()    
+      throws SAXException;
 
 
 }

@@ -107,10 +107,10 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.DOM2Helper;
 
 // Serializer Imports
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.Method;
+import serialize.OutputFormat;
+import serialize.Serializer;
+import serialize.SerializerFactory;
+import serialize.Method;
 
 // DOM Imports
 import org.w3c.dom.Attr;
@@ -508,16 +508,16 @@ public class TransformerImpl extends XMLFilterImpl
       String method = format.getMethod();
       if(null == method)
         method = Method.XML;
-      SerializerFactory sfactory = SerializerFactory.getSerializerFactory(method);
       
       try
       {
         // System.out.println("createResultContentHandler -- format.getIndenting: "
         //                   +format.getIndenting());
-        Serializer serializer 
-          = (null != outputTarget.getCharacterStream()) ?
-            sfactory.makeSerializer(outputTarget.getCharacterStream(), format) :
-            sfactory.makeSerializer(outputTarget.getByteStream(), format);
+        Serializer serializer = SerializerFactory.getSerializer(format);
+        if(null != outputTarget.getCharacterStream())
+          serializer.setWriter(outputTarget.getCharacterStream());
+        else
+          serializer.setOutputStream(outputTarget.getByteStream());
         handler = serializer.asContentHandler();
       }
       catch(UnsupportedEncodingException uee)
@@ -901,11 +901,13 @@ public class TransformerImpl extends XMLFilterImpl
     StringWriter sw;
     try
     {
-      SerializerFactory sfactory = SerializerFactory.getSerializerFactory("text");
+      // SerializerFactory sfactory 
+      //  = SerializerFactory.getSerializerFactory("text");
       sw = new StringWriter();
       OutputFormat format = new OutputFormat();
       format.setPreserveSpace(true);
-      Serializer serializer = sfactory.makeSerializer(sw, format);
+      Serializer serializer = SerializerFactory.getSerializer(format);
+      serializer.setWriter(sw);
       shandler = serializer.asContentHandler();
     }
     catch(IOException ioe)

@@ -60,7 +60,7 @@
 // Software Foundation.  All rights reserved.
 package trax;
 
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 
 /**
  * The Templates object is the runtime representation of compiled 

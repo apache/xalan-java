@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 import java.util.Vector;
 import org.w3c.dom.Document;
 
@@ -125,11 +125,16 @@ public class OutputFormatExtended extends OutputFormat
    */
   public OutputFormatExtended( String method, String encoding, boolean indenting )
   {
-    super(method, encoding, indenting);
+    // super(method, encoding, indenting);
+    if(null != method)
+      super.setMethod(method);
+    if(null != encoding)
+      super.setEncoding(encoding);
+    super.setIndent(indenting);
     m_shouldRecordHasBeenSet = true;
   }
 
-  /**
+  /*
    * Constructs a new output format with the proper method,
    * document type identifiers and media type for the specified
    * document.
@@ -137,11 +142,12 @@ public class OutputFormatExtended extends OutputFormat
    * @param doc The document to output
    * @see #whichMethod
    */
-  public OutputFormatExtended( Document doc )
-  {
-    super(doc);
-    m_shouldRecordHasBeenSet = true;
-  }
+  // public OutputFormatExtended( Document doc )
+  // {
+    // super(doc);
+    // super();
+    // m_shouldRecordHasBeenSet = true;
+  // }
   
   /**
    * Constructs a new output format with the proper method,
@@ -157,11 +163,11 @@ public class OutputFormatExtended extends OutputFormat
    * @see #setIndenting
    * @see #whichMethod
    */
-  public OutputFormatExtended( Document doc, String encoding, boolean indenting )
-  {
-    super(doc, encoding, indenting);
-    m_shouldRecordHasBeenSet = true;
-  }
+  // public OutputFormatExtended( Document doc, String encoding, boolean indenting )
+  // {
+    // super(doc, encoding, indenting);
+    // m_shouldRecordHasBeenSet = true;
+  // }
   
   /**
    * The doctype-public attribute.
@@ -170,7 +176,8 @@ public class OutputFormatExtended extends OutputFormat
   {
     if(m_shouldRecordHasBeenSet)
       m_doctypePublicHasBeenSet = true;
-    super.setDoctype(publicId, this.getDoctypeSystem());
+    super.setDoctypePublicId(publicId);
+    // super.setDoctype(publicId, this.getDoctypeSystem());
   }
 
   /**
@@ -180,7 +187,8 @@ public class OutputFormatExtended extends OutputFormat
   {
     if(m_shouldRecordHasBeenSet)
       m_doctypeSystemHasBeenSet = true;
-    super.setDoctype(this.getDoctypePublic(), systemId);
+    // super.setDoctype(this.getDoctypePublic(), systemId);
+    super.setDoctypeSystemId(systemId);
   }
   
   /**
@@ -200,12 +208,23 @@ public class OutputFormatExtended extends OutputFormat
   {
     if(m_shouldRecordHasBeenSet)
       m_cdataElementsHasBeenSet = true;
-    // TO DO: I have to work something out with Assaf!
     int n = elements.size();
-    String elems[] = new String[n];
+    serialize.QName[] qnames = new QName[n];
     for(int i = 0; i < n; i++)
-      elems[i] = elements.elementAt(i).toString();
-    super.setCDataElements(elems);
+    {
+      qnames[i] = (QName)elements.elementAt(i);
+    }
+    super.setCDataElements(qnames);
+  }
+  
+  /**
+   * The cdata-section-elements attribute.
+   */
+  public void setCdataSectionElements(serialize.QName[] elements)
+  {
+    if(m_shouldRecordHasBeenSet)
+      m_cdataElementsHasBeenSet = true;
+    super.setCDataElements(elements);
   }
   
   /**
@@ -271,7 +290,7 @@ public class OutputFormatExtended extends OutputFormat
   {
     // System.out.println("setIndent( "+indent+" )");
     // setPreserveSpace(false);
-    setIndenting(indent);
+    setIndent(indent);
   }
 
   /**
@@ -287,7 +306,9 @@ public class OutputFormatExtended extends OutputFormat
     // System.out.println("setIndent( int indent )");
     if(m_shouldRecordHasBeenSet)
       m_indentHasBeenSet = true;
-    super.setIndent(indent);
+    // For the moment, there doesn't seem to be a way 
+    // to set the indenting amount.
+    // super.setIndent(indent);
   }
 
   /**
@@ -305,7 +326,7 @@ public class OutputFormatExtended extends OutputFormat
     if(m_shouldRecordHasBeenSet)
       m_indentingHasBeenSet = true;
     setPreserveSpace(!on);
-    super.setIndenting(on);
+    super.setIndent(on);
   }
 
   /**
@@ -370,7 +391,7 @@ public class OutputFormatExtended extends OutputFormat
    *
    * @param nonEscapingElements List of unescaped element tag names
    */
-  public void setNonEscapingElements( String[] nonEscapingElements )
+  public void setNonEscapingElements( serialize.QName[] nonEscapingElements )
   {
     // TODO: Need to work on this.
     if(m_shouldRecordHasBeenSet)

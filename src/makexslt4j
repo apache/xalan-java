@@ -218,7 +218,6 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)PrefixResolver.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)PrefixResolverDefault.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)QName.java \
-  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)RawCharacterHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringKey.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringToIntTable.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)utils$(PATHSEP)StringToStringTable.java \
@@ -242,6 +241,17 @@ SRCS = \
   trax$(PATHSEP)Transformer.java \
   trax$(PATHSEP)TransformException.java \
   trax$(PATHSEP)URIResolver.java \
+  serialize$(PATHSEP)DOMSerializer.java \
+  serialize$(PATHSEP)Method.java \
+  serialize$(PATHSEP)OutputFormat.java \
+  serialize$(PATHSEP)QName.java \
+  serialize$(PATHSEP)Serializer.java \
+  serialize$(PATHSEP)SerializerFactory.java \
+  serialize$(PATHSEP)SerializerHandler.java \
+  serialize$(PATHSEP)helpers$(PATHSEP)HTMLOutputFormat.java \
+  serialize$(PATHSEP)helpers$(PATHSEP)TextOutputFormat.java \
+  serialize$(PATHSEP)helpers$(PATHSEP)XHTMLOutputFormat.java \
+  serialize$(PATHSEP)helpers$(PATHSEP)XMLOutputFormat.java \
   synthetic$(PATHSEP)Class.java \
   synthetic$(PATHSEP)SynthesisException.java \
   synthetic$(PATHSEP)reflection$(PATHSEP)Constructor.java \
@@ -249,8 +259,21 @@ SRCS = \
   synthetic$(PATHSEP)reflection$(PATHSEP)Field.java \
   synthetic$(PATHSEP)reflection$(PATHSEP)Member.java \
   synthetic$(PATHSEP)reflection$(PATHSEP)Method.java \
-  org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java
-   
+  org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)BaseMarkupSerializer.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)ElementState.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Encodings.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)HTMLdtd.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)HTMLSerializer.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)IndentPrinter.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)LineSeparator.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Method.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Printer.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)SerializerFactoryImpl.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)TextSerializer.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)XHTMLSerializer.java \
+  org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)XMLSerializer.java
+    
 OBJS = $($(subst /,\\,$(SRCS)):%.java=classes/%.class)
 
 all: sincelast makesubdirs

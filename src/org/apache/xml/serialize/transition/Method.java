@@ -24,7 +24,7 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
+ * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
  *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
@@ -49,47 +49,56 @@
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * originally based on software copyright (c) 1999, International
+ * Business Machines, Inc., http://www.apache.org.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.dtm;
+
+
+package org.apache.xml.serialize.transition;
+
+import serialize.OutputFormat;
 
 /**
- * <meta name="usage" content="internal"/>
- * Simple class to hold an array of nodes.
+ * @version $Revision$ $Date$
+ * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
+ * @see OutputFormat
  */
-class DTMNodeVector
+public final class Method
 {
-  static final int BLOCKSIZE = 1024;
-  DTMProxy m_map[] = new DTMProxy[BLOCKSIZE];
-  int m_mapSize = BLOCKSIZE;
-  
-  DTMNodeVector()
-  {
-  }
-  
-  void put(int pos, DTMProxy value)
-  {
-    if(pos >= m_mapSize)
-    {
-      int orgMapSize = m_mapSize;
-      while(pos >= m_mapSize)
-        m_mapSize+=BLOCKSIZE;
-      DTMProxy newMap[] = new DTMProxy[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, orgMapSize);
-      m_map = newMap;
-    }
-    // For now, just do a simple append.  A sorted insert only 
-    // makes sense if we're doing an binary search or some such.
-    m_map[pos] = value;
-  }
-  
-  DTMProxy get(int pos)
-  {
-    if(pos >= m_mapSize)
-      return null;
-    return m_map[pos];
-  }
+    
+    
+    /**
+     * The output method for XML documents.
+     */
+    public static final String XML = "xml";
+    
+    
+    /**
+     * The output method for HTML documents.
+     */
+    public static final String HTML = "html";
+    
+    
+    /**
+     * The output method for HTML documents as XHTML.
+     */
+    public static final String XHTML = "xhtml";
+    
+    
+    /**
+     * The output method for text documents.
+     */
+    public static final String TEXT = "text";
+    
+    
+    /**
+     * The output method for FO documents as PDF.
+     */
+    public static final String FOP = "fop";
+    
+    
 }
+
+

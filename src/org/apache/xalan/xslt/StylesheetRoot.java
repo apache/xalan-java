@@ -63,7 +63,7 @@ import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 import trax.ProcessorException;
-import org.apache.xml.serialize.*;
+import serialize.*;
 
 /**
  * <meta name="usage" content="general"/> 

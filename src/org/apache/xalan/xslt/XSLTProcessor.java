@@ -79,7 +79,7 @@ import org.xml.sax.DocumentHandler;
 import org.xml.sax.SAXException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 import org.xml.sax.ext.LexicalHandler;
 
 /**

@@ -75,9 +75,6 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 
-// Needed Xerces classes
-import org.apache.xerces.parsers.DOMParser;
-
 // Needed TRaX classes
 import trax.Result;
 import trax.Processor;
@@ -100,9 +97,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // Needed Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
+import serialize.OutputFormat;
+import serialize.Serializer;
+import serialize.SerializerFactory;
 
 /**
  * <meta name="usage" content="general"/>
@@ -294,14 +291,6 @@ public class XSLTProcessorApplet extends Applet
    
   protected void initLiaison()
   {
-    try
-    { 
-    }
-    catch(Exception se)
-    {
-      se.printStackTrace();
-      throw new RuntimeException(se.getMessage());
-    }
   }
   
  /**
@@ -433,10 +422,13 @@ public class XSLTProcessorApplet extends Applet
 	    Templates templates = m_templatesBuilder.getTemplates();
 	    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
       
-	    Result result = new Result(pw);
-	    org.xml.sax.ContentHandler handler = 
-		   new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
-	  
+      // Result result = new Result(pw);
+      serialize.Serializer serializer 
+        = serialize.SerializerFactory.getSerializer( "HTML" );
+      serializer.setWriter(pw);
+      org.xml.sax.ContentHandler handler = serializer.asContentHandler();
+       // new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+                                       
         transformer.setContentHandler(handler);
 	    transformer.setParent(m_reader);
         transform(transformer, new InputSource(xmlbuf));
@@ -735,9 +727,11 @@ public class XSLTProcessorApplet extends Applet
       
       if(null != m_key)
         transformer.setParameter(m_key, null, m_expression);
-	  Result result = new Result(pw);
-	  org.xml.sax.ContentHandler handler = 
-		 new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+      // Result result = new Result(pw);
+      serialize.Serializer serializer 
+        = serialize.SerializerFactory.getSerializer( "HTML" );
+      serializer.setWriter(pw);
+      org.xml.sax.ContentHandler handler = serializer.asContentHandler();
 	  
       transformer.setContentHandler(handler);
 	  transformer.setParent(m_reader);

@@ -62,7 +62,7 @@ import java.util.Enumeration;
 import trax.ProcessorException;
 import org.apache.xpath.XPath;
 import org.apache.xalan.utils.QName;
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 import org.w3c.dom.Node;

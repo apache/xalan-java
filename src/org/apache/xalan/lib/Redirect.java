@@ -61,7 +61,7 @@ import java.io.*;
 import java.net.URL;
 import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;

@@ -72,20 +72,26 @@ public class QName
     /**
      * The local name.
      */
-    private String _localName;
+    protected String _localName;
 
 
     /**
      * The namespace URI.
      */
-    private String _namespaceURI;
+    protected String _namespaceURI;
 
 
     /**
      * The namespace prefix.
      */
-    private String _prefix;
+    protected String _prefix;
 
+    /**
+     * Constructs an empty QName.
+     */
+    protected QName()
+    {
+    }
 
 
     /**
@@ -156,6 +162,18 @@ public class QName
         return _localName;
     }
 
+    /**
+     * Override equals and agree that we're equal if 
+     * the passed object is a string and it matches 
+     * the name of the arg.
+     */
+    public boolean equals(String ns, String localPart)
+    {
+      return ( ( ( _localName == null && localPart == null ) ||
+                 ( _localName != null && _localName.equals( localPart ) ) ) &&
+               ( ( _namespaceURI == null && ns == null ) ||
+                 ( _namespaceURI != null && _namespaceURI.equals( ns ) ) ) );
+    }
 
     public boolean equals( Object object )
     {
@@ -165,9 +183,7 @@ public class QName
             return ( ( ( _localName == null && ( (QName) object )._localName == null ) ||
                        ( _localName != null && _localName.equals( ( (QName) object )._localName ) ) ) &&
                      ( ( _namespaceURI == null && ( (QName) object )._namespaceURI == null ) ||
-                       ( _namespaceURI != null && _namespaceURI.equals( ( (QName) object )._namespaceURI ) ) ) &&
-                     ( ( _prefix == null && ( (QName) object )._prefix == null ) ||
-                       ( _prefix != null && _prefix.equals( ( (QName) object )._prefix ) ) ) );
+                       ( _namespaceURI != null && _namespaceURI.equals( ( (QName) object )._namespaceURI ) ) ) );
     
         }
         return false;

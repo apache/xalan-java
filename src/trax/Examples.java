@@ -78,9 +78,9 @@ import org.xml.sax.ContentHandler;
 import org.w3c.dom.Node;
 
 // Needed Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
+import serialize.OutputFormat;
+import serialize.Serializer;
+import serialize.SerializerFactory;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -156,8 +156,8 @@ public class Examples
     Transformer transformer = templates.newTransformer();
     
     // Set the result handling to be a serialization to System.out.
-    SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-    Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
+    Serializer serializer = SerializerFactory.getSerializer("xml");
+    serializer.setOutputStream(System.out);
     transformer.setContentHandler(serializer.asContentHandler());
     
     // Cause the transformation to occur by asking the parser to send 
@@ -185,8 +185,8 @@ public class Examples
     Transformer transformer = templates.newTransformer();
 
     // Set the result handling to be a serialization to System.out.
-    SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-    Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
+    Serializer serializer = SerializerFactory.getSerializer(new OutputFormat());
+    serializer.setOutputStream(System.out);
     transformer.setContentHandler(serializer.asContentHandler());
 
     // The transformer will use a SAX parser as it's reader.    
@@ -231,8 +231,8 @@ public class Examples
     transformer3.setParent(transformer2);
     
     // transform3 will output the events to the serializer.
-    SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-    Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
+    Serializer serializer = SerializerFactory.getSerializer(new OutputFormat());
+    serializer.setOutputStream(System.out);
     transformer3.setContentHandler(serializer.asContentHandler());
 
     // Now, when you call transformer3 to parse, it will set  
@@ -274,8 +274,8 @@ public class Examples
 
       transformer.transformNode(doc, new Result(outNode));
       
-      SerializerFactory sf = SerializerFactory.getSerializerFactory("xml");
-      Serializer serializer = sf.makeSerializer(System.out, new OutputFormat());
+      Serializer serializer = SerializerFactory.getSerializer(new OutputFormat());
+      serializer.setOutputStream(System.out);
       serializer.asDOMSerializer().serialize(outNode);
     }
     else
@@ -311,7 +311,7 @@ public class Examples
 
     Templates templates = processor.process(new InputSource(xslID));
     OutputFormat oprops = templates.getOutputFormat();
-    oprops.setIndenting( true );
+    oprops.setIndent( true );
     Transformer transformer = templates.newTransformer();
     transformer.setOutputFormat(oprops);
     

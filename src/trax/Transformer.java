@@ -70,7 +70,7 @@ import org.xml.sax.DocumentHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ext.DeclHandler;
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 import org.w3c.dom.Node;
 
 /**

@@ -1,5 +1,6 @@
 package org.apache.xalan.stree;
 
+import java.util.Stack;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.apache.xalan.utils.DOMBuilder;
@@ -132,8 +133,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     ((DocumentImpl)m_root).setUseMultiThreading(getUseMultiThreading());
 
     m_sourceTreeHandler = new StreeDOMBuilder(m_root);
-    setShouldStripWhitespace(false);
-    
+    pushShouldStripWhitespace(false);    
     if(m_useMultiThreading && (null != m_transformer))
     {
       /*
@@ -158,6 +158,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
     ((Parent)m_root).setComplete(true);    
     m_sourceTreeHandler.endDocument();
+    popShouldStripWhitespace();    
     
     if(!m_useMultiThreading && (null != m_transformer))
     {
@@ -172,6 +173,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
                             String name, Attributes atts)
     throws SAXException
   {
+    pushShouldStripWhitespace(getShouldStripWhitespace());
     m_sourceTreeHandler.startElement(ns, localName, name, atts);
   }
 
@@ -184,6 +186,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
     ((Parent)m_sourceTreeHandler.getCurrentNode()).setComplete(true);
     m_sourceTreeHandler.endElement(ns, localName, name);
+    popShouldStripWhitespace();    
   }
 
   private boolean m_isCData = false;
@@ -440,16 +443,32 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   {
   }
   
-  private boolean m_shouldStripWhitespace = false;
+  static private Boolean S_TRUE = new Boolean(true);
+  static private Boolean S_FALSE = new Boolean(false);
+                                              
+  private Stack m_shouldStripWhitespace = new Stack();
   
   boolean getShouldStripWhitespace()
   {
-    return m_shouldStripWhitespace;
+    return (m_shouldStripWhitespace.empty() ? 
+            false : (m_shouldStripWhitespace.peek() == S_TRUE));
+  }
+  
+  void pushShouldStripWhitespace(boolean shouldStrip)
+  {
+    m_shouldStripWhitespace.push(shouldStrip ? S_TRUE : S_FALSE);
+  }
+  
+  void popShouldStripWhitespace()
+  {
+    m_shouldStripWhitespace.pop();
   }
   
   void setShouldStripWhitespace(boolean shouldStrip)
   {
-    m_shouldStripWhitespace = shouldStrip;
+    popShouldStripWhitespace();
+    pushShouldStripWhitespace(shouldStrip);
   }
+
 
 }

@@ -73,6 +73,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Parser;
 
+import javax.xml.parsers.*;
+
 /**
  * <meta name="usage" content="general"/>
  * Provides XSLTProcessor an interface to the Xerces XML parser.  This 
@@ -97,8 +99,8 @@ public class DOM2Helper extends DOMHelper
   public void checkNode(Node node)
     throws SAXException
   {
-    if(!(node instanceof org.apache.xerces.dom.NodeImpl))
-      throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XERCES_CANNOT_HANDLE_NODES, new Object[]{((Object)node).getClass()})); //"DOM2Helper can not handle nodes of type"
+    // if(!(node instanceof org.apache.xerces.dom.NodeImpl))
+    //  throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XERCES_CANNOT_HANDLE_NODES, new Object[]{((Object)node).getClass()})); //"DOM2Helper can not handle nodes of type"
         //+((Object)node).getClass());
   }
 
@@ -150,42 +152,50 @@ public class DOM2Helper extends DOMHelper
   public void parse (InputSource source)
     throws SAXException
   {
-    // I guess I should use JAXP factory here... when it's legal.
-    org.apache.xerces.parsers.DOMParser parser 
-      = new org.apache.xerces.parsers.DOMParser();
-    
-    // domParser.setFeature("http://apache.org/xml/features/dom/create-entity-ref-nodes", getShouldExpandEntityRefs()? false : true);
-    if(m_useDOM2getNamespaceURI)
-    {
-      parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
-      parser.setFeature("http://xml.org/sax/features/namespaces", true);
-    }
-    else
-    {
-      parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
-    }
-    
-    parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
-
-    String ident = (null == source.getSystemId())
-                   ? "Input XSL" : source.getSystemId();
-    parser.setErrorHandler(new org.apache.xalan.utils.DefaultErrorHandler(ident));
-
-    // if(null != m_entityResolver)
-    // {
-    // System.out.println("Setting the entity resolver.");
-    //  parser.setEntityResolver(m_entityResolver);
-    // }
-
     try
     {
-      parser.parse(source);
+      // I guess I should use JAXP factory here... when it's legal.
+      // org.apache.xerces.parsers.DOMParser parser 
+      //  = new org.apache.xerces.parsers.DOMParser();
+      DocumentBuilderFactory builderFactory 
+        = DocumentBuilderFactory.newInstance();
+      DocumentBuilder parser = builderFactory.newDocumentBuilder();
+      
+      /*
+      // domParser.setFeature("http://apache.org/xml/features/dom/create-entity-ref-nodes", getShouldExpandEntityRefs()? false : true);
+      if(m_useDOM2getNamespaceURI)
+      {
+      parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", true);
+      parser.setFeature("http://xml.org/sax/features/namespaces", true);
+      }
+      else
+      {
+      parser.setFeature("http://apache.org/xml/features/dom/defer-node-expansion", false);
+      }
+      
+      parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
+      */
+      String ident = (null == source.getSystemId())
+                     ? "Input XSL" : source.getSystemId();
+      parser.setErrorHandler(new org.apache.xalan.utils.DefaultErrorHandler(ident));
+
+      // if(null != m_entityResolver)
+      // {
+      // System.out.println("Setting the entity resolver.");
+      //  parser.setEntityResolver(m_entityResolver);
+      // }
+
+      setDocument(parser.parse(source));
+    }
+    catch(ParserConfigurationException pce)
+    {
+      throw new SAXException(pce);
     }
     catch(IOException ioe)
     {
       throw new SAXException(ioe);
     }
-    setDocument(((org.apache.xerces.parsers.DOMParser)parser).getDocument());
+    // setDocument(((org.apache.xerces.parsers.DOMParser)parser).getDocument());
   }
 
   /**

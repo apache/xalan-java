@@ -505,66 +505,27 @@ public class NodeSet extends
     int insertIndex = -1;
     if(test)
     {
-      try
+      // This needs to do a binary search, but a binary search 
+      // is somewhat tough because the sequence test involves 
+      // two nodes.
+      int size = size(), i;
+      for(i = size-1; i >= 0; i--)
       {
-        int index1 = ((org.apache.xalan.dtm.DTMProxy)node).getDTMNodeNumber();
-        
-        // This needs to do a binary search, but a binary search 
-        // is somewhat tough because the sequence test involves 
-        // two nodes.
-        int size = size(), i;
-        for(i = size-1; i >= 0; i--)
+        Node child = (Node)elementAt(i);
+        if(child == node)
         {
-          Node node2 = (Node)elementAt(i);
-          // Check to see if the nodes share the same parent.  If they 
-          // do not, then don't try to sort with it.
-          if(!((((1 == index1) && (node == node2)) ||
-             (node.getOwnerDocument() == node2.getOwnerDocument()))))
-          {
-            continue;
-          }
-          int index2 = ((org.apache.xalan.dtm.DTMProxy)node2).getDTMNodeNumber();
-          if((index2 == index1))
-          {
-            i = -2; // Duplicate, suppress insert
-            break; 
-          }
-          if(index2 < index1)
-          {
-            break;
-          }
+          i = -2; // Duplicate, suppress insert
+          break; 
         }
-        if(i != -2)
+        if(!support.getDOMHelper().isNodeAfter(node, child))
         {
-          insertIndex = i+1;
-          insertElementAt(node, insertIndex);
+          break;
         }
-        
       }
-      catch(ClassCastException cce)
+      if(i != -2)
       {
-        // This needs to do a binary search, but a binary search 
-        // is somewhat tough because the sequence test involves 
-        // two nodes.
-        int size = size(), i;
-        for(i = size-1; i >= 0; i--)
-        {
-          Node child = (Node)elementAt(i);
-          if(child == node)
-          {
-            i = -2; // Duplicate, suppress insert
-            break; 
-          }
-          if(!support.getDOMHelper().isNodeAfter(node, child))
-          {
-            break;
-          }
-        }
-        if(i != -2)
-        {
-          insertIndex = i+1;
-          insertElementAt(node, insertIndex);
-        }
+        insertIndex = i+1;
+        insertElementAt(node, insertIndex);
       }
     }
     else

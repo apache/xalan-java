@@ -75,37 +75,28 @@ import org.apache.xalan.res.XSLMessages;
  * is used as the name of the object. The default namespace is not used for 
  * unprefixed names."
  */
-public class QName implements java.io.Serializable
+public class QName extends serialize.QName implements java.io.Serializable
 {
   /**
    * The XML namespace.
    */
   public static final String S_XMLNAMESPACEURI = "http://www.w3.org/XML/1998/namespace";
   
-  /**
-   * The namespace, which may be null.
-   */
-  private String m_namespace;
   
   /**
    * Get the namespace of the qualified name.
    */
   public String getNamespace()
   {
-    return m_namespace;
+    return getNamespaceURI();
   }
-  
-  /**
-   * The local name.
-   */
-  private String m_localpart;
   
   /**
    * Get the local part of the qualified name.
    */
   public String getLocalPart()
   {
-    return m_localpart;
+    return getLocalName();
   }
 
   /**
@@ -120,26 +111,7 @@ public class QName implements java.io.Serializable
   {
     return m_hashCode;
   }
-  
-  /**
-   * Override equals and agree that we're equal if 
-   * the passed object is a string and it matches 
-   * the name of the arg.
-   */
-  public boolean equals(Object obj)
-  {
-    if(obj instanceof QName)
-    {
-      QName qname = (QName)obj;
-      return m_localpart.equals(qname.m_localpart) 
-             && (((null != m_namespace) && (null != qname.m_namespace)) 
-             ? m_namespace.equals(qname.m_namespace)
-               : ((null == m_namespace) && (null == qname.m_namespace)));
-    }
-          
-    return false;
-  }
-  
+    
   /**
    * Override equals and agree that we're equal if 
    * the passed object is a string and it matches 
@@ -147,10 +119,11 @@ public class QName implements java.io.Serializable
    */
   public boolean equals(String ns, String localPart)
   {
-      return m_localpart.equals(localPart) 
-             && (((null != m_namespace) && (null != ns)) 
-             ? m_namespace.equals(ns)
-               : ((null == m_namespace) && (null == ns)));
+    String thisnamespace = getNamespaceURI();
+    return getLocalName().equals(localPart) 
+           && (((null != thisnamespace) && (null != ns)) 
+               ? thisnamespace.equals(ns)
+                 : ((null == thisnamespace) && (null == ns)));
   }
 
 
@@ -161,10 +134,12 @@ public class QName implements java.io.Serializable
    */
   public boolean equals(QName qname)
   {
-    return m_localpart.equals(qname.m_localpart) 
-           && (((null != m_namespace) && (null != qname.m_namespace)) 
-           ? m_namespace.equals(qname.m_namespace)
-             : ((null == m_namespace) && (null == qname.m_namespace)));
+    String thisnamespace = getNamespaceURI();
+    String thatnamespace = qname.getNamespaceURI();
+    return getLocalName().equals(qname.getLocalName()) 
+           && (((null != thisnamespace) && (null != thatnamespace)) 
+           ? thisnamespace.equals(thatnamespace)
+             : ((null == thisnamespace) && (null == thatnamespace)));
   }
   
   /**
@@ -173,9 +148,7 @@ public class QName implements java.io.Serializable
    */
   public QName(String localName)
   {
-    m_namespace = null;
-    
-    m_localpart = localName;
+    super(null, localName);
     m_hashCode = toString().hashCode();
   }
   
@@ -184,9 +157,7 @@ public class QName implements java.io.Serializable
    */
   public QName(String ns, String localName)
   {
-    m_namespace = ns;
-    
-    m_localpart = localName;
+    super(null, localName);
     m_hashCode = toString().hashCode();
   }
   
@@ -236,15 +207,16 @@ public class QName implements java.io.Serializable
    */
   public QName(String qname, Stack namespaces)
   {
-    m_namespace = null;
+    String namespace = null;
+    String prefix = null;
 
     int indexOfNSSep = qname.indexOf(':');
     if(indexOfNSSep > 0)
     {
-      String prefix = qname.substring(0, indexOfNSSep);
+      prefix = qname.substring(0, indexOfNSSep);
       if(prefix.equals("xml"))
       {
-        m_namespace = S_XMLNAMESPACEURI;
+        namespace = S_XMLNAMESPACEURI;
       }
       else if(prefix.equals("xmlns"))
       {
@@ -260,7 +232,7 @@ public class QName implements java.io.Serializable
           {
             if((null != ns.m_prefix) && prefix.equals(ns.m_prefix))
             {
-              m_namespace = ns.m_uri;
+              namespace = ns.m_uri;
               i = -1;
               break;
             }
@@ -268,12 +240,14 @@ public class QName implements java.io.Serializable
           }
         }
       }  
-      if(null == m_namespace)
+      if(null == namespace)
       {
         throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE, new Object[]{prefix})); //"Prefix must resolve to a namespace: "+prefix);
       }
     }
-    m_localpart = (indexOfNSSep < 0) ? qname : qname.substring(indexOfNSSep+1);
+    _localName = (indexOfNSSep < 0) ? qname : qname.substring(indexOfNSSep+1);
+    _namespaceURI = namespace;
+    _prefix = prefix;
     m_hashCode = toString().hashCode();
   }
   
@@ -284,7 +258,7 @@ public class QName implements java.io.Serializable
    */
   public QName(String qname, Element namespaceContext, PrefixResolver resolver)
   {
-    m_namespace = null;
+    _namespaceURI = null;
 
     int indexOfNSSep = qname.indexOf(':');
     if(indexOfNSSep > 0)
@@ -292,15 +266,16 @@ public class QName implements java.io.Serializable
       if(null != namespaceContext)
       {
         String prefix = qname.substring(0, indexOfNSSep);
+        _prefix = prefix;
         if(prefix.equals("xml"))
         {
-          m_namespace = S_XMLNAMESPACEURI;
+          _namespaceURI = S_XMLNAMESPACEURI;
         }
         else
         {
-          m_namespace = resolver.getNamespaceForPrefix(prefix, namespaceContext);
+          _namespaceURI = resolver.getNamespaceForPrefix(prefix, namespaceContext);
         }  
-        if(null == m_namespace)
+        if(null == _namespaceURI)
         {
           throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE, new Object[]{prefix})); //"Prefix must resolve to a namespace: "+prefix);
         }
@@ -311,7 +286,7 @@ public class QName implements java.io.Serializable
       }
     }
     
-    m_localpart = (indexOfNSSep < 0) ? qname : qname.substring(indexOfNSSep+1);
+    _localName = (indexOfNSSep < 0) ? qname : qname.substring(indexOfNSSep+1);
     m_hashCode = toString().hashCode();
   }
   
@@ -322,7 +297,7 @@ public class QName implements java.io.Serializable
    */
   public QName(String qname, PrefixResolver resolver)
   {
-    m_namespace = null;
+    _namespaceURI = null;
 
     int indexOfNSSep = qname.indexOf(':');
     if(indexOfNSSep > 0)
@@ -330,19 +305,19 @@ public class QName implements java.io.Serializable
       String prefix = qname.substring(0, indexOfNSSep);
       if(prefix.equals("xml"))
       {
-        m_namespace = S_XMLNAMESPACEURI;
+        _namespaceURI = S_XMLNAMESPACEURI;
       }
       else
       {
-        m_namespace = resolver.getNamespaceForPrefix(prefix);
+        _namespaceURI = resolver.getNamespaceForPrefix(prefix);
       }  
-      if(null == m_namespace)
+      if(null == _namespaceURI)
       {
         throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE, new Object[]{prefix})); //"Prefix must resolve to a namespace: "+prefix);
       }
     }
     
-    m_localpart = (indexOfNSSep < 0) ? qname : qname.substring(indexOfNSSep+1);
+    _localName = (indexOfNSSep < 0) ? qname : qname.substring(indexOfNSSep+1);
     m_hashCode = toString().hashCode();
   }
   
@@ -352,9 +327,9 @@ public class QName implements java.io.Serializable
    */
   public String toString()
   {
-    return (null != this.m_namespace) 
-           ? (this.m_namespace + ":" + this.m_localpart) 
-             : this.m_localpart;
+    return (null != this._namespaceURI) 
+           ? (this._namespaceURI + ":" + this._localName) 
+             : this._localName;
   }
 
 }

@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xml.serialize.OutputFormat;
+import serialize.OutputFormat;
 import java.util.Hashtable;
 import org.apache.xalan.templates.OutputFormatExtended;
 import org.apache.xalan.templates.StylesheetRoot;

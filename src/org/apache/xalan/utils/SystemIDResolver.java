@@ -57,8 +57,8 @@
 package org.apache.xalan.utils;
 
 import org.xml.sax.SAXException;
-import org.apache.xerces.utils.URI;
-import org.apache.xerces.utils.URI.MalformedURIException;
+import org.apache.xalan.utils.URI;
+import org.apache.xalan.utils.URI.MalformedURIException;
 
 public class SystemIDResolver
 {

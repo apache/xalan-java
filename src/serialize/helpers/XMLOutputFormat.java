@@ -95,7 +95,7 @@ public class XMLOutputFormat
     public XMLOutputFormat( boolean indenting )
     {
         this();
-        setIndenting( indenting );
+        setIndent( indenting );
         setPreserveSpace( false );
     }
 

@@ -63,7 +63,7 @@ import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
-import org.apache.xml.serialize.*;
+import serialize.*;
 
 import org.apache.xalan.utils.*;
 import org.apache.xpath.*;
@@ -152,13 +152,14 @@ public class StylesheetRoot
     OutputFormat cloned = new OutputFormatExtended();
     cloned.setPreserveSpace(true);
     cloned.setCDataElements(m_outputFormatComposed.getCDataElements());
-    cloned.setDoctype(m_outputFormatComposed.getDoctypePublic(), m_outputFormatComposed.getDoctypeSystem());
+    cloned.setDoctypePublicId(m_outputFormatComposed.getDoctypePublicId());
+    // cloned.setDoctype(m_outputFormatComposed.getDoctypePublic(), m_outputFormatComposed.getDoctypeSystem());
     cloned.setEncoding(m_outputFormatComposed.getEncoding());
     // System.out.println("getOutputFormat - m_outputFormatComposed.getIndent(): "+ m_outputFormatComposed.getIndent());
+    // cloned.setIndent(m_outputFormatComposed.getIndent());
     cloned.setIndent(m_outputFormatComposed.getIndent());
-    cloned.setIndenting(m_outputFormatComposed.getIndenting());
-    cloned.setLineSeparator(m_outputFormatComposed.getLineSeparator());
-    cloned.setLineWidth(m_outputFormatComposed.getLineWidth());
+    // cloned.setLineSeparator(m_outputFormatComposed.getLineSeparator());
+    // cloned.setLineWidth(m_outputFormatComposed.getLineWidth());
     cloned.setMediaType(m_outputFormatComposed.getMediaType());
     cloned.setMethod(m_outputFormatComposed.getMethod());
     cloned.setNonEscapingElements(m_outputFormatComposed.getNonEscapingElements());
@@ -281,19 +282,17 @@ public class StylesheetRoot
       if(of.cdataElementsHasBeenSet())
         m_outputFormatComposed.setCDataElements(of.getCDataElements());
       if(of.doctypePublicHasBeenSet())
-        m_outputFormatComposed.setDoctype(of.getDoctypePublic(), 
-                                          m_outputFormatComposed.getDoctypeSystem());
+        m_outputFormatComposed.setDoctypePublicId(of.getDoctypePublicId());
       if(of.doctypeSystemHasBeenSet())
-        m_outputFormatComposed.setDoctype(m_outputFormatComposed.getDoctypePublic(), 
-                                          of.getDoctypeSystem());
+        m_outputFormatComposed.setDoctypePublicId(of.getDoctypeSystemId());
       if(of.encodingHasBeenSet())
         m_outputFormatComposed.setEncoding(of.getEncoding());
       if(of.indentHasBeenSet())
         m_outputFormatComposed.setIndent(of.getIndent());
       if(of.indentingHasBeenSet())
       {
-        boolean indent = of.getIndenting();
-        m_outputFormatComposed.setIndenting(indent);
+        boolean indent = of.getIndent();
+        m_outputFormatComposed.setIndent(indent);
         m_outputFormatComposed.setPreserveSpace(!indent);
       }
       if(of.mediaTypeHasBeenSet())

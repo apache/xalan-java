@@ -76,6 +76,8 @@ import java.util.Vector;
 import java.util.Properties;
 import java.util.Enumeration;
 
+import java.util.Date;
+
 // Needed Xalan classes
 import org.apache.xalan.res.XSLMessages;
 
@@ -93,9 +95,6 @@ import org.apache.xalan.processor.StylesheetProcessor;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceListener;
 import org.apache.xalan.trace.TraceManager;
-
-// Needed Xerces classes
-import org.apache.xerces.parsers.DOMParser;
 
 // Needed TRaX classes
 import trax.Result;
@@ -117,9 +116,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // Needed Serializer classes
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
+import serialize.OutputFormat;
+import serialize.Serializer;
+import serialize.SerializerFactory;
 
 
 /**
@@ -190,6 +189,7 @@ public class Process
    *    -TEXT (Use simple Text formatter)
    *    -HTML (Use HTML formatter)
    *    -PARAM name expression (Set a stylesheet parameter)
+   *    -DIAG put out timing diagnostics
    * </pre>
    *  <p>Use -IN to specify the XML source document. To specify the XSL stylesheet, use -XSL
    *  or -LXCIN. To compile an XSL stylesheet for future use as -LXCIN input, use -LXCOUT.</p>
@@ -206,6 +206,7 @@ public class Process
     Runtime.getRuntime().traceMethodCalls(false); // turns Java tracing off
     boolean doStackDumpOnError = false;
     boolean setQuietMode = false;
+    boolean doDiag = false;
 
     // Runtime.getRuntime().traceMethodCalls(false);
     // Runtime.getRuntime().traceInstructions(false);
@@ -408,6 +409,10 @@ public class Process
           i++;
           // Handled above
         }
+        else if("-DIAG".equalsIgnoreCase(argv[i]))
+        {
+          doDiag = true;
+        }
         else if("-XML".equalsIgnoreCase(argv[i]))
         {
           outputType = "xml";
@@ -436,6 +441,7 @@ public class Process
       // The main XSL transformation occurs here!
       try
       {
+        long start = System.currentTimeMillis();
         if(null != dumpFileName)
         {
           dumpWriter = new PrintWriter( new FileWriter(dumpFileName) );
@@ -538,7 +544,10 @@ public class Process
           diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
           System.exit(-1);
         }
-        
+        long stop = System.currentTimeMillis();
+        long millisecondsDuration = stop - start;
+        if(doDiag)
+          diagnosticsWriter.println("\n\n========\nTransform of "+inFileName+" via "+xslFileName+" took "+millisecondsDuration+" ms");
       }
       catch(SAXParseException spe)
       {

@@ -81,8 +81,8 @@ import org.apache.xpath.VariableStack;
 import trax.Templates;
 
 // Serializer imports
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Serializer;
+import serialize.OutputFormat;
+import serialize.Serializer;
 
 // DOM Imports
 import org.w3c.dom.Node;

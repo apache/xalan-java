@@ -95,7 +95,7 @@ public class TextOutputFormat
     public TextOutputFormat( boolean indenting )
     {
         this();
-        setIndenting( indenting );
+        setIndent( indenting );
         setPreserveSpace( false );
     }
 

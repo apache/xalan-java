@@ -226,13 +226,14 @@ public class ElemValueOf extends ElemTemplateElement
         int len = s.length();
         if(len > 0)
         {
-          if(!m_disableOutputEscaping)
+          if(m_disableOutputEscaping)
           {
-            transformer.getResultTreeHandler().characters(s.toCharArray(), 0, s.length());
+            transformer.getResultTreeHandler().startNonEscaping();
           }
-          else
+          transformer.getResultTreeHandler().characters(s.toCharArray(), 0, s.length());
+          if(m_disableOutputEscaping)
           {
-            transformer.getResultTreeHandler().charactersRaw(s.toCharArray(), 0, s.length());
+            transformer.getResultTreeHandler().endNonEscaping();
           }
         }
       }
@@ -257,13 +258,14 @@ public class ElemValueOf extends ElemTemplateElement
             int len = s.length();
             if(len > 0)
             {
-              if(!m_disableOutputEscaping)
+              if(m_disableOutputEscaping)
               {
-                transformer.getResultTreeHandler().characters(s.toCharArray(), 0, s.length());
+                transformer.getResultTreeHandler().startNonEscaping();
               }
-              else
+              transformer.getResultTreeHandler().characters(s.toCharArray(), 0, s.length());
+              if(m_disableOutputEscaping)
               {
-                transformer.getResultTreeHandler().charactersRaw(s.toCharArray(), 0, s.length());
+                transformer.getResultTreeHandler().endNonEscaping();
               }
             }
           }

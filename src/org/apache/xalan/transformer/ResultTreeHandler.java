@@ -68,7 +68,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.apache.xalan.utils.DOMBuilder;
 import org.apache.xalan.utils.TreeWalker;
-import org.apache.xalan.utils.RawCharacterHandler;
 import org.apache.xalan.utils.MutableAttrListImpl;
 import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.QName;
@@ -77,13 +76,14 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.Method;
+import serialize.SerializerFactory;
+import serialize.OutputFormat;
+import serialize.Method;
 import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
+import serialize.SerializerHandler;
 
 /**
  * This class is a layer between the direct calls to the result 
@@ -95,7 +95,7 @@ import org.apache.xpath.DOMHelper;
  * can call startElement.
  */
 public class ResultTreeHandler 
-  implements ContentHandler, RawCharacterHandler, LexicalHandler
+  implements ContentHandler, SerializerHandler, LexicalHandler
 {
   /**
    * Create a new result tree handler.  The real content 
@@ -501,66 +501,12 @@ public class ResultTreeHandler
     if(m_haveDocContent)
     {
       flushPending();
-      /*
-      if((null != m_stylesheetRoot.getCDataSectionElems()) &&
-      !m_cdataStack.isEmpty() && (m_cdataStack.peek() == TRUE))
-      {
-      boolean isLexHandler = (m_flistener instanceof LexicalHandler);
-      if(isLexHandler)
-      ((LexicalHandler)m_flistener).startCDATA();
-
-      m_flistener.characters(ch, start, length);
-
-      if(isLexHandler)
-      ((LexicalHandler)m_flistener).endCDATA();
-
-      if(null != m_traceListeners)
-      fireGenerateEvent(new GenerateEvent(m_transformer,
-      GenerateEvent.EVENTTYPE_CDATA,
-      ch, start, length));
-      }
-      else
-      */
     } 
     
     getContentHandler().characters(ch, start, length);
     m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
                                                                         GenerateEvent.EVENTTYPE_CHARACTERS,
                                                                         ch, start, length));
-    
-    
-  }
-
-  /**
-   * Bottleneck the characters event.
-   */
-  public void charactersRaw (char ch[], int start, int length)
-    throws SAXException
-  {
-    m_haveDocContent = true;
-    flushPending();
-    /*
-    if(m_flistener instanceof org.apache.xml.serialize.BaseSerializer)
-    {
-    ((org.apache.xml.serialize.BaseSerializer)m_flistener).characters(new String( ch, start, length ), false, true);
-    }
-    else
-    */
-    if(getContentHandler() instanceof RawCharacterHandler)
-    {
-      ((RawCharacterHandler)getContentHandler()).charactersRaw(ch, start, length);
-    }
-    else if(getContentHandler() instanceof DOMBuilder)
-    {
-      ((DOMBuilder)getContentHandler()).charactersRaw(ch, start, length);
-    }
-    else
-    {
-      getContentHandler().characters(ch, start, length);
-    }
-    m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                      GenerateEvent.EVENTTYPE_CHARACTERS,
-                                                      ch, start, length));
   }
 
   /**
@@ -695,55 +641,75 @@ public class ResultTreeHandler
       ((LexicalHandler)getContentHandler()).endDTD();
     }
   }
-  
+    
   /**
-   * Tell if a given element name should output it's text
-   * as cdata.
-   * TODO: This is handling the cdata elems as strings instead
-   * of qnames... this needs to be fixed.
+   * Starts an un-escaping section. All characters printed within an
+   * un-escaping section are printed as is, without escaping special
+   * characters into entity references. Only XML and HTML serializers
+   * need to support this method.
+   * <p>
+   * The contents of the un-escaping section will be delivered through
+   * the regular <tt>characters</tt> event.
    */
-  boolean isCDataResultElem(String elementName)
+  public void startNonEscaping()
+    throws SAXException
   {
-    boolean is = false;
-    /*
-    OutputFormat outputFormat = m_stylesheetRoot.getOutput();
-    if(null == outputFormat)
-      return is;
-    String[] cdataElems = outputFormat.getCDataElements();
-    if(null != cdataElems)
+    flushPending();
+    if(getContentHandler() instanceof SerializerHandler)
     {
-      String elemNS = null;
-      String elemLocalName = null;
-      int indexOfNSSep = elementName.indexOf(':');
-      if(indexOfNSSep > 0)
-      {
-        String prefix = elementName.substring(0, indexOfNSSep);
-        if(prefix.equals("xml"))
-        {
-          elemNS = QName.S_XMLNAMESPACEURI;
-        }
-        else
-        {
-          elemNS = getURI(prefix);
-        }
-        if(null == elemNS)
-        {
-          throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PREFIX_MUST_RESOLVE, new Object[]{prefix}));//"Prefix must resolve to a namespace: "+prefix);
-        }
-      }
-      elemLocalName = (indexOfNSSep < 0) ? elementName : elementName.substring(indexOfNSSep+1);
-      int n = cdataElems.length;
-      for(int i = 0; i < n; i++)
-      {
-        // This needs to be a qname!
-        QName qname = cdataElems[i];
-        is = qname.equals(elemNS, elemLocalName);
-        if(is)
-          break;
-      }
+      ((SerializerHandler)getContentHandler()).startNonEscaping();
     }
-    */
-    return is;
+  }
+
+  /**
+   * Ends an un-escaping section.
+   *
+   * @see #startNonEscaping
+   */
+  public void endNonEscaping()
+    throws SAXException
+  {
+    flushPending();
+    if(getContentHandler() instanceof SerializerHandler)
+    {
+      ((SerializerHandler)getContentHandler()).endNonEscaping();
+    }
+  }
+
+  /**
+   * Starts a whitespace preserving section. All characters printed
+   * within a preserving section are printed without indentation and
+   * without consolidating multiple spaces. This is equivalent to
+   * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
+   * and HTML serializers need to support this method.
+   * <p>
+   * The contents of the whitespace preserving section will be delivered
+   * through the regular <tt>characters</tt> event.
+   */
+  public void startPreserving()
+    throws SAXException
+  {
+    flushPending();
+    if(getContentHandler() instanceof SerializerHandler)
+    {
+      ((SerializerHandler)getContentHandler()).startPreserving();
+    }
+  }
+
+
+  /**
+   * Ends a whitespace preserving section.
+   *
+   * @see #startPreserving
+   */
+  public void endPreserving()
+    throws SAXException
+  {
+    flushPending();
+    if(getContentHandler() instanceof SerializerHandler)
+    {
+      ((SerializerHandler)getContentHandler()).endPreserving();
+    }
   }
 
   /**

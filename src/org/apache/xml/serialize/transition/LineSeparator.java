@@ -24,7 +24,7 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
+ * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
  *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
@@ -49,54 +49,50 @@
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * originally based on software copyright (c) 1999, International
+ * Business Machines, Inc., http://www.apache.org.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.dtm;
+
+
+package org.apache.xml.serialize.transition;
+
+import serialize.OutputFormat;
 
 /**
- * <meta name="usage" content="internal"/>
- * Simple int lookup.
+ * @version $Revision$ $Date$
+ * @author <a href="mailto:arkin@intalio..com">Assaf Arkin</a>
+ * @see OutputFormat
  */
-class IntMap
+public final class LineSeparator
 {
-  static final int BLOCKSIZE = 64;
-  int m_map[] = new int[BLOCKSIZE];
-  int m_firstFree = 0;
-  int m_mapSize = BLOCKSIZE;
-  
-  IntMap()
-  {
-  }
-  
-  void put(int key, int value)
-  {
-    if((m_firstFree+2) >= m_mapSize)
-    {
-      m_mapSize+=BLOCKSIZE;
-      int newMap[] = new int[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
-      m_map = newMap;
-    }
-    // For now, just do a simple append.  A sorted insert only 
-    // makes sense if we're doing an binary search or some such.
-    m_map[m_firstFree] = key;
-    m_firstFree++;
-    m_map[m_firstFree] = value;
-    m_firstFree++;
-  }
-  
-  int get(int key)
-  {
-    for(int i = 0; i < m_firstFree; i+=2)
-    {
-      if(m_map[i] == key)
-      {
-        return m_map[i+1];
-      }
-    }
-    return -1;
-  }
+    
+    
+    /**
+     * Line separator for Unix systems (<tt>\n</tt>).
+     */
+    public static final String Unix = "\n";
+    
+    
+    /**
+     * Line separator for Windows systems (<tt>\r\n</tt>).
+     */
+    public static final String Windows = "\r\n";
+    
+    
+    /**
+     * Line separator for Macintosh systems (<tt>\r</tt>).
+     */
+    public static final String Macintosh = "\r";
+    
+    
+    /**
+     * Line separator for the Web (<tt>\n</tt>).
+     */
+    public static final String Web = "\n";
+    
+    
 }
+
+

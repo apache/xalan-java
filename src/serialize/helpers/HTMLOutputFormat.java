@@ -98,7 +98,7 @@ public class HTMLOutputFormat
     public HTMLOutputFormat( boolean indenting )
     {
         this();
-        setIndenting( indenting );
+        setIndent( indenting );
     }
 
 

@@ -124,10 +124,10 @@ public class OutputFormat
 
 
     /**
-     * The encoding to use, if an input stream is used, null for
+     * The encoding to use, if an input stream is used, UTF-8 for
      * the default.
      */
-    private String _encoding = null;
+    private String _encoding = "UTF-8";
 
 
     /**
@@ -174,6 +174,10 @@ public class OutputFormat
      */
     private boolean _preserve = false;
 
+    /**
+     * True if the document type should be marked as standalone.
+     */
+    private boolean _standalone = false;
 
 
     /**
@@ -258,7 +262,7 @@ public class OutputFormat
      *
      * @param ident True specifies identiation
      */
-    public void setIndenting( boolean indent )
+    public void setIndent( boolean indent )
     {
         _indent = indent;
     }
@@ -359,6 +363,28 @@ public class OutputFormat
     public String getDoctypeSystemId()
     {
         return _doctypeSystemId;
+    }
+    
+    /**
+     * Returns true if the document type is standalone.
+     * The default is false.
+     */
+    public boolean getStandalone()
+    {
+        return _standalone;
+    }
+
+
+    /**
+     * Sets document DTD standalone. The public and system
+     * identifiers must be null for the document to be
+     * serialized as standalone.
+     *
+     * @param standalone True if document DTD is standalone
+     */
+    public void setStandalone( boolean standalone )
+    {
+        _standalone = standalone;
     }
 
 

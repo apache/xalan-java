@@ -24,7 +24,7 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
+ * 4. The names "Xerces" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
  *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
@@ -49,57 +49,92 @@
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * originally based on software copyright (c) 1999, International
+ * Business Machines, Inc., http://www.apache.org.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.dtm;
+
+
+package org.apache.xml.serialize.transition;
+
+
+import java.util.Hashtable;
+
 
 /**
- * <meta name="usage" content="internal"/>
- * Map simple ints to objects.
+ * Holds the state of the currently serialized element.
+ *
+ *
+ * @version $Revision$ $Date$
+ * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
+ * @see BaseMarkupSerializer
  */
-class IntToObjectMap
+class ElementState
 {
-  static final int BLOCKSIZE = 64;
-  int m_map[] = new int[BLOCKSIZE];
-  Object m_objects[] = new Object[BLOCKSIZE];
-  int m_firstFree = 0;
-  int m_mapSize = BLOCKSIZE;
-  
-  IntToObjectMap()
-  {
-  }
-  
-  void put(int key, Object value)
-  {
-    if(m_firstFree >= m_mapSize)
-    {
-      m_mapSize+=BLOCKSIZE;
-      int newMap[] = new int[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree);
-      m_map = newMap;
-      Object newObjects[] = new Object[m_mapSize];
-      System.arraycopy(m_objects, 0, newObjects, 0, m_firstFree);
-      m_objects = newObjects;
-    }
-    // For now, just do a simple append.  A sorted insert only 
-    // makes sense if we're doing an binary search or some such.
-    m_map[m_firstFree] = key;
-    m_objects[m_firstFree] = value;
-    m_firstFree++;
-  }
-  
-  Object get(int key)
-  {
-    for(int i = 0; i < m_firstFree; i++)
-    {
-      if(m_map[i] == key)
-      {
-        return m_objects[i];
-      }
-    }
-    return null;
-  }
+
+
+    /**
+     * The element's raw tag name (local or prefix:local).
+     */
+    String rawName;
+
+
+    /**
+     * The element's local tag name.
+     */
+    String localName;
+
+
+    /**
+     * The element's namespace URI.
+     */
+    String namespaceURI;
+
+
+    /**
+     * True if element is space preserving.
+     */
+    boolean preserveSpace;
+
+
+    /**
+     * True if element is empty. Turns false immediately
+     * after serializing the first contents of the element.
+     */
+    boolean empty;
+
+
+    /**
+     * True if the last serialized node was an element node.
+     */
+    boolean afterElement;
+
+
+    /**
+     * True if textual content of current element should be
+     * serialized as CDATA section.
+     */
+    boolean doCData;
+
+
+    /**
+     * True if textual content of current element should be
+     * serialized as raw characters (unescaped).
+     */
+    boolean unescaped;
+
+
+    /**
+     * True while inside CData and printing text as CData.
+     */
+    boolean inCData;
+
+
+    /**
+     * Association between namespace URIs (keys) and prefixes (values).
+     */
+    Hashtable prefixes;
+
+
 }
