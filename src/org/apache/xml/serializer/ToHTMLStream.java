@@ -621,7 +621,7 @@ public class ToHTMLStream extends ToStream
                     if (null == doctypePublic)
                         writer.write(" SYSTEM \"");
                     else
-                        writer.write('"');
+                        writer.write(" \"");
 
                     writer.write(doctypeSystem);
                     writer.write('"');
