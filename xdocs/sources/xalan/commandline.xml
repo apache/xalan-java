@@ -97,7 +97,11 @@
 -TEXT (Use simple Text formatter)
 -HTML (Use HTML formatter)
 -PARAM name value (Set a stylesheet parameter)
--DIAG put out timing diagnostics</source>
+-DIAG put out timing diagnostics
+-URIRESOLVER fullClassName (Use a custom URIResolver)
+-ENTITYRESOLVER fullClassName (Use a custom EntityResolver)
+-CONTENTHANDLER fullClassName (Use a custom ContentHandler)
+</source>
       <p>Use <code>-IN</code> to specify the XML source document.</p> 
       <p>Use <code>-XSL</code> to specify the XSL stylesheet file.</p>
       <p>Use <code>-TEXT</code> if you want the output to include only element values (not element tags with element names and
@@ -106,5 +110,12 @@
       not well formed XML).</p>
       <p>To set stylesheet parameters from the command line, use <br/>
       <code>java org.apache.xalan.xslt.Process -PARAM <ref>name value</ref></code></p>
+      <p>Use <code>-URIRESOLVER</code> with a fully qualified class name to utilize a custom implementation of the
+      <jump href="apidocs/javax/xml/transform/URIResolver.html">URIResolver</jump> TrAX interface to resolve URIs for
+       xsl:include, xsl:import, and the document() function.</p>
+       <p>Use <code>-ENTITYRESOLVER</code> with a fully qualified class name to utilize a custom implementation of the
+       <jump href="apidocs/org/xml/sax/EntityResolver.html">EntityResolver</jump> SAX interface to handle external entity references.</p>
+       <p>Use <code>-CONTENTHANDLER</code> with a fully qualified class name to utilize a custom implementation of the 
+       <jump href="apidocs/org/xml/sax/ContentHandler.html">ContentHandler</jump> SAX interface to serialize output.</p>
    </s2>
 </s1>
