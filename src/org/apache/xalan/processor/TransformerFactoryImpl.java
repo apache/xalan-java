@@ -59,7 +59,9 @@ package org.apache.xalan.processor;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
+
 import javax.xml.transform.TransformerException;
+
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLFilter;
@@ -107,11 +109,11 @@ import java.util.Enumeration;
 public class TransformerFactoryImpl extends SAXTransformerFactory
 {
 
-  /** The Xalan properties file.    */
+  /** The Xalan properties file. */
   public static String XSLT_PROPERTIES =
     "/org/apache/xalan/res/XSLTInfo.properties";
 
-  /** Flag tells if the properties file has been loaded to the system    */
+  /** Flag tells if the properties file has been loaded to the system */
   private static boolean isInited = false;
 
   /**
@@ -185,13 +187,13 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    *
    * @param node A DOM tree which must contain
    * valid transform instructions that this processor understands.
-   * 
+   *
    * @return A Templates object capable of being used for transformation purposes.
    *
    * @throws TransformerConfigurationException
    */
-  public javax.xml.transform.Templates processFromNode(Node node) 
-    throws TransformerConfigurationException
+  public javax.xml.transform.Templates processFromNode(Node node)
+          throws TransformerConfigurationException
   {
 
     try
@@ -205,10 +207,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
     catch (org.xml.sax.SAXException se)
     {
+
       // Should remove this later... but right now diagnostics from 
       // TransformerConfigurationException are not good.
       // se.printStackTrace();
-      throw new TransformerConfigurationException("processFromNode failed", se);
+      throw new TransformerConfigurationException("processFromNode failed",
+                                                  se);
     }
   }
 
@@ -238,7 +242,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * valid transform instructions that this processor understands.
    * @param systemID The systemID from where xsl:includes and xsl:imports
    * should be resolved from.
-   * 
+   *
    * @return A Templates object capable of being used for transformation purposes.
    *
    * @throws TransformerConfigurationException
@@ -260,7 +264,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * the given criteria.  Note that it is possible to return several stylesheets
    * that match the criteria, in which case they are applied as if they were
    * a list of imports or cascades.
-   * 
+   *
    * <p>Note that DOM2 has it's own mechanism for discovering stylesheets.
    * Therefore, there isn't a DOM version of this method.</p>
    *
@@ -276,16 +280,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @throws TransformerConfigurationException
    */
   public Source getAssociatedStylesheet(
-    Source source, String media, String title, String charset)
-      throws TransformerConfigurationException
+          Source source, String media, String title, String charset)
+            throws TransformerConfigurationException
   {
+
     String baseID;
     InputSource isource = null;
     Node node = null;
     XMLReader reader = null;
-    if(source instanceof DOMSource)
+
+    if (source instanceof DOMSource)
     {
-      DOMSource dsource = (DOMSource)source;
+      DOMSource dsource = (DOMSource) source;
+
       node = dsource.getNode();
       baseID = dsource.getSystemId();
     }
@@ -294,7 +301,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       isource = SAXSource.sourceToInputSource(source);
       baseID = isource.getSystemId();
     }
-    
 
     // What I try to do here is parse until the first startElement
     // is found, then throw a special exception in order to terminate 
@@ -304,29 +310,37 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
     try
     {
-      if(null != node)
+      if (null != node)
       {
         TreeWalker walker = new TreeWalker(handler);
+
         walker.traverse(node);
       }
       else
       {
+
         // Use JAXP1.1 ( if possible )
-        try {
-            javax.xml.parsers.SAXParserFactory factory=
-                javax.xml.parsers.SAXParserFactory.newInstance();
-            factory.setNamespaceAware( true );
-            javax.xml.parsers.SAXParser jaxpParser=
-                factory.newSAXParser();
-            reader=jaxpParser.getXMLReader();
-            
-        } catch( javax.xml.parsers.ParserConfigurationException ex ) {
-            throw new org.xml.sax.SAXException( ex );
-        } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-            throw new org.xml.sax.SAXException( ex1.toString() );
-        } catch( NoSuchMethodError ex2 ) {
+        try
+        {
+          javax.xml.parsers.SAXParserFactory factory =
+            javax.xml.parsers.SAXParserFactory.newInstance();
+
+          factory.setNamespaceAware(true);
+
+          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+
+          reader = jaxpParser.getXMLReader();
         }
-        
+        catch (javax.xml.parsers.ParserConfigurationException ex)
+        {
+          throw new org.xml.sax.SAXException(ex);
+        }
+        catch (javax.xml.parsers.FactoryConfigurationError ex1)
+        {
+          throw new org.xml.sax.SAXException(ex1.toString());
+        }
+        catch (NoSuchMethodError ex2){}
+
         if (null == reader)
         {
           reader = XMLReaderFactory.createXMLReader();
@@ -344,25 +358,33 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     }
     catch (org.xml.sax.SAXException se)
     {
-      throw new TransformerConfigurationException("getAssociatedStylesheets failed", se);
+      throw new TransformerConfigurationException(
+        "getAssociatedStylesheets failed", se);
     }
     catch (IOException ioe)
     {
-      throw new TransformerConfigurationException("getAssociatedStylesheets failed", ioe);
+      throw new TransformerConfigurationException(
+        "getAssociatedStylesheets failed", ioe);
     }
 
     return handler.getAssociatedStylesheet();
   }
 
   /**
-   * Get a TemplatesBuilder object that can process SAX
-   * events into a Templates object, if the processor supports the
-   * "http://xml.org/trax/features/sax/input" feature.
+   * Create a new Transformer object that performs a copy
+   * of the source to the result.
    *
-   * @throws TransformerConfigurationException
+   * @param source An object that holds a URI, input stream, etc.
+   *
+   * @return A Transformer object that may be used to perform a transformation
+   * in a single thread, never null.
+   *
+   * @exception TransformerConfigurationException May throw this during
+   *            the parse when it is constructing the
+   *            Templates object and fails.
    */
-  public TemplatesHandler newTemplatesHandler() 
-    throws TransformerConfigurationException
+  public TemplatesHandler newTemplatesHandler()
+          throws TransformerConfigurationException
   {
     return new StylesheetHandler(this);
   }
@@ -376,45 +398,47 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * in the case of an adapter for a SAX1 Parser, which has
    * no way of knowing whether the underlying parser is
    * validating, for example.</p>
-   * 
+   *
    * @param name The feature name, which is a fully-qualified URI.
    * @return The current state of the feature (true or false).
    */
   public boolean getFeature(String name)
   {
+
     // Try first with identity comparison, which 
     // will be faster.
-    if (   (DOMResult.FEATURE == name) || (DOMSource.FEATURE == name)
-           || (SAXResult.FEATURE == name) || (SAXSource.FEATURE == name)
-           || (StreamResult.FEATURE == name) || (StreamSource.FEATURE == name)
-           || (SAXTransformerFactory.FEATURE == name) 
-           || (SAXTransformerFactory.FEATURE_XMLFILTER == name)
-        )
+    if ((DOMResult.FEATURE == name) || (DOMSource.FEATURE == name)
+            || (SAXResult.FEATURE == name) || (SAXSource.FEATURE == name)
+            || (StreamResult.FEATURE == name)
+            || (StreamSource.FEATURE == name)
+            || (SAXTransformerFactory.FEATURE == name)
+            || (SAXTransformerFactory.FEATURE_XMLFILTER == name))
+      return true;
+    else if ((DOMResult.FEATURE.equals(name))
+             || (DOMSource.FEATURE.equals(name))
+             || (SAXResult.FEATURE.equals(name))
+             || (SAXSource.FEATURE.equals(name))
+             || (StreamResult.FEATURE.equals(name))
+             || (StreamSource.FEATURE.equals(name))
+             || (SAXTransformerFactory.FEATURE.equals(name))
+             || (SAXTransformerFactory.FEATURE_XMLFILTER.equals(name)))
       return true;
     else
-      if (   (DOMResult.FEATURE.equals(name)) || (DOMSource.FEATURE.equals(name))
-             || (SAXResult.FEATURE.equals(name)) || (SAXSource.FEATURE.equals(name))
-             || (StreamResult.FEATURE.equals(name)) || (StreamSource.FEATURE.equals(name))
-             || (SAXTransformerFactory.FEATURE.equals(name)) 
-             || (SAXTransformerFactory.FEATURE_XMLFILTER.equals(name))
-          )
-        return true;
-      else
-        return false;
+      return false;
   }
 
   /**
    * Allows the user to set specific attributes on the underlying
    * implementation.
-   * 
+   *
    * @param name The name of the attribute.
    * @param value The value of the attribute.
-   * 
+   *
    * @exception IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
    */
   public void setAttribute(String name, Object value)
-    throws IllegalArgumentException
+          throws IllegalArgumentException
   {
     throw new IllegalArgumentException(name);
   }
@@ -422,20 +446,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   /**
    * Allows the user to retrieve specific attributes on the underlying
    * implementation.
-   * 
+   *
    * @param name The name of the attribute.
    * @return value The value of the attribute.
-   * 
+   *
    * @exception IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
    */
-  public Object getAttribute(String name)
-    throws IllegalArgumentException
+  public Object getAttribute(String name) throws IllegalArgumentException
   {
     throw new IllegalArgumentException(name);
   }
 
-  
   /**
    * Create an XMLFilter that uses the given source as the
    * transformation instructions.
@@ -443,29 +465,36 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param src The source of the transformation instructions.
    *
    * @return An XMLFilter object, or null if this feature is not supported.
+   *
+   * @throws TransformerConfigurationException
    */
   public XMLFilter newXMLFilter(Source src)
-    throws TransformerConfigurationException
+          throws TransformerConfigurationException
   {
+
     Templates templates = newTemplates(src);
+
     return newXMLFilter(templates);
   }
-  
+
   /**
    * Create an XMLFilter that uses the given source as the
    * transformation instructions.
    *
    * @param src The source of the transformation instructions.
    *
+   * @param templates non-null reference to Templates object.
+   *
    * @return An XMLFilter object, or null if this feature is not supported.
+   *
+   * @throws TransformerConfigurationException
    */
   public XMLFilter newXMLFilter(Templates templates)
-    throws TransformerConfigurationException
+          throws TransformerConfigurationException
   {
     return new TrAXFilter(templates);
   }
 
-  
   /**
    * Get a TransformerHandler object that can process SAX
    * ContentHandler events into a Result, based on the transformation
@@ -474,18 +503,22 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param src The source of the transformation instructions.
    *
    * @return TransformerHandler ready to transform SAX events.
-   * 
+   *
    * @throws TransformerConfigurationException
    */
   public TransformerHandler newTransformerHandler(Source src)
-    throws TransformerConfigurationException
+          throws TransformerConfigurationException
   {
+
     Templates templates = newTemplates(src);
-    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
-    TransformerHandler th = (TransformerHandler)transformer.getInputContentHandler();
+    TransformerImpl transformer =
+      (TransformerImpl) templates.newTransformer();
+    TransformerHandler th =
+      (TransformerHandler) transformer.getInputContentHandler();
+
     return th;
   }
-  
+
   /**
    * Get a TransformerHandler object that can process SAX
    * ContentHandler events into a Result, based on the Templates argument.
@@ -496,22 +529,28 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @throws TransformerConfigurationException
    */
   public TransformerHandler newTransformerHandler(Templates templates)
-    throws TransformerConfigurationException
+          throws TransformerConfigurationException
   {
-    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
-    TransformerHandler th = (TransformerHandler)transformer.getInputContentHandler();
+
+    TransformerImpl transformer =
+      (TransformerImpl) templates.newTransformer();
+    TransformerHandler th =
+      (TransformerHandler) transformer.getInputContentHandler();
+
     return th;
   }
-  
-  private static final String identityTransform 
-    = "<xsl:stylesheet "+
-      "xmlns:xsl='http://www.w3.org/1999/XSL/Transform' "+
-      "version='1.0'>"+
-      "<xsl:template match='/|node()'>"+
-      "<xsl:copy-of select='.'/>"+
-      "</xsl:template>"+
-      "</xsl:stylesheet>";
-  
+
+  /** The identity transform string, for support of newTransformerHandler()
+   *  and newTransformer().  */
+  private static final String identityTransform =
+    "<xsl:stylesheet " + "xmlns:xsl='http://www.w3.org/1999/XSL/Transform' "
+    + "version='1.0'>" + "<xsl:template match='/|node()'>"
+    + "<xsl:copy-of select='.'/>" + "</xsl:template>" + "</xsl:stylesheet>";
+
+  /** The identity transform Templates, built from identityTransform, 
+   *  for support of newTransformerHandler() and newTransformer().  */
+  private static Templates m_identityTemplate = null;
+
   /**
    * Get a TransformerHandler object that can process SAX
    * ContentHandler events into a Result.
@@ -519,66 +558,87 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param src The source of the transformation instructions.
    *
    * @return TransformerHandler ready to transform SAX events.
-   * 
+   *
    * @throws TransformerConfigurationException
    */
   public TransformerHandler newTransformerHandler()
-    throws TransformerConfigurationException
+          throws TransformerConfigurationException
   {
-    StringReader reader = new StringReader(identityTransform);
-    
-    return newTransformerHandler(new StreamSource(reader));
+
+    if (null == m_identityTemplate)
+    {
+      synchronized (identityTransform)
+      {
+        if (null == m_identityTemplate)
+        {
+          StringReader reader = new StringReader(identityTransform);
+
+          m_identityTemplate = newTemplates(new StreamSource(reader));
+        }
+      }
+    }
+
+    return newTransformerHandler(m_identityTemplate);
   }
 
-  
   /**
-   * Process the source into a Transformer object.  Care must 
-   * be given to know that this object can not be used concurrently 
+   * Process the source into a Transformer object.  Care must
+   * be given to know that this object can not be used concurrently
    * in multiple threads.
    *
    * @param source An object that holds a URL, input stream, etc.
-   * 
-   * @return A Transformer object capable of 
+   *
+   * @return A Transformer object capable of
    * being used for transformation purposes in a single thread.
    *
    * @exception TransformerConfigurationException May throw this during the parse when it
    *            is constructing the Templates object and fails.
    */
-  public Transformer newTransformer(Source source) 
-    throws TransformerConfigurationException
+  public Transformer newTransformer(Source source)
+          throws TransformerConfigurationException
   {
-    Templates templates = newTemplates(source);
-    return templates.newTransformer();
+
+    return newTemplates(source).newTransformer();
   }
 
   /**
-   * Create a new Transformer object that performs a copy 
+   * Create a new Transformer object that performs a copy
    * of the source to the result.
    *
    * @param source An object that holds a URL, input stream, etc.
-   * 
-   * @return A Transformer object capable of 
+   *
+   * @return A Transformer object capable of
    * being used for transformation purposes in a single thread.
    *
-   * @exception TransformerConfigurationException May throw this during 
-   *            the parse when it is constructing the 
+   * @exception TransformerConfigurationException May throw this during
+   *            the parse when it is constructing the
    *            Templates object and it fails.
    */
-  public Transformer newTransformer() 
-    throws TransformerConfigurationException
+  public Transformer newTransformer() throws TransformerConfigurationException
   {
-    // Optimize this down the line?
-    StringReader reader = new StringReader(identityTransform);
-    
-    return newTransformer(new StreamSource(reader));
+
+    if (null == m_identityTemplate)
+    {
+      synchronized (identityTransform)
+      {
+        if (null == m_identityTemplate)
+        {
+          StringReader reader = new StringReader(identityTransform);
+
+          m_identityTemplate = newTemplates(new StreamSource(reader));
+        }
+      }
+    }
+
+    return m_identityTemplate.newTransformer();
   }
-  
+
   /**
-   * Process the source into a Templates object, which is likely 
-   * a compiled representation of the source. This Templates object 
-   * may then be used concurrently across multiple threads.  Creating 
-   * a Templates object allows the TransformerFactory to do detailed 
-   * performance optimization of transformation instructions, without 
+   * Process the source into a Templates object, which is likely
+   * a compiled representation of the source. This Templates object
+   * may then be used concurrently across multiple threads.  Creating
+   * a Templates object allows the TransformerFactory to do detailed
+   * performance optimization of transformation instructions, without
    * penalizing runtime transformation.
    *
    * @param source An object that holds a URL, input stream, etc.
@@ -587,50 +647,62 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @exception TransformerConfigurationException May throw this during the parse when it
    *            is constructing the Templates object and fails.
    */
-  public Templates newTemplates(Source source) 
-    throws TransformerConfigurationException
+  public Templates newTemplates(Source source)
+          throws TransformerConfigurationException
   {
+
     TemplatesHandler builder = newTemplatesHandler();
-    
     String baseID = source.getSystemId();
-    if(null == baseID)
+
+    if (null == baseID)
     {
-      String currentDir = System.getProperty("user.dir");;
-      baseID = "file:///"+currentDir+java.io.File.separatorChar+source.getClass().getName();
+      String currentDir = System.getProperty("user.dir");
+      ;
+
+      baseID = "file:///" + currentDir + java.io.File.separatorChar
+               + source.getClass().getName();
     }
+
     builder.setSystemId(baseID);
-    
-    if(source instanceof DOMSource)
+
+    if (source instanceof DOMSource)
     {
-      DOMSource dsource = (DOMSource)source;
+      DOMSource dsource = (DOMSource) source;
       Node node = dsource.getNode();
+
       return processFromNode(node, baseID);
     }
-    
+
     try
     {
       InputSource isource = SAXSource.sourceToInputSource(source);
-
       XMLReader reader = null;
+
       if (source instanceof SAXSource)
-        reader = ((SAXSource)source).getXMLReader();
+        reader = ((SAXSource) source).getXMLReader();
 
       // Use JAXP1.1 ( if possible )
-      try {
-          javax.xml.parsers.SAXParserFactory factory=
-              javax.xml.parsers.SAXParserFactory.newInstance();
-          factory.setNamespaceAware( true );
-          javax.xml.parsers.SAXParser jaxpParser=
-              factory.newSAXParser();
-          reader=jaxpParser.getXMLReader();
-          
-      } catch( javax.xml.parsers.ParserConfigurationException ex ) {
-          throw new org.xml.sax.SAXException( ex );
-      } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-          throw new org.xml.sax.SAXException( ex1.toString() );
-      } catch( NoSuchMethodError ex2 ) {
+      try
+      {
+        javax.xml.parsers.SAXParserFactory factory =
+          javax.xml.parsers.SAXParserFactory.newInstance();
+
+        factory.setNamespaceAware(true);
+
+        javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
+
+        reader = jaxpParser.getXMLReader();
       }
-      
+      catch (javax.xml.parsers.ParserConfigurationException ex)
+      {
+        throw new org.xml.sax.SAXException(ex);
+      }
+      catch (javax.xml.parsers.FactoryConfigurationError ex1)
+      {
+        throw new org.xml.sax.SAXException(ex1.toString());
+      }
+      catch (NoSuchMethodError ex2){}
+
       if (null == reader)
         reader = XMLReaderFactory.createXMLReader();
 
@@ -651,18 +723,18 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       reader.setContentHandler(builder);
       reader.parse(isource);
     }
-    catch(IOException ioe)
+    catch (IOException ioe)
     {
       throw new TransformerConfigurationException(ioe.getMessage(), ioe);
     }
-    catch(org.xml.sax.SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       throw new TransformerConfigurationException(se.getMessage(), se);
     }
 
     return builder.getTemplates();
   }
-  
+
   /**
    * Method setProperty
    *
@@ -672,8 +744,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @throws TransformerConfigurationException
    */
   public void setProperty(String name, Object value)
-    throws TransformerConfigurationException
+          throws TransformerConfigurationException
   {
+
     // No action at the moment
     return;
   }
@@ -687,19 +760,20 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    *
    * @throws TransformerConfigurationException
    */
-  public Object getProperty(String name) 
-    throws TransformerConfigurationException
+  public Object getProperty(String name)
+          throws TransformerConfigurationException
   {
+
     // No action at the moment
     return null;
   }
-  
+
   /**
    * The object that implements the URIResolver interface,
    * or null.
    */
   URIResolver m_uriResolver;
-  
+
   /**
    * Set an object that will be used to resolve URIs used in
    * xsl:import, etc.  This will be used as the default for the
@@ -723,32 +797,34 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     return m_uriResolver;
   }
-  
+
+  /** The error listener.   */
   private ErrorListener m_errorListener = new DefaultErrorHandler();
-  
+
   /**
    * Get the error listener in effect for the TransformerFactory.
-   * 
+   *
    * @return A non-null reference to an error listener.
    */
   public ErrorListener getErrorListener()
   {
     return m_errorListener;
   }
-  
+
   /**
    * Set an error listener for the TransformerFactory.
-   * 
+   *
    * @param listener Must be a non-null reference to an ErrorListener.
-   * 
+   *
    * @throws IllegalArgumentException if the listener argument is null.
    */
   public void setErrorListener(ErrorListener listener)
-    throws IllegalArgumentException
+          throws IllegalArgumentException
   {
-    if(null == listener)
+
+    if (null == listener)
       throw new IllegalArgumentException("ErrorListener");
+
     m_errorListener = listener;
   }
-
 }
