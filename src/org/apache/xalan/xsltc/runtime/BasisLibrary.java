@@ -857,11 +857,11 @@ public final class BasisLibrary implements Operators {
 				      DecimalFormat formatter) {
 	try {
 	    if (Double.isNaN(number))
-		return("NaN");
+		return(formatter.getDecimalFormatSymbols().getNaN());
 	    else if (number == Double.NEGATIVE_INFINITY) 
-		return("-Infinity");
+		return(formatter.getDecimalFormatSymbols().getInfinity());
 	    else if (number == Double.POSITIVE_INFINITY)
-		return("Infinity");
+		return(formatter.getDecimalFormatSymbols().getInfinity());
 	    StringBuffer result = new StringBuffer();
 	    formatter.applyLocalizedPattern(pattern);
 	    formatter.format(number,result,_fieldPosition);
