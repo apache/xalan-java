@@ -471,7 +471,7 @@ org.w3c.dom.NodeList (or an org.apache.xpath.NodeSet, which implements NodeList,
 <br/>Examples: <code>xmlns:my-package="xalan://java.util"</code>
 <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>xmlns:my-package="xalan://mypackage"</code></p>
 <p><em>Java format:</em> <code>xmlns:java="http://xml.apache.org/xslt/java"</code></p>
-<note>Although the namespace declarations for the class and package formats are shown with the xalan:// prefix, the current implementation for those formats will simply use the string to the right of the rightmost forward slash as the Java class name. This format is shown in order to comply with W3C recommendations for namespace declarations.</note>
+<note>Although the namespace declarations for the class and package formats are shown with the xalan:// prefix, the current implementation for those formats will simply use the string to the right of the rightmost forward slash as the Java class name. This format, however, is the preferred format for extension namespace declarations.</note>
 <note>The class: prefix which was sometimes required in earlier versions of &xslt4j; is no longer required.</note>
 <note>These formats are also available when coding the src attribute of the lxslt:script element as explained in <link anchor="setup-script">Set up the lxslt:script element</link>.</note>
 </s3>
