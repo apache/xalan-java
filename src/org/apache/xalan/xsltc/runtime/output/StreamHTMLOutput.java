@@ -445,10 +445,6 @@ public class StreamHTMLOutput extends StreamOutput {
 		_buffer.append(ch, offset, i - offset).append(GT);
 		offset = i + 1;
 		break;
-	    case '"':
-		_buffer.append(ch, offset, i - offset).append(QUOT);
-		offset = i + 1;
-		break;
 	    case '\u00A0':
 		_buffer.append(ch, offset, i - offset).append(NBSP);
 		offset = i + 1;

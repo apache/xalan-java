@@ -441,14 +441,6 @@ public class StreamXMLOutput extends StreamOutput {
 		_buffer.append(ch, offset, i - offset).append(GT);
 		offset = i + 1;
 		break;
-	    case '\'':
-		_buffer.append(ch, offset, i - offset).append(APOS);
-		offset = i + 1;
-		break;
-	    case '"':
-		_buffer.append(ch, offset, i - offset).append(QUOT);
-		offset = i + 1;
-		break;
 	    default:
 		if ((current >= '\u007F' && current < '\u00A0') ||
 		    (_is8859Encoded && current > '\u00FF'))
