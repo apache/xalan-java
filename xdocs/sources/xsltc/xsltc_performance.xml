@@ -65,7 +65,7 @@
     XSLT is a declarative language and can be used by you to describe
     <em>what</em> you want put in your output document and
     <em>what</em> you want this output to look like. It does not describe
-    <em>how</em> these taks should be carried. That is the job of the XSLT
+    <em>how</em> these tasks should be carried. That is the job of the XSLT
     processor. This document is <em>not</em> a "<ref>programmer's guide to XSLT</ref>"
     and should not be considered as such. All XSLT processors have their
     properties and ways of handling XSL elements and XPath properties. This
@@ -149,7 +149,7 @@
 
     <p>Looking up a value/node-pair in an index does not require much processing
     time at all. But, this is also a type-less pattern and can match any type
-    of node. This degrades XSLTC's performenace, just like wildcard patterns
+    of node. This degrades XSLTC's performance, just like wildcard patterns
     with predicates (see above paragraph).</p>
 
   </s2>
@@ -170,7 +170,7 @@
 
     <p>But, remeber that this will give you all <code>&lt;foo&gt;</code>
     elements first, then all <code>&lt;bar&gt;</code> elements, and so on.
-    This is not always desireable. You may want to handle these elements in
+    This is not always desirable. You may want to handle these elements in
     the order in which they appear in the input document.</p>
 
     <p><em>Important note:</em> This does <em>not</em> apply to union patterns.
