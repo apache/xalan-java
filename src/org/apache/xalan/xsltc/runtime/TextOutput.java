@@ -723,9 +723,9 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    // URL-encode href attributes in HTML output
 	    if  (name.toLowerCase().equals("href"))
-		_attributes.add(name, quickAndDirtyUrlEncode(value));
+		_attributes.add(name,quickAndDirtyUrlEncode(escapeChars(value)));
 	    else
-		_attributes.add(expandAttribute(name), value);
+
 	    return;
 	}
     }
