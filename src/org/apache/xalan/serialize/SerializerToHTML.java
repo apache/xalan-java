@@ -886,7 +886,7 @@ public class SerializerToHTML extends SerializerToXML
     {
       char ch = stringArray[i];
 
-      if ((ch < 33) || (ch > 126))
+      if ((ch < 32) || (ch > 126))
       {
         if (doURLEscaping)
         {
