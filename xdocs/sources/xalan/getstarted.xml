@@ -30,7 +30,7 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
 <s2 title="Setting up the system classpath">
   <p>At the very minimum, you must include xalan.jar, xml-apis.jar, and &xml4j-jar; -- or another 
      conformant XML parser -- see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer 
-     and XML parser</link>) on the system classpath. To run the XSLT Interpretive processor sample 
+     and XML parser</link>) on the system classpath. To run the &xslt4ji; processor sample 
      applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. 
      To run Javascript extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For 
      extensions implemented in other scripting language, see <link idref="extensions" 
