@@ -63,6 +63,9 @@ import org.apache.xml.utils.res.XResourceBundle;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+//import org.w3c.dom.xpath.XPathResult;
 import org.xml.sax.*;
 
 import java.util.*;
@@ -73,6 +76,8 @@ import java.text.DecimalFormat;
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringBufferPool;
 import org.apache.xml.utils.FastStringBuffer;
@@ -105,9 +110,56 @@ import javax.xml.transform.TransformerException;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#number">number in XSLT Specification</a>
  */
-public class ElemNumber extends ElemTemplateElement
+public class ElemNumber extends ElemTemplateElement implements PrefixResolver
 {
 
+    private class MyPrefixResolver implements PrefixResolver {
+        
+        DTM dtm;
+        int handle;
+        boolean handleNullPrefix;
+        
+		/**
+		 * Constructor for MyPrefixResolver.
+		 * @param xpathExpressionContext
+		 */
+		public MyPrefixResolver(Node xpathExpressionContext, DTM dtm, int handle, boolean handleNullPrefix) {
+            this.dtm = dtm;
+            this.handle = handle;
+            this.handleNullPrefix = handleNullPrefix;
+		}
+
+    	/**
+		 * @see PrefixResolver#getNamespaceForPrefix(String, Node)
+		 */
+		public String getNamespaceForPrefix(String prefix) {
+            return dtm.getNamespaceURI(handle);
+		}
+        
+        /**
+         * @see PrefixResolver#getNamespaceForPrefix(String, Node)
+         * this shouldn't get called.
+         */
+        public String getNamespaceForPrefix(String prefix, Node context) {
+            return getNamespaceForPrefix(prefix);
+        }
+
+		/**
+		 * @see PrefixResolver#getBaseIdentifier()
+		 */
+		public String getBaseIdentifier() {
+			return ElemNumber.this.getBaseIdentifier();
+		}
+
+		/**
+		 * @see PrefixResolver#handlesNullPrefixes()
+		 */
+		public boolean handlesNullPrefixes() {
+			return handleNullPrefix;
+		}
+
+}
+    
   /**
    * Only nodes are counted that match this pattern.
    * @serial
@@ -721,11 +773,18 @@ public class ElemNumber extends ElemTemplateElement
       switch (dtm.getNodeType(contextNode))
       {
       case DTM.ELEMENT_NODE :
+        MyPrefixResolver resolver;
 
-        // countMatchPattern = m_stylesheet.createMatchPattern(contextNode.getNodeName(), this);
-        countMatchPattern = new XPath(dtm.getNodeName(contextNode), this, this,
+        if (dtm.getNamespaceURI(contextNode) == null) {
+             resolver =  new MyPrefixResolver(dtm.getNode(contextNode), dtm,contextNode, false);
+        } else {
+            resolver = new MyPrefixResolver(dtm.getNode(contextNode), dtm,contextNode, true);
+        }
+
+        countMatchPattern = new XPath(dtm.getNodeName(contextNode), this, resolver,
                                       XPath.MATCH, support.getErrorListener());
         break;
+
       case DTM.ATTRIBUTE_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
@@ -2137,5 +2196,7 @@ public class ElemNumber extends ElemTemplateElement
       return count;
     }
   }  // end NumberFormatStringTokenizer
+
+
 
 }

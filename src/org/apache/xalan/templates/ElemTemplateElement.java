@@ -1676,4 +1676,11 @@ public class ElemTemplateElement extends UnImplNode
   }
 
 
+	/**
+	 * @see PrefixResolver#handlesNullPrefixes()
+	 */
+	public boolean handlesNullPrefixes() {
+		return false;
+	}
+
 }

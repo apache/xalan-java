@@ -1705,6 +1705,13 @@ public class StylesheetHandler extends DefaultHandler
       }
     return (version == -1)? Constants.XSLTVERSUPPORTED : version;
   }
+	/**
+	 * @see PrefixResolver#handlesNullPrefixes()
+	 */
+	public boolean handlesNullPrefixes() {
+		return false;
+	}
+
 }
 
 
