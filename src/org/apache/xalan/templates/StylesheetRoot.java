@@ -181,27 +181,41 @@ public class StylesheetRoot
       if(sheet != this) // already done
       {  
         sheet.recomposeImports();
-      sheet.recomposeIncludes(sheet);
-      sheet.recomposeAttributeSets();
-      sheet.recomposeDecimalFormats();
-      sheet.recomposeKeys();
-      sheet.recomposeNamespaceAliases();
-      sheet.recomposeParams();
-      sheet.recomposeTemplates();
-      sheet.recomposeVariables();
-      sheet.recomposeWhiteSpaceInfo();
+        sheet.recomposeIncludes(sheet);
+        sheet.recomposeAttributeSets();
+        sheet.recomposeDecimalFormats();
+        sheet.recomposeKeys();
+        sheet.recomposeNamespaceAliases();
+        sheet.recomposeParams();
+        sheet.recomposeTemplates();
+        sheet.recomposeVariables();
+        sheet.recomposeWhiteSpaceInfo();
       }
     }  
-      recomposeIncludes(this);
-      recomposeAttributeSets();
-      recomposeDecimalFormats();
-      recomposeKeys();
-      recomposeNamespaceAliases();
-      recomposeParams();
-      recomposeTemplates();
-      recomposeVariables();
-      recomposeWhiteSpaceInfo();
+    recomposeIncludes(this);
+    recomposeAttributeSets();
+    recomposeDecimalFormats();
+    recomposeKeys();
+    recomposeNamespaceAliases();
+    recomposeParams();
+    recomposeTemplates();
+    recomposeVariables();
+    recomposeWhiteSpaceInfo();
     
+    composeTemplates(this);
+  }
+  
+  /**
+   * Call the compose function for each ElemTemplateElement.
+   */
+  void composeTemplates(ElemTemplateElement templ)
+  {
+    templ.compose();
+    for(ElemTemplateElement child = templ.getFirstChildElem();
+          child != null; child = child.getNextSiblingElem())
+    {
+      child.compose();
+    }
   }
   
   /**

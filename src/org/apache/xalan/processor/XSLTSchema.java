@@ -614,7 +614,32 @@ public class XSLTSchema extends XSLTElementDef
          null /* elements */, // EMPTY
          new XSLTAttributeDef[] {stylesheetPrefixAttr, resultPrefixAttr}, 
          new ProcessorNamespaceAlias(), 
-         null /* class object */ )
+         null /* class object */ ),
+         
+         new XSLTElementDef(Constants.S_BUILTIN_EXTENSIONS_URL, 
+         "component", 
+         null /*alias */, 
+         new XSLTElementDef[]
+         {
+            new XSLTElementDef(Constants.S_BUILTIN_EXTENSIONS_URL,
+            "script", 
+            null /*alias */, 
+            new XSLTElementDef[] {charData} /* elements */,
+            new XSLTAttributeDef[] {
+              new XSLTAttributeDef(null, "lang", XSLTAttributeDef.T_NMTOKEN, true), 
+              new XSLTAttributeDef(null, "src", XSLTAttributeDef.T_URL, false)
+              }, 
+            new ProcessorLRE(), 
+            ElemExtensionScript.class /* class object */ )
+         }, // EMPTY
+         new XSLTAttributeDef[] {
+            new XSLTAttributeDef(null, "prefix", XSLTAttributeDef.T_NMTOKEN, true), 
+            new XSLTAttributeDef(null, "elements", XSLTAttributeDef.T_STRINGLIST, false),
+            new XSLTAttributeDef(null, "functions", XSLTAttributeDef.T_STRINGLIST, false)
+            }, 
+         new ProcessorLRE(), 
+         ElemExtensionDecl.class /* class object */ )
+
          };
     
      XSLTAttributeDef excludeResultPrefixesAttr

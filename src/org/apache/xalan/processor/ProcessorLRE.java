@@ -61,6 +61,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemExtensionCall;
 import org.apache.xalan.templates.ElemTemplate;
+import org.apache.xalan.templates.Constants;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.xml.sax.SAXException;
@@ -111,6 +112,8 @@ public class ProcessorLRE extends ProcessorTemplateElem
     Class classObject = def.getClassObject();
     
     boolean isExtension = false;
+    boolean isComponentDecl = false;
+    boolean isUnknownTopLevel = false;
     while(null != p)
     {
       // System.out.println("Checking: "+p);
@@ -123,6 +126,14 @@ public class ProcessorLRE extends ProcessorTemplateElem
       {
         Stylesheet parentElem = (Stylesheet)p;
         isExtension = parentElem.containsExtensionElementURI(uri);
+        if((false == isExtension) && (null != uri) && uri.equals(Constants.S_BUILTIN_EXTENSIONS_URL))
+        {
+          isComponentDecl = true;
+        }
+        else
+        {
+          isUnknownTopLevel = true;
+        }
       }
       if(isExtension)
         break;
@@ -137,8 +148,18 @@ public class ProcessorLRE extends ProcessorTemplateElem
         // System.out.println("Creating extension(1): "+uri);
         elem = new ElemExtensionCall();
       }
-      else
+      else if(isComponentDecl)
+      {
+      }
+      else if(isUnknownTopLevel)
+      {
+        // TBD: Investigate, not sure about this.  -sb
         elem = (ElemLiteralResult)classObject.newInstance();
+      }
+      else
+      {
+        elem = (ElemLiteralResult)classObject.newInstance();
+      }
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
       elem.setPrefixes(handler.getNamespaceSupport());

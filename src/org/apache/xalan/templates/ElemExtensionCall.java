@@ -84,12 +84,13 @@ public class ElemExtensionCall extends ElemLiteralResult
 {
   // ExtensionNSHandler nsh;
   String m_extns;
-  String m_extHandlerLookup;
+  // String m_extHandlerLookup;
   transient boolean isAvailable = false;
   String m_lang;
   String m_srcURL;
   String m_scriptSrc;
   Class m_javaClass = null;
+  ElemExtensionDecl m_decl = null;
 
   /**
    * Get an int constant identifying the type of element.
@@ -116,6 +117,78 @@ public class ElemExtensionCall extends ElemLiteralResult
   {
     return isAvailable;
   }
+  
+  /**
+   * This function is called after everything else has been 
+   * recomposed, and allows the template to set remaining 
+   * values that may be based on some other property that 
+   * depends on recomposition.
+   */
+  public void compose()
+  {
+    m_extns = this.getNamespace();
+    
+    StylesheetRoot stylesheet = this.getStylesheetRoot();
+    
+    m_decl = getElemExtensionDecl(stylesheet, m_extns);
+    
+    if(null != m_decl)
+    {
+      for(ElemTemplateElement child = m_decl.getFirstChildElem();
+          child != null; child = child.getNextSiblingElem())
+      {
+        if(Constants.ELEMNAME_EXTENSIONSCRIPT == child.getXSLToken())
+        {
+          ElemExtensionScript sdecl = (ElemExtensionScript)child;
+          m_lang = sdecl.getLang();
+          m_srcURL = sdecl.getSrc();
+          ElemTemplateElement childOfSDecl = sdecl.getFirstChildElem();
+          if(null != childOfSDecl)
+          {
+            if(Constants.ELEMNAME_TEXTLITERALRESULT == childOfSDecl.getXSLToken())
+            {
+              ElemTextLiteral tl = (ElemTextLiteral)childOfSDecl;
+              char[] chars = tl.getChars();
+              m_scriptSrc = new String(chars);
+            }
+          }
+          break;
+        }
+      }
+      
+    }
+    else
+    {
+      // stylesheet.error(xxx);
+    }
+  }
+  
+  private ElemExtensionDecl getElemExtensionDecl(StylesheetRoot stylesheet, 
+                                                 String namespace)
+  {
+    ElemExtensionDecl decl = null;
+        
+    int n = stylesheet.getImportCountComposed();
+    for(int i = 0; i < n; i++)
+    {
+      Stylesheet imported = stylesheet.getImportComposed(i);
+      for(ElemTemplateElement child = imported.getFirstChildElem();
+          child != null; child = child.getNextSiblingElem())
+      {
+        if(Constants.ELEMNAME_EXTENSIONDECL == child.getXSLToken())
+        {
+          decl = (ElemExtensionDecl)child;
+          String prefix = decl.getPrefix();
+          String declNamespace = child.getNamespaceForPrefix(prefix);
+          if(namespace.equals(declNamespace))
+          {
+            return decl;
+          }
+        }
+      }
+    }
+    return decl;
+  }
 
   /**
    * Execute an extension.
@@ -129,33 +202,9 @@ public class ElemExtensionCall extends ElemLiteralResult
     {
       transformer.getResultTreeHandler().flushPending();
       
-      ExtensionNSHandler nsh = null;
-      if(null == m_extns)
-      {
-        m_extns = this.getNamespace();
-        nsh = new ExtensionNSHandler (m_extns);
-        m_lang = nsh.scriptLang;
-        m_srcURL = nsh.scriptSrcURL;
-        m_scriptSrc = nsh.scriptSrc;
-        
-        // System.out.println("localName: "+this.getLocalName());
-        // System.out.println("m_lang: "+m_lang);
-        // System.out.println("m_javaClass: "+m_javaClass);
-        // System.out.println("m_srcURL: "+m_srcURL);
-        // System.out.println("m_scriptSrc: "+m_scriptSrc);
-        // System.out.println("m_extns: "+m_extns);
-      }
-
       XPathContext liaison = ((XPathContext)transformer.getXPathContext());
       ExtensionsTable etable = liaison.getExtensionsTable();
-      nsh = etable.get(m_extns);
-
-      if(null == nsh)
-      {
-        nsh = new ExtensionNSHandler (m_extns);
-        nsh.setScript (m_lang, m_srcURL, m_scriptSrc);
-        etable.addExtensionElementNamespace(m_extns, nsh);
-      }
+      ExtensionNSHandler nsh = etable.get(m_extns);
 
       nsh.processElement (this.getLocalName(), this,
                           transformer, 

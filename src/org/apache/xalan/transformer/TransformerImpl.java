@@ -574,6 +574,24 @@ public class TransformerImpl extends XMLFilterImpl
     try
     {
       pushGlobalVars(node);
+      
+      // ==========
+      // Give the top-level templates a chance to pass information into 
+      // the context (this is mainly for setting up tables for extensions).
+      StylesheetRoot stylesheet = this.getStylesheet();
+      int n = stylesheet.getImportCountComposed();
+      for(int i = 0; i < n; i++)
+      {
+        Stylesheet imported = stylesheet.getImportComposed(i);
+        imported.runtimeInit(this);
+        for(ElemTemplateElement child = imported.getFirstChildElem();
+            child != null; child = child.getNextSiblingElem())
+        {
+          child.runtimeInit(this);
+        }
+      }
+      // ===========
+      
       this.transformNode(null, null, node, null);
       if((null != m_resultTreeHandler) && !m_resultTreeHandler.getFoundEndDoc())
       {
@@ -845,7 +863,7 @@ public class TransformerImpl extends XMLFilterImpl
                                         Node sourceNode, QName mode)
     throws SAXException
   {
-    XPathContext xctxt = getXPathContext();
+    // XPathContext xctxt = getXPathContext();
     // Document docFactory = xctxt.getDOMHelper().getDOMFactory();
     
     if(null == m_docBuilder)

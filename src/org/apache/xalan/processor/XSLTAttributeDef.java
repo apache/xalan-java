@@ -503,7 +503,7 @@ public class XSLTAttributeDef
   }
   
   /**
-   * Process an attribute string of type T_STRINGLIST into 
+   * Process an attribute string of type T_URLLIST into 
    * a vector of XPath match patterns.
    */
   StringVector processPREFIX_URLLIST(StylesheetHandler handler,

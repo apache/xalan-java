@@ -145,6 +145,18 @@ public class ElemTemplateElement extends UnImplNode
     return "Unknown XSLT Element";
   }
   
+  /** 
+   * This function will be called on top-level elements 
+   * only, just before the transform begins.
+   * 
+   * @param transformer The XSLT Processor.
+   */
+  public void runtimeInit(TransformerImpl transformer)
+    throws SAXException
+  {
+  }
+
+  
   /** Execute the element's primary function.  Subclasses of this
    * function may recursivly execute down the element tree.
    * 
@@ -196,6 +208,16 @@ public class ElemTemplateElement extends UnImplNode
   {
     return m_parentNode.getStylesheetRoot();
   } 
+  
+  /**
+   * This function is called after everything else has been 
+   * recomposed, and allows the template to set remaining 
+   * values that may be based on some other property that 
+   * depends on recomposition.
+   */
+  public void compose()
+  {
+  }
   
   /** 
    * Validate that the string is an NCName.

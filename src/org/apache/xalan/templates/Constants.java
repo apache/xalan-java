@@ -171,13 +171,15 @@ public class Constants
     ELEMNAME_TEXTLITERALRESULT = 78,
 
     ELEMNAME_EXTENSIONCALL = 79,
+    ELEMNAME_EXTENSIONDECL = 85,
+    ELEMNAME_EXTENSIONSCRIPT = 86,
 
     ELEMNAME_OUTPUT = 80,
 
     ELEMNAME_COMPONENT = 81,
     ELEMNAME_SCRIPT = 82;
 
-  // Next free number: 85
+  // Next free number: 87
   
   /**
    * Literals for XSL element names.  Note that there are more
