@@ -104,23 +104,26 @@ public class Variable extends Expression
     // Is the variable fetched always the same?
     XObject result;
 
-    //try
-    {
+//    try
+//    {
       result = xctxt.getVariable(m_qname);
-    }
-    /*catch (Exception e)
-    {
-      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
-            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
-
-      result = null;
-    }*/
+//    }
+//    catch (Exception e)
+//    {
+//      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
+//            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
+//
+//      result = null;
+//    }
 
     if (null == result)
     {
       warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
            new Object[]{ m_qname.getLocalPart() });  //"VariableReference given for variable out "+
-
+//      (new RuntimeException()).printStackTrace();
+//      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
+//            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
+      
       result = new XNodeSet();
     }
 
