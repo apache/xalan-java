@@ -211,102 +211,119 @@ public class PrintTraceListener implements TraceListenerEx2
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void selected(SelectionEvent ev) throws javax.xml.transform.TransformerException
-  {
+public void selected(SelectionEvent ev)
+    throws javax.xml.transform.TransformerException {
 
-    if (m_traceSelection)
-    {
-      ElemTemplateElement ete = (ElemTemplateElement) ev.m_styleNode;
-      Node sourceNode = ev.m_sourceNode;
-      
-      SourceLocator locator = null;
-      if (sourceNode instanceof DTMNodeProxy)
-      {
-        int nodeHandler = ((DTMNodeProxy)sourceNode).getDTMNodeNumber();      
-        locator = ((DTMNodeProxy)sourceNode).getDTM().getSourceLocatorFor(nodeHandler);
-      }
+    if (m_traceSelection) {
+        ElemTemplateElement ete = (ElemTemplateElement) ev.m_styleNode;
+        Node sourceNode = ev.m_sourceNode;
 
-      if (locator != null)      
-        m_pw.println("Selected source node '" + sourceNode.getNodeName()
-                 + "', at " + locator);
-      else
-        m_pw.println("Selected source node '" + sourceNode.getNodeName() +"'");
-
-      if (ev.m_styleNode.getLineNumber() == 0)
-      {
-
-        // You may not have line numbers if the selection is occuring from a
-        // default template.
-        ElemTemplateElement parent =
-          (ElemTemplateElement) ete.getParentElem();
-
-        if (parent == ete.getStylesheetRoot().getDefaultRootRule())
-        {
-          m_pw.print("(default root rule) ");
-        }
-        else if (parent == ete.getStylesheetRoot().getDefaultTextRule())
-        {
-          m_pw.print("(default text rule) ");
-        }
-        else if (parent == ete.getStylesheetRoot().getDefaultRule())
-        {
-          m_pw.print("(default rule) ");
+        SourceLocator locator = null;
+        if (sourceNode instanceof DTMNodeProxy) {
+            int nodeHandler = ((DTMNodeProxy) sourceNode).getDTMNodeNumber();
+            locator =
+                ((DTMNodeProxy) sourceNode).getDTM().getSourceLocatorFor(
+                    nodeHandler);
         }
 
-        m_pw.print(ete.getNodeName() + ", " + ev.m_attributeName + "='"
-                   + ev.m_xpath.getPatternString() + "': ");
-      }
-      else
-      {
-        m_pw.print(ev.m_styleNode.getSystemId()+ " Line #" + ev.m_styleNode.getLineNumber() + ", "
-                   + "Column #" + ev.m_styleNode.getColumnNumber() + ": "
-                   + ete.getNodeName() + ", " + ev.m_attributeName + "='"
-                   + ev.m_xpath.getPatternString() + "': ");
-      }
+        if (locator != null)
+            m_pw.println(
+                "Selected source node '"
+                    + sourceNode.getNodeName()
+                    + "', at "
+                    + locator);
+        else
+            m_pw.println(
+                "Selected source node '" + sourceNode.getNodeName() + "'");
 
-                        if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET)
-                        {
-                                m_pw.println();
-                                
-                                org.apache.xml.dtm.DTMIterator nl = ev.m_selection.iter();
+        if (ev.m_styleNode.getLineNumber() == 0) {
 
-                                try
-                                {
-                                        nl = nl.cloneWithReset();
-                                }
-                                catch(CloneNotSupportedException cnse)
-                                {
-                                        m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
-                                        return;
-                                }
-                                int pos = nl.nextNode();
+            // You may not have line numbers if the selection is occuring from a
+            // default template.
+            ElemTemplateElement parent =
+                (ElemTemplateElement) ete.getParentElem();
 
-                                if (DTM.NULL == pos)
-                                {
-                                        m_pw.println("     [empty node list]");
-                                }
-                                else
-                                {
-                                        while (DTM.NULL != pos)
-                                        {
-                                                // m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
-                                                DTM dtm = ev.m_processor.getXPathContext().getDTM(pos);
-                                                m_pw.print("     ");
-                                                m_pw.print(Integer.toHexString(pos));
-                                                m_pw.print(": ");
-                                                m_pw.println(dtm.getNodeName(pos));
+            if (parent == ete.getStylesheetRoot().getDefaultRootRule()) {
+                m_pw.print("(default root rule) ");
+            } else if (
+                parent == ete.getStylesheetRoot().getDefaultTextRule()) {
+                m_pw.print("(default text rule) ");
+            } else if (parent == ete.getStylesheetRoot().getDefaultRule()) {
+                m_pw.print("(default rule) ");
+            }
 
-                                                pos = nl.nextNode();
-                                        }
-                                }        
-                        }
-      else
-      {
-        m_pw.println(ev.m_selection.str());
-      }
+            m_pw.print(
+                ete.getNodeName()
+                    + ", "
+                    + ev.m_attributeName
+                    + "='"
+                    + ev.m_xpath.getPatternString()
+                    + "': ");
+        } else {
+            m_pw.print(
+                ev.m_styleNode.getSystemId()
+                    + " Line #"
+                    + ev.m_styleNode.getLineNumber()
+                    + ", "
+                    + "Column #"
+                    + ev.m_styleNode.getColumnNumber()
+                    + ": "
+                    + ete.getNodeName()
+                    + ", "
+                    + ev.m_attributeName
+                    + "='"
+                    + ev.m_xpath.getPatternString()
+                    + "': ");
+        }
+
+        if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET) {
+            m_pw.println();
+
+            org.apache.xml.dtm.DTMIterator nl = ev.m_selection.iter();
+            
+            // The following lines are added to fix bug#16222.
+            // The main cause is that the following loop change the state of iterator, which is shared
+            // with the transformer. The fix is that we record the initial state before looping, then 
+            // restore the state when we finish it, which is done in the following lined added.
+            int currentPos = DTM.NULL;
+            currentPos = nl.getCurrentPos();
+            nl.setShouldCacheNodes(true); // This MUST be done before we clone the iterator!
+            org.apache.xml.dtm.DTMIterator clone = null;
+            // End of block
+            
+            try {
+                clone = nl.cloneWithReset();
+            } catch (CloneNotSupportedException cnse) {
+                m_pw.println(
+                    "     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
+                return;
+            }
+            int pos = clone.nextNode();
+
+            if (DTM.NULL == pos) {
+                m_pw.println("     [empty node list]");
+            } else {
+                while (DTM.NULL != pos) {
+                    // m_pw.println("     " + ev.m_processor.getXPathContext().getDTM(pos).getNode(pos));
+                    DTM dtm = ev.m_processor.getXPathContext().getDTM(pos);
+                    m_pw.print("     ");
+                    m_pw.print(Integer.toHexString(pos));
+                    m_pw.print(": ");
+                    m_pw.println(dtm.getNodeName(pos));
+                    pos = clone.nextNode();
+                }
+            }
+			
+			// Restore the initial state of the iterator, part of fix for bug#16222.
+            nl.runTo(-1);
+            nl.setCurrentPos(currentPos);
+			// End of fix for bug#16222
+			
+        } else {
+            m_pw.println(ev.m_selection.str());
+        }
     }
-  }
-  
+}
   /**
    * Method that is called after an xsl:apply-templates or xsl:for-each 
    * selection occurs.
