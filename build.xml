@@ -574,6 +574,13 @@ Copyright:
     <copy todir="${dist.dir}/docs">
       <fileset dir="${build.docs}"/>
     </copy>  
+    <!-- HACK! delete 3 files longer than 100 chars to get around 
+         tar problems with long filenames -sc 23-May-01
+    -->
+    <delete file="${dist.dir}/docs/apidocs/org/apache/xalan/transformer/class-use/TransformerImpl.ThreadControler.html"/>
+    <delete file="${dist.dir}/docs/apidocs/org/apache/xalan/xsltc/compiler/util/class-use/AttributeSetMethodGenerator.html"/>
+    <delete file="${dist.dir}/docs/apidocs/org/apache/xalan/xsltc/compiler/util/class-use/NodeSortRecordGenerator.html"/>
+
     <copy todir="${dist.dir}/samples">
       <fileset dir="${samples.dir}"/>
     </copy>   
