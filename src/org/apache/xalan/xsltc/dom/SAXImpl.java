@@ -1363,16 +1363,6 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
                     break;
             }
         } 
-        catch (SAXException se) {
-            // If the handler is a StringValueHandler, we should recover from a 
-            // SAXExcption by ignoring the invalid nodes.
-            if (handler instanceof StringValueHandler) {
-                return;
-            }
-            else {
-                throw new TransletException(se);
-            }
-        }
         catch (Exception e) {
             throw new TransletException(e);
         }

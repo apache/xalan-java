@@ -74,10 +74,14 @@ public final class StringValueHandler extends EmptySerializer {
     private String _str = null;
     private static final String EMPTY_STR = "";
     private boolean m_escaping = false;
+    private int _nestedLevel = 0;
 	
     public void characters(char[] ch, int off, int len) 
 	throws SAXException 
     {
+	if (_nestedLevel > 0)
+	    return;
+	
 	if (_str != null) {
 	    _buffer.append(_str);
 	    _str = null;
@@ -99,6 +103,9 @@ public final class StringValueHandler extends EmptySerializer {
     }
 
     public void characters(String characters) throws SAXException {
+	if (_nestedLevel > 0)
+	    return;
+
 	if (_str == null && _buffer.length() == 0) {
 	    _str = characters;
 	}
@@ -113,7 +120,11 @@ public final class StringValueHandler extends EmptySerializer {
     }
     
     public void startElement(String qname) throws SAXException {
-        throw new SAXException(EmptySerializer.ERR);
+        _nestedLevel++;
+    }
+
+    public void endElement(String qname) throws SAXException {
+        _nestedLevel--;
     }
 
     // Override the setEscaping method just to indicate that this class is
