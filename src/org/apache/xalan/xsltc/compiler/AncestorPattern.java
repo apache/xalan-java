@@ -94,6 +94,7 @@ final class AncestorPattern extends RelativePathPattern {
     
     public boolean isWildcard() {
 	//!!! can be wildcard
+	// return _right.isWildcard();
 	return false;
     }
 	
@@ -106,7 +107,9 @@ final class AncestorPattern extends RelativePathPattern {
     }
 	
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_left != null) _left.typeCheck(stable);
+	if (_left != null) {
+	    _left.typeCheck(stable);
+	}
 	return _right.typeCheck(stable);
     }
 
@@ -133,6 +136,11 @@ final class AncestorPattern extends RelativePathPattern {
 	}
 	else {
 	    _right.translate(classGen, methodGen);
+
+	    if (_right instanceof AncestorPattern) {
+		il.append(methodGen.loadDOM());
+		il.append(SWAP);
+	    }
 	}
 
 	if (_left != null) {

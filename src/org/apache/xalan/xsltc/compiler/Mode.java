@@ -195,30 +195,30 @@ final class Mode implements Constants {
 	_templates.addElement(template);
     }
 
-    /*
     private Vector quicksort(Vector templates, int p, int r) {
-	while (p < r) {
+	if (p < r) {
 	    final int q = partition(templates, p, r);
 	    quicksort(templates, p, q);
-	    p = q + 1;
+	    quicksort(templates, q + 1, r);
 	}
 	return templates;
     }
     
     private int partition(Vector templates, int p, int r) {
-	final Template x = (Template)templates.elementAt((p + r) >>> 1);
+	final Template x = (Template)templates.elementAt(p);
 	int i = p - 1;
 	int j = r + 1;
 	while (true) {
-	    while (x.compareTo((Template)templates.elementAt(--j)) < 0);
-	    while (x.compareTo((Template)templates.elementAt(++i)) > 0);
-	    if (i < j)
+	    while (x.compareTo((Template)templates.elementAt(--j)) > 0);
+	    while (x.compareTo((Template)templates.elementAt(++i)) < 0);
+	    if (i < j) {
 		templates.set(j, templates.set(i, templates.elementAt(j)));
-	    else
-		return(j);
+	    }
+	    else {
+		return j;
+	    }
 	}
     }
-    */
 
     /**
      * Process all the test patterns in this mode
@@ -226,7 +226,27 @@ final class Mode implements Constants {
     public void processPatterns(Hashtable keys) {
 	_keys = keys;
 
-	//_templates = quicksort(_templates, 0, _templates.size() - 1);
+/*
+System.out.println("Before Sort " + _name);
+for (int i = 0; i < _templates.size(); i++) {
+    System.out.println("name = " + ((Template)_templates.elementAt(i)).getName());
+    System.out.println("pattern = " + ((Template)_templates.elementAt(i)).getPattern());
+    System.out.println("priority = " + ((Template)_templates.elementAt(i)).getPriority());
+    System.out.println("position = " + ((Template)_templates.elementAt(i)).getPosition());
+}
+*/
+
+	_templates = quicksort(_templates, 0, _templates.size() - 1);
+
+/*
+System.out.println("\n After Sort " + _name);
+for (int i = 0; i < _templates.size(); i++) {
+    System.out.println("name = " + ((Template)_templates.elementAt(i)).getName());
+    System.out.println("pattern = " + ((Template)_templates.elementAt(i)).getPattern());
+    System.out.println("priority = " + ((Template)_templates.elementAt(i)).getPriority());
+    System.out.println("position = " + ((Template)_templates.elementAt(i)).getPosition());
+}
+*/
 
 	// Traverse all templates
 	final Enumeration templates = _templates.elements();
@@ -724,7 +744,7 @@ final class Mode implements Constants {
 	if (_nodeTestSeq != null) {
 
 	    // Compare priorities of node() and "*"
-	    double nodePrio = -0.5; 	//_nodeTestSeq.getPriority();
+	    double nodePrio = _nodeTestSeq.getPriority();
 	    int    nodePos  = _nodeTestSeq.getPosition();
 	    double elemPrio = (0 - Double.MAX_VALUE);
 	    int    elemPos  = Integer.MIN_VALUE;
@@ -1063,7 +1083,7 @@ final class Mode implements Constants {
 	if (_nodeTestSeq != null) {
 
 	    // Compare priorities of node() and "*"
-	    double nodePrio = -0.5; 	//_nodeTestSeq.getPriority();
+	    double nodePrio = _nodeTestSeq.getPriority();
 	    int    nodePos  = _nodeTestSeq.getPosition();
 	    double elemPrio = (0 - Double.MAX_VALUE);
 	    int    elemPos  = Integer.MIN_VALUE;

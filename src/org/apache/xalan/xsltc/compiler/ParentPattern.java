@@ -129,6 +129,11 @@ final class ParentPattern extends RelativePathPattern {
 	}
 	else {
 	    _right.translate(classGen, methodGen);
+
+	    if (_right instanceof AncestorPattern) {
+		il.append(methodGen.loadDOM());
+		il.append(SWAP);
+	    }
 	}
 
 	final int getParent = cpg.addInterfaceMethodref(DOM_INTF,
