@@ -149,7 +149,7 @@ public class StylesheetRoot
    */
   public OutputFormat getOutputFormat()
   {
-    OutputFormat cloned = new OutputFormat();
+    OutputFormat cloned = new OutputFormatExtended();
     cloned.setPreserveSpace(true);
     cloned.setCDataElements(m_outputFormatComposed.getCDataElements());
     cloned.setDoctype(m_outputFormatComposed.getDoctypePublic(), m_outputFormatComposed.getDoctypeSystem());
