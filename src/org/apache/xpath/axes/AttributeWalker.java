@@ -89,7 +89,7 @@ public class AttributeWalker extends AxesWalker
   }
   
   /**
-   *  Moves the <code>TreeWalker</code> to the first visible child of the 
+   * Moves the <code>TreeWalker</code> to the first visible child of the 
    * current node, and returns the new node. If the current node has no 
    * visible children, returns <code>null</code> , and retains the current 
    * node.

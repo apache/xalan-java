@@ -80,8 +80,11 @@ public class ChildWalker extends AxesWalker
    */
   public void setRoot(Node root)
   {
+    // System.out.println("ChildWalker.setRoot");
     m_nextLevelAmount = root.hasChildNodes() ? 1 : 0;
+    // System.out.println("Back from calling hasChildNodes");
     super.setRoot(root);
+    // System.out.println("Exiting ChildWalker.setRoot");
   }
   
   /**
@@ -94,9 +97,11 @@ public class ChildWalker extends AxesWalker
    */
   public Node firstChild()
   {
+    // System.out.println("ChildWalker.firstChild");
     m_nextLevelAmount = 0;
     if(m_root == m_currentNode)
     {
+      // System.out.println("ChildWalker - Calling getFirstChild");
       return setCurrentIfNotNull(this.m_root.getFirstChild());
     }
     else 

@@ -69,6 +69,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.patterns.NodeTestFilter;
 
 import org.apache.xalan.utils.PrefixResolver;
 
@@ -111,7 +112,7 @@ public abstract class AxesWalker extends NodeTest
   public void init(Compiler compiler, int opPos, int stepType)
     throws org.xml.sax.SAXException
   {
-    int nodeTestOpPos = compiler.getFirstChildPosOfStep(opPos);
+    // int nodeTestOpPos = compiler.getFirstChildPosOfStep(opPos);
     m_stepType = stepType;
     switch(stepType)
     {
@@ -265,6 +266,7 @@ public abstract class AxesWalker extends NodeTest
   public void reset()
   {
     setCurrentNode(m_root);
+    m_isFresh = true;
   }
 
   /**
@@ -704,14 +706,28 @@ public abstract class AxesWalker extends NodeTest
       = new java.util.StringTokenizer(clName, ".");
     while(tokenizer.hasMoreTokens())
       clName = tokenizer.nextToken();
-    String rootName = (null == m_root) 
-                      ? "null" 
-                        : m_root.getNodeName() 
-                          + "{"+((org.apache.xalan.stree.Child)m_root).getUid()+"}";
-    String currentNodeName = (null == m_root) 
-                             ? "null" 
-                               : m_currentNode.getNodeName()
-                                + "{"+((org.apache.xalan.stree.Child)m_currentNode).getUid()+"}";
+    String rootName;
+    String currentNodeName;
+    try
+    {
+      rootName = (null == m_root) 
+                 ? "null" 
+                   : m_root.getNodeName() 
+                     + "{"+((org.apache.xalan.stree.Child)m_root).getUid()+"}";
+      currentNodeName = (null == m_root) 
+                        ? "null" 
+                          : m_currentNode.getNodeName()
+                            + "{"+((org.apache.xalan.stree.Child)m_currentNode).getUid()+"}";
+    }
+    catch(ClassCastException cce)
+    {
+      rootName = (null == m_root) 
+                 ? "null" 
+                   : m_root.getNodeName();
+      currentNodeName = (null == m_root) 
+                        ? "null" 
+                          : m_currentNode.getNodeName();
+    }
 
     return clName+"["+rootName+"]["+currentNodeName+"]";
   }
@@ -721,9 +737,18 @@ public abstract class AxesWalker extends NodeTest
    */
   protected String nodeToString(Node n)
   {
-    return (null != n) 
-           ? n.getNodeName()+"{"+ ((org.apache.xalan.stree.Child)n).getUid() + "}"
-             : "null";
+    try
+    {
+      return (null != n) 
+             ? n.getNodeName()+"{"+ ((org.apache.xalan.stree.Child)n).getUid() + "}"
+               : "null";
+    }
+    catch(ClassCastException cce)
+    {
+      return (null != n) 
+             ? n.getNodeName()
+               : "null";
+    }
   }
     
   /**
@@ -752,10 +777,16 @@ public abstract class AxesWalker extends NodeTest
       System.out.print("\n");
       if(null != m_currentNode)
       {
-        org.apache.xalan.stree.Child n = ((org.apache.xalan.stree.Child)m_currentNode);
-        int depth = n.getLevel();
-        for(int i = 0; i < depth; i++)
-          System.out.print(" ");
+        try
+        {
+          org.apache.xalan.stree.Child n = ((org.apache.xalan.stree.Child)m_currentNode);
+          int depth = n.getLevel();
+          for(int i = 0; i < depth; i++)
+            System.out.print(" ");
+        }
+        catch(ClassCastException cce)
+        {
+        }
       }
       System.out.print(s);
     }
@@ -826,10 +857,16 @@ public abstract class AxesWalker extends NodeTest
       System.out.print("\n============================\n");
       if(null != m_currentNode)
       {
-        org.apache.xalan.stree.Child n = ((org.apache.xalan.stree.Child)m_currentNode);
-        int depth = n.getLevel();
-        for(int i = 0; i < depth; i++)
-          System.out.print("+");
+        try
+        {
+          org.apache.xalan.stree.Child n = ((org.apache.xalan.stree.Child)m_currentNode);
+          int depth = n.getLevel();
+          for(int i = 0; i < depth; i++)
+            System.out.print("+");
+        }
+        catch(ClassCastException cce)
+        {
+        }
       }
       System.out.print(" "+this.toString()+", "+nodeToString(this.m_currentNode));
       printWaiters();
@@ -1084,6 +1121,15 @@ public abstract class AxesWalker extends NodeTest
   {
     if(m_isFresh)
       m_isFresh = false;
+    
+    try
+    {
+      // I wish there was a better way to do this...
+      // System.out.println("\nCalling setNodeTest on: "+(this.getCurrentNode()));
+      ((NodeTestFilter)this.getCurrentNode()).setNodeTest(this);
+    }
+    catch(ClassCastException cce){}
+    
     Node next = this.firstChild();
 
     while(null == next)
@@ -1120,7 +1166,7 @@ public abstract class AxesWalker extends NodeTest
     if(DEBUG_TRAVERSAL && !m_didDumpAll)
     {
       m_didDumpAll = true;
-      Node doc = (Node.DOCUMENT_NODE == m_root.getNodeType()) ? m_root : m_root.getOwnerDocument();
+      // Node doc = (Node.DOCUMENT_NODE == m_root.getNodeType()) ? m_root : m_root.getOwnerDocument();
       // dumpAll(doc, 0);
     }
     
@@ -1221,6 +1267,7 @@ public abstract class AxesWalker extends NodeTest
               {
                 walker = (AxesWalker)walker.clone();
                 // walker.pushState();
+                // System.out.println("AxesWalker - Calling setRoot(1)");
                 walker.setRoot(nextNode);
                 if(DEBUG_WAITING)
                   printDebug("clone: "+walker.toString());
@@ -1231,6 +1278,7 @@ public abstract class AxesWalker extends NodeTest
             }
             else
             {
+              // System.out.println("AxesWalker - Calling setRoot(2)");
               walker.setRoot(nextNode);
             }
             walker.m_prevWalker = prev;

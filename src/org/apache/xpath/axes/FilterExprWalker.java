@@ -65,6 +65,7 @@ import org.apache.xpath.DOMHelper;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
+import org.apache.xpath.patterns.NodeTestFilter;
 
 import java.util.Vector;
 
@@ -122,7 +123,9 @@ public class FilterExprWalker extends AxesWalker
       xctxt.pushCurrentNode(root);
       xctxt.getVarStack().setCurrentStackFrameIndex(m_lpi.getStackFrameIndex());
       xctxt.setNamespaceContext(m_lpi.getPrefixResolver());
+      // System.out.println("calling m_expr.execute(m_lpi.getXPathContext())");
       XObject obj = m_expr.execute(m_lpi.getXPathContext());
+      // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
       m_nodeSet = (null != obj) ? obj.nodeset() : null;      
       m_peek = null;
     }
@@ -206,7 +209,16 @@ public class FilterExprWalker extends AxesWalker
     else
     {
       if(null != m_nodeSet)
+      {
+        try
+        {
+          // I wish there was a better way to do this...
+          ((NodeTestFilter)m_nodeSet).setNodeTest(this);
+        }
+        catch(ClassCastException cce){}
+
         next = m_nodeSet.nextNode();
+      }
       else
         next = null;
     }
@@ -219,7 +231,8 @@ public class FilterExprWalker extends AxesWalker
     }
     else
     {
-      m_nextLevelAmount = (next.hasChildNodes() ? 1 : 0);
+     // System.out.println("FilterExprWalker.getNextNode");
+     m_nextLevelAmount = (next.hasChildNodes() ? 1 : 0);
       /* ...WAIT TO SEE IF WE REALLY NEED THIS...
       m_peek = m_nodeSet.nextNode();
       if(null == m_peek)
@@ -231,7 +244,7 @@ public class FilterExprWalker extends AxesWalker
       }
       */
     }
-    
+    // System.out.println("FilterExprWalker.getNextNode - Returning: "+next);
     return setCurrentIfNotNull(next);
   }
   
