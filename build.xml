@@ -106,6 +106,10 @@ Copyright:
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
 	<delete file="${doc.generator.styletar}"/>
     <mkdir dir="${build.docs}"/>
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/$xalan.jar">
+      <arg line="-in todo.xml -xsl todo.xsl -out ${build.docs}/todo.html"/>
+    </java>   
+    
     <mkdir dir="${build.apidocs}"/>
   </target>
 
@@ -312,9 +316,10 @@ Copyright:
           <group title="Xalan Core"
                  packages="org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer"/>
           <group title="XPath" packages="org.apache.xpath*"/>
-          <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xml.utils*:org.apache.xalan.xslt"/>
+          <group title="Utilities" packages="org.apache.xml.utils*"/>
+          <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt"/>
           <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
-          <group title="Serializers" packages="org.apache.serialize*:org.apache.xalan.serialize"/>
+          <group title="Serializers" packages="org.apache.xalan.serialize"/>
           <group title="SAX 2" packages="org.xml.sax*"/>
           <group title="DOM 2" packages="org.w3c.dom*"/>
     </javadoc>
@@ -383,7 +388,7 @@ Copyright:
     <copy file="${build.dir}/xalan.jar" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat"/>
+      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,todo.html"/>
     </copy>
 	  
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
@@ -401,7 +406,7 @@ Copyright:
     <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/$xalan.jar"> 
        <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
 	</java>	 
-       
+    <copy file="${build.docs}/todo.html" todir="${site.dir}"/>
     <copy todir="${site.dir}/apidocs">
 	  <fileset dir="${build.apidocs}"/>
 	</copy>  
