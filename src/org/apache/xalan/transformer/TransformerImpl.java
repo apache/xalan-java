@@ -1049,13 +1049,31 @@ public class TransformerImpl extends XMLFilterImpl
   {    
     int nodeType = child.getNodeType();
 
+    boolean isApplyImports = ((xslInstruction == null)? false : 
+                               xslInstruction.getXSLToken() == Constants.ELEMNAME_APPLY_IMPORTS);      
+    
     // To find templates, use the the root of the import tree if 
     // this element is not an xsl:apply-imports or starting from the root, 
     // otherwise use the root of the stylesheet tree.
     // TODO: Not sure apply-import handling is correct right now.  -sb
-    StylesheetComposed stylesheetTree = (null == template) 
+    StylesheetComposed stylesheetTree;
+    if (isApplyImports)
+    {  
+      StylesheetComposed stylesheet = xslInstruction.getStylesheetComposed();
+      StylesheetRoot sroot = stylesheet.getStylesheetRoot();
+      int importNumber = sroot.getImportNumber(stylesheet);
+      int nImports = sroot.getGlobalImportCount();
+      if (importNumber < (nImports - 1))
+        stylesheetTree = sroot.getGlobalImport(importNumber+1);
+      else 
+        return false;
+    }
+    else 
+    {  
+      stylesheetTree = (null == template) 
                                         ? getStylesheet() 
                                           : template.getStylesheetComposed();
+    }  
 
     XPathContext xctxt = getXPathContext();
     boolean isDefaultTextRule = false;
@@ -1070,7 +1088,7 @@ public class TransformerImpl extends XMLFilterImpl
         xctxt.setNamespaceContext(xslInstruction);
 
         template = stylesheetTree.getTemplateComposed(xctxt, 
-                                                      child, mode,
+                                                      child, mode, 
                                                       getQuietConflictWarnings());
       }
       finally

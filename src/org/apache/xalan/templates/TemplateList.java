@@ -138,9 +138,9 @@ public class TemplateList implements java.io.Serializable
           {
             // find the tail of the list
             MatchPattern2 matchPat = (MatchPattern2)val;
-            ((MatchPattern2)newMatchPat).setNext(matchPat);
-            m_patternTable.put(target, newMatchPat);
-            /*
+            //((MatchPattern2)newMatchPat).setNext(matchPat);
+            //m_patternTable.put(target, newMatchPat);
+            //*
             MatchPattern2 next;
             while((next = matchPat.getNext()) != null)
             {
@@ -148,7 +148,7 @@ public class TemplateList implements java.io.Serializable
             }
             // System.out.println("appending: "+target+" to "+matchPat.getPattern());
             matchPat.setNext((MatchPattern2)newMatchPat);
-            */
+            //*/
           }
         }
       }
@@ -212,14 +212,19 @@ public class TemplateList implements java.io.Serializable
     switch(targetNodeType)
     {
     case Node.ELEMENT_NODE:
-      // String targetName = m_parserLiaison.getExpandedElementName((Element)targetNode);
-      String targetName = support.getDOMHelper().getLocalNameOfNode(targetNode);
-      matchPat = locateMatchPatternList2(targetName, true);
+      {
+        // String targetName = m_parserLiaison.getExpandedElementName((Element)targetNode);
+        String targetName = support.getDOMHelper().getLocalNameOfNode(targetNode);
+        matchPat = locateMatchPatternList2(targetName, true);
+      }
       break;
 
     case Node.PROCESSING_INSTRUCTION_NODE:
     case Node.ATTRIBUTE_NODE:
-      matchPat = locateMatchPatternList2(targetNode.getNodeName(), true);
+      {
+        String targetName = support.getDOMHelper().getLocalNameOfNode(targetNode);
+        matchPat = locateMatchPatternList2(targetName, true);
+      }
       break;
 
     case Node.CDATA_SECTION_NODE:
@@ -264,54 +269,70 @@ public class TemplateList implements java.io.Serializable
       {
         String patterns = matchPat.getPattern();
 
-        if((null != patterns) && !((prevPat != null) && prevPat.equals(patterns) &&
-                                   (prevMatchPat.getTemplate().getPriority()
-                                    == matchPat.getTemplate().getPriority())) )
+        if(null != patterns) 
         {
-          prevMatchPat = matchPat;
-          prevPat = patterns;
-
-          // Date date1 = new Date();
-          XPath xpath = matchPat.getExpression();
-          // System.out.println("Testing score for: "+targetNode.getNodeName()+
-          //                   " against '"+xpath.m_currentPattern);
-          double score = xpath.getMatchScore(support, targetNode);
-          // System.out.println("Score for: "+targetNode.getNodeName()+
-          //                   " against '"+xpath.m_currentPattern+
-          //                   "' returned "+score);
-
-          if(XPath.MATCH_SCORE_NONE != score)
+          if((prevPat != null) && prevPat.equals(patterns) &&
+             (prevMatchPat.getTemplate().getPriority()
+              == matchPat.getTemplate().getPriority()))
           {
-            double priorityOfRule
-              = (XPath.MATCH_SCORE_NONE != rule.getPriority())
-                ? rule.getPriority() : score;
-            matchPat.m_priority = priorityOfRule;
-            double priorityOfBestMatched = (null != bestMatchedPattern) ?
-                                           bestMatchedPattern.m_priority :
-                                           XPath.MATCH_SCORE_NONE;
-            // System.out.println("priorityOfRule: "+priorityOfRule+", priorityOfBestMatched: "+priorityOfBestMatched);
-            if(priorityOfRule > priorityOfBestMatched)
+            // Then we know that this pattern matches also.  Since we're 
+            // operating in document order, take this one instead of the 
+            // old one.
+            if(bestMatchedPattern == prevMatchPat)
             {
-              if(null != conflicts)
-                conflicts.removeAllElements();
-              highScore = score;
               bestMatchedRule = rule;
               bestMatchedPattern = matchPat;
-            }
-            else if(priorityOfRule == priorityOfBestMatched)
-            {
-              if(null == conflicts)
-                conflicts = new Vector(10);
-              addObjectIfNotFound(bestMatchedPattern, conflicts);
-              conflicts.addElement(matchPat);
-              highScore = score;
-              bestMatchedRule = rule;
-              bestMatchedPattern = matchPat;
-            }
+            }            
+            prevMatchPat = matchPat; // make sure this is done after above check.
+            // TODO, need to add to the conflicts list, I think...
           }
-          // Date date2 = new Date();
-          // m_totalTimePatternMatching+=(date2.getTime() - date1.getTime());
-        } // end if(null != patterns)
+          else
+          {
+            prevMatchPat = matchPat;
+            prevPat = patterns;
+
+            // Date date1 = new Date();
+            XPath xpath = matchPat.getExpression();
+            // System.out.println("Testing score for: "+targetNode.getNodeName()+
+            //                   " against '"+xpath.m_currentPattern);
+            double score = xpath.getMatchScore(support, targetNode);
+            // System.out.println("Score for: "+targetNode.getNodeName()+
+            //                   " against '"+xpath.m_currentPattern+
+            //                   "' returned "+score);
+
+            if(XPath.MATCH_SCORE_NONE != score)
+            {
+              double priorityOfRule
+                = (XPath.MATCH_SCORE_NONE != rule.getPriority())
+                  ? rule.getPriority() : score;
+              matchPat.m_priority = priorityOfRule;
+              double priorityOfBestMatched = (null != bestMatchedPattern) ?
+                                             bestMatchedPattern.m_priority :
+                                             XPath.MATCH_SCORE_NONE;
+              // System.out.println("priorityOfRule: "+priorityOfRule+", priorityOfBestMatched: "+priorityOfBestMatched);
+              if(priorityOfRule > priorityOfBestMatched)
+              {
+                if(null != conflicts)
+                  conflicts.removeAllElements();
+                highScore = score;
+                bestMatchedRule = rule;
+                bestMatchedPattern = matchPat;
+              }
+              else if(priorityOfRule == priorityOfBestMatched)
+              {
+                if(null == conflicts)
+                  conflicts = new Vector(10);
+                addObjectIfNotFound(bestMatchedPattern, conflicts);
+                conflicts.addElement(matchPat);
+                highScore = score;
+                bestMatchedRule = rule;
+                bestMatchedPattern = matchPat;
+              }
+            }
+            // Date date2 = new Date();
+            // m_totalTimePatternMatching+=(date2.getTime() - date1.getTime());
+          } 
+        } // end if(null != patterns) 
       } // end if if(targetModeString.equals(mode))
 
       MatchPattern2 nextMatchPat = matchPat.getNext();

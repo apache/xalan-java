@@ -381,6 +381,12 @@ public class StylesheetRoot
         StylesheetComposed imported = getImport(i);
         addImports(imported, true);
       }
+      n = getIncludeCount();
+      for(int i = 0; i < n; i++)
+      {
+        Stylesheet included = getInclude(i);
+        addImports(included, false);
+      }
       m_globalImportList.insertElementAt(this, 0);
     }
     super.recomposeImports();
@@ -389,7 +395,7 @@ public class StylesheetRoot
   /**
    * Get a stylesheet from the global import list.
    */
-  protected StylesheetComposed getGlobalImport(int i)
+  public StylesheetComposed getGlobalImport(int i)
   {
     return (StylesheetComposed)m_globalImportList.elementAt(i);
   }
@@ -400,7 +406,7 @@ public class StylesheetRoot
    * the root stylesheet, thus the number will always be 1 or 
    * greater.
    */
-  protected int getGlobalImportCount()
+  public int getGlobalImportCount()
   {
     return m_globalImportList.size();
   }
@@ -413,7 +419,7 @@ public class StylesheetRoot
    * @return The index into the global import list of the given stylesheet,
    * or -1 if it is not found (which should never happen).
    */
-  protected int getImportNumber(StylesheetComposed sheet)
+  public int getImportNumber(StylesheetComposed sheet)
   {
     if(this == sheet)
       return 0;

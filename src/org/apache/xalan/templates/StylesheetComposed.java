@@ -110,8 +110,8 @@ public class StylesheetComposed extends Stylesheet
     return true;
   }
   
-  private transient int m_importNumber = -1;
-  
+  private int m_importNumber = -1;
+    
   /**
    * Recalculate the number of this stylesheet in the global 
    * import list.
@@ -567,7 +567,7 @@ public class StylesheetComposed extends Stylesheet
     throws SAXException
   {
     int nIncludes = getIncludeCountComposed();
-    for(int k = -1; k < nIncludes; k++)
+    for(int k = nIncludes-1; k >= -1; k--)
     {
       Stylesheet included = (-1 == k) ? this : getIncludeComposed(k);
       

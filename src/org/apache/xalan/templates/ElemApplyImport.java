@@ -111,7 +111,7 @@ public class ElemApplyImport extends ElemTemplateElement
       // This will have to change to current template, (which will have 
       // to be the top of a current template stack).
       
-      transformer.transformNode(null, null, sourceNode, mode);
+      transformer.transformNode(this, null, sourceNode, mode);
     }
     else // if(null == sourceNode)
     {
