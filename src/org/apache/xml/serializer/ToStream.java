@@ -2916,11 +2916,17 @@ abstract public class ToStream extends SerializerBase
     {
          this.m_canConvertMeth = null;
          this.m_cdataStartCalled = false;
-         this.m_charInfo = null; // ?? 
+         /* The stream is being reset. It is one of
+          * ToXMLStream, ToHTMLStream ... and this type can't be changed
+          * so neither should m_charInfo which is associated with the
+          * type of Stream. Just leave m_charInfo as-is for the next re-use.
+          * 
+          */
+         // this.m_charInfo = null; // don't set to null 
          this.m_charToByteConverter = null;
          this.m_disableOutputEscapingStates.clear();
          
-         this.m_escaping = false;
+         this.m_escaping = true;
          // Leave m_format alone for now - bjm
          // this.m_format = null;
          this.m_inDoctype = false;
