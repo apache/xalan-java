@@ -310,16 +310,16 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void parseContents(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
-	if (!_simplified) {
-	    // Make sure the XSL version set in this stylesheet
-	    if ((_version == null) || (_version.equals(EMPTYSTRING))) {
-		reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR,"version");
-	    }
-	    // Verify that the version is 1.0 and nothing else
-	    else if (!_version.equals("1.0")) {
-		reportError(this, parser, ErrorMsg.XSL_VERSION_ERR, _version);
-	    }
+	/*
+	// Make sure the XSL version set in this stylesheet
+	if ((_version == null) || (_version.equals(EMPTYSTRING))) {
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR,"version");
 	}
+	// Verify that the version is 1.0 and nothing else
+	else if (!_version.equals("1.0")) {
+	    reportError(this, parser, ErrorMsg.XSL_VERSION_ERR, _version);
+	}
+	*/
 
 	// Add the implicit mapping of 'xml' to the XML namespace URI
 	addPrefixMapping("xml", "http://www.w3.org/XML/1998/namespace");
