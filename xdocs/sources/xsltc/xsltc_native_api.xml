@@ -185,7 +185,7 @@
     public void printErrors();</source>
 
     <p>Note that warning messages are not returned/output by these two methods.
-    A client application should pass both warning <u>and</u> error messages
+    A client application should pass both warning  and error messages
     to its user.</p>
 
     </s3>
@@ -224,7 +224,7 @@
     The <code>DOMBuilder</code> contains both these interfaces, and it is
     implemented by an inner class of the <code>DOMImpl</code> class. To build
     the internal DOM, one has to go through these steps:</p><source>
-    <b>// Create a SAX parser and get the XMLReader object it uses</b>
+    // Create a SAX parser and get the XMLReader object it uses
     final SAXParserFactory factory = SAXParserFactory.newInstance();
     try {
 	factory.setFeature(Constants.NAMESPACE_FEATURE,true);
@@ -235,23 +235,23 @@
     final SAXParser parser = factory.newSAXParser();
     final XMLReader reader = parser.getXMLReader();
 
-    <b>// Set the DOM's DOM builder as the XMLReader's SAX2 ContentHandler</b>
+     // Set the DOM's DOM builder as the XMLReader's SAX2 ContentHandler
     final DOMImpl dom = new DOMImpl();
     DOMBuilder builder = dom.getBuilder();
     reader.setContentHandler(builder);
 
-    <b>// Set the DOM's DOM builder as the XMLReader's SAX2 LexicalHandler</b>
+     // Set the DOM's DOM builder as the XMLReader's SAX2 LexicalHandler
     try {
 	String prop = "http://xml.org/sax/properties/lexical-handler";
 	reader.setProperty(prop, builder);
     }
     catch (SAXException e) {
-	<b>// Can be quitely ignored...</b>
+	 // Can be quitely ignored...
     }
 
-    <b>// Pass the document URI or file-name to the DOM</b>
+     // Pass the document URI or file-name to the DOM
     dom.setDocumentURI(uri);
-    <b>// Parse the input document to populate the DOM</b>
+     // Parse the input document to populate the DOM
     reader.parse(uri);</source>
 
     <p>The input XML document may contain of reference a DTD. A DTD must be
@@ -261,12 +261,12 @@
     DTD declarations and aggregate them for use by a translet. Create your
     <code>DTDMonitor</code> instance by passing it a reference to your SAX
     parser:</p><source>
-    <b>// Create a DTD monitor and pass it to the XMLReader object</b>
+     // Create a DTD monitor and pass it to the XMLReader object
     final DTDMonitor dtd = new DTDMonitor(reader);</source>
 
     <p>This call ensures that an index is built for all <code>ID</code>
     attributes described in the DTD:</p><source>
-    <b>// If there are any elements with ID attributes, build an index</b>
+     // If there are any elements with ID attributes, build an index
     dtd.buildIdIndex(dom, 0, _translet);</source>
 
     <p>And this call ensures that the translet is passed all unparsed entities
@@ -284,7 +284,7 @@
     Class transletClass = Class.forName(transletName);
     AbstractTranslet translet = (AbstractTranslet)transletClass.newInstance();</source>
 
-    <p>Note that the translet <i>instance</i> is not reusable, so you would
+    <p>Note that the translet  instance  is not reusable, so you would
     benefit from keeping the reference to the translet class.</p>
 
     <p>Once you have your translet instance you can start playing around with
