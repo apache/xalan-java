@@ -7,6 +7,12 @@ import javax.xml.transform.stream.*;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 
 import java.util.Properties;
 
@@ -46,29 +52,39 @@ public class Examples
    */
   public static void main(String argv[])
           throws TransformerException, TransformerConfigurationException, IOException, SAXException,
-                 ParserConfigurationException
+                 ParserConfigurationException, FileNotFoundException
   {
-
-    System.out.println("==== exampleSimple ====");
-    exampleSimple1("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleSAX2SAX ====");
-    exampleSAX2SAX("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleXMLFilter ====");
-    exampleXMLFilter("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleXMLFilterChain ====");
-    exampleXMLFilterChain("foo.xml", "baz.xsl", "foo2.xsl", "baz.xsl");
-    System.out.println("\n==== exampleDOM2DOM ====");
-    exampleDOM2DOM("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleParam ====");
-    exampleParam("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleOutputProperties ====");
-    exampleOutputProperties("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleUseAssociated ====");
-    exampleUseAssociated("foo.xml");
-    System.out.println("\n==== exampleSAX2DOM ====");
-    exampleSAX2DOM("foo.xml", "foo.xsl");
-    System.out.println("\n==== exampleAsSerializer ====");
-    exampleAsSerializer("foo.xml", "foo.xsl");
+    System.out.println("\n\n==== exampleSimple ====");
+    exampleSimple1("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleFromStream ====");
+    exampleFromStream("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleFromReader ====");
+    exampleFromReader("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleUseTemplatesObj ====");
+    exampleUseTemplatesObj("xml/foo.xml", "xml/baz.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleContentHandlerToContentHandler ====");
+    exampleContentHandlerToContentHandler("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleXMLReader ====");
+    exampleXMLReader("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleXMLFilter ====");
+    exampleXMLFilter("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleXMLFilterChain ====");
+    exampleXMLFilterChain("xml/foo.xml", "xsl/foo.xsl", "xsl/foo2.xsl", "xsl/foo3.xsl");
+    System.out.println("\n\n==== exampleDOM2DOM ====");
+    exampleDOM2DOM("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleParam ====");
+    exampleParam("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleOutputProperties ====");
+    exampleOutputProperties("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleUseAssociated ====");
+    exampleUseAssociated("xml/foo.xml");
+    System.out.println("\n\n==== exampleContentHandler2DOM ====");
+    exampleContentHandler2DOM("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleAsSerializer ====");
+    exampleAsSerializer("xml/foo.xml", "xsl/foo.xsl");
+    System.out.println("\n\n==== exampleContentHandler2DOM ====");
+    exampleContentHandler2DOM("xml/foo.xml", "xsl/foo.xsl");
+    
     System.out.println("\n==== done! ====");
   }
   
@@ -79,30 +95,105 @@ public class Examples
   public static void exampleSimple1(String sourceID, String xslID)
     throws TransformerException, TransformerConfigurationException
   {
+    // Create a transform factory instance.
     TransformerFactory tfactory = TransformerFactory.newInstance();
+    
+    // Create a transformer for the stylesheet.
     Transformer transformer 
       = tfactory.newTransformer(new StreamSource(xslID));
+    
+    // Transform the source XML to System.out.
     transformer.transform( new StreamSource(sourceID),
                            new StreamResult(System.out));
   }
+  
+  /**
+   * Show simple transformation from input stream to output stream.
+   */
+  public static void exampleFromStream(String sourceID, String xslID)
+    throws TransformerException, TransformerConfigurationException,
+           FileNotFoundException
+  {
+    // Create a transform factory instance.
+    TransformerFactory tfactory = TransformerFactory.newInstance();
+
+    InputStream xslIS = new BufferedInputStream(new FileInputStream(xslID));
+    StreamSource xslSource = new StreamSource(xslIS);
+    // Note that if we don't do this, relative URLs can not be resolved correctly!
+    xslSource.setSystemId(xslID);
+
+    // Create a transformer for the stylesheet.
+    Transformer transformer = tfactory.newTransformer(xslSource);
+    
+    InputStream xmlIS = new BufferedInputStream(new FileInputStream(sourceID));
+    StreamSource xmlSource = new StreamSource(xmlIS);
+    // Note that if we don't do this, relative URLs can not be resolved correctly!
+    xmlSource.setSystemId(sourceID);
+    
+    // Transform the source XML to System.out.
+    transformer.transform( xmlSource, new StreamResult(System.out));
+  }
+  
+  /**
+   * Show simple transformation from reader to output stream.  In general 
+   * this use case is discouraged, since the XML encoding can not be 
+   * processed.
+   */
+  public static void exampleFromReader(String sourceID, String xslID)
+    throws TransformerException, TransformerConfigurationException,
+           FileNotFoundException
+  {
+    // Create a transform factory instance.
+    TransformerFactory tfactory = TransformerFactory.newInstance();
+
+    // Note that in this case the XML encoding can not be processed!
+    Reader xslReader = new BufferedReader(new FileReader(xslID));
+    StreamSource xslSource = new StreamSource(xslReader);
+    // Note that if we don't do this, relative URLs can not be resolved correctly!
+    xslSource.setSystemId(xslID);
+
+    // Create a transformer for the stylesheet.
+    Transformer transformer = tfactory.newTransformer(xslSource);
+    
+    // Note that in this case the XML encoding can not be processed!
+    Reader xmlReader = new BufferedReader(new FileReader(sourceID));
+    StreamSource xmlSource = new StreamSource(xmlReader);
+    // Note that if we don't do this, relative URLs can not be resolved correctly!
+    xmlSource.setSystemId(sourceID);
+    
+    // Transform the source XML to System.out.
+    transformer.transform( xmlSource, new StreamResult(System.out));
+  }
+
+
  
   /**
    * Show the simplest possible transformation from system id to output stream.
    */
-  public static void exampleSimple2(String sourceID1, 
+  public static void exampleUseTemplatesObj(String sourceID1, 
                                     String sourceID2, 
                                     String xslID)
           throws TransformerException, TransformerConfigurationException
   {
 
     TransformerFactory tfactory = TransformerFactory.newInstance();
+    
+    // Create a templates object, which is the processed, 
+    // thread-safe representation of the stylesheet.
     Templates templates = tfactory.newTemplates(new StreamSource(xslID));
 
+    // Illustrate the fact that you can make multiple transformers 
+    // from the same template.
     Transformer transformer1 = templates.newTransformer();
+    Transformer transformer2 = templates.newTransformer();
+    
+    System.out.println("\n\n----- transform of "+sourceID1+" -----");
+    
     transformer1.transform(new StreamSource(sourceID1),
                           new StreamResult(System.out));
     
-    Transformer transformer2 = templates.newTransformer();
+    System.out.println("\n\n----- transform of "+sourceID2+" -----");
+    
     transformer2.transform(new StreamSource(sourceID2),
                           new StreamResult(System.out));
   }
@@ -112,39 +203,74 @@ public class Examples
   /**
    * Show the Transformer using SAX events in and SAX events out.
    */
-  public static void exampleSAX2SAX(String sourceID, String xslID)
-          throws TransformerException, TransformerConfigurationException, SAXException, IOException    // , ParserConfigurationException
+  public static void exampleContentHandlerToContentHandler(String sourceID, 
+                                                           String xslID)
+          throws TransformerException, 
+                 TransformerConfigurationException, 
+                 SAXException, IOException
   {
     TransformerFactory tfactory = TransformerFactory.newInstance();
-    XMLReader reader = XMLReaderFactory.createXMLReader();
 
-    // Have a Templates builder handle the parse events from the SAXParser's 
-    // parse of an xslt file.
-    if (tfactory instanceof SAXTransformerFactory)
+    // Does this factory support SAX features?
+    if (tfactory.getFeature(Features.SAX))
     {
+      // If so, we can safely cast.
+      SAXTransformerFactory stfactory = ((SAXTransformerFactory) tfactory);
+      
+      // A TransformerHandler is a ContentHandler that will listen for 
+      // SAX events, and transform them to the result.
       TransformerHandler handler 
-        = ((SAXTransformerFactory) tfactory).newTransformerHandler(new StreamSource(xslID));
+        = stfactory.newTransformerHandler(new StreamSource(xslID));
 
       // Set the result handling to be a serialization to System.out.
       Result result = new SAXResult(new ExampleContentHandler());
-
       handler.setResult(result);
+      
+      // Create a reader, and set it's content handler to be the TransformerHandler.
+      XMLReader reader = XMLReaderFactory.createXMLReader();
       reader.setContentHandler(handler);
-      reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                         handler);
+      
+      // It's a good idea for the parser to send lexical events.
+      // The TransformerHandler is also a LexicalHandler.
+      reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
+      
+      // Parse the source XML, and send the parse events to the TransformerHandler.
       reader.parse(sourceID);
     }
     else
     {
       System.out.println(
-        "Can't do exampleSAX2SAX because tfactory is not a SAXTransformerFactory");
+        "Can't do exampleContentHandlerToContentHandler because tfactory is not a SAXTransformerFactory");
     }
+  }
+  
+  /**
+   * Show the Transformer as a SAX2 XMLReader.  An XMLFilter obtained 
+   * from newXMLFilter should act as a transforming XMLReader if setParent is not
+   * called.  Internally, an XMLReader is created as the parent for the XMLFilter.
+   */
+  public static void exampleXMLReader(String sourceID, String xslID)
+          throws TransformerException, TransformerConfigurationException, SAXException, IOException    // , ParserConfigurationException
+  {
+    TransformerFactory tfactory = TransformerFactory.newInstance();
+    if(tfactory.getFeature(Features.SAX))
+    {
+      XMLReader reader 
+        = ((SAXTransformerFactory) tfactory).newXMLFilter(new StreamSource(xslID));
+      
+      reader.setContentHandler(new ExampleContentHandler());
+
+      reader.parse(new InputSource(sourceID));
+    }
+    else
+      System.out.println("tfactory does not support SAX features!");
   }
 
   /**
-   * Show the Transformer as a SAX2 XMLFilter/XMLReader.  In this case
-   * the Transformer acts like a parser, and can in fact be polymorphicaly
-   * used in places where a SAX parser would be used.
+   * Show the Transformer as a simple XMLFilter.  This is pretty similar
+   * to exampleXMLReader, except that here the parent XMLReader is created 
+   * by the caller, instead of automatically within the XMLFilter.  This 
+   * gives the caller more direct control over the parent reader.
    */
   public static void exampleXMLFilter(String sourceID, String xslID)
           throws TransformerException, TransformerConfigurationException, SAXException, IOException    // , ParserConfigurationException
@@ -216,13 +342,14 @@ public class Examples
         filter3.setParent(filter2);
 
         filter3.setContentHandler(new ExampleContentHandler());
+        // filter3.setContentHandler(new org.xml.sax.helpers.DefaultHandler());
 
         // Now, when you call transformer3 to parse, it will set  
         // itself as the ContentHandler for transform2, and 
         // call transform2.parse, which will set itself as the 
         // content handler for transform1, and call transform1.parse, 
         // which will set itself as the content listener for the 
-        // SAX parser, and call parser.parse(new InputSource("foo.xml")).
+        // SAX parser, and call parser.parse(new InputSource("xml/foo.xml")).
         filter3.parse(new InputSource(sourceID));
       }
       else
@@ -263,7 +390,12 @@ public class Examples
         org.w3c.dom.Document outNode = docBuilder.newDocument();
         Node doc = docBuilder.parse(new InputSource(xslID));
  
-        templates = tfactory.newTemplates(new DOMSource(doc));
+        DOMSource dsource = new DOMSource(doc);
+        // If we don't do this, the transformer won't know how to 
+        // resolve relative URLs in the stylesheet.
+        dsource.setBaseID(xslID);
+
+        templates = tfactory.newTemplates(dsource);
       }
 
       Transformer transformer = templates.newTransformer();
@@ -352,7 +484,7 @@ public class Examples
       {
         Transformer transformer = tfactory.newTransformer(sources);
 
-        transformer.transform(new StreamSource("foo.xml"),
+        transformer.transform(new StreamSource(sourceID),
                               new StreamResult(System.out));
       }
       else
@@ -363,48 +495,77 @@ public class Examples
   }
   
   /**
-   * Show the Transformer using SAX events in and SAX events out.
+   * Show the Transformer using SAX events in and DOM nodes out.
    */
-  public static Node exampleSAX2DOM(String sourceID, String xslID)
+  public static void exampleContentHandler2DOM(String sourceID, String xslID)
           throws TransformerException, TransformerConfigurationException, SAXException, IOException, ParserConfigurationException
   {
     TransformerFactory tfactory = TransformerFactory.newInstance();
-    Templates templates = tfactory.newTemplates(new StreamSource(xslID));
 
+    // Make sure the transformer factory we obtained supports both
+    // DOM and SAX.
     if (tfactory.getFeature(Features.SAX)
         && tfactory.getFeature(Features.DOM))
     {
+      // We can now safely cast to a SAXTransformerFactory.
+      SAXTransformerFactory sfactory = (SAXTransformerFactory) tfactory;
+      
       // Create an Document node as the root for the output.
       DocumentBuilderFactory dfactory 
         = DocumentBuilderFactory.newInstance();
       DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
       org.w3c.dom.Document outNode = docBuilder.newDocument();
       
+      // Create a ContentHandler that can liston to SAX events 
+      // and transform the output to DOM nodes.
       TransformerHandler handler 
-        = ((SAXTransformerFactory) tfactory).newTransformerHandler(new StreamSource(xslID));
+        = sfactory.newTransformerHandler(new StreamSource(xslID));
       handler.setResult(new DOMResult(outNode));
       
-      // Create a reader and set it's content handler to be the 
+      // Create a reader and set it's ContentHandler to be the 
       // transformer.
       XMLReader reader = XMLReaderFactory.createXMLReader();
       reader.setContentHandler(handler);
       reader.setProperty("http://xml.org/sax/properties/lexical-handler",
                          handler);
       
-      // Send the SAX events from the parser to the transformer.
+      // Send the SAX events from the parser to the transformer,
+      // and thus to the DOM tree.
       reader.parse(sourceID);
       
-      // The tree should now be filled in, so return it.
-      return outNode;
+      // Serialize the node for diagnosis.
+      exampleSerializeNode(outNode);
     }
     else
     {
       System.out.println(
-        "Can't do exampleSAX2SAX because tfactory is not a SAXTransformerFactory");
+        "Can't do exampleContentHandlerToContentHandler because tfactory is not a SAXTransformerFactory");
     }
-    return null;
   }
   
+  /**
+   * Serialize a node to System.out.
+   */
+  public static void exampleSerializeNode(Node node)
+    throws TransformerException, TransformerConfigurationException, SAXException, IOException,
+    ParserConfigurationException
+  {
+    TransformerFactory tfactory = TransformerFactory.newInstance(); 
+    
+    // This creates a transformer that does a simple identity transform, 
+    // and thus can be used for all intents and purposes as a serializer.
+    Transformer serializer = tfactory.newTransformer();
+    
+    serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+    serializer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+    serializer.transform(new DOMSource(node), 
+                         new StreamResult(System.out));
+  }  
+  
+  /**
+   * A fuller example showing how the TrAX interface can be used 
+   * to serialize a DOM tree.
+   */
   public static void exampleAsSerializer(String sourceID, String xslID)
     throws TransformerException, TransformerConfigurationException, SAXException, IOException,
     ParserConfigurationException
@@ -414,14 +575,20 @@ public class Examples
     org.w3c.dom.Document outNode = docBuilder.newDocument();
     Node doc = docBuilder.parse(new InputSource(sourceID));
 
-    TransformerFactory tfactory = TransformerFactory.newInstance();    
+    TransformerFactory tfactory = TransformerFactory.newInstance(); 
+    
+    // This creates a transformer that does a simple identity transform, 
+    // and thus can be used for all intents and purposes as a serializer.
     Transformer serializer = tfactory.newTransformer();
+    
     Properties oprops = new Properties();
     oprops.put("method", "html");
     oprops.put("indent-amount", "2");
     serializer.setOutputProperties(oprops);
     serializer.transform(new DOMSource(doc), 
                          new StreamResult(System.out));
-  } 
+  }
+  
+
 
 }
