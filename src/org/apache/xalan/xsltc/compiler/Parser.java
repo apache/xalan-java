@@ -968,6 +968,8 @@ public class Parser implements Constants, ContentHandler {
         return SyntaxTreeNode.Dummy; 
     }
 
+    /************************ ERROR HANDLING SECTION ************************/
+
     /**
      * Returns true if there were any errors during compilation
      */

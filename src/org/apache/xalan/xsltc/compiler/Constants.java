@@ -406,6 +406,11 @@ public interface Constants extends InstructionConstants {
 	
     public static final String ADD_ITERATOR_SIG   
 	= "(" + NODE_ITERATOR_SIG +")" + UNION_ITERATOR_SIG;
+
+    public static final String ORDER_ITERATOR
+	= "orderNodes";
+    public static final String ORDER_ITERATOR_SIG
+	= "("+NODE_ITERATOR_SIG+"I)"+NODE_ITERATOR_SIG;
 	
     public static final String SET_START_NODE_SIG   
 	= "(" + NODE_SIG + ")" + NODE_ITERATOR_SIG;

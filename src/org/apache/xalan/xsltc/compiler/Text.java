@@ -74,21 +74,38 @@ final class Text extends Instruction {
     private String _text;
     private boolean _escaping = true;
 
-    public Text() {}
+    /**
+     * Create a blank Text syntax tree node.
+     */
+    public Text() {
+    }
 
+    /**
+     * Create text syntax tree node.
+     * @param text is the text to put in the node.
+     */
     public Text(String text) {
 	_text = text;
     }
 
-    public String getText() {
+    /**
+     * Returns the text wrapped inside this node
+     * @return The text wrapped inside this node
+     */
+    protected String getText() {
 	return _text;
     }
 
-    public void setText(String text) {
+    /**
+     * Set the text for this node. Appends the given text to any already
+     * existing text (using string concatenation, so use only when needed).
+     * @param text is the text to wrap inside this node.
+     */
+    protected void setText(String text) {
 	if (_text == null)
 	    _text = text;
 	else
-	    _text = _text + text; // compliation phase, so OK (well, maybe not)
+	    _text = _text + text;
     }
 
     public void display(int indent) {
@@ -105,8 +122,8 @@ final class Text extends Instruction {
 	}
 	parseChildren(parser);
     }
-	
-    public boolean contextDependent() {
+
+    protected boolean contextDependent() {
 	return false;
     }
 

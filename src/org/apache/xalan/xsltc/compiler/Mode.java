@@ -84,7 +84,7 @@ final class Mode implements Constants {
     private final QName      _name;       // The QName of this mode
     private final Stylesheet _stylesheet; // The owning stylesheet
     private final String     _methodName; // The method name for this mode
-    private Vector     _templates;  // All templates in this mode
+    private Vector           _templates;  // All templates in this mode
 
     // Pattern/test sequence for pattern with node()-type kernel
     private Vector    _nodeGroup = null;

@@ -103,7 +103,7 @@ final class LiteralElement extends Instruction {
     /**
      * Returns the namespace URI for which a prefix is pointing to
      */
-    public String accessedNamespace(String prefix) {
+    private String accessedNamespace(String prefix) {
 	if (_accessedPrefixes == null)
 	    return(null);
 	else
@@ -337,10 +337,7 @@ final class LiteralElement extends Instruction {
 	}
     }
 
-    /**
-     * 
-     */
-    public boolean contextDependent() {
+    protected boolean contextDependent() {
 	return dependentContents();
     }
 

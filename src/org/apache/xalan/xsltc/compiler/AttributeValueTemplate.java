@@ -195,10 +195,6 @@ final class AttributeValueTemplate extends AttributeValue {
 	}
     }
 
-    private void reportError(String value, Parser parser) {
-	reportError(getParent(), parser, ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);
-    }
-
     private boolean check(String value, Parser parser) {
 	// !!! how about quoted/escaped braces?
 	if (value == null) return true;
@@ -227,12 +223,14 @@ final class AttributeValueTemplate extends AttributeValue {
 	    case 1:
 		continue;
 	    default:
-		reportError(value, parser);
+		reportError(getParent(), parser,
+			    ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);
 		return false;
 	    }
 	}
 	if (level != 0) {
-	    reportError(value, parser);
+	    reportError(getParent(), parser,
+			ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);
 	    return false;
 	}
 	return true;

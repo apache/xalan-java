@@ -69,9 +69,16 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class LiteralAttribute extends Instruction {
-    private final String  _name;
-    private final AttributeValue _value;
 
+    private final String  _name;         // Attribute name (incl. prefix)
+    private final AttributeValue _value; // Attribute value
+
+    /**
+     * Creates a new literal attribute (but does not insert it into the AST).
+     * @param name the attribute name (incl. prefix) as a String.
+     * @param value the attribute value.
+     * @param parser the XSLT parser (wraps XPath parser).
+     */
     public LiteralAttribute(String name, String value, Parser parser) {
 	_name = name;
 	_value = AttributeValue.create(this, value, parser);
@@ -88,7 +95,7 @@ final class LiteralAttribute extends Instruction {
 	return Type.Void;
     }
 
-    public boolean contextDependent() {
+    protected boolean contextDependent() {
 	return _value.contextDependent();
     }
 

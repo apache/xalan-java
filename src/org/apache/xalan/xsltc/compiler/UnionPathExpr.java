@@ -74,8 +74,10 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class UnionPathExpr extends Expression {
+
     private final Expression _pathExpr;
     private final Expression _rest;
+    private boolean _reverse = false;
 
     // linearization for top level UnionPathExprs
     private Expression[] _components;
@@ -84,7 +86,7 @@ final class UnionPathExpr extends Expression {
 	_pathExpr = pathExpr;
 	_rest     = rest;
     }
-    
+
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	// find all expressions in this Union
@@ -96,14 +98,20 @@ final class UnionPathExpr extends Expression {
 	    _components[i].setParser(parser);
 	    _components[i].setParent(this);
 	    if (_components[i] instanceof Step) {
-		Step step = (Step)_components[i];
-		if ((step.getAxis() == Axis.ATTRIBUTE) ||
-		    (step.getNodeType() == DOM.ATTRIBUTE)) {
+		final Step step = (Step)_components[i];
+		final int axis = step.getAxis();
+		final int type = step.getNodeType();
+		// Put attribute iterators first
+		if ((axis == Axis.ATTRIBUTE) || (type == DOM.ATTRIBUTE)) {
 		    _components[i] = _components[0];
 		    _components[0] = step;
 		}
+		// Check if the union contains a reverse iterator
+		if (Axis.isReverse[axis]) _reverse = true;
 	    }
 	}
+	// No need to reverse anything if another expression lies on top of this
+	if (getParent() instanceof Expression) _reverse = false;
     }
     
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -135,24 +143,37 @@ final class UnionPathExpr extends Expression {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	final Instruction addIterator =
-	    new INVOKEVIRTUAL(cpg.addMethodref(UNION_ITERATOR_CLASS,
-					       ADD_ITERATOR,
-					       ADD_ITERATOR_SIG));
-	// create new UnionIterator
+
+	final int init = cpg.addMethodref(UNION_ITERATOR_CLASS,
+					  "<init>",
+					  "("+DOM_INTF_SIG+")V");
+	final int iter = cpg.addMethodref(UNION_ITERATOR_CLASS,
+					  ADD_ITERATOR,
+					  ADD_ITERATOR_SIG);
+
+	// Create the UnionIterator and leave it on the stack
 	il.append(new NEW(cpg.addClass(UNION_ITERATOR_CLASS)));
 	il.append(DUP);
 	il.append(methodGen.loadDOM());
-	il.append(new INVOKESPECIAL(cpg.addMethodref(UNION_ITERATOR_CLASS,
-						     "<init>",
-						     "("
-						     + DOM_INTF_SIG
-						     + ")V")));
-	// UnionIterator is on the stack
+	il.append(new INVOKESPECIAL(init));
+
+	// Add the various iterators to the UnionIterator
 	final int length = _components.length;
 	for (int i = 0; i < length; i++) {
 	    _components[i].translate(classGen, methodGen);
-	    il.append(addIterator);
+	    il.append(new INVOKEVIRTUAL(iter));
+	}
+
+	// Order the iterator only if strictly needed
+	if (_reverse) {
+	    final int order = cpg.addInterfaceMethodref(DOM_INTF,
+							ORDER_ITERATOR,
+							ORDER_ITERATOR_SIG);
+	    il.append(methodGen.loadDOM());
+	    il.append(SWAP);
+	    il.append(methodGen.loadContextNode());
+	    il.append(new INVOKEINTERFACE(order, 3));
+
 	}
     }
 }

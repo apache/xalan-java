@@ -157,10 +157,9 @@ final class FilterParentPath extends Expression {
 
 	if (!(getParent() instanceof RelativeLocationPath) &&
 	    !(getParent() instanceof FilterParentPath)) {
-	    String params = "("+NODE_ITERATOR_SIG+"I)"+NODE_ITERATOR_SIG;
 	    final int order = cpg.addInterfaceMethodref(DOM_INTF,
-							"orderNodes",
-							params);
+							ORDER_ITERATOR,
+							ORDER_ITERATOR_SIG);
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
 	    il.append(methodGen.loadContextNode());
