@@ -250,8 +250,6 @@ public class DOM2Helper extends DOMHelper
    */
   public String getLocalNameOfNode(Node n)
   {
-    if(null == n.getLocalName())
-      System.out.println("N name is null: "+n.getLocalName());
     return n.getLocalName();
   }
 
