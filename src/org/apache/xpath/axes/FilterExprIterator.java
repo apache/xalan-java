@@ -38,11 +38,8 @@ public class FilterExprIterator extends BasicTestIterator
   private boolean m_canDetachNodeset = true;
 
   /**
-   * Create a ChildTestIterator object.
+   * Create a FilterExprIterator object.
    *
-   * @param traverser Traverser that tells how the KeyIterator is to be handled.
-   *
-   * @throws javax.xml.transform.TransformerException
    */
   public FilterExprIterator()
   {
@@ -50,11 +47,8 @@ public class FilterExprIterator extends BasicTestIterator
   }
   
   /**
-   * Create a ChildTestIterator object.
+   * Create a FilterExprIterator object.
    *
-   * @param traverser Traverser that tells how the KeyIterator is to be handled.
-   *
-   * @throws javax.xml.transform.TransformerException
    */
   public FilterExprIterator(Expression expr)
   {
@@ -66,7 +60,7 @@ public class FilterExprIterator extends BasicTestIterator
    * Initialize the context values for this expression
    * after it is cloned.
    *
-   * @param execContext The XPath runtime context for this
+   * @param context The XPath runtime context for this
    * transformation.
    */
   public void setRoot(int context, Object environment)
@@ -191,8 +185,6 @@ public class FilterExprIterator extends BasicTestIterator
    * each member.  If the called visitor method returns 
    * false, the subtree should not be called.
    * 
-   * @param owner The owner of the visitor, where that path may be 
-   *              rewritten if needed.
    * @param visitor The visitor whose appropriate method will be called.
    */
   public void callPredicateVisitors(XPathVisitor visitor)

@@ -201,7 +201,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 
   /**
    * Tell if the expression is a nodeset expression.  In other words, tell
-   * if you can execute {@link asNode() asNode} without an exception.
+   * if you can execute {@link #asNode(XPathContext) asNode} without an exception.
    * @return true if the expression can be represented as a nodeset.
    */
   public boolean isNodesetExpr()

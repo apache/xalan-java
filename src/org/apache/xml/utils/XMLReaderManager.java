@@ -73,7 +73,7 @@ public class XMLReaderManager {
      * Retrieves a cached XMLReader for this thread, or creates a new
      * XMLReader, if the existing reader is in use.  When the caller no
      * longer needs the reader, it must release it with a call to
-     * {@link releaseXMLReader}.
+     * {@link #releaseXMLReader}.
      */
     public synchronized XMLReader getXMLReader() throws SAXException {
         XMLReader reader;

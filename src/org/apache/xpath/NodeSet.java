@@ -620,9 +620,6 @@ public class NodeSet
   /**
    * Add the node into a vector of nodes where it should occur in
    * document order.
-   * @param v Vector of nodes, presumably containing Nodes
-   * @param obj Node object.
-   *
    * @param node The node to be added.
    * @param test true if we should test for doc order
    * @param support The XPath runtime context.
@@ -697,9 +694,6 @@ public class NodeSet
   /**
    * Add the node into a vector of nodes where it should occur in
    * document order.
-   * @param v Vector of nodes, presumably containing Nodes
-   * @param obj Node object.
-   *
    * @param node The node to be added.
    * @param support The XPath runtime context.
    *

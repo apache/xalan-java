@@ -84,7 +84,7 @@ public class XMLCharacterRecognizer
   /**
    * Tell if the string is whitespace.
    *
-   * @param buf StringBuffer to check as XML whitespace.
+   * @param s String to check as XML whitespace.
    * @return True if characters in buffer are XML whitespace, false otherwise
    */
   public static boolean isWhiteSpace(String s)

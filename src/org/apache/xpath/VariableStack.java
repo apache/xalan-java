@@ -205,7 +205,7 @@ public class VariableStack implements Cloneable
 
   /**
    * Free up the stack frame that was last allocated with
-   * {@link link(int size)}.
+   * {@link #link(int size)}.
    */
   public  void unlink()
   {
@@ -215,7 +215,7 @@ public class VariableStack implements Cloneable
   
   /**
    * Free up the stack frame that was last allocated with
-   * {@link link(int size)}.
+   * {@link #link(int size)}.
    * @param currentFrame The current frame to set to 
    * after the unlink.
    */

@@ -307,10 +307,10 @@ public class StylesheetPIHandler extends DefaultHandler
    * so, at least for right now, I'm going to go ahead an throw a TransformerException
    * in order to stop the parse.
    *
-   * @param uri The Namespace URI, or an empty string.
+   * @param namespaceURI The Namespace URI, or an empty string.
    * @param localName The local name (without prefix), or empty string if not namespace processing.
-   * @param rawName The qualified name (with prefix).
-   * @param attributes The specified or defaulted attributes.
+   * @param qName The qualified name (with prefix).
+   * @param atts  The specified or defaulted attributes.
    *
    * @throws StopParseException since there can be no valid xml-stylesheet processing 
    *                            instructions past the first element.

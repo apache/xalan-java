@@ -477,7 +477,6 @@ public class UnImplNode implements Node, Element, NodeList, Document
    * Unimplemented. See org.w3c.dom.Element
    *
    * @param namespaceURI Namespace URI of attribute node to set
-   * @param localName Local part of qualified name of attribute node to set
    * NEEDSDOC @param qualifiedName
    * @param value value of attribute
    *
@@ -695,16 +694,14 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Tests whether the DOM implementation implements a specific feature and
    * that feature is supported by this node.
-   * @param featureThe name of the feature to test. This is the same name
+   * @param feature The name of the feature to test. This is the same name
    *   which can be passed to the method <code>hasFeature</code> on
    *   <code>DOMImplementation</code>.
-   * @param versionThis is the version number of the feature to test. In
+   * @param version This is the version number of the feature to test. In
    *   Level 2, version 1, this is the string "2.0". If the version is not
    *   specified, supporting any version of the feature will cause the
    *   method to return <code>true</code>.
    *
-   * NEEDSDOC @param feature
-   * NEEDSDOC @param version
    * @return Returns <code>false</code>
    * @since DOM Level 2
    */
@@ -937,14 +934,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Document
    *
-   * @param importedNodeThe node to import.
-   * @param deepIf <code>true</code>, recursively import the subtree under
+   * @param importedNode The node to import.
+   * @param deep         If <code>true</code>, recursively import the subtree under
    *   the specified node; if <code>false</code>, import only the node
    *   itself, as explained above. This has no effect on <code>Attr</code>
    *   , <code>EntityReference</code>, and <code>Notation</code> nodes.
-   *
-   * NEEDSDOC @param importedNode
-   * NEEDSDOC @param deep
    *
    * @return null
    *
@@ -1058,7 +1052,6 @@ public class UnImplNode implements Node, Element, NodeList, Document
    * Unimplemented.
    *
    * @param offset Start offset of substring to insert.
-   * @param count The length of the substring to insert.
    * NEEDSDOC @param arg
    *
    * @throws DOMException

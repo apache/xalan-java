@@ -125,11 +125,6 @@ public class DescendantIterator extends LocPathIterator
   /**
    * Create a DescendantIterator object.
    *
-   * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the
-   * location path expression for this itterator.
-   *
-   * @throws javax.xml.transform.TransformerException
    */
   public DescendantIterator()
   {
@@ -257,7 +252,7 @@ public class DescendantIterator extends LocPathIterator
    * Initialize the context values for this expression
    * after it is cloned.
    *
-   * @param execContext The XPath runtime context for this
+   * @param context The XPath runtime context for this
    * transformation.
    */
   public void setRoot(int context, Object environment)

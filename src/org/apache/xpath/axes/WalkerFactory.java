@@ -44,9 +44,6 @@ public class WalkerFactory
   /**
    * This method is for building an array of possible levels
    * where the target element(s) could be found for a match.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   *
    * @param lpi The owning location path iterator.
    * @param compiler non-null reference to compiler object that has processed
    *                 the XPath operations into an opcode map.
@@ -81,9 +78,6 @@ public class WalkerFactory
   /**
    * This method is for building an array of possible levels
    * where the target element(s) could be found for a match.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   *
    * @param lpi The owning location path iterator object.
    * @param compiler non-null reference to compiler object that has processed
    *                 the XPath operations into an opcode map.
@@ -294,7 +288,6 @@ public class WalkerFactory
    * @param compiler non-null reference to compiler object that has processed
    *                 the XPath operations into an opcode map.
    * @param stepOpCodePos The opcode position for the step.
-   * @param stepIndex The top-level step index withing the iterator.
    *
    * @return 32 bits as an integer that give information about the location
    * path as a whole.

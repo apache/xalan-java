@@ -58,7 +58,7 @@ public class UnionPathIterator extends LocPathIterator
    * Initialize the context values for this expression 
    * after it is cloned.
    *
-   * @param execContext The XPath runtime context for this 
+   * @param context The XPath runtime context for this 
    * transformation.
    */
   public void setRoot(int context, Object environment)
@@ -90,7 +90,7 @@ public class UnionPathIterator extends LocPathIterator
   /**
    * Add an iterator to the union list.
    *
-   * @param iter non-null reference to a location path iterator.
+   * @param expr non-null reference to a location path iterator.
    */
   public void addIterator(DTMIterator expr)
   {

@@ -331,10 +331,8 @@ public class SourceTreeManager
    * not currently in use for another parse().
    *
    * @param inputSource The value returned from the URIResolver.
-   * @returns a SAX2 XMLReader to use to resolve the inputSource argument.
+   * @return a SAX2 XMLReader to use to resolve the inputSource argument.
    * @param locator The location of the original caller, for diagnostic purposes.
-   *
-   * @return non-null XMLReader reference ready to parse.
    *
    * @throws TransformerException if the reader can not be created.
    */
