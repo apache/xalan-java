@@ -511,4 +511,27 @@ haste, more speed."</Log>
 <Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
 <Log>bug 1520, updating href attr spec char handling</Log>
 </Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>02/08/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions
+ XSLProcessorContext.java
+ java/src/org/apache/xalan/lib/sql DTMDocument.java
+ java/src/org/apache/xalan/templates ElemForEach.java
+ FuncDocument.java FuncKey.java
+ java/src/org/apache/xalan/transformer KeyIterator.java
+ TransformerHandlerImpl.java TransformerImpl.java
+ java/src/org/apache/xml/dtm DTM.java
+ java/src/org/apache/xml/dtm/ref DTMDefaultBase.java
+ DTMDefaultBaseIterators.java DTMDocumentImpl.java
+ DTMNodeProxy.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2RTFDTM.java
+ java/src/org/apache/xpath/axes IteratorPool.java</Modified>
+<Log>Bugzilla 6314: Additional support changes for multiple RTFs per DTM.
+ Many files affected, but the basic change is that dtm.getDocument()
+ with no arguments is meaningless when there are multiple docs in
+ a single DTM object; instead, folks should use the new getRootNode()
+ method or getOwnerDocument(), both of which take a node as input
+ and thus more clearly identify which document we're referring to.</Log>
+</Commit>
 </Commits>
