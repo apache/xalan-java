@@ -65,6 +65,12 @@ import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.TransformerImpl;
 
+/**
+ * Sample for demonstrating Xalan "trace" interface.
+ * Usage: run in Trace directory: java Trace
+ * For an extensions trace sample, run in extensions
+ * directory: java Trace 3-java-namespace
+ */
 public class Trace
 {	
   public static void main (String[] args)
@@ -73,6 +79,10 @@ public class Trace
 			 java.util.TooManyListenersException, 
 			 org.xml.sax.SAXException			 
   {
+    String fileName = "foo";
+    if (args.length > 0)
+      fileName = args[0];
+
     // Set up a PrintTraceListener object to print to a file.
     java.io.FileWriter fw = new java.io.FileWriter("events.log");  
     java.io.PrintWriter pw = new java.io.PrintWriter(fw, true);
@@ -86,10 +96,12 @@ public class Trace
     ptl.m_traceSelection = true;
     // Print information whenever a template is invoked.
     ptl.m_traceTemplates = true;
+    // Print information whenever an extension call is made.
+    ptl.m_traceExtension = true;
 
     // Set up the transformation    
    	TransformerFactory tFactory = TransformerFactory.newInstance();
-    Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
+    Transformer transformer = tFactory.newTransformer(new StreamSource(fileName + ".xsl"));
 
     // Cast the Transformer object to TransformerImpl.
     if (transformer instanceof TransformerImpl) 
@@ -103,13 +115,13 @@ public class Trace
       // Perform the transformation --printing information to
       // the events log during the process.
       transformer.transform
-                         ( new StreamSource("foo.xml"), 
-                           new StreamResult(new java.io.FileWriter("foo.out")) );
+                         ( new StreamSource(fileName + ".xml"), 
+                           new StreamResult(new java.io.FileWriter(fileName + ".out")) );
     }
     // Close the PrintWriter and FileWriter.
     pw.close();
     fw.close();
-   	System.out.println("**The output is in foo.out; the log is in events.log ****");	
+   	System.out.println("**The output is in " + fileName + ".out; the log is in events.log ****");	
     
   }
 }
