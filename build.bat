@@ -11,8 +11,8 @@ if "%ANT_HOME%" == "" set ANT_HOME=.
 
 rem This automatically adds system classes to CLASSPATH
 set SAVECP=%CLASSPATH%
-if exist %JAVA_HOME%\lib\tools.jar set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
-if exist %JAVA_HOME%\lib\classes.zip set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
+if exist "%JAVA_HOME%\lib\tools.jar" set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\tools.jar
+if exist "%JAVA_HOME%\lib\classes.zip" set CLASSPATH=%CLASSPATH%;%JAVA_HOME%\lib\classes.zip
 
 rem Default locations of jars we depend on 
 set ANT=bin\ant.jar
@@ -31,7 +31,7 @@ echo Starting Ant...
 
 rem Temporarily, up the -mx memory since we compile a really big glob of files
 echo %JAVA_HOME%\bin\java.exe -mx64m -Dant.home="%ANT_HOME%" -classpath "%CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
-%JAVA_HOME%\bin\java.exe -mx64m -Dant.home="%ANT_HOME%" -classpath "%CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+"%JAVA_HOME%\bin\java.exe" -mx64m -Dant.home="%ANT_HOME%" -classpath "%CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 
 goto end
 
