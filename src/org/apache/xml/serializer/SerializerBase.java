@@ -95,9 +95,11 @@ abstract public class SerializerBase
     protected void fireEndElem(String name)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
         if (m_tracer != null)
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);     	        	    	
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);
+        }     	        	    	
     }
 
     /**
@@ -109,9 +111,11 @@ abstract public class SerializerBase
     protected void fireCharEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
         if (m_tracer != null)
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CHARACTERS, chars, start,length);     	        	    	
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CHARACTERS, chars, start,length);
+        }     	        	    	
     }
 
     /**
@@ -1041,10 +1045,12 @@ abstract public class SerializerBase
      */
     protected void fireStartEntity(String name)
         throws org.xml.sax.SAXException
-    {
-        flushMyWriter();
+    {        
         if (m_tracer != null)
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF, name);     	        	    	
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF, name);
+        }     	        	    	
     }
 
     /**
@@ -1093,9 +1099,11 @@ abstract public class SerializerBase
     protected void fireCDATAEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
 		if (m_tracer != null)
-			m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CDATA, chars, start,length);     	        	    	
+        {
+            flushMyWriter();
+			m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_CDATA, chars, start,length);
+        }     	        	    	
     }
 
     /**
@@ -1107,9 +1115,11 @@ abstract public class SerializerBase
     protected void fireCommentEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
 		if (m_tracer != null)
-			m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_COMMENT, new String(chars, start, length));     	        	    	
+        {
+            flushMyWriter();
+			m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_COMMENT, new String(chars, start, length));
+        }     	        	    	
     }
 
 
@@ -1120,7 +1130,8 @@ abstract public class SerializerBase
     public void fireEndEntity(String name)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
+        if (m_tracer != null)
+            flushMyWriter();
     	// we do not need to handle this.
     }    
 
@@ -1130,9 +1141,11 @@ abstract public class SerializerBase
      protected void fireStartDoc()
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
         if (m_tracer != null)
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_STARTDOCUMENT);     	    
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_STARTDOCUMENT);
+        }     	    
     }    
 
 
@@ -1142,9 +1155,11 @@ abstract public class SerializerBase
     protected void fireEndDoc()
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
         if (m_tracer != null)
-        m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDDOCUMENT);     	        	
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDDOCUMENT);
+        }     	        	
     }    
     
     /**
@@ -1156,11 +1171,13 @@ abstract public class SerializerBase
      */
     protected void fireStartElem(String elemName)
         throws org.xml.sax.SAXException
-    {
-        flushMyWriter();
+    {        
         if (m_tracer != null)
+        {
+            flushMyWriter();
             m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_STARTELEMENT,
-                elemName, m_attributes);     	        	
+                elemName, m_attributes);     	 
+        }       	
     }    
 
 
@@ -1183,9 +1200,12 @@ abstract public class SerializerBase
     protected void fireEscapingEvent(String name, String data)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
+
         if (m_tracer != null)
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_PI,name, data);     	        	    	
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_PI,name, data);
+        }     	        	    	
     }    
 
 
@@ -1196,9 +1216,11 @@ abstract public class SerializerBase
     protected void fireEntityReference(String name)
         throws org.xml.sax.SAXException
     {
-        flushMyWriter();
         if (m_tracer != null)
-            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF,name, (Attributes)null);     	        	    	
+        {
+            flushMyWriter();
+            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENTITYREF,name, (Attributes)null);
+        }     	        	    	
     }    
 
     /**
