@@ -410,6 +410,7 @@ Copyright:
       <patternset><!-- relative to jar/@basedir -->
         <include name="org/apache/xml/**" />
         <include name="${xsltc.reldir}/**/*" />
+        <exclude name="org/apache/xalan/xsltc/util/JavaCupRedirect*" />
       </patternset>
     </jar>
   </target>
@@ -493,7 +494,10 @@ Copyright:
     
     <!-- make bundled jar named xsltc.jar -->
     <jar jarfile="${build.dir}/xsltc.jar" manifest="${build.dir}/manifest.xsltc" >
-      <fileset dir="${build.classes}" includes="org/apache/xalan/xsltc/**" />
+      <fileset dir="${build.classes}">
+        <include name="org/apache/xalan/xsltc/**"/>
+        <exclude name="org/apache/xalan/xsltc/util/JavaCupRedirect*" />
+      </fileset>
       <fileset dir="${build.classes}" includes="org/apache/xml/**" />
       <fileset dir="${build.classes}" includes="org/apache/bcel/**" />
       <fileset dir="${build.classes}" includes="JLex/**" />
@@ -537,6 +541,7 @@ Copyright:
         <include name="${xpath.reldir}/**/*" />
         <include name="${xalan.reldir}/**/*" />
         <include name="META-INF/services/*" />
+        <exclude name="${xsltc.reldir}/util/JavaCupRedirect*" />
       </patternset>    
     </jar>
   </target>
@@ -553,7 +558,11 @@ Copyright:
     
     <!-- make bundled jar named xalan.jar -->
     <jar jarfile="${build.xalan.jar}" manifest="${build.dir}/MANIFEST.MF"
-         basedir="${build.classes}" />
+         basedir="${build.classes}" >
+       <patternset>
+         <exclude name="${xsltc.reldir}/util/JavaCupRedirect*" />
+       </patternset>
+    </jar>  
   
   </target>
   
