@@ -98,7 +98,7 @@ public class ElemLiteralResult extends ElemUse
    * that is also the stylesheet element.
    *
    *
-   * @param b boolean flag indicating whether this element 
+   * @param b boolean flag indicating whether this element
    * represents a root element that is also the stylesheet element.
    */
   public void setIsLiteralResultAsStylesheet(boolean b)
@@ -108,10 +108,10 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * Return whether this element represents a root element
-   * that is also the stylesheet element. 
+   * that is also the stylesheet element.
    *
    *
-   * @return boolean flag indicating whether this element 
+   * @return boolean flag indicating whether this element
    * represents a root element that is also the stylesheet element.
    */
   public boolean getIsLiteralResultAsStylesheet()
@@ -126,7 +126,7 @@ public class ElemLiteralResult extends ElemUse
    */
   private Vector m_avts = null;
 
-  /** List of attributes with the XSLT namespace.   */
+  /** List of attributes with the XSLT namespace. */
   private Vector m_xslAttr = null;
 
   /**
@@ -162,7 +162,7 @@ public class ElemLiteralResult extends ElemUse
    *
    * @param name Name of literal result attribute to get
    *
-   * @return literal result attribute (AVT) 
+   * @return literal result attribute (AVT)
    */
   public AVT getLiteralResultAttribute(String name)
   {
@@ -184,7 +184,7 @@ public class ElemLiteralResult extends ElemUse
 
     return null;
   }
-  
+
   /**
    * Get whether or not the passed URL is contained flagged by
    * the "extension-element-prefixes" property.
@@ -203,58 +203,70 @@ public class ElemLiteralResult extends ElemUse
     if (prefix.length() == 0)
       prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
 
-    if(m_excludeResultPrefixes.contains(prefix))
+    if (m_excludeResultPrefixes.contains(prefix))
       return true;
     else
       return super.containsExcludeResultPrefix(prefix);
   }
-  
+
   /**
-   * Augment resolvePrefixTables, resolving the namespace aliases once 
+   * Augment resolvePrefixTables, resolving the namespace aliases once
    * the superclass has resolved the tables.
+   *
+   * @throws TransformerException
    */
   public void resolvePrefixTables() throws TransformerException
   {
+
     super.resolvePrefixTables();
-        
+
     StylesheetRoot stylesheet = getStylesheetRoot();
-    if((null != m_namespace) && (m_namespace.length() > 0))
+
+    if ((null != m_namespace) && (m_namespace.length() > 0))
     {
       NamespaceAlias nsa = stylesheet.getNamespaceAliasComposed(m_namespace);
-      if(null != nsa)
+
+      if (null != nsa)
       {
         m_namespace = nsa.getResultNamespace();
-        
+
         // String resultPrefix = nsa.getResultPrefix();
-        String resultPrefix = nsa.getStylesheetPrefix(); // As per xsl WG, Mike Kay
-        if((null != resultPrefix) && (resultPrefix.length() > 0))
-          m_rawName = resultPrefix+":"+m_localName;
+        String resultPrefix = nsa.getStylesheetPrefix();  // As per xsl WG, Mike Kay
+
+        if ((null != resultPrefix) && (resultPrefix.length() > 0))
+          m_rawName = resultPrefix + ":" + m_localName;
         else
           m_rawName = m_localName;
       }
     }
-    
-    if(null != m_avts)
+
+    if (null != m_avts)
     {
       int n = m_avts.size();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
-        AVT avt = (AVT)m_avts.elementAt(i);
-        
+        AVT avt = (AVT) m_avts.elementAt(i);
+
         // Should this stuff be a method on AVT?
         String ns = avt.getURI();
-        if((null != ns) && (ns.length() > 0))
+
+        if ((null != ns) && (ns.length() > 0))
         {
-          NamespaceAlias nsa = stylesheet.getNamespaceAliasComposed(m_namespace);
-          if(null != nsa)
+          NamespaceAlias nsa =
+            stylesheet.getNamespaceAliasComposed(m_namespace);
+
+          if (null != nsa)
           {
             String namespace = nsa.getResultNamespace();
-            
+
             // String resultPrefix = nsa.getResultPrefix();
-            String resultPrefix = nsa.getStylesheetPrefix(); // As per XSL WG
+            String resultPrefix = nsa.getStylesheetPrefix();  // As per XSL WG
             String rawName = avt.getName();
-            if((null != resultPrefix) && (resultPrefix.length() > 0))
-              rawName = resultPrefix+":"+rawName;
+
+            if ((null != resultPrefix) && (resultPrefix.length() > 0))
+              rawName = resultPrefix + ":" + rawName;
+
             avt.setURI(namespace);
             avt.setRawName(rawName);
           }
@@ -262,26 +274,31 @@ public class ElemLiteralResult extends ElemUse
       }
     }
   }
-  
+
   /**
-   * Return whether we need to check namespace prefixes 
+   * Return whether we need to check namespace prefixes
    * against and exclude result prefixes list.
    * Note that this will create a new prefix table if one
    * has not been created already.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   boolean needToCheckExclude()
   {
+
     if (null == m_excludeResultPrefixes && null == m_prefixTable)
       return false;
     else
     {
+
       // Create a new prefix table if one has not already been created.
       if (null == m_prefixTable)
         m_prefixTable = new Vector();
+
       return true;
-    }  
-  }    
-  
+    }
+  }
+
   /**
    * The namespace of the element to be created.
    */
@@ -289,8 +306,8 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * Set the namespace URI of the result element to be created.
-   * Note that after resolvePrefixTables has been called, this will 
-   * return the aliased result namespace, not the original stylesheet 
+   * Note that after resolvePrefixTables has been called, this will
+   * return the aliased result namespace, not the original stylesheet
    * namespace.
    *
    * @param ns The Namespace URI, or the empty string if the
@@ -311,7 +328,7 @@ public class ElemLiteralResult extends ElemUse
   {
     return m_namespace;
   }
-  
+
   /**
    * The local name of the element to be created.
    */
@@ -320,7 +337,7 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Set the local name of the LRE.
    *
-   * @param localName The local name (without prefix) of the result element 
+   * @param localName The local name (without prefix) of the result element
    *                  to be created.
    */
   public void setLocalName(String localName)
@@ -330,11 +347,11 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * Get the local name of the Literal Result Element.
-   * Note that after resolvePrefixTables has been called, this will 
-   * return the aliased name prefix, not the original stylesheet 
+   * Note that after resolvePrefixTables has been called, this will
+   * return the aliased name prefix, not the original stylesheet
    * namespace prefix.
    *
-   * @return The local name (without prefix) of the result element 
+   * @return The local name (without prefix) of the result element
    *                  to be created.
    */
   public String getLocalName()
@@ -346,7 +363,7 @@ public class ElemLiteralResult extends ElemUse
    * The raw name of the element to be created.
    */
   private String m_rawName;
-  
+
   /**
    * Set the raw name of the LRE.
    *
@@ -389,7 +406,7 @@ public class ElemLiteralResult extends ElemUse
    * Get an "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
-   * @param i Index of URI ("extension-element-prefix" property) to get 
+   * @param i Index of URI ("extension-element-prefix" property) to get
    *
    * @return URI at given index ("extension-element-prefix" property)
    *
@@ -500,7 +517,7 @@ public class ElemLiteralResult extends ElemUse
    * namespace aliasing (I think).
    *
    * @param prefix Prefix of namespace to check
-   * @param uri URI of namespace to check 
+   * @param uri URI of namespace to check
    *
    * @return True if the given namespace should be excluded
    *
@@ -537,14 +554,14 @@ public class ElemLiteralResult extends ElemUse
 
     Vector m_declaredPrefixes = getDeclaredPrefixes();
 
-    // If we have declared declarations, then we look for 
-    // a parent that has namespace decls, and add them 
-    // to this element's decls.  Otherwise we just point 
+    // If we have declared declarations, then we look for
+    // a parent that has namespace decls, and add them
+    // to this element's decls.  Otherwise we just point
     // to the parent that has decls.
     if (null != m_declaredPrefixes)
     {
 
-      // Add this element's declared prefixes to the 
+      // Add this element's declared prefixes to the
       // prefix table.
       int n = m_declaredPrefixes.size();
 
@@ -620,7 +637,6 @@ public class ElemLiteralResult extends ElemUse
       child.resolvePrefixTables();
     }
   }*/
-  
 
   /**
    * Copy a Literal Result Element into the Result tree, copy the
@@ -647,41 +663,50 @@ public class ElemLiteralResult extends ElemUse
       executeNSDecls(transformer);
       rhandler.startElement(getNamespace(), getLocalName(), getRawName());
 
-      // Process any possible attributes from xsl:use-attribute-sets first
-      super.execute(transformer, sourceNode, mode);
-
-      //xsl:version, excludeResultPrefixes???
-      // Process the list of avts next
-      if (null != m_avts)
+      try
       {
-        int nAttrs = m_avts.size();
 
-        for (int i = (nAttrs - 1); i >= 0; i--)
+        // Process any possible attributes from xsl:use-attribute-sets first
+        super.execute(transformer, sourceNode, mode);
+
+        //xsl:version, excludeResultPrefixes???
+        // Process the list of avts next
+        if (null != m_avts)
         {
-          AVT avt = (AVT) m_avts.elementAt(i);
-          XPathContext xctxt = transformer.getXPathContext();
-          String stringedValue = avt.evaluate(xctxt, sourceNode, this);
+          int nAttrs = m_avts.size();
 
-          if (null != stringedValue)
+          for (int i = (nAttrs - 1); i >= 0; i--)
           {
+            AVT avt = (AVT) m_avts.elementAt(i);
+            XPathContext xctxt = transformer.getXPathContext();
+            String stringedValue = avt.evaluate(xctxt, sourceNode, this);
 
-            // Important Note: I'm not going to check for excluded namespace 
-            // prefixes here.  It seems like it's to expensive, and I'm not 
-            // even sure this is right.  But I could be wrong, so this needs 
-            // to be tested against other implementations.
-            rhandler.addAttribute(avt.getURI(), avt.getName(),
-                                  avt.getRawName(), "CDATA", stringedValue);
-          }
-        }  // end for
+            if (null != stringedValue)
+            {
+
+              // Important Note: I'm not going to check for excluded namespace 
+              // prefixes here.  It seems like it's to expensive, and I'm not 
+              // even sure this is right.  But I could be wrong, so this needs 
+              // to be tested against other implementations.
+              rhandler.addAttribute(avt.getURI(), avt.getName(),
+                                    avt.getRawName(), "CDATA", stringedValue);
+            }
+          }  // end for
+        }
+
+        // Now process all the elements in this subtree
+        // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
+        transformer.executeChildTemplates(this, sourceNode, mode);
       }
-
-      // Now process all the elements in this subtree
-      // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
-      transformer.executeChildTemplates(this, sourceNode, mode);
-      rhandler.endElement(getNamespace(), getLocalName(), getRawName());
-      unexecuteNSDecls(transformer);
+      finally
+      {
+        // If you don't do this in a finally statement, an exception could 
+        // cause a system hang.
+        rhandler.endElement(getNamespace(), getLocalName(), getRawName());
+        unexecuteNSDecls(transformer);
+      }
     }
-    catch(org.xml.sax.SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       throw new TransformerException(se);
     }
@@ -692,7 +717,7 @@ public class ElemLiteralResult extends ElemUse
    * ADDED 9/5/2000 to support compilation experiment
    *
    * @return an Enumeration of the literal result attributes associated
-   * with this element. 
+   * with this element.
    */
   public Enumeration enumerateLiteralResultAttributes()
   {
