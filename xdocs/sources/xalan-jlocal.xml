@@ -68,11 +68,15 @@
             label="Sample Apps"
             source="xalan/samples.xml"/>
             
+  <document id="commandline" 
+            label="Command Line" 
+            source="xalan/commandline.xml"/>
+                        
  <separator/>
              
   <external href="apidocs/index.html"  label="API (Javadoc)"/>
    
  <separator/>
  
- <external href="http://xml.apache.org/bugs/"  label="Bug reporting"/>
+<external href="http://xml.apache.org/xalan/design/design2_0_0.html" label="Xalan 2 Design"/>
 </book>

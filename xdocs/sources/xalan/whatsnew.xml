@@ -58,16 +58,18 @@
  -->
 <s1 title="What's new in &xslt4j2;">
 <ul>
-<li><link anchor="design">New Design</link></li>
-<li><link anchor="basic">Basic 4 steps</link></li>
-<li><link anchor="processor">1. Instantiate stylesheet Processor</link></li>
-<li><link anchor="process">2. Process stylesheet</link></li>
-<li><link anchor="transformer">3. Instantiate Transformer</link></li>
-<li><link anchor="transformation">4. Perform transformation</link></li>
-<li><link anchor="modules">Modularity</link></li>
-<li><link anchor="sax">SAX</link></li>
-<li><link anchor="params">Setting stylesheet parameters</link></li>
-<li><link anchor="dom">DOM</link></li>
+  <li><link anchor="design">New Design</link></li>
+  <li><link anchor="basic">Basic 4 steps</link></li>
+  <ol>
+    <li><link anchor="processor">Instantiate stylesheet Processor</link></li>
+    <li><link anchor="process">Process stylesheet</link></li>
+    <li><link anchor="transformer">Instantiate Transformer</link></li>
+    <li><link anchor="transformation">Perform transformation</link></li>
+  </ol>
+  <li><link anchor="modules">Modularity</link></li>
+  <li><link anchor="sax">SAX</link></li>
+  <li><link anchor="params">Setting stylesheet parameters</link></li>
+  <li><link anchor="dom">DOM</link></li>
 </ul><anchor name="design"/>
   <s2 title="New Design">
   <p>&xslt4j2; represents a fundamental redesign of Xalan. It differs from &xslt4j; 1 in the following basic ways:</p>
