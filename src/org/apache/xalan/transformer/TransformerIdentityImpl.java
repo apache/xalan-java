@@ -862,9 +862,19 @@ public class TransformerIdentityImpl extends Transformer
       throw new SAXException(te.getMessage(), te);
     }
 
-    m_resultContentHandler.startDocument();
-
     m_foundFirstElement = false;
+  }
+  
+  boolean m_flushedStartDoc = false;
+  
+  protected final void flushStartDoc()
+     throws SAXException
+  {
+    if(!m_flushedStartDoc)
+    {
+      m_resultContentHandler.startDocument();
+      m_flushedStartDoc = true;
+    }
   }
 
   /**
@@ -883,6 +893,7 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void endDocument() throws SAXException
   {
+    flushStartDoc();
     m_resultContentHandler.endDocument();
   }
 
@@ -904,6 +915,7 @@ public class TransformerIdentityImpl extends Transformer
   public void startPrefixMapping(String prefix, String uri)
           throws SAXException
   {
+    flushStartDoc();
     m_resultContentHandler.startPrefixMapping(prefix, uri);
   }
 
@@ -923,6 +935,7 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void endPrefixMapping(String prefix) throws SAXException
   {
+    flushStartDoc();
     m_resultContentHandler.endPrefixMapping(prefix);
   }
 
@@ -990,7 +1003,7 @@ public class TransformerIdentityImpl extends Transformer
         m_serializer = newSerializer;
       }
     }
-
+    flushStartDoc();
     m_resultContentHandler.startElement(uri, localName, qName, attributes);
   }
 
@@ -1044,6 +1057,7 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void characters(char ch[], int start, int length) throws SAXException
   {
+    flushStartDoc();
     m_resultContentHandler.characters(ch, start, length);
   }
 
@@ -1091,6 +1105,7 @@ public class TransformerIdentityImpl extends Transformer
   public void processingInstruction(String target, String data)
           throws SAXException
   {
+    flushStartDoc();
     m_resultContentHandler.processingInstruction(target, data);
   }
 
@@ -1111,6 +1126,7 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void skippedEntity(String name) throws SAXException
   {
+    flushStartDoc();
     m_resultContentHandler.skippedEntity(name);
   }
 
@@ -1138,6 +1154,7 @@ public class TransformerIdentityImpl extends Transformer
   public void startDTD(String name, String publicId, String systemId)
           throws SAXException
   {
+    flushStartDoc();
     if (null != m_resultLexicalHandler)
       m_resultLexicalHandler.startDTD(name, publicId, systemId);
   }
@@ -1237,6 +1254,7 @@ public class TransformerIdentityImpl extends Transformer
    */
   public void comment(char ch[], int start, int length) throws SAXException
   {
+    flushStartDoc();
     if (null != m_resultLexicalHandler)
       m_resultLexicalHandler.comment(ch, start, length);
   }
