@@ -67,7 +67,7 @@ import org.apache.bcel.generic.Type;
 import org.apache.xalan.xsltc.compiler.Constants;
 
 public final class Util {
-    static public char filesep;
+    private static char filesep;
 
     static {
 	String temp = System.getProperty("file.separator", "/");

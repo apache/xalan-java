@@ -79,11 +79,11 @@ import org.apache.xml.utils.ObjectFactory;
  * Base class for sort records containing application specific sort keys 
  */
 public abstract class NodeSortRecord {
-    public static int COMPARE_STRING     = 0;
-    public static int COMPARE_NUMERIC    = 1;
+    public static final int COMPARE_STRING     = 0;
+    public static final int COMPARE_NUMERIC    = 1;
 
-    public static int COMPARE_ASCENDING  = 0;
-    public static int COMPARE_DESCENDING = 1;
+    public static final int COMPARE_ASCENDING  = 0;
+    public static final int COMPARE_DESCENDING = 1;
 
     /**
      * A reference to a locale. May be updated by subclass if the stylesheet
