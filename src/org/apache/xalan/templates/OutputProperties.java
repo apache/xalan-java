@@ -124,6 +124,93 @@ public class OutputProperties extends ElemTemplateElement
   {
     m_properties = new Properties(getDefaultMethodProperties(method));
   }
+  
+  static final String S_XSLT_PREFIX = "xslt.output.";
+  static final int S_XSLT_PREFIX_LEN = S_XSLT_PREFIX.length();
+  static final String S_XALAN_PREFIX = "org.apache.xslt.";
+  static final int S_XALAN_PREFIX_LEN = S_XALAN_PREFIX.length();
+  
+  /**
+   * Fix up a string in an output properties file according to 
+   * the rules of {@link #loadPropertiesFile}.
+   * 
+   * @param s non-null reference to string that may need to be fixed up.
+   * @return A new string if fixup occured, otherwise the s argument.
+   */
+  static private String fixupPropertyString(String s, boolean doClipping)
+  {
+    int index;
+    if (doClipping && s.startsWith(S_XSLT_PREFIX))
+    {
+      s = s.substring(S_XSLT_PREFIX_LEN);
+    }
+    if (s.startsWith(S_XALAN_PREFIX))
+    {
+      s = Constants.S_BUILTIN_EXTENSIONS_URL + s.substring(S_XALAN_PREFIX_LEN);
+    }
+    if ((index = s.indexOf("\\u003a")) > 0)
+    {
+      String temp = s.substring(index+6);
+      s = s.substring(0, index) + ":" + temp;
+
+    }
+    return s;
+  }
+  
+  /**
+   * Load the properties file from a resource stream.  If a 
+   * key name such as "org.apache.xslt.xxx", fix up the start of 
+   * string to be a curly namespace.  If a key name starts with 
+   * "xslt.output.xxx", clip off "xslt.output.".  If a key name *or* a 
+   * key value is discovered, check for \u003a in the text, and 
+   * fix it up to be ":", since earlier versions of the JDK do not 
+   * handle the escape sequence (at least in key names).
+   * 
+   * @param resourceName non-null reference to resource name.
+   * @param defaults Default properties, which may be null.
+   */
+  static private Properties loadPropertiesFile(String resourceName, Properties defaults)
+    throws IOException
+  {
+    Properties props = new Properties(defaults);
+
+    InputStream is = OutputProperties.class.getResourceAsStream(
+                                                                resourceName);
+    BufferedInputStream bis = new BufferedInputStream(is);
+
+    props.load(bis);
+    
+    // Note that we're working at the HashTable level here, 
+    // and not at the Properties level!  This is important 
+    // because we don't want to modify the default properties.
+    Enumeration keys = props.keys();
+    while(keys.hasMoreElements())
+    {
+      String key = (String)keys.nextElement();
+      // Now check if the given key was specified as a 
+      // System property. If so, the system property 
+      // overides the default value in the propery file.
+      String value;
+      if ((value = System.getProperty(key)) == null)      
+        value = (String)props.get(key);                       
+      
+      String newKey = fixupPropertyString(key, true);
+      String newValue;
+      if ((newValue = System.getProperty(newKey)) == null)
+        newValue = fixupPropertyString(value, false);
+      else
+        newValue = fixupPropertyString(newValue, false);
+       
+      if(key != newKey || value != newValue)
+      {
+        props.remove(key);
+        props.put(newKey, newValue);
+      }
+      
+    }
+    
+    return props;
+  }
 
   /**
    * Creates an empty OutputProperties with the defaults specified by
@@ -150,13 +237,7 @@ public class OutputProperties extends ElemTemplateElement
         {
           if (null == m_xml_properties)  // double check
           {
-            m_xml_properties = new Properties();
-
-            InputStream is = OutputProperties.class.getResourceAsStream(
-              "output_xml.properties");
-            BufferedInputStream bis = new BufferedInputStream(is);
-
-            m_xml_properties.load(bis);
+            m_xml_properties = loadPropertiesFile("output_xml.properties", null);
           }
         }
       }
@@ -173,13 +254,8 @@ public class OutputProperties extends ElemTemplateElement
           {
             if (null == m_html_properties)  // double check
             {
-              m_html_properties = new Properties(m_xml_properties);
-
-              InputStream is = OutputProperties.class.getResourceAsStream(
-                "output_html.properties");
-              BufferedInputStream bis = new BufferedInputStream(is);
-
-              m_html_properties.load(bis);
+              m_html_properties = loadPropertiesFile("output_html.properties", 
+                                                     m_xml_properties);
             }
           }
         }
@@ -194,13 +270,8 @@ public class OutputProperties extends ElemTemplateElement
           {
             if (null == m_text_properties)  // double check
             {
-              m_text_properties = new Properties(m_xml_properties);
-
-              InputStream is = OutputProperties.class.getResourceAsStream(
-                "output_text.properties");
-              BufferedInputStream bis = new BufferedInputStream(is);
-
-              m_text_properties.load(bis);
+              m_text_properties = loadPropertiesFile("output_text.properties", 
+                                                     m_xml_properties);
             }
           }
         }
@@ -872,7 +943,7 @@ public class OutputProperties extends ElemTemplateElement
 
   /** The number of whitespaces to indent by, if indent="yes". */
   public static String S_KEY_INDENT_AMOUNT =
-    "{http://xml.apache.org/xslt}indent-amount";
+    Constants.S_BUILTIN_EXTENSIONS_URL+"indent-amount";
 
   /**
    * Fully qualified name of class with a default constructor that
@@ -880,16 +951,16 @@ public class OutputProperties extends ElemTemplateElement
    *  will be sent to.      
    */
   public static String S_KEY_CONTENT_HANDLER =
-    "{http://xml.apache.org/xslt}content-handler";
+    Constants.S_BUILTIN_EXTENSIONS_URL+"content-handler";
 
   /** File name of file that specifies character to entity reference mappings. */
   public static String S_KEY_ENTITIES =
-    "{http://xml.apache.org/xslt}entities";
+    Constants.S_BUILTIN_EXTENSIONS_URL+"entities";
 
   /** Use a value of "yes" if the href values for HTML serialization should 
    *  use %xx escaping. */
   public static String S_USE_URL_ESCAPING =
-    "{http://xml.apache.org/xslt}use-url-escaping";
+    Constants.S_BUILTIN_EXTENSIONS_URL+"use-url-escaping";
 
   /** The default properties of all output files. */
   private static Properties m_xml_properties = null;

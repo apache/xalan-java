@@ -77,7 +77,7 @@ public class Constants
   /*
   * Special apache namespace for built-in extensions.
   */
-  S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xslt", PARSER_PATH =
+    S_BUILTIN_EXTENSIONS_URL = "{http://xml.apache.org/xslt}", PARSER_PATH =
     "com/ibm/xml/parser/Parser",
 
   //  LIAISON_CLASS = "org.apache.xpath.DOM2Helper";
