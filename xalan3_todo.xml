@@ -18,7 +18,6 @@
     <action category="feature" who="MM">regex-group(integer)</action>
     <action category="feature">Function unparsed-text(sequence, string?)</action>
     <action category="feature">Function unparsed-entity-public-id(string)</action>
-    <action category="feature">Function input()</action>
     <action category="feature" who="JK" status="partial">xf:compare()
       <issue id="collations">What are we going to do about collations? Anything?</issue></action>
     <action category="feature">xf:normalize-unicode()</action>
@@ -43,7 +42,6 @@
     <action category="feature" status="unstable" who="JK">cast as, treat as</action>
     <action category="feature" status="unstable">ValidateExpr::= "validate" SchemaContext? "{" Expr "}"</action>
     <action category="feature">exclude-prefixes, default-xpath-namespace standard attributes, allowed everywhere</action>
-    <action category="feature">ExprComment ::= "{--" [^}]* "--}"</action>
     <action category="feature" status="unstable">version attribute on XSLT element, allows mixing</action>
     <action category="feature">exclude-result-prefixes, extension element-prefixes now ubiquitous</action>
     <action category="feature">xsl:apply-imports takes with-param subelement</action>
@@ -96,7 +94,8 @@
     <action category="feature">xf:if-empty()</action>
     <action category="feature" status="bugs">xf:max() and xf:min()
       <issue id="collations">What are we going to do about collations? Anything?</issue></action>
-    <action category="feature">xf:collection()</action>
+    <action category="feature" status="bugs">xf:collection()</action>
+    <action category="feature">ExprComment ::= "{--" [^}]* "--}"</action>
   </completed>
  <devs>
   <!-- in alphabetical order, by last name -->
