@@ -107,7 +107,7 @@ public class StreamResult implements Result
   }
 
   /**
-   * Set the byte stream that is to be written to.  Normally, 
+   * Set the ByteStream that is to be written to.  Normally, 
    * a stream should be used rather than a reader, so that 
    * the transformer may use instructions contained in the 
    * transformation instructions to control the encoding.
@@ -123,7 +123,7 @@ public class StreamResult implements Result
    * Get the byte stream that was set with setByteStream.
    *
    * @return The byte stream that was set with setByteStream, or null
-   * if setByteStream or the byte stream constructor was not called.
+   * if setByteStream or the ByteStream constructor was not called.
    */
   public OutputStream getByteStream()
   {
@@ -149,7 +149,7 @@ public class StreamResult implements Result
    * Get the character stream that was set with setCharacterStream.
    *
    * @return The character stream that was set with setCharacterStream, or null
-   * if setCharacterStream or the character stream constructor was not called.
+   * if setCharacterStream or the CharacterStream constructor was not called.
    */
   public Writer getCharacterStream()
   {
@@ -159,9 +159,9 @@ public class StreamResult implements Result
   /**
    * Method setSystemId Set the systemID that may be used in association
    * with the byte or character stream, or, if neither is set, use 
-   * this value as a writeable URL (probably a file name).
+   * this value as a writeable URI (probably a file name).
    *
-   * @param systemId The system identifier as a URL string.
+   * @param systemId The system identifier as a URI string.
    */
   public void setSystemId(String systemId)
   {
@@ -186,7 +186,7 @@ public class StreamResult implements Result
   /**
    * The systemID that may be used in association
    * with the byte or character stream, or, if neither is set, use 
-   * this value as a writeable URL (probably a file name).
+   * this value as a writeable URI (probably a file name).
    */
   private String systemId;
 
