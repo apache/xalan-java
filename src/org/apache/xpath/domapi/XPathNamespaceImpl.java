@@ -128,7 +128,7 @@ public class XPathNamespaceImpl implements XPathNamespace {
      * @see org.w3c.dom.Node#getNodeName()
      */
     public String getNodeName() {
-        return m_attributeNode.getNodeName();
+        return "#namespace";
     }
 
     /**
@@ -267,7 +267,10 @@ public class XPathNamespaceImpl implements XPathNamespace {
      * @see org.w3c.dom.Node#getNamespaceURI()
      */
     public String getNamespaceURI() {
-        return m_attributeNode.getNamespaceURI();
+        
+        // For namespace node, the namespaceURI is the namespace URI
+        // of the namespace represented by the node.
+        return m_attributeNode.getNodeValue();
     }
 
     /**
@@ -287,7 +290,9 @@ public class XPathNamespaceImpl implements XPathNamespace {
      * @see org.w3c.dom.Node#getLocalName()
      */
     public String getLocalName() {
-        return m_attributeNode.getLocalName();
+        
+        // For namespace node, the local name is the same as the prefix
+        return m_attributeNode.getPrefix();
     }
 
     /**
