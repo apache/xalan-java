@@ -1371,7 +1371,11 @@ abstract public class ToStream extends SerializerBase
     public void characters(final char chars[], final int start, final int length)
         throws org.xml.sax.SAXException
     {
-        if (m_inEntityRef && !m_expandDTDEntities)
+        // It does not make sense to continue with rest of the method if the number of 
+        // characters to read from array is 0.
+        // Section 7.6.1 of XSLT 1.0 (http://www.w3.org/TR/xslt#value-of) suggest no text node
+        // is created if string is empty.	
+        if (length == 0 || (m_inEntityRef && !m_expandDTDEntities))
             return;
         if (m_elemContext.m_startTagOpen)
         {
