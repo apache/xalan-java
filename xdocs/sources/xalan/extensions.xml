@@ -135,7 +135,7 @@
 <note>The extension function could include both numdays and multiplier as arguments, thus bypassing the need for the extension element, but the purpose here is to illustrate the usage pattern for extension elements.</note>
 <p>As you review this stylesheet, please note the following:</p>
 <ol>
-	  <li>The declaration of the &xslt; lxslt namespace, which provides support for the component and
+	  <li>The declaration of the &xslt; xslt namespace, which provides support for the component and
      component/script elements:<br/><br/>
     <code>xmlns:lxslt="http://xml.apache.org/xslt"</code><br/><br/></li>
     <li>The declaration of a namespace for this extension:<br/><br/>
