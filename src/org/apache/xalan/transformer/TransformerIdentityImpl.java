@@ -1260,7 +1260,8 @@ public class TransformerIdentityImpl extends Transformer
     public void elementDecl (String name, String model)
 	throws SAXException
     {
-      m_resultDeclHandler.elementDecl(name, model);
+			if (null != m_resultDeclHandler)
+				m_resultDeclHandler.elementDecl(name, model);
     }
 
 
@@ -1290,7 +1291,8 @@ public class TransformerIdentityImpl extends Transformer
 					String value)
 	throws SAXException
     {
-      m_resultDeclHandler.attributeDecl(eName, aName, type, valueDefault, value);
+      if (null != m_resultDeclHandler)
+				m_resultDeclHandler.attributeDecl(eName, aName, type, valueDefault, value);
     }
 
 
@@ -1310,7 +1312,8 @@ public class TransformerIdentityImpl extends Transformer
     public void internalEntityDecl (String name, String value)
 	throws SAXException
     {
-      m_resultDeclHandler.internalEntityDecl(name, value); 
+      if (null != m_resultDeclHandler)
+				m_resultDeclHandler.internalEntityDecl(name, value); 
     }
 
 
@@ -1333,7 +1336,8 @@ public class TransformerIdentityImpl extends Transformer
 					     String systemId)
 	throws SAXException
     {
-      m_resultDeclHandler.externalEntityDecl(name, publicId, systemId);
+      if (null != m_resultDeclHandler)
+				m_resultDeclHandler.externalEntityDecl(name, publicId, systemId);
     }
   
   /**
