@@ -1,6 +1,7 @@
 <?xml version="1.0" standalone="no"?> 
 <!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
 <!ENTITY done-j SYSTEM "DONE">
+<!ENTITY xsltcreleasenotes SYSTEM "xsltc_constraints.xml">
 <!ENTITY status-j SYSTEM "STATUS">
 
 <!ENTITY history-j SYSTEM "history.xml">]>
@@ -64,7 +65,7 @@
 <s1 title="Release Notes">
 <p>&xslt4j-current;</p>
  <ul>
-  <li><link anchor="status0">Status</link></li>
+  <li><link anchor="status0">Status</link></li>&xsltcreleasenotesentry;
   <li><link anchor="build">Build Notes</link></li>
   <li><link anchor="contact">Getting in touch</link></li>
   <li><link anchor="history">History of software changes</link></li>
@@ -147,7 +148,7 @@
        <jump href="http://xml.apache.org/websrc/cvsweb.cgi/xml-xalan/java/todo.xml">xml-xalan/java/todo.xml</jump>.</p>
       </s3> 
   </s2>
-  
+    &xsltcreleasenotes;  
   <anchor name="build"/>  
   <s2 title="Build Notes">
 <ul>

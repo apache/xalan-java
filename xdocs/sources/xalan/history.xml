@@ -48,8 +48,7 @@ interpretation.</li>
 method. See <link idref="dtm" anchor="settings">DTM performance settings</link></p>
      </s3>
      <s3 title="Changes for &xslt4j; 2.1.0">
-     &xsltcdone;
-     <p>This release also includes a number of bug fixes to &xslt4j; and TrAX. 
+     <p>This release includes a number of bug fixes to &xslt4j; and TrAX. 
      We have also enhanced the ApplyXSLT servlet. It can now be set up to use a compiled Templates object to respond to multiple
      client transformation requests involving the same stylesheet.</p>
 <!--This XML fragment contains a list of source code updates to place in an <s3> section of readme.xml--><p>Core source code updates:</p><ul><li><ref>Committed by </ref>costin@apache.org<ref> on </ref>03/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/processor StylesheetHandler.java
