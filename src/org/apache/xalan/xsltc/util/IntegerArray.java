@@ -87,7 +87,7 @@ public final class IntegerArray {
     }
 
     public Object clone() {
-	final IntegerArray clone = new IntegerArray(_free);
+	final IntegerArray clone = new IntegerArray(_free > 0 ? _free : 1);
 	System.arraycopy(_array, 0, clone._array, 0, _free);
 	clone._free = _free;
 	return clone;
