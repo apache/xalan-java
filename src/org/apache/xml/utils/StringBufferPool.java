@@ -58,20 +58,22 @@ package org.apache.xml.utils;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class StringBufferPool <needs-comment/>
+ * This class pools string buffers, since they are reused so often.
+ * String buffers are good candidates for pooling, because of 
+ * their supporting character arrays.
  */
 public class StringBufferPool
 {
 
-  /** NEEDSDOC Field m_stringBufPool          */
+  /** The global pool of string buffers.   */
   private static ObjectPool m_stringBufPool =
     new ObjectPool(org.apache.xml.utils.FastStringBuffer.class);
 
   /**
-   * NEEDSDOC Method get 
+   * Get the first free instance of a string buffer, or create one 
+   * if there are no free instances.
    *
-   *
-   * NEEDSDOC (get) @return
+   * @return A string buffer ready for use.
    */
   public static FastStringBuffer get()
   {
@@ -79,14 +81,16 @@ public class StringBufferPool
   }
 
   /**
-   * NEEDSDOC Method free 
+   * Return a string buffer back to the pool.
    *
-   *
-   * NEEDSDOC @param sb
+   * @param sb Must be a non-null reference to a string buffer.
    */
   public static void free(FastStringBuffer sb)
   {
-    m_stringBufPool.freeInstance(sb);
+    // Since this isn't synchronized, setLength must be 
+    // done before the instance is freed.
+    // Fix attributed to Peter Speck <speck@ruc.dk>.
     sb.setLength(0);
+    m_stringBufPool.freeInstance(sb);
   }
 }
