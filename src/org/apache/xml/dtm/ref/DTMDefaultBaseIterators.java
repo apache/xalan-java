@@ -1122,7 +1122,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
   /**
    * Iterator that returns preceding nodes of a given node.
    * This includes the node set {root+1, start-1}, but excludes
-   * all ancestors.
+   * all ancestors, attributes, and namespace nodes.
    */
   private class PrecedingIterator extends InternalAxisIteratorBase
   {
@@ -1231,19 +1231,23 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public int next()
     {
-
-      int node = _currentNode + 1;
-
-      if ((_sp >= 0) && (node < _stack[_sp]))
-      {
-        return returnNode(makeNodeHandle(_currentNode = node));
-      }
-      else
-      {
-        _currentNode = node;  // skip ancestor
-
-        return --_sp >= 0 ? next() : NULL;
-      }
+    	// Bugzilla 8324: We were forgetting to skip Attrs and NS nodes.
+    	// Also recoded the loop controls for clarity and to flatten out
+    	// the tail-recursion.
+   		for(++_currentNode; 
+   			_sp>=0; 
+   			++_currentNode)
+   		{
+   			if(_currentNode < _stack[_sp])
+   			{
+   				if(_type(_currentNode) != ATTRIBUTE_NODE &&
+   					_type(_currentNode) != NAMESPACE_NODE)
+   					return returnNode(makeNodeHandle(_currentNode));
+   			}
+   			else
+   				--_sp;
+   		}
+   		return NULL;
     }
 
     // redefine DTMAxisIteratorBase's reset
