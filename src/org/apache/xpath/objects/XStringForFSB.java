@@ -593,7 +593,13 @@ public class XStringForFSB extends XString
    */
   public int hashCode()
   {
-
+    // Commenting this out because in JDK1.1.8 and VJ++
+    // we don't match XMLStrings. Defaulting to the super
+    // causes us to create a string, but at this point
+    // this only seems to get called in key processing.
+    // Maybe we can live with it?
+    
+/*
     int h = m_hash;
 
     if (h == 0)
@@ -611,8 +617,9 @@ public class XStringForFSB extends XString
 
       m_hash = h;
     }
+    */
 
-    return h;
+    return super.hashCode(); // h;
   }
 
   /**
