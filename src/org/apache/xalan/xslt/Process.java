@@ -507,6 +507,7 @@ public class Process
       }
       catch(SAXParseException spe)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + spe.getMessage());
         Exception containedException = spe.getException();
         if(null != containedException)
         {
@@ -544,6 +545,7 @@ public class Process
       }      
       catch(TooManyListenersException tmle)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + tmle.getMessage());        
         if(doStackDumpOnError)
           tmle.printStackTrace(dumpWriter);
         // else
@@ -554,6 +556,7 @@ public class Process
 
       catch(SAXException se)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + se.getMessage());        
         Exception containedException = se.getException();
         if(null != containedException)
         {
@@ -575,6 +578,7 @@ public class Process
       }
       catch(ClassNotFoundException cnfe)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + cnfe.getMessage());        
         if(doStackDumpOnError)
           cnfe.printStackTrace(dumpWriter);
         else
@@ -584,6 +588,7 @@ public class Process
       }
       catch(IOException ioe)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + ioe.getMessage());
         if(doStackDumpOnError)
           ioe.printStackTrace(dumpWriter);
         else
@@ -593,6 +598,7 @@ public class Process
       }
       catch(RuntimeException rte)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + rte.getMessage());
         if(doStackDumpOnError)
           rte.printStackTrace(dumpWriter);
         else
@@ -602,6 +608,7 @@ public class Process
       }
       catch(Exception e)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + e.getMessage());
         if(doStackDumpOnError)
           e.printStackTrace(dumpWriter);
         else
@@ -611,6 +618,7 @@ public class Process
       }
       catch(Error err)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + err.getMessage());
         if(doStackDumpOnError)
           err.printStackTrace(dumpWriter);
         else
@@ -620,9 +628,10 @@ public class Process
       }
       catch(Throwable thr)
       {
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)+": " + thr.getMessage());        
         if(doStackDumpOnError)
           thr.printStackTrace(dumpWriter);
-        else
+        else          
           System.out.println("Error! "+thr.getMessage());
         diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         System.exit(-1);
