@@ -642,8 +642,8 @@ public final class BasisLibrary implements Operators {
 		     left instanceof Integer || right instanceof Integer) {
 		result = numberF(left, dom) == numberF(right, dom);
 	    }
-	    else {		// compare them as strings
-		result = stringF(left, dom) == stringF(right, dom);
+	    else { // compare them as strings
+		result = stringF(left, dom).equals(stringF(right, dom));
 	    }
 
 	    if (op == Operators.NE) {

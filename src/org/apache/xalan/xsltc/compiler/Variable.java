@@ -179,6 +179,9 @@ final class Variable extends TopLevelElement {
 	return _stackIndex;
     }
 
+    /**
+     * Parse the contents of the variable
+     */
     public void parseContents(Parser parser) {
 	// parse attributes name and select (if present)
 	final String name = getAttribute("name");
@@ -233,30 +236,39 @@ final class Variable extends TopLevelElement {
 	}
     }
 
+    /**
+     * Runs a type check on either the variable element body or the
+     * expression in the 'select' attribute
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_select == null) {
+	// Type check the 'select' expression if present
+	if (_select != null) {
+	    _type = _select.typeCheck(stable);
+	}
+	// Type check the element contents otherwise
+	else {
 	    typeCheckContents(stable);
+	    // Compile into a method if variable value is not context dependant
 	    if (dependentContents() == false) {
-		_methodName = "%rt%" + getXSLTC().nextVariableSerial();
+		_methodName = "__rt_" + getXSLTC().nextVariableSerial();
 		_type = new ResultTreeType(_methodName);
 	    }
 	    else {
 		_type = Type.ResultTree;
 	    }
 	}
-	else {
-	    _type = _select.typeCheck(stable);
-	}
 	return Type.Void;
     }
 
-    private void compileRtMethod(ClassGenerator classGen,
-				 MethodGenerator methodGen) {
+    /**
+     * Compiles a method that generates the value of the variable
+     */
+    private void compileResultTreeMethod(ClassGenerator classGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = new InstructionList();
 	final String DOM_CLASS_SIG = classGen.getDOMClassSig();
 	
-	final RtMethodGenerator rtMethodGen =
+	final RtMethodGenerator methodGen =
 	    new RtMethodGenerator(ACC_PROTECTED,
 				  de.fub.bytecode.generic.Type.VOID, 
 				  new de.fub.bytecode.generic.Type[] {
@@ -270,84 +282,16 @@ final class Variable extends TopLevelElement {
 				  _methodName,
 				  classGen.getClassName(),
 				  il, cpg);
-	rtMethodGen.addException("org.apache.xalan.xsltc.TransletException");
+	methodGen.addException("org.apache.xalan.xsltc.TransletException");
 
-	translateContents(classGen, rtMethodGen);
+	translateContents(classGen, methodGen);
 	il.append(RETURN);
 
-	rtMethodGen.stripAttributes(true);
-	rtMethodGen.setMaxLocals();
-	rtMethodGen.setMaxStack();
-	rtMethodGen.removeNOPs();
-	classGen.addMethod(rtMethodGen.getMethod());
-    }
-
-    public void compileRtDom(ClassGenerator classGen,
-			     MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	// Save the current handler base on the stack
-	il.append(methodGen.loadHandler());
-
-	final String DOM_CLASS = classGen.getDOMClass();
-
-	// Create new instance of DOM class (with 64 nodes)
-	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	il.append(new NEW(cpg.addClass(DOM_IMPL)));
-	il.append(DUP);
-	il.append(DUP);
-	il.append(new PUSH(cpg, 64));
-	il.append(new INVOKESPECIAL(index));
-
-	// Overwrite old handler with DOM handler
-	index = cpg.addMethodref(DOM_IMPL,
-				 "getOutputDomBuilder",
-				 "()" + TRANSLET_OUTPUT_SIG);
-	il.append(new INVOKEVIRTUAL(index));
-	il.append(DUP);
-	il.append(methodGen.storeHandler());
-
-	// Call startDocument on the new handler
-	il.append(methodGen.startDocument());
-
-	// Instantiate result tree fragment
-	translateContents(classGen, methodGen);
-
-	// Call endDocument on the new handler
-	il.append(methodGen.loadHandler());
-	il.append(methodGen.endDocument());
-
-	// Check if we need to wrap the DOMImpl object in a DOMAdapter object
-	if (!DOM_CLASS.equals(DOM_IMPL_CLASS)) {
-	    // new org.apache.xalan.xsltc.dom.DOMAdapter(DOMImpl,String[]);
-	    index = cpg.addMethodref(DOM_ADAPTER_CLASS, "<init>",
-				     "("+DOM_IMPL_SIG+
-				     "["+STRING_SIG+
-				     "["+STRING_SIG+")V");
-	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));
-	    il.append(new DUP_X1());
-	    il.append(SWAP);
-	    il.append(new ICONST(0));
-	    il.append(new ANEWARRAY(cpg.addClass(STRING)));
-	    il.append(DUP);
-	    il.append(new INVOKESPECIAL(index)); // leave DOMAdapter on stack
-	    
-	    // Must we wrap the DOMAdapter object in an MultiDOM object?
-	    if (DOM_CLASS.equals("org.apache.xalan.xsltc.dom.MultiDOM")) {
-		// new org.apache.xalan.xsltc.dom.MultiDOM(DOMAdapter);
-		index = cpg.addMethodref(MULTI_DOM_CLASS, "<init>",
-					 "("+DOM_ADAPTER_SIG+")V");
-		il.append(new NEW(cpg.addClass(MULTI_DOM_CLASS)));
-		il.append(new DUP_X1());
-		il.append(SWAP);
-		il.append(new INVOKESPECIAL(index)); // leave MultiDOM on stack
-	    }
-	}
-
-	// Restore old handler base from stack
-	il.append(SWAP);
-	il.append(methodGen.storeHandler());
+	methodGen.stripAttributes(true);
+	methodGen.setMaxLocals();
+	methodGen.setMaxStack();
+	methodGen.removeNOPs();
+	classGen.addMethod(methodGen.getMethod());
     }
 
     /**
@@ -374,49 +318,60 @@ final class Variable extends TopLevelElement {
 		(_type instanceof BooleanType))
 		il.append(new ICONST(0)); // 0 for node-id, integer and boolean
 	    else if (_type instanceof RealType)
-		il.append(new FCONST(0)); // 0.0 for floating point numbers
+		il.append(new DCONST(0)); // 0.0 for floating point numbers
 	    else
 		il.append(new ACONST_NULL()); // and 'null' for anything else
 	    il.append(_type.STORE(_local.getIndex()));
 	}
     }
 
+    /**
+     * Compile the value of the variable, which is either in an expression in
+     * a 'select' attribute, or in the variable elements body
+     */
+    public void translateValue(ClassGenerator classGen,
+			       MethodGenerator methodGen) {
+	// Compile expression is 'select' attribute if present
+	if (_select != null) {
+	    _select.translate(classGen, methodGen);
+	    _select.startResetIterator(classGen, methodGen);
+	}
+	// If not, compile result tree from parameter body if present.
+	else if (hasContents()) {
+	    compileResultTree(classGen, methodGen);
+	}
+	// If neither are present then store empty string in variable
+	else {
+	    final ConstantPoolGen cpg = classGen.getConstantPool();
+	    final InstructionList il = methodGen.getInstructionList();
+	    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
+	}
+    }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 	final String name = _name.getLocalPart();
 
+	// Make sure that a variable instance is only compiled once
 	if (_compiled) return;
 	_compiled = true;
 
-	if (isLocal()) {
-	    // If rt implemented as method then compile and return
-	    if (_select == null && _type != Type.ResultTree) {
-		compileRtMethod(classGen, methodGen);
-		return;
-	    }
+	// If a result tree is implemented as method then compile and return
+	if ((_select == null) && (_type != Type.ResultTree)) {
+	    compileResultTreeMethod(classGen);
+	    return;
+	}
 
+	if (isLocal()) {
 	    // Push args to call addVariable()
 	    if (_escapes) {
 		il.append(classGen.loadTranslet());
 		il.append(new PUSH(cpg, _stackIndex));
 	    }
 
-	    // Compile rt or expression and store in local
-	    if (_select == null) {
-		if (hasContents()) {
-		    compileRtDom(classGen, methodGen);
-		}
-		else {
-		    // If no select and no contents push the empty string
-		    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
-		}
-	    }
-	    else {
-		_select.translate(classGen, methodGen);
-		_select.startResetIterator(classGen, methodGen);
-	    }
+	    // Compile variable value computation
+	    translateValue(classGen, methodGen);
 
 	    // Dup value only when needed
 	    if (_escapes) {
@@ -442,22 +397,15 @@ final class Variable extends TopLevelElement {
 		_type.translateBox(classGen, methodGen);
 		il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
 							     ADD_VARIABLE,
-							     ADD_VARIABLE_SIG)
-					    ));
+							     ADD_VARIABLE_SIG)));
 	    }
 	}
 	else {
-	    // If rt implemented as method then compile and return
-	    if (_select == null && _type != Type.ResultTree) {
-		compileRtMethod(classGen, methodGen);
-		return;
-	    }
-
 	    String signature = _type.toSignature();
 	    if (signature.equals(DOM_IMPL_SIG))
 		signature = classGen.getDOMClassSig();
 
-	    // Add a new field to this class
+	    // Global variables are store in class fields
 	    if (classGen.containsField(name) == null) {
 		classGen.addField(new Field(ACC_PUBLIC, 
 					    cpg.addUtf8(name),
@@ -466,21 +414,9 @@ final class Variable extends TopLevelElement {
 
 		// Push a reference to "this" for putfield
 		il.append(classGen.loadTranslet());
-
-		// Compile rt or expression and store in field
-		if (_select == null) {
-		    if (hasContents()) {
-			compileRtDom(classGen, methodGen);
-		    }
-		    else {
-			// If no select and no contents push the empty string
-			il.append(new PUSH(cpg, Constants.EMPTYSTRING));
-		    }
-		}
-		else {
-		    _select.translate(classGen, methodGen);
-		    _select.startResetIterator(classGen, methodGen);
-		}
+		// Compile variable value computation
+		translateValue(classGen, methodGen);
+		// Store the variable in the allocated field
 		il.append(new PUTFIELD(cpg.addFieldref(classGen.getClassName(),
 						       name, signature)));
 	    }

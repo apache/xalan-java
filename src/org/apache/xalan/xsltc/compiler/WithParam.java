@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -69,9 +70,13 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class WithParam extends Instruction {
+
     private QName _name;
     private Expression _select;
 
+    /**
+     * Displays the contents of this element
+     */
     public void display(int indent) {
 	indent(indent);
 	Util.println("with-param " + _name);
@@ -82,6 +87,10 @@ final class WithParam extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 
+    /**
+     * The contents of a <xsl:with-param> elements are either in the element's
+     * 'select' attribute (this has precedence) or in the element body.
+     */
     public void parseContents(Parser parser) {
 	final String name = getAttribute("name");
 	if (name.length() > 0) {
@@ -99,6 +108,10 @@ final class WithParam extends Instruction {
 	parseChildren(parser);
     }
 
+    /**
+     * Type-check either the select attribute or the element body, depending
+     * on which is in use.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_select != null) {
 	    final Type tselect = _select.typeCheck(stable);
@@ -112,67 +125,51 @@ final class WithParam extends Instruction {
 	return Type.Void;
     }
 
-    public void compileResultTree(ClassGenerator classGen,
-				  MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	// Save the current handler base on the stack
-	il.append(methodGen.loadHandler());
-
-	// Create new instance of DOM class (with 64 nodes)
-	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	il.append(new NEW(cpg.addClass(DOM_IMPL)));
-	il.append(DUP);
-	il.append(DUP);
-	il.append(new PUSH(cpg, 64));
-	il.append(new INVOKESPECIAL(index));
-
-	// Overwrite old handler with DOM handler
-	index = cpg.addMethodref(DOM_IMPL,
-				 "getOutputDomBuilder",
-				 "()" + TRANSLET_OUTPUT_SIG);
-	il.append(new INVOKEVIRTUAL(index));
-	il.append(DUP);
-	il.append(methodGen.storeHandler());
-
-	// Call startDocument on the new handler
-	il.append(methodGen.startDocument());
-
-	// Instantiate result tree fragment
-	translateContents(classGen, methodGen);
-
-	// Call endDocument on the new handler
-	il.append(methodGen.loadHandler());
-	il.append(methodGen.endDocument());
-
-	// Restore old handler base from stack
-	il.append(SWAP);
-	il.append(methodGen.storeHandler());
+    /**
+     * Compile the value of the parameter, which is either in an expression in
+     * a 'select' attribute, or in the with-param element's body
+     */
+    public void translateValue(ClassGenerator classGen,
+			       MethodGenerator methodGen) {
+	// Compile expression is 'select' attribute if present
+	if (_select != null) {
+	    _select.translate(classGen, methodGen);
+	    _select.startResetIterator(classGen, methodGen);
+	}
+	// If not, compile result tree from parameter body if present.
+	else if (hasContents()) {
+	    compileResultTree(classGen, methodGen);
+	}
+	// If neither are present then store empty string in parameter slot
+	else {
+	    final ConstantPoolGen cpg = classGen.getConstantPool();
+	    final InstructionList il = methodGen.getInstructionList();
+	    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
+	}
     }
-    
+
+    /**
+     * This code generates a sequence of bytecodes that call the
+     * addParameter() method in AbstractTranslet. The method call will add
+     * (or update) the parameter frame with the new parameter value.
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+	// Load reference to the translet (method is in AbstractTranslet)
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, _name.getLocalPart()));	// TODO: namespace ?
 
-	if (_select == null) {
-	    if (hasContents()) {
-		compileResultTree(classGen, methodGen);
-	    }
-	    else {
-		il.append(new PUSH(cpg,""));
-	    }
-	}
-	else {
-	    _select.translate(classGen, methodGen);
-	    _select.startResetIterator(classGen, methodGen);
-	}
+	// Load the name of the parameter
+	il.append(new PUSH(cpg, _name.getLocalPart()));	// TODO: namespace ?
+	// Generete the value of the parameter (use value in 'select' by def.)
+	translateValue(classGen, methodGen);
+	// Mark this parameter value is not being the default value
+	il.append(new PUSH(cpg, false));
+	// Pass the parameter to the template
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
 						     ADD_PARAMETER,
 						     ADD_PARAMETER_SIG)));
-	il.append(POP);
+	il.append(POP); // cleanup stack
     }
 }

@@ -16,7 +16,7 @@
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
+ *    the documentation and/or other makterials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -179,7 +179,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     
     public void setParser(Parser parser) {
 	super.setParser(parser);
-	_name = makeStylesheetName("%stylesheet%");
+	_name = makeStylesheetName("__stylesheet_");
     }
     
     public void setParentStylesheet(Stylesheet parent) {
@@ -264,7 +264,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     /**
      * Parse the version and uri fields of the stylesheet and add an
-     * entry to the symbol table mapping the name <tt>%stylesheet%</tt>
+     * entry to the symbol table mapping the name <tt>__stylesheet_</tt>
      * to an instance of this class.
      */
     public void parseContents(Parser parser) {

@@ -161,7 +161,7 @@ final public class DefaultRun {
 	    int n = _params.size();
 	    for (int i = 0; i < n; i++) {
 		Parameter param = (Parameter) _params.elementAt(i);
-		translet.addParameter(param.name, param.value);	
+		translet.addParameter(param._name, param._value);
 	    }
 
 	    // Transform the document
@@ -173,7 +173,6 @@ final public class DefaultRun {
 		DefaultSAXOutputHandler(System.out, encoding);
 	    TextOutput textOutput = new TextOutput(saxHandler, encoding);
 	    translet.transform(dom, textOutput);
-	    textOutput.flush();
 
 	    if (_debug) {
 		TransletOutputBase handler = new TransletOutputBase();

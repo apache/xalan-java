@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -80,6 +81,7 @@ final class Param extends TopLevelElement {
     private boolean    _isLocal;	// true if the param is local
     private Expression _select;
     private Type       _type;
+
     // a JavaClass construct to refer to a JVM var
     private LocalVariableGen _local;
     // cached JavaClass instruction to push the contents of this var
@@ -193,45 +195,29 @@ final class Param extends TopLevelElement {
 	return Type.Void;
     }
 
-    public void compileResultTree(ClassGenerator classGen,
-				  MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	// Save the current handler base on the stack
-	il.append(methodGen.loadHandler());
-
-	// Create new instance of DOM class (with 64 nodes)
-	final int init = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
-	il.append(new NEW(cpg.addClass(DOM_IMPL)));
-	il.append(DUP);
-	il.append(DUP);
-	il.append(new PUSH(cpg, 64));
-	il.append(new INVOKESPECIAL(init));
-
-	// Overwrite old handler with DOM handler
-	final int getOutputDomBuilder =
-	    cpg.addMethodref(DOM_IMPL,
-			     "getOutputDomBuilder",
-			     "()" + TRANSLET_OUTPUT_SIG);
-	il.append(new INVOKEVIRTUAL(getOutputDomBuilder));
-	il.append(DUP);
-	il.append(methodGen.storeHandler());
-
-	// Call startDocument on the new handler
-	il.append(methodGen.startDocument());
-
-	// Instantiate result tree fragment
-	translateContents(classGen, methodGen);
-
-	// Call endDocument on the new handler
-	il.append(methodGen.loadHandler());
-	il.append(methodGen.endDocument());
-
-	// Restore old handler base from stack
-	il.append(SWAP);
-	il.append(methodGen.storeHandler());
+    /**
+     * Compile the value of the parameter, which is either in an expression in
+     * a 'select' attribute, or in the parameter element's body
+     */
+    public void translateValue(ClassGenerator classGen,
+			       MethodGenerator methodGen) {
+	// Compile expression is 'select' attribute if present
+	if (_select != null) {
+	    _select.translate(classGen, methodGen);
+	    _select.startResetIterator(classGen, methodGen);
+	}
+	// If not, compile result tree from parameter body if present.
+	else if (hasContents()) {
+	    compileResultTree(classGen, methodGen);
+	}
+	// If neither are present then store empty string in parameter slot
+	else {
+	    final ConstantPoolGen cpg = classGen.getConstantPool();
+	    final InstructionList il = methodGen.getInstructionList();
+	    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
+	}
     }
+
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
@@ -245,26 +231,13 @@ final class Param extends TopLevelElement {
 
 	    il.append(classGen.loadTranslet());
 	    il.append(new PUSH(cpg, name));
-
-	    if (_select == null) {
-		if (hasContents()) {
-		    compileResultTree(classGen, methodGen);	
-		}
-		else {
-		    // If no select and no contents push the empty string
-		    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
-		}
-	    }
-	    else {
-		_select.translate(classGen, methodGen);
-		_select.startResetIterator(classGen, methodGen);
-	    }
+	    translateValue(classGen, methodGen);
+	    il.append(new PUSH(cpg, true));
 
 	    // Call addParameter() from this class
-	    final int addParameter = cpg.addMethodref(TRANSLET_CLASS,
-						      ADD_PARAMETER,
-						      ADD_PARAMETER_SIG);
-	    il.append(new INVOKEVIRTUAL(addParameter));
+	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
+							 ADD_PARAMETER,
+							 ADD_PARAMETER_SIG)));
 
 	    if (_refs.isEmpty()) { // nobody uses the value
 		il.append(_type.POP());
@@ -288,20 +261,8 @@ final class Param extends TopLevelElement {
 	    il.append(classGen.loadTranslet());
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, name));
-
-	    if (_select == null) {
-		if (hasContents()) {
-		    compileResultTree(classGen, methodGen);	
-		}
-		else {
-		    // If no select and no contents push the empty string
-		    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
-		}
-	    }
-	    else {
-		_select.translate(classGen, methodGen);
-		_select.startResetIterator(classGen, methodGen);
-	    }
+	    translateValue(classGen, methodGen);
+	    il.append(new PUSH(cpg, true));
 
 	    // Call addParameter() from this class
 	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,

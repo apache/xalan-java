@@ -17,7 +17,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
  *    the documentation and/or other materials provided with the
- *    distribution.
+ *    distribution
  *
  * 3. The end-user documentation included with the redistribution,
  *    if any, must include the following acknowledgment:
@@ -113,8 +113,9 @@ public class KeyIndex implements NodeIterator {
 	    if (other._nodes != null) {
 		// Create new Vector for nodes if this set is empty
 		if (_nodes == null)
-		    _nodes = new BitArray(_arraySize);
-		_nodes = _nodes.merge(other._nodes);
+		    _nodes = other._nodes;
+		else
+		    _nodes = _nodes.merge(other._nodes);
 	    }
 	}
     }
@@ -188,7 +189,7 @@ public class KeyIndex implements NodeIterator {
      * Resets the iterator to the last start node.
      */
     public NodeIterator reset() {
-	_pos = -1;
+	_pos = _start;
 	_node = _start - 1;
 	return(this);
     }
@@ -200,7 +201,7 @@ public class KeyIndex implements NodeIterator {
 	if (_nodes == null)
 	    return(0);
 	else
-	    return(_nodes.size());
+	    return(_nodes.size()); // TODO: count actual nodes
     }
 
     /**
@@ -231,8 +232,13 @@ public class KeyIndex implements NodeIterator {
      * i.e. subsequent call to next() should return END.
      */
     public NodeIterator setStartNode(int start) {
-	if (_nodes != null) {
-	    _start = _nodes.getBitNumber(start);
+	if (start == END) {
+	    _nodes = null;
+	}
+	else if (_nodes != null) {
+	    // Node count starts with 1, while bit arrays count from 0. Must
+	    // subtract one from 'start' to initialize bit array correctly.
+	    _start = _nodes.getBitNumber(start-1); 
 	    _node = _start - 1;
 	}
 	return((NodeIterator)this);

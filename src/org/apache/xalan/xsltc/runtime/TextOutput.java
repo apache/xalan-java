@@ -23,7 +23,7 @@
  *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
- *    Alternately, this acknowledgment may appear in the software itself,
+ *    Alternately, this acknowledgment may appear in the software itself
  *    if and wherever such third-party acknowledgments normally appear.
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
@@ -174,12 +174,24 @@ public final class TextOutput implements TransletOutputHandler {
     public void setType(int type)  {
 	try {
 	    _outputType = type;
+	    if (_encoding == null) _encoding = "utf-8";
 	    if (_saxHandler instanceof DefaultSAXOutputHandler)
 		((DefaultSAXOutputHandler)_saxHandler).setOutputType(type);
 	}
 	catch (SAXException e) {
 
 	}
+    }
+
+    private void setTypeInternal(int type) {
+	if (type == XML) {
+	    _escapeChars = true;
+	}
+	else if (type == HTML) {
+	    _escapeChars = true;
+	    setIndent(true);
+	}
+	setType(type);
     }
 
     /**
@@ -212,7 +224,6 @@ public final class TextOutput implements TransletOutputHandler {
 
     /**
      * Directive to turn xml header declaration  on/off. 
-     * bug fix # 1406.
      */
     public void omitXmlDecl(boolean value) {
 	if (_saxHandler instanceof DefaultSAXOutputHandler) {
@@ -274,41 +285,35 @@ public final class TextOutput implements TransletOutputHandler {
      * CDATA sections in output XML documents.
      */
     public boolean setEscaping(boolean escape) throws TransletException {
-	try {
-	    boolean oldSetting = _escapeChars;
-	    if (_outputType == UNKNOWN) {
-		setType(XML);
-		emitHeader();
-		oldSetting = true;
-	    }
-	    _escapeChars = escape;
+	// Set output type to XML (the default) if still unknown.
+	if (_outputType == UNKNOWN) setTypeInternal(XML);
 
-	    // bug # 1403, see also compiler/Text.java::translate method.
-	    if (_outputType == TEXT) { 
-		_escapeChars = false; 
-	    }
+	boolean oldSetting = _escapeChars;
+	_escapeChars = escape;
 
-	    return(oldSetting);
-		
-	}
-	catch (SAXException e) {
-	    throw(new TransletException(e));
-	}
+	// bug # 1403, see also compiler/Text.java::translate method.
+	if (_outputType == TEXT) _escapeChars = false; 
+
+	return(oldSetting);
     }
 
     /**
      * Output document stream flush
      */ 
+    /*
     public void flush() throws IOException {
 	//_saxHandler.flush();
     }
+    */
 
     /**
      * Output document stream close
      */ 
+    /*
     public void close() throws IOException {
 	//_saxHandler.close();
     }
+    */
 
     /**
      * The <xsl:output method="xml"/> instruction can specify that certain
@@ -329,7 +334,6 @@ public final class TextOutput implements TransletOutputHandler {
         try {
             _saxHandler.startDocument();
             if (_outputType == XML) {
-		emitHeader();
                 _escapeChars = true;
             }
         } catch (SAXException e) {
@@ -342,6 +346,9 @@ public final class TextOutput implements TransletOutputHandler {
      */
     public void endDocument() throws TransletException {
         try {
+            // Set output type to XML (the default) if still unknown.
+            if (_outputType == UNKNOWN) setTypeInternal(XML);
+
 	    // Close any open start tag
 	    if (_startTagOpen) {
 		closeStartTag();
@@ -349,12 +356,6 @@ public final class TextOutput implements TransletOutputHandler {
             else if (_cdataTagOpen) {
                 characters(ENDCDATA);
                 _cdataTagOpen = false;
-            }
-
-            // Set output type to XML (the default) if still unknown.
-            if (_outputType == UNKNOWN) {
-		setType(XML);
-		emitHeader();
             }
 
 	    // Close output document
@@ -395,11 +396,7 @@ public final class TextOutput implements TransletOutputHandler {
             }
 
             // Set output type to XML (the default) if still unknown.
-            if (_outputType == UNKNOWN) {
-                setType(XML);
-		emitHeader();
-                _escapeChars = true;
-            }
+            if (_outputType == UNKNOWN) setTypeInternal(XML);
 
 	    int limit = off + len;
 	    int offset = off;
@@ -489,16 +486,10 @@ public final class TextOutput implements TransletOutputHandler {
 	    // If we don't know the output type yet we need to examine
 	    // the very first element to see if it is "html".
 	    if (_outputType == UNKNOWN) {
-		if (elementName.toLowerCase().equals("html")) {
-		    setType(HTML);
-		    setIndent(true);
-		    _escapeChars = true;
-		}
-		else {
-		    setType(XML);
-		    emitHeader();
-		    _escapeChars = true;
-		}
+		if (elementName.toLowerCase().equals("html"))
+		    setTypeInternal(HTML);
+		else
+		    setTypeInternal(XML);
 	    }
 
             _depth++;
@@ -641,11 +632,7 @@ public final class TextOutput implements TransletOutputHandler {
             }
 
             // Set output type to XML (the default) if still unknown.
-            if (_outputType == UNKNOWN) {
-                setType(XML);
-		emitHeader();
-                _escapeChars = true;
-            }
+            if (_outputType == UNKNOWN) setTypeInternal(XML);
 
             // ...and then output the comment.
             characters(BEGCOMM);

@@ -416,11 +416,11 @@ public interface Constants extends InstructionConstants {
 
     public static final String RESET_SIG   	       
 	= "()" + NODE_ITERATOR_SIG;
-    public static final String GET_PARAMETER         
+    public static final String GET_PARAMETER      
 	= "getParameter";
     public static final String ADD_PARAMETER         
 	= "addParameter";
-    public static final String PUSH_PARAM_FRAME      
+    public static final String PUSH_PARAM_FRAME
 	= "pushParamFrame";
     public static final String PUSH_PARAM_FRAME_SIG  
 	= "()V";
@@ -430,32 +430,31 @@ public interface Constants extends InstructionConstants {
 	= "()V";
     public static final String GET_PARAMETER_SIG     
 	= "(" + STRING_SIG + ")" + OBJECT_SIG;
-    public static final String ADD_PARAMETER_SIG     
-	= "(" + STRING_SIG + OBJECT_SIG + ")" + OBJECT_SIG;
-    public static final String PUSH_VAR_FRAME        
+    public static final String ADD_PARAMETER_SIG
+	= "(" + STRING_SIG + OBJECT_SIG + "Z)" + OBJECT_SIG;
+    public static final String PUSH_VAR_FRAME
 	= "pushVarFrame";
-    public static final String PUSH_VAR_FRAME_SIG    
+    public static final String PUSH_VAR_FRAME_SIG
 	= "(I)V";
-    public static final String POP_VAR_FRAME         
+    public static final String POP_VAR_FRAME
 	= "popVarFrame";
-    public static final String POP_VAR_FRAME_SIG     
+    public static final String POP_VAR_FRAME_SIG
 	= "()V";
-    public static final String ADD_VARIABLE          
+    public static final String ADD_VARIABLE
 	= "addVariable";
-    public static final String ADD_VARIABLE_SIG      
+    public static final String ADD_VARIABLE_SIG
 	= "(I" + OBJECT_SIG + ")V";
-    public static final String GET_VARIABLE          
+    public static final String GET_VARIABLE
 	= "getVariable";
-    public static final String GET_VARIABLE_SIG      
+    public static final String GET_VARIABLE_SIG
 	= "(I)" + OBJECT_SIG;
 
-    public static final int POSITION_INDEX           
-	= 2;
-    public static final int LAST_INDEX               
-	= 3;
-    public static final String XSLT_URI 
+    public static final int POSITION_INDEX = 2;
+    public static final int LAST_INDEX     = 3;
+
+    public static final String XSLT_URI
 	= "http://www.w3.org/1999/XSL/Transform";
-    public static final String TRANSLET_URI 
+    public static final String TRANSLET_URI
 	= "http://xml.apache.org/xalan/xsltc";
     public static final String FALLBACK_CLASS
 	= "org.apache.xalan.xsltc.compiler.Fallback";

@@ -73,7 +73,11 @@ import javax.xml.parsers.*;
 
 import org.xml.sax.*;
 
+import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.ReferenceType;
+import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
+
 
 public abstract class SyntaxTreeNode implements Constants {
 
@@ -352,6 +356,78 @@ public abstract class SyntaxTreeNode implements Constants {
 	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
 	    item.translate(classGen, methodGen);
 	}
+    }
+
+    /**
+     * Utility method used by parameters and variables to store result trees
+     */
+    public void compileResultTree(ClassGenerator classGen,
+				  MethodGenerator methodGen) {
+
+	final ConstantPoolGen cpg = classGen.getConstantPool();
+	final InstructionList il = methodGen.getInstructionList();
+
+	// Save the current handler base on the stack
+	il.append(methodGen.loadHandler());
+
+	final String DOM_CLASS = classGen.getDOMClass();
+
+	// Create new instance of DOM class (with 64 nodes)
+	int index = cpg.addMethodref(DOM_IMPL, "<init>", "(I)V");
+	il.append(new NEW(cpg.addClass(DOM_IMPL)));
+	il.append(DUP);
+	il.append(DUP);
+	il.append(new PUSH(cpg, 64));
+	il.append(new INVOKESPECIAL(index));
+
+	// Overwrite old handler with DOM handler
+	index = cpg.addMethodref(DOM_IMPL,
+				 "getOutputDomBuilder",
+				 "()" + TRANSLET_OUTPUT_SIG);
+	il.append(new INVOKEVIRTUAL(index));
+	il.append(DUP);
+	il.append(methodGen.storeHandler());
+
+	// Call startDocument on the new handler
+	il.append(methodGen.startDocument());
+
+	// Instantiate result tree fragment
+	translateContents(classGen, methodGen);
+
+	// Call endDocument on the new handler
+	il.append(methodGen.loadHandler());
+	il.append(methodGen.endDocument());
+
+	// Check if we need to wrap the DOMImpl object in a DOMAdapter object
+	if (!DOM_CLASS.equals(DOM_IMPL_CLASS)) {
+	    // new org.apache.xalan.xsltc.dom.DOMAdapter(DOMImpl,String[]);
+	    index = cpg.addMethodref(DOM_ADAPTER_CLASS, "<init>",
+				     "("+DOM_IMPL_SIG+
+				     "["+STRING_SIG+
+				     "["+STRING_SIG+")V");
+	    il.append(new NEW(cpg.addClass(DOM_ADAPTER_CLASS)));
+	    il.append(new DUP_X1());
+	    il.append(SWAP);
+	    il.append(new ICONST(0));
+	    il.append(new ANEWARRAY(cpg.addClass(STRING)));
+	    il.append(DUP);
+	    il.append(new INVOKESPECIAL(index)); // leave DOMAdapter on stack
+	    
+	    // Must we wrap the DOMAdapter object in an MultiDOM object?
+	    if (DOM_CLASS.equals("org.apache.xalan.xsltc.dom.MultiDOM")) {
+		// new org.apache.xalan.xsltc.dom.MultiDOM(DOMAdapter);
+		index = cpg.addMethodref(MULTI_DOM_CLASS, "<init>",
+					 "("+DOM_ADAPTER_SIG+")V");
+		il.append(new NEW(cpg.addClass(MULTI_DOM_CLASS)));
+		il.append(new DUP_X1());
+		il.append(SWAP);
+		il.append(new INVOKESPECIAL(index)); // leave MultiDOM on stack
+	    }
+	}
+
+	// Restore old handler base from stack
+	il.append(SWAP);
+	il.append(methodGen.storeHandler());
     }
 
     /**

@@ -170,7 +170,7 @@ final class StepPattern extends RelativePathPattern {
     }
 
     private String getNextFieldName() {
-	return  "%step_pattern_iter%" + getXSLTC().nextStepPatternSerial();
+	return  "__step_pattern_iter_" + getXSLTC().nextStepPatternSerial();
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
