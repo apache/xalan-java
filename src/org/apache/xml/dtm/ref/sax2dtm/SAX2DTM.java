@@ -1876,7 +1876,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         if (declAlreadyDeclared(prefix))
           continue;  // go to the next attribute.
 
-        attrLocalName = attrQName = prefix;
         nodeType = DTM.NAMESPACE_NODE;
       }
       else
