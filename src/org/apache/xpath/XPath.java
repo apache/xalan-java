@@ -141,7 +141,9 @@ public class XPath
     throws org.xml.sax.SAXException
   {
     // TODO: would like not to clone the locator...
-    m_locator = new org.xml.sax.helpers.LocatorImpl(locator); 
+    if(null != locator)
+      m_locator = new org.xml.sax.helpers.LocatorImpl(locator); 
+      
     m_patternString = exprString;
     XPathParser parser = new XPathParser();
     
