@@ -399,6 +399,19 @@ public class HTMLSerializer
                 state.unescaped = true;
             }
         }
+        if ( htmlName != null && ( rawName.equalsIgnoreCase( "HEAD" )))
+        {
+          _printer.printText( '>' );
+          // Insert Meta tag here         
+          _printer.breakLine();          
+          _printer.printText( '<' );
+          _printer.printText( "META" );
+          _printer.printText( " http-equiv=\"Content-Type\"" );          
+          _printer.printText( " content=\"text/html;");
+         // _printer.printText( _format.getMediaType() +'"' );
+          _printer.printText( " charset=");
+          _printer.printText( _format.getEncoding() +'"' );
+        }  
     }
     
     
