@@ -90,7 +90,6 @@ final class DecimalFormatting extends TopLevelElement {
 	    final Attr attr = (Attr)attributes.item(i);
 	    _attributes.add(attr.getName(), attr.getValue());
 	}
-	_attributes.prepare();
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -121,7 +120,7 @@ final class DecimalFormatting extends TopLevelElement {
 	
 	final int nAttributes = _attributes.getLength();
 	for (int i = 0; i < nAttributes; i++) {
-	    final String name = _attributes.getName(i);
+	    final String name = _attributes.getQName(i);
 	    final String value = _attributes.getValue(i);
 
 	    boolean valid = true;

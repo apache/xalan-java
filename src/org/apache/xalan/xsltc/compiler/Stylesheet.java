@@ -221,18 +221,6 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Method that tells the symbol table what namespaces that should not
-     * be output in all literal result elements (see LiteralResultElement).
-     */
-    private void excludeNS(String prefixes, SymbolTable stable) {
-	if (prefixes != null) {
-	    StringTokenizer tokens = new StringTokenizer(prefixes);
-	    while (tokens.hasMoreTokens())
-		stable.excludeNamespace(tokens.nextToken());	    
-	}
-    }
-
-    /**
      * Store extension URIs
      */
     private void extensionURI(String prefixes, SymbolTable stable) {
@@ -270,8 +258,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    element.getAttribute("exclude-result-prefixes");
 	final String extensionPrefixes =
 	    element.getAttribute("extension-element-prefixes");
-	excludeNS(excludePrefixes, stable);
-	excludeNS(extensionPrefixes, stable);
+	stable.excludeNamespaces(excludePrefixes);
+	stable.excludeNamespaces(extensionPrefixes);
 	extensionURI(extensionPrefixes, stable);
 
 	// Report and error if more than one stylesheet defined

@@ -68,18 +68,19 @@ import org.xml.sax.*;
 import org.apache.xalan.xsltc.*;
 
 public final class SAXAdapter implements TransletOutputHandler {
-    private final HandlerBase _saxHandler;
-    private final AttributeList _attributes = new AttributeList();
+
+    private final ContentHandler _saxHandler;
+    private final AttributeList  _attributes = new AttributeList();
+
     private String _openElementName;
     
-    public SAXAdapter(HandlerBase saxHandler) {
+    public SAXAdapter(ContentHandler saxHandler) {
 	_saxHandler = saxHandler;
     }
 
     private void maybeEmitStartElement() throws SAXException {
 	if (_openElementName != null) {
-	    _attributes.prepare();
-	    _saxHandler.startElement(_openElementName, _attributes);
+	    _saxHandler.startElement(null, null, _openElementName, _attributes);
 	    _openElementName = null;
 	}
     }
@@ -127,7 +128,7 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void endElement(String elementName) throws TransletException {
 	try {
 	    maybeEmitStartElement();
-	    _saxHandler.endElement(elementName);
+	    _saxHandler.endElement(null, null, elementName);
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);

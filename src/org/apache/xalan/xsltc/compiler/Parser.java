@@ -785,10 +785,22 @@ public final class Parser implements Constants {
     }
 
     private ElementEx findFallback(ElementEx root) {
-
+	/*
+	Node node = root.getNextSibling();
+	while (node != null) {
+	    if (node.getNodeType() == Node.ELEMENT_NODE) {
+		String namespace = ((ElementEx)node).getNamespace();
+		String localname = ((ElementEx)node).getLocalName();
+		if (namespace.equals(XSLT_URI) && localname.equals("fallback"))
+		    return (ElementEx)node;
+		//else
+		//    node = null; // Stop when
+	    }
+	    node = node.getNextSibling();
+	}
+	*/
 	final NodeList nodes = root.getChildNodes();
 	final int length = (nodes != null) ? nodes.getLength() : 0;
-	Vector locals = null;	// only create when needed
 
 	for (int i = 0; i < length; i++) {
 	    Node node = nodes.item(i);
