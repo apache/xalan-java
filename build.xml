@@ -129,6 +129,11 @@ Copyright:
   <property name="samples.dir" value="./samples"/>
   <property name="build.samples.jar" value="${build.dir}/xalansamples.jar"/>
   <property name="build.servlet.jar" value="${build.dir}/xalanservlet.jar"/>
+  <property name="build.xsltc.applet.jar" value="${build.dir}/xsltcapplet.jar"/>
+  <property name="build.xsltc.brazil.jar" value="${build.dir}/xsltcbrazil.jar"/>
+  <property name="build.xsltc.ejb.jar" value="${build.dir}/xsltcejb.jar"/>
+  <property name="build.xsltc.servlet.jar"
+            value="${build.dir}/xsltcservlet.jar"/>
   <property name="xdocs.dir" value="./xdocs"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
@@ -534,7 +539,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
-  <target name="samples" depends="jar"
+  <target name="samples" depends="jar,xsltc.samples"
     description="Compile and jar the samples (except servlet)" >
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
@@ -605,13 +610,20 @@ Copyright:
       <classpath refid="samples.class.path" />
     </javac>           
     <jar jarfile="${build.samples.jar}" basedir="${build.samples}"
-         includes="*.class"/>                   
+         includes="*.class"/>
   </target>
-   
+
   <!-- =================================================================== -->
-  <!-- Compiles the sample servlet and jars the class files.                -->  
-  <!-- The javax.servlet and javax.servlet.http packages                    -->
-  <!-- must be on the classpath                                             -->
+  <!-- Compiles all samples that require extra components in order to      -->
+  <!-- compile.                                                            -->
+  <!-- =================================================================== -->
+  <target name="extra.samples"
+          depends="servlet,xsltc.applet,xsltc.brazil,xsltc.ejb,xsltc.servlet"/>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the sample servlet and jars the class files.               --> 
+  <!-- The javax.servlet and javax.servlet.http packages                   -->
+  <!-- must be on the classpath                                            -->
   <!-- =================================================================== -->
  <target name="servlet" depends="jar"
     description="Compile and jar the servlet samples" >
@@ -633,19 +645,76 @@ Copyright:
  </target>
  
   <!-- =================================================================== -->
-  <!-- Compiles (does not jar) the translet samples in translets.          -->
+  <!-- Compiles (does not jar) the translet samples.                       -->
   <!-- For time being, classes are generated in place.                     -->
   <!-- To run these samples, add xsltc.jar, runtime.jar, bcel.jar,         -->
   <!-- and java_cup.jar (all in the bin directory) to the classpath        --> 
   <!--                                                                     -->
   <!-- When we have straightened out classpath issues,                     -->
-  <!-- add samples in CompiledApplet, CompiledBrazil, and CompiledServlet  -->
+  <!-- add samples in CompiledApplet, CompiledBrazil, CompiledEJB and      -->
+  <!-- CompiledServlet.                                                    -->
   <!-- =================================================================== -->
   <target name="xsltc.samples" depends="jar">
-    <javac srcdir="${samples.dir}/translets" classpath="${java.class.path}:${build.xalan.jar}" 
-           destdir="${samples.dir}/translets" excludes="${exclude}" 
-           debug="${build.debug}"
-           bootclasspathref="xslt.boot.class.path" />
+    <mkdir dir="${build.samples}"/>
+    <javac srcdir="${samples.dir}/translets"
+           classpath="${java.class.path}:${build.xalan.jar}" 
+           destdir="${build.samples}" excludes="${exclude}" 
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <javac srcdir="${samples.dir}/CompiledJAXP"
+           destdir="${build.samples}" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC applet example and jars the class files.         --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.applet" depends="jar">
+    <mkdir dir="${build.samples}/CompiledApplet"/>
+    <javac srcdir="${samples.dir}/CompiledApplet"
+           destdir="${build.samples}/CompiledApplet" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.applet.jar}"
+         basedir="${build.samples}/CompiledApplet"
+         includes="*.class"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC brazil example and jars the class files.         --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.brazil" depends="jar">
+    <mkdir dir="${build.samples}/CompiledBrazil"/>
+    <javac srcdir="${samples.dir}/CompiledBrazil"
+           destdir="${build.samples}/CompiledBrazil" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.brazil.jar}"
+         basedir="${build.samples}/CompiledBrazil"
+         includes="*.class"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC EJB example and jars the class files.            --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.ejb" depends="jar">
+    <mkdir dir="${build.samples}/CompiledEJB"/>
+    <javac srcdir="${samples.dir}/CompiledEJB"
+           destdir="${build.samples}/CompiledEJB" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.ejb.jar}"
+         basedir="${build.samples}/CompiledEJB"
+         includes="*.class"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles the XSLTC servlet example and jars the class files.        --> 
+  <!-- =================================================================== -->
+  <target name="xsltc.servlet" depends="jar">
+    <mkdir dir="${build.samples}/CompiledServlet"/>
+    <javac srcdir="${samples.dir}/CompiledServlet"
+           destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
+    <jar jarfile="${build.xsltc.servlet.jar}"
+         basedir="${build.samples}/CompiledServlet"
+         includes="*.class"/>
   </target>
  
  
@@ -774,7 +843,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,servlet,xsltc.docs,autodist"
+  <target name="dist" depends="jar,docs,javadocs,samples,extra.samples,xsltc.docs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -811,6 +880,10 @@ Copyright:
     </copy>   
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcapplet.jar"  todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcejb.jar"     todir="${dist.dir}/bin"/>
+    <copy file="${build.dir}/xsltcservlet.jar" todir="${dist.dir}/bin"/>
 
     <!-- Copy various built product .jars into the bin directory 
          of the distro, note that changes to what .jars we ship 
@@ -838,6 +911,10 @@ Copyright:
       <include name="${dist.file}/bin/xercesImpl.jar"/>
       <include name="${dist.file}/bin/xalansamples.jar"/>
       <include name="${dist.file}/bin/xalanservlet.jar"/>
+      <include name="${dist.file}/bin/xsltcapplet.jar"/>
+      <include name="${dist.file}/bin/xsltcbrazil.jar"/>
+      <include name="${dist.file}/bin/xsltcejb.jar"/>
+      <include name="${dist.file}/bin/xsltcservlet.jar"/>
       <include name="${dist.file}/samples/"/>
       <include name="${dist.file}/docs/"/>
     </patternset>
