@@ -105,7 +105,6 @@
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Open bugs and bug reporting">
-     <p>&xslt4j-current; passes all conformance tests in our test suite.</p>   
      &bugs-j;
      <p>Xerces bug in &xml4j-used;:</p>
      <ul>
