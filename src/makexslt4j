@@ -113,6 +113,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)ProcessingInstructionImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)SourceTreeHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)StreeDOMHelper.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)StreeDOMBuilder.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)TextImpl.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)stree$(PATHSEP)WhiteSpace.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)AVT.java \
