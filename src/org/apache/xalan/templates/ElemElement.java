@@ -256,7 +256,7 @@ public class ElemElement extends ElemUse
       }
 
       // Only do this if name is valid
-      String elemNameSpace = null;
+      String elemNameSpace = "";
       String prefix = null;
 
       if (null != elemName && null != ns)
@@ -279,7 +279,8 @@ public class ElemElement extends ElemUse
             }
 
             // add the prefix to the attribute name.
-            elemName = (prefix + ":" + QName.getLocalPart(elemName));
+            if(prefix.length() > 0)
+              elemName = (prefix + ":" + QName.getLocalPart(elemName));
           }
         }
 
@@ -287,7 +288,9 @@ public class ElemElement extends ElemUse
         executeNSDecls(transformer);
 
         if (null != prefix)
+        {
           rhandler.startPrefixMapping(prefix, elemNameSpace, true);
+        }
 
         rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName),
                               elemName);

@@ -373,15 +373,21 @@ public class ResultTreeHandler extends QueuedEvents
       prefix = "";  // bit-o-hack, that that's OK
 
     String existingURI = m_nsSupport.getURI(prefix);
+    
+    if(null == existingURI)
+      existingURI = "";
+      
+    if(null == uri)
+      uri = "";
 
-    if ((null == existingURI) ||!existingURI.equals(uri))
+    if (!existingURI.equals(uri))
     {
       if (DEBUG)
       {
         System.out.println("ResultTreeHandler#startPrefixMapping Prefix: " + prefix);
         System.out.println("ResultTreeHandler#startPrefixMapping uri: " + uri);
       }
-
+        
       m_nsSupport.declarePrefix(prefix, uri);
     }
   }
@@ -954,6 +960,9 @@ public class ResultTreeHandler extends QueuedEvents
         name = "xmlns:" + prefix;
 
       String uri = m_nsSupport.getURI(prefix);
+      
+      if(null == uri)
+        uri = "";
 
       qe.addAttribute("http://www.w3.org/2000/xmlns/", prefix, name, "CDATA",
                       uri);
