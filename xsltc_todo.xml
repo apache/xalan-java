@@ -23,8 +23,8 @@
   <actions>
 
    <target-release-description>
-    <date>05/18/01</date>
-    <level>beta</level>
+    <date>09/??/01</date>
+    <level>????</level>
     <goal type="conformance">XSLT 1.0 compliant 100%.</goal>
     <goal type="performance">Maintain current level.</goal>
     <goal type="stability"> Stable, reasonable.</goal>
@@ -32,26 +32,16 @@
     <goal type="documentation">Documentation functionally complete.</goal>
    </target-release-description>
    
-  <action context="doc"
-          category="documentation"
-          who="MJ"
-          priority="high">
-    Produce documentation on architecture of XSLTC so the larger developer
-    community can contribute to the development of XSLT.
-  </action>  
-    
   <action context="test, packages:org.apache.xalan.xsltc"
           category="tests"
           who="TA, Shane"
           priority="high">
-     Integrate tests not already there into the Xalan test suite and begin
-      using the Xalan test suite to test XSLTC as a component of XalanJ2.
-      (This should wait until #1 is done.)          
+     Modify Xalan test enviroment to test XSLTC as a component of XalanJ2.
    </action>       
 
   <action context="code, packages:org.apache.xalan.xsltc"
           category="feature"
-          who="??"
+          who="MJ"
           priority="high">
        Finish the implementation of id() and key() in patterns.   
    </action>       
@@ -62,54 +52,51 @@
           priority="high">
       Continue to improve the handling of name spaces. There are a number of
       bugs that are independent of the lack of namespace nodes.  
-     (bugzilla 1411, 1472, 1473, 1506, 1517, 1518)    
+     (bugzilla 1411, 1506, 1518, 2582, 2801, 2857, 2859, 2863, 2535, 2954, 2840)    
    </action>       
-
 
   <action context="code, packages:org.apache.xalan.xsltc"
           category="bug"
           who="??"
           priority="high">
     Fix bugs that impact the XSLTMark performance benchmark.
-    (bugzilla 1498, 1532).          
+    (bugzilla 1376, 1498, 1512, 1532, 2351, 2517, 2553, 3065, 3066).          
    </action>
         
 
   <action context="code, packages:org.apache.xalan.xsltc"
-          category="feature"
-          who="??"
-          priority="high">
-     Fix bugs that impact the use of XSLT with DocBook (1404, 1487).          
-   </action>
-
-  <action context="code, packages:org.apache.xalan.xsltc"
-          category="feature"
-          who="MJ"
-          priority="high">
-     Fix bugs with the handling of variables and parameters (1487, 1408)          
-   </action>
-          
-
-  <action context="code, packages:org.apache.xalan.xsltc"
-          category="feature"
+          category="bugs"
           who="TM"
           priority="high">
-       Fix bugs reflecting positional problems (1409, 1410, 1412, 1532).          
+       Fix bugs reflecting positional problems (1410, 1532, 2939).          
    </action>
 
   <action context="code, packages:org.apache.xalan.xsltc"
-          category="feature"
+          category="bug"
           who="TM"
           priority="high">
-      Fix bugs on dealing with XPATH expressions (1407, 1511).          
+      Fix bugs on dealing with XPATH/Axes expressions (1498, 2551, 2553, 2572, 2932).          
    </action>       
 
+  <action context="code, packages:org.apache.xalan.xsltc"
+          category="bug"
+          who="??"
+          priority="medium">
+      Fix bugs involving template selection (1397, 2749, 2582, 2585, 2695, 2749, 2754, 2886, 2937).
+   </action>
 
   <action context="code, packages:org.apache.xalan.xsltc"
-          category="feature"
-          who="who"
+          category="bug"
+          who="??"
           priority="medium">
-      Fix bugs involving template selection (1503, 1397).
+      Fix bugs affecting numbering (2901, 2931).
+   </action>
+
+  <action context="code, packages:org.apache.xalan.xsltc"
+          category="bug"
+          who="??"
+          priority="medium">
+      Fix bugs affecting comment and processing-intruction nodes (2599, 2834, 2858).
    </action>
 
   <action context="code, packages:org.apache.xalan.xsltc"
@@ -118,15 +105,6 @@
           priority="low">
      Implement name space nodes (bugzilla 1379).
    </action>       
-
-  <action context="code, packages:org.apache.xalan.xsltc"
-          category="feature"
-          who="??"
-          priority="low">
-      Look into proper caching algorithms and improve the example given in 
-      DocumentCache.java accordingly.          
-   </action>
-
 
   <action context="code, packages:????"
           category="feature, integration with Xalan"
@@ -165,8 +143,7 @@
           who="??"
           priority="medium">
     Fix bugs affecting the correctness of ouput 
-    (1403, 1406, 1441, 1489, 1429, 1504,
-     1508, 1512, 1513, 1516, 1520, 1521, 1525).
+    (1439, 1504, 1512, 1516, 1520, 1525, 2517, 2520, 2578, 2948, 2951, 2952, 2954, 3005, 3065).
      Note: Task may be implemented as a result of integrating Xsltc and Xalan 
      and using shared code.
    </action>       
@@ -196,16 +173,4 @@
     </action>       
 
   </actions>
-
-  <completed>
-     <action context="code, packages: org.apache.xalan.xsltc" 
-           category="feature" 
-           who="MJ, TM"
-           priority="high">           
-     Replace all Project X components and APIs with 
-     JAXP equivalents (this includes updating compiler's parser 
-     to use SAX2/DOM2).
-   </action>
-  </completed>
-
 </todo>

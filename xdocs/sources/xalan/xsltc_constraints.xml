@@ -39,36 +39,9 @@ but which are supported by a number of other XSLT processors:</p>
 <anchor name="xsltcknownproblems"/>
 <s3 title="Known Problems">
 <ul>
-  <li>Casting variables: XSLTC requires you to explicitly type cast values 
-  returned by variables or expressions, when you use them in tests. Always a good
-  practice, but it may seem like overkill in some in contexts, where other XSLT processors
-  automatically assume or convert to the correct type. For example. unless you cast $country
-  to a string in the following apply-templates, entry nodes whose &lt;country&gt; elements
-  contain a string matching the global $country parameter are NOT selected.<br/><br/>
-&nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;xsl:apply-templates select="entry[country=string($country)]"/&gt;</code></li>
-  <li>Order dependency of conditions within a predicate: If you have a predicate in a select or match
-  expression that has multiple conditions, one of which contains a union (X or Y), put it last. 
-  Otherwise, the predicate fails to match node that it should.</li>
-  <li>When using DOM caching, as shown in the Servlet demo, if the source document is local to the 
-  server, the cache is not refreshed when the source XML document is modified. This 
-  problem does not apply when the source is associated with a URL.</li>
-  <li>If you have a list of references included or imported stylesheets, put any with 
-  a relative path last; otherwise, stylesheets in the current directory are not found.</li>
-  <li>[1] should be treated equivalent to position()=1, but it is not. Therefore, if 
-  you get unexpected results using such shortcut positional predicates, substitute the 
-  full postion()= version.</li>
-  <li>XSLTC fails to match existing nodes when match expressions have 
-  multiple steps with predicates containing the position function.
-  The following examples are taken from the XSLTMark oddtemplates.xsl test:<br/><br/>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[position()=2]'</code><br/>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[6]/kid[2]'</code><br/>
-  <code>&nbsp;&nbsp;&nbsp;&nbsp;match='top/*[position()=last()]'</code><br/></li>
-  <li>XSTLC has problems with output escaping, see bug 1403.</li>
-  <li>Case-order option with sorting is ignored.</li>
-  <li>As a minor side-effect of implementing simplified stylesheets, if you inadvertenly 
-  go to compile a stylesheet and give the name of the .xml doc instead of the .xsl doc,
-  it may compile without a warning. In some cases, the compiler aborts with an error 
-  about too many branches.</li>
+    <li>All the currently know problems with XSLTC are filed in Bugzilla. To see the list, 
+  do a query with the Program set to XalanJ2 and the Components set to org.apache.xalan.xsltc and/or 
+  Xalan-Xsltc.</li>
 </ul>
 </s3>
 <anchor name="xsltcdemos"/>
@@ -95,70 +68,7 @@ specified using the "file:filename.xml" format.</p>
 
 <anchor name="xsltctrax"/>
 <s3 title="Translets and TrAX">
-<p>
-The Translet API has been extended to conform with the JAXP1.1 TrAX model.
-This release contains the first implementation of that extension. Two
-new classes have been added to the Translet XSLT codebase, they are:</p>
-<p>(1) <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code> -<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a SAXTransformerFactory.</p>
-<p>(2) <code>org.apache.xalan.xsltc.runtime.TransletTemplates</code> -
-&nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a Templates object.</p>
-<p>
-The existing XSLT class 'org.apache.xalan.xsltc.runtime.AbstractTranslet'
-that implements the Translet interface is now also extending the 
-javax.xml.transform.Transformer abstract class.
-</p>
-<p>
-This implementation is only a partial implementation, with many limitations.
-These limitations include:
-</p>
-<ol>
-<li>Currently  'StreamSource' and 'StreamResult' are the only
- TrAX Sources and Results that are supported.</li>
-<li>The translet is compiled everytime a call is made to the<br/>
-<code>TransformerFactoryImpl 'newTransformer()'</code> method.</li>
-<li>The translet is compiled everytime a call is made to the <br/>
-<code>TemplateFactoryImpl 'newTransformer()'</code> method.</li>
-<li>Translet are currently not cached. (See (2) and (3)).</li>
-<li>Several abstract methods from SAXTransformerFactory still need to
-be implemented in the xsltc.runtime.TransformerFactoryImpl class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TemplatesHandler newTemplatesHandler()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler(Source src)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;TransformerHandler newTransformerHandler(Templates templates)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;XMLFilter newXMLFilter(Source src)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;XMLFilter newXMLFilter(Templates templates)</code></li>
-<li>Several abstract methods from Transformer still need to be implemented in the 
-AbstractTranslet class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;ErrorListener getErrorListener()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setErrorListener(ErrorListener)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Properties getOutputProperties()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;String getOutputProperty(String name)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setOutputProperties(Properties props)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setOutputProperty(String name, String value)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;URIResolver getURIResolver()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setURIResolver(URIResolver resolver)</code></li>
-<li>Abstract method from Templates still need to be implemented in the TransletTemplates class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Properties getOutputProperties()</code></li>
-<li>Several abstract methods from TransformerFactory still need to be implemented 
-in the <code>xsltc.runtime.TransformerFactoryImpl</code> class:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;ErrorListener getErrorListener()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setErrorListener(ErrorListener listener)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Object getAttribute(String name)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setAttribute(String name, Object value)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;boolean getFeature(String name)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;URIResolver getURIResolver()</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;void setURIResolver(URIResolver resolver)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Source getAssociatedStylesheet(Source src, String media, String title,</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;String charset)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Templates newTemplates(Source xslSrc)</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;Transformer newTransformer()</code></li>
-<li>Whenever possible, the required methods that are currently unimplemented will throw an 
-exception if someone tries to call them- this will alert the user that the method is not implemented. 
-The message is of the form:<br/><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp;&quot;&lt;Class Name&gt;:&lt;Method Name&gt;( &lt;args&gt; ) not implemented yet.&quot;</code>
-</li>
-</ol>
+<p>TO BE REWRITTEN</p>
 </s3>
 <anchor name="xsltchistory"/>
 <s3 title="History of XSLTC software changes">
@@ -673,19 +583,6 @@ In the near term, XSLTC will appear in a separate JAR file (xsltc.jar) with its 
 utilities. You can already use the same JAXP interfaces to perform
 transformations with the Xalan transformer and with translets. Over time, we plan to merge the two codebases.
 <ref>See <jump href="xsltc/index.html">XSLTC Design Documents</jump>.</ref></p>
-<p>Since this is the first release of XSLTC on Apache (xml.apache.org), changes are  
-relative to Preview 5 of XSLTC posted on www.sun.com/xml/developers.</p>
-<ul>
-  <li>Simplified stylesheets are now implemented.</li>
-  <li>Base package name has changed from <code>com.sun.xslt</code> to <code>org.apache.xalan.xsltc</code></li>
-  <li>You no longer have to get the BCEL.jar file; it is included in the distribution.</li>
-  <li>The Project X parser components and APIs have all been replaced with JAXP equivalents. 
-  Consequently, you may deploy XSLTC with JAXP-conformant parsers, such as Xerces or Crimson.</li>
-  <li>Previously undocumented feature: -x. You can use the -x option on the java command line when you
-  compile translets or run them to get more detailed information on errors.</li>
-  <li>Addition of -s to DefaultRun - a new -s option has been added to the DefaultRun class 
-  for use with test auotmation. When you use the option, it prevents System.exit() from being called when 
-  and exception is encountered.</li>
 </ul>
 </s4> 
 </s3>
