@@ -74,6 +74,29 @@
 <note>To compile translets, you must be running the JDK or JRE 1.2 or higher. You can run translets with the JDK or JRE 1.1.8 or higher.</note>
 </s2><anchor name="classpath"/>
 <s2 title="Setting the system classpath for XSLTC">
+
+<p>
+The jar file structure of the XSLTC component has changed. In the original
+structure the xsltc.jar file contained only the XSLTC classes, and the
+other support jar files needed to be in the user's class path.
+ If you want to use this model refer to the subsection below 
+'Unbundled System Classpath'.  In the newer model, all of the support 
+classes have been bundled with the XSLTC classes into one xsltc.jar file. 
+The size of the bundled jar file is significantly
+larger, around 1.2MB. However classpath setup is significantly easier.
+Refer to the subsection 'Bundled System Classpath' below.
+</p>
+</s2>
+
+<s3 title="Bundled System Classpath">
+<p>
+To use this newer approach, simply put xsltc.jar in your classpath.
+No need to mention the others (BCEL.jar, JLex.jar, regexp.jar, java_cup.jar,
+runtime.jar). 
+</p>
+</s3>
+
+<s3 title="Unbundled System Classpath">
 <p>To compile translets, run translets, and use the XSLTC API, put the following on the system classpath:</p>
 <table>
 <tr>
@@ -128,7 +151,7 @@
 <p>The JAR files listed above are in the &xslt4j; bin directory. The translet is the set of class files or the JAR file that you generate with the compiler; see <link anchor="compile">Compiling translets</link>.</p>
 <p>If you are using JDK or JRE 1.1.8, also include classes.zip on the classpath. If you are using JDK or JRE 1.2, include tools.jar on the classpath.</p>
 <note>For the time being, the Xalan processor and XSLT do not yet use the same DOM, SAX, and parser infastructures. Accordingly, you may find it necessary to reset the system classpath each time you switch between the Xalan processor and XSLTC. For information on setting the classpath for the Xalan processor, see <link idref="getstarted" anchor="classpath">Setting the system classpath for Xalan</link>.</note>
-</s2>
+</s3>
 <anchor name="compile"/>
 <s2 title="Compiling translets from the command line">
     <ul>
