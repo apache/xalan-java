@@ -241,7 +241,9 @@ public class FastStringBuffer
   }
 
   /**
-   * Discard the content of the FastStringBuffer. 
+   * Discard the content of the FastStringBuffer, and most of the memory
+   * that was allocated by it, restoring the initial state. Note that this
+   * may eventually be different from setLength(0), which see.
    */
   public final void reset()
   {
@@ -258,6 +260,9 @@ public class FastStringBuffer
 	 
 	// Discard the hierarchy
 	m_innerFSB  = null;
+
+	m_array=new char[16][0];
+	m_array[0]=new char[m_chunkSize];
   }
 
   /**
@@ -268,6 +273,14 @@ public class FastStringBuffer
    * if additional storage does exist, its contents are unpredictable.
    * The only safe use for our setLength() is to truncate the FastStringBuffer
    * to a shorter string.
+   * <p>
+   * TODO: Current setLength code is probably not the best solution.
+   * It releases memory that in theory we shouldn retain and
+   * reuse. Holding onto that would require recursive truncation of
+   * the inner FSB, and extending the append operations to recurse
+   * into the inner FSB when space exists within them. Could be done,
+   * but nontrivial change and adds some overhead to the append
+   * operation. Consider alternatives. *****
    *
    * @param l New length. If l<0 or l>=getLength(), this operation will
    * not report an error but future operations will almost certainly fail.
