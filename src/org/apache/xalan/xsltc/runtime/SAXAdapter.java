@@ -176,6 +176,7 @@ public final class SAXAdapter implements TransletOutputHandler {
     public void setIndent(boolean indent) {}
     public void omitHeader(boolean value) {}
     public void setCdataElements(Hashtable elements) { }
+    public void close() {}
     public boolean setEscaping(boolean escape)  throws TransletException {
         return(true);
     }
