@@ -9,8 +9,7 @@
 
 <p>XDM is intended to be an abstract API for the XPath Data Model.
 Its goal is to provide a single efficient view of a variety of back-end
-implementations, ranging from DTM tables to DOMs to databases to
-Java object graphs.
+implementations, ranging from DTM tables to DOMs to databases.
 <p>
 Architecturally, XDM will replace the public DTM APIs. It should
 certainly be more efficient for non-tabular data, as well as being
@@ -97,33 +96,24 @@ by implementation experience, as we discover features to be unnecessary
 or missing.
 <h2>Implementation Status</h2>
 <p>
-A first-draft implementation of these interfaces is in progress, as
-the org.apache.xml.xdm.ref package. For testing purposes, this draft
-is being wrapped around the existing DTM public APIs. Once we have it
-running, we will begin to optimize away the old Node Handle-based
-public DTM API in favor of an XDM implementation which is directly
-aware of and optimized for the SAX2DTM/XNI2DTM implementation's
-back-end tables, along with one that directly accesses a DOM tree
-(based on the DOM2DTM2 experiment).
-<p>
-At this time, the basic code framework has been sketched. The basic
-manager and tree-walker have been implemented, as has the shared code
-of cursors and the Self cursor. Coding continues on cursors for other
-axes, but that shouldn't be difficult -- it's mostly a matter of
-wrapping these around DTM's low-level Axis Traversers.
+At this time, the basic code framework has been sketched, and we 
+have a version of XDM which runs on top of DTM Traversers.
+This is not maximally efficient; it was just maximally fast to prototype.
+I have also adapted a few of the DTM Unit Tests -- simple as they are --
+to run against XDM as an initial validation.
 <p>
 There are still some issues to be resolved; these are flagged in the
 code with our usual %REVIEW%, %OPT% and %BUG% eye-catchers.
 <h2>Implementation Plan</h2>
 <p>
-I'll finish drafting the various axis cursors, then convert the DTM
-unit tests to run against the XDM APIs in order to do some initial
-validation of this module. My best estimate is that I can reach this
-point in ten more ays's worth of coding.
-<p>
-Once that has been done, we can begin the task of adapting a copy of
+Our next step will be to try adapting a copy of
 Xalan to run against XDM rather than DTM, replacing Node Handles and
 DTM Iterators with Cursors and Tree Walkers. This should not be
 difficult, but will be time-consuming and poses risks of human error.
 I do not currently have a sizing estimate for this task.
+<p>
+After that's running, we will come back and start optimizing XDM,
+phasing out Node Handles and letting XDM become our public model API.
+We will also begin writing XDM wrappers around some of the other
+models -- such as an XDM for DOM based on the DOM2DTM2 experiment.
 </body>
