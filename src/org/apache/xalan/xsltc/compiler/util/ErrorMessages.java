@@ -221,7 +221,7 @@ public class ErrorMessages extends ResourceBundle {
 	// COMPILE_USAGE_STR
 	"Usage:\n" + 
 	"   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
-	"         [-p <package name>] [-x] [-s] [-u] { <stylesheet> | -i }\n\n"+
+	"         [-p <package name>] [-n] [-x] [-s] [-u] { <stylesheet> | -i }\n\n"+
 	"   Where <output> is the name to give the the generated translet.\n"+
 	"         <stylesheet> is one or more stylesheet file names, or if\n"+
 	"         the -u options is specified, one or more stylesheet URLs.\n"+
@@ -232,6 +232,7 @@ public class ErrorMessages extends ResourceBundle {
 	"         The -i options forces the compiler to read from stdin\n"+
 	"         The -o option is ignored if compiling multiple stylesheets\n"+
 	"         The -x option switches on debug messages.\n"+
+	"         The -n disable template inlining to reduce method length.\n"+
 	"         The -s option disables calling System.exit.",
 	// TRANSFORM_USAGE_STR
 	"Usage: \n" +

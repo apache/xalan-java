@@ -104,7 +104,7 @@ public final class Compile {
 	    boolean useStdIn = false;
 	    boolean classNameSet = false;
 
-	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhsi");
+	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhsin");
 	    if (args.length < 1) printUsage();
 
 	    final XSLTC xsltc = new XSLTC();
@@ -137,6 +137,9 @@ public final class Compile {
 		    break;
 		case 's':
 		    _allowExit = false;
+		    break;
+		case 'n':
+		    xsltc.setTemplateInlining(false);
 		    break;
 		case 'h':
 		default:

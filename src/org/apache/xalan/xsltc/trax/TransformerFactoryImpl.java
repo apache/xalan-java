@@ -140,8 +140,10 @@ public class TransformerFactoryImpl
 	}
     }
 
-    // This flag is passed to the compiler - will produce stack traces etc.
+    // This flags are passed to the compiler
     private boolean _debug = false;
+    private boolean _disableInlining = false;
+
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -214,6 +216,9 @@ public class TransformerFactoryImpl
 	}
 	else if (name.equals("debug")) {
 	    _debug = true;
+	}
+	else if (name.equals("disable-inlining") && value instanceof Boolean) {
+	    _disableInlining = ((Boolean) value).booleanValue();
 	}
 	else {
 	    // Throw an exception for all other attributes
@@ -320,6 +325,7 @@ public class TransformerFactoryImpl
 
 	XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
+	if (_disableInlining) xsltc.setTemplateInlining(false);
 	xsltc.init();
 
 	// Compile the default copy-stylesheet
@@ -478,6 +484,7 @@ public class TransformerFactoryImpl
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
+	if (_disableInlining) xsltc.setTemplateInlining(false);
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined

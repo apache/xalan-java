@@ -141,6 +141,7 @@ public final class XSLTC {
     private Vector  _classes;
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
+    private boolean _templateInlining = true;
 
     /**
      * XSLTC compiler constructor
@@ -205,6 +206,16 @@ public final class XSLTC {
      */    
     public void setSourceLoader(SourceLoader loader) {
 	_loader = loader;
+    }
+
+    /**
+     * Set a flag indicating if templates are to be inlined or not. The
+     * default is to do inlining, but this causes problems when the
+     * stylesheets have a large number of templates (e.g. branch targets
+     * exceeding 64K or a length of a method exceeding 64K).
+     */
+    public void setTemplateInlining(boolean templateInlining) {
+	_templateInlining = templateInlining;
     }
 
     /**
@@ -312,6 +323,9 @@ public final class XSLTC {
 		_stylesheet.setSourceLoader(_loader);
 		_stylesheet.setSystemId(systemId);
 		_stylesheet.setParentStylesheet(null);
+		if (!_templateInlining) {
+		    _stylesheet.compileTemplatesAsMethods();
+		}
 		_parser.setCurrentStylesheet(_stylesheet);
 		// Create AST under the Stylesheet element (parse & type-check)
 		_parser.createAST(_stylesheet);
