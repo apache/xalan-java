@@ -471,13 +471,16 @@ public class UnionPathIterator extends Expression
   {
 
     UnionPathIterator clone = (UnionPathIterator) super.clone();
-    int n = m_iterators.length;
-
-    clone.m_iterators = new LocPathIterator[n];
-
-    for (int i = 0; i < n; i++)
+    if (m_iterators != null)
     {
-      clone.m_iterators[i] = (LocPathIterator)m_iterators[i].clone();
+      int n = m_iterators.length;
+
+      clone.m_iterators = new LocPathIterator[n];
+
+      for (int i = 0; i < n; i++)
+      {
+        clone.m_iterators[i] = (LocPathIterator)m_iterators[i].clone();
+      }
     }
 
     return clone;
@@ -521,12 +524,15 @@ public class UnionPathIterator extends Expression
     m_last = 0;
     m_lastFetched = DTM.NULL;
 
-    int n = m_iterators.length;
-
-    for (int i = 0; i < n; i++)
+    if (m_iterators != null)
     {
-      m_iterators[i].reset();
-      m_iterators[i].nextNode();
+      int n = m_iterators.length;
+
+      for (int i = 0; i < n; i++)
+      {
+        m_iterators[i].reset();
+        m_iterators[i].nextNode();
+      }
     }
   }
 
