@@ -475,7 +475,8 @@ public class DTMNodeProxy
    */
   public final Document getOwnerDocument()
   {
-    return new DTMNodeProxy(dtm, dtm.getDocument());
+		return (Document)(dtm.getNode(dtm.getDocument()));
+    //return new DTMNodeProxy(dtm, dtm.getDocument());
   }
 
   /**
@@ -582,14 +583,47 @@ public class DTMNodeProxy
 
   /** This is a bit of a problem in DTM, since a DTM may be a Document
    * Fragment and hence not have a clear-cut Document Element. We can
-   * make it work in some cases but would that be confusing for others?
+   * make it work in the well-formed cases but would that be confusing for others?
    * 
    * @return
    * @see org.w3c.dom.Document
    */
   public final Element getDocumentElement()
   {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+		int dochandle=dtm.getDocument();
+		int elementhandle=dtm.NULL;
+		for(int kidhandle=dtm.getFirstChild(dochandle);
+				kidhandle!=dtm.NULL;
+				kidhandle=dtm.getNextSibling(kidhandle))
+		{
+			switch(dtm.getNodeType(kidhandle))
+			{
+			case Node.ELEMENT_NODE:
+				if(elementhandle!=dtm.NULL) 
+				{
+					elementhandle=dtm.NULL; // More than one; ill-formed.
+					kidhandle=dtm.getLastChild(dochandle); // End loop
+				}
+				else
+					elementhandle=kidhandle;
+				break;
+				
+			// These are harmless; document is still wellformed
+			case Node.COMMENT_NODE:
+			case Node.PROCESSING_INSTRUCTION_NODE:
+			case Node.DOCUMENT_TYPE_NODE:
+				break;
+					
+			default:
+				elementhandle=dtm.NULL; // ill-formed
+				kidhandle=dtm.getLastChild(dochandle); // End loop
+				break;
+			}
+		}
+		if(elementhandle==dtm.NULL)
+			throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+		else
+			return (Element)(dtm.getNode(elementhandle));
   }
 
   /**
