@@ -57,11 +57,18 @@
 package org.apache.xalan.lib;
 
 import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xpath.NodeSet;
 import java.util.Hashtable;
 import org.xml.sax.SAXException;
-											   
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException; 
+import org.apache.xpath.objects.XRTreeFrag;
 
 /**
  * <meta name="usage" content="general"/>
@@ -118,7 +125,7 @@ public class NodeSetOperations
 	}
 
 	/**
-	 * Returns NodeIterator for a node-set containing distinct string values.
+	 * Returns node-set containing distinct string values.
 	 * @param ni NodeIterator for node-set
 	 * @return a NodeSet with nodes from ni containing distinct string values. 
 	 * In other words, if more than one node in ni contains the same string value, 
@@ -163,5 +170,24 @@ public class NodeSetOperations
 				return false;
 		}
 		return true;
-	}			   	
+	}
+	
+	public static NodeSet nodeset(Node rtf)
+		throws ParserConfigurationException
+	{
+		if(rtf instanceof DocumentFragment)
+		{  System.out.println("input is DocumentFragment");
+		   XRTreeFrag xr = new XRTreeFrag((DocumentFragment)rtf);
+		   NodeIterator ni = xr.nodeset();
+           NodeSet ns = new NodeSet(ni);
+		   for (int i = 0; i < ns.getLength();i++)
+		   {
+			   Node n = ns.item(i);
+			   System.out.println("Contains " + n.getNodeName());
+			   System.out.println("HasChildNodes = " + n.hasChildNodes());
+		   }
+		   return ns;
+		}
+		return null;
+	}
 }
