@@ -1058,7 +1058,7 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * JJK: Combination of sendStartPrefixMappings and
+   * Combination of sendStartPrefixMappings and
    * addNSDeclsToAttrs() (which it mostly replaces).  Merging the two
    * loops is significantly more efficient.
    *

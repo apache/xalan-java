@@ -605,10 +605,10 @@ public class DTMManagerDefault extends DTMManager
     {
       System.out.println("Releasing "+
 			 (shouldHardDelete ? "HARD" : "soft")+
-			 " systemID="+
+			 " dtm="+
 			 // Following shouldn't need a nodeHandle, but does...
 			 // and doesn't seem to report the intended value
-			 dtm.getDocumentSystemIdentifier(dtm.getDocument())
+			 dtm.getDocumentBaseURI()
 			 );
     }
 

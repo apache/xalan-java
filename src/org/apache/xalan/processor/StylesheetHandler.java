@@ -72,6 +72,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemUnknown;
+import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xml.utils.NodeConsumer;
@@ -609,6 +610,7 @@ public class StylesheetHandler extends DefaultHandler
     nssupport.pushContext();
     
     int n = m_prefixMappings.size();
+
     for (int i = 0; i < n; i++) 
     {
       String prefix = (String)m_prefixMappings.elementAt(i++);
@@ -757,6 +759,14 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Receive notification of a processing instruction.
    *
+   * <p>The Parser will invoke this method once for each processing
+   * instruction found: note that processing instructions may occur
+   * before or after the main document element.</p>
+   *
+   * <p>A SAX parser should never report an XML declaration (XML 1.0,
+   * section 2.8) or a text declaration (XML 1.0, section 4.3.1)
+   * using this method.</p>
+   *
    * <p>By default, do nothing.  Application writers may override this
    * method in a subclass to take specific actions for each
    * processing instruction, such as setting status variables or
@@ -773,9 +783,58 @@ public class StylesheetHandler extends DefaultHandler
   public void processingInstruction(String target, String data)
           throws org.xml.sax.SAXException
   {
-
     if (!m_shouldProcess)
       return;
+
+    // Recreating Scott's kluge:
+    // A xsl:for-each or xsl:apply-templates may have a special 
+    // PI that tells us not to cache the document.  This PI 
+    // should really be namespaced.
+    //    String localName = getLocalName(target);
+    //    String ns = m_stylesheet.getNamespaceFromStack(target);
+    //
+    // %REVIEW%: We need a better PI architecture
+    
+    String prefix="",ns="", localName=target;
+    int colon=target.indexOf(':');
+    if(colon>=0)
+    {
+      ns=getNamespaceForPrefix(prefix=target.substring(0,colon));
+      localName=target.substring(colon+1);
+    }
+
+    try
+    {
+      // A xsl:for-each or xsl:apply-templates may have a special 
+      // PI that tells us not to cache the document.  This PI 
+      // should really be namespaced... but since the XML Namespaces
+      // spec never defined namespaces as applying to PI's, and since
+      // the testcase we're trying to support is inconsistant in whether
+      // it binds the prefix, I'm going to make this sloppy for
+      // testing purposes.
+      if(
+	 "xalan:doc-cache-off".equals(target) ||
+	   ("doc-cache-off".equals(localName) &&
+	    ns.equals("org.apache.xalan.xslt.extensions.Redirect") )
+	 )
+      {
+	if(!(m_elems.peek() instanceof ElemForEach))
+          throw new TransformerException
+	    ("xalan:doc-cache-off not allowed here!", 
+	     getLocator());
+        ElemForEach elem = (ElemForEach)m_elems.peek();
+
+        elem.m_doc_cache_off = true;
+
+	//System.out.println("JJK***** Recognized <? {"+ns+"}"+prefix+":"+localName+" "+data+"?>");
+      }
+    }
+    catch(Exception e)
+    {
+      // JJK: Officially, unknown PIs can just be ignored.
+      // Do we want to issue a warning?
+    }
+
 
     flushCharacters();
     getCurrentProcessor().processingInstruction(this, target, data);

@@ -105,7 +105,19 @@ import javax.xml.transform.TransformerException;
  */
 public class ElemForEach extends ElemTemplateElement
 {
-
+  /** Set true to request some basic status reports */
+  static final boolean DEBUG = false;
+  
+  /**
+   * This is set by an "xalan:doc-cache-off" pi.  It tells the engine that
+   * documents created in the location paths executed by this element
+   * will not be reparsed. It's set by StylesheetHandler during
+   * construction. Note that this feature applies _only_ to xsl:for-each
+   * elements in its current incarnation; a more general cache management
+   * solution is desperately needed.
+   */
+  public boolean m_doc_cache_off=false;
+  
   /**
    * Construct a element representing xsl:for-each.
    */
@@ -425,6 +437,25 @@ public class ElemForEach extends ElemTemplateElement
           transformer.setCurrentElement(t);
           t.execute(transformer);
         }
+
+	// KLUGE: Implement <?xalan:doc_cache_off?> 
+	// ASSUMPTION: This will be set only when the XPath was indeed
+	// a call to the Document() function. Calling it in other
+	// situations is likely to fry Xalan.
+	//
+	// %REVIEW% We need a MUCH cleaner solution -- one that will
+	// handle cleaning up after document() and getDTM() in other
+	// contexts. The whole SourceTreeManager mechanism should probably
+	// be moved into DTMManager rather than being explicitly invoked in
+	// FuncDocument and here.
+	if(m_doc_cache_off)
+	{
+	  if(DEBUG)
+	    System.out.println("JJK***** CACHE RELEASE *****\n"+
+			       "\tdtm="+dtm.getDocumentBaseURI());
+	  xctxt.getSourceTreeManager().removeDocumentFromCache(dtm.getDocument());
+	  xctxt.release(dtm,false);
+	}
       }
     }
     finally
