@@ -58,10 +58,7 @@ package javax.xml.transform;
 
 /**
  * This class defines feature URLs that are supported by
- * the TrAX subpackages, such as sax, dom, etc.  Using these
- * values allows the transformer to do an identity comparison
- * instead of a lexical comparison, which can greatly improve
- * the performance of TransformerFactory#getFeature.
+ * the TrAX subpackages, such as sax, dom, etc.
  */
 public class Features
 {
