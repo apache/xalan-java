@@ -740,7 +740,11 @@ Copyright:
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete dir="${src.dir}/javax" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/xml" includeEmptyDirs="true" quiet="true"/>
-    <delete dir="${src.dir}/org/w3c" includeEmptyDirs="true" quiet="true"/>
+    <delete includeEmptyDirs="true" quiet="true">
+      <fileset dir="${src.dir}/org/w3c">
+        <exclude name="dom/xpath/**"/>
+      </fileset>
+    </delete>
   </target>
  
   <target name="xsltc.clean"
