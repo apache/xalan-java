@@ -202,24 +202,13 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
       if (null != elemFunc) {
         XPathContext context = exprContext.getXPathContext();
         TransformerImpl transformer = (TransformerImpl)context.getOwnerObject();
-      
-        // Reset the frame bottom before calling the EXSLT function.
-        if (callerTemplate != null)
-          elemFunc.setCallerFrameSize(callerTemplate.m_frameSize);
-        else
-          elemFunc.setCallerFrameSize(0);
-       
+        transformer.pushCurrentFuncResult(null);
+
         elemFunc.execute(transformer, methodArgs);
-      
-        XObject val = new XString(""); // value returned if no result element.
-        if (elemFunc.isResultSet())
-        {
-          val = elemFunc.getResult();
-          elemFunc.clearResult();
-        }
-              
-        return val;
-      
+
+        XObject val = (XObject)transformer.popCurrentFuncResult();
+        return (val == null) ? new XString("") // value if no result element.
+                             : val;
       }
       else {
       	throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_FUNCTION_NOT_FOUND, new Object[] {extFunction.getFunctionName()}));
