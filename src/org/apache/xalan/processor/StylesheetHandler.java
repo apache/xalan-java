@@ -381,6 +381,7 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor elemProcessor = def.getProcessorFor(uri, localName);
 
     if (null == elemProcessor
+            && !(currentProcessor instanceof ProcessorStylesheetDoc)
             && ((null == getStylesheet()
                 || Double.valueOf(getStylesheet().getVersion()).doubleValue()
                    > Constants.XSLTVERSUPPORTED) 
