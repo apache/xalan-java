@@ -713,7 +713,7 @@ final class Mode implements Constants {
 	    : ihText;
 
 	// This DOM-type is not in use - default: process next node
-	targets[DOM.UNUSED] = ihLoop;
+	targets[DOM.NAMESPACE] = ihLoop;
 
 	// Match unknown element in DOM - default: check for namespace match
 	targets[DOM.ELEMENT] = elemNamespaceHandle;
