@@ -91,6 +91,7 @@
   <separator/>
   <external href="readme.html#bugs" label="Bugs"/>
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
+  <document id="builds" label="Builds" source="xalan/builds.xml"/>
   <separator/>
   <external href="readme.html#developer-list" label="Credits"/>
   <external href="xsltc/todo.html#developer-list" label="XSLTC Credits"/>  
