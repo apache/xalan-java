@@ -73,9 +73,8 @@ public class StreeDOMHelper extends DOM2Helper
   /**
    * Create an empty DOM Document.  Mainly used for RTFs.
    *
-   * NEEDSDOC @param node
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return an empty DOM Document.
    *
 
   // public Document createDocument()

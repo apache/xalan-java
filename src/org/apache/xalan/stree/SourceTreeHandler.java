@@ -272,8 +272,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   private int m_maxEventsToNotify = 18;
 
   /**
-   * NEEDSDOC Method notifyWaiters 
-   *
+   * Notify all waiting threads that some events have occured.
+   * Note that we only notify when the predefined number of  
+   * have been hit.
    */
   private void notifyWaiters()
   {
@@ -464,7 +465,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     notifyWaiters();
   }
 
-  /** NEEDSDOC Field m_isCData          */
+  /** Flaf indicating whether we got a CDATA event          */
   private boolean m_isCData = false;
 
   /**

@@ -252,7 +252,7 @@ public class AttrImpl extends Child implements Attr
   }
 
   /**
-   * NEEDSDOC Method getName 
+   * Get this attribute's name
    *
    *
    * @return attribute name
@@ -263,7 +263,7 @@ public class AttrImpl extends Child implements Attr
   }
 
   /**
-   * NEEDSDOC Method setName 
+   * Set this attribute's name
    *
    *
    * @param name to set attribute name to 

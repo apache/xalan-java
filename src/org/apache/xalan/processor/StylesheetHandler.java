@@ -452,9 +452,8 @@ public class StylesheetHandler extends DefaultHandler
     m_stylesheetLevel++;
   }
 
-  // support for isParsingComplete
-
-  /** NEEDSDOC Field m_parsingComplete */
+  
+  /** support for isParsingComplete */
   private boolean m_parsingComplete = false;
 
   /**
