@@ -58,14 +58,15 @@ package org.apache.xpath;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+
 import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
  * Defines a class to keep track of a stack for
  * template arguments and variables.
- * 
- * <p>This has been changed from the previous incarnations of this 
+ *
+ * <p>This has been changed from the previous incarnations of this
  * class to be fairly low level.</p>
  */
 public final class VariableStack implements Cloneable
@@ -117,7 +118,7 @@ public final class VariableStack implements Cloneable
   private int _cfb;
 
   /**
-   * The stack of frame positions.  I call 'em links because of distant 
+   * The stack of frame positions.  I call 'em links because of distant
    * <a href="http://math.millikin.edu/mprogers/Courses/currentCourses/CS481-ComputerArchitecture/cs481.Motorola68000.html">
    * Motorola 68000 assembler</a> memories.  :-)
    * @serial
@@ -150,7 +151,7 @@ public final class VariableStack implements Cloneable
   {
     return _top;
   }
-  
+
   /**
    * Reset the stack to a start position.
    *
@@ -158,6 +159,7 @@ public final class VariableStack implements Cloneable
    */
   public final void reset()
   {
+
     _top = 0;
     _linksTop = 0;
 
@@ -190,18 +192,18 @@ public final class VariableStack implements Cloneable
   }
 
   /**
-   * Allocates memory (called a stackframe) on the stack; used to store 
+   * Allocates memory (called a stackframe) on the stack; used to store
    * local variables and parameter arguments.
-   * 
-   * <p>I use the link/unlink concept because of distant 
+   *
+   * <p>I use the link/unlink concept because of distant
    * <a href="http://math.millikin.edu/mprogers/Courses/currentCourses/CS481-ComputerArchitecture/cs481.Motorola68000.html">
    * Motorola 68000 assembler</a> memories.</p>
    *
-   * @param size The size of the stack frame allocation.  This ammount should 
-   * normally be the maximum number of variables that you can have allocated 
+   * @param size The size of the stack frame allocation.  This ammount should
+   * normally be the maximum number of variables that you can have allocated
    * at one time in the new stack frame.
    *
-   * @return The bottom of the stack frame, from where local variable addressing 
+   * @return The bottom of the stack frame, from where local variable addressing
    * should start from.
    */
   public final int link(final int size)
@@ -219,7 +221,7 @@ public final class VariableStack implements Cloneable
       _sf = newsf;
     }
 
-    if (_linksTop+1 >= _links.length)
+    if (_linksTop + 1 >= _links.length)
     {
       int newlinks[] = new int[_links.length + (1024 * 2)];
 
@@ -234,7 +236,7 @@ public final class VariableStack implements Cloneable
   }
 
   /**
-   * Free up the stack frame that was last allocated with 
+   * Free up the stack frame that was last allocated with
    * {@link link(int size)}.
    */
   public final void unlink()
@@ -247,38 +249,39 @@ public final class VariableStack implements Cloneable
    * Set a local variable or parameter in the current stack frame.
    *
    *
-   * @param index Local variable index relative to the current stack 
+   * @param index Local variable index relative to the current stack
    * frame bottom.
-   * 
+   *
    * @param val The value of the variable that is being set.
    */
   public final void setLocalVariable(int index, XObject val)
   {
-    _sf[index+_cfb] = val;
+    _sf[index + _cfb] = val;
   }
 
   /**
    * Set a local variable or parameter in the specified stack frame.
    *
    *
-   * @param index Local variable index relative to the current stack 
+   * @param index Local variable index relative to the current stack
    * frame bottom.
-   * 
+   * NEEDSDOC @param stackFrame
+   *
    * @param val The value of the variable that is being set.
    */
   public final void setLocalVariable(int index, XObject val, int stackFrame)
   {
-    _sf[index+stackFrame] = val;
+    _sf[index + stackFrame] = val;
   }
 
   /**
    * Get a local variable or parameter in the current stack frame.
    *
    *
-   * @param xctxt The XPath context, which must be passed in order to 
+   * @param xctxt The XPath context, which must be passed in order to
    * lazy evaluate variables.
-   * 
-   * @param index Local variable index relative to the current stack 
+   *
+   * @param index Local variable index relative to the current stack
    * frame bottom.
    *
    * @return The value of the variable.
@@ -299,13 +302,14 @@ public final class VariableStack implements Cloneable
 
     return val;
   }
-  
+
   /**
    * Get a local variable or parameter in the current stack frame.
    *
    *
-   * @param index Local variable index relative to the given 
+   * @param index Local variable index relative to the given
    * frame bottom.
+   * NEEDSDOC @param frame
    *
    * @return The value of the variable.
    *
@@ -321,48 +325,49 @@ public final class VariableStack implements Cloneable
 
     return val;
   }
-  
+
   /**
    * Tell if a local variable has been set or not.
    *
-   * @param index Local variable index relative to the current stack 
+   * @param index Local variable index relative to the current stack
    * frame bottom.
    *
    * @return true if the value at the index is not null.
    *
    * @throws TransformerException
    */
-  public final boolean isLocalSet(int index)
-          throws TransformerException
+  public final boolean isLocalSet(int index) throws TransformerException
   {
-    
     return (_sf[index + _cfb] != null);
   }
-  
+
+  /** NEEDSDOC Field m_nulls          */
   private static XObject[] m_nulls = new XObject[1024];
-  
+
   /**
-   * Use this to clear the variables in a section of the stack.  This is 
-   * used to clear the parameter section of the stack, so that default param 
-   * values can tell if they've already been set.  It is important to note that 
+   * Use this to clear the variables in a section of the stack.  This is
+   * used to clear the parameter section of the stack, so that default param
+   * values can tell if they've already been set.  It is important to note that
    * this function has a 1K limitation.
-   * 
+   *
    * @param start The start position, relative to the current local stack frame.
    * @param len The number of slots to be cleared.
    */
   public final void clearLocalSlots(int start, int len)
   {
-    start+=_cfb;
+
+    start += _cfb;
+
     System.arraycopy(m_nulls, 0, _sf, start, len);
   }
-  
+
   /**
    * Set a global variable or parameter in the global stack frame.
    *
    *
-   * @param index Local variable index relative to the global stack frame 
+   * @param index Local variable index relative to the global stack frame
    * bottom.
-   * 
+   *
    * @param val The value of the variable that is being set.
    */
   public final void setGlobalVariable(final int index, final XObject val)
@@ -374,10 +379,10 @@ public final class VariableStack implements Cloneable
    * Get a global variable or parameter from the global stack frame.
    *
    *
-   * @param xctxt The XPath context, which must be passed in order to 
+   * @param xctxt The XPath context, which must be passed in order to
    * lazy evaluate variables.
-   * 
-   * @param index Global variable index relative to the global stack 
+   *
+   * @param index Global variable index relative to the global stack
    * frame bottom.
    *
    * @return The value of the variable.
@@ -396,6 +401,72 @@ public final class VariableStack implements Cloneable
 
     return val;
   }
-  
+
+  /**
+   * Get a variable based on it's qualified name.
+   * This is for external use only.
+   *
+   * @param xctxt The XPath context, which must be passed in order to
+   * lazy evaluate variables.
+   * 
+   * @param qname The qualified name of the variable.
+   *
+   * @return The evaluated value of the variable.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public final XObject getVariable(
+          XPathContext xctxt, org.apache.xml.utils.QName qname)
+            throws javax.xml.transform.TransformerException
+  {
+
+    org.apache.xml.utils.PrefixResolver prefixResolver =
+      xctxt.getNamespaceContext();
+
+    // Get the current ElemTemplateElement, which must be pushed in as the 
+    // prefix resolver, and then walk backwards in document order, searching 
+    // for an xsl:param element or xsl:variable element that matches our 
+    // qname.  For this to work really correctly, the stylesheet element 
+    // should be immediatly resolve to the root stylesheet, and the operation 
+    // performed on it's list of global variables.  But that will have to wait 
+    // for another day, or someone else can do it, or I will come up with a 
+    // better solution to this whole damned hack.
+    if (prefixResolver
+            instanceof org.apache.xalan.templates.ElemTemplateElement)
+    {
+      org.apache.xalan.templates.ElemTemplateElement prev =
+        (org.apache.xalan.templates.ElemTemplateElement) prefixResolver;
+
+      while (null != prev)
+      {
+        org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
+
+        while (null != (prev = prev.getPreviousSiblingElem()))
+        {
+          if (prev instanceof org.apache.xalan.templates.ElemVariable)
+          {
+            org.apache.xalan.templates.ElemVariable vvar =
+              (org.apache.xalan.templates.ElemVariable) prev;
+
+            if (vvar.getName().equals(qname))
+            {
+              int index = vvar.getIndex();
+              boolean isGlobal = vvar.getIsTopLevel();
+
+              if(isGlobal)
+                return getGlobalVariable(xctxt, index);
+              else
+                return getLocalVariable(xctxt, index);
+            }
+          }
+        }
+
+        prev = savedprev.getParentElem();
+      }
+    }
+
+    throw new javax.xml.transform.TransformerException(
+      "Variable not resolavable: " + qname);
+  }
 }  // end VariableStack
 
