@@ -665,7 +665,7 @@ public class XConnection
 
       doc =
         new SQLDocument(
-          mgr, dtmIdent << 20 ,
+          mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS ,
           m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
 
       if (null != doc)
@@ -798,7 +798,7 @@ public class XConnection
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
       SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << 20 ,
+        new SQLDocument(mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS,
         m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
 
       if (null != doc)
@@ -946,7 +946,7 @@ public class XConnection
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
       SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << 20 ,
+        new SQLDocument(mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS ,
         m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
 
       if (null != doc)
@@ -1332,7 +1332,7 @@ public class XConnection
       DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
-      m_Error = new SQLErrorDocument(mgr, dtmIdent << 20, excp);
+      m_Error = new SQLErrorDocument(mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS, excp);
 
       // Register our document
       mgrDefault.addDTM(m_Error, dtmIdent);
@@ -1358,7 +1358,7 @@ public class XConnection
       DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
       int dtmIdent = mgrDefault.getFirstFreeDTMID();
 
-      m_Error = new SQLErrorDocument(mgr, dtmIdent<<20, excp);
+      m_Error = new SQLErrorDocument(mgr, dtmIdent<<DTMManager.IDENT_DTM_NODE_BITS, excp);
 
       // Register our document
       mgrDefault.addDTM(m_Error, dtmIdent);
