@@ -187,7 +187,10 @@ public class XRTreeFrag extends XObject implements Cloneable
   {
     if(m_allowRelease)
     {
-      if(null != m_dtm)
+      // See #destruct() for a comment about this next check.
+      int ident = m_xctxt.getDTMIdentity(m_dtm);
+      DTM foundDTM = m_xctxt.getDTM(ident);      
+      if(foundDTM == m_dtm)
       {
         m_xctxt.release(m_dtm, true);
         m_dtm = null;
@@ -205,9 +208,32 @@ public class XRTreeFrag extends XObject implements Cloneable
   {
     if(null != m_dtm)
     {
-      m_xctxt.release(m_dtm, true);
-      m_dtm = null;
-      m_xctxt = null;
+      // For this next check, see http://nagoya.apache.org/bugzilla/show_bug.cgi?id=7622.
+      // What happens if you don't do this this check:
+      // 1) Transform#1 creates an XRTreeFrag.  This has a reference to a DTM, that in turn 
+      //    is registered with a DTMManager.  The DTM will need to be deleted from the 
+      //    DTMManager when the XRTreeFrag is deleted.  The XRTreeFrag  also contains a 
+      //    reference to the XPathContext.
+      // 2) Transform#1 completes.  The XPathContext is reset... namely the a bunch 
+      //    of structures are reset or rebuilt, including DTMManagerDefault#m_dtms.  
+      //    BUT, the XRTreeFrags are still hanging around, waiting to unregister themselves.
+      // 3) Transform#2 starts humming along.  It builds a XRTreeFrag and installs that 
+      //    RTF DTM into DTMManagerDefault#m_dtms[2].
+      // 4) The finalizer thread wakes and decides to delete some of those old XRTreeFrags 
+      //    from Transform#1.
+      // 5) The XRTreeFrag#finalize() method references through the XPathContext, and 
+      //    deletes what it thinks is it's DTM from  DTMManagerDefault#m_dtms[2] (via 
+      //    getDTMIdentity(dtm)).
+      // 6) Transform#2 tries to reference DTMManagerDefault#m_dtms[2], finds it is 
+      //    null, and chaos results.
+      int ident = m_xctxt.getDTMIdentity(m_dtm);
+      DTM foundDTM = m_xctxt.getDTM(ident);      
+      if(foundDTM == m_dtm)
+      {
+        m_xctxt.release(m_dtm, true);
+        m_dtm = null;
+        m_xctxt = null;
+      }
     }
     m_obj = null;
  }
