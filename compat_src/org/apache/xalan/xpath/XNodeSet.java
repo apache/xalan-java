@@ -293,9 +293,9 @@ public class XNodeSet extends XObject
      */
     NodeIteratorWrapper(NodeList list)
     {
-      super();
+      super(new org.apache.xml.dtm.ref.DTMManagerDefault());
       m_list = list;
-      dtmManager = new org.apache.xml.dtm.ref.DTMManagerDefault(); 
+      dtmManager = getDTMManager(); 
     }
 
   
