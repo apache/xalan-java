@@ -787,6 +787,9 @@ public class ToHTMLStream extends ToStream
                 // not update all the other state information because the endElement() is
                 // coming right away.  If you want to kill this optimization the corresponding
                 // optimization "OPTIMIZE-EMPTY in endElement() must be killed too.
+                if (m_tracer != null)
+                    firePseudoElement(name);
+
                 return;
             }
 
@@ -796,6 +799,10 @@ public class ToHTMLStream extends ToStream
             m_elementName = name;
             m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
             m_currentElemDepth++; // current element is one element deeper
+
+            if (m_tracer != null)
+                firePseudoElement(name);
+
             
             if (elemDesc.is(ElemDesc.HEADELEM))
             {

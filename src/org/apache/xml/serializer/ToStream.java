@@ -1767,6 +1767,9 @@ abstract public class ToStream extends SerializerBase
         m_startTagOpen = true;
         m_currentElemDepth++; // current element is one element deeper
         m_isprevtext = false;
+        
+		if (m_tracer != null)
+			firePseudoElement(name);
     }
 
     /**
@@ -2740,7 +2743,7 @@ abstract public class ToStream extends SerializerBase
              */
             m_attributes.setValue(index, value);
             if (old_value != null)
-                firePseudoAttributes();
+                firePseudoElement(m_elementName);
 
         }
         else
@@ -2748,27 +2751,30 @@ abstract public class ToStream extends SerializerBase
             // the attribute doesn't exist yet, create it
             m_attributes.addAttribute(uri, localName, rawName, type, value);
             if (m_tracer != null)
-                firePseudoAttributes();
+                firePseudoElement(m_elementName);
         }
 
     }
 
     /**
-     * To fire off the pseudo characters of attributes, as they currently
+     * To fire off the pseudo characters of elements, as they currently
      * exist. This method should be called everytime an attribute is added,
-     * or when an attribute value is changed.
+     * or when an attribute value is changed, or an element is created.
      */
 
-    protected void firePseudoAttributes()
+    protected void firePseudoElement(String elementName)
     {
 
-        int nAttrs;
+        int nAttrs = m_attributes.getLength();
 
-        if (m_tracer != null && (nAttrs = m_attributes.getLength()) > 0)
+        if (m_tracer != null)
         {
             String encoding = getEncoding();
             // make a StringBuffer to write the name="value" pairs to.
             StringBuffer sb = new StringBuffer();
+            
+            sb.append('<');
+            sb.append(elementName);
 
             // make a writer that internally appends to the same
             // StringBuffer

@@ -162,8 +162,10 @@ public class ToTextStream extends ToStream
     m_currentElemDepth++;
 
     // time to fire off startElement event
-    if (m_tracer != null)
+    if (m_tracer != null) {
         super.fireStartElem(name);
+        this.firePseudoElement(name);
+    }
     return;
   }
 
@@ -583,8 +585,10 @@ void writeNormalizedChars(
         if (m_needToCallStartDocument)
             startDocumentInternal();		
 		// time to fire off startlement event.
-        if (m_tracer != null)
+        if (m_tracer != null) {
             super.fireStartElem(elementName);
+            this.firePseudoElement(elementName);
+        }
         
         return;
     }
