@@ -1343,7 +1343,7 @@ public class StylesheetRoot extends StylesheetComposed
     }
 
     /**
-     * @param Optimization flag
+     * @param b Optimization flag
      */
     public void setOptimizer(boolean b) {
         m_optimizer = b;
@@ -1364,14 +1364,14 @@ public class StylesheetRoot extends StylesheetComposed
     }
 
     /**
-     * @param Incremental flag
+     * @param b Incremental flag
      */
     public void setIncremental(boolean b) {
         m_incremental = b;
     }
 
     /**
-     * @param Source location flag
+     * @param b Source location flag
      */
     public void setSource_location(boolean b) {
         m_source_location = b;

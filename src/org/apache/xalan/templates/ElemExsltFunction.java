@@ -52,7 +52,7 @@ public class ElemExsltFunction extends ElemTemplate
    /**
    * Return the node name, defined in the
    *     Constants class.
-   * @see org.apache.xalan.templates.Constants.
+   * @see org.apache.xalan.templates.Constants
    * @return The node name
    * 
    */ 

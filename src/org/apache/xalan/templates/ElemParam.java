@@ -101,8 +101,6 @@ public class ElemParam extends ElemVariable
    * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

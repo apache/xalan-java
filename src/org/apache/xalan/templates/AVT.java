@@ -481,7 +481,6 @@ public class AVT implements java.io.Serializable, XSLTVisitable
    * @param xctxt Te XPathContext to use to evaluate this.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
-   * @param NodeList The current Context Node List.
    *
    * @return The AVT evaluated as a string
    *

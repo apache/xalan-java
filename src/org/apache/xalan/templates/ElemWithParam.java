@@ -167,7 +167,7 @@ public class ElemWithParam extends ElemTemplateElement
   /**
    * Set the parent as an ElemTemplateElement.
    *
-   * @param parent This node's parent as an ElemTemplateElement
+   * @param p This node's parent as an ElemTemplateElement
    */
   public void setParentElem(ElemTemplateElement p)
   {

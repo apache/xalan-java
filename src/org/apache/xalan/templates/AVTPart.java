@@ -50,7 +50,6 @@ public abstract class AVTPart implements java.io.Serializable, XSLTVisitable
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
-   * @param NodeList The current Context Node List.
    *
    * @throws javax.xml.transform.TransformerException
    */

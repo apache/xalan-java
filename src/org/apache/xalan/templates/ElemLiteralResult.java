@@ -143,7 +143,7 @@ public class ElemLiteralResult extends ElemUse
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
    *
-   * @param v  Enumerated value, either Constants.ATTRVAL_PRESERVE 
+   * @param avt  Enumerated value, either Constants.ATTRVAL_PRESERVE 
    * or Constants.ATTRVAL_STRIP.
    */
   public void setXmlSpace(AVT avt)
@@ -599,8 +599,6 @@ public class ElemLiteralResult extends ElemUse
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */

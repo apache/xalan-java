@@ -152,7 +152,7 @@ public class XUnresolvedVariable extends XObject
    * Set an index into the variable stack where the variable context 
    * ends, i.e. at the point we should terminate the search.
    * 
-   * @param The point at which the search should terminate, normally 
+   * @param bottom The point at which the search should terminate, normally 
    * zero for global variables.
    */
   public void setVarStackContext(int bottom)

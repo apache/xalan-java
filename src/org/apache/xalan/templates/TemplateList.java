@@ -644,7 +644,7 @@ public class TemplateList implements java.io.Serializable
    * @param maxImportLevel The maximum importCountComposed that we should consider or -1
    *        if we should consider all import levels.  This is used by apply-imports to
    *        access templates that have been overridden.
-   * @param maxEndImportLevel The count of composed imports
+   * @param endImportLevel The count of composed imports
    * @param quietConflictWarnings
    * @return Rule that best matches targetElem.
    * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide

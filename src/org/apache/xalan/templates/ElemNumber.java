@@ -541,8 +541,6 @@ public class ElemNumber extends ElemTemplateElement
    * used to insert a formatted number into the result tree.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
-   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
    * @throws TransformerException
    */
@@ -960,8 +958,6 @@ public class ElemNumber extends ElemTemplateElement
    * Get the ancestors, up to the root, that match the
    * pattern.
    * 
-   * @param patterns if non-null, count only nodes
-   * that match this pattern, if null count all ancestors.
    * @param xctxt The XPath runtime state for this.
    * @param node Count this node and it's ancestors.
    * @param stopAtFirstFound Flag indicating to stop after the
@@ -1141,7 +1137,6 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Format a vector of numbers into a formatted string.
    * 
-   * @param xslNumberElement Element that takes %conversion-atts; attributes.
    * @param transformer non-null reference to the the current transform-time state.
    * @param list Array of one or more long integer numbers.
    * @param contextNode The node that "." expresses.
@@ -1710,7 +1705,6 @@ public class ElemNumber extends ElemTemplateElement
    * count using the traditional numbering.
    * 
    * @param val Value to convert -- must be greater than zero.
-   * @param table a table containing one character for each digit in the radix
    * @param thisBundle Resource bundle to use
    * 
    * @return String representing alpha count of number.

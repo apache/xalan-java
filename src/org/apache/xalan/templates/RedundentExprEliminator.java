@@ -65,10 +65,6 @@ public class RedundentExprEliminator extends XSLTVisitor
 
   /**
    * Construct a RedundentExprEliminator.
-   * 
-   * @param absPathsList Vector to which absolute paths will 
-   * be inserted.  The vector may be null, if the caller does 
-   * not wish to collect absolute paths.
    */
   public RedundentExprEliminator()
   {
@@ -101,9 +97,6 @@ public class RedundentExprEliminator extends XSLTVisitor
    * for each redundent expression, and then rewriting the redundent 
    * expression to be a variable reference.
    * 
-   * @param psuedoVarRecipient The recipient of the psuedo vars.  The 
-   * variables will be inserted as first children of the element, before 
-   * any existing variables.
    */
   public void eleminateRedundentGlobals(StylesheetRoot stylesheet)
   {
@@ -592,7 +585,7 @@ public class RedundentExprEliminator extends XSLTVisitor
    * the vector will be replaced by null.
    * 
    * @param start The position to start looking in the vector.
-   * @param targetIndex The position of firstOccuranceOwner.
+   * @param firstOccuranceIndex The position of firstOccuranceOwner.
    * @param firstOccuranceOwner The owner of the expression we are looking for.
    * @param psuedoVarRecipient Where to put the psuedo variables.
    * 
@@ -873,7 +866,6 @@ public class RedundentExprEliminator extends XSLTVisitor
    * @param psuedoVarRecipient The broadest scope of where the variable 
    * should be inserted, usually an xsl:template or xsl:for-each.
    * @param lpi The LocationPathIterator that the variable should represent.
-   * @param addToContext true if the decl should be added to psuedoVarRecipient.
    * @return null if the decl was not created, otherwise the new Pseudo var  
    *              element.
    */

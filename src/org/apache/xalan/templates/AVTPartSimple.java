@@ -80,7 +80,6 @@ public class AVTPartSimple extends AVTPart
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
-   * @param NodeList The current Context Node List.
    */
   public void evaluate(XPathContext xctxt, FastStringBuffer buf,
                        int context,

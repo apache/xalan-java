@@ -320,7 +320,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * Perform a query if needed, and call transformNode for each child.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param template The owning template context.
    *
    * @throws TransformerException Thrown in a variety of circumstances.
    * @xsl.usage advanced

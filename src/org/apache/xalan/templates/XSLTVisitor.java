@@ -101,8 +101,6 @@ public class XSLTVisitor extends XPathVisitor
 	/**
 	 * Visit an Attribute Value Template (at the top level).
 	 * 
-	 * @param owner The owner of the expression, to which the expression can 
-	 *              be reset if rewriting takes place.
 	 * @param elem The attribute value template object.
 	 * @return true if the sub expressions should be traversed.
 	 */

@@ -63,12 +63,6 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Construct a template element instance.
    *
-   * @param transformer The XSLT TransformerFactory.
-   * @param stylesheetTree The owning stylesheet.
-   * @param name The name of the element.
-   * @param atts The element attributes.
-   * @param lineNumber The line in the XSLT file that the element occurs on.
-   * @param columnNumber The column index in the XSLT file that the element occurs on.
    */
   public ElemTemplateElement(){}
 
@@ -132,8 +126,6 @@ public class ElemTemplateElement extends UnImplNode
    * function may recursivly execute down the element tree.
    *
    * @param transformer The XSLT TransformerFactory.
-   * @param sourceNode The current context node.
-   * @param mode The current mode.
    * 
    * @throws TransformerException if any checked exception occurs.
    */
@@ -290,7 +282,7 @@ public class ElemTemplateElement extends UnImplNode
    * first to remove it from its previous context. Failing to do so will
    * damage the tree.
    *
-   * @param newChild Child to be added to child list
+   * @param elem Child to be added to child list
    *
    * @return Child just added to the child list
    */
@@ -499,8 +491,8 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Replace the old child with a new child.
    *
-   * @param newChild New child to replace with
-   * @param oldChild Old child to be replaced
+   * @param newChildElem New child to replace with
+   * @param oldChildElem Old child to be replaced
    *
    * @return The new child
    *
@@ -1258,7 +1250,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Set the UID (document order index).
    *
-   * @param kIndex Index of this child.
+   * @param i Index of this child.
    */
   public void setUid(int i)
   {
@@ -1305,7 +1297,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Set the parent as an ElemTemplateElement.
    *
-   * @param parent This node's parent as an ElemTemplateElement
+   * @param p This node's parent as an ElemTemplateElement
    */
   public void setParentElem(ElemTemplateElement p)
   {
