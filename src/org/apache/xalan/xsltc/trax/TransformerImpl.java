@@ -1157,7 +1157,7 @@ public final class TransformerImpl extends Transformer
      * DOMCache interface. This approach is simple, but removes the
      * possibility of using external document caches with XSLTC.
      *
-     * @param baseURI The URI for the stylesheet
+     * @param baseURI The base URI used by the document call.
      * @param href The href argument passed to the document function.
      * @param translet A reference to the translet requesting the document
      */

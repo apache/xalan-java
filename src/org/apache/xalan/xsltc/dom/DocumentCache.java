@@ -73,6 +73,7 @@ import java.util.Hashtable;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.sax.SAXSource;
 
 import org.apache.xalan.xsltc.DOM;
@@ -81,6 +82,7 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Constants;
+import org.apache.xml.utils.SystemIDResolver;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -284,9 +286,18 @@ public final class DocumentCache implements DOMCache {
      * Returns a document either by finding it in the cache or
      * downloading it and putting it in the cache.
      */
-    public final DOM retrieveDocument(String uri, int mask, Translet trs) {
+    public DOM retrieveDocument(String baseURI, String href, Translet trs) {
 	CachedDocument doc;
 
+    String uri = href;
+    if (baseURI != null && !baseURI.equals("")) {
+        try {
+            uri = SystemIDResolver.getAbsoluteURI(uri, baseURI);
+        } catch (TransformerException te) {
+            // ignore    
+        }
+    }
+    
 	// Try to get the document from the cache first
 	if ((doc = lookupDocument(uri)) == null) {
 	    doc = new CachedDocument(uri);

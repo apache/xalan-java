@@ -84,6 +84,10 @@ public interface DOMCache {
      * (3) setting the document URI:
      *
      *      _dom.setDocumentURI(uri);
+     * 
+     * @param baseURI The base URI used by the document call.
+     * @param href The href argument passed to the document function.
+     * @param translet A reference to the translet requesting the document
      */
     public DOM retrieveDocument(String baseURI, String href, Translet translet);
 
