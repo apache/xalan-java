@@ -59,6 +59,8 @@
 <s1 title="Basic usage patterns">
 <ul>
 <li><link anchor="basic">Basic steps</link></li>
+<li><link anchor="xmlreader">Setting the XMLReader</link></li>
+<li><link anchor="embed">Working with embedded stylesheets</link></li>
 <li><link anchor="params">Setting stylesheet parameters</link></li>
 <li><link anchor="sax">Explicitly working with SAX</link></li>
 <li><link anchor="outasin">Using transformation output as input for another transformation</link></li>
@@ -67,6 +69,7 @@
 <li><link anchor="applet">Using the &xslt4j; applet wrapper</link></li>
 <li><link anchor="servlet">Using &xslt4j; in a servlet</link></li>
 <li><link anchor="extensions">Creating and using extensions</link></li>
+<li><link anchor="multithreading">Multithreading</link></li>
 <li><link anchor="debugging">Debugger interface</link></li>
 </ul>
 <anchor name="basic"/>
@@ -124,15 +127,50 @@ transformer.transform
 <p>For each node in the XML source, the Transformer uses the Templates object to determine which template to apply: one of the templates in the Templates object, a default template rule as specified in the XSLT spec, or none.</p>
 <p>The Transformer forwards the SAX events produced by this process to the appropriate output ContentHandler, a serializer if the Result object has been set up to write to a stream or file, a DOMBuilder utility if the output is to be a DOM tree.</p>
 <note>A serializer is a utility that translates a series of SAX events or a DOM tree into a stream, performing any character escaping required by the output method (the XML ourput method, for example normally requires &lt; and &amp; to be escaped).</note>
-<p>To the degree possible, the parsing of the XML source and application of the Templates object to that source are performed concurrently in separate threads. For more information, see xxxx.</p>
+<p>To the degree possible, the parsing of the XML source and application of the Templates object to that source are performed concurrently. This enables the Transformer to begin supplying the client with transformation output before the parsing has been completed. When necessary, the Transformer waits for the XMLReader to provide the input it needs to continue.</p>
+</s2><anchor name="xmlreader"/>
+<s2 title="Setting the XMLReader">
+<p>Unless you are submitting your stylesheet and your XML input in the form of DOM trees, &xslt4j; uses an XMLReader to parse the stylesheet and the XML input. This XMLReader must implement the <resource-ref idref="jaxp"/>. To designate an XMLReader, do one of the following:</p>
+<ul>
+  <li>Set the org.xml.sax.driver system property.<br/><br/>
+  You can set system properties from the command line or within your application. You can also edit the setting in org/apache/xalan/res/XSLTInfo.properties (in xalan.jar). If the org.xml.sax.driver system property is not set, &xslt4j; uses this file to set it.<br/><br/></li>
+  <li>Call the trax.Processor.setXMLReader() method.<br/><br/>
+  If you call this method before you call trax.Processor.process() to generate a Templates object, &xslt4j; uses the XMLReader you designate to process the stylesheet and the XML input, and ignores the org.xml.sax.driver property setting (for the current transformation).<br/><br/></li>
+</ul>
+<p>Be sure the XMLReader is on the classpath. The &xml4j; XMLReader -- org.apache.xerces.parsers.SAXParser -- is in xerces.jar.(</p>
+<note>Other system properties: The default serializer system property settings are in serialize/serializer.properties. The default XSLT stylesheet system property setting is in org/apache/xalan/res/XSLTInfo.properties (not in trax/trax.properties??). These properties files are in xalan.jar.</note>
 </s2><anchor name="params"/>
 <s2 title="Setting stylesheet parameters">
 <p>An XSLT stylesheet may include parameters that are set at run time each time a transformation takes place. To set a stylesheet parameter, use the trax.Transformer <jump href="apidocs/trax/Transformer.html#setParameter(java.lang.String,java.lang.String,java.lang.Object)">setParameter(String name, String namespace, Object value)</jump> method. If the parameter QName only includes a local name (as is often the case), the namespace argument is null. For a working example, see UseStylesheetParam.java in the  java/samples/UseStylesheetParam subdirectory.</p>
 <p>You can also set a parameter with the command-line utility by including the -param flag. For example:</p>
 <p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 boo</code></p>
-<p>or</p>
-<p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 org/myorg/xyz boo</code></p>
-<p>where <code>param</code> is the parameter name, <code>org/myorg/xyz</code> is the parameter namespace. [not yet working], and <code>boo</code> is the parameter value. Unless you have defined a namespace for the parameter, the parameter namespace is null.</p>
+<p>where <code>param</code> is the parameter name and <code>boo</code> is the parameter value. The parameter namespace is null.</p>
+</s2><anchor name="embed"/>
+<s2 title="Working with embedded stylesheets">
+<p>An XML source document may include an <jump href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet processing instruction</jump> which identifies the stylesheet to be used to process the document. As indicated by the processing instruction href attribute, the stylesheet itself may be embedded in the XML document or located elsewhere.</p>
+<p>Suppose you have an XML document (foo.xml) with the following xml-stylesheet processing instruction:</p>
+<p><code>&lt;?xml-stylesheet type="text/xml" href="foo.xsl"?&gt;</code></p>
+<p>The following fragment, uses this instruction to locate the stylesheet (foo.xsl in the same directory) and create a Templates object. Note the use of the Processor getAssociatedStylesheets() and processMultipleStylesheets() methods in steps 2a and 2b.</p>
+<note>An XML document may include more than one xml-stylesheet processing instruction, hence the support for working with multiple stylesheets. If more than one stylesheet is returned, the other stylesheets are imported into the first stylesheet [awaiting clarification from the W3C].</note>
+<source>// 1. Instantiate the stylesheet processor.
+trax.Processor processor = trax.Processor.newInstance("xslt");
+
+// 2a. Get the stylesheet(s) from the XML source (the source may contain
+//     more than one xml-stylesheet processing instruction).
+String media = null , title = null, charset = null;
+org.xml.sax.InputSource[] stylesheet = processor.getAssociatedStylesheets
+                      (new InputSource("foo.xml"), media, title, charset);
+// 2b. Process the stylesheet(s), producing a Templates object.
+trax.Templates templates = processor.processMultiple(stylesheet);
+
+// 3. Use the Templates object to instantiate a Transformer.
+trax.Transformer transformer = templates.newTransformer();
+
+// 4. Use the Transformer to apply the Templates object to an XML
+//&nbsp;&nbsp;&nbsp;&nbsp;source and send the output to a Result object.
+transformer.transform
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new org.xml.sax.InputSource("foo.xml"), 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new trax.Result(new java.io.FileWriter("foo.out")));</source>
 </s2><anchor name="sax"/>
 <s2 title="Explicitly working with SAX">
   <p>&xslt4j; uses the SAX event model to process stylesheets, to parse XML input documents, and to produce output. For each of these operations, an XMLReader reads input, firing parse events, and a ContentHandler listens to the XMLReader and performs parse event methods.</p>
@@ -187,8 +225,8 @@ reader.parse("foo.xml");</source>
 <s2 title="Using transformation output as input for another transformation">
 <p>You can chain together a series of two or more transformations such that the output of one transformation provides input for the another transformation. &xslt4j; supports two basic strategies for chaining a series of transformations:</p>
 <ul>
-  <li><br/>A Transformer uses a SAX ContentHandler to process input, and another ContentHandler to process output. Along these lines, you can use the Transformer getInputContentHandler() method to make one Transformer the ContentHandler for the XMLParse that reads the input, then use the same method make a second Transformer the ContentHandler for the output of the first Transformer, and so on. For more detail and an example, see the <link idref="samples" anchor="pipe">Pipe<link> sample.<br/><br/></li>
-  <li>A Transformer extends the SAX XMLFilter interface. Using the setParent() method this interface supplies, you can set an XMLReader as the parent of the Transformer for the first transformation, then set this Transformer as the parent for the Transformer performing the second transformation, and so on. You launch the series by instructing the last Transformer to parse the input. For more detail and an example, see the <link idref="samples" anchor="usexmlfilters">UseXMLFilters<link> sample.</li>
+  <li><br/>A Transformer uses a SAX ContentHandler to process input, and another ContentHandler to process output. Along these lines, you can use the Transformer getInputContentHandler() method to make one Transformer the ContentHandler for the XMLReader that parses the input, then use the same method make a second Transformer the ContentHandler for the output of the first Transformer, and so on. For more detail and an example, see the <link idref="samples" anchor="pipe">Pipe</link> sample.<br/><br/></li>
+  <li>A Transformer extends the SAX XMLFilter interface. Using the setParent() method this interface supplies, you can set an XMLReader as the parent of the Transformer for the first transformation, then set this Transformer as the parent for the Transformer performing the second transformation, and so on. You launch the series by instructing the last Transformer to parse the input. For more detail and an example, see the <link idref="samples" anchor="usexmlfilters">UseXMLFilters</link> sample.</li>
 </ul>
 </s2><anchor name="dom"/>
 <s2 title="Processing and producing DOM trees">
@@ -226,12 +264,14 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 </s2><anchor name="extensions"/>
 <s2 title="Creating and using extensions">
 <p>For those cases where you want to be able to call procedural code from within a stylesheet, the &xslt4j; Extensions facility supports the creation of extension elements and extension functions. See <link idref="extensions">Extensions</link> and <link idref="samples" anchor="extensions">Extensions samples</link>.</p>
-</s2>
-<anchor name="debugging"/>
+</s2><anchor name="multithreading"/>
+<s2 title="Multithreading">
+<p>A given Templates object may be used concurrently iand repeatedly in multiple transformations. You must, however, use a separate Transformer object to perform each transformation. The Transformer object tracks state information and is lightweight. Each time you perform a transformation, use the Templates object newTransformer() method to instantiate a Transformer.</p>
+</s2><anchor name="debugging"/>
 <s2 title="Debugger Interface">
 		<p>&xslt4j; contains a debugger interface in the org.apache.xalan.xslt.trace package:</p> 
 		<ul>
-		  <li><jump href="apidocs/org/apache/xalan/trace/TraceListener.html">TraceListener"</jump> is an interface that debuggers 
+		  <li><jump href="apidocs/org/apache/xalan/trace/TraceListener.html">TraceListener</jump> is an interface that debuggers 
 		  can implement. Or, like the <link idref="commandline">command-line utility</link>, you can use the <jump
       href="apidocs/org/apache/xalan/trace/PrintTraceListener.html">PrintTraceListener</jump> implementation of that interface.
       <br/><br/></li>

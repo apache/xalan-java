@@ -23,7 +23,7 @@
 <p>If you plan to run <link idref="extensions">XSLT extensions</link>, you need bsf.jar, which is included in the &xslt4j; distribution. If you plan to run XSLT extensions implemented in JavaScript or another scripting language, you will need one or more additional files as indicated in <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>
 </s2><anchor name="classpath"/>
 <s2 title="Setting up the system class path">
-<p>At the very minimum, you must include xalan.jar and xerces.jar on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
+<p>At the very minimum, you must include xalan.jar and xerces.jar (or another conformant XMLReader -- see <link idref="usagepatterns" anchor="xmlreader">Setting the XMLReader</link>) on the system class path. To run the sample applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language requirements</link> to identify any additional JAR files you must place on the class path and where you can get them.</p>
 <p>If you are using JDK or JRE 1.1.8, also include classes.zip on the class path.</p>
 </s2><anchor name="samples"/>
 <s2 title="Trying out the samples">
@@ -42,7 +42,7 @@
 <p>The extensions examples require additional JAR files on the class path, and the procedure for running the sample applet and sample servlet is different. For more information about all the samples, see <link idref="samples">&xslt4j; Samples</link>.</p>
 </s2><anchor name="commandline"/>
 <s2 title="Performing your own transformations from the command line">
-<p>java.org.apache.xalan.xslt.Process provides a basic utility for performing transformations from the command line. You use this utility, for example, to run the extensions samples. The command line for most standard transformations is as follows:</p>
+<p>java.org.apache.xalan.xslt.Process provides a basic utility for performing transformations from the command line. You use this utility, for example, to run several of the extensions samples. The command line for most standard transformations is as follows:</p>
 <p><code>java org.apache.xalan.xslt.Process -in <ref>xmlSource</ref></code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;-xsl <ref>stylesheet</ref> -out <ref>outputfile</ref></code></p>
 <p>where <ref>xmlSource</ref> is the XML source file name, <ref>stylesheet</ref> is the XSL stylesheet file name, and <ref>outputfile</ref> is the output file name.</p>

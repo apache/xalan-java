@@ -70,7 +70,8 @@
  		<ol>
     <li>Download &xslt4j;.<br/><br/></li> 
     <li><link idref="getstarted" anchor="classpath">Set the java class path</link> to include xalan.jar and
-    xerces.jar<br/><br/></li>
+    xerces.jar (or another conformat XMLReader -- see <link idref="usagepatterns" anchor="xmlreader">Setting the
+    XMLReader</link>).<br/><br/></li>
     <li>Call java and the Process class with the appropriate flags and
     arguments (described below). The following command line, for example, includes the -IN, -XSL,
     and -OUT flags with their accompanying arguments -- the XML source document, the XSL
@@ -98,7 +99,8 @@
 -XML (Use XML formatter and add XML header)
 -TEXT (Use simple Text formatter)
 -HTML (Use HTML formatter)
--PARAM name expression (Set a stylesheet parameter)</source>
+-PARAM name expression (Set a stylesheet parameter)
+-DIAG put out timing diagnostics</source>
       <p>Use -IN to specify the XML source document.</p> 
       <p>Use -XSL to specify the XSL stylesheet file.</p>
       <p>Use -LXCIN to specify a compiled XSL stylesheet file.</p>

@@ -62,54 +62,58 @@
   <li><link anchor="packages">Package layout</link></li>
 </ul><anchor name="design"/>
   <s2 title="New Design">
-  <p>&xslt4j2; represents a fundamental redesign of Xalan. The goal of this redesign is an easier-to-use, more understandable, and more modular API that that lends itself to "streaming," the production of transformation output while the input is still being parsed, and that encourages wider participation in its ongoing development by the open-source XML developer community.</p>
+  <p>&xslt4j2; represents a fundamental redesign of Xalan. The primary objective of this redesign is an easier-to-use, more understandable, and more modular API that that encourages wider participation in its ongoing development by the open-source XML developer community, and that lends itself to "streaming," the production of transformation output while the input is still being parsed, and .</p>
 <p>As a result of this redesign, the changes are global in nature. The API and the basic usage patterns are different. For the details, see <link idref="usagepatterns">Basic Usage Patterns</link>.</p>
-<p>To start with, &xslt4j2; implements the <resource-ref idref="trax"/> interfaces. A number of open-source XML tool developers have collaborated on TRaX, a conceptual framework and a standard API for performing a variety of XML transformations. We strongly encourage you to use the TRaX framework and interfaces when you perform XML transformations.</p>
+<p>To start with, &xslt4j2; implements the <resource-ref idref="trax"/> interfaces. A number of open-source XML tool developers have collaborated on TRaX, a conceptual framework and a standard API for performing XML transformations. We strongly encourage you to use the TRaX framework and interfaces when you use &xslt4j2; to perform XML transformations.</p>
 <p>The basic organization of TRaX is quite simple: use a Processor to process transformation instructions (the stylesheet), producing a Templates object. Use the Templates object to instantiate a Transformer, with which you can apply the Templates object to XML input, producing a result tree. For more detail, see <link idref="usagepatterns" anchor="basic">Basic steps</link>.</p>
     <p>&xslt4j2; builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the <resource-ref idref="jaxp"/>. For example, &xslt4j2; incorporates the SAX parsing event model in its support for the incremental production of transformation output.</p>
-    <p>In conjunction with TRaX, &xslt4j; gathers basic operational settings from system properties. System properties, for example, identify the stylesheet processor and SAX parser to use, and the serializers that are available for various output methods. The default settings point to the Xalan StylesheetProcessor, the Xerces SAXParser, and the serializers shipped with Xerces.</p>
+    <p>In conjunction with TRaX, &xslt4j; gathers basic operational settings from Java system property settings. System properties, for example, identify the stylesheet processor and XMLReader to use, and the serializers that are available for various output methods. You can set these system properties on the command line, in your applications, or by editing the properties files that &xslt4j; uses for system properties that you do not set. The default settings in these files (as shipped) point to the Xalan StylesheetProcessor, the serializers shipped with Xerces, and the Xerces SAXParser.</p>
 </s2><anchor name="packages"/>
   <s2 title="Package layout">
-  <p>The class package structure maps closely to major conceptual modules. For example, you use the processor
-  package to process stylesheets and produce stylesheet templates (the templates package). Then you use the
-  transformer package to apply the templates to a source tree and produce an output tree. Responsibility for
-  evaluating XPath expressions and XSLT matching patterns is centralized in the XPath packages, and a variety of
+  <p>The new class package structure is flatter and maps closely to the TRaX framework. For example, you use the
+  processor package to process stylesheets and produce stylesheet templates (the templates package). Then you use the
+  transformer package to apply the templates to a source tree and produce an output tree.</p>
+  <p>Responsibility for evaluating XPath expressions and XSLT matching patterns is centralized in the XPath packages,
+  serializers for outputting transformation result trees as a stream are in the serializers package, and a variety of
   utilities used by multiple packages are in the utils package.</p>
-  <p>&xslt4j2; is made up of four major and several minor modules. The four major modules are:</p>
-<gloss> 
-		<label><jump href="apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></label> 
-		<item>Processes the stylesheet and produces the Templates object. This module is responsible for
+  <p>&xslt4j2; is made up of four primary and several secondary packages. The four primary packages are:</p>
+  <gloss> 
+		<label><jump
+     href="apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></label> 
+		<item>Processes the stylesheet and produces the Templates object. This package is responsible for
     implementing the <jump href="apidocs/trax/Processor.html">trax.Processor</jump> abstract class, which 
     provides the primary entry point into &xslt4j;.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/templates/package-summary.html">org.apache.xalan.templates</jump></label> 
-		<item>Defines the structure and content of a stylesheet tree (which may include multiple imported and
-    included stylesheets). This module is responsible for implementing the <jump
+		 <label><jump
+     href="apidocs/org/apache/xalan/templates/package-summary.html">org.apache.xalan.templates</jump></label> 
+		 <item>Defines the structure and content of a stylesheet tree (which may include multiple imported and
+    included stylesheets). This package is responsible for implementing the <jump
     href="apidocs/trax/Templates.html">trax.Templates</jump> interface.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/transformer/package-summary.html">org.apache.xalan.transformer</jump></label> 
-		<item>Applies the Templates object to the XML source and produces the result tree. This module is
+		<label><jump
+    href="apidocs/org/apache/xalan/transformer/package-summary.html">org.apache.xalan.transformer</jump></label> 
+		<item>Applies the Templates object to the XML source and produces the result tree. This package is
      responsible for implementing the <jump href="apidocs/trax/Transformer.html">trax.Transformer</jump>
      interface.</item> 
 	 </gloss> 
 	 <gloss> 
-		<label><jump href="apidocs/org/apache/xpath/package-summary.html">org.apache.xpath</jump></label> 
+		<label><jump href="apidocs/org/apache/xpath/package-summary.html">org.apache.xpath</jump> packages</label> 
 		<item>Evaluates XPath expressions and XSLT match patterns.</item> 
 	 </gloss>
-  <p>Other modules include:</p>
-  <gloss>
-		<label><jump href="apidocs/org/apache/xalan/stree/package-summary.html">org.apache.xalan.stree</jump></label>
+   <p>Other packages include:</p>
+   <gloss>
+  	<label><jump href="apidocs/org/apache/xalan/stree/package-summary.html">org.apache.xalan.stree</jump></label>
       <item>Implementation of DOM source tree optimized for node retrieval and XSLT processing.</item>
-	 </gloss>
-     <gloss>
-		<label><jump href="apidocs/org/apache/xalan/utils/package-summary.html">org.apache.xalan.utils</jump></label>
+    </gloss>
+    <gloss>
+		  <label><jump href="apidocs/org/apache/xalan/utils/package-summary.html">org.apache.xalan.utils</jump></label>
       <item>Xalan utilities used by the other packages.</item>
 	 </gloss>
    <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></label>
-      <item>&xslt4j; resource files (such as error message).</item>
+     <item>&xslt4j; resource files (such as error message).</item>
 	 </gloss> 
    <gloss> 
 		<label><jump href="apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></label>
@@ -120,16 +124,32 @@
      <item>Enables XSLT debuggers and similar tools to add trace listeners to transformation operations.</item>
 	 </gloss>    
   <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/extensions/package-summary.html">org.apache.xalan.extensions</jump></label>
-      <item>Support for extension elements and extension functions, which allow you to call Java code and scripts from within a stylesheet.</item>
+		<label><jump
+    href="apidocs/org/apache/xalan/extensions/package-summary.html">org.apache.xalan.extensions</jump></label>
+      <item>Support for extension elements and extension functions, which allow you to call Java code and scripts from
+       within a stylesheet.</item>
 	 </gloss> 
    <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/lib/package-summary.html">org.apache.xalan.lib</jump></label>
-      <item>The &xslt4j; extensions library. To date this library includes a Redirect extension, which allows a stylesheet to produce multiple output files, and a preliminary version of an SQL extension with which you can connect to and submit queries to a JDBC data source, and incrementally "stream" the result set into an XML target.</item>
+		<label><jump href="apidocs/org/apache/xalan/lib/package-summary.html">org.apache.xalan.lib</jump>
+     packages</label>
+      <item>The &xslt4j; library of extension elements and extension functions.</item>
 	 </gloss> 
-   <gloss> 
-		<label><jump href="apidocs/org/apache/xalan/xslt/package-summary.html">org.apache.xalan.xslt</jump> and <jump href="apidocs/org/apache/xalan/xpath/package-summary.html">org.apache.xalan.xpath</jump></label>
-      <item>Provide &xslt4j; 1 applications an interface to &xslt4j2;</item>
-    </gloss>  
+   <p>Other packages that are included in the xml-xalan source tree and xalan.jar:</p> 
+       <gloss>
+    <label><jump href="">javax.xml.parsers</jump></label>
+      <item>The xml.apache.org implementation of <resource-ref idref="jaxp"/>.</item>
+	 </gloss>
+   <gloss>
+      <label><jump href="">serialize</jump> packages</label>
+      <item>Output transformation result trees as a stream.</item>
+	 </gloss>
+   <gloss>
+     <label><jump href="apidocs/org/xml/sax/package-summary.html">org.xml.sax</jump> packages</label>
+     <item>SAX 2 interfaces.</item>
+   </gloss>
+   <gloss>
+     <label><jump href="apidocs/org/w3c/dom/package-summary.html">org.w3.dom</jump> packages</label>
+     <item>DOM level 2 interfaces.</item>
+   </gloss>
 </s2>
 </s1>

@@ -86,7 +86,7 @@
      </ol>      
     <p>The basic command line for running most of the samples is </p> 
     <p><code>java <ref>classname args</ref></code></p>
-    <p>where <ref>classname</ref> is the classname and <ref>args</ref> are the arguments, if any. As described in
+    <p>where <ref>classname</ref> is the sample class and <ref>args</ref> are the arguments, if any. As described in
      the following sections, some samples take no arguments. The UseStylesheetParam sample takes an
      additional argument. Several samples in extensions use the &xslt4j; 
      <link idref="commandline">command-line utility</link>, so they take arguments for the XML source
@@ -129,7 +129,7 @@
     <p>Run this sample from the Pipe subdirectory with</p> 
     <p><code>java Pipe</code></p>
     </s2><anchor name="usexmlfilters"/>
-    <s2 title="UseXMLFilters"/>
+    <s2 title="UseXMLFilters">
     <p>What it does: Chains together the same transformations as the preceding Pipe sample. Using each Transformer
      object as an extension of the SAX XMLFilter interface, sets the XMLReader as the parent of Transformer1,
      Transformer1 as the parent of Transformer2, and Transformer2 as the parent of of Transformer3.</p>
@@ -156,7 +156,8 @@
     <s2 title="AppletXMLtoHTML">
     <p>The applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>
-    <p>How to run it: See <jump href="../samples/appletXMLtoHTML/readme.html">sample applet readme</jump>.</p>
+    <p>How to run it: Copy xalan.jar and xerces.jar to the AppletXMLtoHTML subdirectory, and open AppletXMLotHTML.hmtl in a
+    browser (it has been tested with Netscape 4.7 and Internet Explorer 5).</p>
     </s2><anchor name="servlet"/>
     <s2 title="Servlet">
     <p>What it does: The client (which you must set up) specifies an XML document and a stylesheet. The servlet
@@ -198,7 +199,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     for information about the extensions library distributed with &xslt4j;, see
     <link idref="extensions">Extensions</link>.</p>
     <ul>
-      <li><link anchor="ext1">SimpleRedirect</link></li>
+      <li><link anchor="ext1">1-redir</link></li>
       <li><link anchor="ext2">2-basicJscript</link></li>
       <li><link anchor="ext3">3-java-namespace</link></li>
       <li><link anchor="ext4">4-numlistJava</link></li>
@@ -218,14 +219,19 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
        line):</p> 
 
       <anchor name="ext1"/>
-      <s3 title="SimpleRedirect">
+      <s3 title="1-redir">
       <p>What it does: Uses the Redirect extension elements shipped with &xslt4j; to direct output to two output
         files.</p>
       <p>Run this sample from the extensions subdirectory with</p> 
-      <p><code>java SimpleRedirect</code></p>
+       <p><code>java org.apache.xalan.xslt.Process -in 1-redir.xml</code></p>
+       <p>&nbsp;&nbsp;<code>-xsl 1-redir.xsl</code></p>
+      <p>The standard (non-redirected) output is writen to the screen. The redirected output is written to 1-redir-out, or
+      whatever filename you assign to the doc/foo @file attribute in 1-redir.xml. The stylesheet gets the file name for
+      redirected output from the XML input file.</p>
       </s3><anchor name="ext2"/>
       <s3 title="2-basicJscript">
-      <p>What it does: Uses an extension element and extension function implemented in Javascript.</p>
+      <p>What it does: Uses an extension element and extension function implemented in Javascript to compute a
+      deadline for responding to a customer inquiry.</p>
       <p>Run this sample from the extensions subdirectory with</p>
       <p><code>java org.apache.xalan.xslt.Process -in 2-basicJscript.xml</code>
          <br/>&nbsp;&nbsp;<code>-xsl 2-jbasicJscript.xsl</code></p>     
@@ -235,20 +241,20 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
         extension namespace to provide ready access to extensions implemented in Java.</p>
       <p>Run this sample from the extensions subdirectory with</p> 
       <p><code>java org.apache.xalan.xslt.Process -in 3-java-namespace.xml</code>
-         <br/>&nbsp;&nbsp;<code>3-java-namespace.xsl</code></p>    
+         <br/>&nbsp;&nbsp;<code>-xsl 3-java-namespace.xsl</code></p>    
       </s3><anchor name="ext4"/>
       <s3 title="4-numlistJava">
-      <p>What it does: Uses a Java extension to transform a set of name elements into an alphabetical and numbered
+      <p>What it does: Uses a Java extension to transform a set of name elements into a numbered and alphabetized
        list.</p>
       <p>Run this sample from the extensions subdirectory with</p> 
-      <p><code>java org.apache.xalan.xslt.Process -in 4-numlistJava.xml</code> 
+      <p><code>java org.apache.xalan.xslt.Process -in numlist.xml</code> 
         <br/>&nbsp;&nbsp;<code>-xsl 4-numlistJava.xsl</code></p>    
       </s3><anchor name="ext5"/>
       <s3 title="5-numlistJscript">
-      <p>What it does: Uses a Javascript  extension to transform a set of name elements into an alphabetical and
-       numbered list. This sample performs the same operations as the preceding Java extension.</p>
+      <p>What it does: Uses a Javascript  extension to transform a set of name elements into a numbered and
+      alphabetized list. This sample performs the same operations as the preceding Java extension.</p>
     <p>Run this sample from the extensions subdirectory with</p>
-      <p><code> java org.apache.xalan.xslt.Process -in 5-numlistJscript.xml </code>
+      <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
         <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
       </s3>
     </s2>    

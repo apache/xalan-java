@@ -67,13 +67,13 @@
     modular framework and a standard API for performing an open-ended range of XML transformations.</p>
      <p>In conjunction with TRaX, &xslt4j2; relies on system properties to configure its operational settings, such as
      which stylesheet processor, which SAX parser, and which serializers to use. The default settings point to the Xalan
-     StylesheetProcessor, the Xerces SAXParser, and the serializers shipped with Xerces.</p>     
+     StylesheetProcessor, the serializers shipped with Xalan, and the Xerces SAXParser.</p>
      <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the 
      <resource-ref idref="jaxp"/>.</p>
      <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
   </s2>
   <s2 title="How about this release?">
-    <p>&xslt4j-current; is the first release of &xslt4j2;. It is an alpha Develper's release. For information about known
+    <p>&xslt4j-current; is the first release of &xslt4j2;. It is an alpha Developer's release. For information about known
     limitations and problems, see the <link idref="readme">Release notes</link>. Please send your comments, bug reports, and
     feeback to the <human-resource-ref idref="xalandev"/></p>
   </s2> 
@@ -86,8 +86,10 @@
   </s2>
   
   <s2 title="Where do I get Xerces?">
-    <p>The Xalan download includes xerces.jar from &xml4j-used;. This is all you need to run Xalan. 
+    <p>The Xalan download includes xerces.jar from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
     You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>.</p>
+    <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="xmlreader">Setting the
+    XMLReader</link>.</note> 
   </s2>
   <s2 title="What else do I need?">
     <p>You need the Java Development Kit or Java Runtime 1.1.8 or 1.2.2, which you can obtain from <jump

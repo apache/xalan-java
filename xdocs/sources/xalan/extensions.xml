@@ -16,10 +16,10 @@
 <li><link anchor="ext-elements">Using an extension element</link></li>
 <li><link anchor="ext-functions">Using extension functions</link></li>
 <li><link anchor="java-namespace">Alternative: using the predefined java extension namespace</link></li>
-<li>Examples: <link anchor="ex-basic">basic JavaScript example</link>, <link anchor="ex-redirect">the Redirect extension</link>, <link anchor="ex-java-namespace">using the java namespace</link>, <link anchor="ex-java">using a Java Hashtable</link>, <link anchor="ex-javascript">using a JavaScript array</link></li>
+<li>Examples: <link anchor="ex-basic">basic JavaScript example</link>, <link anchor="ex-java-namespace">using the java namespace</link>, <link anchor="ex-java">using a Java Hashtable</link>, <link anchor="ex-javascript">using a JavaScript array</link></li>
 </ul><anchor name="intro"/>
   <s2 title="Introduction">
-  <p>For those situations where you would like to augment the functionality of XSLT with calls to a procedural language, &xslt4j; supports the creation and use of extension elements and extension functions. An extension (a collection of elements and functions) inhabits a namespace, either a namespace you declare and designate as an extensions namespace, or the predefined java namespace that &xslt4j; provides. For information about XML namespaces, see <jump href="http://www.w3.org/TR/REC-xml-names/">Namespaces in XML</jump>.</p>
+  <p>For those situations where you would like to augment the functionality of XSLT with calls to a procedural language, &xslt4j; supports the creation and use of extension elements and extension functions. &xslt4j; also provides a growing <link idref="extensionslib">extensions library</link> available for your use. An extension (a collection of elements and functions) inhabits a namespace, either a namespace you declare and designate as an extensions namespace, or the predefined java namespace that &xslt4j; provides. For information about XML namespaces, see <jump href="http://www.w3.org/TR/REC-xml-names/">Namespaces in XML</jump>.</p>
 
 <p><em>Extension elements</em>  Unlike a literal result element, which the stylesheet simply transfers to the result tree, an extension element performs an action. For example, you can use the Redirect extension elements shipped with &xslt4j; to redirect portions of your transformation output to one or more files. Extension elements may contain attributes, text nodes, other elements, basically any valid XML. Extension elements may perform quite sophisticated actions, given that the extension routine (the implementation) has direct access to the XSL processor context object and to the element. In many cases the implementation returns void or null; if it does return a value, that value is placed in the transformation result tree.</p>
 
@@ -227,77 +227,9 @@ Example: <code>&lt;lxslt:script lang="javaclass"</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(org.apache.xalan.xslt.XSLProcessorContext, </code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;org.w3c.dom.Element extensionElement)</code></p>
 <p>JavaScript example: <code>function myElement(xslProcContext, element)</code></p>
+<p>The <link idref="extensionslib" anchor="redirect">Redirect extension</link>in the extensions library contains three extension elements.</p>
 </s3>
-<s3 title="The Redirect extension">
-<p>The Redirect extension (<jump href = "apidocs/org/apache/xalan/xslt/extensions/Redirect.html">org.apache.xalan.xslt.extensions.Redirect</jump>) is shipped with &xslt4j; (more extensions are on the way!).</p>
-<p>A standard XSL transformation involves three parameters: the XML source tree, an XSL stylesheet, and the transformation result tree. Whether the result tree is output to a file, a character stream, a byte stream, a DOM, or a SAX document handler, the initial transformation sends the entire result to a single target, represented by the <resource-ref idref="XSLTResultTargetDoc"/>.</p> 
-<p>The Redirect extension supplies three extension elements that you can use to redirect portions of your transformation output to multiple files: &lt;open&gt;, &lt;write&gt;, and &lt;close&gt;. If you use the &lt;write&gt; element alone, the extension opens a file, writes to it, and closes the file immediately. If you want explicit control over the opening and closing of files, use &lt;write&gt; in conjunction with the &lt;open&gt; and &lt;close&gt; elements.</p>
-<p>Each of these elements includes a file attribute and/or a select attribute to designate the output file. The file attribute takes a string, so you can use it to directly specify the output file name; The select attribute takes an XPath expression, so you can use it to dynamically generate the output file name. If you include both attributes, the Redirect extension first evaluates the select attribute, and falls back to the file attribute if the select attribute expression does not return a valid file name.</p>
-</s3><anchor name="ex-redirect"/> 
-<s3 title="Example with the Redirect extension">
-<p>Suppose you are outputting the bulk of your result tree to one file, but you want to output the transformation of all &lt;foo&gt; elements and their children to another file. The following example illustrates the basic structure of the XML source:</p>
-<source>&lt;?xml version="1.0"?&gt; 
-&lt;doc&gt;
-  &lt;foo file="foo.out"&gt;
-    Testing Redirect extension:
-      &lt;bar&gt;A foo subelement text node&lt;/bar&gt;
-  &lt;/foo&gt;
-  &lt;main&gt;
-    Everything else
-  &lt;/main&gt;  
-&lt;/doc&gt;</source>
-<p>This stylesheet redirects part of the output to a secondary file:</p>
-<source>
-&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    version="1.0"
-    xmlns:lxslt="http://xml.apache.org/xslt"
-    xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"
-    extension-element-prefixes="redirect"&gt;
 
-  &lt;xsl:template match="/"&gt;
-    &lt;standard-out&gt;
-      Standard output:
-      &lt;xsl:apply-templates/&gt;
-    &lt;/standard-out&gt;
-  &lt;/xsl:template&gt;
-  
-  &lt;xsl:template match="main"&gt;
-    &lt;main&gt;
-      &lt;xsl:apply-templates/&gt;
-    &lt;/main&gt;
-  &lt;/xsl:template&gt;
-  
-  &lt;xsl:template match="/doc/foo"&gt;
-    &lt;redirect:write select="@file"&gt;
-      &lt;foo-out&gt;
-        &lt;xsl:apply-templates/&gt;
-      &lt;/foo-out&gt;
-    &lt;/redirect:write&gt;
-  &lt;/xsl:template&gt;
-  
-  &lt;xsl:template match="bar"&gt;
-    &lt;foobar-out&gt;
-      &lt;xsl:apply-templates/&gt;
-    &lt;/foobar-out&gt;
-  &lt;/xsl:template&gt;
-  
-&lt;/xsl:stylesheet&gt;</source>
-<p>The standard output is:</p>
-<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;standard-out&gt;
-  Standard output:
-  &lt;main&gt;
-    Everything else.
-  &lt;/main&gt;
-&lt;standard-out&gt;</source>
-<p>The output redirected to foo.out is:</p>
-<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;foo-out&gt;
-    Testing Redirect extension:
-    &lt;foobar-out&gt;foo subelement text node&lt;/foobar-out&gt;
-  &lt;/foo-out&gt;</source>
-<p>For more information on using the Redirect extension to send output to multiple files, examine the <link idref="samples" anchor="ext1">SimpleRedirect</link> sample and see the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump>class Javadoc.</p>  
-</s3>
 </s2><anchor name="ext-functions"/>
 <s2 title="Using extension functions">
 <p>Extension functions may include arguments of any type and return a value of any type.</p>

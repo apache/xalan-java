@@ -1,0 +1,274 @@
+<?xml version="1.0" standalone="no"?> 
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
+<!--
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ -->
+<s1 title="Extensions library">
+<ul>
+<li><link anchor="intro">Introduction</link></li>
+<li><link anchor="redirect">Redirect</link></li>
+<li><link anchor="nodeset">nodeset</link></li>
+<li><link anchor="sql">SQL extensions</link></li>
+<li><link anchor="intersection">intersection</link></li>
+<li><link anchor="difference">difference</link></li>
+<li><link anchor="distinct">distinct</link></li>
+<li><link anchor="hassamenodes">hasSameNodes</link></li>
+<li><link anchor="evaluate">evalaute</link></li>
+<li><link anchor="groupitem">group and item</link></li>
+<li><link anchor="type">type</link></li>
+<li><link anchor="todate">toDate</link></li>
+<li><link anchor="formatdate">formatDate</link></li>
+<li><link anchor="grep">grep</link></li>
+<li><link anchor="foreachtoken">forEachToken</link></li>
+<li>Examples: <link anchor="ex-redirect">Redirect</link>, <link anchor="ex-sql">SQL library</link></li>
+</ul><anchor name="intro"/>
+<s2 title= "Introduction">
+<p>Extension elements and functions provide a powerful mechanism
+for extending and simplifying what you can do with an XLST processor like
+Xalan. With input and contributions from the XML open-source developer community, we are working on placing the most useful
+extensions in an extensions library distributed with &xslt4j;. If you have ideas and/or contributions you would like to make, please email us at <human-resource-ref idref="xalandev"/>.</p>
+<p></p>
+</s2><anchor name="redirect"/>
+
+<s2 title= "Redirect">
+<p>A standard XSL transformation involves an XSL stylesheet, an XML source tree, and the transformation result tree. The transformation sends the entire result to a single <jump href="apidocs/trax/Result.html">trax.Result</jump> object.</p> 
+<p>The Redirect extension 
+(<jump href="apidocs/org/apache/xalan/xslt/extensions/Redirect.html">org.apache.xalan.xslt.extensions.Redirect</jump>) supplies three extension elements that you can use to redirect portions of your transformation output to multiple files: &lt;open&gt;, &lt;write&gt;, and &lt;close&gt;. If you use the &lt;write&gt; element alone, the extension opens a file, writes to it, and closes the file immediately. If you want explicit control over the opening and closing of files, use &lt;write&gt; in conjunction with the &lt;open&gt; and &lt;close&gt; elements.</p>
+<p>Each of these elements includes a file attribute and/or a select attribute to designate the output file. The file attribute takes a string, so you can use it to directly specify the output file name. The select attribute takes an XPath expression, so you can use it to dynamically generate the output file name. If you include both attributes, the Redirect extension first evaluates the select attribute, and falls back to the file attribute if the select attribute expression does not return a valid file name.</p>
+<anchor name="ex-redirect"/> 
+<s3 title="Example with the Redirect extension">
+<p>Suppose you are outputting the bulk of your result tree to one file, but you want to output the transformation of all &lt;foo&gt; elements and their children to another file. The following example illustrates the basic structure of the XML source:</p>
+<source>&lt;?xml version="1.0"?&gt; 
+&lt;doc&gt;
+  &lt;foo file="foo.out"&gt;
+    Testing Redirect extension:
+      &lt;bar&gt;A foo subelement text node&lt;/bar&gt;
+  &lt;/foo&gt;
+  &lt;main&gt;
+    Everything else
+  &lt;/main&gt;  
+&lt;/doc&gt;</source>
+<p>This stylesheet redirects part of the output to a secondary file:</p>
+<source>
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    version="1.0"
+    xmlns:lxslt="http://xml.apache.org/xslt"
+    xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"
+    extension-element-prefixes="redirect"&gt;
+
+  &lt;xsl:template match="/"&gt;
+    &lt;standard-out&gt;
+      Standard output:
+      &lt;xsl:apply-templates/&gt;
+    &lt;/standard-out&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template match="main"&gt;
+    &lt;main&gt;
+      &lt;xsl:apply-templates/&gt;
+    &lt;/main&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template match="/doc/foo"&gt;
+    &lt;redirect:write select="@file"&gt;
+      &lt;foo-out&gt;
+        &lt;xsl:apply-templates/&gt;
+      &lt;/foo-out&gt;
+    &lt;/redirect:write&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template match="bar"&gt;
+    &lt;foobar-out&gt;
+      &lt;xsl:apply-templates/&gt;
+    &lt;/foobar-out&gt;
+  &lt;/xsl:template&gt;
+  
+&lt;/xsl:stylesheet&gt;</source>
+<p>The standard output is:</p>
+<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;standard-out&gt;
+  Standard output:
+  &lt;main&gt;
+    Everything else.
+  &lt;/main&gt;
+&lt;standard-out&gt;</source>
+<p>The output redirected to foo.out is:</p>
+<source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;foo-out&gt;
+    Testing Redirect extension:
+    &lt;foobar-out&gt;foo subelement text node&lt;/foobar-out&gt;
+  &lt;/foo-out&gt;</source>
+<p>For more information on using the Redirect extension to send output to multiple files, examine the <link idref="samples" anchor="ext1">SimpleRedirect</link> sample and see the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump>class Javadoc.</p>  
+</s3>
+
+</s2><anchor name="nodeset"/>
+<s2 title= "nodeset">
+<p><em>To be ported.</em> This extension function casts a result tree fragment into a node-set. Gary L. Peskin posted nodeset to &xslt4j; version 1, and it needs to be ported to &xslt4j2;.</p>
+</s2><anchor name="sql"/>
+<s2 title= "SQL library">
+<p>Provides extension functions for connecting to a JDBC data source, executing a query,
+and working incrementally through "streamable" result set.</p>
+<p><jump href="apidocs/org/apache/xalan/lib/sql/XConnection.html">org.apache.xalan.lib.sql.XConnection</jump> provides three extension functions that you can use in your stylesheet.</p>
+    <ol>
+      <li>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
+       object.<br/><br/></li>
+      <li>query() -- Use the XConnection object query() method to return a "streamable" result set in the form of a row-set
+       node. Work your way through the row-set one row at a time. The same row element is used over and over again, so you can
+       begin "transforming" the row-set before the entire result set has been returned.<br/><br/></li>
+      <li>close() -- Use the XConnection object close() method to terminate the connection.</li>      
+    </ol>
+    <p>The query() extension function returns a Document node that contains (as needed) an array of column-header elements, 
+    a single row element that is used repeatedly, and an array of col elements. Each column-header element (one per column in
+    the row-set) contains an attribute (ColumnAttribute) for each of the column descriptors in the ResultSetMetaData object. 
+    Each col element contains a text node with a textual representation of the value for that column in the current row.</p>
+    <anchor name="ex-sql"/> 
+    <s3 title="Example with SQL library">
+    <p>This example displays the result set from a table in a sample InstantDB database.</p>
+<source>&lt;?xml version="1.0"?&gt;
+&lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                version="1.0"
+                xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+                extension-element-prefixes="sql"&gt;
+  &lt;xsl:output method="html" indent="yes"/&gt;
+  &lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;
+ 
+  &lt;xsl:template match="/"&gt;
+    &lt;!-- 1. Make the connection --&gt;
+    &lt;xsl:variable name="products"
+                  select="sql:new('org.enhydra.instantdb.jdbc.idbDriver',
+                                'jdbc:idb:D:\instantdb\Examples\sample.prp')"/&gt;
+    &lt;HTML&gt;
+      &lt;HEAD&gt;
+      &lt;/HEAD&gt;
+      &lt;BODY&gt;
+        &lt;TABLE border="1"&gt;
+        &lt;!--2. Execute the query --&gt;
+        &lt;xsl:variable name="table" select='sql:query($products, $query)'/&gt;
+          &lt;TR&gt;
+          &lt;!-- Get column-label attribute from each column-header--&gt;
+          &lt;xsl:for-each select="$table/row-set/column-header"&gt;
+            &lt;TH&gt;&lt;xsl:value-of select="@column-label"/&gt;&lt;/TH&gt;
+          &lt;/xsl:for-each&gt;
+          &lt;/TR&gt;
+          &lt;xsl:apply-templates select="$table/row-set/row"/&gt;
+          &lt;xsl:text&gt;&amp;#10;&lt;/xsl:text&gt;
+        &lt;/TABLE&gt;
+      &lt;/BODY&gt;
+    &lt;/HTML&gt; 
+    &lt;!-- 3. Close the connection --&gt;
+    &lt;xsl:value-of select="sql:close($products)"/&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="row"&gt;
+        &lt;TR&gt;
+          &lt;xsl:apply-templates select="col"/&gt;
+        &lt;/TR&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template match="col"&gt;
+    &lt;TD&gt;
+      &lt;!-- Here is the column data -->
+      &lt;xsl:value-of select="text()"/>
+    &lt;/TD>
+  &lt;/xsl:template>
+
+&lt;/xsl:stylesheet&gt;
+</source>
+</s3>
+</s2><anchor name="intersection"/>
+<s2 title="intersection">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
+<code>intersection (node-set1, node-set2)</code>  function returns a node-set with all nodes that are in ns1 and in ns2 .</p>
+</s2><anchor name="difference"/>
+
+<s2 title= "difference">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
+<code>difference(node-set1, node-set2)</code> returns a node-set with the nodes in node-set1 and not in node-set2.</p>
+</s2><anchor name="distinct"/>
+<s2 title= "distinct">
+ <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
+ distinct (node-set) returns a node-set containing nodes with distinct string values. If more than one node in the node-set 
+ contains the same text node value, distinct only returns the first of these nodes that it finds.</p>
+</s2><anchor name="hassamenodes"/>
+<s2 title= "hasSameNodes">
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeSetOperations.html">org.apache.xalan.lib.NodeSetOperations</jump>,
+<code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
+</s2><anchor name="evaluate"/>
+
+<s2 title= "evaluate">
+<p><em>To be done.</em> Allows the run-time construction and evaluation of XPath expressions.</p>
+</s2><anchor name="groupitem"/>
+<s2 title= "group and item">
+<p><em>To be done.</em> Provides efficient grouping of items with a common value.</p>
+</s2><anchor name="type"/>
+
+<s2 title= "type">
+<p><em>To be done.</em> Returns a string that represents the Schema or DTD type.</p>
+</s2><anchor name="todate"/>
+<s2 title="to-date">
+<p><em>To be done.</em> Takes a string as input, and returns a long value representing the date.</p>
+</s2><anchor name="formatdate"/>
+<s2 title="format-date">
+<p><em>To be done.</em> Takes a date string, and formats it according to a specification.</p>
+</s2><anchor name="grep"/>
+<s2 title="grep">
+<p><em>To be done.</em> Performs a grep function and returns the substring.</p>
+</s2><anchor name="foreachtoken"/>
+<s2 title="for-each-token">
+<p><em>To be done.</em> Tokenizes a string, treats each token as a DOM Text node, and executes the
+sub-template.</p>
+</s2>
+</s1>

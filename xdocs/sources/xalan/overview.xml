@@ -99,20 +99,23 @@
       </s2><anchor name="features"/>
    	  <s2 title="&xslt4j; Features">
 	    <ul> 
-		    <li>Implements the <resource-ref idref="xslt"/> and the <resource-ref idref="xpath"/><br/><br/></li>
+		    <li>Implements the <resource-ref idref="xslt"/> and the <resource-ref idref="xpath"/>.<br/><br/></li>
         <li>Builds on <resource-ref idref="trax"/>, <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>,
-            and the <resource-ref idref="jaxp"/><br/><br/></li>
-    	  <li>Works by default with the <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j; SAXParser</jump>, and may
-    	      be configured to work with any conformant SAX or DOM parser<br/><br/></li>
-    	  <li>Can process SAX or DOM input, and output to SAX or DOM<br/><br/></li>
-        <li>Transformations may be chained (the output of one transformation may be the input for another)<br/><br/></li>
+            and the <resource-ref idref="jaxp"/>.<br/><br/></li>
+    	  <li>May be configured to work with any XMLReader, such as the 
+        <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j; SAXParser</jump>, that implements the
+        Java API for XML Parsing (see <link idref="usagepatterns" anchor="xmlreader">Setting the
+        XMLReader</link>).<br/><br/></li>
+    	  <li>Can process SAX or DOM input, and output to SAX or DOM.<br/><br/></li>
+        <li>Transformations may be chained (the output of one transformation may be the input for
+         another).<br/><br/></li>
         <li>May be run from the <link idref="commandline">command line</link> for convenient file-to-file
-            transformations<br/><br/></li>
-    	  <li>Includes an <link idref="getstarted" anchor="applet">applet wrapper</link><br/><br/></li>
-        <li>May be used in a <link idref="samples" anchor="servlet">servlet</link> to transform XML documents into HTML
-            and serve the results to clients<br/><br/></li>
-        <li>Supports the creation of <link idref="extensions">Java and scripting language extensions</link> and provides 
-        a growing library of extension elements and functions</li>
+            transformations.<br/><br/></li>
+    	  <li>Includes an <link idref="getstarted" anchor="applet">applet wrapper</link>.<br/><br/></li>
+        <li>May be used in a <link idref="samples" anchor="servlet">servlet</link> to transform XML documents into
+        HTML and serve the results to clients.<br/><br/></li>
+        <li>Supports the creation of <link idref="extensions">Java and scripting language extensions</link> and
+         provides a growing library of extension elements and functions.</li>
 	    </ul> 
 	  </s2><anchor name="towork"/>
     <s2 title="Getting to work with &xslt4j;">
@@ -151,7 +154,7 @@
         Anders M&oslash;ller and Michael I. Schwartzbach</li>
     </ul>
     <p>When you come across other useful introductory or background materials, please email <human-resource-ref
-     idref="dleslie"/>, so he can add them to this list.</p>
+     idref="xalandev"/>, so we can add them to this list.</p>
      
     </s2><anchor name="glossary"/>
     <s2 title="Glossary">
@@ -179,10 +182,7 @@
         
         <label>Result Tree</label>
         <item>The tree that is output by the XSL process.<br/><br/></item>
-        
-        <label>Stylesheet Tree</label>
-        <item>The stylesheet tree produced from the XSL file.<br/><br/></item>
-        
+                
         <label>Match Pattern</label>
         <item>The part of a template that defines the kind(s) of nodes to which the template applies.<br/><br/></item>
 

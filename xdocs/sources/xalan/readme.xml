@@ -127,31 +127,12 @@
        in the source tree for doc and Javadoc builds</td></tr> 
   </table>
   <p>If you build a target that depends on other targets, Ant creates those other targets in the correct order.</p>
-  <p><em>Other build tools</em></p>
-  <p>The distribution also includes makefiles that you can use with the GNU development tools. And of course you can also use 
-  the underlying utilities to compile source files, create JAR files, generate Javadoc, and generate the HTML User's Guide. One
-  utility that you may not be familiar with is org.apache.stylebook.StyleBook (in stylebook-1.0-b2.jar), a tool from the
-  xml-stylebook module that we use along with Xalan and Xerces to help generate the documentation. For the details, you can
-  inspect the makefiles.</p>
-     
    </s3><anchor name="jar"/> 
    <s3 title="Rebuilding &xslt4j;">
      <p>The &xslt4j; build is in xalan.jar. The &xslt4j; source code tree is in the src directory.</p>
      <p>If you are using Ant, the target is jar (the default). For more information, see <link anchor="ant">Using
      Ant</link>.</p>
-     <p>To use GNU development tools, do the following:</p>
-     <ol>     
-       <li>Set up GNU or the equivalent build environment on your workstation.<br/><br/>
-       If you are running Windows 95/98/2000/NT, you can use the Cygwin port of GNU. Be sure to put the
-       appropriate Cygwin bin directory at the beginning of your system path. For information about
-       Cygwin, see <jump href="http://www.sourceware.cygnus.com/cygwin/">Cygwin</jump>.<br/><br/></li>
-       <li>Place <resource-ref idref="xml4j-used"/> xerces.jar in the Java class path.<br/><br/></li>
-       <li>If you are working in Windows, set MAKE_MODE as follows:<br/><br/>
-       <code>set MAKE_MODE=UNIX</code><br/><br/></li>
-       <li>Run the make file in the &xslt4j; root directory:<br/><br/>
-       <code>make build</code><br/><br/></li>
-     </ol>
-     <p>If you want to do the build without Ant or the GNU build environment, keep the following in mind:</p>
+     <p>If you want to do the build without Ant, keep the following in mind:</p>
      <ul>
      <li>Set the class path to include the src directory, xerces.jar, bsf.jar, and bsfengines.jar.</li>
      <li>Use a Java compiler (such as the IBM Just-In-Time compiler or the Sun javac) to compile all the .java files in the src
@@ -177,26 +158,11 @@
       HTML User's Guide, and the overview and package-level documents used during the generation of Javadoc.</p>
       <p>To rebuild the documentation, you must use the StyleBook tool and the JDK 1.2.2 java and javadoc
       tools. StyleBook (which uses Xalan and Xerces) is in stylebook-1.0-b2.jar. Some of the document definition files,
-      stylesheets, and resources are stored in xml-site-style.tar.gz, and are unzipped when you run the make files as described
-       below. If the JDK 1.2.2 bin and lib directories are not on your class path, you can edit the make.include file in the
-       Xalan root directory so the make file can find the JDK 1.2.2 java and javadoc tools. You can also include java and javadoc
-       arguments on the make file command line. See the make.include file for the details.</p>
+      stylesheets, and resources are stored in xml-site-style.tar.gz, and are unzipped when you run Ant as described
+       below.</p>
       <p>You can use Ant with the docs target to regenerate the User's Guide and with the javadocs target to regenerate the
       Javadoc API documentation. For more information, see <link anchor="ant">Using Ant</link>.</p>
-     <p>To generate the Xalan HTML User's Guide with the GNU development tools, run the Xalan make file in the Xalan xdocs
-     directory:<br/><br/>
-     <code>make makesbook</code></p>
-     <p>To generate the Xalan API documentation with GNU, set up the make file to use the Javadoc tool in the Java JDK 1.2.2 bin 
-     directory.</p>
-     <p>Do the following:</p>
-       <ol>
-         <li>Put the Java JDK 1.2.2 bin directory on your path (in front of any JDK 1.1.x bin 
-         directory that appears on the path).<br/><br/></li>
-         <li>In the Xalan docs directory, run the Xalan make file as follows:<br/><br/>
-         <code>make makejavadoc</code><br/><br/></li>
-      </ol>
-      <p>If you want to rebuild the documentation without using Ant or the GNU build environment, keep the following in
-       mind:</p>
+      <p>If you want to rebuild the documentation without using Ant, keep the following in mind:</p>
        <ul>
        <li>Unzip xml-site-style.tar.gz into the xdocs directory (the operation places files in a number of subdirectories).
        <br/><br/></li>
@@ -211,7 +177,30 @@
         <li>Before you run javadoc, make sure the following directory structure exists under the Xalan root
          directory: build/docs/apidocs.<br/><br/></li>
        <li>To build the API documentation, run the JDK 1.2.2 javadoc tool from the xdocs directory:<br/><br/>
-<code>javadoc -doclet xalanjdoc.Standard -docletpath ../bin/xalanjdoc.jar -private -overview ../src/javadocOverview.html -sourcepath ../src -group TrAX "trax" -group Xalan_Core "org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer" -group XPath "org.apache.xpath*:org.w3c.xslt" -group Xalan_Other "org.apache.xalan.client:org.apache.xalan.dtm:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils" -group Xalan_Extensions "org.apache.xalan.lib*" -group Serializers "serialize*" -group Xalan-Java_1_Interface "org.apache.xalan.xslt:org.apache.xalan.xpath" org.apache.xalan.client org.apache.xalan.dtm org.apache.xalan.extensions org.apache.xalan.lib org.apache.xalan.lib.sql org.apache.xalan.processor org.apache.xalan.res org.apache.xalan.stree org.apache.xalan.templates org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.utils org.apache.xalan.xpath org.apache.xalan.xpath.xml org.apache.xalan.xslt org.apache.xpath org.apache.xpath.axes org.apache.xpath.compiler org.apache.xpath.functions org.apache.xpath.objects org.apache.xpath.operations org.apache.xpath.patterns org.apache.xpath.res org.w3c.xslt serialize serialize.helpers trax -d ../build/docs/apidocs -windowtitle "Xalan-Java 2" -doctitle "Xalan-Java 2" -bottom "Copyright &#169; 2000 Apache XML Project. All Rights Reserved."
+<code>
+javadoc -doclet xalanjdoc.Standard -docletpath ../bin/xalanjdoc.jar -private
+-overview ../src/javadocOverview.html -sourcepath ../src 
+-group TrAX "trax" 
+-group Xalan_Core "org.apache.xalan.processor:org.apache.xalan.templates:
+org.apache.xalan.transformer"
+-group XPath "org.apache.xpath*:org.w3c.xslt" 
+-group Xalan_Other "org.apache.xalan.client:org.apache.xalan.dtm:
+org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:
+org.apache.xalan.trace:org.apache.xalan.utils" 
+-group Xalan_Extensions "org.apache.xalan.lib*" 
+-group Serializers "serialize*" 
+-group Xalan-Java_1_Interface "org.apache.xalan.xslt:org.apache.xalan.xpath" 
+org.apache.xalan.client org.apache.xalan.dtm org.apache.xalan.extensions 
+org.apache.xalan.lib org.apache.xalan.lib.sql org.apache.xalan.processor 
+org.apache.xalan.res org.apache.xalan.stree org.apache.xalan.templates 
+org.apache.xalan.trace org.apache.xalan.transformer org.apache.xalan.utils 
+org.apache.xalan.xpath org.apache.xalan.xpath.xml org.apache.xalan.xslt 
+org.apache.xpath org.apache.xpath.axes org.apache.xpath.compiler 
+org.apache.xpath.functions org.apache.xpath.objects org.apache.xpath.operations 
+org.apache.xpath.patterns org.apache.xpath.res org.w3c.xslt 
+serialize serialize.helpers trax 
+-d ../build/docs/apidocs -windowtitle "Xalan-Java 2" -doctitle "Xalan-Java 2"
+-bottom "Copyright &#169; 2000 Apache XML Project. All Rights Reserved."
 </code></li>
 </ul>
   </s3>    
