@@ -123,7 +123,9 @@ public class XNI2DTM
   
   /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as instantiated.
    * See discussion in addNode */
-  protected Vector m_actualType=null;
+  // protected Vector m_actualType=null;
+  protected SparseVector m_schemaTypeOverride=new SparseVector();
+  
 
   /**
    * If we're building the model incrementally on demand, we need to
@@ -212,14 +214,13 @@ public class XNI2DTM
 	
 	if(actualType != null)
 	{
-		if(m_actualType==null)
-		{
-			m_actualType=new Vector();
-			// m_expectedType=new Vector(); // %REVIEW% OBSOLETE?
-			
-		}
-		m_actualType.setElementAt(actualType,identity);
-		// m_expectedType.setElementAt(expectedType,identity);  // %REVIEW% OBSOLETE?
+	  // Try to record as default for this nodetype
+	  if(!m_expandedNameTable.setSchemaType(m_exptype.elementAt(identity),
+						actualType)
+	     )
+	  {
+	    m_schemaTypeOverride.addElement(identity,actualType);
+	  }
 	}
 
 	return identity;
@@ -241,7 +242,10 @@ public class XNI2DTM
   	
   	if(identity!=DTM.NULL)
   	{
-  		XSTypeDecl actualType=(XSTypeDecl)m_actualType.elementAt(identity);
+	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+	  if(actualType==null)
+	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+
   		if(actualType!=null)
   		{
   			String nsuri=actualType.getTargetNamespace();
@@ -272,7 +276,9 @@ public class XNI2DTM
   	
   	if(identity!=DTM.NULL)
   	{
-  		XSTypeDecl actualType=(XSTypeDecl)m_actualType.elementAt(identity);
+	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+	  if(actualType==null)
+	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
   		if(actualType!=null)
   		{
   			return actualType.getTargetNamespace();
@@ -297,7 +303,9 @@ public class XNI2DTM
   	
   	if(identity!=DTM.NULL)
   	{
-  		XSTypeDecl actualType=(XSTypeDecl)m_actualType.elementAt(identity);
+	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+	  if(actualType==null)
+	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
   		if(actualType!=null)
   		{
   			return actualType.getTypeName();
@@ -322,7 +330,9 @@ public class XNI2DTM
   	
   	if(identity!=DTM.NULL)
   	{
-  		XSTypeDecl actualType=(XSTypeDecl)m_actualType.elementAt(identity);
+	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+	  if(actualType==null)
+	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
   		if(actualType!=null)
   			return actualType.derivedFrom(namespace,localname);
   	}
@@ -344,7 +354,10 @@ public class XNI2DTM
   	if(identity==DTM.NULL)
   		return XSequence.EMPTY;
   		
-	XSTypeDecl actualType=(XSTypeDecl)m_actualType.elementAt(identity);
+	  XSTypeDecl actualType=(XSTypeDecl)m_schemaTypeOverride.elementAt(identity);
+	  if(actualType==null)
+	    actualType=(XSTypeDecl)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
+
 	if(actualType==null)
   		return XSequence.EMPTY;
   		
@@ -844,9 +857,7 @@ public class XNI2DTM
 	
     // Augs might be null if schema support not turned on in parser. 
     // Shouldn't arise in final operation (?); may arise during debugging
-
     XSTypeDecl actualType=null;
-    
     if(augs!=null)
     {
       // Extract Experimental Xerces PSVI data		
@@ -889,8 +900,7 @@ public class XNI2DTM
 	    // Experimental Xerces PSVI data
 	    Augmentations attrAugs=attributes.getAugmentations(i);
 	    AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
-	    XSTypeDecl actualAttrType =
-	      (attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+	    XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
 	    org.apache.xerces.impl.xs.XSAttributeDecl expectedAttrDecl= // %REVIEW% Obsolete?
 	      (attrPSVI==null) ? null : attrPSVI.getAttributeDecl();			      
 	    expectedType=(expectedAttrDecl==null) ? actualAttrType : expectedAttrDecl.fType;
@@ -935,6 +945,7 @@ public class XNI2DTM
       String declURL = "http://www.w3.org/XML/1998/namespace";
       exName = m_expandedNameTable.getExpandedTypeID(null, prefix, DTM.NAMESPACE_NODE);
       int val = m_valuesOrPrefixes.stringToIndex(declURL);
+      // %REVIEW% I don't _think_ we need datatype on namespaces...?
       prev = addNode(DTM.NAMESPACE_NODE, exName, elemNode,
                      prev, val, false);
       m_pastFirstElement=true;
@@ -953,6 +964,7 @@ public class XNI2DTM
 
       int val = m_valuesOrPrefixes.stringToIndex(declURL);
 
+      // %REVIEW% I don't _think_ we need datatype on namespaces...?
       prev = addNode(DTM.NAMESPACE_NODE, exName, elemNode,
                      prev, val, false);
     }
@@ -1012,11 +1024,10 @@ public class XNI2DTM
       // Experimental Xerces PSVI data
       Augmentations attrAugs=attributes.getAugmentations(i);
       AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
-      XSTypeDecl actualAttrType =
-	(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
-
+      XSTypeDecl actualAttrType=(attrPSVI==null) ? null : attrPSVI.getTypeDefinition();
+      
       prev = addNode(nodeType, exName, elemNode, prev, val,
-                     false,actualAttrType);
+                     false, actualAttrType);
     }
 
     if (DTM.NULL != prev)
@@ -1067,13 +1078,6 @@ public class XNI2DTM
       	", localname: " + element.localpart + ", qname: "+element.rawname);
 
 	try
-  /** %OPT% %REVIEW% PROTOTYPE: Schema Type information, datatype as declared.
-   * See discussion in addNode 
-   * NOTE that the 3/28/03 query datamodel no longer records the type-as-declared,
-   * so this field can probably be eliminated!
-   * */
-  //protected Vector m_expectedType=null; // %REVIEW% OBSOLETE?
-  
 	{
 		super.endElement(element.uri,element.localpart,element.rawname);
   	} 
@@ -1694,5 +1698,63 @@ public class XNI2DTM
 	    throw new SAXException(UNEXPECTED+"endDTD");
   }
 
+  
+  /** Defined internally for the moment.
+
+      %REVIEW% FIRST DRAFT: Binary search
+
+      %REVIEW% We really do need a more global solution... though
+      keeping it here would let us change the Objects in the API to
+      XSTypeDecl, avoiding a cast when retrieving. (Do we care?)
+  */
+  class SparseVector
+  {
+    int[] m_index=new int[64];
+    Object[] m_value=new Object[64];
+    int last=0;
+
+    /** ASSUMPTION: Elements will be added in index order, though
+	indices may be skipped.
+    */
+    void addElement(int index,Object value)
+    {
+      if(last>=m_index.length)
+      {
+	int[] i=new int[last+64];
+	System.arraycopy(m_index,0,i,0,last);
+	m_index=i;
+	Object[] v=new Object[last+64];
+	System.arraycopy(m_value,0,v,0,last);
+	m_value=v;
+      }
+      m_index[last]=index;
+      m_value[last]=value;
+      ++last;
+    }
+
+    Object elementAt(int index)
+    {
+      int i = 0;
+      int first = 0;
+      int last  = m_index.length - 1;
+
+      while (first <= last) {
+        i = (first + last) / 2;
+        int test = index-m_index[i];
+        if(test == 0) {
+          return m_value[i]; // Found an entry!
+        }
+        else if (test < 0) {
+          last = i - 1; // looked too late
+        }
+        else {
+          first = i + 1; // looked too early
+        }
+      }
+      
+      return null; // not found
+    }
+    
+  } // SparseArray
   
 }

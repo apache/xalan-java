@@ -287,7 +287,7 @@ public class ExpandedNameTable
   public final Object getSchemaType(int ExpandedNameID)
   {
     ExtendedType etype = (ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
-    return etype.schemaType;
+    return (etype.schemaType==ExtendedType.NULL_SCHEMATYPE) ? null : etype.schemaType;
   }
   
   /**
@@ -297,7 +297,9 @@ public class ExpandedNameTable
    * @param ExpandedNameID an ID that represents an expanded-name.
    * @param schemaType a schema type object -- probably an XNI PSVI type.
    * @return false if previously set to something different
-   *  (as determined by Object.equals), otherwise true.
+   *  (as determined by Object.equals), otherwise true. False can
+   *  be used as a hint that we should record a type override for this
+   *  node.
    */
   public final boolean setSchemaType(int ExpandedNameID, Object schemaType)
   {
@@ -305,7 +307,7 @@ public class ExpandedNameTable
     Object oldtype=etype.schemaType;
     if(oldtype==null)
     {
-      etype.schemaType=schemaType;
+      etype.schemaType=(schemaType==null) ? ExtendedType.NULL_SCHEMATYPE : schemaType;
       return true;
     }
     else return oldtype.equals(schemaType);
@@ -321,6 +323,22 @@ public class ExpandedNameTable
      String namespace;
      String localName;
     Object schemaType=null; // Default, for XNI PSVI support
+
+    /** We need a value other than NULL which can be used to indicate that
+	the default (first-seen) schemaType really is null rather than
+	not-yet-established. This singleton is a bit of a kluge, but it
+	does the job...
+
+	%REVIEW%
+	This is mostly an issue because I implemented XNI2DTM as a subclass
+	of SAX2DTM and tried to leverage the existing code -- which means
+	we're trying to set the default type _after_ the ExpandedNameTable
+	entry has been constructed. Architecturally, it'd be better to
+	pass this info into the ctor, but that'd require a more
+	substantial rewrite of XNI2DTM.addNode (more code duplication).
+	Worth reconsidering.
+    */
+    public static final String NULL_SCHEMATYPE="NULL_SCHEMATYPE";
     
      ExtendedType (int nodetype, String namespace, String localName)
     {
