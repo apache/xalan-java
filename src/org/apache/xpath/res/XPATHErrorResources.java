@@ -467,7 +467,13 @@ public class XPATHErrorResources extends PropertyResourceBundle
   
   /** ER_CANNOT_FIND_COLLATOR          */
   public static final int ER_CANNOT_FIND_COLLATOR = 86;
-
+  
+  /** ER_INVALID_ARG_TO_COLLECTION          */
+  public static final int ER_INVALID_ARG_TO_COLLECTION = 87;
+  
+  /** ER_CONTEXT_NOT_NODE              */
+  public static final int ER_CONTEXT_NOT_NODE = 88;
+   
   // Warnings...
 
   /** Field WG_LOCALE_NAME_NOT_HANDLED          */

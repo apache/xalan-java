@@ -56,25 +56,60 @@
  */
 package org.apache.xpath.functions;
 
-//import org.w3c.dom.Node;
-
 import java.util.Vector;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.io.IOException;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.XType;
+
+import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XObjectFactory;
-import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XSequence;
-import org.apache.xpath.objects.XSequenceImpl;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
-import org.apache.xml.dtm.DTMSequence;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.SourceTreeManager;
+import org.apache.xpath.Expression;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.transformer.TransformerImpl;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Source;
+
+import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Boolean() function.
+ * Execute the Doc() function.
+ *
+ * When the document function has exactly one argument and the argument
+ * is a node-set, then the result is the union, for each node in the
+ * argument node-set, of the result of calling the document function with
+ * the first argument being the string-value of the node, and the second
+ * argument being a node-set with the node as its only member. When the
+ * document function has two arguments and the first argument is a node-set,
+ * then the result is the union, for each node in the argument node-set,
+ * of the result of calling the document function with the first argument
+ * being the string-value of the node, and with the second argument being
+ * the second argument passed to the document function.
  */
-public class FuncBoolean extends FunctionOneArg
+public class FuncRoot extends FunctionDef1Arg
 {
 
   /**
@@ -87,23 +122,38 @@ public class FuncBoolean extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XSequence seq = m_arg0.execute(xctxt).xseq();
-    Object item;
-    if ((item = seq.next()) != null)
-    {
-      if (item instanceof XNodeSequenceSingleton)
+    int context = DTM.NULL;
+    if (m_arg0 == null)
+    { 
+      context = xctxt.getCurrentNode();
+    }
+    else
+   {
+      XSequence seq = m_arg0.execute(xctxt).xseq();
+      XObject item = seq.next();
+      if (item != null && item instanceof XNodeSequenceSingleton)
       {
-        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        //DTMSequence ds = xnss.getDTM().getTypedValue(xnss.getNodeHandle());
-        XObject obj = XObjectFactory.create(xnss.getDTM().getNodeValue(xnss.getNodeHandle()));
-        return obj.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+        context = ((XNodeSequenceSingleton)item).getNodeHandle();
       }
       else
       {
-        return ((XSequenceImpl)seq).bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-      }
+         error(xctxt, XPATHErrorResources.ER_CONTEXT_NOT_NODE, null);  //"context does not have an owner document!");
+         //context = xctxt.getCurrentNode(); 
+      }        
     }
-    return XBoolean.S_FALSE;
+    
+    DTM dtm = xctxt.getDTM(context);
+    
+    int docContext = dtm.getDocumentRoot(context);
+
+    if (DTM.NULL == docContext)
+    {
+      error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);  //"context does not have an owner document!");
+    }
+    
+    return new XNodeSequenceSingleton(docContext, dtm);
   }
   
+  
+
 }

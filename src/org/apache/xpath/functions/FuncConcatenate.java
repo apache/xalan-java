@@ -58,23 +58,18 @@ package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
 
-import java.util.Vector;
-
+import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XObjectFactory;
-import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.objects.XSequenceImpl;
-import org.apache.xpath.objects.XNodeSequenceSingleton;
-import org.apache.xml.dtm.DTMSequence;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Boolean() function.
+ * Execute the Concat() function.
  */
-public class FuncBoolean extends FunctionOneArg
+public class FuncConcatenate extends Function2Args
 {
 
   /**
@@ -87,23 +82,20 @@ public class FuncBoolean extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XSequence seq = m_arg0.execute(xctxt).xseq();
-    Object item;
-    if ((item = seq.next()) != null)
-    {
-      if (item instanceof XNodeSequenceSingleton)
-      {
-        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        //DTMSequence ds = xnss.getDTM().getTypedValue(xnss.getNodeHandle());
-        XObject obj = XObjectFactory.create(xnss.getDTM().getNodeValue(xnss.getNodeHandle()));
-        return obj.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-      }
-      else
-      {
-        return ((XSequenceImpl)seq).bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-      }
-    }
-    return XBoolean.S_FALSE;
+
+    XSequence seq1 = m_arg0.execute(xctxt).xseq();
+    XSequence seq2 = m_arg1.execute(xctxt).xseq();
+
+    if (seq1.getLength() == 0)
+      return (XSequenceImpl)seq2;
+      
+    if (seq2.getLength() == 0 )
+      return (XSequenceImpl)seq1;
+      
+      XSequenceImpl seq = new XSequenceImpl();
+      seq = (XSequenceImpl)seq.concat(seq1);
+      seq = (XSequenceImpl)seq.concat(seq2);  
+
+    return seq;
   }
-  
 }

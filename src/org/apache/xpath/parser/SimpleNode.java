@@ -408,7 +408,28 @@ m_builtInFunctions.put(
       new FuncSequenceNodeEqual());            
 m_builtInFunctions.put(
       new QName("sequence-deep-equal"),
-      new FuncSequenceDeepEqual());
+      new FuncSequenceDeepEqual());            
+m_builtInFunctions.put(
+      new QName("deep-equal"),
+      new FuncDeepEqual());            
+m_builtInFunctions.put(
+      new QName("collection"),
+      new FuncCollection());            
+m_builtInFunctions.put(
+      new QName("concatenate"),
+      new FuncConcatenate());            
+m_builtInFunctions.put(
+      new QName("root"),
+      new FuncRoot());            
+m_builtInFunctions.put(
+      new QName("if-empty"),
+      new FuncIfEmpty());            
+m_builtInFunctions.put(
+      new QName("if-absent"),
+      new FuncIfAbsent());            
+/*m_builtInFunctions.put(
+      new QName("input"),
+      new FuncInput());*/
   }
 
   /**

@@ -70,6 +70,7 @@ import org.apache.xpath.objects.XString;
 //import org.w3c.dom.Document;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.NodeVector;
 
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.TransformerException;
@@ -277,6 +278,31 @@ public class SourceTreeManager
 
     // System.out.println("getNode - returning: "+node);
     return DTM.NULL;
+  }
+  
+  /**
+   * Given a Source object, find the node associated with it.
+   *
+   * @param source The Source object to act as the key.
+   *
+   * @return The nodes that is associated with the input sequence.
+   */
+  public NodeVector getNodes()
+  {
+
+    NodeVector nl = new NodeVector();
+
+    int n = m_sourceTree.size();
+
+    for (int i = 0; i < n; i++)
+    {
+      SourceTree sTree = (SourceTree) m_sourceTree.elementAt(i);
+      
+      nl.addElement(sTree.m_root);
+    }
+
+    // System.out.println("getNode - returning: "+node);
+    return nl;
   }
 
   /**

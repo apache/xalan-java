@@ -57,24 +57,31 @@
 package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
-
-import java.util.Vector;
-
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.utils.DateTimeObj;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XObjectFactory;
-import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.objects.XSequenceImpl;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
-import org.apache.xml.dtm.DTMSequence;
+import org.apache.xpath.objects.XBoolean;
+import java.util.Comparator;
+import org.apache.xml.dtm.XType;
+import org.apache.xml.dtm.DTM;
+import org.apache.xpath.parser.regexp.*;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.XPathException;
+
+import java.text.Collator;
+import java.net.URL;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Boolean() function.
+ * Execute the xs:matches() function.
  */
-public class FuncBoolean extends FunctionOneArg
+public class FuncIfAbsent extends Function2Args
 {
 
   /**
@@ -88,22 +95,29 @@ public class FuncBoolean extends FunctionOneArg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
     XSequence seq = m_arg0.execute(xctxt).xseq();
-    Object item;
-    if ((item = seq.next()) != null)
+    XObject value = m_arg1.execute(xctxt);
+    
+    XObject item;
+    
+    if((item = seq.next()) != null)  	
     {
-      if (item instanceof XNodeSequenceSingleton)
+      int type = item.getType();
+      if(type == XType.NODE)
       {
-        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        //DTMSequence ds = xnss.getDTM().getTypedValue(xnss.getNodeHandle());
-        XObject obj = XObjectFactory.create(xnss.getDTM().getNodeValue(xnss.getNodeHandle()));
-        return obj.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-      }
-      else
-      {
-        return ((XSequenceImpl)seq).bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-      }
+        if(item instanceof XNodeSequenceSingleton)
+        {
+          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+          DTM dtm = xnss.getDTM();
+         int node = xnss.getNodeHandle();
+         return new XString(dtm.getNodeValue(node));          
+        }
+      } 
+     return item;
     }
-    return XBoolean.S_FALSE;
+    else
+     return value;
+    
   }
   
+
 }
