@@ -501,29 +501,54 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
 	    textOutput.flush();
 	}
 	catch (TransletException e) {
-	    System.err.println("\nTranslet Error: " + e.getMessage());
+	    if (_errorListener != null) {
+		postErrorToListener(e.getMessage());
+	    } else {
+	        System.err.println("\nTranslet Error: " + e.getMessage());
+	    }
 	    System.exit(1);
 	}
 	catch (RuntimeException e) {
-	    System.err.println("\nRuntime Error: " + e.getMessage());
+	    if (_errorListener != null) {
+		postErrorToListener("Runtime Error: " + e.getMessage());
+	    } else {
+	        System.err.println("\nRuntime Error: " + e.getMessage());
+	    }
 	    System.exit(1);
 	}
 	catch (FileNotFoundException e) {
-           //System.err.println("Error:File or URI '"+_fileName+"' not found.");
+	    if (_errorListener != null) {
+		postErrorToListener("File Not Found: " + e.getMessage());
+	    } else {
+               //System.err.println("Error:File or URI '"+_fileName+"' 
+	       //    not found.");
+	    }
 	    System.exit(1);
 	}
 	catch (MalformedURLException e) {
-	    //System.err.println("Error: Invalid URI '"+_fileName+"'.");
+	    if (_errorListener != null) {
+		postErrorToListener("Malformed URL: " + e.getMessage());
+	    } else {
+	        //System.err.println("Error: Invalid URI '"+_fileName+"'.");
+	    }
 	    System.exit(1);
 	}
 	catch (UnknownHostException e) {
-	    //System.err.println("Error: Can't resolve URI specification '"+
-	    //_fileName+"'.");
+	    if (_errorListener != null) {
+		postErrorToListener("Can't resolve URI: " + e.getMessage());
+	    } else {
+	        //System.err.println("Error: Can't resolve URI specification '"+
+	        //_fileName+"'.");
+	    }
 	    System.exit(1);
 	}
 	catch (Exception e) {
-	    e.printStackTrace();
-	    System.err.println("Error: internal error.");
+	    if (_errorListener != null) {
+		postErrorToListener("Internal error: " + e.getMessage()); 
+	    } else {
+	        System.err.println("Error: internal error.");
+	        e.printStackTrace();
+	    }
 	    System.exit(1);
 	}
     }
@@ -532,19 +557,47 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
 	paramsStack.clear();
     }
 
+    // TrAX support methods, get/setErrorListener
+    private ErrorListener _errorListener = null;
+
     public ErrorListener getErrorListener() {  
-	/* TBD */
-	return null; 
+	return _errorListener; 
     }
 
     public void setErrorListener(ErrorListener listener) throws 
         IllegalArgumentException 
-    {  
-	/* TBD */ 
-        throw new IllegalArgumentException(
-            "AbstractTranslet:setErrorListener(ErrorListener) " +
-            "not implemented yet.");
+    {
+        if (listener == null) {
+            throw new IllegalArgumentException(
+               "Error: setErrorListener() call where ErrorListener is null");
+        }
+        _errorListener = listener;
     }
+
+    /**
+     * inform TrAX error listener of this error
+     */
+    private void postErrorToListener(String msg) {
+        try {
+            _errorListener.error(new TransformerException(
+                "Translet Error: " + msg));
+        } catch (TransformerException e) {
+            // TBD
+        }
+    }
+
+    /**
+     * inform TrAX error listener of this warning
+     */
+    private void postWarningToListener(String msg) {
+        try {
+            _errorListener.warning(new TransformerException(
+                "Translet Warning: " + msg));
+        } catch (TransformerException e) {
+            // TBD
+        }
+    }
+
 
     public Properties getOutputProperties() throws IllegalArgumentException { 
         /*TBD*/ 

@@ -255,6 +255,10 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
 	    Class clazz = Class.forName(transletName);
 	    translet = (Translet)clazz.newInstance();
 	    ((AbstractTranslet)translet).setTransletName(transletName);
+	    // GTM
+	    if (_errorListener != null) {
+	        ((AbstractTranslet)translet).setErrorListener(_errorListener);
+	    }
 	} catch (ClassNotFoundException e) {
 	    throw new TransformerConfigurationException(
 		"Translet class '" + transletName + "' not found.");
