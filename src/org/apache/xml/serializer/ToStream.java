@@ -625,8 +625,15 @@ abstract public class ToStream extends SerializerBase
             //                // and not buffer.
             //                init(new WriterToUTF8(output), format, defaultProperties, true);
             //            }
-            if (output instanceof java.io.BufferedOutputStream)
+         
+            if (output instanceof java.io.BufferedOutputStream ||
+            	output.getClass().getName().endsWith("BufferedServletOutputStream"))
             {
+            	/* don't do buffering for 
+            	 *   BufferedOutputStream
+            	 *   BufferedServletOutputStream
+            	 *   ... more ... ?
+            	 */
                 init(new WriterToUTF8(output), format, defaultProperties, true);
             }
             else
