@@ -254,8 +254,9 @@ Copyright:
   
   <target name="autodocs">
     <echo message="autodocs is for automated build process, without dependencies"/>   
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${xalan.jar}"
-         args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${xalan.jar}">
+       <arg line="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>
+	</java>	 
   </target>
   
   <!-- =================================================================== -->
@@ -375,8 +376,9 @@ Copyright:
     <mkdir dir="${site.dir}"/>
     <mkdir dir="${site.dir}/apidocs"/>
     
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-         args="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar"> 
+       <arg line="targetDirectory=${site.dir} ${site.book} ${xdocs.style}"/>
+	</java>	 
        
     <!--copydir src="${build.docs}/resources" dest="${site.dir}/docs/resources"/-->
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
