@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!-- ===================================================================
 
    Build file for Xalan-Java - for use with the Jakarta Ant java build tool
@@ -12,7 +11,6 @@ Setup instructions:
    When the Xalan team uses this tool to build a distribution, we also need to
      - copy the correct version (FOR THIS BUILD) of xerces.jar to the bin subdirectory of the 
        directory in which this file is located
-     - update the (Xalan-J) version property in the "init" target
    
 Build Instructions:   
    To build, run
@@ -32,16 +30,9 @@ If you build a target that depends on other targets, those other targets are cre
 the correct order.
 
 Authors:
-  Stefano Mazzocchi <stefano@apache.org>
   Shane Curcuru <shane_curcuru@lotus.com>
-  Sam Ruby <rubys@us.ibm.com>
   Don Leslie <donald_leslie@lotus.com>
   
-Fixme:
-  - use token evaluation to keep versioning info in this file only?
-  Note that this has issues with the updating of XSLProcessorVersion.java, 
-  especially if some people still use the old Makefile to build instead 
-  of Ant (if you can imagine anyone *wanting* to do that...) 
 
 Copyright:
   Copyright (c) 1999-2000 The Apache Software Foundation.
@@ -58,74 +49,92 @@ Copyright:
   <!-- Defines variables used by the other targets                         -->
   <!-- =================================================================== -->
 
-  <target name="init">
-    <property name="version" value="Alpha_2_0_D0"/>
-   
-    <property name="name" value="xalan"/>
-    <property name="Name" value="Xalan-Java"/>
-    <property name="year" value="2000"/>
+  <property name="version" value="Alpha_2_0_D0"/>
+ 
+  <property name="name" value="xalan"/>
+  <property name="Name" value="Xalan-Java"/>
+  <property name="year" value="2000"/>
 
-    <property name="build.compiler" value="classic"/>
-    <property name="debug" value="off"/>
+  <property name="build.compiler" value="classic"/>
+  <property name="debug" value="off"/>
 
-    <property name="src.dir" value="./src"/>
-    <property name="xdocs.dir" value="./xdocs"/>
-    <property name="samples.dir" value="./samples"/>
-    <property name="version.file" value="org/apache/xalan/processor/XSLProcessorVersion.java"/>
-    <property name="xdocs.book" value="${xdocs.dir}/sources/xalanlocal.xml"/>
-    <property name="xdocs.style" value="${xdocs.dir}/style"/>
-    <property name="xdocs.javadocbook" value="${xdocs.dir}/sources/javadocPackages.xml"/>
-    <property name="xdocs.javadocloader" value="sbk:/style/loaderjdoc.xml"/>
-    <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
-    <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
-    <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
+  <property name="src.dir" value="./src"/>
+  <property name="xpath.reldir" value="org/apache/xpath"/>
+  <property name="xalan.reldir" value="org/apache/xalan"/>
+  <property name="trax.reldir" value="trax"/>
+  <property name="serialize.reldir" value="serialize"/>
 
-    <property name="build.dir" value="./build"/>
-    <property name="build.src" value="./build/src"/>
-    <property name="build.dest" value="./build/classes"/>
-    <property name="build.docs" value="./build/docs"/>
-    <property name="build.samples" value="./build/samples"/>
-    <property name="build.apidocs" value="./build/docs/apidocs"/>
-    
-    <property name="dist.file" value="${name}-j_${version}"/>
-    <property name="dist.dir" value="./${dist.file}"/>    <!-- Check dir name dash/underscore 17-Jan-00 SCurcuru -->
-    
-    <property name="site.root" value="./xml-site"/>
-    <property name="site.dir" value="./xml-site/target/xalan"/>
-    <property name="site.book" value="${xdocs.dir}/sources/xalan.xml"/>
-  </target>
+  <property name="build.dir" value="./build"/>
+  <property name="build.dest" value="${build.dir}/classes"/>
+  <property name="build.docs" value="${build.dir}/docs"/>
+  <property name="build.samples" value="${build.dir}/samples"/>
+  <property name="build.apidocs" value="${build.dir}/docs/apidocs"/>
+  
+  <property name="dist.file" value="${name}-j_${version}"/>
+  <property name="dist.dir" value="./${dist.file}"/>    <!-- Check dir name dash/underscore 17-Jan-00 SCurcuru -->
+  <property name="samples.dir" value="./samples"/>
+
+  <property name="xdocs.dir" value="./xdocs"/>
+  <property name="version.file" value="org/apache/xalan/processor/XSLProcessorVersion.java"/>
+  <property name="xdocs.book" value="${xdocs.dir}/sources/xalanlocal.xml"/>
+  <property name="xdocs.style" value="${xdocs.dir}/style"/>
+  <property name="xdocs.javadocbook" value="${xdocs.dir}/sources/javadocPackages.xml"/>
+  <property name="xdocs.javadocloader" value="sbk:/style/loaderjdoc.xml"/>
+  <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
+  <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
+  <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
+  
+  <property name="site.root" value="./xml-site"/>
+  <property name="site.dir" value="./xml-site/target/xalan"/>
+  <property name="site.book" value="${xdocs.dir}/sources/xalan.xml"/>
 
   <!-- =================================================================== -->
   <!-- Prepares the xdocs/style and the build directories                  -->
   <!-- =================================================================== -->
-  <target name="prepare" depends="init">
+  <target name="prepare">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.dest}"/>
+  </target>
+  <target name="prepare-docs" depends="prepare">
     <!--gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/-->
-    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.samples}"/>
+    <mkdir dir="${build.docs}"/>
+    <mkdir dir="${build.apidocs}"/>
   </target>
 
   <!-- =================================================================== -->
-  <!-- Copy over the source code                                            -->
+  <!-- Copy over the source code                                           -->
+  <!-- We're currently skipping this step, since it seems extraneous if
+       you're not going to be using the filtering stuff. -->
   <!-- =================================================================== -->
-  <target name="prepare-src" depends="prepare">
-    <!-- create directories -->
-    <mkdir dir="${build.src}"/>
-    <mkdir dir="${build.dest}"/>
 
-    <!-- copy src files -->
-    <copydir src="${src.dir}" dest="${build.src}"/>
-
-    <echo message="FIXME: Updating the version number"/>
-    <!-- <replace file="${build.src}/${version.file}" token="@@version@@" value="${version}"/> -->
-    <!-- <replace file="${build.src}/${version.file}" token="@@year@@" value="${year}"/> -->
+  <!-- =================================================================== -->
+  <!-- Compiles the source tree - xpath (independent xpath engine)         -->
+  <!-- =================================================================== -->
+  <!-- Note: Still too many cross-dependencies to do this separately -->
+  <target name="compile.xpath" depends="prepare">
+    <javac srcdir="${src.dir}/${xpath.reldir}" 
+           destdir="${build.dest}" 
+           debug="${debug}" />
   </target>
 
+  <!-- =================================================================== -->
+  <!-- Compiles the source tree - xalan (the processor)                    -->
+  <!-- =================================================================== -->
+  <!-- Note: Still too many cross-dependencies to do this separately -->
+  <target name="compile.xalan" depends="compile.xpath">
+    <javac srcdir="${src.dir}/${xalan.reldir}" 
+           destdir="${build.dest}" 
+           debug="${debug}" />
+  </target>
 
-  <!-- =================================================================== -->
-  <!-- Compiles the source tree                                            -->
-  <!-- =================================================================== -->
-  <target name="compile" depends="prepare-src">
-    <javac srcdir="${build.src}" destdir="${build.dest}" debug="${debug}"/>
+  <target name="compile" depends="prepare,compile.trax,compile.serialize">
+    <echo message="compile target includes=${src.dir}/${xpath.reldir}/**,${src.dir}/${xalan.reldir}/**" />
+    <javac srcdir="${src.dir}" 
+           destdir="${build.dest}" 
+           includes="${xpath.reldir}/**,${xalan.reldir}/**" 
+           debug="${debug}" />
   </target>
 
   <!-- =================================================================== -->
@@ -133,6 +142,16 @@ Copyright:
   <!-- =================================================================== -->
   <target name="jar" depends="compile">
     <jar jarfile="${build.dir}/${name}.jar" basedir="${build.dest}"/>
+  </target>
+
+  <!-- =================================================================== -->
+  <!-- Compiles other source trees                                         -->
+  <!-- =================================================================== -->
+  <target name="compile.trax" depends="prepare">
+    <javac srcdir="${src.dir}/${trax.reldir}" destdir="${build.dest}" debug="${debug}"/>
+  </target>
+  <target name="compile.serialize" depends="prepare">
+    <javac srcdir="${src.dir}/${serialize.reldir}" destdir="${build.dest}" debug="${debug}"/>
   </target>
 
   <!-- =================================================================== -->
@@ -186,7 +205,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="prepare-src"> <!--  depends="jar" xalan.jar used by doc.generator -->
+  <target name="javadocs" depends="prepare"> <!--  depends="jar" xalan.jar used by doc.generator -->
 
     <!--java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar" 
           args="loaderConfig=${xdocs.javadocloader} targetDirectory=${build.src} ${xdocs.javadocbook} ${xdocs.style}"/-->
@@ -211,7 +230,7 @@ group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serialize
   <!-- =================================================================== -->
   <!-- Cleans everything                                                   -->
   <!-- =================================================================== -->
-  <target name="clean" depends="init">
+  <target name="clean">
     <deltree dir="${build.dir}"/>
     <deltree dir="${dist.dir}"/>
     <deltree dir="${site.root}"/>
@@ -271,12 +290,4 @@ group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serialize
     <copydir src="${build.apidocs}" dest="${site.dir}/apidocs"/>
   </target-->
       
-  <!-- =================================================================== -->
-  <!-- Alias for javadocs task                                             -->
-  <!-- =================================================================== -->
-
-  <target name="apidocs" depends="javadocs">
-  <echo message="apidocs is an alias for the javadocs task -- creates Javadoc..."/>
-  </target>
- 
 </project>
