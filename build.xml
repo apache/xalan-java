@@ -118,7 +118,6 @@ Copyright:
   <target name="compile.xpath" depends="prepare">
     <javac srcdir="${src.dir}/${xpath.reldir}" 
            destdir="${build.classes}"
-           excludesfile="compat.xpath.excludes" 
            debug="${debug}" />
   </target>
 
@@ -129,7 +128,6 @@ Copyright:
   <target name="compile.xalan" depends="compile.xpath">
     <javac srcdir="${src.dir}/${xalan.reldir}" 
            destdir="${build.classes}" 
-           excludesfile="compat.xslt.excludes"
            debug="${debug}"/>
   </target>
 
@@ -143,7 +141,6 @@ Copyright:
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="**/*.java"
-           excludesfile="compat.excludes"           
            debug="${debug}"/>
     <copydir src="${src.dir}" dest="${build.classes}" includes="**/*.properties,**/*.res"/>
   </target>
@@ -346,10 +343,7 @@ Copyright:
     <copyfile src="build.sh" dest="${dist.dir}/build.sh"/>
     <copyfile src="build.bat" dest="${dist.dir}/build.bat"/>
     <copyfile src="KEYS" dest="${dist.dir}/KEYS"/>
-    <copyfile src="compat.xpath.excludes" dest="${dist.dir}/compat.xpath.excludes"/>
-    <copyfile src="compat.xslt.excludes" dest="${dist.dir}/compat.xslt.excludes"/>
-    <copyfile src="compat.excludes" dest="${dist.dir}/compat.excludes"/>
-    
+   
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
     <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${build.dir}" includes="${dist.file}/**"/>
     <gzip src="${build.dir}/${dist.file}.tar" zipfile="${build.dir}/${dist.file}.tar.gz"/>
