@@ -66,7 +66,7 @@ package org.apache.xml.utils;
  * access to existing nodes is O(1) fast but appending may be O(N**2)
  * slow. 
  */
-public class ObjectVector
+public class ObjectVector implements Cloneable
 {
 
   /** Size of blocks to allocate          */
@@ -119,6 +119,19 @@ public class ObjectVector
     m_map = new Object[blocksize];
   }
 
+  /**
+   * Copy constructor for ObjectVector
+   * 
+   * @param v Existing ObjectVector to copy
+   */
+  public ObjectVector(ObjectVector v)
+  {
+  	m_map = new Object[v.m_mapSize];
+    m_mapSize = v.m_mapSize;
+    m_firstFree = v.m_firstFree;
+  	m_blocksize = v.m_blocksize;
+  	System.arraycopy(v.m_map, 0, m_map, 0, m_firstFree);
+  }
 
   /**
    * Get the length of the list.
@@ -440,4 +453,15 @@ public class ObjectVector
     m_map = newMap;
     
   }  
+  
+  /**
+   * Returns clone of current ObjectVector
+   * 
+   * @return clone of current ObjectVector
+   */
+  public Object clone()
+    throws CloneNotSupportedException
+  {
+  	return new ObjectVector(this);
+  }
 }

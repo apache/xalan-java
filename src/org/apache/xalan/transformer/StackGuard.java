@@ -64,6 +64,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xml.utils.ObjectStack;
 
 /**
  * Class to guard against recursion getting too deep.
@@ -140,11 +141,11 @@ public class StackGuard
    */
   public int countLikeTemplates(ElemTemplate templ, int pos)
   {
-  	ElemTemplateElement[] elems = m_transformer.getCurrentTemplateElements();
+  	ObjectStack elems = m_transformer.getCurrentTemplateElements();
   	int count = 1;
     for (int i = pos-1; i >= 0; i--)
     {
-    	if(elems[i] == templ)
+    	if((ElemTemplateElement)elems.elementAt(i) == templ)
     		count++;
     }
 	
@@ -161,10 +162,10 @@ public class StackGuard
    */
   private ElemTemplate getNextMatchOrNamedTemplate(int pos)
   {
-  	ElemTemplateElement[] elems = m_transformer.getCurrentTemplateElements();
+  	ObjectStack elems = m_transformer.getCurrentTemplateElements();
     for (int i = pos; i >= 0; i--)
     {
-    	ElemTemplateElement elem = elems[i];
+    	ElemTemplateElement elem = (ElemTemplateElement) elems.elementAt(i);
     	if(null != elem)
     	{
 	    	if(elem.getXSLToken() == Constants.ELEMNAME_TEMPLATE)

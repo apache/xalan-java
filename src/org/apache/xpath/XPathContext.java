@@ -67,6 +67,7 @@ import java.lang.reflect.Method;
 
 // Xalan imports
 import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.ObjectStack;
 import org.apache.xml.utils.NSInfo;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
@@ -341,10 +342,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public XPathContext()
   {
-    m_prefixResolvers[m_prefixResolversTop++] = null;
-    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
-    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
-    m_saxLocations[m_saxLocationsTop++] = null;
+    m_prefixResolvers.push(null);
+    m_currentNodes.push(DTM.NULL);
+    m_currentExpressionNodes.push(DTM.NULL);
+    m_saxLocations.push(null);
   }
 
   /**
@@ -359,10 +360,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
       m_ownerGetErrorListener = m_owner.getClass().getMethod("getErrorListener", new Class[] {});
     }
     catch (NoSuchMethodException nsme) {}
-    m_prefixResolvers[m_prefixResolversTop++] = null;
-    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
-    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
-    m_saxLocations[m_saxLocationsTop++] = null;
+    m_prefixResolvers.push(null);
+    m_currentNodes.push(DTM.NULL);
+    m_currentExpressionNodes.push(DTM.NULL);
+    m_saxLocations.push(null);
   }
 
   /**
@@ -385,30 +386,24 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     m_dtmManager = DTMManager.newInstance(
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
                    
-    m_saxLocations = new SourceLocator[RECURSIONLIMIT];
-	m_saxLocationsTop = 0;
-    
+    m_saxLocations.removeAllElements();   
 	m_axesIteratorStack = new Stack();
 	m_contextNodeLists = new Stack();
-	m_currentExpressionNodes = new int[RECURSIONLIMIT];
-	m_currentExpressionNodesFirstFree = 0;
-	m_currentNodes = new int[RECURSIONLIMIT];
-	m_currentNodesFirstFree = 0;
+	m_currentExpressionNodes.removeAllElements();
+	m_currentNodes.removeAllElements();
 	m_iteratorRoots = new NodeVector();
 	m_predicatePos = new IntStack();
 	m_predicateRoots = new NodeVector();
-	m_prefixResolvers = new PrefixResolver[RECURSIONLIMIT];
-	int m_prefixResolversTop = 0;
+	m_prefixResolvers.removeAllElements();
 	
-	m_prefixResolvers[m_prefixResolversTop++] = null;
-    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
-    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
-    m_saxLocations[m_saxLocationsTop++] = null;
+	m_prefixResolvers.push(null);
+    m_currentNodes.push(DTM.NULL);
+    m_currentExpressionNodes.push(DTM.NULL);
+    m_saxLocations.push(null);
   }
 
   /** The current stylesheet locator. */
-  SourceLocator[] m_saxLocations = new SourceLocator[RECURSIONLIMIT];
-  int m_saxLocationsTop = 0;
+  ObjectStack m_saxLocations = new ObjectStack(RECURSIONLIMIT);
 
   /**
    * Set the current locater in the stylesheet.
@@ -417,7 +412,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public void setSAXLocator(SourceLocator location)
   {
-    m_saxLocations[m_saxLocationsTop-1] = location;
+    m_saxLocations.setTop(location);
   }
   
   /**
@@ -427,7 +422,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public void pushSAXLocator(SourceLocator location)
   {
-    m_saxLocations[m_saxLocationsTop++] = location;
+    m_saxLocations.push(location);
   }
   
   /**
@@ -438,7 +433,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public void pushSAXLocatorNull()
   {
-    m_saxLocationsTop++;
+    m_saxLocations.push(null);
   }
 
 
@@ -447,7 +442,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public void popSAXLocator()
   {
-    m_saxLocationsTop--;
+    m_saxLocations.pop();
   }
 
   /**
@@ -457,7 +452,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public SourceLocator getSAXLocator()
   {
-    return m_saxLocations[m_saxLocationsTop-1];
+    return (SourceLocator) m_saxLocations.peek();
   }
 
   /** The owner context of this XPathContext.  In the case of XSLT, this will be a
@@ -733,13 +728,12 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    *  Not to be confused with the current node list.  %REVIEW% Note that there 
    *  are no bounds check and resize for this stack, so if it is blown, it's all 
    *  over.  */
-  private int m_currentNodes[] = new int[RECURSIONLIMIT];
-  protected int m_currentNodesFirstFree = 0;
+  private IntStack m_currentNodes = new IntStack(RECURSIONLIMIT);
    
 //  private NodeVector m_currentNodes = new NodeVector();
   
-  public int[] getCurrentNodeStack() {return m_currentNodes; }
-  public void setCurrentNodeStack(int[] nv) { m_currentNodes = nv; }
+  public IntStack getCurrentNodeStack() {return m_currentNodes; }
+  public void setCurrentNodeStack(IntStack nv) { m_currentNodes = nv; }
 
   /**
    * Get the current context node.
@@ -748,7 +742,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final int getCurrentNode()
   {
-    return m_currentNodes[m_currentNodesFirstFree-1];
+    return m_currentNodes.peek();
   }
   
   /**
@@ -759,8 +753,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void pushCurrentNodeAndExpression(int cn, int en)
   {
-    m_currentNodes[m_currentNodesFirstFree++] = cn;
-    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = cn;
+    m_currentNodes.push(cn);
+    m_currentExpressionNodes.push(cn);
   }
 
   /**
@@ -768,8 +762,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popCurrentNodeAndExpression()
   {
-    m_currentNodesFirstFree--;
-    m_currentExpressionNodesFirstFree--;
+    m_currentNodes.quickPop(1);
+    m_currentExpressionNodes.quickPop(1);
   }
   
   /**
@@ -781,9 +775,9 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void pushExpressionState(int cn, int en, PrefixResolver nc)
   {
-    m_currentNodes[m_currentNodesFirstFree++] = cn;
-    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = cn;
-    m_prefixResolvers[m_prefixResolversTop++] = nc;
+    m_currentNodes.push(cn);
+    m_currentExpressionNodes.push(cn);
+    m_prefixResolvers.push(nc);
   }
   
   /**
@@ -791,9 +785,9 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popExpressionState()
   {
-    m_currentNodesFirstFree--;
-    m_currentExpressionNodesFirstFree--;
-    m_prefixResolversTop--;
+    m_currentNodes.quickPop(1);
+    m_currentExpressionNodes.quickPop(1);
+    m_prefixResolvers.pop();
   }
 
 
@@ -805,20 +799,15 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void pushCurrentNode(int n)
   {
-    m_currentNodes[m_currentNodesFirstFree++] = n;
+    m_currentNodes.push(n);
   }
   
-  public int getCurrentNodeFirstFree()
-  {
-    return m_currentNodesFirstFree;
-  }
-
   /**
    * Pop the current context node.
    */
   public final void popCurrentNode()
   {
-    m_currentNodesFirstFree--;
+    m_currentNodes.quickPop(1);
   }
   
   /**
@@ -876,17 +865,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   private NodeVector m_predicateRoots = new NodeVector();
 
   /** A stack of the current sub-expression nodes.  */
-  private int m_currentExpressionNodes[] = new int[RECURSIONLIMIT];
-  protected int m_currentExpressionNodesFirstFree = 0;
+  private IntStack m_currentExpressionNodes = new IntStack(RECURSIONLIMIT);
   
      
-  public int[] getCurrentExpressionNodeStack() { return m_currentExpressionNodes; }
-  public void setCurrentExpressionNodeStack(int[] nv) { m_currentExpressionNodes = nv; }
-  public int getCurrentExpressionNodesFirstFree()
-  {
-    return m_currentExpressionNodesFirstFree;
-  }
-
+  public IntStack getCurrentExpressionNodeStack() { return m_currentExpressionNodes; }
+  public void setCurrentExpressionNodeStack(IntStack nv) { m_currentExpressionNodes = nv; }
   
   private IntStack m_predicatePos = new IntStack();
   
@@ -912,7 +895,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final int getCurrentExpressionNode()
   {
-    return m_currentExpressionNodes[m_currentExpressionNodesFirstFree-1];
+    return m_currentExpressionNodes.peek();
   }
 
   /**
@@ -922,7 +905,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void pushCurrentExpressionNode(int n)
   {
-    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = n;
+    m_currentExpressionNodes.push(n);
   }
 
   /**
@@ -931,12 +914,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popCurrentExpressionNode()
   {
-    m_currentExpressionNodesFirstFree--;
+    m_currentExpressionNodes.quickPop(1);
   }
   
-  private PrefixResolver[] m_prefixResolvers 
-                                   = new PrefixResolver[RECURSIONLIMIT];
-  private int m_prefixResolversTop = 0;
+  private ObjectStack m_prefixResolvers 
+                                   = new ObjectStack(RECURSIONLIMIT);
 
   /**
    * Get the current namespace context for the xpath.
@@ -946,7 +928,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final PrefixResolver getNamespaceContext()
   {
-    return m_prefixResolvers[m_prefixResolversTop-1];
+    return (PrefixResolver) m_prefixResolvers.peek();
   }
 
   /**
@@ -957,7 +939,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void setNamespaceContext(PrefixResolver pr)
   {
-    m_prefixResolvers[m_prefixResolversTop-1] = pr;
+    m_prefixResolvers.setTop(pr);
   }
 
   /**
@@ -968,7 +950,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void pushNamespaceContext(PrefixResolver pr)
   {
-    m_prefixResolvers[m_prefixResolversTop++] = pr;
+    m_prefixResolvers.push(pr);
   }
   
   /**
@@ -977,7 +959,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void pushNamespaceContextNull()
   {
-    m_prefixResolversTop++;
+    m_prefixResolvers.push(null);
   }
 
   /**
@@ -985,7 +967,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popNamespaceContext()
   {
-    m_prefixResolversTop--;
+    m_prefixResolvers.pop();
   }
 
   //==========================================================

@@ -63,56 +63,56 @@ import java.util.EmptyStackException;
  * Implement a stack of simple integers.
  *
  * %OPT%
- * This is currently based on IntVector, which permits fast acess but pays a
+ * This is currently based on ObjectVector, which permits fast acess but pays a
  * heavy recopying penalty if/when its size is increased. If we expect deep
- * stacks, we should consider a version based on ChunkedIntVector.
+ * stacks, we should consider a version based on ChunkedObjectVector.
  */
-public class IntStack extends IntVector
+public class ObjectStack extends ObjectVector
 {
 
   /**
    * Default constructor.  Note that the default
    * block size is very small, for small lists.
    */
-  public IntStack()
+  public ObjectStack()
   {
     super();
   }
 
   /**
-   * Construct a IntVector, using the given block size.
+   * Construct a ObjectVector, using the given block size.
    *
    * @param blocksize Size of block to allocate
    */
-  public IntStack(int blocksize)
+  public ObjectStack(int blocksize)
   {
     super(blocksize);
   }
-  
+
   /**
-   * Copy constructor for IntStack
+   * Copy constructor for ObjectStack
    * 
-   * @param v IntStack to copy
+   * @param v ObjectStack to copy
    */
-  public IntStack (IntStack v)
+  public ObjectStack (ObjectStack v)
   {
   	super(v);
   }
-
+  
   /**
    * Pushes an item onto the top of this stack.
    *
    * @param   i   the int to be pushed onto this stack.
    * @return  the <code>item</code> argument.
    */
-  public int push(int i)
+  public Object push(Object i)
   {
 
     if ((m_firstFree + 1) >= m_mapSize)
     {
       m_mapSize += m_blocksize;
 
-      int newMap[] = new int[m_mapSize];
+      Object newMap[] = new Object[m_mapSize];
 
       System.arraycopy(m_map, 0, newMap, 0, m_firstFree + 1);
 
@@ -132,9 +132,12 @@ public class IntStack extends IntVector
    *
    * @return     The object at the top of this stack.
    */
-  public int pop()
+  public Object pop()
   {
-    return m_map[--m_firstFree];
+    Object val = m_map[--m_firstFree];
+    m_map[m_firstFree] = null;
+    
+    return val;
   }
 
   /**
@@ -153,7 +156,7 @@ public class IntStack extends IntVector
    * @return     the object at the top of this stack.
    * @throws  EmptyStackException  if this stack is empty.
    */
-  public int peek()
+  public Object peek()
   {
     try {
       return m_map[m_firstFree - 1];
@@ -171,7 +174,7 @@ public class IntStack extends IntVector
    * @return     the object at n items down.
    * @throws  EmptyStackException  if this stack is empty.
    */
-  public int peek(int n)
+  public Object peek(int n)
   {
     try {
       return m_map[m_firstFree-(1+n)];
@@ -189,7 +192,7 @@ public class IntStack extends IntVector
    * @param val object to set at the top
    * @throws  EmptyStackException  if this stack is empty.
    */
-  public void setTop(int val)
+  public void setTop(Object val)
   {
     try {
       m_map[m_firstFree - 1] = val;
@@ -221,7 +224,7 @@ public class IntStack extends IntVector
    *          object is not on the stack.
    * @since   JDK1.0
    */
-  public int search(int o)
+  public int search(Object o)
   {
 
     int i = lastIndexOf(o);
@@ -233,15 +236,16 @@ public class IntStack extends IntVector
 
     return -1;
   }
-  
+
   /**
-   * Returns clone of current IntStack
+   * Returns clone of current ObjectStack
    * 
-   * @return clone of current IntStack
+   * @return clone of current ObjectStack
    */
   public Object clone()
     throws CloneNotSupportedException
   {
-  	return (IntStack) super.clone();
-  }
+  	return (ObjectStack) super.clone();
+  }  
+  
 }

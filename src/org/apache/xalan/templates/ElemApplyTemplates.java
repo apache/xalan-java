@@ -72,6 +72,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import org.apache.xml.utils.IntStack;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -296,12 +297,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
       }
       
       xctxt.pushCurrentNode(DTM.NULL);
-      int[] currentNodes = xctxt.getCurrentNodeStack();
-      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
+      IntStack currentNodes = xctxt.getCurrentNodeStack();
       
       xctxt.pushCurrentExpressionNode(DTM.NULL);
-      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-      int currentExpressionNodePos = xctxt.getCurrentExpressionNodesFirstFree() - 1;
+      IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();     
 
       xctxt.pushSAXLocatorNull();
       xctxt.pushContextNodeList(sourceNodes);
@@ -311,8 +310,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))
       {
-        currentNodes[currentNodePos] = child;
-        currentExpressionNodes[currentExpressionNodePos] = child;
+        currentNodes.setTop(child);
+        currentExpressionNodes.setTop(child);
 
         if(xctxt.getDTM(child) != dtm)
         {
