@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
+ * @author Douglas Sellers <douglasjsellers@hotmail.com>
  *
  */
 
@@ -3065,7 +3066,10 @@ public final class DOMImpl implements DOM, Externalizable {
 		}
 	    }
 	    namebuf.append('@');
-	    namebuf.append(localname);
+	    if (localname != null )
+                namebuf.append(localname);
+            else
+                namebuf.append(qname);
 
 	    String name = namebuf.toString();
 	    
