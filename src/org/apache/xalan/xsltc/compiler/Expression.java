@@ -189,7 +189,10 @@ abstract class Expression extends SyntaxTreeNode {
 	    return;		// nothing to do
 	}
 
-	if ( (this instanceof VariableRefBase) == false ) {
+	Expression expr = this;
+	if (expr instanceof CastExpr)
+	    expr = ((CastExpr)expr).getExpr();
+	if ( (expr instanceof VariableRefBase) == false ) {
 	    il.append(methodGen.loadContextNode());
 	    il.append(methodGen.setStartNode());
 	}
