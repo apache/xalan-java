@@ -112,7 +112,9 @@ final class Output extends TopLevelElement {
      */
     private String generateXmlHeader() {
         // No header if user doesn't want one.
-        if (_omitXmlDeclaration) return("");
+        if (_omitXmlDeclaration)  {
+	    return("");
+	}
 
 	// Start off XML header
         final StringBuffer hdr = new StringBuffer("<?xml ");
@@ -184,6 +186,15 @@ final class Output extends TopLevelElement {
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
 
+	// bug fix # 1406, Compile code to set xml header on/off
+	if ( _omitXmlDeclaration ) {
+	    final int omitXmlDecl = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
+						 "omitXmlDecl","(Z)V");
+	    il.append(methodGen.loadHandler());
+	    il.append(new PUSH(cpg, true));
+	    il.append(new INVOKEINTERFACE(omitXmlDecl,2));
+	}
+
 	// Compile code to set the appropriate output type.
 	final int type = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 						   "setType", "(I)V");
@@ -223,7 +234,6 @@ final class Output extends TopLevelElement {
 	    il.append(new PUSH(cpg, true));
 	    il.append(new INVOKEINTERFACE(indent,2));
 	}
-
     }
 
     /**

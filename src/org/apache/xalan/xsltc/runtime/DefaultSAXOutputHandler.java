@@ -119,6 +119,7 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     private static final String EMPTYSTRING = "";
 
     private boolean   _indent = false;
+    private boolean   _omitXmlDecl = false;
     private boolean   _indentNextEndTag = false;
     private boolean   _linefeedNextStartTag = false;
     private int       _indentLevel = 0;
@@ -186,6 +187,11 @@ public class DefaultSAXOutputHandler implements ContentHandler {
      * Utility method - outputs an XML header
      */
     private void emitHeader() throws SAXException {
+	if (_omitXmlDecl) {
+	    // if true then stylesheet contained an xsl:output element
+	    // with the omit-xml-declaration attribute set to "yes". 
+	    return;
+	}
 	characters(XML_HEADER_BEG);
 	characters(_encoding);
 	characters(XML_HEADER_END);
@@ -459,13 +465,23 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     }
 
     /**
+     * Turns xml declaration generation on/off, dependent on the attribute
+     * omit-xml-declaration in any xsl:output element. 
+     * Breaks the SAX HandlerBase interface, but TextOutput will only call
+     * this method of the SAX handler is an instance of this class.
+     */
+    public void omitXmlDecl(boolean value) {
+        _omitXmlDecl = value;
+    }
+
+    /**
      * Set the output type (either TEXT, HTML or XML)
      * Breaks the SAX HandlerBase interface, but TextOutput will only call
      * this method of the SAX handler is an instance of this class.
      */
     public void setOutputType(int type) throws SAXException {
 	_outputType = type;
-	if (_outputType == TextOutput.XML) {
+	if (_outputType == TextOutput.XML ) {
 	    emitHeader();
 	}
     }

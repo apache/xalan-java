@@ -208,6 +208,16 @@ public final class TextOutput implements TransletOutputHandler {
     } 
 
     /**
+     * Directive to turn xml header declaration  on/off. 
+     * bug fix # 1406.
+     */
+    public void omitXmlDecl(boolean value) {
+	if (_saxHandler instanceof DefaultSAXOutputHandler) {
+            ((DefaultSAXOutputHandler)_saxHandler).omitXmlDecl(value);
+	}
+    } 
+
+    /**
      * This method is called when all the data needed for a call to the
      * SAX handler's startElement() method has been gathered.
      */

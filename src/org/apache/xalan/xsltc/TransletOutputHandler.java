@@ -80,6 +80,7 @@ public interface TransletOutputHandler {
 	throws TransletException;
     public void setType(int type);
     public void setIndent(boolean indent);
+    public void omitXmlDecl(boolean value);
     public boolean setEscaping(boolean escape) throws TransletException;
     public void insertCdataElement(String elementName);
 }
