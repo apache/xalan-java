@@ -80,7 +80,7 @@ public class TreeWalker //extends org.apache.xml.utils.TreeWalker
   public TreeWalker(DocumentHandler formatterListener) 
   {
     if(formatterListener instanceof FormatterToXML)
-      m_walker = new org.apache.xml.utils.TreeWalker(((FormatterToXML)formatterListener).getSerializerObject());
+      m_walker = new org.apache.xml.utils.TreeWalker(((FormatterToXML)formatterListener).getSerializerObject(), new org.apache.xpath.DOM2Helper());
     //super(formatterListener);
   } 
  

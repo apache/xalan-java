@@ -612,7 +612,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         else
         {
           stylesheetProcessor.setSystemId(stylesheetSource.getSystemId());
-          TreeWalker tw = new TreeWalker(stylesheetProcessor);
+          TreeWalker tw = new TreeWalker(stylesheetProcessor, new org.apache.xpath.DOM2Helper());
           tw.traverse(((DOMSource)ssSource).getNode());
           m_stylesheetRoot = new StylesheetRoot(stylesheetProcessor.getStylesheetRoot());
         }
@@ -928,7 +928,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
           = new StylesheetHandler((TransformerFactoryImpl)m_tfactory);
            
         stylesheetProcessor.pushStylesheet(stylesheet);
-        TreeWalker tw = new TreeWalker(stylesheetProcessor);
+        TreeWalker tw = new TreeWalker(stylesheetProcessor, new org.apache.xpath.DOM2Helper());
         tw.traverse(frag);
 
         displayDuration("Setup of "+xslURLString, frag);
