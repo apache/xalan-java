@@ -57,6 +57,8 @@
 package org.apache.xalan.stree;
 
 import java.util.Stack;
+import java.util.Properties;
+import java.util.Enumeration;
 
 import org.w3c.dom.Node;
 
@@ -100,7 +102,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 {
   static int m_idCount = 0;
   int m_id;
-
+  
   /**
    * Create a SourceTreeHandler that will start a transformation as
    * soon as a startDocument occurs.
@@ -110,17 +112,34 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public SourceTreeHandler(TransformerImpl transformer)
   {
+    this(transformer, false);
+  }
+
+  /**
+   * Create a SourceTreeHandler that will start a transformation as
+   * soon as a startDocument occurs.
+   *
+   * @param transformer The transformer this will use to transform a
+   * source tree into a result tree.
+   */
+  public SourceTreeHandler(TransformerImpl transformer, boolean doFragment)
+  {
     m_id = m_idCount++;
     m_transformer = transformer;
 
     XPathContext xctxt = ((TransformerImpl) transformer).getXPathContext();
 
     xctxt.setDOMHelper(new StreeDOMHelper());
-
-    // if (indexedLookup)
-    //  m_root = new IndexedDocImpl();
-    // else
-    m_root = new DocumentImpl(this);
+    
+    if(doFragment)
+    {
+      m_root = new DocumentFragmentImpl();
+      m_docFrag = (DocumentFragmentImpl)m_root;
+    }
+    else
+    {
+      m_root = new DocumentImpl(this);
+    }
 
     m_initedRoot = false;
     m_shouldCheckWhitespace =
@@ -150,7 +169,10 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   private DOMBuilder m_sourceTreeHandler;
 
   /** The root of the source document          */
-  private DocImpl m_root;  // Normally a Document but may be a DocumentFragment
+  private DocImpl m_root;
+
+  /** If this is non-null, the fragment where the nodes will be added. */
+  private DocumentFragment m_docFrag;
 
   /** No longer used??          */
   private boolean m_initedRoot;
@@ -255,6 +277,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   {
     return m_useMultiThreading;
   }
+  
+  /** Indicate whether running in Debug mode        */
+  private static final boolean DEBUG = false;
 
   /** Flag indicating whether indexed lookup is being used to search the source tree          */
   private boolean indexedLookup = false;  // for now 
@@ -310,7 +335,12 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
       m_root.setLevel(new Integer(1).shortValue());
       m_root.setUseMultiThreading(getUseMultiThreading());
 
-      if (m_root.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE)
+      if(null != m_docFrag)
+      {
+        m_sourceTreeHandler =
+                new StreeDOMBuilder(m_root, m_docFrag);
+      }
+      else if (m_root.getNodeType() == Node.DOCUMENT_FRAGMENT_NODE)
         m_sourceTreeHandler =
                 new StreeDOMBuilder(m_root.getOwnerDocument(), (DocumentFragment) m_root);
       else
@@ -324,7 +354,44 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     {
       if (m_transformer.isParserEventsOnMain())
       {
-        m_transformer.setSourceTreeDocForThread(m_root);
+        // We may need to pass our output properties to the next 
+        // transformer.  There is a question as to whether or not this should 
+        // be done.
+        ContentHandler resultContentHandler = m_transformer.getContentHandler();
+        if(null != resultContentHandler)
+        {
+          if(resultContentHandler instanceof SourceTreeHandler)
+          {
+            // myProps is a clone of the transformer's output properties.
+            Properties myProps = m_transformer.getOutputProperties();
+            
+            // Now copy the result content handler keys on top of our keys.
+            SourceTreeHandler resultHandler = (SourceTreeHandler) resultContentHandler;
+            Transformer resultTransformer = resultHandler.getTransformer();
+            Properties resultProps = resultTransformer.getOutputProperties();
+            Enumeration myKeys = myProps.keys();
+            while(myKeys.hasMoreElements())
+            {
+              Object key = myKeys.nextElement();
+                            
+              // Only add it if it has not been explicitly set.
+              if(null == resultProps.get(key))
+              {
+                // System.out.println("key: "+key+", value: "+myProps.get(key));
+                // System.out.println("resultProps.get(key): "+resultProps.get(key));
+                resultProps.put(key, myProps.get(key));
+              }
+            }
+            
+            resultTransformer.setOutputProperties(resultProps);
+            
+          }
+        } 
+        
+        if(null != m_docFrag)
+          m_transformer.setSourceTreeDocForThread(m_docFrag);
+        else
+          m_transformer.setSourceTreeDocForThread(m_root);
 
         Thread t = new Thread(m_transformer);
 
@@ -349,18 +416,20 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void endDocument() throws org.xml.sax.SAXException
   {
-    // System.out.println("endDocument: "+m_id);
-    m_root.setComplete(true);
-
     m_eventsCount = m_maxEventsToNotify;
 
-    notifyWaiters();
+    // notifyWaiters();
 
     Object synchObj = m_root;
 
     synchronized (synchObj)
     {
       m_sourceTreeHandler.endDocument();
+      
+      // System.out.println("endDocument: "+m_id);
+      m_root.setComplete(true);
+      notifyWaiters();
+
       popShouldStripWhitespace();
 
       if (!m_useMultiThreading && (null != m_transformer) && m_shouldTransformAtEnd)
@@ -434,7 +503,20 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
           String ns, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
-    // System.out.println("startElement: "+ns+", "+localName);
+    if(DEBUG)
+    {
+      System.out.println("SourceTreeHandler - startElement: "+ns+", "+localName+", "+m_root);
+      int n = atts.getLength();
+      for (int i = 0; i < n; i++) 
+      {
+        System.out.println("atts["+i+"]: "+atts.getQName(i)+" = "+atts.getValue(i));
+      }
+      if(null == ns)
+      {
+        (new RuntimeException(localName+" has a null namespace!")).printStackTrace();
+      }
+    }
+    
     synchronized (m_root)
     {
       m_shouldStripWhitespaceStack.push(m_shouldStripWS);
@@ -456,12 +538,16 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void endElement(String ns, String localName, String name)
           throws org.xml.sax.SAXException
   {
-    // System.out.println("endElement: "+ns+", "+localName);
+    if(DEBUG)
+    {
+      System.out.println("SourceTreeHandler - endElement: "+ns+", "+localName);
+    }
 
     synchronized (m_root)
     {
       ((Parent) m_sourceTreeHandler.getCurrentNode()).setComplete(true);
-      m_sourceTreeHandler.endElement(ns, localName, name);
+      
+      m_sourceTreeHandler.endElement(ns, localName, name);     
 
       m_shouldStripWS = m_shouldStripWhitespaceStack.popAndTop();
     }
@@ -509,6 +595,19 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
+    if(DEBUG)
+    {
+      System.out.print("SourceTreeHandler#characters: ");
+      int n = start+length;
+      for (int i = start; i < n; i++) 
+      {
+        if(Character.isWhitespace(ch[i]))
+          System.out.print("\\"+((int)ch[i]));
+        else
+          System.out.print(ch[i]);
+      }    
+      System.out.println("");  
+    }
 
     synchronized (m_root)
     {
@@ -733,13 +832,13 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
   {
+    if(DEBUG)
+      System.out.println("SourceTreeHandler - startPrefixMapping("+prefix+", "+uri+");");
 
     synchronized (m_root)
     {
       m_sourceTreeHandler.startPrefixMapping(prefix, uri);
     }
-
-    // System.out.println("DOMBuilder.startPrefixMapping("+prefix+", "+uri+");");
   }
 
   /**
@@ -760,6 +859,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException
   {
+    if(DEBUG)
+      System.out.println("SourceTreeHandler - endPrefixMapping("+prefix+");");
+
     m_sourceTreeHandler.endPrefixMapping(prefix);
   }
 
