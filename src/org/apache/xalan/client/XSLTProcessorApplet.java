@@ -72,6 +72,8 @@ import java.io.InputStream;
 // Needed Xalan classes
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.stree.SourceTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
 
 // Needed Xerces classes
 import org.apache.xerces.parsers.DOMParser;
@@ -79,11 +81,15 @@ import org.apache.xerces.parsers.DOMParser;
 // Needed TRaX classes
 import trax.Result;
 import trax.Processor;
+import trax.ProcessorFactoryException;
 import trax.Transformer;
+import trax.TransformException;
 import trax.Templates;
+import trax.TemplatesBuilder;
 
 // Needed SAX classes
 import org.xml.sax.InputSource;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.ParserAdapter;
@@ -113,9 +119,14 @@ public class XSLTProcessorApplet extends Applet
 {
 
   /**
-   * The XML Parser Liaison.
+   * The stylesheet processor
    */
   Processor m_processor = null;
+  String m_processorName="org.apache.xalan.processor.StylesheetProcessor";
+  
+  XMLReader m_reader = null;
+  
+  TemplatesBuilder m_templatesBuilder = null;
 
   /**
    * @serial
@@ -140,6 +151,7 @@ public class XSLTProcessorApplet extends Applet
    */
   private final String PARAM_documentURL = "documentURL";
 
+
   /**
    * @serial
    */
@@ -163,8 +175,7 @@ public class XSLTProcessorApplet extends Applet
   private String m_documentURLOfCached = null;
 
   /**
-   * I save this for use on the worker thread, but i don't think I
-   * need to do this.
+   * Save this for use on the worker thread; may not be necessary.
    * @serial
    */
   private URL m_codeBase = null;
@@ -235,7 +246,7 @@ public class XSLTProcessorApplet extends Applet
     {
       { PARAM_styleURL, "String", "URL to a XSL style sheet" },
       { PARAM_documentURL, "String", "URL to a XML document" },
-      { PARAM_parser, "String", "Which parser to use: XML4J or ANY" },
+      { PARAM_parser, "String", "Which parser to use: Xerces or ANY" },
     };
     return info;
   }
@@ -275,26 +286,100 @@ public class XSLTProcessorApplet extends Applet
     //----------------------------------------------------------------------
     resize(320, 240);
 
-    initLiaison();
-
   }
 
   /**
    * Try to init the XML liaison object: currently not implemented.
    */
+   
   protected void initLiaison()
   {
     try
-    {
-      m_processor = Processor.newInstance("xslt");
+    { 
     }
-    catch(org.xml.sax.SAXException se)
+    catch(Exception se)
     {
       se.printStackTrace();
       throw new RuntimeException(se.getMessage());
     }
-
   }
+  
+ /**
+   * Obtain a new instance of a Stysheet Processor object
+   * as specified by m_processorName.
+   * Workaround for Processor.newInstance() which an
+   * applet cannot use because it reads a system property.
+   * @return Concrete instance of an Processor object.
+   */
+   Processor newProcessorInstance()
+	  throws ProcessorFactoryException
+   {
+	 Processor m_processor = null;
+	 try
+	 {  
+	  Class factoryClass = Class.forName(m_processorName);
+      m_processor = (Processor)factoryClass.newInstance();
+     }
+     catch(java.lang.IllegalAccessException iae)
+     {
+      throw new ProcessorFactoryException("Transformation Processor can not be accessed!", iae);
+     }
+     catch(java.lang.InstantiationException ie)
+     {
+      throw new ProcessorFactoryException("Not able to create Transformation Processor!", ie);
+     }
+     catch(java.lang.ClassNotFoundException cnfe)
+     {
+      throw new ProcessorFactoryException("Transformation Processor not found!", cnfe);
+     }
+	 return m_processor;
+   }
+   
+    /**
+   * Process the source tree to SAX parse events.
+   * @param transformer Concrete Transformer
+   * @param xmlSource  The input for the source tree.
+   * Workaround for TransformerImpl.transform() which an
+   * applet cannot use because it reads a system property.
+   */
+   
+   void transform(TransformerImpl transformer, InputSource xmlSource)
+    throws SAXException, TransformException, IOException
+  {
+      try
+      {
+        m_reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+      }
+      catch(SAXException se)
+      {
+        // What can we do?
+        // TODO: User diagnostics.
+      }
+      try
+	  {
+        // Get the input content handler, which will handle the 
+        // parse events and create the source tree.
+        ContentHandler inputHandler = new SourceTreeHandler(transformer);
+        m_reader.setContentHandler(inputHandler);
+        m_reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
+        
+        // Set the reader for cloning purposes.
+        transformer.getXPathContext().setPrimaryReader(m_reader);
+          
+        // Kick off the parse.  When the ContentHandler gets 
+        // the startDocument event, it will call transformNode( node ).
+        m_reader.parse( xmlSource );
+      }
+      catch(SAXException se)
+      {
+        se.printStackTrace();
+        throw new TransformException(se);
+      }
+      catch(IOException ioe)
+      {
+      throw new TransformException(ioe);
+      }
+    }	   
 
   /**
    * Cleanup; called when applet is terminated and unloaded.
@@ -331,20 +416,34 @@ public class XSLTProcessorApplet extends Applet
     m_trustedWorker.start();
     try
     {
-      this.showStatus("Causing Xalan and XML4J to Load and JIT...");
+      this.showStatus("Causing Xalan and Xerces to Load and JIT...");
       // Prime the pump so that subsequent transforms don't look so slow.
       StringReader xmlbuf = new StringReader("<?xml version='1.0'?><foo/>");
       StringReader xslbuf = new StringReader("<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
       PrintWriter pw = new PrintWriter(new StringWriter());
+	  
+      m_processor = newProcessorInstance();
+	  m_reader = XMLReaderFactory.createXMLReader("org.apache.xerces.parsers.SAXParser");
+	  m_templatesBuilder = m_processor.getTemplatesBuilder();
+	  m_reader.setContentHandler(m_templatesBuilder);
+
       synchronized(m_processor)
       {
-        Templates templates = m_processor.process(new InputSource(xslbuf));
-        Transformer transformer = templates.newTransformer();
-        transformer.transform(new InputSource(xmlbuf), new Result(pw));
+        m_reader.parse(new InputSource(xslbuf));
+	    Templates templates = m_templatesBuilder.getTemplates();
+	    TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
+      
+	    Result result = new Result(pw);
+	    org.xml.sax.ContentHandler handler = 
+		   new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+	  
+        transformer.setContentHandler(handler);
+	    transformer.setParent(m_reader);
+        transform(transformer, new InputSource(xmlbuf));
         this.showStatus("PRIMED the pump!");
       }
-      // System.out.println("Primed the pump!");
-      this.showStatus("Ready to click!");
+      System.out.println("Primed the pump!");
+      this.showStatus("Ready to click!"); 
     }
     catch(Exception e)
     {
@@ -618,25 +717,32 @@ public class XSLTProcessorApplet extends Applet
     StringWriter osw = new StringWriter();
     PrintWriter pw = new PrintWriter(osw, false);
 
-    // xmlProcessorLiaison.SaveXMLToFile(m_resultTree, pw);
-
     this.showStatus("Begin Transformation...");
     try
     {
+	  m_templatesBuilder = m_processor.getTemplatesBuilder();
+	  m_reader.setContentHandler(m_templatesBuilder);
+		
       documentURL = new URL(m_codeBase, m_documentURL);
       InputSource xmlSource = new InputSource(documentURL.toString());
 
       styleURL = new URL(m_codeBase, m_styleURL);
       InputSource xslSource = new InputSource(styleURL.toString());
+	  
+	  m_reader.parse(xslSource);
+	  Templates templates = m_templatesBuilder.getTemplates();
+	  TransformerImpl transformer = (TransformerImpl)templates.newTransformer();
       
-      m_styleTree =  m_processor.process(xslSource);
-
-      Transformer transformer = m_styleTree.newTransformer();
       if(null != m_key)
         transformer.setParameter(m_key, null, m_expression);
-
-      transformer.transform(xmlSource, new Result(pw));
-    }
+	  Result result = new Result(pw);
+	  org.xml.sax.ContentHandler handler = 
+		 new org.apache.xml.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+	  
+      transformer.setContentHandler(handler);
+	  transformer.setParent(m_reader);
+      transform(transformer, xmlSource );
+	}
     catch(MalformedURLException e)
     {
       e.printStackTrace();
@@ -663,9 +769,9 @@ public class XSLTProcessorApplet extends Applet
     String htmlData = null;
     try
     {
-      if(whichParser.trim().equals("XML4J") || whichParser.trim().equals("ANY"))
+      if(whichParser.trim().equals("Xerces") || whichParser.trim().equals("ANY"))
       {
-        this.showStatus("Waiting for Xalan and XML4J to finish loading and JITing...");
+        this.showStatus("Waiting for Xalan and Xerces to finish loading and JITing...");
         synchronized(m_processor)
         {
           // TransformerImpl processor = new XSLProcessor(m_liaison);
@@ -674,7 +780,7 @@ public class XSLTProcessorApplet extends Applet
       }
       else
       {
-          System.out.println("XSLTProcessorApplet only works with XML4J at the moment!");
+          System.out.println("XSLTProcessorApplet only works with Xerces at the moment!");
       }
     }
     catch(NoClassDefFoundError e)
