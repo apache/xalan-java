@@ -183,7 +183,10 @@ final class LogicalExpr extends Expression {
 	    // The true-list of OR must point to second clause of AND.
 	    if ((_left instanceof LogicalExpr) &&
 		(((LogicalExpr)_left).getOp() == OR)) {
-		((LogicalExpr)_left).backPatchTrueList(middle);
+		_left.backPatchTrueList(middle);
+	    }
+	    else if (_left instanceof NotCall) {
+		_left.backPatchTrueList(middle);
 	    }
 	    else {
 		_trueList.append(_left._trueList);
@@ -193,12 +196,14 @@ final class LogicalExpr extends Expression {
 	    // The true-list of OR must point to true-list of AND.
 	    if ((_right instanceof LogicalExpr) &&
 		(((LogicalExpr)_right).getOp() == OR)) {
-		((LogicalExpr)_right).backPatchTrueList(after);
+		_right.backPatchTrueList(after);
+	    }
+	    else if (_right instanceof NotCall) {
+		_right.backPatchTrueList(after);
 	    }
 	    else {
 		_trueList.append(_right._trueList);
 	    }
-
 	} 
 	// Compile OR-expression
 	else {
