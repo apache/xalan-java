@@ -149,13 +149,6 @@ final class WithParam extends Instruction {
 	}
     }
 
-    private String escapeName(QName qname) {
-	String local = qname.getLocalPart();
-	local = Variable.replace(local, '.', "$dot$");
-	local = Variable.replace(local, '-', "$dash$");
-	return(local);
-    }
-
     /**
      * This code generates a sequence of bytecodes that call the
      * addParameter() method in AbstractTranslet. The method call will add
@@ -166,7 +159,7 @@ final class WithParam extends Instruction {
 	final InstructionList il = methodGen.getInstructionList();
 
 	// Make name acceptable for use as field name in class
-	String name = escapeName(_name);
+	String name = EscapeString.escape(_name.getLocalPart());
 
 	// Load reference to the translet (method is in AbstractTranslet)
 	il.append(classGen.loadTranslet());

@@ -85,7 +85,6 @@ class VariableBase extends TopLevelElement {
     protected Instruction _loadInstruction; // Instruction to load JVM variable
     protected Expression  _select;          // Reference to variable expression
     protected String      select;           // Textual repr. of variable expr.
-    protected int         _stackIndex = -1; // Stack index relative to base ptr.
 
     // References to this variable (when local)
     protected Vector      _refs = new Vector(2); 
@@ -202,39 +201,13 @@ class VariableBase extends TopLevelElement {
 	return _variable;
     }
 
-    public static String replace(String base, char c, String str) {
-	final int len = base.length() - 1;
-	int pos;
-	while ((pos = base.indexOf(c)) > -1) {
-	    if (pos == 0) {
-		final String after = base.substring(1);
-		base = str + after;
-	    }
-	    else if (pos == len) {
-		final String before = base.substring(0, pos);
-		base = before + str;
-	    }
-	    else {
-		final String before = base.substring(0, pos);
-		final String after = base.substring(pos+1);
-		base = before + str + after;
-	    }
-	}
-	return base;
-    }
-
     /**
      * Set the name of the variable or paremeter. Escape all special chars.
      */
     public void setName(QName name) {
 	_name = name;
 	_name.clearDefaultNamespace();
-
-	String prefix = name.getPrefix();
-	String local = name.getLocalPart();
-	local = replace(local, '.', "$dot$");
-	local = replace(local, '-', "$dash$");
-	_variable = local;
+	_variable = EscapeString.escape(name.getLocalPart());
     }
 
     /**
@@ -242,6 +215,34 @@ class VariableBase extends TopLevelElement {
      */
     public boolean isLocal() {
 	return _isLocal;
+    }
+
+    /**
+     * Parse the contents of the <xsl:decimal-format> element.
+     */
+    public void parseContents(Parser parser) {
+	// Get the 'name attribute
+	String name = getAttribute("name");
+	if (name == null) name = EMPTYSTRING;
+
+	if (name.length() > 0)
+	    setName(parser.getQName(name));
+        else
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
+
+	// Check whether variable/param of the same name is already in scope
+	if (parser.lookupVariable(_name) != null) {
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
+	    parser.reportError(Constants.ERROR, msg);
+	}
+	
+	select = getAttribute("select");
+	if (select.length() > 0) {
+	    _select = getParser().parseExpression(this, "select", null);
+	}
+
+	// Children must be parsed first -> static scoping
+	parseChildren(parser);
     }
 
     /**

@@ -100,6 +100,7 @@ public final class ErrorMsg {
     public static final int ILL_ATTR_ERR = 20;
     public static final int CIRCULAR_INC = 21;
     public static final int TREESORT_ERR = 22;
+    public static final int DFSREDEF_ERR = 23;
 
     static final String messages_d[] = { 
 	"More than one stylesheet defined in the same file.",
@@ -126,7 +127,8 @@ public final class ErrorMsg {
 	"Circular import/include. Stylesheet ''{0}'' already loaded.",
 	"Applying <xsl:sort> to a result tree is not supported (<xsl:sort> "+
 	"elements are ignored). You can, and should, sort the nodes when "+
-	"creating the result tree."
+	"creating the result tree.",
+	"Decimal formatting ''{0}'' is already defined."
     };
 
     public ErrorMsg(int code) {

@@ -314,9 +314,7 @@ public final class Template extends TopLevelElement {
 
 	if (_compiled && isNamed()){
 
-	    String methodName = _name.toString();
-	    methodName = methodName.replace('.', '$');
-	    methodName = methodName.replace('-', '$');
+	    String methodName = EscapeString.escape(_name.toString());
 
 	    il.append(classGen.loadTranslet());
 	    il.append(methodGen.loadDOM());

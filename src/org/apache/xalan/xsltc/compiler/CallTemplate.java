@@ -117,23 +117,21 @@ final class CallTemplate extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	// Push a new parameter frame
-	if (stylesheet.hasLocalParams() || hasContents()) {
-	    il.append(classGen.loadTranslet()); // push param frame
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS, 
-							 PUSH_PARAM_FRAME,
-							 PUSH_PARAM_FRAME_SIG)
-					));
 
-	    // translate with-params
+	if (stylesheet.hasLocalParams() || hasContents()) {
+	    // Push parameter frame
+	    final int push = cpg.addMethodref(TRANSLET_CLASS, 
+					      PUSH_PARAM_FRAME,
+					      PUSH_PARAM_FRAME_SIG);
+	    il.append(classGen.loadTranslet());
+	    il.append(new INVOKEVIRTUAL(push));
+	    // Translate with-params
 	    translateContents(classGen, methodGen);
 	}
 
 	final String className = stylesheet.getClassName();
 	// Generate a valid Java method name
-	String methodName = _name.toString();
-	methodName = methodName.replace('.', '$');
-	methodName = methodName.replace('-', '$');
+	String methodName = EscapeString.escape(_name.toString());
 
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
@@ -150,14 +148,13 @@ final class CallTemplate extends Instruction {
 						     +")V")));
 	
 
-	// Pop parameter frame
 	if (stylesheet.hasLocalParams() || hasContents()) {
-	    il.append(classGen.loadTranslet()); // pop param frame
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-							 POP_PARAM_FRAME,
-							 POP_PARAM_FRAME_SIG)
-					));
-	    
+	    // Pop parameter frame
+	    final int pop = cpg.addMethodref(TRANSLET_CLASS,
+					     POP_PARAM_FRAME,
+					     POP_PARAM_FRAME_SIG);
+	    il.append(classGen.loadTranslet());
+	    il.append(new INVOKEVIRTUAL(pop));
 	}
     }
 } 

@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -71,17 +72,28 @@ import java.util.StringTokenizer;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class SymbolTable {
-    private final Hashtable _templates   = new Hashtable();
+
+    // These hashtables are used for all stylesheets
     private final Hashtable _stylesheets = new Hashtable();
     private final Hashtable _primops     = new Hashtable();
-    private final Hashtable _variables   = new Hashtable();
-    private final Hashtable _atsets      = new Hashtable();
-    private final Hashtable _namespaces  = new Hashtable();
-    private final Hashtable _prefixes    = new Hashtable();
-    private final Hashtable _aliases     = new Hashtable();
-    private final Hashtable _excludedURI = new Hashtable();
 
-    private int nsCounter = 0;
+    // These hashtables are used for some stylesheets
+    private Hashtable _variables = null;
+    private Hashtable _templates = null;
+    private Hashtable _attributeSets = null;
+    private Hashtable _aliases = null;
+    private Hashtable _excludedURI = null;
+    private Hashtable _decimalFormats = null;
+
+    public DecimalFormatting getDecimalFormatting(String name) {
+	if (_decimalFormats == null) return null;
+	return((DecimalFormatting)_decimalFormats.get(name));
+    }
+
+    public void addDecimalFormatting(String name, DecimalFormatting symbols) {
+	if (_decimalFormats == null) _decimalFormats = new Hashtable();
+	_decimalFormats.put(name, symbols);
+    }
 
     public Stylesheet addStylesheet(QName name, Stylesheet node) {
 	return (Stylesheet)_stylesheets.put(name, node);
@@ -94,47 +106,56 @@ final class SymbolTable {
     public Template addTemplate(Template template) {
 	final QName name = template.getName();
 	name.clearDefaultNamespace();
+	if (_templates == null) _templates = new Hashtable();
 	return (Template)_templates.put(name, template);
     }
 	
     public Template lookupTemplate(QName name) {
+	if (_templates == null) return null;
 	name.clearDefaultNamespace();
 	return (Template)_templates.get(name);
     }
 
     public Variable addVariable(Variable variable) {
+	if (_variables == null) _variables = new Hashtable();
 	final String name = variable.getName().getStringRep();
 	return (Variable)_variables.put(name, variable);
     }
 	
     public Param addParam(Param parameter) {
+	if (_variables == null) _variables = new Hashtable();
 	final String name = parameter.getName().getStringRep();
 	return (Param)_variables.put(name, parameter);
     }
 	
     public Variable lookupVariable(QName qname) {
+	if (_variables == null) return null;
 	final String name = qname.getStringRep();
 	final Object obj = _variables.get(name);
 	return obj instanceof Variable ? (Variable)obj : null;
     }
 
     public Param lookupParam(QName qname) {
+	if (_variables == null) return null;
 	final String name = qname.getStringRep();
 	final Object obj = _variables.get(name);
 	return obj instanceof Param ? (Param)obj : null;
     }
 	
     public SyntaxTreeNode lookupName(QName qname) {
+	if (_variables == null) return null;
 	final String name = qname.getStringRep();
 	return (SyntaxTreeNode)_variables.get(name);
     }
 
     public AttributeSet addAttributeSet(AttributeSet atts) {
-	return (AttributeSet)_atsets.put(atts.getName(), atts);
+	if (_attributeSets == null) _attributeSets = new Hashtable();
+	return (AttributeSet)_attributeSets.put(atts.getName(), atts);
     }
 
     public AttributeSet lookupAttributeSet(QName name) {
-	return (AttributeSet)_atsets.get(name);
+	if (_attributeSets == null) return null;
+	return (AttributeSet)_attributeSets.get(name);
     }
 
     /**
@@ -162,30 +183,31 @@ final class SymbolTable {
      * This is used for xsl:attribute elements that have a "namespace"
      * attribute that is currently not defined using xmlns:
      */
+    private int _nsCounter = 0;
+
     public String generateNamespacePrefix() {
-	final String prefix = new String("ns"+(nsCounter++));
-	return(prefix);
+	return(new String("ns"+(_nsCounter++)));
     }
 
     /**
      * Use a namespace prefix to lookup a namespace URI
      */
     private SyntaxTreeNode _current = null;
+
     public void setCurrentNode(SyntaxTreeNode node) {
 	_current = node;
     }
 
     public String lookupNamespace(String prefix) {
-	if (_current != null)
-	    return(_current.lookupNamespace(prefix));
-	else
-	    return(Constants.EMPTYSTRING);
+	if (_current == null) return(Constants.EMPTYSTRING);
+	return(_current.lookupNamespace(prefix));
     }
 
     /**
      * Adds an alias for a namespace prefix
      */ 
     public void addPrefixAlias(String prefix, String alias) {
+	if (_aliases == null) _aliases = new Hashtable();
 	_aliases.put(prefix,alias);
     }
 
@@ -193,14 +215,22 @@ final class SymbolTable {
      * Retrieves any alias for a given namespace prefix
      */ 
     public String lookupPrefixAlias(String prefix) {
+	if (_aliases == null) return null;
 	return (String)_aliases.get(prefix);
     }
 
     /**
-     *
+     * Register a namespace URI so that it will not be declared in the output
+     * unless it is actually referenced in the output.
      */
     public void excludeURI(String uri) {
+	// The null-namespace cannot be excluded
 	if (uri == null) return;
+
+	// Create new hashtable of exlcuded URIs if none exists
+	if (_excludedURI == null) _excludedURI = new Hashtable();
+
+	// Register the namespace URI
 	Integer refcnt = (Integer)_excludedURI.get(uri);
 	if (refcnt == null)
 	    refcnt = new Integer(1);
@@ -210,7 +240,8 @@ final class SymbolTable {
     }
 
     /**
-     *
+     * Exclude a series of namespaces given by a list of whitespace
+     * separated namespace prefixes.
      */
     public void excludeNamespaces(String prefixes) {
 	if (prefixes != null) {
@@ -228,10 +259,11 @@ final class SymbolTable {
     }
 
     /**
-     *
+     * Check if a namespace should not be declared in the output (unless used)
      */
     public boolean isExcludedNamespace(String uri) {
 	if (uri == null) return false;
+	if (_excludedURI == null) return false;
 	final Integer refcnt = (Integer)_excludedURI.get(uri);
 	if (refcnt == null) return false;
 	if (refcnt.intValue() > 0) return true;
@@ -239,9 +271,10 @@ final class SymbolTable {
     }
 
     /**
-     *
+     * Turn of namespace declaration exclusion
      */
     public void unExcludeNamespaces(String prefixes) {
+	if (_excludedURI == null) return;
 	if (prefixes != null) {
 	    StringTokenizer tokens = new StringTokenizer(prefixes);
 	    while (tokens.hasMoreTokens()) {
@@ -257,5 +290,6 @@ final class SymbolTable {
 	    }
 	}	
     }
+
 }
 

@@ -100,42 +100,13 @@ final class Param extends VariableBase {
     }
 
     /**
-     * Returns the parameter's type. This is needed by ParameterRef to
-     * determine the type of the parameter
-     */
-    public Type getType() {
-	return _type;
-    }
-
-    /**
      * Parse the contents of the <xsl:param> element. This method must read
      * the 'name' (required) and 'select' (optional) attributes.
      */
     public void parseContents(Parser parser) {
-	// Parse attributes name and select (if present)
-	final String name = getAttribute("name");
 
-	if (name.length() > 0) {
-	    setName(parser.getQName(name));
-	}
-        else {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
-        }
-
-	// Check whether variable/param of the same name is already in scope
-	if (parser.lookupVariable(_name) != null) {
-	    ErrorMsg msg = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
-	    parser.reportError(Constants.ERROR, msg);
-	}
-	
-	select = getAttribute("select");
-	if (select.length() > 0) {
-	    _select = getParser().parseExpression(this, "select", null);
-	}
-
-
-	// Children must be parsed first -> static scoping
-	parseChildren(parser);
+	// Parse 'name' and 'select' attributes plus parameter contents
+	super.parseContents(parser);
 
 	// Add a ref to this param to its enclosing construct
 	final SyntaxTreeNode parent = getParent();

@@ -107,28 +107,9 @@ final class Variable extends VariableBase {
      * Parse the contents of the variable
      */
     public void parseContents(Parser parser) {
-	// parse attributes name and select (if present)
-	final String name = getAttribute("name");
-	if (name.length() > 0) {
-	    setName(parser.getQName(name));
-	}
-        else {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
-	}
 
-	// check whether variable/param of the same name is already in scope
-	if (parser.lookupVariable(_name) != null) {
-	    reportError(this, parser, ErrorMsg.VARREDEF_ERR, _name.toString());
-	}
-
-	select = getAttribute("select");
-	if (select.length() > 0) {
-	    _select = getParser().parseExpression(this, "select", null);
-	}
-
-
-	// Children must be parsed first -> static scoping
-	parseChildren(parser);
+	// Parse 'name' and 'select' attributes plus parameter contents
+	super.parseContents(parser);
 
 	// Add a ref to this var to its enclosing construct
 	SyntaxTreeNode parent = getParent();

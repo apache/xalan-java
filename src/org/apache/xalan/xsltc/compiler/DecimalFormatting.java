@@ -84,8 +84,28 @@ final class DecimalFormatting extends TopLevelElement {
     private static final String DFS_CLASS = "java.text.DecimalFormatSymbols";
     private static final String DFS_SIG   = "Ljava/text/DecimalFormatSymbols;";
 
+    private String _name = null;
+
+    /**
+     * No type check needed for the <xsl:decimal-formatting/> element
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	return Type.Void;
+    }
+
+    /**
+     * Parse the name of the <xsl:decimal-formatting/> element
+     */
+    public void parseContents(Parser parser) {
+	// Get the name of these decimal formatting symbols
+	if ((_name = getAttribute("name")) == null) _name = EMPTYSTRING;
+
+	// Check if a set of symbols has already been registered under this name
+	SymbolTable stable = parser.getSymbolTable();
+	if (stable.getDecimalFormatting(_name) != null)
+	    reportWarning(this, parser, ErrorMsg.DFSREDEF_ERR,_name.toString());
+	else
+	    stable.addDecimalFormatting(_name, this);
     }
 
     /**
@@ -102,7 +122,7 @@ final class DecimalFormatting extends TopLevelElement {
 
 	// Push the format name on the stack for call to addDecimalFormat()
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, getAttribute("name")));
+	il.append(new PUSH(cpg, _name));
 
 	// Manufacture a DecimalFormatSymbols on the stack
 	// for call to addDecimalFormat()
