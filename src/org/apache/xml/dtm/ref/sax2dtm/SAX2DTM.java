@@ -229,6 +229,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           xstringfactory, doIndexing);
           
     m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
+    m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
     m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
   }
