@@ -63,14 +63,18 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import java.io.File;
 import java.io.Writer;
+import java.io.Reader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+
 import java.lang.IllegalArgumentException;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
@@ -82,8 +86,8 @@ import org.xml.sax.InputSource;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.*;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.*;
+import javax.xml.transform.stream.*;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
@@ -145,41 +149,59 @@ public final class TransformerImpl extends Transformer {
     }
 
     /**
-     * Create an output handler, and get the requested output encoding
-     * from the translet instance
+     * Create an output handler (SAX2 handler) for the transformation output
+     * based on the type and contents of the TrAX Result object passed to
+     * the transform() method. Only StreamResult and SAXResult are currently
+     * handled.
      */
     private ContentHandler getOutputHandler(Result result) 
 	throws TransformerException {
 	// Try to get the encoding from Translet (may not be set)
-	_encoding = _translet._encoding;
-	if (_encoding == null) _encoding = "UTF-8";
-
-	StreamResult target   = (StreamResult)result;
-	Writer       writer   = target.getWriter();
-	OutputStream ostream  = target.getOutputStream();
-	String       systemid = target.getSystemId();
+	if (_translet._encoding != null)
+	    _encoding = _translet._encoding;
+	else
+	    _encoding = "utf-8"; // default output encoding
 
 	try {
-	    if (writer != null) {
-		// no constructor that takes encoding yet...
-		return (new DefaultSAXOutputHandler(writer));
-	    } 
-	    else if (ostream != null) {
-		return (new DefaultSAXOutputHandler(ostream, _encoding));
+	    final String systemId = result.getSystemId();
+
+	    // Handle SAXResult output handler
+	    if (result instanceof SAXResult) {
+		final SAXResult target = (SAXResult)result;
+		final ContentHandler handler = target.getHandler();
+		// Simple as feck, just pass the SAX handler back...
+		if (handler != null) return handler;
 	    }
-	    else if (systemid != null) {
-		String filePrefix = new String("file:///");
-		if (systemid.startsWith(filePrefix)) {
-		    systemid = systemid.substring(filePrefix.length());
-		}
-		ostream = (OutputStream)(new FileOutputStream(systemid));
+	    // Handle StreamResult output handler
+	    else if (result instanceof StreamResult) {
+		final StreamResult target = (StreamResult)result;
+		final OutputStream ostream = target.getOutputStream();
+		final Writer writer = target.getWriter();
+
+		if (ostream != null)
+		    return (new DefaultSAXOutputHandler(ostream, _encoding));
+		else if (writer != null)
+		    return (new DefaultSAXOutputHandler(writer, _encoding));
+	    }
+
+	    // Common, final handling of all input sources, only used if the
+	    // other contents of the Result object could not be used
+	    if (systemId != null) {
+		final URL url = new URL(systemId);
+		final URLConnection connection = url.openConnection();
+		final OutputStream ostream = connection.getOutputStream();
 		return(new DefaultSAXOutputHandler(ostream, _encoding));
 	    }
-	    return null;
+	    else {
+		// Handle error!!!
+		return null;
+	    }
 	}
-	catch (java.io.FileNotFoundException e) {
+	// If we cannot write to the location specified by the SystemId
+	catch (java.net.UnknownServiceException e) {
 	    throw new TransformerException(e);
 	}
+	// If we cannot create the file specified by the SystemId
 	catch (java.io.IOException e) {
 	    throw new TransformerException(e);
 	}
@@ -189,34 +211,56 @@ public final class TransformerImpl extends Transformer {
      * Internal transformation method - uses the internal APIs of XSLTC
      */
     private void transform(Source source,
-			   ContentHandler handler,
+			   ContentHandler outputHandler,
 			   String encoding) throws TransformerException {
 	try {
-	    // Create a SAX parser and get the XMLReader object it uses
-	    final SAXParserFactory factory = SAXParserFactory.newInstance();
-	    final SAXParser parser = factory.newSAXParser();
-	    final XMLReader reader = parser.getXMLReader();
- 
-	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+	    // Create an internal DOM (not W3C) and get SAX2 input handler
 	    final DOMImpl dom = new DOMImpl();
-	    reader.setContentHandler(dom.getBuilder());
-	    // Create a DTD monitor and pass it to the XMLReader object
+	    final ContentHandler inputHandler = dom.getBuilder();
+
+	    // Create a DTDMonitor that will trace all unparsed entity URIs
 	    final DTDMonitor dtdMonitor = new DTDMonitor();
-	    dtdMonitor.handleDTD(reader);
- 
-	    String url = source.getSystemId();
-	    if (url != null) {
-		dom.setDocumentURI(url);
-		if (url.startsWith("file:/")) {   
-		    reader.parse(url);
-		} else {                                
-		    reader.parse("file:"+(new File(url).getAbsolutePath()));
-		}
-	    }
-	    else if (source instanceof StreamSource) {
-		InputStream stream = ((StreamSource)source).getInputStream();
-		InputSource input = new InputSource(stream);
+
+	    // Handle SAXSource input
+	    if (source instanceof SAXSource) {
+		// Get all info from the input SAXSource object
+		final SAXSource   sax    = (SAXSource)source;
+		final XMLReader   reader = sax.getXMLReader();
+		final InputSource input  = sax.getInputSource();
+		final String      systemId = sax.getSystemId();
+		dtdMonitor.handleDTD(reader);
+
+		reader.setContentHandler(inputHandler);
 		reader.parse(input);
+		dom.setDocumentURI(systemId);
+	    }
+	    // Handle StreamSource input
+	    else if (source instanceof StreamSource) {
+		// With a StreamSource we need to create our own parser
+		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		final SAXParser parser = factory.newSAXParser();
+		final XMLReader reader = parser.getXMLReader();
+		dtdMonitor.handleDTD(reader);
+
+		// Get all info from the input StreamSource object
+		final StreamSource stream = (StreamSource)source;
+		final InputStream  streamInput = stream.getInputStream();
+		final Reader streamReader = stream.getReader();
+		final String systemId = stream.getSystemId();
+
+		reader.setContentHandler(inputHandler);
+		
+		InputSource input;
+		if (streamInput != null)
+		    input = new InputSource(streamInput);
+		else if (streamReader != null)
+		    input = new InputSource(streamReader);
+		else if (systemId != null)
+		    input = new InputSource(systemId);
+		else
+		    input = null; // TODO - signal error!!!!
+		reader.parse(input);
+		dom.setDocumentURI(systemId);
 	    }
 	    else {
 		throw new TransformerException("Unsupported input.");
@@ -233,7 +277,7 @@ public final class TransformerImpl extends Transformer {
 	    setOutputProperties(_translet, _properties);
 
 	    // Transform the document
-	    TextOutput textOutput = new TextOutput(handler, _encoding);
+	    TextOutput textOutput = new TextOutput(outputHandler, _encoding);
 	    _translet.transform(dom, textOutput);
 	}
 	catch (TransletException e) {

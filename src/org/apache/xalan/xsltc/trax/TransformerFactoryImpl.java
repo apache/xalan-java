@@ -87,7 +87,7 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 /**
  * Implementation of a JAXP1.1 SAXTransformerFactory for Translets.
  */
-public class TransformerFactoryImpl extends SAXTransformerFactory {
+public class TransformerFactoryImpl extends TransformerFactory {
 
     // This constant should be removed once all abstract methods are impl'ed.
     private static final String NYI = "Not yet implemented";
@@ -111,12 +111,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     private static final String ERROR_LISTENER_NULL =
 	"Attempting to set ErrorListener for TransformerFactory to null";
     private static final String UNKNOWN_SOURCE_ERR =
-	"Only StreamSource is supported by XSLTC";
+	"Only StreamSource and SAXSource is supported by XSLTC";
     private static final String COMPILE_ERR =
 	"Could not compile stylesheet";
-    private static final String SOURCE_CONTENTS_ERR =
-	"The input Source contains an invalid system id";
-
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -192,11 +189,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
      * @return 'true' if feature is supported, 'false' if not
      */
     public boolean getFeature(String name) { 
-	if (name.equals(StreamSource.FEATURE) ||
-	    name.equals(StreamResult.FEATURE) ||
-	    name.equals(SAXTransformerFactory.FEATURE)) {
-	    return true;
-	}
+	// All supported features should be listed here
+	String[] features = {
+	    SAXSource.FEATURE,
+	    SAXResult.FEATURE,
+	    StreamSource.FEATURE,
+	    StreamResult.FEATURE
+	};
+
+	// Inefficient, but it really does not matter in a function like this
+	for (int i=0; i<features.length; i++)
+	    if (name.equals(features[i])) return true;
+
+	// Feature not supported
 	return false;
     }
 
@@ -345,9 +350,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
      * Process the Source into a Templates object, which is a a compiled
      * representation of the source.
      *
-     * @param stylesheet The input stylesheet. Only StreamSource is suported
-     * for now (otherwise the Source URI must be set using the setSystemId()
-     * method). This methods needs more work!!!
+     * @param stylesheet The input stylesheet - DOMSource not supported!!!
      * @return A Templates object that can be used to create Transformers.
      * @throws TransformerConfigurationException
      */
@@ -361,46 +364,38 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
 
-	// Handle SAXSource input
+	InputSource input = null;
+	final String systemId = source.getSystemId();
+
+	// Try to get InputSource from SAXSource input
 	if (source instanceof SAXSource) {
 	    final SAXSource sax = (SAXSource)source;
-	    InputSource input = sax.getInputSource();
-	    String systemId = sax.getSystemId();
-
+	    input = sax.getInputSource();
 	    // Pass the SAX parser to the compiler
 	    xsltc.setXMLReader(sax.getXMLReader());
-
-	    // Then pass the XSL stylesheet doc to the compiler
-	    if ((input == null) && (systemId != null))
-		input = new InputSource(systemId);
-	    // Pass system id to InputSource just to be on the safe side
-	    input.setSystemId(systemId);
-	    // Compile the stylesheet
-	    bytecodes = xsltc.compile(null, input);
 	}
-	// Handle StreamSource input
+	// Try to get InputStream or Reader from StreamSource
 	else if (source instanceof StreamSource) {
 	    final StreamSource stream = (StreamSource)source;
-	    final InputStream input = stream.getInputStream();
+	    final InputStream istream = stream.getInputStream();
 	    final Reader reader = stream.getReader();
-	    final String systemId = stream.getSystemId();
-
-	    InputSource blob;
-	    if (input != null)
-		blob = new InputSource(input);
+	    // Create InputSource from Reader or InputStream in Source
+	    if (istream != null)
+		input = new InputSource(istream);
 	    else if (reader != null)
-		blob = new InputSource(reader);
-	    else if (systemId != null)
-		blob = new InputSource(systemId);
-	    else
-		blob = null; // TODO - signal error!!!!
-
-	    blob.setSystemId(systemId);
-	    bytecodes = xsltc.compile(null, blob);
+		input = new InputSource(reader);
 	}
 	else {
 	    throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
 	}
+	
+	// Try to create an InputStream from the SystemId if no input so far
+	if (input == null) input = new InputSource(systemId);
+
+	// Pass system id to InputSource just to be on the safe side
+	input.setSystemId(systemId);
+	// Compile the stylesheet
+	bytecodes = xsltc.compile(null, input);
 
 	final String transletName = xsltc.getClassName();
 

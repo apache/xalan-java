@@ -123,12 +123,20 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     private AttributeList _namespaceDeclarations = new AttributeList();
 
     /**
+     * Constructor - set Writer to send output to and output encoding
+     */
+    public DefaultSAXOutputHandler(Writer writer, String encoding)
+	throws IOException {
+	_writer = writer;
+	_encoding = encoding;
+	init();
+    }
+
+    /**
      * Constructor - simple, initially for use in servlets
      */
     public DefaultSAXOutputHandler(Writer writer) throws IOException {
-	_writer = writer;
-	_encoding = "utf-8";
-	init();
+	this(writer, "utf-8");
     }
 
     /**
