@@ -66,86 +66,91 @@ import java.util.Hashtable;
 class ElemDesc
 {
 
-  /** Element's flags (See below for posible values          */
-  int m_flags;
-
-  /** Table of attributes for the element          */
+  /** Table of attributes for the element */
   Hashtable m_attrs = null;
 
-  /** EMPTY flag          */
+  /** Element's flags, describing the role this element plays during
+   * formatting of the document. This is used as a bitvector; more than one flag
+   * may be set at a time, bitwise-ORed together. Mnemonic and bits
+   * have been assigned to the flag values. NOTE: Some bits are
+   * currently assigned multiple mnemonics; it is the caller's
+   * responsibility to disambiguate these if necessary. */
+  int m_flags;
+
+  /** Defines mnemonic and bit-value for the EMPTY flag */
   static final int EMPTY = (1 << 1);
 
-  /** FLOW flag          */
+  /** Defines mnemonic and bit-value for the FLOW flag  */
   static final int FLOW = (1 << 2);
 
-  /** BLOCK flag          */
+  /** Defines mnemonic and bit-value for the BLOCK flag          */
   static final int BLOCK = (1 << 3);
 
-  /** BLOCKFORM  flag         */
+  /** Defines mnemonic and bit-value for the BLOCKFORM  flag         */
   static final int BLOCKFORM = (1 << 4);
 
-  /** BLOCKFORMFIELDSET flag          */
+  /** Defines mnemonic and bit-value for the BLOCKFORMFIELDSET flag          */
   static final int BLOCKFORMFIELDSET = (1 << 5);
 
-  /** CDATA flag         */
+  /** Defines mnemonic and bit-value for the CDATA flag         */
   static final int CDATA = (1 << 6);
 
-  /** PCDATA flag          */
+  /** Defines mnemonic and bit-value for the PCDATA flag          */
   static final int PCDATA = (1 << 7);
 
-  /** RAW flag         */
+  /** Defines mnemonic and bit-value for the RAW flag         */
   static final int RAW = (1 << 8);
 
-  /** INLINE flag          */
+  /** Defines mnemonic and bit-value for the INLINE flag          */
   static final int INLINE = (1 << 9);
 
-  /** INLINEA flag          */
+  /** Defines mnemonic and bit-value for the INLINEA flag          */
   static final int INLINEA = (1 << 10);
 
-  /** INLINELABEL flag          */
+  /** Defines mnemonic and bit-value for the INLINELABEL flag          */
   static final int INLINELABEL = (1 << 11);
 
-  /** FONTSTYLE flag          */
+  /** Defines mnemonic and bit-value for the FONTSTYLE flag          */
   static final int FONTSTYLE = (1 << 12);
 
-  /** PHRASE flag          */
+  /** Defines mnemonic and bit-value for the PHRASE flag          */
   static final int PHRASE = (1 << 13);
 
-  /** FORMCTRL flag         */
+  /** Defines mnemonic and bit-value for the FORMCTRL flag         */
   static final int FORMCTRL = (1 << 14);
 
-  /** SPECIAL flag         */
+  /** Defines mnemonic and bit-value for the SPECIAL flag         */
   static final int SPECIAL = (1 << 15);
 
-  /** ASPECIAL flag         */
+  /** Defines mnemonic and bit-value for the ASPECIAL flag         */
   static final int ASPECIAL = (1 << 16);
 
-  /** HEADMISC flag         */
+  /** Defines mnemonic and bit-value for the HEADMISC flag         */
   static final int HEADMISC = (1 << 17);
 
-  /** HEAD flag         */
+  /** Defines mnemonic and bit-value for the HEAD flag         */
   static final int HEAD = (1 << 18);
 
-  /** LIST flag         */
+  /** Defines mnemonic and bit-value for the LIST flag         */
   static final int LIST = (1 << 19);
 
-  /** PREFORMATTED flag         */
+  /** Defines mnemonic and bit-value for the PREFORMATTED flag         */
   static final int PREFORMATTED = (1 << 20);
 
-  /** WHITESPACESENSITIVE flag         */
+  /** Defines mnemonic and bit-value for the WHITESPACESENSITIVE flag         */
   static final int WHITESPACESENSITIVE = (1 << 21);
 
-  /** ATTRURL flag         */
+  /** Defines mnemonic and bit-value for the ATTRURL flag         */
   static final int ATTRURL = (1 << 1);
 
-  /** ATTREMPTY flag         */
+  /** Defines mnemonic and bit-value for the ATTREMPTY flag         */
   static final int ATTREMPTY = (1 << 2);
 
   /**
-   * Constructor ElemDesc
-   *
+   * Construct an ElementDescription with an initial set of flags.
    *
    * @param flags Element flags
+   * @see m_flags
    */
   ElemDesc(int flags)
   {
@@ -153,16 +158,24 @@ class ElemDesc
   }
 
   /**
-   * NEEDSDOC Method is 
+   * "is (this element described by these flags)".
+   * 
+   * This might more properly be called areFlagsSet(). It accepts an
+   * integer (being used as a bitvector) and checks whether all the 
+   * corresponding bits are set in our internal flags. Note that this
+   * test is performed as a bitwise AND, not an equality test, so a
+   * 0 bit in the input means "don't test", not "must be set false".
    *
+   * @param flags Vector of flags to compare against this element's flags
    *
-   * @param flags flags to compare this element to
-   *
-   * @return true if these flags match the element's
+   * @return true if the flags set in the parameter are also set in the
+   * element's stored flags.
+   * 
+   * @see m_flags
+   * @see isAttrFlagSet
    */
   boolean is(int flags)
   {
-
     // int which = (m_flags & flags);
     return (m_flags & flags) != 0;
   }
@@ -192,6 +205,7 @@ class ElemDesc
    *
    * @return True if the flag is set in the attribute. Returns false
    * if the attribute is not found 
+   * @see m_flags
    */
   boolean isAttrFlagSet(String name, int flags)
   {
