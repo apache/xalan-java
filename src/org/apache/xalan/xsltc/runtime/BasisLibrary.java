@@ -152,6 +152,16 @@ public final class BasisLibrary implements Operators {
 	    //return ((DOM)obj).getNodeValue(node);
 	    return ((DOM)obj).getStringValue();
 	}
+	else if (obj instanceof Double) {
+	    Double d = (Double)obj;
+	    final String result = d.toString();
+	    final int length = result.length();
+	    if ((result.charAt(length-2)=='.') &&
+		(result.charAt(length-1) == '0'))
+		return result.substring(0, length-2);
+	    else
+		return result;
+	}
 	else {
 	    if (obj != null)
 		return obj.toString();
