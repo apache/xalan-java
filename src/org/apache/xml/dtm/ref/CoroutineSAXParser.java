@@ -715,7 +715,13 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
 
         if (arg == null) {
           fCoroutineManager.co_exit_to(arg, fParserCoroutineID, fAppCoroutineID);
-          throw shutdownException;
+          // %REVIEW% For some reason the (arg == null) condition is occuring.
+          // You can replicate this sometimes with:
+          // testo attribset\attribset01 -flavor th -edump
+          // Since I'm not sure what good it does to throw a shutdown 
+          // exception here, I'm simply commenting it out for the time 
+          // being.
+          // throw shutdownException;
         }
 
 
