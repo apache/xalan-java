@@ -391,11 +391,12 @@ public class TransformerHandlerImpl
 
     //m_transformer.setTransformThread(listener);
     m_transformer.setSourceTreeDocForThread(m_dtm.getDocument());
-                int cpriority = Thread.currentThread().getPriority();
-            
-                // runTransformThread is equivalent with the 2.0.1 code,
-                // except that the Thread may come from a pool.
-                m_transformer.runTransformThread( cpriority );
+        
+    int cpriority = Thread.currentThread().getPriority();
+
+    // runTransformThread is equivalent with the 2.0.1 code,
+    // except that the Thread may come from a pool.
+    m_transformer.runTransformThread( cpriority );
         
    //listener.setDaemon(false);
    //listener.start();
@@ -649,14 +650,25 @@ public class TransformerHandlerImpl
    */
   public void warning(SAXParseException e) throws SAXException
   {
-
-    if (m_errorHandler != null)
+    // This is not great, but we really would rather have the error 
+    // handler be the error listener if it is a error handler.  Coroutine's fatalError 
+    // can't really be configured, so I think this is the best thing right now 
+    // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
+    javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
+    if(errorListener instanceof ErrorHandler)
     {
-      m_errorHandler.warning(e);
+      ((ErrorHandler)errorListener).warning(e);
     }
     else
     {
-      System.err.println("TransformerHandlerImpl#warning: " + e);
+      try
+      {
+        errorListener.warning(new javax.xml.transform.TransformerException(e));
+      }
+      catch(javax.xml.transform.TransformerException te)
+      {
+        throw e;
+      }
     }
   }
 
@@ -673,13 +685,29 @@ public class TransformerHandlerImpl
     // %REVIEW% I don't think this should be called.  -sb
     // clearCoRoutine(e);
 
-    if (m_errorHandler != null)
+    // This is not great, but we really would rather have the error 
+    // handler be the error listener if it is a error handler.  Coroutine's fatalError 
+    // can't really be configured, so I think this is the best thing right now 
+    // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
+    javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
+    if(errorListener instanceof ErrorHandler)
     {
-      m_errorHandler.error(e);
+      ((ErrorHandler)errorListener).error(e);
+      if(null != m_errorHandler)
+        m_errorHandler.error(e); // may not be called.
     }
     else
     {
-      System.err.println("TransformerHandlerImpl#error: " + e);
+      try
+      {
+        errorListener.error(new javax.xml.transform.TransformerException(e));
+        if(null != m_errorHandler)
+          m_errorHandler.error(e); // may not be called.
+      }
+      catch(javax.xml.transform.TransformerException te)
+      {
+        throw e;
+      }
     }
   }
 
@@ -693,16 +721,31 @@ public class TransformerHandlerImpl
    */
   public void fatalError(SAXParseException e) throws SAXException
   {
-
     clearCoRoutine(e);
 
-    if (m_errorHandler != null)
+    // This is not great, but we really would rather have the error 
+    // handler be the error listener if it is a error handler.  Coroutine's fatalError 
+    // can't really be configured, so I think this is the best thing right now 
+    // for error reporting.  Possibly another JAXP 1.1 hole.  -sb
+    javax.xml.transform.ErrorListener errorListener = m_transformer.getErrorListener();
+    if(errorListener instanceof ErrorHandler)
     {
-      m_errorHandler.fatalError(e);
+      ((ErrorHandler)errorListener).fatalError(e);
+      if(null != m_errorHandler)
+        m_errorHandler.fatalError(e); // may not be called.
     }
     else
     {
-      System.err.println("TransformerHandlerImpl#fatalError: " + e);
+      try
+      {
+        errorListener.fatalError(new javax.xml.transform.TransformerException(e));
+        if(null != m_errorHandler)
+          m_errorHandler.fatalError(e); // may not be called.
+      }
+      catch(javax.xml.transform.TransformerException te)
+      {
+        throw e;
+      }
     }
   }
 
