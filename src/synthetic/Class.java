@@ -123,8 +123,8 @@ public class Class extends Object implements java.io.Serializable
   /** Actual Java class object. When present, all interactions
     are redirected to it. Allows our Class to function as a
     wrapper for the Java version (in lieu of subclassing or
-    a shared Interface), and allows BSC or similar 
-    compilation to replace a generated description with an
+    a shared Interface), and allows "in-place compilation"
+    to replace a generated description with an
     directly runnable class.
     */
   private java.lang.Class realclass = null;
@@ -1286,7 +1286,7 @@ public class Class extends Object implements java.io.Serializable
    * to be switched from purely descriptive mode to proxy mode
    * ("reified").
    * The primary intent is to allow a synthetic.Class to be
-   * "compiled in place", eg by BSC.
+   * "compiled in place"
    * <p>
    * This should have the side-effect of limiting further mutation
    * of the synthetic.Class to things which can not be obtained

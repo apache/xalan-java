@@ -55,20 +55,15 @@
  * <http://www.apache.org/>. 
  */
 
-/** Test driver for com.ibm.synthetic
+/** Test driver for synthetic.Class and synthetic.reflection.*
     <p>
-    DEVELOPMENT NOTES:
-    Defer construction of reified data. Probably don't need
-    it all, and it builds up a significant-sized tree.
-
     toSource should probably be factored out into a separate
-    java generator class, sharing an API with a BSC generator
-    class.
+    java generator class, so we could generate other languages as well.
 */
 
-package com.ibm.synthetic;
-import com.ibm.synthetic.Class;
-import com.ibm.synthetic.reflection.*;
+package synthetic;
+import synthetic.Class;
+import synthetic.reflection.*;
 
 public class TestDriver
 {
@@ -131,7 +126,6 @@ public class TestDriver
         System.out.println("\tgetRealClass(): "+C.getRealClass());
     }
 
-    /* Test for something we plan to do in BSC */
     public void quickcheck()
     {
         Inner a=new Inner();

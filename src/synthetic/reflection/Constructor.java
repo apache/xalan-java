@@ -83,19 +83,11 @@ implements Member
     Actual Java class object. When present, all interactions
     are redirected to it. Allows our Class to function as a
     wrapper for the Java version (in lieu of subclassing or
-    a shared Interface), and allows BSC or similar 
-    compilation to replace a generated description with an
+    a shared Interface), and allows "in-place compilation"
+    to replace a generated description with an
     directly runnable class.
     */
   private synthetic.Class declaringclass = null;
-  /**
-    Actual Java class object. When present, all interactions
-    are redirected to it. Allows our Class to function as a
-    wrapper for the Java version (in lieu of subclassing or
-    a shared Interface), and allows BSC or similar 
-    compilation to replace a generated description with an
-    directly runnable class.
-    */
   private java.lang.reflect.Constructor realconstructor = null;
   
   private synthetic.Class[] parametertypes;
