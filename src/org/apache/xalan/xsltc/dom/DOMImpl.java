@@ -2752,20 +2752,19 @@ public final class DOMImpl implements DOM, Externalizable {
 	String name = _namesArray[type];
 	final int pi = _prefix[node];
 	final int ui = _namespace[type];
+
 	if (pi > 0) {
 	    final String prefix = _prefixArray[pi];
 	    final String uri = _uriArray[ui];
 	    final String local = getLocalName(node);
-	    if (prefix.equals(EMPTYSTRING))
-		name = local;
-	    else
-		name = prefix+':'+local;
+
+	    name = prefix.equals(EMPTYSTRING) ? local : (prefix + ':' + local);
 	    handler.startElement(name);
 	    handler.namespace(prefix, uri);
 	}
 	else {
 	    if (ui > 0) {
-		handler.startElement(getLocalName(node));
+		handler.startElement(name = getLocalName(node));
 		handler.namespace(EMPTYSTRING, _uriArray[ui]);
 	    }
 	    else {
