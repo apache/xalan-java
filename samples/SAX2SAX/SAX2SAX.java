@@ -123,7 +123,7 @@ public class SAX2SAX
       reader.setContentHandler(handler);  
 
       // Set the ContentHandler to also function as a LexicalHandler, which
-      // includes "lexical" (e.g., comments and CDATA) events. 
+      // includes "lexical" events (e.g., comments and CDATA). 
       reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
       
    	  FileOutputStream fos = new FileOutputStream("foo.out");

@@ -7,10 +7,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 
-// Imported SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 // Imported java.io classes
 import java.io.FileOutputStream;
 import java.io.IOException;	
@@ -18,8 +14,7 @@ import java.io.IOException;
 public class UseStylesheetPI
 {
   public static void main(String[] args)
-	throws TransformerException, TransformerConfigurationException, 
-         SAXException, IOException	   
+	  throws TransformerException, TransformerConfigurationException
 	{
 	  String media= null , title = null, charset = null;
 	  try
