@@ -1230,10 +1230,15 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     String prefix;
+    int uriIndex = -1;
 
     if (null != uri && uri.length() > 0)
     {
-      int uriIndex = m_prefixMappings.indexOf(uri, 0);
+
+      do
+      {
+        uriIndex = m_prefixMappings.indexOf(uri, ++uriIndex);
+      } while ( (uriIndex & 0x01) == 0);
 
       if (uriIndex >= 0)
       {
@@ -1561,8 +1566,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     if(null == prefix)
       prefix = "";
 
-    int start = m_contextIndexes.peek();
-    int index = m_prefixMappings.indexOf(prefix, start);
+    int index = m_contextIndexes.peek() - 1;
+
+    do
+    {
+      index = m_prefixMappings.indexOf(prefix, ++index);
+    } while ( (index >= 0) && ((index & 0x01) == 0x01) );
+
 
     if (index > -1)
     {
