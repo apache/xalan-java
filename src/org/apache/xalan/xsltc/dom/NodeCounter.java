@@ -48,22 +48,24 @@ public abstract class NodeCounter implements Axis {
     protected String _groupSep;
     protected int    _groupSize;
 
-    private boolean separFirst = true;
-    private boolean separLast = false;
-    private Vector separToks = null;
-    private Vector formatToks = null;
-    private int nSepars  = 0;
-    private int nFormats = 0;
+    private boolean _separFirst = true;
+    private boolean _separLast = false;
+    private Vector _separToks = new Vector();
+    private Vector _formatToks = new Vector();
+    private int _nSepars  = 0;
+    private int _nFormats = 0;
 
-    private static String[] Thousands = 
+    private final static String[] Thousands = 
         {"", "m", "mm", "mmm" };
-    private static String[] Hundreds = 
+    private final static String[] Hundreds = 
 	{"", "c", "cc", "ccc", "cd", "d", "dc", "dcc", "dccc", "cm"};
-    private static String[] Tens = 
+    private final static String[] Tens = 
 	{"", "x", "xx", "xxx", "xl", "l", "lx", "lxx", "lxxx", "xc"};
-    private static String[] Ones = 
+    private final static String[] Ones = 
 	{"", "i", "ii", "iii", "iv", "v", "vi", "vii", "viii", "ix"};
-
+  
+  private StringBuffer _tempBuffer = new StringBuffer();
+    
     protected NodeCounter(Translet translet,
 			  DOM document, DTMAxisIterator iterator) {
 	_translet = translet;
@@ -92,7 +94,6 @@ public abstract class NodeCounter implements Axis {
     protected void setFormatting(String format, String lang, String letterValue,
 				 String groupSep, String groupSize) {
 	_lang = lang;
-	_format = format;
 	_groupSep = groupSep;
 	_letterValue = letterValue;
 
@@ -102,59 +103,70 @@ public abstract class NodeCounter implements Axis {
 	catch (NumberFormatException e) {
 	    _groupSize = 0;
 	}
+    setTokens(format);
+	
+ }
+  
+  // format == null assumed here 
+ private final void setTokens(final String format){
+     if( (_format!=null) &&(format.equals(_format)) ){// has already been set
+        return;
+     }
+     _format = format;
+     // reset
+     final int length = _format.length();
+     boolean isFirst = true;
+     _separFirst = true;
+     _separLast = false;
+     _nSepars  = 0;
+     _nFormats = 0;
+     _separToks.clear() ;
+     _formatToks.clear();
 
-	final int length = _format.length();
-	boolean isFirst = true;
-	separFirst = true;
-	separLast = false;
+         /* 
+          * Tokenize the format string into alphanumeric and non-alphanumeric
+          * tokens as described in M. Kay page 241.
+          */
+         for (int j = 0, i = 0; i < length;) {
+                 char c = format.charAt(i);
+                 for (j = i; Character.isLetterOrDigit(c);) {
+                     if (++i == length) break;
+             c = format.charAt(i);
+                 }
+                 if (i > j) {
+                     if (isFirst) {
+                         _separToks.addElement(".");
+                         isFirst = _separFirst = false;
+                     }
+                     _formatToks.addElement(format.substring(j, i));
+                 }
 
-        separToks = new Vector();
-        formatToks = new Vector();
+                 if (i == length) break;
 
-	/* 
-	 * Tokenize the format string into alphanumeric and non-alphanumeric
-	 * tokens as described in M. Kay page 241.
-	 */
-	for (int j = 0, i = 0; i < length;) {
-            char c = _format.charAt(i);
-            for (j = i; Character.isLetterOrDigit(c);) {
-                if (++i == length) break;
-		c = _format.charAt(i);
-            }
-            if (i > j) {
-                if (isFirst) {
-                    separToks.addElement(".");
-                    isFirst = separFirst = false;
-                }
-                formatToks.addElement(_format.substring(j, i));
-            }
+                 c = format.charAt(i);
+                 for (j = i; !Character.isLetterOrDigit(c);) {
+                     if (++i == length) break;
+                     c = format.charAt(i);
+                     isFirst = false;
+                 }
+                 if (i > j) {
+                     _separToks.addElement(format.substring(j, i));
+                 }
+             }
 
-            if (i == length) break;
+         _nSepars = _separToks.size();
+         _nFormats = _formatToks.size(); 
+         if (_nSepars > _nFormats) _separLast = true;
 
-            c = _format.charAt(i);
-            for (j = i; !Character.isLetterOrDigit(c);) {
-                if (++i == length) break;
-                c = _format.charAt(i);
-                isFirst = false;
-            }
-            if (i > j) {
-                separToks.addElement(_format.substring(j, i));
-            }
-        }
-
-	nSepars = separToks.size();
-	nFormats = formatToks.size(); 
-	if (nSepars > nFormats) separLast = true;
-
-	if (separFirst) nSepars--;
-	if (separLast) nSepars--;
-	if (nSepars == 0) {
-	    separToks.insertElementAt(".", 1);
- 	    nSepars++;
-	}
-	if (separFirst) nSepars ++;
-    }
-
+         if (_separFirst) _nSepars--;
+         if (_separLast) _nSepars--;
+         if (_nSepars == 0) {
+             _separToks.insertElementAt(".", 1);
+             _nSepars++;
+         }
+         if (_separFirst) _nSepars ++;
+ 
+ }
     /**
      * Sets formatting fields to their default values.
      */
@@ -221,26 +233,27 @@ public abstract class NodeCounter implements Axis {
 	// Format the output string using the values array and the fmt. tokens
 	boolean isFirst = true;
 	int t = 0, n = 0, s = 1;
-	final StringBuffer buffer = new StringBuffer();
+  _tempBuffer.setLength(0);
+	final StringBuffer buffer = _tempBuffer;
 
 	// Append separation token before first digit/letter/numeral
-	if (separFirst) buffer.append((String)separToks.elementAt(0));
+	if (_separFirst) buffer.append((String)_separToks.elementAt(0));
 
 	// Append next digit/letter/numeral and separation token
 	while (n < nValues) {
 	    final int value = values[n];
 	    if (value != Integer.MIN_VALUE) {
-		if (!isFirst) buffer.append((String) separToks.elementAt(s++));
-		formatValue(value, (String)formatToks.elementAt(t++), buffer);
-		if (t == nFormats) t--;
-		if (s >= nSepars) s--;
+		if (!isFirst) buffer.append((String) _separToks.elementAt(s++));
+		formatValue(value, (String)_formatToks.elementAt(t++), buffer);
+		if (t == _nFormats) t--;
+		if (s >= _nSepars) s--;
 		isFirst = false;
 	    }
 	    n++;
 	}
 
 	// Append separation token after last digit/letter/numeral
-	if (separLast) buffer.append((String)separToks.lastElement());
+	if (_separLast) buffer.append((String)_separToks.lastElement());
 	return buffer.toString();
     }
 
