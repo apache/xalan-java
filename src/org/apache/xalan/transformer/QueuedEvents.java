@@ -109,12 +109,12 @@ abstract class QueuedEvents
     return (m_eventCount > 1) ? m_startElement : null;
   }
 
-  /**
-   * This is for the derived class to init new events.
-   *
-   * @param qse Queud Sax event
-   */
-  protected abstract void initQSE(QueuedSAXEvent qse);
+//  /**
+//   * This is for the derived class to init new events.
+//   *
+//   * @param qse Queud Sax event
+//   */
+//  protected abstract void initQSE(QueuedSAXEvent qse);
 
   /**
    * To re-initialize the document and element events 
@@ -122,8 +122,8 @@ abstract class QueuedEvents
    */
   protected void reInitEvents()
   {
-    initQSE(m_startDoc);
-    initQSE(m_startElement);
+    // initQSE(m_startDoc);
+    // initQSE(m_startElement);
   }
 
   /**
@@ -143,7 +143,7 @@ abstract class QueuedEvents
   {
 
     m_startDoc.setPending(true);
-    initQSE(m_startDoc);
+    // initQSE(m_startDoc);
 
     m_eventCount++;
   }
@@ -162,7 +162,7 @@ abstract class QueuedEvents
   {
 
     m_startElement.setPending(ns, localName, name, atts);
-    initQSE(m_startElement);
+    // initQSE(m_startElement);
 
     m_eventCount++;
   }

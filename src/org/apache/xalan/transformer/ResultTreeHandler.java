@@ -134,6 +134,8 @@ public class ResultTreeHandler extends QueuedEvents
   {
 
     m_transformer = transformer;
+    m_startElement.setTransformer(m_transformer);
+    m_startDoc.setTransformer(m_transformer);
 
     TraceManager tracer = transformer.getTraceManager();
 
@@ -141,8 +143,13 @@ public class ResultTreeHandler extends QueuedEvents
       m_tracer = tracer;
     else
       m_tracer = null;
+      
+    m_startElement.setTraceManager(m_tracer);
+    m_startDoc.setTraceManager(m_tracer);
 
     m_contentHandler = realHandler;
+    m_startElement.setContentHandler(m_contentHandler);
+    m_startDoc.setContentHandler(m_contentHandler);
 
     if (m_contentHandler instanceof LexicalHandler)
       m_lexicalHandler = (LexicalHandler) m_contentHandler;
@@ -197,7 +204,7 @@ public class ResultTreeHandler extends QueuedEvents
       qsd.setPending(false);
     }
   }
-
+ 
   /**
    * Bottleneck the startElement event.  This is used to "pend" an
    * element, so that attributes can still be added to it before
@@ -1060,18 +1067,18 @@ public class ResultTreeHandler extends QueuedEvents
     return m_nsSupport;
   }
 
-  /**
-   * Override QueuedEvents#initQSE.
-   *
-   * @param qse Give queued Sax event
-   */
-  protected void initQSE(QueuedSAXEvent qse)
-  {
-
-    qse.setContentHandler(m_contentHandler);
-    qse.setTransformer(m_transformer);
-    qse.setTraceManager(m_tracer);
-  }
+//  /**
+//   * Override QueuedEvents#initQSE.
+//   *
+//   * @param qse Give queued Sax event
+//   */
+//  protected void initQSE(QueuedSAXEvent qse)
+//  {
+//
+//    // qse.setContentHandler(m_contentHandler);
+//    // qse.setTransformer(m_transformer);
+//    // qse.setTraceManager(m_tracer);
+//  }
 
   /**
    * Return the current content handler.
@@ -1099,6 +1106,8 @@ public class ResultTreeHandler extends QueuedEvents
 
     m_contentHandler = ch;
     m_startElement.setIsTransformClient(m_contentHandler instanceof TransformerClient);
+    m_startElement.setContentHandler(m_contentHandler);
+    m_startDoc.setContentHandler(m_contentHandler);
 
     reInitEvents();
   }

@@ -187,7 +187,7 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
 
     super.setPending(true);
     
-    if(m_isTransformClient)
+    if(m_isTransformClient && (null != m_transformer))
     {
       m_currentElement = m_transformer.getCurrentElement();
       m_currentNode = m_transformer.getCurrentNode();
