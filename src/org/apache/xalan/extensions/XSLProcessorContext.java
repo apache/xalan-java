@@ -217,8 +217,7 @@ public class XSLProcessorContext {
         while(null != pos)
         {
           rtreeHandler.flushPending();
-          rtreeHandler.cloneToResultTree(stylesheetTree, pos, false, false,
-                            true);
+          rtreeHandler.cloneToResultTree(pos, true);
           Node nextNode = pos.getFirstChild();
           while(null == nextNode)
           {
