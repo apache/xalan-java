@@ -237,8 +237,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
     String id = (null != exception.getSystemId())
                 ? exception.getSystemId() : "SystemId Unknown";
 
-    System.out.println(id + "; Line " + exception.getLineNumber()
-                       + "; Column " + exception.getColumnNumber());
+    System.out.print(id + "; Line " + exception.getLineNumber()
+                       + "; Column " + exception.getColumnNumber()+"; ");
   }
 
   
@@ -254,8 +254,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
                     : (null != locator.getSystemId())
                       ? locator.getSystemId() : "SystemId Unknown";
 
-      System.out.println(id + "; Line " + locator.getLineNumber()
-                         + "; Column " + locator.getColumnNumber());
+      System.out.print(id + "; Line " + locator.getLineNumber()
+                         + "; Column " + locator.getColumnNumber()+"; ");
     }
   }
 }

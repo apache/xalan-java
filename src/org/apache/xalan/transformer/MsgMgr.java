@@ -109,7 +109,7 @@ public class MsgMgr
 
     if (null != errHandler)
     {
-      errHandler.warning(new TransformerException(msg));
+      errHandler.warning(new TransformerException(msg, srcLctr));
     }
     else
     {
