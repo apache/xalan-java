@@ -498,51 +498,6 @@ public class ToXMLStream extends ToStream
     }
 
     /**
-     * This method escapes special characters used in attribute values
-     * It is stolen from XSLTC
-     */
-    private String escapeString(String value)
-    {
-        final char[] ch = value.toCharArray();
-        final int limit = ch.length;
-        StringBuffer result = new StringBuffer();
-
-        int offset = 0;
-        for (int i = 0; i < limit; i++)
-        {
-            switch (ch[i])
-            {
-                case '&' :
-                    result.append(ch, offset, i - offset).append(ENTITY_AMP);
-                    offset = i + 1;
-                    break;
-                case '"' :
-                    result.append(ch, offset, i - offset).append(ENTITY_QUOT);
-                    offset = i + 1;
-                    break;
-                case '<' :
-                    result.append(ch, offset, i - offset).append(ENTITY_LT);
-                    offset = i + 1;
-                    break;
-                case '>' :
-                    result.append(ch, offset, i - offset).append(ENTITY_GT);
-                    offset = i + 1;
-                    break;
-                case '\n' :
-                    result.append(ch, offset, i - offset).append(ENTITY_CRLF);
-                    offset = i + 1;
-                    break;
-            }
-        }
-
-        if (offset < limit)
-        {
-            result.append(ch, offset, limit - offset);
-        }
-        return result.toString();
-    }
-
-    /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elemName) throws SAXException

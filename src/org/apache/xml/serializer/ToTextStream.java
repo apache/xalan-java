@@ -500,7 +500,13 @@ void writeNormalizedChars(
    */
   public void comment(String data) throws org.xml.sax.SAXException
   {
-    comment(data.toCharArray(), 0, data.length());
+      final int length = data.length();
+      if (length > m_charsBuff.length)
+      {
+          m_charsBuff = new char[length*2 + 1];
+      }
+      data.getChars(0, length, m_charsBuff, 0);
+      comment(m_charsBuff, 0, length);
   }
 
   /**
@@ -594,7 +600,13 @@ void writeNormalizedChars(
     public void characters(String characters) 
     throws SAXException 
     { 
-        characters(characters.toCharArray(), 0, characters.length());
+        final int length = characters.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length*2 + 1];
+        }
+        characters.getChars(0, length, m_charsBuff, 0);
+        characters(m_charsBuff, 0, length); 
     }
 
 

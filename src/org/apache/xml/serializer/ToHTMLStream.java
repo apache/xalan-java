@@ -1063,8 +1063,14 @@ public class ToHTMLStream extends ToStream
         // causing damage.  If the URL is already properly escaped, in theory, this 
         // function should not change the string value.
 
-        final char[] chars = string.toCharArray();
-        final int end = chars.length;
+        final int end = string.length();
+        if (end > m_attrBuff.length)
+        {
+           m_attrBuff = new char[end*2 + 1];               
+        }
+        string.getChars(0,end, m_attrBuff, 0); 
+        final char[] chars = m_attrBuff;
+
         int cleanStart = 0;
         int cleanLength = 0;
         
@@ -1267,9 +1273,15 @@ public class ToHTMLStream extends ToStream
         final java.io.Writer writer, String string, String encoding)
         throws IOException
     {
+        final int end = string.length();
+        if (end > m_attrBuff.length)
+        {
+            m_attrBuff = new char[end * 2 + 1];
+        }
+        string.getChars(0, end, m_attrBuff, 0);
+        final char[] chars = m_attrBuff;
+
         
-        final char chars[] = string.toCharArray();
-        final int end = chars.length;
 
         int cleanStart = 0;
         int cleanLength = 0;

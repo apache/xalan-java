@@ -141,7 +141,13 @@ abstract public class ToSAXHandler extends SerializerBase
      */
     public void characters(String characters) throws SAXException
     {
-        characters(characters.toCharArray(), 0, characters.length());
+        final int len = characters.length();
+        if (len > m_charsBuff.length)
+        {
+           m_charsBuff = new char[len*2 + 1];             
+        }
+        characters.getChars(0,len, m_charsBuff, 0);   
+        characters(m_charsBuff, 0, len);
     }
 
     /**
@@ -165,11 +171,16 @@ abstract public class ToSAXHandler extends SerializerBase
         // Ignore if a lexical handler has not been set
         if (m_lexHandler != null)
         {
-            m_lexHandler.comment(comment.toCharArray(), 0, comment.length());
-
+            final int len = comment.length();
+            if (len > m_charsBuff.length)
+            {
+               m_charsBuff = new char[len*2 + 1];              
+            }
+            comment.getChars(0,len, m_charsBuff, 0);            
+            m_lexHandler.comment(m_charsBuff, 0, len);
             // time to fire off comment event
             if (m_tracer != null)
-                super.fireCommentEvent(comment.toCharArray(), 0, comment.length());
+                super.fireCommentEvent(m_charsBuff, 0, len);
         }
 
     }

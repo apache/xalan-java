@@ -1568,7 +1568,13 @@ abstract public class ToStream extends SerializerBase
      */
     public void characters(String s) throws org.xml.sax.SAXException
     {
-        characters(s.toCharArray(), 0, s.length());
+        final int length = s.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length * 2 + 1];
+        }
+        s.getChars(0, length, m_charsBuff, 0);
+        characters(m_charsBuff, 0, length);
     }
 
     /**
@@ -1899,9 +1905,14 @@ abstract public class ToStream extends SerializerBase
         String encoding)
         throws IOException
     {
+        final int len = string.length();
+        if (len > m_attrBuff.length)
+        {
+           m_attrBuff = new char[len*2 + 1];             
+        }
+        string.getChars(0,len, m_attrBuff, 0);   
+        final char[] stringChars = m_attrBuff;
 
-        final char[] stringChars = string.toCharArray();
-        final int len = stringChars.length;
         for (int i = 0; i < len; i++)
         {
             char ch = stringChars[i];

@@ -461,8 +461,13 @@ public class ToXMLSAXHandler extends ToSAXHandler
      */
     public void characters(String chars) throws SAXException
     {
-        final char[] arr = chars.toCharArray();
-        this.characters(arr,0,arr.length);
+        final int length = chars.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length*2 + 1];
+        }
+        chars.getChars(0, length, m_charsBuff, 0);
+        this.characters(m_charsBuff, 0, length); 
     }
 
     /////////////////// from XSLTC //////////////

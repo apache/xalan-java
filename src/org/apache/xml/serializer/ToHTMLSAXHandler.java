@@ -502,10 +502,15 @@ public class ToHTMLSAXHandler extends ToSAXHandler
      *
      * @see org.apache.xml.serializer.ExtendedContentHandler#characters(String)
      */
-    public void characters(String chars) throws SAXException
+    public void characters(final String chars) throws SAXException
     {
-        this.characters(chars.toCharArray(), 0, chars.length());
-        return;
+        final int length = chars.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length * 2 + 1];
+        }
+        chars.getChars(0, length, m_charsBuff, 0);        
+        this.characters(m_charsBuff, 0, length);
     }
 
 

@@ -242,6 +242,22 @@ abstract public class SerializerBase
      * the element, such as its namespace URI. 
      */
     protected ElemContext m_elemContext = new ElemContext();
+    
+    /**
+     * A utility buffer for converting Strings passed to
+     * character() methods to character arrays.
+     * Reusing this buffer means not creating a new character array
+     * everytime and it runs faster.
+     */
+    protected char[] m_charsBuff = new char[60];
+    
+    /**
+     * A utility buffer for converting Strings passed to
+     * attribute methods to character arrays.
+     * Reusing this buffer means not creating a new character array
+     * everytime and it runs faster.
+     */
+    protected char[] m_attrBuff = new char[30];    
 
     /**
      * Receive notification of a comment.
@@ -250,7 +266,13 @@ abstract public class SerializerBase
      */
     public void comment(String data) throws SAXException
     {
-        this.comment(data.toCharArray(), 0, data.length());
+        final int length = data.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length * 2 + 1];
+        }
+        data.getChars(0, length, m_charsBuff, 0);
+        comment(m_charsBuff, 0, length);
     }
 
     /**
@@ -964,16 +986,16 @@ abstract public class SerializerBase
         throws org.xml.sax.SAXException
     {
         flushPending();
-
         String data = node.getNodeValue();
-        char[] ch = null;
-        int length = 0;
         if (data != null)
         {
-            ch = data.toCharArray();
-            length = data.length();
-             characters(ch, 0, length);
-
+            final int length = data.length();
+            if (length > m_charsBuff.length)
+            {
+                m_charsBuff = new char[length * 2 + 1];
+            }
+            data.getChars(0, length, m_charsBuff, 0);
+            characters(m_charsBuff, 0, length);
         }
     }
     

@@ -123,7 +123,13 @@ public class ToTextSAXHandler extends ToSAXHandler
 
     public void comment(String data) throws org.xml.sax.SAXException
     {
-        comment(data.toCharArray(), 0, data.length());
+        final int length = data.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length*2 + 1];
+        }
+        data.getChars(0, length, m_charsBuff, 0);
+        comment(m_charsBuff, 0, length);
     }
 
     /**
@@ -381,9 +387,14 @@ public class ToTextSAXHandler extends ToSAXHandler
     public void characters(String characters) 
     throws SAXException 
     { 
+        final int length = characters.length();
+        if (length > m_charsBuff.length)
+        {
+            m_charsBuff = new char[length*2 + 1];
+        }
+        characters.getChars(0, length, m_charsBuff, 0);
    
-        m_saxHandler.characters(characters.toCharArray(), 0, 
-        characters.length());
+        m_saxHandler.characters(m_charsBuff, 0, length);
     
     }
     /**
