@@ -69,97 +69,151 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class LogicalExpr extends Expression {
+
     public static final int OR  = 0;
     public static final int AND = 1;
 	
     private final int _op;
     private Expression _left, _right;
 
-    private static final String[] Ops = {
-	"or", "and"
-    };
+    private static final String[] Ops = { "or", "and" };
 
-    public int getOp() {
-	return(_op);
-    }
-
+    /**
+     * Creates a new logical expression - either OR or AND. Note that the
+     * left- and right-hand side expressions can also be logical expressions,
+     * thus creating logical trees representing structures such as
+     * (a and (b or c) and d), etc...
+     */
     public LogicalExpr(int op, Expression left, Expression right) {
 	_op = op;
 	(_left = left).setParent(this);
 	(_right = right).setParent(this);
     }
 
+    /**
+     * Returns this logical expression's operator - OR or AND represented
+     * by 0 and 1 respectively.
+     */
+    public int getOp() {
+	return(_op);
+    }
+
+    /**
+     * Override the SyntaxTreeNode.setParser() method to make sure that the
+     * parser is set for sub-expressions
+     */
     public void setParser(Parser parser) {
 	super.setParser(parser);
 	_left.setParser(parser);
 	_right.setParser(parser);
     }
-    
+
+    /**
+     * Returns a string describing this expression
+     */
     public String toString() {
 	return Ops[_op] + '(' + _left + ", " + _right + ')';
     }
 
+    /**
+     * Type-check this expression, and possibly child expressions.
+     */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	// Get the left and right operand types
 	Type tleft = _left.typeCheck(stable); 
 	Type tright = _right.typeCheck(stable);
 
-	MethodType ptype = lookupPrimop(stable, Ops[_op],
-					new MethodType(Type.Void,
-						       tleft, tright)); 
+	// Check if the operator supports the two operand types
+	MethodType wantType = new MethodType(Type.Void, tleft, tright);
+	MethodType haveType = lookupPrimop(stable, Ops[_op], wantType);
 
-	if (ptype != null) {
-	    Type arg1 = (Type) ptype.argsType().elementAt(0);
-	    if (!arg1.identicalTo(tleft)) {
-		_left = new CastExpr(_left, arg1);
-	    }
-	    Type arg2 = (Type) ptype.argsType().elementAt(1);
-	    if (!arg2.identicalTo(tright)) {
-		_right = new CastExpr(_right, arg1);				
-	    }
-	    return _type = ptype.resultType();
+	// Yes, the operation is supported
+	if (haveType != null) {
+	    // Check if left-hand side operand must be type casted
+	    Type arg1 = (Type)haveType.argsType().elementAt(0);
+	    if (!arg1.identicalTo(tleft)) _left = new CastExpr(_left, arg1);
+	    // Check if right-hand side operand must be type casted
+	    Type arg2 = (Type) haveType.argsType().elementAt(1);
+	    if (!arg2.identicalTo(tright)) _right = new CastExpr(_right, arg1);
+	    // Return the result type for the operator we will use
+	    return _type = haveType.resultType();
 	}
 	throw new TypeCheckError(this);
     }
 
+    /**
+     * Compile the expression - leave boolean expression on stack
+     */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	translateDesynthesized(classGen, methodGen);
 	synthesize(classGen, methodGen);
     }
 
+    /**
+     * Compile expression and update true/false-lists
+     */
     public void translateDesynthesized(ClassGenerator classGen,
 				       MethodGenerator methodGen) {
+
 	final InstructionList il = methodGen.getInstructionList();
 	final SyntaxTreeNode parent = getParent();
+
+	// Compile AND-expression
 	if (_op == AND) {
+
+	    // Translate left hand side - must be true
 	    _left.translateDesynthesized(classGen, methodGen);
 	    if ((_left instanceof FunctionCall) &&
 		(!(_left instanceof ContainsCall)))
 		_falseList.add(il.append(new IFEQ(null)));
+
+	    // Need this for chaining any OR-expression children
 	    InstructionHandle middle = il.append(NOP);
+
+	    // Translate left right side - must be true
 	    _right.translateDesynthesized(classGen, methodGen);
 	    if ((_right instanceof FunctionCall) &&
 		(!(_right instanceof ContainsCall)))
 		_falseList.add(il.append(new IFEQ(null)));
+
+	    // Need this for chaining any OR-expression children
+	    InstructionHandle after = il.append(NOP);
+
+	    // Append child expression false-lists to our false-list
 	    _falseList.append(_right._falseList.append(_left._falseList));
 
-	    // Special case for ((a OR b) and c)
+	    // Special case for OR-expression as a left child of AND
 	    if (_left instanceof LogicalExpr) {
 		LogicalExpr left = (LogicalExpr)_left;
-		if (left.getOp() == OR) {
-		    left.backPatchTrueList(middle);
-		    _trueList.append(_right._trueList);
-		    return; 
-		}
+		if (left.getOp() == OR) left.backPatchTrueList(middle);
+	    }
+	    else {
+		_trueList.append(_left._trueList);
 	    }
 
-	    _trueList.append(_right._trueList.append(_left._trueList));
+	    // Special case for OR-expression as a right child of AND
+	    if (_right instanceof LogicalExpr) {
+		LogicalExpr right = (LogicalExpr)_right;
+		if (right.getOp() == OR) right.backPatchTrueList(after);
+	    }
+	    else {
+		_trueList.append(_right._trueList);
+	    }
+
 	} 
-	else {		// _op == OR
+	// Compile OR-expression
+	else {
+	    // Translate left-hand side expression and produce true/false list
 	    _left.translateDesynthesized(classGen, methodGen);
 	    if ((_left instanceof FunctionCall) &&
 		(!(_left instanceof ContainsCall)))
 		_falseList.add(il.append(new IFEQ(null)));
+
+	    // This GOTO is used to skip over the code for the last test
+	    // in the case where the the first test succeeds
 	    InstructionHandle ih = il.append(new GOTO(null));
+
+	    // Translate right-hand side expression and produce true/false list
 	    _right.translateDesynthesized(classGen, methodGen);
 	    if ((_right instanceof FunctionCall) &&
 		(!(_right instanceof ContainsCall)))
