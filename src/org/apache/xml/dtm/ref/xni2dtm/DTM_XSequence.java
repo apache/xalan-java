@@ -56,7 +56,7 @@
  */
 package org.apache.xml.dtm.ref.xni2dtm;
 
-import org.apache.xml.dtm.DTMSequence;
+import org.apache.xml.xdm.XDMSequence;
 
 /** This class provides an API representation for the XPath 2 Data Model's "Sequences"
  * -- which are the basic representation for typed values. Only built-in types, 
@@ -67,7 +67,7 @@ import org.apache.xml.dtm.DTMSequence;
  * the effort, since XNI2DTM will use a stored instance.)
  * */
 public class DTM_XSequence 
-implements DTMSequence
+implements XDMSequence
 {
   Object[] values;
   

@@ -549,7 +549,7 @@ m_builtInFunctions.put(
           {
             newNode = new StepExpr(p);
             PatternAxis patAxis =
-              new PatternAxis(org.apache.xml.dtm.Axis.ROOT, p);
+              new PatternAxis(org.apache.xml.xdm.Axis.ROOT, p);
             patAxis.m_value = "root::"; // for diagnostics
             NodeTest nt =
               new NodeTest(
@@ -566,7 +566,7 @@ m_builtInFunctions.put(
             StepPattern spat = new StepPattern();
             spat.setWhatToShow(
               DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT);
-            spat.setAxis(org.apache.xml.dtm.Axis.PARENT);
+            spat.setAxis(org.apache.xml.xdm.Axis.PARENT);
             // spat.setT(org.apache.xpath.patterns.StepPattern.PSEUDONAME_ROOT);
             newNode = spat;
           }
@@ -579,7 +579,7 @@ m_builtInFunctions.put(
             newNode = new StepExpr(p);
             PatternAxis patAxis =
               new PatternAxis(
-                org.apache.xml.dtm.Axis.DESCENDANTSORSELFFROMROOT,
+                org.apache.xml.xdm.Axis.DESCENDANTSORSELFFROMROOT,
                 p);
             patAxis.m_value = "descendants-from-root::"; // for diagnostics
             NodeTest nt =
@@ -597,7 +597,7 @@ m_builtInFunctions.put(
             StepPattern spat = new StepPattern();
             spat.setWhatToShow(
               DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT);
-            spat.setAxis(org.apache.xml.dtm.Axis.ANCESTOR);
+            spat.setAxis(org.apache.xml.xdm.Axis.ANCESTOR);
             newNode = spat;
           }
         }
@@ -660,50 +660,50 @@ m_builtInFunctions.put(
 
         // === AXES, ETC. ===	
       case XPathTreeConstants.JJTAXISDESCENDANT :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.DESCENDANT, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.DESCENDANT, p);
         break;
       case XPathTreeConstants.JJTAXISSELF :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.SELF, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.SELF, p);
         break;
       case XPathTreeConstants.JJTAXISDESCENDANTORSELF :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.DESCENDANTORSELF, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.DESCENDANTORSELF, p);
         break;
       case XPathTreeConstants.JJTAXISFOLLOWINGSIBLING :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.FOLLOWINGSIBLING, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.FOLLOWINGSIBLING, p);
         break;
       case XPathTreeConstants.JJTAXISFOLLOWING :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.FOLLOWING, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.FOLLOWING, p);
         break;
       case XPathTreeConstants.JJTAXISNAMESPACE :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.NAMESPACE, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.NAMESPACE, p);
         break;
       case XPathTreeConstants.JJTAXISPARENT :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.PARENT, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.PARENT, p);
         break;
       case XPathTreeConstants.JJTAXISANCESTOR :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.ANCESTOR, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.ANCESTOR, p);
         break;
       case XPathTreeConstants.JJTAXISPRECEDINGSIBLING :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.PRECEDINGSIBLING, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.PRECEDINGSIBLING, p);
         break;
       case XPathTreeConstants.JJTAXISPRECEDING :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.PRECEDING, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.PRECEDING, p);
         break;
       case XPathTreeConstants.JJTAXISANCESTORORSELF :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.ANCESTORORSELF, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.ANCESTORORSELF, p);
         break;
       case XPathTreeConstants.JJTAXISCHILD :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.CHILD, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.CHILD, p);
         break;
       case XPathTreeConstants.JJTAXISATTRIBUTE :
       case XPathTreeConstants.JJTAT :
-        newNode = new PatternAxis(org.apache.xml.dtm.Axis.ATTRIBUTE, p);
+        newNode = new PatternAxis(org.apache.xml.xdm.Axis.ATTRIBUTE, p);
         break;
 
       case XPathTreeConstants.JJTABBREVIATEDFORWARDSTEP :
         {
           PatternAxis patAxis =
-            new PatternAxis(org.apache.xml.dtm.Axis.CHILD, p);
+            new PatternAxis(org.apache.xml.xdm.Axis.CHILD, p);
           patAxis.m_value = "child::"; // for diagnostics
           newNode = patAxis;
         }
@@ -711,7 +711,7 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTDOT :
         {
           PatternAxis patAxis =
-            new PatternAxis(org.apache.xml.dtm.Axis.SELF, p);
+            new PatternAxis(org.apache.xml.xdm.Axis.SELF, p);
           patAxis.m_value = "self::"; // for diagnostics
           newNode = patAxis;
           NodeTest nt = new NodeTest(org.apache.xml.dtm.DTMFilter.SHOW_ALL, p);
@@ -721,7 +721,7 @@ m_builtInFunctions.put(
       case XPathTreeConstants.JJTDOTDOT :
         {
           PatternAxis patAxis =
-            new PatternAxis(org.apache.xml.dtm.Axis.PARENT, p);
+            new PatternAxis(org.apache.xml.xdm.Axis.PARENT, p);
           patAxis.m_value = "parent::"; // for diagnostics
           newNode = patAxis;
           NodeTest nt = new NodeTest(org.apache.xml.dtm.DTMFilter.SHOW_ALL, p);

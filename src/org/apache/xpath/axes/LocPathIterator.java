@@ -1055,7 +1055,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   	String localname = getLocalName();
   	if(getAxis() >= 0)
   	{
-	  	return org.apache.xml.dtm.Axis.names[getAxis()]+"::"+
+	  	return org.apache.xml.xdm.Axis.names[getAxis()]+"::"+
 	  		((null != namespace) ? (namespace+":") : "")+
 	  		((null != localname) ? localname : "node()")+
 	  		" "+super.toString();

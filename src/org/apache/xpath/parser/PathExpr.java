@@ -112,7 +112,7 @@ public class PathExpr extends NonExecutableExpression
   			if(isSlashSlash)
   			{
   				node = new StepExpr(m_parser);
-  				PatternAxis patAxis = new PatternAxis(org.apache.xml.dtm.Axis.DESCENDANTORSELF, m_parser);
+  				PatternAxis patAxis = new PatternAxis(org.apache.xml.xdm.Axis.DESCENDANTORSELF, m_parser);
   				patAxis.m_value = "descendant-or-self::"; // for diagnostics
   				NodeTest nt = new NodeTest(org.apache.xml.dtm.DTMFilter.SHOW_ALL, m_parser);
   				Predicates preds = new Predicates(m_parser);

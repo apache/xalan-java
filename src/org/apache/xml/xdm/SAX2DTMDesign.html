@@ -1,0 +1,406 @@
+<html><head><title></title></head><body>
+<center>
+<h1>SAX2DTM Design Notes</h1>
+<br>
+Original document contributed by Gary Peskin.
+<br>
+Substantial changes 2003-02-03 by Joe Kesselman: Updates, additional discussion, restructuring.
+<br>
+</center>
+<hr>
+<p><strong>Warning:</strong> The internal details of this class are subject to
+change. SAX2DTM should generally be accessed only through published
+interface methods in in the DTM and DTMManager classes.  However, the
+following information is provided to aid in an understanding of how
+this class currently works, for debugging purposes and to help guide
+DTM's further evolution.
+<p>
+This implementation of DTM stores information about each node in a
+series of tables.  Conceptually, these tables can be thought of as
+arrays and vectors, though they are generally implemented using some
+internal classes (for various reasons, including more efficient
+incremental growth, reduced memory use, and efficient content-based
+access).
+<p>
+Note that SAX2DTM inherits a great deal of its structure and behavior
+from DTMDefaultBase, and that XNI2DTM in turn inherits from SAX2DTM.
+<p>
+
+<hr>
+<h2><a name="handles">Node Handles and Node Identifiers</a></h2>
+<p>
+Document Table Model (DTM) node addressing occurs at two levels.
+<p>
+The public DTM APIs currently use Node Handles. These integers encapsulate
+information which -- with the help of a DTMManager object -- can be
+expanded into a pointer to a DTM object and a Node Identifier integer.
+<p>
+The Node Identifier specifies which node we are addressing within a
+given DTM. You can think of it as the "row number" in the DTM's
+tables, where each row represents a single Node.
+<p>
+In SAX2DTM (and in most DTM implementations), Node Identifiers are
+assigned sequentially in document order as the DTM model is built, and
+we take advantage of that in some of the code. However, this is
+strictly an implementation detail, and other DTMs may assign
+Identifiers in other orders.
+
+<hr>
+<h2><a name="main">Main Node Description Columns</a></h2>
+
+<p>
+These are indexed by the <a href="#handles">Node Identifier</a>
+integer. You can think of all values in this chart addressed by the
+same Node Identity as forming a single Node record; separate arrays
+were used primarily because Java didn't offer us a good mixed-type
+array representation.
+<p>
+Note that if we were coding in C, we'd have used a single table of
+Structs. Unfortunately the closest Java can come to that is Objects,
+and objects have a lot of overhead -- which is a large part of why we
+switched to DTM. One downside of this approach is that we've lost some
+locality-of-reference; different properties of the same node are no
+longer located near each other in memory, which may have adverse
+effects on the computer's memory cache.
+<p>
+Also note that our use of arrays (either directly or within other
+wrappers) forces us to accept some unnecessary overhead, since Java
+insists on range-checking all array accesses. Again, DTM would be
+more "comfortable" if coded in a language such as C.
+</p>
+
+<table border="1" summary="support structures">
+<tr>
+<th>Array Name</th>
+<th>Array Type</th>
+<th>Contents</th>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_firstCh<br>m_nextSib<br>m_prevSib<br>m_parent</code></td>
+<td valign="top" rowspan="1" colspan="1">int</td>
+<td valign="top" rowspan="1" colspan="1">Node-tree relationships; the
+integer index of the node bearing this relationship to the current
+node.  If no such node exists, these are set to DTM.NULL (-1).
+<p>
+Note that there isn't a column for first namespace declaration, or
+first attribute node. These are currently stored in SAX2DTM (and in
+the "native core" DTMDefaultBase) as immediate successors to the
+element node on which they appear, with namespace declarations ordered
+before attributes. The first child (if any) will immediately follow the
+namespaces and attributes (if any).
+<p>
+(Example: If the element has Node ID 17, and its
+first child has Node ID 20, then nodes 18 and 19 will be Namespace and/or
+and Attribute nodes for this element. The attribute/namespace access methods
+scan across this group, checking node types to separate it into its
+two categories.)</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_exptype</code></td>
+<td valign="top" rowspan="1" colspan="1">int</td>
+<td valign="top" rowspan="1" colspan="1">An integer representing the node's
+"Expanded Type". For some kinds of node, this is the same as the DOM
+Node type. Namespace declaration nodes, which didn't have a node type
+before DOM Level 3, have been assigned a new value. For nodes which
+have a QName (elements and attributes in particular), we generate a
+unique value for each combination of DOM Node type, namespace URI, and
+Local Name. m_exptype indexes into a table which maps
+the Expanded Type number to the three subfields it summarizes.
+<p>
+This approach both reduces storage and turns the common
+three-field test "Is this node an Element with this specific
+namespace/localname pair" into a single equality comparison, at
+the cost of making less-specific tests more expensive.
+<p>
+NOTE: It might be worth changing this column from integers to
+pointers-to-records within the Expanded Type table, speeding up
+retrieval of the Expanded Type's subfields.
+</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_dataOrQName</code></td>
+<td valign="top" rowspan="1" colspan="1">int</td>
+<td valign="top" rowspan="1" colspan="1"><a name="m_dataOrQName">
+OVERLOADED COLUMN: An index into either m_data or m_valuesOrPrefixes, as explained <a href="#data">below</a>.
+</a>
+</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_namespaceDeclSetElements</code>
+<br> with <code>m_namespaceDeclSets</code></td>
+<td valign="top" rowspan="1" colspan="1">Complicated but yields int[]</td>
+<td valign="top" rowspan="1" colspan="1">SPARSE COLUMN: Finding the
+"in scope" namespaces on a node is expensive, since they may be
+inherited from any ancestor and may have gone through multiple stages
+of redefinition. We currently precalculate these sets, maintaining a
+sparse table of the places in the document where the sets actually
+change and taking advantage of the fact that node identifiers are
+assigned in document order to quickly find the set which applies for
+any given node.
+<p>
+The set is returned as the node handles of the Xalan namespace
+declaration nodes which are in scope at this point. The parent of a
+namespace declaration node (and its node ordering) places it
+immediately following the Element it originally appeared on.
+<p>
+<strong>Note that the last point is a deliberate divergence from the
+XPath 1.0 Data Model spec.</strong> They make the mistake of saying
+that every node has an independent set of its own Namespace Nodes,
+which see it as their parent. <strong><i>Everyone</i></strong> agrees
+that this was a blatantly bad decision; it's impossible to implement
+efficiently, Namespace nodes are extremely rarely accessed, and nobody
+but a testcase author seems to care what a Namespace's parent actually
+is. At this time, <strong>XPath 2.0 is planning to deprecate the
+entire concept</strong> of Namespace Nodes and only let folks retrieve
+the in-scope namespaces as name/value pairs; our solution <i>is</i>
+fully compatible with that approach.
+</td>
+</tr>
+
+<tr>
+<td valign="top" colspan="3">SAX2DTM has three "optional" columns, allocated only
+when the user explicitly enables this feature, which support a
+SAX-style "locator" describing the node's physical position in its
+source file. These is used by some IDE and debugging tools. It might
+be better to instead generate simple XPaths to the nodes (which can be
+done directly from the DTM model), and have the tools interpret those;
+this approach would avoid the storage overhead, would be meaningful
+even when the source-file information is not available (e.g., accessing
+a DOM2DTM or a Result Tree Fragment), and would have all the other
+benefits associated with XPaths, but would also have computational
+costs.
+<p>
+Of course, if the user didn't request locator support, the DTM recognizes that
+these columns are absent and the location accessors return their "not
+known" values.
+</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_sourceSystemID</code></td>
+<td valign="top" rowspan="1" colspan="1">String</td>
+<td valign="top" rowspan="1" colspan="1">URI this node was loaded from, if known. (Base URI at this point in the document/entity.)</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_sourceLine</code></td>
+<td valign="top" rowspan="1" colspan="1">int</td>
+<td valign="top" rowspan="1" colspan="1">Line within text file/stream that this node was loaded from, if known.</td>
+</tr>
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_sourceColumn</code></td>
+<td valign="top" rowspan="1" colspan="1">int</td>
+<td valign="top" rowspan="1" colspan="1">Character position on source line within text file/stream that this node was loaded from, if known.</td>
+</tr>
+
+<tr>
+<td valign="top" colspan="3">In XNI2DTM, which is a schema-type-aware derivative of SAX2DTM, there is an additional column:</td>
+</tr>
+<tr>
+<a name="m_schemaTypeOverride">
+<td valign="top" rowspan="1" colspan="1"><code>m_schemaTypeOverride</code></td>
+<td valign="top" rowspan="1" colspan="1">(Schema type object reference)</td>
+<td valign="top" rowspan="1" colspan="1">SPARSE COLUMN: If this node is an
+element/attribute whose Schema Type does not precisely match that
+normally bound to its Expanded Type (see below), the actual type will
+be recorded here. If there is no entry,, the "default" Schema Type can
+be retrieved from the Expanded Type table.</td>
+</a>
+</tr>
+
+</table>
+
+<h2><a name="data">Data Column Overloading</a></h2>
+
+<P>As a space-saving measure, the <a href="#m_dataOrQName"><code>m_dataOrQName</code></a> column is
+overloaded, and used for several different purposes depending on the
+Expanded Node Type. Sometimes <a href="#m_dataOrQName"><code>m_dataOrQName</code></a> is a direct index into
+m_valuesOrPrefixes, and sometimes it goes through <code>m_data</code> (where,
+again, it may be interpreted different ways in different cases).
+<p>
+The best thing I can say about this solution is that it works and does
+reduce memory usage.
+<p>
+<strong>Note</strong> that <code>m_data</code> is actually treated as
+an array of <strong>pairs</strong> of integers. If we were coding in
+C, we'd use an array of structs, or array of int[2]. Java doesn't have
+an efficient version of that concept, so instead we use a single array
+of integers and simply address every second position. This
+microoptimization reduces the cost of expanding the storage for this
+table, when that's necessary ... but it would have been cleaner to
+simply use two arrays together as a two-column table, as we did in the
+<a href="#main">Main Node Description</a> chart above.
+<p>
+<table border="1"
+summary="Node table">
+<tr>
+<th>Node Type (from m_expType)</th>
+<th><code>m_dataOrQName</code></th>
+<th><code>m_data</code></th>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Attr (namespaced or not)</td>
+<td valign="top" rowspan="1" colspan="1">
+<b>In A Namespace</b>: a negative number, the absolute value of which is an index
+into <code>m_data</code>.
+<p>
+<b>No namespace</b>: an index into
+<code>m_valuesOrPrefixes</code> pointing to the attribute value.
+</td>
+<td valign="top" rowspan="1" colspan="1"><b>index</b>: an int containing the index into
+<code>m_valuesOrPrefixes</code> for the Attr QName.
+<p><b>index+1</b>: an int
+containing the index into <code>m_valuesOrPrefixes</code> for the attribute value.</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Comment</td>
+<td valign="top" rowspan="1" colspan="1">index into <code>m_valuesOrPrefixes</code>
+for comment text.</td>
+<td valign="top" rowspan="1" colspan="1">unused</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Document</td>
+<td valign="top" rowspan="1" colspan="1">0</td>
+<td valign="top" rowspan="1" colspan="1">unused</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Element (namespaced or not)</td>
+<td valign="top" rowspan="1" colspan="1">
+<b>In A Namespace</b>: an index into
+<code>m_valuesOrPrefixes</code> pointing to the Element QName.<p>
+<b>No namespace</b>: 0 (unused?)
+</td>
+<td valign="top" rowspan="1" colspan="1">unused</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Text</td>
+<td valign="top" rowspan="1" colspan="1">an index into <code>m_data</code>.</td>
+<td valign="top" rowspan="1" colspan="1"><b>index</b>: an int containing starting subscript in
+<code>m_chars</code> for the text.
+<p><b>index+1</b>: an int
+containing the length of the text.</td>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Processing Instruction</td>
+<td valign="top" rowspan="1" colspan="1">index into <code>m_valuesOrPrefixes</code>
+for PI data.</td>
+<td valign="top" rowspan="1" colspan="1">unused</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1">Namespace Node</td>
+<td valign="top" rowspan="1" colspan="1">index into
+<code>m_valuesOrPrefixes</code> pointing to the namespace URI being bound to a prefix.</td>
+<td valign="top" rowspan="1" colspan="1">unused</td>
+</tr>
+
+</table>
+
+<p>
+<h2>Support Structures: Expanded Names and Text Strings</h2>
+<p>
+The following arrays are indexed by, and expand upon, information from
+the other tables. This indirection is done either because the integer
+can be directly used as an efficient stand-in for a larger or more
+complicated value, or because we're overloading a field in the main
+tables and need someplace to store the additional information, or
+because we used to be using shift-and-mask to combine several values
+in a single column of those tables... or some combination of these.
+<p>
+(Early versions of DTM were somewhat biased toward storing data as
+integers, since they used a lot of shift-and-mask subaddressing to
+pack multiple values directly into a single array. In fact, the
+original DTM prototype managed to squeeze the essential information
+about a node into just four words of storage -- not counting text
+content, of course. Performance issues caused us to retire that
+design.)
+<p>
+
+<table border="1" summary="support structures">
+<tr>
+<th>Array Name</th>
+<th>Array Type</th>
+<th>Contents</th>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_expandedNameTable</code></td>
+<td valign="top" rowspan="1" colspan="1">ExtendedType object (yes, we're inconsistent about whether it's "expanded" or "extended")</td>
+<td valign="top" rowspan="1" colspan="1">An entry in this table summarizes the "semantic role" of a node, combining its XPath Node Type, its namespace URI (if any), and its local name (if any). A single slot is assigned for each unique combination of these values; thus, comparing offsets in this table combines testing all three values, which improves XPath execution efficiency. 
+<p>
+If schema types are being recorded (XNI2DTM), this table also records
+a default Schema Datatype for this semantic role. This isn't currently
+being optimized; the datatype stored is just the first one we see
+associated with this Expanded Type combination. Since local type
+overrides are uncommon, this will generally be correct; when it isn't,
+it may be overridden on a per-node basis by <a
+href="#m_schemaTypeOverride"><code>m_schemaTypeOverride</code></a></td>.
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_valuesOrPrefixes</code></td> <td valign="top"
+rowspan="1" colspan="1">String</td> <td valign="top" rowspan="1" colspan="1">This
+"string pool" collects unique (typically small) Strings which we
+expect may be used many times -- specifically, QNames and attribute
+values. A single copy of each unique string will be stored, and all
+references to the same value are pointed to that one instance.</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_data</code></td>
+<td valign="top" rowspan="1" colspan="1">int[2] (actually consecutive in single array)</td>
+<td valign="top" rowspan="1" colspan="1">Addressed -- sometimes -- from <a
+href="#m_dataOrQName"><code>m_dataOrQName</code></a>.  This may be an offset/length pair specifying a portion of <code>m_chars</code>, or a pair of indexes into <code>m_valuesOrPrefixes</code>.  See <a
+href="#data">Data Column Overloading</a>.</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_chars</code></td>
+<td valign="top" rowspan="1" colspan="1">char</td>
+<td valign="top" rowspan="1" colspan="1">Contiguous pool of
+characters. Chunks of this are allocated as needed to represent
+text-string values, and addressed using starting offset and length
+within m_chars. This approach avoids paying the substantial overhead
+involved in allocating a Java String object for each name or value
+string, and should offer better performance than the standard
+Java StringBuffer class since it has been tuned for our needs.</td>
+</tr>
+</table>
+
+The following behave more like hashtables than like arrays, since
+they're primarily accessed by searching for a matching string. Whether
+they actually are hashes or operate by linear search is an
+implementation detail, and may change over time. (Note that our
+"string pool" class, mentioned earlier, actually splits the
+difference -- it acts like a hashtable when mapping string to unique int
+but like an array when mapping int to unique string.)
+
+<table border="1" summary="support structures">
+<tr>
+<th>Table Name</th>
+<th>Table Type</th>
+<th>Contents</th>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_entities</code></td>
+<td valign="top" rowspan="1" colspan="1">String[4] (actually consecutive in single array)</td>
+<td valign="top" rowspan="1" colspan="1">DTD information: Descriptions of Unparsed Entities referenced by this document, accessed by entity name. Supports typed attributes.</td>
+</tr>
+
+<tr>
+<td valign="top" rowspan="1" colspan="1"><code>m_idAttributes</code></td>
+<td valign="top" rowspan="1" colspan="1">int</td>
+<td valign="top" rowspan="1" colspan="1">Lookup table for IDs, addressed by string value. Returns the node number of the attribute which asserted that unique ID. Supports typed attributes.</td>
+</tr>
+
+</table>
+
+</body>

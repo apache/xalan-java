@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,79 +54,84 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions;
+package org.apache.xml.xdm;
 
-import javax.xml.transform.TransformerException;
+import org.apache.xml.xdm.*;
 
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xml.xdm.XDMSequence;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XJavaObject;
-
-/**
- * <meta name="usage" content="advanced"/>
- * Execute the data() function. Not supported before
- * XPath/XSLT 2.0.
+/** Implementation of an empty XDMSequence. Mostly used to
+ * support XDMSequence.EMPTY; I don't think anyone else should
+ * ever instantiate it.
+ * 
+ * (This was originally part of the DTM interfaces; refactored
+ * upward for generality.)
+ * 
+ * Created Jul 15, 2002
+ * @author sboag
  */
-public class FuncData extends FunctionOneArg
+class XDMSequenceEmpty implements XDMSequence
 {
-  /**
-   * Execute the function.  The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  /** @return the number of members in this sequence. */
+  public int getLength()
   {
-    XObject src=m_arg0.execute(xctxt);
-    
-//    /* This should have been checked at stylesheet build,
-//     * and hence ought to be superfluous.
-//     * %REVIEW% %OPT%
-//     * */
-//    if("1.0".equals(xctxt.getXPathVersion()))
-//    {
-//    	xctxt.getErrorListener().error(
-//    		new TransformerException(
-//    		XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED,
-//    			new Object[]{"XSLT 2.0 data()"}), 
-//    			xctxt.getSAXLocator())); 
-//    		//"Illegal value for xml:space", locator));
-//    	// If error listener returns...
-//    	return src;
-//    }
-    
-    if(src.getType()==src.CLASS_NODESET)
-    {      
-    	int sourceHandle=src.iter().item(0);
-    	
-	    if(sourceHandle==org.apache.xml.dtm.DTM.NULL)
-    	return /*new XJavaObject*/(org.apache.xpath.objects.XSequence.EMPTY);
-    	
-    	org.apache.xml.dtm.DTM sourceDTM=xctxt.getDTM(sourceHandle);
-
-		XDMSequence seq=sourceDTM.getTypedValue(sourceHandle);
-		
-		// %TODO% Other kinds of objects?
-		return new org.apache.xpath.objects.XDTMSequence(seq);
-    }
-    
-    // %TODO% %REVIEW% See issues 80, 81, 231, ....
-    // There seem to be some conflicts here.
-    //
-    // "Consensus is to define data() on only singleton node and empty sequence"
-    // "Open issue as to whether data() should be defined on node sequences."
-    // "NB: Current definition of data() applied to a text node is the empty sequence."
-    // "data() applied to simple value is identity function (no-op)"
-    //
-    // "xf:data(): decided that it should return the error object when applied to document, PI,
-    // comment and namespace nodes." (What is "the error object"?)
-    
-    else return src; // %TODO% Awaiting typed non-nodes...
+    return 0;
   }
-  
+
+  /** Retrieve the value for this member of the sequence. Since values may be
+   * a heterogenous mix, and their type may not be known until they're examined,
+   * they're returned as Objects. This is storage-inefficient if the value(s)
+   * is/are builtins that map to Java primitives. Tough.
+   * 
+   * @param index 0-based index into the sequence.
+   * @return the specified value
+   * @throws exception if index <0 or >=length   
+   * */
+  public Object getValue(int index)
+  {
+    throw new java.lang.ArrayIndexOutOfBoundsException();
+  }
+
+  /** Retrieve the datatype namespace URI for this member of the sequence.
+   * 
+   * @param index 0-based index into the sequence.
+   * @return the namespace for the specified value's type
+   * @throws exception if index <0 or >=length   
+   * */
+  public String getTypeNS(int index)
+  {
+    throw new java.lang.ArrayIndexOutOfBoundsException();
+  }
+
+  /** Retrieve the datatype namespace URI for this member of the sequence.
+   * 
+   * %REVIEW% Do we really need type -- 
+   * or can we just tell folks to do instanceOf on the Java value objects?  
+   * 
+   * @param index 0-based index into the sequence.
+   * @return the localname of the specified value's type
+   * @throws exception if index <0 or >=length   
+   * */
+  public String getTypeLocalName(int index)
+  {
+    throw new java.lang.ArrayIndexOutOfBoundsException();
+  }
+
+  /** Ask whether this member's datatype equals or is derived from a specified
+   * schema NSURI/localname pair.
+   * 
+   * @param index 0-based index into the sequence.
+   * @return true if the type is an instance of this schema datatype,
+   * false if it isn't.
+   * @throws exception if index <0 or >=length   
+   * */
+  public boolean isSchemaType(int index, String namespace, String localname)
+  {
+    throw new java.lang.ArrayIndexOutOfBoundsException();
+  }
+
+  /** %REVIEW% Format not yet firmly settled. Primarily for debugging purposes!
+   * */
+  public String toString()
+  {
+    return "EmptySequence[]";
+  }
 }

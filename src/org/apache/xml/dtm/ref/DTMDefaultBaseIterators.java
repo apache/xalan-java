@@ -56,7 +56,14 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
+//import org.apache.xml.dtm.*;
+import org.apache.xml.xdm.Axis;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMException;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMWSFilter;
 
 import javax.xml.transform.Source;
 

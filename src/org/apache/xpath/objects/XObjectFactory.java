@@ -59,6 +59,7 @@ package org.apache.xpath.objects;
 import org.apache.xml.dtm.*;
 import org.apache.xml.utils.DateTimeObj;
 import org.apache.xml.utils.Duration;
+import org.apache.xml.xdm.*;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.OneStepIterator;

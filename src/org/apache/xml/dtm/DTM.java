@@ -58,6 +58,7 @@ package org.apache.xml.dtm;
 
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.NodeVector;
+import org.apache.xml.xdm.*;
 import org.apache.xpath.objects.*;
 
 import javax.xml.transform.SourceLocator;
@@ -130,74 +131,74 @@ public interface DTM
   /**
    * The node is an <code>Element</code>.
    */
-  public static final short ELEMENT_NODE = 1;
+  public static final short ELEMENT_NODE = XDMCursor.ELEMENT_NODE;
 
   /**
    * The node is an <code>Attr</code>.
    */
-  public static final short ATTRIBUTE_NODE = 2;
+  public static final short ATTRIBUTE_NODE = XDMCursor.ATTRIBUTE_NODE;
 
   /**
    * The node is a <code>Text</code> node.
    */
-  public static final short TEXT_NODE = 3;
+  public static final short TEXT_NODE = XDMCursor.TEXT_NODE;
 
   /**
    * The node is a <code>CDATASection</code>.
    */
-  public static final short CDATA_SECTION_NODE = 4;
+  public static final short CDATA_SECTION_NODE = XDMCursor.CDATA_SECTION_NODE;
 
   /**
    * The node is an <code>EntityReference</code>.
    */
-  public static final short ENTITY_REFERENCE_NODE = 5;
+  public static final short ENTITY_REFERENCE_NODE = XDMCursor.ENTITY_REFERENCE_NODE;
 
   /**
    * The node is an <code>Entity</code>.
    */
-  public static final short ENTITY_NODE = 6;
+  public static final short ENTITY_NODE = XDMCursor.ENTITY_NODE;
 
   /**
    * The node is a <code>ProcessingInstruction</code>.
    */
-  public static final short PROCESSING_INSTRUCTION_NODE = 7;
+  public static final short PROCESSING_INSTRUCTION_NODE = XDMCursor.PROCESSING_INSTRUCTION_NODE;
 
   /**
    * The node is a <code>Comment</code>.
    */
-  public static final short COMMENT_NODE = 8;
+  public static final short COMMENT_NODE = XDMCursor.COMMENT_NODE;
 
   /**
    * The node is a <code>Document</code>.
    */
-  public static final short DOCUMENT_NODE = 9;
+  public static final short DOCUMENT_NODE = XDMCursor.DOCUMENT_NODE;
 
   /**
    * The node is a <code>DocumentType</code>.
    */
-  public static final short DOCUMENT_TYPE_NODE = 10;
+  public static final short DOCUMENT_TYPE_NODE = XDMCursor.DOCUMENT_TYPE_NODE;
 
   /**
    * The node is a <code>DocumentFragment</code>.
    */
-  public static final short DOCUMENT_FRAGMENT_NODE = 11;
+  public static final short DOCUMENT_FRAGMENT_NODE = XDMCursor.DOCUMENT_FRAGMENT_NODE;
 
   /**
    * The node is a <code>Notation</code>.
    */
-  public static final short NOTATION_NODE = 12;
+  public static final short NOTATION_NODE = XDMCursor.NOTATION_NODE;
 
-  /**
-   * The node is a <code>namespace node</code>. Note that this is not
-   * currently a node type defined by the DOM API.
+  /**   * The node is a <code>namespace node</code>. Note that this is not
+   * currently a node type defined by the DOM API.   
+   * 
+   * %REVIEW% I'm retrieving it from DTM; arguably, it should be
+   * defined here and DTM should ask XDM for it.
    */
-  public static final short NAMESPACE_NODE = 13;
+  public static final short NAMESPACE_NODE = XDMCursor.NAMESPACE_NODE;
   
-  /**
-   * The number of valid nodetypes. REMEMBER TO UPDATE THIS if you add more
-   * node types.
+  /**   * The number of valid nodetypes.
    */
-  public static final short  NTYPES = 14;
+  public static final short  NTYPES = XDMCursor.NTYPES;    
   
 
   // ========= DTM Implementation Control Functions. ==============
@@ -1099,7 +1100,7 @@ public interface DTM
    * @return XSequence object containing one or more values and their type
    * information. If no typed value is available, returns an empty sequence.
    * */
-  public DTMSequence getTypedValue(int nodeHandle);
+  public XDMSequence getTypedValue(int nodeHandle);
 
   /** Query which DTMManager this DTM is currently being handled by.
    * 

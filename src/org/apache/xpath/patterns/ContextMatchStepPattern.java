@@ -62,7 +62,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMAxisTraverser;
-import org.apache.xml.dtm.Axis;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.axes.WalkerFactory; // evil import.
 
 /**

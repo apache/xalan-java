@@ -62,7 +62,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.axes.SubContextList;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.patterns.NodeTest;
@@ -70,7 +70,6 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMAxisTraverser;
 
 /**

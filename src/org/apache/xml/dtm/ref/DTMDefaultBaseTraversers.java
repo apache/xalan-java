@@ -61,6 +61,7 @@ import org.apache.xml.dtm.*;
 import javax.xml.transform.Source;
 
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.xdm.*;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;

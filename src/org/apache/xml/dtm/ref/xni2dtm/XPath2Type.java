@@ -65,7 +65,7 @@ import org.apache.xerces.impl.xs.psvi.XSSimpleTypeDefinition;
 import org.apache.xerces.impl.xs.psvi.XSTypeDefinition;
 import org.apache.xerces.xni.NamespaceContext;
 import org.apache.xerces.xni.psvi.ItemPSVI;
-import org.apache.xml.dtm.DTMSequence;
+import org.apache.xml.xdm.XDMSequence;
 
   /** The full XNI ItemPSVI is far too heavy-weight for
    * our needs. But their XSTypeDecl isn't quite heavy enough; it gives
@@ -215,7 +215,7 @@ public class XPath2Type
    *   to the Built-In Type we have inherited from -- or null if no such 
    *   mapping exists (eg, if actualType was complex)
    * */         
-  public DTMSequence typedValue(String textvalue, org.xml.sax.helpers.NamespaceSupport nsctxt)
+  public XDMSequence typedValue(String textvalue, org.xml.sax.helpers.NamespaceSupport nsctxt)
   {
     Object value;
     DTM_XSequence seq=null;
@@ -295,7 +295,7 @@ public class XPath2Type
     }
     
     // Should the failure be empty, or error?
-    return seq==null ? DTMSequence.EMPTY : seq;
+    return seq==null ? XDMSequence.EMPTY : seq;
   }
   
   /** @return individual element type, if this is a list-of; else null.

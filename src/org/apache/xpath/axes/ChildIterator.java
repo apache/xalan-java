@@ -57,8 +57,8 @@
 package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.parser.StepExpr;
 
@@ -160,7 +160,7 @@ public class ChildIterator extends LocPathIterator
    */
   public int getAxis()
   {
-    return org.apache.xml.dtm.Axis.CHILD;
+    return org.apache.xml.xdm.Axis.CHILD;
   }
 
 

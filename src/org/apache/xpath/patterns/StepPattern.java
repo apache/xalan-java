@@ -64,10 +64,10 @@ import java.io.PrintWriter;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
@@ -88,7 +88,7 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 {
 
   /** The axis for this test. */
-  protected int m_axis = org.apache.xml.dtm.Axis.SELF;
+  protected int m_axis = org.apache.xml.xdm.Axis.SELF;
 
 //  /**
 //   * Construct a StepPattern that tests for namespaces and node names.

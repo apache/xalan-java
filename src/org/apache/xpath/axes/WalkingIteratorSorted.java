@@ -56,8 +56,8 @@
  */
 package org.apache.xpath.axes;
 
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.VariableComposeState;
 
 /**

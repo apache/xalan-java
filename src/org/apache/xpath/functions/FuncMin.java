@@ -62,8 +62,8 @@ import org.apache.xpath.res.XPATHErrorResources;
 //import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMSequence;
 import org.apache.xml.dtm.XType;
+import org.apache.xml.xdm.XDMSequence;
 
 import java.util.Vector;
 

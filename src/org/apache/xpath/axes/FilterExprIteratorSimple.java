@@ -58,10 +58,10 @@ package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.VariableComposeState;

@@ -68,7 +68,7 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.objects.XSequenceImpl;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
-import org.apache.xml.dtm.DTMSequence;
+import org.apache.xml.xdm.XDMSequence;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -94,7 +94,7 @@ public class FuncBoolean extends FunctionOneArg
       if (item instanceof XNodeSequenceSingleton)
       {
         XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        //DTMSequence ds = xnss.getDTM().getTypedValue(xnss.getNodeHandle());
+        //XDMSequence ds = xnss.getDTM().getTypedValue(xnss.getNodeHandle());
         XObject obj = XObjectFactory.create(xnss.getDTM().getNodeValue(xnss.getNodeHandle()));
         return obj.bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }

@@ -66,6 +66,7 @@ import org.apache.xalan.res.XSLMessages;
 
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
+import org.apache.xml.xdm.Axis;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.IntVector;
 import org.apache.xml.utils.FastStringBuffer;

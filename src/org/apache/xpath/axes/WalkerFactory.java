@@ -58,9 +58,9 @@ package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.Expression;
 import org.apache.xpath.functions.FuncLast;
 import org.apache.xpath.functions.FuncPosition;
@@ -517,7 +517,7 @@ public class WalkerFactory
         {
           stepExpr = (StepExpr) pathExpr.jjtGetChild(1);
           PatternAxis axisExpr = stepExpr.getAxisExpr();
-          axisExpr.setAxis(org.apache.xml.dtm.Axis.DESCENDANTSFROMROOT);
+          axisExpr.setAxis(org.apache.xml.xdm.Axis.DESCENDANTSFROMROOT);
         }
         else
           stepExpr = (StepExpr) pathExpr.jjtGetChild(0);

@@ -104,7 +104,7 @@ public class Pattern extends NonExecutableExpression
   		{
   			m_exprs.removeElementAt(prevNodePos);
   			whichAxis = ((SlashOrSlashSlash)prevNode).getisSlashSlash() ? 
-  					org.apache.xml.dtm.Axis.ANCESTOR : org.apache.xml.dtm.Axis.PARENT;
+  					org.apache.xml.xdm.Axis.ANCESTOR : org.apache.xml.xdm.Axis.PARENT;
   					
 	  		if(n instanceof StepPattern)
 	  		{

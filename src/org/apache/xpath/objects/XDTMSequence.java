@@ -58,12 +58,12 @@ package org.apache.xpath.objects;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.dtm.DTMSequence;
 import org.apache.xml.dtm.XType;
 import org.apache.xml.utils.DateTimeObj;
 import org.apache.xml.utils.Duration;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLString;
+import org.apache.xml.xdm.XDMSequence;
 
 /** This class provides an API representation for the XPath 2 Data Model's "Sequences"
  * -- which are the basic representation for typed values. Only built-in types, 
@@ -71,20 +71,20 @@ import org.apache.xml.utils.XMLString;
  * DM; complex schema-types must be accessed through the document tree.
  * 
  * This implementation exists as a wrapper/proxy for the primitive
- * DTMSequence object. DTM is not aware of XPath, and DTMSequence
+ * XDMSequence object. DTM is not aware of XPath, and XDMSequence
  * returns its values as primitive Java objects; we need to re-express
  * that in XPath objects.
  * */
 public class XDTMSequence extends XObject implements XSequence
 {
-	DTMSequence m_dtmseq;
+	XDMSequence m_dtmseq;
 
 	protected int m_pos = -1;
 	protected int m_homogtype = -1; // cache getTypes()
   
   /** Create a sequence, initially empty.
    * */
-  public XDTMSequence(DTMSequence seq)
+  public XDTMSequence(XDMSequence seq)
   {
   	m_dtmseq=seq;
   }
@@ -191,7 +191,7 @@ public class XDTMSequence extends XObject implements XSequence
   			m_homogtype=XType.EMPTYSEQ;
   		else
   		{
-		  	// AT THIS TIME, DTMSequences are always homogenous
+		  	// AT THIS TIME, XDMSequences are always homogenous
 		  	// collections of primitives,
   			// so I can just check the current element. If that 
   			// changes, we'll have to loop and check for conflicts.

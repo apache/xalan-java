@@ -72,6 +72,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.xdm.Axis;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.axes.ContextNodeList;
@@ -105,7 +106,6 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMWSFilter;
-import org.apache.xml.dtm.Axis;
 
 // Utility imports.
 import org.apache.xml.utils.SAXSourceLocator;

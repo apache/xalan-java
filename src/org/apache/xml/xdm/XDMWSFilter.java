@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,79 +54,40 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.functions;
 
-import javax.xml.transform.TransformerException;
-
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xml.xdm.XDMSequence;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XJavaObject;
+package org.apache.xml.xdm;
 
 /**
- * <meta name="usage" content="advanced"/>
- * Execute the data() function. Not supported before
- * XPath/XSLT 2.0.
+ * This interface is meant to be implemented by a client of the DTM, and allows
+ * stripping of whitespace nodes.
  */
-public class FuncData extends FunctionOneArg
+public interface XDMWSFilter
 {
   /**
-   * Execute the function.  The function must return
-   * a valid object.
-   * @param xctxt The current execution context.
-   * @return A valid XObject.
-   *
-   * @throws javax.xml.transform.TransformerException
+   * Do not strip whitespace child nodes of this element.
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
-    XObject src=m_arg0.execute(xctxt);
-    
-//    /* This should have been checked at stylesheet build,
-//     * and hence ought to be superfluous.
-//     * %REVIEW% %OPT%
-//     * */
-//    if("1.0".equals(xctxt.getXPathVersion()))
-//    {
-//    	xctxt.getErrorListener().error(
-//    		new TransformerException(
-//    		XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED,
-//    			new Object[]{"XSLT 2.0 data()"}), 
-//    			xctxt.getSAXLocator())); 
-//    		//"Illegal value for xml:space", locator));
-//    	// If error listener returns...
-//    	return src;
-//    }
-    
-    if(src.getType()==src.CLASS_NODESET)
-    {      
-    	int sourceHandle=src.iter().item(0);
-    	
-	    if(sourceHandle==org.apache.xml.dtm.DTM.NULL)
-    	return /*new XJavaObject*/(org.apache.xpath.objects.XSequence.EMPTY);
-    	
-    	org.apache.xml.dtm.DTM sourceDTM=xctxt.getDTM(sourceHandle);
+  public static final short NOTSTRIP = 1;
 
-		XDMSequence seq=sourceDTM.getTypedValue(sourceHandle);
-		
-		// %TODO% Other kinds of objects?
-		return new org.apache.xpath.objects.XDTMSequence(seq);
-    }
-    
-    // %TODO% %REVIEW% See issues 80, 81, 231, ....
-    // There seem to be some conflicts here.
-    //
-    // "Consensus is to define data() on only singleton node and empty sequence"
-    // "Open issue as to whether data() should be defined on node sequences."
-    // "NB: Current definition of data() applied to a text node is the empty sequence."
-    // "data() applied to simple value is identity function (no-op)"
-    //
-    // "xf:data(): decided that it should return the error object when applied to document, PI,
-    // comment and namespace nodes." (What is "the error object"?)
-    
-    else return src; // %TODO% Awaiting typed non-nodes...
-  }
+  /**
+   * Strip whitespace child nodes of this element.
+   */
+  public static final short STRIP = 2;
+
+  /**
+   * Inherit whitespace stripping behavior of the parent node.
+   */
+  public static final short INHERIT = 3;
+
+  /**
+   * Test whether whitespace-only text nodes are visible in the logical 
+   * view of the given XDM node. Normally, this function
+   * will be called by the implementation of <code>DTM</code>; 
+   * it is not normally called directly from
+   * user code.
+   * 
+   * @param elementHandle int Handle of the element.
+   * @return one of NOTSTRIP, STRIP, or INHERIT.
+   */
+  public short getShouldStripSpace(XDMCursor contextNode);
   
 }

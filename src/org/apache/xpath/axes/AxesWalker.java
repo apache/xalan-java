@@ -639,7 +639,7 @@ public class AxesWalker extends PredicatedNodeTest
   {
   	String namespace = getNamespace();
   	String localname = getLocalName();
-  	return org.apache.xml.dtm.Axis.names[m_axis]+"::"+
+  	return org.apache.xml.xdm.Axis.names[m_axis]+"::"+
   		((null != namespace) ? (namespace+":") : "")+
   		((null != localname) ? localname : "node()")+
   		" "+super.toString();

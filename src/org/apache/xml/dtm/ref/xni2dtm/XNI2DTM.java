@@ -79,10 +79,10 @@ import org.apache.xerces.xni.parser.XMLPullParserConfiguration;
 import org.apache.xerces.xni.psvi.ItemPSVI;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMSequence;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.SparseVector;
 import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.xdm.XDMSequence;
 import org.apache.xpath.objects.XSequence;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -345,7 +345,7 @@ public class XNI2DTM
    * processing instruction nodes... but we haven't yet defined Error.
    * %REVIEW%
    * */
-  public DTMSequence getTypedValue(int nodeHandle)
+  public XDMSequence getTypedValue(int nodeHandle)
   {
     // Determine whether instance of built-in type, or list thereof
     // If so, map to corresponding Java type
@@ -355,14 +355,14 @@ public class XNI2DTM
          
     int identity=makeNodeIdentity(nodeHandle);
     if(identity==DTM.NULL)
-      return DTMSequence.EMPTY;
+      return XDMSequence.EMPTY;
       
     int nodetype=_type(identity);
     if(nodetype==DTM.DOCUMENT_NODE 
     	|| nodetype==DTM.NAMESPACE_NODE
     	|| nodetype==DTM.COMMENT_NODE
     	|| nodetype==DTM.PROCESSING_INSTRUCTION_NODE)
-      return DTMSequence.EMPTY;
+      return XDMSequence.EMPTY;
                 
     XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
     if(actualType==null)

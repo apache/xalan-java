@@ -62,12 +62,12 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTMSequence;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.utils.NodeVector;
+import org.apache.xml.xdm.XDMSequence;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -2532,8 +2532,8 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    * @return XSequence object containing one or more values and their type
    * information. If no typed value is available, returns an empty sequence.
    * */
-  public DTMSequence getTypedValue(int nodeHandle)
-   {return DTMSequence.EMPTY;}
+  public XDMSequence getTypedValue(int nodeHandle)
+   {return XDMSequence.EMPTY;}
 
   /**
    * @see org.apache.xml.dtm.DTM#getManager()

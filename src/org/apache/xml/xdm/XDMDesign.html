@@ -1,0 +1,129 @@
+<html><head><title></title></head><body>
+<center>
+<h1>XDM PRELIMINARY Design Notes</h1>
+<br>
+2003-02-03 by Joe Kesselman: First Draft
+<br>
+</center>
+<hr>
+
+<p>XDM is intended to be an abstract API for the XPath Data Model.
+Its goal is to provide a single efficient view of a variety of back-end
+implementations, ranging from DTM tables to DOMs to databases to
+Java object graphs.
+<p>
+Architecturally, XDM will replace the public DTM APIs. It should
+certainly be more efficient for non-tabular data, as well as being
+more maintainable and leaving more flexibility for experimentation
+with alternative underlying data models. We suspect that it will be
+more efficient even for the DTM back-end, since it avoids the somewhat
+baroque process of converting between (API-level) Node Handles and
+(internal) Node Identifiers.
+<p>
+<h2>Cursors</h2>
+The essential concept behind XDM is that access to the model primarily
+takes place via <code>Cursor</code> objects, which combine iteration over a set
+of XPath nodes with accessor methods to examine properties of the
+current node. Typically, these iterations will occur along XPath's
+principal axes -- including the "self" axis, which retrieves only the
+single node at which the iterator was initialized.
+<p>
+Note that the Cursor is a mutable object; it changes its current node
+each time the <code>next</code> operation is called. This should let
+us implement very lightweight ("flyweight") implementations of
+cursors, at the cost of requiring that the higher-level code
+explicitly generate a new Cursor object if they wish to save a
+reference to a node.
+<p>
+The <code>XDMCursor</code> interface encapsulates the standardized
+behavior of cursors, as well as providing factory methods for
+generating new cursors starting at the current node. An implementation
+of <code>XDMCursor</code> would be provided for each back-end data
+model representation that we will wish to access.
+<p>
+The <code>XDMManager</code> interface encapsulates the process of
+initially loading a document model and retrieving the Cursor for its
+root node, and (perhaps) for caching models for repeated reference and
+discarding them once we know we're done with them.
+<p>
+An <code>XDMCursor</code> also serves as a factory for a Tree
+Walker starting at the current node; see next section.
+<p>
+<h2>Walkers/Visitors</h2>
+The one known use case which Cursors are unable to handle is that of
+serializing/copying a subtree. These tasks require that we know 
+when nodes are exited as well as when they are entered -- consider the
+generation of an end-element tag, for example. Our solution here is an
+alternative form of traversal, a tree-walker/node-visitor pair.
+<p>
+At this time, the Tree Walker performs no filtering; it is the Node
+Visitor's responsibility to decide which of these events are
+significant and act upon them. This may be reconsidered in the future,
+but at this time I expect that letting the visitor make the decision
+is almost equally efficient for XPath/XSLT purposes.
+<p>
+The <code>XDMTreeWalker</code> encapsulates the concept of walking a
+document's tree, or a subtree thereof. As it reaches each node it
+generates a call to an instance of <code>XDMNodeVisitor</code>,
+passing it an XDMCursor object whose current node is the node being
+visited.
+<p>
+Implementations of <code>XDMTreeWalker</code> will be provided for
+each implementation of <code>XDMCursor</code> (and thus for each
+back-end data model we support). Visitors should be portable among
+these walkers, and will be coded to perform the specific tasks.
+<p>
+<h2>Support Classes</h2>
+<p>
+Some of the abstractions now implemented as part of the DTM APIs will
+have to be moved up to the XDM level. Among these are the
+<code>Whitespace Filter</code>, <code>Value Sequence</code>, and
+<code>Model Exception</code>, and the low-level DTM will of course
+have to be adjusted to use these new interfaces. They shouldn't have
+to change very much.
+<p>
+These are currently prototyped as <code>XDMWSFilter</code>,
+<code>XDMSequence</code>, and <code>XDMException</code> (which has a subclass
+<code>XDMConfigurationException</code>).
+<h2>Design Status</h2>
+<p>
+First-draft versions of these interfaces have been coded, in the
+org.apache.xml.xdm package. There are still some issues to be
+resolved; these are flagged in the code with our usual %REVIEW%, %OPT%
+and %BUG% eye-catchers.
+<p>
+We expect these interfaces will continue to evolve somewhat, driven
+by implementation experience, as we discover features to be unnecessary
+or missing.
+<h2>Implementation Status</h2>
+<p>
+A first-draft implementation of these interfaces is in progress, as
+the org.apache.xml.xdm.ref package. For testing purposes, this draft
+is being wrapped around the existing DTM public APIs. Once we have it
+running, we will begin to optimize away the old Node Handle-based
+public DTM API in favor of an XDM implementation which is directly
+aware of and optimized for the SAX2DTM/XNI2DTM implementation's
+back-end tables, along with one that directly accesses a DOM tree
+(based on the DOM2DTM2 experiment).
+<p>
+At this time, the basic code framework has been sketched. The basic
+manager and tree-walker have been implemented, as has the shared code
+of cursors and the Self cursor. Coding continues on cursors for other
+axes, but that shouldn't be difficult -- it's mostly a matter of
+wrapping these around DTM's low-level Axis Traversers.
+<p>
+There are still some issues to be resolved; these are flagged in the
+code with our usual %REVIEW%, %OPT% and %BUG% eye-catchers.
+<h2>Implementation Plan</h2>
+<p>
+I'll finish drafting the various axis cursors, then convert the DTM
+unit tests to run against the XDM APIs in order to do some initial
+validation of this module. My best estimate is that I can reach this
+point in ten more ays's worth of coding.
+<p>
+Once that has been done, we can begin the task of adapting a copy of
+Xalan to run against XDM rather than DTM, replacing Node Handles and
+DTM Iterators with Cursors and Tree Walkers. This should not be
+difficult, but will be time-consuming and poses risks of human error.
+I do not currently have a sizing estimate for this task.
+</body>

@@ -56,8 +56,8 @@
  */
 package org.apache.xpath.parser;
 
-import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.xdm.Axis;
 import org.apache.xpath.axes.LocPathIterator;
 
 /**
@@ -157,10 +157,10 @@ public class StepExpr extends NonExecutableExpression
       NodeTest ntest = getNodeTest();
       if (null != ntest)
       {
-        if (org.apache.xml.dtm.Axis.ATTRIBUTE == axis)
+        if (org.apache.xml.xdm.Axis.ATTRIBUTE == axis)
           ntest.setWhatToShow(org.apache.xml.dtm.DTMFilter.SHOW_ATTRIBUTE);
         else
-          if (org.apache.xml.dtm.Axis.NAMESPACE == axis)
+          if (org.apache.xml.xdm.Axis.NAMESPACE == axis)
           {
             ntest.setWhatToShow(org.apache.xml.dtm.DTMFilter.SHOW_NAMESPACE);
             org.apache.xml.utils.PrefixResolver resolver =
@@ -190,7 +190,7 @@ public class StepExpr extends NonExecutableExpression
     if (firstChild instanceof PatternAxis)
       return ((PatternAxis) firstChild).getAxis();
     else
-      return org.apache.xml.dtm.Axis.ALLFROMNODE;
+      return org.apache.xml.xdm.Axis.ALLFROMNODE;
   }
 
   /**

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,62 +54,62 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xml.dtm;
 
-import org.apache.xml.xdm.XDMConfigurationException;
+package org.apache.xml.xdm;
+
 import javax.xml.transform.SourceLocator;
 
-/** Subclass of XDMConfigurationException. No new information
- * beyond object type.
- * 
+/**
  * Indicates a serious configuration error.
+ * Mostly invoked during dynamic class resolution.
+ * It largely replaces DTMConfigurationException.
  */
-public class DTMConfigurationException extends XDMConfigurationException {
+public class XDMConfigurationException extends XDMException {
 
     /**
-     * Create a new <code>DTMConfigurationException</code> with no
+     * Create a new <code>XDMConfigurationException</code> with no
      * detail mesage.
      */
-    public DTMConfigurationException() {
+    public XDMConfigurationException() {
         super("Configuration Error");
     }
 
     /**
-     * Create a new <code>DTMConfigurationException</code> with
+     * Create a new <code>XDMConfigurationException</code> with
      * the <code>String </code> specified as an error message.
      *
      * @param msg The error message for the exception.
      */
-    public DTMConfigurationException(String msg) {
+    public XDMConfigurationException(String msg) {
         super(msg);
     }
 
     /**
-     * Create a new <code>DTMConfigurationException</code> with a
+     * Create a new <code>XDMConfigurationException</code> with a
      * given <code>Exception</code> base cause of the error.
      *
      * @param e The exception to be encapsulated in a
-     * DTMConfigurationException.
+     * XDMConfigurationException.
      */
-    public DTMConfigurationException(Throwable e) {
+    public XDMConfigurationException(Throwable e) {
         super(e);
     }
 
     /**
-     * Create a new <code>DTMConfigurationException</code> with the
+     * Create a new <code>XDMConfigurationException</code> with the
      * given <code>Exception</code> base cause and detail message.
      *
      * @param e The exception to be encapsulated in a
-     * DTMConfigurationException
+     * XDMConfigurationException
      * @param msg The detail message.
-     * @param e The exception to be wrapped in a DTMConfigurationException
+     * @param e The exception to be wrapped in a XDMConfigurationException
      */
-    public DTMConfigurationException(String msg, Throwable e) {
+    public XDMConfigurationException(String msg, Throwable e) {
         super(msg, e);
     }
 
     /**
-     * Create a new DTMConfigurationException from a message and a Locator.
+     * Create a new XDMConfigurationException from a message and a Locator.
      *
      * <p>This constructor is especially useful when an application is
      * creating its own exception from within a DocumentHandler
@@ -118,20 +118,20 @@ public class DTMConfigurationException extends XDMConfigurationException {
      * @param message The error or warning message.
      * @param locator The locator object for the error or warning.
      */
-    public DTMConfigurationException(String message,
+    public XDMConfigurationException(String message,
                                              SourceLocator locator) {
         super(message, locator);
     }
 
     /**
-     * Wrap an existing exception in a DTMConfigurationException.
+     * Wrap an existing exception in a XDMConfigurationException.
      *
      * @param message The error or warning message, or null to
      *                use the message from the embedded exception.
      * @param locator The locator object for the error or warning.
      * @param e Any exception.
      */
-    public DTMConfigurationException(String message,
+    public XDMConfigurationException(String message,
                                              SourceLocator locator,
                                              Throwable e) {
         super(message, locator, e);

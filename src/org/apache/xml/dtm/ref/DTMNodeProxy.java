@@ -58,7 +58,8 @@ package org.apache.xml.dtm.ref;
 
 import org.w3c.dom.*;
 import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.Axis;
+import org.apache.xml.xdm.*;
+import org.apache.xml.xdm.Axis;
 
 /**
  * <meta name="usage" content="internal"/>
