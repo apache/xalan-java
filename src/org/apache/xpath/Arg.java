@@ -158,6 +158,22 @@ public class Arg
    * Set at the time the object is constructed.
    */
   private boolean m_isParamVar;
+  
+  /**
+   * Tell if this variable is a param var.
+   */
+   public boolean isParamVar()
+   {
+    return m_isParamVar;
+   }
+   
+  /**
+   * Tell if this variable is a param var.
+   */
+   public void setIsParamVar(boolean b)
+   {
+    m_isParamVar = b;
+   }
 
   /**
    * Construct a dummy parameter argument, with no QName and no
