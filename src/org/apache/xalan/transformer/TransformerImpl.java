@@ -2367,6 +2367,7 @@ public class TransformerImpl extends Transformer
             lex = (LexicalHandler) handler;
          }
          m_serializationHandler = new ToXMLSAXHandler(handler, lex, savedHandler.getEncoding());
+         m_serializationHandler.setTransformer(this);
          executeChildTemplates(elem, true);
        }
        catch (TransformerException e)
