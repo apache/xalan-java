@@ -194,20 +194,29 @@ public class CompiledStylesheetBundle
 				// Where to write the class within the jar/zipfile's
 				// directory structure
 				String sink=
-					packageNameToDirectory(packagename,"","/")
+					packageNameToDirectory(packagename,"",'/')
 					+shortname+".class";
  				ze=new java.util.zip.ZipEntry(sink);
 				zf.putNextEntry(ze);
 				
-				// Where to copy the classfile from.
-				// TODO: I'd really like a solution that reads the bytecodes
+				// It would be nice if we could read the bytecodes
 				// from the existing Class, rather than going back to the
-				// .class file, to save disk activity and simplify this code.
-				// Haven't yet found a portable solution. Can't use getResource
-				// since it explicitly disallows classes; can't access the
-				// classloader since some environments return it as null..
+				// .class file, to save disk activity. But Java 
+				// doesn't guarantee that the bytecodes are still in memory
+				// -- a JIT may have discarded them after compilation. 
+				// Asking the classloader to getResourceAsStream is our
+				// "best bet" for any caching that may have occurred, and 
+				// is the standard solution recommended by Sun.
+				//
+				// PROBLEM: Microsoft misimplemented that. Fetching the
+				// resource as c.getClassName returns a null pointer;
+				// fetching it as a file name throws IllegalAgumentException
+				// ("Cannot load class files via getSystemResource APIs.")
+				// So for VJ++ compatability, I'm forced to us a workaround.
+				
+				// Where to copy the classfile from. 
 				String source=
-					packageNameToDirectory(packagename,outdir,File.separator)
+					packageNameToDirectory(packagename,outdir,File.separatorChar)
 					+shortname+".class";
 				java.io.FileInputStream fis=new java.io.FileInputStream(source);
 
@@ -324,23 +333,21 @@ public class CompiledStylesheetBundle
 	 * you want to pass in a directory, it's your responsibility to make
 	 * sure it ends in the separator character.
 	 * TODO: Clean up directory parsing a bit...
-	 * @param String separator Separator into which the '.'s are converted.
+	 * @param char separator Separator into which the '.'s are converted.
 	 * This is a parameter because I'm using this function to work with
 	 * zipfiles (which insist on '/') as well as the normal filesystem
 	 * (which varies from platform to platform).
+	 * @return directory name, ending in separator
 	 */  
 	static String packageNameToDirectory(String packagename,String baseLocation,
-									   String separator)
+									   char separator)
 	{
 		int fnstart=baseLocation.lastIndexOf(separator);
 	    StringBuffer subdir=new StringBuffer(
 		    (fnstart>=0)
 			? baseLocation.substring(0,fnstart+1)
 			: "");
-		// Simple parse-and-reassemble loop
-		StringTokenizer parts=new StringTokenizer(packagename,".");
-		while(parts.hasMoreTokens())
-			subdir.append(parts.nextToken()).append(separator);
+		subdir.append(packagename.replace('.',separator)).append(separator);
 		return subdir.toString();
 	}
 	
@@ -427,7 +434,7 @@ public class CompiledStylesheetBundle
 			String shortname=name.substring(start+1);
 			// Need to convert as a relative path for the jarfile;
 			// it's "anchored" later when we open for read.
-			String fn=packageNameToDirectory(packagename,"","/")
+			String fn=packageNameToDirectory(packagename,"",'/')
 				+shortname+".class";
 		
 			byte[] data=null;

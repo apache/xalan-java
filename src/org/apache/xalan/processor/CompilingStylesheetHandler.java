@@ -861,15 +861,16 @@ if(runSerializer)
   }
  
   
-  // Run this class description through the Java compiler,
-  // and patch the result back into the Synthetic system.
-  // Note that classLocation is treated as a directory iff
-  // it ends in FileLocator; if not, it's treated as a file
-  // name and output is written to the directory that file
-  // would be found in (possibly relative). However, "."
-  // is treated as being found in itself rather than in "..".
-  // TODO: ***** A more elegant version of this should be moved into org.apache.xalan.utils.synthetic.Class?
-  // TODO: Should we use a classloader rather than std. classpath?
+  /** Run this class description through the Java compiler,
+   * and patch the result back into the Synthetic system.
+   * Note that classLocation is treated as a directory iff
+   * it ends in FileLocator; if not, it's treated as a file
+   * name and output is written to the directory that file
+   * would be found in (possibly relative). However, "."
+   * is treated as being found in itself rather than in "..".
+   * TODO: ***** A more elegant version of this should be moved into org.apache.xalan.utils.synthetic.Class?
+   * TODO: Should we use a classloader rather than std. classpath?
+   */
   Class compileSyntheticClass(org.apache.xalan.utils.synthetic.Class tClass, String classLocation)
   {
     Class resolved=null;
