@@ -338,16 +338,15 @@ public class VariableStack extends Stack
 
 
   /**
-   * Same as getVariable, except don't look in the
-   * global space.
+   * Get the variable argument.
    *
    * @param qname The qualified name of the variable.
    *
-   * @return The wrapped value of the variable.
+   * @return the argument object.
    *
    * @throws TransformerException
    */
-  public XObject getParamVariable(XPathContext xctxt, QName qname) throws TransformerException
+  public Arg getParamArg(QName qname) throws TransformerException
   {
 
     XObject val = null;
@@ -357,21 +356,13 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg)frame.elementAt(i);
 
-      if (arg.getQName().equals(qname))
+      if (arg.getQName().equals(qname) && arg.isParamVar())
       {
-        val = arg.getVal();
-        
-        if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
-        {
-          val = val.execute(xctxt);
-          arg.setVal(val);
-        }
-
-        break;
+        return arg;
       }
     }
 
-    return val;
+    return null;
   }
 
   /**
@@ -393,7 +384,7 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg)frame.elementAt(i);
 
-      if (arg.getQName().equals(name))
+      if (arg.getQName().equals(name) && !arg.isParamVar())
       {
         XObject val = arg.getVal();
         if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
