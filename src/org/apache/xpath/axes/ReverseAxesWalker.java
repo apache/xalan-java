@@ -135,7 +135,7 @@ public class ReverseAxesWalker extends AxesWalker
 
         clone.setRoot(this.getRoot());
 
-        clone.m_predicateCount = predicateIndex;
+        clone.setPredicateCount(predicateIndex);
 
         clone.setPrevWalker(null);
         clone.setNextWalker(null);
@@ -198,7 +198,7 @@ public class ReverseAxesWalker extends AxesWalker
 
       clone.setRoot(this.getRoot());
 
-      clone.m_predicateCount = this.m_predicateCount - 1;
+      clone.setPredicateCount(this.getPredicateCount() - 1);
 
       clone.setPrevWalker(null);
       clone.setNextWalker(null);

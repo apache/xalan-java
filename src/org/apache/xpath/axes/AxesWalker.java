@@ -87,35 +87,6 @@ import org.w3c.dom.DOMException;
 public abstract class AxesWalker extends PredicatedNodeTest
         implements Cloneable, TreeWalker, NodeFilter
 {
-
-  // These are useful to enable if you want to turn diagnostics messages 
-  // on or off temporarily from another module.
-  //  public static boolean DEBUG = true;
-  //  public static boolean DEBUG_WAITING = true;
-  //  public static boolean DEBUG_TRAVERSAL = true;
-  //  public static boolean DEBUG_LOCATED = true;
-  //  public static boolean DEBUG_PREDICATECOUNTING = false;
-  
-  /** General static debug flag.  Setting this to false will suppress some 
-   *  of the output messages caused by the other debug categories.  */
-  static final boolean DEBUG = false;
-
-  /** If true, diagnostic messages about the waiting queue will be posted.  */
-  static final boolean DEBUG_WAITING = false;
-
-  /** For diagnostic purposes, tells if we already did a subtree dump.  */
-  static boolean m_didDumpAll = false;
-
-  /** If true, diagnostic messages about the tree traversal will be posted.  */
-  static final boolean DEBUG_TRAVERSAL = false;
-
-  /** If true, diagnostic messages about the nodes that have 
-   *  been 'located' will be posted.  */
-  static final boolean DEBUG_LOCATED = false;
-
-  /** String passed to {@link org.w3c.dom.Node#isSupported} to see if it implements 
-   *  a {@link org.apache.xpath.patterns.NodeTestFilter} interface. */
-  public static final String FEATURE_NODETESTFILTER = "NodeTestFilter";
   
   /**
    * Construct an AxesWalker using a LocPathIterator.
@@ -254,9 +225,19 @@ public abstract class AxesWalker extends PredicatedNodeTest
   }
   
   /**
-   * The step type of the XPath step. Does not change after the constructor.
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
    */
-  private int m_stepType;
+   public boolean canTraverseOutsideSubtree()
+   {
+    if(super.canTraverseOutsideSubtree())
+      return true;
+    if(null != m_nextWalker)
+      return m_nextWalker.canTraverseOutsideSubtree();
+    return false;
+   }
 
   /**
    * The the step type op code.
@@ -271,12 +252,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
   }
 
   /**
-   * The arg length of the XPath step. Does not change after the constructor.
-   * TODO: Can this be removed since it is only valuable at compile time?
-   */
-  private int m_argLen;
-
-  /**
    * Get the argument length of the location step in the opcode map.
    * TODO: Can this be removed since it is only valuable at compile time?
    *
@@ -286,36 +261,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
   {
     return m_argLen;
   }
-
-  /**
-   * The analysis pattern built by the WalkerFactory.
-   * TODO: Move to LocPathIterator.
-   * @see org.apache.xpath.axes.WalkerFactory
-   */
-  protected int m_analysis = 0x00000000;
-
-  /**
-   * Get the analysis pattern built by the WalkerFactory.
-   * TODO: Move to LocPathIterator.
-   *
-   * @return The analysis pattern built by the WalkerFactory.
-   */
-  int getAnalysis()
-  {
-    return m_analysis;
-  }
-
-  /**
-   * Set the analysis pattern built by the WalkerFactory.
-   * TODO: Move to LocPathIterator.
-   *
-   * @param a The analysis pattern built by the WalkerFactory.
-   */
-  void setAnalysis(int a)
-  {
-    m_analysis = a;
-  }
-
 
   /**
    * Tell if the given node is a parent of the
@@ -343,11 +288,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
   //=============== TreeWalker Implementation ===============
 
   /**
-   *  The root node of the TreeWalker, as specified when it was created.
-   */
-  transient Node m_root;
-
-  /**
    * The root node of the TreeWalker, as specified in setRoot(Node root).
    * Note that this may actually be below the current node.
    *
@@ -357,9 +297,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
   {
     return m_root;
   }
-
-  /** True if an itteration has not begun.  */
-  boolean m_isFresh;
 
   /**
    * Set the root node of the TreeWalker.
@@ -384,11 +321,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
 
     resetProximityPositions();
   }
-
-  /**
-   *  The node at which the TreeWalker is currently positioned.
-   */
-  transient Node m_currentNode;
 
   /**
    * The node at which the TreeWalker is currently positioned.
@@ -550,9 +482,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
     throw new RuntimeException("previousNode not supported!");
   }
 
-  /** The next walker in the location step chain.  */
-  protected AxesWalker m_nextWalker;
-
   /**
    * Set the next walker in the location step chain.
    *
@@ -574,9 +503,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
   {
     return m_nextWalker;
   }
-
-  /** The previous walker in the location step chain, or null.   */
-  AxesWalker m_prevWalker;
 
   /**
    * Set or clear the previous walker reference in the location step chain.
@@ -843,10 +769,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
     return 0;
   }
 
-  /** An estimation of the next level that this walker will traverse to.  Not 
-   *  always accurate.  */
-  protected int m_nextLevelAmount;
-
   /**
    * Tell what's the next level this axes can descend to.
    *
@@ -931,9 +853,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
 
     return ok;
   }
-
-  /** Fairly short lived flag to tell if we switched to a waiting walker.  */
-  private boolean m_didSwitch = false;
 
   /**
    * Check if any walkers need to fire before the given walker.  If they
@@ -1116,9 +1035,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
     return walker;
   }
 
-  /** True if this walker has found it's last node.  */
-  boolean m_isDone = false;
-
   /**
    * Get the next node in document order on the axes.
    *
@@ -1155,9 +1071,6 @@ public abstract class AxesWalker extends PredicatedNodeTest
 
     return next;
   }
-
-  /** The node last returned from nextNode(). */
-  transient Node m_prevReturned;
 
   /**
    *  Moves the <code>TreeWalker</code> to the next visible node in document
@@ -1400,4 +1313,80 @@ public abstract class AxesWalker extends PredicatedNodeTest
     return false;
   }
 
+  //============= Static Data =============
+
+  // These are useful to enable if you want to turn diagnostics messages 
+  // on or off temporarily from another module.
+  //  public static boolean DEBUG = true;
+  //  public static boolean DEBUG_WAITING = true;
+  //  public static boolean DEBUG_TRAVERSAL = true;
+  //  public static boolean DEBUG_LOCATED = true;
+  //  public static boolean DEBUG_PREDICATECOUNTING = false;
+  
+  /** General static debug flag.  Setting this to false will suppress some 
+   *  of the output messages caused by the other debug categories.  */
+  static final boolean DEBUG = false;
+
+  /** If true, diagnostic messages about the waiting queue will be posted.  */
+  static final boolean DEBUG_WAITING = false;
+
+  /** For diagnostic purposes, tells if we already did a subtree dump.  */
+  static boolean m_didDumpAll = false;
+
+  /** If true, diagnostic messages about the tree traversal will be posted.  */
+  static final boolean DEBUG_TRAVERSAL = false;
+
+  /** If true, diagnostic messages about the nodes that have 
+   *  been 'located' will be posted.  */
+  static final boolean DEBUG_LOCATED = false;
+
+  /** String passed to {@link org.w3c.dom.Node#isSupported} to see if it implements 
+   *  a {@link org.apache.xpath.patterns.NodeTestFilter} interface. */
+  public static final String FEATURE_NODETESTFILTER = "NodeTestFilter";
+  
+  //============= State Data =============
+
+  /**
+   *  The root node of the TreeWalker, as specified when it was created.
+   */
+  transient Node m_root;
+
+  /**
+   *  The node at which the TreeWalker is currently positioned.
+   */
+  transient Node m_currentNode;
+  
+  /** The node last returned from nextNode(). */
+  transient Node m_prevReturned;
+
+  /**
+   * The arg length of the XPath step. Does not change after the constructor.
+   * TODO: Can this be removed since it is only valuable at compile time?
+   */
+  private int m_argLen;
+  
+  /**
+   * The step type of the XPath step. Does not change after the constructor.
+   */
+  private int m_stepType;
+    
+  /** Fairly short lived flag to tell if we switched to a waiting walker.  */
+  private boolean m_didSwitch = false;
+
+  /** True if this walker has found it's last node.  */
+  boolean m_isDone = false;
+
+  /** True if an itteration has not begun.  */
+  boolean m_isFresh;
+
+  /** An estimation of the next level that this walker will traverse to.  Not 
+   *  always accurate.  */
+  protected int m_nextLevelAmount;
+
+  /** The next walker in the location step chain.  */
+  protected AxesWalker m_nextWalker;
+  
+  /** The previous walker in the location step chain, or null.   */
+  AxesWalker m_prevWalker;
+    
 }

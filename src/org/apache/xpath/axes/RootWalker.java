@@ -85,20 +85,15 @@ public class RootWalker extends AxesWalker
   }
 
   /**
-   * Get a cloned RootWalker.
+   *  Set the root node of the TreeWalker.
    *
-   * @return a new RootWalker ready to be used.
-   *
-   * @throws CloneNotSupportedException
+   * @param root The context node of this step.
    */
-  public Object clone() throws CloneNotSupportedException
-  {
+  public void setRoot(Node root)
+  {      
 
-    RootWalker clone = (RootWalker) super.clone();
-
-    clone.m_processedRoot = false;
-
-    return clone;
+    super.setRoot(root);
+    m_processedRoot = false;
   }
 
   /**

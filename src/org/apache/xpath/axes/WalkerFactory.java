@@ -140,7 +140,7 @@ public class WalkerFactory
       walker = createDefaultWalker(compiler, stepOpCodePos, lpi, analysis);
 
       walker.init(compiler, stepOpCodePos, stepType);
-      walker.setAnalysis(analysis);
+      // walker.setAnalysis(analysis);
 
       if (null == firstWalker)
       {
@@ -183,39 +183,43 @@ public class WalkerFactory
     int analysis = analyze(compiler, firstStepPos, 0);
     
     
-    if (DEBUG_ITERATOR_CREATION)
-      System.out.println("analysis -- newLocPathIterator: " 
-                        + Integer.toBinaryString(analysis) + ", "
-                         + compiler.toString());
-
-//    // Can't have optimized iterators at this time that have predicates.
-//    if (BIT_PREDICATE == (analysis & BIT_PREDICATE))
-//      return new LocPathIterator(compiler, opPos, true);
-
+    // Is the iteration exactly one child step?
     if ((BIT_CHILD | 0x00000001) == (analysis & (BIT_CHILD | BITS_COUNT)))
     {
+      // Does the pattern specify *any* child with no predicate? (i.e. select="child::node()".
       if (BIT_CHILD == (analysis & BIT_NODETEST_ANY) && !(BIT_PREDICATE == (analysis & BIT_PREDICATE)))
       {
         if (DEBUG_ITERATOR_CREATION)
-          System.out.println("ChildIterator!");
+          System.out.println("new iterator:  ChildIterator: " 
+                            + Integer.toBinaryString(analysis) + ", "
+                             + compiler.toString());
 
-        return new ChildIterator(compiler, opPos);
+        // Use simple child iteration without any test.
+        return new ChildIterator(compiler, opPos, analysis);
       }
       else
       {
         if (DEBUG_ITERATOR_CREATION)
-          System.out.println("ChildTestIterator!");
+          System.out.println("new iterator:  ChildTestIterator: " 
+                            + Integer.toBinaryString(analysis) + ", "
+                             + compiler.toString());
 
-        return new ChildTestIterator(compiler, opPos);
+        // Else use simple node test iteration with predicate test.
+        return new ChildTestIterator(compiler, opPos, analysis);
       }
     }
+    // Is the iteration a one-step attribute pattern (i.e. select="@foo")?
     else if ((BIT_ATTRIBUTE | 0x00000001)
              == (analysis & (BIT_ATTRIBUTE | BITS_COUNT)))
     {
       if (DEBUG_ITERATOR_CREATION)
-        System.out.println("AttributeIterator!");
+        System.out.println("new iterator:  AttributeIterator: " 
+                          + Integer.toBinaryString(analysis) + ", "
+                           + compiler.toString());
 
-      return new AttributeIterator(compiler, opPos);
+      // Then use a simple iteration of the attributes, with node test 
+      // and predicate testing.
+      return new AttributeIterator(compiler, opPos, analysis);
     }
     // Analysis of "//center":
     // bits: 1001000000001010000000000000011
@@ -230,20 +234,35 @@ public class WalkerFactory
                  & (BIT_DESCENDANT | BIT_DESCENDANT_OR_SELF | BITS_COUNT))) ||
             ((BIT_DESCENDANT_OR_SELF | BIT_SELF | 0x00000002)
              == (analysis
-                 & (BIT_DESCENDANT_OR_SELF | BIT_SELF | BITS_COUNT))) ||
-            ((BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | 0x00000003)
+                 & (BIT_DESCENDANT_OR_SELF | BIT_SELF | BITS_COUNT))) 
+            
+            /* ".//center" -- 1000010000001010000000000000011 */     
+            || ((BIT_DESCENDANT_OR_SELF | BIT_SELF | BIT_CHILD | BIT_NODETEST_ANY | 0x00000003)
              == (analysis
-                 & (BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | BITS_COUNT)))
+              & (BIT_DESCENDANT_OR_SELF | BIT_SELF | BIT_CHILD | BIT_NODETEST_ANY | BITS_COUNT)))
+
+            /* "//center" -- 1001000000001010000000000000011 */
+            || ((BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | BIT_NODETEST_ANY | 
+              BIT_ANY_DESCENDANT_FROM_ROOT | 0x00000003)
+             == (analysis
+                 & (BIT_DESCENDANT_OR_SELF | BIT_ROOT | BIT_CHILD | 
+                    BIT_NODETEST_ANY | BIT_ANY_DESCENDANT_FROM_ROOT | BITS_COUNT)))
     )
     {
       if (DEBUG_ITERATOR_CREATION)
-        System.out.println("DescendantIterator!");
+        System.out.println("new iterator:  DescendantIterator: " 
+                          + Integer.toBinaryString(analysis) + ", "
+                           + compiler.toString());
 
-      return new DescendantIterator(compiler, opPos);
+      return new DescendantIterator(compiler, opPos, analysis);
     }
     else
     {
-      return new LocPathIterator(compiler, opPos, true);
+      if (DEBUG_ITERATOR_CREATION)
+        System.out.println("new iterator:  LocPathIterator: " 
+                          + Integer.toBinaryString(analysis) + ", "
+                           + compiler.toString());
+      return new LocPathIterator(compiler, opPos, analysis, true);
     }
   }
 
@@ -448,25 +467,49 @@ public class WalkerFactory
     case OpCodes.OP_FUNCTION :
     case OpCodes.OP_GROUP :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  FilterExprWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new FilterExprWalker(lpi);
       simpleInit = true;
       break;
     case OpCodes.FROM_ROOT :
-      ai = new RootWalker(lpi);
+      if (0 == (analysis & ~(BIT_ROOT | BIT_CHILD | BIT_ATTRIBUTE | 
+                             BIT_NAMESPACE | BIT_PREDICATE | BITS_COUNT)))
+      {
+        if (DEBUG_WALKER_CREATION)
+          System.out.println("new walker:  RootWalkerMultiStep: " + analysis
+                             + ", " + compiler.toString());
+                             
+        ai = new RootWalkerMultiStep(lpi);
+      }
+      else
+      {
+        if (DEBUG_WALKER_CREATION)
+          System.out.println("new walker:  RootWalker: " + analysis
+                             + ", " + compiler.toString());
+        ai = new RootWalker(lpi);
+      }
       break;
     case OpCodes.FROM_ANCESTORS :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  AncestorWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new AncestorWalker(lpi);
       break;
     case OpCodes.FROM_ANCESTORS_OR_SELF :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  AncestorOrSelfWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new AncestorOrSelfWalker(lpi);
       break;
     case OpCodes.FROM_ATTRIBUTES :
       if (1 == totalNumberWalkers)
       {
         if (DEBUG_WALKER_CREATION)
-          System.out.println("analysis -- AttributeWalkerOneStep: " + analysis
+          System.out.println("new walker:  AttributeWalkerOneStep: " + analysis
                              + ", " + compiler.toString());
 
         // TODO: We should be able to do this as long as this is 
@@ -476,89 +519,130 @@ public class WalkerFactory
       else
       {
         if (DEBUG_WALKER_CREATION)
-          System.out.println("analysis -- AttributeWalker: " + analysis
+          System.out.println("new walker:  AttributeWalker: " + analysis
                              + ", " + compiler.toString());
                              
         ai = new AttributeWalker(lpi);
       }
       break;
     case OpCodes.FROM_NAMESPACE :
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  NamespaceWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new NamespaceWalker(lpi);
       break;
     case OpCodes.FROM_CHILDREN :
       if (1 == totalNumberWalkers)
       {
+        // I don't think this will ever happen any more.  -sb
         if (DEBUG_WALKER_CREATION)
-          System.out.println("analysis -- onestep child: " + analysis + ", "
+          System.out.println("new walker:  ChildWalkerOneStep: " + analysis + ", "
                              + compiler.toString());
 
         ai = new ChildWalkerOneStep(lpi);
       }
       else
       {
-        if (0 == (analysis & ~(BIT_CHILD | BIT_ATTRIBUTE | BIT_NAMESPACE | BIT_PREDICATE | BITS_COUNT)))
+        if (0 == (analysis & ~(BIT_ROOT | BIT_CHILD | BIT_ATTRIBUTE | 
+                               BIT_NAMESPACE | BIT_PREDICATE | BITS_COUNT)))
         {
           if (DEBUG_WALKER_CREATION)
-            System.out.println("analysis -- multi-step child: " + analysis
+            System.out.println("new walker:  ChildWalkerMultiStep: " + analysis
                                + ", " + compiler.toString());
 
           ai = new ChildWalkerMultiStep(lpi);
         }
         else
         {
+          if (DEBUG_WALKER_CREATION)
+            System.out.println("new walker:  ChildWalker: " + analysis
+                               + ", " + compiler.toString());
           ai = new ChildWalker(lpi);
         }
       }
       break;
     case OpCodes.FROM_DESCENDANTS :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  DescendantWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new DescendantWalker(lpi);
       break;
     case OpCodes.FROM_DESCENDANTS_OR_SELF :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  DescendantOrSelfWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new DescendantOrSelfWalker(lpi);
       break;
     case OpCodes.FROM_FOLLOWING :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  FollowingWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new FollowingWalker(lpi);
       break;
     case OpCodes.FROM_FOLLOWING_SIBLINGS :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  FollowingSiblingWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new FollowingSiblingWalker(lpi);
       break;
     case OpCodes.FROM_PRECEDING :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  PrecedingWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new PrecedingWalker(lpi);
       break;
     case OpCodes.FROM_PRECEDING_SIBLINGS :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  PrecedingSiblingWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new PrecedingSiblingWalker(lpi);
       break;
     case OpCodes.FROM_PARENT :
       prevIsOneStepDown = false;
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  ParentWalker: " + analysis
+                           + ", " + compiler.toString());
       ai = new ParentWalker(lpi);
       break;
     case OpCodes.FROM_SELF :
       if (1 == totalNumberWalkers)
       {
         if (DEBUG_WALKER_CREATION)
-          System.out.println("analysis -- SelfWalkerOneStep: " + analysis
+          System.out.println("new walker:  SelfWalkerOneStep: " + analysis
                              + ", " + compiler.toString());
 
         ai = new SelfWalkerOneStep(lpi);
       }
       else
       {
+        if (DEBUG_WALKER_CREATION)
+          System.out.println("new walker:  SelfWalker: " + analysis
+                             + ", " + compiler.toString());
         ai = new SelfWalker(lpi);
       }
       break;
     case OpCodes.MATCH_ATTRIBUTE :
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  AttributeWalker(MATCH_ATTRIBUTE): " + analysis
+                           + ", " + compiler.toString());
       ai = new AttributeWalker(lpi);
       break;
     case OpCodes.MATCH_ANY_ANCESTOR :
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  ChildWalker(MATCH_ANY_ANCESTOR): " + analysis
+                           + ", " + compiler.toString());
       ai = new ChildWalker(lpi);
       break;
     case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
+      if (DEBUG_WALKER_CREATION)
+        System.out.println("new walker:  ChildWalker(MATCH_IMMEDIATE_ANCESTOR): " + analysis
+                           + ", " + compiler.toString());
       ai = new ChildWalker(lpi);
       break;
     default :
@@ -660,6 +744,20 @@ public class WalkerFactory
 
   /** Bit is on if any of the walkers contain a root step. */
   public static final int BIT_ROOT = (0x00001000 << 15);
+  
+  /** If any of these bits are on, the expression may likely traverse outside 
+   *  the given subtree. */
+  public static final int BITMASK_TRAVERSES_OUTSIDE_SUBTREE 
+                                                   = (BIT_NAMESPACE // ??
+                                                    | BIT_PRECEDING_SIBLING
+                                                    | BIT_PRECEDING
+                                                    | BIT_FOLLOWING_SIBLING
+                                                    | BIT_FOLLOWING
+                                                    | BIT_PARENT // except parent of attrs.
+                                                    | BIT_ANCESTOR_OR_SELF
+                                                    | BIT_ANCESTOR
+                                                    | BIT_FILTER
+                                                    | BIT_ROOT);                                                    
 
   /**
    * Bit is on if any of the walkers can go backwards in document
@@ -675,9 +773,10 @@ public class WalkerFactory
    *  really only useful if the count is 1. 
    */
   public static final int BIT_NODETEST_ANY = (0x00001000 << 18);
+  
+  // can't go higher than 18!
 
   /** Bit is on if the expression is a match pattern. */
   public static final int BIT_MATCH_PATTERN = (0x00001000 << 19);
 
-  // can't go higher than 19!
 }

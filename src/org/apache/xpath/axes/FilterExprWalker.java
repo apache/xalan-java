@@ -209,7 +209,7 @@ public class FilterExprWalker extends AxesWalker
 
     try
     {
-      if (m_predicateCount > 0)
+      if (getPredicateCount() > 0)
       {
         countProximityPosition(0);
 

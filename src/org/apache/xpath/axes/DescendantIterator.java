@@ -87,11 +87,11 @@ public class DescendantIterator extends LocPathIterator
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public DescendantIterator(Compiler compiler, int opPos)
+  public DescendantIterator(Compiler compiler, int opPos, int analysis)
           throws javax.xml.transform.TransformerException
   {
 
-    super(compiler, opPos, false);
+    super(compiler, opPos, analysis, false);
 
     int ops[] = compiler.getOpMap();
     int firstStepPos = compiler.getFirstChildPos(opPos);
@@ -99,6 +99,11 @@ public class DescendantIterator extends LocPathIterator
 
     if (OpCodes.FROM_DESCENDANTS_OR_SELF == stepType)
       m_orSelf = true;
+    if (OpCodes.FROM_SELF == stepType)
+    {
+      m_orSelf = true;
+      firstStepPos += 8;
+    }
     else if(OpCodes.FROM_ROOT == stepType)
     {
       m_fromRoot = true;

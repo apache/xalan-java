@@ -56,88 +56,88 @@
  */
 package org.apache.xpath.axes;
 
-import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.compiler.Compiler;
-
 import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
+import org.w3c.dom.traversal.NodeFilter;
+
+import org.apache.xpath.patterns.NodeTestFilter;
 
 /**
- * <meta name="usage" content="advanced"/>
- * This class implements an optimized iterator for 
- * "node()" patterns, that is, any children of the 
- * context node.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
+ * This class extends ChildWalkerMultiStep to handle the root step of
+ * patterns such as "/foo/baz" where the first step is the root, and the
+ * rest of the steps are simple child steps.
  */
-public class ChildIterator extends LocPathIterator
+public class RootWalkerMultiStep extends ChildWalkerMultiStep
 {
 
   /**
-   * Create a ChildIterator object.
+   * Construct an ChildWalkerMultiStep using a LocPathIterator.
    *
-   * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the 
-   * location path expression for this itterator.
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param locPathIterator
    */
-  public ChildIterator(Compiler compiler, int opPos, int analysis)
-          throws javax.xml.transform.TransformerException
+  public RootWalkerMultiStep(LocPathIterator locPathIterator)
   {
-    super(compiler, opPos, analysis, false);
+    super(locPathIterator);
   }
 
   /**
-   *  Returns the next node in the set and advances the position of the
-   * iterator in the set. After a NodeIterator is created, the first call
-   * to nextNode() returns the first node in the set.
-   * 
-   * @return  The next <code>Node</code> in the set being iterated over, or
-   *   <code>null</code> if there are no more members in that set.
-   * 
-   * @exception DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
+   *  Set the root node of the TreeWalker.
+   *
+   * @param root The context node of this step.
    */
-  public Node nextNode() throws DOMException
+  public void setRoot(Node root)
   {
 
-    // If the cache is on, and the node has already been found, then 
-    // just return from the list.
-    if ((null != m_cachedNodes)
-            && (m_cachedNodes.getCurrentPos() < m_cachedNodes.size()))
-    {
-      Node next = m_cachedNodes.nextNode();
+    super.setRoot(root);
 
-      this.setCurrentPos(m_cachedNodes.getCurrentPos());
+    m_processedRoot = false;
+  }
 
-      return next;
-    }
+  /**
+   * Get the next node in document order on the axes.
+   *
+   * @return the next valid child node.
+   */
+  protected Node getNextNode()
+  {
 
-    if (m_foundLast)
-      return null;
+    if (m_isFresh)
+      m_isFresh = false;
+
+    Node current = this.getCurrentNode();
+
+    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
+      ((NodeTestFilter) current).setNodeTest(this);
 
     Node next;
 
-    m_lastFetched = next = (null == m_lastFetched)
-                           ? m_context.getFirstChild()
-                           : m_lastFetched.getNextSibling();
+    if (!m_processedRoot)
+    {
+      m_processedRoot = true;
+      next = m_lpi.getDOMHelper().getRootNode(m_currentNode);
+    }
+    else
+      next = null;
 
     if (null != next)
     {
-      if (null != m_cachedNodes)
-        m_cachedNodes.addElement(m_lastFetched);
+      m_currentNode = next;
 
-      m_next++;
+      // doesn't seem like we need to do this!
+      if (acceptNode(next) != NodeFilter.FILTER_ACCEPT)
+      {
+        next = null;
+      }
 
-      return next;
+      if (null == next)
+        m_currentNode = current;  // don't advance the current node.
     }
-    else
-    {
-      m_foundLast = true;
 
-      return null;
-    }
+    if (null == next)
+      this.m_isDone = true;
+
+    return next;
   }
+
+  /** True if the root node has been processed. */
+  boolean m_processedRoot = false;
 }

@@ -105,75 +105,6 @@ public class LocPathIterator extends PredicatedNodeTest
                    java.io.Serializable
 {
 
-  /* The pool for cloned iterators.  Iterators need to be cloned
-   * because the hold running state, and thus the original iterator
-   * expression from the stylesheet pool can not be used.          */
-
-  // ObjectPool m_pool = new ObjectPool(this.getClass());
-
-  /** The last node that was fetched, usually by nextNode. */
-  transient public Node m_lastFetched;
-
-  /**
-   * If this iterator needs to cache nodes that are fetched, they
-   * are stored here.
-   */
-  transient NodeSet m_cachedNodes;
-
-  /** The last used step walker in the walker list. */
-  protected AxesWalker m_lastUsedWalker;
-
-  /** The head of the step walker list. */
-  protected AxesWalker m_firstWalker;
-
-  /** This is true if nextNode returns null. */
-  protected boolean m_foundLast = false;
-
-  /**
-   * Quicker access to the DOM helper than going through the
-   * XPathContext object.
-   */
-  transient protected DOMHelper m_dhelper;
-
-  /**
-   * The context node for this iterator, which doesn't change through
-   * the course of the iteration.
-   */
-  transient protected Node m_context;
-
-  /**
-   * The node context from where the expression is being
-   * executed from (i.e. for current() support).  Different
-   * from m_context in that this is the context for the entire
-   * expression, rather than the context for the subexpression.
-   */
-  transient protected Node m_currentContextNode;
-
-  /**
-   * Fast access to the current prefix resolver.  It isn't really
-   * clear that this is needed.
-   */
-  protected PrefixResolver m_prefixResolver;
-
-  /**
-   * The XPathContext reference, needed for execution of many
-   * operations.
-   */
-  transient protected XPathContext m_execContext;
-
-  /**
-   * The index of the next node to be fetched.  Useful if this
-   * is a cached iterator, and is being used as random access
-   * NodeList.
-   */
-  protected int m_next = 0;
-
-  /**
-   * The list of "waiting" step walkers.
-   * @see org.apache.xpath.axes.AxesWalker
-   */
-  private Vector m_waiting = null;
-
   /**
    * Get the waiting walker at the given index.
    *
@@ -203,33 +134,6 @@ public class LocPathIterator extends PredicatedNodeTest
       return m_waiting.size() - m_waitingBottom;
   }
 
-  /** The starting point in m_waiting where the waiting step walkers are. */
-  int m_waitingBottom = 0;
-
-  /**
-   * An index to the point in the variable stack where we should
-   * begin variable searches for this iterator.
-   * This is -1 if m_isTopLevel is false.
-   */
-  int m_varStackPos = -1;
-
-  /**
-   * An index into the variable stack where the variable context
-   * ends, i.e. at the point we should terminate the search and
-   * go looking for global variables.
-   */
-  int m_varStackContext;
-
-  /**
-   * Value determined at compile time, indicates that this is an
-   * iterator at the top level of the expression, rather than inside
-   * a predicate.
-   */
-  private boolean m_isTopLevel = false;
-
-  /** The index of the last node in the iteration. */
-  private int m_last = 0;
-
   /**
    * Create a LocPathIterator object.
    *
@@ -256,10 +160,10 @@ public class LocPathIterator extends PredicatedNodeTest
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public LocPathIterator(Compiler compiler, int opPos)
+  public LocPathIterator(Compiler compiler, int opPos, int analysis)
           throws javax.xml.transform.TransformerException
   {
-    this(compiler, opPos, true);
+    this(compiler, opPos, analysis, true);
   }
 
   /**
@@ -278,9 +182,10 @@ public class LocPathIterator extends PredicatedNodeTest
    * @throws javax.xml.transform.TransformerException
    */
   public LocPathIterator(
-          Compiler compiler, int opPos, boolean shouldLoadWalkers)
+          Compiler compiler, int opPos, int analysis, boolean shouldLoadWalkers)
             throws javax.xml.transform.TransformerException
   {
+    m_analysis = analysis;
 
     setLocPathIterator(this);
 
@@ -1044,4 +949,151 @@ public class LocPathIterator extends PredicatedNodeTest
     // System.out.println("pos: "+pos);
     return pos;
   }
+  
+  /**
+   * Get the analysis pattern built by the WalkerFactory.
+   *
+   * @return The analysis pattern built by the WalkerFactory.
+   */
+  int getAnalysis()
+  {
+    return m_analysis;
+  }
+
+  /**
+   * Set the analysis pattern built by the WalkerFactory.
+   *
+   * @param a The analysis pattern built by the WalkerFactory.
+   */
+  void setAnalysis(int a)
+  {
+    m_analysis = a;
+  }
+  
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+   public boolean canTraverseOutsideSubtree()
+   {
+    if((m_analysis & WalkerFactory.BITMASK_TRAVERSES_OUTSIDE_SUBTREE) != 0)
+    {
+      return true;
+    }
+    // We have to ask subwalkers about their predicates.
+    if(null != m_firstWalker)
+    {
+      if(m_firstWalker.canTraverseOutsideSubtree())
+        return true;
+    }
+    return super.canTraverseOutsideSubtree();
+   }
+
+  
+  //============= State Data =============
+  
+  /** The starting point in m_waiting where the waiting step walkers are. */
+  int m_waitingBottom = 0;
+
+  /**
+   * An index to the point in the variable stack where we should
+   * begin variable searches for this iterator.
+   * This is -1 if m_isTopLevel is false.
+   */
+  int m_varStackPos = -1;
+
+  /**
+   * An index into the variable stack where the variable context
+   * ends, i.e. at the point we should terminate the search and
+   * go looking for global variables.
+   */
+  int m_varStackContext;
+
+  /**
+   * Value determined at compile time, indicates that this is an
+   * iterator at the top level of the expression, rather than inside
+   * a predicate.
+   */
+  private boolean m_isTopLevel = false;
+
+  /** The index of the last node in the iteration. */
+  private int m_last = 0;
+  
+  /* The pool for cloned iterators.  Iterators need to be cloned
+   * because the hold running state, and thus the original iterator
+   * expression from the stylesheet pool can not be used.          */
+
+  // ObjectPool m_pool = new ObjectPool(this.getClass());
+
+  /** The last node that was fetched, usually by nextNode. */
+  transient public Node m_lastFetched;
+
+  /**
+   * If this iterator needs to cache nodes that are fetched, they
+   * are stored here.
+   */
+  transient NodeSet m_cachedNodes;
+
+  /** The last used step walker in the walker list. */
+  protected AxesWalker m_lastUsedWalker;
+
+  /** The head of the step walker list. */
+  protected AxesWalker m_firstWalker;
+
+  /** This is true if nextNode returns null. */
+  protected boolean m_foundLast = false;
+
+  /**
+   * Quicker access to the DOM helper than going through the
+   * XPathContext object.
+   */
+  transient protected DOMHelper m_dhelper;
+
+  /**
+   * The context node for this iterator, which doesn't change through
+   * the course of the iteration.
+   */
+  transient protected Node m_context;
+
+  /**
+   * The node context from where the expression is being
+   * executed from (i.e. for current() support).  Different
+   * from m_context in that this is the context for the entire
+   * expression, rather than the context for the subexpression.
+   */
+  transient protected Node m_currentContextNode;
+
+  /**
+   * Fast access to the current prefix resolver.  It isn't really
+   * clear that this is needed.
+   */
+  protected PrefixResolver m_prefixResolver;
+
+  /**
+   * The XPathContext reference, needed for execution of many
+   * operations.
+   */
+  transient protected XPathContext m_execContext;
+
+  /**
+   * The index of the next node to be fetched.  Useful if this
+   * is a cached iterator, and is being used as random access
+   * NodeList.
+   */
+  protected int m_next = 0;
+
+  /**
+   * The list of "waiting" step walkers.
+   * @see org.apache.xpath.axes.AxesWalker
+   */
+  private Vector m_waiting = null;
+  
+  /**
+   * The analysis pattern built by the WalkerFactory.
+   * TODO: Move to LocPathIterator.
+   * @see org.apache.xpath.axes.WalkerFactory
+   */
+  protected int m_analysis = 0x00000000;
 }

@@ -70,17 +70,33 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    */
   public int getPredicateCount()
   {
-    return m_predicateCount;
+    return (null == m_predicates) ? 0 : m_predicates.length;
   }
 
   /**
-   * Set the number of predicates that this walker has.
+   * Set the number of predicates that this walker has.  This does more 
+   * that one would think, as it creates a new predicate array of the 
+   * size of the count argument, and copies count predicates into the new 
+   * one from the old, and then reassigns the predicates value.  All this 
+   * to keep from having to have a predicate count value.
    *
-   * @param count The number of predicates.
+   * @param count The number of predicates, which must be equal or less 
+   *               than the existing count.
    */
   public void setPredicateCount(int count)
   {
-    m_predicateCount = count;
+    if(count > 0)
+    {
+      Expression[] newPredicates = new Expression[count];
+      for (int i = 0; i < count; i++) 
+      {
+        newPredicates[i] = m_predicates[i];
+      }
+      m_predicates = newPredicates;
+    }
+    else
+      m_predicates = null;
+    
   }
 
   /**
@@ -99,7 +115,6 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
     int pos = compiler.getFirstPredicateOpPos(opPos);
 
     m_predicates = compiler.getCompiledPredicates(pos);
-    m_predicateCount = (null == m_predicates) ? 0 : m_predicates.length;
   }
 
   /**
@@ -169,13 +184,13 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    */
   public void resetProximityPositions()
   {
-
-    if (m_predicateCount > 0)
+    int nPredicates = getPredicateCount();
+    if (nPredicates > 0)
     {
       if (null == m_proximityPositions)
-        m_proximityPositions = new int[m_predicateCount];
+        m_proximityPositions = new int[nPredicates];
 
-      for (int i = 0; i < m_predicateCount; i++)
+      for (int i = 0; i < nPredicates; i++)
       {
         try
         {
@@ -250,7 +265,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
 
     m_predicateIndex = 0;
 
-    int nPredicates = m_predicateCount;
+    int nPredicates = getPredicateCount();
     // System.out.println("nPredicates: "+nPredicates);
     if (nPredicates == 0)
       return true;
@@ -377,7 +392,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
       // System.out.println("\n::acceptNode - score: "+score.num()+"::");
       if (score != NodeTest.SCORE_NONE)
       {
-        if (m_predicateCount > 0)
+        if (getPredicateCount() > 0)
         {
           countProximityPosition(0);
 
@@ -425,10 +440,22 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   }
   
   /**
-   * Number of predicates (in effect).
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
    */
-  protected int m_predicateCount;
-  
+   public boolean canTraverseOutsideSubtree()
+   {
+    int n = getPredicateCount();
+    for (int i = 0; i < n; i++) 
+    {
+      if(getPredicate(i).canTraverseOutsideSubtree())
+        return true;
+    }
+    return false;
+   }
+    
   /** The owning location path iterator. */
   protected LocPathIterator m_lpi;
   
