@@ -60,6 +60,8 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.xml.utils.ObjectFactory;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -199,9 +201,11 @@ public class FuncSystemProperty extends FunctionOneArg
   {
     try
     {
-      // Reflect TransformerFactoryImpl behavior
-      // i.e. do not use context ClassLoader
-      InputStream is = FuncSystemProperty.class.getResourceAsStream("/" + file);
+      // Use SecuritySupport class to provide priveleged access to property file
+      SecuritySupport ss = SecuritySupport.getInstance();
+
+      InputStream is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
+                                              file);
 
       // get a buffered version
       BufferedInputStream bis = new BufferedInputStream(is);
