@@ -369,7 +369,34 @@ public class IncrementalSAXSource_Xerces
     return arg;
   }
 	
-	// Private methods -- conveniences to hide the reflection details
+  static final Object[] parmstrue={Boolean.TRUE};
+	
+  /** deliverAllNodes() is a simple API which tells the coroutine
+   * parser to run until all nodes have been delivered.  
+   * This is a bit of a kluge, intended to address the case where
+   * we're using IncrementalSAXSource_Xerces not for its incrementality
+   * but as a wrapper around the Xerces XNI layer; its primary purpose
+   * is to simplify the logic in DTMManagerDefault.java
+   * */
+  public void deliverAllNodes ()
+  {
+  	try
+  	{
+		Object ret=(Boolean)(fConfigParse.invoke(fPullParserConfig,parmstrue));
+  	}
+  	catch(IllegalAccessException e)
+  	{
+  		// %REVIEW% shouldn't happen
+  		e.printStackTrace();
+  	}
+  	catch(java.lang.reflect.InvocationTargetException e)
+  	{
+  		//  %REVIEW% shouldn't happen
+  		e.printStackTrace();
+  	}
+  }
+  
+  	// Private methods -- conveniences to hide the reflection details
 	private boolean parseSomeSetup(InputSource source) 
 		throws SAXException, IOException, IllegalAccessException, 
 					 java.lang.reflect.InvocationTargetException,
