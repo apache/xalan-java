@@ -127,13 +127,6 @@ public class ToXMLSAXHandler extends ToSAXHandler
     {
     }
 
-    /**
-     * @see org.apache.xml.serializer.Serializer#reset()
-     */
-    public boolean reset()
-    {
-        return false;
-    }
 
     /**
      * @see org.apache.xml.serializer.DOMSerializer#serialize(Node)
@@ -757,6 +750,34 @@ public class ToXMLSAXHandler extends ToSAXHandler
             addAttributeAlways(uri, localName, rawName, type, value);
         }
 
-    }    
+    } 
+       
+    /**
+     * Try's to reset the super class and reset this class for 
+     * re-use, so that you don't need to create a new serializer 
+     * (mostly for performance reasons).
+     * 
+     * @return true if the class was successfuly reset.
+     * @see org.apache.xml.serializer.Serializer#reset()
+     */
+    public boolean reset()
+    {
+        boolean wasReset = false;
+        if (super.reset())
+        {
+            resetToXMLSAXHandler();
+            wasReset = true;
+        }
+        return wasReset;
+    }
+    
+    /**
+     * Reset all of the fields owned by ToXMLSAXHandler class
+     *
+     */
+    private void resetToXMLSAXHandler()
+    {
+        this.m_escapeSetting = false;
+    }  
 
 }

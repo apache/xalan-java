@@ -412,5 +412,35 @@ abstract public class ToSAXHandler extends SerializerBase
         if (m_saxHandler instanceof ErrorHandler)
             ((ErrorHandler)m_saxHandler).warning(exc);        
     }
-
+    
+       
+    /**
+     * Try's to reset the super class and reset this class for 
+     * re-use, so that you don't need to create a new serializer 
+     * (mostly for performance reasons).
+     * 
+     * @return true if the class was successfuly reset.
+     * @see org.apache.xml.serializer.Serializer#reset()
+     */
+    public boolean reset()
+    {
+        boolean wasReset = false;
+        if (super.reset())
+        {
+            resetToSAXHandler();
+            wasReset = true;
+        }
+        return wasReset;
+    }
+    
+    /**
+     * Reset all of the fields owned by ToSAXHandler class
+     *
+     */
+    private void resetToSAXHandler()
+    {
+        this.m_lexHandler = null;
+        this.m_saxHandler = null;
+        this.m_state = null;
+    }  
 }

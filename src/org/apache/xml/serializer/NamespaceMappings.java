@@ -106,12 +106,12 @@ public class NamespaceMappings
      * on the m_nodeStack. That way all prefixes pushed at the current depth can
      * be removed at the same time.      
      */
-    private java.util.Stack m_prefixStack;
+    private java.util.Stack m_prefixStack = new Stack();
 
     /**
      * Each entry (prefix) in this hashtable points to a Stack of URIs
      */
-    private Hashtable m_namespaces;
+    private Hashtable m_namespaces = new Hashtable();
 
     /** 
      * The top of this stack contains the nested element depth
@@ -125,7 +125,7 @@ public class NamespaceMappings
      * Used to ensure prefix/uri map scopes are closed correctly
      *
      */
-    private Stack m_nodeStack;
+    private Stack m_nodeStack = new Stack();
 
     private static final String EMPTYSTRING = "";
     private static final String XML_PREFIX = "xml"; // was "xmlns"
@@ -145,10 +145,7 @@ public class NamespaceMappings
      */
     private void initNamespaces()
     {
-        // Namespaces
-        m_namespaces = new Hashtable();
-        m_nodeStack = new Stack();
-        m_prefixStack = new Stack();
+ 
 
         // Define the default namespace (initially maps to "" uri)
         Stack stack;
@@ -300,6 +297,16 @@ public class NamespaceMappings
         clone.count = count;
         return clone;
         
+    }
+    
+    public final void reset()
+    {
+    	this.count = 0;
+    	this.m_namespaces.clear();
+    	this.m_nodeStack.clear();
+    	this.m_prefixStack.clear();
+    	
+    	initNamespaces();
     }
 
 }

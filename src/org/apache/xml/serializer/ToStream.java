@@ -152,20 +152,6 @@ abstract public class ToStream extends SerializerBase
     protected boolean m_isprevtext = false;
 
     /**
-     * A stack of Boolean objects that tell if the given element
-     * has children.
-     */
-    // protected BoolStack m_elemStack = new BoolStack();
-
-    /**
-     * Map that tells which XML characters should have special treatment, and it
-     *  provides character to entity name lookup.
-     */
-    private static CharInfo m_xmlcharInfo =
-        //      new CharInfo(CharInfo.XML_ENTITIES_RESOURCE);
-    CharInfo.getCharInfo(CharInfo.XML_ENTITIES_RESOURCE);
-
-    /**
      * The maximum character size before we have to resort
      * to escaping.
      */
@@ -189,13 +175,8 @@ abstract public class ToStream extends SerializerBase
      */
     protected CharInfo m_charInfo;
 
-    /** Table of user-specified char infos. */
-    private static Hashtable m_charInfos = null;
-
     /** True if we control the buffer, and we should flush the output on endDocument. */
     boolean m_shouldFlush = true;
-
-    //    protected OutputBuffer _buffer = null;
 
     /**
      * Add space before '/>' for XHTML.
@@ -769,21 +750,6 @@ abstract public class ToStream extends SerializerBase
 
     }
 
-    /**
-     * Resets the serializer. If this method returns true, the
-     * serializer may be used for subsequent serialization of new
-     * documents. It is possible to change the output format and
-     * output stream prior to serializing, or to use the existing
-     * output format and output stream.
-     *
-     * @return True if serializer has been reset and can be reused
-     */
-    public boolean reset()
-    {
-        m_needToCallStartDocument = true;
-        
-        return false;
-    }
 
     /**
      * Might print a newline character and the indentation amount
@@ -2845,4 +2811,52 @@ abstract public class ToStream extends SerializerBase
         
         
     }
+    /**
+     * Try's to reset the super class and reset this class for 
+     * re-use, so that you don't need to create a new serializer 
+     * (mostly for performance reasons).
+     * 
+     * @return true if the class was successfuly reset.
+     */
+    public boolean reset()
+    {
+        boolean wasReset = false;
+        if (super.reset())
+        {
+            resetToStream();
+            wasReset = true;
+        }
+        return wasReset;
+    }
+    
+    /**
+     * Reset all of the fields owned by ToStream class
+     *
+     */
+    private void resetToStream()
+    {
+         this.m_canConvertMeth = null;
+         this.m_cdataStartCalled = false;
+         this.m_charInfo = null; // ?? 
+         this.m_charToByteConverter = null;
+         this.m_disableOutputEscapingStates.clear();
+         
+         this.m_escaping = false;
+         // Leave m_format alone for now - bjm
+         // this.m_format = null;
+         this.m_inDoctype = false;
+         this.m_ispreserve = false;
+         this.m_ispreserve = false;
+         this.m_isprevtext = false;
+         this.m_isUTF8 = false; //  ?? used anywhere ??
+         this.m_maxCharacter = Encodings.getLastPrintable();
+         this.m_preserves.clear();
+         this.m_shouldFlush = true;
+         this.m_spaceBeforeClose = false;
+         this.m_startNewLine = false;
+         this.m_triedToGetConverter = false;
+         // DON'T SET THE WRITER TO NULL, IT MAY BE REUSED !!
+         // this.m_writer = null;        
+ 
+    }        
 }

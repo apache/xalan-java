@@ -87,7 +87,7 @@ public class ToHTMLStream extends ToStream
     /** State stack to keep track of if the current element has output 
      *  escaping disabled. 
      */
-    protected BoolStack m_isRawStack = new BoolStack();
+    protected final BoolStack m_isRawStack = new BoolStack();
 
     /** This flag is set while receiving events from the DTD */
     protected boolean m_inDTD = false;
@@ -100,12 +100,12 @@ public class ToHTMLStream extends ToStream
      * Map that tells which XML characters should have special treatment, and it
      *  provides character to entity name lookup.
      */
-    protected static CharInfo m_htmlcharInfo =
+    protected static final CharInfo m_htmlcharInfo =
 //        new CharInfo(CharInfo.HTML_ENTITIES_RESOURCE);
         CharInfo.getCharInfo(CharInfo.HTML_ENTITIES_RESOURCE);
 
     /** A digital search trie for fast, case insensitive lookup of ElemDesc objects. */
-    static Trie m_elementFlags = new Trie();
+    static final Trie m_elementFlags = new Trie();
 
     static {
 
@@ -506,7 +506,7 @@ public class ToHTMLStream extends ToStream
     /**
      * Dummy element for elements not found.
      */
-    static private ElemDesc m_dummy = new ElemDesc(0 | ElemDesc.BLOCK);
+    static private final ElemDesc m_dummy = new ElemDesc(0 | ElemDesc.BLOCK);
 
     /** True if URLs should be specially escaped with the %xx form. */
     private boolean m_specialEscapeURLs = true;
@@ -1798,5 +1798,24 @@ public class ToHTMLStream extends ToStream
         if (m_inDTD)
             return;
         super.comment(ch, start, length);
+    }
+    
+    public boolean reset()
+    {
+    	boolean ret = super.reset();
+    	if (!ret)
+    		return false;
+    	initToHTMLStream();
+    	return true;    	
+    }
+    
+    private void initToHTMLStream()
+    {
+		m_elementDesc = null;
+		m_inBlockElem = false;
+		m_inDTD = false;
+		m_isRawStack.clear();
+		m_omitMetaTag = false;
+		m_specialEscapeURLs = true;    	
     }
 }
