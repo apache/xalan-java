@@ -306,7 +306,7 @@ final class Predicate extends Expression {
     }
 
     private Expression _value = null;
-    private Expression _step = null;
+    private Step _step = null;
 
     /**
      * Utility method for optimisation. See isNodeValueTest()
@@ -352,7 +352,7 @@ final class Predicate extends Expression {
     /**
      * Utility method for optimisation. See isNodeValueTest()
      */
-    public Expression getStep() {
+    public Step getStep() {
 	if (_step != null) return _step;
 	if (_exp == null) return null;
 
@@ -362,11 +362,12 @@ final class Predicate extends Expression {
 	    Expression right = exp.getRight();
 
 	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
-	    if (left instanceof Step) _step = left;
+	    if (left instanceof Step) _step = (Step)left;
 	    
 	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
-	    if (right instanceof Step) _step = right;
+	    if (right instanceof Step) _step = (Step)right;
 	}
+	//if ((_step != null) && (_step.isAbbreviatedDot())) _step = null;
 	return _step;
     }
 
@@ -383,7 +384,7 @@ final class Predicate extends Expression {
 	if (_nthPositionFilter || _nthDescendant) {
 	    _exp.translate(classGen, methodGen);
 	}
-	else if (isNodeValueTest()) {
+	else if (isNodeValueTest() && (getParent() instanceof Step)) {
 	    _value.translate(classGen, methodGen);
 	    il.append(new PUSH(cpg, ((EqualityExpr)_exp).getOp()));
 	}

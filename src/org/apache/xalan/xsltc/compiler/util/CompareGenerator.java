@@ -68,6 +68,7 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Template;
 
 public final class CompareGenerator extends MethodGenerator {
+
     private static int DOM_INDEX      = 1;
     private static int CURRENT_INDEX  = 2;
     private static int LEVEL_INDEX    = 3;

@@ -126,6 +126,7 @@ final class When extends Instruction {
 	if (!_ignore) {
 	    typeCheckContents(stable);
 	}
+
 	return Type.Void;
     }
 

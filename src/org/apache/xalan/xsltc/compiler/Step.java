@@ -356,25 +356,36 @@ final class Step extends RelativeLocationPath {
 	    final Predicate predicate = (Predicate)_predicates.lastElement();
 	    _predicates.remove(predicate);
 
-	    // Handle '//blob[@attr = $var]' expression
+	    // Special case for predicates that can use the NodeValueIterator
+	    // instead of an auxiliary class. Certain path/predicates pairs
+	    // are translated into a base path, on top of which we place a
+	    // node value iterator that tests for the desired value:
+	    //   foo[@attr = 'str']  ->  foo/@attr + test(value='str')
+	    //   foo[bar = 'str']    ->  foo/bar + test(value='str')
+	    //   foo/bar[. = 'str']  ->  foo/bar + test(value='str')
 	    if (predicate.isNodeValueTest()) {
-		Step step = (Step)(predicate.getStep());
-		ParentLocationPath path = new ParentLocationPath(this, step);
-
-		try {
-		    path.typeCheck(getParser().getSymbolTable());
-		}
-		catch (TypeCheckError e) { }
+		Step step = predicate.getStep();
 
 		il.append(methodGen.loadDOM());
-		path.translate(classGen, methodGen);
+		// If the predicate's Step is simply '.' we translate this Step
+		// and place the node test on top of the resulting iterator
+		if (step.isAbbreviatedDot()) {
+		    translate(classGen, methodGen);
+		}
+		// Otherwise we create a parent location path with this Step and
+		// the predicates Step, and place the node test on top of that
+		else {
+		    ParentLocationPath path = new ParentLocationPath(this,step);
+		    try {
+			path.typeCheck(getParser().getSymbolTable());
+		    }
+		    catch (TypeCheckError e) { }
+		    path.translate(classGen, methodGen);
+		}
 		predicate.translate(classGen, methodGen);
-
-		final String signature =
-		    "("+NODE_ITERATOR_SIG+STRING_SIG+"Z)"+NODE_ITERATOR_SIG;
 		final int iter = cpg.addMethodref(DOM_CLASS,
-						  "getNodeValueIterator",
-						  signature);
+						  GET_NODE_VALUE_ITERATOR,
+						  GET_NODE_VALUE_ITERATOR_SIG);
 		il.append(new INVOKEVIRTUAL(iter));
 	    }
 	    // Handle '//*[n]' expression

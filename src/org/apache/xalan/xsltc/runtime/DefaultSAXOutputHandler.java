@@ -115,9 +115,10 @@ public class DefaultSAXOutputHandler implements ContentHandler {
 
     private static final String EMPTYSTRING = "";
 
-    private boolean   _indentNextEndTag = false;
-    private boolean   _linefeedNextStartTag = false;
-    private int       _indentLevel = 0;
+    private boolean _lineFeedNextStartTag = false;
+    private boolean _linefeedNextEndTag = false;
+    private boolean _indentNextEndTag = false;
+    private int     _indentLevel = 0;
 
     // This is used for aggregating namespace declarations
     private AttributeList _namespaceDeclarations = new AttributeList();
@@ -181,7 +182,6 @@ public class DefaultSAXOutputHandler implements ContentHandler {
 	_outputType = TextOutput.UNKNOWN;
 	_indent = false;
 	_indentNextEndTag = false;
-	_linefeedNextStartTag = false;
 	_indentLevel = 0;
 	_startTagOpen = false;
     }
@@ -255,16 +255,17 @@ public class DefaultSAXOutputHandler implements ContentHandler {
 
 	    // Handle indentation (not a requirement)
             if (_indent) {
-                indent(_linefeedNextStartTag);
-                _indentLevel++;
+		indent(_lineFeedNextStartTag);
+		_lineFeedNextStartTag = true;
                 _indentNextEndTag = false;
+                _indentLevel++;
             }
-            _linefeedNextStartTag = true;
 
 	    // Now, finally, output the start tag for the element.
 	    _writer.write('<');
 	    _writer.write(elementName);
 	    _startTagOpen = true;
+	    _indentNextEndTag = false;
 
 	    // Output namespace declarations first...
 	    int declCount = _namespaceDeclarations.getLength();
@@ -304,15 +305,16 @@ public class DefaultSAXOutputHandler implements ContentHandler {
 			   String elementName)  throws SAXException {
 	try {
 
-	      _linefeedNextStartTag = false;
-
             if (_indent) _indentLevel--;
 
             if (_startTagOpen) {
                 closeStartTag(false);
             }
             else {
-                if ((_indent) && (_indentNextEndTag)) indent(false);
+                if ((_indent) && (_indentNextEndTag)) {
+		    indent(_indentNextEndTag);
+		    _indentNextEndTag = true;
+		}
                 char[] endTag = (char[])_endTags.get(elementName);
                 if (endTag == null) {
 		    // We dont' want to concatenate String objects!!!!
@@ -359,7 +361,6 @@ public class DefaultSAXOutputHandler implements ContentHandler {
 		determineOutputType(null);
 	    
             if (len == 0) return;
-            _linefeedNextStartTag = false;
 
             // Close any open start-tags.
             if (_startTagOpen) closeStartTag(true);

@@ -209,9 +209,7 @@ public abstract class NodeCounter implements Axis {
 	for (int j = 0, i = 0; i < length;) {
             char c = _format.charAt(i);
             for (j = i; Character.isLetterOrDigit(c);) {
-                if (++i == length) {
-		    break;
-		}
+                if (++i == length) break;
 		c = _format.charAt(i);
             }
             if (i > j) {
@@ -222,15 +220,11 @@ public abstract class NodeCounter implements Axis {
                 formatToks.addElement(_format.substring(j, i));
             }
 
-            if (i == length) {
-		break;
-	    }
+            if (i == length) break;
 
             c = _format.charAt(i);
             for (j = i; !Character.isLetterOrDigit(c);) {
-                if (++i == length) {
-		    break;
-		}
+                if (++i == length) break;
                 c = _format.charAt(i);
                 isFirst = false;
             }
@@ -257,8 +251,7 @@ public abstract class NodeCounter implements Axis {
 		if (!isFirst) {
 		    buffer.append((String) separToks.elementAt(t));
 		}
-		formatValue(value, (String) formatToks.elementAt(t++),
-			    buffer);
+		formatValue(value, (String) formatToks.elementAt(t++), buffer);
 		if (t == formatToks.size()) {
 		    t--;
 		}

@@ -139,7 +139,6 @@ final class If extends Instruction {
      * The contents will be ignored if we know the test will always fail.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-
 	final InstructionList il = methodGen.getInstructionList();
 	_test.translateDesynthesized(classGen, methodGen);
 	// remember end of condition

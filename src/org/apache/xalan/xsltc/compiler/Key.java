@@ -222,7 +222,6 @@ final class Key extends TopLevelElement {
 					 "getAxisIterator",
 					 "(I)"+NODE_ITERATOR_SIG);
 
-	// Save current node and current iterator on the stack
 	il.append(methodGen.loadCurrentNode());
 	il.append(methodGen.loadIterator());
 
