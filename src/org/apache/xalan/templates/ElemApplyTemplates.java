@@ -204,9 +204,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
     try
     {
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(this);
-
       // %REVIEW% Do we need this check??
       //      if (null != sourceNode)
       //      {
@@ -223,10 +220,16 @@ public class ElemApplyTemplates extends ElemCallTemplate
           transformer.pushMode(m_mode);
         }
       }
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(this);
+
       transformSelectedNodes(transformer);
     }
     finally
     {
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEndEvent(this);
+
       if (pushMode)
         transformer.popMode();
 
@@ -422,6 +425,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
           t.execute(transformer);
         }
         
+        if (TransformerImpl.S_DEBUG)
+	      transformer.getTraceManager().fireTraceEndEvent(this); 
+	    
         if(template.m_frameSize > 0)
           vars.unlink();
           

@@ -260,13 +260,13 @@ public class ElemValueOf extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
     ResultTreeHandler rth = transformer.getResultTreeHandler();
 
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
+
     try
     {
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(this);
-
       // Optimize for "."
-      if (false && m_isDot &&!TransformerImpl.S_DEBUG)
+      if (false && m_isDot && !TransformerImpl.S_DEBUG)
       {
         int child = xctxt.getCurrentNode();
         DTM dtm = xctxt.getDTM(child);
@@ -333,6 +333,11 @@ public class ElemValueOf extends ElemTemplateElement
     catch (SAXException se)
     {
       throw new TransformerException(se);
+    }
+    finally
+    {
+      if (TransformerImpl.S_DEBUG)
+	    transformer.getTraceManager().fireTraceEndEvent(this); 
     }
   }
 

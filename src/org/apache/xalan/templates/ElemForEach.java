@@ -291,17 +291,18 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   public void execute(TransformerImpl transformer) throws TransformerException
   {
 
-    transformer.pushCurrentTemplateRuleIsNull(true);
+    transformer.pushCurrentTemplateRuleIsNull(true);    
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
 
     try
     {
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(this);
-
       transformSelectedNodes(transformer);
     }
     finally
     {
+      if (TransformerImpl.S_DEBUG)
+	    transformer.getTraceManager().fireTraceEndEvent(this); 
       transformer.popCurrentTemplateRuleIsNull();
     }
   }
@@ -440,6 +441,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
           transformer.setCurrentElement(t);
           t.execute(transformer);
         }
+        
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireTraceEndEvent(this);
+
 
 	 	// KLUGE: Implement <?xalan:doc_cache_off?> 
 	 	// ASSUMPTION: This will be set only when the XPath was indeed

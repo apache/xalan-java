@@ -2090,8 +2090,8 @@ public class TransformerImpl extends Transformer
 
         // Fire a trace event for the template.
          
-                if (TransformerImpl.S_DEBUG)
-                  getTraceManager().fireTraceEvent(template);
+        if (TransformerImpl.S_DEBUG)
+          getTraceManager().fireTraceEvent(template);
         // And execute the child templates.
         // 9/11/00: If template has been compiled, hand off to it
         // since much (most? all?) of the processing has been inlined.
@@ -2105,6 +2105,9 @@ public class TransformerImpl extends Transformer
         // m_xcontext.getVarStack().link();
         m_xcontext.getVarStack().link(template.m_frameSize);
         executeChildTemplates(template, true);
+        
+        if (TransformerImpl.S_DEBUG)
+          getTraceManager().fireTraceEndEvent(template);
       }
     }
     catch (org.xml.sax.SAXException se)

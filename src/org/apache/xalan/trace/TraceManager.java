@@ -178,6 +178,54 @@ public class TraceManager
   }
 
   /**
+   * Fire a end trace event, after all children of an element have been
+   * executed.
+   *
+   * @param sourceNode Current source node
+   * @param mode Template mode
+   * @param styleNode Stylesheet template node
+   */
+  public void fireTraceEndEvent(ElemTemplateElement styleNode)
+  {
+
+    if (hasTraceListeners())
+    {
+      int sourceNode = m_transformer.getXPathContext().getCurrentNode();
+      Node source = m_transformer.getXPathContext().getDTM(
+        sourceNode).getNode(sourceNode);
+
+      fireTraceEndEvent(new TracerEvent(m_transformer, source,
+                     m_transformer.getMode(),  /*sourceNode, mode,*/
+                                     styleNode));
+    }
+  }
+
+  /**
+   * Fire a trace event.
+   *
+   * @param te Trace event to fire
+   */
+  public void fireTraceEndEvent(TracerEvent te)
+  {
+
+    if (hasTraceListeners())
+    {
+      int nListeners = m_traceListeners.size();
+
+      for (int i = 0; i < nListeners; i++)
+      {
+        TraceListener tl = (TraceListener) m_traceListeners.elementAt(i);
+        if(tl instanceof TraceListenerEx2)
+        {
+          ((TraceListenerEx2)tl).traceEnd(te);
+        }
+      }
+    }
+  }
+
+
+
+  /**
    * Fire a trace event.
    *
    * @param te Trace event to fire

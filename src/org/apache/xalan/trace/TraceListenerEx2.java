@@ -58,19 +58,15 @@ package org.apache.xalan.trace;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Extends TraceListener but adds a SelectEnd event.
+ * Extends TraceListenerEx but adds a EndTrace event.
  */
-public interface TraceListenerEx extends TraceListener
+public interface TraceListenerEx2 extends TraceListenerEx
 {
-
   /**
-   * Method that is called after an xsl:apply-templates or xsl:for-each 
-   * selection occurs.
+   * Method that is called when a trace event occurs.
+   * The method is blocking.  It must return before processing continues.
    *
-   * @param ev the generate event.
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param ev the trace event.
    */
-  public void selectEnd(EndSelectionEvent ev) throws javax.xml.transform.TransformerException;
-
+  public void traceEnd(TracerEvent ev);
 }

@@ -137,6 +137,8 @@ public class ElemAttribute extends ElemElement
                                    XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE,
                                    new Object[]{ attrName });
 
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEndEvent(this);
       return;
 
       // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");

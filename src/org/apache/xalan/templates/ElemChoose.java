@@ -158,8 +158,11 @@ public class ElemChoose extends ElemTemplateElement
           if (test.bool())
           {
             transformer.getTraceManager().fireTraceEvent(when);
+            
             transformer.executeChildTemplates(when, true);
 
+	        transformer.getTraceManager().fireTraceEndEvent(when); 
+	                  
             return;
           }
 
@@ -181,6 +184,8 @@ public class ElemChoose extends ElemTemplateElement
         // xsl:otherwise                
         transformer.executeChildTemplates(childElem, true);
 
+        if (TransformerImpl.S_DEBUG)
+	      transformer.getTraceManager().fireTraceEndEvent(childElem); 
         return;
       }
     }
@@ -188,6 +193,9 @@ public class ElemChoose extends ElemTemplateElement
     if (!found)
       transformer.getMsgMgr().error(
         this, XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
+        
+    if (TransformerImpl.S_DEBUG)
+	  transformer.getTraceManager().fireTraceEndEvent(this);         
   }
 
   /**

@@ -203,6 +203,9 @@ public class ElemPI extends ElemTemplateElement
     {
       throw new TransformerException(se);
     }
+    
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEndEvent(this);
   }
 
   /**

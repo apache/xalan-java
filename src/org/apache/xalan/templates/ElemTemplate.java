@@ -420,11 +420,11 @@ public class ElemTemplate extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(this);
-
     XPathContext xctxt = transformer.getXPathContext();      
     xctxt.pushRTFContext();
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(this);
 
       // %REVIEW% commenting out of the code below.
 //    if (null != sourceNode)
@@ -439,6 +439,9 @@ public class ElemTemplate extends ElemTemplateElement
 //
 //      //"sourceNode is null in handleApplyTemplatesInstruction!");
 //    }
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEndEvent(this);
 
     xctxt.popRTFContext();  
     }

@@ -166,12 +166,11 @@ public class ElemCopyOf extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
+    if (TransformerImpl.S_DEBUG)
+    	transformer.getTraceManager().fireTraceEvent(this);
 
     try
     {
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(this);
-
       XPathContext xctxt = transformer.getXPathContext();
       int sourceNode = xctxt.getCurrentNode();
       XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
@@ -253,6 +252,11 @@ public class ElemCopyOf extends ElemTemplateElement
     catch(org.xml.sax.SAXException se)
     {
       throw new TransformerException(se);
+    }
+    finally
+    {
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEndEvent(this);
     }
 
   }

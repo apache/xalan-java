@@ -293,6 +293,10 @@ public class ElemCallTemplate extends ElemForEach
       transformer.getMsgMgr().error(this, XSLTErrorResources.ER_TEMPLATE_NOT_FOUND,
                                     new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
     }
+    
+    if (TransformerImpl.S_DEBUG)
+	  transformer.getTraceManager().fireTraceEndEvent(this); 
+
   }
   
   /** Vector of xsl:param elements associated with this element. 

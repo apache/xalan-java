@@ -559,6 +559,11 @@ public class ElemNumber extends ElemTemplateElement
     {
       throw new TransformerException(se);
     }
+    finally
+    {
+      if (TransformerImpl.S_DEBUG)
+	    transformer.getTraceManager().fireTraceEndEvent(this); 
+    }
   }
 
   /**
