@@ -76,6 +76,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXResult;
 
+import org.apache.xml.utils.XMLReaderManager;
+
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -128,17 +130,26 @@ public class TrAXFilter extends XMLFilterImpl {
 
     public void parse (InputSource input) throws SAXException, IOException
     {
-	if (getParent() == null) {
-		try {
-		    createParent();
-		}
-                catch (SAXException  e) {
+        XMLReader managedReader = null;
+
+        try {
+            if (getParent() == null) {
+                try {
+                    managedReader = XMLReaderManager.getInstance()
+                                                    .getXMLReader();
+                    setParent(managedReader);
+                } catch (SAXException  e) {
                     throw new SAXException(e.toString());
                 }
-	}
+            }
 
-	// call parse on the parent	
-	getParent().parse(input);
+            // call parse on the parent
+            getParent().parse(input);
+        } finally {
+            if (managedReader != null) {
+                XMLReaderManager.getInstance().releaseXMLReader(managedReader);
+            }
+        }
     }
 
     public void parse (String systemId) throws SAXException, IOException 

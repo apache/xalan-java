@@ -76,12 +76,14 @@ import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.XMLReaderManager;
 import org.apache.xml.utils.XMLStringFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
@@ -141,6 +143,12 @@ public class DTMManagerDefault extends DTMManager
    * which is why this is not Protected or Private.)
    */
   int m_dtm_offsets[] = new int[256];
+
+  /**
+   * The cache for XMLReader objects to be used if the user did not
+   * supply an XMLReader for a SAXSource or supplied a StreamSource.
+   */
+  protected XMLReaderManager m_readerManager = null;
 
   /**
    * Add a DTM to the DTM table. This convenience call adds it as the 
@@ -477,18 +485,20 @@ public class DTMManagerDefault extends DTMManager
           try
           {
             reader.parse(xmlSource);
+
+            releaseXMLReader(reader);
           }
           catch (RuntimeException re)
           {
-
             dtm.clearCoRoutine();
+            releaseXMLReader(reader);
 
             throw re;
           }
           catch (Exception e)
           {
-
             dtm.clearCoRoutine();
+            releaseXMLReader(reader);
 
             throw new org.apache.xml.utils.WrappedRuntimeException(e);
           }
@@ -617,8 +627,9 @@ public class DTMManagerDefault extends DTMManager
    * obtained from this URI.
    * It may return null if any SAX2-conformant XML parser can be used,
    * or if getInputSource() will also return null. The parser must
-   * be free for use (i.e.
-   * not currently in use for another parse().
+   * be free for use (i.e., not currently in use for another parse().
+   * After use of the parser is completed, the releaseXMLReader(XMLReader)
+   * must be called.
    *
    * @param inputSource The value returned from the URIResolver.
    * @return  a SAX2 XMLReader to use to resolve the inputSource argument.
@@ -633,51 +644,35 @@ public class DTMManagerDefault extends DTMManager
       XMLReader reader = (inputSource instanceof SAXSource)
                          ? ((SAXSource) inputSource).getXMLReader() : null;
 
-      if (null == reader)
-      {
-        try
-        {
-          javax.xml.parsers.SAXParserFactory factory =
-            javax.xml.parsers.SAXParserFactory.newInstance();
-
-          factory.setNamespaceAware(true);
-
-          javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
-
-          reader = jaxpParser.getXMLReader();
+      // If user did not supply a reader, ask for one from the reader manager
+      if (null == reader) {
+        if (m_readerManager == null) {
+            m_readerManager = XMLReaderManager.getInstance();
         }
-        catch (javax.xml.parsers.ParserConfigurationException ex)
-        {
-          throw new org.xml.sax.SAXException(ex);
-        }
-        catch (javax.xml.parsers.FactoryConfigurationError ex1)
-        {
-          throw new org.xml.sax.SAXException(ex1.toString());
-        }
-        catch (NoSuchMethodError ex2){}
-        catch (AbstractMethodError ame){}
 
-        if (null == reader)
-          reader = XMLReaderFactory.createXMLReader();
-      }
-
-      try
-      {
-        reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
-                          true);
-      }
-      catch (org.xml.sax.SAXException se)
-      {
-
-        // What can we do?
-        // TODO: User diagnostics.
+        reader = m_readerManager.getXMLReader();
       }
 
       return reader;
-    }
-    catch (org.xml.sax.SAXException se)
-    {
+
+    } catch (SAXException se) {
       throw new DTMException(se.getMessage(), se);
+    }
+  }
+
+  /**
+   * Indicates that the XMLReader object is no longer in use for the transform.
+   *
+   * Note that the getXMLReader method may return an XMLReader that was
+   * specified on the SAXSource object by the application code.  Such a
+   * reader should still be passed to releaseXMLReader, but the reader manager
+   * will only re-use XMLReaders that it created.
+   *
+   * @param reader The XMLReader to be released.
+   */
+  synchronized public void releaseXMLReader(XMLReader reader) {
+    if (m_readerManager != null) {
+      m_readerManager.releaseXMLReader(reader);
     }
   }
 

@@ -77,19 +77,21 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
-import org.apache.xml.serializer.Serializer;
-import org.apache.xml.serializer.SerializerFactory;
-import org.apache.xml.serializer.Method;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
+import org.apache.xml.serializer.Method;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.XMLReaderManager;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -99,7 +101,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * This class implements an identity transformer for
@@ -407,56 +408,31 @@ public class TransformerIdentityImpl extends Transformer
       if (null != xmlSource.getSystemId())
         m_systemID = xmlSource.getSystemId();
   
+      XMLReader reader = null;
+      boolean managedReader = false;
+  
       try
       {
-        XMLReader reader = null;
-  
-        if (source instanceof SAXSource)
+        if (source instanceof SAXSource) {
           reader = ((SAXSource) source).getXMLReader();
+        }
           
-        if (null == reader)
-        {
-  
-          // Use JAXP1.1 ( if possible )      
-          try
-          {
-            javax.xml.parsers.SAXParserFactory factory =
-              javax.xml.parsers.SAXParserFactory.newInstance();
-  
-            factory.setNamespaceAware(true);
-  
-            javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
-  
-            reader = jaxpParser.getXMLReader();
+        if (null == reader) {
+          try {
+            reader = XMLReaderManager.getInstance().getXMLReader();
+            managedReader = true;
+          } catch (SAXException se) {
+            throw new TransformerException(se);
           }
-          catch (javax.xml.parsers.ParserConfigurationException ex)
-          {
-            throw new org.xml.sax.SAXException(ex);
+        } else {
+          try {
+            reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
+                              true);
+          } catch (org.xml.sax.SAXException se) {
+            // We don't care.
           }
-          catch (javax.xml.parsers.FactoryConfigurationError ex1)
-          {
-            throw new org.xml.sax.SAXException(ex1.toString());
-          }
-          catch (NoSuchMethodError ex2){}
-          catch (AbstractMethodError ame){}
         }
-  
-        if (null == reader)
-        {
-          reader = XMLReaderFactory.createXMLReader();
-        }
-  
-        try
-        {
-          reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
-                            true);
-        }
-        catch (org.xml.sax.SAXException se)
-        {
-  
-          // We don't care.
-        }
-  
+
         // Get the input content handler, which will handle the 
         // parse events and create the source tree. 
         ContentHandler inputHandler = this;
@@ -513,6 +489,10 @@ public class TransformerIdentityImpl extends Transformer
       catch (IOException ioe)
       {
         throw new TransformerException(ioe);
+      } finally {
+        if (managedReader) {
+          XMLReaderManager.getInstance().releaseXMLReader(reader);
+        }
       }
     }
     finally
