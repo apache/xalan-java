@@ -94,11 +94,8 @@ final class FunctionAvailableCall extends FunctionCall {
             _namespaceOfFunct = arg.getNamespace();
             _nameOfFunct = arg.getValue();
 
-            if (_namespaceOfFunct != null &&
-	        (_namespaceOfFunct.startsWith(JAVA_EXT_XSLTC) ||
-		 _namespaceOfFunct.startsWith(JAVA_EXT_XALAN))) 
-	    {
-                _isFunctionAvailable = hasMethods();
+            if (!isInternalNamespace()) {
+              _isFunctionAvailable = hasMethods();
             }
         }
     }
@@ -129,86 +126,41 @@ final class FunctionAvailableCall extends FunctionCall {
     }
 
     /**
-     * (For ext. java functions only)
-     * Parses the argument to function-available to extract the package 
-     * qualified class name, for example, given the argument 
-     * 'java:java.lang.Math.sin', getClassName would return
-     * 'java.lang.Math'. See also 'getMethodName'.
-     */
-    private String getClassName(String argValue){
-	int colonSep = argValue.indexOf(":");
-	if (colonSep != -1) {
-	    argValue = argValue.substring(colonSep+1);  
-	}		
-	int lastDot  = argValue.lastIndexOf(".");
-	if (lastDot != -1) {
-	    argValue = argValue.substring(0, lastDot);
-	}
-	return argValue;
-    }
-
-    /**
-     * (For ext. java functions only) 
-     * Parses the argument to function-available
-     * to extract the method name, for example, given the argument
-     * 'java.lang.Math.sin', getMethodName would return 'sin'. 
-     */
-    private String getMethodName(String argValue){
-	int lastDot  = argValue.lastIndexOf(".");
-	if (lastDot != -1) {
-	    argValue = argValue.substring(lastDot+1);
-	}
-	return argValue;
-    }
-
-    /**
-     * (For java external functions only) 
-     * Creates a full package qualified 
-     * function name taking into account the namespace and the
-     * function name derived from the argument passed to function-available.
-     * For example, given a name of 'java:java.lang.Math.sin' and a
-     * namespace of 'http://xml.apache.org/xalan/xsltc/java' this routine
-     * constructs a uri and then derives the class name 
-     * 'java.lang.Math.sin' from the uri. The uri in this example would
-     * be 'http://xml.apache.org/xalan/xsltc/java.java.lang.Math.sin'
-     */
-    private String getExternalFunctionName() {
-	int colonIndex = _nameOfFunct.indexOf(":");
-	String uri = _namespaceOfFunct + 
-                    "." + _nameOfFunct.substring(colonIndex+1);
-	try{
-	    return getClassNameFromUri(uri); 
-        } catch (TypeCheckError e) {
-	    return null; 
-        }
-    }
-
-    /**
      * for external java functions only: reports on whether or not
      * the specified method is found in the specifed class. 
      */
     private boolean hasMethods() {
 	LiteralExpr arg = (LiteralExpr)_arg;
-	final String externalFunctName = getExternalFunctionName();
-
-	if (externalFunctName == null) {
+	
+	// Get the class name from the namespace uri
+	String className = getClassNameFromUri(_namespaceOfFunct);
+	
+	// Get the method name from the argument to function-available
+	String methodName = null;
+	int colonIndex = _nameOfFunct.indexOf(":");
+	if (colonIndex > 0) {
+	  methodName = _nameOfFunct.substring(colonIndex+1);
+	}
+	else
+	  methodName = _nameOfFunct;
+	  
+	if (className == null || methodName == null) {
 	    return false;
 	}
-
-	final String className = getClassName(externalFunctName);
+	
+	// Replace the '-' characters in the method name
+	if (methodName.indexOf('-') > 0)
+	  methodName = replaceDash(methodName);
 
 	try {
 	    TransletLoader loader = new TransletLoader();
 	    final Class clazz = loader.loadClass(className);
 
 	    if (clazz == null) {
-		final ErrorMsg msg =
-		    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, className);
-		getParser().reportError(Constants.ERROR, msg);
+	    	return false;
 	    }
 	    else {
-		final String methodName = getMethodName(externalFunctName);
-		final Method[] methods = clazz.getDeclaredMethods();
+		final Method[] methods = clazz.getMethods();
 
 		for (int i = 0; i < methods.length; i++) {
 		    final int mods = methods[i].getModifiers();
@@ -223,9 +175,7 @@ final class FunctionAvailableCall extends FunctionCall {
 	    }
 	}
 	catch (ClassNotFoundException e) {
-	    final ErrorMsg msg =
-		new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, className);
-		    getParser().reportError(Constants.ERROR, msg);
+	  return false;
 	}
         return false;   
     }
@@ -239,16 +189,21 @@ final class FunctionAvailableCall extends FunctionCall {
 	    return false;
 	}
 
-        if (_namespaceOfFunct == null ||
-            _namespaceOfFunct.equals(EMPTYSTRING) ||
-	    _namespaceOfFunct.equals(EXT_XALAN) ||
-	    _namespaceOfFunct.equals(TRANSLET_URI))
-        {
+        if (isInternalNamespace()) {
             final Parser parser = getParser();
             _isFunctionAvailable = 
 		parser.functionSupported(Util.getLocalName(_nameOfFunct));
         }
  	return _isFunctionAvailable;
+    }
+    
+    /**
+     * Return true if the namespace uri is null or it is the XSLTC translet uri.
+     */
+    private boolean isInternalNamespace() {
+    	return (_namespaceOfFunct == null ||
+            _namespaceOfFunct.equals(EMPTYSTRING) ||
+	    _namespaceOfFunct.equals(TRANSLET_URI));
     }
 
     /**
