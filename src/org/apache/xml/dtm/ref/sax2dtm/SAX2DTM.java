@@ -866,6 +866,25 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_exptype.addElement(expandedTypeID);
     m_dataOrQName.addElement(dataOrPrefix);    
 
+	if (m_useSourceLocationProperty && m_locator != null) 
+	{
+		m_sourceSystemId.addElement(m_locator.getSystemId());
+		m_sourceLine.addElement(m_locator.getLineNumber());
+		m_sourceColumn.addElement(m_locator.getColumnNumber());
+
+		//%REVIEW% %BUG% Prevent this from arising in the first place
+		// by not allowing the enabling conditions to change after we start
+		// building the document.
+		if (m_sourceSystemId.size() != m_size) 
+		{
+			System.err.println("CODING ERROR in Source Location: " + m_size
+				+ " != "
+				+ m_sourceSystemId.size());
+			System.exit(1);
+		}
+	}
+
+
     if (DTM.NULL != previousSibling)
       m_nextsib.setElementAt(nodeIndex,previousSibling);
 
@@ -1886,9 +1905,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void characters(char ch[], int start, int length) throws SAXException
   {
-   if (DEBUG)
-      System.out.println("characters: " + new String(ch,start,length));
-
     if (m_textPendingStart == -1)  // First one in this block
     {
       m_textPendingStart = m_chars.size();
@@ -2289,23 +2305,40 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public void setProperty(String property, Object value)
   {
-    if (property.equals(XalanProperties.SOURCE_LOCATION)) {
+    if (property.equals(XalanProperties.SOURCE_LOCATION)) 
+    {
       if (!(value instanceof Boolean))
         throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROPERTY_VALUE_BOOLEAN, new Object[]{XalanProperties.SOURCE_LOCATION})); //"Value for property "
                                   // + XalanProperties.SOURCE_LOCATION
                                   // + " should be a Boolean instance");
-      m_useSourceLocationProperty = ((Boolean)value).booleanValue();
-      m_sourceSystemId = new StringVector();
-      m_sourceLine = new IntVector();
-      m_sourceColumn = new IntVector();
-    }
+      // %REVIEW%
+      // This MUST NOT be set true after document construction has begun,
+      // since that will leave us with incomplete data structures and cause
+      // malfunctions. Easier to just say "don't change at all once in progress"
+      if(m_size<=0)
+      {
+		m_useSourceLocationProperty = ((Boolean)value).booleanValue();
+		if(m_useSourceLocationProperty)
+  	    {
+	  	  m_sourceSystemId = new StringVector();
+ 	  	  m_sourceLine = new IntVector();
+  	  	  m_sourceColumn = new IntVector();
+      	}
+      }
+     }
   }
 
+  /** Retrieve the SourceLocator associated with a specific node.
+   * This is only meaningful if the XalanProperties.SOURCE_LOCATION flag was
+   * set True using setProperty; if it was never set, or was set false, we
+   * will return null. (We _could_ return a locator with the document's
+   * base URI and bogus line/column information. Should we?)
+   * */
   public SourceLocator getSourceLocatorFor(int node)
   {
     if (m_useSourceLocationProperty)
     {
-      node = node & ExpandedNameTable.MASK_NODEHANDLE;
+      node = makeNodeIdentity(node);
       
       return new NodeLocator(null,
                              m_sourceSystemId.elementAt(node),
