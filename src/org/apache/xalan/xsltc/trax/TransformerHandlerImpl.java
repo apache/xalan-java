@@ -72,13 +72,16 @@ import javax.xml.transform.sax.*;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
 
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.DOMBuilder;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
+import org.apache.xalan.xsltc.dom.DOMWSFilter;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
@@ -218,8 +221,15 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
             DTMManager dtmManager = XSLTCDTMManager.newInstance(
                  org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
 
+            DTMWSFilter wsFilter;
+            if (_translet != null && _translet instanceof StripFilter) {
+                wsFilter = new DOMWSFilter(_translet);
+            } else {
+                wsFilter = null;
+            }
             // Construct the DTM using the SAX events that come through
-            _dom = (SAXImpl)dtmManager.getDTM(null, false, null, true, false);
+            _dom = (SAXImpl)dtmManager.getDTM(null, false, wsFilter, true,
+                                              false);
 	    _handler = _dom.getBuilder();
 	    _lexHandler = (LexicalHandler) _handler;
 	    _dtdHandler = (DTDHandler) _handler;

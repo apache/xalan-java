@@ -153,14 +153,14 @@ public class AttributeList implements org.xml.sax.Attributes {
      * SAX2: Look up the index of an attribute by Namespace name.
      */
     public int getIndex(String namespaceURI, String localPart) {
-	return(0);
+	return(-1);
     }
 
     /**
      * SAX2: Look up the index of an attribute by XML 1.0 qualified name.
      */
     public int getIndex(String qname) {
-	return(0);
+	return(-1);
     }
 
     /**

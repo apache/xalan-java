@@ -558,12 +558,9 @@ public class Process
         }
         else if ("-INCREMENTAL".equalsIgnoreCase(argv[i]))
         {
-          if (!useXSLTC)
-            tfactory.setAttribute
-              ("http://xml.apache.org/xalan/features/incremental", 
-               java.lang.Boolean.TRUE);
-          else
-            printInvalidXSLTCOption("-INCREMENTAL");
+          tfactory.setAttribute
+            ("http://xml.apache.org/xalan/features/incremental", 
+             java.lang.Boolean.TRUE);
         }
         else if ("-NOOPTIMIZE".equalsIgnoreCase(argv[i]))
         {

@@ -143,12 +143,12 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     private int       _URICount = 0;
 
     // Tracks which textnodes are whitespaces and which are not
-    private BitArray  _whitespace; // takes xml:space into acc.
+    // private BitArray  _whitespace; // takes xml:space into acc.
     // Tracks which bits in _whitespace are valid
-    private BitArray _checkedForWhitespace;
+    // private BitArray _checkedForWhitespace;
 
     // Tracks which textnodes are not escaped
-    private BitArray  _dontEscape = null; 
+    private BitArray  _dontEscape = null;
 
     // The URI to this document
     private String    _documentURI = null;
@@ -185,7 +185,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         Integer eType = new Integer(getExpandedTypeID(EMPTYSTRING, EMPTYSTRING,
                                                       DTM.NAMESPACE_NODE));
         _nsIndex.put(eType, new Integer(_URICount++));
-  
+        
         eType = new Integer(getExpandedTypeID(XML_PREFIX,
                                      "http://www.w3.org/XML/1998/namespace",
                                      DTM.NAMESPACE_NODE));
@@ -562,7 +562,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      * nodes from the underlaying iterator and return all but
      * whitespace text nodes. The iterator needs to be a supplied
      * with a filter that tells it what nodes are WS text.
-     */             
+                  
     private final class StrippingIterator extends InternalAxisIteratorBase {
 
         private static final int USE_PREDICATE  = 0;
@@ -703,13 +703,16 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         }
 
     } // end of StrippingIterator
+    */
 
+    /*
     public DTMAxisIterator strippingIterator(DTMAxisIterator iterator,
                                           short[] mapping,
                                           StripFilter filter) 
     {
       return(new StrippingIterator(iterator, mapping, filter));
     }
+    */
 
     /**************************************************************
      * This is a specialised iterator for predicates comparing node or
@@ -965,27 +968,43 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      * Get mapping from DOM element/attribute types to external types
      */
     public short[] getMapping(String[] names) {
-        int i;
-        final int namesLength = names.length;
-        final int exLength = m_expandedNameTable.getSize();
-        final short[] result = new short[exLength];
+      int i;
+      final int namesLength = names.length;
+      final int exLength = m_expandedNameTable.getSize();
+      int[] generalizedTypes = null;
+      if (namesLength > 0)
+          generalizedTypes = new int[namesLength];
+      
+      int resultLength = exLength;
+      
+      for (i = 0; i < namesLength; i++) {
+          generalizedTypes[i] = getGeneralizedType(names[i]);
+          if (_types == null && generalizedTypes[i] >= resultLength)
+              resultLength = generalizedTypes[i] + 1;
+      }
+      
+      final short[] result = new short[resultLength];
 
-        // primitive types map to themselves
-        for (i = 0; i < DTM.NTYPES; i++)
-            result[i] = (short)i;
+      // primitive types map to themselves
+      for (i = 0; i < DTM.NTYPES; i++)
+        result[i] = (short)i;
         
-        for (i = NTYPES; i < exLength; i++) 
-            result[i] = m_expandedNameTable.getType(i); 
+      for (i = NTYPES; i < exLength; i++) 
+      	result[i] = m_expandedNameTable.getType(i); 
       	
-        // actual mapping of caller requested names
-        for (i = 0; i < namesLength; i++) {
-            int genType = getGeneralizedType(names[i]);
-            if (genType < _types.length && genType == _types[genType]) {
-                result[genType] = (short)(i + DTM.NTYPES);
-            }
-        }
+      // actual mapping of caller requested names
+      for (i = 0; i < namesLength; i++) {
+          int genType = generalizedTypes[i];          
+          if (_types != null) {
+              if (genType < _types.length && genType == _types[genType]) {
+                  result[genType] = (short)(i + DTM.NTYPES);
+              }
+          }
+          else
+              result[genType] = (short)(i + DTM.NTYPES);          
+      }
 
-        return result;
+      return result;
     }
 
     /**
@@ -1081,7 +1100,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       out.writeObject(_uriArray);        // name of all URIs
       out.writeObject(_prefixArray);     // name of all prefixes
 
-      out.writeObject(_whitespace);
+      //out.writeObject(_whitespace);
 
 
 	if (_dontEscape != null) {
@@ -1119,7 +1138,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       _uriArray      = (String[])in.readObject();
       _prefixArray   = (Hashtable)in.readObject();
 
-      _whitespace    = (BitArray)in.readObject();
+      //_whitespace    = (BitArray)in.readObject();
 
 
 	_dontEscape    = (BitArray)in.readObject();
@@ -1192,8 +1211,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       _offsetOrChild        = new int[size];
       _lengthOrAttr         = new int[size];
       _text                 = new char[textsize];
-      _whitespace           = new BitArray(size);
-      _checkedForWhitespace = new BitArray(size);
+      //_whitespace           = new BitArray(size);
+      //_checkedForWhitespace = new BitArray(size);
     }
 
     /**
@@ -1911,6 +1930,14 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     }
 
     /**
+     * Return the names array
+     */
+    public String[] getNamesArray()
+    {
+        return _namesArray;
+    }
+
+    /**
      * Returns true if a character is an XML whitespace character.
      * Order of tests is important for performance ([space] first).
      */
@@ -2164,6 +2191,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
          */
         private int makeTextNode(boolean isWhitespace) {
             final int node = getNumberOfNodes()-1;
+            
+            /*
             // Tag as whitespace node if the parser tells us that it is...
             if (isWhitespace)
             {
@@ -2183,7 +2212,9 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                     }
                 }
             }
-            storeTextRef(node);
+            */
+            
+            // storeTextRef(node);
             return node;
         }
 
@@ -2437,7 +2468,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	    characters(target);
 	    characters(" ");
 	    characters(data);
-	    storeTextRef(node);
+	    // storeTextRef(node);
 	}
 
 	/**
@@ -2600,7 +2631,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
             _lengthOrAttr = newLengthOrAttr;
 
             // Resize the '_whitespace' array (a BitArray instance)
-            _whitespace.resize(newSize);
+            // _whitespace.resize(newSize);
 
         }
   

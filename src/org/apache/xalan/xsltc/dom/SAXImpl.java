@@ -100,7 +100,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     private int       _parentStackLength    = INIT_STACK_LENGTH;
     private int[]     _parentStack          = new int[INIT_STACK_LENGTH];
     private int       _sp;
-    private int       _currentNode          = 0;
 
     // Temporary structures for attribute nodes
     private int       _currentAttributeNode = 1;
@@ -123,6 +122,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
 
     private boolean _escaping = true;
     private boolean _disableEscaping = false;
+    private int _textNodeToProcess = DTM.NULL;
 
     /* ------------------------------------------------------------------- */
     /* DOMBuilder fields END                                               */
@@ -157,8 +157,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     private Hashtable _nsIndex = new Hashtable();
 
     // Tracks which textnodes are whitespaces and which are not
-    private BitArray  _whitespace; // takes xml:space into acc.
+    //private BitArray  _whitespace; // takes xml:space into acc.
    
+    // The initial size of the text buffer
+    private int _size = 0;
+    
     // Tracks which textnodes are not escaped
     private BitArray  _dontEscape = null;
 
@@ -443,7 +446,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      * nodes from the underlaying iterator and return all but
      * whitespace text nodes. The iterator needs to be a supplied
      * with a filter that tells it what nodes are WS text.
-     */
+     *
     private final class StrippingIterator extends InternalAxisIteratorBase {
 
 	private static final int USE_PREDICATE  = 0;
@@ -570,13 +573,15 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
   }
 
 } // end of StrippingIterator
-
+*/
+    /*
     public DTMAxisIterator strippingIterator(DTMAxisIterator iterator,
                                           short[] mapping,
                                           StripFilter filter)
     {
       return(new StrippingIterator(iterator, mapping, filter));
     }
+    */
 
     /**************************************************************
      * This is a specialised iterator for predicates comparing node or
@@ -902,9 +907,20 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     {
       int i;
       final int namesLength = names.length;
-      final int mappingLength = _namesArray.length + NTYPES;
       final int exLength = m_expandedNameTable.getSize();
-      final short[] result = new short[exLength];
+      int[] generalizedTypes = null;
+      if (namesLength > 0)
+          generalizedTypes = new int[namesLength];
+      
+      int resultLength = exLength;
+      
+      for (i = 0; i < namesLength; i++) {
+          generalizedTypes[i] = getGeneralizedType(names[i]);
+          if (_types == null && generalizedTypes[i] >= resultLength)
+              resultLength = generalizedTypes[i] + 1;
+      }
+      
+      final short[] result = new short[resultLength];
 
       // primitive types map to themselves
       for (i = 0; i < DTM.NTYPES; i++)
@@ -915,10 +931,14 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
       	
       // actual mapping of caller requested names
       for (i = 0; i < namesLength; i++) {
-          int genType = getGeneralizedType(names[i]);
-          if (genType < _types.length && genType == _types[genType]) {
-              result[genType] = (short)(i + DTM.NTYPES);
+          int genType = generalizedTypes[i];         
+          if (_types != null) {
+              if (genType < _types.length && genType == _types[genType]) {
+                  result[genType] = (short)(i + DTM.NTYPES);
+              }
           }
+          else
+              result[genType] = (short)(i + DTM.NTYPES);         
       }
 
       return(result);
@@ -1031,8 +1051,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     {
       super(mgr, saxSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
             doIndexing);
-      initialize(size, size < 128 ? SMALL_TEXT_SIZE
-                                  : size * DEFAULT_TEXT_FACTOR);
+      _size = size;
+      //initialize(size, size < 128 ? SMALL_TEXT_SIZE
+      //                            : size * DEFAULT_TEXT_FACTOR);
                                   
        /* From DOMBuilder */ 
       _xmlSpaceStack[0] = DTMDefaultBase.ROOTNODE;                            
@@ -1040,11 +1061,12 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
 
     /**
      *  defines initial size
-     */
+     
     private void initialize(int size, int textsize)
     {
       _whitespace           = new BitArray(size);
     }
+    */
 
    /*---------------------------------------------------------------------------*/
    /* DOMBuilder methods begin                                                  */
@@ -1074,6 +1096,20 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
       _idx--;
       _preserve = !_preserve;
     }
+  }
+
+  /**
+   * Find out whether or not to strip whitespace nodes.
+   *
+   *
+   * @return whether or not to strip whitespace nodes.
+   */
+  protected boolean getShouldStripWhitespace()
+  {
+      if (_preserve)
+          return false;
+      else
+          return super.getShouldStripWhitespace(); 
   }
 
     /**
@@ -1121,34 +1157,17 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     /**
      * Creates a text-node and checks if it is a whitespace node.
    */
-  private int makeTextNode(boolean isWhitespace)
-  {
-      final int node = getNumberOfNodes()-1; //nextNode();
-      
-      // Tag as whitespace node if the parser tells us that it is...
-      if (isWhitespace) {      
-        _whitespace.setBit(node);
-        _currentNode = node;   // Catch up?? ILENE
-        
-      // ...otherwise we check if this is a whitespace node, unless
-      // the node is protected by an xml:space="preserve" attribute.
-      } else if (!_preserve) {
-           while (_currentNode < node) {
-              int nodeh = makeNodeHandle(++_currentNode);
-              if (isWhitespace(nodeh)) { 
-                  _whitespace.setBit(_currentNode);
-              }
-           }
-      }
-      
-      if (_disableEscaping) {
+  private void handleTextEscaping() {
+      if (_disableEscaping && _textNodeToProcess != DTM.NULL
+            && getNodeType(makeNodeHandle(_textNodeToProcess))==DTM.TEXT_NODE) {
           if (_dontEscape == null) {
-              _dontEscape = new BitArray(_whitespace.size());
+              //_dontEscape = new BitArray(_whitespace.size());
+              _dontEscape = new BitArray(_size);
           }
-          _dontEscape.setBit(_currentNode);
+          _dontEscape.setBit(_textNodeToProcess);
           _disableEscaping = false;
       }
-      return node;
+      _textNodeToProcess = DTM.NULL;
   }
 
     private int makeNamespaceNode(String prefix, String uri)
@@ -1174,7 +1193,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
        super.characters(ch, start, length);
         
        _disableEscaping = !_escaping;  
-
+       _textNodeToProcess = getNumberOfNodes();
   }
 
     /**
@@ -1186,7 +1205,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         super.startDocument();
         _sp             = 0;
         _parentStack[0] = DTMDefaultBase.ROOTNODE;  // root
-        _currentNode    = DTMDefaultBase.ROOTNODE + 1;
         _currentAttributeNode = 1;
 
         definePrefixAndUri(EMPTYSTRING, EMPTYSTRING);
@@ -1198,9 +1216,6 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      */
     public void endDocument() throws SAXException
   {
-
-     makeTextNode(false);
-
     final int namesSize = m_expandedNameTable.getSize() - DTM.NTYPES;
     _types = new int[m_expandedNameTable.getSize()];
  
@@ -1235,14 +1250,16 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     // trim arrays' sizes
     //resizeTextArray(_currentOffset);
 
-    _firstAttributeNode = _currentNode;
+    _firstAttributeNode = getNumberOfNodes()-1;
    // shiftAttributes(_currentNode);
-    resizeArrays(_currentNode + _currentAttributeNode, _currentNode);
+    resizeArrays(_firstAttributeNode + _currentAttributeNode,
+                 _firstAttributeNode);
    // appendAttributes();
     //_treeNodeLimit = _currentNode + _currentAttributeNode;
 
 
         super.endDocument();
+     handleTextEscaping();
   }
 
     /**
@@ -1251,31 +1268,33 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     public void startElement(String uri, String localName,
                  String qname, Attributes attributes)
         throws SAXException
-  {
-     super.startElement(uri, localName, qname, attributes);
+    {
+        super.startElement(uri, localName, qname, attributes);
+        handleTextEscaping();
 
-    // Get node index and setup parent/child references
-    final int node = makeTextNode(false); //nextNode();
-    linkParent(node);
+        // Get node index and setup parent/child references
+        int currentNode = getNumberOfNodes()-1;
+        linkParent(currentNode);
 
-    // Look for any xml:space attributes
-    // Depending on the implementation of attributes, this
-    // might be faster than looping through all attributes. ILENE
-    final int index = attributes.getIndex(XMLSPACE_STRING);
-    if (index > 0) {
-        xmlSpaceDefine(attributes.getValue(index), node);
+        if (m_wsfilter != null) {
+            // Look for any xml:space attributes
+            // Depending on the implementation of attributes, this
+            // might be faster than looping through all attributes. ILENE
+            final int index = attributes.getIndex(XMLSPACE_STRING);
+            if (index >= 0) {
+                xmlSpaceDefine(attributes.getValue(index), currentNode);
+            }
+        }
     }
-  }
 
     /**
      * SAX2: Receive notification of the end of an element.
      */
     public void endElement(String namespaceURI, String localName,
                    String qname) throws SAXException
-        {
+    {
         super.endElement(namespaceURI, localName, qname);
-
-      makeTextNode(false);
+        handleTextEscaping();
 
         // Revert to strip/preserve-space setting from before this element
             // use m_parent??
@@ -1287,9 +1306,9 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      */
     public void processingInstruction(String target, String data)
         throws SAXException
-        {
+    {
         super.processingInstruction(target, data);
-        makeTextNode(false);
+        handleTextEscaping();
     }
 
     /**
@@ -1298,23 +1317,23 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
      */
     public void ignorableWhitespace(char[] ch, int start, int length)
             throws SAXException
-        {
-            super.ignorableWhitespace(ch, start, length);
-            makeTextNode(true);
-        }
+    {
+        super.ignorableWhitespace(ch, start, length);
+        _textNodeToProcess = getNumberOfNodes();
+    }
 
     /**
      * SAX2: Begin the scope of a prefix-URI Namespace mapping.
      */
     public void startPrefixMapping(String prefix, String uri)
         throws SAXException
-        {
-            super.startPrefixMapping(prefix, uri);
-            definePrefixAndUri(prefix, uri);
+    {
+        super.startPrefixMapping(prefix, uri);
+        handleTextEscaping();
 
-            makeTextNode(false);
-            makeNamespaceNode(prefix, uri);
-        }
+        definePrefixAndUri(prefix, uri);
+        makeNamespaceNode(prefix, uri);
+    }
 
     private void definePrefixAndUri(String prefix, String uri) 
         throws SAXException 
@@ -1333,11 +1352,8 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     public void comment(char[] ch, int start, int length)
             throws SAXException
         {
-            // Why do we need to call makeTextNode twice.  Second
-            // call should cover both
-        //   makeTextNode(false); 
             super.comment(ch, start, length);
-            makeTextNode(false);
+            handleTextEscaping();
         }
 
     /**
@@ -1352,11 +1368,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
         }
 
     private void resizeArrays(final int newSize, int length) {
-    if ((length < newSize) && (newSize == _currentNode))
-      length = _currentNode;
+    if ((length < newSize) && (newSize == getNumberOfNodes()-1))
+      length = getNumberOfNodes()-1;
 
     // Resize the '_whitespace' array (a BitArray instance)
-    _whitespace.resize(newSize);
+    // _whitespace.resize(newSize);
     // Resize the '_dontEscape' array (a BitArray instance)
     if (_dontEscape != null) {
         _dontEscape.resize(newSize);
@@ -2022,6 +2038,14 @@ public final class SAXImpl extends SAX2DTM implements DOM, DOMBuilder
     public DOMBuilder getBuilder()
     {
 	return this;
+    }
+    
+    /**
+     * Return the names array
+     */
+    public String[] getNamesArray()
+    {
+        return _namesArray;
     }
 
     /**

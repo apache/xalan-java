@@ -121,7 +121,9 @@ public final class DOMAdapter implements DOM {
     }
 
     private short[] getMapping() {
-	if (_mapping == null) {
+	if (_mapping == null 
+	    || (_saxImpl != null && _saxImpl.getNamesArray() == null)
+	    || (_domImpl != null && _domImpl.getNamesArray() == null)) {
             if (_domImpl != null) {
 	        _mapping = _domImpl.getMapping(_namesArray);
             } else {
@@ -179,6 +181,7 @@ public final class DOMAdapter implements DOM {
     
     public DTMAxisIterator getChildren(final int node) {
         DTMAxisIterator iterator = _dom.getChildren(node);
+        /*
         if (_filter != null) {
             if (_domImpl != null)
                 iterator = _domImpl.strippingIterator(iterator, getMapping(),
@@ -187,6 +190,7 @@ public final class DOMAdapter implements DOM {
                 iterator = _saxImpl.strippingIterator(iterator, getMapping(),
                                                       _filter);
         }
+        */
         return iterator.setStartNode(node);
     }
 
@@ -198,6 +202,7 @@ public final class DOMAdapter implements DOM {
       final int[] reverse = getReverse();
 
       DTMAxisIterator iterator = _dom.getTypedChildren(reverse[type]);
+      /*
       if (_filter != null && reverse[type] == DTM.TEXT_NODE) {
       	if (_domImpl != null) {
           iterator = _domImpl.strippingIterator(iterator,getMapping(),_filter);
@@ -205,6 +210,7 @@ public final class DOMAdapter implements DOM {
           iterator = _saxImpl.strippingIterator(iterator,getMapping(),_filter);
         }
       }
+      */
       return iterator;
     }
 
@@ -215,12 +221,14 @@ public final class DOMAdapter implements DOM {
 
     public DTMAxisIterator getAxisIterator(final int axis) {
       DTMAxisIterator iterator = _dom.getAxisIterator(axis);
+      /*
       if (_filter != null)
       {
         return (_domImpl != null)
                   ? _domImpl.strippingIterator(iterator, getMapping(), _filter)
                   : _saxImpl.strippingIterator(iterator, getMapping(), _filter);
       }
+      */
       return iterator;
     }
     
@@ -240,12 +248,14 @@ public final class DOMAdapter implements DOM {
           iterator = _dom.getTypedAxisIterator(axis, reverse[type]);
       }
       
+      /*
       if (_filter != null && reverse[type] == DTM.TEXT_NODE) {
       	iterator = (_domImpl != null)
                     ? _domImpl.strippingIterator(iterator,getMapping(),_filter)
                     : _saxImpl.strippingIterator(iterator,getMapping(),_filter);
         
       }
+      */
       return iterator;
     }
     

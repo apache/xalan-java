@@ -92,6 +92,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.*;
@@ -101,12 +102,14 @@ import org.apache.xalan.xsltc.runtime.output.*;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
 
 import java.util.Properties;
 
 public final class TransformerImpl extends Transformer
-    implements DOMCache, ErrorListener 
+    implements DOMCache, ErrorListener
 {
     private final static String EMPTY_STRING = "";
     private final static String NO_STRING    = "no";
@@ -173,6 +176,11 @@ public final class TransformerImpl extends Transformer
      * object belongs to.
      */
     private TransformerFactoryImpl _tfactory = null;
+    
+    /**
+     * A flag indicating whether we use incremental building of the DTM.
+     */
+    private boolean _isIncremental = false;
 
     /**
      * A flag indicating whether this transformer implements the identity 
@@ -203,6 +211,7 @@ public final class TransformerImpl extends Transformer
 	_propertiesClone = (Properties) _properties.clone();
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
+	_isIncremental = tfactory._incremental;
     }
 
     /**
@@ -386,6 +395,12 @@ public final class TransformerImpl extends Transformer
 	throws TransformerException {
 	try {
 	    DOM dom = null;
+	    DTMWSFilter wsfilter;
+	    if (_translet != null && _translet instanceof StripFilter) {
+	        wsfilter = new DOMWSFilter(_translet);
+            } else {
+	        wsfilter = null;
+            }
 
 	    // Get systemId from source
 	    if (source != null) {
@@ -411,7 +426,8 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                        .getFactory());
 
-		dom = (SAXImpl)dtmManager.getDTM(sax, false, null, true, false,
+                dtmManager.setIncremental(_isIncremental);
+		dom = (SAXImpl)dtmManager.getDTM(sax, false, wsfilter, true, false,
                                                  hasUserReader);
 		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
@@ -433,7 +449,8 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                          .getFactory());
     
-		dom = (DOMImpl)dtmManager.getDTM(domsrc, false, null, true,
+                dtmManager.setIncremental(_isIncremental);
+		dom = (DOMImpl)dtmManager.getDTM(domsrc, false, wsfilter, true,
                                                  false, false);
 		((DOMImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
@@ -452,6 +469,8 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                    .getFactory());
 
+		dtmManager.setIncremental(_isIncremental);
+		
 		InputSource input;
 		if (streamInput != null) {
 		    input = new InputSource(streamInput);
@@ -468,7 +487,7 @@ public final class TransformerImpl extends Transformer
 		    throw new TransformerException(err.toString());
 		}
 		dom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, input),
-                                                 false, null, true, false,
+                                                 false, wsfilter, true, false,
                                                  false);
 		((SAXImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
@@ -1072,7 +1091,7 @@ public final class TransformerImpl extends Transformer
 	    return(null);
 	}
     }
-
+    
     /**
      * Receive notification of a recoverable error. 
      * The transformer must continue to provide normal parsing events after
