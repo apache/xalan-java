@@ -894,7 +894,11 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * Flush the pending element.
+   * Flush the pending element, and any attributes associated with it.
+   *
+   * NOTE: If there are attributes but _no_ pending element (which can
+   * happen if the user's stylesheet is doing something inappropriate),
+   * we still want to make sure they are flushed.
    *
    * @param type Event type
    *
@@ -938,6 +942,18 @@ public class ResultTreeHandler extends QueuedEvents
       }
 
       m_nsContextPushed = false;
+    }
+
+    else // Bugzila4344
+    {
+      // %REVIEW% I'm not sure how much of this is actually needed and/or
+      // appropriate. In particular, do we really want to flush m_namespaces?
+      m_attributes.clear();
+      m_nsDeclsHaveBeenAdded = false;
+      m_name = null;
+      m_url = null;
+      m_localName = null;
+      m_namespaces = null;
     }
   }
 
