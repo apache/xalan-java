@@ -638,4 +638,23 @@ EntityResolver and ContentHandler</Log>
 <Modified>java/src/org/apache/xalan/templates FuncFormatNumb.java</Modified>
 <Log>Fix error message to say that 2 or 3 arguments are required.</Log>
 </Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor ProcessorLRE.java
+ java/src/org/apache/xalan/res XSLTErrorResources.java</Modified>
+<Log>Better error message for missing or incorrect XSLT namespace declaration in a 
+stylesheet</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>03/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib Redirect.java
+ java/src/org/apache/xalan/transformer TransformerImpl.java
+ java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Remember the Result that was used to trigger the transform. Access that 
+result from the Redirect extension to make file references in Redirect relative 
+to the original result URI.
+ If this is not available, references are relative to the source URI.</Log>
+</Commit>
 </Commits>
