@@ -64,6 +64,11 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
+import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.INVOKESTATIC;
+import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.PUSH;
+
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
@@ -73,14 +78,16 @@ import org.apache.xalan.xsltc.compiler.util.Util;
 
 final class UnsupportedElement extends SyntaxTreeNode {
 
-    private Fallback _fallback = null;
+    private Vector _fallbacks = null;
     private ErrorMsg _message = null;
+    private boolean _isExtension = false;
 
     /**
      * Basic consutrcor - stores element uri/prefix/localname
      */
-    public UnsupportedElement(String uri, String prefix, String local) {
+    public UnsupportedElement(String uri, String prefix, String local, boolean isExtension) {
 	super(uri, prefix, local);
+	_isExtension = isExtension;
     }
 
     /**
@@ -108,56 +115,74 @@ final class UnsupportedElement extends SyntaxTreeNode {
 
 
     /**
-     * Scan all descendants and find the first xsl:fallback element (if any)
+     * Scan and process all fallback children of the unsupported element.
      */
-    private SyntaxTreeNode findFallback(SyntaxTreeNode root) {
+    private void processFallbacks(Parser parser) {
 
-	// First check if this element exists at all
-	if (root == null) return null;
-
-	// Then check if the element is an xsl:fallback element
-	if (root instanceof Fallback) return((Fallback)root);
-
-	// Then traverse all child elements
-	Vector children = root.getContents();
+	Vector children = getContents();
 	if (children != null) {
 	    final int count = children.size();
 	    for (int i = 0; i < count; i++) {
 		SyntaxTreeNode child = (SyntaxTreeNode)children.elementAt(i);
-		SyntaxTreeNode node = findFallback(child);
-		if (node != null) return node;
+		if (child instanceof Fallback) {
+		    Fallback fallback = (Fallback)child;
+		    fallback.activate();
+		    fallback.parseContents(parser);
+		    if (_fallbacks == null) {
+		    	_fallbacks = new Vector();
+		    }
+		    _fallbacks.addElement(child);
+		}
 	    }
 	}
-	return null;
     }
 
     /**
      * Find any fallback in the descendant nodes; then activate & parse it
      */
     public void parseContents(Parser parser) {
-	_fallback = (Fallback)findFallback(this);
-	if (_fallback != null) {
-	    _fallback.activate();
-	    _fallback.parseContents(parser);
-	}
+    	processFallbacks(parser);
     }
 
     /**
      * Run type check on the fallback element (if any).
      */
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-		if (_fallback != null) {
-			_fallback.typeCheck(stable);
-		}
-		return Type.Void;
+    public Type typeCheck(SymbolTable stable) throws TypeCheckError {	
+	if (_fallbacks != null) {
+	    int count = _fallbacks.size();
+	    for (int i = 0; i < count; i++) {
+	        Fallback fallback = (Fallback)_fallbacks.elementAt(i);
+	        fallback.typeCheck(stable);
+	    }
+	}
+	return Type.Void;
     }
 
     /**
-     * Translate the fallback element (if any). The stylesheet should never
-     * be compiled if an unsupported element does not have a fallback element,
-     * so this method should never be called unless _fallback != null
+     * Translate the fallback element (if any).
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	if (_fallback != null) _fallback.translate(classGen, methodGen);
+	if (_fallbacks != null) {
+	    int count = _fallbacks.size();
+	    for (int i = 0; i < count; i++) {
+	        Fallback fallback = (Fallback)_fallbacks.elementAt(i);
+	        fallback.translate(classGen, methodGen);
+	    }
+	}
+	// We only go into the else block in forward-compatibility mode, when
+	// the unsupported element has no fallback.
+	else {		
+	    // If the unsupported element does not have any fallback child, then
+	    // at runtime, a runtime error should be raised when the unsupported
+	    // element is instantiated. Otherwise, no error is thrown.
+	    ConstantPoolGen cpg = classGen.getConstantPool();
+	    InstructionList il = methodGen.getInstructionList();
+	    
+	    final int unsupportedElem = cpg.addMethodref(BASIS_LIBRARY_CLASS, "unsupported_ElementF",
+                                                         "(" + STRING_SIG + "Z)V");	 
+	    il.append(new PUSH(cpg, getQName().toString()));
+	    il.append(new PUSH(cpg, _isExtension));
+	    il.append(new INVOKESTATIC(unsupportedElem));		
+	}
     }
 }

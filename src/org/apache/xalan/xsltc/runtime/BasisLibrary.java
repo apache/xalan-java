@@ -438,6 +438,20 @@ public final class BasisLibrary implements Operators {
     }
 
     /**
+     * Utility function to throw a runtime error for an unsupported element.
+     * 
+     * This is only used in forward-compatibility mode, when the control flow
+     * cannot be determined. In 1.0 mode, the error message is emitted at 
+     * compile time.
+     */
+    public static void unsupported_ElementF(String qname, boolean isExtension) {
+	if (isExtension)
+	    runTimeError(UNSUPPORTED_EXT_ERR, qname);
+	else
+	    runTimeError(UNSUPPORTED_XSL_ERR, qname);
+    }     
+
+    /**
      * XSLT Standard function namespace-uri(node-set).
      */
     public static String namespace_uriF(DTMAxisIterator iter, DOM dom) {
@@ -1352,6 +1366,10 @@ public final class BasisLibrary implements Operators {
                                            "NAMESPACES_SUPPORT_ERR";
     public static final String CANT_RESOLVE_RELATIVE_URI_ERR =
                                            "CANT_RESOLVE_RELATIVE_URI_ERR";
+    public static final String UNSUPPORTED_XSL_ERR =                                       
+                                           "UNSUPPORTED_XSL_ERR";
+    public static final String UNSUPPORTED_EXT_ERR =                                       
+                                           "UNSUPPORTED_EXT_ERR";
 
     // All error messages are localized and are stored in resource bundles.
     protected static ResourceBundle m_bundle;

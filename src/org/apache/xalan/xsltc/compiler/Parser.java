@@ -971,17 +971,18 @@ public class Parser implements Constants, ContentHandler {
 	    if (uri != null) {
 		// Check if the element belongs in our namespace
 		if (uri.equals(XSLT_URI)) {
-		    node = new UnsupportedElement(uri, prefix, local);
+		    node = new UnsupportedElement(uri, prefix, local, false);
 		    UnsupportedElement element = (UnsupportedElement)node;
-		    if (versionIsOne) {
-		    	ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
+		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
 						_locator.getLineNumber(),local);
-		    	element.setErrorMessage(msg);
-		    }
+		    element.setErrorMessage(msg);
+		    if (versionIsOne) {
+		    	reportError(UNSUPPORTED,msg);
+ 		    }
 		}
 		// Check if this is an XSLTC extension element
 		else if (uri.equals(TRANSLET_URI)) {
-		    node = new UnsupportedElement(uri, prefix, local);
+		    node = new UnsupportedElement(uri, prefix, local, true);
 		    UnsupportedElement element = (UnsupportedElement)node;
 		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
 						_locator.getLineNumber(),local);
@@ -992,7 +993,7 @@ public class Parser implements Constants, ContentHandler {
 		    Stylesheet sheet = _xsltc.getStylesheet();
 		    if ((sheet != null) && (sheet.isExtension(uri))) {
 			if (sheet != (SyntaxTreeNode)_parentStack.peek()) {
-			    node = new UnsupportedElement(uri, prefix, local);
+			    node = new UnsupportedElement(uri, prefix, local, true);
 			    UnsupportedElement elem = (UnsupportedElement)node;
 			    ErrorMsg msg =
 				new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
