@@ -342,7 +342,7 @@ public class UnionPathIterator extends Expression
   {    
     // TODO: Handle unwrapped FilterExpr
     int steptype = compiler.getOpMap()[opPos];
-    if((steptype & OpCodes.LOCATIONPATHEX_MASK) == OpCodes.OP_LOCATIONPATH)
+    if(steptype == OpCodes.OP_LOCATIONPATH)
     {
       loadLocationPaths(compiler, compiler.getNextOpPos(opPos), count+1);
       m_iterators[count] = createLocPathIterator(compiler, opPos);

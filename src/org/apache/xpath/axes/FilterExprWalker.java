@@ -95,10 +95,17 @@ public class FilterExprWalker extends AxesWalker
   {
     super.init(compiler, opPos, stepType);
     // Smooth over an anomily in the opcode map...
-    if(OpCodes.OP_FUNCTION == compiler.getOp(opPos))
+    switch(stepType)
+    {
+    case OpCodes.OP_VARIABLE:
+    case OpCodes.OP_EXTFUNCTION:
+    case OpCodes.OP_FUNCTION:
+    case OpCodes.OP_GROUP:
       m_expr = compiler.compile(opPos);
-    else
+      break;
+    default:
       m_expr = compiler.compile(opPos+2);
+    }
   }
 
   /**

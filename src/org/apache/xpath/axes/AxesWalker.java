@@ -113,7 +113,17 @@ public abstract class AxesWalker extends NodeTest
   {
     int nodeTestOpPos = compiler.getFirstChildPosOfStep(opPos);
     m_stepType = stepType;
-    m_argLen = compiler.getArgLengthOfStep(opPos);
+    switch(stepType)
+    {
+    case OpCodes.OP_VARIABLE:
+    case OpCodes.OP_EXTFUNCTION:
+    case OpCodes.OP_FUNCTION:
+    case OpCodes.OP_GROUP:
+      m_argLen = compiler.getArgLength(opPos);
+      break;
+    default:
+      m_argLen = compiler.getArgLengthOfStep(opPos);
+    }
     initPredicateInfo(compiler, opPos);
     
     // int testType = compiler.getOp(nodeTestOpPos);
