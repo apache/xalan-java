@@ -39,10 +39,16 @@ Copyright:
 
   <property name="spec" value="xpath"/>
   <property name="tree.xsl" value="grammar/etree.xsl"/>
+  <property name="test.expr" value="a/b/c"/>
   
-	<path id="classpath">
-		<fileset dir="bin" includes="*.jar"/>
-	</path>
+  <path id="classpath">
+    <fileset dir="bin" includes="*.jar"/>
+  </path>
+
+  <path id="test.classpath">
+    <fileset dir="build" includes="*.jar"/>
+    <fileset dir="../bin" includes="*.jar"/>
+  </path>
 
   <target name="gen-grammar">
       <mkdir dir="${spec}-src"/>
@@ -89,5 +95,12 @@ Copyright:
   <target name="jar" depends="compile">
 		<jar destfile="build/xpathapi.jar" basedir="build/classes" includes="**/*.*"/>
 	</target>
+
+  <target name="test" depends="jar">
+    <java fork="yes" classname="org.apache.xpath.rwapi.test.Test2" >
+      <classpath refid="test.classpath" />
+      <arg line="${test.expr}"/>
+    </java>
+  </target>
 
 </project>
