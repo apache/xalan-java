@@ -148,7 +148,7 @@ final public class DefaultRun {
 	    // If there are any elements with ID attributes, build an index
 	    dtdMonitor.buildIdIndex(dom, 0, _translet);
 
-	    _translet.setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
+	    _translet.setDTDMonitor(dtdMonitor);
 
 	    // Pass global parameters
 	    int n = _params.size();

@@ -64,7 +64,6 @@
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Enumeration;
-import java.util.Hashtable;
 
 import org.xml.sax.XMLReader;
 import org.xml.sax.DTDHandler;
@@ -75,6 +74,7 @@ import org.xml.sax.SAXNotSupportedException;
 
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 final public class DTDMonitor implements DTDHandler, DeclHandler {
 

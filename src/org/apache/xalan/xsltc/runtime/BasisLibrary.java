@@ -64,7 +64,7 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.util.Hashtable;
+//import java.util.Hashtable;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.FieldPosition;

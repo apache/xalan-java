@@ -69,7 +69,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
-import java.util.Hashtable;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -304,16 +303,16 @@ public class DefaultSAXOutputHandler implements ContentHandler {
                 if ((_indent) && (_indentNextEndTag)) indent(false);
                 char[] endTag = (char[])_endTags.get(elementName);
                 if (endTag == null) {
-		    // CHANGED OUTPUT LAYOUT
-		    /*
-		    if (_outputType == TextOutput.HTML) { 
-                        endTag = ("</"+elementName+">\n").toCharArray();
-		    } else {
-			// works for XML, TEXT
-                        endTag = ("</"+elementName+">").toCharArray();
-		    }
-		    */
-		    endTag = ("</"+elementName+">\n").toCharArray();
+		    // We dont' want to concatenate String objects!!!!
+		    // endTag = ("</"+elementName+">\n").toCharArray();
+		    final int len = elementName.length();
+		    final char[] src = elementName.toCharArray();
+		    endTag = new char[len+4];
+		    System.arraycopy(src, 0, endTag, 2, len);
+		    endTag[0] = '<';
+		    endTag[1] = '/';
+		    endTag[len+2] = '>';
+		    endTag[len+3] = '\n';
                     _endTags.put(elementName,endTag);
                 }
                 _writer.write(endTag);

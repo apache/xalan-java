@@ -66,7 +66,6 @@ import org.xml.sax.SAXException;
 
 import java.util.Vector;
 import java.util.Enumeration;
-import java.util.Hashtable;
 
 public class AttributeList implements org.xml.sax.Attributes {
 

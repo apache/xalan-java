@@ -408,7 +408,6 @@ final class Whitespace extends TopLevelElement {
 						      "(I)Ljava/lang/String;");
 
 	    final int strcmp = cpg.addMethodref("java/lang/String",
-						//"compareToIgnoreCase",
 						"compareTo",
 						"(Ljava/lang/String;)I");
 

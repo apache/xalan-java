@@ -65,7 +65,6 @@
 package org.apache.xalan.xsltc.runtime;
 
 import java.util.Vector;
-import java.util.Hashtable;
 import java.util.Enumeration;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -291,6 +290,10 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
 	return uri == null ? EMPTYSTRING : uri;
     }
 
+    public final void setDTDMonitor(DTDMonitor monitor) {
+	setUnparsedEntityURIs(monitor.getUnparsedEntityURIs());
+    }
+
     public final void setUnparsedEntityURIs(Hashtable table) {
 	if (_unparsedEntities == null)
 	    _unparsedEntities = table;
@@ -403,6 +406,128 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
      *  Transformer methods
      *********************************************************/
 
+    public void transform(Source xmlsrc, Result outputTarget)
+	throws TransformerException 
+    {
+	/********************
+        doTransform( xmlsrc.getSystemId(), 
+                    ((StreamResult)outputTarget).getOutputStream() ); 
+	*******************************/
+
+	// try to get the encoding from Translet
+	final Translet translet = (Translet)this;
+	String encoding = translet.getOutputEncoding();
+	if (encoding == null) encoding = "UTF-8";
+
+	// create a DefaultSAXOutputHandler
+	DefaultSAXOutputHandler saxHandler = null;
+	StreamResult target = (StreamResult)outputTarget;
+	java.io.Writer writer = target.getWriter();
+	java.io.OutputStream os = target.getOutputStream();
+	String systemid = target.getSystemId();
+	if (writer != null) {
+	    // no constructor that takes encoding yet...
+	    try {
+		saxHandler = new DefaultSAXOutputHandler(writer); 
+	    } catch (java.io.IOException e) {
+		throw new TransformerException(
+		"IOException creating DefaultSAXOutputHandler");
+	    }
+	} else if (os != null) {
+	    try {
+		saxHandler = new DefaultSAXOutputHandler(os, encoding); 
+	    } catch (java.io.IOException e) {
+		throw new TransformerException(
+                     "IOException creating DefaultSAXOutputHandler");
+	    }
+	} else if (systemid != null) {
+	    String filePrefix = new String("file:///");
+	    if (systemid.startsWith(filePrefix)) {
+		systemid = systemid.substring(filePrefix.length());
+	    }
+	    try {
+		saxHandler = new DefaultSAXOutputHandler(
+			((OutputStream)new FileOutputStream(systemid)), 
+			encoding);
+	    } catch (java.io.FileNotFoundException e) {
+		throw new TransformerException(
+			"Transform output target could not be opened.");
+	    } catch (java.io.IOException e) {
+		throw new TransformerException(
+                   "Transform output target could not be opened.");
+	    }
+	}
+ 
+	// finally do the transformation...
+	doTransform(xmlsrc.getSystemId(), saxHandler, encoding);
+    }
+ 
+    private void doTransform(String xmlDocName, 
+		     DefaultSAXOutputHandler saxHandler, String encoding) 
+    {
+	try {
+	    final Translet translet = (Translet)this; // GTM added
+
+	    // Create a SAX parser and get the XMLReader object it uses
+	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    final SAXParser parser = factory.newSAXParser();
+	    final XMLReader reader = parser.getXMLReader();
+ 
+	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+	    final DOMImpl dom = new DOMImpl();
+	    reader.setContentHandler(dom.getBuilder());
+	    // Create a DTD monitor and pass it to the XMLReader object
+	    final DTDMonitor dtdMonitor = new DTDMonitor();
+	    dtdMonitor.handleDTD(reader);
+ 
+	    dom.setDocumentURI(xmlDocName);
+         /****************
+             if (_uri)
+                 reader.parse(xmlDocName);
+             else
+         *******************/
+	    reader.parse("file:"+(new File(xmlDocName).getAbsolutePath()));
+
+	    // Set size of key/id indices
+	    setIndexSize(dom.getSize());
+	    // If there are any elements with ID attributes, build an index
+	    dtdMonitor.buildIdIndex(dom, 0, this);
+ 
+	    setDTDMonitor(dtdMonitor);
+ 
+	    // Transform the document
+	    TextOutput textOutput = new TextOutput(saxHandler, encoding);
+	    translet.transform(dom, textOutput);
+	    textOutput.flush();
+	}
+	catch (TransletException e) {
+	    System.err.println("\nTranslet Error: " + e.getMessage());
+	    System.exit(1);
+	}
+	catch (RuntimeException e) {
+	    System.err.println("\nRuntime Error: " + e.getMessage());
+	    System.exit(1);
+	}
+	catch (FileNotFoundException e) {
+           //System.err.println("Error:File or URI '"+_fileName+"' not found.");
+	    System.exit(1);
+	}
+	catch (MalformedURLException e) {
+	    //System.err.println("Error: Invalid URI '"+_fileName+"'.");
+	    System.exit(1);
+	}
+	catch (UnknownHostException e) {
+	    //System.err.println("Error: Can't resolve URI specification '"+
+	    //_fileName+"'.");
+	    System.exit(1);
+	}
+	catch (Exception e) {
+	    e.printStackTrace();
+	    System.err.println("Error: internal error.");
+	    System.exit(1);
+	}
+    }
+
     public void clearParameters() {  
 	paramsStack.clear();
     }
@@ -467,133 +592,4 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
 	/*TBD*/
     }
 
-    public void transform(Source xmlsrc, Result outputTarget)
-        throws TransformerException 
-    {
-/********************
-	doTransform( xmlsrc.getSystemId(), 
-		     ((StreamResult)outputTarget).getOutputStream() ); 
-*******************************/
-
-	// try to get the encoding from Translet
-	final Translet translet = (Translet)this;
-	String encoding = translet.getOutputEncoding();
-	if (encoding == null) encoding = "UTF-8";
-
-
-	// create a DefaultSAXOutputHandler
-	DefaultSAXOutputHandler saxHandler = null;
-	StreamResult target = (StreamResult)outputTarget;	
-	java.io.Writer writer = target.getWriter();
-	java.io.OutputStream os = target.getOutputStream();
-	String systemid = target.getSystemId();
-	if (writer != null) {
-	    // no constructor that takes encoding yet...
-	    try {
-	        saxHandler = new DefaultSAXOutputHandler(writer); 
-	    } catch (java.io.IOException e) {
-	        throw new TransformerException(
-                    "IOException creating DefaultSAXOutputHandler");
-	    }
-	} else if (os != null) {
-	    try {
-	        saxHandler = new DefaultSAXOutputHandler(os, encoding); 
-	    } catch (java.io.IOException e) {
-                throw new TransformerException(
-                    "IOException creating DefaultSAXOutputHandler");
-            }
-	} else if (systemid != null) {
-	    String filePrefix = new String("file:///");
-	    if (systemid.startsWith(filePrefix)) {
-	        systemid = systemid.substring(filePrefix.length());
-	    }
-	    try {
-                saxHandler = new DefaultSAXOutputHandler(
-		    ((OutputStream)new FileOutputStream(systemid)), 
-		    encoding);
-	    } catch (java.io.FileNotFoundException e) {
-	        throw new TransformerException(
-		    "Transform output target could not be opened.");
-	    } catch (java.io.IOException e) {
-	        throw new TransformerException(
-		    "Transform output target could not be opened.");
-	    }
-	}
-
-	// finally do the transformation...	
-	doTransform(xmlsrc.getSystemId(), saxHandler, encoding);
-    }
-
-    private void doTransform(String xmlDocName, 
-	DefaultSAXOutputHandler saxHandler, String encoding) 
-    {
-        try {
-            final Translet translet = (Translet)this; // GTM added
-
-            // Create a SAX parser and get the XMLReader object it uses
-            final SAXParserFactory factory = SAXParserFactory.newInstance();
-            final SAXParser parser = factory.newSAXParser();
-            final XMLReader reader = parser.getXMLReader();
-
-            // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-            final DOMImpl dom = new DOMImpl();
-            reader.setContentHandler(dom.getBuilder());
-            // Create a DTD monitor and pass it to the XMLReader object
-            final DTDMonitor dtdMonitor = new DTDMonitor();
-            dtdMonitor.handleDTD(reader);
-
-            dom.setDocumentURI(xmlDocName);
-        /****************
-            if (_uri)
-                reader.parse(xmlDocName);
-            else
-        *******************/
-            reader.parse("file:"+(new File(xmlDocName).getAbsolutePath()));
-           
-            // Set size of key/id indices
-            setIndexSize(dom.getSize());
-            // If there are any elements with ID attributes, build an index
-            dtdMonitor.buildIdIndex(dom, 0, this);
-
-            setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
-
-            // Transform the document
-            //String encoding = translet.getOutputEncoding();
-            //if (encoding == null) encoding = "UTF-8";
-
-            //TextOutput textOutput = new TextOutput(System.out, encoding);
-            //DefaultSAXOutputHandler saxHandler = new
-             //   DefaultSAXOutputHandler(ostream, encoding);
-            TextOutput textOutput = new TextOutput(saxHandler, encoding);
-            translet.transform(dom, textOutput);
-            textOutput.flush();
-
-        }
-        catch (TransletException e) {
-            System.err.println("\nTranslet Error: " + e.getMessage());
-            System.exit(1);
-        }
-        catch (RuntimeException e) {
-            System.err.println("\nRuntime Error: " + e.getMessage());
-            System.exit(1);
-        }
-        catch (FileNotFoundException e) {
-           //System.err.println("Error:File or URI '"+_fileName+"' not found.");
-            System.exit(1);
-        }
-        catch (MalformedURLException e) {
-            //System.err.println("Error: Invalid URI '"+_fileName+"'.");
-            System.exit(1);
-        }
-        catch (UnknownHostException e) {
-            //System.err.println("Error: Can't resolve URI specification '"+
-                               //_fileName+"'.");
-            System.exit(1);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error: internal error.");
-            System.exit(1);
-        }
-    }
 }

@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.util.Hashtable;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -72,6 +70,7 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.TransletOutputHandler;
 import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public final class MultiDOM implements DOM {
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;

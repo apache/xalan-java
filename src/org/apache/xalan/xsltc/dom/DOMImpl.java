@@ -73,7 +73,6 @@ import java.io.Externalizable;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.IOException;
-import java.util.Hashtable;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Stack;
@@ -89,6 +88,7 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.SAXAdapter;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public final class DOMImpl implements DOM, Externalizable {
 
@@ -1709,17 +1709,18 @@ public final class DOMImpl implements DOM, Externalizable {
      * Get mapping from DOM element/attribute types to external types
      */
     public short[] getMapping(String[] names) {
+	int i;
 	final int namesLength = names.length;
 	final int mappingLength = _namesArray.length + NTYPES;
 	final short[] result = new short[mappingLength];
 
 	// primitive types map to themselves
-	for (int i = 0; i < NTYPES; i++)
+	for (i = 0; i < NTYPES; i++)
 	    result[i] = (short)i;
 
 	// extended types initialized to "beyond caller's types"
 	// unknown element or Attr
-	for (int i = NTYPES; i < mappingLength; i++) {
+	for (i = NTYPES; i < mappingLength; i++) {
 	    final String name = _namesArray[i - NTYPES];
 	    final int atPos = name.lastIndexOf(':')+1;
 	    result[i] = (short)(name.charAt(atPos) == '@'
@@ -1727,7 +1728,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	// actual mapping of caller requested names
-	for (int i = 0; i < namesLength; i++) {
+	for (i = 0; i < namesLength; i++) {
 	    result[getGeneralizedType(names[i])] = (short)(i + NTYPES);
 	}
              
@@ -1739,13 +1740,14 @@ public final class DOMImpl implements DOM, Externalizable {
      * Get mapping from external element/attribute types to DOM types
      */
     public short[] getReverseMapping(String[] names) {
+	int i;
 	final short[] result = new short[names.length + NTYPES];
 	// primitive types map to themselves
-	for (int i = 0; i < NTYPES; i++) {
+	for (i = 0; i < NTYPES; i++) {
 	    result[i] = (short)i;
 	}
 	// caller's types map into appropriate dom types
-	for (int i = 0; i < names.length; i++) {
+	for (i = 0; i < names.length; i++) {
 	    result[i + NTYPES] = (short)getGeneralizedType(names[i]);
 	    if (result[i + NTYPES] == ELEMENT)
 		result[i + NTYPES] = NO_TYPE;
@@ -1757,15 +1759,16 @@ public final class DOMImpl implements DOM, Externalizable {
      * Get mapping from DOM namespace types to external namespace types
      */
     public short[] getNamespaceMapping(String[] namespaces) {
+	int i;
 	final int nsLength = namespaces.length;
 	final int mappingLength = _nsNamesArray.length;
 	final short[] result = new short[mappingLength];
 
 	// Initialize all entries to -1
-	for (int i=0; i<mappingLength; i++)
+	for (i=0; i<mappingLength; i++)
 	    result[i] = (-1);
 
-	for (int i=0; i<nsLength; i++) {
+	for (i=0; i<nsLength; i++) {
 	    Integer type = (Integer)_nsIndex.get(namespaces[i]);
 	    if (type != null) {
 		result[type.intValue()] = (short)i;
@@ -1779,10 +1782,11 @@ public final class DOMImpl implements DOM, Externalizable {
      * Get mapping from external namespace types to DOM namespace types
      */
     public short[] getReverseNamespaceMapping(String[] namespaces) {
+	int i;
 	final int length = namespaces.length;
 	final short[] result = new short[length];
 
-	for (int i=0; i<length; i++) {
+	for (i=0; i<length; i++) {
 	    Integer type = (Integer)_nsIndex.get(namespaces[i]);
 	    if (type == null)
 		result[i] = -1;
@@ -1916,7 +1920,11 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     public String getNamespaceName(final int node) {
 	final int type = getNamespaceType(node);
-	return(_nsNamesArray[type]);
+	final String name = _nsNamesArray[type];
+	if (name == null)
+	    return(EMPTYSTRING);
+	else
+	    return(name);
     }
 
     /**
@@ -2201,11 +2209,13 @@ public final class DOMImpl implements DOM, Externalizable {
     public void copy(final int node, TransletOutputHandler handler)
 	throws TransletException {
 
+	int attr, child, col;
+
 	if (node >= _treeNodeLimit) return;
 
 	switch(_type[node]) {
 	case ROOT:
-	    for (int child = _offsetOrChild[node];
+	    for (child = _offsetOrChild[node];
 		 child != NULL;
 		 child = _nextSibling[child]) {
 		copy(child, handler);
@@ -2225,7 +2235,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (isElement(node)) {
 		final String name = getNodeName(node);
 		// Copy element name - start tag
-		int col = name.lastIndexOf(':');
+		col = name.lastIndexOf(':');
 		if (col > 0) {
 		    final String prefix = generateNamespacePrefix();
 		    handler.startElement(prefix+':'+name.substring(col+1));
@@ -2236,7 +2246,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		}
 
 		// Copy element attribute
-		for (int attr = _lengthOrAttr[node];
+		for (attr = _lengthOrAttr[node];
 		     attr != NULL;
 		     attr = _nextSibling[attr]) {
 		    final String aname = getNodeName(attr);
@@ -2254,7 +2264,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		// Copy element namespace declarations ???
 
 		// Copy element children
-		for (int child = _offsetOrChild[node];
+		for (child = _offsetOrChild[node];
 		     child != NULL;
 		     child = _nextSibling[child]) {
 		    copy(child, handler);
@@ -2275,10 +2285,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	throws TransletException {
 	final char[] text = _text;
 	final int start = _offsetOrChild[node];
-	final int length = _lengthOrAttr[node];
 	int i = start + 1;
 	while (text[i] != ' ') ++i;
 
+	final int length = _lengthOrAttr[node];
 	handler.processingInstruction(new String(text, start, i - start),
 				      new String(text, i + 1, length - i));
     }
@@ -2671,25 +2681,29 @@ public final class DOMImpl implements DOM, Externalizable {
     	    final int node = nextAttributeNode();
 
 	    final String qname = attList.getQName(i);
-	    final String uri = attList.getURI(i);
 	    final String localname = attList.getLocalName(i);
 	    final String value = attList.getValue(i);
-
-	    String name = null;
-
+	    
+	    StringBuffer namebuf = new StringBuffer(EMPTYSTRING);
+	    
 	    // Create the internal attribute node name (uri+@+localname)
 	    if (qname.startsWith(XML_STRING)) {
 		if (qname.startsWith(XMLSPACE_STRING))
 		    xmlSpaceDefine(attList.getValue(i), parent);
-		name = "xml:@"+localname;
+		namebuf.append("xml:");
 	    }
 	    else {
-		if (uri.equals(EMPTYSTRING))
-		    name = '@'+localname;
-		else
-		    name = uri+":@"+localname;
+		final String uri = attList.getURI(i);
+		if (!uri.equals(EMPTYSTRING)) {
+		    namebuf.append(uri);
+		    namebuf.append(':');
+		}
 	    }
+	    namebuf.append('@');
+	    namebuf.append(localname);
 
+	    String name = namebuf.toString();
+	    
 	    // Get the index of the attribute node name (create new if non-ex).
 	    Integer obj = (Integer)_names.get(name);
 	    if (obj == null) {
@@ -2952,14 +2966,17 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 	
 	private void shiftAttributes(final int shift) {
+	    int i = 0;
+	    int next = 0;
 	    final int limit = _currentAttributeNode;
 	    int lastParent = -1;
-	    for (int i = 0; i < limit; i++) {
+
+	    for (i = 0; i < limit; i++) {
 		if (_parent2[i] != lastParent) {
 		    lastParent = _parent2[i];
 		    _lengthOrAttr[lastParent] = i + shift;
 		}
-		final int next = _nextSibling2[i];
+		next = _nextSibling2[i];
 		_nextSibling2[i] = next != 0 ? next + shift : 0;
 	    }
 	}

@@ -63,11 +63,11 @@
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Vector;
-import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 
 public class KeyIndex implements NodeIterator {
     private Hashtable _index = new Hashtable();

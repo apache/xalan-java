@@ -65,7 +65,6 @@
 package org.apache.xalan.xsltc.runtime;
 
 import java.io.*;
-import java.util.Hashtable;
 import java.util.Stack;
 
 import org.apache.xalan.xsltc.*;
@@ -234,7 +233,7 @@ public final class TextOutput implements TransletOutputHandler {
 		// Final check to assure that the element is within a namespace
 		// that has been declared (all declarations for this element
 		// should have been processed at this point).
-		int col = _elementName.indexOf(':');
+		int col = _elementName.lastIndexOf(':');
 		if (col > 0) {
 		    final String prefix = _elementName.substring(0,col);
 		    final String localname = _elementName.substring(col+1);
@@ -393,13 +392,14 @@ public final class TextOutput implements TransletOutputHandler {
 
 	    int limit = off + len;
 	    int offset = off;
+	    int i;
 
             // Take special precautions if within a CDATA section. If we
             // encounter the sequence ']]>' within the CDATA, we need to
             // break the section in two and leave the ']]' at the end of
             // the first CDATA and '>' at the beginning of the next.
             if (_cdataTagOpen && len>2) {
-                for (int i = off; i < limit-2; i++) {
+                for (i = off; i < limit-2; i++) {
                     if (ch[i] == ']' && ch[i+1] == ']' && ch[i+2] == '>') {
                         _saxHandler.characters(ch, offset, i - offset);
                         characters(CNTCDATA);
@@ -414,7 +414,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    // Output escaped characters if required. Non-ASCII characters
             // within HTML attributes should _NOT_ be escaped.
 	    else if (_escapeChars) {
-                for (int i = off; i < limit; i++) {
+                for (i = off; i < limit; i++) {
                     switch (ch[i]) {
                     case '&':
                         _saxHandler.characters(ch, offset, i - offset);
@@ -507,12 +507,13 @@ public final class TextOutput implements TransletOutputHandler {
      */
     private String escapeChars(String value) {
 
-	StringBuffer buf = new StringBuffer();
+	int i;
 	char[] ch = value.toCharArray();
-	int offset = 0;
 	int limit = ch.length;
+	int offset = 0;
+	StringBuffer buf = new StringBuffer();
 	
-	for (int i = 0; i < limit; i++) {
+	for (i = 0; i < limit; i++) {
 	    switch (ch[i]) {
 	    case '&':
 		buf.append(ch, offset, i - offset);
@@ -559,10 +560,15 @@ public final class TextOutput implements TransletOutputHandler {
 
 	if (_startTagOpen) {
 	    // Intercept namespace declarations and handle them separately
-	    if (name.startsWith("xmlns"))
-		namespace(name.substring(6),value);
-	    else
+	    if (name.startsWith("xmlns")) {
+		if (name.length() == 5)
+		    namespace(EMPTYSTRING,value);
+		else
+		    namespace(name.substring(6),value);
+	    }
+	    else {
 		_attributes.add(name,escapeChars(value));
+	    }
 	}
 	else if (_cdataTagOpen) {
 	    throw new TransletException("attribute '"+name+"' within CDATA");
@@ -754,7 +760,7 @@ public final class TextOutput implements TransletOutputHandler {
      * returns a strig with the expanded QName on the format uri:local-name.
      */
     private String expandQName(String withPrefix) {
-	int col = withPrefix.indexOf(':');
+	int col = withPrefix.lastIndexOf(':');
 	if (col == -1) return(withPrefix);
 
 	final String prefix = withPrefix.substring(0,col);
