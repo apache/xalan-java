@@ -228,7 +228,9 @@ public class AttList implements Attributes
    */
   public String getValue(String name)
   {
-    return ((Attr) m_attrs.getNamedItem(name)).getValue();
+    Attr attr = ((Attr) m_attrs.getNamedItem(name));
+    return (null != attr) 
+          ? attr.getValue() : null;
   }
 
   /**
