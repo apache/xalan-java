@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2004 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -163,16 +163,15 @@ public class UnionPathIterator extends LocPathIterator
    * exception INVALID_STATE_ERR.
    */
   public void detach()
-  {    
-    if(null != m_iterators)
-    {
-    	int n = m_iterators.length;
-    	for(int i = 0; i < n; i++)
-    	{
-    		m_iterators[i].detach();
-    	}
-    	m_iterators = null;
-    }
+  {
+          if(m_allowDetach && null != m_iterators){         
+                  int n = m_iterators.length;
+                  for(int i = 0; i < n; i++)
+                  {
+                          m_iterators[i].detach();
+                  }
+                  m_iterators = null;                                
+          }
   }
 
 
