@@ -65,7 +65,6 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
-import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
@@ -76,6 +75,7 @@ import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.runtime.output.StreamOutput;
 
 final class Output extends TopLevelElement {
 
@@ -102,30 +102,6 @@ final class Output extends TopLevelElement {
     private final static String STRING_SIG = "Ljava/lang/String;";
     private final static String XML_VERSION = "1.0";
     private final static String HTML_VERSION = "4.0";
-
-    // Canonical 
-    private static Hashtable _canonicalEncodings;
-    static {
-	_canonicalEncodings = new Hashtable();
-	_canonicalEncodings.put("ebcdic-cp-us", "Cp037");
-	_canonicalEncodings.put("ebcdic-cp-ca", "Cp037"); 
-	_canonicalEncodings.put("ebcdic-cp-nl", "Cp037");
-	_canonicalEncodings.put("ebcdic-cp-dk", "Cp277"); 
-	_canonicalEncodings.put("ebcdic-cp-no", "Cp277"); 
-	_canonicalEncodings.put("ebcdic-cp-fi", "Cp278"); 
-	_canonicalEncodings.put("ebcdic-cp-se", "Cp278"); 
-	_canonicalEncodings.put("ebcdic-cp-it", "Cp280"); 
-	_canonicalEncodings.put("ebcdic-cp-es", "Cp284"); 
-	_canonicalEncodings.put("ebcdic-cp-gb", "Cp285"); 
-	_canonicalEncodings.put("ebcdic-cp-fr", "Cp297"); 
-	_canonicalEncodings.put("ebcdic-cp-ar1", "Cp420"); 
-	_canonicalEncodings.put("ebcdic-cp-he", "Cp424"); 
-	_canonicalEncodings.put("ebcdic-cp-ch", "Cp500"); 
-	_canonicalEncodings.put("ebcdic-cp-roece", "Cp870");
-	_canonicalEncodings.put("ebcdic-cp-yu", "Cp870"); 
-	_canonicalEncodings.put("ebcdic-cp-is", "Cp871"); 
-	_canonicalEncodings.put("ebcdic-cp-ar2", "Cp918");   
-    }
 
     /**
      * Displays the contents of this element (for debugging)
@@ -196,16 +172,10 @@ final class Output extends TopLevelElement {
 	}
 	else {
 	    try {
-		// Find encoding synonym (if any)
-		String canonical = (String) _canonicalEncodings.get(
-		    _encoding.toLowerCase());
-		if (canonical != null) {
-		    _encoding = canonical;
-		}
-
 		// Create a write to verify encoding support
 		OutputStreamWriter writer =
-		    new OutputStreamWriter(System.out, _encoding);
+		    new OutputStreamWriter(System.out, 
+		       StreamOutput.getCanonicalEncoding(_encoding));
 	    }
 	    catch (java.io.UnsupportedEncodingException e) {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_ENCODING,

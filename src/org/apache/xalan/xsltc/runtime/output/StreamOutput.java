@@ -71,10 +71,11 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
 import java.util.Vector;
+import java.util.Hashtable;
 
 import org.apache.xalan.xsltc.TransletException;
 
-abstract class StreamOutput extends OutputBase {
+abstract public class StreamOutput extends OutputBase {
 
     protected static final String AMP      = "&amp;";
     protected static final String LT       = "&lt;";
@@ -133,6 +134,36 @@ abstract class StreamOutput extends OutputBase {
 	}
     }
 
+    // Canonical encodings
+    private static Hashtable _canonicalEncodings;
+    static {
+	_canonicalEncodings = new Hashtable();
+	_canonicalEncodings.put("ebcdic-cp-us", "Cp037");
+	_canonicalEncodings.put("ebcdic-cp-ca", "Cp037"); 
+	_canonicalEncodings.put("ebcdic-cp-nl", "Cp037");
+	_canonicalEncodings.put("ebcdic-cp-dk", "Cp277"); 
+	_canonicalEncodings.put("ebcdic-cp-no", "Cp277"); 
+	_canonicalEncodings.put("ebcdic-cp-fi", "Cp278"); 
+	_canonicalEncodings.put("ebcdic-cp-se", "Cp278"); 
+	_canonicalEncodings.put("ebcdic-cp-it", "Cp280"); 
+	_canonicalEncodings.put("ebcdic-cp-es", "Cp284"); 
+	_canonicalEncodings.put("ebcdic-cp-gb", "Cp285"); 
+	_canonicalEncodings.put("ebcdic-cp-fr", "Cp297"); 
+	_canonicalEncodings.put("ebcdic-cp-ar1", "Cp420"); 
+	_canonicalEncodings.put("ebcdic-cp-he", "Cp424"); 
+	_canonicalEncodings.put("ebcdic-cp-ch", "Cp500"); 
+	_canonicalEncodings.put("ebcdic-cp-roece", "Cp870");
+	_canonicalEncodings.put("ebcdic-cp-yu", "Cp870"); 
+	_canonicalEncodings.put("ebcdic-cp-is", "Cp871"); 
+	_canonicalEncodings.put("ebcdic-cp-ar2", "Cp918");   
+    }
+
+    public static String getCanonicalEncoding(String encoding) {
+	String canonical = 
+	    (String)_canonicalEncodings.get(encoding.toLowerCase());
+	return (canonical != null) ? canonical : encoding;
+    }
+
     protected StreamOutput(StreamOutput output) {
 	_writer = output._writer;
 	_encoding = output._encoding;
@@ -151,7 +182,9 @@ abstract class StreamOutput extends OutputBase {
 	throws IOException
     {
 	try {
-	    _writer = new OutputStreamWriter(out, _encoding = encoding);
+	    _writer = new OutputStreamWriter(out, 
+					     getCanonicalEncoding(encoding));
+	    _encoding = encoding;
 	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
 	}
 	catch (UnsupportedEncodingException e) {
