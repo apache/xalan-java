@@ -82,35 +82,35 @@ import org.apache.xalan.xsltc.runtime.Constants;
 
 class SAX2DOM implements ContentHandler, Constants {
 
-    private Stack _nodeStk = null;
-    private Document _document = null;
-    private DocumentBuilder _builder = null;
- 
+    private Document _root = null;
+    private Stack _nodeStk = new Stack();
     private Vector _namespaceDecls = null;
 
     public SAX2DOM() throws ParserConfigurationException {
-	DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	_builder = factory.newDocumentBuilder();
-	_nodeStk = new Stack();
+	final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	_root = factory.newDocumentBuilder().newDocument();
+    }
+
+    public SAX2DOM(Node root) throws ParserConfigurationException {
+	_root = (Document) root;   // TODO: add support for frags and elems
     }
 
     public Node getDOM() {
-	return _document;
+	return _root;
     }
 
     public void characters(char[] ch, int start, int length) {
 	final Node last = (Node)_nodeStk.peek();
-	final String text = new String(ch, start, length);
 
 	// No text nodes can be children of root (DOM006 exception)
-	if (last != _document) {
-	    last.appendChild(_document.createTextNode(text));
+	if (last != _root) {
+	    final String text = new String(ch, start, length);
+	    last.appendChild(_root.createTextNode(text));
 	}
     }
 
     public void startDocument() {
-	_document = _builder.newDocument();
-	_nodeStk.push(_document);
+	_nodeStk.push(_root);
     }
 
     public void endDocument() {
@@ -119,7 +119,7 @@ class SAX2DOM implements ContentHandler, Constants {
     public void startElement(String namespace, String localName, String qName,
 	Attributes attrs) 
     {
-	final Element tmp = (Element)_document.createElementNS(namespace, qName);
+	final Element tmp = (Element)_root.createElementNS(namespace, qName);
 
 	// Add namespace declarations first
 	if (_namespaceDecls != null) {

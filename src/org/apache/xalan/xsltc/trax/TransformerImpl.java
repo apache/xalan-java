@@ -211,7 +211,7 @@ public final class TransformerImpl extends Transformer
                 if (handler != null) return handler;
             }
 	    else if (result instanceof DOMResult) {
-                return (new SAX2DOM());
+                return new SAX2DOM(((DOMResult) result).getNode());
             }
 	    else if (result instanceof StreamResult) {
 		// Get StreamResult
