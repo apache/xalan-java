@@ -126,7 +126,7 @@ public abstract class ExtensionHandler
       }
       catch (ClassNotFoundException cnfe)
       {
-        throw cnfe;
+        result = Class.forName(className);
       }
       catch (Exception e)
       {
