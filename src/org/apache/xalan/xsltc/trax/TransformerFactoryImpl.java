@@ -147,9 +147,9 @@ public class TransformerFactoryImpl
     private boolean _debug = false;
 
     /**
-     * Set to <code>true</code> when templates are not inlined.
+     * Set to <code>true</code> when templates are inlined.
      */
-    private boolean _disableInlining = false;
+    private boolean _enableInlining = false;
 
     /**
      * Number of indent spaces when indentation is turned on.
@@ -246,13 +246,13 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
-	else if (name.equals("disable-inlining")) {
+	else if (name.equals("enable-inlining")) {
 	    if (value instanceof Boolean) {
-		_disableInlining = ((Boolean) value).booleanValue();
+		_enableInlining = ((Boolean) value).booleanValue();
 		return;
 	    }
 	    else if (value instanceof String) {
-		_disableInlining = ((String) value).equalsIgnoreCase("true");
+		_enableInlining = ((String) value).equalsIgnoreCase("true");
 		return;
 	    }
 	}
@@ -455,7 +455,7 @@ public class TransformerFactoryImpl
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
-	if (_disableInlining) xsltc.setTemplateInlining(false);
+	if (_enableInlining) xsltc.setTemplateInlining(true);
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined

@@ -144,7 +144,14 @@ public final class XSLTC {
     private Vector  _classes;
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
-    private boolean _templateInlining = true;
+
+    /**
+     * Set to true if template inlining is requested. Template
+     * inlining used to be the default, but we have found that
+     * Hotspots does a better job with shorter methods, so the
+     * default is *not* to inline now.
+     */
+    private boolean _templateInlining = false;
 
     /**
      * XSLTC compiler constructor
