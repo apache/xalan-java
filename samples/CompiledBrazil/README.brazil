@@ -17,16 +17,20 @@ but we could easily have used some other web interface such
 as Tomcat. The supplied Java code implements a Brazil
 "handler", which very much resembles a servlet.
 
+The CompiledEJB and CompiledServlet sample code
+demonstrate other aproaches to providing XSL transformations
+as a web service.
+
 ------------------------------------------------------------
 HOW TO INVOKE TRANSLETS FROM A BRAZIL HANDLER
 
-The XSLTC preview package contains the example source code:
+The .CompiledBrazil directory contains the example source code:
 
     TransformHandler.java
 
 This file contains a minimal implementation of an XSL
 transformation handler. The handler performs the same basic
-steps as the class implementing the XSLT command-line tool:
+steps as the class implementing the XSLTC command-line tool:
 
     // Obtain a reference to the translet class
     Class cls = Class.forName(transletName);
@@ -38,19 +42,28 @@ steps as the class implementing the XSLT command-line tool:
     dom.setDocumentURI(inputURI);
 
     // Create a parser for the input document
-    final Parser parser = new Parser();
-    parser.setDocumentHandler(dom.getBuilder());
+    // org.apache.xalan.xsltc.runtime.Constants sets NAMESPACE_FEATURE
+    final SAXParserFactory facory = SAXFactory.newInstance();
+    try {
+      factory.setFeature(NAMESPACE_FEATURE,true);
+    }
+    catch (Exception e) {
+      factory.setNamespaceAware(true);
+    }
+    parser = factory.newSAXParser();
+    reader = parser.getXMLReader();
+    reader.setContentHandler(dom.getBuilder());
 
     // Create a DTDMonitor for handling ID references in the DTD
     DTDMonitor dtdMonitor = new DTDMonitor();
-    parser.setDTDHandler(dtdMonitor);
+    dtdMonitor.handleDTD(reader);
 
     // Create output handler (you can plug in your own)
     DefaultSAXOutputHandler saxHandler;
     saxHandler = new DefaultSAXOutputHandler(out);
 
     // Parse the document and build the internal DOM
-    parser.parse(inputURI);
+    reader.parse(inputURI);
 
     // Pass information on id/key indicies to the translet
     translet.setIndexSize(dom.getSize());
