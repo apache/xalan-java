@@ -1125,4 +1125,159 @@ public class DTMNodeProxy
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
   }
 
+  /**
+   * NEEDSDOC Method adoptNode 
+   *
+   *
+   * NEEDSDOC @param source
+   *
+   * NEEDSDOC (adoptNode) @return
+   *
+   * @throws DOMException
+   */
+  public Node adoptNode(Node source) throws DOMException
+  {
+
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the encoding
+   * of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getEncoding()
+  {
+
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the encoding
+   * of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param encoding
+   */
+  public void setEncoding(String encoding)
+  {
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, whether this
+   * document is standalone.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean getStandalone()
+  {
+
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, whether this
+   * document is standalone.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param standalone
+   */
+  public void setStandalone(boolean standalone)
+  {
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying whether errors checking is enforced or not.
+   * When set to <code>false</code>, the implementation is free to not
+   * test every possible error case normally defined on DOM operations,
+   * and not raise any <code>DOMException</code>. In case of error, the
+   * behavior is undefined. This attribute is <code>true</code> by
+   * defaults.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean getStrictErrorChecking()
+  {
+
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying whether errors checking is enforced or not.
+   * When set to <code>false</code>, the implementation is free to not
+   * test every possible error case normally defined on DOM operations,
+   * and not raise any <code>DOMException</code>. In case of error, the
+   * behavior is undefined. This attribute is <code>true</code> by
+   * defaults.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param strictErrorChecking
+   */
+  public void setStrictErrorChecking(boolean strictErrorChecking)
+  {
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the version
+   * number of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getVersion()
+  {
+
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the version
+   * number of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param version
+   */
+  public void setVersion(String version)
+  {
+    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
+  }
 }

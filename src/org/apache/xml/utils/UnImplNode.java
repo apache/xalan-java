@@ -102,7 +102,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. See org.w3c.dom.Node 
+   * Unimplemented. See org.w3c.dom.Node
    *
    * @param newChild New node to append to the list of this node's children
    *
@@ -132,7 +132,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. See org.w3c.dom.Node 
+   * Unimplemented. See org.w3c.dom.Node
    *
    * @return 0
    */
@@ -283,7 +283,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. See org.w3c.dom.Element 
+   * Unimplemented. See org.w3c.dom.Element
    *
    * @param name Name of the element
    *
@@ -351,7 +351,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    * Unimplemented. See org.w3c.dom.Element
    *
    *
-   * @param name 
+   * @param name
    * @param x
    *
    * @return false
@@ -365,10 +365,10 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. See org.w3c.dom.Element 
+   * Unimplemented. See org.w3c.dom.Element
    *
    *
-   * @param name Attribute node name 
+   * @param name Attribute node name
    *
    * @return null
    */
@@ -502,6 +502,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
    *
    * @param namespaceURI Namespace URI of attribute node to set
    * @param localName Local part of qualified name of attribute node to set
+   * NEEDSDOC @param qualifiedName
    * @param value value of attribute
    *
    * @throws DOMException
@@ -545,7 +546,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Node
    *
-   * @param deep Flag indicating whether to clone deep (clone member variables) 
+   * @param deep Flag indicating whether to clone deep (clone member variables)
    *
    * @return null
    */
@@ -587,6 +588,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Node
    *
+   *
+   * NEEDSDOC @param value
    * @return value Node value
    *
    * @throws DOMException
@@ -620,7 +623,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   // {
   //  return this.getNodeName();
   // }
-  
+
   /**
    * Unimplemented. See org.w3c.dom.Node
    *
@@ -635,7 +638,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. See org.w3c.dom.Node 
+   * Unimplemented. See org.w3c.dom.Node
    *
    * @return False
    */
@@ -681,7 +684,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   /**
    * Unimplemented. See org.w3c.dom.Node
    *
-   * @param newChild Replace existing child with this one 
+   * @param newChild Replace existing child with this one
    * @param oldChild Existing child to be replaced
    *
    * @return null
@@ -714,16 +717,19 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Tests whether the DOM implementation implements a specific feature and 
+   * Tests whether the DOM implementation implements a specific feature and
    * that feature is supported by this node.
-   * @param featureThe name of the feature to test. This is the same name 
-   *   which can be passed to the method <code>hasFeature</code> on 
+   * @param featureThe name of the feature to test. This is the same name
+   *   which can be passed to the method <code>hasFeature</code> on
    *   <code>DOMImplementation</code>.
-   * @param versionThis is the version number of the feature to test. In 
-   *   Level 2, version 1, this is the string "2.0". If the version is not 
-   *   specified, supporting any version of the feature will cause the 
+   * @param versionThis is the version number of the feature to test. In
+   *   Level 2, version 1, this is the string "2.0". If the version is not
+   *   specified, supporting any version of the feature will cause the
    *   method to return <code>true</code>.
-   * @return Returns <code>false</code> 
+   *
+   * NEEDSDOC @param feature
+   * NEEDSDOC @param version
+   * @return Returns <code>false</code>
    * @since DOM Level 2
    */
   public boolean isSupported(String feature, String version)
@@ -956,10 +962,13 @@ public class UnImplNode implements Node, Element, NodeList, Document
    * Unimplemented. See org.w3c.dom.Document
    *
    * @param importedNodeThe node to import.
-   * @param deepIf <code>true</code>, recursively import the subtree under 
-   *   the specified node; if <code>false</code>, import only the node 
+   * @param deepIf <code>true</code>, recursively import the subtree under
+   *   the specified node; if <code>false</code>, import only the node
    *   itself, as explained above. This has no effect on <code>Attr</code>
    *   , <code>EntityReference</code>, and <code>Notation</code> nodes.
+   *
+   * NEEDSDOC @param importedNode
+   * NEEDSDOC @param deep
    *
    * @return null
    *
@@ -1027,7 +1036,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Set Node data 
+   * Set Node data
    *
    *
    * @param data data to set for this node
@@ -1040,7 +1049,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented.
    *
    * @param offset Start offset of substring to extract.
    * @param count The length of the substring to extract.
@@ -1058,7 +1067,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented.
    *
    * @param arg String data to append
    *
@@ -1070,10 +1079,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented.
    *
    * @param offset Start offset of substring to insert.
    * @param count The length of the substring to insert.
+   * NEEDSDOC @param arg
    *
    * @throws DOMException
    */
@@ -1083,7 +1093,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented.
    *
    * @param offset Start offset of substring to delete.
    * @param count The length of the substring to delete.
@@ -1096,7 +1106,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented.
    *
    * @param offset Start offset of substring to replace.
    * @param count The length of the substring to replace.
@@ -1111,7 +1121,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented.
    *
    * @param offset Offset into text to split
    *
@@ -1125,5 +1135,171 @@ public class UnImplNode implements Node, Element, NodeList, Document
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
 
     return null;
+  }
+
+  /**
+   * NEEDSDOC Method adoptNode 
+   *
+   *
+   * NEEDSDOC @param source
+   *
+   * NEEDSDOC (adoptNode) @return
+   *
+   * @throws DOMException
+   */
+  public Node adoptNode(Node source) throws DOMException
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return null;
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the encoding
+   * of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getEncoding()
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return null;
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the encoding
+   * of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param encoding
+   */
+  public void setEncoding(String encoding)
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, whether this
+   * document is standalone.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean getStandalone()
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return false;
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, whether this
+   * document is standalone.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param standalone
+   */
+  public void setStandalone(boolean standalone)
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying whether errors checking is enforced or not.
+   * When set to <code>false</code>, the implementation is free to not
+   * test every possible error case normally defined on DOM operations,
+   * and not raise any <code>DOMException</code>. In case of error, the
+   * behavior is undefined. This attribute is <code>true</code> by
+   * defaults.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public boolean getStrictErrorChecking()
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return false;
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying whether errors checking is enforced or not.
+   * When set to <code>false</code>, the implementation is free to not
+   * test every possible error case normally defined on DOM operations,
+   * and not raise any <code>DOMException</code>. In case of error, the
+   * behavior is undefined. This attribute is <code>true</code> by
+   * defaults.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param strictErrorChecking
+   */
+  public void setStrictErrorChecking(boolean strictErrorChecking)
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the version
+   * number of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public String getVersion()
+  {
+
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
+
+    return null;
+  }
+
+  /**
+   * <p>EXPERIMENTAL! Based on the <a
+   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
+   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>
+   * An attribute specifying, as part of the XML declaration, the version
+   * number of this document. This is <code>null</code> when unspecified.
+   * @since DOM Level 3
+   *
+   * NEEDSDOC @param version
+   */
+  public void setVersion(String version)
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 }
