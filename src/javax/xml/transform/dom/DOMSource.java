@@ -81,10 +81,7 @@ public class DOMSource implements Source
     = "http://javax.xml.transform.dom.DOMSource/feature";
 
   /**
-   * Zero-argument default constructor.  If this is used, and 
-   * no DOM source is set, then the Transformer will 
-   * create an empty source Document using 
-   * {@link javax.xml.parsers.DocumentBuilder#newDocument}.
+   * Zero-argument default constructor.
    */
   public DOMSource(){}
 

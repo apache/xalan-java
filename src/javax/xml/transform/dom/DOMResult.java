@@ -82,7 +82,10 @@ public class DOMResult implements Result
     = "http://javax.xml.transform.dom.DOMResult/feature";
 
   /**
-   * Zero-argument default constructor.
+   * Zero-argument default constructor. If this is used, and 
+   * no DOM source is set, then the Transformer will 
+   * create an empty source Document using 
+   * {@link javax.xml.parsers.DocumentBuilder#newDocument}.
    */
   public DOMResult(){}
 
