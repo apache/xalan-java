@@ -62,6 +62,7 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
+import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -81,6 +82,7 @@ public class TransletOutputHandlerFactory {
     private String _method         = null;
     private int    _outputType     = STREAM;
     private OutputStream _ostream  = System.out;
+    private Writer _writer         = null;
 
     static public TransletOutputHandlerFactory newInstance() {
 	return new TransletOutputHandlerFactory();
@@ -104,21 +106,33 @@ public class TransletOutputHandlerFactory {
 	_ostream = ostream;
     }
 
+    public void setWriter(Writer writer) {
+	_writer = writer;
+    }
+
     public TransletOutputHandler getTransletOutputHandler() throws IOException {
 	switch (_outputType) {
 	    case STREAM:
 		if (_method == null) {
-		    return new StreamUnknownOutput(_ostream, _encoding);
+		    return (_writer == null) ? 
+			new StreamUnknownOutput(_ostream, _encoding) :
+			new StreamUnknownOutput(_writer, _encoding);
 		}
 
 		if (_method.equalsIgnoreCase("xml")) {
-		    return new StreamXMLOutput(_ostream, _encoding);
+		    return (_writer == null) ? 
+			new StreamXMLOutput(_ostream, _encoding) :
+			new StreamXMLOutput(_writer, _encoding);
 		}
 		else if (_method.equalsIgnoreCase("html")) {
-		    return new StreamHTMLOutput(_ostream, _encoding);
+		    return (_writer == null) ? 
+			new StreamHTMLOutput(_ostream, _encoding) :
+			new StreamHTMLOutput(_writer, _encoding);
 		}
 		else if (_method.equalsIgnoreCase("text")) {
-		    return new StreamTextOutput(_ostream, _encoding);
+		    return (_writer == null) ? 
+			new StreamTextOutput(_ostream, _encoding) :
+			new StreamTextOutput(_writer, _encoding);
 		}
 	    break;
 	    case SAX:
