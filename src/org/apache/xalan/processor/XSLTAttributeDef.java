@@ -1637,7 +1637,7 @@ public class XSLTAttributeDef
     return true;
   }
   
-  private void handleError(StylesheetHandler handler, int msg, Object [] args, Exception exc) throws org.xml.sax.SAXException
+  private void handleError(StylesheetHandler handler, String msg, Object [] args, Exception exc) throws org.xml.sax.SAXException
   {
     switch (getErrorType()) 
     {
