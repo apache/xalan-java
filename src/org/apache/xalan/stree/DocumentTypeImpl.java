@@ -62,7 +62,7 @@ import org.w3c.dom.NamedNodeMap;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class DocumentTypeImpl <needs-comment/>
+ * Class to hold information about a DocumentType node 
  */
 public class DocumentTypeImpl extends Child implements DocumentType
 {
@@ -71,8 +71,8 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * Constructor DocumentTypeImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
+   * @param doc Document Object
+   * @param name Node name
    */
   DocumentTypeImpl(DocumentImpl doc, String name)
   {
@@ -82,23 +82,23 @@ public class DocumentTypeImpl extends Child implements DocumentType
     m_name = name;
   }
 
-  /** NEEDSDOC Field m_name          */
+  /** DocumentType node name          */
   private String m_name;
 
-  /** NEEDSDOC Field m_publicID          */
+  /** Document Type publicID          */
   private String m_publicID;
 
-  /** NEEDSDOC Field m_systemID          */
+  /** Document Type systemID          */
   private String m_systemID;
 
-  /** NEEDSDOC Field m_internalSubset          */
+  /** Document Type internalSubset          */
   private String m_internalSubset;
 
   /**
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Document Type node type
    */
   public short getNodeType()
   {
@@ -108,7 +108,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Document Type node name
    */
   public String getNodeName()
   {
@@ -119,7 +119,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * The name of DTD; i.e., the name immediately following the
    * <code>DOCTYPE</code> keyword.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Document Type name
    */
   public String getName()
   {
@@ -133,7 +133,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Document Type local name
    */
   public String getLocalName()
   {
@@ -160,7 +160,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * <br>The DOM Level 2 does not support editing entities, therefore
    * <code>entities</code> cannot be altered in any way.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return both external and internal entities declared in the DTD
    */
   public NamedNodeMap getEntities()
   {
@@ -174,7 +174,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * <br>The DOM Level 2 does not support editing notations, therefore
    * <code>notations</code> cannot be altered in any way.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return notations declared in the DTD
    */
   public NamedNodeMap getNotations()
   {
@@ -185,7 +185,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * The public identifier of the external subset.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return public identifier
    */
   public String getPublicId()
   {
@@ -196,7 +196,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * The system identifier of the external subset.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return system identifier
    */
   public String getSystemId()
   {
@@ -207,7 +207,7 @@ public class DocumentTypeImpl extends Child implements DocumentType
    * The internal subset as a string.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return internal subset as a string
    */
   public String getInternalSubset()
   {

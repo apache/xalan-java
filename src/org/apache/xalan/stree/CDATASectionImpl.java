@@ -67,7 +67,7 @@ import org.apache.xalan.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class CDATASectionImpl <needs-comment/>
+ * Class to hold information about a CDATASection node
  */
 public class CDATASectionImpl extends TextImpl implements CDATASection
 {
@@ -76,8 +76,8 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
    * Constructor CDATASectionImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param data
+   * @param doc Document object
+   * @param data CDATASection data
    */
   public CDATASectionImpl(DocumentImpl doc, String data)
   {
@@ -88,10 +88,10 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
    * Constructor CDATASectionImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param doc Document object
+   * @param ch Array of characters in CDATASection
+   * @param start Beginning of CDATASection data in the array
+   * @param length Number of characters in CDATASection data in the array
    */
   public CDATASectionImpl(DocumentImpl doc, char ch[], int start, int length)
   {
@@ -101,7 +101,7 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
   /**
    * Returns the node type. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node type
    */
   public short getNodeType()
   {
@@ -111,7 +111,7 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node name
    */
   public String getNodeName()
   {
@@ -125,7 +125,7 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node local name
    */
   public String getLocalName()
   {
@@ -133,10 +133,10 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
   }
 
   /**
-   * NEEDSDOC Method dispatchSaxEvent 
+   * Handle a CDATASection SAX event
    *
    *
-   * NEEDSDOC @param ch
+   * @param ch Content Handler
    *
    * @throws SAXException
    */

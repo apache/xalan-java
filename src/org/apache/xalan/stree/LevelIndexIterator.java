@@ -76,10 +76,10 @@ public class LevelIndexIterator
 
   /**
    *
-   * NEEDSDOC @param parent
-   * NEEDSDOC @param type
-   * NEEDSDOC @param url
-   * NEEDSDOC @param name
+   * @param parent Parent node  
+   * @param type Node type
+   * @param url Node's namespace URI
+   * @param name Node's name
    */
   public LevelIndexIterator(Node parent, int type, String url, String name){}
 

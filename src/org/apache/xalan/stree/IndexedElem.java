@@ -66,7 +66,7 @@ import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Interface IndexedElem
+ * Interface implemented by Elements in indexed lookup
  */
 public interface IndexedElem
 {
@@ -75,7 +75,7 @@ public interface IndexedElem
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC @param anIndex
+   * @param anIndex Index in nodes list of this node's children to set
    */
   public void setIndex(int anIndex);
 
@@ -83,7 +83,7 @@ public interface IndexedElem
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Index in nodes list of this node's children
    */
   public int getIndex();
 }

@@ -60,28 +60,34 @@ import org.xml.sax.Attributes;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class IndexedElemWithNS <needs-comment/>
+ * * This class represents an element in an HTML or XML document associated 
+ * with a given namespace.
+ * Elements may have attributes associated with them as well as children nodes.
+ * Used in Indexed lookup.
  */
 public class IndexedElemWithNS extends ElementImplWithNS
         implements IndexedElem
 {
 
-  /** NEEDSDOC Field m_localName          */
+  /** Element's localName          */
   private String m_localName;
 
-  /** NEEDSDOC Field m_uri          */
+  /** Element's namespace URI          */
   private String m_uri;
 
-  /** NEEDSDOC Field m_index          */
+  /** 
+   * An integer indicating where this node's children can
+   * be found in the indexed nodes list.          
+   */
   private int m_index;
 
   /**
    * Constructor IndexedElemWithNS
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param name
+   * @param doc Document Element
+   * @param ns Element's namespace URI 
+   * @param name Element's name
    */
   IndexedElemWithNS(DocumentImpl doc, String ns, String name)
   {
@@ -92,11 +98,11 @@ public class IndexedElemWithNS extends ElementImplWithNS
    * Constructor IndexedElemWithNS
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param doc Document Element
+   * @param ns Element's namespace URI
+   * @param localName Element's local name
+   * @param name Element's name
+   * @param atts List of attributes associated with this element
    */
   IndexedElemWithNS(DocumentImpl doc, String ns, String localName,
                     String name, Attributes atts)
@@ -108,7 +114,7 @@ public class IndexedElemWithNS extends ElementImplWithNS
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC @param anIndex
+   * @param anIndex Index of this node's children in nodes list to be set 
    */
   public void setIndex(int anIndex)
   {
@@ -119,7 +125,7 @@ public class IndexedElemWithNS extends ElementImplWithNS
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Index of this node's children in nodes list
    */
   public int getIndex()
   {

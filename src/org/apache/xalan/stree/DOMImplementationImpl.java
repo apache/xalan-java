@@ -65,7 +65,8 @@ import org.apache.xalan.utils.UnImplNode;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class DOMImplementationImpl <needs-comment/>
+ * This class provides a number of methods for performing operations that
+ * are independent of any particular instance of the document object model.
  */
 public class DOMImplementationImpl extends UnImplNode
         implements DOMImplementation
@@ -95,10 +96,9 @@ public class DOMImplementationImpl extends UnImplNode
    * This is interpreted as "Version of the DOM API supported for the
    * specified Feature", and in Level 1 should be "1.0"
    *
-   * @returns    true iff this implementation is compatable with the
+   * @return    true iff this implementation is compatible with the
    * specified feature and version.
    *
-   * NEEDSDOC ($objectName$) @return
    */
   public boolean hasFeature(String feature, String version)
   {
@@ -121,7 +121,7 @@ public class DOMImplementationImpl extends UnImplNode
   /**
    * NON-DOM: Obtain and return the single shared object 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return this DOMImplementation
    */
   public static DOMImplementation getDOMImplementation()
   {
@@ -138,7 +138,7 @@ public class DOMImplementationImpl extends UnImplNode
    * @param systemID The document type system identifier.
    * @since WD-DOM-Level-2-19990923
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return an empty DocumentType node
    */
   public DocumentType createDocumentType(String qualifiedName,
                                          String publicID, String systemID)

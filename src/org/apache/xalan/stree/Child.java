@@ -70,34 +70,34 @@ import org.apache.xalan.transformer.TransformerImpl;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Child <needs-comment/>
+ * Class representing a child node
  */
 public class Child extends UnImplNode implements DOMOrder
 {
 
-  /** NEEDSDOC Field m_doc          */
+  /** Document Object          */
   protected DocumentImpl m_doc;
 
-  /** NEEDSDOC Field m_parent          */
+  /** This child's parent node           */
   protected Parent m_parent;
 
-  /** NEEDSDOC Field m_next          */
+  /** This child next sibling          */
   Child m_next;
 
-  /** NEEDSDOC Field m_prev          */
+  /** This child previous sibling          */
   Child m_prev;
 
-  /** NEEDSDOC Field m_level          */
+  /** This child's level in the source tree   */
   short m_level;
 
-  /** NEEDSDOC Field m_uid          */
+  /** This child's unique ID          */
   int m_uid;
 
   /**
-   * NEEDSDOC Method setDoc 
+   * Set the document object for this child 
    *
    *
-   * NEEDSDOC @param doc
+   * @param doc document object
    */
   protected void setDoc(DocumentImpl doc)
   {
@@ -108,7 +108,7 @@ public class Child extends UnImplNode implements DOMOrder
    * Constructor Child
    *
    *
-   * NEEDSDOC @param doc
+   * @param doc document object
    */
   public Child(DocumentImpl doc)
   {
@@ -118,7 +118,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Set the parent of the node.
    *
-   * NEEDSDOC @param parent
+   * @param parent this node's parent
    */
   protected void setParent(Parent parent)
   {
@@ -150,10 +150,10 @@ public class Child extends UnImplNode implements DOMOrder
   public void setComplete(boolean isComplete){}
 
   /**
-   * NEEDSDOC Method getTransformer 
+   * Get the Transformer object for this source tree. 
    *
    *
-   * NEEDSDOC (getTransformer) @return
+   * @return transformer object for this source tree
    */
   protected TransformerImpl getTransformer()
   {
@@ -161,10 +161,10 @@ public class Child extends UnImplNode implements DOMOrder
   }
 
   /**
-   * NEEDSDOC Method throwParseError 
+   * Throw a Parse Error exception 
    *
    *
-   * NEEDSDOC @param e
+   * @param e original exception
    */
   protected void throwParseError(Exception e)
   {
@@ -172,7 +172,7 @@ public class Child extends UnImplNode implements DOMOrder
   }
 
   /**
-   * NEEDSDOC Method throwIfParseError 
+   * Throw a Parse Error exception if no exception was thrown yet 
    *
    */
   protected void throwIfParseError()
@@ -184,7 +184,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Set the UID (document order index).
    *
-   * NEEDSDOC @param kIndex
+   * @param kIndex Index of this child.
    */
   protected void setUid(int kIndex)
   {
@@ -194,7 +194,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Get the UID (document order index).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Index of this child
    */
   public int getUid()
   {
@@ -205,7 +205,7 @@ public class Child extends UnImplNode implements DOMOrder
    * <meta name="usage" content="internal"/>
    * Get the depth level of this node in the tree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This child's level in the source tree
    */
   public short getLevel()
   {
@@ -216,7 +216,7 @@ public class Child extends UnImplNode implements DOMOrder
    * <meta name="usage" content="internal"/>
    * Get the depth level of this node in the tree.
    *
-   * NEEDSDOC @param level
+   * @param level This child's level in the source tree
    */
   public void setLevel(short level)
   {
@@ -226,7 +226,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Get the root Document Implementation.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return document object
    */
   DocumentImpl getDocumentImpl()
   {
@@ -243,7 +243,7 @@ public class Child extends UnImplNode implements DOMOrder
    * tree, or if it has been removed from the tree, this is
    * <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's parent node. 
    */
   public Node getParentNode()
   {
@@ -257,7 +257,7 @@ public class Child extends UnImplNode implements DOMOrder
    * The first child of this node. If there is no such node, this returns
    * <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's first child.
    */
   public Node getFirstChild()
   {
@@ -268,7 +268,7 @@ public class Child extends UnImplNode implements DOMOrder
    * The last child of this node. If there is no such node, this returns
    * <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's last child.
    */
   public Node getLastChild()
   {
@@ -279,7 +279,7 @@ public class Child extends UnImplNode implements DOMOrder
    * The node immediately preceding this node. If there is no such node,
    * this returns <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's previous sibling
    */
   public Node getPreviousSibling()
   {
@@ -290,7 +290,7 @@ public class Child extends UnImplNode implements DOMOrder
    * The node immediately following this node. If there is no such node,
    * this returns <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's next sibling.
    */
   public Node getNextSibling()
   {
@@ -332,7 +332,7 @@ public class Child extends UnImplNode implements DOMOrder
    * <code>null</code>.
    * @version DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return document object
    */
   public Document getOwnerDocument()
   {
@@ -373,7 +373,7 @@ public class Child extends UnImplNode implements DOMOrder
    * The namespace URI of this node, or <code>null</code> if it is
    * unspecified.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's namespace URI 
    */
   public String getNamespaceURI()
   {
@@ -385,7 +385,7 @@ public class Child extends UnImplNode implements DOMOrder
    * unspecified.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's namespace prefix
    */
   public String getPrefix()
   {
@@ -399,7 +399,7 @@ public class Child extends UnImplNode implements DOMOrder
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local part of the qualified name of this node
    */
   public String getLocalName()
   {
@@ -409,7 +409,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * UnImplemented. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public String getTagName()
   {
@@ -419,7 +419,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null
    */
   public NamedNodeMap getAttributes()
   {
@@ -429,8 +429,8 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Unimplemented. 
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param value
+   * @param name Attribute name 
+   * @param value Attribute value
    *
    * @throws DOMException
    */
@@ -439,7 +439,7 @@ public class Child extends UnImplNode implements DOMOrder
   /**
    * Tell if the given node is a namespace decl node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return whether this node is a namespace decl node
    */
   public boolean isNamespaceNode()
   {

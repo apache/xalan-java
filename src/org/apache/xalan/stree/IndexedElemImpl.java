@@ -66,26 +66,31 @@ import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class IndexedElemImpl <needs-comment/>
+ * This class represents an element in an HTML or XML document.
+ * Elements may have attributes associated with them as well as children nodes.
+ * Used in Indexed lookup.
  */
 public class IndexedElemImpl extends ElementImpl implements IndexedElem
 {
 
-  /** NEEDSDOC Field m_name          */
+  /** Element name           */
   private String m_name;
 
-  /** NEEDSDOC Field m_attrsEnd          */
+  /** Number of attributes for this element          */
   private short m_attrsEnd;
 
-  /** NEEDSDOC Field m_index          */
+  /** 
+   * An integer indicating where this node's children can
+   * be found in the indexed nodes list.          
+   */
   private int m_index;
 
   /**
    * Constructor IndexedElemImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
+   * @param doc Document Object
+   * @param name Element name
    */
   IndexedElemImpl(DocumentImpl doc, String name)
   {
@@ -96,9 +101,9 @@ public class IndexedElemImpl extends ElementImpl implements IndexedElem
    * Constructor IndexedElemImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param doc Document object
+   * @param name Element name
+   * @param atts List of attributes associated with this element 
    */
   IndexedElemImpl(DocumentImpl doc, String name, Attributes atts)
   {
@@ -109,7 +114,7 @@ public class IndexedElemImpl extends ElementImpl implements IndexedElem
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC @param anIndex
+   * @param anIndex Index of this nodes children in node list to set
    */
   public void setIndex(int anIndex)
   {
@@ -120,7 +125,7 @@ public class IndexedElemImpl extends ElementImpl implements IndexedElem
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Index of this nodes children in node list
    */
   public int getIndex()
   {

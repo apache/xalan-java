@@ -66,27 +66,30 @@ import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class AttrImpl <needs-comment/>
+ * Class to hold information about an attribute node.
  */
 public class AttrImpl extends Child implements Attr
 {
 
-  /** NEEDSDOC Field m_name          */
+  /** Attribute name         */
   private String m_name;
 
-  /** NEEDSDOC Field m_value          */
+  /** Attribute value          */
   private String m_value;
 
-  /** NEEDSDOC Field m_specified          */
+  /** 
+   * Flag to determine if this attribute was explicitly given a 
+   * value in the original document          
+   */
   private boolean m_specified = true;
 
   /**
    * Constructor AttrImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
-   * NEEDSDOC @param value
+   * @param doc Document object
+   * @param name Attribute name
+   * @param value Attribute value
    */
   AttrImpl(DocumentImpl doc, String name, String value)
   {
@@ -101,7 +104,7 @@ public class AttrImpl extends Child implements Attr
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node type of attribute
    */
   public short getNodeType()
   {
@@ -111,7 +114,7 @@ public class AttrImpl extends Child implements Attr
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node name
    */
   public String getNodeName()
   {
@@ -132,7 +135,7 @@ public class AttrImpl extends Child implements Attr
    * namespace from the element it is attached to. If an attribute is not
    * explicitly given a namespace, it simply has no namespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return namespace URI
    */
   public String getNamespaceURI()
   {
@@ -144,7 +147,7 @@ public class AttrImpl extends Child implements Attr
    * unspecified.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return namespace prefix of this node
    */
   public String getPrefix()
   {
@@ -158,7 +161,7 @@ public class AttrImpl extends Child implements Attr
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return local part of the qualified name of this node
    */
   public String getLocalName()
   {
@@ -172,7 +175,7 @@ public class AttrImpl extends Child implements Attr
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the value of this attribute node
    */
   public String getValue()
   {
@@ -182,7 +185,7 @@ public class AttrImpl extends Child implements Attr
   /**
    * Same as getValue(). 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the value of this attribute node
    *
    * @throws DOMException
    */
@@ -198,7 +201,7 @@ public class AttrImpl extends Child implements Attr
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC @param value
+   * @param value Attribute value to be set
    *
    * @throws DOMException
    */
@@ -228,7 +231,8 @@ public class AttrImpl extends Child implements Attr
    *   the document and has  a value of #IMPLIED in the DTD, then the
    *   attribute does not appear  in the structure model of the document.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return whether this attribute was explicitly given a value in the original
+   *         document
    */
   public boolean getSpecified()
   {
@@ -240,7 +244,7 @@ public class AttrImpl extends Child implements Attr
    *  <code>null</code> if this attribute is not in use.
    *  @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node this attribute is attached to
    */
   public Element getOwnerElement()
   {
@@ -251,7 +255,7 @@ public class AttrImpl extends Child implements Attr
    * NEEDSDOC Method getName 
    *
    *
-   * NEEDSDOC (getName) @return
+   * @return attribute name
    */
   public String getName()
   {
@@ -262,7 +266,7 @@ public class AttrImpl extends Child implements Attr
    * NEEDSDOC Method setName 
    *
    *
-   * NEEDSDOC @param name
+   * @param name to set attribute name to 
    */
   void setName(String name)
   {
@@ -273,7 +277,7 @@ public class AttrImpl extends Child implements Attr
    * The node immediately preceding this node. If there is no such node,
    * this returns <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node immediately preceding this node
    */
   public Node getPreviousSibling()
   {
@@ -284,7 +288,7 @@ public class AttrImpl extends Child implements Attr
    * The node immediately following this node. If there is no such node,
    * this returns <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node immediately following this node
    */
   public Node getNextSibling()
   {

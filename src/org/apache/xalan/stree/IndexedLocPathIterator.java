@@ -90,8 +90,8 @@ public class IndexedLocPathIterator extends LocPathIterator
   /**
    * Create a IndexedLocPathIterator object.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
+   * @param compiler Compiler for this iterator
+   * @param opPos Position in OPMAP
    *
    * @throws org.xml.sax.SAXException
    */

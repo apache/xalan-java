@@ -60,24 +60,26 @@ import org.xml.sax.Attributes;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ElementImplWithNS <needs-comment/>
+ * This class represents an element in an HTML or XML document associated 
+ * with a given namespace.
+ * Elements may have attributes associated with them as well as children nodes.
  */
 public class ElementImplWithNS extends ElementImpl
 {
 
-  /** NEEDSDOC Field m_localName          */
+  /** This element's localName          */
   private String m_localName;
 
-  /** NEEDSDOC Field m_uri          */
+  /** This element's namespace URI          */
   private String m_uri;
 
   /**
    * Constructor ElementImplWithNS
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param name
+   * @param doc Document object
+   * @param ns Namespace URI 
+   * @param name Element's name
    */
   ElementImplWithNS(DocumentImpl doc, String ns, String name)
   {
@@ -98,11 +100,11 @@ public class ElementImplWithNS extends ElementImpl
    * Constructor ElementImplWithNS
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param doc Document Object
+   * @param ns Element's Namespace URI
+   * @param localName Element's localName
+   * @param name Element's name
+   * @param atts List of attributes associated with this element 
    */
   ElementImplWithNS(DocumentImpl doc, String ns, String localName,
                     String name, Attributes atts)
@@ -118,7 +120,7 @@ public class ElementImplWithNS extends ElementImpl
    * The namespace URI of this node, or <code>null</code> if it is
    * unspecified.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's namespace URI 
    */
   public String getNamespaceURI()
   {
@@ -130,7 +132,7 @@ public class ElementImplWithNS extends ElementImpl
    * unspecified.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element's namespace prefix
    */
   public String getPrefix()
   {
@@ -148,7 +150,7 @@ public class ElementImplWithNS extends ElementImpl
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local part of the qualified name of this node
    */
   public String getLocalName()
   {

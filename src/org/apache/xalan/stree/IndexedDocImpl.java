@@ -70,7 +70,10 @@ import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class IndexedDocImpl <needs-comment/>
+ * This is the implementation of the DOM2 Document 
+ * interface.  It rules over the tree, and may contain 
+ * common information for the tree.
+ * Used for indexed look up.
  */
 public class IndexedDocImpl extends DocumentImpl implements IndexedElem
 {
@@ -88,21 +91,25 @@ public class IndexedDocImpl extends DocumentImpl implements IndexedElem
    * Constructor IndexedDocImpl
    *
    *
-   * NEEDSDOC @param doctype
+   * @param doctype The DocumentType reference that 
+   * this tree conforms to.
    */
   IndexedDocImpl(DocumentType doctype)
   {
     super(doctype);
   }
 
-  /** NEEDSDOC Field m_index          */
+  /** 
+   * An integer indicating where this node's children can
+   * be found in the indexed nodes list.          
+   */
   private int m_index;
 
   /**
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC @param anIndex
+   * @param anIndex index to set in nodes list
    */
   public void setIndex(int anIndex)
   {
@@ -113,7 +120,7 @@ public class IndexedDocImpl extends DocumentImpl implements IndexedElem
    * An integer indicating where this node's children can
    * be found in the indexed nodes list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return index of this nodes's children in nodes list
    */
   public int getIndex()
   {

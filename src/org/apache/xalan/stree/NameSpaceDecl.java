@@ -58,7 +58,7 @@ package org.apache.xalan.stree;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class NameSpaceDecl <needs-comment/>
+ * Class to represent NameSpace Decl nodes
  */
 public class NameSpaceDecl extends AttrImplNS
 {
@@ -67,10 +67,10 @@ public class NameSpaceDecl extends AttrImplNS
    * Constructor NameSpaceDecl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param value
+   * @param doc Document Object
+   * @param uri Namespace URI
+   * @param name Node name
+   * @param value Node value
    */
   NameSpaceDecl(DocumentImpl doc, String uri, String name, String value)
   {
@@ -80,7 +80,7 @@ public class NameSpaceDecl extends AttrImplNS
   /**
    * Tell if the given node is a namespace decl node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the node is a namespace decl node
    */
   public boolean isNamespaceNode()
   {

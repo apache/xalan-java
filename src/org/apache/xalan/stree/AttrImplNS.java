@@ -62,25 +62,25 @@ import org.xml.sax.Attributes;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class AttrImplNS <needs-comment/>
+ * Class to hold information about an attribute node with a name space
  */
 public class AttrImplNS extends AttrImpl
 {
 
-  /** NEEDSDOC Field m_localName          */
+  /** Attribute local name          */
   private String m_localName;
 
-  /** NEEDSDOC Field m_namespaceURI          */
+  /** Attribute namespace URI          */
   private String m_namespaceURI;  // attribute index
 
   /**
    * Constructor AttrImplNS
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param uri
-   * NEEDSDOC @param name
-   * NEEDSDOC @param value
+   * @param doc Document object
+   * @param uri Attribute namespace URI
+   * @param name attribute name
+   * @param value Attribute value   
    */
   AttrImplNS(DocumentImpl doc, String uri, String name, String value)
   {
@@ -113,7 +113,7 @@ public class AttrImplNS extends AttrImpl
    * namespace from the element it is attached to. If an attribute is not
    * explicitly given a namespace, it simply has no namespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return namespace URI of this node
    */
   public String getNamespaceURI()
   {
@@ -125,7 +125,7 @@ public class AttrImplNS extends AttrImpl
    * unspecified.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return namespace prefix of this node
    */
   public String getPrefix()
   {
@@ -143,7 +143,7 @@ public class AttrImplNS extends AttrImpl
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return local part of the qualified name of this node
    */
   public String getLocalName()
   {

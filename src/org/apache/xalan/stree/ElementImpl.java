@@ -68,29 +68,30 @@ import org.w3c.dom.DOMException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ElementImpl <needs-comment/>
+ * This class represents an element in an HTML or XML document.
+ * Elements may have attributes associated with them as well as children nodes.
  */
 public class ElementImpl extends Parent implements Attributes, NamedNodeMap
 {
 
-  /** NEEDSDOC Field m_name          */
+  /** Element name          */
   private String m_name;
 
-  /** NEEDSDOC Field m_attrsEnd          */
+  /** Number of attributes associated with this element          */
   private short m_attrsEnd = 0;
 
-  /** NEEDSDOC Field m_firstAttr          */
+  /** First attribute associated with this element          */
   private AttrImpl m_firstAttr;
 
-  /** NEEDSDOC Field m_lastAttr          */
+  /** Last attribute associated with this element          */
   private AttrImpl m_lastAttr;
 
   /**
    * Constructor ElementImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
+   * @param doc Document object
+   * @param name Element name
    */
   ElementImpl(DocumentImpl doc, String name)
   {
@@ -104,9 +105,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * Constructor ElementImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param doc Document Object 
+   * @param name Element name
+   * @param atts List of attributes associated with this element
    */
   ElementImpl(DocumentImpl doc, String name, Attributes atts)
   {
@@ -122,7 +123,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's type
    */
   public short getNodeType()
   {
@@ -132,7 +133,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This node's name
    */
   public String getNodeName()
   {
@@ -146,7 +147,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local part of the qualified name of this node
    */
   public String getLocalName()
   {
@@ -160,7 +161,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the tag name of this node
    */
   public String getTagName()
   {
@@ -171,7 +172,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * Get the nth attribute child.
    * @param i the index of the child.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the attribute child at the specified position
    * @exception ArrayIndexOutOfBoundsException if the index is out of bounds.
    * @exception NullPointerException if there are no children.
    */
@@ -208,7 +209,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is likely that more children will be added.
    * DON'T CALL THIS FUNCTION IF YOU CAN HELP IT!!!!!!
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of children this node currently contains
    */
   public int getChildCount()
   {
@@ -246,7 +247,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a NamedNodeMap containing this node's attributes
    */
   public NamedNodeMap getAttributes()
   {
@@ -260,8 +261,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param value
+   * @param name attribute name
+   * @param value attribute value
    *
    * @throws DOMException
    */
@@ -280,9 +281,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   * NEEDSDOC @param value
+   * @param namespaceURI Attribute name space
+   * @param qualifiedName Attribute qualified name
+   * @param value Attribute value
    *
    * @throws DOMException
    */
@@ -304,7 +305,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC @param atts
+   * @param atts List of attributes to set for this node
    *
    * @throws DOMException
    */
@@ -339,9 +340,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   /**
    *  Create an attribute node.
    *
-   * NEEDSDOC @param name
+   * @param name Attribute name to create
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the created attribute object
    *
    * @throws DOMException
    */
@@ -410,10 +411,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   /**
    * Create an attribute node with a namespace .
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
+   * @param namespaceURI name space of the attribute to create 
+   * @param qualifiedName qualified name of the attribute to create
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the created attribute object
    *
    * @throws DOMException
    */
@@ -582,10 +583,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
 
   /**
    * Look up an attribute's value by name.
-   *
-   * @param index The attribute index (zero-based).
-   *
-   * NEEDSDOC @param name
+   * 
+   * @param name The attribute name to look up
    * @return The attribute's value as a string, or null if the
    *         index is out of range.
    */
@@ -603,8 +602,8 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    *
    * @param uri The Namespace URI, or the empty string if
    *        the name has no Namespace URI.
-   * @param localName The attribute's local name.
-   * NEEDSDOC @param localPart
+   * @param localPart The attribute's local name.
+   * 
    * @return The index of the attribute, or -1 if it does not
    *         appear in the list.
    */
@@ -742,12 +741,12 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   ////////////////////////////
 
   /**
-   * NEEDSDOC Method getNamedItem 
+   * Get the child attribute with the specified attribute name 
    *
    *
-   * NEEDSDOC @param name
+   * @param name Attribute name to look up 
    *
-   * NEEDSDOC (getNamedItem) @return
+   * @return The found attribute node or null if not found
    */
   public Node getNamedItem(String name)
   {
@@ -809,12 +808,12 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method removeItem 
+   * Remove the attribute at the specified index from the attribute list 
    *
    *
-   * NEEDSDOC @param index
+   * @param index Position of attribute to remove in attribute list 
    *
-   * NEEDSDOC (removeItem) @return
+   * @return the removed attribute or null if not found  
    *
    * @throws DOMException
    */
@@ -853,7 +852,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    * The range of valid child node indices
    * is <code>0</code> to <code>length-1</code> inclusive.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The nunber of attribute nodes associated with this element.
    */
   public int getLength()
   {

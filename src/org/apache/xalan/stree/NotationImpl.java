@@ -60,12 +60,12 @@ import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class NotationImpl <needs-comment/>
+ * Class to represent Notation nodes
  */
 public class NotationImpl
 {
 
-  /** NEEDSDOC Field m_name          */
+  /** Notation Node name          */
   private String m_name;
 
   /** Public identifier. */
@@ -78,7 +78,7 @@ public class NotationImpl
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node type
    */
   public short getNodeType()
   {
@@ -89,7 +89,7 @@ public class NotationImpl
    * The Public Identifier for this Notation. If no public identifier
    * was specified, this will be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Public identifier of null if none specified.
    */
   public String getPublicId()
   {
@@ -100,7 +100,7 @@ public class NotationImpl
    * The System Identifier for this Notation. If no system identifier
    * was specified, this will be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return System identifier of null if none specified.
    */
   public String getSystemId()
   {
@@ -110,7 +110,7 @@ public class NotationImpl
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Notation Node name
    */
   public String getNodeName()
   {
@@ -124,7 +124,7 @@ public class NotationImpl
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Local part of the qualified name of the Notation Node 
    */
   public String getLocalName()
   {

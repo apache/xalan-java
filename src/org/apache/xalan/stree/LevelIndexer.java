@@ -79,27 +79,26 @@ import org.apache.xalan.utils.IntVector;
  */
 public class LevelIndexer
 {
-
-  /** NEEDSDOC Field lastUsed          */
-  int lastUsed;
-
-  /** NEEDSDOC Field m_subtype          */
+  
+  /** 
+   * Global variable to store the subtype of the elements 
+   * added to the table of nodes          
+   */
   int m_subtype;
 
-  /** NEEDSDOC Field m_defaultSize          */
+  /** Default size of a nodesList to be added to the level array            */
   int m_defaultSize = 3;  // this is the default value.
 
-  // change this to be new object extending from hashtable...
-  //Hashtable
+  /** 
+   * Hashtable of element types that is keyed
+   * on multiple keys.          
+   */
+  MultiKeyTable m_elemTypes = new MultiKeyTable();  
 
-  /** NEEDSDOC Field m_elemTypes          */
-  MultiKeyTable m_elemTypes = new MultiKeyTable();  //array of element types
-
-  /* Array of levels in the tree.
+  /** 
+   * Array of levels in the tree.
    * Each element of this array is a nodesList element.
    */
-
-  /** NEEDSDOC Field m_levelArray          */
   Object[] m_levelArray;  // array of levels in the tree. These are used
 
   // to build the elemPostings table.
@@ -116,7 +115,7 @@ public class LevelIndexer
    * <meta name="usage" content="internal"/>
    * Insert a node in the nodesList by level, by parent and by type.
    *
-   * NEEDSDOC @param child
+   * @param child Node to be inserted in nodesList
    */
   public void insertNode(Child child)
   {
@@ -231,9 +230,9 @@ public class LevelIndexer
    * <meta name="usage" content="internal"/>
    * Get a list of nodes in the level array by level and by type.
    *
-   * NEEDSDOC @param level
+   * @param level Level of the nodes in the document tree 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return List of nodes at the given level in the document tree.
    */
   public Object[] getNodesList(int level)
   {
@@ -250,9 +249,9 @@ public class LevelIndexer
    * <meta name="usage" content="internal"/>
    * Get a list of nodes in the level array by level and by type.
    *
-   * NEEDSDOC @param nodesList
+   * @param nodesList Existing list of nodes to expand
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Larger list of nodes, including the nodes from original list
    */
   public Object[] allocateNewList(Object[] nodesList)
   {
@@ -274,11 +273,11 @@ public class LevelIndexer
    * <meta name="usage" content="internal"/>
    * Get index pointing to nodes of a certain type in the nodeslist.
    *
-   * NEEDSDOC @param child
-   * NEEDSDOC @param type
-   * NEEDSDOC @param nodesList
+   * @param child Node for which type we're looking for an index
+   * @param type Type of node to look for in nodesList
+   * @param nodesList List of nodes at a certain level in document tree
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return index pointing to nodes of a certain type in the given nodeslist
    */
   public int getIndexForType(Node child, int type, Object[] nodesList)
   {
@@ -324,7 +323,7 @@ public class LevelIndexer
    * Note that m_subtype is a global variable that gets incremented
    * for the next time it is used.
    *
-   * NEEDSDOC @param child
+   * @param child Node to be added to the subtypes table.
    * @return return the element subtype
    */
   public int addToTable(Child child)
@@ -355,13 +354,13 @@ public class LevelIndexer
 
   /**
    * <meta name="usage" content="internal"/>
-   * Get type.
+   * Get subtype of a given node.
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param namespace
-   * NEEDSDOC @param prepend
+   * @param name Node name
+   * @param namespace Namespace of node
+   * @param prepend String prepended to attribute node names.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Subtype for the given node.
    */
   public short getType(String name, String namespace, String prepend)
   {
@@ -373,11 +372,11 @@ public class LevelIndexer
 
   /**
    * <meta name="usage" content="internal"/>
-   * Get type.
+   * Get subtype of a given node.
    *
-   * NEEDSDOC @param node
+   * @param node Node which subtype we're looking for.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Subtype for the given node.
    */
   public short getType(Node node)
   {
@@ -400,7 +399,9 @@ public class LevelIndexer
    */
   static final int MAXDEPTH = 2000;
 
-  /** NEEDSDOC Field TYPEANY          */
+  /**
+   * The value to use for wildcards and the like
+   */
   static final int TYPEANY = 2000;
 
   /**
@@ -419,20 +420,20 @@ public class LevelIndexer
       super();
     }
 
-    /** NEEDSDOC Field m_nameTable          */
+    /** Hashtable keyed by node name          */
     private Hashtable m_nameTable;
 
-    /** NEEDSDOC Field m_uriTable          */
+    /** Hashtable keyed by namespaceURI          */
     private Hashtable m_uriTable;
 
     /**
-     * NEEDSDOC Method put 
+     * Add a node to this table. 
      *
      *
-     * NEEDSDOC @param name
-     * NEEDSDOC @param namespace
-     * NEEDSDOC @param prepend
-     * NEEDSDOC @param value
+     * @param name Name of the node 
+     * @param namespace namespace of the node
+     * @param prepend String to prepend for attribute nodes
+     * @param value Node subtype
      */
     public void put(String name, String namespace, String prepend, int value)
     {
@@ -472,14 +473,14 @@ public class LevelIndexer
     }
 
     /**
-     * NEEDSDOC Method get 
+     * Get the subtype of a node from the table 
      *
      *
-     * NEEDSDOC @param name
-     * NEEDSDOC @param namespace
-     * NEEDSDOC @param prepend
+     * @param name Node name to look up 
+     * @param namespace Namespace of node to look up
+     * @param prepend String that was prepended to the node name 
      *
-     * NEEDSDOC (get) @return
+     * @return The subtype for the given node
      */
     public int get(String name, String namespace, String prepend)
     {

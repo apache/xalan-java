@@ -61,7 +61,7 @@ import org.w3c.dom.DocumentFragment;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class DocumentFragmentImpl <needs-comment/>
+ * Class to hold information about a DocumentFragment node
  */
 public class DocumentFragmentImpl extends DocumentImpl
         implements DocumentFragment
@@ -83,7 +83,7 @@ public class DocumentFragmentImpl extends DocumentImpl
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node type
    */
   public short getNodeType()
   {
@@ -93,7 +93,7 @@ public class DocumentFragmentImpl extends DocumentImpl
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node name
    */
   public String getNodeName()
   {
@@ -107,7 +107,7 @@ public class DocumentFragmentImpl extends DocumentImpl
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local part of the qualified name of this node
    */
   public String getLocalName()
   {

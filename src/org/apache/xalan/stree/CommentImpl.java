@@ -67,7 +67,7 @@ import org.apache.xalan.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class CommentImpl <needs-comment/>
+ * Class to hold information about a comment node
  */
 public class CommentImpl extends TextImpl implements Comment
 {
@@ -76,8 +76,8 @@ public class CommentImpl extends TextImpl implements Comment
    * Constructor CommentImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param data
+   * @param doc Document object
+   * @param data Comment data
    */
   public CommentImpl(DocumentImpl doc, String data)
   {
@@ -88,10 +88,10 @@ public class CommentImpl extends TextImpl implements Comment
    * Constructor CommentImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param doc Document object
+   * @param ch Character array of comment data
+   * @param start Beginning of comment data in array
+   * @param length Length of comment data in array
    */
   public CommentImpl(DocumentImpl doc, char ch[], int start, int length)
   {
@@ -102,7 +102,7 @@ public class CommentImpl extends TextImpl implements Comment
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node type
    */
   public short getNodeType()
   {
@@ -112,7 +112,7 @@ public class CommentImpl extends TextImpl implements Comment
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return node name
    */
   public String getNodeName()
   {
@@ -126,7 +126,7 @@ public class CommentImpl extends TextImpl implements Comment
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the local part of the qualified name of this node
    */
   public String getLocalName()
   {
@@ -134,10 +134,10 @@ public class CommentImpl extends TextImpl implements Comment
   }
 
   /**
-   * NEEDSDOC Method dispatchSaxEvent 
+   * Handle a Comment Sax Event 
    *
    *
-   * NEEDSDOC @param ch
+   * @param ch Character array with comment data
    *
    * @throws SAXException
    */
