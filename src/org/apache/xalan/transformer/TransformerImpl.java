@@ -488,8 +488,8 @@ public class TransformerImpl extends Transformer
     InputSource xmlSource = SAXSource.sourceToInputSource(source);
     if(null == xmlSource)
     {
-      throw new TransformerException("Can't transform a Source of type "+
-        source.getClass().getName()+"!");
+      m_errorHandler.fatalError(new TransformerException("Can't transform a Source of type "+
+        source.getClass().getName()+"!"));
     }
     
     if (null != xmlSource.getSystemId())
@@ -626,8 +626,8 @@ public class TransformerImpl extends Transformer
         }
         else if (e instanceof org.apache.xml.utils.WrappedRuntimeException) 
         {
-          throw new javax.xml.transform.TransformerException(
-            ((org.apache.xml.utils.WrappedRuntimeException) e).getException());
+          m_errorHandler.fatalError( new javax.xml.transform.TransformerException(
+            ((org.apache.xml.utils.WrappedRuntimeException) e).getException()) );
         }
         else
         {
@@ -649,7 +649,7 @@ public class TransformerImpl extends Transformer
           ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
       }
 
-      throw new TransformerException(wre.getException());
+      m_errorHandler.fatalError( new TransformerException(wre.getException()) );
     }
     // Patch attributed to David Eisenberg <david@catcode.com>
     catch (org.xml.sax.SAXParseException spe)
