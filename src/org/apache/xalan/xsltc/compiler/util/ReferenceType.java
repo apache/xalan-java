@@ -89,6 +89,8 @@ public final class ReferenceType extends Type {
 	else if (type == Type.Object) {
 	    translateTo(classGen, methodGen, (ObjectType) type);
 	}
+	else if (type == Type.Reference ) {
+        }	
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR, type.toString());
 	    classGen.getParser().reportError(Constants.FATAL, err);

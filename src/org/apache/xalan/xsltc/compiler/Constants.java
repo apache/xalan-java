@@ -258,6 +258,8 @@ public interface Constants extends InstructionConstants {
     public static final String TRANSLET_OUTPUT_BASE       
 	= "org.apache.xalan.xsltc.TransletOutputBase";
     // output interface
+    public static final String CALL_FUNCTION_CLASS
+	= "org.apache.xalan.xsltc.runtime.CallFunction";
     public static final String TRANSLET_OUTPUT_INTERFACE
 	= "org.apache.xml.serializer.SerializationHandler";
     public static final String BASIS_LIBRARY_CLASS 
@@ -299,6 +301,8 @@ public interface Constants extends InstructionConstants {
     public static final String TRANSLET_PNAME     
 	= "translet";
 
+    public static final String INVOKE_METHOD
+	= "invokeMethod";
     public static final String GET_NODE_NAME      
 	= "getNodeNameX";
     public static final String CHARACTERSW        

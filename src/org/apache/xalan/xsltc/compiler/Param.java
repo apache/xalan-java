@@ -34,6 +34,7 @@ import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
+import org.apache.xalan.xsltc.compiler.util.ObjectType;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
@@ -149,7 +150,7 @@ final class Param extends VariableBase {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_select != null) {
 	    _type = _select.typeCheck(stable); 
-	    if (_type instanceof ReferenceType == false) {
+	    if (_type instanceof ReferenceType == false && !(_type instanceof ObjectType)) {
 		_select = new CastExpr(_select, Type.Reference);
 	    }
 	}
