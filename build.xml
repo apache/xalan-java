@@ -496,6 +496,7 @@ Copyright:
           <group title="Xalan Core"
                  packages="org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer"/>
           <group title="XPath" packages="org.apache.xpath*"/>
+          <group title="Document Table Model (DTM)" packages="org.apache.xml.dtm*"/>          
           <group title="Utilities" packages="org.apache.xml.utils*"/>
           <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt"/>
           <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
