@@ -1,11 +1,11 @@
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 
 // Imported SAX classes
 import org.xml.sax.InputSource;
@@ -18,34 +18,24 @@ import java.io.IOException;
 public class UseStylesheetPI
 {
   public static void main(String[] args)
-	throws ProcessorException, ProcessorFactoryException, 
-           TransformException, SAXException, IOException	   
+	throws TransformerException, TransformerConfigurationException, 
+         SAXException, IOException	   
 	{
 	  String media= null , title = null, charset = null;
 	  try
 	  {	
-      Processor processor = Processor.newInstance("xslt");
-      InputSource[] stylesheet = processor.getAssociatedStylesheets
-		  (new InputSource("fooX.xml"),media, title, charset);
-      Templates templates = processor.processMultiple(stylesheet);
-
-		Transformer transformer = templates.newTransformer();
-
-		transformer.transform(new InputSource("fooX.xml"), new Result(new java.io.FileOutputStream("foo.out")));
+    	TransformerFactory tFactory = TransformerFactory.newInstance();
+      Source stylesheet = tFactory.getAssociatedStylesheet
+        (new StreamSource("fooX.xml"),media, title, charset);
+      
+      Transformer transformer = tFactory.newTransformer(stylesheet);
+        
+		   transformer.transform(new StreamSource("fooX.xml"), 
+                             new StreamResult(new java.io.FileOutputStream("foo.out")));
 	  }
-  	  catch (SAXException se)
+  	  catch (Exception e)
 	  {
-		System.err.println(se.toString());
-	    se.printStackTrace();
-	    Exception e = se.getException();
-		if(e!=null)
-		{
-			e.printStackTrace();
-		}
+	    e.printStackTrace();
 	  }
-	  catch (Exception e)
-	  {
-		System.err.println(e.toString());
-	    e.printStackTrace();}
-	  }
+  }
 }
