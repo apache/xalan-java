@@ -219,14 +219,8 @@ public class XPath2Type
   {
     Object value;
     DTM_XSequence seq=null;
-    
-    // %REVIEW% This is a SLOPPY way of handling the "any" types. Better must exist!
-    if(m_xniType==null
-    	|| 
-    	(("anyType".equals(m_xniType.getName()) || "anySimpleType".equals(m_xniType.getName()))
-    		&& "http://www.w3.org/2001/XMLSchema".equals(m_xniType.getNamespace())
-    		)
-	    )
+
+    if(m_xniType==null)
     {
       seq=new DTM_XSequence(textvalue,this);
     }
@@ -282,7 +276,18 @@ public class XPath2Type
                 
       seq=new DTM_XSequence(value,this);
     }
-        
+    
+    // Sloppy recognition of anyType -- but it appears to be correct
+	// (if not valid/recognizable, the typed value appears to be
+	// the string value).
+    else if("anyType".equals(m_xniType.getName())
+    		&& "http://www.w3.org/2001/XMLSchema".equals(m_xniType.getNamespace())
+	    )
+    {
+      seq=new DTM_XSequence(textvalue,this);
+    }
+    
+    // Should the failure be empty, or error?
     return seq==null ? DTMSequence.EMPTY : seq;
   }
   
