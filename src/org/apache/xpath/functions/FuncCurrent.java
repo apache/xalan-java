@@ -98,10 +98,12 @@ public class FuncCurrent extends Function
     // %TBD% Hack city...
     if (null != subContextList && subContextList instanceof PredicatedNodeTest)
     {
-      PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
-      LocPathIterator lpi = iter.getLocPathIterator();
+      // PredicatedNodeTest iter = (PredicatedNodeTest) xctxt.getSubContextList();
+      // LocPathIterator lpi = iter.getLocPathIterator();
+      LocPathIterator lpi = xctxt.getCurrentNodeList();
 
-      currentNode = lpi.getCurrentContextNode();
+      currentNode = lpi.getCurrentContextNode();  
+        
     }
     else if(xctxt.getIteratorRoot() != DTM.NULL)
     {
@@ -119,6 +121,15 @@ public class FuncCurrent extends Function
       else
         currentNode = DTM.NULL;
     }
+    //  if(DTM.NULL != currentNode)
+    //  {
+    //    DTM dtm = xctxt.getDTM(currentNode);
+    //    System.err.println("current node: "+dtm.getNodeName(currentNode)+"["+Integer.toHexString(currentNode)+"]");
+    //  }
+    //  else
+    //  {
+    //     System.err.println("current node: DTM.NULL");
+    //  }
 
     return new XNodeSet(currentNode, xctxt.getDTMManager());
   }
