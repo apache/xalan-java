@@ -21,7 +21,8 @@
                 <p>In April 2001, Sun donated XSLTC to the Xalan project. XSLTC compiles stylesheets into translets and
                 provides a runtime environment for using translets to transform XML documents. Initially, XSLTC is
                 available in a separate JAR. Over time, we plan to integrate the two codebases. For more information,
-                see <link idref="xsltc_usage">Using XSLTC</link>.</p>
+                see <link idref="xsltc_usage">Using XSLTC</link>, <link idref="readme" anchor="xsltcreleasenotes">XSLTC 
+                Release Notes</link>, and <jump href="xsltc/index.html">XSLTC Design</link>.</p>
                 </s2>'>
                 
 <!ENTITY xsltcreleasenotesentry '<li><link anchor="xsltcreleasenotes">XSLTC Release Notes</link></li>'>
