@@ -133,6 +133,8 @@ public class Parser implements Constants, ContentHandler {
     private final static String MISSING_XSLT_URI_ERROR =
 	"The input document is not a stylesheet "+
 	"(the XSL namespace is not declared in the root element).";
+    private final static String MISSING_XSLT_TARGET_ERROR =
+	"Could not find stylesheet target ";
 
     public Parser(XSLTC xsltc) {
 	_xsltc = xsltc;
@@ -466,6 +468,8 @@ public class Parser implements Constants, ContentHandler {
 	// Find the xsl:stylesheet or xsl:transform with this reference
 	if (_target.charAt(0) == '#') {
 	    SyntaxTreeNode element = findStylesheet(root, _target.substring(1));
+	    if (element == null)
+		throw new CompilerException(MISSING_XSLT_TARGET_ERROR+_target);
 	    return(element);
 	}
 	else {
