@@ -133,6 +133,8 @@ transformer.transform
   <li>Set the system property in jaxp.properties in the JAVA_HOME/lib directory, where JAVA_HOME is the root of the JDK.<br/><br/></li>
   <li>Revise the entry in src/META-INF/services and rebuild xalan.jar.<br/><br/></li>
 </ol>
+<p>For example, to use the Crimson XML parser in place of the Xerces XML parser, place Crimson on the class path and set the 
+<code>javax.xml.parsers.SAXParserFactory</code> system property to <code>org.apache.crimson.jaxp.SAXParserFactoryImpl</code>.</p>
 <p>For more information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Plugability Layer" in the <ref>Java API for XML Processing</ref> at 
 <jump href="http://java.sun.com/aboutJava/communityprocess/review/jsr063/index.html">JSR-000063 1.1</jump>.</p> 
 </s2><anchor name="outputprops"/>
