@@ -790,7 +790,7 @@ public class ToHTMLStream extends ToStream
                 // coming right away.  If you want to kill this optimization the corresponding
                 // optimization "OPTIMIZE-EMPTY in endElement() must be killed too.
                 if (m_tracer != null)
-                    firePseudoElement(name);
+                    firePseudoAttributes();
 
                 return;
             }
@@ -803,7 +803,7 @@ public class ToHTMLStream extends ToStream
             m_currentElemDepth++; // current element is one element deeper
 
             if (m_tracer != null)
-                firePseudoElement(name);
+                firePseudoAttributes();
 
             
             if (elemDesc.is(ElemDesc.HEADELEM))
@@ -906,7 +906,11 @@ public class ToHTMLStream extends ToStream
                 // so we need to process any gathered attributes NOW, before they go away.
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
-                    processAttributes(nAttrs);
+                {
+                    processAttributes(m_writer, nAttrs);
+                    // clear attributes object for re-use with next element
+                    m_attributes.clear();
+                }
                 if (!elemEmpty)
                 {
                     // As per Dave/Paul recommendation 12/06/2000
@@ -978,6 +982,7 @@ public class ToHTMLStream extends ToStream
 
     /**
      * Process an attribute.
+     * @param   writer The writer to write the processed output to.
      * @param   name   The name of the attribute.
      * @param   value   The value of the attribute.
      * @param   elemDesc The description of the HTML element 
@@ -986,13 +991,12 @@ public class ToHTMLStream extends ToStream
      * @throws org.xml.sax.SAXException
      */
     protected void processAttribute(
+        java.io.Writer writer,
         String name,
         String value,
         ElemDesc elemDesc)
         throws IOException
     {
-
-        final java.io.Writer writer = m_writer;
         writer.write(' ');
 
         if (   ((value.length() == 0) || value.equalsIgnoreCase(name))
@@ -1652,17 +1656,17 @@ public class ToHTMLStream extends ToStream
     }
 
     /**
-     * If passed in via attribSAX, process the official SAX attributes
-     * otherwise process the collected attributes from SAX-like
-     * calls for an element from calls to 
-     * attribute(String name, String value)
+     * Process the attributes, which means to write out the currently
+     * collected attributes to the writer. The attributes are not
+     * cleared by this method
      * 
+     * @param writer the writer to write processed attributes to.
      * @param nAttrs the number of attributes in m_attributes 
      * to be processed
      *
      * @throws org.xml.sax.SAXException
      */
-    public void processAttributes(int nAttrs)
+    public void processAttributes(java.io.Writer writer, int nAttrs)
         throws IOException,SAXException
     {
             /* 
@@ -1671,11 +1675,11 @@ public class ToHTMLStream extends ToStream
             for (int i = 0; i < nAttrs; i++)
             {
                 processAttribute(
+                    writer,
                     m_attributes.getQName(i),
                     m_attributes.getValue(i),
                     m_elementDesc);
             }
-            m_attributes.clear();
     }
 
     /**
@@ -1694,8 +1698,12 @@ public class ToHTMLStream extends ToStream
                 super.fireStartElem(m_elementName);  
             
             int nAttrs = m_attributes.getLength();   
-            if (nAttrs>0) 
-                processAttributes(nAttrs);
+            if (nAttrs>0)
+            {
+                processAttributes(m_writer, nAttrs);
+                // clear attributes object for re-use with next element
+                m_attributes.clear();
+            }
 
             m_writer.write('>');
 

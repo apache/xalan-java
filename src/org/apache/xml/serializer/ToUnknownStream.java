@@ -501,14 +501,17 @@ public class ToUnknownStream extends SerializerBase
                 
                 // null if not known
                 m_firstElementLocalName = localName;
-                
+
+                if (m_tracer != null)
+                    firePseudoElement(elementName);
+					
                 /* we don't want to call our own addAttributes, which
                  * merely delegates to the wrapped handler, but we want to
                  * add these attributes to m_attributes. So me must call super.
                  * addAttributes() In this case m_attributes is only used for the
                  * first element, after that this class totally delegates to the
                  * wrapped handler which is either XML or HTML.
-                 */                
+                 */
                 if (atts != null)   
                     super.addAttributes(atts);
                 
@@ -1260,8 +1263,14 @@ public class ToUnknownStream extends SerializerBase
     }
 
     public void setTransformer(Transformer t)
-    {
+    {    	
         m_handler.setTransformer(t);
+		if ((t instanceof SerializerTrace) &&
+			(((SerializerTrace) t).hasTraceListeners())) {
+		   m_tracer = (SerializerTrace) t;
+		} else {
+		   m_tracer = null;
+		}        
     }
     public Transformer getTransformer()
     {
@@ -1286,6 +1295,27 @@ public class ToUnknownStream extends SerializerBase
     {
         m_handler.setSourceLocator(locator);
     }
+
+	protected void firePseudoElement(String elementName)
+	{
+		
+		if (m_tracer != null) {
+			StringBuffer sb = new StringBuffer();
+	            
+			sb.append('<');
+			sb.append(elementName);
+			
+			// convert the StringBuffer to a char array and
+			// emit the trace event that these characters "might"
+			// be written
+			char ch[] = sb.toString().toCharArray();
+			m_tracer.fireGenerateEvent(
+				SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
+				ch,
+				0,
+				ch.length);
+		}
+	}
 
 
 }

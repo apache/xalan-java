@@ -164,7 +164,7 @@ public class ToTextStream extends ToStream
     // time to fire off startElement event
     if (m_tracer != null) {
         super.fireStartElem(name);
-        this.firePseudoElement(name);
+        this.firePseudoAttributes();
     }
     return;
   }
@@ -588,7 +588,7 @@ void writeNormalizedChars(
 		// time to fire off startlement event.
         if (m_tracer != null) {
             super.fireStartElem(elementName);
-            this.firePseudoElement(elementName);
+            this.firePseudoAttributes();
         }
         
         return;

@@ -1710,7 +1710,7 @@ abstract public class ToStream extends SerializerBase
             }
 
             m_needToOutputDocTypeDecl = false;
-
+        
             /* before we over-write the current elementLocalName etc.
              * lets close out the old one (if we still need to)
              */
@@ -1754,9 +1754,9 @@ abstract public class ToStream extends SerializerBase
         m_startTagOpen = true;
         m_currentElemDepth++; // current element is one element deeper
         m_isprevtext = false;
-        
+
 		if (m_tracer != null)
-			firePseudoElement(name);
+			firePseudoAttributes();
     }
 
     /**
@@ -1858,15 +1858,19 @@ abstract public class ToStream extends SerializerBase
     }
 
     /**
-     * Process the colleced attributes from SAX- like calls for an element from
-     * calls to addattibute(String name, String value)
+     * Process the attributes, which means to write out the currently
+     * collected attributes to the writer. The attributes are not
+     * cleared by this method
      * 
-     * @param nAttrs the number of attributes in m_attributes to be processed
+     * @param writer the writer to write processed attributes to.
+     * @param nAttrs the number of attributes in m_attributes 
+     * to be processed
+     *
+     * @throws java.io.IOException
      * @throws org.xml.sax.SAXException
      */
-    public void processAttributes(int nAttrs) throws IOException, SAXException
+    public void processAttributes(java.io.Writer writer, int nAttrs) throws IOException, SAXException
     {
-
             /* real SAX attributes are not passed in, so process the 
              * attributes that were collected after the startElement call.
              * _attribVector is a "cheap" list for Stream serializer output
@@ -1874,7 +1878,6 @@ abstract public class ToStream extends SerializerBase
              */
 
             String encoding = getEncoding();
-            final java.io.Writer writer = m_writer;
             for (int i = 0; i < nAttrs; i++)
             {
                 // elementAt is JDK 1.1.8
@@ -1886,12 +1889,6 @@ abstract public class ToStream extends SerializerBase
                 writeAttrString(m_writer, value, encoding);
                 writer.write('\"');
             }
-
-            /* The attributes are now processed so clear them out
-             * so that they don't accumulate from element to element.
-             * .removeAllElements() is used as it is from JDK 1.1.8
-             */
-            m_attributes.clear();
     }
 
     /**
@@ -1973,7 +1970,11 @@ abstract public class ToStream extends SerializerBase
                     super.fireStartElem(m_elementName);
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
-                    processAttributes(nAttrs);
+                {
+                    processAttributes(m_writer, nAttrs);
+                    // clear attributes object for re-use with next element
+                    m_attributes.clear();
+                }
                 if (m_spaceBeforeClose)
                     writer.write(" />");
                 else
@@ -2354,7 +2355,11 @@ abstract public class ToStream extends SerializerBase
                     super.fireStartElem(m_elementName);
                 int nAttrs = m_attributes.getLength();
                 if (nAttrs > 0)
-                    processAttributes(nAttrs);
+                {
+                    processAttributes(m_writer, nAttrs);
+                    // clear attributes object for re-use with next element
+                    m_attributes.clear();
+                }
                 m_writer.write('>');
             }
             catch (IOException e)
@@ -2735,7 +2740,7 @@ abstract public class ToStream extends SerializerBase
              */
             m_attributes.setValue(index, value);
             if (old_value != null)
-                firePseudoElement(m_elementName);
+                firePseudoAttributes();
 
         }
         else
@@ -2743,64 +2748,61 @@ abstract public class ToStream extends SerializerBase
             // the attribute doesn't exist yet, create it
             m_attributes.addAttribute(uri, localName, rawName, type, value);
             if (m_tracer != null)
-                firePseudoElement(m_elementName);
+                firePseudoAttributes();
         }
 
     }
 
     /**
-     * To fire off the pseudo characters of elements, as they currently
+     * To fire off the pseudo characters of attributes, as they currently
      * exist. This method should be called everytime an attribute is added,
      * or when an attribute value is changed, or an element is created.
      */
 
-    protected void firePseudoElement(String elementName)
+    protected void firePseudoAttributes()
     {
-
-        int nAttrs = m_attributes.getLength();
-
         if (m_tracer != null)
         {
-            String encoding = getEncoding();
-            // make a StringBuffer to write the name="value" pairs to.
-            StringBuffer sb = new StringBuffer();
-            
-            sb.append('<');
-            sb.append(elementName);
-
-            // make a writer that internally appends to the same
-            // StringBuffer
-            java.io.Writer writer = new ToStream.WritertoStringBuffer(sb);
-
             try
             {
-                for (int i = 0; i < nAttrs; i++)
-                {
+                // flush out the "<elemName" if not already flushed
+                m_writer.flush();
 
-                    // for each attribute append the name="value"
-                    // to the StringBuffer
-                    final String name = m_attributes.getQName(i);
-                    final String value = m_attributes.getValue(i);
-                    sb.append(' ');
-                    sb.append(name);
-                    sb.append("=\"");
-                    writeAttrString(writer, value, encoding);
-                    sb.append('\"');
+                int nAttrs = m_attributes.getLength();
+                if (nAttrs > 0)
+                {
+                    // make a StringBuffer to write the name="value" pairs to.
+                    StringBuffer sb = new StringBuffer();
+
+                    // make a writer that internally appends to the same
+                    // StringBuffer
+                    java.io.Writer writer =
+                        new ToStream.WritertoStringBuffer(sb);
+
+                    processAttributes(writer, nAttrs);
+                    // Don't clear the attributes! 
+                    // We only want to see what would be written out
+                    // at this point, we don't want to loose them.
+
+                    // convert the StringBuffer to a char array and
+                    // emit the trace event that these characters "might"
+                    // be written
+                    char ch[] = sb.toString().toCharArray();
+                    m_tracer.fireGenerateEvent(
+                        SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
+                        ch,
+                        0,
+                        ch.length);
                 }
             }
             catch (IOException ioe)
             {
+                // ignore ?
             }
-
-            // convert the StringBuffer to a char array and
-            // emit the trace event that these characters "might"
-            // be written
-            char ch[] = sb.toString().toCharArray();
-            m_tracer.fireGenerateEvent(
-                SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
-                ch,
-                0,
-                ch.length);
+            catch (SAXException se)
+            {
+                // ignore ?
+            }
         }
     }
 
