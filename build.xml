@@ -247,7 +247,7 @@ Copyright:
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
-      <fileset dir="${src.dir}" includes="${apachexml.reldir}/**/*.properties,${apachexml.reldir}/**/*.res"/>
+      <fileset dir="${src.dir}" includes="${apachexml.reldir}/**/*.properties"/>
     </copy>  
   </target>
   
@@ -271,7 +271,7 @@ Copyright:
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
-      <fileset dir="${src.dir}" includes="**/*.properties,**/*.res,META-INF/services/*" excludes="**/XSLTInfo.properties"/>
+      <fileset dir="${src.dir}" includes="**/*.properties,META-INF/services/*" excludes="**/XSLTInfo.properties"/>
     </copy>  
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.classes}/org/apache/xalan/res" file="${XSLTInfo.props}" filtering="true"/>
