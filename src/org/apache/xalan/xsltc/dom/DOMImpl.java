@@ -591,8 +591,10 @@ public final class DOMImpl implements DOM, Externalizable {
     private final class ChildrenIterator extends NodeIteratorBase {
 	// child to return next
 	private int _currentChild;
-         
+	private int _last = -1;
+
 	public NodeIterator setStartNode(final int node) {
+	    _last = -1;
 	    if (_isRestartable) {
 		_currentChild = hasChildren(node)
 		    ? _offsetOrChild[_startNode = node] : END;
@@ -613,6 +615,16 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public void gotoMark() {
 	    _currentChild = _markedNode;
+	}
+
+	public int getLast() {
+	    if (_last == -1) {
+		int node = _offsetOrChild[_startNode];
+		do {
+		    ++_last;
+		} while ((node = _nextSibling[node]) != END);
+	    }
+	    return(_last);
 	}
 
     } // end of ChildrenIterator
@@ -680,6 +692,14 @@ public final class DOMImpl implements DOM, Externalizable {
 		    ? _offsetOrChild[_startNode = node] : END;
 		return resetPosition();
 	    }
+	    return this;
+	}
+
+	public NodeIterator reset() {
+	    if (hasChildren(_startNode))
+		_currentChild = _offsetOrChild[_startNode];
+	    else
+		_currentChild = END;
 	    return this;
 	}
 
