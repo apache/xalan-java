@@ -123,7 +123,7 @@ public class ElemCopy extends ElemUse
       ResultTreeHandler rthandler = transformer.getResultTreeHandler();
       
       // TODO: Process the use-attribute-sets stuff
-      rthandler.cloneToResultTree( getStylesheet(), sourceNode, false, false, false );
+      rthandler.cloneToResultTree( sourceNode, false );
       
       if(Node.ELEMENT_NODE == nodeType)
       {
