@@ -48,10 +48,6 @@
 
   <!-- Move to completed section when done. -->
 
-  <action context="code" category="documentation" priority="high">
-    Fill in all NEEDSDOC sections.
-  </action>
-
   <action context="code"  category="conformance" priority="high">
     Check relative URL resolution with notations and unparsed entities.
     Not sure if there is a bug here.  See note from Thomal Maesing on
@@ -293,6 +289,10 @@
     Fix the serializer so it can serialize arbitrary XPath expression results (other than Document nodes).
     As it currently stands, the ApplyXPath sample only works when you give it an expression that returns 
     the entire Document.
+  </action>
+  
+  <action context="code" category="documentation" priority="high" completed="12/17/00">
+    Fill in all NEEDSDOC sections.
   </action>
 
  </completed>
