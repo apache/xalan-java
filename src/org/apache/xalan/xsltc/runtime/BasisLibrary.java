@@ -979,7 +979,7 @@ public final class BasisLibrary implements Operators {
 	}
 	else {
 	    final String className = obj.getClass().getName();
-	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    runTimeError(DATA_CONVERSION_ERR, className, "node-set");
 	    return null;
 	}
     }
@@ -998,7 +998,8 @@ public final class BasisLibrary implements Operators {
         }
 	else {
 	    final String className = obj.getClass().getName();
-	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    runTimeError(DATA_CONVERSION_ERR, className, 
+                "org.w3c.dom.NodeList");
 	    return null;
 	}
     }
@@ -1018,11 +1019,76 @@ public final class BasisLibrary implements Operators {
         }
 	else {
 	    final String className = obj.getClass().getName();
-	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
+	    runTimeError(DATA_CONVERSION_ERR, className, "org.w3c.dom.Node");
 	    return null;
 	}
     }
-    
+   
+    /**
+     * Utility function: used to convert reference to long.
+     */
+    public static long referenceToLong(Object obj) {
+        if (obj instanceof Number) {
+            return ((Number) obj).longValue();    // handles Integer and Double
+        }
+        else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, className, Long.TYPE);
+	    return 0;
+        }
+    }
+            
+    /**
+     * Utility function: used to convert reference to double.
+     */
+    public static double referenceToDouble(Object obj) {
+        if (obj instanceof Number) {
+            return ((Number) obj).doubleValue();   // handles Integer and Double
+        }
+        else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, className, Double.TYPE);
+	    return 0;
+        }
+    }
+
+    /**
+     * Utility function: used to convert reference to boolean.
+     */
+    public static boolean referenceToBoolean(Object obj) {
+        if (obj instanceof Boolean) {
+            return ((Boolean) obj).booleanValue();
+        }
+        else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, className, Boolean.TYPE);
+	    return false;
+        }
+    }
+
+    /**
+     * Utility function: used to convert reference to String.
+     */
+    public static String referenceToString(Object obj, DOM dom) {
+        if (obj instanceof String) {
+            return (String) obj;
+        }
+        else if (obj instanceof DTMAxisIterator) {
+	    return dom.getStringValueX(((DTMAxisIterator)obj).reset().next());
+	}
+	else if (obj instanceof Node) {
+	    return dom.getStringValueX(((Node)obj).node);
+	}
+	else if (obj instanceof DOM) {
+	    return ((DOM) obj).getStringValue();
+	}
+        else {
+	    final String className = obj.getClass().getName();
+	    runTimeError(DATA_CONVERSION_ERR, className, String.class);
+	    return null;
+        }
+    }
+
     /**
      * Utility function used to convert a w3c Node into an internal DOM iterator. 
      */

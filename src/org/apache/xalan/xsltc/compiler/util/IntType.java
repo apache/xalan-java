@@ -221,7 +221,6 @@ public final class IntType extends NumberType {
 						     "<init>", "(I)V")));
     }
 
-
     /**
      * Translates an integer into the Java type denoted by <code>clazz</code>. 
      * Expects an integer on the stack and pushes a number of the appropriate
@@ -251,8 +250,10 @@ public final class IntType extends NumberType {
 	else if (clazz == Double.TYPE) {
 	    il.append(I2D);
 	}
-        else if (clazz.isAssignableFrom(java.lang.Integer.class)) {
-            translateTo(classGen, methodGen, Type.Reference);   
+         // Is Double <: clazz? I.e. clazz in { Double, Number, Object }
+       else if (clazz.isAssignableFrom(java.lang.Double.class)) {
+           il.append(I2D);
+           Type.Real.translateTo(classGen, methodGen, Type.Reference);
         }
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,

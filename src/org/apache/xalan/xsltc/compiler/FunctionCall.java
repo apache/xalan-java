@@ -207,52 +207,61 @@ class FunctionCall extends Expression {
 	    final Class nodeClass     = Class.forName("org.w3c.dom.Node");
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
 
-	    // Possible conversions between internal and Java types
-	    _internal2Java.put(Type.Boolean, new JavaType(Object.class,2));
-	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.class,1));
-	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.TYPE,0));
+	    // -- Internal to Java --------------------------------------------
+            
+            // Type.Boolean -> { boolean(0), Boolean(1), Object(2) }
+	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.TYPE, 0));
+	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.class, 1));
+	    _internal2Java.put(Type.Boolean, new JavaType(Object.class, 2));
 
-	    _internal2Java.put(Type.Int, new JavaType(Object.class, 8));
-	    _internal2Java.put(Type.Int, new JavaType(Character.TYPE, 7));
-	    _internal2Java.put(Type.Int, new JavaType(Byte.TYPE, 6));
-	    _internal2Java.put(Type.Int, new JavaType(Short.TYPE, 5));
-	    _internal2Java.put(Type.Int, new JavaType(Integer.TYPE, 0));
-	    _internal2Java.put(Type.Int, new JavaType(Integer.class, 1));
-	    _internal2Java.put(Type.Int, new JavaType(Long.TYPE, 2));
-	    _internal2Java.put(Type.Int, new JavaType(Float.TYPE, 3));
-	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 4));
-
-	    _internal2Java.put(Type.Real, new JavaType(Object.class, 8));
-	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 7)); 
-	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 6));
-	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 5));
-	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 4));
-	    _internal2Java.put(Type.Real, new JavaType(Long.TYPE, 3));
-	    _internal2Java.put(Type.Real, new JavaType(Float.TYPE, 2));
-	    _internal2Java.put(Type.Real, new JavaType(Double.class, 1));
+            // Type.Real -> { double(0), Double(1), float(2), long(3), int(4),
+            //                short(5), byte(6), char(7), Object(8) }
 	    _internal2Java.put(Type.Real, new JavaType(Double.TYPE, 0));
-
-	    _internal2Java.put(Type.String, new JavaType(Object.class, 1));
+	    _internal2Java.put(Type.Real, new JavaType(Double.class, 1));
+	    _internal2Java.put(Type.Real, new JavaType(Float.TYPE, 2));
+	    _internal2Java.put(Type.Real, new JavaType(Long.TYPE, 3));
+	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 4));
+	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 5));
+	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 6));
+	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 7)); 
+	    _internal2Java.put(Type.Real, new JavaType(Object.class, 8));
+            
+            // Type.Int must be the same as Type.Real
+	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 0));
+	    _internal2Java.put(Type.Int, new JavaType(Double.class, 1));
+	    _internal2Java.put(Type.Int, new JavaType(Float.TYPE, 2));
+	    _internal2Java.put(Type.Int, new JavaType(Long.TYPE, 3));
+	    _internal2Java.put(Type.Int, new JavaType(Integer.TYPE, 4));
+	    _internal2Java.put(Type.Int, new JavaType(Short.TYPE, 5));
+	    _internal2Java.put(Type.Int, new JavaType(Byte.TYPE, 6));
+	    _internal2Java.put(Type.Int, new JavaType(Character.TYPE, 7)); 
+	    _internal2Java.put(Type.Int, new JavaType(Object.class, 8));
+            
+            // Type.String -> { String(0), Object(1) }
 	    _internal2Java.put(Type.String, new JavaType(String.class, 0)); 
+	    _internal2Java.put(Type.String, new JavaType(Object.class, 1));
 
+            // Type.NodeSet -> { NodeList(0), Node(1), Object(2), String(3), int(10) }
+	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass, 0)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(Object.class, 2));
+	    _internal2Java.put(Type.NodeSet, new JavaType(String.class, 3)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10));
+
+            // Type.Node -> { Node(0), NodeList(1), Object(2), String(3) }
 	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));  
 	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 1));
 	    _internal2Java.put(Type.Node, new JavaType(Object.class, 2));
 	    _internal2Java.put(Type.Node, new JavaType(String.class, 3));
 
-	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10));
-	    _internal2Java.put(Type.NodeSet, new JavaType(String.class, 3)); 
-	    _internal2Java.put(Type.NodeSet, new JavaType(Object.class, 2));
-	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
-	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0)); 
-
-	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
+            // Type.ResultTree -> { NodeList(0), Node(1), Object(2), String(3), double(4) }
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass, 0));
+	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.ResultTree, new JavaType(Object.class, 2));
 	    _internal2Java.put(Type.ResultTree, new JavaType(String.class, 3));
 	    _internal2Java.put(Type.ResultTree, new JavaType(Double.TYPE, 4));
 
-	    _internal2Java.put(Type.Reference, new JavaType(Object.class,0));
+	    _internal2Java.put(Type.Reference, new JavaType(Object.class, 0));
 
 	    // Possible conversions between Java and internal types
 	    _java2Internal.put(Boolean.TYPE, Type.Boolean); 
@@ -603,7 +612,6 @@ class FunctionCall extends Expression {
 	int bestMethodDistance  = Integer.MAX_VALUE;
 	_type = null;                       // reset internal type 
 	for (int j, i = 0; i < nMethods; i++) {
-
 	    // Check if all paramteters to this method can be converted
 	    final Method method = (Method)methods.elementAt(i);
 	    final Class[] paramTypes = method.getParameterTypes();

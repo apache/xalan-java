@@ -191,6 +191,7 @@ public final class BooleanType extends Type {
 	if (clazz == java.lang.Boolean.TYPE) {
 	    methodGen.getInstructionList().append(NOP);
 	}
+        // Is Boolean <: clazz? I.e. clazz in { Boolean, Object }
         else if (clazz.isAssignableFrom(java.lang.Boolean.class)) {
             translateTo(classGen, methodGen, Type.Reference);
         }

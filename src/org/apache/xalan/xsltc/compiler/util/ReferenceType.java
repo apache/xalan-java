@@ -264,14 +264,39 @@ public final class ReferenceType extends Type {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+        int referenceToLong = cpg.addMethodref(BASIS_LIBRARY_CLASS, 
+                                               "referenceToLong", 
+                                               "(" + OBJECT_SIG + ")J");
+        int referenceToDouble = cpg.addMethodref(BASIS_LIBRARY_CLASS, 
+                                                 "referenceToDouble", 
+                                                "(" + OBJECT_SIG + ")D");      
+        int referenceToBoolean = cpg.addMethodref(BASIS_LIBRARY_CLASS, 
+                                                  "referenceToBoolean", 
+                                                 "(" + OBJECT_SIG + ")Z");
+        
 	if (clazz.getName().equals("java.lang.Object")) {
 	    il.append(NOP);
 	}
 	else if (clazz == Double.TYPE) {
-	    translateTo(classGen, methodGen, Type.Real);
+	    il.append(new INVOKESTATIC(referenceToDouble));
+	}
+	else if (clazz.getName().equals("java.lang.Double")) {
+	    il.append(new INVOKESTATIC(referenceToDouble));
+            Type.Real.translateTo(classGen, methodGen, Type.Reference);
+	}
+	else if (clazz == Float.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToDouble));
+            il.append(D2F);
 	}
 	else if (clazz.getName().equals("java.lang.String")) {
-	    translateTo(classGen, methodGen, Type.String);
+	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToString",
+				         "("
+				         + OBJECT_SIG
+				         + DOM_INTF_SIG
+				         + ")"
+				         + "Ljava/lang/String;");
+	    il.append(methodGen.loadDOM());
+	    il.append(new INVOKESTATIC(index));
 	}
 	else if (clazz.getName().equals("org.w3c.dom.Node")) {
 	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNode",
@@ -295,6 +320,35 @@ public final class ReferenceType extends Type {
 	}
 	else if (clazz.getName().equals("org.apache.xalan.xsltc.DOM")) {
 	    translateTo(classGen, methodGen, Type.ResultTree);
+	}
+	else if (clazz == Long.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToLong));
+        }
+	else if (clazz == Integer.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToLong));
+            il.append(L2I);
+	}
+        else if (clazz == Short.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToLong));
+            il.append(L2I);
+            il.append(I2S);
+        }
+        else if (clazz == Byte.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToLong));
+            il.append(L2I);
+            il.append(I2B);
+        }
+        else if (clazz == Character.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToLong));
+            il.append(L2I);
+            il.append(I2C);
+        }
+	else if (clazz == java.lang.Boolean.TYPE) {
+	    il.append(new INVOKESTATIC(referenceToBoolean));
+	}
+	else if (clazz.getName().equals("java.lang.Boolean")) {
+	    il.append(new INVOKESTATIC(referenceToBoolean));
+            Type.Boolean.translateTo(classGen, methodGen, Type.Reference);
 	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,

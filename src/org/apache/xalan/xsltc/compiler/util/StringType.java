@@ -196,8 +196,8 @@ public class StringType extends Type {
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
 			    Class clazz) 
     {
+        // Is String <: clazz? I.e. clazz in { String, Object }
         if (clazz.isAssignableFrom(java.lang.String.class)) {
-	    // same internal representation
 	    methodGen.getInstructionList().append(NOP);
 	}
 	else {

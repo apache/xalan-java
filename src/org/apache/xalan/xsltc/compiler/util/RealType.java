@@ -273,6 +273,7 @@ public final class RealType extends NumberType {
 	else if (clazz == Double.TYPE) {
 	    il.append(NOP);
 	}
+        // Is Double <: clazz? I.e. clazz in { Double, Number, Object }
         else if (clazz.isAssignableFrom(java.lang.Double.class)) {
             translateTo(classGen, methodGen, Type.Reference);
         }
