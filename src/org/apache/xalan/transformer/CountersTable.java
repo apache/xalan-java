@@ -87,9 +87,10 @@ public class CountersTable extends Hashtable
    * Get the list of counters that corresponds to
    * the given ElemNumber object.
    *
-   * NEEDSDOC @param numberElem
+   * @param numberElem the given xsl:number element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the list of counters that corresponds to
+   * the given ElemNumber object.
    */
   Vector getCounters(ElemNumber numberElem)
   {
@@ -103,9 +104,10 @@ public class CountersTable extends Hashtable
    * Put a counter into the table and create an empty
    * vector as it's value.
    *
-   * NEEDSDOC @param numberElem
+   * @param numberElem the given xsl:number element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return an empty vector to be used to store counts
+   * for this number element.
    */
   Vector putElemNumber(ElemNumber numberElem)
   {
@@ -127,8 +129,8 @@ public class CountersTable extends Hashtable
    * order, or a list of counted nodes that are in forwards document
    * order.
    *
-   * NEEDSDOC @param flist
-   * NEEDSDOC @param blist
+   * @param flist Vector of nodes built in forwards document order
+   * @param blist Vector of nodes built in backwards document order
    */
   void appendBtoFList(NodeSet flist, NodeSet blist)
   {
@@ -143,17 +145,17 @@ public class CountersTable extends Hashtable
 
   // For diagnostics
 
-  /** NEEDSDOC Field m_countersMade          */
+  /** Number of counters created so far          */
   int m_countersMade = 0;
 
   /**
    * Count forward until the given node is found, or until
    * we have looked to the given amount.
-   * @node The node to count.
    *
-   * NEEDSDOC @param support
-   * NEEDSDOC @param numberElem
-   * NEEDSDOC @param node
+   * @param support The XPath context to use  
+   * @param numberElem The given xsl:number element.
+   * @param node The node to count.
+   * 
    * @return The node count, or 0 if not found.
    *
    * @throws TransformerException

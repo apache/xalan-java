@@ -75,23 +75,24 @@ import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ClonerToResultTree <needs-comment/>
+ * Class used to clone a node, possibly including its children to 
+ * a result tree.
  */
 public class ClonerToResultTree
 {
 
-  /** NEEDSDOC Field m_rth          */
+  /** Result tree handler for the cloned tree           */
   private ResultTreeHandler m_rth;
 
-  /** NEEDSDOC Field m_transformer          */
+  /** Transformer instance to use for cloning          */
   private TransformerImpl m_transformer;
 
   /**
    * Constructor ClonerToResultTree
    *
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param rth
+   * @param transformer non-null transformer instance to use for the cloning
+   * @param rth non-null result tree handler for the cloned tree
    */
   public ClonerToResultTree(TransformerImpl transformer,
                             ResultTreeHandler rth)
@@ -105,9 +106,10 @@ public class ClonerToResultTree
    * TODO: Fix or figure out node clone failure!
    * the error condition is severe enough to halt processing.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param shouldCloneAttributes
-   *
+   * @param node The node to clone
+   * @param shouldCloneAttributes Flag indicating whether to 
+   * clone children attributes
+   * 
    * @throws TransformerException
    */
   public void cloneToResultTree(Node node, boolean shouldCloneAttributes)

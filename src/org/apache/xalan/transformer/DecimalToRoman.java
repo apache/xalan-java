@@ -69,10 +69,12 @@ public class DecimalToRoman
    * Constructor DecimalToRoman
    *
    *
-   * NEEDSDOC @param postValue
-   * NEEDSDOC @param postLetter
-   * NEEDSDOC @param preValue
-   * NEEDSDOC @param preLetter
+   * @param postValue Minimum value for a given range of 
+   * roman numbers
+   * @param postLetter Correspoding letter (roman) to postValue
+   * @param preValue Value of last prefixed number within 
+   * that same range (i.e. IV if postval is 5 (V))
+   * @param preLetter Correspoding letter(roman) to preValue
    */
   public DecimalToRoman(long postValue, String postLetter, long preValue,
                         String preLetter)
@@ -84,15 +86,15 @@ public class DecimalToRoman
     this.m_preLetter = preLetter;
   }
 
-  /** NEEDSDOC Field m_postValue          */
+  /** Minimum value for a given range of roman numbers          */
   public long m_postValue;
 
-  /** NEEDSDOC Field m_postLetter          */
+  /** Correspoding letter (roman) to m_postValue          */
   public String m_postLetter;
 
-  /** NEEDSDOC Field m_preValue          */
+  /** Value of last prefixed number within that same range  */
   public long m_preValue;
 
-  /** NEEDSDOC Field m_preLetter          */
+  /** Correspoding letter (roman) to m_preValue          */
   public String m_preLetter;
 }

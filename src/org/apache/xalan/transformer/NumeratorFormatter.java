@@ -70,19 +70,19 @@ import java.util.NoSuchElementException;
 class NumeratorFormatter
 {
 
-  /** NEEDSDOC Field m_xslNumberElement          */
+  /** The owning xsl:number element.          */
   protected Element m_xslNumberElement;
 
-  /** NEEDSDOC Field m_formatTokenizer          */
+  /** An instance of a Tokenizer          */
   NumberFormatStringTokenizer m_formatTokenizer;
 
-  /** NEEDSDOC Field m_locale          */
+  /** Locale we need to format in          */
   Locale m_locale;
 
-  /** NEEDSDOC Field m_formatter          */
+  /** An instance of a NumberFormat         */
   java.text.NumberFormat m_formatter;
 
-  /** NEEDSDOC Field m_processor          */
+  /** An instance of a transformer          */
   TransformerImpl m_processor;
 
   /**
@@ -116,8 +116,8 @@ class NumeratorFormatter
    * format, letter-value, xml:lang, digit-group-sep,
    * n-digits-per-group, and sequence-src.
    *
-   * NEEDSDOC @param xslNumberElement
-   * NEEDSDOC @param processor
+   * @param xslNumberElement The given xsl:number element
+   * @param processor a non-null transformer instance
    */
   NumeratorFormatter(Element xslNumberElement, TransformerImpl processor)
   {
@@ -128,6 +128,7 @@ class NumeratorFormatter
   /**
    * Convert a long integer into alphabetic counting, in other words
    * count using the sequence A B C ... Z AA AB AC.... etc.
+   * 
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
    * @return String representing alpha count of number.
@@ -265,32 +266,28 @@ class NumeratorFormatter
   class NumberFormatStringTokenizer
   {
 
-    /** NEEDSDOC Field currentPosition          */
+    /** Field holding the current position in the string      */
     private int currentPosition;
 
-    /** NEEDSDOC Field maxPosition          */
+    /** The total length of the string          */
     private int maxPosition;
 
-    /** NEEDSDOC Field str          */
+    /** The string to tokenize          */
     private String str;
 
     /**
      * Construct a NumberFormatStringTokenizer.
      *
-     * NEEDSDOC @param str
+     * @param str The string to tokenize
      */
     NumberFormatStringTokenizer(String str)
     {
       this.str = str;
       maxPosition = str.length();
     }
-
+    
     /**
-     * Reset tokenizer so that nextToken() starts from the beginning.
-     */
-
-    /**
-     * NEEDSDOC Method reset 
+     * Reset tokenizer so that nextToken() starts from the beginning. 
      *
      */
     void reset()

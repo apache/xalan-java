@@ -71,41 +71,41 @@ import org.apache.xalan.res.XSLTErrorResources;
 class NodeSortKey
 {
 
-  /** NEEDSDOC Field m_selectPat          */
+  /** Select pattern for this sort key          */
   XPath m_selectPat;
 
-  /** NEEDSDOC Field m_treatAsNumbers          */
+  /** Flag indicating whether to treat thee result as a number     */
   boolean m_treatAsNumbers;
 
-  /** NEEDSDOC Field m_descending          */
+  /** Flag indicating whether to sort in descending order      */
   boolean m_descending;
 
-  /** NEEDSDOC Field m_caseOrderUpper          */
+  /** Flag indicating by case          */
   boolean m_caseOrderUpper;
 
-  /** NEEDSDOC Field m_col          */
+  /** Collator instance          */
   Collator m_col;
 
-  /** NEEDSDOC Field m_locale          */
+  /** Locale we're in          */
   Locale m_locale;
 
-  /** NEEDSDOC Field m_namespaceContext          */
+  /** Prefix resolver to use          */
   org.apache.xml.utils.PrefixResolver m_namespaceContext;
 
-  /** NEEDSDOC Field m_processor          */
+  /** Transformer instance          */
   TransformerImpl m_processor;  // needed for error reporting.
 
   /**
    * Constructor NodeSortKey
    *
    *
-   * NEEDSDOC @param transformer
-   * NEEDSDOC @param selectPat
-   * NEEDSDOC @param treatAsNumbers
-   * NEEDSDOC @param descending
-   * NEEDSDOC @param langValue
-   * NEEDSDOC @param caseOrderUpper
-   * NEEDSDOC @param namespaceContext
+   * @param transformer non null transformer instance
+   * @param selectPat Select pattern for this key 
+   * @param treatAsNumbers Flag indicating whether the result will be a number
+   * @param descending Flag indicating whether to sort in descending order
+   * @param langValue Lang value to use to get locale
+   * @param caseOrderUpper Flag indicating whether case is relevant
+   * @param namespaceContext Prefix resolver
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -119,8 +119,8 @@ class Counter
   /**
    * Construct a counter object.
    *
-   * NEEDSDOC @param numberElem
-   * NEEDSDOC @param countNodes
+   * @param numberElem The owning xsl:number element. 
+   * @param countNodes A vector of all nodes counted so far.
    *
    * @throws TransformerException
    */
@@ -133,7 +133,7 @@ class Counter
   /**
    * Construct a counter object.
    *
-   * NEEDSDOC @param numberElem
+   * @param numberElem The owning xsl:number element. 
    *
    * @throws TransformerException
    */
@@ -146,11 +146,10 @@ class Counter
    * Try and find a node that was previously counted. If found,
    * return a positive integer that corresponds to the count.
    *
-   * NEEDSDOC @param support
+   * @param support The XPath context to use
    * @param node The node to be counted.
-   * @returns The count of the node, or -1 if not found.
-   *
-   * NEEDSDOC ($objectName$) @return
+   * 
+   * @return The count of the node, or -1 if not found.
    */
   int getPreviouslyCounted(XPathContext support, Node node)
   {
@@ -185,7 +184,7 @@ class Counter
   /**
    * Get the last node in the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the last node in the list.
    */
   Node getLast()
   {

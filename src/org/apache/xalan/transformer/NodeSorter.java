@@ -80,10 +80,10 @@ import javax.xml.transform.TransformerException;
 public class NodeSorter
 {
 
-  /** NEEDSDOC Field m_execContext          */
+  /** Current XPath context           */
   XPathContext m_execContext;
 
-  /** NEEDSDOC Field m_keys          */
+  /** Vector of NodeSortKeys          */
   Vector m_keys;  // vector of NodeSortKeys
 
   /**
@@ -96,7 +96,7 @@ public class NodeSorter
    * so it can know how to get the node data according to
    * the proper whitespace rules.
    *
-   * NEEDSDOC @param p
+   * @param p Xpath context to use
    */
   public NodeSorter(XPathContext p)
   {
@@ -108,7 +108,7 @@ public class NodeSorter
    * the criteria in the keys.
    * @param v an vector of Nodes.
    * @param keys a vector of NodeSortKeys.
-   * NEEDSDOC @param support
+   * @param support XPath context to use
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -151,12 +151,12 @@ public class NodeSorter
    * Return the results of a compare of two nodes.
    * TODO: Optimize compare -- cache the getStringExpr results, key by m_selectPat + hash of node.
    *
-   * NEEDSDOC @param n1
-   * NEEDSDOC @param n2
-   * NEEDSDOC @param kIndex
-   * NEEDSDOC @param support
+   * @param n1 First node to use in compare
+   * @param n2 Second node to use in compare
+   * @param kIndex Index of NodeSortKey to use for sort
+   * @param support XPath context to use
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The results of the compare of the two nodes.
    *
    * @throws TransformerException
    */
@@ -310,11 +310,11 @@ public class NodeSorter
    * maintains the original document order of the input if
    * the order isn't changed by the sort.
    *
-   * NEEDSDOC @param a
-   * NEEDSDOC @param b
-   * NEEDSDOC @param l
-   * NEEDSDOC @param r
-   * NEEDSDOC @param support
+   * @param a First vector of nodes to compare
+   * @param b Second vector of  nodes to compare 
+   * @param l Left boundary of  partition
+   * @param r Right boundary of  partition
+   * @param support XPath context to use
    *
    * @throws TransformerException
    */
@@ -399,13 +399,10 @@ public class NodeSorter
    * left and highest index or right.  The first time you call
    * this function it will be with the parameters 0, a.length - 1.
    *
-   * @param a       an integer array
+   * @param v       a vector of integers 
    * @param lo0     left boundary of array partition
    * @param hi0     right boundary of array partition
    *
-   * NEEDSDOC @param v
-   * NEEDSDOC @param i
-   * NEEDSDOC @param j
    */
 
   /*  private void QuickSort2(Vector v, int lo0, int hi0, XPathContext support)
@@ -468,6 +465,10 @@ public class NodeSorter
   /**
    * Simple function to swap two elements in
    * a vector.
+   * 
+   * @param v Vector of nodes to swap
+   * @param i Index of first node to swap
+   * @param i Index of second node to swap
    */
   private void swap(Vector v, int i, int j)
   {
@@ -480,36 +481,36 @@ public class NodeSorter
 
   /**
    * <meta name="usage" content="internal"/>
-   * NEEDSDOC Class NodeCompareElem <needs-comment/>
+   * This class holds the value(s) from executing the given
+   * node against the sort key(s). 
    */
   class NodeCompareElem
   {
 
-    /** NEEDSDOC Field m_node          */
+    /** Current node          */
     Node m_node;
 
-    // This maxkey value was chosen arbitrarily. We are assuming that the    
+    /** This maxkey value was chosen arbitrarily. We are assuming that the    
     // maxkey + 1 keys will only hit fairly rarely and therefore, we
     // will get the node values for those keys dynamically.
-
-    /** NEEDSDOC Field maxkey          */
+    */
     int maxkey = 2;
 
     // Keep this in case we decide to use an array. Right now
     // using two variables is cheaper.
     //Object[] m_KeyValue = new Object[2];
 
-    /** NEEDSDOC Field m_key1Value          */
+    /** Value from first sort key           */
     Object m_key1Value;
 
-    /** NEEDSDOC Field m_key2Value          */
+    /** Value from second sort key            */
     Object m_key2Value;
 
     /**
      * Constructor NodeCompareElem
      *
      *
-     * NEEDSDOC @param node
+     * @param node Current node
      *
      * @throws javax.xml.transform.TransformerException
      */

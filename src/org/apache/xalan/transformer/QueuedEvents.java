@@ -70,19 +70,19 @@ import org.xml.sax.Attributes;
 abstract class QueuedEvents
 {
 
-  /** NEEDSDOC Field m_eventCount          */
+  /** The number of events queued          */
   int m_eventCount = 0;
 
-  /** NEEDSDOC Field m_startDoc          */
+  /** Queued start document          */
   QueuedStartDocument m_startDoc = new QueuedStartDocument();
 
-  /** NEEDSDOC Field m_startElement          */
+  /** Queued start element          */
   QueuedStartElement m_startElement = new QueuedStartElement();
 
   /**
    * Get the queued document event.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the queued document event or null if none.
    */
   QueuedStartDocument getQueuedDoc()
   {
@@ -92,7 +92,7 @@ abstract class QueuedEvents
   /**
    * Get the queued document event.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the queued document event.
    */
   QueuedStartDocument getQueuedDocAtBottom()
   {
@@ -102,7 +102,7 @@ abstract class QueuedEvents
   /**
    * Get the queued element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the queued element.
    */
   QueuedStartElement getQueuedElem()
   {
@@ -112,12 +112,12 @@ abstract class QueuedEvents
   /**
    * This is for the derived class to init new events.
    *
-   * NEEDSDOC @param qse
+   * @param qse Queud Sax event
    */
   protected abstract void initQSE(QueuedSAXEvent qse);
 
   /**
-   * NEEDSDOC Method reInitEvents 
+   * To re-initialize the document and element events 
    *
    */
   protected void reInitEvents()
@@ -127,7 +127,7 @@ abstract class QueuedEvents
   }
 
   /**
-   * NEEDSDOC Method reset 
+   * Push document event and re-initialize events  
    *
    */
   public void reset()
@@ -149,13 +149,13 @@ abstract class QueuedEvents
   }
 
   /**
-   * NEEDSDOC Method pushElementEvent 
+   * Push the element event
    *
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param ns Namespace URI of the element
+   * @param localName Local part of the qualified name of the element
+   * @param name Name of the element
+   * @param atts Attribute children of the element
    */
   void pushElementEvent(String ns, String localName, String name,
                         Attributes atts)
@@ -168,7 +168,7 @@ abstract class QueuedEvents
   }
 
   /**
-   * NEEDSDOC Method popEvent 
+   * Pop element event 
    *
    */
   void popEvent()
@@ -179,14 +179,14 @@ abstract class QueuedEvents
     m_eventCount--;
   }
 
-  /** NEEDSDOC Field m_serializer          */
+  /** Instance of a serializer          */
   private org.apache.xalan.serialize.Serializer m_serializer;
 
   /**
-   * This is only for use of object pooling, so the that
+   * This is only for use of object pooling, so that
    * it can be reset.
    *
-   * NEEDSDOC @param s
+   * @param s non-null instance of a serializer 
    */
   void setSerializer(org.apache.xalan.serialize.Serializer s)
   {
@@ -197,7 +197,7 @@ abstract class QueuedEvents
    * This is only for use of object pooling, so the that
    * it can be reset.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The serializer
    */
   org.apache.xalan.serialize.Serializer getSerializer()
   {

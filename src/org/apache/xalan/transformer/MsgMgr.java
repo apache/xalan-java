@@ -77,25 +77,25 @@ public class MsgMgr
   /**
    * Create a message manager object.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer non transformer instance
    */
   public MsgMgr(TransformerImpl transformer)
   {
     m_transformer = transformer;
   }
 
-  /** NEEDSDOC Field m_transformer          */
+  /** Transformer instance          */
   private TransformerImpl m_transformer;
 
-  /** NEEDSDOC Field m_XSLMessages          */
+  /** XSLMessages instance, sets things up for issuing messages          */
   private static XSLMessages m_XSLMessages = new XSLMessages();
 
   /**
-   * Warn the user of an problem.
+   * Warn the user of a problem.
    * This is public for access by extensions.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param terminate
+   * @param msg The message text to issue
+   * @param terminate Flag indicating whether to terminate this process
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -124,9 +124,9 @@ public class MsgMgr
 
   /**
    * <meta name="usage" content="internal"/>
-   * Warn the user of an problem.
+   * Warn the user of a problem.
    *
-   * NEEDSDOC @param msg
+   * @param msg Message text to issue
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -139,10 +139,10 @@ public class MsgMgr
 
   /**
    * <meta name="usage" content="internal"/>
-   * Warn the user of an problem.
+   * Warn the user of a problem.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg Message text to issue
+   * @param args Arguments to pass to the message
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -155,11 +155,12 @@ public class MsgMgr
 
   /**
    * <meta name="usage" content="internal"/>
-   * Warn the user of an problem.
+   * Warn the user of a problem.
    *
-   * NEEDSDOC @param styleNode
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param msg
+   * 
+   * @param styleNode Stylesheet node
+   * @param sourceNode Source tree node
+   * @param msg Message text to issue
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -173,12 +174,12 @@ public class MsgMgr
 
   /**
    * <meta name="usage" content="internal"/>
-   * Warn the user of an problem.
+   * Warn the user of a problem.
    *
-   * NEEDSDOC @param styleNode
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param styleNode Stylesheet node
+   * @param sourceNode Source tree node
+   * @param msg Message text to issue
+   * @param args Arguments to pass to the message
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -202,7 +203,7 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
+   * @param msg Message text to issue
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -228,7 +229,7 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
+   * @param msg Message text to issue
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -244,8 +245,8 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param msg Message text to issue
+   * @param args Arguments to be passed to the message 
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -261,8 +262,8 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param e
+   * @param msg Message text to issue
+   * @param e Exception to throw
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -278,9 +279,9 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
-   * NEEDSDOC @param e
+   * @param msg Message text to issue
+   * @param args Arguments to use in message
+   * @param e Exception to throw
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -309,9 +310,9 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param styleNode
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param msg
+   * @param styleNode Stylesheet node
+   * @param sourceNode Source tree node
+   * @param msg Message text to issue
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
@@ -328,10 +329,10 @@ public class MsgMgr
    * Tell the user of an error, and probably throw an
    * exception.
    *
-   * NEEDSDOC @param styleNode
-   * NEEDSDOC @param sourceNode
-   * NEEDSDOC @param msg
-   * NEEDSDOC @param args
+   * @param styleNode Stylesheet node
+   * @param sourceNode Source tree node
+   * @param msg Message text to issue
+   * @param args Arguments to use in message
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
