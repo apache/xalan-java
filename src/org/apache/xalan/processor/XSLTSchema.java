@@ -117,7 +117,7 @@ public class XSLTSchema extends XSLTElementDef
                                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef cdataSectionElementsAttr = new XSLTAttributeDef(null,
                                                   "cdata-section-elements",
-                                                  XSLTAttributeDef.T_QNAMES,
+                                                  XSLTAttributeDef.T_QNAMES_RESOLVE_NULL,
                                                   false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef indentAttr = new XSLTAttributeDef(null, "indent",
                                     XSLTAttributeDef.T_YESNO, false, false,XSLTAttributeDef.ERROR);

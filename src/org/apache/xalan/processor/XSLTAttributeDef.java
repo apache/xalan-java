@@ -270,7 +270,8 @@ public class XSLTAttributeDef
   // gets expanded by the XSLT processor. -->
   T_QNAME = 9,
 
-  // <!-- Like qname but a whitespace-separated list of QNames. -->
+  // <!--Used for a whitespace-separated list of QNames where the non-prefixed
+  // entries are not to be placed in the default namespace. -->
   T_QNAMES = 10,
 
   // <!-- Used for enumerated values -->
@@ -295,7 +296,11 @@ public class XSLTAttributeDef
   T_NCNAME = 17,
   
   // Used for QName attributes that are always AVT.  Prefix isn't resolved.
-  T_AVT_QNAME = 18;
+  T_AVT_QNAME = 18,
+  
+  // Used for a list of QNames where non-prefixed items are to be resolved
+  // using the default namespace (This is only true for cdata-section-elements)
+  T_QNAMES_RESOLVE_NULL = 19;
   
 
   /** Representation for an attribute in a foreign namespace. */
@@ -1093,8 +1098,9 @@ public class XSLTAttributeDef
  }
 
   /**
-   * Process an attribute string of type T_QNAMES into
-   * a vector of QNames.
+   * Process an attribute string of type T_QNAMES into a vector of QNames where
+   * the specification requires that non-prefixed elements not be placed in a
+   * namespace.  (See section 2.4 of XSLT 1.0.)
    *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param uri The Namespace URI, or an empty string.
@@ -1123,6 +1129,47 @@ public class XSLTAttributeDef
       qnames.addElement(new QName(tokenizer.nextToken(), handler));
     }
 
+    return qnames;
+  }
+
+ /**
+   * Process an attribute string of type T_QNAMES_RESOLVE_NULL into a vector
+   * of QNames where the specification requires non-prefixed elements to be
+   * placed in the default namespace.  (See section 16 of XSLT 1.0; the
+   * <em>only</em> time that this will get called is for the
+   * <code>cdata-section-elements</code> attribute on <code>xsl:output</code>.
+   *
+   * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri The Namespace URI, or an empty string.
+   * @param name The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName The qualified name (with prefix).
+   * @param value A whitespace delimited list of qualified names.
+   *
+   * @return a Vector of QName objects.
+   *
+   * @throws org.xml.sax.SAXException if the one of the qualified name strings
+   * contains a prefix that can not be resolved, or a qualified name contains
+   * syntax that is invalid for a qualified name.
+   */
+  final Vector processQNAMESRNU(StylesheetHandler handler, String uri,
+    String name, String rawName, String value)
+    throws org.xml.sax.SAXException
+  {
+
+    StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
+    int nQNames = tokenizer.countTokens();
+    Vector qnames = new Vector(nQNames);
+
+    String defaultURI = handler.getNamespaceForPrefix("");
+    for (int i = 0; i < nQNames; i++)
+    {
+      String tok = tokenizer.nextToken();
+      if (tok.indexOf(':') == -1) {
+        qnames.addElement(new QName(defaultURI,tok));
+      } else {
+        qnames.addElement(new QName(tok, handler));
+      }
+    }
     return qnames;
   }
 
@@ -1360,6 +1407,9 @@ public class XSLTAttributeDef
       break;
     case T_QNAMES :
       processedValue = processQNAMES(handler, uri, name, rawName, value);
+      break;
+	case T_QNAMES_RESOLVE_NULL:
+      processedValue = processQNAMESRNU(handler, uri, name, rawName, value);
       break;
     case T_SIMPLEPATTERNLIST :
       processedValue = processSIMPLEPATTERNLIST(handler, uri, name, rawName,
