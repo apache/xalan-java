@@ -375,7 +375,7 @@ public class SourceTreeManager
     }
     catch (Exception e)
     {
-      e.printStackTrace();
+      //e.printStackTrace();
       throw new TransformerException(e.getMessage(), locator, e);
     }
 
