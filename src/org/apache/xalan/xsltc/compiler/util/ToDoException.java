@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,98 +56,21 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  *
- * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
- * @author Morten Jorgensen
  *
  */
 
-package org.apache.xalan.xsltc.compiler;
+package org.apache.xalan.xsltc.compiler.util;
 
-/**
- * Qualified name class. Local name, prefix and namespace components
- * are internalized to speed up qname comparison.
- */
-final class QName {
+public class ToDoException extends RuntimeException {
 
-    /**
-     * The local part of this qname.
-     */
-    private String _localname;
+    private String _message;
 
-    /**
-     * The prefix of this qname.
-     */
-    private String _prefix;
-
-    /**
-     * The namespace URI of this qname.
-     */
-    private String _namespace;
-
-    /**
-     * A string representation of the expanded qname. Either
-     * prefix:localname or localname if no prefix is available.
-     */
-    private String _stringRep;
-
-    /**
-     * A cached hash code value computed from the expanded
-     * qname.
-     */
-    private int _hashCode;
-
-    public QName(String namespace, String prefix, String localname) {
-	_namespace = namespace.intern();
-	_prefix    = prefix.intern();
-	_localname = localname.intern();
-
-	_stringRep = (namespace.length() == 0) ? localname :
-            (namespace + ':' + localname);
-	_hashCode = _stringRep.hashCode() + 19;   // cached for speed
-    }
-
-    public void clearNamespace() {
-	_namespace = "";
+    public ToDoException(String message) {
+        _message = message;
     }
 
     public String toString() {
-	return _stringRep;
-    }
-
-    public String getStringRep() {
-	return _stringRep;
-    }
-
-    public boolean equals(Object other) {
-	try {
-            final QName temp = (QName) other;
-            return (_namespace == temp._namespace &&
-                    _localname == temp._localname);
-        }
-        catch (ClassCastException e) {
-            return false;
-        }
-    }
-
-    public String getLocalPart() {
-	return _localname;
-    }
-
-    public String getNamespace() {
-	return _namespace;
-    }
-
-    public String getPrefix() {
-	return _prefix;
-    }
-
-    public int hashCode() {
-	return _hashCode;
-    }
-
-    public String dump() {
-	return new String("QName: " + _namespace + "(" + _prefix + "):"
-	    + _localname);
+        return ("TODO: " + _message);
     }
 }

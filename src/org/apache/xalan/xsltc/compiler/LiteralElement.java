@@ -81,10 +81,6 @@ final class LiteralElement extends Instruction {
     private static final String XMLNS_STRING = "xmlns";
     private static final QName USE_ATTRIBUTE_SETS =
         new QName(XSLT_URI, "xsl", "use-attribute-sets");
-    private static final QName EXCLUDE_RESULT_PREFIXES =
-        new QName(XSLT_URI, "xsl", "exclude-result-prefixes");
-    private static final QName EXTENSION_ELEMENT_PREFIXES =
-        new QName(XSLT_URI, "xsl", "extension-element-prefixes");
 
     private String _name;
     private LiteralElement _literalElemParent;
@@ -170,7 +166,7 @@ final class LiteralElement extends Instruction {
 	StaticContext scontext = getStaticContext();
 	final String alternative = scontext.getPrefixAlias(prefix);
 	if (alternative != null) {
-	    scontext.setExcludePrefixes(prefix);
+            addExcludeResultURI(scontext.getNamespace(prefix));
 	    prefix = alternative;
 	}
 
@@ -283,14 +279,6 @@ final class LiteralElement extends Instruction {
 	    if (qname.equals(USE_ATTRIBUTE_SETS)) {
 		setFirstAttribute(new UseAttributeSets(val, parser));
 	    }
-	    // Handle xsl:extension-element-prefixes
-	    else if (qname.equals(EXTENSION_ELEMENT_PREFIXES)) {
-		scontext.setExcludePrefixes(val);
-	    }
-	    // Handle xsl:exclude-result-prefixes
-	    else if (qname.equals(EXCLUDE_RESULT_PREFIXES)) {
-		scontext.setExcludePrefixes(val);
-	    }
 	    else {
 		// Ignore special attributes (e.g. xmlns:prefix and xmlns)
 		final String prefix = qname.getPrefix();
@@ -317,28 +305,13 @@ final class LiteralElement extends Instruction {
 	    final String prefix = (String)include.next();
 	    if (!prefix.equals("xml")) {
 		final String uri = lookupNamespace(prefix);
-		if (uri != null && !scontext.getExcludeUri(uri)) {
+		if (uri != null && !scontext.getExcludeResultURI(uri)) {
 		    registerNamespace(prefix, uri, true);
 		}
 	    }
 	}
 
 	parseContents(ccontext);
-
-	// Process all attributes and register all namespaces they use
-	for (int i = 0; i < count; i++) {
-	    final QName qname = parser.getQName(_attributes.getQName(i));
-	    final String val = _attributes.getValue(i);
-
-	    // Handle xsl:extension-element-prefixes
-	    if (qname.equals(EXTENSION_ELEMENT_PREFIXES)) {
-		scontext.setUnexcludePrefixes(val);
-	    }
-	    // Handle xsl:exclude-result-prefixes
-	    else if (qname.equals(EXCLUDE_RESULT_PREFIXES)) {
-		scontext.setUnexcludePrefixes(val);
-	    }
-	}
     }
 
     protected boolean contextDependent() {

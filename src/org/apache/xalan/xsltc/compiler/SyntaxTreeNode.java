@@ -67,6 +67,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.HashSet;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.*;
 
@@ -100,11 +102,6 @@ public abstract class SyntaxTreeNode implements Constants {
     protected Attributes _attributes = null;
 
     /**
-     * Namespace declarations of this element (as a mapping).
-     */
-    private HashMap _prefixMapping = null;
-
-    /**
      * Source line where this element occurs in the input file.
      */
     private int _line;
@@ -124,6 +121,36 @@ public abstract class SyntaxTreeNode implements Constants {
      * tree nodes.
      */
     protected static final SyntaxTreeNode Dummy = new Text();
+
+    /**
+     * Namespace declarations of this element (as a mapping).
+     */
+    private HashMap _prefixMapping = null;
+
+    /**
+     * Set of URIs to be excluded in the result for the scope defined
+     * by this node. These URIs are resolved from the value of the
+     * standard attribute [xsl:]exclude-result-prefixes.
+     */
+    private HashSet _excludeResultURIs = null;
+
+    /**
+     * Set of URIs of extension elements for the scope defined by
+     * this node. These URIs are resolved from the value of the
+     * standard attribute [xsl:]extension-element-prefixes.
+     */
+    private HashSet _extensionElementURIs = null;
+
+    /**
+     * Value of the standard attribute [xsl:]version. Defaults to 2.0
+     * if not present.
+     */
+    private float _version = 2.0f;
+
+    /**
+     * Value of the standard attribute [xsl:]default-xpath-namespace.
+     */
+    private String _defaultXPathNamespace = null;
 
     /**
      * Creates a new SyntaxTreeNode with a 'null' QName and no source file
@@ -243,12 +270,96 @@ public abstract class SyntaxTreeNode implements Constants {
     // -- Node's attributes  ------------------------------------------
 
     /**
-     * Set the attributes for this SyntaxTreeNode.
+     * Set the attributes for this SyntaxTreeNode. As a side effect,
+     * process standard attributes [xsl:]version, [xsl:]default-
+     * xpath-namespace, [xsl:]exclude-result-prefixes [xsl:]extension-
+     * element-prefixes.
      *
      * @param attributes Attributes for the element.
      */
     protected void setAttributes(Attributes attributes) {
+        // Set internal attributes object
 	_attributes = attributes;
+
+        // Process standard attributes
+        final int n = attributes.getLength();
+        StaticContext scontext = getStaticContext();
+        boolean isLiteralElement = (this instanceof LiteralElement);
+
+        for (int i = 0; i < n; i++) {
+            final String namespace = attributes.getURI(i);
+            final String localName = attributes.getLocalName(i);
+
+            // [xsl:]default-xpath-namespace
+            if (localName.equals("default-xpath-namespace") &&
+                (!isLiteralElement || namespace.equals(XSLT_URI)))
+            {
+                _defaultXPathNamespace = attributes.getValue(i);
+            }
+
+            // [xsl:]version (scoped)
+            if (localName.equals("version") &&
+                (!isLiteralElement || namespace.equals(XSLT_URI)))
+            {
+                try {
+                    _version = Float.parseFloat(attributes.getValue(i));
+                }
+                catch (NumberFormatException e) {
+                    // TODO
+		    throw new ToDoException("report error if version is ilegal");
+                }
+            }
+
+            // [xsl:]exclude-result-prefixes
+            if (localName.equals("exclude-result-prefixes") &&
+                (!isLiteralElement || namespace.equals(XSLT_URI)))
+            {
+                StringTokenizer tokens =
+                    new StringTokenizer(attributes.getValue(i));
+
+                // Allocate HashSet if necessary
+                if (_excludeResultURIs != null) {
+                    _excludeResultURIs = new HashSet();
+                }
+
+                // Resolve list of prefixes and add to set
+		while (tokens.hasMoreTokens()) {
+		    String prefix = tokens.nextToken();
+		    String uri = scontext.getNamespace(
+                        prefix.equals("#default") ? "" : prefix);
+		    if (uri == null) {
+                        // TODO
+			throw new ToDoException("report error if undef prefix");
+		    }
+                    _excludeResultURIs.add(uri);
+                }
+            }
+
+            // [xsl:]extension-element-prefixes
+            if (localName.equals("extension-element-prefixes") &&
+                (!isLiteralElement || namespace.equals(XSLT_URI)))
+            {
+                StringTokenizer tokens =
+                    new StringTokenizer(attributes.getValue(i));
+
+                // Allocate HashSet if necessary
+                if (_extensionElementURIs != null) {
+                    _extensionElementURIs = new HashSet();
+                }
+
+                // Resolve list of prefixes and add to set
+                while (tokens.hasMoreTokens()) {
+                    String prefix = tokens.nextToken();
+                    String uri = scontext.getNamespace(
+                        prefix.equals("#default") ? "" : prefix);
+                    if (uri == null) {
+                        // TODO
+                        throw new ToDoException("report error if undef prefix");
+                    }
+                    _extensionElementURIs.add(uri);
+                }
+            }
+        }
     }
 
     /**
@@ -281,7 +392,44 @@ public abstract class SyntaxTreeNode implements Constants {
 	return _attributes;
     }
 
-    // -- Node's NS declarations  -------------------------------------
+    // -- Standard attributes --------------------------------------------
+
+    public float getVersion() {
+        return _version;
+    }
+
+    /**
+     * This method should only be called from StaticContext.
+     */
+    public String getDefaultXPathNamespace() {
+        return _defaultXPathNamespace;
+    }
+
+    /**
+     * This method should only be called from StaticContext.
+     */
+    public HashSet getExcludeResultURIs() {
+        return _excludeResultURIs;
+    }
+
+    /**
+     * This method should only be called from StaticContext.
+     */
+    public HashSet getExtensionElementURIs() {
+        return _extensionElementURIs;
+    }
+
+    /**
+     * Adds a single URI to the set of excluded ones.
+     */
+    public void addExcludeResultURI(String uri) {
+        if (_excludeResultURIs == null) {
+            _excludeResultURIs = new HashSet();
+        }
+        _excludeResultURIs.add(uri);
+    }
+
+    // -- Node's NS declarations  ----------------------------------------
 
     /**
      * Sets the prefix mapping for the namespaces that were declared in this
@@ -356,15 +504,14 @@ public abstract class SyntaxTreeNode implements Constants {
      * Parse all children of this syntax tree node. This method is normally
      * called by the parse() method.
      */
-    protected final void parseContents(CompilerContext ccontext) {
+    protected void parseContents(CompilerContext ccontext) {
 	ArrayList locals = null;
         StaticContext scontext = getStaticContext();
 
 	final int count = _contents.size();
 	for (int i = 0; i < count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode) _contents.get(i);
-            scontext.setCurrentNode(child);
-	    child.parse(ccontext);
+            child.parse(ccontext);
 
             // Is variable or parameter?
             if (child instanceof VariableBase) {

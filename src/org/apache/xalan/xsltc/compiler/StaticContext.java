@@ -66,6 +66,7 @@ import java.text.Collator;
 import java.util.Stack;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -387,18 +388,6 @@ public final class StaticContext {
         return null;    // TODO
     }
 
-    // -- XPath 1.0 compatible flag --------------------------------------
-
-    private boolean _xpath10CompatibleFlag = true;
-
-    public boolean getXPath10CompatibleFlag() {
-        return _xpath10CompatibleFlag;
-    }
-
-    public void setXPath10CompatibleFlag(boolean flag) {
-        _xpath10CompatibleFlag = flag;
-    }
-
     // -- Base URI -------------------------------------------------------
 
     private String _baseURI;
@@ -413,22 +402,52 @@ public final class StaticContext {
 
     // -- Default NS for elements and types ------------------------------
 
-    private String _defaultElementNamespace;
-
-    public String getDefaultElementNamespace() {
-        return _defaultElementNamespace;
+    /**
+     * Finds the nearest declaration of the default XPath namespace as
+     * declared by [xsl:]default-xpath-namespace.
+     */
+    public String getDefaultXPathNamespace() {
+        SyntaxTreeNode parent = _currentNode;
+        while (parent != null) {
+            String result = parent.getDefaultXPathNamespace();
+            if (result != null) {
+                return result;
+            }
+        }
+        return "";    // TODO
     }
 
-    public void setDefaultElementNamespace(String uri) {
-        _defaultElementNamespace = uri;
+    // -- Namespace exclusions  ------------------------------------------
+
+    /**
+     * Check if a namespace URI should not be declared in the output
+     * (unless used). Searches upward in the AST for excluded URI
+     * declarations.
+     */
+    public boolean getExcludeResultURI(String uri) {
+        SyntaxTreeNode parent = _currentNode;
+        while (parent != null) {
+            HashSet set = _currentNode.getExcludeResultURIs();
+            if (set != null && set.contains(uri)) return true;
+            parent = parent.getParent();
+        }
+        return false;
     }
 
-    public String getDefaultTypeNamespace() {
-        return getDefaultElementNamespace();
-    }
+    // -- Extension element prefixes  ------------------------------------
 
-    public void setDefaultTypeNamespace(String uri) {
-        setDefaultElementNamespace(uri);
+    /**
+     * Check if a namespace URI corresponds to an extension namespace.
+     * Searches upward in the AST for extension URI declarations.
+     */
+    public boolean getExtensionElementURI(String uri) {
+        SyntaxTreeNode parent = _currentNode;
+        while (parent != null) {
+            HashSet set = _currentNode.getExtensionElementURIs();
+            if (set != null && set.contains(uri)) return true;
+            parent = parent.getParent();
+        }
+        return false;
     }
 
     // -- Default NS for functions  --------------------------------------
@@ -451,82 +470,6 @@ public final class StaticContext {
 
     public void setSchemaType(QName name, Type type) {
         // TODO;
-    }
-
-    // -- Namespace exclusions  ------------------------------------------
-
-    private HashMap _excludedURI = null;
-
-    /**
-     * Register a namespace URI so that it will not be declared in the
-     * output unless it is actually referenced in the output.
-     */
-    public void setExcludeURI(String uri) {
-        // The null-namespace cannot be excluded
-        if (uri == null) return;
-
-        // Create new HashMap of exlcuded URIs if none exists
-        if (_excludedURI == null) _excludedURI = new HashMap();
-
-        // Register the namespace URI
-        Integer refcnt = (Integer)_excludedURI.get(uri);
-        if (refcnt == null)
-            refcnt = new Integer(1);
-        else
-            refcnt = new Integer(refcnt.intValue() + 1);
-        _excludedURI.put(uri, refcnt);
-    }
-
-    /**
-     * Exclude a series of namespaces given by a list of whitespace
-     * separated namespace prefixes.
-     */
-    public void setExcludePrefixes(String prefixes) {
-        if (prefixes != null) {
-            StringTokenizer tokens = new StringTokenizer(prefixes);
-            while (tokens.hasMoreTokens()) {
-                final String prefix = tokens.nextToken();
-                final String uri;
-                if (prefix.equals("#default"))
-                    uri = getNamespace(Constants.EMPTYSTRING);
-                else
-                    uri = getNamespace(prefix);
-                if (uri != null) setExcludeURI(uri);
-            }
-        }
-    }
-
-    /**
-     * Check if a namespace should not be declared in the output
-     * (unless used).
-     */
-    public boolean getExcludeUri(String uri) {
-        if (uri != null && _excludedURI != null) {
-            final Integer refcnt = (Integer)_excludedURI.get(uri);
-            return (refcnt != null && refcnt.intValue() > 0);
-        }
-        return false;
-    }
-
-    /**
-     * Turn off namespace declaration exclusion.
-     */
-    public void setUnexcludePrefixes(String prefixes) {
-        if (_excludedURI == null) return;
-        if (prefixes != null) {
-            StringTokenizer tokens = new StringTokenizer(prefixes);
-            while (tokens.hasMoreTokens()) {
-                final String prefix = tokens.nextToken();
-                final String uri;
-                if (prefix.equals("#default"))
-                    uri = getNamespace(Constants.EMPTYSTRING);
-                else
-                    uri = getNamespace(prefix);
-                Integer refcnt = (Integer)_excludedURI.get(uri);
-                if (refcnt != null)
-                    _excludedURI.put(uri, new Integer(refcnt.intValue() - 1));
-            }
-        }
     }
 
     // -- SHOULD BE MOVED OUT OF THIS CLASS !!!! -------------------------

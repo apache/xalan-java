@@ -432,7 +432,7 @@ final class Whitespace extends TopLevelElement {
 		final Parser parser = classGen.getParser();
 		QName qname;
 		if (rule.getNamespace() != Constants.EMPTYSTRING )
-		    qname = parser.getQName(rule.getNamespace(), null,
+		    qname = parser.getQName(rule.getNamespace(), "",
 					    rule.getElement());
 		else
 		    qname = parser.getQName(rule.getElement());

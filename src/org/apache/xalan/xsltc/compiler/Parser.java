@@ -81,11 +81,10 @@ import javax.xml.parsers.*;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
+import org.xml.sax.helpers.AttributesImpl;
 
 import java_cup.runtime.Symbol;
-
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.runtime.AttributeList;
 
 public class Parser implements Constants, ContentHandler {
 
@@ -284,25 +283,32 @@ public class Parser implements Constants, ContentHandler {
     }
 
     /**
-     * Instantiates a SAX2 parser and generate the AST from the input.
+     * This method performs two passes on the AST. The first pass is used
+     * to parse attributes and XPath expression. The second pass is used
+     * to type check the tree.
      */
     public void createAST(Stylesheet stylesheet) {
+        CompilerContext ccontext = CompilerContext.getInstance();
+
 	try {
 	    if (stylesheet != null) {
-		stylesheet.parse(CompilerContext.getInstance());
+                // Initiate parsing phase by calling parse()
+		stylesheet.parse(ccontext);
+
 		final int precedence = stylesheet.getImportPrecedence();
 		final Iterator elements = stylesheet.iterator();
 		while (elements.hasNext()) {
 		    Object child = elements.next();
 		    if (child instanceof Text) {
 			final int l = _locator.getLineNumber();
-			ErrorMsg err =
-			    new ErrorMsg(ErrorMsg.ILLEGAL_TEXT_NODE_ERR,l,null);
+			ErrorMsg err = new ErrorMsg(
+                            ErrorMsg.ILLEGAL_TEXT_NODE_ERR, l, null);
 			reportError(ERROR, err);
 		    }
 		}
 		if (!errorsFound()) {
-		    stylesheet.typeCheck(CompilerContext.getInstance());
+                    // Initiate type checking phase by calling typeCheck()
+		    stylesheet.typeCheck(ccontext);
 		}
 	    }
 	}
@@ -872,50 +878,50 @@ public class Parser implements Constants, ContentHandler {
 	    }
 	}
 	else {
-	    if (uri != null) {
-		// Check if the element belongs in our namespace
-		if (uri.equals(XSLT_URI)) {
-		    node = new UnsupportedElement(uri, prefix, local);
-		    UnsupportedElement element = (UnsupportedElement)node;
-		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
-						_locator.getLineNumber(),local);
-		    element.setErrorMessage(msg);
-		}
-		// Check if this is an XSLTC extension element
-		else if (uri.equals(TRANSLET_URI)) {
-		    node = new UnsupportedElement(uri, prefix, local);
-		    UnsupportedElement element = (UnsupportedElement)node;
-		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
-						_locator.getLineNumber(),local);
-		    element.setErrorMessage(msg);
-		}
-		// Check if this is an extension of some other XSLT processor
-		else {
-		    Stylesheet sheet = _xsltc.getStylesheet();
-		    if ((sheet != null) && (sheet.isExtension(uri))) {
-			if (sheet != (SyntaxTreeNode)_parentStack.peek()) {
-			    node = new UnsupportedElement(uri, prefix, local);
-			    UnsupportedElement elem = (UnsupportedElement)node;
-			    ErrorMsg msg =
-				new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
-					     _locator.getLineNumber(),
-					     prefix+":"+local);
-			    elem.setErrorMessage(msg);
-			}
-		    }
+	    // Check if the element belongs in our namespace
+	    if (uri.equals(XSLT_URI)) {
+		node = new UnsupportedElement(uri, prefix, local);
+		UnsupportedElement element = (UnsupportedElement)node;
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
+					    _locator.getLineNumber(),local);
+		element.setErrorMessage(msg);
+	    }
+	    // Check if this is an XSLTC extension element
+	    else if (uri.equals(TRANSLET_URI)) {
+		node = new UnsupportedElement(uri, prefix, local);
+		UnsupportedElement element = (UnsupportedElement)node;
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
+					    _locator.getLineNumber(),local);
+		element.setErrorMessage(msg);
+	    }
+	    // Check if this is an extension of some other XSLT processor
+	    else {
+		// TODO: check if stack is empty
+                SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
+		StaticContext scontext = parent.getStaticContext();
+
+		// Check parent's static context for extension URI
+		if (scontext.getExtensionElementURI(uri)) {
+		    // TODO
+		    throw new ToDoException("do something with extension!");
 		}
 	    }
-	    if (node == null) node = new LiteralElement();
+
+            // If unrecognized then assume literal
+	    if (node == null) {
+                node = new LiteralElement();
+                ((LiteralElement) node).setQName(qname);
+	    }
 	}
-	if ((node != null) && (node instanceof LiteralElement)) {
-	    ((LiteralElement)node).setQName(qname);
-	}
-	return(node);
+
+	return node;
     }
 
     /**
      * checks the list of attributes against a list of allowed attributes
      * for a particular element node.
+     * TODO: change the implementation of this method to use the version
+     * stored in each SyntaxTreeNode.
      */
     private void checkForSuperfluousAttributes(SyntaxTreeNode node,
 	Attributes attrs)
@@ -1165,7 +1171,15 @@ public class Parser implements Constants, ContentHandler {
 
     // -- SAX2 ContentHandler implementation -----------------------------
 
+    /**
+     * Stack of ancestors in reverse document order.
+     */
     private Stack _parentStack = null;
+
+    /**
+     * Prefix mapping for each element node defined. This mapping is
+     * set by calling SyntaxTreeNode.setPrefixMapping().
+     */
     private HashMap _prefixMapping = null;
 
     /**
@@ -1181,7 +1195,8 @@ public class Parser implements Constants, ContentHandler {
     /**
      * SAX2: Receive notification of the end of a document.
      */
-    public void endDocument() { }
+    public void endDocument() {
+    }
 
     /**
      * SAX2: Begin the scope of a prefix-URI Namespace mapping.
@@ -1198,7 +1213,8 @@ public class Parser implements Constants, ContentHandler {
      * SAX2: End the scope of a prefix-URI Namespace mapping.
      *       This has to be passed on to the symbol table!
      */
-    public void endPrefixMapping(String prefix) { }
+    public void endPrefixMapping(String prefix) {
+    }
 
     /**
      * SAX2: Receive notification of the beginning of an element.
@@ -1206,45 +1222,53 @@ public class Parser implements Constants, ContentHandler {
      *       we clone the attributes in our own Attributes implementation
      */
     public void startElement(String uri, String localname,
-			     String qname, Attributes attributes)
-	throws SAXException {
+	String qname, Attributes attributes) throws SAXException
+    {
 	final int col = qname.lastIndexOf(':');
-	final String prefix = (col == -1) ? null : qname.substring(0, col);
+	final String prefix = (col == -1) ? "" : qname.substring(0, col);
+	SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
 
-	SyntaxTreeNode element = makeInstance(uri, prefix,
-					localname, attributes);
-	if (element == null) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR,
-					prefix+':'+localname);
+	// Unqualified names cannot be global
+	if (uri.length() == 0 && parent instanceof Stylesheet) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR, qname);
 	    throw new SAXException(err.toString());
 	}
 
-	// If this is the root element of the XML document we need to make sure
-	// that it contains a definition of the XSL namespace URI
+	// Create AST node based on element qname
+	SyntaxTreeNode element = makeInstance(uri, prefix, localname,
+            attributes);
+	if (element == null) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR, qname);
+	    throw new SAXException(err.toString());
+	}
+
+	// If this is the root element of the XML document we need to
+        // make sure that it contains a definition of the XSL namespace URI
 	if (_root == null) {
 	    if (_prefixMapping == null ||
-		_prefixMapping.containsValue(Constants.XSLT_URI) == false)
+		_prefixMapping.containsValue(Constants.XSLT_URI) == false) {
 		_rootNamespaceDef = false;
-	    else
+	    }
+	    else {
 		_rootNamespaceDef = true;
+	    }
 	    _root = element;
 	}
 	else {
-	    SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
 	    parent.add(element);
 	    element.setParent(parent);
 	}
-	element.setAttributes((Attributes)new AttributeList(attributes));
-	element.setPrefixMapping(_prefixMapping);
 
-	if (element instanceof Stylesheet) {
-	    // Extension elements and excluded elements have to be
-	    // handled at this point in order to correctly generate
-	    // Fallback elements from <xsl:fallback>s.
-	    ((Stylesheet)element).excludeExtensionPrefixes(this);
-	}
+        // Set NS declaration - must be set before attributes
+        element.setPrefixMapping(_prefixMapping);
 
+	// Set attributes (processes standard attributes too)
+	element.setAttributes(new AttributesImpl(attributes));
+
+        // Reset NS mapping
 	_prefixMapping = null;
+
+        // Push element to the parent's stack
 	_parentStack.push(element);
     }
 
@@ -1272,6 +1296,7 @@ public class Parser implements Constants, ContentHandler {
 	}
 
 	// Ignore text nodes that occur directly under <xsl:stylesheet>
+        // TODO: report error if this text node contains non-whitespace
 	if (parent instanceof Stylesheet) return;
 
         // Get last element of parent
@@ -1303,8 +1328,7 @@ public class Parser implements Constants, ContentHandler {
      */
     public void processingInstruction(String name, String value) {
 	// We only handle the <?xml-stylesheet ...?> PI
-	if ((_target == null) && (name.equals("xml-stylesheet"))) {
-
+	if (_target == null && name.equals("xml-stylesheet")) {
 	    String href = null;    // URI of stylesheet found
 	    String media = null;   // Media of stylesheet found
 	    String title = null;   // Title of stylesheet found
@@ -1314,21 +1338,26 @@ public class Parser implements Constants, ContentHandler {
 	    StringTokenizer tokens = new StringTokenizer(value);
 	    while (tokens.hasMoreTokens()) {
 		String token = (String)tokens.nextToken();
-		if (token.startsWith("href"))
+		if (token.startsWith("href")) {
 		    href = getTokenValue(token);
-		else if (token.startsWith("media"))
+		}
+		else if (token.startsWith("media")) {
 		    media = getTokenValue(token);
-		else if (token.startsWith("title"))
+		}
+		else if (token.startsWith("title")) {
 		    title = getTokenValue(token);
-		else if (token.startsWith("charset"))
+		}
+		else if (token.startsWith("charset")) {
 		    charset = getTokenValue(token);
+		}
 	    }
 
 	    // Set the target to this PI's href if the parameters are
 	    // null or match the corresponding attributes of this PI.
-	    if ( ((_PImedia == null) || (_PImedia.equals(media))) &&
-		 ((_PItitle == null) || (_PImedia.equals(title))) &&
-		 ((_PIcharset == null) || (_PImedia.equals(charset))) ) {
+	    if ((_PImedia == null || _PImedia.equals(media)) &&
+		(_PItitle == null || _PImedia.equals(title)) &&
+		(_PIcharset == null || _PImedia.equals(charset)))
+            {
 		_target = href;
 	    }
 	}
@@ -1337,10 +1366,12 @@ public class Parser implements Constants, ContentHandler {
     /**
      * IGNORED - all ignorable whitespace is ignored
      */
-    public void ignorableWhitespace(char[] ch, int start, int length) { }
+    public void ignorableWhitespace(char[] ch, int start, int length) {
+    }
 
     /**
      * IGNORED - we do not have to do anything with skipped entities
      */
-    public void skippedEntity(String name) { }
+    public void skippedEntity(String name) {
+    }
 }

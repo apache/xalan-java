@@ -75,7 +75,6 @@ import org.apache.bcel.generic.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import org.apache.xalan.xsltc.runtime.AttributeList;
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 

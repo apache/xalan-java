@@ -347,18 +347,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return (_extensions.get(uri) != null);
     }
 
-    public void excludeExtensionPrefixes(Parser parser) {
-	final StaticContext scontext = getStaticContext();
-    	final String excludePrefixes = getAttribute("exclude-result-prefixes");
-	final String extensionPrefixes = getAttribute("extension-element-prefixes");
-
-	// Exclude XSLT uri
-	scontext.setExcludeURI(Constants.XSLT_URI);
-	scontext.setExcludePrefixes(excludePrefixes);
-	scontext.setExcludePrefixes(extensionPrefixes);
-	extensionURI(extensionPrefixes, scontext);
-    }
-
     /**
      * Parse the version and uri fields of the stylesheet and add an
      * entry to the symbol table mapping the name <tt>__stylesheet_</tt>
@@ -396,20 +384,20 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// method) as its only child, so the Template class has a special
 	// method that handles this (parseSimplified()).
 	if (_simplified) {
-	    scontext.setExcludeURI(XSLT_URI);
+	    addExcludeResultURI(XSLT_URI);
 	    Template template = new Template();
 	    template.parseSimplified(ccontext);
 	}
 	// Parse the children of this node
 	else {
-	    parseOwnChildren(ccontext);
+	    parseContents(ccontext);
 	}
     }
 
     /**
      * Parse all direct children of the <xsl:stylesheet/> element.
      */
-    public final void parseOwnChildren(CompilerContext ccontext) {
+    protected void parseContents(CompilerContext ccontext) {
         final Parser parser = ccontext.getParser();
 	final ArrayList contents = getContents();
 	final int count = contents.size();
