@@ -438,7 +438,7 @@ public class UnionPathIterator extends Expression
 
     for (int i = 0; i < n; i++)
     {
-      m_iterators[i] = (DTMIterator)clone.m_iterators[i].clone();
+      clone.m_iterators[i] = (DTMIterator)m_iterators[i].clone();
     }
 
     clone.reset();
