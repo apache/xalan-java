@@ -367,7 +367,7 @@ final class LiteralElement extends Instruction {
 		final String prefix = (String)e.nextElement();
 		final String uri = (String)_accessedPrefixes.get(prefix);
 		if ((uri != Constants.EMPTYSTRING) ||
-		    (prefix == Constants.EMPTYSTRING)) {
+		    (prefix != Constants.EMPTYSTRING)) {
 		    il.append(methodGen.loadHandler());
 		    il.append(new PUSH(cpg,prefix));
 		    il.append(new PUSH(cpg,uri));

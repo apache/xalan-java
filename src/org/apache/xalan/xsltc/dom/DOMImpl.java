@@ -62,11 +62,6 @@
  *
  */
 
-/* Issues to resolve:
-   o) All stacks in the DOMBuilder class have hardcoded length
-   o) There are no namespace nodes (but namespace are handled correctly).
-*/
-
 package org.apache.xalan.xsltc.dom;
 
 import java.io.Externalizable;
@@ -921,8 +916,9 @@ public final class DOMImpl implements DOM, Externalizable {
 		if (isElement(node)) {
 		    _attribute = _lengthOrAttr[_startNode = node];
 		    // Skip namespace nodes
-		    while (_type[_attribute] == NAMESPACE)
+		    while (_type[_attribute] == NAMESPACE) {
 			_attribute = _nextSibling[_attribute];
+		    }
 		}
 		else {
 		    _attribute = NULL;
@@ -1268,7 +1264,7 @@ public final class DOMImpl implements DOM, Externalizable {
                       
 	public int next() {
 	    final int node = _node + 1;
-	    return node < _treeNodeLimit ? returnNode(_node = node) : NULL;
+	    return node < _firstAttributeNode ? returnNode(_node = node) : NULL;
 	}
 
 	public void setMark() {

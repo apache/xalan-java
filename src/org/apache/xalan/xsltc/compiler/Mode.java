@@ -631,7 +631,7 @@ final class Mode implements Constants {
 
 	// (*) Handle template with explicit "@*" pattern
 	final TestSeq attrTest = _testSeq[DOM.ATTRIBUTE];
-	InstructionHandle ihAttr = ihLoop;
+	InstructionHandle ihAttr = ihText;
 	if (attrTest != null)
 	    ihAttr = attrTest.compile(classGen, methodGen, ihAttr);
 
