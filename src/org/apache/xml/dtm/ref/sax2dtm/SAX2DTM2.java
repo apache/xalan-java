@@ -70,9 +70,9 @@ import org.xml.sax.ext.*;
 /**
  * SAX2DTM2 is an optimized version of SAX2DTM which is used in non-incremental case.
  * It is used as the super class of the XSLTC SAXImpl. Many of the interfaces in SAX2DTM
- * and DTMDefaultBase are overrided in SAX2DTM2 in order to provide a fast, efficient 
- * wrapper for the underlying DTM model. Some nested iterators in DTMDefaultBaseIterators
- * are also overrided in SAX2DTM2 for performance reasons.
+ * and DTMDefaultBase are overridden in SAX2DTM2 in order to allow fast, efficient 
+ * access to the DTM model. Some nested iterators in DTMDefaultBaseIterators
+ * are also overridden in SAX2DTM2 for performance reasons.
  *
  * %MK% The code in this class is critical to the XSLTC_DTM performance. Be very careful
  * when making changes here!
@@ -1541,6 +1541,9 @@ public class SAX2DTM2 extends SAX2DTM
   private int[][] m_nextsib_map;
   private int[][] m_firstch_map;
   private int[][] m_parent_map;
+
+  // %OPT% Cache the array of extended types in this class
+  private ExtendedType[] m_extendedTypes;
   
   // Cache the shift and mask values for the SuballocatedIntVectors.
   protected final int m_SHIFT;
@@ -1667,6 +1670,8 @@ public class SAX2DTM2 extends SAX2DTM
     // the end indication.
     m_exptype.addElement(NULL);
     
+    // Set the cached references after the document is built.
+    m_extendedTypes = m_expandedNameTable.getExtendedTypes();
     m_exptype_map = m_exptype.getMap();
     m_nextsib_map = m_nextsib.getMap();
     m_firstch_map = m_firstch.getMap();

@@ -239,9 +239,7 @@ public class ExpandedNameTable
    */
   public String getLocalName(int ExpandedNameID)
   {
-    //return m_locNamesPool.indexToString(ExpandedNameID & MASK_LOCALNAME);
-    ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    return etype.localName;
+    return m_extendedTypes[ExpandedNameID].getLocalName();
   }
 
   /**
@@ -252,9 +250,8 @@ public class ExpandedNameTable
    */
   public final int getLocalNameID(int ExpandedNameID)
   {
-    //return (ExpandedNameID & MASK_LOCALNAME);
-    ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    if (etype.localName.equals(""))
+    // ExtendedType etype = m_extendedTypes[ExpandedNameID];
+    if (m_extendedTypes[ExpandedNameID].getLocalName().equals(""))
       return 0;
     else
     return ExpandedNameID;
@@ -270,11 +267,8 @@ public class ExpandedNameTable
    */
   public String getNamespace(int ExpandedNameID)
   {
-
-    //int id = (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
-    //return (0 == id) ? null : m_namespaceNames.indexToString(id);
-    ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    return (etype.namespace.equals("") ? null : etype.namespace);
+    String namespace = m_extendedTypes[ExpandedNameID].getNamespace();
+    return (namespace.equals("") ? null : namespace);
   }
 
   /**
@@ -285,9 +279,8 @@ public class ExpandedNameTable
    */
   public final int getNamespaceID(int ExpandedNameID)
   {
-    //return (ExpandedNameID & MASK_NAMESPACE) >> BITS_PER_LOCALNAME;
-    ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    if (etype.namespace.equals(""))
+    //ExtendedType etype = m_extendedTypes[ExpandedNameID];
+    if (m_extendedTypes[ExpandedNameID].getNamespace().equals(""))
       return 0;
     else
     return ExpandedNameID;
@@ -301,77 +294,28 @@ public class ExpandedNameTable
    */
   public final short getType(int ExpandedNameID)
   {
-    ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    return (short)etype.nodetype;
+    //ExtendedType etype = m_extendedTypes[ExpandedNameID];
+    return (short)m_extendedTypes[ExpandedNameID].getNodeType();
   }
   
+  /**
+   * Return the size of the ExpandedNameTable
+   *
+   * @return The size of the ExpandedNameTable
+   */
   public int getSize()
   {
     return m_nextType;
   }
   
-  
   /**
-   * Private class representing an extended type object
+   * Return the array of extended types
+   *
+   * @return The array of extended types
    */
-  private final static class ExtendedType
+  public ExtendedType[] getExtendedTypes()
   {
-    protected int nodetype;
-    protected String namespace;
-    protected String localName;
-    protected int hash;
-
-    protected ExtendedType (int nodetype, String namespace, String localName)
-    {
-      this.nodetype = nodetype;
-      this.namespace = namespace;
-      this.localName = localName;
-      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
-    }
-
-	/* This is intended to be used ONLY on the hashET
-	 * object. Using it elsewhere will mess up existing
-	 * hashtable entries!
-	 * */
-    protected void redefine(int nodetype, String namespace, String localName)
-    {
-      this.nodetype = nodetype;
-      this.namespace = namespace;
-      this.localName = localName;
-      this.hash=nodetype+namespace.hashCode()+localName.hashCode();
-    }
-
-    /* Override super method
-	 * */
-    public int hashCode()
-    {
-    	return hash;
-    }
-
-    /* Override super method
-	 * */
-    public boolean equals(Object other)
-    {
-      //Usually an optimization, but
-      // won't arise in our usage:
-      //if(other==this) return true;
-      try
-      {
-          ExtendedType et=(ExtendedType)other;
-          return et.nodetype==this.nodetype &&
-                  et.localName.equals(this.localName) &&
-                  et.namespace.equals(this.namespace);
-      }
-      catch(ClassCastException e)
-      {
-              return false;
-      }
-      catch(NullPointerException e)
-      {
-              return false;
-      }
-    }
-
+    return m_extendedTypes;
   }
-
+  
 }
