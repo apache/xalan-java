@@ -168,31 +168,39 @@ class ProcessorInclude extends XSLTElementProcessor
 
     setPropertiesFromAttributes(handler, rawName, attributes, this);
 
-    String hrefUrl = getHref();
-
-    if (handler.importStackContains(hrefUrl))
-    {
-      throw new org.xml.sax.SAXException(
-        XSLMessages.createMessage(
-          getStylesheetInclErr(), new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
-    }
-
-    handler.pushImportURL(hrefUrl);
-
-    int savedStylesheetType = handler.getStylesheetType();
-
-    handler.setStylesheetType(this.getStylesheetType());
-    handler.pushNewNamespaceSupport();
-
     try
     {
-      parse(handler, uri, localName, rawName, attributes);
+      String hrefUrl = SystemIDResolver.getAbsoluteURI(getHref(),
+                           handler.getBaseIdentifier());    
+
+      if (handler.importStackContains(hrefUrl))
+      {
+        throw new org.xml.sax.SAXException(
+          XSLMessages.createMessage(
+          getStylesheetInclErr(), new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
+      }
+
+      handler.pushImportURL(hrefUrl);
+
+      int savedStylesheetType = handler.getStylesheetType();
+
+      handler.setStylesheetType(this.getStylesheetType());
+      handler.pushNewNamespaceSupport();
+
+      try
+      {
+        parse(handler, uri, localName, rawName, attributes);
+      }
+      finally
+      {
+        handler.setStylesheetType(savedStylesheetType);
+        handler.popImportURL();
+        handler.popNamespaceSupport();
+      }
     }
-    finally
+    catch(TransformerException te)
     {
-      handler.setStylesheetType(savedStylesheetType);
-      handler.popImportURL();
-      handler.popNamespaceSupport();
+      handler.error(te.getMessage(), te);
     }
   }
 
