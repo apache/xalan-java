@@ -98,7 +98,106 @@ class StreamOutput extends OutputBase {
     protected int     _indentLevel = 0;
 
     protected boolean _escaping = true;
+    protected boolean _firstElement = true;
 
     protected String  _encoding;
 
+    protected String  _doctypeSystem = null;
+    protected String  _doctypePublic = null;
+
+    /**
+     * Set the output document system/public identifiers
+     */
+    public void setDoctype(String system, String pub) {
+	_doctypeSystem = system;
+	_doctypePublic = pub;
+    }
+
+    public void setIndent(boolean indent) { 
+	_indent = indent;
+    }
+
+    public void omitHeader(boolean value) {
+        _omitHeader = value;
+    }
+
+    protected void appendDTD(String name) {
+	_buffer.append(name);
+	if (_doctypePublic == null) {
+	    _buffer.append(" SYSTEM");
+	}
+	else {
+	    _buffer.append(" PUBLIC \"").append(_doctypePublic).append("\"");
+	}
+	if (_doctypeSystem != null) {
+	    _buffer.append(" \"").append(_doctypeSystem).append("\">\n");
+	}
+	else {
+	    _buffer.append(">\n");
+	}
+    }
+
+    /**
+     * Adds a newline in the output stream and indents to correct level
+     */
+    protected void indent(boolean linefeed) {
+        if (linefeed) {
+            _buffer.append('\n');
+	}
+
+	_buffer.append(INDENT, 0, 
+	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel + _indentLevel 
+		: MAX_INDENT);
+    }
+
+    protected void escapeCharacters(char[] ch, int off, int len) {
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) {
+	    limit = ch.length;
+	}
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    final char current = ch[i];
+
+	    switch (current) {
+	    case '&':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(AMP);
+		offset = i + 1;
+		break;
+	    case '<':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(LT);
+		offset = i + 1;
+		break;
+	    case '>':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(GT);
+		offset = i + 1;
+		break;
+	    case '\u00a0':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(NBSP);
+		offset = i + 1;
+		break;
+	    default:
+		if ((current >= '\u007F' && current < '\u00A0') ||
+		    (_is8859Encoded && current > '\u00FF'))
+		{
+		    _buffer.append(ch, offset, i - offset);
+		    _buffer.append(CHAR_ESC_START);
+		    _buffer.append(Integer.toString((int)ch[i]));
+		    _buffer.append(';');
+		    offset = i + 1;
+		}
+	    }
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) {
+	    _buffer.append(ch, offset, limit - offset);
+	}
+    }
 }

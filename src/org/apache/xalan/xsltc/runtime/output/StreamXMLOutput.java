@@ -63,6 +63,8 @@
 
 package org.apache.xalan.xsltc.runtime.output;
 
+import java.util.Stack;
+
 import java.io.Writer;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -73,42 +75,85 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.*;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 
-public class StreamHTMLOutput extends StreamOutput {
+public class StreamXMLOutput extends StreamOutput implements Constants {
 
-    private static final String HREF_STR = "href";
-    private static final String CITE_STR = "cite";
-    private static final String SRC_STR  = "src";
+    /**
+     * Holds the current tree depth.
+     */
+    private int _depth = 0;
 
-    private static final Hashtable _emptyElements = new Hashtable();
-    private static final String[] tags = { "area", "base", "basefont", "br",
-					   "col", "frame", "hr", "img", "input",
-					   "isindex", "link", "meta", "param" };
-    static {
-        for (int i = 0; i < tags.length; i++) {
-            _emptyElements.put(tags[i], "");
-	}
-    }
+    /**
+     * Contains all elements that should be output as CDATA sections.
+     */
+    private Hashtable _cdata = null;
 
-    private boolean _headTagOpen = false;
-    private boolean _inStyleScript = false;
-    private String  _mediaType     = "text/html";
+    /**
+     * The top of this stack contains the element id of the last element whose
+     * contents should be output as CDATA sections.
+     */
+    private Stack _cdataStack;
 
-    public StreamHTMLOutput(Writer writer, String encoding) {
+    /** 
+     * Each entry (prefix) in this hashtable points to a Stack of URIs.
+     */
+    private Hashtable _namespaces;
+    
+    /** 
+     * The top of this stack contains an id of the element that last declared
+     * a namespace. Used to ensure prefix/uri map scopes are closed correctly.
+     */
+    private Stack _nodeStack;
+
+    /** 
+     * The top of this stack is the prefix that was last mapped to an URI.
+     */
+    private Stack _prefixStack;
+
+    public StreamXMLOutput(Writer writer, String encoding) {
 	_writer = writer;
 	_encoding = encoding;
 	_is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
+	init();
     }
 
-    public StreamHTMLOutput(OutputStream out, String encoding) 
+    public StreamXMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	try {
 	    _writer = new OutputStreamWriter(out, _encoding = encoding);
 	    _is8859Encoded = encoding.equalsIgnoreCase("iso-8859-1");
+	    init();
 	}
 	catch (UnsupportedEncodingException e) {
 	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
 	}
+    }
+
+    /**
+     * Initialize global variables
+     */
+    private void init() {
+	// CDATA stack
+	_cdataStack = new Stack();
+	_cdataStack.push(new Integer(-1)); 	// push dummy value
+
+	// Initialize namespaces
+	_namespaces = new Hashtable();
+	_nodeStack = new Stack();
+	_prefixStack = new Stack();
+
+	// Define the default namespace (initially maps to "" uri)
+	Stack stack;
+	_namespaces.put(EMPTYSTRING, stack = new Stack());
+	stack.push(EMPTYSTRING);
+	_prefixStack.push(EMPTYSTRING);
+
+	_namespaces.put(XML_PREFIX, stack = new Stack());
+	stack.push("http://www.w3.org/XML/1998/namespace");
+	_prefixStack.push(XML_PREFIX);
+
+	_nodeStack.push(new Integer(-1));
+	_depth = 0;
     }
 
     public void startDocument() throws TransletException { 
@@ -154,26 +199,15 @@ public class StreamHTMLOutput extends StreamOutput {
 	}
 
 	if (_indent) {
-	    if (!_emptyElements.containsKey(elementName.toLowerCase())) {
-		indent(_lineFeedNextStartTag);
-		_lineFeedNextStartTag = true;
-		_indentNextEndTag = false;
-	    }
+	    indent(_lineFeedNextStartTag);
+	    _lineFeedNextStartTag = true;
+	    _indentNextEndTag = false;
 	    _indentLevel++;
 	}
 
 	_buffer.append('<').append(elementName);
 	_startTagOpen = true;
 	_indentNextEndTag = false;
-
-	if (elementName.equalsIgnoreCase("head")) {
-	    _headTagOpen = true;
-	}
-	else if (elementName.equalsIgnoreCase("style") || 
-		 elementName.equalsIgnoreCase("script")) 
-	{
-	    _inStyleScript = true;
-	}
     }
 
     public void endElement(String elementName) throws TransletException { 
@@ -189,21 +223,6 @@ public class StreamHTMLOutput extends StreamOutput {
 		_indentNextEndTag = true;
 	    }
 	}
-
-	// Empty elements may not have closing tags
-	if (!_emptyElements.containsKey(elementName.toLowerCase())) {
-	    _buffer.append("</").append(elementName).append('>');
-	}
-	else if (_headTagOpen) {
-	    appendHeader(); 	// Insert <META> tag after <HEAD>
-	    _headTagOpen = false;
-	}
-	else if (_inStyleScript && 
-		 (elementName.equalsIgnoreCase("style") || 
-		  elementName.equalsIgnoreCase("script"))) 
-	{
-	    _inStyleScript = false;
-	}
     }
 
     public void characters(String characters)
@@ -214,7 +233,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _startTagOpen = false;
 	}
 
-	if (_escaping && !_inStyleScript) {
+	if (_escaping) {
 	    escapeCharacters(characters.toCharArray(), 0, characters.length());
 	}
 	else {
@@ -230,7 +249,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _startTagOpen = false;
 	}
 
-	if (_escaping && !_inStyleScript) {
+	if (_escaping) {
 	    escapeCharacters(characters, offset, length);
 	}
 	else {
@@ -242,17 +261,9 @@ public class StreamHTMLOutput extends StreamOutput {
 	throws TransletException 
     { 
 	if (_startTagOpen) {
-	    _buffer.append(' ').append(attributeName).append("=\"");
-
-	    if (attributeName.equalsIgnoreCase(HREF_STR) || 
-		attributeName.equalsIgnoreCase(SRC_STR)  || 
-		attributeName.equals(CITE_STR)) 
-	    {
-		appendEncodedURL(attributeValue).append('"');
-	    }
-	    else {
-		appendNonURL(attributeValue).append('"');
-	    }
+	    _buffer.append(' ').append(attributeName)
+		   .append("=\"").append(attributeValue)
+		   .append('"');
 	}
     }
 
@@ -271,9 +282,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _buffer.append('>');
 	    _startTagOpen = false;
 	}
-	// A PI in HTML ends with ">" instead of "?>"
-	_buffer.append("<?").append(target).append(' ')
-	    .append(data).append('>');
+	_buffer.append("<?").append(target).append(data).append("?>");
     }
 
     public boolean setEscaping(boolean escape) throws TransletException 
@@ -292,72 +301,77 @@ public class StreamHTMLOutput extends StreamOutput {
 	}
     }
 
-    public void namespace(String prefix, String uri) throws TransletException 
-    { 
-	// ignore when method type is HTML
-    }
-
     public void setCdataElements(Hashtable elements) { 
-	// ignore when method type is HTML
+	_cdata = elements;
     }
 
-    public void setType(int type) { 
-	// ignore: default is HTML
-    }
-
-    /**
-     * Set the output media type - only relevant for HTML output
-     */
-    public void setMediaType(String mediaType) {
-	_mediaType = mediaType;
-    }
-
-    /**
-     * Replaces whitespaces in a URL with '%20'
-     */
-    private StringBuffer appendEncodedURL(String base) {
-	final int length = base.length();
-
-	for (int i = 0; i < length; i++) {
-	    final char ch = base.charAt(i);
-	    if (ch == ' ') {
-		_buffer.append("%20");
-	    }
-	    else {
-		_buffer.append(ch);
-	    }
+    public void namespace(final String prefix, final String uri)
+	throws TransletException 
+    {
+	if (_startTagOpen) {
+	    pushNamespace(prefix, uri);
 	}
-	return _buffer;
+	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
+	    BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
+				      prefix, uri);
+	}
     }
 
     /**
-     * Escape non ASCII characters (> u007F) as &#XXX; entities.
+     * Declare a prefix to point to a namespace URI
      */
-    private StringBuffer appendNonURL(String base) {
-	final int length = base.length();
+    private void pushNamespace(String prefix, String uri) {
+	// Prefixes "xml" and "xmlns" cannot be redefined
+	if (prefix.equals(XML_PREFIX)) {
+	    return;
+	}
+	
+	Stack stack;
+	// Get the stack that contains URIs for the specified prefix
+	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
+	    _namespaces.put(prefix, stack = new Stack());
+	}
+	else if (uri.equals(stack.peek())) {
+	    return;	// Ignore
+	}
 
-        for (int i = 0; i < length; i++){
-	    final char ch = base.charAt(i);
-
-	    if (ch > '\u007F') {
-	        _buffer.append(CHAR_ESC_START)
-		       .append(Integer.toString((int) ch))
-		       .append(';');
-	    }
-	    else {
-	        _buffer.append(ch); 
-	    } 
-  	}
-	return _buffer;
+	stack.push(uri);
+	_prefixStack.push(prefix);
+	_nodeStack.push(new Integer(_depth));
     }
 
     /**
-     * Emit HTML meta info
+     * Undeclare the namespace that is currently pointed to by a given prefix
      */
-    private void appendHeader() {
-	_buffer.append("<meta http-equiv=\"Content-Type\" content=\"")
-	       .append(_mediaType).append(" charset=\"")
-	       .append(_encoding).append("/>");
+    private void popNamespace(String prefix) {
+	// Prefixes "xml" and "xmlns" cannot be redefined
+	if (prefix.equals(XML_PREFIX)) return;
+
+	Stack stack;
+	if ((stack = (Stack)_namespaces.get(prefix)) != null) {
+	    stack.pop();
+	}
+    }
+
+    /**
+     * Pop all namespace definitions that were delcared by the current element
+     */
+    private void popNamespaces() throws TransletException {
+	while (true) {
+	    if (_nodeStack.isEmpty()) return;
+	    Integer i = (Integer)(_nodeStack.peek());
+	    if (i.intValue() != _depth) return;
+	    _nodeStack.pop();
+	    popNamespace((String)_prefixStack.pop());
+	}
+    }
+
+    /**
+     * Use a namespace prefix to lookup a namespace URI
+     */
+    private String lookupNamespace(String prefix) {
+	final Stack stack = (Stack)_namespaces.get(prefix);
+	return stack != null && !stack.isEmpty() ? (String)stack.peek() : null;
     }
 
 }
