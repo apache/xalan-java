@@ -330,6 +330,13 @@ public class XSLTElementProcessor
     for (int i = 0; i < nAttrs; i++)
     {
       String attrUri = attributes.getURI(i);
+      // Hack for Crimson.  -sb
+      if((null != attrUri) && (attrUri.length() == 0)
+                           && (attributes.getQName(i).startsWith("xmlns:") || 
+                               attributes.getQName(i).equals("xmlns")))
+      {
+        attrUri = org.apache.xalan.templates.Constants.S_XMLNAMESPACEURI;
+      }
       String attrLocalName = attributes.getLocalName(i);
       XSLTAttributeDef attrDef = def.getAttributeDef(attrUri, attrLocalName);
 
