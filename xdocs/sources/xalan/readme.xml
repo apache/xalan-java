@@ -86,8 +86,7 @@
      <p>Our <link idref="samples" anchor="sql">SQL extension samples</link> continue to use InstantDB, but based on our realization of changes 
      that have occurred in the licensing of InstantDB, we no longer include InstantDB and the associated sample database with our distibution.
      We do, however, provide information on how to <link idref="samples" anchor="instantdbsetup">set up InstantDB</link> to support our SQL 
-     extension samples.</p>
-    
+     extension samples.</p>    
      &done-j;
      </s3>
      <anchor name="other"/>
