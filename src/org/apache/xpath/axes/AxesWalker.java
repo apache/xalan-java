@@ -1338,7 +1338,7 @@ public abstract class AxesWalker extends NodeTest
 
     Node current = this.getCurrentNode();
 
-    if (current.supports(FEATURE_NODETESTFILTER, "1.0"))
+    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
       ((NodeTestFilter) current).setNodeTest(this);
 
     Node next = this.firstChild();

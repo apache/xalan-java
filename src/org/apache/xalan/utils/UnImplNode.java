@@ -702,14 +702,20 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * Unimplemented. 
-   *
-   * NEEDSDOC @param feature
-   * NEEDSDOC @param version
-   *
-   * NEEDSDOC ($objectName$) @return
+   * Tests whether the DOM implementation implements a specific feature and 
+   * that feature is supported by this node.
+   * @param featureThe name of the feature to test. This is the same name 
+   *   which can be passed to the method <code>hasFeature</code> on 
+   *   <code>DOMImplementation</code>.
+   * @param versionThis is the version number of the feature to test. In 
+   *   Level 2, version 1, this is the string "2.0". If the version is not 
+   *   specified, supporting any version of the feature will cause the 
+   *   method to return <code>true</code>.
+   * @return Returns <code>true</code> if the specified feature is 
+   *   supported on this node, <code>false</code> otherwise.
+   * @since DOM Level 2
    */
-  public boolean supports(String feature, String version)
+  public boolean isSupported(String feature, String version)
   {
     return false;
   }

@@ -421,7 +421,7 @@ public class ElemForEach extends ElemTemplateElement
                 template = sroot.getDefaultRule();
                 break;
               case Node.CDATA_SECTION_NODE :
-                if (child.supports(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
+                if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
                 {
                   ((SaxEventDispatch) child).dispatchSaxEvent(rth);
                 }
@@ -437,7 +437,7 @@ public class ElemForEach extends ElemTemplateElement
 
                 continue;
               case Node.TEXT_NODE :
-                if (child.supports(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
+                if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
                 {
                   ((SaxEventDispatch) child).dispatchSaxEvent(rth);
                 }
