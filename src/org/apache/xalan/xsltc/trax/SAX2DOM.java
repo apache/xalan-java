@@ -73,6 +73,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -87,7 +88,8 @@ public class SAX2DOM implements ContentHandler, Constants {
     private Vector _namespaceDecls = null;
 
     public SAX2DOM() throws ParserConfigurationException {
-	final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	final DocumentBuilderFactory factory = 
+		DocumentBuilderFactory.newInstance();
 	_root = factory.newDocumentBuilder().newDocument();
     }
 
@@ -96,7 +98,8 @@ public class SAX2DOM implements ContentHandler, Constants {
 	    _root = (Document) root;   // TODO: add support for frags and elems
 	}
 	else {
-	    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    final DocumentBuilderFactory factory = 
+		DocumentBuilderFactory.newInstance();
 	    _root = factory.newDocumentBuilder().newDocument();
 	}
     }
@@ -189,10 +192,13 @@ public class SAX2DOM implements ContentHandler, Constants {
     }
 
     /**
-     * This class is only used internally so this method should never 
-     * be called.
+     * adds processing instruction node to DOM.
      */
     public void processingInstruction(String target, String data) {
+	final Node last = (Node)_nodeStk.peek();
+	ProcessingInstruction pi = _root.createProcessingInstruction(
+		target, data);
+	if (pi != null)  last.appendChild(pi);
     }
 
     /**
