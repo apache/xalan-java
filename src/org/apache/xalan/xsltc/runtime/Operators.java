@@ -37,6 +37,11 @@ public interface Operators {
     
     // Swap operator array
     public static final int[] swapArray = {
-        0, 1, 3, 2, 5, 4
+        EQ,     // EQ
+        NE,     // NE
+        LT,     // GT
+        GT,     // LT 
+        LE,     // GE 
+        GE      // LE
     };   
 }
