@@ -23,6 +23,15 @@ public class XStatement extends StreamableNode
   private static final boolean DEBUG = false;
   private Statement m_statement;
   
+  private int m_nodeCounter = 0;
+  
+  int getAndIncrementNodeCounter()
+  {
+    int c = m_nodeCounter;
+    m_nodeCounter++;
+    return c;
+  }
+  
   public Statement getStatement()
   {
     return m_statement;

@@ -87,7 +87,10 @@ public class Row extends StreamableNode
   public Node               getNextSibling()
   {
     if(DEBUG)
-      System.out.println("In Row.getNextSibling");
+    {
+      System.out.print("In Row.getNextSibling");
+      System.out.flush();
+    }
     XStatement xstatement = this.getXStatement();
     ResultSet resultSet = xstatement.getResultSet();
     try
@@ -112,6 +115,13 @@ public class Row extends StreamableNode
           {
             // Diagnostics?
           }
+        }
+        if(DEBUG)
+        {
+          System.out.println(": m_next: "+m_next);
+          System.out.flush();
+          // Exception e = new Exception();
+          // e.printStackTrace();
         }
         return m_next;
       }

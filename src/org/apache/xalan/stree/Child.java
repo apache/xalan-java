@@ -1,13 +1,14 @@
 package org.apache.xalan.stree;
 
 import org.apache.xalan.utils.UnImplNode;
+import org.apache.xpath.DOMOrder;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 
-public class Child extends UnImplNode
+public class Child extends UnImplNode implements DOMOrder
 {
   private Parent m_parent;
   private short m_level;

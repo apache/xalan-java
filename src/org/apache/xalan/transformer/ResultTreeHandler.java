@@ -366,13 +366,18 @@ public class ResultTreeHandler
                                                                             GenerateEvent.EVENTTYPE_STARTDOCUMENT));
       }
 
+      // System.out.print("Calling start element: "+m_pendingElementName+"... ");
+      // System.out.print(" on: "+getContentHandler()+"... ");
+      // System.out.flush();
       getContentHandler().startElement(m_pendingElementNS, 
-                                                     m_pendingElementLName, 
-                                                     m_pendingElementName, 
-                                                     m_pendingAttributes);
+                                       m_pendingElementLName, 
+                                       m_pendingElementName, 
+                                       m_pendingAttributes);
+      // System.out.println("Done calling start element: "+m_pendingElementLName);
+      // System.out.flush();
       m_transformer.getTraceManager().fireGenerateEvent(new GenerateEvent(m_transformer,
-                                                        GenerateEvent.EVENTTYPE_STARTELEMENT,
-                                                        m_pendingElementName, m_pendingAttributes));
+                                                                          GenerateEvent.EVENTTYPE_STARTELEMENT,
+                                                                          m_pendingElementName, m_pendingAttributes));
       clearPendingElement();
     }
   }
