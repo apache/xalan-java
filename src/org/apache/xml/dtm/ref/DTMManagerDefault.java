@@ -267,18 +267,18 @@ public class DTMManagerDefault extends DTMManager
           {
             // CoroutineSAXParser_Xerces to avoid threading.
             // System.out.println("Using CoroutineSAXParser_Xerces to avoid threading");
-	    try {
-	      // should be ok, it's in the same package - no need for thread class loader
-	      Class c=Class.forName( "org.apache.xml.dtm.ref.CoroutineSAXParser_Xerces" );
-	      coParser=(CoroutineParser)c.newInstance();
-	      coParser.init( coroutineManager, appCoroutine, reader );
-	    }  catch( Exception ex ) {
-	      ex.printStackTrace();
-	      coParser=null;
-	    }
+            try {
+              // should be ok, it's in the same package - no need for thread class loader
+              Class c=Class.forName( "org.apache.xml.dtm.ref.CoroutineSAXParser_Xerces" );
+              coParser=(CoroutineParser)c.newInstance();
+              coParser.init( coroutineManager, appCoroutine, reader );
+            }  catch( Exception ex ) {
+              ex.printStackTrace();
+              coParser=null;
+            }
           }
 
-	  if( coParser==null ) {
+          if( coParser==null ) {
             // Create a CoroutineSAXParser that will run on the secondary thread.
             if (null == reader)
               coParser = new CoroutineSAXParser(coroutineManager,
@@ -452,12 +452,15 @@ public class DTMManagerDefault extends DTMManager
          }
       
       // Fallback: Not found in one we know how to search.
-      // Current solution: Generate a new DOM2DTM with this node as root.
-      // %REVIEW% Maybe the best I can do??
-      DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(node), false,
+      // Current solution: Generate a new DOM2DTM.
+      // %REVIEW% Maybe the best I can do??     
+      Node root = node.getOwnerDocument();
+      if(null == root)
+        root =  node;   
+      DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root), false,
                        null, true, true);
 
-      return dtm.getDocument();
+      return ((DOM2DTM)dtm).getHandleOfNode(node);
     }
   }
 
