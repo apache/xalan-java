@@ -111,9 +111,10 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     private static final char[] XMLNS    = " xmlns".toCharArray();
 
     // All of these are used to control/track output indentation
-    private static final char[] INDENT = "                    ".toCharArray();
-    private static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
-    private static final int MAX_INDENT       = INDENT.length;
+    private static final char[] INDENT =
+	"                              ".toCharArray();
+    private static final int MAX_INDENT_LEVEL = 10;
+    private static final int MAX_INDENT       = 30;
 
     private static final String EMPTYSTRING = "";
 
@@ -291,16 +292,13 @@ public class DefaultSAXOutputHandler implements ContentHandler {
     public void endElement(String uri, String localname,
 			   String elementName)  throws SAXException {
 	try {
-
-            _linefeedNextStartTag = false;
-
             if (_indent) _indentLevel--;
 
             if (_startTagOpen) {
                 closeStartTag(false);
             }
             else {
-                if ((_indent) && (_indentNextEndTag)) indent(false);
+                if ((_indent) && (_indentNextEndTag)) indent(true);
                 char[] endTag = (char[])_endTags.get(elementName);
                 if (endTag == null) {
 		    // We dont' want to concatenate String objects!!!!
@@ -419,7 +417,7 @@ public class DefaultSAXOutputHandler implements ContentHandler {
         if (linefeed)
             _writer.write('\n');
         if (_indentLevel < MAX_INDENT_LEVEL)
-            _writer.write(INDENT, 0, (_indentLevel+_indentLevel));
+            _writer.write(INDENT, 0, (_indentLevel+_indentLevel+_indentLevel));
         else
             _writer.write(INDENT, 0, MAX_INDENT);
     }
