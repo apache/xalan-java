@@ -41,7 +41,7 @@
 <Log>bug fix 3320, gunnlaugur briem's fix</Log>
 </Commit>
 <Commit category="xsltc">
-<Who>"Gunnlaugur Thor Briem" &lt;gthb@dimon.is&lt;</Who>
+<Who>"Gunnlaugur Thor Briem" &lt;gthb@dimon.is&gt;</Who>
 <DateCommitted>09/06/2001</DateCommitted>
 <Log>
 &gt; bug fix 3320, gunnlaugur briem's fix
@@ -774,5 +774,214 @@ incremental and optimize</Log>
  Obtained from: n/a
  Submitted by: John Howard (johnh@schemasoft.com)
  Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Param.java
+ Step.java Variable.java VariableBase.java xpath.cup
+ java/src/org/apache/xalan/xsltc/dom DOMAdapter.java
+ DOMImpl.java
+ java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>Fix for nth-position typed descendant iterators (previously not fully
+ implemented).
+ PR: bugzilla 3468
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
+<Log>Fix for our handling of the &lt;xsl:comment? element.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Param.java
+ Variable.java</Modified>
+<Log>Removed previous attempt to fix forward references in globar vars.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Stylesheet.java</Modified>
+<Log>Fix for allowing LRE as top-level elements in the stylesheet (they will be
+ ignored).
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>release 2.2.D11</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>release 2.2.D11</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom NodeSortRecord.java</Modified>
+<Log>Fix to make sure all num-numeric values are grouped last in numeric sorts.
+ PR: bugzilla 3517
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ NodeIteratorBase.java</Modified>
+<Log>A fix to ensure that the current position of any iterator is always kept
+ updated. The returnNode() method of the NodeIteratorBase base class updates
+ the _position variable for each returned node. This method should be called
+ by the next() method of any iterator, except for next() methods that call
+ super.next() (because this method calls returnNode() and so _position
+ would be incremented twice or more for one returned node).
+ PR: bugzilla 3816
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>Updated the information returned by the system-property() function.
+ xsl:verision returns "1.0"
+ xsl:vendor returns "Apache Xalan XSLTC" - must be different from Xalan!!!"
+ xsl:vendor-url returns "http://xml.apache.org/xalan-j"
+ PR: bugzilla 3470
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java</Modified>
+<Log>Fix to allow indentation to be turned off XML/HTML output.
+ PR: bugzilla 3469
+ Obtained from: n/a
+ Submitted by: Douglas J. Sellers (douglasjsellers@hotmail.com)
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Output.java
+ Parser.java Stylesheet.java</Modified>
+<Log>Fix to make sure the one, and only one, xsl:output element is compiled
+ per translet (import precedence taken into account).
+ PR: bugzilla 3099
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>Changed BasisLibrary.formatNumer() (this is the implementation of
+ format-number()) so that it correctly formats NaNs into "NaN".
+ PR: bugzilla 2890
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/25/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime BasisLibrary.java</Modified>
+<Log>Another little update to format-number() to make sure it returns
+ "Infinity" and "-Infinity" for infinite numbers.
+ PR: bugzilla 2889
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Stylesheet.java</Modified>
+<Log>Changed the order in which a stylesheet parses its top-level elements.
+ PR: bugzilla 3812
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Step.java
+ java/src/org/apache/xalan/xsltc/dom NthIterator.java</Modified>
+<Log>Removed a bug in the NthIterator iterator that prevented the iterator from
+ properly being reset. This bug manifested itself if the Nth iterator was
+ wrapped inside a step iterator.
+ PR: bugzilla 3419
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Step.java</Modified>
+<Log>Added node-ordering for preceding iterators when used in apply-templates
+ or value-of elements.
+ PR: bugzilla 3463
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Step.java</Modified>
+<Log>Removed debug statement in Step.java
+ Submitted by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DupFilterIterator.java</Modified>
+<Log>Modified the DupFilterIterator so that it also orders nodes.
+ PR: bugzilla 3466
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Step.java</Modified>
+<Log>Fix after a regression for preceding-sibling::* iterator.
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>09/26/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLTSchema.java</Modified>
+<Log>Mark xsl:template as containing ordered elements. Fix for no error when 
+xsl:param not first child of xsl:template</Log>
 </Commit>
 </Commits>
