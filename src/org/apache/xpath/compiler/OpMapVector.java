@@ -122,13 +122,12 @@ public class OpMapVector {
 
       int newMap[] = new int[m_mapSize];
 
-      System.arraycopy(m_map, 0, newMap, 0, m_map[m_lengthPos]);
+      System.arraycopy(m_map, 0, newMap, 0, m_map[m_lengthPos]+1);
 
       m_map = newMap;
     }
 
     m_map[index] = value;
-    
   }
   
   
