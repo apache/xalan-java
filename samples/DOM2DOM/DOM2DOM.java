@@ -89,9 +89,11 @@ public class DOM2DOM
       transformer.transform(xmlDomSource, domResult);
 	  
 	    //Instantiate an Xalan XML serializer and use it to serialize the output DOM to System.out
-	    // using a default output format.
-      Serializer serializer = SerializerFactory.getSerializer
-                             (OutputPropertiesFactory.getDefaultMethodProperties("xml"));
+	    // using the default output format, except for indent="yes"
+      java.util.Properties xmlProps = OutputPropertiesFactory.getDefaultMethodProperties("xml");
+      xmlProps.setProperty("indent", "yes");
+      xmlProps.setProperty("standalone", "no");
+      Serializer serializer = SerializerFactory.getSerializer(xmlProps);                             
       serializer.setOutputStream(System.out);
       serializer.asDOMSerializer().serialize(domResult.getNode());
 	}

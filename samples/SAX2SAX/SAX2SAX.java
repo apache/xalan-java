@@ -84,8 +84,10 @@ public class SAX2SAX
       
    	  FileOutputStream fos = new FileOutputStream("birds.out");
       
-      Serializer serializer = SerializerFactory.getSerializer
-                              (OutputPropertiesFactory.getDefaultMethodProperties("xml"));
+      java.util.Properties xmlProps = OutputPropertiesFactory.getDefaultMethodProperties("xml");
+      xmlProps.setProperty("indent", "yes");
+      xmlProps.setProperty("standalone", "no");      
+      Serializer serializer = SerializerFactory.getSerializer(xmlProps);
       serializer.setOutputStream(fos);
    
       
