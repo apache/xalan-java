@@ -70,6 +70,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Properties;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -160,8 +162,8 @@ public final class TemplatesImpl implements Templates, Serializable {
         /**
          * Access to final protected superclass member from outer class.
          */
-	Class defineClass(byte[] b) {
-	    return defineClass(null, b, 0, b.length);
+	Class defineClass(final byte[] b) {
+            return defineClass(null, b, 0, b.length);
 	}
     }
 
@@ -316,8 +318,12 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    throw new TransformerConfigurationException(err.toString());
 	}
 
-        TransletClassLoader loader =
-            new TransletClassLoader(ObjectFactory.findClassLoader());
+        TransletClassLoader loader = (TransletClassLoader)
+            AccessController.doPrivileged(new PrivilegedAction() {
+                public Object run() {
+                    return new TransletClassLoader(ObjectFactory.findClassLoader());
+                }
+            });
 
 	try {
 	    final int classCount = _bytecodes.length;
