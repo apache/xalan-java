@@ -81,16 +81,18 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ValidateXMLInput
 {
+  
   public static void main(String[] args) 
     throws Exception
   {
     ValidateXMLInput v = new ValidateXMLInput();
-    v.validateInput();
+    v.validate();
   }
-  void validateInput()
+
+  void validate()
     throws Exception
-  {
-    // Since we're going to use a SAX feature, the transformer must support 
+   {
+     // Since we're going to use a SAX feature, the transformer must support 
     // input in the form of a SAXSource.
     TransformerFactory tfactory = TransformerFactory.newInstance();
     if(tfactory.getFeature(SAXSource.FEATURE))
@@ -117,7 +119,17 @@ public class ValidateXMLInput
         new InputSource("birds.xml"));
       
       // Transform to a file.
-      t.transform(source, new StreamResult("birds.out"));
+      try
+      {
+        t.transform(source, new StreamResult("birds.out"));
+      }
+      catch (TransformerException te)
+      {
+        // The TransformerException wraps someting other than a SAXParseException
+        // warning or error, either of which should be "caught" by the Handler.
+        System.out.println("Not a SAXParseException warning or error: " + te.getMessage());
+      }
+                                  
       System.out.println("=====Done=====");
     }
     else
