@@ -100,10 +100,45 @@ import org.apache.xml.dtm.ref.DTMManagerDefault;
  * */
 public class CachedXPathAPI
 {
-  /** XPathContext, and thus DTMManager and DTMs, persists through multiple
-      calls to this object.
+  /** XPathContext, and thus the document model system (DTMs), persists through multiple
+      calls to this object. This is set in the constructor.
   */
-  XPathContext xpathSupport = new XPathContext();
+  protected XPathContext xpathSupport;
+
+  /** Default constructor. Establishes its own XPathContext, and hence
+   *  its own DTMManager.  Good choice for simple uses.
+   * */
+  public CachedXPathAPI()
+  {
+    xpathSupport = new XPathContext();
+  }
+  
+  /** This constructor shares its XPathContext with a pre-existing
+   *  CachedXPathAPI.  That allows sharing document models (DTMs) and
+   *  previously established location state.
+   *
+   *  Note that the original CachedXPathAPI and the new one should not
+   *  be operated concurrently; we do not support multithreaded access
+   *  to a single DTM at this time.
+   *
+   *  %REVIEW% Should this instead do a clone-and-reset on the XPathSupport object?
+   * */
+  public CachedXPathAPI(CachedXPathAPI priorXPathAPI)
+  {
+    xpathSupport = priorXPathAPI.xpathSupport;
+  }
+
+
+  /** Returns the XPathSupport object used in this CachedXPathAPI
+   *
+   * %REVIEW% I'm somewhat concerned about the loss of encapsulation
+   * this causes, but the xml-security folks say they need it.
+   * */
+  public XPathContext getXPathContext()
+  {
+    return this.xpathSupport;
+  }
+  
 
   /**
    * Use an XPath string to select a single node. XPath namespace
