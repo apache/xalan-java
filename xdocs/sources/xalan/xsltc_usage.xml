@@ -329,20 +329,20 @@ Arguments wirhout flags:
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Templates;
-import javax.xml.transform.StreamSource;
-import javax.xml.transform.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
 ...
 // Set the TransformerFactory system property.
 String key = "javax.xml.transformer.TransformerFactory";
 String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
 Properties props = new Properties(System.getProperties());
-props.put(key, value);
+Object o = props.put(key, value);
 ...
 String xslInURI;
 // Instantiate the TransformerFactory, and use it along with a SteamSource
 // XSL stylesheet to create a translet as a Templates object.
-TransformerFactory tFactory = TransformerFactory.newInstance()
-Templates translet = tFactory.newTemplates(new StreamSource(xslInURI);
+TransformerFactory tFactory = TransformerFactory.newInstance();
+Templates translet = tFactory.newTemplates(new StreamSource(xslInURI));
 ...
 String xmlInURI;
 String htmlOutURI;
@@ -350,31 +350,31 @@ String htmlOutURI;
 // For each transformation, instantiate a new Transformer, and perform
 // the transformation from a StreamSource to a StreamResult;
 Transformer transformer = translet.newTransformer();
-transformer.Transform(new StreamSource(xmlInURI),
+transformer.transform(new StreamSource(xmlInURI),
                       new StreamResult(htmlOutURI));
 ...</source>
 <p><em>Example 2:</em> Compiling a translet/Templates object for a single transformation</p>
 <source>import java.util.Properties;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.StreamSource;
-import javax.xml.transform.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
 ...
 // Set the TransformerFactory system property.
 String key = "javax.xml.transformer.TransformerFactory";
 String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
 Properties props = new Properties(System.getProperties());
-props.put(key, value);
+Object o = props.put(key, value);
 ...
 String xslInURI;
 String xmlInURI;
 String htmlOutURI;
 // Instantiate the TransformerFactory, and use it along with a SteamSource
 // XSL stylesheet to create a Transformer.
-TransformerFactory tFactory = TransformerFactory.newInstance()
-Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI);
+TransformerFactory tFactory = TransformerFactory.newInstance();
+Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
 // Perform the transformation from a StreamSource to a StreamResult;
-transformer.Transform(new StreamSource(xmlInURI),
+transformer.transform(new StreamSource(xmlInURI),
                       new StreamResult(htmlOutURI));</source>
 </s3>
 </s2><anchor name="constraints"/>
