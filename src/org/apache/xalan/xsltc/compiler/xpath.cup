@@ -451,36 +451,52 @@ AbsoluteLocationPath ::= SLASH
 
 AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
         {: 
-	   Step nodeStep;
-	   final Step temp = (Step)step;
-           final int  axis = temp.getAxis();
-           // THIS CODE IS NOT GOOD - PREDICATES ARE MISPLACED!!!!!
-	   if ((axis == Axis.CHILD) || (axis == Axis.ATTRIBUTE)) {
-	       // Expand 'rlp//child::E' into 'rlp/descendant::E'
-	       nodeStep = new Step(Axis.DESCENDANT, 
-				   temp.getNodeType(), 
-				   temp.getPredicates());
+	   final Step right  = (Step)step;
+           final int  axis   = right.getAxis();
+           final int  type   = right.getNodeType();
+           final Vector predicates = right.getPredicates();
 
-               if (rlp instanceof Step && ((Step) rlp).isAbbreviatedDot()) {
-                  RESULT = nodeStep;       // Remove './/' from the beginning
+           if ((axis == Axis.CHILD) && (type != NodeTest.ATTRIBUTE)) {
+               // Compress './/child:E' into 'descendant::E' - if possible
+               if (predicates == null) {
+                   if (rlp instanceof Step && ((Step)rlp).isAbbreviatedDot()) {
+                       right.setAxis(Axis.DESCENDANT);
+	               RESULT = right;
+                   }
+                   else {
+                       // Expand 'rlp//child::E' into 'rlp/descendant::E'
+                       RelativeLocationPath left = (RelativeLocationPath)rlp;
+	               RESULT = new ParentLocationPath(left, right);
+                   }
                }
-	       else {
-	          RESULT = new ParentLocationPath((RelativeLocationPath) rlp,
-                                                  nodeStep);
+               else {
+                   // Expand './/step' -> 'descendant-or-self::*/step'
+                   if (rlp instanceof Step && ((Step)rlp).isAbbreviatedDot()) {
+                       Step left = new Step(Axis.DESCENDANTORSELF, -1, null);
+                       RESULT = new ParentLocationPath(left, right);
+                   }
+                   else {
+                       // Expand 'rlp//step' -> 'rlp/descendant-or-self::*/step'
+                       RelativeLocationPath left = (RelativeLocationPath)rlp;
+                       Step mid = new Step(Axis.DESCENDANTORSELF, -1, null);
+                       ParentLocationPath ppl = new ParentLocationPath(mid, right);
+                       RESULT = new ParentLocationPath(left, ppl);
+                   }
                }
+           }
+           else if ((axis == Axis.ATTRIBUTE) || (type == NodeTest.ATTRIBUTE)) {
+               // Expand 'rlp//step' -> 'rlp/descendant-or-self::*/step'
+               RelativeLocationPath left = (RelativeLocationPath)rlp;
+               Step middle = new Step(Axis.DESCENDANTORSELF, -1, null);
+               ParentLocationPath ppl = new ParentLocationPath(middle, right);
+               RESULT = new ParentLocationPath(left, ppl);
 	   }
 	   else {
-	       // Expand 'rlp//step' into 'rlp/descendant-or-self::node()/step'
-	       nodeStep = new Step(Axis.DESCENDANTORSELF, 
-					NodeTest.ANODE, null); 
-               /*
-	       RESULT = new ParentLocationPath(
-			    new ParentLocationPath((RelativeLocationPath) rlp, 
-						   nodeStep), step);
-               */
-	       RESULT = new ParentLocationPath((RelativeLocationPath)rlp,
-			    new ParentLocationPath(nodeStep, step));
-
+	       // Expand 'rlp//step' -> 'rlp/descendant-or-self::node()/step'
+               RelativeLocationPath left = (RelativeLocationPath)rlp;
+	       Step middle = new Step(Axis.DESCENDANTORSELF, -1, null); 
+               ParentLocationPath ppl = new ParentLocationPath(middle, right);
+	       RESULT = new ParentLocationPath(left, ppl);
 	   }
         :};
 
