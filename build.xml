@@ -45,7 +45,9 @@ Copyright:
   <!-- =================================================================== -->
 
   <property name="version" value="Alpha_2_0_D0"/>
- 
+ <!--To compile sample servlet, update "servletjar" to point to JAR containing javax.servlet and javax.servlet.http packages-->
+  <property name="servletjar" value="\jswdk-1.0.1\lib\servlet.jar"/>
+
   <property name="name" value="xalan"/>
   <property name="Name" value="Xalan-Java"/>
   <property name="year" value="2000"/>
@@ -65,12 +67,15 @@ Copyright:
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
 
-  <property name="xalanjar" value="${build.dir}/${name}.jar"/>  
+  <property name="xalanjar" value="${build.dir}/xalan.jar"/>  
+  <property name="xalan1jar" value="../build/xalan.jar"/> <!-- still used by StyleBook -->
+  <property name="xercesjar" value="./bin/xerces.jar"/>
 
   <property name="dist.file" value="${name}-j_${version}"/>
   <property name="dist.dir" value="./${dist.file}"/>    <!-- Check dir name dash/underscore 17-Jan-00 SCurcuru -->
   <property name="samples.dir" value="./samples"/>
 
+  <property name="bin.dir" value="./bin"/>
   <property name="xdocs.dir" value="./xdocs"/>
   <property name="version.file" value="org/apache/xalan/processor/XSLProcessorVersion.java"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
@@ -91,7 +96,6 @@ Copyright:
   <target name="prepare">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.dest}"/>
-    <mkdir dir="${build.samples}"/>
   </target>
   <target name="prepare.docs" depends="prepare">
     <!--gunzip src="${doc.generator.styletargz}"/>
@@ -124,7 +128,7 @@ Copyright:
   <target name="compile.xalan" depends="compile.xpath">
     <javac srcdir="${src.dir}/${xalan.reldir}" 
            destdir="${build.dest}" 
-           excludesfile="compat.xslt.excludes" 
+           excludesfile="compat.xslt.excludes"
            debug="${debug}" />
   </target>
 
@@ -163,62 +167,66 @@ Copyright:
   <!-- To compile (and run) the servlet sample, the javax.servlet and      -->
   <!-- javax.servlet.http packages must be on the classpath                -->
   <!-- =================================================================== -->
-  <!--target name="samples" depends="jar">
+  <target name="samples" depends="jar">
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
-    <mkdir dir="${build.samples}"/-->
-
+    <mkdir dir="${build.samples}"/>
+    <mkdir dir="${build.samples}/servlet"/>
     <!-- Since the samples are packageless, they must be compiled separately. -->
     
+    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${xalanjar}" 
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${xalanjar}"  
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>           
+    <javac srcdir="${samples.dir}/TransformToDom" classpath="${java.class.path}:${xalanjar}" 
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/>
+    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${xalanjar}" 
+           destdir="${build.samples}"  excludes="${exclude}"
+           debug="${debug}"/> 
+
     <!--javac srcdir="${samples.dir}/ApplyXPath" classpath="${java.class.path}:${build.dir}/${name}.jar" 
            destdir="${build.samples}" excludes="${exclude}"
            debug="${debug}"/>           
     <javac srcdir="${samples.dir}/Extensions" classpath="${java.class.path}:${build.dir}/${name}.jar" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${debug}"/>
-    <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-           destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/> 
-    <javac srcdir="${samples.dir}/SimpleTransform" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-           destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>
-    <javac srcdir="${samples.dir}/TransformToDom" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-           destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>
     <javac srcdir="${samples.dir}/PureSAX" classpath="${java.class.path}:${build.dir}/${name}.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>          
-    <javac srcdir="${samples.dir}/UseStylesheetParam" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-           destdir="${build.samples}"  excludes="${exclude}"
-           debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/Servlet" classpath="${java.class.path}:${build.dir}/${name}.jar" 
+           debug="${debug}"/-->                    
+    <jar jarfile="${build.samples}/$xalansamples.jar" basedir="${build.samples}"
+         includes="*.class"/>
+         
+    <!-- copy sample applet to ./build/samples , so (like other samples) can be run from ./build/samples tree.-->
+    <copydir src="${samples.dir}/AppletXMLtoHTML" dest="${build.samples}/AppletXMLtoHTML"/>
+             
+    <javac srcdir="${samples.dir}/servlet" classpath="${java.class.path}:${xalanjar}:${servletjar}" 
            destdir="${build.samples}" excludes="${exclude}"
            debug="${debug}"/>
-    <jar   jarfile="${build.samples}/${name}samples.jar" basedir="${build.samples}"
-            includes="*.class"/> 
-  </target-->
+         
+    <jar jarfile="${build.samples}/servlet/xalanservlet.jar" basedir="${build.samples}"
+         includes="servlet/*.*"/>            
+  </target>
 
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="jar">
-    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalanjar}" 
+  <target name="docs" depends="prepare.docs">
+    <java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${xalan1jar}" 
          args="targetDirectory=${build.docs} ${xdocs.book} ${xdocs.style}"/>    
   </target>
   
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="jar">
-
-    <!--java fork="yes" classname="${doc.generator}" classpath="${java.class.path}:${build.dir}/${name}.jar" 
-          args="loaderConfig=${xdocs.javadocloader} targetDirectory=${build.src} ${xdocs.javadocbook} ${xdocs.style}"/-->
+  <target name="javadocs" depends="prepare.docs">
 
     <javadoc
-         public="true"
+         private="true"
          doclet="xalanjdoc.Standard"
-         sourcepath="${build.src}"
-         overview="${build.src}/javadocOverview.html"        
-         packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
+         sourcepath="${src.dir}"
+         overview="${src.dir}/javadocOverview.html"        packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
          group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serializers serialize*"
          destdir="${build.apidocs}"
          author="true"
@@ -242,41 +250,39 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <!--target name="dist" depends="docs,javadocs,samples">
+  <target name="dist" depends="docs,javadocs,samples">
     <mkdir dir="${dist.dir}"/>
+    <mkdir dir="${dist.dir}/bin"/>    
     <mkdir dir="${dist.dir}/src"/>
     <mkdir dir="${dist.dir}/xdocs"/>
     <mkdir dir="${dist.dir}/docs"/>
     <mkdir dir="${dist.dir}/docs/javadocs"/>
     <mkdir dir="${dist.dir}/samples"/>
 
-    <copydir src="${build.src}" dest="${dist.dir}/src"/>
+    <copydir src="${src.dir}" dest="${dist.dir}/src"/>
+    <copydir src="${bin.dir}" dest="${dist.dir}/bin"/>
+    <copyfile src="${xalanjar}jar" dest="${dist.dir}/bin/xalan.jar"/>    
     <copydir src="${xdocs.dir}" dest="${dist.dir}/xdocs"/>
     <copydir src="${build.docs}" dest="${dist.dir}/docs"/>
 
     <copydir src="${samples.dir}" dest="${dist.dir}/samples"/>   
-    <copyfile src="${build.samples}/${${name}samples.jar" dest="${dist.dir}/samples/${name}samples.jar"/>
+    <copyfile src="${build.samples}/xalansamples.jar" dest="${dist.dir}/samples/xalansamples.jar"/>
+    <copyfile src="${build.samples}/servlet/xalanservlet.jar" dest="${dist.dir}/samples/servlet/xalanservlet.jar"/>    
+    <!--put xalan.jar and xerces.jar where the sample applet can readily use them-->
+    <copyfile src="${xalanjar}" dest="${samples.dir}/AppletXMLtoHTML/xalan.jar"/>
+    <copyfile src="${xercesjar}" dest="${samples.dir}/AppletXMLtoHTML/xerces.jar"/>
 
-    <copyfile src="${build.dir}/${name}.jar" dest="${dist.dir}/${name}.jar"/>
-    <copyfile src="xerces.jar" dest="${dist.dir}/xerces.jar"/>
-    <copyfile src="bsf.jar" dest="${dist.dir}/bsf.jar"/>
-    <copyfile src="bsfengines.jar" dest="${dist.dir}/bsfengines.jar"/>
-    <copyfile src="xml.jar" dest="${dist.dir}/xml.jar"/>
-    <copyfile src="ant.jar" dest="${dist.dir}/ant.jar"/>
     <copyfile src="README" dest="${dist.dir}/README"/>
     <copyfile src="README.html" dest="${dist.dir}/README.html"/>
     <copyfile src="CREDITS" dest="${dist.dir}/CREDITS"/>
     <copyfile src="KEYS" dest="${dist.dir}/KEYS"/>
     <copyfile src="License" dest="${dist.dir}/License"/>
     <copyfile src="build.xml" dest="${dist.dir}/build.xml"/>
-    <copyfile src="Makefile" dest="${dist.dir}/Makefile"/>
-    <copyfile src="make.include" dest="${dist.dir}/make.include"/>
-    <copyfile src="make.include2" dest="${dist.dir}/make.include2"/>
     
     <zip zipfile="${dist.file}.zip" basedir="${dist.dir}" includes="*"/>
     <tar tarfile="${dist.file}.tar" basedir="${dist.dir}" includes="*"/>
     <gzip src="${dist.file}.tar" zipfile="${dist.file}.tar.gz"/>
-  </target-->
+  </target>
   
   <!-- =================================================================== -->
   <!-- Creates the documentation tree for the org.apache.xml website       -->
