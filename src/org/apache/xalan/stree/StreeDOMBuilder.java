@@ -120,18 +120,14 @@ public class StreeDOMBuilder extends DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method setIDAttribute 
+   * Set an ID string to node association in the ID table.
    *
-   *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   * NEEDSDOC @param value
-   * NEEDSDOC @param elem
+   * @param id The ID string.
+   * @param elem The associated ID.
    */
-  public void setIDAttribute(String namespaceURI, String qualifiedName,
-                             String value, Element elem)
+  public void setIDAttribute(String id, Element elem)
   {
-    m_docImpl.setIDAttribute(namespaceURI, qualifiedName, value, elem);
+    m_docImpl.setIDAttribute(id, elem);
   }
 
   /**
