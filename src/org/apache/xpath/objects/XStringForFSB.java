@@ -201,6 +201,24 @@ public class XStringForFSB extends XString
 
     return m_strCache;
   }
+  
+  /** Yield result object's string value as a sequence of Character Blocks
+	* @return a CharacterBlockEnumeration displaying the contents of
+	* this object's string value (as in str()). May be empty, may
+	* yield multiple blocks depending on the FSB's contents. (The latter
+	* case is why we need to enumerate, of course!)
+	* */
+  public org.apache.xml.utils.CharacterBlockEnumeration enumerateCharacterBlocks()
+  {
+  	// %REVIEW% %OPT% I'm not sure this is an optimization. Depends on
+  	// how retrieval of char[] from String works in any given JVM.
+  	// See comments in CharacterBlockEnumeration, and run some tests.
+    if (null != m_strCache)
+    	return new org.apache.xml.utils.CharacterBlockEnumeration(m_strCache);
+	else  	
+	  	return fsb().enumerateCharacterBlocks(m_start,m_length);
+  }
+  
 
   /**
    * Directly call the

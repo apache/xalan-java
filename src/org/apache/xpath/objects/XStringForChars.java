@@ -100,6 +100,16 @@ public class XStringForChars extends XString
   }
   
 
+  /** Yield result object's string value as a sequence of Character Blocks
+	* @return a CharacterBlockEnumeration displaying the contents of
+	* this object's string value (as in str()). May be empty.
+	* */
+  public org.apache.xml.utils.CharacterBlockEnumeration enumerateCharacterBlocks()
+  {
+  	return new org.apache.xml.utils.CharacterBlockEnumeration(
+		(char[])m_obj, m_start, m_length);
+  }
+
   /**
    * Since this object is incomplete without the length and the offset, we 
    * have to convert to a string when this function is called.
