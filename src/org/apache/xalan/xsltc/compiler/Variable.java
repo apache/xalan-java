@@ -196,7 +196,7 @@ final class Variable extends TopLevelElement {
 	    ErrorMsg error = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
 	    parser.addError(error);
 	}
-	
+
 	final String select = element.getAttribute("select");
 	if (select.length() > 0) {
 	    _select = parser.parseExpression(this, element, "select");
@@ -206,11 +206,29 @@ final class Variable extends TopLevelElement {
 	parseChildren(element, parser);
 
 	// Add a ref to this var to its enclosing construct
-	final SyntaxTreeNode parent = getParent();
+	SyntaxTreeNode parent = getParent();
 	if (parent instanceof Stylesheet) {
+	    // Mark this as a global variable
 	    _isLocal = false;
+	    // Check if a global variable with this name already exists...
+	    Variable var = parser.getSymbolTable().lookupVariable(_name);
+	    // ...and if it does we need to check import precedence
+	    if (var != null) {
+		final int us = this.getImportPrecedence();
+		final int them = var.getImportPrecedence();
+		// It is an error if the two have the same import precedence
+		if (us == them) {
+		    ErrorMsg error =
+			new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
+		    parser.addError(error);
+		}
+		// Ignore this if previous definition has higher precedence
+		else if (them > us) {
+		    return;
+		}
+		// Add this variable if we have higher precedence
+	    }
 	    ((Stylesheet)parent).addVariable(this);
-	    //!! check for redef
 	    parser.getSymbolTable().addVariable(this);
 	}
 	else {
