@@ -150,14 +150,14 @@
 Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
 </s3>
 <s3 title="3. If you are using extension elements, designate the extension element prefixes">
-<p><br/>This step is required only if you are using extension elements.  If you are using extension functions only and are not using any extension elements, then you can skip this step.</p>
+<p><br/>This step is required only if you are using extension elements.  If you are using extension functions only, you can skip this step.</p>
 <p>In the stylesheet element, write:</p> 
 <p><code>extension-element-prefixes="<ref>prefix-1 prefix-2 ...</ref>"</code></p>
 <p>In a literal result element or extension element include the xsl prefix:</p>
 <p><code>xsl:extension-element-prefixes="<ref>prefix1 prefix2 ...</ref>"</code></p>
 <p>Keep in mind that where you declare namespaces and designate extension prefixes determines the scope of those namespaces.To make your extensions available throughout the stylesheet, include these settings and attribute in the stylesheet element.</p>
 </s3>
-<s3 title="4. Exclude the extension namespace declaration from the result tree">
+<s3 title="4. (Optional) Exclude the extension namespace declaration from the result tree">
 <p><br/>By default, namespace declarations are included in the transformation output. To exclude namespaces from the output, use</p>
 <p><code>exclude-result-prefixes="<ref>prefix-1 prefix-2 ...</ref>"</code></p>
 <p>in the stylesheet element or</p>
@@ -172,7 +172,7 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
    <code>&nbsp;&nbsp;&lt;!--See lxslt:script below--&gt;</code><br/>
    <code>&lt;/lxslt:component&gt;</code></p>
 <p>where <ref>func-1 func-2 ... func-n</ref> and <ref>elem-1 elem-2 ... elem-n</ref> designate the functions and elements the extension provides and the stylesheet uses. You can use the function-available and element-available functions to determine at run time whether a function or element designated in the lxslt:component is actually available.</p>
-<note>If the component is implemented in Java, the values of the <code>functions</code> and <code>elements</code> attributes are ignored. The function-available and element-available functions will use reflection to examine the actual Java methods.</note>
+<note>If the component is implemented in Java, the values of the <code>functions</code> and <code>elements</code> attributes are ignored. The function-available and element-available functions use reflection to examine the actual Java methods.</note>
 </s3>
 <anchor name="setup-script"/>
 <s3 title="6. Set up the lxslt:script element">
@@ -257,7 +257,7 @@ Example: <code>xmlns:ext1="xyz"</code><br/><br/></p>
        <td>org.w3c.dom.DocumentFragment</td>
     </tr>
   </table>
-<p>Any non-XSLT type is passed without coversion.</p>
+<p>Any non-XSLT type is passed without conversion.</p>
 <p>When calling an extension function written in Java, the extension function signature can specify any of the indicated Java types, as explained below:</p>
   <table>
     <tr>
