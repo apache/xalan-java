@@ -60,6 +60,7 @@ import org.w3c.dom.*;
 
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.helpers.LocatorImpl;
 
 import org.apache.xpath.DOM2Helper;
 import org.apache.xpath.DOMHelper;
@@ -81,6 +82,9 @@ public class TreeWalker
 
   /** DomHelper for this TreeWalker          */
   protected DOMHelper m_dh;
+	
+	/** Locator object for this TreeWalker          */
+	private Locator m_locator = new LocatorImpl();
 
   /**
    * Get the ContentHandler used for the tree walk.
@@ -100,6 +104,7 @@ public class TreeWalker
   public TreeWalker(ContentHandler contentHandler, DOMHelper dh)
   {
     this.m_contentHandler = contentHandler;
+		m_contentHandler.setDocumentLocator(m_locator);
     m_dh = dh;
   }
   
@@ -111,6 +116,7 @@ public class TreeWalker
   public TreeWalker(ContentHandler contentHandler)
   {
     this.m_contentHandler = contentHandler;
+		m_contentHandler.setDocumentLocator(m_locator);
     m_dh = new org.apache.xpath.DOM2Helper();
   }
 
@@ -239,6 +245,12 @@ public class TreeWalker
     {
       ((NodeConsumer) m_contentHandler).setOriginatingNode(node);
     }
+		
+		if (node instanceof Locator)
+		{
+			m_locator = (Locator)node;
+			m_contentHandler.setDocumentLocator(m_locator);
+		}
 
     switch (node.getNodeType())
     {
