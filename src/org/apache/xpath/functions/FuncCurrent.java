@@ -79,11 +79,11 @@ public class FuncCurrent extends Function
 {
 
   /**
-   * Diagnostics.
+   * Diagnostics to show string output from a node.
    *
-   * NEEDSDOC @param n
+   * @param n The input node, which may be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A diagnostics string representing the node.
    */
   protected String nodeToString(Node n)
   {
