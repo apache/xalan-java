@@ -70,6 +70,7 @@ import java.util.Properties;
 
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.ext.DeclHandler;
 
 import org.w3c.dom.Node;
 
@@ -93,7 +94,7 @@ import javax.xml.transform.OutputKeys;
  * SerializerToXML formats SAX-style events into XML.
  */
 public class SerializerToXML
-        implements ContentHandler, LexicalHandler, Serializer, DOMSerializer
+        implements ContentHandler, LexicalHandler, DeclHandler, Serializer, DOMSerializer
 {
 
   /**
@@ -274,6 +275,11 @@ public class SerializerToXML
    * Tells if we're in an EntityRef event.
    */
   protected boolean m_inEntityRef = false;
+  
+  /**
+   * Tells if we're in an internal document type subset.
+   */
+  private boolean m_inDoctype = false;
 
   /**
    * Map that tells which XML characters should have special treatment, and it
@@ -561,12 +567,34 @@ public class SerializerToXML
       accum("\"");
     }
 
-    if (null == m_doctypePublic)
-      accum(" SYSTEM \"");
-    else
-      accum(" \"");
+    if (null != m_doctypeSystem)
+    {
+      if (null == m_doctypePublic)
+        accum(" SYSTEM \"");
+      else
+        accum(" \"");
 
-    accum(m_doctypeSystem);
+      accum(m_doctypeSystem);
+      //accum("\">");
+      accum("\"");
+    }
+    //outputLineSep();
+  }
+  
+  /**
+   * Output the doc type declaration.
+   *
+   * @param name non-null reference to document type name.
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  void outputEntityDecl(String name, String value) throws org.xml.sax.SAXException
+  {
+
+    accum("<!ENTITY ");
+    accum(name);
+    accum(" \"");
+    accum(value);
     accum("\">");
     outputLineSep();
   }
@@ -651,12 +679,13 @@ public class SerializerToXML
     m_doctypeSystem = systemId;
     m_doctypePublic = publicId;
 
-    if ((true == m_needToOutputDocTypeDecl) && (null != m_doctypeSystem))
+    if ((true == m_needToOutputDocTypeDecl)) // && (null != m_doctypeSystem))
     {
       outputDocTypeDecl(name);
     }
 
     m_needToOutputDocTypeDecl = false;
+    m_inDoctype = true;
   }
 
   /**
@@ -667,7 +696,13 @@ public class SerializerToXML
    */
   public void endDTD() throws org.xml.sax.SAXException
   {
-
+    if (!m_inDoctype)
+      accum("]>");
+    else
+    {  
+      accum(">");
+    }  
+    outputLineSep();
     // Do nothing for now.
   }
 
@@ -1805,7 +1840,8 @@ public class SerializerToXML
 
     // TODO: Should handle
   }
-
+  
+  
   /**
    * Report the beginning of an entity.
    *
@@ -1834,7 +1870,7 @@ public class SerializerToXML
    * @see #startEntity
    */
   public void endEntity(String name) throws org.xml.sax.SAXException
-  {
+  {    
     m_inEntityRef = false;
   }
 
@@ -1857,6 +1893,142 @@ public class SerializerToXML
     accum(name);
     accum(";");
   }
+  
+  // Implement DeclHandler
+  
+  /**
+     * Report an element type declaration.
+     *
+     * <p>The content model will consist of the string "EMPTY", the
+     * string "ANY", or a parenthesised group, optionally followed
+     * by an occurrence indicator.  The model will be normalized so
+     * that all whitespace is removed,and will include the enclosing
+     * parentheses.</p>
+     *
+     * @param name The element type name.
+     * @param model The content model as a normalized string.
+     * @exception SAXException The application may raise an exception.
+     */
+    public void elementDecl (String name, String model)
+	throws SAXException
+    {
+      if (m_inDoctype)
+      {
+        accum(" [");
+        outputLineSep();
+        m_inDoctype = false;
+      }
+      accum("<!ELEMENT ");
+      accum(name);
+      accum(" ");
+      accum(model);
+      accum(">");
+      outputLineSep();
+    }
+
+    private String m_elemName = "";
+    
+    /**
+     * Report an attribute type declaration.
+     *
+     * <p>Only the effective (first) declaration for an attribute will
+     * be reported.  The type will be one of the strings "CDATA",
+     * "ID", "IDREF", "IDREFS", "NMTOKEN", "NMTOKENS", "ENTITY",
+     * "ENTITIES", or "NOTATION", or a parenthesized token group with 
+     * the separator "|" and all whitespace removed.</p>
+     *
+     * @param eName The name of the associated element.
+     * @param aName The name of the attribute.
+     * @param type A string representing the attribute type.
+     * @param valueDefault A string representing the attribute default
+     *        ("#IMPLIED", "#REQUIRED", or "#FIXED") or null if
+     *        none of these applies.
+     * @param value A string representing the attribute's default value,
+     *        or null if there is none.
+     * @exception SAXException The application may raise an exception.
+     */
+    public void attributeDecl (String eName,
+					String aName,
+					String type,
+					String valueDefault,
+					String value)
+	throws SAXException
+    {
+      if (m_inDoctype)
+      {
+        accum(" [");
+        outputLineSep();
+        m_inDoctype = false;
+      }
+      if (!eName.equals(m_elemName))
+      {  
+        accum("<!ATTLIST ");
+        accum(eName);
+        accum(" ");
+        m_elemName = eName;
+      }
+      else
+      {
+        m_pos -= 3;
+        outputLineSep();
+      }
+      accum(aName);
+      accum(" ");
+      accum(type);
+      accum(" ");
+      accum(valueDefault);
+      //accum(" ");
+      //accum(value);
+      accum(">");
+      outputLineSep();      
+    }
+
+
+    /**
+     * Report an internal entity declaration.
+     *
+     * <p>Only the effective (first) declaration for each entity
+     * will be reported.</p>
+     *
+     * @param name The name of the entity.  If it is a parameter
+     *        entity, the name will begin with '%'.
+     * @param value The replacement text of the entity.
+     * @exception SAXException The application may raise an exception.
+     * @see #externalEntityDecl
+     * @see org.xml.sax.DTDHandler#unparsedEntityDecl
+     */
+    public void internalEntityDecl (String name, String value)
+	throws SAXException
+    {
+      if (m_inDoctype)
+      {
+        accum(" [");
+        outputLineSep();
+        m_inDoctype = false;
+      }
+      outputEntityDecl(name, value);
+    }
+
+
+    /**
+     * Report a parsed external entity declaration.
+     *
+     * <p>Only the effective (first) declaration for each entity
+     * will be reported.</p>
+     *
+     * @param name The name of the entity.  If it is a parameter
+     *        entity, the name will begin with '%'.
+     * @param publicId The declared public identifier of the entity, or
+     *        null if none was declared.
+     * @param systemId The declared system identifier of the entity.
+     * @exception SAXException The application may raise an exception.
+     * @see #internalEntityDecl
+     * @see org.xml.sax.DTDHandler#unparsedEntityDecl
+     */
+    public void externalEntityDecl (String name, String publicId,
+					     String systemId)
+	throws SAXException
+    {}
 
   /**
    * Handle one of the default entities, return false if it
