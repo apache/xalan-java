@@ -71,6 +71,9 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import org.apache.xml.dtm.ref.IncrementalSAXSource;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 /** <p>IncrementalSAXSource_Filter implements IncrementalSAXSource, using a
  * standard SAX2 event source as its input and parcelling out those
  * events gradually in reponse to deliverMoreNodes() requests.  Output from the
@@ -158,7 +161,7 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
     fControllerCoroutineID = co.co_joinCoroutineSet(controllerCoroutineID);
     fSourceCoroutineID = co.co_joinCoroutineSet(sourceCoroutineID);
     if (fControllerCoroutineID == -1 || fSourceCoroutineID == -1)
-      throw new RuntimeException("co_joinCoroutineSet() failed");
+      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COJOINROUTINESET_FAILED, null)); //"co_joinCoroutineSet() failed");
 
     fNoMoreEvents=false;
     eventcounter=frequency;
@@ -607,9 +610,9 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
   public void startParse(InputSource source) throws SAXException
   {
     if(fNoMoreEvents)
-      throw new SAXException("IncrmentalSAXSource_Filter not currently restartable.");
+      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_INCRSAXSRCFILTER_NOT_RESTARTABLE, null)); //"IncrmentalSAXSource_Filter not currently restartable.");
     if(fXMLReader==null)
-      throw new SAXException("XMLReader not before startParse request");
+      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_XMLRDR_NOT_BEFORE_STARTPARSE, null)); //"XMLReader not before startParse request");
 
     fXMLReaderInputSource=source;
     

@@ -71,6 +71,10 @@ import org.xml.sax.XMLReader;
 import java.io.IOException;
 import org.apache.xml.dtm.ref.CoroutineManager;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /** <p>CoroutineSAXParser runs a SAX2 parser in a coroutine to achieve
  * incremental parsing. Output from the parser will still be issued
  * via callbacks, which will need to be recieved and acted upon by an
@@ -160,7 +164,7 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
     fAppCoroutineID = appCoroutineID;
     fParserCoroutineID = co.co_joinCoroutineSet(-1);
     if (fParserCoroutineID == -1)
-      throw new RuntimeException("co_joinCoroutineSet() failed");
+      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COJOINROUTINESET_FAILED, null)); //"co_joinCoroutineSet() failed");
 
     fRunningInThread=false; // Unless overridden by the other constructor
 
@@ -741,7 +745,7 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
                   +arg.getClass
                   ()+" with value=\""+arg+'"');
             System.err.println("\tStopping parser rather than risk deadlock");
-            throw new RuntimeException("Coroutine parameter error ("+arg+')');
+            throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COROUTINE_PARAM, new Object[]{arg})); //"Coroutine parameter error ("+arg+')');
           }
 
       }
@@ -1012,7 +1016,7 @@ implements CoroutineParser, Runnable, ContentHandler, LexicalHandler, ErrorHandl
         // Debugging; shouldn't arise in normal operation
         if(result!=null)
         {
-          RuntimeException re = new RuntimeException("\nUNEXPECTED: Parser doTerminate answers "+result);
+          RuntimeException re = new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PARSER_DOTERMINATE_ANSWERS, new Object[]{result})); //"\nUNEXPECTED: Parser doTerminate answers "+result);
           // System.out.println("\nUNEXPECTED: Parser doTerminate answers "+result);
           re.printStackTrace();
           // throw re;

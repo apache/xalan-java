@@ -65,6 +65,8 @@ import org.apache.xpath.patterns.ContextMatchStepPattern;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.Expression;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
 
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
@@ -383,8 +385,8 @@ public class WalkerFactory
       return Axis.FILTEREDLIST;
     }
 
-    throw new RuntimeException("Programmer's assertion: unknown opcode: "
-                               + stepType);
+    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
+                               //+ stepType);
   }
   
   static boolean functionProximateOrContainsProximate(Compiler compiler, 
@@ -604,8 +606,8 @@ public class WalkerFactory
         foundSelf = true;
         break;
       default :
-        throw new RuntimeException("Programmer's assertion: unknown opcode: "
-                                   + stepType);
+        throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
+                                  // + stepType);
       }
 
       stepOpCodePos = compiler.getNextStepPos(stepOpCodePos);
@@ -724,8 +726,8 @@ public class WalkerFactory
         analysisResult |= (BIT_MATCH_PATTERN | BIT_PARENT);
         break;
       default :
-        throw new RuntimeException("Programmer's assertion: unknown opcode: "
-                                   + stepType);
+        throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
+                                   //+ stepType);
       }
 
       if (OpCodes.NODETYPE_NODE == ops[stepOpCodePos + 3])  // child::node()
@@ -1058,8 +1060,8 @@ public class WalkerFactory
       predicateAxis = Axis.DESCENDANT;
       break;
     default :
-      throw new RuntimeException("Programmer's assertion: unknown opcode: "
-                                 + stepType);
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
+                                 //+ stepType);
     }
     if(null == ai)
     {
@@ -1222,8 +1224,8 @@ public class WalkerFactory
       ai = new AxesWalker(lpi, Axis.SELF);
       break;
     default :
-      throw new RuntimeException("Programmer's assertion: unknown opcode: "
-                                 + stepType);
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
+                                 //+ stepType);
     }
 
     if (simpleInit)

@@ -611,12 +611,12 @@ public class Process
           else
           {
             if (null != media)
-              throw new TransformerException("No stylesheet found in: "
-                                             + inFileName + ", media="
-                                             + media);
+              throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_STYLESHEET_IN_MEDIA, new Object[]{inFileName, media})); //"No stylesheet found in: "
+                                            // + inFileName + ", media="
+                                            // + media);
             else
-              throw new TransformerException("No xml-stylesheet PI found in: "
-                                             + inFileName);
+              throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_STYLESHEET_PI, new Object[]{inFileName})); //"No xml-stylesheet PI found in: "
+                                             //+ inFileName);
           }
         }
 

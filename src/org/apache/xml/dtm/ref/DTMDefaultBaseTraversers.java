@@ -62,6 +62,10 @@ import javax.xml.transform.Source;
 
 import org.apache.xml.utils.XMLStringFactory;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /**
  * This class implements the traversers for DTMDefaultBase.
  */
@@ -182,7 +186,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     case Axis.FILTEREDLIST :
       return null; // Don't want to throw an exception for this one.
     default :
-      throw new DTMException("Unknown axis traversal type: "+axis);
+      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_UNKNOWN_AXIS_TYPE, new Object[]{Integer.toString(axis)})); //"Unknown axis traversal type: "+axis);
     }
 
     if (null == traverser)

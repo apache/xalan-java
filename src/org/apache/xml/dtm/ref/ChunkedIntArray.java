@@ -59,6 +59,9 @@ package org.apache.xml.dtm.ref;
 import org.w3c.dom.*;
 import org.apache.xml.dtm.*;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 /**
  * <code>ChunkedIntArray</code> is an extensible array of blocks of integers.
  * (I'd consider Vector, but it's unable to handle integers except by
@@ -93,7 +96,7 @@ final class ChunkedIntArray
   ChunkedIntArray(int slotsize)
   {
     if(this.slotsize<slotsize)
-      throw new ArrayIndexOutOfBoundsException("ChunkedIntArray("+slotsize+") not currently supported");
+      throw new ArrayIndexOutOfBoundsException(XSLMessages.createMessage(XSLTErrorResources.ER_CHUNKEDINTARRAY_NOT_SUPPORTED, new Object[]{Integer.toString(slotsize)})); //"ChunkedIntArray("+slotsize+") not currently supported");
     else if (this.slotsize>slotsize)
       System.out.println("*****WARNING: ChunkedIntArray("+slotsize+") wasting "+(this.slotsize-slotsize)+" words per slot");
     chunks.addElement(fastArray);
@@ -155,7 +158,7 @@ final class ChunkedIntArray
     {
       // System.out.println("Using slow read (1)");
       if (offset>=slotsize)
-        throw new ArrayIndexOutOfBoundsException("Offset bigger than slot");
+        throw new ArrayIndexOutOfBoundsException(XSLMessages.createMessage(XSLTErrorResources.ER_OFFSET_BIGGER_THAN_SLOT, null)); //"Offset bigger than slot");
       position*=slotsize;
       int chunkpos = position >> lowbits;
       int slotpos = position & lowmask;
@@ -236,7 +239,7 @@ final class ChunkedIntArray
     */
     {
       if (offset >= slotsize)
-        throw new ArrayIndexOutOfBoundsException("Offset bigger than slot");
+        throw new ArrayIndexOutOfBoundsException(XSLMessages.createMessage(XSLTErrorResources.ER_OFFSET_BIGGER_THAN_SLOT, null)); //"Offset bigger than slot");
       position*=slotsize;
       int chunkpos = position >> lowbits;
       int slotpos = position & lowmask;

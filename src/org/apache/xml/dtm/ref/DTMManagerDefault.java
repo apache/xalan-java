@@ -93,6 +93,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 /**
  * The default implementation for the DTMManager.
  */
@@ -127,7 +130,7 @@ public class DTMManagerDefault extends DTMManager
         return i;
       }
     }
-    throw new DTMException("No more DTM IDs are available!");
+    throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null)); //"No more DTM IDs are available!");
   }
   
   /**
@@ -373,7 +376,7 @@ public class DTMManagerDefault extends DTMManager
 
         // It should have been handled by a derived class or the caller 
         // made a mistake.
-        throw new DTMException("Not supported: " + source);
+        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{source})); //"Not supported: " + source);
       }
     }
   }
@@ -390,7 +393,7 @@ public class DTMManagerDefault extends DTMManager
   public int getDTMHandleFromNode(org.w3c.dom.Node node)
   {
     if(null == node)
-      throw new IllegalArgumentException("node must be non-null for getDTMHandleFromNode!");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NODE_NON_NULL, null)); //"node must be non-null for getDTMHandleFromNode!");
 
     if (node instanceof org.apache.xml.dtm.ref.DTMNodeProxy)
       return ((org.apache.xml.dtm.ref.DTMNodeProxy) node).getDTMNodeNumber();
@@ -437,7 +440,7 @@ public class DTMManagerDefault extends DTMManager
       int handle = ((DOM2DTM)dtm).getHandleOfNode(node);
       
       if(DTM.NULL == handle)
-        throw new RuntimeException("Could not resolve the node to a handle!");
+        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_RESOLVE_NODE, null)); //"Could not resolve the node to a handle!");
       
       return handle;
     }

@@ -324,7 +324,7 @@ public class ElemExtensionCall extends ElemLiteralResult
           if(null != msg)
             te = new TransformerException(e);
           else
-            te = new TransformerException("Unknown error when calling extension!", e);
+            te = new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_UNKNOWN_ERROR_CALLING_EXTENSION, null), e); //"Unknown error when calling extension!", e);
         }
         if(null == te.getLocator())
           te.setLocator(this);

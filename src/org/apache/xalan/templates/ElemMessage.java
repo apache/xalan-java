@@ -63,6 +63,7 @@ import org.xml.sax.*;
 import org.apache.xpath.*;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.transformer.TransformerImpl;
 
 import javax.xml.transform.TransformerException;
@@ -164,6 +165,6 @@ public class ElemMessage extends ElemTemplateElement
     transformer.getMsgMgr().message(this, data, m_terminate);
     
     if(m_terminate)
-      transformer.getErrorListener().fatalError(new TransformerException("Stylesheet directed termination"));
+      transformer.getErrorListener().fatalError(new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_STYLESHEET_DIRECTED_TERMINATION, null))); //"Stylesheet directed termination"));
   }
 }

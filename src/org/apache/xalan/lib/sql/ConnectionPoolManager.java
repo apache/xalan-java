@@ -61,6 +61,9 @@
 import java.util.Hashtable;
 import java.lang.IllegalArgumentException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 /**
  */
 public class ConnectionPoolManager    
@@ -118,7 +121,7 @@ public class ConnectionPoolManager
   {
     if ( m_poolTable.containsKey(name) )
     {
-      throw new IllegalArgumentException("Pool already exists");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_POOL_EXISTS, null)); //"Pool already exists");
     }
 
     m_poolTable.put(name, pool);

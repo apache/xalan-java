@@ -58,6 +58,10 @@ package org.apache.xml.utils;
 
 import java.util.*;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /**
  * <meta name="usage" content="internal"/>
  * Pool of object of a given type to pick from to help memory usage
@@ -172,7 +176,7 @@ public class ObjectPool implements java.io.Serializable
       catch (IllegalAccessException ex){}
 
       // Throw unchecked exception for error in pool configuration.
-      throw new RuntimeException("exception creating new instance for pool");
+      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_EXCEPTION_CREATING_POOL, null)); //"exception creating new instance for pool");
     }
     else
     {

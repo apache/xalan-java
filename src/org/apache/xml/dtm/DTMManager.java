@@ -70,6 +70,9 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 /**
  * A DTMManager instance can be used to create DTM and
  * DTMIterator objects, and manage the DTM objects in the system.
@@ -177,7 +180,7 @@ public abstract class DTMManager
 
     if (classname == null)
     {
-      throw new DTMConfigurationException("No default implementation found");
+      throw new DTMConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
     }
 
     DTMManager factoryImpl;

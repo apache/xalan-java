@@ -62,6 +62,9 @@ import java.util.Vector;
 import org.apache.xpath.objects.XNull;
 import org.apache.xpath.XPathProcessorException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 /**
  * <meta name="usage" content="internal"/>
  * Class holding a table registered extension namespace handlers
@@ -265,8 +268,8 @@ public class ExtensionsTable
       }
       else
       {
-        throw new XPathProcessorException("Extension function '" + ns + ":"
-                                          + funcName + "' is unknown");
+        throw new XPathProcessorException(XSLMessages.createMessage(XSLTErrorResources.ER_EXTENSION_FUNC_UNKNOWN, new Object[]{ns, funcName })); //"Extension function '" + ns + ":"
+                                         // + funcName + "' is unknown");
       }
     }
 

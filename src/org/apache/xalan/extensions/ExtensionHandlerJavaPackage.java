@@ -72,6 +72,8 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 
 import org.apache.xpath.objects.XObject;
@@ -342,8 +344,8 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 
         if (args.size() < 1)
         {
-          throw new TransformerException("Instance method call to method " + funcName
-                                    + " requires an Object instance as first argument");
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_INSTANCE_MTHD_CALL_REQUIRES, new Object[]{funcName })); //"Instance method call to method " + funcName
+                                    //+ " requires an Object instance as first argument");
         }
         targetObject = args.elementAt(0);
         if (targetObject instanceof XObject)          // Next level down for XObjects
@@ -432,7 +434,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         String fullName = m_className + localPart;
         int lastDot = fullName.lastIndexOf(".");
         if (lastDot < 0)
-          throw new TransformerException("Invalid element name specified " + fullName);
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_ELEMENT_NAME, new Object[]{fullName })); //"Invalid element name specified " + fullName);
         try
         {
           classObj = getClassForName(fullName.substring(0, lastDot));
@@ -444,7 +446,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         localPart = fullName.substring(lastDot + 1);
         m = MethodResolver.getElementMethod(classObj, localPart);
         if (!Modifier.isStatic(m.getModifiers()))
-          throw new TransformerException("Element name method must be static " + fullName);
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_ELEMENT_NAME_METHOD_STATIC, new Object[]{fullName })); //"Element name method must be static " + fullName);
       }
       catch (Exception e)
       {

@@ -545,7 +545,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   public void setErrorListener(ErrorListener listener) throws IllegalArgumentException
   {
     if (listener == null) 
-      throw new IllegalArgumentException("Null error handler");
+      throw new IllegalArgumentException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, null)); //"Null error handler");
     m_errorListener = listener;
   }
 

@@ -71,6 +71,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -256,9 +257,9 @@ public class ElemExtensionDecl extends ElemTemplateElement
     String declNamespace = getNamespaceForPrefix(prefix);
 
     if (null == declNamespace)
-      throw new TransformerException("Prefix " + prefix
-                             + " does not have a corresponding "
-                             + "namespace declaration");
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_NAMESPACE_DECL, new Object[]{prefix})); //"Prefix " + prefix
+                             //+ " does not have a corresponding "
+                             //+ "namespace declaration");
 
     for (ElemTemplateElement child = getFirstChildElem(); child != null;
             child = child.getNextSiblingElem())
@@ -293,8 +294,8 @@ public class ElemExtensionDecl extends ElemTemplateElement
       lang = "javaclass";
 
     if (lang.equals("javaclass") && (scriptSrc != null))
-      throw new TransformerException("Element content not allowed for lang=javaclass "
-                             + scriptSrc);
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_ELEM_CONTENT_NOT_ALLOWED, new Object[]{scriptSrc})); //"Element content not allowed for lang=javaclass "
+                             //+ scriptSrc);
 
     XPathContext liaison = ((XPathContext) transformer.getXPathContext());
     ExtensionsTable etable = liaison.getExtensionsTable();

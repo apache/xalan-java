@@ -522,9 +522,9 @@ public class TransformerImpl extends Transformer
   {
     if (property.equals(XalanProperties.SOURCE_LOCATION)) {
       if (!(value instanceof Boolean))
-        throw new RuntimeException("Value for property "
-                                   + XalanProperties.SOURCE_LOCATION
-                                   + " should be a Boolean instance");
+        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROPERTY_VALUE_BOOLEAN, new Object[]{XalanProperties.SOURCE_LOCATION})); //"Value for property "
+                                   //+ XalanProperties.SOURCE_LOCATION
+                                   //+ " should be a Boolean instance");
       m_useSourceLocationProperty = ((Boolean)value).booleanValue();
     }
   }
@@ -777,8 +777,8 @@ public class TransformerImpl extends Transformer
     if (null == value)
     {
       if (!props.isLegalPropertyKey(qnameString))
-        throw new IllegalArgumentException("output property not recognized: "
-                                           + qnameString);
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{qnameString})); //"output property not recognized: "
+                                           //+ qnameString);
     }
 
     return value;
@@ -810,8 +810,8 @@ public class TransformerImpl extends Transformer
     if (null == value)
     {
       if (!props.isLegalPropertyKey(qnameString))
-        throw new IllegalArgumentException("output property not recognized: "
-                                           + qnameString);
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{qnameString})); //"output property not recognized: "
+                                          // + qnameString);
     }
 
     return value;
@@ -844,8 +844,8 @@ public class TransformerImpl extends Transformer
       }
 
       if (!m_outputFormat.isLegalPropertyKey(name))
-        throw new IllegalArgumentException("output property not recognized: "
-                                           + name);
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
+                                           //+ name);
 
       m_outputFormat.setProperty(name, value);
     }
@@ -1019,7 +1019,7 @@ public class TransformerImpl extends Transformer
           serializer.setOutputStream(m_outputStream);
         }
         else
-          throw new TransformerException("No output specified!");
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_OUTPUT_SPECIFIED, null)); //"No output specified!");
 
         handler = serializer.asContentHandler();
 
@@ -1036,9 +1036,9 @@ public class TransformerImpl extends Transformer
     }
     else
     {
-      throw new TransformerException("Can't transform to a Result of type "
-                                     + outputTarget.getClass().getName()
-                                     + "!");
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_TRANSFORM_TO_RESULT_TYPE, new Object[]{outputTarget.getClass().getName()})); //"Can't transform to a Result of type "
+                                     //+ outputTarget.getClass().getName()
+                                     //+ "!");
     }
 
     return handler;
@@ -1625,7 +1625,7 @@ public class TransformerImpl extends Transformer
 
     if (handler == null)
     {
-      throw new NullPointerException("Null content handler");
+      throw new NullPointerException(XSLMessages.createMessage(XSLTErrorResources.ER_NULL_CONTENT_HANDLER, null)); //"Null content handler");
     }
     else
     {
@@ -2678,7 +2678,7 @@ public class TransformerImpl extends Transformer
     synchronized (m_reentryGuard)
     {
       if (listener == null)
-        throw new IllegalArgumentException("Null error handler");
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NULL_ERROR_HANDLER, null)); //"Null error handler");
 
       m_errorHandler = listener;
     }

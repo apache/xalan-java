@@ -58,6 +58,9 @@ package org.apache.xalan.serialize;
 
 import java.io.*;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 /**
  * This class writes ASCII to a byte stream as quickly as possible.  For the
  * moment it does not do buffering, though I reserve the right to do some
@@ -114,7 +117,7 @@ public final class WriterToUTF8Buffered extends Writer
 
     if (size <= 0)
     {
-      throw new IllegalArgumentException("Buffer size <= 0");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BUFFER_SIZE_LESSTHAN_ZERO, null)); //"Buffer size <= 0");
     }
 
     buf = new byte[size];
@@ -134,8 +137,7 @@ public final class WriterToUTF8Buffered extends Writer
    */
   public void write(final int c) throws IOException
   {
-
-  
+    
     if (c < 0x80)
     {
       if (count >= buf.length)

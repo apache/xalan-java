@@ -217,7 +217,7 @@ public class XPath implements Serializable
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
-      throw new RuntimeException("Can not deal with XPath type: " + type);
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
 
     // System.out.println("----------------");
     Expression expr = compiler.compile(0);

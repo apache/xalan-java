@@ -115,7 +115,7 @@ public class TransformerIdentityImpl extends Transformer
   public void setResult(Result result) throws IllegalArgumentException
   {
     if(null == result)
-      throw new IllegalArgumentException("Result should not be null");        
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_RESULT_NULL, null)); //"Result should not be null");        
     m_result = result;
   }
 
@@ -251,7 +251,7 @@ public class TransformerIdentityImpl extends Transformer
           serializer.setOutputStream(m_outputStream);
         }
         else
-          throw new TransformerException("No output specified!");
+          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_OUTPUT_SPECIFIED, null)); //"No output specified!");
 
         m_resultContentHandler = serializer.asContentHandler();
       }
@@ -262,9 +262,9 @@ public class TransformerIdentityImpl extends Transformer
     }
     else
     {
-      throw new TransformerException("Can't transform to a Result of type "
-                                     + outputTarget.getClass().getName()
-                                     + "!");
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_TRANSFORM_TO_RESULT_TYPE, new Object[]{outputTarget.getClass().getName()})); //"Can't transform to a Result of type "
+                                    // + outputTarget.getClass().getName()
+                                    // + "!");
     }
 
     if (m_resultContentHandler instanceof DTDHandler)
@@ -348,8 +348,8 @@ public class TransformerIdentityImpl extends Transformer
   
       if (null == xmlSource)
       {
-        throw new TransformerException("Can't transform a Source of type "
-                                       + source.getClass().getName() + "!");
+        throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_TRANSFORM_SOURCE_TYPE, new Object[]{source.getClass().getName()})); //"Can't transform a Source of type "
+                                       //+ source.getClass().getName() + "!");
       }
   
       if (null != xmlSource.getSystemId())
@@ -692,8 +692,8 @@ public class TransformerIdentityImpl extends Transformer
   {
 
     if (!m_outputFormat.isLegalPropertyKey(name))
-      throw new IllegalArgumentException("output property not recognized: "
-                                         + name);
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
+                                         //+ name);
 
     m_outputFormat.setProperty(name, value);
   }
@@ -725,8 +725,8 @@ public class TransformerIdentityImpl extends Transformer
     if (null == value)
     {
       if (!props.isLegalPropertyKey(name))
-        throw new IllegalArgumentException("output property not recognized: "
-                                           + name);
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
+                                          // + name);
     }
 
     return value;

@@ -68,6 +68,9 @@ import java.util.Hashtable;
 
 import org.apache.xml.utils.CharKey;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 /**
  * This class provides services that tell if a character should have
  * special treatement, such as entity reference substitution or normalization
@@ -149,9 +152,9 @@ public class CharInfo
       }
 
       if (is == null)
-        throw new RuntimeException("The resource [" + entitiesResource
-                                   + "] could not be found.\n"
-                                   + entitiesResource);
+        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_RESOURCE_COULD_NOT_FIND, new Object[]{entitiesResource, entitiesResource })); //"The resource [" + entitiesResource
+                                  // + "] could not be found.\n"
+                                  // + entitiesResource);
 
       reader = new BufferedReader(new InputStreamReader(is));
       line = reader.readLine();
@@ -196,10 +199,10 @@ public class CharInfo
     }
     catch (Exception except)
     {
-      throw new RuntimeException("The resource [" + entitiesResource
-                                 + "] could not load: " + except.toString()
-                                 + "\n" + entitiesResource + "\t"
-                                 + except.toString());
+      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_RESOURCE_COULD_NOT_LOAD, new Object[]{entitiesResource,  except.toString(), entitiesResource, except.toString() })); //"The resource [" + entitiesResource
+                                 //+ "] could not load: " + except.toString()
+                                 //+ "\n" + entitiesResource + "\t"
+                                 //+ except.toString());
     }
     finally
     {

@@ -242,8 +242,8 @@ public class XSLTElementProcessor
           StylesheetHandler handler, char ch[], int start, int length)
             throws org.xml.sax.SAXException
   {
-    handler.error("Characters are not allowed at this point in the document!",
-                  null);
+    handler.error(XSLTErrorResources.ER_CHARS_NOT_ALLOWED, null, null);//"Characters are not allowed at this point in the document!",
+                  //null);
   }
 
   /**
@@ -357,9 +357,9 @@ public class XSLTElementProcessor
         {
 
           // Then barf, because this element does not allow this attribute.
-          handler.error("\""+attributes.getQName(i)+"\""
-                        + " attribute is not allowed on the " + rawName
-                        + " element!", null);
+          handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);//"\""+attributes.getQName(i)+"\""
+                        //+ " attribute is not allowed on the " + rawName
+                       // + " element!", null);
         }
         else
         {

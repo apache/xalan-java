@@ -88,6 +88,10 @@ import org.apache.xml.dtm.ref.IncrementalSAXSource;
 import org.apache.xml.dtm.ref.IncrementalSAXSource_Filter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /**
  * A TransformerHandler
  * listens for SAX ContentHandler parse events and transforms
@@ -190,7 +194,7 @@ public class TransformerHandlerImpl
   {
 
     if (null == result)
-      throw new IllegalArgumentException("result should not be null");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_RESULT_NULL, null)); //"result should not be null");
 
     try
     {
@@ -201,7 +205,7 @@ public class TransformerHandlerImpl
     }
     catch (javax.xml.transform.TransformerException te)
     {
-      throw new IllegalArgumentException("result could not be set");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_RESULT_COULD_NOT_BE_SET, null)); //"result could not be set");
     }
 
     m_result = result;

@@ -66,6 +66,10 @@ import org.w3c.dom.DOMException;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.axes.ContextNodeList;
 
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /**
  * <meta name="usage" content="advanced"/>
  * <p>The NodeSet class can act as either a NodeVector,
@@ -414,7 +418,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     this.addElement(n);
   }
@@ -432,7 +436,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     insertElementAt(n, pos);
   }
@@ -448,7 +452,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     this.removeElement(n);
   }
@@ -466,7 +470,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     if (null != nodelist)  // defensive to fix a bug that Sanjiva reported.
     {
@@ -506,7 +510,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     addNodes((NodeIterator) ns);
   }
@@ -523,7 +527,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     if (null != iterator)  // defensive to fix a bug that Sanjiva reported.
     {
@@ -551,7 +555,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     int nChildren = nodelist.getLength();
 
@@ -579,7 +583,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     Node node;
 
@@ -607,7 +611,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     boolean foundit = false;
     int i;
@@ -670,7 +674,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     int insertIndex = -1;
 
@@ -747,7 +751,7 @@ public class NodeSet
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     return addNodeInDocOrder(node, true, support);
   }  // end addNodeInDocOrder(Vector v, Object obj)
@@ -915,7 +919,7 @@ public class NodeSet
   public void addElement(Node value)
   {
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     if ((m_firstFree + 1) >= m_mapSize)
     {
@@ -1142,7 +1146,7 @@ public class NodeSet
   public void insertElementAt(Node value, int at)
   {
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     if (null == m_map)
     {
@@ -1235,7 +1239,7 @@ public class NodeSet
   public boolean removeElement(Node s)
   {
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     if (null == m_map)
       return false;
@@ -1293,7 +1297,7 @@ public class NodeSet
   public void setElementAt(Node node, int index)
   {
     if (!m_mutable)
-      throw new RuntimeException("This NodeSet is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESET_NOT_MUTABLE, null)); //"This NodeSet is not mutable!");
 
     if (null == m_map)
     {

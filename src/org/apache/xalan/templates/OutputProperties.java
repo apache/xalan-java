@@ -74,6 +74,9 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xalan.serialize.Method;
 import org.apache.xalan.extensions.ExtensionHandler;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.OutputKeys;
@@ -213,7 +216,7 @@ public class OutputProperties extends ElemTemplateElement
         throw ioe;
       }
       else {
-        throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH), now using just the defaults ", ioe);
+        throw new WrappedRuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_LOAD_RESOURCE, new Object[]{resourceName}), ioe); //"Could not load '"+resourceName+"' (check CLASSPATH), now using just the defaults ", ioe);
       }
     }
     catch (SecurityException se) {
@@ -222,7 +225,7 @@ public class OutputProperties extends ElemTemplateElement
         throw se;
       }
       else {
-        throw new WrappedRuntimeException("Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
+        throw new WrappedRuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_LOAD_RESOURCE, new Object[]{resourceName}), se); //"Could not load '"+resourceName+"' (check CLASSPATH, applet security), now using just the defaults ", se);
       }
     } 
     finally {

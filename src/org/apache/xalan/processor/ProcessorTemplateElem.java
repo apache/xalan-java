@@ -57,6 +57,7 @@
 package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.res.XSLTErrorResources;
 
 import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
@@ -111,11 +112,11 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
       }
       catch (InstantiationException ie)
       {
-        handler.error("Failed creating ElemTemplateElement instance!", ie);
+        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, ie);//"Failed creating ElemTemplateElement instance!", ie);
       }
       catch (IllegalAccessException iae)
       {
-        handler.error("Failed creating ElemTemplateElement instance!", iae);
+        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMTMPL, null, iae);//"Failed creating ElemTemplateElement instance!", iae);
       }
 
       setPropertiesFromAttributes(handler, rawName, attributes, elem);

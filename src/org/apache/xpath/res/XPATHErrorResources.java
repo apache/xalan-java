@@ -84,7 +84,7 @@ public class XPATHErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Field MAX_CODE          */
-  public static final int MAX_CODE = 69;  // this is needed to keep track of the number of messages          
+  public static final int MAX_CODE = 83;  // this is needed to keep track of the number of messages          
 
   /** Field MAX_WARNING          */
   public static final int MAX_WARNING = 11;  // this is needed to keep track of the number of warnings
@@ -741,6 +741,144 @@ public class XPATHErrorResources extends XResourceBundleBase
     contents[ER_FUNCTION_TOKEN_NOT_FOUND][1] =
       "function token not found.";
   }
+  
+   /**  Argument 'localName' is null  */
+  public static final int ER_ARG_LOCALNAME_NULL = 70;
+
+  static
+  {
+    contents[ER_ARG_LOCALNAME_NULL][1] =
+       "Argument 'localName' is null";
+  }
+  
+   /**  Can not deal with XPath type:   */
+  public static final int ER_CANNOT_DEAL_XPATH_TYPE = 71;
+
+  static
+  {
+    contents[ER_CANNOT_DEAL_XPATH_TYPE][1] =
+       "Can not deal with XPath type: {0}";
+  }
+  
+   /**  This NodeSet is not mutable  */
+  public static final int ER_NODESET_NOT_MUTABLE = 72;
+
+  static
+  {
+    contents[ER_NODESET_NOT_MUTABLE][1] =
+       "This NodeSet is not mutable";
+  }
+  
+   /**  This NodeSetDTM is not mutable  */
+  public static final int ER_NODESETDTM_NOT_MUTABLE = 73;
+
+  static
+  {
+    contents[ER_NODESETDTM_NOT_MUTABLE][1] =
+       "This NodeSetDTM is not mutable";
+  }
+  
+   /**  Variable not resolvable:   */
+  public static final int ER_VAR_NOT_RESOLVABLE = 74;
+
+  static
+  {
+    contents[ER_VAR_NOT_RESOLVABLE][1] =
+        "Variable not resolvable: {0}";
+  }
+  
+   /** Null error handler  */
+  public static final int ER_NULL_ERROR_HANDLER = 75;
+
+  static
+  {
+    contents[ER_NULL_ERROR_HANDLER][1] =
+        "Null error handler";
+  }
+  
+   /**  Programmer's assertion: unknown opcode  */
+  public static final int ER_PROG_ASSERT_UNKNOWN_OPCODE = 76;
+
+  static
+  {
+    contents[ER_PROG_ASSERT_UNKNOWN_OPCODE][1] =
+       "Programmer's assertion: unknown opcode: {0}";
+  }
+  
+   /**  0 or 1   */
+  public static final int ER_ZERO_OR_ONE = 77;
+
+  static
+  {
+    contents[ER_ZERO_OR_ONE][1] =
+       "0 or 1";
+  }
+  
+   /**  2 or 3   */
+  public static final int ER_TWO_OR_THREE = 78;
+
+  static
+  {
+    contents[ER_TWO_OR_THREE][1] =
+       "0 or 1";
+  }
+  
+  
+  
+   /**  rtf() not supported by XRTreeFragSelectWrapper   */
+  public static final int ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER = 78;
+
+  static
+  {
+    contents[ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER][1] =
+       "rtf() not supported by XRTreeFragSelectWrapper";
+  }
+  
+   /**  asNodeIterator() not supported by XRTreeFragSelectWrapper   */
+  public static final int ER_ASNODEITERATOR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER = 79;
+
+  static
+  {
+    contents[ER_ASNODEITERATOR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER][1] =
+       "asNodeIterator() not supported by XRTreeFragSelectWrapper";
+  }
+  
+   /**  fsb() not supported for XStringForChars   */
+  public static final int ER_FSB_NOT_SUPPORTED_XSTRINGFORCHARS = 80;
+
+  static
+  {
+    contents[ER_FSB_NOT_SUPPORTED_XSTRINGFORCHARS][1] =
+       "fsb() not supported for XStringForChars";
+  }
+  
+   /**  Could not find variable with the name of   */
+  public static final int ER_COULD_NOT_FIND_VAR = 81;
+
+  static
+  {
+    contents[ER_COULD_NOT_FIND_VAR][1] =
+      "Could not find variable with the name of {0}";
+  }
+  
+   /**  XStringForChars can not take a string for an argument   */
+  public static final int ER_XSTRINGFORCHARS_CANNOT_TAKE_STRING = 82;
+
+  static
+  {
+    contents[ER_XSTRINGFORCHARS_CANNOT_TAKE_STRING][1] =
+      "XStringForChars can not take a string for an argument";
+  }
+  
+   /**  The FastStringBuffer argument can not be null   */
+  public static final int ER_FASTSTRINGBUFFER_CANNOT_BE_NULL = 83;
+
+  static
+  {
+    contents[ER_FASTSTRINGBUFFER_CANNOT_BE_NULL][1] =
+      "The FastStringBuffer argument can not be null";
+  }  
+  
 
 
   // Warnings...

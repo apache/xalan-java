@@ -465,7 +465,7 @@ public class FuncDocument extends Function2Args
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if ((argNum < 1) || (argNum > 2))
-      throw new WrongNumberArgsException("1 or 2");
+      throw new WrongNumberArgsException(XSLMessages.createMessage(XSLTErrorResources.ER_ONE_OR_TWO, null)); //"1 or 2");
   }
   
   /**

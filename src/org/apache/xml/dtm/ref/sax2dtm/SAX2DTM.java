@@ -61,6 +61,9 @@ import java.util.Vector;
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 import org.apache.xalan.transformer.XalanProperties;
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 import org.apache.xml.dtm.*;
 import org.apache.xml.dtm.ref.*;
 import org.apache.xml.utils.StringVector;
@@ -632,7 +635,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMDefaultBase abstract method */
-    error("Not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
 
     return null;
   }
@@ -1077,7 +1080,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMDefaultBase abstract method */
-    error("Not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
 
     return null;
   }
@@ -2203,9 +2206,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
     if (property.equals(XalanProperties.SOURCE_LOCATION)) {
       if (!(value instanceof Boolean))
-        throw new RuntimeException("Value for property "
-                                   + XalanProperties.SOURCE_LOCATION
-                                   + " should be a Boolean instance");
+        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_PROPERTY_VALUE_BOOLEAN, new Object[]{XalanProperties.SOURCE_LOCATION})); //"Value for property "
+                                  // + XalanProperties.SOURCE_LOCATION
+                                  // + " should be a Boolean instance");
       m_useSourceLocationProperty = ((Boolean)value).booleanValue();
       m_sourceSystemId = new StringVector();
       m_sourceLine = new IntVector();

@@ -17,6 +17,10 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.ErrorListener;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 public class TrAXFilter extends XMLFilterImpl
 {
   private Templates m_templates;
@@ -124,7 +128,7 @@ public class TrAXFilter extends XMLFilterImpl
     }
     if(null == m_transformer.getContentHandler())
     {
-      throw new org.xml.sax.SAXException("parse can not be called if the ContentHandler has not been set!");
+      throw new org.xml.sax.SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_CALL_PARSE, null)); //"parse can not be called if the ContentHandler has not been set!");
     }
 
     getParent().parse(input);
@@ -167,7 +171,7 @@ public class TrAXFilter extends XMLFilterImpl
   {
     XMLReader p = getParent();
     if (p == null) {
-      throw new NullPointerException("No parent for filter");
+      throw new NullPointerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_PARENT_FOR_FILTER, null)); //"No parent for filter");
     }
     
     ContentHandler ch = m_transformer.getInputContentHandler();

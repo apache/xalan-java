@@ -68,6 +68,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import java.util.Stack;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemUnknown;
@@ -497,7 +498,7 @@ public class StylesheetHandler extends DefaultHandler
           getStylesheetRoot().recompose();        
       }
       else
-        throw new TransformerException("Did not find the stylesheet root!");
+        throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_STYLESHEETROOT, null)); //"Did not find the stylesheet root!");
 
       XSLTElementProcessor elemProcessor = getCurrentProcessor();
 
@@ -1601,7 +1602,7 @@ public class StylesheetHandler extends DefaultHandler
   
       try
       {
-        handler.error(new TransformerException("Illegal value for xml:space", locator));
+        handler.error(new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_ILLEGAL_XMLSPACE_VALUE, null), locator)); //"Illegal value for xml:space", locator));
       }
       catch (TransformerException te)
       {

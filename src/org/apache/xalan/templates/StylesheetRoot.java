@@ -117,7 +117,7 @@ public class StylesheetRoot extends StylesheetComposed
     }
     catch (TransformerException se)
     {
-      throw new TransformerConfigurationException("Can't init default templates!", se);
+      throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_INIT_DEFAULT_TEMPLATES, null), se); //"Can't init default templates!", se);
     }
   }
 

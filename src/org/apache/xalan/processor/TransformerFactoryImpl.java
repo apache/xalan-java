@@ -246,8 +246,8 @@ public javax.xml.transform.Templates processFromNode(Node node)
         // Should remove this later... but right now diagnostics from 
         // TransformerConfigurationException are not good.
         // se.printStackTrace();
-        throw new TransformerConfigurationException("processFromNode failed",
-                                                    se);
+        throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), se); //"processFromNode failed",
+                                                    //se);
     }
     catch (TransformerConfigurationException tce)
     {
@@ -279,8 +279,8 @@ public javax.xml.transform.Templates processFromNode(Node node)
         // Should remove this later... but right now diagnostics from 
         // TransformerConfigurationException are not good.
         // se.printStackTrace();
-        throw new TransformerConfigurationException("processFromNode failed",
-                                                    e);
+        throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), e); //"processFromNode failed",
+                                                    //e);
     }
   }
 
@@ -532,7 +532,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
       else
       {
         // Give a more meaningful error message
-        throw new IllegalArgumentException(name + " bad value " + value);
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BAD_VALUE, new Object[]{name, value})); //name + " bad value " + value);
       }
 	}
     else if (name.equals(FEATURE_OPTIMIZE))
@@ -550,12 +550,12 @@ public javax.xml.transform.Templates processFromNode(Node node)
       else
       {
         // Give a more meaningful error message
-        throw new IllegalArgumentException(name + " bad value " + value);
+        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_BAD_VALUE, new Object[]{name, value})); //name + " bad value " + value);
       }
     }
     else
     {
-      throw new IllegalArgumentException(name + "not supported");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUPPORTED, new Object[]{name})); //name + "not supported");
     }
   }
 
@@ -573,11 +573,11 @@ public javax.xml.transform.Templates processFromNode(Node node)
   {
     // Please implement this method for testing purposes 25-Jun-01 -sc
     if (name.equals(FEATURE_INCREMENTAL))
-      throw new IllegalArgumentException(name + " attribute value not found");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_FOUND, new Object[]{name})); //name + " attribute value not found");
     else if (name.equals(FEATURE_OPTIMIZE))
-      throw new IllegalArgumentException(name + " attribute value not found");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_FOUND, new Object[]{name})); //name + " attribute value not found");
     else
-      throw new IllegalArgumentException(name + " attribute not recognized");
+      throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");
   }
 
   /**

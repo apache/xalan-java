@@ -62,6 +62,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
 
 import org.apache.xml.utils.XMLString;
 
@@ -180,7 +182,7 @@ public class FunctionDef1Arg extends FunctionOneArg
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum > 1)
-      throw new WrongNumberArgsException("0 or 1");
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ZERO_OR_ONE, null)); //"0 or 1");
   }
 
   /**

@@ -73,6 +73,9 @@ import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 import javax.xml.transform.TransformerException;
 
 /**
@@ -186,7 +189,7 @@ public class MethodResolver
     }
     /*** This is commented out until we can do a better object -> object scoring 
     else if (bestScoreCount > 1)
-      throw new TransformerException("More than one best match for constructor for "
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_MORE_MATCH_CONSTRUCTOR, new Object[]{classObj.getName()})); //"More than one best match for constructor for "
                                                                    + classObj.getName());
     ***/
     else
@@ -313,7 +316,7 @@ public class MethodResolver
     }
     /*** This is commented out until we can do a better object -> object scoring 
     else if (bestScoreCount > 1)
-      throw new TransformerException("More than one best match for method " + name);
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_MORE_MATCH_METHOD, new Object[]{name})); //"More than one best match for method " + name);
     ***/
     else
       convertParams(argsIn, argsOut, bestParamTypes, exprContext);
@@ -368,7 +371,7 @@ public class MethodResolver
                                                                         name, 0, null));
     }
     else if (bestScoreCount > 1)
-      throw new TransformerException("More than one best match for element method " + name);
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_MORE_MATCH_ELEMENT, new Object[]{name})); //"More than one best match for element method " + name);
     
     return bestMethod;
   }

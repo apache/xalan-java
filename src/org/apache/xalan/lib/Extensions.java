@@ -80,6 +80,8 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 
 import javax.xml.parsers.*;
 
@@ -342,8 +344,8 @@ public class Extensions
       }
     }
     else
-      throw new SAXNotSupportedException("Invalid context passed to evaluate "
-                                         + myContext);
+      throw new SAXNotSupportedException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_CONTEXT_PASSED, new Object[]{myContext })); //"Invalid context passed to evaluate "
+                                         //+ myContext);
   }
 
   /**

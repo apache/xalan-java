@@ -62,6 +62,10 @@ import javax.xml.transform.Source;
 
 import org.apache.xml.utils.XMLStringFactory;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /**
  * This class implements the traversers for DTMDefaultBase.
  */
@@ -162,8 +166,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         iterator = new TypedRootIterator(type);
         break;
       default :
-        throw new DTMException("Error: typed iterator for axis "
-                               + Axis.names[axis] + "not implemented");
+        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: typed iterator for axis "
+                               //+ Axis.names[axis] + "not implemented");
       }
     }
 
@@ -226,8 +230,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       iterator = new RootIterator();
       break;
     default :
-      throw new DTMException("Error: iterator for axis '" + Axis.names[axis]
-                             + "' not implemented");
+      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_ITERATOR_AXIS_NOT_IMPLEMENTED, new Object[]{Axis.names[axis]})); //"Error: iterator for axis '" + Axis.names[axis]
+                             //+ "' not implemented");
     }
 
     return (iterator);
@@ -1164,7 +1168,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       }
       catch (CloneNotSupportedException e)
       {
-        throw new DTMException("Iterator clone not supported.");
+        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_ITERATOR_CLONE_NOT_SUPPORTED, null)); //"Iterator clone not supported.");
       }
     }
 
@@ -1443,7 +1447,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       }
       catch (CloneNotSupportedException e)
       {
-        throw new DTMException("Iterator clone not supported.");
+        throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_ITERATOR_CLONE_NOT_SUPPORTED, null)); //"Iterator clone not supported.");
       }
     }
 

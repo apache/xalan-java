@@ -86,7 +86,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 110;          
+  public static final int MAX_CODE = 215;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 26;
@@ -1101,6 +1101,1049 @@ public class XSLTErrorResources extends XResourceBundleBase
     contents[ER_REQUIRED_ELEM_NOT_FOUND][1] =
 			"Required Element not found: {0}";
   }
+  
+  /** InputStream cannot be null         */
+  public static final int ER_INPUT_CANNOT_BE_NULL = 111;
+
+  static
+  {
+    contents[ER_INPUT_CANNOT_BE_NULL][1] =
+			"InputStream cannot be null";
+  }
+  
+  /** URI cannot be null         */
+  public static final int ER_URI_CANNOT_BE_NULL = 112;
+
+  static
+  {
+    contents[ER_URI_CANNOT_BE_NULL][1] =
+			"URI cannot be null";
+  }
+  
+  /** File cannot be null         */
+  public static final int ER_FILE_CANNOT_BE_NULL = 113;
+
+  static
+  {
+    contents[ER_FILE_CANNOT_BE_NULL][1] =
+			"File cannot be null";
+  }
+  
+   /** InputSource cannot be null         */
+  public static final int ER_SOURCE_CANNOT_BE_NULL = 114;
+
+  static
+  {
+    contents[ER_SOURCE_CANNOT_BE_NULL][1] =
+			"InputSource cannot be null";
+  }
+  
+  /** Can't overwrite cause         */
+  public static final int ER_CANNOT_OVERWRITE_CAUSE = 115;
+
+  static
+  {
+    contents[ER_CANNOT_OVERWRITE_CAUSE][1] =
+			"Cannot overwrite cause";
+  }
+  
+  /** Could not initialize BSF Manager        */
+  public static final int ER_CANNOT_INIT_BSFMGR = 116;
+
+  static
+  {
+    contents[ER_CANNOT_INIT_BSFMGR][1] =
+			"Could not initialize BSF Manager";
+  }
+  
+  /** Could not compile extension       */
+  public static final int ER_CANNOT_CMPL_EXTENSN = 117;
+
+  static
+  {
+    contents[ER_CANNOT_CMPL_EXTENSN][1] =
+			"Could not compile extension";
+  }
+  
+  /** Could not create extension       */
+  public static final int ER_CANNOT_CREATE_EXTENSN = 118;
+
+  static
+  {
+    contents[ER_CANNOT_CREATE_EXTENSN][1] =
+      "Could not create extension: {0} because of: {1}";
+  }
+  
+  /** Instance method call to method {0} requires an Object instance as first argument       */
+  public static final int ER_INSTANCE_MTHD_CALL_REQUIRES = 119;
+
+  static
+  {
+    contents[ER_INSTANCE_MTHD_CALL_REQUIRES][1] =
+      "Instance method call to method {0} requires an Object instance as first argument";
+  }
+  
+  /** Invalid element name specified       */
+  public static final int ER_INVALID_ELEMENT_NAME = 120;
+
+  static
+  {
+    contents[ER_INVALID_ELEMENT_NAME][1] =
+      "Invalid element name specified {0}";
+  }
+  
+   /** Element name method must be static      */
+  public static final int ER_ELEMENT_NAME_METHOD_STATIC = 121;
+
+  static
+  {
+    contents[ER_ELEMENT_NAME_METHOD_STATIC][1] =
+      "Element name method must be static {0}";
+  }
+  
+   /** Extension function {0} : {1} is unknown      */
+  public static final int ER_EXTENSION_FUNC_UNKNOWN = 122;
+
+  static
+  {
+    contents[ER_EXTENSION_FUNC_UNKNOWN][1] =
+             "Extension function {0} : {1} is unknown";
+  }
+  
+   /** More than one best match for constructor for       */
+  public static final int ER_MORE_MATCH_CONSTRUCTOR = 123;
+
+  static
+  {
+    contents[ER_MORE_MATCH_CONSTRUCTOR][1] =
+             "More than one best match for constructor for {0}";
+  }
+  
+   /** More than one best match for method      */
+  public static final int ER_MORE_MATCH_METHOD = 124;
+
+  static
+  {
+    contents[ER_MORE_MATCH_METHOD][1] =
+             "More than one best match for method {0}";
+  }
+  
+   /** More than one best match for element method      */
+  public static final int ER_MORE_MATCH_ELEMENT = 125;
+
+  static
+  {
+    contents[ER_MORE_MATCH_ELEMENT][1] =
+             "More than one best match for element method {0}";
+  }
+  
+   /** Invalid context passed to evaluate       */
+  public static final int ER_INVALID_CONTEXT_PASSED = 126;
+
+  static
+  {
+    contents[ER_INVALID_CONTEXT_PASSED][1] =
+             "Invalid context passed to evaluate {0}";
+  }
+  
+   /** Pool already exists       */
+  public static final int ER_POOL_EXISTS = 127;
+
+  static
+  {
+    contents[ER_POOL_EXISTS][1] =
+             "Pool already exists";
+  }
+  
+   /** No driver Name specified      */
+  public static final int ER_NO_DRIVER_NAME = 128;
+
+  static
+  {
+    contents[ER_NO_DRIVER_NAME][1] =
+             "No driver Name specified";
+  }
+  
+   /** No URL specified     */
+  public static final int ER_NO_URL = 129;
+
+  static
+  {
+    contents[ER_NO_URL][1] =
+             "No URL specified";
+  }
+  
+   /** Pool size is less than one    */
+  public static final int ER_POOL_SIZE_LESSTHAN_ONE = 130;
+
+  static
+  {
+    contents[ER_POOL_SIZE_LESSTHAN_ONE][1] =
+             "Pool size is less than one!";
+  }
+  
+   /** Invalid driver name specified    */
+  public static final int ER_INVALID_DRIVER = 131;
+
+  static
+  {
+    contents[ER_INVALID_DRIVER][1] =
+             "Invalid driver name specified!";
+  }
+  
+   /** Did not find the stylesheet root    */
+  public static final int ER_NO_STYLESHEETROOT = 132;
+
+  static
+  {
+    contents[ER_NO_STYLESHEETROOT][1] =
+             "Did not find the stylesheet root!";
+  }
+  
+   /** Illegal value for xml:space     */
+  public static final int ER_ILLEGAL_XMLSPACE_VALUE = 133;
+
+  static
+  {
+    contents[ER_ILLEGAL_XMLSPACE_VALUE][1] =
+         "Illegal value for xml:space";
+  }
+  
+   /** processFromNode failed     */
+  public static final int ER_PROCESSFROMNODE_FAILED = 134;
+
+  static
+  {
+    contents[ER_PROCESSFROMNODE_FAILED][1] =
+         "processFromNode failed";
+  }
+  
+   /** The resource [] could not load:     */
+  public static final int ER_RESOURCE_COULD_NOT_LOAD = 135;
+
+  static
+  {
+    contents[ER_RESOURCE_COULD_NOT_LOAD][1] =
+        "The resource [ {0} ] could not load: {1} \n {2} \t {3}";
+  }
+   
+  
+   /** Buffer size <=0     */
+  public static final int ER_BUFFER_SIZE_LESSTHAN_ZERO = 136;
+
+  static
+  {
+    contents[ER_BUFFER_SIZE_LESSTHAN_ZERO][1] =
+        "Buffer size <=0";
+  }
+  
+   /** Unknown error when calling extension    */
+  public static final int ER_UNKNOWN_ERROR_CALLING_EXTENSION = 137;
+
+  static
+  {
+    contents[ER_UNKNOWN_ERROR_CALLING_EXTENSION][1] =
+        "Unknown error when calling extension";
+  }
+  
+   /** Prefix {0} does not have a corresponding namespace declaration    */
+  public static final int ER_NO_NAMESPACE_DECL = 138;
+
+  static
+  {
+    contents[ER_NO_NAMESPACE_DECL][1] =
+        "Prefix {0} does not have a corresponding namespace declaration";
+  }
+  
+   /** Element content not allowed for lang=javaclass   */
+  public static final int ER_ELEM_CONTENT_NOT_ALLOWED = 139;
+
+  static
+  {
+    contents[ER_ELEM_CONTENT_NOT_ALLOWED][1] =
+        "Element content not allowed for lang=javaclass {0}";
+  }   
+  
+   /** Stylesheet directed termination   */
+  public static final int ER_STYLESHEET_DIRECTED_TERMINATION = 140;
+
+  static
+  {
+    contents[ER_STYLESHEET_DIRECTED_TERMINATION][1] =
+        "Stylesheet directed termination";
+  }
+  
+   /** 1 or 2   */
+  public static final int ER_ONE_OR_TWO = 141;
+
+  static
+  {
+    contents[ER_ONE_OR_TWO][1] =
+        "1 or 2";
+  }
+  
+   /** 2 or 3   */
+  public static final int ER_TWO_OR_THREE = 142;
+
+  static
+  {
+    contents[ER_TWO_OR_THREE][1] =
+        "2 or 3";
+  }
+  
+   /** Could not load {0} (check CLASSPATH), now using just the defaults   */
+  public static final int ER_COULD_NOT_LOAD_RESOURCE = 143;
+
+  static
+  {
+    contents[ER_COULD_NOT_LOAD_RESOURCE][1] =
+        "Could not load {0} (check CLASSPATH), now using just the defaults";
+  }
+  
+   /** Cannot initialize default templates   */
+  public static final int ER_CANNOT_INIT_DEFAULT_TEMPLATES = 144;
+
+  static
+  {
+    contents[ER_CANNOT_INIT_DEFAULT_TEMPLATES][1] =
+        "Cannot initialize default templates";
+  }
+  
+   /** Result should not be null   */
+  public static final int ER_RESULT_NULL = 145;
+
+  static
+  {
+    contents[ER_RESULT_NULL][1] =
+        "Result should not be null";
+  }
+    
+   /** Result could not be set   */
+  public static final int ER_RESULT_COULD_NOT_BE_SET = 146;
+
+  static
+  {
+    contents[ER_RESULT_COULD_NOT_BE_SET][1] =
+        "Result could not be set";
+  }
+  
+   /** No output specified   */
+  public static final int ER_NO_OUTPUT_SPECIFIED = 147;
+
+  static
+  {
+    contents[ER_NO_OUTPUT_SPECIFIED][1] =
+        "No output specified";
+  }
+  
+   /** Can't transform to a Result of type   */
+  public static final int ER_CANNOT_TRANSFORM_TO_RESULT_TYPE = 148;
+
+  static
+  {
+    contents[ER_CANNOT_TRANSFORM_TO_RESULT_TYPE][1] =
+        "Can't transform to a Result of type {0}";
+  }
+  
+   /** Can't transform to a Source of type   */
+  public static final int ER_CANNOT_TRANSFORM_SOURCE_TYPE = 149;
+
+  static
+  {
+    contents[ER_CANNOT_TRANSFORM_SOURCE_TYPE][1] =
+        "Can't transform a Source of type {0}";
+  }
+  
+   /** Null content handler  */
+  public static final int ER_NULL_CONTENT_HANDLER = 150;
+
+  static
+  {
+    contents[ER_NULL_CONTENT_HANDLER][1] =
+        "Null content handler";
+  }
+  
+   /** Null error handler  */
+  public static final int ER_NULL_ERROR_HANDLER = 151;
+
+  static
+  {
+    contents[ER_NULL_ERROR_HANDLER][1] =
+        "Null error handler";
+  }
+  
+   /** parse can not be called if the ContentHandler has not been set */
+  public static final int ER_CANNOT_CALL_PARSE = 152;
+
+  static
+  {
+    contents[ER_CANNOT_CALL_PARSE][1] =
+        "parse can not be called if the ContentHandler has not been set";
+  }
+  
+   /**  No parent for filter */
+  public static final int ER_NO_PARENT_FOR_FILTER = 153;
+
+  static
+  {
+    contents[ER_NO_PARENT_FOR_FILTER][1] =
+        "No parent for filter";
+  }
+  
+  
+   /**  No stylesheet found in: {0}, media */
+  public static final int ER_NO_STYLESHEET_IN_MEDIA = 154;
+
+  static
+  {
+    contents[ER_NO_STYLESHEET_IN_MEDIA][1] =
+         "No stylesheet found in: {0}, media= {1}";
+  }
+  
+   /**  No xml-stylesheet PI found in */
+  public static final int ER_NO_STYLESHEET_PI = 155;
+
+  static
+  {
+    contents[ER_NO_STYLESHEET_PI][1] =
+         "No xml-stylesheet PI found in: {0}";
+  }
+  
+   /**  No default implementation found */
+  public static final int ER_NO_DEFAULT_IMPL = 156;
+
+  static
+  {
+    contents[ER_NO_DEFAULT_IMPL][1] =
+         "No default implementation found ";
+  }
+  
+   /**  ChunkedIntArray({0}) not currently supported */
+  public static final int ER_CHUNKEDINTARRAY_NOT_SUPPORTED = 157;
+
+  static
+  {
+    contents[ER_CHUNKEDINTARRAY_NOT_SUPPORTED][1] =
+       "ChunkedIntArray({0}) not currently supported";
+  }
+  
+   /**  Offset bigger than slot */
+  public static final int ER_OFFSET_BIGGER_THAN_SLOT = 158;
+
+  static
+  {
+    contents[ER_OFFSET_BIGGER_THAN_SLOT][1] =
+       "Offset bigger than slot";
+  }
+  
+   /**  Coroutine not available, id= */
+  public static final int ER_COROUTINE_NOT_AVAIL = 159;
+
+  static
+  {
+    contents[ER_COROUTINE_NOT_AVAIL][1] =
+       "Coroutine not available, id={0}";
+  }
+  
+   /**  CoroutineManager recieved co_exit() request */
+  public static final int ER_COROUTINE_CO_EXIT = 160;
+
+  static
+  {
+    contents[ER_COROUTINE_CO_EXIT][1] =
+       "CoroutineManager received co_exit() request";
+  }
+  
+   /**  co_joinCoroutineSet() failed */
+  public static final int ER_COJOINROUTINESET_FAILED = 161;
+
+  static
+  {
+    contents[ER_COJOINROUTINESET_FAILED][1] =
+       "co_joinCoroutineSet() failed";
+  }
+  
+   /**  Coroutine parameter error () */
+  public static final int ER_COROUTINE_PARAM = 162;
+
+  static
+  {
+    contents[ER_COROUTINE_PARAM][1] =
+       "Coroutine parameter error ({0})";
+  }
+  
+   /**  UNEXPECTED: Parser doTerminate answers  */
+  public static final int ER_PARSER_DOTERMINATE_ANSWERS = 163;
+
+  static
+  {
+    contents[ER_PARSER_DOTERMINATE_ANSWERS][1] =
+       "\nUNEXPECTED: Parser doTerminate answers {0}";
+  }
+  
+   /**  parse may not be called while parsing */
+  public static final int ER_NO_PARSE_CALL_WHILE_PARSING = 164;
+
+  static
+  {
+    contents[ER_NO_PARSE_CALL_WHILE_PARSING][1] =
+       "parse may not be called while parsing";
+  }
+  
+   /**  Error: typed iterator for axis  {0} not implemented  */
+  public static final int ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED = 165;
+
+  static
+  {
+    contents[ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED][1] =
+       "Error: typed iterator for axis  {0} not implemented";
+  }
+  
+   /**  Error: iterator for axis {0} not implemented  */
+  public static final int ER_ITERATOR_AXIS_NOT_IMPLEMENTED = 166;
+
+  static
+  {
+    contents[ER_ITERATOR_AXIS_NOT_IMPLEMENTED][1] =
+       "Error: iterator for axis {0} not implemented ";
+  }
+  
+   /**  Iterator clone not supported  */
+  public static final int ER_ITERATOR_CLONE_NOT_SUPPORTED = 167;
+
+  static
+  {
+    contents[ER_ITERATOR_CLONE_NOT_SUPPORTED][1] =
+       "Iterator clone not supported";
+  }
+  
+   /**  Unknown axis traversal type  */
+  public static final int ER_UNKNOWN_AXIS_TYPE = 168;
+
+  static
+  {
+    contents[ER_UNKNOWN_AXIS_TYPE][1] =
+       "Unknown axis traversal type: {0}";
+  }
+  
+   /**  Axis traverser not supported  */
+  public static final int ER_AXIS_NOT_SUPPORTED = 169;
+
+  static
+  {
+    contents[ER_AXIS_NOT_SUPPORTED][1] =
+       "Axis traverser not supported: {0}";
+  }
+  
+   /**  No more DTM IDs are available  */
+  public static final int ER_NO_DTMIDS_AVAIL = 170;
+
+  static
+  {
+    contents[ER_NO_DTMIDS_AVAIL][1] =
+       "No more DTM IDs are available";
+  }
+  
+   /**  Not supported  */
+  public static final int ER_NOT_SUPPORTED = 171;
+
+  static
+  {
+    contents[ER_NOT_SUPPORTED][1] =
+       "Not supported: {0}";
+  }
+  
+   /**  node must be non-null for getDTMHandleFromNode  */
+  public static final int ER_NODE_NON_NULL = 172;
+
+  static
+  {
+    contents[ER_NODE_NON_NULL][1] =
+       "Node must be non-null for getDTMHandleFromNode";
+  }
+  
+   /**  Could not resolve the node to a handle  */
+  public static final int ER_COULD_NOT_RESOLVE_NODE = 173;
+
+  static
+  {
+    contents[ER_COULD_NOT_RESOLVE_NODE][1] =
+       "Could not resolve the node to a handle";
+  }
+  
+   /**  startParse may not be called while parsing */
+  public static final int ER_STARTPARSE_WHILE_PARSING = 174;
+
+  static
+  {
+    contents[ER_STARTPARSE_WHILE_PARSING][1] =
+       "startParse may not be called while parsing";
+  }
+  
+   /**  startParse needs a non-null SAXParser  */
+  public static final int ER_STARTPARSE_NEEDS_SAXPARSER = 175;
+
+  static
+  {
+    contents[ER_STARTPARSE_NEEDS_SAXPARSER][1] =
+       "startParse needs a non-null SAXParser";
+  }
+  
+   /**  could not initialize parser with */
+  public static final int ER_COULD_NOT_INIT_PARSER = 176;
+
+  static
+  {
+    contents[ER_COULD_NOT_INIT_PARSER][1] =
+       "could not initialize parser with";
+  }
+  
+   /**  Value for property {0} should be a Boolean instance  */
+  public static final int ER_PROPERTY_VALUE_BOOLEAN = 177;
+
+  static
+  {
+    contents[ER_PROPERTY_VALUE_BOOLEAN][1] =
+       "Value for property {0} should be a Boolean instance";
+  }
+  
+   /**  exception creating new instance for pool  */
+  public static final int ER_EXCEPTION_CREATING_POOL = 178;
+
+  static
+  {
+    contents[ER_EXCEPTION_CREATING_POOL][1] =
+       "exception creating new instance for pool";
+  }
+  
+   /**  Path contains invalid escape sequence  */
+  public static final int ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE = 179;
+
+  static
+  {
+    contents[ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE][1] =
+       "Path contains invalid escape sequence";
+  }
+  
+   /**  Scheme is required!  */
+  public static final int ER_SCHEME_REQUIRED = 180;
+
+  static
+  {
+    contents[ER_SCHEME_REQUIRED][1] =
+       "Scheme is required!";
+  }
+  
+   /**  No scheme found in URI  */
+  public static final int ER_NO_SCHEME_IN_URI = 181;
+
+  static
+  {
+    contents[ER_NO_SCHEME_IN_URI][1] =
+       "No scheme found in URI: {0}";
+  }
+  
+   /**  No scheme found in URI  */
+  public static final int ER_NO_SCHEME_INURI = 182;
+
+  static
+  {
+    contents[ER_NO_SCHEME_INURI][1] =
+       "No scheme found in URI";
+  }
+  
+   /**  Path contains invalid character:   */
+  public static final int ER_PATH_INVALID_CHAR = 183;
+
+  static
+  {
+    contents[ER_PATH_INVALID_CHAR][1] =
+       "Path contains invalid character: {0}";
+  }
+  
+   /**  Cannot set scheme from null string  */
+  public static final int ER_SCHEME_FROM_NULL_STRING = 184;
+
+  static
+  {
+    contents[ER_SCHEME_FROM_NULL_STRING][1] =
+       "Cannot set scheme from null string";
+  }
+  
+   /**  The scheme is not conformant. */
+  public static final int ER_SCHEME_NOT_CONFORMANT = 185;
+
+  static
+  {
+    contents[ER_SCHEME_NOT_CONFORMANT][1] =
+       "The scheme is not conformant.";
+  }
+  
+   /**  Host is not a well formed address  */
+  public static final int ER_HOST_ADDRESS_NOT_WELLFORMED = 186;
+
+  static
+  {
+    contents[ER_HOST_ADDRESS_NOT_WELLFORMED][1] =
+       "Host is not a well formed address";
+  }
+  
+   /**  Port cannot be set when host is null  */
+  public static final int ER_PORT_WHEN_HOST_NULL = 187;
+
+  static
+  {
+    contents[ER_PORT_WHEN_HOST_NULL][1] =
+       "Port cannot be set when host is null";
+  }
+  
+   /**  Invalid port number  */
+  public static final int ER_INVALID_PORT = 188;
+
+  static
+  {
+    contents[ER_INVALID_PORT][1] =
+       "Invalid port number";
+  }
+  
+   /**  Fragment can only be set for a generic URI  */
+  public static final int ER_FRAG_FOR_GENERIC_URI = 189;
+
+  static
+  {
+    contents[ER_FRAG_FOR_GENERIC_URI][1] =
+       "Fragment can only be set for a generic URI";
+  }
+  
+   /**  Fragment cannot be set when path is null  */
+  public static final int ER_FRAG_WHEN_PATH_NULL = 190;
+
+  static
+  {
+    contents[ER_FRAG_WHEN_PATH_NULL][1] =
+       "Fragment cannot be set when path is null";
+  }
+  
+   /**  Fragment contains invalid character  */
+  public static final int ER_FRAG_INVALID_CHAR = 191;
+
+  static
+  {
+    contents[ER_FRAG_INVALID_CHAR][1] =
+       "Fragment contains invalid character";
+  }
+  
+ 
+  
+   /** Parser is already in use  */
+  public static final int ER_PARSER_IN_USE = 192;
+
+  static
+  {
+    contents[ER_PARSER_IN_USE][1] =
+        "Parser is already in use";
+  }
+  
+   /** Parser is already in use  */
+  public static final int ER_CANNOT_CHANGE_WHILE_PARSING = 193;
+
+  static
+  {
+    contents[ER_CANNOT_CHANGE_WHILE_PARSING][1] =
+        "Cannot change {0} {1} while parsing";
+  }
+  
+   /** Self-causation not permitted  */
+  public static final int ER_SELF_CAUSATION_NOT_PERMITTED = 194;
+
+  static
+  {
+    contents[ER_SELF_CAUSATION_NOT_PERMITTED][1] =
+        "Self-causation not permitted";
+  }
+  
+   /** src attribute not yet supported for  */
+  public static final int ER_SRC_ATTRIB_NOT_SUPPORTED = 195;
+
+  static
+  {
+    contents[ER_SRC_ATTRIB_NOT_SUPPORTED][1] =
+       "src attribute not yet supported for {0}";
+  }
+  
+  /** The resource [] could not be found     */
+  public static final int ER_RESOURCE_COULD_NOT_FIND = 196;
+
+  static
+  {
+    contents[ER_RESOURCE_COULD_NOT_FIND][1] =
+        "The resource [ {0} ] could not be found.\n {1}";
+  }
+  
+   /** output property not recognized:  */
+  public static final int ER_OUTPUT_PROPERTY_NOT_RECOGNIZED = 197;
+
+  static
+  {
+    contents[ER_OUTPUT_PROPERTY_NOT_RECOGNIZED][1] =
+        "Output property not recognized: {0}";
+  }
+  
+   /** Userinfo may not be specified if host is not specified   */
+  public static final int ER_NO_USERINFO_IF_NO_HOST = 198;
+
+  static
+  {
+    contents[ER_NO_USERINFO_IF_NO_HOST][1] =
+        "Userinfo may not be specified if host is not specified";
+  }
+  
+   /** Port may not be specified if host is not specified   */
+  public static final int ER_NO_PORT_IF_NO_HOST = 199;
+
+  static
+  {
+    contents[ER_NO_PORT_IF_NO_HOST][1] =
+        "Port may not be specified if host is not specified";
+  }
+  
+   /** Query string cannot be specified in path and query string   */
+  public static final int ER_NO_QUERY_STRING_IN_PATH = 200;
+
+  static
+  {
+    contents[ER_NO_QUERY_STRING_IN_PATH][1] =
+        "Query string cannot be specified in path and query string";
+  }
+  
+   /** Fragment cannot be specified in both the path and fragment   */
+  public static final int ER_NO_FRAGMENT_STRING_IN_PATH = 201;
+
+  static
+  {
+    contents[ER_NO_FRAGMENT_STRING_IN_PATH][1] =
+        "Fragment cannot be specified in both the path and fragment";
+  }
+  
+   /** Cannot initialize URI with empty parameters   */
+  public static final int ER_CANNOT_INIT_URI_EMPTY_PARMS = 202;
+
+  static
+  {
+    contents[ER_CANNOT_INIT_URI_EMPTY_PARMS][1] =
+        "Cannot initialize URI with empty parameters";
+  }
+  
+   /** Failed creating ElemLiteralResult instance   */
+  public static final int ER_FAILED_CREATING_ELEMLITRSLT = 203;
+
+  static
+  {
+    contents[ER_FAILED_CREATING_ELEMLITRSLT][1] =
+        "Failed creating ElemLiteralResult instance";
+  }  
+  
+   /** Priority value does not contain a parsable number   */
+  public static final int ER_PRIORITY_NOT_PARSABLE = 204;
+
+  static
+  {
+    contents[ER_PRIORITY_NOT_PARSABLE][1] =
+        "Priority value does not contain a parsable number";
+  }
+  
+   /**  Value for {0} should equal 'yes' or 'no'   */
+  public static final int ER_VALUE_SHOULD_EQUAL = 205;
+
+  static
+  {
+    contents[ER_VALUE_SHOULD_EQUAL][1] =
+        " Value for {0} should equal yes or no";
+  }
+ 
+   /**  Failed calling {0} method   */
+  public static final int ER_FAILED_CALLING_METHOD = 206;
+
+  static
+  {
+    contents[ER_FAILED_CALLING_METHOD][1] =
+        " Failed calling {0} method";
+  }
+  
+   /** Failed creating ElemLiteralResult instance   */
+  public static final int ER_FAILED_CREATING_ELEMTMPL = 207;
+
+  static
+  {
+    contents[ER_FAILED_CREATING_ELEMTMPL][1] =
+        "Failed creating ElemTemplateElement instance";
+  }
+  
+   /**  Characters are not allowed at this point in the document   */
+  public static final int ER_CHARS_NOT_ALLOWED = 208;
+
+  static
+  {
+    contents[ER_CHARS_NOT_ALLOWED][1] =
+        "Characters are not allowed at this point in the document";
+  }
+  
+  /**  attribute is not allowed on the element   */
+  public static final int ER_ATTR_NOT_ALLOWED = 209;
+
+  static
+  {
+    contents[ER_ATTR_NOT_ALLOWED][1] =
+        "\"{0}\" attribute is not allowed on the {1} element!";
+  }
+  
+  /**  Method not yet supported    */
+  public static final int ER_METHOD_NOT_SUPPORTED = 210;
+
+  static
+  {
+    contents[ER_METHOD_NOT_SUPPORTED][1] =
+        "Method not yet supported ";
+  }
+ 
+  /**  Bad value    */
+  public static final int ER_BAD_VALUE = 211;
+
+  static
+  {
+    contents[ER_BAD_VALUE][1] =
+     "{0} bad value {1} ";
+  }
+  
+  /**  attribute value not found   */
+  public static final int ER_ATTRIB_VALUE_NOT_FOUND = 212;
+
+  static
+  {
+    contents[ER_ATTRIB_VALUE_NOT_FOUND][1] =
+     "{0} attribute value not found ";
+  }
+  
+  /**  attribute value not recognized    */
+  public static final int ER_ATTRIB_VALUE_NOT_RECOGNIZED = 213;
+
+  static
+  {
+    contents[ER_ATTRIB_VALUE_NOT_RECOGNIZED][1] =
+     "{0} attribute value not recognized ";
+  }
+
+  /** IncrementalSAXSource_Filter not currently restartable   */
+  public static final int ER_INCRSAXSRCFILTER_NOT_RESTARTABLE = 214;
+
+  static
+  {
+    contents[ER_INCRSAXSRCFILTER_NOT_RESTARTABLE][1] =
+     "IncrementalSAXSource_Filter not currently restartable";
+  }
+  
+  /** IncrementalSAXSource_Filter not currently restartable   */
+  public static final int ER_XMLRDR_NOT_BEFORE_STARTPARSE = 215;
+
+  static
+  {
+    contents[ER_XMLRDR_NOT_BEFORE_STARTPARSE][1] =
+     "XMLReader not before startParse request";
+  }
+  
+  
+  /*
+    /**  Cannot find SAX1 driver class    *
+  public static final int ER_CANNOT_FIND_SAX1_DRIVER = 190;
+
+  static
+  {
+    contents[ER_CANNOT_FIND_SAX1_DRIVER][1] =
+      "Cannot find SAX1 driver class {0}";
+  }
+  
+   /**  SAX1 driver class {0} found but cannot be loaded    *
+  public static final int ER_SAX1_DRIVER_NOT_LOADED = 191;
+
+  static
+  {
+    contents[ER_SAX1_DRIVER_NOT_LOADED][1] =
+      "SAX1 driver class {0} found but cannot be loaded";
+  }
+  
+   /**  SAX1 driver class {0} found but cannot be instantiated    *
+  public static final int ER_SAX1_DRIVER_NOT_INSTANTIATED = 192;
+
+  static
+  {
+    contents[ER_SAX1_DRIVER_NOT_INSTANTIATED][1] =
+      "SAX1 driver class {0} loaded but cannot be instantiated";
+  }
+  
+   /**  SAX1 driver class {0} does not implement org.xml.sax.Parser    *
+  public static final int ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER = 193;
+
+  static
+  {
+    contents[ER_SAX1_DRIVER_NOT_IMPLEMENT_PARSER][1] =
+      "SAX1 driver class {0} does not implement org.xml.sax.Parser";
+  }
+  
+   /**  System property org.xml.sax.parser not specified    *
+  public static final int ER_PARSER_PROPERTY_NOT_SPECIFIED = 194;
+
+  static
+  {
+    contents[ER_PARSER_PROPERTY_NOT_SPECIFIED][1] =
+      "System property org.xml.sax.parser not specified";
+  }
+  
+   /**  Parser argument must not be null    *
+  public static final int ER_PARSER_ARG_CANNOT_BE_NULL = 195;
+
+  static
+  {
+    contents[ER_PARSER_ARG_CANNOT_BE_NULL][1] =
+      "Parser argument must not be null";
+  }
+  
+   /**  Feature:    *
+  public static final int ER_FEATURE = 196;
+
+  static
+  {
+    contents[ER_FEATURE][1] =
+        "Feature: {0}";
+  }
+  
+   /**  Property:    *
+  public static final int ER_PROPERTY = 197;
+
+  static
+  {
+    contents[ER_PROPERTY][1] =
+        "Property: {0}";
+  }
+  
+   /** Null Entity Resolver  *
+  public static final int ER_NULL_ENTITY_RESOLVER = 198;
+
+  static
+  {
+    contents[ER_NULL_ENTITY_RESOLVER][1] =
+        "Null entity resolver";
+  }
+  
+   /** Null DTD handler  *
+  public static final int ER_NULL_DTD_HANDLER = 199;
+
+  static
+  {
+    contents[ER_NULL_DTD_HANDLER][1] =
+        "Null DTD handler";
+  }
+  
+ */ 
   
 
   // Warnings...

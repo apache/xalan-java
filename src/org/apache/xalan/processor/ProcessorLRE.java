@@ -305,11 +305,11 @@ public class ProcessorLRE extends ProcessorTemplateElem
       }
       catch (InstantiationException ie)
       {
-        handler.error("Failed creating ElemLiteralResult instance!", ie);
+        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMLITRSLT, null, ie);//"Failed creating ElemLiteralResult instance!", ie);
       }
       catch (IllegalAccessException iae)
       {
-        handler.error("Failed creating ElemLiteralResult instance!", iae);
+        handler.error(XSLTErrorResources.ER_FAILED_CREATING_ELEMLITRSLT, null, iae);//"Failed creating ElemLiteralResult instance!", iae);
       }
 
       setPropertiesFromAttributes(handler, rawName, attributes, elem);

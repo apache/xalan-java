@@ -59,6 +59,10 @@ package org.apache.xpath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 import javax.xml.transform.TransformerException;
 
 /**
@@ -459,7 +463,7 @@ public final class VariableStack implements Cloneable
         return getGlobalVariable(xctxt, vvar.getIndex());
     }
 
-    throw new javax.xml.transform.TransformerException("Variable not resolvable: " + qname);
+    throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{qname.toString()})); //"Variable not resolvable: " + qname);
   }
 }  // end VariableStack
 

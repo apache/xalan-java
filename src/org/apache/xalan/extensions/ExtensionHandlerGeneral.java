@@ -68,6 +68,8 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 
 import javax.xml.transform.TransformerException;
@@ -225,12 +227,12 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
     if (m_scriptSrcURL != null)
     {
-      throw new TransformerException("src attribute not yet supported for "
-                             + scriptLang);
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_SRC_ATTRIB_NOT_SUPPORTED, new Object[]{scriptLang})); //"src attribute not yet supported for "
+                             //+ scriptLang);
     }
 
     if (null == managerClass)
-      throw new TransformerException("Could not initialize BSF manager");
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_INIT_BSFMGR, null)); //"Could not initialize BSF manager");
 
     try
     {
@@ -246,7 +248,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     {
       e.printStackTrace();
 
-      throw new TransformerException("Could not compile extension", e);
+      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_CMPL_EXTENSN, null), e); //"Could not compile extension", e);
     }
   }
 
@@ -330,8 +332,8 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
       {
 
         // Should probably make a TRaX Extension Exception.
-        throw new TransformerException("Could not create extension: " + funcName
-                               + " because of: " + e);
+        throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_CREATE_EXTENSN, new Object[]{funcName, e })); //"Could not create extension: " + funcName
+                               //+ " because of: " + e);
       }
     }
   }

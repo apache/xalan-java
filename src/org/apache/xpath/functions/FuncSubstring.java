@@ -64,6 +64,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xml.utils.XMLString;
 
 /**
@@ -147,6 +149,6 @@ public class FuncSubstring extends Function3Args
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
     if (argNum < 2)
-      throw new WrongNumberArgsException("2 or 3");
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_TWO_OR_THREE, null)); //"2 or 3");
   }
 }

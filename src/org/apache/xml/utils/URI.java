@@ -59,6 +59,9 @@ package org.apache.xml.utils;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
 /**
  * A class to represent a Uniform Resource Identifier (URI). This class
  * is designed to handle the parsing of URIs and provide access to
@@ -320,7 +323,7 @@ public class URI implements Serializable
 
     if (p_scheme == null || p_scheme.trim().length() == 0)
     {
-      throw new MalformedURIException("Scheme is required!");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_SCHEME_REQUIRED, null)); //"Scheme is required!");
     }
 
     if (p_host == null)
@@ -328,13 +331,13 @@ public class URI implements Serializable
       if (p_userinfo != null)
       {
         throw new MalformedURIException(
-          "Userinfo may not be specified if host is not specified!");
+          XSLMessages.createMessage(XSLTErrorResources.ER_NO_USERINFO_IF_NO_HOST, null)); //"Userinfo may not be specified if host is not specified!");
       }
 
       if (p_port != -1)
       {
         throw new MalformedURIException(
-          "Port may not be specified if host is not specified!");
+          XSLMessages.createMessage(XSLTErrorResources.ER_NO_PORT_IF_NO_HOST, null)); //"Port may not be specified if host is not specified!");
       }
     }
 
@@ -343,13 +346,13 @@ public class URI implements Serializable
       if (p_path.indexOf('?') != -1 && p_queryString != null)
       {
         throw new MalformedURIException(
-          "Query string cannot be specified in path and query string!");
+          XSLMessages.createMessage(XSLTErrorResources.ER_NO_QUERY_STRING_IN_PATH, null)); //"Query string cannot be specified in path and query string!");
       }
 
       if (p_path.indexOf('#') != -1 && p_fragment != null)
       {
         throw new MalformedURIException(
-          "Fragment cannot be specified in both the path and fragment!");
+          XSLMessages.createMessage(XSLTErrorResources.ER_NO_FRAGMENT_STRING_IN_PATH, null)); //"Fragment cannot be specified in both the path and fragment!");
       }
     }
 
@@ -403,7 +406,7 @@ public class URI implements Serializable
             && (p_uriSpec == null || p_uriSpec.trim().length() == 0))
     {
       throw new MalformedURIException(
-        "Cannot initialize URI with empty parameters.");
+        XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_INIT_URI_EMPTY_PARMS, null)); //"Cannot initialize URI with empty parameters.");
     }
 
     // just make a copy of the base if spec is empty
@@ -423,7 +426,7 @@ public class URI implements Serializable
     {
       if (p_base == null)
       {
-        throw new MalformedURIException("No scheme found in URI: "+uriSpec);
+        throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_SCHEME_IN_URI, new Object[]{uriSpec})); //"No scheme found in URI: "+uriSpec);
       }
     }
     else
@@ -636,7 +639,7 @@ public class URI implements Serializable
 
     if (scheme.length() == 0)
     {
-      throw new MalformedURIException("No scheme found in URI.");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_SCHEME_INURI, null)); //"No scheme found in URI.");
     }
     else
     {
@@ -787,15 +790,15 @@ public class URI implements Serializable
                 ||!isHex(p_uriSpec.charAt(index + 2)))
         {
           throw new MalformedURIException(
-            "Path contains invalid escape sequence!");
+            XSLMessages.createMessage(XSLTErrorResources.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE, null)); //"Path contains invalid escape sequence!");
         }
       }
       else if (!isReservedCharacter(testChar)
                &&!isUnreservedCharacter(testChar))
       {
         if ('\\' != testChar)
-          throw new MalformedURIException("Path contains invalid character: "
-                                          + testChar);
+          throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_PATH_INVALID_CHAR, new Object[]{String.valueOf(testChar)})); //"Path contains invalid character: "
+                                          //+ testChar);
       }
 
       index++;
@@ -1052,12 +1055,12 @@ public class URI implements Serializable
 
     if (p_scheme == null)
     {
-      throw new MalformedURIException("Cannot set scheme from null string!");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_SCHEME_FROM_NULL_STRING, null)); //"Cannot set scheme from null string!");
     }
 
     if (!isConformantSchemeName(p_scheme))
     {
-      throw new MalformedURIException("The scheme is not conformant.");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_SCHEME_NOT_CONFORMANT, null)); //"The scheme is not conformant.");
     }
 
     m_scheme = p_scheme.toLowerCase();
@@ -1140,7 +1143,7 @@ public class URI implements Serializable
     }
     else if (!isWellFormedAddress(p_host))
     {
-      throw new MalformedURIException("Host is not a well formed address!");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_HOST_ADDRESS_NOT_WELLFORMED, null)); //"Host is not a well formed address!");
     }
 
     m_host = p_host;
@@ -1165,12 +1168,12 @@ public class URI implements Serializable
       if (m_host == null)
       {
         throw new MalformedURIException(
-          "Port cannot be set when host is null!");
+          XSLMessages.createMessage(XSLTErrorResources.ER_PORT_WHEN_HOST_NULL, null)); //"Port cannot be set when host is null!");
       }
     }
     else if (p_port != -1)
     {
-      throw new MalformedURIException("Invalid port number!");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_PORT, null)); //"Invalid port number!");
     }
 
     m_port = p_port;
@@ -1228,7 +1231,7 @@ public class URI implements Serializable
 
     if (!isURIString(p_addToPath))
     {
-      throw new MalformedURIException("Path contains invalid character!");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_PATH_INVALID_CHAR, new Object[]{p_addToPath})); //"Path contains invalid character!");
     }
 
     if (m_path == null || m_path.trim().length() == 0)
@@ -1327,16 +1330,16 @@ public class URI implements Serializable
     else if (!isGenericURI())
     {
       throw new MalformedURIException(
-        "Fragment can only be set for a generic URI!");
+        XSLMessages.createMessage(XSLTErrorResources.ER_FRAG_FOR_GENERIC_URI, null)); //"Fragment can only be set for a generic URI!");
     }
     else if (getPath() == null)
     {
       throw new MalformedURIException(
-        "Fragment cannot be set when path is null!");
+        XSLMessages.createMessage(XSLTErrorResources.ER_FRAG_WHEN_PATH_NULL, null)); //"Fragment cannot be set when path is null!");
     }
     else if (!isURIString(p_fragment))
     {
-      throw new MalformedURIException("Fragment contains invalid character!");
+      throw new MalformedURIException(XSLMessages.createMessage(XSLTErrorResources.ER_FRAG_INVALID_CHAR, null)); //"Fragment contains invalid character!");
     }
     else
     {

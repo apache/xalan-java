@@ -7,6 +7,10 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 
 /**
  * This class specifies an exceptional condition that occured
@@ -91,12 +95,12 @@ public class DTMException extends RuntimeException {
     public synchronized Throwable initCause(Throwable cause) {
 
         if ((this.containedException == null) && (cause != null)) {
-            throw new IllegalStateException("Can't overwrite cause");
+            throw new IllegalStateException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_OVERWRITE_CAUSE, null)); //"Can't overwrite cause");
         }
 
         if (cause == this) {
             throw new IllegalArgumentException(
-                "Self-causation not permitted");
+                XSLMessages.createMessage(XSLTErrorResources.ER_SELF_CAUSATION_NOT_PERMITTED, null)); //"Self-causation not permitted");
         }
 
         this.containedException = cause;

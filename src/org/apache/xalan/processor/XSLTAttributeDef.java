@@ -72,6 +72,8 @@ import java.util.Vector;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.StringVector;
@@ -659,8 +661,8 @@ public class XSLTAttributeDef
     }
     catch (NumberFormatException nfe)
     {
-      handler.error("Priority value does not contain a parsable number.",
-                    nfe);
+      handler.error(XSLTErrorResources.ER_PRIORITY_NOT_PARSABLE, null, nfe);//"Priority value does not contain a parsable number.",
+                    //nfe);
 
       return new Double(0.0);
     }
@@ -872,8 +874,8 @@ public class XSLTAttributeDef
 
     // Is this already checked somewhere else?  -sb
     if (!(value.equals("yes") || value.equals("no")))
-      handler.error("Value for " + name + " should equal 'yes' or 'no'",
-                    null);
+      handler.error(XSLTErrorResources.ER_VALUE_SHOULD_EQUAL, new Object[]{name}, null);//"Value for " + name + " should equal 'yes' or 'no'",
+                    //null);
 
     return new Boolean(value.equals("yes") ? true : false);
   }
@@ -1099,15 +1101,15 @@ public class XSLTAttributeDef
       catch (NoSuchMethodException nsme)
       {
         if (!setterString.equals(S_FOREIGNATTR_SETTER))
-          handler.error("Failed calling " + setterString + " method!", nsme);
+          handler.error(XSLTErrorResources.ER_FAILED_CALLING_METHOD, new Object[]{setterString}, nsme);//"Failed calling " + setterString + " method!", nsme);
       }
       catch (IllegalAccessException iae)
       {
-        handler.error("Failed calling " + setterString + " method!", iae);
+        handler.error(XSLTErrorResources.ER_FAILED_CALLING_METHOD, new Object[]{setterString}, iae);//"Failed calling " + setterString + " method!", iae);
       }
       catch (InvocationTargetException nsme)
       {
-        handler.error("Failed calling " + setterString + " method!", nsme);
+        handler.error(XSLTErrorResources.ER_FAILED_CALLING_METHOD, new Object[]{setterString}, nsme);//"Failed calling " + setterString + " method!", nsme);
       }
     }
   }

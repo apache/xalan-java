@@ -65,6 +65,10 @@ import java.io.IOException;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.XMLReader;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /** <p>CoroutineSAXParser_Xerces takes advantage of the fact that Xerces
  * incremental mode is already a coroutine of sorts, and just wraps our
  * CoroutineParser API around it.</p>
@@ -199,7 +203,7 @@ implements CoroutineParser
     if (fParseInProgress) {
       // %review% -- We never set this flag in the previous version of
       // this class, we still don't set it here... Discard, or fix?
-      return new SAXException("parse may not be called while parsing.");
+      return new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_PARSE_CALL_WHILE_PARSING, null)); //"parse may not be called while parsing.");
     }
     
     Object arg;

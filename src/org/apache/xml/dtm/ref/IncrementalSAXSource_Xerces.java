@@ -63,6 +63,10 @@ import java.io.IOException;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.XMLReader;
 
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /** <p>IncrementalSAXSource_Xerces takes advantage of the fact that Xerces
  * incremental mode is already a coroutine of sorts, and just wraps our
  * IncrementalSAXSource API around it.</p>
@@ -151,9 +155,9 @@ public class IncrementalSAXSource_Xerces
   public void startParse(InputSource source) throws SAXException
   {
     if (fIncrementalParser==null)
-      throw new SAXException("startParse needs a non-null SAXParser.");
+      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_STARTPARSE_NEEDS_SAXPARSER, null)); //"startParse needs a non-null SAXParser.");
     if (fParseInProgress)
-      throw new SAXException("startParse may not be called while parsing.");
+      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_STARTPARSE_WHILE_PARSING, null)); //"startParse may not be called while parsing.");
 
     boolean ok=false;
 
@@ -167,7 +171,7 @@ public class IncrementalSAXSource_Xerces
     }
     
     if(!ok)
-      throw new SAXException("could not initialize parser with");
+      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_COULD_NOT_INIT_PARSER, null)); //"could not initialize parser with");
   }
 
   

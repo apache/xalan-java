@@ -71,6 +71,10 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.axes.ContextNodeList;
 
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
+
+
 /**
  * <meta name="usage" content="advanced"/>
  * <p>The NodeSetDTM class can act as either a NodeVector,
@@ -541,7 +545,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     this.addElement(n);
   }
@@ -559,7 +563,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     insertElementAt(n, pos);
   }
@@ -575,7 +579,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     this.removeElement(n);
   }
@@ -652,7 +656,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     if (null != iterator)  // defensive to fix a bug that Sanjiva reported.
     {
@@ -709,7 +713,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     int node;
 
@@ -801,7 +805,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     int insertIndex = -1;
 
@@ -879,7 +883,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     return addNodeInDocOrder(node, true, support);
   }  // end addNodeInDocOrder(Vector v, Object obj)
@@ -905,7 +909,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.addElement(value);
   }
@@ -925,7 +929,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.insertElementAt(value, at);
   }
@@ -941,7 +945,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.appendNodes(nodes);
   }
@@ -958,7 +962,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.removeAllElements();
   }
@@ -980,7 +984,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     return super.removeElement(s);
   }
@@ -999,7 +1003,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.removeElementAt(i);
   }
@@ -1020,7 +1024,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.setElementAt(node, index);
   }
@@ -1037,7 +1041,7 @@ public class NodeSetDTM extends NodeVector
   {
 
     if (!m_mutable)
-      throw new RuntimeException("This NodeSetDTM is not mutable!");
+      throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_NOT_MUTABLE, null)); //"This NodeSetDTM is not mutable!");
 
     super.setElementAt(node, index);
   }

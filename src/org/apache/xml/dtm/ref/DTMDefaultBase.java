@@ -78,6 +78,9 @@ import javax.xml.transform.Source;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
+
 import java.io.*; // for dumpDTM
 
 /**
@@ -1319,7 +1322,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     // %TBD%
-    error("getStringValueChunkCount not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//("getStringValueChunkCount not yet supported!");
 
     return 0;
   }
@@ -1342,7 +1345,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     // %TBD%
-    error("getStringValueChunk not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"getStringValueChunk not yet supported!");
 
     return null;
   }
@@ -1445,7 +1448,7 @@ public abstract class DTMDefaultBase implements DTM
   {
 
     /** @todo: implement this org.apache.xml.dtm.DTMDefaultBase abstract method */
-    error("Not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"Not yet supported!");
 
     return null;
   }
@@ -1882,7 +1885,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public void appendChild(int newChild, boolean clone, boolean cloneDepth)
   {
-    error("appendChild not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"appendChild not yet supported!");
   }
 
   /**
@@ -1896,7 +1899,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public void appendTextChild(String str)
   {
-    error("appendTextChild not yet supported!");
+    error(XSLMessages.createMessage(XSLTErrorResources.ER_METHOD_NOT_SUPPORTED, null));//"appendTextChild not yet supported!");
   }
 
   /**

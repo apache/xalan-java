@@ -4,6 +4,10 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.utils.XMLCharacterRecognizer;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
+
 import java.util.Locale;
 
 
@@ -34,7 +38,7 @@ public class XStringForChars extends XString
     m_length = length;
     if(null == val)
       throw new IllegalArgumentException(
-                          "The FastStringBuffer argument can not be null!!");
+                          XSLMessages.createXPATHMessage(XPATHErrorResources.ER_FASTSTRINGBUFFER_CANNOT_BE_NULL, null)); //"The FastStringBuffer argument can not be null!!");
   }
 
 
@@ -47,7 +51,7 @@ public class XStringForChars extends XString
   {
     super(val);
     throw new IllegalArgumentException(
-                      "XStringForChars can not take a string for an argument!");
+                      XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XSTRINGFORCHARS_CANNOT_TAKE_STRING, null)); //"XStringForChars can not take a string for an argument!");
   }
   
   /**
@@ -57,7 +61,7 @@ public class XStringForChars extends XString
    */
   public FastStringBuffer fsb()
   {
-    throw new RuntimeException("fsb() not supported for XStringForChars!");
+    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_FSB_NOT_SUPPORTED_XSTRINGFORCHARS, null)); //"fsb() not supported for XStringForChars!");
   }
   
   /**

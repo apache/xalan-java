@@ -66,6 +66,7 @@ import org.apache.xpath.objects.XNodeSet;
 import org.w3c.dom.Node;
 
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
 
 /**
  * The variable reference expression executer.
@@ -123,8 +124,8 @@ public class Variable extends Expression
         return;
       }
     }
-    throw new RuntimeException("Could not find variable with the name of "
-                                +m_qname.toString()+"!");
+    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_COULD_NOT_FIND_VAR, new Object[]{m_qname.toString()})); //"Could not find variable with the name of "
+                               // +m_qname.toString()+"!");
     
   }
 
@@ -233,7 +234,7 @@ public class Variable extends Expression
 
         }
       }
-      throw new javax.xml.transform.TransformerException("Variable not resolvable: "+m_qname);
+      throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{m_qname.toString()})); //"Variable not resolvable: "+m_qname);
     }
   }
 }

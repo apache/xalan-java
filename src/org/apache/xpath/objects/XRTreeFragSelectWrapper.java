@@ -9,6 +9,8 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.Expression;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * This class makes an select statement act like an result tree fragment.
@@ -112,7 +114,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    */
   public int rtf()
   {
-    throw new RuntimeException("rtf() not supported by XRTreeFragSelectWrapper!");
+    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"rtf() not supported by XRTreeFragSelectWrapper!");
   }
 
   /**
@@ -122,7 +124,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    */
   public DTMIterator asNodeIterator()
   {
-    throw new RuntimeException("asNodeIterator() not supported by XRTreeFragSelectWrapper!");
+    throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"asNodeIterator() not supported by XRTreeFragSelectWrapper!");
   }
 
 }

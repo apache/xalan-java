@@ -127,7 +127,8 @@ public class QName implements java.io.Serializable
   {
 
     if (localName == null)
-      throw new IllegalArgumentException("Argument 'localName' is null");
+      throw new IllegalArgumentException(XSLMessages.createXPATHMessage(
+            XPATHErrorResources.ER_ARG_LOCALNAME_NULL, null)); //"Argument 'localName' is null");
 
     _namespaceURI = namespaceURI;
     _localName = localName;
@@ -146,7 +147,8 @@ public class QName implements java.io.Serializable
   {
 
     if (localName == null)
-      throw new IllegalArgumentException("Argument 'localName' is null");
+      throw new IllegalArgumentException(XSLMessages.createXPATHMessage(
+            XPATHErrorResources.ER_ARG_LOCALNAME_NULL, null)); //"Argument 'localName' is null");
 
     _namespaceURI = namespaceURI;
     _prefix = prefix;
@@ -164,7 +166,8 @@ public class QName implements java.io.Serializable
   {
 
     if (localName == null)
-      throw new IllegalArgumentException("Argument 'localName' is null");
+      throw new IllegalArgumentException(XSLMessages.createXPATHMessage(
+            XPATHErrorResources.ER_ARG_LOCALNAME_NULL, null)); //"Argument 'localName' is null");
 
     _namespaceURI = null;
     _localName = localName;
