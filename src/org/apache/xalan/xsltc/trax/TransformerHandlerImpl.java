@@ -109,7 +109,7 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     /**
      * Cosntructor - pass in reference to a TransformerImpl object
      */
-    protected TransformerHandlerImpl(TransformerImpl transformer) {
+    public TransformerHandlerImpl(TransformerImpl transformer) {
 	// Save the reference to the transformer
 	_transformer = transformer;
 
@@ -171,10 +171,9 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
 		    _transformer.getOutputHandler(result);
 		_transformer.transferOutputProperties(outputHandler);
 
-		_handler = new SAX2TO(outputHandler);
-		_lexHandler = (LexicalHandler) _handler;
-		_dtdHandler = (DTDHandler) _handler;
-		_declHandler = (DeclHandler) _handler;
+                SAX2TO saxToOutputHandler = new SAX2TO(outputHandler);
+		_handler = saxToOutputHandler;
+		_lexHandler = saxToOutputHandler;
 	    }
 	    catch (TransformerException e) {
 		_result = null;
@@ -419,7 +418,10 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void unparsedEntityDecl(String name, String publicId, 
 	String systemId, String notationName) throws SAXException 
     {
-	_dtdHandler.unparsedEntityDecl(name, publicId, systemId, notationName);
+        if (_dtdHandler != null) {
+	    _dtdHandler.unparsedEntityDecl(name, publicId, systemId,
+                                           notationName);
+        }
     }
 
     /**
@@ -428,7 +430,9 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void notationDecl(String name, String publicId, String systemId) 
 	throws SAXException
     {
-	_dtdHandler.notationDecl(name, publicId, systemId);
+        if (_dtdHandler != null) {
+	    _dtdHandler.notationDecl(name, publicId, systemId);
+        }
     }
 
     /**
@@ -437,7 +441,9 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void attributeDecl(String eName, String aName, String type, 
 	String valueDefault, String value) throws SAXException 
     {
-	_declHandler.attributeDecl(eName, aName, type, valueDefault, value);
+        if (_declHandler != null) {
+	    _declHandler.attributeDecl(eName, aName, type, valueDefault, value);
+        }
     }
 
     /**
@@ -446,7 +452,9 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void elementDecl(String name, String model) 
 	throws SAXException
     {
-	_declHandler.elementDecl(name, model);
+        if (_declHandler != null) {
+	    _declHandler.elementDecl(name, model);
+        }
     }
 
     /**
@@ -455,7 +463,9 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void externalEntityDecl(String name, String publicId, String systemId) 
 	throws SAXException
     {
-	_declHandler.externalEntityDecl(name, publicId, systemId);
+        if (_declHandler != null) {
+	    _declHandler.externalEntityDecl(name, publicId, systemId);
+        }
     }
 
     /**
@@ -464,6 +474,8 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void internalEntityDecl(String name, String value) 
 	throws SAXException
     {
-	_declHandler.internalEntityDecl(name, value);
+        if (_declHandler != null) {
+	    _declHandler.internalEntityDecl(name, value);
+        }
     }
 }

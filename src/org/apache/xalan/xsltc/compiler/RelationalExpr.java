@@ -225,7 +225,6 @@ final class RelationalExpr extends Expression implements Operators {
 	    _right.startResetIterator(classGen, methodGen);
 
 	    il.append(new PUSH(cpg, _op));
-	    il.append(methodGen.loadContextNode());
 	    il.append(methodGen.loadDOM());
 
 	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "compare",
@@ -233,7 +232,6 @@ final class RelationalExpr extends Expression implements Operators {
 					 + _left.getType().toSignature() 
 					 + _right.getType().toSignature()
 					 + "I"
-					 + NODE_SIG
 					 + DOM_INTF_SIG
 					 + ")Z");
 	    il.append(new INVOKESTATIC(index));

@@ -57,6 +57,7 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
@@ -68,16 +69,17 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 class VariableRefBase extends Expression {
 
-    protected final VariableBase _variable; // Reference to the associated var.
+    /**
+     * A reference to the associated variable.
+     */
+    protected final VariableBase _variable; 
 
     /**
-     * Created a new variable or parameter reference. Note that this base-
-     * class is not here mostly because variable and parameter references share
-     * a lot of functionality. The base class is needed more for having a
-     * single class to run 'if (instanceof)' on in the compiler code. The same
-     * holds for the variable base class.
-     * @param variable The referenced variable
+     * A reference to the enclosing expression/instruction for which a
+     * closure is needed (Predicate, Number or Sort).
      */
+    protected Closure _closure = null;
+
     public VariableRefBase(VariableBase variable) {
 	_variable = variable;
 	variable.addReference(this);
@@ -89,23 +91,34 @@ class VariableRefBase extends Expression {
 
     /**
      * Returns a reference to the associated variable
-     * @return The referenced variable
      */
     public VariableBase getVariable() {
-	return(_variable);
+	return _variable;
     }
 
     /**
      * Returns a reference to any parent variable
-     * @return Parent variable (or null if none)
      */
     public VariableBase findParentVariable() {
 	SyntaxTreeNode node = this;
-	while ((node != null) && (!(node instanceof VariableBase)))
+	while (node != null && !(node instanceof VariableBase)) {
 	    node = node.getParent();
-	return (VariableBase)node;
+	}
+	return (VariableBase) node;
     }
 
+    /**
+     * Two variable references are deemed equal if they refer to the 
+     * same variable.
+     */
+    public boolean equals(Object obj) {
+	try {
+	    return (_variable == ((VariableRefBase) obj)._variable);
+	} 
+	catch (ClassCastException e) {
+	    return false;
+	}
+    }
 
     /**
      * Returns a string representation of this variable reference on the
@@ -116,7 +129,30 @@ class VariableRefBase extends Expression {
 	return "variable-ref("+_variable.getName()+'/'+_variable.getType()+')';
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+    public Type typeCheck(SymbolTable stable) 
+	throws TypeCheckError 
+    {
+	// Returned cached type if available
+	if (_type != null) return _type;
+
+	// Find nearest closure to add a variable reference
+	if (_variable.isLocal()) {
+	    SyntaxTreeNode node = getParent();
+	    do {
+		if (node instanceof Closure) {
+		    _closure = (Closure) node;
+		    break;
+		}
+		if (node instanceof TopLevelElement) {
+		    break;	// way up in the tree
+		}
+		node = node.getParent();
+	    } while (node != null);
+
+	    if (_closure != null) {
+		_closure.addVariable(this);
+	    }
+	}
 
 	// Insert a dependency link from one variable to another
 	VariableBase parent = findParentVariable();

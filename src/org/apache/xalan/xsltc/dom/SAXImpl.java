@@ -2348,7 +2348,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	    _currentAttributeNode = 1;
 	    _type2[0] = DTM.NAMESPACE_NODE;
 
-	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+	    definePrefixAndUri(EMPTYSTRING, EMPTYSTRING);
 	    startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
 //	    _lengthOrAttr[DTMDefaultBase.ROOTNODE] = _nextNamespace;
 //	    _parent2[_nextNamespace] = DTMDefaultBase.ROOTNODE;
@@ -2464,16 +2464,13 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 */
 	public void endElement(String namespaceURI, String localName,
 			       String qname) throws SAXException
-  {
-
-        SAXImpl.this.endElement(namespaceURI, localName, qname);
+        {
+            SAXImpl.this.endElement(namespaceURI, localName, qname);
 	    makeTextNode(false);
 
 	    // Revert to strip/preserve-space setting from before this element
-       // use m_parent??
+            // use m_parent??
 	    xmlSpaceRevert(_parentStack[_sp]);
-	    //_previousSiblingStack[_sp--] = 0;
-       // SAXImpl.this.endElement(namespaceURI, localName, qname);
 	}
 
 	/**
@@ -2481,17 +2478,10 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 */
 	public void processingInstruction(String target, String data)
 	    throws SAXException
-  {
-        SAXImpl.this.processingInstruction(target, data);
+        {
+            SAXImpl.this.processingInstruction(target, data);
 	    final int node = makeTextNode(false);
 
-	    //final int node = nextNode();
-	    //_type[node] =
-       //_types.put(new Integer(getExpandedTypeID(node)), new Integer(DTM.PROCESSING_INSTRUCTION_NODE));
-	    //linkChildren(node);
-	    //characters(target);
-	    //characters(" ");
-	    //characters(data);
 	    storeTextRef(node);
 	}
 
@@ -2499,25 +2489,20 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 * SAX2: Receive notification of ignorable whitespace in element
 	 * content. Similar to characters(char[], int, int).
 	 */
-	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException
-  {
-        SAXImpl.this.ignorableWhitespace(ch, start, length);
-  /*  if (_currentOffset + length > _text.length)
-    {
-      resizeTextArray(_text.length * 2);
-    }
-    System.arraycopy(ch, start, _text, _currentOffset, length);
-  */_currentOffset += length;
-    makeTextNode(true);
-  }
+	public void ignorableWhitespace(char[] ch, int start, int length)
+            throws SAXException
+        {
+            SAXImpl.this.ignorableWhitespace(ch, start, length);
+            makeTextNode(true);
+        }
 
 	/**
 	 * SAX2: Receive an object for locating the origin of SAX document
 	 * events.
 	 */
 	public void setDocumentLocator(Locator locator)
-  {
-        SAXImpl.this.setDocumentLocator(locator);
+        {
+            SAXImpl.this.setDocumentLocator(locator);
 	    // Not handled
 	}
 
@@ -2525,7 +2510,7 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 * SAX2: Receive notification of a skipped entity.
 	 */
 	public void skippedEntity(String name)
-  {
+        {
 	    // Not handled
 	}
 
@@ -2534,69 +2519,42 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 */
 	public void startPrefixMapping(String prefix, String uri)
 	    throws SAXException
-  {
-  	if (!prefix.equals(EMPTYSTRING) && !uri.equals(EMPTYSTRING))
-     SAXImpl.this.startPrefixMapping(prefix, uri);
-    // Get the stack associated with this namespace prefix
-   /* Stack stack = (Stack)_nsPrefixes.get(prefix);
-    if (stack == null)
-    {
-      stack = new Stack();
-      stack.push(new Integer(_prefixCount++));
-      _nsPrefixes.put(prefix, stack);
-    }*/
+        {
+            SAXImpl.this.startPrefixMapping(prefix, uri);
+            definePrefixAndUri(prefix, uri);
 
-    // Check if the URI already exists before pushing on stack
-        Integer eType = new Integer(getIdForNamespace(uri));
-                             //getExpandedTypeID(null, prefix, DTM.NAMESPACE_NODE));
-    Integer idx;
-    if ((idx = (Integer)_nsIndex.get(eType)) == null)
-    {
-      _nsIndex.put(eType, idx = new Integer(_uriCount++));
-    }
-    //stack.push(uri);
+            makeTextNode(false);
+            int attr = makeNamespaceNode(prefix, uri);
+        }
 
-    if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
-      makeTextNode(false);
-      int attr = makeNamespaceNode(prefix, uri);
-      //if (_nextNamespace == DTM.NULL)
-      //  _nextNamespace = attr;
-      //else
-      //  _nextSibling2[attr-1] = attr;
-     // _nextSibling2[attr] = DTM.NULL;
-     // _prefix2[attr] = idx.shortValue();
-    }
-  }
-
-  /**
-   * SAX2: End the scope of a prefix-URI Namespace mapping.
-   */
-  public void endPrefixMapping(String prefix) throws SAXException
-  {
-      SAXImpl.this.endPrefixMapping(prefix);
-    // Get the stack associated with this namespace prefix
-   // final Stack stack = (Stack)_nsPrefixes.get(prefix);
-   // if ((stack != null) && (!stack.empty())) stack.pop();
-  }
+	private void definePrefixAndUri(String prefix, String uri) 
+	    throws SAXException 
+	{
+            // Check if the URI already exists before pushing on stack
+            Integer eType = new Integer(getIdForNamespace(uri));
+            if ((Integer)_nsIndex.get(eType) == null) {
+                _nsIndex.put(eType, new Integer(_uriCount++));
+            }
+ 	}
+ 
+        /**
+         * SAX2: End the scope of a prefix-URI Namespace mapping.
+         */
+        public void endPrefixMapping(String prefix) throws SAXException
+        {
+            SAXImpl.this.endPrefixMapping(prefix);
+        }
 
 	/**
 	 * SAX2: Report an XML comment anywhere in the document.
 	 */
-	public void comment(char[] ch, int start, int length) throws SAXException
-  {
-        //SAXImpl.this.comment(ch, start, length);
-    makeTextNode(false);
-    SAXImpl.this.comment(ch, start, length);
- /*   if (_currentOffset + length > _text.length)
-    {
-      resizeTextArray(_text.length * 2);
-    }
-    System.arraycopy(ch, start, _text, _currentOffset, length);
-*/  _currentOffset += length;
-    final int node = makeTextNode(false);
-    //_type[node] =
-     //_types.put(new Integer(getExpandedTypeID(node)), new Integer(DTM.COMMENT_NODE));
-  }
+	public void comment(char[] ch, int start, int length)
+            throws SAXException
+        {
+            makeTextNode(false);
+            SAXImpl.this.comment(ch, start, length);
+            final int node = makeTextNode(false);
+        }
 
 	/**
 	 * SAX2: Ignored events
@@ -2656,18 +2614,11 @@ public final class SAXImpl extends SAX2DTM implements DOM, Externalizable
 	 * method takes a string as its only parameter. The effect is the same.
 	 */
 	private void characters(final String string)
-  {
-    final int length = string.length();
- /*   if (_currentOffset + length > _text.length) {
-		// GTM: resizeTextArray(_text.length * 2);
-		// bug fix 6189, contributed by Mirko Seifert
-		resizeTextArray(
-		    Math.max(_text.length * 2, _currentOffset + length));
-	    }
-	    string.getChars(0, length, _text, _currentOffset);
-*/   _currentOffset += length;
+        {
+            final int length = string.length();
+            _currentOffset += length;
     
-  }
+        }
 
 	private void resizeArrays(final int newSize, int length)
   {

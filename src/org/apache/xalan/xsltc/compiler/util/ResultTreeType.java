@@ -446,7 +446,6 @@ public final class ResultTreeType extends Type {
 	    il.append(NOP);
 	}
 	else {
-System.out.println("ResultTreeType.translateTo()");
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);
 	    classGen.getParser().reportError(Constants.FATAL, err);

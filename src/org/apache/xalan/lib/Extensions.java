@@ -67,17 +67,9 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.ref.DTMNodeIterator;
-import org.apache.xml.utils.XMLString;
-
 import org.xml.sax.SAXNotSupportedException;
 
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xalan.res.XSLMessages;
@@ -85,7 +77,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 // Note: we should consider loading EnvironmentCheck at runtime
 //  to simplify inter-package dependencies Sep-01 -sc
 import org.apache.xalan.xslt.EnvironmentCheck;
-
+import javax.xml.transform.TransformerException;
 import javax.xml.parsers.*;
 
 /**
@@ -180,118 +172,64 @@ public class Extensions
   /**
    * Returns the intersection of two node-sets.
    * 
-   * @param ni1 NodeIterator for first node-set
-   * @param ni2 NodeIterator for second node-set
-   * @return a NodeSet containing the nodes in ni1 that are also
-   * in ni2
+   * @param nl1 NodeList for first node-set
+   * @param nl2 NodeList for second node-set
+   * @return a NodeList containing the nodes in nl1 that are also in nl2
    *
-   * @throws javax.xml.transform.TransformerException
+   * Note: The usage of this extension function in the xalan namespace 
+   * is deprecated. Please use the same function in the EXSLT sets extension
+   * (http://exslt.org/sets).
    */
-  public static NodeSet intersection(NodeIterator ni1, NodeIterator ni2)
-          throws javax.xml.transform.TransformerException
+  public static NodeList intersection(NodeList nl1, NodeList nl2)
   {
-
-    NodeSet ns1 = new NodeSet(ni1);
-    NodeSet ns2 = new NodeSet(ni2);
-    NodeSet inter = new NodeSet();
-
-    inter.setShouldCacheNodes(true);
-
-    for (int i = 0; i < ns1.getLength(); i++)
-    {
-      Node n = ns1.elementAt(i);
-
-      if (ns2.contains(n))
-        inter.addElement(n);
-    }
-
-    return inter;
+    return ExsltSets.intersection(nl1, nl2);
   }
 
   /**
    * Returns the difference between two node-sets.
    * 
-   * @param ni1 NodeIterator for first node-set
-   * @param ni2 NodeIterator for second node-set
-   * @return a NodeSet containing the nodes in ni1 that are not
-   * in ni2
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param nl1 NodeList for first node-set
+   * @param nl2 NodeList for second node-set
+   * @return a NodeList containing the nodes in nl1 that are not in nl2
+   * 
+   * Note: The usage of this extension function in the xalan namespace 
+   * is deprecated. Please use the same function in the EXSLT sets extension
+   * (http://exslt.org/sets).
    */
-  public static NodeSet difference(NodeIterator ni1, NodeIterator ni2)
-          throws javax.xml.transform.TransformerException
+  public static NodeList difference(NodeList nl1, NodeList nl2)
   {
-
-    NodeSet ns1 = new NodeSet(ni1);
-    NodeSet ns2 = new NodeSet(ni2);
-
-    // NodeSet inter= new NodeSet();
-    NodeSet diff = new NodeSet();
-
-    diff.setShouldCacheNodes(true);
-
-    for (int i = 0; i < ns1.getLength(); i++)
-    {
-      Node n = ns1.elementAt(i);
-
-      if (!ns2.contains(n))
-        diff.addElement(n);
-    }
-
-    return diff;
+    return ExsltSets.difference(nl1, nl2);
   }
 
   /**
    * Returns node-set containing distinct string values.
-   * @param ni NodeIterator for node-set
-   * @return a NodeSet with nodes from ni containing distinct string values.
-   * In other words, if more than one node in ni contains the same string value,
+   *
+   * @param nl NodeList for node-set
+   * @return a NodeList with nodes from nl containing distinct string values.
+   * In other words, if more than one node in nl contains the same string value,
    * only include the first such node found.
    *
-   * @throws javax.xml.transform.TransformerException
+   * Note: The usage of this extension function in the xalan namespace 
+   * is deprecated. Please use the same function in the EXSLT sets extension
+   * (http://exslt.org/sets).
    */
-  public static NodeSet distinct(ExpressionContext myContext, NodeIterator ni)
-          throws javax.xml.transform.TransformerException
+  public static NodeList distinct(NodeList nl)
   {
-
-    // Set up our resulting NodeSet and the hashtable we use to keep track of duplicate
-    // strings.
-
-    NodeSet dist = new NodeSet();
-    dist.setShouldCacheNodes(true);
-
-    Hashtable stringTable = new Hashtable();
-
-    Node currNode = ni.nextNode();
-
-    while (currNode != null)
-    {
-      String key = myContext.toString(currNode);
-
-      if (!stringTable.containsKey(key))
-      {
-        stringTable.put(key, currNode);
-        dist.addElement(currNode);
-      }
-      currNode = ni.nextNode();
-    }
-
-    return dist;
+    return ExsltSets.distinct(nl);
   }
 
   /**
    * Returns true if both node-sets contain the same set of nodes.
-   * @param n1 NodeIterator for first node-set
    *
-   * NEEDSDOC @param ni1
-   * @param ni2 NodeIterator for second node-set
-   * @return true if ni1 and ni2 contain exactly the same set of nodes.
+   * @param nl1 NodeList for first node-set
+   * @param nl2 NodeList for second node-set
+   * @return true if nl1 and nl2 contain exactly the same set of nodes.
    */
-  public static boolean hasSameNodes(NodeIterator ni1, NodeIterator ni2)
+  public static boolean hasSameNodes(NodeList nl1, NodeList nl2)
   {
 
-    NodeSet ns1 = new NodeSet(ni1);
-    NodeSet ns2 = new NodeSet(ni2);
+    NodeSet ns1 = new NodeSet(nl1);
+    NodeSet ns2 = new NodeSet(nl2);
 
     if (ns1.getLength() != ns2.getLength())
       return false;
@@ -312,41 +250,22 @@ public class Extensions
    * an XPath expression.  Used where the XPath expression is not known until
    * run-time.  The expression is evaluated as if the run-time value of the
    * argument appeared in place of the evaluate function call at compile time.
+   *
    * @param myContext an <code>ExpressionContext</code> passed in by the
    *                  extension mechanism.  This must be an XPathContext.
    * @param xpathExtr The XPath expression to be evaluated.
-   * NEEDSDOC @param xpathExpr
    * @return the XObject resulting from evaluating the XPath
    *
-   * @throws Exception
    * @throws SAXNotSupportedException
+   *
+   * Note: The usage of this extension function in the xalan namespace 
+   * is deprecated. Please use the same function in the EXSLT dynamic extension
+   * (http://exslt.org/dynamic).
    */
-  public static XObject evaluate(
-          ExpressionContext myContext, String xpathExpr)
-            throws SAXNotSupportedException, Exception
+  public static XObject evaluate(ExpressionContext myContext, String xpathExpr)
+         throws SAXNotSupportedException
   {
-
-    if (myContext instanceof XPathContext.XPathExpressionContext)
-    {
-      try
-      {
-        XPathContext xctxt =
-                    ((XPathContext.XPathExpressionContext) myContext).getXPathContext();
-        XPath dynamicXPath = new XPath(xpathExpr, xctxt.getSAXLocator(),
-                                       xctxt.getNamespaceContext(),
-                                       XPath.SELECT);
-
-        return dynamicXPath.execute(xctxt, myContext.getContextNode(),
-                                    xctxt.getNamespaceContext());
-      }
-      catch (Exception e)
-      {
-        throw e;
-      }
-    }
-    else
-      throw new SAXNotSupportedException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_CONTEXT_PASSED, new Object[]{myContext })); //"Invalid context passed to evaluate "
-                                         //+ myContext);
+    return ExsltDynamic.evaluate(myContext, xpathExpr);
   }
 
   /**
@@ -355,41 +274,22 @@ public class Extensions
    * Tokens are determined by a call to <code>StringTokenizer</code>.
    * If the first argument is an empty string or contains only delimiters, the result
    * will be an empty NodeSet.
+   *
    * Contributed to XalanJ1 by <a href="mailto:benoit.cerrina@writeme.com">Benoit Cerrina</a>.
+   * 
    * @param myContext an <code>ExpressionContext</code> passed in by the
    *                  extension mechanism.  This must be an XPathContext.
    * @param toTokenize The string to be split into text tokens.
    * @param delims The delimiters to use.
    * @return a NodeSet as described above.
    *
+   * Note: The usage of this extension function in the xalan namespace 
+   * is deprecated. Please use the same function in the EXSLT strings extension
+   * (http://exslt.org/strings).
    */
-  public static NodeSet tokenize(ExpressionContext myContext,
-                                 String toTokenize, String delims)
+  public static NodeList tokenize(String toTokenize, String delims)
   {
-
-    Document lDoc;
-
-    // Document lDoc = myContext.getContextNode().getOwnerDocument();
-    try
-    {
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder db = dbf.newDocumentBuilder();
-      lDoc = db.newDocument();
-    }
-    catch(ParserConfigurationException pce)
-    {
-      throw new org.apache.xml.utils.WrappedRuntimeException(pce);
-    }
-
-    StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
-    NodeSet resultSet = new NodeSet();
-
-    while (lTokenizer.hasMoreTokens())
-    {
-      resultSet.addNode(lDoc.createTextNode(lTokenizer.nextToken()));
-    }
-
-    return resultSet;
+    return ExsltStrings.tokenize(toTokenize, delims);
   }
 
   /**
@@ -399,17 +299,21 @@ public class Extensions
    * Tokens are determined by a call to <code>StringTokenizer</code>.
    * If the first argument is an empty string or contains only delimiters, the result
    * will be an empty NodeSet.
+   *
    * Contributed to XalanJ1 by <a href="mailto:benoit.cerrina@writeme.com">Benoit Cerrina</a>.
+   * 
    * @param myContext an <code>ExpressionContext</code> passed in by the
    *                  extension mechanism.  This must be an XPathContext.
    * @param toTokenize The string to be split into text tokens.
    * @return a NodeSet as described above.
    *
+   * Note: The usage of this extension function in the xalan namespace 
+   * is deprecated. Please use the same function in the EXSLT strings extension
+   * (http://exslt.org/strings).
    */
-  public static NodeSet tokenize(ExpressionContext myContext,
-                                 String toTokenize)
+  public static NodeList tokenize(String toTokenize)
   {
-    return tokenize(myContext, toTokenize, " \t\n\r");
+    return tokenize(toTokenize, " \t\n\r");
   }
 
   /**

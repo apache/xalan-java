@@ -523,7 +523,7 @@ public final class BasisLibrary implements Operators {
      * Utility function: node-set/node-set compare. 
      */
     public static boolean compare(DTMAxisIterator left, DTMAxisIterator right,
-				  int op, int node, DOM dom) {
+				  int op, DOM dom) {
 	int lnode;
 	left.reset();
 	
@@ -541,24 +541,8 @@ public final class BasisLibrary implements Operators {
 	return false;
     }
 
-    /**
-     * Utility function: node/node-set compare.
-     */
-    public static boolean compare(int node, DTMAxisIterator nodeSet,
-				  int op, DOM dom) {
-	final String lvalue = dom.getNodeValue(node);
-	int rnode;
-	//nodeSet.reset();
-	while ((rnode = nodeSet.next()) != DTMAxisIterator.END) {
-	    if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
-		return true;
-	    }
-	} 
-	return false;
-    }
-
     public static boolean compare(int node, DTMAxisIterator iterator,
-				  int op, int dummy, DOM dom) {
+				  int op, DOM dom) {
 	//iterator.reset();
 
 	int rnode;
@@ -566,39 +550,31 @@ public final class BasisLibrary implements Operators {
 
 	switch(op) {
 	case EQ:
-	    /* TODO:
-	     * This needs figuring out: What sort of comparison is done here?
-	     * Are we comparing exact node id's, node types, or node values?
-	     * Values is the obvious for attributes, but what about elements?
-	     */
 	    value = dom.getNodeValue(node);
-	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
 		if (value.equals(dom.getNodeValue(rnode))) return true;
-	    // if (rnode == node) return true; It just ain't that easy!!!
+	    }
 	    break;
 	case NE:
 	    value = dom.getNodeValue(node);
-	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
 		if (!value.equals(dom.getNodeValue(rnode))) return true;
-	    // if (rnode != node) return true;
+	    }
 	    break;
 	case LT:
 	    // Assume we're comparing document order here
-	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
 		if (rnode > node) return true;
+	    }
 	    break;
 	case GT:
 	    // Assume we're comparing document order here
-	    while ((rnode = iterator.next()) != DTMAxisIterator.END)
+	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
 		if (rnode < node) return true;
+	    }
 	    break;
 	} 
 	return(false);
-    }
-
-    public static boolean compare(DTMAxisIterator left, final double rnumber,
-				  final int op, final int node, DOM dom) {
-	return(compare(left,rnumber,op,dom));
     }
 
     /**
@@ -674,19 +650,10 @@ public final class BasisLibrary implements Operators {
 	return false;
     }
 
-    public static boolean compare(DTMAxisIterator left, final String rstring,
-				  int op, int node, DOM dom) {
-	
-	if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
-	    return true;
-	}
-	else {
-	    return false;
-	}
-    }
 
     public static boolean compare(Object left, Object right,
-				  int op, int node, DOM dom) { 
+				  int op, DOM dom) 
+    { 
 	boolean result = false;
 	boolean hasSimpleArgs = hasSimpleType(left) && hasSimpleType(right);
 
@@ -784,10 +751,9 @@ public final class BasisLibrary implements Operators {
 	    DTMAxisIterator iter = ((DTMAxisIterator)left).reset();
 
 	    if (right instanceof DTMAxisIterator) {
-		result = compare(iter, (DTMAxisIterator)right, op, node, dom);
+		result = compare(iter, (NodeIterator)right, op, dom);
 	    }
 	    else if (right instanceof String) {
-		//result = compare(iter, (String)right, op, node, dom);
 		result = compare(iter, (String)right, op, dom);
 	    }	
 	    else if (right instanceof Number) {

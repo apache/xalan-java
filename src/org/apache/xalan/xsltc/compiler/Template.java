@@ -85,14 +85,6 @@ public final class Template extends TopLevelElement {
     private int     _position; // Position within stylesheet (prio. resolution)
     private boolean _disabled = false;
     private boolean _compiled = false;//make sure it is compiled only once
-
-    /**
-     * Set to <tt>true</tt> by the XPath parser if this template
-     * needs to create a variable frame. Variable frames are needed
-     * when certain parts of a template are compiled in external
-     * classes (e.g., predicates, xsl:number, xsl:sort).
-     */
-    private boolean _hasVariableFrame;
     private boolean _hasParams = false;
     private boolean _simplified = false;
 
@@ -165,29 +157,6 @@ public final class Template extends TopLevelElement {
 	    return 0;
     }
 
-    private Hashtable _variables;
-    private int _nextIndex;
-
-    public int allocateIndex(QName varName) {
-	if (_variables == null) { // first time
-	    _hasVariableFrame = true;
-	    (_variables = new Hashtable()).put(varName, new Integer(0));
-	    _nextIndex = 1;
-	    return 0;
-	}
-	else {
-	    Integer index = (Integer)_variables.get(varName);
-	    if (index == null) {
-		_variables.put(varName, index = new Integer(_nextIndex++));
-	    }
-	    return index.intValue();
-	}
-    }
-
-    private final int localVariablesCount() {
-	return _variables == null ? 0 : _variables.size();
-    }
-    
     public void display(int indent) {
 	Util.println('\n');
 	indent(indent);
@@ -354,24 +323,9 @@ public final class Template extends TopLevelElement {
 	if (_compiled) return;
 	_compiled = true; 
 	
-	if (_hasVariableFrame) {
-	    il.append(classGen.loadTranslet());
-	    il.append(new PUSH(cpg, localVariablesCount()));
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-							 PUSH_VAR_FRAME,
-							 PUSH_VAR_FRAME_SIG)));
-	}
-	
 	final InstructionHandle start = il.getEnd();
 	translateContents(classGen, methodGen);
 	final InstructionHandle end = il.getEnd();
 	il.setPositions(true);
-	
-	if (_hasVariableFrame) {
-	    il.append(classGen.loadTranslet());
-	    il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS, 
-							 POP_VAR_FRAME,
-							 POP_VAR_FRAME_SIG)));
-	}
     }
 }

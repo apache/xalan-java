@@ -71,31 +71,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class VariableRef extends VariableRefBase {
 
-    private boolean _escaped;
-	
     public VariableRef(Variable variable) {
 	super(variable);
-    }
-
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if ( (_variable.isLocal()) && (_escaped = isEscaped()) )
-	    ((Variable)_variable).setEscapes();
-	return super.typeCheck(stable);
-    }
-
-    private boolean isEscaped() {
-	final SyntaxTreeNode limit = _variable.getParent();
-	SyntaxTreeNode parent = getParent();
-	do {
-	    if (parent.isClosureBoundary()) {
-		return true;
-	    }
-	    else {
-		parent = parent.getParent();
-	    }
-	}
-	while (parent != limit);
-	return limit.isClosureBoundary();
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
@@ -106,17 +83,26 @@ final class VariableRef extends VariableRefBase {
 	if (_type.implementedAsMethod()) return;
 
 	final String name = _variable.getVariable();
+	final String signature = _type.toSignature();
 
 	if (_variable.isLocal()) {
-	    if (classGen.isExternal() || _escaped) {
-		il.append(classGen.loadTranslet());
-		final int sindex = ((Variable)_variable).getStackIndex();
-		il.append(new PUSH(cpg, sindex));
-		final int getVar = cpg.addMethodref(TRANSLET_CLASS, 
-						    GET_VARIABLE,
-						    GET_VARIABLE_SIG);
-		il.append(new INVOKEVIRTUAL(getVar));
-		_type.translateUnBox(classGen, methodGen);
+	    if (classGen.isExternal()) {
+		Closure variableClosure = _closure;
+		while (variableClosure != null) {
+		    if (variableClosure.inInnerClass()) break;
+		    variableClosure = variableClosure.getParentClosure();
+		}
+	    
+		if (variableClosure != null) {
+		    il.append(ALOAD_0);
+		    il.append(new GETFIELD(
+			cpg.addFieldref(variableClosure.getInnerClassName(), 
+			    name, signature)));
+		}
+		else {
+		    il.append(_variable.loadInstruction());
+		    _variable.removeReference(this);
+		}
 	    }
 	    else {
 		il.append(_variable.loadInstruction());
@@ -124,10 +110,8 @@ final class VariableRef extends VariableRefBase {
 	    }
 	}
 	else {
-	    final String signature = _type.toSignature();
 	    final String className = classGen.getClassName();
 	    il.append(classGen.loadTranslet());
-	    // If inside a predicate we must cast this ref down
 	    if (classGen.isExternal()) {
 		il.append(new CHECKCAST(cpg.addClass(className)));
 	    }
@@ -142,6 +126,5 @@ final class VariableRef extends VariableRefBase {
 							NODE_ITERATOR_SIG);
 	    il.append(new INVOKEINTERFACE(clone, 1));
 	}
-
     }
 }

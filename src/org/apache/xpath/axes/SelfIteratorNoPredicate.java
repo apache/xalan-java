@@ -63,6 +63,9 @@ public class SelfIteratorNoPredicate extends LocPathIterator
    */
   public int nextNode()
   {
+    if (m_foundLast)
+      return DTM.NULL;
+      
     int next;
     DTM dtm = m_cdtm;
 
