@@ -242,9 +242,9 @@ public class ElemLiteralResult extends ElemUse
   public boolean containsExcludeResultPrefix(String prefix, String uri)
   {
     if (uri == null ||
-				(null == m_excludeResultPrefixes &&
-				 null == m_ExtensionElementURIs)
-				)
+                (null == m_excludeResultPrefixes &&
+                 null == m_ExtensionElementURIs)
+                )
       return super.containsExcludeResultPrefix(prefix, uri);
 
     if (prefix.length() == 0)
@@ -252,18 +252,18 @@ public class ElemLiteralResult extends ElemUse
 
     // This loop is ok here because this code only runs during
     // stylesheet compile time.    
-		if(m_excludeResultPrefixes!=null)
-			for (int i =0; i< m_excludeResultPrefixes.size(); i++)
-			{
-				if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixes.elementAt(i))))
-					return true;
-			}    
-		
-		// JJK Bugzilla 1133: Also check locally-scoped extensions
+        if(m_excludeResultPrefixes!=null)
+            for (int i =0; i< m_excludeResultPrefixes.size(); i++)
+            {
+                if (uri.equals(getNamespaceForPrefix(m_excludeResultPrefixes.elementAt(i))))
+                    return true;
+            }    
+        
+        // JJK Bugzilla 1133: Also check locally-scoped extensions
     if(m_ExtensionElementURIs!=null && m_ExtensionElementURIs.contains(uri))
        return true;
 
-		return super.containsExcludeResultPrefix(prefix, uri);
+        return super.containsExcludeResultPrefix(prefix, uri);
   }
 
   /**
@@ -343,8 +343,8 @@ public class ElemLiteralResult extends ElemUse
   boolean needToCheckExclude()
   {
     if (null == m_excludeResultPrefixes && null == m_prefixTable
-				&& m_ExtensionElementURIs==null   	// JJK Bugzilla 1133
-				)
+                && m_ExtensionElementURIs==null     // JJK Bugzilla 1133
+                )
       return false;
     else
     {
@@ -451,7 +451,7 @@ public class ElemLiteralResult extends ElemUse
   {
     return m_rawName;
   }
-	
+    
  /**
    * Get the prefix part of the raw name of the Literal Result Element.
    *
@@ -459,10 +459,10 @@ public class ElemLiteralResult extends ElemUse
    */
   public String getPrefix()
   {
-		int len=m_rawName.length()-m_localName.length()-1;
+        int len=m_rawName.length()-m_localName.length()-1;
     return (len>0)
-			? m_rawName.substring(0,len)
-			: "";
+            ? m_rawName.substring(0,len)
+            : "";
   }
 
 
@@ -644,13 +644,17 @@ public class ElemLiteralResult extends ElemUse
     public void execute(TransformerImpl transformer)
         throws TransformerException
     {
-
-        if (TransformerImpl.S_DEBUG)
-            transformer.getTraceManager().fireTraceEvent(this);
         SerializationHandler rhandler = transformer.getSerializationHandler();
 
         try
         {
+            if (TransformerImpl.S_DEBUG) {
+                // flush any buffered pending processing before
+                // the trace event.
+                rhandler.flushPending();
+                transformer.getTraceManager().fireTraceEvent(this);
+            }
+
             // JJK Bugzilla 3464, test namespace85 -- make sure LRE's
             // namespace is asserted even if default, since xsl:element
             // may have changed the context.
@@ -731,9 +735,13 @@ public class ElemLiteralResult extends ElemUse
              * successful startElement() call even if 
              * there was an exception in the middle.
              * Otherwise an exception in the middle could cause a system to hang.
-             */   
-            if (TransformerImpl.S_DEBUG)
+             */
+            if (TransformerImpl.S_DEBUG) {
+                // flush any buffered pending processing before
+                // the trace event.
+                //rhandler.flushPending();
                 transformer.getTraceManager().fireTraceEndEvent(this);
+            }
             rhandler.endElement(getNamespace(), getLocalName(), getRawName());
         }
         catch (SAXException se)

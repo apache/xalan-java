@@ -238,11 +238,15 @@ public class ElemTextLiteral extends ElemTemplateElement
           TransformerImpl transformer)
             throws TransformerException
   {
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(this);
     try
     {
       SerializationHandler rth = transformer.getResultTreeHandler();
+      if (TransformerImpl.S_DEBUG) {
+        // flush any pending cached processing before the trace event.
+        rth.flushPending();
+        transformer.getTraceManager().fireTraceEvent(this);
+      }
+
       if (m_disableOutputEscaping)
       {
         rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
@@ -261,8 +265,18 @@ public class ElemTextLiteral extends ElemTemplateElement
     }
     finally
     {
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEndEvent(this);
+      if (TransformerImpl.S_DEBUG) {
+        try
+        {
+            // flush any pending cached processing before sending the trace event
+            transformer.getResultTreeHandler().flushPending();
+            transformer.getTraceManager().fireTraceEndEvent(this);
+        }
+        catch (SAXException se)
+        {
+            throw new TransformerException(se);
+        } 
+      }
     }
   }
 }
