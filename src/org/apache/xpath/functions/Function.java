@@ -64,6 +64,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.compiler.Compiler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -157,5 +158,12 @@ public abstract class Function extends Expression
   	return true;
   }
 
-
+  /**
+   * This function is currently only being used by Position()
+   * and Last(). See respective functions for more detail.
+   */
+  public void postCompileStep(Compiler compiler)
+  {
+    // no default action
+  }
 }
