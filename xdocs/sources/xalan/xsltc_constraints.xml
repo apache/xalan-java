@@ -78,6 +78,15 @@ Stylesheet when 'elements' does not contain only TopLevelElements, thus causing 
   after an xsl:comment element. This has been reported to happen only when the stylesheet also includes
   an xsl:for-each element (bugzilla 6109). 
   </li>
+  <li>XSLTC TRAX API produces an incorrect DOM Structure when using a DOMResult. 
+  The org.apache.xalan.xsltc.trax.SAX2DOM class automatically adds a Element with 
+  the name "root" to the top of the DOM tree on the startDocument method. On a 
+  successful transform call, the node returned from the DOMResult.getNode() 
+  method is the document node, with this 'root' element attached as the first 
+  child. Xalan and Saxon both have the output document top nodes directly 
+  attached below the Document node. Also, the TransformerImpl and SAX2DOM Classes does not respect 
+  any node already set in the DOMResult (from bugzilla 6417).
+  </li>
 </ul>
 </s2>
 <anchor name="xsltcsmart"/>
