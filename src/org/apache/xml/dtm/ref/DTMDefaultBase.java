@@ -1138,15 +1138,13 @@ public abstract class DTMDefaultBase implements DTM
       }
     else
       {
-        // Most recent?
+        // Most recent. May be -1 (none) if DTM was pruned.
         // %OPT% Is there a lastElement() method? Should there be?
         int last=m_namespaceDeclSetElements.size()-1;
-
-        if(elementNodeIndex==
-           m_namespaceDeclSetElements.elementAt(last))
+	        
+        if(last>=0 && elementNodeIndex==m_namespaceDeclSetElements.elementAt(last))
           {
             nsList=(SuballocatedIntVector)m_namespaceDeclSets.elementAt(last);
-
           }
       }
     if(nsList==null)
@@ -1391,8 +1389,11 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
-   *  Given a node handle, find the owning document node.
-   *
+   * Find the Document node handle for the document currently under construction.
+   * PLEASE NOTE that most people should use getOwnerDocument(nodeHandle) instead;
+   * this version of the operation is primarily intended for use during negotiation
+   * with the DTM Manager.
+   * 
    *  @param nodeHandle the id of the node.
    *  @return int Node handle of document, which should always be valid.
    */

@@ -91,7 +91,6 @@ import javax.xml.transform.TransformerException;
  */
 public class ElemTemplate extends ElemTemplateElement
 {
-
   /** The public identifier for the current document event.
    *  @serial          */
   private String m_publicId;
@@ -424,6 +423,9 @@ public class ElemTemplate extends ElemTemplateElement
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
 
+    XPathContext xctxt = transformer.getXPathContext();      
+    xctxt.pushRTFContext();
+
       // %REVIEW% commenting out of the code below.
 //    if (null != sourceNode)
 //    {
@@ -437,7 +439,9 @@ public class ElemTemplate extends ElemTemplateElement
 //
 //      //"sourceNode is null in handleApplyTemplatesInstruction!");
 //    }
-  }
+
+    xctxt.popRTFContext();  
+    }
 
   /**
    * This function is called during recomposition to

@@ -1704,11 +1704,17 @@ public class TransformerImpl extends Transformer
   {
 
     XPathContext xctxt = m_xcontext;
-    DTM dtmFrag = xctxt.getDTM(null, true, this, false, false);
+    
+    // Retrieve a DTM to contain the RTF. At this writing, this may be a
+    // multi-document DTM (SAX2RTFDTM).
+    DTM dtmFrag = xctxt.getRTFDTM();
     ContentHandler rtfHandler = dtmFrag.getContentHandler();
 
-    // Create a ResultTreeFrag object.
-    int resultFragment = resultFragment = dtmFrag.getDocument();
+    // Obtain the ResultTreeFrag's root node.
+    // NOTE: In SAX2RTFDTM, this value isn't available until after
+    // the startDocument has been issued, so assignment has been moved
+    // down a bit in the code.
+    int resultFragment; // not yet reliably = dtmFrag.getDocument();
 
     // Save the current result tree handler.
     ResultTreeHandler savedRTreeHandler = this.m_resultTreeHandler;
@@ -1721,7 +1727,12 @@ public class TransformerImpl extends Transformer
     try
     {
       rth.startDocument();
-
+      
+      // startDocument is "bottlenecked" in RTH. We need it acted upon immediately,
+      // to set the DTM's state as in-progress, so that if the xsl:variable's body causes
+      // further RTF activity we can keep that from bashing this DTM.
+      rth.flushPending(); 
+ 
       try
       {
 
@@ -1730,7 +1741,12 @@ public class TransformerImpl extends Transformer
 
         // Make sure everything is flushed!
         rth.flushPending();
-      }
+        
+        // Get the document ID. May not exist until the RTH has not only
+        // recieved, but flushed, the startDocument... so waiting until
+        // just before the end seems simplest/safest.
+	    resultFragment = dtmFrag.getDocument();      
+	  }
       finally
       {
         rth.endDocument();

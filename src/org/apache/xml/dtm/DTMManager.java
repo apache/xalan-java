@@ -215,8 +215,9 @@ public abstract class DTMManager
    * always be returned.  Otherwise it is up to the DTMManager to return a
    * new instance or an instance that it already created and may be being used
    * by someone else.
-   * (I think more parameters will need to be added for error handling, and entity
-   * resolution).
+   * 
+   * (More parameters may eventually need to be added for error handling
+   * and entity resolution, and to better control selection of implementations.)
    *
    * @param source the specification of the source object, which may be null,
    *               in which case it is assumed that node construction will take

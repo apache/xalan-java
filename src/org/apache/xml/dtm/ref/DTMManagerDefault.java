@@ -73,6 +73,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 
 // W3C DOM
 import org.w3c.dom.Document;
@@ -190,7 +191,7 @@ public class DTMManagerDefault extends DTMManager
   }
 
   /**
-   * Get the first free DTM ID available.
+   * Get the first free DTM ID available. %OPT% Linear search is inefficient!
    */
   public int getFirstFreeDTMID()
   {
@@ -229,8 +230,13 @@ public class DTMManagerDefault extends DTMManager
    * always be returned.  Otherwise it is up to the DTMManager to return a
    * new instance or an instance that it already created and may be being used
    * by someone else.
+   * 
+   * A bit of magic in this implementation: If the source is null, unique is true,
+   * and incremental and doIndexing are both false, we return an instance of
+   * SAX2RTFDTM, which see.
+   * 
    * (I think more parameters will need to be added for error handling, and entity
-   * resolution).
+   * resolution, and more explicit control of the RTF situation).
    *
    * @param source the specification of the source object.
    * @param unique true if the returned DTM must be unique, probably because it
@@ -314,9 +320,19 @@ public class DTMManagerDefault extends DTMManager
           }
         }
 
-        // Create the basic SAX2DTM.
-        SAX2DTM dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
-                                  xstringFactory, doIndexing);
+ 	    SAX2DTM dtm;
+		if(source==null && unique && !incremental && !doIndexing)
+		{
+		  // Special case to support RTF construction into shared DTM.
+		  // It should actually still work for other uses,
+		  // but may be slightly deoptimized relative to the base
+		  // to allow it to deal with carrying multiple documents.
+		  dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
+				       xstringFactory, doIndexing);
+		}
+		else // Create the basic SAX2DTM.
+		  dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
+				    xstringFactory, doIndexing);
 
         // Go ahead and add the DTM to the lookup table.  This needs to be
         // done before any parsing occurs.

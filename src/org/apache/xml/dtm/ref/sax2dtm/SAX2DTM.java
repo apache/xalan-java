@@ -111,28 +111,39 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * %REVIEW% Should this have an option of being shared across DTMs?
    * Sequentially only; not threadsafe... Currently, I think not.
    *
-   * %REVIEW%  Initial size should be pushed way down to reduce weight of RTFs,
-   * pending reduction in number of RTFs.
-   * However, I've got a bug in whitespace normalization to fix first.
+   * %REVIEW% Initial size was pushed way down to reduce weight of RTFs.
+   * pending reduction in number of RTF DTMs. Now that we're sharing a DTM
+   * between RTFs, and tail-pruning... consider going back to the larger/faster.
+   *
+   * Made protected rather than private so SAX2RTFDTM can access it.
    */
   //private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
-  private FastStringBuffer m_chars = new FastStringBuffer(5, 13);
+  protected FastStringBuffer m_chars = new FastStringBuffer(5, 13);
 
-  /** This vector holds offset and length data. */
+  /** This vector holds offset and length data.
+   */
   protected SuballocatedIntVector m_data;
 
-  /** The parent stack, needed only for construction. */
-  transient private IntStack m_parents = new IntStack();
+  /** The parent stack, needed only for construction.
+   * Made protected rather than private so SAX2RTFDTM can access it.
+   */
+  transient protected IntStack m_parents = new IntStack();
 
-  /** The current previous node, needed only for construction time. */
-  transient private int m_previous = 0;
+  /** The current previous node, needed only for construction time.
+   * Made protected rather than private so SAX2RTFDTM can access it.
+   */
+  transient protected int m_previous = 0;
 
-  /** Namespace support, only relevent at construction time. */
-  transient private java.util.Vector m_prefixMappings =
+  /** Namespace support, only relevent at construction time.
+   * Made protected rather than private so SAX2RTFDTM can access it.
+   */
+  transient protected java.util.Vector m_prefixMappings =
     new java.util.Vector();
 
-  /** Namespace support, only relevent at construction time. */
-  transient private IntStack m_contextIndexes = new IntStack();
+  /** Namespace support, only relevent at construction time.
+   * Made protected rather than private so SAX2RTFDTM can access it.
+   */
+  transient protected IntStack m_contextIndexes = new IntStack();
 
   /** Type of next characters() event within text block in prgress. */
   transient private int m_textType = DTM.TEXT_NODE;
@@ -155,8 +166,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** pool of string values that come as strings. */
   private DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
 
-  /** End document has been reached. */
-  private boolean m_endDocumentOccured = false;
+  /** End document has been reached.
+   * Made protected rather than private so SAX2RTFDTM can access it.
+   */
+  protected boolean m_endDocumentOccured = false;
 
   /** Data or qualified name values, one array element for each node. */
   protected SuballocatedIntVector m_dataOrQName;
@@ -1140,9 +1153,12 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public XMLString getStringValue(int nodeHandle)
   {
-
     int identity = makeNodeIdentity(nodeHandle);
-    int type = _type(identity);
+    int type;
+    if(identity==DTM.NULL) // Separate lines because I wanted to breakpoint it
+      type = DTM.NULL;
+    else
+      type= _type(identity);
 
     if (isTextType(type))
     {
@@ -1488,11 +1504,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /**
    * Receive notification of the beginning of the document.
    *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass to take specific actions at the beginning
-   * of a document (such as allocating the root node of a tree or
-   * creating an output file).</p>
-   *
    * @throws SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startDocument
@@ -1515,11 +1526,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
   /**
    * Receive notification of the end of the document.
-   *
-   * <p>By default, do nothing.  Application writers may override this
-   * method in a subclass to take specific actions at the end
-   * of a document (such as finalising a tree or closing an output
-   * file).</p>
    *
    * @throws SAXException Any SAX exception, possibly
    *            wrapping another exception.
@@ -1699,7 +1705,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true);
 
-    indexNode(exName, elemNode);
+    if(m_indexing)
+      indexNode(exName, elemNode);
     
     m_parents.push(elemNode);
 

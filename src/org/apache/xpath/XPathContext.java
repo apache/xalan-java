@@ -61,6 +61,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.Stack;
+import java.util.Vector;
 
 import java.lang.reflect.Method;
 
@@ -112,6 +113,9 @@ import org.apache.xml.utils.XMLStringFactory;
 
 import org.apache.xpath.axes.DescendantIterator;
 
+// For RTF handling.
+import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Default class for the runtime execution context for XPath.
@@ -120,6 +124,21 @@ import org.apache.xpath.axes.DescendantIterator;
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
 {
+  /**
+   * Stack of cached "reusable" DTMs for Result Tree Fragments.
+   * This is a kluge to handle the problem of starting an RTF before
+   * the old one is complete.
+   * 
+   * %REVIEW% I'm using a Vector rather than Stack so we can reuse
+   * the DTMs if the problem occurs multiple times. I'm not sure that's
+   * really a net win versus discarding the DTM and starting a new one...
+   * but the retained RTF DTM will have been tail-pruned so should be small.
+   */
+  private Vector m_rtfdtm_stack=null;
+  /** Index of currently active RTF DTM in m_rtfdtm_stack */
+  private int m_which_rtfdtm=-1;
+  
+	
   /**
    * Though XPathContext context extends 
    * the DTMManager, it really is a proxy for this object, which 
@@ -181,7 +200,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   {
     return m_dtmManager.getDTM(nodeHandle);
   }
-//  
+
   /**
    * Given a W3C DOM node, try and return a DTM handle.
    * Note: calling this may be non-optimal.
@@ -224,6 +243,16 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public boolean release(DTM dtm, boolean shouldHardDelete)
   {
+    // %REVIEW% If it's a DTM which may contain multiple Result Tree
+    // Fragments, we can't discard it unless we know not only that it
+    // is empty, but that the XPathContext itself is going away. So do
+    // _not_ accept the request. (May want to do it as part of
+    // reset(), though.)
+    if(m_rtfdtm_stack.contains(dtm))
+    {
+      return false;
+    }
+  	
     return m_dtmManager.release(dtm, shouldHardDelete);
   }
 
@@ -336,6 +365,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public void reset()
   {
+  	// These couldn't be disposed of earlier (see comments in release()); zap them now.
+  	if(m_rtfdtm_stack!=null)
+  		 for (java.util.Enumeration e = m_rtfdtm_stack.elements() ; e.hasMoreElements() ;) 
+  		 	m_dtmManager.release((DTM)e.nextElement(), true);
+  	
     m_dtmManager = DTMManager.newInstance(
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
   }
@@ -1149,4 +1183,92 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
   }
 
+  /**
+   * Get a DTM to be used as a container for a Result Tree
+   * Fragment. This will always be an instance of (derived from? equivalent to?) 
+   * SAX2DTM, since each RTF is constructed by temporarily redirecting our SAX 
+   * output to it. It may be a single DTM containing for multiple fragments, 
+   * if the implementation supports that.
+   * 
+   * @return a non-null DTM reference.
+   */
+  public DTM getRTFDTM()
+  {
+  	SAX2RTFDTM rtfdtm;
+
+  	// We probably should _NOT_ be applying whitespace filtering at this stage!
+  	//
+  	// Some magic has been applied in DTMManagerDefault to recognize this set of options
+  	// and generate an instance of DTM which can contain multiple documents
+  	// (SAX2RTFDTM). Perhaps not the optimal way of achieving that result, but
+  	// I didn't want to change the manager API at this time, or expose 
+  	// too many dependencies on its internals. (Ideally, I'd like to move
+  	// isTreeIncomplete all the way up to DTM, so we wouldn't need to explicitly
+  	// specify the subclass here.)
+
+	if(m_rtfdtm_stack==null)
+	{
+		m_rtfdtm_stack=new Vector();
+  		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
+		m_rtfdtm_stack.add(rtfdtm);
+		++m_which_rtfdtm;
+	}
+	else
+	{
+		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
+  		
+	  	// It might already be under construction -- the classic example would be
+ 	 	// an xsl:variable which uses xsl:call-template as part of its value. To
+  		// handle this recursion, we have to start a new RTF DTM, pushing the old
+  		// one onto a stack so we can return to it. It is hoped that
+	  	// this is an uncommon case!
+  		if(rtfdtm.isTreeIncomplete())
+	  	{
+	  		if(++m_which_rtfdtm < m_rtfdtm_stack.size())
+				rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
+	  		else
+	  		{
+		  		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
+				m_rtfdtm_stack.add(rtfdtm); 		
+	  		}
+ 	 	}
+	}
+    return rtfdtm;
+  }
+  
+  /** Push the RTFDTM's context mark, to allows discarding RTFs added after this
+   * point. (If it doesn't exist we don't push, since we might still be able to 
+   * get away with not creating it. That requires that excessive pops be harmless.)
+   * */
+  public void pushRTFContext()
+  {
+  	if(null!=m_rtfdtm_stack)
+	  	((SAX2RTFDTM)(getRTFDTM())).pushRewindMark();
+  }
+  
+  /** Pop the RTFDTM's context mark. This discards any RTFs added after the last
+   * mark was set. 
+   * 
+   * If there is no RTF DTM, there's nothing to pop so this
+   * becomes a no-op. If pushes were issued before this was called, we count on
+   * the fact that popRewindMark is defined such that overpopping just resets
+   * to empty.
+   * 
+   * Complicating factor: We need to handle the case of popping back to a previous
+   * RTF DTM, if one of the weird produce-an-RTF-to-build-an-RTF cases arose.
+   * Basically: If pop says this DTM is now empty, then return to the previous
+   * if one exists, in whatever state we left it in. UGLY, but hopefully the
+   * situation which forces us to consider this will arise exceedingly rarely.
+   * */
+  public void popRTFContext()
+  {
+  	if(null==m_rtfdtm_stack)
+  		return;
+  		
+	boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
+	if(isEmpty && m_which_rtfdtm>0)
+	{
+		--m_which_rtfdtm;
+	}
+  }
 }
