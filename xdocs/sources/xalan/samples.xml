@@ -400,8 +400,8 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <p>3. To get connection information from the stylesheet and dump the raw result set to an XML file:</p>
       <p><code>java org.apache.xalan.xslt.Process</code>
       <br/>&nbsp;&nbsp;<code>-xsl DumpSQL.xsl -out import1.xml</code></p>
-    </s3> <anchor name="ext-conn"/><p><em>[broken in &xslt4j-current; -- does not yet work with DTM]</em></p>
-    <s3 title="ExternalConnection">
+    </s3> <anchor name="ext-conn"/>
+    <s3 title="ExternalConnection"><p><em>[broken in &xslt4j-current; -- does not yet work with DTM]</em></p>
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
     <p>What it does: The ExternalConnection classes uses the default implementation of the ConnectionPool interface 
     to create a pool of connections. A stylesheet in turn uses a connection from this pool to instantiate an 
@@ -413,8 +413,8 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     <p>ExternalConnection creates the ConnectionPool, and performs a transformation wiht dbtest.xsl, which draws 
     from the pool to instantiate an XConnection object, connect to the datasource, execute a static query, and return the
     query result.</p>
-    </s3><anchor name="pquery"/><p><em>[broken in &xslt4j-current; -- does not yet work with DTM]</em></p>
-    <s3 title="Parameterized query">
+    </s3><anchor name="pquery"/>
+    <s3 title="Parameterized query"><p><em>[broken in &xslt4j-current; -- does not yet work with DTM]</em></p>
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
     <p>What it does: connect to a datasource, execute a parameterized query, and return the result. The XML source document
     provides the parameter value as well as the connection information. The parameter value is in a node in the XML source.</p>

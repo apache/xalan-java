@@ -61,6 +61,7 @@
 <li><link anchor="basic">Basic steps</link></li>
 <li><link anchor="plug">Plugging in the Transformer and XML parser</link></li>
 <li><link anchor="outputprops">Setting output properties in your stylesheets</link></li>
+<li><link anchor="outputencoding">Caution: setting output encoding in the stylesheet</link></li>
 <li><link anchor="embed">Working with embedded stylesheets</link></li>
 <li><link anchor="params">Setting stylesheet parameters</link></li>
 <li><link anchor="serialize">Serializing output</link></li>
@@ -214,6 +215,14 @@ or edit src/org/apache/xalan/serialize/HTMLEntities.res and rebuild xalan.jar.</
     <td>org.apache.xalan.serialize.SerializerToText</td>
   </tr>
 </table>
+</s2><anchor name="outputencoding"/>
+<s2 title="Caution: setting output encoding in the stylesheet">
+<p>When you use the &lt;xsl:output&gt; encoding attribute to set output character encoding, you should not 
+use StreamResult(java.io.Writer) to construct a 
+<jump href="apidocs/javax/xml/transform/stream/StreamResult.html">StreamResult</jump> object to hold the transformation result.
+If you do, the Writer uses its own encoding rather than the encoding specified in the stylesheet.</p>
+<p>If you want to use a Writer, you can specify an encoding when you create the Writer (java.io.OutputStreamWriter). Once the 
+Writer exists, you cannot reset the encoding it uses.</p>
 </s2><anchor name="embed"/>
 <s2 title="Working with embedded stylesheets">
 <p>An XML Source may include an <jump href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet processing instruction</jump> which identifies the stylesheet to be used to process the document. As indicated by the processing instruction <ref>href</ref> attribute, the stylesheet itself may be embedded in the XML document or located elsewhere.</p>

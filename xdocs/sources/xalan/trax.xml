@@ -205,7 +205,7 @@
   
 <p>To use the TRaX interface, you create a
 	 <link anchor="pattern-TransformerFactory">TransformerFactory</link>,
-	 which may directly provide a <link anchor="pattern-Transformers">Transformers</link>, or which can provide
+	 which may directly provide a <link anchor="pattern-Transformer">Transformers</link>, or which can provide
 	 <link anchor="pattern-Templates">Templates</link> from a variety of
 	 <link anchor="pattern-Source">Source</link>s. The
 	 <link anchor="pattern-Templates">Templates</link> object is a processed
