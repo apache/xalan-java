@@ -251,7 +251,7 @@ public class VariableStack extends Stack
     }
 
     // Look in the global space
-    for(int i = (m_globalStackFrameIndex-1); i >= 2; i--)
+    for(int i = (m_globalStackFrameIndex-1); i >= 1; i--)
     {
       Object obj = elementAt(i);
       if(obj == contextMarker)
