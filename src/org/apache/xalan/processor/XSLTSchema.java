@@ -560,7 +560,7 @@ public class XSLTSchema extends XSLTElementDef
                                   new XSLTAttributeDef[]{ hrefAttr },
                                   new ProcessorInclude(),
                                   null /* class object */,
-																	2, true);
+																	20, true);
     XSLTElementDef[] topLevelElements = new XSLTElementDef[]{ includeDef,
                                                               importDef,
                                                               // resultElement,
