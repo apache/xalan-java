@@ -1193,6 +1193,9 @@ public class ResultTreeHandler extends QueuedEvents
 
   /**
    * Copy <KBD>xmlns:</KBD> attributes in if not already in scope.
+   * 
+   * As a quick hack to support ClonerToResultTree, this can also be used
+   * to copy an individual namespace node.
    *
    * @param src Source Node
    * NEEDSDOC @param type
@@ -1224,6 +1227,17 @@ public class ResultTreeHandler extends QueuedEvents
           }
         }
       }
+      else if (type == DTM.NAMESPACE_NODE)
+			{
+          String prefix = dtm.getNodeNameX(src);
+          String desturi = getURI(prefix);
+          String srcURI = dtm.getNodeValue(src);
+
+          if (!srcURI.equalsIgnoreCase(desturi))
+          {
+            this.startPrefixMapping(prefix, srcURI, false);
+          }
+			}
     }
     catch (org.xml.sax.SAXException se)
     {

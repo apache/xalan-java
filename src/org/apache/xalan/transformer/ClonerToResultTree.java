@@ -206,7 +206,6 @@ public class ClonerToResultTree
         break;
       case DTM.DOCUMENT_FRAGMENT_NODE :
       case DTM.DOCUMENT_NODE :
-
         // Can't clone a document, but refrain from throwing an error
         // so that copy-of will work
         break;
@@ -221,9 +220,9 @@ public class ClonerToResultTree
           }
 
           String ns = dtm.getNamespaceURI(node);
-	  // JJK SAX apparently expects "no namespace" to be represented
-	  // as "" rather than null.
-	  if(ns==null)ns="";
+          // JJK SAX apparently expects "no namespace" to be represented
+          // as "" rather than null.
+          if(ns==null)ns="";
 
           String localName = dtm.getLocalName(node);
 
@@ -238,6 +237,13 @@ public class ClonerToResultTree
       case DTM.ATTRIBUTE_NODE :
         rth.addAttribute(node);
         break;
+			case DTM.NAMESPACE_NODE:
+				// %REVIEW% Normally, these should have been handled with element.
+				// It's possible that someone may write a stylesheet that tries to
+				// clone them explicitly. If so, we need the equivalent of
+				// rth.addAttribute().
+  			rth.processNSDecls(node,DTM.NAMESPACE_NODE,dtm);
+				break;
       case DTM.COMMENT_NODE :
         XMLString xstr = dtm.getStringValue (node);
         xstr.dispatchAsComment(rth);
