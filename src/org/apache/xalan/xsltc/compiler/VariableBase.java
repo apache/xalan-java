@@ -71,11 +71,14 @@ import java.util.Vector;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.LocalVariableGen;
+import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
+import org.apache.xalan.xsltc.compiler.util.NodeSetType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.Util;
 
@@ -286,6 +289,23 @@ class VariableBase extends TopLevelElement {
 	// Compile expression is 'select' attribute if present
 	if (_select != null) {
 	    _select.translate(classGen, methodGen);
+	    // Create a CachedNodeListIterator for select expressions
+	    // in a variable or parameter.
+	    if (_select.getType() instanceof NodeSetType) {
+	        final ConstantPoolGen cpg = classGen.getConstantPool();
+	        final InstructionList il = methodGen.getInstructionList();
+	    	
+	        final int initCNI = cpg.addMethodref(CACHED_NODE_LIST_ITERATOR_CLASS,
+					    "<init>",
+					    "("
+					    +NODE_ITERATOR_SIG
+					    +")V");
+	        il.append(new NEW(cpg.addClass(CACHED_NODE_LIST_ITERATOR_CLASS)));
+	        il.append(DUP_X1);
+	        il.append(SWAP);
+
+	        il.append(new INVOKESPECIAL(initCNI));
+	    }
 	    _select.startResetIterator(classGen, methodGen);
 	}
 	// If not, compile result tree from parameter body if present.

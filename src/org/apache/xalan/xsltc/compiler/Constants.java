@@ -189,6 +189,8 @@ public interface Constants extends InstructionConstants {
 	= "org.apache.xalan.xsltc.dom.UnionIterator";
     public static final String STEP_ITERATOR_CLASS
 	= "org.apache.xalan.xsltc.dom.StepIterator";
+    public static final String CACHED_NODE_LIST_ITERATOR_CLASS
+	= "org.apache.xalan.xsltc.dom.CachedNodeListIterator";	
     public static final String NTH_ITERATOR_CLASS
 	= "org.apache.xalan.xsltc.dom.NthIterator";
     public static final String ABSOLUTE_ITERATOR
