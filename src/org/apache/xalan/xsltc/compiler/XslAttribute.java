@@ -201,12 +201,9 @@ final class XslAttribute extends Instruction {
 	if (_namespace != null) {
 	    // public void attribute(final String name, final String value)
 	    il.append(methodGen.loadHandler());
-	    if (_prefix == "")
-		il.append(new PUSH(cpg,"xmlns"));
-	    else
-		il.append(new PUSH(cpg,"xmlns:"+_prefix));
+	    il.append(new PUSH(cpg,_prefix));
 	    _namespace.translate(classGen,methodGen);
-	    il.append(methodGen.attribute());
+	    il.append(methodGen.namespace());
 	}
 
 	// Save the current handler base on the stack

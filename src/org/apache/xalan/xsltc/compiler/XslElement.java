@@ -197,12 +197,9 @@ final class XslElement extends Instruction {
 	    if (_namespace != null) {
 		// public void attribute(final String name, final String value)
 		il.append(methodGen.loadHandler());
-		if (_namespacePrefix == "")
-		    il.append(new PUSH(cpg,"xmlns"));
-		else
-		    il.append(new PUSH(cpg,"xmlns:"+_namespacePrefix));
+		il.append(new PUSH(cpg,_namespacePrefix));
 		_namespace.translate(classGen,methodGen);
-		il.append(methodGen.attribute());
+		il.append(methodGen.namespace());
 	    }
 	}
 

@@ -2229,7 +2229,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		if (col > 0) {
 		    final String prefix = generateNamespacePrefix();
 		    handler.startElement(prefix+':'+name.substring(col+1));
-		    handler.attribute("xmlns:"+prefix, name.substring(0,col));
+		    handler.namespace(prefix, name.substring(0,col));
 		}
 		else {
 		    handler.startElement(name);
@@ -2246,8 +2246,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		    }
 		    else {
 			final String prefix = generateNamespacePrefix();
-			handler.attribute("xmlns:"+prefix,
-					  aname.substring(0,col));
+			handler.namespace(prefix,aname.substring(0,col));
 			handler.attribute(prefix+':'+aname.substring(col+1),
 					  makeStringValue(attr));
 		    }

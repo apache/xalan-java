@@ -145,6 +145,11 @@ public final class SAXAdapter implements TransletOutputHandler {
 	}
     }
     
+    public void namespace(String prefix, String uri)
+	throws TransletException {
+	// ???
+    }
+
     public void comment(String comment) throws TransletException {
 	try {
 	    maybeEmitStartElement();

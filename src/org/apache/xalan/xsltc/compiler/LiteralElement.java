@@ -82,6 +82,9 @@ final class LiteralElement extends Instruction {
     private Hashtable _accessedPrefixes = null;
     private LiteralElement _parent;
 
+    private final static String XMLNS_STRING = "xmlns";
+    private final static String EMPTY_STRING = "";
+
     /**
      * Returns the QName for this literal element
      */
@@ -158,9 +161,9 @@ final class LiteralElement extends Instruction {
 
 	// Treat default namespace as "" and not null
 	if (prefix == null)
-	    prefix = "";
-	else if (prefix.equals("xmlns"))
-	    return("xmlns:"+localname);
+	    prefix = EMPTY_STRING;
+	else if (prefix.equals(XMLNS_STRING))
+	    return(XMLNS_STRING);
 	
 	// Check if we must translate the prefix
 	final String alternative = stable.lookupPrefixAlias(prefix);
@@ -177,7 +180,7 @@ final class LiteralElement extends Instruction {
 	registerNamespace(prefix,uri,stable,false);
 
 	// Construct the new name for the element (may be unchanged)
-	if (!prefix.equals(""))
+	if (!prefix.equals(EMPTY_STRING))
 	    return(prefix+":"+localname);
 	else
 	    return(localname);
@@ -228,7 +231,7 @@ final class LiteralElement extends Instruction {
 	    else {
 		// Namespace declarations are handled separately !!!
 		final String name = translateQName(qname,stable);
-		if (!name.startsWith("xmlns"))
+		if (name != XMLNS_STRING)
 		    addElement(new LiteralAttribute(name, val, parser));
 	    }
 	}
@@ -295,12 +298,9 @@ final class LiteralElement extends Instruction {
 		final String prefix = (String)e.nextElement();
 		final String uri = (String)_accessedPrefixes.get(prefix);
 		il.append(methodGen.loadHandler());
-		if (prefix.equals(""))
-		    il.append(new PUSH(cpg,"xmlns"));
-		else
-		    il.append(new PUSH(cpg,"xmlns:"+prefix));
+		il.append(new PUSH(cpg,prefix));
 		il.append(new PUSH(cpg,uri));
-		il.append(methodGen.attribute());
+		il.append(methodGen.namespace());
 	    }
 	}
 

@@ -95,6 +95,7 @@ public class MethodGenerator extends MethodGen
     private final Instruction _startDocument;
     private final Instruction _endDocument;
     private final Instruction _attribute;
+    private final Instruction _namespace;
 
     private final Instruction _setStartNode;
     private final Instruction _nextNode;
@@ -134,6 +135,15 @@ public class MethodGenerator extends MethodGen
 				      + STRING_SIG
 				      + ")V");
 	_attribute = new INVOKEINTERFACE(attribute, 3);
+
+	final int namespace =
+	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
+				      "namespace", 
+				      "("
+				      + STRING_SIG
+				      + STRING_SIG
+				      + ")V");
+	_namespace = new INVOKEINTERFACE(namespace, 3);
 	
 	int index = cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
 					      "startDocument",
@@ -293,6 +303,10 @@ public class MethodGenerator extends MethodGen
 
     public final Instruction attribute() {
 	return _attribute;
+    }
+
+    public final Instruction namespace() {
+	return _namespace;
     }
 
     public Instruction loadCurrentNode() {

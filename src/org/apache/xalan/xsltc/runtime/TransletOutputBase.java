@@ -75,6 +75,8 @@ public class TransletOutputBase implements TransletOutputHandler {
     public void endElement(String elementName) throws TransletException {}
     public void attribute(String attributeName, String attributeValue)
 	throws TransletException {}
+    public void namespace(String prefix, String uri)
+	throws TransletException {}
     public void comment(String comment) throws TransletException {}
     public void processingInstruction(String target, String data)
 	throws TransletException {}

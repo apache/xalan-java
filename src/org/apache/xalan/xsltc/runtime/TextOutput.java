@@ -552,7 +552,7 @@ public final class TextOutput implements TransletOutputHandler {
 	if (_startTagOpen) {
 	    // Intercept namespace declarations and handle them separately
 	    if (name.startsWith("xmlns"))
-		declareNamespace(name,value);
+		namespace(name.substring(6),value);
 	    else
 		_attributes.add(name,escapeChars(value));
 	}
@@ -720,23 +720,17 @@ public final class TextOutput implements TransletOutputHandler {
      * declaration will not be include if the namespace is already in scope
      * with the same prefix.
      */
-    public void declareNamespace(final String name, final String uri)
+    public void namespace(final String prefix, final String uri)
 	throws TransletException {
 	try {
-	    if (_startTagOpen) {
-		if (name.indexOf(':') == -1)
-		    pushNamespace(EMPTYSTRING,uri);
-		else
-		    pushNamespace(name.substring(6),uri);
-	    }
-	    else if (_cdataTagOpen) {
+	    if (_startTagOpen)
+		pushNamespace(prefix, uri);
+	    else if (_cdataTagOpen)
 		throw new TransletException("namespace declaration within "+
 					    "CDATA element");
-	    }
-	    else {
-		throw new TransletException("namespace declaration '"+name+
+	    else
+		throw new TransletException("namespace declaration '"+prefix+
 					    "'='"+uri+"' outside of element");
-	    }
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
