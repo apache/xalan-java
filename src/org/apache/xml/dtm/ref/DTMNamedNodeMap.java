@@ -112,7 +112,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
     {
       short count = 0;
 
-      for (int n = dtm.getNextAttribute(element); n != -1;
+      for (int n = dtm.getFirstAttribute(element); n != -1;
               n = dtm.getNextAttribute(n))
       {
         ++count;
@@ -136,7 +136,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
   public Node getNamedItem(String name)
   {
 
-    for (int n = dtm.getNextAttribute(element); n != -1;
+    for (int n = dtm.getFirstAttribute(element); n != -1;
             n = dtm.getNextAttribute(n))
     {
       if (dtm.getNodeName(n).equals(name))
@@ -161,7 +161,7 @@ public class DTMNamedNodeMap implements NamedNodeMap
 
     int count = 0;
 
-    for (int n = dtm.getNextAttribute(element); n != -1;
+    for (int n = dtm.getFirstAttribute(element); n != -1;
             n = dtm.getNextAttribute(n))
     {
       if (count == i)

@@ -287,11 +287,11 @@ public class DTMNodeProxy
   public final String getNodeValue() throws DOMException
   {
 
-    // ***** ASSUMPTION: ATTRIBUTES HAVE SINGLE TEXT-NODE CHILD.
-    // (SIMILAR ASSUMPTION CURRENTLY MADE IN DTM; BE SURE TO
-    // REVISIT THIS IF THAT CHANGES!)
-    if (getNodeType() == Node.ATTRIBUTE_NODE)
-      return dtm.getNodeValue(node + 1);
+//    // ***** ASSUMPTION: ATTRIBUTES HAVE SINGLE TEXT-NODE CHILD.
+//    // (SIMILAR ASSUMPTION CURRENTLY MADE IN DTM; BE SURE TO
+//    // REVISIT THIS IF THAT CHANGES!)
+//    if (getNodeType() == Node.ATTRIBUTE_NODE)
+//      return dtm.getNodeValue(node + 1);
 
     return dtm.getNodeValue(node);
   }

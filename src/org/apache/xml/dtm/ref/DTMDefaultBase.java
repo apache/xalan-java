@@ -954,9 +954,9 @@ public abstract class DTMDefaultBase implements DTM
   }
 
   /**
-   * Given a node handle, advance to the next attribute. If an
-   * element, we advance to its first attribute; if an attr, we advance to
-   * the next attr on the same node.
+   * Given a node handle, advance to the next attribute. 
+   * If an attr, we advance to
+   * the next attr on the same node.  If not an attribute, we return NULL.
    *
    * @param nodeHandle int Handle of the node.
    * @return int DTM node-number of the resolved attr,
@@ -967,7 +967,7 @@ public abstract class DTMDefaultBase implements DTM
 
     int type = getNodeType(nodeHandle);
 
-    if (DTM.ATTRIBUTE_NODE == type || DTM.ELEMENT_NODE == type)
+    if (DTM.ATTRIBUTE_NODE == type)
     {
       // Assume that attributes and namespace nodes immediately follow the element.
       int identity = nodeHandle & m_mask;
