@@ -295,6 +295,8 @@ public class Child extends UnImplNode implements DOMOrder, SaxEventDispatch
   public Node getNextSibling()
   {
 
+//    synchronized (m_doc)
+//    {
     if (null != m_next)
       return m_next;
     else if (!m_parent.m_isComplete)
@@ -320,6 +322,7 @@ public class Child extends UnImplNode implements DOMOrder, SaxEventDispatch
         }
       }
     }
+//    }
 
     return m_next;
   }

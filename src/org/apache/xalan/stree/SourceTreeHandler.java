@@ -100,8 +100,8 @@ import javax.xml.transform.ErrorListener;
  */
 public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implements TransformerHandler, DeclHandler, DTDHandler
 {
-  static int m_idCount = 0;
-  int m_id;
+//  static int m_idCount = 0;
+//  int m_id;
   
   /**
    * Create a SourceTreeHandler that will start a transformation as
@@ -124,7 +124,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public SourceTreeHandler(TransformerImpl transformer, boolean doFragment)
   {
-    m_id = m_idCount++;
+//    m_id = m_idCount++;
     m_transformer = transformer;
 
     XPathContext xctxt = ((TransformerImpl) transformer).getXPathContext();
@@ -428,7 +428,6 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
       
       // System.out.println("endDocument: "+m_id);
       m_root.setComplete(true);
-      notifyWaiters();
 
       popShouldStripWhitespace();
 

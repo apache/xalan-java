@@ -150,6 +150,8 @@ public class Parent extends Child
   public boolean hasChildNodes()
   {
 
+//    synchronized (m_doc)
+//    {
     if (0 != m_childCount)
       return true;
     else
@@ -180,6 +182,7 @@ public class Parent extends Child
 
       return (0 == m_childCount) ? false : true;
     }
+//    }
   }
 
   /**

@@ -69,11 +69,11 @@ import org.apache.xpath.XPathContext;
 public abstract class DocImpl extends Parent
 {
 
-  /** Aid to assigning a unique ID to the tree. */
-  static int m_idCount = 0;
-  
-  /** The unique ID of this tree. */
-  int m_id;
+//  /** Aid to assigning a unique ID to the tree. */
+//  static int m_idCount = 0;
+//  
+//  /** The unique ID of this tree. */
+//  int m_id;
 
   /** This holds all the characters used, copied from the 
    * characters events.  This allows us to not have to allocate 
@@ -96,7 +96,7 @@ public abstract class DocImpl extends Parent
   {
     super(null);
     m_chars = new FastStringBuffer(1024 * 8);
-    m_id = m_idCount++;
+//    m_id = m_idCount++;
   }
   
   /**
@@ -106,7 +106,7 @@ public abstract class DocImpl extends Parent
   {
     super(null);
     m_chars = new FastStringBuffer(charBufSize);
-    m_id = m_idCount++;
+//    m_id = m_idCount++;
   }
 
 

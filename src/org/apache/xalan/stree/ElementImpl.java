@@ -490,7 +490,10 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public int getAttrCount()
   {
-    return m_attrsEnd;
+    synchronized (m_doc)
+    {
+      return m_attrsEnd;
+    }
   }
 
   /**
