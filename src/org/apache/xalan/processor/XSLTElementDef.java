@@ -365,7 +365,7 @@ public class XSLTElementDef
     {
       XSLTElementDef def = m_elements[i];
 
-      if (def.m_name.equals("unknown"))
+      if (def.m_name.equals("unknown") && uri.length() > 0)
       {
         return def.m_elementProcessor;
       }

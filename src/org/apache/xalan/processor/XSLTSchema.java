@@ -284,7 +284,7 @@ public class XSLTSchema extends XSLTElementDef
                                        resultAttr }, new ProcessorLRE(),
                                                      ElemLiteralResult.class /* class object */);
     XSLTElementDef unknownElement =
-      new XSLTElementDef(this, null, "unknown", null /*alias */,
+      new XSLTElementDef(this, "*", "unknown", null /*alias */,
                          templateElementsAndParams /* elements */,
                          new XSLTAttributeDef[]{ xslExcludeResultPrefixesAttr,
                                                  xslExtensionElementPrefixesAttr,
@@ -545,7 +545,7 @@ public class XSLTSchema extends XSLTElementDef
                                   null /* class object */);
     XSLTElementDef[] topLevelElements = new XSLTElementDef[]{ includeDef,
                                                               importDef,
-                                                              resultElement,
+                                                              // resultElement,
                                                               whiteSpaceOnly,
                                                               unknownElement,
                                                               new XSLTElementDef(
