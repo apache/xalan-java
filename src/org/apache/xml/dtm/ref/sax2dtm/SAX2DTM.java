@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1521,18 +1521,21 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         doStrip = m_chars.isWhitespace(m_textPendingStart, length);
       }
 
-      if (doStrip)
+      if (doStrip) {
         m_chars.setLength(m_textPendingStart);  // Discard accumulated text
-      else
-      {
-        int exName = m_expandedNameTable.getExpandedTypeID(DTM.TEXT_NODE);
-        int dataIndex = m_data.size();
+      } else {
+        // Guard against characters/ignorableWhitespace events that
+        // contained no characters.  They should not result in a node.
+        if (length > 0) {
+          int exName = m_expandedNameTable.getExpandedTypeID(DTM.TEXT_NODE);
+          int dataIndex = m_data.size();
 
-        m_previous = addNode(m_coalescedTextType, exName,
-                             m_parents.peek(), m_previous, dataIndex, false);
+          m_previous = addNode(m_coalescedTextType, exName,
+                               m_parents.peek(), m_previous, dataIndex, false);
 
-        m_data.addElement(m_textPendingStart);
-        m_data.addElement(length);
+          m_data.addElement(m_textPendingStart);
+          m_data.addElement(length);
+        }
       }
 
       // Reset for next text block
