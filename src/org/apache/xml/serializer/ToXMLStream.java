@@ -393,7 +393,7 @@ public class ToXMLStream extends ToStream
      * @param name the qualified name of the attribute
      * @param value the value of the attribute which can contain only
      * ASCII printable characters characters in the range 32 to 127 inclusive.
-     * @flags the bit values of this integer give optimization information.
+     * @param flags the bit values of this integer give optimization information.
      */
     public void addUniqueAttribute(String name, String value, int flags)
         throws SAXException

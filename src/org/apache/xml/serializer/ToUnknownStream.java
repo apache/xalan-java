@@ -312,7 +312,7 @@ public class ToUnknownStream extends SerializerBase
      * Adds an attribute to the currenly open tag
      * @param name the attribute name, with prefix (if any)
      * @param value the value of the parameter
-     * @see org.apache.xml.serializer.ExtendedContentHandler#attribute(String, String)
+     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String)
      */
     public void addAttribute(String rawName, String value)
     {
@@ -371,8 +371,8 @@ public class ToUnknownStream extends SerializerBase
 
     /**
      * @see org.xml.sax.ContentHandler#startPrefixMapping(String, String)
-     * @ param prefix The prefix that maps to the URI
-     * @ param uri The URI for the namespace
+     * @param prefix The prefix that maps to the URI
+     * @param uri The URI for the namespace
      */
     public void startPrefixMapping(String prefix, String uri) throws SAXException
     {
@@ -1254,7 +1254,7 @@ public class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#getPrefix()
+     * @see org.apache.xml.serializer.ExtendedContentHandler#getPrefix
      */
     public String getPrefix(String namespaceURI)
     {

@@ -126,7 +126,7 @@ public class AttributesImplSerializer extends AttributesImpl
      * @param val the value of the attribute
      *
      * @see org.xml.sax.helpers.AttributesImpl#addAttribute(String, String, String, String, String)
-     * @see getIndex(String)
+     * @see #getIndex(String)
      */
     public void addAttribute(
         String uri,
@@ -200,7 +200,7 @@ public class AttributesImplSerializer extends AttributesImpl
      * getIndex(qName).
      * @param atts the attributes to copy into these attributes.
      * @see org.xml.sax.helpers.AttributesImpl#setAttributes(Attributes)
-     * @see getIndex(String)
+     * @see #getIndex(String)
      */
     public void setAttributes(Attributes atts)
     {
