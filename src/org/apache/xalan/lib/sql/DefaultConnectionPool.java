@@ -59,23 +59,29 @@ package org.apache.xalan.lib.sql;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.Enumeration;
-
 import java.lang.String;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.util.*;
+import java.sql.*;
 
-public class DefaultConnectionPool implements ConnectionPool
+/**
+ */
+public class DefaultConnectionPool  implements ConnectionPool
 {
-  private final static boolean DEBUG = false;
+  /**
+   */
+  private static final boolean DEBUG = false;
 
   /**
    * The basic information to make a JDBC Connection
    */
-  private String      m_driver = new String("");
-  private String      m_url = new String("");
+  private String m_driver = new String("");
+  /**
+   */
+  private String m_url = new String("");
 
 
   /**
@@ -83,68 +89,77 @@ public class DefaultConnectionPool implements ConnectionPool
    * number of available connections falls below this
    * mark, min connections will be allocated. The Connection
    * Pool will always be somewhere between MinSize and MinSize*2
-   *
    */
-  private int         m_PoolMinSize = 1;
+  private int m_PoolMinSize = 1;
 
 
   /**
    * Always implement the properties mechinism, if the Password
    * or Username is set seperatly then we will add them to the
    * property manually.
-   *
    */
-  private Properties  m_ConnectionProtocol = new Properties();
+  private Properties m_ConnectionProtocol = new Properties();
 
   /**
    * Storage for the PooledConnections
    */
-  private Vector      m_pool = new Vector();
+  private Vector m_pool = new Vector();
 
   /**
    * Are we active ??
    */
-  private boolean     m_IsActive = false;
-
-  public DefaultConnectionPool() {}
+  private boolean m_IsActive = false;
 
   /**
-   * Are we active, if not then released connections will be
-   * closed on release and new connections will be refused.
-   *
-   * @param <code>boolean flag</code>, Set the active flag.
    */
-  public void disablePool()
-  {
-    m_IsActive = false;
-    freeUnused();
-  }
+  public DefaultConnectionPool( ) {}
 
-  public void enablePool()
-  {
-    m_IsActive = true;
-  }
+  ///**
+//   * Are we active, if not then released connections will be
+//   * closed on release and new connections will be refused.
+//   * @return
+//   */
+//  public void disablePool( )
+//  {
+//    m_IsActive = false;
+//    freeUnused();
+//  }
 
+  
+  ///**
+//   * @return
+//   */
+//  public void enablePool( )
+//  {
+//    m_IsActive = true;
+//  }
+
+  
   /**
    * Return our current Active state
+   * @return
    */
-  public boolean isEnabled()
+  public boolean isEnabled( )
   {
     return m_IsActive;
   }
 
   /**
    * Set the driver call to be used to create connections
+   * @param d
+   * @return
    */
-  public void setDriver(String d)
+  public void setDriver( String d )
   {
     m_driver = d;
   }
 
   /**
    * Set the url used to connect to the database
+   * @param url
+   * @return
    */
-  public void setURL(String url)
+  public void setURL( String url )
   {
     m_url = url;
   }
@@ -152,9 +167,9 @@ public class DefaultConnectionPool implements ConnectionPool
   /**
    * Go through the connection pool and release any connections
    * that are not InUse;
-   *
+   * @return
    */
-  public void freeUnused()
+  public void freeUnused( )
   {
     // Iterate over the entire pool closing the
     // JDBC Connections.
@@ -181,8 +196,9 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * Is our ConnectionPool have any connections that are still in Use ??
+   * @return
    */
-  public boolean hasActiveConnections()
+  public boolean hasActiveConnections( )
   {
     return (m_pool.size() > 0);
   }
@@ -190,41 +206,50 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * Set the password in the property set.
+   * @param p
+   * @return
    */
-  public void setPassword(String p)
+  public void setPassword( String p )
   {
     m_ConnectionProtocol.put("password", p);
   }
 
   /**
    * Set the user name in the property set
+   * @param u
+   * @return
    */
-  public void setUser(String u)
+  public void setUser( String u )
   {
     m_ConnectionProtocol.put("user", u);
   }
 
-  /**
-   * Copy the properties from the source to our properties
-   */
-  public void setProtocol(Properties p)
-  {
-    Enumeration e = p.keys();
+  ///**
+//   * Copy the properties from the source to our properties
+//   * @param p
+//   * @return
+//   */
+//  public void setProtocol( Properties p )
+//  {
+//    Enumeration e = p.keys();
+//
+//    while (e.hasMoreElements())
+//    {
+//      String key = (String) e.nextElement();
+//      m_ConnectionProtocol.put(key, p.getProperty(key));
+//    }
+//
+//  }
 
-    while (e.hasMoreElements())
-    {
-      String key = (String) e.nextElement();
-      m_ConnectionProtocol.put(key, p.getProperty(key));
-    }
-
-  }
-
+  
   /**
    * Override the current number of connections to keep in the pool. This
    * setting will only have effect on a new pool or when a new connection
    * is requested and there is less connections that this setting.
+   * @param n
+   * @return
    */
-  public void setMinConnections(int n)
+  public void setMinConnections( int n )
   {
     m_PoolMinSize = n;
   }
@@ -233,9 +258,9 @@ public class DefaultConnectionPool implements ConnectionPool
    * Try to aquire a new connection, if it succeeds then return
    * true, else return false.
    * Note: This method will cause the connection pool to be built.
-   *
+   * @return
    */
-  public boolean testConnection()
+  public boolean testConnection( )
   {
     try
     {
@@ -282,8 +307,22 @@ public class DefaultConnectionPool implements ConnectionPool
 
 
   // Find an available connection
-  public synchronized Connection getConnection()
-    throws IllegalArgumentException, SQLException
+  /**
+   * @return
+   * @throws SQLException
+   * @throws IllegalArgumentException
+   * @return
+   * @throws IllegalArgumentException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws IllegalArgumentException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws IllegalArgumentException
+   */
+  public synchronized Connection getConnection( )throws IllegalArgumentException, SQLException          
   {
 
     PooledConnection pcon = null;
@@ -331,8 +370,22 @@ public class DefaultConnectionPool implements ConnectionPool
     return pcon.getConnection();
   }
 
-  public synchronized void releaseConnection(Connection con)
-    throws SQLException
+  /**
+   * @param con
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   */
+  public synchronized void releaseConnection( Connection con )throws SQLException          
   {
 
     // find the PooledConnection Object
@@ -374,8 +427,21 @@ public class DefaultConnectionPool implements ConnectionPool
 
 
 
-  private Connection createConnection()
-    throws SQLException
+  /**
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   */
+  private Connection createConnection( )throws SQLException          
   {
     Connection con = null;
 
@@ -386,8 +452,22 @@ public class DefaultConnectionPool implements ConnectionPool
   }
 
   // Initialize the pool
-  public synchronized void initializePool()
-    throws IllegalArgumentException, SQLException
+  /**
+   * @return
+   * @throws SQLException
+   * @throws IllegalArgumentException
+   * @return
+   * @throws IllegalArgumentException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws IllegalArgumentException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws IllegalArgumentException
+   */
+  public synchronized void initializePool( )throws IllegalArgumentException, SQLException          
   {
 
      // Check our initial values
@@ -445,15 +525,32 @@ public class DefaultConnectionPool implements ConnectionPool
   }
 
   // Adds the PooledConnection to the pool
-  private void addConnection(PooledConnection value)
+  /**
+   * @param value
+   * @return
+   */
+  private void addConnection( PooledConnection value )
   {
     // Add the PooledConnection Object to the vector
     m_pool.addElement(value);
   }
 
 
-  protected void finalize()
-    throws Throwable
+  /**
+   * @return
+   * @throws Throwable
+   * @return
+   * @throws Throwable
+   * @return
+   * @throws Throwable
+   * @return
+   * @throws Throwable
+   * @return
+   * @throws Throwable
+   * @return
+   * @throws Throwable
+   */
+  protected void finalize( )throws Throwable          
   {
     if (DEBUG)
     {
@@ -503,4 +600,20 @@ public class DefaultConnectionPool implements ConnectionPool
 
     super.finalize();
   }
+
+  /**
+   * The Pool can be Enabled and Disabled. Disabling the pool
+   * closes all the outstanding Unused connections and any new
+   * connections will be closed upon release.
+   * @param flag Control the Connection Pool. If it is enabled then Connections will actuall be held
+   * around. If disabled then all unused connections will be instantly closed and as
+   * connections are released they are closed and removed from the pool.
+   * @return
+   */
+  public void setPoolEnabled( final boolean flag )
+  {
+    
+  }
+  
+  
 }

@@ -58,36 +58,32 @@
 
  package org.apache.xalan.lib.sql;
 
-/**
- * <P>
- * Provides a mechinism where a shared collection of connection
- * pools can exist. Connection Pools are referenced by name.
- * <P><HR>
- *
- * Title:        PoolManager<p>
- * @author       John Gentilin
- * @version      1.0
- *
- */
-
 import java.util.Hashtable;
 import java.lang.IllegalArgumentException;
 
-public class XConnectionPoolManager
+/**
+ */
+public class ConnectionPoolManager    
 {
-  static Hashtable  m_poolTable = null;
-  static boolean    m_isInit  = false;
+  /**
+   */
+  static Hashtable m_poolTable = null;
+  /**
+   */
+  static boolean m_isInit = false;
 
-  public XConnectionPoolManager()
+  /**
+   */
+  public ConnectionPoolManager( )
   {
     init();
   }
 
   /**
    * Initialize the internal structures of the Pool Manager
-   *
+   * @return
    */
-  public synchronized void init()
+  public synchronized void init( )
   {
     // Only do this process once
     if (m_isInit == true) return;
@@ -106,19 +102,19 @@ public class XConnectionPoolManager
    * If a pool by that name currently exists, then throw an
    * IllegalArgumentException stating that the pool already
    * exist.
-   *
-   * @param <code>String name</code>, the name of the pool to
-   * add to the list.
-   *
-   * @param <code>ConnectionPool</code> the Connection Pool to
-   * be added, this pool must already be set up to accept connections.
-   * see {@link org.apache.xalan.lib.sql.ConnectionPool}
-   *
+   * @param name
+   * @param pool
+   * @return
+   * @return
    * @throws <code>IllegalArgumentException</code>, throw this exception
    * if a pool with the same name currently exists.
-   *
+   * @return
+   * @return
+   * @return
+   * @return
+   * @link org.apache.xalan.lib.sql.ConnectionPool}
    */
-  public synchronized void registerPool(String name, ConnectionPool pool)
+  public synchronized void registerPool( String name, ConnectionPool pool )
   {
     if ( m_poolTable.containsKey(name) )
     {
@@ -132,11 +128,10 @@ public class XConnectionPoolManager
    * Remove a pool from the global table. If the pool still has
    * active connections, then only mark this pool as inactive and
    * leave it around until all the existing connections are closed.
-   *
-   * @param <code>String name</code> name of the pool to remove.
-   *
+   * @param name
+   * @return
    */
-  public synchronized void removePool(String name)
+  public synchronized void removePool( String name )
   {
     ConnectionPool pool = getPool(name);
 
@@ -146,7 +141,7 @@ public class XConnectionPoolManager
       // Disable future use of this pool under the Xalan
       // extension only. This flag should only exist in the
       // wrapper and not in the actual pool implementation.
-      pool.disablePool();
+      pool.setPoolEnabled(false);
 
 
       //
@@ -161,15 +156,18 @@ public class XConnectionPoolManager
 
   /**
    * Return the connection pool referenced by the name
-   *
-   * @param <code>String name</code>, name of the pool to be returned.
-   *
+   * @param name
+   * @return
+   * @return
+   * @return
+   * @return
+   * @return
+   * @return
    * @returns <code>ConnectionPool</code> a reference to the ConnectionPool
    * object stored in the Pool Table. If the named pool does not exist, return
    * null
-   *
    */
-  public synchronized ConnectionPool getPool(String name)
+  public synchronized ConnectionPool getPool( String name )
   {
     return (ConnectionPool) m_poolTable.get(name);
   }

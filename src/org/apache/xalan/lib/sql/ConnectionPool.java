@@ -59,53 +59,64 @@ package org.apache.xalan.lib.sql;
 
 import java.util.Properties;
 import java.lang.String;
-
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.*;
 
 /**
- *
  * An interface used to build wrapper classes around existing
  * Connection Pool libraries.
- *
  * Title:     ConnectionPool<p>
- * @author    John Gentilin
- * @version   1.0
- *
+ * @author John Gentilin
+ * @version 1.0
  */
-
-
-public interface ConnectionPool
+public interface ConnectionPool         
 {
+  ///**
+//   * The Pool can be Enabled and Disabled. Disabling the pool
+//   * closes all the outstanding Unused connections and any new
+//   * connections will be closed upon release.
+//   * @return
+//   */
+//  public void enablePool( );
+  
+  ///**
+//   * @return
+//   */
+//  public void disablePool( );
+  
   /**
-   * The Pool can be Enabled and Disabled. Disabling the pool
-   * closes all the outstanding Unused connections and any new
-   * connections will be closed upon release.
-   *
+   * @return
    */
-  public void     enablePool();
-  public void     disablePool();
-  public boolean  isEnabled();
+  public boolean isEnabled( );
 
   /**
    * The Driver and URL are the only required parmeters.
+   * @param d
+   * @return
    */
-  public void     setDriver(String d);
-  public void     setURL(String url);
+  public void setDriver( String d );
+  /**
+   * @param url
+   * @return
+   */
+  public void setURL( String url );
 
   /**
    * Start downsizeing the pool, this usally happens right after the
    * pool has been marked as Inactive and we are removing connections
    * that are not currently inuse.
+   * @return
    */
-  public void     freeUnused();
+  public void freeUnused( );
 
 
   /**
    * Provide an indicator to the PoolManager when the Pool can be removed
    * from the Pool Table.
+   * @return
    */
-  public boolean  hasActiveConnections();
+  public boolean hasActiveConnections( );
 
   /**
    * The rest of the protocol parameters can eiter be passed in as
@@ -115,37 +126,85 @@ public interface ConnectionPool
    * the situation. If the connection information changes while after the
    * pool has been established, the wrapper implementation should ignore
    * the change and throw an error.
-   *
+   * @param p
+   * @return
    */
-  public void     setPassword(String p);
-  public void     setUser(String u);
-  public void     setProtocol(Properties p);
+  public void setPassword( String p );
+  /**
+   * @param u
+   * @return
+   */
+  public void setUser( String u );
+  ///**
+//   * @param p
+//   * @return
+//   */
+//  public void setProtocol( Properties p );
 
+  
   /**
    * Set tne minimum number of connections that are to be maintained in the
    * pool.
+   * @param n
+   * @return
    */
-  public void     setMinConnections(int n);
+  public void setMinConnections( int n );
 
   /**
    * Test to see if the connection info is valid to make a real connection
    * to the database. This method may cause the pool to be crated and filled
    * with min connections.
-   *
+   * @return
    */
-  public boolean  testConnection();
+  public boolean testConnection( );
 
   /**
    * Retrive a database connection from the pool
-   *
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
    */
-   public Connection getConnection() throws SQLException;
+  public Connection getConnection( )throws SQLException         ;
 
    /**
-    * Return a connection to the pool, the connection may be closed if the
-    * pool is inactive or has exceeded the max number of free connections
-    *
-    */
-  public void releaseConnection(Connection con) throws SQLException;
+   * Return a connection to the pool, the connection may be closed if the
+   * pool is inactive or has exceeded the max number of free connections
+   * @param con
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   * @return
+   * @throws SQLException
+   */
+  public void releaseConnection( Connection con )throws SQLException         ;
 
+
+  /**
+   * The Pool can be Enabled and Disabled. Disabling the pool
+   * closes all the outstanding Unused connections and any new
+   * connections will be closed upon release.
+   * @param flag Control the Connection Pool. If it is enabled then Connections will actuall be held
+   * around. If disabled then all unused connections will be instantly closed and as
+   * connections are released they are closed and removed from the pool.
+   * @return
+   */
+  public void setPoolEnabled( final boolean flag );
+  
+  
 }

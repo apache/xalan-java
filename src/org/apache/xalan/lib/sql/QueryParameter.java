@@ -65,32 +65,53 @@ package org.apache.xalan.lib.sql;
  * @author
  * @version 1.0
  */
-
-public class QueryParameter
+public class QueryParameter         
 {
 
+  /**
+   */
   private String value;
+  /**
+   */
   private String type;
 
-  public QueryParameter(String v, String t)
+  /**
+   * @param v
+   * @param t
+   */
+  public QueryParameter( String v, String t )
   {
     value = v;
     type = t;
   }
 
-  public String getValue() {
+  /**
+   * @return
+   */
+  public String getValue( ) {
     return value;
   }
 
-  public void setValue(String newValue) {
+  /**
+   * @param newValue
+   * @return
+   */
+  public void setValue( String newValue ) {
     value = newValue;
   }
 
-  public void setType(String newType) {
+  /**
+   * @param newType
+   * @return
+   */
+  public void setType( String newType ) {
     type = newType;
   }
 
-  public String getType() {
+  /**
+   * @return
+   */
+  public String getType( ) {
     return type;
   }
 }

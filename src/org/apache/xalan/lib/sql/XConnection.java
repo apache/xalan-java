@@ -60,17 +60,28 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import java.util.Properties;
 import java.util.Vector;
 import java.util.StringTokenizer;
-
-
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
+
+import org.w3c.dom.*;
+import java.util.*;
+import java.sql.*;
+
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xalan.extensions.ExpressionContext;
+
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
+
+import org.apache.xpath.XPathContext;
 
 /**
  * An XSLT extension that allows a stylesheet to
@@ -91,165 +102,216 @@ public class XConnection
   /**
    * Flag for DEBUG mode
    */
-  private static final boolean DEBUG = false;
+  private static final boolean DEBUG = true;
+
+  /**
+   * The Current Connection Pool in Use. An XConnection can only
+   * represent one query at a time, prior to doing some type of query.
+   */
+  private ConnectionPool m_ConnectionPool = null;
+
+  /**
+   * If a default Connection Pool is used. i.e. A connection Pool
+   * that is created internally, then do we actually allow pools
+   * to be created. Due to the archititure of the Xalan Extensions,
+   * there is no notification of when the Extension is being unloaded and
+   * as such, there is a good chance that JDBC COnnections are not closed.
+   *
+   * A finalized is provided to try and catch this situation but since
+   * support of finalizers is inconsistant across JVM's this may cause
+   * a problem. The robustness of the JDBC Driver is also at issue here.
+   * if a controlled shutdown is provided by the driver then default
+   * conntectiom pools are OK.
+   */
+  private boolean m_DefaultPoolingEnabled = false;
 
 
   /**
-   * The JDBC connection.
+   * As we do queries, we will produce SQL Documents. Any ony may produce
+   * one or more SQL Documents so that the current connection information
+   * may be easilly reused. This collection will hold a collection of all
+   * the documents created. As Documents are closed, they will be removed
+   * from the collection and told to free all the used resources.
    */
-  public Connection m_connection = null;
-
-  /**
-   * Reference to the ConnectionPool used
-   */
-  private ConnectionPool  m_ConnectionPool = null;
-  private String          m_ConnectionPoolName;
-
-  private boolean         m_IsDefaultPool = false;
-  private boolean         m_DefaultPoolingEnabled = false;
+  private Vector m_OpenSQLDocuments = new Vector();
 
 
   /**
    * Let's keep a copy of the ConnectionPoolMgr in
    * alive here so we are keeping the static pool alive
-   *
    * We will also use this Pool Manager to register our default pools.
-   *
    */
-
-   private XConnectionPoolManager m_PoolMgr = new XConnectionPoolManager();
+  private ConnectionPoolManager m_PoolMgr = new ConnectionPoolManager();
 
   /**
    * For PreparedStatements, we need a place to
    * to store the parameters in a vector.
    */
-   public Vector        m_ParameterList = new Vector();
+  private Vector m_ParameterList = new Vector();
 
+  /**
+   * Allow the SQL Extensions to return null on error. The Error information will
+   * be stored in a seperate Error Document that can easily be retrived using the
+   * getError() method.
+   *
+   * %REVIEW% This functionality will probably be buried inside the SQLDocument.
+   */
+  private SQLErrorDocument m_Error = null;
+
+  private boolean m_IsDefaultPool = false;
+
+  /**
+   */
+  public XConnection( )
+  {
+  }
 
   // The original constructors will be kept around for backwards
   // compatibility. Future Stylesheets should use the approaite
   // connect method to receive full error information.
   //
-  public XConnection (String ConnPoolName)
+  /**
+   * @param ConnPoolName
+   */
+  public XConnection( String ConnPoolName )
   {
     connect(ConnPoolName);
   }
 
-  public XConnection(String driver, String dbURL)
+  /**
+   * @param driver
+   * @param dbURL
+   */
+  public XConnection( String driver, String dbURL )
   {
     connect(driver, dbURL);
   }
 
-  public XConnection(NodeList list)
+  /**
+   * @param list
+   */
+  public XConnection( NodeList list )
   {
     connect(list);
   }
 
-  public XConnection(String driver, String dbURL, String user,
-                     String password)
+  /**
+   * @param driver
+   * @param dbURL
+   * @param user
+   * @param password
+   */
+  public XConnection( String driver, String dbURL, String user, String password )
   {
     connect(driver, dbURL, user, password);
   }
 
-  public XConnection(String driver, String dbURL, Element protocolElem)
+  /**
+   * @param driver
+   * @param dbURL
+   * @param protocolElem
+   */
+  public XConnection( String driver, String dbURL, Element protocolElem )
   {
     connect(driver, dbURL, protocolElem);
   }
 
+
   /**
-   *
    * Create an XConnection using the name of an existing Connection Pool
-   * @param <code>String poolName</code>, name of the existing pool
-   * to pull connections from.
-   *
+   * @param ConnPoolName
+   * @return
    */
-  public NodeIterator connect(String ConnPoolName)
+  public XConnection connect( String ConnPoolName )
   {
     try
     {
-      if ((m_ConnectionPool != null) && (m_IsDefaultPool))
-        m_PoolMgr.removePool(m_ConnectionPoolName);
-
       m_ConnectionPool = m_PoolMgr.getPool(ConnPoolName);
-      m_ConnectionPoolName = ConnPoolName;
-
-      m_connection = m_ConnectionPool.getConnection();
+      m_IsDefaultPool = false;
+      return this;
     }
-    catch(SQLException e)
+//    catch(SQLException e)
+//    {
+//      m_Error = new SQLErrorDocument(e);
+//      return null;
+//    }
+    catch (Exception e)
     {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
 
-    return null;
   }
 
   /**
    * Create an XConnection object with just a driver and database URL.
    * @param driver JDBC driver of the form foo.bar.Driver.
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
+   * @return
    */
-
-  public NodeIterator connect(String driver, String dbURL)
+  public XConnection connect( String driver, String dbURL )
   {
     try
     {
-      init(driver, dbURL, new Properties() );
+      init(driver, dbURL, new Properties());
+      return this;
     }
     catch(SQLException e)
     {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-    return null;
-
   }
 
-  public NodeIterator connect(Element protocolElem)
+  /**
+   * @param protocolElem
+   * @return
+   */
+  public XConnection connect( Element protocolElem )
   {
     try
     {
       initFromElement(protocolElem);
+      return this;
     }
     catch(SQLException e)
     {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-    return null;
-
   }
 
-  public NodeIterator connect(NodeList list)
+  /**
+   * @param list
+   * @return
+   */
+  public XConnection connect( NodeList list )
   {
     try
     {
       initFromElement( (Element) list.item(0) );
+      return this;
     }
     catch(SQLException e)
     {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-    return null;
   }
 
   /**
@@ -258,9 +320,9 @@ public class XConnection
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @param user user ID.
    * @param password connection password.
+   * @return
    */
-  public NodeIterator connect(String driver, String dbURL, String user,
-                     String password)
+  public XConnection connect( String driver, String dbURL, String user, String password )
   {
     try
     {
@@ -269,19 +331,19 @@ public class XConnection
       prop.put("password", password);
 
       init(driver, dbURL, prop);
+
+      return this;
     }
     catch(SQLException e)
     {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-    return null;
   }
 
 
@@ -291,8 +353,9 @@ public class XConnection
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @param protocolElem list of string tag/value connection arguments,
    * normally including at least "user" and "password".
+   * @return
    */
-  public NodeIterator connect(String driver, String dbURL, Element protocolElem)
+  public XConnection connect( String driver, String dbURL, Element protocolElem )
   {
     try
     {
@@ -306,58 +369,47 @@ public class XConnection
       }
 
       init(driver, dbURL, prop);
+
+      return this;
     }
     catch(SQLException e)
     {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-    return null;
   }
 
 
   /**
-   *
    * Allow the database connection information to be sepcified in
    * the XML tree. The connection information could also be
    * externally originated and passed in as an XSL Parameter.
-   *
    * The required XML Format is as follows.
-   *
-   * // A document fragment is needed to specify the connection information
-   * // the top tag name is not specific for this code, we are only interested
-   * // in the tags inside.
+   * A document fragment is needed to specify the connection information
+   * the top tag name is not specific for this code, we are only interested
+   * in the tags inside.
    * <DBINFO-TAG>
-   *
-   * // Specify the driver name for this connection pool
-   *  <dbdriver>drivername</dbdriver>
-   *
-   * // Specify the URL for the driver in this connection pool
-   *  <dburl>url</dburl>
-   *
-   * // Specify the password for this connection pool
-   *  <password>password</password>
-   *
-   * // Specify the username for this connection pool
-   *  <user>username</user>
-   *
-   *  // You can add extra protocol items including the User Name & Password
-   *  // with the protocol tag. For each extra protocol item, add a new element
-   *  // where the name of the item is specified as the name attribute and
-   *  // and its value as the elements value.
-   *  <protocol name="name of value">value</protocol>
-   *
+   * Specify the driver name for this connection pool
+   * <dbdriver>drivername</dbdriver>
+   * Specify the URL for the driver in this connection pool
+   * <dburl>url</dburl>
+   * Specify the password for this connection pool
+   * <password>password</password>
+   * Specify the username for this connection pool
+   * <user>username</user>
+   * You can add extra protocol items including the User Name & Password
+   * with the protocol tag. For each extra protocol item, add a new element
+   * where the name of the item is specified as the name attribute and
+   * and its value as the elements value.
+   * <protocol name="name of value">value</protocol>
    * </DBINFO-TAG>
-   *
    */
-  private void initFromElement(Element e)
-    throws SQLException
+  private void initFromElement( Element e )throws SQLException
   {
 
     Properties prop = new Properties();
@@ -442,15 +494,8 @@ public class XConnection
    * Initilize is being called because we did not have an
    * existing Connection Pool, so let's see if we created one
    * already or lets create one ourselves.
-   *
-   * @param driver JDBC driver of the form foo.bar.Driver.
-   * @param dbURL database URL of the form jdbc:subprotocol:subname.
-   * @param Properties list of string tag/value connection arguments,
-   * normally including at least "user" and "password".
-   * @param getConnectionArgs Connection arguments
    */
-  private void init(String driver, String dbURL, Properties prop)
-    throws SQLException
+  private void init( String driver, String dbURL, Properties prop )throws SQLException
   {
     if (DEBUG)
       System.out.println("XConnection, Connection Init");
@@ -464,18 +509,6 @@ public class XConnection
 
     String poolName = driver + dbURL + user + passwd;
     ConnectionPool cpool = m_PoolMgr.getPool(poolName);
-
-    // We are limited to only one Default Connection Pool
-    // at a time.
-    // If we are creating a new Default Pool, release the first
-    // One so it is not lost when we close the Stylesheet
-    if (
-        (m_ConnectionPool != null) &&
-        (m_IsDefaultPool) &&
-        (cpool != m_ConnectionPool))
-    {
-      m_PoolMgr.removePool(m_ConnectionPoolName);
-    }
 
     if (cpool == null)
     {
@@ -497,126 +530,138 @@ public class XConnection
 
       defpool.setDriver(driver);
       defpool.setURL(dbURL);
-      defpool.setProtocol(prop);
-
+//      defpool.setProtocol(prop);
 
       // Only enable pooling in the default pool if we are explicatly
       // told too.
-      if (m_DefaultPoolingEnabled) defpool.enablePool();
+      if (m_DefaultPoolingEnabled) defpool.setPoolEnabled(true);
 
       m_PoolMgr.registerPool(poolName, defpool);
-
       m_ConnectionPool = defpool;
-      m_ConnectionPoolName = poolName;
-    }
-    else
-    {
-      if (DEBUG)
-        System.out.println("Default Connection already existed");
-
-      m_ConnectionPool = cpool;
-      m_ConnectionPoolName = poolName;
     }
 
-    m_ConnectionPool.testConnection();
+    m_IsDefaultPool = true;
 
-    m_connection = m_ConnectionPool.getConnection();
   }
 
 
   /**
    * Execute a query statement by instantiating an
-   * {@link org.apache.xalan.lib.sql.XStatement XStatement}
-   * object. The XStatement executes the query, and uses the result set
-   * to create a {@link org.apache.xalan.lib.sql.RowSet RowSet},
-   * a row-set element.
-   *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
-   *
    * @throws SQLException
+   * @link org.apache.xalan.lib.sql.XStatement XStatement}
+   * object. The XStatement executes the query, and uses the result set
+   * to create a
+   * @link org.apache.xalan.lib.sql.RowSet RowSet},
+   * a row-set element.
    */
-  public NodeIterator query(String queryString)
+//  public DTMAxisIterator query(ExpressionContext exprContext, String queryString)
+  public DTM query(ExpressionContext exprContext, String queryString)
   {
     try
     {
-      return new XStatement(this, queryString);
-    }
-    catch(SQLException e)
-    {
-      if (DEBUG)
+      if (DEBUG) System.out.println("query()");
+      if (null == m_ConnectionPool)
       {
-        System.out.println("SQL Exception in Query");
-        e.printStackTrace();
+        // Build an Error Document, NOT Connected
+        return null;
       }
 
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
+      Connection con = m_ConnectionPool.getConnection();
+      Statement stmt = con.createStatement();
+      ResultSet rs = stmt.executeQuery(queryString);
+
+      if (DEBUG) System.out.println("..creatingSQLDocument");
+
+      DTMManager mgr =
+        ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
+      DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
+      int dtmIdent = mgrDefault.getFirstFreeDTMID();
+
+      SQLDocument doc =  new SQLDocument(mgr, dtmIdent << 20 , con, stmt, rs);
+      if (null != doc)
+      {
+        if (DEBUG) System.out.println("..returning Document");
+
+        // Register our document
+        mgrDefault.addDTM(doc, dtmIdent);
+
+        // also keep a local reference
+        m_OpenSQLDocuments.addElement(doc);
+//        return doc.getAxisIterator(0);
+        return doc;
+      }
+      else
+      {
+        // Build Error Doc, BAD Result Set
+        return null;
+      }
     }
+//    catch(SQLException e)
+//    {
+//      m_Error = new SQLErrorDocument(e);
+//      return null;
+//    }
     catch (Exception e)
     {
-      if (DEBUG)
-      {
-        System.out.println("Exception in Query");
-        e.printStackTrace();
-      }
-
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
+    finally
+    {
+      if (DEBUG) System.out.println("leaving query()");
+    }
   }
 
   /**
    * Execute a parameterized query statement by instantiating an
-   * {@link org.apache.xalan.lib.sql.XStatement XStatement}
-   * object. The XStatement executes the query, and uses the result set
-   * to create a {@link org.apache.xalan.lib.sql.RowSet RowSet},
-   * a row-set element.
-   *
    * @param queryString the SQL query.
    * @return XStatement implements NodeIterator.
-   *
    * @throws SQLException
+   * @link org.apache.xalan.lib.sql.XStatement XStatement}
+   * object. The XStatement executes the query, and uses the result set
+   * to create a
+   * @link org.apache.xalan.lib.sql.RowSet RowSet},
+   * a row-set element.
    */
-  public NodeIterator pquery(String queryString)
+  public DTMIterator pquery( String queryString )
   {
     try
     {
-      return new XStatement(this, queryString, m_ParameterList);
+      return null;
+      //return new XStatement(this, queryString, m_ParameterList);
     }
-    catch(SQLException e)
-    {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
-    }
+//    catch(SQLException e)
+//    //{
+//      m_Error = new SQLErrorDocument(e);
+//      return null;
+//    }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-
   }
 
 
   /**
    * Execute a parameterized query statement by instantiating an
-   * {@link org.apache.xalan.lib.sql.XStatement XStatement}
+   * @param queryString the SQL query.
+   * @param typeInfo
+   * @return XStatement implements NodeIterator.
+   * @throws SQLException
+   * @link org.apache.xalan.lib.sql.XStatement XStatement}
    * object. The XStatement executes the query, and uses the result set
-   * to create a {@link org.apache.xalan.lib.sql.RowSet RowSet},
+   * to create a
+   * @link org.apache.xalan.lib.sql.RowSet RowSet},
    * a row-set element.
    * This method allows for the user to pass in a comma seperated
    * String that represents a list of parameter types. If supplied
    * the parameter types will be used to overload the current types
    * in the current parameter list.
-   *
-   * @param queryString the SQL query.
-   * @return XStatement implements NodeIterator.
-   *
-   * @throws SQLException
    */
-  public NodeIterator pquery(String queryString, String typeInfo)
+  public DTMIterator pquery( String queryString, String typeInfo )
   {
     try
     {
@@ -641,34 +686,38 @@ public class XConnection
         }
       }
 
-      return new XStatement(this, queryString, m_ParameterList);
+      return null;
+      // return new XStatement(this, queryString, m_ParameterList);
     }
-    catch(SQLException e)
-    {
-      SQLExtensionError err = new SQLExtensionError(e);
-      return err;
-    }
+//    catch(SQLException e)
+//    {
+//      m_Error = new SQLErrorDocument(e);
+//      return null;
+//    }
     catch (Exception e)
     {
-      ExtensionError err = new ExtensionError(e);
-      return err;
+      m_Error = new SQLErrorDocument(e);
+      return null;
     }
-
-
   }
 
   /**
    * Add an untyped value to the parameter list.
+   * @param value
+   * @return
    */
-  public void addParameter(String value)
+  public void addParameter( String value )
   {
     addParameterWithType(value, null);
   }
 
   /**
    * Add a typed parameter to the parameter list.
+   * @param value
+   * @param Type
+   * @return
    */
-  public void addParameterWithType(String value, String Type)
+  public void addParameterWithType( String value, String Type )
   {
     m_ParameterList.addElement( new QueryParameter(value, Type) );
   }
@@ -677,8 +726,10 @@ public class XConnection
   /**
    * Add a single parameter to the parameter list
    * formatted as an Element
+   * @param e
+   * @return
    */
-  public void addParameterFromElement(Element e)
+  public void addParameterFromElement( Element e )
   {
     NamedNodeMap attrs = e.getAttributes();
     Node Type = attrs.getNamedItem("type");
@@ -695,8 +746,10 @@ public class XConnection
   /**
    * Add a section of parameters to the Parameter List
    * Do each element from the list
+   * @param nl
+   * @return
    */
-  public void addParameterFromElement(NodeList nl)
+  public void addParameterFromElement( NodeList nl )
   {
     //
     // Each child of the NodeList represents a node
@@ -721,7 +774,11 @@ public class XConnection
     }
   }
 
-  private void addParameters(Element elem)
+  /**
+   * @param elem
+   * @return
+   */
+  private void addParameters( Element elem )
   {
     //
     // Process all of the Child Elements
@@ -765,7 +822,6 @@ public class XConnection
 
 
   /**
-   *
    * There is a problem with some JDBC drivers when a Connection
    * is open and the JVM shutsdown. If there is a problem, there
    * is no way to control the currently open connections in the
@@ -774,10 +830,9 @@ public class XConnection
    * re-enabled pooling to take advantage of connection pools.
    * The connection pool can even be disabled which will close all
    * outstanding connections.
-   *
-   *
+   * @return
    */
-  public void enableDefaultConnectionPool()
+  public void enableDefaultConnectionPool( )
   {
 
     if (DEBUG)
@@ -786,16 +841,17 @@ public class XConnection
     m_DefaultPoolingEnabled = true;
 
     if (m_ConnectionPool == null) return;
-    if (!m_IsDefaultPool) return;
+    if (m_IsDefaultPool) return;
 
-    m_ConnectionPool.enablePool();
+    m_ConnectionPool.setPoolEnabled(true);
 
   }
 
   /**
    * See enableDefaultConnectionPool
+   * @return
    */
-  public void disableDefaultConnectionPool()
+  public void disableDefaultConnectionPool( )
   {
     if (DEBUG)
       System.out.println("Disabling Default Connection Pool");
@@ -805,45 +861,37 @@ public class XConnection
     if (m_ConnectionPool == null) return;
     if (!m_IsDefaultPool) return;
 
-    m_ConnectionPool.disablePool();
+    m_ConnectionPool.setPoolEnabled(false);
   }
 
   /**
    * Close the connection to the data source.
-   *
-   *
-   * @throws SQLException
    */
-  public void close() throws SQLException
+  public void close( )throws SQLException
   {
 
     if (DEBUG)
       System.out.println("Entering XConnection.close");
 
-    if (null != m_connection)
+    //
+    // This function is included just for Legacy support
+    // If it is really called then we must me using a single
+    // document interface, so close all open documents.
+    while(m_OpenSQLDocuments.size() != 0)
     {
-      if (null != m_ConnectionPool)
-      {
-        m_ConnectionPool.releaseConnection(m_connection);
-
-      }
-      else
-      {
-        // something is wrong here, we have a connection
-        // but no controlling pool, close it anyway the
-        // error will show up as an excpeion elsewhere
-        m_connection.close();
-      }
+      SQLDocument d = (SQLDocument) m_OpenSQLDocuments.elementAt(0);
+      d.close();
+      m_OpenSQLDocuments.removeElementAt(0);
     }
 
-    m_connection = null;
-
-    if (DEBUG)
-      System.out.println("Exiting XConnection.close");
   }
 
-  protected void finalize()
+  /**
+   * @return
+   */
+  protected void finalize( )
   {
     if (DEBUG) System.out.println("In XConnection, finalize");
   }
+
 }
