@@ -295,6 +295,9 @@ Copyright:
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            debug="${debug}" >
+      <!-- Also compile version info classes here -->
+      <include name="${xalan.reldir}/Version.java" />
+      <include name="${xalan.reldir}/processor/XSLProcessorVersion.java" />
       <include name="${apachexml.reldir}/**/*.java" />
       <include name="${xpath.reldir}/**/*.java" />
       <exclude name="**/CoroutineSAXFilterTest.java" 
