@@ -506,12 +506,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       {
         int offset = -1;
         int length = 0;
-        int level = _level(identity);
+        int startNode = identity;
 
         identity = firstChild;
 
-        while (DTM.NULL != identity && (_level(identity) > level))
-        {
+        do {
           type = _type(identity);
 
           if (isTextType(type))
@@ -527,7 +526,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           }
 
           identity = getNextNodeIdentity(identity);
-        }
+        } while (DTM.NULL != identity && (_parent(identity) >= startNode));
 
         if (length > 0)
         {
@@ -1212,12 +1211,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       {
         int offset = -1;
         int length = 0;
-        int level = _level(identity);
+        int startNode = identity;
 
         identity = firstChild;
 
-        while (DTM.NULL != identity && (_level(identity) > level))
-        {
+        do {
           type = _type(identity);
 
           if (isTextType(type))
@@ -1233,7 +1231,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           }
 
           identity = getNextNodeIdentity(identity);
-        }
+        } while (DTM.NULL != identity && (_parent(identity) >= startNode));
 
         if (length > 0)
         {
