@@ -85,7 +85,7 @@ public class XPathParser
 	// %REVIEW% Is there a better way of doing this?
 	// Upside is minimum object churn. Downside is that we don't have a useful
 	// backtrace in the exception itself -- but we don't expect to need one.
-	static public final XPathProcessorException CONTINUE_EXCEPTION=new XPathProcessorException("CONTINUE_AFTER_FATAL_ERROR");
+	static public final String CONTINUE_AFTER_FATAL_ERROR="CONTINUE_AFTER_FATAL_ERROR";
 
   /**
    * The XPath to be processed.
@@ -185,8 +185,7 @@ public class XPathParser
     } 
     catch (org.apache.xpath.XPathProcessorException e)
     {
-      // %REVIEW% Should we test object identity instead? I think not.
-	  if(CONTINUE_EXCEPTION.getMessage().equals(e.getMessage()))
+	  if(CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
 	  {
 		// What I _want_ to do is null out this XPath.
 		// I doubt this has the desired effect, but I'm not sure what else to do.
@@ -536,7 +535,7 @@ public class XPathParser
 	  // Patch for Christina's gripe. She wants her errorHandler to return from
 	  // this error and continue trying to parse, rather than throwing an exception.
 	  // Without the patch, that put us into an endless loop.
-		throw CONTINUE_EXCEPTION;
+		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);;
 	}
   }
 
@@ -565,7 +564,7 @@ public class XPathParser
 	  // Patch for Christina's gripe. She wants her errorHandler to return from
 	  // this error and continue trying to parse, rather than throwing an exception.
 	  // Without the patch, that put us into an endless loop.
-		throw CONTINUE_EXCEPTION;
+		throw new XPathProcessorException(CONTINUE_AFTER_FATAL_ERROR);;
     }
   }
 
