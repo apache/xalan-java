@@ -141,7 +141,7 @@ public class ElemChoose extends ElemTemplateElement
 
         // must be xsl:when
         XObject test = when.getTest().execute(transformer.getXPathContext(),
-                                              sourceNode, this);
+                                              sourceNode, when);
 
         if (TransformerImpl.S_DEBUG)
           transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
