@@ -60,8 +60,12 @@ import org.xml.sax.SAXException;
 import org.apache.xalan.utils.URI;
 import org.apache.xalan.utils.URI.MalformedURIException;
 
+import java.io.*;
+import java.lang.StringBuffer;
+
 public class SystemIDResolver
-{
+{  
+  
   /**
    * Take a SystemID string and try and turn it into a good absolute URL.
    * @exception SAXException thrown if the string can't be turned into a URL.
@@ -69,6 +73,13 @@ public class SystemIDResolver
   public static String getAbsoluteURI(String urlString, String base)
     throws SAXException 
   {
+    // bit of a hack here.  Need to talk to URI person to see if this can be fixed.
+    if((null != base) && 
+       urlString.startsWith("file:") && (urlString.charAt(5) != '/'))
+    {
+      urlString = urlString.substring(5);
+    }
+    
     URI uri;
     try
     {
@@ -87,6 +98,7 @@ public class SystemIDResolver
       throw new SAXException(mue);
     }
     String uriStr = uri.toString();
+    
     return uriStr;
   }
 }
