@@ -153,8 +153,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Set import precedence for all included stylesheets
 	final Enumeration elements = elements();
 	while (elements.hasMoreElements()) {
-	    final TopLevelElement child =
-		(TopLevelElement)elements.nextElement();
+	    SyntaxTreeNode child = (SyntaxTreeNode)elements.nextElement();
 	    if (child instanceof Include) {
 		Stylesheet included = ((Include)child).getIncludedStylesheet();
 		if (included != null) {
