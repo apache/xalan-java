@@ -513,12 +513,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
 
     Templates templates = newTemplates(src);
-    TransformerImpl transformer =
-      (TransformerImpl) templates.newTransformer();
-    TransformerHandler th =
-      (TransformerHandler) transformer.getInputContentHandler();
-
-    return th;
+    
+    return newTransformerHandler(templates);
   }
 
   /**
@@ -537,7 +533,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     TransformerImpl transformer =
       (TransformerImpl) templates.newTransformer();
     TransformerHandler th =
-      (TransformerHandler) transformer.getInputContentHandler();
+      (TransformerHandler) transformer.getInputContentHandler(true);
 
     return th;
   }
