@@ -101,10 +101,15 @@ final class RelationalExpr extends Expression implements Operators {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-
 	Type tleft = _left.typeCheck(stable); 
 	Type tright = _right.typeCheck(stable);
 
+	//bug fix # 2838, cast to reals if both are result tree fragments
+	if (tleft instanceof ResultTreeType &&
+	    tright instanceof ResultTreeType ) {
+	    _right = new CastExpr(_right, Type.Real);
+	    _left = new CastExpr(_left, Type.Real);
+	}
 	// If one is of reference type, then convert the other too
 	if (hasReferenceArgs()) {
 	    if (tleft instanceof ReferenceType) {
