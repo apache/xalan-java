@@ -86,7 +86,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   public static final String WARNING_SUFFIX = "WR";
 
   /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 216;          
+  public static final int MAX_CODE = 217;          
 
   /** Maximum warnings, this is needed to keep track of the number of warnings.          */
   public static final int MAX_WARNING = 26;
@@ -2058,7 +2058,16 @@ public class XSLTErrorResources extends XResourceBundleBase
   {
     contents[ER_NULL_URI_NAMESPACE][1] =
      "Attempting to generate a namespace prefix with a null URI";
-  }    
+  }
+  
+  /** Attempting to generate a namespace prefix with a null URI   */
+  public static final int ER_NUMBER_TOO_BIG = 217;
+
+  static
+  {
+    contents[ER_NUMBER_TOO_BIG][1] =
+     "Attempting to format a number bigger than the largest Long integer";
+  }
   
   
   /*

@@ -771,23 +771,23 @@ public class ElemNumber extends ElemTemplateElement
           throws TransformerException
   {
 
-    int[] list = null;
+    long[] list = null;
     XPathContext xctxt = transformer.getXPathContext();
     CountersTable ctable = transformer.getCountersTable();
 
     if (null != m_valueExpr)
     {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
-      int count = (int) java.lang.Math.floor(countObj.num()+ 0.5);
+      long count = (long)java.lang.Math.floor(countObj.num()+ 0.5);
 
-      list = new int[1];
+      list = new long[1];
       list[0] = count;
     }
     else
     {
       if (Constants.NUMBERLEVEL_ANY == m_level)
       {
-        list = new int[1];
+        list = new long[1];
         list[0] = ctable.countNode(xctxt, this, sourceNode);
       }
       else
@@ -799,7 +799,7 @@ public class ElemNumber extends ElemTemplateElement
 
         if (lastIndex >= 0)
         {
-          list = new int[lastIndex + 1];
+          list = new long[lastIndex + 1];
 
           for (int i = lastIndex; i >= 0; i--)
           {
@@ -1106,7 +1106,7 @@ public class ElemNumber extends ElemTemplateElement
    * 
    * @param xslNumberElement Element that takes %conversion-atts; attributes.
    * @param transformer non-null reference to the the current transform-time state.
-   * @param list Array of one or more integer numbers.
+   * @param list Array of one or more long integer numbers.
    * @param contextNode The node that "." expresses.
    * @return String that represents list according to
    * %conversion-atts; attributes.
@@ -1116,7 +1116,7 @@ public class ElemNumber extends ElemTemplateElement
    * @throws TransformerException
    */
   String formatNumberList(
-          TransformerImpl transformer, int[] list, int contextNode)
+          TransformerImpl transformer, long[] list, int contextNode)
             throws TransformerException
   {
 
@@ -1274,7 +1274,7 @@ public class ElemNumber extends ElemTemplateElement
    */
   private void getFormattedNumber(
           TransformerImpl transformer, int contextNode, 
-          char numberType, int numberWidth, int listElement, 
+          char numberType, int numberWidth, long listElement, 
           FastStringBuffer formattedNumber)
             throws javax.xml.transform.TransformerException
   {
@@ -1569,7 +1569,7 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected String int2singlealphaCount(int val, char[] table)
+  protected String int2singlealphaCount(long val, char[] table)
   {
 
     int radix = table.length;
@@ -1580,7 +1580,7 @@ public class ElemNumber extends ElemTemplateElement
       return getZeroString();
     }
     else
-      return (new Character(table[val - 1])).toString();  // index into table is off one, starts at 0
+      return (new Character(table[(int)val - 1])).toString();  // index into table is off one, starts at 0
   }
 
   /**
@@ -1597,7 +1597,7 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected void int2alphaCount(int val, char[] aTable,
+  protected void int2alphaCount(long val, char[] aTable,
                                 FastStringBuffer stringBuf)
   {
 
@@ -1654,7 +1654,7 @@ public class ElemNumber extends ElemTemplateElement
     // it can represent either 10 or zero).  In summary, the correction value of
     // "radix-1" acts like "-1" when run through the mod operator, but with the
     // desireable characteristic that it never produces a negative number.
-    int correction = 0;
+    long correction = 0;
 
     // TODO:  throw error on out of range input
     do
@@ -1668,7 +1668,7 @@ public class ElemNumber extends ElemTemplateElement
         ? (radix - 1) : 0;
 
       // index in "table" of the next char to emit
-      lookupIndex = (val + correction) % radix;
+      lookupIndex = (int)(val + correction) % radix;
 
       // shift input by one "column"
       val = (val / radix);
@@ -1699,12 +1699,15 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected String tradAlphaCount(int val, XResourceBundle thisBundle)
+  protected String tradAlphaCount(long val, XResourceBundle thisBundle)
   {
 
     // if this number is larger than the largest number we can represent, error!
-    //if (val > ((Integer)thisBundle.getObject("MaxNumericalValue")).intValue())
-    //return XSLTErrorResources.ERROR_STRING;
+    if (val > Long.MAX_VALUE)
+    {
+      this.error(XSLTErrorResources.ER_NUMBER_TOO_BIG);
+      return XSLTErrorResources.ERROR_STRING;
+    }
     char[] table = null;
 
     // index in table of the last character that we stored
@@ -1738,8 +1741,8 @@ public class ElemNumber extends ElemTemplateElement
     if (numbering.equals(org.apache.xml.utils.res.XResourceBundle.LANG_MULT_ADD))
     {
       String mult_order = thisBundle.getString(org.apache.xml.utils.res.XResourceBundle.MULT_ORDER);
-      int[] multiplier =
-        (int[]) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER));
+      long[] multiplier =
+        (long[]) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER));
       char[] zeroChar = (char[]) thisBundle.getObject("zero");
       int i = 0;
 
@@ -1773,7 +1776,7 @@ public class ElemNumber extends ElemTemplateElement
         }
         else if (val >= multiplier[i])
         {
-          int mult = val / multiplier[i];
+          long mult = val / multiplier[i];
 
           val = val % multiplier[i];  // save this.
 
@@ -1803,7 +1806,7 @@ public class ElemNumber extends ElemTemplateElement
               table[0] = THEletters[j - 1];  // don't need this                                                                         
 
               // index in "table" of the next char to emit
-              lookupIndex = mult / groups[k];
+              lookupIndex = (int)mult / groups[k];
 
               //this should not happen
               if (lookupIndex == 0 && mult == 0)
@@ -1870,7 +1873,7 @@ public class ElemNumber extends ElemTemplateElement
         table[0] = theletters[j - 1];  // don't need this
 
         // index in "table" of the next char to emit
-        lookupIndex = val / groups[count];
+        lookupIndex = (int)val / groups[count];
 
         // shift input by one "column"
         val = val % groups[count];

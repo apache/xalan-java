@@ -111,7 +111,7 @@ public class XResources_zh_TW extends XResourceBundle
     { "zero", new char[]{ 0x96f6 } },
 
     //These only used for mutiplicative-additive numbering 
-    { "multiplier", new int[]{ 100000000, 10000, 1000, 100, 10 } },
+    { "multiplier", new long[]{ 100000000, 10000, 1000, 100, 10 } },
     { "multiplierChar",
       new char[]{ 0x5104, 0x842c, 0x4edf, 0x4f70, 0x62fe } },
     { "digits",
