@@ -469,7 +469,7 @@ spFactory.setNamespaceAware(true);</source>
         <source>
 &lt;xsl:template match="doc"&gt;
   &lt;xsl:for-each select="document(@href)/bar/zulu"&gt;
-    &lt;?xalan:doc-cache-off?&gt;
+    &lt;?xalan-doc-cache-off?&gt;
     &lt;!-- process each document --&gt;
   &lt;xsl:for-each&gt;
 &lt;/xsl:template&gt;</source>
