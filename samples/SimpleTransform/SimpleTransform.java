@@ -63,10 +63,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 
 
-// Imported SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 // Imported java classes
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
