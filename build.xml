@@ -482,7 +482,7 @@ Copyright:
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="README,README.html,CREDITS,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
+      <fileset dir="." includes="readme.html,KEYS,License,build.xml,build.sh,build.bat,todo.xml,todo.xsl,bugs.xml"/>
     </copy>
           
     <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${build.dir}" includes="${dist.file}/**"/>
