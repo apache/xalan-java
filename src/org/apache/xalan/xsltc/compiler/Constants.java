@@ -453,7 +453,7 @@ public interface Constants extends InstructionConstants {
     public static final String XSLT_URI 
 	= "http://www.w3.org/1999/XSL/Transform";
     public static final String TRANSLET_URI 
-	= "www.apache.org/xalan/xsltc";
+	= "http://www.apache.org/xalan/xsltc";
     public static final String FALLBACK_CLASS
 	= "org.apache.xalan.xsltc.compiler.Fallback";
 }
