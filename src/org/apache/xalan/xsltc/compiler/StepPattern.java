@@ -142,6 +142,10 @@ class StepPattern extends RelativePathPattern {
 	}
     }
     
+    public int getAxis() {
+	return _axis;
+    }
+
     public void reduceKernelPattern() {
 	_isEpsilon = true;
     }

@@ -70,11 +70,13 @@ import java.util.HashSet;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
-import org.apache.xalan.xsltc.compiler.util.Type;
-import org.apache.bcel.generic.*;
+
 import org.apache.bcel.util.*;
-import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.dom.Axis;
+import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.compiler.util.Type;
 
 /**
  * Mode gathers all the templates belonging to a given mode; 
@@ -104,15 +106,25 @@ final class Mode implements Constants {
     private Vector _templates; 
 
     /**
-     * Group for patterns with node()-type kernel.
+     * Group for patterns with node()-type kernel and child axis.
      */
-    private Vector _nodeGroup = null;
+    private Vector _childNodeGroup = null;
 
     /**
-     * Test sequence for patterns with node()-type kernel.
+     * Test sequence for patterns with node()-type kernel and child axis.
      */
-    private TestSeq _nodeTestSeq = null;
+    private TestSeq _childNodeTestSeq = null;
 
+    /**
+     * Group for patterns with node()-type kernel and attribute axis.
+     */
+    private Vector _attribNodeGroup = null;
+
+    /**
+     * Test sequence for patterns with node()-type kernel and attribute axis.
+     */
+    private TestSeq _attribNodeTestSeq = null;
+    
     /**
      * Group for patterns with id() or key()-type kernel.
      */
@@ -395,27 +407,31 @@ for (int i = 0; i < _templates.size(); i++) {
 	// Find the vector to put this pattern into
 	Vector patterns;
 
-	// Use the vector for id()/key()/node() patterns if no kernel type
-	patterns = (kernelType == -1) ? _nodeGroup : _patternGroups[kernelType];
-
-	// Create a new vector if needed and insert the very first pattern
-	if (patterns == null) {
-	    patterns = new Vector(2);
-	    patterns.addElement(pattern);
-
-	    if (kernelType == -1) {
-		_nodeGroup = patterns;
+	if (kernelType == DOM.NO_TYPE) {
+	    if (pattern.getAxis() == Axis.ATTRIBUTE) {
+		patterns = (_attribNodeGroup == null) ?
+		    (_attribNodeGroup = new Vector(2)) : _attribNodeGroup;
 	    }
 	    else {
-		_patternGroups[kernelType] = patterns;
+		patterns = (_childNodeGroup == null) ?
+		    (_childNodeGroup = new Vector(2)) : _childNodeGroup;
 	    }
 	}
-	// Otherwise make sure patterns are ordered by precedence/priorities
+	else {
+	    patterns = (_patternGroups[kernelType] == null) ?
+		(_patternGroups[kernelType] = new Vector(2)) : 
+		_patternGroups[kernelType];
+	}
+
+	if (patterns == null) {
+	    patterns.addElement(pattern);
+	}
 	else {
 	    boolean inserted = false;
 	    for (int i = 0; i < patterns.size(); i++) {
 		final LocationPathPattern lppToCompare =
 		    (LocationPathPattern)patterns.elementAt(i);
+
 		if (pattern.noSmallerThan(lppToCompare)) {
 		    inserted = true;
 		    patterns.insertElementAt(pattern, i);
@@ -429,47 +445,73 @@ for (int i = 0; i < _templates.size(); i++) {
     }
     
     /**
+     * Complete test sequences of a given type by adding all patterns
+     * from a given group.
+     */
+    private void completeTestSequences(int nodeType, Vector patterns) {
+	if (patterns != null) {
+	    if (_patternGroups[nodeType] == null) {
+		_patternGroups[nodeType] = patterns;
+	    }
+	    else {
+		final int m = patterns.size();
+		for (int j = 0; j < m; j++) {
+		    addPattern(nodeType, 
+			(LocationPathPattern) patterns.elementAt(j));
+		}
+	    }
+	}
+    }
+
+    /**
      * Build test sequences. The first step is to complete the test sequences 
      * by including patterns of "*" and "node()" kernel to all element test 
      * sequences, and of "@*" to all attribute test sequences.
      */
     private void prepareTestSequences() {
-	final Vector names = _stylesheet.getXSLTC().getNamesIndex();
-
 	final Vector starGroup = _patternGroups[DOM.ELEMENT];
 	final Vector atStarGroup = _patternGroups[DOM.ATTRIBUTE];
 
-	// Complete test sequences with "*", "@*" and "node()"
-	if (starGroup != null || atStarGroup != null || _nodeGroup != null) {
+	// Complete test sequence for "text()" with "child::node()"
+	completeTestSequences(DOM.TEXT, _childNodeGroup);
+	
+	// Complete test sequence for "*" with "child::node()"
+	completeTestSequences(DOM.ELEMENT, _childNodeGroup);
+	
+	// Complete test sequence for "pi()" with "child::node()"
+	completeTestSequences(DOM.PROCESSING_INSTRUCTION, _childNodeGroup);
+	
+	// Complete test sequence for "comment()" with "child::node()"
+	completeTestSequences(DOM.COMMENT, _childNodeGroup);
+	
+	// Complete test sequence for "@*" with "attribute::node()"
+	completeTestSequences(DOM.ATTRIBUTE, _attribNodeGroup);
+
+	final Vector names = _stylesheet.getXSLTC().getNamesIndex();
+	if (starGroup != null || atStarGroup != null || 
+	    _childNodeGroup != null || _attribNodeGroup != null) 
+	{
 	    final int n = _patternGroups.length;
 
-	    for (int m, i = DOM.NTYPES; i < n; i++) {
+	    // Complete test sequence for user-defined types
+	    for (int i = DOM.NTYPES; i < n; i++) {
 		if (_patternGroups[i] == null) continue;
 
 		final String name = (String) names.elementAt(i - DOM.NTYPES);
 
 		if (isAttributeName(name)) {
 		    // If an attribute then copy "@*" to its test sequence
-		    m = (atStarGroup != null) ? atStarGroup.size() : 0;
-		    for (int j = 0; j < m; j++) {
-			addPattern(i, 
-			    (LocationPathPattern) atStarGroup.elementAt(j));
-		    }
+		    completeTestSequences(i, atStarGroup);
+
+		    // And also copy "attribute::node()" to its test sequence
+		    completeTestSequences(i, _attribNodeGroup);
 		}
 		else {
 		    // If an element then copy "*" to its test sequence
-		    m = (starGroup != null) ? starGroup.size() : 0;
-		    for (int j = 0; j < m; j++) {
-			addPattern(i, 
-			    (LocationPathPattern) starGroup.elementAt(j));
-		    }
+		    completeTestSequences(i, starGroup);
 
-		    // And also copy "node()" to its test sequence
-		    m = (_nodeGroup != null) ? _nodeGroup.size() : 0;
-		    for (int j = 0; j < m; j++) {
-			addPattern(i, 
-			    (LocationPathPattern) _nodeGroup.elementAt(j));
-		    }
+		    // And also copy "child::node()" to its test sequence
+		    completeTestSequences(i, _childNodeGroup);
 		}
 	    }
 	}
@@ -481,19 +523,28 @@ for (int i = 0; i < _templates.size(); i++) {
 	    final Vector patterns = _patternGroups[i];
 	    if (patterns != null) {
 		final TestSeq testSeq = new TestSeq(patterns, i, this);
+// System.out.println("testSeq[" + i + "] = " + testSeq);
 		testSeq.reduce();
 		_testSeq[i] = testSeq;
 		testSeq.findTemplates(_neededTemplates);
 	    }
 	}
 
-	if ((_nodeGroup != null) && (_nodeGroup.size() > 0)) {
-	    _nodeTestSeq = new TestSeq(_nodeGroup, -1, this);
-	    _nodeTestSeq.reduce();
-	    _nodeTestSeq.findTemplates(_neededTemplates);
+	if (_childNodeGroup != null && _childNodeGroup.size() > 0) {
+	    _childNodeTestSeq = new TestSeq(_childNodeGroup, -1, this);
+	    _childNodeTestSeq.reduce();
+	    _childNodeTestSeq.findTemplates(_neededTemplates);
 	}
 
-	if ((_idxGroup != null) && (_idxGroup.size() > 0)) {
+/*
+	if (_attribNodeGroup != null && _attribNodeGroup.size() > 0) {
+	    _attribNodeTestSeq = new TestSeq(_attribNodeGroup, -1, this);
+	    _attribNodeTestSeq.reduce();
+	    _attribNodeTestSeq.findTemplates(_neededTemplates);
+	}
+*/
+
+	if (_idxGroup != null && _idxGroup.size() > 0) {
 	    _idxTestSeq = new TestSeq(_idxGroup, this);
 	    _idxTestSeq.reduce();
 	    _idxTestSeq.findTemplates(_neededTemplates);
@@ -825,10 +876,10 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// If there is a match on node() we need to replace ihElem
 	// and ihText if the priority of node() is higher
-	if (_nodeTestSeq != null) {
+	if (_childNodeTestSeq != null) {
 	    // Compare priorities of node() and "*"
-	    double nodePrio = _nodeTestSeq.getPriority();
-	    int    nodePos  = _nodeTestSeq.getPosition();
+	    double nodePrio = _childNodeTestSeq.getPriority();
+	    int    nodePos  = _childNodeTestSeq.getPosition();
 	    double elemPrio = (0 - Double.MAX_VALUE);
 	    int    elemPos  = Integer.MIN_VALUE;
 
@@ -839,7 +890,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	    if (elemPrio == Double.NaN || elemPrio < nodePrio || 
 		(elemPrio == nodePrio && elemPos < nodePos)) 
 	    {
-		ihElem = _nodeTestSeq.compile(classGen, methodGen, ihLoop);
+		ihElem = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
 	    }
 
 	    // Compare priorities of node() and text()
@@ -854,8 +905,8 @@ for (int i = 0; i < _templates.size(); i++) {
 	    if (textPrio == Double.NaN || textPrio < nodePrio ||
 	        (textPrio == nodePrio && textPos < nodePos)) 
 	    {
-		ihText = _nodeTestSeq.compile(classGen, methodGen, ihLoop);
-		_testSeq[DOM.TEXT] = _nodeTestSeq;
+		ihText = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
+		_testSeq[DOM.TEXT] = _childNodeTestSeq;
 	    }
 	}
 
@@ -920,7 +971,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Match on processing instruction - default: process next node
 	InstructionHandle ihPI = ihLoop;
-	if (_nodeTestSeq != null) ihPI = ihElem;
+	if (_childNodeTestSeq != null) ihPI = ihElem;
 	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null)
 	    targets[DOM.PROCESSING_INSTRUCTION] =
 		_testSeq[DOM.PROCESSING_INSTRUCTION].
@@ -930,7 +981,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	
 	// Match on comments - default: process next node
 	InstructionHandle ihComment = ihLoop;
-	if (_nodeTestSeq != null) ihComment = ihElem;
+	if (_childNodeTestSeq != null) ihComment = ihElem;
 	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
 	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
 	    : ihComment;
@@ -1160,10 +1211,10 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// If there is a match on node() we need to replace ihElem
 	// and ihText if the priority of node() is higher
-	if (_nodeTestSeq != null) {
+	if (_childNodeTestSeq != null) {
 	    // Compare priorities of node() and "*"
-	    double nodePrio = _nodeTestSeq.getPriority();
-	    int    nodePos  = _nodeTestSeq.getPosition();
+	    double nodePrio = _childNodeTestSeq.getPriority();
+	    int    nodePos  = _childNodeTestSeq.getPosition();
 	    double elemPrio = (0 - Double.MAX_VALUE);
 	    int    elemPos  = Integer.MIN_VALUE;
 
@@ -1175,7 +1226,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	    if (elemPrio == Double.NaN || elemPrio < nodePrio || 
 		(elemPrio == nodePrio && elemPos < nodePos)) 
 	    {
-		ihElem = _nodeTestSeq.compile(classGen, methodGen, ihLoop);
+		ihElem = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
 	    }
 
 	    // Compare priorities of node() and text()
@@ -1191,8 +1242,8 @@ for (int i = 0; i < _templates.size(); i++) {
 	    if (textPrio == Double.NaN || textPrio < nodePrio ||
 	        (textPrio == nodePrio && textPos < nodePos)) 
 	    {
-		ihText = _nodeTestSeq.compile(classGen, methodGen, ihLoop);
-		_testSeq[DOM.TEXT] = _nodeTestSeq;
+		ihText = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
+		_testSeq[DOM.TEXT] = _childNodeTestSeq;
 	    }
 	}
 
@@ -1256,7 +1307,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Match on processing instruction - default: loop
 	InstructionHandle ihPI = ihLoop;
-	if (_nodeTestSeq != null) ihPI = ihElem;
+	if (_childNodeTestSeq != null) ihPI = ihElem;
 	if (_testSeq[DOM.PROCESSING_INSTRUCTION] != null) {
 	    targets[DOM.PROCESSING_INSTRUCTION] =
 		_testSeq[DOM.PROCESSING_INSTRUCTION].
@@ -1268,7 +1319,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	
 	// Match on comments - default: process next node
 	InstructionHandle ihComment = ihLoop;
-	if (_nodeTestSeq != null) ihComment = ihElem;
+	if (_childNodeTestSeq != null) ihComment = ihElem;
 	targets[DOM.COMMENT] = _testSeq[DOM.COMMENT] != null
 	    ? _testSeq[DOM.COMMENT].compile(classGen, methodGen, ihComment)
 	    : ihComment;
