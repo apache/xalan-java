@@ -740,6 +740,26 @@ public class FormatterToHTML extends FormatterToXML
    {
       return (c >= '0' && c <= '9');
    }
+   
+ /**
+  * Make an integer into an HH hex value.
+  * Does no checking on the size of the input, since this 
+  * is only meant to be used locally by writeAttrURI.
+  * 
+  * @param i must be a value less than 255.
+  * 
+  * @return should be a two character string.
+  */
+  private String makeHHString(int i)
+  {
+    String s = Integer.toHexString(i).toUpperCase();
+    if(s.length() == 1)
+    {
+      s = "0"+s;
+    }
+    return s;
+  }
+    
 
   /**
    * Write the specified <var>string</var> after substituting non ASCII characters,
@@ -788,7 +808,7 @@ public class FormatterToHTML extends FormatterToXML
           if(ch <= 0x7F)
           {
             accum('%');
-            accum(Integer.toHexString(ch).toUpperCase());          
+            accum(makeHHString(ch));          
           }
           else if(ch <= 0x7FF)
           {
@@ -797,9 +817,9 @@ public class FormatterToHTML extends FormatterToXML
             int high = (ch >> 6) | 0xC0;  
             int low = (ch & 0x3F) | 0x80; // First 6 bits, + high bit
             accum('%');
-            accum(Integer.toHexString(high).toUpperCase());
+            accum(makeHHString(high));
             accum('%');
-            accum(Integer.toHexString(low).toUpperCase());
+            accum(makeHHString(low));
           }
           else if( isUTF16Surrogate(ch) ) // high surrogate
           {
@@ -844,13 +864,13 @@ public class FormatterToHTML extends FormatterToXML
             int byte4 = 0x80 | xxxxxx;
             
             accum('%');
-            accum(Integer.toHexString(byte1).toUpperCase());
+            accum(makeHHString(byte1));
             accum('%');
-            accum(Integer.toHexString(byte2).toUpperCase());
+            accum(makeHHString(byte2));
             accum('%');
-            accum(Integer.toHexString(byte3).toUpperCase());
+            accum(makeHHString(byte3));
             accum('%');
-            accum(Integer.toHexString(byte4).toUpperCase());
+            accum(makeHHString(byte4));
           }
           else 
           {
@@ -858,11 +878,11 @@ public class FormatterToHTML extends FormatterToXML
             int middle = ((ch & 0x0FC0) >> 6) | 0x80; // middle 6 bits
             int low = (ch & 0x3F) | 0x80; // First 6 bits, + high bit
             accum('%');
-            accum(Integer.toHexString(high).toUpperCase());
+            accum(makeHHString(high));
             accum('%');
-            accum(Integer.toHexString(middle).toUpperCase());
+            accum(makeHHString(middle));
             accum('%');
-            accum(Integer.toHexString(low).toUpperCase());
+            accum(makeHHString(low));
           }
 
         }
@@ -891,7 +911,7 @@ public class FormatterToHTML extends FormatterToXML
           if (doURLEscaping)
           {
            accum('%');
-           accum(Integer.toHexString(ch).toUpperCase());
+           accum(makeHHString(ch));
           }
           else
             accum(ch);
