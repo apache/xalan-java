@@ -89,18 +89,20 @@ import org.apache.xalan.utils.NodeVector;
 import org.apache.xalan.utils.BoolStack;
 import org.apache.xalan.utils.QName;
 
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.XRTreeFrag;
-import org.apache.xalan.xpath.Arg;
-import org.apache.xalan.xpath.XPathAPI;
-import org.apache.xalan.xpath.VariableStack;
-import org.apache.xalan.xpath.XPathParser;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.Arg;
+import org.apache.xpath.XPathAPI;
+import org.apache.xpath.VariableStack;
+import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.axes.ContextNodeList;
 
 // Back support for liaisons
-import org.apache.xalan.xpath.DOM2Helper;
+import org.apache.xpath.DOM2Helper;
 
 // Serializer Imports
 import org.apache.xml.serialize.OutputFormat;
@@ -859,11 +861,8 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
     if(null == selectPattern)
     {
       if(null == m_selectDefault)
-      {
-        m_selectDefault = new XPath();
-        XPathParser parser = new XPathParser();
-        parser.initXPath(m_selectDefault, "node()", template);
-      }
+        m_selectDefault = new XPath("node()", template, template, XPath.SELECT);
+
       selectPattern = m_selectDefault;
     }
     
@@ -878,9 +877,15 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
       XObject result = selectPattern.execute(xctxt, sourceNodeContext, 
                                              xslInstruction);
       sourceNodes = result.nodeset();
-      if(TransformerImpl.S_DEBUG)
-        getTraceManager().fireSelectedEvent(sourceNodeContext,
-                                            xslInstruction, "select", selectPattern, result);
+      
+      if(TransformerImpl.S_DEBUG && m_traceManager.hasTraceListeners())
+      {
+        XNodeSet xresult = new XNodeSet(new NodeSet(sourceNodes));
+        m_traceManager.fireSelectedEvent(sourceNodeContext,
+                                         xslInstruction, "select", 
+                                         selectPattern, xresult);
+        // nodeList.setCurrentPos(0);
+      }
     }
     finally
     {
@@ -915,7 +920,7 @@ public class TransformerImpl extends XMLFilterImpl implements Transformer
       // Push the ContextNodeList on a stack, so that select="position()"
       // and the like will work.
       // System.out.println("pushing context node list...");
-      xctxt.pushContextNodeList((NodeSet)sourceNodes );
+      xctxt.pushContextNodeList((ContextNodeList)sourceNodes );
       try
       {   
         // Do the transformation on each.

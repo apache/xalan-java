@@ -60,9 +60,9 @@ import java.util.Vector;
 import java.text.NumberFormat;
 import java.text.CollationKey;
 import org.w3c.dom.Node;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XObject;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.objects.XObject;
 import org.apache.xalan.utils.NodeVector;
 import org.xml.sax.SAXException;
 

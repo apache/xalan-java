@@ -61,9 +61,9 @@ import java.util.Vector;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.NodeSet;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPath;
+import org.apache.xpath.NodeSet;
 import org.apache.xalan.templates.ElemNumber;
 
 /**

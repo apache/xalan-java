@@ -81,9 +81,9 @@ import org.apache.xml.serialize.SerializerFactory;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.Method;
 import org.apache.xalan.trace.GenerateEvent;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.DOMHelper;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.DOMHelper;
 
 /**
  * This class is a layer between the direct calls to the result 

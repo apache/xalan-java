@@ -56,8 +56,10 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xalan.xpath.*;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.*;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.compiler.XPathParser;
 import org.w3c.dom.*;
 
 /**
@@ -89,10 +91,7 @@ public class AVTPartXPath extends AVTPart
                       XPathFactory factory, XPathContext liaison)
     throws org.xml.sax.SAXException
   {
-    m_xpath = factory.create();
-
-    xpathProcessor.initMatchPattern(m_xpath, val, nsNode);
-    // m_xpath.shrink();
+    m_xpath = new XPath(val, null, nsNode, XPath.SELECT);
   }
   
   /**

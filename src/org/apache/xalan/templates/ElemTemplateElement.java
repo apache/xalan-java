@@ -75,7 +75,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultNameSpace;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
-import org.apache.xalan.xpath.VariableStack;
+import org.apache.xpath.VariableStack;
 
 // TRaX imports
 import trax.Templates;

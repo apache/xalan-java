@@ -58,8 +58,8 @@ package org.apache.xalan.extensions;
 
 import java.util.Hashtable;
 import java.util.Vector;
-import org.apache.xalan.xpath.XNull;
-import org.apache.xalan.xpath.XPathProcessorException;
+import org.apache.xpath.objects.XNull;
+import org.apache.xpath.XPathProcessorException;
 
 public class ExtensionsTable
 {

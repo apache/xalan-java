@@ -71,7 +71,7 @@ import org.apache.xalan.utils.SystemIDResolver;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.StringVector;
 
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.XPath;
 
 // DOM Imports
 import org.w3c.dom.Node;

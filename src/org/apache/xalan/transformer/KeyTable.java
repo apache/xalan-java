@@ -62,17 +62,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import java.util.Hashtable;
 import java.util.Vector;
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPathContext; 
-import org.apache.xalan.xpath.XPathContext; 
-import org.apache.xalan.xpath.DOMHelper; 
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathContext; 
+import org.apache.xpath.XPathContext; 
+import org.apache.xpath.DOMHelper; 
 import org.apache.xalan.utils.QName; 
 import org.apache.xalan.templates.KeyDeclaration;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.PrefixResolver;
 
-import org.apache.xalan.xpath.LocPathIterator; 
+import org.apache.xpath.axes.LocPathIterator; 
 
 // import org.apache.xalan.dtm.*;
 

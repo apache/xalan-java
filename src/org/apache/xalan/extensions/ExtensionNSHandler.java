@@ -75,7 +75,7 @@ import org.xml.sax.ErrorHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
-import org.apache.xalan.xpath.XPathProcessorException;
+import org.apache.xpath.XPathProcessorException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -356,7 +356,7 @@ public class ExtensionNSHandler extends ExtensionFunctionHandler
     String url = null; // xslp.getAbsoluteURI(namespaceUri,
                      //               xslp.m_stylesheetRoot.getBaseIdentifier());
     // System.out.println("Extension URI: "+url.toString());
-    org.apache.xalan.xpath.XPathContext liaison = xslp.getXPathContext();
+    org.apache.xpath.XPathContext liaison = xslp.getXPathContext();
 
     Element componentElement = null;
     /*

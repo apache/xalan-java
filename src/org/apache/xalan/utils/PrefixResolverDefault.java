@@ -75,7 +75,7 @@ public class PrefixResolverDefault implements PrefixResolver
   
   /**
    * The URI for the XML namespace.
-   * (Duplicate of that found in org.apache.xalan.xpath.XPathContext).
+   * (Duplicate of that found in org.apache.xpath.XPathContext).
    */
   public static final String S_XMLNAMESPACEURI = "http://www.w3.org/XML/1998/namespace";
 

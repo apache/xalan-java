@@ -66,12 +66,11 @@ import trax.ProcessorException;
 import trax.TemplatesBuilder;
 import trax.Templates;
 import trax.TransformException;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.XPathFactory;
-import org.apache.xalan.xpath.XPathParser;
-import org.apache.xalan.xpath.FunctionTable;
-import org.apache.xalan.xpath.functions.Function;
-import org.apache.xalan.xpath.SimpleNodeLocator;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathFactory;
+import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.Function;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.PrefixResolver;
 import org.xml.sax.Attributes;
@@ -157,11 +156,7 @@ public class StylesheetHandler
   public XPath createXPath(String str)
     throws org.xml.sax.SAXException
   {
-    XPath xpath = m_xpathFactory.create();
-
-    m_xpathProcessor.initXPath(xpath, str, this);
-
-    return xpath;
+    return new XPath(str, getLocator(), this, XPath.SELECT);
   }
 
   /**
@@ -170,11 +165,7 @@ public class StylesheetHandler
   XPath createMatchPatternXPath(String str)
     throws org.xml.sax.SAXException
   {
-    XPath xpath = m_xpathFactory.create();
-
-    m_xpathProcessor.initMatchPattern(xpath, str, this);
-
-    return xpath;
+    return new XPath(str, getLocator(), this, XPath.MATCH);
   }
   
   /**
@@ -984,11 +975,6 @@ public class StylesheetHandler
    */
   private boolean warnedAboutOldXSLTNamespace = false;
   
-  /**
-   * Factory for creating xpaths.
-   */
-  private XPathFactory m_xpathFactory = SimpleNodeLocator.factory();
-
   /**
    * The query/pattern-matcher object.
    */

@@ -59,7 +59,7 @@ package org.apache.xalan.utils;
 import java.util.Stack;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xpath.res.XPATHErrorResources;
 
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
@@ -260,12 +260,23 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
                             String name, Attributes atts)
     throws SAXException
   {
-    Element elem = m_doc.createElement(name);
+    Element elem;
+    if((null == ns) || (ns.length() == 0))
+      elem = m_doc.createElement(name);
+    else
+      elem = m_doc.createElementNS(ns, localName);
     append(elem); 
-    int nAtts = atts.getLength();       
+    int nAtts = atts.getLength();
     for(int i = 0; i < nAtts; i++)
     {
-      elem.setAttribute(atts.getQName(i), atts.getValue(i));
+      String attrNS = atts.getURI(i);
+      // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
+      //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
+
+      if((null == attrNS) || (attrNS.length() == 0))
+        elem.setAttribute(atts.getQName(i), atts.getValue(i));
+      else
+        elem.setAttributeNS(atts.getURI(i), atts.getLocalName(i), atts.getValue(i));
     }
     m_elemStack.push(elem);
     m_currentNode = elem;

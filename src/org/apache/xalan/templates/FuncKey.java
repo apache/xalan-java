@@ -59,20 +59,21 @@ package org.apache.xalan.templates;
 import java.util.Vector;
 import java.util.Hashtable;
 
-import org.apache.xalan.xpath.functions.Function;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XNodeSet;
-import org.apache.xalan.xpath.DOMHelper;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.LocPathIterator;
-import org.apache.xalan.xpath.UnionPathIterator;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.DOMHelper;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.KeyManager;
 
-import org.apache.xalan.xpath.res.XPATHErrorResources;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.XPathContext;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
@@ -84,39 +85,32 @@ import org.w3c.dom.traversal.NodeIterator;
  * <meta name="usage" content="advanced"/>
  * Execute the Key() function.
  */
-public class FuncKey extends Function
+public class FuncKey extends Function2Args
 {
   static private Boolean ISTRUE = new Boolean(true);
   
   /**
    * Execute the function.  The function must return 
    * a valid object.
-   * @param path The executing xpath.
-   * @param context The current context.
-   * @param opPos The current op position.
-   * @param args A list of XObject arguments.
+   * @param xctxt The current execution context.
    * @return A valid XObject.
    */
-  public XObject execute(XPath path, XPathContext xctxt, 
-                         Node context, int opPos, Vector args) 
+  public XObject execute(XPathContext xctxt) 
     throws org.xml.sax.SAXException
-  {
+  {    
     // TransformerImpl transformer = (TransformerImpl)xctxt;
     TransformerImpl transformer = (TransformerImpl)xctxt.getOwnerObject();
     XNodeSet nodes = null;
+    Node context = xctxt.getCurrentNode();
     Document docContext = (Node.DOCUMENT_NODE == context.getNodeType()) 
                           ? (Document)context : context.getOwnerDocument();
     if(null == docContext)
     {
       // path.error(context, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC); //"context does not have an owner document!");
     }
-    if (args.size()!= 2)
-    {
-      // path.error(XPATHErrorResources.ER_KEY_HAS_TOO_MANY_ARGS);
-    }
-    String xkeyname = ((XObject)args.elementAt(0)).str();
+    String xkeyname = getArg0().execute(xctxt).str();
     QName keyname = new QName(xkeyname, xctxt.getNamespaceContext());
-    XObject arg = (XObject)args.elementAt(1);
+    XObject arg = getArg1().execute(xctxt);
     boolean argIsNodeSet = (XObject.CLASS_NODESET == arg.getType());
     
     KeyManager kmgr = transformer.getKeyManager();

@@ -60,7 +60,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.ListResourceBundle;
 import java.util.MissingResourceException;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xpath.res.XPATHErrorResources;
 
 
 
@@ -76,7 +76,7 @@ public class XSLMessages
   private static XSLResourceBundle XSLTBundle = null ;
   private static XSLResourceBundle XPATHBundle = null ;
   private static final String XSLT_ERROR_RESOURCES = "org.apache.xalan.res.XSLTErrorResources";
-  private static final String XPATH_ERROR_RESOURCES = "org.apache.xalan.xpath.res.XPATHErrorResources";
+  private static final String XPATH_ERROR_RESOURCES = "org.apache.xpath.res.XPATHErrorResources";
   private static String BAD_CODE = "BAD_CODE";
   private static String FORMAT_FAILED = "FORMAT_FAILED";
   

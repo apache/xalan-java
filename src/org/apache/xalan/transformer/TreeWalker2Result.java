@@ -62,7 +62,7 @@ import org.xml.sax.*;
 import org.apache.xalan.utils.TreeWalker;
 import org.apache.xalan.utils.MutableAttrListImpl;
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.xpath.DOMHelper;
+import org.apache.xpath.DOMHelper;
 
 /**
  * <meta name="usage" content="internal"/>

@@ -62,8 +62,8 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 

@@ -2,16 +2,16 @@ package org.apache.xalan.transformer;
 
 import java.util.Vector;
 
-import org.apache.xalan.xpath.LocPathIterator;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.QName;
 
 import org.apache.xalan.templates.KeyDeclaration;
 
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.axes.DescendantOrSelfWalker;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.DescendantOrSelfWalker;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPath;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;

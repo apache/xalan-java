@@ -1,6 +1,6 @@
 package org.apache.xalan.stree;
 
-import org.apache.xalan.xpath.DOM2Helper;
+import org.apache.xpath.DOM2Helper;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
@@ -49,5 +49,14 @@ public class StreeDOMHelper extends DOM2Helper
   {
     return ((Child)node1).getLevel();
   }
+  
+  /**
+   * Tell if the given node is a namespace decl node.
+   */
+  public boolean isNamespaceNode(Node n)
+  {
+    return ((Child)n).isNamespaceNode();
+  }
+
 
 }

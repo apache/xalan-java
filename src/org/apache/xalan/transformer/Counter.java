@@ -58,11 +58,11 @@ package org.apache.xalan.transformer;
 
 import org.w3c.dom.Node;
 import org.apache.xalan.utils.NodeVector;
-import org.apache.xalan.xpath.NodeSet; // for isNodeAfter support
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.NodeSet; // for isNodeAfter support
+import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.XPath;
 import org.apache.xalan.templates.ElemNumber;
 
 /**

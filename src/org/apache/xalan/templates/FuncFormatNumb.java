@@ -60,11 +60,14 @@ import java.util.Vector;
 
 import org.apache.xalan.utils.QName;
 
-import org.apache.xalan.xpath.functions.Function;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XString;
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function3Args;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.XPath;
+import org.apache.xpath.Expression;
+import org.apache.xpath.functions.WrongNumberArgsException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -80,40 +83,37 @@ import trax.TransformException;
  * <meta name="usage" content="advanced"/>
  * Execute the FormatNumber() function.
  */
-public class FuncFormatNumb extends Function
+public class FuncFormatNumb extends Function3Args
 {
   /**
-   * Execute the function.  The function must return
+   * Execute the function.  The function must return 
    * a valid object.
-   * @param path The executing xpath.
-   * @param context The current context.
-   * @param opPos The current op position.
-   * @param args A list of XObject arguments.
+   * @param xctxt The current execution context.
    * @return A valid XObject.
    */
-  public XObject execute(XPath path, XPathContext xctxt,
-                         Node context, int opPos, Vector args)
+  public XObject execute(XPathContext xctxt) 
     throws org.xml.sax.SAXException
-  {
+  {    
     // A bit of an ugly hack to get our context.
     ElemTemplateElement templElem = (ElemTemplateElement)xctxt.getNamespaceContext();
     StylesheetComposed ss = templElem.getStylesheetComposed();
 
     java.text.DecimalFormat formatter = null;
     java.text.DecimalFormatSymbols dfs = null;
-    double num = ((XObject)args.elementAt(0)).num();
-    String patternStr = ((XObject)args.elementAt(1)).str();
+    double num = getArg0().execute(xctxt).num();
+    String patternStr = getArg1().execute(xctxt).str();
     // TODO: what should be the behavior here??
     if (patternStr.indexOf(0x00A4)> 0)
       ss.error(XSLTErrorResources.ER_CURRENCY_SIGN_ILLEGAL); // currency sign not allowed
-    int nArgs = args.size();
+
     // this third argument is not a locale name. It is the name of a
     // decimal-format declared in the stylesheet!(xsl:decimal-format
     try
     {
-      if(nArgs == 3)
+      Expression arg2Expr = getArg2();
+      if(null != arg2Expr)
       {
-        String dfName = ((XObject)args.elementAt(2)).str();
+        String dfName = arg2Expr.execute(xctxt).str();
         QName qname = new QName(dfName, xctxt.getNamespaceContext());
         dfs = ss.getDecimalFormatComposed(qname);
         if (null == dfs)
@@ -146,7 +146,7 @@ public class FuncFormatNumb extends Function
     catch(Exception iae)
     {
       templElem.error(XSLTErrorResources.ER_MALFORMED_FORMAT_STRING, new Object[]{patternStr});
-      return new XString("");
+      return XString.EMPTYSTRING;
       //throw new XSLProcessorException(iae);
     }
   }
@@ -164,5 +164,13 @@ public class FuncFormatNumb extends Function
     ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
     errHandler.warning(new TransformException(formattedMsg));
   }
+  
+  public void checkNumberArgs(int argNum)
+    throws WrongNumberArgsException
+  {
+    if((argNum != 3) || (argNum != 2))
+      throw new WrongNumberArgsException("3");
+  }
+
 
 }

@@ -65,14 +65,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
 // Xalan imports
-import org.apache.xalan.xpath.res.XPATHErrorResources;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.OpCodes;
-import org.apache.xalan.xpath.PsuedoNames;
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.LocPathIterator;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.XPath;
+import org.apache.xpath.compiler.OpCodes;
+import org.apache.xpath.compiler.PsuedoNames;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.compiler.Compiler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -89,11 +89,10 @@ public class IndexedLocPathIterator extends LocPathIterator
   /**
    * Create a IndexedLocPathIterator object.
    */
-  public IndexedLocPathIterator(XPath xpath, XPathContext execContext, 
-                         Node context, int opPos,
-                         StreeLocator locator)
+  public IndexedLocPathIterator(Compiler compiler, int opPos)
+    throws org.xml.sax.SAXException
   {
-    super(xpath, execContext, context, opPos, locator);
+    super(compiler, opPos);
   }  
 }
 

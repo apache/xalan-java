@@ -5,16 +5,22 @@ import org.xml.sax.Attributes;
 
 public class AttrImplNS extends AttrImpl
 {
+  private String m_localName;
   private String m_namespaceURI;                  // attribute index
-  
   
   AttrImplNS(String uri, String name, String value)
   {
     super(name, value);
+    // System.out.println("uri: "+uri+", "+name);
     m_namespaceURI = uri;
+    int index = name.indexOf(':');
+    if (index >0)
+      m_localName = name.substring(index+1);
+    else
+      m_localName = name;
   }
   
-   
+  
   
   /**
    * The namespace URI of this node, or <code>null</code> if it is 
@@ -57,11 +63,6 @@ public class AttrImplNS extends AttrImpl
    */
   public String       getLocalName()
   {
-    String m_name = getNodeName();
-    int indexOfNSSep = m_name.indexOf(':');
-    return (indexOfNSSep > 0) 
-                    ? m_name.substring(indexOfNSSep+1) : m_name;
+    return m_localName;
   }
-  
-  
 }

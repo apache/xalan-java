@@ -57,7 +57,7 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="internal"/>

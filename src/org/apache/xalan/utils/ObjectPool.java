@@ -1,6 +1,5 @@
 package org.apache.xalan.utils;
 
-import java.lang.*;
 import java.util.*;
 
 public class ObjectPool
@@ -17,8 +16,28 @@ public class ObjectPool
     objectType = type;
     freeStack = new Vector(size);
   }
-
-  public synchronized Object getInstance() {
+  
+  public ObjectPool() 
+  {
+    objectType = null;
+    freeStack = new Vector();
+  }
+  
+  public synchronized Object getInstanceIfFree() 
+  {
+    // Check if the pool is empty.
+    if (!freeStack.isEmpty()) 
+    {
+      // Remove object from end of free pool.
+      Object result = freeStack.lastElement();
+      freeStack.setSize(freeStack.size() - 1);
+      return result;
+    }
+    return null;
+  }
+  
+  public synchronized Object getInstance() 
+  {
 
     // Check if the pool is empty.
     if (freeStack.isEmpty()) {
@@ -41,8 +60,8 @@ public class ObjectPool
     }
   }
 
-  public synchronized void freeInstance(Object obj) {
-
+  public synchronized void freeInstance(Object obj) 
+  {
     // Make sure the object is of the correct type.
     if (objectType.isInstance(obj)) {
       freeStack.addElement(obj);

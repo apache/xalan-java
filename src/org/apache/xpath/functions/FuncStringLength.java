@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -54,69 +54,32 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.dtm;
+package org.apache.xpath.functions; 
 
-import org.apache.xalan.xpath.SimpleNodeLocator;
-
-import java.util.*;
-import java.io.*;
-import org.w3c.dom.*;
-import org.apache.xalan.xpath.*;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.w3c.dom.Node;
+import java.util.Vector;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XNodeSet;
 
 /**
  * <meta name="usage" content="advanced"/>
+ * Execute the StringLength() function.
  */
-public class DTMNodeLocator extends SimpleNodeLocator
+public class FuncStringLength extends FunctionDef1Arg
 {
   /**
-   * Create a DTMNodeLocator object.
+   * Execute the function.  The function must return 
+   * a valid object.
+   * @param xctxt The current execution context.
+   * @return A valid XObject.
    */
-  public DTMNodeLocator()
-  {
-  }
-
-  /**
-   * The singleton instance of this class.
-   */
-  private static DTMNodeLocator m_locater = null;
-
-  /**
-   * The default locator.
-   */
-  public static XLocator getDefaultLocator()
-  {
-    m_locater = (null == m_locater) ? new DTMNodeLocator() : m_locater;
-    return m_locater;
+  public XObject execute(XPathContext xctxt) 
+    throws org.xml.sax.SAXException
+  {    
+    return new XNumber(getArg0AsString(xctxt).length());
   }
 }
-
-/**
- * Override the createXLocatorHandler method.
- */
-  class DTMXPath extends XPath
-  {
-    public DTMXPath()
-    {
-      super();
-    }
-
-    /**
-     * getXLocatorHandler.
-     */
-    public XLocator createXLocatorHandler(XPath xpath)
-    {
-      return new DTMNodeLocator();
-    }
-  }
-
-/**
- * Implement an XPath factory.
- */
-  class DTMNodeLocatorFactory implements XPathFactory
-  {
-    public XPath create()
-    {
-      return new DTMXPath();
-    }
-  }

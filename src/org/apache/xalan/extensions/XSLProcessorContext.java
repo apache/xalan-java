@@ -64,13 +64,13 @@ import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 import org.xml.sax.SAXException;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XString;
-import org.apache.xalan.xpath.XBoolean;
-import org.apache.xalan.xpath.XNumber;
-import org.apache.xalan.xpath.XRTreeFrag;
-import org.apache.xalan.xpath.XNodeSet;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.XPathContext;
 
 // import org.apache.xalan.xslt.*;
 

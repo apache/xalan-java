@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.XPath;
 import org.apache.xalan.utils.QName;
 
 /**

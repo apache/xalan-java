@@ -63,10 +63,10 @@ import java.util.Vector;
 import java.io.Serializable;
 
 import org.apache.xalan.utils.QName;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.PsuedoNames;
+import org.apache.xpath.XPath;
+import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -287,4 +287,13 @@ public class Child extends UnImplNode
     throws DOMException
   {    
   }
+  
+  /**
+   * Tell if the given node is a namespace decl node.
+   */
+  public boolean isNamespaceNode()
+  {
+    return false;
+  }
+
 }

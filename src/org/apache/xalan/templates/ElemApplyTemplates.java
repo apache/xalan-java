@@ -58,12 +58,12 @@ package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import org.apache.xalan.xpath.*;
+import org.apache.xpath.*;
 import java.util.Vector;
 import org.apache.xalan.trace.TracerEvent;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.xpath.VariableStack;
+import org.apache.xpath.VariableStack;
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
@@ -179,6 +179,7 @@ public class ElemApplyTemplates extends ElemForEach
 
         try
         {
+          XPath xpath = getSelect();
           transformer.transformSelectedNodes(getStylesheetComposed(), 
                                     this,
                                     null, 

@@ -3,7 +3,7 @@ package org.apache.xalan.stree;
 import org.w3c.dom.Node;
 import org.xml.sax.ContentHandler;
 import org.apache.xalan.utils.DOMBuilder;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.WhiteSpaceInfo;

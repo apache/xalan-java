@@ -2,16 +2,16 @@ package org.apache.xalan.transformer;
 
 import java.util.Vector;
 
-import org.apache.xalan.xpath.LocPathIterator;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.QName;
 
 import org.apache.xalan.templates.KeyDeclaration;
 
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.axes.DescendantOrSelfWalker;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.DescendantOrSelfWalker;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPath;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
@@ -35,7 +35,8 @@ public class KeyIterator extends LocPathIterator
                      Vector keyDeclarations, 
                      XPathContext xctxt)
   {
-    super(xctxt, nscontext, doc);
+    super(nscontext);
+    initContext(xctxt);
     m_name = name;
     m_keyDeclarations = keyDeclarations;
     m_firstWalker = new KeyWalker(this);
@@ -59,7 +60,7 @@ public class KeyIterator extends LocPathIterator
     ((KeyWalker)m_firstWalker).m_lookupKey = lookupKey;
     m_firstWalker.setRoot(getContext());
     this.setLastUsedWalker(m_firstWalker);
-    m_next = 0;
+    this.setNextPosition(0);
   }  
   
 }

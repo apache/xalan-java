@@ -62,9 +62,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
 // Xalan Imports
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.UnionPathIterator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -74,81 +75,12 @@ import org.apache.xalan.xpath.XPathContext;
  * As each node is iterated via nextNode(), the node is also stored 
  * in the NodeVector, so that previousNode() can easily be done.
  */
-public class IndexedUnionPathIterator extends NodeSet
+public class IndexedUnionPathIterator extends UnionPathIterator
 {
   /**
-   * Package-private constructor, which takes the 
-   * same arguments as XLocator's union() function, plus the 
-   * locator reference.
+   * Constructor.
    */
-  IndexedUnionPathIterator(XPath xpath, XPathContext execContext, 
-                    Node context, int opPos,
-                    StreeLocator locator)
-  {
-    super();
-    
-    this.m_xpath = xpath;
-    this.m_execContext = execContext;
-    this.m_context = context;
-    this.m_unionOpPos = opPos;
-    this.m_locator = locator;
-    init();
-  }
-  
-  /**
-   * Initialize the location path iterators.
-   */
-  protected void init()
+  public IndexedUnionPathIterator()
   {
   }
-
-  /**
-   *  Returns the next node in the set and advances the position of the 
-   * iterator in the set. After a NodeIterator is created, the first call 
-   * to nextNode() returns the first node in the set.
-   * @return  The next <code>Node</code> in the set being iterated over, or
-   *   <code>null</code> if there are no more members in that set.
-   * @exception DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
-   */
-  public Node nextNode()
-    throws DOMException
-  {
-    return null;
-  }
-  
-  /**
-   * The XPath that contains the union expression.
-   */
-  protected XPath m_xpath;
-  
-  /**
-   * The execution context for the expression.
-   */
-  protected XPathContext m_execContext;
-  
-  /**
-   * The node context for the expression.
-   */
-  protected Node m_context;
-  
-  /**
-   * The op code position of the union path.
-   */
-  protected int m_unionOpPos;
-  
-  /**
-   * Reference to the FastNodeLocator that created 
-   * this instance.
-   */
-  protected StreeLocator m_locator;
-  
-  /**
-   * The location path iterators, one for each 
-   * <a href="http://www.w3.org/TR/xpath#NT-LocationPath">location 
-   * path</a> contained in the union expression.
-   */
-  protected IndexedLocPathIterator[] m_iterators;
-
 }

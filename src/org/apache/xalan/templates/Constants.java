@@ -77,7 +77,7 @@ public class Constants
     S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xslt",
 
     PARSER_PATH = "com/ibm/xml/parser/Parser",
-    //  LIAISON_CLASS = "org.apache.xalan.xpath.DOM2Helper";
+    //  LIAISON_CLASS = "org.apache.xpath.DOM2Helper";
     LIAISON_CLASS = "org.apache.xalan.dtm.DTMLiaison";
   
   /**

@@ -60,8 +60,8 @@ import org.w3c.dom.*;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.XObject;
+import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>

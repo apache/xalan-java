@@ -66,7 +66,8 @@ import org.xml.sax.helpers.*;
 import org.apache.xml.serialize.*;
 
 import org.apache.xalan.utils.*;
-import org.apache.xalan.xpath.*;
+import org.apache.xpath.*;
+import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
@@ -153,6 +154,7 @@ public class StylesheetRoot
     cloned.setCDataElements(m_outputFormatComposed.getCDataElements());
     cloned.setDoctype(m_outputFormatComposed.getDoctypePublic(), m_outputFormatComposed.getDoctypeSystem());
     cloned.setEncoding(m_outputFormatComposed.getEncoding());
+    // System.out.println("getOutputFormat - m_outputFormatComposed.getIndent(): "+ m_outputFormatComposed.getIndent());
     cloned.setIndent(m_outputFormatComposed.getIndent());
     cloned.setIndenting(m_outputFormatComposed.getIndenting());
     cloned.setLineSeparator(m_outputFormatComposed.getLineSeparator());
@@ -215,6 +217,8 @@ public class StylesheetRoot
    */
   public OutputFormat getOutputComposed()
   {
+    System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
+    System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
     return m_outputFormatComposed;
   }
   
@@ -465,13 +469,10 @@ public class StylesheetRoot
   private void initDefaultRule()
     throws SAXException
   {
-    XPathParser processor = new XPathParser();
-
     // Then manufacture a default
     m_defaultRule = new ElemTemplate();
     m_defaultRule.setStylesheet(this);
-    XPath defMatch = new XPath();
-    processor.initMatchPattern(defMatch, "*", this);
+    XPath defMatch = new XPath("*", this, this, XPath.MATCH);
     m_defaultRule.setMatch(defMatch);
 
     ElemApplyTemplates childrenElement
@@ -484,16 +485,14 @@ public class StylesheetRoot
     m_defaultTextRule = new ElemTemplate();
     m_defaultTextRule.setStylesheet(this);
     
-    defMatch = new XPath();
-    processor.initMatchPattern(defMatch, "text() | @*", this);
+    defMatch = new XPath("text() | @*", this, this, XPath.MATCH);
     m_defaultTextRule.setMatch(defMatch);
 
     ElemValueOf elemValueOf
       = new ElemValueOf();
     m_defaultTextRule.appendChild(elemValueOf);
     
-    XPath selectPattern = new XPath();
-    processor.initXPath(selectPattern, ".", this);
+    XPath selectPattern = new XPath(".", this, this, XPath.SELECT);
     elemValueOf.setSelect(selectPattern);
 
 
@@ -502,8 +501,7 @@ public class StylesheetRoot
     m_defaultRootRule = new ElemTemplate();
     m_defaultRootRule.setStylesheet(this);
     
-    defMatch = new XPath();
-    processor.initMatchPattern(defMatch, "/", this);
+    defMatch = new XPath("/", this, this, XPath.MATCH);
     m_defaultRootRule.setMatch(defMatch);
 
     childrenElement

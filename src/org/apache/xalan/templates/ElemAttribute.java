@@ -64,7 +64,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 
 /**
  * <meta name="usage" content="advanced"/>

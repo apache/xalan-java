@@ -251,22 +251,6 @@ public class OutputFormatExtended extends OutputFormat
     super.setVersion(version);;
   }
 
-
-  /**
-   * Sets the indentation amount. The document will not be
-   * indented if the indentation is set to zero.
-   * Calling {@link #setIndenting} will reset this
-   * value to zero (off) or the default (on).
-   *
-   * @param indent The indentation, or zero
-   */
-  public void setIndent( int indent )
-  {
-    if(m_shouldRecordHasBeenSet)
-      m_indentHasBeenSet = true;
-    super.setIndent(indent);
-  }
-
   /**
    * Sets the indentation on and off. When set on, the default
    * indentation level and default line wrapping is used
@@ -285,7 +269,24 @@ public class OutputFormatExtended extends OutputFormat
    */
   public void setIndent( boolean indent )
   {
+    System.out.println("setIndent( "+indent+" )");
     super.setIndenting(indent);
+  }
+
+  /**
+   * Sets the indentation amount. The document will not be
+   * indented if the indentation is set to zero.
+   * Calling {@link #setIndenting} will reset this
+   * value to zero (off) or the default (on).
+   *
+   * @param indent The indentation, or zero
+   */
+  public void setIndent( int indent )
+  {
+    System.out.println("setIndent( int indent )");
+    if(m_shouldRecordHasBeenSet)
+      m_indentHasBeenSet = true;
+    super.setIndent(indent);
   }
 
   /**

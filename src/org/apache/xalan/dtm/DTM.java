@@ -73,7 +73,7 @@ import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.StringVector;
 import org.apache.xalan.utils.StringToStringTableVector;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xpath.res.XPATHErrorResources;
 
 import org.apache.xerces.readers.XMLEntityHandler;
 import org.apache.xerces.dom.DocumentTypeImpl;

@@ -57,7 +57,7 @@
 package org.apache.xalan.transformer;
 
 import java.util.Locale;
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.XPath;
 import java.text.Collator;
 import org.apache.xalan.res.XSLTErrorResources;
 

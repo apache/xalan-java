@@ -62,7 +62,7 @@ import org.xml.sax.helpers.*;
 import java.util.StringTokenizer;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.NameSpace;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.NameSpace;
 import org.apache.xalan.res.XSLTErrorResources;

@@ -59,7 +59,7 @@ package org.apache.xalan.utils;
 import java.util.Stack;
 
 import org.w3c.dom.Element;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
 /**

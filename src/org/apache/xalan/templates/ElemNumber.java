@@ -64,7 +64,9 @@ import java.util.*;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
-import org.apache.xalan.xpath.*;
+import org.apache.xpath.*;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
@@ -568,35 +570,38 @@ public class ElemNumber extends ElemTemplateElement
     XPath countMatchPattern = m_countMatchPattern;
     if(null == countMatchPattern)
     {
-      XPathFactory xpathFactory = SimpleNodeLocator.factory();
-      XPathParser xpathProcessor = new XPathParser();
-      countMatchPattern = xpathFactory.create();
       switch( contextNode.getNodeType())
       {
       case Node.ELEMENT_NODE:
         // countMatchPattern = m_stylesheet.createMatchPattern(contextNode.getNodeName(), this);
-        xpathProcessor.initMatchPattern(countMatchPattern, contextNode.getNodeName(), this);
+        countMatchPattern 
+          = new XPath(contextNode.getNodeName(), this, this, XPath.MATCH);
         break;
       case Node.ATTRIBUTE_NODE:
         // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
-        xpathProcessor.initMatchPattern(countMatchPattern, "@"+contextNode.getNodeName(), this);
+        countMatchPattern 
+          = new XPath("@"+contextNode.getNodeName(), this, this, XPath.MATCH);
         break;
       case Node.CDATA_SECTION_NODE:
       case Node.TEXT_NODE:
         // countMatchPattern = m_stylesheet.createMatchPattern("text()", this);
-        xpathProcessor.initMatchPattern(countMatchPattern, "text()", this);
+        countMatchPattern 
+          = new XPath("text()", this, this, XPath.MATCH);
         break;
       case Node.COMMENT_NODE:
         // countMatchPattern = m_stylesheet.createMatchPattern("comment()", this);
-        xpathProcessor.initMatchPattern(countMatchPattern, "comment()", this);
+        countMatchPattern 
+          = new XPath("comment()", this, this, XPath.MATCH);
         break;
       case Node.DOCUMENT_NODE:
         // countMatchPattern = m_stylesheet.createMatchPattern("/", this);
-        xpathProcessor.initMatchPattern(countMatchPattern, "/", this);
+        countMatchPattern 
+          = new XPath("/", this, this, XPath.MATCH);
         break;
       case Node.PROCESSING_INSTRUCTION_NODE:
         // countMatchPattern = m_stylesheet.createMatchPattern("pi("+contextNode.getNodeName()+")", this);
-        xpathProcessor.initMatchPattern(countMatchPattern, "pi("+contextNode.getNodeName()+")", this);
+        countMatchPattern 
+          = new XPath("pi("+contextNode.getNodeName()+")", this, this, XPath.MATCH);
         break;
       default:
         countMatchPattern = null;

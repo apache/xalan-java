@@ -599,12 +599,12 @@ static {contents[ER_NO_APPLY_IMPORT_IN_FOR_EACH][1]
 
 public static final int ER_CANT_USE_DTM_FOR_OUTPUT = 96;
 static {contents[ER_CANT_USE_DTM_FOR_OUTPUT][1] 
-			= "Cannot use a DTMLiaison for an output DOM node... pass a org.apache.xalan.xpath.DOM2Helper instead!";
+			= "Cannot use a DTMLiaison for an output DOM node... pass a org.apache.xpath.DOM2Helper instead!";
 }
 
 public static final int ER_CANT_USE_DTM_FOR_INPUT = 97;
 static {contents[ER_CANT_USE_DTM_FOR_INPUT][1] 
-			= "Cannot use a DTMLiaison for a input DOM node... pass a org.apache.xalan.xpath.DOM2Helper instead!";
+			= "Cannot use a DTMLiaison for a input DOM node... pass a org.apache.xpath.DOM2Helper instead!";
 }
 
 public static final int ER_CALL_TO_EXT_FAILED = 98;

@@ -1,5 +1,7 @@
 package org.apache.xalan.stree;
 
+import org.apache.xalan.utils.QName;
+
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.w3c.dom.NamedNodeMap;
@@ -124,7 +126,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
                                          String value)
     throws DOMException
   {
-    AttrImpl attr = (AttrImpl)createAttribute(name);
+    AttrImpl attr = (AttrImpl)createAttribute(name); 
     attr.setValue(value);    
   }
   
@@ -174,13 +176,21 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   public Attr               createAttribute(String name)
     throws DOMException
   {
-    AttrImpl attrImpl = new AttrImpl(name, "");
+    // System.out.println("name: "+name);
+    AttrImpl attrImpl;
+    if(QName.isXMLNSDecl(name))
+    {
+      attrImpl = new NameSpaceDecl("http://www.w3.org/2000/xmlns/", 
+                                   name, "");
+    }
+    else
+      attrImpl = new AttrImpl(name, "");
     int index = getIndex(name);
     if (index<0)
     {  
       appendChild(attrImpl);
       attrsEnd++;
-    }  
+    }
     else
       m_children[index] = attrImpl;
     return (Attr)attrImpl;    
@@ -193,6 +203,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
                                               String qualifiedName)
     throws DOMException
   {
+    // System.out.println("qualifiedName: "+qualifiedName);
     AttrImplNS attrImpl = new AttrImplNS(namespaceURI, qualifiedName, "");
     int index = getIndex(namespaceURI, qualifiedName);
     if (index<0)

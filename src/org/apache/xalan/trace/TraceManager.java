@@ -62,8 +62,8 @@ import org.w3c.dom.Node;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPath;
 
 /**
  * This class manages trace listeners, and acts as an 

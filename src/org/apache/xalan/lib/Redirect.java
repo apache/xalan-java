@@ -68,8 +68,8 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemExtensionCall;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XPathAPI;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathAPI;
 
 /**
  * Implements three extension elements to allow an XSLT transformation to
@@ -263,7 +263,7 @@ public class Redirect
                                                 context.getTransformer());
     if(null != fileNameExpr)
     {
-      org.apache.xalan.xpath.XPathContext xctxt 
+      org.apache.xpath.XPathContext xctxt 
         = context.getTransformer().getXPathContext();
       XObject xobj = XPathAPI.eval(context.getContextNode(), fileNameExpr, xctxt.getNamespaceContext());
       fileName = xobj.str();

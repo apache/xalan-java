@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
 import org.xml.sax.*;
-import org.apache.xalan.xpath.*;
+import org.apache.xpath.*;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;

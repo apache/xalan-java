@@ -62,8 +62,8 @@ import org.w3c.dom.NodeList;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.LocPathIterator;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 
 /**
  * This class manages the key tables.

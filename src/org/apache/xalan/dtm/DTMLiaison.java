@@ -65,10 +65,9 @@ import org.apache.xerces.framework.*;
 import org.xml.sax.*;
 import org.w3c.dom.*;
 
-import org.apache.xalan.xpath.DOM2Helper;
-import org.apache.xalan.xpath.XPathFactory;
-import org.apache.xalan.xpath.XLocator;
-import org.apache.xalan.xpath.res.XPATHErrorResources;
+import org.apache.xpath.DOM2Helper;
+import org.apache.xpath.XPathFactory;
+import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
 /**
@@ -79,7 +78,7 @@ import org.apache.xalan.res.XSLMessages;
  * DOM, use DOM2Helper.
  *
  * @see org.apache.xalan.xslt.XSLTProcessor
- * @see org.apache.xalan.xpath.DOM2Helper
+ * @see org.apache.xpath.DOM2Helper
  */
 public class DTMLiaison extends DOM2Helper
 {
@@ -289,7 +288,6 @@ public class DTMLiaison extends DOM2Helper
    * entity with the specified name in the same document as the context
    * node (see [3.3 Unparsed Entities]). It returns the empty string if
    * there is no such entity.
-   * (Should this go here or in the XLocator??)
    * Since it states in the DOM draft: "An XML processor may choose to
    * completely expand entities before the structure model is passed
    * to the DOM; in this case, there will be no EntityReferences in the DOM tree."
@@ -355,30 +353,5 @@ public class DTMLiaison extends DOM2Helper
     */
   }
 
-  /**
-   * Get a factory to create XPaths.
-   */
-  public XPathFactory getDefaultXPathFactory()
-  {
-    return DTMNodeLocator.factory();
-  }
-
-  /**
-   * Get an XLocator provider keyed by node.  This get's
-   * the association based on the root of the tree that the
-   * node is parented by.
-   */
-  public XLocator getXLocatorFromNode(Node node)
-  {
-    return DTMNodeLocator.getDefaultLocator();
-  }
-
-  /**
-   * getXLocatorHandler.
-   */
-  public XLocator createXLocatorHandler()
-  {
-    return DTMNodeLocator.getDefaultLocator();
-  }
 
 }

@@ -146,4 +146,9 @@ public class AttrImpl extends Child implements Attr
       return m_name;
     }  
     
+    void setName(String name)
+    {
+      m_name = name;
+    }  
+    
 }

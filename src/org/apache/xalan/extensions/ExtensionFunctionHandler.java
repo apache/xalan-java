@@ -71,8 +71,8 @@ import com.ibm.cs.util.ReflectionUtils;
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
 
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XNull;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNull;
 
 
 /**

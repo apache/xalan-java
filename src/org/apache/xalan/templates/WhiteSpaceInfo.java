@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.apache.xalan.xpath.XPath;
+import org.apache.xpath.XPath;
 
 /**
  * This is used as a special "fake" template that can be 

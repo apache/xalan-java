@@ -59,7 +59,7 @@ package org.apache.xalan.templates;
 import java.util.Vector;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
-import org.apache.xalan.xpath.*;
+import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import java.util.StringTokenizer;
 import org.apache.xalan.transformer.TransformerImpl;

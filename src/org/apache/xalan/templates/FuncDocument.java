@@ -62,19 +62,22 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
-import org.apache.xalan.xpath.NodeSet;
-import org.apache.xalan.xpath.functions.Function;
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XNodeSet;
-import org.apache.xalan.xpath.XPath;
-import org.apache.xalan.xpath.XPathContext;
-import org.apache.xalan.xpath.DOMHelper;
-import org.apache.xalan.xpath.SourceTreeManager;
+import org.apache.xpath.NodeSet;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.DOMHelper;
+import org.apache.xpath.SourceTreeManager;
+import org.apache.xpath.Expression;
 
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.xpath.XPathContext;
+import org.apache.xpath.XPathContext;
 
 import org.apache.xalan.transformer.TransformerImpl;
 
@@ -99,31 +102,30 @@ import trax.TransformException;
  * being the string-value of the node, and with the second argument being 
  * the second argument passed to the document function.
  */
-public class FuncDocument extends Function
+public class FuncDocument extends Function2Args
 {
   /**
    * Execute the function.  The function must return 
    * a valid object.
-   * @param path The executing xpath.
-   * @param context The current context.
-   * @param opPos The current op position.
-   * @param args A list of XObject arguments.
+   * @param xctxt The current execution context.
    * @return A valid XObject.
    */
-  public XObject execute(XPath path, XPathContext xctxt, Node context, int opPos, Vector args) 
+  public XObject execute(XPathContext xctxt) 
     throws org.xml.sax.SAXException
   {    
+    Node context = xctxt.getCurrentNode();
     Document docContext = (Node.DOCUMENT_NODE == context.getNodeType()) 
                           ? (Document)context : context.getOwnerDocument();
-    XObject arg = (XObject)args.elementAt(0);
+    XObject arg = (XObject)this.getArg0().execute(xctxt);
     String base = "";
-    if(args.size() > 1)
+    Expression arg1Expr = this.getArg1();
+    if(null != arg1Expr)
     {
       // The URI reference may be relative. The base URI (see [3.2 Base URI]) 
       // of the node in the second argument node-set that is first in document 
       // order is used as the base URI for resolving the 
       // relative URI into an absolute URI. 
-      XObject arg2 = (XObject)args.elementAt(1);
+      XObject arg2 = arg1Expr.execute(xctxt);
       if(XObject.CLASS_NODESET == arg2.getType())
       {
         Node baseNode = arg2.nodeset().nextNode();
@@ -188,7 +190,7 @@ public class FuncDocument extends Function
         base = null;
       }
       
-      Node newDoc = getDoc(path, xctxt, context, ref, base);
+      Node newDoc = getDoc(xctxt, context, ref, base);
       // nodes.mutableNodeset().addNode(newDoc);  
       if(null != newDoc)
       {
@@ -205,7 +207,7 @@ public class FuncDocument extends Function
   /**
    * HandleDocExpr
    */
-  Node getDoc(XPath path, XPathContext xctxt, Node context, String uri, String base)
+  Node getDoc(XPathContext xctxt, Node context, String uri, String base)
     throws org.xml.sax.SAXException
   {
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
@@ -247,7 +249,7 @@ public class FuncDocument extends Function
         else
         {
           // TBD: What to do about XLocator?
-          xctxt.getSourceTreeManager().associateXLocatorToNode(newDoc, url, null);
+          // xctxt.getSourceTreeManager().associateXLocatorToNode(newDoc, url, null);
         }
       }
     }

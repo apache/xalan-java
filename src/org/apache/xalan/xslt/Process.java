@@ -668,6 +668,33 @@ public class Process
         diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         System.exit(-1);
       }
+      catch(Exception e)
+      {
+        if(doStackDumpOnError)
+          e.printStackTrace(dumpWriter);
+        else
+          System.out.println("Error! "+e.getMessage());
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
+        System.exit(-1);
+      }
+      catch(Error err)
+      {
+        if(doStackDumpOnError)
+          err.printStackTrace(dumpWriter);
+        else
+          System.out.println("Error! "+err.getMessage());
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
+        System.exit(-1);
+      }
+      catch(Throwable thr)
+      {
+        if(doStackDumpOnError)
+          thr.printStackTrace(dumpWriter);
+        else
+          System.out.println("Error! "+thr.getMessage());
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
+        System.exit(-1);
+      }
 
       if(null != dumpFileName)
       {

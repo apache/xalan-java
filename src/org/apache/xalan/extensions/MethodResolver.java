@@ -6,8 +6,8 @@ import java.lang.reflect.Constructor;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
-import org.apache.xalan.xpath.XObject;
-import org.apache.xalan.xpath.XString;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 
 /**
  * Utility class to help resolve method overloading with Xalan XSLT 
