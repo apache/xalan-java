@@ -91,7 +91,7 @@ public class FuncLocalPart extends FunctionDef1Arg
     String s = (context != null)
                        ? xctxt.getDOMHelper().getLocalNameOfNode(context)
                        : "";
-    if(s.startsWith("#"))
+    if(s.startsWith("#") || s.equals("xmlns"))
       s = "";
 
     return new XString(s);
