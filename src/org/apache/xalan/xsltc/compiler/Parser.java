@@ -1008,7 +1008,10 @@ public class Parser implements Constants, ContentHandler {
 	            versionIsOne = attrs.getValue(i).equals("1.0");
 	        }
 
-	        if (attrQName.startsWith("xml")) continue;
+		// Ignore if special or if it has a prefix
+	        if (attrQName.startsWith("xml") ||
+		    attrQName.indexOf(':') > 0) continue;
+
 	        for (j = 0; j < legal.length; j++) {
 	            if (attrQName.equalsIgnoreCase(legal[j])) {
 		        break;
