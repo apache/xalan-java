@@ -299,6 +299,17 @@ public class StylesheetRoot extends StylesheetComposed
     for (int i = recomposableElements.size() - 1; i >= 0; i--)
       ((ElemTemplateElement) recomposableElements.elementAt(i)).recompose(this);
     
+      
+    // This has to be done before the initialization of the compose state, because 
+    // eleminateRedundentGlobals will add variables to the m_variables vector, which 
+    // it then copied in the ComposeState constructor.
+    if(true && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
+    {
+          RedundentExprEliminator ree = new RedundentExprEliminator();
+          callVisitors(ree);
+          ree.eleminateRedundentGlobals(this);
+    }
+          
     initComposeState();
 
     // Need final composition of TemplateList.  This adds the wild cards onto the chains.
