@@ -381,15 +381,12 @@ public class TransformerFactoryImpl
 	    }
 	    // handle  DOMSource  
 	    else if (source instanceof DOMSource) {
-		throw new TransformerConfigurationException(
-							    "DOMSource not supported yet.");
-		/****
-		     final DOMSource domsrc = (DOMSource)source;
-		     final Document dom = (Document)domsrc.getNode();
-		     final DOM2SAX dom2sax = new DOM2SAX(dom);
-		     xsltc.setXMLReader(dom2sax);  
-		     input = null;
-		****/
+		final DOMSource domsrc = (DOMSource)source;
+		final Document dom = (Document)domsrc.getNode();
+		final DOM2SAX dom2sax = new DOM2SAX(dom);
+		xsltc.setXMLReader(dom2sax);  
+	        // try to get SAX InputSource from DOM Source.
+		input = SAXSource.sourceToInputSource(source);
 	    }
 	    // Try to get InputStream or Reader from StreamSource
 	    else if (source instanceof StreamSource) {
@@ -405,7 +402,6 @@ public class TransformerFactoryImpl
 	    else {
 		throw new TransformerConfigurationException(UNKNOWN_SOURCE_ERR);
 	    }
-	
 	    // Try to create an InputStream from the SystemId if no input so far
 	    if (input == null) {
 		if ((new File(systemId)).exists())
