@@ -377,16 +377,22 @@ public class XDTMSequence extends XObject implements XSequence
   	// DateTimeObj would be more efficient but bind us
   	// explicitly to Xerces' current stopgap...
   	//
-  	// Durations are treated similarly.  	
+  	// Durations are treated similarly. Note that we have to deal with
+  	// the derived duration types defined by the XPath/XSLT/XQuery group.
   	if(value instanceof int[])
   	{
-  		if("duration".equals(getTypeLocalName()) &&
-  			XType.XMLSCHEMA_NAMESPACE.equals(getTypeNS()))
+  		String typeNS=getTypeNS(),typeLocalName=getTypeLocalName();
+  		if("duration".equals(typeLocalName) &&
+  			XType.XMLSCHEMA_NAMESPACE.equals(typeNS) ||
+  			("http://www.w3.org/2002/10/xquery-functions".equals(typeNS) &&
+  			  ("yearMonthDuration".equals(typeLocalName) ||
+  			  "dayTimeDuration".equals(typeLocalName)))
+  			)
   			value=new Duration((int[])value);
   	
 	  	else // It's a date of some flavor
       {
-        DateTimeObj dt=new DateTimeObj((int[])value,getTypeLocalName());
+        DateTimeObj dt=new DateTimeObj((int[])value,typeLocalName);
 
         // The following is only good enough for now.  Needs more work. -sb
         int t = getValueType(pos);
