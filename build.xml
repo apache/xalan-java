@@ -454,21 +454,9 @@ Copyright:
   </target>
 
   <target name="autojavadocs">
-    <echo message="autojavadocs is for automated build process, without dependencies"/>
+    <echo message="autojavadocs is for automated build process, without dependencies"/>    
     
-    <!-- generate trax.html, a TRaX overview document, and a package.html for each trax package
-         (the latter are generated with the the Redirect extension -->
-    <mkdir dir="${build.apidocs}/${trax.reldir}"/>         
-    <java fork="yes" 
-          classname="${xalan.cmdline.class}" >
-      <classpath refid="docs.class.path" />
-      <arg line="-in ${xdocs.dir}/sources/trax/trax.xml
-                 -param package-root '../../../src/'
-                 -xsl ${xdocs.style}/stylesheets/spec.xsl 
-                 -out ${build.apidocs}/${trax.reldir}/trax.html"/>
-    </java>   
-    
-    <!-- Ant 1.2 ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
+    <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
          public="true"
          sourcepath="${src.dir}"
