@@ -27,7 +27,7 @@ public class UseStylesheetParamServlet extends HttpServlet {
 		HttpServletResponse res)
 			throws ServletException, IOException {
 		try {
-			res.setContentType("text/html");
+			res.setContentType("text/html; charset=UTF-8");
 			out = res.getWriter();
 
       paramValue = req.getParameter("PVAL");

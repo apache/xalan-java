@@ -86,12 +86,12 @@ public class SimpleXSLTServlet extends HttpServlet {
 
   public void doGet (HttpServletRequest request,
                      HttpServletResponse response)
-    throws ServletException, IOException
+    throws ServletException, IOException, java.net.MalformedURLException
   {
-    // Output goes in the response stream.
-    PrintWriter out = new PrintWriter (response.getOutputStream());
     // The servlet returns HTML.
-    response.setContentType("text/html");    
+    response.setContentType("text/html; charset=UTF-8");    
+    // Output goes in the response stream.
+    PrintWriter out = response.getWriter();
     try
     {	
       TransformerFactory tFactory = TransformerFactory.newInstance();
