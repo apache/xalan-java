@@ -115,6 +115,15 @@ public class CharInfo
    * Constructor that reads in a resource file that describes the mapping of
    * characters to entity references.
    *
+   * Resource files must be encoded in UTF-8 and have a format like:
+   * <pre>
+   * # First char # is a comment
+   * Entity numericValue
+   * quot 34
+   * amp 38
+   * </pre>
+   * (Note: Why don't we just switch to .properties files? Oct-01 -sc)
+   *
    * @param entitiesResource Name of entities resource file that should
    * be loaded, which describes that mapping of characters to entity references.
    */
@@ -133,6 +142,9 @@ public class CharInfo
     {
       try
       {
+        // Maintenance note: we should evaluate replacing getting the 
+        //  ClassLoader with javax.xml.transform.FactoryFinder.findClassLoader()
+        //  or similar code
         ClassLoader cl = CharInfo.class.getClassLoader();
 
         if (cl == null) {
@@ -141,15 +153,6 @@ public class CharInfo
           is = cl.getResourceAsStream(entitiesResource);
         }
       }
-      /*  replaced with lines above (adapted from TransformerFactory) for getting a stream resource.
-      try {
-        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
-        if (getCCL != null) {
-          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-          is = contextClassLoader.getResourceAsStream("org/apache/xalan/serialize/" + entitiesResource);
-        }
-      }    */
-    
       catch (Exception e) {}
 
       if (is == null)
@@ -163,11 +166,12 @@ public class CharInfo
       }
 
       if (is == null)
-        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_RESOURCE_COULD_NOT_FIND, new Object[]{entitiesResource, entitiesResource })); //"The resource [" + entitiesResource
-                                  // + "] could not be found.\n"
-                                  // + entitiesResource);
+        throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_RESOURCE_COULD_NOT_FIND, new Object[]{entitiesResource, entitiesResource }));
 
-      reader = new BufferedReader(new InputStreamReader(is));
+      // Fix Bugzilla#4000: force reading in UTF-8
+      //  This creates the de facto standard that Xalan's resource 
+      //  files must be encoded in UTF-8
+      reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
       line = reader.readLine();
 
       while (line != null)
@@ -210,10 +214,7 @@ public class CharInfo
     }
     catch (Exception except)
     {
-      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_RESOURCE_COULD_NOT_LOAD, new Object[]{entitiesResource,  except.toString(), entitiesResource, except.toString() })); //"The resource [" + entitiesResource
-                                 //+ "] could not load: " + except.toString()
-                                 //+ "\n" + entitiesResource + "\t"
-                                 //+ except.toString());
+      throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_RESOURCE_COULD_NOT_LOAD, new Object[]{entitiesResource,  except.toString(), entitiesResource, except.toString() }));
     }
     finally
     {
