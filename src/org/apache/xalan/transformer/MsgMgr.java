@@ -350,7 +350,7 @@ public class MsgMgr
     ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.warning(new TransformerException(formattedMsg));
+      errHandler.fatalError(new TransformerException(formattedMsg));
     else
       throw new TransformerException(formattedMsg);
   }
