@@ -122,7 +122,7 @@ public class Parent extends Child
           // Here we have to wait until the element is complete
           while (!isComplete())
           {
-            m_doc.wait();
+            m_doc.wait(100);
             throwIfParseError();
           }
         }
@@ -162,7 +162,7 @@ public class Parent extends Child
             // Only wait until the first child comes, or we are complete.
             while (!isComplete())
             {
-              m_doc.wait();
+              m_doc.wait(100);
               throwIfParseError();
 
               if (0 != m_childCount)
@@ -222,7 +222,7 @@ public class Parent extends Child
           // System.out.println("Waiting... getChild " + i + " " + getNodeName());
           while (!isComplete())
           {
-            m_doc.wait();
+            m_doc.wait(100);
             throwIfParseError();
 
             if (i < m_childCount)
@@ -278,7 +278,7 @@ public class Parent extends Child
           // System.out.println("Waiting... getChild " + i + " " + getNodeName());
           while (!isComplete())
           {
-            m_doc.wait();
+            m_doc.wait(100);
             throwIfParseError();
 
             if (null != m_first)
@@ -332,8 +332,12 @@ public class Parent extends Child
     child.m_parent = this;
 
     m_childCount++;
-
-    child.m_uid = ++m_doc.m_docOrderCount;
+    
+    if(0 == child.m_uid)
+    {
+      child.m_uid = ++m_doc.m_docOrderCount;
+    }
+    
     child.m_level = (short) (m_level + 1);
 
     if (null == m_first)
