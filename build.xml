@@ -212,7 +212,7 @@ Copyright:
     <javac srcdir="${samples.dir}/SAX2SAX" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>           
-    <javac srcdir="${samples.dir}/TransformToDom" classpath="${java.class.path}:${build.dir}/xalan.jar" 
+    <javac srcdir="${samples.dir}/DomToDom" classpath="${java.class.path}:${build.dir}/xalan.jar" 
            destdir="${build.samples}"  excludes="${exclude}"
            debug="${debug}"/>
     <javac srcdir="${samples.dir}/Pipe" classpath="${java.class.path}:${build.dir}/xalan.jar" 
@@ -301,7 +301,7 @@ Copyright:
          windowtitle="${Name} 2" 
          doctitle="${Name} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
-          <doclet name="xalanjdoc.Standard" path="${bin.dir}/xalanjdoc.jar">
+          <doclet name="xalanjdoc.Standard" path="${bin.dir}/xalan2jdoc.jar">
             <param name="-d" value="${build.apidocs}"/>
           </doclet>
           <group title="Transformations API for XML (TrAX)" packages="javax.xml.transform*"/>
