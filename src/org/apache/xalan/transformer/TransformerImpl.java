@@ -97,6 +97,7 @@ import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.ObjectPool;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
@@ -633,25 +634,18 @@ public class TransformerImpl extends Transformer
     // Patch attributed to David Eisenberg <david@catcode.com>
     catch (org.xml.sax.SAXParseException spe)
     {
-       String msg = spe.getMessage();
-       if (spe.getLineNumber() >= 0 && spe.getColumnNumber() >= 0)
-       {
-         msg += "\nLine " + spe.getLineNumber() +
-                         " Column " + spe.getColumnNumber();
-       }
-       else
-       {
-         msg += "\n(no line number info available)";
-       }
-       throw new TransformerException( msg );
+      String msg = spe.getMessage();
+      SAXSourceLocator loc = new SAXSourceLocator(spe);
+      
+      m_errorHandler.fatalError(new TransformerException( msg, loc ));
     }
     catch(org.xml.sax.SAXException se)
     {
-      throw new TransformerException(se);
+      m_errorHandler.fatalError(new TransformerException( se ));
     }
     catch (IOException ioe)
     {
-      throw new TransformerException(ioe);
+      m_errorHandler.fatalError(new TransformerException( ioe ));
     }
     finally
     {
