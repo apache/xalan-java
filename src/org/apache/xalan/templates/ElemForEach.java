@@ -312,9 +312,13 @@ public class ElemForEach extends ElemTemplateElement
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
+   * @return -1, this return will not be used by ElemForEach. 
+   * It is just there because ElemApplyTemplates which derives
+   * from this needs to that value to be saved.
+   *     
    * @throws TransformerException
    */
-  void pushParams(
+  int pushParams(
           TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
             throws TransformerException
   {
@@ -322,6 +326,7 @@ public class ElemForEach extends ElemTemplateElement
     VariableStack vars = xctxt.getVarStack();
 
     vars.pushElemFrame();
+    return -1;
   }
 
   /**
@@ -329,8 +334,11 @@ public class ElemForEach extends ElemTemplateElement
    *
    *
    * @param xctxt The XPath runtime state.
+   * @param savedSearchStart This param will not be used by ElemForEach. 
+   * It is just there because ElemApplyTemplates which derives
+   * from this needs to restore that value. 
    */
-  void popParams(XPathContext xctxt)
+  void popParams(XPathContext xctxt, int savedSearchStart)
   {
 
     VariableStack vars = xctxt.getVarStack();
@@ -381,7 +389,10 @@ public class ElemForEach extends ElemTemplateElement
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
-      pushParams(transformer, xctxt, sourceNode, mode);
+      // The returned value is only relevant for ElemApplyTemplates.
+      // This value needs to be passed to popParams which will
+      // restore it in the variable stack.
+      int savedSearchStart = pushParams(transformer, xctxt, sourceNode, mode);
 
       // Push the ContextNodeList on a stack, so that select="position()"
       // and the like will work.
@@ -400,7 +411,7 @@ public class ElemForEach extends ElemTemplateElement
       boolean check = (guard.m_recursionLimit > -1);
       boolean quiet = transformer.getQuietConflictWarnings();
       boolean needToFindTemplate = (null == template);
-
+      
       try
       {
         Node child;
@@ -512,9 +523,9 @@ public class ElemForEach extends ElemTemplateElement
         xctxt.setSAXLocator(savedLocator);
         xctxt.popContextNodeList();
         transformer.popElemTemplateElement();
-        popParams(xctxt);
+        popParams(xctxt, savedSearchStart);
         // if(null != sourceNodes)
-        //  sourceNodes.detach();
+        //  sourceNodes.detach();                
       }
     }
     catch(SAXException se)

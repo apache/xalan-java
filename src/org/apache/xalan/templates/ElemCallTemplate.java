@@ -174,6 +174,9 @@ public class ElemCallTemplate extends ElemForEach
         transformer.pushParams(xctxt, this, sourceNode, mode);
       else
         vars.pushContextMarker();
+      
+      int savedSearchStart = vars.getSearchStart();
+      vars.setSearchStart(-1);
 
       SourceLocator savedLocator = xctxt.getSAXLocator();
 
@@ -190,6 +193,7 @@ public class ElemCallTemplate extends ElemForEach
         transformer.popElemTemplateElement();
         xctxt.setSAXLocator(savedLocator);
         vars.popCurrentContext();
+        vars.setSearchStart(savedSearchStart);
       }
     }
     else

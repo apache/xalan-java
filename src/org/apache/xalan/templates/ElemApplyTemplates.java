@@ -222,19 +222,29 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    *
+   * @return The original value of where to start the current search for a variable.
+   * This value will be used by popParams to restore the value of
+   * VariableStack.m_searchStart.
+   * 
    * @throws TransformerException
    */
-  void pushParams(
+  int pushParams(
           TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
             throws TransformerException
   {
 
     VariableStack vars = xctxt.getVarStack();
-
+    int savedSearchStart = vars.getSearchStart();      
+    
     if (null != m_paramElems)
+    {  
       transformer.pushParams(xctxt, this, sourceNode, mode);
+      vars.setSearchStart(-1);
+    }  
     else
       vars.pushContextMarker();
+    
+    return savedSearchStart;
   }
 
   /**
@@ -242,9 +252,13 @@ public class ElemApplyTemplates extends ElemCallTemplate
    *
    *
    * @param xctxt The XPath runtime state for this transformation.
+   * @param savedSearchStart Value to restore VariableStack.m_searchStart
+   * to. This is used to set where to start the current search for a variable.
    */
-  void popParams(XPathContext xctxt)
+  void popParams(XPathContext xctxt, int savedSearchStart)
   {
-    xctxt.getVarStack().popCurrentContext();
+    VariableStack vars = xctxt.getVarStack();
+    vars.popCurrentContext();
+    vars.setSearchStart(savedSearchStart);
   }
 }
