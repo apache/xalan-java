@@ -206,6 +206,16 @@ public interface StepExpr extends Expr
      *          step.
      */
     NodeTest getNodeTest() throws XPathException;
+    
+	/**
+	 * Sets the node test 
+	 *
+	 * @param NodeTest
+	 * @throws XPathException whenever the step is not a forward or reverse
+	 *          step.
+	 */
+	void setNodeTest(NodeTest test) throws XPathException;
+
 
     /**
      * Gets the step as a primary expression. 

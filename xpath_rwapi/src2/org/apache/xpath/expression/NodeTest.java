@@ -55,6 +55,7 @@
  */
 package org.apache.xpath.expression;
 
+import org.apache.xml.QName;
 import org.apache.xpath.XPathException;
 
 /**
@@ -81,7 +82,7 @@ public interface NodeTest {
     /**
      * The node test is a wildcard
      */
-    static final String WILDCARD = "*";
+    static final QName WILDCARD = new QName("*");
     
     /**
      * The item test is a processing instruction kind test 
@@ -110,7 +111,7 @@ public interface NodeTest {
     
     /**
      * Full name of kind tests. 
-     * This array is kept in synchronization with kind test constants
+     * This array is synchronized with kind test constants
      */
 	static final String[] KIND_TEST_NAME = { "processing-instruction()", "comment()", "node()", "text()", "." };
     
@@ -135,17 +136,12 @@ public interface NodeTest {
     
     /**
      * Gets the local part of the name test
-     * @return String The local part of the name test or {@link #WILDCARD}
+     * @return QName The name test or {@link #WILDCARD}
      * @throws XPathException whenever this node test isn't name test
      */
-    String getLocalNameTest() throws XPathException;
+    QName getNameTest() throws XPathException;
     
-    /**
-     * Gets the prefix of the name test
-     * @return String The prefix part of the name test or {@link #WILDCARD}
-     * @throws XPathException whenever this node test isn't a name test
-     */
-    String getPrefix() throws XPathException;
+   
 }
 
 

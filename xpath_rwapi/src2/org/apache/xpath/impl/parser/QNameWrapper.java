@@ -94,12 +94,12 @@ public class QNameWrapper extends SimpleNode {
 		String qname;
 		switch (id) {
 			case XPathTreeConstants.JJTSTAR :
-                m_qname = new QName(NodeTest.WILDCARD);                
+                m_qname = NodeTest.WILDCARD;                
 				break;
 			case XPathTreeConstants.JJTSTARCOLONNCNAME :               
                 qname = t.image.trim();
                 qname = qname.substring(qname.indexOf(":")+1);
-                m_qname = new QName(NodeTest.WILDCARD, qname, NodeTest.WILDCARD);
+                m_qname = new QName("*", qname, "*");
                 
 				break;
 			case XPathTreeConstants.JJTNCNAMECOLONSTAR :

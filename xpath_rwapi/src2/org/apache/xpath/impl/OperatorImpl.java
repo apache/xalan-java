@@ -200,20 +200,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
         m_exprType = expr.m_exprType;
         m_opType = expr.m_opType;
 
-        // clone operands
-        int count = getOperandCount();
-
-        for (int i = 0; i < count; i++)
-        {
-            try
-            {
-                addOperand(getOperand(i).cloneExpression());
-            }
-            catch (XPathException e)
-            {
-                // never
-            }
-        }
+       m_children = expr.cloneChildren();
     }
 
     /**

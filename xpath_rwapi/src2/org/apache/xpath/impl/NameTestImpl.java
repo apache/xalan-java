@@ -65,7 +65,7 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 
 /**
- *
+ * Default implementation of name test.
  */
 public class NameTestImpl extends SimpleNode implements NodeTest
 {
@@ -75,7 +75,7 @@ public class NameTestImpl extends SimpleNode implements NodeTest
     QName m_qname;
 
     /**
-     * Constructor for NameTestImpl.
+     * Constructor for NameTestImpl. Internal uses only
      *
      * @param i
      */
@@ -85,7 +85,7 @@ public class NameTestImpl extends SimpleNode implements NodeTest
     }
 
     /**
-     * Constructor for NodeTestImpl.
+     * Constructor for NodeTestImpl. Internal uses only
      *
      * @param namespace DOCUMENT ME!
      * @param localpart DOCUMENT ME!
@@ -96,7 +96,7 @@ public class NameTestImpl extends SimpleNode implements NodeTest
 
         m_qname = new QName(namespace, localpart);
     }
-
+    	
     /**
      * @see org.apache.xpath.expression.NodeTest#isNameTest()
      */
@@ -124,19 +124,11 @@ public class NameTestImpl extends SimpleNode implements NodeTest
     /**
      * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
      */
-    public String getLocalNameTest() throws XPathException
+    public QName getNameTest() throws XPathException
     {
-        return m_qname.getLocalPart();
+        return m_qname;
     }
-
-    /**
-     * @see org.apache.xpath.expression.NodeTest#getPrefix()
-     */
-    public String getPrefix() throws XPathException
-    {
-        return m_qname.getPrefix();
-    }
-
+  
     /**
      * @see org.apache.xpath.expression.Expr#getString(boolean)
      */
@@ -145,14 +137,7 @@ public class NameTestImpl extends SimpleNode implements NodeTest
         return m_qname.toString();
     }
 
-    /**
-     * @see org.apache.xpath.impl.parser.SimpleNode#canBeFiltered()
-     */
-    protected boolean canBeFiltered()
-    {
-        return false;
-    }
-
+ 
     /**
      * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
      */

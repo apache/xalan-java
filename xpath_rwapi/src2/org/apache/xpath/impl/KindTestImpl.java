@@ -55,8 +55,9 @@
  */
 package org.apache.xpath.impl;
 
+import org.apache.xml.QName;
+
 import org.apache.xpath.XPathException;
-import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.NodeTest;
 import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
@@ -65,22 +66,28 @@ import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 
 /**
- *
+ * Default implementation of XPath kind test.
  */
 public class KindTestImpl extends SimpleNode implements NodeTest
 {
+    //@TODO: define constants for each possible kind test 
+
+    /**
+     * The type of kindtest
+     */
     protected short m_kindTest;
 
     /**
-    * Creates an any kind test node 
-    */
+     * Creates an any kind test node. Internal uses only
+     */
     public KindTestImpl()
     {
         super(XPathTreeConstants.JJTANYKINDTEST);
     }
 
     /**
-     * Constructor for KindTestImpl.
+     * Constructor for KindTestImpl. Internal uses only
+     *
      * @param i
      */
     public KindTestImpl(int i)
@@ -91,7 +98,8 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     }
 
     /**
-     * Constructor for KindTestImpl.
+     * Constructor for KindTestImpl. Internal uses only
+     *
      * @param p
      * @param i
      */
@@ -100,6 +108,18 @@ public class KindTestImpl extends SimpleNode implements NodeTest
         super(p, i);
 
         setKindTestFromJJTID(i);
+    }
+
+    /**
+     * Constructor for cloning
+     *
+     * @param kt
+     */
+    public KindTestImpl(KindTestImpl kt)
+    {
+        super(kt.id);
+
+        m_kindTest = kt.m_kindTest;
     }
 
     /**
@@ -129,25 +149,9 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     /**
      * @see org.apache.xpath.expression.NodeTest#getLocalNameTest()
      */
-    public String getLocalNameTest() throws XPathException
+    public QName getNameTest() throws XPathException
     {
-        throw new XPathException("Invalid call this method on kind test"); // I8
-    }
-
-    /**
-     * @see org.apache.xpath.expression.NodeTest#getPrefix()
-     */
-    public String getPrefix() throws XPathException
-    {
-        throw new XPathException("Invalid call this method on kind test"); // I8
-    }
-
-   /**
-     * @see org.apache.xpath.expression.Expr#cloneExpression()
-     */
-    public Expr cloneExpression()
-    {
-        return null; //TODO
+        throw new XPathException("Invalid call this method on kind test"); // I18N
     }
 
     /**
@@ -163,11 +167,11 @@ public class KindTestImpl extends SimpleNode implements NodeTest
      */
     public void jjtAddChild(Node n, int i)
     {
-       
     }
 
     /**
      * Set the kindtest type from JJT id
+     *
      * @param id
      */
     private void setKindTestFromJJTID(int id)
@@ -206,6 +210,7 @@ public class KindTestImpl extends SimpleNode implements NodeTest
 
     /**
      * Sets the kindTest.
+     *
      * @param kindTest The kindTest to set
      */
     public void setKindTest(short kindTest)
@@ -214,13 +219,13 @@ public class KindTestImpl extends SimpleNode implements NodeTest
     }
 
     /**
-     * Override to print out useful instance data.  
+     * Override to print out useful instance data.
+     *
      * @see org.apache.xpath.impl.parser.SimpleNode#toString()
      */
     public String toString()
     {
-        return XPathTreeConstants.jjtNodeName[id] + " " 
-                + getClass() + " " 
-                + getString(true);
+        return XPathTreeConstants.jjtNodeName[id] + " " + getClass() + " "
+        + getString(true);
     }
 }

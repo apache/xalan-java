@@ -93,16 +93,16 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     short m_axisType = NO_AXIS_TYPE;
 
     /**
-     * Constructor for StepExprImpl.
+     * Constructor for StepExprImpl. Internal uses only
      * @param i
      */
     public StepExprImpl(int i)
     {
-        super(i);
+        super(i);           
     }
 
     /**
-     * Constructor for StepExprImpl.
+     * Constructor for StepExprImpl. Internal uses only
      * @param p
      * @param i
      */
@@ -112,7 +112,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     }
 
     /**
-     * Constructor for StepExprImpl.
+     * Constructor for factory. Internal uses only
      * @param axisType
      * @param NodeTest
      */
@@ -131,7 +131,9 @@ public class StepExprImpl extends ExprImpl implements StepExpr
      */
     private StepExprImpl(StepExprImpl step)
     {
+    	super(XPathTreeConstants.JJTSTEPEXPR);
     	
+    	m_children = step.cloneChildren();
     }
 
     /**
@@ -161,7 +163,10 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.expression.StepExpr#removePredicate(Expr)
      */
-    public void removePredicate(Expr predicate) {}
+    public void removePredicate(Expr predicate) 
+    {
+		super.jjtRemoveChild((Node) predicate);
+    }
 
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
@@ -246,6 +251,18 @@ public class StepExprImpl extends ExprImpl implements StepExpr
 
         return (NodeTest) m_children[0];
     }
+    
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.StepExpr#setNodeTest(org.apache.xpath.expression.NodeTest)
+	 */
+	public void setNodeTest(NodeTest test) throws XPathException {
+		if (m_axisType == STEP_IS_PRIMARYEXPR)
+		{
+				throw new XPathException("Invalid call of this method on step compose of primary expression");
+		}
+		super.jjtAddChild((Node) test, 0);
+	}
+
 
     /**
      * @see org.apache.xpath.expression.StepExpr#getPrimaryExpr()
@@ -265,7 +282,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
      */
     public StepExpr cloneStep()
     {
-        return null;
+        return new StepExprImpl(this);
     }
 
     /**
@@ -281,7 +298,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
      */
     public Expr cloneExpression()
     {
-        return null;
+		return new StepExprImpl(this);
     }
 
     /**
@@ -465,4 +482,5 @@ public class StepExprImpl extends ExprImpl implements StepExpr
                 + getClass() + " " 
                 + ((m_axisType == STEP_IS_PRIMARYEXPR) ? "InvalidAxis" : StepExprImpl.FULL_AXIS_NAME[m_axisType]);
     }
+	
 }

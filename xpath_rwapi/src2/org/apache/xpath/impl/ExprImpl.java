@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,61 +55,91 @@
  */
 package org.apache.xpath.impl;
 
+import org.apache.xpath.XPathException;
 import org.apache.xpath.expression.Expr;
 import org.apache.xpath.expression.Visitor;
+import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
+
 
 /**
  *
  */
-public abstract class ExprImpl extends SimpleNode implements Expr{
-
-	/**
-	 * 
-	 */
-	protected ExprImpl() {
-		super();
-	}
-	
-	/**
-	 * Constructor for ExprImpl.
-	 * @param i
-	 */
-	public ExprImpl(int i) {
-		super(i);
-	}
-
-	/**
-	 * Constructor for ExprImpl.
-	 * @param p
-	 * @param i
-	 */
-	public ExprImpl(XPath p, int i) {
-		super(p, i);
-	}
-    
+public abstract class ExprImpl extends SimpleNode implements Expr
+{
     /**
-     * Gets expression as external string representation
-     */
-    public void getString(StringBuffer expr, boolean abbreviate) {
+    	 *
+    	 */
+    protected ExprImpl()
+    {
+        super();
     }
 
+    /**
+     * Constructor for ExprImpl.
+     *
+     * @param i
+     */
+    public ExprImpl(int i)
+    {
+        super(i);
+    }
 
-	/**
+    /**
+     * Constructor for ExprImpl.
+     *
+     * @param p
+     * @param i
+     */
+    public ExprImpl(XPath p, int i)
+    {
+        super(p, i);
+    }
+
+    /**
+     * Gets expression as external string representation
+     *
+     * @param expr DOCUMENT ME!
+     * @param abbreviate DOCUMENT ME!
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+    }
+
+    /**
      * @see org.apache.xpath.expression.Expr#getString(boolean)
      */
-    public String getString(boolean abbreviate) {
+    public String getString(boolean abbreviate)
+    {
         StringBuffer buf = new StringBuffer();
         getString(buf, abbreviate);
+
         return buf.toString();
     }
 
-	/**
-	 * @see org.apache.xpath.expression.Visitable#visit(Visitor)
-	 */
-	public boolean visit(Visitor visitor) {
-       return true;
-	}
+    /**
+     * @see org.apache.xpath.expression.Visitable#visit(Visitor)
+     */
+    public boolean visit(Visitor visitor)
+    {
+        return true;
+    }
 
+    /**
+     * Clone children
+     *
+     * @return DOCUMENT ME!
+     */
+    protected Node[] cloneChildren()
+    {
+        Node[] clone = new Node[m_children.length];
+
+        for (int i = 0; i < m_children.length; i++)
+        {
+            clone[i] = (Node) ((Expr) m_children[i]).cloneExpression();
+        }
+
+        return clone;
+    }
 }
