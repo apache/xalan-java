@@ -105,20 +105,15 @@ public abstract class SingleNodeCounter extends NodeCounter {
 	    }
 
 	    if (next != END) {
-		result++;		// count target
 		_countSiblings.setStartNode(next);
-		while ((next = _countSiblings.next()) != END) {
-		    if (matchesCount(next)) {
-			result++;
-		    }
-		}
+		do {
+		    if (matchesCount(next)) result++;
+		} while ((next = _countSiblings.next()) != END);
 	    }
-	    /*
-	      else {
-				// If no target found then pass the empty list
-				return formatNumbers(EmptyArray);
-				}
-	    */
+	    else {
+		// If no target found then pass the empty list
+		return formatNumbers(EmptyArray);
+	    }
 	}
 	return formatNumbers(result);
     }

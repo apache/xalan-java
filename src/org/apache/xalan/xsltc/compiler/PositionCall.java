@@ -96,9 +96,15 @@ final class PositionCall extends FunctionCall {
 	    if ((_type == DOM.ELEMENT) || (_type == DOM.ATTRIBUTE))
 		_type = -1;
 	}
-    
-	if ((parent instanceof Predicate) && (granny instanceof StepPattern)){ 
-	    _type = ((StepPattern)granny).getNodeType();
+	else {
+	    while ((granny != null) && !(granny instanceof StepPattern)) {
+		parent = granny;
+		granny = granny.getParent();
+	    }
+	    if ((parent instanceof Predicate) &&
+		(granny instanceof StepPattern)){ 
+		_type = ((StepPattern)granny).getNodeType();
+	    }
 	}
 
 	if (methodGen instanceof CompareGenerator) {
