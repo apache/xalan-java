@@ -125,8 +125,10 @@ final class DecimalFormatting extends TopLevelElement {
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
 
-	// DecimalFormatSymbols.<init>();
-	final int init = cpg.addMethodref(DFS_CLASS, "<init>", "()V");
+        // DecimalFormatSymbols.<init>(Locale);
+        // xsl:decimal-format - except for the NaN and infinity attributes.
+        final int init = cpg.addMethodref(DFS_CLASS, "<init>",
+                                          "("+LOCALE_SIG+")V");
 
 	// Push the format name on the stack for call to addDecimalFormat()
 	il.append(classGen.loadTranslet());
@@ -134,8 +136,12 @@ final class DecimalFormatting extends TopLevelElement {
 
 	// Manufacture a DecimalFormatSymbols on the stack
 	// for call to addDecimalFormat()
+        // Use the US Locale as the default, as most of its settings
+        // are equivalent to the default settings required of
 	il.append(new NEW(cpg.addClass(DFS_CLASS)));
 	il.append(DUP);
+        il.append(new GETSTATIC(cpg.addFieldref(LOCALE_CLASS, "US",
+                                                LOCALE_SIG)));
 	il.append(new INVOKESPECIAL(init));
 
 	String tmp = getAttribute("NaN");
@@ -244,17 +250,23 @@ final class DecimalFormatting extends TopLevelElement {
 
 	ConstantPoolGen cpg = classGen.getConstantPool();
 	InstructionList il = methodGen.getInstructionList();
-	final int init = cpg.addMethodref(DFS_CLASS, "<init>", "()V");
+	final int init = cpg.addMethodref(DFS_CLASS, "<init>",
+                                          "("+LOCALE_SIG+")V");
 
 	// Push the format name, which is empty, on the stack
 	// for call to addDecimalFormat()
 	il.append(classGen.loadTranslet());
 	il.append(new PUSH(cpg, EMPTYSTRING));
 
-	// Manufacture a DecimalFormatSymbols on the stack
-	// for call to addDecimalFormat()
+	// Manufacture a DecimalFormatSymbols on the stack for
+	// call to addDecimalFormat().  Use the US Locale as the
+        // default, as most of its settings are equivalent to
+        // the default settings required of xsl:decimal-format -
+        // except for the NaN and infinity attributes.
 	il.append(new NEW(cpg.addClass(DFS_CLASS)));
 	il.append(DUP);
+        il.append(new GETSTATIC(cpg.addFieldref(LOCALE_CLASS, "US",
+                                                LOCALE_SIG)));
 	il.append(new INVOKESPECIAL(init));
 
 	int nan = cpg.addMethodref(DFS_CLASS,
