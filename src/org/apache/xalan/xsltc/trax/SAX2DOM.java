@@ -92,7 +92,13 @@ class SAX2DOM implements ContentHandler, Constants {
     }
 
     public SAX2DOM(Node root) throws ParserConfigurationException {
-	_root = (Document) root;   // TODO: add support for frags and elems
+	if (root != null) {
+	    _root = (Document) root;   // TODO: add support for frags and elems
+	}
+	else {
+	    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    _root = factory.newDocumentBuilder().newDocument();
+	}
     }
 
     public Node getDOM() {
