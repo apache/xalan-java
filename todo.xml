@@ -52,6 +52,25 @@
     Fill in all NEEDSDOC sections.
   </action>
 
+  <action context="code" category="architecture, conformance" priority="high" who="SB">
+    Restructure OutputFormat class to be based on properties.  Make sure 
+    include/import conformance is correct.
+  </action>
+  
+  <action context="code" category="architecture" priority="high" who="SB">
+    Make entities in the html serializer to be resource file driven, and 
+    possibly use radix partitioned tree for character to entity reference 
+    lookup.
+  </action>
+  
+  <action context="code" category="architecture" priority="high" who="SB">
+    Removed linefeed normalization from serializers.  I think.
+  </action>
+
+  <action context="code" category="architecture" priority="high" who="SB">
+    Fix remaining axes tests.
+  </action>
+
   <action context="code" category="performance" priority="high">
     When using STree for the input, use STree for the document() and
     result tree fragments.
@@ -65,33 +84,10 @@
     implement fast iterator for "@foo" pattern.
   </action>
 
-  <action context="code" who="MM" category="performance" priority="high">
-    optimize xsl:key and key() stuff by building hash table of iterators for
-    each key.
-  </action>
-
-  <action context="code" category="code-cleanup" priority="medium">
-    Clean up treatment of null namespaces, re "" vs. null.
-  </action>
-
-  <action context="code"  category="conformance" priority="high">
-    Implement namespace aliasing.
-  </action>
-
   <action context="code"  category="conformance" priority="high">
     Check relative URL resolution with notations and unparsed entities.
     Not sure if there is a bug here.  See note from Thomal Maesing on
     10/24/2000, titled "Antwort: Re:".
-  </action>
-
-  <action context="code" category="code-cleanup" priority="medium">
-    Move org.apache.xalan.utils package to org.apache.xml.utils.
-    remove resource dependencies on xalan and/or xpath package.
-  </action>
-
-  <action context="code" packages="templates" category="conformance" priority="medium"
-          note="done?">
-    Catch multiple definitions of a variable with the same name and scope.
   </action>
 
   <action context="test" who="SC" category="minitest" priority="medium">
@@ -226,6 +222,31 @@
     implement fast iterator for "foo" pattern.
   </action>
 
+  <action context="code" who="MM" category="performance" priority="high" completed-date="11/29/00">
+    optimize xsl:key and key() stuff by building hash table of iterators for
+    each key.
+  </action>
+
+  <action context="code" category="code-cleanup" priority="medium" completed="12/01/00">
+    Clean up treatment of null namespaces, re "" vs. null.
+    <completed-comment>I consider this to be pretty good in most places.  "" 
+    equals the default namespace.  No pending plans for action, other than ongoing 
+    cleanup and javadoc as it occurs.</completed-comment>
+  </action>
+  
+  <action context="code"  category="conformance" priority="high" completed="12/10/00">
+    Implement namespace aliasing.
+  </action>
+
+  <action context="code" packages="templates" category="conformance" priority="medium"
+          note="done?" completed="11/29/00">
+    Catch multiple definitions of a variable with the same name and scope.
+  </action>
+  
+  <action context="code" category="code-cleanup" priority="medium" completed="11/25/00">
+    Move org.apache.xalan.utils package to org.apache.xml.utils.
+    remove resource dependencies on xalan and/or xpath package.
+  </action>
 
 
  </completed>
