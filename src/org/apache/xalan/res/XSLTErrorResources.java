@@ -1016,6 +1016,23 @@ public class XSLTErrorResources extends PropertyResourceBundle
 // ListingErrorHandler created with null PrintWriter!
   public static final int ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER = 236;
 
+  // {0}is not allowed in this position in the stylesheet!
+  public static final int ER_NOT_ALLOWED_IN_POSITION = 237;
+
+  // Non-whitespace text is not allowed in this position in the stylesheet!
+  public static final int ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 238;
+  
+  // An XSLT attribute of type T_CHAR must be only 1 character!
+  public static final int ER_ATTR_T_CHAR_ONE_CHAR = 239;
+  
+  // SystemId Unknown
+  public static final int ER_SYSTEMID_UNKNOWN = 240;
+    
+  // Location of error unknown  
+  public static final int ER_LOCATION_UNKNOWN = 241;
+  
+
+
   /*
     /**  Cannot find SAX1 driver class    *
   public static final int ER_CANNOT_FIND_SAX1_DRIVER = 190;
