@@ -1152,7 +1152,11 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
       return getParent(context);
     }
   
-    /**
+    /**This is actually going to the nearest ancestor of the
+     * specified type, not to the parent-if-it-has-this-type.
+     * I suspect that's incorrect!
+     * 
+     * %REVIEW% 
      * By the nature of the stateless traversal, the context node can not be
      * returned or the iteration will go into an infinate loop.  So to traverse 
      * an axis, the first function must be used to get the first node.

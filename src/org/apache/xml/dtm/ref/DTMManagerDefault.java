@@ -73,12 +73,13 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.dtm.ref.dom2dtm.DOM2DTM;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
-//import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
 
 /**************************************************************/
 // EXPERIMENTAL 3/22/02
 import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
 import org.apache.xml.dtm.ref.xni2dtm.XNISource;
+// EXPERIMENTAL 9/18/02
+import org.apache.xml.dtm.dom2dtm2.DOM2DTM2;
 /**************************************************************/
 
 // W3C DOM
@@ -122,6 +123,12 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
+  // Set true to attempt loading DOMs via our experimental
+  // DOM2DTM2 wrapper. If false, or if that fails, we fall
+  // back on standard DOM2DTM.
+  private static final boolean ATTEMPT_DOM2DTM2=false;	
+	
+	
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
 
@@ -287,11 +294,23 @@ public class DTMManagerDefault extends DTMManager
     if (source instanceof DOMSource)
     {
       // Simplest case: Wrap a DTM around an existing DOM.
-      //
-      // %REVIEW% May get more complicated if we start trying to match
-      // DOM2DTM implementations against specific DOM implementations,
-      // eg taking advantage of a particular DOM's hashability or
-      // userData hooks.
+      if(ATTEMPT_DOM2DTM2)
+      {
+		DTM dtm;      	
+      	try
+      	{
+	      dtm = new DOM2DTM2(this, source, documentID,
+                                whiteSpaceFilter, xstringFactory, doIndexing);
+      	} catch(ClassCastException e)
+      	{
+	      dtm = new DOM2DTM(this, (DOMSource) source, documentID,
+                                whiteSpaceFilter, xstringFactory, doIndexing);
+      	}
+	    addDTM(dtm, dtmPos, 0);
+        return dtm;
+      }
+
+
       DOM2DTM dtm = new DOM2DTM(this, (DOMSource) source, documentID,
                                 whiteSpaceFilter, xstringFactory, doIndexing);
       addDTM(dtm, dtmPos, 0);
@@ -836,6 +855,31 @@ public class DTMManagerDefault extends DTMManager
     {
       if(nodeHandle==DTM.NULL)
 				return null;		// Accept as a special case.
+      else
+				throw e;		// Programming error; want to know about it.
+    }    
+  }
+  
+  /**
+   * Return the offset between this DTM Handle and the internal
+   * node identifier. May be used by makeNodeIdentity to obtain
+   * the high-order bits of that identifier.
+   *
+   * @param nodeHandle DTM Handle indicating which node to retrieve
+   *
+   * @return a reference to the DTM object containing this node.
+   */
+  synchronized public int getDTMoffset(int nodeHandle)
+  {
+    try
+    {
+      // Performance critical function.
+      return m_dtm_offsets[nodeHandle >>> IDENT_DTM_NODE_BITS];
+    }
+    catch(java.lang.ArrayIndexOutOfBoundsException e)
+    {
+      if(nodeHandle==DTM.NULL)
+				return DTM.NULL;		// Accept as a special case.
       else
 				throw e;		// Programming error; want to know about it.
     }    

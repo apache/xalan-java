@@ -238,7 +238,11 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
    * <br />
    * would probably optimize just about as well and avoid questions
    * about whether what's returned could ever be different from what's
-   * passed in.
+   * passed in.. and
+   * <br />
+   * <code> _position++; return node; </code>
+   * <br />
+   * would avoid any risk of call-and-return overhead...
    *
    * @param node Node handle which iteration is about to yield.
    *

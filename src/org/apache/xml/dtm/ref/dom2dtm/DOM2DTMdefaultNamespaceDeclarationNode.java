@@ -85,15 +85,29 @@ public class DOM2DTMdefaultNamespaceDeclarationNode implements Attr
   
   Element pseudoparent;
   String prefix,uri,nodename;
-  int handle;
-  DOM2DTMdefaultNamespaceDeclarationNode(Element pseudoparent,String prefix,String uri,int handle)
+  int handle, id;
+  
+  public DOM2DTMdefaultNamespaceDeclarationNode(Element pseudoparent,String prefix,String uri,int handle)
   {
     this.pseudoparent=pseudoparent;
     this.prefix=prefix;
     this.uri=uri;
     this.handle=handle;
     this.nodename="xmlns:"+prefix;
+    this.id=DTM.NULL; // %BUG% %REVIEW%
   }
+
+  public DOM2DTMdefaultNamespaceDeclarationNode(Element pseudoparent,String prefix,String uri,int handle,int id)
+  {
+    this.pseudoparent=pseudoparent;
+    this.prefix=prefix;
+    this.uri=uri;
+    this.handle=handle;
+    this.nodename="xmlns:"+prefix;
+    this.id=id; // %BUG% %REVIEW%
+  }
+  
+  
   public String getNodeName() {return nodename;}
   public String getName() {return nodename;}
   public String getNamespaceURI() {return "http://www.w3.org/2000/xmlns/";}
@@ -127,13 +141,23 @@ public class DOM2DTMdefaultNamespaceDeclarationNode implements Attr
   public Node cloneNode(boolean deep) {throw new DTMException(NOT_SUPPORTED_ERR);}
 	
 	/** Non-DOM method, part of the temporary kluge
-	 * %REVIEW% This would be a pruning problem, but since it will always be
+	 * %REVIEW% This could be a pruning problem, but since it will always be
 	 * added to the root element and we prune on elements, we shouldn't have 
 	 * to worry.
 	 */
 	public int getHandleOfNode()		
 	{
 		return handle;
+	}
+	
+	/** Non-DOM method, part of the temporary kluge
+	 * %REVIEW% This would be a pruning problem, but since it will always be
+	 * added to the root element and we prune on elements, we shouldn't have 
+	 * to worry.
+	 */
+	public int getIDOfNode()		
+	{
+		return id;
 	}
 }
 
