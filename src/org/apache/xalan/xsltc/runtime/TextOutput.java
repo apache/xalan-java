@@ -96,12 +96,14 @@ public final class TextOutput implements TransletOutputHandler {
     private static final char[] GT       = "&gt;".toCharArray();
     private static final char[] CRLF     = "&#xA;".toCharArray();
     private static final char[] QUOTE    = "&quot;".toCharArray();
+    private static final char[] NBSP     = "&nbsp;".toCharArray();
 
     private static final int AMP_length   = AMP.length;
     private static final int LT_length    = LT.length;
     private static final int GT_length    = GT.length;
     private static final int CRLF_length  = CRLF.length;
     private static final int QUOTE_length = QUOTE.length;
+    private static final int NBSP_length  = NBSP.length;
 
     private static final char[] BEGCDATA = "<![CDATA[".toCharArray();
     private static final char[] ENDCDATA = "]]>".toCharArray();
@@ -441,6 +443,11 @@ public final class TextOutput implements TransletOutputHandler {
                     case '>':
                         _saxHandler.characters(ch, offset, i - offset);
                         _saxHandler.characters(GT, 0, GT_length);
+                        offset = i + 1;
+                        break;
+                    case '\u00a0':
+                        _saxHandler.characters(ch, offset, i - offset);
+                        _saxHandler.characters(NBSP, 0, NBSP_length);
                         offset = i + 1;
                         break;
                     }
