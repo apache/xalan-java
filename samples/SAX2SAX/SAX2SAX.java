@@ -83,7 +83,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.templates.OutputProperties;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -127,7 +127,9 @@ public class SAX2SAX
       reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
       
    	  FileOutputStream fos = new FileOutputStream("birds.out");
-      Serializer serializer = SerializerFactory.getSerializer("xml");
+      
+      Serializer serializer = SerializerFactory.getSerializer
+                              (OutputProperties.getDefaultMethodProperties("xml"));
       serializer.setOutputStream(fos);
    
       

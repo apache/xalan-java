@@ -82,9 +82,9 @@ import org.xml.sax.ext.LexicalHandler;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.templates.OutputProperties;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -131,7 +131,8 @@ public class Pipe
       tHandler2.setResult(new SAXResult(tHandler3));
 
       // transformer3 outputs SAX events to the serializer.
-      Serializer serializer = SerializerFactory.getSerializer("xml");
+      Serializer serializer = SerializerFactory.getSerializer
+                                   (OutputProperties.getDefaultMethodProperties("xml"));        
       serializer.setOutputStream(System.out);
       tHandler3.setResult(new SAXResult(serializer.asContentHandler()));
 

@@ -84,9 +84,9 @@ import org.xml.sax.ContentHandler;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.templates.OutputProperties;
 
 // Imported JAVA API for XML Parsing classes
 import javax.xml.parsers.DocumentBuilder;
@@ -135,7 +135,8 @@ public class UseXMLFilters
       xmlFilter3.setParent(xmlFilter2);
     
       // xmlFilter3 outputs SAX events to the serializer.
-      Serializer serializer = SerializerFactory.getSerializer("xml");
+      Serializer serializer = SerializerFactory.getSerializer
+                                   (OutputProperties.getDefaultMethodProperties("xml"));        
       serializer.setOutputStream(System.out);
       xmlFilter3.setContentHandler(serializer.asContentHandler());
 

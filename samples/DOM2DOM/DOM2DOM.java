@@ -78,9 +78,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 // Imported Serializer classes
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
+
+import org.apache.xalan.templates.OutputProperties;
 
 // Imported JAVA API for XML Parsing classes
 import javax.xml.parsers.DocumentBuilder;
@@ -129,7 +130,8 @@ public class DOM2DOM
 	  
 	    //Instantiate an XML serializer and use it to serialize the output DOM to System.out
 	    // using a default output format.
-      Serializer serializer = SerializerFactory.getSerializer("xml");
+      Serializer serializer = SerializerFactory.getSerializer
+                                   (OutputProperties.getDefaultMethodProperties("xml"));
       serializer.setOutputStream(System.out);
       serializer.asDOMSerializer().serialize(domResult.getNode());
 	}
