@@ -273,10 +273,14 @@ public class StreeDOMBuilder extends DOMBuilder
       appendAccumulatedText(m_text_buffer, ch, start, length);
     else
     {
-      if (m_inCData)
-        m_text_buffer = (new CDATASectionImpl(m_docImpl, ch, start,
-                                                  length));
-      else
+        //      if (m_inCData)
+        //      {
+        // CDATA SECTIONS DON'T REALLY WORK IN THE STREE.  I WOULD 
+        // LEAVE THIS, BUT THE APPEND MODE MAKES IT STRANGE...
+        //        m_text_buffer = (new CDATASectionImpl(m_docImpl, ch, start,
+        //                                                  length));
+        //      }
+        //      else
         m_text_buffer = (new TextImpl(m_docImpl, ch, start, length));
 
       setPreviousIsText(true);
