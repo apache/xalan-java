@@ -1120,7 +1120,12 @@ public class DOMHelper
     if (null != doctype)
     {
       NamedNodeMap entities = doctype.getEntities();
+      if(null == entities)
+        return url;
       Entity entity = (Entity) entities.getNamedItem(name);
+      if(null == entity)
+        return url;
+      
       String notationName = entity.getNotationName();
 
       if (null != notationName)  // then it's unparsed
@@ -1144,7 +1149,7 @@ public class DOMHelper
         {
           // This should be resolved to an absolute URL, but that's hard 
           // to do from here.
-        }
+        }        
       }
     }
 
