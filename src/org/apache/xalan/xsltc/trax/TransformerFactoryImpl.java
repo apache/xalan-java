@@ -400,12 +400,18 @@ public class TransformerFactoryImpl extends TransformerFactory {
 	final String transletName = xsltc.getClassName();
 
 	// Pass compiler warnings to the error listener
-	passWarningsToListener(xsltc.getWarnings());
+	if (_errorListener != null)
+	    passWarningsToListener(xsltc.getWarnings());
+	else
+	    xsltc.printWarnings();
 
 	// Check that the transformation went well before returning
 	if (bytecodes == null) {
 	    // Pass compiler errors to the error listener
-	    passErrorsToListener(xsltc.getErrors());
+	    if (_errorListener != null)
+		passErrorsToListener(xsltc.getErrors());
+	    else
+		xsltc.printErrors();
 	    throw new TransformerConfigurationException(COMPILE_ERR);
 	}
 	return(new TemplatesImpl(bytecodes, transletName));

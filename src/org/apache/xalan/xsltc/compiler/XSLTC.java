@@ -230,9 +230,8 @@ public final class XSLTC {
 
     /**
      * Compiles an XSL stylesheet passed in through an InputStream
-     * @param input An InputStream that will pass in the stylesheet contents
+     * @param input An InputSource that will pass in the stylesheet contents
      * @param name The name of the translet class to generate - can be null
-     * @param url Identifies the original stylesheet location
      * @return 'true' if the compilation was successful
      */
     public boolean compile(InputSource input, String name) {
