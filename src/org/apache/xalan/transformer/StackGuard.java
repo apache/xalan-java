@@ -59,10 +59,8 @@ package org.apache.xalan.transformer;
 //import org.w3c.dom.Node;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.Element;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -208,10 +206,18 @@ public class StackGuard
     	
     	if (loopCount >= m_recursionLimit)
     	{
-    		throw new TransformerException("Template nesting too deep. nesting = "+loopCount+
-    		   ", template "+((null == template.getName()) ? "name = " : "match = ")+
-    		   ((null != template.getName()) ? template.getName().toString() 
-    		   : template.getMatch().getPatternString()));
+    		// throw new TransformerException("Template nesting too deep. nesting = "+loopCount+
+    		//   ", template "+((null == template.getName()) ? "name = " : "match = ")+
+    		//   ((null != template.getName()) ? template.getName().toString() 
+    		//   : template.getMatch().getPatternString()));
+    		
+    		String idIs = XSLMessages.createMessage(((null != template.getName()) ? "nameIs" : "matchPatternIs"), null);
+        	Object[] msgArgs = new Object[]{ new Integer(loopCount), idIs, 
+                     ((null != template.getName()) ? template.getName().toString() 
+    		   : template.getMatch().getPatternString()) };
+        	String msg = XSLMessages.createMessage("recursionTooDeep", msgArgs);
+
+    		throw new TransformerException(msg);
     	}
     }
   }
