@@ -65,7 +65,6 @@ package org.apache.xalan.serialize;
  *
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
- * @see OutputFormat
  */
 public final class Method
 {

@@ -63,6 +63,7 @@ import java.io.IOException;
 
 import java.util.Hashtable;
 import java.util.Vector;
+import java.util.Properties;
 
 import org.xml.sax.*;
 
@@ -70,11 +71,11 @@ import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.Trie;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.serialize.OutputFormat;
-import org.apache.xalan.serialize.Method;
-import org.apache.xalan.serialize.helpers.HTMLOutputFormat;
 import org.apache.xml.utils.StringToIntTable;
+import org.apache.xalan.templates.OutputProperties;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
 
 /**
  * <meta name="usage" content="general"/>
@@ -83,73 +84,23 @@ import org.apache.xml.utils.StringToIntTable;
  */
 public class FormatterToHTML extends FormatterToXML
 {
-  // StringVector m_parents = new StringVector();
 
-  /** NEEDSDOC Field m_isRawStack          */
-  BoolStack m_isRawStack = new BoolStack();
+  /** State stack to keep track of if the current element has output 
+   *  escaping disabled. */
+  private BoolStack m_isRawStack = new BoolStack();
 
-  /** NEEDSDOC Field m_inBlockElem          */
-  boolean m_inBlockElem = false;
+  /** True if the current element is a block element.  (seems like 
+   *  this needs to be a stack. -sb). */
+  private boolean m_inBlockElem = false;
 
-  /** NEEDSDOC Field s_HTMLlat1          */
-  static String[] s_HTMLlat1 = { "nbsp", "iexcl", "cent", "pound", "curren",
-                                 "yen", "brvbar", "sect", "uml", "copy",
-                                 "ordf", "laquo", "not", "shy", "reg", "macr",
-                                 "deg", "plusmn", "sup2", "sup3", "acute",
-                                 "micro", "para", "middot", "cedil", "sup1",
-                                 "ordm", "raquo", "frac14", "frac12",
-                                 "frac34", "iquest", "Agrave", "Aacute",
-                                 "Acirc", "Atilde", "Auml", "Aring", "AElig",
-                                 "Ccedil", "Egrave", "Eacute", "Ecirc",
-                                 "Euml", "Igrave", "Iacute", "Icirc", "Iuml",
-                                 "ETH", "Ntilde", "Ograve", "Oacute", "Ocirc",
-                                 "Otilde", "Ouml", "times", "Oslash",
-                                 "Ugrave", "Uacute", "Ucirc", "Uuml",
-                                 "Yacute", "THORN", "szlig", "agrave",
-                                 "aacute", "acirc", "atilde", "auml", "aring",
-                                 "aelig", "ccedil", "egrave", "eacute",
-                                 "ecirc", "euml", "igrave", "iacute", "icirc",
-                                 "iuml", "eth", "ntilde", "ograve", "oacute",
-                                 "ocirc", "otilde", "ouml", "divide",
-                                 "oslash", "ugrave", "uacute", "ucirc",
-                                 "uuml", "yacute", "thorn", "yuml" };
+  /**
+   * Map that tells which XML characters should have special treatment, and it
+   *  provides character to entity name lookup.
+   */
+  protected static CharInfo m_htmlcharInfo =
+    new CharInfo(CharInfo.HTML_ENTITIES_RESOURCE);
 
-  /** NEEDSDOC Field HTMLsymbol1          */
-  static String[] HTMLsymbol1 = { "Alpha", "Beta", "Gamma", "Delta",
-                                  "Epsilon", "Zeta", "Eta", "Theta", "Iota",
-                                  "Kappa", "Lambda", "Mu", "Nu", "Xi",
-                                  "Omicron", "Pi", "Rho", "", "Sigma", "Tau",
-                                  "Upsilon", "Phi", "Chi", "Psi", "Omega" };
-
-  /** NEEDSDOC Field HTMLsymbol2          */
-  static String[] HTMLsymbol2 = { "alpha", "beta", "gamma", "delta",
-                                  "epsilon", "zeta", "eta", "theta", "iota",
-                                  "kappa", "lambda", "mu", "nu", "xi",
-                                  "omicron", "pi", "rho", "sigmaf", "sigma",
-                                  "tau", "upsilon", "phi", "chi", "psi",
-                                  "omega", "thetasym", "upsih", "piv" };
-
-  // "fnof",
-  // static   String[]  HTMLsymbol2 =    {"bull",    "hellip",    
-  //                                     "prime",    "Prime",    "oline",    "frasl",    
-  //                                     "weierp",    "image",    "real",    "trade",    
-  //                                     "alefsym",    "larr",    "uarr",    "rarr",    
-  //                                     "darr",    "harr",    "crarr",    "lArr",    
-  //                                     "uArr",    "rArr",    "dArr",    "hArr",    
-  //                                     "forall",    "part",    "exist",    "empty",    
-  //                                     "nabla",    "isin",    "notin",    "ni",    
-  //                                     "prod",    "sum",    "minus",    "lowast",    
-  //                                     "radic",    "prop",    "infin",    "ang",    
-  //                                     "and",    "or",    "cap",    "cup",    "int",    
-  //                                     "there4",    "sim",    "cong",    "asymp",    
-  //                                     "ne",    "equiv",    "le",    "ge",    "sub",    
-  //                                     "sup",    "nsub",    "sube",    "supe",    
-  //                                     "oplus",    "otimes",    "perp",    "sdot",    
-  //                                     "lceil",    "rceil",    "lfloor",    "rfloor",    
-  //                                     "lang",    "rang",    "loz",    "spades",    
-  //                                      "clubs",    "hearts",    "diams"};
-
-  /** NEEDSDOC Field m_elementFlags          */
+  /** A digital search trie for fast, case insensitive lookup of ElemDesc objects. */
   static Trie m_elementFlags = new Trie();
 
   static
@@ -315,7 +266,7 @@ public class FormatterToHTML extends FormatterToXML
                        new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.BLOCKFORM
                                     | ElemDesc.BLOCKFORMFIELDSET));
     m_elementFlags.put("HTML", new ElemDesc(0 | ElemDesc.BLOCK));
-    
+
     // From "John Ky" <hand@syd.speednet.com.au
     // Transitional Document Type Definition ()
     // file:///C:/Documents%20and%20Settings/sboag.BOAG600E/My%20Documents/html/sgml/loosedtd.html#basefont
@@ -324,7 +275,7 @@ public class FormatterToHTML extends FormatterToXML
     // file:///C:/Documents%20and%20Settings/sboag.BOAG600E/My%20Documents/html/present/graphics.html#edef-STRIKE
     m_elementFlags.put("S", new ElemDesc(0 | ElemDesc.FONTSTYLE));
     m_elementFlags.put("STRIKE", new ElemDesc(0 | ElemDesc.FONTSTYLE));
-    
+
     // file:///C:/Documents%20and%20Settings/sboag.BOAG600E/My%20Documents/html/present/graphics.html#edef-U
     m_elementFlags.put("U", new ElemDesc(0 | ElemDesc.FONTSTYLE));
 
@@ -427,13 +378,13 @@ public class FormatterToHTML extends FormatterToXML
    */
   static private ElemDesc m_dummy = new ElemDesc(0 | ElemDesc.BLOCK);
 
-  /** NEEDSDOC Field m_specialEscapeURLs          */
+  /** True if URLs should be specially escaped with the %xx form. */
   private boolean m_specialEscapeURLs = true;
 
   /**
    * Tells if the formatter should use special URL escaping.
    *
-   * NEEDSDOC @param bool
+   * @param bool True if URLs should be specially escaped with the %xx form.
    */
   public void setSpecialEscapeURLs(boolean bool)
   {
@@ -441,9 +392,28 @@ public class FormatterToHTML extends FormatterToXML
   }
 
   /**
+   * Specifies an output format for this serializer. It the
+   * serializer has already been associated with an output format,
+   * it will switch to the new format. This method should not be
+   * called while the serializer is in the process of serializing
+   * a document.
+   *
+   * @param format The output format to use
+   */
+  public void setOutputFormat(Properties format)
+  {
+
+    m_specialEscapeURLs =
+      OutputProperties.getBooleanProperty(OutputProperties.S_USE_URL_ESCAPING,
+                                          format);
+
+    super.setOutputFormat(format);
+  }
+
+  /**
    * Tells if the formatter should use special URL escaping.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if URLs should be specially escaped with the %xx form.
    */
   public boolean getSpecialEscapeURLs()
   {
@@ -453,9 +423,10 @@ public class FormatterToHTML extends FormatterToXML
   /**
    * Get a description of the given element.
    *
-   * NEEDSDOC @param name
+   * @param name non-null name of element, case insensitive.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return non-null reference to ElemDesc, which may be m_dummy if no 
+   *         element description matches the given name.
    */
   ElemDesc getElemDesc(String name)
   {
@@ -476,121 +447,14 @@ public class FormatterToHTML extends FormatterToXML
    */
   public FormatterToHTML()
   {
+
     super();
+
+    m_charInfo = m_htmlcharInfo;
   }
 
-  /**
-   * Constructor using a writer.
-   * @param writer        The character output stream to use.
-   */
-  public FormatterToHTML(Writer writer)
-  {
-    super(writer);
-  }
-
-  /**
-   * Constructor using an output stream, and a simple OutputFormat.
-   * @param writer        The character output stream to use.
-   *
-   * NEEDSDOC @param os
-   *
-   * @throws java.io.UnsupportedEncodingException
-   */
-  public FormatterToHTML(java.io.OutputStream os)
-          throws java.io.UnsupportedEncodingException
-  {
-
-    OutputFormat of = new HTMLOutputFormat("UTF-8");
-
-    this.init(os, of);
-  }
-
-  /**
-   * Constructor using a writer.
-   * @param writer        The character output stream to use.
-   *
-   * NEEDSDOC @param xmlListener
-   */
-  public FormatterToHTML(FormatterToXML xmlListener)
-  {
-
-    super(xmlListener);
-
-    m_doIndent = true;  // TODO: But what if the user wants to set it???
-  }
-
-  /**
-   * Set the attribute characters what will require special mapping.
-   */
-  protected void initAttrCharsMap()
-  {
-
-    super.initAttrCharsMap();
-
-    m_attrCharsMap[(int) '\n'] = 'S';
-
-    // XSLT Spec: The html output method should not 
-    // escape < characters occurring in attribute values.
-    m_attrCharsMap[(int) '<'] = '\0';
-    m_attrCharsMap[(int) '>'] = '\0';
-    m_attrCharsMap[0x0A] = 'S';
-    m_attrCharsMap[0x0D] = 'S';
-
-    int n = (255 > SPECIALSSIZE) ? 255 : SPECIALSSIZE;
-
-    for (int i = 160; i < n; i++)
-    {
-      m_attrCharsMap[i] = 'S';
-    }
-  }
-
-  /**
-   * Set the characters what will require special mapping.
-   */
-  protected void initCharsMap()
-  {
-
-    initAttrCharsMap();
-
-    int n = (m_maxCharacter > SPECIALSSIZE) ? SPECIALSSIZE : m_maxCharacter;
-
-    for (int i = 0; i < n; i++)
-    {
-      m_charsMap[i] = '\0';
-    }
-
-    m_charsMap[(int) '\n'] = 'S';
-    m_charsMap[(int) '<'] = 'S';
-    m_charsMap[(int) '>'] = 'S';
-    m_charsMap[(int) '&'] = 'S';
-
-    for (int i = 0; i < 10; i++)
-    {
-      m_charsMap[i] = 'S';
-    }
-
-    m_charsMap[0x0A] = 'S';
-    m_charsMap[0x0D] = 'S';
-    n = (255 > SPECIALSSIZE) ? 255 : SPECIALSSIZE;
-
-    for (int i = 160; i < n; i++)
-    {
-      m_charsMap[i] = 'S';
-    }
-
-    for (int i = m_maxCharacter; i < SPECIALSSIZE; i++)
-    {
-      m_charsMap[i] = 'S';
-    }
-  }
-
-  /** NEEDSDOC Field m_currentElementName          */
-  String m_currentElementName = null;
-
-  // protected boolean shouldIndent()
-  // {
-  //   return (!m_ispreserve && !m_isprevtext);
-  // }
+  /** The name of the current element. */
+  private String m_currentElementName = null;
 
   /**
    * Receive notification of the beginning of a document.
@@ -641,35 +505,40 @@ public class FormatterToHTML extends FormatterToXML
 
   /**
    *  Receive notification of the beginning of an element.
-   * 
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   *
+   *  @param namespaceURI
+   *  @param localName
    *  @param name The element type name.
    *  @param atts The attributes attached to the element, if any.
-   *  @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *  @throws org.xml.sax.SAXException Any SAX exception, possibly
    *             wrapping another exception.
    *  @see #endElement
    *  @see org.xml.sax.AttributeList
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
 
+    if (null != namespaceURI && namespaceURI.length() > 0)
+    {
+      super.startElement(namespaceURI, localName, name, atts);
+
+      return;
+    }
+
     boolean savedDoIndent = m_doIndent;
     boolean noLineBreak;
 
     writeParentTagEnd();
-    pushState(namespaceURI, localName, m_format.getCDataElements(),
-              m_cdataSectionStates);
-    pushState(namespaceURI, localName, m_format.getNonEscapingElements(),
-              m_disableOutputEscapingStates);
+    pushState(
+      namespaceURI, localName,
+      m_cdataSectionNames, m_cdataSectionStates);
 
-    String nameUpper = name.toUpperCase();
-    ElemDesc elemDesc = getElemDesc(nameUpper);
+    // pushState(namespaceURI, localName, m_format.getNonEscapingElements(),
+    //          m_disableOutputEscapingStates);
+    ElemDesc elemDesc = getElemDesc(name);
 
     // ElemDesc parentElemDesc = getElemDesc(m_currentElementName);
     boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
@@ -693,7 +562,7 @@ public class FormatterToHTML extends FormatterToXML
 
     m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
 
-    m_currentElementName = nameUpper;
+    m_currentElementName = name;
 
     // m_parents.push(m_currentElementName);
     this.accum('<');
@@ -709,7 +578,7 @@ public class FormatterToHTML extends FormatterToXML
     // Flag the current element as not yet having any children.
     openElementForChildren();
 
-    m_currentIndent += this.indent;
+    m_currentIndent += this.m_indentAmount;
     m_isprevtext = false;
     m_doIndent = savedDoIndent;
 
@@ -733,31 +602,34 @@ public class FormatterToHTML extends FormatterToXML
 
   /**
    *  Receive notification of the end of an element.
-   * 
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   *
+   *  @param namespaceURI
+   *  @param localName
    *  @param name The element type name
-   *  @exception org.xml.sax.SAXException Any SAX exception, possibly
+   *  @throws org.xml.sax.SAXException Any SAX exception, possibly
    *             wrapping another exception.
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void endElement(String namespaceURI, String localName, String name)
           throws org.xml.sax.SAXException
   {
 
-    m_currentIndent -= this.indent;
+    if (null != namespaceURI && namespaceURI.length() > 0)
+    {
+      super.endElement(namespaceURI, localName, name);
 
-    // name = name.toUpperCase();
+      return;
+    }
+
+    m_currentIndent -= this.m_indentAmount;
+
     boolean hasChildNodes = childNodesWereAdded();
 
     // System.out.println(m_currentElementName);
     // m_parents.pop();
     m_isRawStack.pop();
 
-    String nameUpper = name.toUpperCase();
-    ElemDesc elemDesc = getElemDesc(nameUpper);
+    ElemDesc elemDesc = getElemDesc(name);
 
     // ElemDesc parentElemDesc = getElemDesc(m_currentElementName);
     boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
@@ -819,28 +691,27 @@ public class FormatterToHTML extends FormatterToXML
 
     m_isprevtext = false;
 
-    m_disableOutputEscapingStates.pop();
+    // m_disableOutputEscapingStates.pop();
     m_cdataSectionStates.pop();
   }
 
   /**
    * Process an attribute.
    * @param   name   The name of the attribute.
-   * NEEDSDOC @param elemDesc
+   * @param elemDesc non-null reference to the owning element description.
    * @param   value   The value of the attribute.
    *
    * @throws org.xml.sax.SAXException
    */
   protected void processAttribute(
-          String name, ElemDesc elemDesc, String value) throws org.xml.sax.SAXException
+          String name, ElemDesc elemDesc, String value)
+            throws org.xml.sax.SAXException
   {
-
-    String nameUpper = name.toUpperCase();
 
     this.accum(' ');
 
-    if (elemDesc.isAttrFlagSet(nameUpper, ElemDesc.ATTREMPTY)
-            && ((value.length() == 0) || value.equalsIgnoreCase(name)))
+    if (((value.length() == 0) || value.equalsIgnoreCase(name))
+            && elemDesc.isAttrFlagSet(name, ElemDesc.ATTREMPTY))
     {
       this.accum(name);
     }
@@ -850,8 +721,7 @@ public class FormatterToHTML extends FormatterToXML
       this.accum('=');
       this.accum('\"');
 
-      if (m_specialEscapeURLs
-              && elemDesc.isAttrFlagSet(nameUpper, ElemDesc.ATTRURL))
+      if (elemDesc.isAttrFlagSet(name, ElemDesc.ATTRURL))
         writeAttrURI(value, this.m_encoding);
       else
         writeAttrString(value, this.m_encoding);
@@ -860,10 +730,10 @@ public class FormatterToHTML extends FormatterToXML
     }
   }
 
-  /** NEEDSDOC Field MASK1          */
+  /** Mask for high byte. */
   static final int MASK1 = 0xFF00;
 
-  /** NEEDSDOC Field MASK2          */
+  /** Mask for low byte. */
   static final int MASK2 = 0x00FF;
 
   /**
@@ -877,7 +747,8 @@ public class FormatterToHTML extends FormatterToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  public void writeAttrURI(String string, String encoding) throws org.xml.sax.SAXException
+  public void writeAttrURI(String string, String encoding)
+          throws org.xml.sax.SAXException
   {
 
     char[] stringArray = string.toCharArray();
@@ -891,17 +762,30 @@ public class FormatterToHTML extends FormatterToXML
       if ((ch < 9) || (ch > 127)
               || /*(ch == '"') || -sb, as per #PDIK4L9LZY */ (ch == ' '))
       {
-        int b1 = (int) ((((int) ch) & MASK1) >> 8);
-        int b2 = (int) (((int) ch) & MASK2);
-
-        if (b1 != 0)
+        if (m_specialEscapeURLs)
         {
-          accum("%");
-          accum(Integer.toHexString(b1));
-        }
+          int b1 = (int) ((((int) ch) & MASK1) >> 8);
+          int b2 = (int) (((int) ch) & MASK2);
 
-        accum("%");
-        accum(Integer.toHexString(b2));
+          if (b1 != 0)
+          {
+            accum("%");
+            accum(Integer.toHexString(b1));
+          }
+
+          accum("%");
+          accum(Integer.toHexString(b2));
+        }
+        else if (ch < m_maxCharacter)
+        {
+          accum(ch);
+        }
+        else
+        {
+          accum("&#");
+          accum(Integer.toString(ch));
+          accum(';');
+        }
       }
       else if (ch == '"')
       {
@@ -944,9 +828,13 @@ public class FormatterToHTML extends FormatterToXML
       // System.out.println("ch: "+(int)ch);
       // System.out.println("m_maxCharacter: "+(int)m_maxCharacter);
       // System.out.println("m_attrCharsMap[ch]: "+(int)m_attrCharsMap[ch]);
-      if ((ch < SPECIALSSIZE) && (m_attrCharsMap[ch] != 'S'))
+      if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
       {
         accum(ch);
+      }
+      else if ('<' == ch || '>' == ch)
+      {
+        accum(ch);  // no escaping in this case, as specified in 15.2
       }
       else if (('&' == ch) && ((i + 1) < strLen) && ('{' == chars[i + 1]))
       {
@@ -1005,51 +893,22 @@ public class FormatterToHTML extends FormatterToXML
 
           // The next is kind of a hack to keep from escaping in the case 
           // of Shift_JIS and the like.
+
           /*
           else if ((ch < m_maxCharacter) && (m_maxCharacter == 0xFFFF)
           && (ch != 160))
           {
           accum(ch);  // no escaping in this case
           }
-          else 
+          else
           */
-          if ((ch >= 160) && (ch <= 255))
-          {
-            accum('&');
-            accum(s_HTMLlat1[((int) ch) - 160]);
-            accum(';');
-          }
-          else if ((ch >= 913) && (ch <= 937) && (ch != 930))
-          {
-            accum('&');
-            accum(HTMLsymbol1[((int) ch) - 913]);
-            accum(';');
-          }
-          else if ((ch >= 945) && (ch <= 969))
-          {
-            accum('&');
-            accum(HTMLsymbol2[((int) ch) - 945]);
-            accum(';');
-          }
-          else if ((ch >= 977) && (ch <= 978))
-          {
-            accum('&');
+          String entityName = m_charInfo.getEntityNameForChar(ch);
 
-            // substracting the number of unused characters
-            accum(HTMLsymbol2[((int) ch) - 945 - 7]);
-            accum(';');
-          }
-          else if ((ch == 982))
+          if (null != entityName)
           {
             accum('&');
-
-            // substracting the number of unused characters
-            accum(HTMLsymbol2[((int) ch) - 945 - 10]);
+            accum(entityName);
             accum(';');
-          }
-          else if (402 == ch)
-          {
-            accum("&fnof;");
           }
           else if (ch < m_maxCharacter)
           {
@@ -1074,17 +933,17 @@ public class FormatterToHTML extends FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method copyEntityIntoBuf 
+   * Copy an entity into the accumulation buffer.
    *
+   * @param s The name of the entity.
+   * @param pos unused.
    *
-   * NEEDSDOC @param s
-   * NEEDSDOC @param pos
-   *
-   * NEEDSDOC (copyEntityIntoBuf) @return
+   * @return The pos argument.
    *
    * @throws org.xml.sax.SAXException
    */
-  private int copyEntityIntoBuf(String s, int pos) throws org.xml.sax.SAXException
+  private int copyEntityIntoBuf(String s, int pos)
+          throws org.xml.sax.SAXException
   {
 
     int l = s.length();
@@ -1132,24 +991,7 @@ public class FormatterToHTML extends FormatterToXML
           throws org.xml.sax.SAXException
   {
 
-    if (0 == length)
-      return;
-
-    if (m_inCData)
-    {
-      cdata(chars, start, length);
-
-      return;
-    }
-
-    if (isEscapingDisabled())
-    {
-      charactersRaw(chars, start, length);
-
-      return;
-    }
-
-    if (!m_isRawStack.isEmpty() && m_isRawStack.peek())
+    if (m_isRawStack.peekOrFalse())
     {
       try
       {
@@ -1174,316 +1016,29 @@ public class FormatterToHTML extends FormatterToXML
           XPATHErrorResources.ER_OIERROR, null), ioe);  //"IO error", ioe);
       }
     }
-
-    writeParentTagEnd();
-
-    m_ispreserve = true;
-
-    int pos = 0;
-    int end = start + length;
-    int startClean = start;
-    int lengthClean = 0;
-
-    for (int i = start; i < end; i++)
+    else
     {
-      char ch = chars[i];
-
-      if ((ch < SPECIALSSIZE) && (m_charsMap[ch] != 'S'))
-      {
-
-        // accum(ch);
-        lengthClean++;
-
-        continue;
-      }
-      else if ((0x0A == ch) && ((i + 1) < end) && (0x0D == chars[i + 1]))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 2;
-
-        outputLineSep();
-
-        i++;
-      }
-
-      if ((0x0D == ch) && ((i + 1) < end) && (0x0A == chars[i + 1]))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 2;
-
-        outputLineSep();
-
-        i++;
-      }
-      else if (0x0D == ch)
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 2;
-
-        outputLineSep();
-
-        i++;
-      }
-      else if ('\n' == ch)
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-
-        outputLineSep();
-      }
-      else if ('<' == ch)
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf("lt", pos);
-      }
-      else if ('>' == ch)
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf("gt", pos);
-      }
-      else if ('&' == ch)
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf("amp", pos);
-      }
-      else if ((ch >= 9) && (ch <= 126))
-      {
-        lengthClean++;
-
-        // accum(ch);
-      }
-      else if ((ch >= 160) && (ch <= 255))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf(s_HTMLlat1[((int) ch) - 160], pos);
-      }
-      else if ((ch >= 913) && (ch <= 937) && (ch != 930))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf(HTMLsymbol1[((int) ch) - 913], pos);
-      }
-      else if ((ch >= 945) && (ch <= 969))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf(HTMLsymbol2[((int) ch) - 945], pos);
-      }
-      else if ((ch >= 977) && (ch <= 978))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-
-        // subtract the unused characters 
-        pos = copyEntityIntoBuf(HTMLsymbol2[((int) ch) - 945 - 7], pos);
-      }
-      else if ((ch == 982))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-
-        // subtract the unused characters
-        pos = copyEntityIntoBuf(HTMLsymbol2[((int) ch) - 945 - 10], pos);
-      }
-      else if (402 == ch)
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-        pos = copyEntityIntoBuf("fnof", pos);
-      }
-      else if (m_isUTF8 && (0xd800 <= ch && ch < 0xdc00))
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        // UTF-16 surrogate
-        int next;
-
-        if (i + 1 >= length)
-        {
-          throw new org.xml.sax.SAXException(
-            XSLMessages.createXPATHMessage(
-              XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-              new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
-
-          //+Integer.toHexString(ch)+ " ?");
-        }
-        else
-        {
-          next = chars[++i];
-
-          if (!(0xdc00 <= next && next < 0xe000))
-            throw new org.xml.sax.SAXException(
-              XSLMessages.createXPATHMessage(
-                XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
-                new Object[]{
-                  Integer.toHexString(ch) + " "
-                  + Integer.toHexString(next) }));  //"Invalid UTF-16 surrogate detected: "
-
-          //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
-          next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
-        }
-
-        accum('&');
-        accum('#');
-
-        String intStr = Integer.toString(next);
-        int nIntStr = intStr.length();
-
-        for (int k = 0; k < nIntStr; k++)
-        {
-          accum(intStr.charAt(k));
-        }
-
-        accum(';');
-
-        startClean = i + 1;
-      }
-      else if ((ch >= '\u007F') && (ch <= m_maxCharacter))
-      {
-
-        // Hope this is right...
-        lengthClean++;
-
-        // accum(ch);
-      }
-      else
-      {
-        if (lengthClean > 0)
-        {
-          accum(chars, startClean, lengthClean);
-
-          lengthClean = 0;
-        }
-
-        startClean = i + 1;
-
-        accum('&');
-        accum('#');
-
-        String intStr = Integer.toString(ch);
-        int nIntStr = intStr.length();
-
-        for (int k = 0; k < nIntStr; k++)
-        {
-          accum(intStr.charAt(k));
-        }
-
-        accum(';');
-      }
+      super.characters(chars, start, length);
     }
-
-    if (lengthClean > 0)
-    {
-      accum(chars, startClean, lengthClean);
-    }
-
-    m_isprevtext = true;
   }
 
   /**
    *  Receive notification of cdata.
-   * 
+   *
    *  <p>The Parser will call this method to report each chunk of
    *  character data.  SAX parsers may return all contiguous character
    *  data in a single chunk, or they may split it into several
    *  chunks; however, all of the characters in any single event
    *  must come from the same external entity, so that the Locator
    *  provides useful information.</p>
-   * 
+   *
    *  <p>The application must not attempt to read from the array
    *  outside of the specified range.</p>
-   * 
+   *
    *  <p>Note that some parsers will report whitespace using the
    *  ignorableWhitespace() method rather than this one (validating
    *  parsers must do so).</p>
-   * 
+   *
    *  @param ch The characters from the XML document.
    *  @param start The start position in the array.
    *  @param length The number of characters to read from the array.
@@ -1494,7 +1049,8 @@ public class FormatterToHTML extends FormatterToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
+  public void cdata(char ch[], int start, int length)
+          throws org.xml.sax.SAXException
   {
 
     if ((null != m_currentElementName)
@@ -1548,7 +1104,7 @@ public class FormatterToHTML extends FormatterToXML
 
   /**
    *  Receive notification of a processing instruction.
-   * 
+   *
    *  @param target The processing instruction target.
    *  @param data The processing instruction data, or null if
    *         none was supplied.
@@ -1563,9 +1119,13 @@ public class FormatterToHTML extends FormatterToXML
 
     // Use a fairly nasty hack to tell if the next node is supposed to be 
     // unescaped text.
-    if (target.equals(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING))
+    if (target.equals(Result.PI_DISABLE_OUTPUT_ESCAPING))
     {
-      m_disableOutputEscapingStates.setTop(true);
+      startNonEscaping();
+    }
+    else if (target.equals(Result.PI_ENABLE_OUTPUT_ESCAPING))
+    {
+      endNonEscaping();
     }
     else
     {
@@ -1588,7 +1148,7 @@ public class FormatterToHTML extends FormatterToXML
   /**
    * Receive notivication of a entityReference.
    *
-   * NEEDSDOC @param name
+   * @param name non-null reference to entity name string.
    *
    * @throws org.xml.sax.SAXException
    */

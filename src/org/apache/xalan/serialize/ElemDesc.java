@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.serialize;
 
-import java.util.Hashtable;
+import org.apache.xml.utils.StringToIntTable;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -66,89 +66,92 @@ import java.util.Hashtable;
 class ElemDesc
 {
 
-  /** NEEDSDOC Field m_flags          */
+  /** Bit flags to tell about this element type. */
   int m_flags;
 
-  /** NEEDSDOC Field m_attrs          */
-  Hashtable m_attrs = null;
+  /**
+   * Table of attribute names to integers, which contain bit flags telling about
+   *  the attributes.
+   */
+  StringToIntTable m_attrs = null;
 
-  /** NEEDSDOC Field EMPTY          */
+  /** Bit position if this element type is empty. */
   static final int EMPTY = (1 << 1);
 
-  /** NEEDSDOC Field FLOW          */
+  /** Bit position if this element type is a flow. */
   static final int FLOW = (1 << 2);
 
-  /** NEEDSDOC Field BLOCK          */
+  /** Bit position if this element type is a block. */
   static final int BLOCK = (1 << 3);
 
-  /** NEEDSDOC Field BLOCKFORM          */
+  /** Bit position if this element type is a block form. */
   static final int BLOCKFORM = (1 << 4);
 
-  /** NEEDSDOC Field BLOCKFORMFIELDSET          */
+  /** Bit position if this element type is a block form field set (?? -sb). */
   static final int BLOCKFORMFIELDSET = (1 << 5);
 
-  /** NEEDSDOC Field CDATA          */
+  /** Bit position if this element type is CDATA. */
   static final int CDATA = (1 << 6);
 
-  /** NEEDSDOC Field PCDATA          */
+  /** Bit position if this element type is PCDATA. */
   static final int PCDATA = (1 << 7);
 
-  /** NEEDSDOC Field RAW          */
+  /** Bit position if this element type is should be raw characters. */
   static final int RAW = (1 << 8);
 
-  /** NEEDSDOC Field INLINE          */
+  /** Bit position if this element type should be inlined. */
   static final int INLINE = (1 << 9);
 
-  /** NEEDSDOC Field INLINEA          */
+  /** Bit position if this element type is INLINEA (?? -sb). */
   static final int INLINEA = (1 << 10);
 
-  /** NEEDSDOC Field INLINELABEL          */
+  /** Bit position if this element type is an inline label. */
   static final int INLINELABEL = (1 << 11);
 
-  /** NEEDSDOC Field FONTSTYLE          */
+  /** Bit position if this element type is a font style. */
   static final int FONTSTYLE = (1 << 12);
 
-  /** NEEDSDOC Field PHRASE          */
+  /** Bit position if this element type is a phrase. */
   static final int PHRASE = (1 << 13);
 
-  /** NEEDSDOC Field FORMCTRL          */
+  /** Bit position if this element type is a form control. */
   static final int FORMCTRL = (1 << 14);
 
-  /** NEEDSDOC Field SPECIAL          */
+  /** Bit position if this element type is ???. */
   static final int SPECIAL = (1 << 15);
 
-  /** NEEDSDOC Field ASPECIAL          */
+  /** Bit position if this element type is ???. */
   static final int ASPECIAL = (1 << 16);
 
-  /** NEEDSDOC Field HEADMISC          */
+  /** Bit position if this element type is an odd header element. */
   static final int HEADMISC = (1 << 17);
 
-  /** NEEDSDOC Field HEAD          */
+  /** Bit position if this element type is a head element (i.e. H1, H2, etc.) */
   static final int HEAD = (1 << 18);
 
-  /** NEEDSDOC Field LIST          */
+  /** Bit position if this element type is a list. */
   static final int LIST = (1 << 19);
 
-  /** NEEDSDOC Field PREFORMATTED          */
+  /** Bit position if this element type is a preformatted type. */
   static final int PREFORMATTED = (1 << 20);
 
-  /** NEEDSDOC Field WHITESPACESENSITIVE          */
+  /** Bit position if this element type is whitespace sensitive. */
   static final int WHITESPACESENSITIVE = (1 << 21);
 
-  /** NEEDSDOC Field HEADELEM          */
+  /** Bit position if this element type is a header element (i.e. HEAD). */
   static final int HEADELEM = (1 << 22);
 
-  /** NEEDSDOC Field ATTRURL          */
+  /** Bit position if this attribute type is a URL. */
   static final int ATTRURL = (1 << 1);
 
-  /** NEEDSDOC Field ATTREMPTY          */
+  /** Bit position if this attribute type is an empty type. */
   static final int ATTREMPTY = (1 << 2);
 
   /**
-   * Constructor ElemDesc
+   * Construct an ElemDesc from a set of bit flags.
    *
    *
-   * NEEDSDOC @param flags
+   * @param flags Bit flags that describe the basic properties of this element type.
    */
   ElemDesc(int flags)
   {
@@ -156,12 +159,12 @@ class ElemDesc
   }
 
   /**
-   * NEEDSDOC Method is 
+   * Tell if this element type has the basic bit properties that are passed
+   * as an argument.
    *
+   * @param flags Bit flags that describe the basic properties of interest.
    *
-   * NEEDSDOC @param flags
-   *
-   * NEEDSDOC (is) @return
+   * @return true if any of the flag bits are true.
    */
   boolean is(int flags)
   {
@@ -171,43 +174,31 @@ class ElemDesc
   }
 
   /**
-   * NEEDSDOC Method setAttr 
+   * Set an attribute name and it's bit properties.
    *
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param flags
+   * @param name non-null name of attribute, in upper case.
+   * @param flags flag bits.
    */
   void setAttr(String name, int flags)
   {
 
     if (null == m_attrs)
-      m_attrs = new Hashtable();
+      m_attrs = new StringToIntTable();
 
-    m_attrs.put(name, new Integer(flags));
+    m_attrs.put(name, flags);
   }
 
   /**
-   * NEEDSDOC Method isAttrFlagSet 
+   * Tell if any of the bits of interest are set for a named attribute type.
    *
+   * @param name non-null reference to attribute name, in any case.
+   * @param flags flag mask.
    *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param flags
-   *
-   * NEEDSDOC (isAttrFlagSet) @return
+   * @return true if any of the flags are set for the named attribute.
    */
   boolean isAttrFlagSet(String name, int flags)
   {
-
-    if (null != m_attrs)
-    {
-      Integer _flags = (Integer) m_attrs.get(name);
-
-      if (null != _flags)
-      {
-        return (_flags.intValue() & flags) != 0;
-      }
-    }
-
-    return false;
+    return (null != m_attrs) ? ((m_attrs.getIgnoreCase(name) & flags) != 0) : false;
   }
 }

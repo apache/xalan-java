@@ -59,8 +59,8 @@ package org.apache.xalan.serialize;
 import java.io.Writer;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.Properties;
 
-import org.xml.sax.DocumentHandler;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -120,7 +120,7 @@ public interface Serializer
    * serialized. This method should not be called while the
    * serializer is in the process of serializing a document.
    * <p>
-   * The encoding specified in the {@link OutputFormat} is used, or
+   * The encoding specified in the output {@link Properties} is used, or
    * if no encoding was specified, the default for the selected
    * output method.
    *
@@ -129,10 +129,10 @@ public interface Serializer
   public void setOutputStream(OutputStream output);
 
   /**
-   * NEEDSDOC Method getOutputStream 
+   * Get the output stream where the events will be serialized to.
    *
-   *
-   * NEEDSDOC (getOutputStream) @return
+   * @return reference to the result stream, or null of only a writer was
+   * set.
    */
   public OutputStream getOutputStream();
 
@@ -141,7 +141,7 @@ public interface Serializer
    * This method should not be called while the serializer is in
    * the process of serializing a document.
    * <p>
-   * The encoding specified for the {@link OutputFormat} must be
+   * The encoding specified for the output {@link Properties} must be
    * identical to the output format used with the writer.
    *
    * @param writer The output writer stream
@@ -149,10 +149,9 @@ public interface Serializer
   public void setWriter(Writer writer);
 
   /**
-   * NEEDSDOC Method getWriter 
+   * Get the character stream where the events will be serialized to.
    *
-   *
-   * NEEDSDOC (getWriter) @return
+   * @return Reference to the result Writer, or null.
    */
   public Writer getWriter();
 
@@ -165,25 +164,14 @@ public interface Serializer
    *
    * @param format The output format to use
    */
-  public void setOutputFormat(OutputFormat format);
+  public void setOutputFormat(Properties format);
 
   /**
    * Returns the output format for this serializer.
    *
    * @return The output format in use
    */
-  public OutputFormat getOutputFormat();
-
-  /**
-   * Return a {@link DocumentHandler} interface into this serializer.
-   * If the serializer does not support the {@link DocumentHandler}
-   * interface, it should return null.
-   *
-   * @return A {@link DocumentHandler} interface into this serializer,
-   *  or null if the serializer is not SAX 1 capable
-   * @throws IOException An I/O exception occured
-   */
-  public DocumentHandler asDocumentHandler() throws IOException;
+  public Properties getOutputFormat();
 
   /**
    * Return a {@link ContentHandler} interface into this serializer.

@@ -64,8 +64,9 @@ import java.io.*;
 
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.serialize.OutputFormat;
-import org.apache.xalan.serialize.helpers.TextOutputFormat;
+import org.apache.xalan.templates.OutputProperties;
+
+import javax.xml.transform.OutputKeys;
 
 /**
  * <meta name="usage" content="general"/>
@@ -84,47 +85,7 @@ public class FormatterToText extends FormatterToXML
     super();
   }
 
-  /**
-   * Constructor using a writer.
-   * @param writer        The character output stream to use.
-   */
-  public FormatterToText(Writer writer)
-  {
-    super(writer);
-  }
-
-  /**
-   * Constructor using an output stream, and a simple OutputFormat.
-   * @param writer        The character output stream to use.
-   *
-   * NEEDSDOC @param os
-   *
-   * @throws java.io.UnsupportedEncodingException
-   */
-  public FormatterToText(java.io.OutputStream os)
-          throws java.io.UnsupportedEncodingException
-  {
-
-    OutputFormat of = new TextOutputFormat("UTF-8");
-
-    this.init(os, of);
-  }
-
-  /**
-   * Constructor using a writer.
-   * @param writer        The character output stream to use.
-   *
-   * NEEDSDOC @param xmlListener
-   */
-  public FormatterToText(FormatterToXML xmlListener)
-  {
-
-    super(xmlListener);
-
-    m_doIndent = true;  // TODO: But what if the user wants to set it???
-  }
-
-  /**
+   /**
    * Receive an object for locating the origin of SAX document events.
    *
    * <p>SAX parsers are strongly encouraged (though not absolutely
@@ -209,9 +170,14 @@ public class FormatterToText extends FormatterToXML
    * defaulted): #IMPLIED attributes will be omitted.</p>
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
-   * @param name The element type name.
+   * @param namespaceURI The Namespace URI, or the empty string if the
+   *        element has no Namespace URI or if Namespace
+   *        processing is not being performed.
+   * @param localName The local name (without prefix), or the
+   *        empty string if Namespace processing is not being
+   *        performed.
+   * @param name The qualified name (with prefix), or the
+   *        empty string if qualified names are not available.
    * @param atts The attributes attached to the element, if any.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
@@ -240,8 +206,14 @@ public class FormatterToText extends FormatterToXML
    * still be attached to the name.</p>
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI The Namespace URI, or the empty string if the
+   *        element has no Namespace URI or if Namespace
+   *        processing is not being performed.
+   * @param localName The local name (without prefix), or the
+   *        empty string if Namespace processing is not being
+   *        performed.
+   * @param name The qualified name (with prefix), or the
+   *        empty string if qualified names are not available.
    * @param name The element type name
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
@@ -275,17 +247,24 @@ public class FormatterToText extends FormatterToXML
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
-   *
-   * @throws org.xml.sax.SAXException
    */
-  public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
+  public void characters(char ch[], int start, int length)
+          throws org.xml.sax.SAXException
   {
 
-    this.accum(ch, start, length);
+    // this.accum(ch, start, length);
+    try
+    {
+      writeNormalizedChars(ch, start, length, false);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
     this.flush();
 
     // flushWriter();
@@ -295,17 +274,26 @@ public class FormatterToText extends FormatterToXML
    * If available, when the disable-output-escaping attribute is used,
    * output raw text without escaping.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void charactersRaw(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
 
-    accum(ch, start, length);
+    // accum(ch, start, length);
+    try
+    {
+      writeNormalizedChars(ch, start, length, false);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
     flush();
 
     // flushWriter();
@@ -331,17 +319,24 @@ public class FormatterToText extends FormatterToXML
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
-   *
-   * @throws org.xml.sax.SAXException
    */
-  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
+  public void cdata(char ch[], int start, int length)
+          throws org.xml.sax.SAXException
   {
 
-    accum(ch, start, length);
+    // accum(ch, start, length);
+    try
+    {
+      writeNormalizedChars(ch, start, length, false);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
     flush();
 
     // flushWriter();
@@ -377,7 +372,15 @@ public class FormatterToText extends FormatterToXML
           throws org.xml.sax.SAXException
   {
 
-    // No action for the moment.
+    try
+    {
+      writeNormalizedChars(ch, start, length, false);
+    }
+    catch(IOException ioe)
+    {
+      throw new SAXException(ioe);
+    }
+    flush();
   }
 
   /**
@@ -423,7 +426,7 @@ public class FormatterToText extends FormatterToXML
   /**
    * Receive notivication of a entityReference.
    *
-   * NEEDSDOC @param name
+   * @param name non-null reference to the name of the entity.
    *
    * @throws org.xml.sax.SAXException
    */

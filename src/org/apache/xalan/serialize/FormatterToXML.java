@@ -66,26 +66,26 @@ import java.util.Enumeration;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.Hashtable;
+import java.util.Properties;
 
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.w3c.dom.Node;
 
-import org.apache.xalan.serialize.OutputFormat;
-import org.apache.xalan.serialize.helpers.XMLOutputFormat;
 import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.DOMSerializer;
 import org.apache.xml.utils.QName;
-
+import org.apache.xalan.templates.OutputProperties;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.WrappedRuntimeException;
-
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
+
+import javax.xml.transform.Result;
+import javax.xml.transform.OutputKeys;
 
 /**
  * <meta name="usage" content="general"/>
@@ -93,8 +93,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * Warning: this class will be replaced by the Xerces Serializer classes.
  */
 public class FormatterToXML
-        implements ContentHandler, LexicalHandler, 
-                   Serializer, DOMSerializer
+        implements ContentHandler, LexicalHandler, Serializer, DOMSerializer
 {
 
   /**
@@ -102,13 +101,13 @@ public class FormatterToXML
    */
   protected Writer m_writer = null;
 
-  /** NEEDSDOC Field m_shouldFlush          */
+  /** True if we control the buffer, and we should flush the output on endDocument. */
   boolean m_shouldFlush = true;
 
-  /** NEEDSDOC Field m_outputStream          */
+  /** The output stream where the result stream is written. */
   protected OutputStream m_outputStream = System.out;
 
-  /** NEEDSDOC Field m_bytesEqualChars          */
+  /** True if no encoding has to take place, if we're not writting to a Writer. */
   private boolean m_bytesEqualChars = false;
 
   /**
@@ -137,17 +136,22 @@ public class FormatterToXML
    */
   protected BoolStack m_elemStack = new BoolStack();
 
-  /** NEEDSDOC Field m_disableOutputEscapingStates          */
+  /** Stack to keep track of disabling output escaping. */
   protected BoolStack m_disableOutputEscapingStates = new BoolStack();
 
-  /** NEEDSDOC Field m_cdataSectionStates          */
+  /** True will be pushed, if characters should be in CDATA section blocks. */
   protected BoolStack m_cdataSectionStates = new BoolStack();
 
+  /** List of QNames obtained from the xsl:output properties. */
+  protected Vector m_cdataSectionNames = null;
+
+  /** True if the current characters should be in CDATA blocks. */
+  protected boolean m_inCData = false;
+
   /**
-   * NEEDSDOC Method isEscapingDisabled 
+   * Tell if the character escaping should be disabled for the current state.
    *
-   *
-   * NEEDSDOC (isEscapingDisabled) @return
+   * @return true if the character escaping should be disabled.
    */
   protected boolean isEscapingDisabled()
   {
@@ -155,14 +159,15 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method isCDataSection 
+   * Tell if the characters in the current state should be put in
+   * cdata section blocks.
    *
-   *
-   * NEEDSDOC (isCDataSection) @return
+   * @return true if the characters in the current state should be put in
+   * cdata section blocks.
    */
   protected boolean isCDataSection()
   {
-    return m_cdataSectionStates.peekOrFalse();
+    return m_inCData || m_cdataSectionStates.peekOrFalse();
   }
 
   /**
@@ -221,7 +226,7 @@ public class FormatterToXML
   /**
    * Amount to indent.
    */
-  public int indent = 0;
+  public int m_indentAmount = 0;
 
   /**
    * Current level of indent.
@@ -256,6 +261,11 @@ public class FormatterToXML
   boolean m_standalone = false;
 
   /**
+   * True if standalone was specified.
+   */
+  boolean m_standaloneWasSpecified = false;
+
+  /**
    * The mediatype.  Not used right now.
    */
   String m_mediatype;
@@ -266,84 +276,17 @@ public class FormatterToXML
   protected boolean m_inEntityRef = false;
 
   /**
-   * These are characters that will be escaped in the output.
+   * Map that tells which XML characters should have special treatment, and it
+   *  provides character to entity name lookup.
    */
-
-  // public char[] m_attrSpecialChars = {'<', '>', '&', '\"', '\r', '\n'};
-  public char[] m_attrSpecialChars = { '<', '>', '&', '\"' };
-
-  /** NEEDSDOC Field SPECIALSSIZE          */
-  static final int SPECIALSSIZE = 256;
-
-  /** NEEDSDOC Field m_attrCharsMap          */
-  public char[] m_attrCharsMap = new char[SPECIALSSIZE];
-
-  /** NEEDSDOC Field m_charsMap          */
-  public char[] m_charsMap = new char[SPECIALSSIZE];
+  protected static CharInfo m_xmlcharInfo =
+    new CharInfo(CharInfo.XML_ENTITIES_RESOURCE);
 
   /**
-   * Set the attribute characters what will require special mapping.
+   * Map that tells which characters should have special treatment, and it
+   *  provides character to entity name lookup.
    */
-  protected void initAttrCharsMap()
-  {
-
-    int n = (m_maxCharacter > SPECIALSSIZE) ? SPECIALSSIZE : m_maxCharacter;
-
-    for (int i = 0; i < n; i++)
-    {
-      m_attrCharsMap[i] = '\0';
-    }
-
-    int nSpecials = m_attrSpecialChars.length;
-
-    for (int i = 0; i < nSpecials; i++)
-    {
-      m_attrCharsMap[(int) m_attrSpecialChars[i]] = 'S';
-    }
-
-    m_attrCharsMap[0x0A] = 'S';
-    m_attrCharsMap[0x0D] = 'S';
-
-    for (int i = m_maxCharacter; i < SPECIALSSIZE; i++)
-    {
-      m_attrCharsMap[i] = 'S';
-    }
-  }
-
-  /**
-   * Set the characters what will require special mapping.
-   */
-  protected void initCharsMap()
-  {
-
-    initAttrCharsMap();
-
-    int n = (m_maxCharacter > SPECIALSSIZE) ? SPECIALSSIZE : m_maxCharacter;
-
-    for (int i = 0; i < n; i++)
-    {
-      m_charsMap[i] = '\0';
-    }
-
-    m_charsMap[(int) '\n'] = 'S';
-    m_charsMap[(int) '<'] = 'S';
-    m_charsMap[(int) '>'] = 'S';
-    m_charsMap[(int) '&'] = 'S';
-
-    for (int i = 0; i < 20; i++)
-    {
-      m_charsMap[i] = 'S';
-    }
-
-    m_charsMap[0x0A] = 'S';
-    m_charsMap[0x0D] = 'S';
-    m_charsMap[9] = '\0';
-
-    for (int i = m_maxCharacter; i < SPECIALSSIZE; i++)
-    {
-      m_charsMap[i] = 'S';
-    }
-  }
+  protected static CharInfo m_charInfo;
 
   /**
    * Flag to quickly tell if the encoding is UTF8.
@@ -361,51 +304,23 @@ public class FormatterToXML
    */
   public boolean m_spaceBeforeClose = false;
 
-  /** NEEDSDOC Field DEFAULT_MIME_ENCODING          */
-  static final String DEFAULT_MIME_ENCODING = "UTF-8";
-
-  /** NEEDSDOC Field m_format          */
-  protected OutputFormat m_format;
+  /** The xsl:output properties. */
+  protected Properties m_format;
 
   /**
    * Default constructor.
    */
-  public FormatterToXML(){}
-
-  /**
-   * Constructor using a writer.
-   * @param writer        The character output stream to use.
-   */
-  public FormatterToXML(Writer writer)
+  public FormatterToXML()
   {
-    m_shouldFlush = false;
-    m_writer = writer;
+    m_charInfo = m_xmlcharInfo;
   }
 
   /**
-   * Constructor using an output stream, and a simple OutputFormat.
-   * @param writer        The character output stream to use.
+   * Copy properties from another FormatterToXML.
    *
-   * NEEDSDOC @param os
-   *
-   * @throws UnsupportedEncodingException
+   * @param xmlListener non-null reference to a FormatterToXML object.
    */
-  public FormatterToXML(java.io.OutputStream os)
-          throws UnsupportedEncodingException
-  {
-
-    OutputFormat of = new XMLOutputFormat();
-
-    init(os, of);
-  }
-
-  /**
-   * Constructor using a writer.
-   * @param writer        The character output stream to use.
-   *
-   * NEEDSDOC @param xmlListener
-   */
-  public FormatterToXML(FormatterToXML xmlListener)
+  public void CopyFrom(FormatterToXML xmlListener)
   {
 
     m_writer = xmlListener.m_writer;
@@ -424,7 +339,7 @@ public class FormatterToXML
     m_isprevtext = xmlListener.m_isprevtext;
     m_doIndent = xmlListener.m_doIndent;
     m_currentIndent = xmlListener.m_currentIndent;
-    indent = xmlListener.indent;
+    m_indentAmount = xmlListener.m_indentAmount;
     level = xmlListener.level;
     m_startNewLine = xmlListener.m_startNewLine;
     m_needToOutputDocTypeDecl = xmlListener.m_needToOutputDocTypeDecl;
@@ -432,9 +347,6 @@ public class FormatterToXML
     m_doctypePublic = xmlListener.m_doctypePublic;
     m_standalone = xmlListener.m_standalone;
     m_mediatype = xmlListener.m_mediatype;
-    m_attrSpecialChars = xmlListener.m_attrSpecialChars;
-    m_attrCharsMap = xmlListener.m_attrCharsMap;
-    m_charsMap = xmlListener.m_charsMap;
     m_maxCharacter = xmlListener.m_maxCharacter;
     m_spaceBeforeClose = xmlListener.m_spaceBeforeClose;
     m_inCData = xmlListener.m_inCData;
@@ -443,8 +355,6 @@ public class FormatterToXML
 
     // m_pos = xmlListener.m_pos;
     m_pos = 0;
-
-    initCharsMap();
   }
 
   /**
@@ -454,7 +364,7 @@ public class FormatterToXML
    * @param writer The writer to use
    * @param format The output format
    */
-  public synchronized void init(Writer writer, OutputFormat format)
+  public synchronized void init(Writer writer, Properties format)
   {
     init(writer, format, false);
   }
@@ -465,27 +375,32 @@ public class FormatterToXML
    *
    * @param writer The writer to use
    * @param format The output format
-   * NEEDSDOC @param shouldFlush
+   * @param shouldFlush True if the writer should be flushed at EndDocument.
    */
-  private synchronized void init(Writer writer, OutputFormat format,
+  private synchronized void init(Writer writer, Properties format,
                                  boolean shouldFlush)
   {
 
     m_shouldFlush = shouldFlush;
     m_writer = writer;
     m_format = format;
-
-    // This is to get around differences between Xalan and Xerces.
-    // Xalan uses -1 as default for no indenting, Xerces uses 0.
-    // So we just adjust the indent value here because we bumped it
-    // up previously ( in StylesheetRoot);
-    indent = format.getIndentAmount() - 1;
-    m_doIndent = format.getIndent();
-    m_shouldNotWriteXMLHeader = format.getOmitXMLDeclaration();
-    m_doctypeSystem = format.getDoctypeSystemId();
-    m_doctypePublic = format.getDoctypePublicId();
-    m_standalone = format.getStandalone();
-    m_mediatype = format.getMediaType();
+    m_cdataSectionNames =
+      OutputProperties.getQNameProperties(OutputKeys.CDATA_SECTION_ELEMENTS,
+                                          format);
+    m_indentAmount =
+      OutputProperties.getIntProperty(OutputProperties.S_KEY_INDENT_AMOUNT,
+                                      format);
+    m_doIndent = OutputProperties.getBooleanProperty(OutputKeys.INDENT,
+            format);
+    m_shouldNotWriteXMLHeader =
+      OutputProperties.getBooleanProperty(OutputKeys.OMIT_XML_DECLARATION,
+                                          format);
+    m_doctypeSystem = format.getProperty(OutputKeys.DOCTYPE_SYSTEM);
+    m_doctypePublic = format.getProperty(OutputKeys.DOCTYPE_PUBLIC);
+    m_standaloneWasSpecified = (null != format.get(OutputKeys.STANDALONE));
+    m_standalone = OutputProperties.getBooleanProperty(OutputKeys.STANDALONE,
+            format);
+    m_mediatype = format.getProperty(OutputKeys.MEDIA_TYPE);
 
     if (null != m_doctypePublic)
     {
@@ -495,12 +410,11 @@ public class FormatterToXML
 
     // initCharsMap();
     if (null == m_encoding)
-      m_encoding = Encodings.getMimeEncoding(format.getEncoding());
+      m_encoding =
+        Encodings.getMimeEncoding(format.getProperty(OutputKeys.ENCODING));
 
-    m_isUTF8 = m_encoding.equals(DEFAULT_MIME_ENCODING);
+    m_isUTF8 = m_encoding.equals(Encodings.DEFAULT_MIME_ENCODING);
     m_maxCharacter = Encodings.getLastPrintable(m_encoding);
-
-    initCharsMap();
   }
 
   /**
@@ -512,14 +426,19 @@ public class FormatterToXML
    * @throws UnsupportedEncodingException The encoding specified
    *   in the output format is not supported
    */
-  public synchronized void init(OutputStream output, OutputFormat format)
+  public synchronized void init(OutputStream output, Properties format)
           throws UnsupportedEncodingException
   {
-    if(null == format)
+
+    if (null == format)
     {
-      format = new org.apache.xalan.serialize.helpers.XMLOutputFormat();
+      OutputProperties op = new OutputProperties(Method.XML);
+
+      format = op.getProperties();
     }
-    m_encoding = Encodings.getMimeEncoding(format.getEncoding());
+
+    m_encoding =
+      Encodings.getMimeEncoding(format.getProperty(OutputKeys.ENCODING));
 
     if (m_encoding.equals("WINDOWS-1250") || m_encoding.equals("US-ASCII")
             || m_encoding.equals("ASCII"))
@@ -569,7 +488,7 @@ public class FormatterToXML
   /**
    * Output the doc type declaration.
    *
-   * NEEDSDOC @param name
+   * @param name non-null reference to document type name.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -617,7 +536,16 @@ public class FormatterToXML
     {
       String encoding = Encodings.getMimeEncoding(m_encoding);
       String version = (null == m_version) ? "1.0" : m_version;
-      String standalone = (m_standalone) ? " standalone=\"yes\"" : "";
+      String standalone;
+
+      if (m_standaloneWasSpecified)
+      {
+        standalone = " standalone=\"" + (m_standalone ? "yes" : "no") + "\"";
+      }
+      else
+      {
+        standalone = "";
+      }
 
       accum("<?xml version=\"" + version + "\" encoding=\"" + encoding + "\""
             + standalone + "?>");
@@ -681,35 +609,35 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method startPrefixMapping 
+   * Begin the scope of a prefix-URI Namespace mapping.
+   * @see {@line org.xml.sax.ContentHandler#startPrefixMapping}.
    *
-   *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param uri
-   *
-   * @throws org.xml.sax.SAXException
+   * @param prefix The Namespace prefix being declared.
+   * @param uri The Namespace URI the prefix is mapped to.
+   * @exception org.xml.sax.SAXException The client may throw
+   *            an exception during processing.
    */
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException{}
 
   /**
-   * NEEDSDOC Method endPrefixMapping 
+   * End the scope of a prefix-URI Namespace mapping.
+   * @see {@line org.xml.sax.ContentHandler#endPrefixMapping}.
    *
-   *
-   * NEEDSDOC @param prefix
-   *
-   * @throws org.xml.sax.SAXException
+   * @param prefix The prefix that was being mapping.
+   * @exception org.xml.sax.SAXException The client may throw
+   *            an exception during processing.
    */
-  public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException{}
+  public void endPrefixMapping(String prefix)
+          throws org.xml.sax.SAXException{}
 
   /**
-   * NEEDSDOC Method subPartMatch 
+   * Tell if two strings are equal, without worry if the first string is null.
    *
+   * @param p String reference, which may be null.
+   * @param t String reference, which may be null.
    *
-   * NEEDSDOC @param p
-   * NEEDSDOC @param t
-   *
-   * NEEDSDOC (subPartMatch) @return
+   * @return true if strings are equal.
    */
   protected static final boolean subPartMatch(String p, String t)
   {
@@ -721,13 +649,15 @@ public class FormatterToXML
    * is found in the list of qnames.  A state is always pushed,
    * one way or the other.
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param qnames
-   * NEEDSDOC @param state
+   * @param namespaceURI Should be a non-null reference to the namespace URL
+   *        of the element that owns the state, or empty string.
+   * @param localName Should be a non-null reference to the local name
+   *        of the element that owns the state.
+   * @param qnames Vector of qualified names of elements, or null.
+   * @param state The stack where the state should be pushed.
    */
   protected void pushState(String namespaceURI, String localName,
-                           QName[] qnames, BoolStack state)
+                           Vector qnames, BoolStack state)
   {
 
     boolean b;
@@ -739,17 +669,16 @@ public class FormatterToXML
       if ((null != namespaceURI) && namespaceURI.length() == 0)
         namespaceURI = null;
 
-      int nElems = qnames.length;
+      int nElems = qnames.size();
 
       for (int i = 0; i < nElems; i++)
       {
-        QName q = qnames[i];
+        QName q = (QName) qnames.elementAt(i);
 
         if (q.getLocalName().equals(localName)
                 && subPartMatch(namespaceURI, q.getNamespaceURI()))
         {
           b = true;
-          ;
 
           break;
         }
@@ -767,13 +696,18 @@ public class FormatterToXML
    * Receive notification of the beginning of an element.
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI The Namespace URI, or the empty string if the
+   *        element has no Namespace URI or if Namespace
+   *        processing is not being performed.
+   * @param localName The local name (without prefix), or the
+   *        empty string if Namespace processing is not being
+   *        performed.
    * @param name The element type name.
    * @param atts The attributes attached to the element, if any.
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see #endElement
+   * @see org.xml.sax.ContentHandler#startElement
+   * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.AttributeList
    *
    * @throws org.xml.sax.SAXException
@@ -794,11 +728,11 @@ public class FormatterToXML
     m_needToOutputDocTypeDecl = false;
 
     writeParentTagEnd();
-    pushState(namespaceURI, localName, m_format.getCDataElements(),
+    pushState(namespaceURI, localName, m_cdataSectionNames,
               m_cdataSectionStates);
-    pushState(namespaceURI, localName, m_format.getNonEscapingElements(),
-              m_disableOutputEscapingStates);
 
+    // pushState(namespaceURI, localName, m_format.getNonEscapingElements(),
+    //          m_disableOutputEscapingStates);
     m_ispreserve = false;
 
     //  System.out.println(name+": m_doIndent = "+m_doIndent+", m_ispreserve = "+m_ispreserve+", m_isprevtext = "+m_isprevtext);
@@ -822,7 +756,7 @@ public class FormatterToXML
     // Flag the current element as not yet having any children.
     openElementForChildren();
 
-    m_currentIndent += indent;
+    m_currentIndent += m_indentAmount;
     m_isprevtext = false;
   }
 
@@ -867,7 +801,7 @@ public class FormatterToXML
    * Tell if child nodes have been added to the current
    * element.  Must be called in balance with openElementForChildren().
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if child nodes were added.
    */
   protected boolean childNodesWereAdded()
   {
@@ -878,8 +812,12 @@ public class FormatterToXML
    * Receive notification of the end of an element.
    *
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param localName
+   * @param namespaceURI The Namespace URI, or the empty string if the
+   *        element has no Namespace URI or if Namespace
+   *        processing is not being performed.
+   * @param localName The local name (without prefix), or the
+   *        empty string if Namespace processing is not being
+   *        performed.
    * @param name The element type name
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
@@ -893,7 +831,7 @@ public class FormatterToXML
     if (m_inEntityRef)
       return;
 
-    m_currentIndent -= indent;
+    m_currentIndent -= m_indentAmount;
 
     boolean hasChildNodes = childNodesWereAdded();
 
@@ -922,7 +860,7 @@ public class FormatterToXML
 
     m_isprevtext = false;
 
-    m_disableOutputEscapingStates.pop();
+    // m_disableOutputEscapingStates.pop();
     m_cdataSectionStates.pop();
   }
 
@@ -1025,11 +963,11 @@ public class FormatterToXML
     if (m_inEntityRef)
       return;
 
-    if (target.equals(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING))
+    if (target.equals(Result.PI_DISABLE_OUTPUT_ESCAPING))
     {
       startNonEscaping();
     }
-    else if (target.equals(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING))
+    else if (target.equals(Result.PI_ENABLE_OUTPUT_ESCAPING))
     {
       endNonEscaping();
     }
@@ -1067,7 +1005,8 @@ public class FormatterToXML
    * @param length The number of characters to use from the array.
    * @exception org.xml.sax.SAXException The application may raise an exception.
    */
-  public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
+  public void comment(char ch[], int start, int length)
+          throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
@@ -1084,9 +1023,6 @@ public class FormatterToXML
 
     m_startNewLine = true;
   }
-
-  /** NEEDSDOC Field m_inCData          */
-  protected boolean m_inCData = false;
 
   /**
    * Report the start of a CDATA section.
@@ -1137,7 +1073,8 @@ public class FormatterToXML
    *
    * @throws org.xml.sax.SAXException
    */
-  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
+  public void cdata(char ch[], int start, int length)
+          throws org.xml.sax.SAXException
   {
 
     try
@@ -1178,25 +1115,28 @@ public class FormatterToXML
     }
   }
 
-  /** NEEDSDOC Field MAXCHARBUF          */
+  /** The maximum character buffer, set to 4K to match most servers. */
   static final int MAXCHARBUF = (4 * 1024);
 
-  /** NEEDSDOC Field NUMBERBYTESTOWRITEDIRECT          */
+  /**
+   * If a character event is greater than this number, don't bother with
+   *  the local buffer. 
+   */
   static final int NUMBERBYTESTOWRITEDIRECT = (1024);
 
-  /** NEEDSDOC Field m_charBuf          */
+  /** Character buffer if characters need to be encoded. */
   protected char[] m_charBuf = new char[MAXCHARBUF];
 
-  /** NEEDSDOC Field m_byteBuf          */
+  /** Byte buffer if characters do not need to be encoded. */
   protected byte[] m_byteBuf = new byte[MAXCHARBUF];
 
-  /** NEEDSDOC Field m_pos          */
+  /** The current position in the m_charBuf or m_byteBuf. */
   protected int m_pos = 0;
 
   /**
    * Append a byte to the buffer.
    *
-   * NEEDSDOC @param b
+   * @param b Byte to be written.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1222,7 +1162,7 @@ public class FormatterToXML
   /**
    * Append a character to the buffer.
    *
-   * NEEDSDOC @param b
+   * @param b byte to be written to result stream.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1248,9 +1188,9 @@ public class FormatterToXML
   /**
    * Append a character to the buffer.
    *
-   * NEEDSDOC @param chars
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param chars non-null reference to character array.
+   * @param start Start of characters to be written.
+   * @param length Number of characters to be written.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1304,7 +1244,7 @@ public class FormatterToXML
   /**
    * Append a character to the buffer.
    *
-   * NEEDSDOC @param s
+   * @param s non-null reference to string to be written to the character buffer.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1357,8 +1297,7 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method flushBytes 
-   *
+   * Flush all accumulated bytes to the result stream, without encoding.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1399,8 +1338,7 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method flushChars 
-   *
+   * Flush all accumulated characters to the result stream.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1420,8 +1358,7 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method flush 
-   *
+   * Flush all accumulated characters or bytes to the result stream.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1468,6 +1405,7 @@ public class FormatterToXML
   public void characters(char chars[], int start, int length)
           throws org.xml.sax.SAXException
   {
+
     if (m_inEntityRef)
       return;
 
@@ -1500,21 +1438,25 @@ public class FormatterToXML
     for (int i = start; i < end; i++)
     {
       char ch = chars[i];
-      
-      if(checkWhite)
+
+      if (checkWhite)
       {
-        if(!Character.isWhitespace(ch))
+        if (!Character.isWhitespace(ch))
         {
           m_ispreserve = true;
           checkWhite = false;
         }
       }
 
-      if ((ch < SPECIALSSIZE) && (m_charsMap[ch] != 'S'))
+      if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
       {
 
         // accum(ch);
         lengthClean++;
+      }
+      else if ('"' == ch)
+      {
+        lengthClean++;  // don't escape quote here
       }
       else
       {
@@ -1534,6 +1476,7 @@ public class FormatterToXML
     {
       accum(chars, startClean, lengthClean);
     }
+
     m_isprevtext = true;
   }
 
@@ -1541,9 +1484,9 @@ public class FormatterToXML
    * If available, when the disable-output-escaping attribute is used,
    * output raw text without escaping.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1564,10 +1507,10 @@ public class FormatterToXML
   /**
    * Normalize the characters, but don't escape.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
-   * NEEDSDOC @param isCData
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
+   * @param isCData true if a CDATA block should be built around the characters.
    *
    * @throws IOException
    * @throws org.xml.sax.SAXException
@@ -1582,19 +1525,7 @@ public class FormatterToXML
     {
       char c = ch[i];
 
-      if ((0x0D == c) && ((i + 1) < end) && (0x0A == ch[i + 1]))
-      {
-        outputLineSep();
-
-        i++;
-      }
-      else if ((0x0A == c) && ((i + 1) < end) && (0x0D == ch[i + 1]))
-      {
-        outputLineSep();
-
-        i++;
-      }
-      else if ('\n' == c)
+      if (CharInfo.S_LINEFEED == c)
       {
         outputLineSep();
       }
@@ -1744,12 +1675,15 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method skippedEntity 
+   * Receive notification of a skipped entity.
+   * @see {@link org.xml.sax.ContentHandler#skippedEntity}.
    *
-   *
-   * NEEDSDOC @param name
-   *
-   * @throws org.xml.sax.SAXException
+   * @param name The name of the skipped entity.  If it is a
+   *        parameter entity, the name will begin with '%', and if
+   *        it is the external DTD subset, it will be the string
+   *        "[dtd]".
+   * @throws org.xml.sax.SAXException Any SAX exception, possibly
+   *            wrapping another exception.
    */
   public void skippedEntity(String name) throws org.xml.sax.SAXException
   {
@@ -1795,7 +1729,7 @@ public class FormatterToXML
   /**
    * Receive notivication of a entityReference.
    *
-   * NEEDSDOC @param name
+   * @param name The name of the entity.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1816,13 +1750,13 @@ public class FormatterToXML
    * Handle one of the default entities, return false if it
    * is not a default entity.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param i
-   * NEEDSDOC @param chars
-   * NEEDSDOC @param len
-   * NEEDSDOC @param escLF
+   * @param ch character to be escaped.
+   * @param i index into character array.
+   * @param chars non-null reference to character array.
+   * @param len length of chars.
+   * @param escLF true if the linefeed should be escaped.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return i+1 if the character was written, else i.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1831,72 +1765,27 @@ public class FormatterToXML
             throws org.xml.sax.SAXException
   {
 
-    if (!escLF && (0x0D == ch) && ((i + 1) < len) && (0x0A == chars[i + 1]))
+    if (!escLF && CharInfo.S_LINEFEED == ch)
     {
       outputLineSep();
-
-      i++;
-    }
-    else if (!escLF && (0x0A == ch) && ((i + 1) < len)
-             && (0x0D == chars[i + 1]))
-    {
-      outputLineSep();
-
-      i++;
-    }
-    else if (!escLF && 0x0D == ch)
-    {
-      outputLineSep();
-
-      i++;
-    }
-    else if (!escLF && '\n' == ch)
-    {
-      outputLineSep();
-    }
-    else if ('<' == ch)
-    {
-      accum('&');
-      accum('l');
-      accum('t');
-      accum(';');
-    }
-    else if ('>' == ch)
-    {
-      accum('&');
-      accum('g');
-      accum('t');
-      accum(';');
-    }
-    else if ('&' == ch)
-    {
-      accum('&');
-      accum('a');
-      accum('m');
-      accum('p');
-      accum(';');
-    }
-    else if ('"' == ch)
-    {
-      accum('&');
-      accum('q');
-      accum('u');
-      accum('o');
-      accum('t');
-      accum(';');
-    }
-    else if ('\'' == ch)
-    {
-      accum('&');
-      accum('a');
-      accum('p');
-      accum('o');
-      accum('s');
-      accum(';');
     }
     else
     {
-      return i;
+      if (m_charInfo.isSpecial(ch))
+      {
+        String entityRef = m_charInfo.getEntityNameForChar(ch);
+
+        if (null != entityRef)
+        {
+          accum('&');
+          accum(entityRef);
+          accum(';');
+        }
+        else
+          return i;
+      }
+      else
+        return i;
     }
 
     return i + 1;
@@ -1905,13 +1794,13 @@ public class FormatterToXML
   /**
    * Escape and accum a character.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param i
-   * NEEDSDOC @param chars
-   * NEEDSDOC @param len
-   * NEEDSDOC @param escLF
+   * @param ch character to be escaped.
+   * @param i index into character array.
+   * @param chars non-null reference to character array.
+   * @param len length of chars.
+   * @param escLF true if the linefeed should be escaped.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return i+1 if the character was written, else i.
    *
    * @throws org.xml.sax.SAXException
    */
@@ -1968,8 +1857,7 @@ public class FormatterToXML
       }
       else
       {
-        if (ch > m_maxCharacter
-                || ((ch < SPECIALSSIZE) && (m_attrCharsMap[ch] == 'S')))
+        if (ch > m_maxCharacter || (m_charInfo.isSpecial(ch)))
         {
           accum("&#");
           accum(Integer.toString(ch));
@@ -1990,9 +1878,7 @@ public class FormatterToXML
    * and UTF-16 surrogates for chracter references <CODE>&amp;#xnn</CODE>.
    *
    * @param   string      String to convert to XML format.
-   * @param   specials    Chracters, should be represeted in chracter referenfces.
    * @param   encoding    CURRENTLY NOT IMPLEMENTED.
-   * @return              XML-formatted string.
    * @see #backReference
    *
    * @throws org.xml.sax.SAXException
@@ -2008,7 +1894,7 @@ public class FormatterToXML
     {
       char ch = stringChars[i];
 
-      if ((ch < SPECIALSSIZE) && (m_attrCharsMap[ch] != 'S'))
+      if ((ch < m_maxCharacter) && (!m_charInfo.isSpecial(ch)))
         accum(ch);
       else
         accumDefaultEscape(ch, i, stringChars, len, true);
@@ -2016,10 +1902,10 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method shouldIndent 
+   * Tell if, based on space preservation constraints and the doIndent property,
+   * if an indent should occur.
    *
-   *
-   * NEEDSDOC (shouldIndent) @return
+   * @return True if an indent should occur.
    */
   protected boolean shouldIndent()
   {
@@ -2068,7 +1954,7 @@ public class FormatterToXML
    * serialized. This method should not be called while the
    * serializer is in the process of serializing a document.
    * <p>
-   * The encoding specified in the {@link OutputFormat} is used, or
+   * The encoding specified in the output properties is used, or
    * if no encoding was specified, the default for the selected
    * output method.
    *
@@ -2089,10 +1975,10 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method getOutputStream 
+   * Get the output stream where the events will be serialized to.
    *
-   *
-   * NEEDSDOC (getOutputStream) @return
+   * @return reference to the result stream, or null of only a writer was
+   * set.
    */
   public OutputStream getOutputStream()
   {
@@ -2103,9 +1989,6 @@ public class FormatterToXML
    * Specifies a writer to which the document should be serialized.
    * This method should not be called while the serializer is in
    * the process of serializing a document.
-   * <p>
-   * The encoding specified for the {@link OutputFormat} must be
-   * identical to the output format used with the writer.
    *
    * @param writer The output writer stream
    */
@@ -2115,10 +1998,9 @@ public class FormatterToXML
   }
 
   /**
-   * NEEDSDOC Method getWriter 
+   * Get the character stream where the events will be serialized to.
    *
-   *
-   * NEEDSDOC (getWriter) @return
+   * @return Reference to the result Writer, or null.
    */
   public Writer getWriter()
   {
@@ -2134,7 +2016,7 @@ public class FormatterToXML
    *
    * @param format The output format to use
    */
-  public void setOutputFormat(OutputFormat format)
+  public void setOutputFormat(Properties format)
   {
 
     boolean shouldFlush = m_shouldFlush;
@@ -2149,23 +2031,9 @@ public class FormatterToXML
    *
    * @return The output format in use
    */
-  public OutputFormat getOutputFormat()
+  public Properties getOutputFormat()
   {
     return m_format;
-  }
-
-  /**
-   * Return a {@link DocumentHandler} interface into this serializer.
-   * If the serializer does not support the {@link DocumentHandler}
-   * interface, it should return null.
-   *
-   * @return A {@link DocumentHandler} interface into this serializer,
-   *  or null if the serializer is not SAX 1 capable
-   * @throws IOException An I/O exception occured
-   */
-  public DocumentHandler asDocumentHandler() throws IOException
-  {
-    return null;  // at least for now
   }
 
   /**
@@ -2209,30 +2077,29 @@ public class FormatterToXML
   {
     return false;
   }
-  
+
   /**
    * Serializes the DOM node. Throws an exception only if an I/O
    * exception occured while serializing.
    *
    * @param elem The element to serialize
+   *
+   * @param node Node to serialize.
    * @throws IOException An I/O exception occured while serializing
    */
   public void serialize(Node node) throws IOException
   {
+
     try
     {
       TreeWalker walker = new TreeWalker(this);
+
       walker.traverse(node);
     }
-    catch(org.xml.sax.SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       throw new WrappedRuntimeException(se);
     }
   }
-
 }  //ToXMLStringVisitor
-
-
-
-
 

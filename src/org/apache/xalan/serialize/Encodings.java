@@ -73,13 +73,10 @@ import java.io.UnsupportedEncodingException;
 public class Encodings extends Object
 {
 
-  /** NEEDSDOC Field m_shouldNormalizeLinebreaks          */
-  public static boolean m_shouldNormalizeLinebreaks = true;
-
   /**
    * The last printable character for unknown encodings.
    */
-  static final int DefaultLastPrintable = 0x7F;
+  static final int m_defaultLastPrintable = 0x7F;
 
   /**
    * Returns a writer for the specified encoding based on
@@ -131,21 +128,21 @@ public class Encodings extends Object
         return _encodings[i].lastPrintable;
     }
 
-    return DefaultLastPrintable;
+    return m_defaultLastPrintable;
   }
 
   /**
    * Returns the last printable character for an unspecified
    * encoding.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the default size
    */
   public static int getLastPrintable()
   {
-    return DefaultLastPrintable;
+    return m_defaultLastPrintable;
   }
 
-  /** NEEDSDOC Field DEFAULT_MIME_ENCODING          */
+  /** The default encoding, ISO style, ISO style.   */
   public static final String DEFAULT_MIME_ENCODING = "UTF-8";
 
   /**
@@ -159,9 +156,10 @@ public class Encodings extends Object
    * [XML]. If no encoding attribute is specified, then the XSLT processor should
    * use either UTF-8 or UTF-16."
    *
-   * NEEDSDOC @param encoding
+   * @param encoding Reference to java-style encoding string, which may be null, 
+   * in which case a default will be found.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The ISO-style encoding string, or null if failure.
    */
   public static String getMimeEncoding(String encoding)
   {
@@ -215,9 +213,9 @@ public class Encodings extends Object
   /**
    * Try the best we can to convert a Java encoding to a XML-style encoding.
    *
-   * NEEDSDOC @param encoding
+   * @param encoding non-null reference to encoding string, java style.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ISO-style encoding string.
    */
   public static String convertJava2MimeEncoding(String encoding)
   {

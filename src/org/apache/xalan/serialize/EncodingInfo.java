@@ -78,12 +78,12 @@ public class EncodingInfo extends Object
   final int lastPrintable;
 
   /**
-   * Constructor EncodingInfo
+   * Create an EncodingInfo object based on the name, java name, and the 
+   * max character size.
    *
-   *
-   * NEEDSDOC @param name
-   * NEEDSDOC @param javaName
-   * NEEDSDOC @param lastPrintable
+   * @param name non-null reference to the ISO name.
+   * @param javaName non-null reference to the Java encoding name.
+   * @param lastPrintable The maximum character that can be written.
    */
   public EncodingInfo(String name, String javaName, int lastPrintable)
   {
