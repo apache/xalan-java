@@ -237,7 +237,15 @@ Copyright:
   </target>
 
   <target name="autojavadocs">
-    <echo message="autojavadocs is for automated build process, without dependencies"/>   
+    <echo message="autojavadocs is for automated build process, without dependencies"/>
+    
+    <!-- generate patterns.html, a TRaX "patterns design" document -->
+    <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}"
+       args="-in ${src.dir}/trax/patterns.xml 
+             -xsl ${xdocs.style}/stylesheets/patterns.xsl 
+             -out ${build.apidocs}/trax/patterns.html"/>  <!-- patterns.html TRaX desing document -->    
+    <copyfile src="./xdocs/sources/xalan/trax.gif" dest="${build.apidocs}/trax/trax.gif"/>
+      
     <javadoc
          private="true"
          doclet="xalanjdoc.Standard"
