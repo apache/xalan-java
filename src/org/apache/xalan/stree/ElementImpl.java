@@ -71,9 +71,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
    */
   public Node         getFirstChild()
   {
-    // The call to getAttrCount gets the number of attributes in the list.
+    // The call to getLength gets the number of attributes in the list.
     // The attributes are put in the list before the actual children.
-    return (getChildCount() == 0) ? null : getChild(getAttrCount());
+    return (getChildCount() == 0) ? null : getChild(getLength());
   }
       
   /**
@@ -86,7 +86,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     throws ArrayIndexOutOfBoundsException, NullPointerException
   {
     // wait?
-    if (i < getAttrCount()) 
+    if (i < getLength()) 
       return (AttrImpl)m_children[i];
     else
       return null;
@@ -118,7 +118,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
         
       }
     }
-    return (null == m_children) ? 0 : m_children.length - getAttrCount();
+    return (null == m_children) ? 0 : m_children.length - getLength();
   }
   
   
@@ -244,7 +244,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      *
      * @return The number of attributes in the list.
      */
-    public int getAttrCount ()
+    public int getLength ()
     {
       return attrsEnd;
     }
@@ -351,7 +351,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public int getIndex (String uri, String localPart)
     {
-      for (int i = 0; i < getAttrCount(); i++)
+      for (int i = 0; i < getLength(); i++)
       {
         AttrImpl attr = (AttrImpl)getChildAttribute(i);
         if (attr.getLocalName().equals(localPart) &&
@@ -370,7 +370,7 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
      */
     public int getIndex (String rawName)
     {
-      for (int i = 0; i < getAttrCount(); i++)
+      for (int i = 0; i < getLength(); i++)
       {
         AttrImpl attr = getChildAttribute(i);
         if (attr.getNodeName().equals(rawName))
