@@ -1175,7 +1175,6 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(RUN_TIME_COPY_ERR);
 	}
     }
-    
 
     /**
      * Utility function for the implementation of xsl:element.
@@ -1210,7 +1209,7 @@ public final class BasisLibrary implements Operators {
 	    handler.startElement(qname);
 	}
 	catch (TransletException e) {
-	    throw new RuntimeException(e);
+	    throw new RuntimeException(e.getMessage());
 	}
 
 	return qname;
