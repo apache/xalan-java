@@ -72,7 +72,7 @@ Copyright:
   <property name="xercesjar" value="./bin/xerces.jar"/>
 
   <property name="dist.file" value="${name}-j_${version}"/>
-  <property name="dist.dir" value="./${dist.file}"/>    <!-- Check dir name dash/underscore 17-Jan-00 SCurcuru -->
+  <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   <property name="samples.dir" value="./samples"/>
 
   <property name="bin.dir" value="./bin"/>
@@ -221,7 +221,8 @@ Copyright:
          private="true"
          doclet="xalanjdoc.Standard"
          sourcepath="${src.dir}"
-         overview="${src.dir}/javadocOverview.html"        packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
+         overview="${src.dir}/javadocOverview.html"
+         packagenames="org.apache.xalan.client,org.apache.xalan.dtm,org.apache.xalan.extensions,org.apache.xalan.lib,org.apache.xalan.processor,org.apache.xalan.res,org.apache.xalan.stree,org.apache.xalan.templates,org.apache.xalan.trace,org.apache.xalan.transformer,org.apache.xalan.utils,org.apache.xalan.xslt,org.apache.xpath,org.apache.xpath.axes,org.apache.xpath.compiler,org.apache.xpath.functions,org.apache.xpath.objects,org.apache.xpath.operations,org.apache.xpath.patterns,org.apache.xpath.res,serialize,serialize.helpers,trax"
          group="Xalan_Core org.apache.xalan*,XPath org.apache.xpath*,TRaX trax*,Serializers serialize*"
          destdir="${build.apidocs}"
          author="true"
@@ -245,38 +246,51 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="docs,javadocs,samples,servlet">
+  <target name="dist" depends="docs,javadocs,samples,servlet,autodist">
+    <echo message="dist is human-useable target for distribution, with all dependencies"/>
+  </target>
+  <target name="autodist">
+    <echo message="autodist is for automated build processes, without dependencies"/>
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/bin"/>    
     <mkdir dir="${dist.dir}/src"/>
     <mkdir dir="${dist.dir}/xdocs"/>
     <mkdir dir="${dist.dir}/docs"/>
-    <mkdir dir="${dist.dir}/docs/javadocs"/>
+    <mkdir dir="${dist.dir}/docs/apidocs"/>
     <mkdir dir="${dist.dir}/samples"/>
 
     <copydir src="${src.dir}" dest="${dist.dir}/src"/>
     <copydir src="${bin.dir}" dest="${dist.dir}/bin"/>
-    <copyfile src="${xalanjar}jar" dest="${dist.dir}/bin/xalan.jar"/>    
-    <copydir src="${xdocs.dir}" dest="${dist.dir}/xdocs"/>
+    <copyfile src="${xalanjar}" dest="${dist.dir}/bin/xalan.jar"/>    
+    <!-- Remove copy of xdocs since it's not checked in yet
+    copydir src="${xdocs.dir}" dest="${dist.dir}/xdocs"/
+    -->
     <copydir src="${build.docs}" dest="${dist.dir}/docs"/>
 
     <copydir src="${samples.dir}" dest="${dist.dir}/samples"/>   
     <copyfile src="${build.samples}/xalansamples.jar" dest="${dist.dir}/samples/xalansamples.jar"/>
-    <copyfile src="${build.samples}/servlet/xalanservlet.jar" dest="${dist.dir}/samples/servlet/xalanservlet.jar"/>    
+    <!-- Remove copy of servlet stuff since it may not work yet
+    copyfile src="${build.samples}/servlet/xalanservlet.jar" dest="${dist.dir}/samples/servlet/xalanservlet.jar"/
+    -->
     <!--put xalan.jar and xerces.jar where the sample applet can readily use them-->
-    <copyfile src="${xalanjar}" dest="${samples.dir}/AppletXMLtoHTML/xalan.jar"/>
-    <copyfile src="${xercesjar}" dest="${samples.dir}/AppletXMLtoHTML/xerces.jar"/>
+    <!-- Remove copy of servlet stuff since it may not work yet
+    copyfile src="${xalanjar}" dest="${samples.dir}/AppletXMLtoHTML/xalan.jar"/
+    copyfile src="${xercesjar}" dest="${samples.dir}/AppletXMLtoHTML/xerces.jar"/
+    -->
 
+    <copyfile src="build.xml" dest="${dist.dir}/build.xml"/>
+    <copyfile src="KEYS" dest="${dist.dir}/KEYS"/>
+
+    <!-- Remove copy of other files that aren't checked in yet
     <copyfile src="README" dest="${dist.dir}/README"/>
     <copyfile src="README.html" dest="${dist.dir}/README.html"/>
     <copyfile src="CREDITS" dest="${dist.dir}/CREDITS"/>
-    <copyfile src="KEYS" dest="${dist.dir}/KEYS"/>
     <copyfile src="License" dest="${dist.dir}/License"/>
-    <copyfile src="build.xml" dest="${dist.dir}/build.xml"/>
+    -->
     
-    <zip zipfile="${dist.file}.zip" basedir="${dist.dir}" includes="*"/>
-    <tar tarfile="${dist.file}.tar" basedir="${dist.dir}" includes="*"/>
-    <gzip src="${dist.file}.tar" zipfile="${dist.file}.tar.gz"/>
+    <zip zipfile="${build.dir}/${dist.file}.zip" basedir="${dist.dir}" />
+    <tar tarfile="${build.dir}/${dist.file}.tar" basedir="${dist.dir}" />
+    <gzip src="${build.dir}/${dist.file}.tar" zipfile="${build.dir}/${dist.file}.tar.gz"/>
   </target>
   
   <!-- =================================================================== -->
