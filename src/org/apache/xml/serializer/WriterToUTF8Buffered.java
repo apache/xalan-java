@@ -185,12 +185,14 @@ public final class WriterToUTF8Buffered extends Writer
          * Cut the buffer up into chunks, each of which will
          * not cause an overflow to the output buffer m_outputBytes,
          * and make multiple recursive calls.
+         * Be careful about integer overflows in multiplication.
          */
         final int chunks = 1 + length/CHARS_MAX;
-        for (int chunk =0 ; chunk < chunks; chunk++)
+        int end_chunk = start;
+        for (int chunk = 1; chunk <= chunks; chunk++)
         {
-            int start_chunk = start + ((length*chunk)/chunks);
-            int end_chunk   = start + ((length*(chunk+1))/chunks);
+            int start_chunk = end_chunk;
+            end_chunk = start + (int) ((((long) length) * chunk) / chunks);
             int len_chunk = (end_chunk - start_chunk);
             this.write(chars,start_chunk, len_chunk);
         }
