@@ -168,7 +168,7 @@ final class DocumentCall extends FunctionCall {
 	il.append(methodGen.loadDOM());
 	if (_base != null) {
 	    _base.translate(classGen, methodGen);
-	    il.append(new INVOKEINTERFACE(nextIdx, 2));
+	    il.append(new INVOKEINTERFACE(nextIdx, 1));
 	}
 	else {
 	     il.append(methodGen.loadContextNode());
