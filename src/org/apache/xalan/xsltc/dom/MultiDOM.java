@@ -107,6 +107,10 @@ public final class MultiDOM implements DOM {
 	    return node != END ? (node | _mask) : END;
 	}
 	
+	public void setRestartable(boolean flag) {
+	    _source.setRestartable(flag);
+	}
+
 	public NodeIterator setStartNode(final int node) {
 	    _mask = node & SET;
 	    int dom = node >>> 24;
@@ -155,7 +159,7 @@ public final class MultiDOM implements DOM {
 	public NodeIterator cloneIterator() {
 	    final AxisIterator clone = new AxisIterator(_axis, _type);
 	    clone._source = _source.cloneIterator();
-	    clone._mask = _mask;	    
+	    clone._mask = _mask;
 	    return clone;
 	}
 
@@ -191,9 +195,7 @@ public final class MultiDOM implements DOM {
 	    try {
 		NodeValueIterator clone = (NodeValueIterator)super.clone();
 		clone._source = _source.cloneIterator();
-		clone._value = _value;
-		clone._op = _op;
-		_isRestartable = false;
+		clone.setRestartable(false);
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -202,7 +204,12 @@ public final class MultiDOM implements DOM {
 		return null;
 	    }
 	}
-    
+
+	public void setRestartable(boolean isRestartable) {
+	    _isRestartable = isRestartable;
+	    _source.setRestartable(isRestartable);
+	}
+
 	public NodeIterator reset() {
 	    _source.reset();
 	    return resetPosition();

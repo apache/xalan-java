@@ -104,6 +104,11 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	return this;
     }
 
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	_source.setRestartable(isRestartable);
+    }
+
     public boolean isReverse() {
 	return !_docOrder;
     }
@@ -113,7 +118,7 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	    final CurrentNodeListIterator clone =
 		(CurrentNodeListIterator)super.clone();
 	    clone._nodes = (IntegerArray)_nodes.clone();
-	    clone._isRestartable = false;
+	    clone.setRestartable(false);
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

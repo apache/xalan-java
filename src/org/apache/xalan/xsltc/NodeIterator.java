@@ -112,4 +112,9 @@ public interface NodeIterator extends Cloneable {
      */
     public NodeIterator cloneIterator();
 
+    /**
+     * Prevents or allows iterator restarts.
+     */
+    public void setRestartable(boolean isRestartable);
+
 }

@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -74,6 +75,10 @@ public abstract class NodeIteratorBase implements NodeIterator {
     protected int _startNode = NodeIterator.END;
     protected boolean _includeSelf = false;
     protected boolean _isRestartable = true;
+
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+    }
 
     public NodeIterator reset() {
 	final boolean temp = _isRestartable;

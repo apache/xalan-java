@@ -80,11 +80,16 @@ public final class FilterIterator extends NodeIteratorBase {
     public boolean isReverse() {
 	return _isReverse;
     }
-    
+
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	_source.setRestartable(isRestartable);
+    }
+
     public NodeIterator cloneIterator() {
 	try {
 	    final FilterIterator clone = (FilterIterator)super.clone();
-	    clone._isRestartable = false;
+	    clone.setRestartable(false);
 	    clone._source = _source.cloneIterator();
 	    return clone.reset();
 	}

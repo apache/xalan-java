@@ -76,11 +76,16 @@ public final class MatchingIterator extends NodeIteratorBase {
 	_match = match;
     }
 
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	_source.setRestartable(isRestartable);
+    }
+
     public NodeIterator cloneIterator() {
 	try {
 	    final MatchingIterator clone = (MatchingIterator)super.clone();
 	    clone._source = _source.cloneIterator();
-	    clone._isRestartable = false;
+	    clone.setRestartable(false);
 	    return clone;
 	}
 	catch (CloneNotSupportedException e) {

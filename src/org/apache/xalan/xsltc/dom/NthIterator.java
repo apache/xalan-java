@@ -77,6 +77,11 @@ public final class NthIterator extends NodeIteratorBase {
 	_source = source;
 	_position = n;
     }
+
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	_source.setRestartable(isRestartable);
+    }
     
     public int next() {
 	if (_ready && _position > 0) {
@@ -94,8 +99,10 @@ public final class NthIterator extends NodeIteratorBase {
     }
 	
     public NodeIterator setStartNode(final int node) {
-	_source.setStartNode(node);
-	_ready = true;
+	if (_isRestartable) {
+	    _source.setStartNode(node);
+	    _ready = true;
+	}
 	return this;
     }
 	
@@ -127,9 +134,8 @@ public final class NthIterator extends NodeIteratorBase {
 
     public NodeIterator cloneIterator() {
 	NodeIterator clone = _source.cloneIterator();
-	((NodeIteratorBase)clone)._isRestartable = true;
 	NthIterator other = new NthIterator(clone, _position);
-	other._isRestartable = false;
+	other.setRestartable(false);
 	return other.reset();
     }
 }

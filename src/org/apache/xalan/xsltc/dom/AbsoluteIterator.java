@@ -77,6 +77,11 @@ public final class AbsoluteIterator extends NodeIteratorBase {
     public int next() {
 	return returnNode(_source.next());
     }
+
+    public void setRestartable(boolean isRestartable) {
+	_isRestartable = isRestartable;
+	_source.setRestartable(isRestartable);
+    }
 	
     public NodeIterator setStartNode(int node) {
 	_startNode = DOM.ROOTNODE;
@@ -90,7 +95,7 @@ public final class AbsoluteIterator extends NodeIteratorBase {
     public NodeIterator cloneIterator() {
 	try {
 	    final AbsoluteIterator clone = (AbsoluteIterator)super.clone();
-	    clone._isRestartable = false;
+	    clone.setRestartable(false);
 	    clone._source = _source.cloneIterator();
 	    return clone.reset();
 	}

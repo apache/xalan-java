@@ -105,6 +105,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    public boolean isReverse() { return false; }
 	    public NodeIterator resetOnce() { return this; }
 	    public NodeIterator includeSelf() { return this; }
+	    public void setRestartable(boolean isRestartable) { }
 	};
 
     // Contains the number of nodes and attribute nodes in the tree
@@ -743,7 +744,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		final TypedChildrenIterator clone =
 		    (TypedChildrenIterator)super.clone();
 		clone._nodeType = _nodeType;
-		clone._isRestartable = false;
+		clone.setRestartable(false);
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1201,7 +1202,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    try {
 		final PrecedingIterator clone = 
 		    (PrecedingIterator)super.clone();
-		clone._isRestartable = false;
+		clone.setRestartable(false);
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1361,7 +1362,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeIterator cloneIterator() {
 	    try {
 		final AncestorIterator clone = (AncestorIterator)super.clone();
-		clone._isRestartable = false; // must set to false for any clone
+		clone.setRestartable(false); // must set to false for any clone
 		clone._startNode = _startNode;
 		return clone.reset();
 	    }
@@ -1537,6 +1538,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _pos = pos;
 	}
 
+	public void setRestartable(boolean isRestartable) {
+	    _isRestartable = isRestartable;
+	    _source.setRestartable(isRestartable);
+	}
+
 	// The start node of this iterator is always the root!!!
 	public NodeIterator setStartNode(int node) {
 	    _source.setStartNode(node);
@@ -1623,6 +1629,11 @@ public final class DOMImpl implements DOM, Externalizable {
 		_source instanceof TypedChildrenIterator) {
 		_children = true;
 	    }
+	}
+
+	public void setRestartable(boolean isRestartable) {
+	    _isRestartable = isRestartable;
+	    _source.setRestartable(isRestartable);
 	}
 
 	public NodeIterator setStartNode(int node) {
@@ -1724,6 +1735,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	private boolean _op;
 	private final boolean _isReverse;
 	private int _returnType = RETURN_PARENT;
+	private int _pos;
 
 	public NodeValueIterator(NodeIterator source, int returnType,
 				 String value, boolean op) {
@@ -1738,20 +1750,16 @@ public final class DOMImpl implements DOM, Externalizable {
 	    return _isReverse;
 	}
     
+	public void setRestartable(boolean isRestartable) {
+	    _isRestartable = isRestartable;
+	    _source.setRestartable(isRestartable);
+	}
+
 	public NodeIterator cloneIterator() {
 	    try {
 		NodeValueIterator clone = (NodeValueIterator)super.clone();
 		clone._source = _source.cloneIterator();
-		if (_source instanceof StepIterator) {
-		    StepIterator source = (StepIterator)clone._source;
-		    source.setRestartable();
-		}
-		else if (_source instanceof NodeIteratorBase) {
-		    NodeIteratorBase source = (NodeIteratorBase)clone._source;
-		    source._isRestartable = true;
-		}
-		clone._value = _value;
-		clone._op = _op;
+		clone.setRestartable(false);
 		return clone.reset();
 	    }
 	    catch (CloneNotSupportedException e) {
@@ -1791,10 +1799,12 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public void setMark() {
 	    _source.setMark();
+	    _pos = _position;
 	}
 
 	public void gotoMark() {
 	    _source.gotoMark();
+	    _position = _pos;
 	}
     }                       
 

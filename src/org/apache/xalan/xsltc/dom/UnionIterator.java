@@ -125,7 +125,7 @@ public final class UnionIterator extends NodeIteratorBase {
 	try {
 	    final UnionIterator clone = (UnionIterator)super.clone();
 	    System.arraycopy(_heap, 0, heapCopy, 0, _heap.length);
-	    clone._isRestartable = false;
+	    clone.setRestartable(false);
 	    clone._heap = heapCopy;
 	    return clone.reset();
 	} 

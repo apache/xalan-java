@@ -85,7 +85,7 @@ public final class FilteredStepIterator extends StepIterator {
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
 	    clone._filter = _filter;
-	    clone.setNotRestartable();
+	    clone.setRestartable(false);
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

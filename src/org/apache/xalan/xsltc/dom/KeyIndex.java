@@ -86,6 +86,10 @@ public class KeyIndex implements NodeIterator {
     public KeyIndex(int size) {
 	_arraySize = size;
     }
+
+    public void setRestartable(boolean flag) {
+	    
+    }
  
     /**
      * Adds a node to the node list for a given value.
