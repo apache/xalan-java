@@ -6,12 +6,12 @@
 <!ENTITY xslt4j-dist "xalan-j_2_3_1">
 <!ENTITY xslt4j-dist-bin "&xslt4j-dist;-bin">
 <!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
-<!ENTITY xslt4j-current "&xslt4j; version 2.3.1">
+<!ENTITY xslt4j-current "&xslt4j; version 2.3.2">
 <!ENTITY xslt4j-distdir "http://xml.apache.org/dist/xalan-j/">
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j1 "Xerces-Java 1">
 <!ENTITY xml4j2 "Xerces-Java 2">
-<!ENTITY xml4j-used "&xml4j; 2.0.0">
+<!ENTITY xml4j-used "&xml4j; 2.0.1">
 <!ENTITY xml4j-jar "xercesImpl.jar">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
