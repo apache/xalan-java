@@ -115,7 +115,7 @@
 <Spr>
 <Name>SCUU4R5QUY</Name>
 <DateCreated>11/16/2000</DateCreated>
-<State>Open</State>
+<State>Pending</State>
 <TestID>testmultitypethreads.java r1.1</TestID>
 <TestDesc>TestMultiTypeThreads: various (occasional) exceptions from multithreaded testing</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -197,7 +197,7 @@
 <DateCreated>12/20/2000</DateCreated>
 <State>Open</State>
 <TestID></TestID>
-<TestDesc>ConformanceTest -flavor trax.s2s hangs on expression02.xsl; extend01.xsl; mdocs03</TestDesc>
+<TestDesc>ConformanceTest -flavor trax.s2s hang: expression02.xsl;extend01.xsl;mdocs03;mdocs06.xsl;mdocs15.xsl</TestDesc>
 <Subsystem>XSLT</Subsystem>
 </Spr>
 </Sprs>
