@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001-2004 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -917,10 +917,7 @@ public final class SAXImpl extends SAX2DTM2
         super.startDocument();
 
         _nsIndex.put(new Integer(0), new Integer(_uriCount++));
-        
-        super.startPrefixMapping(XML_PREFIX, XML_URI);
-        Integer eType = new Integer(getIdForNamespace(XML_URI));
-        _nsIndex.put(eType, new Integer(_uriCount++));
+        definePrefixAndUri(XML_PREFIX, XML_URI);
     }
 
     /**
