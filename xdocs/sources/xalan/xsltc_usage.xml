@@ -312,10 +312,10 @@ Arguments wirhout flags:
 <p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP 1.1 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
 
 
-<p>When you use the JAXP 1.1 API to run &xslt4j;, the <code>javax.xml.transformer.TransformerFactory</code> system property is set to <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently stands, this Xalan implementation of TransformerFactory always uses the Xalan Transformer to perform transformations. To use translets to perform transformations, set this system property to <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code>. For information on setting this and related system properties designating XML parsere and XSL transformer, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
+<p>When you use the JAXP 1.1 API to run &xslt4j;, the <code>javax.xml.transform.TransformerFactory</code> system property is set to <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently stands, this Xalan implementation of TransformerFactory always uses the Xalan Transformer to perform transformations. To use translets to perform transformations, set this system property to <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code>. For information on setting this and related system properties designating XML parsere and XSL transformer, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML parser</link>.</p>
 <p>To Use the JAXP 1.1 API to perform transformations with translets do the following:</p>
 <ol>
-  <li>Set the <code>javax.xml.transformer.TransformerFactory</code> system property as indicated above.<br/><br/></li>
+  <li>Set the <code>javax.xml.transform.TransformerFactory</code> system property as indicated above.<br/><br/></li>
   <li>Instantiate a TransformerFactory.<br/><br/></li>
   <li>Assuming you want to perform a series of transformations with the same translet, use the TransformerFactory and a
    StreamSource XSL stylesheet to generate a Templates object (the translet). If you are performing a single
@@ -336,7 +336,7 @@ import javax.xml.transform.stream.StreamResult;
 // Set the TransformerFactory system property.
 // Note: For more flexibility, load properties from a properties file.
 String key = "javax.xml.transform.TransformerFactory";
-String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
+String value = "org.apache.xalan.xsltc.trax.TransformerFactoryImpl";
 Properties props = System.getProperties();
 props.put(key, value);
 System.setProperties(props);
@@ -368,7 +368,7 @@ import javax.xml.transform.stream.StreamResult;
 // Set the TransformerFactory system property.
 // Note: For more flexibility, load properties from a properties file.
 String key = "javax.xml.transform.TransformerFactory";
-String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
+String value = "org.apache.xalan.xsltc.trax.TransformerFactoryImpl";
 Properties props = System.getProperties();
 props.put(key, value);
 System.setProperties(props);

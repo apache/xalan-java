@@ -86,7 +86,7 @@
     <p>The following example illustrates the three basic steps involved in performing a transformation.</p>
     <source>// 1. Instantiate a TransformerFactory.
 javax.xml.transform.TransformerFactory tFactory = 
-                  javax.xml.transformerTransformerFactory.newInstance();
+                  javax.xml.transform.TransformerFactory.newInstance();
 
 // 2. Use the TransformerFactory to process the stylesheet Source and
 //    generate a Transformer.

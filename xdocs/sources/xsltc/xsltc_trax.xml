@@ -166,8 +166,8 @@ block:</p>
 <s2 title="Translet Integration">
 <p>The crux of the integration strategy is the pluggable TransformerFactory class. The
 JAXP specifies that the actual TransformerFactory implementation be controlled by the
-a Java system property (javax.xml.transformer.TransformerFactory) . This system property can be specified in the usual ways, for
-example in a properties file or on the command line as a -D optionpassed to thejava
+a Java system property (javax.xml.transform.TransformerFactory) . This system property can be specified in the usual ways, for
+example in a properties file or on the command line as a -D option passed to the java
 engine itself. The strategy involves writing a TransformerFactory for Translets.
 In the JAXP the TransformerFactory is an abstract class. In Xalan, the system
 property specifies the implementation class TransformerFactoryImpl (org.apache.xalan.processor.TransformerFactoryImpl).

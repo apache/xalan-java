@@ -324,7 +324,7 @@ specified using the "file:filename.xml" format.</p>
 The Translet API has been extended to conform with the JAXP1.1 TrAX model.
 This release contains the first implementation of that extension. Two
 new classes have been added to the Translet XSLT codebase, they are:</p>
-<p>(1) <code>org.apache.xalan.xsltc.runtime.TransformerFactoryImpl</code> -<br/>
+<p>(1) <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code> -<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a SAXTransformerFactory.</p>
 <p>(2) <code>org.apache.xalan.xsltc.runtime.TransletTemplates</code> -
 &nbsp;&nbsp;&nbsp;&nbsp;the Translet implementation of a Templates object.</p>
