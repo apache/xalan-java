@@ -65,7 +65,10 @@ import java.math.BigInteger;
 
 
 /**
- * Constructors for XPath expressions.
+ * Constructors for XPath expressions. 
+ * <p>Most of the constructors creates expression fragments (the top level expression is <em>not</em>
+ * a sequence). In order to obtain a valid expression, create a {@link #createSequence() sequence}
+ * and {@link OperatorExpr#append(OperatorExpr) append} the expression fragment to it.</p> 
  * @author <a href="mailto:villard@us.ibm.com">Lionel Villard</a>
  * @version $Id$
  */
@@ -73,46 +76,40 @@ public interface ExpressionFactory
 {
     /**
      * Creates a new XPath expression from a string representation
-     *
      * @return A XPath expression
-     * @throws XPathException whenever the given expression isn't a valid XPath
-     *         expression
+     * @throws XPathException whenever the specified expression is not valid syntaxically or semantically.
      */
     public Expr createExpr(String expr) throws XPathException;
 
 	/**
-	 * Creates a new XPath sequence
-	 * @return A sequence
+	 * Creates a new empty {@link OperatorExpr expression sequence}
+	 * @return A expression sequence
 	 */
 	public OperatorExpr createSequence();
 
     /**
-     * Creates a new relative or absolute path expression
+     * Creates a new relative or absolute {@link PathExpr}
      * @return An XPath expression of type 'path'
      */
     public PathExpr createPathExpr(boolean isAbsolute);
 
     /**
-     * Creates a new step. This step contains no qualifier.
-     *
-     * @return A step
+     * Creates a new axis {@link StepExpr} step from the specified axis type and node test.
+     * It contains no predicate.     
+     * @return A {@link StepExpr}
      */
     public StepExpr createStepExpr(short axisType, NodeTest nodeTest);
 
     /**
      * Creates a name test.
-     *
      * @return A name test
      */
     public NodeTest createNameTest(String namespace, String name);
 
     /**
-     * Creates a new combining expression of the given type
-     *
+     * Creates a new {@link OperatorExpr combining expression} of the specified type
      * @param type The type of the combining expression to create.
-     *
-     * @return An XPath expression of type combine
-     *
+     * @return An XPath expression of type combine     
      * @see OperatorExpr#UNION_COMBINE
      * @see OperatorExpr#EXCEPT_COMBINE
      * @see OperatorExpr#INTERSECT_COMBINE
@@ -120,131 +117,110 @@ public interface ExpressionFactory
     public OperatorExpr createCombineExpr(short type);
 
     /**
-     * Creates a new quantifier expression of type 'some' with one clause
-     *
+     * Creates a new {@link ForAndQuantifiedExpr quantifier expression} of type 'some' with one clause     
      * @param clause First clause of the new quantifier expression
      * @return An XPath expression of type 'some'
      */
     public ForAndQuantifiedExpr createSomeExpr(Expr clause);
 
     /**
-     * Creates a quantifier expression of type 'every'  with one clause
-     *
+     * Creates a {@link ForAndQuantifiedExpr quantifier expression} of type 'every'  with one clause
      * @return An XPath expression of type 'every'
      */
     public ForAndQuantifiedExpr createEveryExpr(Expr clause);
 
     /**
-     * Creates a logical expression of type 'and' with at least two operands
-     *
+     * Creates a {@link OperatorExpr logical expression} of type 'and' with two operands
      * @param operand1 XPath expression to compose
      * @param operand2 XPath expression to compose
-     *
      * @return An XPath expression of type 'and'
      */
     public OperatorExpr createAndExpr(Expr operand1, Expr operand2);
 
     /**
-     * Creates a new logical expression of type 'or' with at least two operands
-     *
+     * Creates a {@link OperatorExpr logical expression} of type 'or' with at least two operands
      * @param operand1 XPath expression to compose
      * @param operand2 XPath expression to compose
-     *
      * @return An XPath expression of type 'or'
      */
     public OperatorExpr createOrExpr(Expr operand1, Expr operand2);
 
     /**
-     * Creates a new conditional expression
-     *
-     * @param test The boolean XPath expression
+     * Creates a {@link ConditionalExpr conditional expression}
+     * @param test The XPath expression uses for the test 
      * @param thenExpr The XPath expression uses in the then clause
      * @param elseExpr The XPath expression uses in the else clause
-     *
      * @return An XPath expression of type 'if'
      */
     public ConditionalExpr createIfExpr(Expr test, Expr thenExpr, Expr elseExpr);
 
     /**
-     * Creates a new 'for' expression
-     *
+     * Creates a {@link ForAndQuantifiedExpr 'for' expression}   
      * @param varName The name of the binding variable
      * @param clauseExpr The for clause expression
      * @param quantifiedExpr The content of the for expression
-     *
-     * @return An XPath expression of type for
+     * @return An XPath expression of type 'for'
      */
     public ForAndQuantifiedExpr createForExpr(String varName, Expr clauseExpr,
         Expr quantifiedExpr);
 
     /**
-     * Creates a new cast as expression
-     *
+     * Creates a {@link CastableAsExpr 'cast as' expression}     
      * @param seqType The cast as type
-     * @param parExpr The XPath expression to cast as
-     *
+     * @param parExpr The XPath expression to cast as     
      * @return An XPath expression of type cast as
      */
     public CastOrTreatAsExpr createCastAsExpr(SequenceType seqType,
         OperatorExpr parExpr);
 
     /**
-     * Creates a new treat as expression
-     *
+     * Creates a  {@link CastOrTreatAsExpr 'treat as' expression}     
      * @param seqType The treat as type
-     * @param parExpr The XPath expression to treat as
-     *
+     * @param parExpr The XPath expression to treat as     
      * @return An XPath expression of type treat as
      */
     public CastOrTreatAsExpr createTreatAsExpr(SequenceType seqType,
         OperatorExpr parExpr);
 
     /**
-     * Creates a new integer literal
-     *
+     * Creates a {@link Literal literal} of type integer
      * @return A literal of type integer
      */
     public Literal createIntegerLiteralExpr(int value);
 
     /**
-     * Creates a new 'big' integer literal
-     *
-     * @param value The big integer
-     *
+     * Creates a  {@link Literal literal} of type big integer
+     * @param value The big integer     
      * @return A literal of type integer
      */
     public Literal createIntegerLiteralExpr(BigInteger value);
 
     /**
-     * Creates a new decimal literal
-     *
+     * Creates a {@link Literal literal} of type decimal
      * @return A literal of type decimal
      */
     public Literal createDecimalLiteralExpr(double value);
 
     /**
-     * Creates a new 'big' decimal literal
-     *
+     * Creates a {@link Literal literal} of type big decimal     
      * @return A literal of type decimal
      */
     public Literal createDecimalLiteralExpr(BigDecimal value);
 
     /**
-     * Creates a new string literal
-     *
+     * Creates a {@link Literal literal} of type string
      * @return A literal of type string
      */
     public Literal createStringLiteralExpr(String value);
 
     /**
-     * Creates a new double literal
-     *
+     * Creates a {@link Literal literal} of type double
      * @return A literal of type double
      */
     public Literal createDoubleLiteralExpr(double value);
     
     /**
-     * Creates new function call expression with the specified name
+     * Creates a {@link FunctionCall function call} with the specified qname
      * and no parameter. 
      * @param name Qualified name of the function to create 
      * @return
