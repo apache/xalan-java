@@ -458,7 +458,9 @@ public class StylesheetComposed extends Stylesheet
       for(int vIndex = 0; vIndex < nVariables; vIndex++)
       {
         ElemVariable elemVar = stylesheet.getVariable(vIndex);
-        m_variables.put(elemVar.getName(), elemVar);
+        // Don't overide higher priority variable        
+        if (m_variables.get(elemVar.getName())== null)
+          m_variables.put(elemVar.getName(), elemVar);
       }
       
       // Do the included stylesheets contain it?
@@ -470,7 +472,9 @@ public class StylesheetComposed extends Stylesheet
         for(int vIndex = 0; vIndex < nVariables; vIndex++)
         {
           ElemVariable elemVar = included.getVariable(vIndex);
-          m_variables.put(elemVar.getName(), elemVar);
+          // Don't overide higher priority variable
+          if (m_variables.get(elemVar.getName())== null)
+            m_variables.put(elemVar.getName(), elemVar);
         }
       }
     }
@@ -518,7 +522,9 @@ public class StylesheetComposed extends Stylesheet
       for(int vIndex = 0; vIndex < nVariables; vIndex++)
       {
         ElemParam elemVar = stylesheet.getParam(vIndex);
-        m_params.put(elemVar.getName(), elemVar);
+        // Don't overide higher priority parameter
+        if (m_params.get(elemVar.getName())== null)
+          m_params.put(elemVar.getName(), elemVar);
       }
       
       // Do the included stylesheets contain it?
@@ -530,7 +536,9 @@ public class StylesheetComposed extends Stylesheet
         for(int vIndex = 0; vIndex < nVariables; vIndex++)
         {
           ElemParam elemVar = included.getParam(vIndex);
-          m_params.put(elemVar.getName(), elemVar);
+          // Don't overide higher priority parameter
+          if (m_params.get(elemVar.getName())== null)
+            m_params.put(elemVar.getName(), elemVar);
         }
       }
     }

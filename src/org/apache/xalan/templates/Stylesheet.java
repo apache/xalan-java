@@ -491,6 +491,8 @@ public class Stylesheet  extends ElemTemplateElement
   {
     if(null == m_DecimalFormatDeclarations)
       m_DecimalFormatDeclarations = new Stack();
+    // Elements are pushed in by order of importance
+    // so that when recomposed, they get overiden properly.
     m_DecimalFormatDeclarations.push(edf);
   }
   
@@ -709,7 +711,9 @@ public class Stylesheet  extends ElemTemplateElement
     {
       m_attributeSets = new Vector();
     }
-    m_attributeSets.addElement(attrSet);  
+    // Insert elements by order of importance so that
+    // during recompose, they get properly overiden. 
+    m_attributeSets.insertElementAt(attrSet, 0);  
   }
 
   /**
@@ -747,7 +751,9 @@ public class Stylesheet  extends ElemTemplateElement
   {
     if(null == m_topLevelVariables)
       m_topLevelVariables = new Vector();
-    m_topLevelVariables.addElement(v);
+    // Always insert variables by order of importance so that 
+    // during recompose, they get properly overiden. 
+    m_topLevelVariables.insertElementAt(v, 0); 
   }
   
   /**
@@ -804,7 +810,9 @@ public class Stylesheet  extends ElemTemplateElement
   {
     if(null == m_topLevelParams)
       m_topLevelParams = new Vector();
-    m_topLevelParams.addElement(v);
+    // Always insert parameters by order of importance so that 
+    // during recompose, they get properly overiden.
+    m_topLevelParams.insertElementAt(v, 0); 
   }
   
   /**
@@ -900,7 +908,9 @@ public class Stylesheet  extends ElemTemplateElement
   {
     if (m_prefix_aliases == null)
       m_prefix_aliases = new Vector();
-    m_prefix_aliases.addElement(na);
+    // Always insert elements by order of importance so that 
+    // during recompose, they get properly overiden.
+    m_prefix_aliases.insertElementAt(na, 0);
   }
     
   /**
