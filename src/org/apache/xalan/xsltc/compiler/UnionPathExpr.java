@@ -65,7 +65,10 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
+
 import de.fub.bytecode.generic.Instruction;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -92,6 +95,14 @@ final class UnionPathExpr extends Expression {
 	for (int i = 0; i < size; i++) {
 	    _components[i].setParser(parser);
 	    _components[i].setParent(this);
+	    if (_components[i] instanceof Step) {
+		Step step = (Step)_components[i];
+		if ((step.getAxis() == Axis.ATTRIBUTE) ||
+		    (step.getNodeType() == DOM.ATTRIBUTE)) {
+		    _components[i] = _components[0];
+		    _components[0] = step;
+		}
+	    }
 	}
     }
     
