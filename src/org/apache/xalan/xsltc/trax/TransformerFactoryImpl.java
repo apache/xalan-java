@@ -410,9 +410,7 @@ public class TransformerFactoryImpl
 
 	InputSource input = null;
 	String systemId = source.getSystemId();
-	if (systemId == null) {
-	    systemId = "";
-	}
+	if (systemId == null) ystemId = "";
 
 	try {
 
@@ -442,10 +440,8 @@ public class TransformerFactoryImpl
 		    input = new InputSource(istream);
 		else if (reader != null)
 		    input = new InputSource(reader);
-		else if ((new File(systemId)).exists()) {
-		    input = new InputSource(
-			new File(systemId).toURL().toExternalForm());
-		}
+		else
+		    input = new InputSource(systemId);
 	    }
 	    else {
 		ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNKNOWN_SOURCE_ERR);
@@ -459,10 +455,6 @@ public class TransformerFactoryImpl
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (SecurityException e) {
- 	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR, systemId);
-	    throw new TransformerConfigurationException(err.toString());
-	}
-	catch (MalformedURLException e){
  	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR, systemId);
 	    throw new TransformerConfigurationException(err.toString());
 	}
