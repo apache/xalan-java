@@ -241,15 +241,6 @@ public class XPath implements Serializable
    * XPath are supposed to be expanded.
    * @throws TransformerException thrown if the active ProblemListener decides
    * the error condition is severe enough to halt processing.
-   * @param callback Interface that implements the processLocatedNode method.
-   * @param callbackInfo Object that will be passed to the processLocatedNode method.
-   * @param stopAtFirst True if the search should stop once the first node in document
-   * order is found.
-   * @return The result of the XPath or null if callbacks are used.
-   * @throws TransformerException thrown if
-   * the error condition is severe enough to halt processing.
-   *
-   * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(
           XPathContext xctxt, Node contextNode, PrefixResolver namespaceContext)
