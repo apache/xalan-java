@@ -385,6 +385,53 @@ public class ToXMLStream extends ToStream
             super.fireEntityReference(name);            
     }
 
+    /**
+     * This method is used to add an attribute to the currently open element. 
+     * The caller has guaranted that this attribute is unique, which means that it
+     * not been seen before and will not be seen again.
+     * 
+     * @param name the qualified name of the attribute
+     * @param value the value of the attribute which can contain only
+     * ASCII printable characters characters in the range 32 to 127 inclusive.
+     * @flags the bit values of this integer give optimization information.
+     */
+    public void addUniqueAttribute(String name, String value, int flags)
+        throws SAXException
+    {
+        if (m_elemContext.m_startTagOpen)
+        {
+           
+            try
+            {
+                final String patchedName = patchName(name);
+                final java.io.Writer writer = m_writer;
+                if ((flags & NO_BAD_CHARS) > 0 && m_xmlcharInfo.onlyQuotAmpLtGt)
+                {
+                    // "flags" has indicated that the characters
+                    // '>'  '<'   '&'  and '"' are not in the value and
+                    // m_htmlcharInfo has recorded that there are no other
+                    // entities in the range 32 to 127 so we write out the
+                    // value directly
+                    
+                    writer.write(' ');
+                    writer.write(patchedName);
+                    writer.write("=\"");
+                    writer.write(value);
+                    writer.write('"');
+                }
+                else
+                {
+                    writer.write(' ');
+                    writer.write(patchedName);
+                    writer.write("=\"");
+                    writeAttrString(writer, value, this.getEncoding());
+                    writer.write('"');
+                }
+            } catch (IOException e) {
+                throw new SAXException(e);
+            }
+        }
+    }
 
     public void addAttribute(
         String uri,

@@ -325,6 +325,20 @@ public class ToUnknownStream extends SerializerBase
     }
 
     /**
+     * Adds a unique attribute to the currenly open tag
+     */
+    public void addUniqueAttribute(String rawName, String value, int flags)
+        throws SAXException
+    {
+        if (m_firstTagNotEmitted)
+        {
+            flush();
+        }
+        m_handler.addUniqueAttribute(rawName, value, flags);
+ 
+    }
+
+    /**
      * Converts the String to a character array and calls the SAX method 
      * characters(char[],int,int);
      * 
@@ -504,7 +518,7 @@ public class ToUnknownStream extends SerializerBase
 
                 if (m_tracer != null)
                     firePseudoElement(elementName);
-					
+                    
                 /* we don't want to call our own addAttributes, which
                  * merely delegates to the wrapped handler, but we want to
                  * add these attributes to m_attributes. So me must call super.
@@ -1263,14 +1277,14 @@ public class ToUnknownStream extends SerializerBase
     }
 
     public void setTransformer(Transformer t)
-    {    	
+    {       
         m_handler.setTransformer(t);
-		if ((t instanceof SerializerTrace) &&
-			(((SerializerTrace) t).hasTraceListeners())) {
-		   m_tracer = (SerializerTrace) t;
-		} else {
-		   m_tracer = null;
-		}        
+        if ((t instanceof SerializerTrace) &&
+            (((SerializerTrace) t).hasTraceListeners())) {
+           m_tracer = (SerializerTrace) t;
+        } else {
+           m_tracer = null;
+        }        
     }
     public Transformer getTransformer()
     {
@@ -1296,26 +1310,24 @@ public class ToUnknownStream extends SerializerBase
         m_handler.setSourceLocator(locator);
     }
 
-	protected void firePseudoElement(String elementName)
-	{
-		
-		if (m_tracer != null) {
-			StringBuffer sb = new StringBuffer();
-	            
-			sb.append('<');
-			sb.append(elementName);
-			
-			// convert the StringBuffer to a char array and
-			// emit the trace event that these characters "might"
-			// be written
-			char ch[] = sb.toString().toCharArray();
-			m_tracer.fireGenerateEvent(
-				SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
-				ch,
-				0,
-				ch.length);
-		}
-	}
-
-
+    protected void firePseudoElement(String elementName)
+    {
+        
+        if (m_tracer != null) {
+            StringBuffer sb = new StringBuffer();
+                
+            sb.append('<');
+            sb.append(elementName);
+            
+            // convert the StringBuffer to a char array and
+            // emit the trace event that these characters "might"
+            // be written
+            char ch[] = sb.toString().toCharArray();
+            m_tracer.fireGenerateEvent(
+                SerializerTrace.EVENTTYPE_OUTPUT_PSEUDO_CHARACTERS,
+                ch,
+                0,
+                ch.length);
+        }
+    }
 }

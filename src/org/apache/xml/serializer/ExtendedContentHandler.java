@@ -111,6 +111,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param value
      */
     public void addAttribute(String qName, String value);
+    
     /**
      * This method is used to notify of a character event, but passing the data
      * as a character String rather than the standard character array.
@@ -240,4 +241,29 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      */
     public void setSourceLocator(SourceLocator locator);
 
+    // Bit constants for addUniqueAttribute().
+    
+    // The attribute value contains no bad characters. A "bad" character is one which
+    // is greater than 126 or it is one of '<', '>', '&' or '"'.
+    public static final int NO_BAD_CHARS = 0x1;
+    
+    // An HTML empty attribute (e.g. <OPTION selected>).
+    public static final int HTML_ATTREMPTY = 0x2;
+    
+    // An HTML URL attribute
+    public static final int HTML_ATTRURL = 0x4;
+
+    /**
+     * Add a unique attribute to the current element.
+     * The attribute is guaranteed to be unique here. The serializer can write
+     * it out immediately without saving it in a table first. The integer
+     * flag contains information about the attribute, which helps the serializer
+     * to decide whether a particular processing is needed.
+     *
+     * @param qName the fully qualified attribute name.
+     * @param value the attribute value
+     * @param flags a bitwise flag
+     */
+    public void addUniqueAttribute(String qName, String value, int flags)
+        throws SAXException;
 }

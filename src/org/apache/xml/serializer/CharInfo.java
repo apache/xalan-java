@@ -104,6 +104,13 @@ public class CharInfo
     /** The carriage return character, which the parser should always normalize. */
     public static char S_CARRIAGERETURN = 0x0D;
     
+    /** This flag is an optimization for HTML entities. It false if entities 
+     * other than quot (34), amp (38), lt (60) and gt (62) are defined
+     * in the range 0 to 127.
+     */
+    
+    public final boolean onlyQuotAmpLtGt;
+    
     /** Copy the first 0,1 ... ASCII_MAX values into an array */
     private static final int ASCII_MAX = 128;
     
@@ -146,14 +153,6 @@ public class CharInfo
      */
     private int firstWordNotUsed;
 
-    /**
-     * This constructor is private, just to force the use
-     * of the getCharInfo(entitiesResource) factory
-     *
-     */
-    private CharInfo()
-    {
-    }
 
     /**
      * Constructor that reads in a resource file that describes the mapping of
@@ -186,6 +185,8 @@ public class CharInfo
         String value;
         int code;
         String line;
+        
+        boolean noExtraEntities = true;
 
         // Make various attempts to interpret the parameter as a properties
         // file or resource file, as follows:
@@ -202,6 +203,8 @@ public class CharInfo
                 value = entities.getString(name);
                 code = Integer.parseInt(value);
                 defineEntity(name, (char) code);
+                if (extraEntity(code))
+                    noExtraEntities = false;
             }
             set(S_LINEFEED);
             set(S_CARRIAGERETURN);
@@ -293,6 +296,8 @@ public class CharInfo
                             code = Integer.parseInt(value);
 
                             defineEntity(name, (char) code);
+                            if (extraEntity(code))
+                                noExtraEntities = false;
                         }
                     }
 
@@ -318,6 +323,7 @@ public class CharInfo
                 }
             }
         }
+        onlyQuotAmpLtGt = noExtraEntities;
         
         // initialize the array with a cache of the BitSet values
         for (int i=0; i<ASCII_MAX; i++)
@@ -335,6 +341,7 @@ public class CharInfo
          else
              isCleanASCII[ch] = false;     
     }
+
 
     /**
      * Defines a new character reference. The reference's name and value are
@@ -515,9 +522,6 @@ public class CharInfo
         private static Hashtable m_getCharInfo_cache = new Hashtable();
 
     }
-    
-    
-
 
     /**
      * Returns the array element holding the bit value for the
@@ -590,5 +594,41 @@ public class CharInfo
             ) != 0;  // 0L for 64 bit words
         return in_the_set;
     }
-
+    
+    /**
+     * This is private to force the use of the factory method:
+     * getCharInfo(String) instead.
+     */
+    private CharInfo()
+    {
+        // this constructor should never be called, the next line
+        // is only here to make the compiler happy.
+        onlyQuotAmpLtGt = true;
+    }
+    
+    // record if there are any entities other than
+    // quot, amp, lt, gt  (probably user defined)
+    /**
+     * @return true if the entity 
+     * @param code The value of the character that has an entity defined
+     * for it.
+     */
+    private boolean extraEntity(int entityValue)
+    {
+        boolean extra = false;
+        if (entityValue < 128)
+        {
+            switch (entityValue)
+            {
+                case 34 : // quot
+                case 38 : // amp
+                case 60 : // lt
+                case 62 : // gt
+                    break;
+                default : // other entity in range 0 to 127  
+                    extra = true;
+            }
+        }
+        return extra;
+    }    
 }

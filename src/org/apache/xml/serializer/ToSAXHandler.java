@@ -69,14 +69,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.LexicalHandler;
 
-/**
- * @author minchau
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- */
 abstract public class ToSAXHandler extends SerializerBase 
 {
     public ToSAXHandler()
@@ -237,7 +229,7 @@ abstract public class ToSAXHandler extends SerializerBase
             m_state.resetState(getTransformer());
         }
 
-    	// fire off the start element event
+        // fire off the start element event
         if (m_tracer != null)
             super.fireStartElem(arg2);
     }
@@ -321,7 +313,7 @@ abstract public class ToSAXHandler extends SerializerBase
     public void setTransformState(TransformStateSetter ts) {
         this.m_state = ts;
     }
-
+    
     /**
      * Receives notification that an element starts, but attributes are not
      * fully known yet.
@@ -339,9 +331,9 @@ abstract public class ToSAXHandler extends SerializerBase
             m_state.resetState(getTransformer());
         }
 
-    	// fire off the start element event
+        // fire off the start element event
         if (m_tracer != null)
-            super.fireStartElem(qName);	        
+            super.fireStartElem(qName);         
     }
 
     /**
@@ -355,7 +347,7 @@ abstract public class ToSAXHandler extends SerializerBase
         if (m_state != null) {
             m_state.resetState(getTransformer());
         }        
-    	// fire off the start element event
+        // fire off the start element event
         if (m_tracer != null)
             super.fireStartElem(qName);              
     }
@@ -443,4 +435,13 @@ abstract public class ToSAXHandler extends SerializerBase
         this.m_saxHandler = null;
         this.m_state = null;
     }  
+
+    /**
+     * Add a unique attribute
+     */
+    public void addUniqueAttribute(String qName, String value, int flags)
+        throws SAXException
+    {
+        addAttribute(qName, value); 
+    }
 }

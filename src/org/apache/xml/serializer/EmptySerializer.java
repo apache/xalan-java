@@ -263,6 +263,7 @@ public class EmptySerializer implements SerializationHandler
     {
         throwUnimplementedException();
     }
+
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#characters(java.lang.String)
      */
@@ -694,6 +695,7 @@ public class EmptySerializer implements SerializationHandler
     public void setNamespaceMappings(NamespaceMappings mappings) {
         throwUnimplementedException();
     }
+    
     /**
      * @see org.apache.xml.serializer.ExtendedContentHandler#setSourceLocator(javax.xml.transform.SourceLocator)
      */
@@ -702,4 +704,12 @@ public class EmptySerializer implements SerializationHandler
         throwUnimplementedException();
     }
 
+    /**
+     * @see org.apache.xml.serializer.ExtendedContentHandler#addUniqueAttribute(java.lang.String, java.lang.String, int)
+     */
+    public void addUniqueAttribute(String name, String value, int flags)
+        throws SAXException
+    {
+        throwUnimplementedException();
+    }
 }

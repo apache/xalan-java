@@ -196,7 +196,7 @@ public class ToTextStream extends ToStream
           throws org.xml.sax.SAXException
   {
         if (m_tracer != null)
-		    super.fireEndElem(name);           
+            super.fireEndElem(name);           
   }
 
   /**
@@ -234,8 +234,8 @@ public class ToTextStream extends ToStream
     try
     {
         writeNormalizedChars(ch, start, length, false);
-		if (m_tracer != null)
-		    super.fireCharEvent(ch, start, length);      
+        if (m_tracer != null)
+            super.fireCharEvent(ch, start, length);      
     }
     catch(IOException ioe)
     {
@@ -411,7 +411,7 @@ void writeNormalizedChars(
     try
     {
         writeNormalizedChars(ch, start, length, false);
-		if (m_tracer != null)
+        if (m_tracer != null)
             super.fireCDATAEvent(ch, start, length);              
     }
     catch(IOException ioe)
@@ -563,7 +563,7 @@ void writeNormalizedChars(
      */
     public void endElement(String elemName) throws SAXException
     {
-		if (m_tracer != null)
+        if (m_tracer != null)
             super.fireEndElem(elemName);                       
     }
  
@@ -577,8 +577,8 @@ void writeNormalizedChars(
     throws SAXException 
     {
         if (m_needToCallStartDocument)
-            startDocumentInternal();		
-		// time to fire off startlement event.
+            startDocumentInternal();        
+        // time to fire off startlement event.
         if (m_tracer != null) {
             super.fireStartElem(elementName);
             this.firePseudoAttributes();
@@ -604,6 +604,15 @@ void writeNormalizedChars(
     public void addAttribute(String name, String value)
     {
         // do nothing, forget about the attribute
+    }
+    
+    /**
+     * Add a unique attribute
+     */
+    public void addUniqueAttribute(String qName, String value, int flags)
+        throws SAXException
+    {
+        // do nothing, forget about the attribute 
     }
 
     public boolean startPrefixMapping(
