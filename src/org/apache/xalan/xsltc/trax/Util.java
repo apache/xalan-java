@@ -82,7 +82,11 @@ public final class Util {
     public static String baseName(String name) {
 	return org.apache.xalan.xsltc.compiler.util.Util.baseName(name);
     }
-
+    
+    public static String noExtName(String name) {
+	return org.apache.xalan.xsltc.compiler.util.Util.noExtName(name);
+    }
+    
     /**
      * Creates a SAX2 InputSource object from a TrAX Source object
      */
