@@ -539,21 +539,18 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 			return isNodeOrder(n1,e2); // order as per element			
 	}
 
-	
   	// As long as I'm using one DOM3 call, I might as well use another and
   	// avoid reinventing this wheel... among other things, the built-in
   	// version is likely to be more efficient.
 	NodeImpl n1a=(NodeImpl)n1; 
 	
-	
 	// Returns a bitmask. NOTE that this call reports the position of
 	// the argument node relative to the node it's called on, 
-	// NOT vice versa.	
-	// EXPERIMENTAL: Local verson for debugging
-	//short n2_to_n1=n1a.compareTreePosition(n2);
-	short n2_to_n1=compareTreePosition(n1,n2);
+	// NOT vice versa.
+	short n2_to_n1=(true)
+	  ? n1a.compareTreePosition(n2)
+	  : compareTreePosition(n1,n2);	// EXPERIMENTAL: Local for tuning
 	
-
 	if(0!=(n2_to_n1 & n1a.TREE_POSITION_DISCONNECTED))
 		return ORDER_UNDEFINED;
 	else if(0!=(n2_to_n1 & n1a.TREE_POSITION_PRECEDING))
@@ -597,207 +594,203 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
   
   
   // Swiped from Xerces for debugging
-    /**
-     * Compares a node with this node with regard to their position in the 
-     * tree and according to the document order. This order can be extended 
-     * by module that define additional types of nodes.
-     * @param other The node to compare against this node.
-     * @return Returns how the given node is positioned relatively to this 
-     *   node.
-     * @since DOM Level 3
-     */
-    public short compareTreePosition(Node reference,Node other) {
-        // Questions of clarification for this method - to be answered by the
-        // DOM WG.   Current assumptions listed - LM
-        // 
-        // 1. How do ENTITY nodes compare?  
-        //    Current assumption: TREE_POSITION_DISCONNECTED, as ENTITY nodes 
-        //    aren't really 'in the tree'
-        //
-        // 2. How do NOTATION nodes compare?
-        //    Current assumption: TREE_POSITION_DISCONNECTED, as NOTATION nodes
-        //    aren't really 'in the tree'
-        //
-        // 3. Are TREE_POSITION_ANCESTOR and TREE_POSITION_DESCENDANT     
-        //    only relevant for nodes that are "part of the document tree"?   
-        //     <outer>
-        //         <inner  myattr="true"/>
-        //     </outer>
-        //    Is the element node "outer" considered an ancestor of "myattr"?
-        //    Current assumption: No.                                     
-        //
-        // 4. How do children of ATTRIBUTE nodes compare (with eachother, or  
-        //    with children of other attribute nodes with the same element)    
-        //    Current assumption: Children of ATTRIBUTE nodes are treated as if 
-        //    they they are the attribute node itself, unless the 2 nodes 
-        //    are both children of the same attribute. 
-        //
-        // 5. How does an ENTITY_REFERENCE node compare with it's children? 
-        //    Given the DOM, it should precede its children as an ancestor. 
-        //    Given "document order",  does it represent the same position?     
-        //    Current assumption: An ENTITY_REFERENCE node is an ancestor of its
-        //    children.
-        //
-        // 6. How do children of a DocumentFragment compare?   
-        //    Current assumption: If both nodes are part of the same document 
-        //    fragment, there are compared as if they were part of a document. 
+  /**
+   * Compares a node with this node with regard to their position in the 
+   * tree and according to the document order. This order can be extended 
+   * by module that define additional types of nodes.
+   * @param other The node to compare against this node.
+   * @return Returns how the given node is positioned relatively to this 
+   *   node.
+   * @since DOM Level 3
+   */
+  public short compareTreePosition(Node reference,Node other) {
+    // Questions of clarification for this method - to be answered by the
+    // DOM WG.   Current assumptions listed - LM
+    // 
+    // 1. How do ENTITY nodes compare?  
+    //    Current assumption: TREE_POSITION_DISCONNECTED, as ENTITY nodes 
+    //    aren't really 'in the tree'
+    //
+    // 2. How do NOTATION nodes compare?
+    //    Current assumption: TREE_POSITION_DISCONNECTED, as NOTATION nodes
+    //    aren't really 'in the tree'
+    //
+    // 3. Are TREE_POSITION_ANCESTOR and TREE_POSITION_DESCENDANT     
+    //    only relevant for nodes that are "part of the document tree"?   
+    //     <outer>
+    //         <inner  myattr="true"/>
+    //     </outer>
+    //    Is the element node "outer" considered an ancestor of "myattr"?
+    //    Current assumption: No.                                     
+    //
+    // 4. How do children of ATTRIBUTE nodes compare (with eachother, or  
+    //    with children of other attribute nodes with the same element)    
+    //    Current assumption: Children of ATTRIBUTE nodes are treated as if 
+    //    they they are the attribute node itself, unless the 2 nodes 
+    //    are both children of the same attribute. 
+    //
+    // 5. How does an ENTITY_REFERENCE node compare with it's children? 
+    //    Given the DOM, it should precede its children as an ancestor. 
+    //    Given "document order",  does it represent the same position?     
+    //    Current assumption: An ENTITY_REFERENCE node is an ancestor of its
+    //    children.
+    //
+    // 6. How do children of a DocumentFragment compare?   
+    //    Current assumption: If both nodes are part of the same document 
+    //    fragment, there are compared as if they were part of a document. 
 
         
-        // If the nodes are the same...
-        if (reference==other) 
-          return (NodeImpl.TREE_POSITION_SAME_NODE | NodeImpl.TREE_POSITION_EQUIVALENT);
+    // If the nodes are the same...
+    if (reference==other) 
+      return (NodeImpl.TREE_POSITION_SAME_NODE | NodeImpl.TREE_POSITION_EQUIVALENT);
         
-        // If either node is of type ENTITY or NOTATION, compare as disconnected
-        short thisType = reference.getNodeType();
-        short otherType = other.getNodeType();
+    // If either node is of type ENTITY or NOTATION, compare as disconnected
+    short thisType = reference.getNodeType();
+    short otherType = other.getNodeType();
 
-        // If either node is of type ENTITY or NOTATION, compare as disconnected
-        if (thisType == Node.ENTITY_NODE || 
-            thisType == Node.NOTATION_NODE ||
-            otherType == Node.ENTITY_NODE ||
-            otherType == Node.NOTATION_NODE ) {
-          return NodeImpl.TREE_POSITION_DISCONNECTED; 
-        }
-
-        // Find the ancestor of each node, and the distance each node is from 
-        // its ancestor.
-        // During this traversal, look for ancestor/descendent relationships 
-        // between the 2 nodes in question. 
-        // We do this now, so that we get this info correct for attribute nodes 
-        // and their children. 
-
-        Node node; 
-        Node thisAncestor = reference;
-        Node otherAncestor = other;
-        int thisDepth=0;
-        int otherDepth=0;
-        for (node=reference; node != null; node = node.getParentNode()) {
-            thisDepth +=1;
-            if (node == other) 
-              // The other node is an ancestor of this one.
-              return (NodeImpl.TREE_POSITION_ANCESTOR | NodeImpl.TREE_POSITION_PRECEDING);
-            thisAncestor = node;
-        }
-
-        for (node=other; node!=null; node=node.getParentNode()) {
-            otherDepth +=1;
-            if (node == reference) 
-              // The other node is a descendent of the reference node.
-              return (NodeImpl.TREE_POSITION_DESCENDANT | NodeImpl.TREE_POSITION_FOLLOWING);
-            otherAncestor = node;
-        }
-        
-       
-        Node thisNode = reference;
-        Node otherNode = other;
-
-        int thisAncestorType = thisAncestor.getNodeType();
-        int otherAncestorType = otherAncestor.getNodeType();
-
-        // if the ancestor is an attribute, get owning element. 
-        // we are now interested in the owner to determine position.
-
-        if (thisAncestorType == Node.ATTRIBUTE_NODE)  {
-           thisNode = ((Attr)thisAncestor).getOwnerElement();
-        }
-        if (otherAncestorType == Node.ATTRIBUTE_NODE) {
-           otherNode = ((Attr)otherAncestor).getOwnerElement();
-        }
-
-        // Before proceeding, we should check if both ancestor nodes turned
-        // out to be attributes for the same element
-        if (thisAncestorType == Node.ATTRIBUTE_NODE &&  
-            otherAncestorType == Node.ATTRIBUTE_NODE &&  
-            thisNode==otherNode)              
-            return NodeImpl.TREE_POSITION_EQUIVALENT;
-
-        // Now, find the ancestor of the owning element, if the original
-        // ancestor was an attribute
- 
-        // Note:  the following 2 loops are quite close to the ones above.
-        // May want to common them up.  LM.
-        if (thisAncestorType == Node.ATTRIBUTE_NODE) {
-            thisDepth=0;
-            for (node=thisNode; node != null; node=node.getParentNode()) {
-                thisDepth +=1;
-                if (node == otherNode) 
-                  // The other node is an ancestor of the owning element
-                  return NodeImpl.TREE_POSITION_PRECEDING;
-                thisAncestor = node;
-            }
-		}
-
-        // Now, find the ancestor of the owning element, if the original
-        // ancestor was an attribute
-        if (otherAncestorType == Node.ATTRIBUTE_NODE) {
-            otherDepth=0;
-            for (node=otherNode; node != null; node=node.getParentNode()) {
-                otherDepth +=1;
-                if (node == thisNode) 
-                  // The other node is a descendent of the reference 
-                  // node's element
-                  return NodeImpl.TREE_POSITION_FOLLOWING;
-                otherAncestor = node;
-            }
-        }
-
-        // thisAncestor and otherAncestor must be the same at this point,  
-        // otherwise, we are not in the same tree or document fragment
-        if (thisAncestor != otherAncestor) 
-          return NodeImpl.TREE_POSITION_DISCONNECTED; 
-
-		// Go up the parent chain of the deeper node, until we find a node
-		// with the same depth as the shallower node
-		if (thisDepth > otherDepth) {
-			for (int i=0; i<thisDepth - otherDepth; i++)
-            	thisNode = thisNode.getParentNode();
-			// Check if the node we have reached is in fact "otherNode". 
-			// This can happen in the case of attributes.  In this case, 
-			// otherNode "precedes" this.
-			if (thisNode == otherNode)
-				return NodeImpl.TREE_POSITION_PRECEDING;
-		}
-		else {
-			for (int i=0; i<otherDepth - thisDepth; i++)
-				otherNode = otherNode.getParentNode();
-			// Check if the node we have reached is in fact "thisNode".  This can
-			// happen in the case of attributes.  In this case, otherNode
-			// "follows" this.
-			if (otherNode == thisNode)
-				return NodeImpl.TREE_POSITION_FOLLOWING;
-		}
-		
-        // We now have nodes at the same depth in the tree.  Find a common 
-        // ancestor.                                   
-        Node thisNodeP, otherNodeP;
-        for (thisNodeP=thisNode.getParentNode(),
-                  otherNodeP=otherNode.getParentNode();
-             thisNodeP!=otherNodeP;) {
-             thisNode = thisNodeP;
-             otherNode = otherNodeP;
-             thisNodeP = thisNodeP.getParentNode();
-             otherNodeP = otherNodeP.getParentNode();
-        }
-
-        // See whether thisNode or otherNode is the leftmost
-        for (Node current=thisNodeP.getFirstChild(); 
-                  current!=null;
-                  current=current.getNextSibling()) {
-               if (current==otherNode) {
-                 return NodeImpl.TREE_POSITION_PRECEDING;
-               }
-               else if (current==thisNode) {
-                 return NodeImpl.TREE_POSITION_FOLLOWING;
-               }
-        }
-        // REVISIT:  shouldn't get here.   Should probably throw an 
-        // exception
-        return 0;
-
+    // If either node is of type ENTITY or NOTATION, compare as disconnected
+    if (thisType == Node.ENTITY_NODE || 
+	thisType == Node.NOTATION_NODE ||
+	otherType == Node.ENTITY_NODE ||
+	otherType == Node.NOTATION_NODE ) {
+      return NodeImpl.TREE_POSITION_DISCONNECTED; 
     }
 
+    // Find the ancestor of each node, and the distance each node is from 
+    // its ancestor.
+    // During this traversal, look for ancestor/descendent relationships 
+    // between the 2 nodes in question. 
+    // We do this now, so that we get this info correct for attribute nodes 
+    // and their children. 
 
+    Node node; 
+    Node thisAncestor = reference;
+    Node otherAncestor = other;
+    int thisDepth=0;
+    int otherDepth=0;
+    for (node=reference; node != null; node = node.getParentNode()) {
+      thisDepth +=1;
+      if (node == other) 
+	// The other node is an ancestor of this one.
+	return (NodeImpl.TREE_POSITION_ANCESTOR | NodeImpl.TREE_POSITION_PRECEDING);
+      thisAncestor = node;
+    }
 
+    for (node=other; node!=null; node=node.getParentNode()) {
+      otherDepth +=1;
+      if (node == reference) 
+	// The other node is a descendent of the reference node.
+	return (NodeImpl.TREE_POSITION_DESCENDANT | NodeImpl.TREE_POSITION_FOLLOWING);
+      otherAncestor = node;
+    }
+        
+       
+    Node thisNode = reference;
+    Node otherNode = other;
+
+    int thisAncestorType = thisAncestor.getNodeType();
+    int otherAncestorType = otherAncestor.getNodeType();
+
+    // if the ancestor is an attribute, get owning element. 
+    // we are now interested in the owner to determine position.
+
+    if (thisAncestorType == Node.ATTRIBUTE_NODE)  {
+      thisNode = ((Attr)thisAncestor).getOwnerElement();
+    }
+    if (otherAncestorType == Node.ATTRIBUTE_NODE) {
+      otherNode = ((Attr)otherAncestor).getOwnerElement();
+    }
+
+    // Before proceeding, we should check if both ancestor nodes turned
+    // out to be attributes for the same element
+    if (thisAncestorType == Node.ATTRIBUTE_NODE &&  
+	otherAncestorType == Node.ATTRIBUTE_NODE &&  
+	thisNode==otherNode)              
+      return NodeImpl.TREE_POSITION_EQUIVALENT;
+
+    // Now, find the ancestor of the owning element, if the original
+    // ancestor was an attribute
+ 
+    // Note:  the following 2 loops are quite close to the ones above.
+    // May want to common them up.  LM.
+    if (thisAncestorType == Node.ATTRIBUTE_NODE) {
+      thisDepth=0;
+      for (node=thisNode; node != null; node=node.getParentNode()) {
+	thisDepth +=1;
+	if (node == otherNode) 
+	  // The other node is an ancestor of the owning element
+	  return NodeImpl.TREE_POSITION_PRECEDING;
+	thisAncestor = node;
+      }
+    }
+
+    // Now, find the ancestor of the owning element, if the original
+    // ancestor was an attribute
+    if (otherAncestorType == Node.ATTRIBUTE_NODE) {
+      otherDepth=0;
+      for (node=otherNode; node != null; node=node.getParentNode()) {
+	otherDepth +=1;
+	if (node == thisNode) 
+	  // The other node is a descendent of the reference 
+	  // node's element
+	  return NodeImpl.TREE_POSITION_FOLLOWING;
+	otherAncestor = node;
+      }
+    }
+
+    // thisAncestor and otherAncestor must be the same at this point,  
+    // otherwise, we are not in the same tree or document fragment
+    if (thisAncestor != otherAncestor) 
+      return NodeImpl.TREE_POSITION_DISCONNECTED; 
+
+    // Go up the parent chain of the deeper node, until we find a node
+    // with the same depth as the shallower node
+    if (thisDepth > otherDepth) {
+      for (int i=0; i<thisDepth - otherDepth; i++)
+	thisNode = thisNode.getParentNode();
+      // Check if the node we have reached is in fact "otherNode". 
+      // This can happen in the case of attributes.  In this case, 
+      // otherNode "precedes" this.
+      if (thisNode == otherNode)
+	return NodeImpl.TREE_POSITION_PRECEDING;
+    }
+    else {
+      for (int i=0; i<otherDepth - thisDepth; i++)
+	otherNode = otherNode.getParentNode();
+      // Check if the node we have reached is in fact "thisNode".  This can
+      // happen in the case of attributes.  In this case, otherNode
+      // "follows" this.
+      if (otherNode == thisNode)
+	return NodeImpl.TREE_POSITION_FOLLOWING;
+    }
+		
+    // We now have nodes at the same depth in the tree.  Find a common 
+    // ancestor.                                   
+    Node thisNodeP, otherNodeP;
+    for (thisNodeP=thisNode.getParentNode(),
+	   otherNodeP=otherNode.getParentNode();
+	 thisNodeP!=otherNodeP;) {
+      thisNode = thisNodeP;
+      otherNode = otherNodeP;
+      thisNodeP = thisNodeP.getParentNode();
+      otherNodeP = otherNodeP.getParentNode();
+    }
+
+    // See whether thisNode or otherNode is the leftmost
+    for (Node current=thisNodeP.getFirstChild(); 
+	 current!=null;
+	 current=current.getNextSibling()) {
+      if (current==otherNode) {
+	return NodeImpl.TREE_POSITION_PRECEDING;
+      }
+      else if (current==thisNode) {
+	return NodeImpl.TREE_POSITION_FOLLOWING;
+      }
+    }
+    // REVISIT:  shouldn't get here.   Should probably throw an 
+    // exception
+    return 0;
+
+  }
   
 }
-
