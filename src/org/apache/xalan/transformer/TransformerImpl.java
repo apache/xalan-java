@@ -986,10 +986,10 @@ public class TransformerImpl extends XMLFilterImpl
     {
       // Sort if we need to.
       if(null != keys)
-      {
+      {               
         NodeSorter sorter = new NodeSorter(xctxt);
-        
         NodeSet nodeList;
+        
         if(sourceNodes instanceof NodeSet)
         {
           nodeList = ((NodeSet)sourceNodes);
@@ -1000,9 +1000,18 @@ public class TransformerImpl extends XMLFilterImpl
         {
           nodeList = new NodeSet(sourceNodes);
           sourceNodes = nodeList;
+          ((ContextNodeList)sourceNodes).setCurrentPos(0);
         }
-        sorter.sort(nodeList, keys, xctxt);
-        nodeList.setCurrentPos(0);
+        
+        xctxt.pushContextNodeList((ContextNodeList)sourceNodes );
+        try{
+          sorter.sort(nodeList, keys, xctxt);
+          nodeList.setCurrentPos(0);
+        }
+        finally
+        {
+          xctxt.popContextNodeList();
+        }
       }
       
       // Push the ContextNodeList on a stack, so that select="position()"
