@@ -327,18 +327,13 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   }
 
   /**
-   * NEEDSDOC Method setIDAttribute 
+   * Set the ID string to element association for this node.
    *
-   *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   * NEEDSDOC @param value
+   * @param value The ID string, should not be null.
    */
-  public void setIDAttribute(String namespaceURI, String qualifiedName,
-                             String value)
+  public void setIDAttribute(String value)
   {
-    getDocumentImpl().setIDAttribute(namespaceURI, qualifiedName, value,
-                                     this);
+    getDocumentImpl().setIDAttribute(value, this);
   }
 
   /**
