@@ -56,6 +56,9 @@
  */
 package org.apache.xalan.trace;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.templates.Constants;
@@ -75,7 +78,7 @@ import org.w3c.dom.Node;
  *
  * @see org.apache.xalan.trace.TracerEvent
  */
-public class PrintTraceListener implements TraceListenerEx2
+public class PrintTraceListener implements TraceListenerEx3
 {
 
   /**
@@ -112,6 +115,11 @@ public class PrintTraceListener implements TraceListenerEx2
    * Set to true if the listener is to print information after each selection event.
    */
   public boolean m_traceSelection = false;
+
+  /**
+   * Set to true if the listener is to print information after each extension event.
+   */
+  public boolean m_traceExtension = false;
 
   /**
    * Print information about a TracerEvent.
@@ -393,6 +401,36 @@ public void selected(SelectionEvent ev)
       }
     }
   }
-  
+
+  /**
+   * Print information about an extension event.
+   *
+   * @param ev the extension event to print information about
+   */
+  public void extension(ExtensionEvent ev) {
+    if (m_traceExtension) {
+      switch (ev.m_callType) {
+        case ExtensionEvent.DEFAULT_CONSTRUCTOR:
+          m_pw.println("EXTENSION: " + ((Class)ev.m_method).getName() + "#<init>");
+          break;
+        case ExtensionEvent.METHOD:
+          m_pw.println("EXTENSION: " + ((Method)ev.m_method).getDeclaringClass().getName() + "#" + ((Method)ev.m_method).getName());
+          break;
+        case ExtensionEvent.CONSTRUCTOR:
+          m_pw.println("EXTENSION: " + ((Constructor)ev.m_method).getDeclaringClass().getName() + "#<init>");
+          break;
+      }
+    }
+  }
+
+
+  /**
+   * Print information about an extension event.
+   *
+   * @param ev the extension event to print information about
+   */
+  public void extensionEnd(ExtensionEvent ev) {
+    // do nothing
+  }
 
 }
