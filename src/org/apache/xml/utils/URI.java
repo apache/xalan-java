@@ -421,7 +421,8 @@ public class URI implements Serializable
     int index = 0;
 
     // check for scheme
-    if (uriSpec.indexOf(':') == -1)
+    int colonIndex = uriSpec.indexOf(':');
+    if (colonIndex < 0)
     {
       if (p_base == null)
       {
@@ -431,8 +432,8 @@ public class URI implements Serializable
     else
     {
       initializeScheme(uriSpec);
-
-      index = m_scheme.length() + 1;
+      uriSpec = uriSpec.substring(colonIndex+1);
+      uriSpecLen = uriSpec.length();
     }
 
     // two slashes means generic URI syntax, so we get the authority
@@ -508,10 +509,6 @@ public class URI implements Serializable
       if (m_scheme == null)
       {
         m_scheme = p_base.getScheme();
-      }
-      else
-      {
-        return;
       }
 
       // check for authority - RFC 2396 5.2 #4
