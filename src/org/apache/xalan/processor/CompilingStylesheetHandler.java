@@ -131,21 +131,63 @@ public class CompilingStylesheetHandler
   public void endDocument ()
     throws org.xml.sax.SAXException
   {
-    try
-    {
+	  
+//    try
+//    {
+	  
+	  // Perform normal end-of-parse operations -- in particular, 
+	  // the "composition" process which performs data gathering
+	  // and optimization of the interpretable tree.
       super.endDocument();
       
-      Vector compiledTemplates=new Vector();
-      
-      Stylesheet current=getStylesheet();
       if(isStylesheetParsingComplete())
       {    
-        // Begin compiling. Loop modeled on StylesheetRoot.recompose()
-        // calling recomposeTemplates().
+        Stylesheet current=getStylesheet();
+
+		// Record the Templates as we compile them; this list gets
+		// passed into the "bundling" code to copy their excutable code
+		// into the .xsb file.
+		// TODO: Can we just use the StylesheetRoot's list?
+        Vector compiledTemplates=new Vector();
+
+		// cache the typecast
         StylesheetRoot root=(StylesheetRoot)getStylesheetRoot();
         
-        // loop from recompose()
-        int nImports = root.getGlobalImportCount();
+		// For all templates used in this stylesheet (including
+		// those from imported and included stylesheets), 
+		// compile to Java. (Takes advantage of the fact that
+		// ComposedStylesheet processing has already gathered
+		// these and reconciled conflicts.)
+		
+		// New TemplateList being generated
+		org.apache.xalan.templates.TemplateList newTl 
+			= new org.apache.xalan.templates.TemplateList();
+		// Iterate over contents of old TemplateList
+		org.apache.xalan.templates.TemplateList.TemplateWalker tw
+			=root.getTemplateListComposed().getWalker();
+		
+		// Scan all templates in old list, compile, insert into new
+		ElemTemplate et;
+		while ( null != (et = tw.next()) )
+		{
+			ElemTemplate ct = compileTemplate(et);
+			
+			// If compilation succeeds, use it; else fall back on interp
+			newTl.setTemplate( (ct!=null) ? ct : et);
+		}
+		// Postprocess/reconcile list
+		newTl.compose();
+		// And make it active
+		root.setTemplateListComposed(newTl);
+
+		// TODO: Theoretically, we can now discard imports/includes
+		// -- they're no longer pointing at the right ElemTemplates
+		// anyway. There's discussion of doing so in any case when
+		// they aren't needed for tooling support. Always do it here,
+		// leave it to be handled there, or other?
+
+/****** OLD APPROACH
+		int nImports = root.getGlobalImportCount();
         for(int imp = 0; imp < nImports; imp++)
         {
           org.apache.xalan.templates.StylesheetComposed
@@ -185,16 +227,30 @@ public class CompilingStylesheetHandler
         // entry point... Or flush might be made the new default
         // behavior; I don't know whether that would be appropriate.
         root.recomposeTemplates(true); 
-        
-        // TODO: Should bundling occur elsewhere?
+ ****** OLD APPROACH */
+
+		// TODO: Theoretically, we no longer need the Imported trees.
+		// Eliminating them would save some bytes in memory and in the
+		// .xsb bundle file. (They should be needed only for tooling 
+		// support, which doesn't seem to apply to compiled operation.)
+		// Try that _AFTER_ the compile loop has been revived!
+		
+        // TODO: Should bundling occur elsewhere or be optional?
         CompiledStylesheetBundle.createBundle(root,compiledTemplates);
       }
-    }
-    catch(TransformerException te)
-    {
-      throw new org.xml.sax.SAXException(te);
-    }
+	  
+//    }
+//    catch(TransformerException te)
+//    {
+//      throw new org.xml.sax.SAXException(te);
+//    }
   }
+  
+  
+  // Minor optimization: Only need to look these up once
+  private static final org.apache.xml.utils.synthetic.Class sClassCompiledTemplate=org.apache.xml.utils.synthetic.Class.forClass(org.apache.xalan.processor.CompiledTemplate.class);
+  private static final org.apache.xml.utils.synthetic.Class sClassObjectArray=org.apache.xml.utils.synthetic.Class.forClass(Object[].class);
+
   
   /**
     Analyse an <xsl:template> tree, converting some (most?)
@@ -220,15 +276,9 @@ public class CompilingStylesheetHandler
         to the attribute trees.
     xsl:choose and xsl:for-each may be flattened
     Namespace declarations become SAX prefix operations.
-    ***** NS aliasing really should have occured before we get here,
-    as should most NS resolution. The annoying exception is when
-    xsl:attribute has a prefixed name but no explicit namespace,
-    a feature which I Really Wish had not been supported.    
-    
+    <p>
     Other nodes simply have their .evaluate() invoked
     TODO: Their children really should be walked for further compilation opportunities.
-    TODO: ***** OPTIMIZATION: We should preload/cache the org.apache.xml.utils.synthetic.Class
-     objects rather than doing forName/forClass lookups every time.
     */
   ElemTemplate compileTemplate(ElemTemplate source)
   {
@@ -243,7 +293,7 @@ public class CompilingStylesheetHandler
         org.apache.xml.utils.synthetic.Class tClass=
             org.apache.xml.utils.synthetic.Class.declareClass(className);
         tClass.setModifiers(java.lang.reflect.Modifier.PUBLIC);
-        tClass.setSuperClass(tClass.forName("org.apache.xalan.processor.CompiledTemplate"));
+        tClass.setSuperClass(sClassCompiledTemplate);
 
         // public constructor: Copy values from original
         // template object, pick up "uncompiled children"
@@ -252,7 +302,7 @@ public class CompilingStylesheetHandler
             tClass.declareConstructor();
         ctor.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         ctor.addParameter(tClass.forClass(ElemTemplate.class),"original");
-        ctor.addParameter(tClass.forName("java.lang.Object[]"),"interpretArray");
+        ctor.addParameter(sClassObjectArray,"interpretArray");
         ctor.getBody().append(
                         "super(original,\n"
                         +'\t'+source.getLineNumber()+','+source.getColumnNumber()+",\n"
@@ -337,11 +387,11 @@ public class CompilingStylesheetHandler
 
         }
         
-        // Compile the new java class
+        // Compile the new java class. Note that any existing class
+		// by the same name will be walked upon... which is why I'm
+		// going to the trouble of generating unique classnames.
         // TODO: ***** ISSUE: Where write out the class? Parameterize.
-        // Needs to be somewhere on the classpath.
-        // TODO: ***** ISSUE: What if file already exists?
-        // I think the answer in this case is "overwrite it.".
+        // Needs to be somewhere on the classpath, or we need a classloader.
         Class realclass=compileSyntheticClass(tClass,".");
         // Prepare the array of execute()ables
         Object[] eteParms=new Object[interpretVector.size()];
@@ -356,11 +406,6 @@ public class CompilingStylesheetHandler
     catch(org.apache.xml.utils.synthetic.SynthesisException e)
     {
         System.out.println("CompilingStylesheetHandler class synthesis error");
-        e.printStackTrace();
-    }
-    catch(java.lang.ClassNotFoundException e)
-    {
-        System.out.println("CompilingStylesheetHandler class resolution error");
         e.printStackTrace();
     }
     catch(java.lang.IllegalAccessException e)
@@ -397,9 +442,10 @@ public class CompilingStylesheetHandler
         compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
                 break;
 
-                // TODO: ***** Redirection of attr value not working yet.
-        //case Constants.ELEMNAME_ATTRIBUTE:
-    //    compileElemAttribute((ElemAttribute)kid,body,interpretVector);
+	// TODO: ***** Redirection of attr value not working yet.
+	// TODO: ***** Attrs should be preprocessed (SAX-ordered)
+	//case Constants.ELEMNAME_ATTRIBUTE:
+        //    compileElemAttribute((ElemAttribute)kid,body,interpretVector);
         //    break;
                 
         default:
@@ -460,7 +506,7 @@ public class CompilingStylesheetHandler
     }    
         
     // Process AVTs.
-    // TODO: Should be be checking for excluded namespace prefixes?
+    // TODO: Should we be checking for excluded namespace prefixes?
     // ***** That wasn't done in non-compiled version, but was an open issue.
     java.util.Enumeration avts=ele.enumerateLiteralResultAttributes();
     if (avts!=null) 
@@ -486,8 +532,7 @@ public class CompilingStylesheetHandler
             else
             {
                 // Expression. Must resolve at runtime.
-                // TODO: ***** It might be possible to unwind this
-                // evaluation too. Consider.
+                // TODO: ***** It might be possible to unwind this too.
                 int offset=interpretVector.size();
                 interpretVector.addElement(avt);
                 body.append(
@@ -606,11 +651,11 @@ public class CompilingStylesheetHandler
       // YES, this is inconsistant. 
       int offset=interpretVector.size();
       interpretVector.addElement(avt);
-      // TODO: ***** I'm assuming I can get away with "this" as the prefixResolver
-      // even in the compiled code. I'm not really convinced that's true...
       return 
-            "( ((org.apache.xalan.templates.AVT)m_interpretArray["+offset+"]).evaluate(transformer.getXPathContext(),sourceNode,this,new StringBuffer()) )"
-            ;
+          "( ((org.apache.xalan.templates.AVT)m_interpretArray["
+		  +offset
+		  +"]).evaluate(transformer.getXPathContext(),sourceNode,this,new StringBuffer()) )"
+          ;
   }
   
   // Wrap quotes around a text string. 
@@ -699,7 +744,7 @@ public class CompilingStylesheetHandler
 
     // If they are trying to add an attribute when there isn't an 
     // element pending, it is an error.
-    // TODO: ****** Could these tests occur _before_ we transform?
+    // TODO: ****** Could these tests occur _before_ we transform? Factor?
     body.append(
         "if(null == rhandler.getPendingElementName())\n"
         +"{\n"
@@ -834,13 +879,12 @@ public class CompilingStylesheetHandler
           kid!=null;
           kid=kid.getNextSiblingElem())
          {
-           //TODO: *PROBLEM* NEED EQUIVALENT? Node is Going Away...
-           // body.append("transformer.pushElemTemplateElement(kid);\n");
-
+	   //TODO: NEED EQUIVALENT? This Node is Going Away...
+	   // body.append("transformer.pushElemTemplateElement(kid);\n");
            compileElemTemplateElement(kid,body,interpretVector);
 
-           //TODO: *PROBLEM* NEED EQUIVALENT? Node is Going Away...
-           // body.append("transformer.popElemTemplateElement(kid);\n");
+	   //TODO: NEED EQUIVALENT? This Node is Going Away...
+	   // body.append("transformer.popElemTemplateElement(kid);\n");
          }
 
      // End the class wrapper
@@ -862,7 +906,7 @@ public class CompilingStylesheetHandler
    * name and output is written to the directory that file
    * would be found in (possibly relative). However, "."
    * is treated as being found in itself rather than in "..".
-   * TODO: ***** A more elegant version of this should be moved into org.apache.xml.utils.synthetic.Class?
+   * TODO: ***** Move polished version into org.apache.xml.utils.synthetic.Class
    * TODO: Should we use a classloader rather than std. classpath?
    */
   Class compileSyntheticClass(org.apache.xml.utils.synthetic.Class tClass, String classLocation)
@@ -910,21 +954,21 @@ public class CompilingStylesheetHandler
         return null;
     }
 
-        // Try to pick up the same classpath we're executing under. That
-        // ought to include everything in Xalan and the standard libraries.
+    // Try to pick up the same classpath we're executing under. That
+    // ought to include everything in Xalan and the standard libraries.
     String classpath=System.getProperty ("java.class.path");
-        
-        // If compiling with the -g switch (Java debugging), we should retain 
-        // the Java source code to support debugging into the synthesized class.
-        // Some additional diagnostics are also turned on as a side effect.
-        // TODO: Find a better place to put the debugging control.
-        String javac_options=
-                        System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
-        boolean debug=(javac_options.indexOf("-g")>=0);
+	
+    // If compiling with the -g switch (Java debugging), we should retain 
+    // the Java source code to support debugging into the synthesized class.
+    // Some additional diagnostics are also turned on as a side effect.
+    // TODO: Find a better place to put the debugging control. Property? Parm?
+    String javac_options=
+	System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
+    boolean debug=(javac_options.indexOf("-g")>=0);
 
-        // Run the compilation. Encapsulates the fallbacks and
-        // workarounds needed to achieve this in various environments.
-        JavaUtils.setDebug(debug);
+    // Run the compilation. Encapsulates the fallbacks and
+    // workarounds needed to achieve this in various environments.
+    JavaUtils.setDebug(debug);
     boolean compileOK=
                 JavaUtils.JDKcompile(filename,classpath);
         
@@ -981,7 +1025,7 @@ public class CompilingStylesheetHandler
     //which need to be made globally unique if they aren't
     //to collide with other compilations loaded into the same
     //JVM. We really need classnames based on something like
-    //UUID or GID, combining the source stylesheet's URI, 
+    //UUID or GID, combining the source stylesheet's URI and locator, 
     //where it was processed, exactly when it was processed
     //... and then going the extra step to guard against
     //multitasking causing two stylesheets to start within
@@ -1007,22 +1051,20 @@ public class CompilingStylesheetHandler
 
     long templateNumber;
     synchronized(this)
-    {   // I don't know if ++ is atomic or not. I'd hope so,
-        // but until that's been checked we should synchronize
-        // this operation.
+    {   // Atomic get-next-count -- last-ditch protection against
+		// the risk of multiple threads trying to process the same
+		// stylesheet at the same instant on the same machine.
         templateNumber = ++templateCounter;
     }
     
     // Generate a mostly-unique name.
     // TODO: ***** NOT GUARANTEED TO BE COMPLETELY UNIQUE, since
-    // there could, theoretically, be two seperate processes
-    // which are running this code simultaneously -- so
-    // even the combination of server, timestamp, and
-    // unique index may not suffice. The officious answer
-    // would be to tap into a system-level unique ID service,
+    // there could, theoretically, be two seperate PROCESSES
+    // which are running this code simultaneously. The officious
+    // answer would be to tap into a system-level unique ID service,
     // like UUID or GID.
     // ***** Unclear these names will be supportable on all
-    // systems. Some may have limits on filename length.
+    // systems. Some platforms may have limits on filename length.
     // Could move more of the fields into directory names if
     // that helps.
     String className=
