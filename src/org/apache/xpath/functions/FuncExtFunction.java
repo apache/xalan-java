@@ -59,7 +59,10 @@ package org.apache.xpath.functions;
 import java.util.Vector;
 
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.objects.*;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -233,6 +236,72 @@ public class FuncExtFunction extends Function
    * @throws WrongNumberArgsException
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException{}
+
+
+  class ArgExtOwner implements ExpressionOwner
+  {
+  
+    Expression m_exp;
+  	
+  	ArgExtOwner(Expression exp)
+  	{
+  		m_exp = exp;
+  	}
+  	
+    /**
+     * @see ExpressionOwner#getExpression()
+     */
+    public Expression getExpression()
+    {
+      return m_exp;
+    }
+
+
+    /**
+     * @see ExpressionOwner#setExpression(Expression)
+     */
+    public void setExpression(Expression exp)
+    {
+    	exp.exprSetParent(FuncExtFunction.this);
+    	m_exp = exp;
+    }
+  }
+  
+  
+  /**
+   * Call the visitors for the function arguments.
+   */
+  public void callArgVisitors(XPathVisitor visitor)
+  {
+      for (int i = 0; i < m_argVec.size(); i++)
+      {
+         Expression exp = (Expression)m_argVec.get(i);
+         exp.callVisitors(new ArgExtOwner(exp), visitor);
+      }
+    
+  }
+
+  /**
+   * Set the parent node.
+   * For an extension function, we also need to set the parent
+   * node for all argument expressions.
+   * 
+   * @param n The parent node
+   */
+  public void exprSetParent(ExpressionNode n) 
+  {
+	
+    super.exprSetParent(n);
+      
+    int nArgs = m_argVec.size();
+
+    for (int i = 0; i < nArgs; i++)
+    {
+      Expression arg = (Expression) m_argVec.elementAt(i);
+
+      arg.exprSetParent(n);
+    }		
+  }
 
   /**
    * Constructs and throws a WrongNumberArgException with the appropriate
