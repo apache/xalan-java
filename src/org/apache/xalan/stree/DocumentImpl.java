@@ -74,26 +74,36 @@ import org.apache.xalan.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class DocumentImpl <needs-comment/>
+ * This is the implementation of the DOM2 Document 
+ * interface.  It rules over the tree, and may contain 
+ * common information for the tree.
  */
 public class DocumentImpl extends Parent
 {
-
-  /** NEEDSDOC Field m_exceptionThrown          */
+  /** Aid to assigning a unique ID to the tree. */
+  static int m_idCount = 0;
+  
+  /** The unique ID of this tree. */
+  int m_id;
+  
+  /** Contains exception thrown from transformation thread, 
+   * if one occured. */
   public Exception m_exceptionThrown = null;
 
-  /** NEEDSDOC Field m_chars          */
+  /** This holds all the characters used, copied from the 
+   * characters events.  This allows us to not have to allocate 
+   * a million little arrays.  */
   FastStringBuffer m_chars = new FastStringBuffer(1024 * 64);
 
   /**
-   * Constructor DocumentImpl
-   *
+   * Constructor DocumentImpl. This constructor is 
+   * not normally used by the transformation.
    */
   DocumentImpl()
   {
 
     super(null);
-
+    m_id = m_idCount++;
     setDoc(this);
 
     // m_bUpIndexer = new LevelIndexer();
@@ -102,14 +112,14 @@ public class DocumentImpl extends Parent
   /**
    * Constructor DocumentImpl
    *
-   *
-   * NEEDSDOC @param sth
+   * @param sth A reference back to the source tree 
+   * handler that is creating this tree. 
    */
   DocumentImpl(SourceTreeHandler sth)
   {
 
     super(null);
-
+    m_id = m_idCount++;
     setDoc(this);
 
     // m_bUpIndexer = new LevelIndexer();
@@ -117,16 +127,17 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * Constructor DocumentImpl
+   * Constructor DocumentImpl.  This constructor is 
+   * not normally used by the transformation.
    *
-   *
-   * NEEDSDOC @param doctype
+   * @param doctype The DocumentType reference that 
+   * this tree conforms to.
    */
   DocumentImpl(DocumentType doctype)
   {
 
     super(null);
-
+    m_id = m_idCount++;
     setDoc(this);
 
     if (null != doctype)
@@ -135,14 +146,16 @@ public class DocumentImpl extends Parent
     // m_bUpIndexer = new LevelIndexer();
   }
 
-  /** NEEDSDOC Field m_sourceTreeHandler          */
+  /** A reference back to the source tree 
+   * handler that is creating this tree.    */
   SourceTreeHandler m_sourceTreeHandler;
 
   /**
-   * NEEDSDOC Method getSourceTreeHandler 
+   * Get a reference back to the source tree 
+   * handler that is creating this tree.  
    *
-   *
-   * NEEDSDOC (getSourceTreeHandler) @return
+   * @return SourceTreeHandler reference, could 
+   * be null (though maybe this should change.  -sb).
    */
   SourceTreeHandler getSourceTreeHandler()
   {
@@ -150,35 +163,25 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * NEEDSDOC Method setSourceTreeHandler 
+   * Set a reference back to the source tree 
+   * handler that is creating this tree. 
    *
-   *
-   * NEEDSDOC @param h
+   * @param h Should be a non-null reference to 
+   * the SourceTreeHandler that is creating this 
+   * tree.
    */
   void setSourceTreeHandler(SourceTreeHandler h)
   {
     m_sourceTreeHandler = h;
   }
 
-  /** NEEDSDOC Field indexedLookup          */
-  private boolean indexedLookup = false;  // for now
-
   /**
-   *
+   * The document type that this tree conforms to.  Is 
+   * not normally used, and may well be null.
    */
-
-  // private LevelIndexer m_bUpIndexer ;
-
-  /**
-   *
-   */
-  // public LevelIndexer getLevelIndexer()
-  // {
-  //  return m_bUpIndexer;
-  // }
   DocumentTypeImpl m_docType;
 
-  /** NEEDSDOC Field m_docOrderCount          */
+  /** This tells how many children are in the tree.  */
   int m_docOrderCount = 1;
 
   /**
@@ -194,7 +197,7 @@ public class DocumentImpl extends Parent
    * Get the number of nodes in the tree.  Needs to be called
    * when a child is added.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The number of children in the tree.
    */
   protected int getDocOrderCount()
   {
@@ -206,21 +209,24 @@ public class DocumentImpl extends Parent
    * For HTML documents, and XML documents which don't specify a DTD,
    * it will be null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The DocumentType reference, which may well be null.
    */
   public DocumentType getDoctype()
   {
     return m_docType;
   }
 
-  /** NEEDSDOC Field m_useMultiThreading          */
+  /** If this is true, the transformation is working off of 
+   * a secondary thread from the incoming SAX events, and 
+   * the secondary thread may have to wait for nodes be produced.  */
   boolean m_useMultiThreading = false;
 
   /**
    * Set whether or not the tree being built should handle
    * transformation while the parse is still going on.
    *
-   * NEEDSDOC @param b
+   * @param b true if the transformation is working off of a 
+   * secondary thread, false otherwise.
    */
   public void setUseMultiThreading(boolean b)
   {
@@ -231,7 +237,8 @@ public class DocumentImpl extends Parent
    * Tell whether or not the tree being built should handle
    * transformation while the parse is still going on.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the transformation is working off of a 
+   * secondary thread, false otherwise.
    */
   public boolean getUseMultiThreading()
   {
@@ -247,21 +254,23 @@ public class DocumentImpl extends Parent
    * Convenience method, allowing direct access to the child node
    * which is considered the root of the actual document content.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the document element, which may be null if it hasn't 
+   * been constructed.
    */
   public Element getDocumentElement()
   {
     return m_docElement;
   }
 
-  /** NEEDSDOC Field m_idAttributes          */
+  /** This table holds the ID string to node associations, for 
+   * XML IDs.  */
   Hashtable m_idAttributes = new Hashtable();
 
   /**
-   * NEEDSDOC Method getIDAttributes 
+   * Get the table that holds the ID string to node associations, 
+   * for looking up XML IDs.
    *
-   *
-   * NEEDSDOC (getIDAttributes) @return
+   * @return the ID table, never null.
    */
   public Hashtable getIDAttributes()
   {
@@ -269,27 +278,24 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * NEEDSDOC Method setIDAttribute 
+   * Set an ID string to node association in the ID table.
    *
-   *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   * NEEDSDOC @param value
-   * NEEDSDOC @param elem
+   * @param id The ID string.
+   * @param elem The associated ID.
    */
-  public void setIDAttribute(String namespaceURI, String qualifiedName,
-                             String value, Element elem)
+  public void setIDAttribute(String id, Element elem)
   {
-    m_idAttributes.put(value, elem);
+    m_idAttributes.put(id, elem);
   }
 
   /**
    * Append a child to the child list.
+   * 
    * @param newChild Must be a org.apache.xalan.stree.Child.
    *
-   * NEEDSDOC ($objectName$) @return
-   * @exception ClassCastException if the newChild isn't a org.apache.xalan.stree.Child.
-   *
+   * @return The child that was added.
+   * 
+   * @throws ClassCastException if the newChild isn't a org.apache.xalan.stree.Child.
    * @throws DOMException
    */
   public Node appendChild(Node newChild) throws DOMException
@@ -316,7 +322,7 @@ public class DocumentImpl extends Parent
   /**
    * Returns the node type. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Node.DOCUMENT_NODE. 
    */
   public short getNodeType()
   {
@@ -326,7 +332,7 @@ public class DocumentImpl extends Parent
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return "#document" string.
    */
   public String getNodeName()
   {
@@ -340,7 +346,7 @@ public class DocumentImpl extends Parent
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The local name of the node, or null if namespaces are not processed.
    */
   public String getLocalName()
   {
@@ -348,11 +354,11 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * Unimplemented. 
+   * Create a new Element.
    *
-   * NEEDSDOC @param tagName
+   * @param tagName The name of the element.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new element.
    *
    * @throws DOMException
    */
@@ -364,7 +370,7 @@ public class DocumentImpl extends Parent
   /**
    * Create a DocumentFragment. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return a new DocumentFragment reference.
    */
   public DocumentFragment createDocumentFragment()
   {
@@ -374,9 +380,9 @@ public class DocumentImpl extends Parent
   /**
    * Create a Text node. 
    *
-   * NEEDSDOC @param data
+   * @param data The character that this node holds.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new Text node.
    */
   public Text createTextNode(String data)
   {
@@ -386,9 +392,9 @@ public class DocumentImpl extends Parent
   /**
    * Create a Comment node. 
    *
-   * NEEDSDOC @param data
+   * @param data The comment data that this node holds.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new Comment node.
    */
   public Comment createComment(String data)
   {
@@ -398,9 +404,9 @@ public class DocumentImpl extends Parent
   /**
    * Create a CDATASection node. 
    *
-   * NEEDSDOC @param data
+   * @param data The character data that this node holds.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new CDATASection node.
    *
    * @throws DOMException
    */
@@ -412,10 +418,10 @@ public class DocumentImpl extends Parent
   /**
    * Create a ProcessingInstruction node. 
    *
-   * NEEDSDOC @param target
-   * NEEDSDOC @param data
+   * @param target The name of the PI.
+   * @param data The data for this PI.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new ProcessingInstruction node.
    *
    * @throws DOMException
    */
@@ -426,12 +432,12 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * Unimplemented right now, but I should probably implement. 
+   * Unimplemented, since this a read-only DOM. 
    *
-   * NEEDSDOC @param importedNode
-   * NEEDSDOC @param deep
+   * @param importedNode The node being imported.
+   * @param deep Tells if we should also import the subtree.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new node of the same type as importedNode.
    *
    * @throws DOMException
    */
@@ -441,12 +447,20 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * Unimplemented. 
+   * Create a new namespaced element. 
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param namespaceURI The namespace URI (NEEDTOREVIEW: Handling of "" vs. null. -sb)
+   * @param qualifiedName  The  qualified name of the element type to 
+   *   instantiate.
+   * 
+   * @return  A new <code>Element</code> object with the following 
+   *   attributes: Attribute Value<code>Node.nodeName</code>
+   *   <code>qualifiedName</code><code>Node.namespaceURI</code>
+   *   <code>namespaceURI</code><code>Node.prefix</code> prefix, extracted 
+   *   from <code>qualifiedName</code> , or <code>null</code> if there is no
+   *    prefix<code>Node.localName</code> local name , extracted from 
+   *   <code>qualifiedName</code><code>Element.tagName</code>
+   *   <code>qualifiedName</code>
    *
    * @throws DOMException
    */
@@ -457,12 +471,19 @@ public class DocumentImpl extends Parent
   }
 
   /**
-   * Unimplemented. 
+   * Unimplemented right now. 
    *
-   * NEEDSDOC @param namespaceURI
-   * NEEDSDOC @param qualifiedName
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param namespaceURI  The  namespace URI of the attribute to create.
+   * @param qualifiedName  The  qualified name of the attribute to 
+   *   instantiate.
+   * @return  A new <code>Attr</code> object with the following attributes: 
+   *   Attribute Value<code>Node.nodeName</code> qualifiedName
+   *   <code>Node.namespaceURI</code><code>namespaceURI</code>
+   *   <code>Node.prefix</code> prefix, extracted from 
+   *   <code>qualifiedName</code> , or <code>null</code> if there is no 
+   *   prefix<code>Node.localName</code> local name , extracted from 
+   *   <code>qualifiedName</code><code>Attr.name</code>
+   *   <code>qualifiedName</code>
    *
    * @throws DOMException
    */
@@ -475,9 +496,10 @@ public class DocumentImpl extends Parent
   /**
    * Given an ID, return the element.
    *
-   * NEEDSDOC @param elementId
+   * @param elementId A non-null string that may be a key in the ID table.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The element associated with the given elementId, or 
+   * null if not found.
    */
   public Element getElementById(String elementId)
   {
@@ -521,7 +543,7 @@ public class DocumentImpl extends Parent
    * The node immediately following this node. If there is no such node,
    * this returns <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Always null, since there is never a node following a Document node.
    */
   public Node getNextSibling()
   {
