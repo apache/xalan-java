@@ -61,12 +61,10 @@ package org.apache.xml.serializer;
 
 import java.io.IOException;
 
-import org.apache.xml.serializer.CharInfo;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
 
 public class ToTextStream extends ToStream 
 { 
@@ -359,9 +357,11 @@ void writeNormalizedChars(
                 }
                 else
                 {
-                    // writer.write(c);
-                    throw new SAXException(XSLMessages.createMessage(
-                        XSLTErrorResources.ER_ILLEGAL_CHARACTER,null));
+                    String encoding = getEncoding();
+                    String integralValue = Integer.toString(c);
+                    throw new SAXException(XMLMessages.createXMLMessage(
+                        XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                        new Object[]{ integralValue, encoding}));
                 }
             }
         }
@@ -388,9 +388,11 @@ void writeNormalizedChars(
             }
             else
             {
-                // writer.write(c);
-                throw new SAXException(XSLMessages.createMessage(
-                    XSLTErrorResources.ER_ILLEGAL_CHARACTER,null));
+                String encoding = getEncoding();
+                String integralValue = Integer.toString(c);
+                throw new SAXException(XMLMessages.createXMLMessage(
+                    XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                    new Object[]{ integralValue, encoding}));                 
             }
         }
     }
