@@ -57,9 +57,12 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
+
 import java.util.StringTokenizer;
+
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.NameSpace;
 import org.apache.xpath.XPathContext;
@@ -71,26 +74,26 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
 import java.io.*;
-import java.util.*;
 
+import java.util.*;
 
 /**
  * <meta name="usage" content="advanced"/>
  * Implement a Literal Result Element.
  */
 public class ElemUnknown extends ElemLiteralResult
-{   
+{
 
   /**
    * Copy an unknown element to the result tree
-   * */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {
-  }
-  
-  
-
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
+   */
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException{}
 }

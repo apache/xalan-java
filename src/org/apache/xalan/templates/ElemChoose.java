@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xalan.trace.SelectionEvent;
@@ -75,91 +77,126 @@ import org.apache.xalan.transformer.TransformerImpl;
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
  */
 public class ElemChoose extends ElemTemplateElement
-{  
+{
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_CHOOSE;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_CHOOSE_STRING;
   }
- 
-  public ElemChoose()
-  {
-  }
 
-  public void execute(TransformerImpl transformer, 
-                     Node sourceNode,
-                     QName mode)
-    throws SAXException
-  {    
-    if(TransformerImpl.S_DEBUG)
+  /**
+   * Constructor ElemChoose
+   *
+   */
+  public ElemChoose(){}
+
+  /**
+   * NEEDSDOC Method execute 
+   *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
+   */
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-    
+
     boolean found = false;
-    for (ElemTemplateElement childElem = getFirstChildElem(); 
-         childElem != null; childElem = childElem.getNextSiblingElem()) 
+
+    for (ElemTemplateElement childElem = getFirstChildElem();
+            childElem != null; childElem = childElem.getNextSiblingElem())
     {
       int type = childElem.getXSLToken();
-      if(Constants.ELEMNAME_WHEN == type)
-      {
-		    found = true;  
-        ElemWhen when = (ElemWhen)childElem;
-        // must be xsl:when
-        
-        XObject test = when.getTest().execute(transformer.getXPathContext(), 
-                                           sourceNode, this);
-        if(TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireSelectedEvent(sourceNode,
-                                        when, "test", 
-                                        when.getTest(), test);
 
-        if((null != test) && test.bool())
+      if (Constants.ELEMNAME_WHEN == type)
+      {
+        found = true;
+
+        ElemWhen when = (ElemWhen) childElem;
+
+        // must be xsl:when
+        XObject test = when.getTest().execute(transformer.getXPathContext(),
+                                              sourceNode, this);
+
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
+                  "test", when.getTest(), test);
+
+        if ((null != test) && test.bool())
         {
           transformer.executeChildTemplates(when, sourceNode, mode);
+
           return;
         }
       }
-      else if(Constants.ELEMNAME_OTHERWISE == type)
+      else if (Constants.ELEMNAME_OTHERWISE == type)
       {
         found = true;
-        // xsl:otherwise		
+
+        // xsl:otherwise                
         transformer.executeChildTemplates(childElem, sourceNode, mode);
+
         return;
       }
     }
-    if(!found)
-      transformer.getMsgMgr().error(XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
-  }
-  
-  /**
-   * Add a child to the child list.
-   */
-  public Node               appendChild(Node newChild)
-    throws DOMException
-  {
-    int type = ((ElemTemplateElement)newChild).getXSLToken();
-    switch(type)
-    {
-    case Constants.ELEMNAME_WHEN:
-    case Constants.ELEMNAME_OTHERWISE:
-      // TODO: Positional checking
-      break;
-      
-    default:
-      error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-            //" to " + this.m_elemName);
-    }
-    return super.appendChild(newChild);
+
+    if (!found)
+      transformer.getMsgMgr().error(
+        XSLTErrorResources.ER_CHOOSE_REQUIRES_WHEN);
   }
 
+  /**
+   * Add a child to the child list.
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node appendChild(Node newChild) throws DOMException
+  {
+
+    int type = ((ElemTemplateElement) newChild).getXSLToken();
+
+    switch (type)
+    {
+    case Constants.ELEMNAME_WHEN :
+    case Constants.ELEMNAME_OTHERWISE :
+
+      // TODO: Positional checking
+      break;
+    default :
+      error(XSLTErrorResources.ER_CANNOT_ADD,
+            new Object[]{ newChild.getNodeName(),
+                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    //" to " + this.m_elemName);
+    }
+
+    return super.appendChild(newChild);
+  }
 }

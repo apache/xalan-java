@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -54,14 +54,15 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
 package org.apache.xalan.templates;
 
 // Java imports
 import java.io.ObjectInputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+
 import java.text.DecimalFormatSymbols;
+
 import java.util.Hashtable;
 import java.util.Stack;
 import java.util.Vector;
@@ -70,7 +71,6 @@ import java.util.Vector;
 import org.apache.xalan.utils.SystemIDResolver;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.StringVector;
-
 import org.apache.xpath.XPath;
 
 // DOM Imports
@@ -83,10 +83,10 @@ import org.xml.sax.Locator;
 
 /**
  * Represents a stylesheet element.
- * <p>All properties in this class have a fixed form of bean-style property 
- * accessors for all properties that represent XSL attributes or elements.  
- * These properties have setter method names accessed generically by the 
- * processor, and so these names must be fixed according to the system 
+ * <p>All properties in this class have a fixed form of bean-style property
+ * accessors for all properties that represent XSL attributes or elements.
+ * These properties have setter method names accessed generically by the
+ * processor, and so these names must be fixed according to the system
  * defined in the <a href="XSLTAttributeDef#getSetterMethodName">getSetterMethodName</a>
  * function.</p>
  * <p><pre>
@@ -105,7 +105,7 @@ import org.xml.sax.Locator;
  *   | xsl:namespace-alias
  *   %non-xsl-top-level;)*)
  * ">
- * 
+ *
  * <!ENTITY % top-level-atts '
  *   extension-element-prefixes CDATA #IMPLIED
  *   exclude-result-prefixes CDATA #IMPLIED
@@ -114,36 +114,40 @@ import org.xml.sax.Locator;
  *   xmlns:xsl CDATA #FIXED "http://www.w3.org/1999/XSL/Transform"
  *   %space-att;
  * '>
- * 
+ *
  * <!ELEMENT xsl:stylesheet %top-level;>
  * <!ATTLIST xsl:stylesheet %top-level-atts;>
- * 
+ *
  * <!ELEMENT xsl:transform %top-level;>
  * <!ATTLIST xsl:transform %top-level-atts;>
- * 
+ *
  * </p></pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Stylesheet-Structure">section-Stylesheet-Structure in XSLT Specification</a>
  */
-public class Stylesheet  extends ElemTemplateElement
-  implements java.io.Serializable, Document
+public class Stylesheet extends ElemTemplateElement
+        implements java.io.Serializable, Document
 {
+
   /**
    * Constructor for a Stylesheet.
    * @param parent  The including or importing stylesheet.
    */
   public Stylesheet(Stylesheet parent)
   {
-    if(null != parent)
+
+    if (null != parent)
     {
       m_stylesheetParent = parent;
       m_stylesheetRoot = parent.getStylesheetRoot();
     }
   }
-  
+
   /**
-   * Get the owning stylesheet.  This looks up the 
+   * Get the owning stylesheet.  This looks up the
    * inheritance chain until it calls getStylesheet
    * on a Stylesheet object, which will return itself.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Stylesheet getStylesheet()
   {
@@ -151,22 +155,26 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * Tell if this can be cast to a StylesheetComposed, meaning, you 
+   * Tell if this can be cast to a StylesheetComposed, meaning, you
    * can ask questions from getXXXComposed functions.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean isAggregatedType()
   {
     return false;
   }
-  
+
   /**
    * Tell if this is the root of the stylesheet tree.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean isRoot()
   {
     return false;
   }
-  
+
   /**
    * Extension to be used when serializing to disk.
    */
@@ -174,49 +182,69 @@ public class Stylesheet  extends ElemTemplateElement
 
   /**
    * Read the stylesheet from a serialization stream.
+   *
+   * NEEDSDOC @param stream
+   *
+   * @throws IOException
+   * @throws SAXException
    */
   private void readObject(ObjectInputStream stream)
-    throws IOException, SAXException
+          throws IOException, SAXException
   {
+
     // System.out.println("Reading Stylesheet");
     try
     {
       stream.defaultReadObject();
     }
-    catch(ClassNotFoundException cnfe)
+    catch (ClassNotFoundException cnfe)
     {
       throw new SAXException(cnfe);
     }
+
     // System.out.println("Done reading Stylesheet");
   }
 
-  private void writeObject(ObjectOutputStream stream)
-    throws IOException
+  /**
+   * NEEDSDOC Method writeObject 
+   *
+   *
+   * NEEDSDOC @param stream
+   *
+   * @throws IOException
+   */
+  private void writeObject(ObjectOutputStream stream) throws IOException
   {
+
     // System.out.println("Writing Stylesheet");
     stream.defaultWriteObject();
+
     // System.out.println("Done writing Stylesheet");
   }
 
   //============== XSLT Properties =================
-  
+
   /**
-   * The "xmlns:xsl" property. 
+   * The "xmlns:xsl" property.
    */
   private String m_XmlnsXsl;
 
   /**
-   * Set the "xmlns:xsl" property. 
+   * Set the "xmlns:xsl" property.
    * @see <a href="http://www.w3.org/TR/xslt#xslt-namespace">xslt-namespace in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setXmlnsXsl (String v)
+  public void setXmlnsXsl(String v)
   {
     m_XmlnsXsl = v;
   }
 
   /**
-   * Get the "xmlns:xsl" property. 
+   * Get the "xmlns:xsl" property.
    * @see <a href="http://www.w3.org/TR/xslt#xslt-namespace">xslt-namespace in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getXmlnsXsl()
   {
@@ -224,49 +252,67 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * The "extension-element-prefixes" property, actually contains URIs. 
+   * The "extension-element-prefixes" property, actually contains URIs.
    */
   private StringVector m_ExtensionElementURIs;
 
   /**
-   * Set the "extension-element-prefixes" property. 
+   * Set the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setExtensionElementPrefixes (StringVector v)
+  public void setExtensionElementPrefixes(StringVector v)
   {
     m_ExtensionElementURIs = v;
   }
 
   /**
-   * Get and "extension-element-prefix" property. 
+   * Get and "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
   public String getExtensionElementPrefix(int i)
-    throws ArrayIndexOutOfBoundsException
+          throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_ExtensionElementURIs)
+
+    if (null == m_ExtensionElementURIs)
       throw new ArrayIndexOutOfBoundsException();
+
     return m_ExtensionElementURIs.elementAt(i);
   }
-  
+
   /**
-   * Get the number of "extension-element-prefixes" Strings. 
+   * Get the number of "extension-element-prefixes" Strings.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getExtensionElementPrefixCount()
   {
-    return (null != m_ExtensionElementURIs) 
+    return (null != m_ExtensionElementURIs)
            ? m_ExtensionElementURIs.size() : 0;
   }
-  
+
   /**
-   * Get and "extension-element-prefix" property. 
+   * Get and "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param uri
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean containsExtensionElementURI(String uri)
   {
-    if(null == m_ExtensionElementURIs)
+
+    if (null == m_ExtensionElementURIs)
       return false;
+
     return m_ExtensionElementURIs.contains(uri);
   }
 
@@ -276,79 +322,102 @@ public class Stylesheet  extends ElemTemplateElement
   private StringVector m_ExcludeResultPrefixs;
 
   /**
-   * Set the "exclude-result-prefixes" property. 
-   * The designation of a namespace as an excluded namespace is 
-   * effective within the subtree of the stylesheet rooted at 
-   * the element bearing the exclude-result-prefixes or 
-   * xsl:exclude-result-prefixes attribute; a subtree rooted 
-   * at an xsl:stylesheet element does not include any stylesheets 
+   * Set the "exclude-result-prefixes" property.
+   * The designation of a namespace as an excluded namespace is
+   * effective within the subtree of the stylesheet rooted at
+   * the element bearing the exclude-result-prefixes or
+   * xsl:exclude-result-prefixes attribute; a subtree rooted
+   * at an xsl:stylesheet element does not include any stylesheets
    * imported or included by children of that xsl:stylesheet element.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setExcludeResultPrefixes (StringVector v)
+  public void setExcludeResultPrefixes(StringVector v)
   {
     m_ExcludeResultPrefixs = v;
   }
 
   /**
-   * Get an "exclude-result-prefix" property. 
-   * The designation of a namespace as an excluded namespace is 
-   * effective within the subtree of the stylesheet rooted at 
-   * the element bearing the exclude-result-prefixes or 
-   * xsl:exclude-result-prefixes attribute; a subtree rooted 
-   * at an xsl:stylesheet element does not include any stylesheets 
+   * Get an "exclude-result-prefix" property.
+   * The designation of a namespace as an excluded namespace is
+   * effective within the subtree of the stylesheet rooted at
+   * the element bearing the exclude-result-prefixes or
+   * xsl:exclude-result-prefixes attribute; a subtree rooted
+   * at an xsl:stylesheet element does not include any stylesheets
    * imported or included by children of that xsl:stylesheet element.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
   public String getExcludeResultPrefix(int i)
-    throws ArrayIndexOutOfBoundsException
+          throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_ExcludeResultPrefixs)
+
+    if (null == m_ExcludeResultPrefixs)
       throw new ArrayIndexOutOfBoundsException();
+
     return m_ExcludeResultPrefixs.elementAt(i);
   }
-  
+
   /**
-   * Get the number of "extension-element-prefixes" Strings. 
+   * Get the number of "extension-element-prefixes" Strings.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getExcludeResultPrefixCount()
   {
-    return (null != m_ExcludeResultPrefixs) 
+    return (null != m_ExcludeResultPrefixs)
            ? m_ExcludeResultPrefixs.size() : 0;
   }
 
   /**
    * Get whether or not the passed URL is contained flagged by
-   * the "extension-element-prefixes" property. 
+   * the "extension-element-prefixes" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param prefix
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean containsExcludeResultPrefix(String prefix)
   {
-    if(null == m_ExcludeResultPrefixs)
+
+    if (null == m_ExcludeResultPrefixs)
       return false;
+
     if (prefix.length() == 0)
       prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
+
     return m_ExcludeResultPrefixs.contains(prefix);
   }
 
   /**
-   * The "id" property. 
+   * The "id" property.
    */
   private String m_Id;
 
   /**
-   * Set the "id" property. 
+   * Set the "id" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Embedding-Stylesheets">section-Embedding-Stylesheets in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setId (String v)
+  public void setId(String v)
   {
     m_Id = v;
   }
 
   /**
-   * Get the "id" property. 
+   * Get the "id" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Embedding-Stylesheets">section-Embedding-Stylesheets in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getId()
   {
@@ -356,22 +425,26 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * The "version" property. 
+   * The "version" property.
    */
   private String m_Version;
 
   /**
-   * Set the "version" property. 
+   * Set the "version" property.
    * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setVersion (String v)
+  public void setVersion(String v)
   {
     m_Version = v;
   }
 
   /**
-   * Get the "version" property. 
+   * Get the "version" property.
    * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getVersion()
   {
@@ -379,22 +452,26 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * The "xml:space" property. 
+   * The "xml:space" property.
    */
   private boolean m_XmlSpace;
 
   /**
-   * Set the "xml:space" property. 
+   * Set the "xml:space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setXmlSpace (boolean v)
+  public void setXmlSpace(boolean v)
   {
     m_XmlSpace = v;
   }
 
   /**
-   * Get the "xml:space" property. 
+   * Get the "xml:space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean getXmlSpace()
   {
@@ -402,82 +479,108 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * The "xsl:import" list. 
+   * The "xsl:import" list.
    */
   private Vector m_imports;
 
   /**
-   * Add a stylesheet to the "import" list. 
+   * Add a stylesheet to the "import" list.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setImport (StylesheetComposed v)
+  public void setImport(StylesheetComposed v)
   {
-    if(null == m_imports)
+
+    if (null == m_imports)
       m_imports = new Vector();
-    
+
     // I'm going to insert the elements in backwards order,
     // so I can walk them 0 to n.
     m_imports.addElement(v);
   }
 
   /**
-   * Get a stylesheet from the "import" list. 
+   * Get a stylesheet from the "import" list.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
   public StylesheetComposed getImport(int i)
-    throws ArrayIndexOutOfBoundsException
+          throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_imports)
+
+    if (null == m_imports)
       throw new ArrayIndexOutOfBoundsException();
-    return (StylesheetComposed)m_imports.elementAt(i);
+
+    return (StylesheetComposed) m_imports.elementAt(i);
   }
 
   /**
-   * Get the number of imported stylesheets. 
+   * Get the number of imported stylesheets.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getImportCount()
   {
     return (null != m_imports) ? m_imports.size() : 0;
   }
-  
+
   /**
-   * The "xsl:include" properties. 
+   * The "xsl:include" properties.
    */
   private Vector m_includes;
 
   /**
-   * Set a "xsl:include" property. 
+   * Set a "xsl:include" property.
    * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setInclude (Stylesheet v)
+  public void setInclude(Stylesheet v)
   {
-    if(null == m_includes)
+
+    if (null == m_includes)
       m_includes = new Vector();
+
     m_includes.addElement(v);
   }
 
   /**
-   * Get an "xsl:include" property. 
+   * Get an "xsl:include" property.
    * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
-  public Stylesheet getInclude(int i)
-    throws ArrayIndexOutOfBoundsException
+  public Stylesheet getInclude(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_includes)
+
+    if (null == m_includes)
       throw new ArrayIndexOutOfBoundsException();
-    return (Stylesheet)m_includes.elementAt(i);
+
+    return (Stylesheet) m_includes.elementAt(i);
   }
 
   /**
-   * Get the number of included stylesheets. 
+   * Get the number of included stylesheets.
    * @see <a href="http://www.w3.org/TR/xslt#import">import in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getIncludeCount()
   {
     return (null != m_includes) ? m_includes.size() : 0;
   }
-  
+
   /**
    * Table of tables of element decimal-format.
    * @see ElemDecimalFormat.
@@ -486,62 +589,80 @@ public class Stylesheet  extends ElemTemplateElement
 
   /**
    * Process the xsl:decimal-format element.
+   *
+   * NEEDSDOC @param edf
    */
   public void setDecimalFormat(DecimalFormatProperties edf)
   {
-    if(null == m_DecimalFormatDeclarations)
+
+    if (null == m_DecimalFormatDeclarations)
       m_DecimalFormatDeclarations = new Stack();
+
     // Elements are pushed in by order of importance
     // so that when recomposed, they get overiden properly.
     m_DecimalFormatDeclarations.push(edf);
   }
-  
+
   /**
-   * Get an "xsl:decimal-format" property. 
+   * Get an "xsl:decimal-format" property.
    * @see ElemDecimalFormat.
    * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
+   *
+   * NEEDSDOC @param name
    * @return null if not found, otherwise a DecimalFormatProperties
    * object, from which you can get a DecimalFormatSymbols object.
    */
   public DecimalFormatProperties getDecimalFormat(QName name)
   {
-    if(null == m_DecimalFormatDeclarations)
+
+    if (null == m_DecimalFormatDeclarations)
       return null;
-    
+
     int n = getDecimalFormatCount();
-    for(int i = (n-1); i >= 0; i++)
+
+    for (int i = (n - 1); i >= 0; i++)
     {
       DecimalFormatProperties dfp = getDecimalFormat(i);
-      if(dfp.getName().equals(name))
+
+      if (dfp.getName().equals(name))
         return dfp;
     }
-    
+
     return null;
-  }
-  
-  /**
-   * Get an "xsl:decimal-format" property. 
-   * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
-   * @see ElemDecimalFormat.
-   */
-  public DecimalFormatProperties getDecimalFormat(int i)
-    throws ArrayIndexOutOfBoundsException
-  {
-    if(null == m_DecimalFormatDeclarations)
-      throw new ArrayIndexOutOfBoundsException();
-    return (DecimalFormatProperties)m_DecimalFormatDeclarations.elementAt(i);
   }
 
   /**
-   * Get the number of xsl:decimal-format declarations. 
+   * Get an "xsl:decimal-format" property.
+   * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
    * @see ElemDecimalFormat.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
+   */
+  public DecimalFormatProperties getDecimalFormat(int i)
+          throws ArrayIndexOutOfBoundsException
+  {
+
+    if (null == m_DecimalFormatDeclarations)
+      throw new ArrayIndexOutOfBoundsException();
+
+    return (DecimalFormatProperties) m_DecimalFormatDeclarations.elementAt(i);
+  }
+
+  /**
+   * Get the number of xsl:decimal-format declarations.
+   * @see ElemDecimalFormat.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getDecimalFormatCount()
   {
-    return (null != m_DecimalFormatDeclarations) 
+    return (null != m_DecimalFormatDeclarations)
            ? m_DecimalFormatDeclarations.size() : 0;
   }
-
 
   /**
    * The "xsl:strip-space" properties,
@@ -550,42 +671,57 @@ public class Stylesheet  extends ElemTemplateElement
   private Vector m_whitespaceStrippingElements;
 
   /**
-   * Set the "xsl:strip-space" properties. 
+   * Set the "xsl:strip-space" properties.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setStripSpaces(Vector v)
   {
-    if(null == m_whitespaceStrippingElements)
+
+    if (null == m_whitespaceStrippingElements)
     {
       m_whitespaceStrippingElements = v;
     }
     else
     {
       int n = v.size();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
+      {
         m_whitespaceStrippingElements.addElement(v.elementAt(i));
+      }
     }
   }
 
   /**
-   * Get an "xsl:strip-space" property. 
+   * Get an "xsl:strip-space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
-  public XPath getStripSpace(int i)
-    throws ArrayIndexOutOfBoundsException
+  public XPath getStripSpace(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_whitespaceStrippingElements)
+
+    if (null == m_whitespaceStrippingElements)
       throw new ArrayIndexOutOfBoundsException();
-    return (XPath)m_whitespaceStrippingElements.elementAt(i);
+
+    return (XPath) m_whitespaceStrippingElements.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:strip-space" properties. 
+   * Get the number of "xsl:strip-space" properties.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getStripSpaceCount()
   {
-    return (null != m_whitespaceStrippingElements) 
+    return (null != m_whitespaceStrippingElements)
            ? m_whitespaceStrippingElements.size() : 0;
   }
 
@@ -596,62 +732,81 @@ public class Stylesheet  extends ElemTemplateElement
   private Vector m_whitespacePreservingElements;
 
   /**
-   * Set the "xsl:preserve-space" property. 
+   * Set the "xsl:preserve-space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setPreserveSpaces (Vector v)
+  public void setPreserveSpaces(Vector v)
   {
-    if(null == m_whitespacePreservingElements)
+
+    if (null == m_whitespacePreservingElements)
     {
       m_whitespacePreservingElements = v;
     }
     else
     {
       int n = v.size();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
+      {
         m_whitespacePreservingElements.addElement(v.elementAt(i));
+      }
     }
   }
 
   /**
-   * Get a "xsl:preserve-space" property. 
+   * Get a "xsl:preserve-space" property.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
-  public XPath getPreserveSpace(int i)
-    throws ArrayIndexOutOfBoundsException
+  public XPath getPreserveSpace(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_whitespacePreservingElements)
+
+    if (null == m_whitespacePreservingElements)
       throw new ArrayIndexOutOfBoundsException();
-    return (XPath)m_whitespacePreservingElements.elementAt(i);
+
+    return (XPath) m_whitespacePreservingElements.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:preserve-space" properties. 
+   * Get the number of "xsl:preserve-space" properties.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getPreserveSpaceCount()
   {
-    return (null != m_whitespacePreservingElements) 
+    return (null != m_whitespacePreservingElements)
            ? m_whitespacePreservingElements.size() : 0;
   }
 
   /**
-   * The "xsl:output" property. 
+   * The "xsl:output" property.
    */
   private OutputFormatExtended m_output;
 
   /**
-   * Set the "xsl:output" property. 
+   * Set the "xsl:output" property.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setOutput (OutputFormatExtended v)
+  public void setOutput(OutputFormatExtended v)
   {
     m_output = v;
   }
 
   /**
-   * Get the "xsl:output" property. 
+   * Get the "xsl:output" property.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public OutputFormatExtended getOutput()
   {
@@ -659,216 +814,285 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * The "xsl:key" property. 
+   * The "xsl:key" property.
    */
   private Vector m_keyDeclarations;
 
   /**
-   * Set the "xsl:key" property. 
+   * Set the "xsl:key" property.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setKey (KeyDeclaration v)
+  public void setKey(KeyDeclaration v)
   {
-    if(null == m_keyDeclarations)
+
+    if (null == m_keyDeclarations)
       m_keyDeclarations = new Vector();
+
     m_keyDeclarations.addElement(v);
   }
 
   /**
-   * Get an "xsl:key" property. 
+   * Get an "xsl:key" property.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
-  public KeyDeclaration getKey(int i)
-    throws ArrayIndexOutOfBoundsException
+  public KeyDeclaration getKey(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_keyDeclarations)
+
+    if (null == m_keyDeclarations)
       throw new ArrayIndexOutOfBoundsException();
-    return (KeyDeclaration)m_keyDeclarations.elementAt(i);
+
+    return (KeyDeclaration) m_keyDeclarations.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:key" properties. 
+   * Get the number of "xsl:key" properties.
    * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getKeyCount()
   {
-    return (null != m_keyDeclarations) 
-           ? m_keyDeclarations.size() : 0;
+    return (null != m_keyDeclarations) ? m_keyDeclarations.size() : 0;
   }
 
   /**
-   * The "xsl:attribute-set" property. 
+   * The "xsl:attribute-set" property.
    */
   private Vector m_attributeSets;
 
   /**
-   * Set the "xsl:attribute-set" property. 
+   * Set the "xsl:attribute-set" property.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+   *
+   * NEEDSDOC @param attrSet
    */
-  public void setAttributeSet (ElemAttributeSet attrSet)
+  public void setAttributeSet(ElemAttributeSet attrSet)
   {
-    if(null == m_attributeSets)
+
+    if (null == m_attributeSets)
     {
       m_attributeSets = new Vector();
     }
+
     // Insert elements by order of importance so that
     // during recompose, they get properly overiden. 
-    m_attributeSets.insertElementAt(attrSet, 0);  
+    m_attributeSets.insertElementAt(attrSet, 0);
   }
 
   /**
-   * Get an "xsl:attribute-set" property. 
+   * Get an "xsl:attribute-set" property.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
   public ElemAttributeSet getAttributeSet(int i)
-    throws ArrayIndexOutOfBoundsException
+          throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_attributeSets)
+
+    if (null == m_attributeSets)
       throw new ArrayIndexOutOfBoundsException();
-    return (ElemAttributeSet)m_attributeSets.elementAt(i);
+
+    return (ElemAttributeSet) m_attributeSets.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:attribute-set" properties. 
+   * Get the number of "xsl:attribute-set" properties.
    * @see <a href="http://www.w3.org/TR/xslt#attribute-sets">attribute-sets in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getAttributeSetCount()
   {
-    return (null != m_attributeSets) 
-           ? m_attributeSets.size() : 0;
+    return (null != m_attributeSets) ? m_attributeSets.size() : 0;
   }
 
   /**
-   * The "xsl:variable" properties. 
+   * The "xsl:variable" properties.
    */
   private Vector m_topLevelVariables;
 
   /**
-   * Set the "xsl:variable" property. 
+   * Set the "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setVariable (ElemVariable v)
+  public void setVariable(ElemVariable v)
   {
-    if(null == m_topLevelVariables)
+
+    if (null == m_topLevelVariables)
       m_topLevelVariables = new Vector();
+
     // Always insert variables by order of importance so that 
     // during recompose, they get properly overiden. 
-    m_topLevelVariables.insertElementAt(v, 0); 
+    m_topLevelVariables.insertElementAt(v, 0);
   }
-  
+
   /**
-   * Get an "xsl:variable" property. 
+   * Get an "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public ElemVariable getVariable(QName qname)
   {
-    if(null != m_topLevelVariables)
+
+    if (null != m_topLevelVariables)
     {
       int n = getVariableCount();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
-        ElemVariable var = (ElemVariable)getVariable(i);
-        if(var.getName().equals(qname))
+        ElemVariable var = (ElemVariable) getVariable(i);
+
+        if (var.getName().equals(qname))
           return var;
       }
     }
+
     return null;
   }
 
   /**
-   * Get an "xsl:variable" property. 
+   * Get an "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
-  public ElemVariable getVariable(int i)
-    throws ArrayIndexOutOfBoundsException
+  public ElemVariable getVariable(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_topLevelVariables)
+
+    if (null == m_topLevelVariables)
       throw new ArrayIndexOutOfBoundsException();
-    return (ElemVariable)m_topLevelVariables.elementAt(i);
+
+    return (ElemVariable) m_topLevelVariables.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:variable" properties. 
+   * Get the number of "xsl:variable" properties.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getVariableCount()
   {
-    return (null != m_topLevelVariables) 
-           ? m_topLevelVariables.size() : 0;
+    return (null != m_topLevelVariables) ? m_topLevelVariables.size() : 0;
   }
 
   /**
-   * The "xsl:param" properties. 
+   * The "xsl:param" properties.
    */
   private Vector m_topLevelParams;
 
   /**
-   * Set an "xsl:param" property. 
+   * Set an "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setParam (ElemParam v)
+  public void setParam(ElemParam v)
   {
-    if(null == m_topLevelParams)
+
+    if (null == m_topLevelParams)
       m_topLevelParams = new Vector();
+
     // Always insert parameters by order of importance so that 
     // during recompose, they get properly overiden.
-    m_topLevelParams.insertElementAt(v, 0); 
+    m_topLevelParams.insertElementAt(v, 0);
   }
-  
+
   /**
-   * Get an "xsl:param" property. 
+   * Get an "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param qname
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public ElemParam getParam(QName qname)
   {
-    if(null != m_topLevelParams)
+
+    if (null != m_topLevelParams)
     {
       int n = getParamCount();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
         ElemParam var = getParam(i);
-        if(var.getName().equals(qname))
+
+        if (var.getName().equals(qname))
           return var;
       }
     }
+
     return null;
   }
 
   /**
-   * Get an "xsl:param" property. 
+   * Get an "xsl:param" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
-  public ElemParam getParam(int i)
-    throws ArrayIndexOutOfBoundsException
+  public ElemParam getParam(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_topLevelParams)
+
+    if (null == m_topLevelParams)
       throw new ArrayIndexOutOfBoundsException();
-    return (ElemParam)m_topLevelParams.elementAt(i);
+
+    return (ElemParam) m_topLevelParams.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:param" properties. 
+   * Get the number of "xsl:param" properties.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getParamCount()
   {
-    return (null != m_topLevelParams) 
-           ? m_topLevelParams.size() : 0;
+    return (null != m_topLevelParams) ? m_topLevelParams.size() : 0;
   }
 
   /**
-   * The "xsl:template" properties. 
+   * The "xsl:template" properties.
    */
   private Vector m_templates;
-  
+
   /**
-   * Set an "xsl:template" property. 
+   * Set an "xsl:template" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
-  public void setTemplate (ElemTemplate v)
+  public void setTemplate(ElemTemplate v)
   {
-    if(null == m_templates)
+
+    if (null == m_templates)
       m_templates = new Vector();
+
     m_templates.addElement(v);
     v.setStylesheet(this);
   }
@@ -876,86 +1100,114 @@ public class Stylesheet  extends ElemTemplateElement
   /**
    * Get an "xsl:template" property.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
-  public ElemTemplate getTemplate(int i)
-    throws SAXException
+  public ElemTemplate getTemplate(int i) throws SAXException
   {
-    if(null == m_templates)
+
+    if (null == m_templates)
       throw new ArrayIndexOutOfBoundsException();
-    return (ElemTemplate)m_templates.elementAt(i);
+
+    return (ElemTemplate) m_templates.elementAt(i);
   }
 
   /**
    * Get the number of "xsl:template" properties.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getTemplateCount()
   {
-    return (null != m_templates) 
-           ? m_templates.size() : 0;
+    return (null != m_templates) ? m_templates.size() : 0;
   }
 
   /**
-   * The "xsl:namespace-alias" properties. 
+   * The "xsl:namespace-alias" properties.
    */
   private Vector m_prefix_aliases;
-  
+
   /**
-   * Set the "xsl:namespace-alias" property. 
+   * Set the "xsl:namespace-alias" property.
    * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param na
    */
-  public void setNamespaceAlias (NamespaceAlias na)
+  public void setNamespaceAlias(NamespaceAlias na)
   {
+
     if (m_prefix_aliases == null)
       m_prefix_aliases = new Vector();
+
     // Always insert elements by order of importance so that 
     // during recompose, they get properly overiden.
     m_prefix_aliases.insertElementAt(na, 0);
   }
-    
+
   /**
-   * Get an "xsl:variable" property. 
+   * Get an "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
    */
   public NamespaceAlias getNamespaceAlias(int i)
-    throws ArrayIndexOutOfBoundsException
+          throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_prefix_aliases)
+
+    if (null == m_prefix_aliases)
       throw new ArrayIndexOutOfBoundsException();
-    return (NamespaceAlias)m_prefix_aliases.elementAt(i);
+
+    return (NamespaceAlias) m_prefix_aliases.elementAt(i);
   }
 
   /**
-   * Get the number of "xsl:variable" properties. 
+   * Get the number of "xsl:variable" properties.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getNamespaceAliasCount()
   {
-    return (null != m_prefix_aliases) 
-           ? m_prefix_aliases.size() : 0;
+    return (null != m_prefix_aliases) ? m_prefix_aliases.size() : 0;
   }
 
-
   /**
-   * The "non-xsl-top-level" properties. 
+   * The "non-xsl-top-level" properties.
    */
   private Hashtable m_NonXslTopLevel;
 
   /**
-   * Set a found non-xslt element. 
+   * Set a found non-xslt element.
    * @see <a href="http://www.w3.org/TR/xslt#stylesheet-element">stylesheet-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param name
+   * NEEDSDOC @param obj
    */
-  public void setNonXslTopLevel (QName name, Object obj)
+  public void setNonXslTopLevel(QName name, Object obj)
   {
-    if(null == m_NonXslTopLevel)
+
+    if (null == m_NonXslTopLevel)
       m_NonXslTopLevel = new Hashtable();
-    
+
     m_NonXslTopLevel.put(name, obj);
   }
 
   /**
-   * Get a non-xslt element. 
+   * Get a non-xslt element.
    * @see <a href="http://www.w3.org/TR/xslt#stylesheet-element">stylesheet-element in XSLT Specification</a>
+   *
+   * NEEDSDOC @param name
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Object getNonXslTopLevel(QName name)
   {
@@ -963,17 +1215,23 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   // =========== End top-level XSLT properties ===========
-  
+
   /**
    * The base URL of the XSL document.
    * @serial
    */
   private String m_href = null;
+
+  /** NEEDSDOC Field m_publicId          */
   private String m_publicId;
+
+  /** NEEDSDOC Field m_systemId          */
   private String m_systemId;
 
   /**
    * Get the base identifier with which this stylesheet is associated.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getHref()
   {
@@ -982,38 +1240,43 @@ public class Stylesheet  extends ElemTemplateElement
 
   /**
    * Get the base identifier with which this stylesheet is associated.
+   *
+   * NEEDSDOC @param baseIdent
    */
   public void setHref(String baseIdent)
   {
     m_href = baseIdent;
   }
-  
+
   /**
    * Set the location information for this element.
+   *
+   * NEEDSDOC @param locator
    */
   public void setLocaterInfo(Locator locator)
   {
-    if(null != locator)
+
+    if (null != locator)
     {
       m_publicId = locator.getPublicId();
       m_systemId = locator.getSystemId();
-      
-      if(null != m_systemId)
+
+      if (null != m_systemId)
       {
         try
         {
           m_href = SystemIDResolver.getAbsoluteURI(m_systemId, null);
         }
-        catch(SAXException se)
+        catch (SAXException se)
         {
+
           // Ignore this for right now
         }
       }
-      
+
       super.setLocaterInfo(locator);
     }
   }
-
 
   /**
    * The root of the stylesheet, where all the tables common
@@ -1025,6 +1288,8 @@ public class Stylesheet  extends ElemTemplateElement
   /**
    * Get the root of the stylesheet, where all the tables common
    * to all stylesheets are kept.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetRoot getStylesheetRoot()
   {
@@ -1034,6 +1299,8 @@ public class Stylesheet  extends ElemTemplateElement
   /**
    * Set the root of the stylesheet, where all the tables common
    * to all stylesheets are kept.
+   *
+   * NEEDSDOC @param v
    */
   public void setStylesheetRoot(StylesheetRoot v)
   {
@@ -1050,6 +1317,8 @@ public class Stylesheet  extends ElemTemplateElement
   /**
    * Get the parent of the stylesheet.  This will be null if this
    * is the root stylesheet.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Stylesheet getStylesheetParent()
   {
@@ -1059,6 +1328,8 @@ public class Stylesheet  extends ElemTemplateElement
   /**
    * Set the parent of the stylesheet.  This should be null if this
    * is the root stylesheet.
+   *
+   * NEEDSDOC @param v
    */
   public void setStylesheetParent(Stylesheet v)
   {
@@ -1066,31 +1337,38 @@ public class Stylesheet  extends ElemTemplateElement
   }
 
   /**
-   * Get the owning aggregated stylesheet, or this 
+   * Get the owning aggregated stylesheet, or this
    * stylesheet if it is aggregated.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetComposed getStylesheetComposed()
   {
+
     Stylesheet sheet = this;
-    while(!sheet.isAggregatedType())
+
+    while (!sheet.isAggregatedType())
     {
       sheet = sheet.getStylesheetParent();
     }
-    return (StylesheetComposed)sheet;
+
+    return (StylesheetComposed) sheet;
   }
 
   /**
    * Get the type of the node.  We'll pretend we're a Document.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public short              getNodeType()
+  public short getNodeType()
   {
     return Node.DOCUMENT_NODE;
   }
-  
-  /** 
+
+  /**
    * Get an integer representation of the element type.
-   * 
-   * @return An integer representation of the element, defined in the 
+   *
+   * @return An integer representation of the element, defined in the
    *     Constants class.
    * @see org.apache.xalan.templates.Constants
    */
@@ -1098,9 +1376,11 @@ public class Stylesheet  extends ElemTemplateElement
   {
     return Constants.ELEMNAME_STYLESHEET;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -1113,15 +1393,20 @@ public class Stylesheet  extends ElemTemplateElement
    * us to access a template, compile it, instantiate it,
    * and replace the original with the compiled instance.
    * ADDED 9/5/2000 to support compilation experiment
+   *
+   * NEEDSDOC @param v
+   * NEEDSDOC @param i
+   *
+   * @throws SAXException
    */
-  public void replaceTemplate(ElemTemplate v, int i)
-    throws SAXException
+  public void replaceTemplate(ElemTemplate v, int i) throws SAXException
   {
-    if(null == m_templates)
-      throw new ArrayIndexOutOfBoundsException();
-    replaceChild(v,(Node)m_templates.elementAt(i));
-    m_templates.setElementAt(v,i);
-	v.setStylesheet(this);
-  }
 
+    if (null == m_templates)
+      throw new ArrayIndexOutOfBoundsException();
+
+    replaceChild(v, (Node) m_templates.elementAt(i));
+    m_templates.setElementAt(v, i);
+    v.setStylesheet(this);
+  }
 }

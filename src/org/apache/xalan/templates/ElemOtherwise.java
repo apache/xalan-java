@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -72,23 +74,26 @@ import org.apache.xalan.transformer.TransformerImpl;
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
  */
 public class ElemOtherwise extends ElemTemplateElement
-{  
+{
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_OTHERWISE;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_OTHERWISE_STRING;
   }
-
-
 }

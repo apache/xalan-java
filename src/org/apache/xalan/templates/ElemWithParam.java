@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -65,7 +67,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Implement xsl:with-param.  xsl:with-param is allowed within 
+ * Implement xsl:with-param.  xsl:with-param is allowed within
  * both xsl:call-template and xsl:apply-templates.
  * <pre>
  * <!ELEMENT xsl:with-param %template;>
@@ -78,16 +80,19 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemWithParam extends ElemTemplateElement
 {
+
   /**
-   * The "select" attribute, which specifies the value of the 
+   * The "select" attribute, which specifies the value of the
    * argument, if element content is not specified.
    */
   private XPath m_selectPattern = null;
-  
+
   /**
-   * Set the "select" attribute. 
-   * The "select" attribute specifies the value of the 
+   * Set the "select" attribute.
+   * The "select" attribute specifies the value of the
    * argument, if element content is not specified.
+   *
+   * NEEDSDOC @param v
    */
   public void setSelect(XPath v)
   {
@@ -95,26 +100,30 @@ public class ElemWithParam extends ElemTemplateElement
   }
 
   /**
-   * Get the "select" attribute. 
-   * The "select" attribute specifies the value of the 
+   * Get the "select" attribute.
+   * The "select" attribute specifies the value of the
    * argument, if element content is not specified.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getSelect()
   {
     return m_selectPattern;
   }
-  
+
   /**
-   * The required name attribute specifies the name of the 
-   * parameter (the variable the value of whose binding is 
-   * to be replaced). The value of the name attribute is a QName, 
-   * which is expanded as described in [2.4 Qualified Names]. 
+   * The required name attribute specifies the name of the
+   * parameter (the variable the value of whose binding is
+   * to be replaced). The value of the name attribute is a QName,
+   * which is expanded as described in [2.4 Qualified Names].
    */
   private QName m_qname = null;
 
   /**
-   * Set the "name" attribute. 
-   * DJD 
+   * Set the "name" attribute.
+   * DJD
+   *
+   * NEEDSDOC @param v
    */
   public void setName(QName v)
   {
@@ -122,18 +131,20 @@ public class ElemWithParam extends ElemTemplateElement
   }
 
   /**
-   * Get the "name" attribute. 
-   * DJD 
+   * Get the "name" attribute.
+   * DJD
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getName()
   {
     return m_qname;
   }
-  
-  /** 
+
+  /**
    * Get an integer representation of the element type.
-   * 
-   * @return An integer representation of the element, defined in the 
+   *
+   * @return An integer representation of the element, defined in the
    *     Constants class.
    * @see org.apache.xalan.templates.Constants
    */
@@ -141,13 +152,14 @@ public class ElemWithParam extends ElemTemplateElement
   {
     return Constants.ELEMNAME_WITHPARAM;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_WITHPARAM_STRING;
   }
-
 }

@@ -57,14 +57,21 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
+import org.apache.xpath.objects.XObject;
+
 import java.util.Vector;
+
 import org.apache.xalan.trace.TracerEvent;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.VariableStack;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.ClonerToResultTree;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -75,18 +82,21 @@ import org.apache.xalan.transformer.TransformerImpl;
  *   select %expr; "node()"
  *   mode %qname; #IMPLIED
  * &amp;
- * </pre> 
+ * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Applying-Template-Rules">section-Applying-Template-Rules in XSLT Specification</a>
  */
-public class ElemApplyTemplates extends ElemForEach
+public class ElemApplyTemplates extends ElemCallTemplate
 {
+
   /**
    * mode %qname; #IMPLIED
    */
   private QName m_mode = null;
-  
+
   /**
    * Set the mode attribute for this element.
+   *
+   * NEEDSDOC @param mode
    */
   public void setMode(QName mode)
   {
@@ -95,6 +105,8 @@ public class ElemApplyTemplates extends ElemForEach
 
   /**
    * Get the mode attribute for this element.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getMode()
   {
@@ -102,18 +114,20 @@ public class ElemApplyTemplates extends ElemForEach
   }
 
   /**
-   * Tells if this belongs to a default template, 
-   * in which case it will act different with 
+   * Tells if this belongs to a default template,
+   * in which case it will act different with
    * regard to processing modes.
    * @see <a href="http://www.w3.org/TR/xslt#built-in-rule">built-in-rule in XSLT Specification</a>
    */
   private boolean m_isDefaultTemplate = false;
-  
+
   /**
-   * Set if this belongs to a default template, 
-   * in which case it will act different with 
+   * Set if this belongs to a default template,
+   * in which case it will act different with
    * regard to processing modes.
    * @see <a href="http://www.w3.org/TR/xslt#built-in-rule">built-in-rule in XSLT Specification</a>
+   *
+   * NEEDSDOC @param b
    */
   public void setIsDefaultTemplate(boolean b)
   {
@@ -123,14 +137,18 @@ public class ElemApplyTemplates extends ElemForEach
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_APPLY_TEMPLATES;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -140,63 +158,91 @@ public class ElemApplyTemplates extends ElemForEach
   /**
    * Apply the context node to the matching templates.
    * @see <a href="http://www.w3.org/TR/xslt#section-Applying-Template-Rules">section-Applying-Template-Rules in XSLT Specification</a>
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer,
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {    
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
     transformer.pushCurrentTemplateRuleIsNull(false);
 
     try
     {
-      if(TransformerImpl.S_DEBUG)
+      if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-      
-      if(null != sourceNode)
-      {      
+
+      if (null != sourceNode)
+      {
+
         // boolean needToTurnOffInfiniteLoopCheck = false;
-        
-        if(!m_isDefaultTemplate)
+        if (!m_isDefaultTemplate)
         {
           mode = m_mode;
         }
 
-        VariableStack vars = transformer.getXPathContext().getVarStack();
-        int selectStackFrameIndex = vars.getCurrentStackFrameIndex();       
-        
-        // This call will cause a context marker to be pushed into the stack 
-        transformer.pushParams(getStylesheet(), 
-                        this, 
-                        sourceNode, mode);
-        vars.setCurrentStackFrameIndex(vars.size());
-
-        try
-        {
-          XPath xpath = getSelect();
-          transformer.transformSelectedNodes(getStylesheetComposed(), 
-                                    this,
-                                    null, 
-                                    sourceNode, mode,
-                                    getSelect(), 
-                                    selectStackFrameIndex);
-        }
-        finally
-        {
-          vars.popCurrentContext();
-          vars.setCurrentStackFrameIndex(selectStackFrameIndex);
-        }
+        transformSelectedNodes(transformer, sourceNode, null, mode);
       }
-      else // if(null == sourceNode)
+      else  // if(null == sourceNode)
       {
-        transformer.getMsgMgr().error(XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);//"sourceNode is null in handleApplyTemplatesInstruction!");
+        transformer.getMsgMgr().error(
+          XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);  //"sourceNode is null in handleApplyTemplatesInstruction!");
       }
     }
-
     finally
     {
       transformer.popCurrentTemplateRuleIsNull();
     }
+  }
 
-  }  
+  /**
+   * NEEDSDOC Method needToPushParams 
+   *
+   *
+   * NEEDSDOC (needToPushParams) @return
+   */
+  boolean needToPushParams()
+  {
+    return true;
+  }
+
+  /**
+   * NEEDSDOC Method pushParams 
+   *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
+   */
+  void pushParams(
+          TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    VariableStack vars = xctxt.getVarStack();
+
+    if (null != m_paramElems)
+      transformer.pushParams(xctxt, this, sourceNode, mode);
+    else
+      vars.pushContextMarker();
+  }
+
+  /**
+   * NEEDSDOC Method popParams 
+   *
+   *
+   * NEEDSDOC @param xctxt
+   */
+  void popParams(XPathContext xctxt)
+  {
+    xctxt.getVarStack().popCurrentContext();
+  }
 }

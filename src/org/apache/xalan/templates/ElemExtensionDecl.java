@@ -54,10 +54,10 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-
 package org.apache.xalan.templates;
 
 import java.util.Vector;
+
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.NameSpace;
 import org.apache.xalan.utils.StringToStringTable;
@@ -66,100 +66,186 @@ import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xalan.extensions.ExtensionHandlerGeneral;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
 
+/**
+ * <meta name="usage" content="internal"/>
+ * NEEDSDOC Class ElemExtensionDecl <needs-comment/>
+ */
 public class ElemExtensionDecl extends ElemTemplateElement
 {
+
+  /**
+   * Constructor ElemExtensionDecl
+   *
+   */
   public ElemExtensionDecl()
   {
+
     // System.out.println("ElemExtensionDecl ctor");
   }
-  
+
+  /** NEEDSDOC Field m_prefix          */
   private String m_prefix = null;
-  
+
+  /**
+   * NEEDSDOC Method setPrefix 
+   *
+   *
+   * NEEDSDOC @param v
+   */
   public void setPrefix(String v)
   {
     m_prefix = v;
   }
 
+  /**
+   * NEEDSDOC Method getPrefix 
+   *
+   *
+   * NEEDSDOC (getPrefix) @return
+   */
   public String getPrefix()
   {
     return m_prefix;
   }
 
+  /** NEEDSDOC Field m_functions          */
   private StringVector m_functions = new StringVector();
-  
+
+  /**
+   * NEEDSDOC Method setFunctions 
+   *
+   *
+   * NEEDSDOC @param v
+   */
   public void setFunctions(StringVector v)
   {
     m_functions = v;
   }
 
+  /**
+   * NEEDSDOC Method getFunctions 
+   *
+   *
+   * NEEDSDOC (getFunctions) @return
+   */
   public StringVector getFunctions()
   {
     return m_functions;
   }
-  
-  public String getFunction(int i)
-    throws ArrayIndexOutOfBoundsException
+
+  /**
+   * NEEDSDOC Method getFunction 
+   *
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC (getFunction) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
+   */
+  public String getFunction(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_functions)
+
+    if (null == m_functions)
       throw new ArrayIndexOutOfBoundsException();
-    return (String)m_functions.elementAt(i);
+
+    return (String) m_functions.elementAt(i);
   }
 
+  /**
+   * NEEDSDOC Method getFunctionCount 
+   *
+   *
+   * NEEDSDOC (getFunctionCount) @return
+   */
   public int getFunctionCount()
   {
-    return (null != m_functions) 
-           ? m_functions.size() : 0;
+    return (null != m_functions) ? m_functions.size() : 0;
   }
 
-  
+  /** NEEDSDOC Field m_elements          */
   private StringVector m_elements = null;
-  
+
+  /**
+   * NEEDSDOC Method setElements 
+   *
+   *
+   * NEEDSDOC @param v
+   */
   public void setElements(StringVector v)
   {
     m_elements = v;
   }
 
+  /**
+   * NEEDSDOC Method getElements 
+   *
+   *
+   * NEEDSDOC (getElements) @return
+   */
   public StringVector getElements()
   {
     return m_elements;
   }
-  
-  public String getElement(int i)
-    throws ArrayIndexOutOfBoundsException
+
+  /**
+   * NEEDSDOC Method getElement 
+   *
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC (getElement) @return
+   *
+   * @throws ArrayIndexOutOfBoundsException
+   */
+  public String getElement(int i) throws ArrayIndexOutOfBoundsException
   {
-    if(null == m_elements)
+
+    if (null == m_elements)
       throw new ArrayIndexOutOfBoundsException();
-    return (String)m_elements.elementAt(i);
+
+    return (String) m_elements.elementAt(i);
   }
 
+  /**
+   * NEEDSDOC Method getElementCount 
+   *
+   *
+   * NEEDSDOC (getElementCount) @return
+   */
   public int getElementCount()
   {
-    return (null != m_elements) 
-           ? m_elements.size() : 0;
+    return (null != m_elements) ? m_elements.size() : 0;
   }
 
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_EXTENSIONDECL;
   }
-  
-  /** 
-   * This function will be called on top-level elements 
+
+  /**
+   * This function will be called on top-level elements
    * only, just before the transform begins.
-   * 
+   *
    * @param transformer The XSLT Processor.
+   *
+   * @throws SAXException
    */
-  public void runtimeInit(TransformerImpl transformer)
-    throws SAXException
+  public void runtimeInit(TransformerImpl transformer) throws SAXException
   {
+
     String lang = null;
     String srcURL = null;
     String scriptSrc = null;
@@ -167,38 +253,47 @@ public class ElemExtensionDecl extends ElemTemplateElement
     String declNamespace = getNamespaceForPrefix(prefix);
 
     if (null == declNamespace)
-      throw new SAXException("Prefix " + prefix + " does not have a corresponding "
-                                               + "namespace declaration");
+      throw new SAXException("Prefix " + prefix
+                             + " does not have a corresponding "
+                             + "namespace declaration");
 
-    for(ElemTemplateElement child = getFirstChildElem();
-        child != null; child = child.getNextSiblingElem())
+    for (ElemTemplateElement child = getFirstChildElem(); child != null;
+            child = child.getNextSiblingElem())
     {
-      if(Constants.ELEMNAME_EXTENSIONSCRIPT == child.getXSLToken())
+      if (Constants.ELEMNAME_EXTENSIONSCRIPT == child.getXSLToken())
       {
-        ElemExtensionScript sdecl = (ElemExtensionScript)child;
+        ElemExtensionScript sdecl = (ElemExtensionScript) child;
+
         lang = sdecl.getLang();
         srcURL = sdecl.getSrc();
+
         ElemTemplateElement childOfSDecl = sdecl.getFirstChildElem();
-        if(null != childOfSDecl)
+
+        if (null != childOfSDecl)
         {
-          if(Constants.ELEMNAME_TEXTLITERALRESULT == childOfSDecl.getXSLToken())
+          if (Constants.ELEMNAME_TEXTLITERALRESULT
+                  == childOfSDecl.getXSLToken())
           {
-            ElemTextLiteral tl = (ElemTextLiteral)childOfSDecl;
+            ElemTextLiteral tl = (ElemTextLiteral) childOfSDecl;
             char[] chars = tl.getChars();
+
             scriptSrc = new String(chars);
-            if(scriptSrc.trim().length() == 0)
+
+            if (scriptSrc.trim().length() == 0)
               scriptSrc = null;
           }
         }
       }
     }
-    if(null == lang)
+
+    if (null == lang)
       lang = "javaclass";
 
-    if ( lang.equals("javaclass") && (scriptSrc != null) )
-      throw new SAXException("Element content not allowed for lang=javaclass " + scriptSrc);
+    if (lang.equals("javaclass") && (scriptSrc != null))
+      throw new SAXException("Element content not allowed for lang=javaclass "
+                             + scriptSrc);
 
-    XPathContext liaison = ((XPathContext)transformer.getXPathContext());
+    XPathContext liaison = ((XPathContext) transformer.getXPathContext());
     ExtensionsTable etable = liaison.getExtensionsTable();
     ExtensionHandler nsh = etable.get(declNamespace);
 
@@ -208,10 +303,10 @@ public class ElemExtensionDecl extends ElemTemplateElement
     // Element content is not supported for this so we throw an exception if
     // it is provided.  Otherwise, we look up the srcURL to see if we already have
     // an ExtensionHandler.
-
-    if(null == nsh)
+    if (null == nsh)
     {
-      if (lang.equals("javaclass")) {
+      if (lang.equals("javaclass"))
+      {
         if (null == srcURL)
         {
           nsh = etable.makeJavaNamespace(declNamespace);
@@ -219,27 +314,25 @@ public class ElemExtensionDecl extends ElemTemplateElement
         else
         {
           nsh = etable.get(srcURL);
-          if (null == nsh) {
+
+          if (null == nsh)
+          {
             nsh = etable.makeJavaNamespace(srcURL);
           }
         }
       }
-      else     // not java
+      else  // not java
       {
-        nsh = new ExtensionHandlerGeneral(declNamespace,
-                                          this.m_elements,
-                                          this.m_functions,
-                                          lang,
-                                          srcURL,
+        nsh = new ExtensionHandlerGeneral(declNamespace, this.m_elements,
+                                          this.m_functions, lang, srcURL,
                                           scriptSrc);
+
         // System.out.println("Adding NS Handler: declNamespace = "+
         //                   declNamespace+", lang = "+lang+", srcURL = "+
         //                   srcURL+", scriptSrc="+scriptSrc);
       }
 
-      etable.addExtensionNamespace (declNamespace, nsh);
-
+      etable.addExtensionNamespace(declNamespace, nsh);
     }
   }
 }
-

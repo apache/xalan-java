@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.utils.QName;
@@ -68,7 +70,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  * Implement xsl:param.
  * <pre>
  * <!ELEMENT xsl:param %template;>
- * <!ATTLIST xsl:param 
+ * <!ATTLIST xsl:param
  *   name %qname; #REQUIRED
  *   select %expr; #IMPLIED
  * >
@@ -77,58 +79,75 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemParam extends ElemVariable
 {
-  public ElemParam()
-  {
-  }
+
+  /**
+   * Constructor ElemParam
+   *
+   */
+  public ElemParam(){}
 
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_PARAMVARIABLE;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_PARAMVARIABLE_STRING;
   }
-  
+
   /**
    * Copy constructor.
+   *
+   * NEEDSDOC @param param
+   *
+   * @throws SAXException
    */
-  public ElemParam (ElemParam param)
-    throws SAXException
+  public ElemParam(ElemParam param) throws SAXException
   {
     super(param);
   }
 
   /**
-   * Execute a parameter declaration.  There are two elements that can 
-   * be used to bind variables: xsl:variable and xsl:param. The 
-   * difference is that the value specified on the xsl:param variable 
-   * is only a default value for the binding; when the template or 
-   * stylesheet within which the xsl:param element occurs is invoked, 
+   * Execute a parameter declaration.  There are two elements that can
+   * be used to bind variables: xsl:variable and xsl:param. The
+   * difference is that the value specified on the xsl:param variable
+   * is only a default value for the binding; when the template or
+   * stylesheet within which the xsl:param element occurs is invoked,
    * parameters may be passed that are used in place of the default values.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {    
-    Object obj = transformer.getXPathContext().getVarStack().getParamVariable(getName());
-    
-    if(null == obj)
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    Object obj =
+      transformer.getXPathContext().getVarStack().getParamVariable(getName());
+
+    if (null == obj)
     {
       super.execute(transformer, sourceNode, mode);
     }
     else
     {
-      if(TransformerImpl.S_DEBUG)
+      if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
     }
   }

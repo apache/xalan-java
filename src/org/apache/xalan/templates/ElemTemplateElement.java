@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import java.lang.InstantiationException;
+
 import java.io.Serializable;
+
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -67,14 +69,11 @@ import org.apache.xalan.utils.NameSpace;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.StringToStringTable;
-
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
-
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultNameSpace;
 import org.apache.xalan.transformer.ResultTreeHandler;
-
 import org.apache.xpath.VariableStack;
 
 // TRaX imports
@@ -95,7 +94,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.NamespaceSupport;
 
-/** 
+/**
  * <meta name="usage" content="advanced"/>
  * An instance of this class represents an element inside
  * an xsl:template class.  It has a single "execute" method
@@ -105,14 +104,16 @@ import org.xml.sax.helpers.NamespaceSupport;
  * Element interface, but is not a full implementation
  * of that interface... it only implements enough for
  * basic traversal of the tree.
- * 
+ *
  * @see Stylesheet
  */
-public class ElemTemplateElement extends UnImplNode 
-  implements PrefixResolver, Serializable, Locator
-{  
-  /** Construct a template element instance.
-   * 
+public class ElemTemplateElement extends UnImplNode
+        implements PrefixResolver, Serializable, Locator
+{
+
+  /**
+   * Construct a template element instance.
+   *
    * @param transformer The XSLT Processor.
    * @param stylesheetTree The owning stylesheet.
    * @param name The name of the element.
@@ -121,22 +122,22 @@ public class ElemTemplateElement extends UnImplNode
    * @param columnNumber The column index in the XSLT file that the element occurs on.
    * @exception SAXException Never.
    */
-  public ElemTemplateElement()
-  {
-  }
-  
+  public ElemTemplateElement(){}
+
   /**
    * Tell if this template is a compiled template.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean isCompiledTemplate()
   {
     return false;
   }
-  
-  /** 
+
+  /**
    * Get an integer representation of the element type.
-   * 
-   * @return An integer representation of the element, defined in the 
+   *
+   * @return An integer representation of the element, defined in the
    *     Constants class.
    * @see org.apache.xalan.templates.Constants
    */
@@ -144,52 +145,51 @@ public class ElemTemplateElement extends UnImplNode
   {
     return Constants.ELEMNAME_UNDEFINED;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return "Unknown XSLT Element";
   }
-  
-  /** 
-   * This function will be called on top-level elements 
-   * only, just before the transform begins.
-   * 
-   * @param transformer The XSLT Processor.
-   */
-  public void runtimeInit(TransformerImpl transformer)
-    throws SAXException
-  {
-  }
 
-  
-  /** Execute the element's primary function.  Subclasses of this
+  /**
+   * This function will be called on top-level elements
+   * only, just before the transform begins.
+   *
+   * @param transformer The XSLT Processor.
+   *
+   * @throws SAXException
+   */
+  public void runtimeInit(TransformerImpl transformer) throws SAXException{}
+
+  /**
+   * Execute the element's primary function.  Subclasses of this
    * function may recursivly execute down the element tree.
-   * 
-   * @exception XSLProcessorException 
-   * @exception java.net.MalformedURLException 
-   * @exception java.io.FileNotFoundException 
-   * @exception java.io.IOException 
-   * @exception SAXException 
+   *
+   * @exception XSLProcessorException
+   * @exception java.net.MalformedURLException
+   * @exception java.io.FileNotFoundException
+   * @exception java.io.IOException
+   * @exception SAXException
    * @param transformer The XSLT Processor.
    * @param sourceNode The current context node.
    * @param mode The current mode.
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {
-  }
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException{}
 
-  
   /**
-   * Get the owning "composed" stylesheet.  This looks up the 
+   * Get the owning "composed" stylesheet.  This looks up the
    * inheritance chain until it calls getStylesheetComposed
-   * on a Stylesheet object, which will Get the owning 
+   * on a Stylesheet object, which will Get the owning
    * aggregated stylesheet, or that stylesheet if it is aggregated.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetComposed getStylesheetComposed()
   {
@@ -197,9 +197,11 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Get the owning stylesheet.  This looks up the 
+   * Get the owning stylesheet.  This looks up the
    * inheritance chain until it calls getStylesheet
    * on a Stylesheet object, which will return itself.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Stylesheet getStylesheet()
   {
@@ -207,121 +209,146 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Get the owning root stylesheet.  This looks up the 
+   * Get the owning root stylesheet.  This looks up the
    * inheritance chain until it calls StylesheetRoot
-   * on a Stylesheet object, which will return a reference 
+   * on a Stylesheet object, which will return a reference
    * to the root stylesheet.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetRoot getStylesheetRoot()
   {
     return m_parentNode.getStylesheetRoot();
-  } 
-  
+  }
+
   /**
-   * This function is called after everything else has been 
-   * recomposed, and allows the template to set remaining 
-   * values that may be based on some other property that 
+   * This function is called after everything else has been
+   * recomposed, and allows the template to set remaining
+   * values that may be based on some other property that
    * depends on recomposition.
    */
-  public void compose()
-  {
-  }
-  
-  /** 
+  public void compose(){}
+
+  /**
    * Validate that the string is an NCName.
-   * 
+   *
    * @param s The name in question.
    * @return True if the string is a valid NCName according to XML rules.
    * @see <a href="http://www.w3.org/TR/REC-xml-names#NT-NCName">XXX in XSLT Specification</a>
    */
   protected boolean isValidNCName(String s)
   {
+
     int len = s.length();
     char c = s.charAt(0);
-    if(!(Character.isLetter(c) || (c == '_')))
+
+    if (!(Character.isLetter(c) || (c == '_')))
       return false;
-    if(len > 0)
+
+    if (len > 0)
     {
-      for(int i = 1; i < len; i++)
+      for (int i = 1; i < len; i++)
       {
         c = s.charAt(i);
-        if(!(Character.isLetterOrDigit(c) || (c == '_') || (c == '-') || (c == '.')))
+
+        if (!(Character.isLetterOrDigit(c) || (c == '_') || (c == '-')
+              || (c == '.')))
           return false;
       }
     }
+
     return true;
   }
-    
-  /** 
+
+  /**
    * Throw a template element runtime error.  (Note: should we throw a SAXException instead?)
-   * 
+   *
    * @param msg Description of the error that occured.
+   * NEEDSDOC @param args
    */
   public void error(int msg, Object[] args)
   {
-    String themsg = XSLMessages.createMessage(msg, args);  
-    throw new RuntimeException(XSLMessages.createMessage(XSLTErrorResources.ER_ELEMTEMPLATEELEM_ERR, new Object[] {themsg})); //"ElemTemplateElement error: "+msg);
+
+    String themsg = XSLMessages.createMessage(msg, args);
+
+    throw new RuntimeException(
+      XSLMessages.createMessage(
+        XSLTErrorResources.ER_ELEMTEMPLATEELEM_ERR, new Object[]{ themsg }));  //"ElemTemplateElement error: "+msg);
   }
-  
+
   // Implemented DOM Element methods.
-  
-  /** 
+
+  /**
    * Add a child to the child list.
    * NOTE: This presumes the child did not previously have a parent.
    * Making that assumption makes this a less expensive operation -- but
    * requires that if you *do* want to reparent a node, you use removeChild()
    * first to remove it from its previous context. Failing to do so will
    * damage the tree.
-   * 
-   * @exception DOMException 
-   * @param newChild 
+   *
+   *
+   * NEEDSDOC ($objectName$) @return
+   * @exception DOMException
+   * @param newChild
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    if(null == newChild)
+
+    if (null == newChild)
     {
-      error(XSLTErrorResources.ER_NULL_CHILD, null); //"Trying to add a null child!");
+      error(XSLTErrorResources.ER_NULL_CHILD, null);  //"Trying to add a null child!");
     }
-    ElemTemplateElement elem = (ElemTemplateElement)newChild;
-    if(null == m_firstChild)
+
+    ElemTemplateElement elem = (ElemTemplateElement) newChild;
+
+    if (null == m_firstChild)
     {
       m_firstChild = elem;
     }
     else
     {
-      ElemTemplateElement last = (ElemTemplateElement)getLastChild();
+      ElemTemplateElement last = (ElemTemplateElement) getLastChild();
+
       last.m_nextSibling = elem;
     }
+
     elem.m_parentNode = this;
-    
+
     return newChild;
   }
-  
-  /** 
+
+  /**
    * Tell if there are child nodes.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public boolean            hasChildNodes()
+  public boolean hasChildNodes()
   {
     return (null != m_firstChild);
   }
-  
-  /** 
+
+  /**
    * Get the type of the node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public short              getNodeType()
+  public short getNodeType()
   {
     return Node.ELEMENT_NODE;
   }
-    
-  /** Return the nodelist (same reference).
+
+  /**
+   * Return the nodelist (same reference).
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public NodeList           getChildNodes()
+  public NodeList getChildNodes()
   {
     return this;
   }
-  
-  /** Remove a child. 
+
+  /**
+   * Remove a child.
    * ADDED 9/8/200 to support compilation.
    * TODO: ***** Alternative is "removeMe() from my parent if any"
    * ... which is less well checked, but more convenient in some cases.
@@ -329,129 +356,155 @@ public class ElemTemplateElement extends UnImplNode
    * be preferable. It's less DOMish, though.
    * @param oldChild The child to remove. This operation is a no-op
    * if oldChild is not a child of this node.
+   *
+   * NEEDSDOC @param childETE
    * @return the removed child, or null if the specified
    * node was not a child of this element.
+   *
+   * @throws DOMException
    */
-  public Node              removeChild(ElemTemplateElement childETE)
-  	      throws DOMException
+  public Node removeChild(ElemTemplateElement childETE) throws DOMException
   {
-	if(childETE==null || childETE.m_parentNode!=this)
-		return null;
-	
-	// Pointers to the child
-	if(childETE==m_firstChild)
-		m_firstChild=childETE.m_nextSibling;
-	else
-	{
-		ElemTemplateElement prev=(ElemTemplateElement)(childETE.getPreviousSibling());
-		prev.m_nextSibling=childETE.m_nextSibling;
-	}
-			
-	// Pointers from the child
-     childETE.m_parentNode = null;
-     childETE.m_nextSibling = null;
-	 return childETE;
+
+    if (childETE == null || childETE.m_parentNode != this)
+      return null;
+
+    // Pointers to the child
+    if (childETE == m_firstChild)
+      m_firstChild = childETE.m_nextSibling;
+    else
+    {
+      ElemTemplateElement prev =
+        (ElemTemplateElement) (childETE.getPreviousSibling());
+
+      prev.m_nextSibling = childETE.m_nextSibling;
+    }
+
+    // Pointers from the child
+    childETE.m_parentNode = null;
+    childETE.m_nextSibling = null;
+
+    return childETE;
   }
-  
-  /** Replace the old child with a new child.
+
+  /**
+   * Replace the old child with a new child.
+   *
+   * NEEDSDOC @param newChild
+   * NEEDSDOC @param oldChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               replaceChild(Node newChild,
-                                         Node oldChild)
-    throws DOMException
+  public Node replaceChild(Node newChild, Node oldChild) throws DOMException
   {
-	if(oldChild==null || oldChild.getParentNode()!=this)
-		return null;
-	
-    ElemTemplateElement newChildElem 
-      = ((ElemTemplateElement)newChild);
-    ElemTemplateElement oldChildElem 
-      = ((ElemTemplateElement)oldChild);
+
+    if (oldChild == null || oldChild.getParentNode() != this)
+      return null;
+
+    ElemTemplateElement newChildElem = ((ElemTemplateElement) newChild);
+    ElemTemplateElement oldChildElem = ((ElemTemplateElement) oldChild);
 
     // Fix up previous sibling.
-    ElemTemplateElement prev 
-      = (ElemTemplateElement)oldChildElem.getPreviousSibling();
-    if(null != prev)
+    ElemTemplateElement prev =
+      (ElemTemplateElement) oldChildElem.getPreviousSibling();
+
+    if (null != prev)
       prev.m_nextSibling = newChildElem;
 
     // Fix up parent (this)
-    if(m_firstChild == oldChildElem)
+    if (m_firstChild == oldChildElem)
       m_firstChild = newChildElem;
 
     newChildElem.m_parentNode = this;
     oldChildElem.m_parentNode = null;
-        
     newChildElem.m_nextSibling = oldChildElem.m_nextSibling;
     oldChildElem.m_nextSibling = null;
 
     // newChildElem.m_stylesheet = oldChildElem.m_stylesheet;
     // oldChildElem.m_stylesheet = null;
-        
     return newChildElem;
   }
-  
-  /** 
+
+  /**
    * NodeList method: Count the immediate children of this node
-   * 
+   *
    * @return int
    */
-  public int getLength() 
+  public int getLength()
   {
 
     // It is assumed that the getChildNodes call synchronized
     // the children. Therefore, we can access the first child
     // reference directly.
     int count = 0;
-    for (ElemTemplateElement node = m_firstChild; node != null; node = node.m_nextSibling) 
+
+    for (ElemTemplateElement node = m_firstChild; node != null;
+            node = node.m_nextSibling)
     {
       count++;
     }
-    return count;
 
-  } // getLength():int
-  
-  /** 
+    return count;
+  }  // getLength():int
+
+  /**
    * NodeList method: Return the Nth immediate child of this node, or
    * null if the index is out of bounds.
-   * 
-   * @param index 
+   *
+   * @param index
    * @return org.w3c.dom.Node
    */
-  public Node item(int index) 
+  public Node item(int index)
   {
+
     // It is assumed that the getChildNodes call synchronized
     // the children. Therefore, we can access the first child
     // reference directly.
     ElemTemplateElement node = m_firstChild;
-    for (int i = 0; i < index && node != null; i++) 
+
+    for (int i = 0; i < index && node != null; i++)
     {
       node = node.m_nextSibling;
     }
-    return node;
 
-  } // item(int):Node
-  
-  /** Get the stylesheet owner.
+    return node;
+  }  // item(int):Node
+
+  /**
+   * Get the stylesheet owner.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Document           getOwnerDocument()
+  public Document getOwnerDocument()
   {
     return getStylesheet();
   }
-  
-  /** Return the element name.
+
+  /**
+   * Return the element name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getTagName()
   {
     return getNodeName();
   }
-    
-  /** Return the base identifier.
+
+  /**
+   * Return the base identifier.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getBaseIdentifier()
   {
+
     // Should this always be absolute?
     return this.getSystemId();
   }
-  
+
+  /** NEEDSDOC Field m_lineNumber          */
   private int m_lineNumber;
 
   /**
@@ -461,11 +514,12 @@ public class ElemTemplateElement extends UnImplNode
    * @return The line number, or -1 if none is available.
    * @see #getColumnNumber
    */
-  public int getLineNumber ()
+  public int getLineNumber()
   {
     return m_lineNumber;
   }
-  
+
+  /** NEEDSDOC Field m_columnNumber          */
   private int m_columnNumber;
 
   /**
@@ -476,11 +530,11 @@ public class ElemTemplateElement extends UnImplNode
    * @return The column number, or -1 if none is available.
    * @see #getLineNumber
    */
-  public int getColumnNumber ()
+  public int getColumnNumber()
   {
     return m_columnNumber;
   }
-  
+
   /**
    * Return the public identifier for the current document event.
    * <p>This will be the public identifier
@@ -488,11 +542,11 @@ public class ElemTemplateElement extends UnImplNode
    *         null if none is available.
    * @see #getSystemId
    */
-  public String getPublicId ()
+  public String getPublicId()
   {
     return (null != m_parentNode) ? m_parentNode.getPublicId() : null;
   }
-  
+
   /**
    * Return the system identifier for the current document event.
    *
@@ -503,14 +557,15 @@ public class ElemTemplateElement extends UnImplNode
    *         if none is available.
    * @see #getPublicId
    */
-  public String getSystemId ()
+  public String getSystemId()
   {
     return this.getStylesheet().getHref();
   }
 
-  
   /**
    * Set the location information for this element.
+   *
+   * NEEDSDOC @param locator
    */
   public void setLocaterInfo(Locator locator)
   {
@@ -518,21 +573,22 @@ public class ElemTemplateElement extends UnImplNode
     m_columnNumber = locator.getColumnNumber();
   }
 
-  
-  /** 
+  /**
    * Tell if this element has the default space handling
    * turned off or on according to the xml:space attribute.
    * @serial
    */
   private boolean m_defaultSpace = true;
-  
+
   /**
-   * Set the "xml:space" attribute. 
-   * A text node is preserved if an ancestor element of the text node 
-   * has an xml:space attribute with a value of preserve, and 
+   * Set the "xml:space" attribute.
+   * A text node is preserved if an ancestor element of the text node
+   * has an xml:space attribute with a value of preserve, and
    * no closer ancestor element has xml:space with a value of default.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setXmlSpace(boolean v)
   {
@@ -540,368 +596,468 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Get the "xml:space" attribute. 
-   * A text node is preserved if an ancestor element of the text node 
-   * has an xml:space attribute with a value of preserve, and 
+   * Get the "xml:space" attribute.
+   * A text node is preserved if an ancestor element of the text node
+   * has an xml:space attribute with a value of preserve, and
    * no closer ancestor element has xml:space with a value of default.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean getXmlSpace()
   {
     return m_defaultSpace;
   }
-  
-  /** 
+
+  /**
    * The list of namespace declarations for this element only.
    * @serial
    */
   private Vector m_declaredPrefixes;
-  
+
   /**
-   * Return a table that contains all prefixes available 
+   * Return a table that contains all prefixes available
    * within this element context.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Vector getDeclaredPrefixes()
   {
     return m_declaredPrefixes;
   }
-  
+
   /**
-   * From the SAX2 helper class, set the namespace table for 
+   * From the SAX2 helper class, set the namespace table for
    * this element.  Take care to call resolveInheritedNamespaceDecls.
    * after all namespace declarations have been added.
+   *
+   * NEEDSDOC @param nsSupport
+   *
+   * @throws SAXException
    */
-  public void setPrefixes(NamespaceSupport nsSupport)
-    throws SAXException
+  public void setPrefixes(NamespaceSupport nsSupport) throws SAXException
   {
     setPrefixes(nsSupport, false);
   }
-  
+
   /**
-   * From the SAX2 helper class, set the namespace table for 
+   * From the SAX2 helper class, set the namespace table for
    * this element.  Take care to call resolveInheritedNamespaceDecls.
    * after all namespace declarations have been added.
+   *
+   * NEEDSDOC @param nsSupport
+   * NEEDSDOC @param excludeXSLDecl
+   *
+   * @throws SAXException
    */
   public void setPrefixes(NamespaceSupport nsSupport, boolean excludeXSLDecl)
-    throws SAXException
+          throws SAXException
   {
-    Enumeration decls = nsSupport.getDeclaredPrefixes ();
-    while(decls.hasMoreElements())
+
+    Enumeration decls = nsSupport.getDeclaredPrefixes();
+
+    while (decls.hasMoreElements())
     {
-      String prefix = (String)decls.nextElement();
-      if(null == m_declaredPrefixes)
+      String prefix = (String) decls.nextElement();
+
+      if (null == m_declaredPrefixes)
         m_declaredPrefixes = new Vector();
+
       String uri = nsSupport.getURI(prefix);
-      if(excludeXSLDecl && uri.equals(Constants.S_XSLNAMESPACEURL))
+
+      if (excludeXSLDecl && uri.equals(Constants.S_XSLNAMESPACEURL))
         continue;
+
       // System.out.println("setPrefixes - "+prefix+", "+uri);
       XMLNSDecl decl = new XMLNSDecl(prefix, uri, false);
+
       m_declaredPrefixes.addElement(decl);
     }
   }
-  
-  /** 
+
+  /**
    * Fullfill the PrefixResolver interface.  Calling this will throw an error.
+   *
+   * NEEDSDOC @param prefix
+   * NEEDSDOC @param context
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context)
   {
+
     this.error(XSLTErrorResources.ER_CANT_RESOLVE_NSPREFIX, null);
+
     return null;
   }
-  
-  /** 
+
+  /**
    * Given a namespace, get the corrisponding prefix.
    * 9/15/00: This had been iteratively examining the m_declaredPrefixes
    * field for this node and its parents. That makes life difficult for
    * the compilation experiment, which doesn't have a static vector of
    * local declarations. Replaced a recursive solution, which permits
    * easier subclassing/overriding.
+   *
+   * NEEDSDOC @param prefix
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNamespaceForPrefix(String prefix)
   {
+
     Vector nsDecls = m_declaredPrefixes;
-    if(null != nsDecls)
+
+    if (null != nsDecls)
+    {
+      int n = nsDecls.size();
+
+      for (int i = 0; i < n; i++)
       {
-        int n = nsDecls.size();
-        for(int i = 0; i < n; i++)
-        {
-          XMLNSDecl decl = (XMLNSDecl)nsDecls.elementAt(i);
-          if(prefix.equals(decl.getPrefix()))
-            return decl.getURI();
-        }
+        XMLNSDecl decl = (XMLNSDecl) nsDecls.elementAt(i);
+
+        if (prefix.equals(decl.getPrefix()))
+          return decl.getURI();
       }
+    }
 
     // Not found; ask our ancestors
-    if(null!=m_parentNode)
+    if (null != m_parentNode)
       return m_parentNode.getNamespaceForPrefix(prefix);
 
     // No parent, so no definition
     return null;
   }
 
-  /** 
-   * The table of namespace declarations for this element 
+  /**
+   * The table of namespace declarations for this element
    * and all parent elements, screened for excluded prefixes.
    * @serial
    */
   Vector m_prefixTable;
 
   /**
-   * Return a table that contains all prefixes available 
+   * Return a table that contains all prefixes available
    * within this element context.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Vector getPrefixes()
   {
     return m_prefixTable;
   }
-  
+
   /**
-   * Tell if the result namespace decl should be excluded.  Should be called before 
+   * Tell if the result namespace decl should be excluded.  Should be called before
    * namespace aliasing (I think).
+   *
+   * NEEDSDOC @param prefix
+   * NEEDSDOC @param uri
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
   private boolean excludeResultNSDecl(String prefix, String uri)
-    throws SAXException
+          throws SAXException
   {
+
     if (uri != null)
-    {  
-      if(uri.equals(Constants.S_XSLNAMESPACEURL)
-         || getStylesheet().containsExtensionElementURI(uri)
-         || uri.equals("http://xml.apache.org/xslt")
-         || uri.equals("http://xsl.lotus.com/")
-         || uri.equals("http://xsl.lotus.com"))
-        return true; 
-      
-      if(getStylesheet().containsExcludeResultPrefix(prefix))
+    {
+      if (uri.equals(Constants.S_XSLNAMESPACEURL)
+              || getStylesheet().containsExtensionElementURI(uri)
+              || uri.equals("http://xml.apache.org/xslt")
+              || uri.equals("http://xsl.lotus.com/")
+              || uri.equals("http://xsl.lotus.com"))
+        return true;
+
+      if (getStylesheet().containsExcludeResultPrefix(prefix))
         return true;
     }
+
     return false;
   }
 
-    
   /**
-   * Combine the parent's namespaces with this namespace 
-   * for fast processing, taking care to reference the 
+   * Combine the parent's namespaces with this namespace
+   * for fast processing, taking care to reference the
    * parent's namespace if this namespace adds nothing new.
-   * (Recursive method, walking the elements depth-first, 
+   * (Recursive method, walking the elements depth-first,
    * processing parents before children).
+   *
+   * @throws SAXException
    */
-  public void resolvePrefixTables()
-    throws SAXException
+  public void resolvePrefixTables() throws SAXException
   {
+
     // Always start with a fresh prefix table!
     m_prefixTable = null;
-    
+
     // If we have declared declarations, then we look for 
     // a parent that has namespace decls, and add them 
     // to this element's decls.  Otherwise we just point 
     // to the parent that has decls.
-    if(null != this.m_declaredPrefixes)
+    if (null != this.m_declaredPrefixes)
     {
+
       // Add this element's declared prefixes to the 
       // prefix table.
       int n = m_declaredPrefixes.size();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
-        XMLNSDecl decl = (XMLNSDecl)m_declaredPrefixes.elementAt(i);
+        XMLNSDecl decl = (XMLNSDecl) m_declaredPrefixes.elementAt(i);
         String prefix = decl.getPrefix();
         String uri = decl.getURI();
         boolean shouldExclude = excludeResultNSDecl(prefix, uri);
+
         // Create a new prefix table if one has not already been created.
-        if(null == m_prefixTable)
+        if (null == m_prefixTable)
           m_prefixTable = new Vector();
+
         m_prefixTable.addElement(new XMLNSDecl(prefix, uri, shouldExclude));
       }
     }
-    
-    ElemTemplateElement parent = (ElemTemplateElement)this.getParentNode();
-    if(null != parent)
+
+    ElemTemplateElement parent = (ElemTemplateElement) this.getParentNode();
+
+    if (null != parent)
     {
+
       // The prefix table of the parent should never be null!
       Vector prefixes = parent.m_prefixTable;
-      if(null == m_prefixTable)
+
+      if (null == m_prefixTable)
       {
+
         // Nothing to combine, so just use parent's table!
         this.m_prefixTable = parent.m_prefixTable;
       }
       else
       {
+
         // Add the prefixes from the parent's prefix table.
         int n = prefixes.size();
-        for(int i = 0; i < n; i++)
+
+        for (int i = 0; i < n; i++)
         {
-          XMLNSDecl decl = (XMLNSDecl)prefixes.elementAt(i);
-          boolean shouldExclude 
-            = excludeResultNSDecl(decl.getPrefix(), decl.getURI());
-          if(shouldExclude != decl.getIsExcluded())
+          XMLNSDecl decl = (XMLNSDecl) prefixes.elementAt(i);
+          boolean shouldExclude = excludeResultNSDecl(decl.getPrefix(),
+                                                      decl.getURI());
+
+          if (shouldExclude != decl.getIsExcluded())
           {
-            decl = new XMLNSDecl(decl.getPrefix(), decl.getURI(), shouldExclude);
+            decl = new XMLNSDecl(decl.getPrefix(), decl.getURI(),
+                                 shouldExclude);
           }
 
           m_prefixTable.addElement(decl);
         }
-
       }
     }
-    else if(null == m_prefixTable)
+    else if (null == m_prefixTable)
     {
+
       // Must be stylesheet element without any result prefixes!
       m_prefixTable = new Vector();
     }
-    
+
     // Resolve the children's prefix tables.
-    for(ElemTemplateElement child = m_firstChild; 
-        child != null; child = child.m_nextSibling)
+    for (ElemTemplateElement child = m_firstChild; child != null;
+            child = child.m_nextSibling)
     {
       child.resolvePrefixTables();
     }
   }
-    
+
   /**
-   * Send startPrefixMapping events to the result tree handler 
+   * Send startPrefixMapping events to the result tree handler
    * for all declared prefix mappings in the stylesheet.
+   *
+   * NEEDSDOC @param transformer
+   *
+   * @throws SAXException
    */
-  void executeNSDecls(TransformerImpl transformer)
-    throws SAXException
+  void executeNSDecls(TransformerImpl transformer) throws SAXException
   {
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-    int n = m_prefixTable.size();
-    for(int i = n-1; i >= 0; i--)
+
+    if (null != m_prefixTable)
     {
-      XMLNSDecl decl = (XMLNSDecl)m_prefixTable.elementAt(i);
-      if(!decl.getIsExcluded())
+      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      int n = m_prefixTable.size();
+
+      for (int i = n - 1; i >= 0; i--)
       {
-        rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI(), true);
+        XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+
+        if (!decl.getIsExcluded())
+        {
+          rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI(), true);
+        }
       }
-    }    
-  }
-  
-  /**
-   * Send startPrefixMapping events to the result tree handler 
-   * for all declared prefix mappings in the stylesheet.
-   */
-  void unexecuteNSDecls(TransformerImpl transformer)
-    throws SAXException
-  {
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-    int n = m_prefixTable.size();
-    for(int i = 0; i < n; i++)
-    {
-      XMLNSDecl decl = (XMLNSDecl)m_prefixTable.elementAt(i);
-      if(!decl.getIsExcluded())
-      {
-        rhandler.endPrefixMapping(decl.getPrefix());
-      }
-    }    
+    }
   }
 
-    
-  /** 
+  /**
+   * Send startPrefixMapping events to the result tree handler
+   * for all declared prefix mappings in the stylesheet.
+   *
+   * NEEDSDOC @param transformer
+   *
+   * @throws SAXException
+   */
+  void unexecuteNSDecls(TransformerImpl transformer) throws SAXException
+  {
+
+    if (null != m_prefixTable)
+    {
+      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      int n = m_prefixTable.size();
+
+      for (int i = 0; i < n; i++)
+      {
+        XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+
+        if (!decl.getIsExcluded())
+        {
+          rhandler.endPrefixMapping(decl.getPrefix());
+        }
+      }
+    }
+  }
+
+  /**
    * Parent node.
    * @serial
    */
   protected ElemTemplateElement m_parentNode;
 
-  /** 
+  /**
    * Get the parent as a Node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getParentNode()
   {
     return m_parentNode;
   }
 
-  /** 
+  /**
    * Get the parent as an ElemTemplateElement.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public ElemTemplateElement getParentElem()
   {
     return m_parentNode;
   }
 
-  /** 
+  /**
    * Next sibling.
    * @serial
    */
-  protected ElemTemplateElement m_nextSibling;
-  
-  /** 
+  ElemTemplateElement m_nextSibling;
+
+  /**
    * Get the next sibling (as a Node) or return null.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getNextSibling()
   {
     return m_nextSibling;
   }
-  
-  /** 
+
+  /**
    * Get the previous sibling (as a Node) or return null.
    * Note that this may be expensive if the parent has many kids;
    * we accept that price in exchange for avoiding the prev pointer
    * TODO: If we were sure parents and sibs are always ElemTemplateElements,
    * we could hit the fields directly rather than thru accessors.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getPreviousSibling()
   {
-	Node walker=getParentNode(),prev=null;
-	if(walker!=null)
-		for(walker=walker.getFirstChild();
-			walker!=null;
-			prev=walker,walker=walker.getNextSibling())
-			if(walker==this)
-				return prev;
+
+    Node walker = getParentNode(), prev = null;
+
+    if (walker != null)
+      for (walker = walker.getFirstChild(); walker != null;
+              prev = walker, walker = walker.getNextSibling())
+      {
+        if (walker == this)
+          return prev;
+      }
+
     return null;
   }
-  
-  
 
-  /** 
+  /**
    * Get the next sibling (as a ElemTemplateElement) or return null.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public ElemTemplateElement getNextSiblingElem()
   {
     return m_nextSibling;
   }
-  
-  /** 
+
+  /**
    * First child.
    * @serial
    */
-  protected ElemTemplateElement m_firstChild;
-  
-  /** 
+  ElemTemplateElement m_firstChild;
+
+  /**
    * Get the first child as a Node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getFirstChild()
   {
     return m_firstChild;
   }
-  
-  /** 
+
+  /**
    * Get the first child as a ElemTemplateElement.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public ElemTemplateElement getFirstChildElem()
   {
     return m_firstChild;
   }
-  
-  /** Get the last child.
+
+  /**
+   * Get the last child.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
-  public Node               getLastChild()
+  public Node getLastChild()
   {
+
     ElemTemplateElement lastChild = null;
-    for (ElemTemplateElement node = m_firstChild; 
-         node != null; node = node.m_nextSibling) 
+
+    for (ElemTemplateElement node = m_firstChild; node != null;
+            node = node.m_nextSibling)
     {
       lastChild = node;
     }
+
     return lastChild;
   }
-  
+
+  /** NEEDSDOC Field m_DOMBackPointer          */
   private Node m_DOMBackPointer;
-  
+
   /**
-   * If this stylesheet was created from a DOM, get the 
+   * If this stylesheet was created from a DOM, get the
    * DOM backpointer that this element originated from.
    * For tooling use.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Node getDOMBackPointer()
   {
@@ -909,13 +1065,14 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * If this stylesheet was created from a DOM, set the 
+   * If this stylesheet was created from a DOM, set the
    * DOM backpointer that this element originated from.
    * For tooling use.
+   *
+   * NEEDSDOC @param n
    */
   public void setDOMBackPointer(Node n)
   {
     m_DOMBackPointer = n;
   }
-  
 }

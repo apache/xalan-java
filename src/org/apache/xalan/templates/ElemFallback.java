@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xalan.utils.QName;
@@ -75,17 +77,22 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemFallback extends ElemTemplateElement
 {
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_FALLBACK;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -94,24 +101,32 @@ public class ElemFallback extends ElemTemplateElement
 
   /**
    * Execute the fallback elements.
-   * When an XSLT transformer performs fallback for an instruction 
-   * element, if the instruction element has one or more xsl:fallback 
-   * children, then the content of each of the xsl:fallback children 
-   * must be instantiated in sequence; otherwise, an error must 
+   * When an XSLT transformer performs fallback for an instruction
+   * element, if the instruction element has one or more xsl:fallback
+   * children, then the content of each of the xsl:fallback children
+   * must be instantiated in sequence; otherwise, an error must
    * be signaled. The content of an xsl:fallback element is a template.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {    
-    if(Constants.ELEMNAME_EXTENSIONCALL == m_parentNode.getXSLToken())
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (Constants.ELEMNAME_EXTENSIONCALL == m_parentNode.getXSLToken())
     {
-      ElemExtensionCall parent = (ElemExtensionCall)m_parentNode; 
-      if(!parent.elementIsAvailable())
+      ElemExtensionCall parent = (ElemExtensionCall) m_parentNode;
+
+      if (!parent.elementIsAvailable())
       {
-        if(TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireTraceEvent(sourceNode, mode,
+                  this);
 
         // XPathContext xctxt = transformer.getXPathContext();
         transformer.executeChildTemplates(this, sourceNode, mode);
@@ -119,8 +134,10 @@ public class ElemFallback extends ElemTemplateElement
     }
     else
     {
+
       // Should never happen
-      System.out.println("Error!  parent of xsl:fallback must be an extension element!");
+      System.out.println(
+        "Error!  parent of xsl:fallback must be an extension element!");
     }
   }
 }

@@ -1,66 +1,68 @@
 /*
-* The Apache Software License, Version 1.1
-*
-*
-* Copyright (c) 1999 The Apache Software Foundation.  All rights
-* reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer.
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. The end-user documentation included with the redistribution,
-*    if any, must include the following acknowledgment:
-*       "This product includes software developed by the
-*        Apache Software Foundation (http://www.apache.org/)."
-*    Alternately, this acknowledgment may appear in the software itself,
-*    if and wherever such third-party acknowledgments normally appear.
-*
-* 4. The names "Xalan" and "Apache Software Foundation" must
-*    not be used to endorse or promote products derived from this
-*    software without prior written permission. For written
-*    permission, please contact apache@apache.org.
-*
-* 5. Products derived from this software may not be called "Apache",
-*    nor may "Apache" appear in their name, without prior written
-*    permission of the Apache Software Foundation.
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*
-* This software consists of voluntary contributions made by many
-* individuals on behalf of the Apache Software Foundation and was
-* originally based on software copyright (c) 1999, Lotus
-* Development Corporation., http://www.lotus.com.  For more
-* information on the Apache Software Foundation, please see
-* <http://www.apache.org/>.
-*/
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
+
 import org.xml.sax.*;
 
 import java.util.*;
+
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
@@ -75,6 +77,7 @@ import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.utils.NodeVector;
+
 // import org.apache.xalan.dtm.*;
 
 /**
@@ -98,19 +101,22 @@ import org.apache.xalan.utils.NodeVector;
  */
 public class ElemNumber extends ElemTemplateElement
 {
+
   /**
    * Only nodes are counted that match this pattern.
    */
   private XPath m_countMatchPattern = null;
-  
+
   /**
-   * Set the "count" attribute. 
-   * The count attribute is a pattern that specifies what nodes 
-   * should be counted at those levels. If count attribute is not 
-   * specified, then it defaults to the pattern that matches any 
-   * node with the same node type as the current node and, if the 
-   * current node has an expanded-name, with the same expanded-name 
+   * Set the "count" attribute.
+   * The count attribute is a pattern that specifies what nodes
+   * should be counted at those levels. If count attribute is not
+   * specified, then it defaults to the pattern that matches any
+   * node with the same node type as the current node and, if the
+   * current node has an expanded-name, with the same expanded-name
    * as the current node.
+   *
+   * NEEDSDOC @param v
    */
   public void setCount(XPath v)
   {
@@ -118,40 +124,44 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "count" attribute. 
-   * The count attribute is a pattern that specifies what nodes 
-   * should be counted at those levels. If count attribute is not 
-   * specified, then it defaults to the pattern that matches any 
-   * node with the same node type as the current node and, if the 
-   * current node has an expanded-name, with the same expanded-name 
+   * Get the "count" attribute.
+   * The count attribute is a pattern that specifies what nodes
+   * should be counted at those levels. If count attribute is not
+   * specified, then it defaults to the pattern that matches any
+   * node with the same node type as the current node and, if the
+   * current node has an expanded-name, with the same expanded-name
    * as the current node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getCount()
   {
     return m_countMatchPattern;
   }
-  
+
   /**
    * Specifies where to count from.
    * For level="single" or level="multiple":
-   * Only ancestors that are searched are 
-   * those that are descendants of the nearest ancestor that matches 
+   * Only ancestors that are searched are
+   * those that are descendants of the nearest ancestor that matches
    * the from pattern.
    * For level="any:
-   * Only nodes after the first node before the 
+   * Only nodes after the first node before the
    * current node that match the from pattern are considered.
    */
   private XPath m_fromMatchPattern = null;
-  
+
   /**
    * Set the "from" attribute. Specifies where to count from.
    * For level="single" or level="multiple":
-   * Only ancestors that are searched are 
-   * those that are descendants of the nearest ancestor that matches 
+   * Only ancestors that are searched are
+   * those that are descendants of the nearest ancestor that matches
    * the from pattern.
    * For level="any:
-   * Only nodes after the first node before the 
+   * Only nodes after the first node before the
    * current node that match the from pattern are considered.
+   *
+   * NEEDSDOC @param v
    */
   public void setFrom(XPath v)
   {
@@ -159,52 +169,56 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "from" attribute. 
+   * Get the "from" attribute.
    * For level="single" or level="multiple":
-   * Only ancestors that are searched are 
-   * those that are descendants of the nearest ancestor that matches 
+   * Only ancestors that are searched are
+   * those that are descendants of the nearest ancestor that matches
    * the from pattern.
    * For level="any:
-   * Only nodes after the first node before the 
+   * Only nodes after the first node before the
    * current node that match the from pattern are considered.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getFrom()
   {
     return m_fromMatchPattern;
   }
-  
+
   /**
-   * When level="single", it goes up to the first node in the ancestor-or-self axis 
-   * that matches the count pattern, and constructs a list of length one containing 
-   * one plus the number of preceding siblings of that ancestor that match the count 
-   * pattern. If there is no such ancestor, it constructs an empty list. If the from 
-   * attribute is specified, then the only ancestors that are searched are those 
-   * that are descendants of the nearest ancestor that matches the from pattern. 
+   * When level="single", it goes up to the first node in the ancestor-or-self axis
+   * that matches the count pattern, and constructs a list of length one containing
+   * one plus the number of preceding siblings of that ancestor that match the count
+   * pattern. If there is no such ancestor, it constructs an empty list. If the from
+   * attribute is specified, then the only ancestors that are searched are those
+   * that are descendants of the nearest ancestor that matches the from pattern.
    * Preceding siblings has the same meaning here as with the preceding-sibling axis.
-   * 
-   * When level="multiple", it constructs a list of all ancestors of the current node 
-   * in document order followed by the element itself; it then selects from the list 
-   * those nodes that match the count pattern; it then maps each node in the list to 
-   * one plus the number of preceding siblings of that node that match the count pattern. 
-   * If the from attribute is specified, then the only ancestors that are searched are 
-   * those that are descendants of the nearest ancestor that matches the from pattern. 
+   *
+   * When level="multiple", it constructs a list of all ancestors of the current node
+   * in document order followed by the element itself; it then selects from the list
+   * those nodes that match the count pattern; it then maps each node in the list to
+   * one plus the number of preceding siblings of that node that match the count pattern.
+   * If the from attribute is specified, then the only ancestors that are searched are
+   * those that are descendants of the nearest ancestor that matches the from pattern.
    * Preceding siblings has the same meaning here as with the preceding-sibling axis.
-   * 
-   * When level="any", it constructs a list of length one containing the number of 
-   * nodes that match the count pattern and belong to the set containing the current 
-   * node and all nodes at any level of the document that are before the current node 
-   * in document order, excluding any namespace and attribute nodes (in other words 
-   * the union of the members of the preceding and ancestor-or-self axes). If the 
-   * from attribute is specified, then only nodes after the first node before the 
+   *
+   * When level="any", it constructs a list of length one containing the number of
+   * nodes that match the count pattern and belong to the set containing the current
+   * node and all nodes at any level of the document that are before the current node
+   * in document order, excluding any namespace and attribute nodes (in other words
+   * the union of the members of the preceding and ancestor-or-self axes). If the
+   * from attribute is specified, then only nodes after the first node before the
    * current node that match the from pattern are considered.
    */
   private int m_level = Constants.NUMBERLEVEL_SINGLE;
-  
+
   /**
-   * Set the "level" attribute. 
-   * The level attribute specifies what levels of the source tree should 
-   * be considered; it has the values single, multiple or any. The default 
+   * Set the "level" attribute.
+   * The level attribute specifies what levels of the source tree should
+   * be considered; it has the values single, multiple or any. The default
    * is single.
+   *
+   * NEEDSDOC @param v
    */
   public void setLevel(int v)
   {
@@ -212,10 +226,12 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "level" attribute. 
-   * The level attribute specifies what levels of the source tree should 
-   * be considered; it has the values single, multiple or any. The default 
+   * Get the "level" attribute.
+   * The level attribute specifies what levels of the source tree should
+   * be considered; it has the values single, multiple or any. The default
    * is single.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getLevel()
   {
@@ -223,17 +239,19 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * The value attribute contains an expression. The expression is evaluated 
-   * and the resulting object is converted to a number as if by a call to the 
-   * number function. 
+   * The value attribute contains an expression. The expression is evaluated
+   * and the resulting object is converted to a number as if by a call to the
+   * number function.
    */
   private XPath m_valueExpr = null;
-  
+
   /**
-   * Set the "value" attribute. 
-   * The value attribute contains an expression. The expression is evaluated 
-   * and the resulting object is converted to a number as if by a call to the 
-   * number function. 
+   * Set the "value" attribute.
+   * The value attribute contains an expression. The expression is evaluated
+   * and the resulting object is converted to a number as if by a call to the
+   * number function.
+   *
+   * NEEDSDOC @param v
    */
   public void setValue(XPath v)
   {
@@ -241,28 +259,32 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "value" attribute. 
-   * The value attribute contains an expression. The expression is evaluated 
-   * and the resulting object is converted to a number as if by a call to the 
-   * number function. 
+   * Get the "value" attribute.
+   * The value attribute contains an expression. The expression is evaluated
+   * and the resulting object is converted to a number as if by a call to the
+   * number function.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getValue()
   {
     return m_valueExpr;
   }
-  
+
   /**
-   * The "format" attribute is used to control conversion of a list of 
-   * numbers into a string. 
+   * The "format" attribute is used to control conversion of a list of
+   * numbers into a string.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
    */
   private AVT m_format_avt = null;
-  
+
   /**
-   * Set the "format" attribute. 
-   * The "format" attribute is used to control conversion of a list of 
-   * numbers into a string. 
+   * Set the "format" attribute.
+   * The "format" attribute is used to control conversion of a list of
+   * numbers into a string.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setFormat(AVT v)
   {
@@ -270,30 +292,34 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "format" attribute. 
-   * The "format" attribute is used to control conversion of a list of 
-   * numbers into a string. 
+   * Get the "format" attribute.
+   * The "format" attribute is used to control conversion of a list of
+   * numbers into a string.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getFormat()
   {
     return m_format_avt;
-  }  
-  
+  }
+
   /**
-   * When numbering with an alphabetic sequence, the lang attribute 
+   * When numbering with an alphabetic sequence, the lang attribute
    * specifies which language's alphabet is to be used.
    */
   private AVT m_lang_avt = null;
-  
+
   /**
-   * Set the "lang" attribute. 
-   * When numbering with an alphabetic sequence, the lang attribute 
-   * specifies which language's alphabet is to be used; it has the same 
-   * range of values as xml:lang [XML]; if no lang value is specified, 
-   * the language should be determined from the system environment. 
+   * Set the "lang" attribute.
+   * When numbering with an alphabetic sequence, the lang attribute
+   * specifies which language's alphabet is to be used; it has the same
+   * range of values as xml:lang [XML]; if no lang value is specified,
+   * the language should be determined from the system environment.
    * Implementers should document for which languages they support numbering.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setLang(AVT v)
   {
@@ -301,30 +327,34 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "lang" attribute. 
-   * When numbering with an alphabetic sequence, the lang attribute 
-   * specifies which language's alphabet is to be used; it has the same 
-   * range of values as xml:lang [XML]; if no lang value is specified, 
-   * the language should be determined from the system environment. 
+   * Get the "lang" attribute.
+   * When numbering with an alphabetic sequence, the lang attribute
+   * specifies which language's alphabet is to be used; it has the same
+   * range of values as xml:lang [XML]; if no lang value is specified,
+   * the language should be determined from the system environment.
    * Implementers should document for which languages they support numbering.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getLang()
   {
     return m_lang_avt;
-  }  
-  
+  }
+
   /**
-   * The letter-value attribute disambiguates between numbering 
-   * sequences that use letters. 
+   * The letter-value attribute disambiguates between numbering
+   * sequences that use letters.
    */
   private AVT m_lettervalue_avt = null;
-  
+
   /**
-   * Set the "letter-value" attribute. 
-   * The letter-value attribute disambiguates between numbering sequences 
+   * Set the "letter-value" attribute.
+   * The letter-value attribute disambiguates between numbering sequences
    * that use letters.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setLetterValue(AVT v)
   {
@@ -332,29 +362,33 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "letter-value" attribute. 
-   * The letter-value attribute disambiguates between numbering sequences 
+   * Get the "letter-value" attribute.
+   * The letter-value attribute disambiguates between numbering sequences
    * that use letters.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getLetterValue()
   {
     return m_lettervalue_avt;
-  }  
-    
+  }
+
   /**
-   * The grouping-separator attribute gives the separator 
-   * used as a grouping (e.g. thousands) separator in decimal 
+   * The grouping-separator attribute gives the separator
+   * used as a grouping (e.g. thousands) separator in decimal
    * numbering sequences.
    */
   private AVT m_groupingSeparator_avt = null;
-  
+
   /**
-   * Set the "grouping-separator" attribute. 
-   * The grouping-separator attribute gives the separator 
-   * used as a grouping (e.g. thousands) separator in decimal 
+   * Set the "grouping-separator" attribute.
+   * The grouping-separator attribute gives the separator
+   * used as a grouping (e.g. thousands) separator in decimal
    * numbering sequences.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setGroupingSeparator(AVT v)
   {
@@ -362,26 +396,30 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "grouping-separator" attribute. 
-   * The grouping-separator attribute gives the separator 
-   * used as a grouping (e.g. thousands) separator in decimal 
+   * Get the "grouping-separator" attribute.
+   * The grouping-separator attribute gives the separator
+   * used as a grouping (e.g. thousands) separator in decimal
    * numbering sequences.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getGroupingSeparator()
   {
     return m_groupingSeparator_avt;
-  }  
-    
+  }
+
   /**
-   * The optional grouping-size specifies the size (normally 3) of the grouping. 
+   * The optional grouping-size specifies the size (normally 3) of the grouping.
    */
   private AVT m_groupingSize_avt = null;
-  
+
   /**
-   * Set the "grouping-size" attribute. 
-   * The optional grouping-size specifies the size (normally 3) of the grouping. 
+   * Set the "grouping-size" attribute.
+   * The optional grouping-size specifies the size (normally 3) of the grouping.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setGroupingSize(AVT v)
   {
@@ -389,35 +427,36 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Get the "grouping-size" attribute. 
-   * The optional grouping-size specifies the size (normally 3) of the grouping. 
+   * Get the "grouping-size" attribute.
+   * The optional grouping-size specifies the size (normally 3) of the grouping.
    * @see <a href="http://www.w3.org/TR/xslt#convert">convert in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getGroupingSize()
   {
     return m_groupingSize_avt;
-  }  
-  
+  }
+
   /**
    * Shouldn't this be in the transformer?  Big worries about threads...
    */
- // private XSLTResourceBundle thisBundle;
+
+  // private XSLTResourceBundle thisBundle;
 
   /**
    * Table to help in converting decimals to roman numerals.
    * @see TransformerImpl#DecimalToRoman
    * @see TransformerImpl#long2roman
    */
-  private final static DecimalToRoman m_romanConvertTable[] =
-  {
+  private final static DecimalToRoman m_romanConvertTable[] = {
     new DecimalToRoman(1000, "M", 900, "CM"),
     new DecimalToRoman(500, "D", 400, "CD"),
     new DecimalToRoman(100L, "C", 90L, "XC"),
     new DecimalToRoman(50L, "L", 40L, "XL"),
     new DecimalToRoman(10L, "X", 9L, "IX"),
     new DecimalToRoman(5L, "V", 4L, "IV"),
-    new DecimalToRoman(1L, "I", 1L, "I")
-  };
+    new DecimalToRoman(1L, "I", 1L, "I") };
 
   /**
    * Chars for converting integers into alpha counts.
@@ -428,14 +467,18 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_NUMBER;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -443,64 +486,87 @@ public class ElemNumber extends ElemTemplateElement
   }
 
   /**
-   * Execute an xsl:number instruction. The xsl:number element is 
-   * used to insert a formatted number into the result tree. 
+   * Execute an xsl:number instruction. The xsl:number element is
+   * used to insert a formatted number into the result tree.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer,
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
   {
-    if(TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);    
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
     String countString = getCountString(transformer, sourceNode);
 
-    transformer.getResultTreeHandler().characters(countString.toCharArray(), 0, countString.length());
+    transformer.getResultTreeHandler().characters(countString.toCharArray(),
+            0, countString.length());
   }
 
   /**
    * Add a child to the child list.
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    error(XSLTErrorResources.ER_CANNOT_ADD,
+          new Object[]{ newChild.getNodeName(),
+                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
     //" to " + this.m_elemName);
     return null;
   }
-
 
   /**
    * Given a 'from' pattern (ala xsl:number), a match pattern
    * and a context, find the first ancestor that matches the
    * pattern (including the context handed in).
+   *
+   * NEEDSDOC @param xctxt
    * @param fromMatchPattern The ancestor must match this pattern.
    * @param countMatchPattern The ancestor must also match this pattern.
    * @param context The node that "." expresses.
    * @param namespaceContext The context in which namespaces in the
    * queries are supposed to be expanded.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  Node findAncestor(XPathContext xctxt, XPath fromMatchPattern, 
-                    XPath countMatchPattern,
-                    Node context,
-                    Element namespaceContext)
-    throws org.xml.sax.SAXException
+  Node findAncestor(
+          XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, Node context, Element namespaceContext)
+            throws org.xml.sax.SAXException
   {
-    while(null != context)
+
+    while (null != context)
     {
-      if(null != fromMatchPattern)
+      if (null != fromMatchPattern)
       {
-        if(fromMatchPattern.getMatchScore(xctxt, context) != XPath.MATCH_SCORE_NONE)
+        if (fromMatchPattern.getMatchScore(xctxt, context)
+                != XPath.MATCH_SCORE_NONE)
         {
+
           //context = null;
           break;
         }
       }
 
-      if(null != countMatchPattern)
+      if (null != countMatchPattern)
       {
-        if(countMatchPattern.getMatchScore(xctxt, context) != XPath.MATCH_SCORE_NONE)
+        if (countMatchPattern.getMatchScore(xctxt, context)
+                != XPath.MATCH_SCORE_NONE)
         {
           break;
         }
@@ -508,9 +574,9 @@ public class ElemNumber extends ElemTemplateElement
 
       context = xctxt.getDOMHelper().getParentOfNode(context);
     }
-    return context;    
-  }
 
+    return context;
+  }
 
   /**
    * Given a 'from' pattern (ala xsl:number), a match pattern
@@ -518,311 +584,398 @@ public class ElemNumber extends ElemTemplateElement
    * pattern (including the context handed in).
    * @param matchPatternString The match pattern.
    * @param node The node that "." expresses.
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param fromMatchPattern
+   * NEEDSDOC @param countMatchPattern
+   * NEEDSDOC @param context
    * @param namespaceContext The context in which namespaces in the
    * queries are supposed to be expanded.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
-  private Node findPrecedingOrAncestorOrSelf(XPathContext xctxt, 
-                                     XPath fromMatchPattern, 
-                                     XPath countMatchPattern,
-                                     Node context,
-                                     Element namespaceContext)
-    throws org.xml.sax.SAXException
+  private Node findPrecedingOrAncestorOrSelf(
+          XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, Node context, Element namespaceContext)
+            throws org.xml.sax.SAXException
   {
-    while(null != context)
+
+    while (null != context)
     {
-      if(null != fromMatchPattern)
+      if (null != fromMatchPattern)
       {
-        if(fromMatchPattern.getMatchScore(xctxt, context) != XPath.MATCH_SCORE_NONE)
+        if (fromMatchPattern.getMatchScore(xctxt, context)
+                != XPath.MATCH_SCORE_NONE)
         {
           context = null;
+
           break;
         }
       }
 
-      if(null != countMatchPattern)
+      if (null != countMatchPattern)
       {
-        if(countMatchPattern.getMatchScore(xctxt, context) != XPath.MATCH_SCORE_NONE)
+        if (countMatchPattern.getMatchScore(xctxt, context)
+                != XPath.MATCH_SCORE_NONE)
         {
           break;
         }
       }
 
       Node prevSibling = context.getPreviousSibling();
-      if(null == prevSibling)
+
+      if (null == prevSibling)
       {
         context = xctxt.getDOMHelper().getParentOfNode(context);
       }
       else
       {
+
         // Now go down the chain of children of this sibling 
         context = prevSibling.getLastChild();
+
         if (context == null)
           context = prevSibling;
       }
     }
+
     return context;
   }
-  
+
   /**
    * Get the count match pattern, or a default value.
+   *
+   * NEEDSDOC @param support
+   * NEEDSDOC @param contextNode
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
   XPath getCountMatchPattern(XPathContext support, Node contextNode)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
+
     XPath countMatchPattern = m_countMatchPattern;
-    if(null == countMatchPattern)
+
+    if (null == countMatchPattern)
     {
-      switch( contextNode.getNodeType())
+      switch (contextNode.getNodeType())
       {
-      case Node.ELEMENT_NODE:
+      case Node.ELEMENT_NODE :
+
         // countMatchPattern = m_stylesheet.createMatchPattern(contextNode.getNodeName(), this);
-        countMatchPattern 
-          = new XPath(contextNode.getNodeName(), this, this, XPath.MATCH);
+        countMatchPattern = new XPath(contextNode.getNodeName(), this, this,
+                                      XPath.MATCH);
         break;
-      case Node.ATTRIBUTE_NODE:
+      case Node.ATTRIBUTE_NODE :
+
         // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
-        countMatchPattern 
-          = new XPath("@"+contextNode.getNodeName(), this, this, XPath.MATCH);
+        countMatchPattern = new XPath("@" + contextNode.getNodeName(), this,
+                                      this, XPath.MATCH);
         break;
-      case Node.CDATA_SECTION_NODE:
-      case Node.TEXT_NODE:
+      case Node.CDATA_SECTION_NODE :
+      case Node.TEXT_NODE :
+
         // countMatchPattern = m_stylesheet.createMatchPattern("text()", this);
-        countMatchPattern 
-          = new XPath("text()", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("text()", this, this, XPath.MATCH);
         break;
-      case Node.COMMENT_NODE:
+      case Node.COMMENT_NODE :
+
         // countMatchPattern = m_stylesheet.createMatchPattern("comment()", this);
-        countMatchPattern 
-          = new XPath("comment()", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("comment()", this, this, XPath.MATCH);
         break;
-      case Node.DOCUMENT_NODE:
+      case Node.DOCUMENT_NODE :
+
         // countMatchPattern = m_stylesheet.createMatchPattern("/", this);
-        countMatchPattern 
-          = new XPath("/", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("/", this, this, XPath.MATCH);
         break;
-      case Node.PROCESSING_INSTRUCTION_NODE:
+      case Node.PROCESSING_INSTRUCTION_NODE :
+
         // countMatchPattern = m_stylesheet.createMatchPattern("pi("+contextNode.getNodeName()+")", this);
-        countMatchPattern 
-          = new XPath("pi("+contextNode.getNodeName()+")", this, this, XPath.MATCH);
+        countMatchPattern = new XPath("pi(" + contextNode.getNodeName()
+                                      + ")", this, this, XPath.MATCH);
         break;
-      default:
+      default :
         countMatchPattern = null;
       }
     }
+
     return countMatchPattern;
   }
-  
+
   /**
    * Given an XML source node, get the count according to the
    * parameters set up by the xsl:number attributes.
    * @param transformer The node being counted.
    * @param sourceNode The source node being counted.
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
   String getCountString(TransformerImpl transformer, Node sourceNode)
-    throws SAXException
+          throws SAXException
   {
+
     int[] list = null;
     XPathContext xctxt = transformer.getXPathContext();
     CountersTable ctable = transformer.getCountersTable();
 
-    if(null != m_valueExpr)
+    if (null != m_valueExpr)
     {
       XObject countObj = m_valueExpr.execute(xctxt, sourceNode, this);
-      int count = (int)countObj.num();
+      int count = (int) countObj.num();
+
       list = new int[1];
       list[0] = count;
     }
     else
     {
-      if(Constants.NUMBERLEVEL_ANY == m_level)
+      if (Constants.NUMBERLEVEL_ANY == m_level)
       {
         list = new int[1];
         list[0] = ctable.countNode(xctxt, this, sourceNode);
       }
       else
       {
-        NodeVector ancestors = getMatchingAncestors(xctxt, sourceNode,
-                                                  Constants.NUMBERLEVEL_SINGLE == m_level);
+        NodeVector ancestors =
+          getMatchingAncestors(xctxt, sourceNode,
+                               Constants.NUMBERLEVEL_SINGLE == m_level);
         int lastIndex = ancestors.size() - 1;
-        if(lastIndex >= 0)
+
+        if (lastIndex >= 0)
         {
-          list = new int[lastIndex+1];
-          for(int i = lastIndex; i >= 0; i--)
+          list = new int[lastIndex + 1];
+
+          for (int i = lastIndex; i >= 0; i--)
           {
             Node target = ancestors.elementAt(i);
-            list[lastIndex-i] = ctable.countNode(xctxt, this, target);
+
+            list[lastIndex - i] = ctable.countNode(xctxt, this, target);
           }
         }
       }
     }
-    
-    return (null != list) ? formatNumberList(transformer, list, sourceNode) : "";
+
+    return (null != list)
+           ? formatNumberList(transformer, list, sourceNode) : "";
   }
-  
+
   /**
    * Get the previous node to be counted.
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param pos
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
   public Node getPreviousNode(XPathContext xctxt, Node pos)
-    throws SAXException
-  {    
+          throws SAXException
+  {
+
     XPath countMatchPattern = getCountMatchPattern(xctxt, pos);
-    if(Constants.NUMBERLEVEL_ANY == m_level)
+
+    if (Constants.NUMBERLEVEL_ANY == m_level)
     {
       XPath fromMatchPattern = m_fromMatchPattern;
 
       // Do a backwards document-order walk 'till a node is found that matches 
       // the 'from' pattern, or a node is found that matches the 'count' pattern, 
       // or the top of the tree is found.
-      while(null != pos)
-      {            
+      while (null != pos)
+      {
+
         // Get the previous sibling, if there is no previous sibling, 
         // then count the parent, but if there is a previous sibling, 
         // dive down to the lowest right-hand (last) child of that sibling.
         Node next = pos.getPreviousSibling();
-        if(null == next)
+
+        if (null == next)
         {
           next = pos.getParentNode();
-          if((null != next) && ((((null != fromMatchPattern) &&
-                                  (fromMatchPattern.getMatchScore(xctxt, next) !=
-                                   XPath.MATCH_SCORE_NONE))) || 
-                                (next.getNodeType() == Node.DOCUMENT_NODE)))
+
+          if ((null != next) && ((((null != fromMatchPattern) && (fromMatchPattern.getMatchScore(
+                  xctxt, next) != XPath.MATCH_SCORE_NONE))) || (next.getNodeType() == Node.DOCUMENT_NODE)))
           {
-            pos = null; // return null from function.
-            break; // from while loop
+            pos = null;  // return null from function.
+
+            break;  // from while loop
           }
         }
         else
         {
+
           // dive down to the lowest right child.
           Node child = next;
-          while(null != child)
+
+          while (null != child)
           {
             child = next.getLastChild();
-            if(null != child)
+
+            if (null != child)
               next = child;
           }
         }
+
         pos = next;
-        
-        if((null != pos) && ((null == countMatchPattern) ||
-                             (countMatchPattern.getMatchScore(xctxt, pos) !=
-                              XPath.MATCH_SCORE_NONE)))
+
+        if ((null != pos)
+                && ((null == countMatchPattern)
+                    || (countMatchPattern.getMatchScore(xctxt, pos)
+                        != XPath.MATCH_SCORE_NONE)))
         {
           break;
         }
       }
     }
-    else // NUMBERLEVEL_MULTI or NUMBERLEVEL_SINGLE
+    else  // NUMBERLEVEL_MULTI or NUMBERLEVEL_SINGLE
     {
-      while(null != pos)
-      {            
+      while (null != pos)
+      {
         pos = pos.getPreviousSibling();
-        if((null != pos) && ((null == countMatchPattern) ||
-                             (countMatchPattern.getMatchScore(xctxt, pos) !=
-                              XPath.MATCH_SCORE_NONE)))
+
+        if ((null != pos)
+                && ((null == countMatchPattern)
+                    || (countMatchPattern.getMatchScore(xctxt, pos)
+                        != XPath.MATCH_SCORE_NONE)))
         {
           break;
         }
       }
     }
+
     return pos;
   }
-  
+
   /**
    * Get the target node that will be counted..
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param sourceNode
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
   public Node getTargetNode(XPathContext xctxt, Node sourceNode)
-    throws SAXException
+          throws SAXException
   {
+
     Node target = null;
     XPath countMatchPattern = getCountMatchPattern(xctxt, sourceNode);
-    if(Constants.NUMBERLEVEL_ANY == m_level)
+
+    if (Constants.NUMBERLEVEL_ANY == m_level)
     {
-      target= findPrecedingOrAncestorOrSelf(xctxt, m_fromMatchPattern, 
-                                            countMatchPattern,
-                                            sourceNode, this);
-      
+      target = findPrecedingOrAncestorOrSelf(xctxt, m_fromMatchPattern,
+                                             countMatchPattern, sourceNode,
+                                             this);
     }
     else
     {
-      target = findAncestor(xctxt, m_fromMatchPattern,
-                            countMatchPattern, sourceNode, this);
+      target = findAncestor(xctxt, m_fromMatchPattern, countMatchPattern,
+                            sourceNode, this);
     }
+
     return target;
   }
-
-
-
 
   /**
    * Get the ancestors, up to the root, that match the
    * pattern.
    * @param patterns if non-null, count only nodes
    * that match this pattern, if null count all ancestors.
+   *
+   * NEEDSDOC @param xctxt
    * @param node Count this node and it's ancestors.
+   * NEEDSDOC @param stopAtFirstFound
    * @return The number of ancestors that match the pattern.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  NodeVector getMatchingAncestors(XPathContext xctxt, 
-                                       Node node, 
-                                       boolean stopAtFirstFound)
-    throws org.xml.sax.SAXException
+  NodeVector getMatchingAncestors(
+          XPathContext xctxt, Node node, boolean stopAtFirstFound)
+            throws org.xml.sax.SAXException
   {
+
     NodeSet ancestors = new NodeSet();
     XPath countMatchPattern = getCountMatchPattern(xctxt, node);
-    while( null != node )
+
+    while (null != node)
     {
-      if((null != m_fromMatchPattern) &&
-         (m_fromMatchPattern.getMatchScore(xctxt, node) !=
-          XPath.MATCH_SCORE_NONE))
-      { 
+      if ((null != m_fromMatchPattern)
+              && (m_fromMatchPattern.getMatchScore(xctxt, node)
+                  != XPath.MATCH_SCORE_NONE))
+      {
+
         // The following if statement gives level="single" different 
         // behavior from level="multiple", which seems incorrect according 
         // to the XSLT spec.  For now we are leaving this in to replicate 
         // the same behavior in XT, but, for all intents and purposes we 
         // think this is a bug, or there is something about level="single" 
         // that we still don't understand.
-        if(!stopAtFirstFound)
-          break;
-      }  
-      
-      if(null == countMatchPattern)
-        System.out.println("Programmers error! countMatchPattern should never be null!");
-      
-      if(countMatchPattern.getMatchScore(xctxt, node) !=
-         XPath.MATCH_SCORE_NONE)
-      {
-        ancestors.addElement(node);
-        if(stopAtFirstFound)
+        if (!stopAtFirstFound)
           break;
       }
-      
+
+      if (null == countMatchPattern)
+        System.out.println(
+          "Programmers error! countMatchPattern should never be null!");
+
+      if (countMatchPattern.getMatchScore(xctxt, node)
+              != XPath.MATCH_SCORE_NONE)
+      {
+        ancestors.addElement(node);
+
+        if (stopAtFirstFound)
+          break;
+      }
+
       node = xctxt.getDOMHelper().getParentOfNode(node);
     }
-    return ancestors;
-  } // end getMatchingAncestors method
 
+    return ancestors;
+  }  // end getMatchingAncestors method
 
   /**
    * Get the locale we should be using.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param contextNode
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
   Locale getLocale(TransformerImpl transformer, Node contextNode)
-    throws SAXException
+          throws SAXException
   {
+
     Locale locale = null;
-    if(null != m_lang_avt)
+
+    if (null != m_lang_avt)
     {
-      String langValue = m_lang_avt.evaluate(transformer.getXPathContext(), contextNode, this);
-      if(null != langValue)
+      String langValue = m_lang_avt.evaluate(transformer.getXPathContext(),
+                                             contextNode, this);
+
+      if (null != langValue)
       {
+
         // Not really sure what to do about the country code, so I use the
         // default from the system.
         // TODO: fix xml:lang handling.
-        locale = new Locale(langValue.toUpperCase(),"");
+        locale = new Locale(langValue.toUpperCase(), "");
+
         //Locale.getDefault().getDisplayCountry());
-        if(null == locale)
+        if (null == locale)
         {
           transformer.getMsgMgr().warn(null, contextNode,
-                         XSLTErrorResources.WG_LOCALE_NOT_FOUND, new Object[] {langValue}); //"Warning: Could not find locale for xml:lang="+langValue);
+                                       XSLTErrorResources.WG_LOCALE_NOT_FOUND,
+                                       new Object[]{ langValue });  //"Warning: Could not find locale for xml:lang="+langValue);
+
           locale = Locale.getDefault();
         }
       }
@@ -831,48 +984,58 @@ public class ElemNumber extends ElemTemplateElement
     {
       locale = Locale.getDefault();
     }
+
     return locale;
   }
 
   /**
    *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param contextNode
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws SAXException
    */
-  private DecimalFormat getNumberFormatter(TransformerImpl transformer, Node contextNode)
-    throws SAXException
+  private DecimalFormat getNumberFormatter(
+          TransformerImpl transformer, Node contextNode) throws SAXException
   {
+
     Locale locale = getLocale(transformer, contextNode);
 
     // Helper to format local specific numbers to strings.
     DecimalFormat formatter;
-    synchronized(locale)
+
+    synchronized (locale)
     {
-      formatter = (DecimalFormat)NumberFormat.getNumberInstance(locale);
+      formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
     }
 
-    String digitGroupSepValue = (null != m_groupingSeparator_avt)
-                                ?  m_groupingSeparator_avt.evaluate(transformer.getXPathContext(),
-                                                                    contextNode, this)
-                                   : null;
-
-    String nDigitsPerGroupValue = (null != m_groupingSize_avt)
-                                  ?  m_groupingSize_avt.evaluate(transformer.getXPathContext(),
-                                                                 contextNode, this)
-                                     : null;
+    String digitGroupSepValue =
+      (null != m_groupingSeparator_avt)
+      ? m_groupingSeparator_avt.evaluate(
+      transformer.getXPathContext(), contextNode, this) : null;
+    String nDigitsPerGroupValue =
+      (null != m_groupingSize_avt)
+      ? m_groupingSize_avt.evaluate(
+      transformer.getXPathContext(), contextNode, this) : null;
 
     // TODO: Handle digit-group attributes
-    if((null != digitGroupSepValue) && (null != nDigitsPerGroupValue))
+    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue))
     {
-      try 
+      try
       {
-        formatter.setGroupingSize(Integer.valueOf(nDigitsPerGroupValue).intValue());	
-        formatter.getDecimalFormatSymbols().setGroupingSeparator(digitGroupSepValue.charAt(0));	
+        formatter.setGroupingSize(
+          Integer.valueOf(nDigitsPerGroupValue).intValue());
+        formatter.getDecimalFormatSymbols().setGroupingSeparator(
+          digitGroupSepValue.charAt(0));
         formatter.setGroupingUsed(true);
-      }	
-      catch(NumberFormatException ex)
+      }
+      catch (NumberFormatException ex)
       {
         formatter.setGroupingUsed(false);
       }
-      
     }
 
     return formatter;
@@ -881,22 +1044,31 @@ public class ElemNumber extends ElemTemplateElement
   /**
    * Format a vector of numbers into a formatted string.
    * @param xslNumberElement Element that takes %conversion-atts; attributes.
+   *
+   * NEEDSDOC @param transformer
    * @param list Array of one or more integer numbers.
+   * NEEDSDOC @param contextNode
    * @return String that represents list according to
    * %conversion-atts; attributes.
    * TODO: Optimize formatNumberList so that it caches the last count and
    * reuses that info for the next count.
+   *
+   * @throws SAXException
    */
-  String formatNumberList(TransformerImpl transformer, int[] list, Node contextNode)
-    throws SAXException
+  String formatNumberList(
+          TransformerImpl transformer, int[] list, Node contextNode)
+            throws SAXException
   {
+
     String numStr;
     FastStringBuffer formattedNumber = StringBufferPool.get();
+
     try
     {
       int nNumbers = list.length, numberWidth = 1;
       char numberType = '1';
       String formatToken, lastSepString = null, formatTokenString = null;
+
       // If a seperator hasn't been specified, then use "."  
       // as a default separator. 
       // For instance: [2][1][5] with a format value of "1 "
@@ -904,107 +1076,115 @@ public class ElemNumber extends ElemTemplateElement
       // Otherwise, use the seperator specified in the format string.
       // For instance: [2][1][5] with a format value of "01-001. "
       // should format to "02-001-005 ".
-      String lastSep = ".";                
-      boolean isFirstToken = true;        // true if first token  
+      String lastSep = ".";
+      boolean isFirstToken = true;  // true if first token  
+      String formatValue =
+        (null != m_format_avt)
+        ? m_format_avt.evaluate(
+        transformer.getXPathContext(), contextNode, this) : null;
 
-      String formatValue = (null != m_format_avt)
-                           ? m_format_avt.evaluate(transformer.getXPathContext(), contextNode, this)
-                             : null;
-      if(null == formatValue) formatValue = "1";
+      if (null == formatValue)
+        formatValue = "1";
 
-      NumberFormatStringTokenizer formatTokenizer = new NumberFormatStringTokenizer(formatValue);
-      
+      NumberFormatStringTokenizer formatTokenizer =
+        new NumberFormatStringTokenizer(formatValue);
+
       // int sepCount = 0;                  // keep track of seperators
       // Loop through all the numbers in the list.
-      for(int i = 0; i < nNumbers; i++)
+      for (int i = 0; i < nNumbers; i++)
       {
+
         // Loop to the next digit, letter, or separator.
-        if(formatTokenizer.hasMoreTokens())
+        if (formatTokenizer.hasMoreTokens())
         {
           formatToken = formatTokenizer.nextToken();
-          
+
           // If the first character of this token is a character or digit, then 
           // it is a number format directive.
-          if(Character.isLetterOrDigit(formatToken.charAt(formatToken.length()-1)))
+          if (Character.isLetterOrDigit(
+                  formatToken.charAt(formatToken.length() - 1)))
           {
             numberWidth = formatToken.length();
-            numberType = formatToken.charAt(numberWidth-1);
+            numberType = formatToken.charAt(numberWidth - 1);
           }
+
           // If there is a number format directive ahead, 
           // then append the formatToken.
-          else if(formatTokenizer.isLetterOrDigitAhead())
-          {          
+          else if (formatTokenizer.isLetterOrDigitAhead())
+          {
             formatTokenString = formatToken;
-            
+
             // Append the formatToken string...
             // For instance [2][1][5] with a format value of "1--1. "
             // should format to "2--1--5. " (I guess).
-            while(formatTokenizer.nextIsSep())
+            while (formatTokenizer.nextIsSep())
             {
               formatToken = formatTokenizer.nextToken();
               formatTokenString += formatToken;
             }
+
             // Record this separator, so it can be used as the 
             // next separator, if the next is the last.
             // For instance: [2][1][5] with a format value of "1-1 "
             // should format to "2-1-5 ".
             if (!isFirstToken)
               lastSep = formatTokenString;
-            
+
             // Since we know the next is a number or digit, we get it now.
             formatToken = formatTokenizer.nextToken();
             numberWidth = formatToken.length();
-            numberType = formatToken.charAt(numberWidth-1);
+            numberType = formatToken.charAt(numberWidth - 1);
           }
-          else // only separators left
+          else  // only separators left
           {
+
             // Set up the string for the trailing characters after 
             // the last number is formatted (i.e. after the loop).
             lastSepString = formatToken;
-            
+
             // And append any remaining characters to the lastSepString.
-            while(formatTokenizer.hasMoreTokens())
+            while (formatTokenizer.hasMoreTokens())
             {
               formatToken = formatTokenizer.nextToken();
               lastSepString += formatToken;
             }
-          } // else
-          
-        } // end if(formatTokenizer.hasMoreTokens())
-        
+          }  // else
+        }  // end if(formatTokenizer.hasMoreTokens())
+
         // if this is the first token and there was a prefix
         // append the prefix else, append the separator
         // For instance, [2][1][5] with a format value of "(1-1.) "
         // should format to "(2-1-5.) " (I guess).
-        if(null != formatTokenString && isFirstToken)
+        if (null != formatTokenString && isFirstToken)
         {
           formattedNumber.append(formatTokenString);
-        }  
-        else if(null != lastSep && !isFirstToken)
+        }
+        else if (null != lastSep &&!isFirstToken)
           formattedNumber.append(lastSep);
-        
-        getFormattedNumber(transformer, contextNode, 
-                           numberType, numberWidth, 
+
+        getFormattedNumber(transformer, contextNode, numberType, numberWidth,
                            list[i], formattedNumber);
-        isFirstToken = false;              // After the first pass, this should be false
-        
-      } // end for loop
-      
+
+        isFirstToken = false;  // After the first pass, this should be false
+      }  // end for loop
 
       // Check to see if we finished up the format string...
-      
       // Skip past all remaining letters or digits
-      while(formatTokenizer.isLetterOrDigitAhead())
+      while (formatTokenizer.isLetterOrDigitAhead())
+      {
         formatTokenizer.nextToken();
-      
-      if(lastSepString != null)
+      }
+
+      if (lastSepString != null)
         formattedNumber.append(lastSepString);
-      
-      while(formatTokenizer.hasMoreTokens())
+
+      while (formatTokenizer.hasMoreTokens())
       {
         formatToken = formatTokenizer.nextToken();
+
         formattedNumber.append(formatToken);
       }
+
       numStr = formattedNumber.toString();
     }
     finally
@@ -1013,184 +1193,297 @@ public class ElemNumber extends ElemTemplateElement
     }
 
     return numStr;
-  } // end formatNumberList method
+  }  // end formatNumberList method
 
   /*
   * Get Formatted number
   */
-  private void getFormattedNumber(TransformerImpl transformer,
-                                  Node contextNode,
-                                  char numberType,
-                                  int numberWidth,
-                                  int listElement,
-                                  FastStringBuffer formattedNumber)
-    throws org.xml.sax.SAXException
+
+  /**
+   * NEEDSDOC Method getFormattedNumber 
+   *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param contextNode
+   * NEEDSDOC @param numberType
+   * NEEDSDOC @param numberWidth
+   * NEEDSDOC @param listElement
+   * NEEDSDOC @param formattedNumber
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  private void getFormattedNumber(
+          TransformerImpl transformer, Node contextNode, char numberType, int numberWidth, int listElement, FastStringBuffer formattedNumber)
+            throws org.xml.sax.SAXException
   {
+
     DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
     String padString = formatter.format(0);
-    String letterVal = (m_lettervalue_avt != null) ? m_lettervalue_avt.evaluate(transformer.getXPathContext(),
-                                                                                contextNode, this) : null;
-    switch(numberType)
-    {     
-    case 'A':
+    String letterVal =
+      (m_lettervalue_avt != null)
+      ? m_lettervalue_avt.evaluate(
+      transformer.getXPathContext(), contextNode, this) : null;
+
+    switch (numberType)
+    {
+    case 'A' :
       if (m_alphaCountTable == null)
-      { 
+      {
         XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode) );       
+
+        thisBundle =
+          (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+            Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
+
         char[] alphabet;
-        alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
-        m_alphaCountTable = alphabet;
-      }    
-      int2alphaCount(listElement, m_alphaCountTable, formattedNumber);
-      break;
-    case 'a':      
-      if (m_alphaCountTable == null)
-      { 
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode) );       
-        char[] alphabet;
-        alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
+
+        alphabet = (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
         m_alphaCountTable = alphabet;
       }
+
+      int2alphaCount(listElement, m_alphaCountTable, formattedNumber);
+      break;
+    case 'a' :
+      if (m_alphaCountTable == null)
+      {
+        XSLTResourceBundle thisBundle;
+
+        thisBundle =
+          (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+            Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
+
+        char[] alphabet;
+
+        alphabet = (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
+        m_alphaCountTable = alphabet;
+      }
+
       FastStringBuffer stringBuf = StringBufferPool.get();
+
       try
       {
         int2alphaCount(listElement, m_alphaCountTable, stringBuf);
-        formattedNumber.append(stringBuf.toString().toLowerCase(getLocale(transformer, contextNode)));   
+        formattedNumber.append(
+          stringBuf.toString().toLowerCase(
+            getLocale(transformer, contextNode)));
       }
       finally
       {
         StringBufferPool.free(stringBuf);
       }
       break;
-    case 'I':
-      formattedNumber.append( long2roman(listElement, true));
+    case 'I' :
+      formattedNumber.append(long2roman(listElement, true));
       break;
-    case 'i':
-      formattedNumber.append( long2roman(listElement, true).toLowerCase( getLocale(transformer, contextNode)));
+    case 'i' :
+      formattedNumber.append(
+        long2roman(listElement, true).toLowerCase(
+          getLocale(transformer, contextNode)));
       break;
-    case 0x3042:
+    case 0x3042 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HA"));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        formattedNumber.append(
+          int2singlealphaCount(
+            listElement,
+            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+
+      break;
+    }
+    case 0x3044 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HI"));
+
+      if ((letterVal != null)
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        formattedNumber.append(
+          int2singlealphaCount(
+            listElement,
+            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+
+      break;
+    }
+    case 0x30A2 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "A"));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        formattedNumber.append(
+          int2singlealphaCount(
+            listElement,
+            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+
+      break;
+    }
+    case 0x30A4 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "I"));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        formattedNumber.append(
+          int2singlealphaCount(
+            listElement,
+            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+
+      break;
+    }
+    case 0x4E00 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("zh", "CN"));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
       {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP","HA" ) );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-        break;
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       }
-    case 0x3044:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP", "HI") );
-        if ((letterVal != null) && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-        break;
-      }
-    case 0x30A2:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP","A" ) );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-        break;
-      }
-    case 0x30A4:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ja","JP", "I") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          formattedNumber.append( int2singlealphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET)));			
-        break;
-      }
-    case 0x4E00:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("zh","CN" ) );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-        {
-          formattedNumber.append(tradAlphaCount(listElement, thisBundle));
-        }	
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);
-        break;
-      }
-    case 0x58F9:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("zh","TW") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);			
-        break;
-      }
-    case 0x0E51:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("th","") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
-        break;
-      }
-    case 0x05D0:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("he","") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
-        break;
-      }
-    case 0x10D0:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("ka","") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);	
-        break;
-      }
-    case 0x03B1:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("el","") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement, (char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);		
-        break;
-      }
-    case 0x0430:
-      {
-        XSLTResourceBundle thisBundle;
-        thisBundle = (XSLTResourceBundle)XSLTResourceBundle.loadResourceBundle( Constants.LANG_BUNDLE_NAME, new Locale("cy","") );
-        if (letterVal != null && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
-          formattedNumber.append( tradAlphaCount(listElement, thisBundle));
-        else //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
-          int2alphaCount(listElement,(char[])thisBundle.getObject(Constants.LANG_ALPHABET), formattedNumber);		
-        break;
-      }
-    default: // "1"
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    case 0x58F9 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("zh", "TW"));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    case 0x0E51 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("th", ""));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    case 0x05D0 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("he", ""));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    case 0x10D0 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("ka", ""));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    case 0x03B1 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("el", ""));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    case 0x0430 :
+    {
+      XSLTResourceBundle thisBundle;
+
+      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
+        Constants.LANG_BUNDLE_NAME, new Locale("cy", ""));
+
+      if (letterVal != null
+              && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
+        formattedNumber.append(tradAlphaCount(listElement, thisBundle));
+      else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
+        int2alphaCount(listElement,
+                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       formattedNumber);
+
+      break;
+    }
+    default :  // "1"
       String numString = formatter.format(listElement);
       int nPadding = numberWidth - numString.length();
-      for(int k = 0; k < nPadding; k++)
+
+      for (int k = 0; k < nPadding; k++)
       {
         formattedNumber.append(padString);
       }
+
       formattedNumber.append(numString);
     }
-    
   }
 
   /**
@@ -1204,16 +1497,16 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected String int2singlealphaCount(int val, char [] table)
+  protected String int2singlealphaCount(int val, char[] table)
   {
+
     int radix = table.length;
 
     // TODO:  throw error on out of range input
     if (val > radix)
-      return "#E("+val+")";
+      return "#E(" + val + ")";
     else
-      return (new Character(table[val-1])).toString();        // index into table is off one, starts at 0
-    
+      return (new Character(table[val - 1])).toString();  // index into table is off one, starts at 0
   }
 
   /**
@@ -1221,21 +1514,29 @@ public class ElemNumber extends ElemTemplateElement
    * count using the sequence A B C ... Z AA AB AC.... etc.
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
+   * NEEDSDOC @param aTable
+   * NEEDSDOC @param stringBuf
    * @return String representing alpha count of number.
    * @see TransformerImpl#DecimalToRoman
    *
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected void int2alphaCount(int val, char [] aTable, FastStringBuffer stringBuf)
+  protected void int2alphaCount(int val, char[] aTable,
+                                FastStringBuffer stringBuf)
   {
 
     int radix = aTable.length;
     char[] table = new char[aTable.length];
+
     // start table at 1, add last char at index 0. Reason explained above and below.
     int i;
-    for (i=0; i<aTable.length-1;i++)		
-      table[i+1] = aTable[i];
+
+    for (i = 0; i < aTable.length - 1; i++)
+    {
+      table[i + 1] = aTable[i];
+    }
+
     table[0] = aTable[i];
 
     // Create a buffer to hold the result
@@ -1246,27 +1547,24 @@ public class ElemNumber extends ElemTemplateElement
     //some languages go left to right(ie. english), right to left (ie. Hebrew),
     //top to bottom (ie.Japanese), etc... Handle them differently
     //String orientation = thisBundle.getString(Constants.LANG_ORIENTATION);
-
     // next character to set in the buffer
     int charPos;
-    charPos= buf.length -1 ;    // work backward through buf[]	
-    
+
+    charPos = buf.length - 1;  // work backward through buf[]  
 
     // index in table of the last character that we stored
     int lookupIndex = 1;  // start off with anything other than zero to make correction work
 
-    
-
-    //						Correction number
+    //                                          Correction number
     //
-    //	Correction can take on exactly two values:
+    //  Correction can take on exactly two values:
     //
-    //		0	if the next character is to be emitted is usual
+    //          0       if the next character is to be emitted is usual
     //
     //      radix - 1
-    //			if the next char to be emitted should be one less than
-    //			you would expect
-    //			
+    //                  if the next char to be emitted should be one less than
+    //                  you would expect
+    //                  
     // For example, consider radix 10, where 1="A" and 10="J"
     //
     // In this scheme, we count: A, B, C ...   H, I, J (not A0 and certainly
@@ -1281,21 +1579,21 @@ public class ElemNumber extends ElemTemplateElement
     // it can represent either 10 or zero).  In summary, the correction value of
     // "radix-1" acts like "-1" when run through the mod operator, but with the
     // desireable characteristic that it never produces a negative number.
-
     int correction = 0;
 
     // TODO:  throw error on out of range input
-
     do
     {
+
       // most of the correction calculation is explained above,  the reason for the
       // term after the "|| " is that it correctly propagates carries across
       // multiple columns.
-      correction = ((lookupIndex == 0) ||
-                    (correction != 0 && lookupIndex == radix-1 )) ? (radix-1) : 0;
+      correction =
+        ((lookupIndex == 0) || (correction != 0 && lookupIndex == radix - 1))
+        ? (radix - 1) : 0;
 
       // index in "table" of the next char to emit
-      lookupIndex  = (val+correction) % radix;
+      lookupIndex = (val + correction) % radix;
 
       // shift input by one "column"
       val = (val / radix);
@@ -1305,18 +1603,19 @@ public class ElemNumber extends ElemTemplateElement
         break;
 
       // put out the next character of output
-      buf[charPos--] = table[lookupIndex];  // left to right or top to bottom  	
+      buf[charPos--] = table[lookupIndex];  // left to right or top to bottom   
     }
-      while (val > 0);
-    
-    stringBuf.append(buf, charPos+1, (buf.length - charPos -1));
+    while (val > 0);
+
+    stringBuf.append(buf, charPos + 1, (buf.length - charPos - 1));
   }
 
   /**
-   *Convert a long integer into traditional alphabetic counting, in other words
+   * Convert a long integer into traditional alphabetic counting, in other words
    * count using the traditional numbering.
    * @param val Value to convert -- must be greater than zero.
    * @param table a table containing one character for each digit in the radix
+   * NEEDSDOC @param thisBundle
    * @return String representing alpha count of number.
    * @see XSLProcessor#DecimalToRoman
    *
@@ -1325,171 +1624,199 @@ public class ElemNumber extends ElemTemplateElement
    */
   protected String tradAlphaCount(int val, XSLTResourceBundle thisBundle)
   {
+
     // if this number is larger than the largest number we can represent, error!
     //if (val > ((Integer)thisBundle.getObject("MaxNumericalValue")).intValue())
     //return XSLTErrorResources.ERROR_STRING;
     char[] table = null;
+
     // index in table of the last character that we stored
     int lookupIndex = 1;  // start off with anything other than zero to make correction work
+
     // Create a buffer to hold the result
     // TODO:  size of the table can be detereined by computing
     // logs of the radix.  For now, we fake it.
     char buf[] = new char[100];
-    
+
     //some languages go left to right(ie. english), right to left (ie. Hebrew),
     //top to bottom (ie.Japanese), etc... Handle them differently
     //String orientation = thisBundle.getString(Constants.LANG_ORIENTATION);
-
     // next character to set in the buffer
     int charPos;
-    charPos= 0;                  //start at 0
-    
+
+    charPos = 0;  //start at 0
+
     // array of number groups: ie.1000, 100, 10, 1
-    int[] groups = (int[])thisBundle.getObject(Constants.LANG_NUMBERGROUPS);	
-    
+    int[] groups = (int[]) thisBundle.getObject(Constants.LANG_NUMBERGROUPS);
+
     // array of tables of hundreds, tens, digits...
-    String[] tables = (String[])(thisBundle.getObject(Constants.LANG_NUM_TABLES));
-    
-    
+    String[] tables =
+      (String[]) (thisBundle.getObject(Constants.LANG_NUM_TABLES));
+
     //some languages have additive alphabetical notation,
     //some multiplicative-additive, etc... Handle them differently.
-    String numbering = thisBundle.getString(Constants.LANG_NUMBERING);	
-    
+    String numbering = thisBundle.getString(Constants.LANG_NUMBERING);
+
     // do multiplicative part first
     if (numbering.equals(Constants.LANG_MULT_ADD))
     {
       String mult_order = thisBundle.getString(Constants.MULT_ORDER);
-      int[] multiplier = (int[])(thisBundle.getObject(Constants.LANG_MULTIPLIER));	
-      char[]zeroChar = (char[])thisBundle.getObject("zero");			
-      
-      int i= 0;
+      int[] multiplier =
+        (int[]) (thisBundle.getObject(Constants.LANG_MULTIPLIER));
+      char[] zeroChar = (char[]) thisBundle.getObject("zero");
+      int i = 0;
+
       // skip to correct multiplier
-      while (i < multiplier.length && val < multiplier[i] )
+      while (i < multiplier.length && val < multiplier[i])
+      {
         i++;
-      
+      }
+
       do
       {
         if (i >= multiplier.length)
-          break;              //number is smaller than multipliers
-        
+          break;  //number is smaller than multipliers
+
         // some languages (ie chinese) put a zero character (and only one) when
         // the multiplier is multiplied by zero. (ie, 1001 is 1X1000 + 0X100 + 0X10 + 1)
         // 0X100 is replaced by the zero character, we don't need one for 0X10
-        if (val< multiplier[i])
+        if (val < multiplier[i])
         {
           if (zeroChar.length == 0)
           {
             i++;
-          }	
+          }
           else
           {
-            if (buf[charPos-1]!= zeroChar[0])
+            if (buf[charPos - 1] != zeroChar[0])
               buf[charPos++] = zeroChar[0];
+
             i++;
           }
-        }	
-        else if (val>= multiplier[i])
-        {	
-          int mult = val/multiplier[i];
-          val = val % multiplier[i];         // save this.
-          
+        }
+        else if (val >= multiplier[i])
+        {
+          int mult = val / multiplier[i];
+
+          val = val % multiplier[i];  // save this.
+
           int k = 0;
+
           while (k < groups.length)
           {
-            lookupIndex = 1;                 // initialize for each table
-            if (mult/groups[k]<= 0)		     // look for right table
+            lookupIndex = 1;  // initialize for each table
+
+            if (mult / groups[k] <= 0)  // look for right table
               k++;
             else
             {
+
               // get the table
-              char[] THEletters= (char[]) thisBundle.getObject(tables[k]);					
-              table = new char[THEletters.length+1];					
+              char[] THEletters = (char[]) thisBundle.getObject(tables[k]);
+
+              table = new char[THEletters.length + 1];
+
               int j;
-              for (j=0; j<THEletters.length;j++)		
-                table[j+1] = THEletters[j];
-              table[0] = THEletters[j-1];    // don't need this										
+
+              for (j = 0; j < THEletters.length; j++)
+              {
+                table[j + 1] = THEletters[j];
+              }
+
+              table[0] = THEletters[j - 1];  // don't need this                                                                         
+
               // index in "table" of the next char to emit
-              lookupIndex  = mult/ groups[k];
+              lookupIndex = mult / groups[k];
 
               //this should not happen
               if (lookupIndex == 0 && mult == 0)
                 break;
-              char multiplierChar = ((char[])(thisBundle.getObject(Constants.LANG_MULTIPLIER_CHAR)))[i];
-              // put out the next character of output	
+
+              char multiplierChar = ((char[]) (thisBundle.getObject(
+                Constants.LANG_MULTIPLIER_CHAR)))[i];
+
+              // put out the next character of output   
               if (lookupIndex < table.length)
-              {				
-                if( mult_order.equals(Constants.MULT_PRECEDES))
+              {
+                if (mult_order.equals(Constants.MULT_PRECEDES))
                 {
-                  buf[charPos++] = multiplierChar;  				
-                  buf[charPos++] = table[lookupIndex];							
-                }	
-                else
-                {	
-                  // don't put out 1 (ie 1X10 is just 10)
-                  if (lookupIndex == 1 && i == multiplier.length -1)
-                  {}
-                  else
-                    buf[charPos++] =  table[lookupIndex];
-                  buf[charPos++] =  multiplierChar ;
+                  buf[charPos++] = multiplierChar;
+                  buf[charPos++] = table[lookupIndex];
                 }
-                
-                break;       // all done!
+                else
+                {
+
+                  // don't put out 1 (ie 1X10 is just 10)
+                  if (lookupIndex == 1 && i == multiplier.length - 1){}
+                  else
+                    buf[charPos++] = table[lookupIndex];
+
+                  buf[charPos++] = multiplierChar;
+                }
+
+                break;  // all done!
               }
               else
                 return XSLTErrorResources.ERROR_STRING;
-            } //end else
-          } // end while	
-          
+            }  //end else
+          }  // end while        
+
           i++;
-        } // end else if
-      } // end do while
-              while ( i < multiplier.length);	  	
+        }  // end else if
+      }  // end do while
+      while (i < multiplier.length);
     }
 
     // Now do additive part...
-    
     int count = 0;
     String tableName;
+
     // do this for each table of hundreds, tens, digits...
     while (count < groups.length)
     {
-      if (val/groups[count]<= 0)		 // look for correct table
+      if (val / groups[count] <= 0)  // look for correct table
         count++;
       else
       {
-        char[] theletters= (char[]) thisBundle.getObject(tables[count]);			
-        table = new char[theletters.length+1];
+        char[] theletters = (char[]) thisBundle.getObject(tables[count]);
+
+        table = new char[theletters.length + 1];
+
         int j;
+
         // need to start filling the table up at index 1
-        for (j=0; j<theletters.length;j++)
+        for (j = 0; j < theletters.length; j++)
         {
-          table[j+1] = theletters[j];
-        }	
-        table[0] = theletters[j-1];  // don't need this
-        
+          table[j + 1] = theletters[j];
+        }
+
+        table[0] = theletters[j - 1];  // don't need this
+
         // index in "table" of the next char to emit
-        lookupIndex  = val / groups[count];
+        lookupIndex = val / groups[count];
 
         // shift input by one "column"
         val = val % groups[count];
 
         // this should not happen
         if (lookupIndex == 0 && val == 0)
-          break;					
-        
+          break;
+
         if (lookupIndex < table.length)
         {
-          // put out the next character of output	
-          buf[charPos++] = table[lookupIndex];  // left to right or top to bottom					
+
+          // put out the next character of output       
+          buf[charPos++] = table[lookupIndex];  // left to right or top to bottom                                       
         }
         else
           return XSLTErrorResources.ERROR_STRING;
+
         count++;
       }
-    } // end while
+    }  // end while
 
     // String s = new String(buf, 0, charPos);
-    return new String(buf, 0,  charPos);
+    return new String(buf, 0, charPos);
   }
 
   /**
@@ -1503,13 +1830,15 @@ public class ElemNumber extends ElemTemplateElement
    */
   protected String long2roman(long val, boolean prefixesAreOK)
   {
-    if(val <= 0)
+
+    if (val <= 0)
     {
-      return "#E("+val+")";
+      return "#E(" + val + ")";
     }
 
     String roman = "";
     int place = 0;
+
     if (val <= 3999L)
     {
       do
@@ -1519,6 +1848,7 @@ public class ElemNumber extends ElemTemplateElement
           roman += m_romanConvertTable[place].m_postLetter;
           val -= m_romanConvertTable[place].m_postValue;
         }
+
         if (prefixesAreOK)
         {
           if (val >= m_romanConvertTable[place].m_preValue)
@@ -1527,29 +1857,39 @@ public class ElemNumber extends ElemTemplateElement
             val -= m_romanConvertTable[place].m_preValue;
           }
         }
+
         place++;
       }
-        while (val > 0);
+      while (val > 0);
     }
     else
     {
       roman = XSLTErrorResources.ERROR_STRING;
     }
-    return roman;
-  } // end long2roman
 
-/**
- * This class returns tokens using non-alphanumberic
- * characters as delimiters.
- */
+    return roman;
+  }  // end long2roman
+
+  /**
+   * This class returns tokens using non-alphanumberic
+   * characters as delimiters.
+   */
   class NumberFormatStringTokenizer
   {
+
+    /** NEEDSDOC Field currentPosition          */
     private int currentPosition;
+
+    /** NEEDSDOC Field maxPosition          */
     private int maxPosition;
+
+    /** NEEDSDOC Field str          */
     private String str;
 
     /**
      * Construct a NumberFormatStringTokenizer.
+     *
+     * NEEDSDOC @param str
      */
     public NumberFormatStringTokenizer(String str)
     {
@@ -1574,25 +1914,29 @@ public class ElemNumber extends ElemTemplateElement
      */
     public String nextToken()
     {
+
       if (currentPosition >= maxPosition)
       {
         throw new NoSuchElementException();
       }
 
       int start = currentPosition;
-      while ((currentPosition < maxPosition) &&
-             Character.isLetterOrDigit(str.charAt(currentPosition)))
+
+      while ((currentPosition < maxPosition)
+             && Character.isLetterOrDigit(str.charAt(currentPosition)))
       {
         currentPosition++;
       }
-      if ((start == currentPosition) &&
-          (!Character.isLetterOrDigit(str.charAt(currentPosition))))
+
+      if ((start == currentPosition)
+              && (!Character.isLetterOrDigit(str.charAt(currentPosition))))
       {
         currentPosition++;
       }
+
       return str.substring(start, currentPosition);
     }
-    
+
     /**
      * Tells if there is a digit or a letter character ahead.
      *
@@ -1600,14 +1944,17 @@ public class ElemNumber extends ElemTemplateElement
      */
     public boolean isLetterOrDigitAhead()
     {
+
       int pos = currentPosition;
 
       while (pos < maxPosition)
       {
-        if(Character.isLetterOrDigit(str.charAt(pos)))
+        if (Character.isLetterOrDigit(str.charAt(pos)))
           return true;
+
         pos++;
       }
+
       return false;
     }
 
@@ -1618,12 +1965,12 @@ public class ElemNumber extends ElemTemplateElement
      */
     public boolean nextIsSep()
     {
-      if(Character.isLetterOrDigit(str.charAt(currentPosition)))
+
+      if (Character.isLetterOrDigit(str.charAt(currentPosition)))
         return false;
       else
         return true;
     }
-
 
     /**
      * Tells if <code>nextToken</code> will throw an exception
@@ -1648,26 +1995,30 @@ public class ElemNumber extends ElemTemplateElement
      */
     public int countTokens()
     {
+
       int count = 0;
       int currpos = currentPosition;
 
       while (currpos < maxPosition)
       {
         int start = currpos;
-        while ((currpos < maxPosition) &&
-               Character.isLetterOrDigit(str.charAt(currpos)))
+
+        while ((currpos < maxPosition)
+               && Character.isLetterOrDigit(str.charAt(currpos)))
         {
           currpos++;
         }
-        if ((start == currpos) &&
-            (Character.isLetterOrDigit(str.charAt(currpos)) == false))
+
+        if ((start == currpos)
+                && (Character.isLetterOrDigit(str.charAt(currpos)) == false))
         {
           currpos++;
         }
+
         count++;
       }
+
       return count;
     }
-
-  } // end NumberFormatStringTokenizer
+  }  // end NumberFormatStringTokenizer
 }

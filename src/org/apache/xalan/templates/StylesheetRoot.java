@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,7 +18,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:
+ *    if any, must include the following acknowledgment:  
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -26,7 +26,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written
+ *    software without prior written permission. For written 
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -57,14 +57,17 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import java.util.*;
+
 import java.net.MalformedURLException;
+
 import java.io.*;
+
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import org.apache.serialize.*;
-
 import org.apache.xalan.utils.*;
 import org.apache.xpath.*;
 import org.apache.xpath.compiler.XPathParser;
@@ -80,106 +83,120 @@ import org.apache.trax.Templates;
  * <meta name="usage" content="general"/>
  * This class represents the root object of the stylesheet tree.
  */
-public class StylesheetRoot 
-  extends StylesheetComposed 
-  implements java.io.Serializable, Templates
+public class StylesheetRoot extends StylesheetComposed
+        implements java.io.Serializable, Templates
 {
+
   /**
    * Uses an XSL stylesheet document.
    * @param transformer  The XSLTProcessor implementation.
    * @param baseIdentifier The file name or URL for the XSL stylesheet.
    * @exception ProcessorException if the baseIdentifier can not be resolved to a URL.
    */
-  public StylesheetRoot()
-    throws ProcessorException
+  public StylesheetRoot() throws ProcessorException
   {
+
     super(null);
+
     setStylesheetRoot(this);
+
     try
     {
+      m_selectDefault = new XPath("node()", this, this, XPath.SELECT);
+
       initDefaultRule();
     }
-    catch(SAXException se)
+    catch (SAXException se)
     {
       throw new ProcessorException("Can't init default templates!", se);
     }
   }
-  
+
   /**
    * Tell if this is the root of the stylesheet tree.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean isRoot()
   {
     return true;
   }
-  
-  
+
   //============== Templates Interface ================
-  
+
   /**
    * Create a new transformation context for this Templates object.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Transformer newTransformer()
   {
     return new TransformerImpl(this);
   }
-      
+
   /**
-   * Get the properties for xsl:output.  The object returned will 
-   * be a clone of the internal values, and thus it can be mutated 
-   * without mutating the Templates object, and then handed in to 
+   * Get the properties for xsl:output.  The object returned will
+   * be a clone of the internal values, and thus it can be mutated
+   * without mutating the Templates object, and then handed in to
    * the process method.
-   * <p>A stylesheet may contain multiple xsl:output elements and may 
-   * include or import stylesheets that also contain xsl:output elements. 
-   * All the xsl:output elements occurring in a stylesheet are merged 
-   * into a single effective xsl:output element. For the 
-   * cdata-section-elements attribute, the effective value is the 
-   * union of the specified values. For other attributes, the effective 
-   * value is the specified value with the highest import precedence. 
-   * It is an error if there is more than one such value for an attribute. 
-   * An XSLT processor may signal the error; if it does not signal the 
-   * error, if should recover by using the value that occurs last in 
-   * the stylesheet. The values of attributes are defaulted after 
-   * the xsl:output elements have been merged; different output 
+   * <p>A stylesheet may contain multiple xsl:output elements and may
+   * include or import stylesheets that also contain xsl:output elements.
+   * All the xsl:output elements occurring in a stylesheet are merged
+   * into a single effective xsl:output element. For the
+   * cdata-section-elements attribute, the effective value is the
+   * union of the specified values. For other attributes, the effective
+   * value is the specified value with the highest import precedence.
+   * It is an error if there is more than one such value for an attribute.
+   * An XSLT processor may signal the error; if it does not signal the
+   * error, if should recover by using the value that occurs last in
+   * the stylesheet. The values of attributes are defaulted after
+   * the xsl:output elements have been merged; different output
    * methods may have different default values for an attribute.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    * @return A OutputProperties object that may be mutated.
-   * 
+   *
    * @see org.xml.org.apache.serialize.OutputFormat
    */
   public OutputFormat getOutputFormat()
   {
+
     OutputFormatExtended cloned = new OutputFormatExtended();
-    if(m_outputFormatComposed instanceof OutputFormatExtended)
+
+    if (m_outputFormatComposed instanceof OutputFormatExtended)
     {
-      cloned.copyFrom((OutputFormatExtended)m_outputFormatComposed);
+      cloned.copyFrom((OutputFormatExtended) m_outputFormatComposed);
     }
     else
     {
       cloned.copyFrom(m_outputFormatComposed);
     }
+
     return cloned;
   }
 
   //============== End Templates Interface ================
-  
+
   /**
-   * Recompose the values of all "composed" properties, meaning 
-   * properties that need to be combined or calculated from 
+   * Recompose the values of all "composed" properties, meaning
+   * properties that need to be combined or calculated from
    * the combination of imported and included stylesheets.
+   *
+   * @throws SAXException
    */
-  public void recompose()
-    throws SAXException
+  public void recompose() throws SAXException
   {
+
     recomposeImports();
     recomposeOutput();
-    
+
     int n = getGlobalImportCount();
-    for(int i = 0; i < n; i++)
+
+    for (int i = 0; i < n; i++)
     {
       StylesheetComposed sheet = getGlobalImport(i);
-      if(sheet != this) // already done
-      {  
+
+      if (sheet != this)  // already done
+      {
         sheet.recomposeImports();
         sheet.recomposeIncludes(sheet);
         sheet.recomposeAttributeSets();
@@ -191,7 +208,8 @@ public class StylesheetRoot
         sheet.recomposeVariables();
         sheet.recomposeWhiteSpaceInfo();
       }
-    }  
+    }
+
     recomposeIncludes(this);
     recomposeAttributeSets();
     recomposeDecimalFormats();
@@ -201,212 +219,254 @@ public class StylesheetRoot
     recomposeTemplates();
     recomposeVariables();
     recomposeWhiteSpaceInfo();
-    
     composeTemplates(this);
   }
-  
+
   /**
    * Call the compose function for each ElemTemplateElement.
+   *
+   * NEEDSDOC @param templ
    */
   void composeTemplates(ElemTemplateElement templ)
   {
+
     templ.compose();
-    for(ElemTemplateElement child = templ.getFirstChildElem();
-          child != null; child = child.getNextSiblingElem())
+
+    for (ElemTemplateElement child = templ.getFirstChildElem();
+            child != null; child = child.getNextSiblingElem())
     {
       composeTemplates(child);
     }
   }
-  
+
   /**
-   * This will be set up with the default values, and then the values 
+   * This will be set up with the default values, and then the values
    * will be set as stylesheets are encountered.
    */
   private OutputFormat m_outputFormatComposed;
 
   /**
-   * Get the combined "xsl:output" property with the properties 
-   * combined from the included stylesheets.  If a xsl:output 
-   * is not declared in this stylesheet or an included stylesheet, 
-   * look in the imports. 
+   * Get the combined "xsl:output" property with the properties
+   * combined from the included stylesheets.  If a xsl:output
+   * is not declared in this stylesheet or an included stylesheet,
+   * look in the imports.
    * Please note that this returns a reference to the OutputFormat
    * object, not a cloned object, like getOutputFormat does.
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public OutputFormat getOutputComposed()
   {
+
     // System.out.println("getOutputComposed.getIndent: "+m_outputFormatComposed.getIndent());
     // System.out.println("getOutputComposed.getIndenting: "+m_outputFormatComposed.getIndenting());
     return m_outputFormatComposed;
   }
-  
+
   /**
    * Recompose the output format object from the included elements.
    */
   public void recomposeOutput()
   {
+
     // System.out.println("Recomposing output...");
     m_outputFormatComposed = new OutputFormatExtended();
+
     m_outputFormatComposed.setPreserveSpace(true);
     recomposeOutput(this);
   }
-  
-  
+
   /**
    * Recompose the output format object from the included elements.
+   *
+   * NEEDSDOC @param stylesheet
    */
   private void recomposeOutput(Stylesheet stylesheet)
   {
+
     // Get the direct imports of this sheet.
     int n = stylesheet.getImportCount();
-    if(n > 0)
+
+    if (n > 0)
     {
-      for(int i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
       {
         Stylesheet imported = stylesheet.getImport(i);
+
         recomposeOutput(imported);
       }
     }
-    
+
     n = stylesheet.getIncludeCount();
-    if(n > 0)
+
+    if (n > 0)
     {
-      for(int i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
       {
         Stylesheet included = stylesheet.getInclude(i);
+
         recomposeOutput(included);
       }
     }
-    
+
     OutputFormatExtended of = getOutput();
-    if(null != of)
+
+    if (null != of)
     {
-      ((OutputFormatExtended)m_outputFormatComposed).copyFrom(of);
+      ((OutputFormatExtended) m_outputFormatComposed).copyFrom(of);
     }
   }
 
-  
+  /** NEEDSDOC Field m_outputMethodSet          */
   private boolean m_outputMethodSet = false;
 
   /**
    * <meta name="usage" content="internal"/>
    * Find out if an output method has been set by the user.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean isOutputMethodSet()
   {
     return m_outputMethodSet;
   }
-  
+
   /**
    * The combined list of imports.
    */
   private transient Vector m_globalImportList;
-  
+
   /**
    * Add the imports in the given sheet to the m_globalImportList
-   * list.  The will be added from highest import precedence to 
+   * list.  The will be added from highest import precedence to
    * least import precidence.
+   *
+   * NEEDSDOC @param stylesheet
+   * NEEDSDOC @param addToList
    */
   protected void addImports(Stylesheet stylesheet, boolean addToList)
   {
+
     // Get the direct imports of this sheet.
     int n = stylesheet.getImportCount();
-    if(n > 0)
+
+    if (n > 0)
     {
-      for(int i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
       {
         Stylesheet imported = stylesheet.getImport(i);
+
         m_globalImportList.insertElementAt(imported, 0);
         addImports(imported, false);
       }
     }
-    
+
     n = stylesheet.getIncludeCount();
-    if(n > 0)
+
+    if (n > 0)
     {
-      for(int i = 0; i < n; i++)
+      for (int i = 0; i < n; i++)
       {
         Stylesheet included = stylesheet.getInclude(i);
+
         addImports(included, false);
       }
     }
-    if(addToList)
+
+    if (addToList)
       m_globalImportList.insertElementAt(stylesheet, 0);
   }
-  
+
   /**
-   * Recompose the value of the composed import list. This 
+   * Recompose the value of the composed import list. This
    * means any stylesheets of lesser import precidence.
    * <p>For example, suppose</p>
    * <p>stylesheet A imports stylesheets B and C in that order;</p>
    * <p>stylesheet B imports stylesheet D;</p>
    * <p>stylesheet C imports stylesheet E.</p>
-   * <p>Then the order of import precedence (highest first) is 
+   * <p>Then the order of import precedence (highest first) is
    * A, C, E, B, D.</p>
    */
   protected void recomposeImports()
   {
-    if(null == m_globalImportList)
+
+    if (null == m_globalImportList)
     {
       m_globalImportList = new Vector();
+
       int n = getImportCount();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
         StylesheetComposed imported = getImport(i);
+
         addImports(imported, true);
       }
+
       n = getIncludeCount();
-      for(int i = 0; i < n; i++)
+
+      for (int i = 0; i < n; i++)
       {
         Stylesheet included = getInclude(i);
+
         addImports(included, false);
       }
+
       m_globalImportList.insertElementAt(this, 0);
     }
+
     super.recomposeImports();
   }
-  
+
   /**
    * Get a stylesheet from the global import list.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetComposed getGlobalImport(int i)
   {
-    return (StylesheetComposed)m_globalImportList.elementAt(i);
+    return (StylesheetComposed) m_globalImportList.elementAt(i);
   }
-  
+
   /**
    * Get the total number of imports in the global import list.
-   * @return The total number of imported stylesheets, including 
-   * the root stylesheet, thus the number will always be 1 or 
+   * @return The total number of imported stylesheets, including
+   * the root stylesheet, thus the number will always be 1 or
    * greater.
    */
   public int getGlobalImportCount()
   {
     return m_globalImportList.size();
   }
-  
+
   /**
-   * Given a stylesheet, return the number of the stylesheet 
+   * Given a stylesheet, return the number of the stylesheet
    * in the global import list.
-   * @param sheet The stylesheet which will be located in the 
+   * @param sheet The stylesheet which will be located in the
    * global import list.
    * @return The index into the global import list of the given stylesheet,
    * or -1 if it is not found (which should never happen).
    */
   public int getImportNumber(StylesheetComposed sheet)
   {
-    if(this == sheet)
+
+    if (this == sheet)
       return 0;
-    
+
     int n = getGlobalImportCount();
-    for(int i = 0; i < n; i++)
+
+    for (int i = 0; i < n; i++)
     {
-      if(sheet == getGlobalImport(i))
+      if (sheet == getGlobalImport(i))
         return i;
     }
+
     return -1;
   }
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * The default template to use for text nodes if we don't find
@@ -414,16 +474,17 @@ public class StylesheetRoot
    * @serial
    */
   private ElemTemplate m_defaultTextRule;
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * Get the default template for text.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final ElemTemplate getDefaultTextRule()
   {
     return m_defaultTextRule;
   }
-  
 
   /**
    * <meta name="usage" content="advanced"/>
@@ -436,12 +497,14 @@ public class StylesheetRoot
   /**
    * <meta name="usage" content="advanced"/>
    * Get the default template for elements.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final ElemTemplate getDefaultRule()
   {
     return m_defaultRule;
   }
-  
+
   /**
    * <meta name="usage" content="advanced"/>
    * The default template to use for the root if we don't find
@@ -458,6 +521,8 @@ public class StylesheetRoot
   /**
    * <meta name="usage" content="advanced"/>
    * Get the default template for a root node.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public final ElemTemplate getDefaultRootRule()
   {
@@ -465,48 +530,60 @@ public class StylesheetRoot
   }
 
   /**
-   * Create the default rule if needed.
+   * Used for default selection.
    */
-  private void initDefaultRule()
-    throws SAXException
+  XPath m_selectDefault;
+
+  /**
+   * Create the default rule if needed.
+   *
+   * @throws SAXException
+   */
+  private void initDefaultRule() throws SAXException
   {
+
     // Then manufacture a default
     m_defaultRule = new ElemTemplate();
+
     m_defaultRule.setStylesheet(this);
+
     XPath defMatch = new XPath("*", this, this, XPath.MATCH);
+
     m_defaultRule.setMatch(defMatch);
 
-    ElemApplyTemplates childrenElement
-      = new ElemApplyTemplates();
+    ElemApplyTemplates childrenElement = new ElemApplyTemplates();
+
     childrenElement.setIsDefaultTemplate(true);
     m_defaultRule.appendChild(childrenElement);
 
     // -----------------------------
-
     m_defaultTextRule = new ElemTemplate();
+
     m_defaultTextRule.setStylesheet(this);
-    
+
     defMatch = new XPath("text() | @*", this, this, XPath.MATCH);
+
     m_defaultTextRule.setMatch(defMatch);
 
-    ElemValueOf elemValueOf
-      = new ElemValueOf();
+    ElemValueOf elemValueOf = new ElemValueOf();
+
     m_defaultTextRule.appendChild(elemValueOf);
-    
+
     XPath selectPattern = new XPath(".", this, this, XPath.SELECT);
+
     elemValueOf.setSelect(selectPattern);
 
-
     //--------------------------------
-
     m_defaultRootRule = new ElemTemplate();
+
     m_defaultRootRule.setStylesheet(this);
-    
+
     defMatch = new XPath("/", this, this, XPath.MATCH);
+
     m_defaultRootRule.setMatch(defMatch);
 
-    childrenElement
-      = new ElemApplyTemplates();
+    childrenElement = new ElemApplyTemplates();
+
     childrenElement.setIsDefaultTemplate(true);
     m_defaultRootRule.appendChild(childrenElement);
   }

@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xalan.trace.SelectionEvent;
@@ -79,14 +81,17 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemIf extends ElemTemplateElement
 {
+
   /**
-   * The xsl:if element must have a test attribute, which specifies an expression. 
+   * The xsl:if element must have a test attribute, which specifies an expression.
    */
   private XPath m_test = null;
-  
+
   /**
-   * Set the "test" attribute. 
-   * The xsl:if element must have a test attribute, which specifies an expression. 
+   * Set the "test" attribute.
+   * The xsl:if element must have a test attribute, which specifies an expression.
+   *
+   * NEEDSDOC @param v
    */
   public void setTest(XPath v)
   {
@@ -94,8 +99,10 @@ public class ElemIf extends ElemTemplateElement
   }
 
   /**
-   * Get the "test" attribute. 
-   * The xsl:if element must have a test attribute, which specifies an expression. 
+   * Get the "test" attribute.
+   * The xsl:if element must have a test attribute, which specifies an expression.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getTest()
   {
@@ -105,40 +112,53 @@ public class ElemIf extends ElemTemplateElement
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_IF;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_IF_STRING;
   }
-  
+
   /**
    * Conditionally execute a sub-template.
-   * The expression is evaluated and the resulting object is converted 
-   * to a boolean as if by a call to the boolean function. If the result 
-   * is true, then the content template is instantiated; otherwise, nothing 
+   * The expression is evaluated and the resulting object is converted
+   * to a boolean as if by a call to the boolean function. If the result
+   * is true, then the content template is instantiated; otherwise, nothing
    * is created.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {    
-    if(TransformerImpl.S_DEBUG)
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
     XPathContext xctxt = transformer.getXPathContext();
     XObject test = m_test.execute(xctxt, sourceNode, this);
-    if(TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireSelectedEvent(sourceNode, this, "test", m_test, test);
-    if(test.bool())
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+              "test", m_test, test);
+
+    if (test.bool())
     {
       transformer.executeChildTemplates(this, sourceNode, mode);
     }

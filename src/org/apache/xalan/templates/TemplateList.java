@@ -1,59 +1,59 @@
 /*
-* The Apache Software License, Version 1.1
-*
-*
-* Copyright (c) 1999 The Apache Software Foundation.  All rights 
-* reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer. 
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. The end-user documentation included with the redistribution,
-*    if any, must include the following acknowledgment:  
-*       "This product includes software developed by the
-*        Apache Software Foundation (http://www.apache.org/)."
-*    Alternately, this acknowledgment may appear in the software itself,
-*    if and wherever such third-party acknowledgments normally appear.
-*
-* 4. The names "Xalan" and "Apache Software Foundation" must
-*    not be used to endorse or promote products derived from this
-*    software without prior written permission. For written 
-*    permission, please contact apache@apache.org.
-*
-* 5. Products derived from this software may not be called "Apache",
-*    nor may "Apache" appear in their name, without prior written
-*    permission of the Apache Software Foundation.
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
-* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*
-* This software consists of voluntary contributions made by many
-* individuals on behalf of the Apache Software Foundation and was
-* originally based on software copyright (c) 1999, Lotus
-* Development Corporation., http://www.lotus.com.  For more
-* information on the Apache Software Foundation, please see
-* <http://www.apache.org/>.
-*/
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
 package org.apache.xalan.templates;
 
 import java.util.Hashtable;
@@ -91,8 +91,9 @@ public class TemplateList implements java.io.Serializable
   TemplateList(Stylesheet stylesheet)
   {
     m_stylesheet = stylesheet;
+    m_stylesheetComposed = m_stylesheet.getStylesheetComposed();
   }
-  
+
   /**
    * Add a template to the template list.
    *
@@ -100,6 +101,7 @@ public class TemplateList implements java.io.Serializable
    */
   public void setTemplate(ElemTemplate template)
   {
+
     int pos = 0;
 
     if (null == m_firstTemplate)
@@ -115,15 +117,19 @@ public class TemplateList implements java.io.Serializable
         if (null == next.m_nextSibling)
         {
           next.m_nextSibling = template;
-          template.m_nextSibling = null;    // just to play it safe.
+          template.m_nextSibling = null;  // just to play it safe.
+
           break;
         }
         else if (template.equals(next.m_nextSibling))
         {
           pos++;
+
           break;
         }
+
         pos++;
+
         next = next.m_nextSibling;
       }
     }
@@ -165,87 +171,112 @@ public class TemplateList implements java.io.Serializable
       }
       else
       {
+
         // TODO: assert error
       }
     }
   }
-  
+
+  /** NEEDSDOC Field DEBUG          */
   boolean DEBUG = false;
-  
+
+  /**
+   * NEEDSDOC Method dumpAssociationTables 
+   *
+   */
   void dumpAssociationTables()
   {
+
     Enumeration associations = m_patternTable.elements();
-    while(associations.hasMoreElements())
+
+    while (associations.hasMoreElements())
     {
-      TemplateSubPatternAssociation head 
-        = (TemplateSubPatternAssociation)associations.nextElement();
-      while(null != head)
+      TemplateSubPatternAssociation head =
+        (TemplateSubPatternAssociation) associations.nextElement();
+
+      while (null != head)
       {
-        System.out.print("("+head.getTargetString()+", "+head.getPattern()+")");
+        System.out.print("(" + head.getTargetString() + ", "
+                         + head.getPattern() + ")");
+
         head = head.getNext();
       }
+
       System.out.println("\n.....");
     }
+
     TemplateSubPatternAssociation head = m_wildCardPatterns;
+
     System.out.print("wild card list: ");
-    while(null != head)
+
+    while (null != head)
     {
-      System.out.print("("+head.getTargetString()+", "+head.getPattern()+")");
+      System.out.print("(" + head.getTargetString() + ", "
+                       + head.getPattern() + ")");
+
       head = head.getNext();
     }
+
     System.out.println("\n.....");
   }
-  
+
   /**
    * After all templates have been added, this function
    * should be called.
    */
   public void compose()
   {
-    if(DEBUG)
+
+    if (DEBUG)
     {
       System.out.println("Before wildcard insert...");
       dumpAssociationTables();
     }
-    
-    if(null != m_wildCardPatterns)
+
+    if (null != m_wildCardPatterns)
     {
       Enumeration associations = m_patternTable.elements();
-      while(associations.hasMoreElements())
+
+      while (associations.hasMoreElements())
       {
-        TemplateSubPatternAssociation head 
-          = (TemplateSubPatternAssociation)associations.nextElement();
+        TemplateSubPatternAssociation head =
+          (TemplateSubPatternAssociation) associations.nextElement();
         TemplateSubPatternAssociation wild = m_wildCardPatterns;
-        while(null != wild)
+
+        while (null != wild)
         {
           try
           {
-            insertAssociationIntoList(head, 
-                                      (TemplateSubPatternAssociation)wild.clone(), true);
+            insertAssociationIntoList(
+              head, (TemplateSubPatternAssociation) wild.clone(), true);
           }
-          catch(CloneNotSupportedException cnse){}
+          catch (CloneNotSupportedException cnse){}
+
           wild = wild.getNext();
         }
       }
     }
-    if(DEBUG)
+
+    if (DEBUG)
     {
       System.out.println("After wildcard insert...");
       dumpAssociationTables();
     }
   }
-  
+
   /**
    * Insert the given TemplateSubPatternAssociation into the the linked
    * list.  Sort by priority first, then by document order.
    *
    * @param head
    * @param item
+   * NEEDSDOC @param isWildCardInsert
    */
   private void insertAssociationIntoList(TemplateSubPatternAssociation head,
                                          TemplateSubPatternAssociation item,
                                          boolean isWildCardInsert)
   {
+
     // Sort by priority first, then by document order.
     double priority = getPriorityOrScore(item);
     TemplateSubPatternAssociation next;
@@ -259,12 +290,14 @@ public class TemplateList implements java.io.Serializable
     // System.out.println("appending: "+target+" to "+matchPat.getPattern());
     // This check is just to catch the first template in the list
     // It's priority was not checked against the new template  
-    if(isWildCardInsert)
+    if (isWildCardInsert)
     {
       if ((getPriorityOrScore(head) < priority))
       {
         item.setNext(head);
+
         String key = head.getTargetString();
+
         item.setTargetString(key);
         putHead(key, item);
       }
@@ -279,7 +312,8 @@ public class TemplateList implements java.io.Serializable
       if ((getPriorityOrScore(head) <= priority))
       {
         item.setNext(head);
-        if(head.isWild() || item.isWild())
+
+        if (head.isWild() || item.isWild())
           m_wildCardPatterns = item;
         else
           putHead(item.getTargetString(), item);
@@ -299,9 +333,10 @@ public class TemplateList implements java.io.Serializable
    * @param template
    * @param pos
    */
-  private void insertPatternInTable(StepPattern pattern, ElemTemplate template,
-                                    int pos)
+  private void insertPatternInTable(StepPattern pattern,
+                                    ElemTemplate template, int pos)
   {
+
     String target = pattern.getTargetString();
 
     if (null != target)
@@ -342,6 +377,7 @@ public class TemplateList implements java.io.Serializable
    */
   private double getPriorityOrScore(TemplateSubPatternAssociation matchPat)
   {
+
     double priority = matchPat.getTemplate().getPriority();
 
     if (priority == XPath.MATCH_SCORE_NONE)
@@ -373,7 +409,7 @@ public class TemplateList implements java.io.Serializable
 
     if (null == namedTemplate)
     {
-      StylesheetComposed stylesheet = getStylesheet().getStylesheetComposed();
+      StylesheetComposed stylesheet = m_stylesheetComposed;
       int n = stylesheet.getImportCountComposed();
 
       for (int i = 0; i < n; i++)
@@ -388,7 +424,7 @@ public class TemplateList implements java.io.Serializable
         }
       }
     }
-    
+
     return namedTemplate;
   }
 
@@ -403,47 +439,48 @@ public class TemplateList implements java.io.Serializable
   TemplateSubPatternAssociation getHead(XPathContext xctxt, Node targetNode)
   {
 
-    int targetNodeType = targetNode.getNodeType();
+    short targetNodeType = targetNode.getNodeType();
     TemplateSubPatternAssociation head;
 
     switch (targetNodeType)
     {
-
-    case Node.PROCESSING_INSTRUCTION_NODE :
-    case Node.ATTRIBUTE_NODE :
     case Node.ELEMENT_NODE :
-    {
-      String targetName = xctxt.getDOMHelper().getLocalNameOfNode(targetNode);
-      head = getHead(targetName);
-    }
-    break;
-
-    case Node.CDATA_SECTION_NODE :
+    case Node.ATTRIBUTE_NODE :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        xctxt.getDOMHelper().getLocalNameOfNode(targetNode));
+      break;
     case Node.TEXT_NODE :
-      head = getHead(PsuedoNames.PSEUDONAME_TEXT);
+    case Node.CDATA_SECTION_NODE :
+      head = m_textPatterns;
       break;
-
+    case Node.ENTITY_REFERENCE_NODE :
+    case Node.ENTITY_NODE :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        targetNode.getNodeName());
+      break;
+    case Node.PROCESSING_INSTRUCTION_NODE :
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        xctxt.getDOMHelper().getLocalNameOfNode(targetNode));
+      break;
     case Node.COMMENT_NODE :
-      head = getHead(PsuedoNames.PSEUDONAME_COMMENT);
+      head = m_commentPatterns;
       break;
-
     case Node.DOCUMENT_NODE :
-      head = getHead(PsuedoNames.PSEUDONAME_ROOT);
+      head = m_docPatterns;
       break;
-
     case Node.DOCUMENT_FRAGMENT_NODE :
-      head = getHead(PsuedoNames.PSEUDONAME_ANY);
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        PsuedoNames.PSEUDONAME_ANY);
       break;
-
+    case Node.NOTATION_NODE :
     default :
-      head = getHead(targetNode.getNodeName());
+      head = (TemplateSubPatternAssociation) m_patternTable.get(
+        targetNode.getNodeName());
     }
-    if(null == head)
-      head = m_wildCardPatterns;
 
-    return head;
+    return (null == head) ? m_wildCardPatterns : head;
   }
-  
+
   /**
    * Given a target element, find the template that best
    * matches in the given XSL document, according
@@ -463,58 +500,68 @@ public class TemplateList implements java.io.Serializable
    * @throws SAXException
    */
   public ElemTemplate getTemplate(
-          XPathContext xctxt, Node targetNode, 
-          QName mode, boolean quietConflictWarnings)
+          XPathContext xctxt, Node targetNode, QName mode, boolean quietConflictWarnings)
             throws SAXException
-  {    
+  {
+
     TemplateSubPatternAssociation head = getHead(xctxt, targetNode);
 
-    if(null != head)
+    if (null != head)
     {
       try
       {
         xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
+
         do
         {
-          if((head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE) 
-             && head.matchMode(mode))
+          if ((head.m_stepPattern.execute(xctxt) != NodeTest.SCORE_NONE)
+                  && head.matchMode(mode))
           {
-            if(quietConflictWarnings)
+            if (quietConflictWarnings)
               checkConflicts(head, xctxt, targetNode, mode);
+
             return head.getTemplate();
           }
-          head = head.getNext();
         }
-          while (null != head);
+        while (null != (head = head.getNext()));
       }
       finally
       {
         xctxt.popCurrentNodeAndExpression();
       }
     }
-    
-    StylesheetComposed stylesheet = getStylesheet().getStylesheetComposed();
-    int n = stylesheet.getImportCountComposed();
-    for(int i = 0; i < n; i++)
+
+    int n = m_stylesheetComposed.getImportCountComposed();
+
+    if (0 != n)
     {
-      StylesheetComposed imported = stylesheet.getImportComposed(i);
-      ElemTemplate t = getTemplate(imported, xctxt, targetNode, mode, 
-                                  quietConflictWarnings);
-      if(null != t)
-        return t;
+      for (int i = 0; i < n; i++)
+      {
+        StylesheetComposed imported =
+          m_stylesheetComposed.getImportComposed(i);
+        ElemTemplate t = getTemplate(imported, xctxt, targetNode, mode,
+                                     quietConflictWarnings);
+
+        if (null != t)
+          return t;
+      }
     }
-    
+
     return null;
-    
-  }    // end findTemplate
-  
+  }  // end findTemplate
+
   /**
    * Check for match conflicts, and warn the stylesheet author.
+   *
+   * NEEDSDOC @param head
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param targetNode
+   * NEEDSDOC @param mode
    */
   private void checkConflicts(TemplateSubPatternAssociation head,
-                              XPathContext xctxt, Node targetNode, 
-                              QName mode)
+                              XPathContext xctxt, Node targetNode, QName mode)
   {
+
     // TODO: Check for conflicts.
   }
 
@@ -573,6 +620,9 @@ public class TemplateList implements java.io.Serializable
    */
   private Stylesheet m_stylesheet;
 
+  /** NEEDSDOC Field m_stylesheetComposed          */
+  private StylesheetComposed m_stylesheetComposed;
+
   /**
    * Get the stylesheet owner of the list.
    *
@@ -606,7 +656,7 @@ public class TemplateList implements java.io.Serializable
    * findNamedTemplate.
    * @serial
    */
-  private Hashtable m_namedTemplates = new Hashtable();
+  private Hashtable m_namedTemplates = new Hashtable(89);
 
   /**
    * This table is keyed on the target elements
@@ -615,8 +665,19 @@ public class TemplateList implements java.io.Serializable
    * to some degree of specifity.
    * @serial
    */
-  private Hashtable m_patternTable = new Hashtable();
+  private Hashtable m_patternTable = new Hashtable(89);
+
+  /** NEEDSDOC Field m_wildCardPatterns          */
   private TemplateSubPatternAssociation m_wildCardPatterns = null;
+
+  /** NEEDSDOC Field m_textPatterns          */
+  private TemplateSubPatternAssociation m_textPatterns = null;
+
+  /** NEEDSDOC Field m_docPatterns          */
+  private TemplateSubPatternAssociation m_docPatterns = null;
+
+  /** NEEDSDOC Field m_commentPatterns          */
+  private TemplateSubPatternAssociation m_commentPatterns = null;
 
   /**
    * Get table of named Templates.
@@ -643,27 +704,6 @@ public class TemplateList implements java.io.Serializable
   }
 
   /**
-   * Given an element type, locate the start of a linked list of
-   * possible template matches.
-   *
-   * @param sourceElementType
-   * @param tryWildCard
-   *
-   * @return The head of a list of potentially matching
-   * StepPattern-to-Template associations.
-   */
-  private TemplateSubPatternAssociation locateHead(String sourceElementType,
-          boolean tryWildCard)
-  {
-
-    TemplateSubPatternAssociation startMatchList = getHead(sourceElementType);
-
-    return ((null == startMatchList) && tryWildCard)
-           ? m_wildCardPatterns
-           : startMatchList;
-  }
-  
-  /**
    * Get the head of the assocation list that is keyed by target.
    *
    * @param key
@@ -683,7 +723,14 @@ public class TemplateList implements java.io.Serializable
    */
   private void putHead(String key, TemplateSubPatternAssociation assoc)
   {
+
+    if (key.equals(PsuedoNames.PSEUDONAME_TEXT))
+      m_textPatterns = assoc;
+    else if (key.equals(PsuedoNames.PSEUDONAME_ROOT))
+      m_docPatterns = assoc;
+    else if (key.equals(PsuedoNames.PSEUDONAME_COMMENT))
+      m_commentPatterns = assoc;
+
     m_patternTable.put(key, assoc);
   }
-
 }

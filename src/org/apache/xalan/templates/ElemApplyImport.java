@@ -58,7 +58,9 @@ package org.apache.xalan.templates;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.utils.QName;
@@ -73,62 +75,83 @@ import org.apache.xalan.utils.QName;
  */
 public class ElemApplyImport extends ElemTemplateElement
 {
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_APPLY_IMPORTS;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_APPLY_IMPORTS_STRING;
   }
-    
+
   /**
    * Execute the xsl:apply-imports transformation.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
   {
+
     if (transformer.currentTemplateRuleIsNull())
     {
-      transformer.getMsgMgr().error(XSLTErrorResources.ER_NO_APPLY_IMPORT_IN_FOR_EACH); //"xsl:apply-imports not allowed in a xsl:for-each");
+      transformer.getMsgMgr().error(
+        XSLTErrorResources.ER_NO_APPLY_IMPORT_IN_FOR_EACH);  //"xsl:apply-imports not allowed in a xsl:for-each");
     }
 
-    if(TransformerImpl.S_DEBUG)
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-    
-    if(null != sourceNode)
+
+    if (null != sourceNode)
     {
+
       // This will have to change to current template, (which will have 
       // to be the top of a current template stack).
-      
-      transformer.transformNode(this, null, sourceNode, mode);
+      transformer.applyTemplateToNode(this, null, sourceNode, mode);
     }
-    else // if(null == sourceNode)
+    else  // if(null == sourceNode)
     {
-      transformer.getMsgMgr().error(XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS); //"sourceNode is null in xsl:apply-imports!");
+      transformer.getMsgMgr().error(
+        XSLTErrorResources.ER_NULL_SOURCENODE_APPLYIMPORTS);  //"sourceNode is null in xsl:apply-imports!");
     }
   }
-  
+
   /**
    * Add a child to the child list.
    * <!ELEMENT xsl:apply-imports EMPTY>
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    error(XSLTErrorResources.ER_CANNOT_ADD,
+          new Object[]{ newChild.getNodeName(),
+                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
     //" to " + this.m_elemName);
     return null;
   }
-
 }

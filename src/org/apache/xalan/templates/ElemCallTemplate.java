@@ -56,8 +56,12 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Vector;
+
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -75,18 +79,21 @@ import org.apache.xalan.transformer.TransformerImpl;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
  */
-public class ElemCallTemplate extends ElemTemplateElement
+public class ElemCallTemplate extends ElemForEach
 {
+
   /**
-   * An xsl:call-template element invokes a template by name; 
-   * it has a required name attribute that identifies the template to be invoked. 
+   * An xsl:call-template element invokes a template by name;
+   * it has a required name attribute that identifies the template to be invoked.
    */
   public QName m_templateName = null;
-  
+
   /**
-   * Set the "name" attribute. 
-   * An xsl:call-template element invokes a template by name; 
-   * it has a required name attribute that identifies the template to be invoked. 
+   * Set the "name" attribute.
+   * An xsl:call-template element invokes a template by name;
+   * it has a required name attribute that identifies the template to be invoked.
+   *
+   * NEEDSDOC @param name
    */
   public void setName(QName name)
   {
@@ -95,8 +102,10 @@ public class ElemCallTemplate extends ElemTemplateElement
 
   /**
    * Get the "name" attribute.
-   * An xsl:call-template element invokes a template by name; 
-   * it has a required name attribute that identifies the template to be invoked. 
+   * An xsl:call-template element invokes a template by name;
+   * it has a required name attribute that identifies the template to be invoked.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getName()
   {
@@ -107,18 +116,22 @@ public class ElemCallTemplate extends ElemTemplateElement
    * The template which is named by QName.
    */
   private ElemTemplateElement m_template = null;
-    
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_CALLTEMPLATE;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -128,37 +141,45 @@ public class ElemCallTemplate extends ElemTemplateElement
   /**
    * Invoke a named template.
    * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
   {
-    if(TransformerImpl.S_DEBUG)
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-    
-    // XPathContext xctxt = transformer.getXPathContext();
-    if(null == m_template)
+
+    if (null == m_template)
     {
-      m_template 
-        = this.getStylesheetRoot().getTemplateComposed(m_templateName);
+      m_template =
+        this.getStylesheetRoot().getTemplateComposed(m_templateName);
     }
-    
-    if(null != m_template)
+
+    if (null != m_template)
     {
       XPathContext xctxt = transformer.getXPathContext();
       VariableStack vars = xctxt.getVarStack();
-      // int selectStackFrameIndex = vars.getCurrentStackFrameIndex();
-      
-      transformer.pushParams(getStylesheet(), 
-                             this, sourceNode, mode);
-      vars.setCurrentStackFrameIndex(vars.size());
+
+      if (null != m_paramElems)
+        transformer.pushParams(xctxt, this, sourceNode, mode);
+      else
+        vars.pushContextMarker();
+
       Locator savedLocator = xctxt.getSAXLocator();
+
       try
-      {        
+      {
         xctxt.setSAXLocator(m_template);
+
         // template.executeChildTemplates(transformer, sourceNode, mode);
-        transformer.pushElemTemplateElement(m_template, sourceNode);
+        transformer.pushElemTemplateElement(m_template);
         m_template.execute(transformer, sourceNode, mode);
       }
       finally
@@ -166,32 +187,79 @@ public class ElemCallTemplate extends ElemTemplateElement
         transformer.popElemTemplateElement();
         xctxt.setSAXLocator(savedLocator);
         vars.popCurrentContext();
-        // vars.setCurrentStackFrameIndex(selectStackFrameIndex);
       }
     }
     else
     {
-      transformer.getMsgMgr().error(XSLTErrorResources.ER_TEMPLATE_NOT_FOUND, new Object[] {m_templateName}); //"Could not find template named: '"+templateName+"'");
+      transformer.getMsgMgr().error(XSLTErrorResources.ER_TEMPLATE_NOT_FOUND,
+                                    new Object[]{ m_templateName });  //"Could not find template named: '"+templateName+"'");
     }
-  }
-  
-  /**
-   * Add a child to the child list.
-   */
-  public Node               appendChild(Node newChild)
-    throws DOMException
-  {
-    int type = ((ElemTemplateElement)newChild).getXSLToken();
-    switch(type)
-    {
-    case Constants.ELEMNAME_WITHPARAM:
-      break;
-      
-    default:
-      error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-            //" to " + this.m_elemName);
-    }
-    return super.appendChild(newChild);
   }
 
+  /** NEEDSDOC Field m_paramElems          */
+  protected Vector m_paramElems = null;
+
+  /**
+   * Get the count xsl:sort elements associated with this element.
+   * @return The number of xsl:sort elements.
+   */
+  public int getParamElemCount()
+  {
+    return (m_paramElems == null) ? 0 : m_paramElems.size();
+  }
+
+  /**
+   * Get a xsl:sort element associated with this element.
+   *
+   * NEEDSDOC @param i
+   *
+   * NEEDSDOC ($objectName$) @return
+   */
+  public ElemWithParam getParamElem(int i)
+  {
+    return (ElemWithParam) m_paramElems.elementAt(i);
+  }
+
+  /**
+   * Set a xsl:sort element associated with this element.
+   *
+   * NEEDSDOC @param ParamElem
+   */
+  public void setParamElem(ElemWithParam ParamElem)
+  {
+
+    if (null == m_paramElems)
+      m_paramElems = new Vector();
+
+    m_paramElems.addElement(ParamElem);
+  }
+
+  /**
+   * Add a child to the child list.
+   * <!ELEMENT xsl:apply-templates (xsl:sort|xsl:with-param)*>
+   * <!ATTLIST xsl:apply-templates
+   *   select %expr; "node()"
+   *   mode %qname; #IMPLIED
+   * >
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
+   */
+  public Node appendChild(Node newChild) throws DOMException
+  {
+
+    int type = ((ElemTemplateElement) newChild).getXSLToken();
+
+    if (Constants.ELEMNAME_WITHPARAM == type)
+    {
+      setParamElem((ElemWithParam) newChild);
+    }
+
+    // You still have to append, because this element can
+    // contain a for-each, and other elements.
+    return super.appendChild(newChild);
+  }
 }

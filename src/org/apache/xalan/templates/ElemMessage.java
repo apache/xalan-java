@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -77,18 +79,21 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemMessage extends ElemTemplateElement
 {
+
   /**
-   * If the terminate attribute has the value yes, then the 
-   * XSLT transformer should terminate processing after sending 
+   * If the terminate attribute has the value yes, then the
+   * XSLT transformer should terminate processing after sending
    * the message. The default value is no.
    */
-  private boolean m_terminate = Constants.ATTRVAL_NO;  // default value	
-  
+  private boolean m_terminate = Constants.ATTRVAL_NO;  // default value 
+
   /**
-   * Set the "terminate" attribute. 
-   * If the terminate attribute has the value yes, then the 
-   * XSLT transformer should terminate processing after sending 
+   * Set the "terminate" attribute.
+   * If the terminate attribute has the value yes, then the
+   * XSLT transformer should terminate processing after sending
    * the message. The default value is no.
+   *
+   * NEEDSDOC @param v
    */
   public void setTerminate(boolean v)
   {
@@ -96,51 +101,63 @@ public class ElemMessage extends ElemTemplateElement
   }
 
   /**
-   * Get the "terminate" attribute. 
-   * If the terminate attribute has the value yes, then the 
-   * XSLT transformer should terminate processing after sending 
+   * Get the "terminate" attribute.
+   * If the terminate attribute has the value yes, then the
+   * XSLT transformer should terminate processing after sending
    * the message. The default value is no.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean getTerminate()
   {
     return m_terminate;
   }
-  
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_MESSAGE;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_MESSAGE_STRING;
   }
 
-  
   /**
    * Send a message to diagnostics.
-   * The xsl:message instruction sends a message in a way that 
-   * is dependent on the XSLT transformer. The content of the xsl:message 
-   * instruction is a template. The xsl:message is instantiated by 
-   * instantiating the content to create an XML fragment. This XML 
+   * The xsl:message instruction sends a message in a way that
+   * is dependent on the XSLT transformer. The content of the xsl:message
+   * instruction is a template. The xsl:message is instantiated by
+   * instantiating the content to create an XML fragment. This XML
    * fragment is the content of the message.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {    
-    if(TransformerImpl.S_DEBUG)
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
     String data = transformer.transformToString(this, sourceNode, mode);
-    transformer.getMsgMgr().message(data, m_terminate);    
+
+    transformer.getMsgMgr().message(data, m_terminate);
   }
 }

@@ -58,7 +58,9 @@ package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xalan.trace.SelectionEvent;
@@ -79,14 +81,17 @@ import org.apache.xalan.transformer.ResultTreeHandler;
  */
 public class ElemCopyOf extends ElemTemplateElement
 {
+
   /**
-   * The required select attribute contains an expression. 
+   * The required select attribute contains an expression.
    */
   public XPath m_selectExpression = null;
-  
+
   /**
-   * Set the "select" attribute. 
-   * The required select attribute contains an expression. 
+   * Set the "select" attribute.
+   * The required select attribute contains an expression.
+   *
+   * NEEDSDOC @param expr
    */
   public void setSelect(XPath expr)
   {
@@ -95,7 +100,9 @@ public class ElemCopyOf extends ElemTemplateElement
 
   /**
    * Get the "use-attribute-sets" attribute.
-   * The required select attribute contains an expression. 
+   * The required select attribute contains an expression.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getSelect()
   {
@@ -105,14 +112,18 @@ public class ElemCopyOf extends ElemTemplateElement
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_COPY_OF;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -120,64 +131,75 @@ public class ElemCopyOf extends ElemTemplateElement
   }
 
   /**
-   * The xsl:copy-of element can be used to insert a result tree 
-   * fragment into the result tree, without first converting it to 
-   * a string as xsl:value-of does (see [7.6.1 Generating Text with 
-   * xsl:value-of]). 
+   * The xsl:copy-of element can be used to insert a result tree
+   * fragment into the result tree, without first converting it to
+   * a string as xsl:value-of does (see [7.6.1 Generating Text with
+   * xsl:value-of]).
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                     Node sourceNode,
-                     QName mode)
-    throws SAXException
-  {    
-    if(TransformerImpl.S_DEBUG)
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
     XPathContext xctxt = transformer.getXPathContext();
     XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
-    
-    if(TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireSelectedEvent(sourceNode,
-                                    this, "select", m_selectExpression, value);
-    
+
+    if (TransformerImpl.S_DEBUG)
+      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+              "select", m_selectExpression, value);
+
     ResultTreeHandler handler = transformer.getResultTreeHandler();
-    
-    if(null != value)
+
+    if (null != value)
     {
       int type = value.getType();
       String s;
-      switch(type)
+
+      switch (type)
       {
-      case XObject.CLASS_BOOLEAN:
-      case XObject.CLASS_NUMBER:
-      case XObject.CLASS_STRING:
+      case XObject.CLASS_BOOLEAN :
+      case XObject.CLASS_NUMBER :
+      case XObject.CLASS_STRING :
         s = value.str();
+
         handler.characters(s.toCharArray(), 0, s.length());
         break;
-        
-      case XObject.CLASS_NODESET:
+      case XObject.CLASS_NODESET :
+
         // System.out.println(value);
         NodeIterator nl = value.nodeset();
-        
+
         // Copy the tree.
-        org.apache.xalan.utils.TreeWalker tw 
-          = new TreeWalker2Result(transformer, handler);
+        org.apache.xalan.utils.TreeWalker tw =
+          new TreeWalker2Result(transformer, handler);
         Node pos;
-        while(null != (pos = nl.nextNode()))
+
+        while (null != (pos = nl.nextNode()))
         {
-          int t = pos.getNodeType();
+          short t = pos.getNodeType();
+
           // If we just copy the whole document, a startDoc and endDoc get 
           // generated, so we need to only walk the child nodes.
-          if(t == Node.DOCUMENT_NODE)
+          if (t == Node.DOCUMENT_NODE)
           {
-            for(Node child = pos.getFirstChild(); child != null; child = child.getNextSibling())
+            for (Node child = pos.getFirstChild(); child != null;
+                    child = child.getNextSibling())
             {
               tw.traverse(child);
             }
           }
-          else if(t == Node.ATTRIBUTE_NODE)
+          else if (t == Node.ATTRIBUTE_NODE)
           {
-            handler.addAttribute((Attr)pos);
+            handler.addAttribute((Attr) pos);
           }
           else
           {
@@ -185,28 +207,36 @@ public class ElemCopyOf extends ElemTemplateElement
           }
         }
         break;
-        
-      case XObject.CLASS_RTREEFRAG:
-        handler.outputResultTreeFragment(value, transformer.getXPathContext());
+      case XObject.CLASS_RTREEFRAG :
+        handler.outputResultTreeFragment(value,
+                                         transformer.getXPathContext());
         break;
-        
-      default:
+      default :
         s = value.str();
+
         handler.characters(s.toCharArray(), 0, s.length());
         break;
       }
     }
   }
-  
+
   /**
    * Add a child to the child list.
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-          //" to " + this.m_elemName);
+
+    error(XSLTErrorResources.ER_CANNOT_ADD,
+          new Object[]{ newChild.getNodeName(),
+                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    //" to " + this.m_elemName);
     return null;
   }
-
 }

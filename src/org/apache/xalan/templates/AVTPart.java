@@ -57,44 +57,51 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
- * Class to hold a part, either a string or XPath, 
+ * Class to hold a part, either a string or XPath,
  * of an Attribute Value Template.
  */
 public abstract class AVTPart implements java.io.Serializable
 {
+
   /**
    * Construct a part.
    */
-  public AVTPart()
-  {
-  }
-  
+  public AVTPart(){}
+
   /**
    * Get the AVT part as the original string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public abstract String getSimpleString();
-  
+
   /**
-   * Write the evaluated value into the given 
+   * Write the evaluated value into the given
    * string buffer.
+   *
+   * NEEDSDOC @param xctxt
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
    * @param NodeList The current Context Node List.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public abstract void evaluate(XPathContext xctxt, FastStringBuffer buf, Node context, 
-                                org.apache.xalan.utils.PrefixResolver nsNode)
-    throws org.xml.sax.SAXException;
-  
+  public abstract void evaluate(
+    XPathContext xctxt, FastStringBuffer buf, Node context,
+      org.apache.xalan.utils.PrefixResolver nsNode)
+        throws org.xml.sax.SAXException;
+
   /**
    * Set the XPath support.
+   *
+   * NEEDSDOC @param support
    */
-  public void setXPathSupport(XPathContext support)
-  {
-  }
+  public void setXPathSupport(XPathContext support){}
 }

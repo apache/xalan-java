@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -59,27 +59,40 @@ package org.apache.xalan.templates;
 import org.apache.xpath.XPath;
 
 /**
- * This is used as a special "fake" template that can be 
- * handled by the TemplateList to do pattern matching 
+ * This is used as a special "fake" template that can be
+ * handled by the TemplateList to do pattern matching
  * on nodes.
  */
 public class WhiteSpaceInfo extends ElemTemplate
 {
+
+  /** NEEDSDOC Field m_shouldStripSpace          */
   private boolean m_shouldStripSpace;
-  
+
   /**
-   * Return true if this element specifies that the node that 
-   * matches the match pattern should be stripped, otherwise 
+   * Return true if this element specifies that the node that
+   * matches the match pattern should be stripped, otherwise
    * the space should be preserved.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public boolean getShouldStripSpace()
   {
     return m_shouldStripSpace;
   }
-  
+
+  /**
+   * Constructor WhiteSpaceInfo
+   *
+   *
+   * NEEDSDOC @param matchPattern
+   * NEEDSDOC @param shouldStripSpace
+   */
   WhiteSpaceInfo(XPath matchPattern, boolean shouldStripSpace)
   {
+
     m_shouldStripSpace = shouldStripSpace;
+
     setMatch(matchPattern);
   }
 }

@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -58,19 +58,22 @@ package org.apache.xalan.templates;
 
 /**
  * Object to hold an xsl:namespace element.
- * A stylesheet can use the xsl:namespace-alias element to declare 
- * that one namespace URI is an alias for another namespace URI. 
+ * A stylesheet can use the xsl:namespace-alias element to declare
+ * that one namespace URI is an alias for another namespace URI.
  * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
  */
 public class NamespaceAlias
 {
+
   /**
    * The "stylesheet-prefix" attribute
    */
   private String m_StylesheetPrefix;
-  
+
   /**
-   * Set the "stylesheet-prefix" attribute. 
+   * Set the "stylesheet-prefix" attribute.
+   *
+   * NEEDSDOC @param v
    */
   public void setStylesheetPrefix(String v)
   {
@@ -78,7 +81,9 @@ public class NamespaceAlias
   }
 
   /**
-   * Get the "stylesheet-prefix" attribute. 
+   * Get the "stylesheet-prefix" attribute.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getStylesheetPrefix()
   {
@@ -89,9 +94,11 @@ public class NamespaceAlias
    * The "result-prefix" attribute
    */
   private String m_ResultPrefix;
-  
+
   /**
-   * Set the "result-prefix" attribute. 
+   * Set the "result-prefix" attribute.
+   *
+   * NEEDSDOC @param v
    */
   public void setResultPrefix(String v)
   {
@@ -99,11 +106,12 @@ public class NamespaceAlias
   }
 
   /**
-   * Get the "result-prefix" attribute. 
+   * Get the "result-prefix" attribute.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getResultPrefix()
   {
     return m_ResultPrefix;
   }
-
 }

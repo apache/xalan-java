@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -74,31 +76,46 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemComment extends ElemTemplateElement
 {
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_COMMENT;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_COMMENT_STRING;
   }
-  
-  public void execute(TransformerImpl transformer, 
-                     Node sourceNode,
-                     QName mode)
-    throws SAXException
-  {  
-    if(TransformerImpl.S_DEBUG)
+
+  /**
+   * NEEDSDOC Method execute 
+   *
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
+   */
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-    
+
     // Note the content model is:
     // <!ENTITY % instructions "
     // %char-instructions;
@@ -108,46 +125,57 @@ public class ElemComment extends ElemTemplateElement
     // | xsl:attribute
     // ">
     String data = transformer.transformToString(this, sourceNode, mode);
+
     transformer.getResultTreeHandler().comment(data);
   }
-  
+
   /**
    * Add a child to the child list.
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    int type = ((ElemTemplateElement)newChild).getXSLToken();
-    switch(type)
+
+    int type = ((ElemTemplateElement) newChild).getXSLToken();
+
+    switch (type)
     {
-      // char-instructions 
-    case Constants.ELEMNAME_TEXTLITERALRESULT:
-    case Constants.ELEMNAME_APPLY_TEMPLATES:
-    case Constants.ELEMNAME_APPLY_IMPORTS:
-    case Constants.ELEMNAME_CALLTEMPLATE:
-    case Constants.ELEMNAME_FOREACH:
-    case Constants.ELEMNAME_VALUEOF:
-    case Constants.ELEMNAME_COPY_OF:
-    case Constants.ELEMNAME_NUMBER:
-    case Constants.ELEMNAME_CHOOSE:
-    case Constants.ELEMNAME_IF:
-    case Constants.ELEMNAME_TEXT:
-    case Constants.ELEMNAME_COPY:
-    case Constants.ELEMNAME_VARIABLE:
-    case Constants.ELEMNAME_MESSAGE:
-      
+
+    // char-instructions 
+    case Constants.ELEMNAME_TEXTLITERALRESULT :
+    case Constants.ELEMNAME_APPLY_TEMPLATES :
+    case Constants.ELEMNAME_APPLY_IMPORTS :
+    case Constants.ELEMNAME_CALLTEMPLATE :
+    case Constants.ELEMNAME_FOREACH :
+    case Constants.ELEMNAME_VALUEOF :
+    case Constants.ELEMNAME_COPY_OF :
+    case Constants.ELEMNAME_NUMBER :
+    case Constants.ELEMNAME_CHOOSE :
+    case Constants.ELEMNAME_IF :
+    case Constants.ELEMNAME_TEXT :
+    case Constants.ELEMNAME_COPY :
+    case Constants.ELEMNAME_VARIABLE :
+    case Constants.ELEMNAME_MESSAGE :
+
       // instructions 
       // case Constants.ELEMNAME_PI:
       // case Constants.ELEMNAME_COMMENT:
       // case Constants.ELEMNAME_ELEMENT:
       // case Constants.ELEMNAME_ATTRIBUTE:
-
       break;
-      
-    default:
-      error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-            //" to " + this.m_elemName);
+    default :
+      error(XSLTErrorResources.ER_CANNOT_ADD,
+            new Object[]{ newChild.getNodeName(),
+                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    //" to " + this.m_elemName);
     }
+
     return super.appendChild(newChild);
   }
 }

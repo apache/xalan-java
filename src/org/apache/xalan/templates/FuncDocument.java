@@ -57,8 +57,10 @@
 package org.apache.xalan.templates;
 
 import java.util.Vector;
+
 import java.io.StringWriter;
 import java.io.PrintWriter;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
@@ -74,12 +76,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 import org.apache.xpath.SourceTreeManager;
 import org.apache.xpath.Expression;
-
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPathContext;
-
 import org.apache.xalan.transformer.TransformerImpl;
 
 import org.xml.sax.ErrorHandler;
@@ -93,68 +93,78 @@ import org.apache.trax.TransformException;
 /**
  * <meta name="usage" content="advanced"/>
  * Execute the Doc() function.
- * 
- * When the document function has exactly one argument and the argument 
- * is a node-set, then the result is the union, for each node in the 
- * argument node-set, of the result of calling the document function with 
- * the first argument being the string-value of the node, and the second 
- * argument being a node-set with the node as its only member. When the 
- * document function has two arguments and the first argument is a node-set, 
- * then the result is the union, for each node in the argument node-set, 
- * of the result of calling the document function with the first argument 
- * being the string-value of the node, and with the second argument being 
+ *
+ * When the document function has exactly one argument and the argument
+ * is a node-set, then the result is the union, for each node in the
+ * argument node-set, of the result of calling the document function with
+ * the first argument being the string-value of the node, and the second
+ * argument being a node-set with the node as its only member. When the
+ * document function has two arguments and the first argument is a node-set,
+ * then the result is the union, for each node in the argument node-set,
+ * of the result of calling the document function with the first argument
+ * being the string-value of the node, and with the second argument being
  * the second argument passed to the document function.
  */
 public class FuncDocument extends Function2Args
 {
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     Node context = xctxt.getCurrentNode();
-    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType()) 
-                          ? (Document)context : context.getOwnerDocument();
-    XObject arg = (XObject)this.getArg0().execute(xctxt);
+    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType())
+                          ? (Document) context : context.getOwnerDocument();
+    XObject arg = (XObject) this.getArg0().execute(xctxt);
     String base = "";
     Expression arg1Expr = this.getArg1();
-    if(null != arg1Expr)
+
+    if (null != arg1Expr)
     {
+
       // The URI reference may be relative. The base URI (see [3.2 Base URI]) 
       // of the node in the second argument node-set that is first in document 
       // order is used as the base URI for resolving the 
       // relative URI into an absolute URI. 
       XObject arg2 = arg1Expr.execute(xctxt);
-      if(XObject.CLASS_NODESET == arg2.getType())
+
+      if (XObject.CLASS_NODESET == arg2.getType())
       {
         Node baseNode = arg2.nodeset().nextNode();
-        
+
         if (baseNode == null)
-          warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);       
-        
-        Document baseDoc = (baseNode == null ? null : (Node.DOCUMENT_NODE == baseNode.getNodeType()) ? 
-                           (Document)baseNode : baseNode.getOwnerDocument());
-        
-        if(baseDoc == null || baseDoc instanceof Stylesheet)
+          warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);
+
+        Document baseDoc = (baseNode == null
+                            ? null
+                            : (Node.DOCUMENT_NODE == baseNode.getNodeType())
+                              ? (Document) baseNode
+                              : baseNode.getOwnerDocument());
+
+        if (baseDoc == null || baseDoc instanceof Stylesheet)
         {
+
           // base = ((Stylesheet)baseDoc).getBaseIdentifier();
-          base = xctxt.getNamespaceContext().getBaseIdentifier();   
+          base = xctxt.getNamespaceContext().getBaseIdentifier();
         }
         else
           base = xctxt.getSourceTreeManager().findURIFromDoc(baseDoc);
       }
-      else 
+      else
       {
         base = arg2.str();
       }
-     
     }
     else
     {
+
       // If the second argument is omitted, then it defaults to 
       // the node in the stylesheet that contains the expression that 
       // includes the call to the document function. Note that a 
@@ -166,23 +176,26 @@ public class FuncDocument extends Function2Args
       // was the initial source document.
       base = xctxt.getNamespaceContext().getBaseIdentifier();
     }
-	
+
     XNodeSet nodes = new XNodeSet();
     NodeSet mnl = nodes.mutableNodeset();
-    NodeIterator iterator = (XObject.CLASS_NODESET == arg.getType()) ?
-                            arg.nodeset() : null;
+    NodeIterator iterator = (XObject.CLASS_NODESET == arg.getType())
+                            ? arg.nodeset() : null;
     Node pos = null;
-    while((null == iterator) || (null != (pos = iterator.nextNode())))
+
+    while ((null == iterator) || (null != (pos = iterator.nextNode())))
     {
       String ref = (null != iterator)
-                      ? DOMHelper.getNodeData(pos) : arg.str();
-      if(null == ref)
+                   ? DOMHelper.getNodeData(pos) : arg.str();
+
+      if (null == ref)
         continue;
-      if(null == docContext)
+
+      if (null == docContext)
       {
-        error(xctxt, XSLTErrorResources.ER_NO_CONTEXT_OWNERDOC, null); //"context does not have an owner document!");
+        error(xctxt, XSLTErrorResources.ER_NO_CONTEXT_OWNERDOC, null);  //"context does not have an owner document!");
       }
-        
+
       // From http://www.ics.uci.edu/pub/ietf/uri/rfc1630.txt
       // A partial form can be distinguished from an absolute form in that the
       // latter must have a colon and that colon must occur before any slash
@@ -191,182 +204,245 @@ public class FuncDocument extends Function2Args
       // will still work, but confusion may result.
       int indexOfColon = ref.indexOf(':');
       int indexOfSlash = ref.indexOf('/');
-      if((indexOfColon != -1) && (indexOfSlash != -1) && (indexOfColon < indexOfSlash))
+
+      if ((indexOfColon != -1) && (indexOfSlash != -1)
+              && (indexOfColon < indexOfSlash))
       {
+
         // The url (or filename, for that matter) is absolute.
         base = null;
       }
-      
+
       Node newDoc = getDoc(xctxt, context, ref, base);
+
       // nodes.mutableNodeset().addNode(newDoc);  
-      if(null != newDoc)
+      if (null != newDoc)
       {
+
         // TODO: mnl.addNodeInDocOrder(newDoc, true, xctxt); ??
-        mnl.addElement(newDoc);        
+        if (!mnl.contains(newDoc))
+          mnl.addElement(newDoc);
       }
-      
-      if(null == iterator)
+
+      if (null == iterator)
         break;
     }
+
     return nodes;
   }
-  
+
   /**
    * HandleDocExpr
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param context
+   * NEEDSDOC @param uri
+   * NEEDSDOC @param base
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws org.xml.sax.SAXException
    */
   Node getDoc(XPathContext xctxt, Node context, String uri, String base)
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
+
     // System.out.println("base: "+base+", uri: "+uri);
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
     Node newDoc = treeMgr.findNodeFromURL(base, uri, xctxt.getSAXLocator());
-    if(null != newDoc)
+
+    if (null != newDoc)
       return newDoc;
 
     // If the uri length is zero, get the uri of the stylesheet.
-    if(uri.length() == 0)
+    if (uri.length() == 0)
       uri = xctxt.getNamespaceContext().getBaseIdentifier();
-    
+
     String diagnosticsString = null;
+
     try
     {
-      if((null != uri) && (uri.toString().length() > 0))
+      if ((null != uri) && (uri.toString().length() > 0))
       {
         newDoc = treeMgr.getSourceTree(base, uri, xctxt.getSAXLocator());
+
         // System.out.println("newDoc: "+((Document)newDoc).getDocumentElement().getNodeName());
       }
       else
-        warn(xctxt, XSLTErrorResources.WG_CANNOT_MAKE_URL_FROM, new Object[]{((base == null) ? "" : base )+uri}); //"Can not make URL from: "+((base == null) ? "" : base )+uri);
+        warn(xctxt, XSLTErrorResources.WG_CANNOT_MAKE_URL_FROM,
+             new Object[]{ ((base == null) ? "" : base) + uri });  //"Can not make URL from: "+((base == null) ? "" : base )+uri);
     }
-    catch(Throwable throwable)
+    catch (Throwable throwable)
     {
-      newDoc = null;
-      // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
-        while(throwable instanceof org.apache.xalan.utils.WrappedRuntimeException)
-          throwable = ((org.apache.xalan.utils.WrappedRuntimeException)throwable).getException();
 
-        if((throwable instanceof NullPointerException) ||
-           (throwable instanceof ClassCastException)
-           )
-        {
-          throw new org.apache.xalan.utils.WrappedRuntimeException((Exception)throwable);
-        }
-        
-        StringWriter sw = new StringWriter();
-        PrintWriter diagnosticsWriter = new PrintWriter(sw);
-        if(throwable instanceof SAXException)
-        {
-          SAXException spe = (SAXException)throwable;
-          {
-            Exception e = spe;
-            while(null != e)
-            {
-              if(null != e.getMessage())
-              {
-                diagnosticsWriter.println(" ("+e.getClass().getName()+"): " 
-                                    + e.getMessage());        
-              }
-              if(e instanceof SAXParseException)
-              {
-                SAXParseException spe2 = (SAXParseException)e;
-                if(null != spe2.getSystemId())
-                  diagnosticsWriter.println("   ID: "+spe2.getSystemId()
-                                            +" Line #"+spe2.getLineNumber()
-                                            +" Column #"+spe2.getColumnNumber());
-                e = spe2.getException();
-                if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
-                  e = ((org.apache.xalan.utils.WrappedRuntimeException)e).getException();
-              }
-              else
-                e = null;
-            }
-          }
-        }      
-        else 
-        {
-          diagnosticsWriter.println(" ("+throwable.getClass().getName()+"): " 
-                                    + throwable.getMessage());        
-        }
-         diagnosticsString = sw.toString();
-    }
-    if(null == newDoc)
-    {
-      // System.out.println("what?: "+base+", uri: "+uri);
-      if(null != diagnosticsString)
+      // throwable.printStackTrace();
+      newDoc = null;
+
+      // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+      while (throwable
+             instanceof org.apache.xalan.utils.WrappedRuntimeException)
       {
-        warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{diagnosticsString}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+        throwable =
+          ((org.apache.xalan.utils.WrappedRuntimeException) throwable).getException();
+      }
+
+      if ((throwable instanceof NullPointerException)
+              || (throwable instanceof ClassCastException))
+      {
+        throw new org.apache.xalan.utils.WrappedRuntimeException(
+          (Exception) throwable);
+      }
+
+      StringWriter sw = new StringWriter();
+      PrintWriter diagnosticsWriter = new PrintWriter(sw);
+
+      if (throwable instanceof SAXException)
+      {
+        SAXException spe = (SAXException) throwable;
+
+        {
+          Exception e = spe;
+
+          while (null != e)
+          {
+            if (null != e.getMessage())
+            {
+              diagnosticsWriter.println(" (" + e.getClass().getName() + "): "
+                                        + e.getMessage());
+            }
+
+            if (e instanceof SAXParseException)
+            {
+              SAXParseException spe2 = (SAXParseException) e;
+
+              if (null != spe2.getSystemId())
+                diagnosticsWriter.println("   ID: " + spe2.getSystemId()
+                                          + " Line #" + spe2.getLineNumber()
+                                          + " Column #"
+                                          + spe2.getColumnNumber());
+
+              e = spe2.getException();
+
+              if (e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+                e = ((org.apache.xalan.utils.WrappedRuntimeException) e).getException();
+            }
+            else
+              e = null;
+          }
+        }
       }
       else
-        warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC, new Object[]{uri== null ?((base == null) ? "" : base)+uri : uri.toString()}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+      {
+        diagnosticsWriter.println(" (" + throwable.getClass().getName()
+                                  + "): " + throwable.getMessage());
+      }
+
+      diagnosticsString = sw.toString();
+    }
+
+    if (null == newDoc)
+    {
+
+      // System.out.println("what?: "+base+", uri: "+uri);
+      if (null != diagnosticsString)
+      {
+        warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC,
+             new Object[]{ diagnosticsString });  //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
+      }
+      else
+        warn(xctxt, XSLTErrorResources.WG_CANNOT_LOAD_REQUESTED_DOC,
+             new Object[]{
+               uri == null
+               ? ((base == null) ? "" : base) + uri : uri.toString() });  //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
     }
     else
     {
+
       // TBD: What to do about XLocator?
       // xctxt.getSourceTreeManager().associateXLocatorToNode(newDoc, url, null);
     }
+
     return newDoc;
   }
-  
+
   /**
    * Tell the user of an error, and probably throw an
    * exception.
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws org.xml.sax.SAXException
    */
   public void error(XPathContext xctxt, int msg, Object args[])
-	  throws org.xml.sax.SAXException
-  {	
-	  String formattedMsg = XSLMessages.createMessage(msg, args);
-    
+          throws org.xml.sax.SAXException
+  {
+
+    String formattedMsg = XSLMessages.createMessage(msg, args);
     ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
-    TransformException te = new TransformException(formattedMsg, 
-                                                   xctxt.getSAXLocator());
-                                                   
-    if(null != errHandler)
+    TransformException te = new TransformException(formattedMsg,
+                              xctxt.getSAXLocator());
+
+    if (null != errHandler)
       errHandler.error(te);
     else
     {
-      System.out.println(te.getMessage()
-                         +"; file "+te.getSystemId()
-                         +"; line "+te.getLineNumber()
-                         +"; column "+te.getColumnNumber());
+      System.out.println(te.getMessage() + "; file " + te.getSystemId()
+                         + "; line " + te.getLineNumber() + "; column "
+                         + te.getColumnNumber());
     }
   }
-  
+
   /**
    * Warn the user of a problem.
+   *
+   * NEEDSDOC @param xctxt
+   * NEEDSDOC @param msg
+   * NEEDSDOC @param args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
+   *
+   * @throws org.xml.sax.SAXException
    */
   public void warn(XPathContext xctxt, int msg, Object args[])
-    throws org.xml.sax.SAXException
+          throws org.xml.sax.SAXException
   {
+
     String formattedMsg = XSLMessages.createWarning(msg, args);
-    
-    ErrorHandler errHandler = (null != xctxt.getPrimaryReader()) ? 
-                              xctxt.getPrimaryReader().getErrorHandler() : null;
-    TransformException te = new TransformException(formattedMsg, 
-                                                   xctxt.getSAXLocator());
-                                                   
-    if(null != errHandler)
+    ErrorHandler errHandler = (null != xctxt.getPrimaryReader())
+                              ? xctxt.getPrimaryReader().getErrorHandler()
+                              : null;
+    TransformException te = new TransformException(formattedMsg,
+                              xctxt.getSAXLocator());
+
+    if (null != errHandler)
       errHandler.warning(te);
     else
     {
-      System.out.println(te.getMessage()
-                         +"; file "+te.getSystemId()
-                         +"; line "+te.getLineNumber()
-                         +"; column "+te.getColumnNumber());
+      System.out.println(te.getMessage() + "; file " + te.getSystemId()
+                         + "; line " + te.getLineNumber() + "; column "
+                         + te.getColumnNumber());
     }
   }
-  
+
   /*
    * Overide the superclass method to allow one or two arguments.
    */
-  public void checkNumberArgs(int argNum)
-    throws WrongNumberArgsException
+
+  /**
+   * NEEDSDOC Method checkNumberArgs 
+   *
+   *
+   * NEEDSDOC @param argNum
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if(argNum < 1 && argNum > 2)
+    if (argNum < 1 && argNum > 2)
       throw new WrongNumberArgsException("2");
   }
-
 }

@@ -58,11 +58,15 @@ package org.apache.xalan.templates;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
+
 import org.xml.sax.SAXException;
+
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
+
 import java.util.Stack;
+
 import org.apache.xalan.transformer.TransformerImpl;
 
 /**
@@ -79,14 +83,17 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemAttributeSet extends ElemUse
 {
+
   /**
-   * The name attribute specifies the name of the attribute set. 
+   * The name attribute specifies the name of the attribute set.
    */
   public QName m_qname = null;
-  
+
   /**
-   * Set the "name" attribute. 
-   * The name attribute specifies the name of the attribute set. 
+   * Set the "name" attribute.
+   * The name attribute specifies the name of the attribute set.
+   *
+   * NEEDSDOC @param name
    */
   public void setName(QName name)
   {
@@ -95,7 +102,9 @@ public class ElemAttributeSet extends ElemUse
 
   /**
    * Get the "name" attribute.
-   * The name attribute specifies the name of the attribute set. 
+   * The name attribute specifies the name of the attribute set.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getName()
   {
@@ -105,46 +114,61 @@ public class ElemAttributeSet extends ElemUse
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_DEFINEATTRIBUTESET;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_ATTRIBUTESET_STRING;
   }
 
-  
   /**
    * Apply a set of attributes to the element.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
   {
-    if(transformer.isRecursiveAttrSet(this))
+
+    if (transformer.isRecursiveAttrSet(this))
     {
-      throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_XSLATTRSET_USED_ITSELF, new Object[]{m_qname.getLocalPart()})); //"xsl:attribute-set '"+m_qname.m_localpart+
+      throw new SAXException(
+        XSLMessages.createMessage(
+          XSLTErrorResources.ER_XSLATTRSET_USED_ITSELF,
+          new Object[]{ m_qname.getLocalPart() }));  //"xsl:attribute-set '"+m_qname.m_localpart+
     }
-    
+
     transformer.pushElemAttributeSet(this);
-    
     super.execute(transformer, sourceNode, mode);
-    ElemAttribute attr = (ElemAttribute)getFirstChild();
-    while(null != attr)
+
+    ElemAttribute attr = (ElemAttribute) getFirstChild();
+
+    while (null != attr)
     {
       attr.execute(transformer, sourceNode, mode);
-      attr = (ElemAttribute)attr.getNextSibling();
+
+      attr = (ElemAttribute) attr.getNextSibling();
     }
+
     transformer.popElemAttributeSet();
   }
-  
+
   /**
    * Add a child to the child list.
    * <!ELEMENT xsl:attribute-set (xsl:attribute)*>
@@ -152,21 +176,30 @@ public class ElemAttributeSet extends ElemUse
    *   name %qname; #REQUIRED
    *   use-attribute-sets %qnames; #IMPLIED
    * >
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    int type = ((ElemTemplateElement)newChild).getXSLToken();
-    switch(type)
+
+    int type = ((ElemTemplateElement) newChild).getXSLToken();
+
+    switch (type)
     {
-    case Constants.ELEMNAME_ATTRIBUTE:
+    case Constants.ELEMNAME_ATTRIBUTE :
       break;
-      
-    default:
-      error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-            //" to " + this.m_elemName);
+    default :
+      error(XSLTErrorResources.ER_CANNOT_ADD,
+            new Object[]{ newChild.getNodeName(),
+                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    //" to " + this.m_elemName);
     }
+
     return super.appendChild(newChild);
   }
-
 }

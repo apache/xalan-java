@@ -62,24 +62,27 @@ import org.apache.xalan.utils.QName;
 /**
  * <meta name="usage" content="internal"/>
  * Holds the attribute declarations for the xsl:keys element.
- * A stylesheet declares a set of keys for each document using 
- * the xsl:key element. When this set of keys contains a member 
- * with node x, name y and value z, we say that node x has a key 
+ * A stylesheet declares a set of keys for each document using
+ * the xsl:key element. When this set of keys contains a member
+ * with node x, name y and value z, we say that node x has a key
  * with name y and value z.
  * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>
  */
 public class KeyDeclaration extends ElemTemplateElement
 {
+
   /**
    * The "name" property.
    */
   private QName m_name;
-  
+
   /**
-   * Set the "name" attribute. 
-   * The name attribute specifies the name of the key. The value 
-   * of the name attribute is a QName, which is expanded as 
-   * described in [2.4 Qualified Names]. 
+   * Set the "name" attribute.
+   * The name attribute specifies the name of the key. The value
+   * of the name attribute is a QName, which is expanded as
+   * described in [2.4 Qualified Names].
+   *
+   * NEEDSDOC @param name
    */
   public void setName(QName name)
   {
@@ -88,26 +91,30 @@ public class KeyDeclaration extends ElemTemplateElement
 
   /**
    * Get the "name" attribute.
-   * The name attribute specifies the name of the key. The value 
-   * of the name attribute is a QName, which is expanded as 
-   * described in [2.4 Qualified Names]. 
+   * The name attribute specifies the name of the key. The value
+   * of the name attribute is a QName, which is expanded as
+   * described in [2.4 Qualified Names].
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getName()
   {
     return m_name;
   }
-  
+
   /**
    * The "match" attribute.
    */
   private XPath m_matchPattern = null;
-  
+
   /**
    * Set the "match" attribute.
-   * The match attribute is a Pattern; an xsl:key element gives 
-   * information about the keys of any node that matches the 
-   * pattern specified in the match attribute.  
+   * The match attribute is a Pattern; an xsl:key element gives
+   * information about the keys of any node that matches the
+   * pattern specified in the match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setMatch(XPath v)
   {
@@ -115,27 +122,31 @@ public class KeyDeclaration extends ElemTemplateElement
   }
 
   /**
-   * Get the "match" attribute. 
-   * The match attribute is a Pattern; an xsl:key element gives 
-   * information about the keys of any node that matches the 
-   * pattern specified in the match attribute.  
+   * Get the "match" attribute.
+   * The match attribute is a Pattern; an xsl:key element gives
+   * information about the keys of any node that matches the
+   * pattern specified in the match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getMatch()
   {
     return m_matchPattern;
   }
-  
+
   /**
    * The "use" attribute.
    */
   private XPath m_use;
-  
+
   /**
-   * Set the "use" attribute. 
-   * The use attribute is an expression specifying the values 
-   * of the key; the expression is evaluated once for each node 
-   * that matches the pattern. 
+   * Set the "use" attribute.
+   * The use attribute is an expression specifying the values
+   * of the key; the expression is evaluated once for each node
+   * that matches the pattern.
+   *
+   * NEEDSDOC @param v
    */
   public void setUse(XPath v)
   {
@@ -143,22 +154,30 @@ public class KeyDeclaration extends ElemTemplateElement
   }
 
   /**
-   * Get the "use" attribute. 
-   * The use attribute is an expression specifying the values 
-   * of the key; the expression is evaluated once for each node 
-   * that matches the pattern. 
+   * Get the "use" attribute.
+   * The use attribute is an expression specifying the values
+   * of the key; the expression is evaluated once for each node
+   * that matches the pattern.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getUse()
   {
     return m_use;
   }
-  
+
+  /** NEEDSDOC Field UNBUILT          */
   public static int UNBUILT = -1;
+
+  /** NEEDSDOC Field BUILDING          */
   public static int BUILDING = 0;
+
+  /** NEEDSDOC Field BUILT          */
   public static int BUILT = 1;
-  
+
+  /** NEEDSDOC Field m_buildState          */
   private int m_buildState = UNBUILT;
-  
+
   /**
    * Set the state of the build for this key.
    * @param state One of UNBUILT, BUILDING, BUILT.
@@ -176,5 +195,4 @@ public class KeyDeclaration extends ElemTemplateElement
   {
     return m_buildState;
   }
-
 }

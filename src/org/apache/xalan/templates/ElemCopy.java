@@ -57,9 +57,13 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
+
 import java.util.*;
+
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -80,70 +84,84 @@ import org.apache.xalan.transformer.ResultTreeHandler;
  */
 public class ElemCopy extends ElemUse
 {
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_COPY;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_COPY_STRING;
   }
-  
+
   /**
-   * The xsl:copy element provides an easy way of copying the current node. 
-   * Executing this function creates a copy of the current node into the 
-   * result tree. 
-   * <p>The namespace nodes of the current node are automatically 
-   * copied as well, but the attributes and children of the node are not 
-   * automatically copied. The content of the xsl:copy element is a 
-   * template for the attributes and children of the created node; 
-   * the content is instantiated only for nodes of types that can have 
+   * The xsl:copy element provides an easy way of copying the current node.
+   * Executing this function creates a copy of the current node into the
+   * result tree.
+   * <p>The namespace nodes of the current node are automatically
+   * copied as well, but the attributes and children of the node are not
+   * automatically copied. The content of the xsl:copy element is a
+   * template for the attributes and children of the created node;
+   * the content is instantiated only for nodes of types that can have
    * attributes or children (i.e. root nodes and element nodes).</p>
-   * <p>The root node is treated specially because the root node of the 
-   * result tree is created implicitly. When the current node is the 
-   * root node, xsl:copy will not create a root node, but will just use 
+   * <p>The root node is treated specially because the root node of the
+   * result tree is created implicitly. When the current node is the
+   * root node, xsl:copy will not create a root node, but will just use
    * the content template.</p>
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                     Node sourceNode,
-                     QName mode)
-    throws SAXException
-  {    
-    int nodeType = sourceNode.getNodeType();
-    if((Node.DOCUMENT_NODE != nodeType))
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    short nodeType = sourceNode.getNodeType();
+
+    if ((Node.DOCUMENT_NODE != nodeType))
     {
       ResultTreeHandler rthandler = transformer.getResultTreeHandler();
-      
+
       // TODO: Process the use-attribute-sets stuff
-      rthandler.cloneToResultTree( sourceNode, false );
-      
-      if(Node.ELEMENT_NODE == nodeType)
+      rthandler.cloneToResultTree(sourceNode, false);
+
+      if (Node.ELEMENT_NODE == nodeType)
       {
         super.execute(transformer, sourceNode, mode);
         rthandler.processNSDecls(sourceNode);
         transformer.executeChildTemplates(this, sourceNode, mode);
-        transformer.getResultTreeHandler().endElement("", "", sourceNode.getNodeName());
+        transformer.getResultTreeHandler().endElement("", "",
+                sourceNode.getNodeName());
       }
       else
       {
-        if(TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireTraceEvent(sourceNode, mode,
+                  this);
       }
     }
     else
     {
-      if(TransformerImpl.S_DEBUG)
+      if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+
       transformer.executeChildTemplates(this, sourceNode, mode);
     }
   }
-  
 }

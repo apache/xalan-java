@@ -57,11 +57,13 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
- 
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:sort.
@@ -81,58 +83,66 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemSort extends ElemTemplateElement
 {
+
   /**
    * xsl:sort has a select attribute whose value is an expression.
    */
   private XPath m_selectExpression = null;
-  
+
   /**
-   * Set the "select" attribute. 
-   * xsl:sort has a select attribute whose value is an expression. 
-   * For each node to be processed, the expression is evaluated 
-   * with that node as the current node and with the complete 
-   * list of nodes being processed in unsorted order as the current 
-   * node list. The resulting object is converted to a string as if 
-   * by a call to the string function; this string is used as the 
-   * sort key for that node. The default value of the select attribute 
-   * is ., which will cause the string-value of the current node to 
+   * Set the "select" attribute.
+   * xsl:sort has a select attribute whose value is an expression.
+   * For each node to be processed, the expression is evaluated
+   * with that node as the current node and with the complete
+   * list of nodes being processed in unsorted order as the current
+   * node list. The resulting object is converted to a string as if
+   * by a call to the string function; this string is used as the
+   * sort key for that node. The default value of the select attribute
+   * is ., which will cause the string-value of the current node to
    * be used as the sort key.
+   *
+   * NEEDSDOC @param v
    */
   public void setSelect(XPath v)
   {
-    if (v.getPatternString().indexOf("{") < 0)    
-      m_selectExpression = v;          
+
+    if (v.getPatternString().indexOf("{") < 0)
+      m_selectExpression = v;
     else
       error(XSLTErrorResources.ER_NO_CURLYBRACE, null);
   }
 
   /**
-   * Get the "select" attribute. 
-   * xsl:sort has a select attribute whose value is an expression. 
-   * For each node to be processed, the expression is evaluated 
-   * with that node as the current node and with the complete 
-   * list of nodes being processed in unsorted order as the current 
-   * node list. The resulting object is converted to a string as if 
-   * by a call to the string function; this string is used as the 
-   * sort key for that node. The default value of the select attribute 
-   * is ., which will cause the string-value of the current node to 
+   * Get the "select" attribute.
+   * xsl:sort has a select attribute whose value is an expression.
+   * For each node to be processed, the expression is evaluated
+   * with that node as the current node and with the complete
+   * list of nodes being processed in unsorted order as the current
+   * node list. The resulting object is converted to a string as if
+   * by a call to the string function; this string is used as the
+   * sort key for that node. The default value of the select attribute
+   * is ., which will cause the string-value of the current node to
    * be used as the sort key.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getSelect()
   {
     return m_selectExpression;
   }
-  
+
   /**
    * lang specifies the language of the sort keys.
    */
   private AVT m_lang_avt = null;
-  
+
   /**
-   * Set the "lang" attribute. 
-   * lang specifies the language of the sort keys; it has the same 
-   * range of values as xml:lang [XML]; if no lang value is 
+   * Set the "lang" attribute.
+   * lang specifies the language of the sort keys; it has the same
+   * range of values as xml:lang [XML]; if no lang value is
    * specified, the language should be determined from the system environment.
+   *
+   * NEEDSDOC @param v
    */
   public void setLang(AVT v)
   {
@@ -140,25 +150,26 @@ public class ElemSort extends ElemTemplateElement
   }
 
   /**
-   * Get the "lang" attribute. 
-   * lang specifies the language of the sort keys; it has the same 
-   * range of values as xml:lang [XML]; if no lang value is 
+   * Get the "lang" attribute.
+   * lang specifies the language of the sort keys; it has the same
+   * range of values as xml:lang [XML]; if no lang value is
    * specified, the language should be determined from the system environment.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getLang()
   {
     return m_lang_avt;
   }
-  
-  
+
   /**
    * data-type specifies the data type of the
    * strings to be sorted.
    */
   private AVT m_dataType_avt = null;
-  
+
   /**
-   * Set the "data-type" attribute. 
+   * Set the "data-type" attribute.
    * <code>data-type</code> specifies the data type of the
    * strings; the following values are allowed:
    * <ul>
@@ -186,6 +197,8 @@ public class ElemSort extends ElemTemplateElement
    * <b>NOTE: </b>The XSL Working Group plans that future versions of XSLT will
    * leverage XML Schemas to define further values for this
    * attribute.</blockquote>
+   *
+   * NEEDSDOC @param v
    */
   public void setDataType(AVT v)
   {
@@ -193,7 +206,7 @@ public class ElemSort extends ElemTemplateElement
   }
 
   /**
-   * Get the "data-type" attribute. 
+   * Get the "data-type" attribute.
    * <code>data-type</code> specifies the data type of the
    * strings; the following values are allowed:
    * <ul>
@@ -221,23 +234,27 @@ public class ElemSort extends ElemTemplateElement
    * <b>NOTE: </b>The XSL Working Group plans that future versions of XSLT will
    * leverage XML Schemas to define further values for this
    * attribute.</blockquote>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getDataType()
   {
     return m_dataType_avt;
   }
-    
+
   /**
-   * order specifies whether the strings should be sorted in ascending 
+   * order specifies whether the strings should be sorted in ascending
    * or descending order.
    */
   private AVT m_order_avt = null;
-  
+
   /**
-   * Set the "order" attribute. 
-   * order specifies whether the strings should be sorted in ascending 
-   * or descending order; ascending specifies ascending order; descending 
+   * Set the "order" attribute.
+   * order specifies whether the strings should be sorted in ascending
+   * or descending order; ascending specifies ascending order; descending
    * specifies descending order; the default is ascending.
+   *
+   * NEEDSDOC @param v
    */
   public void setOrder(AVT v)
   {
@@ -245,30 +262,34 @@ public class ElemSort extends ElemTemplateElement
   }
 
   /**
-   * Get the "order" attribute. 
-   * order specifies whether the strings should be sorted in ascending 
-   * or descending order; ascending specifies ascending order; descending 
+   * Get the "order" attribute.
+   * order specifies whether the strings should be sorted in ascending
+   * or descending order; ascending specifies ascending order; descending
    * specifies descending order; the default is ascending.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getOrder()
   {
     return m_order_avt;
   }
-    
+
   /**
-   * case-order has the value upper-first or lower-first. 
+   * case-order has the value upper-first or lower-first.
    * The default value is language dependent.
    */
   private AVT m_caseorder_avt = null;
-  
+
   /**
-   * Set the "case-order" attribute. 
-   * case-order has the value upper-first or lower-first; this applies 
-   * when data-type="text", and specifies that upper-case letters should 
-   * sort before lower-case letters or vice-versa respectively. 
-   * For example, if lang="en", then A a B b are sorted with 
-   * case-order="upper-first" and a A b B are sorted with case-order="lower-first". 
+   * Set the "case-order" attribute.
+   * case-order has the value upper-first or lower-first; this applies
+   * when data-type="text", and specifies that upper-case letters should
+   * sort before lower-case letters or vice-versa respectively.
+   * For example, if lang="en", then A a B b are sorted with
+   * case-order="upper-first" and a A b B are sorted with case-order="lower-first".
    * The default value is language dependent.
+   *
+   * NEEDSDOC @param v
    */
   public void setCaseOrder(AVT v)
   {
@@ -276,46 +297,59 @@ public class ElemSort extends ElemTemplateElement
   }
 
   /**
-   * Get the "case-order" attribute. 
-   * case-order has the value upper-first or lower-first; this applies 
-   * when data-type="text", and specifies that upper-case letters should 
-   * sort before lower-case letters or vice-versa respectively. 
-   * For example, if lang="en", then A a B b are sorted with 
-   * case-order="upper-first" and a A b B are sorted with case-order="lower-first". 
+   * Get the "case-order" attribute.
+   * case-order has the value upper-first or lower-first; this applies
+   * when data-type="text", and specifies that upper-case letters should
+   * sort before lower-case letters or vice-versa respectively.
+   * For example, if lang="en", then A a B b are sorted with
+   * case-order="upper-first" and a A b B are sorted with case-order="lower-first".
    * The default value is language dependent.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getCaseOrder()
   {
     return m_caseorder_avt;
   }
-  
 
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_SORT;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_SORT_STRING;
   }
-  
+
   /**
    * Add a child to the child list.
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-          //" to " + this.m_elemName);
+
+    error(XSLTErrorResources.ER_CANNOT_ADD,
+          new Object[]{ newChild.getNodeName(),
+                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    //" to " + this.m_elemName);
     return null;
   }
-
 }

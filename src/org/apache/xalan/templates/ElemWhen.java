@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -76,16 +78,19 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemWhen extends ElemTemplateElement
 {
+
   /**
-   * Each xsl:when element has a single attribute, test, 
-   * which specifies an expression. 
+   * Each xsl:when element has a single attribute, test,
+   * which specifies an expression.
    */
   private XPath m_test;
 
   /**
-   * Set the "test" attribute. 
-   * Each xsl:when element has a single attribute, test, 
-   * which specifies an expression. 
+   * Set the "test" attribute.
+   * Each xsl:when element has a single attribute, test,
+   * which specifies an expression.
+   *
+   * NEEDSDOC @param v
    */
   public void setTest(XPath v)
   {
@@ -93,19 +98,21 @@ public class ElemWhen extends ElemTemplateElement
   }
 
   /**
-   * Get the "test" attribute. 
-   * Each xsl:when element has a single attribute, test, 
-   * which specifies an expression. 
+   * Get the "test" attribute.
+   * Each xsl:when element has a single attribute, test,
+   * which specifies an expression.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getTest()
   {
     return m_test;
   }
 
-  /** 
+  /**
    * Get an integer representation of the element type.
-   * 
-   * @return An integer representation of the element, defined in the 
+   *
+   * @return An integer representation of the element, defined in the
    *     Constants class.
    * @see org.apache.xalan.templates.Constants
    */
@@ -113,17 +120,20 @@ public class ElemWhen extends ElemTemplateElement
   {
     return Constants.ELEMNAME_WHEN;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
     return Constants.ELEMNAME_WHEN_STRING;
   }
 
-  public ElemWhen()
-  {
-  }
-
+  /**
+   * Constructor ElemWhen
+   *
+   */
+  public ElemWhen(){}
 }

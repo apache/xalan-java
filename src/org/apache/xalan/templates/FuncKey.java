@@ -8,13 +8,13 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright
  *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
+ *    the documentation and/or other materials provided with the
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
@@ -71,7 +71,6 @@ import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.KeyManager;
-
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.XPathContext;
 
@@ -80,81 +79,97 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
-
 /**
  * <meta name="usage" content="advanced"/>
  * Execute the Key() function.
  */
 public class FuncKey extends Function2Args
 {
+
+  /** NEEDSDOC Field ISTRUE          */
   static private Boolean ISTRUE = new Boolean(true);
-  
+
   /**
-   * Execute the function.  The function must return 
+   * Execute the function.  The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
+   *
+   * @throws org.xml.sax.SAXException
    */
-  public XObject execute(XPathContext xctxt) 
-    throws org.xml.sax.SAXException
-  {    
+  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  {
+
     // TransformerImpl transformer = (TransformerImpl)xctxt;
-    TransformerImpl transformer = (TransformerImpl)xctxt.getOwnerObject();
+    TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();
     XNodeSet nodes = null;
     Node context = xctxt.getCurrentNode();
-    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType()) 
-                          ? (Document)context : context.getOwnerDocument();
-    if(null == docContext)
+    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType())
+                          ? (Document) context : context.getOwnerDocument();
+
+    if (null == docContext)
     {
+
       // path.error(context, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC); //"context does not have an owner document!");
     }
+
     String xkeyname = getArg0().execute(xctxt).str();
     QName keyname = new QName(xkeyname, xctxt.getNamespaceContext());
     XObject arg = getArg1().execute(xctxt);
     boolean argIsNodeSet = (XObject.CLASS_NODESET == arg.getType());
-    
     KeyManager kmgr = transformer.getKeyManager();
-    if(argIsNodeSet)
+
+    if (argIsNodeSet)
     {
       Hashtable usedrefs = null;
       NodeIterator ni = arg.nodeset();
       Node pos;
       UnionPathIterator upi = new UnionPathIterator();
-      while(null != (pos = ni.nextNode()))
+
+      while (null != (pos = ni.nextNode()))
       {
         String ref = DOMHelper.getNodeData(pos);
-        if(null == ref)
+
+        if (null == ref)
           continue;
-        if(null == usedrefs)
+
+        if (null == usedrefs)
           usedrefs = new Hashtable();
 
-        if(usedrefs.get(ref) != null)
+        if (usedrefs.get(ref) != null)
         {
-          continue; // We already have 'em.
+          continue;  // We already have 'em.
         }
         else
         {
+
           // ISTRUE being used as a dummy value.
           usedrefs.put(ref, ISTRUE);
         }
-        
-        LocPathIterator nl = kmgr.getNodeSetByKey(xctxt, docContext, 
-                                           keyname, ref, 
-                                           xctxt.getNamespaceContext());
+
+        LocPathIterator nl =
+          kmgr.getNodeSetByKey(xctxt, docContext, keyname, ref,
+                               xctxt.getNamespaceContext());
+
         upi.addIterator(nl);
+
         //mnodeset.addNodesInDocOrder(nl, xctxt); needed??
       }
+
       upi.initContext(xctxt);
+
       nodes = new XNodeSet(upi);
     }
     else
     {
       String ref = arg.str();
-      LocPathIterator nl = kmgr.getNodeSetByKey(xctxt, docContext, 
-                                         keyname, ref, 
-                                         xctxt.getNamespaceContext());
+      LocPathIterator nl = kmgr.getNodeSetByKey(xctxt, docContext, keyname,
+                                                ref,
+                                                xctxt.getNamespaceContext());
+
       nodes = new XNodeSet(nl);
     }
+
     return nodes;
   }
 }

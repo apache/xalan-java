@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -68,7 +70,7 @@ import org.apache.xalan.transformer.TransformerImpl;
  * Implement xsl:processing-instruction.
  * <pre>
  * <!ELEMENT xsl:processing-instruction %char-template;>
- * <!ATTLIST xsl:processing-instruction 
+ * <!ATTLIST xsl:processing-instruction
  *   name %avt; #REQUIRED
  *   %space-att;
  * >
@@ -77,17 +79,20 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemPI extends ElemTemplateElement
 {
+
   /**
-   * The xsl:processing-instruction element has a required name 
-   * attribute that specifies the name of the processing instruction node. 
-   * The value of the name attribute is interpreted as an 
+   * The xsl:processing-instruction element has a required name
+   * attribute that specifies the name of the processing instruction node.
+   * The value of the name attribute is interpreted as an
    * attribute value template.
    */
   private AVT m_name_atv = null;
 
   /**
-   * Set the "name" attribute. 
-   * DJD 
+   * Set the "name" attribute.
+   * DJD
+   *
+   * NEEDSDOC @param v
    */
   public void setName(AVT v)
   {
@@ -95,25 +100,31 @@ public class ElemPI extends ElemTemplateElement
   }
 
   /**
-   * Get the "name" attribute. 
-   * DJD 
+   * Get the "name" attribute.
+   * DJD
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public AVT getName()
   {
     return m_name_atv;
   }
-  
+
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_PI;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -122,28 +133,37 @@ public class ElemPI extends ElemTemplateElement
 
   /**
    * Create a processing instruction in the result tree.
-   * The content of the xsl:processing-instruction element is a 
-   * template for the string-value of the processing instruction node. 
+   * The content of the xsl:processing-instruction element is a
+   * template for the string-value of the processing instruction node.
    * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions">section-Creating-Processing-Instructions in XSLT Specification</a>
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                     Node sourceNode,
-                     QName mode)
-    throws SAXException
-  {    
-    if(TransformerImpl.S_DEBUG)
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-    String piName = m_name_atv.evaluate(transformer.getXPathContext(), sourceNode, this);
-    if(piName.equalsIgnoreCase("xml"))
+    String piName = m_name_atv.evaluate(transformer.getXPathContext(),
+                                        sourceNode, this);
+
+    if (piName.equalsIgnoreCase("xml"))
     {
-      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML); //"processing-instruction name can not be 'xml'");
+      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML);  //"processing-instruction name can not be 'xml'");
     }
-    else if(!isValidNCName(piName))
+    else if (!isValidNCName(piName))
     {
-      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME, new Object[] {piName}); //"processing-instruction name must be a valid NCName: "+piName);
+      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
+            new Object[]{ piName });  //"processing-instruction name must be a valid NCName: "+piName);
     }
-    
+
     // Note the content model is:
     // <!ENTITY % instructions "
     // %char-instructions;
@@ -152,49 +172,58 @@ public class ElemPI extends ElemTemplateElement
     // | xsl:element
     // | xsl:attribute
     // ">
-    String data = transformer.transformToString(this,  
-                                   sourceNode, mode);
+    String data = transformer.transformToString(this, sourceNode, mode);
+
     transformer.getResultTreeHandler().processingInstruction(piName, data);
   }
-  
+
   /**
    * Add a child to the child list.
+   *
+   * NEEDSDOC @param newChild
+   *
+   * NEEDSDOC ($objectName$) @return
+   *
+   * @throws DOMException
    */
-  public Node               appendChild(Node newChild)
-    throws DOMException
+  public Node appendChild(Node newChild) throws DOMException
   {
-    int type = ((ElemTemplateElement)newChild).getXSLToken();
-    switch(type)
+
+    int type = ((ElemTemplateElement) newChild).getXSLToken();
+
+    switch (type)
     {
-      // char-instructions 
-    case Constants.ELEMNAME_TEXTLITERALRESULT:
-    case Constants.ELEMNAME_APPLY_TEMPLATES:
-    case Constants.ELEMNAME_APPLY_IMPORTS:
-    case Constants.ELEMNAME_CALLTEMPLATE:
-    case Constants.ELEMNAME_FOREACH:
-    case Constants.ELEMNAME_VALUEOF:
-    case Constants.ELEMNAME_COPY_OF:
-    case Constants.ELEMNAME_NUMBER:
-    case Constants.ELEMNAME_CHOOSE:
-    case Constants.ELEMNAME_IF:
-    case Constants.ELEMNAME_TEXT:
-    case Constants.ELEMNAME_COPY:
-    case Constants.ELEMNAME_VARIABLE:
-    case Constants.ELEMNAME_MESSAGE:
-      
+
+    // char-instructions 
+    case Constants.ELEMNAME_TEXTLITERALRESULT :
+    case Constants.ELEMNAME_APPLY_TEMPLATES :
+    case Constants.ELEMNAME_APPLY_IMPORTS :
+    case Constants.ELEMNAME_CALLTEMPLATE :
+    case Constants.ELEMNAME_FOREACH :
+    case Constants.ELEMNAME_VALUEOF :
+    case Constants.ELEMNAME_COPY_OF :
+    case Constants.ELEMNAME_NUMBER :
+    case Constants.ELEMNAME_CHOOSE :
+    case Constants.ELEMNAME_IF :
+    case Constants.ELEMNAME_TEXT :
+    case Constants.ELEMNAME_COPY :
+    case Constants.ELEMNAME_VARIABLE :
+    case Constants.ELEMNAME_MESSAGE :
+
       // instructions 
       // case Constants.ELEMNAME_PI:
       // case Constants.ELEMNAME_COMMENT:
       // case Constants.ELEMNAME_ELEMENT:
       // case Constants.ELEMNAME_ATTRIBUTE:
-
       break;
-      
-    default:
-      error(XSLTErrorResources.ER_CANNOT_ADD, new Object[] {newChild.getNodeName(), this.getNodeName()}); //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-            //" to " + this.m_elemName);
+    default :
+      error(XSLTErrorResources.ER_CANNOT_ADD,
+            new Object[]{ newChild.getNodeName(),
+                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
+
+    //" to " + this.m_elemName);
     }
+
     return super.appendChild(newChild);
   }
-
 }

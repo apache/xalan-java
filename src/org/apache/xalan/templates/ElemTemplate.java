@@ -57,7 +57,9 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.xml.sax.*;
+
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -71,9 +73,9 @@ import org.apache.xalan.transformer.TransformerImpl;
  *  (#PCDATA
  *   %instructions;
  *   %result-elements;
- *   | xsl:param)*
+ *   | xsl:param)
  * >
- * 
+ *
  * <!ATTLIST xsl:template
  *   match %pattern; #IMPLIED
  *   name %qname; #IMPLIED
@@ -86,9 +88,13 @@ import org.apache.xalan.transformer.TransformerImpl;
  */
 public class ElemTemplate extends ElemTemplateElement
 {
+
+  /** NEEDSDOC Field m_publicId          */
   private String m_publicId;
+
+  /** NEEDSDOC Field m_systemId          */
   private String m_systemId;
-  
+
   /**
    * Return the public identifier for the current document event.
    * <p>This will be the public identifier
@@ -96,11 +102,11 @@ public class ElemTemplate extends ElemTemplateElement
    *         null if none is available.
    * @see #getSystemId
    */
-  public String getPublicId ()
+  public String getPublicId()
   {
     return m_publicId;
   }
-  
+
   /**
    * Return the system identifier for the current document event.
    *
@@ -111,22 +117,26 @@ public class ElemTemplate extends ElemTemplateElement
    *         if none is available.
    * @see #getPublicId
    */
-  public String getSystemId ()
+  public String getSystemId()
   {
     return m_systemId;
   }
-  
+
   /**
    * Set the location information for this element.
+   *
+   * NEEDSDOC @param locator
    */
   public void setLocaterInfo(Locator locator)
   {
+
     m_publicId = locator.getPublicId();
     m_systemId = locator.getSystemId();
+
     super.setLocaterInfo(locator);
   }
-  
-  /** 
+
+  /**
    * The owning stylesheet.
    * (Should this only be put on the template element, to
    * conserve space?)
@@ -136,6 +146,8 @@ public class ElemTemplate extends ElemTemplateElement
 
   /**
    * Get the owning stylesheet.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetComposed getStylesheetComposed()
   {
@@ -144,14 +156,18 @@ public class ElemTemplate extends ElemTemplateElement
 
   /**
    * Get the owning stylesheet.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public Stylesheet getStylesheet()
   {
     return m_stylesheet;
   }
-  
+
   /**
    * Set the owning stylesheet.
+   *
+   * NEEDSDOC @param sheet
    */
   public void setStylesheet(Stylesheet sheet)
   {
@@ -160,26 +176,30 @@ public class ElemTemplate extends ElemTemplateElement
 
   /**
    * Get the owning stylesheet.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public StylesheetRoot getStylesheetRoot()
   {
     return m_stylesheet.getStylesheetRoot();
   }
-  
+
   /**
-   * The match attribute is a Pattern that identifies the source 
+   * The match attribute is a Pattern that identifies the source
    * node or nodes to which the rule applies.
    */
   private XPath m_matchPattern = null;
-  
+
   /**
-   * Set the "match" attribute. 
-   * The match attribute is a Pattern that identifies the source 
-   * node or nodes to which the rule applies. The match attribute 
-   * is required unless the xsl:template element has a name 
-   * attribute (see [6 Named Templates]). It is an error for the 
-   * value of the match attribute to contain a VariableReference. 
+   * Set the "match" attribute.
+   * The match attribute is a Pattern that identifies the source
+   * node or nodes to which the rule applies. The match attribute
+   * is required unless the xsl:template element has a name
+   * attribute (see [6 Named Templates]). It is an error for the
+   * value of the match attribute to contain a VariableReference.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setMatch(XPath v)
   {
@@ -187,30 +207,34 @@ public class ElemTemplate extends ElemTemplateElement
   }
 
   /**
-   * Get the "match" attribute. 
-   * The match attribute is a Pattern that identifies the source 
-   * node or nodes to which the rule applies. The match attribute 
-   * is required unless the xsl:template element has a name 
-   * attribute (see [6 Named Templates]). It is an error for the 
-   * value of the match attribute to contain a VariableReference. 
+   * Get the "match" attribute.
+   * The match attribute is a Pattern that identifies the source
+   * node or nodes to which the rule applies. The match attribute
+   * is required unless the xsl:template element has a name
+   * attribute (see [6 Named Templates]). It is an error for the
+   * value of the match attribute to contain a VariableReference.
    * @see <a href="http://www.w3.org/TR/xslt#patterns">patterns in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public XPath getMatch()
   {
     return m_matchPattern;
   }
-  
+
   /**
    * An xsl:template element with a name attribute specifies a named template.
    */
   private QName m_name = null;
-  
+
   /**
-   * Set the "name" attribute. 
+   * Set the "name" attribute.
    * An xsl:template element with a name attribute specifies a named template.
-   * If an xsl:template element has a name attribute, it may, but need not, 
-   * also have a match attribute. 
+   * If an xsl:template element has a name attribute, it may, but need not,
+   * also have a match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setName(QName v)
   {
@@ -218,29 +242,33 @@ public class ElemTemplate extends ElemTemplateElement
   }
 
   /**
-   * Get the "name" attribute. 
+   * Get the "name" attribute.
    * An xsl:template element with a name attribute specifies a named template.
-   * If an xsl:template element has a name attribute, it may, but need not, 
-   * also have a match attribute. 
+   * If an xsl:template element has a name attribute, it may, but need not,
+   * also have a match attribute.
    * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getName()
   {
     return m_name;
   }
-  
+
   /**
-   * Modes allow an element to be processed multiple times, 
+   * Modes allow an element to be processed multiple times,
    * each time producing a different result.
    */
   private QName m_mode;
-  
+
   /**
-   * Set the "mode" attribute. 
-   * Modes allow an element to be processed multiple times, 
-   * each time producing a different result.  If xsl:template 
-   * does not have a match attribute, it must not have a mode attribute. 
+   * Set the "mode" attribute.
+   * Modes allow an element to be processed multiple times,
+   * each time producing a different result.  If xsl:template
+   * does not have a match attribute, it must not have a mode attribute.
    * @see <a href="http://www.w3.org/TR/xslt#modes">modes in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setMode(QName v)
   {
@@ -248,30 +276,34 @@ public class ElemTemplate extends ElemTemplateElement
   }
 
   /**
-   * Get the "mode" attribute. 
-   * Modes allow an element to be processed multiple times, 
-   * each time producing a different result.  If xsl:template 
-   * does not have a match attribute, it must not have a mode attribute. 
+   * Get the "mode" attribute.
+   * Modes allow an element to be processed multiple times,
+   * each time producing a different result.  If xsl:template
+   * does not have a match attribute, it must not have a mode attribute.
    * @see <a href="http://www.w3.org/TR/xslt#modes">modes in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public QName getMode()
   {
     return m_mode;
   }
-  
+
   /**
-   * The priority of a template rule is specified by the priority 
+   * The priority of a template rule is specified by the priority
    * attribute on the template rule.
    */
   private double m_priority = XPath.MATCH_SCORE_NONE;
-  
+
   /**
-   * Set the "priority" attribute. 
-   * The priority of a template rule is specified by the priority 
-   * attribute on the template rule. The value of this must be a 
-   * real number (positive or negative), matching the production 
-   * Number with an optional leading minus sign (-). 
+   * Set the "priority" attribute.
+   * The priority of a template rule is specified by the priority
+   * attribute on the template rule. The value of this must be a
+   * real number (positive or negative), matching the production
+   * Number with an optional leading minus sign (-).
    * @see <a href="http://www.w3.org/TR/xslt#conflict">conflict in XSLT Specification</a>
+   *
+   * NEEDSDOC @param v
    */
   public void setPriority(double v)
   {
@@ -279,12 +311,14 @@ public class ElemTemplate extends ElemTemplateElement
   }
 
   /**
-   * Get the "priority" attribute. 
-   * The priority of a template rule is specified by the priority 
-   * attribute on the template rule. The value of this must be a 
-   * real number (positive or negative), matching the production 
-   * Number with an optional leading minus sign (-). 
+   * Get the "priority" attribute.
+   * The priority of a template rule is specified by the priority
+   * attribute on the template rule. The value of this must be a
+   * real number (positive or negative), matching the production
+   * Number with an optional leading minus sign (-).
    * @see <a href="http://www.w3.org/TR/xslt#conflict">conflict in XSLT Specification</a>
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public double getPriority()
   {
@@ -294,14 +328,18 @@ public class ElemTemplate extends ElemTemplateElement
   /**
    * Get an int constant identifying the type of element.
    * @see org.apache.xalan.templates.Constants
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public int getXSLToken()
   {
     return Constants.ELEMNAME_TEMPLATE;
   }
-  
-  /** 
+
+  /**
    * Return the node name.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getNodeName()
   {
@@ -310,25 +348,33 @@ public class ElemTemplate extends ElemTemplateElement
 
   /**
    * Copy the template contents into the result tree.
-   * The content of the xsl:template element is the template 
+   * The content of the xsl:template element is the template
    * that is instantiated when the template rule is applied.
+   *
+   * NEEDSDOC @param transformer
+   * NEEDSDOC @param sourceNode
+   * NEEDSDOC @param mode
+   *
+   * @throws SAXException
    */
-  public void execute(TransformerImpl transformer, 
-                      Node sourceNode,
-                      QName mode)
-    throws SAXException
-  {    
-    if(TransformerImpl.S_DEBUG)
+  public void execute(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws SAXException
+  {
+
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-    if(null != sourceNode)
-    { 
+    if (null != sourceNode)
+    {
       transformer.executeChildTemplates(this, sourceNode, mode);
     }
-    else // if(null == sourceNode)
+    else  // if(null == sourceNode)
     {
-      transformer.getMsgMgr().error(this, sourceNode, 
-                                    XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES); 
+      transformer.getMsgMgr().error(
+        this, sourceNode,
+        XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);
+
       //"sourceNode is null in handleApplyTemplatesInstruction!");
     }
   }

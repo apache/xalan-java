@@ -57,6 +57,7 @@
 package org.apache.xalan.templates;
 
 import org.w3c.dom.*;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.utils.FastStringBuffer;
 
@@ -66,11 +67,12 @@ import org.apache.xalan.utils.FastStringBuffer;
  */
 public class AVTPartSimple extends AVTPart
 {
+
   /**
    * Simple string value;
    */
   private String m_val;
-  
+
   /**
    * Construct a simple AVT part.
    * @param val A pure string section of an AVT.
@@ -79,24 +81,29 @@ public class AVTPartSimple extends AVTPart
   {
     m_val = val;
   }
-  
+
   /**
    * Get the AVT part as the original string.
+   *
+   * NEEDSDOC ($objectName$) @return
    */
   public String getSimpleString()
   {
     return m_val;
   }
-  
+
   /**
    * Write the value into the buffer.
+   *
+   * NEEDSDOC @param xctxt
    * @param buf Buffer to write into.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
    * @param NodeList The current Context Node List.
    */
-  public void evaluate(XPathContext xctxt, FastStringBuffer buf, Node context, 
-                                org.apache.xalan.utils.PrefixResolver nsNode)
+  public void evaluate(XPathContext xctxt, FastStringBuffer buf,
+                       Node context,
+                       org.apache.xalan.utils.PrefixResolver nsNode)
   {
     buf.append(m_val);
   }
