@@ -410,8 +410,7 @@ public class StylesheetRoot extends StylesheetComposed
    * list.  The will be added from highest import precedence to
    * least import precidence.
    *
-   * NEEDSDOC @param stylesheet
-   * NEEDSDOC @param addToList
+   * @param stylesheet Stylesheet to examine for imports.
    */
   protected void addImports(Stylesheet stylesheet, boolean addToList)
   {
@@ -425,8 +424,7 @@ public class StylesheetRoot extends StylesheetComposed
       {
         Stylesheet imported = stylesheet.getImport(i);
 
-        m_globalImportList.insertElementAt(imported, 0);
-        addImports(imported, false);
+        addImports(imported, true);
       }
     }
 
@@ -444,6 +442,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     if (addToList)
       m_globalImportList.insertElementAt(stylesheet, 0);
+
   }
 
   /**
@@ -463,25 +462,7 @@ public class StylesheetRoot extends StylesheetComposed
     {
       m_globalImportList = new Vector();
 
-      int n = getImportCount();
-
-      for (int i = 0; i < n; i++)
-      {
-        StylesheetComposed imported = getImport(i);
-
-        addImports(imported, true);
-      }
-
-      n = getIncludeCount();
-
-      for (int i = 0; i < n; i++)
-      {
-        Stylesheet included = getInclude(i);
-
-        addImports(included, false);
-      }
-
-      m_globalImportList.insertElementAt(this, 0);
+      addImports(this, true);
     }
 
     super.recomposeImports();
