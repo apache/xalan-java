@@ -82,13 +82,15 @@ public abstract class NodeSortRecord {
     public static int COMPARE_DESCENDING = 1;
 
     protected static Collator _collator = Collator.getInstance();
+    protected static int[] _compareType;
+    protected static int[] _sortOrder;
+    protected static int _levels = 1;
 
     private Translet _translet = null;
     private DOM    _dom = null;
     private int    _node;           // The position in the current iterator
     private int    _last = 0;       // Number of nodes in the current iterator
-    private int    _levels = 1;     // The number of sort keys for each element
-    private int    _scanned = 0;
+    private int    _scanned = 0;    // Number of key levels extracted from DOM
 
     private Object[] _values; // Contains either CollationKey or Double
 
@@ -110,16 +112,14 @@ public abstract class NodeSortRecord {
      * This method allows the caller to set the values that could not be passed
      * to the default constructor.
      */
-    public final void initialize(int node, int last, int levels, DOM dom,
-				 Translet translet) {
+    public final void initialize(int node,int last,DOM dom,Translet translet) {
 	_dom = dom;
 	_node = node;
 	_last = last;
-	_levels = levels;
 	_translet = translet;
 	_scanned = 0;
 
-	_values = new Object[levels];
+	_values = new Object[_levels];
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class NodeSortRecord {
 	int cmp, level;
 	for (level = 0; level < _levels; level++) {
 	    // Compare the two nodes either as numeric or text values
-	    if (compareType(level) == COMPARE_NUMERIC) {
+	    if (_compareType[level] == COMPARE_NUMERIC) {
 		final Double our = numericValue(level);
 		final Double their = other.numericValue(level);
 		cmp = our.compareTo(their);
@@ -198,7 +198,7 @@ public abstract class NodeSortRecord {
 	    
 	    // Return inverse compare value if inverse sort order
 	    if (cmp != 0) {
-		return sortOrder(level) == COMPARE_DESCENDING ? 0 - cmp : cmp;
+		return _sortOrder[level] == COMPARE_DESCENDING ? 0 - cmp : cmp;
 	    }
 	}
 	// Compare based on document order if all sort keys are equal
@@ -214,22 +214,9 @@ public abstract class NodeSortRecord {
     }
 
     /**
-     * Returns compare type for a level of this key.
-     * Must return either COMPARE_STRING or COMPARE_NUMERIC.
-     */
-    public abstract int compareType(int level);
-
-    /**
-     * Returns sort order for a level of this key.
-     * Most return either COMPARE_ASCENDING or COMPARE_DESCENDING.
-     */
-    public abstract int sortOrder(int level);
-
-    /**
      * Extract the sort value for a level of this key.
      */
     public abstract String extractValueFromDOM(DOM dom, int current, int level,
-					       Translet translet,
-					       int last);
+					       Translet translet, int last);
 
 }

@@ -228,12 +228,8 @@ final class Sort extends Instruction {
 	final InstructionList il = methodGen.getInstructionList();
 	
 	// NodeSortRecordFactory.NodeSortRecordFactory(dom,class,levels,trlet);
-	final String initParams = "("
-	    + DOM_INTF_SIG
-	    + STRING_SIG
-	    + "I"
-	    + TRANSLET_INTF_SIG
-	    + ")V";
+	final String initParams =
+	    "("+DOM_INTF_SIG+STRING_SIG+ TRANSLET_INTF_SIG+")V";
 	final int init = cpg.addMethodref(NODE_SORT_FACTORY,
 					  "<init>", initParams);
 
@@ -247,7 +243,6 @@ final class Sort extends Instruction {
 	il.append(DUP);
 	il.append(methodGen.loadDOM());
 	il.append(new PUSH(cpg, className));
-	il.append(new PUSH(cpg, sortObjects.size()));
 	il.append(classGen.loadTranslet());
 	il.append(new INVOKESPECIAL(init));
     }
@@ -276,16 +271,9 @@ final class Sort extends Instruction {
 					 cpg, className);
 	Method extract = compileExtract(sortObjects, sortRecord,
 					cpg, className);
-	Method sortType = compileSortType(sortObjects, sortRecord,
-					  cpg, className);
-	Method sortOrder = compileSortOrder(sortObjects, sortRecord,
-					    cpg, className);
-
 	sortRecord.addMethod(clinit);
 	sortRecord.addEmptyConstructor(ACC_PUBLIC);
 	sortRecord.addMethod(extract);
-	sortRecord.addMethod(sortType);
-	sortRecord.addMethod(sortOrder);
 
 	// Overload NodeSortRecord.getCollator() only if needed
 	for (int i = 0; i < sortObjects.size(); i++) {
@@ -333,24 +321,11 @@ final class Sort extends Instruction {
 	final int setStrength = cpg.addMethodref(COLLATOR_CLASS,
 						 "setStrength", "(I)V");
 
-	// GTM: BCEL Changes:
-	// GTM: Chged Field.ACC_PRIVATE --> Constants.ACC_PRIVATE
-	//	Chged Field.ACC_STATIC  --> Constants.ACC_STATIC	
-	sortRecord.addField(new Field(
-				Constants.ACC_PRIVATE | Constants.ACC_STATIC,
-				cpg.addUtf8("_compareType"),
-				cpg.addUtf8("[I"),
-				null, cpg.getConstantPool()));
-	// GTM: BCEL Changes:
-	// GTM: Chged Field.ACC_PRIVATE --> Constants.ACC_PRIVATE
-	//	Chged Field.ACC_STATIC  --> Constants.ACC_STATIC	
-	sortRecord.addField(new Field(
-				Constants.ACC_PRIVATE | Constants.ACC_STATIC,
-				cpg.addUtf8("_sortOrder"),
-				cpg.addUtf8("[I"),
-				null, cpg.getConstantPool()));
-
 	final int levels = sortObjects.size();
+
+	final int levelsField = cpg.addFieldref(className, "_levels", "I");
+	il.append(new PUSH(cpg, levels));
+	il.append(new PUTSTATIC(levelsField));
 
 	// Compile code that initializes the static _compareType array
 	final int ctype = cpg.addFieldref(className, "_compareType", "[I");
@@ -500,72 +475,6 @@ final class Sort extends Instruction {
 	extractMethod.removeNOPs();
 
 	return extractMethod.getMethod();
-    }
-
-
-    /**
-     * Compiles a method that overloads NodeSortRecord.compareType()
-     */
-    private static Method compileSortType(Vector sortObjects,
-					  NodeSortRecordGenerator sortRecord,
-					  ConstantPoolGen cpg,
-					  String className) {
-	final InstructionList il = new InstructionList();
-	
-	// int NodeSortRecord.compareType(level);
-	final MethodGenerator sortType =
-	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
-				de.fub.bytecode.generic.Type.INT, 
-				new de.fub.bytecode.generic.Type[] {
-				    de.fub.bytecode.generic.Type.INT
-				},
-				new String[] { "level" },
-				"compareType", className, il, cpg);
-	final int idx = cpg.addFieldref(className, "_compareType", "[I");
-	il.append(new GETSTATIC(idx));
-	il.append(new ILOAD(sortType.getLocalIndex("level")));
-	il.append(IALOAD);
-	il.append(IRETURN);
-
-	sortType.stripAttributes(true);
-	sortType.setMaxLocals();
-	sortType.setMaxStack();
-	sortType.removeNOPs();
-
-	return sortType.getMethod();
-    }
-
-
-    /**
-     * Compiles a method that overloads NodeSortRecord
-     */
-    private static Method compileSortOrder(Vector sortObjects,
-					   NodeSortRecordGenerator sortRecord,
-					   ConstantPoolGen cpg,
-					   String className) {
-	final InstructionList il = new InstructionList();
-	
-	// int NodeSortRecord.sortOrder(level);
-	final MethodGenerator sortOrder =
-	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
-				de.fub.bytecode.generic.Type.INT, 
-				new de.fub.bytecode.generic.Type[] {
-				    de.fub.bytecode.generic.Type.INT
-				},
-				new String[] { "level" },
-				"sortOrder", className, il, cpg);
-	final int idx = cpg.addFieldref(className, "_sortOrder", "[I");
-	il.append(new GETSTATIC(idx));
-	il.append(new ILOAD(sortOrder.getLocalIndex("level")));
-	il.append(IALOAD);
-	il.append(IRETURN);
-
-	sortOrder.stripAttributes(true);
-	sortOrder.setMaxLocals();
-	sortOrder.setMaxStack();
-	sortOrder.removeNOPs();
-
-	return sortOrder.getMethod();
     }
 
     /**

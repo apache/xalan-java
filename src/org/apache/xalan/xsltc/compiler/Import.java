@@ -104,6 +104,8 @@ final class Import extends TopLevelElement {
 		input = loader.loadSource(base, systemId, xsltc);
 	    }
 	    else {
+		//System.err.println("current context is "+context.getSystemId());
+		//System.err.println("new file  is "+systemId);
 		input = new InputSource(systemId);
 	    }
 
