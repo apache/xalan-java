@@ -93,6 +93,10 @@ public class BitArray implements Externalizable {
     /**
      * Constructor. Defines the initial size of the bit array (in bits).
      */
+    public BitArray() {
+	this(32);
+    }
+
     public BitArray(int size) {
 	if (size < 32) size = 32;
 	_bitSize = size;
