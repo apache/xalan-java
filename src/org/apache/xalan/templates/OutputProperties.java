@@ -673,7 +673,9 @@ public class OutputProperties extends ElemTemplateElement
       QName qname = (QName) v.elementAt(i);
 
       fsb.append(qname.toNamespacedString());
-      fsb.append(' ');
+      // Don't append space after last value
+      if (i < s-1) 
+        fsb.append(' ');
     }
 
     m_properties.put(key, fsb.toString());
