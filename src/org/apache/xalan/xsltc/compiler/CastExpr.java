@@ -202,7 +202,7 @@ final class CastExpr extends Expression {
 	else if (tleft instanceof ResultTreeType) {
 	    tleft = Type.ResultTree; // multiple instances
 	}
-	if (InternalTypeMap.maps(tleft, _type)) {
+	if (InternalTypeMap.maps(tleft, _type) != null) {
 	    return _type;
 	}
 	throw new TypeCheckError(this);	

@@ -133,12 +133,31 @@ class FunctionCall extends Expression {
     private static final Hashtable _java2Internal = new Hashtable();
 
     /**
+     * inner class to used in internal2Java mappings, contains
+     * the Java type and the distance between the internal type and
+     * the Java type. 
+     */
+    static class JavaType {
+	public Class  type;
+	public int distance;
+	
+	public JavaType(Class type, int distance){
+	    this.type = type;
+	    this.distance = distance;
+	}
+	public boolean equals(Object query){
+	    return query.equals(type);
+	}
+    } 
+
+    /**
      * Defines 2 conversion tables:
      * 1. From internal types to Java types and
      * 2. From Java types to internal types.
      * These two tables are used when calling external (Java) functions.
      */
     static {
+
 	try {
 	    final Class objectClass   = Class.forName("java.lang.Object");
 	    final Class stringClass   = Class.forName("java.lang.String");
@@ -146,43 +165,43 @@ class FunctionCall extends Expression {
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
 
 	    // Possible conversions between internal and Java types
-	    _internal2Java.put(Type.Boolean, Boolean.TYPE);
+	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.TYPE,0));
 
-	    _internal2Java.put(Type.Int, Character.TYPE);
-	    _internal2Java.put(Type.Int, Byte.TYPE);
-	    _internal2Java.put(Type.Int, Short.TYPE);
-	    _internal2Java.put(Type.Int, Integer.TYPE);
-	    _internal2Java.put(Type.Int, Long.TYPE);
-	    _internal2Java.put(Type.Int, Float.TYPE);
-	    _internal2Java.put(Type.Int, Double.TYPE);
+	    _internal2Java.put(Type.Int, new JavaType(Character.TYPE, 6)); 
+	    _internal2Java.put(Type.Int, new JavaType(Byte.TYPE, 5));
+	    _internal2Java.put(Type.Int, new JavaType(Short.TYPE, 4));
+	    _internal2Java.put(Type.Int, new JavaType(Integer.TYPE, 0));
+	    _internal2Java.put(Type.Int, new JavaType(Long.TYPE, 1));
+	    _internal2Java.put(Type.Int, new JavaType(Float.TYPE, 2));
+	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 3));
 
-	    _internal2Java.put(Type.Real, Character.TYPE);
-	    _internal2Java.put(Type.Real, Byte.TYPE);
-	    _internal2Java.put(Type.Real, Short.TYPE);
-	    _internal2Java.put(Type.Real, Integer.TYPE);
-	    _internal2Java.put(Type.Real, Long.TYPE);
-	    _internal2Java.put(Type.Real, Float.TYPE);
-	    _internal2Java.put(Type.Real, Double.TYPE);
+	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 6)); 
+	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 5));
+	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 4));
+	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 3));
+	    _internal2Java.put(Type.Real, new JavaType(Long.TYPE, 2));
+	    _internal2Java.put(Type.Real, new JavaType(Float.TYPE, 1));
+	    _internal2Java.put(Type.Real, new JavaType(Double.TYPE, 0));
 
-	    _internal2Java.put(Type.String, stringClass);
+	    _internal2Java.put(Type.String, new JavaType(stringClass, 0)); 
 
-	    _internal2Java.put(Type.Node, nodeClass);
-	    _internal2Java.put(Type.Node, nodeListClass);
+	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));  
+	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 1));
 
-	    _internal2Java.put(Type.NodeSet, Integer.TYPE);
-	    _internal2Java.put(Type.NodeSet, nodeClass);
-	    _internal2Java.put(Type.NodeSet, nodeListClass);
+	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0)); 
 
-	    _internal2Java.put(Type.ResultTree, nodeClass);
-	    _internal2Java.put(Type.ResultTree, nodeListClass);
-	    _internal2Java.put(Type.ResultTree, objectClass);
+	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
+	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass,0));
+	    _internal2Java.put(Type.ResultTree, new JavaType(objectClass,2));
 
-	    _internal2Java.put(Type.Reference, objectClass);
+	    _internal2Java.put(Type.Reference, new JavaType(objectClass,0));
 
 	    // Possible conversions between Java and internal types
-	    _java2Internal.put(Boolean.TYPE, Type.Boolean);
+	    _java2Internal.put(Boolean.TYPE, Type.Boolean); 
 
-	    _java2Internal.put(Character.TYPE, Type.Real);
+	    _java2Internal.put(Character.TYPE, Type.Real); 
 	    _java2Internal.put(Byte.TYPE, Type.Real);
 	    _java2Internal.put(Short.TYPE, Type.Real);
 	    _java2Internal.put(Integer.TYPE, Type.Real);
@@ -339,6 +358,8 @@ class FunctionCall extends Expression {
 	final Vector argsType = typeCheckArgs(stable);
 
 	// Try all constructors 
+	int bestConstrDistance = Integer.MAX_VALUE;
+	_type = null;			// reset
 	for (int j, i = 0; i < nConstructors; i++) {
 	    // Check if all parameters to this constructor can be converted
 	    final Constructor constructor = 
@@ -346,18 +367,32 @@ class FunctionCall extends Expression {
 	    final Class[] paramTypes = constructor.getParameterTypes();
 
 	    Class extType = null;
+	    int currConstrDistance = 0;
 	    for (j = 0; j < nArgs; j++) {
 		// Convert from internal (translet) type to external (Java) type
 		extType = paramTypes[j];
 		final Type intType = (Type)argsType.elementAt(j);
-		if (!_internal2Java.maps(intType, extType)) break;
+		Object match = _internal2Java.maps(intType, extType);
+		if (match != null) {
+		    currConstrDistance += ((JavaType)match).distance;
+		}
+		else {
+		    // no mapping available
+		    currConstrDistance = Integer.MAX_VALUE;
+		    break;
+		} 
 	    }
 
-	    if (j == nArgs) {
+	    if (j == nArgs && currConstrDistance < bestConstrDistance ) {
 	        _chosenConstructor = constructor;
 	        _isExtConstructor = true;
-		return _type = new ObjectType(_className);
+		bestConstrDistance = currConstrDistance;
+		_type = new ObjectType(_className);
 	    }
+	}
+
+	if (_type != null) {
+	    return _type;
 	}
 
 	final StringBuffer buf = new StringBuffer(_className);
@@ -431,18 +466,30 @@ class FunctionCall extends Expression {
 	final int nMethods = methods.size();
 	final Vector argsType = typeCheckArgs(stable);
 
-	// Try all methods with the same name as this function
+	// Try all methods to identify the best fit 
+	int bestMethodDistance  = Integer.MAX_VALUE;
+	_type = null;                       // reset internal type 
 	for (int j, i = 0; i < nMethods; i++) {
 
 	    // Check if all paramteters to this method can be converted
 	    final Method method = (Method)methods.elementAt(i);
 	    final Class[] paramTypes = method.getParameterTypes();
-
+	    
+	    int currMethodDistance = 0;
 	    for (j = 0; j < nArgs; j++) {
 		// Convert from internal (translet) type to external (Java) type
 		extType = paramTypes[j];
 		final Type intType = (Type)argsType.elementAt(j);
-		if (!_internal2Java.maps(intType, extType)) break;
+		Object match = _internal2Java.maps(intType, extType);
+		if (match != null) {
+		   currMethodDistance += 
+			((JavaType)match).distance; 
+		}
+		else {
+		    // no mapping available
+		    currMethodDistance = Integer.MAX_VALUE;
+		    break;
+		}
 	    }
 
 	    if (j == nArgs) {
@@ -452,14 +499,18 @@ class FunctionCall extends Expression {
 		    : (Type) _java2Internal.get(extType);
 
 		// Use this method if all parameters & return type match
-		if (_type != null) {
+		if (_type != null && currMethodDistance < bestMethodDistance) {
 		    _chosenMethod = method;
-		    if (_type == Type.NodeSet){
-		        getXSLTC().setMultiDocument(true);
-		    }
-		    return _type;
+		    bestMethodDistance = currMethodDistance;
 		}
 	    }
+	}
+
+	if (_type != null) {
+	    if (_type == Type.NodeSet){
+                getXSLTC().setMultiDocument(true);
+            }
+	    return _type;
 	}
 
 	final StringBuffer buf = new StringBuffer(_className);
