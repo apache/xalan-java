@@ -1335,7 +1335,6 @@ public class TransformerImpl extends Transformer
   public void setSerializer(Serializer s)
   {
     m_serializer = s;
-    ;
   }
 
   /**
@@ -1696,7 +1695,6 @@ public class TransformerImpl extends Transformer
     return m_outputContentHandler;
   }
 
-
   /**
    * <meta name="usage" content="advanced"/>
    * Given a stylesheet element, create a result tree fragment from it's
@@ -1727,7 +1725,8 @@ public class TransformerImpl extends Transformer
       ((SourceTreeHandler)rtfHandler).setUseMultiThreading(false);
       ((SourceTreeHandler)rtfHandler).setShouldTransformAtEnd(false);
       // Create a ResultTreeFrag object.
-      resultFragment = (DocumentFragment)((SourceTreeHandler)rtfHandler).getRoot();;      
+      resultFragment = (DocumentFragment)((SourceTreeHandler)rtfHandler).getRoot();
+      // ((org.apache.xalan.stree.DocumentFragmentImpl)resultFragment).setComplete(true);     
     }     
     else
     {
@@ -1762,20 +1761,25 @@ public class TransformerImpl extends Transformer
     ResultTreeHandler savedRTreeHandler = this.m_resultTreeHandler;
 
     // And make a new handler for the RTF.
-    this.m_resultTreeHandler = new ResultTreeHandler(this, rtfHandler);
-    
+    m_resultTreeHandler = new ResultTreeHandler(this, rtfHandler);
+    ResultTreeHandler rth = m_resultTreeHandler;
 
     try
     {
-      m_resultTreeHandler.startDocument();
+      rth.startDocument();
   
-      // Do the transformation of the child elements.
-      executeChildTemplates(templateParent, sourceNode, mode, true);
-      
-      // Make sure everything is flushed!
-      this.m_resultTreeHandler.flushPending();
-      
-      m_resultTreeHandler.endDocument();
+      try
+      {
+        // Do the transformation of the child elements.
+        executeChildTemplates(templateParent, sourceNode, mode, true);
+        
+        // Make sure everything is flushed!
+        rth.flushPending();
+      }
+      finally
+      {      
+        rth.endDocument();
+      }
     }
     catch(org.xml.sax.SAXException se)
     {
@@ -2059,6 +2063,12 @@ public class TransformerImpl extends Transformer
             throws TransformerException
   {
 
+    ResultTreeHandler rth = this.getResultTreeHandler();
+    
+    // These may well not be the same!  In this case when calling 
+    // the Redirect extension, it has already set the ContentHandler
+    // in the Transformer.
+    ContentHandler savedRTHHandler = rth.getContentHandler();
     ContentHandler savedHandler = this.getContentHandler();
 
     try
@@ -2074,6 +2084,10 @@ public class TransformerImpl extends Transformer
     finally
     {
       this.setContentHandler(savedHandler);
+      
+      // This fixes a bug where the ResultTreeHandler's ContentHandler
+      // was being reset to the wrong ContentHandler.
+      rth.setContentHandler(savedRTHHandler);
     }
   }
 
