@@ -996,20 +996,7 @@ for (int i = 0; i < _templates.size(); i++) {
 				classGen.getConstantPool());
 	methodGen.addException("org.apache.xalan.xsltc.TransletException");
 
-	// No templates? Then just stuff in a single 'return' instruction
-	if (_neededTemplates.size() == 0) {
-	    mainIL.append(new RETURN());
-	    methodGen.stripAttributes(true);
-	    methodGen.setMaxLocals();
-	    methodGen.setMaxStack();
-	    methodGen.removeNOPs();
-	    classGen.addMethod(methodGen.getMethod());
-	    // Restore original/complete set of templates for the transformation
-	    _templates = oldTemplates;
-	    return;
-	}
-
-	// Create the local variablea
+	// Create the local variable to hold the current node
 	final LocalVariableGen current;
 	current = methodGen.addLocalVariable2("current",
 					      org.apache.bcel.generic.Type.INT,
@@ -1036,6 +1023,16 @@ for (int i = 0; i < _templates.size(); i++) {
 	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
 	final InstructionHandle ihLoop = ilLoop.getStart();
 
+	// Compile default handling of elements (traverse children)
+	InstructionList ilRecurse =
+	    compileDefaultRecursion(classGen, methodGen, ihLoop);
+	InstructionHandle ihRecurse = ilRecurse.getStart();
+
+	// Compile default handling of text/attribute nodes (output text)
+	InstructionList ilText =
+	    compileDefaultText(classGen, methodGen, ihLoop);
+	InstructionHandle ihText = ilText.getStart();
+
 	// Distinguish attribute/element/namespace tests for further processing
 	final int[] types = new int[DOM.NTYPES + names.size()];
 	for (int i = 0; i < types.length; i++) {
@@ -1055,7 +1052,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Handle template with explicit "*" pattern
 	final TestSeq elemTest = _testSeq[DOM.ELEMENT];
-	InstructionHandle ihElem = ihLoop;
+	InstructionHandle ihElem = ihRecurse;
 	if (elemTest != null) {
 	    ihElem = elemTest.compile(classGen, methodGen, ihLoop);
 	}
@@ -1079,9 +1076,7 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// If there is a match on node() we need to replace ihElem
 	// and ihText if the priority of node() is higher
-	InstructionHandle ihText = ihLoop;
 	if (_nodeTestSeq != null) {
-
 	    // Compare priorities of node() and "*"
 	    double nodePrio = _nodeTestSeq.getPriority();
 	    int    nodePos  = _nodeTestSeq.getPosition();
@@ -1156,10 +1151,10 @@ for (int i = 0; i < _templates.size(); i++) {
 	    }
 	}
 
-	// Handle pattern with match on root node - default: loop
+	// Handle pattern with match on root node - default: traverse children
 	targets[DOM.ROOT] = _rootPattern != null
 	    ? getTemplateInstructionHandle(_rootPattern.getTemplate())
-	    : ihLoop;
+	    : ihRecurse;
 	
 	// Handle any pattern with match on text nodes - default: loop
 	targets[DOM.TEXT] = _testSeq[DOM.TEXT] != null
@@ -1236,6 +1231,11 @@ for (int i = 0; i < _templates.size(); i++) {
 	if (nsElem != null) body.append(nsElem);
 	// Append NS:@* node tests (if any)
 	if (nsAttr != null) body.append(nsAttr);
+
+	// Append default action for element and root nodes
+	body.append(ilRecurse);
+	// Append default action for text and attribute nodes
+	body.append(ilText);
 
 	// putting together constituent instruction lists
 	mainIL.append(new GOTO_W(ihLoop));
