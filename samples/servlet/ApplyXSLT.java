@@ -550,22 +550,24 @@ public class ApplyXSLT extends HttpServlet
       String xslURL = ((DefaultApplyXSLTProperties) ourDefaultParameters).getXSLRequestURL(request);
 
       if (xslURL != null)
+      {
         listener.out.println("Parsing XSL Stylesheet Document from request parameter: "
                              + xslURL);
+        useDefaultTemplates = false;
+      }
       else 
       {
         // find stylesheet from XML Document, Media tag preference
-        if (!useDefaultTemplates)
+        SAXTransformerFactory stf = (SAXTransformerFactory)tFactory;
+        Source styleSource =
+               stf.getAssociatedStylesheet(xmlSource,getMedia(request), null, null);
+        if (styleSource != null)
         {
-          SAXTransformerFactory stf = (SAXTransformerFactory)tFactory;
-          Source styleSource =
-                stf.getAssociatedStylesheet(xmlSource,getMedia(request), null, null);
-          if (styleSource != null)
-          {
-            listener.out.println("Parsing XSL Stylesheet from XML document stylesheet PI.");
-            return styleSource;
-          }
-        }      
+          listener.out.println("Parsing XSL Stylesheet from XML document stylesheet PI.");
+          useDefaultTemplates = false;
+          return styleSource;
+        }
+        
         // Configuration Default
         if ((xslURL = ourDefaultParameters.getXSLurl(null)) != null)
         {
