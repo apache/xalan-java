@@ -37,7 +37,25 @@ import org.apache.xpath.XPathContext;
  */
 public class AVT implements java.io.Serializable, XSLTVisitable
 {
-
+  
+  /**
+    *We are not going to use the object pool if USE_OBJECT_POOL == false.
+  */
+  private final static boolean USE_OBJECT_POOL = false; 
+  
+  /**
+    * INIT_BUFFER_CHUNK_BITS is used to set initial size of
+    * of the char m_array in FastStringBuffer if USE_OBJECT_POOL == false. 
+    * size = 2^ INIT_BUFFER_CHUNK_BITS, INIT_BUFFER_CHUNK_BITS = 7 
+    * corresponds size = 256. 
+  */
+  private final static int INIT_BUFFER_CHUNK_BITS = 8; 
+  
+  /**
+   * We are caching FastStringBuffer objects if if USE_OBJECT_POOL == false
+   */
+  private transient FastStringBuffer m_cachedBuf;
+  
   /**
    * If the AVT is not complex, just hold the simple string.
    * @serial
@@ -49,6 +67,8 @@ public class AVT implements java.io.Serializable, XSLTVisitable
    * @serial
    */
   private Vector m_parts = null;
+  
+   
 
   /**
    * The name of the attribute.
@@ -161,9 +181,15 @@ public class AVT implements java.io.Serializable, XSLTVisitable
     }
     else
     {
-      FastStringBuffer buffer = StringBufferPool.get();
-      FastStringBuffer exprBuffer = StringBufferPool.get();
-
+      FastStringBuffer buffer = null;
+      FastStringBuffer exprBuffer = null;
+      if(USE_OBJECT_POOL){
+        buffer = StringBufferPool.get(); 
+        exprBuffer = StringBufferPool.get();
+      }else{
+        buffer = new FastStringBuffer(6);
+        exprBuffer = new FastStringBuffer(6);
+      }
       try
       {
         m_parts = new Vector(nTokens + 1);
@@ -395,8 +421,13 @@ public class AVT implements java.io.Serializable, XSLTVisitable
       }
       finally
       {
-        StringBufferPool.free(buffer);
-        StringBufferPool.free(exprBuffer);
+        if(USE_OBJECT_POOL){
+             StringBufferPool.free(buffer);
+             StringBufferPool.free(exprBuffer);
+         }else{
+            buffer = null;
+            exprBuffer = null;
+         };
       }
     }  // end else nTokens > 1
 
@@ -416,42 +447,32 @@ public class AVT implements java.io.Serializable, XSLTVisitable
   public String getSimpleString()
   {
 
-    if (null != m_simpleString)
-    {
+    if (null != m_simpleString){
       return m_simpleString;
     }
-    else if (null != m_parts)
-    {
-      FastStringBuffer buf = StringBufferPool.get();
-      String s;
+    else if (null != m_parts){
+     final FastStringBuffer buf = getBuffer();
+     String out = null;
 
-      try
-      {
-        buf.setLength(0);
-
-        int n = m_parts.size();
-
-        for (int i = 0; i < n; i++)
-        {
-          AVTPart part = (AVTPart) m_parts.elementAt(i);
-
-          buf.append(part.getSimpleString());
-        }
-
-        s = buf.toString();
+    int n = m_parts.size();
+    try{
+      for (int i = 0; i < n; i++){
+        AVTPart part = (AVTPart) m_parts.elementAt(i);
+        buf.append(part.getSimpleString());
       }
-      finally
-      {
-        StringBufferPool.free(buf);
-      }
-
-      return s;
+      out = buf.toString();
+    }finally{
+      if(USE_OBJECT_POOL){
+         StringBufferPool.free(buf);
+     }else{
+        buf.setLength(0); 
+     };
     }
-    else
-    {
+    return out;
+  }else{
       return "";
-    }
   }
+}
 
   /**
    * Evaluate the AVT and return a String.
@@ -469,39 +490,28 @@ public class AVT implements java.io.Serializable, XSLTVisitable
           XPathContext xctxt, int context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
-
-    if (null != m_simpleString)
-    {
-            return m_simpleString;
-    }
-    
-    FastStringBuffer buf = null;
-    try
-    {
-      buf = StringBufferPool.get();
-      if (null != m_parts)
-      {
-        buf.setLength(0);
-
-        int n = m_parts.size();
-
-        for (int i = 0; i < n; i++)
-        {
-          AVTPart part = (AVTPart) m_parts.elementAt(i);
-
+    if (null != m_simpleString){
+        return m_simpleString;
+    }else if (null != m_parts){
+      final FastStringBuffer buf =getBuffer();
+      String out = null;
+      int n = m_parts.size();
+      try{
+        for (int i = 0; i < n; i++){
+          AVTPart part = (AVTPart) m_parts.elementAt(i);  
           part.evaluate(xctxt, buf, context, nsNode);
         }
-
-        return buf.toString();
+       out = buf.toString();
+      }finally{
+          if(USE_OBJECT_POOL){
+             StringBufferPool.free(buf);
+         }else{
+           buf.setLength(0); 
+         }
       }
-      else
-      {
-        return "";
-      }
-    }finally{
-      if(buf != null){
-        StringBufferPool.free(buf);
-      }      
+     return out;
+    }else{
+      return "";
     }
   }
 
@@ -595,5 +605,18 @@ public class AVT implements java.io.Serializable, XSLTVisitable
    */
   public boolean isSimple() {
   	return m_simpleString != null;
+  }
+  
+  private final FastStringBuffer getBuffer(){
+    if(USE_OBJECT_POOL){
+       return StringBufferPool.get();
+    }else if(m_cachedBuf == null){
+       m_cachedBuf = new FastStringBuffer(INIT_BUFFER_CHUNK_BITS);
+       return m_cachedBuf;
+    }else if(m_cachedBuf.length() != 0){
+      return new FastStringBuffer(INIT_BUFFER_CHUNK_BITS);
+    }else{
+       return m_cachedBuf;
+     }
   }
 }
