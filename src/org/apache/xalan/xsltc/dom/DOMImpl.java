@@ -136,6 +136,9 @@ public final class DOMImpl implements DOM, Externalizable {
     // Tracks which textnodes are whitespaces and which are not
     private BitArray  _whitespace; // takes xml:space into acc.
 
+    // Tracks which textnodes are not escaped
+    private BitArray  _dontEscape = null; 
+
     // The URI to this document
     private String    _documentURI;
 
@@ -1980,6 +1983,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	case ROOT:
 	    return getNodeValue(_offsetOrChild[node]);
 	case TEXT:
+	    // GTM - add escapign code here too.
 	case COMMENT:
 	    return makeStringValue(node);
 	case PROCESSING_INSTRUCTION:
@@ -2162,6 +2166,13 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	out.writeObject(_whitespace);
 
+	if (_dontEscape != null) {
+	    out.writeObject(_dontEscape);
+	}
+	else {
+	    out.writeObject(new BitArray(0));
+	}
+
 	out.flush();
     }
 
@@ -2189,6 +2200,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	_prefixArray   = (String[])in.readObject();
 
 	_whitespace    = (BitArray)in.readObject();
+
+	_dontEscape    = (BitArray)in.readObject();
+	if (_dontEscape.size() == 0) {
+	    _dontEscape = null;
+        }
 
 	_types         = setupMapping(_namesArray);
     }
@@ -2614,9 +2630,23 @@ public final class DOMImpl implements DOM, Externalizable {
 				       _lengthOrAttr[node]));
 	    break;
 	case TEXT:
+	    boolean last = false;
+	    boolean escapeBit = false;
+
+	    if (_dontEscape != null) {	
+		escapeBit = _dontEscape.getBit(node);
+		if (escapeBit) {
+		    last = handler.setEscaping(false);
+		}	
+	    }
+
 	    handler.characters(_text,
 			       _offsetOrChild[node],
 			       _lengthOrAttr[node]);
+
+            if (_dontEscape != null && escapeBit) {
+		handler.setEscaping(last);
+	    }	
 	    break;
 	case ATTRIBUTE:
 	    shallowCopy(node, handler);
@@ -2694,9 +2724,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	case ROOT: // do nothing
 	    return EMPTYSTRING;
 	case TEXT:
+
 	    handler.characters(_text,
 			       _offsetOrChild[node],
 			       _lengthOrAttr[node]);
+
 	    return null;
 	case PROCESSING_INSTRUCTION:
 	    copyPI(node, handler);
@@ -2899,8 +2931,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * DOM builder's interface is pure SAX2 (must investigate)
      */
     public TransletOutputHandler getOutputDomBuilder() {
-	DOMBuilder builder = getBuilder();
-	return new SAXAdapter(builder, builder);
+	return new SAXAdapter(new DOMBuilderImpl());
     }
 
     /**
@@ -2959,6 +2990,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	private static final String XML_STRING = "xml:";
 	private static final String XMLSPACE_STRING = "xml:space";
 	private static final String PRESERVE_STRING = "preserve";
+
+	private boolean _escaping = true;
+	private boolean _disableEscaping = false;
 
 	/**
 	 * Default constructor for the DOMBuiler class
@@ -3170,6 +3204,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	private int makeTextNode(boolean isWhitespace) {
 	    if (_currentOffset > _baseOffset) {
+
 		final int node = nextNode();
 		final int limit = _currentOffset;
 		// Tag as whitespace node if the parser tells us that it is...
@@ -3188,6 +3223,14 @@ public final class DOMImpl implements DOM, Externalizable {
 		_type[node] = TEXT;
 		linkChildren(node);
 		storeTextRef(node);
+
+		if (_disableEscaping) {
+		    if (_dontEscape == null) {
+			_dontEscape = new BitArray(_whitespace.size());
+		    }
+		    _dontEscape.setBit(node);
+		    _disableEscaping = false;
+		}
 		return node;
 	    }
 	    return -1;
@@ -3280,6 +3323,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
+
+	    _disableEscaping = !_escaping;	
+
 	}
 
 	/**
@@ -3587,6 +3633,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    // Resize the '_whitespace' array (a BitArray instance)
 	    _whitespace.resize(newSize);
 
+	    // Resize the '_dontEscape' array (a BitArray instance)
+	    if (_dontEscape != null) {
+		_dontEscape.resize(newSize);
+	    }
+
 	    // Resize the '_prefix' array
 	    final short[] newPrefix = new short[newSize];
 	    System.arraycopy(_prefix, 0, newPrefix, 0, length);
@@ -3655,6 +3706,12 @@ public final class DOMImpl implements DOM, Externalizable {
 		System.arraycopy(_length,        0, _lengthOrAttr,  dst, len);
 	    }
 	}
+
+ 	public boolean setEscaping(boolean value) {
+	    final boolean temp = _escaping;
+	    _escaping = value; 
+	    return temp;
+    	}
 
     } // end of DOMBuilder
 }
