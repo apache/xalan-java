@@ -544,4 +544,11 @@ regresion.
 slightly
  a touch faster.</Log>
 </Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>02/13/2002</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DOMImpl.java</Modified>
+<Log>bug fix 6189, ArrayIndexOutOfBoundsException, contrib
+ by Mirko Seifert</Log>
+</Commit>
 </Commits>
