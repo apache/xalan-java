@@ -1697,37 +1697,43 @@ public final class DOMImpl implements DOM, Externalizable {
     /**
      * Returns a node's position amongst other nodes of the same type
      */
-    public int getTypedPosition(NodeIterator iterator, int type, int node) {
-
+    public int getTypedPosition(int type, int node) {
 	// Just return the basic position if no type is specified
 	if (type == -1) type = _type[node];
 
-	int match = 1;
-	int curr  = 0;
-	iterator.reset();
+	// Initialize with the first sbiling of the current node
+	int match = 0;
+	int curr  = _offsetOrChild[_parent[node]];
+	if (_type[curr] == type) match++;
 
-	while ( ((curr = iterator.next()) != NULL) && (curr != node)) {
+	// Then traverse all other siblings up until the current node
+	while (curr != node) {
+	    curr = _nextSibling[curr];
 	    if (_type[curr] == type) match++;
 	}
+
+	// And finally return number of matches
 	return match;         
     }
 
     /**
      * Returns an iterator's last node of a given type
      */
-    public int getTypedLast(NodeIterator iterator, int type, int node) {
+    public int getTypedLast(int type, int node) {
 	// Just return the basic position if no type is specified
-	if (type == -1) return(iterator.getLast());
+	if (type == -1) type = _type[node];
 
+	// Initialize with the first sbiling of the current node
 	int match = 0;
-	int curr  = 0;
-	iterator.setMark();
-	iterator.reset();
+	int curr  = _offsetOrChild[_parent[node]];
+	if (_type[curr] == type) match++;
 
-	while ((curr = iterator.next()) != NULL) {
+	// Then traverse all other siblings up until the very last one
+	while (curr != NULL) {
+	    curr = _nextSibling[curr];
 	    if (_type[curr] == type) match++;
 	}
-	iterator.gotoMark();
+
 	return match;         
     }
 

@@ -86,16 +86,20 @@ final class PositionCall extends FunctionCall {
 
 	final InstructionList il = methodGen.getInstructionList();
 
-	// If we're a part of an expression's preficate we want to know what
-	// type of node we want to be looking for
-	if (getParent() instanceof Expression) {
-	    if (getParent().getParent() instanceof Predicate) {
-		Predicate pred = (Predicate)getParent().getParent();
-		_type = pred.getPosType();
-		if ((_type==DOM.ELEMENT) || (_type==DOM.ATTRIBUTE)) _type = -1;
-	    }
-	}
+	SyntaxTreeNode parent = getParent();
+	SyntaxTreeNode granny = parent.getParent();
 
+	// If we're a part of an expression's predicate we want to know what
+	// type of node we want to be looking for
+	if ((parent instanceof Expression) && (granny instanceof Predicate)) {
+	    _type = ((Predicate)granny).getPosType();
+	    if ((_type == DOM.ELEMENT) || (_type == DOM.ATTRIBUTE))
+		_type = -1;
+	}
+    
+	if ((parent instanceof Predicate) && (granny instanceof StepPattern)){ 
+	    _type = ((StepPattern)granny).getNodeType();
+	}
 
 	if (methodGen instanceof CompareGenerator) {
 	    il.append(((CompareGenerator)methodGen).loadCurrentNode());
@@ -114,15 +118,13 @@ final class PositionCall extends FunctionCall {
 	else {
 	    final ConstantPoolGen cpg = classGen.getConstantPool();
 	    // public int getTypedPosition(NodeIterator iterator, int type) {
-	    final String params = "("+NODE_ITERATOR_SIG+"II)I";
 	    final int pos = cpg.addInterfaceMethodref(DOM_INTF,
 						      "getTypedPosition",
-						      params);
+						      "(II)I");
 	    il.append(methodGen.loadDOM());
-	    il.append(methodGen.loadIterator());
 	    il.append(new PUSH(cpg, _type));
-	    il.append(methodGen.loadCurrentNode());
-	    il.append(new INVOKEINTERFACE(pos, 4));
+	    il.append(methodGen.loadContextNode());
+	    il.append(new INVOKEINTERFACE(pos, 3));
 	}
     }
 }

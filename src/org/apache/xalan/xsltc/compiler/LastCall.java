@@ -140,17 +140,14 @@ final class LastCall extends FunctionCall {
 	    il.append(new INVOKEINTERFACE(last, 1));
 	}
 	else {
-	    // public int getTypedPosition(NodeIterator iterator, int type) {
+	    // public int getTypedLast(int type, int node) {
 	    final int last = cpg.addInterfaceMethodref(DOM_INTF,
 						       "getTypedLast",
-						       "("+
-						       NODE_ITERATOR_SIG+
-						       "II)I");
+						       "(II)I");
 	    il.append(methodGen.loadDOM());
-	    il.append(methodGen.loadIterator());
 	    il.append(new PUSH(cpg, _type));
-	    il.append(methodGen.loadCurrentNode());
-	    il.append(new INVOKEINTERFACE(last, 4));
+	    il.append(methodGen.loadContextNode());
+	    il.append(new INVOKEINTERFACE(last, 3));
 
 	}
     }
