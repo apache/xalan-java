@@ -1574,4 +1574,58 @@ last 2 japanese multipliers will not be supported. If anyone has a strong and
 valid user case for this, we will reconsider. For now, we could not justify the 
 expense of moving to BigInteger to support these multipliers.</Log>
 </Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Log>Bugzilla 4735: We should at least report an error when we overflow DTM 
+addressing...</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor ProcessorInclude.java</Modified>
+<Log>Bugzilla 4355: Make sure that when finding out if a stylesheet imports 
+itself, we use the resolved href.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>11/08/2001</DateCommitted>
+<Modified>java/src/org/apache/xpath NodeSetDTM.java</Modified>
+<Log>Bugzilla 4158: Make sure we get the current, not the node pointed to by 
+m_next, which has been already incremented.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java</Modified>
+<Log>Removed a debug statement that was left behind after last putback.
+ PR: none
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Step.java
+ StepPattern.java XSLTC.java xpath.cup xpath.lex</Modified>
+<Log>Added support for processing-instruction() with a literal parameter for
+ use in node tests in expressions and patterns.
+ PR: bugzilla 2583
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc/compiler
+ ProcessingInstructionPattern.java</Added>
+<Log>Forgot this in last putback.
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
 </Commits>
