@@ -212,17 +212,17 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    }
 
 	    if (_transletIndex < 0) {
-		ErrorMsg err= new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR,_name);
+		ErrorMsg err= new ErrorMsg(ErrorMsg.NO_MAIN_TRANSLET_ERR, _name);
 		throw new TransformerConfigurationException(err.toString());
 	    }
 	}
 
 	catch (ClassFormatError e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (LinkageError e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR+_name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
     }
