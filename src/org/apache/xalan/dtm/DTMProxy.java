@@ -56,6 +56,7 @@
  */
 package org.apache.xalan.dtm;
 import org.w3c.dom.*;
+import org.apache.xalan.utils.UnImplNode;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -71,7 +72,7 @@ import org.w3c.dom.*;
  *
  * @see org.w3c.dom
  */
-public class DTMProxy
+public class DTMProxy extends UnImplNode
   implements Node, Document, Text, Element, Attr, ProcessingInstruction, Comment
 {
   public DTM dtm;
@@ -216,13 +217,6 @@ public class DTMProxy
     return dtm.getNodeValue(node);
   }
 
-  /** @see org.w3c.dom.Node -- DTMProxy is read-only */
-  public final void               setNodeValue(String nodeValue)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NO_MODIFICATION_ALLOWED_ERR);
-  }
-
   /** @see org.w3c.dom.Node */
   public final short              getNodeType()
   {
@@ -245,12 +239,6 @@ public class DTMProxy
     return (newnode==-1) ? null : dtm.getNode(newnode);
   }
 
-  /** @see org.w3c.dom.Node */
-  public final NodeList           getChildNodes()
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
   /** @see org.w3c.dom.Node */
   public final Node               getFirstChild()
   {
@@ -294,46 +282,10 @@ public class DTMProxy
     return dtm.getDocument();
   }
   
-  /** @see org.w3c.dom.Node -- DTMProxy is read-only */
-  public final Node               insertBefore(Node newChild, 
-                                         Node refChild)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NO_MODIFICATION_ALLOWED_ERR);
-  }
-
-  /** @see org.w3c.dom.Node -- DTMProxy is read-only */
-  public final Node               replaceChild(Node newChild, 
-                                         Node oldChild)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NO_MODIFICATION_ALLOWED_ERR);
-  }
-
-  /** @see org.w3c.dom.Node -- DTMProxy is read-only */
-  public final Node               removeChild(Node oldChild)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NO_MODIFICATION_ALLOWED_ERR);
-  }
-
-  /** @see org.w3c.dom.Node -- DTMProxy is read-only */
-  public final Node               appendChild(Node newChild)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NO_MODIFICATION_ALLOWED_ERR);
-  }
-
   /** @see org.w3c.dom.Node */
   public final boolean            hasChildNodes()
   {
     return (-1 != dtm.getFirstChild(node));
-  }
-  
-  /** @see org.w3c.dom.Node -- DTMProxy is read-only */
-  public final Node               cloneNode(boolean deep)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
   }
   
   /** @see org.w3c.dom.Document */
@@ -341,123 +293,7 @@ public class DTMProxy
   {
     return null;
   }
-
-  /** @see org.w3c.dom.Document */
-  public final DOMImplementation  getImplementation()
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final Element            getDocumentElement()
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final Element            createElement(String tagName)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final DocumentFragment   createDocumentFragment()
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final Text               createTextNode(String data)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final Comment            createComment(String data)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final CDATASection       createCDATASection(String data)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final ProcessingInstruction createProcessingInstruction(String target, 
-                                                           String data)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final Attr               createAttribute(String name)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final EntityReference    createEntityReference(String name)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document */
-  public final NodeList           getElementsByTagName(String tagname)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
   
-  /** @see org.w3c.dom.Document as of DOM Level 2 -- DTMProxy is read-only*/
-  public final Node               importNode(Node importedNode, 
-                                             boolean deep)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NO_MODIFICATION_ALLOWED_ERR);
-  }
-
-  /** @see org.w3c.dom.Document as of DOM Level 2 */
-  public final Element            createElementNS(String namespaceURI, 
-                                                  String qualifiedName)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
-  /** @see org.w3c.dom.Document as of DOM Level 2 */
-  public final Attr               createAttributeNS(String namespaceURI, 
-                                                    String qualifiedName)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
-  /** @see org.w3c.dom.Document as of DOM Level 2 */
-  public final NodeList           getElementsByTagNameNS(String namespaceURI, 
-                                                         String localName)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
-  /** @see org.w3c.dom.Document as of DOM Level 2 */
-  public final Element            getElementById(String elementId)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
-  /** @see org.w3c.dom.Text */
-  public final Text               splitText(int offset)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
   /** @see org.w3c.dom.CharacterData */
   public final String             getData()
     throws DOMException
@@ -466,57 +302,10 @@ public class DTMProxy
   }
 
   /** @see org.w3c.dom.CharacterData */
-  public final void               setData(String data)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.CharacterData */
   public final int                getLength()
   {
     // %%FIX: This should do something smarter?
     return dtm.getNodeValue(node).length();
-  }
-
-  /** @see org.w3c.dom.CharacterData */
-  public final String             substringData(int offset, 
-                                          int count)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.CharacterData */
-  public final void               appendData(String arg)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.CharacterData */
-  public final void               insertData(int offset, 
-                                       String arg)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.CharacterData */
-  public final void               deleteData(int offset, 
-                                       int count)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.CharacterData */
-  public final void               replaceData(int offset, 
-                                        int count, 
-                                        String arg)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
   }
   
   /** @see org.w3c.dom.Element */
@@ -534,95 +323,10 @@ public class DTMProxy
   }
 
   /** @see org.w3c.dom.Element */
-  public final void               setAttribute(String name, 
-                                         String value)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final void               removeAttribute(String name)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
-  /** @see org.w3c.dom.Element */
   public final Attr               getAttributeNode(String name)
   {
     DTMProxyMap  map = new DTMProxyMap(dtm, node);
     return (Attr)map.getNamedItem(name);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final Attr               setAttributeNode(Attr newAttr)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final Attr               removeAttributeNode(Attr oldAttr)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final void               normalize()
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  public boolean hasAttribute(String name)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-    // return false;
-  }
-
-  public boolean hasAttributeNS(String name, String x)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-    // return false;
-  }
-  
-  /** @see org.w3c.dom.Element */
-  public final String             getAttributeNS(String namespaceURI, 
-                                                 String localName)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final void               setAttributeNS(String namespaceURI, 
-                                                 String qualifiedName, 
-                                                 String value)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final void               removeAttributeNS(String namespaceURI, 
-                                                    String localName)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Element */
-  public final Attr               getAttributeNodeNS(String namespaceURI, 
-                                                     String localName)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-  
-  /** @see org.w3c.dom.Element */
-  public final Attr               setAttributeNodeNS(Attr newAttr)
-    throws DOMException
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
   }
   
   /** @see org.w3c.dom.Attr */
@@ -644,16 +348,4 @@ public class DTMProxy
     return dtm.getNodeValue(node+1);
   }
   
-  /** @see org.w3c.dom.Attr */
-  public final void               setValue(String value)
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
-  /** @see org.w3c.dom.Attr as of DOM Level 2 */ 
-  public final Element            getOwnerElement()
-  {
-    throw new DTMException(DTMException.NOT_SUPPORTED_ERR);
-  }
-
 }
