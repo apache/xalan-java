@@ -383,7 +383,7 @@
 <sect2> 
   <title>Exceptions and Error Reporting</title> 
   <para>The TrAX APIs throw three types of specialized exceptions. A
-	 <plink>javax.xml.transform.TFactoryConfigurationError</plink> is parallel to
+	 <plink>javax.xml.transform.TransformerFactoryConfigurationError</plink> is parallel to
 	 the <plink>javax.xml.parsers.FactoryConfigurationError</plink>, and is thrown
 	 when a configuration problem with the TransformerFactory exists. This error
 	 will typically be thrown when the transformation factory class specified with
