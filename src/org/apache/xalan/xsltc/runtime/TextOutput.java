@@ -127,7 +127,7 @@ public final class TextOutput implements TransletOutputHandler {
     private static final String EMPTYSTRING     = "";
     private static final String HREF_STR        = "href";
     private static final String CITE_STR        = "cite";
-    private static final String SRC_STR         = "str";
+    private static final String SRC_STR         = "src";
     private static final String CHAR_ESC_START  = "&#";
     private static final String CDATA_ESC_START = "]]>&#";
     private static final String CDATA_ESC_END   = ";<![CDATA[";
@@ -671,6 +671,14 @@ public final class TextOutput implements TransletOutputHandler {
 	return(buf.toString());
     }
 
+    private String makeHHString(int i) {
+	String s = Integer.toHexString(i).toUpperCase();
+	if (s.length() == 1) {
+	    s = "0"+s;
+	}
+	return s;
+    }
+
     /**
      * This method escapes special characters used in HTML attribute values
      */
@@ -682,9 +690,17 @@ public final class TextOutput implements TransletOutputHandler {
 	char[] ch = base.toCharArray();
 	StringBuffer buf = new StringBuffer();
         for(int i=0; i<base.length(); i++){
-	    if (ch[i] > '\u007F') {
-	        buf.append('%');
-		buf.append(Integer.toHexString((int)ch[i]));
+	    if (ch[i] <= 0x20) {
+		buf.append('%');
+		buf.append(makeHHString(ch[i]));
+	    } 
+	    else if (ch[i] > '\u007F') {
+		int high = (ch[i] >> 6) | 0xC0;
+		int low  = (ch[i] & 0x3F) | 0x80;  // First 6 bits + high bit
+		buf.append('%');
+		buf.append(makeHHString(high));
+		buf.append('%');
+		buf.append(makeHHString(low));
 	    }
 	    else {
 		// These chars are reserved or unsafe in URLs
