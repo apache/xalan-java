@@ -58,14 +58,18 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
 package org.apache.xalan.xsltc;
 
-public final class TransletException extends Exception {
+import org.xml.sax.SAXException;
+
+public final class TransletException extends SAXException {
+
     public TransletException() {
-	super();
+	super("Translet error");
     }
     
     public TransletException(Exception e) {
