@@ -760,7 +760,7 @@ public class Compiler extends OpMap
     case OpCodes.NODETYPE_NODE :
       return NodeFilter.SHOW_ALL;
     case OpCodes.NODETYPE_ROOT :
-      return NodeFilter.SHOW_DOCUMENT;
+      return NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT;
     case OpCodes.NODETYPE_FUNCTEST :
       return NodeTest.SHOW_BYFUNCTION;
     case OpCodes.NODENAME :
@@ -827,7 +827,7 @@ public class Compiler extends OpMap
     case OpCodes.FROM_ROOT :
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new StepPattern(NodeFilter.SHOW_DOCUMENT);
+      pattern = new StepPattern(NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT);
       break;
     case OpCodes.MATCH_ATTRIBUTE :
       argLen = getArgLengthOfStep(opPos);
