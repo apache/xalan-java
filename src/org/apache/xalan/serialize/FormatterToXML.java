@@ -310,6 +310,9 @@ public class FormatterToXML
 
   /** The xsl:output properties. */
   protected Properties m_format;
+  
+  /** Indicate whether running in Debug mode        */
+  private static final boolean DEBUG = false;
 
   /**
    * Default constructor.
@@ -770,6 +773,19 @@ public class FormatterToXML
           String namespaceURI, String localName, String name, Attributes atts)
             throws org.xml.sax.SAXException
   {
+    if(DEBUG)
+    {
+      System.out.println("FormatterToXML - startElement: "+namespaceURI+", "+localName);
+      int n = atts.getLength();
+      for (int i = 0; i < n; i++) 
+      {
+        System.out.println("atts["+i+"]: "+atts.getQName(i)+" = "+atts.getValue(i));
+      }
+      if(null == namespaceURI)
+      {
+        (new RuntimeException(localName+" has a null namespace!")).printStackTrace();
+      }
+    }
 
     if (m_inEntityRef)
       return;
