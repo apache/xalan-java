@@ -100,6 +100,11 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
      */
     private int _lastNext = END;
 
+    /**
+     * Temporary variable to store _lastNext.
+     */
+    private int _markedLastNext = END;
+
     public DupFilterIterator(DTMAxisIterator source) {
 	_source = source;
 // System.out.println("DFI source = " + source + " this = " + this);
@@ -111,6 +116,7 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
 	    setStartNode(DTMDefaultBase.ROOTNODE);
 	}
     }
+    
     /**
      * Set the start node for this iterator
      * @param node The start node
@@ -142,7 +148,6 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
 	return this;
     }
 
-
     public int next() {
 	while (_current < _nodesSize) {
 	    final int next = _nodes.at(_current++);
@@ -173,13 +178,15 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
     }
-
+   
     public void setMark() {
 	_markedNode = _current;
+        _markedLastNext = _lastNext;    // Bugzilla 25924
     }
 
     public void gotoMark() {
 	_current = _markedNode;
+        _lastNext = _markedLastNext;    // Bugzilla 25924
     }
 
     public DTMAxisIterator reset() {
