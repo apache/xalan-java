@@ -96,10 +96,10 @@ public class XSLTServletWithParams extends HttpServlet {
                      HttpServletResponse response)
     throws ServletException, IOException
   {
-    // Output goes in the response stream.
-    PrintWriter out = new PrintWriter (response.getOutputStream());
-    // This servlet is intended to return HTML.
-    response.setContentType("text/html");    
+    // The servlet returns HTML; charset is UTF8.
+    // See ApplyXSLT.getContentType() to get output properties from <xsl:output>.
+    response.setContentType("text/html; charset=UTF-8"); 
+    PrintWriter out = response.getWriter();
     try
     {	
       TransformerFactory tFactory = TransformerFactory.newInstance();
@@ -126,7 +126,8 @@ public class XSLTServletWithParams extends HttpServlet {
         {
           transformer = tFactory.newTransformer(xslSource);
           setParameters(transformer, request); // Set stylesheet params.
-          transformer.transform(xmlSource, new StreamResult(out)); // Perform the transformation.
+          // Perform the transformation.
+          transformer.transform(xmlSource, new StreamResult(out)); 
         }
         else
           out.write("No Stylesheet!");
@@ -136,7 +137,6 @@ public class XSLTServletWithParams extends HttpServlet {
     }
     catch (Exception e)
     {
-      out.write(e.getMessage());
       e.printStackTrace(out);    
     }
     out.close();
