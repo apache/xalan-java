@@ -487,7 +487,7 @@ pm.registerPool("extpool", cp);</source>
   org.apache.xalan.lib.PipeDocument</jump>,<br/>
   the pipeDocument extension element pipes an XML document through a series of one or more 
   transformations. The output of each transformation is piped to the next transformation. The 
-  final transofrmation creates a target file.</p>
+  final transformation creates a target file.</p>
   <p>The namespace for the pipeDocument extension is:</p>
   <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan/PipeDocument</code></p>
 
