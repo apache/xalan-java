@@ -94,12 +94,10 @@ import org.apache.xpath.axes.ContextNodeList;
  *    &lt;message&gt; Message from the Exception thrown &lt;/message&gt;
  *  &lt;exception-info&gt;
  *
- *    If another class subclasses this class, there will be an
- *    oppurtitny to add specific information here. Each Extension
- *    class should implement their own specific Extension Error class.
- *  &lt;/exception-info&gt;
- * %lt;/ext-error&gt;
- *
+ *  If another class subclasses this class, there will be an
+ *  opportunity to add specific information here. Each Extension
+ *  class should implement their own specific Extension Error
+ *  class.
  * </p>
  * </pre>
  *
