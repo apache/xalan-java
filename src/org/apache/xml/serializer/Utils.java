@@ -96,27 +96,18 @@ class Utils
         Object o = CacheHolder.cache.get(classname);
         if (o == null)
         {
-            try
-            {
-                // class was not in the cache, so try to load it
-                c = Class.forName(classname);
-                CacheHolder.cache.put(classname, c);
-            }
-            catch (ClassNotFoundException e)
-            {
-                // class could not be loaded, lets put it in the
-                // cache anyway to make subsequent attempts quicker.
-                c = null;
-                CacheHolder.cache.put(classname, null);
-            }
+            // class was not in the cache, so try to load it
+            c = Class.forName(classname);
+            // if the class is not found we will have thrown a
+            // ClassNotFoundException on the statement above
+            
+            // if we get here c is not null
+            CacheHolder.cache.put(classname, c);
         }
         else
         {
             c = (Class)o;
         }
-        if (c == null)
-            throw new ClassNotFoundException(); // never return null
         return c;
     }
-
 }
