@@ -58,6 +58,12 @@ package org.apache.xalan.lib.sql;
 
 import java.sql.*;
 
+/**
+ * <p>
+ * A special container that wraps a standard JDBC Connection that is
+ * used to identify the connection inside the Connection Pool.
+ * </p>
+ */
 public class PooledConnection
 {
 

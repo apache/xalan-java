@@ -67,6 +67,20 @@ import java.sql.SQLException;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 
+
+/**
+ * <p>
+ * The default connection pool was implemented so that all connection
+ * to JDBC data sources use connection pools.
+ * </p>
+ * <p>
+ * The Default connection pool can also be used be external programs
+ * that want to use Xalan but don't already have connection pool code.
+ * Note however that this implementation of a connection pool is the
+ * bare minimum.
+ * </p>
+ *
+ */
 public class DefaultConnectionPool implements ConnectionPool
 {
   private final static boolean DEBUG = false;
@@ -109,10 +123,11 @@ public class DefaultConnectionPool implements ConnectionPool
   public DefaultConnectionPool() {}
 
   /**
-   * Are we active, if not then released connections will be
-   * closed on release and new connections will be refused.
+   * The call provides a external method to control the connection
+   * pooling. If the pool is disabled, then the number of connections
+   * in use will be the number of connections in the pool. i.e. there
+   * will be no free unused connections.
    *
-   * @param <code>boolean flag</code>, Set the active flag.
    */
   public void disablePool()
   {
@@ -120,6 +135,13 @@ public class DefaultConnectionPool implements ConnectionPool
     freeUnused();
   }
 
+  /**
+   * The call provides a external method to control the connection
+   * pooling. If the pool is disabled, then the number of connections
+   * in use will be the number of connections in the pool. i.e. there
+   * will be no free unused connections.
+   *
+   */
   public void enablePool()
   {
     m_IsActive = true;
@@ -135,6 +157,8 @@ public class DefaultConnectionPool implements ConnectionPool
 
   /**
    * Set the driver call to be used to create connections
+   *
+   * @param Sting d - The name of the driver to be used.
    */
   public void setDriver(String d)
   {
@@ -280,8 +304,12 @@ public class DefaultConnectionPool implements ConnectionPool
 
   }
 
-
-  // Find an available connection
+  /**
+   * Retrives an available connection from the pool. If one does not
+   * exist, the creat a new one.
+   * @throws SQLException
+   * @throws IllegalArgumentException, If connection info is invalid
+   */
   public synchronized Connection getConnection()
     throws IllegalArgumentException, SQLException
   {

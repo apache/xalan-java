@@ -66,32 +66,55 @@ import java.sql.ResultSetMetaData;
 
 
 /**
- * <meta name="usage" content="experimental"/>
- * Represents a col node from a row node.
+ * <p>
+ * A JDBC Query returns a resultSet that contains rows of
+ * Data. In each row are entried for each column. The Column
+ * Object is used to represent the information about an
+ * individual column. i.e. It represents the &lt;col&gt; element.
+ * From this object, the attributes of that colum can be interrogated
+ * {@link org.apache.xalan.lib.sql.ColumnAttribute} or the value of
+ * the data that the current column rpresents
+ * {@link org.apache.xalan.lib.sql.ColumnData}
+ *
+ * </p>
+ * <p>
+ * This object only represents the current column but a full array of
+ * all the columns are held in the Parent Row object. The array is
+ * zero based and the position of the current column is held in the
+ * m_columnIndex class field, the parent row information is held
+ * in the m_parentRow and the extent of the array is available in
+ * the m_childCount from the m_parentRow object.
+ *</p>
  */
 public class Column extends StreamableNode
 {
 
-  /** column Index          */
+  /**
+   * column Index, our position in the column line up
+   * The first position being zero.
+   */
   int m_columnIndex;
 
-  /** Parent row node          */
+  /** Parent row node  */
   Row m_parent;
 
   /** Flag indicating if in DEBUG mode         */
   private static final boolean DEBUG = false;
 
-  /** Column data          */
+  /** Column data   */
   ColumnData m_text = null;
 
   /**
-   * Constructor Column
-   *
+   * Build up an instance of the Column object.
+   * To support cached nodes, the column data will be
+   * fetched in the constructor to assure that a valid
+   * copy exists.
    *
    * @param statement Current Document
    * @param parent Parent row node of this column
    * @param columnIndex Index for this column
    * @param metadata Meta data (column header).
+   * @param ResultSet {@link java.sql.ResultSet}
    */
   public Column(XStatement statement, Row parent, int columnIndex,
                 ResultSetMetaData metadata, ResultSet resultSet)
@@ -146,7 +169,12 @@ public class Column extends StreamableNode
 
   /**
    * Return the next col element for the current row.
-   * @return a Column node or null.
+   * @return a Column node or null if we are at the end
+   * of the column array.
+   *
+   * The column array list is built and maintained in the
+   * parent row object.
+   *
    */
   public Node getNextSibling()
   {
@@ -191,7 +219,8 @@ public class Column extends StreamableNode
   }
 
   /**
-   * Return the metadata for this column.
+   * From the XConnection (the root of the variable), retrive
+   * the ColumnAttributes object.
    *
    * @return the metadata for this column(column header).
    */

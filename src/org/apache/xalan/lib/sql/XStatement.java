@@ -84,9 +84,12 @@ import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
+ * <p>
  * Represents a JDBC query statement. Also acts as both a
  * NodeIterator and the Document node for the row-set representation
  * of the query result set.
+ * </p>
+ *
  */
 public class XStatement extends StreamableNode
         implements NodeIterator, ContextNodeList, Cloneable
@@ -259,12 +262,18 @@ public class XStatement extends StreamableNode
     m_statement = m_pstatement;
 
     if (DEBUG)
+
       System.out.println("Exiting XStatement constructor");
   }
 
 
   /**
    * Set the parameter for a Prepared Statement
+   * @param int pos, the Position of the place holder in the prepared statement
+   * @param PreparedStatement the current pquery being worked on
+   * @param QueryParameter the Vaue and type of that value to be added.
+   *
+   * @throws SQLException - will be converted to an ext-error
    *
    */
   public void setParameter(int pos, PreparedStatement stmt, QueryParameter p)

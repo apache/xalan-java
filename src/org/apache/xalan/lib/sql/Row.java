@@ -68,11 +68,33 @@ import java.sql.ResultSet;
 import org.apache.xml.utils.*;
 
 /**
- * <meta name="usage" content="experimental"/>
- * This class represents a row from a query result set.  It is used
- * over and over, and so is certainly not fully DOM complient,
- * and will result in strange results in the stylesheet if the
- * user is not carefull.
+ * <p>
+ * This class represents a row from a query result set.
+ * The row object can be accessed in one of two modes.
+ * Streaming or cached.
+ * </p>
+ *
+ * <p>
+ * In <b>streaming mode</b>, the same Row object is used to represent sequential
+ * database rows. Streaming mode only supports traversing the Document once.
+ * </p>
+ * <p>
+ * In <b>cached mode</b>, as the Document is traversed a new Row objec is created
+ * for each database row and a full Document is built. Cached mode allows
+ * the Document to be traversed many times.
+ * </p>
+ * <p>
+ * If you are only traversing the Document once transfering the contents
+ * to the result tree, the streaming mode is the better option. The
+ * memory footprint is much less. Also streaming mode may be required
+ * for database queries that return a large number of rows because the memory
+ * footprint is limited to one row.
+ * </p>
+ * <p>
+ * Caching is controlled by two methods on the XConnection object called
+ * enableCacheNodes() or disableCacheNodes().
+ * </p>
+ *
  */
 public class Row extends StreamableNode
 {
@@ -104,6 +126,7 @@ public class Row extends StreamableNode
    *
    * @param statement Owning document
    * @param parent parent node, a row-set
+   * @param prev, the previous node in the row-set
    *
    */
   public Row(XStatement statement, RowSet parent, Row prev)

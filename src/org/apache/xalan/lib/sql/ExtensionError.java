@@ -81,28 +81,29 @@ import java.io.PrintStream;
 import org.apache.xpath.axes.ContextNodeList;
 
 /**
- *
+ * <meta name="usage" content="experimental"/>
+ * <p>
  * A base class that will convert an exception into an XML stream
  * that can be returned in place of the standard result. The XML
  * format returned is a follows.
+ * </p>
+ * <pre>
+ * <p>
+ * &lt;ext-error&gt;
+ *  &lt;exception-info&gt;
+ *    &lt;message&gt; Message from the Exception thrown &lt;/message&gt;
+ *  &lt;exception-info&gt;
  *
- * <ext-error>
- *  <exception-info>
- *    <message> Message from the Exception thrown </message>
- *    <stack> Current stack information as CData </stack>
- *  <exception-info>
+ *    If another class subclasses this class, there will be an
+ *    oppurtitny to add specific information here. Each Extension
+ *    class should implement their own specific Extension Error class.
+ *  &lt;/exception-info&gt;
+ * %lt;/ext-error&gt;
  *
- *  If another class subclasses this class, there will be an
- *  oppurtitny to add specific information here. Each Extension
- *  class should implement their own specific Extension Error
- *  class.
- * <ext-error>
- *
- * @author  John Gentilin
- * @version 1.0
+ * </p>
+ * </pre>
  *
  */
-
 
 public class ExtensionError
   implements NodeIterator, ContextNodeList, Cloneable
@@ -116,12 +117,35 @@ public class ExtensionError
   {
   }
 
+  /**
+   *
+   * <meta name="usage" content="experimental"/>
+   *
+   * Initialize an error with the base exception and
+   * extrace the relavent information.
+   *
+   */
   public ExtensionError(Exception err)
   {
     processBaseError(err);
     // dump();
   }
 
+  /**
+   *  <meta name="usage" content="experimental"/>
+   *
+   * Process the standard error information and build the
+   * base document.
+   *
+   * Note: this implementation should probably extend UnImplNode and
+   * create a light weight representation of the Document instead of
+   * using a full Document implementation.
+   *
+   * Classes that extend this class to extend the error information
+   * need to override the populateSpecificData method so that only
+   * one control creates the return Document.
+   *
+   */
   protected void processBaseError(Exception err)
   {
     try
@@ -147,20 +171,8 @@ public class ExtensionError
       text = m_doc.createTextNode(err.getLocalizedMessage());
       etmp.appendChild(text);
 
-      // System.out.println("MESSAGE[" + err.getLocalizedMessage() + "]");
-
-      //ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      //PrintStream ps = new PrintStream(bos);
-      //err.printStackTrace(ps);
-      //String stack = bos.toString();
-
-      // System.out.println(stack);
-
-      //etmp = m_doc.createElement("stack");
-      //info.appendChild(etmp);
-      //cdata = m_doc.createCDATASection(stack);
-      //etmp.appendChild(text);
-
+      // If we have been extended then give the extension a chance
+      // to add their information.
       populateSpecificData(m_doc, root);
 
     }
@@ -173,9 +185,11 @@ public class ExtensionError
   }
 
   /**
-   * Other classes that extend this class will overrid this mehood to
+   * Other classes that extend this class will override this mehood to
    * add any specific information.
    *
+   * @param Document - The document that will be returned to the processor
+   * @param Node - the <ext-error> Element that can be added to.
    */
 
   protected void populateSpecificData(Document doc, Node node)
@@ -269,36 +283,6 @@ public class ExtensionError
   {
   }
 
-
-  /*
-  public void dump()
-  {
-
-    try
-    {
-      //Serialize DOM
-      OutputFormat		format  = new OutputFormat();
-      //Writer will be a String
-      StringWriter		stringOut = new StringWriter();
-
-      XMLSerializer		serial = new XMLSerializer( stringOut, format );
-
-      // As a DOM Serializer
-      serial.asDOMSerializer();
-
-      Element e = m_doc.getDocumentElement();
-      serial.serialize(e);
-      System.out.println("Extension Error:");
-      String display = stringOut.toString();
-      System.out.println( display );
-    }
-    catch(Exception e)
-    {
-      // Empty
-    }
-
-  }
-  */
 
   public Node getCurrentNode()
   {

@@ -69,8 +69,15 @@ import org.apache.xpath.DOMOrder;
 import org.apache.xpath.axes.AxesWalker;
 
 /**
- * <meta name="usage" content="experimental"/>
- * This is the superclass for all nodes in the org.apache.xalan.lib.sql package.
+ * <p>
+ * The StreamableNode really just provides a base implemtation
+ * for the other SQL Node based classes. It support keeping track
+ * of the Document Order Index where it is just incermented to assure
+ * that the node are considered seperate and assign a distance in the
+ * Document. It also provides a common reference to the Document Root
+ * or the XStatement object.
+ * </p>
+ *
  */
 public class StreamableNode extends UnImplNode
         implements NodeTestFilter, NamedNodeMap, DOMOrder

@@ -55,23 +55,32 @@
  * <http://www.apache.org/>.
  */
 
-
- package org.apache.xalan.lib.sql;
-
-/**
- * <P>
- * Provides a mechinism where a shared collection of connection
- * pools can exist. Connection Pools are referenced by name.
- * <P><HR>
- *
- * Title:        PoolManager<p>
- * @author       John Gentilin
- * @version      1.0
- *
- */
+package org.apache.xalan.lib.sql;
 
 import java.util.Hashtable;
 import java.lang.IllegalArgumentException;
+
+/**
+ * <p>
+ * The ConnectionPoolManager provides a static container that allows
+ * external programs, inside the same JVM, to supply a set of JDBC
+ * connections to the Xalan transformer.
+ * </p>
+ * <p>
+ * This provides two primary features.
+ *
+ * <b>External Connections</b>; The Stylesheet no longer has to have knowladge
+ * of the database login information. The External program can create the
+ * connections that are already connected to the database. The Stylesheet
+ * only needs to know the name of the connection group.
+ *
+ * <b>ConnectionPooling</b>; as a performance enhancement the use of database
+ * connections to be pooled and resused. Most of the time in using a
+ * connection is makeing the actual connection to the database, i.e. loging
+ * on. With connection pools, this step is only done once and reused.
+ * </p?
+ */
+
 
 public class XConnectionPoolManager
 {

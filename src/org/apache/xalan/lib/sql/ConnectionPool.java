@@ -64,13 +64,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- *
- * An interface used to build wrapper classes around existing
- * Connection Pool libraries.
- *
- * Title:     ConnectionPool<p>
- * @author    John Gentilin
- * @version   1.0
+ *<p>
+ * This interface specification is used to define how Xalan will
+ * interact with a Connection Pool. To adapt a third party connection
+ * pool, either implement this interface as part of that pool or create
+ * a wrapper class that will provide the translation.
+ * </p>
  *
  */
 

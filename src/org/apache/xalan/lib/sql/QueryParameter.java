@@ -58,20 +58,21 @@
 package org.apache.xalan.lib.sql;
 
 /**
- * Title:        <p>
- * Description:  <p>
- * Copyright:    Copyright (c) <p>
- * Company:      <p>
- * @author John Gentilin
- * @version 1.0
+ * <p>
+ * The Query Parameter is a container class that is used to hold the
+ * Parameter information. The Xconnection will maintain a LinkedList
+ * of these parameters and will pass them in the the pquery.
+ * </p>
  */
-
 public class QueryParameter
 {
 
   private String value;
   private String type;
 
+  /**
+   * create a new entry
+   */
   public QueryParameter(String v, String t)
   {
     value = v;

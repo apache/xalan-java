@@ -68,8 +68,7 @@ import java.sql.SQLException;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * <meta name="usage" content="experimental"/>
- * Represents the col element text node, i.e., the column value.
+  * Represents the col element text node, i.e., the column value.
  */
 public class ColumnData extends StreamableNode implements Text
 {
@@ -93,6 +92,7 @@ public class ColumnData extends StreamableNode implements Text
    *
    * @param statement Owning document
    * @param parent Owning column
+   * @param ResultSet {@link java.sql.ResultSet}
    * @throws SQLException, make the Column Class deal with the problem
    *
    */

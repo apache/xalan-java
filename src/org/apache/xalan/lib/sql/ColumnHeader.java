@@ -69,9 +69,34 @@ import java.sql.SQLException;
 import org.apache.xalan.res.XSLTErrorResources;
 
 /**
- * <meta name="usage" content="experimental"/>
- * This class represents a column-header Node, which contains the metadata
- * for a column.
+ * <p>
+ * The ColumnHeader is a special branch of the document that provides
+ * a mechinsim to interogate columns that are returned from the query
+ * without accessing the data or moving the row counter.
+ * </p>
+ *
+ * <pre>
+ * The DTD is as follows.
+ *
+ * <p><HR>
+ * &lt;row-set&gt;
+ *    &lt;column-header &lt;attribute list&gt; /&gt;
+ * &lt;/row-set&gt;
+ *<HR>
+ *</p>
+ *</pre>
+ *
+ * <p>
+ * To retrive a list of column labels that are available, walk the
+ * column-header elements and access the @column-label attribute.
+ *
+ * The column arrributes are actually store in an array of the RowSet
+ * object.
+ *
+ * This object will only give you the attributes for the current column
+ * header element (a.k.a. the current column)  Access to the other columns
+ * is through the parent (row-set) array.
+ * </p>
  */
 public class ColumnHeader extends StreamableNode implements NamedNodeMap
 {

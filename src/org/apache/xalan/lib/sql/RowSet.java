@@ -67,10 +67,37 @@ import java.sql.ResultSetMetaData;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
- * <meta name="usage" content="experimental"/>
- * This class represents the row-set StreamableNode, a "streamable" holder
- * for the JDBC query result set.
+ * <p>
+ * The row-set is the controlling element in the Document that determines
+ * if the JDB ResultSet is being traversed or if the ResultSet MetaData
+ * is being interogated.
+ * <p>
+ *
+ * <pre>
+ * <p>
+ * The DTD for the Document is a follows.
+ * &lt;row-set&gt;
+ *    &lt;column-header {@link org.apache.xalan.lib.sql.ColumnAttributes} &gt;
+ *    .
+ *    . One for each column in the Query
+ *    .
+ *    &lt;column-header /&gt;
+ *    &lt;row&gt;
+ *    .
+ *    . One for each Row in the query
+ *    .
+ *      &lt;col {@link ColumnAttribute} &gt; The Data for the column &lt;/col&gt;
+ *      .
+ *      .
+ *      . One for each column in the Row
+ *      .
+ *      .
+ *    &lt;/row&gt;
+ * &lt;row-set&gt;
+ * </p>
+ * </pre>
  */
+
 public class RowSet extends StreamableNode
 {
   /** Let's keep track of the branch we are on */
