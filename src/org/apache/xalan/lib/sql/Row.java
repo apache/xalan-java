@@ -239,7 +239,7 @@ public class Row extends StreamableNode
   /**
    * Return the RowSet parent.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The parent node (RowSet) of this row.
    */
   public Node getParentNode()
   {

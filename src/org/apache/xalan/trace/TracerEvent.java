@@ -97,7 +97,7 @@ public class TracerEvent implements java.util.EventListener
    * @param mode The current mode.
    * @param m_styleNode node in the style tree reference for the event.
    * Should not be null.  That is not enforced.
-   * NEEDSDOC @param styleNode
+   * @param styleNode The stylesheet element that is executing.
    */
   public TracerEvent(TransformerImpl processor, Node sourceNode, QName mode,
                      ElemTemplateElement styleNode)
