@@ -241,19 +241,6 @@ public class StylesheetHandler extends DefaultHandler
   }
 
   /**
-   * Return the base identifier.
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getBaseIdentifier()
-  {
-
-    SourceLocator locator = getLocator();
-
-    return (null == locator) ? "" : locator.getSystemId();
-  }
-
-  /**
    * Test to see if the stack contains the given URL.
    *
    * NEEDSDOC @param stack
@@ -1270,6 +1257,29 @@ public class StylesheetHandler extends DefaultHandler
   {
     return (String) m_baseIdentifiers.pop();
   }
+  
+  /**
+   * Return the base identifier.
+   *
+   * @return The base identifier of the current stylesheet.
+   */
+  public String getBaseIdentifier()
+  {
+    // Try to get the baseIdentifier from the baseIdentifier's stack, 
+    // which may not be the same thing as the value found in the 
+    // SourceLocators stack.
+    String base = (String)(m_baseIdentifiers.isEmpty() ? null : m_baseIdentifiers.peek());
+
+    // Otherwise try the stylesheet.
+    if(null == base)
+    {
+      SourceLocator locator = getLocator();
+
+      base = (null == locator) ? "" : locator.getSystemId();
+    }
+    return base;
+  }
+
 
   /**
    * The top of this stack should contain the currently processed
@@ -1288,7 +1298,7 @@ public class StylesheetHandler extends DefaultHandler
     if (m_stylesheetLocatorStack.isEmpty())
     {
       SAXSourceLocator locator = new SAXSourceLocator();
-
+      
       locator.setSystemId(this.getStylesheetProcessor().getDOMsystemID());
       return locator;
       // m_stylesheetLocatorStack.push(locator);
