@@ -71,13 +71,33 @@
   <s2 title="Status">
    <ul>
     <li><link anchor="done">Changes since version 2.0.D01</link></li>
+    <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Open bugs and bug reporting</link></li>
     <li><link anchor="status">Version of Xerces to use</link></li>
     <li><link anchor="to-do">To-do tasks for future &xslt4j; releases</link></li>
    </ul>
      <anchor name="done"/>
      &done-j;
-     <anchor name="bugs"/>
+     <anchor name="other"/>
+     <s3 title="Other points of interest">
+     <ul>
+     <li>Handling xsl:namespace-alias declarations: In release 2.0.D01, we reported the need to do some research concerning exactly how Xalan
+     should handle xsl:namespace-alias declarations. As a result of discussions among members of the W3C Working Group on XSL, we have reached a
+     more precise concensus on how namespaces should be represented when an xsl:namespace-alias declaration is in effect.<br/><br/>
+     If a literal result element has a namespace prefix, the prefix will be preserved and the namespace URI of the element will be as
+     specified in the xsl:namespace-alias element, but the result-prefix is not required to appear in the result. This also applies to the
+     two other cases of "Literal namespace URI" mentioned in the XSLT Recommendation on 
+     <jump href="http://www.w3.org/TR/xslt#literal-result-element">Literal Result Elements</jump>. More simply, if the stylesheet calls for
+     &lt;axsl:foo&gt; to be output as a literal result element, then it will be output as &lt;axsl:foo&gt; in the result, but the namespace
+     associated with this "axsl" prefix will be as designated in the xsl:namespace-alias declaration.<br/><br/></li>
+     <li>For HTML output, &xslt4j2; outputs character entity references (&amp;copy; etc.) for all the special characters designated in  
+     <jump href="http://www.w3.org/TR/xhtml1/#dtds">Appendix A. DTDs of the XHTML 1.0: The Extensible HyperText Markup
+     Language</jump>. &xslt4j; 1.x, on the other hand, outputs literal characters for some of these special characters.<br/><br/></li>
+     <li>In conformance with the <jump href="http://www.w3.org/TR/xslt#section-HTML-Output-Method">XSLT Recommendation on the HTML 
+     Output Method</jump> and <jump href="http://www.w3.org/TR/REC-html40/appendix/notes.html#h-B.2.1">Section B.2.1 of the HTML 4.0
+     Recommendation</jump>, &xslt4j2; uses %hh encoding for non-ASCII characters in HTML URI attributes.</li>
+     </ul>
+     </s3><anchor name="bugs"/>
      &bugs-j;
      <anchor name="status"/>
      &status-j;

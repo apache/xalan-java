@@ -1,13 +1,8 @@
 <s3 title="Open bugs and bug reporting">
-<p>We are aware of the following limitations and problems in this beta release:</p>
+<p>&xslt4j-current; passes all conformance tests in our comprehensive test suite. We are not aware of any outstanding bugs in this release. We are aware, however, of a Xerces bug in &xml4j-used; which does affect &xslt4j;:</p>
 <ul>
-<li>There are differences in the way 1.x and 2.0. handle space and linefeed characters.<br/><br/></li>
-<li>In some cases, a named character (&copy; etc.) will be output where 1.x would put out a literal character.<br/><br/></li>
-<li>In some cases, a linefeed will be output where 1.x put out &amp;#10;.<br/><br/></li>
-<li>In some cases, %hh encoding will be used in HTML URI attributes instead of a named character (e.g., &auml;) or a literal character.<br/><br/></li>
-<li>Sometimes a declaration for the default or XSLT namespace is added when not needed.<br/><br/></li>
-<li>The &lt;xsl:namespace-alias... does not output the correct prefix.<br/><br/></li>
-<li>Some required CDATA markers are not being output.<br/><br/></li>
+<li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16 documents. 
+Xerces will post a fix shortly.<br/><br/></li>
 </ul>
 <p>The Apache XML Bug Tracking System is currently not working. If you find a bug, please report it (with "Xalan-J 2 bug" in the subject line) to the <human-resource-ref idref="xalandev"/>. We strongly encourage you write patches for problems you find and submit them to <human-resource-ref idref="xalandev"/>. We review the patches we receive to make sure they do not break something else, and (assuming they do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design issues, we sincerely want (and need!) your active participation in the ongoing development of Xalan.</p>
 </s3>
