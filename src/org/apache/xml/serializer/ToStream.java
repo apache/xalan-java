@@ -1905,7 +1905,7 @@ abstract public class ToStream extends SerializerBase
                 writer.write(' ');
                 writer.write(name);
                 writer.write("=\"");
-                writeAttrString(m_writer, value, encoding);
+                writeAttrString(writer, value, encoding);
                 writer.write('\"');
             }
     }
