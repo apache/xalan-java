@@ -189,30 +189,31 @@ public class Variable extends Expression
         // Get the current ElemTemplateElement, which must be pushed in as the 
         // prefix resolver, and then walk backwards in document order, searching 
         // for an xsl:param element or xsl:variable element that matches our 
-        // qname.  For this to work really correctly, the stylesheet element 
-        // should be immediatly resolve to the root stylesheet, and the operation 
-        // performed on it's list of global variables.  But that will have to wait 
-        // for another day, or someone else can do it, or I will come up with a 
-        // better solution to this whole damned hack.
-        if(prefixResolver instanceof org.apache.xalan.templates.ElemTemplateElement)
+        // qname.  If we reach the top level, use the StylesheetRoot's composed
+        // list of top level variables and parameters.
+
+        if (prefixResolver instanceof org.apache.xalan.templates.ElemTemplateElement)
         {
+
+          org.apache.xalan.templates.ElemVariable vvar;
+
           org.apache.xalan.templates.ElemTemplateElement prev = 
-            (org.apache.xalan.templates.ElemTemplateElement)prefixResolver;
+            (org.apache.xalan.templates.ElemTemplateElement) prefixResolver;
             
-          while(null != prev)
+          while ( !(prev.getParentNode() instanceof org.apache.xalan.templates.Stylesheet) )
           {
             org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
-            while(null != (prev = prev.getPreviousSiblingElem()))
+
+            while (null != (prev = prev.getPreviousSiblingElem()))
             {
               if(prev instanceof org.apache.xalan.templates.ElemVariable)
               {
-                org.apache.xalan.templates.ElemVariable vvar = 
-                  (org.apache.xalan.templates.ElemVariable)prev;
+                vvar = (org.apache.xalan.templates.ElemVariable) prev;
                 
-                if(vvar.getName().equals(m_qname))
+                if (vvar.getName().equals(m_qname))
                 {
                   m_index = vvar.getIndex();
-                  m_isGlobal = vvar.getIsTopLevel();
+                  m_isGlobal = false;
                   m_fixUpWasCalled = true;
                   return execute(xctxt);
                 }
@@ -220,9 +221,19 @@ public class Variable extends Expression
             }
             prev = savedprev.getParentElem();
           }
+
+          vvar = prev.getStylesheetRoot().getVariableOrParamComposed(m_qname);
+          if (null != vvar)
+          {
+            m_index = vvar.getIndex();
+            m_isGlobal = true;
+            m_fixUpWasCalled = true;
+            return execute(xctxt);
+          }
+
         }
       }
-      throw new javax.xml.transform.TransformerException("Variable not resolavable: "+m_qname);
+      throw new javax.xml.transform.TransformerException("Variable not resolvable: "+m_qname);
     }
   }
 }

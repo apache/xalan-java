@@ -752,6 +752,7 @@ public class StylesheetRoot extends StylesheetComposed
     if (getVariableOrParamComposed(elemVar.getName()) == null)
     {
       elemVar.setIsTopLevel(true);        // Mark as a top-level variable or param
+      elemVar.setIndex(m_variables.size());
       m_variables.addElement(elemVar);
     }
   }

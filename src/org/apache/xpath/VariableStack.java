@@ -426,18 +426,18 @@ public final class VariableStack implements Cloneable
     // Get the current ElemTemplateElement, which must be pushed in as the 
     // prefix resolver, and then walk backwards in document order, searching 
     // for an xsl:param element or xsl:variable element that matches our 
-    // qname.  For this to work really correctly, the stylesheet element 
-    // should be immediatly resolve to the root stylesheet, and the operation 
-    // performed on it's list of global variables.  But that will have to wait 
-    // for another day, or someone else can do it, or I will come up with a 
-    // better solution to this whole damned hack.
-    if (prefixResolver
-            instanceof org.apache.xalan.templates.ElemTemplateElement)
+    // qname.  If we reach the top level, use the StylesheetRoot's composed
+    // list of top level variables and parameters.
+
+    if (prefixResolver instanceof org.apache.xalan.templates.ElemTemplateElement)
     {
+      
+      org.apache.xalan.templates.ElemVariable vvar;
+
       org.apache.xalan.templates.ElemTemplateElement prev =
         (org.apache.xalan.templates.ElemTemplateElement) prefixResolver;
 
-      while (null != prev)
+      while ( !(prev.getParentNode() instanceof org.apache.xalan.templates.Stylesheet) )
       {
         org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
 
@@ -445,28 +445,21 @@ public final class VariableStack implements Cloneable
         {
           if (prev instanceof org.apache.xalan.templates.ElemVariable)
           {
-            org.apache.xalan.templates.ElemVariable vvar =
-              (org.apache.xalan.templates.ElemVariable) prev;
+            vvar = (org.apache.xalan.templates.ElemVariable) prev;
 
             if (vvar.getName().equals(qname))
-            {
-              int index = vvar.getIndex();
-              boolean isGlobal = vvar.getIsTopLevel();
-
-              if(isGlobal)
-                return getGlobalVariable(xctxt, index);
-              else
-                return getLocalVariable(xctxt, index);
-            }
+              return getLocalVariable(xctxt, vvar.getIndex());
           }
         }
-
         prev = savedprev.getParentElem();
       }
+
+      vvar = prev.getStylesheetRoot().getVariableOrParamComposed(qname);
+      if (null != vvar)
+        return getGlobalVariable(xctxt, vvar.getIndex());
     }
 
-    throw new javax.xml.transform.TransformerException(
-      "Variable not resolavable: " + qname);
+    throw new javax.xml.transform.TransformerException("Variable not resolvable: " + qname);
   }
 }  // end VariableStack
 

@@ -87,23 +87,38 @@ import javax.xml.transform.TransformerException;
  */
 public class ElemVariable extends ElemTemplateElement
 {
-  /**
-   * This is the index into the stack frame.  If the index is above the 
-   * global area, it will have to be offset at execution time.
-   */
-  protected int m_index;
-  
-  // Get the relative index of this variable.
-  public int getIndex()
-  {
-    return m_index;
-  }
 
   /**
    * Constructor ElemVariable
    *
    */
   public ElemVariable(){}
+
+  /**
+   * This is the index into the stack frame.  If the index is above the 
+   * global area, it will have to be offset at execution time.
+   */
+  protected int m_index;
+  
+  /**
+   * Sets the relative position of this variable within the stack frame (if local)
+   * or the global area (if global).  Note that this should be called only for
+   * global variables since the local position is computed in the compose() method.
+   */
+  public void setIndex(int index)
+  {
+    m_index = index;
+  }
+
+  /**
+   * If this element is not at the top-level, get the relative position of the
+   * variable into the stack frame.  If this variable is at the top-level, get
+   * the relative position within the global area.
+   */
+  public int getIndex()
+  {
+    return m_index;
+  }
 
   /**
    * The value of the "select" attribute.
