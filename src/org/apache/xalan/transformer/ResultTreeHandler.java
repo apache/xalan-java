@@ -78,6 +78,9 @@ import org.apache.xml.dtm.DTMFilter;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
+import org.xml.sax.ErrorHandler;
 
 import org.xml.sax.helpers.NamespaceSupport;
 import org.apache.xml.utils.NamespaceSupport2;
@@ -98,7 +101,8 @@ import javax.xml.transform.Transformer;
  */
 public class ResultTreeHandler extends QueuedEvents
         implements ContentHandler, LexicalHandler, TransformState,
-        org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler
+        org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler,
+        ErrorHandler
 {
 
   /** Indicate whether running in Debug mode */
@@ -1668,6 +1672,101 @@ public class ResultTreeHandler extends QueuedEvents
   public Transformer getTransformer()
   {
     return m_transformer;
+  }
+  
+  
+  // Implement ErrorHandler
+  
+  /**
+    * Receive notification of a warning.
+    *
+    * <p>SAX parsers will use this method to report conditions that
+    * are not errors or fatal errors as defined by the XML 1.0
+    * recommendation.  The default behaviour is to take no action.</p>
+    *
+    * <p>The SAX parser must continue to provide normal parsing events
+    * after invoking this method: it should still be possible for the
+    * application to process the document through to the end.</p>
+    *
+    * <p>Filters may use this method to report other, non-XML warnings
+    * as well.</p>
+    *
+    * @param exception The warning information encapsulated in a
+    *                  SAX parse exception.
+    * @exception org.xml.sax.SAXException Any SAX exception, possibly
+    *            wrapping another exception.
+    * @see org.xml.sax.SAXParseException 
+    */
+  public void warning (SAXParseException exception)
+    throws SAXException
+  {
+    if (m_contentHandler instanceof ErrorHandler)
+      ((ErrorHandler)m_contentHandler).warning(exception);
+  }
+    
+    
+   /**
+    * Receive notification of a recoverable error.
+    *
+    * <p>This corresponds to the definition of "error" in section 1.2
+    * of the W3C XML 1.0 Recommendation.  For example, a validating
+    * parser would use this callback to report the violation of a
+    * validity constraint.  The default behaviour is to take no
+    * action.</p>
+    *
+    * <p>The SAX parser must continue to provide normal parsing events
+    * after invoking this method: it should still be possible for the
+    * application to process the document through to the end.  If the
+    * application cannot do so, then the parser should report a fatal
+    * error even if the XML 1.0 recommendation does not require it to
+    * do so.</p>
+    *
+    * <p>Filters may use this method to report other, non-XML errors
+    * as well.</p>
+    *
+    * @param exception The error information encapsulated in a
+    *                  SAX parse exception.
+    * @exception org.xml.sax.SAXException Any SAX exception, possibly
+    *            wrapping another exception.
+    * @see org.xml.sax.SAXParseException 
+    */
+  public void error (SAXParseException exception)
+    throws SAXException
+  {
+    if (m_contentHandler instanceof ErrorHandler)
+      ((ErrorHandler)m_contentHandler).error(exception);
+  }
+    
+    
+   /**
+    * Receive notification of a non-recoverable error.
+    *
+    * <p>This corresponds to the definition of "fatal error" in
+    * section 1.2 of the W3C XML 1.0 Recommendation.  For example, a
+    * parser would use this callback to report the violation of a
+    * well-formedness constraint.</p>
+    *
+    * <p>The application must assume that the document is unusable
+    * after the parser has invoked this method, and should continue
+    * (if at all) only for the sake of collecting addition error
+    * messages: in fact, SAX parsers are free to stop reporting any
+    * other events once this method has been invoked.</p>
+    *
+    * @param exception The error information encapsulated in a
+    *                  SAX parse exception.  
+    * @exception org.xml.sax.SAXException Any SAX exception, possibly
+    *            wrapping another exception.
+    * @see org.xml.sax.SAXParseException
+    */
+  public void fatalError (SAXParseException exception)
+    throws SAXException
+  {      
+    m_elemIsPending = false;
+    m_docEnded = true;
+    m_docPending = false;
+    
+    if (m_contentHandler instanceof ErrorHandler)
+      ((ErrorHandler)m_contentHandler).fatalError(exception);
   }
   
   boolean m_isTransformClient = false;

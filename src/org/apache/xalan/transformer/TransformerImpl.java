@@ -1017,7 +1017,10 @@ public class TransformerImpl extends Transformer
 
           if (fileURL.startsWith("file:///"))
           {
-            fileURL = fileURL.substring(8);
+            if (fileURL.substring(8).indexOf(":") >0)
+              fileURL = fileURL.substring(8);
+            else 
+              fileURL = fileURL.substring(7);
           }
 
           m_outputStream = new java.io.FileOutputStream(fileURL);
@@ -1187,14 +1190,6 @@ public class TransformerImpl extends Transformer
         // If an exception was thrown, we need to make sure that any waiting 
         // handlers can terminate, which I guess is best done by sending 
         // an endDocument.
-        if (null != m_resultTreeHandler)
-        {
-          try
-          {
-            m_resultTreeHandler.endDocument();
-          }
-          catch (Exception e){}
-        }
         
         // SAXSourceLocator
         while(se instanceof org.apache.xml.utils.WrappedRuntimeException)
@@ -1203,6 +1198,18 @@ public class TransformerImpl extends Transformer
           if(null != e)
             se = e;
         }
+        
+        if (null != m_resultTreeHandler)
+        {
+          try
+          {
+            if(se instanceof org.xml.sax.SAXParseException)
+              m_resultTreeHandler.fatalError((org.xml.sax.SAXParseException)se);
+            else
+              m_resultTreeHandler.fatalError(new org.xml.sax.SAXParseException(se.getMessage(), new SAXSourceLocator(), se));              
+          }
+          catch (Exception e){}
+        }        
         
         if(se instanceof TransformerException)
         {
