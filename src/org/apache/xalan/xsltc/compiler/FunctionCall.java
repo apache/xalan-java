@@ -37,13 +37,6 @@ import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.PUSH;
-import org.apache.bcel.generic.LocalVariableGen;
-import org.apache.bcel.generic.ASTORE;
-import org.apache.bcel.generic.ANEWARRAY;
-import org.apache.bcel.generic.ALOAD;
-import org.apache.bcel.generic.ACONST_NULL;
-
-
 import org.apache.xalan.xsltc.compiler.util.BooleanType;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -133,9 +126,6 @@ class FunctionCall extends Expression {
     // If the java method is static
     private boolean 	  _isStatic = false;
 
-    // If unable to resolve statically then resolve dynamically
-    private boolean  resolveDynamic = false;
-    
     // Legal conversions between internal and Java types.
     private static final MultiHashtable _internal2Java = new MultiHashtable();
 
@@ -494,14 +484,10 @@ class FunctionCall extends Expression {
 	}
 
 	if (_type != null) {
-           return _type;
+	    return _type;
 	}
-        else{
-          resolveDynamic = true;
-        }  
 
-        return  _type = (_clazz != null) ? Type.newObjectType(_clazz)
-                    : Type.newObjectType(_className);
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, getMethodSignature(argsType));
     }
 
 
@@ -540,11 +526,6 @@ class FunctionCall extends Expression {
 	  	    && _clazz != null
 	  	    && _clazz.isAssignableFrom(((ObjectType)firstArgType).getJavaClass()))
 	  	    hasThisArgument = true;
-                else if(firstArgType instanceof ReferenceType){
-                    resolveDynamic = true;
-              	    typeCheckArgs(stable);
-                    return Type.String;
-                }
 	  	
 	  	if (hasThisArgument) {
 	  	    _thisArgument = (Expression) _arguments.elementAt(0);
@@ -794,56 +775,6 @@ class FunctionCall extends Expression {
 				_chosenConstructor.getDeclaringClass());
 	    
 	}
-	else if(resolveDynamic) {
-
-          final LocalVariableGen _local = methodGen.addLocalVariable2("objects",
-              org.apache.bcel.generic.Type.OBJECT, il.getEnd());
-
-          //Create the Object[].
-          il.append(new PUSH(cpg, n + 1));
-          il.append(new ANEWARRAY(cpg.addClass(OBJECT_CLASS)));
-
-          // Push "this" if it is an instance method
-          il.append(DUP);
-          if (_thisArgument != null) {
-            il.append(new PUSH(cpg, 0));
-            _thisArgument.translate(classGen, methodGen);
-          }
-          //else add null to the Object array
-          else {
-            il.append(new PUSH(cpg, 0));
-            il.append(ACONST_NULL);
-          }
-          il.append(AASTORE);
-
-          //Add the parameters to Object[]
-          for (int i = 0; i < n; i++) {
-            il.append(DUP);
-            il.append(new PUSH(cpg, i + 1));
-            Expression exp = argument(i);
-            exp.translate(classGen, methodGen);
-            exp.startIterator(classGen, methodGen);
-            exp.getType().translateTo(classGen, methodGen, Type.Reference);
-            il.append(AASTORE);
-          }
-          il.append(new ASTORE(_local.getIndex()));
-
-          //call invoke parameter
-          String methodName = null;
-          if (_chosenMethod != null)
-            methodName = _chosenMethod.getName();
-          else
-            methodName = _fname.getLocalPart();
-
-          il.append(new PUSH(cpg, _className));
-          il.append(new PUSH(cpg, methodName));
-          il.append(new ALOAD(_local.getIndex()));
-
-          index = cpg.addMethodref(CALL_FUNCTION_CLASS, INVOKE_METHOD,
-              "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;");
-          il.append(new INVOKESTATIC(index));
-
-        }
 	// Invoke function calls that are handled in separate classes
 	else {
 	    final String clazz = _chosenMethod.getDeclaringClass().getName();
