@@ -204,13 +204,13 @@ public class NodeSorter
                                            k.m_namespaceContext);
         XObject r2 = k.m_selectPat.execute(m_execContext, n2.m_node,
                                            k.m_namespaceContext);
-        double d = r1.num();
+        n1Num = r1.num();
 
         // Can't use NaN for compare. They are never equal. Use zero instead.
         // That way we can keep elements in document order. 
-        n1Num = Double.isNaN(d) ? 0.0 : d;
-        d = r2.num();
-        n2Num = Double.isNaN(d) ? 0.0 : d;
+        //n1Num = Double.isNaN(d) ? 0.0 : d;
+        n2Num = r2.num();
+        //n2Num = Double.isNaN(d) ? 0.0 : d;
       }
 
       if ((n1Num == n2Num) && ((kIndex + 1) < m_keys.size()))
@@ -219,7 +219,18 @@ public class NodeSorter
       }
       else
       {
-        double diff = n1Num - n2Num;
+        double diff;
+        if (Double.isNaN(n1Num))
+        {
+          if (Double.isNaN(n2Num))
+            diff = 0.0;
+          else
+            diff = -1;
+        }
+        else if (Double.isNaN(n2Num))
+           diff = 1;
+        else
+          diff = n1Num - n2Num;
 
         // process order parameter 
         result = (int) ((diff < 0.0)
@@ -544,7 +555,7 @@ public class NodeSorter
           d = r.num();
 
           // Can't use NaN for compare. They are never equal. Use zero instead.  
-          m_key1Value = new Double(Double.isNaN(d) ? 0.0 : d);
+          m_key1Value = new Double(d);
         }
         else
         {
@@ -584,7 +595,7 @@ public class NodeSorter
             if (k2.m_treatAsNumbers)
             {
               d = r2.num();
-              m_key2Value = new Double(Double.isNaN(d) ? 0.0 : d);
+              m_key2Value = new Double(d);
             }
             else
               m_key2Value = k2.m_col.getCollationKey(r2.str());
