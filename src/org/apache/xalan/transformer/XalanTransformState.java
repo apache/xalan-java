@@ -84,14 +84,14 @@ public class XalanTransformState
     TransformerImpl m_transformer = null;
 
     /**
-     * @see org.apache.xml.serializer.SerializerTransformState#setCurrentNode(Node)
+     * @see org.apache.xml.serializer.TransformStateSetter#setCurrentNode(Node)
      */
     public void setCurrentNode(Node n) {
         m_node = n;
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializerTransformState#resetState(Transformer)
+     * @see org.apache.xml.serializer.TransformStateSetter#resetState(Transformer)
      */
     public void resetState(Transformer transformer) {
         if ((transformer != null) && (transformer instanceof TransformerImpl)) {

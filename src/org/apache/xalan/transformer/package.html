@@ -9,8 +9,8 @@
     <p>For each node in the XML source, TransformerImpl uses the StylesheetRoot and underlying XSLT schema to determine which
     template to apply: one of the templates in the StylesheetRoot, a default template rule as specified in the XSLT spec, or
     none.</p>
-    <p>The Transformer works with {@link org.apache.xalan.transformer.ResultTreeHandler} to 
-    forward the SAX events produced by the
+    <p>The Transformer works with {@link org.apache.xml.serializer.SerializationHandler} to 
+    forward the SAX-like events produced by the
     transformation to the appropriate output ContentHandler.</p>
     <p>To the degree possible, the parsing of the XML source and application of the Templates object to that source are performed
     concurrently in separate threads. When necessary, the Transformer waits for the parse events that must be in place before a

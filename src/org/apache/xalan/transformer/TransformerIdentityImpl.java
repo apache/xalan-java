@@ -103,7 +103,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * This class implements an identity transformer for
- * {@link javax.xml.transform.sax.SAXTransformerFactory#newTransformerHandler()
+ * {@link javax.xml.transform.sax.SAXTransformerFactory#newTransformerHandler()}
  * and {@link javax.xml.transform.TransformerFactory#newTransformer()}.  It
  * simply feeds SAX events directly to a serializer ContentHandler, if the
  * result is a stream.  If the result is a DOM, it will send the events to

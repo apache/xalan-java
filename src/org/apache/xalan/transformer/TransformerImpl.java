@@ -983,7 +983,7 @@ public class TransformerImpl extends Transformer
    * <p>Note that mutation of the Properties object returned will not
    * effect the properties that the transformation contains.</p>
    *
-   * @returns A copy of the set of output properties in effect
+   * @return  A copy of the set of output properties in effect
    * for the next transformation.
    *
    * NEEDSDOC ($objectName$) @return
@@ -3522,7 +3522,7 @@ public class TransformerImpl extends Transformer
      
 	/**
 	 * Fire off characters, cdate events.
-	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, char[], int, int)
+	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, char[], int, int)
 	 */
 	public void fireGenerateEvent(
 		int eventType,
@@ -3536,7 +3536,7 @@ public class TransformerImpl extends Transformer
 
 	/**
 	 * Fire off startElement, endElement events.
-	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, String, Attributes)
+	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, String, Attributes)
 	 */
 	public void fireGenerateEvent(
 		int eventType,
@@ -3549,7 +3549,7 @@ public class TransformerImpl extends Transformer
 
 	/**
 	 * Fire off processingInstruction events.
-	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, String, String)
+	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, String, String)
 	 */
 	public void fireGenerateEvent(int eventType, String name, String data) {
 		GenerateEvent ge = new GenerateEvent(this, eventType, name,data);
@@ -3558,7 +3558,7 @@ public class TransformerImpl extends Transformer
 
 	/**
 	 * Fire off comment and entity ref events.
-	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, String)
+	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int, String)
 	 */
 	public void fireGenerateEvent(int eventType, String data) {
 		GenerateEvent ge = new GenerateEvent(this, eventType, data);
@@ -3567,7 +3567,7 @@ public class TransformerImpl extends Transformer
 
 	/**
 	 * Fire off startDocument, endDocument events.
-	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int)
+	 * @see org.apache.xml.serializer.SerializerTrace#fireGenerateEvent(int)
 	 */
 	public void fireGenerateEvent(int eventType) {
 		GenerateEvent ge = new GenerateEvent(this, eventType);
@@ -3575,7 +3575,7 @@ public class TransformerImpl extends Transformer
 	}
 
 	/**
-	 * @see org.apache.xml.utils.SerializerTrace#hasTraceListeners()
+	 * @see org.apache.xml.serializer.SerializerTrace#hasTraceListeners()
 	 */
 	public boolean hasTraceListeners() {
 		return m_traceManager.hasTraceListeners();

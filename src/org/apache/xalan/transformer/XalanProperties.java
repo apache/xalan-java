@@ -61,7 +61,7 @@ package org.apache.xalan.transformer;
  * Xalan.
  *
  * @author <a href="mailto:ovidiu@cup.hp.com">Ovidiu Predescu</a>
- @ @since May 23, 2001
+ * @since May 23, 2001
  */
 public class XalanProperties
 {
