@@ -83,6 +83,9 @@
      <p>&xslt4j-current; is intended to be the final release in the current series of Developer releases incorporating
      the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
      standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
+     <p>Beginning with this release, we are placing two distribution files in the <resource-ref idref="xslt4j-distdir"/>: a binary
+     distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
+     more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
      &done-j;
      </s3>
      <anchor name="other"/>
