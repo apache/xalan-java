@@ -1029,7 +1029,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
       {
 	// XSLT treats PIs, and possibly other things, as having QNames.
 	String qname = newnode.getNodeName();
-	if('#'==newnode.getNodeName().charAt(0))
+	if('#'==qname.charAt(0))
 	{
 	  //  Match old default for this function
 	  // This conversion may or may not be necessary
