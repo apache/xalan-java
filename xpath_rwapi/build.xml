@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ===================================================================
+
+   Build file for XPath Api
+   Sample usage: build javacc test -Dtest.expr="a/b /a/b /a|b"
+   
+Setup instructions: 
+   Before running an Ant build, you must
+   
+     - set the JAVA_HOME environment variable to the JDK root directory
+   
+Build Instructions:   
+  To build, run
+   ant [antoptions] [targets]
+  in the directory where this file is located; you should also be 
+  able to use an installation of Ant v1.4.1 or later.
+   
+  build -projecthelp  will  show a list of supported targets.
+   
+  Developers: include a description="" attribute in all user-callable targets.
+        
+Authors:
+  Shane Curcuru <shane_curcuru@lotus.com>
+  Scott Boag <scott_boag@us.ibm.com>
+  Lionel Villard <villard@us.ibm.com>
+
+Copyright:
+  Copyright (c) 1999-2003 The Apache Software Foundation.
+   $Id: build.xml,v 1.11 2003/10/16 20:23:08 villard Exp $
+==================================================================== -->
+
+<project name="XPathAPI" default="jar" basedir=".">
+  <property name="year" value="2003"/>
+
+  <property name="version" value="0.8"/>
+  <property name="java.src" value="1.3"/>
+ 
+  <property name="build.dir" value="build"/>
+  <property name="build.classes" value="${build.dir}/classes"/>
+  <property name="build.debug" value="on"/>
+  
+  <!-- Note bin.dir assumes we're using Xalan's checked-in copy of ant.jar -->
+  <property name="bin.dir" value="${ant.home}/bin"/>
+  <property name="jarfilename" value="xpath.jar"/>
+
+  <property name="src.dir" value="src"/>
+  <property name="xpath.dir" value="org/apache/xpath"/>
+  <property name="xml.dir" value="org/apache/xml"/>
+  <property name="parser.dir" value="${src.dir}/${xpath.dir}/impl/parser"/>
+  <property name="parser.package" value="org.apache.xpath.impl.parser"/>
+
+  <property name="test.class" value="org.apache.xpath.test.TestAST"/>
+  <property name="test.expr" value=""/>
+  
+  <property name="docs.dir" value="build/docs"/>
+ 
+  <path id="classpath">
+    <fileset dir="${bin.dir}" includes="*.jar"/>
+    <fileset dir="${bin.dir}" includes="*.zip"/>
+  </path>
+
+  <path id="test.classpath">
+    <path refid="classpath" />
+    <fileset dir="${build.dir}" includes="*.jar"/>
+  </path>
+  
+  <path id="docs.class.path">  
+	   <pathelement location="${build.dir}/${jarfilename}" />
+	   <pathelement path="${classpath}" />
+  </path>
+
+  <target name="clean"
+    description="Clean up classfiles and ${jarfilename}">
+    <delete dir="${build.classes}"/>
+    <delete dir="${docs.dir}"/>
+    <delete file="${build.dir}/${jarfilename}"/>
+  </target>
+
+  <target name="init">
+    <echo message="Preset classpath is ${java.class.path}; ant.home is ${ant.home}"/>
+    <mkdir dir="${build.classes}"/>
+    <mkdir dir="${parser.dir}"/>
+  </target>
+  
+  <!-- ==== Code compilation and jar targets ==== -->
+  <target name="compile" depends="init"
+    description="Compile all sources, including generated parser">
+  	<javac srcdir="${src.dir}" source="${java.src}" destdir="${build.classes}" debug="${build.debug}">
+	  	<classpath refid="classpath"/>
+	</javac>
+  </target>
+  
+  <target name="jar" depends="compile"
+    description="Jar standalone XPath engine into ${jarfilename}">
+    <jar jarfile="${build.dir}/${jarfilename}">
+      <fileset dir="${build.classes}"
+               includes="${xpath.dir}/**,${xml.dir}/**,${xpath.dir}/test/TestSamples.xml"/>
+    </jar>
+  </target>
+
+  <target name="test" depends="jar"
+    description="Run a simple test of XPath AST creation">
+    <java fork="yes" classname="${test.class}" >
+      <classpath refid="test.classpath" />
+      <arg line="${test.expr}"/>
+    </java>
+  </target>
+  
+  <target name="exportsrc" depends="jar"
+    description="Create exportable files for inclusion in other projects (experimental!)">
+    <zip zipfile="${build.dir}/xpath-src.zip" >
+      <zipfileset dir="${src.dir}">
+      </zipfileset>
+    </zip>
+  </target>
+
+  <!-- ==== Documentation targets ==== -->
+  
+  <target name="apidocs" depends="jar" description="[6]Build API documentation">
+    <mkdir dir="${docs.dir}"/>
+  	<javadoc sourcepath="${src.dir}" destdir="${docs.dir}"
+  	 		 public="true"                  	 
+         	 packagenames="org.apache.xml,org.apache.xpath.*,org.apache.xpath.impl.*"
+         	 author="true"
+         	 version="true"
+         	 use="true"
+         	 windowtitle="XPath 2.0 API" 
+         	 doctitle="XPath API 2.0 Version ${version}"
+         	 source="${java.src}"
+         	 bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+         	  <classpath refid="docs.class.path" />
+         	  <group title="Namespace Support" packages="org.apache.xml"/>
+         	  <group title="XPath 2.0 Public API" packages="org.apache.xpath:org.apache.xpath.expression:org.apache.xpath.datamodel"/>
+         	  <group title="XPath 2.0 Implementation API" packages="org.apache.xpath.impl*"/>
+    </javadoc>
+  </target>
+
+</project>

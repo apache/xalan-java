@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>XPath 2.0 API Implementation</title>
+</head>
+<body>
+<p>JavaCC-based implementation for XPath expression Abstract Syntax
+Tree nodes.</p>
+<p>
+May be overridden by implementation-specific versions. </p>
+<h2>Internal representation</h2>
+An expression can be encoded through three differents internal
+representations: the compact representation, the normalized
+representation and the editable representation:<br>
+<ul>
+  <li>The <span style="font-weight: bold;">compact </span>representation
+minimizes the number of AST nodes for encoding expressions, even though
+abbreviated expressions are fully expanded. <br>
+  </li>
+  <li>The <span style="font-weight: bold;">editable </span>representation
+encodes accurately the initial expression, without any loss of
+formatting information (like the use of abbreviated expressions,
+parenthesis, etc..). This representation is very useful in authoring
+environment. <br>
+  </li>
+  <li>The <span style="font-weight: bold;">normalized </span>representation
+corresponds to the definition given in the <a
+ href="http://www.w3.org/TR/xquery-semantics/" target="_top">XPath
+2.0/XQuery 1.0 formal semantics.</a><br>
+  </li>
+</ul>
+Note: the editing and normalized representations are unimplemented.
+</body>
+</html>

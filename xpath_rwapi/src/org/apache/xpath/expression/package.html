@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>XPath 2.0 API Implementation</title>
+</head>
+<body>
+<p>Public interfaces for XPath expression Abstract Syntax Tree nodes.
+Primary external APIs for this XPath AST model.<br>
+</p>
+<p>The XPath API is a compact set of Java interfaces that allow
+in-memory representation and manipulation of XPath 2.0 expressions.The
+main idea of this API is to manipulate XPath expressions independently
+of their actual underlying representation (since most of XPath
+processors use different representations for optimization purpose).<br>
+</p>
+<p>It was designed to fulfill
+the following requirements:</p>
+<ul>
+  <li style="font-weight: bold;">Read/Write: <span
+ style="font-weight: normal;">it should be able to query/visit
+and modifying the
+internal representation of XPath expressions. The expression reading is
+performed by using either the visitor pattern or get-like methods.
+Similarly, the</span><span style="font-weight: normal;"> expression </span><span
+ style="font-weight: normal;">writing is done through a bunch of
+set-like methods.</span></li>
+  <li style="font-weight: bold;"><span style="font-weight: normal;"><span
+ style="font-weight: bold;">Round-trip: </span>it should be able to
+get
+back string representation of expressions from their internal
+representation.<br>
+    </span></li>
+  <li><span style="font-weight: bold;">Application-independent</span>:
+it should be suitable to be used by a variety of applications
+efficiently.<span style="font-weight: bold;"> </span>It should provide
+solutions to plug in application-dependent features, like
+namespace/qname manager and AST generalization and specialisation (see
+implementation package).<span style="font-weight: bold;"><br>
+    </span></li>
+  <li style="font-weight: bold;">Lightweight: <span
+ style="font-weight: normal;">it should be compact and therefore it
+should
+define a minimal set of Java interfaces in particular by factoring
+similar concepts. The best example is the
+interface <a href="OperatorExpr.html">OperatorExpr </a>which allows
+the representation of more than ten
+expression types.</span></li>
+</ul>
+The XPath API by itself do not define how to bind expressions with an
+XPath processor. However, this can easily be done using the XPath <span
+ style="font-style: italic;">invocation</span> API defined in <a
+ href="http://www.jcp.org/en/jsr/detail?id=206" target="_top">JSR 206</a>
+and using the round-trip feature of this API. <br>
+<br>
+The starting point to handle XPath expressions is the class <a
+ href="Expr.html">Expr</a>. Enjoy!<br>
+<p></p>
+</body>
+</html>
