@@ -76,7 +76,7 @@ final class ParameterRef extends VariableRefBase {
     }
 
     public String toString() {
-	return "parameter-ref(" + _variable.getName() + ')';
+	return "parameter-ref("+_variable.getName()+'/'+_variable.getType()+')';
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

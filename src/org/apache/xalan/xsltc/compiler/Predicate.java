@@ -94,12 +94,6 @@ final class Predicate extends Expression {
     }
 
     public boolean isNthPositionFilter() {
-	if (_exp instanceof EqualityExpr) {
-	    EqualityExpr eq = (EqualityExpr)_exp;
-	    if ((eq.getLeft() instanceof PositionCall) &&
-		(eq.getRight() instanceof IntExpr))
-		_nthPositionFilter = true;
-	}
 	return _nthPositionFilter;
     }
     

@@ -141,7 +141,6 @@ final class ParentLocationPath extends RelativeLocationPath {
 	_path.translate(classGen, methodGen); // iterator on stack....
 	_step.translate(classGen, methodGen);
 
-
 	// Initialize StepIterator with iterators from the stack
 	il.append(new INVOKESPECIAL(initSI));
 
