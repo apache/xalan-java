@@ -124,24 +124,44 @@ public class XNumber extends XObject
         return "Infinity";
       else
         return "-Infinity";
-    }
+    }    
     
-    // java.text.NumberFormat formatter 
-    //         = java.text.NumberFormat.getNumberInstance();
-    java.text.DecimalFormat formatter = new java.text.DecimalFormat("0.##################");
-  
-    String s = formatter.format(m_val);
-    
-    // Hack to get around some VMs tendency to format integers to '1.0' 
-    // instead of '1'.  I would rather do that than muck with the pattern 
-    // handed in to NumberFormat, since that is locale specific.
-    // (not that this is locale sensitive... but at least it should be 
-    // non-harmful in the case of a different locale...).
-    if(s.endsWith(".0"))
+    double num = m_val;
+    String s = Double.toString(num);
+    int len = s.length();
+    if (s.charAt(len - 2) == '.' && s.charAt(len - 1) == '0') 
     {
-      s = s.substring(0, s.length() - 2);
+      s = s.substring(0, len - 2);
+      if (s.equals("-0"))
+        return "0";
+      return s;
     }
-    return s;
+    int e = s.indexOf('E');
+    if (e < 0)
+      return s;
+    int exp = Integer.parseInt(s.substring(e + 1));
+    String sign;
+    if (s.charAt(0) == '-') 
+    {
+      sign = "-";
+      s = s.substring(1);
+      --e;
+    }
+    else
+      sign = "";
+    int nDigits = e - 2;
+    if (exp >= nDigits)
+      return sign + s.substring(0, 1) + s.substring(2, e) + zeros(exp - nDigits);
+    if (exp > 0)
+      return sign + s.substring(0, 1) + s.substring(2, 2 + exp) + "." + s.substring(2 + exp, e);
+    return sign + "0." + zeros(-1 - exp) + s.substring(0, 1) + s.substring(2, e);
+  }
+  
+  static private String zeros(int n) {
+    char[] buf = new char[n];
+    for (int i = 0; i < n; i++)
+      buf[i] = '0';
+    return new String(buf);
   }
   
   /**
