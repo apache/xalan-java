@@ -109,27 +109,28 @@ public class XRTreeFrag extends XObject
   public double num()
   {
 
-    java.text.NumberFormat m_formatter =
-      java.text.NumberFormat.getNumberInstance();
+//    java.text.NumberFormat m_formatter =
+//      java.text.NumberFormat.getNumberInstance();
     double result;
     String s = DOMHelper.getNodeData((DocumentFragment) m_obj);
 
     if (null != s)
     {
-      try
-      {
+//      try
+//      {
 
         // result = Double.valueOf(s).doubleValue();
-        Number n = m_formatter.parse(s.trim());
-
-        result = n.doubleValue();
-      }
-
-      // catch(NumberFormatException nfe)
-      catch (java.text.ParseException nfe)
-      {
-        result = Double.NaN;
-      }
+//        Number n = m_formatter.parse(s.trim());
+//
+//        result = n.doubleValue();
+          result = XString.castToNum(s.trim());
+//      }
+//
+//      // catch(NumberFormatException nfe)
+//      catch (java.text.ParseException nfe)
+//      {
+//        result = Double.NaN;
+//      }
     }
     else
     {
