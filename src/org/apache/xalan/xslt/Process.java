@@ -1119,7 +1119,7 @@ public class Process
       // if(!setQuietMode)
       //  diagnosticsWriter.println(resbundle.getString("xsldone")); //"Xalan: done");
       // else
-      diagnosticsWriter.println("");  //"Xalan: done");
+      // diagnosticsWriter.println("");  //"Xalan: done");
     }
   }
   
