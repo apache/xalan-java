@@ -58,6 +58,7 @@
  *
  */
 import java.util.Properties;
+import java.io.FileOutputStream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Templates;
@@ -84,26 +85,34 @@ public class JAXPTransletOneTransformation
   public static void main(String argv[])
           throws TransformerException, TransformerConfigurationException, IOException, SAXException,
                  ParserConfigurationException, FileNotFoundException
-  {
- 
+  { 
     // Set the TransformerFactory system property to generate and use a translet.
+    // Note: To make this sample more flexible, load properties from a properties file.    
+    // The setting for the Xalan Transformer is "org.apache.xalan.processor.TransformerFactoryImpl"
     String key = "javax.xml.transform.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
     Properties props = System.getProperties();
     props.put(key, value);
     System.setProperties(props);    
 
-    String xslInURI = "../../todo.xsl";
+    String xslInURI = "todo.xsl";
     String xmlInURI = "../../xsltc_todo.xml";
     String htmlOutURI = "todo-xsltc.html";
-    // Instantiate the TransformerFactory, and use it along with a SteamSource
-    // XSL stylesheet to create a Transformer.
-    TransformerFactory tFactory = TransformerFactory.newInstance();
-    Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
-    // Perform the transformation from a StreamSource to a StreamResult;
-    transformer.transform(new StreamSource(xmlInURI),
-                          new StreamResult(htmlOutURI));  
-    System.out.println("Produced todo-xsltc.html");  
+    try
+    {
+      // Instantiate the TransformerFactory, and use it along with a SteamSource
+      // XSL stylesheet to create a Transformer.
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+      Transformer transformer = tFactory.newTransformer(new StreamSource(xslInURI));
+      // Perform the transformation from a StreamSource to a StreamResult;
+      transformer.transform(new StreamSource(xmlInURI),
+                            new StreamResult(new FileOutputStream(htmlOutURI)));  
+      System.out.println("Produced todo-xsltc.html");  
+    }
+    catch (Exception e) 
+    {
+     System.out.println(e.toString());
+     e.printStackTrace();
+    }      
   }
- 
 }

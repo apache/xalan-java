@@ -58,6 +58,7 @@
  *
  */
 import java.util.Properties;
+import java.io.FileOutputStream;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Templates;
@@ -83,37 +84,46 @@ import javax.xml.parsers.ParserConfigurationException;
 public class JAXPTransletMultipleTransformations 
 {
  static void doTransform(Templates translet, String xmlInURI, String htmlOutURI)
-        throws TransformerException     
-  {  
+        throws TransformerException, FileNotFoundException     
+  {
     // For each transformation, instantiate a new Transformer, and perform
     // the transformation from a StreamSource to a StreamResult;
     Transformer transformer = translet.newTransformer();
     transformer.transform( new StreamSource(xmlInURI),
-                           new StreamResult(htmlOutURI) );
+                           new StreamResult(new FileOutputStream(htmlOutURI)));
   }
 
-  public static void main(String argv[])
-         throws TransformerException, TransformerConfigurationException, IOException, SAXException,
-                ParserConfigurationException, FileNotFoundException          
-  {
- 
+  public static void main(String argv[])        
+  { 
     // Set the TransformerFactory system property to generate and use translets.
+    // Note: To make this sample more flexible, load properties from a properties file.
+    // The setting for the Xalan Transformer is "org.apache.xalan.processor.TransformerFactoryImpl"
     String key = "javax.xml.transform.TransformerFactory";
     String value = "org.apache.xalan.xsltc.runtime.TransformerFactoryImpl";
     Properties props = System.getProperties();
     props.put(key, value);
+    
     System.setProperties(props);
 
-    String xslInURI = "../../todo.xsl";
-    // Instantiate the TransformerFactory, and use it along with a SteamSource
-    // XSL stylesheet to create a translet as a Templates object.
-    TransformerFactory tFactory = TransformerFactory.newInstance();
-    Templates translet = tFactory.newTemplates(new StreamSource(xslInURI));
+    String xslInURI = "todo.xsl";
     
-    // Perform each transformation
-    doTransform(translet, "../../xsltc_todo.xml", "todo-xsltc.html");
-    System.out.println("Produced todo-xsltc.html");
-    doTransform(translet, "../../todo.xml", "todo-xalan.html");
-    System.out.println("Produced todo-xalan.html");
+    try
+    {
+      // Instantiate the TransformerFactory, and use it along with a SteamSource
+      // XSL stylesheet to create a translet as a Templates object.
+      TransformerFactory tFactory = TransformerFactory.newInstance();
+      Templates translet = tFactory.newTemplates(new StreamSource(xslInURI));
+    
+      // Perform each transformation
+      doTransform(translet, "../../xsltc_todo.xml", "todo-xsltc.html");
+      System.out.println("Produced todo-xsltc.html");
+    
+      doTransform(translet, "../../todo.xml", "todo-xalan.html");
+      System.out.println("Produced todo-xalan.html");
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace();
+    }    
   } 
 }
