@@ -1628,4 +1628,35 @@ m_next, which has been already incremented.</Log>
  Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org</Log>
 </Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc/compiler LongExpr.java</Added>
+<Log>bug fix 3592, new class to handle Long expresssion</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Parser.java
+ xpath.cup xpath.lex Constants.java CastExpr.java</Modified>
+<Log>bug fix 3592, handles long now</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Added>java/src/org/apache/xalan/xsltc/compiler/util LongType.java</Added>
+<Log>bug fix 3592, added new class for Long types</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler/util Type.java</Modified>
+<Log>bug fix 3592, handles Long types</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer ResultTreeHandler.java</Modified>
+<Log>Bugzilla 4344: discard attrs which don't have an element to belong to</Log>
+</Commit>
 </Commits>
