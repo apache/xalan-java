@@ -314,6 +314,21 @@ public class FormatterToHTML extends FormatterToXML
                        new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.BLOCKFORM
                                     | ElemDesc.BLOCKFORMFIELDSET));
     m_elementFlags.put("HTML", new ElemDesc(0 | ElemDesc.BLOCK));
+    
+    // From "John Ky" <hand@syd.speednet.com.au
+    // Transitional Document Type Definition ()
+    // file:///C:/Documents%20and%20Settings/sboag.BOAG600E/My%20Documents/html/sgml/loosedtd.html#basefont
+    m_elementFlags.put("FONT", new ElemDesc(0 | ElemDesc.FONTSTYLE));
+
+    // file:///C:/Documents%20and%20Settings/sboag.BOAG600E/My%20Documents/html/present/graphics.html#edef-STRIKE
+    m_elementFlags.put("S", new ElemDesc(0 | ElemDesc.FONTSTYLE));
+    m_elementFlags.put("STRIKE", new ElemDesc(0 | ElemDesc.FONTSTYLE));
+    
+    // file:///C:/Documents%20and%20Settings/sboag.BOAG600E/My%20Documents/html/present/graphics.html#edef-U
+    m_elementFlags.put("U", new ElemDesc(0 | ElemDesc.FONTSTYLE));
+
+    // From "John Ky" <hand@syd.speednet.com.au
+    m_elementFlags.put("NOBR", new ElemDesc(0 | ElemDesc.FONTSTYLE));
 
     ElemDesc elemDesc;
 
