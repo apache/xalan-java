@@ -257,6 +257,60 @@ SRCS = \
   synthetic$(PATHSEP)reflection$(PATHSEP)Member.java \
   synthetic$(PATHSEP)reflection$(PATHSEP)Method.java \
   org$(PATHSEP)w3c$(PATHSEP)xslt$(PATHSEP)ExpressionContext.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Attr.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)CDATASection.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)CharacterData.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Comment.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Document.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)DocumentFragment.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)DocumentType.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)DOMException.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)DOMImplementation.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Element.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Entity.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)EntityReference.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)NamedNodeMap.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Node.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)NodeList.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Notation.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)ProcessingInstruction.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)Text.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)range$(PATHSEP)DocumentRange.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)range$(PATHSEP)Range.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)range$(PATHSEP)RangeException.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)traversal$(PATHSEP)DocumentTraversal.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)traversal$(PATHSEP)NodeFilter.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)traversal$(PATHSEP)NodeIterator.java \
+  org$(PATHSEP)w3c$(PATHSEP)dom$(PATHSEP)traversal$(PATHSEP)TreeWalker.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)AttributeList.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)Attributes.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)ContentHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)DocumentHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)DTDHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)EntityResolver.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)ErrorHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)HandlerBase.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)InputSource.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)Locator.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)Parser.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)SAXException.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)SAXNotRecognizedException.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)SAXNotSupportedException.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)SAXParseException.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)XMLFilter.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)XMLReader.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)ext$(PATHSEP)DeclHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)ext$(PATHSEP)LexicalHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)AttributeListImpl.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)AttributesImpl.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)DefaultHandler.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)LocatorImpl.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)NamespaceSupport.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)ParserAdapter.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)ParserFactory.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLFilterImpl.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderAdapter.java \
+  org$(PATHSEP)xml$(PATHSEP)sax$(PATHSEP)helpers$(PATHSEP)XMLReaderFactory.java \
   org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)BaseMarkupSerializer.java \
   org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)ElementState.java \
   org$(PATHSEP)apache$(PATHSEP)xml$(PATHSEP)serialize$(PATHSEP)transition$(PATHSEP)Encodings.java \

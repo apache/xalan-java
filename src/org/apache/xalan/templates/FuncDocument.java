@@ -219,7 +219,7 @@ public class FuncDocument extends Function2Args
   {
     // System.out.println("base: "+base+", uri: "+uri);
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
-    Node newDoc = treeMgr.findNodeFromURL(base, uri);
+    Node newDoc = treeMgr.findNodeFromURL(base, uri, xctxt.getSAXLocator());
     if(null != newDoc)
       return newDoc;
 
@@ -232,7 +232,7 @@ public class FuncDocument extends Function2Args
     {
       if((null != uri) && (uri.toString().length() > 0))
       {
-        newDoc = treeMgr.getSourceTree(base, uri);
+        newDoc = treeMgr.getSourceTree(base, uri, xctxt.getSAXLocator());
         // System.out.println("newDoc: "+((Document)newDoc).getDocumentElement().getNodeName());
       }
       else
@@ -343,7 +343,8 @@ public class FuncDocument extends Function2Args
   {
     String formattedMsg = XSLMessages.createWarning(msg, args);
     
-    ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
+    ErrorHandler errHandler = (null != xctxt.getPrimaryReader()) ? 
+                              xctxt.getPrimaryReader().getErrorHandler() : null;
     TransformException te = new TransformException(formattedMsg, 
                                                    xctxt.getSAXLocator());
                                                    

@@ -5,14 +5,14 @@ import org.w3c.dom.CDATASection;
 
 public class CDATASectionImpl extends TextImpl implements CDATASection
 {
-  public CDATASectionImpl (String data)
+  public CDATASectionImpl (DocumentImpl doc, String data)
   {
-    super(data);
+    super(doc, data);
   }
 
-  public CDATASectionImpl (char ch[], int start, int length)
+  public CDATASectionImpl (DocumentImpl doc, char ch[], int start, int length)
   {
-    super(ch, start, length);
+    super(doc, ch, start, length);
   }
 
   /** Returns the node type. */

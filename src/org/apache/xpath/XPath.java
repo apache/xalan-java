@@ -203,8 +203,8 @@ public class XPath
         throw (trax.TransformException)e;
       else
       {
-        // System.out.println("m_locator.getSystemId(): "+m_locator.getSystemId());
-        // System.out.println("m_locator.getLineNumber(): "+m_locator.getLineNumber());
+        while(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+          e = ((org.apache.xalan.utils.WrappedRuntimeException)e).getException();
         throw new trax.TransformException("Error in XPath", m_locator, e);
       }
     }

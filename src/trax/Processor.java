@@ -119,6 +119,12 @@ public abstract class Processor
   private static String platformDefaultFactoryName = null;
   
   /**
+   * The name of the properties file used to get the trax.processor.xslt
+   * property via getResourceAsStream.
+   */
+  public static String PropertiesResource = "trax.properties";
+    
+  /**
    * Set the name of the default concrete class to be used.
    * @param classname Full classname of concrete implementation 
    * of org.xml.trax.Processor.
@@ -126,6 +132,23 @@ public abstract class Processor
   public static void setPlatformDefaultProcessor(String classname)
   {
     platformDefaultFactoryName = classname;
+  }
+  
+  private static String getFactoryNameFromResourceStream(String factoryKey)
+  {
+    try
+    {
+      Properties props = new Properties();
+      InputStream is = Processor.class.getResourceAsStream( PropertiesResource );
+      if(null == is)
+        return null;
+      props.load( is );
+      return props.getProperty ( factoryKey );
+    }
+    catch(IOException ioe)
+    {
+      return null;
+    }
   }
     
   /**
@@ -136,22 +159,31 @@ public abstract class Processor
     throws ProcessorFactoryException
   {
     Processor factory = null;
+    String factoryName;
     try
     {
       String factoryKey = "trax.processor."+type;
-      String factoryName = System.getProperty(factoryKey);
+      factoryName = null;
+      try 
+      {
+        factoryName = System.getProperty(factoryKey);
+      }
+      catch (SecurityException e){}
       
       if(null == factoryName)
       {
-        loadPropertyFileToSystem(XSLT_PROPERTIES) ;
-        factoryName = System.getProperty(factoryKey);
+        try
+        {
+          factoryName = getFactoryNameFromResourceStream(factoryKey);
+        }
+        catch (SecurityException e){}
       }
 
       if(null == factoryName)
         factoryName = platformDefaultFactoryName;
       
       if(null == factoryName)
-        throw new ProcessorFactoryException("Can't find system property: "+factoryKey, null);
+        throw new ProcessorFactoryException("Can't find trax property: "+factoryKey, null);
       
       Class factoryClass = Class.forName(factoryName);
       factory = (Processor)factoryClass.newInstance();
@@ -171,43 +203,7 @@ public abstract class Processor
     
     return factory;
   }
-  
-  // TODO: This needs changing to some vendor neutral location.
-  public static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
-  
-  /*
-  * Retrieve a propery bundle from a specified file and load it 
-  * int the System properties.
-  * @param file The string name of the property file.  
-  */
-  private static void loadPropertyFileToSystem(String file) 
-  {
-    InputStream is;
-    try
-    {   		   
-      Properties props = new Properties();
-      is = Process.class.getResourceAsStream(file);    
-      // get a buffered version
-      BufferedInputStream bis = new BufferedInputStream (is);
-      props.load (bis);                                     // and load up the property bag from this
-      bis.close ();                                          // close out after reading
-      // OK, now we only want to set system properties that 
-      // are not already set.
-      Properties systemProps = System.getProperties();
-      Enumeration propEnum = props.propertyNames();
-      while(propEnum.hasMoreElements())
-      {
-        String prop = (String)propEnum.nextElement();
-        if(!systemProps.containsKey(prop))
-          systemProps.put(prop, props.getProperty(prop));
-      }
-      System.setProperties(systemProps);
-    }
-    catch (Exception ex)
-    {
-    }
-  }
-  
+      
   /**
    * Process the source into a templates object.
    * 

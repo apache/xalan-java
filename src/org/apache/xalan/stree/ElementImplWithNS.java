@@ -7,9 +7,9 @@ public class ElementImplWithNS extends ElementImpl
   private String m_localName;
   private String m_uri;
   
-  ElementImplWithNS (String ns, String name)
+  ElementImplWithNS (DocumentImpl doc, String ns, String name)
   {
-    super(name);
+    super(doc, name);
     int index = name.indexOf(':');
     if (index >0)
       m_localName = name.substring(index+1);
@@ -18,10 +18,10 @@ public class ElementImplWithNS extends ElementImpl
     m_uri = ns;
   }
   
-  ElementImplWithNS (String ns, String localName,
+  ElementImplWithNS (DocumentImpl doc, String ns, String localName,
                      String name, Attributes atts)
   {
-    super(name, atts);
+    super(doc, name, atts);
     m_localName = localName;
     m_uri = ns;
   }

@@ -76,7 +76,7 @@ public class TreeWalker
   
   // ARGHH!!  JAXP Uses Xerces without setting the namespace processing to ON!
   // DOM2Helper m_dh = new DOM2Helper();
-  DOMHelper m_dh = new DOM2Helper();
+  protected DOMHelper m_dh = new DOM2Helper();
   
   /**
    * Get the ContentHandler used for the tree walk.

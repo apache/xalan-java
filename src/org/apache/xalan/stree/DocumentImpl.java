@@ -19,17 +19,23 @@ public class DocumentImpl extends Parent
 {
   DocumentImpl()
   {
+    super(null);
+    setDoc(this);
 	  m_bUpIndexer = new LevelIndexer();
   }
 
   DocumentImpl(SourceTreeHandler sth)
   {
+    super(null);
+    setDoc(this);
 	  m_bUpIndexer = new LevelIndexer();
     m_sourceTreeHandler = sth;
   }
 
   DocumentImpl(DocumentType doctype)
   {
+    super(null);
+    setDoc(this);
     if(null != doctype)
       m_docType = (DocumentTypeImpl)doctype;
 	  m_bUpIndexer = new LevelIndexer();
@@ -196,9 +202,9 @@ public class DocumentImpl extends Parent
     throws DOMException
   {
     if (indexedLookup)
-      return new IndexedElemImpl(tagName);
+      return new IndexedElemImpl(this, tagName);
     else
-      return new ElementImpl(tagName);
+      return new ElementImpl(this, tagName);
   }
 
   /** Create a DocumentFragment. */
@@ -210,13 +216,13 @@ public class DocumentImpl extends Parent
   /** Create a Text node. */
   public Text               createTextNode(String data)
   {
-    return new TextImpl(data);
+    return new TextImpl(this, data);
   }
 
   /** Create a Comment node. */
   public Comment            createComment(String data)
   {
-    return new CommentImpl(data);
+    return new CommentImpl(this, data);
   }
 
   /** Create a CDATASection node. */
@@ -224,7 +230,7 @@ public class DocumentImpl extends Parent
     throws DOMException
 
   {
-    return new CDATASectionImpl(data);
+    return new CDATASectionImpl(this, data);
   }
 
   /** Create a ProcessingInstruction node. */
@@ -233,7 +239,7 @@ public class DocumentImpl extends Parent
     throws DOMException
 
   {
-    return new ProcessingInstructionImpl(target, data);
+    return new ProcessingInstructionImpl(this, target, data);
   }
 
   /** Unimplemented right now, but I should probably implement. */
@@ -250,9 +256,9 @@ public class DocumentImpl extends Parent
     throws DOMException
   {
     if (indexedLookup)
-      return new IndexedElemWithNS(namespaceURI, qualifiedName);
+      return new IndexedElemWithNS(this, namespaceURI, qualifiedName);
     else
-      return new ElementImplWithNS(namespaceURI, qualifiedName);
+      return new ElementImplWithNS(this, namespaceURI, qualifiedName);
     //return super.createElementNS(namespaceURI, qualifiedName);
   }
 

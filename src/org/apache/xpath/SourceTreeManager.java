@@ -75,6 +75,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
+import org.xml.sax.Locator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.stree.SourceTreeHandler;
@@ -146,7 +147,7 @@ public class SourceTreeManager
    * or a URI specified in the document() function.
    * @returns a InputSource that can be used to process the resource.
    */
-  public InputSource resolveURI (String base, String urlString)
+  public InputSource resolveURI (String base, String urlString, Locator locator)
     throws TransformException, IOException
   {
     String uri;
@@ -166,11 +167,13 @@ public class SourceTreeManager
         }
         catch(SAXException se2)
         {
-          throw new TransformException(se2);
+          throw new TransformException("URL of base: "+base+
+          " and url: "+urlString+" can't be resolved", locator, se2);
         }
       }
       else
-        throw new TransformException(se);
+        throw new TransformException("URL of base: "+base+
+          " and url: "+urlString+" can't be resolved", locator, se);
     }
     
     InputSource source;
@@ -183,7 +186,8 @@ public class SourceTreeManager
     }
     catch(SAXException se2)
     {
-      throw new TransformException(se2);
+      throw new TransformException("URL: "+urlString
+        +" can't be resolved", locator, se2);
     }
 
     return source;
@@ -207,12 +211,12 @@ public class SourceTreeManager
    * Given a URL, find the node associated with that document.
    * @param url 
    */
-  public Node findNodeFromURL(String base, String url)
+  public Node findNodeFromURL(String base, String url, Locator locator)
     throws TransformException
   {
     try
     {
-      InputSource source = this.resolveURI(base, url);
+      InputSource source = this.resolveURI(base, url, locator);
       if(null != source.getSystemId())
         url = source.getSystemId();
       Node node = null;
@@ -230,39 +234,39 @@ public class SourceTreeManager
     }
     catch(IOException ioe)
     {
-      throw new TransformException(ioe);
+      throw new TransformException(ioe, locator);
     }
   }
   
   /**
    * Get the source tree from the a base URL and a URL string.
    */
-  public Node getSourceTree (String base, String urlString) 
+  public Node getSourceTree (String base, String urlString, Locator locator) 
     throws TransformException
   {
     try
     {
-      InputSource source = this.resolveURI(base, urlString);
+      InputSource source = this.resolveURI(base, urlString, locator);
       // System.out.println("base: "+base+", urlString: "+urlString+", source: "+source.getSystemId());
-      return getSourceTree(source);
+      return getSourceTree(source, locator);
     }
     catch(IOException ioe)
     {
-      throw new TransformException(ioe);
+      throw new TransformException(ioe, locator);
     }
   }
 
   /**
    * Get the source tree from the input source.
    */
-  public Node getSourceTree (InputSource source) 
+  public Node getSourceTree (InputSource source, Locator locator) 
     throws TransformException
   {
     // Try first to see if we have a node cached that matches this 
     // systemID.
     if(null != source.getSystemId())
     {
-      Node n = findNodeFromURL(null, source.getSystemId());
+      Node n = findNodeFromURL(null, source.getSystemId(), locator);
       if(null != n)
         return n;
     }
@@ -273,7 +277,7 @@ public class SourceTreeManager
       root = m_uriResolver.getDOMNode(source);
     
     if(null == root)
-      root = getDOMNode(source);
+      root = getDOMNode(source, locator);
     
     if(null != root)
       putDocumentInCache(root, source);
@@ -283,7 +287,7 @@ public class SourceTreeManager
   /**
    * Try to create a DOM source tree from the input source.
    */
-  public Node getDOMNode (InputSource source) 
+  public Node getDOMNode (InputSource source, Locator locator) 
     throws TransformException
   {
     Node doc = null;
@@ -299,35 +303,35 @@ public class SourceTreeManager
       } 
       catch (SAXException se) 
       {
-        throw new TransformException(se);
+        throw new TransformException(se, locator);
       } 
       catch (ClassNotFoundException e1) 
       {
         throw new TransformException("XML Liaison class " + liaisonClassName +
-          " specified but not found", e1);
+          " specified but not found", locator, e1);
       } 
       catch (IllegalAccessException e2) 
       {
           throw new TransformException("XML Liaison class " + liaisonClassName +
-            " found but cannot be loaded", e2);
+            " found but cannot be loaded", locator, e2);
       } 
       catch (InstantiationException e3) 
       {
           throw new TransformException("XML Liaison class " + liaisonClassName +
             " loaded but cannot be instantiated (no empty public constructor?)",
-            e3);
+            locator, e3);
       } 
       catch (ClassCastException e4) 
       {
           throw new TransformException("XML Liaison class " + liaisonClassName +
-            " does not implement DOM2Helper", e4);
+            " does not implement DOM2Helper", locator, e4);
       }
     }
     else
     {
     try
     {
-      XMLReader reader = getXMLReader(source) ;
+      XMLReader reader = getXMLReader(source, locator) ;
       
       // TODO: Need to use factory of some kind to create the ContentHandler
       // (Also, try using JAXP if need be...)
@@ -355,11 +359,11 @@ public class SourceTreeManager
     }
     catch(IOException ioe)
     {
-      throw new TransformException(ioe);
+      throw new TransformException(ioe, locator);
     }
     catch(SAXException se)
     {
-      throw new TransformException(se);
+      throw new TransformException(se, locator);
     }
     }
     return doc;
@@ -376,7 +380,7 @@ public class SourceTreeManager
    * @param inputSource The value returned from the EntityResolver.
    * @returns a SAX2 parser to use with the InputSource.
    */
-  public XMLReader getXMLReader(InputSource inputSource) 
+  public XMLReader getXMLReader(InputSource inputSource, Locator locator) 
     throws TransformException
   {
     try
@@ -389,6 +393,7 @@ public class SourceTreeManager
       try
       {
         reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
       }
       catch(SAXException se)
       {
@@ -400,7 +405,7 @@ public class SourceTreeManager
     }
     catch(SAXException se)
     {
-      throw new TransformException(se);
+      throw new TransformException(se, locator);
     }
   }
 }

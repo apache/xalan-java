@@ -8,9 +8,9 @@ public class AttrImplNS extends AttrImpl
   private String m_localName;
   private String m_namespaceURI;                  // attribute index
   
-  AttrImplNS(String uri, String name, String value)
+  AttrImplNS(DocumentImpl doc, String uri, String name, String value)
   {
-    super(name, value);
+    super(doc, name, value);
     // System.out.println("AttrImplNS - name: "+name);
     // System.out.println("uri: "+uri+", "+name);
     m_namespaceURI = uri;

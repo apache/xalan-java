@@ -630,6 +630,29 @@ public class DOMBuilder implements ContentHandler, LexicalHandler
   public void startPrefixMapping (String prefix, String uri)
 	  throws SAXException
   {
+    /*
+    // Not sure if this is needed or wanted
+    // Also, it fails in the stree.
+    if((null != m_currentNode) 
+       && (m_currentNode.getNodeType() == Node.ELEMENT_NODE))
+    {
+      String qname;
+      if(((null != prefix) && (prefix.length() == 0))
+         || (null == prefix))
+        qname = "xmlns";
+      else
+        qname = "xmlns:"+prefix;
+       
+      Element elem = (Element)m_currentNode;
+      String val = elem.getAttribute(qname);
+      if(val == null)
+      {
+        elem.setAttributeNS("http://www.w3.org/XML/1998/namespace", 
+                            qname, uri);
+      }
+    }
+    */
+
   }
 
   /**

@@ -15,13 +15,15 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   private String m_name;
   private short attrsEnd = 0;
   
-  ElementImpl (String name)
+  ElementImpl (DocumentImpl doc, String name)
   {
+    super(doc);
     m_name = name;    
   }
 
-  ElementImpl (String name, Attributes atts)
+  ElementImpl (DocumentImpl doc, String name, Attributes atts)
   {
+    super(doc);
     m_name = name;
     setAttributes(atts);
   }
@@ -87,11 +89,14 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
   public AttrImpl getChildAttribute(int i)
     throws ArrayIndexOutOfBoundsException, NullPointerException
   {
-    // wait?
-    if (i < getAttrCount() && i >= 0) 
-      return (AttrImpl)m_children[i];
-    else
-      return null;
+    Object synchObj = getSynchObject();
+    synchronized (synchObj)
+    {
+      if (i < getAttrCount() && i >= 0) 
+        return (AttrImpl)m_children[i];
+      else
+        return null;
+    }
   }
   
   /**
@@ -217,11 +222,12 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     AttrImpl attrImpl;
     if(QName.isXMLNSDecl(name))
     {
-      attrImpl = new NameSpaceDecl("http://www.w3.org/2000/xmlns/", 
+      attrImpl = new NameSpaceDecl(getDocumentImpl(),
+                                   "http://www.w3.org/2000/xmlns/", 
                                    name, "");
     }
     else
-      attrImpl = new AttrImpl(name, "");
+      attrImpl = new AttrImpl(getDocumentImpl(), name, "");
     boolean found = false;
     for (int i = 0; i < attrsEnd; i++)
     {
@@ -250,7 +256,9 @@ public class ElementImpl extends Parent implements Attributes, NamedNodeMap
     throws DOMException
   {
     // System.out.println("qualifiedName: "+qualifiedName);
-    AttrImplNS attrImpl = new AttrImplNS(namespaceURI, qualifiedName, "");
+    AttrImplNS attrImpl = new AttrImplNS(getDocumentImpl(), 
+                                         namespaceURI, 
+                                         qualifiedName, "");
     boolean found = false;
     for (int i = 0; i < attrsEnd; i++)
     {

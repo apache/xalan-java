@@ -7,6 +7,7 @@ public class DocumentFragmentImpl extends DocumentImpl implements DocumentFragme
 {
   public DocumentFragmentImpl()
   {
+    super();
     setComplete(true);
   }
   

@@ -5,14 +5,14 @@ import org.w3c.dom.Comment;
 
 public class CommentImpl extends TextImpl implements Comment
 {
-  public CommentImpl (String data)
+  public CommentImpl (DocumentImpl doc, String data)
   {
-    super(data);
+    super(doc, data);
   }
 
-  public CommentImpl (char ch[], int start, int length)
+  public CommentImpl (DocumentImpl doc, char ch[], int start, int length)
   {
-    super(ch, start, length);
+    super(doc, ch, start, length);
   }
 
   /** 

@@ -73,6 +73,12 @@ import trax.ProcessorException;
 import trax.Templates;
 import trax.TemplatesBuilder;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.util.Properties;
+import java.util.Enumeration;
+
 /**
  * The StylesheetProcessor, which implements the TRaX Processor 
  * interface, processes XSLT stylesheets into a Templates object 
@@ -80,6 +86,60 @@ import trax.TemplatesBuilder;
  */
 public class StylesheetProcessor extends Processor
 {  
+  public static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
+
+  private static boolean isInited = false;
+    
+  public StylesheetProcessor()
+  {
+    loadPropertyFileToSystem(XSLT_PROPERTIES);
+  }
+  
+  /*
+  * Retrieve a propery bundle from a specified file and load it 
+  * int the System properties.
+  * @param file The string name of the property file.  
+  */
+  private static void loadPropertyFileToSystem(String file) 
+  {
+    if(false == isInited)
+    {
+      try
+      {
+        InputStream is;
+        try
+        {   		   
+          Properties props = new Properties();
+          is = Process.class.getResourceAsStream(file);    
+          // get a buffered version
+          BufferedInputStream bis = new BufferedInputStream (is);
+          props.load (bis);                                     // and load up the property bag from this
+          bis.close ();                                          // close out after reading
+          // OK, now we only want to set system properties that 
+          // are not already set.
+          Properties systemProps = System.getProperties();
+          Enumeration propEnum = props.propertyNames();
+          while(propEnum.hasMoreElements())
+          {
+            String prop = (String)propEnum.nextElement();
+            if(!systemProps.containsKey(prop))
+              systemProps.put(prop, props.getProperty(prop));
+          }
+          System.setProperties(systemProps);
+          isInited = true;
+        }
+        catch (Exception ex)
+        {
+        }
+      }
+      catch(SecurityException se)
+      {
+        // In this case the caller is required to have 
+        // the needed attributes already defined.
+      }
+    }
+  }
+
   /**
    * Process the source into a templates object.
    * 
@@ -96,6 +156,10 @@ public class StylesheetProcessor extends Processor
     {
       reader = XMLReaderFactory.createXMLReader();
     }
+    // If you set the namespaces to true, we'll end up getting double 
+    // xmlns attributes.  Needs to be fixed.  -sb
+    // reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+    reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
     reader.setContentHandler(builder);
     reader.parse(source);
     return builder.getTemplates();

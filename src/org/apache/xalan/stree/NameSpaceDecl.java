@@ -2,9 +2,9 @@ package org.apache.xalan.stree;
 
 public class NameSpaceDecl extends AttrImplNS
 {
-  NameSpaceDecl(String uri, String name, String value)
+  NameSpaceDecl(DocumentImpl doc, String uri, String name, String value)
   {
-    super(uri, name, value);
+    super(doc, uri, name, value);
   }
   
   /**

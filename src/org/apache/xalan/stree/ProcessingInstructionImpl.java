@@ -12,8 +12,9 @@ public class ProcessingInstructionImpl extends Child
   /**
    * Implement the processingInstruction event.
    */
-  ProcessingInstructionImpl(String target, String data)
+  ProcessingInstructionImpl(DocumentImpl doc, String target, String data)
   {
+    super(doc);
     m_name = target;
     m_data = data;
   }

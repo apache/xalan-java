@@ -12,8 +12,9 @@ public class WhiteSpace extends Child
 {
   String m_data;
   
-  public WhiteSpace (char ch[], int start, int length)
+  public WhiteSpace (DocumentImpl doc, char ch[], int start, int length)
   {
+    super(doc);
     m_data = new String(ch, start, start+length);
   }
   

@@ -36,7 +36,14 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     if (indexedLookup)
       m_root = new IndexedDocImpl();
     else
-      m_root = new DocumentImpl(this);      
+      m_root = new DocumentImpl(this);  
+    
+    String urlOfSource = transformer.getBaseURLOfSource();
+    if(null == m_inputSource)
+    {
+      m_inputSource = new InputSource(urlOfSource);
+    }
+    transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(m_root, m_inputSource);
   }
 
   /**
@@ -50,6 +57,14 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public TransformerImpl getTransformer()
   {
     return m_transformer;
+  }
+
+  Object getSynchObject()
+  {
+    if (null != m_transformer) 
+      return m_transformer;
+    else
+      return this;
   }
 
   private DOMBuilder m_sourceTreeHandler;
@@ -116,51 +131,61 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   
   private void notifyWaiters()
   {
-    if(null != m_transformer)
-    {
-      synchronized (m_transformer)
-      {
-        m_transformer.notifyAll();
-      }
+    Object synchObj = getSynchObject();
+    synchronized (synchObj)
+    {      
+      synchObj.notifyAll();
     }
   }
   
+    
   /**
    * Implement the startDocument event.
    */
   public void startDocument ()
     throws SAXException
   {    
-    if(null == m_root)
+    synchronized (getSynchObject())
     {
-      if (indexedLookup)
-        m_root = new IndexedDocImpl();
-      else
-        m_root = new DocumentImpl(this);      
-    }
-    ((DocumentImpl)m_root).setSourceTreeHandler(this);
-    ((DocumentImpl)m_root).setUid(1);
-    ((DocumentImpl)m_root).setLevel(new Integer(1).shortValue());
-    ((DocumentImpl)m_root).setUseMultiThreading(getUseMultiThreading());
+      if(null == m_root)
+      {
+        if (indexedLookup)
+          m_root = new IndexedDocImpl();
+        else
+          m_root = new DocumentImpl(this);  
+        if(null != m_transformer)
+        {
+          String urlOfSource = m_transformer.getBaseURLOfSource();
+          if(null == m_inputSource)
+          {
+            m_inputSource = new InputSource(urlOfSource);
+          }
+          m_transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(m_root, m_inputSource);
+        }
+      }
+      ((DocumentImpl)m_root).setSourceTreeHandler(this);
+      ((DocumentImpl)m_root).setUid(1);
+      ((DocumentImpl)m_root).setLevel(new Integer(1).shortValue());
+      ((DocumentImpl)m_root).setUseMultiThreading(getUseMultiThreading());
 
-    m_sourceTreeHandler = new StreeDOMBuilder(m_root);
-    pushShouldStripWhitespace(false);    
+      m_sourceTreeHandler = new StreeDOMBuilder(m_root);
+      pushShouldStripWhitespace(false);    
+
+      m_sourceTreeHandler.startDocument();
+      
+    }
     if(m_useMultiThreading && (null != m_transformer))
     {
-      /*
-      if(null != m_inputSource)
-        m_transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(m_root, m_inputSource);
-      Thread t = new Thread(m_transformer);
-      t.start();
-      */
-      //m_transformer.transformNode(m_root);
+      if(m_transformer.isParserEventsOnMain())
+      {
+        m_transformer.setSourceTreeDocForThread(m_root);
+        Thread t = new Thread(m_transformer);
+        t.start();
+      }
     }
 
-    m_sourceTreeHandler.startDocument();
     notifyWaiters();
   }
-  
-  
 
   /**
    * Implement the endDocument event.
@@ -168,15 +193,40 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void endDocument ()
     throws SAXException
   {
-    ((Parent)m_root).setComplete(true);    
-    m_sourceTreeHandler.endDocument();
-    popShouldStripWhitespace();    
-    
-    if(!m_useMultiThreading && (null != m_transformer))
+    Object synchObj = getSynchObject();
+    synchronized (synchObj)
     {
-      m_transformer.transformNode(m_root);
+      ((Parent)m_root).setComplete(true);    
+      m_sourceTreeHandler.endDocument();
+      popShouldStripWhitespace();    
+      
+      if(!m_useMultiThreading && (null != m_transformer))
+      {
+        m_transformer.transformNode(m_root);
+      }
     }
     notifyWaiters();
+    
+    if(m_useMultiThreading && (null != m_transformer))
+    {
+      // Since the transform is on the secondary thread, we 
+      // can't really exit until it is done, so we wait...
+      // System.out.println("m_transformer.isTransformDone():" + m_transformer.isTransformDone());
+      while(!m_transformer.isTransformDone())
+      {
+        synchronized(synchObj)
+        {
+          try
+          {
+            // System.out.println("Waiting...");
+            synchObj.wait();
+          }
+          catch(InterruptedException ie)
+          {
+          }
+        }
+      }
+    }
   }
 
   /**
@@ -186,8 +236,12 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
                             String name, Attributes atts)
     throws SAXException
   {
-    pushShouldStripWhitespace(getShouldStripWhitespace());
-    m_sourceTreeHandler.startElement(ns, localName, name, atts);
+    synchronized (getSynchObject())
+    {
+      pushShouldStripWhitespace(getShouldStripWhitespace());
+      m_sourceTreeHandler.startElement(ns, localName, name, atts);
+    }
+
     notifyWaiters();
   }
 
@@ -198,9 +252,13 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
                           String name)
     throws SAXException
   {
-    ((Parent)m_sourceTreeHandler.getCurrentNode()).setComplete(true);
-    m_sourceTreeHandler.endElement(ns, localName, name);
-    popShouldStripWhitespace(); 
+    synchronized (getSynchObject())
+    {
+      ((Parent)m_sourceTreeHandler.getCurrentNode()).setComplete(true);
+      m_sourceTreeHandler.endElement(ns, localName, name);
+      popShouldStripWhitespace(); 
+    }
+
     notifyWaiters();
   }
 
@@ -239,11 +297,14 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
    */
   private boolean isWhitespaceArray(char ch[], int start, int length)
   {
-    int n = start+length;
-    for(int i = start; i < n; i++)
+    synchronized (getSynchObject())
     {
-      if(!Character.isWhitespace(ch[i]))
-         return false;
+      int n = start+length;
+      for(int i = start; i < n; i++)
+      {
+        if(!Character.isWhitespace(ch[i]))
+          return false;
+      }
     }
     return true;
   }
@@ -254,13 +315,16 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void characters (char ch[], int start, int length)
     throws SAXException
   {
-    if(isWhitespaceArray(ch, start, length) && getShouldStripWhitespace())
-      return;
-    
-    if(m_isCData)
-      m_sourceTreeHandler.cdata(ch, start, length);
-    else
-      m_sourceTreeHandler.characters(ch, start, length);
+    synchronized (getSynchObject())
+    {
+      if(isWhitespaceArray(ch, start, length) && getShouldStripWhitespace())
+        return;
+      
+      if(m_isCData)
+        m_sourceTreeHandler.cdata(ch, start, length);
+      else
+        m_sourceTreeHandler.characters(ch, start, length);
+    }
     notifyWaiters();
   }
 
@@ -270,7 +334,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void charactersRaw (char ch[], int start, int length)
     throws SAXException
   {
-    m_sourceTreeHandler.charactersRaw(ch, start, length);
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.charactersRaw(ch, start, length);
+    }
     notifyWaiters();
   }
 
@@ -280,7 +347,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void ignorableWhitespace (char ch[], int start, int length)
     throws SAXException
   {
-    m_sourceTreeHandler.charactersRaw(ch, start, length);
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.charactersRaw(ch, start, length);
+    }
     notifyWaiters();
   }
 
@@ -290,7 +360,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void processingInstruction (String target, String data)
     throws SAXException
   {
-    m_sourceTreeHandler.processingInstruction(target, data);
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.processingInstruction(target, data);
+    }
     notifyWaiters();
   }
 
@@ -309,7 +382,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void comment (char ch[], int start, int length)
     throws SAXException
   {
-    m_sourceTreeHandler.comment(ch, start, length);
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.comment(ch, start, length);
+    }
     notifyWaiters();
   }
   
@@ -335,7 +411,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void startEntity (String name)
     throws SAXException
   {
-    m_sourceTreeHandler.startEntity(name);
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.startEntity(name);
+    }
     notifyWaiters();
   }
 
@@ -349,7 +428,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void endEntity (String name)
     throws SAXException
   {
-    m_sourceTreeHandler.endEntity(name);
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.endEntity(name);
+    }
     notifyWaiters();
   }
   
@@ -421,6 +503,10 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void startPrefixMapping (String prefix, String uri)
     throws SAXException
   {
+    synchronized (getSynchObject())
+    {
+      m_sourceTreeHandler.startPrefixMapping(prefix, uri);
+    }
     // System.out.println("DOMBuilder.startPrefixMapping("+prefix+", "+uri+");");
   }
 
@@ -441,6 +527,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   public void endPrefixMapping (String prefix)
     throws SAXException
   {
+    m_sourceTreeHandler.endPrefixMapping(prefix);
   }
   
   /**

@@ -12,8 +12,9 @@ public class AttrImpl extends Child implements Attr
   private String m_value;
   private boolean m_specified = true;
   
-  AttrImpl(String name, String value)
+  AttrImpl(DocumentImpl doc, String name, String value)
   {
+    super(doc);
     m_name = name;
     m_value = value;
   }

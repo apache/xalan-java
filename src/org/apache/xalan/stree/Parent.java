@@ -12,6 +12,11 @@ import org.xml.sax.SAXException;
 
 public class Parent extends Child
 {
+  public Parent(DocumentImpl doc)
+  {
+    super(doc);
+  }
+  
   /**
    * The list of children.  For space conservation reasons, 
    * this list is resized everytime a child is added, and is 
@@ -113,37 +118,34 @@ public class Parent extends Child
   public Child getChild(int i)
     throws ArrayIndexOutOfBoundsException, NullPointerException
   {
-    // wait?
-    
-    Child child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
-           m_children[i] : null;
-    if (child == null && !isComplete())
-    {
-      Object synchObj = getSynchObject();
-      synchronized (synchObj)
-      {
-        try
-        {
-          // System.out.println("Waiting... getChild " + i + " " + getNodeName());
-          while (!isComplete())
-          {
-            synchObj.wait();
-            throwIfParseError();
-            // System.out.println("... gotChild " + i);
-            child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
+      Child child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
                     m_children[i] : null;
-            if(null != child)
-              break;
+      if (child == null && !isComplete())
+      {
+        Object synchObj = getSynchObject();
+        synchronized (synchObj)
+        {
+          try
+          {
+            // System.out.println("Waiting... getChild " + i + " " + getNodeName());
+            while (!isComplete())
+            {
+              synchObj.wait();
+              throwIfParseError();
+              // System.out.println("... gotChild " + i);
+              child = ((null != m_children) && (i >= 0) && i < m_children.length) ?
+                      m_children[i] : null;
+              if(null != child)
+                break;
+            }
+          }
+          catch (InterruptedException e)
+          {
+            throwIfParseError();
           }
         }
-        catch (InterruptedException e)
-        {
-          throwIfParseError();
-        }
-      }
-    }     
-    return child;
-      
+      }  
+      return child;
   }
   
   /**
@@ -198,8 +200,8 @@ public class Parent extends Child
     }
     
     Child child = (Child)newChild;
-    m_children[childCount] = child;
     child.SetChildPosition(childCount);
+    m_children[childCount] = child;
 
     DocumentImpl doc;
     try
@@ -226,7 +228,7 @@ public class Parent extends Child
     }
     child.setParent(this);
     child.setLevel((short)(getLevel() + 1));
-	  // getDocumentImpl().getLevelIndexer().insertNode(child);
+    // getDocumentImpl().getLevelIndexer().insertNode(child);
     
     if((null != doc) && (Node.ELEMENT_NODE == child.getNodeType()))
     {
@@ -259,17 +261,7 @@ public class Parent extends Child
           }
         }
       }
-
     }
-    if (newChild.getNodeType() != Node.ATTRIBUTE_NODE)
-    {  
-      // Notify anyone waiting for a child...
-      synchronized (getSynchObject())
-      {
-        getSynchObject().notifyAll();
-      }
-    }
-    
     return newChild;
   }  
 

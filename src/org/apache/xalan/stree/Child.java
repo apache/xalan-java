@@ -16,6 +16,13 @@ public class Child extends UnImplNode implements DOMOrder
 {
   private Parent m_parent;
   private short m_level;
+  private DocumentImpl m_doc;
+  protected void setDoc(DocumentImpl doc){m_doc = doc;}
+  
+  public Child(DocumentImpl doc)
+  {
+    m_doc = doc;
+  }
   
   /**
    * Set the parent of the node.
@@ -38,17 +45,7 @@ public class Child extends UnImplNode implements DOMOrder
   
   protected TransformerImpl getTransformer()
   {
-    DocumentImpl di = this.getDocumentImpl();
-    if(null != di)
-    {
-      SourceTreeHandler sth = di.getSourceTreeHandler();
-      if(null != sth)
-      {
-        sth = di.getSourceTreeHandler();
-        return sth.getTransformer();
-      }
-    }
-    return null;
+    return this.getDocumentImpl().getSourceTreeHandler().getTransformer();
   }
   
   /**
@@ -58,8 +55,7 @@ public class Child extends UnImplNode implements DOMOrder
    */
   protected Object getSynchObject()
   {
-    Object obj = getTransformer();
-    return (null == obj) ? this : obj;
+    return this.getDocumentImpl().getSourceTreeHandler().getSynchObject();
   }
   
   protected void throwParseError(Exception e)
@@ -78,6 +74,7 @@ public class Child extends UnImplNode implements DOMOrder
         throwParseError(e);
     }
   }
+  
   
   /**
    * The position in the parent's list.
@@ -148,19 +145,12 @@ public class Child extends UnImplNode implements DOMOrder
    */
   DocumentImpl getDocumentImpl()
   {
-    Child n = this;
-    while(n.getUid() > 1)
-    {
-      n = (Child)n.getParentNode();
-      if(n == null)
-        return null;
-    }
-    return (DocumentImpl)n;
+    return m_doc;
   }
 
   
   // ================ Node interface implementation ==============
-      
+        
   /**
    * The parent of this node. All nodes, except <code>Attr</code>, 
    * <code>Document</code>, <code>DocumentFragment</code>, 
@@ -171,6 +161,8 @@ public class Child extends UnImplNode implements DOMOrder
    */
   public Node         getParentNode()
   {
+    // if(null != m_parent)
+    //  m_parent.waitForHaveParent();
     return this.m_parent;
   }
 

@@ -80,6 +80,12 @@ public class SystemIDResolver
       urlString = urlString.substring(5);
     }
     
+    // This is probably a bad idea, we should at least check for quotes...
+    if(null != base  && (base.indexOf('\\') > -1))
+      base = base.replace('\\', '/');
+    if(null != urlString  && (urlString.indexOf('\\') > -1))
+      urlString = urlString.replace('\\', '/');
+    
     URI uri;
     try
     {

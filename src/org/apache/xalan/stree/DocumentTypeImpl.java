@@ -6,8 +6,9 @@ import org.w3c.dom.NamedNodeMap;
 
 public class DocumentTypeImpl extends Child implements DocumentType 
 {
-  DocumentTypeImpl(String name)
+  DocumentTypeImpl(DocumentImpl doc, String name)
   {
+    super(doc);
     m_name = name;
   }
   

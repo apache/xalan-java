@@ -14,14 +14,14 @@ public class IndexedElemImpl extends ElementImpl implements IndexedElem
   private short attrsEnd;
   private int m_index;
   
-  IndexedElemImpl (String name)
+  IndexedElemImpl (DocumentImpl doc, String name)
   {
-    super(name);    
+    super(doc, name);    
   }
 
-  IndexedElemImpl (String name, Attributes atts)
+  IndexedElemImpl (DocumentImpl doc, String name, Attributes atts)
   {
-    super(name, atts);    
+    super(doc, name, atts);    
   }
 
   /** 

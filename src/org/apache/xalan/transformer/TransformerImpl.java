@@ -194,14 +194,25 @@ public class TransformerImpl extends XMLFilterImpl
    */
   public void reset()
   {
-    m_stylesheetRoot = null;
-    // m_rootDoc = null;
-    // if(null != m_countersTable)
-    //  System.out.println("Number counters made: "+m_countersTable.m_countersMade);
+    // I need to look more carefully at which of these really
+    // needs to be reset.
+    
     m_countersTable = null;
-    // m_resultNameSpaces = new Stack();
     m_stackGuard = new StackGuard();
     getXPathContext().reset();
+    m_currentTemplateElements = new Stack();
+    m_currentNodes = new Stack();
+    m_currentMatchTemplates = new Stack();
+    m_currentMatchNodes = new Stack();
+    m_resultTreeHandler = new ResultTreeHandler(this);
+    m_keyManager = new KeyManager();
+    m_attrSetStack = null;
+    m_countersTable = null;
+    m_currentTemplateRuleIsNull = new BoolStack();
+    m_xmlSource = null;
+    m_doc = null;
+    m_isTransformDone = false;
+    m_inputContentHandler = null;
   }
       
   // ========= Transformer Interface Implementation ==========
@@ -224,148 +235,188 @@ public class TransformerImpl extends XMLFilterImpl
   }
   
   /**
+   * True if the parser events should be on the main thread, 
+   * false if not.  Experemental.  Can not be set right now.
+   */
+  private boolean m_parserEventsOnMain = true;
+  
+  /**
+   * Get true if the parser events should be on the main thread, 
+   * false if not.  Experemental.  Can not be set right now.
+   */
+  public boolean isParserEventsOnMain()
+  {
+    return m_parserEventsOnMain;
+  }
+    
+  /**
    * Process the source tree to SAX parse events.
    * @param xmlSource  The input for the source tree.
    */
   public void transform( InputSource xmlSource)
     throws TransformException
   {
-    String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
-
-    if(null != liaisonClassName)
+    if(null != xmlSource.getSystemId())
+      m_urlOfSource = xmlSource.getSystemId();
+    try
     {
-      try 
+      // Get an already set XMLReader, or create one.
+      XMLReader reader = this.getParent();
+      if(null == reader)
       {
-        DOM2Helper liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
-        liaison.parse(xmlSource);
-        getXPathContext().setDOMHelper(liaison);
-        transformNode(liaison.getDocument());
-      } 
-      catch (SAXException se) 
-      {
-        if(se instanceof trax.TransformException)
-          throw (trax.TransformException)se;
-        else
-          throw new TransformException(se);
-      } 
-      catch (ClassNotFoundException e1) 
-      {
-        throw new TransformException("XML Liaison class " + liaisonClassName +
-          " specified but not found", e1);
-      } 
-      catch (IllegalAccessException e2) 
-      {
-          throw new TransformException("XML Liaison class " + liaisonClassName +
-            " found but cannot be loaded", e2);
-      } 
-      catch (InstantiationException e3) 
-      {
-          throw new TransformException("XML Liaison class " + liaisonClassName +
-            " loaded but cannot be instantiated (no empty public constructor?)",
-            e3);
-      } 
-      catch (ClassCastException e4) 
-      {
-          throw new TransformException("XML Liaison class " + liaisonClassName +
-            " does not implement DOM2Helper", e4);
+        reader = XMLReaderFactory.createXMLReader();
       }
-    }
-    else
-    {
       try
       {
-        // Get an already set XMLReader, or create one.
-        XMLReader reader = this.getParent();
-        if(null == reader)
+        reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+        reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+      }
+      catch(SAXException se)
+      {
+        // What can we do?
+        // TODO: User diagnostics.
+      }
+      
+      // Get the input content handler, which will handle the 
+      // parse events and create the source tree. 
+      ContentHandler inputHandler = getInputContentHandler();
+      reader.setContentHandler( inputHandler );
+      reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
+      
+      // Set the reader for cloning purposes.
+      getXPathContext().setPrimaryReader(reader);
+      this.m_exceptionThrown = null;
+      if(inputHandler instanceof org.apache.xalan.stree.SourceTreeHandler)
+      {
+        ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
+        ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setUseMultiThreading(true);
+        Node doc 
+          = ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).getRoot();
+        if(null != doc)
         {
-          reader = XMLReaderFactory.createXMLReader();
-        }
-        try
-        {
-          reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
-        }
-        catch(SAXException se)
-        {
-          // What can we do?
-          // TODO: User diagnostics.
-        }
-        try
-        {
-          reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
-        }
-        catch(SAXException se)
-        {
-        }
-        
-        // Get the input content handler, which will handle the 
-        // parse events and create the source tree. 
-        ContentHandler inputHandler = getInputContentHandler();
-        reader.setContentHandler( inputHandler );
-        reader.setProperty("http://xml.org/sax/properties/lexical-handler", inputHandler);
-                
-        // Set the reader for cloning purposes.
-        getXPathContext().setPrimaryReader(reader);
-        this.m_exceptionThrown = null;
-        if(inputHandler instanceof org.apache.xalan.stree.SourceTreeHandler)
-        {
-          ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setInputSource(xmlSource);
-          ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).setUseMultiThreading(true);
-          Node doc 
-            = ((org.apache.xalan.stree.SourceTreeHandler)inputHandler).getRoot();
-          if(null != doc)
+          getXPathContext().getSourceTreeManager().putDocumentInCache(doc, xmlSource);
+          
+          m_xmlSource = xmlSource;
+          m_doc = doc;
+          
+          if(isParserEventsOnMain())
           {
-            getXPathContext().getSourceTreeManager().putDocumentInCache(doc, xmlSource);
-            m_xmlSource = xmlSource;
+            m_isTransformDone = false;
+            getXPathContext().getPrimaryReader().parse(xmlSource);
+          }
+          else
+          {
             Thread t = new Thread(this);
             t.start();
             transformNode(doc);
           }
-          
-        }
-        else
-        {
-          // ??
-          reader.parse( xmlSource );
         }
         
-        // Kick off the parse.  When the ContentHandler gets 
-        // the startDocument event, it will call transformNode( node ).
-        // reader.parse( xmlSource );
-        
-        // This has to be done to catch exceptions thrown from 
-        // the transform thread spawned by the STree handler.
-        Exception e = getExceptionThrown();
-        if(null != e)
-        {
-          if(e instanceof trax.TransformException)
-            throw (trax.TransformException)e;
-          else if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
-            throw new trax.TransformException(
-              ((org.apache.xalan.utils.WrappedRuntimeException)e).getException());
-         else
-            throw new trax.TransformException(e);
-        }
       }
-      catch(org.apache.xalan.utils.WrappedRuntimeException wre)
+      else
       {
-        Throwable throwable = wre.getException();
-        while(throwable instanceof org.apache.xalan.utils.WrappedRuntimeException)
-          throwable = ((org.apache.xalan.utils.WrappedRuntimeException)throwable).getException();
-        throw new TransformException(wre.getException());
+        // ??
+        reader.parse( xmlSource );
       }
-      catch(SAXException se)
+      
+      // Kick off the parse.  When the ContentHandler gets 
+      // the startDocument event, it will call transformNode( node ).
+      // reader.parse( xmlSource );
+      
+      // This has to be done to catch exceptions thrown from 
+      // the transform thread spawned by the STree handler.
+      Exception e = getExceptionThrown();
+      if(null != e)
       {
-        // se.printStackTrace();
-        if(se instanceof TransformException)
-          throw (TransformException)se;
+        if(e instanceof trax.TransformException)
+          throw (trax.TransformException)e;
+        else if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+          throw new trax.TransformException(
+            ((org.apache.xalan.utils.WrappedRuntimeException)e).getException());
         else
-          throw new TransformException(se);
-      }
-      catch(IOException ioe)
-      {
-        throw new TransformException(ioe);
+          throw new trax.TransformException(e);
       }
     }
+    catch(org.apache.xalan.utils.WrappedRuntimeException wre)
+    {
+      Throwable throwable = wre.getException();
+      while(throwable instanceof org.apache.xalan.utils.WrappedRuntimeException)
+        throwable = ((org.apache.xalan.utils.WrappedRuntimeException)throwable).getException();
+      throw new TransformException(wre.getException());
+    }
+    catch(SAXException se)
+    {
+      se.printStackTrace();
+      if(se instanceof TransformException)
+        throw (TransformException)se;
+      else
+        throw new TransformException(se);
+    }
+    catch(IOException ioe)
+    {
+      throw new TransformException(ioe);
+    }
+    finally
+    {
+      reset();
+    }
+  }
+  
+  private String m_urlOfSource = null;
+  
+  /**
+   * Get the base URL of the source.
+   */
+  public String getBaseURLOfSource()
+  {
+    return m_urlOfSource;
+  }
+  
+  /**
+   * Get the value of a property.  Recognized properties are:
+   *
+   * <p>"http://xml.apache.org/xslt/sourcebase" - the base URL for the 
+   * source, which is needed when pure SAX ContentHandler transformation 
+   * is to be done.</p>
+   *
+   * @param name The property name, which is a fully-qualified URI.
+   * @exception org.xml.sax.SAXNotRecognizedException When the
+   *            XMLReader does not recognize the property name.
+   * @exception org.xml.sax.SAXNotSupportedException When the
+   *            XMLReader recognizes the property name but 
+   *            cannot set the requested value.
+   */
+  public Object getProperty (String name)
+    throws SAXNotRecognizedException, SAXNotSupportedException
+  {
+    if(name.equals("http://xml.apache.org/xslt/sourcebase"))
+      return name;
+    else
+      return super.getProperty (name);
+  }
+  
+  /**
+   * Set the value of a property.  Recognized properties are:
+   *
+   * <p>"http://xml.apache.org/xslt/sourcebase" - the base URL for the 
+   * source, which is needed when pure SAX ContentHandler transformation 
+   * is to be done.</p>
+   *
+   * @param name The property name, which is a fully-qualified URI.
+   * @param value The requested value for the property.
+   * @exception org.xml.sax.SAXNotRecognizedException When the
+   *            XMLReader does not recognize the property name.
+   * @exception org.xml.sax.SAXNotSupportedException When the
+   *            XMLReader recognizes the property name but 
+   *            cannot set the requested value.
+   */
+  public void setProperty (String name, Object value)
+    throws SAXNotRecognizedException, SAXNotSupportedException
+  {
+    if(name.equals("http://xml.apache.org/xslt/sourcebase"))
+      m_urlOfSource = (String)value;
+    else
+      super.getProperty (name);
   }
   
   /**
@@ -377,6 +428,9 @@ public class TransformerImpl extends XMLFilterImpl
   {
     // Duplicate code from above... but slightly different.  
     // TODO: Work on this...
+    
+    if(null != xmlSource.getSystemId())
+      m_urlOfSource = xmlSource.getSystemId();
     
     Node doc = null;
     String liaisonClassName = System.getProperty("org.apache.xalan.source.liaison");
@@ -429,6 +483,7 @@ public class TransformerImpl extends XMLFilterImpl
         try
         {
           reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
         }
         catch(SAXException se)
         {
@@ -1770,7 +1825,7 @@ public class TransformerImpl extends XMLFilterImpl
   }
 
   /**
-   * Is > 0 when we're processing a for-each
+   * Is > 0 when we're processing a for-each.
    */
   private BoolStack m_currentTemplateRuleIsNull = new BoolStack();
   
@@ -1906,6 +1961,26 @@ public class TransformerImpl extends XMLFilterImpl
   }
   
   private InputSource m_xmlSource;
+  private Node m_doc;
+  
+  /**
+   * This is just a way to set the document for run().
+   */
+  public void setSourceTreeDocForThread(Node doc)
+  {
+    m_doc = doc;
+  }
+  
+  /**
+   * If the the transform is on the secondary thread, we 
+   * need to know when it is done, so we can return.
+   */
+  boolean m_isTransformDone = false;
+
+  public boolean isTransformDone()
+  {
+    return m_isTransformDone;
+  }
   
   /**
    * Run the transform thread.
@@ -1916,10 +1991,30 @@ public class TransformerImpl extends XMLFilterImpl
     {
       // Node n = ((SourceTreeHandler)getInputContentHandler()).getRoot();
       // transformNode(n);
-      getXPathContext().getPrimaryReader().parse(m_xmlSource);
+      if(isParserEventsOnMain())
+      {
+        try
+        {
+          m_isTransformDone = false;
+          transformNode(m_doc);
+        }
+        finally
+        {
+          m_isTransformDone = true;
+          synchronized (this)
+          {
+            notifyAll();
+          }
+        }
+      }
+      else
+      {
+        getXPathContext().getPrimaryReader().parse(m_xmlSource);
+      }
     }
     catch(Exception e)
     {
+      m_isTransformDone = true;
       m_exceptionThrown = e;
       ; // should have already been reported via the error handler?
       synchronized (this)

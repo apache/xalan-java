@@ -110,6 +110,7 @@ import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.ParserAdapter;
 import org.xml.sax.helpers.XMLReaderFactory;
+import org.xml.sax.ContentHandler;
 
 // Needed DOM classes
 import org.w3c.dom.Node;
@@ -145,7 +146,7 @@ public class Process
     System.out.println(resbundle.getString("optionTS")); //"   [-TS (Trace each selection event.)]");
     System.out.println(resbundle.getString("optionTTC")); //"   [-TTC (Trace the template children as they are being processed.)]");
     System.out.println(resbundle.getString("optionTCLASS")); //"   [-TCLASS (TraceListener class for trace extensions.)]");
-    System.out.println(resbundle.getString("optionVALIDATE")); //"   [-VALIDATE (Set whether validation occurs.  Validation is off by default.)]");
+    // System.out.println(resbundle.getString("optionVALIDATE")); //"   [-VALIDATE (Set whether validation occurs.  Validation is off by default.)]");
     System.out.println(resbundle.getString("optionEDUMP")); //"   [-EDUMP {optional filename} (Do stackdump on error.)]");
     System.out.println(resbundle.getString("optionXML")); //"   [-XML (Use XML formatter and add XML header.)]");
     System.out.println(resbundle.getString("optionTEXT")); //"   [-TEXT (Use simple Text formatter.)]");
@@ -204,14 +205,13 @@ public class Process
       String outFileName = null;
       String dumpFileName = null;
       String xslFileName = null;
-      String compiledStylesheetFileNameOut = null;
-      String compiledStylesheetFileNameIn = null;
       String treedumpFileName = null;
       PrintTraceListener tracer = null;
       String outputType = null;
       String media = null;
       Vector params = new Vector();
       boolean quietConflictWarnings = false;
+      boolean isSAX = false;
 
       for (int i = 0;  i < argv.length;  i ++)
       {
@@ -290,22 +290,6 @@ public class Process
             System.err.println(XSLMessages.createMessage(XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION, new Object[] {"-XSL"})); //"Missing argument for);
 
         }
-        else if("-LXCIN".equalsIgnoreCase(argv[i]))
-        {
-          if ( i+1 < argv.length)
-            compiledStylesheetFileNameIn = argv[++i];
-          else
-            System.err.println(XSLMessages.createMessage(XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION, new Object[] {"-LXCIN"})); //"Missing argument for);
-
-        }
-        else if("-LXCOUT".equalsIgnoreCase(argv[i]))
-        {
-          if ( i+1 < argv.length)
-            compiledStylesheetFileNameOut = argv[++i];
-          else
-            System.err.println(XSLMessages.createMessage(XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION, new Object[] {"-LXCOUT"})); //"Missing argument for);
-
-        }
         else if ("-PARAM".equalsIgnoreCase(argv[i]))
         {
           if ( i+2 < argv.length)
@@ -351,6 +335,7 @@ public class Process
         {
           setQuietMode = true;
         }
+        /*
         else if("-VALIDATE".equalsIgnoreCase(argv[i]))
         {
           String shouldValidate;
@@ -365,6 +350,7 @@ public class Process
 
           // xmlProcessorLiaison.setUseValidation(shouldValidate.equalsIgnoreCase("yes"));
         }
+        */
         else if("-DIAG".equalsIgnoreCase(argv[i]))
         {
           doDiag = true;
@@ -381,6 +367,10 @@ public class Process
         {
           outputType = "html";
         }
+        else if("-SAX".equalsIgnoreCase(argv[i]))
+        {
+          isSAX = true;
+        }      
         else if("-EDUMP".equalsIgnoreCase(argv[i]))
         {
           doStackDumpOnError = true;
@@ -403,30 +393,7 @@ public class Process
           dumpWriter = new PrintWriter( new FileWriter(dumpFileName) );
         }
 
-        Templates stylesheet = null;
-
-        if(null != compiledStylesheetFileNameIn)
-        {
-          try
-          {
-            FileInputStream fileInputStream
-              = new FileInputStream(compiledStylesheetFileNameIn);
-            ObjectInputStream objectInput
-              = new ObjectInputStream(fileInputStream);
-            stylesheet = (Templates)objectInput.readObject();
-            objectInput.close();
-          }
-          catch(java.io.UnsupportedEncodingException uee)
-          {
-            stylesheet = null;
-            // diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_ENCODING_NOT_SUPPORTED, new Object[] {stylesheet.getOutputEncoding()})); //"Encoding not supported: "+stylesheet.m_encoding);
-            // throw new XSLProcessorException(XSLMessages.createMessage(XSLTErrorResources.ER_ENCODING_NOT_SUPPORTED, new Object[] {stylesheet.getOutputEncoding()})); //"Encoding not supported: "+stylesheet.m_encoding);
-          }
-        }
-        else if(null != xslFileName)
-        {
-          stylesheet = processor.process(new InputSource(xslFileName));
-        }
+        Templates stylesheet = processor.process(new InputSource(xslFileName));
 
         PrintWriter resultWriter;
 
@@ -448,16 +415,6 @@ public class Process
 
         if(null != stylesheet)
         {
-          if(null != compiledStylesheetFileNameOut)
-          {
-            FileOutputStream compiledStylesheetOutputStream
-              = new FileOutputStream(compiledStylesheetFileNameOut);
-            ObjectOutputStream compiledStylesheetOutput
-              = new ObjectOutputStream(compiledStylesheetOutputStream);
-
-            compiledStylesheetOutput.writeObject(stylesheet);
-          }
-
           Transformer transformer = stylesheet.newTransformer();
           
           // Override the output format?
@@ -487,7 +444,36 @@ public class Process
           
           if(null != inFileName)
           {
-            transformer.transform(new InputSource(inFileName), new Result(outputStream));
+            if(isSAX)
+            {
+              OutputFormat format = stylesheet.getOutputFormat();
+              if(null != outputType)
+                format.setMethod(outputType);
+              Serializer serializer = SerializerFactory.getSerializer(format);
+              serializer.setOutputStream(outputStream);
+              transformer.setContentHandler(serializer.asContentHandler());
+              transformer.setProperty("http://xml.apache.org/xslt/sourcebase",
+                                      inFileName);
+
+              XMLReader reader = XMLReaderFactory.createXMLReader();
+              
+              reader.setFeature("http://xml.org/sax/features/namespace-prefixes", true);
+              reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+              
+              ContentHandler chandler = transformer.getInputContentHandler();
+              reader.setContentHandler(chandler);
+              
+              if(chandler instanceof org.xml.sax.ext.LexicalHandler)
+                reader.setProperty("http://xml.org/sax/properties/lexical-handler", chandler);
+              else
+                reader.setProperty("http://xml.org/sax/properties/lexical-handler", null);
+
+              reader.parse(inFileName);
+            }
+            else
+            {
+              transformer.transform(new InputSource(inFileName), new Result(outputStream));
+            }
           }
           else
           {
@@ -515,70 +501,12 @@ public class Process
            )
           doStackDumpOnError = true;
         
-        if(throwable instanceof SAXException)
-        {
-          SAXException spe = (SAXException)throwable;
-          if(doStackDumpOnError)
-          {
-            Exception containedException = spe.getException();
-            if(null != containedException)
-            {
-              containedException = spe;
-              while(containedException instanceof SAXException)
-              {
-                containedException.printStackTrace(dumpWriter);
-                containedException = ((SAXException)containedException).getException();
-                dumpWriter.println("====================");
-              }
-              if(null != containedException)
-              {
-                containedException.printStackTrace(dumpWriter);
-                dumpWriter.println("====================");
-              }
-              // else
-              //  System.out.println("Error! "+se.getMessage());
-              diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
-            }
-            else
-            {
-              spe.printStackTrace(dumpWriter);
-            }
-          }
-          else
-          {
-            Exception e = spe;
-            while(null != e)
-            {
-              if(null != e.getMessage())
-              {
-                diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
-                                    +" ("+e.getClass().getName()+"): " 
-                                    + e.getMessage());        
-              }
-              if(e instanceof SAXParseException)
-              {
-                SAXParseException spe2 = (SAXParseException)e;
-                if(null != spe2.getSystemId())
-                  diagnosticsWriter.println("   ID: "+spe2.getSystemId()
-                                            +" Line #"+spe2.getLineNumber()
-                                            +" Column #"+spe2.getColumnNumber());
-                e = spe2.getException();
-                if(e instanceof org.apache.xalan.utils.WrappedRuntimeException)
-                  e = ((org.apache.xalan.utils.WrappedRuntimeException)e).getException();
-              }
-              else
-                e = null;
-            }
-          }
-        }      
-        else 
-        {
-          diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
-                                    +" ("+throwable.getClass().getName()+"): " 
-                                    + throwable.getMessage());        
-          if(doStackDumpOnError)
-            throwable.printStackTrace(dumpWriter);
-        }
+        diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_XSLT_ERROR, null)
+                                  +" ("+throwable.getClass().getName()+"): " 
+                                  + throwable.getMessage());        
+        if(doStackDumpOnError)
+          throwable.printStackTrace(dumpWriter);
+        
         diagnosticsWriter.println(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_SUCCESSFUL, null)); //"XSL Process was not successful.");
         if(null != dumpFileName)
         {

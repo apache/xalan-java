@@ -61,6 +61,7 @@
 package trax;
 
 import org.xml.sax.SAXParseException;
+import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
 
@@ -212,5 +213,160 @@ public class ProcessorException extends SAXParseException
                              int lineNumber, int columnNumber, Exception e)
   {
     super(message, publicId, systemId, lineNumber, columnNumber, e);
+  }
+  
+  
+  /**
+   * Print the the trace of methods from where the error 
+   * originated.  This will trace all nested exception 
+   * objects, as well as this object.
+   * @param s The stream where the dump will be sent to.
+   */
+  public void printStackTrace(java.io.PrintStream s) 
+  {
+    if(s == null)
+      s = System.err;
+    try
+    {
+      super.printStackTrace(s);
+    }
+    catch(Exception e){}
+    Exception exception = getException();
+    for(int i = 0; (i < 10) && (null != exception); i++)
+    {
+      s.println("---------");
+      exception.printStackTrace(s);
+      if(exception instanceof SAXException)
+      {
+        SAXException se = (SAXException)exception;
+        Exception prev = exception;
+        exception = se.getException();
+        if(prev == exception)
+          break;
+      }
+      else
+      {
+        exception = null;
+      }
+    }
+  }
+  
+  /**
+   * Find the most contained message.
+   * @returns The error message of the originating exception.
+   */
+  public String getMessage() 
+  {
+    StringBuffer sbuffer = new StringBuffer();
+    
+    if(null != super.getMessage())
+    {
+      sbuffer.append(super.getMessage());
+    }
+    if(null != getSystemId())
+    {
+      sbuffer.append("; SystemID: ");
+      sbuffer.append(getSystemId());
+    }
+    if(0 != getLineNumber())
+    {
+      sbuffer.append("; Line#: ");
+      sbuffer.append(getLineNumber());
+    }
+    if(0 != getColumnNumber())
+    {
+      sbuffer.append("; Column#: ");
+      sbuffer.append(getColumnNumber());
+    }
+
+    Exception exception = getException();
+    while(null != exception)
+    {
+      if(null != exception.getMessage())
+      {
+        sbuffer.append("\n (");
+        sbuffer.append( exception.getClass().getName());
+        sbuffer.append( "): ");
+        sbuffer.append(exception.getMessage());
+      }
+      
+      if((!((exception instanceof TransformException) || 
+           (exception instanceof ProcessorException))) &&
+         (exception instanceof SAXException))
+      {
+        if(exception instanceof SAXParseException)
+        {
+          SAXParseException spe = (SAXParseException)exception;
+          if(null != spe.getSystemId())
+          {
+            sbuffer.append("; SystemID: ");
+            sbuffer.append(spe.getSystemId());
+          }
+          if(0 != spe.getLineNumber())
+          {
+            sbuffer.append("; Line#: ");
+            sbuffer.append(spe.getLineNumber());
+          }
+          if(0 != spe.getColumnNumber())
+          {
+            sbuffer.append("; Column#: ");
+            sbuffer.append(spe.getColumnNumber());
+          }
+        }
+        SAXException se = (SAXException)exception;
+        exception = se.getException();
+      }
+      else
+      {
+        exception = null;
+      }
+    }
+    return sbuffer.toString();
+  }
+
+  /**
+   * Print the the trace of methods from where the error 
+   * originated.  This will trace all nested exception 
+   * objects, as well as this object.
+   * @param s The writer where the dump will be sent to.
+   */
+  public void printStackTrace(java.io.PrintWriter s) 
+  {
+    if(s == null)
+      s = new java.io.PrintWriter(System.err);
+    try
+    {
+      super.printStackTrace(s);
+    }
+    catch(Exception e){}
+    Exception exception = getException();
+    
+    for(int i = 0; (i < 10) && (null != exception); i++)
+    {
+      s.println("---------");
+      try
+      {
+        exception.printStackTrace(s);
+      }
+      catch(Exception e)
+      {
+        s.println("Could not print stack trace...");
+      }
+      if(exception instanceof SAXException)
+      {
+        SAXException se = (SAXException)exception;
+        Exception prev = exception;
+        exception = se.getException();
+        if(prev == exception)
+        {
+          exception = null;
+          break;
+        }
+      }
+      else
+      {
+        exception = null;
+      }
+    }
   }
 }

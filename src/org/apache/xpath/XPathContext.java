@@ -311,7 +311,7 @@ public class XPathContext implements ExpressionContext
     InputSource inputSource;
     try
     {
-      inputSource = getSourceTreeManager().resolveURI(base, urlString);
+      inputSource = getSourceTreeManager().resolveURI(base, urlString, getSAXLocator());
     }
     catch(IOException ioe)
     {

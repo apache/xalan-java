@@ -7,13 +7,15 @@ public class TextImpl extends Child implements Text
 {
   private String m_data;
  
-  public TextImpl (String data)
+  public TextImpl (DocumentImpl doc, String data)
   {
+    super(doc);
     m_data = data;
   }
 
-  public TextImpl (char ch[], int start, int length)
+  public TextImpl (DocumentImpl doc, char ch[], int start, int length)
   {
+    super(doc);
     m_data = new String(ch, start, start+length);
   }
   
