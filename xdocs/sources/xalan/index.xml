@@ -38,7 +38,7 @@
        it utilizes system properties to determine which Transformer and which XML parser to use.</p>
     <p>&xslt4j; also builds on <resource-ref idref="sax2"/> and <resource-ref idref="dom2"/>.</p>
   
-    <p>For more information, see <link idref="whatsnew">What's new in &xslt4j2;</link>.</p>
+    <p>For more information, see <link idref="readme">the release notes</link>.</p>
     <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
 </s2>
 
