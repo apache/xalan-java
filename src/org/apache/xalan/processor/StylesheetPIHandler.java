@@ -154,24 +154,62 @@ public class StylesheetPIHandler extends DefaultHandler
       String media = null;  // CDATA #IMPLIED
       String charset = null;  // CDATA #IMPLIED
       boolean alternate = false;  // (yes|no) "no"
-      StringTokenizer tokenizer = new StringTokenizer(data, " \t=");
+      StringTokenizer tokenizer = new StringTokenizer(data, " \t=", true);
+      boolean lookedAhead = false; 
 
+      String token = "";
       while (tokenizer.hasMoreTokens())
-      {
-        String name = tokenizer.nextToken();
-
+      {        
+        if (!lookedAhead)
+          token = tokenizer.nextToken();
+        else
+          lookedAhead = false;
+        if (tokenizer.hasMoreTokens() && 
+               (token.equals(" ") || token.equals("\t") || token.equals("=")))
+          continue;
+          
+        String name = token;  
         if (name.equals("type"))
-        {
-          String typeVal = tokenizer.nextToken();
-
-          type = typeVal.substring(1, typeVal.length() - 1);
+        { 
+          token = tokenizer.nextToken();
+          while (tokenizer.hasMoreTokens() && 
+               (token.equals(" " ) || token.equals("\t") || token.equals("=")))
+            token = tokenizer.nextToken();
+          type = token.substring(1, token.length() - 1);
+          
         }
         else if (name.equals("href"))
         {
-          href = tokenizer.nextToken();
+          token = tokenizer.nextToken();
+          while (tokenizer.hasMoreTokens() && 
+               (token.equals(" " ) || token.equals("\t") || token.equals("=")))
+            token = tokenizer.nextToken();
+          href = token;
+          token = tokenizer.nextToken();
+          // If the href value has parameters to be passed to a 
+          // servlet(something like "foobar?id=12..."), 
+          // we want to make sure we get them added to
+          // the href value. Without this check, we would move on 
+          // to try to process another attribute and that would be
+          // wrong.
+          // We need to set lookedAhead here to flag that we
+          // already have the next token. 
+          while ( token.equals("="))
+          {  
+            href = href + token + tokenizer.nextToken();
+            if (tokenizer.hasMoreTokens())
+            {  
+              token = tokenizer.nextToken();
+              lookedAhead = true;
+            }
+            else
+            {
+              break;
+            }
+          }
           href = href.substring(1, href.length() - 1);
           try
-          {
+          {              
             href = SystemIDResolver.getAbsoluteURI(href, m_baseID);
           }
           catch(TransformerException te)
@@ -181,26 +219,38 @@ public class StylesheetPIHandler extends DefaultHandler
         }
         else if (name.equals("title"))
         {
-          title = tokenizer.nextToken();
-          title = title.substring(1, title.length() - 1);
+          token = tokenizer.nextToken();
+          while (tokenizer.hasMoreTokens() && 
+               (token.equals(" " ) || token.equals("\t") || token.equals("=")))
+            token = tokenizer.nextToken();
+          title = token.substring(1, token.length() - 1);
         }
         else if (name.equals("media"))
         {
-          media = tokenizer.nextToken();
-          media = media.substring(1, media.length() - 1);
+          token = tokenizer.nextToken();
+          while (tokenizer.hasMoreTokens() && 
+               (token.equals(" " ) || token.equals("\t") || token.equals("=")))
+            token = tokenizer.nextToken();
+          media = token.substring(1, token.length() - 1);
         }
         else if (name.equals("charset"))
         {
-          charset = tokenizer.nextToken();
-          charset = charset.substring(1, charset.length() - 1);
+          token = tokenizer.nextToken();
+          while (tokenizer.hasMoreTokens() && 
+              (token.equals(" " ) || token.equals("\t") || token.equals("=")))
+            token = tokenizer.nextToken();
+          charset = token.substring(1, token.length() - 1);
         }
         else if (name.equals("alternate"))
         {
-          String alternateStr = tokenizer.nextToken();
-
-          alternate = alternateStr.substring(1, alternateStr.length()
+          token = tokenizer.nextToken();
+          while (tokenizer.hasMoreTokens() && 
+               (token.equals(" " ) || token.equals("\t") || token.equals("=")))
+            token = tokenizer.nextToken();
+          alternate = token.substring(1, token.length()
                                              - 1).equals("yes");
         }
+        
       }
 
       if ((null != type) && type.equals("text/xsl") && (null != href))
@@ -242,7 +292,8 @@ public class StylesheetPIHandler extends DefaultHandler
       }
     }
   }
-
+  
+  
   /**
    * The spec notes that "The xml-stylesheet processing instruction is allowed only in the prolog of an XML document.",
    * so, at least for right now, I'm going to go ahead an throw a TransformerException
