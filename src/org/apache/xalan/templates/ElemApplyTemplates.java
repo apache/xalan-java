@@ -288,7 +288,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
         for (int i = 0; i < nParams; i++) 
         {
           ElemWithParam ewp = m_paramElems[i];
+          if (TransformerImpl.S_DEBUG)
+            transformer.getTraceManager().fireTraceEvent(ewp);
           XObject obj = ewp.getValue(transformer, sourceNode);
+          if (TransformerImpl.S_DEBUG)
+            transformer.getTraceManager().fireTraceEndEvent(ewp);
           
           vars.setLocalVariable(i, obj, argsFrame);
         }
