@@ -166,7 +166,7 @@ public class DTMNodeList implements org.w3c.dom.NodeList
       else
       {
         int handle=m_firstChild;
-        while(--index>0 && handle!=DTM.NULL)
+        while(--index>=0 && handle!=DTM.NULL)
           handle=m_parentDTM.getNextSibling(handle);
         return m_parentDTM.getNode(handle);
       }
