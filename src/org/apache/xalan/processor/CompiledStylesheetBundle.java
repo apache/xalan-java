@@ -396,7 +396,7 @@ public class CompiledStylesheetBundle
 		*
 		* @param String name fully-qualified classname (including package, if any)
 		*/
-		Class findClass(String name) 
+		public Class findClass(String name) 
 		{
 			Class c=null;
 			try
