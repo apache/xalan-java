@@ -1,0 +1,161 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+<META NAME="Generator" CONTENT="Microsoft Word 97">
+<TITLE>Xalan SQL Extension</TITLE>
+</HEAD>
+<BODY LINK="#0000ff" VLINK="#800080">
+
+<B><FONT FACE="Arial" SIZE=5><P ALIGN="CENTER"><A NAME="_Toc509062553">Xalan SQL Extension</A></P>
+<P ALIGN="CENTER"><A NAME="_Toc509062554">Connections and Queries</A></P>
+</FONT><FONT SIZE=2><P>Database Connections&#9;</B></FONT><A HREF="#_Toc509119435">*</A><DIR>
+
+<FONT SIZE=2><P>Providing Connection information in the XSL File&#9;</FONT><A HREF="#_Toc509119436">*</A></P>
+<I><FONT SIZE=2><P>XConnection(Sring DBDriver, String DBurl)&#9;</I></FONT><A HREF="#_Toc509119437">*</A></P>
+<I><FONT SIZE=2><P>XConnection(String DBDriver, String DBurl, String User, String Password)&#9;</I></FONT><A HREF="#_Toc509119438">*</A></P>
+<I><FONT SIZE=2><P>XConnection(String DBDriver, String DBurl, NodeList Properties)&#9;</I></FONT><A HREF="#_Toc509119439">*</A></P>
+<FONT SIZE=2><P>Providing Connection information in the XML File&#9;</FONT><A HREF="#_Toc509119440">*</A></P>
+<I><FONT SIZE=2><P>XConnection(NodeList ConnectionData)&#9;</I></FONT><A HREF="#_Toc509119441">*</A></P>
+<FONT SIZE=2><P>Using Existing Connections in a connection pool&#9;</FONT><A HREF="#_Toc509119442">*</A></P>
+<I><FONT SIZE=2><P>XConnection(String ConnectionName)&#9;</I></FONT><A HREF="#_Toc509119443">*</A></P></DIR>
+
+<B><FONT SIZE=2><P>Connection Pools&#9;</B></FONT><A HREF="#_Toc509119444">*</A></P><DIR>
+
+<FONT SIZE=2><P>Overview&#9;</FONT><A HREF="#_Toc509119445">*</A></P>
+<FONT SIZE=2><P>Creating a new wrapper&#9;</FONT><A HREF="#_Toc509119446">*</A></P>
+<FONT SIZE=2><P>The Default Connection Pool&#9;</FONT><A HREF="#_Toc509119447">*</A></P></DIR>
+
+<B><FONT SIZE=2><P>Queries&#9;</B></FONT><A HREF="#_Toc509119448">*</A></P><DIR>
+
+<FONT SIZE=2><P>Standard queries&#9;</FONT><A HREF="#_Toc509119449">*</A></P>
+<FONT SIZE=2><P>Parameter based queries&#9;</FONT><A HREF="#_Toc509119450">*</A></P>
+<I><FONT SIZE=2><P>Overview&#9;</I></FONT><A HREF="#_Toc509119451">*</A></P>
+<I><FONT SIZE=2><P>Handling Value and Type Information&#9;</I></FONT><A HREF="#_Toc509119452">*</A></P></DIR>
+
+<B><FONT SIZE=2><P>Examples&#9;</B></FONT><A HREF="#_Toc509119453">*</A></P><DIR>
+
+<FONT SIZE=2><P>Basic&#9;</FONT><A HREF="#_Toc509119454">*</A></P>
+<FONT SIZE=2><P>External Connections&#9;</FONT><A HREF="#_Toc509119455">*</A></P>
+<FONT SIZE=2><P>PQuery&#9;</FONT><A HREF="#_Toc509119456">*</A></P>
+<FONT SIZE=2></DIR>
+</P>
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="_Toc509062555"><A NAME="_Toc509119435">Database Connection</A>s</A></P><DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The SQL Extension provides 2 basic mechanisms to connect to the database. The connection information can either be provided in the XSL/XML or pulled from a Connection Pool that was created outside the Xalan library.</P>
+<P ALIGN="JUSTIFY">The XConnection object is used to represent a connection to the database. The actual connection is established through the object constructor. Each of the different mechanisms differs with the signature of the extension.</P>
+<P ALIGN="JUSTIFY">When the connection information is provided in the XSL or XML sources, a default connection pool will be created on its behalf but due to restrictions in some drivers, the actual pooling of connections will disabled by default. See Connection Pools, The Default Connection Pool.</P>
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119436">Providing Connection information in the XSL File</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">When providing Connection Information from the XSL or XML input sources, the XConnection object will create a default connection pool that will exist for the lifetime of the Transformation object.</P>
+</FONT><FONT FACE="Arial"><P><A NAME="_Toc509119437">XConnection(Sring DBDriver, String DBurl)</A></P>
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Create a standard JDBC connection using the specified driver and URL. This is used primarily for local databases that do not return user identification.</P>
+</FONT><FONT FACE="Arial"><P><A NAME="_Toc509119438">XConnection(String DBDriver, String DBurl, String User, String Password)</A></P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Create a standard JDBC Connection, which also provides user identification.</P></DIR>
+
+</FONT><FONT FACE="Arial"><P><A NAME="_Toc509119439">XConnection(String DBDriver, String DBurl, NodeList Properties)</A></P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Create a standard JDBC connection that loads the database driver using the specified URL. The NodeList provides will then be converted into a properties object which will be passes in when getting the JDBC connection.</P></DIR>
+</DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119440">Providing Connection information in the XML File</A></P><DIR>
+
+</B></I><P><A NAME="_Toc509119441">XConnection(NodeList ConnectionData)</A></P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Create connection and pass in the complete connection information as a Nodelist. This allows the XML data to provide the connection information. The node list will be used to create a named value pair list where the Node Name will represent the name and the Node Value will be the value. Required Tags consist of &quot;dbdriver&quot; and &quot;dburl&quot;. Optional tags can include &quot;user&quot; and &quot;password&quot; to specify the user identification but can also include any other database connection property.</P></DIR>
+</DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119442">Using Existing Connections in a connection pool</A></P><DIR>
+
+</B></I><P><A NAME="_Toc509119443">XConnection(String ConnectionName)</A></P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The Xalan SQL Extensions allows the controlling program to create an external JDBC Connection Pool and reference the connection pools by name inside the Stylsheet. Besides providing a mechanism to share connection resources with Xalan, is also allows the Stylesheet to not be concerned with the Connection properties all together.</P></DIR>
+</DIR>
+</DIR>
+
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="_Toc509119444">Connection Pools</A></P><DIR>
+
+</FONT><I><FONT FACE="Arial"><P><A NAME="_Toc509119445">Overview</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Connection pools allow the Xalan Transformer to share connections with the rest of the application. Any existing JDBC Connection pool should be compatible with the Xalan Transformer by creating a wrapper class around the specific connection pool and registering it with the XConnectionPoolManager.</P></DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119446">Creating a new wrapper</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The org.apache.xalan.lib.sql.connection is the interface that needs to be implemented be compatible with the Xalan Transformer.</P></DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119447">The Default Connection Pool</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">To provide a uniform internal programming model, the XConnection object will create an instance of the DefaultConnectionPool. By default the Default Connection Pool will</P></DIR>
+</DIR>
+
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="_Toc509119448">Queries</A></P><DIR>
+
+</FONT><I><FONT FACE="Arial"><P><A NAME="_Toc509119449">Standard queries</A></P><DIR>
+<DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">query(XConnection conn, String SQL)</P>
+<P ALIGN="JUSTIFY">Standard queries take a connection as arguments, an XConnection and the SQL String. It is the responsibility of the Stylesheet designer to format the SQL String completely including any quotes that are necessary. For static queries this is fine because the sting can be assembled at design time.</P></DIR>
+</DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119450">Parameter based queries</A></P><DIR>
+
+</B></I><P><A NAME="_Toc509119451">Overview</A></P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Parameter based queries are used when data that dynamically changes the query needs to be supplied from the XML Data.</P>
+<P ALIGN="JUSTIFY">The Stylesheet will provide the skeleton template of the query with place holders where the data goes, then provides several mechanisms to apply that data from the XML Data.</P>
+<P ALIGN="JUSTIFY">Parameter based queries take advantage of the JDBC Prepared statement semantics.</P></DIR>
+
+</FONT><FONT FACE="Arial"><P><A NAME="_Toc509119452">Handling Value and Type Information</A></P><DIR>
+
+</FONT><FONT SIZE=2><P ALIGN="JUSTIFY">When using parameterized query the place markers in the query (a &quot;?&quot;) will be replaced with data that is provided using one of the addParameter.. methods. When adding data to a parameter based query, the type of each value must also be included so that real query can be produced. The type information can be passed in as a component of the Query or the Data which ever is more convenient to the Stylesheet designer. </P>
+<P ALIGN="JUSTIFY">If the type information is missing for a data point, the default type is set to String.</P>
+<P ALIGN="JUSTIFY">The list of possible value types include, string,  bigdecimal, boolean, bytes, date, double, float, long, short, time, timestamp.</P></DIR>
+
+</FONT><B><FONT FACE="Arial"><P>pquery(XConnection, query)</P><DIR>
+
+</B></FONT><FONT SIZE=2><P>When just the query statement is passed as a parameter, the Type information must be passed in as a component of the data. </P></DIR>
+
+</FONT><B><FONT FACE="Arial"><P>pquery(XConnection, query, typeinfo)</P><DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">This allows the query to be specified using the &quot;?&quot; place holders and defining the type for each of the placeholders as a comma separated value string. i.e. &quot;string,int,string,datetime&quot;</P></DIR>
+
+</FONT><B><FONT FACE="Arial"><P>addParameter(XConnection, value)</P><DIR>
+
+</B></FONT><FONT SIZE=2><P>Add a new value to be used with a pquery, each new value is appended to a list that will be merged into the query statement when the pquery statement is executed. All data points must be added prior to executing the pquery statement.</P></DIR>
+
+</FONT><B><FONT FACE="Arial"><P>addParameterWithType(XConnection, value,type)</P><DIR>
+
+</B></FONT><FONT SIZE=2><P>Add a new value specifying the type information also.</P></DIR>
+
+</FONT><B><FONT FACE="Arial"><P>addParameterFromElement(XConnection, NodeList)</P><DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">Add a block of data points from a node list queried from the XML Data Source.  Each tag name at the START_TAG and TAG1 level are irrelevant, the only significant information is the value and possibly the type attribute.</P>
+<P ALIGN="JUSTIFY">If the type attribute is present, it will set the current type. If the type information is missing, it will either be provide through one of the other mechanisms or default to a string.</P>
+<P ALIGN="JUSTIFY">&lt;START_TAG&gt;</P>
+<P ALIGN="JUSTIFY">  &lt;TAG1&gt; type=&quot;int&quot;&gt;value&lt;/TAG1&gt;</P>
+<P ALIGN="JUSTIFY">&lt;/START_TAG</P>
+<P ALIGN="JUSTIFY"></P>
+<P ALIGN="JUSTIFY">Typical implementation </P>
+<P ALIGN="JUSTIFY">&lt;xsl:param name=&quot;plist&quot; select=&quot;/START_TAG&quot; /&gt;</P>
+<P ALIGN="JUSTIFY">&lt;xsl:addParameterFromElement( $conn, $plist);</P></DIR>
+</DIR>
+</DIR>
+
+</FONT><B><FONT FACE="Arial" SIZE=4><P><A NAME="_Toc509119453">Examples</A></P><DIR>
+
+</B></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">All of the following examples use the Enhydra InstantDB which is included as part of the Xalan distribution to operate. Please read the Enhydra documentation on managing an InstantDB http://www.instantdb.co.uk/</P>
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119454">Basic</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The XML/XSL Files (dbinfo.xml and dbtest.xsl) provide an example of implementing a basic connection where the connection information is provided in the XSL file using a static query.</P>
+<P ALIGN="JUSTIFY">The XML/XSL Files (dbinfo.xml and dbtest-cinfo.xsl) provide an example of implementing a basic connection where the connection information is provided as a node list in the XML file using a static query.</P></DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119455">External Connections</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The java file ExternalConnection demonstrates how to build a JDBC connection pool that is independent of Xalan. The actual connection pool used is the Default Connection pool inside the Xalan SQL Extension, which already implements the ConnectionPool interface so no wrapper was required. To implement a third party connection pool, a wrapper function must be implemented.</P></DIR>
+
+</FONT><B><I><FONT FACE="Arial"><P><A NAME="_Toc509119456">PQuery</A></P><DIR>
+
+</B></I></FONT><FONT SIZE=2><P ALIGN="JUSTIFY">The XML/XSL file (dbInfo.xml and dbtest.xsl) provide an example of implementing a parameter based query.</P></DIR>
+</DIR>
+</FONT></BODY>
+</HTML>
