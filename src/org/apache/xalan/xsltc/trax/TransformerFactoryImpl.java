@@ -699,15 +699,14 @@ public class TransformerFactoryImpl
     public InputSource loadSource(String href, String context, XSLTC xsltc) {
 	try {
 	    final Source source = _uriResolver.resolve(href, context);
-	    final InputSource input = getInputSource(xsltc, source);
-	    return(input);
-	}
-	catch (TransformerConfigurationException e) {
-	    return null;
+	    if (source != null) {
+		return getInputSource(xsltc, source);
+	    }
 	}
 	catch (TransformerException e) {
-	    return null;
+	    // Falls through
 	}
+	return null;
     }
 
     /**
