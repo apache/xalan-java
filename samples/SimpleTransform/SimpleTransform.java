@@ -55,13 +55,12 @@
  * <http://www.apache.org/>.
  */
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 
 
 // Imported SAX classes
@@ -70,41 +69,31 @@ import org.xml.sax.SAXException;
 
 // Imported java classes
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileNotFoundException;
 
 /**
  *  Use the TraX interface to perform a transformation in the simplest manner possible
- *  (4 statements).
+ *  (3 statements).
  */
 public class SimpleTransform
 {
 	public static void main(String[] args)
-    throws ProcessorException, ProcessorFactoryException, 
-           TransformException, SAXException, IOException
+    throws TransformerException, TransformerConfigurationException, FileNotFoundException
   {  
-    // Instantiate a stylesheet processor. The org.apache.trax.Processor newInstance()
-	// method with "xslt" as the argument reads the org.apache.trax.processor.xslt 
-	// system property to determine the actual class to instantiate:
-	// org.apache.xalan.processor.StylesheetProcessor.
-	Processor processor = Processor.newInstance("xslt");
+  // Use the static TransformerFactory.newInstance() method to instantiate 
+  // a TransformerFactory. The javax.xml.transform.TransformerFactory 
+  // system property setting determines the actual class to instantiate --
+  // org.apache.xalan.transformer.TransformerImpl.
+	TransformerFactory tFactory = TransformerFactory.newInstance();
 	
-	// Use the stylesheet processor to process the stylesheet (foo.xsl) and
-	// return a Templates object. As implemented by StylesheetProcessor,
-	// the process() method uses the Xerces SAX processor to parse the stylesheet
-	// and returns a StylesheetRoot (an implementation of the org.apache.trax.Templates interface)
-	// from the ContentHandler for the SAX processor. The Templates (StylesheetRoot)
-	// object contains an XSLT schema and the stylesheet data.
-    Templates templates = processor.process(new InputSource("foo.xsl"));
-	
-	// Use the Templates object to generate a Transformer object. As implemented by
-	// StylesheetRoot, newTransformer() returns an instance of 
-	// org.apache.xalan.transformer.Transformer, an implementation of the 
-	// org.apache.trax.Transformer interface.
-	Transformer transformer = templates.newTransformer();
+	// Use the TransformerFactory to instantiate a Transformer that will work with  
+	// the stylesheet you specify. This method call also processes the stylesheet
+  // into a compiled Templates object.
+	Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
 
-	// Use the transformer to apply the Templates (StylesheetRoot) object to an XML document
+	// Use the Transformer to apply the associated Templates object to an XML document
 	// (foo.xml) and write the output to a file (foo.out).
-	transformer.transform(new InputSource("foo.xml"), new Result(new FileOutputStream("foo.out")));
+	transformer.transform(new StreamSource("foo.xml"), new StreamResult(new FileOutputStream("foo.out")));
 	
 	System.out.println("************* The result is in foo.out *************");
   }
