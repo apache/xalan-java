@@ -105,6 +105,13 @@ final class LogicalExpr extends Expression {
     }
 
     /**
+     * Returns true if this expressions contains a call to last()
+     */
+    public boolean hasLastCall() {
+            return (_left.hasLastCall() || _right.hasLastCall());
+    }
+    
+    /**
      * Returns an object representing the compile-time evaluation 
      * of an expression. We are only using this for function-available
      * and element-available at this time.
