@@ -71,7 +71,7 @@
   </s2>
   <s2 title="How about this release?">
   <p>&xslt4j-current; is a production release. This is the first &xslt4j; release to include the 
-  <link idref="xsltc_usage">XSLTC</link> translet compiler and runtime,. This release also incorporates a number of bug fixes.
+  <link idref="xsltc_usage">XSLTC</link> translet compiler and runtime. This release also incorporates a number of bug fixes.
    For the details, see <link idref="readme">Release Notes</link>. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</p>
   </s2> 
   <s2 title="How do I get it?">
