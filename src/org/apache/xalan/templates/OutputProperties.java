@@ -692,7 +692,11 @@ public class OutputProperties extends ElemTemplateElement
             || key.equals(OutputKeys.OMIT_XML_DECLARATION)
             || key.equals(OutputKeys.STANDALONE)
             || key.equals(OutputKeys.VERSION)
-            || (key.length() > 0) && (key.charAt(0) == '{'));
+            || (key.length() > 0) 
+                  && (key.charAt(0) == '{') 
+                  && (key.lastIndexOf('{') == 0)
+                  && (key.indexOf('}') > 0)
+                  && (key.lastIndexOf('}') == key.indexOf('}')));
   }
 
   /** The output properties.
