@@ -70,8 +70,8 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.xpath.XPathException;
-import org.w3c.dom.xpath.XPathResult;
+import org.apache.xalan.dom3.xpath.XPathException;
+import org.apache.xalan.dom3.xpath.XPathResult;
 
 /**
  * <meta name="usage" content="experimental"/>

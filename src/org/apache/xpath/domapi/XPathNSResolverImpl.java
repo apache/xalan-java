@@ -59,7 +59,7 @@ package org.apache.xpath.domapi;
 
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.w3c.dom.Node;
-import org.w3c.dom.xpath.XPathNSResolver;
+import org.apache.xalan.dom3.xpath.XPathNSResolver;
 
 /**
  * <meta name="usage" content="experimental"/>
