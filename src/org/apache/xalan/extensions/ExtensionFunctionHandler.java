@@ -635,6 +635,8 @@ public class ExtensionFunctionHandler
             
             if (isClass) 
             {
+              if(null == classObject)
+                classObject = Class.forName(cname);
               javaObject = classObject;
             }
             else
