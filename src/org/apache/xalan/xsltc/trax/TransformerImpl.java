@@ -188,7 +188,7 @@ public final class TransformerImpl extends Transformer
     /**
      * A flag indicating whether we use incremental building of the DTM.
      */
-    private boolean _isIncremental = false;
+    //private boolean _isIncremental = false;
 
     /**
      * A flag indicating whether this transformer implements the identity 
@@ -219,7 +219,7 @@ public final class TransformerImpl extends Transformer
 	_propertiesClone = (Properties) _properties.clone();
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
-	_isIncremental = tfactory._incremental;
+	//_isIncremental = tfactory._incremental;
     }
 
     /**
@@ -434,7 +434,7 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                        .getFactory());
 
-                dtmManager.setIncremental(_isIncremental);
+                //dtmManager.setIncremental(_isIncremental);
 		dom = (SAXImpl)dtmManager.getDTM(sax, false, wsfilter, true, false,
                                                  hasUserReader);
 		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
@@ -457,7 +457,7 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                          .getFactory());
     
-                dtmManager.setIncremental(_isIncremental);
+                //dtmManager.setIncremental(_isIncremental);
 		dom = (DOMImpl)dtmManager.getDTM(domsrc, false, wsfilter, true,
                                                  false, false);
 		((DOMImpl)dom).setDocumentURI(_sourceSystemId);
@@ -477,7 +477,7 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                    .getFactory());
 
-		dtmManager.setIncremental(_isIncremental);
+		//dtmManager.setIncremental(_isIncremental);
 		
 		InputSource input;
 		if (streamInput != null) {

@@ -227,12 +227,12 @@ public class TransformerFactoryImpl
     /**
      * The name of the feature for incremental building of the DTM.
      */
-    public static String FEATURE_INCREMENTAL = "http://xml.apache.org/xalan/features/incremental";
+    // public static String FEATURE_INCREMENTAL = "http://xml.apache.org/xalan/features/incremental";
     
     /**
      *  Set to <code>true</code> when we want to use incremental building of the DTM.
      */
-    protected boolean _incremental = false;
+    // protected boolean _incremental = false;
     
     /**
      * Number of indent spaces when indentation is turned on.
@@ -302,9 +302,11 @@ public class TransformerFactoryImpl
 	else if (name.equals(AUTO_TRANSLET)) {
 	    return new Boolean(_autoTranslet);
 	}
+	/*
 	else if (name.equals(FEATURE_INCREMENTAL)) {
 	    return new Boolean(_incremental);	
 	}
+	*/
 
 	// Throw an exception for all other attributes
 	ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
@@ -390,6 +392,7 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
+	/*
 	else if (name.equals(FEATURE_INCREMENTAL)) {
 	    if (value instanceof Boolean) {
 		_incremental = ((Boolean) value).booleanValue();
@@ -400,6 +403,7 @@ public class TransformerFactoryImpl
 		return;
 	    }
 	}
+	*/
 	else if (name.equals(INDENT_NUMBER)) {
 	    if (value instanceof String) {
 		try {
