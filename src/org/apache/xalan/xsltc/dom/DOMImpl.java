@@ -2826,6 +2826,18 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if ((name = getNodeName(element)) != null) {
 		buffer.append('<');
 		buffer.append(name);
+
+		int attribute = _lengthOrAttr[element];
+		while (attribute != NULL) {
+		    // Skip namespace nodes
+		    if (_type[attribute] != NAMESPACE) {
+			buffer.append(' ').append(getNodeName(attribute))
+			      .append("=\"").append(getNodeValue(attribute))
+			      .append('"');
+		    }
+		    attribute = _nextSibling[attribute];
+		}
+
 		if (_offsetOrChild[element] == NULL) {
 		    buffer.append("/>");
 		    return buffer;
