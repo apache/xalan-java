@@ -128,6 +128,43 @@ for the TrAX API.
  PR: n/a
  Obtained from: n/a
  Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/18/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/compiler Output.java
+ Stylesheet.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultRun.java
+ DefaultSAXOutputHandler.java SAXAdapter.java
+ StringValueHandler.java TextOutput.java
+ TransletOutputBase.java<br/><ref>Committer's log entry: </ref>A series of changes to the XSLTC output handling to accomodate the
+ set/getOutputSettings() methods in the TrAX API.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime TextOutput.java<br/><ref>Committer's log entry: </ref>Fixed the handling of the 'cdata-section-elements' attribute of the
+ &lt;xsl:output&gt; element. Previously we output the whole element, including
+ all contents, child elements and the start- and end-tags in one big
+ CDATA section. We now correctly output only immediate text child-nodes
+ as CDATA sections.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc Translet.java
+ java/src/org/apache/xalan/xsltc/dom LoadDocument.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java
+ java/src/org/apache/xalan/xsltc/trax TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added implementation of get/setOutputProperties() of the Transformer
+ implementation.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/19/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/><ref>Committer's log entry: </ref>Added (a rather brutal) handling of all Exceptions thrown in the
+ DocumentCache.getLastModified() method. This class is provided only
+ as an example/skeleton, but should still - for various reasons -
+ be provided in the base 'xsltc.dom' package.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org<br/><br/></li></ul>
 </s3>
 <anchor name="xsltcconf"/>

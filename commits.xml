@@ -724,4 +724,71 @@ hand. Change code to use the new constructors.</Log>
 <Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
 <Log>2.2.D7</Log>
 </Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc TransletOutputHandler.java
+ java/src/org/apache/xalan/xsltc/cmdline Transform.java
+ java/src/org/apache/xalan/xsltc/compiler Output.java
+ Stylesheet.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java DefaultRun.java
+ DefaultSAXOutputHandler.java SAXAdapter.java
+ StringValueHandler.java TextOutput.java
+ TransletOutputBase.java</Modified>
+<Log>A series of changes to the XSLTC output handling to accomodate the
+ set/getOutputSettings() methods in the TrAX API.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Removed>java/src/org/apache/xml/dtm/ref DTMBuilder.java</Removed>
+<Log>Obsolete</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/19/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime TextOutput.java</Modified>
+<Log>Fixed the handling of the 'cdata-section-elements' attribute of the
+ &lt;xsl:output&gt; element. Previously we output the whole element, including
+ all contents, child elements and the start- and end-tags in one big
+ CDATA section. We now correctly output only immediate text child-nodes
+ as CDATA sections.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/19/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc Translet.java
+ java/src/org/apache/xalan/xsltc/dom LoadDocument.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java
+ java/src/org/apache/xalan/xsltc/trax TransformerImpl.java</Modified>
+<Log>Added implementation of get/setOutputProperties() of the Transformer
+ implementation.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/19/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DocumentCache.java</Modified>
+<Log>Added (a rather brutal) handling of all Exceptions thrown in the
+ DocumentCache.getLastModified() method. This class is provided only
+ as an example/skeleton, but should still - for various reasons -
+ be provided in the base 'xsltc.dom' package.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
 </Commits>
