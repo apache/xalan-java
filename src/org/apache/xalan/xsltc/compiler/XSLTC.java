@@ -97,14 +97,6 @@ public final class XSLTC {
     // A reference to the stylesheet being compiled.
     private Stylesheet _stylesheet = null;
 
-    // Command line options/args
-    private boolean _debug;
-    private boolean _isJarFileSpecified;
-    private String  _className;			// -o effects this
-    private String  _packageName;
-    private File    _destDir;
-    private File    _dumpDir;
-
     // Counters used by various classes to generate unique names.
     private int _variableSerial     = 1;
     private int _modeSerial         = 1;
@@ -120,29 +112,47 @@ public final class XSLTC {
     private Vector    _namesIndex; // Index of all registered QNames
     private Hashtable _elements;   // Hashtable of all registered elements
     private Hashtable _attributes; // Hashtable of all registered attributes
+
     // Namespace index tables
     private int       _nextNSType; // Next available namespace type
     private Vector    _namespaceIndex; // Index of all registered namespaces
     private Hashtable _namespaces; // Hashtable of all registered namespaces
 
+    // These define the various methods for outputting the translet
     private static final int FILE_OUTPUT        = 0;
     private static final int JAR_OUTPUT         = 1;
     private static final int BYTEARRAY_OUTPUT   = 2;
     private static final int CLASSLOADER_OUTPUT = 3;
 
-    private int _outputType = FILE_OUTPUT; // by default
-    private Vector _classes;
+    // Compiler options (passed from command line or XSLTC client)
+    private boolean _debug = false;      // -x
+    private String  _jarFileName = null; // -j <jar-file-name>
+    private String  _className = null;   // -o <class-name>
+    private String  _packageName = null; // -p <package-name>
+    private File    _destDir = null;     // -d <directory-name>
+    private int     _outputType = FILE_OUTPUT; // by default
+
+    private Vector  _classes;
     private boolean _multiDocument = false;
     
+    /**
+     * XSLTC compiler constructor
+     */
     public XSLTC() {
 	_parser = new Parser(this);
     }
 
+    /**
+     * Initializes the compiler to compile a new stylesheet
+     */
     public void init() {
 	reset();
 	_classes = new Vector();
     }
     
+    /**
+     * Initializes the compiler to produce a new translet
+     */
     private void reset() {
 	_nextGType      = DOM.NTYPES;
 	_elements       = new Hashtable();
@@ -166,25 +176,29 @@ public final class XSLTC {
 	};
     }
     
-    public void setMultiDocument(boolean flag) {
-	_multiDocument = flag;
-    }
-
     /**
-     *
+     * Compiles an XSL stylesheet pointed to by a URL
      */
     public boolean compile(URL url) { 
-	return compile(url, null);
+	return compile(url, (ErrorListener)null);
     }
 
     /**
-     *
+     * Compiles an XSL stylesheet pointed to by a URL
+     *   @listener parameter may be null
      */
     public boolean compile(URL url, ErrorListener listener) {
 	try {
-	    final String name = Util.baseName(url.getFile());
+	    // Open input stream from URL
 	    final InputStream input = url.openStream();
-	    return compile(input, name, url, listener);
+	    // Get class name from URL if not explicitly set
+	    if (_className == null) {
+		final String name = Util.baseName(url.getFile());
+		return compile(input, name, url, listener);
+	    }
+	    else {
+		return compile(input, _className, url, listener);
+	    }
 	}
 	catch (MalformedURLException e) {
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
@@ -199,14 +213,20 @@ public final class XSLTC {
     }
 
     /**
-     *
+     * Compiles an XSL stylesheet passed in through an InputStream
+     *   @transletName parameter must be set since the compiler cannot get
+     *   the XSL stylesheet name from the input stream
      */
     public boolean compile(InputStream input, String transletName) {
 	return compile(input, transletName, null, null);
     }
 
     /**
-     *
+     * Compiles an XSL stylesheet passed in through an InputStream
+     *   @input passes the stylesheet to the compiler
+     *   @transletName may be set, name taken from URL if this param is null
+     *   @url parameter must be set
+     *   @listener parameter may be null
      */
     public boolean compile(InputStream input,
 			   String transletName,
@@ -221,139 +241,191 @@ public final class XSLTC {
 	    reset();
 
 	    // Set the translet's class name
+	    if (transletName == null) 
+		transletName = Util.baseName(url.getFile());
 	    setClassName(transletName);
 
 	    // Get the root node of the abstract syntax tree
 	    final SyntaxTreeNode element = _parser.parse(input);
 
-	    // Process any error and/or warning messages
-	    _parser.printWarnings();
-	    if (_parser.errorsFound()) {
-		_parser.printErrors();
-		return false;
-	    }
-
 	    // Compile the translet - this is where the work is done!
 	    if ((!_parser.errorsFound()) && (element != null)) {
+		// Create a Stylesheet element from the root node
 		_stylesheet = _parser.makeStylesheet(element);
 		_stylesheet.setURL(url);
-		// This is the top level stylesheet - it has no parent
 		_stylesheet.setParentStylesheet(null);
 		_parser.setCurrentStylesheet(_stylesheet);
+		// Create AST under the Stylesheet element (parse & type-check)
 		_parser.createAST(_stylesheet);
-		if (_stylesheet != null && _parser.errorsFound() == false) {
-		    _stylesheet.setMultiDocument(_multiDocument);
-		    _stylesheet.translate();
-		}
-		else {
-		    _parser.printErrors();
-		}		
 	    }
-	    else {
-		_parser.printErrors();
+	    // Generate the bytecodes and output the translet class(es)
+	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
+		_stylesheet.setMultiDocument(_multiDocument);
+		_stylesheet.translate();
 	    }
+	}
+	catch (CompilerException e) {
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	}
+	finally {
+	    _parser.printErrors();
 	    _parser.printWarnings();
 	    return !_parser.errorsFound();
 	}
-	catch (CompilerException e) {
-	    e.printStackTrace();
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
-	    _parser.printErrors();
-	    return false;  
-	}
     }
 
-    private boolean compile(Vector stylesheets) {
-	final int nStylesheets = stylesheets.size();
-	/*
-	 * Note: if there are multiple stylesheets, then '_className' must
-	 *       be reset to null each time; otherwise it should not be
-	 *       reset because user might have specified a new name with the
-	 *       -o <name> option.
-	 */
-	if (nStylesheets > 1) {
-	    final Enumeration urls = stylesheets.elements();
-	    while (urls.hasMoreElements()) {
-		final URL stylesheetURL = (URL)urls.nextElement();
-		_className = null; // reset, so that new name will be computed 
-		if (!compile(stylesheetURL)) {
-		    return false;
-		}
+    /**
+     * Compiles a set of stylesheets pointed to by a Vector of URLs
+     */
+    public boolean compile(Vector stylesheets) {
+	// Get the number of stylesheets (ie. URLs) in the vector
+	final int count = stylesheets.size();
+	
+	// Return straight away if the vector is empty
+	if (count == 0) return true;
+
+	// Special handling needed if the URL count is one, becuase the
+	// _className global must not be reset if it was set explicitly
+	if (count == 1) {
+	    final Object url = stylesheets.firstElement();
+	    if (url instanceof URL)
+		return compile((URL)url);
+	    else
+		return false;
+	}
+
+	// Traverse all elements in the vector and compile
+	final Enumeration urls = stylesheets.elements();
+	while (urls.hasMoreElements()) {
+	    _className = null; // reset, so that new name will be computed 
+	    final Object url = urls.nextElement();
+	    if (url instanceof URL) {
+		if (!compile((URL)url)) return false;
 	    }
-	    return true;
 	}
-	else {
-	    final URL stylesheetURL = (URL)stylesheets.firstElement();
-	    // do not reset _className to null in case -o option was used.
-	    return compile(stylesheetURL);
+	return true;
+    }
+
+    /**
+     * Compiles a stylesheet pointed to by a URL. The result is put in a
+     * set of byte arrays. One byte array for each generated class.
+     */
+    public byte[][] compile(URL stylesheetURL, String className) {
+	_outputType = BYTEARRAY_OUTPUT;
+	setClassName(className);
+	if (compile(stylesheetURL)) {
+	    final int count = _classes.size();
+	    final byte[][] result = new byte[1][count];
+	    for (int i = 0; i < count; i++)
+		result[i] = (byte[])_classes.elementAt(i);
+	    return result;
 	}
+	return null;
+    }
+
+    /**
+     * This method is called by the XPathParser when it encounters a call
+     * to the document() function. Affects the DOM used by the translet.
+     */
+    public void setMultiDocument(boolean flag) {
+	_multiDocument = flag;
+    }
+
+    /**
+     * Set the class name for the generated translet. This class name is
+     * overridden if multiple stylesheets are compiled in one go using the
+     * compile(Vector urls) method.
+     */
+    public void setClassName(String className) {
+	final String base  = Util.baseName(className);
+	final String noext = Util.noExtName(base); 
+	final String name  = Util.toJavaName(noext);
+	if (_packageName == null)
+	    _className = name;
+	else
+	    _className = _packageName + '.' + name;
     }
     
-    private void setClassName(String className)  {
-	final String name =
-	    Util.toJavaName(Util.noExtName(Util.baseName(className)));
-	_className = (_packageName != null) ? _packageName + '.' + name : name;
-    }
-    
+    /**
+     * Get the class name for the generated translet.
+     */
     public String getClassName() {
 	return _className;
     }
 
-    private void setDebug(boolean debug) {
-	_debug = debug;
-    }
-
-
-    public boolean debug() {
-	return _debug;
+    /**
+     * Convert for Java class name of local system file name.
+     * (Replace '.' with '/' on UNIX and replace '.' by '\' on Windows/DOS.)
+     */
+    private String classFileName(final String className) {
+	return className.replace('.', File.separatorChar) + ".class";
     }
     
-    public void setDestDirectory(String dstDirName) throws CompilerException {
+    /**
+     * Generate an output File object to send the translet to
+     */
+    private File getOutputFile(String className) {
+	if (_destDir != null)
+	    return new File(_destDir, classFileName(className));
+	else
+	    return new File(classFileName(className));
+    }
+
+    /**
+     * Set the destination directory for the translet.
+     * The current working directory will be used by default.
+     */
+    public boolean setDestDirectory(String dstDirName) {
 	final File dir = new File(dstDirName);
 	if (dir.exists() || dir.mkdirs()) {
 	    _destDir = dir;
+	    return true;
 	}
 	else {
-	    throw new CompilerException("Could not create output directory");
+	    _destDir = null;
+	    return false;
 	}
     }
 
-    private void setPackageName(String packageName) {
+    /**
+     * Set an optional package name for the translet and auxiliary classes
+     */
+    public void setPackageName(String packageName) {
 	_packageName = packageName;
     }
 
-    private void setJarFileSpecified(boolean value) {
-	if (_isJarFileSpecified = value) {
-	    _outputType = JAR_OUTPUT;
-	}
+    /**
+     * Set the name of an optional JAR-file to dump the translet and
+     * auxiliary classes to
+     */
+    public void setJarFileName(String jarFileName) {
+	final String JAR_EXT = ".jar";
+	if (jarFileName.endsWith(JAR_EXT))
+	    _jarFileName = jarFileName;
+	else
+	    _jarFileName = jarFileName + JAR_EXT;
+	_outputType = JAR_OUTPUT;
     }
-    
+
+    public String getJarFileName() {
+	return _jarFileName;
+    }
+
+    /**
+     *
+     */
     public Stylesheet getStylesheet() {
 	return _stylesheet;
     }
 
+    /**
+     *
+     */
     public void setStylesheet(Stylesheet stylesheet) {
 	if (_stylesheet == null)
 	    _stylesheet = stylesheet;
     }
-
-    private File getOutputFile(String className) {
-	return new File(_dumpDir != null ? _dumpDir : _destDir,
-			classFileName(className));
-    }
    
-    private String classFileName(final String className) {
-	return className.replace('.', File.separatorChar) + ".class";
-    }
-
-    public Vector getNamesIndex() {
-	return _namesIndex;
-    }
-
-    public Vector getNamespaceIndex() {
-	return _namespaceIndex;
-    }
-
     /**
      * Registers an attribute and gives it a type so that it can be mapped to
      * DOM attribute types at run-time.
@@ -433,6 +505,14 @@ public final class XSLTC {
     public int nextAttributeSetSerial() {
 	return _attributeSetSerial++;
     }
+
+    public Vector getNamesIndex() {
+	return _namesIndex;
+    }
+
+    public Vector getNamespaceIndex() {
+	return _namespaceIndex;
+    }
     
     /**
      * Returns a unique name for every helper class needed to
@@ -448,11 +528,9 @@ public final class XSLTC {
 	    case FILE_OUTPUT:
 		clazz.dump(getOutputFile(clazz.getClassName()));
 		break;
-		
 	    case JAR_OUTPUT:
 		_classes.addElement(clazz);	 
 		break;
-		
 	    case BYTEARRAY_OUTPUT:
 	    case CLASSLOADER_OUTPUT:
 		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
@@ -466,15 +544,6 @@ public final class XSLTC {
 	}
     }
 
-    private byte[][] outputToArrays() {
-	final int nClasses = _classes.size();
-	final byte[][] result = new byte[1][nClasses];
-	for (int i = 0; i < nClasses; i++) {
-	    result[i] = (byte[])_classes.elementAt(i);
-	}
-	return result;
-    }
-
     /**
      * File separators are converted to forward slashes for ZIP files.
      */
@@ -483,9 +552,9 @@ public final class XSLTC {
     }
     
     /**
-     * Jar and packages
+     * Generate output JAR-file and packages
      */
-    private void outputToJar(String jarFileName) throws IOException {
+    public void outputToJar() throws IOException {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	manifest.getMainAttributes()
@@ -505,7 +574,7 @@ public final class XSLTC {
 	    map.put(classFileName(clazz.getClassName()), attr);
 	}
 
-	final File jarFile = new File(_destDir, jarFileName+".jar");
+	final File jarFile = new File(_destDir, _jarFileName);
 	final JarOutputStream jos =
 	    new JarOutputStream(new FileOutputStream(jarFile), manifest);
 	classes = _classes.elements();
@@ -518,116 +587,90 @@ public final class XSLTC {
 	}
 	jos.close();
     }
-    
-    public byte[][] compileStylesheet(URL stylesheetURL, String className) {
-	_outputType = BYTEARRAY_OUTPUT;
-	setClassName(className);
-	return compile(stylesheetURL) ? outputToArrays() : null;
+
+    /**
+     * Turn debugging messages on/off
+     */
+    public void setDebug(boolean debug) {
+	_debug = debug;
     }
 
+    /**
+     * Get current debugging message setting
+     */
+    public boolean debug() {
+	return _debug;
+    }
+        
     /** 
-     * Command line runnability.
-     * o className
-     * d destDirectory
-     * p packageName
-     * j jarFileName
-     * u (isUriSpecified)
-     * x (isDebugSpecified)
-     * h printUsage()
-     * s (don't allow System.exit)
+     * This method implements the command line compiler. See the USAGE_STRING
+     * constant for a description. It may make sense to move the command-line
+     * handling to a separate package (ie. make one xsltc.cmdline.Compiler
+     * class that contains this main() method and one xsltc.cmdline.Transform
+     * class that contains the DefaultRun stuff).
      */
     public static void main(String[] args) {
 	try {
+	    boolean inputIsURL = false;
+
 	    final GetOpt getopt = new GetOpt(args, "o:d:j:p:uxhs");
 	    if (args.length < 1) {
 		printUsage();
-		doSystemExit(1); return;
-	    } 
-	    boolean isUriSpecified = false;
-	    boolean isDebugSpecified = false;
-	    boolean isJarFileSpecified = false;
-	    String jarFileName = null;
-	    String destDirectory = "."; // cwd by default
-	    String packageName = null;
-	    String className = null;
+		return;
+	    }
+
+	    final XSLTC xsltc = new XSLTC();
+	    xsltc.init();
+
 	    int c;
 	    while ((c = getopt.getNextOption()) != -1) {
 		switch(c) {
 		case 'o':
-		    className = getopt.getOptionArg();
+		    xsltc.setClassName(getopt.getOptionArg());
 		    break;
 		case 'd':
-		    destDirectory = getopt.getOptionArg();
+		    xsltc.setDestDirectory(getopt.getOptionArg());
 		    break;
 		case 'p':
-		    packageName = getopt.getOptionArg(); 
+		    xsltc.setPackageName(getopt.getOptionArg());
 		    break;
 		case 'j':  
-		    jarFileName = getopt.getOptionArg();
-		    isJarFileSpecified = true;
-		    break;
-		case 'u':  
-		    isUriSpecified = true;
+		    xsltc.setJarFileName(getopt.getOptionArg());
 		    break;
 		case 'x':
-		    isDebugSpecified = true;
+		    xsltc.setDebug(true);
+		    break;
+		case 'u':
+		    inputIsURL = true;
 		    break;
 		case 's':
 		    allowSystemExit = false;
 		    break;
 		case 'h':
-		    printUsage();
-		    break;
 		default:
 		    printUsage();
 		    break; 
 		}
 	    }
 
-	    final String[] stylesheets = getopt.getCmdArgs();
-	    final int nStyleSheets = stylesheets.length;
-
-	    File dir = new File(destDirectory);
-
-	    if (!dir.isDirectory() || (className != null && nStyleSheets > 1)) {
-		printUsage();
-		doSystemExit(1); return;
-	    }
-
-	    dir = null;
-	
-	    final XSLTC xsltc = new XSLTC();
-	    xsltc.init();
-	    xsltc.setDebug(isDebugSpecified);
-	    xsltc.setPackageName(packageName);
-	    xsltc.setDestDirectory(destDirectory);
-	    xsltc.setJarFileSpecified(isJarFileSpecified);
-	    if (className != null) {
-		xsltc.setClassName(className);
-	    }
-	    final Vector stylesheetVector = new Vector();
-	    for (int i = 0; i < nStyleSheets; i++) {
-		final String currStyleSheetName = stylesheets[i];
-		final URL stylesheetURL;
-		if (isUriSpecified) {
-		    stylesheetURL = new URL(currStyleSheetName);
+	    // Generate a vector containg URLs for all stylesheets specified
+	    final String[] stylesheetNames = getopt.getCmdArgs();
+	    final Vector   stylesheetVector = new Vector();
+	    for (int i = 0; i < stylesheetNames.length; i++) {
+		final String stylesheetName = stylesheetNames[i];
+		final URL    stylesheetURL;
+		if (inputIsURL) {
+		    stylesheetVector.addElement(new URL(stylesheetName));
 		}
 		else {
-		    File stylesheetFile = new File(currStyleSheetName);
-		    stylesheetURL = stylesheetFile.toURL();
+		    stylesheetVector.addElement((new File(stylesheetName)).toURL());
 		}
-		stylesheetVector.addElement(stylesheetURL);
+
 	    }
-	    final long startTime = System.currentTimeMillis();
+
+	    // Compile the stylesheet and output class/jar file(s)
 	    if (xsltc.compile(stylesheetVector)) {
-		if (isJarFileSpecified) {
-		    xsltc.outputToJar(jarFileName);
-		}
-		if (isDebugSpecified) {
-		    Util.println("compile time " +
-				 (System.currentTimeMillis() - startTime) +
-				 " msec");
-		}
+		if (xsltc.getJarFileName() != null) xsltc.outputToJar();
 	    }
 	    else {
 		Util.println("compilation failed");
@@ -637,11 +680,10 @@ public final class XSLTC {
 	catch (GetOptsException ex) {
 	    System.err.println(ex);
 	    printUsage();
-	    doSystemExit(1); return;
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
-	    doSystemExit(1); return;
+	    doSystemExit(1);
 	}
     }
 
@@ -656,18 +698,22 @@ public final class XSLTC {
 
     private final static String USAGE_STRING =
 	"Usage:\n" + 
-	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n" +
-	"         [-p <package name>] \n" +
-	"         [-u]  <stylesheet>... \n\n" +
-	"   where <stylesheet> is a file or if -u option is used, \n" +
-	"         is a URL such as http://myserver/stylesheet1.xsl.\n"+
-	"         <jarfile> is the name of jar file, do not specify \n" +
-	"         the .jar extension. Example: -j MyJar \n"+
-	"   Note: the -o option should not be used when processing\n"+
-	"         multiple stylesheets. \n"+
-	"   also: [-x] (debug), [-s] (don't allow System.exit)";
+	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
+	"         [-p <package name>] [-x] [-s] [-u] <stylesheet>... \n\n"+
+	"   Where <output> is the name to give the the generated translet.\n"+
+	"         <stylesheet> is one or more stylesheet file names, or if,\n"+
+	"         the -u options is specified, one or more stylesheet URLs.\n"+
+	"         <directory> is the output directory.\n"+
+	"         <jarfile> is the name of a JAR-file to put all generated classes in.\n"+
+	"         <package-name> is a package name to prefix all class names with.\n\n"+
+	"   Notes:\n"+
+	"         The -o option is ignored when multiple stylesheets are specified.\n"+
+	"         The -x option switched on debug messages.\n"+
+	"         The -s option prevents the compiler from exiting\n";
     
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
+	doSystemExit(1);
+	return;
     }
 }

@@ -931,10 +931,12 @@ public final class Parser implements Constants, ContentHandler {
      */
     public void printErrors() {
 	if (_errorListener != null) return;   //support for TrAX Error Listener
-	System.err.println("Compile errors:");
 	final int size = _errors.size();
-	for (int i = 0; i < size; i++) {
-	    System.err.println("  " + _errors.elementAt(i));
+	if (size > 0) {
+	    System.err.println("Compile errors:");
+	    for (int i = 0; i < size; i++) {
+		System.err.println("  " + _errors.elementAt(i));
+	    }
 	}
     }
 
@@ -943,9 +945,9 @@ public final class Parser implements Constants, ContentHandler {
      */
     public void printWarnings() {
 	if (_errorListener != null) return;  //support for TrAX Error Listener 
-	if (_warnings.size() > 0) {
+	final int size = _warnings.size();
+	if (size > 0) {
 	    System.err.println("Warning:");
-	    final int size = _warnings.size();
 	    for (int i = 0; i < size; i++) {
 		System.err.println("  " + _warnings.elementAt(i));
 	    }

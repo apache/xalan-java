@@ -254,6 +254,13 @@ public abstract class SyntaxTreeNode implements Constants {
 	return _parser.getXSLTC();
     }
 
+    public final SymbolTable getSymbolTable() {
+	if (_parser != null)
+	    return _parser.getSymbolTable();
+	else
+	    return null;
+    }
+
     /**
      * To be overridden in nodes implemented by code outside of applyTemplates
      * eg. in Predicates
