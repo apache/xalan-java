@@ -923,7 +923,10 @@ public final class TextOutput implements TransletOutputHandler {
     public void setType(int type)  {
 	try {
 	    _outputType = type;
-	    if (_encoding == null) _encoding = "UTF-8";
+	    if ((_outputType == HTML) || (_outputType == XML))
+		_escapeChars = true;
+	    if (_encoding == null)
+		_encoding = "UTF-8";
 	    if (_saxHandler instanceof DefaultSAXOutputHandler)
 		((DefaultSAXOutputHandler)_saxHandler).setOutputType(type);
 	}
