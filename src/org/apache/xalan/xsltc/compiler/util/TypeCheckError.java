@@ -79,12 +79,12 @@ public class TypeCheckError extends Exception {
 	_error = error;
     }
 	
-    public TypeCheckError(int code, Object param) {
+    public TypeCheckError(String code, Object param) {
 	super();
 	_error = new ErrorMsg(code, param);
     }
 
-    public TypeCheckError(int code, Object param1, Object param2) {
+    public TypeCheckError(String code, Object param1, Object param2) {
 	super();
 	_error = new ErrorMsg(code, param1, param2);
     }

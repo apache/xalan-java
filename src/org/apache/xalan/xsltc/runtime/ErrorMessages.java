@@ -4,7 +4,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 2001-2003 The Apache Software Foundation.  All rights
+ * Copyright (c) 2001,2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,11 +62,9 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import java.util.Enumeration;
-import java.util.ResourceBundle;
-import java.util.Vector;
+import java.util.ListResourceBundle;
 
-public class ErrorMessages extends ResourceBundle {
+public class ErrorMessages extends ListResourceBundle {
 
 /*
  * XSLTC run-time error messages.
@@ -117,165 +115,152 @@ public class ErrorMessages extends ResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    private static final String errorMessages[] = {
+    private static final Object[][] m_errorMessages = {
 
-	/*
-	 * Note to translators:  the substitution text in the following message
-	 * is a class name.  Used for internal errors in the processor.
-	 */
-	// RUN_TIME_INTERNAL_ERR
-	"Run-time internal error in ''{0}''",
+        /*
+         * Note to translators:  the substitution text in the following message
+         * is a class name.  Used for internal errors in the processor.
+         */
+        {BasisLibrary.RUN_TIME_INTERNAL_ERR,
+        "Run-time internal error in ''{0}''"},
 
-	/*
-	 * Note to translators:  <xsl:copy> is a keyword that should not be
-	 * translated.
-	 */
-	// RUN_TIME_COPY_ERR
-	"Run-time error when executing <xsl:copy>.",
+        /*
+         * Note to translators:  <xsl:copy> is a keyword that should not be
+         * translated.
+         */
+        {BasisLibrary.RUN_TIME_COPY_ERR,
+        "Run-time error when executing <xsl:copy>."},
 
-	/*
-	 * Note to translators:  The substitution text refers to data types.
-	 * The message is displayed if a value in a particular context needs to
-	 * be converted to type {1}, but that's not possible for a value of type
-	 * {0}.
-	 */
-	// DATA_CONVERSION_ERR
-	"Invalid conversion from ''{0}'' to ''{1}''.",
+        /*
+         * Note to translators:  The substitution text refers to data types.
+         * The message is displayed if a value in a particular context needs to
+         * be converted to type {1}, but that's not possible for a value of type
+         * {0}.
+         */
+        {BasisLibrary.DATA_CONVERSION_ERR,
+        "Invalid conversion from ''{0}'' to ''{1}''."},
 
-	/*
-	 * Note to translators:  This message is displayed if the function named
-	 * by the substitution text is not a function that is supported.  XSLTC
-	 * is the acronym naming the product.
-	 */
-	// EXTERNAL_FUNC_ERR
-	"External function ''{0}'' not supported by XSLTC.",
+        /*
+         * Note to translators:  This message is displayed if the function named
+         * by the substitution text is not a function that is supported.  XSLTC
+         * is the acronym naming the product.
+         */
+        {BasisLibrary.EXTERNAL_FUNC_ERR,
+        "External function ''{0}'' not supported by XSLTC."},
 
-	/*
-	 * Note to translators:  This message is displayed if two values are
-	 * compared for equality, but the data type of one of the values is
-	 * unknown.
-	 */
-	// EQUALITY_EXPR_ERR
-	"Unknown argument type in equality expression.",
+        /*
+         * Note to translators:  This message is displayed if two values are
+         * compared for equality, but the data type of one of the values is
+         * unknown.
+         */
+        {BasisLibrary.EQUALITY_EXPR_ERR,
+        "Unknown argument type in equality expression."},
 
-	/*
-	 * Note to translators:  The substitution text for {0} will be a data
-	 * type; the substitution text for {1} will be the name of a function.
-	 * This is displayed if an argument of the particular data type is not
-	 * permitted for a call to this function.
-	 */
-	// INVALID_ARGUMENT_ERR
-	"Invalid argument type ''{0}'' in call to ''{1}''",
+        /*
+         * Note to translators:  The substitution text for {0} will be a data
+         * type; the substitution text for {1} will be the name of a function.
+         * This is displayed if an argument of the particular data type is not
+         * permitted for a call to this function.
+         */
+        {BasisLibrary.INVALID_ARGUMENT_ERR,
+        "Invalid argument type ''{0}'' in call to ''{1}''"},
 
-	/*
-	 * Note to translators:  There is way of specifying a format for a
-	 * number using a pattern; the processor was unable to format the
-	 * particular value using the specified pattern.
-	 */
-	// FORMAT_NUMBER_ERR
-	"Attempting to format number ''{0}'' using pattern ''{1}''.",
+        /*
+         * Note to translators:  There is way of specifying a format for a
+         * number using a pattern; the processor was unable to format the
+         * particular value using the specified pattern.
+         */
+        {BasisLibrary.FORMAT_NUMBER_ERR,
+        "Attempting to format number ''{0}'' using pattern ''{1}''."},
 
-	/*
-	 * Note to translators:  The following represents an internal error
-	 * situation in XSLTC.  The processor was unable to create a copy of an
-	 * iterator.  (See definition of iterator above.)
-	 */
-	// ITERATOR_CLONE_ERR
-	"Cannot clone iterator ''{0}''.",
+        /*
+         * Note to translators:  The following represents an internal error
+         * situation in XSLTC.  The processor was unable to create a copy of an
+         * iterator.  (See definition of iterator above.)
+         */
+        {BasisLibrary.ITERATOR_CLONE_ERR,
+        "Cannot clone iterator ''{0}''."},
 
-	/*
-	 * Note to translators:  The following represents an internal error
-	 * situation in XSLTC.  The processor attempted to create an iterator
-	 * for a particular axis (see definition above) that it does not
-	 * support.
-	 */
-	// AXIS_SUPPORT_ERR
-	"Iterator for axis ''{0}'' not supported.",
+        /*
+         * Note to translators:  The following represents an internal error
+         * situation in XSLTC.  The processor attempted to create an iterator
+         * for a particular axis (see definition above) that it does not
+         * support.
+         */
+        {BasisLibrary.AXIS_SUPPORT_ERR,
+        "Iterator for axis ''{0}'' not supported."},
 
-	/*
-	 * Note to translators:  The following represents an internal error
-	 * situation in XSLTC.  The processor attempted to create an iterator
-	 * for a particular axis (see definition above) that it does not
-	 * support.
-	 */
-	// TYPED_AXIS_SUPPORT_ERR
-	"Iterator for typed axis ''{0}'' not supported.",
+        /*
+         * Note to translators:  The following represents an internal error
+         * situation in XSLTC.  The processor attempted to create an iterator
+         * for a particular axis (see definition above) that it does not
+         * support.
+         */
+        {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
+        "Iterator for typed axis ''{0}'' not supported."},
 
-	/*
-	 * Note to translators:  This message is reported if the stylesheet
-	 * being processed attempted to construct an XML document with an
-	 * attribute in a place other than on an element.  The substitution text
-	 * specifies the name of the attribute.
-	 */
-	// STRAY_ATTRIBUTE_ERR
-	"Attribute ''{0}'' outside of element.",
+        /*
+         * Note to translators:  This message is reported if the stylesheet
+         * being processed attempted to construct an XML document with an
+         * attribute in a place other than on an element.  The substitution text
+         * specifies the name of the attribute.
+         */
+        {BasisLibrary.STRAY_ATTRIBUTE_ERR,
+        "Attribute ''{0}'' outside of element."},
 
-	/*
-	 * Note to translators:  As with the preceding message, a namespace
-	 * declaration has the form of an attribute and is only permitted to
-	 * appear on an element.  The substitution text {0} is the namespace
-	 * prefix and {1} is the URI that was being used in the erroneous
-	 * namespace declaration.
-	 */
-	// STRAY_NAMESPACE_ERR
-	"Namespace declaration ''{0}''=''{1}'' outside of element.",
+        /*
+         * Note to translators:  As with the preceding message, a namespace
+         * declaration has the form of an attribute and is only permitted to
+         * appear on an element.  The substitution text {0} is the namespace
+         * prefix and {1} is the URI that was being used in the erroneous
+         * namespace declaration.
+         */
+        {BasisLibrary.STRAY_NAMESPACE_ERR,
+        "Namespace declaration ''{0}''=''{1}'' outside of element."},
 
-	/*
-	 * Note to translators:  The stylesheet contained a reference to a
-	 * namespace prefix that was undefined.  The value of the substitution
-	 * text is the name of the prefix.
-	 */
-	// NAMESPACE_PREFIX_ERR
-	"Namespace for prefix ''{0}'' has not been declared.",
+        /*
+         * Note to translators:  The stylesheet contained a reference to a
+         * namespace prefix that was undefined.  The value of the substitution
+         * text is the name of the prefix.
+         */
+        {BasisLibrary.NAMESPACE_PREFIX_ERR,
+        "Namespace for prefix ''{0}'' has not been declared."},
 
-	/*
-	 * Note to translators:  The following represents an internal error.
-	 * DOMAdapter is a Java class in XSLTC.
-	 */
-	// DOM_ADAPTER_INIT_ERR
-	"DOMAdapter created using wrong type of source DOM.",
+        /*
+         * Note to translators:  The following represents an internal error.
+         * DOMAdapter is a Java class in XSLTC.
+         */
+        {BasisLibrary.DOM_ADAPTER_INIT_ERR,
+        "DOMAdapter created using wrong type of source DOM."},
 
-	/*
-	 * Note to translators:  The following message indicates that the XML
-	 * parser that is providing input to XSLTC cannot be used because it
-	 * does not describe to XSLTC the structure of the input XML document's
-	 * DTD.
-	 */
-        // PARSER_DTD_SUPPORT_ERR
-        "The SAX parser you are using does not handle DTD declaration events.",
+        /*
+         * Note to translators:  The following message indicates that the XML
+         * parser that is providing input to XSLTC cannot be used because it
+         * does not describe to XSLTC the structure of the input XML document's
+         * DTD.
+         */
+        {BasisLibrary.PARSER_DTD_SUPPORT_ERR,
+        "The SAX parser you are using does not handle DTD declaration events."},
 
-	/*
-	 * Note to translators:  The following message indicates that the XML
-	 * parser that is providing input to XSLTC cannot be used because it
-	 * does not distinguish between ordinary XML attributes and namespace
-	 * declarations.
-	 */
-        // NAMESPACES_SUPPORT_ERR
-        "The SAX parser you are using does not have support for XML Namespaces.",
+        /*
+         * Note to translators:  The following message indicates that the XML
+         * parser that is providing input to XSLTC cannot be used because it
+         * does not distinguish between ordinary XML attributes and namespace
+         * declarations.
+         */
+        {BasisLibrary.NAMESPACES_SUPPORT_ERR,
+        "The SAX parser you are using does not have support for XML Namespaces."},
 
         /*
          * Note to translators:  The substitution text is the URI that was in
          * error.
          */
-        // CANT_RESOLVE_RELATIVE_URI_ERR
-        "Could not resolve the URI reference ''{0}''."
+        {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
+        "Could not resolve the URI reference ''{0}''."}
     };
 
-    private static Vector _keys;
-
-    static {
-	_keys = new Vector();
-	_keys.addElement(BasisLibrary.ERROR_MESSAGES_KEY);
-    }
-
-    public Enumeration getKeys() {
-	return _keys.elements();
-    }
-
-    public Object handleGetObject(String key) {
-	if (key == null) return null;
-	if (key.equals(BasisLibrary.ERROR_MESSAGES_KEY)) return errorMessages;
-	return(null);
+    public Object[][] getContents() {
+        return m_errorMessages;
     }
 
 }

@@ -235,41 +235,41 @@ final public class Transform {
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       e.getMessage());
 	    if (_allowExit) System.exit(-1);	    
 	}
 	catch (RuntimeException e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       e.getMessage());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (FileNotFoundException e) {
 	    if (_debug) e.printStackTrace();
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, _fileName);
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       err.toString());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (MalformedURLException e) {
 	    if (_debug) e.printStackTrace();
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_URI_ERR, _fileName);
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       err.toString());
 	    if (_allowExit) System.exit(-1);
 	}
 	catch (ClassNotFoundException e) {
 	    if (_debug) e.printStackTrace();
 	    ErrorMsg err= new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR,_className);
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       err.toString());
 	    if (_allowExit) System.exit(-1);
 	}
         catch (UnknownHostException e) {
 	    if (_debug) e.printStackTrace();
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_URI_ERR, _fileName);
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       err.toString());
 	    if (_allowExit) System.exit(-1);
         }
@@ -279,7 +279,7 @@ final public class Transform {
 		if (ex != null) ex.printStackTrace();
 		e.printStackTrace();
 	    }
-	    System.err.print(ErrorMsg.getTransletErrorMessage());
+	    System.err.print(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY));
 	    if (ex != null)
 		System.err.println(ex.getMessage());
 	    else
@@ -288,7 +288,7 @@ final public class Transform {
 	}
 	catch (Exception e) {
 	    if (_debug) e.printStackTrace();
-	    System.err.println(ErrorMsg.getTransletErrorMessage()+
+	    System.err.println(new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)+
 			       e.getMessage());
 	    if (_allowExit) System.exit(-1);
 	}

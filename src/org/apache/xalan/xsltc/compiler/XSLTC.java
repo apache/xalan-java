@@ -264,7 +264,7 @@ public final class XSLTC {
 	    return compile(input, _className);
 	}
 	catch (IOException e) {
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	    return false;
 	}
     }
@@ -283,7 +283,7 @@ public final class XSLTC {
 	    return compile(input, name);
 	}
 	catch (IOException e) {
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	    return false;
 	}
     }
@@ -362,11 +362,11 @@ public final class XSLTC {
 	}
 	catch (Exception e) {
 	    if (_debug) e.printStackTrace();
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	}
 	catch (Error e) {
 	    if (_debug) e.printStackTrace();
-	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	}
 	finally {
 	    _reader = null; // reset this here to be sure it is not re-used

@@ -1309,52 +1309,69 @@ public final class BasisLibrary implements Operators {
 	return ("ns" + prefixIndex++);
     }
 
-    public static final int RUN_TIME_INTERNAL_ERR   = 0;
-    public static final int RUN_TIME_COPY_ERR       = 1;
-    public static final int DATA_CONVERSION_ERR     = 2;
-    public static final int EXTERNAL_FUNC_ERR       = 3;
-    public static final int EQUALITY_EXPR_ERR       = 4;
-    public static final int INVALID_ARGUMENT_ERR    = 5;
-    public static final int FORMAT_NUMBER_ERR       = 6;
-    public static final int ITERATOR_CLONE_ERR      = 7;
-    public static final int AXIS_SUPPORT_ERR        = 8;
-    public static final int TYPED_AXIS_SUPPORT_ERR  = 9;
-    public static final int STRAY_ATTRIBUTE_ERR     = 10; 
-    public static final int STRAY_NAMESPACE_ERR     = 11;
-    public static final int NAMESPACE_PREFIX_ERR    = 12;
-    public static final int DOM_ADAPTER_INIT_ERR    = 13;
-    public static final int PARSER_DTD_SUPPORT_ERR  = 14;
-    public static final int NAMESPACES_SUPPORT_ERR  = 15;
+    public static final String RUN_TIME_INTERNAL_ERR =
+                                           "RUN_TIME_INTERNAL_ERR";
+    public static final String RUN_TIME_COPY_ERR =
+                                           "RUN_TIME_COPY_ERR";
+    public static final String DATA_CONVERSION_ERR =
+                                           "DATA_CONVERSION_ERR";
+    public static final String EXTERNAL_FUNC_ERR =
+                                           "EXTERNAL_FUNC_ERR";
+    public static final String EQUALITY_EXPR_ERR =
+                                           "EQUALITY_EXPR_ERR";
+    public static final String INVALID_ARGUMENT_ERR =
+                                           "INVALID_ARGUMENT_ERR";
+    public static final String FORMAT_NUMBER_ERR =
+                                           "FORMAT_NUMBER_ERR";
+    public static final String ITERATOR_CLONE_ERR =
+                                           "ITERATOR_CLONE_ERR";
+    public static final String AXIS_SUPPORT_ERR =
+                                           "AXIS_SUPPORT_ERR";
+    public static final String TYPED_AXIS_SUPPORT_ERR =
+                                           "TYPED_AXIS_SUPPORT_ERR";
+    public static final String STRAY_ATTRIBUTE_ERR =
+                                           "STRAY_ATTRIBUTE_ERR"; 
+    public static final String STRAY_NAMESPACE_ERR =
+                                           "STRAY_NAMESPACE_ERR";
+    public static final String NAMESPACE_PREFIX_ERR =
+                                           "NAMESPACE_PREFIX_ERR";
+    public static final String DOM_ADAPTER_INIT_ERR =
+                                           "DOM_ADAPTER_INIT_ERR";
+    public static final String PARSER_DTD_SUPPORT_ERR =
+                                           "PARSER_DTD_SUPPORT_ERR";
+    public static final String NAMESPACES_SUPPORT_ERR =
+                                           "NAMESPACES_SUPPORT_ERR";
+    public static final String CANT_RESOLVE_RELATIVE_URI_ERR =
+                                           "CANT_RESOLVE_RELATIVE_URI_ERR";
 
     // All error messages are localized and are stored in resource bundles.
-    // This array and the following 4 strings are read from that bundle.
-    private static String[] _errorMessages;
+    protected static ResourceBundle m_bundle;
     
     public final static String ERROR_MESSAGES_KEY = "error-messages";
 
     static {
 	String resource = "org.apache.xalan.xsltc.runtime.ErrorMessages";
-	ResourceBundle bundle = ResourceBundle.getBundle(resource);
-	_errorMessages  = bundle.getStringArray(ERROR_MESSAGES_KEY);
+	m_bundle = ResourceBundle.getBundle(resource);
     }
 
     /**
      * Print a run-time error message.
      */
-    public static void runTimeError(int code) {
-	throw new RuntimeException(_errorMessages[code]);
+    public static void runTimeError(String code) {
+	throw new RuntimeException(m_bundle.getString(code));
     }
 
-    public static void runTimeError(int code, Object[] args) {
-	final String message = MessageFormat.format(_errorMessages[code],args);
+    public static void runTimeError(String code, Object[] args) {
+	final String message = MessageFormat.format(m_bundle.getString(code),
+                                                    args);
 	throw new RuntimeException(message);
     }
 
-    public static void runTimeError(int code, Object arg0) {
+    public static void runTimeError(String code, Object arg0) {
 	runTimeError(code, new Object[]{ arg0 } );
     }
 
-    public static void runTimeError(int code, Object arg0, Object arg1) {
+    public static void runTimeError(String code, Object arg0, Object arg1) {
 	runTimeError(code, new Object[]{ arg0, arg1 } );
     }
 

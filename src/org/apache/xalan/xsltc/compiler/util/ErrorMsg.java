@@ -75,174 +75,170 @@ import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 
 public final class ErrorMsg {
 
-    private int _code;
+    private String _code;
     private int _line;
     private String _message = null;
     private String _url = null;
     Object[] _params = null;
 
     // Compiler error messages
-    public static final int MULTIPLE_STYLESHEET_ERR = 0;
-    public static final int TEMPLATE_REDEF_ERR      = 1;
-    public static final int TEMPLATE_UNDEF_ERR      = 2;
-    public static final int VARIABLE_REDEF_ERR      = 3;
-    public static final int VARIABLE_UNDEF_ERR      = 4;
-    public static final int CLASS_NOT_FOUND_ERR     = 5;
-    public static final int METHOD_NOT_FOUND_ERR    = 6;
-    public static final int ARGUMENT_CONVERSION_ERR = 7;
-    public static final int FILE_NOT_FOUND_ERR      = 8;
-    public static final int INVALID_URI_ERR         = 9;
-    public static final int FILE_ACCESS_ERR         = 10;
-    public static final int MISSING_ROOT_ERR        = 11;
-    public static final int NAMESPACE_UNDEF_ERR     = 12;
-    public static final int FUNCTION_RESOLVE_ERR    = 13;
-    public static final int NEED_LITERAL_ERR        = 14;
-    public static final int XPATH_PARSER_ERR        = 15;
-    public static final int REQUIRED_ATTR_ERR       = 16;
-    public static final int ILLEGAL_CHAR_ERR        = 17;
-    public static final int ILLEGAL_PI_ERR          = 18;
-    public static final int STRAY_ATTRIBUTE_ERR     = 19;
-    public static final int ILLEGAL_ATTRIBUTE_ERR   = 20;
-    public static final int CIRCULAR_INCLUDE_ERR    = 21;
-    public static final int RESULT_TREE_SORT_ERR    = 22;
-    public static final int SYMBOLS_REDEF_ERR       = 23;
-    public static final int XSL_VERSION_ERR         = 24;
-    public static final int CIRCULAR_VARIABLE_ERR   = 25;
-    public static final int ILLEGAL_BINARY_OP_ERR   = 26;
-    public static final int ILLEGAL_ARG_ERR         = 27;
-    public static final int DOCUMENT_ARG_ERR        = 28;
-    public static final int MISSING_WHEN_ERR        = 29;
-    public static final int MULTIPLE_OTHERWISE_ERR  = 30;
-    public static final int STRAY_OTHERWISE_ERR     = 31;
-    public static final int STRAY_WHEN_ERR          = 32;
-    public static final int WHEN_ELEMENT_ERR        = 33;
-    public static final int UNNAMED_ATTRIBSET_ERR   = 34;
-    public static final int ILLEGAL_CHILD_ERR       = 35;
-    public static final int ILLEGAL_ELEM_NAME_ERR   = 36;
-    public static final int ILLEGAL_ATTR_NAME_ERR   = 37;
-    public static final int ILLEGAL_TEXT_NODE_ERR   = 38;
-    public static final int SAX_PARSER_CONFIG_ERR   = 39;
-    public static final int INTERNAL_ERR            = 40;
-    public static final int UNSUPPORTED_XSL_ERR     = 41;
-    public static final int UNSUPPORTED_EXT_ERR     = 42;
-    public static final int MISSING_XSLT_URI_ERR    = 43;
-    public static final int MISSING_XSLT_TARGET_ERR = 44;
-    public static final int NOT_IMPLEMENTED_ERR     = 45;
-    public static final int NOT_STYLESHEET_ERR      = 46;
-    public static final int ELEMENT_PARSE_ERR       = 47;
-    public static final int KEY_USE_ATTR_ERR        = 48;
-    public static final int OUTPUT_VERSION_ERR      = 49;
-    public static final int ILLEGAL_RELAT_OP_ERR    = 50;
-    public static final int ATTRIBSET_UNDEF_ERR     = 51;
-    public static final int ATTR_VAL_TEMPLATE_ERR   = 52;
-    public static final int UNKNOWN_SIG_TYPE_ERR    = 53;
-    public static final int DATA_CONVERSION_ERR     = 54;
+    public static final String MULTIPLE_STYLESHEET_ERR = "MULTIPLE_STYLESHEET_ERR";
+    public static final String TEMPLATE_REDEF_ERR = "TEMPLATE_REDEF_ERR";
+    public static final String TEMPLATE_UNDEF_ERR = "TEMPLATE_UNDEF_ERR";
+    public static final String VARIABLE_REDEF_ERR = "VARIABLE_REDEF_ERR";
+    public static final String VARIABLE_UNDEF_ERR = "VARIABLE_UNDEF_ERR";
+    public static final String CLASS_NOT_FOUND_ERR = "CLASS_NOT_FOUND_ERR";
+    public static final String METHOD_NOT_FOUND_ERR = "METHOD_NOT_FOUND_ERR";
+    public static final String ARGUMENT_CONVERSION_ERR = "ARGUMENT_CONVERSION_ERR";
+    public static final String FILE_NOT_FOUND_ERR = "FILE_NOT_FOUND_ERR";
+    public static final String INVALID_URI_ERR = "INVALID_URI_ERR";
+    public static final String FILE_ACCESS_ERR = "FILE_ACCESS_ERR";
+    public static final String MISSING_ROOT_ERR = "MISSING_ROOT_ERR";
+    public static final String NAMESPACE_UNDEF_ERR = "NAMESPACE_UNDEF_ERR";
+    public static final String FUNCTION_RESOLVE_ERR = "FUNCTION_RESOLVE_ERR";
+    public static final String NEED_LITERAL_ERR = "NEED_LITERAL_ERR";
+    public static final String XPATH_PARSER_ERR = "XPATH_PARSER_ERR";
+    public static final String REQUIRED_ATTR_ERR = "REQUIRED_ATTR_ERR";
+    public static final String ILLEGAL_CHAR_ERR = "ILLEGAL_CHAR_ERR";
+    public static final String ILLEGAL_PI_ERR = "ILLEGAL_PI_ERR";
+    public static final String STRAY_ATTRIBUTE_ERR = "STRAY_ATTRIBUTE_ERR";
+    public static final String ILLEGAL_ATTRIBUTE_ERR = "ILLEGAL_ATTRIBUTE_ERR";
+    public static final String CIRCULAR_INCLUDE_ERR = "CIRCULAR_INCLUDE_ERR";
+    public static final String RESULT_TREE_SORT_ERR = "RESULT_TREE_SORT_ERR";
+    public static final String SYMBOLS_REDEF_ERR = "SYMBOLS_REDEF_ERR";
+    public static final String XSL_VERSION_ERR = "XSL_VERSION_ERR";
+    public static final String CIRCULAR_VARIABLE_ERR = "CIRCULAR_VARIABLE_ERR";
+    public static final String ILLEGAL_BINARY_OP_ERR = "ILLEGAL_BINARY_OP_ERR";
+    public static final String ILLEGAL_ARG_ERR = "ILLEGAL_ARG_ERR";
+    public static final String DOCUMENT_ARG_ERR = "DOCUMENT_ARG_ERR";
+    public static final String MISSING_WHEN_ERR = "MISSING_WHEN_ERR";
+    public static final String MULTIPLE_OTHERWISE_ERR = "MULTIPLE_OTHERWISE_ERR";
+    public static final String STRAY_OTHERWISE_ERR = "STRAY_OTHERWISE_ERR";
+    public static final String STRAY_WHEN_ERR = "STRAY_WHEN_ERR";
+    public static final String WHEN_ELEMENT_ERR = "WHEN_ELEMENT_ERR";
+    public static final String UNNAMED_ATTRIBSET_ERR = "UNNAMED_ATTRIBSET_ERR";
+    public static final String ILLEGAL_CHILD_ERR = "ILLEGAL_CHILD_ERR";
+    public static final String ILLEGAL_ELEM_NAME_ERR = "ILLEGAL_ELEM_NAME_ERR";
+    public static final String ILLEGAL_ATTR_NAME_ERR = "ILLEGAL_ATTR_NAME_ERR";
+    public static final String ILLEGAL_TEXT_NODE_ERR = "ILLEGAL_TEXT_NODE_ERR";
+    public static final String SAX_PARSER_CONFIG_ERR = "SAX_PARSER_CONFIG_ERR";
+    public static final String INTERNAL_ERR = "INTERNAL_ERR";
+    public static final String UNSUPPORTED_XSL_ERR = "UNSUPPORTED_XSL_ERR";
+    public static final String UNSUPPORTED_EXT_ERR = "UNSUPPORTED_EXT_ERR";
+    public static final String MISSING_XSLT_URI_ERR = "MISSING_XSLT_URI_ERR";
+    public static final String MISSING_XSLT_TARGET_ERR = "MISSING_XSLT_TARGET_ERR";
+    public static final String NOT_IMPLEMENTED_ERR = "NOT_IMPLEMENTED_ERR";
+    public static final String NOT_STYLESHEET_ERR = "NOT_STYLESHEET_ERR";
+    public static final String ELEMENT_PARSE_ERR = "ELEMENT_PARSE_ERR";
+    public static final String KEY_USE_ATTR_ERR = "KEY_USE_ATTR_ERR";
+    public static final String OUTPUT_VERSION_ERR = "OUTPUT_VERSION_ERR";
+    public static final String ILLEGAL_RELAT_OP_ERR = "ILLEGAL_RELAT_OP_ERR";
+    public static final String ATTRIBSET_UNDEF_ERR = "ATTRIBSET_UNDEF_ERR";
+    public static final String ATTR_VAL_TEMPLATE_ERR = "ATTR_VAL_TEMPLATE_ERR";
+    public static final String UNKNOWN_SIG_TYPE_ERR = "UNKNOWN_SIG_TYPE_ERR";
+    public static final String DATA_CONVERSION_ERR = "DATA_CONVERSION_ERR";
 
     // JAXP/TrAX error messages
-    public static final int NO_TRANSLET_CLASS_ERR   = 55;
-    public static final int NO_MAIN_TRANSLET_ERR    = 56;
-    public static final int TRANSLET_CLASS_ERR      = 57;
-    public static final int TRANSLET_OBJECT_ERR     = 58;
-    public static final int ERROR_LISTENER_NULL_ERR = 59;
-    public static final int JAXP_UNKNOWN_SOURCE_ERR = 60;
-    public static final int JAXP_NO_SOURCE_ERR      = 61;
-    public static final int JAXP_COMPILE_ERR        = 62;
-    public static final int JAXP_INVALID_ATTR_ERR   = 63;
-    public static final int JAXP_SET_RESULT_ERR     = 64;
-    public static final int JAXP_NO_TRANSLET_ERR    = 65;
-    public static final int JAXP_NO_HANDLER_ERR     = 66;
-    public static final int JAXP_NO_RESULT_ERR      = 67;
-    public static final int JAXP_UNKNOWN_PROP_ERR   = 68;
-    public static final int SAX2DOM_ADAPTER_ERR     = 69;
-    public static final int XSLTC_SOURCE_ERR        = 70;
+    public static final String NO_TRANSLET_CLASS_ERR = "NO_TRANSLET_CLASS_ERR";
+    public static final String NO_MAIN_TRANSLET_ERR = "NO_MAIN_TRANSLET_ERR";
+    public static final String TRANSLET_CLASS_ERR = "TRANSLET_CLASS_ERR";
+    public static final String TRANSLET_OBJECT_ERR = "TRANSLET_OBJECT_ERR";
+    public static final String ERROR_LISTENER_NULL_ERR = "ERROR_LISTENER_NULL_ERR";
+    public static final String JAXP_UNKNOWN_SOURCE_ERR = "JAXP_UNKNOWN_SOURCE_ERR";
+    public static final String JAXP_NO_SOURCE_ERR = "JAXP_NO_SOURCE_ERR";
+    public static final String JAXP_COMPILE_ERR = "JAXP_COMPILE_ERR";
+    public static final String JAXP_INVALID_ATTR_ERR = "JAXP_INVALID_ATTR_ERR";
+    public static final String JAXP_SET_RESULT_ERR = "JAXP_SET_RESULT_ERR";
+    public static final String JAXP_NO_TRANSLET_ERR = "JAXP_NO_TRANSLET_ERR";
+    public static final String JAXP_NO_HANDLER_ERR = "JAXP_NO_HANDLER_ERR";
+    public static final String JAXP_NO_RESULT_ERR = "JAXP_NO_RESULT_ERR";
+    public static final String JAXP_UNKNOWN_PROP_ERR = "JAXP_UNKNOWN_PROP_ERR";
+    public static final String SAX2DOM_ADAPTER_ERR = "SAX2DOM_ADAPTER_ERR";
+    public static final String XSLTC_SOURCE_ERR = "XSLTC_SOURCE_ERR";
 
     // Command-line error messages
-    public static final int COMPILE_STDIN_ERR       = 71;
-    public static final int COMPILE_USAGE_STR       = 72;
-    public static final int TRANSFORM_USAGE_STR     = 73;
+    public static final String COMPILE_STDIN_ERR = "COMPILE_STDIN_ERR";
+    public static final String COMPILE_USAGE_STR = "COMPILE_USAGE_STR";
+    public static final String TRANSFORM_USAGE_STR = "TRANSFORM_USAGE_STR";
 
     // Recently added error messages
-    public static final int STRAY_SORT_ERR              = 74;
-    public static final int UNSUPPORTED_ENCODING        = 75;
-    public static final int SYNTAX_ERR                  = 76;
-    public static final int CONSTRUCTOR_NOT_FOUND       = 77;
-    public static final int NO_JAVA_FUNCT_THIS_REF      = 78;
-    public static final int TYPE_CHECK_ERR              = 79;
-    public static final int TYPE_CHECK_UNK_LOC_ERR      = 80;
-    public static final int ILLEGAL_CMDLINE_OPTION_ERR  = 81;
-    public static final int CMDLINE_OPT_MISSING_ARG_ERR = 82;
-    public static final int WARNING_PLUS_WRAPPED_MSG    = 83;
-    public static final int WARNING_MSG                 = 84;
-    public static final int FATAL_ERR_PLUS_WRAPPED_MSG  = 85;
-    public static final int FATAL_ERR_MSG               = 86;
-    public static final int ERROR_PLUS_WRAPPED_MSG      = 87;
-    public static final int ERROR_MSG                   = 88;
-    public static final int TRANSFORM_WITH_TRANSLET_STR = 89;
-    public static final int TRANSFORM_WITH_JAR_STR      = 90;
+    public static final String STRAY_SORT_ERR = "STRAY_SORT_ERR";
+    public static final String UNSUPPORTED_ENCODING = "UNSUPPORTED_ENCODING";
+    public static final String SYNTAX_ERR = "SYNTAX_ERR";
+    public static final String CONSTRUCTOR_NOT_FOUND = "CONSTRUCTOR_NOT_FOUND";
+    public static final String NO_JAVA_FUNCT_THIS_REF = "NO_JAVA_FUNCT_THIS_REF";
+    public static final String TYPE_CHECK_ERR = "TYPE_CHECK_ERR";
+    public static final String TYPE_CHECK_UNK_LOC_ERR = "TYPE_CHECK_UNK_LOC_ERR";
+    public static final String ILLEGAL_CMDLINE_OPTION_ERR = "ILLEGAL_CMDLINE_OPTION_ERR";
+    public static final String CMDLINE_OPT_MISSING_ARG_ERR = "CMDLINE_OPT_MISSING_ARG_ERR";
+    public static final String WARNING_PLUS_WRAPPED_MSG = "WARNING_PLUS_WRAPPED_MSG";
+    public static final String WARNING_MSG = "WARNING_MSG";
+    public static final String FATAL_ERR_PLUS_WRAPPED_MSG = "FATAL_ERR_PLUS_WRAPPED_MSG";
+    public static final String FATAL_ERR_MSG = "FATAL_ERR_MSG";
+    public static final String ERROR_PLUS_WRAPPED_MSG = "ERROR_PLUS_WRAPPED_MSG";
+    public static final String ERROR_MSG = "ERROR_MSG";
+    public static final String TRANSFORM_WITH_TRANSLET_STR = "TRANSFORM_WITH_TRANSLET_STR";
+    public static final String TRANSFORM_WITH_JAR_STR = "TRANSFORM_WITH_JAR_STR";
+    public static final String COULD_NOT_CREATE_TRANS_FACT = "COULD_NOT_CREATE_TRANS_FACT";
     
     // All error messages are localized and are stored in resource bundles.
     // This array and the following 4 strings are read from that bundle.
-    private static String[] _errorMessages;
-    private static String   _compileError;
-    private static String   _compileWarning;
-    private static String   _runtimeError;
+    private static ResourceBundle _bundle;
     
-    public final static String ERROR_MESSAGES_KEY   = "error-messages";
-    public final static String COMPILER_ERROR_KEY   = "compile-error";
-    public final static String COMPILER_WARNING_KEY = "compile-warning";
-    public final static String RUNTIME_ERROR_KEY    = "runtime-error";
+    public final static String ERROR_MESSAGES_KEY   = "ERROR_MESSAGES_KEY";
+    public final static String COMPILER_ERROR_KEY   = "COMPILER_ERROR_KEY";
+    public final static String COMPILER_WARNING_KEY = "COMPILER_WARNING_KEY";
+    public final static String RUNTIME_ERROR_KEY    = "RUNTIME_ERROR_KEY";
 
     static {
-	ResourceBundle bundle = ResourceBundle.getBundle("org.apache.xalan.xsltc.compiler.util.ErrorMessages", Locale.getDefault());
-	_errorMessages  = bundle.getStringArray(ERROR_MESSAGES_KEY);
-	_compileError   = bundle.getString(COMPILER_ERROR_KEY);
-	_compileWarning = bundle.getString(COMPILER_WARNING_KEY);
-	_runtimeError   = bundle.getString(RUNTIME_ERROR_KEY);
+        _bundle = ResourceBundle.getBundle(
+                          "org.apache.xalan.xsltc.compiler.util.ErrorMessages",
+                          Locale.getDefault());
     }
 
-    public ErrorMsg(int code) {
+    public ErrorMsg(String code) {
 	_code = code;
 	_line = 0;
     }
 	
-    public ErrorMsg(String message) {
-	_code = -1;
-	_message = message;
+    public ErrorMsg(Throwable e) {
+   	_code = null;
+	_message = e.getMessage();
 	_line = 0;
     }
 
     public ErrorMsg(String message, int line) {
-	_code = -1;
+	_code = null;
 	_message = message;
 	_line = line;
     }
 
-    public ErrorMsg(int code, int line, Object param) {
+    public ErrorMsg(String code, int line, Object param) {
 	_code = code;
 	_line = line;
 	_params = new Object[] { param };
     }
 
-    public ErrorMsg(int code, Object param) {
+    public ErrorMsg(String code, Object param) {
 	this(code);
 	_params = new Object[1];
 	_params[0] = param;
     }
 
-    public ErrorMsg(int code, Object param1, Object param2) {
+    public ErrorMsg(String code, Object param1, Object param2) {
 	this(code);
 	_params = new Object[2];
 	_params[0] = param1;
 	_params[1] = param2;
     }
 
-    public ErrorMsg(int code, SyntaxTreeNode node) {
+    public ErrorMsg(String code, SyntaxTreeNode node) {
 	_code = code;
 	_url  = getFileName(node);
 	_line = node.getLineNumber();
     }
 
-    public ErrorMsg(int code, Object param1, SyntaxTreeNode node) {
+    public ErrorMsg(String code, Object param1, SyntaxTreeNode node) {
 	_code = code;
 	_url  = getFileName(node);
 	_line = node.getLineNumber();
@@ -250,7 +246,7 @@ public final class ErrorMsg {
 	_params[0] = param1;
     }
 
-    public ErrorMsg(int code, Object param1, Object param2,
+    public ErrorMsg(String code, Object param1, Object param2,
 		    SyntaxTreeNode node) {
 	_code = code;
 	_url  = getFileName(node);
@@ -258,18 +254,6 @@ public final class ErrorMsg {
 	_params = new Object[2];
 	_params[0] = param1;
 	_params[1] = param2;
-    }
-
-    public static String getCompileErrorMessage() {
-	return _compileError;
-    }
-
-    public static String getCompileWarningMessage() {
-	return _compileWarning;
-    }
-
-    public static String getTransletErrorMessage() {
-	return _runtimeError;
     }
 
     private String getFileName(SyntaxTreeNode node) {
@@ -301,15 +285,15 @@ public final class ErrorMsg {
      */
     public String toString() {
 	String suffix = (_params == null) ? 
-	    (_code >= 0 ? new String(_errorMessages[_code]) : _message)
-	    : MessageFormat.format(_errorMessages[_code], _params);
+	    (null != _code ? new String(getErrorMessage()) : _message)
+	    : MessageFormat.format(getErrorMessage(), _params);
 	return formatLine() + suffix;
     }
 	
     public String toString(Object obj) {
 	Object params[] = new Object[1];
 	params[0] = obj.toString();
-	String suffix = MessageFormat.format(_errorMessages[_code], params);
+	String suffix = MessageFormat.format(getErrorMessage(), params);
 	return formatLine() + suffix;
     }
 	
@@ -317,8 +301,19 @@ public final class ErrorMsg {
 	Object params[] = new Object[2];
 	params[0] = obj0.toString();
 	params[1] = obj1.toString();
-	String suffix = MessageFormat.format(_errorMessages[_code], params);
+	String suffix = MessageFormat.format(getErrorMessage(), params);
 	return formatLine() + suffix;
+    }
+
+    /**
+     * Return an ErrorMessages string corresponding to the _code
+     * This function is temporary until the three special-cased keys
+     * below are moved into ErrorMessages
+     * 
+     * @return ErrorMessages string
+     */    
+    private String getErrorMessage() {
+      return _bundle.getString(_code);
     }
 }
 

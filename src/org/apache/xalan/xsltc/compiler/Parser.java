@@ -432,7 +432,7 @@ public class Parser implements Constants, ContentHandler {
 	    }
 	}
 	catch (TypeCheckError e) {
-	    reportError(ERROR, new ErrorMsg(e.toString()));
+	    reportError(ERROR, new ErrorMsg(e));
 	}
     }
 
@@ -452,7 +452,7 @@ public class Parser implements Constants, ContentHandler {
 	}
 	catch (IOException e) {
 	    if (_xsltc.debug()) e.printStackTrace();
-	    reportError(ERROR,new ErrorMsg(e.getMessage()));
+	    reportError(ERROR,new ErrorMsg(e));
 	}
 	catch (SAXException e) {
 	    Throwable ex = e.getException();
@@ -460,15 +460,15 @@ public class Parser implements Constants, ContentHandler {
 		e.printStackTrace();
 		if (ex != null) ex.printStackTrace();
 	    }
-	    reportError(ERROR, new ErrorMsg(e.getMessage()));
+	    reportError(ERROR, new ErrorMsg(e));
 	}
 	catch (CompilerException e) {
 	    if (_xsltc.debug()) e.printStackTrace();
-	    reportError(ERROR, new ErrorMsg(e.getMessage()));
+	    reportError(ERROR, new ErrorMsg(e));
 	}
 	catch (Exception e) {
 	    if (_xsltc.debug()) e.printStackTrace();
-	    reportError(ERROR, new ErrorMsg(e.getMessage()));
+	    reportError(ERROR, new ErrorMsg(e));
 	}
 	return null;
     }
@@ -1146,7 +1146,7 @@ public class Parser implements Constants, ContentHandler {
     public void printErrors() {
 	final int size = _errors.size();
 	if (size > 0) {
-	    System.err.println(ErrorMsg.getCompileErrorMessage());
+	    System.err.println(new ErrorMsg(ErrorMsg.COMPILER_ERROR_KEY));
 	    for (int i = 0; i < size; i++) {
 		System.err.println("  " + _errors.elementAt(i));
 	    }
@@ -1159,7 +1159,7 @@ public class Parser implements Constants, ContentHandler {
     public void printWarnings() {
 	final int size = _warnings.size();
 	if (size > 0) {
-	    System.err.println(ErrorMsg.getCompileWarningMessage());
+	    System.err.println(new ErrorMsg(ErrorMsg.COMPILER_WARNING_KEY));
 	    for (int i = 0; i < size; i++) {
 		System.err.println("  " + _warnings.elementAt(i));
 	    }

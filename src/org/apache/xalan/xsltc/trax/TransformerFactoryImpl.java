@@ -612,7 +612,9 @@ public class TransformerFactoryImpl
 	        throw new TransformerConfigurationException(err.toString());
 	    }
 	    catch (Exception e) {
-	        ErrorMsg err = new ErrorMsg(ErrorMsg.getTransletErrorMessage() + e.getMessage());
+	        ErrorMsg err = new ErrorMsg(
+                                     new ErrorMsg(ErrorMsg.RUNTIME_ERROR_KEY)
+                                     + e.getMessage());
 	        throw new TransformerConfigurationException(err.toString());
 	    }
 	}
