@@ -896,6 +896,8 @@ public class Stylesheet  extends ElemTemplateElement
    */
   public void setNamespaceAlias (NamespaceAlias na)
   {
+    if (m_prefix_aliases == null)
+      m_prefix_aliases = new Vector();
     m_prefix_aliases.addElement(na);
   }
     
