@@ -106,7 +106,28 @@ public abstract class DocImpl extends Parent
   public DocImpl(int charBufSize)
   {
     super(null);
-    m_chars = new FastStringBuffer(charBufSize);
+
+    /*
+     * (Note that this takes an initial text buffer size, in characters,
+     * as its input parameter. FastStringBuffer's constructor expects the
+     * number of bits (power of two) needed to span that size. We need to
+     * convert.)
+     */
+
+    // Find highest bit
+    int bitCheck=charBufSize, bitCount=0;
+    while(bitCheck!=0)
+      {
+	++bitCount;
+	bitCheck>>>=1;
+      }
+    //If any lower bits are set, bump bitCount up one 
+    int mask=( 1<<(bitCount-1) -1 );
+    if ((charBufSize & mask) != 0)
+      ++bitCount;
+
+    m_chars = new FastStringBuffer(bitCount);
+
 //    m_id = m_idCount++;
   }
 
