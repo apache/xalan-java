@@ -111,8 +111,9 @@ public final class LoadDocument {
 
 	// Check if this is a local file name
 	final File file = new File(uri);
-	if (file.exists())
-	    uri = "file:" + file.getAbsolutePath();
+	if (file.exists()) {
+	    uri = file.toURL().toExternalForm();
+	}
 	
 	// Check if this DOM has already been added to the multiplexer
 	int mask = multiplexer.getDocumentMask(uri);
