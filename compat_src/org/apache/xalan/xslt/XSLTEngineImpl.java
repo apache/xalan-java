@@ -784,7 +784,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
 						DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
 
 						dfactory.setNamespaceAware(true);
-						dfactory.setValidating(true);
+						dfactory.setValidating(false);
 
 						DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 						sourceTree = docBuilder.parse(xmlIdentifier);
