@@ -902,10 +902,14 @@ public class ResultTreeHandler extends QueuedEvents
 
     if (m_elemIsPending)
     {
+      // Combined loop shoud be much more efficient.
+      // %REVIEW% %OPT% Will the "else" case ever arise?
       if (!m_nsDeclsHaveBeenAdded)
-        addNSDeclsToAttrs();
+//        addNSDeclsToAttrs();
+          startAndAddPrefixMappings();  // new
+      else                              // new
+          sendStartPrefixMappings();
 
-      sendStartPrefixMappings();
 
       if (DEBUG)
       {
@@ -1026,10 +1030,29 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Add the attributes that have been declared to the attribute list.
    * (Seems like I shouldn't have to do this...)
+   * Internally deprecated in favor of combined startAndAddPrefixMappings();
+   * 
    *
    * @throws org.xml.sax.SAXException
    */
   protected void sendStartPrefixMappings() throws org.xml.sax.SAXException
+  {
+    Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
+    ContentHandler handler = m_contentHandler;
+    while (prefixes.hasMoreElements())
+    {
+      String prefix = (String) prefixes.nextElement();
+      handler.startPrefixMapping(prefix, m_nsSupport.getURI(prefix));
+    }
+  }
+
+  /**
+   * JJK: Combination of sendStartPrefixMappings and
+   * addNSDeclsToAttrs() (which it mostly replaces).  Merging the two
+   * loops is significantly more efficient.
+   *
+   * @throws org.xml.sax.SAXException */
+  protected void startAndAddPrefixMappings() throws org.xml.sax.SAXException
   {
 
     Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
@@ -1038,9 +1061,30 @@ public class ResultTreeHandler extends QueuedEvents
     while (prefixes.hasMoreElements())
     {
       String prefix = (String) prefixes.nextElement();
+      String uri=m_nsSupport.getURI(prefix);
+      
+      // Send event
+      handler.startPrefixMapping(prefix, uri);
 
-      handler.startPrefixMapping(prefix, m_nsSupport.getURI(prefix));
+      // Set attribute
+      boolean isDefault = (prefix.length() == 0);
+      String name;
+
+      if (isDefault)
+      {
+        //prefix = "xml";
+        name = "xmlns";
+      }
+      else
+        name = "xmlns:" + prefix;
+
+      if (null == uri)
+        uri = "";
+
+      m_attributes.addAttribute("http://www.w3.org/2000/xmlns/", 
+                                prefix, name, "CDATA", uri);
     }
+    m_nsDeclsHaveBeenAdded=true;
   }
 
   /**
@@ -1092,7 +1136,9 @@ public class ResultTreeHandler extends QueuedEvents
 
   /**
    * Add the attributes that have been declared to the attribute list.
-   * (Seems like I shouldn't have to do this...)
+   *
+   * %REVIEW% This should have been done automatically during
+   * flushPending(boolean); is it ever explicitly reinvoked?
    */
   public void addNSDeclsToAttrs()
   {
@@ -1322,6 +1368,7 @@ public class ResultTreeHandler extends QueuedEvents
             throws TransformerException
   {
 
+    // %REVIEW% %OPT% Is this ever needed?????
     if (!m_nsDeclsHaveBeenAdded)
       addNSDeclsToAttrs();
 
