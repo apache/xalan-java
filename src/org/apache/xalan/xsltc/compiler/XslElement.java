@@ -102,36 +102,43 @@ final class XslElement extends Instruction {
 
 	final SymbolTable stable = parser.getSymbolTable();
 
-	// First try to get namespace from the namespace attribute
-	String namespace = getAttribute("namespace");
-
-	// If that is undefied we use the prefix in the supplied QName
+	// Get the "name" attribute of the <xsl:element> element
 	String name = getAttribute("name");
 	if ((name == null) || (name.equals(Constants.EMPTYSTRING))) {
-	    final ErrorMsg msg = 
-		new ErrorMsg("You can't call an element \"\"");
+	    final ErrorMsg msg = new ErrorMsg("You can't call an element \"\"");
 	    parser.reportError(Constants.WARNING, msg);
-	    _ignore = true;
+	    _ignore = true; // Ignore the element if the QName is invalid
 	    return;
 	}
 
-	QName qname = parser.getQNameSafe(name);
-	final String prefix = qname.getPrefix();
-	if ((namespace == null || namespace == Constants.EMPTYSTRING) && 
-	    (prefix != null)) {
+	// Try to construct a QName and then get the prefix and local part
+	QName  qname  = parser.getQNameSafe(name);
+	String prefix = qname.getPrefix();
+	String local  = qname.getLocalPart();
+
+	// First try to get the namespace URI from the "namespace" attribute
+	String namespace = getAttribute("namespace");
+
+	// Then try to get it from the "name" attribute QName prefix
+	if (namespace == null) {
+
+	    // We are supposed to use the default namespace URI if the QName
+	    // from the "name" attribute is not prefixed, so check that first
+	    if (prefix == null) prefix = Constants.EMPTYSTRING;
+	    // Then look up the URI that is in scope for the prefix
 	    namespace = lookupNamespace(prefix); 
+
+	    // Signal error if the prefix does not map to any namespace URI 
 	    if (namespace == null) {
-		final ErrorMsg msg =
-		    new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix);
+		final ErrorMsg msg = new ErrorMsg(ErrorMsg.NSPUNDEF_ERR,prefix);
 		parser.reportError(Constants.WARNING, msg);
 		parseChildren(parser);
 		_ignore = true; // Ignore the element if prefix is undeclared
 		return;
 	    }
 	}
-
 	// Check if this element belongs in a specific namespace
-	if (namespace != Constants.EMPTYSTRING) {
+	else if (namespace != Constants.EMPTYSTRING) {
 	    // Get the namespace requested by the xsl:element
 	    _namespace = new AttributeValueTemplate(namespace, parser);
 	    // Get the current prefix for that namespace (if any)
@@ -151,11 +158,9 @@ final class XslElement extends Instruction {
 
 	// Next check that the local part of the QName is legal (no whitespace)
 	if ((_name instanceof SimpleAttributeValue) &&
-	    (qname.getLocalPart().indexOf(' ') > -1)) {
-	    final ErrorMsg msg = 
-		new ErrorMsg("You can't call an element \""+
-			     qname.getLocalPart()+"\"");
-	    parser.reportError(Constants.WARNING, msg);
+	    (local.indexOf(' ') > -1)) {
+	    final String errmsg = "You can't call an element \""+local+"\"";
+	    parser.reportError(Constants.WARNING, new ErrorMsg(errmsg));
 	    parseChildren(parser);
 	    _ignore = true; // Ignore the element if the local part is invalid
 	    return;
