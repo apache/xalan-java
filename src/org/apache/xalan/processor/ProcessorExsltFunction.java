@@ -100,7 +100,7 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
   {
     //System.out.println("ProcessorFunction.startElement()");
     String msg = "";
-    if (!(handler.getElemTemplateElement() instanceof StylesheetRoot))
+    if (!(handler.getElemTemplateElement() instanceof Stylesheet))
     {
       msg = "func:function element must be top level.";
       handler.error(msg, new SAXException(msg));
