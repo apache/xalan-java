@@ -234,8 +234,6 @@ Submitted by: Brian Minchau
 Contributed by Christine Li (jycli@ca.ibm.com).
 Modified FAQ entry regarding bootclasspath; the class path separator is not
 colon for all systems.
-<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/05/29<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates StylesheetRoot.java<br/><ref>Committer's log entry: </ref>
-Activate redundant expression elimination!
 <br/><br/></li></ul>
 </s2>
 <s2 title="Changes for &xslt4j; 2.5.0">
