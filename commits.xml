@@ -1659,4 +1659,71 @@ m_next, which has been already incremented.</Log>
 <Modified>java/src/org/apache/xalan/transformer ResultTreeHandler.java</Modified>
 <Log>Bugzilla 4344: discard attrs which don't have an element to belong to</Log>
 </Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/09/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer ResultTreeHandler.java</Modified>
+<Log>Bugzilla 4344: more efficient.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler XslAttribute.java</Modified>
+<Log>Fixed bug for xsl:attribute
+ PR: 4175
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java</Modified>
+<Log>Reorder slightly and add test to not synthesize xmlns:xsl declaration
+ if one was already present on the DOM's root element.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java</Modified>
+<Log>Fix for properly creating a SAX InputSource from a TrAX InputStream for
+ encapsulating a stylesheet before it is compiled.
+ PR: bugzilla 4711 (I hope to God)
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java</Modified>
+<Log>Fix for last putback.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Stylesheet.java</Modified>
+<Log>This fix should take care of a regression introduced by the code that was
+ added on the 29.10.2001 to take care of forward referenced variables.
+ This little patch ensures that variables that do not have any dependencies
+ are kept in order.
+ PR: bugzilla 4779
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan Version.java</Modified>
+<Log>D13 internal version number update</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>11/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>D13 internal version number update</Log>
+</Commit>
 </Commits>
