@@ -240,4 +240,27 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
     // else
     //  return super.supports(feature, version);
   }
+  
+  /**
+   * Append this text to the text of this node.
+   *
+   *
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array. 
+   *
+   */
+  void appendText(char ch[], int start, int length)
+  {   
+    if (null == m_data)
+    {
+      FastStringBuffer fsb = m_doc.m_chars;   
+      fsb.append(ch, start, length);      
+    }
+    else
+      m_data.concat(ch.toString());
+    
+    m_length += length;
+  }
+  
 }

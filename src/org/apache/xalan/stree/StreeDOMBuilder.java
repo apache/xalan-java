@@ -62,6 +62,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
+import org.xml.sax.Attributes;
 
 import javax.xml.transform.TransformerException;
 
@@ -76,6 +77,10 @@ public class StreeDOMBuilder extends DOMBuilder
 
   /** Source document node          */
   protected DocumentImpl m_docImpl;
+  
+  /** State of the source tree indicating whether the last event
+   * was a characters event.   */
+  private boolean m_previousIsText = false;
 
   /**
    * StreeDOMBuilder instance constructor... it will add the DOM nodes
@@ -131,6 +136,38 @@ public class StreeDOMBuilder extends DOMBuilder
   {
     m_docImpl.setIDAttribute(id, elem);
   }
+  
+  /**
+   * Receive notification of the beginning of an element.
+   *
+   *
+   * @param ns namespace URL of the element
+   * @param localName local part of qualified name of the element 
+   * @param name The element type name.
+   * @param atts The attributes attached to the element, if any.
+   * @see org.apache.xalan.utils.DOMBuilder.startElement()
+   */
+  public void startElement(
+          String ns, String localName, String name, Attributes atts)
+            throws org.xml.sax.SAXException
+  {
+    super.startElement(ns, localName, name, atts);
+    setPreviousIsText(false);
+  }
+  
+  /**
+   * Receive notification of the end of an element.
+   *
+   * @param ns namespace URL of the element
+   * @param localName local part of qualified name of the element
+   * @param name The element type name
+   */
+  public void endElement(String ns, String localName, String name)
+          throws org.xml.sax.SAXException
+  {
+    super.endElement(ns, localName, name);
+    setPreviousIsText(false);
+  }
 
   /**
    * Receive notification of character data.
@@ -143,12 +180,17 @@ public class StreeDOMBuilder extends DOMBuilder
    * @throws TransformerException
    */
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
-  {
-
-    if (m_inCData)
-      append(new CDATASectionImpl(m_docImpl, ch, start, length));
+  {           
+    if (getPreviousIsText())      
+      appendAccumulatedText(getCurrentNode(), ch, start, length);      
     else
-      append(new TextImpl(m_docImpl, ch, start, length));
+    {
+      if (m_inCData)
+        append(new CDATASectionImpl(m_docImpl, ch, start, length));
+      else
+        append(new TextImpl(m_docImpl, ch, start, length));
+      setPreviousIsText(true);
+    }        
   }
 
   /**
@@ -164,7 +206,13 @@ public class StreeDOMBuilder extends DOMBuilder
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
-    append(new TextImpl(m_docImpl, ch, start, length));
+    if (getPreviousIsText())      
+      appendAccumulatedText(getCurrentNode(), ch, start, length);      
+    else
+    {  
+      append(new TextImpl(m_docImpl, ch, start, length));
+      setPreviousIsText(true);
+    }
   }
 
   /**
@@ -187,6 +235,7 @@ public class StreeDOMBuilder extends DOMBuilder
     append(m_doc.createProcessingInstruction("xslt-next-is-raw",
                                              "formatter-to-dom"));
     append(new TextImpl(m_docImpl, ch, start, length));
+    
   }
 
   /**
@@ -202,8 +251,10 @@ public class StreeDOMBuilder extends DOMBuilder
   public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
     append(new CommentImpl(m_docImpl, ch, start, length));
+    setPreviousIsText(false);
   }
-
+  
+  //Don't think we need this for STree!!
   /**
    * Receive notification of cdata. 
    *
@@ -214,8 +265,66 @@ public class StreeDOMBuilder extends DOMBuilder
    *
    * @throws TransformerException
    */
-  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
+/*  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
-    append(new CDATASectionImpl(m_docImpl, ch, start, length));
+    append(new CDATASectionImpl(m_docImpl, ch, start, length));    
+  }*/
+  
+   /**
+   * Receive notification of ignorable whitespace in element content.
+   *
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
+   * @see #characters
+   */
+  public void processingInstruction(String target, String data)
+          throws org.xml.sax.SAXException
+  {
+    super.processingInstruction(target, data);
+    setPreviousIsText(false);
   }
+  
+  /**
+   * Set the state of the source tree to indicate whether the last event
+   * was a characters event. 
+   *
+   *
+   * @param isText True if last event was a characters event
+   *
+   */
+  void setPreviousIsText(boolean isText)
+  {   
+    m_previousIsText = isText;
+  }
+  
+  /**
+   * Get the state of the source tree indicating whether the last event
+   * was a characters event. 
+   *
+   *
+   * @return True if last event was a characters event
+   *
+   */
+  boolean getPreviousIsText()
+  {   
+    return m_previousIsText;
+  } 
+  
+  /**
+   * Append the text from this characters event to the previous text.
+   *
+   *
+   * @param textNode Text node created by previous characters event.
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array. 
+   *
+   */
+  void appendAccumulatedText(Node currentNode, char ch[], int start, int length)
+  {
+    TextImpl textNode = (TextImpl)((Parent)currentNode).m_last;
+    textNode.appendText(ch, start, length);
+  }
+  
 }
