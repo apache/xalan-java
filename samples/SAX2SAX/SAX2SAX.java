@@ -96,29 +96,29 @@ public class SAX2SAX
          SAXException, IOException	   
 	{
 
-    // Instantiate  a TransformerFactory.
+    // Instantiate a TransformerFactory.
   	TransformerFactory tFactory = TransformerFactory.newInstance();
-    // Determine whether the TransformerFactory supports The use uf SAXSource 
+    // Determine whether the TransformerFactory supports The use of SAXSource 
     // and SAXResult
     if (tFactory.getFeature(SAXSource.FEATURE) && tFactory.getFeature(SAXResult.FEATURE))
     { 
       // Cast the TransformerFactory.
-      SAXTransformerFactory stFactory = ((SAXTransformerFactory) tFactory);
+      SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);
       // Create a ContentHandler to handle parsing of the stylesheet.
-      TemplatesHandler templatesHandler = stFactory.newTemplatesHandler();
+      TemplatesHandler templatesHandler = saxTFactory.newTemplatesHandler();
 
       // Create an XMLReader and set its ContentHandler.
       XMLReader reader = XMLReaderFactory.createXMLReader();
       reader.setContentHandler(templatesHandler);
     
       // Parse the stylesheet.                       
-      reader.parse("foo.xsl");
+      reader.parse("birds.xsl");
 
       //Get the Templates object from the ContentHandler.
       Templates templates = templatesHandler.getTemplates();
       // Create a ContentHandler to handle parsing of the XML source.  
       TransformerHandler handler 
-        = stFactory.newTransformerHandler(templates);
+        = saxTFactory.newTransformerHandler(templates);
       // Reset the XMLReader's ContentHandler.
       reader.setContentHandler(handler);  
 
@@ -126,7 +126,7 @@ public class SAX2SAX
       // includes "lexical" events (e.g., comments and CDATA). 
       reader.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
       
-   	  FileOutputStream fos = new FileOutputStream("foo.out");
+   	  FileOutputStream fos = new FileOutputStream("birds.out");
       Serializer serializer = SerializerFactory.getSerializer("xml");
       serializer.setOutputStream(fos);
    
@@ -136,9 +136,9 @@ public class SAX2SAX
       handler.setResult(result);
       
       // Parse the XML input document.
-      reader.parse("foo.xml");
+      reader.parse("birds.xml");
       
-    	System.out.println("************* The result is in foo.out *************");	
+    	System.out.println("************* The result is in birds.out *************");	
     }	
     else
       System.out.println("The TransformerFactory does not support SAX input and SAX output");

@@ -89,12 +89,12 @@ public class SimpleTransform
 	// Use the TransformerFactory to instantiate a Transformer that will work with  
 	// the stylesheet you specify. This method call also processes the stylesheet
   // into a compiled Templates object.
-	Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
+	Transformer transformer = tFactory.newTransformer(new StreamSource("birds.xsl"));
 
 	// Use the Transformer to apply the associated Templates object to an XML document
 	// (foo.xml) and write the output to a file (foo.out).
-	transformer.transform(new StreamSource("foo.xml"), new StreamResult(new FileOutputStream("foo.out")));
+	transformer.transform(new StreamSource("birds.xml"), new StreamResult(new FileOutputStream("birds.out")));
 	
-	System.out.println("************* The result is in foo.out *************");
+	System.out.println("************* The result is in birds.out *************");
   }
 }

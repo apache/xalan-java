@@ -64,6 +64,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.dom.DOMResult;
 
@@ -108,29 +109,35 @@ public class Pipe
 	throws TransformerException, TransformerConfigurationException, 
          SAXException, IOException	   
 	{
-    // Instantiate a TransformerFactory.
+    // Instantiate  a TransformerFactory.
   	TransformerFactory tFactory = TransformerFactory.newInstance();
-    SAXTransformerFactory saxTFactory = (SAXTransformerFactory)tFactory;
-	  // Create a Transformer for each stylesheet.
-    TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource("foo1.xsl"));
-    TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource("foo2.xsl"));
-    TransformerHandler tHandler3 = saxTFactory.newTransformerHandler(new StreamSource("foo3.xsl"));
+    // Determine whether the TransformerFactory supports The use uf SAXSource 
+    // and SAXResult
+    if (tFactory.getFeature(SAXSource.FEATURE) && tFactory.getFeature(SAXResult.FEATURE))
+    { 
+      // Cast the TransformerFactory to SAXTransformerFactory.
+      SAXTransformerFactory saxTFactory = ((SAXTransformerFactory) tFactory);	  
+      // Create a TransformerHandler for each stylesheet.
+      TransformerHandler tHandler1 = saxTFactory.newTransformerHandler(new StreamSource("foo1.xsl"));
+      TransformerHandler tHandler2 = saxTFactory.newTransformerHandler(new StreamSource("foo2.xsl"));
+      TransformerHandler tHandler3 = saxTFactory.newTransformerHandler(new StreamSource("foo3.xsl"));
     
-    // Create an XMLReader.
-	  XMLReader reader = XMLReaderFactory.createXMLReader();
-    reader.setContentHandler(tHandler1);
-    reader.setProperty("http://xml.org/sax/properties/lexical-handler", tHandler1);
+      // Create an XMLReader.
+	    XMLReader reader = XMLReaderFactory.createXMLReader();
+      reader.setContentHandler(tHandler1);
+      reader.setProperty("http://xml.org/sax/properties/lexical-handler", tHandler1);
 
-    tHandler1.setResult(new SAXResult(tHandler2));
-    tHandler2.setResult(new SAXResult(tHandler3));
+      tHandler1.setResult(new SAXResult(tHandler2));
+      tHandler2.setResult(new SAXResult(tHandler3));
 
-    // transformer3 outputs SAX events to the serializer.
-    Serializer serializer = SerializerFactory.getSerializer("xml");
-    serializer.setOutputStream(System.out);
-    tHandler3.setResult(new SAXResult(serializer.asContentHandler()));
+      // transformer3 outputs SAX events to the serializer.
+      Serializer serializer = SerializerFactory.getSerializer("xml");
+      serializer.setOutputStream(System.out);
+      tHandler3.setResult(new SAXResult(serializer.asContentHandler()));
 
-	  // Parse the XML input document. The input ContentHandler and output ContentHandler
-    // work in separate threads to optimize performance.   
-    reader.parse("foo.xml");	
+	    // Parse the XML input document. The input ContentHandler and output ContentHandler
+      // work in separate threads to optimize performance.   
+      reader.parse("foo.xml");
+    }
   }
 }

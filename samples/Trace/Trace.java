@@ -30,14 +30,13 @@ public class Trace
     // Print information whenever a template is invoked.
     ptl.m_traceTemplates = true;
 
-    // Set up the transformation
-    
+    // Set up the transformation    
    	TransformerFactory tFactory = TransformerFactory.newInstance();
     Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
 
-    // Cast the Transformer object as TransformerImpl.
+    // Cast the Transformer object to TransformerImpl.
     if (transformer instanceof TransformerImpl) 
-	{
+	  {
       TransformerImpl transformerImpl = (TransformerImpl)transformer;
       // Register the TraceListener with a TraceManager associated 
       // with the TransformerImpl.
