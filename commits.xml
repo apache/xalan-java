@@ -609,4 +609,33 @@ references ($myParam) even though there was no xsl:param element to receive it.<
  of the serialization classes that are part of xalan - if someone needs the
  method I'll try to port it.</Log>
 </Commit>
+<Commit category="compat">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/13/2001</DateCommitted>
+<Modified>java/compat_src/org/apache/xalan/xpath/xml TreeWalker.java
+ java/compat_src/org/apache/xalan/xslt XSLTEngineImpl.java</Modified>
+<Log>Made changes for change to API for XalanJ2 TreeWalker, which
+ now requires that the DOM helper be created by the caller.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/utils TreeWalker.java</Modified>
+<Log>Added back in the TreeWalker(ContentHandler contentHandler)
+ constructor, because I'm worried I'll break more dependent code.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTErrorResources.java
+ java/src/org/apache/xalan/xslt Process.java</Modified>
+<Log>Implement new arguments for the command line interface: URIResolver, 
+EntityResolver and ContentHandler</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>03/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates FuncFormatNumb.java</Modified>
+<Log>Fix error message to say that 2 or 3 arguments are required.</Log>
+</Commit>
 </Commits>
