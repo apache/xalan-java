@@ -123,7 +123,9 @@ public class ElemExsltFunction extends ElemTemplate
     int oldStackFrame = vars.getStackFrame();
     vars.setStackFrame(m_callerFrameSize + oldStackFrame);
     
-    // Set parameters.
+    // Set parameters,
+    // have to clear the section of the stack frame that has params.
+    vars.clearLocalSlots(vars.getStackFrame(), VariableStack.CLEARLIMITATION);
     NodeList children = this.getChildNodes();
     int numparams =0;
     for (int i = 0; i < args.length; i ++)

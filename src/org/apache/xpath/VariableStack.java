@@ -72,6 +72,10 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class VariableStack implements Cloneable
 {
+  /**
+   * limitation for 1K
+   */
+  public static final int CLEARLIMITATION= 1024;
 
   /**
    * Constructor for a variable stack.
@@ -216,7 +220,7 @@ public class VariableStack implements Cloneable
 
     if (_frameTop >= _stackFrames.length)
     {
-      XObject newsf[] = new XObject[_stackFrames.length + (1024 * 4) + size];
+      XObject newsf[] = new XObject[_stackFrames.length + XPathContext.RECURSIONLIMIT + size];
 
       System.arraycopy(_stackFrames, 0, newsf, 0, _stackFrames.length);
 
@@ -225,7 +229,7 @@ public class VariableStack implements Cloneable
 
     if (_linksTop + 1 >= _links.length)
     {
-      int newlinks[] = new int[_links.length + (1024 * 2)];
+      int newlinks[] = new int[_links.length + (CLEARLIMITATION * 2)];
 
       System.arraycopy(_links, 0, newlinks, 0, _links.length);
 
@@ -395,7 +399,7 @@ public class VariableStack implements Cloneable
   }
 
   /** NEEDSDOC Field m_nulls          */
-  private static XObject[] m_nulls = new XObject[1024];
+  private static XObject[] m_nulls = new XObject[CLEARLIMITATION];
 
   /**
    * Use this to clear the variables in a section of the stack.  This is
