@@ -112,6 +112,7 @@ Copyright:
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
+  <property name="build.servlet" value="${build.samples}/servlet"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
   <property name="dist.file" value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
@@ -125,7 +126,7 @@ Copyright:
   <property name="version.file" value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
   <property name="samples.dir" value="./samples"/>
   <property name="build.samples.jar" value="${build.dir}/xalansamples.jar"/>
-  <property name="build.servlet.jar" value="${build.dir}/xalanservlet.jar"/>
+  <property name="build.servlet.war" value="${build.dir}/xalanservlet.war"/>
   <property name="xdocs.dir" value="./xdocs"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
@@ -566,22 +567,35 @@ Copyright:
   <!-- must be on the classpath                                             -->
   <!-- =================================================================== -->
  <target name="servlet" depends="jar"
-    description="Compile and jar the servlet samples" >
+    description="Compile and jar the servlet samples in xalanservlet.war" >
      <echo message="To compile the sample servlets, javax.servlet and javax.servlet.http must be on the classpath"/>   
-     <mkdir dir="${build.samples}/servlet"/>
+     <mkdir dir="${build.servlet}"/>
+     <mkdir dir="${build.servlet}/WEB-INF/classes/servlet"/>
+     <mkdir dir="${build.servlet}/WEB-INF/lib"/>
      <javac srcdir="${samples.dir}/servlet"
-            destdir="${build.samples}"
+            destdir="${build.servlet}/WEB-INF/classes"
             debug="${build.debug}"
             bootclasspathref="xslt.boot.class.path" >
        <classpath refid="samples.class.path" />
      </javac>           
-      <copy todir="${build.samples}/servlet">
-        <fileset dir="${samples.dir}/servlet" 
-          includes="media.properties,default.xsl,default2.xsl"/>
+      <copy todir="${build.servlet}/WEB-INF/classes/servlet">
+        <fileset dir="${samples.dir}/servlet" includes="media.properties"/>
       </copy>  		         
-    <jar jarfile="${build.servlet.jar}" 
-         basedir="${build.samples}" 
-         includes="servlet/**"/>
+      <copy todir="${build.servlet}/WEB-INF">
+        <fileset dir="${samples.dir}/servlet" includes="web.xml"/>
+      </copy>
+      <copy todir="${build.servlet}">
+        <fileset dir="${samples.dir}/servlet" 
+        		includes="birds.xml, birds.xsl, booklist1.xsl, 
+        		booklist2.xsl, catalog.xml, fooparam.xml, fooparam.xsl, jspSample.jsp"/>
+      </copy>
+      <copy todir="${build.servlet}/WEB-INF/lib">
+      	<fileset dir="${bin.dir}" includes="${parser.jar.name}, ${xmlapis.jar.name}"/>
+      </copy>
+      <copy file="${build.xalan.jar}" todir="${build.servlet}/WEB-INF/lib" />
+    <jar jarfile="${build.servlet.war}" 
+         basedir="${build.servlet}" 
+         includes="**"/>
  </target>
  
   <!-- =================================================================== -->
