@@ -331,7 +331,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
     if(null != locator)
     {
       // m_pw.println("Parser fatal error: "+exception.getMessage());
-      String id = (locator.getPublicId() != locator.getPublicId())
+      String id = (null != locator.getPublicId() )
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())
                       ? locator.getSystemId() : "SystemId Unknown";
