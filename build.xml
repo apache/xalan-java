@@ -178,9 +178,17 @@ Copyright:
   </path>
   <path id="xslt.boot.class.path">
     <!-- Put this version of xalan in front of the jdk's for JDK 1.4+ -->
+    <!-- Set build.boot.class.path to a JDK 1.1.x classes.zip file to check
+         compatibility with 1.1.x.  If you omit this property, compatability
+         with 1.1.x will not be checked even though javac specifies a target of 1.1 -->
     <pathelement location="${build.classes}" />
+    <pathelement path="${build.boot.class.path}" />
     <pathelement path="${sun.boot.class.path}" />
   </path>
+  <path id="compile.source.path">
+    <dirset dir="${src.dir}" includes="/org/apache/**" />
+  </path>
+
 
   <!-- =================================================================== -->
   <!-- Creates output build directories and doc prerequistes               -->
@@ -229,22 +237,16 @@ Copyright:
   <target name="compile" depends="prepare"
     description="Compile Xalan-J 2.x (skips 1.x compat and XSLTC)" >
     <echo message="compile entire source tree and copy .properties and .res files to build tree."/>
-    <!-- Note: split compile into separate javac steps to avoid JDK 1.1.8 bug reported at:
-         http://developer.java.sun.com/developer/bugParade/bugs/4043508.html
-         which causes an error like:
-         [javac] E:\builds\xml-xalan\java\src\org\apache\xalan\templates\ElemTemplate.java:108: Cyclic class inheritance or scoping.
-    --> 
-    <!-- Compile XPath engine and some common utilities -->
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           debug="${build.debug}" >
-      <!-- Also compile version info classes here -->
-      <include name="${xalan.reldir}/Version.java" />
-      <include name="${xalan.reldir}/processor/XSLProcessorVersion.java" />
+           debug="${build.debug}"
+           target="1.1" >
       <include name="${apachexml.reldir}/**/*.java" />
       <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
       <exclude name="${apachexml.reldir}/utils/synthetic/**/*.java" />
       <include name="${xpath.reldir}/**/*.java" />
+      <include name="${xalan.reldir}/**/*.java" />
+      <exclude name="${xsltc.reldir}/**/*.java" />
       <include name="${domxpath.reldir}/**/*.java" />
       <exclude name="**/CoroutineSAXFilterTest.java" 
         unless="xerces.present"	 />
@@ -254,23 +256,7 @@ Copyright:
         unless="xerces.present"	 />
       <classpath refid="compile.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
-    </javac>
-    <!-- Compile Xalan main engine (but not xsltc package yet) -->
-    <javac srcdir="${src.dir}" 
-           destdir="${build.classes}"
-           includes="${xalan.reldir}/**/*.java"
-           excludes="${xsltc.reldir}/**/*.java,${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${build.debug}" >
-      <classpath refid="compile.class.path" />
-      <bootclasspath refid="xslt.boot.class.path" />
-    </javac>
-    <!-- Compile various Xalan-specific extensions and command line class -->
-    <javac srcdir="${src.dir}" 
-           destdir="${build.classes}"
-           includes="${xalan.reldir}/lib/**/*.java,${xalan.reldir}/xslt/**/*.java"
-           debug="${build.debug}" >
-      <classpath refid="compile.class.path" />
-      <bootclasspath refid="xslt.boot.class.path" />
+      <sourcepath refid="compile.source.path" />
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${build.classes}">
