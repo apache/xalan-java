@@ -302,7 +302,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
   public void reset()
   {
     if (m_transformerImpl != null)
-      m_transformerImpl.reset();    
+      m_transformerImpl.reset(); 
+    m_stylesheetParams = null;
   }
   
  
@@ -358,6 +359,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
           {}
         }
         m_needToEval = false;
+        m_evalList = null;
       }
       if(null != stylesheetSource)
       {
@@ -2216,12 +2218,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   public void setStylesheetParam(String key, XObject value)
   {
-    if (m_transformerImpl != null)
-      m_transformerImpl.setParameter(key, null, value);
-    else
-    {
-      setParameter(key, value);
-    }
+    setParameter(key, value);
   }
 
   /**
@@ -2240,12 +2237,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
     if (m_evalList == null)
       m_evalList = new Vector();
     m_evalList.addElement(key);
-    if (m_transformerImpl != null)
-      m_transformerImpl.setParameter(key, null, expression);
-    else
-    {
-      setParameter(key, expression);
-    }
+    setParameter(key, expression);
     m_needToEval = true;
   }
   
