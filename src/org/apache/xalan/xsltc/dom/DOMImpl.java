@@ -941,8 +941,9 @@ public final class DOMImpl implements DOM, Externalizable {
      * Iterator that returns preceding siblings of a given node
      */
     private class PrecedingSiblingIterator extends NodeIteratorBase {
-	private int _start;
+
 	private int _node;
+	private int _mom;
          
 	public boolean isReverse() {
 	    return true;
@@ -950,21 +951,35 @@ public final class DOMImpl implements DOM, Externalizable {
          
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_node = _offsetOrChild[_parent[_startNode = _start = node]];
+		int tmp = NULL;
+		_startNode = node;
+		_mom = _parent[node];
+		_node = _offsetOrChild[_mom];
+		while ((_node != node) && (_node != NULL)) {
+		    tmp = _node;
+		    _node = _nextSibling[_node];
+		}
+		_node = tmp;
 		return resetPosition();
 	    }
 	    return this;
 	}
-                  
+
 	public int next() {
-	    if (_node == _start) {
-		return NULL;
+	    // Return NULL if end already reached
+	    if (_node == NULL) return NULL;
+
+	    int current = _offsetOrChild[_mom];
+
+	    // Otherwise find the next preceeding sibling
+	    int last = NULL;
+	    while ((current != _node) && (current != NULL)) {
+		last = current;
+		current = _nextSibling[current];
 	    }
-	    else {
-		final int node = _node;
-		_node = _nextSibling[node];
-		return returnNode(node);
-	    }
+	    current = _node;
+	    _node = last;
+	    return returnNode(current);
 	}
 
 	public void setMark() {
@@ -1790,8 +1805,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	    return getNodeValue(_offsetOrChild[node]);
 	case TEXT:
 	case COMMENT:
-	case PROCESSING_INSTRUCTION:
 	    return makeStringValue(node);
+	case PROCESSING_INSTRUCTION:
+	    final String pistr = makeStringValue(node);
+	    final int col = pistr.indexOf(' ');
+	    if (col > 0)
+		return pistr.substring(col+1);
+	    else
+		return pistr;
 	default:
 	    if (node < _firstAttributeNode)
 		return getElementValue(node); // element string value
@@ -2046,7 +2067,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	case DOM.COMMENT:
 	    return EMPTYSTRING;
 	case DOM.PROCESSING_INSTRUCTION:
-	    return "a-pi";
+	    final String pistr = makeStringValue(node);
+	    final int col = pistr.indexOf(' ');
+	    if (col > -1)
+		return(pistr.substring(0,col));
+	    else
+		return pistr;
 	default:
 	    // Construct the local part (omit '@' for attributes)
 	    String name  = getLocalName(node);
@@ -2523,6 +2549,9 @@ public final class DOMImpl implements DOM, Externalizable {
 			      _lengthOrAttr[child]);
 		break;
 	    case PROCESSING_INSTRUCTION:
+		buffer.append(_text,
+			      _offsetOrChild[child],
+			      _lengthOrAttr[child]);
 		break;
 		// !!! at the moment default can only be an element???
 	    default:
