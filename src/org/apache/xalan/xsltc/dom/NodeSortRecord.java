@@ -74,6 +74,7 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.utils.ObjectFactory;
+import org.apache.xml.utils.StringComparable;
 
 /**
  * Base class for sort records containing application specific sort keys 
@@ -108,7 +109,7 @@ public abstract class NodeSortRecord {
     private int    _last = 0;       // Number of nodes in the current iterator
     private int    _scanned = 0;    // Number of key levels extracted from DOM
 
-    private Object[] _values; // Contains either CollationKey or Double
+    private Object[] _values; // Contains Comparable  objects
 
     /**
      * This constructor is run by a call to ClassLoader in the
@@ -188,18 +189,18 @@ public abstract class NodeSortRecord {
      * element. The value is extracted from the DOM if it is not already in
      * our sort key vector.
      */
-    private final CollationKey stringValue(int level) {
-	// Get value from our array if possible
-	if (_scanned <= level) {
-	    // Get value from DOM if accessed for the first time
-	    final String str = extractValueFromDOM(_dom, _node, level,
-						   _translet, _last);
-	    final CollationKey key = _collator[level].getCollationKey(str);
-	    _values[_scanned++] = key;
-	    return(key);
-	}
-	return((CollationKey)_values[level]);
-    }
+    private final Comparable stringValue(int level) {
+    	// Get value from our array if possible
+    	if (_scanned <= level) {
+    	    // Get value from DOM if accessed for the first time
+    	    final String str = extractValueFromDOM(_dom, _node, level,
+    						   _translet, _last);
+    	    final Comparable key = StringComparable.getComparator(str, _locale[level], _collator[level], _case_order[level]);
+    	    _values[_scanned++] = key;
+    	    return(key);
+    	}
+    	return((Comparable)_values[level]);
+  }
     
     private final Double numericValue(int level) {
 	// Get value from our vector if possible
@@ -238,8 +239,8 @@ public abstract class NodeSortRecord {
 		cmp = our.compareTo(their);
 	    }
 	    else {
-		final CollationKey our = stringValue(level);
-		final CollationKey their = other.stringValue(level);
+		final Comparable our = stringValue(level);
+		final Comparable their = other.stringValue(level);
 		cmp = our.compareTo(their);
 	    }
 	    
