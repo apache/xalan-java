@@ -312,7 +312,7 @@ public class ResultTreeHandler
   {
     if(m_pendingStartDoc && (null != m_pendingElementName))
     {
-      if(!m_stylesheetRoot.isOutputMethodSet())
+      if(null != m_stylesheetRoot && !m_stylesheetRoot.isOutputMethodSet())
       {
         if(m_pendingElementName.equalsIgnoreCase("html") 
            && (null == m_nsSupport.getURI("")))
