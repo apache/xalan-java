@@ -109,7 +109,10 @@ public class TemplateList implements java.io.Serializable
     }
     if(null != template.getName())
     {
-      m_namedTemplates.put(template.getName(), template);
+      if (m_namedTemplates.get(template.getName()) == null)
+        m_namedTemplates.put(template.getName(), template);
+      else
+        template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE, new Object[]{template.getName()});
     }
 
     if(null != template.getMatch())
