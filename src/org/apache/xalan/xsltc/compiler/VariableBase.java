@@ -81,11 +81,12 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.NodeSetType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 class VariableBase extends TopLevelElement {
 
     protected QName       _name;            // The name of the variable.
-    protected String      _variable;        // The real name of the variable.
+    protected String      _escapedName;        // The escaped qname of the variable.
     protected Type        _type;            // The type of this variable.
     protected boolean     _isLocal;         // True if the variable is local.
     protected LocalVariableGen _local;      // Reference to JVM variable
@@ -153,7 +154,7 @@ class VariableBase extends TopLevelElement {
     public void mapRegister(MethodGenerator methodGen) {
         if (_local == null) {
             final InstructionList il = methodGen.getInstructionList();
-	    final String name = _name.getLocalPart(); // TODO: namespace ?
+	    final String name = getEscapedName(); // TODO: namespace ?
 	    final org.apache.bcel.generic.Type varType = _type.toJCType();
             _local = methodGen.addLocalVariable2(name, varType, il.getEnd());
         }
@@ -226,11 +227,10 @@ class VariableBase extends TopLevelElement {
     }
 
     /**
-     * Returns the name of the variable or parameter as it occured in the
-     * stylesheet.
+     * Returns the escaped qname of the variable or parameter 
      */
-    public String getVariable() {
-	return _variable;
+    public String getEscapedName() {
+	return _escapedName;
     }
 
     /**
@@ -238,7 +238,7 @@ class VariableBase extends TopLevelElement {
      */
     public void setName(QName name) {
 	_name = name;
-	_variable = Util.escape(name.getLocalPart());
+	_escapedName = Util.escape(name.getStringRep());
     }
 
     /**
@@ -254,10 +254,14 @@ class VariableBase extends TopLevelElement {
     public void parseContents(Parser parser) {
 	// Get the 'name attribute
 	String name = getAttribute("name");
-	if (name == null) name = EMPTYSTRING;
 
-	if (name.length() > 0)
+        if (name.length() > 0) {
+            if (!XMLChar.isValidQName(name)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
+                parser.reportError(Constants.ERROR, err);           
+            }   
 	    setName(parser.getQNameIgnoreDefaultNs(name));
+        }
         else
 	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 

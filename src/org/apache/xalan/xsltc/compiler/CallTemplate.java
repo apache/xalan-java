@@ -76,6 +76,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
+import org.apache.xml.utils.XMLChar;
 
 import java.util.Vector;
 
@@ -109,7 +110,17 @@ final class CallTemplate extends Instruction {
     }
 
     public void parseContents(Parser parser) {
-	_name = parser.getQNameIgnoreDefaultNs(getAttribute("name"));
+        final String name = getAttribute("name");
+        if (name.length() > 0) {
+            if (!XMLChar.isValidQName(name)) {
+                ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
+                parser.reportError(Constants.ERROR, err);           
+            }                
+            _name = parser.getQNameIgnoreDefaultNs(name);
+        }
+        else {
+            reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");		
+        }
 	parseChildren(parser);
     }
 		
