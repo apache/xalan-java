@@ -5,6 +5,10 @@
 package trax;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.util.Properties;
+import java.util.Enumeration;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotSupportedException;
@@ -77,13 +81,20 @@ public abstract class Processor
     Processor factory = null;
     try
     {
-      String factoryName = System.getProperty("trax.processor."+type);
+      String factoryKey = "trax.processor."+type;
+      String factoryName = System.getProperty(factoryKey);
+      
+      if(null == factoryName)
+      {
+        loadPropertyFileToSystem(XSLT_PROPERTIES) ;
+        factoryName = System.getProperty(factoryKey);
+      }
 
       if(null == factoryName)
         factoryName = platformDefaultFactoryName;
       
       if(null == factoryName)
-        throw new ProcessorFactoryException("Can't find system property trax.processor.xslt", null);
+        throw new ProcessorFactoryException("Can't find system property: "+factoryKey, null);
       
       Class factoryClass = Class.forName(factoryName);
       factory = (Processor)factoryClass.newInstance();
@@ -102,6 +113,43 @@ public abstract class Processor
     }
     
     return factory;
+  }
+  
+  // TODO: This needs changing to some vendor neutral location.
+  public static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
+  
+  /*
+  * Retrieve a propery bundle from a specified file and load it 
+  * int the System properties.
+  * @param file The string name of the property file.  
+  */
+  private static void loadPropertyFileToSystem(String file) 
+  {
+    InputStream is;
+    try
+    {   		   
+      Properties props = new Properties();
+      is = Process.class.getResourceAsStream(file);    
+      // get a buffered version
+      BufferedInputStream bis = new BufferedInputStream (is);
+      props.load (bis);                                     // and load up the property bag from this
+      bis.close ();                                          // close out after reading
+      // OK, now we only want to set system properties that 
+      // are not already set.
+      Properties systemProps = System.getProperties();
+      Enumeration propEnum = props.propertyNames();
+      while(propEnum.hasMoreElements())
+      {
+        String prop = (String)propEnum.nextElement();
+        if(!systemProps.containsKey(prop))
+          systemProps.put(prop, props.getProperty(prop));
+      }
+      System.setProperties(systemProps);
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace();
+    }
   }
   
   /**
