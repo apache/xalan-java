@@ -316,7 +316,7 @@ public class ElemLiteralResult extends ElemUse
         if ((null != ns) && (ns.length() > 0))
         {
           NamespaceAlias nsa =
-            stylesheet.getNamespaceAliasComposed(m_namespace);
+            stylesheet.getNamespaceAliasComposed(m_namespace); // %REVIEW% ns?
 
           if (null != nsa)
           {
@@ -664,9 +664,10 @@ public class ElemLiteralResult extends ElemUse
             {
 
               // Important Note: I'm not going to check for excluded namespace 
-              // prefixes here.  It seems like it's to expensive, and I'm not 
+              // prefixes here.  It seems like it's too expensive, and I'm not 
               // even sure this is right.  But I could be wrong, so this needs 
               // to be tested against other implementations.
+							
               rhandler.addAttribute(avt.getURI(), avt.getName(),
                                     avt.getRawName(), "CDATA", stringedValue);
             }
