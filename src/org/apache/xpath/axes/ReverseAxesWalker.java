@@ -79,7 +79,7 @@ public class ReverseAxesWalker extends AxesWalker
   /**
    * Construct an AxesWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public ReverseAxesWalker(LocPathIterator locPathIterator)
   {
@@ -87,9 +87,9 @@ public class ReverseAxesWalker extends AxesWalker
   }
 
   /**
-   * Tells if this is a reverse axes.
+   * Tells if this is a reverse axes.  Overrides AxesWalker#isReverseAxes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true for this class.
    */
   public boolean isReverseAxes()
   {
@@ -99,7 +99,7 @@ public class ReverseAxesWalker extends AxesWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -113,9 +113,9 @@ public class ReverseAxesWalker extends AxesWalker
    * the nodes searched, but, for the moment, this case is probably
    * rare enough that the added complexity isn't worth it.
    *
-   * NEEDSDOC @param predicateIndex
+   * @param predicateIndex The predicate index of the proximity position.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The pridicate index, or -1.
    */
   protected int getProximityPosition(int predicateIndex)
   {
@@ -169,7 +169,7 @@ public class ReverseAxesWalker extends AxesWalker
   /**
    * Count backwards one proximity position.
    *
-   * NEEDSDOC @param i
+   * @param i The predicate index.
    */
   protected void countProximityPosition(int i)
   {
@@ -178,12 +178,13 @@ public class ReverseAxesWalker extends AxesWalker
   }
 
   /**
-   * NEEDSDOC Method getLastPos 
+   * Get the number of nodes in this node list.  The function is probably ill
+   * named?
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC (getLastPos) @return
+   * @return the number of nodes in this node list.
    */
   public int getLastPos(XPathContext xctxt)
   {

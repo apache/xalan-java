@@ -74,7 +74,7 @@ public class RootWalker extends AxesWalker
   /**
    * Construct a RootWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public RootWalker(LocPathIterator locPathIterator)
   {
@@ -126,13 +126,13 @@ public class RootWalker extends AxesWalker
     return null;
   }
 
-  /** NEEDSDOC Field m_processedRoot          */
+  /** True if the root node has been processed.   */
   boolean m_processedRoot = false;
 
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Always 1.
    */
   protected int getLevelMax()
   {

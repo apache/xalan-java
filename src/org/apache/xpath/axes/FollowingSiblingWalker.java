@@ -72,7 +72,7 @@ public class FollowingSiblingWalker extends AxesWalker
   /**
    * Construct a FollowingSiblingWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public FollowingSiblingWalker(LocPathIterator locPathIterator)
   {
@@ -100,7 +100,7 @@ public class FollowingSiblingWalker extends AxesWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

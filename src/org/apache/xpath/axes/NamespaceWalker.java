@@ -75,7 +75,7 @@ public class NamespaceWalker extends AxesWalker
   /**
    * Construct an NamespaceWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public NamespaceWalker(LocPathIterator locPathIterator)
   {
@@ -85,7 +85,7 @@ public class NamespaceWalker extends AxesWalker
   /**
    * Get a cloned AxesWalker.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A cloned NamespaceWalker.
    *
    * @throws CloneNotSupportedException
    */
@@ -105,7 +105,7 @@ public class NamespaceWalker extends AxesWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -177,13 +177,13 @@ public class NamespaceWalker extends AxesWalker
     return this.setCurrentIfNotNull(next);
   }
 
-  /** NEEDSDOC Field m_namespaces          */
+  /** Stack of namespace decl nodes (xmlns attributes).   */
   transient Stack m_namespaces;
 
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

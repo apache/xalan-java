@@ -67,13 +67,13 @@ import org.w3c.dom.Node;
  * @see <a href="http://www.w3.org/TR/xpath#axes">XPath axes descriptions</a>
  */
 public class SelfWalker extends AxesWalker
-	implements java.io.Serializable
+        implements java.io.Serializable
 {
 
   /**
    * Construct a SelfWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public SelfWalker(LocPathIterator locPathIterator)
   {
@@ -86,7 +86,7 @@ public class SelfWalker extends AxesWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -118,13 +118,13 @@ public class SelfWalker extends AxesWalker
     return null;
   }
 
-  /** NEEDSDOC Field m_processedSelf          */
+  /** True if the self node has been processed.   */
   boolean m_processedSelf;
 
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

@@ -72,7 +72,7 @@ public class ChildWalker extends AxesWalker
   /**
    * Construct an ChildWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public ChildWalker(LocPathIterator locPathIterator)
   {
@@ -82,7 +82,7 @@ public class ChildWalker extends AxesWalker
   /**
    *  The root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -139,7 +139,7 @@ public class ChildWalker extends AxesWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

@@ -278,7 +278,7 @@ public class LocPathIterator extends Expression
   }
     
   /**
-   * <meta name="usage" content="internal"/>
+   * <meta name="usage" content="advanced"/>
    * Set if this is an iterator at the upper level of 
    * the XPath.
    */
@@ -789,7 +789,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * <meta name="usage" content="internal"/>
+   * <meta name="usage" content="advanced"/>
    * Get the head of the walker list.
    *
    * @return The head of the walker list, or null 
@@ -801,7 +801,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * <meta name="usage" content="internal"/>
+   * <meta name="usage" content="advanced"/>
    * Set the last used walker.
    *
    * @param walker The last used walker, or null.
@@ -812,7 +812,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * <meta name="usage" content="internal"/>
+   * <meta name="usage" content="advanced"/>
    * Get the last used walker.
    *
    * @return The last used walker, or null.
@@ -823,7 +823,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * <meta name="usage" content="internal"/>
+   * <meta name="usage" content="advanced"/>
    * Add a walker to the waiting list.
    *
    * @param walker A walker that is waiting for 
@@ -838,7 +838,7 @@ public class LocPathIterator extends Expression
   }
 
   /**
-   * <meta name="usage" content="internal"/>
+   * <meta name="usage" content="advanced"/>
    * Remove a walker from the waiting list.
    *
    * @param walker A walker that is no longer waiting.

@@ -72,7 +72,7 @@ public class DescendantWalker extends AxesWalker
   /**
    * Construct an DescendantWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public DescendantWalker(LocPathIterator locPathIterator)
   {
@@ -82,7 +82,7 @@ public class DescendantWalker extends AxesWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -160,7 +160,7 @@ public class DescendantWalker extends AxesWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Short.MAX_VALUE.
    */
   protected int getLevelMax()
   {

@@ -94,32 +94,37 @@ public abstract class AxesWalker extends NodeTest
   //  public static boolean DEBUG_LOCATED = true;
   //  public static boolean DEBUG_PREDICATECOUNTING = false;
   
-  /** NEEDSDOC Field DEBUG          */
+  /** General static debug flag.  Setting this to false will suppress some 
+   *  of the output messages caused by the other debug categories.  */
   static final boolean DEBUG = false;
 
-  /** NEEDSDOC Field DEBUG_WAITING          */
+  /** If true, diagnostic messages about the waiting queue will be posted.  */
   static final boolean DEBUG_WAITING = false;
 
-  /** NEEDSDOC Field DEBUG_TRAVERSAL          */
+  /** For diagnostic purposes, tells if we already did a subtree dump.  */
+  static boolean m_didDumpAll = false;
+
+  /** If true, diagnostic messages about the tree traversal will be posted.  */
   static final boolean DEBUG_TRAVERSAL = false;
 
-  /** NEEDSDOC Field DEBUG_LOCATED          */
+  /** If true, diagnostic messages about the nodes that have 
+   *  been 'located' will be posted.  */
   static final boolean DEBUG_LOCATED = false;
 
-  /** NEEDSDOC Field DEBUG_PREDICATECOUNTING          */
+  /** If true, diagnostic messages about predicate execution will be posted.  */
   static final boolean DEBUG_PREDICATECOUNTING = false;
 
-  /** NEEDSDOC Field FEATURE_NODETESTFILTER          */
+  /** String passed to {@link org.w3c.dom.Node#isSupported} to see if it implements 
+   *  a {@link org.apache.xpath.patterns.NodeTestFilter} interface. */
   public static final String FEATURE_NODETESTFILTER = "NodeTestFilter";
 
-  /** NEEDSDOC Field m_lpi          */
+  /** The owning location path iterator. */
   protected LocPathIterator m_lpi;
 
   /**
-   * NEEDSDOC Method getLocPathIterator 
+   * Get the owning location path iterator.
    *
-   *
-   * NEEDSDOC (getLocPathIterator) @return
+   * @return the owning location path iterator, which should not be null.
    */
   public LocPathIterator getLocPathIterator()
   {
@@ -148,11 +153,12 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Init an AxesWalker.
+   * Initialize an AxesWalker during the parse of the XPath expression.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param stepType
+   * @param compiler The Compiler object that has information about this 
+   *                 walker in the op map.
+   * @param opPos The op code position of this location step.
+   * @param stepType  The type of location step.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -267,10 +273,11 @@ public abstract class AxesWalker extends NodeTest
   private int m_stepType;
 
   /**
-   * NEEDSDOC Method getStepType 
+   * The the step type op code.
    *
    *
-   * NEEDSDOC (getStepType) @return
+   * @return An integer that represents an axes traversal opcode found in 
+   * {@link org.apache.xpath.compiler.OpCodes}.
    */
   protected int getStepType()
   {
@@ -279,14 +286,15 @@ public abstract class AxesWalker extends NodeTest
 
   /**
    * The arg length of the XPath step. Does not change after the constructor.
+   * TODO: Can this be removed since it is only valuable at compile time?
    */
   private int m_argLen;
 
   /**
-   * NEEDSDOC Method getArgLen 
+   * Get the argument length of the location step in the opcode map.
+   * TODO: Can this be removed since it is only valuable at compile time?
    *
-   *
-   * NEEDSDOC (getArgLen) @return
+   * @return The argument length of the location step in the opcode map.
    */
   protected int getArgLen()
   {
@@ -294,16 +302,17 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * The type of this walker based on the pattern analysis.
+   * The analysis pattern built by the WalkerFactory.
+   * TODO: Move to LocPathIterator.
    * @see org.apache.xpath.axes.WalkerFactory
    */
   protected int m_analysis = 0x00000000;
 
   /**
-   * NEEDSDOC Method getAnalysis 
+   * Get the analysis pattern built by the WalkerFactory.
+   * TODO: Move to LocPathIterator.
    *
-   *
-   * NEEDSDOC (getAnalysis) @return
+   * @return The analysis pattern built by the WalkerFactory.
    */
   int getAnalysis()
   {
@@ -311,10 +320,10 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * NEEDSDOC Method setAnalysis 
+   * Set the analysis pattern built by the WalkerFactory.
+   * TODO: Move to LocPathIterator.
    *
-   *
-   * NEEDSDOC @param a
+   * @param a The analysis pattern built by the WalkerFactory.
    */
   void setAnalysis(int a)
   {
@@ -330,7 +339,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Get the current sub-context position.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node position of this walker in the sub-context node list.
    */
   public int getProximityPosition()
   {
@@ -342,9 +351,9 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Get the current sub-context position.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node position of this walker in the sub-context node list.
    */
   public int getProximityPosition(XPathContext xctxt)
   {
@@ -354,9 +363,10 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Get the current sub-context position.
    *
-   * NEEDSDOC @param predicateIndex
+   * @param predicateIndex The index of the predicate where the proximity 
+   *                       should be taken from.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node position of this walker in the sub-context node list.
    */
   protected int getProximityPosition(int predicateIndex)
   {
@@ -386,7 +396,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Init the proximity position to zero for a forward axes.
    *
-   * NEEDSDOC @param i
+   * @param i The index into the m_proximityPositions array.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -398,7 +408,8 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Count forward one proximity position.
    *
-   * NEEDSDOC @param i
+   * @param i The index into the m_proximityPositions array, where the increment 
+   *          will occur.
    */
   protected void countProximityPosition(int i)
   {
@@ -409,7 +420,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Tells if this is a reverse axes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return false, unless a derived class overrides.
    */
   public boolean isReverseAxes()
   {
@@ -422,10 +433,9 @@ public abstract class AxesWalker extends NodeTest
   int m_predicateIndex = -1;
 
   /**
-   * Get which predicate is executing.  Returns
-   * -1 if no predicate is executing.
+   * Get which predicate is executing.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The current predicate index, or -1 if no predicate is executing.
    */
   public int getPredicateIndex()
   {
@@ -435,10 +445,10 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Process the predicates.
    *
-   * NEEDSDOC @param context
-   * NEEDSDOC @param xctxt
+   * @param context The current context node.
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the result of executing the predicate expressions.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -536,7 +546,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Get the number of predicates that this walker has.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the number of predicates that this walker has.
    */
   public int getPredicateCount()
   {
@@ -546,7 +556,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Set the number of predicates that this walker has.
    *
-   * NEEDSDOC @param count
+   * @param count The number of predicates.
    */
   public void setPredicateCount(int count)
   {
@@ -556,8 +566,9 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Init predicate info.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
+   * @param compiler The Compiler object that has information about this 
+   *                 walker in the op map.
+   * @param opPos The op code position of this location step.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -571,16 +582,17 @@ public abstract class AxesWalker extends NodeTest
     m_predicateCount = (null == m_predicates) ? 0 : m_predicates.length;
   }
 
-  /** NEEDSDOC Field m_predicates          */
+  /** The list of predicate expressions. Is static and does not need 
+   *  to be deep cloned. */
   private Expression[] m_predicates;
 
   /**
-   * NEEDSDOC Method getPredicate 
+   * Get a predicate expression at the given index.
    *
    *
-   * NEEDSDOC @param index
+   * @param index Index of the predicate.
    *
-   * NEEDSDOC (getPredicate) @return
+   * @return A predicate expression.
    */
   Expression getPredicate(int index)
   {
@@ -591,9 +603,10 @@ public abstract class AxesWalker extends NodeTest
    * Tell if the given node is a parent of the
    * step context, or the step context node itself.
    *
-   * NEEDSDOC @param n
+   * @param n The node being tested.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if n is a parent of the step context, or the step context 
+   *              itself.
    */
   boolean isAncestorOfRootContext(Node n)
   {
@@ -620,21 +633,21 @@ public abstract class AxesWalker extends NodeTest
    * The root node of the TreeWalker, as specified in setRoot(Node root).
    * Note that this may actually be below the current node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The context node of the step.
    */
   public Node getRoot()
   {
     return m_root;
   }
 
-  /** NEEDSDOC Field m_isFresh          */
+  /** True if an itteration has not begun.  */
   boolean m_isFresh;
 
   /**
    * Set the root node of the TreeWalker.
    * (Not part of the DOM2 TreeWalker interface).
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -678,7 +691,8 @@ public abstract class AxesWalker extends NodeTest
    * current view by applying the filters in the requested direction (not
    * changing currentNode where no traversal is possible).
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node at which the TreeWalker is currently positioned, only null 
+   * if setRoot has not yet been called.
    * @exception DOMException
    *    NOT_SUPPORTED_ERR: Raised if the specified <code>currentNode</code>
    *   is<code>null</code> .
@@ -691,7 +705,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Set the current node.
    *
-   * NEEDSDOC @param currentNode
+   * @param currentNode The current itteration node, should not be null.
    *
    * @throws DOMException
    */
@@ -703,7 +717,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Set the current node if it's not null.
    *
-   * NEEDSDOC @param currentNode
+   * @param currentNode The current node or null.
    * @return The node passed in.
    *
    * @throws DOMException
@@ -720,7 +734,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    *  The filter used to screen nodes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This AxesWalker.
    */
   public NodeFilter getFilter()
   {
@@ -739,7 +753,7 @@ public abstract class AxesWalker extends NodeTest
    * entity expansion, use the whatToShow flags to show the entity
    * reference node and set expandEntityReferences to false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true.
    */
   public boolean getExpandEntityReferences()
   {
@@ -826,14 +840,14 @@ public abstract class AxesWalker extends NodeTest
     throw new RuntimeException("previousNode not supported!");
   }
 
-  /** NEEDSDOC Field m_nextWalker          */
+  /** The next walker in the location step chain.  */
   protected AxesWalker m_nextWalker;
 
   /**
-   * NEEDSDOC Method setNextWalker 
+   * Set the next walker in the location step chain.
    *
    *
-   * NEEDSDOC @param walker
+   * @param walker Reference to AxesWalker derivative, or may be null.
    */
   public void setNextWalker(AxesWalker walker)
   {
@@ -841,24 +855,25 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * NEEDSDOC Method getNextWalker 
+   * Get the next walker in the location step chain.
    *
    *
-   * NEEDSDOC (getNextWalker) @return
+   * @return Reference to AxesWalker derivative, or null.
    */
   public AxesWalker getNextWalker()
   {
     return m_nextWalker;
   }
 
-  /** NEEDSDOC Field m_prevWalker          */
+  /** The previous walker in the location step chain, or null.   */
   AxesWalker m_prevWalker;
 
   /**
-   * NEEDSDOC Method setPrevWalker 
+   * Set or clear the previous walker reference in the location step chain.
    *
    *
-   * NEEDSDOC @param walker
+   * @param walker Reference to previous walker reference in the location 
+   *               step chain, or null.
    */
   public void setPrevWalker(AxesWalker walker)
   {
@@ -866,10 +881,11 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * NEEDSDOC Method getPrevWalker 
+   * Get the previous walker reference in the location step chain.
    *
    *
-   * NEEDSDOC (getPrevWalker) @return
+   * @return Reference to previous walker reference in the location 
+   *               step chain, or null.
    */
   public AxesWalker getPrevWalker()
   {
@@ -877,9 +893,9 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Diagnostics.
+   * Diagnostic string for this walker.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Diagnostic string for this walker.
    */
   public String toString()
   {
@@ -922,9 +938,9 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Diagnostics.
    *
-   * NEEDSDOC @param n
+   * @param n Node to give diagnostic information about, or null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Informative string about the argument.
    */
   protected String nodeToString(Node n)
   {
@@ -942,11 +958,12 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Diagnostics.
+   * This is simply a way to bottle-neck the return of the next node, for 
+   * diagnostic purposes.
    *
-   * NEEDSDOC @param n
+   * @param n Node to return, or null.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The argument.
    */
   private Node returnNextNode(Node n)
   {
@@ -964,9 +981,9 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Diagnostics.
+   * Print a diagnostics string, adding a line break before the print.
    *
-   * NEEDSDOC @param s
+   * @param s String to print.
    */
   private void printDebug(String s)
   {
@@ -996,10 +1013,10 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Do a diagnostics dump of the entire document.
+   * Do a diagnostics dump of an entire subtree.
    *
-   * NEEDSDOC @param node
-   * NEEDSDOC @param indent
+   * @param node The top of the subtree.
+   * @param indent The amount to begin the indenting at.
    */
   private void dumpAll(Node node, int indent)
   {
@@ -1061,9 +1078,9 @@ public abstract class AxesWalker extends NodeTest
   }
 
   /**
-   * Diagnostics.
+   * Print a diagnostic string without adding a line break.
    *
-   * NEEDSDOC @param s
+   * @param s The string to print.
    */
   private void printDebugAdd(String s)
   {
@@ -1127,28 +1144,25 @@ public abstract class AxesWalker extends NodeTest
     }
   }
 
-  // short-lived flag.
-
-  /** NEEDSDOC Field m_waitingForNext          */
-  private boolean m_waitingForNext = false;
-
   /**
-   * Tell what's the maximum level this axes can descend to.
+   * Tell what's the maximum level this axes can descend to.  This method is 
+   * meant to be overloaded by derived classes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {
     return 0;
   }
 
-  /** NEEDSDOC Field m_nextLevelAmount          */
+  /** An estimation of the next level that this walker will traverse to.  Not 
+   *  always accurate.  */
   protected int m_nextLevelAmount;
 
   /**
    * Tell what's the next level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the next level that this walker will traverse to.
    */
   protected int getNextLevelAmount()
   {
@@ -1158,16 +1172,14 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Tell if it's OK to traverse to the next node, following document
    * order, or if the walker should wait for a condition to occur.
-   * @prevStepWalker The previous walker in the location path.
-   * @testWalker The walker being tested, but the state may not be intact,
+   * 
+   * @param prevStepWalker The previous walker in the location path.
+   * @param testWalker The walker being tested, but the state may not be intact,
    * so only static information can be obtained from it.
+   * @param currentTestNode The current node being testing.
+   * @param nextLevelAmount An estimation of the next level to traverse to.
    *
-   * NEEDSDOC @param prevStepWalker
-   * NEEDSDOC @param testWalker
-   * NEEDSDOC @param currentTestNode
-   * NEEDSDOC @param nextLevelAmount
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if it's OK for testWalker to traverse to nextLevelAmount.
    */
   protected boolean checkOKToTraverse(AxesWalker prevStepWalker,
                                       AxesWalker testWalker,
@@ -1232,7 +1244,7 @@ public abstract class AxesWalker extends NodeTest
     return ok;
   }
 
-  /** NEEDSDOC Field m_didSwitch          */
+  /** Fairly short lived flag to tell if we switched to a waiting walker.  */
   private boolean m_didSwitch = false;
 
   /**
@@ -1298,7 +1310,7 @@ public abstract class AxesWalker extends NodeTest
    * We have to do something to get things moving along,
    * so get the earliest (in doc order) waiter.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the earliest (in doc order) waiting walker.
    */
   private AxesWalker getEarliestWaiting()
   {
@@ -1337,9 +1349,9 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Tell if the given walker is already on the waiting list.
    *
-   * NEEDSDOC @param walker
+   * @param walker Reference to walker that is the subject of the test.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return  True if the walker argument is on the waiting list.
    */
   boolean isWaiting(AxesWalker walker)
   {
@@ -1371,9 +1383,9 @@ public abstract class AxesWalker extends NodeTest
    * Check if a given walker needs to wait for the previous walker to
    * catch up.
    *
-   * NEEDSDOC @param walker
+   * @param walker The walker being checked.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The walker or the previous walker.
    */
   AxesWalker checkNeedsToWait(AxesWalker walker)
   {
@@ -1407,21 +1419,22 @@ public abstract class AxesWalker extends NodeTest
           addToWaitList(walker);
 
         walker = walker.m_prevWalker;
-
-        walker.printEntryDebug();
+        
+        if (DEBUG_WAITING)
+          walker.printEntryDebug();
       }
     }
 
     return walker;
   }
 
-  /** NEEDSDOC Field m_isDone          */
+  /** True if this walker has found it's last node.  */
   boolean m_isDone = false;
 
   /**
    * Get the next node in document order on the axes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the next node in document order on the axes, or null.
    */
   protected Node getNextNode()
   {
@@ -1455,11 +1468,8 @@ public abstract class AxesWalker extends NodeTest
     return next;
   }
 
-  /** NEEDSDOC Field m_prevReturned          */
+  /** The node last returned from nextNode(). */
   transient Node m_prevReturned;
-
-  /** NEEDSDOC Field m_didDumpAll          */
-  static boolean m_didDumpAll = false;
 
   /**
    *  Moves the <code>TreeWalker</code> to the next visible node in document
@@ -1641,12 +1651,12 @@ public abstract class AxesWalker extends NodeTest
   //============= End TreeWalker Implementation =============
 
   /**
-   * NEEDSDOC Method getLastPos 
+   * Get the index of the last node that can be itterated to.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt XPath runtime context.
    *
-   * NEEDSDOC (getLastPos) @return
+   * @return the index of the last node that can be itterated to.
    */
   public int getLastPos(XPathContext xctxt)
   {

@@ -61,28 +61,30 @@ import org.apache.xpath.XPathContext;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Interface SubContextList
+ * <meta name="usage" content="advanced"/>
+ * A class that implements this interface is a sub context node list, meaning it
+ * is a node list for a location path step for a predicate.
  */
 public interface SubContextList
 {
 
   /**
-   * NEEDSDOC Method getLastPos 
+   * Get the number of nodes in the node list, which, in the XSLT 1 based 
+   * counting system, is the last index position.
    *
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC (getLastPos) @return
+   * @return the number of nodes in the node list.
    */
   public int getLastPos(XPathContext xctxt);
 
   /**
    * Get the current sub-context position.
    *
-   * NEEDSDOC @param xctxt
+   * @param xctxt The XPath runtime context.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The position of the current node in the list.
    */
   public int getProximityPosition(XPathContext xctxt);
 }

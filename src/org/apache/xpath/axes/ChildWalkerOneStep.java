@@ -62,8 +62,8 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.apache.xpath.patterns.NodeTestFilter;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ChildWalkerOneStep <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * Walker to use when we only have one step, but it has a predicate.
  */
 public class ChildWalkerOneStep extends AxesWalker
 {
@@ -71,7 +71,7 @@ public class ChildWalkerOneStep extends AxesWalker
   /**
    * Construct an AxesWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public ChildWalkerOneStep(LocPathIterator locPathIterator)
   {
@@ -81,7 +81,7 @@ public class ChildWalkerOneStep extends AxesWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {
@@ -89,20 +89,9 @@ public class ChildWalkerOneStep extends AxesWalker
   }
 
   /**
-   * Set the analysis ID.
-   * @see org.apache.xpath.axes.WalkerFactory
-   *
-   * NEEDSDOC @param a
-   */
-  void setAnalysis(int a)
-  {
-    super.setAnalysis(a);
-  }
-
-  /**
    * Get the next node in document order on the axes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The next node in the walk, or null.
    */
   public Node nextNode()
   {

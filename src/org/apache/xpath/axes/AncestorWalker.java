@@ -75,7 +75,7 @@ public class AncestorWalker extends ReverseAxesWalker
   /**
    * Construct an AncestorWalker using a LocPathWalker.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public AncestorWalker(LocPathIterator locPathIterator)
   {
@@ -122,7 +122,7 @@ public class AncestorWalker extends ReverseAxesWalker
   /**
    *  The root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -148,7 +148,9 @@ public class AncestorWalker extends ReverseAxesWalker
     return setCurrentIfNotNull(next);
   }
 
-  /** NEEDSDOC Field m_ancestors          */
+  /** Stack of ancestors.  We have to do this instead of 
+   *  just using getParent on the fly, because we have to walk the ancestors 
+   *  in document order.   */
   protected Stack m_ancestors;
   
   /** The position within the stack */
@@ -157,7 +159,7 @@ public class AncestorWalker extends ReverseAxesWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

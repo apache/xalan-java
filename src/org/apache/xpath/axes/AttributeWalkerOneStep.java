@@ -63,19 +63,20 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.apache.xpath.patterns.NodeTestFilter;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Class AttributeWalkerOneStep <needs-comment/>
+ * <meta name="usage" content="advanced"/>
+ * This walker should be used when the walker is at the end of a location 
+ * path, or is the only step.  It has a much simplified nextNode() method.
  */
 public class AttributeWalkerOneStep extends AxesWalker
 {
 
-  /** NEEDSDOC Field m_attributeList          */
+  /** The attribute list from the context node.  */
   transient NamedNodeMap m_attributeList;
 
-  /** NEEDSDOC Field m_attrListPos          */
+  /** The current index into m_attributeList.  -1 to start. */
   int m_attrListPos;
 
-  /** NEEDSDOC Field m_nAttrs          */
+  /** The number of attributes in m_attributeList, or -2 if no attributes. */
   int m_nAttrs;
 
   /**
@@ -103,7 +104,7 @@ public class AttributeWalkerOneStep extends AxesWalker
   /**
    * Construct an AxesWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public AttributeWalkerOneStep(LocPathIterator locPathIterator)
   {
@@ -111,20 +112,9 @@ public class AttributeWalkerOneStep extends AxesWalker
   }
 
   /**
-   * Set the analysis ID.
-   * @see org.apache.xpath.axes.WalkerFactory
-   *
-   * NEEDSDOC @param a
-   */
-  void setAnalysis(int a)
-  {
-    super.setAnalysis(a);
-  }
-
-  /**
    * Get the next node in document order on the axes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The next node in the itteration, or null.
    */
   public Node nextNode()
   {

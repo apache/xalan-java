@@ -72,7 +72,7 @@ public class DescendantOrSelfWalker extends DescendantWalker
   /**
    * Construct a DescendantOrSelfWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public DescendantOrSelfWalker(LocPathIterator locPathIterator)
   {
@@ -82,7 +82,7 @@ public class DescendantOrSelfWalker extends DescendantWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -104,7 +104,6 @@ public class DescendantOrSelfWalker extends DescendantWalker
   {
 
     // Follow my made-up rule about returning the self node as a child.
-    // (only in this case, it isn't the self).
     if (!m_processedSelf)
     {
       m_processedSelf = true;
@@ -115,6 +114,6 @@ public class DescendantOrSelfWalker extends DescendantWalker
     return super.firstChild();
   }
 
-  /** NEEDSDOC Field m_processedSelf          */
+  /** True if the self (root, context node) has been returned. */
   boolean m_processedSelf;
 }

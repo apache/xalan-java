@@ -60,17 +60,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
 /**
- * <meta name="usage" content="internal"/>
- * NEEDSDOC Interface ContextNodeList
+ * <meta name="usage" content="advanced"/>
+ * Classes who implement this interface can be a
+ * <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
+ * also refered to here as a <term>context node list</term>.
  */
 public interface ContextNodeList
 {
 
   /**
-   * NEEDSDOC Method getCurrentNode 
+   * Get the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
    *
    *
-   * NEEDSDOC (getCurrentNode) @return
+   * @return The current node, or null.
    */
   public Node getCurrentNode();
 
@@ -80,7 +82,9 @@ public interface ContextNodeList
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The position of the
+   * <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>
+   * in the  <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>.
    */
   public int getCurrentPos();
 
@@ -93,7 +97,7 @@ public interface ContextNodeList
    * If setShouldCacheNodes(true) is called, then nodes will
    * be cached.  They are not cached by default.
    *
-   * NEEDSDOC @param b
+   * @param b true if the nodes should be cached.
    */
   public void setShouldCacheNodes(boolean b);
 
@@ -103,7 +107,8 @@ public interface ContextNodeList
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
    *
-   * NEEDSDOC @param index
+   * @param index The index to run to, or -1 if the iterator should be run
+   *              to the end.
    */
   public void runTo(int index);
 
@@ -116,7 +121,7 @@ public interface ContextNodeList
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The number of nodes in this node list.
    */
   public int size();
 
@@ -125,29 +130,43 @@ public interface ContextNodeList
    * the first nextNode() that is called will return the
    * first node in the set.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the iteration of this list has not yet begun.
    */
   public boolean isFresh();
 
   /**
-   * Get a cloned Iterator.
+   * Get a cloned Iterator that is reset to the start of the iteration.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A clone of this iteration that has been reset.
    *
    * @throws CloneNotSupportedException
    */
   public NodeIterator cloneWithReset() throws CloneNotSupportedException;
 
   /**
-   * NEEDSDOC Method clone 
+   * Get a clone of this iterator.  Be aware that this operation may be
+   * somewhat expensive.
    *
    *
-   * NEEDSDOC (clone) @return
+   * @return A clone of this object.
    *
    * @throws CloneNotSupportedException
    */
   public Object clone() throws CloneNotSupportedException;
-  
+
+  /**
+   * Get the index of the last node in this list.
+   *
+   *
+   * @return the index of the last node in this list.
+   */
   public int getLast();
+
+  /**
+   * Set the index of the last node in this list.
+   *
+   *
+   * @param last the index of the last node in this list.
+   */
   public void setLast(int last);
 }

@@ -101,10 +101,11 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * NEEDSDOC Method initContext 
+   * Initialize the context values for this expression 
+   * after it is cloned.
    *
-   *
-   * NEEDSDOC @param execContext
+   * @param execContext The XPath runtime context for this 
+   * transformation.
    */
   public void initContext(XPathContext execContext)
   {
@@ -149,16 +150,18 @@ public class UnionPathIterator extends Expression
     m_pool.freeInstance(this);
   }
 
-  /** NEEDSDOC Field m_pool          */
+  /** Pool of UnionPathIterators.  (The need for this has to be re-evaluated.  -sb) */
   transient ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /**
-   * NEEDSDOC Method execute 
+   * Execute this iterator, meaning create a clone that can  
+   * store state, and initialize it for fast execution from 
+   * the current runtime state.  When this is called, no actual 
+   * query from the current context node is performed.
    *
+   * @param xctxt The XPath execution context.
    *
-   * NEEDSDOC @param xctxt
-   *
-   * NEEDSDOC (execute) @return
+   * @return An XNodeSet reference that holds this iterator.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -182,17 +185,20 @@ public class UnionPathIterator extends Expression
     return null;
   }
 
-  /** NEEDSDOC Field m_cachedNodes          */
+  /** If this iterator needs to cache nodes that are fetched, they
+   * are stored here.   */
   transient NodeSet m_cachedNodes = null;
 
-  /** NEEDSDOC Field m_next          */
+  /** The index of the next node to be fetched.  Useful if this 
+   * is a cached iterator, and is being used as random access 
+   * NodeList.   */
   protected int m_next = 0;
 
   /**
    * If setShouldCacheNodes(true) is called, then nodes will
    * be cached.  They are not cached by default.
    *
-   * NEEDSDOC @param b
+   * @param b True if this iterator should cache nodes.
    */
   public void setShouldCacheNodes(boolean b)
   {
@@ -222,7 +228,7 @@ public class UnionPathIterator extends Expression
   /**
    * Get the length of the list.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The length of this list, or zero is this is not a cached list.
    */
   public int size()
   {
@@ -238,7 +244,7 @@ public class UnionPathIterator extends Expression
    * the first nextNode() that is called will return the
    * first node in the set.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return True if the iteration has not yet begun.
    */
   public boolean isFresh()
   {
@@ -269,7 +275,8 @@ public class UnionPathIterator extends Expression
    * iterator. The available set of constants is defined in the
    * <code>NodeFilter</code> interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A bit set that tells what node types to show (NodeFilter.SHOW_ALL at 
+   * the iterator level).
    */
   public int getWhatToShow()
   {
@@ -281,7 +288,7 @@ public class UnionPathIterator extends Expression
   /**
    *  The filter used to screen nodes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return null.
    */
   public NodeFilter getFilter()
   {
@@ -291,7 +298,7 @@ public class UnionPathIterator extends Expression
   /**
    *  The root node of the Iterator, as specified when it was created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The context node of this iterator.
    */
   public Node getRoot()
   {
@@ -310,7 +317,7 @@ public class UnionPathIterator extends Expression
    * expansion, use the whatToShow flags to show the entity reference node
    * and set expandEntityReferences to false.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true.
    */
   public boolean getExpandEntityReferences()
   {
@@ -320,7 +327,7 @@ public class UnionPathIterator extends Expression
   /**
    * Add an iterator to the union list.
    *
-   * NEEDSDOC @param iter
+   * @param iter non-null reference to a location path iterator.
    */
   public void addIterator(LocPathIterator iter)
   {
@@ -346,10 +353,14 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * Constructor.
+   * Create a UnionPathIterator object, including creation 
+   * of location path iterators from the opcode list, and call back 
+   * into the Compiler to create predicate expressions.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
+   * @param compiler The Compiler which is creating 
+   * this expression.
+   * @param opPos The position of this iterator in the 
+   * opcode list from the compiler.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -365,9 +376,10 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * Get a cloned UnionPathIterator.
+   * Get a cloned Iterator that is reset to the beginning 
+   * of the query.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A cloned NodeIterator set of the start of the query.
    *
    * @throws CloneNotSupportedException
    */
@@ -382,9 +394,10 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * Get a cloned UnionPathIterator.
+   * Get a cloned LocPathIterator that holds the same 
+   * position as this iterator.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A clone of this iterator that holds the same node position.
    *
    * @throws CloneNotSupportedException
    */
@@ -423,11 +436,13 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * Initialize the location path iterators.
+   * Initialize the location path iterators.  Recursive.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
-   * NEEDSDOC @param count
+   * @param compiler The Compiler which is creating 
+   * this expression.
+   * @param opPos The position of this iterator in the 
+   * opcode list from the compiler.
+   * @param count The insert position of the iterator.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -475,10 +490,11 @@ public class UnionPathIterator extends Expression
   /**
    * Create a new location path iterator.
    *
-   * NEEDSDOC @param compiler
-   * NEEDSDOC @param opPos
+   * @param compiler The Compiler which is creating 
+   * this expression.
+   * @param opPos The position of this iterator in the 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return New location path iterator.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -488,7 +504,7 @@ public class UnionPathIterator extends Expression
     return WalkerFactory.newLocPathIterator(compiler, opPos);
   }
 
-  /** NEEDSDOC Field m_lastFetched          */
+  /** The last node that was fetched, usually by nextNode. */
   transient Node m_lastFetched;
 
   /**
@@ -580,7 +596,8 @@ public class UnionPathIterator extends Expression
    * m_next to the index.  If the index argument is -1, this
    * signals that the iterator should be run to the end.
    *
-   * NEEDSDOC @param index
+   * @param index The index to run to, or -1 if the iterator 
+   * should run to the end.
    */
   public void runTo(int index)
   {
@@ -603,7 +620,8 @@ public class UnionPathIterator extends Expression
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A value greater than or equal to zero that indicates the next 
+   * node position to fetch.
    */
   public int getCurrentPos()
   {
@@ -611,9 +629,9 @@ public class UnionPathIterator extends Expression
   }
 
   /**
-   * Return the last fetched node.  Needed to support the UnionPathIterator.
+   * Return the last fetched node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The last fetched node, or null if the last fetch was null.
    */
   public Node getCurrentNode()
   {
@@ -642,10 +660,10 @@ public class UnionPathIterator extends Expression
   transient protected Node m_currentContextNode;
 
   /**
-   * NEEDSDOC Method getCurrentContextNode 
+   * The node context from where the expression is being
+   * executed from (i.e. for current() support).
    *
-   *
-   * NEEDSDOC (getCurrentContextNode) @return
+   * @return The top-level node context of the entire expression.
    */
   public Node getCurrentContextNode()
   {

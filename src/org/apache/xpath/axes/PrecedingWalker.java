@@ -77,7 +77,7 @@ public class PrecedingWalker extends ReverseAxesWalker
   /**
    * Construct a PrecedingWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public PrecedingWalker(LocPathIterator locPathIterator)
   {
@@ -88,7 +88,7 @@ public class PrecedingWalker extends ReverseAxesWalker
    *  Set the root node of the TreeWalker.  If we follow an attribute:: or namespace::
    *  axis, we operate relative to the parent node.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -233,13 +233,13 @@ public class PrecedingWalker extends ReverseAxesWalker
     return setCurrentIfNotNull(next);
   }
 
-  /** NEEDSDOC Field m_doc          */
+  /** The document owner node.  */
   transient Node m_doc;
 
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Short.MAX_VALUE.
    */
   protected int getLevelMax()
   {

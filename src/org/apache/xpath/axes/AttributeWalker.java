@@ -73,7 +73,7 @@ public class AttributeWalker extends AxesWalker
   /**
    * Construct an AttributeWalker using a LocPathWalker.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public AttributeWalker(LocPathIterator locPathIterator)
   {
@@ -83,7 +83,7 @@ public class AttributeWalker extends AxesWalker
   /**
    *  The root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {
@@ -161,7 +161,7 @@ public class AttributeWalker extends AxesWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

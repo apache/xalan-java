@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;
 
 /**
- * <meta name="usage" content="internal"/>
+ * <meta name="usage" content="advanced"/>
  * Class SelfWalkerOneStep
  * <needs-description/>
  *

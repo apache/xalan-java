@@ -75,7 +75,7 @@ public class AncestorOrSelfWalker extends AncestorWalker
   /**
    * Construct an AncestorOrSelfWalker using a LocPathWalker.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public AncestorOrSelfWalker(LocPathIterator locPathIterator)
   {
@@ -85,7 +85,7 @@ public class AncestorOrSelfWalker extends AncestorWalker
   /**
    * Push the ancestor nodes.
    *
-   * NEEDSDOC @param n
+   * @param n The context node.
    */
   protected void pushAncestors(Node n)
   {
@@ -108,7 +108,7 @@ public class AncestorOrSelfWalker extends AncestorWalker
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return An estimation of the maximum level this axes can descend to.
    */
   protected int getLevelMax()
   {

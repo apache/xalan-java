@@ -75,7 +75,7 @@ public class FollowingWalker extends AxesWalker
   /**
    * Construct a FollowingWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator The location path iterator that 'owns' this walker.
    */
   public FollowingWalker(LocPathIterator locPathIterator)
   {
@@ -85,7 +85,7 @@ public class FollowingWalker extends AxesWalker
   /**
    *  Set the root node of the TreeWalker.
    *
-   * NEEDSDOC @param root
+   * @param root The context node of this step.
    */
   public void setRoot(Node root)
   {      
@@ -119,7 +119,7 @@ public class FollowingWalker extends AxesWalker
     m_nextLevelAmount = 0;
   }
 
-  /** NEEDSDOC Field m_ancestors          */
+  /** Stack of ancestors of the root/context node.  */
   transient protected Stack m_ancestors = new Stack();
 
   /**
@@ -218,13 +218,14 @@ public class FollowingWalker extends AxesWalker
     return setCurrentIfNotNull(n);
   }
 
-  /** NEEDSDOC Field m_currentAncestor          */
+  /** What this is is frankly a little unclear.  It is used in getParent 
+   *  to see if we should continue to climb the tree. */
   transient Node m_currentAncestor;
 
   /**
    * Tell what's the maximum level this axes can descend to.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Short.MAX_VALUE.
    */
   protected int getLevelMax()
   {

@@ -62,7 +62,7 @@ import org.w3c.dom.traversal.NodeFilter;
 import org.apache.xpath.patterns.NodeTestFilter;
 
 /**
- * <meta name="usage" content="internal"/>
+ * <meta name="usage" content="advanced"/>
  * Class ChildWalkerMultiStep
  * <needs-description/>
  *
