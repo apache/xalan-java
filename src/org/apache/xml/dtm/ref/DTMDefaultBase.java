@@ -1760,6 +1760,8 @@ public abstract class DTMDefaultBase implements DTM
    */
   public boolean isNodeAfter(int nodeHandle1, int nodeHandle2)
   {
+    if((nodeHandle1 & ~m_mask) != (nodeHandle2 & ~m_mask))
+      return false;
 
     int index1 = nodeHandle1 & m_mask;
     int index2 = nodeHandle2 & m_mask;
