@@ -150,7 +150,7 @@ public class UnionPathIterator extends Expression
   }
 
   /** NEEDSDOC Field m_pool          */
-  ObjectPool m_pool = new ObjectPool();
+  ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /**
    * NEEDSDOC Method execute 

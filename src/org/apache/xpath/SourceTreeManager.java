@@ -397,13 +397,31 @@ public class SourceTreeManager
       }
 
       reader.setContentHandler(handler);
+      if(handler instanceof org.xml.sax.DTDHandler)
+        reader.setDTDHandler((org.xml.sax.DTDHandler)handler);
 
       try
       {
-        reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                           handler);
+        if(handler instanceof org.xml.sax.ext.LexicalHandler)
+          reader.setProperty("http://xml.org/sax/properties/lexical-handler",
+                             handler);
+        if(handler instanceof org.xml.sax.ext.DeclHandler)
+          reader.setProperty("http://xml.org/sax/properties/declaration-handler",
+                             handler);
       }
       catch (org.xml.sax.SAXException se){}
+      try
+      {
+        if(handler instanceof org.xml.sax.ext.LexicalHandler)
+          reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
+                             handler);
+        if(handler instanceof org.xml.sax.ext.DeclHandler)
+          reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
+                             handler);
+      }
+      catch(org.xml.sax.SAXNotRecognizedException snre)
+      {
+      }
 
       InputSource isource = SAXSource.sourceToInputSource(source);
       reader.parse(isource);

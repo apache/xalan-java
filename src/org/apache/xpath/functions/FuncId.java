@@ -174,6 +174,7 @@ public class FuncId extends FunctionOneArg
         usedrefs = getNodesByID(xctxt, docContext, refval, usedrefs, nodeSet,
                                 null != pos);
       }
+      // ni.detach();
     }
     else if (XObject.CLASS_NULL == argType)
     {

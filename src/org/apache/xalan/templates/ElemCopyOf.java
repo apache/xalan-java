@@ -210,6 +210,7 @@ public class ElemCopyOf extends ElemTemplateElement
               tw.traverse(pos);
             }
           }
+          // nl.detach();
           break;
         case XObject.CLASS_RTREEFRAG :
           handler.outputResultTreeFragment(value,

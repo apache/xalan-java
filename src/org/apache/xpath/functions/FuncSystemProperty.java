@@ -223,7 +223,8 @@ public class FuncSystemProperty extends FunctionOneArg
     }
     catch (Exception ex)
     {
-      ex.printStackTrace();
+      // ex.printStackTrace();
+      throw new org.apache.xalan.utils.WrappedRuntimeException(ex);
     }
   }
 }

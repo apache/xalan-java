@@ -97,6 +97,7 @@ public class FuncSum extends FunctionOneArg
       if (null != s)
         sum += XString.castToNum(s);
     }
+    // nodes.detach();
 
     return new XNumber(sum);
   }

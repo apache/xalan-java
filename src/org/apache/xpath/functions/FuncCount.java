@@ -97,6 +97,7 @@ public class FuncCount extends FunctionOneArg
     {
       i++;
     }
+    // nl.detach();
 
     return new XNumber((double) i);
   }

@@ -141,6 +141,7 @@ public class FunctionPattern extends StepPattern
           break;
         }
       }
+      // nl.detach();
     }
 
     return score;

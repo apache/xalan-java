@@ -176,13 +176,14 @@ public class ObjectPool implements java.io.Serializable
   {
 
     // Make sure the object is of the correct type.
-    if (objectType.isInstance(obj))
-    {
-      freeStack.addElement(obj);
-    }
-    else
-    {
-      throw new IllegalArgumentException("argument type invalid for pool");
-    }
+    // Remove safety.  -sb
+    // if (objectType.isInstance(obj))
+    // {
+    freeStack.addElement(obj);
+    // }
+    // else
+    // {
+    //  throw new IllegalArgumentException("argument type invalid for pool");
+    // }
   }
 }

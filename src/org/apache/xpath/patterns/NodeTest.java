@@ -136,7 +136,7 @@ public class NodeTest extends Expression
 
   /** NEEDSDOC Field SCORE_NODETEST          */
   static final XNumber SCORE_NODETEST =
-    new XNumber(XPath.MATCH_SCORE_NODETEST);
+                                       new XNumber(XPath.MATCH_SCORE_NODETEST);
 
   /** NEEDSDOC Field SCORE_NSWILD          */
   static final XNumber SCORE_NSWILD = new XNumber(XPath.MATCH_SCORE_NSWILD);
@@ -149,7 +149,7 @@ public class NodeTest extends Expression
 
   /** NEEDSDOC Field SCORE_NONE          */
   public static final XNumber SCORE_NONE =
-    new XNumber(XPath.MATCH_SCORE_NONE);
+                                          new XNumber(XPath.MATCH_SCORE_NONE);
 
   /**
    * Constructor NodeTest
@@ -326,6 +326,77 @@ public class NodeTest extends Expression
     // System.out.println("subPartMatch - p: "+p+", t: "+t+", result: "+b);
     return (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
   }
+  
+  public XObject execute(XPathContext xctxt, Node context)
+    throws javax.xml.transform.TransformerException
+  {
+    short nodeType = context.getNodeType();
+    int nodeBit = (m_whatToShow & (0x00000001 << (nodeType - 1)));
+
+    switch (nodeBit)
+    {
+    case NodeFilter.SHOW_DOCUMENT_FRAGMENT :
+    case NodeFilter.SHOW_DOCUMENT :
+      return SCORE_OTHER;
+    case NodeFilter.SHOW_COMMENT :
+      return m_score;
+    case NodeFilter.SHOW_CDATA_SECTION :
+    case NodeFilter.SHOW_TEXT :
+      return (!xctxt.getDOMHelper().shouldStripSourceNode(context))
+             ? m_score : SCORE_NONE;
+    case NodeFilter.SHOW_PROCESSING_INSTRUCTION :
+      return subPartMatch(context.getNodeName(), m_name)
+             ? m_score : SCORE_NONE;
+
+      // From the draft: "Two expanded names are equal if they 
+      // have the same local part, and either both have no URI or 
+      // both have the same URI."
+      // "A node test * is true for any node of the principal node type. 
+      // For example, child::* will select all element children of the 
+      // context node, and attribute::* will select all attributes of 
+      // the context node."
+      // "A node test can have the form NCName:*. In this case, the prefix 
+      // is expanded in the same way as with a QName using the context 
+      // namespace declarations. The node test will be true for any node 
+      // of the principal type whose expanded name has the URI to which 
+      // the prefix expands, regardless of the local part of the name."
+    case NodeFilter.SHOW_ATTRIBUTE :
+      {
+        int isNamespace = (m_whatToShow & SHOW_NAMESPACE);
+
+        if (0 == isNamespace)
+        {
+          DOMHelper dh = xctxt.getDOMHelper();
+
+          if (!dh.isNamespaceNode(context))
+            return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+                   ? m_score : SCORE_NONE;
+          else
+            return SCORE_NONE;
+        }
+        else
+        {
+          if (xctxt.getDOMHelper().isNamespaceNode(context))
+          {
+            String ns = context.getNodeValue();
+
+            return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
+          }
+          else
+            return SCORE_NONE;
+        }
+      }
+    case NodeFilter.SHOW_ELEMENT :
+      {
+        DOMHelper dh = xctxt.getDOMHelper();
+
+        return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+               ? m_score : SCORE_NONE;
+      }
+    default :
+      return SCORE_NONE;
+    }  // end switch(testType)
+  }
 
   /**
    * Test a node to see if it matches the given node test.
@@ -350,71 +421,6 @@ public class NodeTest extends Expression
       return m_score;
 
     Node context = xctxt.getCurrentNode();
-    short nodeType = context.getNodeType();
-    int nodeBit = (m_whatToShow & (0x00000001 << (nodeType - 1)));
-
-    switch (nodeBit)
-    {
-    case NodeFilter.SHOW_DOCUMENT_FRAGMENT :
-    case NodeFilter.SHOW_DOCUMENT :
-      return SCORE_OTHER;
-    case NodeFilter.SHOW_COMMENT :
-      return m_score;
-    case NodeFilter.SHOW_CDATA_SECTION :
-    case NodeFilter.SHOW_TEXT :
-      return (!xctxt.getDOMHelper().shouldStripSourceNode(context))
-             ? m_score : SCORE_NONE;
-    case NodeFilter.SHOW_PROCESSING_INSTRUCTION :
-      return subPartMatch(context.getNodeName(), m_name)
-             ? m_score : SCORE_NONE;
-
-    // From the draft: "Two expanded names are equal if they 
-    // have the same local part, and either both have no URI or 
-    // both have the same URI."
-    // "A node test * is true for any node of the principal node type. 
-    // For example, child::* will select all element children of the 
-    // context node, and attribute::* will select all attributes of 
-    // the context node."
-    // "A node test can have the form NCName:*. In this case, the prefix 
-    // is expanded in the same way as with a QName using the context 
-    // namespace declarations. The node test will be true for any node 
-    // of the principal type whose expanded name has the URI to which 
-    // the prefix expands, regardless of the local part of the name."
-    case NodeFilter.SHOW_ATTRIBUTE :
-    {
-      int isNamespace = (m_whatToShow & SHOW_NAMESPACE);
-
-      if (0 == isNamespace)
-      {
-        DOMHelper dh = xctxt.getDOMHelper();
-
-        if (!dh.isNamespaceNode(context))
-          return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
-                 ? m_score : SCORE_NONE;
-        else
-          return SCORE_NONE;
-      }
-      else
-      {
-        if (xctxt.getDOMHelper().isNamespaceNode(context))
-        {
-          String ns = context.getNodeValue();
-
-          return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
-        }
-        else
-          return SCORE_NONE;
-      }
-    }
-    case NodeFilter.SHOW_ELEMENT :
-    {
-      DOMHelper dh = xctxt.getDOMHelper();
-
-      return (m_isTotallyWild || (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
-             ? m_score : SCORE_NONE;
-    }
-    default :
-      return SCORE_NONE;
-    }  // end switch(testType)
+    return execute(xctxt, context);
   }
 }

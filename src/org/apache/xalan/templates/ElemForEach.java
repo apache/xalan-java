@@ -512,11 +512,13 @@ public class ElemForEach extends ElemTemplateElement
         xctxt.popContextNodeList();
         transformer.popElemTemplateElement();
         popParams(xctxt);
+        // if(null != sourceNodes)
+        //  sourceNodes.detach();
       }
     }
     catch(SAXException se)
     {
-      throw new TransformerException(se);
+      transformer.getErrorListener().fatalError(new TransformerException(se));
     }
   }
 

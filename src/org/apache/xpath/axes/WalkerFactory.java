@@ -181,6 +181,10 @@ public class WalkerFactory
     {
       return new ChildIterator(compiler, opPos);
     }
+    else if(ONESTEP_CHILDREN_NO_PREDICATE == analysis)
+    {
+      return new ChildTestIterator(compiler, opPos);
+    }
     else
     {
       return new LocPathIterator(compiler, opPos, true);
@@ -222,6 +226,9 @@ public class WalkerFactory
 
   /** NEEDSDOC Field MULTISTEP_CHILDREN          */
   static final int MULTISTEP_CHILDREN = 6;
+
+  /** NEEDSDOC Field ONESTEP_CHILDREN          */
+  static final int ONESTEP_CHILDREN_NO_PREDICATE = 8;
 
   /**
    * <meta name="usage" content="advanced"/>
@@ -291,7 +298,12 @@ public class WalkerFactory
               analysisResult = NO_OPTIMIZE;
           }
           else
-            analysisResult = ONESTEP_CHILDREN;
+          {
+            if(predAnalysis == HAS_NOPREDICATE)
+              analysisResult = ONESTEP_CHILDREN_NO_PREDICATE;
+            else
+              analysisResult = ONESTEP_CHILDREN;
+          }
         }
         else
         {

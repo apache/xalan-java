@@ -108,7 +108,7 @@ public class LocPathIterator extends Expression
   /** The pool for cloned iterators.  Iterators need to be cloned 
    * because the hold running state, and thus the original iterator 
    * expression from the stylesheet pool can not be used.          */
-  ObjectPool m_pool = new ObjectPool();
+  ObjectPool m_pool = new ObjectPool(this.getClass());
 
   /** The last node that was fetched, usually by nextNode. */
   Node m_lastFetched;
