@@ -87,16 +87,29 @@ import org.apache.xerces.framework.XMLAttrList;
 /**
  * <meta name="usage" content="internal"/>
  * <code>DTM</code> is an XML document model expressed as a table rather than
- * an object tree. It attempts to be very compact, and to support very
- * specifically limited multitasking: users can start reading the document
- * while it's still being generated.  (A work in progress...)
+ * an object tree. Its goals were:
+ * <ul>
+ * <li>to be very compact,</li>
+ * <li>to avoid object-creation overhead,</li>
+ * <li>to offer improved locality-of-reference for forward scan of documents,
+ * </li>
+ * <li>to provide inherent document-order sequencing,</li>
+ * <li>and to support a very specifically limited form of multitasking:
+ * users can start reading the document while it's still being generated,
+ * with very little synchronization overhead. (In fact, we seem to have
+ * established that this feature is of negligable value in a single-processor
+ * system; greater benefit might be obtained by instead tapping into XML4J's
+ * "demand parsing" scheme.)</li>
+ * </ul>
  * <p>
- * (***** The SAX handler calls, and the string-based XMLContentHandler
- * methods, are known to be bad; they're included as hooks for the future.)</p>
+ * DTM does _not_ directly support the W3C's Document Object Model API.
+ * However, it attempts to come close enough to the DOM's behavior that a
+ * subset of the DOM can be implemented as proxy objects referencing the DTM.
+ * </p>
  * <p>
- * DTM does _not_ directly support the W3C's Document Object Model. However,
- * it attempts to come close enough that a subset of DOM behavior can be
- * implemented as proxy objects referencing the DTM.</p>
+ * Note: The SAX handler calls, and the string-based XMLContentHandler
+ * methods, were known to be bad and have been disabled. The API is still
+ * present as hooks for future deveopment.</p>
  * @see DTMProxy
  */
 public class DTM 
@@ -129,7 +142,7 @@ public class DTM
   private boolean processingIgnorableWhitespace = false;
   private boolean processingCDATASection = false;
   private boolean previousSiblingWasParent = false;
-  // Local cache for record-at-a-time fetch
+  // Local cache for record-at-a-time fetch 
   int gotslot[] = new int[4];
 
   // Unique-string-to-integer conversions, for use with SAX.
@@ -140,8 +153,9 @@ public class DTM
 
   // MANEFEST CONSTANTS
   // Status bits, ORed with node type (assumed to be <256, should be safe)
-  final int TEXT_IGNORABLE = 2 << 8;
-  final int TEXT_CDATA = 4 << 8;
+  final int TEXT_DTM_POOL =	1 << 8;	// Locally cached, eg concatenation
+  final int TEXT_IGNORABLE =	2 << 8;	// Whitespace in element context
+  final int TEXT_CDATA =	4 << 8;	// CDATA node
   
   // Impossible prefix to look up the default namespace
   public static final String DEFAULT_PREFIX_STR = "#:::";
@@ -334,6 +348,7 @@ public class DTM
     throws org.xml.sax.SAXException
   {
     if(DISABLE)return;
+    appendAccumulatedText();
 
     done=true;
     
@@ -372,6 +387,8 @@ public class DTM
                            int attrListIndex) 
   {
     if(DISABLE)return;    
+    appendAccumulatedText();
+
     // Need to retrive the attrList...
         
     String attrname, attrvalue;
@@ -481,9 +498,10 @@ public class DTM
         previousSibling=ourslot;
         
         // Create attribute substructure. 
-        // ***** Current XML4J will _only_ yield a single text,
+        // ***** We assume XML4J will _only_ yield a single text,
         //   rather than attempting to retain EntityReference nodes
-        //   within Attribute values.
+        //   within Attribute values. Note that this counts on
+	//   XML4J handling the split-buffer issue for us.
         // ***** DTMProxy currently assumes this behavior!
         // W0 Low: Node Type, with flag if ignorable whitespace
         // W0 High: Buffer index (in SAX mode) or 0 (XML4J mode)
@@ -521,6 +539,8 @@ public class DTM
   public final void endElement(QName name)
   {
     if(DISABLE)return;    
+    appendAccumulatedText();
+
     int thisElement = currentParent;
     
     // If last node appended before we pop has a next-sib reference,
@@ -603,17 +623,20 @@ public class DTM
   /** Start CDATA section. */
   public final void startCDATA() throws Exception 
   {
+    // No-op; XSLT considers only the contained text.
   }
 
   /** End CDATA section. */
   public final void endCDATA() throws Exception 
   {
+    // No-op; XSLT considers only the contained text.
   }
   
   /** Ignorable whitespace. */
   public final void ignorableWhitespace(int dataIndex) 
     throws Exception 
   {
+    if(DISABLE)return;
     general_characters(dataIndex);
   }
   
@@ -670,29 +693,140 @@ public class DTM
   public final void ignorableWhitespace(int dataIndex, boolean cdataSection) 
     throws org.xml.sax.SAXException
   {
+    if(DISABLE)return;
     processingIgnorableWhitespace = true;
     general_characters(dataIndex);
   }
+
+  // Vector handles objects. Too much overhead. I could use ChunkedIntArray
+  // (and did, in an early draft), but since we aren't trying to handle SAX
+  // right now there's no need for the additional columns. So we'll use a
+  // simple grow-it-myself array.
+  int charChunks[]=new int[100];
+  int charChunkStart=0,charChunkCount=0;
 
   /** Text-accumulator operation for the integer-index version of
    * characters(). Obviously far simpler, since we are assured that
    * (unlike the parse buffers) the XML4J symbol table will persist.
    * @param index int Index of this string in XML4J's symbol tables.
    *<p>
-   * KNOWN LIMITATION: DOESN'T PRESERVE CDATA FLAG.
+   * Note: Even though we are using XML4J's internal events rather than SAX,
+   * we <strong>must</strong> be prepared to normalize successive blocks
+   * of characters():
+   * <ul>
+   * <li>when text runs over the end of a parse buffer (may not arise in
+   * this parser),</li>
+   * <li>when text and CDATA sections are intermixed (with intervening
+   * start/end CDATA events),</li>
+   * <li>and when text and entity references are intermixed (with intervening
+   * start/end Entity Reference events).</li>
+   * </ul>
+   * The simplest way to handle this is to record the data, but defer
+   * creating the Text node until we get an event indicating that no further
+   * text will arrive. This logic was present in early versions of DTM,
+   * but was lost during an overagressive optimization; we're restoring it now.
+   *<p>
+   * Note: Yes, the charChunks array grows monotonically during parsing,
+   * and does not shrink back down when the chunks are concatenated later
+   * in processing. Tough. I'm assuming that this is cheaper than allocating
+   * a separate array for every multichunk string, despite the block-copying
+   * that occurs when the array is grown.
+   *<p>
+   * KNOWN LIMITATION: DOESN'T PRESERVE CDATA FLAG. Since XSLT doesn't
+   * care about that flag, this is not a problem for our target
+   * application. It may be an issue if you try to reuse DTM elsewhere.
+   *
+   * @see appendAccumulatedText
    */
   public final void general_characters(int index) 
   {
-    // Add this element to the document
-    int w0 = Node.TEXT_NODE;
-    // W1: Parent
-    int w1 = currentParent;
-    // W2: Start position within buffer (SAX), or text index (XML4J)
-    int w2 = index;
-    // W3: Length of this text (SAX), or 0 (XML4J)
-    int w3 = gotslot[2];
-    int ourslot = appendNode(w0, w1, w2, w3);
-    previousSibling = ourslot;
+    // Grow the array, if out of space. (Doubling may be excessive, but the
+    // goal is to trade off minimum memory use versus minimum recopying.)
+    if(charChunkCount==charChunks.length)
+      {
+	int[] newCharChunks=new int[2*charChunks.length];
+	System.arraycopy(charChunks,0,newCharChunks,0,charChunks.length);
+	charChunks=newCharChunks;
+      }
+    // Append to the array
+    charChunks[charChunkCount++]=index;
+  }
+  
+  /** appendAccumulatedText completes the work started by
+   * general_characters(). It takes all the blocks of text which have
+   * arrived, and generates a single Text node containing their
+   * concatenated value. This routine _MUST_ be called at the first step
+   * in processing any other event.
+   *<p>
+   * There are a few reasonable ways of handling this.
+   * <ul>
+   * <li> One is to hold onto the individual text chunks -- which are
+   * already in a string pool inside the parser, since we're being
+   * driven through XMLDocumentHandler -- and concatenate them on
+   * demand when the user asks for this node's value; this minimizes
+   * model-building time, especially if the user never asks for the
+   * value of this node.</li>
+   *<li>The other is to generate a concatenated string in a local
+   * pool; this avoids re-concatenating the string if it should be
+   * accessed more than once.</li>
+   * <li>Or we could use the first solution, but convert it to the second
+   * the first time the text node is accessed. This is probably the best
+   * of both worlds... and we can get away with it because DTM  is
+   * explicitly single-threaded after parsing, so there will be no
+   * contention for the node during its conversion.</li>
+   * </ul>
+   * <p>
+   * Early versions of DTM chose the first answer. I'm going to try the third
+   * this time.
+   *<p>
+   * Length of 0 indicates the simple case, referenced directly from
+   * the parser's pool.
+   *<p>
+
+   * @see general_characters() */
+  void appendAccumulatedText()
+  {
+    if(charChunkCount==charChunkStart)
+      return;			// No new text.
+    else if(charChunkCount==charChunkStart+1)
+      {
+	// Single chunk. We can use the efficient inline version of Text
+	
+	int w0 = Node.TEXT_NODE;
+	// W1: Parent
+	int w1 = currentParent;
+	// W2: Start position within charChunks (multiple),
+	// or text index (inline), or local text index (multiple converted)
+	int w2 = charChunks[charChunkStart];
+	// W3: Start of next sequence, or 0 for inline
+	int w3 = 0;
+	int ourslot = appendNode(w0, w1, w2, w3);
+	previousSibling = ourslot;
+	
+	// This chunk has been completely processed, so reuse its chunk slot
+	// (They're cheap, but why waste them?)
+	--charChunkCount;
+      }
+    else
+      {
+	// Here's our problem child. We need to record that the Text node's
+	// value is represented by a sequence of nodes in 
+	int w0 = Node.TEXT_NODE;
+	// W1: Parent
+	int w1 = currentParent;
+	// W2: Start position within charChunks (multiple),
+	// or text index (inline), or local text index (multiple converted)
+	int w2 = charChunkStart;
+	// W3: Start of next sequence, or 0 for inline
+	int w3 = charChunkCount;
+	int ourslot = appendNode(w0, w1, w2, w3);
+	previousSibling = ourslot;
+	
+	// This time, we need to remember that these charChunks can _NOT_
+	// be reused -- leave the high-water mark alone, and instead move
+	// the baseline up.
+	charChunkStart=charChunkCount;
+      }
   }
 
   /**
@@ -703,6 +837,7 @@ public class DTM
   public final void comment(int dataIndex) 
   {
     if(DISABLE)return;
+    appendAccumulatedText();
     
     // Short Form, XML4J mode
     int w0, w1, w2, w3;
@@ -730,6 +865,7 @@ public class DTM
   public final void processingInstruction(int target, int data) 
   {
     if(DISABLE)return;
+    appendAccumulatedText();
     
     // W0 Low: Node Type.
     int w0 = org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE;
@@ -1862,6 +1998,9 @@ public class DTM
       return intToString(w0>>16);
   }
 
+  // Cache conversions of multi-charChunk text nodes
+  Vector localStringPool=new Vector();
+
   /**
    * DTM read API: Given a node index, return its node value. This is mostly
    * as defined by the DOM, but may ignore some conveniences.
@@ -1880,7 +2019,48 @@ public class DTM
     {
     case Node.TEXT_NODE:
     case Node.CDATA_SECTION_NODE: // We handle as flagged Text...
-      value=intToString(gotslot[2]);
+      if((gotslot[0] & TEXT_DTM_POOL) != 0)
+	{
+	  // Value of this node lives in DTM's pool, not in the parser's
+	  value=(String)(localStringPool.elementAt(gotslot[2]));
+	}
+      else if(gotslot[3]>0)		// (actually >1, but 1 never occurs)
+	{
+	  // This was a multi-charChunk node. Its value is the concatenation
+	  // of those chunks. For efficient future access, we will now convert
+	  // this into a TEXT_DTM_POOL node
+
+	  // First, concatenate the chunks to obtain the value
+	  int chunk=gotslot[2],stop=gotslot[3];
+	  StringBuffer sb=new StringBuffer(intToString(charChunks[chunk++]));
+	  while(chunk<stop)
+	    sb.append(intToString(charChunks[chunk++]));
+	  value=sb.toString();
+
+	  // Add the normalized string to our local pool.
+	  // ****** Is it worth suppressing duplicates? 
+	  // int localStringNumber=localStringPool.indexOf(value);
+	  // if(-1 == localStringNumber) // Not found
+	  // {
+	    localStringPool.addElement(value);
+	    int localStringNumber=localStringPool.size();
+	  // }
+	  
+	  // Now back-patch the node. We can get away with not protecting
+	  // this since we assert that DTM's read access is single-threaded,
+	  // and hence nobody else is accessing this node right now.
+	  // (If you don't believe that, synchronize this and the preceeding
+	  // case on localStringPool.)
+	  gotslot[0] |= TEXT_DTM_POOL;
+	  gotslot[2] = localStringNumber-1;
+	  // ***** Would be nice right here to have an array-to-array write...
+	  nodes.writeSlot(position,gotslot[0],gotslot[1],gotslot[2],gotslot[3]);
+	}
+      else
+	{
+	  // Single charChunk. Read the value direct from the parser's pool.
+	  value=intToString(gotslot[2]);
+	}
       break;
     case Node.PROCESSING_INSTRUCTION_NODE:
     case Node.COMMENT_NODE:
