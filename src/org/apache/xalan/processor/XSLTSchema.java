@@ -605,13 +605,13 @@ public class XSLTSchema extends XSLTElementDef
                                                                   mediaTypeAttr,
                                                                   XSLTAttributeDef.m_foreignAttr }, 
                                                                 new ProcessorOutputElem(), null /* class object */, 20, true), 
-                                                                                             new XSLTElementDef(
-                                                                    this,
-                                                                    Constants.S_XSLNAMESPACEURL,
-                                                                    "key",
-                                                                    null /*alias */,
-                                                                    null /* elements */,  // EMPTY
-                                                                    new XSLTAttributeDef[]{ nameAttrRequired,
+                                                              new XSLTElementDef(
+                                                                this,
+                                                                Constants.S_XSLNAMESPACEURL,
+                                                                "key",
+                                                                null /*alias */,
+                                                                null /* elements */,  // EMPTY
+                                                                new XSLTAttributeDef[]{ nameAttrRequired,
                                                                                             matchAttrRequired,
                                                                                             useAttr }, 
                                                                                                new ProcessorKey(), null /* class object */, 20, true),
@@ -677,7 +677,7 @@ public class XSLTSchema extends XSLTElementDef
                                                                   nameAttrOpt,
                                                                   priorityAttr,
                                                                   modeAttr,
-                                                                  spaceAttr }, new ProcessorTemplate(), ElemTemplate.class /* class object */, 20, true), 
+                                                                  spaceAttr }, new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true), 
                                                                                              new XSLTElementDef(
                                                                     this,
                                                                     Constants.S_XSLNAMESPACEURL,
