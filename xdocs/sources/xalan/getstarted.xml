@@ -48,7 +48,7 @@
 <code>&nbsp;&nbsp;&nbsp;&nbsp;-xsl <ref>stylesheet</ref> -out <ref>outputfile</ref></code></p>
 <p>where <ref>xmlSource</ref> is the XML source file name, <ref>stylesheet</ref> is the XSL stylesheet file name, and <ref>outputfile</ref> is the output file name.</p>
 <p>If you want the output to be displayed on the screen, simply omit the -out flag and argument.</p>
-<p>You can use this utility to try out XSL stylesheets you have written, to make sure they do what you expect with the XML source files they are designed to transform. The utility provides useful messages if the source file or stylesheet is not well formed. If you include a DOCTYPE statement in your XML source files and include the -validate flag on the command line, the utility will also let you know whether the XML document is valid (conforms to that DOCTYPE). For more information, see <link idref="commandline">Command-Line Utility</link>.</p>
+<p>You can use this utility to try out XSL stylesheets you have written, to make sure they do what you expect with the XML source files they are designed to transform. The utility provides useful messages if the source file or stylesheet is not well formed. For more information, see <link idref="commandline">Command-Line Utility</link>.</p>
 </s2><anchor name="java-apps"/>
 <s2 title="Setting up your own Java applications">
 <p>You can start by using your own XML source files and XSL stylesheets with the sample applications, which illustrate a number of the <link idref="usagepatterns">basic usage patterns</link>.</p>
