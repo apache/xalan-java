@@ -201,7 +201,7 @@ public class StreamXMLOutput extends StreamOutput {
     public void characters(char[] characters, int offset, int length)
 	throws TransletException 
     {
-// System.out.println("characters() char '" + new String(characters, offset, length) + "'");
+System.out.println("characters() char '" + new String(characters, offset, length) + "'");
 	if (length <= 0) return;
 
 	if (_startTagOpen) {

@@ -71,7 +71,12 @@ import org.xml.sax.helpers.AttributesImpl;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.Constants;
 
-public class SAXOutput extends OutputBase implements Constants { 
+abstract class SAXOutput extends OutputBase implements Constants { 
+
+    private static final char[] BEGCOMM  = "<!--".toCharArray();
+    private static final char[] ENDCOMM  = "-->".toCharArray();
+    private static final int BEGCOMM_length = BEGCOMM.length;
+    private static final int ENDCOMM_length = ENDCOMM.length;
 
     protected ContentHandler _saxHandler;
     protected LexicalHandler _lexHandler;
@@ -83,11 +88,15 @@ public class SAXOutput extends OutputBase implements Constants {
  
 
     public SAXOutput(ContentHandler handler, String encoding) {
+System.err.println("GTM>> ################");
+System.out.println("GTM>> ################");
 	_saxHandler = handler;
 	_encoding = encoding;	
     } 
 
     public SAXOutput(ContentHandler hdler, LexicalHandler lex, String encoding){
+System.err.println("GTM>> ################");
+System.out.println("GTM>> ################");
 	_saxHandler = hdler;
 	_lexHandler = lex;
 	_encoding = encoding;
@@ -102,26 +111,36 @@ public class SAXOutput extends OutputBase implements Constants {
 	}
     }
 
-    public void endDocument() throws TransletException {
-	try {
-	    _saxHandler.endDocument();
-	} 
-	catch (SAXException e) {
-            throw new TransletException(e);
-        }
-    }
-
-
     public void characters(String  characters)
        throws TransletException
     {
+System.out.println("GTM>> SAXOutput value = " + characters);
+	characters(characters.toCharArray(), 0, characters.length());	
+    }
+
+    public void comment(String comment) throws TransletException {
 	try {
-	    _saxHandler.characters(characters.toCharArray(), 0, 
-		characters.length());	
-	} 
+	    // Close any open element before emitting comment
+            if (_startTagOpen) {
+		closeStartTag();
+	    }
+	    else if (_cdataTagOpen) {
+		closeCDATA();
+	    }
+
+            _saxHandler.characters(BEGCOMM, 0, BEGCOMM_length);
+            characters(comment);
+            _saxHandler.characters(ENDCOMM, 0, ENDCOMM_length);
+	}
 	catch (SAXException e) {
-            throw new TransletException(e);
-        }
+	    throw new TransletException(e);
+	}
+    }
+
+    public void processingInstruction(String target, String data) 
+	throws TransletException 
+    {
+        // Redefined in SAXXMLOutput
     }
 
     /**
@@ -135,4 +154,9 @@ public class SAXOutput extends OutputBase implements Constants {
         return (col > 0) ? qname.substring(col + 1) : null;
     }
 
+    protected abstract void closeStartTag() throws TransletException;
+
+    protected void closeCDATA() throws SAXException {
+        // Redefined in SAXXMLOutput
+    }
 }

@@ -130,7 +130,7 @@ public class SAXHTMLOutput extends SAXOutput {
      * This method is called when all the data needed for a call to the
      * SAX handler's startElement() method has been gathered.
      */
-    public void closeStartTag() throws TransletException {
+    protected void closeStartTag() throws TransletException {
         try {
             _startTagOpen = false;
 

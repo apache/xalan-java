@@ -71,7 +71,7 @@ import java.io.UnsupportedEncodingException;
 
 import java.util.Vector;
 
-class StreamOutput extends OutputBase {
+abstract class StreamOutput extends OutputBase {
 
     protected static final String AMP      = "&amp;";
     protected static final String LT       = "&lt;";

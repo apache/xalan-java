@@ -82,6 +82,7 @@ public class SAXXMLOutput extends SAXOutput {
 	throws IOException 
     {
     	super(handler, encoding);
+System.out.println("GTM>> SAXXMLOutput.<init>");
 	initCDATA();
 	initNamespaces();
     }
@@ -90,6 +91,7 @@ public class SAXXMLOutput extends SAXOutput {
         String encoding) throws IOException
     {
         super(handler, lex, encoding);
+System.out.println("GTM>> SAXXMLOutput.<init>");
 	initCDATA();
 	initNamespaces();
     }
@@ -182,6 +184,7 @@ public class SAXXMLOutput extends SAXOutput {
     public void characters(char[] ch, int off, int len)
         throws TransletException 
     {
+System.out.println("GTM>> SAXXMLOutput value = " + new String(ch,off,len));
 	try {
             // Close any open start tag
             if (_startTagOpen) {
@@ -248,7 +251,7 @@ public class SAXXMLOutput extends SAXOutput {
      * This method is called when all the data needed for a call to the
      * SAX handler's startElement() method has been gathered.
      */
-    private void closeStartTag() throws TransletException {
+    protected void closeStartTag() throws TransletException {
         try {
             _startTagOpen = false;
 
@@ -312,7 +315,7 @@ public class SAXXMLOutput extends SAXOutput {
         return stack != null && !stack.isEmpty() ? (String)stack.peek() : null;
     }
 
-    private void closeCDATA() throws SAXException {
+    protected void closeCDATA() throws SAXException {
         // Output closing bracket - "]]>"
         _saxHandler.characters(ENDCDATA, 0, ENDCDATA.length);
         _cdataTagOpen = false;

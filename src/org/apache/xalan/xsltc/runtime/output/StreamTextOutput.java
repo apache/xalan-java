@@ -80,8 +80,21 @@ public class StreamTextOutput extends StreamOutput {
 	super(out, encoding);
     }
 
+    public void startDocument() throws TransletException { 
+    }
+
     public void endDocument() throws TransletException { 
 	outputBuffer();
+    }
+
+    public void startElement(String elementName) 
+	throws TransletException 
+    {
+    }
+
+    public void endElement(String elementName) 
+	throws TransletException 
+    {
     }
 
     public void characters(String characters) 
@@ -95,4 +108,18 @@ public class StreamTextOutput extends StreamOutput {
     { 
 	_buffer.append(characters, offset, length);
     }
+
+    public void comment(String comment) throws TransletException {
+    }
+
+    public void attribute(String name, String value) 
+	throws TransletException 
+    {
+    }
+
+    public void processingInstruction(String target, String data) 
+	throws TransletException
+    {
+    }
 }
+
