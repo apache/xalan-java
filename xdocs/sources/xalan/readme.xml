@@ -69,13 +69,30 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.4.1</link></li>
+    <li><link anchor="done">Changes since version 2.5.D1</link></li>
     <li><link anchor="other">Other points of interest</link></li>
     <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
     <li><link anchor="developer-list">&xslt4j; developers</link></li>
    </ul>
      <anchor name="done"/>
+     <s3 title="Changes since &xslt4j; 2.5.D1">
+     <p>&xslt4j; 2.5.0 contains a variety of features, bug fixes and 
+        performance enhancements.</p>
+     <p>New features in &xslt4j; 2.5.0 include:
+        <ul>
+        <li>integration of the Document Table Model (DTM) with the XSLTC 
+            processor [Henry Zongaro, Morris Kwan] and </li>
+        <li>integration of the Xalan Interpretive and Xalan Compiled 
+            serializers into a common serializer [Brian Minchau].</li>  
+        </ul>    
+        These features have been driven by a need to get common behavior, 
+        improve maintainability, reduce duplication of effort for future work, 
+        and in some cases improve performance and conformance.</p>
+     <p>Refer to <link idref="whatsnew">What's New</link> for a description of the new function 
+        and <link idref="history">History of software changes</link> for a list of the various 
+        bug fixes and other enhancements in this release.</p>
+     </s3>
      <s3 title="Changes since &xslt4j; 2.4.1">
      <p>This developer's release, Xalan-Java 2.5.D1, is primarily for the purpose of releasing 
         various bug fixes to the community.  These will eventually be released officially in 
@@ -540,6 +557,15 @@ to <human-resource-ref idref="xalandev"/>.</p>
   <li><human-resource-ref idref="zongaro"/>
     <br/>Xalan-J developer.
   </li>
+  <li><human-resource-ref idref="minchau"/>
+    <br/>Xalan-J developer.
+  </li>
+  <li><human-resource-ref idref="igor"/>
+    <br/>Xalan-J developer.
+  </li>      
+  <li><human-resource-ref idref="jycli"/>
+    <br/>Xalan-J developer.
+  </li>  
  </ul>
  </s2>
 </s1>

@@ -59,6 +59,310 @@
 <s1 title="History of software changes">
 <p>The following sections list the core software changes in each release since &xslt4j; version 2.0.D01.</p>
 &history2xsltc;
+<s2 title="Changes for &xslt4j; 2.5.0">
+<p> Core (Non-XSLTC) source code updates:</p>
+<ul><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Small improvement to SAXImpl.copyElement().
+Move the getStringValue() method from SAXImpl to SAX2DTM2.
+Remove the SAXImpl.stringValueAux() method.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/02/25<br/><ref>Modified: </ref> xml-xalan/java/src xml-commons-src.tar.gz xml-xalan/java/bin xml-apis.jar<br/><ref>Committer's log entry: </ref>
+Update to latest version of xml-apis.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Improvement to DescendantIterator. If _startNode is the root node, do
+not need to do the isDescendant() check.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/26<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Set the nextsib element of an attribute or namespace node to -1.
+This makes the logic in the iterators simpler and easier to
+maintain.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib/sql DTMDocument.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AttributeList.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java DTMStringPool.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java SAX2DTM2.java xml-xalan/java/src/org/apache/xml/utils SuballocatedIntVector.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Improvement for RTF. These changes improve the performance
+for stylesheets which create and throw away many small RTFs.
+
+Make the sizes of all internal storage units used by SAXImpl configurable.
+These include SuballocatedIntVector, DTMStringPool, IntStack and FastStringBuffer.
+The chain size of DTMStringPool and the number of blocks in SuballocatedIntVector
+can now be passed in the constructor. These sizes are set to smaller values in
+the RTF case.
+
+The default RTF size is changed to 32. There is also a change in the XSLTC
+AttributeList class to use on-demand memory allocation for the internal vectors.
+The vectors are only allocated when there is an attribute.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/27<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Small improvement to DescendantIterator and TypedDescendantIterator.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/02/28<br/><ref>Modified: </ref> xml-xalan/java/samples/extensions/sql/streamable cachedNodes.xsl pivot.xsl xml-xalan/java/xdocs/sources/xalan samples.xml xml-xalan/java/samples/CompiledApplet menu.html README.applet xml-xalan/java/samples/extensions/sql/basic-connection dbinfo.xml dbtest.xsl<br/><ref>Committer's log entry: </ref>
+More sample and documentation updates from Christine Li (jycli@ca.ibm.com).
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TrAXFilter.java<br/><ref>Committer's log entry: </ref>
+Add a getTransformer() interface to TrAXFilter. This is a user requested
+feature. This interface can be used by the UseXMLFilters samples to
+set the output properties correctly.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java DTMDefaultBaseIterators.java DTMDefaultBaseTraversers.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Do not create the previous sibling array for XSLTC. This array is not used
+in XSLTC's SAXImpl. Creating it is a waste of time.
+
+We add a boolean flag to the constructors of DTMDefaultBase and its
+subclasses to indicate whether the previous sibling array should be created.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/02/28<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java<br/><ref>Committer's log entry: </ref>
+Correct an error. The DTMDefaultBase.getPreviousSibling() interface
+returns a node handle instead of a node identity.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/02/28<br/><ref>Modified: </ref> xml-xalan/java/samples/CompiledEJB bottom_frame.html index.html README.ejb top_frame.html xml-xalan/java/samples/CompiledServlet CompileServlet.java README.servlet<br/><ref>Committer's log entry: </ref>
+Patches for samples from Christine Li (jycli@ca.ibm.com)
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TrAXFilter.java<br/><ref>Committer's log entry: </ref>
+Propagate the change from head branch to XSLTC_DTM.
+Add a new getTransformer() interface to TrAXFilter.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer TrAXFilter.java<br/><ref>Committer's log entry: </ref>
+Add a new getTransformer() interface to TrAXFilter.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/cmdline Transform.java xml-xalan/java/src/org/apache/xalan/xsltc/compiler Constants.java NameBase.java Stylesheet.java xpath.cup XSLTC.java xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMImpl.java DocumentCache.java LoadDocument.java SAXImpl.java XSLTCDTMManager.java xml-xalan/java/src/org/apache/xalan/xsltc/runtime AbstractTranslet.java BasisLibrary.java xml-xalan/java/src/org/apache/xalan/xsltc/trax TransformerHandlerImpl.java TransformerImpl.java XSLTCSource.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+
+Implement a feature for on-demand building of the ID index table.
+
+Before this change, the SAX2DTM2 class always builds an ID index
+hashtable by comparing the name of every attribute with "id". Now
+we maintain a flag _hasIdCall in AbstractTranslet to indicate
+whether the translet has id function calls. The value of this flag
+is compiled into the translet from the Stylesheet class. The Stylesheet
+class also has an _hasIdCall flag, which is set by the XPath parser.
+
+When a SAXImpl object is created, the _hasIdCall flag is passed in from the
+Translet. Now the id index table is only built when the stylesheet makes
+use of the id function.
+
+Also fix a bug in the NameBase class for using an incorrect class name
+(org.apache.xml.dtm.ref.DTMAxisIterator should be org.apache.xml.dtm.DTMAxisIterator).
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom AnyNodeCounter.java DOMAdapter.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Improvement for xsl:number. Introduce an optimized version of
+getExpandedTypeID() in SAX2DTM2.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMWSFilter.java NodeSortRecord.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Improvement for xsl:strip-space by caching the DTM that is used last time.
+Better Collator handling in NodeSortRecord.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/10<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Save the values of attribute, namespace, comment and PI nodes
+in a plain Vector instead of in DTMStringPool. Saving a String
+in DTMStringPool involves a hash calculation. These values
+are unlikely to be equal. Saving them in a plain Vector has a
+lower cost than saving them in DTMStringPool. Only prefixed QNames
+are saved in DTMStringPool after this change.
+
+Need to make changes in a few interfaces to accommadate this change.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Small improvement in FastStringBuffer.sendSAXCharacters() when the whole
+piece of text is in one chunk.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Small improvement in SAX2DTM2.getStringValueX() and dispatchCharacterEvents()
+by saving one local variable.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/14<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom CollatorFactoryBase.java SAXImpl.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Save the offset and length of a Text node in a bitwise encoded value (10
+bits for length and 21 bits for offset) if they are within certain limits.
+Before this change, we need 3 SuballocatedIntVector calls to get the offset
+and length information. Now we only need one SuballocatedIntVector call,
+one bit AND &amp; one SHIFT. Bit AND and SHIFT are faster than accessing a
+SuballocatedIntVector.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBase.java<br/><ref>Committer's log entry: </ref>
+Fix a bug for testcase axes129.
+DTMDefaultBase.getFirstNamespaceNode() should return NULL when
+the given node is not an element. axes129 passed in both
+Xalan and XSLTC_DTM after this change.
+<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>2003/03/20<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMDefaultBaseTraversers.java<br/><ref>Committer's log entry: </ref>
+Oops! Old bug, just noticed -- we forgot to override RootTraverser's typed first().
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom NthIterator.java xml-xalan/java/src/org/apache/xml/dtm DTMAxisIterator.java xml-xalan/java/src/org/apache/xml/dtm/ref DTMAxisIteratorBase.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Improvement for step[n]. Introduce a new interface getNodeByPosition(int position)
+in DTMAxisIterator, which is used by the NthIterator. The default implementation
+is in DTMAxisIteratorBase. The subclasses can override this interface to provide
+a faster customized implementation.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/21<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom SAXImpl.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Introduce a copyAttribute() method in SAXImpl to speed up
+attribute copying.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+XSLTC_DTM performance work
+Improvement in DTM building. Make the code more efficient
+in a few expensive interfaces.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/24<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/xsltc/dom DOMAdapter.java xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+Fix a bug in XSLTC_DTM.
+Change the name of the optimized getExpandedTypeID method to getgetExpandedTypeID2.
+The old one can be used during DTM building, while the new one is only
+used in document traversal.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/03/25<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates FuncDocument.java FuncDocument.java xml-xalan/java/src/org/apache/xalan/res XSLTErrorResources.java XSLTErrorResources.properties XSLTErrorResources.java XSLTErrorResources.properties xml-xalan/java/src/org/apache/xalan/templates FuncDocument.java FuncDocument.java<br/><ref>Committer's log entry: </ref>
+Committing Christine Li's (jycli@ca.ibm.com) patch for bugzilla #18210.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java SAX2DTM2.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xml.dtm.ref.sax2dtm.
+Add new file SAX2DTM2.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xml.dtm.ref.dom2dtm.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm DTM.java DTMAxisIterator.java DTMManager.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xml.dtm.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/dtm/ref DTMAxisIteratorBase.java DTMAxisIterNodeList.java DTMChildIterNodeList.java DTMDefaultBase.java DTMDefaultBaseIterators.java DTMDefaultBaseTraversers.java DTMDocumentImpl.java DTMManagerDefault.java DTMNamedNodeMap.java DTMNodeList.java DTMNodeListBase.java DTMNodeProxy.java DTMStringPool.java ExpandedNameTable.java ExtendedType.java IncrementalSAXSource_Xerces.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xml.dtm.ref.
+Add new files:
+DTMAxisIterNodeList.java
+DTMChildIterNodeList.java
+DTMNodeListBase.java
+ExtendedType.java
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/res XMLErrorResources.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xml.res.
+Add new messages for common serializer.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer AttributesImplSerializer.java CharInfo.java DOMSerializer.java ElemDesc.java EmptySerializer.java EncodingInfo.java Encodings.java Encodings.properties ExtendedContentHandler.java ExtendedLexicalHandler.java HTMLEntities.res Method.java NamespaceMappings.java output_html.properties output_text.properties output_unknown.properties output_xml.properties OutputPropertiesFactory.java OutputPropertyUtils.java package.html SerializationHandler.java Serializer.java SerializerBase.java SerializerConstants.java SerializerFactory.java SerializerTrace.java SerializerTraceWriter.java ToHTMLSAXHandler.java ToHTMLStream.java ToSAXHandler.java ToStream.java ToTextSAXHandler.java ToTextStream.java ToUnknownStream.java ToXMLSAXHandler.java ToXMLStream.java TransformStateSetter.java WriterToASCI.java WriterToUTF8.java WriterToUTF8Buffered.java XMLEntities.res XSLOutputAttributes.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Add new serializer classes under package org.apache.xml.serializer.
+Log from Brian Minchau (minchau@ca.ibm.com):
+
+In the past Xalan-J interpretive (Xalan) and XSLTC both implemented their own
+serialization stages.  Much of the code provides the same functionality.
+In order to improve the maintainability of the code, and to eliminate any
+functional differences, these two serializers are now merged in the
+org.apache.xml.serializer package.
+
+The best performing features of both have been used.  The class hierarchy
+of serializers used by XSLTC is re-used for this reason. At the highest
+level the serializer classes split based on whether the output of the
+serializer is a "Stream" or whether it is a "SAX" handler.  After that
+both major branches split based on the output type (e.g. XML, HTML or TEXT).
+
+The external user interface of the old Xalan serializer has been kept.
+Other classes and interfaces have been absorbed into the serializer
+package to keep it independent of both Xalan and XSLTC. The primary
+interface, SerializationHandler, accepts SAX and SAX-like calls, but
+it also absorbs other interfaces from the old Xalan serializer.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils DOMHelper.java FastStringBuffer.java IntStack.java SuballocatedIntVector.java XMLStringDefault.java XMLStringFactoryDefault.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xml.utils.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/extensions XSLProcessorContext.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xalan.extensions.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java PipeDocument.java Redirect.java xml-xalan/java/src/org/apache/xalan/lib/sql DTMDocument.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xalan.lib.
+
+1. Change the return types of some date-time extension functions
+for support in XSLTC.
+
+2. Changes for the new serializer.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor ProcessorOutputElem.java TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xalan.processor.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize CharInfo.java DOMSerializer.java ElemDesc.java EncodingInfo.java Encodings.java Encodings.properties HTMLEntities.res Method.java package.html Serializer.java serializer.properties SerializerFactory.java SerializerToHTML.java SerializerToText.java SerializerToXML.java SerializerUtils.java WriterToASCI.java WriterToUTF8.java WriterToUTF8Buffered.java XMLEntities.res<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Remove old serializer classes under org.apache.xalan.serialize.
+The new serializer files are now in org.apache.xml.serializer.
+Add new file SerializerUtils.java.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/templates ElemApplyTemplates.java ElemAttribute.java ElemCopy.java ElemCopyOf.java ElemElement.java ElemExtensionCall.java ElemForEach.java ElemLiteralResult.java ElemTemplateElement.java ElemTextLiteral.java ElemValueOf.java output_html.properties output_text.properties output_xml.properties OutputProperties.java StylesheetRoot.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xalan.templates.
+Replace ResultTreeHandler with SerializationHandler.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/trace GenerateEvent.java PrintTraceListener.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xalan.trace.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/transformer ClonerToResultTree.java QueuedEvents.java ResultTreeHandler.java SerializerSwitcher.java TransformerHandlerImpl.java TransformerIdentityImpl.java TransformerImpl.java TransformSnapshot.java TransformSnapshotImpl.java TransformState.java TreeWalker2Result.java XalanTransformState.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Changes in org.apache.xalan.transformer for the new serializer.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java build.xml xsltc_todo.xml<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Update build.xml and xsltc_todo.xml.
+
+Now the default build target is a big xalan.jar which
+includes both Xalan-J Interpretive and XSLTC.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/01<br/><ref>Modified: </ref> xml-xalan/java/src MANIFEST.MF<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Update MANIFEST.MF to include information about
+xsltc and its support jars.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/02<br/><ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/><ref>Committer's log entry: </ref>
+Updating to Xerces-J 2.4.0.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/02<br/><ref>Modified: </ref> xml-xalan/java/src MANIFEST.MF<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Update spec version for XSLTC in MANIFEST.MF
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/02<br/><ref>Modified: </ref> xml-xalan/java/samples/CompiledApplet menu.html README.applet TransformApplet.java xml-xalan/java/samples/CompiledBrazil README.brazil TransformHandler.java xml-xalan/java/samples/CompiledEJB README.ejb TransformBean.java xml-xalan/java/samples/CompiledJAXP Compile.java README.cjaxp Transform.java xml-xalan/java/samples/CompiledServlet README.servlet TransformServlet.java xml-xalan/java/samples/DOM2DOM DOM2DOM.java xml-xalan/java/samples/Pipe Pipe.java xml-xalan/java/samples/SAX2SAX SAX2SAX.java xml-xalan/java/samples/translets JAXPTransletMultipleTransformations.java JAXPTransletOneTransformation.java todo.xsl xml-xalan/java/samples/UseXMLFilters UseXMLFilters.java<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+
+Update in the samples
+1. Changes from Henry Zongaro (zongaro@ca.ibm.com) in the
+XSLTC samples. Use TrAX API instead of native API.
+2. Changes from Brian Minchau (minchau@ca.ibm.com) to use
+the new serializer classes.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/02<br/><ref>Modified: </ref> xml-xalan/java/samples/CompiledApplet singleTransform.html xml-xalan/java/samples/CompiledEJB bottom_frame.html index.html top_frame.html xml-xalan/java/samples/translets todo.xml todotoo.xml<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+Add new sample files.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/02<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources entities.ent xalan-jlocal.xml xalan-jsite.xml xml-xalan/java/xdocs/sources/xalan commandline_xsltc.xml commandline.xml dtm.xml history.xml readme.xml samples.xml usagepatterns.xml xsltc_history.xml xsltc_usage.xml<br/><ref>Committer's log entry: </ref>
+Merging XSLTC_DTM and common serializer to the head
+
+Update in java/xdocs.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/03<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xpath/axes FilterExprWalker.java<br/><ref>Committer's log entry: </ref>
+Commit patch for bug 12797 from Arun Yadav (arun.yadav@sun.com).
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/03<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Added a new "fulldist" target.  It builds a distribution that includes Xalan-J
+components that depend upon non-standard components that aren't part of the
+Xalan-J repository.  In particular, xsltcbrazil.jar is built under the
+"fulldist" target, but not under the ordinary "dist" target.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/04<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer ToStream.java<br/><ref>Committer's log entry: </ref>
+Replace Vector.add() by Vector.addElement() because the first method
+is not in JDK 1.1.8.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/05<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/processor TransformerFactoryImpl.java xml-xalan/java/src/org/apache/xml/utils TreeWalker.java<br/><ref>Committer's log entry: </ref>
+Instead of setting a default baseURI in newTemplates, append a dummy string
+to the default used in the TreeWalker constructors.  This solves the problem
+of violating the SourceLocator.getSystemId API which should return null
+if if no systemId was set, while allowing relative URI's to be resolved when
+the source is a DOM and no systemID has been set.  Relative URI's are already 
+resolved correctly for other source types.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/06<br/><ref>Modified: </ref> xml-xalan/java/samples/CompiledApplet TransformApplet.java README.applet<br/><ref>Committer's log entry: </ref>
+Patch from Christine Li (jycli@ca.ibm.com).  Reworked applet code so that the
+init method creates a thread to which it delegates all the work of creating
+Transformers and performing transformations.
+
+Xalan needs all of its classes to be loaded with respect to the same class
+loader.  The thread that's created will have the context class loader, if any,
+that is in effect when the applet's init method is called, but calls to other
+methods on the applet might not have the same context class loader.  Using a
+thread avoids any problems that might arise from such a situation.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer CharInfo.java HTMLEntities.properties output_html.properties output_xml.properties XMLEntities.properties xml-xalan/java/xdocs/sources/xalan usagepatterns.xml<br/><ref>Committer's log entry: </ref>
+Patch from Christine Li (jycli@ca.ibm.com).  Changed CharInfo so that it allows
+descriptions of entities to be specified as a properties file in addition to a
+Xalan-specific resource file format.
+
+The code previously always assumed a Xalan-specific resource file format, for
+both user-supplied descriptions of entities, and for those supplied with
+Xalan-J.  The security restrictions of applets are such that an applet that
+relies on a copy of Xalan-J in the Java run-time would find that Xalan-J would
+be unable to read the default entities file that is packaged with the JRE on
+the applet's behalf - it can only do so with a properties, via ResourceBundle.
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/07<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib ExsltDatetime.java<br/><ref>Committer's log entry: </ref>
+Commit an implementation of the date-time:format-date() extension function
+(bugzilla 18713) contributed by Helg Bredow (helg.bredow@kalido.com).
+<br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/04/07<br/><ref>Modified: </ref> xml-xalan/java/xdocs/sources/xalan commandline_xsltc.xml<br/><ref>Committer's log entry: </ref>
+Docs update
+Document the new "use-classpath" attribute
+which is supported in the XSLTC TrAX API.
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/07<br/><ref>Modified: </ref> xml-xalan/java/samples/CompiledServlet README.servlet TransformServlet.java xml-xalan/java/samples/CompiledBrazil README.brazil<br/><ref>Committer's log entry: </ref>
+Sample updates from Christine Li (jycli@ca.ibm.com).
+<br/><br/></li><li><ref>Committed by </ref>ilene@apache.org<ref> on </ref>2003/04/08<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/serialize DOMSerializer.java Serializer.java SerializerFactory.java xml-xalan/java/src/org/apache/xml/serializer DOMSerializer.java SerializationHandler.java SerializerBase.java ToHTMLStream.java ToUnknownStream.java xml-xalan/java/src/org/apache/xalan/templates OutputProperties.java<br/><ref>Committer's log entry: </ref>
+Patch from Brian Minchau (minchau@ca.ibm.com) for backward compatibility
+of new serializers.  Also a fix related to a failure in the DOM2DOM sample.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/09<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/serializer HTMLEntities.res XMLEntities.res<br/><ref>Committer's log entry: </ref>
+Dropped descriptions of entities in the form of resource files in favour of
+those in the form of properties file.  The resource files are still supported,
+but Xalan-J's serializer only requires one.
+<br/><br/></li><li><ref>Committed by </ref>zongaro@apache.org<ref> on </ref>2003/04/09<br/><ref>Modified: </ref> xml-xalan/java build.xml<br/><ref>Committer's log entry: </ref>
+Dropped descriptions of entities in the form of resource files in favour of
+those in the form of properties file.  The resource files are still supported,
+but Xalan-J's serializer only requires one.
+<br/><br/></li></ul>
+</s2>
 <s2 title="Changes for &xslt4j; 2.4.1">
 <p> Core (Non-XSLTC) source code updates:</p><ul>
 <li><ref>Committed by </ref>johng@apache.org<ref> on </ref>2002/09/06<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java<br/><ref>Committer's log entry: </ref>

@@ -70,8 +70,7 @@
 <anchor name="options"/>
 <s2 title="Options">
 <p>The <code>org.apache.xalan.xslt.Process</code> command line now supports &xslt4jc-short; for transformation. 
-You can use the new <code>-XSLTC</code> option to enable the &xslt4jc-short; support. 
-The xsltc.jar file must be on your CLASSPATH in order to use the <code>-XSLTC</code> option.</p>
+You can use the new <code>-XSLTC</code> option to enable the &xslt4jc-short; support.</p> 
 <p>The following existing options can be used with -XSLTC:</p>
 <p><code>-IN, -XSL, -OUT, -V, -EDUMP, -XML, -TEXT, -HTML, -PARAM, <br/>
 -MEDIA, -FLAVOR, -DIAG, -URIRESOLVER, -ENTITYRESOLVER,<br/>
@@ -86,8 +85,8 @@ with <code>-XSLTC</code>, a message is printed and the option is ignored.</p>
 letter is X and the second letter is the same as the corresponding option in the &xslt4jc-short; command line 
 <code>org.apache.xalan.xsltc.cmdline.Compile</code>.</p>
 
-<p>These new options can only be used with <code>-XSLTC</code>. If any of them is used with
-&xslt4ji;, a message is printed and the option is ignored.</p>
+<p>These new options can only be used with <code>-XSLTC</code>. If any of them is used
+with &xslt4ji;, a message is printed and the option is ignored.</p>
 
 <p>Here is the list of the new options:</p>
 <ul>

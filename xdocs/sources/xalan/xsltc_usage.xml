@@ -105,20 +105,19 @@ the version of the &xslt4jc-short; compiler that was used to create the translet
 
 <s3 title="Bundled System Classpath">
 <p>
-To use this newer approach, simply put xalan.jar in your classpath.
-No need to mention the others (xsltc.jar, BCEL.jar, JLex.jar, regexp.jar,
-java_cup.jar, runtime.jar). 
+To use this newer approach, simply put xalan.jar, xml-apis.jar and xercesImpl.jar
+in your classpath.  There is no need to include xsltc.jar, BCEL.jar, JLex.jar,
+regexp.jar, java_cup.jar or runtime.jar as required in previous releases.
 </p>
-<note>In order to compile and run translets you must have a JAXP-compliant XML
-parser installed. Our distribution 
-includes <jump href="http://xml.apache.org/xerces2-j/index.html">Xerces</jump>
-(just include xercesImpl.jar and xml-apis.jar in your class path).
+<note>In order to compile and run translets you must have a JAXP 1.2 compliant XML
+parser installed. Our distribution includes <resource-ref idref='xml4j-used' />.
+Include xercesImpl.jar and xml-apis.jar in your class path.
 </note>
 </s3>
 
 <s3 title="Unbundled System Classpath">
-<p>The binary distribution contains a bundled xsltc.jar which contains all
-of the support classes in a single jar.  To use the unbundled approach, rebuild 
+<p>The binary distribution contains &xslt4jc-short; and all its support classes bundled 
+into xalan.jar. To use the unbundled approach, rebuild 
 the xsltc.jar file using the xsltc.unbundledjar target. The support jars that 
 you'll need to add to your classpath are available in the Xalan Java bin 
 directory.</p>
@@ -391,8 +390,8 @@ Arguments without flags:
 <p>When you use the JAXP 1.2 API to run &xslt4j;, the
 <code>javax.xml.transform.TransformerFactory</code> system property is set to
 <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently
-stands, this Xalan implementation of TransformerFactory always uses the
-&xslt4ji; processor to perform transformations.  To use translets to perform
+stands, this &xslt4j; implementation of TransformerFactory always uses the &xslt4j;
+Interpretive processor to perform transformations.  To use translets to perform
 transformations, set this system property to
 <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code>. For
 information on setting this and related system properties designating XML
@@ -577,9 +576,10 @@ transformer.transform(new StreamSource(xmlInURI2),
 </s2>
 <anchor name="xsltcsmart"/>
 <s2 title="Smart Transformer Switch">
-<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching between &xslt4ji; and &xslt4jc-short; 
-processors within your application. It uses &xslt4ji; to create your 
- <code>Transformer</code> objects, and uses &xslt4jc-short; to create your <code>Templates</code> objects.</p>
+<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching 
+between &xslt4ji; and &xslt4jc-short; processors within your application. It uses &xslt4ji; 
+processor to create your <code>Transformer</code> objects, and uses &xslt4jc-short; to create your 
+<code>Templates</code> objects.</p>
 <p>To use the switch, you set the TrAX system property,
 <code>javax.xml.transform.TransformerFactory</code>, to
 <code>org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl</code>. 

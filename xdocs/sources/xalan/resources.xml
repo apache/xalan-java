@@ -13,6 +13,9 @@
 				mailto CDATA #IMPLIED>
    ]>  
 <resources> 	
+  <resource id="xslt4j" 
+            title="&xslt4j;" 
+            location="http://xml.apache.org/xalan-j"/>
   <resource id="xslt4j-current" 
             title="&xslt4j-current;" 
             location="http://xml.apache.org/xalan-j"/>
@@ -171,5 +174,14 @@
   <human-resource id="zongaro"
                   name="Henry Zongaro"
                   mailto="zongaro@ca.ibm.com"/>
+  <human-resource id="minchau"
+                  name="Brian Minchau"
+                  mailto="minchau@ca.ibm.com"/>
+  <human-resource id="igor"
+                  name="Igor Hersht"
+                  mailto="igorh@ca.ibm.com"/>                  
+  <human-resource id="jycli"
+                  name="Christine Li"
+                  mailto="jycli@ca.ibm.com"/>                                                      
 
 </resources>

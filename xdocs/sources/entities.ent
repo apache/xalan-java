@@ -8,18 +8,18 @@
 <!ENTITY xslt4jc-long  "&xslt4j; Compiled">
 <!ENTITY xslt4j-dist-bin "&xslt4j-dist;-bin">
 <!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
-<!ENTITY xslt4j-dist "xalan-j_2_5_D1">
-<!ENTITY xslt4j-current "&xslt4j; version 2.5.D1">
+<!ENTITY xslt4j-dist "xalan-j_2_5_0">
+<!ENTITY xslt4j-current "&xslt4j; version 2.5.0">
 <!ENTITY xslt4j-distdir "http://xml.apache.org/dist/xalan-j/">
 <!ENTITY xslt4j_longname "Apache Xalan Java">
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j1 "Xerces-Java 1">
 <!ENTITY xml4j2 "Xerces-Java 2">
-<!ENTITY xml4j-used "&xml4j; 2.3.0">
+<!ENTITY xml4j-used "&xml4j; 2.4.0">
 <!ENTITY xml4j-jar "xercesImpl.jar">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
-<!ENTITY download "The &xslt4j-current; download from xml.apache.org includes &xml4j-jar; from &xml4j-used; and xml-apis.jar. 
+<!ENTITY download "The &xslt4j-current; download from &xslt4j-distdir; includes &xml4j-jar; from &xml4j-used; and xml-apis.jar. 
 For version information about the contents of xml-apis.jar, see the JAR manifest.">
 
 <!ENTITY xsltcwhatsnewhead '<li><link anchor="xsltc">&xslt4jc-short;</link></li>'>
@@ -28,7 +28,7 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                 <p>In April 2001, Sun donated &xslt4jc-short; to the Xalan project. &xslt4jc-short; compiles stylesheets into translets and
                 provides a runtime environment for using translets to transform XML documents. Initially, &xslt4jc-short; is
                 available in a separate JAR. Over time, we plan to integrate the two codebases. For more information,
-                see <link idref="xsltc_usage">Using &xslt4jc-short;</link>, <link idref="readme" anchor="xsltcreleasenotes">&xslt4jc-short;
+                see <link idref="xsltc_usage">Getting Started with &xslt4jc-short;</link>, <link idref="readme" anchor="xsltcreleasenotes">&xslt4jc-short;
                 Release Notes</link>, and <jump href="xsltc/index.html">&xslt4jc-short; Design</link>.</p>
                 </s2>'>
 
@@ -44,42 +44,25 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                  <ul>
                  <li><link anchor="xsltc1">JAXPTransletOneTransformation</link></li>
                  <li><link anchor="xsltc2">JAXPTransletMultipleTransformations</link></li>
-                 <li><link anchor="xsltcother">Other &xslt4jc-short; samples</link></li>
+                 <li><link anchor="xsltcother">Other &xslt4jc-short; samples</link></li>   
                  </ul>
                  <p>You can use the TrAX/JAXP 1.2 interfaces to compile and run translets.
-                 For this release, you must still
-                 use StreamSource objects for the XSL stylesheet and XML input document, 
-                 and a StreamResult object for the transformation output. 
-                 For an overview of the usage patterns these samples illustrate, see
+                 For an overview of the usage patterns these samples illustrate, see 
                  <link idref="xsltc_usage" anchor="api">Calling &xslt4jc-short; with the TrAX/JAXP API</link>.</p>
-                 <anchor name="xsltcprepare"/>
-                 <p><em>Important:</em> To run these samples, you must compile the sample class files and adjust the 
-                 system classpath.</p>
-                 <ol>
-                   <li>To compile the samples, you can run the Ant build from the root directory as follows:<br/><br/>
-                   <code>&nbsp;&nbsp;build xsltc.samples</code><br/><br/></li>
-                   <li>Add xsltc.jar, runtime.jar, BCEL.jar, java_cup.jar, and the samples/translets subdirectory to 
-                   the classpath</li>
-                 </ol>
-                 <note>The JAR files listed above are in the bin directory. 
-                 The samples/translets directory contains the sample class files as well as the translet class file that is
-                 generated at tun time (todo.class from the todo.xsl stylesheet).</note> 
                  <anchor name="xsltc1"/>
                  <s3 title="JAXPTransletOneTransformation">
                  <p>What it does: Uses the &xslt4jc-short; TransformerFactory to compile a translet and use
                  the translet to transform the &xslt4jc-short; to-do list from XML into HTML.</p>
-                 <p>Complete the <link anchor="xsltcprepare">steps detailed above</link>, and run this sample 
-                 from the translets subdirectory with</p>
+                 <p>Run this sample from the translets subdirectory with</p>
                  <p><code>java JAXPTransletOneTransformation</code></p>
                  <p>View the result in todo-xsltc.html.</p>
                  </s3><anchor name="xsltc2"/>
                  <s3 title="JAXPTransletMultipleTransformations">
                  <p>What it does: Uses the &xslt4jc-short; TransformerFactory to compile a translet and use
-                 the Templates object associated with the translet to transform two to-do lists from XML
+                 the Templates object associated with the translet to transform the &xslt4jc-short; and Xalan to-do lists from XML 
                  into HTML.</p>
-                 <p>Complete the <link anchor="xsltcprepare">steps detailed above</link>, and run this sample 
-                 from the translets subdirectory with</p>
-                 <p><code>java JAXPTransletOneTransformation</code></p>
+                 <p>Run this sample from the translets subdirectory with</p>
+                 <p><code>java JAXPTransletMultipleTransformations</code></p>
                  <p>View the results in todo-xsltc.html and todo-xalan.html.</p>                
                  </s3><anchor name="xsltcother"/>
                  <s3 title="Other &xslt4jc-short; samples">
@@ -92,7 +75,6 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                  <li>CompiledEJB</li>
                  </ul>
                  <p>For information about each of these samples, consult the README file in the subdirectory.</p>
-                 <note>The following paragraphs supply some basic background information for CompiledServlet and CompiledBrazil.</note>
                  <p>&xslt4jc-short; provides demos for using &xslt4jc-short; as a servlet and as a handler for
                  Brazil (a new and powerful Web techology from Sun labs).</p>
                  <p>To run the Brazil-handler demo, download Brazil from sunlabs:</p>

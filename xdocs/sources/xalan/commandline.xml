@@ -74,8 +74,7 @@
     <li>Download &xslt4j;.<br/><br/></li> 
     <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include xalan.jar, xml-apis.jar, and
     &xml4j-jar; -- or another conformant XML Parser -- (see <link idref="usagepatterns" anchor="plug">Plugging in 
-    the Transformer and XML parser</link>). Also include xsltc.jar in the classpath if you want to use
-    &xslt4jc-short; related options.<br/><br/></li>
+    the Transformer and XML parser</link>).<br/><br/></li>
     <li>Call java and the Process class with the appropriate flags and
     arguments (described below). The following command line, for example, includes the -IN, -XSL,
     and -OUT flags with their accompanying arguments -- the XML source document, the XSL

@@ -94,7 +94,7 @@
 </tr>
 <tr>
   <td>xalansamples.jar</td>
-  <td>Everything except the Xalan-J Interpretive servlet sample and some
+  <td>Everything except the &xslt4ji; servlet sample and some
       &xslt4jc-short; samples</td>
 </tr>
 <tr>

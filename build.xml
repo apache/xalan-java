@@ -83,8 +83,8 @@ Copyright:
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
   <property name="version.RELEASE" value="5"/>
-  <property name="version.DEVELOPER" value="D"/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR" value="1"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.DEVELOPER" value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
+  <property name="version.MINOR" value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
@@ -717,6 +717,8 @@ Copyright:
 
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC EJB example and jars the class files.            --> 
+  <!-- ejb.jar must be on the classpath to compile this sample.            -->
+  <!-- EJB 2.0 can be found at http://java.sun.com/products/ejb/docs.html  -->
   <!-- =================================================================== -->
   <target name="xsltc.ejb" depends="jar">
     <mkdir dir="${build.samples}/CompiledEJB"/>
@@ -740,7 +742,7 @@ Copyright:
          basedir="${build.samples}/CompiledServlet"
          includes="*.class"/>
   </target>
- 
+
  
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
@@ -785,8 +787,8 @@ Copyright:
          author="true"
          version="true"
          use="true"
-         windowtitle="${Name-in-docs} 2" 
-         doctitle="${Name-in-docs} 2"
+         windowtitle="${Name-in-docs} ${impl.version}" 
+         doctitle="${Name-in-docs} ${impl.version}"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
           <classpath refid="docs.class.path" />
           <doclet name="xalanjdoc.Standard" path="${doclet.jar}">
@@ -957,7 +959,7 @@ Copyright:
       <include name="${dist.file}/bin/${name}.jar"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
-      <include name="${dist.file}/bin/xercesImpl.jar"/>
+      <include name="${dist.file}/bin/${parser.jar.name}"/>
       <include name="${dist.file}/bin/xalansamples.jar"/>
       <include name="${dist.file}/bin/xalanservlet.war"/>
       <include name="${dist.file}/bin/xsltcapplet.jar"/>
@@ -970,7 +972,7 @@ Copyright:
     <patternset id="src-distro" >
       <include name="${dist.file}/*"/>
       <include name="${dist.file}/bin/ant.jar"/>
-      <include name="${dist.file}/bin/xercesImpl.jar"/>
+      <include name="${dist.file}/bin/${parser.jar.name}"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
       <include name="${dist.file}/bin/${stylebook.jar.name}"/>
@@ -995,7 +997,7 @@ Copyright:
     <tar tarfile="${build.dir}/${dist.file}-bin.tar" >
       <tarfileset dir="${build.dir}">
         <patternset refid="bin-distro"/>
-        <patternset refid="xsltc-deps-jars"/>
+<!--    <patternset refid="xsltc-deps-jars"/> --> <!-- these jars are only needed in the src pkg -->
       </tarfileset>
     </tar>
     <gzip src="${build.dir}/${dist.file}-bin.tar" zipfile="${build.dir}/${dist.file}-bin.tar.gz"/>
@@ -1013,7 +1015,7 @@ Copyright:
     <zip zipfile="${build.dir}/${dist.file}-bin.zip" >
       <fileset dir="${build.dir}">
         <patternset refid="bin-distro"/>
-        <patternset refid="xsltc-deps-jars"/>
+<!--    <patternset refid="xsltc-deps-jars"/> --> <!-- these jars are only needed in the src pkg -->
       </fileset>
     </zip>
     <zip zipfile="${build.dir}/${dist.file}-src.zip" >
