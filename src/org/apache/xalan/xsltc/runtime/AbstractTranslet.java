@@ -317,39 +317,40 @@ public abstract class AbstractTranslet implements Translet {
      * The index contains the element node index (int) and Id value (String).
      */
     private final void buildIDIndex(DOM document) {
-        // %HZ% %REVISIT%  This works fine when the document is built from
-        // %HZ% %REVISIT%  SAX events, but if it is built from a W3C DOM,
-        // %HZ% %REVISIT%  the only means of associating ID's with elements is
-        // %HZ% %REVISIT%  the getElementById method.  There's no way of
-        // %HZ% %REVISIT%  knowing a priori which ID values are in the DOM,
-        // %HZ% %REVISIT%  which elements have attributes of type ID, nor
-        // %HZ% %REVISIT%  even which attributes are of type ID.  Not
-        // %HZ% %REVISIT%  surprisingly, the old DOMImpl didn't correctly
-        // %HZ% %REVISIT%  handle the id() function.  We'll probably need to
-        // %HZ% %REVISIT%  build KeyIndex objects that operate on the DOM
-        // %HZ% %REVISIT%  directly to solve this problem.
-        final Hashtable elementsByID = document.getElementsWithIDs();
-
-        if (elementsByID == null) {
-            return;
+        // %MK% %REVISIT% We can pursue another way of handling the id() function
+        // %MK% %REVISIT% without using the KeyIndex, e.g. introducing a function idF() 
+        // %MK% %REVISIT% in BasisLibrary. We need to investigate the performance impact
+        // %MK% %REVISIT% of both solutions and see which one is better.
+        //
+        // In the DOM case, we create an empty KeyIndex at the moment.
+        // The id vs. node mapping is created later when KeyIndex.lookupId() is called.
+        if (document instanceof DOMImpl) {
+            buildKeyIndex(ID_INDEX_NAME, document);
         }
+        else {
+            final Hashtable elementsByID = document.getElementsWithIDs();
 
-        // Given a Hashtable of DTM nodes indexed by ID attribute values,
-        // loop through the table copying information to a KeyIndex
-        // for the mapping from ID attribute value to DTM node
-        final Enumeration idValues = elementsByID.keys();
-        boolean hasIDValues = false;
+            if (elementsByID == null) {
+            	return;
+            }
 
-        while (idValues.hasMoreElements()) {
-            final Object idValue = idValues.nextElement();
-            final int element = ((Integer)elementsByID.get(idValue)).intValue();
+            // Given a Hashtable of DTM nodes indexed by ID attribute values,
+            // loop through the table copying information to a KeyIndex
+            // for the mapping from ID attribute value to DTM node
+            final Enumeration idValues = elementsByID.keys();
+            boolean hasIDValues = false;
 
-            buildKeyIndex(ID_INDEX_NAME, element, idValue);
-            hasIDValues = true;
-        }
+            while (idValues.hasMoreElements()) {
+            	final Object idValue = idValues.nextElement();
+            	final int element = ((Integer)elementsByID.get(idValue)).intValue();
 
-        if (hasIDValues) {
-            setKeyIndexDom(ID_INDEX_NAME, document);
+            	buildKeyIndex(ID_INDEX_NAME, element, idValue);
+            	hasIDValues = true;
+            }
+
+            if (hasIDValues) {
+            	setKeyIndexDom(ID_INDEX_NAME, document);
+            }
         }
     }
 
@@ -391,6 +392,21 @@ public abstract class AbstractTranslet implements Translet {
 	    _keyIndexes.put(name, index = new KeyIndex(_indexSize));
 	}
 	index.add(value, node);
+    }
+
+    /**
+     * Create an empty KeyIndex in the DOM case
+     *   @name is the name of the index (the key or ##id)
+     *   @node is the DOM
+     */
+    public void buildKeyIndex(String name, DOM dom) {
+	if (_keyIndexes == null) _keyIndexes = new Hashtable();
+	
+	KeyIndex index = (KeyIndex)_keyIndexes.get(name);
+	if (index == null) {
+	    _keyIndexes.put(name, index = new KeyIndex(_indexSize));
+	}
+	index.setDom(dom);
     }
 
     /**
