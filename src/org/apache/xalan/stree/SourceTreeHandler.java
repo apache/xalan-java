@@ -280,21 +280,6 @@ public class SourceTreeHandler implements TransformerHandler
     // System.out.println("startDocument: "+m_id);
     synchronized (m_root)
     {
-
-      /*
-      if(false == m_initedRoot)
-      {
-        if(null != m_transformer)
-        {
-          String urlOfSource = m_transformer.getBaseURLOfSource();
-          if(null == m_inputSource)
-          {
-            m_inputSource = new InputSource(urlOfSource);
-          }
-          m_transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(m_root, m_inputSource);
-        }
-      }
-      */
       ((DocumentImpl) m_root).setSourceTreeHandler(this);
       ((DocumentImpl) m_root).setUid(1);
       ((DocumentImpl) m_root).setLevel(new Integer(1).shortValue());
