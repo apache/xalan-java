@@ -738,9 +738,10 @@ public class XObject extends Expression implements Serializable, Cloneable
     //                                      null, fmsg, 0, 0);
     // if(shouldThrow)
     {
-      throw new XPathException(fmsg);
+      throw new XPathException(fmsg, this);
     }
   }
+  
   
   /**
    * XObjects should not normally need to fix up variables.
