@@ -143,6 +143,14 @@ public class OutputProperties extends ElemTemplateElement
         "{"+Constants.S_BUILTIN_EXTENSIONS_URL+"}";
   
   /**
+   * The old built-in extension namespace
+   */
+  static final String S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL=
+        "{"+Constants.S_BUILTIN_OLD_EXTENSIONS_URL+"}";
+  
+  static final int S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN = S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL.length();
+  
+  /**
    * Fix up a string in an output properties file according to 
    * the rules of {@link #loadPropertiesFile}.
    * 
@@ -418,6 +426,10 @@ public class OutputProperties extends ElemTemplateElement
     {
       setMethodDefaults(value);
     }
+    
+    if (key.startsWith(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL))
+      key = S_BUILTIN_EXTENSIONS_UNIVERSAL + key.substring(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN);
+    
     m_properties.put(key, value);
   }
 
@@ -446,6 +458,8 @@ public class OutputProperties extends ElemTemplateElement
    */
   public String getProperty(String key)
   {
+    if (key.startsWith(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL))
+      key = S_BUILTIN_EXTENSIONS_UNIVERSAL + key.substring(S_BUILTIN_OLD_EXTENSIONS_UNIVERSAL_LEN);
     return m_properties.getProperty(key);
   }
 

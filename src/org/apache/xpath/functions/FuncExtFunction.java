@@ -140,14 +140,48 @@ public class FuncExtFunction extends Function
       }
     }
   }
-  //called by StylesheetHandler.createXPath() -- dml 
+  
+  /**
+   * Return the namespace of the extension function.
+   *
+   * @return The namespace of the extension function.
+   */
   public String getNamespace()
   {
     return m_namespace;
   }
+  
+  /**
+   * Return the name of the extension function.
+   *
+   * @return The name of the extension function.
+   */
   public String getFunctionName()
   {
     return m_extensionName;
+  }
+
+  /** 
+   * Return the nth argument passed to the extension function.
+   * 
+   * @param n The argument number index.
+   * @return The Expression object at the given index.
+   */    
+  public Expression getArg(int n) {
+    if (n >= 0 && n < m_argVec.size())
+      return (Expression) m_argVec.elementAt(n);
+    else
+      return null;
+  }
+
+  /**
+   * Return the number of arguments that were passed
+   * into this extension function.
+   *
+   * @return The number of arguments.
+   */    
+  public int getArgCount() {
+    return m_argVec.size();
   }
 
   /**
@@ -275,7 +309,7 @@ public class FuncExtFunction extends Function
   {
       for (int i = 0; i < m_argVec.size(); i++)
       {
-         Expression exp = (Expression)m_argVec.get(i);
+         Expression exp = (Expression)m_argVec.elementAt(i);
          exp.callVisitors(new ArgExtOwner(exp), visitor);
       }
     

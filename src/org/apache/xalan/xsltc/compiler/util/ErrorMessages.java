@@ -632,7 +632,7 @@ public class ErrorMessages extends ResourceBundle {
 	 * Note to translators:  "setResult()" and "startDocument()" are Java
 	 * method names that should not be translated.
 	 */
-	//JAXP_SET_RESULT_ERROR
+	//JAXP_SET_RESULT_ERR
 	"setResult() must be called prior to startDocument().",
 
 	/*
@@ -692,7 +692,12 @@ public class ErrorMessages extends ResourceBundle {
 
 	/*
 	 * Note to translators:  This message contains usage information for a
-	 * means of invoking XSLTC from the command-line.
+	 * means of invoking XSLTC from the command-line.  The message is
+         * formatted for presentation in English.  The strings <output>,
+         * <directory>, etc. indicate user-specified argument values, and can
+         * be translated - the argument <package> refers to a Java package, so
+         * it should be handled in the same way the term is handled for JDK
+         * documentation.
 	 */
 	//COMPILE_USAGE_STR
 	"SYNOPSIS\n"+
@@ -720,7 +725,12 @@ public class ErrorMessages extends ResourceBundle {
 
 	/*
 	 * Note to translators:  This message contains usage information for a
-	 * means of invoking XSLTC from the command-line.
+	 * means of invoking XSLTC from the command-line.  The message is
+         * formatted for presentation in English.  The strings <jarfile>,
+         * <document>, etc. indicate user-specified argument values, and can
+         * be translated - the argument <class> refers to a Java class, so it
+         * should be handled in the same way the term is handled for JDK
+         * documentation.
 	 */
 	//TRANSFORM_USAGE_STR
 	"SYNOPSIS \n"+
@@ -796,7 +806,7 @@ public class ErrorMessages extends ResourceBundle {
 	 * required in a particular context.  However, the location of the
 	 * problematic expression is unknown.
 	 */
-	//TYPE_CHECK_LOC_UNK_ERR
+	//TYPE_CHECK_UNK_LOC_ERR
 	"Error checking type of an expression at an unknown location.",
 
 	/*
@@ -816,7 +826,8 @@ public class ErrorMessages extends ResourceBundle {
 	/*
 	 * Note to translators:  This message is used to indicate the severity
 	 * of another message.  The substitution text contains two error
-	 * messages.
+	 * messages.  The spacing before the second substitution text indents
+         * it the same amount as the first in English.
 	 */
 	//WARNING_PLUS_WRAPPED_MSG
 	"WARNING:  ''{0}''\n       :{1}",
@@ -831,7 +842,8 @@ public class ErrorMessages extends ResourceBundle {
 	/*
 	 * Note to translators:  This message is used to indicate the severity
 	 * of another message.  The substitution text contains two error
-	 * messages.
+	 * messages.  The spacing before the second substitution text indents
+         * it the same amount as the first in English.
 	 */
 	//FATAL_ERR_PLUS_WRAPPED_MSG
 	"FATAL ERROR:  ''{0}''\n           :{1}",
@@ -846,7 +858,8 @@ public class ErrorMessages extends ResourceBundle {
 	/*
 	 * Note to translators:  This message is used to indicate the severity
 	 * of another message.  The substitution text contains two error
-	 * messages.
+	 * messages.  The spacing before the second substitution text indents
+         * it the same amount as the first in English.
 	 */
 	//ERROR_PLUS_WRAPPED_MSG
 	"ERROR:  ''{0}''\n     :{1}",
@@ -856,7 +869,28 @@ public class ErrorMessages extends ResourceBundle {
          * of another message.  The substitution text is an error message.
 	 */
 	//ERROR_MSG
-	"ERROR:  ''{0}''"
+	"ERROR:  ''{0}''",
+	
+	/*
+	 * Note to translators:  The substitution text is the name of a class.
+	 */
+	//TRANSFORM_WITH_TRANSLET_STR
+	"Transform using translet ''{0}'' ",
+
+	/*
+	 * Note to translators:  The first substitution is the name of a class,
+         * while the second substitution is the name of a jar file.
+	 */
+	//TRANSFORM_WITH_JAR_STR
+	"Transform using translet ''{0}'' from jar file ''{1}''",
+
+        /*
+	 * Note to translators:  "TransformerFactory" is the name of a Java
+         * interface and must not be translated.  The substitution text is
+         * the name of the class that could not be instantiated.
+	 */
+        //COULD_NOT_CREATE_TRANS_FACT
+        "Could not create an instance of the TransformerFactory class ''{0}''."
     };
 
     private static Vector _keys;

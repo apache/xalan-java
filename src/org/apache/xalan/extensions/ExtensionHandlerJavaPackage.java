@@ -87,7 +87,7 @@ import javax.xml.transform.TransformerException;
  * <pre>
  *   xalan://partial.class.name
  *   xalan://
- *   http://xml.apache.org/xslt/java (which is the same as xalan://)
+ *   http://xml.apache.org/xalan/java (which is the same as xalan://)
  * </pre>
  * However, we do not enforce this.  If the class name contains a
  * a /, we only use the part to the right of the rightmost slash.
