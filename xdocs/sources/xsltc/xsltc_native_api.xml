@@ -200,12 +200,14 @@
 
     <ul>
       <li><code>org.apache.xalan.xsltc.cmdline.Transform</code></li>
-      <li><code>$XML-XALAN/java/samples/CompiledApplet/TransformApplet</code></li>
-      <li><code>$XML-XALAN/java/samples/CompiledApplet/TransformApplet</code></li>
-      <li><code>$XML-XALAN/java/samples/CompiledServlet/TransformServlet</code></li>
-      <li><code>$XML-XALAN/java/samples/CompiledBrazil/TransformHandler</code></li>
-      <li><code>$XML-XALAN/java/samples/CompiledEJB/Transform</code></li>
-
+      <li><code>xml-xalan/java/samples/CompiledApplet/TransformApplet.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledBrazil/TransformHandler.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledEJB/TransformBean.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledEJB/TransformHome.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledEJB/TransformRemote.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledEJB/TransformServlet.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledServlet/CompileServlet.java</code></li>
+      <li><code>xml-xalan/java/samples/CompiledServlet/TransformServlet.java</code></li>
     </ul>
 
     <s3 title="Transformation input handling">

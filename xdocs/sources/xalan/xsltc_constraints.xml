@@ -12,7 +12,7 @@ and new support for the TrAX API.</p>
   <li><link anchor="xsltcconf">Conformance</link></li>
   <li><link anchor="xsltcknownproblems">Known Problems</link></li>
   <li><link anchor="xsltcsmart">Smart Transformer Switch</link></li>
-  <li><link anchor="xsltcdemos">Running Demos</link></li>  
+  <li><link idref="samples" anchor="translets">Sample Translets</link></li>  
   <li><link idref="xsltc_history">History of XSLTC software changes</link></li>
 </ul>
 <anchor name="xsltcnew"/>
@@ -100,25 +100,5 @@ processors within your application. It uses Xalan to create your
 For one-time transformations or transformations that require extensions supported by Xalan, and not XSLTC,
 you would use Transformer objects. For a repeated transformation where performance is critical, you would 
 use Templates objects.</p> 
-</s2>
-<s2 title="Running Demos">
-<p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
-Brazil (a new and powerful Web techology from Sun labs). To run these demos,
-download Brazil from sunlabs:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;<jump href="http://research.sun.com/research/download/index.html">http://research.sun.com/research/download/index.html</jump></code></p>
-<p>and the java extensions for servlets from Sun:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;
-<jump href="http://java.sun.com/products/servlet/download.html">
-http://java.sun.com/products/servlet/download.html</jump>
-</code></p>
-<p>The translet must be specified as a pure class name, accessible
-through the Brazil handler's classpath. For example:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;translet=mk054</code></p>
-<p>The document must be specified as a valid URL. For example:</p>
-<p><code>&nbsp;&nbsp;&nbsp;&nbsp;document=http://server/path/to/filename.xml</code></p>
-<p>If the file is local to the Brazil handler, it has to be
-specified using the "file:filename.xml" format.</p>
-<note>You also need to make the Brazil and javax classes available from your classpath</note>
-<p>See also: <link idref="samples" anchor="translets">sample JAXP translets</link>.</p>
 </s2>
 </s1>

@@ -65,7 +65,8 @@
   <li><link anchor="run">Running translets from the command line</link></li>
   <li><link anchor="api">Calling XSLTC with the TrAX/JAXP API</link></li>
   <li><link anchor="native_api">Calling XSLTC with the native API</link></li>
-  <li><link anchor="constraints">XSLTC usage constraints</link></li>  
+  <li><link idref="samples" anchor="translets">Sample translets</link></li>
+  <li><link idref="xsltc_constraints">XSLTC release notes</link></li>  
 </ul>
 <p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
 <anchor name="intro"/>
