@@ -382,6 +382,7 @@ final class Step extends RelativeLocationPath {
 		// and place the node test on top of the resulting iterator
 		if (step.isAbbreviatedDot()) {
 		    translate(classGen, methodGen);
+		    il.append(new ICONST(DOM.RETURN_CURRENT));
 		}
 		// Otherwise we create a parent location path with this Step and
 		// the predicates Step, and place the node test on top of that
@@ -392,12 +393,13 @@ final class Step extends RelativeLocationPath {
 		    }
 		    catch (TypeCheckError e) { }
 		    path.translate(classGen, methodGen);
+		    il.append(new ICONST(DOM.RETURN_PARENT));
 		}
 		predicate.translate(classGen, methodGen);
 		int iter = cpg.addInterfaceMethodref(DOM_INTF,
 					     GET_NODE_VALUE_ITERATOR,
 					     GET_NODE_VALUE_ITERATOR_SIG);
-		il.append(new INVOKEINTERFACE(iter, 4));
+		il.append(new INVOKEINTERFACE(iter, 5));
 	    }
 	    // Handle '//*[n]' expression
 	    else if (predicate.isNthDescendant()) {

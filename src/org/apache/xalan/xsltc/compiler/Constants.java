@@ -470,7 +470,7 @@ public interface Constants extends InstructionConstants {
     public static final String GET_NODE_VALUE_ITERATOR
 	= "getNodeValueIterator";
     public static final String GET_NODE_VALUE_ITERATOR_SIG
-	= "("+NODE_ITERATOR_SIG+STRING_SIG+"Z)"+NODE_ITERATOR_SIG;
+	= "("+NODE_ITERATOR_SIG+"I"+STRING_SIG+"Z)"+NODE_ITERATOR_SIG;
 
     public static final int POSITION_INDEX = 2;
     public static final int LAST_INDEX     = 3;

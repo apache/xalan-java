@@ -975,6 +975,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	public void gotoMark() {
 	    _node = _markedNode;
 	}
+
     } // end of PrecedingSiblingIterator
 
 
@@ -994,7 +995,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    int node;
 	    while ((node = super.next()) != NULL && _type[node] != _nodeType) {
 	    }
-	    return node;
+	    return returnNode(node);
 	}
 
     } // end of PrecedingSiblingIterator
@@ -1524,10 +1525,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	private String _value;
 	private boolean _op;
 	private final boolean _isReverse;
+	private int _returnType = RETURN_PARENT;
 
-	public NodeValueIterator(NodeIterator source,
+	public NodeValueIterator(NodeIterator source, int returnType,
 				 String value, boolean op) {
 	    _source = source;
+	    _returnType = returnType;
 	    _value = value;
 	    _op = op;
 	    _isReverse = source.isReverse();
@@ -1563,7 +1566,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	    while ((node = _source.next()) != END) {
 		String val = getNodeValue(node);
 		if (_value.equals(val) == _op) {
-		    return _parent[node];
+		    if (_returnType == RETURN_CURRENT)
+			return returnNode(node);
+		    else
+			return returnNode(_parent[node]);
 		}
 	    }
 	    return END;
@@ -1586,9 +1592,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
     }                       
 
-    public NodeIterator getNodeValueIterator(NodeIterator iterator,
+    public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
 					     String value, boolean op) {
-	return(new NodeValueIterator(iterator, value, op));
+	return(new NodeValueIterator(iterator, type, value, op));
     }
 
     /**************************************************************

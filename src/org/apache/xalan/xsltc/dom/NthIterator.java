@@ -68,13 +68,14 @@ import org.apache.xalan.xsltc.NodeIterator;
 
 public final class NthIterator extends NodeIteratorBase {
     // ...[N]
-    private final int _position;
     private final NodeIterator _source;
+    private int _position = 1;
+    private int _n = 0;
     private boolean _ready;
 
     public NthIterator(NodeIterator source, int n) {
 	_source = source;
-	_position = n;
+	_n = n;
     }
     
     public int next() {
@@ -93,6 +94,15 @@ public final class NthIterator extends NodeIteratorBase {
 	
     public NodeIterator setStartNode(final int node) {
 	_source.setStartNode(node);
+	// Make sure we count backwards if the iterator is reverse
+	if (_source.isReverse()) {
+	    int last = _source.getLast();
+	    _position = (last - _n) + 1;
+	    if (_position < 1) _position = 1;
+	}
+	else {
+	    _position = _n;
+	}
 	_ready = true;
 	return this;
     }

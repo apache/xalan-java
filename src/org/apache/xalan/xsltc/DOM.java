@@ -84,6 +84,10 @@ public interface DOM {
     public final static int NULL     = 0;
     // index of root node
     public final static int ROOTNODE = 1;
+
+    // used by some node iterators to know which node to return
+    public final static int RETURN_CURRENT = 0;
+    public final static int RETURN_PARENT  = 1;
     
     /** returns singleton iterator containg the document root */
     public NodeIterator getIterator();
@@ -95,7 +99,7 @@ public interface DOM {
     public NodeIterator getTypedAxisIterator(final int axis, final int type);
     public NodeIterator getNthDescendant(int node, int n);
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns);
-    public NodeIterator getNodeValueIterator(NodeIterator iter,
+    public NodeIterator getNodeValueIterator(NodeIterator iter, int returnType,
 					     String value, boolean op);
     public NodeIterator orderNodes(NodeIterator source, int node);
     public String getNodeName(final int node);

@@ -234,9 +234,9 @@ public final class MultiDOM implements DOM {
 	return _adapters[node>>>24].getNthDescendant(node & CLR, n);
     }
 
-    public NodeIterator getNodeValueIterator(NodeIterator iterator,
+    public NodeIterator getNodeValueIterator(NodeIterator iterator, int type,
 					     String value, boolean op) {
-	return _adapters[0].getNodeValueIterator(iterator, value, op);
+	return _adapters[0].getNodeValueIterator(iterator, type, value, op);
     }
 
     public NodeIterator getNamespaceAxisIterator(final int axis, final int ns) {
