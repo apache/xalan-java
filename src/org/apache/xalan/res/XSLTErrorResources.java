@@ -433,7 +433,9 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_NO_ATTRIB_SET = "ER_NO_ATTRIB_SET";
   public static final String ER_FUNCTION_NOT_FOUND = 
 	 "ER_FUNCTION_NOT_FOUND"; 
-
+  public static final String ER_CANT_HAVE_CONTENT_AND_SELECT = 
+     "ER_CANT_HAVE_CONTENT_AND_SELECT";
+     
   public static final String WG_FOUND_CURLYBRACE = "WG_FOUND_CURLYBRACE";
   public static final String WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR = 
 	 "WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR";
@@ -2145,6 +2147,14 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_FUNCTION_NOT_FOUND,
      "The function named {0} does not exist"},
 
+    // Note to translators:  This message indicates that the XSLT instruction
+    // that is named by the substitution text {0} must not contain other XSLT
+    // instructions (content) or a "select" attribute.  The word "select" is
+    // an XSLT keyword in this case and must not be translated.
+//  ER_CANT_HAVE_CONTENT_AND_SELECT
+//  public static final int ER_CANT_HAVE_CONTENT_AND_SELECT = 255;
+    { ER_CANT_HAVE_CONTENT_AND_SELECT,
+     "The {0} element must not have both content and a select attribute."},
 
 
 

@@ -58,6 +58,7 @@ package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
@@ -273,7 +274,27 @@ public class ElemWithParam extends ElemTemplateElement
   		m_selectPattern.getExpression().callVisitors(m_selectPattern, visitor);
     super.callChildVisitors(visitor, callAttrs);
   }
-
+  
+  /**
+   * Add a child to the child list. If the select attribute
+   * is present, an error will be raised.
+   *
+   * @param elem New element to append to this element's children list
+   *
+   * @return null if the select attribute was present, otherwise the 
+   * child just added to the child list 
+   */
+  public ElemTemplateElement appendChild(ElemTemplateElement elem)
+  {
+    // cannot have content and select
+    if (m_selectPattern != null)
+    {
+      error(XSLTErrorResources.ER_CANT_HAVE_CONTENT_AND_SELECT, 
+          new Object[]{"xsl:" + this.getNodeName()});
+      return null;
+    }
+    return super.appendChild(elem);
+  }
 
 
 }

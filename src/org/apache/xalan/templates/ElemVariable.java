@@ -66,6 +66,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
+import org.apache.xalan.res.XSLTErrorResources;
 
 /**
  * Implement xsl:variable.
@@ -548,6 +549,27 @@ public class ElemVariable extends ElemTemplateElement
   			return true;
   	}
   	return false;
+  }
+  
+  /**
+   * Add a child to the child list. If the select attribute
+   * is present, an error will be raised.
+   *
+   * @param elem New element to append to this element's children list
+   *
+   * @return null if the select attribute was present, otherwise the 
+   * child just added to the child list 
+   */
+  public ElemTemplateElement appendChild(ElemTemplateElement elem)
+  {
+    // cannot have content and select
+    if (m_selectPattern != null)
+    {
+      error(XSLTErrorResources.ER_CANT_HAVE_CONTENT_AND_SELECT, 
+          new Object[]{"xsl:" + this.getNodeName()});
+      return null;
+    }
+    return super.appendChild(elem);
   }
 
 }
