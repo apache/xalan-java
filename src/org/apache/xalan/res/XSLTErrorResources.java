@@ -453,7 +453,8 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME";
   public static final String WG_ILLEGAL_ATTRIBUTE_POSITION = 
 	 "WG_ILLEGAL_ATTRIBUTE_POSITION";
-
+  public static final String NO_MODIFICATION_ALLOWED_ERR = 
+         "NO_MODIFICATION_ALLOWED_ERR";
 
 //  public static final int ER_NO_CURLYBRACE = 1;
   /*
@@ -2333,6 +2334,10 @@ public class XSLTErrorResources extends ListResourceBundle
 //  public static final int WG_ILLEGAL_ATTRIBUTE_POSITION = 29;
     { WG_ILLEGAL_ATTRIBUTE_POSITION,
       "Cannot add attribute {0} after child nodes or before an element is produced.  Attribute will be ignored."},
+
+    { NO_MODIFICATION_ALLOWED_ERR,
+      "An attempt is made to modify an object where modifications are not allowed."
+    },
 
     //Check: WHY THERE IS A GAP B/W NUMBERS in the XSLTErrorResources properties file?
 

@@ -265,26 +265,6 @@ public class ElemExtensionCall extends ElemLiteralResult
   }
 
   /**
-   * Return the raw value of the attribute.
-   *
-   * @param rawName Raw name of the attribute to get
-   *
-   * @return the raw value of the attribute or null if not found
-   */
-  public String getAttribute(String rawName)
-  {
-
-    AVT avt = getLiteralResultAttribute(rawName);
-
-    if ((null != avt) && avt.getRawName().equals(rawName))
-    {
-      return avt.getSimpleString();
-    }
-
-    return null;
-  }
-
-  /**
    * Return the value of the attribute interpreted as an Attribute
    * Value Template (in other words, you can use curly expressions
    * such as href="http://{website}".

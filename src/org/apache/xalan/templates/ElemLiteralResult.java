@@ -23,11 +23,21 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.StringVector;
+import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.DOMException;
 
 /**
  * Implement a Literal Result Element.
@@ -37,6 +47,9 @@ import org.xml.sax.SAXException;
 public class ElemLiteralResult extends ElemUse
 {
     static final long serialVersionUID = -8703409074421657260L;
+
+    /** The return value as Empty String. */
+    private static final String EMPTYSTRING = "";
 
   /**
    * Tells if this element represents a root element
@@ -162,9 +175,61 @@ public class ElemLiteralResult extends ElemUse
     // else maybe it's a real AVT, so we can't resolve it at this time.
   }
 
-
   /**
    * Get a literal result attribute by name.
+   *
+   * @param namespaceURI Namespace URI of attribute node to get
+   * @param localName Local part of qualified name of attribute node to get
+   *
+   * @return literal result attribute (AVT)
+   */
+  public AVT getLiteralResultAttributeNS(String namespaceURI, String localName)
+  {
+
+    if (null != m_avts)
+    {
+      int nAttrs = m_avts.size();
+
+      for (int i = (nAttrs - 1); i >= 0; i--)
+      {
+        AVT avt = (AVT) m_avts.elementAt(i);
+
+        if (avt.getName().equals(localName) && 
+                avt.getURI().equals(namespaceURI))
+        {
+          return avt;
+        }
+      }  // end for
+    }
+
+    return null;
+  }
+
+  /**
+   * Return the raw value of the attribute.
+   *
+   * @param namespaceURI Namespace URI of attribute node to get
+   * @param localName Local part of qualified name of attribute node to get
+   *
+   * @return The Attr value as a string, or the empty string if that attribute 
+   * does not have a specified or default value
+   */
+  public String getAttributeNS(String namespaceURI, String localName)
+  {
+
+    AVT avt = getLiteralResultAttributeNS(namespaceURI, localName);
+
+    if ((null != avt))
+    {
+      return avt.getSimpleString();
+    }
+
+    return EMPTYSTRING;
+  }
+
+  /**
+   * Get a literal result attribute by name. The name is namespaceURI:localname  
+   * if namespace is not null.
    *
    * @param name Name of literal result attribute to get
    *
@@ -176,12 +241,15 @@ public class ElemLiteralResult extends ElemUse
     if (null != m_avts)
     {
       int nAttrs = m_avts.size();
-
+      String namespace = null;
       for (int i = (nAttrs - 1); i >= 0; i--)
       {
         AVT avt = (AVT) m_avts.elementAt(i);
-
-        if (avt.getRawName().equals(name))
+        namespace = avt.getURI();
+        
+        if ((namespace != null && (!namespace.equals("")) && (namespace 
+                +":"+avt.getName()).equals(name))|| ((namespace == null || 
+                namespace.equals(""))&& avt.getRawName().equals(name)))
         {
           return avt;
         }
@@ -191,6 +259,28 @@ public class ElemLiteralResult extends ElemUse
     return null;
   }
 
+  /**
+   * Return the raw value of the attribute.
+   *
+   * @param namespaceURI:localName or localName if the namespaceURI is null of 
+   * the attribute to get
+   *
+   * @return The Attr value as a string, or the empty string if that attribute 
+   * does not have a specified or default value
+   */
+  public String getAttribute(String rawName)
+  {
+
+    AVT avt = getLiteralResultAttribute(rawName);
+
+    if ((null != avt))
+    {
+      return avt.getSimpleString();
+    }
+
+    return EMPTYSTRING;
+  }
+  
   /**
    * Get whether or not the passed URL is flagged by
    * the "extension-element-prefixes" or "exclude-result-prefixes"
@@ -446,6 +536,551 @@ public class ElemLiteralResult extends ElemUse
     m_ExtensionElementURIs = v;
   }
 
+  /**
+   * @see org.w3c.dom.Node
+   *
+   * @return NamedNodeMap
+   */
+  public NamedNodeMap getAttributes()
+  {
+        return new LiteralElementAttributes();
+  }
+
+  public class LiteralElementAttributes implements NamedNodeMap{
+          private int m_count = -1;
+          
+          /**
+           * Construct a NameNodeMap.
+           *
+           */
+          public LiteralElementAttributes(){         
+          }
+          
+          /**
+           * Return the number of Attributes on this Element
+           *
+           * @return The number of nodes in this map. The range of valid child 
+           * node indices is <code>0</code> to <code>length-1</code> inclusive
+           */
+          public int getLength()
+          {
+            if (m_count == -1)
+            {
+               if (null != m_avts) m_count = m_avts.size();
+               else m_count = 0;
+            }
+            return m_count;
+          }
+
+          /**
+           * Retrieves a node specified by name.
+           * @param name The <code>nodeName</code> of a node to retrieve.
+           * @return A <code>Node</code> (of any type) with the specified
+           *   <code>nodeName</code>, or <code>null</code> if it does not 
+           *   identify any node in this map.
+           */
+          public Node getNamedItem(String name)
+          {
+                if (getLength() == 0) return null;
+                String uri = null;
+                String localName = name; 
+                int index = name.indexOf(":"); 
+                if (-1 != index){
+                         uri = name.substring(0, index);
+                         localName = name.substring(index+1);
+                }
+                Node retNode = null;
+                Enumeration eum = m_avts.elements();
+                while (eum.hasMoreElements()){
+                        AVT avt = (AVT) eum.nextElement();
+                        if (localName.equals(avt.getName()))
+                        {
+                          String nsURI = avt.getURI(); 
+                          if ((uri == null && nsURI == null)
+                            || (uri != null && uri.equals(nsURI)))
+                          {
+                            retNode = new Attribute(avt, ElemLiteralResult.this);
+                            break;
+                          }
+                        }
+                }
+                return retNode;
+          }
+
+          /**
+           * Retrieves a node specified by local name and namespace URI.
+           * @param namespaceURI Namespace URI of attribute node to get
+           * @param localName Local part of qualified name of attribute node to 
+           * get
+           * @return A <code>Node</code> (of any type) with the specified
+           *   <code>nodeName</code>, or <code>null</code> if it does not 
+           *   identify any node in this map.
+           */
+          public Node getNamedItemNS(String namespaceURI, String localName)
+          {
+                  if (getLength() == 0) return null;
+                  Node retNode = null;
+                  Enumeration eum = m_avts.elements();
+                  while (eum.hasMoreElements())
+                  {
+                    AVT avt = (AVT) eum.nextElement();      
+                    if (localName.equals(avt.getName()))
+                    {
+                      String nsURI = avt.getURI(); 
+                      if ((namespaceURI == null && nsURI == null)
+                        || (namespaceURI != null && namespaceURI.equals(nsURI)))
+                      {
+                        retNode = new Attribute(avt, ElemLiteralResult.this);
+                        break;
+                      }
+                    }
+                  }
+                  return retNode;
+          }
+          
+          /**
+           * Returns the <code>index</code>th item in the map. If <code>index
+           * </code> is greater than or equal to the number of nodes in this 
+           * map, this returns <code>null</code>.
+           * @param i The index of the requested item.
+           * @return The node at the <code>index</code>th position in the map, 
+           *   or <code>null</code> if that is not a valid index.
+           */
+          public Node item(int i)
+          {
+                if (getLength() == 0 || i >= m_avts.size()) return null;
+                else return 
+                    new Attribute(((AVT)m_avts.elementAt(i)), 
+                        ElemLiteralResult.this);
+          }
+          
+          /**
+           * @see org.w3c.dom.NamedNodeMap
+           *
+           * @param name of the node to remove
+           * 
+           * @return The node removed from this map if a node with such 
+           * a name exists. 
+           *
+           * @throws DOMException
+           */
+          public Node removeNamedItem(String name) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          }
+          
+          /**
+           * @see org.w3c.dom.NamedNodeMap
+           *
+           * @param namespaceURI Namespace URI of the node to remove
+           * @param localName Local part of qualified name of the node to remove
+           * 
+           * @return The node removed from this map if a node with such a local
+           *  name and namespace URI exists
+           *
+           * @throws DOMException
+           */
+          public Node removeNamedItemNS(String namespaceURI, String localName) 
+                throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          } 
+          
+          /**
+           * Unimplemented. See org.w3c.dom.NamedNodeMap
+           *
+           * @param A node to store in this map
+           * 
+           * @return If the new Node replaces an existing node the replaced 
+           * Node is returned, otherwise null is returned
+           *
+           * @throws DOMException
+           */
+          public Node setNamedItem(Node arg) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          }
+          
+          /**
+           * Unimplemented. See org.w3c.dom.NamedNodeMap
+           *
+           * @param A node to store in this map
+           * 
+           * @return If the new Node replaces an existing node the replaced 
+           * Node is returned, otherwise null is returned
+           *
+           * @throws DOMException
+           */
+          public Node setNamedItemNS(Node arg) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          }                                                                         
+  }
+
+  public class Attribute implements Attr{
+          private AVT m_attribute;
+          private Element m_owner = null;
+          /**
+           * Construct a Attr.
+           *
+           */
+          public Attribute(AVT avt, Element elem){
+                m_attribute = avt;
+                m_owner = elem;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param newChild New node to append to the list of this node's 
+           * children
+           *
+           *
+           * @throws DOMException
+           */
+          public Node appendChild(Node newChild) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param deep Flag indicating whether to clone deep 
+           * (clone member variables)
+           *
+           * @return Returns a duplicate of this node
+           */
+          public Node cloneNode(boolean deep)
+          {
+                  return new Attribute(m_attribute, m_owner);
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return null
+           */
+          public NamedNodeMap getAttributes()
+          {
+            return null;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return a NodeList containing no nodes. 
+           */
+          public NodeList getChildNodes()
+          {
+                  return new NodeList(){
+                          public int getLength(){
+                                  return 0;
+                          }
+                          public Node item(int index){
+                                  return null;
+                          }
+                  };
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return null
+           */
+          public Node getFirstChild()
+          {
+                  return null;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return null
+           */
+          public Node getLastChild()
+          {
+                  return null;
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return the local part of the qualified name of this node
+           */
+          public String getLocalName()
+          {
+                  return m_attribute.getName();
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return The namespace URI of this node, or null if it is 
+           * unspecified
+           */
+          public String getNamespaceURI()
+          {
+                  String uri = m_attribute.getURI();
+                  return (uri.equals(""))?null:uri;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return null
+           */
+          public Node getNextSibling()
+          {
+                return null;
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return The name of the attribute
+           */
+          public String getNodeName()
+          {
+                  String uri = m_attribute.getURI();
+                  String localName = getLocalName();
+                  return (uri.equals(""))?localName:uri+":"+localName;
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return The node is an Attr
+           */
+          public short getNodeType()
+          {
+                  return ATTRIBUTE_NODE;
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return The value of the attribute
+           *
+           * @throws DOMException
+           */
+          public String getNodeValue() throws DOMException
+          {
+                  return m_attribute.getSimpleString();
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return null
+           */
+          public Document getOwnerDocument()
+          {
+            return m_owner.getOwnerDocument();
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return the containing element node
+           */
+          public Node getParentNode()
+          {
+                  return m_owner;
+          }
+                    
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return The namespace prefix of this node, or null if it is 
+           * unspecified
+           */
+          public String getPrefix()
+          {
+                  String uri = m_attribute.getURI();
+                  String rawName = m_attribute.getRawName();
+                  return (uri.equals(""))? 
+                        null:rawName.substring(0, rawName.indexOf(":"));
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return null
+           */
+          public Node getPreviousSibling()
+          {
+                  return null;
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return false
+           */
+          public boolean hasAttributes()
+          {
+                  return false;
+          }
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return false
+           */
+          public boolean hasChildNodes()
+          {
+                  return false;
+          }                    
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param newChild New child node to insert
+           * @param refChild Insert in front of this child
+           *
+           * @return null
+           *
+           * @throws DOMException
+           */
+          public Node insertBefore(Node newChild, Node refChild) 
+                throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR);
+                  return null;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @return Returns <code>false</code>
+           * @since DOM Level 2
+           */
+          public boolean isSupported(String feature, String version)
+          {
+            return false;
+          }
+
+          /** @see org.w3c.dom.Node */
+          public void normalize(){}
+          
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param oldChild Child to be removed
+           *
+           * @return null
+           *
+           * @throws DOMException
+           */
+          public Node removeChild(Node oldChild) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          }         
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param newChild Replace existing child with this one
+           * @param oldChild Existing child to be replaced
+           *
+           * @return null
+           *
+           * @throws DOMException
+           */
+          public Node replaceChild(Node newChild, Node oldChild) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+                  return null;
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param nodeValue Value to set this node to
+           *
+           * @throws DOMException
+           */
+          public void setNodeValue(String nodeValue) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+          }
+
+          /**
+           * @see org.w3c.dom.Node
+           *
+           * @param prefix Prefix to set for this node
+           *
+           * @throws DOMException
+           */
+          public void setPrefix(String prefix) throws DOMException
+          {
+                  throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                      XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR);
+          }
+                                                                      
+          /**
+           *
+           * @return The name of this attribute
+           */          
+          public String getName(){
+                  return m_attribute.getName();                            
+          }
+
+          /**
+           *
+           * @return The value of this attribute returned as string
+           */          
+          public String getValue(){
+                  return m_attribute.getSimpleString();                            
+          }
+          
+          /**
+           *
+           * @return The Element node this attribute is attached to 
+           * or null if this attribute is not in use
+           */                    
+          public Element getOwnerElement(){
+                  return m_owner;
+          }
+          
+          /**
+           *
+           * @return true
+           */          
+          public boolean getSpecified(){
+                  return true;
+          }
+          
+          /**
+           * @see org.w3c.dom.Attr
+           *
+           * @param value Value to set this node to
+           *
+           * @throws DOMException
+           */
+          public void setValue(String value) throws DOMException
+          {
+            throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
+                XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
+          }
+  }        
+  
   /**
    * Get an "extension-element-prefix" property.
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
@@ -777,6 +1412,19 @@ public class ElemLiteralResult extends ElemUse
         }
       }
       super.callChildVisitors(visitor, callAttrs);
+    }
+
+    /**
+     * Throw a DOMException
+     *
+     * @param msg key of the error that occured.
+     */
+    public void throwDOMException(short code, String msg)
+    {
+
+      String themsg = XSLMessages.createMessage(msg, null);
+
+      throw new DOMException(code, themsg);
     }
 
 }
