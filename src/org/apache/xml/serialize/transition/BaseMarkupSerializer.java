@@ -331,6 +331,10 @@ public abstract class BaseMarkupSerializer
         reset();
     }
 
+    public OutputStream getOutputStream()
+    {
+      return _output;
+    }
 
     /**
      * Specifies a writer to which the document should be serialized.
@@ -349,6 +353,11 @@ public abstract class BaseMarkupSerializer
         _writer = writer;
         _output = null;
         reset();
+    }
+    
+    public Writer getWriter()
+    {
+      return _writer;
     }
 
     /**

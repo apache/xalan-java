@@ -207,26 +207,104 @@ class IndentPrinter
      */
     public void printText( String text )
     {
-        _text.append( text );
+      // _text.append( text );
+      // Need linefeed normalization.  Yuck.  -sb
+      int n = text.length();
+      for(int i = 0; i < n; i++)
+      {
+        char c = text.charAt( i );
+        if ((0x0D == c) && ((i+1) < n) && (0x0A==text.charAt( i+1 ))) 
+        {
+          breakLine();
+          i++;
+        }
+        else if ((0x0A == c) && ((i+1) < n) && (0x0D==text.charAt( i+1 ))) 
+        {
+          breakLine();
+          i++;
+        }
+        else if((0x0A == c) || ('\n' == c))
+        {
+          breakLine();
+        }
+        else
+        {
+          _text.append(c);
+        }
+      }
     }
     
     
     public void printText( StringBuffer text )
     {
-        _text.append( text );
+        // _text.append( text );
+      // Need linefeed normalization.  Yuck.  -sb
+      int n = text.length();
+      for(int i = 0; i < n; i++)
+      {
+        char c = text.charAt( i );
+        if ((0x0D == c) && ((i+1) < n) && (0x0A==text.charAt( i+1 ))) 
+        {
+          breakLine();
+          i++;
+        }
+        else if ((0x0A == c) && ((i+1) < n) && (0x0D==text.charAt( i+1 ))) 
+        {
+          breakLine();
+          i++;
+        }
+        else if((0x0A == c) || ('\n' == c))
+        {
+          breakLine();
+        }
+        else
+        {
+          _text.append(c);
+        }
+      }
     }
 
 
     public void printText( char ch )
-    {
+    {       
+      if((0x0A == ch) || ('\n' == ch))
+      {
+        breakLine();
+      }
+      else
+      {
         _text.append( ch );
+      }
     }
 
 
     public void printText( char[] chars, int start, int length )
     {
-        _text.append( chars, start, length );
-    }
+       //  _text.append( chars, start, length );
+      while ( length-- > 0 ) {
+        // -sb Normalize linebreaks.
+        char c = chars[ start ];
+        if ((0x0D == c) && (length>1) && (0x0A==chars[ start+1 ])) 
+        {
+          breakLine();
+          ++start;
+        }
+        else if ((0x0A == c) && (length>1) && (0x0D==chars[ start+1 ])) 
+        {
+          breakLine();
+          ++start;
+        }
+        else if((0x0A == c) || ('\n' == c))
+        {
+          breakLine();
+        }
+        else
+        {
+          _text.append(c);
+        }
+        ++start;
+      }
+   }
     
 
     /**
@@ -303,7 +381,8 @@ class IndentPrinter
     public void breakLine( boolean preserveSpace )
     {
         // Equivalent to calling printSpace and forcing a flushLine.
-        if ( _text.length() > 0 ) {
+        if ( _text.length() > 0 ) 
+        {
             while ( _spaces > 0 ) {
                 _line.append( ' ' );
                 --_spaces;
@@ -335,7 +414,8 @@ class IndentPrinter
     {
         int     indent;
         
-        if ( _line.length() > 0 ) {
+        if ( _line.length() > 0 ) 
+        {
             try {
                 
                 if ( _format.getIndent() && ! preserveSpace ) {
@@ -393,9 +473,8 @@ class IndentPrinter
      */
     public void indent()
     {
-      // -sb TBD: Define way to set the indent amount
-      _nextIndent += 2;
-      // _nextIndent += _format.getIndent();
+      _nextIndent += _format.getIndentAmount();
+      // System.out.print("+"+_nextIndent);
     }
 
 
@@ -404,15 +483,14 @@ class IndentPrinter
      */
     public void unindent()
     {
-      // -sb TBD: Define way to set the indent amount
-      _nextIndent -= 2;
-      // _nextIndent -= _format.getIndent();
+      _nextIndent -= _format.getIndentAmount();
       if ( _nextIndent < 0 )
         _nextIndent = 0;
       // If there is no current line and we're de-identing then
       // this indentation level is actually the next level.
       if ( ( _line.length() + _spaces + _text.length() ) == 0 )
         _thisIndent = _nextIndent;
+      // System.out.print("-"+_nextIndent);
     }
 
 

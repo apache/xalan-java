@@ -173,7 +173,7 @@ public class HTMLSerializer
     public HTMLSerializer( OutputFormat format )
     {
         super();
-        if(null != format)
+        if(null == format)
         {
           format = new OutputFormat();
           format.setMethod(Method.HTML);
@@ -194,7 +194,7 @@ public class HTMLSerializer
     public HTMLSerializer( Writer writer, OutputFormat format )
     {
         super();
-        if(null != format)
+        if(null == format)
         {
           format = new OutputFormat();
           format.setMethod(Method.HTML);
@@ -214,7 +214,7 @@ public class HTMLSerializer
     public HTMLSerializer( OutputStream output, OutputFormat format )
     {
         super();
-        if(null != format)
+        if(null == format)
         {
           format = new OutputFormat();
           format.setMethod(Method.HTML);
@@ -225,7 +225,7 @@ public class HTMLSerializer
     
     public void setOutputFormat( OutputFormat format )
     {
-        if(null != format)
+        if(null == format)
         {
           format = new OutputFormat();
           format.setMethod(Method.HTML);
@@ -270,9 +270,11 @@ public class HTMLSerializer
             // Indent this element on a new line if the first
             // content of the parent element or immediately
             // following an element.
-            if ( _indenting && ! state.preserveSpace &&
-                 ( state.empty || state.afterElement ) )
+            if ( _indenting && !state.preserveSpace &&
+                 (  state.empty ||  state.afterElement ) )
+            {
                 _printer.breakLine();
+            }
         }
         preserveSpace = state.preserveSpace;
 
@@ -442,7 +444,7 @@ public class HTMLSerializer
             // [keith] Provided this is not an anchor.
             // HTML: some elements do not print closing tag (e.g. LI)
             if ( htmlName == null || ! HTMLdtd.isOnlyOpening( htmlName ) ) {
-                if ( _indenting && ! state.preserveSpace && state.afterElement )
+                if ( _indenting && !state.preserveSpace && state.afterElement )
                     _printer.breakLine();
                 // Must leave CData section first (Illegal in HTML, but still)
                 if ( state.inCData )
@@ -631,6 +633,8 @@ public class HTMLSerializer
             // If the public and system identifiers were not specified
             // in the output format, use the appropriate ones for HTML
             // or XHTML.
+          // -sb See http://www.w3.org/TR/xslt#section-HTML-Output-Method
+            /*
             if ( _docTypePublicId == null && _docTypeSystemId == null ) {
                 if ( _xhtml ) {
                     _docTypePublicId = DTD.XHTMLPublicId;
@@ -640,6 +644,7 @@ public class HTMLSerializer
                     _docTypeSystemId = DTD.HTMLSystemId;
                 }
             }
+          */
 
             // -sb
             // if ( ! _format.getOmitDocumentType() ) 

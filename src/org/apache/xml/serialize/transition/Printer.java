@@ -220,7 +220,7 @@ public class Printer
                   breakLine();
                   i++;
                 }
-                else if('\n' == c)
+                else if((0x0A == c) || ('\n' == c))
                 {
                   breakLine();
                 }
@@ -260,7 +260,7 @@ public class Printer
                   breakLine();
                   i++;
                 }
-                else if('\n' == c)
+                else if((0x0A == c) || ('\n' == c))
                 {
                   breakLine();
                 }
@@ -299,7 +299,7 @@ public class Printer
                   breakLine();
                   ++start;
                 }
-                else if('\n' == c)
+                else if((0x0A == c) || ('\n' == c))
                 {
                   breakLine();
                 }
@@ -326,7 +326,7 @@ public class Printer
                 _writer.write( _buffer );
                 _pos = 0;
             }
-            else if('\n' == ch)
+            else if((0x0A == ch) || ('\n' == ch))
             {
               breakLine();
             }
