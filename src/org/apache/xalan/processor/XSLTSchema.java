@@ -667,6 +667,21 @@ public class XSLTSchema extends XSLTElementDef
                                   new ProcessorInclude(),
                                   null /* class object */,
                                                20, true);
+    
+    XSLTAttributeDef[] scriptAttrs = new XSLTAttributeDef[]{
+    					    new XSLTAttributeDef(null, "lang", XSLTAttributeDef.T_NMTOKEN,
+                                                                 true, false,XSLTAttributeDef.WARNING),
+                                            new XSLTAttributeDef(null, "src", XSLTAttributeDef.T_URL, 
+                                            			 false, false,XSLTAttributeDef.WARNING)};
+
+    XSLTAttributeDef[] componentAttrs = new XSLTAttributeDef[]{ 
+                                            new XSLTAttributeDef(null, "prefix", XSLTAttributeDef.T_NMTOKEN, 
+                                            			 true, false,XSLTAttributeDef.WARNING),
+                                            new XSLTAttributeDef(null, "elements", XSLTAttributeDef.T_STRINGLIST, 
+                                            			 false, false,XSLTAttributeDef.WARNING),
+                                            new XSLTAttributeDef(null, "functions", XSLTAttributeDef.T_STRINGLIST, 
+                                            			 false, false,XSLTAttributeDef.WARNING) };
+
     XSLTElementDef[] topLevelElements = new XSLTElementDef[]
                                  {includeDef,
                                   importDef,
@@ -810,26 +825,31 @@ public class XSLTSchema extends XSLTElementDef
                                                         Constants.S_BUILTIN_EXTENSIONS_URL,
                                                         "script",
                                                         null /*alias */,
-                                                    new XSLTElementDef[]{ 
+                                                    	new XSLTElementDef[]{ 
                                                         charData } /* elements */,
-                                                        new XSLTAttributeDef[]{
-                                                            new XSLTAttributeDef(
-                                                                null,
-                                                                "lang",
-                                                                XSLTAttributeDef.T_NMTOKEN,
-                                                                true, false,XSLTAttributeDef.WARNING),
-                                                            new XSLTAttributeDef(
-                                                                null, "src", XSLTAttributeDef.T_URL, false, false,XSLTAttributeDef.WARNING) }, 
-                                                                new ProcessorLRE(),
-                                                                ElemExtensionScript.class /* class object */, 20, true) },  // EMPTY
-                                                            new XSLTAttributeDef[]{ 
-                                                                new XSLTAttributeDef(
-                                                                    null, "prefix", XSLTAttributeDef.T_NMTOKEN, true, false,XSLTAttributeDef.WARNING),
-                                                                new XSLTAttributeDef(
-                                                                    null, "elements", XSLTAttributeDef.T_STRINGLIST, false, false,XSLTAttributeDef.WARNING),
-                                                                new XSLTAttributeDef(
-                                                                    null, "functions", XSLTAttributeDef.T_STRINGLIST, false, false,XSLTAttributeDef.WARNING) }, 
-                                                    new ProcessorLRE(), ElemExtensionDecl.class /* class object */),
+                                                        scriptAttrs, 
+                                                        new ProcessorLRE(),
+                                                        ElemExtensionScript.class /* class object */, 20, true) },  // EMPTY
+                                           componentAttrs, 
+                                           new ProcessorLRE(), ElemExtensionDecl.class /* class object */),
+                                  new XSLTElementDef(
+                                           this,
+                                           Constants.S_BUILTIN_OLD_EXTENSIONS_URL,
+                                           "component",
+                                           null /*alias */,
+                                           new XSLTElementDef[]{
+                                                    new XSLTElementDef(
+                                                        this,
+                                                        Constants.S_BUILTIN_OLD_EXTENSIONS_URL,
+                                                        "script",
+                                                        null /*alias */,
+                                                    	new XSLTElementDef[]{ 
+                                                        charData } /* elements */,
+                                                        scriptAttrs, 
+                                                        new ProcessorLRE(),
+                                                        ElemExtensionScript.class /* class object */, 20, true) },  // EMPTY
+                                           componentAttrs, 
+                                           new ProcessorLRE(), ElemExtensionDecl.class /* class object */),
                                   exsltFunction}/* exslt */;  //end of topevelElements
     
     XSLTAttributeDef excludeResultPrefixesAttr =
