@@ -157,10 +157,37 @@ public abstract class AbstractTranslet implements Translet {
     }
 
     /**
+     * Replace a certain character in a string with a new substring.
+     */
+    private static String replace(String base, char c, String str) {
+	final int len = base.length() - 1;
+	int pos;
+	while ((pos = base.indexOf(c)) > -1) {
+	    if (pos == 0) {
+		final String after = base.substring(1);
+		base = str + after;
+	    }
+	    else if (pos == len) {
+		final String before = base.substring(0, pos);
+		base = before + str;
+	    }
+	    else {
+		final String before = base.substring(0, pos);
+		final String after = base.substring(pos+1);
+		base = before + str + after;
+	    }
+	}
+	return base;
+    }
+
+    /**
      * Add a new global parameter if not already in the current frame.
      */
     public final Object addParameter(String name, Object value) {
-	return addParameter(name, value, false);
+	String parName = new String(name);
+	parName = replace(parName, '.', "$dot$");
+	parName = replace(parName, '-', "$dash$");
+	return addParameter(parName, value, false);
     }
 
     /**
