@@ -59,7 +59,7 @@
  * @author Jacek Ambroziak
  * @author Morten Jorgensen
  * @author Erwin Bolwidt <ejb@klomp.org>
- *
+ * @author Gunnlaugur Briem <gthb@dimon.is>
  */
 
 package org.apache.xalan.xsltc.compiler;
@@ -88,26 +88,26 @@ final class Include extends TopLevelElement {
     public void parseContents(final Parser parser) {
 	final Stylesheet context = parser.getCurrentStylesheet();
 	try {
-	    String systemId = getAttribute("href");
-	    if (context.checkForLoop(systemId)) {
+	    String docToLoad = getAttribute("href");
+	    if (context.checkForLoop(docToLoad)) {
 		final int errno = ErrorMsg.CIRCULAR_INC;
-		final ErrorMsg msg = new ErrorMsg(errno, systemId, this);
+		final ErrorMsg msg = new ErrorMsg(errno, docToLoad, this);
 		parser.reportError(Constants.FATAL, msg);
 		return;
 	    }
 
-	    final String base = context.getSystemId();
+	    final String currLoadedDoc = context.getSystemId();
 	    SourceLoader loader = context.getSourceLoader();
 	    InputSource input = null;
 
 	    if (loader != null) {
 		final XSLTC xsltc = parser.getXSLTC();
-		input = loader.loadSource(base, systemId, xsltc);
+		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
 	    }
 	    else {
-		final URL url = new URL(new URL(base), systemId);
-		systemId = url.toString();
-		input = new InputSource(systemId);
+		final URL url = new URL(new URL(currLoadedDoc), docToLoad);
+		docToLoad = url.toString();
+		input = new InputSource(docToLoad);
 	    }
 
 	    final SyntaxTreeNode root = parser.parse(input);
@@ -116,7 +116,7 @@ final class Include extends TopLevelElement {
 	    if (_included == null) return;
 
 	    _included.setSourceLoader(loader);
-	    _included.setSystemId(systemId);
+	    _included.setSystemId(docToLoad);
 	    _included.setParentStylesheet(context);
 
 	    // An included stylesheet gets the same import precedence
