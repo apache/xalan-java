@@ -2165,7 +2165,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	case DOM.COMMENT:
 	    return EMPTYSTRING;
 	case DOM.NAMESPACE:
-	    return _prefixArray[_prefix[node]];
+	    final int index = _prefix[node];
+	    if (index < _prefixArray.length)
+		return _prefixArray[index];
+	    else
+		return EMPTYSTRING;
 	case DOM.PROCESSING_INSTRUCTION:
 	    final String pistr = makeStringValue(node);
 	    final int col = pistr.indexOf(' ');
@@ -2193,12 +2197,17 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the namespace URI to which a node belongs
      */
     public String getNamespaceName(final int node) {
-	final int type = getNamespaceType(node);
-	final String name = _uriArray[type];
-	if (name == null)
-	    return(EMPTYSTRING);
-	else
-	    return(name);
+	if (_type[node] == NAMESPACE) {
+	    return getNodeValue(node);
+	}
+	else {
+	    final int type = getNamespaceType(node);
+	    final String name = _uriArray[type];
+	    if (name == null)
+		return(EMPTYSTRING);
+	    else
+		return(name);
+	}
     }
 
     /**
