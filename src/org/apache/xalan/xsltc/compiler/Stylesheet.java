@@ -306,7 +306,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	_version = getAttribute("version");
 
-	addPrefixMapping("xml", "xml"); // Make sure 'xml' maps to 'xml'
+	//addPrefixMapping("xml", "xml"); // Make sure 'xml' maps to 'xml'
+	addPrefixMapping("xml", "http://www.w3.org/XML/1998/namespace");
 
 	// Report and error if more than one stylesheet defined
 	final Stylesheet sheet = stable.addStylesheet(_name, this);

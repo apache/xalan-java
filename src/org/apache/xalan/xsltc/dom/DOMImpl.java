@@ -144,6 +144,9 @@ public final class DOMImpl implements DOM, Externalizable {
     private static NodeList EmptyNodeList;
     private static NamedNodeMap EmptyNamedNodeMap;
 
+    private final static String XML_LANG_ATTRIBUTE =
+	"http://www.w3.org/XML/1998/namespace:@lang";
+
     /**
      * Define the origin of the document from which the tree was built
      */
@@ -2717,7 +2720,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns a node' defined language for a node (if any)
      */
     public String getLanguage(int node) {
-	final Integer langType = (Integer)_types.get("xml:@lang");
+	final Integer langType = (Integer)_types.get(XML_LANG_ATTRIBUTE);
 	if (langType != null) {
 	    final int type = langType.intValue();
 	    while (node != DOM.NULL) {
@@ -3078,14 +3081,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (qname.startsWith(XML_STRING)) {
 		if (qname.startsWith(XMLSPACE_STRING))
 		    xmlSpaceDefine(attList.getValue(i), parent);
-		namebuf.append("xml:");
 	    }
-	    else {
-		final String uri = attList.getURI(i);
-		if ((uri != null) && (!uri.equals(EMPTYSTRING))) {
-		    namebuf.append(uri);
-		    namebuf.append(':');
-		}
+	    final String uri = attList.getURI(i);
+	    if ((uri != null) && (!uri.equals(EMPTYSTRING))) {
+		namebuf.append(uri);
+		namebuf.append(':');
 	    }
 	    namebuf.append('@');
 	    if (localname != null )

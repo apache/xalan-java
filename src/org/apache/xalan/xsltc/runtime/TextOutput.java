@@ -704,6 +704,7 @@ public final class TextOutput implements TransletOutputHandler {
 			namespace(EMPTYSTRING, value);
 		    else
 			namespace(name.substring(6),value);
+		    return;
 		}
 		// Output as xml:<blah> attribute
 		_attributes.add(name, value);
