@@ -75,6 +75,9 @@
   <p>&xslt4j-current; is intended to be the final release in the current series of Developer releases incorporating
   the <link idref="dtm">DTM</link>. We believe Xalan with the DTM has reached a level of stability that warrants a                                                          
   standard "User" release. Accordingly, we plan to release &xslt4j; 2.2 soon.</p>
+  <p>Starting with this release, we have reduced xalan.jar to just include the &xslt4j; implementation, placing the SAX, DOM, 
+  and JAVAX interfaces in xml-apis.jar. These interfaces are shared by a number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a 
+  separate JAR simplifies coordination and reduces risk of duplication. <em>Be sure to put both JAR files on your classpath!</em></p>
 
   <note>To improve performance, &xslt4j; uses the Document Table Model (<link idref="dtm">DTM</link>) to represent the XML source document 
   to be transformed. Please send your feedback to the <human-resource-ref idref="xalandev"/>.</note>
@@ -89,12 +92,13 @@
     <ul>
       <li><resource-ref idref="xslt4j-dist-src-zip"/></li>
       <li><resource-ref idref="xslt4j-dist-src-targz"/></li>
-    </ul>    
+    </ul>
   </s2>
   
   <s2 title="Where do I get Xerces?">
     <p>The Xalan download includes xerces.jar from &xml4j-used;. This is all you need to run Xalan with the Xerces XML parser. 
-    You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>.</p>
+    You can, however, download the complete Xerces distribution from the <resource-ref idref="xml4j-distdir"/>. If you are interested in testing
+    or prototyping &xml4j2;:You can run &xslt4j-current; with &xml4j; 2.0.0.0.beta3.</p>
     <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer
      and XML parser</link>.</note> 
   </s2>
