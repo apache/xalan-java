@@ -31,7 +31,7 @@
     <xsl:if test="count(Commit[@category='compat'])=0">
       <note>This release includes no updates of the compatibility source code (now deprecated).</note>
     </xsl:if>
-    <xsl:if test="count(Commit[@category='xsltc'])>0">
+    <!--xsl:if test="count(Commit[@category='xsltc'])>0">
       <p>XSLTC source code updates:</p>
       <ul>
       <xsl:for-each select="Commit[@category='xsltc']">
@@ -41,7 +41,7 @@
     </xsl:if>
     <xsl:if test="count(Commit[@category='xsltc'])=0">
       <note>This release includes no updates of the XSLTC source code.</note>
-    </xsl:if>
+    </xsl:if-->
   </xsl:template>
   
   <xsl:template match="Who">
