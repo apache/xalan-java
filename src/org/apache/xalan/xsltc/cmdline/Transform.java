@@ -194,41 +194,39 @@ final public class Transform {
 	    }
 	}
 	catch (TransletException e) {
+	    if (_debug) e.printStackTrace();
 	    System.err.println("\nTranslet Error: " + e.getMessage());
-	    if (_debug) {
-		System.err.println(e.toString());
-		e.printStackTrace();
-	    }
 	    System.exit(-1);	    
 	}
 	catch (RuntimeException e) {
+	    if (_debug) e.printStackTrace();
 	    System.err.println("\nRuntime Error: " + e.getMessage());
-	    if (_debug) {
-		System.err.println(e.toString());
-		e.printStackTrace();
-	    }
 	    System.exit(-1);
 	}
 	catch (FileNotFoundException e) {
+	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
 	    System.exit(-1);
 	}
 	catch (MalformedURLException e) {
+	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
 	    System.exit(-1);
 	}
 	catch (ClassNotFoundException e) {
+	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: Cannot find class '"+_className+"'.");
 	    System.exit(-1);
 	}
         catch (UnknownHostException e) {
+	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: Can't resolve URI specification '"+ 
 			       _fileName+"'.");
 	    System.exit(-1);
         }
 	catch (Exception e) {
-	    e.printStackTrace();
-	    System.err.println("Error: internal error.");
+	    if (_debug) e.printStackTrace();
+	    System.err.println("Error: "+e.getMessage());
 	    System.exit(-1);
 	}
     }
