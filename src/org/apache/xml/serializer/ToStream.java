@@ -772,11 +772,13 @@ abstract public class ToStream extends SerializerBase
 
     /**
      * Might print a newline character and the indentation amount
-     * of the current element.
+     * of the given depth.
+     * 
+     * @param depth the indentation depth (element nesting depth)
      *
      * @throws org.xml.sax.SAXException if an error occurs during writing.
      */
-    protected void indent() throws IOException
+    protected void indent(int depth) throws IOException
     {
 
         if (m_startNewLine)
@@ -786,8 +788,17 @@ abstract public class ToStream extends SerializerBase
          * will run faster in that situation.
          */
         if (m_indentAmount > 0)
-            printSpace(m_elemContext.m_currentElemDepth * m_indentAmount);
+            printSpace(depth * m_indentAmount);
 
+    }
+    
+    /**
+     * Indent at the current element nesting depth.
+     * @throws IOException
+     */
+    protected void indent() throws IOException
+    {
+        indent(m_elemContext.m_currentElemDepth);
     }
     /**
      * Prints <var>n</var> spaces.
@@ -2019,7 +2030,7 @@ abstract public class ToStream extends SerializerBase
                     closeCDATA();
 
                 if (shouldIndent())
-                    indent();
+                    indent(m_elemContext.m_currentElemDepth - 1);
                 writer.write('<');
                 writer.write('/');
                 writer.write(name);

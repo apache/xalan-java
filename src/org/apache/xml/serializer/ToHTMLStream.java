@@ -870,7 +870,7 @@ public class ToHTMLStream extends ToStream
                     shouldIndent = true;
                 }
                 if (!m_elemContext.m_startTagOpen && shouldIndent)
-                    indent();
+                    indent(m_elemContext.m_currentElemDepth - 1);
                 m_inBlockElem = !isBlockElement;
             }
 
