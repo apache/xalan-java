@@ -1035,9 +1035,6 @@ public class XStringForFSB extends XString
 	break;
 	
       case '0':			// NOT Unicode isDigit();  ASCII digits _only_
-	if(digitType==0 && digitsFound[0]==0)   // Ignore leading zeros
-	  break;
-	// Else fall through into normal digit handling.
       case '1':
       case '2':
       case '3':
