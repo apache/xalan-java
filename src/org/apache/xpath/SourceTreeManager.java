@@ -101,6 +101,11 @@ public class SourceTreeManager
 
   /** NEEDSDOC Field m_sourceTree          */
   private Vector m_sourceTree = new Vector();
+  
+  public void reset()
+  {
+    m_sourceTree = new Vector();
+  }
 
   /** NEEDSDOC Field m_uriResolver          */
   URIResolver m_uriResolver;
