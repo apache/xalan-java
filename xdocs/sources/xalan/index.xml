@@ -63,7 +63,7 @@
      in an applet or a servlet, or as a module in other program.</p>
   </s2>
   <s2 title="I've heard of &xslt4j;, but what is version 2?">
-    <p>&xslt4j; version 2 recasts Xalan as an implementation of the <resource-ref idref="trax"/> interfaces, part of the <resource-ref idref="jaxp11"/>. TRaX provides a
+    <p>&xslt4j; version 2 recasts Xalan as an implementation of the <link idref="trax">TRaX (Transformation API for XML)</link> interfaces, part of the <resource-ref idref="jaxp11"/>. TRaX provides a
     modular framework and a standard API for performing XML transformations, and it utilizes system properties to determine which Transformer and which XML parser to use.</p>
      <p>&xslt4j; version 2 also builds on <resource-ref idref="sax2"/>, <resource-ref idref="dom2"/>, and the XML parser API in
      <resource-ref idref="jaxp"/>.</p>

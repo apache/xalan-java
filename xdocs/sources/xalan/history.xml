@@ -22,13 +22,12 @@ in front of xerces.jar on the system class path.</em></p>
 </s3>     
    <anchor name="dtm"/>
      <s3 title="Changes for &xslt4j; 2.2.D2">
-     <p>This release includes the following non-XSLTC changes:</p>
+     <p>This release includes the following changes:</p>
      <ul>
        <li>Deprecation of the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatiblity API</link></li>
        <li>The DTM</li>
        <li>Other optimization work</li>
      </ul>
-     <anchor name="dtm"/>
      <p>The primary focus of the 2.2 Developer releases is incorporation of all our work over the past several months on the Document Table
       Model (<link idref="dtm">DTM</link>).</p>
 
@@ -705,7 +704,7 @@ Note: To support incremental output, &xslt4j; performs the transformation in a s
 <s3 title="Changes for &xslt4j; version 2.0.D05">
 <p>All of the bugs reported in &xslt4j; 2.0.D01 have been fixed. The remainder of this section discusses two changes that we believe are of particular importance:</p>
 <p><em>TrAX</em></p>
-<p>The Transformation API for XML (TrAX) that &xslt4j2; implements has undergone substantial revisions since the release of &xslt4j; 2.0.D01. TrAX has joined the Java API for XML Parsing (JAXP) as part of the Sun&reg; <resource-ref idref="jsr063"/>. Accordingly, the TrAX package names have changed. The conceptual organization has also changed somewhat: The primary transformation interfaces are defined in javax.xml.transform, with concrete classes for managing stream input/output, SAX parsers and ContentHandler, and DOM parsers and DOM trees in javax.xml.transform.stream, javax.xml.transform.sax, and javax.xml.transform.dom. For more information, see <resource-ref idref="trax"/>, and review <link idref="usagepatterns">Usage Patterns</link>.</p>
+<p>The Transformation API for XML (TrAX) that &xslt4j2; implements has undergone substantial revisions since the release of &xslt4j; 2.0.D01. TrAX has joined the Java API for XML Parsing (JAXP) as part of the Sun&reg; <resource-ref idref="jsr063"/>. Accordingly, the TrAX package names have changed. The conceptual organization has also changed somewhat: The primary transformation interfaces are defined in javax.xml.transform, with concrete classes for managing stream input/output, SAX parsers and ContentHandler, and DOM parsers and DOM trees in javax.xml.transform.stream, javax.xml.transform.sax, and javax.xml.transform.dom. For more information, see <link idref="trax">TRaX (Transformation API for XML)</link>, and review <link idref="usagepatterns">Usage Patterns</link>.</p>
 <anchor name="outputprops"/><p><em>Output properties</em></p>
 <p>The handling of xsl:output properties has changed: org.apache.xalan.serialize.OutputFormat and apache.xalan.templates.OutputFormatExtended were removed and replaced with org.apache.xalan.templates.OutputProperties. The SerializerFactory getSerializer() method now takes Properties rather than a String indicating the output method. You can replace <code>getSerializer("xml")</code>, for example, with <code>getSerializer(OutputProperties.getDefaultMethodProperties("xml"))</code>.</p>
 <p>HTML, XML, and text xsl:output properties are specified in property files in org.apache.xalan.templates: output_html.properties, output_xml.properties, and output_text.properties.</p>

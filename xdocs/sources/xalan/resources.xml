@@ -86,9 +86,6 @@
   <resource id="jsr063"
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
-  <resource id="trax" 
-            title="TRaX (Transformation API for XML)" 
-            location="trax.html"/>
             
   <resource id="compatapi"
             title="Xalan-Java 1 compatibility Javadoc"
