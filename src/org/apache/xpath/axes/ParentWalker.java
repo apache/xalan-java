@@ -100,7 +100,8 @@ public class ParentWalker extends AxesWalker
     if(!m_gotParent)
     {
       m_gotParent = true;
-      Node n = m_root.getParentNode();
+      // Patch from Merlin
+      Node n = m_lpi.getDOMHelper().getParentOfNode(m_root); 
       return setCurrentIfNotNull(n);
     }
     return null;
