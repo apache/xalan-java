@@ -194,7 +194,7 @@ public class StepPattern extends NodeTest implements SubContextList
     {
       Node parent = xctxt.getDOMHelper().getParentOfNode(xctxt.getCurrentNode());
       xctxt.pushCurrentNode(parent);
-      score = m_relativePathPattern.execute(xctxt);
+      score = execute(xctxt);
       if(score != NodeTest.SCORE_NONE)
         score = SCORE_OTHER;
     }
