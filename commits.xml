@@ -690,4 +690,15 @@ to the original result URI.
 <Modified>java/src/org/apache/xml/utils StringVector.java</Modified>
 <Log>Added missing @serial Javadoc tags.</Log>
 </Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>03/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql ConnectionPool.java
+                        DefaultConnectionPool.java ExtensionError.java
+                        SQLExtensionError.java XConnection.java
+                        XConnectionPoolManager.java XStatement.java</Modified>
+<Log>Update from John Gentilin &lt;johnglinux@eyecatching.com&gt; to
+  fix connection cleanup.</Log>
+</Commit>
+
 </Commits>
