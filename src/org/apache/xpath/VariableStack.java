@@ -270,14 +270,14 @@ public class VariableStack extends Stack
   public void pushOrReplaceVariable(QName qname, XObject xval)
   {
     Stack frame = getCurrentFrame();
-    
     if(frame == m_emptyStackFrame)
+    {
       frame = allocateCurrentFrame();
-      
+    }
     for (int i = (frame.size() - 1); i >= 0; i--)
     {
       Arg arg = (Arg)frame.elementAt(i);
-      if(arg.getQName().equals(qname))
+      if(arg.getQName().equals(qname) && arg.isParamVar())
       {
         frame.setElementAt(new Arg(qname, xval), i);
         return;
