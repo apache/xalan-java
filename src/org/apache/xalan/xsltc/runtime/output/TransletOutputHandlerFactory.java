@@ -68,11 +68,15 @@ import java.io.Writer;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xalan.xsltc.TransletOutputHandler;
-import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
-import org.apache.xalan.xsltc.runtime.TextOutput;
 import org.apache.xalan.xsltc.trax.SAX2DOM;
-
+import org.apache.xml.serializer.ToHTMLSAXHandler;
+import org.apache.xml.serializer.ToHTMLStream;
+import org.apache.xml.serializer.ToTextSAXHandler;
+import org.apache.xml.serializer.ToTextStream;
+import org.apache.xml.serializer.ToUnknownStream;
+import org.apache.xml.serializer.ToXMLSAXHandler;
+import org.apache.xml.serializer.ToXMLStream;
+import org.apache.xml.serializer.SerializationHandler;
 import org.w3c.dom.Node;
 
 import org.xml.sax.ContentHandler;
@@ -141,73 +145,118 @@ public class TransletOutputHandlerFactory {
 	_indentNumber = value;
     }
 
-    public TransletOutputHandler getTransletOutputHandler() 
-	throws IOException, ParserConfigurationException 
+    public SerializationHandler getSerializationHandler()
+        throws IOException, ParserConfigurationException
     {
-	switch (_outputType) {
-	    case STREAM:
-		StreamOutput result = null;
+        SerializationHandler result = null;
+        switch (_outputType)
+        {
+            case STREAM :
 
-		if (_method == null) {
-		    result = (_writer == null) ? 
-			new StreamUnknownOutput(_ostream, _encoding) :
-			new StreamUnknownOutput(_writer, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("xml")) {
-		    result = (_writer == null) ? 
-			new StreamXMLOutput(_ostream, _encoding) :
-			new StreamXMLOutput(_writer, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("html")) {
-		    result = (_writer == null) ? 
-			new StreamHTMLOutput(_ostream, _encoding) :
-			new StreamHTMLOutput(_writer, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("text")) {
-		    result = (_writer == null) ? 
-			new StreamTextOutput(_ostream, _encoding) :
-			new StreamTextOutput(_writer, _encoding);
-		}
+                if (_method == null)
+                {
+                    result = new ToUnknownStream();
+                }
+                else if (_method.equalsIgnoreCase("xml"))
+                {
 
-		if (result != null && _indentNumber >= 0) {
-		    result.setIndentNumber(_indentNumber);
-		}
-		return result;
-	    case DOM:
-		_handler = (_node != null) ? new SAX2DOM(_node) : 
-					     new SAX2DOM();
-		_lexHandler = (LexicalHandler)_handler;
-		// falls through
-	    case SAX:
-		if (_method == null) {
-		    _method = "xml";    // default case
-		}
+                    result = new ToXMLStream();
 
-		if (_method.equalsIgnoreCase("xml")) {
-		    return (_lexHandler == null) ? 
-			new SAXXMLOutput(_handler, _encoding) :
-			new SAXXMLOutput(_handler, _lexHandler, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("html")) {
-		    return (_lexHandler == null) ? 
-			new SAXHTMLOutput(_handler, _encoding) :
-			new SAXHTMLOutput(_handler, _lexHandler, _encoding);
-		}
-		else if (_method.equalsIgnoreCase("text")) {
-		    return (_lexHandler == null) ? 
-			new SAXTextOutput(_handler, _encoding) :
-			new SAXTextOutput(_handler, _lexHandler, _encoding);
-		}
-	    break;
-	}
-	return null;
+                }
+                else if (_method.equalsIgnoreCase("html"))
+                {
+
+                    result = new ToHTMLStream();
+
+                }
+                else if (_method.equalsIgnoreCase("text"))
+                {
+
+                    result = new ToTextStream();
+
+                }
+
+                if (result != null && _indentNumber >= 0)
+                {
+                    result.setIndentAmount(_indentNumber);
+                }
+
+                result.setEncoding(_encoding);
+
+                if (_writer != null)
+                {
+                    result.setWriter(_writer);
+                }
+                else
+                {
+                    result.setOutputStream(_ostream);
+                }
+                return result;
+
+            case DOM :
+                _handler = (_node != null) ? new SAX2DOM(_node) : new SAX2DOM();
+                _lexHandler = (LexicalHandler) _handler;
+                // falls through
+            case SAX :
+                if (_method == null)
+                {
+                    _method = "xml"; // default case
+                }
+
+                if (_method.equalsIgnoreCase("xml"))
+                {
+
+                    if (_lexHandler == null)
+                    {
+                        result = new ToXMLSAXHandler(_handler, _encoding);
+                    }
+                    else
+                    {
+                        result =
+                            new ToXMLSAXHandler(
+                                _handler,
+                                _lexHandler,
+                                _encoding);
+                    }
+
+                }
+                else if (_method.equalsIgnoreCase("html"))
+                {
+
+                    if (_lexHandler == null)
+                    {
+                        result = new ToHTMLSAXHandler(_handler, _encoding);
+                    }
+                    else
+                    {
+                        result =
+                            new ToHTMLSAXHandler(
+                                _handler,
+                                _lexHandler,
+                                _encoding);
+                    }
+
+                }
+                else if (_method.equalsIgnoreCase("text"))
+                {
+
+                    if (_lexHandler == null)
+                    {
+                        result = new ToTextSAXHandler(_handler, _encoding);
+                    }
+                    else
+                    {
+                        result =
+                            new ToTextSAXHandler(
+                                _handler,
+                                _lexHandler,
+                                _encoding);
+                    }
+
+                }
+                return result;
+        }
+        return null;
     }
 
-    // Temporary - returns an instance of TextOutput
-    public TransletOutputHandler getOldTransletOutputHandler() throws IOException {
-	DefaultSAXOutputHandler saxHandler =
-	    new DefaultSAXOutputHandler(_ostream, _encoding);
-	return new TextOutput((ContentHandler)saxHandler,
-			      (LexicalHandler)saxHandler, _encoding);
-    }
 }
