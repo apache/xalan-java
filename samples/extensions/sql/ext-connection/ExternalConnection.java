@@ -67,6 +67,7 @@ import org.apache.xalan.lib.sql.XConnectionPoolManager;
 
 
 // Imported java classes
+import java.io.StringReader;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -110,13 +111,20 @@ public class ExternalConnection
 	Transformer transformer = tFactory.newTransformer(
         new StreamSource("dbtest.xsl"));
 
-	// Use the Transformer to apply the associated Templates object to an XML document
-	// (foo.xml) and write the output to a file (foo.out).
-	transformer.transform(
-        new StreamSource("dbtest.xml"),
-        new StreamResult(new FileOutputStream("dbtest.out")));
+	// For this transformation, all the required information is in the stylesheet, so generate 
+  // a minimal XML source document for the input.
+  // Note: the command-line processor (org.apache.xalan.xslt.Process) uses this strategy when 
+  // the user does not provide an -IN parameter.
+  StringReader reader =
+              new StringReader("<?xml version=\"1.0\"?> <doc/>");
 
-	System.out.println("************* The result is in dbtest.out *************");
+  // Use the Transformer to apply the associated Templates object to an XML document
+	// and write the output to a file.
+	transformer.transform(
+        new StreamSource(reader),
+        new StreamResult(new FileOutputStream("dbtest-out.html")));
+
+	System.out.println("************* The result is in dbtest-out.html *************");
   
   cp.disablePool();
   }

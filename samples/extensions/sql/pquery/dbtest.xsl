@@ -1,4 +1,5 @@
 <?xml version="1.0"?>
+
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
                 xmlns:sql="org.apache.xalan.lib.sql.XConnection"
@@ -17,7 +18,6 @@
 
 <xsl:template match="/">
     <xsl:variable name="db" select="sql:new($cinfo)"/>
-
     <HTML>
       <HEAD>
         <TITLE>List of products</TITLE>
@@ -25,8 +25,7 @@
       <BODY>
         <TABLE border="1">
           <xsl:variable name="qparam" select="//QUERY"/>
-					<xsl:value-of select="sql:addParameterFromElement($db, $qparam)"/>
-      	
+          <xsl:value-of select="sql:addParameterFromElement($db, $qparam)"/>
           <xsl:variable name="table" select='sql:pquery($db, $q1, $q1type )'/>
           <TR>
              <xsl:for-each select="$table/row-set/column-header">
