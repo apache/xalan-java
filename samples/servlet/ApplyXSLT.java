@@ -498,7 +498,13 @@ public class ApplyXSLT extends HttpServlet
 	}
 	else
 	{
-	  return "text/html";	
+	  String method = of.getMethod();
+	  if (method.equals("html"))
+		  return "text/html";
+	  else if (method.equals("text"))
+		  return "text";
+	  else 
+		  return "text/xml";
 	}
   }
 
