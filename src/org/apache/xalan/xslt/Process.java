@@ -229,7 +229,7 @@ public class Process
 
         tfactory = null;  // shut up compiler
 
-        System.exit(-1);
+        doExit(-1);
       }
 
       boolean formatOutput = false;
@@ -466,7 +466,7 @@ public class Process
                 XSLMessages.createMessage(
                   XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
                   new Object[]{ "-URIResolver" }));
-              System.exit(-1);
+              doExit(-1);
             }
           }
           else
@@ -475,7 +475,7 @@ public class Process
               XSLMessages.createMessage(
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-URIResolver" }));  //"Missing argument for);
-            System.exit(-1);
+            doExit(-1);
           }
         }
         else if ("-ENTITYRESOLVER".equalsIgnoreCase(argv[i]))
@@ -493,7 +493,7 @@ public class Process
                 XSLMessages.createMessage(
                   XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
                   new Object[]{ "-EntityResolver" }));
-              System.exit(-1);
+              doExit(-1);
             }
           }
           else
@@ -502,7 +502,7 @@ public class Process
               XSLMessages.createMessage(
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-EntityResolver" }));  //"Missing argument for);
-            System.exit(-1);
+            doExit(-1);
           }
         }
         else if ("-CONTENTHANDLER".equalsIgnoreCase(argv[i]))
@@ -520,7 +520,7 @@ public class Process
                 XSLMessages.createMessage(
                   XSLTErrorResources.ER_CLASS_NOT_FOUND_FOR_OPTION,
                   new Object[]{ "-ContentHandler" }));
-              System.exit(-1);
+              doExit(-1);
             }
           }
           else
@@ -529,7 +529,7 @@ public class Process
               XSLMessages.createMessage(
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-ContentHandler" }));  //"Missing argument for);
-            System.exit(-1);
+            doExit(-1);
           }
         }
         else
@@ -852,7 +852,7 @@ public class Process
           diagnosticsWriter.println(
             XSLMessages.createMessage(
               XSLTErrorResources.ER_NOT_SUCCESSFUL, null));  //"XSL Process was not successful.");
-          System.exit(-1);
+          doExit(-1);
         }
 
         long stop = System.currentTimeMillis();
@@ -893,7 +893,7 @@ public class Process
           dumpWriter.close();
         }
 
-        System.exit(-1);
+        doExit(-1);
       }
 
       if (null != dumpFileName)
@@ -912,5 +912,14 @@ public class Process
       // else
       diagnosticsWriter.println("");  //"Xalan: done");
     }
+  }
+  
+  /** It is _much_ easier to debug under VJ++ if I can set a single breakpoint 
+   * before this blows itself out of the water...
+   * (I keep checking this in, it keeps vanishing. Grr!)
+   * */
+  static void doExit(int i)
+  {
+	  System.exit(i);
   }
 }
