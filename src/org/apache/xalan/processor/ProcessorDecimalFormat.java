@@ -103,5 +103,7 @@ class ProcessorDecimalFormat extends XSLTElementProcessor
 
     setPropertiesFromAttributes(handler, rawName, attributes, dfp);
     handler.getStylesheet().setDecimalFormat(dfp);
+    
+    handler.getStylesheet().appendChild(dfp);
   }
 }
