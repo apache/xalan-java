@@ -45,24 +45,11 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                  <p>You can use the TrAX/JAXP 1.2 interfaces to compile and run translets.
                  For an overview of the usage patterns these samples illustrate, see 
                  <link idref="xsltc_usage" anchor="api">Calling XSLTC with the TrAX/JAXP API</link>.</p>
-                 <anchor name="xsltcprepare"/>
-                 <p><em>Important:</em> To run these samples, you must compile the sample class files and adjust the 
-                 system classpath.</p>
-                 <ol>
-                   <li>To compile the samples, you can run the Ant build from the root directory as follows:<br/><br/>
-                   <code>&nbsp;&nbsp;build xsltc.samples</code><br/><br/></li>
-                   <li>Add xalan.jar and the samples/translets subdirectory to 
-                   the classpath</li>
-                 </ol>
-                 <note>The JAR file mentioned above is in the bin directory. 
-                 The samples/translets directory contains the sample class files as well as the translet class file that is
-                 generated at run-time (todo.class from the todo.xsl stylesheet).</note> 
                  <anchor name="xsltc1"/>
                  <s3 title="JAXPTransletOneTransformation">
                  <p>What it does: Uses the XSLTC TransformerFactory to compile a translet and use
                  the translet to transform the XSLTC to-do list from XML into HTML.</p>
-                 <p>Complete the <link anchor="xsltcprepare">steps detailed above</link>, and run this sample 
-                 from the translets subdirectory with</p>
+                 <p>Run this sample from the translets subdirectory with</p>
                  <p><code>java JAXPTransletOneTransformation</code></p>
                  <p>View the result in todo-xsltc.html.</p>
                  </s3><anchor name="xsltc2"/>
@@ -70,8 +57,7 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                  <p>What it does: Uses the XSLTC TransformerFactory to compile a translet and use
                  the Templates object associated with the translet to transform the XSLTC and Xalan to-do lists from XML 
                  into HTML.</p>
-                 <p>Complete the <link anchor="xsltcprepare">steps detailed above</link>, and run this sample 
-                 from the translets subdirectory with</p>
+                 <p>Run this sample from the translets subdirectory with</p>
                  <p><code>java JAXPTransletMultipleTransformations</code></p>
                  <p>View the results in todo-xsltc.html and todo-xalan.html.</p>                
                  </s3><anchor name="xsltcother"/>
@@ -87,20 +73,23 @@ information about the contents of xml-apis.jar, see the JAR manifest.">
                  <p>For information about each of these samples, consult the README file in the subdirectory.</p>
                  <note>The following paragraphs supply some basic background information for CompiledServlet and CompiledBrazil.</note>
                  <p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
-                 Brazil (a new and powerful Web techology from Sun labs). To run these demos,
-                 download Brazil from sunlabs:</p>
+                 Brazil (a new and powerful Web techology from Sun labs).</p>
+                 <p>To run the Brazil-handler demo, download Brazil from sunlabs:</p>
                  <p><code>&nbsp;&nbsp;&nbsp;&nbsp;<jump href="http://research.sun.com/research/download/index.html">http://research.sun.com/research/download/index.html</jump></code></p>
-                 <p>and the java extensions for servlets from Sun:</p>
-                 <p><code>&nbsp;&nbsp;&nbsp;&nbsp;
-                 <jump href="http://java.sun.com/products/servlet/download.html">
-                 http://java.sun.com/products/servlet/download.html</jump></code></p>
-                 <p>The translet must be specified as a pure class name, accessible
-                 through the Brazil handler classpath. For example:</p>
+                 <p>The translet must be specified as a pure class name,
+                 accessible through the Brazil-handler&apos;s classpath. For
+                 example:</p>
                  <p><code>&nbsp;&nbsp;&nbsp;&nbsp;translet=mk054</code></p>
                  <p>The document must be specified as a valid URL. For example:</p>
                  <p><code>&nbsp;&nbsp;&nbsp;&nbsp;document=http://server/path/to/filename.xml</code></p>
                  <p>If the file is local to the Brazil handler, it has to be
                 specified using the "file:filename.xml" format.</p>
-                <note>You also need to make the Brazil and javax classes available from your classpath</note>
+                <note>In order to run the Brazil-handler demo, you also need to
+                      make the Brazil and javax classes available from your
+                      classpath</note>
+                 <p>To run the servlet demo, download the java extensions for servlets from Sun:</p>
+                 <p><code>&nbsp;&nbsp;&nbsp;&nbsp;
+                 <jump href="http://java.sun.com/products/servlet/download.html">
+                 http://java.sun.com/products/servlet/download.html</jump></code></p>
                  </s3>
                  </s2>'>
