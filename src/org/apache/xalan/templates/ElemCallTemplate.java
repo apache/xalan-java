@@ -59,6 +59,7 @@ package org.apache.xalan.templates;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
@@ -157,13 +158,19 @@ public class ElemCallTemplate extends ElemForEach
       ewp.compose(sroot);
     }
     
-    if ((null != m_templateName) && (null == m_template))
-    {
-      m_template =
-        this.getStylesheetRoot().getTemplateComposed(m_templateName);
-        
-      if(null == m_template)
-        return; // %REVIEW% error?
+	if ((null != m_templateName) && (null == m_template)) {
+		m_template =
+			this.getStylesheetRoot().getTemplateComposed(m_templateName);
+
+		if (null == m_template) {
+			String themsg =
+				XSLMessages.createMessage(
+					XSLTErrorResources.ER_ELEMTEMPLATEELEM_ERR,
+					new Object[] { m_templateName });
+
+			throw new TransformerException(themsg, this);
+			//"Could not find template named: '"+templateName+"'");
+		}
     
       length = getParamElemCount();
       for (int i = 0; i < length; i++) 
