@@ -72,11 +72,11 @@ import org.apache.xml.serializer.SerializerTrace;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Implementation of the TraceListener interface that
  * prints each event to standard out as it occurs.
  *
  * @see org.apache.xalan.trace.TracerEvent
+ * @xsl.usage advanced
  */
 public class PrintTraceListener implements TraceListenerEx3
 {

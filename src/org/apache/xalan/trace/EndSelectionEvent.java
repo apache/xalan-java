@@ -64,9 +64,9 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Event triggered by completion of a xsl:for-each selection or a 
  * xsl:apply-templates selection.
+ * @xsl.usage advanced
  */
 public class EndSelectionEvent extends SelectionEvent
 {

@@ -58,8 +58,8 @@
 package org.apache.xalan.trace;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Extends TraceListenerEx2 but adds extensions trace events.
+ * @xsl.usage advanced
  */
 public interface TraceListenerEx3 extends TraceListenerEx2 {
 

@@ -66,9 +66,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * <meta name="usage" content="advanced"/>
  * Parent class of events generated for tracing the
  * progress of the XSL processor.
+ * @xsl.usage advanced
  */
 public class TracerEvent implements java.util.EventListener
 {
