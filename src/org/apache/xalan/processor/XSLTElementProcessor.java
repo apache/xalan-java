@@ -326,7 +326,13 @@ public class XSLTElementProcessor extends ElemTemplateElement
   {
 
     XSLTElementDef def = getElemDef();
-    AttributesImpl undefines = throwError ? null : new AttributesImpl();
+    AttributesImpl undefines = null;
+    boolean isCompatibleMode = ((null != handler.getStylesheet() 
+                                 && handler.getStylesheet().getCompatibleMode())
+                                || !throwError);
+    if (isCompatibleMode)
+      undefines = new AttributesImpl();
+
 
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
@@ -351,7 +357,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
 
       if (null == attrDef)
       {
-        if (throwError)
+        if (!isCompatibleMode)
         {
 
           // Then barf, because this element does not allow this attribute.

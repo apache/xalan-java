@@ -435,6 +435,12 @@ public class Stylesheet extends ElemTemplateElement
    * @serial
    */
   private String m_Version;
+  
+  /**
+   * Whether or not the stylesheet is in "Forward Compatibility Mode" 
+   * @serial
+   */
+  private boolean m_isCompatibleMode = false;
 
   /**
    * Set the "version" property.
@@ -445,6 +451,17 @@ public class Stylesheet extends ElemTemplateElement
   public void setVersion(String v)
   {
     m_Version = v;
+    m_isCompatibleMode = (Double.valueOf(v).doubleValue() > Constants.XSLTVERSUPPORTED);
+  }
+
+  /**
+   * Get whether or not the stylesheet is in "Forward Compatibility Mode"
+   * 
+   * @return true if in forward compatible mode, false otherwise
+   */
+  public boolean getCompatibleMode()
+  {
+  	return m_isCompatibleMode;
   }
 
   /**
