@@ -46,6 +46,11 @@
     another transformation</link>.</p></a>
   </faq>
   
+  <faq title="IBM JDK 1.3 classpath issues">
+  <q>I'm having a problem building or running &xslt4j; on the IBM JDK 1.3.</q>
+  <a><p>The JDK 1.3 automatically places everything in the lib/ext directory in front of everything you place on the classpath. The IBM JDK 1.3 includes an earlier version of xerces.jar in the lib/ext directory, a version that does not work with the current Xalan release. Accordingly, you must either purge the xerces.jar that is in that directory or overwrite it with the xerces.jar that is included with the Xalan distribution.</p></a>
+  
+  </faq>
  
   <faq title="Speeding up transformations">
   

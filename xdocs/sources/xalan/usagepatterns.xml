@@ -239,6 +239,8 @@ instructions:</p>
 <p>You can also set a parameter with the command-line utility by including the <code>-param</code> flag. For example:</p>
 <p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 foobar</code></p>
 <p>where <code>param</code> is the parameter name and <code>foobar</code> is the parameter value. The parameter namespace is null.</p>
+<note>&xslt4j2; processes string parameters. You are no longer required (as you were with &xslt4j; version 1) to enclose strings in single 
+quotes (') as string expressions.</note>
 </s2><anchor name="sax"/>
 <s2 title="Explicitly working with SAX">
   <p>&xslt4j; uses the SAX event model to process stylesheets, to parse XML input documents, and to produce output. For each of these operations, an XMLReader reads input, firing parse events, and a ContentHandler listens to the XMLReader and executes parse event methods.</p>
