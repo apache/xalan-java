@@ -101,6 +101,7 @@ public class TransformerHandlerImpl
 {
   
   private boolean m_insideParse = false;
+  private boolean m_hasStarted = false;
 
   ////////////////////////////////////////////////////////////////////
   // Constructors.
@@ -207,6 +208,7 @@ public class TransformerHandlerImpl
    */
   protected void waitForInitialEvents()
   {
+    m_hasStarted = true;
     
     if(m_dtm instanceof SAX2DTM)
     {
@@ -221,6 +223,34 @@ public class TransformerHandlerImpl
       }
     }
   }
+  
+  /** 
+   * Call co_entry_pause on the CoroutineSAXParser.
+   */
+  protected void pauseForTransformThreadStartup()
+  {
+    
+    if(m_dtm instanceof SAX2DTM)
+    {
+      if(DEBUG)
+        System.out.println("In pauseForTransformThreadStartup...");
+      SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);
+      if(null != m_contentHandler 
+         && m_contentHandler instanceof CoroutineSAXParser)
+      {
+        CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
+        try
+        {
+          sp.getCoroutineManager().co_entry_pause(sp.getParserCoroutineID());
+        }
+        catch(java.lang.NoSuchMethodException nsme)
+        {
+          // ignore.
+        }
+      }
+    }
+  }
+
 
 
   ////////////////////////////////////////////////////////////////////
@@ -428,6 +458,9 @@ public class TransformerHandlerImpl
         // runTransformThread is equivalent with the 2.0.1 code,
         // except that the Thread may come from a pool.
         m_transformer.runTransformThread( cpriority );
+        pauseForTransformThreadStartup();
+        if(false == m_hasStarted)
+          System.err.println("Transform thread has still not started after pauseForTransformThreadStartup!");
       }
       
    }
