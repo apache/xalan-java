@@ -1254,7 +1254,6 @@ public class TransformerImpl extends Transformer
    * feature.
    * %REVIEW% Do we need a Node version of this?
    * @param node  The input source node, which can be any valid DTM node.
-   * @param outputTarget The output source target.
    *
    * @throws TransformerException
    */
@@ -1675,13 +1674,6 @@ public class TransformerImpl extends Transformer
    * these will not be additive, they will replace the existing
    * set of parameters.
    *
-   * @param name The name of the parameter,
-   *             which may have a namespace URI.
-   * @param value The value object.  This can be any valid Java object
-   * -- it's up to the processor to provide the proper
-   * coersion to the object, or simply pass it on for use
-   * in extensions.
-   *
    * NEEDSDOC @param params
    */
   public void setParameters(Properties params)
@@ -1809,8 +1801,6 @@ public class TransformerImpl extends Transformer
 
   /**
    * Set the content event handler.
-   *
-   * @param resolver The new content handler.
    *
    * NEEDSDOC @param handler
    * @throws java.lang.NullPointerException If the handler
@@ -1994,9 +1984,6 @@ public class TransformerImpl extends Transformer
    *
    * @param elem The parent element whose children will be output
    * as a string.
-   * @param transformer The XSLT transformer instance.
-   * @param sourceNode The current source node context.
-   * @param mode The current xslt mode.
    *
    * @return The stringized result of executing the elements children.
    *
@@ -2085,7 +2072,6 @@ public class TransformerImpl extends Transformer
    * @param xslInstruction The calling element.
    * @param template The template to use if xsl:for-each, current template for apply-imports, or null.
    * @param child The source context node.
-   * @param mode The current mode, may be null.
    * @throws TransformerException
    * @return true if applied a template, false if not.
    * @xsl.usage advanced
@@ -2265,7 +2251,6 @@ public class TransformerImpl extends Transformer
    *
    * @param elem The ElemTemplateElement that contains the children
    * that should execute.
-   * @param sourceNode The current context node.
    * NEEDSDOC @param context
    * @param mode The current mode.
    * @param handler The ContentHandler to where the result events
@@ -2302,12 +2287,8 @@ public class TransformerImpl extends Transformer
   /**
    * Execute each of the children of a template element.
    *
-   * @param transformer The XSLT transformer instance.
-   *
    * @param elem The ElemTemplateElement that contains the children
    * that should execute.
-   * @param sourceNode The current context node.
-   * @param mode The current mode.
    * @param shouldAddAttrs true if xsl:attributes should be executed.
    *
    * @throws TransformerException

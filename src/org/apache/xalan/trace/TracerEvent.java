@@ -60,8 +60,6 @@ public class TracerEvent implements java.util.EventListener
    * @param processor The XSLT TransformerFactory.
    * @param sourceNode The current context node.
    * @param mode The current mode.
-   * @param m_styleNode node in the style tree reference for the event.
-   * Should not be null.  That is not enforced.
    * @param styleNode The stylesheet element that is executing.
    */
   public TracerEvent(TransformerImpl processor, Node sourceNode, QName mode,

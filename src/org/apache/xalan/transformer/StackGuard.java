@@ -82,9 +82,6 @@ public class StackGuard
   /**
    * Constructor StackGuard
    *
-   *
-   * @param xslTemplate Current template node
-   * @param sourceXML Source Node
    */
   public StackGuard(TransformerImpl transformerImpl)
   {
@@ -94,10 +91,6 @@ public class StackGuard
   /**
    * Overide equal method for StackGuard objects 
    *
-   *
-   * @param obj StackGuard object to compare
-   *
-   * @return True if the given object matches this StackGuard object
    */
   public int countLikeTemplates(ElemTemplate templ, int pos)
   {
@@ -139,9 +132,6 @@ public class StackGuard
 
   /**
    * Check if we are in an infinite loop
-   *
-   *
-   * @param guard Current StackGuard object (matching current template)  
    *
    * @throws TransformerException
    */

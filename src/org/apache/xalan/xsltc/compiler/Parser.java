@@ -1019,8 +1019,8 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath expression:
-     *  @parent - XSL element where the expression occured
-     *  @exp    - textual representation of the expression
+     *  @param parent - XSL element where the expression occured
+     *  @param exp    - textual representation of the expression
      */
     public Expression parseExpression(SyntaxTreeNode parent, String exp) {
 	return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, null);
@@ -1028,9 +1028,9 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath expression:
-     *  @parent - XSL element where the expression occured
-     *  @attr   - name of this element's attribute to get expression from
-     *  @def    - default expression (if the attribute was not found)
+     *  @param parent - XSL element where the expression occured
+     *  @param attr   - name of this element's attribute to get expression from
+     *  @param def    - default expression (if the attribute was not found)
      */
     public Expression parseExpression(SyntaxTreeNode parent,
 				      String attr, String def) {
@@ -1044,8 +1044,8 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath pattern:
-     *  @parent - XSL element where the pattern occured
-     *  @exp    - textual representation of the pattern
+     *  @param parent  - XSL element where the pattern occured
+     *  @param pattern - textual representation of the pattern
      */
     public Pattern parsePattern(SyntaxTreeNode parent, String pattern) {
 	return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, pattern);
@@ -1053,9 +1053,9 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath pattern:
-     *  @parent - XSL element where the pattern occured
-     *  @attr   - name of this element's attribute to get pattern from
-     *  @def    - default pattern (if the attribute was not found)
+     *  @param parent - XSL element where the pattern occured
+     *  @param attr   - name of this element's attribute to get pattern from
+     *  @param def    - default pattern (if the attribute was not found)
      */
     public Pattern parsePattern(SyntaxTreeNode parent,
 				String attr, String def) {

@@ -205,7 +205,7 @@ public class TrAXFilter extends XMLFilterImpl
   /**
    * Set the content event handler.
    *
-   * @param resolver The new content handler.
+   * @param handler The new content handler.
    * @throws java.lang.NullPointerException If the handler
    *            is null.
    * @see org.xml.sax.XMLReader#setContentHandler

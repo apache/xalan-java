@@ -426,9 +426,9 @@ public abstract class AbstractTranslet implements Translet {
 
     /**
      * Adds a value to a key/id index
-     *   @name is the name of the index (the key or ##id)
-     *   @node is the node id of the node to insert
-     *   @value is the value that will look up the node in the given index
+     *   @param name is the name of the index (the key or ##id)
+     *   @param node is the node id of the node to insert
+     *   @param value is the value that will look up the node in the given index
      */
     public void buildKeyIndex(String name, int node, Object value) {
 	if (_keyIndexes == null) _keyIndexes = new Hashtable();
@@ -442,8 +442,8 @@ public abstract class AbstractTranslet implements Translet {
 
     /**
      * Create an empty KeyIndex in the DOM case
-     *   @name is the name of the index (the key or ##id)
-     *   @node is the DOM
+     *   @param name is the name of the index (the key or ##id)
+     *   @param dom is the DOM
      */
     public void buildKeyIndex(String name, DOM dom) {
 	if (_keyIndexes == null) _keyIndexes = new Hashtable();

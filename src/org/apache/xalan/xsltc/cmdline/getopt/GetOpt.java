@@ -133,7 +133,6 @@ public class GetOpt{
     * If the next option found has been declared to take an argument, 
     * and no such argument exists, then a MissingOptArgException
     * is thrown (case 2).
-    * @param none
     * @return int - the next option found.
     * @throws IllegalArgumentException, MissingOptArgException. 
     */
@@ -165,7 +164,6 @@ public class GetOpt{
     * gets the argument for the current parsed option. For example,
     * in case of '-d <file>', if current option parsed is 'd' then
     * getOptionArg() would return '<file>'.
-    * @param none
     * @return String - argument for current parsed option.
     */
     public String getOptionArg(){
@@ -183,7 +181,6 @@ public class GetOpt{
     * such as 'cmd -s -d file file2 file3 file4'  with the usage
     * 'cmd [-s] [-d <file>] <file>...', getCmdArgs() would return
     * the list {file2, file3, file4}.
-    * @params none
     * @return String[] - list of command arguments that may appear
     *                    after options and option arguments.
     */

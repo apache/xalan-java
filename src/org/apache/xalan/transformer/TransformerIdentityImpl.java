@@ -1036,7 +1036,6 @@ public class TransformerIdentityImpl extends Transformer
    *        performed.
    * @param qName The qualified name (with prefix), or the
    *        empty string if qualified names are not available.
-   * @param attributes The specified or defaulted attributes.
    *
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.

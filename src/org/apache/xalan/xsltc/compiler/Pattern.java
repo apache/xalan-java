@@ -44,7 +44,7 @@ public abstract class Pattern extends Expression {
      * make sure to backpatch both true and false lists. True lists are the 
      * default, in the sense that they always <em>"fall through"</em>. If this
      * is not the intended semantics (e.g., see 
-     * {@link org.apache.xalan.xsltc.compiler.AlternativePattern#translate()})
+     * {@link org.apache.xalan.xsltc.compiler.AlternativePattern#translate})
      * then a GOTO must be appended to the instruction list after calling
      * <code>translate</code>. 
      */

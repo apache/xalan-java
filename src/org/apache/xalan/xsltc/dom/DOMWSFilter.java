@@ -29,7 +29,7 @@ import org.apache.xml.dtm.DTMWSFilter;
 /**
  * A wrapper class that adapts the
  * {@link org.apache.xml.dtm.DTMWSFilter DTMWSFilter} interface to the XSLTC
- * DOM {@link org.apache.xsltc.StripFilter StripFilter} interface.
+ * DOM {@link org.apache.xalan.xsltc.StripFilter StripFilter} interface.
  */
 public class DOMWSFilter implements DTMWSFilter {
 
@@ -51,7 +51,7 @@ public class DOMWSFilter implements DTMWSFilter {
      * interface.
      *
      * @see org.apache.xml.dtm.DTMWSFilter
-     * @see org.apache.xsltc.StripFilter
+     * @see org.apache.xalan.xsltc.StripFilter
      */
     public DOMWSFilter(AbstractTranslet translet) {
         m_translet = translet;

@@ -87,7 +87,6 @@ public class KeyTable
    * @param nscontext The stylesheet's namespace context.
    * @param name The key name
    * @param keyDeclarations The stylesheet's xsl:key declarations.
-   * @param xmlLiaison The parser liaison for support of getNodeData(useNode).
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -124,8 +124,6 @@ public class TraceManager
   /**
    * Fire a trace event.
    *
-   * @param sourceNode Current source node
-   * @param mode Template mode
    * @param styleNode Stylesheet template node
    */
   public void fireTraceEvent(ElemTemplateElement styleNode)
@@ -146,8 +144,6 @@ public class TraceManager
    * Fire a end trace event, after all children of an element have been
    * executed.
    *
-   * @param sourceNode Current source node
-   * @param mode Template mode
    * @param styleNode Stylesheet template node
    */
   public void fireTraceEndEvent(ElemTemplateElement styleNode)

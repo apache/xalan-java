@@ -81,7 +81,7 @@ public class KeyRefIterator extends org.apache.xpath.axes.ChildTestIterator
    * implementation of TreeWalker and NodeIterator; it is not intended to
    * be called directly from user code.
    * 
-   * @param testnode  The node to check to see if it passes the filter or not.
+   * @param testNode  The node to check to see if it passes the filter or not.
    *
    * @return  a constant to determine whether the node is accepted,
    *   rejected, or skipped, as defined  above .

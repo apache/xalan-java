@@ -74,10 +74,6 @@ public class KeyIterator extends OneStepIteratorForward
   /**
     * Create a KeyIterator object.
     *
-    * @param compiler A reference to the Compiler that contains the op map.
-    * @param opPos The position within the op map, which contains the
-    * location path expression for this itterator.
-    *
     * @throws javax.xml.transform.TransformerException
     */
   KeyIterator(QName name, Vector keyDeclarations)
@@ -94,7 +90,7 @@ public class KeyIterator extends OneStepIteratorForward
    * implementation of TreeWalker and NodeIterator; it is not intended to
    * be called directly from user code.
    * 
-   * @param testnode  The node to check to see if it passes the filter or not.
+   * @param testNode  The node to check to see if it passes the filter or not.
    *
    * @return  a constant to determine whether the node is accepted,
    *   rejected, or skipped, as defined  above .
