@@ -85,8 +85,11 @@ public class SuballocatedIntVector
   /** Bitwise addressing (much faster than div/remainder */
   protected int m_SHIFT, m_MASK;
   
-  /** Number of blocks to (over)allocate by */
-  protected  int m_numblocks=32;
+  /** The default number of blocks to (over)allocate by */
+  protected static final int NUMBLOCKS_DEFAULT = 32;
+  
+  /** The number of blocks to (over)allocate by */
+  protected int m_numblocks = NUMBLOCKS_DEFAULT;
   
   /** Array of arrays of ints          */
   protected int m_map[][];
@@ -96,6 +99,12 @@ public class SuballocatedIntVector
 
   /** "Shortcut" handle to m_map[0]. Surprisingly helpful for short vectors. */
   protected int m_map0[];
+
+  /** "Shortcut" handle to most recently added row of m_map.
+   * Very helpful during construction.
+   */
+  protected int m_buildCache[];
+  protected int m_buildCacheStartIndex;
 
 
   /**
@@ -109,34 +118,37 @@ public class SuballocatedIntVector
   }
 
   /**
-   * Construct a IntVector, using the given block size. For
-   * efficiency, we will round the requested size off to a power of
-   * two.
+   * Construct a IntVector, using the given block size and number
+   * of blocks. For efficiency, we will round the requested size 
+   * off to a power of two.
    *
    * @param blocksize Size of block to allocate
+   * @param numblocks Number of blocks to allocate
    * */
-  public SuballocatedIntVector(int blocksize)
+  public SuballocatedIntVector(int blocksize, int numblocks)
   {
     //m_blocksize = blocksize;
     for(m_SHIFT=0;0!=(blocksize>>>=1);++m_SHIFT)
       ;
     m_blocksize=1<<m_SHIFT;
     m_MASK=m_blocksize-1;
-		
+    m_numblocks = numblocks;
+    	
     m_map0=new int[m_blocksize];
-    m_map = new int[m_numblocks][];
+    m_map = new int[numblocks][];
     m_map[0]=m_map0;
+    m_buildCache = m_map0;
+    m_buildCacheStartIndex = 0;
   }
 	
-  /** We never _did_ use the increasesize parameter, so I'm phasing
-   * this constructor out.
+  /** Construct a IntVector, using the given block size and
+   * the default number of blocks (32).
    *
-   * @deprecated use SuballocatedIntVector(int)
-   * @see SuballocatedIntVector(int)
+   * @param blocksize Size of block to allocate
    * */
-  public SuballocatedIntVector(int blocksize,int increasesize)
+  public SuballocatedIntVector(int blocksize)
   {
-    this(blocksize);
+    this(blocksize, NUMBLOCKS_DEFAULT);
   }
 
   /**
@@ -168,10 +180,13 @@ public class SuballocatedIntVector
    */
   public  void addElement(int value)
   {
-    if(m_firstFree<m_blocksize)
-      m_map0[m_firstFree++]=value;
-    else
-    {
+    int indexRelativeToCache = m_firstFree - m_buildCacheStartIndex;
+
+    // Is the new index an index into the cache row of m_map?
+    if(indexRelativeToCache >= 0 && indexRelativeToCache < m_blocksize) {
+      m_buildCache[indexRelativeToCache]=value;
+      ++m_firstFree;
+    } else {
       // Growing the outer array should be rare. We initialize to a
       // total of m_blocksize squared elements, which at the default
       // size is 4M integers... and we grow by at least that much each
@@ -194,10 +209,15 @@ public class SuballocatedIntVector
 	block=m_map[index]=new int[m_blocksize];
       block[offset]=value;
 
+      // Cache the current row of m_map.  Next m_blocksize-1
+      // values added will go to this row.
+      m_buildCache = block;
+      m_buildCacheStartIndex = m_firstFree-offset;
+
       ++m_firstFree;
     }
   }
-  
+
   /**
    * Append several int values onto the vector.
    *
@@ -326,6 +346,8 @@ public class SuballocatedIntVector
   public void removeAllElements()
   {
     m_firstFree = 0;
+    m_buildCache = m_map0;
+    m_buildCacheStartIndex = 0;
   }
 
   /**
@@ -549,5 +571,23 @@ public class SuballocatedIntVector
     }
     return -1;
   }
-
+  
+  /**
+   * Return the internal m_map0 array
+   * @return the m_map0 array
+   */
+  public final int[] getMap0()
+  {
+    return m_map0;
+  }
+  
+  /**
+   * Return the m_map double array
+   * @return the internal map of array of arrays 
+   */
+  public final int[][] getMap()
+  {
+    return m_map;
+  }
+  
 }

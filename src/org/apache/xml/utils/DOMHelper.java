@@ -690,7 +690,7 @@ public class DOMHelper
         {
           if ((null != nsInfo)
                   && (nsInfo.m_ancestorHasXMLNSAttrs
-                      == nsInfo.ANCESTORNOXMLNS))
+                      == NSInfo.ANCESTORNOXMLNS))
           {
             break;
           }

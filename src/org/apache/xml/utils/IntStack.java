@@ -132,7 +132,7 @@ public class IntStack extends IntVector
    *
    * @return     The object at the top of this stack.
    */
-  public int pop()
+  public final int pop()
   {
     return m_map[--m_firstFree];
   }
@@ -141,7 +141,7 @@ public class IntStack extends IntVector
    * Quickly pops a number of items from the stack.
    */
 
-  public void quickPop(int n)
+  public final void quickPop(int n)
   {
     m_firstFree -= n;
   }
@@ -153,7 +153,7 @@ public class IntStack extends IntVector
    * @return     the object at the top of this stack.
    * @throws  EmptyStackException  if this stack is empty.
    */
-  public int peek()
+  public final int peek()
   {
     try {
       return m_map[m_firstFree - 1];

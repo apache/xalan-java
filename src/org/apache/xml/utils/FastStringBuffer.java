@@ -900,8 +900,18 @@ public class FastStringBuffer
    */
   public String getString(int start, int length)
   {
-    return getString(new StringBuffer(length), start >>> m_chunkBits,
-                     start & m_chunkMask, length).toString();
+    int startColumn = start & m_chunkMask;
+    int startChunk = start >>> m_chunkBits;
+    if (startColumn + length < m_chunkMask && m_innerFSB == null) {
+      return getOneChunkString(startChunk, startColumn, length);
+    }
+    return getString(new StringBuffer(length), startChunk, startColumn,
+                     length).toString();
+  }
+
+  protected String getOneChunkString(int startChunk, int startColumn,
+                                     int length) {
+    return new String(m_array[startChunk], startColumn, length);
   }
 
   /**
@@ -1008,9 +1018,14 @@ public class FastStringBuffer
             throws org.xml.sax.SAXException
   {
 
-    int stop = start + length;
     int startChunk = start >>> m_chunkBits;
     int startColumn = start & m_chunkMask;
+    if (startColumn + length < m_chunkMask && m_innerFSB == null) {
+        ch.characters(m_array[startChunk], startColumn, length);
+        return;
+    }
+    
+    int stop = start + length;
     int stopChunk = stop >>> m_chunkBits;
     int stopColumn = stop & m_chunkMask;
 
