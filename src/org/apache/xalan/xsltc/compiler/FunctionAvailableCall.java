@@ -241,6 +241,7 @@ final class FunctionAvailableCall extends FunctionCall {
 
         if (_namespaceOfFunct == null ||
             _namespaceOfFunct.equals(EMPTYSTRING) ||
+	    _namespaceOfFunct.equals(EXT_XALAN) ||
 	    _namespaceOfFunct.equals(TRANSLET_URI))
         {
             final Parser parser = getParser();
