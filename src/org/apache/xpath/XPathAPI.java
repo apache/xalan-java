@@ -197,8 +197,15 @@ public class XPathAPI
     // Execute the XPath, and have it return the result
     XObject list = eval(contextNode, str, namespaceNode);
 
-    // Have the XObject return its result as a NodeSet.
-    return (NodeList) list.nodeset();
+    // Patch attributed to nboyd@atg.com (Norris Boyd)
+    NodeSet nodeset = list.mutableNodeset();
+
+    // setShouldCacheNodes(true) be called before the first nextNode() is
+    //   called, in order that nodes can be added as they are fetched.
+    nodeset.setShouldCacheNodes(true);
+
+    // Return a NodeList.
+    return (NodeList) nodeset;
   }
 
   /**
