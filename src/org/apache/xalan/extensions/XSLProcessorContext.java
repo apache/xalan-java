@@ -56,11 +56,10 @@
  */
 package org.apache.xalan.extensions;
 
-//import org.w3c.dom.Node;
-//import org.w3c.dom.DocumentFragment;
-//import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.w3c.dom.Node;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.*;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
@@ -77,6 +76,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.DescendantIterator;
+import org.apache.xpath.axes.OneStepIterator;
 
 import org.apache.xml.dtm.DTM;
 
@@ -201,6 +202,7 @@ public class XSLProcessorContext
     try
     {
       ResultTreeHandler rtreeHandler = transformer.getResultTreeHandler();
+      XPathContext xctxt = transformer.getXPathContext();
       XObject value;
 
       // Make the return object into an XObject because it
@@ -223,19 +225,39 @@ public class XSLProcessorContext
       {
         value = new XNumber(((Double) obj).doubleValue());
       }
-      // %TDM%
-//      else if (obj instanceof DocumentFragment)
-//      {
-//        value = new XRTreeFrag((DocumentFragment) obj);
-//      }
-//      else if (obj instanceof Node)
-//      {
-//        value = new XNodeSet((Node) obj);
-//      }
-//      else if (obj instanceof NodeIterator)
-//      {
-//        value = new XNodeSet((NodeIterator) obj);
-//      }
+      else if (obj instanceof DocumentFragment)
+      {
+        int handle = xctxt.getDTMHandleFromNode((DocumentFragment)obj);
+        
+        value = new XRTreeFrag(handle, xctxt);
+      }
+      else if (obj instanceof DTM)
+      {
+        DTM dtm = (DTM)obj;
+        DTMIterator iterator = new DescendantIterator();
+        iterator.setRoot(dtm.getDocument(), xctxt);
+        value = new XNodeSet(iterator);
+      }
+      else if (obj instanceof DTMAxisIterator)
+      {
+        DTMAxisIterator iter = (DTMAxisIterator)obj;
+        DTMIterator iterator = new OneStepIterator(iter);
+        value = new XNodeSet(iterator);
+      }
+      else if (obj instanceof DTMIterator)
+      {
+        value = new XNodeSet((DTMIterator) obj);
+      }
+      else if (obj instanceof NodeIterator)
+      {
+        value = new XNodeSet(new org.apache.xpath.NodeSetDTM(((NodeIterator)obj), xctxt));
+      }
+      else if (obj instanceof org.w3c.dom.Node)
+      {
+        value =
+          new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node) obj),
+                       xctxt.getDTMManager());
+      }
       else
       {
         value = new XString(obj.toString());
