@@ -58,7 +58,7 @@ package org.apache.xpath.rwapi.expression;
 import org.apache.xpath.rwapi.*;
 
 /**
- * Represent a node test
+ * Represents a node test
  * <pre>
  * [28]   NodeTest   ::=   KindTest |  NameTest 
  * [29]   NameTest   ::=   QName |  Wildcard 

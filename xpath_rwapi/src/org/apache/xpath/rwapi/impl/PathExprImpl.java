@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -55,7 +55,6 @@
  */
 package org.apache.xpath.rwapi.impl;
 
-import org.apache.xpath.rwapi.XPathException;
 import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.PathExpr;
 import org.apache.xpath.rwapi.expression.StepExpr;
@@ -66,119 +65,130 @@ import org.apache.xpath.rwapi.impl.parser.Singletons;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 
+
 /**
  *
  */
-public class PathExprImpl extends OperatorImpl implements PathExpr {
+public class PathExprImpl extends OperatorImpl implements PathExpr
+{
+    boolean m_isAbsolute;
 
-	boolean m_isAbsolute;
+    /**
+     * Constructor for PathExprImpl.
+     */
+    protected PathExprImpl()
+    {
+        this(XPathTreeConstants.JJTPATHEXPR);
+    }
 
-	/**
-	 * Constructor for PathExprImpl.
-	 */
-	protected PathExprImpl() {
-		this(XPathTreeConstants.JJTPATHEXPR);
-	}
+    /**
+     * Constructor for PathExprImpl.
+     * @param i
+     */
+    public PathExprImpl(int i)
+    {
+        super(i);
 
-	/**
-	 * Constructor for PathExprImpl.
-	 * @param i
-	 */
-	public PathExprImpl(int i) {
-		super(i);
+        m_isAbsolute = false;
+    }
 
-		m_isAbsolute = false;
-	}
+    /**
+     * Constructor for PathExprImpl.
+     * @param p
+     * @param i
+     */
+    public PathExprImpl(XPath p, int i)
+    {
+        super(p, i);
 
-	/**
-	 * Constructor for PathExprImpl.
-	 * @param p
-	 * @param i
-	 */
-	public PathExprImpl(XPath p, int i) {
-		super(p, i);
+        m_isAbsolute = false;
+    }
 
-		m_isAbsolute = false;
-	}
+    /**
+     * @see org.apache.xpath.rwapi.expression.PathExpr#isAbsolute()
+     */
+    public boolean isAbsolute()
+    {
+        return m_isAbsolute;
+    }
 
-	/**
-	 * @see org.apache.xpath.rwapi.expression.PathExpr#isAbsolute()
-	 */
-	public boolean isAbsolute() {
-		return m_isAbsolute;
-	}
+    /**
+      * @see org.apache.xpath.rwapi.expression.Visitable#visit(Visitor)
+      */
+    public void visit(Visitor visitor)
+    {
+        visitor.visitPath(this);
 
-	/**
-	  * @see org.apache.xpath.rwapi.expression.Visitable#visit(Visitor)
-	  */
-	public void visit(Visitor visitor) {
-		visitor.visitPath(this);
-        
         // visit each step (operand)
         super.visit(visitor);
-        
-	}
+    }
 
-	/**
-  	  * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
-	  */
-	protected void getString(StringBuffer expr, boolean abbreviate) {
-		if (m_isAbsolute) {
-			expr.append("/");
-		}
-		super.getString(expr, abbreviate);
-	}
+    /**
+              * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
+      */
+    protected void getString(StringBuffer expr, boolean abbreviate)
+    {
+        if (m_isAbsolute)
+        {
+            expr.append("/");
+        }
 
-	/**
-	 * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
-	 */
-	public void jjtAddChild(Node n, int i) {
-		if (n.getId() == XPathTreeConstants.JJTROOT) {
-			m_isAbsolute = true;
-		} else if (n.getId() == XPathTreeConstants.JJTROOTDESCENDANTS) {
-			m_isAbsolute = true;
-			super.jjtAddChild(Singletons.SLASHSLASH, i);
-		} else if (n.getId() == XPathTreeConstants.JJTSLASHSLASH) {
-			// expand to /descendant::node()/
-			super.jjtAddChild(Singletons.SLASHSLASH, i);
-		} else if (n.getId() == XPathTreeConstants.JJTSLASH) {
-			// filtered
-		} else {
-			if (((SimpleNode) n).canBeReduced()) {
-				super.jjtInsertChild(n.jjtGetChild(0));
-			} else {
-				super.jjtInsertChild(n);
-			}
-		}
-	}
+        super.getString(expr, abbreviate);
+    }
 
-	/**
-	 * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#canBeReduced()
-	 */
-	public boolean canBeReduced() {
-		// Can be reduced if the first child is a literal
-		int et = ((Expr) children[0]).getExprType();
-		if (et == LITERAL_EXPR || et == FUNCTION_CALL_EXPR || et == SEQUENCE_EXPR || et == VARIABLE_REF_EXPR || et == ARITHMETIC_EXPR) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * @see org.apache.xpath.rwapi.impl.parser.Node#jjtAddChild(Node, int)
+     */
+    public void jjtAddChild(Node n, int i)
+    {
+        if (n.getId() == XPathTreeConstants.JJTROOT)
+        {
+            m_isAbsolute = true;
+        }
+        else if (n.getId() == XPathTreeConstants.JJTROOTDESCENDANTS)
+        {
+            m_isAbsolute = true;
+            super.jjtAddChild(Singletons.SLASHSLASH, i);
+        }
+      //  else if (n.getId() == XPathTreeConstants.JJTSLASHSLASH)
+       // {
+            // expand to /descendant-or-self::node()/
+       //     super.jjtAddChild(Singletons.SLASHSLASH, i);
+        //}
+        else if (n.getId() == XPathTreeConstants.JJTSLASH)
+        {
+            // filtered
+        }
+        else
+        {
+            if (((SimpleNode) n).canBeReduced())
+            {
+                super.jjtInsertChild(n.jjtGetChild(0));
+            }
+            else
+            {
+                super.jjtInsertChild(n);
+            }
+        }
+    }
 
-	/**
-	 * @see org.apache.xpath.rwapi.impl.parser.Node#jjtClose()
-	 */
-	public void jjtClose() {
-		// If the path expression contain only one primary step, then reduce
-		if (children.length == 1) {
-			Expr step = (Expr) children[0];
-			if (step.getExprType() == STEP && ((StepExpr) step).isPrimaryExpr()) {
-				try {
-					children[0] = (SimpleNode) ((StepExpr) step).getPrimaryExpr();
-				} catch (XPathException e) {
-					// never
-				}
-			}
-		}
-	}
+    /**
+     * @see org.apache.xpath.rwapi.impl.parser.SimpleNode#canBeReduced()
+     */
+    public boolean canBeReduced()
+    {
+        // Can be reduced whenever there is only one step and this step is a primary expression
+        if ((children != null) && (children.length == 1))
+        {
+            Expr step = (Expr) children[0];
+            int et = step.getExprType();
 
+            return (((et == STEP) && ((StepExpr) step).isPrimaryExpr())
+                   || (et == LITERAL_EXPR) || (et == FUNCTION_CALL_EXPR)
+                   || (et == SEQUENCE_EXPR) || (et == VARIABLE_REF_EXPR)
+                   || (et == ARITHMETIC_EXPR));
+        }
+
+        return false;
+    }
 }

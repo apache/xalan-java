@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -60,75 +60,81 @@ import org.apache.xpath.rwapi.expression.StepExpr;
 import org.apache.xpath.rwapi.impl.KindTestImpl;
 import org.apache.xpath.rwapi.impl.StepExprImpl;
 
+
 /**
  *
  */
-public class Singletons extends SimpleNode {
+public class Singletons extends SimpleNode
+{
+    /**
+     * DotDot singleton
+     */
+    static final protected Singletons DOTDOT = new Singletons(XPathTreeConstants.JJTDOTDOT);
 
-	/**
-	 * DotDot singleton
-	 */
-	static final protected Singletons DOTDOT = new Singletons(XPathTreeConstants.JJTDOTDOT);
+    /**
+     * Slash singleton
+     */
+    static final protected Singletons SLASH = new Singletons(XPathTreeConstants.JJTSLASH);
 
-	/**
-	 * Slash singleton
-	 */
-	static final protected Singletons SLASH = new Singletons(XPathTreeConstants.JJTSLASH);
+    /**
+    * At singleton
+    */
+    static final protected Singletons AT = new Singletons(XPathTreeConstants.JJTAT);
 
-	/**
-	* At singleton
-	*/
-	static final protected Singletons AT = new Singletons(XPathTreeConstants.JJTAT);
+    /**
+     * NodeTest singleton
+     */
+    static final protected Singletons NODETEST = new Singletons(XPathTreeConstants.JJTNODETEST);
 
-	/**
-	 * NodeTest singleton
-	 */
-	static final protected Singletons NODETEST = new Singletons(XPathTreeConstants.JJTNODETEST);
-    
     /**
      * Root singleton
      */
     static final protected Singletons ROOT = new Singletons(XPathTreeConstants.JJTROOT);
-    
+
     /**
      * Root descendants singleton
      */
     static final protected Singletons ROOTDESCENDANT = new Singletons(XPathTreeConstants.JJTROOTDESCENDANTS);
-    
+
     /**
      * Minus singleton
      */
     static final protected Singletons MINUS = new Singletons(XPathTreeConstants.JJTMINUS);
 
+    /**
+             * Plus singleton
+             */
+    static final protected Singletons PLUS = new Singletons(XPathTreeConstants.JJTPLUS);
 
-	/**
-	 * SlashSlash singleton
-	 */
-	static final public StepExprImpl SLASHSLASH;
+    /**
+     * SlashSlash singleton
+     */
+    static final public StepExprImpl SLASHSLASH;
 
-	static {
+    static
+    {
+        KindTestImpl kt = new KindTestImpl();
+        kt.setKindTest(NodeTest.ANY_KIND_TEST);
 
-		KindTestImpl kt = new KindTestImpl();
-		kt.setKindTest(NodeTest.ANY_KIND_TEST);
+        SLASHSLASH = new StepExprImpl(StepExpr.AXIS_DESCENDANT_OR_SELF, kt);
+    }
 
-		SLASHSLASH = new StepExprImpl(StepExpr.AXIS_DESCENDANT_OR_SELF, kt);
-	}
+    /**
+     * Constructor for Singletons.
+     * @param i
+     */
+    private Singletons(int i)
+    {
+        super(i);
+    }
 
-	/**
-	 * Constructor for Singletons.
-	 * @param i
-	 */
-	private Singletons(int i) {
-		super(i);
-	}
-
-	/**
-	 * Constructor for Singletons.
-	 * @param p
-	 * @param i
-	 */
-	private Singletons(XPath p, int i) {
-		super(p, i);
-	}
-
+    /**
+     * Constructor for Singletons.
+     * @param p
+     * @param i
+     */
+    private Singletons(XPath p, int i)
+    {
+        super(p, i);
+    }
 }

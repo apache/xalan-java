@@ -3,12 +3,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:g="http://www.w3.org/2001/03/XPath/grammar">
 
- 
-
   <xsl:import href="jjtree.xsl"/>
-  
-  <xsl:param name="package-name" select="'org.apache.xpath.parser'"/>
- 
 
   <!-- override jjtree.xsl -->
 	<xsl:template name="javacc-options">
@@ -24,7 +19,7 @@
 	</xsl:template>
 
 	<xsl:template name="set-parser-package">
-package <xsl:value-of select="$package-name"/>;
+package org.apache.xpath.rwapi.impl.parser;
 	</xsl:template>
 
     <xsl:template name="extra-parser-code">

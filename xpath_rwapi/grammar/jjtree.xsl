@@ -208,8 +208,20 @@ printIndent(); System.err.println("</xsl:text>
     <xsl:param name="label">
       <xsl:text>void</xsl:text>
     </xsl:param>
+		<!-- Begin SMPG -->
+    <xsl:param name="condition"></xsl:param>
+		<!-- End SMPG -->
+
     <xsl:text> #</xsl:text>
     <xsl:value-of select="$label"/>
+
+		<!-- Begin SMPG -->
+		<xsl:if test="$condition != ''">
+			<xsl:text>(</xsl:text>
+			<xsl:value-of select="$condition"/>
+			<xsl:text>)</xsl:text>
+		</xsl:if>
+		<!-- End SMPG -->
   </xsl:template>
 	
 	<xsl:template name="binary-action-level-jjtree-label">

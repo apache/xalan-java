@@ -551,6 +551,7 @@ we use ]]> as a single token. -->
     <xsl:when test="@node-type">
       <xsl:call-template name="action-level-jjtree-label">
         <xsl:with-param name="label" select="@node-type"/>
+        <xsl:with-param name="condition" select="@condition"/>
       </xsl:call-template>
     </xsl:when>
     <xsl:otherwise>
@@ -596,17 +597,29 @@ we use ]]> as a single token. -->
             </xsl:when>
             <xsl:otherwise>
               <xsl:choose>
-                <xsl:when test="not(g:binary) and */g:sequence">
+                <!-- <xsl:when test="not(g:binary) and */g:sequence"> SMPG -->
+                <xsl:when test="g:binary or */g:sequence">
                   <xsl:value-of select="*/@name"/>
-                  <!-- xsl:text>void</xsl:text -->
                 </xsl:when>
-                <xsl:otherwise>
+								<xsl:otherwise>
                   <xsl:text>void</xsl:text>
                 </xsl:otherwise>
               </xsl:choose>
             </xsl:otherwise>
           </xsl:choose>
         </xsl:with-param>
+
+				<!-- Begin SMPG -->
+        <xsl:with-param name="condition">
+					<xsl:choose>
+						<xsl:when test="g:binary or */g:sequence">
+							<xsl:value-of select="*/@condition"/>
+						</xsl:when>
+						<xsl:otherwise/>
+					</xsl:choose>
+        </xsl:with-param>
+				<!-- End SMPG -->
+
 		   <xsl:with-param name="thisProd" select="$thisProd"/>
 		   <xsl:with-param name="nextProd" select="$nextProd"/>
      </xsl:call-template> :

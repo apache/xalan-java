@@ -1294,12 +1294,12 @@
 
   <exprProduction name="Expr" node-type="void">
 		<level>	
-			<binary name="OrExpr" if="xpath xquery pathx1">
+			<binary name="OrExpr" if="xpath xquery pathx1" condition="&gt; 1">
 				<ref name="Or"/>
 			</binary>
 		</level>
 		<level>
-			<binary name="AndExpr" if="xpath xquery pathx1">
+			<binary name="AndExpr" if="xpath xquery pathx1" condition="&gt; 1">
 				<ref name="And"/>
 			</binary>
 		</level>
@@ -1327,7 +1327,7 @@
 				</sequence>
 			</prefix>
 			
-			<prefix name="ForExpr" if="xpath">
+			<prefix name="ForExpr" if="xpath" condition="&gt; 1">
 				<sequence>
 					<ref name="SimpleForClause"/>
 					<ref name="Return"/>
@@ -1335,7 +1335,7 @@
 			</prefix>
 		</level>
 		<level>
-			<prefix name="QuantifiedExpr" if="xquery xpath">
+			<prefix name="QuantifiedExpr" if="xquery xpath" condition="&gt; 1">
 				<sequence>
 					<choice>
 						<ref name="Some"/>
@@ -1383,7 +1383,7 @@
 			</prefix>
 		</level>
 		<level>
-			<prefix name="IfExpr" if="xpath core xquery">
+			<prefix name="IfExpr" if="xpath core xquery" condition="&gt; 1">
 				<sequence>
 					<ref name="IfLpar"/>
 					<ref name="Expr"/>
@@ -1396,7 +1396,7 @@
 			</prefix>  
 		</level>
 		<level>
-      <postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?">
+      <postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
 				  <sequence>
 					  <ref name="Instanceof"/>
 					  <ref name="SequenceType"/>
@@ -1404,7 +1404,7 @@
       </postfix>       
     </level>
 		<level>
-      <postfix name="CastableExpr" if="xquery xpath" prefix-seq-type="?">
+      <postfix name="CastableExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
           <sequence>
             <ref name="Castable"/>
             <ref name="SingleType"/>
@@ -1412,7 +1412,7 @@
       </postfix>       
     </level>
     <level>
-      <binary name="ComparisonExpr" prefix-seq-type="*" if="xpath xquery core">
+      <binary name="ComparisonExpr" prefix-seq-type="*" if="xpath xquery core" condition="&gt; 1">
         <choice break="true">
           <ref name="ValueComp"/>
           <ref name="GeneralComp"/>
@@ -1425,12 +1425,12 @@
       </binary>
     </level>
     <level>
-      <binary name="RangeExpr" if="xquery xpath" prefix-seq-type="?">
+	    <binary name="RangeExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
         <ref name="To"/>
       </binary>
     </level>
     <level>
-      <binary name="AdditiveExpr">
+			<binary name="AdditiveExpr" condition="&gt; 1">
         <choice>
           <ref name="Plus"/>
           <ref name="Minus"/>
@@ -1438,7 +1438,7 @@
       </binary>
     </level>
     <level>
-      <binary name="MultiplicativeExpr">
+			<binary name="MultiplicativeExpr" condition="&gt; 1">
         <choice>
           <ref name="Multiply"/>
           <ref name="Div"/>
@@ -1456,7 +1456,7 @@
       </prefix>
     </level>
     <level>
-      <binary name="UnionExpr" if="xquery xpath pathx1">
+			<binary name="UnionExpr" if="xquery xpath pathx1" condition="&gt; 1">
         <choice>
           <ref name="Union" if="xquery xpath"/>
           <ref name="Vbar"/>
@@ -1464,7 +1464,7 @@
       </binary>
     </level>
     <level>
-      <binary name="IntersectExceptExpr" if="xquery xpath">
+			<binary name="IntersectExceptExpr" if="xquery xpath" condition="&gt; 1">
         <choice>
           <ref name="Intersect"/>
           <ref name="Except"/>
@@ -1510,7 +1510,8 @@
 		</choice>
 	</production>
 	
-	<production name="RelativePathExpr" node-type="void">
+	<production name="RelativePathExpr" node-type="void"> 
+	
 		<ref name="StepExpr"/>
 		<zeroOrMore>
 			<choice>
@@ -1521,7 +1522,7 @@
 		</zeroOrMore>
 	</production>
 	
-	<production name="StepExpr">
+	<production name="StepExpr" node-type="StepExpr" condition="&gt; 1">
 		<choice>
 			<ref name="ForwardStep"/>
 			<ref name="ReverseStep"/>
@@ -1890,7 +1891,7 @@
 	  <ref name="DotDot"/>
   </production>
 
-  <production name="Predicates" if="xquery xpath pathx1 core">
+  <production name="Predicates" if="xquery xpath pathx1 core" condition="&gt; 1">
     <zeroOrMore name="PredicatesList">
       <choice>
         <sequence>

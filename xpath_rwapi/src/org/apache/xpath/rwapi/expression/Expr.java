@@ -99,10 +99,10 @@ public interface Expr extends Visitable {
     short QUANTIFIED_EXPR = 4;
     
     /**
-     * Comparator expression type.
-     * Modelise value comparisons, general comparisons, node comparisons, and order comparisons.
+     * Comparison expression type. Modelise value comparisons, general
+     * comparisons, node comparisons, and order comparisons.
      */
-    short COMPARATOR_EXPR = 5;
+    short COMPARISON_EXPR = 5;
     
     /**
      * Arithmetic expression type.
@@ -157,9 +157,9 @@ public interface Expr extends Visitable {
     short VARIABLE_REF_EXPR = 15;
 
     /**
-     * Parenthesized primary expression type constant
+     * Range expression type constant
      */
-    //short PARENTHESIZED_EXPR = 16;
+    short RANGE_EXPR = 16;
     
     /**
      * Step

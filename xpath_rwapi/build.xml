@@ -38,6 +38,7 @@ Copyright:
 <project name="XPathAPI" default="javacc" basedir=".">
 
   <property name="spec" value="xpath"/>
+  <property name="target.parser" value="src/org/apache/xpath/rwapi/impl/parser"/>
   <property name="tree.xsl" value="grammar/etree.xsl"/>
   <property name="test.expr" value="a/b/c"/>
   
@@ -51,35 +52,34 @@ Copyright:
   </path>
 
   <target name="gen-grammar">
-      <mkdir dir="${spec}-src"/>
-      <property name="target.parser" value="${spec}-src"/>
-
+      <mkdir dir="${target.parser}"/>
+    
 		<!-- first customized from original xpath-grammar -->
       <style style="grammar/customize.xsl" in="grammar/xpath-grammar.xml" 
 	    out="grammar/custom-xpath-grammar.xml" force="yes" extension=".xml" destdir="grammar"/>
     
       <style style="${tree.xsl}" in="grammar/custom-xpath-grammar.xml" 
-	    out="${spec}-src/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}-src">
+	    out="${target.parser}/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}">
       	<param name="spec" expression="${spec}"/>
-      	<param name="package-name" expression="com.ibm.etools.xpath.impl.parser"/>
+      	<param name="package-name" expression="org.apache.xpath.rwapi.impl.parser"/>
       </style>
 
   </target>
   
   <target name="jjtree" depends="gen-grammar">
-    <jjtree target="${spec}-src/xpath-grammar.jjt" javacchome="bin"/>
+    <jjtree target="${target.parser}/xpath-grammar.jjt" javacchome="../bin" outputdirectory="${target.parser}"/>
   </target>
 
   <target name="javacc" depends="jjtree">
-    <javacc target="${spec}-src/xpath-grammar.jj" 
-	    javacchome="bin"
+  	
+    <javacc target="${target.parser}/xpath-grammar.jj" 
+	    javacchome="../bin"
 	    debugtokenmanager="${debug}"
 	    debugparser="${debug}"
 	    sanitycheck="true"
 	    unicodeinput="${unicodeinput}"
 	    javaunicodeescape="${unicodeinput}"
-        outputdirectory="src/com/ibm/etools/xpath/impl/parser"/>
-      <copy file="${spec}-src/XPathTreeConstants.java" todir="src/com/ibm/etools/xpath/impl/parser"/>
+        outputdirectory="${target.parser}"/>
   </target>
   
   <target name="prepare">

@@ -1,70 +1,656 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <exprs>
-	<!-- primary (not nodeset) -->
-	<expr value="10"/>
-	<expr value="'chaine'"/>
-	<expr value="toto,10"/>
+	<!-- primary -->
+	<expr value="10">
+		<ast>
+			<node name="ExprSequence">
+				<!-- No predicate so filter StepExpr node -->
+				<node name="IntegerLiteral"/>
+			</node>
+		</ast>
+	</expr>
 	
-	<expr value="tutu/(toto|titi)"/>
-	<expr value="tutu/toto|titi"/>
-
-	<!-- primary expr -->
-	<expr value="func()"/>
-	<expr value="func2('param1',56)"/>
-	<expr value="$varvar"/>
-	<expr value="toto/$varvar"/>
-	<expr value="$varvar/toto"/>
-	<!--expr value="(toto|titi)"/-->
-
+	<expr value="10[$var]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="StepExpr">
+					<node name="IntegerLiteral"/>
+					<node name="VarName"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="'chaine'">
+		<ast>
+			<node name="ExprSequence">
+				<node name="StringLiteral"/>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="toto,10">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+				<node name="IntegerLiteral"/>
+			</node>
+		</ast>
+	</expr>
+	
+	
+	<expr value="func()">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FunctionCall"/>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="func2('param1',56)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FunctionCall">
+					<node name="StringLiteral"/>
+					<node name="IntegerLiteral"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="$varvar">
+		<ast>
+			<node name="ExprSequence">
+				<node name="VarName"/>
+			</node>
+		</ast>
+	</expr>
 	
 	<!-- nametest (AbbreviateForwardStep) -->
-	<expr value="toto"/>
-	<expr value="prefix4:toto"/>
-	<expr value="*"/>		
-	<expr value="prefix3:*"/>			
-	<expr value="*:toto"/>			
+	<expr value="toto">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">	
+					<node name="StepExpr">				
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="prefix4:toto">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="*">		
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	<expr value="prefix3:*">			
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	<expr value="*:toto">			
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
 	
 	<!-- kindtest -->
-	<expr value="text()"/>
-	<expr value="comment()"/>
-	<expr value="processing-instruction()"/>
-	<expr value="node()"/>
+	<expr value="text()">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="comment()">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="processing-instruction()">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="node()">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
 	
 	<!-- abbreviate step -->
 	<!--expr value="."/-->
-	<expr value="@toto"/>
-	<expr value=".."/>
+	<expr value="@toto">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="..">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
 
 	
 	<!-- reverse axis -->
-	<expr value="ancestor::toto"/>
+	<expr value="ancestor::toto">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
 		
-	<!-- path expr (more than one step) -->
-	<expr value="toto/titi"/>
-	<expr value="/abs/titi"/>
-	<expr value="rel//titi"/>
-	<expr value="rel//titi/tutu//tata"/>
-	<expr value="//abs/self:titi"/>
-	<expr value="//abs[//toto]/self::titi"/>
+	<!-- path expr -->
+	<expr value="/">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr"/>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="toto/titi">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>					
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="/abs/titi">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>					
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="rel//titi">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>	
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>					
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="rel//titi/tutu//tata">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>	
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>	
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>					
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="//abs/self:titi">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>	
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>									
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="//abs[//toto]/self::titi">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="KindTest"/>
+					</node>	
+					<node name="StepExpr">
+						<node name="NameTest"/>
+						<node name="PathExpr">
+							<node name="StepExpr">
+								<node name="KindTest"/>
+							</node>	
+							<node name="StepExpr">
+								<node name="NameTest"/>
+							</node>
+						</node>
+					</node>
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>									
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="toto/$varvar">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>							
+					<node name="VarName"/>					
+				</node>	
+			</node>
+		</ast>	
+	</expr>
+	
+	
+	<expr value="$varvar/toto">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="VarName"/>
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>												
+				</node>	
+			</node>
+		</ast>
+	</expr>
+	
+	
+	<!-- Union -->
+	<expr value="tutu/(toto|titi)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+					</node>
+					<node name="StepExpr">
+						<node name="UnionExpr">
+							<node name="PathExpr">
+								<node name="StepExpr">
+									<node name="NameTest"/>
+								</node>								
+							</node>	
+							
+							<node name="PathExpr">
+								<node name="StepExpr">
+									<node name="NameTest"/>
+								</node>							
+							</node>
+						</node>				
+					</node>					
+				</node>
+			</node>
+		</ast>	
+	</expr>
+	
+	
+	<expr value="tutu/toto|titi">
+		<ast>
+			<node name="ExprSequence">
+				<node name="UnionExpr">
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>
+						</node>		
+						<node name="StepExpr">
+							<node name="NameTest"/>
+						</node>																				
+					</node>	
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>
+						</node>							
+					</node>
+				</node>					
+			</node>
+		</ast>
+	</expr>
+	
 	
 	<!-- predicate -->
-	<expr value="toto[titi]"/>
-	<expr value="toto[10]"/>
-	<expr value="toto[10][descendant::tutu]"/>
+	<expr value="toto[titi]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+						<node name="PathExpr">
+							<node name="StepExpr">
+								<node name="NameTest"/>								
+							</node>
+						</node>				
+					</node>		
+				</node>		
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="toto[10]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+						<node name="IntegerLiteral"/>
+					</node>		
+				</node>		
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="toto[10][descendant::tutu]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>
+						<node name="IntegerLiteral"/>
+						<node name="PathExpr">
+							<node name="StepExpr">
+								<node name="NameTest"/>								
+							</node>
+						</node>													
+					</node>		
+				</node>		
+			</node>
+		</ast>
+	</expr>
 	
 	<!-- expr sequence -->
-	<expr value="toto,50,'chaine'"/>
+	<expr value="toto,50,'chaine'">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>						
+					</node>		
+				</node>		
+				<node name="IntegerLiteral"/>
+				<node name="StringLiteral"/>
+			</node>
+		</ast>
+	</expr>
 	
 	<!-- Additive/Mutiplicative/unary expr -->
-	<expr value="45+23-10"/>
-	<expr value="toto[45+23]"/>
-	<expr value="42+12*5-4 div 12 idiv 10 mod 10"/>
-	<expr value="42+12 mod 10"/>
-	<expr value="(42+12) mod 10"/>
+	<expr value="((45+23)-10)">
+		<ast>
+			<node name="ExprSequence">
+				<node name="AdditiveExpr">
+					<node name="AdditiveExpr">
+						<node name="IntegerLiteral"/>
+						<node name="IntegerLiteral"/>				
+					</node>		
+					<node name="IntegerLiteral"/>				
+				</node>		
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="toto[45+23]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="PathExpr">
+					<node name="StepExpr">
+						<node name="NameTest"/>		
+						<node name="AdditiveExpr">
+							<node name="IntegerLiteral"/>
+							<node name="IntegerLiteral"/>				
+						</node>		
+					</node>		
+				</node>	
+					
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="-3">
+		<ast>
+			<node name="ExprSequence">
+				<node name="UnaryExpr">
+					<node name="IntegerLiteral"/>					
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="+3">
+		<ast>
+			<node name="ExprSequence">
+				<node name="UnaryExpr">
+					<node name="IntegerLiteral"/>					
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="4 div 12">
+		<ast>
+			<node name="ExprSequence">
+				<node name="MultiplicativeExpr">
+					<node name="IntegerLiteral"/>	
+					<node name="IntegerLiteral"/>	
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	
+	<!-- And Or expr -->
+	
+	<expr value="a and b">
+		<ast>
+			<node name="ExprSequence">
+				<node name="AndExpr">
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="a or b">
+		<ast>
+			<node name="ExprSequence">
+				<node name="OrExpr">
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<!-- Comparison expr -->
+	
+	<expr value="a=b">
+		<ast>
+			<node name="ExprSequence">
+				<node name="ComparisonExpr">
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	
+	<!-- Range expr -->
+	
+	<expr value="1 to 100">
+		<ast>
+			<node name="ExprSequence">
+				<node name="RangeExpr">
+					<node name="IntegerLiteral"/>
+					<node name="IntegerLiteral"/>		
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<expr value="(1 to 100)[(5 mod 5) eq 0]">
+		<ast>
+			<node name="ExprSequence">
+				<node name="StepExpr">
+					<node name="RangeExpr">
+						<node name="IntegerLiteral"/>
+						<node name="IntegerLiteral"/>					
+					</node>
+					<node name="ComparisonExpr">
+						<node name="MultiplicativeExpr">
+							<node name="IntegerLiteral"/>
+							<node name="IntegerLiteral"/>
+						</node>
+						<node name="IntegerLiteral"/>
+					</node>
+				</node>
+			</node>			
+		</ast>
+	</expr>
 	
 
-
-	<!-- Semantically invalid expression -->
+	<!-- Semantically invalid expression (parser should return an error) -->
 	<expr value="toto/(45+23)"/>
 </exprs>

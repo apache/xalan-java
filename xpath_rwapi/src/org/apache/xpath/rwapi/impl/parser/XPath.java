@@ -742,24 +742,29 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   }
 
   final public void OrExpr() throws ParseException {
-    AndExpr();
-    label_2:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Or:
-        ;
-        break;
-      default:
-        jj_la1[14] = jj_gen;
-        break label_2;
-      }
-      jj_consume_token(Or);
-          binaryTokenStack.push(token);
+ /*@bgen(jjtree) #OrExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTOREXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       AndExpr();
+      label_2:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Or:
+          ;
+          break;
+        default:
+          jj_la1[14] = jj_gen;
+          break label_2;
+        }
+        jj_consume_token(Or);
+          binaryTokenStack.push(token);
+        AndExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTOREXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -772,33 +777,57 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
   final public void AndExpr() throws ParseException {
-    FLWRExpr();
-    label_3:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case And:
-        ;
-        break;
-      default:
-        jj_la1[15] = jj_gen;
-        break label_3;
-      }
-      jj_consume_token(And);
-          binaryTokenStack.push(token);
+ /*@bgen(jjtree) #AndExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTANDEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       FLWRExpr();
+      label_3:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case And:
+          ;
+          break;
+        default:
+          jj_la1[15] = jj_gen;
+          break label_3;
+        }
+        jj_consume_token(And);
+          binaryTokenStack.push(token);
+        FLWRExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTANDEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -811,16 +840,35 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
   final public void FLWRExpr() throws ParseException {
- /*@bgen(jjtree) FLWRExpr */
+ /*@bgen(jjtree) #FLWRExpr(> 1) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTFLWREXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -867,13 +915,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
     }
     }
   }
 
   final public void QuantifiedExpr() throws ParseException {
- /*@bgen(jjtree) QuantifiedExpr */
+ /*@bgen(jjtree) #QuantifiedExpr(> 1) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTQUANTIFIEDEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1023,13 +1071,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
     }
     }
   }
 
   final public void IfExpr() throws ParseException {
- /*@bgen(jjtree) IfExpr */
+ /*@bgen(jjtree) #IfExpr(> 1) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIFEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1104,13 +1152,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
     }
     }
   }
 
   final public void InstanceofExpr() throws ParseException {
- /*@bgen(jjtree) InstanceofExpr */
+ /*@bgen(jjtree) #InstanceofExpr(> 1) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINSTANCEOFEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1153,13 +1201,13 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
     }
     }
   }
 
   final public void CastableExpr() throws ParseException {
- /*@bgen(jjtree) CastableExpr */
+ /*@bgen(jjtree) #CastableExpr(> 1) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTABLEEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1202,73 +1250,78 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
     }
     }
   }
 
   final public void ComparisonExpr() throws ParseException {
-    RangeExpr();
-    label_8:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Equals:
-      case Is:
-      case NotEquals:
-      case IsNot:
-      case LtEquals:
-      case LtLt:
-      case GtEquals:
-      case GtGt:
-      case FortranEq:
-      case FortranNe:
-      case FortranGt:
-      case FortranGe:
-      case FortranLt:
-      case FortranLe:
-      case Lt:
-      case Gt:
-        ;
-        break;
-      default:
-        jj_la1[23] = jj_gen;
-        break label_8;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case FortranEq:
-      case FortranNe:
-      case FortranGt:
-      case FortranGe:
-      case FortranLt:
-      case FortranLe:
-        ValueComp();
-        break;
-      case Equals:
-      case NotEquals:
-      case LtEquals:
-      case GtEquals:
-      case Lt:
-      case Gt:
-        GeneralComp();
-        break;
-      case Is:
-      case IsNot:
-        NodeComp();
-        break;
-      case LtLt:
-      case GtGt:
-        OrderComp();
-        break;
-      default:
-        jj_la1[24] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+ /*@bgen(jjtree) #ComparisonExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCOMPARISONEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       RangeExpr();
+      label_8:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Equals:
+        case Is:
+        case NotEquals:
+        case IsNot:
+        case LtEquals:
+        case LtLt:
+        case GtEquals:
+        case GtGt:
+        case FortranEq:
+        case FortranNe:
+        case FortranGt:
+        case FortranGe:
+        case FortranLt:
+        case FortranLe:
+        case Lt:
+        case Gt:
+          ;
+          break;
+        default:
+          jj_la1[23] = jj_gen;
+          break label_8;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case FortranEq:
+        case FortranNe:
+        case FortranGt:
+        case FortranGe:
+        case FortranLt:
+        case FortranLe:
+          ValueComp();
+          break;
+        case Equals:
+        case NotEquals:
+        case LtEquals:
+        case GtEquals:
+        case Lt:
+        case Gt:
+          GeneralComp();
+          break;
+        case Is:
+        case IsNot:
+          NodeComp();
+          break;
+        case LtLt:
+        case GtGt:
+          OrderComp();
+          break;
+        default:
+          jj_la1[24] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        RangeExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCOMPARISONEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -1281,25 +1334,49 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
   final public void RangeExpr() throws ParseException {
-    AdditiveExpr();
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case To:
-      jj_consume_token(To);
-          binaryTokenStack.push(token);
+ /*@bgen(jjtree) #RangeExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRANGEEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       AdditiveExpr();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case To:
+        jj_consume_token(To);
+          binaryTokenStack.push(token);
+        AdditiveExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTRANGEEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -1312,50 +1389,74 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
+        break;
+      default:
+        jj_la1[25] = jj_gen;
+        ;
       }
-      break;
-    default:
-      jj_la1[25] = jj_gen;
-      ;
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
   final public void AdditiveExpr() throws ParseException {
-    MultiplicativeExpr();
-    label_9:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Minus:
-      case Plus:
-        ;
-        break;
-      default:
-        jj_la1[26] = jj_gen;
-        break label_9;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Plus:
-        jj_consume_token(Plus);
-          binaryTokenStack.push(token);
-        break;
-      case Minus:
-        jj_consume_token(Minus);
-          binaryTokenStack.push(token);
-        break;
-      default:
-        jj_la1[27] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+ /*@bgen(jjtree) #AdditiveExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTADDITIVEEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       MultiplicativeExpr();
+      label_9:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Minus:
+        case Plus:
+          ;
+          break;
+        default:
+          jj_la1[26] = jj_gen;
+          break label_9;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Plus:
+          jj_consume_token(Plus);
+          binaryTokenStack.push(token);
+          break;
+        case Minus:
+          jj_consume_token(Minus);
+          binaryTokenStack.push(token);
+          break;
+        default:
+          jj_la1[27] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        MultiplicativeExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTADDITIVEEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -1368,56 +1469,80 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
   final public void MultiplicativeExpr() throws ParseException {
-    UnaryExpr();
-    label_10:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Div:
-      case Idiv:
-      case Mod:
-      case Multiply:
-        ;
-        break;
-      default:
-        jj_la1[28] = jj_gen;
-        break label_10;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Multiply:
-        jj_consume_token(Multiply);
-          binaryTokenStack.push(token);
-        break;
-      case Div:
-        jj_consume_token(Div);
-          binaryTokenStack.push(token);
-        break;
-      case Idiv:
-        jj_consume_token(Idiv);
-          binaryTokenStack.push(token);
-        break;
-      case Mod:
-        jj_consume_token(Mod);
-          binaryTokenStack.push(token);
-        break;
-      default:
-        jj_la1[29] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+ /*@bgen(jjtree) #MultiplicativeExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLICATIVEEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       UnaryExpr();
+      label_10:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Div:
+        case Idiv:
+        case Mod:
+        case Multiply:
+          ;
+          break;
+        default:
+          jj_la1[28] = jj_gen;
+          break label_10;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Multiply:
+          jj_consume_token(Multiply);
+          binaryTokenStack.push(token);
+          break;
+        case Div:
+          jj_consume_token(Div);
+          binaryTokenStack.push(token);
+          break;
+        case Idiv:
+          jj_consume_token(Idiv);
+          binaryTokenStack.push(token);
+          break;
+        case Mod:
+          jj_consume_token(Mod);
+          binaryTokenStack.push(token);
+          break;
+        default:
+          jj_la1[29] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        UnaryExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTMULTIPLICATIVEEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -1430,11 +1555,30 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
@@ -1515,37 +1659,42 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   }
 
   final public void UnionExpr() throws ParseException {
-    IntersectExceptExpr();
-    label_12:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Union:
-      case Vbar:
-        ;
-        break;
-      default:
-        jj_la1[32] = jj_gen;
-        break label_12;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Union:
-        jj_consume_token(Union);
-          binaryTokenStack.push(token);
-        break;
-      case Vbar:
-        jj_consume_token(Vbar);
-          binaryTokenStack.push(token);
-        break;
-      default:
-        jj_la1[33] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+ /*@bgen(jjtree) #UnionExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNIONEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       IntersectExceptExpr();
+      label_12:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Union:
+        case Vbar:
+          ;
+          break;
+        default:
+          jj_la1[32] = jj_gen;
+          break label_12;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Union:
+          jj_consume_token(Union);
+          binaryTokenStack.push(token);
+          break;
+        case Vbar:
+          jj_consume_token(Vbar);
+          binaryTokenStack.push(token);
+          break;
+        default:
+          jj_la1[33] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        IntersectExceptExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTUNIONEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -1558,46 +1707,70 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
   final public void IntersectExceptExpr() throws ParseException {
-    ValueExpr();
-    label_13:
-    while (true) {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Intersect:
-      case Except:
-        ;
-        break;
-      default:
-        jj_la1[34] = jj_gen;
-        break label_13;
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case Intersect:
-        jj_consume_token(Intersect);
-          binaryTokenStack.push(token);
-        break;
-      case Except:
-        jj_consume_token(Except);
-          binaryTokenStack.push(token);
-        break;
-      default:
-        jj_la1[35] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
+ /*@bgen(jjtree) #IntersectExceptExpr(> 1) */
+  SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXCEPTEXPR);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+    try {
       ValueExpr();
+      label_13:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Intersect:
+        case Except:
+          ;
+          break;
+        default:
+          jj_la1[34] = jj_gen;
+          break label_13;
+        }
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case Intersect:
+          jj_consume_token(Intersect);
+          binaryTokenStack.push(token);
+          break;
+        case Except:
+          jj_consume_token(Except);
+          binaryTokenStack.push(token);
+          break;
+        default:
+          jj_la1[35] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
+        ValueExpr();
                   SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTINTERSECTEXCEPTEXPR);
                   boolean jjtc001 = true;
                   jjtree.openNodeScope(jjtn001);
-      try {
+        try {
                   jjtree.closeNodeScope(jjtn001,  2);
                   jjtc001 = false;
          try
@@ -1610,11 +1783,30 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
            e.printStackTrace();
            {if (true) throw e;}
          }
-      } finally {
+        } finally {
                   if (jjtc001) {
                     jjtree.closeNodeScope(jjtn001,  2);
                   }
+        }
       }
+    } catch (Throwable jjte000) {
+    if (jjtc000) {
+      jjtree.clearNodeScope(jjtn000);
+      jjtc000 = false;
+    } else {
+      jjtree.popNode();
+    }
+    if (jjte000 instanceof RuntimeException) {
+      {if (true) throw (RuntimeException)jjte000;}
+    }
+    if (jjte000 instanceof ParseException) {
+      {if (true) throw (ParseException)jjte000;}
+    }
+    {if (true) throw (Error)jjte000;}
+    } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
+    }
     }
   }
 
@@ -1861,7 +2053,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
   }
 
   final public void StepExpr() throws ParseException {
- /*@bgen(jjtree) StepExpr */
+ /*@bgen(jjtree) #StepExpr(> 1) */
   SimpleNode jjtn000 = (SimpleNode)SimpleNode.jjtCreate(this, JJTSTEPEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1926,7 +2118,7 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
     {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
+      jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
     }
     }
   }
