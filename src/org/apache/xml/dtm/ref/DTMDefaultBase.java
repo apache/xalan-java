@@ -1648,7 +1648,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public short getNodeType(int nodeHandle)
   {
-    return (short)(_exptype(makeNodeIdentity(nodeHandle)) >> ExpandedNameTable.ROTAMOUNT_TYPE);
+    return (short)(_exptype(makeNodeIdentity(nodeHandle)) >>> ExpandedNameTable.ROTAMOUNT_TYPE);
   }
 
   /**

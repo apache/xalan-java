@@ -1228,7 +1228,12 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    */
   public String getNodeValue(int nodeHandle)
   {
-    int type=_type(nodeHandle);
+    // The _type(nodeHandle) call was taking the lion's share of our
+    // time, and was wrong anyway since it wasn't coverting handle to
+    // identity. Inlined it.
+    int type = _exptype(makeNodeIdentity(nodeHandle));
+    type=(NULL != type) ? ExpandedNameTable.getType(type) : NULL;
+    
     if(TEXT_NODE!=type && CDATA_SECTION_NODE!=type)
       return getNode(nodeHandle).getNodeValue();
     
