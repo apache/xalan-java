@@ -556,10 +556,10 @@ public abstract class AbstractTranslet implements Translet {
 	if (_method != null) {
 	    // Transfer all settings relevant to XML output
 	    if (_method.equals("xml")) {
+	        if (_standalone != null) handler.setStandalone(_standalone);
 		handler.setType(TextOutput.XML);
 		handler.setCdataElements(_cdata);
 		if (_version != null) handler.setVersion(_version);
-		if (_standalone != null) handler.setStandalone(_standalone);
 		if (_omitHeader) handler.omitHeader(true);
 		handler.setIndent(_indent);
 		if (_doctypeSystem != null)
