@@ -85,11 +85,11 @@ import org.apache.xalan.xsltc.runtime.AttributeList;
 
 class DOM2SAX implements XMLReader , Locator {
 
-    private Document _dom = null;
+    private Node _dom = null;
     private ContentHandler _sax = null;
  
     public DOM2SAX(Node root) {
-	_dom = (Document)root;
+	_dom = root;
     }
 
     public ContentHandler getContentHandler() { 
@@ -123,7 +123,7 @@ class DOM2SAX implements XMLReader , Locator {
 
     private void parse(Node node) throws IOException, SAXException {
         Node first = null;
- 	if (node == null ) return;
+ 	if (node == null) return;
 
         switch (node.getNodeType()) {
 	case Node.ATTRIBUTE_NODE:         // handled by ELEMENT_NODE

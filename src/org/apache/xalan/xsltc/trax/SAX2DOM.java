@@ -101,6 +101,7 @@ class SAX2DOM implements ContentHandler {
 
     public void startDocument() {
 	_document = _builder.newDocument();
+	_nodeStk.push(_document);
 	// bugfix 6417, contributed by Tim Elcott
     }
 
