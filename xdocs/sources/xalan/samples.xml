@@ -350,27 +350,27 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <s2 title="SQL library extensions">
       <p>The <link idref="extensionslib" anchor="sql">SQL library </link> extension enables you to execute SQL queries from within a stylesheet, 
       and to incorporate query result sets in the XML output. To use the SQL library, you need
-      a JDBC driver, the underying DBMS, and a database. Our samples use Lutris&reg; InstantDB, available "free of charge for research and 
-      development use."</p><anchor name="instantdbsetup"/>
-      <s3 title="Setting up the InstantDB samples">
+      a JDBC driver, the underlying DBMS, and a database. Our samples use Lutris&reg; InstantDB. 
+      You can also customize the stylesheets for your own database implementations.</p>
+      <anchor name="dbsetup"/>
+      <s3 title="Setting up the SQL extension samples">
       <p>To run the SQL library extension samples, do the following:</p>
       <ol>
-      <li>Obtain a copy of InstantDB. You can download a free "Development license" copy for research and development from 
-      <jump href="http://www.lutris.com/downloads/index.html">Lutris Downloads</jump>.<br/><br/></li>
-      <li>Follow the instructions Lutris provides for installing InstantDB and generating the sample database.<br/><br/></li>
-      <li>Add idb.jar and the Java Transaction API JAR (jta-spec1_0_1.jar in the InstantDB 4.0 release) to the system class path.<br/><br/></li>
-      <li>Create an instantdb directory in the samples/extensions subdirectory, and copy the sample database to instantdb. The sample database
-      is in the Examples subdirectory where you installed InstantDB. For our purposes, it includes samples.prp and three subdirectories:
-      indexes, system, and tables.<br/><br/>
-      Alternative: You can adjust the references to samples.prp in the XSL stylesheets and XML document dburl nodes to point to sample.prp in
-      its original location, in which case you do not need to copy the samples database. For example, if you have installed InstantDB in /idb,
-      you can change 'jdbc:idb:./instantdb/sample.prp' in the XConnection new() call in extensions/6-sqllib-instantdb to
-      'jdbc:idb:/idb/Examples/sample.prp'.<br/><br/></li>
+      <li>InstantDB is no longer freely available. If you still have a copy of it, 
+      you can follow the instructions Lutris provides for installing InstantDB and generating the sample database.</li>
+      <li>For other database implementations, you have to customize the stylesheets by modifying the SQL query, the JDBC driver name and the database url:
+        <ul>
+          <li>Modify the SQL query to your own needs. The SQL query is defined in a parameter like
+          <code>&lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;</code>.</li>
+          <li>Modify the JDBC driver name and the database url. They are specified in the stylesheets as parameters for some
+          examples. For other examples the parameters are defined in the dbinfo.xml file.</li>
+        </ul>
+      </li>
+      <li>Add the JDBC driver jar to the system class path.</li>
+      <li>Create the database you want to work with if it does not already exist.</li>
       </ol>
-      <p>For more information about InstantDB, see the <jump href="http://www.lutris.com/products/instantDB/software/documentation/">InstantDB
-      Documentation</jump>.</p>
       </s3>
-      <s3 title="SQL Library samples with InstantDB">    
+      <s3 title="SQL Library samples">    
       <ul>
       <li><link anchor="ext6">6-sqllib-instantdb</link></li>
       <li><link anchor="basic-conn">Basic Connections</link></li>      
@@ -380,13 +380,13 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <li><link anchor="showerror">Show-error</link></li>
       </ul>
       <note>Except for 6-sqllib-instantdb, all these samples have been created by John Gentilin 
-      (johnglinux@eyecatching.com) to take illustrate the rich feature set he has contributed to the SQL Library. 
+      (johnglinux@eyecatching.com) to illustrate the rich feature set he has contributed to the SQL Library. 
       To run each of these samples, be sure  you are in the appropriate extensions/sql subdirectory.</note>
       </s3><anchor name="ext6"/>
       <s3 title="6-sqllib-instantdb">
       <p>What it does: Uses the SQL library XConnection extension to connect to the InstantDB sample database, 
       performs a query, and returns the query result in an HTML table.</p>
-      <p><link anchor="instantdbsetup">Set up InstantDB</link>, and run this sample from the extensions subdirectory:</p>
+      <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions subdirectory:</p>
       <p><code>java org.apache.xalan.xslt.Process</code>
       <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb.xsl -out import1.html</code></p>
       </s3><anchor name="basic-conn"/>
@@ -398,7 +398,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       in the form of stylesheet parameters.</p>      
       <p>The second strategy is to get connection information from a nodeset in an XML source document (dbInfo.xml).</p>
       
-      <p><link anchor="instantdbsetup">Set up InstantDB</link>, and run this sample from the extensions/sql/basic-connection 
+      <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions/sql/basic-connection 
        directory.</p>
        <p>1. To get connection information from the stylesheet:</p>
       <p><code>java org.apache.xalan.xslt.Process</code>
@@ -418,7 +418,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     XConnection object and connect to a datasouce.</p>
     <p>The stylesheet uses this named connection pool to instantiate an XConnection object and connect to the datasource. 
     The ExternalConnection class is in xalansamples.jar.</p>
-    <p><link anchor="instantdbsetup">Set up InstantDB</link>, be sure xalanxamples.jar is on the class path, and run this 
+    <p><link anchor="dbsetup">Set up the database</link>, be sure xalanxamples.jar is on the class path, and run this 
     sample from the extensions/sql/ext-connection directory:</p>
     <p><code>java ExternalConnection</code></p>
     <p>ExternalConnection creates the ConnectionPool, and performs a transformation with dbtest.xsl, which draws 
@@ -431,7 +431,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     provides the parameter value as well as the connection information. The parameter value is in a node in the XML source.</p>
     <p>The stylesheet gets the required connection and parameter information from the XML source, sets up and executes the
     parameterized query, and retuns the query result set.</p>
-    <p><link anchor="instantdbsetup">Set up InstantDB</link>, and run this sample from the sql/pquery subdirectory:</p>
+    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the sql/pquery subdirectory:</p>
     <p><code>java org.apache.xalan.xslt.Process -in dbInfo.xml</code>
     <br/><code>-xsl dbTest.xsl -out dbTest.html</code></p>    
     </s3><anchor name="streamable"/>
@@ -439,7 +439,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>    
     <p>What it does: Illustrates enabling and disabling of caching the streamable result set returned by a query.</p>
     <p>The stylesheets use the XConnection enableCacheNodes() and disableCacheNodes() methods.</p>
-    <p><link anchor="instantdbsetup">Set up InstantDB</link>, and run these samples from the sql/streamable subdirectory.</p>
+    <p><link anchor="dbsetup">Set up the database</link>, and run these samples from the sql/streamable subdirectory.</p>
     <p>1. To turn caching on:</p>
     <p><code>java org.apache.xalan.xslt.Process</code>
     <br/><code>-xsl cachedNodes.xsl</code></p>
@@ -455,7 +455,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     <source>&lt;xsl:variable name="table" select='sql:query($db, $query)'/&gt;
   &lt;xsl:apply-templates select="$table/row-set" /&gt;	
   &lt;xsl:apply-templates select="$table/ext-error"/&gt;</source>
-  <p><link anchor="instantdbsetup">Set up InstantDB</link>, and run this sample from the extensions/sql/show-error subdirectory:</p>
+  <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions/sql/show-error subdirectory:</p>
   <p><code>java org.apache.xalan.xslt.Process</code>
   <br/><code> -xsl <ref>invalidSomething.xsl</ref> -out dbtestout.html</code></p>
   <p>where <ref>invalidSomething.xsl</ref> is <code>invalidConn.xsl</code> (specifies a database that does not exist), 

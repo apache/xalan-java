@@ -63,21 +63,11 @@
 <li><link anchor="xalanns">&xslt; namespace</link></li>
 <li><link anchor="redirect">Redirect</link></li>
 <li><link anchor="nodeset">nodeset</link></li>
-<li><link anchor="intersection">intersection</link></li>
-<li><link anchor="difference">difference</link></li>
-<li><link anchor="distinct">distinct</link></li>
-<li><link anchor="hassamenodes">hasSameNodes</link></li>
 <li><link anchor="nodeinfo">NodeInfo extension functions</link></li>
 <li><link anchor="sql">SQL library</link></li>
 <li><link anchor="pipedocument">PipeDocument</link></li>
 <li><link anchor="evaluate">evaluate</link></li>
 <li><link anchor="tokenize">tokenize</link></li>
-<li><link anchor="groupitem">group and item</link> <ref>(to be done)</ref></li>
-<li><link anchor="type">type</link> <ref>(to be done)</ref></li>
-<li><link anchor="todate">toDate</link> <ref>(to be done)</ref></li>
-<li><link anchor="formatdate">formatDate</link> <ref>(to be done)</ref></li>
-<li><link anchor="grep">grep</link> <ref>(to be done)</ref></li>
-<li><link anchor="foreachtoken">forEachToken</link> <ref>(to be done)</ref></li>
 <li>Examples: <link anchor="ex-redirect">Redirect</link>, <link anchor="ex-nodeset">nodeset</link>, <link anchor="ex-sql">SQL library</link></li>
 </ul><anchor name="intro"/>
 <s2 title= "Introduction">
@@ -88,31 +78,36 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 </s2><anchor name="exslt"/>
 <s2 title="EXSLT extensions">
  <p>&xslt4j; supports the <jump href="http://exslt.org/">EXSLT</jump> initiative to provide a set of
-standard extension functions and elements to XSLT users. &xslt4j; 2.3.2 includes implementations for 12 EXSLT
-functions (some are calls to extension already in the Xalan namespace). For the details, see:</p>
+standard extension functions and elements to XSLT users. &xslt4j; includes implementations for the following EXSLT
+extension modules:</p>
 <ul>
 <li><jump href="apidocs/org/apache/xalan/lib/ExsltCommon.html">EXSLT common functions</jump></li>
 <li><jump href="apidocs/org/apache/xalan/lib/ExsltMath.html">EXSLT math functions</jump></li>
-<li><jump href="apidocs/org/apache/xalan/lib/ExsltSets.html">EXSLT set function</jump></li>
-<li><jump href="apidocs/org/apache/xalan/lib/ExsltDatetime.html">EXSLT date-and-time function</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltSets.html">EXSLT set functions</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltDatetime.html">EXSLT date-and-time functions</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltDynamic.html">EXSLT dynamic functions</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltStrings.html">EXSLT string functions</jump></li>
 <li>The EXSLT func:function and func:result elements (see <jump href="http://www.exslt.org/func/elements/function/index.html">EXSLT - func:function)</jump></li>
 </ul>
-<p>Work is currently underway on <jump href="http://www.exslt.org/date/index.html">EXSLT date and time functions</jump> 
-and <jump href="http://www.exslt.org/func/index.html">and user defined EXSLT functions (with the function and result 
-elements)</jump>. Anyone who would like to help by implementating other EXSLT extensions is more than welcome. Please email us at the <human-resource-ref idref="xalandev"/>.</p>
+<p>All EXSLT extensions use namespaces specified in the EXSLT specification. For example, to use the EXSLT math functions, specify a namespace URI as follows:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>xmlns:math="http://exslt.org/math"</code></p>
+<p>Anyone who would like to help by implementating other EXSLT extensions is more than welcome. Please email us at the <human-resource-ref idref="xalandev"/>.</p>
 </s2>
 <anchor name="xalanns"/>
 <s2 title="&xslt; namespace">
-<p>Where it makes sense, we are placing the new &xslt; extensions in the org.apache.xalan.lib.Extensions class and we have defined a namespace for this class:</p>
+<p>The &xslt; extensions are implemented in one of the classes under org.apache.xalan.lib. The main extension class is <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>. Some extension
+functions (e.g. intersection, difference, etc.) used to be in this class are now moved to the corresponding <link anchor="exslt">EXSLT</link> modules. All &xslt; extensions use namespace URIs starting with:</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan</code></p>
-<p>If you are calling &xslt4j;-supplied extensions, we recommend that you define this namespace in your stylesheet element, and call the extension using the namespace prefix that you have associated with that namespace. That way, if we later reorganize how the &xslt4j;-supplied extensions are stored, you won't have to modify your stylesheet.</p>
+<p>If you are calling &xslt4j;-supplied extensions, we recommend that you define the corresponding namespace in your stylesheet, and call the extension using the namespace prefix that you have associated with that namespace. That way, if we later reorganize how the &xslt4j;-supplied extensions are stored, you won't have to modify your stylesheet.</p>
 <p>For an example that uses this namespace, see <link anchor="ex-nodeset">Example with the nodeset extension function</link>.</p>
 </s2><anchor name="redirect"/>
 <s2 title= "Redirect">
 <p>A standard XSL transformation involves an XSL stylesheet, an XML source tree, and the transformation result tree. The transformation sends the entire result to a single <jump href="apidocs/org/apache/trax/Result.html">org.apache.trax.Result</jump> object.</p> 
-<p>The Redirect extension 
-(<jump href="apidocs/org/apache/xalan/xslt/extensions/Redirect.html">org.apache.xalan.xslt.extensions.Redirect</jump>) supplies three extension elements that you can use to redirect portions of your transformation output to multiple files: &lt;open&gt;, &lt;write&gt;, and &lt;close&gt;. If you use the &lt;write&gt; element alone, the extension opens a file, writes to it, and closes the file immediately. If you want explicit control over the opening and closing of files, use &lt;write&gt; in conjunction with the &lt;open&gt; and &lt;close&gt; elements.</p>
-<p>Each of these elements includes a file attribute and/or a select attribute to designate the output file. The file attribute takes a string, so you can use it to directly specify the output file name. The select attribute takes an XPath expression, so you can use it to dynamically generate the output file name. If you include both attributes, the Redirect extension first evaluates the select attribute, and falls back to the file attribute if the select attribute expression does not return a valid file name.</p>
+<p>The namespace for the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump> extension is:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan/redirect</code></p>
+<p>It supplies three extension elements that you can use to redirect portions of your transformation output to multiple files: &lt;open&gt;, &lt;write&gt;, and &lt;close&gt;. If you use the &lt;write&gt; element alone, the extension opens a file, writes to it, and closes the file immediately. If you want explicit control over the opening and closing of files, use &lt;write&gt; in conjunction with the &lt;open&gt; and &lt;close&gt; elements.</p>
+<p>The &lt;open&gt; and &lt;write&gt; elements include a file attribute and/or a select attribute to designate the output file. The file attribute takes a string, so you can use it to directly specify the output file name. The select attribute takes an XPath expression, so you can use it to dynamically generate the output file name. If you include both attributes, the Redirect extension first evaluates the select attribute, and falls back to the file attribute if the select attribute expression does not return a valid file name.</p>
+<p>The &lt;open&gt; and &lt;write&gt; elements also support an append attribute. If the append attribute is set to true or yes, then the result is appended to the output file.</p>
 <anchor name="ex-redirect"/> 
 <s3 title="Example with the Redirect extension">
 <p>Suppose you are outputting the bulk of your result tree to one file, but you want to output the transformation of all &lt;foo&gt; elements and their children to another file. The following example illustrates the basic structure of the XML source:</p>
@@ -130,8 +125,7 @@ elements)</jump>. Anyone who would like to help by implementating other EXSLT ex
 <source>
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     version="1.0"
-    xmlns:lxslt="http://xml.apache.org/xslt"
-    xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"
+    xmlns:redirect="http://xml.apache.org/xalan/redirect"
     extension-element-prefixes="redirect"&gt;
 
   &lt;xsl:template match="/"&gt;
@@ -181,6 +175,7 @@ elements)</jump>. Anyone who would like to help by implementating other EXSLT ex
 <s2 title= "nodeset">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
 <code>nodeset (result-tree-fragment)</code>  casts a result tree fragment into a node-set.</p>
+<p>To use the nodeset extension, you can either use the <code>nodeset</code> function in the namespace <code>xmlns:xalan="http://xml.apache.org"</code> or the <link anchor="exslt">EXSLT</link> extension function <code>node-set</code> in the namespace <code>xmlns:common="http://exslt.org/common"</code>.</p>
 <note>When you bind a variable to a template, rather than to the value generated by a select expression, the data type of the variable is result tree fragment. For more information, see <jump href="http://www.w3.org/TR/xslt#section-Result-Tree-Fragments">Result Tree Fragments</jump>.</note>
 <anchor name="ex-nodeset"/>
 <s3 title="Example with the nodeset extension function">
@@ -214,24 +209,8 @@ elements)</jump>. Anyone who would like to help by implementating other EXSLT ex
 <note>For illustration purposes, the preceding stylesheet pays no attention to the structure and content of the XML input document. Instead, it processes the template (in the stylesheet) bound to the variable named rtf.</note>
 
 </s3>
-</s2><anchor name="intersection"/>
-<s2 title="intersection">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
-<code>intersection (node-set1, node-set2)</code> function returns a node-set with all nodes that are in ns1 and in ns2 .</p>
-</s2><anchor name="difference"/>
-<s2 title= "difference">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
-<code>difference(node-set1, node-set2)</code> returns a node-set with the nodes in node-set1 and not in node-set2.</p>
-</s2><anchor name="distinct"/>
-<s2 title= "distinct">
- <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
- distinct (node-set) returns a node-set containing nodes with distinct string values. If more than one node in the node-set 
- contains the same text node value, distinct only returns the first of these nodes that it finds.</p>
-</s2><anchor name="hassamenodes"/>
-<s2 title= "hasSameNodes">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
-<code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
-</s2><anchor name="nodeinfo"/>
+</s2>
+<anchor name="nodeinfo"/>
 <s2 title="NodeInfo">
 <p><jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump> provides extension elements that you can
 use to get information about the location of nodes in the source document:</p>
@@ -247,24 +226,24 @@ You can use the <link idref="commandline">command-line utility</link> -L flag or
 method to set this attribute.</note>
 <anchor name="systemid"/>
 <s3 title="systemId">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
-<code>systemId()</code> returns the system ID for the current node, and <br/>
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,
+<code>systemId()</code> returns the system ID for the current node, and
 <code>systemId(node-set)</code> returns the system ID of the first node in the node-set.</p>
 </s3><anchor name="publicid"/>
 <s3 title="publicId">
-<p><em>To be done.</em> Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
-<code>publicId()</code> will return the public ID for the current node, and<br/>
+<p><em>To be done.</em> Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,
+<code>publicId()</code> will return the public ID for the current node, and
 <code>publicId(node-set)</code> will return the public ID of the first node in the node-set.</p>
 </s3><anchor name="linenumber"/>
 <s3 title="lineNumber">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
-<code>lineNumber()</code> returns the line number in the source document for the current node, and<br/>
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,
+<code>lineNumber()</code> returns the line number in the source document for the current node, and
 <code>lineNumber(node-set)</code> returns the line number in the source document for the first node in the node-set.</p>
 <note>This function returns -1 if the line number is not known (for example, the source is a DOM Document).</note>
 </s3><anchor name="columnnumber"/>
 <s3 title="columnNumber">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,<br/>
-<code>columnNumber()</code> returns the column number in the source document for the current node, and<br/>
+<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/NodeInfo.html">org.apache.xalan.lib.NodeInfo</jump>,
+<code>columnNumber()</code> returns the column number in the source document for the current node, and
 <code>columnNumber(node-set)</code> returns the column number in the source document for the first node in the node-set.</p>
 <note>This function returns -1 if the column number is not known (for example, the source is a DOM Document).</note>
 </s3></s2><anchor name="sql"/>
@@ -276,7 +255,9 @@ method to set this attribute.</note>
 <li><link anchor="ex-sql">SQL library example</link></li>
 <li><link idref="samples" anchor="sql">SQL library sample applications</link></li>
 </ul>
-<p>Provides extension functions for connecting to a JDBC data source, executing a query,
+<p>The namespace for the SQL extension is:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan/sql</code></p>
+<p>The SQL extension provides extension functions for connecting to a JDBC data source, executing a query,
 and working incrementally through a "streamable" result set. Streaming (reuse of a single row node to traverse the result set) is the default mode of operation. If you want unlimited access to the entire result set, you can cache the query result set (1 row node for each row in the result set).</p>
 <p><em>If you use streaming mode (the default), you can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>
 <note>Many features of the SQL library, including support for connection pools, parameterized queries, caching, and added support for extracting connection information and query parameters from XML source documents exist thanks to John Gentilin (johnglinux@eyecatching.com), who has also added a number of <link idref="samples" anchor="sql">SQL library samples</link>.</note>
@@ -319,7 +300,7 @@ and working incrementally through a "streamable" result set. Streaming (reuse of
        <p>In the stylesheet, you can extract this information as follows:</p>
        <source>&lt;xsl:stylesheet version 1.0
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:sql="http://xml.apache.org/xalan/sql"
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extension-element-prefixes="sql"&gt;
 &nbsp;&nbsp;&lt;xsl:param name="cinfo" select="//DBINFO"/&gt;
 &nbsp;&nbsp;&lt;xsl:variable name="db" select="sql:new($cinfo)"/&gt;
@@ -343,7 +324,7 @@ pm.registerPool("extpool", cp);</source>
       <p>A stylesheet can use this connection pool as follows:</p>
       <source>&lt;xsl:stylesheet version 1.0
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-     xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+     xmlns:sql="http://xml.apache.org/xalan/sql"
      extension-element-prefixes="sql"&gt;
 ...
   &lt;xsl:variable name="db" select="sql:new($driver, 'extpool')"/&gt;</source>
@@ -370,7 +351,7 @@ pm.registerPool("extpool", cp);</source>
 <source>&lt;?xml version="1.0"?&gt;
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
-                xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+                xmlns:sql="http://xml.apache.org/xalan/sql"
                 extension-element-prefixes="sql"&gt;
   &lt;xsl:output method="html" indent="yes"/&gt;
   &lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;
@@ -424,7 +405,9 @@ pm.registerPool("extpool", cp);</source>
   <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/PipeDocument.html">org.apache.xalan.lib.PipeDocument</jump>,<br/>
   the pipeDocument extension element pipes an XML document through a series of one or more transformations. The output of
   each transformation is piped to the next transformation. The final transofrmation creates a target file.</p>
-  
+  <p>The namespace for the pipeDocument extension is:</p>
+  <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan/PipeDocument</code></p>
+
   <p>Suppose, for example,you have a stylesheet that is processing a "book" document with elements designating the 
   documents to be transformed. This primary stylesheet generates a table of contents for the book. For each source 
   document it uses a pipeDocument extension element to pipe the document through a series of one or more transformations.</p>
@@ -437,7 +420,7 @@ pm.registerPool("extpool", cp);</source>
     and contains a parameter designating where the output files are to be placed:</p>
   <source>&lt;xsl:stylesheet version="1.0"
    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-   xmlns:pipe="xalan://PipeDocument"
+   xmlns:pipe="http://xml.apache.org/xalan/PipeDocument"
    extension-element-prefixes="pipe"&gt;
    
 &lt;xsl:param  name="destdir" value="html/output"&gt;
@@ -482,7 +465,7 @@ the extension element.</p>
 
 &lt;xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:pipe="xalan://org.apache.xalan.lib.PipeDocument"
+                xmlns:pipe="http://xml.apache.org/xalan/PipeDocument"
                 extension-element-prefixes="pipe"&gt;
 
 &lt;xsl:param name="source"/&gt;
@@ -508,6 +491,9 @@ the extension element.</p>
 <code>evaluate (xpath-expression)</code> function returns the result of evaluating the xpath-expression in the current 
 XPath expression context (automatically passed in by the extension mechanism).</p>
 <p>Use the evaluation extension function when the value of the expression is not known until run time.</p>
+<note>Although you can still use the evaluate extension function in the main Extensions class, the preferred solution
+is to use the same function in the EXSLT dynamic package. This will make your stylesheet more portable across XSLT
+processors that support EXSLT extensions.</note>
 </s2><anchor name="tokenize"/>
 <s2 title="tokenize">
 <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
@@ -517,24 +503,8 @@ or<br/>
 <p>The delimiters determine which characters are used to divide the tokenize-string into individual tokens. If you do not include
 the delimiters argument, the function uses tab (&amp;#x09), linefeed (&amp;#x0A), return (&amp;#x0D), and space (&amp;#x20) as delimiters.
 If tokenize-string is an empty string or contains only delimiters, the result is an empty node-set.</p>
-</s2><anchor name="groupitem"/>
-<s2 title= "group and item">
-<p><em>To be done.</em> Provides efficient grouping of items with a common value.</p>
-</s2><anchor name="type"/>
-<s2 title= "type">
-<p><em>To be done.</em> Returns a string that represents the Schema or DTD type.</p>
-</s2><anchor name="todate"/>
-<s2 title="to-date">
-<p><em>To be done.</em> Takes a string as input, and returns a long value representing the date.</p>
-</s2><anchor name="formatdate"/>
-<s2 title="format-date">
-<p><em>To be done.</em> Takes a date string, and formats it according to a specification.</p>
-</s2><anchor name="grep"/>
-<s2 title="grep">
-<p><em>To be done.</em> Performs a grep function and returns the substring.</p>
-</s2><anchor name="foreachtoken"/>
-<s2 title="for-each-token">
-<p><em>To be done.</em> Tokenizes a string, treats each token as a DOM Text node, and executes the
-sub-template.</p>
+<note>Although you can still use the tokenize extension function in the main Extensions class, the preferred solution
+is to use the same function in the EXSLT strings package. This will make your stylesheet more portable across XSLT
+processors that support EXSLT extensions.</note>
 </s2>
 </s1>
