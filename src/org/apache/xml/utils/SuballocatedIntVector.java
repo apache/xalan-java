@@ -71,7 +71,10 @@ package org.apache.xml.utils;
  *
  * Current chunking is based on /%. Shift/mask _should_ be faster, if
  * power-of-two chunksizes are acceptable. (Would be in a real language,
- * anyway...)
+ * anyway...) Some compilers _may_ be smart enough to convert the former
+ * to the latter if the block size is a constant power of two... so we have
+ * our choice of locking in a specific size, or converting to shift/mask,
+ * or both...
  * 
  * Some methods are private because they haven't yet been tested properly.
  *
@@ -163,21 +166,29 @@ public class SuballocatedIntVector
       m_map0[m_firstFree++]=value;
     else
     {
+      // Growing the outer array should be rare. We initialize to a
+      // total of m_blocksize squared elements, which at the default
+      // size is 4M integers... and we grow by at least that much each
+      // time.  However, attempts to microoptimize for this (assume
+      // long enough and catch exceptions) yield no noticable
+      // improvement.
+
       int index=m_firstFree/m_blocksize;
       int offset=m_firstFree%m_blocksize;
-      ++m_firstFree;
 
       if(index>=m_map.length)
       {
-        int newsize=index+m_numblocks;
-        int[][] newMap=new int[newsize][];
-        System.arraycopy(m_map, 0, newMap, 0, m_map.length);
-        m_map=newMap;
+	int newsize=index+m_numblocks;
+	int[][] newMap=new int[newsize][];
+	System.arraycopy(m_map, 0, newMap, 0, m_map.length);
+	m_map=newMap;
       }
       int[] block=m_map[index];
       if(null==block)
-        block=m_map[index]=new int[m_blocksize];
+	block=m_map[index]=new int[m_blocksize];
       block[offset]=value;
+
+      ++m_firstFree;
     }
   }
   
@@ -255,8 +266,8 @@ public class SuballocatedIntVector
   {
     if(at==m_firstFree)
       addElement(value);
-	else if (at>m_firstFree)
-	{
+    else if (at>m_firstFree)
+    {
       int index=at/m_blocksize;
       if(index>=m_map.length)
       {
@@ -269,13 +280,13 @@ public class SuballocatedIntVector
       if(null==block)
         block=m_map[index]=new int[m_blocksize];
       int offset=at%m_blocksize;
-	  block[offset]=value;
-	  m_firstFree=offset+1;
-	}
+          block[offset]=value;
+          m_firstFree=offset+1;
+        }
     else
     {
       int index=at/m_blocksize;
-      int maxindex=m_firstFree+1/m_blocksize;
+      int maxindex=m_firstFree/m_blocksize; // %REVIEW% (m_firstFree+1?)
       ++m_firstFree;
       int offset=at%m_blocksize;
       int push;
@@ -341,7 +352,7 @@ public class SuballocatedIntVector
    */
   private  void removeElementAt(int at)
   {
-	// No point in removing elements that "don't exist"...  
+        // No point in removing elements that "don't exist"...  
     if(at<m_firstFree)
     {
       int index=at/m_blocksize;
@@ -384,30 +395,30 @@ public class SuballocatedIntVector
   public void setElementAt(int value, int at)
   {
     if(at<m_blocksize)
-    {
       m_map0[at]=value;
-      return;
-    }
-
-    int index=at/m_blocksize;
-    int offset=at%m_blocksize;
-	
-    if(index>=m_map.length)
+    else
     {
-      int newsize=index+m_numblocks;
-      int[][] newMap=new int[newsize][];
-      System.arraycopy(m_map, 0, newMap, 0, m_map.length);
-      m_map=newMap;
-    }
+      int index=at/m_blocksize;
+      int offset=at%m_blocksize;
+        
+      if(index>=m_map.length)
+      {
+	int newsize=index+m_numblocks;
+	int[][] newMap=new int[newsize][];
+	System.arraycopy(m_map, 0, newMap, 0, m_map.length);
+	m_map=newMap;
+      }
 
-	int[] block=m_map[index];
-    if(null==block)
-      block=m_map[index]=new int[m_blocksize];
-    block[offset]=value;
+      int[] block=m_map[index];
+      if(null==block)
+	block=m_map[index]=new int[m_blocksize];
+      block[offset]=value;
+    }
 
     if(at>=m_firstFree)
       m_firstFree=at+1;
   }
+  
 
   /**
    * Get the nth element. This is often at the innermost loop of an
@@ -432,8 +443,7 @@ public class SuballocatedIntVector
    */
   public int elementAt(int i)
   {
-    // %OPT% Does this really buy us anything? Test versus division for small,
-    // test _plus_ division for big docs.
+    // %OPT% Seems to buy us some very slight performance gains.
     if(i<m_blocksize)
       return m_map0[i];
 
@@ -465,9 +475,9 @@ public class SuballocatedIntVector
    */
   public int indexOf(int elem, int index)
   {
-	if(index>=m_firstFree)
-		return -1;
-	  
+        if(index>=m_firstFree)
+                return -1;
+          
     int bindex=index/m_blocksize;
     int boffset=index%m_blocksize;
     int maxindex=m_firstFree/m_blocksize;

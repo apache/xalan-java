@@ -171,6 +171,7 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
    * */
   public void setXMLReader(XMLReader eventsource)
   {
+    fXMLReader=eventsource;
     eventsource.setContentHandler(this);
     eventsource.setErrorHandler(this); // to report fatal errors in filtering mode
 
@@ -603,14 +604,14 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
    * @throws SAXException is parse thread is already in progress
    * or parsing can not be started.
    * */
-  void startParse(XMLReader reader,InputSource source) throws SAXException
+  public void startParse(InputSource source) throws SAXException
   {
-    if(fXMLReader!=null)
-      throw new SAXException("startParse may not be called while parsing.");
+    if(fNoMoreEvents)
+      throw new SAXException("IncrmentalSAXSource_Filter not currently restartable.");
+    if(fXMLReader==null)
+      throw new SAXException("XMLReader not before startParse request");
 
-    fXMLReader=reader;
     fXMLReaderInputSource=source;
-    setXMLReader(reader);
     
     // Xalan thread pooling...
     org.apache.xalan.transformer.TransformerImpl.runTransformThread(this);
@@ -761,7 +762,8 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
 	// init not issued; we _should_ automagically Do The Right Thing
 
         // Bind parser, kick off parsing in a thread
-        filter.startParse(theSAXParser,source);
+        filter.setXMLReader(theSAXParser);
+        filter.startParse(source);
       
         for(result = filter.deliverMoreNodes(more);
             (result instanceof Boolean && ((Boolean)result)==Boolean.TRUE);

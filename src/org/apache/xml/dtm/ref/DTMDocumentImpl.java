@@ -145,22 +145,10 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    * fallback, but that has all the known problems with multithreading
    * on multiprocessors and we Don't Want to Go There.
    * 
-   * @see setCoroutineParser
+   * @see setIncrementalSAXSource
    */
-  private CoroutineParser m_coroutineParser=null;
+  private IncrementalSAXSource m_incrSAXSource=null;
 
-  /** If we're building the model incrementally on demand, we need to
-   * be able to tell the source who to return the data to.
-   *
-   * Note that if this has not been set, and you attempt to read ahead
-   * of the current build point, we'll probably throw a MethodNotFound
-   * exception. We could try to wait-and-retry instead, as a very poor
-   * fallback, but that has all the known problems with multithreading
-   * on multiprocessors and we Don't Want to Go There.
-   * 
-   * @see setCoroutineParser
-   */
-  private int m_appCoroutineID=-1;
 
         // ========= DTM data structure declarations. ==============
 
@@ -215,40 +203,30 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
                 m_xsf = xstringfactory;
         }
 
-  /** Bind a CoroutineParser to this DTM. If we discover we need nodes
+  /** Bind a IncrementalSAXSource to this DTM. If we discover we need nodes
    * that have not yet been built, we will ask this object to send us more
    * events, and it will manage interactions with its data sources.
    *
-   * Note that we do not actually build the CoroutineParser, since we don't
+   * Note that we do not actually build the IncrementalSAXSource, since we don't
    * know what source it's reading from, what thread that source will run in,
    * or when it will run.
    *
-   * @param coroutineParser The parser that we want to recieve events from
+   * @param source The IncrementalSAXSource that we want to recieve events from
    * on demand.
    */
-  public void setCoroutineParser(CoroutineParser coroutineParser)
+  public void setIncrementalSAXSource(IncrementalSAXSource source)
   {
-    // Establish coroutine link so we can request more data
-    //
-    // Note: It's possible that some versions of CoroutineParser may
-    // not actually use a CoroutineManager, and hence may not require
-    // that we obtain an Application Coroutine ID. (This relies on the
-    // coroutine transaction details having been encapsulated in the
-    // CoroutineParser.do...() methods.)
-    m_coroutineParser=coroutineParser;
-    CoroutineManager cm=coroutineParser.getCoroutineManager();
-    if(cm!=null)
-      m_appCoroutineID=cm.co_joinCoroutineSet(-1);
+    m_incrSAXSource=source;
 
     // Establish SAX-stream link so we can receive the requested data
-    coroutineParser.setContentHandler(this);
-    coroutineParser.setLexHandler(this);
+    source.setContentHandler(this);
+    source.setLexicalHandler(this);
 
-    // Are the following really needed? coroutineParser doesn't yet
+    // Are the following really needed? IncrementalSAXSource doesn't yet
     // support them, and they're mostly no-ops here...
-    //coroutineParser.setErrorHandler(this);
-    //coroutineParser.setDTDHandler(this);
-    //coroutineParser.setDeclHandler(this);
+    //source.setErrorHandler(this);
+    //source.setDTDHandler(this);
+    //source.setDeclHandler(this);
   }
   
         /**
@@ -375,13 +353,13 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    *
    * @return null if this model doesn't respond to SAX events,
    * "this" if the DTM object has a built-in SAX ContentHandler,
-   * the CoroutineParser if we're bound to one and should receive
+   * the IncrementalSAXSource if we're bound to one and should receive
    * the SAX stream via it for incremental build purposes...
    * */
   public org.xml.sax.ContentHandler getContentHandler()
   {
-    if (m_coroutineParser instanceof CoroutineSAXParser)
-      return (ContentHandler) m_coroutineParser;
+    if (m_incrSAXSource instanceof IncrementalSAXSource_Filter)
+      return (ContentHandler) m_incrSAXSource;
     else
       return this;
   }
@@ -393,14 +371,14 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    *
    * @return null if this model doesn't respond to lexical SAX events,
    * "this" if the DTM object has a built-in SAX ContentHandler,
-   * the CoroutineParser if we're bound to one and should receive
+   * the IncrementalSAXSource if we're bound to one and should receive
    * the SAX stream via it for incremental build purposes...
    */
   public LexicalHandler getLexicalHandler()
   {
 
-    if (m_coroutineParser instanceof CoroutineSAXParser)
-      return (LexicalHandler) m_coroutineParser;
+    if (m_incrSAXSource instanceof IncrementalSAXSource_Filter)
+      return (LexicalHandler) m_incrSAXSource;
     else
       return this;
   }
@@ -450,13 +428,13 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
   }  
   
   /** @return true iff we're building this model incrementally (eg
-   * we're partnered with a CoroutineParser) and thus require that the
+   * we're partnered with a IncrementalSAXSource) and thus require that the
    * transformation and the parse run simultaneously. Guidance to the
    * DTMManager.
    * */
   public boolean needsTwoThreads()
   {
-    return null!=m_coroutineParser;
+    return null!=m_incrSAXSource;
   }
 
   //================================================================
@@ -1214,7 +1192,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * additional logic for the public view.  If we're rewriting
          * for XPath emulation, that test must be done here.
          *
-         * %TBD% CODE INTERACTION WITH COROUTINE PARSE - If not yet
+         * %TBD% CODE INTERACTION WITH INCREMENTAL PARSE - If not yet
          * resolved, should wait for more nodes to be added to the document
          * and tries again.
          *

@@ -59,7 +59,6 @@ package org.apache.xml.dtm.ref;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import java.io.IOException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.XMLReader;
@@ -107,4 +106,18 @@ public interface IncrementalSAXSource
    * */
   public Object deliverMoreNodes (boolean parsemore);
 
+  // ------------------------------------------------------------------
+  // Parse Thread Convenience API
+  // ------------------------------------------------------------------
+
+  /** Launch an XMLReader's parsing operation, feeding events to this
+   * IncrementalSAXSource. In some implementations, this may launch a
+   * thread which runs the previously supplied XMLReader's parse() operation.
+   * In others, it may do other forms of initialization.
+   *
+   * @throws SAXException is parse thread is already in progress
+   * or parsing can not be started.
+   * */
+  public void startParse(InputSource source) throws SAXException;
+    
 } // class IncrementalSAXSource

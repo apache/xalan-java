@@ -1477,6 +1477,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
     super.setShouldStripWhitespace( parm1);
   }
 
+
   protected void ensureSizeOfIndex(int parm1, int parm2)
   {
     if (DEBUG) System.out.println("ensureSizeOfIndex("+parm1+","+parm2+")");
@@ -1486,7 +1487,10 @@ public class SQLDocument extends DTMDefaultBaseIterators
   protected void ensureSize(int parm1)
   {
     if (DEBUG) System.out.println("ensureSize("+parm1+")");
-    super.ensureSize( parm1);
+
+    // IntVectors in DTMDefaultBase are now self-sizing, and ensureSize()
+    // is being dropped.
+    //super.ensureSize( parm1);
   }
 
   public String getDocumentEncoding(int parm1)

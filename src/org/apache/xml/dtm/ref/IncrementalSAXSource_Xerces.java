@@ -148,7 +148,7 @@ public class IncrementalSAXSource_Xerces
    * @throws SAXException is parse thread is already in progress
    * or parsing can not be started.
    * */
-  void startParse(InputSource source) throws SAXException
+  public void startParse(InputSource source) throws SAXException
   {
     if (fIncrementalParser==null)
       throw new SAXException("startParse needs a non-null SAXParser.");

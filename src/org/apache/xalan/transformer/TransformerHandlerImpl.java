@@ -84,10 +84,8 @@ import javax.xml.transform.Result;
 import org.apache.xpath.XPathContext;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
-
-// Bad, bad, we should work towards having to have these referenced here.
-import org.apache.xml.dtm.ref.CoroutineManager;
-import org.apache.xml.dtm.ref.CoroutineSAXParser;
+import org.apache.xml.dtm.ref.IncrementalSAXSource;
+import org.apache.xml.dtm.ref.IncrementalSAXSource_Filter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 
 /**
@@ -141,7 +139,6 @@ public class TransformerHandlerImpl
    */
   protected void clearCoRoutine()
   {
-    
     clearCoRoutine(null);
   }
   
@@ -157,37 +154,12 @@ public class TransformerHandlerImpl
         System.out.println("In clearCoRoutine...");
       SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);
       if(null != m_contentHandler 
-         && m_contentHandler instanceof CoroutineSAXParser)
+         && m_contentHandler instanceof IncrementalSAXSource_Filter)
       {
-        CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
-
-        if(m_insideParse)
-        {
-          // %REVIEW% Joe needs to review this.
-          // If we are in a condition where the parser threw an exception, 
-          // we have to make sure that doMore doesn't call to wait on 
-          // the other thread, so in this case we first clear the parser 
-          // thread from the CoRoutine manager.  
-          if(null != ex)
-          {
-            sp.getCoroutineManager().co_exit(sp.getParserCoroutineID());
-            sp.doMore(false, sax2dtm.getAppCoroutineID()); 
-            
-            // Actually, I think we're always incremental here...
-            if(DTMManager.getIncremental())
-            {
-              try
-              {
-                m_transformer.waitTransformThread();
-              }
-              catch(SAXException se){}
-            }
-          }
-          else
-          {
-            sp.doMore(false, sax2dtm.getAppCoroutineID()); 
-          }
-        }
+        IncrementalSAXSource_Filter sp =
+	  (IncrementalSAXSource_Filter)m_contentHandler;
+	// This should now be all that's needed.
+	sp.deliverMoreNodes(false);
       }
       
       sax2dtm.clearCoRoutine(true);
@@ -202,57 +174,6 @@ public class TransformerHandlerImpl
     }
   }
   
-  /** 
-   * Wait for initial events.  This has to be called by the secondary thread 
-   * upon startup.
-   */
-  protected void waitForInitialEvents()
-  {
-    m_hasStarted = true;
-    
-    if(m_dtm instanceof SAX2DTM)
-    {
-      if(DEBUG)
-        System.out.println("In clearCoRoutine...");
-      SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);
-      if(null != m_contentHandler 
-         && m_contentHandler instanceof CoroutineSAXParser)
-      {
-        CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
-        sp.doMore(true, sax2dtm.getAppCoroutineID()); 
-      }
-    }
-  }
-  
-  /** 
-   * Call co_entry_pause on the CoroutineSAXParser.
-   */
-  protected void pauseForTransformThreadStartup()
-  {
-    
-    if(m_dtm instanceof SAX2DTM)
-    {
-      if(DEBUG)
-        System.out.println("In pauseForTransformThreadStartup...");
-      SAX2DTM sax2dtm = ((SAX2DTM)m_dtm);
-      if(null != m_contentHandler 
-         && m_contentHandler instanceof CoroutineSAXParser)
-      {
-        CoroutineSAXParser sp = (CoroutineSAXParser)m_contentHandler;
-        try
-        {
-          sp.getCoroutineManager().co_entry_pause(sp.getParserCoroutineID());
-        }
-        catch(java.lang.NoSuchMethodException nsme)
-        {
-          // ignore.
-        }
-      }
-    }
-  }
-
-
-
   ////////////////////////////////////////////////////////////////////
   // Implementation of javax.xml.transform.sax.TransformerHandler.
   ////////////////////////////////////////////////////////////////////
@@ -446,8 +367,6 @@ public class TransformerHandlerImpl
 
     if (m_contentHandler != null)
     {
-      m_contentHandler.startDocument();
-    
       //m_transformer.setTransformThread(listener);
       if(DTMManager.getIncremental())
       {
@@ -458,11 +377,15 @@ public class TransformerHandlerImpl
         // runTransformThread is equivalent with the 2.0.1 code,
         // except that the Thread may come from a pool.
         m_transformer.runTransformThread( cpriority );
-        pauseForTransformThreadStartup();
         if(false == m_hasStarted)
           System.err.println("Transform thread has still not started after pauseForTransformThreadStartup!");
       }
-      
+
+      // This is now done _last_, because IncrementalSAXSource_Filter
+      // will immediately go into a "wait until events are requested"
+      // pause. I believe that will close our timing window.
+      // %REVIEW%
+      m_contentHandler.startDocument();
    }
         
    //listener.setDaemon(false);

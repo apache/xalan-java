@@ -97,23 +97,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * fallback, but that has all the known problems with multithreading
    * on multiprocessors and we Don't Want to Go There.
    *
-   * @see setCoroutineParser
+   * @see setIncrementalSAXSource
    */
-  private CoroutineParser m_coroutineParser = null;
-
-  /**
-   * If we're building the model incrementally on demand, we need to
-   * be able to tell the source who to return the data to.
-   *
-   * Note that if this has not been set, and you attempt to read ahead
-   * of the current build point, we'll probably throw a MethodNotFound
-   * exception. We could try to wait-and-retry instead, as a very poor
-   * fallback, but that has all the known problems with multithreading
-   * on multiprocessors and we Don't Want to Go There.
-   *
-   * @see setCoroutineParser
-   */
-  private int m_appCoroutineID = -1;
+  private IncrementalSAXSource m_incrementalSAXSource = null;
 
   /**
    * All the character content, including attribute values, are stored in
@@ -275,16 +261,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   }
 
   /**
-   * Get the CoRoutine ID for the application.
-   *
-   * @return The CoRoutine ID for the application.
-   */
-  public int getAppCoroutineID()
-  {
-    return m_appCoroutineID;
-  }
-
-  /**
    * Ask the CoRoutine parser to doTerminate and clear the reference.
    */
   public void clearCoRoutine()
@@ -302,54 +278,49 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public void clearCoRoutine(boolean callDoTerminate)
   {
 
-    if (null != m_coroutineParser)
+    if (null != m_incrementalSAXSource)
     {
       if (callDoTerminate)
-        m_coroutineParser.doTerminate(m_appCoroutineID);
+        m_incrementalSAXSource.deliverMoreNodes(false);
 
-      m_coroutineParser = null;
+      m_incrementalSAXSource = null;
     }
   }
 
   /**
-   * Bind a CoroutineParser to this DTM. If we discover we need nodes
+   * Bind a IncrementalSAXSource to this DTM. If we discover we need nodes
    * that have not yet been built, we will ask this object to send us more
    * events, and it will manage interactions with its data sources.
    *
-   * Note that we do not actually build the CoroutineParser, since we don't
+   * Note that we do not actually build the IncrementalSAXSource, since we don't
    * know what source it's reading from, what thread that source will run in,
    * or when it will run.
    *
-   * @param coroutineParser The parser that we want to recieve events from
+   * @param incrementalSAXSource The parser that we want to recieve events from
    * on demand.
    * @param appCoRID The CoRoutine ID for the application.
    */
-  public void setCoroutineParser(CoroutineParser coroutineParser,
-                                 int appCoRID)
+  public void setIncrementalSAXSource(IncrementalSAXSource incrementalSAXSource)
   {
 
     // Establish coroutine link so we can request more data
     //
-    // Note: It's possible that some versions of CoroutineParser may
+    // Note: It's possible that some versions of IncrementalSAXSource may
     // not actually use a CoroutineManager, and hence may not require
     // that we obtain an Application Coroutine ID. (This relies on the
     // coroutine transaction details having been encapsulated in the
-    // CoroutineParser.do...() methods.)
-    m_coroutineParser = coroutineParser;
-
-    CoroutineManager cm = coroutineParser.getCoroutineManager();
-
-    m_appCoroutineID = appCoRID;
+    // IncrementalSAXSource.do...() methods.)
+    m_incrementalSAXSource = incrementalSAXSource;
 
     // Establish SAX-stream link so we can receive the requested data
-    coroutineParser.setContentHandler(this);
-    coroutineParser.setLexHandler(this);
+    incrementalSAXSource.setContentHandler(this);
+    incrementalSAXSource.setLexicalHandler(this);
 
-    // Are the following really needed? coroutineParser doesn't yet
+    // Are the following really needed? incrementalSAXSource doesn't yet
     // support them, and they're mostly no-ops here...
-    //coroutineParser.setErrorHandler(this);
-    //coroutineParser.setDTDHandler(this);
-    //coroutineParser.setDeclHandler(this);
+    //incrementalSAXSource.setErrorHandler(this);
+    //incrementalSAXSource.setDTDHandler(this);
+    //incrementalSAXSource.setDeclHandler(this);
   }
 
   /**
@@ -361,14 +332,14 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return null if this model doesn't respond to SAX events,
    * "this" if the DTM object has a built-in SAX ContentHandler,
-   * the CoroutineParser if we're bound to one and should receive
+   * the IncrementalSAXSource if we're bound to one and should receive
    * the SAX stream via it for incremental build purposes...
    */
   public ContentHandler getContentHandler()
   {
 
-    if (m_coroutineParser instanceof CoroutineSAXParser)
-      return (ContentHandler) m_coroutineParser;
+    if (m_incrementalSAXSource instanceof IncrementalSAXSource_Filter)
+      return (ContentHandler) m_incrementalSAXSource;
     else
       return this;
   }
@@ -380,14 +351,14 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return null if this model doesn't respond to lexical SAX events,
    * "this" if the DTM object has a built-in SAX ContentHandler,
-   * the CoroutineParser if we're bound to one and should receive
+   * the IncrementalSAXSource if we're bound to one and should receive
    * the SAX stream via it for incremental build purposes...
    */
   public LexicalHandler getLexicalHandler()
   {
 
-    if (m_coroutineParser instanceof CoroutineSAXParser)
-      return (LexicalHandler) m_coroutineParser;
+    if (m_incrementalSAXSource instanceof IncrementalSAXSource_Filter)
+      return (LexicalHandler) m_incrementalSAXSource;
     else
       return this;
   }
@@ -434,13 +405,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
   /**
    * @return true iff we're building this model incrementally (eg
-   * we're partnered with a CoroutineParser) and thus require that the
+   * we're partnered with a IncrementalSAXSource) and thus require that the
    * transformation and the parse run simultaneously. Guidance to the
    * DTMManager.
    */
   public boolean needsTwoThreads()
   {
-    return null != m_coroutineParser;
+    return null != m_incrementalSAXSource;
   }
 
   /**
@@ -553,27 +524,30 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     int expandedTypeID = getExpandedTypeID(nodeHandle);
-    int namespaceID = (expandedTypeID & ExpandedNameTable.MASK_NAMESPACE)
-                      >> ExpandedNameTable.BITS_PER_LOCALNAME;
+    // If just testing nonzero, no need to shift...
+    //int namespaceID = (expandedTypeID & ExpandedNameTable.MASK_NAMESPACE)
+    //                  >> ExpandedNameTable.BITS_PER_LOCALNAME;
+    int namespaceID = (expandedTypeID & ExpandedNameTable.MASK_NAMESPACE);
 
     if (0 == namespaceID)
     {
-      String name = m_expandedNameTable.getLocalName(expandedTypeID);
+      // Don't retrieve name until/unless needed
+      // String name = m_expandedNameTable.getLocalName(expandedTypeID);
       int type = getNodeType(nodeHandle);
 
       if (type == DTM.NAMESPACE_NODE)
       {
-        if (name == null)
+        if (null == m_expandedNameTable.getLocalName(expandedTypeID))
           return "xmlns";
         else
-          return "xmlns:" + name;
+          return "xmlns:" + m_expandedNameTable.getLocalName(expandedTypeID);
       }
       else if (0 == m_expandedNameTable.getLocalNameID(expandedTypeID))
       {
         return m_fixednames[type];
       }
       else
-        return name;
+        return m_expandedNameTable.getLocalName(expandedTypeID);
     }
     else
     {
@@ -676,7 +650,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     while (identity >= m_size)
     {
-      if (null == m_coroutineParser)
+      if (null == m_incrementalSAXSource)
         return DTM.NULL;
 
       nextNode();
@@ -737,7 +711,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   protected boolean nextNode()
   {
 
-    if (null == m_coroutineParser)
+    if (null == m_incrementalSAXSource)
       return false;
 
     if (m_endDocumentOccured)
@@ -747,10 +721,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       return false;
     }
 
-    Object gotMore = m_coroutineParser.doMore(true, m_appCoroutineID);
+    Object gotMore = m_incrementalSAXSource.deliverMoreNodes(true);
 
     // gotMore may be a Boolean (TRUE if still parsing, FALSE if
-    // EOF) or an exception if CoroutineParser malfunctioned
+    // EOF) or an exception if IncrementalSAXSource malfunctioned
     // (code error rather than user error).
     //
     // %REVIEW% Currently the ErrorHandlers sketched herein are
@@ -798,21 +772,21 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     return (DTM.TEXT_NODE == type || DTM.CDATA_SECTION_NODE == type);
   }
 
-  /**
-   * Ensure that the size of the information arrays can hold another entry
-   * at the given index.
-   *
-   * @param on exit from this function, the information arrays sizes must be
-   * at least index+1.
-   *
-   * NEEDSDOC @param index
-   */
-  protected void ensureSize(int index)
-  {
-        // dataOrQName is an SuballocatedIntVector and hence self-sizing.
-        // But DTMDefaultBase may need fixup.
-      super.ensureSize(index);
-  }
+//    /**
+//     * Ensure that the size of the information arrays can hold another entry
+//     * at the given index.
+//     *
+//     * @param on exit from this function, the information arrays sizes must be
+//     * at least index+1.
+//     *
+//     * NEEDSDOC @param index
+//     */
+//    protected void ensureSize(int index)
+//    {
+//          // dataOrQName is an SuballocatedIntVector and hence self-sizing.
+//          // But DTMDefaultBase may need fixup.
+//        super.ensureSize(index);
+//    }
 
   /**
    * Construct the node map from the node.
@@ -833,46 +807,41 @@ public class SAX2DTM extends DTMDefaultBaseIterators
                         int dataOrPrefix, boolean canHaveFirstChild)
   {
 
+    // Common to all nodes:
     int nodeIndex = m_size++;
-
-    ensureSize(nodeIndex);
-
-    if (m_useSourceLocationProperty && m_locator != null) {
-      m_sourceSystemId.addElement(m_locator.getSystemId());
-      m_sourceLine.addElement(m_locator.getLineNumber());
-      m_sourceColumn.addElement(m_locator.getColumnNumber());
-      
-      if (m_sourceSystemId.size() != m_size) {
-        System.out.println("size array " + m_size
-                           + " is different from size of array "
-                           + m_sourceSystemId.size());
-        System.exit(1);
-      }
-    }
-
-    // Do the hard casts here, so we localize changes that may have to be made.
-    m_level.addElement((byte)level); // %REVIEW% setElementAt(level,nodeIndex)?
-    m_firstch.setElementAt(canHaveFirstChild ? NOTPROCESSED : DTM.NULL,nodeIndex);
-    m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
-    m_prevsib.setElementAt(previousSibling,nodeIndex);
-    m_parent.setElementAt(parentIndex,nodeIndex);
-    m_exptype.setElementAt(expandedTypeID,nodeIndex);
-    m_dataOrQName.setElementAt(dataOrPrefix,nodeIndex);    
-
-    if (DTM.NULL != parentIndex && type != DTM.ATTRIBUTE_NODE
-            && type != DTM.NAMESPACE_NODE)
+    // %REVIEW% This is being phased out
+    if(!DTMDefaultBase.DISABLE_PRECALC_LEVEL)
     {
-      if (NOTPROCESSED == m_firstch.elementAt(parentIndex))
-        m_firstch.setElementAt(nodeIndex,parentIndex);
+      // Do the hard casts here, to localize changes that may have to be made.
+      m_level.addElement((byte)level); 
     }
+    m_firstch.addElement(canHaveFirstChild ? NOTPROCESSED : DTM.NULL);
+    m_nextsib.addElement(NOTPROCESSED);
+    m_prevsib.addElement(previousSibling);
+    m_parent.addElement(parentIndex);
+    m_exptype.addElement(expandedTypeID);
+    m_dataOrQName.addElement(dataOrPrefix);    
 
-    // Note that we don't want nextSibling to be processed until
-    // charactersFlush() is called.
     if (DTM.NULL != previousSibling)
       m_nextsib.setElementAt(nodeIndex,previousSibling);
 
-    if(type == DTM.NAMESPACE_NODE)
-                declareNamespaceInContext(parentIndex,nodeIndex);
+    // Note that nextSibling is not processed until charactersFlush()
+    // is called, to handle successive characters() events.
+
+    // Special handling by type: Declare namespaces, attach first child
+    switch(type)
+    {
+    case DTM.NAMESPACE_NODE:
+      declareNamespaceInContext(parentIndex,nodeIndex);
+      break;
+    case DTM.ATTRIBUTE_NODE:
+      break;
+    default:
+      if (DTM.NULL != parentIndex &&
+	  NOTPROCESSED == m_firstch.elementAt(parentIndex))
+        m_firstch.setElementAt(nodeIndex,parentIndex);
+      break;
+    }
 
     return nodeIndex;
   }

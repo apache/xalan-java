@@ -202,7 +202,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   {
     int nodeIndex = m_nodes.size();
     m_size++;
-    ensureSize(nodeIndex);
+    // ensureSize(nodeIndex);
     
     int type;
     if(NULL==forceNodeType)
@@ -227,8 +227,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     // so if it's read-only). The best available answer might be to
     // synthesize additional DTM Namespace Nodes that don't correspond
     // to DOM Attr Nodes.
-    //
-    // %REVIEW% With forceNodeType... Is this trip really necessary?
     if (Node.ATTRIBUTE_NODE == type)
     {
       String name = node.getNodeName();
@@ -244,8 +242,8 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     // Do casts here so that if we change the sizes, the changes are localized.
     // %REVIEW% Remember to change this cast if we change
     // m_level's type, or we may truncate values without warning!
-    //m_level[nodeIndex] = (byte)level;
-    m_level.addElement((byte)level); // setElementAt(level,nodeIndex)?
+    if(!DTMDefaultBase.DISABLE_PRECALC_LEVEL)
+      m_level.addElement((byte)level); // setElementAt(level,nodeIndex)?
     
     m_firstch.setElementAt(NOTPROCESSED,nodeIndex);
     m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
@@ -522,9 +520,12 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         // Inserting next. NOTE that we force the node type; for
         // coalesced Text, this records CDATASections adjacent to
         // ordinary Text as Text.
-        int level=m_level.elementAt(m_last_parent)+1;
-        int nextindex=addNode(next,level,m_last_parent,m_last_kid,
-                              nexttype);
+	int level=0;
+	if(!DTMDefaultBase.DISABLE_PRECALC_LEVEL)
+	  level=m_level.elementAt(m_last_parent)+1;
+	int nextindex=addNode(next,level,m_last_parent,m_last_kid,
+			      nexttype);
+	
         m_last_kid=nextindex;
 
         if(ELEMENT_NODE == nexttype)
@@ -1379,13 +1380,13 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     return false;
   }
 
-  /** Bind a CoroutineParser to this DTM. NOT RELEVANT for DOM2DTM, since
+  /** Bind an IncrementalSAXSource to this DTM. NOT RELEVANT for DOM2DTM, since
    * we're wrapped around an existing DOM.
    *
-   * @param coroutineParser The parser that we want to recieve events from
+   * @param source The IncrementalSAXSource that we want to recieve events from
    * on demand.
    */
-  public void setCoroutineParser(CoroutineParser coroutineParser)
+  public void setIncrementalSAXSource(IncrementalSAXSource source)
   {
   }
   
@@ -1395,7 +1396,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    *
    * @return null if this model doesn't respond to SAX events,
    * "this" if the DTM object has a built-in SAX ContentHandler,
-   * the CoroutineParser if we're bound to one and should receive
+   * the IncrmentalSAXSource if we're bound to one and should receive
    * the SAX stream via it for incremental build purposes...
    * */
   public org.xml.sax.ContentHandler getContentHandler()
@@ -1410,7 +1411,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    *
    * @return null if this model doesn't respond to lexical SAX events,
    * "this" if the DTM object has a built-in SAX ContentHandler,
-   * the CoroutineParser if we're bound to one and should receive
+   * the IncrementalSAXSource if we're bound to one and should receive
    * the SAX stream via it for incremental build purposes...
    */
   public org.xml.sax.ext.LexicalHandler getLexicalHandler()
@@ -1465,7 +1466,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   }  
 
   /** @return true iff we're building this model incrementally (eg
-   * we're partnered with a CoroutineParser) and thus require that the
+   * we're partnered with a IncrementalSAXSource) and thus require that the
    * transformation and the parse run simultaneously. Guidance to the
    * DTMManager.
    * */

@@ -251,28 +251,19 @@ public class DTMManagerDefault extends DTMManager
           incremental = true;  // No matter what.  %REVIEW%
 
         // If the reader is null, but they still requested an incremental build, 
-        // then we still want to set up the CoRoutine stuff.
+        // then we still want to set up the IncrementalSAXSource stuff.
         if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
         {
-
-          // Create a CoroutineManager to manage the coordination between the 
-          // parser and the transformation.  This will "throttle" between 
-          // the parser and the calling application.
-          CoroutineManager coroutineManager = new CoroutineManager();
-
-          // Create an CoRoutine ID for the transformation.
-          int appCoroutine = coroutineManager.co_joinCoroutineSet(-1);
-          CoroutineParser coParser=null;
+          IncrementalSAXSource coParser=null;
 
           if (haveXercesParser)
           {
-            // CoroutineSAXParser_Xerces to avoid threading.
-            // System.out.println("Using CoroutineSAXParser_Xerces to avoid threading");
+            // IncrementalSAXSource_Xerces to avoid threading.
+            // System.out.println("Using IncrementalSAXSource_Xerces to avoid threading");
             try {
               // should be ok, it's in the same package - no need for thread class loader
-              Class c=Class.forName( "org.apache.xml.dtm.ref.CoroutineSAXParser_Xerces" );
-              coParser=(CoroutineParser)c.newInstance();
-              coParser.init( coroutineManager, appCoroutine, reader );
+              Class c=Class.forName( "org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces" );
+              coParser=(IncrementalSAXSource)c.newInstance();
             }  catch( Exception ex ) {
               ex.printStackTrace();
               coParser=null;
@@ -280,20 +271,20 @@ public class DTMManagerDefault extends DTMManager
           }
 
           if( coParser==null ) {
-            // Create a CoroutineSAXParser that will run on the secondary thread.
+            // Create a IncrementalSAXSource that will run on the secondary thread.
             if (null == reader)
-              coParser = new CoroutineSAXParser(coroutineManager,
-                                                appCoroutine);
+              coParser = new IncrementalSAXSource_Filter();
             else
-              coParser = new CoroutineSAXParser(coroutineManager,
-                                                appCoroutine, reader);
+	    {
+	      IncrementalSAXSource_Filter filter=new IncrementalSAXSource_Filter();
+	      filter.setXMLReader(reader);
+	      coParser=filter;
+	    }
+	    
           }
 
-          // Have the DTM set itself up as the CoroutineSAXParser's listener.
-          dtm.setCoroutineParser(coParser, appCoroutine);
-
-          // Get the parser's CoRoutine ID.
-          int parserCoroutine = coParser.getParserCoroutineID();
+          // Have the DTM set itself up as the IncrementalSAXSource's listener.
+          dtm.setIncrementalSAXSource(coParser);
 
           if (null == xmlSource)
           {
@@ -302,39 +293,19 @@ public class DTMManagerDefault extends DTMManager
             return dtm;
           }
 
-          // System.out.println("parserCoroutine (mgr): "+parserCoroutine);
-          // %TBD%  It's probably OK to have these bypass the CoRoutine stuff??
-          // Or maybe not?
-          // ... Depends on how broken will things get if they occur at the same
-          // time that someone is trying to read the DTM model. I'd suggest that
-          // we instead extend CoroutineParser to handle these, and let it
-          // pass the registration through to the reader if that's the Right Thng
           reader.setDTDHandler(dtm);
           reader.setErrorHandler(dtm);
 
           try
           {
 
-            // %REVIEW% Consider making coParser just be a throttling filter
-            Object gotMore = coParser.doParse(xmlSource, appCoroutine);
-
-            if (gotMore instanceof Exception)
-            {
-              dtm.clearCoRoutine();
-
-              throw ((Exception) gotMore);
-            }
-            else if (gotMore != Boolean.TRUE)
-            {
-
-              // %REVIEW% Consider having coParser self-terminate at end of file.
-              dtm.clearCoRoutine();
-            }
+	    // Launch parsing coroutine.  Launches a second thread,
+	    // if we're using IncrementalSAXSource.filter().
+            coParser.startParse(xmlSource);
           }
           catch (RuntimeException re)
           {
 
-            // coroutineManager.co_exit(appCoroutine);
             dtm.clearCoRoutine();
 
             throw re;
@@ -342,7 +313,6 @@ public class DTMManagerDefault extends DTMManager
           catch (Exception e)
           {
 
-            // coroutineManager.co_exit(appCoroutine);
             dtm.clearCoRoutine();
 
             throw new org.apache.xml.utils.WrappedRuntimeException(e);
@@ -377,7 +347,6 @@ public class DTMManagerDefault extends DTMManager
           catch (RuntimeException re)
           {
 
-            // coroutineManager.co_exit(appCoroutine);
             dtm.clearCoRoutine();
 
             throw re;
@@ -385,7 +354,6 @@ public class DTMManagerDefault extends DTMManager
           catch (Exception e)
           {
 
-            // coroutineManager.co_exit(appCoroutine);
             dtm.clearCoRoutine();
 
             throw new org.apache.xml.utils.WrappedRuntimeException(e);

@@ -87,6 +87,12 @@ import java.io.*; // for dumpDTM
  */
 public abstract class DTMDefaultBase implements DTM
 {
+  /** %OPT% %REVIEW% When true, don't build the m_level array;
+   *  instead, support _level()/getLevel() by counting upward to the
+   *  root. This is exposed because SAX2DTM and DOM2DTM should
+   *  respond to it. */
+  protected static final boolean DISABLE_PRECALC_LEVEL=true;
+
   /**
    * The number of nodes, which is also used to determine the next
    *  node index.
@@ -98,14 +104,7 @@ public abstract class DTMDefaultBase implements DTM
 
   /** levels deep, one array element for each node.
    *
-   * %REVIEW% Are 256 levels really enough? (Yes for most docs, but maybe not
-   * for something deeply structured.) Should this be shorts instead? Or give up
-   * and go back to int?
-   *
-   * %REVIEW% We may be concluding that, given some of the other changes DTM
-   * and the new traversal code have bought us, level no longer needs to be
-   * tracked at all. Keep it for now because it's useful as a DTM diagnostic,
-   * but consider phasing it out.
+   * %REVIEW% Used only when DISABLE_PRECALC_LEVEL is false!
    */
   protected SuballocatedByteVector m_level;
 
@@ -217,11 +216,14 @@ public abstract class DTMDefaultBase implements DTM
     }
 
     m_exptype = new SuballocatedIntVector(m_initialblocksize);
-    m_level = new SuballocatedByteVector(m_initialblocksize);
     m_firstch = new SuballocatedIntVector(m_initialblocksize);
     m_nextsib = new SuballocatedIntVector(m_initialblocksize);
     m_prevsib = new SuballocatedIntVector(m_initialblocksize);
     m_parent = new SuballocatedIntVector(m_initialblocksize);
+
+    if(!DISABLE_PRECALC_LEVEL)
+      m_level = new SuballocatedByteVector(m_initialblocksize);
+
     m_mgr = mgr;
     m_documentBaseURI = (null != source) ? source.getSystemId() : null;
     m_dtmIdent = dtmIdentity;
@@ -441,17 +443,17 @@ public abstract class DTMDefaultBase implements DTM
   /** Stateless axis traversers, lazely built. */
   protected DTMAxisTraverser[] m_traversers;
 
-  /**
-   * Ensure that the size of the information arrays can hold another entry
-   * at the given index.
-   *
-   * @param index On exit from this function, the information arrays sizes must be
-   * at least index+1.
-   */
-  protected void ensureSize(int index)
-  {
-      // We've cut over to Suballocated*Vector, which are self-sizing. 
-  }
+//    /**
+//     * Ensure that the size of the information arrays can hold another entry
+//     * at the given index.
+//     *
+//     * @param index On exit from this function, the information arrays sizes must be
+//     * at least index+1.
+//     */
+//    protected void ensureSize(int index)
+//    {
+//        // We've cut over to Suballocated*Vector, which are self-sizing. 
+//    }
 
   /**
    * Get the simple type ID for the given node identity.
@@ -480,22 +482,16 @@ public abstract class DTMDefaultBase implements DTM
    */
   protected int _exptype(int identity)
   {
-
-    if (identity < m_size)
-      return m_exptype.elementAt(identity);
-
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
-    // processed.
-    while (true)
+    // Reorganized test and loop into single flow
+    // Tiny performance improvement, saves a few bytes of code, clearer.
+    // %OPT% Other internal getters could be treated simliarly
+    while (identity>=m_size)
     {
-      boolean isMore = nextNode();
-
-      if (identity >= m_size && !isMore)
+      if (!nextNode() && identity >= m_size)
         return NULL;
-      else if (identity < m_size)
-        return m_exptype.elementAt(identity);
     }
+    return m_exptype.elementAt(identity);
+
   }
 
   /**
@@ -507,21 +503,23 @@ public abstract class DTMDefaultBase implements DTM
    */
   protected int _level(int identity)
   {
-
-    if (identity < m_size)
-      return m_level.elementAt(identity);
-
-    // Check to see if the information requested has been processed, and, 
-    // if not, advance the iterator until we the information has been 
-    // processed.
-    while (true)
+    while (identity>=m_size)
     {
       boolean isMore = nextNode();
-
-      if (identity >= m_size && !isMore)
+      if (!isMore && identity >= m_size)
         return NULL;
-      else if (identity < m_size)
-        return m_level.elementAt(identity);
+    }
+
+    if(DISABLE_PRECALC_LEVEL)
+    {
+      int i=0;
+      while(NULL != (identity=_parent(identity)))
+	++i;
+      return i;
+    }
+    else
+    {
+      return m_level.elementAt(identity);
     }
   }
 
@@ -1524,10 +1522,8 @@ public abstract class DTMDefaultBase implements DTM
    */
   public short getLevel(int nodeHandle)
   {
-
-    int identity = nodeHandle & m_mask;
-
     // Apparently, the axis walker stuff requires levels to count from 1.
+    int identity = nodeHandle & m_mask;
     return (short) (_level(identity) + 1);
   }
 
