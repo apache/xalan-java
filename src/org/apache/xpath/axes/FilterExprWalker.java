@@ -60,6 +60,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.VariableStack;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.DOMHelper;
 import org.apache.xml.utils.PrefixResolver;
@@ -137,9 +138,25 @@ public class FilterExprWalker extends AxesWalker
     {
       xctxt.pushCurrentNode(root);
       xctxt.setNamespaceContext(m_lpi.getPrefixResolver());
+      
+      // The setRoot operation can take place with a reset operation, 
+      // and so we may not be in the context of LocPathIterator#nextNode, 
+      // so we have to set up the variable context, execute the expression, 
+      // and then restore the variable context.
 
       // System.out.println("calling m_expr.execute(m_lpi.getXPathContext())");
+      VariableStack vars = m_lpi.m_execContext.getVarStack();
+      
+      // These three statements need to be combined into one operation.
+      int savedStart = vars.getSearchStart();
+      vars.setSearchStart(m_lpi.m_varStackPos);
+      vars.pushContextPosition(m_lpi.m_varStackContext);
+      
       XObject obj = m_expr.execute(m_lpi.getXPathContext());
+      
+      // These two statements need to be combined into one operation.
+      vars.setSearchStart(savedStart);
+      vars.popContextPosition();
       
       // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
       m_nodeSet = (null != obj) ? obj.nodeset() : null;
