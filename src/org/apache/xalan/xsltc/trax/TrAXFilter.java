@@ -72,6 +72,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXResult;
 
@@ -87,14 +88,19 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class TrAXFilter extends XMLFilterImpl {
     private Templates              _templates;
-    private TransformerHandlerImpl _transformer;
+    private TransformerImpl	   _transformer;
+    private TransformerHandlerImpl _transformerHandler;
 
     public TrAXFilter(Templates templates)  throws 
 	TransformerConfigurationException
     {
 	_templates = templates;
-        _transformer = new TransformerHandlerImpl( 
-		(TransformerImpl) templates.newTransformer());
+	_transformer = (TransformerImpl) templates.newTransformer();
+        _transformerHandler = new TransformerHandlerImpl(_transformer);
+    }
+    
+    public Transformer getTransformer() {
+        return _transformer;
     }
 
     private void createParent() throws SAXException {
@@ -142,7 +148,7 @@ public class TrAXFilter extends XMLFilterImpl {
 
     public void setContentHandler (ContentHandler handler) 
     {
-	_transformer.setResult(new SAXResult(handler));
+	_transformerHandler.setResult(new SAXResult(handler));
 	if (getParent() == null) {
                 try {
                     createParent();
@@ -151,7 +157,7 @@ public class TrAXFilter extends XMLFilterImpl {
                    return; 
                 }
 	}
-	getParent().setContentHandler(_transformer);
+	getParent().setContentHandler(_transformerHandler);
     }
 
     public void setErrorListener (ErrorListener handler) { }
