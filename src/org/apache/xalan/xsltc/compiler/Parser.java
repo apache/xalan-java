@@ -618,8 +618,8 @@ public class Parser implements Constants, ContentHandler {
 				COMPILER_PACKAGE + '.' + className);
     }
 
-    public boolean elementSupported(QName qname) {
-	return(_instructionClasses.get(qname) != null);
+    public boolean elementSupported(String namespace, String localName) {
+	return(_instructionClasses.get(getQName(namespace, XSL, localName)) != null);
     }
 
     public boolean functionSupported(String fname) {
@@ -1101,11 +1101,7 @@ public class Parser implements Constants, ContentHandler {
 			     String qname, Attributes attributes) 
 	throws SAXException {
 	final int col = qname.lastIndexOf(':');
-	final String prefix;
-	if (col == -1)
-	    prefix = null;
-	else
-	    prefix = qname.substring(0, col);
+	final String prefix = (col == -1) ? null : qname.substring(0, col);
 
 	SyntaxTreeNode element = makeInstance(uri, prefix, localname);
 	if (element == null) {
