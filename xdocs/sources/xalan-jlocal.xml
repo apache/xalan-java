@@ -83,4 +83,6 @@
   <separator/>
   <external href="readme.html#bugs" label="Bugs"/>
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
+  <separator/>
+  <external href="todo.html#developer-list" label="Credits"/>  
 </book>
