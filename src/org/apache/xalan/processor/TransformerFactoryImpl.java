@@ -589,6 +589,7 @@ public javax.xml.transform.Templates processFromNode(Node node)
     try {
       TransformerImpl transformer =
         (TransformerImpl) templates.newTransformer();
+      transformer.setURIResolver(m_uriResolver);
       TransformerHandler th =
         (TransformerHandler) transformer.getInputContentHandler(true);
 
@@ -674,7 +675,9 @@ public javax.xml.transform.Templates processFromNode(Node node)
          that, and returns null.
       */
       if( tmpl==null ) return null;
-      return tmpl.newTransformer();
+      Transformer transformer = tmpl.newTransformer();
+      transformer.setURIResolver(m_uriResolver);
+      return transformer;
     } catch( TransformerConfigurationException ex ) {
       if( m_errorListener != null ) {
         try {
