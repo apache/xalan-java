@@ -97,13 +97,6 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	// Save the reference to the transformer
 	_transformer = transformer;
 
-	// Create an internal DOM (not W3C) and get SAX2 input handler
-	_dom = new DOMImpl();
-	_handler = _dom.getBuilder();
-
-	// Set this DOM as the transformer's DOM
-	_transformer.setDOM(_dom);
-	
 	// Get a reference to the translet wrapped inside the transformer
 	_translet = _transformer.getTranslet();
     }
@@ -178,6 +171,10 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	if (_result == null) {
 	    throw new SAXException(NULL_RESULT_ERROR);
 	}
+	// Create an internal DOM (not W3C) and get SAX2 input handler
+	_dom = new DOMImpl();
+	_handler = _dom.getBuilder();
+
 	_handler.startDocument();
     }
 
@@ -202,6 +199,9 @@ public class TransformerHandlerImpl implements TransformerHandler {
 	}
 	// Signal that the internal DOM is build (see 'setResult()').
 	_done = true;
+
+	// Set this DOM as the transformer's DOM
+	_transformer.setDOM(_dom);
     }
 	
     /**

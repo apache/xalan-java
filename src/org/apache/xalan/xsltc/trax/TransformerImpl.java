@@ -449,7 +449,6 @@ public final class TransformerImpl extends Transformer
 	    _translet.transform(dom, handler);
 	}
 	catch (TransletException e) {
-	    e.printStackTrace();
 	    if (_errorListener != null)
 		postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
@@ -457,8 +456,6 @@ public final class TransformerImpl extends Transformer
 	catch (RuntimeException e) {
 	    if (_errorListener != null)
 		postErrorToListener("Runtime Error: " + e.getMessage());
-	    System.err.println("Error: "+e.getMessage());
-	    e.printStackTrace();
 	    throw new TransformerException(e);
 	}
 	catch (Exception e) {
@@ -835,9 +832,6 @@ public final class TransformerImpl extends Transformer
     public void error(TransformerException e)
 	throws TransformerException {
 	System.err.println("ERROR: "+e.getMessageAndLocation());
-	Throwable wrapped = e.getException();
-	if (wrapped != null)
-	    System.err.println("     : "+wrapped.getMessage());
 	throw(e); 	
     }
 
