@@ -118,7 +118,10 @@ final public class Transform {
 	_uri = uri;
 	_debug = debug;
 	_iterations = iterations;
-    }
+  }
+  
+   public String getFileName(){return _fileName;}
+   public String getClassName(){return _className;}
 
     public void setParameters(Vector params) {
 	_params = params;
@@ -224,8 +227,13 @@ final public class Transform {
 		mm = System.currentTimeMillis() - mm;
 
 		System.err.println("\n<!--");
-		System.err.println("  transform  = " + (mm / _iterations) + " ms");
-		System.err.println("  throughput = " + (1000.0 / (mm / _iterations)) + " tps");
+		System.err.println("  transform  = "
+                                   + (((double) mm) / ((double) _iterations))
+                                   + " ms");
+		System.err.println("  throughput = "
+                                   + (1000.0 / (((double) mm)
+                                                 / ((double) _iterations)))
+                                   + " tps");
 		System.err.println("-->");
 	    }
 	}
@@ -303,7 +311,9 @@ final public class Transform {
 		boolean uri = false, debug = false;
 		boolean isJarFileSpecified = false;
 		String  jarFile = null;
-
+		boolean doDiag = false;
+		long start=0;
+		long stop=0;
 		// Parse options starting with '-'
 		for (i = 0; i < args.length && args[i].charAt(0) == '-'; i++) {
 		    if (args[i].equals("-u")) {
@@ -329,6 +339,9 @@ final public class Transform {
 			catch (NumberFormatException e) {
 			    // ignore
 			}
+		    }
+		    else if ("-DIAG".equalsIgnoreCase(args[i])){
+          		doDiag = true;
 		    }
 		    else {
 			printUsage();
@@ -359,7 +372,21 @@ final public class Transform {
 
 		if (i == args.length) {
 		    handler.setParameters(params);
+		    if (doDiag) {
+			start = System.currentTimeMillis();
+		    }
 		    handler.doTransform();
+		    if (doDiag) {
+			stop = System.currentTimeMillis();
+			long millisecondsDuration = stop - start;
+			String msg = "--------- Transform of "
+                                   + handler.getFileName() + " via "
+                                   + handler.getClassName() + " took "
+                                   + millisecondsDuration + " ms"; 
+			java.io.PrintWriter diagnosticsWriter =
+                                              new PrintWriter(System.err, true);
+			diagnosticsWriter.println(msg);
+   		    }
 		    if (_allowExit) System.exit(0);
 		}
 	    } else {
