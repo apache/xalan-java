@@ -171,6 +171,10 @@ import javax.xml.parsers.ParserConfigurationException;
 public class TransformerImpl extends Transformer
         implements Runnable, TransformState
 {
+  // Synch object to gaurd against setting values from the TrAX interface 
+  // or reentry while the transform is going on.
+  private Boolean m_reentryGuard = new Boolean(true);
+  
   /**
    * True if the parser events should be on the main thread,
    * false if not.  Experemental.  Can not be set right now.
@@ -214,24 +218,18 @@ public class TransformerImpl extends Transformer
   /** A pool of ResultTreeHandlers, for serialization of a subtree to text.
    *  Please note that each of these also holds onto a Text Serializer.  */
   private ObjectPool m_textResultHandlerObjectPool =
-    new ObjectPool(org.apache.xalan.transformer.ResultTreeHandler.class);
+    new ObjectPool("org.apache.xalan.transformer.ResultTreeHandler");
 
   /** Related to m_textResultHandlerObjectPool, this is a pool of 
    * StringWriters, which are passed to the Text Serializers.
    * (I'm not sure if this is really needed any more.  -sb)      */
   private ObjectPool m_stringWriterObjectPool =
-    new ObjectPool(java.io.StringWriter.class);
+    new ObjectPool("java.io.StringWriter");
 
   /** A static text format object, which can be used over and 
    * over to create the text serializers.    */
-  private static OutputProperties m_textformat;
+  private OutputProperties m_textformat = new OutputProperties(Method.Text);
 
-  static
-  {
-    // Synchronize??
-    m_textformat = new OutputProperties(Method.Text);
-  }
-  
   // Commenteded out in response to problem reported by 
   // Nicola Brown <Nicola.Brown@jacobsrimell.com>
 //  /**
@@ -347,7 +345,7 @@ public class TransformerImpl extends Transformer
    * If the the transform is on the secondary thread, we
    * need to know when it is done, so we can return.
    */
-  boolean m_isTransformDone = false;
+  private boolean m_isTransformDone = false;
   
   private boolean m_hasBeenReset = false;
   
@@ -756,17 +754,20 @@ public class TransformerImpl extends Transformer
   public void setOutputProperty(String name, String value)
     throws IllegalArgumentException
   {    
-    // Get the output format that was set by the user, otherwise get the 
-    // output format from the stylesheet.
-    if(null == m_outputFormat)
+    synchronized(m_reentryGuard) 
     {
-      m_outputFormat = (OutputProperties)getStylesheet().getOutputComposed().clone();
+      // Get the output format that was set by the user, otherwise get the 
+      // output format from the stylesheet.
+      if(null == m_outputFormat)
+      {
+        m_outputFormat = (OutputProperties)getStylesheet().getOutputComposed().clone();
+      }
+  
+      if(!m_outputFormat.isLegalPropertyKey(name))
+        throw new IllegalArgumentException("output property not recognized: "+name);
+      
+      m_outputFormat.setProperty(name, value);
     }
-
-    if(!m_outputFormat.isLegalPropertyKey(name))
-      throw new IllegalArgumentException("output property not recognized: "+name);
-    
-    m_outputFormat.setProperty(name, value);
   }
   
   /**
@@ -783,20 +784,23 @@ public class TransformerImpl extends Transformer
    */
   public void setOutputProperties(Properties oformat)
   {
-    if(null != oformat)
+    synchronized(m_reentryGuard) 
     {
-      // See if an *explicit* method was set.
-      String method = (String)oformat.get(OutputKeys.METHOD);
-      if(null != method)
-        m_outputFormat = new OutputProperties(method);
-      else
-        m_outputFormat = new OutputProperties();
-    }
-    
-    m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
-    if(null != oformat)
-    {
-      m_outputFormat.copyFrom(oformat);
+      if(null != oformat)
+      {
+        // See if an *explicit* method was set.
+        String method = (String)oformat.get(OutputKeys.METHOD);
+        if(null != method)
+          m_outputFormat = new OutputProperties(method);
+        else
+          m_outputFormat = new OutputProperties();
+      }
+      
+      m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
+      if(null != oformat)
+      {
+        m_outputFormat.copyFrom(oformat);
+      }
     }
   }
   
@@ -1085,10 +1089,13 @@ public class TransformerImpl extends Transformer
   public void transform(Source xmlSource, Result outputTarget)
           throws TransformerException
   {
-    ContentHandler handler = createResultContentHandler(outputTarget);
-
-    this.setContentHandler(handler);
-    transform(xmlSource);
+    synchronized(m_reentryGuard) 
+    {
+      ContentHandler handler = createResultContentHandler(outputTarget);
+  
+      this.setContentHandler(handler);
+      transform(xmlSource);
+    }
   }
 
   /**
@@ -1121,68 +1128,72 @@ public class TransformerImpl extends Transformer
    */
   public void transformNode(Node node) throws TransformerException
   {
-    m_hasBeenReset = false;
-
-    try
+    // Make sure we're not writing to the same output content handler.
+    synchronized(m_outputContentHandler)
     {
-      pushGlobalVars(node);
-
-      // ==========
-      // Give the top-level templates a chance to pass information into 
-      // the context (this is mainly for setting up tables for extensions).
-      StylesheetRoot stylesheet = this.getStylesheet();
-      int n = stylesheet.getGlobalImportCount();
-
-      for (int i = 0; i < n; i++)
+      m_hasBeenReset = false;
+  
+      try
       {
-        StylesheetComposed imported = stylesheet.getGlobalImport(i);
-
-        int includedCount = imported.getIncludeCountComposed();
-
-        for (int j = -1; j < includedCount; j++)
+        pushGlobalVars(node);
+  
+        // ==========
+        // Give the top-level templates a chance to pass information into 
+        // the context (this is mainly for setting up tables for extensions).
+        StylesheetRoot stylesheet = this.getStylesheet();
+        int n = stylesheet.getGlobalImportCount();
+  
+        for (int i = 0; i < n; i++)
         {
-          Stylesheet included = imported.getIncludeComposed(j);
-
-          included.runtimeInit(this);
-
-          for (ElemTemplateElement child = included.getFirstChildElem();
-                  child != null; child = child.getNextSiblingElem())
+          StylesheetComposed imported = stylesheet.getGlobalImport(i);
+  
+          int includedCount = imported.getIncludeCountComposed();
+  
+          for (int j = -1; j < includedCount; j++)
           {
-            child.runtimeInit(this);
+            Stylesheet included = imported.getIncludeComposed(j);
+  
+            included.runtimeInit(this);
+  
+            for (ElemTemplateElement child = included.getFirstChildElem();
+                    child != null; child = child.getNextSiblingElem())
+            {
+              child.runtimeInit(this);
+            }
           }
         }
-      }
-
-      // ===========
-      // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
-      this.applyTemplateToNode(null, null, node, null);
-      // System.out.println("Done with applyTemplateToNode - "+Thread.currentThread().getName());
-
-      if (null != m_resultTreeHandler)
-      {
-        m_resultTreeHandler.endDocument();
-      }   
-    }
-    catch (Exception se)
-    {
-      // System.out.println(Thread.currentThread().getName()+" threw an exception! "
-      //                   +se.getMessage());
-      // If an exception was thrown, we need to make sure that any waiting 
-      // handlers can terminate, which I guess is best done by sending 
-      // an endDocument.
-      if (null != m_resultTreeHandler)
-      {
-        try
+  
+        // ===========
+        // System.out.println("Calling applyTemplateToNode - "+Thread.currentThread().getName());
+        this.applyTemplateToNode(null, null, node, null);
+        // System.out.println("Done with applyTemplateToNode - "+Thread.currentThread().getName());
+  
+        if (null != m_resultTreeHandler)
         {
           m_resultTreeHandler.endDocument();
-        }
-        catch(Exception e){}
+        }   
       }
-      throw new TransformerException(se.getMessage(), se);
-    }
-    finally
-    {
-      this.reset();
+      catch (Exception se)
+      {
+        // System.out.println(Thread.currentThread().getName()+" threw an exception! "
+        //                   +se.getMessage());
+        // If an exception was thrown, we need to make sure that any waiting 
+        // handlers can terminate, which I guess is best done by sending 
+        // an endDocument.
+        if (null != m_resultTreeHandler)
+        {
+          try
+          {
+            m_resultTreeHandler.endDocument();
+          }
+          catch(Exception e){}
+        }
+        throw new TransformerException(se.getMessage(), se);
+      }
+      finally
+      {
+        this.reset();
+      }
     }
   }
   
@@ -1465,9 +1476,12 @@ public class TransformerImpl extends Transformer
    */
   public void clearParameters()
   {
-    VariableStack varstack = new VariableStack();
-    getXPathContext().setVarStack(varstack);
-    m_userParams = null;
+    synchronized(m_reentryGuard) 
+    {
+      VariableStack varstack = new VariableStack();
+      getXPathContext().setVarStack(varstack);
+      m_userParams = null;
+    }
   }
 
   /**
@@ -1603,7 +1617,10 @@ public class TransformerImpl extends Transformer
    */
   public void setURIResolver(URIResolver resolver)
   {
-    getXPathContext().getSourceTreeManager().setURIResolver(resolver);
+    synchronized(m_reentryGuard) 
+    {
+      getXPathContext().getSourceTreeManager().setURIResolver(resolver);
+    }
   }
   
   /**
@@ -2628,9 +2645,12 @@ public class TransformerImpl extends Transformer
   public void setErrorListener (ErrorListener listener)
     throws IllegalArgumentException
   {
-    if (listener == null) 
-      throw new IllegalArgumentException("Null error handler");
-    m_errorHandler = listener;
+    synchronized(m_reentryGuard) 
+    {
+      if (listener == null) 
+        throw new IllegalArgumentException("Null error handler");
+      m_errorHandler = listener;
+    }
   }
 
 
@@ -2750,7 +2770,10 @@ public class TransformerImpl extends Transformer
    */
   public boolean isTransformDone()
   {
-    return m_isTransformDone;
+    synchronized(this)
+    {
+      return m_isTransformDone;
+    }
   }
 
   /**
@@ -2759,7 +2782,7 @@ public class TransformerImpl extends Transformer
    *
    * @param e The exception that was thrown.
    */
-  void postExceptionFromThread(Exception e)
+  void postExceptionFromThread(Exception e)  
   {
     // Commented out in response to problem reported by Nicola Brown <Nicola.Brown@jacobsrimell.com>
 //    if(m_reportInPostExceptionFromThread)
@@ -2812,7 +2835,6 @@ public class TransformerImpl extends Transformer
 
     try
     {
-
       // Node n = ((SourceTreeHandler)getInputContentHandler()).getRoot();
       // transformNode(n);
       if (isParserEventsOnMain())
