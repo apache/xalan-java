@@ -1321,7 +1321,7 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Peephole optimization: Remove sequences of [ALOAD, POP].
      */
     private void peepHoleOptimization(MethodGenerator methodGen) {
-	final String pattern = "`ALOAD'`POP'`Instruction'";
+	final String pattern = "`aload'`pop'`instruction'";
 	final InstructionList il = methodGen.getInstructionList();
 	final InstructionFinder find = new InstructionFinder(il);
 	for(Iterator iter=find.search(pattern); iter.hasNext(); ) {

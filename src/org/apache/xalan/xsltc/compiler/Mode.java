@@ -1438,7 +1438,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	String pattern;
 
 	// Remove seqences of ALOAD, POP (GTM)
-	pattern = "`ALOAD'`POP'`Instruction'";
+	pattern = "`aload'`pop'`instruction'";
 	for(Iterator iter=find.search(pattern); iter.hasNext();){
 	    InstructionHandle[] match = (InstructionHandle[])iter.next();
 	    try {
@@ -1451,7 +1451,7 @@ for (int i = 0; i < _templates.size(); i++) {
             }
 	}
 	// Replace sequences of ILOAD_?, ALOAD_?, SWAP with ALOAD_?, ILOAD_?
-	pattern = "`ILOAD'`ALOAD'`SWAP'`Instruction'";
+	pattern = "`iload'`aload'`swap'`instruction'";
 	for(Iterator iter=find.search(pattern); iter.hasNext();){
             InstructionHandle[] match = (InstructionHandle[])iter.next();
             try {
@@ -1473,7 +1473,7 @@ for (int i = 0; i < _templates.size(); i++) {
         }
         
         // Replace sequences of ALOAD_1, ALOAD_1 with ALOAD_1, DUP 
-	pattern = "`ALOAD_1'`ALOAD_1'`Instruction'";
+	pattern = "`aload_1'`aload_1'`instruction'";
         for(Iterator iter=find.search(pattern); iter.hasNext();){
             InstructionHandle[] match = (InstructionHandle[])iter.next();
             try {
