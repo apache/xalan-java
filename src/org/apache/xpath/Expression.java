@@ -89,6 +89,17 @@ public abstract class Expression implements java.io.Serializable
    *  messages. May be null.
    */
   protected SourceLocator m_slocator;
+  
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+   public boolean canTraverseOutsideSubtree()
+   {
+    return false;
+   }
 
   /**
    * Set the location where this expression was built from.
