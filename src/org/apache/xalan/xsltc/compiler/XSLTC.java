@@ -525,18 +525,17 @@ public final class XSLTC {
     }
 
     /**
-     *
+     * Set the top-level stylesheet
      */
-    public Stylesheet getStylesheet() {
-	return _stylesheet;
+    public void setStylesheet(Stylesheet stylesheet) {
+	if (_stylesheet == null) _stylesheet = stylesheet;
     }
 
     /**
-     *
+     * Returns the top-level stylesheet
      */
-    public void setStylesheet(Stylesheet stylesheet) {
-	if (_stylesheet == null)
-	    _stylesheet = stylesheet;
+    public Stylesheet getStylesheet() {
+	return _stylesheet;
     }
    
     /**
@@ -544,9 +543,10 @@ public final class XSLTC {
      * DOM attribute types at run-time.
      */
     public int registerAttribute(QName name) {
-	Integer code = (Integer)_attributes.get(name);
+	Integer code = (Integer)_attributes.get(name.toString());
 	if (code == null) {
-	    _attributes.put(name, code = new Integer(_nextGType++));
+	    code = new Integer(_nextGType++);
+	    _attributes.put(name.toString(), code);
 	    final String uri = name.getNamespace();
 	    final String local = "@"+name.getLocalPart();
 	    if ((uri != null) && (!uri.equals("")))
