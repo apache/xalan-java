@@ -69,26 +69,29 @@ public interface PrefixResolver
    * the PrevixResolver hold's it's own namespace context, or is a namespace
    * context itself.
    *
-   * NEEDSDOC @param prefix
+   * @param prefix The prefix to look up, which may be an empty string ("") for the default Namespace.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The associated Namespace URI, or null if the prefix
+   *         is undeclared in this context.
    */
   String getNamespaceForPrefix(String prefix);
 
   /**
-   * Given a namespace, get the corrisponding prefix.
+   * Given a namespace, get the corrisponding prefix, based on the node context.
    *
-   * NEEDSDOC @param prefix
-   * NEEDSDOC @param context
+   * @param prefix The prefix to look up, which may be an empty string ("") for the default Namespace.
+   * @param context The node context from which to look up the URI.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The associated Namespace URI, or null if the prefix
+   *         is undeclared in this context.
    */
   String getNamespaceForPrefix(String prefix, org.w3c.dom.Node context);
 
   /**
    * Return the base identifier.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The base identifier from where relative URIs should be absolutized, or null 
+   * if the base ID is unknown.
    */
   public String getBaseIdentifier();
 }
