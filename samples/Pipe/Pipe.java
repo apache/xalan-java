@@ -66,9 +66,9 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
-import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -107,7 +107,7 @@ public class Pipe
 
       // transformer3 outputs SAX events to the serializer.
       Serializer serializer = SerializerFactory.getSerializer
-                                   (OutputProperties.getDefaultMethodProperties("xml"));        
+                          (OutputPropertiesFactory.getDefaultMethodProperties("xml"));        
       serializer.setOutputStream(System.out);
       tHandler3.setResult(new SAXResult(serializer.asContentHandler()));
 

@@ -97,8 +97,8 @@ public class JAXPTransletOneTransformation
     System.setProperties(props);    
 
     String xslInURI = "todo.xsl";
-    String xmlInURI = "../../xsltc_todo.xml";
-    String htmlOutURI = "todo-xsltc.html";
+    String xmlInURI = "todo.xml";
+    String htmlOutURI = "todo.html";
     try
     {
       // Instantiate the TransformerFactory, and use it along with a SteamSource
@@ -108,7 +108,7 @@ public class JAXPTransletOneTransformation
       // Perform the transformation from a StreamSource to a StreamResult;
       transformer.transform(new StreamSource(xmlInURI),
                             new StreamResult(new FileOutputStream(htmlOutURI)));  
-      System.out.println("Produced todo-xsltc.html");  
+      System.out.println("Produced todo.html");  
     }
     catch (Exception e) 
     {

@@ -3,8 +3,7 @@ CONTENTS OF THIS DOCUMENT:
 
   o) HOW TO PROVIDE XSL TRANSFORMATIONS AS A WEB SERVICE
   o) HOW TO INVOKE TRANSLETS FROM A SERVLET
-  o) BUILDING YOUR OWN DOM CACHE
-  o) TIPS FOR RUNNING THE SAMPLES ON TOMCAT
+  o) TIPS FOR RUNNING THE SAMPLE ON TOMCAT
 
 -----------------------------------------------------------------------
 HOW TO PROVIDE XSL TRANSFORMATIONS AS A WEB SERVICE
@@ -23,166 +22,37 @@ The CompiledServlet directory contains the example source code:
     TransformServlet.java
 
 This file contains a minimal implementation of an XSL transformation 
-servlet. It utilizes a cache to store the DOM trees for frequently 
-accessed XML documents. These are not W3C DOM objects; They are 
-specialized DOMs, native to XSLTC and optimzed for use with compiled 
-translets. In addition to the initial input XML documents, the cache 
-may contain DOMs for other XML input documents the translet requires 
-at runtime, when the xsl:document() function is used in the stylesheet.
+servlet.  When you deploy your servlet, make sure that the XSLTC
+TransformerFactory will be used by either setting the system property
+"javax.xml.transform.TransformerFactory" with the value
+"org.apache.xalan.xsltc.trax.TransformerFactoryImpl", or by making a
+file with the name "META-INF/services/javax.xml.transform.TransformerFactory"
+containing the single line
 
-Here's the essential code in the servlet for doing the transformation:
+  org.apache.xalan.xsltc.trax.TransformerFactoryImpl
 
-    // Get a reference to the translet class
-    Class cls = Class.forName(transletName);
-
-    // Instanciate a translet object (inherits AbstractTranslet)
-    AbstractTranslet translet = (AbstractTranslet)cls.newInstance();
-
-    // The translet needs a reference to the cache in case
-    // in needs to load additional XML documents.
-    translet.setDOMCache(cache);
-
-    // Get the DOM from the DOM cache if current, otherwise
-    // build and cache the DOM first
-    DOMImpl dom = cache.retrieveDocument(documentURI, 0, translet);
-
-    // Create output handler (you can plug in your own)
-    DefaultSAXOutputHandler saxHandler;
-    saxHandler = new DefaultSAXOutputHandler(out);
-
-    // Start the transformation
-    translet.transform(dom, new TextOutput(saxHandler));
+available on your CLASSPATH.
 
 -----------------------------------------------------------------------
-BUILDING YOUR OWN DOM CACHE
+TIPS FOR RUNNING THE SAMPLE ON TOMCAT
 
-The interface for the DOM cache consists of a single method,
-and its definition can be found in:
+When compiling the java files supplied with the sample, you need to 
+add xalan.jar, xml-apis.jar, xercesImpl.jar and servlet.jar 
+(in %Tomcat_Home%/common/lib) to the classpath
 
-    org/apache/xalan/xsltc/DOMCache.java
+o Copy the translet .class file to the %Tomcat_Home%/common/classes 
+  directory
 
-The method contained in the interface is:
+o Make sure that the value of the "class" parameter is the same as
+  the name of the translet .class
 
-    public DOMImpl retrieveDocument(String uri,
-                                    int mask,
-                                    Translet translet);
+o Make sure that the value of the "source" parameter is a valid 
+  xml URI
 
-The responsibilities of this method are:
+o Make sure that the value of the "sheet" parameter is a valid
+  xsl URI
 
- A) Build new a DOMImpl and DTDMonitor for XML documents
-    that are not already in the cache:
-
-        // Instanciate a DOMImpl object
-        Parser  parser = new Parser();
-        DOMImpl dom = new DOMImpl();
-        // Set URI for imports, includes, and document() functions
-        dom.setDocumentURI(uri);
-        parser = factory.newSAXParser();
-        reader = parser.getXMLReader();
-        reader.setContentHandler(dom.getBuilder());
-
-        // Use a DTDMonitor to track ID references in DTD
-        DTDMonitor dtdMonitor = new DTDMonitor();
-        dtdMonitor.handleDTD(reader);
-
-        // Parse the input document and build DOM
-        reader.parse(uri);
-
-    At this point the DOMImpl and DTDMonitor objects are
-    populated with the necessary data. The two objects
-    are ready to be put in the cache (using the URI as
-    the lookup key).
-
- B) For each time a new document is requested by a translet:
-
-        // Expand translet's index array to fit this DOM
-        translet.setIndexSize(dom.getSize());
-
-        // Build indices for this DOM's DTD's ID references
-        dtdMonitor.buildIdIndex(dom, mask, translet);
-
-        // Pass unparsed entity URIs to the translet
-        translet.setUnparsedEntityURIs(dtd.getUnparsedEntityURIs());
-
-Step A) must be done every time a document is read into the
-cache, and step B) every time a document is given to a
-translet.
-
-The XSLTC package contains an example implementation of a
-DOM cache, based on a very simple round-robin caching
-algorithm:
-
-    org/apache/xalan/xsltc/dom/DocumentCache.java
-
+o The translet .class generated by CompiledServlet will be placed 
+  under %Tomcat_Home%/bin/ 
 -----------------------------------------------------------------------
-DOING TRANSFORMATIONS WITHOUT A DOM CACHE
-
-Alternatively, you can program a servlet to perform the same basic
-steps as the XSLTC command-line tool
-
-    org.apache.xalan.xsltc.cmdline.Transform
-
-as follows:
-
-
-    // Obtain a reference to the translet class
-    Class cls = Class.forName(transletName);
-    // Instanciate a translet object (inherits AbstractTranslet)
-    AbstractTranslet translet = (AbstractTranslet)cls.newInstance();
-
-    // Prepare the internal DOM tree
-    final DOMImpl dom = new DOMImpl();
-    dom.setDocumentURI(inputURI);
-
-    // Create a parser for the input document
-    // org.apache.xalan.xsltc.runtime.Constants sets NAMESPACE_FEATURE
-    final SAXParserFactory facory = SAXFactory.newInstance();
-    try {
-      factory.setFeature(NAMESPACE_FEATURE,true);
-    }
-    catch (Exception e) {
-      factory.setNamespaceAware(true);
-    }
-    parser = factory.newSAXParser();
-    reader = parser.getXMLReader();
-    reader.setContentHandler(dom.getBuilder());
-
-    // Create a DTDMonitor for handling ID references in the DTD
-    DTDMonitor dtdMonitor = new DTDMonitor();
-    dtdMonitor.handleDTD(reader);
-
-    // Create output handler (you can plug in your own)
-    DefaultSAXOutputHandler saxHandler;
-    saxHandler = new DefaultSAXOutputHandler(out);
-
-    // Parse the document and build the internal DOM
-    reader.parse(inputURI);
-
-    // Pass information on id/key indicies to the translet
-    translet.setIndexSize(dom.getSize());
-    dtdMonitor.buildIdIndex(dom, 0, translet);
-    translet.setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
-
-    // Start the transformation
-    translet.transform(dom, new TextOutput(saxHandler));
-
------------------------------------------------------------------------
-TIPS FOR RUNNING THE SAMPLES ON TOMCAT
-
-When compiling those two java files, you need to add the xalan.jar, xml-apis.jar,
-xercesImpl.jar, xsltc.jar and servlet.jar (in %Tomcat_Home%/common/lib) to 
-the classpath
-
-Copy xsltc.jar to the %Tomcat_Home%/common/lib directory
-
-Copy the translet .class to %Tomcat_Home%/common/classes directory
-
-The value of "class" parameter must be the name of translet .class
-
-The value of "source" parameter must be a valide xml URI
-
-The value of "sheet" parameter must be a valide xsl URI
-
-The transleted xsl is stored under %Tomcat_Home%/bin/ (???)
-------------------------------------------------------------
 END OF README

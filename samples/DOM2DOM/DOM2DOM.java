@@ -68,9 +68,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
-import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
+import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException; 
 
@@ -129,7 +129,7 @@ public class DOM2DOM
 	    //Instantiate an Xalan XML serializer and use it to serialize the output DOM to System.out
 	    // using a default output format.
       Serializer serializer = SerializerFactory.getSerializer
-                                   (OutputProperties.getDefaultMethodProperties("xml"));
+                             (OutputPropertiesFactory.getDefaultMethodProperties("xml"));
       serializer.setOutputStream(System.out);
       serializer.asDOMSerializer().serialize(domResult.getNode());
 	}

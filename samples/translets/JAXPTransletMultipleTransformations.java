@@ -112,11 +112,11 @@ public class JAXPTransletMultipleTransformations
       Templates translet = tFactory.newTemplates(new StreamSource(xslInURI));
     
       // Perform each transformation
-      doTransform(translet, "../../xsltc_todo.xml", "todo-xsltc.html");
-      System.out.println("Produced todo-xsltc.html");
+      doTransform(translet, "todo.xml", "todo.html");
+      System.out.println("Produced todo.html");
     
-      doTransform(translet, "../../todo.xml", "todo-xalan.html");
-      System.out.println("Produced todo-xalan.html");
+      doTransform(translet, "todotoo.xml", "todotoo.html");
+      System.out.println("Produced todotoo.html");
     }
     catch (Exception e)
     {
