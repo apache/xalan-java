@@ -223,9 +223,9 @@ final class ParentLocationPath extends RelativeLocationPath {
 	    if ((path == Axis.DESCENDANTORSELF && step == Axis.CHILD) ||
 		(path == Axis.DESCENDANTORSELF && step == Axis.ATTRIBUTE) ||
 		(path == Axis.PRECEDING        && step == Axis.PARENT)) {
-		final int incl = cpg.addMethodref(STEP_ITERATOR_CLASS,
+		final int incl = cpg.addMethodref(NODE_ITERATOR_BASE,
 						  "includeSelf",
-						  "()"+NODE_ITERATOR_SIG);
+						  "()" + NODE_ITERATOR_SIG);
 		il.append(new INVOKEVIRTUAL(incl));
 	    }
 	}

@@ -147,6 +147,8 @@ public interface Constants extends InstructionConstants {
 	= "int";
     public static final String NODE_ITERATOR      
 	= "org.apache.xalan.xsltc.NodeIterator";
+    public static final String NODE_ITERATOR_BASE
+	= "org.apache.xalan.xsltc.dom.NodeIteratorBase";
     public static final String SORT_ITERATOR      
 	= "org.apache.xalan.xsltc.dom.SortingIterator";
     public static final String SORT_ITERATOR_SIG     
