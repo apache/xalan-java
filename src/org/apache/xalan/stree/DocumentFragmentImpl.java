@@ -63,7 +63,7 @@ import org.w3c.dom.DocumentFragment;
  * <meta name="usage" content="internal"/>
  * Class to hold information about a DocumentFragment node
  */
-public class DocumentFragmentImpl extends DocImpl
+public class DocumentFragmentImpl extends DocumentImpl
         implements DocumentFragment
 {
 
@@ -71,12 +71,10 @@ public class DocumentFragmentImpl extends DocImpl
    * Constructor DocumentFragmentImpl
    *
    */
-  public DocumentFragmentImpl(DocumentImpl doc)
+  public DocumentFragmentImpl()
   {
 
     super();
-    setDoc(doc);
-    setComplete(true);
   }
 
   /**
