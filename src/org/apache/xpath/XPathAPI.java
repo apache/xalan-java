@@ -60,6 +60,7 @@ import org.xml.sax.SAXException;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.NodeList;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.XPathParser;
@@ -108,7 +109,7 @@ public class XPathAPI
     throws SAXException
   {
     // Have the XObject return its result as a NodeSet.
-    NodeIterator nl = selectNodeList(contextNode, str, namespaceNode);
+    NodeIterator nl = selectNodeIterator(contextNode, str, namespaceNode);
 
     // Return the first node, or null
     return nl.nextNode();
@@ -120,9 +121,43 @@ public class XPathAPI
    *
    * @param contextNode The node to start searching from.
    * @param str A valid XPath string.
-   * @return A nodelist, should never be null.
+   * @return A NodeIterator, should never be null.
    */
-  public static NodeIterator selectNodeList(Node contextNode, String str)
+  public static NodeIterator selectNodeIterator(Node contextNode, String str)
+    throws SAXException
+  {
+    return selectNodeIterator(contextNode, str, contextNode);
+  }
+
+ /**
+   * Use an XPath string to select a nodelist.
+   * XPath namespace prefixes are resolved from the namespaceNode.
+   *
+   * @param contextNode The node to start searching from.
+   * @param str A valid XPath string.
+   * @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
+   * @return A NodeIterator, should never be null.
+   */
+  public static NodeIterator selectNodeIterator(Node contextNode, String str, Node namespaceNode)
+    throws SAXException
+  {
+    // Execute the XPath, and have it return the result
+    XObject list = eval(contextNode, str, namespaceNode);
+
+    // Have the XObject return its result as a NodeSet.
+    return list.nodeset();
+
+  }
+  
+ /**
+   * Use an XPath string to select a nodelist.
+   * XPath namespace prefixes are resolved from the contextNode.
+   *
+   * @param contextNode The node to start searching from.
+   * @param str A valid XPath string.
+   * @return A NodeIterator, should never be null.
+   */
+  public static NodeList selectNodeList(Node contextNode, String str)
     throws SAXException
   {
     return selectNodeList(contextNode, str, contextNode);
@@ -135,18 +170,19 @@ public class XPathAPI
    * @param contextNode The node to start searching from.
    * @param str A valid XPath string.
    * @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
-   * @return A nodelist, should never be null.
+   * @return A NodeIterator, should never be null.
    */
-  public static NodeIterator selectNodeList(Node contextNode, String str, Node namespaceNode)
+  public static NodeList selectNodeList(Node contextNode, String str, Node namespaceNode)
     throws SAXException
   {
     // Execute the XPath, and have it return the result
     XObject list = eval(contextNode, str, namespaceNode);
 
     // Have the XObject return its result as a NodeSet.
-    return list.nodeset();
+    return (NodeList)list.nodeset();
 
   }
+
 
  /**
    * Evaluate XPath string to an XObject.  Using this method,
