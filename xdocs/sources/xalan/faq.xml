@@ -563,10 +563,39 @@ file:///
             on JDK 1.4</link>.</p>
         </a>        
     </faq>
+    <faq title='IllegalAccessError or could not load output_xml.properties
+                on JDK 1.4'>
+      <q>Why do I get a "java.lang.IllegalAccessError" or the message
+         "Could not load the property file 'output_xml.properties'" when I try
+         to transform using &xslt4jc-short; or &xslt4ji;?</q>
+      <a>
+        <p>These errors may occur if you use JDK 1.4 or later releases.</p>
+        <p>JRE 1.4 and later releases contain copies of &xslt4j;.  In some
+        cases, the JRE includes only &xslt4ji;, while in other cases it also
+        includes &xslt4jc-short;.  Typically, the copy of the processor packaged
+        with the JRE will be loaded in preference to any copy of &xslt4j; on
+        your class path.</p>
+        <p>Beginning with &xslt4j; 2.5, &xslt4ji; and &xslt4jc-short; are both
+        packaged in xalan.jar, and share some of the same classes.  If you
+        are using a version of the JRE that contains &xslt4ji;, but not
+        &xslt4jc-short;, and you try to use &xslt4jc-short; on your class path,
+        classes from that version of &xslt4jc-short; may be loaded along with
+        classes from the version of &xslt4j; packaged with your JRE.</p>
+        <p>Because the classes may be from different versions of &xslt4j;, the
+        results may be unpredictable.  In particular, a
+        <code>java.lang.IllegalAccessError</code> may be thrown, or an
+        <code>org.apache.xml.utils.WrappedRuntimeException</code> containing
+        the message:  <code>"Could not load the property file
+        'output_xml.properties' for output method 'xml' (check
+        CLASSPATH)"</code> may be thrown.</p>
+        <p>To work around those problems, please read the FAQ entitled
+        <link anchor='jdk14'>Issues running &xslt4j; on JDK 1.4</link>.</p>
+      </a>
+    </faq>    
   </group>
   <group title='Miscellaneous'>
     <faq title='Chaining transformations'>
-      <q>How do you chain together a series of transformations?"</q>
+      <q>How do you chain together a series of transformations?</q>
       <a>
         <p>&xslt4j; supports two strategies for chaining together a series of 
            transformations such that the output of each transformation provides input for the next 
