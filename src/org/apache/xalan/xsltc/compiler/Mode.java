@@ -1037,7 +1037,8 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Append first code in applyTemplates() - get type of current node
 	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
+						      "getExpandedTypeID",
+                                                      "(I)I");
 	body.append(methodGen.loadDOM());
 	body.append(new ILOAD(_currentIndex));
 	body.append(new INVOKEINTERFACE(getType, 2));
@@ -1399,7 +1400,8 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Append first code in applyTemplates() - get type of current node
 	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
+						      "getExpandedTypeID",
+                                                      "(I)I");
 	body.append(methodGen.loadDOM());
 	body.append(new ILOAD(_currentIndex));
 	body.append(new INVOKEINTERFACE(getType, 2));

@@ -99,7 +99,7 @@ public interface DOM {
     public String getNodeName(final int node);
     public String getNodeNameX(final int node);
     public String getNamespaceName(final int node);
-    public int getType(final int node);
+    public int getExpandedTypeID(final int node);
     public int getNamespaceType(final int node);
     public int getParent(final int node);
     public int getAttributeNode(final int gType, final int element);

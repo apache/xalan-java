@@ -81,7 +81,7 @@ public abstract class SingleNodeCounter extends NodeCounter {
 
     public NodeCounter setStartNode(int node) {
 	_node = node;
-	_nodeType = _document.getType(node);
+	_nodeType = _document.getExpandedTypeID(node);
 	_countSiblings = _document.getAxisIterator(PRECEDINGSIBLING);
 	return this;
     }
@@ -134,10 +134,10 @@ public abstract class SingleNodeCounter extends NodeCounter {
 
 	public NodeCounter setStartNode(int node) {
 	    _node = node;
-	    _nodeType = _document.getType(node);
+	    _nodeType = _document.getExpandedTypeID(node);
 	    _countSiblings =
 		_document.getTypedAxisIterator(PRECEDINGSIBLING,
-					       _document.getType(node));
+					       _document.getExpandedTypeID(node));
 	    return this;
 	}
 

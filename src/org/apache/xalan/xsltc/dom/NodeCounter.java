@@ -228,7 +228,7 @@ public abstract class NodeCounter implements Axis {
      * same type as the starting node.
      */
     public boolean matchesCount(int node) {
-	return _nodeType == _document.getType(node);
+	return _nodeType == _document.getExpandedTypeID(node);
     }
 
     /**

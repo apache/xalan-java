@@ -117,12 +117,12 @@ public class DOMWSFilter implements DTMWSFilter {
                 SAXImpl saxImpl = (SAXImpl)dtm;
                 short[] mapping =
                               saxImpl.getMapping(m_translet.getNamesArray());
-                type = mapping[saxImpl.getType(node)];
+                type = mapping[saxImpl.getExpandedTypeID(node)];
             } else if (dtm instanceof DOMImpl) {
                 DOMImpl domImpl = (DOMImpl)dtm;
                 short[] mapping =
                               domImpl.getMapping(m_translet.getNamesArray());
-                type = mapping[domImpl.getType(node)];
+                type = mapping[domImpl.getExpandedTypeID(node)];
             } else {
                 return INHERIT;
             }

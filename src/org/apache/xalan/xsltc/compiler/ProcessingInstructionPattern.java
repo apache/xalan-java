@@ -138,7 +138,8 @@ final class ProcessingInstructionPattern extends StepPattern {
 	if (!_typeChecked) {
 	    il.append(methodGen.loadCurrentNode());
 	    final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-							  "getType", "(I)I");
+							  "getExpandedTypeID",
+                                                          "(I)I");
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(new INVOKEINTERFACE(getType, 2));

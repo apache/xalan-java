@@ -405,8 +405,8 @@ public final class MultiDOM implements DOM {
         return _adapters[getDTMId(node)].orderNodes(source, node & CLR);
     }
 
-    public int getType(final int node) {
-        return _adapters[getDTMId(node)].getType(node & CLR);
+    public int getExpandedTypeID(final int node) {
+        return _adapters[getDTMId(node)].getExpandedTypeID(node & CLR);
     }
 
     public int getNamespaceType(final int node) {

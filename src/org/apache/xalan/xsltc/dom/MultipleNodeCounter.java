@@ -80,7 +80,7 @@ public abstract class MultipleNodeCounter extends NodeCounter {
 	
     public NodeCounter setStartNode(int node) {
 	_node = node;
-	_nodeType = _document.getType(node);
+	_nodeType = _document.getExpandedTypeID(node);
 	_precSiblings = _document.getAxisIterator(PRECEDINGSIBLING);
 	return this;
     }

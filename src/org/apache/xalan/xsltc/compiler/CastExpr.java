@@ -225,7 +225,8 @@ final class CastExpr extends Expression {
 	    final InstructionList il = methodGen.getInstructionList();
 
 	    final int idx = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
+						      "getExpandedTypeID",
+                                                      "(I)I");
 	    il.append(new SIPUSH((short)((Step)_left).getNodeType()));
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadContextNode());

@@ -342,7 +342,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public boolean isElement(final int node) 
     {
-      return (((node < _firstAttributeNode) && (getType(node) >= DTM.NTYPES))
+      return (((node < _firstAttributeNode)
+                   && (getExpandedTypeID(node) >= DTM.NTYPES))
               || getNodeType(node) == DTM.ELEMENT_NODE);
     }
 
@@ -351,7 +352,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public boolean isAttribute(final int node) 
     {
-      return ((node >= _firstAttributeNode) && (getType(node) >= DTM.NTYPES));
+      return ((node >= _firstAttributeNode)
+              && (getExpandedTypeID(node) >= DTM.NTYPES));
     }
 
     /**
@@ -500,7 +502,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	}
                   
 	public boolean test(int node) {
-	    return getType(node) == _nodeType;
+	    return getExpandedTypeID(node) == _nodeType;
 	}
     }
 
@@ -591,7 +593,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
         public DTMAxisIterator setStartNode(int node) {
             if (_children){
                 if (_filter.stripSpace((DOM)DOMImpl.this, node,
-                                       _mapping[getType(node)])) {
+                                       _mapping[getExpandedTypeID(node)])) {
                     _action = STRIP_SPACE;
                 } else {
                     _action = PRESERVE_SPACE;
@@ -617,7 +619,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                 default:
                     if (isWhitespace(node)
                          && _filter.stripSpace((DOM)DOMImpl.this, node,
-                                         _mapping[getType(getParent(node))])) {
+                                         _mapping[getExpandedTypeID(getParent(node))])) {
                         continue;
                     }
                     return returnNode(node);
@@ -670,7 +672,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
                 default:
                     if (isWhitespace(node)
                          && _filter.stripSpace((DOM)DOMImpl.this, node,
-                                          _mapping[getType(getParent(node))])) {
+                                          _mapping[getExpandedTypeID(getParent(node))])) {
                         continue;
                     } else {
                          count++;
@@ -853,13 +855,6 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	    return new SingletonIterator(getDocument()); //ROOTNODE);
     }
 
-    /**
-     * Returns the type of a specific node
-     */
-    public int getType(final int node) {
-        return getExpandedTypeID(node);
-    }
-    
     /**
      * Get mapping from DOM namespace types to external namespace types
      */

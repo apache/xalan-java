@@ -78,7 +78,7 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	
     public NodeCounter setStartNode(int node) {
 	_node = node;
-	_nodeType = _document.getType(node);
+	_nodeType = _document.getExpandedTypeID(node);
 	return this;
     }
 
@@ -128,10 +128,10 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	    else {
 		int next = _node;
 		result = 0;
-		final int ntype = _document.getType(_node);
+		final int ntype = _document.getExpandedTypeID(_node);
                 final int root = _document.getDocument();
 		while (next >= 0) {
-		    if (ntype == _document.getType(next)) {
+		    if (ntype == _document.getExpandedTypeID(next)) {
 			result++;
 		    }
 //%HZ%:  Is this the best way of finding the root?  Is it better to check

@@ -131,7 +131,8 @@ final class AbsolutePathPattern extends LocationPathPattern {
 							GET_PARENT,
 							GET_PARENT_SIG);
 	final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-						      "getType", "(I)I");
+						      "getExpandedTypeID",
+                                                      "(I)I");
 
 	InstructionHandle begin = il.append(methodGen.loadDOM());
 	il.append(SWAP);

@@ -121,16 +121,16 @@ public final class DOMAdapter implements DOM {
     }
 
     private short[] getMapping() {
-	if (_mapping == null 
-	    || (_saxImpl != null && _saxImpl.getNamesArray() == null)
-	    || (_domImpl != null && _domImpl.getNamesArray() == null)) {
+        if (_mapping == null
+            || (_saxImpl != null && _saxImpl.getNamesArray() == null)
+            || (_domImpl != null && _domImpl.getNamesArray() == null)) {
             if (_domImpl != null) {
-	        _mapping = _domImpl.getMapping(_namesArray);
+                _mapping = _domImpl.getMapping(_namesArray);
             } else {
-	        _mapping = _saxImpl.getMapping(_namesArray);
+                _mapping = _saxImpl.getMapping(_namesArray);
             }
-	}
-	return _mapping;
+        }
+        return _mapping;
     }
 
     private int[] getReverse() {
@@ -287,8 +287,8 @@ public final class DOMAdapter implements DOM {
       return _dom.orderNodes(source, node);
     }
     
-    public int getType(final int node) {
-      return getMapping()[_dom.getType(node)];
+    public int getExpandedTypeID(final int node) {
+      return getMapping()[_dom.getExpandedTypeID(node)];
     }
 
     public int getNamespaceType(final int node) {

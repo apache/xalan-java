@@ -260,11 +260,12 @@ class StepPattern extends RelativePathPattern {
 	}
 	else {
 	    // context node is on the stack
-	    final int getType = cpg.addInterfaceMethodref(DOM_INTF,
-							  "getType", "(I)I");
+	    final int getEType = cpg.addInterfaceMethodref(DOM_INTF,
+							  "getExpandedTypeID",
+                                                          "(I)I");
 	    il.append(methodGen.loadDOM());
 	    il.append(SWAP);
-	    il.append(new INVOKEINTERFACE(getType, 2));
+	    il.append(new INVOKEINTERFACE(getEType, 2));
 	    il.append(new PUSH(cpg, _nodeType));
 	
 	    // Need to allow for long jumps here
