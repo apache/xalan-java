@@ -151,14 +151,14 @@ public class FuncKey extends Function2Args
           kmgr.getNodeSetDTMByKey(xctxt, docContext, keyname, ref,
                                xctxt.getNamespaceContext());
 
-        try
-        {
-          upi.addIterator((LocPathIterator)nl.clone());
-        }
-        catch(CloneNotSupportedException cnse)
-        {
-          // will never happen.
-        }
+//        try
+//        {
+          upi.addIterator((LocPathIterator)nl.asIterator(xctxt, docContext));
+//        }
+//        catch(CloneNotSupportedException cnse)
+//        {
+//          // will never happen.
+//        }
         //mnodeset.addNodesInDocOrder(nl, xctxt); needed??
       }
 
