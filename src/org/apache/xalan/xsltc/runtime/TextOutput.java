@@ -689,19 +689,8 @@ public final class TextOutput implements TransletOutputHandler {
 		// These chars are reserved or unsafe in URLs
 		// pg 196, 'HTML, The Definitive Guide" C. Musciano, et. al
 	        switch (ch[i]) {
-		    case '\u003B' :
-		    case '\u002F' :
-		    case '\u003F' :
-		    case '\u003A' :
-		    case '\u0040' :
 		    case '\u007F' :
-		    case '\u003D' :
-		    case '\u0026' :
-		    case '\u003C' :
-		    case '\u003E' :
 		    case '\u0022' :
-		    case '\u0023' :
-		    case '\u0025' :
 		    case '\u007B' :
 		    case '\u007D' :
 		    case '\u007C' :
@@ -715,6 +704,9 @@ public final class TextOutput implements TransletOutputHandler {
 		        buf.append('%');
 		        buf.append(Integer.toHexString((int)ch[i]));
 		        break;
+		    case '\u0026' :
+			buf.append("&amp;");
+			break;
 		    default:	
 		        buf.append(ch[i]); break;
 	        }
