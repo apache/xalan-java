@@ -182,7 +182,7 @@ public class SourceTreeManager
    */
   public Source resolveURI(
           String base, String urlString, SourceLocator locator)
-            throws TransformerException, IOException, TransformerException
+            throws TransformerException, IOException
   {
 
     Source source = null;
