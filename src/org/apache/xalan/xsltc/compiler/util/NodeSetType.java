@@ -314,23 +314,6 @@ public final class NodeSetType extends Type {
             il.append(new INVOKEINTERFACE(index, 2));
                        
         }
-	else if (className.equals("int")) {
-	    int next = cpg.addInterfaceMethodref(NODE_ITERATOR,
-						  "next", "()I");
-	    int index = cpg.addInterfaceMethodref(DOM_INTF,
-						  GET_NODE_VALUE,
-						  "(I)"+STRING_SIG);
-	    int str = cpg.addMethodref(BASIS_LIBRARY_CLASS,
-					STRING_TO_INT,
-					STRING_TO_INT_SIG);
-
-	    // Get next node from the iterator
-	    il.append(new INVOKEINTERFACE(next, 1));
-	    // Get the node's string value (from the DOM)
-	    il.append(new INVOKEINTERFACE(index, 2));
-	    // Create a new Integer object from the string value
-	    il.append(new INVOKESTATIC(str));
-	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);

@@ -241,25 +241,23 @@ class FunctionCall extends Expression {
 	    _internal2Java.put(Type.String, new JavaType(String.class, 0)); 
 	    _internal2Java.put(Type.String, new JavaType(Object.class, 1));
 
-            // Type.NodeSet -> { NodeList(0), Node(1), Object(2), String(3), int(10) }
+            // Type.NodeSet -> { NodeList(0), Node(1), Object(2), String(3) }
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass, 0)); 
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.NodeSet, new JavaType(Object.class, 2));
 	    _internal2Java.put(Type.NodeSet, new JavaType(String.class, 3)); 
-	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10));
 
             // Type.Node -> { Node(0), NodeList(1), Object(2), String(3) }
-	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));  
-	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 1));
+	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 0));
+	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 1));  
 	    _internal2Java.put(Type.Node, new JavaType(Object.class, 2));
 	    _internal2Java.put(Type.Node, new JavaType(String.class, 3));
 
-            // Type.ResultTree -> { NodeList(0), Node(1), Object(2), String(3), double(4) }
+            // Type.ResultTree -> { NodeList(0), Node(1), Object(2), String(3) }
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass, 0));
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.ResultTree, new JavaType(Object.class, 2));
 	    _internal2Java.put(Type.ResultTree, new JavaType(String.class, 3));
-	    _internal2Java.put(Type.ResultTree, new JavaType(Double.TYPE, 4));
 
 	    _internal2Java.put(Type.Reference, new JavaType(Object.class, 0));
 

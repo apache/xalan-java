@@ -461,9 +461,6 @@ public final class ResultTreeType extends Type {
         else if (className.equals("java.lang.String")) {
             translateTo(classGen, methodGen, Type.String);
         }
-        else if (clazz == Double.TYPE) {
-            translateTo(classGen, methodGen, Type.Real);
-        }        
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);
