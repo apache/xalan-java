@@ -20,7 +20,7 @@ public class NodeTest extends Expression
   /**
    * This attribute determines which node types are accepted.
    */
-  private int m_whatToShow;
+  protected int m_whatToShow;
   
   public static final int SHOW_NAMESPACE = 0x00001000;
   
@@ -101,6 +101,8 @@ public class NodeTest extends Expression
     calcScore();
   }
   
+  private boolean m_isTotallyWild;
+  
   /**
    * Static calc of match score.
    */
@@ -114,6 +116,8 @@ public class NodeTest extends Expression
       m_score = SCORE_NSWILD;
     else
       m_score = SCORE_QNAME;
+    
+    m_isTotallyWild = ( m_namespace == null && m_name == WILD);
   }
   
   public double getDefaultScore()
@@ -160,6 +164,17 @@ public class NodeTest extends Expression
     System.out.println();
   }
 
+  /**
+   * Two names are equal if they and either both are null or 
+   * the name t is wild and the name p is non-null, or the two 
+   * strings are equal.
+   */
+  private static final boolean subPartMatch(String p, String t)
+  {
+    // boolean b = (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
+    // System.out.println("subPartMatch - p: "+p+", t: "+t+", result: "+b);
+    return (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
+  }
   
   /**
    * Test a node to see if it matches the given node test.
@@ -174,12 +189,14 @@ public class NodeTest extends Expression
   public XObject execute(XPathContext xctxt)
     throws org.xml.sax.SAXException
   {
-    Node context = xctxt.getCurrentNode();
-    int nodeType = context.getNodeType();
     int whatToShow = getWhatToShow();
     // debugWhatToShow(whatToShow);
     if(whatToShow == NodeFilter.SHOW_ALL)
       return m_score;
+    
+    Node context = xctxt.getCurrentNode();
+    int nodeType = context.getNodeType();
+
     int nodeBit = (whatToShow & (0x00000001 << (nodeType-1)));
 
     switch(nodeBit)
@@ -213,21 +230,20 @@ public class NodeTest extends Expression
 
     case NodeFilter.SHOW_ATTRIBUTE:
       {
-        DOMHelper dh = xctxt.getDOMHelper();
         int isNamespace = (whatToShow & SHOW_NAMESPACE);
         if(0 == isNamespace)
         {
-          if(!dh.isNamespaceNode(context))
-            return (( m_namespace == null && m_name == WILD) ||
-                    (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
-                    && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
+          if(!xctxt.getDOMHelper().isNamespaceNode(context))
+            return (m_isTotallyWild ||
+                    (subPartMatch(context.getNamespaceURI(), m_namespace) 
+                    && subPartMatch(context.getLocalName(), m_name))) ?
                    m_score : SCORE_NONE;
           else
             return SCORE_NONE;
         }
         else
         {
-          if(dh.isNamespaceNode(context))
+          if(xctxt.getDOMHelper().isNamespaceNode(context))
           {
             String ns = context.getNodeValue();
             return (subPartMatch(ns, m_name)) ?
@@ -240,10 +256,9 @@ public class NodeTest extends Expression
       
     case NodeFilter.SHOW_ELEMENT:
       {
-        DOMHelper dh = xctxt.getDOMHelper();
-        return (( m_namespace == null && m_name == WILD) ||
-                (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
-                && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
+        return (m_isTotallyWild ||
+                (subPartMatch(context.getNamespaceURI(), m_namespace) 
+                && subPartMatch(context.getLocalName(), m_name))) ?
                m_score : SCORE_NONE;
       }
       
@@ -253,16 +268,4 @@ public class NodeTest extends Expression
     
   }
   
-  
-  /**
-   * Two names are equal if they and either both are null or 
-   * the name t is wild and the name p is non-null, or the two 
-   * strings are equal.
-   */
-  private boolean subPartMatch(String p, String t)
-  {
-    // boolean b = (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
-    // System.out.println("subPartMatch - p: "+p+", t: "+t+", result: "+b);
-    return (p == t) || ((null != p) && ((t == WILD) || p.equals(t)));
-  }
 }
