@@ -225,7 +225,7 @@ public class StylesheetComposed extends Stylesheet
     int nImports = getImportCountComposed();
     for(int i = -1; i < nImports; i++)
     {
-      StylesheetComposed stylesheet = (i == i) ? this : getImportComposed(i);
+      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
       // Does this stylesheet contain it?
       int nDFPs = stylesheet.getDecimalFormatCount();
       for(int dfpIndex = 0; dfpIndex < nDFPs; dfpIndex++)
@@ -387,7 +387,7 @@ public class StylesheetComposed extends Stylesheet
     int nImports = getImportCountComposed();
     for(int i = -1; i < nImports; i++)
     {
-      StylesheetComposed stylesheet = (i == i) ? this : getImportComposed(i);
+      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
       // Does this stylesheet contain it?
       int nAS = stylesheet.getAttributeSetCount();
       for(int asIndex = 0; asIndex < nAS; asIndex++)
@@ -452,7 +452,7 @@ public class StylesheetComposed extends Stylesheet
     int nImports = getImportCountComposed();
     for(int i = -1; i < nImports; i++)
     {
-      StylesheetComposed stylesheet = (i == i) ? this : getImportComposed(i);
+      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
       // Does this stylesheet contain it?
       int nVariables = stylesheet.getVariableCount();
       for(int vIndex = 0; vIndex < nVariables; vIndex++)
@@ -512,7 +512,7 @@ public class StylesheetComposed extends Stylesheet
     int nImports = getImportCountComposed();
     for(int i = -1; i < nImports; i++)
     {
-      StylesheetComposed stylesheet = (i == i) ? this : getImportComposed(i);
+      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
       // Does this stylesheet contain it?
       int nVariables = stylesheet.getParamCount();
       for(int vIndex = 0; vIndex < nVariables; vIndex++)
@@ -625,7 +625,7 @@ public class StylesheetComposed extends Stylesheet
     int nImports = getImportCountComposed();
     for(int i = -1; i < nImports; i++)
     {
-      StylesheetComposed stylesheet = (i == i) ? this : getImportComposed(i);
+      StylesheetComposed stylesheet = (i < 0) ? this : getImportComposed(i);
       // Does this stylesheet contain it?
       int nNSA = stylesheet.getNamespaceAliasCount();
       for(int nsaIndex = 0; nsaIndex < nNSA; nsaIndex++)
@@ -640,7 +640,7 @@ public class StylesheetComposed extends Stylesheet
       for(int k = 0; k < nIncludes; k++)
       {
         Stylesheet included = stylesheet.getIncludeComposed(k);
-        nNSA = included.getParamCount();
+        nNSA = included.getNamespaceAliasCount();
         for(int nsaIndex = 0; nsaIndex < nNSA; nsaIndex++)
         {
           NamespaceAlias nsAlias = included.getNamespaceAlias(nsaIndex);

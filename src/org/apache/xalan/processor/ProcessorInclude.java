@@ -70,6 +70,7 @@ import java.io.IOException;
 import org.xml.sax.helpers.XMLReaderFactory;
 import trax.URIResolver;
 import org.w3c.dom.Node;
+import org.apache.xalan.utils.SystemIDResolver;
 
 /**
  * Processor class for xsl:include markup.
@@ -157,13 +158,23 @@ class ProcessorInclude extends XSLTElementProcessor
       boolean tryCreatingReader = true;
       EntityResolver entityResolver 
         = handler.getStylesheetProcessor().getEntityResolver();
+      
+      InputSource inputSource;
+      if(null != entityResolver)
+      {
+        inputSource = entityResolver.resolveEntity(null, getHref());
+        // TODO: Check for relative URL, and absolutize it???  Or no?
+      }
+      else
+      {
+        String absURL 
+          = SystemIDResolver.getAbsoluteURI(getHref(), handler.getBaseIdentifier());
+        inputSource = new InputSource(absURL);
+      }
 
       if(null != uriresolver)
       {
         tryCreatingReader = false;
-        InputSource inputSource = (null != entityResolver) 
-                                  ? entityResolver.resolveEntity(null, getHref()) : 
-                                    new InputSource(getHref());
         reader = uriresolver.getXMLReader(inputSource);
         if(null == reader)
         {
@@ -195,7 +206,7 @@ class ProcessorInclude extends XSLTElementProcessor
         if(null != entityResolver)
           reader.setEntityResolver(entityResolver);
         reader.setContentHandler(handler);
-        reader.parse(getHref());
+        reader.parse(inputSource);
       }
     }
     catch(InstantiationException ie)

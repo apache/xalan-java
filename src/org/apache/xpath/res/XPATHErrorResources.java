@@ -77,7 +77,7 @@ public class XPATHErrorResources extends XSLResourceBundle
   public static final String WARNING_SUFFIX = "WR";
 
   public static final int MAX_CODE = 68;                // this is needed to keep track of the number of messages          
-  public static final int MAX_WARNING = 10;             // this is needed to keep track of the number of warnings
+  public static final int MAX_WARNING = 11;             // this is needed to keep track of the number of warnings
   public static final int MAX_OTHERS = 20;
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING +1;
 
@@ -666,6 +666,13 @@ public class XPATHErrorResources extends XSLResourceBundle
   {
     contents[WG_EXPAND_ENTITIES_NOT_SUPPORTED  + MAX_CODE][1] 
     = "-E option not supported for DTM parser";
+  }
+  
+  public static final int WG_ILLEGAL_VARIABLE_REFERENCE  = 11;
+  static 
+  {
+    contents[WG_ILLEGAL_VARIABLE_REFERENCE + MAX_CODE][1] 
+    = "VariableReference given for variable out of context or without definition!  Name = {0}";
   }
 
   // Other miscellaneous text used inside the code...

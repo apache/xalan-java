@@ -187,6 +187,7 @@ public class StylesheetRoot
     {
       StylesheetComposed sheet = getGlobalImport(i);
       if(sheet != this) // already done
+      {  
         sheet.recomposeImports();
       sheet.recomposeIncludes(sheet);
       sheet.recomposeAttributeSets();
@@ -197,7 +198,18 @@ public class StylesheetRoot
       sheet.recomposeTemplates();
       sheet.recomposeVariables();
       sheet.recomposeWhiteSpaceInfo();
-    }
+      }
+    }  
+      recomposeIncludes(this);
+      recomposeAttributeSets();
+      recomposeDecimalFormats();
+      recomposeKeys();
+      recomposeNamespaceAliases();
+      recomposeParams();
+      recomposeTemplates();
+      recomposeVariables();
+      recomposeWhiteSpaceInfo();
+    
   }
   
   /**
@@ -321,7 +333,7 @@ public class StylesheetRoot
    * list.  The will be added from highest import precedence to 
    * least import precidence.
    */
-  protected void addImports(Stylesheet stylesheet)
+  protected void addImports(Stylesheet stylesheet, boolean addToList)
   {
     // Get the direct imports of this sheet.
     int n = stylesheet.getImportCount();
@@ -331,7 +343,7 @@ public class StylesheetRoot
       {
         Stylesheet imported = stylesheet.getImport(i);
         m_globalImportList.insertElementAt(imported, 0);
-        addImports(imported);
+        addImports(imported, false);
       }
     }
     
@@ -341,10 +353,11 @@ public class StylesheetRoot
       for(int i = 0; i < n; i++)
       {
         Stylesheet included = stylesheet.getInclude(i);
-        addImports(included);
+        addImports(included, false);
       }
     }
-    m_globalImportList.insertElementAt(stylesheet, 0);
+    if(addToList)
+      m_globalImportList.insertElementAt(stylesheet, 0);
   }
   
   /**
@@ -366,7 +379,7 @@ public class StylesheetRoot
       for(int i = 0; i < n; i++)
       {
         StylesheetComposed imported = getImport(i);
-        addImports(imported);
+        addImports(imported, true);
       }
       m_globalImportList.insertElementAt(this, 0);
     }

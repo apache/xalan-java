@@ -11,16 +11,22 @@ public class FunctionMultiArgs extends Function3Args
   {
     if(argNum < 3)
       super.setArg(arg, argNum);
-    else if(null == m_args)
-      m_args = new Expression[1];
-    else
-    {
-      // Slow but space conservative.
-      Expression[] args = new Expression[m_args.length+1];
-      System.arraycopy(m_args, 0, args, 0, m_args.length);
-      args[m_args.length] = arg;
-      m_args = args;
-    }
+    else 
+    {                  
+      if(null == m_args)
+      {    
+        m_args = new Expression[1];
+        m_args[0] = arg;
+      }  
+      else
+      { 
+        // Slow but space conservative.
+        Expression[] args = new Expression[m_args.length+1];      
+        System.arraycopy(m_args, 0, args, 0, m_args.length);
+        args[m_args.length] = arg;
+        m_args = args;
+      }
+    }  
   }
   
   public void checkNumberArgs(int argNum)

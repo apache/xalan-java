@@ -105,6 +105,8 @@ public class KeyWalker extends DescendantOrSelfWalker
         if(!kd.getName().equals(name)) 
           continue;
         
+        ki.getXPathContext().setNamespaceContext(ki.getPrefixResolver());
+            
         // See if our node matches the given key declaration according to 
         // the match attribute on xsl:key.
         double score = kd.getMatch().getMatchScore(ki.getXPathContext(), testNode);

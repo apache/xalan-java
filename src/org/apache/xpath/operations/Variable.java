@@ -32,13 +32,13 @@ public class Variable extends Expression
     }
     catch(Exception e)
     {
-      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED, new Object[] {m_qname}); //"Could not get variable named "+varName);
+      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED, new Object[] {m_qname.getLocalPart()}); //"Could not get variable named "+varName);
       result = null;
     }
 
     if(null == result)
     {
-      warn(xctxt, XPATHErrorResources.ER_ILLEGAL_VARIABLE_REFERENCE, new Object[] {m_qname}); //"VariableReference given for variable out "+
+      warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE, new Object[] {m_qname.getLocalPart()}); //"VariableReference given for variable out "+
       result = new XNodeSet();
     }
 
