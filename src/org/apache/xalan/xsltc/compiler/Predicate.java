@@ -392,6 +392,7 @@ final class Predicate extends Expression {
 	}
 	else if (isNodeValueTest() && (getParent() instanceof Step)) {
 	    _value.translate(classGen, methodGen);
+	    il.append(new CHECKCAST(cpg.addClass(STRING_CLASS)));
 	    il.append(new PUSH(cpg, ((EqualityExpr)_exp).getOp()));
 	}
 	else {
