@@ -174,6 +174,7 @@ public class TransformerHandlerImpl implements TransformerHandler {
 
 	// Create an internal DOM (not W3C) and get SAX2 input handler
 	_dom = new DOMImpl();
+	_dom.setDocumentURI(_systemId);
 	_handler = _dom.getBuilder();
 
 	// Proxy call
