@@ -453,6 +453,6 @@ public final class MultiDOM implements DOM {
     public String lookupNamespace(int node, String prefix) 
 	throws TransletException
     {
-	return _adapters[node>>>24].lookupNamespace(node, prefix);
+	return _adapters[node>>>24].lookupNamespace(node & CLR, prefix);
     }
 }
