@@ -452,33 +452,6 @@ public class Stylesheet extends ElemTemplateElement
   }
 
   /**
-   * The "xml:space" property.
-   */
-  private boolean m_XmlSpace;
-
-  /**
-   * Set the "xml:space" property.
-   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
-   *
-   * NEEDSDOC @param v
-   */
-  public void setXmlSpace(boolean v)
-  {
-    m_XmlSpace = v;
-  }
-
-  /**
-   * Get the "xml:space" property.
-   * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public boolean getXmlSpace()
-  {
-    return m_XmlSpace;
-  }
-
-  /**
    * The "xsl:import" list.
    */
   private Vector m_imports;
