@@ -125,8 +125,8 @@ Copyright:
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
    <!-- xml-commons sources (for Javadoc) -->                                                                        
-   <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>                                                                         
-   <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-src.tar"/>
+   <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-external-1.2.01-src.tar.gz"/>
+   <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-external-1.2.01-src.tar"/>
  
   <!-- Documentation and samples information  -->
   <property name="Name-in-docs" value="Xalan-Java"/>
