@@ -239,6 +239,20 @@ final public class Transform {
 			       _fileName+"'.");
 	    if (_allowExit) System.exit(-1);
         }
+	catch (SAXException e) {
+	    Exception i = e.getException();
+	    if (_debug) {
+		if (i != null)
+		    i.printStackTrace();
+		else
+		    e.printStackTrace();
+	    }
+	    if (i != null)
+		System.err.println("Error: "+i.getMessage());
+	    else
+		System.err.println("Error: "+e.getMessage());
+	    if (_allowExit) System.exit(-1);
+	}
 	catch (Exception e) {
 	    if (_debug) e.printStackTrace();
 	    System.err.println("Error: "+e.getMessage());
