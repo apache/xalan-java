@@ -49,7 +49,7 @@
   <!-- Move to completed section when done. -->
  
    <action context="code" category="feature" who="SB">
-    Integrate John Gentilin <johnglinux@eyecatching.com> code, 
+    Integrate John Gentilin &lt;johnglinux@eyecatching.com> code, 
     for SQL Extension Enhancements.
    </action>
  
@@ -62,22 +62,8 @@
     For default transformer, do direct transform without stylesheet.
    </action>
    
-   <action context="code" category="performance" who="SB">
-    Optimize "." patterns to be ultra simple iterator.
-   </action>
-
-   <action context="code" category="documentation" who="SB">
-    Fix some javadoc headers that still have old XalanJ1 text.  For instance, 
-    TransformerImpl.
-   </action>
-
    <action context="doc" category="documentation" who="SB">
     Update and add to architecture documentation, including package headers.
-   </action>
-
-   <action context="code" category="performance" who="SB">
-    Optimize "/foo/baz" patterns that have no variability, to a global space, 
-    and don't re-evaluate each time.
    </action>
        
    <action context="code" category="conformance" who="GP">
@@ -117,6 +103,14 @@
    </target-release-description>
 
   <!-- Move to completed section when done. -->
+   <action context="code" category="performance" who="SB">
+    Optimize "." patterns to be ultra simple iterator.
+   </action>
+
+   <action context="code" category="performance" who="SB">
+    Optimize "/foo/baz" patterns that have no variability, to a global space, 
+    and don't re-evaluate each time.
+   </action>
 
   <action context="code" category="feature">
     Don published a list of proposed extensions a while ago.
@@ -223,6 +217,11 @@
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
   
+   <action context="code" category="documentation" who="SB" completed="01/01/01">
+    Fix some javadoc headers that still have old XalanJ1 text.  For instance, 
+    TransformerImpl.
+   </action>
+  
    <action context="code" category="bugs" who="SB" completed="12/31/00">
     Fix bug with Shane's s2s test hang.
    </action>
@@ -274,7 +273,7 @@
 
   <action context="code" packages="serialize" who="SB"  category="feature"
           completed-date="11/17/00">
-    Implement DOMSerializer on FormatterToXML.
+    Implement DOMSerializer on SerializerToXML.
   </action>
 
   <action context="code" who="SB" packages="xpath.axes" category="performance"
