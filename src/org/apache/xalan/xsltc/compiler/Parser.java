@@ -76,6 +76,9 @@ import java.net.MalformedURLException;
 
 import javax.xml.parsers.*;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.*;
 import org.xml.sax.*;
 
@@ -106,6 +109,12 @@ public final class Parser implements Constants {
     private Template    _template;    // Reference to the template being parsed.
 
     private int _currentImportPrecedence = 1;
+
+    private ErrorListener _errorListener = null;
+
+    public void setErrorListener(ErrorListener listener) {
+	_errorListener = listener;
+    } 
 
     public Parser(XSLTC xsltc) {
 	_xsltc = xsltc;
@@ -984,16 +993,52 @@ public final class Parser implements Constants {
      */
     public void addError(ErrorMsg error) {
 	_errors.addElement(error);
+	// support for TrAX Error Listener
+  	if (_errorListener != null ) {  
+	    postErrorToListener(error.toString());
+	}
     }
 
+    /**
+     * inform TrAX error listener of this error
+     */
+    private void postErrorToListener(String msg) {
+	try {
+	    _errorListener.error(new TransformerException(
+	        "Stylesheet Parsing Error: " + msg));
+	} catch (TransformerException e) {
+	    // TBD
+	}
+    }
+
+    /**
+     * Prints all compile-time warnings
+     */
     public void addWarning(ErrorMsg msg) {
 	_warnings.addElement(msg);
+	// support for TrAX Error Listener
+  	if (_errorListener != null ) {
+	    postWarningToListener(msg.toString());
+	}
+    }
+
+    /**
+     * inform TrAX error listener of this warning 
+     */
+    private void postWarningToListener(String msg) {
+	try {
+	    _errorListener.warning(new TransformerException(
+	        "Stylesheet Parsing Warning: " + msg));
+	} catch (TransformerException e) {
+	    // TBD
+	}
     }
 
     /**
      * Prints all compile-time errors
      */
     public void printErrors() {
+	if (_errorListener != null) return;   //support for TrAX Error Listener
 	System.err.println("Compile errors:");
 	final int size = _errors.size();
 	for (int i = 0; i < size; i++) {
@@ -1002,6 +1047,7 @@ public final class Parser implements Constants {
     }
 
     public void printWarnings() {
+	if (_errorListener != null) return;  //support for TrAX Error Listener 
 	if (_warnings.size() > 0) {
 	    System.err.println("Warning:");
 	    final int size = _warnings.size();

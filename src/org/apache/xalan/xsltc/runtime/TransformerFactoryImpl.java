@@ -156,14 +156,20 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     ////////////////////////////////////////////////////// 
     // TransformerFactory
     //
-    public ErrorListener getErrorListener() { /*TBD*/ return null; }
+    public ErrorListener getErrorListener() { 
+	/*TBD*/ 
+        /* return null;  */
+	return _errorListener;
+    }
     public void setErrorListener(ErrorListener listener) 
 	throws IllegalArgumentException
     {
+	_errorListener = listener;
 	/*TBD*/   
-        throw new IllegalArgumentException(
+        /*throw new IllegalArgumentException(
             "TransformerFactoryImpl:setErrorListener(ErrorListener) " +
             "not implemented yet.");
+	*/
     }
     public Object getAttribute(String name) 
 	throws IllegalArgumentException
@@ -232,7 +238,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
 	try {
 	    File file = new File(stylesheetName);
 	    URL url = file.toURL();
-	    isSuccessful = xsltc.compile(url);
+	    // GTM isSuccessful = xsltc.compile(url);
+	    isSuccessful = xsltc.compile(url, _errorListener); // GTM
 	} catch (MalformedURLException e) {
 	    throw new TransformerConfigurationException(
 		"URL for stylesheet '" + stylesheetName + 
@@ -267,5 +274,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
        TransformerConfigurationException 
     {
 	return new TransletTemplates(stylesheet);
-    } 
+    }
+
+    private ErrorListener _errorListener = null; 
 }

@@ -81,6 +81,8 @@ import java.util.jar.*;
 
 import javax.xml.parsers.*;
 
+import javax.xml.transform.ErrorListener;
+
 import org.w3c.dom.Element;
 import org.xml.sax.*;
 
@@ -174,7 +176,19 @@ public final class XSLTC {
      * Compiles the stylesheet into Java bytecode. Returns 'true' if the
      * compilation was successful - 'false' otherwise.
      */
-    public boolean compile(URL stylesheet) {
+    public boolean compile(URL stylesheet) { 
+	return compile(stylesheet, null);   
+    }
+
+    /**
+     * Compile stylesheet into Java bytecode. Returns 'true' if compilation
+     * is successful. - 'false' otherwise. ErrorListener arg (may be null)
+     * added to support TrAX API.
+     */
+    public boolean compile(URL stylesheet, ErrorListener elistener) {
+	if (elistener != null) {
+	    _parser.setErrorListener(elistener);
+	}
 	try {
 	    reset();
 	    final String name = stylesheet.getFile();
