@@ -540,8 +540,10 @@ public class StylesheetHandler extends DefaultHandler
 
     // m_nsSupport.pushContext();
     // this.getNamespaceSupport().declarePrefix(prefix, uri);
-    m_prefixMappings.add(prefix);
-    m_prefixMappings.add(uri);
+    //m_prefixMappings.add(prefix); // JDK 1.2+ only -sc
+    //m_prefixMappings.add(uri); // JDK 1.2+ only -sc
+    m_prefixMappings.addElement(prefix); // JDK 1.1.x compat -sc
+    m_prefixMappings.addElement(uri); // JDK 1.1.x compat -sc
   }
 
   /**
@@ -604,7 +606,8 @@ public class StylesheetHandler extends DefaultHandler
       String nsURI = (String)m_prefixMappings.elementAt(i);
       nssupport.declarePrefix(prefix, nsURI);
     }
-    m_prefixMappings.clear();
+    //m_prefixMappings.clear(); // JDK 1.2+ only -sc
+    m_prefixMappings.removeAllElements(); // JDK 1.1.x compat -sc
 
     m_elementID++;
 
