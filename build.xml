@@ -250,38 +250,49 @@ Copyright:
     <pathelement location="${runtime.jar}" />
     <pathelement location="${xml.jar}" />
     <pathelement location="${crimson.jar}" />
+    <!-- build.classes needed for 
+         org.apache.xalan.xsltc.util.JavaCupRedirect -->
+    <pathelement location="${build.classes}" />
     <pathelement path="${java.class.path}" />
   </path>
+  <!-- The xsltc.compile target should be rewritten to properly 
+       do dependencies on the generated sources: right now, it 
+       will always regenerate the sources, even if it's not needed
+       (which forces all later steps to re-run as well) -->
   <target name="xsltc.compile" depends="prepare"
     description="Compile just the XSLTC classes" >
 
-    <!-- The first step generates sym.java and XPathParser.java, and the
+    <!-- The first step compiles the utils directpry, which includes 
+         a special wrapper for the java_cup step next. -->
+    <echo message="Compiling XSLTC utilities"/>
+    <javac srcdir="${src.dir}" 
+           destdir="${build.classes}"
+           includes="${xsltc.reldir}/util/**/*.java"
+           debug="${debug}">
+      <classpath refid="xsltc.class.path" />
+    </javac>
+    <!-- The second step generates sym.java and XPathParser.java, and the
     last one generates XPathLexer.java. The lexiographical analyser
     has to be generated after sym.java, so order is important. -->
-<!-- 
-java -cp /src/XSLT/External/java_cup/java_cup.jar:/src/XSLT/External/java_cup/runtime/runtime.jar java_cup.Main -parser XPathParser -expect 0 < /src/xml-xalan/java/src/org/apache/xalan/xsltc/compiler/xpath.cup
--->
     <echo message="java_cup preparsing"/>
-    <java fork="yes" classname="java_cup.Main" >
+    <java fork="yes" failonerror="true" classname="org.apache.xalan.xsltc.util.JavaCupRedirect" >
       <classpath refid="xsltc.class.path" />
-      <!-- Note XML-isms prevent putting bare < in line; also Ant doesn't allow stdin redirection like this -->
-      <arg line="-parser XPathParser -expect 0 ${src.dir}/${xsltc.reldir}/compiler/xpath.cup"/><!-- PROBABLY DOES NOT WORK! -sc 19-Apr-01 -->
+      <!-- We're using JavaCupRedirect to call the java_cup application -->
+      <arg line="-parser XPathParser -expect 0 -stdin ${src.dir}/${xsltc.reldir}/compiler/xpath.cup"/>
     </java>
-<!-- 
-java -cp /src/XSLT/External/JLex/JLex.jar JLex.Main -static /src/xml-xalan/java/src/org/apache/xalan/xsltc/compiler/xpath.lex
--->
+    <echo message="java_cup move output files"/>
+    <move file="XPathParser.java" tofile="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
+    <move file="sym.java" tofile="${src.dir}/${xsltc.reldir}/compiler/sym.java"/>
+
     <echo message="JLex preparsing"/>
-    <java fork="yes" classname="JLex.Main" >
+    <java fork="yes" failonerror="true" classname="JLex.Main" >
       <classpath refid="xsltc.class.path" />
       <arg line="-static ${src.dir}/${xsltc.reldir}/compiler/xpath.lex"/>
     </java>
-<!--
-mv xpath.lex.java XPathLexer.java
--->
     <echo message="JLex move output file"/>
     <move file="${src.dir}/${xsltc.reldir}/compiler/xpath.lex.java" tofile="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
 
-    <echo message="Compiling all XSLTC classes"/>
+    <echo message="Compiling remaining XSLTC classes"/>
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="${xsltc.reldir}/**/*.java"
@@ -501,7 +512,7 @@ mv xpath.lex.java XPathLexer.java
   <!--         - Javadoc overview and packqage-level html docs placed      -->
   <!--           in the source tree                                        -->
   <!-- =================================================================== -->
-  <target name="clean"
+  <target name="clean" depends="xsltc.clean"
     description="Clean up the build tree and any outputs" >
     <delete dir="${build.dir}"/>
     <delete dir="${site.root}"/>
@@ -510,6 +521,13 @@ mv xpath.lex.java XPathLexer.java
     </delete>
   </target>
  
+  <!-- Cleans just the generated sources from xsltc.compile -->
+  <target name="xsltc.clean"
+    description="Clean up the XSLTC generated sources" >
+    <delete file="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java" />
+    <delete file="${src.dir}/${xsltc.reldir}/compiler/sym.java" />
+    <delete file="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java" />
+  </target>
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
