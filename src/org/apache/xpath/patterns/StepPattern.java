@@ -102,7 +102,7 @@ public class StepPattern extends NodeTest implements SubContextList
   /** The target local name or psuedo name, for hash table lookup optimization.
    *  @serial  */
   String m_targetString;  // only calculate on head
-
+  
   /**
    * Calculate the local name or psuedo name of the node that this pattern will test, 
    * for hash table lookup optimization.
@@ -120,6 +120,8 @@ public class StepPattern extends NodeTest implements SubContextList
       m_targetString = PsuedoNames.PSEUDONAME_COMMENT;
       break;
     case NodeFilter.SHOW_TEXT :
+    case NodeFilter.SHOW_CDATA_SECTION :
+    case (NodeFilter.SHOW_TEXT | NodeFilter.SHOW_CDATA_SECTION):
       m_targetString = PsuedoNames.PSEUDONAME_TEXT;
       break;
     case NodeFilter.SHOW_ALL :
