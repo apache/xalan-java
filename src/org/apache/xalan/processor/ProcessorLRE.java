@@ -198,15 +198,16 @@ public class ProcessorLRE extends ProcessorTemplateElem
 					// declaration.
 					// If someone comes up with a better solution, please feel 
 					// free to contribute it. -mm
-					String msg = e.getMessage();
+         
 					if (stylesheet.getDeclaredPrefixes() == null || 
 						!declaredXSLNS(stylesheet))
 					{
-						msg = msg +"; " + XSLMessages.createWarning(XSLTErrorResources.WG_OLD_XSLT_NS, null);
-						
+						throw new org.xml.sax.SAXException(XSLMessages.createWarning(XSLTErrorResources.WG_OLD_XSLT_NS, null));
 					}
-					//else
-						throw new org.xml.sax.SAXException(msg, e);
+					else
+                    {
+						throw new org.xml.sax.SAXException(e);
+                    }
 				}
         handler.pushElemTemplateElement(stylesheet);
 
