@@ -60,8 +60,7 @@
 <ul>
   <li><link anchor="intro">Introduction</link></li>
   <li><link anchor="settings">Performance settings</link></li>  
-</ul>
-<anchor name="intro"/>
+</ul><anchor name="intro"/>
 <s2 title="Introduction">
   <p>The Document Table Model (DTM) is an interface to a Document Model designed specifically for 
   the needs of our XPath and XSLT implementations. The motivation behind this model is to optimize 

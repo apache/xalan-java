@@ -82,11 +82,11 @@
 <p>&xslt4jc-long; samples:</p>
 <ul>
 &xsltcsampleshead;
-</ul>
+</ul>  
 <s2 title="Samples to help you get started">
-<p>Each of the subdirectories in the &xslt4j; java/samples directory
-   contains the source files for one or more sample applications.  The class
-   files for the samples are in the following jar files:</p>
+    <p>Each of the subdirectories in the &xslt4j; java/samples directory
+    contains the source files for one or more sample applications.  The class
+    files for the samples are in the following jar files:</p>
 <table>
 <tr>
   <th>JAR file</th>
@@ -94,12 +94,28 @@
 </tr>
 <tr>
   <td>xalansamples.jar</td>
-  <td>Everything except the &xslt4ji; servlet sample and some
+  <td>Everything except the Xalan-J Interpretive servlet sample and some
       &xslt4jc-short; samples</td>
 </tr>
 <tr>
   <td>xalanservlet.jar</td>
   <td>&xslt4ji; servlet sample</td>
+</tr>
+<tr>
+  <td>xsltcapplet.jar</td>
+  <td>&xslt4jc-short; applet sample</td>
+</tr>
+<tr>
+  <td>xsltcbrazil.jar</td>
+  <td>&xslt4jc-short; Brazil server sample</td>
+</tr>
+<tr>
+  <td>xsltcejb.jar</td>
+  <td>&xslt4jc-short; EJB sample</td>
+</tr>
+<tr>
+  <td>xsltcservlet.jar</td>
+  <td>&xslt4jc-short; servlet sample</td>
 </tr>
 </table>
 <p>With most of the samples, you can use the following procedure:</p>

@@ -3,17 +3,15 @@
 <!ENTITY xslt "Xalan">
 <!ENTITY xslt4j "Xalan-Java">
 <!ENTITY xslt4j2 "Xalan-Java 2">
-<!ENTITY xslt4j-dist "xalan-j_2_5_D1">
-<!ENTITY xslt4j-dist-bin "&xslt4j-dist;-bin">
-<!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
-<!ENTITY xslt4j-current "&xslt4j; version 2.5.D1">
-<!ENTITY xslt4j-distdir "http://xml.apache.org/dist/xalan-j/">
-
-<!ENTITY xslt4j_longname "Apache Xalan Java">
 <!ENTITY xslt4ji "&xslt4j; Interpretive">
 <!ENTITY xslt4jc-short "XSLTC">
 <!ENTITY xslt4jc-long  "&xslt4j; Compiled">
-
+<!ENTITY xslt4j-dist-bin "&xslt4j-dist;-bin">
+<!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
+<!ENTITY xslt4j-dist "xalan-j_2_5_D1">
+<!ENTITY xslt4j-current "&xslt4j; version 2.5.D1">
+<!ENTITY xslt4j-distdir "http://xml.apache.org/dist/xalan-j/">
+<!ENTITY xslt4j_longname "Apache Xalan Java">
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j1 "Xerces-Java 1">
 <!ENTITY xml4j2 "Xerces-Java 2">
@@ -25,7 +23,7 @@
 For version information about the contents of xml-apis.jar, see the JAR manifest.">
 
 <!ENTITY xsltcwhatsnewhead '<li><link anchor="xsltc">&xslt4jc-short;</link></li>'>
-                         
+
 <!ENTITY xsltcwhatsnew '<anchor name="xsltc"/><s2 title="&xslt4jc-long; (&xslt4jc-short;)">
                 <p>In April 2001, Sun donated &xslt4jc-short; to the Xalan project. &xslt4jc-short; compiles stylesheets into translets and
                 provides a runtime environment for using translets to transform XML documents. Initially, &xslt4jc-short; is
@@ -33,10 +31,10 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                 see <link idref="xsltc_usage">Using &xslt4jc-short;</link>, <link idref="readme" anchor="xsltcreleasenotes">&xslt4jc-short;
                 Release Notes</link>, and <jump href="xsltc/index.html">&xslt4jc-short; Design</link>.</p>
                 </s2>'>
-                
+
 <!ENTITY history2xsltc '<note>For &xslt4jc-short; changes since &xslt4jc-short; was incorporated into &xslt4j;, see
                         <link idref="xsltc_history">&xslt4jc-short; software changes</link>.</note>'>
-                        
+
 <!ENTITY xsltcclasspath '<p>If you are using <link idref="xsltc_usage">&xslt4jc-short;</link>, see
                         <link idref="xsltc_usage" anchor="classpath">Setting the system classpath for &xslt4jc-short;</link>.</p>'>
 
@@ -77,7 +75,7 @@ For version information about the contents of xml-apis.jar, see the JAR manifest
                  </s3><anchor name="xsltc2"/>
                  <s3 title="JAXPTransletMultipleTransformations">
                  <p>What it does: Uses the &xslt4jc-short; TransformerFactory to compile a translet and use
-                 the Templates object associated with the translet to transform the &xslt4jc-short; and Xalan to-do lists from XML 
+                 the Templates object associated with the translet to transform two to-do lists from XML
                  into HTML.</p>
                  <p>Complete the <link anchor="xsltcprepare">steps detailed above</link>, and run this sample 
                  from the translets subdirectory with</p>

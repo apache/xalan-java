@@ -128,7 +128,7 @@
 -XX (turn on additional debugging message output)
 -XT (use translet to transform if possible)
 </source>
-      <p>Use <code>-XSLTC</code> if you want to transform with &xslt4jc-short;. Refer to 
+      <p>Use <code>-XSLTC</code> if you want to transform with &xslt4jc-short;. Please refer to 
       <link idref="commandline_xsltc">this document</link> for a detailed description on
       &xslt4jc-short; related options.</p>
       <p>Use <code>-IN</code> to specify the XML source document.</p> 

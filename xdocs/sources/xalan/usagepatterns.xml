@@ -149,7 +149,7 @@ transformer.transform
 <jump href="http://java.sun.com/aboutJava/communityprocess/review/jsr063/index.html">JSR-000063 1.1</jump>.</p> 
 </s2><anchor name="outputprops"/>
 <s2 title="Setting output properties in your stylesheets">
-<p>Output properties for XML, HTML, and Text transformation output are defined in property files in the org.apache.xalan.templates package.</p>
+<p>Output properties for XML, HTML, and Text transformation output are defined in property files in the org.apache.xml.serializer package.</p>
 <p>You can change these settings as follows:</p>
 <ol>
   <li>Declare the xalan namespace in your stylesheet element (xmlns:xalan="http://xml.apache.org/xslt").<br/><br/></li>
@@ -181,7 +181,7 @@ transformer.transform
   </tr>
   <tr>
     <td>xalan:content-handler</td>
-    <td>org.apache.xalan.serialize.SerializerToXML</td>
+    <td>org.apache.xml.serializer.ToXMLStream</td>
   </tr>
 </table>
 <p><ref>output_html.properties</ref>:</p>
@@ -196,7 +196,7 @@ transformer.transform
   </tr>
   <tr>
     <td>xalan:content-handler</td>
-    <td>org.apache.xalan.serialize.SerializerToHTML</td>
+    <td>org.apache.xml.serializer.ToHTMLStream</td>
   </tr>
   <tr>
     <td>xalan:entities</td>
@@ -212,7 +212,7 @@ transformer.transform
   </tr>
 </table>
 <note>You can also create your own HTML entity file (mapping characters to entities) 
-or edit src/org/apache/xalan/serialize/HTMLEntities.res and rebuild xalan.jar.</note>
+or edit src/org/apache/xml/serializer/HTMLEntities.res and rebuild xalan.jar.</note>
 <p><ref>output_text.properties</ref>:</p>
 <table>  
   <tr>
@@ -221,7 +221,7 @@ or edit src/org/apache/xalan/serialize/HTMLEntities.res and rebuild xalan.jar.</
   </tr>
   <tr>
     <td>xalan:content-handler</td>
-    <td>org.apache.xalan.serialize.SerializerToText</td>
+    <td>org.apache.xml.serializer.ToTextStream</td>
   </tr>
 </table>
 </s2><anchor name="outputencoding"/>
@@ -327,8 +327,8 @@ if (tFactory.getFeature(javax.xml.transform.sax.SAXSource.FEATURE) &amp;&amp;
                         transformerHandler);
 
     // Set up a Serializer to serialize the Result to a file.
-    org.apache.xalan.serialize.Serializer serializer = 
-    org.apache.xalan.serialize.SerializerFactory.getSerializer
+    org.apache.xml.serializer.Serializer serializer = 
+    org.apache.xml.serializer.SerializerFactory.getSerializer
     (org.apache.xalan.templates.OutputProperties.getDefaultMethodProperties
                                                                    ("xml"));
     serializer.setOutputStream(new java.io.FileOutputStream("foo.out"));
@@ -418,7 +418,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 <p>You can set up a servlet to use &xslt4j; to respond to requests for XML documents by transforming those documents into HTML and serving them to web browsers. To respond to HTTP GET requests, all you need to do is overwrite the HttpServlet doGet() method with a procedure that instantiates a Transformer and uses it to perform a transformation. As the following example shows, you can generate a ResultStream that a PrintWriter writes to the HttpResponse OutputStream, returning the transformation output to the web browser.</p>
 <source>
 public class SampleXSLTServlet extends javax.servlet.http.HttpServlet {
-
+  
   public final static String FS = System.getProperty("file.separator"); 
   // Respond to HTTP GET requests from browsers.
   public void doGet (javax.servlet.http.HttpServletRequest request,

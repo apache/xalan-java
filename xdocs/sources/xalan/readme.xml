@@ -267,7 +267,7 @@
      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=11828">11828</jump>,
      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=12075">12075</jump></li>. 
      <li>&xslt4j; now uses a list of supported encodings in a properties file 
-     (org.apache.xalan.serialize.Encodings.properties). Fixes Bugzilla 6356. Patch from Sergey Ushakov. </li>     
+     (org.apache.xml.serializer.Encodings.properties). Fixes Bugzilla 6356. Patch from Sergey Ushakov. </li>     
      <li>Support for the <jump href="http://www.exslt.org/">EXSLT</jump> function and result elements, and EXSLT 
      date-and-time functions.</li>
      <li>Improvements to the extensions mechanism to more efficiently handle the detection and analysis of extensions 
@@ -470,7 +470,7 @@ javadoc -doclet xalanjdoc.Standard
  org.apache.xalan.stree:org.apache.xalan.trace:
  org.apache.xalan.xslt" 
  -group Xalan_Extensions "org.apache.xalan.lib*" 
- -group Serializers "org.apache.xalan.serialize" 
+ -group Serializers "org.apache.xml.serializer" 
  org.apache.xalan.client org.apache.xalan.dtm 
  org.apache.xalan.extensions org.apache.xalan.lib 
  org.apache.xalan.lib.sql org.apache.xalan.processor 
@@ -481,7 +481,7 @@ javadoc -doclet xalanjdoc.Standard
  org.apache.xpath.compiler org.apache.xpath.functions 
  org.apache.xpath.objects org.apache.xpath.operations 
  org.apache.xpath.patterns org.apache.xpath.res
- org.apache.xalan.serialize javax.xml.transform  
+ org.apache.xml.serializer javax.xml.transform  
  javax.xml.transform.dom javax.xml.transform.sax 
  javax.xml.transform.stream javax.xml.parsers
  -d ../build/docs/apidocs -windowtitle "&xslt4j; 2" 

@@ -86,8 +86,8 @@ with <code>-XSLTC</code>, a message is printed and the option is ignored.</p>
 letter is X and the second letter is the same as the corresponding option in the &xslt4jc-short; command line 
 <code>org.apache.xalan.xsltc.cmdline.Compile</code>.</p>
 
-<p>These new options can only be used with <code>-XSLTC</code>. If any of them is used 
-with the &xslt4ji;, a message is printed and the option is ignored.</p>
+<p>These new options can only be used with <code>-XSLTC</code>. If any of them is used with
+&xslt4ji;, a message is printed and the option is ignored.</p>
 
 <p>Here is the list of the new options:</p>
 <ul>

@@ -64,11 +64,11 @@
   <separator/>
   <document id="index" label="Xalan-J 2.5.D1" source="xalan/index.xml"/>
   <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
+  <document id="xsltc_usage" label="XSLTC Translets" source="xalan/xsltc_usage.xml"/>
   <separator/>
   <document id="overview" label="Overview" source="xalan/overview.xml"/>
   <document id="downloads" label="Downloads" source="xalan/downloads.xml"/>  
   <document id="getstarted" label="Getting Started" source="xalan/getstarted.xml"/>
-  <document id="xsltc_usage" label="Using XSLTC" source="xalan/xsltc_usage.xml"/>  
   <separator/>
   <faqs id="faq" label="FAQs" source="xalan/faq.xml"/>
   <separator/>
