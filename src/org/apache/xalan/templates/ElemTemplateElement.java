@@ -843,6 +843,8 @@ public class ElemTemplateElement extends UnImplNode
         XMLNSDecl decl = (XMLNSDecl) m_declaredPrefixes.elementAt(i);
         String prefix = decl.getPrefix();
         String uri = decl.getURI();
+        if(null == uri)
+          uri = "";
         boolean shouldExclude = excludeResultNSDecl(prefix, uri);
 
         // Create a new prefix table if one has not already been created.
