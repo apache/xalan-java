@@ -243,7 +243,7 @@ public class ElemElement extends ElemUse
       rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName), elemName);
       if(null != prefix)
       {
-        rhandler.startPrefixMapping(prefix, elemNameSpace);
+        rhandler.startPrefixMapping(prefix, elemNameSpace, true);
       }
     }
     // Instantiate content of xsl:element. Note that if startElement was not

@@ -771,7 +771,7 @@ public class ElemTemplateElement extends UnImplNode
       XMLNSDecl decl = (XMLNSDecl)m_prefixTable.elementAt(i);
       if(!decl.getIsExcluded())
       {
-        rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI());
+        rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI(), true);
       }
     }    
   }
