@@ -75,7 +75,7 @@
 <Spr>
 <Name>DMAN4TAU39</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>conditionalerr16</TestID>
 <TestDesc>Need to catch reference to undefined variable in certain expressions</TestDesc>
 <Subsystem>XPath</Subsystem>
@@ -155,7 +155,7 @@
 <Spr>
 <Name>DMAN4TAUNL</Name>
 <DateCreated>1/24/2001 </DateCreated>
-<State>Pending</State>
+<State build="2.0.0">Resolved</State>
 <TestID>mdocserr02</TestID>
 <TestDesc>Need to raise error when document() has zero arguments</TestDesc>
 <Subsystem>XSLT</Subsystem>
@@ -295,6 +295,14 @@
 <TestID>impincl12</TestID>
 <TestDesc>Import/Include over the net w/i firewall is failing</TestDesc>
 <Subsystem>XSLT</Subsystem>
+</Spr>
+<Spr>
+<Name>PDIK4TGQLK</Name>
+<DateCreated>1/30/2001 </DateCreated>
+<State>Open</State>
+<TestID>axes68</TestID>
+<TestDesc>Seems that we should be outputting the xml namespace node for document element of xml document.</TestDesc>
+<Subsystem>XPath</Subsystem>
 </Spr>
 <Spr>
 <Name>SBOG4SPP2F</Name>
