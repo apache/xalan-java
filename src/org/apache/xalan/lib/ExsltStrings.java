@@ -132,7 +132,7 @@ public class ExsltStrings extends ExsltBase
     // Default is left
     else
     {
-      return targetStr + paddingStr.substring(paddingStr.length() - targetStr.length());
+      return targetStr + paddingStr.substring(targetStr.length());
     }    
   }
 
