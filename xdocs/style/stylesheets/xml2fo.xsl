@@ -271,6 +271,11 @@ TBD: - The faq doesn't show in the content
     <xsl:apply-templates/> 
 </xsl:template>
 
+<xsl:template match="img">
+  <fo:block>
+    <fo:external-graphic src="file:build/docs/images/{@src}"/>
+  </fo:block>
+</xsl:template>
 
 <!-- faq -->
 <xsl:template match ="faq">
