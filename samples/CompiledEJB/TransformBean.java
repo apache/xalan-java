@@ -60,29 +60,21 @@
  *
  */
 
-import java.io.*;
-import java.text.*;
-import java.util.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-import java.rmi.RemoteException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import javax.ejb.SessionBean;
 import javax.ejb.SessionContext;
 
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
-
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.dom.*;
-
 public class TransformBean implements SessionBean {
 
-    private SessionContext _context = null;
+    private SessionContext m_context = null;
     
     private final static String nullErrorMsg =
 	"<h1>XSL transformation error</h1>"+
@@ -91,38 +83,6 @@ public class TransformBean implements SessionBean {
 
     private static final String NAMESPACE_FEATURE =
 	"http://xml.org/sax/features/namespaces";
-
-    /**
-     * Read the input document and build the internal "DOM" tree.
-     */
-    private DOMImpl getDOM(String url, AbstractTranslet translet)
-	throws Exception {
-
-	// Create a SAX parser and get the XMLReader object it uses
-	final SAXParserFactory factory = SAXParserFactory.newInstance();
-	try {
-	    factory.setFeature(NAMESPACE_FEATURE,true);
-	}
-	catch (Exception e) {
-	    factory.setNamespaceAware(true);
-	}
-	final SAXParser parser = factory.newSAXParser();
-	final XMLReader reader = parser.getXMLReader();
-
-	// Set the DOM's builder as the XMLReader's SAX2 content handler
-	DOMImpl dom = new DOMImpl();
-	reader.setContentHandler(dom.getBuilder());
-
-	// Create a DTD monitor and pass it to the XMLReader object
-	final DTDMonitor dtdMonitor = new DTDMonitor();
-	dtdMonitor.handleDTD(reader);
-	translet.setDTDMonitor(dtdMonitor);
-
-	// Parse the input document
-	reader.parse(url);
-
-	return dom;
-    }
 
     /**
      * Generates HTML from a basic error message and an exception
@@ -147,39 +107,27 @@ public class TransformBean implements SessionBean {
 		out.println(nullErrorMsg);
 	    }
 	    else {
-		// Instanciate a translet object (inherits AbstractTranslet)
-	        Class tc = Class.forName(transletName);
-		AbstractTranslet translet = (AbstractTranslet)tc.newInstance();
+                TransformerFactory tf = TransformerFactory.newInstance();
+                try {
+                    tf.setAttribute("use-classpath", Boolean.TRUE);
+                } catch (IllegalArgumentException iae) {
+                    System.err.println(
+                        "Could not set XSLTC-specific TransformerFactory "
+                      + "attributes.  Transformation failed.");
+                }
 
-		// Read input document from the DOM cache
-		DOMImpl dom = getDOM(document, translet);
+                Transformer t =
+                    tf.newTransformer(new StreamSource(transletName));
 
-		// Create output handler
-		TransletOutputHandlerFactory tohFactory = 
-		    TransletOutputHandlerFactory.newInstance();
-		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
-		tohFactory.setEncoding(translet._encoding);
-		tohFactory.setOutputMethod(translet._method);
-		tohFactory.setWriter(out);
-
-		// Start the transformation
-		final long start = System.currentTimeMillis();
-		translet.transform(dom, tohFactory.getTransletOutputHandler());
-		final long done = System.currentTimeMillis() - start;
-		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
+                // Do the actual transformation
+                final long start = System.currentTimeMillis();
+                t.transform(new StreamSource(document),
+                            new StreamResult(out));
+                final long done = System.currentTimeMillis() - start;
+                out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
 	    }
 	}
 
-	catch (IOException e) {
-	    errorMsg(out, e, "Could not locate source document: "+document);
-	}
-	catch (ClassNotFoundException e) {
-	    errorMsg(out, e, "Could not locate the translet class: "+
-		     transletName);
-	}
-	catch (SAXException e) {
-	    errorMsg(out, e, "Error parsing document "+document);
-	}
 	catch (Exception e) {
 	    errorMsg(out, e, "Impossible state reached.");
 	}
@@ -194,7 +142,7 @@ public class TransformBean implements SessionBean {
      *
      */
     public void setSessionContext(SessionContext context) {
-	_context = context;
+	m_context = context;
     }
 
     // General EJB entry points
